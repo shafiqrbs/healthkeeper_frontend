@@ -1,96 +1,95 @@
 import { Routes, Route } from "react-router-dom";
-import Login from "./components/Login";
-import Layout from "./components/layout/Layout";
-import SampleDashboard from "./components/modules/sample-module/DashBoard";
-import "./lang/i18next";
-import CustomerIndex from "./components/modules/core/customer/CustomerIndex";
-import UserIndex from "./components/modules/core/user/UserIndex";
-import VendorIndex from "./components/modules/core/vendor/VendorIndex";
-import ProductionConfigurationIndex from "./components/modules/production/configuraton/ConfigurationIndex";
-import CategoryGroupIndex from "./components/modules/inventory/category-group/CategoryGroupIndex";
-import CategoryIndex from "./components/modules/inventory/category/CategoryIndex";
-import ProductIndex from "./components/modules/inventory/product/ProductIndex.jsx";
-import SalesIndex from "./components/modules/inventory/sales/SalesIndex";
-import SampleInvoice from "./components/modules/sample-module/sample-layout/SampleInvoice";
-import SampleIndex from "./components/modules/sample-module/sample-layout/SampleIndex";
-import DomainIndex from "./components/modules/domain/domain/DomainIndex";
-import TransactionModeIndex from "./components/modules/accounting/transaction-mode/TransactionModeIndex.jsx";
-import SalesInvoice from "./components/modules/inventory/sales/SalesInvoice";
-import Sitemap from "./components/modules/dashboard/SItemap";
-import PurchaseIndex from "./components/modules/inventory/purchase/PurchaseIndex";
-import PurchaseInvoice from "./components/modules/inventory/purchase/PurchaseInvoice";
-import VoucherIndex from "./components/modules/accounting/voucher-entry/VoucherIndex";
-import HeadGroupIndex from "./components/modules/accounting/head-group/HeadGroupIndex";
-import HeadSubGroupIndex from "./components/modules/accounting/head-subgroup/HeadSubGroupIndex";
-import LedgerIndex from "./components/modules/accounting/ledger/LedgerIndex";
-import SalesEdit from "./components/modules/inventory/sales/SalesEdit.jsx";
-import PurchaseEdit from "./components/modules/inventory/purchase/PurchaseEdit.jsx";
-import SampleModalIndex from "./components/modules/sample3Grid/SampleModalIndex.jsx";
-import OpeningApproveIndex from "./components/modules/inventory/opening-stock/OpeningApproveIndex";
-import OpeningStockIndex from "./components/modules/inventory/opening-stock/OpeningStockIndex";
-import InvoiceBatchIndex from "./components/modules/inventory/invoice-batch/InvoiceBatchIndex.jsx";
-import WarehouseIndex from "./components/modules/core/warehouse/WarehouseIndex.jsx";
-import MarketingExecutiveIndex from "./components/modules/core/marketing-executive/MarketingExecutiveIndex.jsx";
-import ProductSettingsIndex from "./components/modules/inventory/product-settings/ProductSettingsIndex.jsx";
-import ProductionSettingIndex from "./components/modules/production/settings/ProductionSettingIndex.jsx";
-import RecipeItemsIndex from "./components/modules/production/recipe-items/RecipeItemsIndex.jsx";
-import RecipeIndex from "./components/modules/production/recipe-items/recipe/RecipeIndex.jsx";
-import InventoryConfigurationIndex from "./components/modules/inventory/inventory-configuration/InventoryConfigurationIndex.jsx";
-import ParticularIndex from "./components/modules/inventory/particular/ParticularIndex";
-import InhouseIndex from "./components/modules/production/production-inhouse/InhouseIndex.jsx";
-import SettingsIndex from "./components/modules/core/settings/SettingsIndex";
+import Login from "@modules/auth/Login";
+import Layout from "@components/layout/Layout";
+// import SampleDashboard from "@modules/sample-module/DashBoard";
+// import CustomerIndex from "@modules/core/customer/CustomerIndex";
+// import UserIndex from "@modules/core/user/UserIndex";
+import VendorIndex from "@modules/core/vendor/VendorIndex";
+// import ProductionConfigurationIndex from "@modules/production/configuraton/ConfigurationIndex";
+// import CategoryGroupIndex from "@modules/inventory/category-group/CategoryGroupIndex";
+// import CategoryIndex from "@modules/inventory/category/CategoryIndex";
+// import ProductIndex from "@modules/inventory/product/ProductIndex";
+// import SalesIndex from "@modules/inventory/sales/SalesIndex";
+// import SampleInvoice from "@modules/sample-module/sample-layout/SampleInvoice";
+// import SampleIndex from "@modules/sample-module/sample-layout/SampleIndex";
+// import DomainIndex from "@modules/domain/domain/DomainIndex";
+// import TransactionModeIndex from "@modules/accounting/transaction-mode/TransactionModeIndex";
+// import SalesInvoice from "@modules/inventory/sales/SalesInvoice";
+// import Sitemap from "@modules/dashboard/SItemap";
+// import PurchaseIndex from "@modules/inventory/purchase/PurchaseIndex";
+// import PurchaseInvoice from "@modules/inventory/purchase/PurchaseInvoice";
+// import VoucherIndex from "@modules/accounting/voucher-entry/VoucherIndex";
+// import HeadGroupIndex from "@modules/accounting/head-group/HeadGroupIndex";
+// import HeadSubGroupIndex from "@modules/accounting/head-subgroup/HeadSubGroupIndex";
+// import LedgerIndex from "@modules/accounting/ledger/LedgerIndex";
+// import SalesEdit from "@modules/inventory/sales/SalesEdit";
+// import PurchaseEdit from "@modules/inventory/purchase/PurchaseEdit";
+// import SampleModalIndex from "@modules/sample3Grid/SampleModalIndex";
+// import OpeningApproveIndex from "@modules/inventory/opening-stock/OpeningApproveIndex";
+// import OpeningStockIndex from "@modules/inventory/opening-stock/OpeningStockIndex";
+// import InvoiceBatchIndex from "@modules/inventory/invoice-batch/InvoiceBatchIndex";
+// import WarehouseIndex from "@modules/core/warehouse/WarehouseIndex";
+// import MarketingExecutiveIndex from "@modules/core/marketing-executive/MarketingExecutiveIndex";
+// import ProductSettingsIndex from "@modules/inventory/product-settings/ProductSettingsIndex";
+// import ProductionSettingIndex from "@modules/production/settings/ProductionSettingIndex";
+// import RecipeItemsIndex from "@modules/production/recipe-items/RecipeItemsIndex";
+// import RecipeIndex from "@modules/production/recipe-items/recipe/RecipeIndex";
+// import InventoryConfigurationIndex from "@modules/inventory/inventory-configuration/InventoryConfigurationIndex";
+// import ParticularIndex from "@modules/inventory/particular/ParticularIndex";
+// import InhouseIndex from "@modules/production/production-inhouse/InhouseIndex";
+// import SettingsIndex from "@modules/core/settings/SettingsIndex";
 
-import StockIndex from "./components/modules/inventory/stock/StockIndex.jsx";
-import ConfigurationIndex from "./components/modules/domain/configuraton/ConfigurationIndex.jsx";
-import SitemapIndex from "./components/modules/domain/sitemap/SitemapIndex.jsx";
-import BatchIndex from "./components/modules/production/batch/BatchIndex.jsx";
-import Requisition from "./components/modules/procurement/purchase-requisition/Requisition.jsx";
-import RequisitionInvoice from "./components/modules/procurement/purchase-requisition/RequisitionInvoice.jsx";
-import BranchManagementIndex from "./components/modules/domain/branch-management/BranchManagementIndex.jsx";
-import AccountingConfig from "./components/modules/accounting/config/ConfigIndex";
-import FileUploadIndex from "./components/modules/core/file-upload/FileUploadIndex.jsx";
-import MatrixIndex from "./components/modules/procurement/requistion-matrix/MatrixIndex.jsx";
-import BakeryIndex from "./components/modules/pos/bakery/BakeryIndex.jsx";
-import ReportIndex from "./components/modules/reporting/reports/ReportIndex.jsx";
-import RequisitionUpdate from "./components/modules/procurement/purchase-requisition/RequisitionUpdate.jsx";
-import ReconciliationIndex from "./components/modules/inventory/stock-reconciliation/ReconciliationIndex.jsx";
-import TransferIndex from "./components/modules/inventory/stock-transfer/TransferIndex.jsx";
-import CouponIndex from "./components/modules/inventory/coupon-code/CouponIndex.jsx";
-import BarcodePrintIndex from "./components/modules/inventory/barcode-print/BarcodePrintIndex.jsx";
-import DashboardIndexB2B from "./components/modules/b2b/dashboard/DashboardIndex.jsx";
-import CategoryIndexB2B from "./components/modules/b2b/category/CategoryIndex.jsx";
-import ProductIndexB2B from "./components/modules/b2b/product/ProductIndex.jsx";
-import SettingIndexB2B from "./components/modules/b2b/setting/SettingIndex.jsx";
-import B2bDomainIndex from "./components/modules/b2b/domain/B2bDomainIndex.jsx";
-import GeneralIssueIndex from "./components/modules/production/production-issue/general-issue/GeneralIssueIndex.jsx";
-import BatchIssueIndex from "./components/modules/production/production-issue/batch-issue/BatchIssueIndex.jsx";
-import DiscountUserIndex from "./components/modules/discount/user/DiscountUserIndex";
-import B2bUserIndex from "./components/modules/b2b/master-user/B2bUserIndex";
-import DiscountConfigIndex from "./components/modules/discount/config/DiscountConfigIndex";
-import VoucherCreateIndex from "./components/modules/accounting/voucher-create/VoucherCreateIndex.jsx";
-import DiscountDashboard from "./components/modules/discount/dashboard/DiscountDashboard";
+// import StockIndex from "@modules/inventory/stock/StockIndex";
+// import ConfigurationIndex from "@modules/domain/configuraton/ConfigurationIndex";
+// import SitemapIndex from "@modules/domain/sitemap/SitemapIndex";
+// import BatchIndex from "@modules/production/batch/BatchIndex";
+// import Requisition from "@modules/procurement/purchase-requisition/Requisition";
+// import RequisitionInvoice from "@modules/procurement/purchase-requisition/RequisitionInvoice";
+// import BranchManagementIndex from "@modules/domain/branch-management/BranchManagementIndex";
+// import AccountingConfig from "@modules/accounting/config/ConfigIndex";
+// import FileUploadIndex from "@modules/core/file-upload/FileUploadIndex";
+// import MatrixIndex from "@modules/procurement/requistion-matrix/MatrixIndex";
+// import BakeryIndex from "@modules/pos/bakery/BakeryIndex";
+// import ReportIndex from "@modules/reporting/reports/ReportIndex";
+// import RequisitionUpdate from "@modules/procurement/purchase-requisition/RequisitionUpdate";
+// import ReconciliationIndex from "@modules/inventory/stock-reconciliation/ReconciliationIndex";
+// import TransferIndex from "@modules/inventory/stock-transfer/TransferIndex";
+// import CouponIndex from "@modules/inventory/coupon-code/CouponIndex";
+// import BarcodePrintIndex from "@modules/inventory/barcode-print/BarcodePrintIndex";
+// import DashboardIndexB2B from "@modules/b2b/dashboard/DashboardIndex";
+// import CategoryIndexB2B from "@modules/b2b/category/CategoryIndex";
+// import ProductIndexB2B from "@modules/b2b/product/ProductIndex";
+// import SettingIndexB2B from "@modules/b2b/setting/SettingIndex";
+// import B2bDomainIndex from "@modules/b2b/domain/B2bDomainIndex";
+// import GeneralIssueIndex from "@modules/production/production-issue/general-issue/GeneralIssueIndex";
+// import BatchIssueIndex from "@modules/production/production-issue/batch-issue/BatchIssueIndex";
+// import DiscountUserIndex from "@modules/discount/user/DiscountUserIndex";
+// import B2bUserIndex from "@modules/b2b/master-user/B2bUserIndex";
+// import DiscountConfigIndex from "@modules/discount/config/DiscountConfigIndex";
+// import VoucherCreateIndex from "@modules/accounting/voucher-create/VoucherCreateIndex";
+// import DiscountDashboard from "@modules/discount/dashboard/DiscountDashboard";
 
 function AppRoute() {
-  return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Layout />}>
-        <Route path="/sample/">
+	return (
+		<Routes>
+			<Route path="/login" element={<Login />} />
+			<Route path="/" element={<Layout />}>
+				{/* <Route path="/sample/">
           <Route path="" element={<SampleDashboard />} />
           <Route path="invoice" element={<SampleInvoice />} />
           <Route path="index" element={<SampleIndex />} />
-        </Route>
-        <Route path="core/">
-          <Route path="file-upload/">
+        </Route> */}
+				<Route path="core/">
+					{/* <Route path="file-upload/">
             <Route path="" element={<FileUploadIndex />} />
           </Route>
           <Route path="customer" element={<CustomerIndex />} />
           <Route path="customer/:id" element={<CustomerIndex />} />
           <Route path="user" element={<UserIndex />} />
-          <Route path="user/:id" element={<UserIndex />} />
-          <Route path="vendor" element={<VendorIndex />} />
-          <Route path="vendor/:id" element={<VendorIndex />} />
-          <Route path="setting" element={<SettingsIndex />} />
+          <Route path="user/:id" element={<UserIndex />} /> */}
+					<Route path="vendor" element={<VendorIndex />} />
+					<Route path="vendor/:id" element={<VendorIndex />} />
+					{/* <Route path="setting" element={<SettingsIndex />} />
           <Route path="setting/:id" element={<SettingsIndex />} />
           <Route path="warehouse" element={<WarehouseIndex />} />
           <Route path="warehouse/:id" element={<WarehouseIndex />} />
@@ -101,9 +100,9 @@ function AppRoute() {
           <Route
             path="marketing-executive/:id"
             element={<MarketingExecutiveIndex />}
-          />
-        </Route>
-        <Route path="/inventory/">
+          /> */}
+				</Route>
+				{/* <Route path="/inventory/">
           <Route path="sales/edit/:id" element={<SalesEdit />} />
           <Route path="sales" element={<SalesIndex />} />
           <Route path="sales-invoice" element={<SalesInvoice />} />
@@ -215,10 +214,10 @@ function AppRoute() {
           <Route path="sub-domain/product/:id" element={<ProductIndexB2B />} />
           <Route path="sub-domain/setting/:id" element={<SettingIndexB2B />} />
         </Route>
-        <Route path="sitemap" element={<Sitemap />} />
-      </Route>
-    </Routes>
-  );
+        <Route path="sitemap" element={<Sitemap />} /> */}
+			</Route>
+		</Routes>
+	);
 }
 
 export default AppRoute;
