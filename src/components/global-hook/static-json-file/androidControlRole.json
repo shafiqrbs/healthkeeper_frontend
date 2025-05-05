@@ -1,0 +1,15 @@
+[
+  {
+    "Group": "Android Apps",
+    "actions": [
+      { "id": "ROLE_MANAGER", "label": "Manager" },
+      { "id": "ROLE_PURCHASE", "label": "InventoryPurchase" },
+      { "id": "ROLE_SALES", "label": "InventorySales" },
+      { "id": "ROLE_STOCK", "label": "InventoryStock" },
+      { "id": "ROLE_ACCOUNT_RECEIVE", "label": "AccountReceive" },
+      { "id": "ROLE_ACCOUNT_PAYMENT", "label": "AccountPayment" },
+      { "id": "ROLE_EXPENSE", "label": "AccountExpense" },
+      { "id": "ROLE_SETTING", "label": "Setting" }
+    ]
+  }
+]

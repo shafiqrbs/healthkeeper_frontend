@@ -1,0 +1,61 @@
+[
+  {
+    "Group": "Accounting",
+    "actions": [
+      { "id": "role_accounting", "label": "Accounting" },
+      { "id": "role_accounting_voucher_entry", "label": "Voucher Entry" },
+      { "id": "role_accounting_voucher_approve", "label": "Voucher Approve" },
+      { "id": "role_accounting_admin", "label": "AccountingAdmin" }
+    ]
+  },
+
+  {
+    "Group": "Sales & Purchase",
+    "actions": [
+      { "id": "role_sales_purchase", "label": "Sales & Purchase" },
+      { "id": "role_sales", "label": "Manage Sales" },
+      { "id": "role_purchase", "label": "Manage Purchase" },
+      { "id": "role_sales_purchase_operator", "label": "Operator" },
+      { "id": "role_sales_purchase_manager", "label": "Manager" },
+      { "id": "role_sales_purchase_approval", "label": "Approval" },
+      { "id": "role_sales_purchase_admin", "label": "Admin" }
+    ]
+  },
+  {
+    "Group": "Procurement",
+    "actions": [
+      { "id": "role_procurement", "label": "Procurement" },
+      { "id": "role_procurement_operator", "label": "ProcurementOperator" },
+      { "id": "role_procurement_approval", "label": "ProcurementApproval" },
+      { "id": "role_procurement_admin", "label": "ProcurementAdmin" }
+    ]
+  },
+  {
+    "Group": "Production",
+    "actions": [
+      { "id": "role_production", "label": "Production" },
+      { "id": "role_production_operator", "label": "ProductionOperator" },
+      { "id": "role_production_approval", "label": "ProductionApproval" },
+      { "id": "role_production_admin", "label": "ProductionAdmin" }
+    ]
+  },
+  {
+    "Group": "Inventory & Product",
+    "actions": [
+      { "id": "role_inventory", "label": "InventoryAndProduct" },
+      { "id": "role_inventory_stock", "label": "InventoryStock" },
+      { "id": "role_inventory_manager", "label": "InventoryManager" },
+      { "id": "role_inventory_admin", "label": "InventoryAdmin" }
+    ]
+  },
+  {
+    "Group": "Core & Master Data",
+    "actions": [
+      { "id": "role_core", "label": "CoreAndMasterData" },
+      { "id": "role_core_manager", "label": "CoreManager" },
+      { "id": "role_core_admin", "label": "CoreAdmin" }
+    ]
+  }
+]
+
+
