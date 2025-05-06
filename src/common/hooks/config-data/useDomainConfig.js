@@ -4,7 +4,7 @@ import { getShowConfigEntityData } from "../../../store/inventory/crudSlice.js";
 
 const useDomainConfig = (autoFetch = true) => {
 	const dispatch = useDispatch();
-	const domainConfig = useSelector((state) => state.inventoryCrudSlice.showConfigData);
+	const domainConfig = useSelector((state) => state.crud.showConfigData);
 
 	const [path, setPath] = useState("domain/config");
 

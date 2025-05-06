@@ -21,13 +21,8 @@ import { hasLength, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { modals } from "@mantine/modals";
 
-import {
-	setEditEntityData,
-	setFetching,
-	setFormLoading,
-	setInsertType,
-	updateEntityData,
-} from "@/app/store/core/crudSlice.js";
+import { setFetching } from "@/app/store/core/crudSlice.js";
+import { updateEntityData } from "@/app/store/core/crudThunk";
 
 import SelectForm from "@components/form-builders/SelectForm.jsx";
 import TextAreaForm from "@components/form-builders/TextAreaForm.jsx";
@@ -35,12 +30,11 @@ import Shortcut from "@modules/shortcut/Shortcut";
 import PhoneNumber from "@components/form-builders/PhoneNumberInput.jsx";
 import vendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage.js";
 
-function VendorUpdateForm(props) {
-	const { customerDropDownData } = props;
-	const { t, i18n } = useTranslation();
+function VendorUpdateForm({ customerDropDownData }) {
+	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { isOnline, mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 100; //TabList height 104
+	const height = mainAreaHeight - 100;
 
 	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
 	const [setFormData, setFormDataForUpdate] = useState(false);

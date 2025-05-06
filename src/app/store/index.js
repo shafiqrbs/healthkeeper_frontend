@@ -6,7 +6,7 @@ import storage from "redux-persist/lib/storage";
 const middlewares = [];
 
 const persistConfig = {
-	key: "demo",
+	key: "dev",
 	keyPrefix: "",
 	storage,
 	whitelist: ["auth", "locale"],

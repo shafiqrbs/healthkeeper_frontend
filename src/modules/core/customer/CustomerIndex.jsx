@@ -21,7 +21,7 @@ import getLocationDropdownData from "../../../global-hook/dropdown/getLocationDr
 import getExecutiveDropdownData from "../../../global-hook/dropdown/getExecutiveDropdownData.js";
 import { setDropdownLoad } from "../../../../store/inventory/crudSlice.js";
 import { coreSettingDropdown } from "../../../../store/core/utilitySlice.js";
-import Navigation from "../components/Navigation.jsx";
+import Navigation from "../shared/Navigation.jsx";
 
 function CustomerIndex() {
 	const { t } = useTranslation();

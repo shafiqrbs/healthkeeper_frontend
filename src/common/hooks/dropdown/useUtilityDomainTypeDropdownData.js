@@ -5,9 +5,7 @@ import { getSettingDropdown } from "../../../store/utility/utilitySlice.js";
 const useUtilityDomainTypeDropdownData = (reloadTrigger) => {
 	const dispatch = useDispatch();
 
-	const dropdownData = useSelector(
-		(state) => state.utilityUtilitySlice.utilityDomainTypeDropdownData
-	);
+	const dropdownData = useSelector((state) => state.utility.utilityDomainTypeDropdownData);
 
 	useEffect(() => {
 		// trigger re-fetch each time the reloadTrigger changes

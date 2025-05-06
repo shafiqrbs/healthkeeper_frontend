@@ -1,15 +1,16 @@
+import { API_BASE_URL, API_KEY } from "@/constants";
 import axios from "axios";
 
 const useOrderProcessDropdownLocalDataStore = async (user_id) => {
 	try {
 		const response = await axios({
 			method: "get",
-			url: `${import.meta.env.VITE_API_GATEWAY_URL + "utility/select/setting"}`,
+			url: `${API_BASE_URL}/utility/select/setting`,
 			headers: {
 				Accept: `application/json`,
 				"Content-Type": `application/json`,
 				"Access-Control-Allow-Origin": "*",
-				"X-Api-Key": import.meta.env.VITE_API_KEY,
+				"X-Api-Key": API_KEY,
 				"X-Api-User": user_id,
 			},
 			params: { "dropdown-type": "sales-process-type" },
@@ -25,7 +26,7 @@ const useOrderProcessDropdownLocalDataStore = async (user_id) => {
 			}
 		}
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 	}
 };
 

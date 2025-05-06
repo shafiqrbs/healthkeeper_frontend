@@ -25,7 +25,7 @@ import {
 } from "@mantine/core";
 import "@mantine/spotlight/styles.css";
 
-import { setInventoryShowDataEmpty } from "@/app/store/core/crudSlice.js";
+import { setInventoryShowDataEmpty } from "@/app/store/core/crudSlice";
 import flagBD from "@/assets/images/flags/bd.svg";
 import flagGB from "@/assets/images/flags/gb.svg";
 import { default as classes, default as HeaderStyle } from "@assets/css/Header.module.css";

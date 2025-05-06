@@ -1,54 +1,55 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
 import VendorTable from "./VendorTable";
 import VendorForm from "./VendorForm";
-import VendorUpdateForm from "./VendorUpdateForm.jsx";
-import {
-	editEntityData,
-	setEntityNewData,
-	setFormLoading,
-	setInsertType,
-	setSearchKeyword,
-	setVendorFilterData,
-} from "@/app/store/core/crudSlice.js";
-import { getLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
-import CoreHeaderNavbar from "../CoreHeaderNavbar";
+import VendorUpdateForm from "./VendorUpdateForm";
+import { setFilterData, setSearchKeyword } from "@/app/store/core/crudSlice.js";
+import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
+import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import { useNavigate, useParams } from "react-router-dom";
-import getCustomerDropdownData from "@hooks/dropdown/useCustomerDropdownData.js";
-import Navigation from "../components/Navigation";
+import useCustomerDropdownData from "@hooks/dropdown/useCustomerDropdownData.js";
+import Navigation from "@modules/core/shared/Navigation";
 
 function VendorIndex() {
-	const { t, i18n } = useTranslation();
 	const dispatch = useDispatch();
+	const { t } = useTranslation();
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const [insertType, setInsertType] = useState("create");
 
-	const insertType = useSelector((state) => state.crudSlice.insertType);
-	const vendorFilterData = useSelector((state) => state.crudSlice.vendorFilterData);
-	const customerDropDownData = getCustomerDropdownData();
+	const vendorFilterData = useSelector((state) => state.crud.vendor.filterData);
+	const customerDropDownData = useCustomerDropdownData();
 
-	const progress = getLoadingProgress();
+	const progress = useGetLoadingProgress();
 
 	useEffect(() => {
-		id
-			? (dispatch(setInsertType("update")),
-			  dispatch(editEntityData(`core/vendor/${id}`)),
-			  dispatch(setFormLoading(true)))
-			: (dispatch(setInsertType("create")),
-			  dispatch(setSearchKeyword("")),
-			  dispatch(setEntityNewData([])),
-			  dispatch(
-					setVendorFilterData({
+		if (id) {
+			setInsertType("update");
+			dispatch(
+				editEntityData({
+					url: `core/vendor/${id}`,
+					module: "vendor",
+				})
+			);
+		} else {
+			setInsertType("create");
+			dispatch(setSearchKeyword(""));
+			dispatch(
+				setFilterData({
+					module: "vendor",
+					data: {
 						...vendorFilterData,
-						["name"]: "",
-						["mobile"]: "",
-						["company"]: "",
-					})
-			  ),
-			  navigate("/core/vendor", { replace: true }));
+						name: "",
+						mobile: "",
+						company: "",
+					},
+				})
+			);
+			navigate("/core/vendor", { replace: true });
+		}
 	}, [id, dispatch, navigate]);
 
 	return (

@@ -1,4 +1,3 @@
-import "./lang/i18next";
 import AppRoute from "./AppRoute";
 
 function App() {

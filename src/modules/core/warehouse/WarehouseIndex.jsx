@@ -19,7 +19,7 @@ import CoreHeaderNavbar from "../CoreHeaderNavbar.jsx";
 import WarehouseTable from "./WarehouseTable.jsx";
 import WarehouseForm from "./WarehouseForm.jsx";
 import WarehouseUpdateForm from "./WarehouseUpdateForm.jsx";
-import Navigation from "../components/Navigation.jsx";
+import Navigation from "../shared/Navigation.jsx";
 
 function WarehouseIndex() {
 	const { t } = useTranslation();

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCustomerDropdown } from "@/app/store/core/utilitySlice.js";
+import { getCustomerDropdown } from "@/app/store/core/utilityThunk";
 
 const useCustomerDropdownData = () => {
 	const dispatch = useDispatch();
@@ -10,7 +10,7 @@ const useCustomerDropdownData = () => {
 		dispatch(getCustomerDropdown("core/select/customer"));
 	}, [dispatch]);
 
-	const customerDropdownData = useSelector((state) => state.utilitySlice.customerDropdownData);
+	const customerDropdownData = useSelector((state) => state.utility.customerDropdownData);
 
 	useEffect(() => {
 		if (customerDropdownData && customerDropdownData.length > 0) {

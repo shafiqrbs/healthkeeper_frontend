@@ -5,19 +5,17 @@ import { useTranslation } from "react-i18next";
 import { IconCheck, IconDotsVertical, IconTrashX, IconAlertCircle } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import {
-	editEntityData,
-	getIndexEntityData,
-	setDeleteMessage,
-	setFormLoading,
-	setInsertType,
-} from "@/app/store/core/crudSlice.js";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
-import { deleteEntityData } from "@/app/store/core/crudSlice";
+import {
+	deleteEntityData,
+	getIndexEntityData,
+	editEntityData,
+} from "@/app/store/core/crudThunk.js";
 import tableCss from "@/assets/css/Table.module.css";
 import VendorViewDrawer from "./VendorViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
+
 function VendorTable() {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -28,42 +26,44 @@ function VendorTable() {
 	const [page, setPage] = useState(1);
 
 	const [fetching, setFetching] = useState(true);
-	const searchKeyword = useSelector((state) => state.crudSlice.searchKeyword);
-	const fetchingReload = useSelector((state) => state.crudSlice.fetching);
-	const vendorFilterData = useSelector((state) => state.crudSlice.vendorFilterData);
-	const entityDataDelete = useSelector((state) => state.crudSlice.entityDataDelete);
+	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
+	const fetchingReload = useSelector((state) => state.crud.globalFetching);
+	const vendorListData = useSelector((state) => state.crud.vendor.data);
+	const vendorFilterData = useSelector((state) => state.crud.vendor.filterData);
 	const coreVendors = JSON.parse(localStorage.getItem("core-vendors") || "[]");
 
 	const [vendorObject, setVendorObject] = useState({});
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
 
-	useEffect(() => {
-		dispatch(setDeleteMessage(""));
-		if (entityDataDelete.message === "delete") {
-			notifications.show({
-				color: "red",
-				title: t("DeleteSuccessfully"),
-				icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-				loading: false,
-				autoClose: 700,
-				style: { backgroundColor: "lightgray" },
-			});
+	// TODO: deletion message should be working after the deletion
+	// useEffect(() => {
+	// 	dispatch(setDeleteMessage(""));
+	// 	if (entityDataDelete.message === "delete") {
+	// 		notifications.show({
+	// 			color: "red",
+	// 			title: t("DeleteSuccessfully"),
+	// 			icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
+	// 			loading: false,
+	// 			autoClose: 700,
+	// 			style: { backgroundColor: "lightgray" },
+	// 		});
 
-			setTimeout(() => {
-				dispatch(setFetching(true));
-			}, 700);
-		}
-	}, [entityDataDelete]);
+	// 		setTimeout(() => {
+	// 			dispatch(setFetching(true));
+	// 		}, 700);
+	// 	}
+	// }, [entityDataDelete]);
 
 	const [indexData, setIndexData] = useState([]);
+	console.log(indexData.total, fetching);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setFetching(true);
 			const value = {
 				url: "core/vendor",
-				param: {
+				params: {
 					term: searchKeyword,
 					name: vendorFilterData.name,
 					mobile: vendorFilterData.mobile,
@@ -71,16 +71,23 @@ function VendorTable() {
 					page: page,
 					offset: perPage,
 				},
+				module: "vendor",
 			};
 
 			try {
-				const resultAction = await dispatch(getIndexEntityData(value));
-
-				if (getIndexEntityData.rejected.match(resultAction)) {
-					console.error("Error:", resultAction);
-				} else if (getIndexEntityData.fulfilled.match(resultAction)) {
-					setIndexData(resultAction.payload);
+				// check if vendorListData is not empty to optimize the api call on re-render
+				if (vendorListData.data?.length) {
+					setIndexData(vendorListData);
 					setFetching(false);
+				} else {
+					const resultAction = await dispatch(getIndexEntityData(value));
+
+					if (getIndexEntityData.rejected.match(resultAction)) {
+						console.error("Error:", resultAction);
+					} else if (getIndexEntityData.fulfilled.match(resultAction)) {
+						setIndexData(resultAction.payload?.data);
+						setFetching(false);
+					}
 				}
 			} catch (err) {
 				console.error("Unexpected error:", err);
@@ -90,6 +97,59 @@ function VendorTable() {
 		fetchData();
 	}, [dispatch, searchKeyword, vendorFilterData, page, fetchingReload]);
 
+	const handleVendorEdit = (data) => {
+		dispatch(
+			editEntityData({
+				url: `core/vendor/${data.id}`,
+				module: "vendor",
+			})
+		);
+		navigate(`/core/vendor/${data.id}`);
+	};
+
+	const handleDelete = () => {
+		() => {
+			modals.openConfirmModal({
+				title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+				children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+				labels: {
+					confirm: "Confirm",
+					cancel: "Cancel",
+				},
+				confirmProps: { color: "red.6" },
+				onCancel: () => console.log("Cancel"),
+				onConfirm: () => {
+					dispatch(deleteEntityData("core/vendor/" + data.id));
+				},
+			});
+		};
+	};
+
+	const handleDataShow = () => {
+		const foundVendors = coreVendors.find((type) => type.id == data.id);
+		if (foundVendors) {
+			setVendorObject(foundVendors);
+			setViewDrawer(true);
+		} else {
+			notifications.show({
+				color: "red",
+				title: t("Something Went wrong , please try again"),
+				icon: (
+					<IconAlertCircle
+						style={{
+							width: rem(18),
+							height: rem(18),
+						}}
+					/>
+				),
+				loading: false,
+				autoClose: 900,
+				style: { backgroundColor: "lightgray" },
+			});
+		}
+		// dispatch(showEntityData('core/vendor/' + data.id))
+	};
+
 	return (
 		<>
 			<Box
@@ -97,11 +157,11 @@ function VendorTable() {
 				pr={8}
 				pt={"6"}
 				pb={"4"}
-				className={"boxBackground borderRadiusAll border-bottom-none"}
+				className="boxBackground borderRadiusAll border-bottom-none"
 			>
-				<KeywordSearch module={"vendor"} />
+				<KeywordSearch module="vendor" />
 			</Box>
-			<Box className={"borderRadiusAll border-top-none"}>
+			<Box className="borderRadiusAll border-top-none">
 				<DataTable
 					classNames={{
 						root: tableCss.root,
@@ -116,7 +176,7 @@ function VendorTable() {
 							accessor: "index",
 							title: t("S/N"),
 							textAlignment: "right",
-							render: (item) => indexData.data.indexOf(item) + 1,
+							render: (item) => indexData.data?.indexOf(item) + 1,
 						},
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "company_name", title: t("CompanyName") },
@@ -125,7 +185,7 @@ function VendorTable() {
 							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
-							render: (data) => (
+							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
 									<Menu
 										position="bottom-end"
@@ -152,15 +212,7 @@ function VendorTable() {
 										</Menu.Target>
 										<Menu.Dropdown>
 											<Menu.Item
-												// href={`/inventory/sales/edit/${data.id}`}
-												onClick={() => {
-													dispatch(setInsertType("update"));
-													dispatch(
-														editEntityData("core/vendor/" + data.id)
-													);
-													dispatch(setFormLoading(true));
-													navigate(`/core/vendor/${data.id}`);
-												}}
+												onClick={() => handleVendorEdit(values.id)}
 												target="_blank"
 												component="a"
 												w={"200"}
@@ -169,34 +221,7 @@ function VendorTable() {
 											</Menu.Item>
 
 											<Menu.Item
-												onClick={() => {
-													const foundVendors = coreVendors.find(
-														(type) => type.id == data.id
-													);
-													if (foundVendors) {
-														setVendorObject(foundVendors);
-														setViewDrawer(true);
-													} else {
-														notifications.show({
-															color: "red",
-															title: t(
-																"Something Went wrong , please try again"
-															),
-															icon: (
-																<IconAlertCircle
-																	style={{
-																		width: rem(18),
-																		height: rem(18),
-																	}}
-																/>
-															),
-															loading: false,
-															autoClose: 900,
-															style: { backgroundColor: "lightgray" },
-														});
-													}
-													// dispatch(showEntityData('core/vendor/' + data.id))
-												}}
+												onClick={handleDataShow}
 												target="_blank"
 												component="a"
 												w={"200"}
@@ -210,35 +235,7 @@ function VendorTable() {
 												mt={"2"}
 												bg={"red.1"}
 												c={"red.6"}
-												onClick={() => {
-													modals.openConfirmModal({
-														title: (
-															<Text size="md">
-																{" "}
-																{t("FormConfirmationTitle")}
-															</Text>
-														),
-														children: (
-															<Text size="sm">
-																{" "}
-																{t("FormConfirmationMessage")}
-															</Text>
-														),
-														labels: {
-															confirm: "Confirm",
-															cancel: "Cancel",
-														},
-														confirmProps: { color: "red.6" },
-														onCancel: () => console.log("Cancel"),
-														onConfirm: () => {
-															dispatch(
-																deleteEntityData(
-																	"core/vendor/" + data.id
-																)
-															);
-														},
-													});
-												}}
+												onClick={handleDelete}
 												rightSection={
 													<IconTrashX
 														style={{ width: rem(14), height: rem(14) }}
@@ -259,7 +256,7 @@ function VendorTable() {
 					page={page}
 					onPageChange={(p) => {
 						setPage(p);
-						dispatch(setFetching(true));
+						setFetching(true);
 					}}
 					loaderSize="xs"
 					loaderColor="grape"

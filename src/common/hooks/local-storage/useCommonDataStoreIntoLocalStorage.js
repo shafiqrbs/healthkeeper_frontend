@@ -1,49 +1,37 @@
+import { API_BASE_URL, API_KEY } from "@/constants";
 import axios from "axios";
 
 const useCommonDataStoreIntoLocalStorage = async (user_id) => {
-	const apiBackendRoutes = [
-		"inventory/config", // this is old implementation , remove this after new domain config final implementation
-		"inventory/stock-item",
-		"core/customer/local-storage",
-		"core/vendor/local-storage",
-		"core/user/local-storage",
-		"accounting/transaction-mode/local-storage",
-	];
-	const localStorageKeys = [
-		"config-data",
-		"core-products",
-		"core-customers",
-		"core-vendors",
-		"core-users",
-		"accounting-transaction-mode",
+	const apiEndpoints = [
+		{ url: "inventory/config", key: "config-data" },
+		{ url: "inventory/stock-item", key: "core-products" },
+		{ url: "core/customer/local-storage", key: "core-customers" },
+		{ url: "core/vendor/local-storage", key: "core-vendors" },
+		{ url: "core/user/local-storage", key: "core-users" },
+		{ url: "accounting/transaction-mode/local-storage", key: "accounting-transaction-mode" },
 	];
 
-	for (let i = 0; i < apiBackendRoutes.length; i++) {
-		try {
-			const response = await axios({
-				method: "get",
-				url: `${import.meta.env.VITE_API_GATEWAY_URL + apiBackendRoutes[i]}`,
-				headers: {
-					Accept: `application/json`,
-					"Content-Type": `application/json`,
-					"Access-Control-Allow-Origin": "*",
-					"X-Api-Key": import.meta.env.VITE_API_KEY,
-					"X-Api-User": user_id,
-				},
-			});
-			if (response.data.data) {
-				if ("inventory/config" == apiBackendRoutes[i]) {
-					localStorage.setItem(
-						localStorageKeys[i],
-						JSON.stringify(response.data.data.configData)
-					);
+	await Promise.all(
+		apiEndpoints.map(async ({ url, key }) => {
+			try {
+				const response = await axios.get(`${API_BASE_URL}/${url}`, {
+					headers: {
+						Accept: `application/json`,
+						"Content-Type": `application/json`,
+						"Access-Control-Allow-Origin": "*",
+						"X-Api-Key": API_KEY,
+						"X-Api-User": user_id,
+					},
+				});
+
+				if (response.data?.data) {
+					localStorage.setItem(key, JSON.stringify(response.data.data));
 				}
-				localStorage.setItem(localStorageKeys[i], JSON.stringify(response.data.data));
+			} catch (error) {
+				console.error(error);
 			}
-		} catch (error) {
-			console.log(error);
-		}
-	}
+		})
+	);
 };
 
 export default useCommonDataStoreIntoLocalStorage;

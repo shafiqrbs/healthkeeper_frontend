@@ -15,7 +15,7 @@ import {
 import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
 import CoreHeaderNavbar from "../CoreHeaderNavbar";
 import { useNavigate, useParams } from "react-router-dom";
-import Navigation from "../components/Navigation.jsx";
+import Navigation from "../shared/Navigation.jsx";
 
 function UserIndex() {
 	const { t, i18n } = useTranslation();

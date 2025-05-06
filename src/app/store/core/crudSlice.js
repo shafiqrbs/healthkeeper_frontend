@@ -1,185 +1,166 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
-	createData,
-	deleteData,
-	editData,
-	getDataWithoutParam,
-	getDataWithParam,
-	inlineStatusUpdateData,
-	showData,
-	updateData,
-	updateDataWithFile,
-} from "../../../services/apiService";
+	deleteEntityData,
+	editEntityData,
+	getIndexEntityData,
+	getStatusInlineUpdateData,
+	showEntityData,
+	storeEntityData,
+	updateEntityData,
+	updateEntityDataWithFile,
+} from "./crudThunk";
 
-// Thunk for fetching data
-export const getIndexEntityData = createAsyncThunk(
-	"index", // Unique action type
-	async (value, { rejectWithValue }) => {
-		try {
-			const data = await getDataWithParam(value); // Wait for the API response
-			return data; // Return data (will trigger `fulfilled` case)
-		} catch (error) {
-			return rejectWithValue(error.response?.data || "Failed to fetch data"); // Return error details to `rejected` case
-		}
-	}
-);
+const initialState = {
+	// --------------- core modules starts -------------------
+	vendor: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		data: {},
+		validation: false,
+		searchKeyword: "",
+		validationMessages: [],
+		filterData: { name: "", mobile: "", company_name: "" },
+	},
+	user: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		data: {},
+		validation: false,
+		filterData: { name: "", mobile: "", email: "" },
+	},
+	customer: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		data: {},
+		validation: false,
+		filterData: { name: "", mobile: "" },
+	},
+	warehouse: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		data: {},
+		validation: false,
+		filterData: { name: "", mobile: "", email: "", location: "" },
+	},
+	fileUpload: { filterData: { file_type: "", original_name: "", created: "" } },
+	// -------------------- core modules stops ----------------------
 
-export const getCustomerIndexData = createAsyncThunk("customer-index", async (value) => {
-	try {
-		const response = getDataWithoutParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
+	// ---------------- inventory modules starts ---------------------
+	config: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		validation: false,
+		data: {},
+	},
+	category: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		filterData: { name: "" },
+	},
+	categoryGroup: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		filterData: { name: "" },
+	},
+	purchase: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		filterData: { vendor_id: "", start_date: "", end_date: "", searchKeyword: "" },
+	},
+	product: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		filterData: { name: "" },
+	},
+	// -------------------- inventory modules stops -------------------------
+	// -------------------- procurement modules starts -------------------------
 
-export const getStatusInlineUpdateData = createAsyncThunk("status-update", async (value) => {
-	try {
-		const response = inlineStatusUpdateData(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
+	requisition: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		filterData: { vendor_id: "", start_date: "", end_date: "", searchKeyword: "" },
+	},
+	// -------------------- procurement modules stops -------------------------
+	// -------------------- production modules starts -------------------------
+	batch: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		filterData: { name: "" },
+	},
+	settings: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		filterData: { name: "", code: "", description: "" },
+	},
+	recipeItems: {
+		isLoading: true,
+		fetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		filterData: { name: "" },
+	},
+	// -------------------- production modules stops -------------------------
 
-export const storeEntityData = createAsyncThunk("store", async (value, { rejectWithValue }) => {
-	const response = await createData(value);
-	if (response.success === false) {
-		return rejectWithValue({
-			message: response.message,
-			errors: response.errors,
-		});
-	}
-
-	return response;
-});
-
-export const editEntityData = createAsyncThunk("edit", async (value) => {
-	try {
-		const response = editData(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-
-export const updateEntityData = createAsyncThunk("update", async (value, { rejectWithValue }) => {
-	const response = await updateData(value);
-
-	if (response.success === false) {
-		return rejectWithValue({
-			message: response.message,
-			errors: response.errors,
-		});
-	}
-
-	return response;
-});
-
-export const updateEntityDataWithFile = createAsyncThunk("update-with-file", async (value) => {
-	try {
-		const response = updateDataWithFile(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-
-export const showEntityData = createAsyncThunk("show", async (value) => {
-	try {
-		const response = showData(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-
-export const deleteEntityData = createAsyncThunk("delete", async (value) => {
-	try {
-		const response = deleteData(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
+	searchKeyword: "",
+	searchKeywordTooltip: false,
+	globalFetching: false,
+};
 
 const crudSlice = createSlice({
 	name: "crud",
-	initialState: {
-		dropdownLoad: false,
-		isLoading: true,
-		fetching: true,
-		indexEntityData: [],
-		entityNewData: [],
-		validation: false,
-		validationMessage: [],
-		entityEditData: [],
-		updateEntityData: [],
-		showEntityData: [],
-		customerIndexData: [],
-		entityDataDelete: [],
-		updateUserError: [],
-		formLoading: false,
-		insertType: "create",
-		searchKeyword: "",
-		entityUpdateId: null,
-		entityIsUpdate: false,
-		customerFilterData: { name: "", mobile: "" },
-		fileUploadFilterData: { file_type: "", original_name: "", created: "" },
-		vendorFilterData: { name: "", mobile: "", company_name: "" },
-		userFilterData: { name: "", mobile: "", email: "" },
-		warehouseFilterData: { name: "", mobile: "", email: "", location: "" },
-		requisitionFilterData: { vendor_id: "", start_date: "", end_date: "", searchKeyword: "" },
-		categoryGroupFilterData: { name: "" },
-		statusInlineUpdateData: null,
-	},
+	initialState,
 	reducers: {
 		setFetching: (state, action) => {
 			state.fetching = action.payload;
 		},
-		setDropdownLoad: (state, action) => {
-			state.dropdownLoad = action.payload;
-		},
-		setFormLoading: (state, action) => {
-			state.formLoading = action.payload;
-		},
-		setInsertType: (state, action) => {
-			state.insertType = action.payload;
-		},
 		setSearchKeyword: (state, action) => {
 			state.searchKeyword = action.payload;
 		},
-		setEntityUpdateId: (state, action) => {
-			state.entityUpdateId = action.payload;
+		setFilterData: (state, action) => {
+			const { module, data } = action.payload;
+
+			if (state?.[module]?.filterData) {
+				state[module].filterData = {
+					...state[module].filterData,
+					...data,
+				};
+			}
 		},
-		setEntityIsUpdate: (state, action) => {
-			state.entityIsUpdate = action.payload;
+		setKeyWordSearch: (state, action) => {
+			state.searchKeyword = action.payload;
 		},
-		setEditEntityData: (state, action) => {
-			state.entityEditData = action.payload;
+		setSearchKeywordTooltip: (state, action) => {
+			state.searchKeywordTooltip = action.payload;
 		},
-		setCustomerFilterData: (state, action) => {
-			state.customerFilterData.name = action.payload.name;
-			state.customerFilterData.mobile = action.payload.mobile;
-		},
-		setCategoryGroupFilterData: (state, action) => {
-			state.categoryGroupFilterData.name = action.payload.name;
-		},
-		setVendorFilterData: (state, action) => {
-			state.vendorFilterData.name = action.payload.name;
-			state.vendorFilterData.mobile = action.payload.mobile;
-			state.vendorFilterData.company_name = action.payload.company_name;
-		},
-		setUserFilterData: (state, action) => {
-			state.userFilterData.name = action.payload.name;
-			state.userFilterData.mobile = action.payload.mobile;
-			state.userFilterData.email = action.payload.email;
+		setGlobalFetching: (state, action) => {
+			state.globalFetching = action.payload;
 		},
 		setDeleteMessage: (state, action) => {
 			state.entityDataDelete = action.payload;
@@ -187,66 +168,64 @@ const crudSlice = createSlice({
 		setValidationData: (state, action) => {
 			state.validation = action.payload;
 		},
-		setEntityNewData: (state, action) => {
-			state.entityNewData = action.payload;
-		},
-		setWarehouseFilterData: (state, action) => {
-			state.warehouseFilterData.name = action.payload.name;
-			state.warehouseFilterData.mobile = action.payload.mobile;
-			state.warehouseFilterData.location = action.payload.location;
-			state.warehouseFilterData.email = action.payload.email;
-		},
-		setRequisitionFilterData: (state, action) => {
-			state.requisitionFilterData.vendor_id = action.payload.vendor_id;
-			state.requisitionFilterData.start_date = action.payload.start_date;
-			state.requisitionFilterData.end_date = action.payload.end_date;
-			state.requisitionFilterData.searchKeyword = action.payload.searchKeyword;
-		},
-		setFileUploadFilterData: (state, action) => {
-			state.fileUploadFilterData.file_type = action.payload.file_type;
-			state.fileUploadFilterData.original_name = action.payload.original_name;
-			state.fileUploadFilterData.created = action.payload.created;
+		setInventoryShowDataEmpty: (state, action) => {
+			state.config.data = {};
 		},
 	},
 
 	extraReducers: (builder) => {
 		builder
 			.addCase(getIndexEntityData.fulfilled, (state, action) => {
-				state.indexEntityData = action.payload; // Store response data
-				state.fetching = false; // Turn off fetching state
+				const { module, data } = action.payload;
+
+				state[module].data = data;
+				state[module].fetching = false;
 			})
 			.addCase(getIndexEntityData.rejected, (state, action) => {
-				state.error = action.payload; // Save error
+				const { module } = action.payload;
+				console.log("🚀 ~ .addCase ~ action.payload:", action.payload);
+				state[module].error = action.payload; // Save error
 			});
 
 		builder.addCase(storeEntityData.fulfilled, (state, action) => {
-			if ("success" === action.payload.data.message) {
-				state.entityNewData = action.payload.data;
-				state.fetching = true;
+			const { module, data } = action.payload;
+			if (action.payload.data.message === "success") {
+				state[module].data = {
+					...state[module].data,
+					data: [...state[module].data.data, data.data],
+				};
+				state[module].fetching = true;
 			} else {
-				state.validationMessage = action.payload.data.data;
-				state.validation = true;
+				state[module].validationMessages = data.data;
+				state[module].validation = true;
 			}
 		});
 
 		builder.addCase(storeEntityData.rejected, (state, action) => {
-			state.updateEntityDataForUser = action.payload; // Save or log the error data
+			const { module, data } = action.payload;
+			state[module].validationMessages = data.data;
+			state[module].validation = true;
 		});
 
 		builder.addCase(editEntityData.fulfilled, (state, action) => {
-			state.entityEditData = action.payload.data.data;
+			const { module } = action.payload;
+			state[module].fetching = false;
 		});
 
 		builder.addCase(updateEntityData.fulfilled, (state, action) => {
-			state.updateEntityDataForUser = action.payload.data.data;
+			const { module } = action.payload;
+			state[module].fetching = false;
 		});
 
 		builder.addCase(updateEntityData.rejected, (state, action) => {
-			state.updateEntityDataForUser = action.payload; // Save or log the error data
+			const { module, data } = action.payload;
+			state[module].validationMessages = data.data;
+			state[module].validation = true;
 		});
 
 		builder.addCase(updateEntityDataWithFile.fulfilled, (state, action) => {
-			state.updateEntityData = action.payload.data.data;
+			const { module } = action.payload;
+			state[module].fetching = false;
 		});
 
 		builder.addCase(showEntityData.fulfilled, (state, action) => {
@@ -254,8 +233,8 @@ const crudSlice = createSlice({
 		});
 
 		builder.addCase(deleteEntityData.fulfilled, (state, action) => {
-			state.entityDataDelete = action.payload.data.data;
-			state.fetching = true;
+			const { module } = action.payload;
+			state[module].fetching = false;
 		});
 
 		builder.addCase(getStatusInlineUpdateData.fulfilled, (state, action) => {
@@ -265,24 +244,15 @@ const crudSlice = createSlice({
 });
 
 export const {
-	setDropdownLoad,
+	setFilterData,
 	setFetching,
-	setFormLoading,
-	setInsertType,
 	setSearchKeyword,
-	setEntityUpdateId,
-	setEntityIsUpdate,
-	setEditEntityData,
-	setCustomerFilterData,
-	setVendorFilterData,
-	setUserFilterData,
-	setValidationData,
-	setEntityNewData,
-	setCategoryGroupFilterData,
 	setDeleteMessage,
-	setWarehouseFilterData,
-	setRequisitionFilterData,
-	setFileUploadFilterData,
+	setValidationData,
+	setInventoryShowDataEmpty,
+	setGlobalFetching,
+	setKeyWordSearch,
+	setSearchKeywordTooltip,
 } = crudSlice.actions;
 
 export default crudSlice.reducer;

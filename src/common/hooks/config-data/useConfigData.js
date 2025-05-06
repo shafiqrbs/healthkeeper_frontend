@@ -1,20 +1,25 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getShowEntityData } from "@/app/store/core/crudSlice.js";
+import { getIndexEntityData } from "@/app/store/core/crudThunk";
 
 const useConfigData = () => {
 	const dispatch = useDispatch();
-	const configData = useSelector((state) => state.inventoryCrudSlice.showEntityData);
+	const configData = useSelector((state) => state.crud.config.data?.data);
 
 	const fetchData = () => {
-		dispatch(getShowEntityData("inventory/config")); // Trigger the Redux action to fetch the data
+		dispatch(
+			getIndexEntityData({
+				url: "inventory/config",
+				module: "config",
+			})
+		);
 	};
 
 	useEffect(() => {
-		fetchData(); // Fetch config data on mount
-	}, [dispatch]); // Only triggers once on mount since the dependency is `dispatch`
+		fetchData();
+	}, [dispatch]);
 
-	return { configData, fetchData }; // Return both data and the function to manually re-fetch
+	return { configData, fetchData };
 };
 
 export default useConfigData;

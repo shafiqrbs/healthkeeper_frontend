@@ -9,7 +9,8 @@ import { hasLength, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 
-import { setFetching, storeEntityData } from "@/app/store/core/crudSlice.js";
+import { setFetching } from "@/app/store/core/crudSlice";
+import { storeEntityData } from "@/app/store/core/crudThunk";
 
 import InputForm from "@components/form-builders/InputForm";
 import SelectForm from "@components/form-builders/SelectForm";

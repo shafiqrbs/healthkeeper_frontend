@@ -17,7 +17,7 @@ import CoreHeaderNavbar from "../CoreHeaderNavbar.jsx";
 import MarketingExecutiveTable from "./MarketingExecutiveTable.jsx";
 import MarketingExecutiveForm from "./MarketingExecutiveForm.jsx";
 import MarketingExecutiveUpdateForm from "./MarketingExecutiveUpdateForm.jsx";
-import Navigation from "../components/Navigation.jsx";
+import Navigation from "../shared/Navigation.jsx";
 
 function MarketingExecutiveIndex() {
 	const { t, i18n } = useTranslation();

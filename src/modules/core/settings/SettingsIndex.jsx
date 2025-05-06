@@ -19,7 +19,7 @@ import SettingsForm from "./SettingsForm.jsx";
 import SettingsUpdateForm from "./SettingsUpdateForm.jsx";
 import getParticularTypeDropdownData from "../../../global-hook/dropdown/core/getSettingTypeDropdownData.js";
 import { setProductionSettingFilterData } from "../../../../store/production/crudSlice.js";
-import Navigation from "../components/Navigation.jsx";
+import Navigation from "../shared/Navigation.jsx";
 
 function SettingsIndex() {
 	const { t, i18n } = useTranslation();

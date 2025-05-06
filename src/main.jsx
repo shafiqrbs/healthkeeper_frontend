@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./i18n.js";
+import "./lang/i18next";
 import App from "./App.jsx";
 
 import { MantineProvider, createTheme } from "@mantine/core";

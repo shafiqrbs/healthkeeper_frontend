@@ -25,20 +25,16 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import commonDataStoreIntoLocalStorage from "@hooks/local-storage/useCommonDataStoreIntoLocalStorage.js";
 import orderProcessDropdownLocalDataStore from "@hooks/local-storage/useOrderProcessDropdownLocalDataStore.js";
+import { API_BASE_URL, API_KEY } from "@/constants";
+import { getLoggedInUser } from "@/common/utils";
 
 export default function Login() {
-	const { t, i18n } = useTranslation();
+	const user = getLoggedInUser();
+	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const icon = <IconInfoCircle />;
 
 	const [spinner, setSpinner] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
-
-	const user = localStorage.getItem("user");
-
-	if (user) {
-		return <Navigate replace to="/" />;
-	}
 
 	const form = useForm({
 		initialValues: { username: "", password: "" },
@@ -50,39 +46,41 @@ export default function Login() {
 		},
 	});
 
+	if (user?.id) {
+		console.info("already logged in, redirecting from login page.");
+		return <Navigate replace to="/" />;
+	}
+
 	function login(data) {
 		setSpinner(true);
 		axios({
 			method: "POST",
-			url: `${import.meta.env.VITE_API_GATEWAY_URL + "user-login"}`,
+			url: `${API_BASE_URL}/user-login`,
 			headers: {
 				Accept: `application/json`,
 				"Content-Type": `application/json`,
 				"Access-Control-Allow-Origin": "*",
-				"X-Api-Key": import.meta.env.VITE_API_KEY,
+				"X-Api-Key": API_KEY,
 			},
 			data: data,
 		})
 			.then((res) => {
-				setTimeout(() => {
-					if (res.data.status === 200) {
-						localStorage.setItem("user", JSON.stringify(res.data.data));
-						commonDataStoreIntoLocalStorage(res.data.data.id);
-						orderProcessDropdownLocalDataStore(res.data.data.id);
-
+				if (res.data.status === 200) {
+					localStorage.setItem("user", JSON.stringify(res.data.data));
+					orderProcessDropdownLocalDataStore(res.data.data.id);
+					commonDataStoreIntoLocalStorage(res.data.data.id).then(() => {
 						setErrorMessage("");
 						setSpinner(false);
-						navigate("/");
-					}
+						return navigate("/");
+					});
+				} else {
 					setErrorMessage(res.data.message);
 					setSpinner(false);
-				}, 500);
+				}
 			})
 			.catch(function (error) {
-				setTimeout(() => {
-					setSpinner(false);
-					console.log(error);
-				}, 500);
+				setSpinner(false);
+				console.error(error);
 			});
 	}
 
@@ -111,7 +109,7 @@ export default function Login() {
 							color="red"
 							radius="md"
 							title={errorMessage}
-							icon={icon}
+							icon={<IconInfoCircle />}
 						></Alert>
 					)}
 					<Tooltip
@@ -161,7 +159,7 @@ export default function Login() {
 							mt="md"
 							size="md"
 							{...form.getInputProps("password")}
-							id={"Password"}
+							id="Password"
 							onKeyDown={getHotkeyHandler([
 								[
 									"Enter",
@@ -198,6 +196,7 @@ export default function Login() {
 					</Group>
 				</Paper>
 			</Box>
+			<Box className={classes.wrapperImage} />
 		</div>
 	);
 }

@@ -5,8 +5,8 @@ import crudSlice from "./core/crudSlice.js";
 
 const rootReducer = (asyncReducers) => (state, action) => {
 	const combinedReducer = combineReducers({
-		utilitySlice,
-		crudSlice,
+		utility: utilitySlice,
+		crud: crudSlice,
 		...asyncReducers,
 	});
 	return combinedReducer(state, action);
