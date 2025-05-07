@@ -5,7 +5,7 @@ import { AppShell } from "@mantine/core";
 import Header from "./Header";
 import Footer from "./Footer";
 import MainDashboard from "@modules/dashboard/MainDashboard";
-import useConfigData from "@/common/hooks/config-data/useConfigData";
+import useConfigData from "@hooks/config-data/useConfigData";
 import { getLoggedInUser } from "@/common/utils";
 
 const Layout = () => {
@@ -18,7 +18,7 @@ const Layout = () => {
 
 	// check authentication
 	if (!user?.id) {
-		console.log("not logged in");
+		console.info("Not logged in, redirecting to login page.");
 		return <Navigate replace to="/login" />;
 	}
 

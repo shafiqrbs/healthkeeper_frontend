@@ -3,41 +3,38 @@ import {
 	Anchor,
 	Box,
 	Button,
-	Center,
+	CloseButton,
 	Divider,
 	Flex,
 	Grid,
 	Group,
-	HoverCard,
 	Image,
 	Kbd,
 	Menu,
 	Modal,
-	NavLink,
-	rem,
-	SimpleGrid,
+	ScrollArea,
 	Stack,
 	Text,
+	TextInput,
 	ThemeIcon,
 	Tooltip,
 	UnstyledButton,
-	useMantineTheme,
+	rem,
 } from "@mantine/core";
-import "@mantine/spotlight/styles.css";
 
-import { setInventoryShowDataEmpty } from "@/app/store/core/crudSlice";
-import flagBD from "@/assets/images/flags/bd.svg";
-import flagGB from "@/assets/images/flags/gb.svg";
-import { default as classes, default as HeaderStyle } from "@assets/css/Header.module.css";
-import LanguagePickerStyle from "@assets/css/LanguagePicker.module.css";
-import logo_default from "@assets/images/logo_default.png";
-import shortcutDropdownData from "@hooks/shortcut-dropdown/useShortcutDropdownData.js";
-import { useDisclosure, useFullscreen, useHotkeys } from "@mantine/hooks";
+import { setInventoryShowDataEmpty } from "@/app/store/core/crudSlice.js";
 import SpotLightSearchModal from "@modules/modals/SpotLightSearchModal";
+import LanguagePickerStyle from "@assets/css/LanguagePicker.module.css";
+import flagBD from "@assets/images/flags/bd.svg";
+import flagGB from "@assets/images/flags/gb.svg";
+import logo_default from "@assets/images/logo_default.png";
+import shortcutDropdownData from "@hooks/shortcut-dropdown/useShortcutDropdownData";
+import { useDisclosure, useFullscreen, useHotkeys } from "@mantine/hooks";
+import "@mantine/spotlight/styles.css";
 import {
+	IconArrowRight,
+	IconBackspace,
 	IconChevronDown,
-	IconCircleCheck,
-	IconEdit,
 	IconLogout,
 	IconSearch,
 	IconWifi,
@@ -48,50 +45,333 @@ import {
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { getLoggedInUser, getUserRole } from "@/common/utils";
 
 const languages = [
 	{ label: "EN", value: "en", flag: flagGB },
 	{ label: "BN", value: "bn", flag: flagBD },
 ];
 
-export default function Header({ isOnline, configData }) {
-	// console.log(configData);
+const getActionPath = (action) => {
+	if (
+		(action.group === "Domain" && action.id === "dashboard") ||
+		(action.group === "ডোমেইন" && action.id === "dashboard")
+	) {
+		return `b2b/${action.id}`;
+	}
+	if (action.group === "Production" || action.group === "প্রোডাকশন") {
+		return `production/${action.id}`;
+	}
+	if (action.group === "Core" || action.group === "কেন্দ্র") {
+		return `core/${action.id}`;
+	}
+	if (action.group === "Inventory" || action.group === "ইনভেন্টরি") {
+		return `inventory/${action.id}`;
+	}
+	if (action.group === "Domain" || action.group === "ডোমেইন") {
+		return `domain/${action.id}`;
+	}
+	if (action.group === "Accounting" || action.group === "একাউন্টিং") {
+		return `accounting/${action.id}`;
+	}
+	if (action.group === "Procurement") {
+		return `procurement/${action.id}`;
+	}
+	if (action.group === "Sales & Purchase") {
+		return `inventory/${action.id}`;
+	}
+	return `/sitemap`;
+};
 
+// Logo Component
+const Logo = ({ configData, navigate }) => {
+	if (!configData?.path) {
+		return (
+			<NavLink
+				component="button"
+				bg={"transparent"}
+				style={{
+					backgroundColor: "#C6AF9D",
+					color: "white",
+					fontWeight: 800,
+					transition: "background 1s",
+				}}
+				label={configData?.domain?.company_name || ""}
+				onClick={() => navigate("/")}
+				onMouseEnter={(e) => {
+					e.currentTarget.style.color = "#dee2e6";
+				}}
+				onMouseLeave={(e) => {
+					e.currentTarget.style.color = "white";
+				}}
+			/>
+		);
+	}
+
+	return (
+		<div
+			style={{
+				display: "flex",
+				height: "100%",
+				alignItems: "center",
+				paddingLeft: 16,
+			}}
+		>
+			<Tooltip
+				label={configData?.domain?.company_name || ""}
+				color={"#C6AF9D"}
+				position="right"
+				withArrow
+			>
+				<Anchor
+					target="_blank"
+					underline="never"
+					onClick={() => navigate("/")}
+					style={{
+						backgroundColor: "#C6AF9D",
+						color: "white",
+						fontWeight: 800,
+						transition: "background 1s",
+					}}
+				>
+					<Image
+						mah={40}
+						radius="md"
+						src={`${import.meta.env.VITE_IMAGE_GATEWAY_URL}/uploads/inventory/logo/${
+							configData.path
+						}`}
+						fallbackSrc={logo_default}
+						pl={6}
+					/>
+				</Anchor>
+			</Tooltip>
+		</div>
+	);
+};
+
+// Search Button Component
+const SearchButton = ({ t, onClick }) => (
+	<Button
+		leftSection={
+			<>
+				<IconSearch size={16} c={"white"} />
+				<Text fz={`xs`} pl={"xs"} c={"gray.8"}>
+					{t("SearchMenu")}
+				</Text>
+			</>
+		}
+		fullWidth
+		variant="transparent"
+		rightSection={
+			<>
+				<Kbd h={"24"} c={"gray.8"} fz={"12"}>
+					Alt{" "}
+				</Kbd>{" "}
+				+{" "}
+				<Kbd c={"gray.8"} h={"24"} fz={"12"}>
+					{" "}
+					K
+				</Kbd>
+			</>
+		}
+		w={`100%`}
+		justify="space-between"
+		style={{ border: "1px solid #49362366" }}
+		color={"black"}
+		bg={"white"}
+		onClick={onClick}
+		className="no-focus-outline"
+	/>
+);
+
+// Search Input Component
+const SearchInput = ({ value, onChange, onKeyDown, onClear }) => {
+	const { t } = useTranslation();
+	return (
+		<TextInput
+			w={"100%"}
+			align={"center"}
+			pr={"lg"}
+			justify="space-between"
+			data-autofocus
+			leftSection={<IconSearch size={16} c={"red"} />}
+			placeholder={t("SearchMenu")}
+			value={value}
+			rightSectionPointerEvents="all"
+			rightSection={
+				<div style={{ display: "flex", alignItems: "center" }}>
+					{value ? (
+						<>
+							<CloseButton
+								ml={"-50"}
+								mr={"xl"}
+								icon={<IconBackspace style={{ width: rem(24) }} stroke={1.5} />}
+								aria-label="Clear input"
+								onClick={onClear}
+							/>
+							<Kbd ml={"-xl"} h={"24"} c={"gray.8"} fz={"12"}>
+								Alt
+							</Kbd>{" "}
+							+{" "}
+							<Kbd c={"gray.8"} h={"24"} fz={"12"} mr={"lg"}>
+								C
+							</Kbd>
+						</>
+					) : (
+						<>
+							<Kbd ml={"-lg"} h={"24"} c={"gray.8"} fz={"12"}>
+								Alt{" "}
+							</Kbd>{" "}
+							+{" "}
+							<Kbd c={"gray.8"} h={"24"} fz={"12"} mr={"lg"}>
+								X
+							</Kbd>
+						</>
+					)}
+				</div>
+			}
+			onChange={onChange}
+			onKeyDown={onKeyDown}
+			className="no-focus-outline"
+		/>
+	);
+};
+
+// Action Item Component
+const ActionItem = ({ action, isSelected, onClick }) => (
+	<Link
+		id={`item-${action.index}`}
+		className={"link"}
+		to={getActionPath(action)}
+		onClick={onClick}
+	>
+		<Group
+			wrap="nowrap"
+			align="center"
+			justify="left"
+			pt={"4"}
+			pb={"4"}
+			className={isSelected ? "highlightedItem" : ""}
+		>
+			<ThemeIcon size={18} color={"#242424"} variant="transparent">
+				<IconArrowRight />
+			</ThemeIcon>
+			<Text size="sm" className={`${isSelected ? "highlightedItem" : ""} ${"link"}`}>
+				{action.label}
+			</Text>
+		</Group>
+	</Link>
+);
+
+// Language Picker Component
+const LanguagePicker = ({ languageSelected, onLanguageChange }) => {
+	const { t } = useTranslation();
+	return (
+		<Menu radius="md" width="target" withinPortal withArrow arrowPosition="center">
+			<Menu.Target>
+				<UnstyledButton p={2} bg={"red"} className={LanguagePickerStyle.control}>
+					<Group gap="xs">
+						<Image src={languageSelected?.flag} width={18} height={18} />
+						<span className={LanguagePickerStyle.label}>{languageSelected?.label}</span>
+					</Group>
+					<IconChevronDown size="1rem" className={LanguagePickerStyle.icon} stroke={1} />
+				</UnstyledButton>
+			</Menu.Target>
+			<Menu.Dropdown p={4} className={LanguagePickerStyle.dropdown}>
+				{languages.map((item) => (
+					<Menu.Item
+						p={4}
+						leftSection={<Image src={item.flag} width={18} height={18} />}
+						onClick={() => onLanguageChange(item)}
+						key={item.label}
+					>
+						{item.label}
+					</Menu.Item>
+				))}
+			</Menu.Dropdown>
+		</Menu>
+	);
+};
+
+// Header Actions Component
+const HeaderActions = ({ isOnline, fullscreen, toggle, loginUser, t, onLogout }) => (
+	<Flex
+		gap="sm"
+		justify="flex-end"
+		direction="row"
+		wrap="wrap"
+		mih={42}
+		align={"right"}
+		px={"xs"}
+		pr={"24"}
+	>
+		<Tooltip label={fullscreen ? t("NormalScreen") : t("Fullscreen")} bg={"#635031"} withArrow>
+			<ActionIcon mt={"6"} onClick={toggle} variant="subtle" color={"white"}>
+				{fullscreen ? <IconWindowMinimize size={24} /> : <IconWindowMaximize size={24} />}
+			</ActionIcon>
+		</Tooltip>
+		<Tooltip
+			label={
+				<>
+					<Stack spacing={0} gap={0}>
+						<Text align="center">
+							{loginUser?.name} ( {loginUser?.username} )
+						</Text>
+						<Text align="center">{t("LogoutAltL")}</Text>
+					</Stack>
+				</>
+			}
+			bg={"#635031"}
+			withArrow
+			position={"left"}
+			multiline
+		>
+			<ActionIcon onClick={onLogout} variant="subtle" mt={"6"} color={"white"}>
+				<IconLogout size={24} />
+			</ActionIcon>
+		</Tooltip>
+		<Tooltip
+			label={isOnline ? t("Online") : t("Offline")}
+			bg={isOnline ? "green.5" : "red.5"}
+			withArrow
+		>
+			<ActionIcon
+				mt={"6"}
+				variant="filled"
+				radius="xl"
+				color={isOnline ? "green.5" : "red.5"}
+			>
+				{isOnline ? (
+					<IconWifi color={"white"} size={24} />
+				) : (
+					<IconWifiOff color={"white"} size={24} />
+				)}
+			</ActionIcon>
+		</Tooltip>
+	</Flex>
+);
+
+export default function Header({ isOnline, configData, mainAreaHeight }) {
+	const userRole = getUserRole();
 	const [opened, { open, close }] = useDisclosure(false);
 	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const theme = useMantineTheme();
+	const height = mainAreaHeight - 140;
 	const { toggle, fullscreen } = useFullscreen();
-	const [languageOpened, setLanguageOpened] = useState(false);
 	const [languageSelected, setLanguageSelected] = useState(
 		languages.find((item) => item.value === i18n.language)
 	);
-	const [visible, setVisible] = useState(true);
+	const loginUser = getLoggedInUser();
+	const [shortcutModalOpen, setShortcutModalOpen] = useState(false);
+	const [value, setValue] = useState("");
+	const [filteredItems, setFilteredItems] = useState([]);
+	const [selectedIndex, setSelectedIndex] = useState(-1);
 
-	const [configDataSpot, setConfigData] = useState(null);
-	const loginUser = JSON.parse(localStorage.getItem("user"));
-	useEffect(() => {
-		const checkConfigData = () => {
-			const storedConfigData = localStorage.getItem("config-data");
-			if (storedConfigData) {
-				setConfigData(JSON.parse(storedConfigData));
-				setVisible(false);
-			} else {
-				setVisible(false);
-				navigate("/login");
-			}
-		};
-		const timeoutId = setTimeout(checkConfigData, 500);
-
-		return () => clearTimeout(timeoutId);
-	}, [navigate]);
 	const getActions = () => {
-		const actions = shortcutDropdownData(t, configDataSpot);
+		const actions = shortcutDropdownData(t, configData);
 		let index = 0;
-
-		// Assign an index to each action
 		return actions.map((group) => ({
 			...group,
 			actions: group.actions.map((action) => ({
@@ -101,159 +381,134 @@ export default function Header({ isOnline, configData }) {
 			})),
 		}));
 	};
-	function logout() {
+
+	const hasAccessToGroup = (group) => {
+		if (userRole.includes("role_domain")) return true;
+
+		switch (group) {
+			case "Production":
+			case "প্রোডাকশন":
+				return userRole.includes("role_production");
+			case "Core":
+			case "কেন্দ্র":
+				return userRole.includes("role_core");
+			case "Inventory":
+			case "ইনভেন্টরি":
+				return userRole.includes("role_inventory");
+			case "Domain":
+			case "ডোমেইন":
+				return userRole.includes("role_domain");
+			case "Accounting":
+			case "একাউন্টিং":
+				return userRole.includes("role_accounting");
+			case "Procurement":
+				return userRole.includes("role_procurement");
+			case "Sales & Purchase":
+				return userRole.includes("role_sales_purchase");
+			default:
+				return false;
+		}
+	};
+
+	const filterList = (searchValue) => {
+		const updatedList = getActions().reduce((acc, group) => {
+			if (hasAccessToGroup(group.group)) {
+				const filteredActions = group.actions.filter((action) =>
+					action.label.toLowerCase().includes(searchValue.toLowerCase())
+				);
+				return [...acc, ...filteredActions];
+			}
+			return acc;
+		}, []);
+
+		setFilteredItems(updatedList);
+		setSelectedIndex(-1);
+	};
+
+	const clearSearch = () => {
+		setValue("");
+		const allActions = getActions().reduce((acc, group) => [...acc, ...group.actions], []);
+		setFilteredItems(allActions);
+		setSelectedIndex(0);
+	};
+
+	const handleKeyDown = (event) => {
+		if (filteredItems.length === 0) return;
+
+		if (event.key === "ArrowDown") {
+			event.preventDefault();
+			setSelectedIndex((prevIndex) => (prevIndex + 1) % filteredItems.length);
+		} else if (event.key === "ArrowUp") {
+			event.preventDefault();
+			setSelectedIndex((prevIndex) =>
+				prevIndex <= 0 ? filteredItems.length - 1 : prevIndex - 1
+			);
+		} else if (event.key === "Enter" && selectedIndex >= 0) {
+			handleActionSelect(filteredItems[selectedIndex]);
+		}
+	};
+
+	const handleActionSelect = (selectedAction) => {
+		if (selectedAction) {
+			const path = getActionPath(selectedAction);
+			navigate(path);
+			setValue("");
+			setShortcutModalOpen(false);
+		}
+	};
+
+	const handleSearchChange = (event) => {
+		setValue(event.target.value);
+		filterList(event.target.value);
+	};
+
+	const handleLanguageChange = (item) => {
+		setLanguageSelected(item);
+		i18n.changeLanguage(item.value);
+	};
+
+	const handleLogout = () => {
 		dispatch(setInventoryShowDataEmpty());
 		localStorage.clear();
 		navigate("/login");
-	}
-	const list = getActions().reduce((acc, group) => [...acc, ...group.actions], []);
+	};
 
 	useHotkeys(
 		[
-			[
-				"alt+k",
-				() => {
-					open();
-				},
-			],
-		],
-		[]
-	);
-	useHotkeys(
-		[
-			[
-				"alt+x",
-				() => {
-					close();
-				},
-			],
+			["alt+k", () => setShortcutModalOpen(true)],
+			["alt+x", () => setShortcutModalOpen(false)],
+			["alt+l", handleLogout],
+			["alt+c", clearSearch],
 		],
 		[]
 	);
 
-	const shortcuts = (
-		<Stack spacing="xs">
-			{list
-				.reduce((groups, item) => {
-					const lastGroup = groups[groups.length - 1];
-					if (!lastGroup || item.group !== lastGroup.group) {
-						groups.push({ group: item.group, items: [item] });
-					} else {
-						lastGroup.items.push(item);
-					}
-					return groups;
-				}, [])
-				.map((groupData, groupIndex) => (
-					<Box key={groupIndex}>
-						<Text size="sm" fw="bold" c="#828282" pb={"xs"}>
-							{groupData.group}
-						</Text>
+	useEffect(() => {
+		if (selectedIndex >= 0 && filteredItems.length > 0) {
+			const selectedElement = document.getElementById(
+				`item-${filteredItems[selectedIndex].index}`
+			);
+			if (selectedElement) {
+				selectedElement.scrollIntoView({
+					behavior: "smooth",
+					block: "nearest",
+				});
+			}
+		}
+	}, [selectedIndex, filteredItems]);
 
-						<SimpleGrid cols={2}>
-							{groupData.items.map((action, itemIndex) => (
-								<Link
-									key={itemIndex}
-									to={
-										action.id === "inhouse"
-											? "#"
-											: action.group === "Production" ||
-											  action.group === "প্রোডাকশন"
-											? `production/${action.id}`
-											: action.group === "Core" || action.group === "কেন্দ্র"
-											? `core/${action.id}`
-											: action.group === "Inventory" ||
-											  action.group === "ইনভেন্টরি"
-											? `inventory/${action.id}`
-											: action.group === "Domain" || action.group === "ডোমেইন"
-											? `domain/${action.id}`
-											: action.group === "Accounting" ||
-											  action.group === "একাউন্টিং"
-											? `accounting/${action.id}`
-											: action.group === "Procurement"
-											? `procurement/${action.id}`
-											: action.group === "Sales & Purchase"
-											? `inventory/${action.id}`
-											: `/sitemap`
-									}
-									onClick={(e) => {
-										navigate(
-											action.group === "Production" ||
-												action.group === "প্রোডাকশন"
-												? `production/${action.id}`
-												: action.group === "Core" ||
-												  action.group === "কেন্দ্র"
-												? `core/${action.id}`
-												: action.group === "Inventory" ||
-												  action.group === "ইনভেন্টরি"
-												? `inventory/${action.id}`
-												: action.group === "Domain" ||
-												  action.group === "ডোমেইন"
-												? `domain/${action.id}`
-												: action.group === "Accounting" ||
-												  action.group === "একাউন্টিং"
-												? `accounting/${action.id}`
-												: action.group === "Sales & Purchase"
-												? `inventory/${action.id}`
-												: `/sitemap`
-										);
-									}}
-									style={{ textDecoration: "none", color: "inherit" }}
-								>
-									<UnstyledButton className={HeaderStyle.subLink}>
-										<Group
-											wrap="nowrap"
-											align="center"
-											justify="center"
-											gap={4}
-										>
-											<ThemeIcon size={18} variant="transparent" radius="md">
-												<IconCircleCheck
-													style={{ width: rem(14), height: rem(14) }}
-													color={"green"}
-												/>
-											</ThemeIcon>
-											<div>
-												<Center>
-													<Text size="sm" fw={500}>
-														{action.label}
-													</Text>
-												</Center>
-												{/* <Text size="xs" c="dimmed">
-                          {action.description}
-                        </Text> */}
-											</div>
-										</Group>
-									</UnstyledButton>
-								</Link>
-							))}
-						</SimpleGrid>
-					</Box>
-				))}
-		</Stack>
-	);
+	useEffect(() => {
+		const allActions = getActions().reduce((acc, group) => [...acc, ...group.actions], []);
+		setFilteredItems(allActions);
+	}, [shortcutModalOpen === true]);
 
-	useHotkeys(
-		[
-			[
-				"alt+l",
-				() => {
-					logout();
-				},
-			],
-		],
-		[]
-	);
 	return (
 		<>
 			<Modal.Root opened={opened} onClose={close} size="64%">
 				<Modal.Overlay />
 				<Modal.Content p={"xs"}>
 					<Modal.Header ml={"xs"}>
-						<Modal.Title>
-							{configData && configData?.domain
-								? configData.domain?.company_name
-								: ""}
-						</Modal.Title>
+						<Modal.Title>{configData?.domain?.company_name || ""}</Modal.Title>
 						<Modal.CloseButton />
 					</Modal.Header>
 					<Modal.Body>
@@ -261,111 +516,12 @@ export default function Header({ isOnline, configData }) {
 					</Modal.Body>
 				</Modal.Content>
 			</Modal.Root>
-			<Box bg={"#905a23"} mb={"2"} pos={`relative`}>
+			<Box bg="#C6AF9D" mb={"2"} pos={`relative`}>
 				<Grid columns={24} gutter={{ base: 2 }} justify="space-between">
 					<Grid.Col span={3}>
-						{configData?.path ? (
-							<div
-								style={{
-									display: "flex",
-									height: "100%",
-									alignItems: "center",
-									paddingLeft: 16,
-								}}
-							>
-								<Tooltip
-									label={
-										configData && configData.domain
-											? configData.domain.company_name
-											: ""
-									}
-									className={"tooltipSecondaryBg"}
-									position="right"
-									withArrow
-								>
-									<Anchor
-										target="_blank"
-										underline="never"
-										onClick={() => {
-											navigate("/");
-										}}
-										style={{
-											backgroundColor: "#905a23",
-											color: "white",
-											fontWeight: 800,
-											transition: "background 1s",
-										}}
-									>
-										<Image
-											mah={40}
-											radius="md"
-											src={
-												import.meta.env.VITE_IMAGE_GATEWAY_URL +
-												"/uploads/inventory/logo/" +
-												configData.path
-											}
-											fallbackSrc={logo_default}
-											pl={6}
-										></Image>
-									</Anchor>
-								</Tooltip>
-								{configData?.domain && loginUser.user_group === "domain" && (
-									<Tooltip
-										label={t("UpdateYourLogoAndOtherConfigs")}
-										bg={`green`}
-										position="right"
-										withArrow
-										className={"tooltipSecondaryBg"}
-									>
-										<ActionIcon
-											c={"grey"}
-											bg={"transparent"}
-											pl={"xs"}
-											onClick={() => {
-												navigate(
-													`/domain/config/${configData?.domain?.id}`
-												);
-											}}
-											onAuxClick={(e) => {
-												navigate(
-													`/domain/config/${configData?.domain?.id}`
-												);
-											}}
-										>
-											<IconEdit style={{ width: rem(18), height: rem(18) }} />
-										</ActionIcon>
-									</Tooltip>
-								)}
-								{/* <Text ml={4}>{configData.domain.company_name}</Text> */}
-							</div>
-						) : (
-							<NavLink
-								component="button"
-								bg={"transparent"}
-								style={{
-									backgroundColor: "#905a23",
-									color: "white",
-									fontWeight: 800,
-									transition: "background 1s",
-								}}
-								label={
-									configData && configData.domain
-										? configData.domain.company_name
-										: ""
-								}
-								onClick={() => {
-									navigate("/");
-								}}
-								onMouseEnter={(e) => {
-									e.currentTarget.style.color = "#dee2e6";
-								}}
-								onMouseLeave={(e) => {
-									e.currentTarget.style.color = "white";
-								}}
-							/>
-						)}
+						<Logo configData={configData} navigate={navigate} />
 					</Grid.Col>
-					<Grid.Col span={3} justify="flex-end" align={"flex-start"} mt={"xs"}></Grid.Col>
+					<Grid.Col span={3} justify="flex-end" align={"flex-start"} mt={"xs"} />
 					<Grid.Col
 						span={12}
 						justify="flex-end"
@@ -374,94 +530,126 @@ export default function Header({ isOnline, configData }) {
 						wrap="wrap"
 					>
 						<Group gap={"md"} wrap="nowrap" mih={42}>
-							<Button
-								leftSection={
-									<>
-										<IconSearch size={16} c={"white"} />
-										<Text fz={`xs`} pl={"xs"} c={"gray.8"}>
-											{t("SearchMenu")}
-										</Text>
-									</>
-								}
-								fullWidth
-								variant="transparent"
-								rightSection={
-									<>
-										<Kbd h={"24"} c={"gray.8"} fz={"12"}>
-											Alt{" "}
-										</Kbd>{" "}
-										+{" "}
-										<Kbd c={"gray.8"} h={"24"} fz={"12"}>
-											{" "}
-											K
-										</Kbd>
-									</>
-								}
-								w={`100%`}
-								justify="space-between"
-								style={{ border: "1px solid #49362366" }}
-								color={"black"}
-								bg={"white"}
-								onClick={open}
-								className="no-focus-outline"
-							/>
-							<HoverCard
-								width={400}
-								position="bottom"
+							<SearchButton t={t} onClick={() => setShortcutModalOpen(true)} />
+							<Modal
+								opened={shortcutModalOpen}
+								onClose={() => setShortcutModalOpen(false)}
+								centered
+								size="450"
+								padding="md"
 								radius="md"
-								shadow="md"
-								withinPortal
-								withArrow
-								arrowPosition="center"
+								styles={{
+									title: {
+										width: "100%",
+										margin: 0,
+										padding: 0,
+									},
+								}}
+								overlayProps={{
+									backgroundOpacity: 0.7,
+									blur: 3,
+								}}
+								title={
+									<Box>
+										<SearchInput
+											value={value}
+											onChange={handleSearchChange}
+											onKeyDown={handleKeyDown}
+											onClear={clearSearch}
+										/>
+									</Box>
+								}
+								transitionProps={{ transition: "fade", duration: 200 }}
 							>
-								<HoverCard.Target>
-									<a href="#" className={classes.link}>
-										<Center inline>
-											<Box component="span" mr={"xs"} c={"white"} fw={"500"}>
-												{t("Shortcut")}
-											</Box>
-											<IconChevronDown
-												style={{ width: rem(16), height: rem(16) }}
-												color={"white"}
-											/>
-										</Center>
-									</a>
-								</HoverCard.Target>
-
-								<HoverCard.Dropdown style={{ overflow: "hidden" }}>
-									<Group justify="space-between">
-										<Text fw={500} fz={16}>
-											{configData && configData.domain
-												? configData.domain.company_name
-												: ""}
+								<Divider my="sm" mt={0} />
+								<ScrollArea type={"never"} scrollbars="y" h={height}>
+									{filteredItems.length > 0 ? (
+										<Stack spacing="xs">
+											{filteredItems
+												.reduce((groups, item) => {
+													const existingGroup = groups.find(
+														(g) => g.group === item.group
+													);
+													if (existingGroup) {
+														existingGroup.items.push(item);
+													} else {
+														groups.push({
+															group: item.group,
+															items: [item],
+														});
+													}
+													return groups;
+												}, [])
+												.map((groupData, groupIndex) => (
+													<Box key={groupIndex}>
+														<Text
+															size="sm"
+															fw="bold"
+															c="#828282"
+															pb={"xs"}
+														>
+															{groupData.group}
+														</Text>
+														<Stack
+															bg="var(--mantine-color-body)"
+															justify="flex-start"
+															align="stretch"
+															gap="2"
+														>
+															{groupData.items.map(
+																(action, itemIndex) => (
+																	<ActionItem
+																		key={itemIndex}
+																		action={action}
+																		isSelected={
+																			filteredItems.indexOf(
+																				action
+																			) === selectedIndex
+																		}
+																		onClick={() => {
+																			setShortcutModalOpen(
+																				false
+																			);
+																			setValue("");
+																			navigate(
+																				getActionPath(
+																					action
+																				)
+																			);
+																		}}
+																	/>
+																)
+															)}
+														</Stack>
+													</Box>
+												))}
+										</Stack>
+									) : (
+										<Text align="center" mt="md" c="dimmed">
+											{t("NoResultsFound")}
 										</Text>
+									)}
+								</ScrollArea>
+								<div className={"titleBackground"}>
+									<Group justify="space-between" mt={"xs"}>
+										<div>
+											<Text fw={500} fz="sm">
+												{t("Sitemap")}
+											</Text>
+											<Text size="xs" c="dimmed">
+												{t("SitemapDetails")}
+											</Text>
+										</div>
+										<Button
+											className={"btnPrimaryBg"}
+											size="xs"
+											onClick={() => navigate("/")}
+										>
+											{t("Sitemap")}
+										</Button>
 									</Group>
-									<Divider my="sm" />
-									<SimpleGrid cols={1} spacing={0}>
-										{shortcuts}
-									</SimpleGrid>
-
-									<div className={classes.dropdownFooter}>
-										<Group justify="space-between" mt={"xs"}>
-											<div>
-												<Text fw={500} fz="sm">
-													Sitemap
-												</Text>
-												<Text size="xs" c="dimmed">
-													Sitemap Details
-												</Text>
-											</div>
-											<Button
-												className={"btnPrimaryBg"}
-												size="xs"
-												onClick={() => navigate("/")}
-											>
-												Sitemap
-											</Button>
-										</Group>
-									</div>
-								</HoverCard.Dropdown>
-							</HoverCard>
+								</div>
+							</Modal>
 						</Group>
 					</Grid.Col>
 					<Grid.Col span={6}>
@@ -475,57 +663,10 @@ export default function Header({ isOnline, configData }) {
 							px={"xs"}
 							pr={"24"}
 						>
-							<Menu
-								onOpen={() => setLanguageOpened(true)}
-								onClose={() => setLanguageOpened(false)}
-								radius="md"
-								width="target"
-								withinPortal
-								withArrow
-								arrowPosition="center"
-							>
-								<Menu.Target>
-									<UnstyledButton
-										p={2}
-										bg={"red"}
-										className={LanguagePickerStyle.control}
-										data-expanded={languageOpened || undefined}
-									>
-										<Group gap="xs">
-											<Image
-												src={languageSelected?.flag}
-												width={18}
-												height={18}
-											/>
-											<span className={LanguagePickerStyle.label}>
-												{languageSelected?.label}
-											</span>
-										</Group>
-										<IconChevronDown
-											size="1rem"
-											className={LanguagePickerStyle.icon}
-											stroke={1}
-										/>
-									</UnstyledButton>
-								</Menu.Target>
-								<Menu.Dropdown p={4} className={LanguagePickerStyle.dropdown}>
-									{languages.map((item) => (
-										<Menu.Item
-											p={4}
-											leftSection={
-												<Image src={item.flag} width={18} height={18} />
-											}
-											onClick={() => {
-												setLanguageSelected(item);
-												i18n.changeLanguage(item.value);
-											}}
-											key={item.label}
-										>
-											{item.label}
-										</Menu.Item>
-									))}
-								</Menu.Dropdown>
-							</Menu>
+							<LanguagePicker
+								languageSelected={languageSelected}
+								onLanguageChange={handleLanguageChange}
+							/>
 							<Tooltip
 								label={fullscreen ? t("NormalScreen") : t("Fullscreen")}
 								bg={"#635031"}
@@ -561,7 +702,7 @@ export default function Header({ isOnline, configData }) {
 								multiline
 							>
 								<ActionIcon
-									onClick={() => logout()}
+									onClick={handleLogout}
 									variant="subtle"
 									mt={"6"}
 									color={"white"}

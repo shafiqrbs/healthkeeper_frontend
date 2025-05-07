@@ -16,7 +16,9 @@ const useConfigData = () => {
 	};
 
 	useEffect(() => {
-		fetchData();
+		if (!configData?.id) {
+			fetchData();
+		}
 	}, [dispatch]);
 
 	return { configData, fetchData };

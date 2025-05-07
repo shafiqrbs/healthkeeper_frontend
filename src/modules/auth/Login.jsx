@@ -39,7 +39,6 @@ export default function Login() {
 	const form = useForm({
 		initialValues: { username: "", password: "" },
 
-		// functions will be used to validate values at corresponding key
 		validate: {
 			username: isNotEmpty(),
 			password: isNotEmpty(),
@@ -47,7 +46,7 @@ export default function Login() {
 	});
 
 	if (user?.id) {
-		console.info("already logged in, redirecting from login page.");
+		console.info("Already logged in, redirecting from login page.");
 		return <Navigate replace to="/" />;
 	}
 

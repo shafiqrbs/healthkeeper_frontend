@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
 	rem,
@@ -73,23 +73,10 @@ function MainDashboard({ height }) {
 	const { t } = useTranslation();
 	const { configData } = useConfigData();
 	const userRole = getUserRole();
-	console.log(configData);
 
 	height = height - 105;
 	const navigate = useNavigate();
 	const theme = useMantineTheme();
-
-	useEffect(() => {
-		const checkConfigData = () => {
-			if (!configData) {
-				navigate("/login");
-			}
-		};
-
-		const timeoutId = setTimeout(checkConfigData, 500);
-
-		return () => clearTimeout(timeoutId);
-	}, [navigate]);
 
 	return (
 		<>
