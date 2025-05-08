@@ -104,6 +104,7 @@ const SelectForm = forwardRef(
 							clearable={clearable}
 							searchable={searchable}
 							{...form.getInputProps(name)}
+							error={!!form.errors[name]}
 							value={value}
 							onChange={handleChange}
 							withAsterisk={required}

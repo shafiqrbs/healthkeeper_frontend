@@ -2,37 +2,26 @@ import React from "react";
 import { Group, Menu, rem, ActionIcon, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import classes from "@assets/css/HeaderSearch.module.css";
-import {
-	IconInfoCircle,
-	IconSettings,
-	IconAdjustments,
-	IconMap2,
-	IconLetterMSmall,
-} from "@tabler/icons-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { IconInfoCircle } from "@tabler/icons-react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { coreHeaderLinks } from "@/constants/headerLinks";
 
-function CoreHeaderNavbar({ pageTitle }) {
+function CoreHeaderNavbar({ pageTitle, module, pageDescription }) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const links = [
-		{ link: "/core/customer", label: t("Customers") },
-		{ link: "/core/vendor", label: t("Vendors") },
-		{ link: "/core/user", label: t("Users") },
-	];
-	const items = links.map((link) => (
-		<a
-			key={link.label}
-			href={link.link}
+	if (!module) return <Text c="red">CoreHeaderNavbar: No module name is provided</Text>;
+
+	const links = coreHeaderLinks[module].topBarLinks;
+	const items = links.map((link, index) => (
+		<NavLink
+			key={index}
+			to={link.link}
 			className={location.pathname == link.link ? classes.active : classes.link}
-			onClick={(event) => {
-				event.preventDefault();
-				navigate(link.link, { replace: true });
-			}}
 		>
-			{link.label}
-		</a>
+			{t(link.label)}
+		</NavLink>
 	));
 	return (
 		<>
@@ -40,82 +29,70 @@ function CoreHeaderNavbar({ pageTitle }) {
 				<div className={classes.inner}>
 					<Group ml={10}>
 						<Text>{pageTitle}</Text>
+						{pageDescription && (
+							<Flex mt={"4"}>
+								<Tooltip
+									label={pageDescription}
+									px={16}
+									py={2}
+									w={320}
+									withArrow
+									multiline
+									position="right"
+									c="white"
+									bg="gray.6"
+									transitionProps={{
+										transition: "pop-bottom-left",
+										duration: 500,
+									}}
+								>
+									<IconInfoCircle size={18} color="gray" />
+								</Tooltip>
+							</Flex>
+						)}
 					</Group>
 					<Group>
 						<Group ml={50} gap={5} className={classes.links} visibleFrom="sm" mt={"2"}>
 							{items}
 						</Group>
-						<Menu
-							withArrow
-							arrowPosition="center"
-							trigger="hover"
-							openDelay={100}
-							closeDelay={400}
-							mr={"8"}
-						>
-							<Menu.Target>
-								<ActionIcon
-									mt={"4"}
-									variant="filled"
-									color="red.5"
-									radius="xl"
-									aria-label="Settings"
-								>
-									<IconInfoCircle height={"12"} width={"12"} stroke={1.5} />
-								</ActionIcon>
-							</Menu.Target>
-							<Menu.Dropdown>
-								<Menu.Item
-									component="button"
-									onClick={(e) => {
-										navigate("/core/setting");
-									}}
-									leftSection={
-										<IconAdjustments
-											style={{ width: rem(14), height: rem(14) }}
-										/>
-									}
-								>
-									{t("Setting")}
-								</Menu.Item>
-								<Menu.Item
-									component="button"
-									onClick={(e) => {
-										navigate("/core/warehouse");
-									}}
-									leftSection={
-										<IconMap2 style={{ width: rem(14), height: rem(14) }} />
-									}
-								>
-									{t("Warehouse")}
-								</Menu.Item>
-								<Menu.Item
-									component="button"
-									onClick={(e) => {
-										navigate("/core/marketing-executive");
-									}}
-									leftSection={
-										<IconLetterMSmall
-											style={{ width: rem(14), height: rem(14) }}
-										/>
-									}
-								>
-									{t("MarketingExecutive")}
-								</Menu.Item>
-								<Menu.Item
-									href="/inventory/config"
-									component="button"
-									onClick={(e) => {
-										navigate("/inventory/config");
-									}}
-									leftSection={
-										<IconSettings style={{ width: rem(14), height: rem(14) }} />
-									}
-								>
-									{t("Configuration")}
-								</Menu.Item>
-							</Menu.Dropdown>
-						</Menu>
+						{coreHeaderLinks[module]?.dropDownLinks?.length > 0 && (
+							<Menu
+								withArrow
+								arrowPosition="center"
+								trigger="hover"
+								openDelay={100}
+								closeDelay={400}
+								mr={"8"}
+							>
+								<Menu.Target>
+									<ActionIcon
+										mt={"4"}
+										variant="filled"
+										color="red.5"
+										radius="xl"
+										aria-label="Settings"
+									>
+										<IconInfoCircle height={12} width={12} stroke={1.5} />
+									</ActionIcon>
+								</Menu.Target>
+								<Menu.Dropdown>
+									{coreHeaderLinks[module]?.dropDownLinks?.map((link, index) => (
+										<Menu.Item
+											key={index}
+											component="button"
+											onClick={() => navigate(link.link)}
+											leftSection={
+												<link.icon
+													style={{ width: rem(14), height: rem(14) }}
+												/>
+											}
+										>
+											{t(link.label)}
+										</Menu.Item>
+									))}
+								</Menu.Dropdown>
+							</Menu>
+						)}
 					</Group>
 				</div>
 			</header>

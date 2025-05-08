@@ -52,24 +52,12 @@ function HeadGroupForm() {
 					document.getElementById("mother_account_id").click();
 				},
 			],
-		],
-		[]
-	);
-
-	useHotkeys(
-		[
 			[
 				"alt+r",
 				() => {
 					form.reset();
 				},
 			],
-		],
-		[]
-	);
-
-	useHotkeys(
-		[
 			[
 				"alt+s",
 				() => {

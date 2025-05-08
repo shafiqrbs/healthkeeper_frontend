@@ -13,20 +13,18 @@ const getCommonHeaders = () => {
 	};
 };
 export const getSelectDataWithParam = async (value) => {
-	let data = [];
-	await axios({
-		method: "get",
-		url: `${API_BASE_URL}/${value.url}`,
-		headers: getCommonHeaders(),
-		params: value.params,
-	})
-		.then((res) => {
-			data = res.data.data;
-		})
-		.catch(function (error) {
-			console.error(error);
+	try {
+		const response = await axios({
+			method: "get",
+			url: `${API_BASE_URL}/${value.url}`,
+			headers: getCommonHeaders(),
+			params: value.params,
 		});
-	return data;
+		return response.data.data;
+	} catch (error) {
+		console.error("Error in getSelectDataWithParam:", error);
+		throw error;
+	}
 };
 
 export const getDataWithParam = async (value) => {
@@ -37,31 +35,141 @@ export const getDataWithParam = async (value) => {
 			headers: getCommonHeaders(),
 			params: value.params,
 		});
-		return response.data; // Return the `data` part of the response
+		return response.data;
 	} catch (error) {
-		// Log the error and throw it so it can be caught by `createAsyncThunk`
 		console.error("Error in getDataWithParam:", error);
 		throw error;
 	}
 };
 
 export const getDataWithoutParam = async (value) => {
-	let data = [];
-	await axios({
-		method: "get",
-		url: `${API_BASE_URL}/${value}`,
-		headers: getCommonHeaders(),
-	})
-		.then((res) => {
-			data = res.data.data;
-		})
-		.catch(function (error) {
-			console.error(error);
+	try {
+		const response = await axios({
+			method: "get",
+			url: `${API_BASE_URL}/${value}`,
+			headers: getCommonHeaders(),
 		});
-	return data;
+		return response.data;
+	} catch (error) {
+		console.error("Error in getDataWithoutParam:", error);
+		throw error;
+	}
 };
 
-export const createData = async (value) => {
+export const createData = async ({ url, data }) => {
+	try {
+		const response = await axios({
+			method: "POST",
+			url: `${API_BASE_URL}/${url}`,
+			headers: getCommonHeaders(),
+			data,
+		});
+		return response;
+	} catch (error) {
+		const errorResponse = error.response?.data || {};
+		return {
+			success: false,
+			message: errorResponse.message || error.message,
+			errors: errorResponse.errors || {},
+		};
+	}
+};
+
+export const editData = async (value) => {
+	try {
+		const response = await axios({
+			method: "GET",
+			url: `${API_BASE_URL}/${value.url}`,
+			headers: getCommonHeaders(),
+		});
+		return response;
+	} catch (error) {
+		console.error("Error in editData:", error);
+		throw error;
+	}
+};
+
+export const updateData = async ({ url, data }) => {
+	try {
+		const response = await axios({
+			method: "PATCH",
+			url: `${API_BASE_URL}/${url}`,
+			headers: getCommonHeaders(),
+			data,
+		});
+		return response;
+	} catch (error) {
+		const errorResponse = error.response?.data || {};
+		return {
+			success: false,
+			message: errorResponse.message || error.message,
+			errors: errorResponse.errors || {},
+		};
+	}
+};
+
+export const showData = async (value) => {
+	try {
+		const response = await axios({
+			method: "GET",
+			url: `${API_BASE_URL}/${value.url}`,
+			headers: getCommonHeaders(),
+		});
+		return response;
+	} catch (error) {
+		console.error("Error in showData:", error);
+		throw error;
+	}
+};
+
+export const deleteData = async (value) => {
+	try {
+		const response = await axios({
+			method: "DELETE",
+			url: `${API_BASE_URL}/${value.url}`,
+			headers: getCommonHeaders(),
+		});
+		return response;
+	} catch (error) {
+		console.error("Error in deleteData:", error);
+		throw error;
+	}
+};
+
+export const inlineStatusUpdateData = async (value) => {
+	try {
+		const response = await axios({
+			method: "GET",
+			url: `${API_BASE_URL}/${value.url}`,
+			headers: getCommonHeaders(),
+		});
+		return response;
+	} catch (error) {
+		console.error("Error in inlineStatusUpdateData:", error);
+		throw error;
+	}
+};
+
+export const getCoreSettingDropdown = async (value) => {
+	try {
+		const response = await axios({
+			method: "GET",
+			url: `${API_BASE_URL}/${value.url}`,
+			headers: getCommonHeaders(),
+			params: value.params,
+		});
+
+		return {
+			data: response.data,
+			type: value.params["dropdown-type"],
+		};
+	} catch (error) {
+		console.error("Error in getCoreSettingDropdown:", error);
+		throw error;
+	}
+};
+
+export const updateDataWithFile = async (value) => {
 	try {
 		const response = await axios({
 			method: "POST",
@@ -71,147 +179,7 @@ export const createData = async (value) => {
 		});
 		return response;
 	} catch (error) {
-		// Return both the message and validation errors
-		if (error.response) {
-			return {
-				success: false,
-				message: error.response.data.message,
-				errors: error.response.data.errors,
-			};
-		} else {
-			return {
-				success: false,
-				message: error.message,
-				errors: {},
-			};
-		}
+		console.error("Error in updateDataWithFile:", error);
+		throw error;
 	}
-};
-
-export const editData = async (value) => {
-	let data = [];
-	await axios({
-		method: "get",
-		url: `${API_BASE_URL}/${value.url}`,
-		headers: getCommonHeaders(),
-	})
-		.then((res) => {
-			data = res;
-		})
-		.catch(function (error) {
-			console.error(error);
-		});
-	return data;
-};
-
-export const updateData = async (value) => {
-	try {
-		const response = await axios({
-			method: "PATCH",
-			url: `${API_BASE_URL}/${value.url}`,
-			headers: getCommonHeaders(),
-			data: value.data,
-		});
-		return response;
-	} catch (error) {
-		// Return both the message and validation errors
-		if (error.response) {
-			return {
-				success: false,
-				message: error.response.data.message,
-				errors: error.response.data.errors,
-			};
-		} else {
-			return {
-				success: false,
-				message: error.message,
-				errors: {},
-			};
-		}
-	}
-};
-
-export const showData = async (value) => {
-	let data = [];
-	await axios({
-		method: "get",
-		url: `${API_BASE_URL}/${value.url}`,
-		headers: getCommonHeaders(),
-	})
-		.then((res) => {
-			data = res;
-		})
-		.catch(function (error) {
-			console.error(error);
-		});
-	return data;
-};
-
-export const deleteData = async (value) => {
-	let data = [];
-	await axios({
-		method: "delete",
-		url: `${API_BASE_URL}/${value.url}`,
-		headers: getCommonHeaders(),
-	})
-		.then((res) => {
-			data = res;
-		})
-		.catch(function (error) {
-			console.error(error);
-		});
-	return data;
-};
-
-/* Inline Status Update */
-
-export const inlineStatusUpdateData = async (value) => {
-	let data = [];
-	await axios({
-		method: "get",
-		url: `${API_BASE_URL}/${value.url}`,
-		headers: getCommonHeaders(),
-	})
-		.then((res) => {
-			data = res;
-		})
-		.catch(function (error) {
-			console.error(error);
-		});
-	return data;
-};
-
-export const getCoreSettingDropdown = async (value) => {
-	let data = [];
-	await axios({
-		method: "get",
-		url: `${API_BASE_URL}/${value.url}`,
-		headers: getCommonHeaders(),
-		params: value.params,
-	})
-		.then((res) => {
-			data["data"] = res.data;
-			data["type"] = value.params["dropdown-type"];
-		})
-		.catch(function (error) {
-			console.error(error);
-		});
-	return data;
-};
-
-export const updateDataWithFile = async (value) => {
-	let data = [];
-	await axios({
-		method: "POST",
-		url: `${API_BASE_URL}/${value.url}`,
-		headers: getCommonHeaders(),
-		data: value.data,
-	})
-		.then((res) => {
-			data = res;
-		})
-		.catch(function (error) {
-			console.error(error);
-		});
-	return data;
 };

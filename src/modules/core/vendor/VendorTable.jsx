@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Group, Box, ActionIcon, Text, Menu, rem } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconCheck, IconDotsVertical, IconTrashX, IconAlertCircle } from "@tabler/icons-react";
+import { IconDotsVertical, IconTrashX, IconAlertCircle } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
@@ -15,6 +15,7 @@ import {
 import tableCss from "@/assets/css/Table.module.css";
 import VendorViewDrawer from "./VendorViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
+import { getCoreVendors } from "@/common/utils/index.js";
 
 function VendorTable() {
 	const dispatch = useDispatch();
@@ -30,33 +31,11 @@ function VendorTable() {
 	const fetchingReload = useSelector((state) => state.crud.globalFetching);
 	const vendorListData = useSelector((state) => state.crud.vendor.data);
 	const vendorFilterData = useSelector((state) => state.crud.vendor.filterData);
-	const coreVendors = JSON.parse(localStorage.getItem("core-vendors") || "[]");
 
 	const [vendorObject, setVendorObject] = useState({});
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
-
-	// TODO: deletion message should be working after the deletion
-	// useEffect(() => {
-	// 	dispatch(setDeleteMessage(""));
-	// 	if (entityDataDelete.message === "delete") {
-	// 		notifications.show({
-	// 			color: "red",
-	// 			title: t("DeleteSuccessfully"),
-	// 			icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-	// 			loading: false,
-	// 			autoClose: 700,
-	// 			style: { backgroundColor: "lightgray" },
-	// 		});
-
-	// 		setTimeout(() => {
-	// 			dispatch(setFetching(true));
-	// 		}, 700);
-	// 	}
-	// }, [entityDataDelete]);
-
 	const [indexData, setIndexData] = useState([]);
-	console.log(indexData.total, fetching);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -97,36 +76,60 @@ function VendorTable() {
 		fetchData();
 	}, [dispatch, searchKeyword, vendorFilterData, page, fetchingReload]);
 
-	const handleVendorEdit = (data) => {
+	const handleVendorEdit = (id, values) => {
 		dispatch(
 			editEntityData({
-				url: `core/vendor/${data.id}`,
+				url: `core/vendor/${id}`,
 				module: "vendor",
 			})
 		);
-		navigate(`/core/vendor/${data.id}`);
+		navigate(`/core/vendor/${id}`, { state: { values } });
 	};
 
-	const handleDelete = () => {
-		() => {
-			modals.openConfirmModal({
-				title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-				children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-				labels: {
-					confirm: "Confirm",
-					cancel: "Cancel",
-				},
-				confirmProps: { color: "red.6" },
-				onCancel: () => console.log("Cancel"),
-				onConfirm: () => {
-					dispatch(deleteEntityData("core/vendor/" + data.id));
-				},
+	const handleDelete = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: {
+				confirm: "Confirm",
+				cancel: "Cancel",
+			},
+			confirmProps: { color: "red.6" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleDeleteSuccess(id),
+		});
+	};
+
+	const handleDeleteSuccess = (id) => {
+		const resultAction = dispatch(
+			deleteEntityData({
+				url: `core/vendor/${id}`,
+				module: "vendor",
+				id,
+			})
+		);
+		console.log("resultAction 🚀 ~ handleDeleteSuccess ~ resultAction:", resultAction);
+		if (deleteEntityData.fulfilled.match(resultAction)) {
+			notifications.show({
+				color: "red",
+				title: t("DeleteSuccessfully"),
+				icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
+				loading: false,
+				autoClose: 700,
+				style: { backgroundColor: "lightgray" },
 			});
-		};
+		} else {
+			notifications.show({
+				color: "red",
+				title: t("Delete Failed"),
+				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+			});
+		}
 	};
 
-	const handleDataShow = () => {
-		const foundVendors = coreVendors.find((type) => type.id == data.id);
+	const handleDataShow = (id) => {
+		const coreVendors = getCoreVendors();
+		const foundVendors = coreVendors.find((type) => type.id == id);
 		if (foundVendors) {
 			setVendorObject(foundVendors);
 			setViewDrawer(true);
@@ -147,7 +150,6 @@ function VendorTable() {
 				style: { backgroundColor: "lightgray" },
 			});
 		}
-		// dispatch(showEntityData('core/vendor/' + data.id))
 	};
 
 	return (
@@ -185,6 +187,7 @@ function VendorTable() {
 							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
+							titleClassName: "title-right",
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
 									<Menu
@@ -212,7 +215,7 @@ function VendorTable() {
 										</Menu.Target>
 										<Menu.Dropdown>
 											<Menu.Item
-												onClick={() => handleVendorEdit(values.id)}
+												onClick={() => handleVendorEdit(values.id, values)}
 												target="_blank"
 												component="a"
 												w={"200"}
@@ -221,7 +224,7 @@ function VendorTable() {
 											</Menu.Item>
 
 											<Menu.Item
-												onClick={handleDataShow}
+												onClick={() => handleDataShow(values.id)}
 												target="_blank"
 												component="a"
 												w={"200"}
@@ -235,7 +238,7 @@ function VendorTable() {
 												mt={"2"}
 												bg={"red.1"}
 												c={"red.6"}
-												onClick={handleDelete}
+												onClick={() => handleDelete(values.id)}
 												rightSection={
 													<IconTrashX
 														style={{ width: rem(14), height: rem(14) }}

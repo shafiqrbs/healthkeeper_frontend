@@ -18,7 +18,10 @@ export const getIndexEntityData = createAsyncThunk(
 			const data = await getDataWithParam(value); // Wait for the API response
 			return { data, module: value.module }; // Return data (will trigger `fulfilled` case)
 		} catch (error) {
-			return rejectWithValue(error.response?.data || "Failed to fetch data"); // Return error details to `rejected` case
+			return rejectWithValue({
+				message: error.response?.data || "Failed to fetch data",
+				module: value.module,
+			}); // Return error details to `rejected` case
 		}
 	}
 );
@@ -44,38 +47,61 @@ export const getStatusInlineUpdateData = createAsyncThunk("status-update", async
 });
 
 export const storeEntityData = createAsyncThunk("store", async (value, { rejectWithValue }) => {
-	const response = await createData(value);
-	if (response.success === false) {
+	try {
+		const response = await createData(value);
+		if (response.status !== 200) {
+			return rejectWithValue({
+				message: response.message,
+				errors: response.errors,
+				module: value.module,
+			});
+		}
+
+		return { ...response, module: value.module };
+	} catch (error) {
+		console.error("error", error.message);
 		return rejectWithValue({
-			message: response.message,
-			errors: response.errors,
+			message: error.message || "Failed to store data",
+			errors: error.response?.data?.errors || {},
+			module: value.module,
 		});
 	}
-
-	return { ...response, module: value.module };
 });
 
 export const editEntityData = createAsyncThunk("edit", async (value) => {
 	try {
 		const response = editData(value);
+		console.log(value.url);
+
+		console.log("🚀 ~ editEntityData ~ response:", response);
+		return { ...response, module: value.module };
+	} catch (error) {
+		console.error("error", error.message);
+		return rejectWithValue({
+			message: error.message || "Failed to edit data",
+			errors: error.response?.data?.errors || {},
+			module: value.module,
+		});
+	}
+});
+
+export const updateEntityData = createAsyncThunk("update", async (value, { rejectWithValue }) => {
+	try {
+		const response = await updateData(value);
+
+		if (response.success === false) {
+			return rejectWithValue({
+				message: response.message,
+				errors: response.errors,
+				module: value.module,
+			});
+		}
+
 		return { ...response, module: value.module };
 	} catch (error) {
 		console.error("error", error.message);
 		throw error;
 	}
-});
-
-export const updateEntityData = createAsyncThunk("update", async (value, { rejectWithValue }) => {
-	const response = await updateData(value);
-
-	if (response.success === false) {
-		return rejectWithValue({
-			message: response.message,
-			errors: response.errors,
-		});
-	}
-
-	return { ...response, module: value.module };
 });
 
 export const updateEntityDataWithFile = createAsyncThunk("update-with-file", async (value) => {
@@ -98,12 +124,16 @@ export const showEntityData = createAsyncThunk("show", async (value) => {
 	}
 });
 
-export const deleteEntityData = createAsyncThunk("delete", async (value) => {
+export const deleteEntityData = createAsyncThunk("delete", async (value, { rejectWithValue }) => {
 	try {
 		const response = deleteData(value);
-		return { ...response, module: value.module };
+		return { ...response, id: value.id, module: value.module };
 	} catch (error) {
 		console.error("error", error.message);
-		throw error;
+		return rejectWithValue({
+			message: error.message || "Failed to delete data",
+			errors: error.response?.data?.errors || {},
+			module: value.module,
+		});
 	}
 });

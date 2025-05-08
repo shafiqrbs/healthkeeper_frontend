@@ -1,7 +1,7 @@
 import React from "react";
 import { Drawer, Button, Box, Flex, Text, ScrollArea, ActionIcon, Group } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { setFetching } from "@/app/store/core/crudSlice.js";
+import { setGlobalFetching } from "@/app/store/core/crudSlice.js";
 import { useDispatch } from "react-redux";
 import CustomerFilterForm from "@modules/core/customer/CustomerFilterForm.jsx";
 import VendorFilterForm from "@modules/core/vendor/VendorFilterForm.jsx";
@@ -81,7 +81,7 @@ function FilterModel({ filterModel, setFilterModel, module }) {
 									id={"submit"}
 									w={142}
 									onClick={() => {
-										dispatch(setFetching(true));
+										dispatch(setGlobalFetching(true));
 										closeModel();
 									}}
 									leftSection={<IconSearch size={16} />}

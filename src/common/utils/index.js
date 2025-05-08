@@ -2,6 +2,10 @@ export const getLoggedInUser = () => {
 	return JSON.parse(localStorage.getItem("user") || "{}");
 };
 
+export const getCoreVendors = () => {
+	return JSON.parse(localStorage.getItem("core-vendors") || "[]");
+};
+
 export const getUserRole = () => {
 	try {
 		const parsedUser = getLoggedInUser();

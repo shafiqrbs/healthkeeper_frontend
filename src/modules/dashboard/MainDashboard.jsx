@@ -106,14 +106,12 @@ function MainDashboard({ height }) {
 										src={pos}
 										fit="cover"
 										w="100%"
-										onClick={() => {
-											navigate("/pos/bakery");
-										}}
+										onClick={() => navigate("/pos/bakery")}
 										style={{ cursor: "pointer" }}
 									/>
 								</Tooltip>
 							</Grid.Col>
-							<Grid.Col span={"6"}>
+							<Grid.Col span={6}>
 								<Title order={4} align="center" mt={0} mb={0}>
 									{t("Sales")}
 								</Title>

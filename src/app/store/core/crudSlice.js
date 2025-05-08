@@ -17,6 +17,7 @@ const initialState = {
 		fetching: true,
 		error: null,
 		data: {},
+		editData: {},
 		validation: false,
 		searchKeyword: "",
 		validationMessages: [],
@@ -27,6 +28,7 @@ const initialState = {
 		fetching: true,
 		error: null,
 		data: {},
+		editData: {},
 		validation: false,
 		filterData: { name: "", mobile: "", email: "" },
 	},
@@ -35,6 +37,7 @@ const initialState = {
 		fetching: true,
 		error: null,
 		data: {},
+		editData: {},
 		validation: false,
 		filterData: { name: "", mobile: "" },
 	},
@@ -43,6 +46,7 @@ const initialState = {
 		fetching: true,
 		error: null,
 		data: {},
+		editData: {},
 		validation: false,
 		filterData: { name: "", mobile: "", email: "", location: "" },
 	},
@@ -71,6 +75,7 @@ const initialState = {
 		error: null,
 		validation: false,
 		data: {},
+		editData: {},
 		filterData: { name: "" },
 	},
 	purchase: {
@@ -79,6 +84,7 @@ const initialState = {
 		error: null,
 		validation: false,
 		data: {},
+		editData: {},
 		filterData: { vendor_id: "", start_date: "", end_date: "", searchKeyword: "" },
 	},
 	product: {
@@ -87,6 +93,7 @@ const initialState = {
 		error: null,
 		validation: false,
 		data: {},
+		editData: {},
 		filterData: { name: "" },
 	},
 	// -------------------- inventory modules stops -------------------------
@@ -98,6 +105,7 @@ const initialState = {
 		error: null,
 		validation: false,
 		data: {},
+		editData: {},
 		filterData: { vendor_id: "", start_date: "", end_date: "", searchKeyword: "" },
 	},
 	// -------------------- procurement modules stops -------------------------
@@ -108,6 +116,7 @@ const initialState = {
 		error: null,
 		validation: false,
 		data: {},
+		editData: {},
 		filterData: { name: "" },
 	},
 	settings: {
@@ -116,6 +125,7 @@ const initialState = {
 		error: null,
 		validation: false,
 		data: {},
+		editData: {},
 		filterData: { name: "", code: "", description: "" },
 	},
 	recipeItems: {
@@ -124,6 +134,7 @@ const initialState = {
 		error: null,
 		validation: false,
 		data: {},
+		editData: {},
 		filterData: { name: "" },
 	},
 	// -------------------- production modules stops -------------------------
@@ -137,9 +148,6 @@ const crudSlice = createSlice({
 	name: "crud",
 	initialState,
 	reducers: {
-		setFetching: (state, action) => {
-			state.fetching = action.payload;
-		},
 		setSearchKeyword: (state, action) => {
 			state.searchKeyword = action.payload;
 		},
@@ -183,7 +191,6 @@ const crudSlice = createSlice({
 			})
 			.addCase(getIndexEntityData.rejected, (state, action) => {
 				const { module } = action.payload;
-				console.log("🚀 ~ .addCase ~ action.payload:", action.payload);
 				state[module].error = action.payload; // Save error
 			});
 
@@ -192,7 +199,7 @@ const crudSlice = createSlice({
 			if (action.payload.data.message === "success") {
 				state[module].data = {
 					...state[module].data,
-					data: [...state[module].data.data, data.data],
+					data: [data.data, ...state[module].data.data],
 				};
 				state[module].fetching = true;
 			} else {
@@ -202,13 +209,15 @@ const crudSlice = createSlice({
 		});
 
 		builder.addCase(storeEntityData.rejected, (state, action) => {
-			const { module, data } = action.payload;
-			state[module].validationMessages = data.data;
+			const { module, errors } = action.payload;
+			state[module].validationMessages = errors;
 			state[module].validation = true;
 		});
 
 		builder.addCase(editEntityData.fulfilled, (state, action) => {
 			const { module } = action.payload;
+			console.log("🚀 ~ .addCase fulfilled ~ data:", action.payload);
+			state[module].editData = action.payload.data.data;
 			state[module].fetching = false;
 		});
 
@@ -233,8 +242,20 @@ const crudSlice = createSlice({
 		});
 
 		builder.addCase(deleteEntityData.fulfilled, (state, action) => {
-			const { module } = action.payload;
+			const { module, id } = action.payload;
+			const originalData = [...state[module].data.data].filter((item) => item.id != id);
+			state[module].data = {
+				...state[module].data,
+				data: originalData,
+			};
 			state[module].fetching = false;
+		});
+
+		builder.addCase(deleteEntityData.rejected, (state, action) => {
+			console.log("🚀 ~ .addCase rejected ~ action.payload:", action.payload);
+			const { module, data } = action.payload;
+			state[module].validationMessages = data?.data;
+			state[module].validation = true;
 		});
 
 		builder.addCase(getStatusInlineUpdateData.fulfilled, (state, action) => {
@@ -245,7 +266,6 @@ const crudSlice = createSlice({
 
 export const {
 	setFilterData,
-	setFetching,
 	setSearchKeyword,
 	setDeleteMessage,
 	setValidationData,

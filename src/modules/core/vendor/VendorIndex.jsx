@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 import VendorTable from "./VendorTable";
 import VendorForm from "./VendorForm";
-import VendorUpdateForm from "./VendorUpdateForm";
 import { setFilterData, setSearchKeyword } from "@/app/store/core/crudSlice.js";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import { useNavigate, useParams } from "react-router-dom";
 import useCustomerDropdownData from "@hooks/dropdown/useCustomerDropdownData.js";
-import Navigation from "@modules/core/shared/Navigation";
+import Navigation from "@components/layout/Navigation";
+import { editEntityData } from "@/app/store/core/crudThunk";
 
 function VendorIndex() {
 	const dispatch = useDispatch();
@@ -67,27 +67,27 @@ function VendorIndex() {
 			{progress === 100 && (
 				<>
 					<CoreHeaderNavbar
+						module="core"
 						pageTitle={t("ManageVendor")}
 						roles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""
 					/>
-					<Box p={"8"}>
-						<Grid columns={24} gutter={{ base: 8 }}>
-							<Grid.Col span={1}>
-								<Navigation module={"vendor"} />
+					<Box p="8">
+						<Grid columns={36} gutter={{ base: 8 }}>
+							<Grid.Col span={2}>
+								<Navigation module="base" />
 							</Grid.Col>
-							<Grid.Col span={14}>
-								<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+							<Grid.Col span={20}>
+								<Box bg="white" p="xs" className="borderRadiusAll">
 									<VendorTable />
 								</Box>
 							</Grid.Col>
-							<Grid.Col span={9}>
-								{insertType === "create" ? (
-									<VendorForm customerDropDownData={customerDropDownData} />
-								) : (
-									<VendorUpdateForm customerDropDownData={customerDropDownData} />
-								)}
+							<Grid.Col span={14}>
+								<VendorForm
+									type={insertType}
+									customerDropDownData={customerDropDownData}
+								/>
 							</Grid.Col>
 						</Grid>
 					</Box>

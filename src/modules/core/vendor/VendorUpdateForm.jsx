@@ -21,7 +21,7 @@ import { hasLength, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { modals } from "@mantine/modals";
 
-import { setFetching } from "@/app/store/core/crudSlice.js";
+import { setGlobalFetching } from "@/app/store/core/crudSlice.js";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 
 import SelectForm from "@components/form-builders/SelectForm.jsx";
@@ -188,7 +188,7 @@ function VendorUpdateForm({ customerDropDownData }) {
 									form.reset();
 									dispatch(setInsertType("create"));
 									dispatch(setEditEntityData([]));
-									dispatch(setFetching(true));
+									dispatch(setGlobalFetching(true));
 									setSaveCreateLoading(false);
 									navigate("/core/vendor", { replace: true });
 								}, 700);

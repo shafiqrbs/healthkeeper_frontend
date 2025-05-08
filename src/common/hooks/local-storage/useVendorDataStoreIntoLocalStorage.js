@@ -1,22 +1,20 @@
+import { getLoggedInUser } from "@/common/utils";
+import { API_BASE_URL, API_KEY } from "@/constants";
 import axios from "axios";
 
 const useVendorDataStoreIntoLocalStorage = async () => {
 	try {
-		const user = localStorage.getItem("user");
-		const userId = user ? JSON.parse(user).id : null;
+		const user = getLoggedInUser();
 
-		const response = await axios.get(
-			`${import.meta.env.VITE_API_GATEWAY_URL}core/vendor/local-storage`,
-			{
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-					"Access-Control-Allow-Origin": "*",
-					"X-Api-Key": import.meta.env.VITE_API_KEY,
-					"X-Api-User": userId,
-				},
-			}
-		);
+		const response = await axios.get(`${API_BASE_URL}/core/vendor/local-storage`, {
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				"Access-Control-Allow-Origin": "*",
+				"X-Api-Key": API_KEY,
+				"X-Api-User": user.id,
+			},
+		});
 
 		let { data } = response;
 
