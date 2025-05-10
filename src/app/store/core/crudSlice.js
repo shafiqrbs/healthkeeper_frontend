@@ -14,7 +14,7 @@ const initialState = {
 	// --------------- core modules starts -------------------
 	vendor: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		data: {},
 		editData: {},
@@ -25,7 +25,7 @@ const initialState = {
 	},
 	user: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		data: {},
 		editData: {},
@@ -34,7 +34,7 @@ const initialState = {
 	},
 	customer: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		data: {},
 		editData: {},
@@ -43,7 +43,7 @@ const initialState = {
 	},
 	warehouse: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		data: {},
 		editData: {},
@@ -56,14 +56,14 @@ const initialState = {
 	// ---------------- inventory modules starts ---------------------
 	config: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		validation: false,
 		data: {},
 	},
 	category: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		validation: false,
 		data: {},
@@ -71,7 +71,7 @@ const initialState = {
 	},
 	categoryGroup: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		validation: false,
 		data: {},
@@ -80,7 +80,7 @@ const initialState = {
 	},
 	purchase: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		validation: false,
 		data: {},
@@ -89,7 +89,7 @@ const initialState = {
 	},
 	product: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		validation: false,
 		data: {},
@@ -101,7 +101,7 @@ const initialState = {
 
 	requisition: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		validation: false,
 		data: {},
@@ -112,7 +112,7 @@ const initialState = {
 	// -------------------- production modules starts -------------------------
 	batch: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		validation: false,
 		data: {},
@@ -121,7 +121,7 @@ const initialState = {
 	},
 	settings: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		validation: false,
 		data: {},
@@ -130,7 +130,7 @@ const initialState = {
 	},
 	recipeItems: {
 		isLoading: true,
-		fetching: true,
+		refetching: true,
 		error: null,
 		validation: false,
 		data: {},
@@ -179,6 +179,10 @@ const crudSlice = createSlice({
 		setInventoryShowDataEmpty: (state, action) => {
 			state.config.data = {};
 		},
+		setRefetchData: (state, action) => {
+			const { module, refetching } = action.payload;
+			state[module].refetching = refetching;
+		},
 	},
 
 	extraReducers: (builder) => {
@@ -187,7 +191,7 @@ const crudSlice = createSlice({
 				const { module, data } = action.payload;
 
 				state[module].data = data;
-				state[module].fetching = false;
+				state[module].refetching = true;
 			})
 			.addCase(getIndexEntityData.rejected, (state, action) => {
 				const { module } = action.payload;
@@ -197,11 +201,7 @@ const crudSlice = createSlice({
 		builder.addCase(storeEntityData.fulfilled, (state, action) => {
 			const { module, data } = action.payload;
 			if (action.payload.data.message === "success") {
-				state[module].data = {
-					...state[module].data,
-					data: [data.data, ...state[module].data.data],
-				};
-				state[module].fetching = true;
+				state[module].refetching = true;
 			} else {
 				state[module].validationMessages = data.data;
 				state[module].validation = true;
@@ -216,14 +216,14 @@ const crudSlice = createSlice({
 
 		builder.addCase(editEntityData.fulfilled, (state, action) => {
 			const { module } = action.payload;
-			console.log("🚀 ~ .addCase fulfilled ~ data:", action.payload);
 			state[module].editData = action.payload.data.data;
-			state[module].fetching = false;
+			state[module].refetching = true;
 		});
 
 		builder.addCase(updateEntityData.fulfilled, (state, action) => {
 			const { module } = action.payload;
-			state[module].fetching = false;
+			state[module].refetching = true;
+			state[module].editData = {};
 		});
 
 		builder.addCase(updateEntityData.rejected, (state, action) => {
@@ -234,7 +234,7 @@ const crudSlice = createSlice({
 
 		builder.addCase(updateEntityDataWithFile.fulfilled, (state, action) => {
 			const { module } = action.payload;
-			state[module].fetching = false;
+			state[module].refetching = true;
 		});
 
 		builder.addCase(showEntityData.fulfilled, (state, action) => {
@@ -242,17 +242,11 @@ const crudSlice = createSlice({
 		});
 
 		builder.addCase(deleteEntityData.fulfilled, (state, action) => {
-			const { module, id } = action.payload;
-			const originalData = [...state[module].data.data].filter((item) => item.id != id);
-			state[module].data = {
-				...state[module].data,
-				data: originalData,
-			};
-			state[module].fetching = false;
+			const { module } = action.payload;
+			state[module].refetching = true;
 		});
 
 		builder.addCase(deleteEntityData.rejected, (state, action) => {
-			console.log("🚀 ~ .addCase rejected ~ action.payload:", action.payload);
 			const { module, data } = action.payload;
 			state[module].validationMessages = data?.data;
 			state[module].validation = true;
@@ -273,6 +267,7 @@ export const {
 	setGlobalFetching,
 	setKeyWordSearch,
 	setSearchKeywordTooltip,
+	setRefetchData,
 } = crudSlice.actions;
 
 export default crudSlice.reducer;

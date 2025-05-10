@@ -80,12 +80,13 @@ function VendorIndex() {
 							</Grid.Col>
 							<Grid.Col span={20}>
 								<Box bg="white" p="xs" className="borderRadiusAll">
-									<VendorTable />
+									<VendorTable setInsertType={setInsertType} />
 								</Box>
 							</Grid.Col>
 							<Grid.Col span={14}>
 								<VendorForm
 									type={insertType}
+									setInsertType={setInsertType}
 									customerDropDownData={customerDropDownData}
 								/>
 							</Grid.Col>

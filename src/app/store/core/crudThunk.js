@@ -28,7 +28,7 @@ export const getIndexEntityData = createAsyncThunk(
 
 export const getCustomerIndexData = createAsyncThunk("customer-index", async (value) => {
 	try {
-		const response = getDataWithoutParam(value);
+		const response = await getDataWithoutParam(value);
 		return { ...response, module: value.module };
 	} catch (error) {
 		console.error("error", error.message);
@@ -38,7 +38,7 @@ export const getCustomerIndexData = createAsyncThunk("customer-index", async (va
 
 export const getStatusInlineUpdateData = createAsyncThunk("status-update", async (value) => {
 	try {
-		const response = inlineStatusUpdateData(value);
+		const response = await inlineStatusUpdateData(value);
 		return { ...response, module: value.module };
 	} catch (error) {
 		console.error("error", error.message);
@@ -70,10 +70,7 @@ export const storeEntityData = createAsyncThunk("store", async (value, { rejectW
 
 export const editEntityData = createAsyncThunk("edit", async (value) => {
 	try {
-		const response = editData(value);
-		console.log(value.url);
-
-		console.log("🚀 ~ editEntityData ~ response:", response);
+		const response = await editData(value);
 		return { ...response, module: value.module };
 	} catch (error) {
 		console.error("error", error.message);
@@ -106,7 +103,7 @@ export const updateEntityData = createAsyncThunk("update", async (value, { rejec
 
 export const updateEntityDataWithFile = createAsyncThunk("update-with-file", async (value) => {
 	try {
-		const response = updateDataWithFile(value);
+		const response = await updateDataWithFile(value);
 		return { ...response, module: value.module };
 	} catch (error) {
 		console.error("error", error.message);
@@ -116,7 +113,7 @@ export const updateEntityDataWithFile = createAsyncThunk("update-with-file", asy
 
 export const showEntityData = createAsyncThunk("show", async (value) => {
 	try {
-		const response = showData(value);
+		const response = await showData(value);
 		return { ...response, module: value.module };
 	} catch (error) {
 		console.error("error", error.message);
@@ -126,7 +123,7 @@ export const showEntityData = createAsyncThunk("show", async (value) => {
 
 export const deleteEntityData = createAsyncThunk("delete", async (value, { rejectWithValue }) => {
 	try {
-		const response = deleteData(value);
+		const response = await deleteData(value);
 		return { ...response, id: value.id, module: value.module };
 	} catch (error) {
 		console.error("error", error.message);

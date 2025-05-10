@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect } from "react";
 import { Tooltip, Select } from "@mantine/core";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import { useDispatch } from "react-redux";
@@ -35,9 +35,25 @@ const SelectForm = forwardRef(
 	) => {
 		const dispatch = useDispatch();
 
+		// Sync form value with local state when form value changes
+		useEffect(() => {
+			if (form && form.values[name] && changeValue) {
+				changeValue(form.values[name]);
+			}
+		}, [form?.values[name]]);
+
 		const handleChange = async (e) => {
-			changeValue(e);
-			form.setFieldValue(name, e);
+			// Update local state first
+			if (changeValue) {
+				changeValue(e);
+			}
+
+			// Then update form state
+			if (form) {
+				form.setFieldValue(name, e);
+			}
+
+			// Handle next field focus
 			if (nextField) {
 				setTimeout(() => {
 					const nextElement = document.getElementById(nextField);
@@ -46,9 +62,10 @@ const SelectForm = forwardRef(
 					}
 				}, 0);
 			}
+
+			// Handle inline update if needed
 			if (inlineUpdate) {
 				updateDetails.data.value = e;
-				// Dispatch and handle response
 				try {
 					const resultAction = await dispatch(storeEntityData(updateDetails));
 
@@ -103,9 +120,8 @@ const SelectForm = forwardRef(
 							autoComplete="off"
 							clearable={clearable}
 							searchable={searchable}
-							{...form.getInputProps(name)}
 							error={!!form.errors[name]}
-							value={value}
+							value={value === undefined ? null : String(value)}
 							onChange={handleChange}
 							withAsterisk={required}
 							comboboxProps={comboboxProps}

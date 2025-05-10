@@ -13,8 +13,8 @@ const useCustomerDropdownData = () => {
 	const customerDropdownData = useSelector((state) => state.utility.customerDropdownData);
 
 	useEffect(() => {
-		if (customerDropdownData && customerDropdownData.length > 0) {
-			const transformedData = customerDropdownData.map((type) => {
+		if (customerDropdownData && customerDropdownData?.data?.length > 0) {
+			const transformedData = customerDropdownData?.data?.map((type) => {
 				return { label: type.name, value: String(type.id) };
 			});
 			setCustomerDropdown(transformedData);

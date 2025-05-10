@@ -6,13 +6,13 @@ import { getHotkeyHandler } from "@mantine/hooks";
 import inputCss from "@assets/css/InputField.module.css";
 
 function InputForm({
-	label,
-	placeholder,
-	required,
-	nextField,
-	name,
-	form,
-	tooltip,
+	label = "",
+	placeholder = "",
+	required = false,
+	nextField = "",
+	name = "",
+	form = {},
+	tooltip = "",
 	mt,
 	id,
 	disabled,
@@ -31,8 +31,8 @@ function InputForm({
 					px={16}
 					py={2}
 					position="top-end"
-					bg={`red.4`}
-					c={"white"}
+					bg="red.4"
+					c="white"
 					withArrow
 					offset={2}
 					zIndex={999}
@@ -52,7 +52,7 @@ function InputForm({
 						onKeyDown={getHotkeyHandler([
 							[
 								"Enter",
-								(e) => {
+								() => {
 									nextField && nextField === "EntityFormSubmit"
 										? document.getElementById(nextField).click()
 										: document.getElementById(nextField).focus();
@@ -62,14 +62,12 @@ function InputForm({
 						leftSection={leftSection}
 						rightSection={
 							form.values[name] ? (
-								<Tooltip label={t("Close")} withArrow bg={`red.1`} c={"red.3"}>
+								<Tooltip label={t("Close")} withArrow bg="red.1" c="red.3">
 									<IconX
-										color={`red`}
+										color="red"
 										size={16}
 										opacity={0.5}
-										onClick={() => {
-											form.setFieldValue(name, "");
-										}}
+										onClick={() => form.setFieldValue(name, "")}
 									/>
 								</Tooltip>
 							) : (
@@ -78,9 +76,9 @@ function InputForm({
 									px={16}
 									py={2}
 									withArrow
-									position={"left"}
-									c={"black"}
-									bg={`gray.1`}
+									position="left"
+									c="black"
+									bg="gray.1"
 									transitionProps={{
 										transition: "pop-bottom-left",
 										duration: 500,

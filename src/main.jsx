@@ -8,6 +8,7 @@ import { MantineProvider, createTheme } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { BrowserRouter } from "react-router-dom";
 import "@mantine/core/styles.css";
+import "mantine-datatable/styles.layer.css";
 import "@mantine/notifications/styles.css";
 import { ModalsProvider } from "@mantine/modals";
 import { PersistGate } from "redux-persist/integration/react";

@@ -2,22 +2,26 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Group, Box, ActionIcon, Text, Menu, rem } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconDotsVertical, IconTrashX, IconAlertCircle } from "@tabler/icons-react";
+import { IconDotsVertical, IconTrashX, IconAlertCircle, IconCheck } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
+import { useMounted } from "@mantine/hooks";
 import {
 	deleteEntityData,
 	getIndexEntityData,
 	editEntityData,
 } from "@/app/store/core/crudThunk.js";
+import { setRefetchData } from "@/app/store/core/crudSlice.js";
 import tableCss from "@/assets/css/Table.module.css";
 import VendorViewDrawer from "./VendorViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
 import { getCoreVendors } from "@/common/utils/index.js";
+import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 
-function VendorTable() {
+function VendorTable({ setInsertType }) {
+	const isMounted = useMounted();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
@@ -26,16 +30,15 @@ function VendorTable() {
 	const perPage = 50;
 	const [page, setPage] = useState(1);
 
-	const [fetching, setFetching] = useState(true);
+	const [fetching, setFetching] = useState(false);
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
-	const fetchingReload = useSelector((state) => state.crud.globalFetching);
+	const refetchData = useSelector((state) => state.crud.vendor.refetching);
 	const vendorListData = useSelector((state) => state.crud.vendor.data);
 	const vendorFilterData = useSelector((state) => state.crud.vendor.filterData);
 
 	const [vendorObject, setVendorObject] = useState({});
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
-	const [indexData, setIndexData] = useState([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -54,36 +57,27 @@ function VendorTable() {
 			};
 
 			try {
-				// check if vendorListData is not empty to optimize the api call on re-render
-				if (vendorListData.data?.length) {
-					setIndexData(vendorListData);
-					setFetching(false);
-				} else {
-					const resultAction = await dispatch(getIndexEntityData(value));
-
-					if (getIndexEntityData.rejected.match(resultAction)) {
-						console.error("Error:", resultAction);
-					} else if (getIndexEntityData.fulfilled.match(resultAction)) {
-						setIndexData(resultAction.payload?.data);
-						setFetching(false);
-					}
-				}
+				await dispatch(getIndexEntityData(value));
 			} catch (err) {
 				console.error("Unexpected error:", err);
+			} finally {
+				setFetching(false);
 			}
 		};
 
-		fetchData();
-	}, [dispatch, searchKeyword, vendorFilterData, page, fetchingReload]);
+		if (isMounted || refetchData === true) {
+			fetchData();
+		}
+	}, [dispatch, searchKeyword, vendorFilterData, page, refetchData, isMounted]);
 
-	const handleVendorEdit = (id, values) => {
+	const handleVendorEdit = (id) => {
 		dispatch(
 			editEntityData({
 				url: `core/vendor/${id}`,
 				module: "vendor",
 			})
 		);
-		navigate(`/core/vendor/${id}`, { state: { values } });
+		navigate(`/core/vendor/${id}`);
 	};
 
 	const handleDelete = (id) => {
@@ -100,27 +94,28 @@ function VendorTable() {
 		});
 	};
 
-	const handleDeleteSuccess = (id) => {
-		const resultAction = dispatch(
+	const handleDeleteSuccess = async (id) => {
+		const resultAction = await dispatch(
 			deleteEntityData({
 				url: `core/vendor/${id}`,
 				module: "vendor",
 				id,
 			})
 		);
-		console.log("resultAction 🚀 ~ handleDeleteSuccess ~ resultAction:", resultAction);
 		if (deleteEntityData.fulfilled.match(resultAction)) {
+			dispatch(setRefetchData({ module: "vendor", refetching: true }));
 			notifications.show({
-				color: "red",
+				color: SUCCESS_NOTIFICATION_COLOR,
 				title: t("DeleteSuccessfully"),
 				icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
 				loading: false,
 				autoClose: 700,
 				style: { backgroundColor: "lightgray" },
 			});
+			setInsertType("create");
 		} else {
 			notifications.show({
-				color: "red",
+				color: ERROR_NOTIFICATION_COLOR,
 				title: t("Delete Failed"),
 				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
 			});
@@ -155,10 +150,10 @@ function VendorTable() {
 	return (
 		<>
 			<Box
-				pl={`xs`}
+				pl="xs"
 				pr={8}
-				pt={"6"}
-				pb={"4"}
+				pt="6"
+				pb="4"
 				className="boxBackground borderRadiusAll border-bottom-none"
 			>
 				<KeywordSearch module="vendor" />
@@ -172,13 +167,13 @@ function VendorTable() {
 						footer: tableCss.footer,
 						pagination: tableCss.pagination,
 					}}
-					records={indexData.data}
+					records={vendorListData.data}
 					columns={[
 						{
 							accessor: "index",
 							title: t("S/N"),
 							textAlignment: "right",
-							render: (item) => indexData.data?.indexOf(item) + 1,
+							render: (item) => vendorListData.data?.indexOf(item) + 1,
 						},
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "company_name", title: t("CompanyName") },
@@ -207,18 +202,18 @@ function VendorTable() {
 												aria-label="Settings"
 											>
 												<IconDotsVertical
-													height={"18"}
-													width={"18"}
+													height={18}
+													width={18}
 													stroke={1.5}
 												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
 											<Menu.Item
-												onClick={() => handleVendorEdit(values.id, values)}
+												onClick={() => handleVendorEdit(values.id)}
 												target="_blank"
 												component="a"
-												w={"200"}
+												w="200"
 											>
 												{t("Edit")}
 											</Menu.Item>
@@ -227,17 +222,17 @@ function VendorTable() {
 												onClick={() => handleDataShow(values.id)}
 												target="_blank"
 												component="a"
-												w={"200"}
+												w="200"
 											>
 												{t("Show")}
 											</Menu.Item>
 											<Menu.Item
 												target="_blank"
 												component="a"
-												w={"200"}
-												mt={"2"}
-												bg={"red.1"}
-												c={"red.6"}
+												w="200"
+												mt="2"
+												bg="red.1"
+												c="red.6"
 												onClick={() => handleDelete(values.id)}
 												rightSection={
 													<IconTrashX
@@ -254,7 +249,7 @@ function VendorTable() {
 						},
 					]}
 					fetching={fetching}
-					totalRecords={indexData.total}
+					totalRecords={vendorListData.total}
 					recordsPerPage={perPage}
 					page={page}
 					onPageChange={(p) => {

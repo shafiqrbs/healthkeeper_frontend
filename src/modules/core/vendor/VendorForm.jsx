@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import {
 	Button,
 	rem,
@@ -16,12 +16,12 @@ import { useTranslation } from "react-i18next";
 import { IconCheck, IconDeviceFloppy, IconAlertCircle } from "@tabler/icons-react";
 import { useHotkeys } from "@mantine/hooks";
 import { useDispatch, useSelector } from "react-redux";
-import { hasLength, useForm } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 
 import { setGlobalFetching } from "@/app/store/core/crudSlice";
-import { storeEntityData } from "@/app/store/core/crudThunk";
+import { storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 
 import InputForm from "@components/form-builders/InputForm";
 import SelectForm from "@components/form-builders/SelectForm";
@@ -30,44 +30,23 @@ import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 import Shortcut from "@modules/shortcut/Shortcut.jsx";
 import vendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage.js";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { getVendorFormInitialValues } from "./helpers/req";
 
-function VendorForm({ type = "create", customerDropDownData }) {
+function VendorForm({ type = "create", customerDropDownData, setInsertType }) {
+	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { isOnline, mainAreaHeight } = useOutletContext();
 	const vendorUpdateData = useSelector((state) => state.crud.vendor.editData);
 	const height = mainAreaHeight - 100; //TabList height 104
-	const [submitLoading, setSubmitLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [customerData, setCustomerData] = useState(null);
 
-	const form = useForm({
-		initialValues: {
-			company_name: "",
-			name: "",
-			mobile: "",
-			email: "",
-			customer_id: "",
-			address: "",
-		},
+	const form = useForm(getVendorFormInitialValues(t));
 
-		validate: {
-			company_name: hasLength({ min: 2, max: 20 }),
-			name: hasLength({ min: 2, max: 20 }),
-			mobile: (value) => {
-				if (!value) return t("MobileValidationRequired");
-				return null;
-			},
-			email: (value) => {
-				if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-					return true;
-				}
-				return null;
-			},
-		},
-	});
-	console.log("vendorUpdateData 🚀 ~ VendorForm ~ vendorUpdateData:", vendorUpdateData);
 	useEffect(() => {
 		if (vendorUpdateData && type === "update") {
+			setIsLoading(true);
 			form.setValues({
 				company_name: vendorUpdateData.company_name,
 				name: vendorUpdateData.name,
@@ -77,6 +56,13 @@ function VendorForm({ type = "create", customerDropDownData }) {
 				address: vendorUpdateData.address,
 			});
 			setCustomerData(vendorUpdateData.customer_id);
+
+			const timeoutId = setTimeout(() => {
+				setIsLoading(false);
+			}, 300);
+			return () => clearTimeout(timeoutId);
+		} else {
+			form.reset();
 		}
 	}, [vendorUpdateData, type]);
 
@@ -101,50 +87,92 @@ function VendorForm({ type = "create", customerDropDownData }) {
 	};
 
 	async function handleConfirmModal(values) {
-		try {
-			setSubmitLoading(true);
+		if (type === "create") {
+			try {
+				setIsLoading(true);
+				const value = {
+					url: "core/vendor",
+					data: values,
+					module: "vendor",
+				};
+
+				const resultAction = await dispatch(storeEntityData(value));
+				if (storeEntityData.rejected.match(resultAction)) {
+					const fieldErrors = resultAction.payload.errors;
+					if (fieldErrors) {
+						const errorObject = {};
+						Object.keys(fieldErrors).forEach((key) => {
+							errorObject[key] = fieldErrors[key][0];
+						});
+						form.setErrors(errorObject);
+					}
+				} else if (storeEntityData.fulfilled.match(resultAction)) {
+					vendorDataStoreIntoLocalStorage();
+					form.reset();
+					setCustomerData(null);
+					dispatch(setGlobalFetching(true));
+					notifications.show({
+						color: SUCCESS_NOTIFICATION_COLOR,
+						title: t("CreateSuccessfully"),
+						icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
+						loading: false,
+						autoClose: 1400,
+						style: { backgroundColor: "lightgray" },
+					});
+				}
+			} catch (error) {
+				console.error(error);
+				notifications.show({
+					color: ERROR_NOTIFICATION_COLOR,
+					title: error.message,
+					icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+					loading: false,
+					autoClose: 2000,
+					style: { backgroundColor: "lightgray" },
+				});
+			} finally {
+				setIsLoading(false);
+			}
+		} else {
 			const value = {
-				url: "core/vendor",
+				url: `core/vendor/${vendorUpdateData.id}`,
 				data: values,
 				module: "vendor",
 			};
 
-			const resultAction = await dispatch(storeEntityData(value));
-			if (storeEntityData.rejected.match(resultAction)) {
+			const resultAction = await dispatch(updateEntityData(value));
+
+			if (updateEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
+
+				// Check if there are field validation errors and dynamically set them
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+						errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
 					});
+					// Display the errors using your form's `setErrors` function dynamically
 					form.setErrors(errorObject);
 				}
-			} else if (storeEntityData.fulfilled.match(resultAction)) {
-				vendorDataStoreIntoLocalStorage(); // TODO: have to update the local storage without api calls
-				form.reset();
-				setCustomerData(null);
-				dispatch(setGlobalFetching(true));
+			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				notifications.show({
-					color: SUCCESS_NOTIFICATION_COLOR,
-					title: t("CreateSuccessfully"),
+					color: "teal",
+					title: t("UpdateSuccessfully"),
 					icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
 					loading: false,
-					autoClose: 1400,
+					autoClose: 700,
 					style: { backgroundColor: "lightgray" },
 				});
+
+				setTimeout(() => {
+					vendorDataStoreIntoLocalStorage();
+					form.reset();
+					setInsertType("create");
+					setIsLoading(false);
+					navigate("/core/vendor", { replace: true });
+					setCustomerData(null);
+				}, 700);
 			}
-		} catch (error) {
-			console.error(error);
-			notifications.show({
-				color: ERROR_NOTIFICATION_COLOR,
-				title: error.message,
-				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-				loading: false,
-				autoClose: 2000,
-				style: { backgroundColor: "lightgray" },
-			});
-		} finally {
-			setSubmitLoading(false);
 		}
 	}
 
@@ -156,15 +184,14 @@ function VendorForm({ type = "create", customerDropDownData }) {
 						<Box bg="white" p="xs" className="borderRadiusAll">
 							<Box bg="white" pos="relative">
 								<LoadingOverlay
-									visible={submitLoading}
+									visible={isLoading}
 									zIndex={1000}
 									overlayProps={{ radius: "sm", blur: 1 }}
 								/>
 								<Box
 									pl="xs"
 									pr={8}
-									pt={6}
-									pb={6}
+									py={6}
 									mb={4}
 									className="boxBackground borderRadiusAll"
 								>
@@ -181,7 +208,7 @@ function VendorForm({ type = "create", customerDropDownData }) {
 										<Grid.Col span={6}>
 											<Stack right align="flex-end">
 												<>
-													{!submitLoading && isOnline && (
+													{isOnline && (
 														<Button
 															size="xs"
 															className="btnPrimaryBg"
