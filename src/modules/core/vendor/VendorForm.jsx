@@ -27,12 +27,10 @@ import InputForm from "@components/form-builders/InputForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import PhoneNumber from "@components/form-builders/PhoneNumberInput";
-import Shortcut from "@modules/shortcut/Shortcut.jsx";
 import vendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage.js";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import { getVendorFormInitialValues } from "./helpers/req";
 
-function VendorForm({ type = "create", customerDropDownData, setInsertType }) {
+function VendorForm({ form, type = "create", customerDropDownData, setInsertType }) {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
@@ -41,8 +39,6 @@ function VendorForm({ type = "create", customerDropDownData, setInsertType }) {
 	const height = mainAreaHeight - 100; //TabList height 104
 	const [isLoading, setIsLoading] = useState(false);
 	const [customerData, setCustomerData] = useState(null);
-
-	const form = useForm(getVendorFormInitialValues(t));
 
 	useEffect(() => {
 		if (vendorUpdateData && type === "update") {
@@ -179,8 +175,8 @@ function VendorForm({ type = "create", customerDropDownData, setInsertType }) {
 	return (
 		<Box>
 			<form onSubmit={form.onSubmit(handleSubmit)}>
-				<Grid columns={9} gutter={{ base: 8 }}>
-					<Grid.Col span={8}>
+				<Grid columns={12} gutter={{ base: 8 }}>
+					<Grid.Col span={12}>
 						<Box bg="white" p="xs" className="borderRadiusAll">
 							<Box bg="white" pos="relative">
 								<LoadingOverlay
@@ -337,16 +333,6 @@ function VendorForm({ type = "create", customerDropDownData, setInsertType }) {
 									</ScrollArea>
 								</Box>
 							</Box>
-						</Box>
-					</Grid.Col>
-					<Grid.Col span={1}>
-						<Box bg="white" className="borderRadiusAll" pt="sm">
-							<Shortcut
-								form={form}
-								FormSubmit="EntityFormSubmit"
-								Name="name"
-								inputType="select"
-							/>
 						</Box>
 					</Grid.Col>
 				</Grid>

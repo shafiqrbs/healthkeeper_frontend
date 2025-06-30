@@ -12,6 +12,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import useCustomerDropdownData from "@hooks/dropdown/useCustomerDropdownData.js";
 import Navigation from "@components/layout/Navigation";
 import { editEntityData } from "@/app/store/core/crudThunk";
+import { getVendorFormInitialValues } from "./helpers/req";
+import { useForm } from "@mantine/form";
+import Shortcut from "@/modules/shortcut/Shortcut";
 
 function VendorIndex() {
 	const dispatch = useDispatch();
@@ -19,11 +22,34 @@ function VendorIndex() {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const [insertType, setInsertType] = useState("create");
-
+	const [isRotated, setIsRotated] = useState(false);
+	const form = useForm(getVendorFormInitialValues(t));
 	const vendorFilterData = useSelector((state) => state.crud.vendor.filterData);
 	const customerDropDownData = useCustomerDropdownData();
 
 	const progress = useGetLoadingProgress();
+
+	const gridComponents = [
+		{
+			span: 20,
+			component: (
+				<Box bg="white" p="xs" className="borderRadiusAll">
+					<VendorTable setInsertType={setInsertType} />
+				</Box>
+			),
+		},
+		{
+			span: 12,
+			component: (
+				<VendorForm
+					form={form}
+					type={insertType}
+					setInsertType={setInsertType}
+					customerDropDownData={customerDropDownData}
+				/>
+			),
+		},
+	];
 
 	useEffect(() => {
 		if (id) {
@@ -78,17 +104,22 @@ function VendorIndex() {
 							<Grid.Col span={2}>
 								<Navigation module="base" />
 							</Grid.Col>
-							<Grid.Col span={20}>
-								<Box bg="white" p="xs" className="borderRadiusAll">
-									<VendorTable setInsertType={setInsertType} />
+							{(isRotated ? [...gridComponents].reverse() : gridComponents).map(
+								({ span, component }, index) => (
+									<Grid.Col key={index} span={span}>
+										{component}
+									</Grid.Col>
+								)
+							)}
+							<Grid.Col span={2}>
+								<Box bg="white" className="borderRadiusAll" pt="sm">
+									<Shortcut
+										form={form}
+										FormSubmit="EntityFormSubmit"
+										Name="name"
+										inputType="select"
+									/>
 								</Box>
-							</Grid.Col>
-							<Grid.Col span={14}>
-								<VendorForm
-									type={insertType}
-									setInsertType={setInsertType}
-									customerDropDownData={customerDropDownData}
-								/>
 							</Grid.Col>
 						</Grid>
 					</Box>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Group, Box, ActionIcon, Text, Menu, rem } from "@mantine/core";
 import { useTranslation } from "react-i18next";
@@ -26,9 +26,11 @@ function VendorTable({ setInsertType }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 98; //TabList height 104
+	const tableRef = useRef(null);
 
 	const perPage = 50;
 	const [page, setPage] = useState(1);
+	const [hasMore, setHasMore] = useState(true);
 
 	const [fetching, setFetching] = useState(false);
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
@@ -40,35 +42,73 @@ function VendorTable({ setInsertType }) {
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			setFetching(true);
-			const value = {
-				url: "core/vendor",
-				params: {
-					term: searchKeyword,
-					name: vendorFilterData.name,
-					mobile: vendorFilterData.mobile,
-					company_name: vendorFilterData.company_name,
-					page: page,
-					offset: perPage,
-				},
-				module: "vendor",
-			};
+	const fetchData = async (pageNum = 1, append = false) => {
+		if (!hasMore && pageNum > 1) return;
 
-			try {
-				await dispatch(getIndexEntityData(value));
-			} catch (err) {
-				console.error("Unexpected error:", err);
-			} finally {
-				setFetching(false);
-			}
+		setFetching(true);
+		const value = {
+			url: "core/vendor",
+			params: {
+				term: searchKeyword,
+				name: vendorFilterData.name,
+				mobile: vendorFilterData.mobile,
+				company_name: vendorFilterData.company_name,
+				page: pageNum,
+				offset: perPage,
+			},
+			module: "vendor",
 		};
 
-		if (isMounted || refetchData === true) {
-			fetchData();
+		try {
+			const result = await dispatch(getIndexEntityData(value));
+			if (result.payload) {
+				const newData = result.payload.data;
+				const total = result.payload.total;
+
+				// Update hasMore based on whether we've loaded all data
+				setHasMore(newData.length === perPage && pageNum * perPage < total);
+
+				// If appending, combine with existing data
+				if (append && pageNum > 1) {
+					dispatch({
+						type: "crud/setVendorData",
+						payload: {
+							...vendorListData,
+							data: [...vendorListData.data, ...newData],
+							total: total,
+						},
+					});
+				}
+			}
+		} catch (err) {
+			console.error("Unexpected error:", err);
+		} finally {
+			setFetching(false);
 		}
-	}, [dispatch, searchKeyword, vendorFilterData, page, refetchData, isMounted]);
+	};
+
+	const handleScroll = useCallback(
+		(e) => {
+			const { scrollTop, scrollHeight, clientHeight } = e.target;
+			// Load more when user scrolls to bottom (with 100px threshold)
+			if (scrollHeight - scrollTop - clientHeight < 100 && !fetching && hasMore) {
+				setPage((prev) => prev + 1);
+			}
+		},
+		[fetching, hasMore]
+	);
+
+	useEffect(() => {
+		if (isMounted || refetchData === true) {
+			fetchData(1, false);
+		}
+	}, [dispatch, searchKeyword, vendorFilterData, refetchData, isMounted]);
+
+	useEffect(() => {
+		if (page > 1) {
+			fetchData(page, true);
+		}
+	}, [page]);
 
 	const handleVendorEdit = (id) => {
 		dispatch(
@@ -160,6 +200,7 @@ function VendorTable({ setInsertType }) {
 			</Box>
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
+					ref={tableRef}
 					classNames={{
 						root: tableCss.root,
 						table: tableCss.table,
@@ -249,17 +290,13 @@ function VendorTable({ setInsertType }) {
 						},
 					]}
 					fetching={fetching}
-					totalRecords={vendorListData.total}
-					recordsPerPage={perPage}
-					page={page}
-					onPageChange={(p) => {
-						setPage(p);
-						setFetching(true);
-					}}
 					loaderSize="xs"
 					loaderColor="grape"
 					height={height}
-					scrollAreaProps={{ type: "never" }}
+					scrollAreaProps={{
+						type: "scroll",
+						onScrollPositionChange: handleScroll,
+					}}
 				/>
 			</Box>
 			{viewDrawer && (
