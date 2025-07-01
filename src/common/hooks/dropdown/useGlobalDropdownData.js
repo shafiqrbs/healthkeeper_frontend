@@ -10,7 +10,6 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 	const storeData = useSelector((state) => {
 		// =============== first check dynamic dropdown data ================
 		if (state.utility.dynamicDropdownData[utility]) {
-			console.log("state.utility.dynamicDropdownData[utility]", state.utility.dynamicDropdownData[utility]);
 			return state.utility.dynamicDropdownData[utility];
 		}
 

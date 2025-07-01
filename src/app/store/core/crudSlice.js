@@ -13,6 +13,7 @@ import {
 const initialState = {
 	// --------------- core modules starts -------------------
 	vendor: {
+		insertType: "create",
 		isLoading: true,
 		refetching: true,
 		error: null,
@@ -138,7 +139,6 @@ const initialState = {
 		filterData: { name: "" },
 	},
 	// -------------------- production modules stops -------------------------
-
 	searchKeyword: "",
 	searchKeywordTooltip: false,
 	globalFetching: false,
@@ -160,6 +160,10 @@ const crudSlice = createSlice({
 					...data,
 				};
 			}
+		},
+		setInsertType: (state, action) => {
+			const { module, insertType } = action.payload;
+			state[module].insertType = insertType;
 		},
 		setKeyWordSearch: (state, action) => {
 			state.searchKeyword = action.payload;
@@ -268,6 +272,7 @@ export const {
 	setKeyWordSearch,
 	setSearchKeywordTooltip,
 	setRefetchData,
+	setInsertType,
 } = crudSlice.actions;
 
 export default crudSlice.reducer;

@@ -4,11 +4,10 @@ import { Button, Flex, Tooltip, Stack, Center, Container } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router-dom";
 
-function Shortcut(props) {
+function Shortcut({ inputType, Name, FormSubmit, handleFormReset, form }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const formHeight = mainAreaHeight - 46; //TabList height 104
-	const { inputType, Name } = props;
 
 	const handleOnClick = () => {
 		inputType === "select"
@@ -70,9 +69,9 @@ function Shortcut(props) {
 								color="red"
 								radius="xl"
 								onClick={() => {
-									props.handleFormReset
-										? props.handleFormReset()
-										: props.form.reset();
+									handleFormReset
+										? handleFormReset()
+										: form.reset();
 								}}
 							>
 								<Flex direction="column" align="center">
@@ -104,7 +103,7 @@ function Shortcut(props) {
 								variant="filled"
 								color="green.8"
 								radius="xl"
-								onClick={() => document.getElementById(props.FormSubmit).click()}
+								onClick={() => document.getElementById(FormSubmit).click()}
 							>
 								<Flex direction="column" align="center">
 									<IconDeviceFloppy size={16} />

@@ -13,14 +13,14 @@ import {
 	getIndexEntityData,
 	editEntityData,
 } from "@/app/store/core/crudThunk.js";
-import { setRefetchData } from "@/app/store/core/crudSlice.js";
+import { setRefetchData, setInsertType } from "@/app/store/core/crudSlice.js";
 import tableCss from "@/assets/css/Table.module.css";
 import VendorViewDrawer from "./__VendorViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
 import { getCoreVendors } from "@/common/utils/index.js";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 
-function _VendorTable({ setInsertType }) {
+function _VendorTable() {
 	const isMounted = useMounted();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -111,6 +111,7 @@ function _VendorTable({ setInsertType }) {
 	}, [page]);
 
 	const handleVendorEdit = (id) => {
+		dispatch(setInsertType({ insertType: "update", module: "vendor" }));
 		dispatch(
 			editEntityData({
 				url: `core/vendor/${id}`,
@@ -152,7 +153,7 @@ function _VendorTable({ setInsertType }) {
 				autoClose: 700,
 				style: { backgroundColor: "lightgray" },
 			});
-			setInsertType("create");
+			dispatch(setInsertType({ insertType: "create", module: "vendor" }));
 		} else {
 			notifications.show({
 				color: ERROR_NOTIFICATION_COLOR,

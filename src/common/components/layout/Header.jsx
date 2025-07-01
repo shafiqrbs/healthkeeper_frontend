@@ -97,7 +97,8 @@ const Logo = ({ configData, navigate }) => {
 					fontWeight: 800,
 					transition: "background 1s",
 				}}
-				label={configData?.domain?.company_name || ""}
+				unselectable="on"
+				label={configData?.domain?.company_name || configData?.domain?.name || ""}
 				onClick={() => navigate("/")}
 				onMouseEnter={(e) => {
 					e.currentTarget.style.color = "#dee2e6";
@@ -141,8 +142,6 @@ const Logo = ({ configData, navigate }) => {
 						src={`${import.meta.env.VITE_IMAGE_GATEWAY_URL}/uploads/inventory/logo/${
 							configData.path
 						}`}
-						fallbackSrc={logo_default}
-						pl={6}
 					/>
 				</Anchor>
 			</Tooltip>
@@ -508,7 +507,9 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 				<Modal.Overlay />
 				<Modal.Content p={"xs"}>
 					<Modal.Header ml={"xs"}>
-						<Modal.Title>{configData?.domain?.company_name || ""}</Modal.Title>
+						<Modal.Title>
+							{configData?.domain?.company_name || configData?.domain?.name || ""}
+						</Modal.Title>
 						<Modal.CloseButton />
 					</Modal.Header>
 					<Modal.Body>

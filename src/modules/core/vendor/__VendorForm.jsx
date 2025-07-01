@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import {
 	Button,
-	rem,
 	Flex,
 	Grid,
 	Box,
@@ -13,45 +12,39 @@ import {
 	LoadingOverlay,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconCheck, IconDeviceFloppy, IconAlertCircle } from "@tabler/icons-react";
+import { IconDeviceFloppy } from "@tabler/icons-react";
 import { useHotkeys } from "@mantine/hooks";
-import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "@mantine/form";
-import { modals } from "@mantine/modals";
-import { notifications } from "@mantine/notifications";
-
-import { setGlobalFetching } from "@/app/store/core/crudSlice";
-import { storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 
 import InputForm from "@components/form-builders/InputForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import PhoneNumber from "@components/form-builders/PhoneNumberInput";
-import vendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage.js";
-import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 
-function _VendorForm({ form, type = "create", customerDropDownData, setInsertType }) {
-	const navigate = useNavigate();
+import useGlobalDropdownData from "@/common/hooks/dropdown/useGlobalDropdownData";
+
+function __VendorForm({ form, type = "create", data, handleSubmit }) {
+	const customerDropDownData = useGlobalDropdownData({
+		path: "core/select/customer",
+		utility: "customer",
+	});
 	const { t } = useTranslation();
-	const dispatch = useDispatch();
 	const { isOnline, mainAreaHeight } = useOutletContext();
-	const vendorUpdateData = useSelector((state) => state.crud.vendor.editData);
 	const height = mainAreaHeight - 100; //TabList height 104
 	const [isLoading, setIsLoading] = useState(false);
 	const [customerData, setCustomerData] = useState(null);
 
 	useEffect(() => {
-		if (vendorUpdateData && type === "update") {
+		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
-				company_name: vendorUpdateData.company_name,
-				name: vendorUpdateData.name,
-				mobile: vendorUpdateData.mobile,
-				email: vendorUpdateData.email,
-				customer_id: vendorUpdateData.customer_id,
-				address: vendorUpdateData.address,
+				company_name: data.company_name,
+				name: data.name,
+				mobile: data.mobile,
+				email: data.email,
+				customer_id: data.customer_id,
+				address: data.address,
 			});
-			setCustomerData(vendorUpdateData.customer_id);
+			setCustomerData(data.customer_id);
 
 			const timeoutId = setTimeout(() => {
 				setIsLoading(false);
@@ -60,7 +53,7 @@ function _VendorForm({ form, type = "create", customerDropDownData, setInsertTyp
 		} else {
 			form.reset();
 		}
-	}, [vendorUpdateData, type]);
+	}, [data, type]);
 
 	useHotkeys(
 		[
@@ -70,107 +63,6 @@ function _VendorForm({ form, type = "create", customerDropDownData, setInsertTyp
 		],
 		[]
 	);
-
-	const handleSubmit = (values) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: { confirm: t("Submit"), cancel: t("Cancel") },
-			confirmProps: { color: "red" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleConfirmModal(values),
-		});
-	};
-
-	async function handleConfirmModal(values) {
-		if (type === "create") {
-			try {
-				setIsLoading(true);
-				const value = {
-					url: "core/vendor",
-					data: values,
-					module: "vendor",
-				};
-
-				const resultAction = await dispatch(storeEntityData(value));
-				if (storeEntityData.rejected.match(resultAction)) {
-					const fieldErrors = resultAction.payload.errors;
-					if (fieldErrors) {
-						const errorObject = {};
-						Object.keys(fieldErrors).forEach((key) => {
-							errorObject[key] = fieldErrors[key][0];
-						});
-						form.setErrors(errorObject);
-					}
-				} else if (storeEntityData.fulfilled.match(resultAction)) {
-					vendorDataStoreIntoLocalStorage();
-					form.reset();
-					setCustomerData(null);
-					dispatch(setGlobalFetching(true));
-					notifications.show({
-						color: SUCCESS_NOTIFICATION_COLOR,
-						title: t("CreateSuccessfully"),
-						icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-						loading: false,
-						autoClose: 1400,
-						style: { backgroundColor: "lightgray" },
-					});
-				}
-			} catch (error) {
-				console.error(error);
-				notifications.show({
-					color: ERROR_NOTIFICATION_COLOR,
-					title: error.message,
-					icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-					loading: false,
-					autoClose: 2000,
-					style: { backgroundColor: "lightgray" },
-				});
-			} finally {
-				setIsLoading(false);
-			}
-		} else {
-			const value = {
-				url: `core/vendor/${vendorUpdateData.id}`,
-				data: values,
-				module: "vendor",
-			};
-
-			const resultAction = await dispatch(updateEntityData(value));
-
-			if (updateEntityData.rejected.match(resultAction)) {
-				const fieldErrors = resultAction.payload.errors;
-
-				// Check if there are field validation errors and dynamically set them
-				if (fieldErrors) {
-					const errorObject = {};
-					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
-					});
-					// Display the errors using your form's `setErrors` function dynamically
-					form.setErrors(errorObject);
-				}
-			} else if (updateEntityData.fulfilled.match(resultAction)) {
-				notifications.show({
-					color: "teal",
-					title: t("UpdateSuccessfully"),
-					icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-					loading: false,
-					autoClose: 700,
-					style: { backgroundColor: "lightgray" },
-				});
-
-				setTimeout(() => {
-					vendorDataStoreIntoLocalStorage();
-					form.reset();
-					setInsertType("create");
-					setIsLoading(false);
-					navigate("/core/vendor", { replace: true });
-					setCustomerData(null);
-				}, 700);
-			}
-		}
-	}
 
 	return (
 		<Box>
@@ -340,4 +232,4 @@ function _VendorForm({ form, type = "create", customerDropDownData, setInsertTyp
 		</Box>
 	);
 }
-export default _VendorForm;
+export default __VendorForm;
