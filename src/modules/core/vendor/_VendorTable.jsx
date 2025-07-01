@@ -15,12 +15,12 @@ import {
 } from "@/app/store/core/crudThunk.js";
 import { setRefetchData } from "@/app/store/core/crudSlice.js";
 import tableCss from "@/assets/css/Table.module.css";
-import VendorViewDrawer from "./VendorViewDrawer.jsx";
+import VendorViewDrawer from "./__VendorViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
 import { getCoreVendors } from "@/common/utils/index.js";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 
-function VendorTable({ setInsertType }) {
+function _VendorTable({ setInsertType }) {
 	const isMounted = useMounted();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -310,4 +310,4 @@ function VendorTable({ setInsertType }) {
 	);
 }
 
-export default VendorTable;
+export default _VendorTable;

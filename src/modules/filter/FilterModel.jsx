@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { setGlobalFetching } from "@/app/store/core/crudSlice.js";
 import { useDispatch } from "react-redux";
 import CustomerFilterForm from "@modules/core/customer/CustomerFilterForm.jsx";
-import VendorFilterForm from "@modules/core/vendor/VendorFilterForm.jsx";
+import VendorFilterForm from "@/modules/filter/VendorFilterForm.jsx";
 import UserFilterForm from "@modules/core/user/UserFilterForm.jsx";
 import ProductFilterForm from "@modules/inventory/product/ProductFilterForm.jsx";
 import CategoryGroupFilterForm from "@modules/inventory/category-group/CategoryGroupFilterForm.jsx";

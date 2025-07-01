@@ -30,7 +30,7 @@ import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 import vendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage.js";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 
-function VendorForm({ form, type = "create", customerDropDownData, setInsertType }) {
+function _VendorForm({ form, type = "create", customerDropDownData, setInsertType }) {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
@@ -340,4 +340,4 @@ function VendorForm({ form, type = "create", customerDropDownData, setInsertType
 		</Box>
 	);
 }
-export default VendorForm;
+export default _VendorForm;

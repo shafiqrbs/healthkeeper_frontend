@@ -6,7 +6,7 @@ import {useTranslation} from 'react-i18next';
 
 
 function _VendorViewModel(props) {
-    const {t, i18n} = useTranslation();
+    const {t} = useTranslation();
     
     let showData = {}
     if (props.vendorObject){

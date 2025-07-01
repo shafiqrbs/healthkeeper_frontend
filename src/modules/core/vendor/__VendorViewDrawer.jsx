@@ -3,12 +3,11 @@ import { useOutletContext } from "react-router-dom";
 import { ActionIcon, Grid, Box, Drawer, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconX } from "@tabler/icons-react";
-import { useSelector } from "react-redux";
 
-function VendorViewDrawer(props) {
+function __VendorViewDrawer(props) {
   const { viewDrawer, setViewDrawer, vendorObject } = props;
   const { isOnline, mainAreaHeight } = useOutletContext();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const height = mainAreaHeight; //TabList height 104
   const closeDrawer = () => {
     setViewDrawer(false);
@@ -103,4 +102,4 @@ function VendorViewDrawer(props) {
   );
 }
 
-export default VendorViewDrawer;
+export default __VendorViewDrawer;

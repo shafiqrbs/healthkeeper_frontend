@@ -30,7 +30,7 @@ import { notifications } from "@mantine/notifications";
 import vendorDataStoreIntoLocalStorage from "../../../global-hook/local-storage/vendorDataStoreIntoLocalStorage.js";
 import DatePickerForm from "../../../form-builders/DatePicker.jsx";
 import AddVendorDrawer from "../sales/drawer-form/AddVendorDrawer.jsx";
-import VendorViewDrawer from "../../core/vendor/VendorViewDrawer.jsx";
+import VendorViewDrawer from "../../core/vendor/__VendorViewDrawer.jsx";
 import _PurchaseDrawerForPrint from './print-drawer/_PurchaseDrawerForPrint.jsx'
 
 function __PurchaseForm(props) {

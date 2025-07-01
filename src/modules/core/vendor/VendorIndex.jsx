@@ -3,18 +3,18 @@ import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
-import VendorTable from "./VendorTable";
-import VendorForm from "./VendorForm";
+import VendorTable from "./_VendorTable";
+import VendorForm from "./_VendorForm";
 import { setFilterData, setSearchKeyword } from "@/app/store/core/crudSlice.js";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import { useNavigate, useParams } from "react-router-dom";
-import useCustomerDropdownData from "@hooks/dropdown/useCustomerDropdownData.js";
 import Navigation from "@components/layout/Navigation";
 import { editEntityData } from "@/app/store/core/crudThunk";
-import { getVendorFormInitialValues } from "./helpers/req";
+import { getVendorFormInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
 import Shortcut from "@/modules/shortcut/Shortcut";
+import useGlobalDropdownData from "@/common/hooks/dropdown/useGlobalDropdownData";
 
 function VendorIndex() {
 	const dispatch = useDispatch();
@@ -25,8 +25,7 @@ function VendorIndex() {
 	const [isRotated, setIsRotated] = useState(false);
 	const form = useForm(getVendorFormInitialValues(t));
 	const vendorFilterData = useSelector((state) => state.crud.vendor.filterData);
-	const customerDropDownData = useCustomerDropdownData();
-
+	const customerDropDownData = useGlobalDropdownData({ path: "core/select/customer", utility: "customer" });
 	const progress = useGetLoadingProgress();
 
 	const gridComponents = [

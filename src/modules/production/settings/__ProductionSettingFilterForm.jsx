@@ -4,10 +4,11 @@ import InputForm from "@components/form-builders-filter/InputForm.jsx";
 import { useHotkeys } from "@mantine/hooks";
 import SelectForm from "@components/form-builders-filter/SelectForm.jsx";
 import React from "react";
-import getParticularTypeDropdownData from "@hooks/dropdown/core/useSettingTypeDropdownData.js";
 
 function __ProductionSettingFilterForm(props) {
 	const { t } = useTranslation();
+	const [settingTypeData, setSettingTypeData] = useState(null);
+	const settingTypeDropdownData = useGlobalDropdownData({ path: "core/select/setting-type", utility: "settingType" });
 
 	useHotkeys(
 		[
@@ -21,7 +22,6 @@ function __ProductionSettingFilterForm(props) {
 		[]
 	);
 
-	const [settingTypeData, setSettingTypeData] = useState(null);
 
 	return (
 		<>
@@ -43,7 +43,7 @@ function __ProductionSettingFilterForm(props) {
 				required={false}
 				nextField={"submit"}
 				name={"setting_type_id"}
-				dropdownValue={getParticularTypeDropdownData()}
+				dropdownValue={settingTypeDropdownData}
 				id={"setting_type"}
 				value={settingTypeData}
 				changeValue={setSettingTypeData}

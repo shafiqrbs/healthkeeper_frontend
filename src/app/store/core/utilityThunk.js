@@ -1,121 +1,25 @@
-import {
-	getDataWithoutParam,
-	getSelectDataWithParam,
-	getDataWithParam,
-	getCoreSettingDropdown,
-} from "@/services/apiService.js";
+import { getDataWithoutParam, getDataWithParam } from "@/services/apiService.js";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const getSettingTypeDropdown = createAsyncThunk("select/setting-type", async (value) => {
+// =============== global dropdown thunk for dynamic dropdown handling ================
+export const getGlobalDropdown = createAsyncThunk("global/dropdown", async (value) => {
 	try {
-		const response = getDataWithoutParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-
-export const getUserDropdown = createAsyncThunk("user/select", async (value) => {
-	try {
-		const response = getDataWithParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-
-export const getCountryDropdown = createAsyncThunk("country/select", async (value) => {
-	try {
-		const response = getDataWithoutParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-
-export const getCustomerDropdown = createAsyncThunk("customer/select", async (value) => {
-	try {
-		const response = getDataWithoutParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-
-export const getVendorDropdown = createAsyncThunk("vendor/select", async (value) => {
-	try {
-		const response = getDataWithParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-
-export const getLocationDropdown = createAsyncThunk("warehouse/select", async (value) => {
-	try {
-		const response = getDataWithParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-export const getVoucherDropdown = createAsyncThunk("voucher/all", async (value) => {
-	try {
-		const response = getSelectDataWithParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-export const getAccountingDropdown = createAsyncThunk("accounting/head", async (value) => {
-	try {
-		const response = getSelectDataWithParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-
-export const getVoucherTypeDropdown = createAsyncThunk("voucher/select", async (value) => {
-	try {
-		const response = getSelectDataWithParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-
-export const getLocationProDropdown = createAsyncThunk("warehouse/dropdown", async (value) => {
-	try {
-		const response = getSelectDataWithParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-
-export const getExecutiveDropdown = createAsyncThunk("executive/select", async (value) => {
-	try {
-		const response = getSelectDataWithParam(value);
-		return response;
-	} catch (error) {
-		console.error("error", error.message);
-		throw error;
-	}
-});
-export const coreSettingDropdown = createAsyncThunk("setting/select", async (value) => {
-	try {
-		const response = getCoreSettingDropdown(value);
+		// =============== determine which api service to use based on params ================
+		let response;
+		if (value.params && Object.keys(value.params).length > 0) {
+			response = getDataWithParam(value);
+		} else {
+			response = getDataWithoutParam(value.url);
+		}
+		
+		// =============== if this is a type-based dropdown, add type to response ================
+		if (value.type) {
+			return {
+				type: value.type,
+				data: response
+			};
+		}
+		
 		return response;
 	} catch (error) {
 		console.error("error", error.message);
