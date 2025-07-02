@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { rem, Grid, Tooltip, TextInput, ActionIcon } from "@mantine/core";
+import { rem, Tooltip, TextInput, ActionIcon, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconFilter,
@@ -10,7 +10,7 @@ import {
 	IconPdf,
 	IconFileTypeXls,
 } from "@tabler/icons-react";
-import { useHotkeys } from "@mantine/hooks";
+import { useHotkeys, useMediaQuery } from "@mantine/hooks";
 import { useDispatch, useSelector } from "react-redux";
 import FilterModel from "./FilterModel.jsx";
 import { setFilterData, setGlobalFetching, setSearchKeyword } from "@/app/store/core/crudSlice.js";
@@ -18,6 +18,7 @@ import { setFilterData, setGlobalFetching, setSearchKeyword } from "@/app/store/
 function KeywordSearch({ module }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
+	const matches = useMediaQuery("(max-width: 64em)");
 
 	const [searchKeywordTooltip, setSearchKeywordTooltip] = useState(false);
 	const [filterModel, setFilterModel] = useState(false);
@@ -118,163 +119,160 @@ function KeywordSearch({ module }) {
 
 	return (
 		<>
-			<Grid justify="space-between" align="stretch" gutter={{ base: 2 }} grow>
-				<Grid.Col span="8">
-					<Tooltip
-						label={t("EnterSearchAnyKeyword")}
-						opened={searchKeywordTooltip}
-						px={16}
-						py={2}
-						position="top-end"
-						color="red"
-						withArrow
-						offset={2}
-						zIndex={100}
-						transitionProps={{ transition: "pop-bottom-left", duration: 1000 }}
-					>
-						<TextInput
-							leftSection={<IconSearch size={16} opacity={0.5} />}
-							size="sm"
-							placeholder={t("EnterSearchAnyKeyword")}
-							onKeyDown={handleKeyDown}
-							onChange={handleOnChange}
-							value={searchKeyword}
-							id={"SearchKeyword"}
-							rightSection={
-								searchKeyword ? (
-									<Tooltip label={t("Close")} withArrow bg={`red.5`}>
-										<IconX
-											color={`red`}
-											size={16}
-											opacity={0.5}
-											onClick={() => dispatch(setSearchKeyword(""))}
-										/>
-									</Tooltip>
-								) : (
-									<Tooltip
-										label={t("FieldIsRequired")}
-										withArrow
-										position={"bottom"}
-										c={"red"}
-										bg={`red.1`}
-									>
-										<IconInfoCircle size={16} opacity={0.5} />
-									</Tooltip>
-								)
-							}
-						/>
-					</Tooltip>
-				</Grid.Col>
-				<Grid.Col span="auto">
-					<ActionIcon.Group mt={"1"} justify="center">
-						<ActionIcon
-							variant="default"
-							c={"red.4"}
-							size="lg"
-							aria-label="Filter"
-							onClick={handleSearchClick}
-						>
-							<Tooltip
-								label={t("SearchButton")}
-								px={16}
-								py={2}
-								withArrow
-								position={"bottom"}
-								c={"red"}
-								bg={`red.1`}
-								transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
-							>
-								<IconSearch style={{ width: rem(18) }} stroke={1.5} />
-							</Tooltip>
-						</ActionIcon>
-						{module !== "category" &&
-							module !== "category-group" &&
-							module !== "particular" && (
-								<ActionIcon
-									variant="default"
-									size="lg"
-									c={"gray.6"}
-									aria-label="Settings"
-									onClick={() => setFilterModel(true)}
+			<Flex justify="space-between" gap={2} w="100%">
+				<Tooltip
+					label={t("EnterSearchAnyKeyword")}
+					opened={searchKeywordTooltip}
+					px={16}
+					py={2}
+					position="top-end"
+					color="red"
+					withArrow
+					offset={2}
+					zIndex={100}
+					transitionProps={{ transition: "pop-bottom-left", duration: 1000 }}
+				>
+					<TextInput
+						styles={{ root: { width: "100%" } }}
+						leftSection={<IconSearch size={16} opacity={0.5} />}
+						size="sm"
+						placeholder={t("EnterSearchAnyKeyword")}
+						onKeyDown={handleKeyDown}
+						onChange={handleOnChange}
+						value={searchKeyword}
+						id={"SearchKeyword"}
+						rightSection={
+							searchKeyword ? (
+								<Tooltip label={t("Close")} withArrow bg={`red.5`}>
+									<IconX
+										color={`red`}
+										size={16}
+										opacity={0.5}
+										onClick={() => dispatch(setSearchKeyword(""))}
+									/>
+								</Tooltip>
+							) : (
+								<Tooltip
+									label={t("FieldIsRequired")}
+									withArrow
+									position={"bottom"}
+									c={"red"}
+									bg={`red.1`}
 								>
-									<Tooltip
-										label={t("FilterButton")}
-										px={16}
-										py={2}
-										withArrow
-										position={"bottom"}
-										c={"red"}
-										bg={`red.1`}
-										transitionProps={{
-											transition: "pop-bottom-left",
-											duration: 500,
-										}}
-									>
-										<IconFilter style={{ width: rem(18) }} stroke={1.0} />
-									</Tooltip>
-								</ActionIcon>
-							)}
-						<ActionIcon variant="default" c={"gray.6"} size="lg" aria-label="Reset">
-							<Tooltip
-								label={t("ResetButton")}
-								px={16}
-								py={2}
-								withArrow
-								position={"bottom"}
-								c={"red"}
-								bg={`red.1`}
-								transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
-							>
-								<IconRestore
-									style={{ width: rem(18) }}
-									stroke={1.5}
-									onClick={resetFilters}
-								/>
-							</Tooltip>
-						</ActionIcon>
-						<ActionIcon
-							variant="default"
-							c={"green.8"}
-							size="lg"
-							aria-label="Filter"
-							onClick={handlePDFDownload}
+									<IconInfoCircle size={16} opacity={0.5} />
+								</Tooltip>
+							)
+						}
+					/>
+				</Tooltip>
+				<ActionIcon.Group mt={"1"} justify="center">
+					<ActionIcon
+						variant="default"
+						c={"red.4"}
+						size="lg"
+						aria-label="Filter"
+						onClick={handleSearchClick}
+					>
+						<Tooltip
+							label={t("SearchButton")}
+							px={16}
+							py={2}
+							withArrow
+							position={"bottom"}
+							c={"red"}
+							bg={`red.1`}
+							transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 						>
-							<Tooltip
-								label={t("DownloadPdfFile")}
-								px={16}
-								py={2}
-								withArrow
-								position={"bottom"}
-								c={"red"}
-								bg={`red.1`}
-								transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
+							<IconSearch style={{ width: rem(18) }} stroke={1.5} />
+						</Tooltip>
+					</ActionIcon>
+					{module !== "category" &&
+						module !== "category-group" &&
+						module !== "particular" && (
+							<ActionIcon
+								variant="default"
+								size="lg"
+								c={"gray.6"}
+								aria-label="Settings"
+								onClick={() => setFilterModel(true)}
 							>
-								<IconPdf style={{ width: rem(18) }} stroke={1.5} />
-							</Tooltip>
-						</ActionIcon>
-						<ActionIcon
-							variant="default"
-							c={"green.8"}
-							size="lg"
-							aria-label="Filter"
-							onClick={handleExcelDownload}
+								<Tooltip
+									label={t("FilterButton")}
+									px={16}
+									py={2}
+									withArrow
+									position={"bottom"}
+									c={"red"}
+									bg={`red.1`}
+									transitionProps={{
+										transition: "pop-bottom-left",
+										duration: 500,
+									}}
+								>
+									<IconFilter style={{ width: rem(18) }} stroke={1.0} />
+								</Tooltip>
+							</ActionIcon>
+						)}
+					<ActionIcon variant="default" c={"gray.6"} size="lg" aria-label="Reset">
+						<Tooltip
+							label={t("ResetButton")}
+							px={16}
+							py={2}
+							withArrow
+							position={"bottom"}
+							c={"red"}
+							bg={`red.1`}
+							transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 						>
-							<Tooltip
-								label={t("DownloadExcelFile")}
-								px={16}
-								py={2}
-								withArrow
-								position={"bottom"}
-								c={"red"}
-								bg={`red.1`}
-								transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
-							>
-								<IconFileTypeXls style={{ width: rem(18) }} stroke={1.5} />
-							</Tooltip>
-						</ActionIcon>
-					</ActionIcon.Group>
-				</Grid.Col>
-			</Grid>
+							<IconRestore
+								style={{ width: rem(18) }}
+								stroke={1.5}
+								onClick={resetFilters}
+							/>
+						</Tooltip>
+					</ActionIcon>
+					<ActionIcon
+						variant="default"
+						c={"green.8"}
+						size="lg"
+						aria-label="Filter"
+						onClick={handlePDFDownload}
+					>
+						<Tooltip
+							label={t("DownloadPdfFile")}
+							px={16}
+							py={2}
+							withArrow
+							position={"bottom"}
+							c={"red"}
+							bg={`red.1`}
+							transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
+						>
+							<IconPdf style={{ width: rem(18) }} stroke={1.5} />
+						</Tooltip>
+					</ActionIcon>
+					<ActionIcon
+						variant="default"
+						c={"green.8"}
+						size="lg"
+						aria-label="Filter"
+						onClick={handleExcelDownload}
+					>
+						<Tooltip
+							label={t("DownloadExcelFile")}
+							px={16}
+							py={2}
+							withArrow
+							position={"bottom"}
+							c={"red"}
+							bg={`red.1`}
+							transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
+						>
+							<IconFileTypeXls style={{ width: rem(18) }} stroke={1.5} />
+						</Tooltip>
+					</ActionIcon>
+				</ActionIcon.Group>
+			</Flex>
 
 			{filterModel && (
 				<FilterModel

@@ -1,26 +1,32 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Group, Box, ActionIcon, Text, Menu, rem } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, Menu, rem, Button, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconDotsVertical, IconTrashX, IconAlertCircle, IconCheck } from "@tabler/icons-react";
+import {
+	IconDotsVertical,
+	IconTrashX,
+	IconAlertCircle,
+	IconCheck,
+	IconDeviceFloppy,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
-import { useMounted } from "@mantine/hooks";
+import { useMediaQuery, useMounted } from "@mantine/hooks";
 import {
 	deleteEntityData,
 	getIndexEntityData,
 	editEntityData,
 } from "@/app/store/core/crudThunk.js";
-import { setRefetchData, setInsertType } from "@/app/store/core/crudSlice.js";
+import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/crudSlice.js";
 import tableCss from "@/assets/css/Table.module.css";
 import VendorViewDrawer from "./__VendorViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
 import { getCoreVendors } from "@/common/utils/index.js";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 
-function _VendorTable() {
+function _VendorTable({ open, close }) {
 	const isMounted = useMounted();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -41,6 +47,7 @@ function _VendorTable() {
 	const [vendorObject, setVendorObject] = useState({});
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
+	const matches = useMediaQuery("(max-width: 64em)");
 
 	const fetchData = async (pageNum = 1, append = false) => {
 		if (!hasMore && pageNum > 1) return;
@@ -70,14 +77,16 @@ function _VendorTable() {
 
 				// If appending, combine with existing data
 				if (append && pageNum > 1) {
-					dispatch({
-						type: "crud/setVendorData",
-						payload: {
-							...vendorListData,
-							data: [...vendorListData.data, ...newData],
-							total: total,
-						},
-					});
+					dispatch(
+						setItemData({
+							module: "vendor",
+							data: {
+								...vendorListData,
+								data: [...vendorListData.data, ...newData],
+								total: total,
+							},
+						})
+					);
 				}
 			}
 		} catch (err) {
@@ -153,6 +162,7 @@ function _VendorTable() {
 				autoClose: 700,
 				style: { backgroundColor: "lightgray" },
 			});
+			navigate("/core/vendor");
 			dispatch(setInsertType({ insertType: "create", module: "vendor" }));
 		} else {
 			notifications.show({
@@ -197,7 +207,24 @@ function _VendorTable() {
 				pb="4"
 				className="boxBackground borderRadiusAll border-bottom-none"
 			>
-				<KeywordSearch module="vendor" />
+				<Flex align="center" justify="space-between" gap={4}>
+					<KeywordSearch module="vendor" />
+					{matches && (
+						<Button
+							size="xs"
+							className="btnPrimaryBg"
+							type="submit"
+							id="EntityFormSubmit"
+							leftSection={<IconDeviceFloppy size={16} />}
+							onClick={open}
+							miw={100}
+						>
+							<Text fz={14} fw={400}>
+								{t("Create")}
+							</Text>
+						</Button>
+					)}
+				</Flex>
 			</Box>
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable

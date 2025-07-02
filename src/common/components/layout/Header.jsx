@@ -15,7 +15,7 @@ import {
 	ScrollArea,
 	Stack,
 	Text,
-	TextInput,
+	TextInput,NavLink,
 	ThemeIcon,
 	Tooltip,
 	UnstyledButton,
@@ -45,7 +45,7 @@ import {
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getLoggedInUser, getUserRole } from "@/common/utils";
 
 const languages = [

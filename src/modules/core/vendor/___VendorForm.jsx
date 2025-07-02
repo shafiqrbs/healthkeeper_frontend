@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconDeviceFloppy } from "@tabler/icons-react";
-import { useHotkeys } from "@mantine/hooks";
+import { useHotkeys, useMediaQuery } from "@mantine/hooks";
 
 import InputForm from "@components/form-builders/InputForm";
 import SelectForm from "@components/form-builders/SelectForm";
@@ -22,16 +22,24 @@ import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 
 import useGlobalDropdownData from "@/common/hooks/dropdown/useGlobalDropdownData";
 
-function __VendorForm({ form, type = "create", data, handleSubmit }) {
-	const customerDropDownData = useGlobalDropdownData({
+function ___VendorForm({
+	form,
+	type = "create",
+	data,
+	handleSubmit,
+	customerData,
+	setCustomerData,
+	isLoading,
+	setIsLoading,
+}) {
+	const { data: customerDropDownData } = useGlobalDropdownData({
 		path: "core/select/customer",
 		utility: "customer",
 	});
 	const { t } = useTranslation();
 	const { isOnline, mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 100; //TabList height 104
-	const [isLoading, setIsLoading] = useState(false);
-	const [customerData, setCustomerData] = useState(null);
+	const matches = useMediaQuery("(max-width: 64em)");
 
 	useEffect(() => {
 		if (data && type === "update") {
@@ -48,7 +56,7 @@ function __VendorForm({ form, type = "create", data, handleSubmit }) {
 
 			const timeoutId = setTimeout(() => {
 				setIsLoading(false);
-			}, 300);
+			}, 500);
 			return () => clearTimeout(timeoutId);
 		} else {
 			form.reset();
@@ -69,7 +77,7 @@ function __VendorForm({ form, type = "create", data, handleSubmit }) {
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Grid columns={12} gutter={{ base: 8 }}>
 					<Grid.Col span={12}>
-						<Box bg="white" p="xs" className="borderRadiusAll">
+						<Box bg="white" p={matches ? "0px" : "sm"} className="borderRadiusAll">
 							<Box bg="white" pos="relative">
 								<LoadingOverlay
 									visible={isLoading}
@@ -141,6 +149,45 @@ function __VendorForm({ form, type = "create", data, handleSubmit }) {
 													name="company_name"
 													mt={0}
 													id="company_name"
+												/>
+											</Box>
+											<Box mt="xs">
+												<InputForm
+													form={form}
+													tooltip={t("VendorNameValidateMessage")}
+													label={t("VendorName")}
+													placeholder={t("VendorName")}
+													required={true}
+													name="name"
+													id="name"
+													nextField="mobile"
+													mt={8}
+												/>
+											</Box>
+											<Box mt="xs">
+												<InputForm
+													form={form}
+													tooltip={t("VendorNameValidateMessage")}
+													label={t("VendorName")}
+													placeholder={t("VendorName")}
+													required={true}
+													name="name"
+													id="name"
+													nextField="mobile"
+													mt={8}
+												/>
+											</Box>
+											<Box mt="xs">
+												<InputForm
+													form={form}
+													tooltip={t("VendorNameValidateMessage")}
+													label={t("VendorName")}
+													placeholder={t("VendorName")}
+													required={true}
+													name="name"
+													id="name"
+													nextField="mobile"
+													mt={8}
 												/>
 											</Box>
 											<Box mt="xs">
@@ -232,4 +279,4 @@ function __VendorForm({ form, type = "create", data, handleSubmit }) {
 		</Box>
 	);
 }
-export default __VendorForm;
+export default ___VendorForm;

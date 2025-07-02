@@ -4,7 +4,7 @@ import Layout from "@components/layout/Layout";
 // import SampleDashboard from "@modules/sample-module/DashBoard";
 // import CustomerIndex from "@modules/core/customer/CustomerIndex";
 // import UserIndex from "@modules/core/user/UserIndex";
-import VendorIndex from "@modules/core/vendor/VendorIndex";
+import VendorIndex from "@/modules/core/vendor/VendorIndex";
 // import ProductionConfigurationIndex from "@modules/production/configuraton/ConfigurationIndex";
 // import CategoryGroupIndex from "@modules/inventory/category-group/CategoryGroupIndex";
 // import CategoryIndex from "@modules/inventory/category/CategoryIndex";

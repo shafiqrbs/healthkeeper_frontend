@@ -15,7 +15,7 @@ const initialState = {
 	vendor: {
 		insertType: "create",
 		isLoading: true,
-		refetching: true,
+		refetching: false,
 		error: null,
 		data: {},
 		editData: {},
@@ -187,6 +187,10 @@ const crudSlice = createSlice({
 			const { module, refetching } = action.payload;
 			state[module].refetching = refetching;
 		},
+		setItemData: (state, action) => {
+			const { module, data } = action.payload;
+			state[module].data = data;
+		},
 	},
 
 	extraReducers: (builder) => {
@@ -195,7 +199,7 @@ const crudSlice = createSlice({
 				const { module, data } = action.payload;
 
 				state[module].data = data;
-				state[module].refetching = true;
+				state[module].refetching = false;
 			})
 			.addCase(getIndexEntityData.rejected, (state, action) => {
 				const { module } = action.payload;
@@ -273,6 +277,7 @@ export const {
 	setSearchKeywordTooltip,
 	setRefetchData,
 	setInsertType,
+	setItemData,
 } = crudSlice.actions;
 
 export default crudSlice.reducer;

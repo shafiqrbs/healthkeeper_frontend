@@ -1,3 +1,60 @@
+:root {
+    --theme-primary-color-0: var(--mantine-color-blue-0);
+    --theme-primary-color-1: var(--mantine-color-blue-1);
+    --theme-primary-color-2: var(--mantine-color-blue-2);
+    --theme-primary-color-3: var(--mantine-color-blue-3);
+    --theme-primary-color-4: var(--mantine-color-blue-4);
+    --theme-primary-color-5: var(--mantine-color-blue-5);
+    --theme-primary-color-6: var(--mantine-color-blue-6);
+    --theme-primary-color-7: var(--mantine-color-blue-7);
+    --theme-primary-color-8: var(--mantine-color-blue-8);
+    --theme-primary-color-9: var(--mantine-color-blue-9);
+
+    --theme-secondary-color-0: var(--mantine-color-gray-0);
+    --theme-secondary-color-1: var(--mantine-color-gray-1);
+    --theme-secondary-color-2: var(--mantine-color-gray-2);
+    --theme-secondary-color-3: var(--mantine-color-gray-3);
+    --theme-secondary-color-4: var(--mantine-color-gray-4);
+    --theme-secondary-color-5: var(--mantine-color-gray-5);
+    --theme-secondary-color-6: var(--mantine-color-gray-6);
+    --theme-secondary-color-7: var(--mantine-color-gray-7);
+    --theme-secondary-color-8: var(--mantine-color-gray-8);
+
+    --theme-success-color: var(--mantine-color-green-6);
+    --theme-error-color: var(--mantine-color-red-6);
+    --theme-warning-color: var(--mantine-color-yellow-6);
+    --theme-info-color: var(--mantine-color-blue-6);
+    --theme-notice-color: var(--mantine-color-gray-6);
+    --theme-validation-error-color: var(--mantine-color-red-6);
+    --theme-validation-success-color: var(--mantine-color-blue-6);
+
+    --theme-reset-btn-color: var(--mantine-color-red-6);
+    --theme-reset-btn-color-hover: var(--mantine-color-red-8);
+
+    --theme-hold-btn-color: var(--mantine-color-yellow-6);
+    --theme-hold-btn-color-hover: var(--mantine-color-yellow-8);
+
+    --theme-print-btn-color: var(--mantine-color-lime-8);
+    --theme-print-btn-color-hover: var(--mantine-color-lime-9);
+
+    --theme-pos-btn-color: var(--mantine-color-violet-7);
+    --theme-pos-btn-color-hover: var(--mantine-color-violet-8);
+
+    --theme-save-btn-color: var(--mantine-color-cyan-7);
+    --theme-save-btn-color-hover: var(--mantine-color-cyan-8);
+
+    --theme-submit-btn-color: var(--mantine-color-green-7);
+    --theme-submit-btn-color-hover: var(--mantine-color-green-8);
+
+    --theme-add-btn-color: var(--mantine-color-blue-8);
+    --theme-add-btn-color-hover: var(--mantine-color-blue-9);
+
+    --theme-edit-btn-color: var(--mantine-color-indigo-6);
+    --theme-edit-btn-color-hover: var(--mantine-color-indigo-8);
+
+    --theme-drawer-border-color: #dddddd;
+}
+
 body {
     overflow: hidden;
 }
@@ -99,7 +156,6 @@ textarea:focus {
     border-radius: 4px;
 }
 
-
 .border-top-none {
     border-top: none;
     border-radius: 0;
@@ -175,7 +231,6 @@ input[type=radio]:checked+label>img {
 .highlightedItem .title {
     font-weight: bold !important;
     color: #eb0f0f !important;
-
 }
 
 .highlightedItem .description {

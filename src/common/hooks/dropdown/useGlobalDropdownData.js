@@ -5,6 +5,14 @@ import { getGlobalDropdown } from "@/app/store/core/utilityThunk";
 const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 	const dispatch = useDispatch();
 	const [dropdownData, setDropdownData] = useState([]);
+	const existingData = useSelector((state) => state.utility.dynamicDropdownData[utility]);
+
+	const value = {
+		url: path,
+		params: params,
+		utility: utility,
+		type: type,
+	};
 
 	// =============== dynamically select dropdown data from store ================
 	const storeData = useSelector((state) => {
@@ -40,13 +48,9 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 	});
 
 	useEffect(() => {
-		const value = {
-			url: path,
-			params: params,
-			utility: utility, // =============== pass utility key to thunk ================
-			type: type, // =============== pass type for type-based dropdowns ================
-		};
-		dispatch(getGlobalDropdown(value));
+		if (!existingData?.length) {
+			dispatch(getGlobalDropdown(value));
+		}
 	}, [dispatch, path, utility, type, JSON.stringify(params)]);
 
 	useEffect(() => {
@@ -86,7 +90,7 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 		}
 	}, [storeData]);
 
-	return dropdownData;
+	return { data: dropdownData, refetch: () => dispatch(getGlobalDropdown(value)) };
 };
 
 export default useGlobalDropdownData;
