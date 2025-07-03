@@ -165,46 +165,6 @@ function ___VendorForm({
 												/>
 											</Box>
 											<Box mt="xs">
-												<InputForm
-													form={form}
-													tooltip={t("VendorNameValidateMessage")}
-													label={t("VendorName")}
-													placeholder={t("VendorName")}
-													required={true}
-													name="name"
-													id="name"
-													nextField="mobile"
-													mt={8}
-												/>
-											</Box>
-											<Box mt="xs">
-												<InputForm
-													form={form}
-													tooltip={t("VendorNameValidateMessage")}
-													label={t("VendorName")}
-													placeholder={t("VendorName")}
-													required={true}
-													name="name"
-													id="name"
-													nextField="mobile"
-													mt={8}
-												/>
-											</Box>
-											<Box mt="xs">
-												<InputForm
-													form={form}
-													tooltip={t("VendorNameValidateMessage")}
-													label={t("VendorName")}
-													placeholder={t("VendorName")}
-													required={true}
-													name="name"
-													id="name"
-													nextField="mobile"
-													mt={8}
-												/>
-											</Box>
-
-											<Box mt="xs">
 												<PhoneNumber
 													form={form}
 													tooltip={

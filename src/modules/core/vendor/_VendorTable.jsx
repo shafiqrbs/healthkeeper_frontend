@@ -278,34 +278,22 @@ function _VendorTable({ open, close }) {
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
-											<Menu.Item
-												onClick={() => handleVendorEdit(values.id)}
-												target="_blank"
-												component="a"
-												w="200"
-											>
+											<Menu.Item onClick={() => handleVendorEdit(values.id)}>
 												{t("Edit")}
 											</Menu.Item>
-
-											<Menu.Item
-												onClick={() => handleDataShow(values.id)}
-												target="_blank"
-												component="a"
-												w="200"
-											>
+											<Menu.Item onClick={() => handleDataShow(values.id)}>
 												{t("Show")}
 											</Menu.Item>
 											<Menu.Item
-												target="_blank"
-												component="a"
-												w="200"
-												mt="2"
+												onClick={() => handleDelete(values.id)}
 												bg="red.1"
 												c="red.6"
-												onClick={() => handleDelete(values.id)}
 												rightSection={
 													<IconTrashX
-														style={{ width: rem(14), height: rem(14) }}
+														style={{
+															width: rem(14),
+															height: rem(14),
+														}}
 													/>
 												}
 											>

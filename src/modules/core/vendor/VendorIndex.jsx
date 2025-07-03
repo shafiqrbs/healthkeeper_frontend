@@ -42,11 +42,13 @@ function VendorIndex({ mode }) {
 					/>
 					<Box p="8">
 						<Grid columns={36} gutter={{ base: 8 }}>
-							<Grid.Col span={2}>
-								<Navigation module="base" />
-							</Grid.Col>
+							{!matches && (
+								<Grid.Col span={2}>
+									<Navigation module="base" />
+								</Grid.Col>
+							)}
 
-							<Grid.Col span={matches ? 34 : 20}>
+							<Grid.Col span={matches ? 36 : 20}>
 								<Box bg="white" p="xs" className="borderRadiusAll">
 									<VendorTable open={open} close={close} />
 								</Box>

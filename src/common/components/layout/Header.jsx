@@ -15,7 +15,8 @@ import {
 	ScrollArea,
 	Stack,
 	Text,
-	TextInput,NavLink,
+	TextInput,
+	NavLink,
 	ThemeIcon,
 	Tooltip,
 	UnstyledButton,
@@ -29,7 +30,7 @@ import flagBD from "@assets/images/flags/bd.svg";
 import flagGB from "@assets/images/flags/gb.svg";
 import logo_default from "@assets/images/logo_default.png";
 import shortcutDropdownData from "@hooks/shortcut-dropdown/useShortcutDropdownData";
-import { useDisclosure, useFullscreen, useHotkeys } from "@mantine/hooks";
+import { useDisclosure, useFullscreen, useHotkeys, useMediaQuery } from "@mantine/hooks";
 import "@mantine/spotlight/styles.css";
 import {
 	IconArrowRight,
@@ -92,20 +93,18 @@ const Logo = ({ configData, navigate }) => {
 				component="button"
 				bg={"transparent"}
 				style={{
-					backgroundColor: "#C6AF9D",
 					color: "white",
 					fontWeight: 800,
-					transition: "background 1s",
+					whiteSpace: "nowrap",
+				}}
+				styles={{
+					body: {
+						overflow: "unset",
+					},
 				}}
 				unselectable="on"
 				label={configData?.domain?.company_name || configData?.domain?.name || ""}
 				onClick={() => navigate("/")}
-				onMouseEnter={(e) => {
-					e.currentTarget.style.color = "#dee2e6";
-				}}
-				onMouseLeave={(e) => {
-					e.currentTarget.style.color = "white";
-				}}
 			/>
 		);
 	}
@@ -119,12 +118,7 @@ const Logo = ({ configData, navigate }) => {
 				paddingLeft: 16,
 			}}
 		>
-			<Tooltip
-				label={configData?.domain?.company_name || ""}
-				color={"#C6AF9D"}
-				position="right"
-				withArrow
-			>
+			<Tooltip label={configData?.domain?.company_name || ""} position="right" withArrow>
 				<Anchor
 					target="_blank"
 					underline="never"
@@ -150,31 +144,38 @@ const Logo = ({ configData, navigate }) => {
 };
 
 // Search Button Component
-const SearchButton = ({ t, onClick }) => (
+const SearchButton = ({ t, onClick, matches2 }) => (
 	<Button
+		ml="auto"
 		leftSection={
 			<>
 				<IconSearch size={16} c={"white"} />
-				<Text fz={`xs`} pl={"xs"} c={"gray.8"}>
-					{t("SearchMenu")}
-				</Text>
+				{!matches2 && (
+					<Text fz={`xs`} pl={"xs"} c={"gray.8"}>
+						{t("SearchMenu")}
+					</Text>
+				)}
 			</>
 		}
-		fullWidth
+		fullWidth={!matches2}
+		maw={matches2 ? 40 : "100%"}
 		variant="transparent"
 		rightSection={
 			<>
-				<Kbd h={"24"} c={"gray.8"} fz={"12"}>
-					Alt{" "}
-				</Kbd>{" "}
-				+{" "}
-				<Kbd c={"gray.8"} h={"24"} fz={"12"}>
-					{" "}
-					K
-				</Kbd>
+				{!matches2 && (
+					<>
+						<Kbd h={"24"} c={"gray.8"} fz={"12"}>
+							Alt{" "}
+						</Kbd>{" "}
+						+{" "}
+						<Kbd c={"gray.8"} h={"24"} fz={"12"}>
+							{" "}
+							K
+						</Kbd>
+					</>
+				)}
 			</>
 		}
-		w={`100%`}
 		justify="space-between"
 		style={{ border: "1px solid #49362366" }}
 		color={"black"}
@@ -265,7 +266,6 @@ const ActionItem = ({ action, isSelected, onClick }) => (
 
 // Language Picker Component
 const LanguagePicker = ({ languageSelected, onLanguageChange }) => {
-	const { t } = useTranslation();
 	return (
 		<Menu radius="md" width="target" withinPortal withArrow arrowPosition="center">
 			<Menu.Target>
@@ -294,7 +294,16 @@ const LanguagePicker = ({ languageSelected, onLanguageChange }) => {
 };
 
 // Header Actions Component
-const HeaderActions = ({ isOnline, fullscreen, toggle, loginUser, t, onLogout }) => (
+const HeaderActions = ({
+	isOnline,
+	fullscreen,
+	toggle,
+	loginUser,
+	t,
+	onLogout,
+	languageSelected,
+	handleLanguageChange,
+}) => (
 	<Flex
 		gap="sm"
 		justify="flex-end"
@@ -305,6 +314,10 @@ const HeaderActions = ({ isOnline, fullscreen, toggle, loginUser, t, onLogout })
 		px={"xs"}
 		pr={"24"}
 	>
+		<LanguagePicker
+			languageSelected={languageSelected}
+			onLanguageChange={handleLanguageChange}
+		/>
 		<Tooltip label={fullscreen ? t("NormalScreen") : t("Fullscreen")} bg={"#635031"} withArrow>
 			<ActionIcon mt={"6"} onClick={toggle} variant="subtle" color={"white"}>
 				{fullscreen ? <IconWindowMinimize size={24} /> : <IconWindowMaximize size={24} />}
@@ -367,6 +380,8 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 	const [value, setValue] = useState("");
 	const [filteredItems, setFilteredItems] = useState([]);
 	const [selectedIndex, setSelectedIndex] = useState(-1);
+	const matches = useMediaQuery("(max-width: 1070px)");
+	const matches2 = useMediaQuery("(max-width: 768px)");
 
 	const getActions = () => {
 		const actions = shortcutDropdownData(t, configData);
@@ -518,20 +533,17 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 				</Modal.Content>
 			</Modal.Root>
 			<Box bg="#C6AF9D" mb={"2"} pos={`relative`}>
-				<Grid columns={24} gutter={{ base: 2 }} justify="space-between">
-					<Grid.Col span={3}>
+				<Grid columns={24} justify="space-between" gutter={{ base: 2 }}>
+					<Grid.Col span={6}>
 						<Logo configData={configData} navigate={navigate} />
 					</Grid.Col>
-					<Grid.Col span={3} justify="flex-end" align={"flex-start"} mt={"xs"} />
-					<Grid.Col
-						span={12}
-						justify="flex-end"
-						align="center"
-						direction="row"
-						wrap="wrap"
-					>
+					<Grid.Col span={matches2 ? 6 : matches ? 10 : 12}>
 						<Group gap={"md"} wrap="nowrap" mih={42}>
-							<SearchButton t={t} onClick={() => setShortcutModalOpen(true)} />
+							<SearchButton
+								matches2={matches2}
+								t={t}
+								onClick={() => setShortcutModalOpen(true)}
+							/>
 							<Modal
 								opened={shortcutModalOpen}
 								onClose={() => setShortcutModalOpen(false)}
@@ -653,83 +665,17 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 							</Modal>
 						</Group>
 					</Grid.Col>
-					<Grid.Col span={6}>
-						<Flex
-							gap="sm"
-							justify="flex-end"
-							direction="row"
-							wrap="wrap"
-							mih={42}
-							align={"right"}
-							px={"xs"}
-							pr={"24"}
-						>
-							<LanguagePicker
-								languageSelected={languageSelected}
-								onLanguageChange={handleLanguageChange}
-							/>
-							<Tooltip
-								label={fullscreen ? t("NormalScreen") : t("Fullscreen")}
-								bg={"#635031"}
-								withArrow
-							>
-								<ActionIcon
-									mt={"6"}
-									onClick={toggle}
-									variant="subtle"
-									color={"white"}
-								>
-									{fullscreen ? (
-										<IconWindowMinimize size={24} />
-									) : (
-										<IconWindowMaximize size={24} />
-									)}
-								</ActionIcon>
-							</Tooltip>
-							<Tooltip
-								label={
-									<>
-										<Stack spacing={0} gap={0}>
-											<Text align="center">
-												{loginUser?.name} ( {loginUser?.username} )
-											</Text>
-											<Text align="center">{t("LogoutAltL")}</Text>
-										</Stack>
-									</>
-								}
-								bg={"#635031"}
-								withArrow
-								position={"left"}
-								multiline
-							>
-								<ActionIcon
-									onClick={handleLogout}
-									variant="subtle"
-									mt={"6"}
-									color={"white"}
-								>
-									<IconLogout size={24} />
-								</ActionIcon>
-							</Tooltip>
-							<Tooltip
-								label={isOnline ? t("Online") : t("Offline")}
-								bg={isOnline ? "green.5" : "red.5"}
-								withArrow
-							>
-								<ActionIcon
-									mt={"6"}
-									variant="filled"
-									radius="xl"
-									color={isOnline ? "green.5" : "red.5"}
-								>
-									{isOnline ? (
-										<IconWifi color={"white"} size={24} />
-									) : (
-										<IconWifiOff color={"white"} size={24} />
-									)}
-								</ActionIcon>
-							</Tooltip>
-						</Flex>
+					<Grid.Col span={matches2 ? 12 : matches ? 8 : 6}>
+						<HeaderActions
+							isOnline={isOnline}
+							fullscreen={fullscreen}
+							toggle={toggle}
+							loginUser={loginUser}
+							t={t}
+							onLogout={handleLogout}
+							languageSelected={languageSelected}
+							handleLanguageChange={handleLanguageChange}
+						/>
 					</Grid.Col>
 				</Grid>
 			</Box>
