@@ -48,23 +48,17 @@ function VendorIndex({ mode }) {
 								</Grid.Col>
 							)}
 
-							<Grid.Col span={matches ? 36 : 20}>
+							<Grid.Col span={matches ? 36 : 34}>
 								<Box bg="white" p="xs" className="borderRadiusAll">
 									<VendorTable open={open} close={close} />
 								</Box>
 							</Grid.Col>
 
-							{matches ? (
-								<GlobalDrawer opened={opened} close={close} title="Vendor Form">
-									<Form form={form} mode={mode} />
-								</GlobalDrawer>
-							) : (
-								<Grid.Col span={12}>
-									<Form form={form} mode={mode} />
-								</Grid.Col>
-							)}
+							<GlobalDrawer opened={opened} close={close} title="Vendor Form">
+								<Form form={form} mode={mode} />
+							</GlobalDrawer>
 
-							{!matches && (
+							{/* {!matches && (
 								<Grid.Col span={2}>
 									<Box bg="white" className="borderRadiusAll" pt="sm">
 										<Shortcut
@@ -75,7 +69,7 @@ function VendorIndex({ mode }) {
 										/>
 									</Box>
 								</Grid.Col>
-							)}
+							)} */}
 						</Grid>
 					</Box>
 				</>

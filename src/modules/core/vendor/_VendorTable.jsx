@@ -209,21 +209,19 @@ function _VendorTable({ open, close }) {
 			>
 				<Flex align="center" justify="space-between" gap={4}>
 					<KeywordSearch module="vendor" />
-					{matches && (
-						<Button
-							size="xs"
-							className="btnPrimaryBg"
-							type="submit"
-							id="EntityFormSubmit"
-							leftSection={<IconDeviceFloppy size={16} />}
-							onClick={open}
-							miw={100}
-						>
-							<Text fz={14} fw={400}>
-								{t("Create")}
-							</Text>
-						</Button>
-					)}
+					<Button
+						size="xs"
+						className="btnPrimaryBg"
+						type="submit"
+						id="EntityFormSubmit"
+						leftSection={<IconDeviceFloppy size={16} />}
+						onClick={open}
+						miw={100}
+					>
+						<Text fz={14} fw={400}>
+							{t("Create")}
+						</Text>
+					</Button>
 				</Flex>
 			</Box>
 			<Box className="borderRadiusAll border-top-none">
@@ -278,7 +276,12 @@ function _VendorTable({ open, close }) {
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
-											<Menu.Item onClick={() => handleVendorEdit(values.id)}>
+											<Menu.Item
+												onClick={() => {
+													handleVendorEdit(values.id);
+													open();
+												}}
+											>
 												{t("Edit")}
 											</Menu.Item>
 											<Menu.Item onClick={() => handleDataShow(values.id)}>

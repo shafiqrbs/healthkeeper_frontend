@@ -77,7 +77,7 @@ function ___VendorForm({
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Grid columns={12} gutter={{ base: 8 }}>
 					<Grid.Col span={12}>
-						<Box bg="white" p={matches ? "0px" : "sm"} className="borderRadiusAll">
+						<Box bg="white" className="borderRadiusAll">
 							<Box bg="white" pos="relative">
 								<LoadingOverlay
 									visible={isLoading}

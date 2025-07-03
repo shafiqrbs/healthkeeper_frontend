@@ -52,7 +52,7 @@
     --theme-edit-btn-color: var(--mantine-color-indigo-6);
     --theme-edit-btn-color-hover: var(--mantine-color-indigo-8);
 
-    --theme-drawer-border-color: #dddddd;
+    --theme-drawer-border-color: var(--mantine-color-gray-2);
 }
 
 body {
