@@ -12,14 +12,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
 import { setInsertType } from "@/app/store/core/crudSlice";
 
-export default function __Update({ form }) {
+export default function __Update({ form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
-    const [customerData, setCustomerData] = useState(null);
+	const [customerData, setCustomerData] = useState(null);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-    const navigate = useNavigate();
-    const { id } = useParams();
-    const vendorUpdateData = useSelector((state) => state.crud.vendor.editData);
+	const navigate = useNavigate();
+	const { id } = useParams();
+	const vendorUpdateData = useSelector((state) => state.crud.vendor.editData);
 
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
@@ -69,6 +69,7 @@ export default function __Update({ form }) {
 					form.reset();
 					dispatch(setInsertType({ insertType: "create", module: "vendor" }));
 					setIsLoading(false);
+					close(); // close the drawer
 					navigate("/core/vendor", { replace: true });
 					setCustomerData(null);
 				}, 700);

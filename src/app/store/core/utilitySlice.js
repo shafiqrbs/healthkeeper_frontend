@@ -5,6 +5,9 @@ const initialState = {
 	isLoading: true,
 	fetching: true,
 	dynamicDropdownData: {},
+	// dynamic dropdowns data will be stored in the following format:
+	// businessModel
+	// module
 };
 
 const utilitySlice = createSlice({

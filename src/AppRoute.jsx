@@ -12,7 +12,7 @@ import VendorIndex from "@/modules/core/vendor/VendorIndex";
 // import SalesIndex from "@modules/inventory/sales/SalesIndex";
 // import SampleInvoice from "@modules/sample-module/sample-layout/SampleInvoice";
 // import SampleIndex from "@modules/sample-module/sample-layout/SampleIndex";
-// import DomainIndex from "@modules/domain/domain/DomainIndex";
+import DomainIndex from "@modules/domain/domain/DomainIndex";
 // import TransactionModeIndex from "@modules/accounting/transaction-mode/TransactionModeIndex";
 // import SalesInvoice from "@modules/inventory/sales/SalesInvoice";
 // import Sitemap from "@modules/dashboard/SItemap";
@@ -101,6 +101,14 @@ function AppRoute() {
             path="marketing-executive/:id"
             element={<MarketingExecutiveIndex />}
           /> */}
+				</Route>
+				<Route path="/domain/">
+					<Route path="" element={<DomainIndex />} />
+					<Route path="edit/:id" element={<DomainIndex />} />
+					{/* <Route path="config/:id" element={<ConfigurationIndex />} />
+          <Route path="sitemap" element={<SitemapIndex />} />
+          <Route path="sitemap/:id" element={<SitemapIndex />} />
+          <Route path="branch-management" element={<BranchManagementIndex />} /> */}
 				</Route>
 				{/* <Route path="/inventory/">
           <Route path="sales/edit/:id" element={<SalesEdit />} />

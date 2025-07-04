@@ -55,7 +55,7 @@ function VendorIndex({ mode }) {
 							</Grid.Col>
 
 							<GlobalDrawer opened={opened} close={close} title="Vendor Form">
-								<Form form={form} mode={mode} />
+								<Form form={form} mode={mode} close={close} />
 							</GlobalDrawer>
 
 							{/* {!matches && (

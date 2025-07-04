@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { Group, Box, ActionIcon, Text, Menu, rem, Button, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
@@ -7,7 +7,7 @@ import {
 	IconTrashX,
 	IconAlertCircle,
 	IconCheck,
-	IconDeviceFloppy,
+	IconPlus,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,6 +31,7 @@ function _VendorTable({ open, close }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
+	const { id } = useParams();
 	const height = mainAreaHeight - 98; //TabList height 104
 	const tableRef = useRef(null);
 
@@ -108,10 +109,10 @@ function _VendorTable({ open, close }) {
 	);
 
 	useEffect(() => {
-		if (isMounted || refetchData === true) {
+		if (!id && (isMounted || refetchData === true)) {
 			fetchData(1, false);
 		}
-	}, [dispatch, searchKeyword, vendorFilterData, refetchData, isMounted]);
+	}, [dispatch, searchKeyword, vendorFilterData, refetchData, isMounted, id]);
 
 	useEffect(() => {
 		if (page > 1) {
@@ -214,7 +215,7 @@ function _VendorTable({ open, close }) {
 						className="btnPrimaryBg"
 						type="submit"
 						id="EntityFormSubmit"
-						leftSection={<IconDeviceFloppy size={16} />}
+						leftSection={<IconPlus size={16} />}
 						onClick={open}
 						miw={100}
 					>

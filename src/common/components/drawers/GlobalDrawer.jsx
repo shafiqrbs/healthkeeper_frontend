@@ -4,7 +4,14 @@ import React from "react";
 
 export default function GlobalDrawer({ opened, close, title, children }) {
 	return (
-		<Drawer.Root opened={opened} onClose={close} position="right" closeOnClickOutside={false}>
+		<Drawer.Root
+			opened={opened}
+			onClose={close}
+			position="right"
+			closeOnClickOutside={false}
+			offset={10}
+			radius="md"
+		>
 			<Drawer.Overlay />
 			<Drawer.Content>
 				<Drawer.Header

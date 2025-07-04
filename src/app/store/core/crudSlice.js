@@ -138,6 +138,18 @@ const initialState = {
 		editData: {},
 		filterData: { name: "" },
 	},
+	// -------------------- domain modules starts -------------------------
+	domain: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		validation: false,
+		insertType: "create",
+		data: {},
+		editData: {},
+		filterData: { name: "" },
+	},
+	// -------------------- domain modules stops -------------------------
 	// -------------------- production modules stops -------------------------
 	searchKeyword: "",
 	searchKeywordTooltip: false,

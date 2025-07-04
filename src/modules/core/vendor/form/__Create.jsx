@@ -11,13 +11,13 @@ import { rem, Text } from "@mantine/core";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
 
-export default function __Create({form}) {
-    const [isLoading, setIsLoading] = useState(false);
-    const dispatch = useDispatch();
-    const { t } = useTranslation();
-    const [customerData, setCustomerData] = useState(null);
+export default function __Create({ form, close }) {
+	const [isLoading, setIsLoading] = useState(false);
+	const dispatch = useDispatch();
+	const { t } = useTranslation();
+	const [customerData, setCustomerData] = useState(null);
 
-    const handleSubmit = (values) => {
+	const handleSubmit = (values) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
@@ -49,8 +49,9 @@ export default function __Create({form}) {
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
 				useVendorDataStoreIntoLocalStorage();
 				form.reset();
+				close(); // close the drawer
 				setCustomerData(null);
-				dispatch(setRefetchData({module: "vendor", refetching: true}));
+				dispatch(setRefetchData({ module: "vendor", refetching: true }));
 				notifications.show({
 					color: SUCCESS_NOTIFICATION_COLOR,
 					title: t("CreateSuccessfully"),

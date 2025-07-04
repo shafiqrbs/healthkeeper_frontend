@@ -1,77 +1,82 @@
 import React, { useEffect } from "react";
-import {
-    Box, Grid, Progress
-} from "@mantine/core";
-import { useTranslation } from 'react-i18next';
+import { Box, Grid, Progress } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { setInsertType } from "../../../../store/inventory/crudSlice";
-import { editEntityData, setSearchKeyword } from "../../../../store/core/crudSlice";
-import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
+import { setSearchKeyword, setInsertType } from "@/app/store/core/crudSlice";
+import { editEntityData } from "@/app/store/core/crudThunk.js";
+import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DomainTable from "./DomainTable";
 import DomainHeaderNavbar from "../DomainHeaderNavbar";
 import DomainUpdateForm from "./DomainUpdateFrom";
 import { useNavigate, useParams } from "react-router-dom";
-import { setFormLoading } from "../../../../store/generic/crudSlice.js";
-import DomainForm from './DomainFrom.jsx'
-import getConfigData from "../../../global-hook/config-data/getConfigData.js";
+import DomainForm from "./DomainFrom.jsx";
+import useConfigData from "@hooks/config-data/useConfigData";
+import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
+import _Navigation from "../common/_Navigation";
+import { useDisclosure } from "@mantine/hooks";
 
 function DomainIndex() {
-    const { t, i18n } = useTranslation();
-    const dispatch = useDispatch();
-    const insertType = useSelector((state) => state.crudSlice.insertType)
+	const { t } = useTranslation();
+	const dispatch = useDispatch();
+	const insertType = useSelector((state) => state.crud.domain.insertType);
+	const [opened, { open, close }] = useDisclosure(false);
+	const progress = useGetLoadingProgress();
+	const { configData } = useConfigData();
 
-    const progress = getLoadingProgress()
-    const {configData,fetchData} = getConfigData()
+	const { id } = useParams();
+	const navigate = useNavigate();
 
-    const { id } = useParams();
-    const navigate = useNavigate();
+	localStorage.setItem("config-data", JSON.stringify(configData));
 
-    localStorage.setItem('config-data', JSON.stringify(configData));
+	useEffect(() => {
+		if (id) {
+			dispatch(setInsertType({ insertType: "update", module: "domain" }));
+			dispatch(editEntityData({ url: `domain/global/${id}`, module: "domain" }));
+		} else if (!id) {
+			dispatch(setInsertType({ insertType: "create", module: "domain" }));
+			dispatch(setSearchKeyword({ searchKeyword: "", module: "domain" }));
+			navigate("/domain");
+		}
+	}, [id, dispatch, navigate]);
 
-    useEffect(() => {
-        if (id) {
-            dispatch(setInsertType('update'));
-            dispatch(editEntityData(`domain/global/${id}`));
-            dispatch(setFormLoading(true));
-        } else if (!id) {
-            dispatch(setInsertType('create'));
-            dispatch(setSearchKeyword(''));
-            navigate('/domain');
-        }
-    }, [id, dispatch, navigate]);
-
-    return (
-        <>
-            {progress !== 100 &&
-                <Progress color="red" size={"sm"} striped animated value={progress} transitionDuration={200} />}
-            {progress === 100 &&
-                <Box>
-                    <DomainHeaderNavbar
-                        pageTitle={t('ManageDomain')}
-                        roles={t('Roles')}
-                        allowZeroPercentage=''
-                        currencySymbol=''
-                    />
-                    <Box p={'8'}>
-                        <Grid columns={24} gutter={{ base: 8 }}>
-                            <Grid.Col span={15} >
-                                <Box bg={'white'} p={'xs'} className={'borderRadiusAll'} >
-                                    <DomainTable configData={configData} />
-                                </Box>
-                            </Grid.Col>
-                            <Grid.Col span={9}>
-                                {
-                                    insertType === 'create'
-                                        ? <DomainForm />
-                                        : <DomainUpdateForm />
-                                }
-                            </Grid.Col>
-                        </Grid>
-                    </Box>
-                </Box>
-            }
-        </>
-    );
+	return (
+		<>
+			{progress !== 100 ? (
+				<Progress
+					color="red"
+					size={"sm"}
+					striped
+					animated
+					value={progress}
+					transitionDuration={200}
+				/>
+			) : (
+				<Box>
+					<DomainHeaderNavbar
+						pageTitle={t("ManageDomain")}
+						roles={t("Roles")}
+						allowZeroPercentage=""
+						currencySymbol=""
+					/>
+					<Box p="8">
+						<Grid columns={24} gutter={{ base: 8 }}>
+							<Grid.Col span={1}>
+								<_Navigation id={id} module="b2b_dashboard" />
+							</Grid.Col>
+							<Grid.Col span={23}>
+								<Box bg="white" p="xs" className="borderRadiusAll">
+									<DomainTable open={open} close={close} />
+								</Box>
+							</Grid.Col>
+							<GlobalDrawer opened={opened} close={close} title="Domain Form">
+								{insertType === "create" ? <DomainForm /> : <DomainUpdateForm />}
+							</GlobalDrawer>
+						</Grid>
+					</Box>
+				</Box>
+			)}
+		</>
+	);
 }
 
 export default DomainIndex;

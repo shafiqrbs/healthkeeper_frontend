@@ -10,7 +10,7 @@ import {
 	IconPdf,
 	IconFileTypeXls,
 } from "@tabler/icons-react";
-import { useHotkeys, useMediaQuery } from "@mantine/hooks";
+import { useHotkeys } from "@mantine/hooks";
 import { useDispatch, useSelector } from "react-redux";
 import FilterModel from "./FilterModel.jsx";
 import { setFilterData, setGlobalFetching, setSearchKeyword } from "@/app/store/core/crudSlice.js";
@@ -18,7 +18,6 @@ import { setFilterData, setGlobalFetching, setSearchKeyword } from "@/app/store/
 function KeywordSearch({ module }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
-	const matches = useMediaQuery("(max-width: 64em)");
 
 	const [searchKeywordTooltip, setSearchKeywordTooltip] = useState(false);
 	const [filterModel, setFilterModel] = useState(false);

@@ -6,7 +6,7 @@ import { setFilterData, setSearchKeyword, setInsertType } from "@/app/store/core
 import __Update from "./__Update";
 import __Create from "./__Create";
 
-export default function _Form({ form }) {
+export default function _Form({ form, close }) {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -64,8 +64,8 @@ export default function _Form({ form }) {
 
 	// =============== render form based on mode ================
 	if (insertType === "create") {
-		return <__Create form={form} />;
+		return <__Create form={form} close={close} />;
 	}
 
-	return <__Update form={form} />;
+	return <__Update form={form} close={close} />;
 }
