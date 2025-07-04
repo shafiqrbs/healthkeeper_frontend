@@ -138,7 +138,7 @@ function KeywordSearch({ module }) {
 						placeholder={t("EnterSearchAnyKeyword")}
 						onKeyDown={handleKeyDown}
 						onChange={handleOnChange}
-						value={searchKeyword}
+						value={searchKeyword || ""}
 						id={"SearchKeyword"}
 						rightSection={
 							searchKeyword ? (

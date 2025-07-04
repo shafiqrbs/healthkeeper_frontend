@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import VendorForm from "../___VendorForm";
+import VendorForm from "./___VendorForm";
 import { modals } from "@mantine/modals";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { useDispatch } from "react-redux";

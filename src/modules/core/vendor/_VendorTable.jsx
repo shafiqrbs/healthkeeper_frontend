@@ -199,6 +199,12 @@ function _VendorTable({ open, close }) {
 		}
 	};
 
+	const handleCreateVendor = () => {
+		open();
+		dispatch(setInsertType({ insertType: "create", module: "vendor" }));
+		navigate("/core/vendor");
+	};
+
 	return (
 		<>
 			<Box
@@ -216,7 +222,7 @@ function _VendorTable({ open, close }) {
 						type="submit"
 						id="EntityFormSubmit"
 						leftSection={<IconPlus size={16} />}
-						onClick={open}
+						onClick={handleCreateVendor}
 						miw={100}
 					>
 						<Text fz={14} fw={400}>

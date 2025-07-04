@@ -11,7 +11,7 @@ import KeywordSearch from "@/modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
 import tableCss from "@assets/css/Table.module.css";
 import getConfigData from "@hooks/config-data/useConfigData";
-import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent.jsx";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 
 function DomainTable({ open }) {
 	const dispatch = useDispatch();
@@ -148,6 +148,12 @@ function DomainTable({ open }) {
 	};
 	const user = JSON.parse(localStorage.getItem("user") || "{}");
 
+	const handleCreateDomain = () => {
+		open();
+		dispatch(setInsertType({ insertType: "create", module: "domain" }));
+		navigate("/domain", { replace: true });
+	};
+
 	return (
 		<>
 			<Box
@@ -158,14 +164,14 @@ function DomainTable({ open }) {
 				className="boxBackground borderRadiusAll border-bottom-none"
 			>
 				<Flex align="center" justify="space-between" gap={4}>
-					<KeywordSearch module="customer" />
+					<KeywordSearch module="domain" />
 					<Button
 						size="xs"
 						className="btnPrimaryBg"
 						type="submit"
 						id="EntityFormSubmit"
 						leftSection={<IconPlus size={16} />}
-						onClick={open}
+						onClick={handleCreateDomain}
 						miw={100}
 					>
 						<Text fz={14} fw={400}>

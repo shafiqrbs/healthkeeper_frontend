@@ -1,27 +1,25 @@
 import React, { useState } from "react";
-import VendorForm from "./___VendorForm";
+import DomainForm from "./___DomainForm";
 import { modals } from "@mantine/modals";
-import { useDispatch, useSelector } from "react-redux";
+import { storeEntityData } from "@/app/store/core/crudThunk";
+import { useDispatch } from "react-redux";
+import { setGlobalFetching, setRefetchData } from "@/app/store/core/crudSlice";
 import { useTranslation } from "react-i18next";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconAlertCircle } from "@tabler/icons-react";
 import { rem, Text } from "@mantine/core";
-import { ERROR_NOTIFICATION_COLOR } from "@/constants";
-import { updateEntityData } from "@/app/store/core/crudThunk";
-import { useParams, useNavigate } from "react-router-dom";
-import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
-import { setInsertType } from "@/app/store/core/crudSlice";
+import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants";
+import { getDomainFormInitialValues } from "../helpers/request";
 
-export default function __Update({ form, close }) {
+export default function __Create({ form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
-	const [customerData, setCustomerData] = useState(null);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const navigate = useNavigate();
-	const { id } = useParams();
-	const vendorUpdateData = useSelector((state) => state.crud.vendor.editData);
+	const [businessModelId, setBusinessModelId] = useState(null);
+	const [moduleChecked, setModuleChecked] = useState([]);
 
 	const handleSubmit = (values) => {
+		values["modules"] = moduleChecked;
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
@@ -34,45 +32,37 @@ export default function __Update({ form, close }) {
 
 	async function handleConfirmModal(values) {
 		try {
+			setIsLoading(true);
 			const value = {
-				url: `core/vendor/${id}`,
+				url: "domain/global",
 				data: values,
-				module: "vendor",
+				module: "domain",
 			};
 
-			const resultAction = await dispatch(updateEntityData(value));
-
-			if (updateEntityData.rejected.match(resultAction)) {
+			const resultAction = await dispatch(storeEntityData(value));
+			if (storeEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
-
-				// Check if there are field validation errors and dynamically set them
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
+						errorObject[key] = fieldErrors[key][0];
 					});
-					// Display the errors using your form's `setErrors` function dynamically
 					form.setErrors(errorObject);
 				}
-			} else if (updateEntityData.fulfilled.match(resultAction)) {
+			} else if (storeEntityData.fulfilled.match(resultAction)) {
+				form.reset();
+				close(); // close the drawer
+				setBusinessModelId(null);
+				setModuleChecked([]);
+				dispatch(setRefetchData({ module: "domain", refetching: true }));
 				notifications.show({
-					color: "teal",
-					title: t("UpdateSuccessfully"),
+					color: SUCCESS_NOTIFICATION_COLOR,
+					title: t("CreateSuccessfully"),
 					icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
 					loading: false,
-					autoClose: 700,
+					autoClose: 1400,
 					style: { backgroundColor: "lightgray" },
 				});
-
-				setTimeout(() => {
-					useVendorDataStoreIntoLocalStorage();
-					form.reset();
-					dispatch(setInsertType({ insertType: "create", module: "vendor" }));
-					setIsLoading(false);
-					close(); // close the drawer
-					navigate("/core/vendor", { replace: true });
-					setCustomerData(null);
-				}, 700);
 			}
 		} catch (error) {
 			console.error(error);
@@ -84,17 +74,19 @@ export default function __Update({ form, close }) {
 				autoClose: 2000,
 				style: { backgroundColor: "lightgray" },
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	}
 
 	return (
-		<VendorForm
-			type="update"
+		<DomainForm
 			form={form}
-			data={vendorUpdateData}
 			handleSubmit={handleSubmit}
-			customerData={customerData}
-			setCustomerData={setCustomerData}
+			businessModelId={businessModelId}
+			setBusinessModelId={setBusinessModelId}
+			moduleChecked={moduleChecked}
+			setModuleChecked={setModuleChecked}
 			isLoading={isLoading}
 			setIsLoading={setIsLoading}
 		/>
