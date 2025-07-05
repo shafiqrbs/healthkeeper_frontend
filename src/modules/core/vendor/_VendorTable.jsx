@@ -20,6 +20,7 @@ import { notifications } from "@mantine/notifications";
 import { getCoreVendors } from "@/common/utils/index.js";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import CreateButton from "@components/buttons/CreateButton.jsx";
+import DataTableFooter from "@components/tables/DataTableFooter.jsx";
 
 function _VendorTable({ open, close }) {
 	const isMounted = useMounted();
@@ -28,7 +29,7 @@ function _VendorTable({ open, close }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { id } = useParams();
 	const height = mainAreaHeight - 98; //TabList height 104
-	const tableRef = useRef(null);
+	const scrollViewportRef = useRef(null);
 
 	const perPage = 50;
 	const [page, setPage] = useState(1);
@@ -92,28 +93,28 @@ function _VendorTable({ open, close }) {
 		}
 	};
 
-	const handleScroll = useCallback(
-		(e) => {
-			const { scrollTop, scrollHeight, clientHeight } = e.target;
-			// Load more when user scrolls to bottom (with 100px threshold)
-			if (scrollHeight - scrollTop - clientHeight < 100 && !fetching && hasMore) {
-				setPage((prev) => prev + 1);
-			}
-		},
-		[fetching, hasMore]
-	);
+	const loadMoreRecords = useCallback(() => {
+		if (hasMore && !fetching) {
+			const nextPage = page + 1;
+			setPage(nextPage);
+			fetchData(nextPage, true);
+		} else if (!hasMore) {
+			notifications.show({
+				title: t("No more records"),
+				message: t("All records have been loaded."),
+			});
+		}
+	}, [hasMore, fetching, page]);
 
 	useEffect(() => {
 		if (!id && (isMounted || refetchData === true)) {
 			fetchData(1, false);
+			setPage(1);
+			setHasMore(true);
+			// Reset scroll position when data is refreshed
+			scrollViewportRef.current?.scrollTo(0, 0);
 		}
 	}, [dispatch, searchKeyword, vendorFilterData, refetchData, isMounted, id]);
-
-	useEffect(() => {
-		if (page > 1) {
-			fetchData(page, true);
-		}
-	}, [page]);
 
 	const handleVendorEdit = (id) => {
 		dispatch(setInsertType({ insertType: "update", module: "vendor" }));
@@ -216,7 +217,6 @@ function _VendorTable({ open, close }) {
 			</Box>
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
-					ref={tableRef}
 					classNames={{
 						root: tableCss.root,
 						table: tableCss.table,
@@ -301,13 +301,12 @@ function _VendorTable({ open, close }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					scrollAreaProps={{
-						type: "scroll",
-						onScrollPositionChange: handleScroll,
-					}}
+					height={height - 72}
+					onScrollToBottom={loadMoreRecords}
+					scrollViewportRef={scrollViewportRef}
 				/>
 			</Box>
+			<DataTableFooter indexData={vendorListData} module="vendors" />
 			{viewDrawer && (
 				<VendorViewDrawer
 					viewDrawer={viewDrawer}

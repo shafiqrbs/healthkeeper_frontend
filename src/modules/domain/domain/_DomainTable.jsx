@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { Group, Box, ActionIcon, Text, Menu, rem, Flex } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, Menu, rem, Flex, Paper } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconTrashX, IconDotsVertical, IconRestore } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
@@ -13,21 +13,26 @@ import tableCss from "@assets/css/Table.module.css";
 import getConfigData from "@hooks/config-data/useConfigData";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import CreateButton from "@components/buttons/CreateButton";
+import { notifications } from "@mantine/notifications";
+import DataTableFooter from "@components/tables/DataTableFooter";
 
 function DomainTable({ open }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 98; //TabList height 104
+	const scrollViewportRef = useRef(null);
+
 	const perPage = 50;
 	const [page, setPage] = useState(1);
+	const [hasMore, setHasMore] = useState(true);
+	const [fetching, setFetching] = useState(false);
 
 	const { configData, fetchData } = getConfigData();
 	const [superadmin, setSuperadmin] = useState(
 		configData?.domain?.modules?.includes(["superadmin"]) || false
 	);
 
-	const fetching = useSelector((state) => state.crud.domain.fetching);
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 
 	const navigate = useNavigate();
@@ -35,35 +40,71 @@ function DomainTable({ open }) {
 
 	const [indexData, setIndexData] = useState([]);
 
-	useEffect(() => {
-		const fetchDomainData = async () => {
-			const value = {
-				url: "domain/global",
-				params: {
-					term: searchKeyword,
-					page: page,
-					offset: perPage,
-				},
-				module: "domain",
-			};
+	const fetchDomainData = async (pageNum = 1, append = false) => {
+		if (!hasMore && pageNum > 1) return;
 
-			try {
-				const resultAction = await dispatch(getIndexEntityData(value));
-
-				if (getIndexEntityData.rejected.match(resultAction)) {
-					console.error("Error:", resultAction);
-				} else if (getIndexEntityData.fulfilled.match(resultAction)) {
-					setIndexData(resultAction.payload);
-				}
-			} catch (err) {
-				console.error("Unexpected error:", err);
-			} finally {
-				setReloadList(false);
-			}
+		setFetching(true);
+		const value = {
+			url: "domain/global",
+			params: {
+				term: searchKeyword,
+				page: pageNum,
+				offset: perPage,
+			},
+			module: "domain",
 		};
 
-		fetchDomainData();
-	}, [dispatch, searchKeyword, page, fetching]);
+		try {
+			const resultAction = await dispatch(getIndexEntityData(value));
+
+			if (getIndexEntityData.rejected.match(resultAction)) {
+				console.error("Error:", resultAction);
+			} else if (getIndexEntityData.fulfilled.match(resultAction)) {
+				const newData = resultAction.payload.data;
+				const total = resultAction.payload.total;
+
+				// Update hasMore based on whether we've loaded all data
+				setHasMore(newData.length === perPage && pageNum * perPage < total);
+
+				// If appending, combine with existing data
+				if (append && pageNum > 1) {
+					setIndexData((prevData) => ({
+						...prevData,
+						data: [...prevData.data, ...newData],
+						total: total,
+					}));
+				} else {
+					setIndexData(resultAction.payload);
+				}
+			}
+		} catch (err) {
+			console.error("Unexpected error:", err);
+		} finally {
+			setFetching(false);
+			setReloadList(false);
+		}
+	};
+
+	const loadMoreRecords = useCallback(() => {
+		if (hasMore && !fetching) {
+			const nextPage = page + 1;
+			setPage(nextPage);
+			fetchDomainData(nextPage, true);
+		} else if (!hasMore) {
+			notifications.show({
+				title: t("No more records"),
+				message: t("All records have been loaded."),
+			});
+		}
+	}, [hasMore, fetching, page]);
+
+	useEffect(() => {
+		fetchDomainData(1, false);
+		setPage(1);
+		setHasMore(true);
+		// Reset scroll position when data is refreshed
+		scrollViewportRef.current?.scrollTo(0, 0);
+	}, [dispatch, searchKeyword]);
 
 	const handleConfirmDomainReset = async (id) => {
 		try {
@@ -364,18 +405,14 @@ function DomainTable({ open }) {
 					]}
 					fetching={fetching || reloadList}
 					totalRecords={indexData.total}
-					recordsPerPage={perPage}
-					page={page}
-					onPageChange={(p) => {
-						setPage(p);
-						dispatch(setRefetchData({ module: "domain", refetching: true }));
-					}}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					scrollAreaProps={{ type: "never" }}
+					height={height - 72}
+					onScrollToBottom={loadMoreRecords}
+					scrollViewportRef={scrollViewportRef}
 				/>
 			</Box>
+			<DataTableFooter indexData={indexData} module="domains" />
 		</>
 	);
 }
