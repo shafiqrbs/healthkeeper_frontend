@@ -31,8 +31,8 @@ function InputNumberForm({
 					px={16}
 					py={2}
 					position="top-end"
-					bg={`red.4`}
-					c={"white"}
+					bg="var(--theme-error-color)"
+					c="white"
 					withArrow
 					offset={2}
 					zIndex={999}
@@ -62,9 +62,14 @@ function InputNumberForm({
 						leftSection={leftSection}
 						rightSection={
 							form.values[name] && closeIcon ? (
-								<Tooltip label={t("Close")} withArrow bg={`red.1`} c={"red.3"}>
+								<Tooltip
+									label={t("Close")}
+									withArrow
+									bg="var(--theme-error-color)"
+									c="white"
+								>
 									<IconX
-										color={`red.5`}
+										color="var(--theme-error-color)"
 										size={16}
 										opacity={0.5}
 										onClick={() => {
@@ -79,8 +84,9 @@ function InputNumberForm({
 									py={2}
 									withArrow
 									position={"left"}
-									c={"black"}
-									bg={`gray.1`}
+									c="white"
+									bg="var(--theme-info-color)"
+									radius="sm"
 									transitionProps={{
 										transition: "pop-bottom-left",
 										duration: 500,

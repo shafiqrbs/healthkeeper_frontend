@@ -1,28 +1,24 @@
-import React, { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import {
-	Button,
-	Flex,
 	Grid,
 	Box,
 	ScrollArea,
 	Group,
-	Text,
-	Title,
 	Stack,
 	Checkbox,
 	Tooltip,
 	LoadingOverlay,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconDeviceFloppy } from "@tabler/icons-react";
 import { useHotkeys, useMediaQuery } from "@mantine/hooks";
 
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import SelectForm from "@components/form-builders/SelectForm";
-import useGlobalDropdownData from "@/common/hooks/dropdown/useGlobalDropdownData";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 
 function ___DomainForm({
 	form,
@@ -40,7 +36,7 @@ function ___DomainForm({
 	setIsLoading,
 }) {
 	const { t } = useTranslation();
-	const { isOnline, mainAreaHeight } = useOutletContext();
+	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 100; //TabList height 104
 	const matches = useMediaQuery("(max-width: 64em)");
 
@@ -99,187 +95,142 @@ function ___DomainForm({
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Grid columns={12} gutter={{ base: 8 }}>
 					<Grid.Col span={12}>
-						<Box bg="white" className="borderRadiusAll">
-							<Box bg="white" pos="relative">
-								<LoadingOverlay
-									visible={isLoading}
-									zIndex={1000}
-									overlayProps={{ radius: "sm", blur: 1 }}
-								/>
-								<Box
-									pl="xs"
-									pr={8}
-									py={6}
-									mb={4}
-									className="boxBackground borderRadiusAll"
+						<Box bg="white" pos="relative">
+							<LoadingOverlay
+								visible={isLoading}
+								zIndex={1000}
+								overlayProps={{ radius: "sm", blur: 1 }}
+							/>
+							<Stack justify="space-between" px="xs" className="borderRadiusAll">
+								<ScrollArea
+									h={height}
+									scrollbarSize={2}
+									scrollbars="y"
+									type="hover"
+									mb={16}
 								>
-									<Grid>
-										<Grid.Col span={6}>
-											<Title order={6} pt={6}>
-												{t(
-													type === "create"
-														? "CreateNewDomain"
-														: "UpdateDomain"
-												)}
-											</Title>
-										</Grid.Col>
-										<Grid.Col span={6}>
-											<Stack right align="flex-end">
-												<>
-													{isOnline && (
-														<Button
-															size="xs"
-															className="btnPrimaryBg"
-															type="submit"
-															id="EntityFormSubmit"
-															leftSection={
-																<IconDeviceFloppy size={16} />
-															}
-														>
-															<Flex direction="column" gap={0}>
-																<Text fz={14} fw={400}>
-																	{t(
-																		type === "create"
-																			? "CreateAndSave"
-																			: "UpdateAndSave"
-																	)}
-																</Text>
-															</Flex>
-														</Button>
-													)}
-												</>
-											</Stack>
-										</Grid.Col>
-									</Grid>
-								</Box>
-								<Box pl="xs" pr="xs" className="borderRadiusAll">
-									<ScrollArea
-										h={height}
-										scrollbarSize={2}
-										scrollbars="y"
-										type="never"
-									>
-										<Box>
-											<Box mt={8}>
-												<SelectForm
-													tooltip={t("BusinessModel")}
-													label={t("BusinessModel")}
-													placeholder={t("ChooseBusinessModel")}
-													required={true}
-													nextField="company_name"
-													name="business_model_id"
-													form={form}
-													dropdownValue={businessModelDropdown}
-													mt={8}
-													id="business_model_id"
-													searchable={false}
-													value={businessModelId}
-													changeValue={setBusinessModelId}
-													clearable={false}
-													allowDeselect={false}
-												/>
-											</Box>
+									<Box>
+										<Box mt={8}>
+											<SelectForm
+												tooltip={t("BusinessModel")}
+												label={t("BusinessModel")}
+												placeholder={t("ChooseBusinessModel")}
+												required={true}
+												nextField="company_name"
+												name="business_model_id"
+												form={form}
+												dropdownValue={businessModelDropdown}
+												mt={8}
+												id="business_model_id"
+												searchable={false}
+												value={businessModelId}
+												changeValue={setBusinessModelId}
+												clearable={false}
+												allowDeselect={false}
+											/>
+										</Box>
+										<Box mt="xs">
+											<InputForm
+												tooltip={t("CompanyStoreNameValidateMessage")}
+												label={t("CompanyStoreName")}
+												placeholder={t("CompanyStoreName")}
+												required={true}
+												nextField="mobile"
+												name="company_name"
+												form={form}
+												mt={0}
+												id="company_name"
+											/>
+										</Box>
+										<Box mt="xs">
+											<InputNumberForm
+												tooltip={t("MobileValidateMessage")}
+												label={t("Mobile")}
+												placeholder={t("Mobile")}
+												required={true}
+												nextField="alternative_mobile"
+												name="mobile"
+												form={form}
+												id="mobile"
+											/>
+										</Box>
+										<Box mt="xs">
+											<InputNumberForm
+												tooltip={t("AlternativeMobileValidateMessage")}
+												label={t("AlternativeMobile")}
+												placeholder={t("AlternativeMobile")}
+												required={false}
+												nextField="email"
+												name="alternative_mobile"
+												form={form}
+												mt={8}
+												id="alternative_mobile"
+											/>
+										</Box>
+										<Box mt="xs">
+											<InputForm
+												tooltip={t("InvalidEmail")}
+												label={t("Email")}
+												placeholder={t("Email")}
+												required={true}
+												nextField="name"
+												name="email"
+												form={form}
+												mt={8}
+												id="email"
+											/>
+										</Box>
+										<Box mt="xs">
+											<InputForm
+												tooltip={t("ClientNameValidateMessage")}
+												label={t("ClientName")}
+												placeholder={t("ClientName")}
+												required={true}
+												nextField="username"
+												name="name"
+												form={form}
+												id="name"
+												mt={8}
+											/>
+										</Box>
+										{type === "create" && (
 											<Box mt="xs">
 												<InputForm
-													tooltip={t("CompanyStoreNameValidateMessage")}
-													label={t("CompanyStoreName")}
-													placeholder={t("CompanyStoreName")}
+													tooltip={t("DomainUserValidateMessage")}
+													label={t("DomainUser")}
+													placeholder={t("DomainUser")}
 													required={true}
-													nextField="mobile"
-													name="company_name"
-													form={form}
-													mt={0}
-													id="company_name"
-												/>
-											</Box>
-											<Box mt="xs">
-												<InputNumberForm
-													tooltip={t("MobileValidateMessage")}
-													label={t("Mobile")}
-													placeholder={t("Mobile")}
-													required={true}
-													nextField="alternative_mobile"
-													name="mobile"
-													form={form}
-													id="mobile"
-												/>
-											</Box>
-											<Box mt="xs">
-												<InputNumberForm
-													tooltip={t("AlternativeMobileValidateMessage")}
-													label={t("AlternativeMobile")}
-													placeholder={t("AlternativeMobile")}
-													required={false}
-													nextField="email"
-													name="alternative_mobile"
+													nextField="address"
+													name="username"
 													form={form}
 													mt={8}
-													id="alternative_mobile"
+													id="username"
 												/>
 											</Box>
-											<Box mt="xs">
-												<InputForm
-													tooltip={t("InvalidEmail")}
-													label={t("Email")}
-													placeholder={t("Email")}
-													required={true}
-													nextField="name"
-													name="email"
-													form={form}
-													mt={8}
-													id="email"
-												/>
-											</Box>
-											<Box mt="xs">
-												<InputForm
-													tooltip={t("ClientNameValidateMessage")}
-													label={t("ClientName")}
-													placeholder={t("ClientName")}
-													required={true}
-													nextField="username"
-													name="name"
-													form={form}
-													id="name"
-													mt={8}
-												/>
-											</Box>
-											{type === "create" && (
-												<Box mt="xs">
-													<InputForm
-														tooltip={t("DomainUserValidateMessage")}
-														label={t("DomainUser")}
-														placeholder={t("DomainUser")}
-														required={true}
-														nextField="address"
-														name="username"
-														form={form}
-														mt={8}
-														id="username"
-													/>
-												</Box>
-											)}
-											<Box mt="xs">
-												<TextAreaForm
-													tooltip={t("Address")}
-													label={t("Address")}
-													placeholder={t("Address")}
-													required={false}
-													nextField="isNotEmpty"
-													name="address"
-													form={form}
-													mt={8}
-													id="address"
-												/>
-											</Box>
+										)}
+										<Box mt="xs">
+											<TextAreaForm
+												tooltip={t("Address")}
+												label={t("Address")}
+												placeholder={t("Address")}
+												required={false}
+												nextField="isNotEmpty"
+												name="address"
+												form={form}
+												mt={8}
+												id="address"
+											/>
+										</Box>
 
-											<Box mt="xs">
-												<Checkbox.Group
-													label={t("Modules")}
-													description={t("selectModulesForAccess")}
-													value={moduleChecked}
-													onChange={setModuleChecked}
-												>
-													<Group mt="xs">
+										<Box mt="xs">
+											<Checkbox.Group
+												label={t("Modules")}
+												description={t("selectModulesForAccess")}
+												value={moduleChecked}
+												onChange={setModuleChecked}
+											>
+												<Group mt="xs">
+													<Stack>
 														{modulesData.map((module, index) => (
 															<Tooltip
 																key={index}
@@ -287,25 +238,27 @@ function ___DomainForm({
 																label={t(module.label)}
 															>
 																<Checkbox
-																	value={module.value}
+																	value={module.slug}
 																	label={t(module.label)}
 																/>
 															</Tooltip>
 														))}
-													</Group>
-												</Checkbox.Group>
-											</Box>
+													</Stack>
+												</Group>
+											</Checkbox.Group>
+										</Box>
 
-											{/* =============== product type checkbox group for update mode ================ */}
-											{type === "update" && productTypeCheckbox && (
-												<Box mt="xs">
-													<Checkbox.Group
-														label={t("ProductType")}
-														description={t("selectProductType")}
-														value={productTypeChecked || []}
-														onChange={setProductTypeChecked}
-													>
-														<Group mt="xs">
+										{/* =============== product type checkbox group for update mode ================ */}
+										{type === "update" && productTypeCheckbox && (
+											<Box mt="xs">
+												<Checkbox.Group
+													label={t("ProductType")}
+													description={t("selectProductType")}
+													value={productTypeChecked || []}
+													onChange={setProductTypeChecked}
+												>
+													<Group mt="xs">
+														<Stack>
 															{productTypeCheckbox.map(
 																(type, index) => (
 																	<Tooltip
@@ -320,14 +273,15 @@ function ___DomainForm({
 																	</Tooltip>
 																)
 															)}
-														</Group>
-													</Checkbox.Group>
-												</Box>
-											)}
-										</Box>
-									</ScrollArea>
-								</Box>
-							</Box>
+														</Stack>
+													</Group>
+												</Checkbox.Group>
+											</Box>
+										)}
+									</Box>
+								</ScrollArea>
+								<DrawerStickyFooter type={type} />
+							</Stack>
 						</Box>
 					</Grid.Col>
 				</Grid>

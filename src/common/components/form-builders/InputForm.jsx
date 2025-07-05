@@ -31,7 +31,7 @@ function InputForm({
 					px={16}
 					py={2}
 					position="top-end"
-					bg="red.4"
+					bg="var(--theme-validation-error-color)"
 					c="white"
 					withArrow
 					offset={2}
@@ -62,9 +62,14 @@ function InputForm({
 						leftSection={leftSection}
 						rightSection={
 							form.values[name] ? (
-								<Tooltip label={t("Close")} withArrow bg="red.1" c="red.3">
+								<Tooltip
+									label={t("Close")}
+									withArrow
+									bg="var(--theme-error-color)"
+									c="white"
+								>
 									<IconX
-										color="red"
+										color="var(--theme-error-color)"
 										size={16}
 										opacity={0.5}
 										onClick={() => form.setFieldValue(name, "")}
@@ -77,8 +82,8 @@ function InputForm({
 									py={2}
 									withArrow
 									position="left"
-									c="black"
-									bg="gray.1"
+									c="white"
+									bg="var(--theme-info-color)"
 									transitionProps={{
 										transition: "pop-bottom-left",
 										duration: 500,

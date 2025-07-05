@@ -11,9 +11,10 @@ import {
 	IconFileTypeXls,
 } from "@tabler/icons-react";
 import { useHotkeys } from "@mantine/hooks";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import FilterModel from "./FilterModel.jsx";
 import { setFilterData, setGlobalFetching, setSearchKeyword } from "@/app/store/core/crudSlice.js";
+import useDebounce from "@hooks/useDebounce.js";
 
 function KeywordSearch({ module }) {
 	const { t } = useTranslation();
@@ -21,8 +22,11 @@ function KeywordSearch({ module }) {
 
 	const [searchKeywordTooltip, setSearchKeywordTooltip] = useState(false);
 	const [filterModel, setFilterModel] = useState(false);
+	const [inputValue, setInputValue] = useState("");
 
-	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
+	const debouncedSetSearchKeyword = useDebounce((value) => {
+		dispatch(setSearchKeyword(value));
+	}, 250);
 
 	useHotkeys(
 		[
@@ -37,7 +41,7 @@ function KeywordSearch({ module }) {
 	);
 
 	const handleKeyDown = (event) => {
-		if (event.key === "Enter" && searchKeyword.length > 0) {
+		if (event.key === "Enter" && inputValue.length > 0) {
 			dispatch(setGlobalFetching(true)), setSearchKeywordTooltip(false);
 		} else {
 			setSearchKeywordTooltip(true),
@@ -48,6 +52,7 @@ function KeywordSearch({ module }) {
 	};
 
 	const resetFilters = () => {
+		setInputValue("");
 		dispatch(setSearchKeyword(""));
 		dispatch(setGlobalFetching(true));
 
@@ -78,7 +83,8 @@ function KeywordSearch({ module }) {
 	const handleOnChange = (event) => {
 		const { value } = event.currentTarget;
 
-		dispatch(setSearchKeyword(value));
+		setInputValue(value);
+		debouncedSetSearchKeyword(value);
 
 		if (value) {
 			setSearchKeywordTooltip(false);
@@ -89,7 +95,7 @@ function KeywordSearch({ module }) {
 	};
 
 	const handleSearchClick = () => {
-		if (searchKeyword.length > 0) {
+		if (inputValue.length > 0) {
 			dispatch(setGlobalFetching(true));
 			setSearchKeywordTooltip(false);
 		} else {
@@ -101,7 +107,7 @@ function KeywordSearch({ module }) {
 	};
 
 	const handlePDFDownload = () => {
-		if (searchKeyword.length > 0) {
+		if (inputValue.length > 0) {
 			dispatch(setGlobalFetching(true));
 			setSearchKeywordTooltip(false);
 		} else {
@@ -125,7 +131,7 @@ function KeywordSearch({ module }) {
 					px={16}
 					py={2}
 					position="top-end"
-					color="red"
+					color="var(--theme-error-color)"
 					withArrow
 					offset={2}
 					zIndex={100}
@@ -138,16 +144,19 @@ function KeywordSearch({ module }) {
 						placeholder={t("EnterSearchAnyKeyword")}
 						onKeyDown={handleKeyDown}
 						onChange={handleOnChange}
-						value={searchKeyword || ""}
+						value={inputValue}
 						id={"SearchKeyword"}
 						rightSection={
-							searchKeyword ? (
-								<Tooltip label={t("Close")} withArrow bg={`red.5`}>
+							inputValue ? (
+								<Tooltip label={t("Close")} withArrow bg="var(--theme-error-color)">
 									<IconX
-										color={`red`}
+										color="var(--theme-error-color)"
 										size={16}
 										opacity={0.5}
-										onClick={() => dispatch(setSearchKeyword(""))}
+										onClick={() => {
+											setInputValue("");
+											dispatch(setSearchKeyword(""));
+										}}
 									/>
 								</Tooltip>
 							) : (
@@ -155,8 +164,8 @@ function KeywordSearch({ module }) {
 									label={t("FieldIsRequired")}
 									withArrow
 									position={"bottom"}
-									c={"red"}
-									bg={`red.1`}
+									c="white"
+									bg="var(--theme-error-color-hover)"
 								>
 									<IconInfoCircle size={16} opacity={0.5} />
 								</Tooltip>
@@ -167,7 +176,7 @@ function KeywordSearch({ module }) {
 				<ActionIcon.Group mt={"1"} justify="center">
 					<ActionIcon
 						variant="default"
-						c={"red.4"}
+						c="var(--theme-error-color)"
 						size="lg"
 						aria-label="Filter"
 						onClick={handleSearchClick}
@@ -178,8 +187,8 @@ function KeywordSearch({ module }) {
 							py={2}
 							withArrow
 							position={"bottom"}
-							c={"red"}
-							bg={`red.1`}
+							c="var(--theme-error-color)"
+							bg="var(--theme-error-color-hover)"
 							transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 						>
 							<IconSearch style={{ width: rem(18) }} stroke={1.5} />
@@ -191,7 +200,7 @@ function KeywordSearch({ module }) {
 							<ActionIcon
 								variant="default"
 								size="lg"
-								c={"gray.6"}
+								c="var(--theme-tooltip-color)"
 								aria-label="Settings"
 								onClick={() => setFilterModel(true)}
 							>
@@ -201,8 +210,8 @@ function KeywordSearch({ module }) {
 									py={2}
 									withArrow
 									position={"bottom"}
-									c={"red"}
-									bg={`red.1`}
+									c="var(--theme-error-color)"
+									bg="var(--theme-error-color-hover)"
 									transitionProps={{
 										transition: "pop-bottom-left",
 										duration: 500,
@@ -212,15 +221,20 @@ function KeywordSearch({ module }) {
 								</Tooltip>
 							</ActionIcon>
 						)}
-					<ActionIcon variant="default" c={"gray.6"} size="lg" aria-label="Reset">
+					<ActionIcon
+						variant="default"
+						c="var(--theme-tooltip-color)"
+						size="lg"
+						aria-label="Reset"
+					>
 						<Tooltip
 							label={t("ResetButton")}
 							px={16}
 							py={2}
 							withArrow
-							position={"bottom"}
-							c={"red"}
-							bg={`red.1`}
+							position="bottom"
+							c="var(--theme-error-color)"
+							bg="var(--theme-error-color-hover)"
 							transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 						>
 							<IconRestore
@@ -232,7 +246,7 @@ function KeywordSearch({ module }) {
 					</ActionIcon>
 					<ActionIcon
 						variant="default"
-						c={"green.8"}
+						c="var(--theme-success-color)"
 						size="lg"
 						aria-label="Filter"
 						onClick={handlePDFDownload}
@@ -242,9 +256,9 @@ function KeywordSearch({ module }) {
 							px={16}
 							py={2}
 							withArrow
-							position={"bottom"}
-							c={"red"}
-							bg={`red.1`}
+							position="bottom"
+							c="var(--theme-error-color)"
+							bg="var(--theme-error-color-hover)"
 							transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 						>
 							<IconPdf style={{ width: rem(18) }} stroke={1.5} />
@@ -252,7 +266,7 @@ function KeywordSearch({ module }) {
 					</ActionIcon>
 					<ActionIcon
 						variant="default"
-						c={"green.8"}
+						c="var(--theme-success-color)"
 						size="lg"
 						aria-label="Filter"
 						onClick={handleExcelDownload}
@@ -262,9 +276,9 @@ function KeywordSearch({ module }) {
 							px={16}
 							py={2}
 							withArrow
-							position={"bottom"}
-							c={"red"}
-							bg={`red.1`}
+							position="bottom"
+							c="var(--theme-error-color)"
+							bg="var(--theme-error-color-hover)"
 							transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 						>
 							<IconFileTypeXls style={{ width: rem(18) }} stroke={1.5} />

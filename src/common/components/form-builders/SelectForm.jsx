@@ -100,7 +100,7 @@ const SelectForm = forwardRef(
 						px={16}
 						py={2}
 						position={position && position ? position : "top-end"}
-						bg={color && color ? color : "red.4"}
+						bg={color && color ? color : "var(--theme-error-color)"}
 						c="white"
 						withArrow
 						offset={2}

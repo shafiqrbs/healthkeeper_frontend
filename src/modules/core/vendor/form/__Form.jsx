@@ -6,7 +6,7 @@ import { setFilterData, setSearchKeyword, setInsertType } from "@/app/store/core
 import __Update from "./__Update";
 import __Create from "./__Create";
 
-export default function _Form({ form, close }) {
+export default function _Form({ form, close, mode }) {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -16,7 +16,7 @@ export default function _Form({ form, close }) {
 	const vendorFilterData = useSelector((state) => state.crud.vendor.filterData);
 
 	// =============== memoized values ================
-	const isEditMode = useMemo(() => Boolean(id), [id]);
+	const isEditMode = mode === "edit";
 	const defaultFilterData = useMemo(
 		() => ({
 			name: "",

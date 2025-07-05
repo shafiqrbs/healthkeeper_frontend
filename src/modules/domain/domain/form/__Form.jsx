@@ -8,7 +8,7 @@ import __Create from "./__Create";
 import { getDomainFormInitialValues } from "../helpers/request";
 import { useForm } from "@mantine/form";
 
-export default function _Form({ close }) {
+export default function _Form({ close, mode }) {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -21,7 +21,7 @@ export default function _Form({ close }) {
 	const form = useForm(getDomainFormInitialValues({ type: insertType }));
 
 	// =============== memoized values ================
-	const isEditMode = useMemo(() => Boolean(id), [id]);
+	const isEditMode = mode === "edit";
 	const defaultFilterData = useMemo(
 		() => ({
 			company_name: "",

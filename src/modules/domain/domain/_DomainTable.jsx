@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { Group, Box, ActionIcon, Text, Menu, rem, Button, Flex } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, Menu, rem, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconTrashX, IconDotsVertical, IconRestore, IconPlus } from "@tabler/icons-react";
+import { IconTrashX, IconDotsVertical, IconRestore } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { setRefetchData, setInsertType } from "@/app/store/core/crudSlice.js";
-import { showEntityData } from "@/app/store/core/crudThunk.js";
+import { getIndexEntityData } from "@/app/store/core/crudThunk.js";
 import KeywordSearch from "@/modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
 import tableCss from "@assets/css/Table.module.css";
 import getConfigData from "@hooks/config-data/useConfigData";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
+import CreateButton from "@components/buttons/CreateButton";
 
 function DomainTable({ open }) {
 	const dispatch = useDispatch();
@@ -27,7 +28,8 @@ function DomainTable({ open }) {
 	);
 
 	const fetching = useSelector((state) => state.crud.domain.fetching);
-	const searchKeyword = useSelector((state) => state.crud.domain.searchKeyword);
+	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
+
 	const navigate = useNavigate();
 	const [reloadList, setReloadList] = useState(true);
 
@@ -46,11 +48,11 @@ function DomainTable({ open }) {
 			};
 
 			try {
-				const resultAction = await dispatch(showEntityData(value));
+				const resultAction = await dispatch(getIndexEntityData(value));
 
-				if (showEntityData.rejected.match(resultAction)) {
+				if (getIndexEntityData.rejected.match(resultAction)) {
 					console.error("Error:", resultAction);
-				} else if (showEntityData.fulfilled.match(resultAction)) {
+				} else if (getIndexEntityData.fulfilled.match(resultAction)) {
 					setIndexData(resultAction.payload);
 				}
 			} catch (err) {
@@ -165,19 +167,7 @@ function DomainTable({ open }) {
 			>
 				<Flex align="center" justify="space-between" gap={4}>
 					<KeywordSearch module="domain" />
-					<Button
-						size="xs"
-						className="btnPrimaryBg"
-						type="submit"
-						id="EntityFormSubmit"
-						leftSection={<IconPlus size={16} />}
-						onClick={handleCreateDomain}
-						miw={100}
-					>
-						<Text fz={14} fw={400}>
-							{t("Create")}
-						</Text>
-					</Button>
+					<CreateButton handleModal={handleCreateDomain} text="CreateDomain" />
 				</Flex>
 			</Box>
 			<Box className="borderRadiusAll border-top-none">

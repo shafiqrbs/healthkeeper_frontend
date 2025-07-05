@@ -10,20 +10,21 @@ export default function GlobalDrawer({ opened, close, title, children }) {
 			position="right"
 			closeOnClickOutside={false}
 			offset={10}
-			radius="md"
+			radius="sm"
+			size="35%"
 		>
 			<Drawer.Overlay />
 			<Drawer.Content>
 				<Drawer.Header
+					mb="xs"
 					styles={{
 						header: {
 							borderBottom: `1px solid var(--theme-drawer-border-color)`,
-							marginBottom: "10px",
 						},
 					}}
 				>
 					<Drawer.Title>
-						<Flex align="center" gap={4}>
+						<Flex align="center" gap={8}>
 							<IconArrowLeft size={16} />{" "}
 							<Text mt={2} fz={16} fw={500}>
 								{title}
@@ -32,7 +33,7 @@ export default function GlobalDrawer({ opened, close, title, children }) {
 					</Drawer.Title>
 					<Drawer.CloseButton />
 				</Drawer.Header>
-				<Drawer.Body>{children}</Drawer.Body>
+				<Drawer.Body pb="xs">{children}</Drawer.Body>
 			</Drawer.Content>
 		</Drawer.Root>
 	);

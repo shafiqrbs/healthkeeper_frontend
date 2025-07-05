@@ -13,7 +13,7 @@ import Shortcut from "@/modules/shortcut/Shortcut";
 import Form from "./form/__Form";
 import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
 
-function VendorIndex({ mode }) {
+function VendorIndex({ mode = "create" }) {
 	const { t } = useTranslation();
 	const form = useForm(getVendorFormInitialValues(t));
 	const progress = useGetLoadingProgress();
@@ -54,7 +54,11 @@ function VendorIndex({ mode }) {
 								</Box>
 							</Grid.Col>
 
-							<GlobalDrawer opened={opened} close={close} title="Vendor Form">
+							<GlobalDrawer
+								opened={opened}
+								close={close}
+								title={mode === "create" ? t("CreateVendor") : t("UpdateVendor")}
+							>
 								<Form form={form} mode={mode} close={close} />
 							</GlobalDrawer>
 

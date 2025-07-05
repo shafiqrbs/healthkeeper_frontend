@@ -22,6 +22,7 @@
 
     --theme-success-color: var(--mantine-color-green-6);
     --theme-error-color: var(--mantine-color-red-6);
+    --theme-error-color-hover: var(--mantine-color-red-1);
     --theme-warning-color: var(--mantine-color-yellow-6);
     --theme-info-color: var(--mantine-color-blue-6);
     --theme-notice-color: var(--mantine-color-gray-6);
@@ -53,6 +54,8 @@
     --theme-edit-btn-color-hover: var(--mantine-color-indigo-8);
 
     --theme-drawer-border-color: var(--mantine-color-gray-2);
+
+    --theme-tooltip-color: var(--mantine-color-gray-6);
 }
 
 body {
@@ -267,7 +270,7 @@ input[type=radio]:checked+label>img {
 }
 
 .btnPrimaryBg {
-    background-color: #905a23 !important;
+    background-color: var(--theme-primary-color-6) !important;
 }
 
 .tooltipPrimaryBg {
@@ -291,4 +294,15 @@ input[type=radio]:checked+label>img {
 
 .title-right .mantine-Flex-root {
     justify-content: flex-end !important;
+}
+
+.drawer-sticky-footer {
+    background-color: var(--theme-primary-color-0) !important;
+    margin-inline: -16px !important;
+    padding: 8px !important;
+}
+
+.drawer-sticky-footer button p {
+    font-size: 14px !important;
+    font-weight: 400 !important;
 }

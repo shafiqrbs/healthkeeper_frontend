@@ -88,7 +88,7 @@ function AppRoute() {
           <Route path="user" element={<UserIndex />} />
           <Route path="user/:id" element={<UserIndex />} /> */}
 					<Route path="vendor" element={<VendorIndex />} />
-					<Route path="vendor/:id" element={<VendorIndex />} />
+					<Route path="vendor/:id" element={<VendorIndex mode="edit" />} />
 					{/* <Route path="setting" element={<SettingsIndex />} />
           <Route path="setting/:id" element={<SettingsIndex />} />
           <Route path="warehouse" element={<WarehouseIndex />} />
@@ -104,7 +104,7 @@ function AppRoute() {
 				</Route>
 				<Route path="/domain/">
 					<Route path="" element={<DomainIndex />} />
-					<Route path="edit/:id" element={<DomainIndex />} />
+					<Route path="edit/:id" element={<DomainIndex mode="edit" />} />
 					{/* <Route path="config/:id" element={<ConfigurationIndex />} />
           <Route path="sitemap" element={<SitemapIndex />} />
           <Route path="sitemap/:id" element={<SitemapIndex />} />

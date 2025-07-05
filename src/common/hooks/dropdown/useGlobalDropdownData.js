@@ -59,6 +59,7 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 				// =============== handle different data structures ================
 				const label = item.display_name || item.name || item.label || item.title || "";
 				const value = String(item.id || item.value || "");
+				const slug = item.slug || "";
 
 				// =============== handle special cases like country with code and phonecode ================
 				if (item.code && item.phonecode) {
@@ -84,7 +85,7 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 					};
 				}
 
-				return { label, value };
+				return { label, value, slug };
 			});
 			setDropdownData(transformedData);
 		}

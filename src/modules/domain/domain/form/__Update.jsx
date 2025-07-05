@@ -56,7 +56,7 @@ export default function __Update({ form, close }) {
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
-			confirmProps: { color: "red" },
+			confirmProps: { color: "var(--theme-primary-color-6)" },
 			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handleConfirmModal(values),
 		});

@@ -1,14 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { Group, Box, ActionIcon, Text, Menu, rem, Button, Flex } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, Menu, rem, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconDotsVertical,
-	IconTrashX,
-	IconAlertCircle,
-	IconCheck,
-	IconPlus,
-} from "@tabler/icons-react";
+import { IconDotsVertical, IconTrashX, IconAlertCircle, IconCheck } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
@@ -25,6 +19,7 @@ import VendorViewDrawer from "./__VendorViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
 import { getCoreVendors } from "@/common/utils/index.js";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
+import CreateButton from "@components/buttons/CreateButton.jsx";
 
 function _VendorTable({ open, close }) {
 	const isMounted = useMounted();
@@ -216,19 +211,7 @@ function _VendorTable({ open, close }) {
 			>
 				<Flex align="center" justify="space-between" gap={4}>
 					<KeywordSearch module="vendor" />
-					<Button
-						size="xs"
-						className="btnPrimaryBg"
-						type="submit"
-						id="EntityFormSubmit"
-						leftSection={<IconPlus size={16} />}
-						onClick={handleCreateVendor}
-						miw={100}
-					>
-						<Text fz={14} fw={400}>
-							{t("Create")}
-						</Text>
-					</Button>
+					<CreateButton handleModal={handleCreateVendor} text="CreateVendor" />
 				</Flex>
 			</Box>
 			<Box className="borderRadiusAll border-top-none">

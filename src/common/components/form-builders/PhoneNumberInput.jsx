@@ -26,7 +26,7 @@ const TooltipContent = forwardRef(({ onClick, onMouseEnter, onMouseLeave, form, 
 			{value ? (
 				<IconX
 					size={16}
-					color="#ff6b6b"
+					color="var(--theme-error-color)"
 					opacity={0.7}
 					onClick={() => form.setFieldValue(name, "")}
 				/>
@@ -69,7 +69,8 @@ export default function PhoneNumber(props) {
 				px={20}
 				py={3}
 				position="top-end"
-				color="red.4"
+				bg="var(--theme-error-color)"
+				c="white"
 				withArrow
 				offset={2}
 				transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
@@ -91,7 +92,7 @@ export default function PhoneNumber(props) {
 							height: "36px",
 							fontSize: "14px",
 							borderRadius: "4px",
-							borderColor: error ? "red" : undefined,
+							borderColor: error ? "var(--theme-error-color)" : undefined,
 							paddingRight: "2.5rem",
 						}}
 						containerStyle={{ marginBottom: 0 }}
@@ -113,8 +114,8 @@ export default function PhoneNumber(props) {
 							py={2}
 							withArrow
 							position="left"
-							c="black"
-							bg="gray.1"
+							c="white"
+							bg="var(--theme-info-color)"
 							transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 						>
 							<TooltipContent form={form} name={name} />

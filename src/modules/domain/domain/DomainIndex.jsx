@@ -14,7 +14,7 @@ import _Navigation from "../common/_Navigation";
 import { useDisclosure } from "@mantine/hooks";
 import Form from "./form/__Form";
 
-function DomainIndex() {
+function DomainIndex({ mode = "create" }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const [opened, { open, close }] = useDisclosure(false);
@@ -55,8 +55,12 @@ function DomainIndex() {
 									<DomainTable open={open} close={close} />
 								</Box>
 							</Grid.Col>
-							<GlobalDrawer opened={opened} close={close} title="Domain Form">
-								<Form close={close} />
+							<GlobalDrawer
+								opened={opened}
+								close={close}
+								title={mode === "create" ? t("CreateDomain") : t("UpdateDomain")}
+							>
+								<Form close={close} mode={mode} />
 							</GlobalDrawer>
 						</Grid>
 					</Box>
