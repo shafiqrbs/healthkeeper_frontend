@@ -91,7 +91,7 @@ const Logo = ({ configData, navigate }) => {
 		return (
 			<NavLink
 				component="button"
-				bg={"transparent"}
+				bg="transparent"
 				style={{
 					color: "white",
 					fontWeight: 800,
@@ -110,14 +110,7 @@ const Logo = ({ configData, navigate }) => {
 	}
 
 	return (
-		<div
-			style={{
-				display: "flex",
-				height: "100%",
-				alignItems: "center",
-				paddingLeft: 16,
-			}}
-		>
+		<Flex pl={16} align="center" h="100%">
 			<Tooltip label={configData?.domain?.company_name || ""} position="right" withArrow>
 				<Anchor
 					target="_blank"
@@ -139,7 +132,7 @@ const Logo = ({ configData, navigate }) => {
 					/>
 				</Anchor>
 			</Tooltip>
-		</div>
+		</Flex>
 	);
 };
 
@@ -532,7 +525,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 					</Modal.Body>
 				</Modal.Content>
 			</Modal.Root>
-			<Box bg="#C6AF9D" mb={"2"} pos={`relative`}>
+			<Box bg="var(--theme-primary-color-6)" mb="2" pos="relative">
 				<Grid columns={24} justify="space-between" gutter={{ base: 2 }}>
 					<Grid.Col span={6}>
 						<Logo configData={configData} navigate={navigate} />

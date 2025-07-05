@@ -8,6 +8,9 @@ const initialState = {
 	// dynamic dropdowns data will be stored in the following format:
 	// businessModel
 	// module
+	// posInvoiceMode
+	// country
+	// currency
 };
 
 const utilitySlice = createSlice({

@@ -99,10 +99,7 @@ function _VendorTable({ open, close }) {
 			setPage(nextPage);
 			fetchData(nextPage, true);
 		} else if (!hasMore) {
-			notifications.show({
-				title: t("No more records"),
-				message: t("All records have been loaded."),
-			});
+			console.info("No more records");
 		}
 	}, [hasMore, fetching, page]);
 
@@ -207,7 +204,7 @@ function _VendorTable({ open, close }) {
 				pl="xs"
 				pr={8}
 				pt="6"
-				pb="4"
+				pb="sm"
 				className="boxBackground borderRadiusAll border-bottom-none"
 			>
 				<Flex align="center" justify="space-between" gap={4}>

@@ -164,7 +164,7 @@ function KeywordSearch({ module }) {
 									label={t("FieldIsRequired")}
 									withArrow
 									position={"bottom"}
-									c="white"
+									c="var(--theme-error-color)"
 									bg="var(--theme-error-color-hover)"
 								>
 									<IconInfoCircle size={16} opacity={0.5} />

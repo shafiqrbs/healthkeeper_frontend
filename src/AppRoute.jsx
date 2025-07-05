@@ -40,7 +40,7 @@ import DomainIndex from "@modules/domain/domain/DomainIndex";
 // import SettingsIndex from "@modules/core/settings/SettingsIndex";
 
 // import StockIndex from "@modules/inventory/stock/StockIndex";
-// import ConfigurationIndex from "@modules/domain/configuraton/ConfigurationIndex";
+import ConfigurationIndex from "@modules/domain/configuration/ConfigurationIndex";
 // import SitemapIndex from "@modules/domain/sitemap/SitemapIndex";
 // import BatchIndex from "@modules/production/batch/BatchIndex";
 // import Requisition from "@modules/procurement/purchase-requisition/Requisition";
@@ -105,8 +105,8 @@ function AppRoute() {
 				<Route path="/domain/">
 					<Route path="" element={<DomainIndex />} />
 					<Route path="edit/:id" element={<DomainIndex mode="edit" />} />
-					{/* <Route path="config/:id" element={<ConfigurationIndex />} />
-          <Route path="sitemap" element={<SitemapIndex />} />
+					<Route path="config/:id" element={<ConfigurationIndex />} />
+					{/* <Route path="sitemap" element={<SitemapIndex />} />
           <Route path="sitemap/:id" element={<SitemapIndex />} />
           <Route path="branch-management" element={<BranchManagementIndex />} /> */}
 				</Route>

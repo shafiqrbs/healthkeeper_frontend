@@ -91,10 +91,7 @@ function DomainTable({ open }) {
 			setPage(nextPage);
 			fetchDomainData(nextPage, true);
 		} else if (!hasMore) {
-			notifications.show({
-				title: t("No more records"),
-				message: t("All records have been loaded."),
-			});
+			console.info("No more records");
 		}
 	}, [hasMore, fetching, page]);
 
