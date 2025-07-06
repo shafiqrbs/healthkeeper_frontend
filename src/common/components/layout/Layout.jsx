@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import MainDashboard from "@modules/dashboard/MainDashboard";
 import useConfigData from "@hooks/config-data/useConfigData";
 import { getLoggedInUser } from "@/common/utils";
+import HomeIndex from "@modules/home/HomeIndex";
 
 const Layout = () => {
 	const user = getLoggedInUser();
@@ -36,7 +37,8 @@ const Layout = () => {
 				{paramPath !== "/" ? (
 					<Outlet context={{ isOnline: networkStatus.online, mainAreaHeight }} />
 				) : (
-					<MainDashboard height={mainAreaHeight} />
+					// <MainDashboard height={mainAreaHeight} />
+					<HomeIndex height={mainAreaHeight} />
 				)}
 			</AppShell.Main>
 			<AppShell.Footer height={footerHeight}>

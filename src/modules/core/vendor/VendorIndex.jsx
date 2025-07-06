@@ -12,6 +12,7 @@ import { useForm } from "@mantine/form";
 import Shortcut from "@/modules/shortcut/Shortcut";
 import Form from "./form/__Form";
 import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
+import { useOutletContext } from "react-router-dom";
 
 function VendorIndex({ mode = "create" }) {
 	const { t } = useTranslation();
@@ -19,6 +20,7 @@ function VendorIndex({ mode = "create" }) {
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
 	const [opened, { open, close }] = useDisclosure(false);
+	const { mainAreaHeight } = useOutletContext();
 
 	return (
 		<>
@@ -44,7 +46,7 @@ function VendorIndex({ mode = "create" }) {
 						<Grid columns={36} gutter={{ base: 8 }}>
 							{!matches && (
 								<Grid.Col span={2}>
-									<Navigation module="base" />
+									<Navigation module="base" mainAreaHeight={mainAreaHeight} />
 								</Grid.Col>
 							)}
 

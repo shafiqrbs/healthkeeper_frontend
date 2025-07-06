@@ -10,6 +10,8 @@ import { BrowserRouter } from "react-router-dom";
 import "@mantine/core/styles.css";
 import "mantine-datatable/styles.layer.css";
 import "@mantine/notifications/styles.css";
+import "@mantine/charts/styles.css";
+import "@mantine/carousel/styles.css";
 import { ModalsProvider } from "@mantine/modals";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./app/store";

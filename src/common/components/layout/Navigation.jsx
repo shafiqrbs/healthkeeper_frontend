@@ -1,18 +1,17 @@
 import React, { useMemo } from "react";
 import { Button, Flex, Text, Tooltip, ScrollArea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { sideNavigationLinks } from "@/constants/sideNavigationLinks";
 
-export default function Navigation({ module = "base" }) {
+export default function Navigation({ module = "base", mainAreaHeight }) {
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 20;
 	const navigate = useNavigate();
 	const links = useMemo(() => sideNavigationLinks[module], [module]);
+
 	return (
-		<ScrollArea h={height - 8} bg="white" type="never" className="border-radius">
-			<Flex direction="column" px={4} py={13} gap={10}>
+		<ScrollArea h={mainAreaHeight} bg="white" type="never" className="border-radius">
+			<Flex direction="column" px={4} py={13} gap={14}>
 				{links.map((item, index) => (
 					<Flex key={index} direction="column" align="center">
 						<Tooltip
@@ -30,22 +29,24 @@ export default function Navigation({ module = "base" }) {
 						>
 							<Button
 								bg={item.color}
-								size="md"
-								px={13}
+								h={46}
+								w={46}
+								px={8}
+								radius="xl"
 								variant="light"
 								color="black"
-								radius="xl"
 								onClick={() => navigate(item.path)}
 							>
 								<Flex align="center">
-									<item.icon size={14} color="white" />
+									<item.icon size={22} color="white" />
 								</Flex>
 							</Button>
 						</Tooltip>
-						<Flex direction="column" align="center" c="black" mt={4}>
+						<Flex direction="column" align="center" className="mt-4">
 							<Text
-								size="12px"
-								c="black"
+								size="11px"
+								fw={500}
+								c="var(--theme-secondary-color-6)"
 								ta="center"
 								style={{
 									wordBreak: "break-word",
