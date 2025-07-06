@@ -770,6 +770,7 @@ function ConfigurationForm({
 									<Box
 										m={10}
 										mb={4}
+										pb={8}
 										className="config-form-header-box boxBackground borderRadiusAll"
 									>
 										<Grid>
@@ -779,42 +780,38 @@ function ConfigurationForm({
 												</Title>
 											</Grid.Col>
 											<Grid.Col span={6}>
-												<>
-													{!saveCreateLoading && isOnline && (
-														<Flex gap={8}>
-															<Button
-																size="xs"
-																className="btnPrimaryBg"
-																type="submit"
-																id="EntityFormSubmit"
-																leftSection={
-																	<IconDeviceFloppy size={16} />
-																}
-															>
-																<Flex direction="column" gap={0}>
-																	<Text fz={14} fw={400}>
-																		{t("Save")}
-																	</Text>
-																</Flex>
-															</Button>
-															<Button
-																size="xs"
-																className={"btnPrimaryBgOutline"}
-																onClick={handleRestore}
-																id="EntityFormSubmit"
-																leftSection={
-																	<IconRestore size={16} />
-																}
-															>
-																<Flex direction="column" gap={0}>
-																	<Text fz={14} fw={400}>
-																		{t("Restore")}
-																	</Text>
-																</Flex>
-															</Button>
-														</Flex>
-													)}
-												</>
+												{!saveCreateLoading && isOnline && (
+													<Flex gap={8} justify="flex-end">
+														<Button
+															size="xs"
+															className="btnPrimaryBg"
+															type="submit"
+															id="EntityFormSubmit"
+															leftSection={
+																<IconDeviceFloppy size={16} />
+															}
+														>
+															<Flex direction="column" gap={0}>
+																<Text fz={14} fw={400}>
+																	{t("Save")}
+																</Text>
+															</Flex>
+														</Button>
+														<Button
+															size="xs"
+															className={"btnPrimaryBgOutline"}
+															onClick={handleRestore}
+															id="EntityFormSubmit"
+															leftSection={<IconRestore size={16} />}
+														>
+															<Flex direction="column" gap={0}>
+																<Text fz={14} fw={400}>
+																	{t("Restore")}
+																</Text>
+															</Flex>
+														</Button>
+													</Flex>
+												)}
 											</Grid.Col>
 										</Grid>
 									</Box>

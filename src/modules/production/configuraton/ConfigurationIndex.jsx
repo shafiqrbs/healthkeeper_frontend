@@ -9,41 +9,47 @@ import { useDispatch } from "react-redux";
 import ProductionNavigation from "../common/ProductionNavigation.jsx";
 
 function ConfigurationIndex() {
-  const { t, i18n } = useTranslation();
-  const progress = getLoadingProgress();
-  const dispatch = useDispatch();
+	const { t, i18n } = useTranslation();
+	const progress = getLoadingProgress();
+	const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getShowEntityData("production/config"));
-  }, []);
+	useEffect(() => {
+		dispatch(getShowEntityData("production/config"));
+	}, []);
 
-  return (
-    <>
-      {progress !== 100 && (
-        <Progress color="red" size={"sm"} striped animated value={progress} />
-      )}
-      {progress === 100 && (
-        <>
-          <ProductionHeaderNavbar
-            pageTitle={t("ConfigurationInformationFormDetails")}
-            roles={t("Roles")}
-            allowZeroPercentage=""
-            currencySymbol=""
-          />
-          <Box p={"8"}>
-            <Grid columns={24} gutter={{ base: 8 }}>
-              <Grid.Col span={1}>
-                <ProductionNavigation module={"config"} />
-              </Grid.Col>
-              <Grid.Col span={23}>
-                <_ConfigurationForm />
-              </Grid.Col>
-            </Grid>
-          </Box>
-        </>
-      )}
-    </>
-  );
+	return (
+		<>
+			{progress !== 100 && (
+				<Progress
+					color="var(--theme-primary-color-7)"
+					size={"sm"}
+					striped
+					animated
+					value={progress}
+				/>
+			)}
+			{progress === 100 && (
+				<>
+					<ProductionHeaderNavbar
+						pageTitle={t("ConfigurationInformationFormDetails")}
+						roles={t("Roles")}
+						allowZeroPercentage=""
+						currencySymbol=""
+					/>
+					<Box p={"8"}>
+						<Grid columns={24} gutter={{ base: 8 }}>
+							<Grid.Col span={1}>
+								<ProductionNavigation module={"config"} />
+							</Grid.Col>
+							<Grid.Col span={23}>
+								<_ConfigurationForm />
+							</Grid.Col>
+						</Grid>
+					</Box>
+				</>
+			)}
+		</>
+	);
 }
 
 export default ConfigurationIndex;

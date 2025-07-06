@@ -79,7 +79,13 @@ function CustomerIndex() {
 	return (
 		<>
 			{progress !== 100 && (
-				<Progress color="red" size={"sm"} striped animated value={progress} />
+				<Progress
+					color="var(--theme-primary-color-7)"
+					size={"sm"}
+					striped
+					animated
+					value={progress}
+				/>
 			)}
 			{progress === 100 && (
 				<>
