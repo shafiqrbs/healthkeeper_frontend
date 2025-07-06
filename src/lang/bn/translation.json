@@ -728,5 +728,7 @@
 	"FormSubmitConfirmationTitle": "ফর্ম সাবমিট করার জন্য নির্দেশনা",
 	"FormSubmitConfirmationMessage": "আপনি কি নির্দেশনাটি সাবমিট করতে চান?",
 	"SettingsDetails": "সেটিংস বিবিধ",
-	"FailedToUpdateData": "আপডেট করতে ব্যর্থ"
+	"FailedToUpdateData": "আপডেট করতে ব্যর্থ",
+	"DomainMasterUser": "ডোমেইন মাস্টার ইউজার",
+	"DomainHead": "ডোমেইন হেড"
 }

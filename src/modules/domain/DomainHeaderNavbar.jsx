@@ -10,7 +10,12 @@ function DomainHeaderNavbar({ pageTitle, pageDescription }) {
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const links = [{ link: "/domain", label: t("Domains") }];
+	const links = [
+		{ link: "/domain", label: t("Domains") },
+		{ link: "/domain/user", label: t("DomainMasterUser") },
+		{ link: "/domain/head", label: t("DomainHead") },
+	];
+
 	const items = links.map((link) => (
 		<a
 			key={link.label}

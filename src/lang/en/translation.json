@@ -1164,5 +1164,7 @@
 	"WarehouseIssue": "Warehouse issue",
 	"xxxxxx": "xxxxxxx",
 	"CreateDomain": "Create Domain",
-	"FailedToUpdateData": "Failed to update"
+	"FailedToUpdateData": "Failed to update",
+	"DomainMasterUser": "Domain Master User",
+	"DomainHead": "Domain Head"
 }
