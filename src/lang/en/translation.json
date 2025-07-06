@@ -1163,5 +1163,6 @@
 	"ReceivedFrom": "Received from",
 	"WarehouseIssue": "Warehouse issue",
 	"xxxxxx": "xxxxxxx",
-	"CreateDomain": "Create Domain"
+	"CreateDomain": "Create Domain",
+	"FailedToUpdateData": "Failed to update"
 }

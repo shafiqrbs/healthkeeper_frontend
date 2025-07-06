@@ -2,9 +2,21 @@ import React from "react";
 import { Tooltip, Switch, rem, useMantineTheme } from "@mantine/core";
 import { getHotkeyHandler } from "@mantine/hooks";
 import { IconX, IconCheck } from "@tabler/icons-react";
+
 function SwitchForm(props) {
-	const { label, nextField, name, form, tooltip, mt, id, position, defaultChecked, checked } =
-		props;
+	const {
+		label,
+		nextField,
+		name,
+		form,
+		tooltip,
+		mt,
+		id,
+		position,
+		defaultChecked,
+		checked,
+		showLabel = true,
+	} = props;
 	const theme = useMantineTheme();
 	return (
 		<>
@@ -28,7 +40,7 @@ function SwitchForm(props) {
 						labelPosition={position}
 						mt={mt}
 						color="var(--theme-error-color)"
-						label={label}
+						label={showLabel ? label : ""}
 						size="md"
 						thumbIcon={
 							checked ? (

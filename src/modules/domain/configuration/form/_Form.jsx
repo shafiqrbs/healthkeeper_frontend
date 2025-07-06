@@ -21,6 +21,7 @@ export default function Form() {
 	);
 	const [configFetching, setConfigFetching] = useState(true);
 	const [setFormData, setFormDataForUpdate] = useState(false);
+	const [files, setFiles] = useState([]);
 
 	const handleSubmit = async (values) => {
 		try {
@@ -99,6 +100,7 @@ export default function Form() {
 				}
 			}
 		} catch (error) {
+			console.error(error);
 			showNotificationComponent(t("FailedToUpdateData"), "red", null, false, 1000);
 		} finally {
 			setSaveCreateLoading(false);
@@ -117,6 +119,8 @@ export default function Form() {
 			setFormDataForUpdate={setFormDataForUpdate}
 			posInvoiceModeId={posInvoiceModeId}
 			setPosInvoiceModeId={setPosInvoiceModeId}
+			files={files}
+			setFiles={setFiles}
 		/>
 	);
 }
