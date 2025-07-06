@@ -20,6 +20,7 @@ export default function GlobalDrawer({ opened, close, title, children }) {
 					styles={{
 						header: {
 							borderBottom: `1px solid var(--theme-drawer-border-color)`,
+							backgroundColor: `var(--theme-primary-color-0)`,
 						},
 					}}
 				>

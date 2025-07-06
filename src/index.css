@@ -53,7 +53,7 @@
     --theme-edit-btn-color: var(--mantine-color-indigo-6);
     --theme-edit-btn-color-hover: var(--mantine-color-indigo-8);
 
-    --theme-drawer-border-color: var(--mantine-color-gray-2);
+    --theme-drawer-border-color: var(--mantine-color-blue-4);
 
     --theme-tooltip-color: var(--mantine-color-gray-6);
 }
@@ -271,6 +271,11 @@ input[type=radio]:checked+label>img {
 
 .btnPrimaryBg {
     background-color: var(--theme-primary-color-6) !important;
+}
+.btnPrimaryRestBg {
+    background-color: white !important;
+    border: 1px solid var(--theme-primary-color-6) !important;
+    color:var(--theme-primary-color-6) !important;
 }
 
 .tooltipPrimaryBg {

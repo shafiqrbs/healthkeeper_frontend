@@ -1,5 +1,5 @@
 import { Box, Flex, Button, Text } from "@mantine/core";
-import { IconDeviceFloppy } from "@tabler/icons-react";
+import { IconDeviceFloppy,IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router-dom";
 
@@ -12,7 +12,15 @@ export default function DrawerStickyFooter({ type }) {
 			{isOnline && (
 				<Box className="drawer-sticky-footer">
 					<Flex justify="space-between" align="center">
-						<Button>reset</Button>
+						<Button
+							size="md"
+							className="btnPrimaryRestBg"
+							type="submit"
+							id="EntityFormSubmit"
+							leftSection={<IconRestore size={16} />}
+						>
+							<Text>{t("Reset")}</Text>
+						</Button>
 						<Button
 							size="md"
 							className="btnPrimaryBg"
