@@ -1,6 +1,6 @@
 import { getConfigurationFormInitialValues } from "../helpers/request";
 import ConfigurationForm from "./__ConfigurationForm";
-import { showEntityData, updateEntityData } from "@/app/store/core/crudThunk.js";
+import { showEntityData, storeEntityData } from "@/app/store/core/crudThunk.js";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -84,7 +84,7 @@ export default function Form() {
 				data: values,
 				module: "config",
 			};
-			const result = await dispatch(updateEntityData(value)).unwrap();
+			const result = await dispatch(storeEntityData(value)).unwrap();
 			if (result?.data?.message === "success") {
 				showNotificationComponent(t("UpdateSuccessfully"), "teal", null, false, 1000);
 				const resultAction = await dispatch(
