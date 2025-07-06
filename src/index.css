@@ -321,3 +321,13 @@ input[type=radio]:checked+label>img {
 .mx-10 {
     margin-inline: 10px !important;
 }
+
+.mt-6 {
+    margin-top: 6px !important;
+}
+
+.header-action-icon {
+    color: var(--theme-primary-color-6) !important;
+    border-radius: 100% !important;
+    background-color: white !important;
+}

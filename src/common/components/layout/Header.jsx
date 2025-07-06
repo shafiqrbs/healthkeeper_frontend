@@ -312,8 +312,8 @@ const HeaderActions = ({
 			onLanguageChange={handleLanguageChange}
 		/>
 		<Tooltip label={fullscreen ? t("NormalScreen") : t("Fullscreen")} bg={"#635031"} withArrow>
-			<ActionIcon mt={"6"} onClick={toggle} variant="subtle" color={"white"}>
-				{fullscreen ? <IconWindowMinimize size={24} /> : <IconWindowMaximize size={24} />}
+			<ActionIcon className="mt-6 header-action-icon" onClick={toggle} variant="subtle">
+				{fullscreen ? <IconWindowMinimize size={18} /> : <IconWindowMaximize size={18} />}
 			</ActionIcon>
 		</Tooltip>
 		<Tooltip
@@ -332,8 +332,8 @@ const HeaderActions = ({
 			position={"left"}
 			multiline
 		>
-			<ActionIcon onClick={onLogout} variant="subtle" mt={"6"} color={"white"}>
-				<IconLogout size={24} />
+			<ActionIcon onClick={onLogout} variant="subtle" className="mt-6 header-action-icon">
+				<IconLogout size={18} />
 			</ActionIcon>
 		</Tooltip>
 		<Tooltip
@@ -341,17 +341,8 @@ const HeaderActions = ({
 			bg={isOnline ? "green.5" : "red.5"}
 			withArrow
 		>
-			<ActionIcon
-				mt={"6"}
-				variant="filled"
-				radius="xl"
-				color={isOnline ? "green.5" : "red.5"}
-			>
-				{isOnline ? (
-					<IconWifi color={"white"} size={24} />
-				) : (
-					<IconWifiOff color={"white"} size={24} />
-				)}
+			<ActionIcon className="mt-6 header-action-icon" variant="filled" radius="xl">
+				{isOnline ? <IconWifi size={20} /> : <IconWifiOff size={20} />}
 			</ActionIcon>
 		</Tooltip>
 	</Flex>
