@@ -20,6 +20,16 @@ import { Provider } from "react-redux";
 const theme = createTheme({
 	primaryColor: "indigo",
 	fontFamily: "Open Sans, sans-serif",
+	fontSizes: {
+		xxs: "10px",
+		xxxs: "8px",
+	},
+	spacing: {
+		xxs: "10px",
+		xxxs: "8px",
+		les: "6px",
+		es: "2px",
+	},
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(

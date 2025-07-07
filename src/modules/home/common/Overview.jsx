@@ -1,6 +1,94 @@
-import { Box, Card, Flex, Text, Tabs } from "@mantine/core";
+import { Sparkline } from "@mantine/charts";
+import { Box, Card, Flex, Text, Tabs, Grid, NumberFormatter } from "@mantine/core";
+import { IconArrowRight } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
+
+const tabs = [
+	{
+		label: "OPD",
+		value: "opd",
+	},
+	{
+		label: "Visit",
+		value: "visit",
+	},
+	{
+		label: "Pathology",
+		value: "pathology",
+	},
+	{
+		label: "Radiology",
+		value: "radiology",
+	},
+	{
+		label: "Pharmacy",
+		value: "pharmacy",
+	},
+	{
+		label: "Emergency",
+		value: "emergency",
+	},
+	{
+		label: "Test Report",
+		value: "test-report",
+	},
+	{
+		label: "Bill",
+		value: "bill",
+	},
+];
+
+const opdData = [
+	{
+		label: "Closed",
+		value: 7,
+		route: "/opd/closed",
+	},
+	{
+		label: "Created",
+		value: 10,
+		route: "/opd/created",
+	},
+	{
+		label: "Done",
+		value: 10789,
+		route: "/opd/done",
+	},
+	{
+		label: "In-Progress",
+		value: 23323,
+		route: "/opd/in-progress",
+	},
+	{
+		label: "Admitted",
+		value: 10,
+		route: "/opd/admitted",
+	},
+	{
+		label: "Due",
+		value: 10,
+		route: "/opd/due",
+	},
+	{
+		label: "Released",
+		value: 10,
+		route: "/opd/released",
+	},
+	{
+		label: "Returned",
+		value: 5158,
+		route: "/opd/returned",
+	},
+	{
+		label: "Progress",
+		value: 2,
+		route: "/opd/progress",
+	},
+];
 
 export default function Overview() {
+	const navigate = useNavigate();
+
 	return (
 		<Card padding="lg" radius="sm">
 			<Card.Section h={32} withBorder component="div" bg="var(--mantine-color-green-8)">
@@ -12,22 +100,78 @@ export default function Overview() {
 			</Card.Section>
 
 			<Box pt="md">
-				<Tabs
-					bg="var(--theme-primary-color-0)"
-					orientation="vertical"
-					defaultValue="gallery"
-				>
-					<Tabs.List>
-						<Tabs.Tab value="gallery">Gallery</Tabs.Tab>
-						<Tabs.Tab value="messages">Messages</Tabs.Tab>
-						<Tabs.Tab value="settings">Settings</Tabs.Tab>
+				<Tabs orientation="vertical" defaultValue="opd">
+					<Tabs.List
+						mr="sm"
+						p="xxs"
+						bg="var(--theme-secondary-color-0)"
+						style={{ borderRadius: "es" }}
+					>
+						{tabs.map((tab) => (
+							<Tabs.Tab py="xxxs" key={tab.value} value={tab.value}>
+								<Text mt="es" fz="sm" c="var(--theme-secondary-color-6)">
+									{tab.label}
+								</Text>
+							</Tabs.Tab>
+						))}
 					</Tabs.List>
 
-					<Tabs.Panel value="gallery">Gallery tab content</Tabs.Panel>
+					{tabs.map((tab) => (
+						<Tabs.Panel
+							key={tab.value}
+							value={tab.value}
+							pl="xs"
+							style={{ borderLeft: "1px solid var(--mantine-color-gray-2)" }}
+						>
+							<Sparkline
+								w="100%"
+								h={80}
+								data={[10, 20, 40, 20, 40, 10, 50]}
+								curveType="linear"
+								color="var(--mantine-color-green-8)"
+								fillOpacity={0.6}
+								strokeWidth={0.5}
+							/>
 
-					<Tabs.Panel value="messages">Messages tab content</Tabs.Panel>
-
-					<Tabs.Panel value="settings">Settings tab content</Tabs.Panel>
+							<Grid
+								mt="sm"
+								pt="sm"
+								columns={9}
+								gutter="xs"
+								style={{ borderTop: "1px solid var(--mantine-color-gray-2)" }}
+							>
+								{opdData.map((item) => (
+									<Grid.Col span={3} key={item.label}>
+										<Box
+											onClick={() => navigate(item.route)}
+											className="opd-card"
+											px="sm"
+											py="xxxs"
+											h="100%"
+										>
+											<Flex justify="space-between" align="center">
+												<Text fz="sm" c="var(--theme-secondary-color-6)">
+													{item.label}
+												</Text>
+												<IconArrowRight
+													size={16}
+													color="var(--mantine-color-green-8)"
+												/>
+											</Flex>
+											<Text fz="lg" fw={600}>
+												<NumberFormatter
+													thousandSeparator
+													value={item.value}
+													decimalScale={0}
+													fixedDecimalScale
+												/>
+											</Text>
+										</Box>
+									</Grid.Col>
+								))}
+							</Grid>
+						</Tabs.Panel>
+					))}
 				</Tabs>
 			</Box>
 		</Card>

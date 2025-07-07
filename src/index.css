@@ -349,3 +349,39 @@ input[type=radio]:checked+label>img {
         margin-inline: -24px !important;
     }
 }
+
+.mantine-Tabs-list::before {
+    border: none !important;
+}
+
+.mantine-Tabs-tab {
+    &:hover {
+        border: none !important;
+    }
+}
+
+.mantine-Tabs-tab[data-active] {
+    z-index: 1;
+    background-color: white;
+    border: none;
+    border-radius: 4px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+    .mantine-Tabs-tabLabel {
+        p {
+            color: var(--mantine-color-green-8) !important;
+        }
+    }
+}
+
+.opd-card {
+    border: 1px solid var(--mantine-color-gray-2);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--mantine-color-gray-0);
+
+    &:hover {
+        background-color: var(--mantine-color-gray-1);
+    }
+}
