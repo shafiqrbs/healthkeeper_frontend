@@ -1,6 +1,6 @@
 import React from "react";
 import { Carousel } from "@mantine/carousel";
-import { Flex, Text } from "@mantine/core";
+import { Flex, NumberFormatter, Progress, Text } from "@mantine/core";
 import {
 	IconBed,
 	IconCash,
@@ -13,35 +13,35 @@ const slides = [
 	{
 		icon: IconCash,
 		title: "Balance",
-		color: "var(--theme-primary-color-7)",
+		color: "var(--theme-carousel-item-color)",
 		amount: 10971033,
-		progress: 80,
+		progress: 70,
 	},
 	{
 		icon: IconCreditCardPay,
 		title: "Expense",
-		color: "var(--theme-carousel-item-color)",
+		color: "var(--theme-primary-color-7)",
 		amount: 30000,
 		progress: 50,
 	},
 	{
 		icon: IconTestPipe,
+		color: "var(--theme-carousel-item-color)",
 		title: "Diagnostic",
-		color: "var(--theme-primary-color-7)",
 		amount: 10000,
 		progress: 30,
 	},
 	{
 		icon: IconBed,
 		title: "Admission",
-		color: "var(--theme-carousel-item-color)",
+		color: "var(--theme-primary-color-7)",
 		amount: 5000,
 		progress: 20,
 	},
 	{
 		icon: IconStethoscope,
 		title: "Patient",
-		color: "var(--theme-primary-color-7)",
+		color: "var(--theme-carousel-item-color)",
 		amount: 1000,
 		progress: 10,
 	},
@@ -54,17 +54,39 @@ function Slide({ slide }) {
 			direction="column"
 			align="center"
 			justify="center"
-			gap={10}
+			gap="xs"
 			p="md"
-			style={{ borderRadius: "2px" }}
+			style={{ borderRadius: "4px" }}
+			h="100%"
+			bd="1px solid var(--theme-secondary-color-2)"
 		>
-			<slide.icon size={40} color={slide.color} />
-			<Text size="lg" fw={500} c={slide.color}>
-				{slide.title}
-			</Text>
-			<Text size="sm" c={slide.color}>
-				{slide.progress}%
-			</Text>
+			<Flex align="center" w="100%" justify="space-between" gap="sm">
+				<Text fz={14} tt="uppercase" fw={500} c="var(--theme-secondary-color-6)">
+					{slide.title}
+				</Text>
+				<slide.icon size={24} color={slide.color} />
+			</Flex>
+			<Flex align="center" w="100%" justify="space-between" gap="sm">
+				<Text size="sm" c={slide.color} fw={700} fz={24}>
+					<NumberFormatter
+						thousandSeparator
+						value={slide.amount}
+						decimalScale={0}
+						fixedDecimalScale
+					/>
+				</Text>
+				<Text size="sm" c={slide.color} fz="md">
+					BDT
+				</Text>
+			</Flex>
+			<Progress
+				styles={{ section: { borderRadius: "50px" } }}
+				w="100%"
+				value={slide.progress}
+				radius="xl"
+				color={slide.color}
+				h={10}
+			/>
 		</Flex>
 	);
 }
@@ -72,11 +94,11 @@ function Slide({ slide }) {
 export default function HeaderCarousel() {
 	return (
 		<Carousel
-			withIndicators
 			height={130}
 			slideSize={{ base: "100%", sm: "100%", md: "25%" }}
 			slideGap={{ base: 0, sm: "md" }}
-			emblaOptions={{ loop: true, align: "start" }}
+			align="start"
+			className="header-carousel"
 		>
 			{slides.map((slide) => (
 				<Carousel.Slide key={slide.id}>

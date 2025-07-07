@@ -57,7 +57,7 @@
 
     --theme-tooltip-color: var(--mantine-color-gray-6);
 
-    --theme-carousel-item-color: var(--mantine-color-lime-9);
+    --theme-carousel-item-color: var(--mantine-color-green-8);
 }
 
 body {
@@ -342,4 +342,10 @@ input[type=radio]:checked+label>img {
     color: var(--theme-primary-color-6) !important;
     border-radius: 100% !important;
     background-color: white !important;
+}
+
+.header-carousel {
+    button.mantine-Carousel-control {
+        margin-inline: -24px !important;
+    }
 }
