@@ -1,5 +1,5 @@
 import { Sparkline } from "@mantine/charts";
-import { Box, Card, Flex, Text, Tabs, Grid, NumberFormatter } from "@mantine/core";
+import { Box, Card, Flex, Text, Tabs, Grid, NumberFormatter, ScrollArea } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
@@ -86,11 +86,11 @@ const opdData = [
 	},
 ];
 
-export default function Overview() {
+export default function Overview({ height }) {
 	const navigate = useNavigate();
 
 	return (
-		<Card padding="lg" radius="sm">
+		<Card padding="lg" radius="sm" h="100%">
 			<Card.Section h={32} withBorder component="div" bg="var(--mantine-color-green-8)">
 				<Flex align="center" h="100%" px="lg">
 					<Text pb={0} fz="sm" c="white" fw={500}>
@@ -99,22 +99,24 @@ export default function Overview() {
 				</Flex>
 			</Card.Section>
 
-			<Box pt="md">
+			<Box h={height} pt="md">
 				<Tabs orientation="vertical" defaultValue="opd">
-					<Tabs.List
-						mr="sm"
-						p="xxs"
-						bg="var(--theme-secondary-color-0)"
-						style={{ borderRadius: "es" }}
-					>
-						{tabs.map((tab) => (
-							<Tabs.Tab py="xxxs" key={tab.value} value={tab.value}>
-								<Text mt="es" fz="sm" c="var(--theme-secondary-color-6)">
-									{tab.label}
-								</Text>
-							</Tabs.Tab>
-						))}
-					</Tabs.List>
+					<ScrollArea miw={140} h={height} scrollbarSize={8} scrollbars="y" type="never">
+						<Tabs.List
+							mr="sm"
+							p="xxs"
+							bg="var(--theme-secondary-color-0)"
+							style={{ borderRadius: "es" }}
+						>
+							{tabs.map((tab) => (
+								<Tabs.Tab py="xxxs" key={tab.value} value={tab.value}>
+									<Text mt="es" fz="sm" c="var(--theme-secondary-color-6)">
+										{tab.label}
+									</Text>
+								</Tabs.Tab>
+							))}
+						</Tabs.List>
+					</ScrollArea>
 
 					{tabs.map((tab) => (
 						<Tabs.Panel
@@ -123,53 +125,58 @@ export default function Overview() {
 							pl="xs"
 							style={{ borderLeft: "1px solid var(--mantine-color-gray-2)" }}
 						>
-							<Sparkline
-								w="100%"
-								h={80}
-								data={[10, 20, 40, 20, 40, 10, 50]}
-								curveType="linear"
-								color="var(--mantine-color-green-8)"
-								fillOpacity={0.6}
-								strokeWidth={0.5}
-							/>
+							<ScrollArea h={height} scrollbarSize={8} scrollbars="y" type="hover">
+								<Sparkline
+									w="100%"
+									h={80}
+									data={[10, 20, 40, 20, 40, 10, 50]}
+									curveType="linear"
+									color="var(--mantine-color-green-8)"
+									fillOpacity={0.6}
+									strokeWidth={0.5}
+								/>
 
-							<Grid
-								mt="sm"
-								pt="sm"
-								columns={9}
-								gutter="xs"
-								style={{ borderTop: "1px solid var(--mantine-color-gray-2)" }}
-							>
-								{opdData.map((item) => (
-									<Grid.Col span={3} key={item.label}>
-										<Box
-											onClick={() => navigate(item.route)}
-											className="opd-card"
-											px="sm"
-											py="xxxs"
-											h="100%"
-										>
-											<Flex justify="space-between" align="center">
-												<Text fz="sm" c="var(--theme-secondary-color-6)">
-													{item.label}
+								<Grid
+									mt="sm"
+									pt="sm"
+									columns={9}
+									gutter="xs"
+									style={{ borderTop: "1px solid var(--mantine-color-gray-2)" }}
+								>
+									{opdData.map((item) => (
+										<Grid.Col span={3} key={item.label}>
+											<Box
+												onClick={() => navigate(item.route)}
+												className="opd-card"
+												px="sm"
+												py="xxxs"
+												h="100%"
+											>
+												<Flex justify="space-between" align="center">
+													<Text
+														fz="sm"
+														c="var(--theme-secondary-color-6)"
+													>
+														{item.label}
+													</Text>
+													<IconArrowRight
+														size={16}
+														color="var(--mantine-color-green-8)"
+													/>
+												</Flex>
+												<Text fz="lg" fw={600}>
+													<NumberFormatter
+														thousandSeparator
+														value={item.value}
+														decimalScale={0}
+														fixedDecimalScale
+													/>
 												</Text>
-												<IconArrowRight
-													size={16}
-													color="var(--mantine-color-green-8)"
-												/>
-											</Flex>
-											<Text fz="lg" fw={600}>
-												<NumberFormatter
-													thousandSeparator
-													value={item.value}
-													decimalScale={0}
-													fixedDecimalScale
-												/>
-											</Text>
-										</Box>
-									</Grid.Col>
-								))}
-							</Grid>
+											</Box>
+										</Grid.Col>
+									))}
+								</Grid>
+							</ScrollArea>
 						</Tabs.Panel>
 					))}
 				</Tabs>

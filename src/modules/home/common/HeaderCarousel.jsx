@@ -1,6 +1,7 @@
 import React from "react";
 import { Carousel } from "@mantine/carousel";
 import { Flex, NumberFormatter, Progress, Text } from "@mantine/core";
+import classes from "@assets/css/Carousel.module.css";
 import {
 	IconBed,
 	IconCash,
@@ -94,11 +95,12 @@ function Slide({ slide }) {
 export default function HeaderCarousel() {
 	return (
 		<Carousel
-			height={130}
+			height="100%"
 			slideSize={{ base: "100%", sm: "100%", md: "25%" }}
 			slideGap={{ base: 0, sm: "md" }}
 			align="start"
 			className="header-carousel"
+			classNames={classes}
 		>
 			{slides.map((slide) => (
 				<Carousel.Slide key={slide.id}>

@@ -13,8 +13,10 @@ const elements = [
 export default function GrandTotalOverview() {
 	const rows = elements.map((element) => (
 		<Table.Tr key={element.name}>
-			<Table.Td fw={500}>{element.name}</Table.Td>
-			<Table.Td fw={500}>
+			<Table.Td fw={500} pl="lg">
+				{element.name}
+			</Table.Td>
+			<Table.Td fw={500} w={100}>
 				<Flex justify="center" align="center" gap="xs">
 					<NumberFormatter
 						thousandSeparator
@@ -24,7 +26,7 @@ export default function GrandTotalOverview() {
 					/>
 				</Flex>
 			</Table.Td>
-			<Table.Td>
+			<Table.Td w={80}>
 				<Flex
 					h={22}
 					w={22}
@@ -42,14 +44,8 @@ export default function GrandTotalOverview() {
 	));
 
 	return (
-		<Card px={0} radius="sm">
-			<Card.Section
-				px="sm"
-				h={32}
-				withBorder
-				component="div"
-				bg="var(--theme-primary-color-7)"
-			>
+		<Card padding={0} radius="sm" h="100%">
+			<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
 				<Flex align="center" h="100%" px="lg">
 					<Text pb={0} fz="sm" c="white" fw={500}>
 						Overview
@@ -59,6 +55,26 @@ export default function GrandTotalOverview() {
 
 			<Table striped my="les">
 				<Table.Tbody>{rows}</Table.Tbody>
+				<Table.Tfoot>
+					<Table.Tr bg="var(--theme-primary-color-9)">
+						<Table.Td>
+							<Text pl="xs" fz="sm" c="white">
+								Total
+							</Text>
+						</Table.Td>
+						<Table.Td>
+							<Flex c="white" justify="center" align="center" gap="xs">
+								<NumberFormatter
+									thousandSeparator
+									decimalScale={0}
+									fixedDecimalScale
+									value={12000}
+								/>
+							</Flex>
+						</Table.Td>
+						<Table.Td></Table.Td>
+					</Table.Tr>
+				</Table.Tfoot>
 			</Table>
 		</Card>
 	);

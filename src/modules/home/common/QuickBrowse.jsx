@@ -101,7 +101,7 @@ export default function QuickBrowse() {
 	const navigate = useNavigate();
 
 	return (
-		<Card padding="lg" radius="sm">
+		<Card padding="lg" radius="sm" h="100%">
 			<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
 				<Flex align="center" h="100%" px="lg">
 					<Text pb={0} fz="sm" c="white" fw={500}>
