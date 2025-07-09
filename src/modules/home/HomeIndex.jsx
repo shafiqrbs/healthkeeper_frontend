@@ -10,7 +10,6 @@ import SparkLineOverview from "./common/SparkLineOverview";
 
 export default function HomeIndex({ height }) {
 	const progress = useGetLoadingProgress();
-	const cardHeight = height - 416;
 
 	return (
 		<>
@@ -30,13 +29,7 @@ export default function HomeIndex({ height }) {
 						{/* ================= carousel part ================== */}
 						<Box>
 							<HeaderCarousel />
-							<ScrollArea
-								mt="md"
-								scrollbarSize={8}
-								scrollbars="y"
-								type="never"
-								h={height - 146}
-							>
+							<ScrollArea mt="md" scrollbars="y" type="never" h={height - 146}>
 								{/* ================= overviews part ================== */}
 								<Grid columns={40} gutter={{ base: "md" }}>
 									<Grid.Col span={20}>

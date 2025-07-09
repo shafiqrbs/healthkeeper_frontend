@@ -69,6 +69,8 @@ import DomainUserIndex from "@modules/domain/master-user/DomainUserIndex";
 // import DiscountConfigIndex from "@modules/discount/config/DiscountConfigIndex";
 // import VoucherCreateIndex from "@modules/accounting/voucher-create/VoucherCreateIndex";
 // import DiscountDashboard from "@modules/discount/dashboard/DiscountDashboard";
+import VisitIndex from "@/modules/doctor/visit/VisitIndex";
+import NotFound from "@components/layout/NotFound";
 
 function AppRoute() {
 	return (
@@ -111,6 +113,9 @@ function AppRoute() {
 					{/* <Route path="sitemap" element={<SitemapIndex />} />
           <Route path="sitemap/:id" element={<SitemapIndex />} />
           <Route path="branch-management" element={<BranchManagementIndex />} /> */}
+				</Route>
+				<Route path="/doctor/">
+					<Route path="visit" element={<VisitIndex />} />
 				</Route>
 				{/* <Route path="/inventory/">
           <Route path="sales/edit/:id" element={<SalesEdit />} />
@@ -226,6 +231,7 @@ function AppRoute() {
         </Route>
         <Route path="sitemap" element={<Sitemap />} /> */}
 			</Route>
+			<Route path="*" element={<NotFound />} />
 		</Routes>
 	);
 }

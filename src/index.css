@@ -346,7 +346,7 @@ input[type=radio]:checked+label>img {
 
 .header-carousel {
     button.mantine-Carousel-control {
-        margin-inline: -4px !important;
+        margin-inline: -24px !important;
     }
 }
 
@@ -360,7 +360,7 @@ input[type=radio]:checked+label>img {
     }
 }
 
-.mantine-Tabs-tab[data-active] {
+#overview-tabs .mantine-Tabs-tab[data-active] {
     z-index: 1;
     background-color: white;
     border: none;

@@ -100,7 +100,7 @@ export default function Overview({ height }) {
 			</Card.Section>
 
 			<Box h={height} pt="md">
-				<Tabs orientation="vertical" defaultValue="opd">
+				<Tabs id="overview-tabs" orientation="vertical" defaultValue="opd">
 					<ScrollArea miw={140} h={height} scrollbarSize={8} scrollbars="y" type="never">
 						<Tabs.List
 							mr="sm"

@@ -12,7 +12,7 @@ import {
 	IconTestPipe2,
 	IconWallet,
 } from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const quickBrowseButtonData = [
 	{
@@ -42,7 +42,7 @@ const quickBrowseButtonData = [
 	{
 		label: "Doctor Visit",
 		icon: IconStethoscope,
-		route: "/doctor-visit",
+		route: "/doctor/visit",
 		color: "var(--mantine-color-yellow-8)",
 	},
 	{
@@ -97,6 +97,7 @@ const quickBrowseCardData = [
 		backgroundColor: "var(--mantine-color-blue-0)",
 	},
 ];
+
 export default function QuickBrowse() {
 	const navigate = useNavigate();
 
@@ -113,14 +114,16 @@ export default function QuickBrowse() {
 			<Grid columns={9} gutter="md" mt="md">
 				{quickBrowseButtonData.map((item) => (
 					<Grid.Col span={3} key={item.label}>
-						<Button
-							leftSection={<item.icon size={16} />}
-							color="white"
-							bg={item.color}
-							fullWidth
-						>
-							{item.label}
-						</Button>
+						<Link to={item.route} style={{ textDecoration: "none" }}>
+							<Button
+								leftSection={<item.icon size={16} />}
+								color="white"
+								bg={item.color}
+								fullWidth
+							>
+								{item.label}
+							</Button>
+						</Link>
 					</Grid.Col>
 				))}
 			</Grid>

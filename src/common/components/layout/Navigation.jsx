@@ -11,7 +11,7 @@ export default function Navigation({ module = "base", mainAreaHeight }) {
 
 	return (
 		<ScrollArea miw={68} h={mainAreaHeight} bg="white" type="never" className="border-radius">
-			<Flex direction="column" px={4} py={13} gap={14}>
+			<Flex w={68} direction="column" px={4} py={13} gap={14}>
 				{links.map((item, index) => (
 					<Flex key={index} direction="column" align="center">
 						<Tooltip
