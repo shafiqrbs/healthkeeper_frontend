@@ -6,8 +6,13 @@ import { useOutletContext } from "react-router-dom";
 import Form from "./form/Form";
 import VisitTable from "./VisitTable";
 import VisitActionButton from "./VisitActionButton";
+import { useForm } from "@mantine/form";
+import { getVendorFormInitialValues } from "./helpers/request";
+import { useTranslation } from "react-i18next";
 
 export default function VisitIndex() {
+	const { t } = useTranslation();
+	const form = useForm(getVendorFormInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 
@@ -28,11 +33,11 @@ export default function VisitIndex() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={24}>
 							<Grid.Col span={8}>
-								<Form />
+								<Form form={form} />
 							</Grid.Col>
 							<Grid.Col span={16}>
 								<VisitTable />
-								{/* <VisitActionButton /> */}
+								<VisitActionButton form={form} />
 							</Grid.Col>
 						</Grid>
 					</Flex>

@@ -3,12 +3,23 @@ import { Tooltip, TextInput, Box, Grid, Checkbox } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconInfoCircle, IconX } from "@tabler/icons-react";
 import { getHotkeyHandler } from "@mantine/hooks";
-import inputCss from "../../assets/css/InputField.module.css";
+import inputCss from "@assets/css/InputField.module.css";
 
-function InputNumberForm(props) {
-	const { label, field, name, required, nextField, form, tooltip, mt, id, disabled, closeIcon } =
-		props;
-	const { t, i18n } = useTranslation();
+function InputCheckboxForm({
+	label,
+	field,
+	name,
+	required,
+	nextField,
+	form,
+	tooltip,
+	mt,
+	id,
+	disabled,
+	closeIcon,
+	color = "var(--theme-error-color)",
+}) {
+	const { t } = useTranslation();
 
 	return (
 		<>
@@ -26,10 +37,10 @@ function InputNumberForm(props) {
 							<Checkbox
 								pr="xs"
 								checked={form.values[field] === 1}
-								color="var(--theme-error-color)"
-								{...form.getInputProps(field, {
-									type: "checkbox",
-								})}
+								// {...form.getInputProps(field, {
+								// 	type: "checkbox",
+								// })}
+								color={color}
 								onChange={(event) =>
 									form.setFieldValue(field, event.currentTarget.checked ? 1 : 0)
 								}
@@ -47,4 +58,4 @@ function InputNumberForm(props) {
 	);
 }
 
-export default InputNumberForm;
+export default InputCheckboxForm;

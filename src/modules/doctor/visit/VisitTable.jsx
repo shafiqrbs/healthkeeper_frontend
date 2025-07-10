@@ -125,6 +125,8 @@ export default function VisitTable() {
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
 					striped
+					pinFirstColumn
+					pinLastColumn
 					stripedColor="var(--theme-secondary-color-1)"
 					classNames={{
 						root: tableCss.root,

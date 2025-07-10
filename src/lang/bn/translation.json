@@ -826,5 +826,6 @@
 	"manageWebsite": "ওয়েবসাইট পরিচালনা",
 	"media": "মিডিয়া",
 	"manageAppearance": "উপস্থিতি পরিচালনা",
-	"invoiceSmsEmail": "চালান এসএমএস ইমেইল"
+	"invoiceSmsEmail": "চালান এসএমএস ইমেইল",
+	"remark": "মন্তব্য"
 }

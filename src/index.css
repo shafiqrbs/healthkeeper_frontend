@@ -440,3 +440,18 @@ input[type=radio]:checked+label>img {
     margin-left: -4px !important;
     padding-block: 14px !important;
 }
+
+.form-action-header {
+    color: var(--theme-primary-color-6);
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background-color: white;
+    padding-block: 6px;
+}
+
+.full-bleed {
+    box-shadow: 0 0 0 100vmax white !important;
+    -webkit-clip-path: inset(0 -100vmax) !important;
+    clip-path: inset(0 -100vmax) !important;
+}

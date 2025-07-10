@@ -8,10 +8,13 @@ import { IconChevronRight, IconCirclePlusFilled } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import tabClass from "@assets/css/Tab.module.css";
 import { useTranslation } from "react-i18next";
+import DatePickerForm from "@components/form-builders/DatePicker";
+import InputNumberForm from "@components/form-builders/InputNumberForm";
 
 export default function PatientForm({ form, handleSubmit }) {
 	const { mainAreaHeight } = useOutletContext();
 	const [gender, setGender] = useState("male");
+	const [ageType, setAgeType] = useState("year");
 	const { t } = useTranslation();
 
 	return (
@@ -49,14 +52,14 @@ export default function PatientForm({ form, handleSubmit }) {
 										<Text fz="sm">{t("appointment")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<InputForm
+										<DatePickerForm
 											form={form}
 											label=""
 											tooltip={t("bookYourAppointment")}
-											placeholder={t("appointment")}
+											placeholder="23-06-2025"
 											name="appointment"
 											id="appointment"
-											nextField="name"
+											nextField="patientName"
 											value={form.values.appointment}
 											required
 										/>
@@ -69,10 +72,14 @@ export default function PatientForm({ form, handleSubmit }) {
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
+											label=""
 											tooltip={t("enterPatientName")}
-											placeholder={t("patientName")}
-											required
+											placeholder="John Doe"
 											name="patientName"
+											id="patientName"
+											nextField="mobile"
+											value={form.values.patientName}
+											required
 										/>
 									</Grid.Col>
 								</Grid>
@@ -83,10 +90,14 @@ export default function PatientForm({ form, handleSubmit }) {
 									<Grid.Col span={14}>
 										<PhoneNumber
 											form={form}
+											label=""
 											tooltip={t("enterPatientMobile")}
-											placeholder={t("mobile")}
-											required
+											placeholder="01717171717"
 											name="mobile"
+											id="mobile"
+											nextField="gender"
+											value={form.values.mobile}
+											required
 										/>
 									</Grid.Col>
 								</Grid>
@@ -99,6 +110,8 @@ export default function PatientForm({ form, handleSubmit }) {
 											fullWidth
 											color="var(--theme-primary-color-6)"
 											value={gender}
+											id="gender"
+											name="gender"
 											onChange={setGender}
 											data={[
 												{ label: t("male"), value: "male" },
@@ -114,20 +127,35 @@ export default function PatientForm({ form, handleSubmit }) {
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<Flex gap="les">
-											<InputForm
+											<InputNumberForm
 												form={form}
-												placeholder={t("height")}
+												label=""
+												placeholder="170"
 												name="height"
+												id="height"
+												nextField="weight"
+												value={form.values.height}
+												required
 											/>
-											<InputForm
+											<InputNumberForm
 												form={form}
-												placeholder={t("weight")}
+												label=""
+												placeholder="60"
 												name="weight"
+												id="weight"
+												nextField="bp"
+												value={form.values.weight}
+												required
 											/>
-											<InputForm
+											<InputNumberForm
 												form={form}
-												placeholder={t("bp")}
+												label=""
+												placeholder="120/80"
 												name="bp"
+												id="bp"
+												nextField="dateOfBirth"
+												value={form.values.bp}
+												required
 											/>
 										</Flex>
 									</Grid.Col>
@@ -137,11 +165,15 @@ export default function PatientForm({ form, handleSubmit }) {
 										<Text fz="sm">{t("dateOfBirth")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<InputForm
-											type="date"
+										<DatePickerForm
 											form={form}
-											placeholder={t("dateOfBirth")}
+											label=""
+											placeholder="23-06-2025"
 											name="dateOfBirth"
+											id="dateOfBirth"
+											nextField="age"
+											value={form.values.dateOfBirth}
+											required
 										/>
 									</Grid.Col>
 								</Grid>
@@ -151,10 +183,15 @@ export default function PatientForm({ form, handleSubmit }) {
 									</Grid.Col>
 									<Grid.Col span={6}>
 										<Flex gap="les">
-											<InputForm
+											<InputNumberForm
 												form={form}
-												placeholder={t("age")}
+												label=""
+												placeholder="20"
 												name="age"
+												id="age"
+												nextField="ageType"
+												value={form.values.age}
+												required
 											/>
 										</Flex>
 									</Grid.Col>
@@ -162,8 +199,8 @@ export default function PatientForm({ form, handleSubmit }) {
 										<SegmentedControl
 											fullWidth
 											color="var(--theme-primary-color-6)"
-											value={gender}
-											onChange={setGender}
+											value={form.values.ageType}
+											onChange={setAgeType}
 											data={[
 												{ label: t("day"), value: "day" },
 												{ label: t("mon"), value: "month" },
@@ -178,10 +215,15 @@ export default function PatientForm({ form, handleSubmit }) {
 										<Text fz="sm">{t("identity")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<InputForm
+										<InputNumberForm
 											form={form}
-											placeholder={t("nidBirthCertificate")}
+											label=""
+											placeholder="1234567890"
 											name="identity"
+											id="identity"
+											nextField="district"
+											value={form.values.identity}
+											required
 										/>
 									</Grid.Col>
 								</Grid>
@@ -192,8 +234,13 @@ export default function PatientForm({ form, handleSubmit }) {
 									<Grid.Col span={14}>
 										<SelectForm
 											form={form}
-											placeholder={t("selectDistrict")}
+											label=""
+											placeholder="Dhaka"
 											name="district"
+											id="district"
+											nextField="address"
+											value={form.values.district}
+											required
 											data={[
 												"Pirojpur",
 												"Dhaka",
@@ -215,18 +262,18 @@ export default function PatientForm({ form, handleSubmit }) {
 									<Grid.Col span={14}>
 										<TextAreaForm
 											form={form}
-											placeholder={t("address")}
+											label=""
+											placeholder="12 street, 123456"
 											name="address"
+											id="address"
+											nextField="roomNo"
+											value={form.values.address}
+											required
 										/>
 									</Grid.Col>
 								</Grid>
 
-								<Flex
-									c="var(--theme-primary-color-6)"
-									align="center"
-									justify="space-between"
-									gap="xs"
-								>
+								<Flex className="form-action-header full-bleed">
 									<Text fz="sm">{t("doctorInformation")}</Text>
 									<Flex align="center" gap="xs">
 										<Text fz="sm">{t("booked")}-05</Text>{" "}
@@ -239,10 +286,15 @@ export default function PatientForm({ form, handleSubmit }) {
 										<Text fz="sm">{t("roomNo")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<InputForm
+										<InputNumberForm
 											form={form}
-											placeholder={t("roomNo")}
+											label=""
+											placeholder="101"
 											name="roomNo"
+											id="roomNo"
+											nextField="specialization"
+											value={form.values.roomNo}
+											required
 										/>
 									</Grid.Col>
 								</Grid>
@@ -253,8 +305,13 @@ export default function PatientForm({ form, handleSubmit }) {
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											placeholder={t("specialization")}
+											label=""
+											placeholder="Cardiologist"
 											name="specialization"
+											id="specialization"
+											nextField="doctorName"
+											value={form.values.specialization}
+											required
 										/>
 									</Grid.Col>
 								</Grid>
@@ -265,8 +322,13 @@ export default function PatientForm({ form, handleSubmit }) {
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											placeholder={t("doctorName")}
+											label=""
+											placeholder="Dr. John Doe"
 											name="doctorName"
+											id="doctorName"
+											nextField="diseaseProfile"
+											value={form.values.doctorName}
+											required
 										/>
 									</Grid.Col>
 								</Grid>
@@ -278,8 +340,13 @@ export default function PatientForm({ form, handleSubmit }) {
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											placeholder={t("diabetic")}
+											label=""
+											placeholder="Diabetic"
 											name="diseaseProfile"
+											id="diseaseProfile"
+											nextField="referredName"
+											value={form.values.diseaseProfile}
+											required
 											rightSection={
 												<IconCirclePlusFilled
 													color="var(--theme-primary-color-6)"
@@ -290,7 +357,7 @@ export default function PatientForm({ form, handleSubmit }) {
 									</Grid.Col>
 								</Grid>
 
-								<Flex c="var(--theme-primary-color-6)" align="center">
+								<Flex className="form-action-header full-bleed">
 									<Text fz="sm">{t("marketing")}</Text>
 								</Flex>
 
@@ -301,8 +368,13 @@ export default function PatientForm({ form, handleSubmit }) {
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											placeholder={t("name")}
+											label=""
+											placeholder="John Doe"
 											name="referredName"
+											id="referredName"
+											nextField="marketingEx"
+											value={form.values.referredName}
+											required
 											rightSection={
 												<IconCirclePlusFilled
 													color="var(--theme-primary-color-6)"
@@ -318,10 +390,15 @@ export default function PatientForm({ form, handleSubmit }) {
 										<Text fz="sm">{t("marketingEx")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<InputForm
+										<InputNumberForm
 											form={form}
+											label=""
 											placeholder="101"
 											name="marketingEx"
+											id="marketingEx"
+											nextField="isConfirm"
+											value={form.values.marketingEx}
+											required
 										/>
 									</Grid.Col>
 								</Grid>

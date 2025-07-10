@@ -1262,5 +1262,6 @@
 	"manageWebsite": "Manage Website",
 	"media": "Media",
 	"manageAppearance": "Manage Appearance",
-	"invoiceSmsEmail": "Invoice SMS Email"
+	"invoiceSmsEmail": "Invoice SMS Email",
+	"remark": "Remark"
 }

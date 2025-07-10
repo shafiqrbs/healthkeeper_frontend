@@ -5,23 +5,22 @@ import { IconInfoCircle, IconX } from "@tabler/icons-react";
 import { getHotkeyHandler } from "@mantine/hooks";
 import inputCss from "@assets/css/InputField.module.css";
 
-function TextAreaForm(props) {
-	const {
-		label,
-		placeholder,
-		required,
-		nextField,
-		name,
-		form,
-		tooltip,
-		mt,
-		id,
-		minRows,
-		autosize,
-		maxRows,
-		style,
-		size,
-	} = props;
+function TextAreaForm({
+	label,
+	placeholder,
+	required,
+	nextField,
+	name,
+	form,
+	tooltip,
+	mt,
+	id,
+	minRows,
+	autosize,
+	maxRows,
+	style,
+	size,
+}) {
 	const { t, i18n } = useTranslation();
 	return (
 		<>
