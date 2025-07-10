@@ -1,5 +1,5 @@
 import { Box, Flex, Button, Text } from "@mantine/core";
-import { IconDeviceFloppy,IconRestore } from "@tabler/icons-react";
+import { IconDeviceFloppy, IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router-dom";
 
@@ -14,7 +14,7 @@ export default function DrawerStickyFooter({ type }) {
 					<Flex justify="space-between" align="center">
 						<Button
 							size="md"
-							className="btnPrimaryRestBg"
+							className="btnPrimaryResetBg"
 							type="submit"
 							id="EntityFormSubmit"
 							leftSection={<IconRestore size={16} />}

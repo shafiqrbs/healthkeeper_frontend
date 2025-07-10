@@ -12,6 +12,8 @@ export default defineConfig({
 			"@assets": "/src/assets",
 			"@hooks": "/src/common/hooks",
 			"@modules": "/src/modules",
+
+			"@tabler/icons-react": "@tabler/icons-react/dist/esm/icons/index.mjs",
 		},
 	},
 });

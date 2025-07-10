@@ -200,13 +200,7 @@ function _VendorTable({ open, close }) {
 
 	return (
 		<>
-			<Box
-				pl="xs"
-				pr={8}
-				pt="6"
-				pb="sm"
-				className="boxBackground borderRadiusAll border-bottom-none"
-			>
+			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
 				<Flex align="center" justify="space-between" gap={4}>
 					<KeywordSearch module="vendor" />
 					<CreateButton handleModal={handleCreateVendor} text="CreateVendor" />

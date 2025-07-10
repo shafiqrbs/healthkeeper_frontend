@@ -13,40 +13,41 @@ import {
 	IconWallet,
 } from "@tabler/icons-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const quickBrowseButtonData = [
 	{
-		label: "Report Delivery",
+		label: "reportDelivery",
 		icon: IconMailForward,
 		route: "/report-delivery",
 		color: "var(--mantine-color-indigo-8)",
 	},
 	{
-		label: "Add Diagnostic",
+		label: "addDiagnostic",
 		icon: IconTestPipe,
 		route: "/add-diagnostic",
 		color: "var(--mantine-color-green-8)",
 	},
 	{
-		label: "Diagnosis",
+		label: "diagnosis",
 		icon: IconTestPipe2,
 		route: "/diagnosis",
 		color: "var(--mantine-color-cyan-8)",
 	},
 	{
-		label: "Report Prepared",
+		label: "reportPrepared",
 		icon: IconClipboardText,
 		route: "/report-prepare",
 		color: "var(--mantine-color-red-8)",
 	},
 	{
-		label: "Doctor Visit",
+		label: "doctorVisit",
 		icon: IconStethoscope,
 		route: "/doctor/visit",
 		color: "var(--mantine-color-yellow-8)",
 	},
 	{
-		label: "Admission",
+		label: "admission",
 		icon: IconBed,
 		route: "/admission",
 		color: "var(--mantine-color-blue-7)",
@@ -55,42 +56,42 @@ const quickBrowseButtonData = [
 
 const quickBrowseCardData = [
 	{
-		label: "Commission",
+		label: "commission",
 		icon: IconChecklist,
 		route: "/commission",
 		color: "var(--mantine-color-indigo-7)",
 		backgroundColor: "var(--mantine-color-indigo-0)",
 	},
 	{
-		label: "Diagnostic Test",
+		label: "diagnosticTest",
 		icon: IconMicroscope,
 		route: "/diagnostic-test",
 		color: "var(--mantine-color-green-9)",
 		backgroundColor: "var(--mantine-color-green-0)",
 	},
 	{
-		label: "Payment",
+		label: "payment",
 		icon: IconWallet,
 		route: "/payment",
 		color: "var(--mantine-color-cyan-7)",
 		backgroundColor: "var(--mantine-color-cyan-0)",
 	},
 	{
-		label: "Item Issue",
+		label: "itemIssue",
 		icon: IconBuildingHospital,
 		route: "/item-issue",
 		color: "var(--mantine-color-red-7)",
 		backgroundColor: "var(--mantine-color-red-0)",
 	},
 	{
-		label: "New Doctor",
+		label: "newDoctor",
 		icon: IconStethoscope,
 		route: "/new-doctor",
 		color: "var(--mantine-color-yellow-7)",
 		backgroundColor: "var(--mantine-color-yellow-0)",
 	},
 	{
-		label: "Manage Stock",
+		label: "manageStock",
 		icon: IconPackageExport,
 		route: "/manage-stock",
 		color: "var(--mantine-color-blue-7)",
@@ -100,13 +101,14 @@ const quickBrowseCardData = [
 
 export default function QuickBrowse() {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 
 	return (
 		<Card padding="lg" radius="sm" h="100%">
 			<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
 				<Flex align="center" h="100%" px="lg">
 					<Text pb={0} fz="sm" c="white" fw={500}>
-						Quick Browse
+						{t("quickBrowse")}
 					</Text>
 				</Flex>
 			</Card.Section>
@@ -121,7 +123,7 @@ export default function QuickBrowse() {
 								bg={item.color}
 								fullWidth
 							>
-								{item.label}
+								{t(item.label)}
 							</Button>
 						</Link>
 					</Grid.Col>
@@ -150,7 +152,7 @@ export default function QuickBrowse() {
 									<item.icon color="white" size={16} />
 								</Flex>
 								<Text pb={0} fz="sm" fw={500}>
-									{item.label}
+									{t(item.label)}
 								</Text>
 							</Stack>
 						</Box>

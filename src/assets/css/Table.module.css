@@ -1,4 +1,10 @@
-.root {}
+.root {
+    .mantine-datatable-table[data-striped] tbody tr:nth-of-type(odd) {
+        background-color: var(--theme-primary-color-4) !important;
+    }
+
+    border: 1px solid var(--theme-secondary-color-1) !important;
+}
 
 .header {
     th {

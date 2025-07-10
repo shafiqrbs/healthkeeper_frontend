@@ -4,71 +4,73 @@ import { Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Tabs, Text } from
 import { useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconChevronRight } from "@tabler/icons-react";
+import { IconChevronRight, IconCirclePlusFilled } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
+import tabClass from "@assets/css/Tab.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function PatientForm({ form, handleSubmit }) {
 	const { mainAreaHeight } = useOutletContext();
 	const [gender, setGender] = useState("male");
+	const { t } = useTranslation();
 
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
-			<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 34}>
-				<form onSubmit={form.onSubmit(handleSubmit)}>
-					<Text px="sm" fw={600} fz="sm" pb="xs">
-						Patient Information
-					</Text>
-					<Tabs
-						variant="pills"
-						color="var(--theme-primary-color-6)"
-						defaultValue="new"
-						bg="var(--theme-secondary-color-0)"
-					>
-						<Tabs.List p="sm">
-							<Flex w="100%" justify="space-between">
-								<Tabs.Tab w="32%" value="new">
-									New
-								</Tabs.Tab>
-								<Tabs.Tab w="32%" value="report">
-									Report
-								</Tabs.Tab>
-								<Tabs.Tab w="32%" value="re-visit">
-									Re-Visit
-								</Tabs.Tab>
-							</Flex>
-						</Tabs.List>
+			<form onSubmit={form.onSubmit(handleSubmit)}>
+				<Text px="sm" fw={600} fz="sm" pb="xs">
+					{t("patientInformation")}
+				</Text>
+				<Tabs
+					className={tabClass.list}
+					variant="pills"
+					color="var(--theme-primary-color-6)"
+					defaultValue="new"
+					bg="var(--theme-secondary-color-0)"
+				>
+					<Tabs.List p="sm">
+						<Flex w="100%" justify="space-between">
+							<Tabs.Tab w="32%" value="new">
+								{t("new")}
+							</Tabs.Tab>
+							<Tabs.Tab w="32%" value="report">
+								{t("report")}
+							</Tabs.Tab>
+							<Tabs.Tab w="32%" value="re-visit">
+								{t("reVisit")}
+							</Tabs.Tab>
+						</Flex>
+					</Tabs.List>
 
-						<Tabs.Panel value="new" mt="sm">
-							<Stack
-								bd="3px solid white"
-								bg="var(--theme-secondary-color-0)"
-								style={{ borderRadius: "4px" }}
-								px="sm"
-								gap="xs"
-							>
+					<Tabs.Panel value="new">
+						<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 120}>
+							<Stack className="form-stack-vertical">
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Appointment</Text>
+										<Text fz="sm">{t("appointment")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											tooltip="Book your appointment"
-											placeholder="Appointment"
-											required
+											label=""
+											tooltip={t("bookYourAppointment")}
+											placeholder={t("appointment")}
 											name="appointment"
+											id="appointment"
+											nextField="name"
+											value={form.values.appointment}
+											required
 										/>
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Patient Name</Text>
+										<Text fz="sm">{t("patientName")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											tooltip="Enter the patient's name"
-											placeholder="Patient Name"
+											tooltip={t("enterPatientName")}
+											placeholder={t("patientName")}
 											required
 											name="patientName"
 										/>
@@ -76,13 +78,13 @@ export default function PatientForm({ form, handleSubmit }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Mobile</Text>
+										<Text fz="sm">{t("mobile")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<PhoneNumber
 											form={form}
-											tooltip="Enter the patient's mobile number"
-											placeholder="Mobile"
+											tooltip={t("enterPatientMobile")}
+											placeholder={t("mobile")}
 											required
 											name="mobile"
 										/>
@@ -90,81 +92,107 @@ export default function PatientForm({ form, handleSubmit }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Gender</Text>
+										<Text fz="sm">{t("gender")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<SegmentedControl
+											fullWidth
 											color="var(--theme-primary-color-6)"
 											value={gender}
 											onChange={setGender}
 											data={[
-												{ label: "Male", value: "male" },
-												{ label: "Female", value: "female" },
-												{ label: "Other", value: "other" },
+												{ label: t("male"), value: "male" },
+												{ label: t("female"), value: "female" },
+												{ label: t("other"), value: "other" },
 											]}
 										/>
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Status</Text>
+										<Text fz="sm">{t("status")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<Flex gap="les">
 											<InputForm
 												form={form}
-												placeholder="Height"
+												placeholder={t("height")}
 												name="height"
 											/>
 											<InputForm
 												form={form}
-												placeholder="Weight"
+												placeholder={t("weight")}
 												name="weight"
 											/>
-											<InputForm form={form} placeholder="B/P" name="B/P" />
+											<InputForm
+												form={form}
+												placeholder={t("bp")}
+												name="bp"
+											/>
 										</Flex>
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Date of Birth</Text>
+										<Text fz="sm">{t("dateOfBirth")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
+										<InputForm
+											type="date"
+											form={form}
+											placeholder={t("dateOfBirth")}
+											name="dateOfBirth"
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("age")}</Text>
+									</Grid.Col>
+									<Grid.Col span={6}>
 										<Flex gap="les">
 											<InputForm
 												form={form}
-												placeholder="Date of Birth"
-												name="dateOfBirth"
-											/>
-											<InputForm form={form} placeholder="Age" name="age" />
-											<InputForm
-												form={form}
-												placeholder="Years"
-												name="years"
+												placeholder={t("age")}
+												name="age"
 											/>
 										</Flex>
 									</Grid.Col>
+									<Grid.Col span={8}>
+										<SegmentedControl
+											fullWidth
+											color="var(--theme-primary-color-6)"
+											value={gender}
+											onChange={setGender}
+											data={[
+												{ label: t("day"), value: "day" },
+												{ label: t("mon"), value: "month" },
+												{ label: t("year"), value: "year" },
+											]}
+										/>
+									</Grid.Col>
 								</Grid>
+
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Identity</Text>
+										<Text fz="sm">{t("identity")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											placeholder="NID/Birth Certificate"
+											placeholder={t("nidBirthCertificate")}
 											name="identity"
 										/>
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">District</Text>
+										<Text fz="sm">{t("district")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<SelectForm
 											form={form}
-											placeholder="Select District"
+											placeholder={t("selectDistrict")}
 											name="district"
 											data={[
 												"Pirojpur",
@@ -182,12 +210,12 @@ export default function PatientForm({ form, handleSubmit }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Address</Text>
+										<Text fz="sm">{t("address")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<TextAreaForm
 											form={form}
-											placeholder="Address"
+											placeholder={t("address")}
 											name="address"
 										/>
 									</Grid.Col>
@@ -199,45 +227,45 @@ export default function PatientForm({ form, handleSubmit }) {
 									justify="space-between"
 									gap="xs"
 								>
-									<Text fz="sm">Doctor Information</Text>
+									<Text fz="sm">{t("doctorInformation")}</Text>
 									<Flex align="center" gap="xs">
-										<Text fz="sm">Booked-05</Text>{" "}
+										<Text fz="sm">{t("booked")}-05</Text>{" "}
 										<IconChevronRight size="16px" />
 									</Flex>
 								</Flex>
 
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Room No.</Text>
+										<Text fz="sm">{t("roomNo")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											placeholder="Room No."
+											placeholder={t("roomNo")}
 											name="roomNo"
 										/>
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Specialization</Text>
+										<Text fz="sm">{t("specialization")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											placeholder="Specialization"
+											placeholder={t("specialization")}
 											name="specialization"
 										/>
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Doctor Name</Text>
+										<Text fz="sm">{t("doctorName")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											placeholder="Doctor Name"
+											placeholder={t("doctorName")}
 											name="doctorName"
 										/>
 									</Grid.Col>
@@ -245,37 +273,49 @@ export default function PatientForm({ form, handleSubmit }) {
 
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Disease Profile</Text>
+										<Text fz="sm">{t("diseaseProfile")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											placeholder="Diabetic"
+											placeholder={t("diabetic")}
 											name="diseaseProfile"
+											rightSection={
+												<IconCirclePlusFilled
+													color="var(--theme-primary-color-6)"
+													size="24px"
+												/>
+											}
 										/>
 									</Grid.Col>
 								</Grid>
 
 								<Flex c="var(--theme-primary-color-6)" align="center">
-									<Text fz="sm">Marketing</Text>
+									<Text fz="sm">{t("marketing")}</Text>
 								</Flex>
 
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Referred Name</Text>
+										<Text fz="sm">{t("referredName")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
 											form={form}
-											placeholder="Name"
+											placeholder={t("name")}
 											name="referredName"
+											rightSection={
+												<IconCirclePlusFilled
+													color="var(--theme-primary-color-6)"
+													size="24px"
+												/>
+											}
 										/>
 									</Grid.Col>
 								</Grid>
 
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">Marketing Ex.</Text>
+										<Text fz="sm">{t("marketingEx")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
@@ -286,10 +326,10 @@ export default function PatientForm({ form, handleSubmit }) {
 									</Grid.Col>
 								</Grid>
 							</Stack>
-						</Tabs.Panel>
-					</Tabs>
-				</form>
-			</ScrollArea>
+						</ScrollArea>
+					</Tabs.Panel>
+				</Tabs>
+			</form>
 		</Box>
 	);
 }

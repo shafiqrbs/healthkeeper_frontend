@@ -2,85 +2,86 @@ import { Sparkline } from "@mantine/charts";
 import { Box, Card, Flex, Text, Tabs, Grid, NumberFormatter, ScrollArea } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const tabs = [
 	{
-		label: "OPD",
+		label: "opd",
 		value: "opd",
 	},
 	{
-		label: "Visit",
+		label: "visit",
 		value: "visit",
 	},
 	{
-		label: "Pathology",
+		label: "pathology",
 		value: "pathology",
 	},
 	{
-		label: "Radiology",
+		label: "radiology",
 		value: "radiology",
 	},
 	{
-		label: "Pharmacy",
+		label: "pharmacy",
 		value: "pharmacy",
 	},
 	{
-		label: "Emergency",
+		label: "emergency",
 		value: "emergency",
 	},
 	{
-		label: "Test Report",
+		label: "testReport",
 		value: "test-report",
 	},
 	{
-		label: "Bill",
+		label: "bill",
 		value: "bill",
 	},
 ];
 
 const opdData = [
 	{
-		label: "Closed",
+		label: "closed",
 		value: 7,
 		route: "/opd/closed",
 	},
 	{
-		label: "Created",
+		label: "created",
 		value: 10,
 		route: "/opd/created",
 	},
 	{
-		label: "Done",
+		label: "done",
 		value: 10789,
 		route: "/opd/done",
 	},
 	{
-		label: "In-Progress",
+		label: "inProgress",
 		value: 23323,
 		route: "/opd/in-progress",
 	},
 	{
-		label: "Admitted",
+		label: "admitted",
 		value: 10,
 		route: "/opd/admitted",
 	},
 	{
-		label: "Due",
+		label: "due",
 		value: 10,
 		route: "/opd/due",
 	},
 	{
-		label: "Released",
+		label: "released",
 		value: 10,
 		route: "/opd/released",
 	},
 	{
-		label: "Returned",
+		label: "returned",
 		value: 5158,
 		route: "/opd/returned",
 	},
 	{
-		label: "Progress",
+		label: "progress",
 		value: 2,
 		route: "/opd/progress",
 	},
@@ -88,13 +89,14 @@ const opdData = [
 
 export default function Overview({ height }) {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 
 	return (
 		<Card padding="lg" radius="sm" h="100%">
 			<Card.Section h={32} withBorder component="div" bg="var(--mantine-color-green-8)">
 				<Flex align="center" h="100%" px="lg">
 					<Text pb={0} fz="sm" c="white" fw={500}>
-						Overview
+						{t("overview")}
 					</Text>
 				</Flex>
 			</Card.Section>
@@ -111,7 +113,7 @@ export default function Overview({ height }) {
 							{tabs.map((tab) => (
 								<Tabs.Tab py="xxxs" key={tab.value} value={tab.value}>
 									<Text mt="es" fz="sm" c="var(--theme-secondary-color-6)">
-										{tab.label}
+										{t(tab.label)}
 									</Text>
 								</Tabs.Tab>
 							))}
@@ -157,7 +159,7 @@ export default function Overview({ height }) {
 														fz="sm"
 														c="var(--theme-secondary-color-6)"
 													>
-														{item.label}
+														{t(item.label)}
 													</Text>
 													<IconArrowRight
 														size={16}

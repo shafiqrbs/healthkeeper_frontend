@@ -5,6 +5,7 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import { useOutletContext } from "react-router-dom";
 import Form from "./form/Form";
 import VisitTable from "./VisitTable";
+import VisitActionButton from "./VisitActionButton";
 
 export default function VisitIndex() {
 	const progress = useGetLoadingProgress();
@@ -25,12 +26,13 @@ export default function VisitIndex() {
 				<Box p="md">
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-						<Grid w="100%" columns={20}>
-							<Grid.Col span={6}>
+						<Grid w="100%" columns={24}>
+							<Grid.Col span={8}>
 								<Form />
 							</Grid.Col>
-							<Grid.Col span={14}>
+							<Grid.Col span={16}>
 								<VisitTable />
+								{/* <VisitActionButton /> */}
 							</Grid.Col>
 						</Grid>
 					</Flex>

@@ -1,6 +1,6 @@
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Group, Menu, Text } from "@mantine/core";
-import { IconDotsVertical, IconTrashX } from "@tabler/icons-react";
+import { ActionIcon, Box, Button, Group, Menu, Text } from "@mantine/core";
+import { IconDotsVertical, IconEye, IconTrashX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { rem } from "@mantine/core";
@@ -24,7 +24,7 @@ const data = [
 		referred_name: "Dr. Williams",
 		diseases: "Hypertension, Diabetes",
 		total_amount: "150.00",
-		payment_status: "Paid",
+		payment_status: "paid",
 	},
 	{
 		id: 2,
@@ -40,7 +40,7 @@ const data = [
 		referred_name: "Dr. Wilson",
 		diseases: "Asthma",
 		total_amount: "200.00",
-		payment_status: "Pending",
+		payment_status: "pending",
 	},
 	{
 		id: 3,
@@ -56,7 +56,7 @@ const data = [
 		referred_name: "Dr. Anderson",
 		diseases: "Heart Disease",
 		total_amount: "300.00",
-		payment_status: "Paid",
+		payment_status: "paid",
 	},
 	{
 		id: 4,
@@ -72,7 +72,7 @@ const data = [
 		referred_name: "Dr. Thomas",
 		diseases: "Migraine",
 		total_amount: "120.00",
-		payment_status: "Paid",
+		payment_status: "paid",
 	},
 	{
 		id: 5,
@@ -88,7 +88,7 @@ const data = [
 		referred_name: "Dr. Harris",
 		diseases: "Arthritis",
 		total_amount: "180.00",
-		payment_status: "Pending",
+		payment_status: "pending",
 	},
 ];
 
@@ -108,24 +108,24 @@ export default function VisitTable() {
 	};
 
 	const loadMoreRecords = useCallback(() => {
-		if (hasMore && !fetching) {
-			const nextPage = page + 1;
-			setPage(nextPage);
-			fetchData(nextPage, true);
-		} else if (!hasMore) {
-			console.info("No more records");
-		}
+		// if (hasMore && !fetching) {
+		// 	const nextPage = page + 1;
+		// 	setPage(nextPage);
+		// 	fetchData(nextPage, true);
+		// } else if (!hasMore) {
+		// 	console.info("No more records");
+		// }
 	}, [hasMore, fetching, page]);
 
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
 			<Text px="sm" fw={600} fz="sm" pb="xs">
-				Patient Information
+				{t("patientInformation")}
 			</Text>
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
 					striped
-					stripedColor="var(--theme-secondary-color-0)"
+					stripedColor="var(--theme-secondary-color-1)"
 					classNames={{
 						root: tableCss.root,
 						table: tableCss.table,
@@ -149,15 +149,19 @@ export default function VisitTable() {
 						},
 						{ accessor: "created_by", title: t("CreatedBy") },
 						{ accessor: "invoice_no", title: t("InvoiceNo") },
-						{ accessor: "visit_no", title: t("VisitNo") },
-						{ accessor: "appointment", title: t("Appointment") },
-						{ accessor: "patient_id", title: t("PatientID") },
+						{ accessor: "visit_no", title: t("visitNo") },
+						{ accessor: "appointment", title: t("appointment") },
+						{ accessor: "patient_id", title: t("patientId") },
 						{ accessor: "patient_name", title: t("Name") },
-						{ accessor: "doctor_name", title: t("Doctor") },
-						{ accessor: "referred_name", title: t("Referred") },
-						{ accessor: "diseases", title: t("Diseases") },
+						{ accessor: "doctor_name", title: t("doctor") },
+						{ accessor: "referred_name", title: t("referred") },
+						{ accessor: "diseases", title: t("diseases") },
 						{ accessor: "total_amount", title: t("Total") },
-						{ accessor: "payment_status", title: t("Payment") },
+						{
+							accessor: "payment_status",
+							title: t("paymentStatus"),
+							render: (item) => t(item.payment_status),
+						},
 						{
 							accessor: "action",
 							title: t("Action"),
@@ -165,6 +169,16 @@ export default function VisitTable() {
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
+									<Button
+										variant="default"
+										c="var(--theme-success-color)"
+										size="xs"
+										radius="es"
+										leftSection={<IconEye size={18} />}
+										className="border-right-radius-none"
+									>
+										{t("View")}
+									</Button>
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -175,10 +189,9 @@ export default function VisitTable() {
 									>
 										<Menu.Target>
 											<ActionIcon
-												size="sm"
-												variant="outline"
-												color="red"
-												radius="xl"
+												className="action-icon-menu border-left-radius-none"
+												variant="default"
+												radius="es"
 												aria-label="Settings"
 											>
 												<IconDotsVertical
@@ -224,7 +237,7 @@ export default function VisitTable() {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 72}
+					height={height - 272}
 					onScrollToBottom={loadMoreRecords}
 					scrollViewportRef={scrollViewportRef}
 				/>

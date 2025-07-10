@@ -1,20 +1,23 @@
 import React from "react";
 import { Card, Flex, NumberFormatter, Table, Text } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 
 const elements = [
-	{ value: 12000, name: "Total Sales" },
-	{ value: 0, name: "Sales Received" },
-	{ value: 0, name: "Commission" },
-	{ value: 0, name: "Return" },
-	{ value: 0, name: "Due Received" },
+	{ value: 12000, name: "totalSales" },
+	{ value: 0, name: "salesReceived" },
+	{ value: 0, name: "commission" },
+	{ value: 0, name: "return" },
+	{ value: 0, name: "dueReceived" },
 ];
 
 export default function GrandTotalOverview() {
+	const { t } = useTranslation();
+
 	const rows = elements.map((element) => (
 		<Table.Tr key={element.name}>
 			<Table.Td fw={500} pl="lg">
-				{element.name}
+				{t(element.name)}
 			</Table.Td>
 			<Table.Td fw={500} w={100}>
 				<Flex justify="center" align="center" gap="xs">
@@ -48,7 +51,7 @@ export default function GrandTotalOverview() {
 			<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
 				<Flex align="center" h="100%" px="lg">
 					<Text pb={0} fz="sm" c="white" fw={500}>
-						Overview
+						{t("overview")}
 					</Text>
 				</Flex>
 			</Card.Section>
@@ -59,7 +62,7 @@ export default function GrandTotalOverview() {
 					<Table.Tr bg="var(--theme-primary-color-9)">
 						<Table.Td>
 							<Text pl="xs" fz="sm" c="white">
-								Total
+								{t("total")}
 							</Text>
 						</Table.Td>
 						<Table.Td>

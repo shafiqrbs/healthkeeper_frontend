@@ -9,18 +9,19 @@ import {
 	IconStethoscope,
 	IconTestPipe,
 } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 
 const slides = [
 	{
 		icon: IconCash,
-		title: "Balance",
+		title: "balance",
 		color: "var(--theme-carousel-item-color)",
 		amount: 10971033,
 		progress: 70,
 	},
 	{
 		icon: IconCreditCardPay,
-		title: "Expense",
+		title: "expense",
 		color: "var(--theme-primary-color-7)",
 		amount: 30000,
 		progress: 50,
@@ -28,20 +29,20 @@ const slides = [
 	{
 		icon: IconTestPipe,
 		color: "var(--theme-carousel-item-color)",
-		title: "Diagnostic",
+		title: "diagnostic",
 		amount: 10000,
 		progress: 30,
 	},
 	{
 		icon: IconBed,
-		title: "Admission",
+		title: "admission",
 		color: "var(--theme-primary-color-7)",
 		amount: 5000,
 		progress: 20,
 	},
 	{
 		icon: IconStethoscope,
-		title: "Patient",
+		title: "patient",
 		color: "var(--theme-carousel-item-color)",
 		amount: 1000,
 		progress: 10,
@@ -49,6 +50,8 @@ const slides = [
 ];
 
 function Slide({ slide }) {
+	const { t } = useTranslation();
+
 	return (
 		<Flex
 			bg="white"
@@ -63,7 +66,7 @@ function Slide({ slide }) {
 		>
 			<Flex align="center" w="100%" justify="space-between" gap="sm">
 				<Text fz={14} tt="uppercase" fw={500} c="var(--theme-secondary-color-6)">
-					{slide.title}
+					{t(slide.title)}
 				</Text>
 				<slide.icon size={24} color={slide.color} />
 			</Flex>
@@ -77,7 +80,7 @@ function Slide({ slide }) {
 					/>
 				</Text>
 				<Text size="sm" c={slide.color} fz="md">
-					BDT
+					{t("bdt")}
 				</Text>
 			</Flex>
 			<Progress
