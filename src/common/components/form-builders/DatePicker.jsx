@@ -1,13 +1,9 @@
-import dayjs from "dayjs";
-// import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { DateInput } from "@mantine/dates";
 import { Tooltip } from "@mantine/core";
 import { getHotkeyHandler } from "@mantine/hooks";
 import { IconInfoCircle, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import inputCss from "@assets/css/InputField.module.css";
-
-// dayjs.extend(customParseFormat);
 
 function DatePickerForm({
 	label,
@@ -36,8 +32,8 @@ function DatePickerForm({
 				px={16}
 				py={2}
 				position="top-end"
-				bg={`red.4`}
-				c={"white"}
+				bg="var(--theme-validation-error-color)"
+				c="white"
 				withArrow
 				offset={2}
 				zIndex={999}
@@ -67,9 +63,14 @@ function DatePickerForm({
 					leftSection={leftSection}
 					rightSection={
 						form.values[name] && closeIcon ? (
-							<Tooltip label={t("Close")} withArrow bg={`red.1`} c={"red.3"}>
+							<Tooltip
+								label={t("Close")}
+								withArrow
+								bg="var(--theme-error-color)"
+								c="white"
+							>
 								<IconX
-									color={`red.5`}
+									color="var(--theme-error-color)"
 									size={16}
 									opacity={0.5}
 									onClick={() => {
@@ -84,8 +85,8 @@ function DatePickerForm({
 								py={2}
 								withArrow
 								position={"left"}
-								c={"black"}
-								bg={`gray.1`}
+								c="white"
+								bg="var(--theme-info-color)"
 								transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 							>
 								{rightSection ? (

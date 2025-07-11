@@ -1267,5 +1267,20 @@
 	"reset": "Reset",
 	"prescription": "Prescription",
 	"a4Print": "A4 Print",
-	"save": "Save"
+	"save": "Save",
+	"enterPatientHeight": "Enter the patient's height",
+	"enterPatientWeight": "Enter the patient's weight",
+	"enterPatientBp": "Enter the patient's Blood Pressure",
+	"enterPatientDateOfBirth": "Enter the patient's date of birth",
+	"enterPatientAge": "Enter the patient's age",
+	"enterPatientIdentity": "Enter the patient's identity",
+	"enterPatientDistrict": "Enter the patient's district",
+	"enterPatientAddress": "Enter the patient's address",
+	"enterPatientRoomNo": "Enter the patient's room number",
+	"enterPatientSpecialization": "Enter the patient's specialization",
+	"enterPatientDoctorName": "Enter the patient's doctor name",
+	"enterPatientDiseaseProfile": "Enter the patient's disease profile",
+	"enterPatientReferredName": "Enter the patient's referred name",
+	"enterPatientMarketingEx": "Enter the patient's marketing experience",
+	"enterRemark": "Enter the remark"
 }

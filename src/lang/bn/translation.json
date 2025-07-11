@@ -831,5 +831,20 @@
 	"reset": "রিসেট",
 	"hold": "হোল্ড",
 	"prescription": "প্রেসক্রিপশন",
-	"a4Print": "A4 প্রিন্ট"
+	"a4Print": "A4 প্রিন্ট",
+	"enterPatientHeight": "রোগীর উচ্চতা লিখুন",
+	"enterPatientWeight": "রোগীর ওজন লিখুন",
+	"enterPatientBp": "রোগীর রক্তচাপ লিখুন",
+	"enterPatientDateOfBirth": "রোগীর জন্ম তারিখ লিখুন",
+	"enterPatientAge": "রোগীর বয়স লিখুন",
+	"enterPatientIdentity": "রোগীর পরিচয় লিখুন",
+	"enterPatientDistrict": "রোগীর জেলা লিখুন",
+	"enterPatientAddress": "রোগীর ঠিকানা লিখুন",
+	"enterPatientRoomNo": "রোগীর রুম নং লিখুন",
+	"enterPatientSpecialization": "রোগীর বিশেষজ্ঞতা লিখুন",
+	"enterPatientDoctorName": "রোগীর ডাক্তারের নাম লিখুন",
+	"enterPatientDiseaseProfile": "রোগীর রোগের প্রোফাইল লিখুন",
+	"enterPatientReferredName": "রোগীর রেফারারের নাম লিখুন",
+	"enterPatientMarketingEx": "রোগীর মার্কেটিং এক্সপারিয়ন লিখুন",
+	"enterRemark": "মন্তব্য লিখুন"
 }

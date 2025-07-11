@@ -131,6 +131,7 @@ export default function PatientForm({ form, handleSubmit }) {
 												form={form}
 												label=""
 												placeholder="170"
+												tooltip={t("enterPatientHeight")}
 												name="height"
 												id="height"
 												nextField="weight"
@@ -141,6 +142,7 @@ export default function PatientForm({ form, handleSubmit }) {
 												form={form}
 												label=""
 												placeholder="60"
+												tooltip={t("enterPatientWeight")}
 												name="weight"
 												id="weight"
 												nextField="bp"
@@ -151,6 +153,7 @@ export default function PatientForm({ form, handleSubmit }) {
 												form={form}
 												label=""
 												placeholder="120/80"
+												tooltip={t("enterPatientBp")}
 												name="bp"
 												id="bp"
 												nextField="dateOfBirth"
@@ -169,6 +172,7 @@ export default function PatientForm({ form, handleSubmit }) {
 											form={form}
 											label=""
 											placeholder="23-06-2025"
+											tooltip={t("enterPatientDateOfBirth")}
 											name="dateOfBirth"
 											id="dateOfBirth"
 											nextField="age"
@@ -187,6 +191,7 @@ export default function PatientForm({ form, handleSubmit }) {
 												form={form}
 												label=""
 												placeholder="20"
+												tooltip={t("enterPatientAge")}
 												name="age"
 												id="age"
 												nextField="ageType"
@@ -219,6 +224,7 @@ export default function PatientForm({ form, handleSubmit }) {
 											form={form}
 											label=""
 											placeholder="1234567890"
+											tooltip={t("enterPatientIdentity")}
 											name="identity"
 											id="identity"
 											nextField="district"
@@ -235,6 +241,7 @@ export default function PatientForm({ form, handleSubmit }) {
 										<SelectForm
 											form={form}
 											label=""
+											tooltip={t("enterPatientDistrict")}
 											placeholder="Dhaka"
 											name="district"
 											id="district"
@@ -263,6 +270,7 @@ export default function PatientForm({ form, handleSubmit }) {
 										<TextAreaForm
 											form={form}
 											label=""
+											tooltip={t("enterPatientAddress")}
 											placeholder="12 street, 123456"
 											name="address"
 											id="address"
@@ -289,6 +297,7 @@ export default function PatientForm({ form, handleSubmit }) {
 										<InputNumberForm
 											form={form}
 											label=""
+											tooltip={t("enterPatientRoomNo")}
 											placeholder="101"
 											name="roomNo"
 											id="roomNo"
@@ -306,6 +315,7 @@ export default function PatientForm({ form, handleSubmit }) {
 										<InputForm
 											form={form}
 											label=""
+											tooltip={t("enterPatientSpecialization")}
 											placeholder="Cardiologist"
 											name="specialization"
 											id="specialization"
@@ -323,6 +333,7 @@ export default function PatientForm({ form, handleSubmit }) {
 										<InputForm
 											form={form}
 											label=""
+											tooltip={t("enterPatientDoctorName")}
 											placeholder="Dr. John Doe"
 											name="doctorName"
 											id="doctorName"
@@ -341,6 +352,7 @@ export default function PatientForm({ form, handleSubmit }) {
 										<InputForm
 											form={form}
 											label=""
+											tooltip={t("enterPatientDiseaseProfile")}
 											placeholder="Diabetic"
 											name="diseaseProfile"
 											id="diseaseProfile"
@@ -369,6 +381,7 @@ export default function PatientForm({ form, handleSubmit }) {
 										<InputForm
 											form={form}
 											label=""
+											tooltip={t("enterPatientReferredName")}
 											placeholder="John Doe"
 											name="referredName"
 											id="referredName"
@@ -393,6 +406,7 @@ export default function PatientForm({ form, handleSubmit }) {
 										<InputNumberForm
 											form={form}
 											label=""
+											tooltip={t("enterPatientMarketingEx")}
 											placeholder="101"
 											name="marketingEx"
 											id="marketingEx"

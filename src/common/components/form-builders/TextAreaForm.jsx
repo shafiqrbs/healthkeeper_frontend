@@ -20,8 +20,9 @@ function TextAreaForm({
 	maxRows,
 	style,
 	size,
+	showRightSection = true,
 }) {
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 	return (
 		<>
 			{form && (
@@ -60,39 +61,43 @@ function TextAreaForm({
 							],
 						])}
 						rightSection={
-							form.values[name] ? (
-								<Tooltip
-									label={t("Close")}
-									withArrow
-									bg="var(--theme-error-color)"
-									c="white"
-								>
-									<IconX
-										color="var(--theme-error-color)"
-										size={16}
-										opacity={0.5}
-										onClick={() => {
-											form.setFieldValue(name, "");
-										}}
-									/>
-								</Tooltip>
-							) : (
-								<Tooltip
-									label={tooltip}
-									px={16}
-									py={2}
-									withArrow
-									position={"left"}
-									c="white"
-									bg="var(--theme-info-color)"
-									transitionProps={{
-										transition: "pop-bottom-left",
-										duration: 500,
-									}}
-								>
-									<IconInfoCircle size={16} opacity={0.5} />
-								</Tooltip>
-							)
+							showRightSection ? (
+								<>
+									{form.values[name] ? (
+										<Tooltip
+											label={t("Close")}
+											withArrow
+											bg="var(--theme-error-color)"
+											c="white"
+										>
+											<IconX
+												color="var(--theme-error-color)"
+												size={16}
+												opacity={0.5}
+												onClick={() => {
+													form.setFieldValue(name, "");
+												}}
+											/>
+										</Tooltip>
+									) : (
+										<Tooltip
+											label={tooltip}
+											px={16}
+											py={2}
+											withArrow
+											position="left"
+											c="white"
+											bg="var(--theme-info-color)"
+											transitionProps={{
+												transition: "pop-bottom-left",
+												duration: 500,
+											}}
+										>
+											<IconInfoCircle size={16} opacity={0.5} />
+										</Tooltip>
+									)}
+								</>
+							) : null
 						}
 						withAsterisk={required}
 					/>
