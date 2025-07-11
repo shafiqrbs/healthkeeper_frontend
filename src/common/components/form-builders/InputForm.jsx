@@ -19,6 +19,7 @@ function InputForm({
 	type,
 	leftSection,
 	rightSection,
+	styles = {},
 }) {
 	const { t } = useTranslation();
 
@@ -41,6 +42,7 @@ function InputForm({
 					<TextInput
 						type={type}
 						id={id}
+						styles={styles}
 						classNames={inputCss}
 						size="sm"
 						label={label}

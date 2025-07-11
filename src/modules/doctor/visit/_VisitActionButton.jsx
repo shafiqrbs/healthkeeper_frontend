@@ -1,7 +1,7 @@
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { ActionIcon, Button, Checkbox, Flex, Grid, Image, Stack, Text } from "@mantine/core";
-import { IconArrowsSplit2, IconCirclePlusFilled, IconHistory } from "@tabler/icons-react";
+import { IconArrowsSplit2, IconCirclePlusFilled, IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import { Carousel } from "@mantine/carousel";
@@ -170,7 +170,7 @@ export default function VisitActionButton({ form }) {
 				<Button
 					w="100%"
 					bg="var(--theme-reset-btn-color)"
-					leftSection={<IconHistory size={16} />}
+					leftSection={<IconRestore size={16} />}
 					onClick={handleReset}
 					disabled={isSubmitting}
 				>

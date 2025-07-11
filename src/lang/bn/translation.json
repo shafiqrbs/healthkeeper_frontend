@@ -846,5 +846,8 @@
 	"enterPatientDiseaseProfile": "রোগীর রোগের প্রোফাইল লিখুন",
 	"enterPatientReferredName": "রোগীর রেফারারের নাম লিখুন",
 	"enterPatientMarketingEx": "রোগীর মার্কেটিং এক্সপারিয়ন লিখুন",
-	"enterRemark": "মন্তব্য লিখুন"
+	"enterRemark": "মন্তব্য লিখুন",
+	"visitInformation": "ভিজিট তথ্য",
+	"visitOverview": "ভিজিট ওভারভিউ",
+	"all": "সব"
 }

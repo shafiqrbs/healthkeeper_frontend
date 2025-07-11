@@ -1282,5 +1282,8 @@
 	"enterPatientDiseaseProfile": "Enter the patient's disease profile",
 	"enterPatientReferredName": "Enter the patient's referred name",
 	"enterPatientMarketingEx": "Enter the patient's marketing experience",
-	"enterRemark": "Enter the remark"
+	"enterRemark": "Enter the remark",
+	"visitInformation": "Visit Information",
+	"visitOverview": "Visit Overview",
+	"all": "All"
 }

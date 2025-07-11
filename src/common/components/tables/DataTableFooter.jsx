@@ -5,7 +5,7 @@ import { Group, Paper, Text } from "@mantine/core";
 export default function DataTableFooter({ indexData, module }) {
 	const { t } = useTranslation();
 	return (
-		<Paper className="infinite-pagination-footer" p="md" withBorder>
+		<Paper className="infinite-pagination-footer" px="sm" py="xs">
 			<Group justify="space-between">
 				<Text size="sm">
 					{t("Showing")} {indexData?.data?.data?.length || indexData?.data?.length || 0}{" "}

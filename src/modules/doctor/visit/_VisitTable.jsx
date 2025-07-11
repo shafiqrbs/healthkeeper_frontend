@@ -1,13 +1,26 @@
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Group, Menu, Text } from "@mantine/core";
-import { IconDotsVertical, IconEye, IconTrashX } from "@tabler/icons-react";
+import {
+	ActionIcon,
+	Box,
+	Button,
+	Flex,
+	FloatingIndicator,
+	Group,
+	Menu,
+	Tabs,
+	Text,
+} from "@mantine/core";
+import { IconArrowRight, IconDotsVertical, IconEye, IconTrashX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { rem } from "@mantine/core";
 import tableCss from "@assets/css/Table.module.css";
+import classes from "@assets/css/FilterTabs.module.css";
 
 import React, { useCallback, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import KeywordSearch from "../common/KeywordSearch";
+import { useForm } from "@mantine/form";
 
 const data = [
 	{
@@ -90,6 +103,38 @@ const data = [
 		total_amount: "180.00",
 		payment_status: "pending",
 	},
+	{
+		id: 6,
+		index: 6,
+		created_at: "2025-01-19",
+		created_by: "Dr. Rodriguez",
+		invoice_no: "INV-005",
+		visit_no: "VIS-005",
+		appointment: "2025-01-19 03:20 PM",
+		patient_id: "P005",
+		patient_name: "David Brown",
+		doctor_name: "Dr. White",
+		referred_name: "Dr. Harris",
+		diseases: "Arthritis",
+		total_amount: "180.00",
+		payment_status: "pending",
+	},
+	{
+		id: 7,
+		index: 7,
+		created_at: "2025-01-19",
+		created_by: "Dr. Rodriguez",
+		invoice_no: "INV-005",
+		visit_no: "VIS-005",
+		appointment: "2025-01-19 03:20 PM",
+		patient_id: "P005",
+		patient_name: "David Brown",
+		doctor_name: "Dr. White",
+		referred_name: "Dr. Harris",
+		diseases: "Arthritis",
+		total_amount: "180.00",
+		payment_status: "pending",
+	},
 ];
 
 export default function VisitTable() {
@@ -100,6 +145,21 @@ export default function VisitTable() {
 	const scrollViewportRef = useRef(null);
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
+
+	const form = useForm({
+		initialValues: {
+			keywordSearch: "",
+		},
+	});
+
+	const [rootRef, setRootRef] = useState(null);
+	const [value, setValue] = useState("1");
+	const [controlsRefs, setControlsRefs] = useState({});
+
+	const setControlRef = (val) => (node) => {
+		controlsRefs[val] = node;
+		setControlsRefs(controlsRefs);
+	};
 
 	const fetchData = async (pageNum = 1, append = false) => {
 		if (!hasMore && pageNum > 1) return;
@@ -118,10 +178,49 @@ export default function VisitTable() {
 	}, [hasMore, fetching, page]);
 
 	return (
-		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
-			<Text px="sm" fw={600} fz="sm" pb="xs">
-				{t("patientInformation")}
-			</Text>
+		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
+			<Flex justify="space-between" align="center" px="sm">
+				<Text fw={600} fz="sm" py="xs">
+					{t("visitInformation")}
+				</Text>
+				<Flex gap="xs" align="center">
+					<Tabs mt="xs" variant="none" value={value} onChange={setValue}>
+						<Tabs.List ref={setRootRef} className={classes.list}>
+							<Tabs.Tab value="1" ref={setControlRef("1")} className={classes.tab}>
+								{t("all")}
+							</Tabs.Tab>
+							<Tabs.Tab value="2" ref={setControlRef("2")} className={classes.tab}>
+								{t("closed")}
+							</Tabs.Tab>
+							<Tabs.Tab value="3" ref={setControlRef("3")} className={classes.tab}>
+								{t("done")}
+							</Tabs.Tab>
+							<Tabs.Tab value="4" ref={setControlRef("4")} className={classes.tab}>
+								{t("inProgress")}
+							</Tabs.Tab>
+							<Tabs.Tab value="5" ref={setControlRef("5")} className={classes.tab}>
+								{t("returned")}
+							</Tabs.Tab>
+
+							<FloatingIndicator
+								target={value ? controlsRefs[value] : null}
+								parent={rootRef}
+								className={classes.indicator}
+							/>
+						</Tabs.List>
+					</Tabs>
+					<Button
+						size="xs"
+						radius="es"
+						rightSection={<IconArrowRight size={16} />}
+						bg="var(--theme-success-color)"
+						c="white"
+					>
+						{t("visitOverview")}
+					</Button>
+				</Flex>
+			</Flex>
+			<KeywordSearch form={form} />
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
 					striped
@@ -239,7 +338,7 @@ export default function VisitTable() {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 272}
+					height={height - 314}
 					onScrollToBottom={loadMoreRecords}
 					scrollViewportRef={scrollViewportRef}
 				/>
