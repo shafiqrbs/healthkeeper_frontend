@@ -6,6 +6,18 @@
     border: 1px solid var(--theme-secondary-color-1) !important;
 }
 
+.table {
+    tr {
+        background-color: white;
+    }
+
+    &[data-striped] {
+        tr:nth-of-type(odd) {
+            background-color: var(--mantine-datatable-striped-color);
+        }
+    }
+}
+
 .header {
     th {
         border-bottom: 1px solid #f8eedf;

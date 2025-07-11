@@ -5,7 +5,7 @@ import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { rem } from "@mantine/core";
 import tableCss from "@assets/css/Table.module.css";
-import classes from "@assets/css/FilterTabs.module.css";
+import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import React, { useCallback, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
@@ -177,13 +177,17 @@ export default function VisitTable() {
 				</Text>
 				<Flex gap="xs" align="center">
 					<Tabs mt="xs" variant="none" value={value} onChange={setValue}>
-						<Tabs.List ref={setRootRef} className={classes.list}>
+						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab} ref={setControlRef(tab)} className={classes.tab} key={tab}>
+								<Tabs.Tab value={tab} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab}>
 									{t(tab)}
 								</Tabs.Tab>
 							))}
-							<FloatingIndicator target={value ? controlsRefs[value] : null} parent={rootRef} className={classes.indicator} />
+							<FloatingIndicator
+								target={value ? controlsRefs[value] : null}
+								parent={rootRef}
+								className={filterTabsCss.indicator}
+							/>
 						</Tabs.List>
 					</Tabs>
 					<Button size="xs" radius="es" rightSection={<IconArrowRight size={16} />} bg="var(--theme-success-color)" c="white">
@@ -191,8 +195,10 @@ export default function VisitTable() {
 					</Button>
 				</Flex>
 			</Flex>
-			<KeywordSearch form={form} />
-			<Box className="borderRadiusAll border-top-none">
+			<Box px="sm" mb="sm">
+				<KeywordSearch form={form} />
+			</Box>
+			<Box className="borderRadiusAll border-top-none" px="sm">
 				<DataTable
 					striped
 					pinFirstColumn
@@ -296,7 +302,7 @@ export default function VisitTable() {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 314}
+					height={height - 344}
 					onScrollToBottom={loadMoreRecords}
 					scrollViewportRef={scrollViewportRef}
 				/>

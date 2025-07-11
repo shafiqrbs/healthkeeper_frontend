@@ -24,4 +24,9 @@ export const PAYMENT_METHODS = [
 		value: "wise",
 		icon: "/images/transaction-modes/wise.svg",
 	},
+	{
+		label: "Nagad2",
+		value: "nagad2",
+		icon: "/images/transaction-modes/nagad.svg",
+	},
 ];

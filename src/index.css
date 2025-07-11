@@ -387,6 +387,12 @@ input[type=radio]:checked+label>img {
     }
 }
 
+.method-carousel {
+    .mantine-Carousel-control {
+        margin-inline: -20px !important;
+    }
+}
+
 .mantine-Tabs-list::before {
     border: none !important;
 }
@@ -460,4 +466,12 @@ input[type=radio]:checked+label>img {
     box-shadow: 0 0 0 100vmax white !important;
     -webkit-clip-path: inset(0 -100vmax) !important;
     clip-path: inset(0 -100vmax) !important;
+}
+
+.keyword-search-box {
+    width: 100%;
+    background-color: var(--theme-primary-color-0);
+    padding: 6px 8px;
+    gap: 12px;
+    border-radius: 4px;
 }

@@ -1,6 +1,6 @@
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { ActionIcon, Button, Checkbox, Flex, Grid, Image, Stack, Text } from "@mantine/core";
+import { ActionIcon, Box, Button, Checkbox, Flex, Grid, Image, Stack, Text } from "@mantine/core";
 import { IconArrowsSplit2, IconCirclePlusFilled, IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
@@ -43,35 +43,14 @@ export default function VisitActionButton({ form }) {
 				const resultAction = await dispatch(storeEntityData(data));
 
 				if (storeEntityData.rejected.match(resultAction)) {
-					showNotificationComponent(
-						resultAction.payload.message,
-						"red",
-						"lightgray",
-						true,
-						1000,
-						true
-					);
+					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
 				} else {
-					showNotificationComponent(
-						t("Visit saved successfully"),
-						"green",
-						"lightgray",
-						true,
-						1000,
-						true
-					);
+					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
 					form.reset();
 				}
 			} catch (error) {
 				console.error("Error submitting visit:", error);
-				showNotificationComponent(
-					t("Something went wrong"),
-					"red",
-					"lightgray",
-					true,
-					1000,
-					true
-				);
+				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
 			} finally {
 				setIsSubmitting(false);
 			}
@@ -84,89 +63,87 @@ export default function VisitActionButton({ form }) {
 	};
 
 	return (
-		<Stack gap="xxxs" justify="space-between">
-			<Grid columns={24}>
-				<Grid.Col span={8}>
-					<TextAreaForm
-						form={form}
-						placeholder="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its"
-						label={t("remark")}
-						tooltip={t("enterRemark")}
-						showRightSection={false}
-						name="remark"
-						style={{ input: { height: "114px" } }}
-					/>
-				</Grid.Col>
-				<Grid.Col span={8}>
-					<Stack>
-						<InputForm
+		<Stack gap={0} justify="space-between" mt="xs">
+			<Box p="md" bg="white" className="borderRadiusAll">
+				<Grid columns={24}>
+					<Grid.Col span={8} bg="var(--theme-secondary-color-1)" px="xs">
+						<TextAreaForm
 							form={form}
-							label={t("referredName")}
-							placeholder={t("name")}
-							name="referredName"
-							tooltip={t("enterPatientReferredName")}
-							rightSection={
-								<IconCirclePlusFilled
-									color="var(--theme-primary-color-6)"
-									size="24px"
-								/>
-							}
+							placeholder="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its"
+							label={t("remark")}
+							tooltip={t("enterRemark")}
+							showRightSection={false}
+							name="remark"
+							style={{ input: { height: "114px" } }}
 						/>
-						<InputForm
-							form={form}
-							label={t("marketingEx")}
-							placeholder="101"
-							name="marketingEx"
-							tooltip={t("enterPatientMarketingEx")}
-							rightSection={
-								<IconCirclePlusFilled
-									color="var(--theme-primary-color-6)"
-									size="24px"
-								/>
-							}
-						/>
-					</Stack>
-				</Grid.Col>
-				<Grid.Col span={8}>
-					<Carousel slideGap="xs" align="start" slideSize="20%">
-						{PAYMENT_METHODS.map((method) => (
-							<Carousel.Slide key={method.value}>
-								<Image src={method.icon} alt={method.label} mih={40} />
-								<Text>{method.label}</Text>
-							</Carousel.Slide>
-						))}
-					</Carousel>
-					<Flex justify="space-between">
-						<Flex align="center" gap="xs">
-							Is Confirm{" "}
-							<Checkbox
-								checked={form.values.isConfirm}
-								onChange={(event) =>
-									form.setFieldValue("isConfirm", event.currentTarget.checked)
-								}
-								color="var(--theme-success-color)"
+					</Grid.Col>
+					<Grid.Col span={8} px="xs" bg="var(--theme-secondary-color-0)">
+						<Stack>
+							<InputForm
+								form={form}
+								label={t("referredName")}
+								placeholder={t("name")}
+								name="referredName"
+								tooltip={t("enterPatientReferredName")}
+								rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 							/>
-						</Flex>
-						<Flex align="center" gap="xs">
-							SMS Alert{" "}
-							<Checkbox
-								checked={form.values.smsAlert}
-								onChange={(event) =>
-									form.setFieldValue("smsAlert", event.currentTarget.checked)
-								}
-								color="var(--theme-success-color)"
+							<InputForm
+								form={form}
+								label={t("marketingEx")}
+								placeholder="101"
+								name="marketingEx"
+								tooltip={t("enterPatientMarketingEx")}
+								rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 							/>
-						</Flex>
-					</Flex>
-					<Flex gap="xs" align="center">
-						<Text>{t("Due")} ৳ 200000</Text>
-						<InputNumberForm form={form} placeholder={t("amount")} name="amount" />
-						<ActionIcon color="var(--theme-success-color)">
-							<IconArrowsSplit2 size={16} />
-						</ActionIcon>
-					</Flex>
-				</Grid.Col>
-			</Grid>
+						</Stack>
+					</Grid.Col>
+					<Grid.Col span={8} bg="var(--theme-secondary-color-1)" px="xs">
+						<Stack gap="xs" className="method-carousel">
+							<Carousel height={50} align="start" slideSize="20%" bg="var(--theme-secondary-color-0)" py="les">
+								{PAYMENT_METHODS.map((method) => (
+									<Carousel.Slide key={method.value}>
+										<Stack h="100%" justify="space-between" align="center" gap="0">
+											<Image src={method.icon} alt={method.label} w={30} />
+											<Text fz="xxs">{method.label}</Text>
+										</Stack>
+									</Carousel.Slide>
+								))}
+							</Carousel>
+							<Box>
+								<Flex justify="space-between" mb="xxxs">
+									<Flex fz="sm" align="center" gap="xs">
+										Is Confirm{" "}
+										<Checkbox
+											checked={form.values.isConfirm}
+											onChange={(event) => form.setFieldValue("isConfirm", event.currentTarget.checked)}
+											color="var(--theme-success-color)"
+										/>
+									</Flex>
+									<Flex fz="sm" align="center" gap="xs">
+										SMS Alert{" "}
+										<Checkbox
+											checked={form.values.smsAlert}
+											onChange={(event) => form.setFieldValue("smsAlert", event.currentTarget.checked)}
+											color="var(--theme-success-color)"
+										/>
+									</Flex>
+								</Flex>
+								<Flex gap="xs" align="center">
+									<Box bg="white" px="xs" py="les" className="borderRadiusAll">
+										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
+											{t("Due")} ৳ {(20000).toLocaleString()}
+										</Text>
+									</Box>
+									<InputNumberForm form={form} tooltip={t("enterAmount")} placeholder={t("amount")} name="amount" />
+									<ActionIcon color="var(--theme-success-color)">
+										<IconArrowsSplit2 size={16} />
+									</ActionIcon>
+								</Flex>
+							</Box>
+						</Stack>
+					</Grid.Col>
+				</Grid>
+			</Box>
 			<Button.Group>
 				<Button
 					w="100%"
@@ -189,13 +166,7 @@ export default function VisitActionButton({ form }) {
 				<Button w="100%" bg="var(--theme-pos-btn-color)" disabled={isSubmitting}>
 					{t("Pos")}
 				</Button>
-				<Button
-					w="100%"
-					bg="var(--theme-save-btn-color)"
-					onClick={handleSubmit}
-					loading={isSubmitting}
-					disabled={isSubmitting}
-				>
+				<Button w="100%" bg="var(--theme-save-btn-color)" onClick={handleSubmit} loading={isSubmitting} disabled={isSubmitting}>
 					{t("Save")}
 				</Button>
 			</Button.Group>

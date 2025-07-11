@@ -1,6 +1,6 @@
 import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 import InputForm from "@components/form-builders/InputForm";
-import { Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Tabs, Text } from "@mantine/core";
+import { Box, Flex, FloatingIndicator, Grid, ScrollArea, SegmentedControl, Stack, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -17,31 +17,38 @@ export default function PatientForm({ form, handleSubmit }) {
 	const [ageType, setAgeType] = useState("year");
 	const { t } = useTranslation();
 
+	const [rootRef, setRootRef] = useState(null);
+	const [tabValue, setTabValue] = useState("new");
+	const [controlsRefs, setControlsRefs] = useState({});
+	const setControlRef = (val) => (node) => {
+		controlsRefs[val] = node;
+		setControlsRefs(controlsRefs);
+	};
+
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Text px="sm" fw={600} fz="sm" pb="xs">
 					{t("patientInformation")}
 				</Text>
-				<Tabs
-					className={tabClass.list}
-					variant="pills"
-					color="var(--theme-primary-color-6)"
-					defaultValue="new"
-					bg="var(--theme-secondary-color-0)"
-				>
-					<Tabs.List p="sm">
+				<Tabs variant="none" value={tabValue} onChange={setTabValue}>
+					<Tabs.List p="sm" className={tabClass.list} ref={setRootRef}>
 						<Flex w="100%" justify="space-between">
-							<Tabs.Tab w="32%" value="new">
+							<Tabs.Tab w="32%" value="new" ref={setControlRef("new")} className={tabClass.tab}>
 								{t("new")}
 							</Tabs.Tab>
-							<Tabs.Tab w="32%" value="report">
+							<Tabs.Tab w="32%" value="report" ref={setControlRef("report")} className={tabClass.tab}>
 								{t("report")}
 							</Tabs.Tab>
-							<Tabs.Tab w="32%" value="re-visit">
+							<Tabs.Tab w="32%" value="re-visit" ref={setControlRef("re-visit")} className={tabClass.tab}>
 								{t("reVisit")}
 							</Tabs.Tab>
 						</Flex>
+						<FloatingIndicator
+							target={tabValue ? controlsRefs[tabValue] : null}
+							parent={rootRef}
+							className={tabClass.indicator}
+						/>
 					</Tabs.List>
 
 					<Tabs.Panel value="new">
@@ -284,8 +291,7 @@ export default function PatientForm({ form, handleSubmit }) {
 								<Flex className="form-action-header full-bleed">
 									<Text fz="sm">{t("doctorInformation")}</Text>
 									<Flex align="center" gap="xs">
-										<Text fz="sm">{t("booked")}-05</Text>{" "}
-										<IconChevronRight size="16px" />
+										<Text fz="sm">{t("booked")}-05</Text> <IconChevronRight size="16px" />
 									</Flex>
 								</Flex>
 
@@ -359,60 +365,7 @@ export default function PatientForm({ form, handleSubmit }) {
 											nextField="referredName"
 											value={form.values.diseaseProfile}
 											required
-											rightSection={
-												<IconCirclePlusFilled
-													color="var(--theme-primary-color-6)"
-													size="24px"
-												/>
-											}
-										/>
-									</Grid.Col>
-								</Grid>
-
-								<Flex className="form-action-header full-bleed">
-									<Text fz="sm">{t("marketing")}</Text>
-								</Flex>
-
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("referredName")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<InputForm
-											form={form}
-											label=""
-											tooltip={t("enterPatientReferredName")}
-											placeholder="John Doe"
-											name="referredName"
-											id="referredName"
-											nextField="marketingEx"
-											value={form.values.referredName}
-											required
-											rightSection={
-												<IconCirclePlusFilled
-													color="var(--theme-primary-color-6)"
-													size="24px"
-												/>
-											}
-										/>
-									</Grid.Col>
-								</Grid>
-
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("marketingEx")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<InputNumberForm
-											form={form}
-											label=""
-											tooltip={t("enterPatientMarketingEx")}
-											placeholder="101"
-											name="marketingEx"
-											id="marketingEx"
-											nextField="isConfirm"
-											value={form.values.marketingEx}
-											required
+											rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 										/>
 									</Grid.Col>
 								</Grid>

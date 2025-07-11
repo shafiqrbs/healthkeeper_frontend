@@ -6,7 +6,7 @@ import React from "react";
 
 export default function KeywordSearch({ form }) {
 	return (
-		<Flex w="100%" bg="var(--theme-primary-color-0)" py="xxs" px="sm" gap="xs">
+		<Flex className="keyword-search-box">
 			<DatePickerForm
 				form={form}
 				name="date"
