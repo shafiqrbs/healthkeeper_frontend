@@ -1,8 +1,9 @@
 import DatePickerForm from "@components/form-builders/DatePicker";
 import InputForm from "@components/form-builders/InputForm";
-import { ActionIcon, Flex } from "@mantine/core";
+import { ActionIcon, Flex, Popover } from "@mantine/core";
 import { IconFilter, IconRestore, IconSearch } from "@tabler/icons-react";
 import React from "react";
+import AdvancedFilter from "./AdvancedFilter";
 
 export default function KeywordSearch({ form }) {
 	return (
@@ -17,6 +18,7 @@ export default function KeywordSearch({ form }) {
 			<InputForm
 				placeholder="Keyword Search"
 				form={form}
+				tooltip="Search by patient name, mobile, email, etc."
 				name="keywordSearch"
 				rightSection={<IconSearch size={16} stroke={1.5} />}
 				styles={{ root: { width: "100%" } }}
@@ -25,9 +27,8 @@ export default function KeywordSearch({ form }) {
 				<ActionIcon c="var(--theme-primary-color-6)" bg="white">
 					<IconSearch size={16} stroke={1.5} />
 				</ActionIcon>
-				<ActionIcon c="var(--theme-success-color)" bg="white">
-					<IconFilter size={16} stroke={1.5} />
-				</ActionIcon>
+				<AdvancedFilter />
+
 				<ActionIcon c="var(--theme-secondary-color-8)" bg="white">
 					<IconRestore size={16} stroke={1.5} />
 				</ActionIcon>

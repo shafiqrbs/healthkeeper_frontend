@@ -2,17 +2,9 @@ import { Drawer, Flex, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import React from "react";
 
-export default function GlobalDrawer({ opened, close, title, children }) {
+export default function GlobalDrawer({ opened, close, title, size = "35%", position = "right", children }) {
 	return (
-		<Drawer.Root
-			opened={opened}
-			onClose={close}
-			position="right"
-			closeOnClickOutside={false}
-			offset={10}
-			radius="sm"
-			size="35%"
-		>
+		<Drawer.Root opened={opened} onClose={close} position={position} closeOnClickOutside={false} offset={10} radius="sm" size={size}>
 			<Drawer.Overlay />
 			<Drawer.Content>
 				<Drawer.Header

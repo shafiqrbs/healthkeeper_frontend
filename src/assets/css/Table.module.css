@@ -9,6 +9,10 @@
 .table {
     tr {
         background-color: white;
+
+        &:hover {
+            cursor: pointer;
+        }
     }
 
     &[data-striped] {

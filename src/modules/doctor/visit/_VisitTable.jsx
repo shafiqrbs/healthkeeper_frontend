@@ -11,6 +11,8 @@ import React, { useCallback, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import KeywordSearch from "../common/KeywordSearch";
 import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import VisitDetailsDrawer from "./__VisitDetailsDrawer";
 
 const data = [
 	{
@@ -137,6 +139,7 @@ export default function VisitTable() {
 	const scrollViewportRef = useRef(null);
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
+	const [opened, { open, close }] = useDisclosure(false);
 
 	const form = useForm({
 		initialValues: {
@@ -168,6 +171,10 @@ export default function VisitTable() {
 		// 	console.info("No more records");
 		// }
 	}, [hasMore, fetching, page]);
+
+	const handleView = (id) => {
+		open();
+	};
 
 	return (
 		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
@@ -251,6 +258,7 @@ export default function VisitTable() {
 										variant="default"
 										c="var(--theme-success-color)"
 										size="xs"
+										onClick={() => handleView(values.id)}
 										radius="es"
 										leftSection={<IconEye size={18} />}
 										className="border-right-radius-none"
@@ -271,15 +279,14 @@ export default function VisitTable() {
 										<Menu.Dropdown>
 											<Menu.Item
 												onClick={() => {
-													handleVendorEdit(values.id);
-													open();
+													// handleVendorEdit(values.id);
+													// open();
 												}}
 											>
 												{t("Edit")}
 											</Menu.Item>
-											<Menu.Item onClick={() => handleDataShow(values.id)}>{t("Show")}</Menu.Item>
 											<Menu.Item
-												onClick={() => handleDelete(values.id)}
+												// onClick={() => handleDelete(values.id)}
 												bg="red.1"
 												c="red.6"
 												rightSection={
@@ -308,6 +315,7 @@ export default function VisitTable() {
 				/>
 			</Box>
 			<DataTableFooter indexData={data} module="visit" />
+			<VisitDetailsDrawer opened={opened} close={close} />
 		</Box>
 	);
 }
