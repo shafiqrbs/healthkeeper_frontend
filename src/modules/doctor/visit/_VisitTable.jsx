@@ -1,15 +1,5 @@
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {
-	ActionIcon,
-	Box,
-	Button,
-	Flex,
-	FloatingIndicator,
-	Group,
-	Menu,
-	Tabs,
-	Text,
-} from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
 import { IconArrowRight, IconDotsVertical, IconEye, IconTrashX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -137,6 +127,8 @@ const data = [
 	},
 ];
 
+const tabs = ["all", "closed", "done", "inProgress", "returned"];
+
 export default function VisitTable() {
 	const { t } = useTranslation();
 	const [fetching, setFetching] = useState(false);
@@ -153,7 +145,7 @@ export default function VisitTable() {
 	});
 
 	const [rootRef, setRootRef] = useState(null);
-	const [value, setValue] = useState("1");
+	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
 	const setControlRef = (val) => (node) => {
@@ -186,36 +178,15 @@ export default function VisitTable() {
 				<Flex gap="xs" align="center">
 					<Tabs mt="xs" variant="none" value={value} onChange={setValue}>
 						<Tabs.List ref={setRootRef} className={classes.list}>
-							<Tabs.Tab value="1" ref={setControlRef("1")} className={classes.tab}>
-								{t("all")}
-							</Tabs.Tab>
-							<Tabs.Tab value="2" ref={setControlRef("2")} className={classes.tab}>
-								{t("closed")}
-							</Tabs.Tab>
-							<Tabs.Tab value="3" ref={setControlRef("3")} className={classes.tab}>
-								{t("done")}
-							</Tabs.Tab>
-							<Tabs.Tab value="4" ref={setControlRef("4")} className={classes.tab}>
-								{t("inProgress")}
-							</Tabs.Tab>
-							<Tabs.Tab value="5" ref={setControlRef("5")} className={classes.tab}>
-								{t("returned")}
-							</Tabs.Tab>
-
-							<FloatingIndicator
-								target={value ? controlsRefs[value] : null}
-								parent={rootRef}
-								className={classes.indicator}
-							/>
+							{tabs.map((tab) => (
+								<Tabs.Tab value={tab} ref={setControlRef(tab)} className={classes.tab} key={tab}>
+									{t(tab)}
+								</Tabs.Tab>
+							))}
+							<FloatingIndicator target={value ? controlsRefs[value] : null} parent={rootRef} className={classes.indicator} />
 						</Tabs.List>
 					</Tabs>
-					<Button
-						size="xs"
-						radius="es"
-						rightSection={<IconArrowRight size={16} />}
-						bg="var(--theme-success-color)"
-						c="white"
-					>
+					<Button size="xs" radius="es" rightSection={<IconArrowRight size={16} />} bg="var(--theme-success-color)" c="white">
 						{t("visitOverview")}
 					</Button>
 				</Flex>
@@ -280,14 +251,7 @@ export default function VisitTable() {
 									>
 										{t("View")}
 									</Button>
-									<Menu
-										position="bottom-end"
-										offset={3}
-										withArrow
-										trigger="hover"
-										openDelay={100}
-										closeDelay={400}
-									>
+									<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
 										<Menu.Target>
 											<ActionIcon
 												className="action-icon-menu border-left-radius-none"
@@ -295,11 +259,7 @@ export default function VisitTable() {
 												radius="es"
 												aria-label="Settings"
 											>
-												<IconDotsVertical
-													height={18}
-													width={18}
-													stroke={1.5}
-												/>
+												<IconDotsVertical height={18} width={18} stroke={1.5} />
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
@@ -311,9 +271,7 @@ export default function VisitTable() {
 											>
 												{t("Edit")}
 											</Menu.Item>
-											<Menu.Item onClick={() => handleDataShow(values.id)}>
-												{t("Show")}
-											</Menu.Item>
+											<Menu.Item onClick={() => handleDataShow(values.id)}>{t("Show")}</Menu.Item>
 											<Menu.Item
 												onClick={() => handleDelete(values.id)}
 												bg="red.1"

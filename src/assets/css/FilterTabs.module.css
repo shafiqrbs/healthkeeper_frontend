@@ -3,24 +3,16 @@
 }
 
 .indicator {
-    background-color: var(--theme-primary-color-0);
+    background-color: transparent;
 }
 
 .tab {
     z-index: 1;
     font-weight: 500;
     transition: color 100ms ease;
-    color: var(--mantine-color-gray-7);
+    color: var(--mantine-color-dark-5) !important;
 
     &[data-active] {
-        color: var(--mantine-color-black);
-    }
-
-    @mixin dark {
-        color: var(--mantine-color-dark-1);
-
-        &[data-active] {
-            color: var(--mantine-color-white);
-        }
+        background-color: var(--theme-primary-color-0) !important;
     }
 }

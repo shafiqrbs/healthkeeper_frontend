@@ -94,6 +94,7 @@ export default function VisitActionButton({ form }) {
 						tooltip={t("enterRemark")}
 						showRightSection={false}
 						name="remark"
+						style={{ input: { height: "114px" } }}
 					/>
 				</Grid.Col>
 				<Grid.Col span={8}>

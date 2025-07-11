@@ -18,7 +18,7 @@ function TextAreaForm({
 	minRows,
 	autosize,
 	maxRows,
-	style,
+	style = {},
 	size,
 	showRightSection = true,
 }) {
@@ -40,7 +40,7 @@ function TextAreaForm({
 					transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 				>
 					<Textarea
-						styles={style ? { input: { height: 20 } } : {}}
+						styles={style}
 						maxRows={maxRows}
 						classNames={inputCss}
 						autosize={autosize}
