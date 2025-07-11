@@ -1263,5 +1263,9 @@
 	"media": "Media",
 	"manageAppearance": "Manage Appearance",
 	"invoiceSmsEmail": "Invoice SMS Email",
-	"remark": "Remark"
+	"remark": "Remark",
+	"reset": "Reset",
+	"prescription": "Prescription",
+	"a4Print": "A4 Print",
+	"save": "Save"
 }

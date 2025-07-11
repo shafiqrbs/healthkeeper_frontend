@@ -5,7 +5,7 @@ export const PAYMENT_METHODS = [
 		icon: "/images/transaction-modes/bkash.svg",
 	},
 	{
-		label: "Google Pay",
+		label: "GPay",
 		value: "googlePay",
 		icon: "/images/transaction-modes/gpay.svg",
 	},

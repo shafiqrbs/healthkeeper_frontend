@@ -93,7 +93,7 @@ export default function Overview({ height }) {
 
 	return (
 		<Card padding="lg" radius="sm" h="100%">
-			<Card.Section h={32} withBorder component="div" bg="var(--mantine-color-green-8)">
+			<Card.Section h={32} withBorder component="div" bg="var(--theme-success-color-8)">
 				<Flex align="center" h="100%" px="lg">
 					<Text pb={0} fz="sm" c="white" fw={500}>
 						{t("overview")}
@@ -125,7 +125,7 @@ export default function Overview({ height }) {
 							key={tab.value}
 							value={tab.value}
 							pl="xs"
-							style={{ borderLeft: "1px solid var(--mantine-color-gray-2)" }}
+							style={{ borderLeft: "1px solid var(--theme-secondary-color-2)" }}
 						>
 							<ScrollArea h={height} scrollbarSize={8} scrollbars="y" type="hover">
 								<Sparkline
@@ -133,7 +133,7 @@ export default function Overview({ height }) {
 									h={80}
 									data={[10, 20, 40, 20, 40, 10, 50]}
 									curveType="linear"
-									color="var(--mantine-color-green-8)"
+									color="var(--theme-success-color-8)"
 									fillOpacity={0.6}
 									strokeWidth={0.5}
 								/>
@@ -143,7 +143,9 @@ export default function Overview({ height }) {
 									pt="sm"
 									columns={9}
 									gutter="xs"
-									style={{ borderTop: "1px solid var(--mantine-color-gray-2)" }}
+									style={{
+										borderTop: "1px solid var(--theme-secondary-color-2)",
+									}}
 								>
 									{opdData.map((item) => (
 										<Grid.Col span={3} key={item.label}>
@@ -163,7 +165,7 @@ export default function Overview({ height }) {
 													</Text>
 													<IconArrowRight
 														size={16}
-														color="var(--mantine-color-green-8)"
+														color="var(--theme-success-color-8)"
 													/>
 												</Flex>
 												<Text fz="lg" fw={600}>

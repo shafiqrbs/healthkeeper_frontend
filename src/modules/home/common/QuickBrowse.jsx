@@ -26,7 +26,7 @@ const quickBrowseButtonData = [
 		label: "addDiagnostic",
 		icon: IconTestPipe,
 		route: "/add-diagnostic",
-		color: "var(--mantine-color-green-8)",
+		color: "var(--theme-success-color-8)",
 	},
 	{
 		label: "diagnosis",
@@ -66,8 +66,8 @@ const quickBrowseCardData = [
 		label: "diagnosticTest",
 		icon: IconMicroscope,
 		route: "/diagnostic-test",
-		color: "var(--mantine-color-green-9)",
-		backgroundColor: "var(--mantine-color-green-0)",
+		color: "var(--theme-success-color-9)",
+		backgroundColor: "var(--theme-success-color-1)",
 	},
 	{
 		label: "payment",

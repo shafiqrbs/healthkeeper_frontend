@@ -40,7 +40,7 @@ export default function GrandTotalOverview() {
 					bg="white"
 					style={{ cursor: "pointer", borderRadius: "50%" }}
 				>
-					<IconArrowRight size={14} color="var(--mantine-color-green-8)" />
+					<IconArrowRight size={14} color="var(--theme-success-color-8)" />
 				</Flex>
 			</Table.Td>
 		</Table.Tr>

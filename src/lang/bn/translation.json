@@ -106,7 +106,7 @@
 	"Vendor": "বিক্রেতা",
 	"ID": "আইডি",
 	"S/N": "নং",
-	"Action": " ",
+	"Action": "ক্রিয়া",
 	"ManageTransactionMode": "লেনদেন এর মাধ্যম পরিচালনা",
 	"Contra": "কন্ট্রা",
 	"Journal": "জার্নাল",
@@ -827,5 +827,9 @@
 	"media": "মিডিয়া",
 	"manageAppearance": "উপস্থিতি পরিচালনা",
 	"invoiceSmsEmail": "চালান এসএমএস ইমেইল",
-	"remark": "মন্তব্য"
+	"remark": "মন্তব্য",
+	"reset": "রিসেট",
+	"hold": "হোল্ড",
+	"prescription": "প্রেসক্রিপশন",
+	"a4Print": "A4 প্রিন্ট"
 }
