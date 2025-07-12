@@ -1292,5 +1292,8 @@
 	"totalCollection": "Total Collection",
 	"returnAmount": "Return Amount",
 	"roomCollection": "Room Base Collection",
-	"userCollection": "User Base Patient and collection"
+	"userCollection": "User Base Patient and collection",
+	"search": "Search",
+	"selectDoctor": "Select Doctor",
+	"selectRoom": "Select Room"
 }

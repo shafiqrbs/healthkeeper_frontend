@@ -22,6 +22,8 @@
 
     --theme-success-color: var(--mantine-color-green-6);
     --theme-success-color-1: var(--mantine-color-green-0);
+    --theme-success-color-3: var(--mantine-color-green-3);
+    --theme-success-color-4: var(--mantine-color-green-4);
     --theme-success-color-8: var(--mantine-color-green-8);
     --theme-success-color-9: var(--mantine-color-green-9);
     --theme-error-color: var(--mantine-color-red-6);
@@ -185,7 +187,7 @@ textarea:focus {
 }
 
 .borderRadiusAll {
-    border: 1px solid #efeae1;
+    border: 1px solid #e6e6e6;
     border-radius: 4px;
 }
 
@@ -200,6 +202,11 @@ textarea:focus {
     border-bottom: 1px solid #fffbf459;
     ;
     border-radius: 4px;
+}
+
+.borderRadiusTop {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
 }
 
 .border-top-none {
@@ -478,4 +485,13 @@ input[type=radio]:checked+label>img {
     padding: 6px 8px;
     gap: 12px;
     border-radius: 4px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.active-box {
+    border: 1px solid var(--theme-primary-color-6);
+    background-color: var(--theme-primary-color-0) !important;
 }

@@ -856,5 +856,8 @@
 	"totalCollection": "মোট কলেকশন",
 	"returnAmount": "ফেরত পরিমাণ",
 	"roomCollection": "রুম বেস কলেকশন",
-	"userCollection": "ইউজার কলেকশন"
+	"userCollection": "ইউজার কলেকশন",
+	"search": "অনুসন্ধান",
+	"selectDoctor": "ডাক্তার নির্বাচন করুন",
+	"selectRoom": "রুম নির্বাচন করুন"
 }
