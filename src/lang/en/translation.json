@@ -1286,5 +1286,11 @@
 	"visitInformation": "Visit Information",
 	"visitOverview": "Visit Overview",
 	"all": "All",
-	"enterAmount": "Enter the amount"
+	"enterAmount": "Enter the amount",
+	"collectionOverview": "Collection Overview",
+	"totalPatient": "Total Patient",
+	"totalCollection": "Total Collection",
+	"returnAmount": "Return Amount",
+	"roomCollection": "Room Base Collection",
+	"userCollection": "User Base Patient and collection"
 }

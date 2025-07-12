@@ -103,6 +103,10 @@ body {
     border: 1px solid rgba(182, 138, 61, 0.35);
 }
 
+.borderBottomDashed {
+    border-bottom: 1px dashed var(--theme-secondary-color-3);
+}
+
 .border-top-none {
     border-top: none !important;
 }
@@ -181,7 +185,7 @@ textarea:focus {
 }
 
 .borderRadiusAll {
-    border: 1px solid #fbf7ef;
+    border: 1px solid #efeae1;
     border-radius: 4px;
 }
 

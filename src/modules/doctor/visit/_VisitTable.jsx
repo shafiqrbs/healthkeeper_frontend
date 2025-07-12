@@ -13,6 +13,7 @@ import KeywordSearch from "../common/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import VisitDetailsDrawer from "./__VisitDetailsDrawer";
+import VisitOverviewDrawer from "./__VisitOverviewDrawer";
 
 const data = [
 	{
@@ -140,7 +141,7 @@ export default function VisitTable() {
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
 	const [opened, { open, close }] = useDisclosure(false);
-
+	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -176,6 +177,10 @@ export default function VisitTable() {
 		open();
 	};
 
+	const handleOpenViewOverview = () => {
+		openOverview();
+	};
+
 	return (
 		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -197,7 +202,14 @@ export default function VisitTable() {
 							/>
 						</Tabs.List>
 					</Tabs>
-					<Button size="xs" radius="es" rightSection={<IconArrowRight size={16} />} bg="var(--theme-success-color)" c="white">
+					<Button
+						onClick={handleOpenViewOverview}
+						size="xs"
+						radius="es"
+						rightSection={<IconArrowRight size={16} />}
+						bg="var(--theme-success-color)"
+						c="white"
+					>
 						{t("visitOverview")}
 					</Button>
 				</Flex>
@@ -265,7 +277,14 @@ export default function VisitTable() {
 									>
 										{t("View")}
 									</Button>
-									<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
+									<Menu
+										position="bottom-end"
+										offset={3}
+										withArrow
+										trigger="hover"
+										openDelay={100}
+										closeDelay={400}
+									>
 										<Menu.Target>
 											<ActionIcon
 												className="action-icon-menu border-left-radius-none"
@@ -316,6 +335,7 @@ export default function VisitTable() {
 			</Box>
 			<DataTableFooter indexData={data} module="visit" />
 			<VisitDetailsDrawer opened={opened} close={close} />
+			<VisitOverviewDrawer opened={openedOverview} close={closeOverview} />
 		</Box>
 	);
 }

@@ -10,6 +10,8 @@ import tabClass from "@assets/css/Tab.module.css";
 import { useTranslation } from "react-i18next";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
+import DoctorsRoomDrawer from "../__DoctorsRoomDrawer";
+import { useDisclosure } from "@mantine/hooks";
 
 export default function PatientForm({ form, handleSubmit }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -20,9 +22,15 @@ export default function PatientForm({ form, handleSubmit }) {
 	const [rootRef, setRootRef] = useState(null);
 	const [tabValue, setTabValue] = useState("new");
 	const [controlsRefs, setControlsRefs] = useState({});
+	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
+
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
+	};
+
+	const handleOpenDoctorsRoom = () => {
+		openDoctorsRoom();
 	};
 
 	return (
@@ -290,7 +298,12 @@ export default function PatientForm({ form, handleSubmit }) {
 
 								<Flex className="form-action-header full-bleed">
 									<Text fz="sm">{t("doctorInformation")}</Text>
-									<Flex align="center" gap="xs">
+									<Flex
+										align="center"
+										gap="xs"
+										onClick={handleOpenDoctorsRoom}
+										style={{ cursor: "pointer" }}
+									>
 										<Text fz="sm">{t("booked")}-05</Text> <IconChevronRight size="16px" />
 									</Flex>
 								</Flex>
@@ -365,7 +378,12 @@ export default function PatientForm({ form, handleSubmit }) {
 											nextField="referredName"
 											value={form.values.diseaseProfile}
 											required
-											rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
+											rightSection={
+												<IconCirclePlusFilled
+													color="var(--theme-primary-color-6)"
+													size="24px"
+												/>
+											}
 										/>
 									</Grid.Col>
 								</Grid>
@@ -374,6 +392,7 @@ export default function PatientForm({ form, handleSubmit }) {
 					</Tabs.Panel>
 				</Tabs>
 			</form>
+			<DoctorsRoomDrawer opened={openedDoctorsRoom} close={closeDoctorsRoom} />
 		</Box>
 	);
 }

@@ -850,5 +850,11 @@
 	"visitInformation": "ভিজিট তথ্য",
 	"visitOverview": "ভিজিট ওভারভিউ",
 	"all": "সব",
-	"enterAmount": "পরিশোধের পরিমাণ লিখুন"
+	"enterAmount": "পরিশোধের পরিমাণ লিখুন",
+	"collectionOverview": "কলেকশন ওভারভিউ",
+	"totalPatient": "মোট রোগী",
+	"totalCollection": "মোট কলেকশন",
+	"returnAmount": "ফেরত পরিমাণ",
+	"roomCollection": "রুম বেস কলেকশন",
+	"userCollection": "ইউজার কলেকশন"
 }

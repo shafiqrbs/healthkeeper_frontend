@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, Grid, Progress, Text } from "@mantine/core";
+import { Box, Flex, Grid } from "@mantine/core";
 import Navigation from "@components/layout/Navigation";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import { useOutletContext } from "react-router-dom";
