@@ -1,12 +1,13 @@
 import React from "react";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
-import { Box, Flex, Grid, Progress, ScrollArea, Stack } from "@mantine/core";
+import { Box, Flex, Grid, ScrollArea } from "@mantine/core";
 import Navigation from "@/common/components/layout/Navigation";
 import HeaderCarousel from "./common/HeaderCarousel";
 import Overview from "./common/Overview";
 import QuickBrowse from "./common/QuickBrowse";
 import GrandTotalOverview from "./common/GrandTotalOverview";
 import SparkLineOverview from "./common/SparkLineOverview";
+import HomeSkeleton from "@components/skeletons/HomeSkeleton";
 
 export default function HomeIndex({ height }) {
 	const progress = useGetLoadingProgress();
@@ -14,14 +15,7 @@ export default function HomeIndex({ height }) {
 	return (
 		<>
 			{progress !== 100 ? (
-				<Progress
-					color="var(--theme-primary-color-7)"
-					size="sm"
-					striped
-					animated
-					value={progress}
-					transitionDuration={200}
-				/>
+				<HomeSkeleton height={height} />
 			) : (
 				<Box p="md">
 					<Flex w="100%" gap="sm">

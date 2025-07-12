@@ -9,6 +9,7 @@ import VisitActionButton from "./_VisitActionButton";
 import { useForm } from "@mantine/form";
 import { getVendorFormInitialValues } from "./helpers/request";
 import { useTranslation } from "react-i18next";
+import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 
 export default function VisitIndex() {
 	const { t } = useTranslation();
@@ -19,14 +20,7 @@ export default function VisitIndex() {
 	return (
 		<>
 			{progress !== 100 ? (
-				<Progress
-					color="var(--theme-primary-color-7)"
-					size="sm"
-					striped
-					animated
-					value={progress}
-					transitionDuration={200}
-				/>
+				<DefaultSkeleton />
 			) : (
 				<Box p="md">
 					<Flex w="100%" gap="sm">

@@ -173,24 +173,21 @@ export default function Login() {
 					<Group justify="space-between" mt="lg" className={LoginPage.controls}>
 						<Anchor c="dimmed" size="sm" className={LoginPage.control}>
 							<Center inline>
-								<IconArrowLeft
-									style={{ width: rem(12), height: rem(12) }}
-									stroke={1.5}
-								/>
+								<IconArrowLeft style={{ width: rem(12), height: rem(12) }} stroke={1.5} />
 								<Box ml={5}>Back to the sign-up page</Box>
 							</Center>
 						</Anchor>
 						<Button
 							fullWidth={true}
 							mt="xl"
-							bg={"red.5"}
+							bg={"var(--theme-primary-color-6)"}
 							size="md"
 							type="submit"
 							id={"LoginSubmit"}
 							className={LoginPage.control}
 							rightSection={<IconLogin />}
 						>
-							{spinner ? <Loader color="red" type="dots" size={30} /> : "Login"}
+							{spinner ? <Loader color="white" type="dots" size={30} /> : "Login"}
 						</Button>
 					</Group>
 				</Paper>
