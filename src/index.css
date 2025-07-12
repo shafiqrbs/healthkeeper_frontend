@@ -475,7 +475,6 @@ input[type=radio]:checked+label>img {
 
 .full-bleed {
     box-shadow: 0 0 0 100vmax white !important;
-    -webkit-clip-path: inset(0 -100vmax) !important;
     clip-path: inset(0 -100vmax) !important;
 }
 
@@ -488,7 +487,7 @@ input[type=radio]:checked+label>img {
 }
 
 .cursor-pointer {
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .active-box {

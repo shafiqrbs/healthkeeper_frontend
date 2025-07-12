@@ -31,7 +31,7 @@ export const sideNavigationLinks = {
 		},
 		{
 			label: "doctorPrescription",
-			path: "/",
+			path: "/doctor/prescription",
 			icon: IconPrescription,
 			color: "#E53834",
 		},
