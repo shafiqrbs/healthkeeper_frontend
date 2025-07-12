@@ -1,26 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-	Box,
-	Button,
-	Grid,
-	Progress,
-	Title,
-	Group,
-	Burger,
-	Menu,
-	rem,
-	ActionIcon,
-	NavLink,
-	Flex,
-} from "@mantine/core";
+import { Box, Button, Grid, Progress, Title, Group, Burger, Menu, rem, ActionIcon, NavLink, Flex } from "@mantine/core";
 import { getHotkeyHandler, useDisclosure, useHotkeys, useToggle } from "@mantine/hooks";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import classes from "@assets/css/FooterNavbar.module.css";
 import { IconInfoCircle, IconTrash, IconSearch, IconSettings } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import useConfigData from "@hooks/config-data/useConfigData";
 
 function FooterNavbar() {
+	const { configData } = useConfigData();
 	const { t, i18n } = useTranslation();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -50,6 +39,7 @@ function FooterNavbar() {
 	const leftLinks = [
 		{ link: "/", label: t("Home") },
 		{ link: "/sitemap", label: t("Sitemap") },
+		{ link: `/settings/hospital-config/${configData?.domain?.id}`, label: t("Settings") },
 	];
 
 	const leftItems = leftLinks.map((link) => (
@@ -71,27 +61,13 @@ function FooterNavbar() {
 			<footer className={classes.footer}>
 				<div className={classes.inner}>
 					<Group gap={5} className={classes.links} visibleFrom="sm">
-						<Flex
-							gap="md"
-							mih={42}
-							justify="flex-start"
-							align="center"
-							direction="row"
-							wrap="wrap"
-						>
+						<Flex gap="md" mih={42} justify="flex-start" align="center" direction="row" wrap="wrap">
 							{leftItems}
 						</Flex>
 					</Group>
 					<Group>
 						<Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
-							<Flex
-								gap="md"
-								mih={42}
-								justify="flex-start"
-								align="center"
-								direction="row"
-								wrap="wrap"
-							>
+							<Flex gap="md" mih={42} justify="flex-start" align="center" direction="row" wrap="wrap">
 								{items}
 							</Flex>
 						</Group>

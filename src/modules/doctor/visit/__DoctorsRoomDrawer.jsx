@@ -56,9 +56,9 @@ export default function DoctorsRoomDrawer({ opened, close }) {
 			bg="var(--theme-primary-color-0)"
 			keepMounted
 		>
-			<Grid columns={12}>
+			<Grid columns={12} gutter="xs">
 				<Grid.Col span={6}>
-					<Grid columns={12}>
+					<Grid columns={12} gutter="xs">
 						<Grid.Col span={6}>
 							<Box bg="white" className="borderRadiusAll">
 								<Text
@@ -192,6 +192,7 @@ export default function DoctorsRoomDrawer({ opened, close }) {
 												my="xs"
 												bg="var(--theme-secondary-color-0)"
 												px="xs"
+												gutter="xs"
 											>
 												<Grid.Col span={4}>
 													<Flex align="center" gap="xxxs">
