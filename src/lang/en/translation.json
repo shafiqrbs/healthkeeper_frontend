@@ -1295,5 +1295,6 @@
 	"userCollection": "User Base Patient and collection",
 	"search": "Search",
 	"selectDoctor": "Select Doctor",
-	"selectRoom": "Select Room"
+	"selectRoom": "Select Room",
+	"confirm": "Confirm"
 }

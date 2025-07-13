@@ -474,6 +474,11 @@ input[type=radio]:checked+label>img {
     clip-path: inset(0 -100vmax) !important;
 }
 
+.full-bleed-primary {
+    box-shadow: 0 0 0 100vmax var(--theme-primary-color-6) !important;
+    clip-path: inset(0 -100vmax) !important;
+}
+
 .keyword-search-box {
     width: 100%;
     background-color: var(--theme-primary-color-0);
