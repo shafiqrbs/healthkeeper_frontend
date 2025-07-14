@@ -48,9 +48,9 @@ export default function PatientReport() {
 	const [investigation, setInvestigation] = useState("");
 	const [investigationList, setInvestigationList] = useState([
 		"Chest X-Ray P/A",
-		"Chest X-Ray P/A",
-		"Chest X-Ray P/A",
-		"Chest X-Ray P/A",
+		"Face X-Ray",
+		"Head X-Ray",
+		"Teeth X-Ray",
 	]);
 
 	// Handlers
@@ -92,7 +92,7 @@ export default function PatientReport() {
 
 			<ScrollArea scrollbars="y" h={mainAreaHeight - 136}>
 				<Flex gap="les" mt="xxxs" mb="xxxs" wrap="wrap">
-					<Group gap="les" grow>
+					<Group gap="les" grow w="100%">
 						<InputForm
 							value={vitals.bp}
 							label={t("bp")}
@@ -101,7 +101,7 @@ export default function PatientReport() {
 							form={form}
 							placeholder="120/80"
 							mt={0}
-							styles={{ input: { padding: 4, fontSize: 13 } }}
+							styles={{ input: { padding: "es", fontSize: "sm" } }}
 						/>
 						<InputForm
 							value={vitals.sugar}
@@ -111,10 +111,10 @@ export default function PatientReport() {
 							form={form}
 							placeholder="5.6"
 							mt={0}
-							styles={{ input: { padding: 4, fontSize: 13 } }}
+							styles={{ input: { padding: "es", fontSize: "sm" } }}
 						/>
 					</Group>
-					<Group gap="les" grow>
+					<Group gap="les" grow w="100%">
 						<InputForm
 							value={vitals.weight}
 							label={t("weight")}
@@ -123,7 +123,7 @@ export default function PatientReport() {
 							form={form}
 							placeholder="50"
 							mt={0}
-							styles={{ input: { padding: 4, fontSize: 13 } }}
+							styles={{ input: { padding: "es", fontSize: "sm" } }}
 						/>
 						<SelectForm
 							value={vitals.bloodGroup}

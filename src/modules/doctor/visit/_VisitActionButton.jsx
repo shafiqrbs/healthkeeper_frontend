@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { useState } from "react";
+import SelectForm from "@components/form-builders/SelectForm";
 
 export default function VisitActionButton({ form }) {
 	const { t } = useTranslation();
@@ -79,19 +80,27 @@ export default function VisitActionButton({ form }) {
 					</Grid.Col>
 					<Grid.Col span={8} px="xs" bg="var(--theme-secondary-color-0)">
 						<Stack>
-							<InputForm
+							<SelectForm
 								form={form}
 								label={t("referredName")}
+								tooltip={t("enterPatientReferredName")}
 								placeholder={t("name")}
 								name="referredName"
-								tooltip={t("enterPatientReferredName")}
+								id="referredName"
+								nextField="referredName"
+								value={form.values.referredName}
+								required
+								dropdownValue={["Rahim", "Karim"]}
 								rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 							/>
-							<InputForm
+							<SelectForm
 								form={form}
 								label={t("marketingEx")}
 								placeholder="101"
 								name="marketingEx"
+								required
+								dropdownValue={["Rahim", "Karim"]}
+								value={form.values.marketingEx}
 								tooltip={t("enterPatientMarketingEx")}
 								rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 							/>
@@ -99,7 +108,13 @@ export default function VisitActionButton({ form }) {
 					</Grid.Col>
 					<Grid.Col span={8} bg="var(--theme-secondary-color-1)" px="xs">
 						<Stack gap="xs" className="method-carousel">
-							<Carousel height={50} align="start" slideSize="20%" bg="var(--theme-secondary-color-0)" py="les">
+							<Carousel
+								height={50}
+								align="start"
+								slideSize="20%"
+								bg="var(--theme-secondary-color-0)"
+								py="les"
+							>
 								{PAYMENT_METHODS.map((method) => (
 									<Carousel.Slide key={method.value}>
 										<Stack h="100%" justify="space-between" align="center" gap="0">
@@ -115,7 +130,9 @@ export default function VisitActionButton({ form }) {
 										Is Confirm{" "}
 										<Checkbox
 											checked={form.values.isConfirm}
-											onChange={(event) => form.setFieldValue("isConfirm", event.currentTarget.checked)}
+											onChange={(event) =>
+												form.setFieldValue("isConfirm", event.currentTarget.checked)
+											}
 											color="var(--theme-success-color)"
 										/>
 									</Flex>
@@ -123,7 +140,9 @@ export default function VisitActionButton({ form }) {
 										SMS Alert{" "}
 										<Checkbox
 											checked={form.values.smsAlert}
-											onChange={(event) => form.setFieldValue("smsAlert", event.currentTarget.checked)}
+											onChange={(event) =>
+												form.setFieldValue("smsAlert", event.currentTarget.checked)
+											}
 											color="var(--theme-success-color)"
 										/>
 									</Flex>
@@ -134,7 +153,12 @@ export default function VisitActionButton({ form }) {
 											{t("Due")} ৳ {(20000).toLocaleString()}
 										</Text>
 									</Box>
-									<InputNumberForm form={form} tooltip={t("enterAmount")} placeholder={t("amount")} name="amount" />
+									<InputNumberForm
+										form={form}
+										tooltip={t("enterAmount")}
+										placeholder={t("amount")}
+										name="amount"
+									/>
 									<ActionIcon color="var(--theme-success-color)">
 										<IconArrowsSplit2 size={16} />
 									</ActionIcon>
@@ -166,7 +190,13 @@ export default function VisitActionButton({ form }) {
 				<Button w="100%" bg="var(--theme-pos-btn-color)" disabled={isSubmitting}>
 					{t("Pos")}
 				</Button>
-				<Button w="100%" bg="var(--theme-save-btn-color)" onClick={handleSubmit} loading={isSubmitting} disabled={isSubmitting}>
+				<Button
+					w="100%"
+					bg="var(--theme-save-btn-color)"
+					onClick={handleSubmit}
+					loading={isSubmitting}
+					disabled={isSubmitting}
+				>
 					{t("Save")}
 				</Button>
 			</Button.Group>

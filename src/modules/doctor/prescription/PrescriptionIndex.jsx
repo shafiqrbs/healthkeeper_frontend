@@ -30,7 +30,7 @@ export default function PrescriptionIndex() {
 								<PatientInformation />
 							</Grid.Col>
 							<Grid.Col span={17}>
-								<Grid columns={25}>
+								<Grid columns={25} gutter="les">
 									<Grid.Col span={9}>
 										<PatientReport />
 									</Grid.Col>

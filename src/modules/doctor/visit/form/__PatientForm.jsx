@@ -40,7 +40,7 @@ export default function PatientForm({ form, handleSubmit }) {
 					{t("patientInformation")}
 				</Text>
 				<Tabs variant="none" value={tabValue} onChange={setTabValue}>
-					<Tabs.List p="sm" className={tabClass.list} ref={setRootRef}>
+					<Tabs.List px="sm" py="xxxs" className={tabClass.list} ref={setRootRef}>
 						<Flex w="100%" justify="space-between">
 							<Tabs.Tab w="32%" value="new" ref={setControlRef("new")} className={tabClass.tab}>
 								{t("new")}

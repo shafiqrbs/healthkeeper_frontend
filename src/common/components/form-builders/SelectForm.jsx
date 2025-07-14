@@ -30,6 +30,7 @@ const SelectForm = forwardRef(
 			updateDetails = null,
 			size,
 			pt,
+			rightSection = undefined,
 		},
 		ref
 	) => {
@@ -79,13 +80,7 @@ const SelectForm = forwardRef(
 						);
 					}
 				} catch (error) {
-					showNotificationComponent(
-						"Request failed. Please try again.",
-						"red",
-						"",
-						"",
-						true
-					);
+					showNotificationComponent("Request failed. Please try again.", "red", "", "", true);
 					console.error("Error updating invoice:", error);
 				}
 			}
@@ -126,6 +121,7 @@ const SelectForm = forwardRef(
 							withAsterisk={required}
 							comboboxProps={comboboxProps}
 							allowDeselect={allowDeselect}
+							rightSection={rightSection}
 						/>
 					</Tooltip>
 				)}
