@@ -1,16 +1,4 @@
-import {
-	Box,
-	Flex,
-	Stack,
-	Text,
-	Group,
-	Checkbox,
-	ActionIcon,
-	Select,
-	TextInput,
-	Divider,
-	ScrollArea,
-} from "@mantine/core";
+import { Box, Flex, Stack, Text, Group, Checkbox, ActionIcon, Select, ScrollArea, Button } from "@mantine/core";
 import React, { useState } from "react";
 import InputForm from "@components/form-builders/InputForm";
 import SelectForm from "@components/form-builders/SelectForm";
@@ -87,7 +75,6 @@ export default function PatientReport() {
 
 	return (
 		<Box bg="white" p="les">
-			{/* Header */}
 			<Stack gap="xxxs" bg="var(--theme-primary-color-1)" p="xs" className="borderRadiusAll">
 				<Flex justify="space-between">
 					<Text fw={600}>Md. Shafiqul Islam</Text>
@@ -98,108 +85,94 @@ export default function PatientReport() {
 						Patient ID: <b>20</b>
 					</Text>
 					<Text fz="xs">
-						Age: <b>25</b> - Gender: <b>Male</b>
+						{t("age")}: <b>25</b> - {t("gender")}: <b>Male</b>
 					</Text>
 				</Flex>
 			</Stack>
 
-			<ScrollArea scrollbars="y" h={mainAreaHeight - 96}>
-				{/* Vitals */}
+			<ScrollArea scrollbars="y" h={mainAreaHeight - 136}>
 				<Flex gap="les" mt="xxxs" mb="xxxs" wrap="wrap">
 					<Group gap="les" grow>
-						<Box w={90}>
-							<Text fz="xs" mb={2}>
-								B/P
-							</Text>
-							<InputForm
-								value={vitals.bp}
-								name="bp"
-								form={form}
-								placeholder=""
-								mt={0}
-								styles={{ input: { padding: 4, fontSize: 13 } }}
-							/>
-						</Box>
-						<Box w={90}>
-							<Text fz="xs" mb={2}>
-								Sugar
-							</Text>
-							<InputForm
-								value={vitals.sugar}
-								name="sugar"
-								form={form}
-								placeholder=""
-								mt={0}
-								styles={{ input: { padding: 4, fontSize: 13 } }}
-							/>
-						</Box>
+						<InputForm
+							value={vitals.bp}
+							label={t("bp")}
+							name="bp"
+							tooltip="Blood Pressure"
+							form={form}
+							placeholder="120/80"
+							mt={0}
+							styles={{ input: { padding: 4, fontSize: 13 } }}
+						/>
+						<InputForm
+							value={vitals.sugar}
+							label={t("sugar")}
+							name="sugar"
+							tooltip="Sugar"
+							form={form}
+							placeholder="5.6"
+							mt={0}
+							styles={{ input: { padding: 4, fontSize: 13 } }}
+						/>
 					</Group>
 					<Group gap="les" grow>
-						<Box w={90}>
-							<Text fz="xs" mb={2}>
-								Weight
-							</Text>
-							<InputForm
-								value={vitals.weight}
-								name="weight"
-								form={form}
-								placeholder=""
-								mt={0}
-								styles={{ input: { padding: 4, fontSize: 13 } }}
-							/>
-						</Box>
-						<Box w={90}>
-							<Text fz="xs" mb={2}>
-								Blood Group
-							</Text>
-							<SelectForm
-								value={vitals.bloodGroup}
-								name="bloodGroup"
-								form={form}
-								dropdownValue={BLOOD_GROUPS}
-								searchable={false}
-								clearable={false}
-								mt={0}
-								size="xs"
-								pt={0}
-							/>
-						</Box>
+						<InputForm
+							value={vitals.weight}
+							label={t("weight")}
+							name="weight"
+							tooltip="Weight"
+							form={form}
+							placeholder="50"
+							mt={0}
+							styles={{ input: { padding: 4, fontSize: 13 } }}
+						/>
+						<SelectForm
+							value={vitals.bloodGroup}
+							label={t("bloodGroup")}
+							name="bloodGroup"
+							form={form}
+							dropdownValue={BLOOD_GROUPS}
+							searchable={false}
+							clearable={false}
+							mt={0}
+							size="sm"
+							pt={0}
+						/>
 					</Group>
 				</Flex>
 
-				{/* OLE */}
 				<Box bg="var(--theme-primary-color-0)" p="xs" mt="xxxs" mb="xxxs" className="borderRadiusAll">
 					<Text fw={600} fz="sm" mb="xxxs">
-						OLE
+						{t("ole")}
 					</Text>
-					<Stack gap="xxxs">
+					<Stack gap="xxxs" bg="white" p="sm" className="borderRadiusSmall">
 						{OLE_OPTIONS.map((label, idx) => (
 							<Checkbox
 								key={idx}
 								label={label}
 								size="sm"
 								checked={ole[idx]}
+								color="var(--theme-primary-color-6)"
 								onChange={() => handleOleChange(idx)}
-								styles={{ label: { fontSize: 14 } }}
+								styles={{ label: { fontSize: "sm" } }}
 							/>
 						))}
 					</Stack>
 				</Box>
 
-				{/* Chief Complaints */}
 				<Box bg="var(--theme-primary-color-0)" p="xs" mt="xxxs" mb="xxxs" className="borderRadiusAll">
 					<Text fw={600} fz="sm" mb="xxxs">
 						Chief Complaints
 					</Text>
-					<Stack gap="xxxs">
+					<Stack gap="xxxs" bg="white" p="sm" className="borderRadiusSmall">
 						{CHIEF_COMPLAINTS.map((label, idx) => (
 							<Checkbox
 								key={idx}
 								label={label}
 								size="sm"
 								checked={complaints[idx]}
+								color="var(--theme-primary-color-6)"
 								onChange={() => handleComplaintChange(idx)}
-								styles={{ label: { fontSize: 14 } }}
+								styles={{ label: { fontSize: "sm" } }}
 							/>
 						))}
 					</Stack>
@@ -224,16 +197,19 @@ export default function PatientReport() {
 						}}
 						onBlur={() => handleInvestigationAdd(investigation)}
 					/>
-					<Stack gap={0}>
+					<Stack gap={0} bg="white" px="sm" className="borderRadiusAll">
 						{investigationList.map((item, idx) => (
 							<Flex
 								key={idx}
 								align="center"
 								justify="space-between"
-								py={2}
-								px={2}
+								px="es"
+								py="xs"
 								style={{
-									borderBottom: idx !== investigationList.length - 1 ? "1px solid #f0f0f0" : "none",
+									borderBottom:
+										idx !== investigationList.length - 1
+											? "1px solid var(--theme-secondary-color-4)"
+											: "none",
 								}}
 							>
 								<Text fz="sm">
@@ -252,6 +228,35 @@ export default function PatientReport() {
 					</Stack>
 				</Box>
 			</ScrollArea>
+			<Button.Group>
+				<Button
+					w="30%"
+					px="xs"
+					variant="filled"
+					color="var(--theme-primary-color-6)"
+					bg="var(--theme-primary-color-6)"
+				>
+					{t("referred")}
+				</Button>
+				<Button
+					w="32%"
+					px="xs"
+					variant="filled"
+					color="var(--theme-primary-color-6)"
+					bg="var(--theme-success-color-5)"
+				>
+					{t("admission")}
+				</Button>
+				<Button
+					w="38%"
+					px="xs"
+					variant="filled"
+					color="var(--theme-primary-color-6)"
+					bg="var(--theme-success-color-8)"
+				>
+					{t("roomReferred")}
+				</Button>
+			</Button.Group>
 		</Box>
 	);
 }

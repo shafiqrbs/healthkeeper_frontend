@@ -158,7 +158,13 @@ function PatientList() {
 						</Grid.Col>
 						<Grid.Col span={4}>
 							<Flex align="center" h="100%" justify="flex-end" gap="es">
-								<Button variant="filled" size="xs" color="var(--theme-primary-color-6)">
+								<Button
+									variant="filled"
+									size="xs"
+									px="xs"
+									fz="xxs"
+									color="var(--theme-primary-color-6)"
+								>
 									{t("confirm")}
 								</Button>
 								<ActionIcon variant="transparent" aria-label="close">

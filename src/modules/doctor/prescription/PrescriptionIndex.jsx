@@ -9,6 +9,7 @@ import Navigation from "@components/layout/Navigation";
 import { Box, Flex, Grid } from "@mantine/core";
 import PatientInformation from "./common/PatientInformation";
 import PatientReport from "./common/PatientReport";
+import AddMedicineForm from "./common/AddMedicineForm";
 
 export default function PrescriptionIndex() {
 	const { t } = useTranslation();
@@ -33,7 +34,9 @@ export default function PrescriptionIndex() {
 									<Grid.Col span={9}>
 										<PatientReport />
 									</Grid.Col>
-									<Grid.Col span={16}>gggg</Grid.Col>
+									<Grid.Col span={16}>
+										<AddMedicineForm />
+									</Grid.Col>
 								</Grid>
 							</Grid.Col>
 						</Grid>

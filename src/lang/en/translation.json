@@ -1296,5 +1296,9 @@
 	"search": "Search",
 	"selectDoctor": "Select Doctor",
 	"selectRoom": "Select Room",
-	"confirm": "Confirm"
+	"confirm": "Confirm",
+	"ole": "OLE",
+	"sugar": "Sugar",
+	"bloodGroup": "Blood Group",
+	"roomReferred": "Room Referred"
 }
