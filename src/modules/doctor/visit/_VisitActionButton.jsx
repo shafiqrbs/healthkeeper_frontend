@@ -1,4 +1,3 @@
-import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { ActionIcon, Box, Button, Checkbox, Flex, Grid, Image, Stack, Text } from "@mantine/core";
 import { IconArrowsSplit2, IconCirclePlusFilled, IconRestore } from "@tabler/icons-react";
@@ -16,6 +15,7 @@ export default function VisitActionButton({ form }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
 
 	// =============== handle form submission ================
 	const handleSubmit = async () => {
@@ -56,6 +56,10 @@ export default function VisitActionButton({ form }) {
 				setIsSubmitting(false);
 			}
 		}
+	};
+
+	const selectPaymentMethod = (method) => {
+		setPaymentMethod(method);
 	};
 
 	// =============== handle form reset ================
@@ -114,10 +118,21 @@ export default function VisitActionButton({ form }) {
 								slideSize="20%"
 								bg="var(--theme-secondary-color-0)"
 								py="les"
+								loop
 							>
 								{PAYMENT_METHODS.map((method) => (
-									<Carousel.Slide key={method.value}>
-										<Stack h="100%" justify="space-between" align="center" gap="0">
+									<Carousel.Slide key={method.id} onClick={() => selectPaymentMethod(method)}>
+										<Stack
+											bd={
+												paymentMethod.id === method.id
+													? "2px solid var(--theme-success-color-8)"
+													: "2px solid transparent"
+											}
+											h="100%"
+											justify="space-between"
+											align="center"
+											gap="0"
+										>
 											<Image src={method.icon} alt={method.label} w={30} />
 											<Text fz="xxs">{method.label}</Text>
 										</Stack>

@@ -2,13 +2,7 @@ import React from "react";
 import { Carousel } from "@mantine/carousel";
 import { Flex, NumberFormatter, Progress, Text } from "@mantine/core";
 import classes from "@assets/css/Carousel.module.css";
-import {
-	IconBed,
-	IconCash,
-	IconCreditCardPay,
-	IconStethoscope,
-	IconTestPipe,
-} from "@tabler/icons-react";
+import { IconBed, IconCash, IconCreditCardPay, IconStethoscope, IconTestPipe } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 
 const slides = [
@@ -65,19 +59,14 @@ function Slide({ slide }) {
 			bd="1px solid var(--theme-secondary-color-2)"
 		>
 			<Flex align="center" w="100%" justify="space-between" gap="sm">
-				<Text fz={14} tt="uppercase" fw={500} c="var(--theme-secondary-color-6)">
+				<Text fz="sm" tt="uppercase" fw={500} c="var(--theme-secondary-color-6)">
 					{t(slide.title)}
 				</Text>
 				<slide.icon size={24} color={slide.color} />
 			</Flex>
 			<Flex align="center" w="100%" justify="space-between" gap="sm">
 				<Text size="sm" c={slide.color} fw={700} fz={24}>
-					<NumberFormatter
-						thousandSeparator
-						value={slide.amount}
-						decimalScale={0}
-						fixedDecimalScale
-					/>
+					<NumberFormatter thousandSeparator value={slide.amount} decimalScale={0} fixedDecimalScale />
 				</Text>
 				<Text size="sm" c={slide.color} fz="md">
 					{t("bdt")}
@@ -102,6 +91,7 @@ export default function HeaderCarousel() {
 			slideSize={{ base: "100%", sm: "100%", md: "25%" }}
 			slideGap={{ base: 0, sm: "md" }}
 			align="start"
+			loop
 			className="header-carousel"
 			classNames={classes}
 		>
