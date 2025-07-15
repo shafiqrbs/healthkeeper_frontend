@@ -1,9 +1,14 @@
 import SelectForm from "@components/form-builders/SelectForm";
-import { Box, Button, Group, Select, Table, ActionIcon, Text, Divider, Stack, Flex } from "@mantine/core";
+import { Box, Button, Group, ActionIcon, Text, Stack, Flex, Grid, ScrollArea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconPencil, IconRestore, IconTrash } from "@tabler/icons-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { getMedicineFormInitialValues } from "../helpers/request";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
+import DatePickerForm from "@components/form-builders/DatePicker";
+import InputForm from "@/common/components/form-builders/InputForm";
+import { useOutletContext } from "react-router-dom";
 
 const GENERIC_OPTIONS = [
 	{ value: "napa", label: "Napa" },
@@ -97,21 +102,10 @@ function MedicineListItem({ form, handleAdd }) {
 
 export default function AddMedicineForm() {
 	const { t } = useTranslation();
-	const form = useForm({
-		initialValues: {
-			generic: "",
-			brand: "",
-			dosage: "",
-		},
-		validate: {
-			generic: (value) => (value ? null : "Generic name is required"),
-			brand: (value) => (value ? null : "Brand name is required"),
-			dosage: (value) => (value ? null : "Dosage is required"),
-		},
-	});
+	const form = useForm(getMedicineFormInitialValues(t));
 	const [medicines, setMedicines] = useState([]);
 	const [editIndex, setEditIndex] = useState(null);
-
+	const { mainAreaHeight } = useOutletContext();
 	const handleChange = (field, value) => {
 		form.setFieldValue(field, value);
 	};
@@ -226,12 +220,65 @@ export default function AddMedicineForm() {
 				List of Medicines
 			</Text>
 			{/* {medicines.map((medicine, index) => ( */}
-			<Stack gap="xs" p="sm">
-				<MedicineListItem form={form} handleAdd={handleAdd} />
-				<MedicineListItem form={form} handleAdd={handleAdd} />
-			</Stack>
+			<ScrollArea h={mainAreaHeight - 370}>
+				<Stack gap="xs" p="sm">
+					<MedicineListItem form={form} handleAdd={handleAdd} />
+					<MedicineListItem form={form} handleAdd={handleAdd} />
+				</Stack>
+			</ScrollArea>
 			{/* ))} */}
 
+			{/* =================== Advise form =================== */}
+			<Grid columns={12}>
+				<Grid.Col span={7}>
+					<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
+						<Text bg="var(--theme-success-color-9)" fz="md" c="white" px="sm" py="les">
+							Advise
+						</Text>
+						<Box p="sm">
+							<TextAreaForm
+								form={form}
+								label=""
+								value={form.values.advise}
+								name="advise"
+								handleChange={(v) => handleChange("advise", v)}
+								placeholder="Advise"
+								showRightSection={false}
+							/>
+						</Box>
+					</Box>
+				</Grid.Col>
+				<Grid.Col span={5}>
+					<Box bg="var(--theme-primary-color-0)">
+						<DatePickerForm
+							form={form}
+							label={t("followUpDate")}
+							name="followUpDate"
+							value={form.values.followUpDate}
+							handleChange={(v) => handleChange("followUpDate", v)}
+							placeholder="Follow up date"
+						/>
+					</Box>
+					<Group grow>
+						<InputForm
+							form={form}
+							label="Special Discount"
+							value={form.values.visitPercent}
+							handleChange={(v) => handleChange("visitTime", v)}
+							placeholder="Visit time"
+						/>
+						<InputForm
+							form={form}
+							label=""
+							value={form.values.visitPercent}
+							handleChange={(v) => handleChange("visitTime", v)}
+							placeholder="Visit time"
+						/>
+					</Group>
+				</Grid.Col>
+			</Grid>
+
+			{/* =================== button group =================== */}
 			<Button.Group mt="md">
 				<Button w="100%" bg="var(--theme-reset-btn-color)" leftSection={<IconRestore size={16} />}>
 					{t("reset")}

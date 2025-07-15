@@ -125,23 +125,27 @@ export default function DoctorsRoomDrawer({ opened, close }) {
 									{t("selectDoctor")}
 								</Text>
 								<ScrollArea h={mainAreaHeight - 50} scrollbars="y" p="xs">
-									{[...Array(20)].map((_, index) => (
-										<Box
-											key={index}
-											p="xs"
-											bg="var(--theme-secondary-color-0)"
-											mb="les"
-											className={`borderRadiusAll cursor-pointer ${
-												selectedDoctor === index ? "active-box" : ""
-											}`}
-											onClick={() => selectDoctor(index)}
-										>
-											<Text fw={500} fz="sm">
-												{doctorData[0].name}
-											</Text>
-											<Text fz="xs">{doctorData[0].specialty}</Text>
-										</Box>
-									))}
+									{selectedRoom && (
+										<>
+											{[...Array(20)].map((_, index) => (
+												<Box
+													key={index}
+													p="xs"
+													bg="var(--theme-secondary-color-0)"
+													mb="les"
+													className={`borderRadiusAll cursor-pointer ${
+														selectedDoctor === index ? "active-box" : ""
+													}`}
+													onClick={() => selectDoctor(index)}
+												>
+													<Text fw={500} fz="sm">
+														{doctorData[0].name}
+													</Text>
+													<Text fz="xs">{doctorData[0].specialty}</Text>
+												</Box>
+											))}
+										</>
+									)}
 								</ScrollArea>
 							</Box>
 						</Grid.Col>
@@ -150,7 +154,7 @@ export default function DoctorsRoomDrawer({ opened, close }) {
 				<Grid.Col span={6}>
 					<Box className="borderRadiusAll">
 						<Tabs variant="none" value={tabValue} onChange={setTabValue}>
-							<Tabs.List p="sm" className={tabClass.list} ref={setRootRef}>
+							<Tabs.List px="sm" py="les" className={tabClass.list} ref={setRootRef}>
 								<Flex w="100%" justify="space-between">
 									<Tabs.Tab w="32%" value="new" ref={setControlRef("new")} className={tabClass.tab}>
 										{t("new")}

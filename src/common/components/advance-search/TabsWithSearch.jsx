@@ -44,7 +44,7 @@ export default function TabsWithSearch({
 
 			<Tabs.Panel value="new">
 				<Box py="sm" bg="white">
-					<Box p="xs" bg="var(--theme-success-color-4)">
+					<Box p="xs" bg="var(--theme-success-color-5)">
 						<TextInput name="search" placeholder={t("search")} />
 					</Box>
 					{newChild}

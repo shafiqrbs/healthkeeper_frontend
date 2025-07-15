@@ -1300,5 +1300,6 @@
 	"ole": "OLE",
 	"sugar": "Sugar",
 	"bloodGroup": "Blood Group",
-	"roomReferred": "Room Referred"
+	"roomReferred": "Room Referred",
+	"followUpDate": "Follow Up Date"
 }
