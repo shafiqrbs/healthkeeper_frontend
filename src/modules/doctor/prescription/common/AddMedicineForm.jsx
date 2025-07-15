@@ -1,7 +1,7 @@
 import SelectForm from "@components/form-builders/SelectForm";
 import { Box, Button, Group, ActionIcon, Text, Stack, Flex, Grid, ScrollArea } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconPencil, IconRestore, IconTrash } from "@tabler/icons-react";
+import { IconPencil, IconRestore, IconTrash, IconX } from "@tabler/icons-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../helpers/request";
@@ -46,49 +46,66 @@ const DURATION_UNIT_OPTIONS = [
 	{ value: "year", label: "Year" },
 ];
 
-function MedicineListItem({ form, handleAdd }) {
+function MedicineListItem({ index, form, handleAdd, handleChange }) {
+	const [editMode, setEditMode] = useState(false);
+
+	const handleEdit = () => {
+		setEditMode(true);
+	};
+
+	const handleCancelEdit = () => {
+		setEditMode(false);
+	};
+
+	const handleSave = () => {
+		setEditMode(false);
+	};
+
 	return (
 		<Box>
-			<Text mb="es">1. Napa</Text>
+			<Text mb="es">{index}. Napa</Text>
 			<Group grow gap="les">
 				<SelectForm
 					form={form}
 					label=""
 					dropdownValue={FREQUENCY_OPTIONS}
 					value={form.values.frequency}
-					handleChange={(v) => handleChange("frequency", v)}
+					changeValue={(v) => handleChange("frequency", v)}
 					placeholder="Times"
-					w={100}
+					disabled={!editMode}
 				/>
 				<SelectForm
 					form={form}
 					label=""
 					dropdownValue={TIMING_OPTIONS}
 					value={form.values.timing}
-					handleChange={(v) => handleChange("timing", v)}
+					changeValue={(v) => handleChange("timing", v)}
 					placeholder="Timing"
-					w={120}
+					disabled={!editMode}
 				/>
 				<SelectForm
 					form={form}
 					label=""
 					dropdownValue={MEDITATION_DURATION}
 					value={form.values.meditationDuration}
-					handleChange={(v) => handleChange("meditationDuration", v)}
+					changeValue={(v) => handleChange("meditationDuration", v)}
 					placeholder="Meditation Duration"
-					w={120}
+					disabled={!editMode}
 				/>
 				<SelectForm
 					form={form}
 					label=""
 					dropdownValue={DURATION_UNIT_OPTIONS}
 					value={form.values.durationUnit}
-					handleChange={(v) => handleChange("durationUnit", v)}
+					changeValue={(v) => handleChange("durationUnit", v)}
 					placeholder="Unit"
-					w={100}
+					disabled={!editMode}
 				/>
 				<Flex gap="les" justify="flex-end">
-					<ActionIcon variant="outline" color="var(--theme-primary-color-6)">
+					<ActionIcon variant="outline" color="var(--theme-secondary-color-6)" onClick={handleCancelEdit}>
+						<IconX size={18} stroke={1.5} />
+					</ActionIcon>
+					<ActionIcon variant="outline" color="var(--theme-primary-color-6)" onClick={handleEdit}>
 						<IconPencil size={18} stroke={1.5} />
 					</ActionIcon>
 					<ActionIcon variant="outline" color="var(--theme-error-color)">
@@ -155,7 +172,7 @@ export default function AddMedicineForm() {
 							form={form}
 							dropdownValue={GENERIC_OPTIONS}
 							value={form.values.generic}
-							handleChange={(v) => handleChange("generic", v)}
+							changeValue={(v) => handleChange("generic", v)}
 							placeholder="Generic name"
 							w={150}
 						/>
@@ -163,7 +180,7 @@ export default function AddMedicineForm() {
 							form={form}
 							dropdownValue={BRAND_OPTIONS}
 							value={form.values.brand}
-							handleChange={(v) => handleChange("brand", v)}
+							changeValue={(v) => handleChange("brand", v)}
 							placeholder="Brand name"
 							w={150}
 						/>
@@ -171,7 +188,7 @@ export default function AddMedicineForm() {
 							form={form}
 							dropdownValue={DOSAGE_OPTIONS}
 							value={form.values.dosage}
-							handleChange={(v) => handleChange("dosage", v)}
+							changeValue={(v) => handleChange("dosage", v)}
 							placeholder="Dosage"
 							w={100}
 						/>
@@ -181,7 +198,7 @@ export default function AddMedicineForm() {
 							form={form}
 							dropdownValue={FREQUENCY_OPTIONS}
 							value={form.values.frequency}
-							handleChange={(v) => handleChange("frequency", v)}
+							changeValue={(v) => handleChange("frequency", v)}
 							placeholder="Times"
 							w={100}
 						/>
@@ -189,7 +206,7 @@ export default function AddMedicineForm() {
 							form={form}
 							dropdownValue={TIMING_OPTIONS}
 							value={form.values.timing}
-							handleChange={(v) => handleChange("timing", v)}
+							changeValue={(v) => handleChange("timing", v)}
 							placeholder="Timing"
 							w={120}
 						/>
@@ -198,7 +215,7 @@ export default function AddMedicineForm() {
 							label=""
 							dropdownValue={MEDITATION_DURATION}
 							value={form.values.meditationDuration}
-							handleChange={(v) => handleChange("meditationDuration", v)}
+							changeValue={(v) => handleChange("meditationDuration", v)}
 							placeholder="Meditation Duration"
 							w={120}
 						/>
@@ -206,7 +223,7 @@ export default function AddMedicineForm() {
 							form={form}
 							dropdownValue={DURATION_UNIT_OPTIONS}
 							value={form.values.durationUnit}
-							handleChange={(v) => handleChange("durationUnit", v)}
+							changeValue={(v) => handleChange("durationUnit", v)}
 							placeholder="Unit"
 							w={100}
 						/>
@@ -220,16 +237,16 @@ export default function AddMedicineForm() {
 				List of Medicines
 			</Text>
 			{/* {medicines.map((medicine, index) => ( */}
-			<ScrollArea h={mainAreaHeight - 370}>
+			<ScrollArea h={mainAreaHeight - 382}>
 				<Stack gap="xs" p="sm">
-					<MedicineListItem form={form} handleAdd={handleAdd} />
-					<MedicineListItem form={form} handleAdd={handleAdd} />
+					<MedicineListItem index={1} form={form} handleChange={handleChange} handleAdd={handleAdd} />
+					<MedicineListItem index={2} form={form} handleChange={handleChange} handleAdd={handleAdd} />
 				</Stack>
 			</ScrollArea>
 			{/* ))} */}
 
 			{/* =================== Advise form =================== */}
-			<Grid columns={12}>
+			<Grid columns={12} gutter="sm">
 				<Grid.Col span={7}>
 					<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
 						<Text bg="var(--theme-success-color-9)" fz="md" c="white" px="sm" py="les">
@@ -242,44 +259,51 @@ export default function AddMedicineForm() {
 								value={form.values.advise}
 								name="advise"
 								handleChange={(v) => handleChange("advise", v)}
-								placeholder="Advise"
+								placeholder="Write a advice..."
 								showRightSection={false}
+								style={{ input: { height: "92px" } }}
 							/>
 						</Box>
 					</Box>
 				</Grid.Col>
 				<Grid.Col span={5}>
-					<Box bg="var(--theme-primary-color-0)">
+					<Box bg="var(--theme-primary-color-0)" p="sm">
 						<DatePickerForm
 							form={form}
 							label={t("followUpDate")}
+							tooltip="Enter follow up date"
 							name="followUpDate"
 							value={form.values.followUpDate}
 							handleChange={(v) => handleChange("followUpDate", v)}
 							placeholder="Follow up date"
 						/>
+						<Text mt="xs" fz="sm">
+							{t("specialDiscount")}
+						</Text>
+						<Group grow gap="sm">
+							<InputForm
+								form={form}
+								label=""
+								tooltip="Discount on visit (%)"
+								value={form.values.visitPercent}
+								changeValue={(v) => handleChange("visitTime", v)}
+								placeholder="Visit (%)"
+							/>
+							<InputForm
+								form={form}
+								label=""
+								tooltip="Discount on test (%)"
+								value={form.values.visitPercent}
+								changeValue={(v) => handleChange("visitTime", v)}
+								placeholder="Test (%)"
+							/>
+						</Group>
 					</Box>
-					<Group grow>
-						<InputForm
-							form={form}
-							label="Special Discount"
-							value={form.values.visitPercent}
-							handleChange={(v) => handleChange("visitTime", v)}
-							placeholder="Visit time"
-						/>
-						<InputForm
-							form={form}
-							label=""
-							value={form.values.visitPercent}
-							handleChange={(v) => handleChange("visitTime", v)}
-							placeholder="Visit time"
-						/>
-					</Group>
 				</Grid.Col>
 			</Grid>
 
 			{/* =================== button group =================== */}
-			<Button.Group mt="md">
+			<Button.Group mt="xxs">
 				<Button w="100%" bg="var(--theme-reset-btn-color)" leftSection={<IconRestore size={16} />}>
 					{t("reset")}
 				</Button>

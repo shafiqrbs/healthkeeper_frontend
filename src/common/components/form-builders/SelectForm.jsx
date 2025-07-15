@@ -31,6 +31,7 @@ const SelectForm = forwardRef(
 			size,
 			pt,
 			rightSection = undefined,
+			disabled = false,
 		},
 		ref
 	) => {
@@ -122,6 +123,7 @@ const SelectForm = forwardRef(
 							comboboxProps={comboboxProps}
 							allowDeselect={allowDeselect}
 							rightSection={rightSection}
+							disabled={disabled}
 						/>
 					</Tooltip>
 				)}

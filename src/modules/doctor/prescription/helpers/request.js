@@ -9,6 +9,9 @@ const medicineInitialValues = {
 	brand: "",
 	dosage: "",
 	followUpDate: "",
+	visitPercent: "",
+	testPercent: "",
+	advise: "",
 };
 
 export const getPrescriptionFormInitialValues = (t) => {
