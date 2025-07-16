@@ -282,7 +282,7 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 
 										<Button
 											size="xs"
-											color="var(--theme-error-color)"
+											color="var(--theme-primary-color-6)"
 											type="submit"
 											id={"EntityFormSubmit"}
 											leftSection={<IconSearch size={16} />}

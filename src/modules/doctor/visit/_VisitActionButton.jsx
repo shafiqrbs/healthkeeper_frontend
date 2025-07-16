@@ -132,6 +132,7 @@ export default function VisitActionButton({ form }) {
 											justify="space-between"
 											align="center"
 											gap="0"
+											className="cursor-pointer"
 										>
 											<Image src={method.icon} alt={method.label} w={30} />
 											<Text fz="xxs">{method.label}</Text>
