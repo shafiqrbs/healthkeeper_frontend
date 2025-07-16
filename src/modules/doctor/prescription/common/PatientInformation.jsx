@@ -1,6 +1,6 @@
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import { ActionIcon, Box, Button, Flex, Grid, ScrollArea, SegmentedControl, Text } from "@mantine/core";
-import { IconCalendar, IconUser, IconX } from "@tabler/icons-react";
+import { IconCalendar, IconPencil, IconUser, IconX } from "@tabler/icons-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router-dom";
@@ -123,6 +123,11 @@ const patientList = [
 function PatientList() {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
+	const [selectPatient, setSelectPatient] = useState(patientList[1]);
+
+	const handleSelectPatient = (patient) => {
+		setSelectPatient(patient);
+	};
 
 	return (
 		<Box pos="relative">
@@ -136,7 +141,18 @@ function PatientList() {
 			</Flex>
 			<ScrollArea scrollbars="y" h={mainAreaHeight - 240}>
 				{patientList.map((patient) => (
-					<Grid columns={14} my="xs" bg="var(--theme-secondary-color-0)" px="les">
+					<Grid
+						columns={14}
+						my="es"
+						p="les"
+						className="cursor-pointer"
+						bg={
+							selectPatient.id === patient.id
+								? "var(--theme-primary-color-1)"
+								: "var(--theme-secondary-color-0)"
+						}
+						onClick={() => handleSelectPatient(patient)}
+					>
 						<Grid.Col span={1}>
 							<Text fz="sm" fw={500}>
 								{patient.id}.
@@ -157,19 +173,38 @@ function PatientList() {
 							<Text fz="sm">{patient.mobile}</Text>
 						</Grid.Col>
 						<Grid.Col span={4}>
-							<Flex align="center" h="100%" justify="flex-end" gap="es">
-								<Button
-									variant="filled"
-									size="xs"
-									px="xs"
-									fz="xxs"
-									color="var(--theme-primary-color-6)"
-								>
-									{t("confirm")}
-								</Button>
-								<ActionIcon variant="transparent" aria-label="close">
-									<IconX size={16} stroke={1.5} color="var(--theme-error-color)" />
-								</ActionIcon>
+							<Flex align="center" h="100%" justify="flex-end" gap="les">
+								{selectPatient.id === patient.id ? (
+									<>
+										<Button
+											variant="filled"
+											size="xs"
+											bg="var(--theme-success-color-8)"
+											aria-label="print"
+											miw={76}
+										>
+											{t("Print")}
+										</Button>
+										<ActionIcon variant="solid" bg="white">
+											<IconPencil size={16} stroke={1.5} color="var(--theme-primary-color-6)" />
+										</ActionIcon>
+									</>
+								) : (
+									<>
+										<Button
+											variant="filled"
+											size="xs"
+											bg="var(--theme-primary-color-6)"
+											aria-label="confirm"
+											miw={76}
+										>
+											{t("confirm")}
+										</Button>
+										<ActionIcon variant="transparent" aria-label="close">
+											<IconX size={16} stroke={1.5} color="var(--theme-error-color)" />
+										</ActionIcon>
+									</>
+								)}
 							</Flex>
 						</Grid.Col>
 					</Grid>
@@ -179,13 +214,13 @@ function PatientList() {
 	);
 }
 
-export default function PatientInformation() {
+export default function PatientInformation({ setIsOpenPatientInfo }) {
 	const { t } = useTranslation();
 	const [rootRef, setRootRef] = useState(null);
 	const [tabValue, setTabValue] = useState("new");
 	const [controlsRefs, setControlsRefs] = useState({});
 	return (
-		<Box>
+		<Box onMouseEnter={() => setIsOpenPatientInfo(true)}>
 			<Flex justify="space-between" align="center" bg="white" py="xxxs" px="xs">
 				<Text>{t("patientInformation")}</Text>
 				<SegmentedControl

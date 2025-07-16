@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "./helpers/request";
 import { useOutletContext } from "react-router-dom";
@@ -10,12 +10,14 @@ import { Box, Flex, Grid } from "@mantine/core";
 import PatientInformation from "./common/PatientInformation";
 import PatientReport from "./common/PatientReport";
 import AddMedicineForm from "./common/AddMedicineForm";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 
 export default function PrescriptionIndex() {
 	const { t } = useTranslation();
 	const form = useForm(getPrescriptionFormInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
+	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 
 	return (
 		<>
@@ -26,10 +28,16 @@ export default function PrescriptionIndex() {
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={25}>
-							<Grid.Col span={8}>
-								<PatientInformation />
+							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative">
+								<Box
+									className="right-arrow-button"
+									onClick={() => setIsOpenPatientInfo(!isOpenPatientInfo)}
+								>
+									{isOpenPatientInfo ? <IconChevronLeft size={20} /> : <IconChevronRight size={20} />}
+								</Box>
+								<PatientInformation setIsOpenPatientInfo={setIsOpenPatientInfo} />
 							</Grid.Col>
-							<Grid.Col span={17}>
+							<Grid.Col span={isOpenPatientInfo ? 17 : 23}>
 								<Grid columns={25} gutter="les">
 									<Grid.Col span={9}>
 										<PatientReport />

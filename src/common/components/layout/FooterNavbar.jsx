@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Grid, Progress, Title, Group, Burger, Menu, rem, ActionIcon, NavLink, Flex } from "@mantine/core";
-import { getHotkeyHandler, useDisclosure, useHotkeys, useToggle } from "@mantine/hooks";
+import React from "react";
+import { Group, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
 import classes from "@assets/css/FooterNavbar.module.css";
-import { IconInfoCircle, IconTrash, IconSearch, IconSettings } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import useConfigData from "@hooks/config-data/useConfigData";
+import { useHotkeys } from "@mantine/hooks";
 
 function FooterNavbar() {
 	const { configData } = useConfigData();
-	const { t, i18n } = useTranslation();
-	const dispatch = useDispatch();
+	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const [opened, { toggle }] = useDisclosure(false);
+
+	useHotkeys([
+		["alt+/", () => navigate("/")],
+		["alt+t", () => navigate("/sitemap")],
+		["alt+s", () => navigate(`/settings/hospital-config/${configData?.domain?.id}`)],
+	]);
 
 	const links = [
-		{ link: "/sitemap", label: t("Sitemap") },
-		{ link: `/settings/hospital-config/${configData?.domain?.id}`, label: t("Settings") },
+		{ link: "/sitemap", label: `${t("Sitemap")} (alt+t)` },
+		{ link: `/settings/hospital-config/${configData?.domain?.id}`, label: `${t("Settings")} (alt+s)` },
 	];
 
 	const items = links.map((link) => (
@@ -34,7 +36,7 @@ function FooterNavbar() {
 		</a>
 	));
 
-	const leftLinks = [{ link: "/", label: t("Home") }];
+	const leftLinks = [{ link: "/", label: `${t("Home")} (alt+/)` }];
 
 	const leftItems = leftLinks.map((link) => (
 		<a

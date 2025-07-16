@@ -69,6 +69,11 @@
     --theme-carousel-item-color: var(--mantine-color-green-8);
 }
 
+/* -----------------scrollbar------------------ */
+.m_d57069b5 {
+    --scrollarea-scrollbar-size: 6px !important;
+}
+
 body {
     overflow: hidden;
 }
@@ -499,4 +504,27 @@ input[type=radio]:checked+label>img {
 .active-box {
     border: 1px solid var(--theme-primary-color-6);
     background-color: var(--theme-primary-color-0) !important;
+}
+
+.right-arrow-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 99;
+    right: -10px;
+    background-color: var(--theme-primary-color-6);
+    border-radius: 100%;
+    padding: 8px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+
+    &:hover {
+        opacity: 1;
+        background-color: var(--theme-primary-color-7);
+    }
 }

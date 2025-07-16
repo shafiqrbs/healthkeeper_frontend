@@ -92,7 +92,7 @@ export default function PatientReport() {
 
 			<ScrollArea scrollbars="y" h={mainAreaHeight - 136}>
 				<Flex gap="les" mt="xxxs" mb="xxxs" wrap="wrap">
-					<Group gap="les" grow w="100%">
+					<Group gap="les" grow w="100%" px="les">
 						<InputForm
 							value={vitals.bp}
 							label={t("bp")}
@@ -114,7 +114,7 @@ export default function PatientReport() {
 							styles={{ input: { padding: "es", fontSize: "sm" } }}
 						/>
 					</Group>
-					<Group gap="les" grow w="100%">
+					<Group gap="les" grow w="100%" px="les">
 						<InputForm
 							value={vitals.weight}
 							label={t("weight")}
