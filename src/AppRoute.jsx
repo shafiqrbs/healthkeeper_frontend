@@ -15,7 +15,7 @@ import VendorIndex from "@/modules/core/vendor/VendorIndex";
 import DomainIndex from "@modules/domain/domain/DomainIndex";
 // import TransactionModeIndex from "@modules/accounting/transaction-mode/TransactionModeIndex";
 // import SalesInvoice from "@modules/inventory/sales/SalesInvoice";
-// import Sitemap from "@modules/dashboard/SItemap";
+import Sitemap from "@modules/sitemap/SitemapIndex";
 // import PurchaseIndex from "@modules/inventory/purchase/PurchaseIndex";
 // import PurchaseInvoice from "@modules/inventory/purchase/PurchaseInvoice";
 // import VoucherIndex from "@modules/accounting/voucher-entry/VoucherIndex";
@@ -123,6 +123,7 @@ function AppRoute() {
 				<Route path="/settings/">
 					<Route path="hospital-config/:id" element={<HospitalConfigIndex />} />
 				</Route>
+				<Route path="sitemap" element={<Sitemap />} />
 				{/* <Route path="/inventory/">
           <Route path="sales/edit/:id" element={<SalesEdit />} />
           <Route path="sales" element={<SalesIndex />} />
@@ -223,7 +224,6 @@ function AppRoute() {
         <Route path="/reporting/">
           <Route path="reports" element={<ReportIndex />} />
         </Route>
-        <Route path="sitemap" element={<Sitemap />} />
         <Route path="/pos/">
           <Route path="bakery" element={<BakeryIndex />} />
         </Route>

@@ -866,5 +866,11 @@
 	"bloodGroup": "রক্তের গ্রুপ",
 	"roomReferred": "রুম রেফারড",
 	"followUpDate": "পুনরায় ভিজিট তারিখ",
-	"specialDiscount": "বিশেষ ডিসকাউন্ট"
+	"specialDiscount": "বিশেষ ডিসকাউন্ট",
+	"PatientManagement": "রোগী ব্যবস্থাপনা",
+	"DoctorAndDiagnostic": "ডাক্তার ও ডায়াগনস্টিক",
+	"lab": "ল্যাব",
+	"PharmacyAndBilling": "ফার্মেসি ও বিলিং",
+	"billing": "বিলিং",
+	"patientManagement": "রোগী ব্যবস্থাপনা"
 }

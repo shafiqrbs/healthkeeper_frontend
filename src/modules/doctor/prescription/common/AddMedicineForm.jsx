@@ -184,6 +184,8 @@ export default function AddMedicineForm() {
 							placeholder="Brand name"
 							w={150}
 						/>
+					</Group>
+					<Group grow gap="les" w="100%">
 						<SelectForm
 							form={form}
 							dropdownValue={DOSAGE_OPTIONS}
@@ -192,8 +194,6 @@ export default function AddMedicineForm() {
 							placeholder="Dosage"
 							w={100}
 						/>
-					</Group>
-					<Group grow gap="les" w="100%">
 						<SelectForm
 							form={form}
 							dropdownValue={FREQUENCY_OPTIONS}

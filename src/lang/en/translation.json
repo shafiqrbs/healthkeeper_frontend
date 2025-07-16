@@ -1302,5 +1302,18 @@
 	"bloodGroup": "Blood Group",
 	"roomReferred": "Room Referred",
 	"followUpDate": "Follow Up Date",
-	"specialDiscount": "Special Discount"
+	"specialDiscount": "Special Discount",
+	"Patient Management": "Patient Management",
+	"doctorAndDiagnostic": "Doctor & Diagnostic",
+	"lab": "Lab",
+	"pharmacyAndBilling": "Pharmacy & Billing",
+	"billing": "Billing",
+	"inventoryAndPurchase": "Inventory & Purchase",
+	"inventory": "Inventory",
+	"purchase": "Purchase",
+	"reports": "Reports",
+	"userAndStaff": "User & Staff",
+	"users": "Users",
+	"staff": "Staff",
+	"patientManagement": "Patient Management"
 }

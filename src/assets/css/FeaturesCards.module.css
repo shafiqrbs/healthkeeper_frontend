@@ -2,24 +2,24 @@
     font-size: rem(34px);
     font-weight: 900;
 
-@media (max-width: $mantine-breakpoint-sm) {
-    font-size: rem(24px);
-}
+    @media (max-width: $mantine-breakpoint-sm) {
+        font-size: rem(24px);
+    }
 }
 
 .description {
     margin: auto;
 
-&::after {
-     content: '';
-     display: block;
-     background-color: var(--mantine-color-blue-filled);
-     width: rem(45px);
-     height: rem(2px);
-     margin-top: var(--mantine-spacing-sm);
-     margin-left: auto;
-     margin-right: auto;
- }
+    &::after {
+        content: '';
+        display: block;
+        background-color: var(--mantine-color-blue-filled);
+        width: rem(45px);
+        height: rem(2px);
+        margin-top: var(--mantine-spacing-sm);
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 
 .card {
@@ -27,16 +27,16 @@
 }
 
 .cardTitle {
-&::after {
-     content: '';
-     display: block;
-     background-color: #905a23;
-     width: rem(56px);
-     height: rem(2px);
-     margin-top: var(--mantine-spacing-sm);
- }
+    &::after {
+        content: '';
+        display: block;
+        background-color: var(--theme-primary-color-6);
+        width: rem(56px);
+        height: rem(2px);
+        margin-top: var(--mantine-spacing-sm);
+    }
 }
 
 .btnPrimaryBg {
-    background-color: #905a23;
+    background-color: var(--theme-primary-color-6);
 }

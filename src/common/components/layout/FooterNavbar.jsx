@@ -16,10 +16,8 @@ function FooterNavbar() {
 	const [opened, { toggle }] = useDisclosure(false);
 
 	const links = [
-		{ link: "/inventory/sales-invoice", label: t("Sales") },
-		{ link: "/inventory/purchase-invoice", label: t("Purchase") },
-		{ link: "/inventory/product", label: t("Product") },
-		{ link: "/accounting/voucher-entry", label: t("Accounting") },
+		{ link: "/sitemap", label: t("Sitemap") },
+		{ link: `/settings/hospital-config/${configData?.domain?.id}`, label: t("Settings") },
 	];
 
 	const items = links.map((link) => (
@@ -36,11 +34,7 @@ function FooterNavbar() {
 		</a>
 	));
 
-	const leftLinks = [
-		{ link: "/", label: t("Home") },
-		{ link: "/sitemap", label: t("Sitemap") },
-		{ link: `/settings/hospital-config/${configData?.domain?.id}`, label: t("Settings") },
-	];
+	const leftLinks = [{ link: "/", label: t("Home") }];
 
 	const leftItems = leftLinks.map((link) => (
 		<a
