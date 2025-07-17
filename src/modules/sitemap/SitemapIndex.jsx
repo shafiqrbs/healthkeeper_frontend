@@ -101,6 +101,23 @@ const SITEMAP_SECTIONS = [
 		],
 	},
 	{
+		title: "Core",
+		icon: IconShoppingCart,
+		color: "var(--mantine-color-cyan-6)",
+		links: [
+			{
+				label: "User",
+				route: "/user",
+				icon: IconShoppingCart,
+			},
+			{
+				label: "Vendor",
+				route: "/core/vendor",
+				icon: IconReportMoney,
+			},
+		],
+	},
+	{
 		title: "inventoryAndPurchase",
 		icon: IconShoppingCart,
 		color: "var(--mantine-color-cyan-6)",

@@ -25,15 +25,7 @@ export default function GlobalDrawer({
 		>
 			<Drawer.Overlay />
 			<Drawer.Content bg={bg}>
-				<Drawer.Header
-					mb="xs"
-					styles={{
-						header: {
-							borderBottom: `1px solid var(--theme-drawer-border-color)`,
-							backgroundColor: `var(--theme-primary-color-0)`,
-						},
-					}}
-				>
+				<Drawer.Header className={'drawer-sticky-header'}>
 					<Drawer.Title>
 						<Flex align="center" gap={8}>
 							<IconArrowLeft size={16} />{" "}
