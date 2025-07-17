@@ -10,7 +10,7 @@ import tabClass from "@assets/css/Tab.module.css";
 import { useTranslation } from "react-i18next";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import DoctorsRoomDrawer from "../__DoctorsRoomDrawer";
+import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure } from "@mantine/hooks";
 
 export default function PatientForm({ form, handleSubmit }) {

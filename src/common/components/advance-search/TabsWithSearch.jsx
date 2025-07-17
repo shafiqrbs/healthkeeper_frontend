@@ -1,21 +1,13 @@
 import { Box, Flex, Tabs, TextInput, FloatingIndicator, Button } from "@mantine/core";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import tabClass from "@assets/css/Tab.module.css";
 
-export default function TabsWithSearch({
-	expand = true,
-	tabValue,
-	setTabValue,
-	rootRef,
-	setRootRef,
-	controlsRefs,
-	setControlsRefs,
-	newChild,
-	reportChild,
-	reVisitChild,
-}) {
+export default function TabsWithSearch({ expand = true, tabPanels, tabList }) {
 	const { t } = useTranslation();
+	const [rootRef, setRootRef] = useState(null);
+	const [tabValue, setTabValue] = useState(tabList[0]);
+	const [controlsRefs, setControlsRefs] = useState({});
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -28,19 +20,21 @@ export default function TabsWithSearch({
 				<Flex w="100%" justify={expand ? "space-between" : "center"}>
 					{expand ? (
 						<>
-							<Tabs.Tab w="32%" value="new" ref={setControlRef("new")} className={tabClass.tab}>
-								{t("new")}
-							</Tabs.Tab>
-							<Tabs.Tab w="32%" value="report" ref={setControlRef("report")} className={tabClass.tab}>
-								{t("report")}
-							</Tabs.Tab>
-							<Tabs.Tab w="32%" value="re-visit" ref={setControlRef("re-visit")} className={tabClass.tab}>
-								{t("reVisit")}
-							</Tabs.Tab>
+							{tabList.map((tab) => (
+								<Tabs.Tab
+									w="32%"
+									key={tab}
+									value={tab}
+									ref={setControlRef(tab)}
+									className={tabClass.tab}
+								>
+									{t(tab)}
+								</Tabs.Tab>
+							))}
 						</>
 					) : (
 						<Button variant="filled" size="xs">
-							{t("new")}
+							{t(tabList[0])}
 						</Button>
 					)}
 				</Flex>
@@ -51,30 +45,16 @@ export default function TabsWithSearch({
 				/>
 			</Tabs.List>
 
-			<Tabs.Panel value="new">
-				<Box py="sm" bg="white">
-					<Box p="xs" bg="var(--theme-success-color-5)">
-						<TextInput name="search" placeholder={t("search")} />
+			{tabPanels.map((tab) => (
+				<Tabs.Panel key={tab.tab} value={tab.tab}>
+					<Box py="sm" bg="white">
+						<Box p="xs" bg="var(--theme-success-color-5)">
+							<TextInput name="search" placeholder={t("search")} />
+						</Box>
+						{tab.component}
 					</Box>
-					{newChild}
-				</Box>
-			</Tabs.Panel>
-			<Tabs.Panel value="report">
-				<Box py="sm" bg="white">
-					<Box p="xs" bg="var(--theme-success-color-5)">
-						<TextInput name="search" placeholder={t("search")} />
-					</Box>
-					{reportChild}
-				</Box>
-			</Tabs.Panel>
-			<Tabs.Panel value="re-visit">
-				<Box py="sm" bg="white">
-					<Box p="xs" bg="var(--theme-success-color-5)">
-						<TextInput name="search" placeholder={t("search")} />
-					</Box>
-					{reVisitChild}
-				</Box>
-			</Tabs.Panel>
+				</Tabs.Panel>
+			))}
 		</Tabs>
 	);
 }
