@@ -120,7 +120,7 @@ const patientList = [
 	},
 ];
 
-function PatientList() {
+function PatientList({ isOpenPatientInfo }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const [selectPatient, setSelectPatient] = useState(patientList[1]);
@@ -131,13 +131,22 @@ function PatientList() {
 
 	return (
 		<Box pos="relative">
-			<Flex gap="sm" p="les" mt="xxxs" c="white" bg="var(--theme-primary-color-6)">
-				<Text fz="sm" fw={500}>
+			<Flex
+				gap="sm"
+				p="les"
+				mt="xxxs"
+				c="white"
+				bg="var(--theme-primary-color-6)"
+				justify={isOpenPatientInfo ? "" : "center"}
+			>
+				<Text ta="center" fz="sm" fw={500}>
 					S/N
 				</Text>
-				<Text fz="sm" fw={500}>
-					Patient Name
-				</Text>
+				{isOpenPatientInfo && (
+					<Text ta="center" fz="sm" fw={500}>
+						Patient Name
+					</Text>
+				)}
 			</Flex>
 			<ScrollArea scrollbars="y" h={mainAreaHeight - 240}>
 				{patientList.map((patient) => (
@@ -153,60 +162,68 @@ function PatientList() {
 						}
 						onClick={() => handleSelectPatient(patient)}
 					>
-						<Grid.Col span={1}>
-							<Text fz="sm" fw={500}>
+						<Grid.Col span={isOpenPatientInfo ? 1 : 14}>
+							<Text fz="sm" fw={500} ta="center">
 								{patient.id}.
 							</Text>
 						</Grid.Col>
-						<Grid.Col span={4}>
-							<Flex align="center" gap="es">
-								<IconCalendar size={16} stroke={1.5} />
-								<Text fz="sm">{patient.date}</Text>
-							</Flex>
-							<Flex align="center" gap="es">
-								<IconUser size={16} stroke={1.5} />
-								<Text fz="sm">{patient.patientId}</Text>
-							</Flex>
-						</Grid.Col>
-						<Grid.Col span={5}>
-							<Text fz="sm">{patient.name}</Text>
-							<Text fz="sm">{patient.mobile}</Text>
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<Flex align="center" h="100%" justify="flex-end" gap="les">
-								{selectPatient.id === patient.id ? (
-									<>
-										<Button
-											variant="filled"
-											size="xs"
-											bg="var(--theme-success-color-8)"
-											aria-label="print"
-											miw={76}
-										>
-											{t("Print")}
-										</Button>
-										<ActionIcon variant="solid" bg="white">
-											<IconPencil size={16} stroke={1.5} color="var(--theme-primary-color-6)" />
-										</ActionIcon>
-									</>
-								) : (
-									<>
-										<Button
-											variant="filled"
-											size="xs"
-											bg="var(--theme-primary-color-6)"
-											aria-label="confirm"
-											miw={76}
-										>
-											{t("confirm")}
-										</Button>
-										<ActionIcon variant="transparent" aria-label="close">
-											<IconX size={16} stroke={1.5} color="var(--theme-error-color)" />
-										</ActionIcon>
-									</>
-								)}
-							</Flex>
-						</Grid.Col>
+						{isOpenPatientInfo && (
+							<>
+								<Grid.Col span={4}>
+									<Flex align="center" gap="es">
+										<IconCalendar size={16} stroke={1.5} />
+										<Text fz="sm">{patient.date}</Text>
+									</Flex>
+									<Flex align="center" gap="es">
+										<IconUser size={16} stroke={1.5} />
+										<Text fz="sm">{patient.patientId}</Text>
+									</Flex>
+								</Grid.Col>
+								<Grid.Col span={5}>
+									<Text fz="sm">{patient.name}</Text>
+									<Text fz="sm">{patient.mobile}</Text>
+								</Grid.Col>
+								<Grid.Col span={4}>
+									<Flex align="center" h="100%" justify="flex-end" gap="les">
+										{selectPatient.id === patient.id ? (
+											<>
+												<Button
+													variant="filled"
+													size="xs"
+													bg="var(--theme-success-color-8)"
+													aria-label="print"
+													miw={76}
+												>
+													{t("Print")}
+												</Button>
+												<ActionIcon variant="solid" bg="white">
+													<IconPencil
+														size={16}
+														stroke={1.5}
+														color="var(--theme-primary-color-6)"
+													/>
+												</ActionIcon>
+											</>
+										) : (
+											<>
+												<Button
+													variant="filled"
+													size="xs"
+													bg="var(--theme-primary-color-6)"
+													aria-label="confirm"
+													miw={76}
+												>
+													{t("confirm")}
+												</Button>
+												<ActionIcon variant="transparent" aria-label="close">
+													<IconX size={16} stroke={1.5} color="var(--theme-error-color)" />
+												</ActionIcon>
+											</>
+										)}
+									</Flex>
+								</Grid.Col>
+							</>
+						)}
 					</Grid>
 				))}
 			</ScrollArea>
@@ -214,35 +231,44 @@ function PatientList() {
 	);
 }
 
-export default function PatientInformation({ setIsOpenPatientInfo }) {
+export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatientInfo }) {
 	const { t } = useTranslation();
 	const [rootRef, setRootRef] = useState(null);
 	const [tabValue, setTabValue] = useState("new");
 	const [controlsRefs, setControlsRefs] = useState({});
 	return (
 		<Box onMouseEnter={() => setIsOpenPatientInfo(true)}>
-			<Flex justify="space-between" align="center" bg="white" py="xxxs" px="xs">
-				<Text>{t("patientInformation")}</Text>
-				<SegmentedControl
-					size="xs"
-					color="var(--theme-primary-color-6)"
-					data={["List", "New"]}
-					styles={{
-						root: { backgroundColor: "var(--theme-secondary-color-1)" },
-						control: { width: "60px" },
-					}}
-				/>
+			<Flex justify={isOpenPatientInfo ? "space-between" : "center"} align="center" bg="white" py="xxxs" px="xs">
+				{isOpenPatientInfo ? (
+					<>
+						<Text>{t("patientInformation")}</Text>
+						<SegmentedControl
+							size="xs"
+							color="var(--theme-primary-color-6)"
+							data={["List", "New"]}
+							styles={{
+								root: { backgroundColor: "var(--theme-secondary-color-1)" },
+								control: { width: "60px" },
+							}}
+						/>
+					</>
+				) : (
+					<Button variant="filled" size="xs" aria-label="list">
+						{t("List")}
+					</Button>
+				)}
 			</Flex>
 			<TabsWithSearch
+				expand={isOpenPatientInfo}
 				tabValue={tabValue}
 				setTabValue={setTabValue}
 				rootRef={rootRef}
 				setRootRef={setRootRef}
 				controlsRefs={controlsRefs}
 				setControlsRefs={setControlsRefs}
-				newChild={<PatientList />}
-				reportChild={<PatientList />}
-				reVisitChild={<PatientList />}
+				newChild={<PatientList isOpenPatientInfo={isOpenPatientInfo} />}
+				reportChild={<PatientList isOpenPatientInfo={isOpenPatientInfo} />}
+				reVisitChild={<PatientList isOpenPatientInfo={isOpenPatientInfo} />}
 			/>
 		</Box>
 	);

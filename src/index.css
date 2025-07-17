@@ -506,6 +506,10 @@ input[type=radio]:checked+label>img {
     background-color: var(--theme-primary-color-0) !important;
 }
 
+.animate-2ms-ease-out {
+    transition: all 0.2s ease-out;
+}
+
 .right-arrow-button {
     position: absolute;
     top: 50%;

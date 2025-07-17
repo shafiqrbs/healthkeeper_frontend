@@ -28,16 +28,19 @@ export default function PrescriptionIndex() {
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={25}>
-							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative">
+							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-2ms-ease-out">
 								<Box
 									className="right-arrow-button"
 									onClick={() => setIsOpenPatientInfo(!isOpenPatientInfo)}
 								>
 									{isOpenPatientInfo ? <IconChevronLeft size={20} /> : <IconChevronRight size={20} />}
 								</Box>
-								<PatientInformation setIsOpenPatientInfo={setIsOpenPatientInfo} />
+								<PatientInformation
+									isOpenPatientInfo={isOpenPatientInfo}
+									setIsOpenPatientInfo={setIsOpenPatientInfo}
+								/>
 							</Grid.Col>
-							<Grid.Col span={isOpenPatientInfo ? 17 : 23}>
+							<Grid.Col span={isOpenPatientInfo ? 17 : 23} className="animate-2ms-ease-out">
 								<Grid columns={25} gutter="les">
 									<Grid.Col span={9}>
 										<PatientReport />

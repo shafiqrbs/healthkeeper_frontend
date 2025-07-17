@@ -164,7 +164,7 @@ export default function AddMedicineForm() {
 	};
 
 	return (
-		<Box bg="white">
+		<Box bg="white" className="borderRadiusAll">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
 				<Group align="end" gap="les">
 					<Group grow w="100%" gap="les">
