@@ -29,9 +29,8 @@ function ___VendorForm({
 	});
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 100; //TabList height 104
+	const height = mainAreaHeight - 180; //TabList height 104
 	const matches = useMediaQuery("(max-width: 64em)");
-
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);

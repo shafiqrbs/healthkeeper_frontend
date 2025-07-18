@@ -18,7 +18,7 @@ export default function GlobalDrawer({
 			onClose={close}
 			position={position}
 			closeOnClickOutside={false}
-			offset={10}
+			offset={42}
 			radius="sm"
 			size={size}
 			keepMounted={keepMounted}

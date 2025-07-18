@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { Group, Box, ActionIcon, Text, Menu, rem, Flex } from "@mantine/core";
+import {Group, Box, ActionIcon, Text, Menu, rem, Flex, Button} from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconDotsVertical, IconTrashX, IconAlertCircle, IconCheck } from "@tabler/icons-react";
+import {IconDotsVertical, IconTrashX, IconAlertCircle, IconCheck, IconEdit, IconEye} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
-import { useMediaQuery, useMounted } from "@mantine/hooks";
+import {useHotkeys, useMediaQuery, useMounted} from "@mantine/hooks";
 import {
 	deleteEntityData,
 	getIndexEntityData,
@@ -28,7 +28,7 @@ function _VendorTable({ open, close }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const { id } = useParams();
-	const height = mainAreaHeight - 98; //TabList height 104
+	const height = mainAreaHeight - 78; //TabList height 104
 	const scrollViewportRef = useRef(null);
 
 	const perPage = 50;
@@ -198,6 +198,13 @@ function _VendorTable({ open, close }) {
 		navigate("/core/vendor");
 	};
 
+	useHotkeys(
+		[
+			["ctrl+n", () => handleCreateVendor()],
+			["alt+n", () => handleCreateVendor()]
+		]
+	);
+
 	return (
 		<>
 			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
@@ -211,6 +218,7 @@ function _VendorTable({ open, close }) {
 					classNames={{
 						root: tableCss.root,
 						table: tableCss.table,
+						body: tableCss.body,
 						header: tableCss.header,
 						footer: tableCss.footer,
 						pagination: tableCss.pagination,
@@ -227,65 +235,124 @@ function _VendorTable({ open, close }) {
 						{ accessor: "company_name", title: t("CompanyName") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{
+							accessor: 'status',
+							title: t("Status"),
+							render: (values) => (
+								<>
+									<Button
+										onClick={() => {
+											handleDelete(values.id);
+											open();
+										}}
+										variant="filled"
+										c="white"
+										size="compact-xs"
+										className="btnPrimaryBg"
+									>
+										{ values.status === 1  ? 'Active' : 'Inactive'}
+									</Button>
+
+								</>
+								)
+
+						},
+						{
 							accessor: "action",
-							title: t("Action"),
+							title: t(""),
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
-								<Group gap={4} justify="right" wrap="nowrap">
-									<Menu
-										position="bottom-end"
-										offset={3}
-										withArrow
-										trigger="hover"
-										openDelay={100}
-										closeDelay={400}
-									>
-										<Menu.Target>
+								<>
+									<Group gap={4} justify="right" wrap="nowrap">
+										<Button.Group>
+										<Button
+											onClick={() => {
+												handleVendorEdit(values.id);
+												open();
+											}}
+											variant="filled"
+											c="white"
+											size="xs"
+											radius="es"
+											leftSection={<IconEdit size={16} />}
+											className="border-right-radius-none btnPrimaryBg"
+										>
+											{t("Edit")}
+										</Button>
+										<Button
+											onClick={() => {
+												handleDataShow(values.id);
+												open();
+											}}
+											variant="filled"
+											c="white"
+											bg='var(--theme-primary-color-6)'
+											size="xs"
+											radius="es"
+											leftSection={<IconEye size={16} />}
+											className="border-left-radius-none"
+										>
+											{t("View")}
+										</Button>
 											<ActionIcon
-												size="sm"
-												variant="outline"
-												color="red"
-												radius="xl"
+												onClick={() => handleDelete(values.id)}
+												className="action-icon-menu border-left-radius-none"
+												variant="light"
+												color='var(--theme-delete-color)'
+												radius="es"
 												aria-label="Settings"
 											>
-												<IconDotsVertical
-													height={18}
-													width={18}
-													stroke={1.5}
-												/>
+												<IconTrashX height={18} width={18} stroke={1.5} />
 											</ActionIcon>
-										</Menu.Target>
-										<Menu.Dropdown>
-											<Menu.Item
-												onClick={() => {
-													handleVendorEdit(values.id);
-													open();
-												}}
-											>
-												{t("Edit")}
-											</Menu.Item>
-											<Menu.Item onClick={() => handleDataShow(values.id)}>
-												{t("Show")}
-											</Menu.Item>
-											<Menu.Item
-												onClick={() => handleDelete(values.id)}
-												bg="red.1"
-												c="red.6"
-												rightSection={
-													<IconTrashX
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-											>
-												{t("Delete")}
-											</Menu.Item>
-										</Menu.Dropdown>
-									</Menu>
-								</Group>
+										</Button.Group>
+
+										{/*<Menu
+											position="bottom-end"
+											offset={3}
+											withArrow
+											trigger="hover"
+											openDelay={100}
+											closeDelay={400}
+										>
+											<Menu.Target>
+												<ActionIcon
+													className="action-icon-menu border-left-radius-none"
+													variant="default"
+													radius="es"
+													aria-label="Settings"
+												>
+													<IconDotsVertical height={18} width={18} stroke={1.5} />
+												</ActionIcon>
+											</Menu.Target>
+											<Menu.Dropdown>
+												<Menu.Item
+													onClick={() => {
+														// handleVendorEdit(values.id);
+														// open();
+													}}
+												>
+													{t("Edit")}
+												</Menu.Item>
+												<Menu.Item
+													// onClick={() => handleDelete(values.id)}
+													bg="red.1"
+													c="red.6"
+													rightSection={
+														<IconTrashX
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+												>
+													{t("Delete")}
+												</Menu.Item>
+											</Menu.Dropdown>
+										</Menu>*/}
+									</Group>
+
+								</>
 							),
 						},
 					]}

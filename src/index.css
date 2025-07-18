@@ -10,25 +10,33 @@
     --theme-primary-color-8: var(--mantine-color-blue-8);
     --theme-primary-color-9: var(--mantine-color-blue-9);
 
-    --theme-secondary-color-0: var(--mantine-color-gray-0);
-    --theme-secondary-color-1: var(--mantine-color-gray-1);
-    --theme-secondary-color-2: var(--mantine-color-gray-2);
-    --theme-secondary-color-3: var(--mantine-color-gray-3);
-    --theme-secondary-color-4: var(--mantine-color-gray-4);
-    --theme-secondary-color-5: var(--mantine-color-gray-5);
-    --theme-secondary-color-6: var(--mantine-color-gray-6);
-    --theme-secondary-color-7: var(--mantine-color-gray-7);
-    --theme-secondary-color-8: var(--mantine-color-gray-8);
+    --theme-secondary-color-0: var(--mantine-color-green-0);
+    --theme-secondary-color-1: var(--mantine-color-green-1);
+    --theme-secondary-color-2: var(--mantine-color-green-2);
+    --theme-secondary-color-3: var(--mantine-color-green-3);
+    --theme-secondary-color-4: var(--mantine-color-green-4);
+    --theme-secondary-color-5: var(--mantine-color-green-5);
+    --theme-secondary-color-6: var(--mantine-color-green-6);
+    --theme-secondary-color-7: var(--mantine-color-green-7);
+    --theme-secondary-color-8: var(--mantine-color-green-8);
+
+
+    --theme-tertiary-color-0: var(--mantine-color-gray-0);
+    --theme-tertiary-color-1: var(--mantine-color-gray-1);
+    --theme-tertiary-color-2: var(--mantine-color-gray-2);
+    --theme-tertiary-color-3: var(--mantine-color-gray-3);
+    --theme-tertiary-color-4: var(--mantine-color-gray-4);
+    --theme-tertiary-color-5: var(--mantine-color-gray-5);
+    --theme-tertiary-color-6: var(--mantine-color-gray-6);
+    --theme-tertiary-color-7: var(--mantine-color-gray-7);
+    --theme-tertiary-color-8: var(--mantine-color-gray-8);
+
 
     --theme-success-color: var(--mantine-color-green-6);
-    --theme-success-color-1: var(--mantine-color-green-0);
-    --theme-success-color-3: var(--mantine-color-green-3);
-    --theme-success-color-4: var(--mantine-color-green-4);
-    --theme-success-color-5: var(--mantine-color-green-5);
-    --theme-success-color-8: var(--mantine-color-green-8);
-    --theme-success-color-9: var(--mantine-color-green-9);
+    --theme-remove-color: var(--mantine-color-red-6);
+    --theme-delete-color: var(--mantine-color-red-6);
     --theme-error-color: var(--mantine-color-red-6);
-    --theme-error-color-hover: var(--mantine-color-red-1);
+    --theme-delete-color: var(--mantine-color-red-6);
     --theme-warning-color: var(--mantine-color-yellow-6);
     --theme-info-color: var(--mantine-color-blue-6);
     --theme-notice-color: var(--mantine-color-gray-6);
@@ -193,7 +201,7 @@ textarea:focus {
 }
 
 .borderRadiusAll {
-    border: 1px solid #e6e6e6;
+    border: 1px solid var(--mantine-color-gray-2);
     border-radius: 4px;
 }
 
@@ -326,7 +334,7 @@ input[type=radio]:checked+label>img {
 }
 
 .btnPrimaryBg {
-    background-color: var(--theme-primary-color-6) !important;
+    background-color: var(--theme-secondary-color-8) !important;
 }
 
 .btnPrimaryResetBg {
@@ -336,11 +344,11 @@ input[type=radio]:checked+label>img {
 }
 
 .tooltipPrimaryBg {
-    background-color: #905a23 !important;
+    background-color: var(--theme-primary-color-8) !important;
 }
 
 .tooltipSecondaryBg {
-    background-color: #905a23 !important;
+    background-color:var(--theme-secondary-color-8) !important;
 }
 
 .link {
@@ -366,7 +374,7 @@ input[type=radio]:checked+label>img {
 .drawer-form-stack-vertical {
     padding-top: 14px;
     border: 4px solid white;
-    background-color: var(--theme-secondary-color-0);
+    background-color: var(--mantine-color-gray-0);
     border-radius: 4px;
     padding-inline: 14px;
     gap: 12px;
@@ -376,7 +384,7 @@ input[type=radio]:checked+label>img {
     margin-inline: -16px !important;
     margin-left: -16px !important;
     margin-top: 16px !important;
-    padding: 8px !important;
+    padding: 16px !important;
 }
 
 .drawer-sticky-footer button p {
@@ -473,7 +481,7 @@ input[type=radio]:checked+label>img {
 }
 
 .infinite-pagination-footer {
-    border: 1px solid var(--theme-secondary-color-1) !important;
+    border: 1px solid var(--mantine-color-gray-1) !important;
     border-top: none !important;
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;

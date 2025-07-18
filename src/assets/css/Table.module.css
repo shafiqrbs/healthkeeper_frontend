@@ -3,7 +3,7 @@
         background-color: var(--theme-primary-color-4) !important;
     }
 
-    border: 1px solid var(--theme-secondary-color-1) !important;
+    border: 1px solid var(--mantine-color-gray-1) !important;
 }
 
 .table {
@@ -24,10 +24,19 @@
 
 .header {
     th {
-        border-bottom: 1px solid #f8eedf;
-        background-color: var(--theme-primary-color-4) !important;
+        background-color: var(--theme-primary-color-1) !important;
         font-size: 14px;
-        color: white;
+        font-weight: normal;
+        color: var(--mantine-color-gray-8);
+        border-bottom: 1px solid transparent;
+    }
+}
+
+.body {
+    td {
+        font-size: 12px;
+        font-weight: normal;
+        border-bottom: 1px solid transparent;
     }
 }
 
@@ -37,13 +46,13 @@
 
     th,
     td {
-        border-top: 1px solid rgba(226, 194, 194, 0.39);
+        border: 1px solid transparent;
     }
 }
 
 .pagination {
     background: transparent;
-    border-top: 1px solid rgba(226, 194, 194, 0.39);
+    border: 1px solid transparent;
 
     button {
         background: transparent;
