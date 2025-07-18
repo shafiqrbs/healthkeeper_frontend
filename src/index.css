@@ -473,7 +473,7 @@ input[type=radio]:checked+label>img {
 .form-stack-vertical {
     padding-top: 14px;
     border: 4px solid white;
-    background-color: var(--theme-secondary-color-0);
+    background-color: var(--theme-tertiary-color-0);
     border-radius: 4px;
     padding-inline: 14px;
     gap: 12px;
@@ -517,6 +517,14 @@ input[type=radio]:checked+label>img {
     padding: 6px 8px;
     gap: 12px;
     border-radius: 4px;
+}
+
+.activate-link {
+    transition: all 0.1s;
+
+    &:hover {
+        color: var(--theme-primary-color-6) !important;
+    }
 }
 
 .cursor-pointer {

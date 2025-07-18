@@ -12,9 +12,9 @@ import {
 } from "@tabler/icons-react";
 import { useHotkeys } from "@mantine/hooks";
 import { useDispatch } from "react-redux";
-import FilterModel from "./FilterModel.jsx";
 import { setFilterData, setGlobalFetching, setSearchKeyword } from "@/app/store/core/crudSlice.js";
 import useDebounce from "@hooks/useDebounce.js";
+import AdvancedFilter from "@components/advance-search/AdvancedFilter.jsx";
 
 function KeywordSearch({ module }) {
 	const { t } = useTranslation();
@@ -194,39 +194,32 @@ function KeywordSearch({ module }) {
 							<IconSearch style={{ width: rem(18) }} stroke={1.5} />
 						</Tooltip>
 					</ActionIcon>
-					{module !== "category" &&
-						module !== "category-group" &&
-						module !== "particular" && (
-							<ActionIcon
-								variant="default"
-								size="lg"
-								c="var(--theme-tooltip-color)"
-								aria-label="Settings"
-								onClick={() => setFilterModel(true)}
+					{module !== "category" && module !== "category-group" && module !== "particular" && (
+						<ActionIcon
+							variant="default"
+							size="lg"
+							c="var(--theme-tooltip-color)"
+							aria-label="Settings"
+							onClick={() => setFilterModel(true)}
+						>
+							<Tooltip
+								label={t("FilterButton")}
+								px={16}
+								py={2}
+								withArrow
+								position={"bottom"}
+								c="var(--theme-error-color)"
+								bg="var(--theme-error-color-hover)"
+								transitionProps={{
+									transition: "pop-bottom-left",
+									duration: 500,
+								}}
 							>
-								<Tooltip
-									label={t("FilterButton")}
-									px={16}
-									py={2}
-									withArrow
-									position={"bottom"}
-									c="var(--theme-error-color)"
-									bg="var(--theme-error-color-hover)"
-									transitionProps={{
-										transition: "pop-bottom-left",
-										duration: 500,
-									}}
-								>
-									<IconFilter style={{ width: rem(18) }} stroke={1.0} />
-								</Tooltip>
-							</ActionIcon>
-						)}
-					<ActionIcon
-						variant="default"
-						c="var(--theme-tooltip-color)"
-						size="lg"
-						aria-label="Reset"
-					>
+								<AdvancedFilter bd="none" />
+							</Tooltip>
+						</ActionIcon>
+					)}
+					<ActionIcon variant="default" c="var(--theme-tooltip-color)" size="lg" aria-label="Reset">
 						<Tooltip
 							label={t("ResetButton")}
 							px={16}
@@ -237,11 +230,7 @@ function KeywordSearch({ module }) {
 							bg="var(--theme-error-color-hover)"
 							transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 						>
-							<IconRestore
-								style={{ width: rem(18) }}
-								stroke={1.5}
-								onClick={resetFilters}
-							/>
+							<IconRestore style={{ width: rem(18) }} stroke={1.5} onClick={resetFilters} />
 						</Tooltip>
 					</ActionIcon>
 					<ActionIcon
@@ -287,13 +276,13 @@ function KeywordSearch({ module }) {
 				</ActionIcon.Group>
 			</Flex>
 
-			{filterModel && (
+			{/* {filterModel && (
 				<FilterModel
 					filterModel={filterModel}
 					setFilterModel={setFilterModel}
 					module={module}
 				/>
-			)}
+			)} */}
 		</>
 	);
 }

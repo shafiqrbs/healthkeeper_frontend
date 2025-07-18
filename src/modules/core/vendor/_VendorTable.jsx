@@ -1,33 +1,44 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { Group, Box, ActionIcon, Text, Menu, rem, Flex, Button } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem, Flex, Button, Tooltip } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconTrashX, IconAlertCircle, IconCheck, IconEdit, IconEye } from "@tabler/icons-react";
+import {
+	IconTrashX,
+	IconAlertCircle,
+	IconCheck,
+	IconEdit,
+	IconEye,
+	IconChevronUp,
+	IconSelector,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
-import { useHotkeys, useMediaQuery, useMounted } from "@mantine/hooks";
+import { useHotkeys, useMounted } from "@mantine/hooks";
 import { deleteEntityData, getIndexEntityData, editEntityData } from "@/app/store/core/crudThunk.js";
 import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/crudSlice.js";
-import tableCss from "@/assets/css/Table.module.css";
+import tableCss from "@assets/css/Table.module.css";
 import VendorViewDrawer from "./__VendorViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
 import { getCoreVendors } from "@/common/utils/index.js";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import CreateButton from "@components/buttons/CreateButton.jsx";
 import DataTableFooter from "@components/tables/DataTableFooter.jsx";
+import { sortBy } from "lodash";
+import { useOs } from "@mantine/hooks";
+
+const PER_PAGE = 50;
 
 function _VendorTable({ open, close }) {
 	const isMounted = useMounted();
+	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const { mainAreaHeight } = useOutletContext();
 	const { id } = useParams();
 	const height = mainAreaHeight - 78; //TabList height 104
 	const scrollViewportRef = useRef(null);
-
-	const perPage = 50;
+	const os = useOs();
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
 
@@ -40,7 +51,18 @@ function _VendorTable({ open, close }) {
 	const [vendorObject, setVendorObject] = useState({});
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
-	const matches = useMediaQuery("(max-width: 64em)");
+
+	const [sortStatus, setSortStatus] = useState({
+		columnAccessor: "name",
+		direction: "asc",
+	});
+
+	const [records, setRecords] = useState(sortBy(vendorListData.data, "name"));
+
+	useEffect(() => {
+		const data = sortBy(vendorListData.data, sortStatus.columnAccessor);
+		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
+	}, [sortStatus, vendorListData.data]);
 
 	const fetchData = async (pageNum = 1, append = false) => {
 		if (!hasMore && pageNum > 1) return;
@@ -54,7 +76,7 @@ function _VendorTable({ open, close }) {
 				mobile: vendorFilterData.mobile,
 				company_name: vendorFilterData.company_name,
 				page: pageNum,
-				offset: perPage,
+				offset: PER_PAGE,
 			},
 			module: "vendor",
 		};
@@ -66,7 +88,7 @@ function _VendorTable({ open, close }) {
 				const total = result.payload.total;
 
 				// Update hasMore based on whether we've loaded all data
-				setHasMore(newData.length === perPage && pageNum * perPage < total);
+				setHasMore(newData.length === PER_PAGE && pageNum * PER_PAGE < total);
 
 				// If appending, combine with existing data
 				if (append && pageNum > 1) {
@@ -99,12 +121,13 @@ function _VendorTable({ open, close }) {
 		}
 	}, [hasMore, fetching, page]);
 
+	// =============== combined logic for data fetching and scroll reset ================
 	useEffect(() => {
-		if (!id && (isMounted || refetchData === true)) {
+		if ((!id && (isMounted || refetchData)) || (id && !refetchData)) {
 			fetchData(1, false);
 			setPage(1);
 			setHasMore(true);
-			// Reset scroll position when data is refreshed
+			// reset scroll position when data is refreshed
 			scrollViewportRef.current?.scrollTo(0, 0);
 		}
 	}, [dispatch, searchKeyword, vendorFilterData, refetchData, isMounted, id]);
@@ -128,9 +151,23 @@ function _VendorTable({ open, close }) {
 				confirm: "Confirm",
 				cancel: "Cancel",
 			},
-			confirmProps: { color: "red.6" },
+			confirmProps: { color: "var(--theme-delete-color)" },
 			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handleDeleteSuccess(id),
+		});
+	};
+
+	const handleStatusChange = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: {
+				confirm: "Active",
+				cancel: "Inactive",
+			},
+			confirmProps: { color: "var(--theme-delete-color)" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => console.log(id),
 		});
 	};
 
@@ -194,12 +231,7 @@ function _VendorTable({ open, close }) {
 		navigate("/core/vendor");
 	};
 
-	useHotkeys([
-		//TODO: specify the execution based on the mac
-		//TODO: show this shortcut to the tooltip
-		["ctrl+n", () => handleCreateVendor()],
-		["alt+n", () => handleCreateVendor()],
-	]);
+	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateVendor()]]);
 
 	return (
 		<>
@@ -219,30 +251,37 @@ function _VendorTable({ open, close }) {
 						footer: tableCss.footer,
 						pagination: tableCss.pagination,
 					}}
-					records={vendorListData.data}
+					records={records}
 					columns={[
 						{
 							accessor: "index",
 							title: t("S/N"),
 							textAlignment: "right",
+							sortable: true,
 							render: (item) => vendorListData.data?.indexOf(item) + 1,
 						},
-						{ accessor: "name", title: t("Name") },
-						{ accessor: "company_name", title: t("CompanyName") },
-						{ accessor: "mobile", title: t("Mobile") },
+						{
+							accessor: "name",
+							title: t("Name"),
+							sortable: true,
+							render: (values) => (
+								<Text className="activate-link" fz="sm" onClick={() => handleDataShow(values.id)}>
+									{values.name}
+								</Text>
+							),
+						},
+						{ accessor: "company_name", title: t("CompanyName"), sortable: true },
+						{ accessor: "mobile", title: t("Mobile"), sortable: true },
 						{
 							accessor: "status",
 							title: t("Status"),
 							render: (values) => (
 								<Button
-									onClick={() => {
-										handleDelete(values.id);
-										open();
-									}}
+									onClick={() => handleStatusChange(values.id)}
 									variant="filled"
 									c="white"
 									size="compact-xs"
-									className="btnPrimaryBg"
+									bg={values.status === 1 ? "var(--theme-success-color)" : "var(--theme-error-color)"}
 								>
 									{values.status === 1 ? "Active" : "Inactive"}
 								</Button>
@@ -272,10 +311,7 @@ function _VendorTable({ open, close }) {
 												{t("Edit")}
 											</Button>
 											<Button
-												onClick={() => {
-													handleDataShow(values.id);
-													open();
-												}}
+												onClick={() => handleDataShow(values.id)}
 												variant="filled"
 												c="white"
 												bg="var(--theme-primary-color-6)"
@@ -292,73 +328,34 @@ function _VendorTable({ open, close }) {
 												variant="light"
 												color="var(--theme-delete-color)"
 												radius="es"
+												ps="les"
 												aria-label="Settings"
 											>
 												<IconTrashX height={18} width={18} stroke={1.5} />
 											</ActionIcon>
 										</Button.Group>
-
-										{/*<Menu
-											position="bottom-end"
-											offset={3}
-											withArrow
-											trigger="hover"
-											openDelay={100}
-											closeDelay={400}
-										>
-											<Menu.Target>
-												<ActionIcon
-													className="action-icon-menu border-left-radius-none"
-													variant="default"
-													radius="es"
-													aria-label="Settings"
-												>
-													<IconDotsVertical height={18} width={18} stroke={1.5} />
-												</ActionIcon>
-											</Menu.Target>
-											<Menu.Dropdown>
-												<Menu.Item
-													onClick={() => {
-														// handleVendorEdit(values.id);
-														// open();
-													}}
-												>
-													{t("Edit")}
-												</Menu.Item>
-												<Menu.Item
-													// onClick={() => handleDelete(values.id)}
-													bg="red.1"
-													c="red.6"
-													rightSection={
-														<IconTrashX
-															style={{
-																width: rem(14),
-																height: rem(14),
-															}}
-														/>
-													}
-												>
-													{t("Delete")}
-												</Menu.Item>
-											</Menu.Dropdown>
-										</Menu>*/}
 									</Group>
 								</>
 							),
 						},
 					]}
+					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
 					height={height - 72}
 					onScrollToBottom={loadMoreRecords}
 					scrollViewportRef={scrollViewportRef}
+					sortStatus={sortStatus}
+					onSortStatusChange={setSortStatus}
+					sortIcons={{
+						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+					}}
 				/>
 			</Box>
 			<DataTableFooter indexData={vendorListData} module="vendors" />
-			{viewDrawer && (
-				<VendorViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} vendorObject={vendorObject} />
-			)}
+			<VendorViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} vendorObject={vendorObject} />
 		</>
 	);
 }

@@ -15,9 +15,11 @@ function FooterNavbar() {
 		["alt+/", () => navigate("/")],
 		["alt+t", () => navigate("/sitemap")],
 		["alt+s", () => navigate(`/settings/hospital-config/${configData?.domain?.id}`)],
+		["alt+v", () => navigate("/core/vendor")],
 	]);
 
 	const links = [
+		{ link: "/core/vendor", label: `${t("Vendor")} (alt+v)` },
 		{ link: "/sitemap", label: `${t("Sitemap")} (alt+t)` },
 		{ link: `/settings/hospital-config/${configData?.domain?.id}`, label: `${t("Settings")} (alt+s)` },
 	];

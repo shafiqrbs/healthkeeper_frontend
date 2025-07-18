@@ -15,7 +15,7 @@ import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
 import SelectForm from "@components/form-builders/SelectForm";
 
-export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField, fieldPrefix }) {
+export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField, fieldPrefix, bd = "auto" }) {
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight;
 
@@ -111,6 +111,7 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 									? setAdvanceSearchFormOpened(false)
 									: setAdvanceSearchFormOpened(true)
 							}
+							bd={bd}
 						>
 							<IconFilter size={16} stroke={1.5} />
 						</ActionIcon>

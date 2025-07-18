@@ -3,7 +3,7 @@ import InputForm from "@components/form-builders/InputForm";
 import { ActionIcon, Flex, Popover } from "@mantine/core";
 import { IconFilter, IconRestore, IconSearch } from "@tabler/icons-react";
 import React from "react";
-import AdvancedFilter from "./AdvancedFilter";
+import AdvancedFilter from "../../../common/components/advance-search/AdvancedFilter";
 
 export default function KeywordSearch({ form }) {
 	return (
