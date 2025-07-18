@@ -15,7 +15,7 @@ const doctorData = [
 	},
 ];
 
-export default function DoctorsRoomDrawer({ opened, close }) {
+export default function DoctorsRoomDrawer({ form, opened, close }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const [selectedRoom, setSelectedRoom] = useState(null);
@@ -23,10 +23,14 @@ export default function DoctorsRoomDrawer({ opened, close }) {
 
 	const selectDoctor = (doctor) => {
 		setSelectedDoctor(doctor);
+		form.setFieldValue("doctorId", doctor.id);
+		form.setFieldValue("doctorName", doctor.name);
+		form.setFieldValue("specialization", doctor.specialty);
 	};
 
 	const selectRoom = (room) => {
 		setSelectedRoom(room);
+		form.setFieldValue("roomNo", room);
 	};
 
 	return (
@@ -116,9 +120,12 @@ export default function DoctorsRoomDrawer({ opened, close }) {
 													bg="var(--theme-secondary-color-0)"
 													mb="les"
 													className={`borderRadiusAll cursor-pointer ${
-														selectedDoctor === index ? "active-box" : ""
+														selectedDoctor.id === index ? "active-box" : ""
 													}`}
-													onClick={() => selectDoctor(index)}
+													onClick={() => {
+														doctorData[0].id = index;
+														selectDoctor(doctorData[0]);
+													}}
 												>
 													<Text fw={500} fz="sm">
 														{doctorData[0].name}

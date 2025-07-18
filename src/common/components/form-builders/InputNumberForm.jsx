@@ -11,6 +11,7 @@ function InputNumberForm({
 	required,
 	nextField,
 	name,
+	readOnly = false,
 	form,
 	tooltip,
 	mt,
@@ -46,6 +47,7 @@ function InputNumberForm({
 						label={label}
 						placeholder={placeholder}
 						mt={mt}
+						readOnly={readOnly}
 						disabled={disabled}
 						autoComplete="off"
 						{...form.getInputProps(name)}
@@ -62,12 +64,7 @@ function InputNumberForm({
 						leftSection={leftSection}
 						rightSection={
 							form.values[name] && closeIcon ? (
-								<Tooltip
-									label={t("Close")}
-									withArrow
-									bg="var(--theme-error-color)"
-									c="white"
-								>
+								<Tooltip label={t("Close")} withArrow bg="var(--theme-error-color)" c="white">
 									<IconX
 										color="var(--theme-error-color)"
 										size={16}
@@ -92,11 +89,7 @@ function InputNumberForm({
 										duration: 500,
 									}}
 								>
-									{rightSection ? (
-										rightSection
-									) : (
-										<IconInfoCircle size={16} opacity={0.5} />
-									)}
+									{rightSection ? rightSection : <IconInfoCircle size={16} opacity={0.5} />}
 								</Tooltip>
 							)
 						}

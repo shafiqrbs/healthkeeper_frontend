@@ -1315,5 +1315,6 @@
 	"userAndStaff": "User & Staff",
 	"users": "Users",
 	"staff": "Staff",
-	"patientManagement": "Patient Management"
+	"patientManagement": "Patient Management",
+	"totalAge": "Total Age"
 }

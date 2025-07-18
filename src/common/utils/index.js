@@ -32,3 +32,26 @@ export const getUserRole = () => {
 		return [];
 	}
 };
+
+export const calculateAge = (dob, type) => {
+	if (!dob) return "";
+	const birthDate = new Date(dob);
+	const today = new Date();
+	let value = 0;
+	if (type === "year") {
+		value = today.getFullYear() - birthDate.getFullYear();
+		const m = today.getMonth() - birthDate.getMonth();
+		if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+			value--;
+		}
+	} else if (type === "month") {
+		value = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
+		if (today.getDate() < birthDate.getDate()) {
+			value--;
+		}
+	} else if (type === "day") {
+		const diff = today.getTime() - birthDate.getTime();
+		value = Math.floor(diff / (1000 * 60 * 60 * 24));
+	}
+	return value;
+};

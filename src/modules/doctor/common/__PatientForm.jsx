@@ -1,7 +1,7 @@
 import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 import InputForm from "@components/form-builders/InputForm";
 import { Box, Flex, FloatingIndicator, Grid, ScrollArea, SegmentedControl, Stack, Tabs, Text } from "@mantine/core";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { IconChevronRight, IconCirclePlusFilled } from "@tabler/icons-react";
@@ -12,17 +12,24 @@ import DatePickerForm from "@components/form-builders/DatePicker";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure } from "@mantine/hooks";
+import { DISEASE_PROFILE, DISTRICT_LIST } from "@/constants";
+import { calculateAge } from "@/common/utils";
 
 export default function PatientForm({ form, handleSubmit }) {
 	const { mainAreaHeight } = useOutletContext();
 	const [gender, setGender] = useState("male");
-	const [ageType, setAgeType] = useState("year");
 	const { t } = useTranslation();
 
 	const [rootRef, setRootRef] = useState(null);
 	const [tabValue, setTabValue] = useState("new");
 	const [controlsRefs, setControlsRefs] = useState({});
 	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
+
+	useEffect(() => {
+		const type = form.values.ageType || "year";
+		const formattedAge = calculateAge(form.values.dateOfBirth, type);
+		form.setFieldValue("age", formattedAge);
+	}, [form.values.dateOfBirth, form.values.ageType]);
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -193,6 +200,7 @@ export default function PatientForm({ form, handleSubmit }) {
 											nextField="age"
 											value={form.values.dateOfBirth}
 											required
+											disabledFutureDate
 										/>
 									</Grid.Col>
 								</Grid>
@@ -205,8 +213,9 @@ export default function PatientForm({ form, handleSubmit }) {
 											<InputNumberForm
 												form={form}
 												label=""
+												readOnly={true}
 												placeholder="20"
-												tooltip={t("enterPatientAge")}
+												tooltip={t("totalAge")}
 												name="age"
 												id="age"
 												nextField="ageType"
@@ -220,7 +229,8 @@ export default function PatientForm({ form, handleSubmit }) {
 											fullWidth
 											color="var(--theme-primary-color-6)"
 											value={form.values.ageType}
-											onChange={setAgeType}
+											defaultValue="year"
+											onChange={(val) => form.setFieldValue("ageType", val)}
 											data={[
 												{ label: t("day"), value: "day" },
 												{ label: t("mon"), value: "month" },
@@ -263,17 +273,7 @@ export default function PatientForm({ form, handleSubmit }) {
 											nextField="address"
 											value={form.values.district}
 											required
-											data={[
-												"Pirojpur",
-												"Dhaka",
-												"Chittagong",
-												"Rajshahi",
-												"Sylhet",
-												"Mymensingh",
-												"Rangpur",
-												"Barisal",
-												"Khulna",
-											]}
+											dropdownValue={DISTRICT_LIST}
 										/>
 									</Grid.Col>
 								</Grid>
@@ -302,7 +302,7 @@ export default function PatientForm({ form, handleSubmit }) {
 										align="center"
 										gap="xs"
 										onClick={handleOpenDoctorsRoom}
-										style={{ cursor: "pointer" }}
+										className="cursor-pointer"
 									>
 										<Text fz="sm">{t("booked")}-05</Text> <IconChevronRight size="16px" />
 									</Flex>
@@ -312,8 +312,9 @@ export default function PatientForm({ form, handleSubmit }) {
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("roomNo")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>
+									<Grid.Col span={14} onClick={openDoctorsRoom}>
 										<InputNumberForm
+											readOnly={true}
 											form={form}
 											label=""
 											tooltip={t("enterPatientRoomNo")}
@@ -330,8 +331,9 @@ export default function PatientForm({ form, handleSubmit }) {
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("specialization")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>
+									<Grid.Col span={14} onClick={openDoctorsRoom}>
 										<InputForm
+											readOnly={true}
 											form={form}
 											label=""
 											tooltip={t("enterPatientSpecialization")}
@@ -348,8 +350,9 @@ export default function PatientForm({ form, handleSubmit }) {
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("doctorName")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>
+									<Grid.Col span={14} onClick={openDoctorsRoom}>
 										<InputForm
+											readOnly={true}
 											form={form}
 											label=""
 											tooltip={t("enterPatientDoctorName")}
@@ -368,7 +371,7 @@ export default function PatientForm({ form, handleSubmit }) {
 										<Text fz="sm">{t("diseaseProfile")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<InputForm
+										<SelectForm
 											form={form}
 											label=""
 											tooltip={t("enterPatientDiseaseProfile")}
@@ -378,6 +381,7 @@ export default function PatientForm({ form, handleSubmit }) {
 											nextField="referredName"
 											value={form.values.diseaseProfile}
 											required
+											dropdownValue={DISEASE_PROFILE}
 											rightSection={
 												<IconCirclePlusFilled
 													color="var(--theme-primary-color-6)"
@@ -392,7 +396,7 @@ export default function PatientForm({ form, handleSubmit }) {
 					</Tabs.Panel>
 				</Tabs>
 			</form>
-			<DoctorsRoomDrawer opened={openedDoctorsRoom} close={closeDoctorsRoom} />
+			<DoctorsRoomDrawer form={form} opened={openedDoctorsRoom} close={closeDoctorsRoom} />
 		</Box>
 	);
 }

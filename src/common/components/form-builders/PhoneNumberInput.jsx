@@ -38,8 +38,7 @@ const TooltipContent = forwardRef(({ onClick, onMouseEnter, onMouseLeave, form, 
 });
 
 export default function PhoneNumber(props) {
-	const { name, form, tooltip, mt, id, disabled, label, placeholder, required, nextField } =
-		props;
+	const { name, form, tooltip, mt, id, disabled, label, placeholder, required, nextField } = props;
 	const { t } = useTranslation();
 	const error = form.errors[name];
 
@@ -77,7 +76,7 @@ export default function PhoneNumber(props) {
 			>
 				<div style={{ position: "relative" }}>
 					<PhoneInput
-						country={"bd"}
+						country="bd"
 						classNames={inputCss}
 						value={form.values[name] || `+880`}
 						onChange={handleChange}

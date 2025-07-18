@@ -21,6 +21,7 @@ function DatePickerForm({
 	disable,
 	leftSection,
 	rightSection,
+	disabledFutureDate = false,
 }) {
 	const { t } = useTranslation();
 
@@ -45,6 +46,7 @@ function DatePickerForm({
 					size="sm"
 					classNames={inputCss}
 					minDate={disable && new Date()}
+					maxDate={disabledFutureDate ? new Date() : undefined}
 					label={label}
 					placeholder={placeholder}
 					mt={mt}
@@ -63,12 +65,7 @@ function DatePickerForm({
 					leftSection={leftSection}
 					rightSection={
 						form.values[name] && closeIcon ? (
-							<Tooltip
-								label={t("Close")}
-								withArrow
-								bg="var(--theme-error-color)"
-								c="white"
-							>
+							<Tooltip label={t("Close")} withArrow bg="var(--theme-error-color)" c="white">
 								<IconX
 									color="var(--theme-error-color)"
 									size={16}
@@ -89,11 +86,7 @@ function DatePickerForm({
 								bg="var(--theme-info-color)"
 								transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 							>
-								{rightSection ? (
-									rightSection
-								) : (
-									<IconInfoCircle size={16} opacity={0.5} />
-								)}
+								{rightSection ? rightSection : <IconInfoCircle size={16} opacity={0.5} />}
 							</Tooltip>
 						)
 					}

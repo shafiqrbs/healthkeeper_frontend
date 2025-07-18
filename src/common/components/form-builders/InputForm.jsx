@@ -6,6 +6,7 @@ import { getHotkeyHandler } from "@mantine/hooks";
 import inputCss from "@assets/css/InputField.module.css";
 
 function InputForm({
+	readOnly = false,
 	label = "",
 	placeholder = "",
 	required = false,
@@ -48,6 +49,7 @@ function InputForm({
 						label={label}
 						placeholder={placeholder}
 						mt={mt}
+						readOnly={readOnly}
 						disabled={disabled}
 						autoComplete="off"
 						{...form.getInputProps(name)}
@@ -64,12 +66,7 @@ function InputForm({
 						leftSection={leftSection}
 						rightSection={
 							form.values[name] ? (
-								<Tooltip
-									label={t("Close")}
-									withArrow
-									bg="var(--theme-error-color)"
-									c="white"
-								>
+								<Tooltip label={t("Close")} withArrow bg="var(--theme-error-color)" c="white">
 									<IconX
 										color="var(--theme-error-color)"
 										size={16}
@@ -91,11 +88,7 @@ function InputForm({
 										duration: 500,
 									}}
 								>
-									{rightSection ? (
-										rightSection
-									) : (
-										<IconInfoCircle size={16} opacity={0.5} />
-									)}
+									{rightSection ? rightSection : <IconInfoCircle size={16} opacity={0.5} />}
 								</Tooltip>
 							)
 						}
