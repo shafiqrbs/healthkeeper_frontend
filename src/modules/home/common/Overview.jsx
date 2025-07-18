@@ -93,7 +93,7 @@ export default function Overview({ height }) {
 
 	return (
 		<Card padding="lg" radius="sm" h="100%">
-			<Card.Section h={32} withBorder component="div" bg="var(--theme-success-color-8)">
+			<Card.Section h={32} withBorder component="div" bg="var(--theme-secondary-color-8)">
 				<Flex align="center" h="100%" px="lg">
 					<Text pb={0} fz="sm" c="white" fw={500}>
 						{t("overview")}
@@ -104,15 +104,10 @@ export default function Overview({ height }) {
 			<Box h={height} pt="md">
 				<Tabs id="overview-tabs" orientation="vertical" defaultValue="opd">
 					<ScrollArea miw={140} h={height} scrollbarSize={8} scrollbars="y" type="never">
-						<Tabs.List
-							mr="sm"
-							p="xxs"
-							bg="var(--theme-secondary-color-0)"
-							style={{ borderRadius: "es" }}
-						>
+						<Tabs.List mr="sm" p="xxs" bg="var(--theme-tertiary-color-0)" style={{ borderRadius: "es" }}>
 							{tabs.map((tab) => (
 								<Tabs.Tab py="xxxs" key={tab.value} value={tab.value}>
-									<Text mt="es" fz="sm" c="var(--theme-secondary-color-6)">
+									<Text mt="es" fz="sm" c="var(--theme-tertiary-color-6)">
 										{t(tab.label)}
 									</Text>
 								</Tabs.Tab>
@@ -125,7 +120,7 @@ export default function Overview({ height }) {
 							key={tab.value}
 							value={tab.value}
 							pl="xs"
-							style={{ borderLeft: "1px solid var(--theme-secondary-color-2)" }}
+							style={{ borderLeft: "1px solid var(--theme-tertiary-color-2)" }}
 						>
 							<ScrollArea h={height} scrollbarSize={8} scrollbars="y" type="hover">
 								<Sparkline
@@ -133,7 +128,7 @@ export default function Overview({ height }) {
 									h={80}
 									data={[10, 20, 40, 20, 40, 10, 50]}
 									curveType="linear"
-									color="var(--theme-success-color-8)"
+									color="var(--theme-secondary-color-8)"
 									fillOpacity={0.6}
 									strokeWidth={0.5}
 								/>
@@ -144,7 +139,7 @@ export default function Overview({ height }) {
 									columns={9}
 									gutter="xs"
 									style={{
-										borderTop: "1px solid var(--theme-secondary-color-2)",
+										borderTop: "1px solid var(--theme-tertiary-color-2)",
 									}}
 								>
 									{opdData.map((item) => (
@@ -157,16 +152,10 @@ export default function Overview({ height }) {
 												h="100%"
 											>
 												<Flex justify="space-between" align="center">
-													<Text
-														fz="sm"
-														c="var(--theme-secondary-color-6)"
-													>
+													<Text fz="sm" c="var(--theme-tertiary-color-6)">
 														{t(item.label)}
 													</Text>
-													<IconArrowRight
-														size={16}
-														color="var(--theme-success-color-8)"
-													/>
+													<IconArrowRight size={16} color="var(--theme-secondary-color-8)" />
 												</Flex>
 												<Text fz="lg" fw={600}>
 													<NumberFormatter

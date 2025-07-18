@@ -60,13 +60,13 @@ function DomainHeaderNavbar({ pageTitle, pageDescription }) {
 									multiline
 									position="right"
 									color="white"
-									bg="var(--theme-secondary-color-1)"
+									bg="var(--theme-tertiary-color-1)"
 									transitionProps={{
 										transition: "pop-bottom-left",
 										duration: 500,
 									}}
 								>
-									<IconInfoCircle size={16} color="var(--theme-secondary-color-1)" />
+									<IconInfoCircle size={16} color="var(--theme-tertiary-color-1)" />
 								</Tooltip>
 							</Flex>
 						)}

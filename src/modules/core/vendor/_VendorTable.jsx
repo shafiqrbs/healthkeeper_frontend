@@ -1,18 +1,14 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import {Group, Box, ActionIcon, Text, Menu, rem, Flex, Button} from "@mantine/core";
+import { Group, Box, ActionIcon, Text, Menu, rem, Flex, Button } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {IconDotsVertical, IconTrashX, IconAlertCircle, IconCheck, IconEdit, IconEye} from "@tabler/icons-react";
+import { IconTrashX, IconAlertCircle, IconCheck, IconEdit, IconEye } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
-import {useHotkeys, useMediaQuery, useMounted} from "@mantine/hooks";
-import {
-	deleteEntityData,
-	getIndexEntityData,
-	editEntityData,
-} from "@/app/store/core/crudThunk.js";
+import { useHotkeys, useMediaQuery, useMounted } from "@mantine/hooks";
+import { deleteEntityData, getIndexEntityData, editEntityData } from "@/app/store/core/crudThunk.js";
 import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/crudSlice.js";
 import tableCss from "@/assets/css/Table.module.css";
 import VendorViewDrawer from "./__VendorViewDrawer.jsx";
@@ -198,12 +194,12 @@ function _VendorTable({ open, close }) {
 		navigate("/core/vendor");
 	};
 
-	useHotkeys(
-		[
-			["ctrl+n", () => handleCreateVendor()],
-			["alt+n", () => handleCreateVendor()]
-		]
-	);
+	useHotkeys([
+		//TODO: specify the execution based on the mac
+		//TODO: show this shortcut to the tooltip
+		["ctrl+n", () => handleCreateVendor()],
+		["alt+n", () => handleCreateVendor()],
+	]);
 
 	return (
 		<>
@@ -235,26 +231,22 @@ function _VendorTable({ open, close }) {
 						{ accessor: "company_name", title: t("CompanyName") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{
-							accessor: 'status',
+							accessor: "status",
 							title: t("Status"),
 							render: (values) => (
-								<>
-									<Button
-										onClick={() => {
-											handleDelete(values.id);
-											open();
-										}}
-										variant="filled"
-										c="white"
-										size="compact-xs"
-										className="btnPrimaryBg"
-									>
-										{ values.status === 1  ? 'Active' : 'Inactive'}
-									</Button>
-
-								</>
-								)
-
+								<Button
+									onClick={() => {
+										handleDelete(values.id);
+										open();
+									}}
+									variant="filled"
+									c="white"
+									size="compact-xs"
+									className="btnPrimaryBg"
+								>
+									{values.status === 1 ? "Active" : "Inactive"}
+								</Button>
+							),
 						},
 						{
 							accessor: "action",
@@ -265,40 +257,40 @@ function _VendorTable({ open, close }) {
 								<>
 									<Group gap={4} justify="right" wrap="nowrap">
 										<Button.Group>
-										<Button
-											onClick={() => {
-												handleVendorEdit(values.id);
-												open();
-											}}
-											variant="filled"
-											c="white"
-											size="xs"
-											radius="es"
-											leftSection={<IconEdit size={16} />}
-											className="border-right-radius-none btnPrimaryBg"
-										>
-											{t("Edit")}
-										</Button>
-										<Button
-											onClick={() => {
-												handleDataShow(values.id);
-												open();
-											}}
-											variant="filled"
-											c="white"
-											bg='var(--theme-primary-color-6)'
-											size="xs"
-											radius="es"
-											leftSection={<IconEye size={16} />}
-											className="border-left-radius-none"
-										>
-											{t("View")}
-										</Button>
+											<Button
+												onClick={() => {
+													handleVendorEdit(values.id);
+													open();
+												}}
+												variant="filled"
+												c="white"
+												size="xs"
+												radius="es"
+												leftSection={<IconEdit size={16} />}
+												className="border-right-radius-none btnPrimaryBg"
+											>
+												{t("Edit")}
+											</Button>
+											<Button
+												onClick={() => {
+													handleDataShow(values.id);
+													open();
+												}}
+												variant="filled"
+												c="white"
+												bg="var(--theme-primary-color-6)"
+												size="xs"
+												radius="es"
+												leftSection={<IconEye size={16} />}
+												className="border-left-radius-none"
+											>
+												{t("View")}
+											</Button>
 											<ActionIcon
 												onClick={() => handleDelete(values.id)}
 												className="action-icon-menu border-left-radius-none"
 												variant="light"
-												color='var(--theme-delete-color)'
+												color="var(--theme-delete-color)"
 												radius="es"
 												aria-label="Settings"
 											>
@@ -351,7 +343,6 @@ function _VendorTable({ open, close }) {
 											</Menu.Dropdown>
 										</Menu>*/}
 									</Group>
-
 								</>
 							),
 						},
@@ -366,11 +357,7 @@ function _VendorTable({ open, close }) {
 			</Box>
 			<DataTableFooter indexData={vendorListData} module="vendors" />
 			{viewDrawer && (
-				<VendorViewDrawer
-					viewDrawer={viewDrawer}
-					setViewDrawer={setViewDrawer}
-					vendorObject={vendorObject}
-				/>
+				<VendorViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} vendorObject={vendorObject} />
 			)}
 		</>
 	);

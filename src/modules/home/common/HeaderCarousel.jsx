@@ -56,10 +56,10 @@ function Slide({ slide }) {
 			p="md"
 			style={{ borderRadius: "4px" }}
 			h="100%"
-			bd="1px solid var(--theme-secondary-color-2)"
+			bd="1px solid var(--theme-tertiary-color-2)"
 		>
 			<Flex align="center" w="100%" justify="space-between" gap="sm">
-				<Text fz="sm" tt="uppercase" fw={500} c="var(--theme-secondary-color-6)">
+				<Text fz="sm" tt="uppercase" fw={500} c="var(--theme-tertiary-color-6)">
 					{t(slide.title)}
 				</Text>
 				<slide.icon size={24} color={slide.color} />

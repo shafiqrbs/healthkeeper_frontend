@@ -46,7 +46,7 @@ export default function Navigation({ module = "base", mainAreaHeight }) {
 							<Text
 								size="11px"
 								fw={500}
-								c="var(--theme-secondary-color-6)"
+								c="var(--theme-tertiary-color-6)"
 								ta="center"
 								style={{
 									wordBreak: "break-word",

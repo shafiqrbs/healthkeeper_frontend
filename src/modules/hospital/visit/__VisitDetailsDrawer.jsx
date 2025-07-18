@@ -8,31 +8,31 @@ export default function VisitDetailsDrawer({ opened, close }) {
 			<Grid columns={14} h="100%" w="100%">
 				{/* =============== left column with patient info, OLE, complaints, investigation =============== */}
 				<Grid.Col span={6} h="100%">
-					<Paper withBorder p="lg" radius="sm" bg="var(--theme-secondary-color-0)" h="100%">
+					<Paper withBorder p="lg" radius="sm" bg="var(--theme-tertiary-color-0)" h="100%">
 						<Stack gap="md">
 							<Box>
 								<Title order={4} fw={700} mb="es">
 									Md. Shafiqul Islam
 								</Title>
-								<Text mt="les" size="xs" c="var(--theme-secondary-color-7)">
+								<Text mt="les" size="xs" c="var(--theme-tertiary-color-7)">
 									Patient ID: 000020
 								</Text>
 								<Group gap="xs" mb="es">
-									<Text size="xs" c="var(--theme-secondary-color-7)">
+									<Text size="xs" c="var(--theme-tertiary-color-7)">
 										Age: 25
 									</Text>
-									<Text size="xs" c="var(--theme-secondary-color-7)">
+									<Text size="xs" c="var(--theme-tertiary-color-7)">
 										| Gender: Male
 									</Text>
 								</Group>
-								<Text size="xs" c="var(--theme-secondary-color-7)">
+								<Text size="xs" c="var(--theme-tertiary-color-7)">
 									Date: 30-06-25
 								</Text>
 							</Box>
 							<Divider
 								mt="xs"
 								label={
-									<Text size="xs" c="var(--theme-secondary-color-7)">
+									<Text size="xs" c="var(--theme-tertiary-color-7)">
 										Vitals
 									</Text>
 								}
@@ -55,7 +55,7 @@ export default function VisitDetailsDrawer({ opened, close }) {
 							<Divider
 								mt="xs"
 								label={
-									<Text size="xs" c="var(--theme-secondary-color-7)">
+									<Text size="xs" c="var(--theme-tertiary-color-7)">
 										Chief Complaints
 									</Text>
 								}
@@ -70,13 +70,13 @@ export default function VisitDetailsDrawer({ opened, close }) {
 							<Divider
 								mt="xs"
 								label={
-									<Text size="xs" c="var(--theme-secondary-color-7)">
+									<Text size="xs" c="var(--theme-tertiary-color-7)">
 										Investigation
 									</Text>
 								}
 								labelPosition="left"
 							/>
-							<List c="var(--theme-secondary-color-9)" type="ordered" size="sm" pl="sm" spacing="es">
+							<List c="var(--theme-tertiary-color-9)" type="ordered" size="sm" pl="sm" spacing="es">
 								<List.Item>Chest X-Ray P/A</List.Item>
 								<List.Item>Face X-Ray P/A</List.Item>
 								<List.Item>Leg X-Ray P/A</List.Item>
@@ -91,20 +91,20 @@ export default function VisitDetailsDrawer({ opened, close }) {
 						<Stack gap="lg" h="100%">
 							<Box>
 								<Group align="center" mb="xs">
-									<Title order={5} fw={600} c="var(--theme-secondary-color-9)">
+									<Title order={5} fw={600} c="var(--theme-tertiary-color-9)">
 										List of Medicines
 									</Title>
 								</Group>
 								<List type="ordered" size="sm" pl="md" spacing="es">
 									<List.Item>
 										Napa
-										<Text size="xs" mt="es" c="var(--theme-secondary-color-7)">
+										<Text size="xs" mt="es" c="var(--theme-tertiary-color-7)">
 											1 Tab, 3 times, 30 min B, 5 Year
 										</Text>
 									</List.Item>
 									<List.Item>
 										Paracetamol
-										<Text size="xs" mt="es" c="var(--theme-secondary-color-7)">
+										<Text size="xs" mt="es" c="var(--theme-tertiary-color-7)">
 											1 Tab, 3 times, 30 min B, 5 Year
 										</Text>
 									</List.Item>
@@ -113,21 +113,21 @@ export default function VisitDetailsDrawer({ opened, close }) {
 							<Divider
 								mt="xs"
 								label={
-									<Text size="xs" c="var(--theme-secondary-color-7)">
+									<Text size="xs" c="var(--theme-tertiary-color-7)">
 										Advise
 									</Text>
 								}
 								labelPosition="left"
 							/>
 							<Box>
-								<Text size="sm" c="var(--theme-secondary-color-7)">
+								<Text size="sm" c="var(--theme-tertiary-color-7)">
 									-
 								</Text>
 							</Box>
 							<Divider
 								mt="xs"
 								label={
-									<Text size="xs" c="var(--theme-secondary-color-7)">
+									<Text size="xs" c="var(--theme-tertiary-color-7)">
 										Follow up & Discount
 									</Text>
 								}
@@ -138,7 +138,7 @@ export default function VisitDetailsDrawer({ opened, close }) {
 									<Text fw={500} size="sm">
 										Follow up
 									</Text>
-									<Text size="sm" c="var(--theme-secondary-color-7)">
+									<Text size="sm" c="var(--theme-tertiary-color-7)">
 										28-06-2025
 									</Text>
 								</Box>
@@ -147,7 +147,7 @@ export default function VisitDetailsDrawer({ opened, close }) {
 								<Text fw={500} size="sm">
 									Special Discount
 								</Text>
-								<Text size="sm" c="var(--theme-secondary-color-7)">
+								<Text size="sm" c="var(--theme-tertiary-color-7)">
 									Visit 20% &nbsp; Test 10%
 								</Text>
 							</Box>

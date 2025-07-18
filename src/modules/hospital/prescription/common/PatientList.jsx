@@ -17,9 +17,9 @@ export default function PatientList() {
 	const { mainAreaHeight } = useOutletContext();
 
 	return (
-		<ScrollArea bg="white" h={mainAreaHeight - 146} scrollbars="y" px="xxxs">
+		<ScrollArea bg="white" h={mainAreaHeight - 212} scrollbars="y" px="xxxs">
 			{data.map((item) => (
-				<Grid columns={12} key={item.id} my="xs" bg="var(--theme-secondary-color-0)" px="xs" gutter="xs">
+				<Grid columns={12} key={item.id} my="xs" bg="var(--theme-tertiary-color-0)" px="xs" gutter="xs">
 					<Grid.Col span={4}>
 						<Flex align="center" gap="xxxs">
 							<IconCalendarWeek size={16} stroke={1.5} />
@@ -37,10 +37,10 @@ export default function PatientList() {
 								<Text fz="sm">{item.mobile}</Text>
 							</Box>
 							<Button
-								bg="var(--theme-secondary-color-2)"
-								c="var(--theme-secondary-color-8)"
+								bg="var(--theme-tertiary-color-2)"
+								c="var(--theme-tertiary-color-8)"
 								size="xs"
-								bd="1px solid var(--theme-secondary-color-3)"
+								bd="1px solid var(--theme-tertiary-color-3)"
 							>
 								Done
 							</Button>

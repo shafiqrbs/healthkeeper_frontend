@@ -130,7 +130,7 @@ export default function PatientListEdit({ isOpenPatientInfo }) {
 	};
 
 	const handleEditClick = (id) => {
-		navigate(`/doctor/prescription/edit/${id}`);
+		navigate(`/hospital/prescription/edit/${id}`);
 	};
 
 	return (
@@ -162,7 +162,7 @@ export default function PatientListEdit({ isOpenPatientInfo }) {
 						bg={
 							selectPatient.id === patient.id
 								? "var(--theme-primary-color-1)"
-								: "var(--theme-secondary-color-0)"
+								: "var(--theme-tertiary-color-0)"
 						}
 						onClick={() => handleSelectPatient(patient)}
 					>
@@ -194,7 +194,7 @@ export default function PatientListEdit({ isOpenPatientInfo }) {
 												<Button
 													variant="filled"
 													size="xs"
-													bg="var(--theme-success-color-8)"
+													bg="var(--theme-secondary-color-8)"
 													aria-label="print"
 													miw={76}
 												>

@@ -222,7 +222,7 @@ export default function VisitTable() {
 					striped
 					pinFirstColumn
 					pinLastColumn
-					stripedColor="var(--theme-secondary-color-1)"
+					stripedColor="var(--theme-tertiary-color-1)"
 					classNames={{
 						root: tableCss.root,
 						table: tableCss.table,

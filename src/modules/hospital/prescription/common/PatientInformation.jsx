@@ -17,7 +17,7 @@ export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatient
 							color="var(--theme-primary-color-6)"
 							data={["List", "New"]}
 							styles={{
-								root: { backgroundColor: "var(--theme-secondary-color-1)" },
+								root: { backgroundColor: "var(--theme-tertiary-color-1)" },
 								control: { width: "60px" },
 							}}
 						/>

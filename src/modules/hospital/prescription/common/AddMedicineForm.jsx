@@ -102,7 +102,7 @@ function MedicineListItem({ index, form, handleAdd, handleChange }) {
 					disabled={!editMode}
 				/>
 				<Flex gap="les" justify="flex-end">
-					<ActionIcon variant="outline" color="var(--theme-secondary-color-6)" onClick={handleCancelEdit}>
+					<ActionIcon variant="outline" color="var(--theme-tertiary-color-6)" onClick={handleCancelEdit}>
 						<IconX size={18} stroke={1.5} />
 					</ActionIcon>
 					<ActionIcon variant="outline" color="var(--theme-primary-color-6)" onClick={handleEdit}>
@@ -249,7 +249,7 @@ export default function AddMedicineForm() {
 			<Grid columns={12} gutter="sm">
 				<Grid.Col span={7}>
 					<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
-						<Text bg="var(--theme-success-color-9)" fz="md" c="white" px="sm" py="les">
+						<Text bg="var(--theme-secondary-color-9)" fz="md" c="white" px="sm" py="les">
 							Advise
 						</Text>
 						<Box p="sm">

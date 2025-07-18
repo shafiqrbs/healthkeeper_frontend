@@ -36,7 +36,7 @@ export default function VisitActionButton({ form }) {
 				};
 
 				const data = {
-					url: "doctor/visit",
+					url: "hospital/visit",
 					data: formValue,
 					module: "visit",
 				};
@@ -71,7 +71,7 @@ export default function VisitActionButton({ form }) {
 		<Stack gap={0} justify="space-between" mt="xs">
 			<Box p="md" bg="white" className="borderRadiusAll">
 				<Grid columns={24}>
-					<Grid.Col span={8} bg="var(--theme-secondary-color-1)" px="xs">
+					<Grid.Col span={8} bg="var(--theme-tertiary-color-1)" px="xs">
 						<TextAreaForm
 							form={form}
 							placeholder="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its"
@@ -82,7 +82,7 @@ export default function VisitActionButton({ form }) {
 							style={{ input: { height: "114px" } }}
 						/>
 					</Grid.Col>
-					<Grid.Col span={8} px="xs" bg="var(--theme-secondary-color-0)">
+					<Grid.Col span={8} px="xs" bg="var(--theme-tertiary-color-0)">
 						<Stack>
 							<SelectForm
 								form={form}
@@ -110,13 +110,13 @@ export default function VisitActionButton({ form }) {
 							/>
 						</Stack>
 					</Grid.Col>
-					<Grid.Col span={8} bg="var(--theme-secondary-color-1)" px="xs">
+					<Grid.Col span={8} bg="var(--theme-tertiary-color-1)" px="xs">
 						<Stack gap="xs" className="method-carousel">
 							<Carousel
 								height={50}
 								align="start"
 								slideSize="20%"
-								bg="var(--theme-secondary-color-0)"
+								bg="var(--theme-tertiary-color-0)"
 								py="les"
 								loop
 							>
@@ -125,7 +125,7 @@ export default function VisitActionButton({ form }) {
 										<Stack
 											bd={
 												paymentMethod.id === method.id
-													? "2px solid var(--theme-success-color-8)"
+													? "2px solid var(--theme-secondary-color-8)"
 													: "2px solid transparent"
 											}
 											h="100%"

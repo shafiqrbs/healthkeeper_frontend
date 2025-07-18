@@ -208,7 +208,7 @@ export default function PatientReport() {
 								style={{
 									borderBottom:
 										idx !== investigationList.length - 1
-											? "1px solid var(--theme-secondary-color-4)"
+											? "1px solid var(--theme-tertiary-color-4)"
 											: "none",
 								}}
 							>
@@ -243,7 +243,7 @@ export default function PatientReport() {
 					px="xs"
 					variant="filled"
 					color="var(--theme-primary-color-6)"
-					bg="var(--theme-success-color-5)"
+					bg="var(--theme-secondary-color-5)"
 				>
 					{t("admission")}
 				</Button>
@@ -252,7 +252,7 @@ export default function PatientReport() {
 					px="xs"
 					variant="filled"
 					color="var(--theme-primary-color-6)"
-					bg="var(--theme-success-color-8)"
+					bg="var(--theme-secondary-color-8)"
 				>
 					{t("roomReferred")}
 				</Button>

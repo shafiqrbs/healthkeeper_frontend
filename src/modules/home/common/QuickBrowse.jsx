@@ -26,7 +26,7 @@ const quickBrowseButtonData = [
 		label: "addDiagnostic",
 		icon: IconTestPipe,
 		route: "/add-diagnostic",
-		color: "var(--theme-success-color-8)",
+		color: "var(--theme-secondary-color-8)",
 	},
 	{
 		label: "diagnosis",
@@ -43,7 +43,7 @@ const quickBrowseButtonData = [
 	{
 		label: "doctorVisit",
 		icon: IconStethoscope,
-		route: "/doctor/visit",
+		route: "/hospital/visit",
 		color: "var(--mantine-color-yellow-8)",
 	},
 	{
@@ -66,8 +66,8 @@ const quickBrowseCardData = [
 		label: "diagnosticTest",
 		icon: IconMicroscope,
 		route: "/diagnostic-test",
-		color: "var(--theme-success-color-9)",
-		backgroundColor: "var(--theme-success-color-1)",
+		color: "var(--theme-secondary-color-9)",
+		backgroundColor: "var(--theme-secondary-color-0)",
 	},
 	{
 		label: "payment",
@@ -117,12 +117,7 @@ export default function QuickBrowse() {
 				{quickBrowseButtonData.map((item) => (
 					<Grid.Col span={3} key={item.label}>
 						<Link to={item.route} style={{ textDecoration: "none" }}>
-							<Button
-								leftSection={<item.icon size={16} />}
-								color="white"
-								bg={item.color}
-								fullWidth
-							>
+							<Button leftSection={<item.icon size={16} />} color="white" bg={item.color} fullWidth>
 								{t(item.label)}
 							</Button>
 						</Link>

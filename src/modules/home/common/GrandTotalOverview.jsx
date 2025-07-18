@@ -21,12 +21,7 @@ export default function GrandTotalOverview() {
 			</Table.Td>
 			<Table.Td fw={500} w={100}>
 				<Flex justify="center" align="center" gap="xs">
-					<NumberFormatter
-						thousandSeparator
-						decimalScale={0}
-						fixedDecimalScale
-						value={element.value}
-					/>
+					<NumberFormatter thousandSeparator decimalScale={0} fixedDecimalScale value={element.value} />
 				</Flex>
 			</Table.Td>
 			<Table.Td w={80}>
@@ -40,7 +35,7 @@ export default function GrandTotalOverview() {
 					bg="white"
 					style={{ cursor: "pointer", borderRadius: "50%" }}
 				>
-					<IconArrowRight size={14} color="var(--theme-success-color-8)" />
+					<IconArrowRight size={14} color="var(--theme-secondary-color-8)" />
 				</Flex>
 			</Table.Td>
 		</Table.Tr>
@@ -67,12 +62,7 @@ export default function GrandTotalOverview() {
 						</Table.Td>
 						<Table.Td>
 							<Flex c="white" justify="center" align="center" gap="xs">
-								<NumberFormatter
-									thousandSeparator
-									decimalScale={0}
-									fixedDecimalScale
-									value={12000}
-								/>
+								<NumberFormatter thousandSeparator decimalScale={0} fixedDecimalScale value={12000} />
 							</Flex>
 						</Table.Td>
 						<Table.Td></Table.Td>

@@ -240,7 +240,7 @@ function ConfigurationForm({
 					loading: false,
 					autoClose: 700,
 					style: {
-						backgroundColor: "var(--theme-secondary-color-1)",
+						backgroundColor: "var(--theme-tertiary-color-1)",
 					},
 				});
 			},

@@ -19,7 +19,8 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const [selectedRoom, setSelectedRoom] = useState(null);
-	const [selectedDoctor, setSelectedDoctor] = useState(null);
+	const [selectedDoctor, setSelectedDoctor] = useState({});
+	const height = mainAreaHeight - 120;
 
 	const selectDoctor = (doctor) => {
 		setSelectedDoctor(doctor);
@@ -46,7 +47,7 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 				<Grid.Col span={6}>
 					<Grid columns={12} gutter="xs">
 						<Grid.Col span={6}>
-							<Box bg="white" className="borderRadiusAll">
+							<Box bg="white" className="borderRadiusAll" mt="xs">
 								<Text
 									bg="var(--theme-primary-color-6"
 									className="borderRadiusTop"
@@ -56,12 +57,12 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 								>
 									{t("selectRoom")}
 								</Text>
-								<ScrollArea h={mainAreaHeight - 50} scrollbars="y" p="xs">
+								<ScrollArea h={height} scrollbars="y" p="xs">
 									{[...Array(20)].map((_, index) => (
 										<Box
 											key={index}
 											p="xs"
-											bg="var(--theme-secondary-color-0)"
+											bg="var(--theme-tertiary-color-0)"
 											mb="les"
 											className={`borderRadiusAll cursor-pointer ${
 												selectedRoom === index ? "active-box" : ""
@@ -69,7 +70,7 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 											onClick={() => selectRoom(index)}
 										>
 											<Flex justify="space-between" mb="xxxs">
-												<Text fw={500} c="var(--theme-secondary-color-6)" fz="sm">
+												<Text fw={500} c="var(--theme-tertiary-color-6)" fz="sm">
 													Patient
 												</Text>
 												<Flex align="center" gap="xxxs">
@@ -82,7 +83,7 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 												</Flex>
 											</Flex>
 											<Flex justify="space-between">
-												<Text fw={500} c="var(--theme-secondary-color-6)" fz="sm">
+												<Text fw={500} c="var(--theme-tertiary-color-6)" fz="sm">
 													Room
 												</Text>
 												<Flex align="center" gap="xxxs">
@@ -100,9 +101,9 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 							</Box>
 						</Grid.Col>
 						<Grid.Col span={6}>
-							<Box bg="white" className="borderRadiusAll">
+							<Box bg="white" className="borderRadiusAll" mt="xs">
 								<Text
-									bg="var(--theme-success-color-9"
+									bg="var(--theme-secondary-color-9"
 									className="borderRadiusTop"
 									c="white"
 									p="sm"
@@ -110,14 +111,14 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 								>
 									{t("selectDoctor")}
 								</Text>
-								<ScrollArea h={mainAreaHeight - 50} scrollbars="y" p="xs">
+								<ScrollArea h={height} scrollbars="y" p="xs">
 									{selectedRoom && (
 										<>
 											{[...Array(20)].map((_, index) => (
 												<Box
 													key={index}
 													p="xs"
-													bg="var(--theme-secondary-color-0)"
+													bg="var(--theme-tertiary-color-0)"
 													mb="les"
 													className={`borderRadiusAll cursor-pointer ${
 														selectedDoctor.id === index ? "active-box" : ""
@@ -141,7 +142,7 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 					</Grid>
 				</Grid.Col>
 				<Grid.Col span={6}>
-					<Box className="borderRadiusAll">
+					<Box className="borderRadiusAll" mt="xs">
 						<TabsWithSearch
 							tabList={["new", "report", "reVisit"]}
 							tabPanels={[

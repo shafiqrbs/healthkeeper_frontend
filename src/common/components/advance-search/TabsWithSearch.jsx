@@ -48,7 +48,7 @@ export default function TabsWithSearch({ expand = true, tabPanels, tabList }) {
 			{tabPanels.map((tab) => (
 				<Tabs.Panel key={tab.tab} value={tab.tab}>
 					<Box py="sm" bg="white">
-						<Box p="xs" bg="var(--theme-success-color-5)">
+						<Box p="xs" bg="var(--theme-secondary-color-5)">
 							<TextInput name="search" placeholder={t("search")} />
 						</Box>
 						{tab.component}

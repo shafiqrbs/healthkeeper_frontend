@@ -131,7 +131,7 @@ export default function Search(props) {
 						</ActionIcon>
 						<ActionIcon
 							variant="default"
-							color="var(--theme-secondary-color-6)"
+							color="var(--theme-tertiary-color-6)"
 							size="lg"
 							aria-label="Settings"
 						>
@@ -186,7 +186,7 @@ export default function Search(props) {
 						</ActionIcon>
 						<ActionIcon
 							variant="default"
-							color="var(--theme-success-color-8)"
+							color="var(--theme-secondary-color-8)"
 							size="lg"
 							aria-label="Filter"
 							onClick={() => {
@@ -217,7 +217,7 @@ export default function Search(props) {
 
 						<ActionIcon
 							variant="default"
-							color="var(--theme-success-color-8)"
+							color="var(--theme-secondary-color-8)"
 							size="lg"
 							aria-label="Filter"
 							onClick={() => {

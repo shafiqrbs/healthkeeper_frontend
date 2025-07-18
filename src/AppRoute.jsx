@@ -69,9 +69,9 @@ import DomainUserIndex from "@modules/domain/master-user/DomainUserIndex";
 // import DiscountConfigIndex from "@modules/discount/config/DiscountConfigIndex";
 // import VoucherCreateIndex from "@modules/accounting/voucher-create/VoucherCreateIndex";
 // import DiscountDashboard from "@modules/discount/dashboard/DiscountDashboard";
-import PrescriptionIndex from "@modules/doctor/prescription/PrescriptionIndex";
-import PrescriptionEditIndex from "@modules/doctor/prescription/form/PrescriptionEditIndex";
-import VisitIndex from "@modules/doctor/visit/VisitIndex";
+import PrescriptionIndex from "@/modules/hospital/prescription/PrescriptionIndex";
+import PrescriptionEditIndex from "@/modules/hospital/prescription/form/PrescriptionEditIndex";
+import VisitIndex from "@/modules/hospital/visit/VisitIndex";
 import NotFound from "@components/layout/NotFound";
 import HospitalConfigIndex from "@modules/settings/HospitalConfigIndex";
 
@@ -117,7 +117,7 @@ function AppRoute() {
           <Route path="sitemap/:id" element={<SitemapIndex />} />
           <Route path="branch-management" element={<BranchManagementIndex />} /> */}
 				</Route>
-				<Route path="/doctor/">
+				<Route path="/hospital/">
 					<Route path="visit" element={<VisitIndex />} />
 					<Route path="prescription" element={<PrescriptionIndex />} />
 					<Route path="prescription/edit/:id" element={<PrescriptionEditIndex />} />

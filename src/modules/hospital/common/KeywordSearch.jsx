@@ -29,7 +29,7 @@ export default function KeywordSearch({ form }) {
 				</ActionIcon>
 				<AdvancedFilter />
 
-				<ActionIcon c="var(--theme-secondary-color-8)" bg="white">
+				<ActionIcon c="var(--theme-tertiary-color-8)" bg="white">
 					<IconRestore size={16} stroke={1.5} />
 				</ActionIcon>
 			</Flex>
