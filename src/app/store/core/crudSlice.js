@@ -150,6 +150,19 @@ const initialState = {
 		filterData: { name: "" },
 	},
 	// -------------------- domain modules stops -------------------------
+	// -------------------- hospital modules starts -------------------------
+	visit: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		validation: false,
+		insertType: "create",
+		data: {},
+		editData: {},
+		filterData: { name: "" },
+		validationMessages: [],
+	},
+	// -------------------- hospital modules stops -------------------------
 	// -------------------- production modules stops -------------------------
 	searchKeyword: "",
 	searchKeywordTooltip: false,

@@ -35,3 +35,22 @@ export const CORE_DATA_ROUTES = {
 		},
 	},
 };
+
+export const HOSPITAL_DATA_ROUTES = {
+	API_ROUTES: {
+		VISIT: {
+			INDEX: "hospital/visit",
+			CREATE: "hospital/visit/create",
+			UPDATE: "hospital/visit",
+			VIEW: "hospital/visit/view",
+		},
+	},
+	NAVIGATION_LINKS: {
+		VISIT: {
+			INDEX: "/hospital/visit",
+			CREATE: "/hospital/visit/create",
+			UPDATE: "/hospital/visit",
+			VIEW: "/hospital/visit/view",
+		},
+	},
+};

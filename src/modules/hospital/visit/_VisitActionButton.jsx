@@ -10,12 +10,15 @@ import { storeEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/apiRoutes";
 
 export default function VisitActionButton({ form }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
+	const [referredNameKey, setReferredNameKey] = useState(100);
+	const [marketingExKey, setMarketingExKey] = useState(10);
 
 	// =============== handle form submission ================
 	const handleSubmit = async () => {
@@ -28,7 +31,7 @@ export default function VisitActionButton({ form }) {
 
 				const formValue = {
 					...form.values,
-					created_by_id: Number(createdBy?.id),
+					created_by_id: createdBy?.id,
 					visit_date: new Date().toLocaleDateString("en-CA", options),
 					amount: form.values.amount || 0,
 					is_confirm: form.values.isConfirm || false,
@@ -36,7 +39,7 @@ export default function VisitActionButton({ form }) {
 				};
 
 				const data = {
-					url: "hospital/visit",
+					url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.CREATE,
 					data: formValue,
 					module: "visit",
 				};
@@ -59,12 +62,16 @@ export default function VisitActionButton({ form }) {
 	};
 
 	const selectPaymentMethod = (method) => {
+		form.setFieldValue("paymentMethod", method.value);
 		setPaymentMethod(method);
 	};
 
 	// =============== handle form reset ================
 	const handleReset = () => {
 		form.reset();
+		setPaymentMethod(PAYMENT_METHODS[0]);
+		setReferredNameKey((prev) => prev + 1);
+		setMarketingExKey((prev) => prev + 1);
 	};
 
 	return (
@@ -85,10 +92,11 @@ export default function VisitActionButton({ form }) {
 					<Grid.Col span={8} px="xs" bg="var(--theme-tertiary-color-0)">
 						<Stack>
 							<SelectForm
+								key={referredNameKey}
 								form={form}
 								label={t("referredName")}
 								tooltip={t("enterPatientReferredName")}
-								placeholder={t("name")}
+								placeholder="Dr. Holand"
 								name="referredName"
 								id="referredName"
 								nextField="referredName"
@@ -98,9 +106,10 @@ export default function VisitActionButton({ form }) {
 								rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 							/>
 							<SelectForm
+								key={marketingExKey}
 								form={form}
 								label={t("marketingEx")}
-								placeholder="101"
+								placeholder="Mr. Doland Rak"
 								name="marketingEx"
 								required
 								dropdownValue={["Mr. Rahim", "Mr. Karim"]}
@@ -172,7 +181,7 @@ export default function VisitActionButton({ form }) {
 									<InputNumberForm
 										form={form}
 										tooltip={t("enterAmount")}
-										placeholder={t("amount")}
+										placeholder={t("Amount")}
 										name="amount"
 									/>
 									<ActionIcon color="var(--theme-success-color)">

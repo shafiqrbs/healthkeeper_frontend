@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import tabClass from "@assets/css/Tab.module.css";
 
-export default function TabsWithSearch({ expand = true, tabPanels, tabList }) {
+export default function TabsWithSearch({ expand = true, tabPanels, tabList, hideSearchbar = false }) {
 	const { t } = useTranslation();
 	const [rootRef, setRootRef] = useState(null);
 	const [tabValue, setTabValue] = useState(tabList[0]);
@@ -16,7 +16,7 @@ export default function TabsWithSearch({ expand = true, tabPanels, tabList }) {
 
 	return (
 		<Tabs variant="none" value={tabValue} onChange={setTabValue}>
-			<Tabs.List p="sm" className={tabClass.list} ref={setRootRef}>
+			<Tabs.List px="sm" py="xxxs" className={tabClass.list} ref={setRootRef}>
 				<Flex w="100%" justify={expand ? "space-between" : "center"}>
 					{expand ? (
 						<>
@@ -47,10 +47,12 @@ export default function TabsWithSearch({ expand = true, tabPanels, tabList }) {
 
 			{tabPanels.map((tab) => (
 				<Tabs.Panel key={tab.tab} value={tab.tab}>
-					<Box py="sm" bg="white">
-						<Box p="xs" bg="var(--theme-secondary-color-5)">
-							<TextInput name="search" placeholder={t("search")} />
-						</Box>
+					<Box py={hideSearchbar ? "0" : "xs"} bg="white">
+						{!hideSearchbar && (
+							<Box p="xs" bg="var(--theme-secondary-color-5)">
+								<TextInput name="search" placeholder={t("search")} />
+							</Box>
+						)}
 						{tab.component}
 					</Box>
 				</Tabs.Panel>

@@ -4,22 +4,26 @@ const initialValues = {
 	appointment: "",
 	patientName: "",
 	mobile: "",
-	gender: "",
+	gender: "male",
 	height: "",
 	weight: "",
-	BP: "",
+	bp: "",
 	dateOfBirth: "",
 	age: "",
-	years: "",
+	ageType: "year",
 	identity: "",
-	district: "",
+	district: "Dhaka",
 	address: "",
 	roomNo: "",
 	specialization: "",
 	doctorName: "",
-	diseaseProfile: "",
+	diseaseProfile: "Diabetic",
 	referredName: "",
+	amount: "",
 	marketingEx: "",
+	paymentMethod: "bkash",
+	isConfirm: false,
+	smsAlert: false,
 };
 
 export const getVendorFormInitialValues = (t) => {
@@ -32,7 +36,7 @@ export const getVendorFormInitialValues = (t) => {
 				if (!value) return t("MobileValidationRequired");
 				return null;
 			},
-			BP: hasLength({ min: 2, max: 20 }),
+			bp: hasLength({ min: 2, max: 20 }),
 			identity: hasLength({ min: 2, max: 20 }),
 			district: hasLength({ min: 2, max: 20 }),
 			specialization: hasLength({ min: 2, max: 20 }),
@@ -40,6 +44,10 @@ export const getVendorFormInitialValues = (t) => {
 			diseaseProfile: hasLength({ min: 2, max: 20 }),
 			referredName: hasLength({ min: 2, max: 20 }),
 			marketingEx: hasLength({ min: 2, max: 20 }),
+			amount: (value) => {
+				if (!value) return t("AmountValidationRequired");
+				return null;
+			},
 		},
 	};
 };

@@ -152,7 +152,7 @@ export default function PatientListEdit({ isOpenPatientInfo }) {
 					</Text>
 				)}
 			</Flex>
-			<ScrollArea scrollbars="y" h={mainAreaHeight - 240}>
+			<ScrollArea scrollbars="y" h={mainAreaHeight - 230}>
 				{patientList.map((patient) => (
 					<Grid
 						columns={14}
