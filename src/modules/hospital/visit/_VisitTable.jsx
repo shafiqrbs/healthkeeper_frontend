@@ -242,9 +242,21 @@ export default function VisitTable() {
 							accessor: "created_at",
 							title: t("Created"),
 							textAlignment: "right",
-							render: (item) => item.created_at,
+							render: (item) => (
+								<Text fz="sm" onClick={() => handleView(item.id)} className="text-nowrap activate-link">
+									{item.created_at}
+								</Text>
+							),
 						},
-						{ accessor: "created_by", title: t("CreatedBy") },
+						{
+							accessor: "created_by",
+							title: t("CreatedBy"),
+							render: (item) => (
+								<Text fz="sm" className="text-nowrap">
+									{item.created_by || "N/A"}
+								</Text>
+							),
+						},
 						{ accessor: "invoice_no", title: t("InvoiceNo") },
 						{ accessor: "visit_no", title: t("visitNo") },
 						{ accessor: "appointment", title: t("appointment") },

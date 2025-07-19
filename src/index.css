@@ -572,3 +572,7 @@ input[type=radio]:checked+label>img {
         background-color: var(--theme-primary-color-7);
     }
 }
+
+.text-nowrap {
+    white-space: nowrap !important;
+}

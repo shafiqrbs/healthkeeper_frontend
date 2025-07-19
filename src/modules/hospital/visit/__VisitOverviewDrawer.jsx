@@ -57,7 +57,7 @@ export default function VisitOverviewDrawer({ opened, close }) {
 
 	return (
 		<GlobalDrawer opened={opened} close={close} title="Overview" size="30%">
-			<ScrollArea mt="sm" h={mainAreaHeight - 20}>
+			<ScrollArea mt="sm" h={mainAreaHeight - 80}>
 				<Box bg="var(--theme-primary-color-0)" py="xxxs" px="xs" style={{ borderRadius: "4px" }}>
 					<Text fz="sm" fw={600}>
 						{t("collectionOverview")}
