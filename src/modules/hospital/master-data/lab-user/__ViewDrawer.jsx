@@ -1,19 +1,17 @@
 import React from "react";
-import { useOutletContext } from "react-router-dom";
 import { ActionIcon, Grid, Box, Drawer, Text, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconArrowLeft, IconX } from "@tabler/icons-react";
 
-function __VendorViewDrawer({ viewDrawer, setViewDrawer, vendorObject }) {
-	const { mainAreaHeight } = useOutletContext();
+export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }) {
 	const { t } = useTranslation();
-	const height = mainAreaHeight; //TabList height 104
+	const height = 500; //TabList height 104
 	const closeDrawer = () => {
 		setViewDrawer(false);
 	};
 	let showData = {};
-	if (vendorObject) {
-		showData = vendorObject;
+	if (entityObject) {
+		showData = entityObject;
 	}
 
 	return (
@@ -32,10 +30,10 @@ function __VendorViewDrawer({ viewDrawer, setViewDrawer, vendorObject }) {
 					<Drawer.CloseButton />
 				</Drawer.Header>
 				<Box mb={0} h={height}>
-					<Box p="xl" h={height}>
+					<Box p={"md"} className="borderRadiusAll" h={height}>
 						<Box>
 							<Grid columns={24}>
-								<Grid.Col span={"8"} align={"left"} fw={"600"} fz={"14"}>
+								<Grid.Col span={"8"} className="drawer-form-input-label">
 									{t("CompanyName")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
@@ -44,14 +42,14 @@ function __VendorViewDrawer({ viewDrawer, setViewDrawer, vendorObject }) {
 								</Grid.Col>
 							</Grid>
 							<Grid columns={24}>
-								<Grid.Col span={"8"} align={"left"} fw={"600"} fz={"14"}>
+								<Grid.Col span={"8"} className="drawer-form-input-label">
 									{t("Name")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>{showData && showData.name && showData.name}</Grid.Col>
 							</Grid>
 							<Grid columns={24}>
-								<Grid.Col span={"8"} align={"left"} fw={"600"} fz={"14"}>
+								<Grid.Col span={"8"} className="drawer-form-input-label">
 									{t("Mobile")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
@@ -59,7 +57,7 @@ function __VendorViewDrawer({ viewDrawer, setViewDrawer, vendorObject }) {
 							</Grid>
 
 							<Grid columns={24}>
-								<Grid.Col span={"8"} align={"left"} fw={"600"} fz={"14"}>
+								<Grid.Col span={"8"} className="drawer-form-input-label">
 									{t("Email")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
@@ -67,7 +65,7 @@ function __VendorViewDrawer({ viewDrawer, setViewDrawer, vendorObject }) {
 							</Grid>
 
 							<Grid columns={24}>
-								<Grid.Col span={"8"} align={"left"} fw={"600"} fz={"14"}>
+								<Grid.Col span={"8"} className="drawer-form-input-label">
 									{t("Address")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
@@ -80,5 +78,3 @@ function __VendorViewDrawer({ viewDrawer, setViewDrawer, vendorObject }) {
 		</Drawer.Root>
 	);
 }
-
-export default __VendorViewDrawer;

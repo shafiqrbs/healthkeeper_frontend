@@ -14,6 +14,14 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
 import SelectForm from "@components/form-builders/SelectForm";
+import { ADVANCED_FILTER_SEARCH_OPERATOR } from "@/constants";
+import InputNumberForm from "@components/form-builders/InputNumberForm";
+
+const DROPDOWN_DATA = Object.entries(ADVANCED_FILTER_SEARCH_OPERATOR.INPUT_PARAMETER).map(([key, value], index) => ({
+	id: index,
+	label: value,
+	value: value,
+}));
 
 export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField, fieldPrefix, bd = "auto" }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -23,22 +31,23 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 
 	/*START CUSTOMER ADDED FORM INITIAL*/
 	const [advanceSearchFormOpened, setAdvanceSearchFormOpened] = useState(false);
-	const [nameDropdown, setNameDropdown] = useState(null);
-	const [mobileDropdown, setMobileDropdown] = useState(null);
-	const [invoiceDropdown, setInvoiceDropdown] = useState(null);
+	const [nameDropdown, setNameDropdown] = useState(DROPDOWN_DATA[0].value);
+	const [mobileDropdown, setMobileDropdown] = useState(DROPDOWN_DATA[0].value);
+	const [companyNameDropdown, setCompanyNameDropdown] = useState(DROPDOWN_DATA[0].value);
+
 	const advanceSearchForm = useForm({
 		initialValues: {
 			name: "",
 			mobile: "",
-			invoice: "",
+			company_name: "",
 			name_dropdown: "",
 			mobile_dropdown: "",
-			invoice_dropdown: "",
+			company_name_dropdown: "",
 		},
 		validate: {
 			name: (value, values) => {
 				// First check if any main field is filled
-				if (!value && !values.mobile && !values.invoice) {
+				if (!value && !values.mobile && !values.company_name) {
 					return "At least one main field is required";
 				}
 				return null;
@@ -51,7 +60,7 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 				return null;
 			},
 			mobile: (value, values) => {
-				if (!value && !values.name && !values.invoice) {
+				if (!value && !values.name && !values.company_name) {
 					return true;
 				}
 				return null;
@@ -62,32 +71,24 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 				}
 				return null;
 			},
-			invoice: (value, values) => {
+			company_name: (value, values) => {
 				if (!value && !values.name && !values.mobile) {
 					return "At least one main field is required";
 				}
 				return null;
 			},
-			invoice_dropdown: (value, values) => {
-				if (values.invoice && !value) {
-					return "Please select an option for Invoice";
+			company_name_dropdown: (value, values) => {
+				if (values.company_name && !value) {
+					return "Please select an option for Company Name";
 				}
 				return null;
 			},
 		},
 	});
-	const mobile_drop_data = [
-		{ id: 1, value: "chiller" },
-		{ id: 2, value: "party" },
-	];
-	const invoice_drop_data = [
-		{ id: 1, value: "chiller" },
-		{ id: 2, value: "party" },
-	];
-	const name_drop_data = [
-		{ id: 1, value: "chiller" },
-		{ id: 2, value: "party" },
-	];
+
+	const handleSubmit = (values) => {
+		console.log(values);
+	};
 
 	return (
 		<Box>
@@ -119,11 +120,7 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 				</Popover.Target>
 				<Popover.Dropdown>
 					<Box>
-						<form
-							onSubmit={advanceSearchForm.onSubmit((values) => {
-								console.log(advanceSearchForm.values);
-							})}
-						>
+						<form onSubmit={advanceSearchForm.onSubmit(handleSubmit)}>
 							<Box mt="es">
 								<Box className="boxBackground borderRadiusAll" pt="les" mb="es" pb="les">
 									<Text ta="center" fw={600} fz="sm">
@@ -144,15 +141,14 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 													<SelectForm
 														tooltip={t("SelectSearchLikeValue")}
 														form={advanceSearchForm}
-														searchable
 														name="name_dropdown"
 														id="name_dropdown"
 														label=""
 														nextField="name"
 														placeholder="Search Like"
-														dropdownValue={name_drop_data}
+														dropdownValue={DROPDOWN_DATA}
+														value={nameDropdown}
 														changeValue={setNameDropdown}
-														data={["React", "Angular", "Vue", "Svelte"]}
 													/>
 												</Grid.Col>
 												<Grid.Col span={7}>
@@ -184,24 +180,23 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 													<SelectForm
 														tooltip={t("SelectSearchLikeValue")}
 														form={advanceSearchForm}
-														searchable
 														name="mobile_dropdown"
 														id="mobile_dropdown"
 														nextField="mobile"
 														label=""
 														placeholder="Search Like"
-														dropdownValue={mobile_drop_data}
+														dropdownValue={DROPDOWN_DATA}
 														value={mobileDropdown}
 														changeValue={setMobileDropdown}
 													/>
 												</Grid.Col>
 												<Grid.Col span={7}>
 													<Box>
-														<InputForm
+														<InputNumberForm
 															tooltip={t("MobileValidateMessage")}
 															label=""
 															placeholder={t("Mobile")}
-															nextField={"invoice_dropdown"}
+															nextField={"company_name_dropdown"}
 															form={advanceSearchForm}
 															name={"mobile"}
 															id={"mobile"}
@@ -216,7 +211,7 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 											<Grid columns={15} gutter={{ base: "xxxs" }}>
 												<Grid.Col span={3}>
 													<Text ta="left" fw={600} fz="sm" mt="xxxs">
-														{t("Invoice")}
+														{t("Company")}
 													</Text>
 												</Grid.Col>
 
@@ -224,27 +219,26 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 													<SelectForm
 														tooltip={t("SelectSearchLikeValue")}
 														form={advanceSearchForm}
-														searchable
-														name="invoice_dropdown"
-														id="invoice_dropdown"
-														nextField="invoice"
+														name="company_name_dropdown"
+														id="company_name_dropdown"
+														nextField="company_name"
 														label=""
 														placeholder="Search Like"
-														dropdownValue={invoice_drop_data}
-														value={invoiceDropdown}
-														changeValue={setInvoiceDropdown}
+														dropdownValue={DROPDOWN_DATA}
+														value={companyNameDropdown}
+														changeValue={setCompanyNameDropdown}
 													/>
 												</Grid.Col>
 												<Grid.Col span={7}>
 													<Box>
 														<InputForm
-															tooltip={t("InvoiceValidateMessage")}
+															tooltip={t("CompanyNameValidateMessage")}
 															label=""
-															placeholder={t("Invoice")}
+															placeholder={t("CompanyName")}
 															nextField={"EntityFormSubmit"}
 															form={advanceSearchForm}
-															name={"invoice"}
-															id={"invoice"}
+															name={"company_name"}
+															id={"company_name"}
 															leftSection={<IconFileInvoice size={16} opacity={0.5} />}
 															rightIcon={""}
 														/>

@@ -379,6 +379,12 @@ input[type=radio]:checked+label>img {
     gap: 12px;
 }
 
+.drawer-form-input-label {
+    align-items: left !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+}
+
 .drawer-sticky-footer {
     margin-inline: -16px !important;
     margin-left: -16px !important;

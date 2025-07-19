@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import VendorForm from "./___VendorForm";
+import VendorForm from "./___LabUserForm";
 import { modals } from "@mantine/modals";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { useDispatch } from "react-redux";
@@ -10,7 +10,6 @@ import { IconCheck, IconAlertCircle } from "@tabler/icons-react";
 import { rem, Text } from "@mantine/core";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
-import { CORE_DATA_ROUTES } from "@/constants/apiRoutes";
 
 export default function __Create({ form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +31,7 @@ export default function __Create({ form, close }) {
 		try {
 			setIsLoading(true);
 			const value = {
-				url: CORE_DATA_ROUTES.API_ROUTES.VENDOR.INDEX,
+				url: "core/vendor",
 				data: values,
 				module: "vendor",
 			};

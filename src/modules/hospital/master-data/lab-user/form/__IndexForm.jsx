@@ -5,9 +5,8 @@ import { editEntityData } from "@/app/store/core/crudThunk";
 import { setFilterData, setSearchKeyword, setInsertType } from "@/app/store/core/crudSlice";
 import __Update from "./__Update";
 import __Create from "./__Create";
-import { CORE_DATA_ROUTES } from "@/constants/apiRoutes";
 
-export default function _Form({ form, close, mode }) {
+export default function _IndexForm({ form, close, mode }) {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -32,7 +31,7 @@ export default function _Form({ form, close, mode }) {
 		dispatch(setInsertType({ insertType: "update", module: "vendor" }));
 		dispatch(
 			editEntityData({
-				url: `${CORE_DATA_ROUTES.API_ROUTES.VENDOR.UPDATE}/${id}`,
+				url: `core/vendor/${id}`,
 				module: "vendor",
 			})
 		);
@@ -51,7 +50,7 @@ export default function _Form({ form, close, mode }) {
 				},
 			})
 		);
-		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.VENDOR.INDEX, { replace: true });
+		navigate("/core/vendor", { replace: true });
 	};
 
 	// =============== effect to handle mode switching ================

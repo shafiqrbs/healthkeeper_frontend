@@ -3,21 +3,20 @@ import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
-import VendorTable from "./_VendorTable";
+import VendorTable from "./_Table";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
-import { getVendorFormInitialValues } from "./helpers/request";
+import { getInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
 import Shortcut from "@/modules/shortcut/Shortcut";
-import Form from "./form/__Form";
-import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import IndexForm from "./form/__IndexForm";
+import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
-import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 
-function VendorIndex({ mode = "create" }) {
+export default function Index({ mode = "create" }) {
 	const { t } = useTranslation();
-	const form = useForm(getVendorFormInitialValues(t));
+	const form = useForm(getInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
 	const [opened, { open, close }] = useDisclosure(false);
@@ -26,7 +25,14 @@ function VendorIndex({ mode = "create" }) {
 	return (
 		<>
 			{progress !== 100 ? (
-				<DefaultSkeleton />
+				<Progress
+					color="var(--theme-reset-btn-color)"
+					size="sm"
+					striped
+					animated
+					value={progress}
+					transitionDuration={200}
+				/>
 			) : (
 				<>
 					<CoreHeaderNavbar
@@ -55,7 +61,7 @@ function VendorIndex({ mode = "create" }) {
 								close={close}
 								title={mode === "create" ? t("CreateVendor") : t("UpdateVendor")}
 							>
-								<Form form={form} mode={mode} close={close} />
+								<IndexForm form={form} mode={mode} close={close} />
 							</GlobalDrawer>
 
 							{/* {!matches && (
@@ -77,5 +83,3 @@ function VendorIndex({ mode = "create" }) {
 		</>
 	);
 }
-
-export default VendorIndex;

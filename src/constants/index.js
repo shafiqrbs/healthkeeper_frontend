@@ -72,3 +72,21 @@ export const DISTRICT_LIST = [
 	"Tangail",
 	"Thakurgaon",
 ];
+
+export const ADVANCED_FILTER_SEARCH_OPERATOR = {
+	INPUT_PARAMETER: {
+		equal: "=",
+		not_equal: "!=",
+		in: "in",
+		not_in: "not_in",
+		starts_with: "starts_with",
+		ends_with: "ends_with",
+	},
+	SELECT_PARAMETER: { equal: "=", not_equal: "!=", in: "in", not_in: "not_in" },
+	DATE_PARAMETER: { equal: "=", not_equal: "!=", in: "in", not_in: "not_in" },
+	NUMBER_PARAMETER: { equal: "=", not_equal: "!=", in: "in", not_in: "not_in" },
+	TEXT_PARAMETER: { equal: "=", not_equal: "!=", in: "in", not_in: "not_in" },
+	BOOLEAN_PARAMETER: { equal: "=", not_equal: "!=", in: "in", not_in: "not_in" },
+	ARRAY_PARAMETER: { equal: "=", not_equal: "!=", in: "in", not_in: "not_in" },
+	OBJECT_PARAMETER: { equal: "=", not_equal: "!=", in: "in", not_in: "not_in" },
+};

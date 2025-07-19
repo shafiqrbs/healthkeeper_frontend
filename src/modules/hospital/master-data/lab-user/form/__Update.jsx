@@ -1,22 +1,26 @@
 import React, { useState } from "react";
-import VendorForm from "./___VendorForm";
+import VendorForm from "./___LabUserForm";
 import { modals } from "@mantine/modals";
-import { storeEntityData } from "@/app/store/core/crudThunk";
-import { useDispatch } from "react-redux";
-import { setGlobalFetching, setRefetchData } from "@/app/store/core/crudSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconAlertCircle } from "@tabler/icons-react";
 import { rem, Text } from "@mantine/core";
-import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants";
+import { ERROR_NOTIFICATION_COLOR } from "@/constants";
+import { updateEntityData } from "@/app/store/core/crudThunk";
+import { useParams, useNavigate } from "react-router-dom";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
-import { CORE_DATA_ROUTES } from "@/constants/apiRoutes";
+import { setInsertType } from "@/app/store/core/crudSlice";
+import { MASTER_DATA_ROUTES } from "@/constants/apiRoutes";
 
-export default function __Create({ form, close }) {
+export default function __Update({ form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
+	const [customerData, setCustomerData] = useState(null);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const [customerData, setCustomerData] = useState(null);
+	const navigate = useNavigate();
+	const { id } = useParams();
+	const vendorUpdateData = useSelector((state) => state.crud.vendor.editData);
 
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
@@ -28,39 +32,48 @@ export default function __Create({ form, close }) {
 			onConfirm: () => handleConfirmModal(values),
 		});
 	};
+
 	async function handleConfirmModal(values) {
 		try {
-			setIsLoading(true);
 			const value = {
-				url: CORE_DATA_ROUTES.API_ROUTES.VENDOR.INDEX,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.UPDATE}/${id}`,
 				data: values,
-				module: "vendor",
+				module: "lab-user",
 			};
 
-			const resultAction = await dispatch(storeEntityData(value));
-			if (storeEntityData.rejected.match(resultAction)) {
+			const resultAction = await dispatch(updateEntityData(value));
+
+			if (updateEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
+
+				// Check if there are field validation errors and dynamically set them
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+						errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
 					});
+					// Display the errors using your form's `setErrors` function dynamically
 					form.setErrors(errorObject);
 				}
-			} else if (storeEntityData.fulfilled.match(resultAction)) {
-				useVendorDataStoreIntoLocalStorage();
-				form.reset();
-				close(); // close the drawer
-				setCustomerData(null);
-				dispatch(setRefetchData({ module: "vendor", refetching: true }));
+			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				notifications.show({
-					color: SUCCESS_NOTIFICATION_COLOR,
-					title: t("CreateSuccessfully"),
+					color: "teal",
+					title: t("UpdateSuccessfully"),
 					icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
 					loading: false,
-					autoClose: 1400,
+					autoClose: 700,
 					style: { backgroundColor: "lightgray" },
 				});
+
+				setTimeout(() => {
+					useVendorDataStoreIntoLocalStorage();
+					form.reset();
+					dispatch(setInsertType({ insertType: "create", module: "vendor" }));
+					setIsLoading(false);
+					close(); // close the drawer
+					navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX, { replace: true });
+					setCustomerData(null);
+				}, 700);
 			}
 		} catch (error) {
 			console.error(error);
@@ -72,14 +85,14 @@ export default function __Create({ form, close }) {
 				autoClose: 2000,
 				style: { backgroundColor: "lightgray" },
 			});
-		} finally {
-			setIsLoading(false);
 		}
 	}
 
 	return (
 		<VendorForm
+			type="update"
 			form={form}
+			data={vendorUpdateData}
 			handleSubmit={handleSubmit}
 			customerData={customerData}
 			setCustomerData={setCustomerData}

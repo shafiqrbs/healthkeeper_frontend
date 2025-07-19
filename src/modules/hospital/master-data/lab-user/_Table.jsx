@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { Group, Box, ActionIcon, Text, rem, Flex, Button } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem, Flex, Button, Tooltip } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
@@ -19,7 +19,7 @@ import { useHotkeys, useMounted } from "@mantine/hooks";
 import { deleteEntityData, getIndexEntityData, editEntityData } from "@/app/store/core/crudThunk.js";
 import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/crudSlice.js";
 import tableCss from "@assets/css/Table.module.css";
-import VendorViewDrawer from "./__VendorViewDrawer.jsx";
+import ViewDrawer from "./__ViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
 import { getCoreVendors } from "@/common/utils/index.js";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
@@ -27,11 +27,10 @@ import CreateButton from "@components/buttons/CreateButton.jsx";
 import DataTableFooter from "@components/tables/DataTableFooter.jsx";
 import { sortBy } from "lodash";
 import { useOs } from "@mantine/hooks";
-import { CORE_DATA_ROUTES } from "@/constants/apiRoutes";
 
 const PER_PAGE = 50;
 
-function _VendorTable({ open, close }) {
+export default function _Table({ open, close }) {
 	const isMounted = useMounted();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -69,9 +68,8 @@ function _VendorTable({ open, close }) {
 		if (!hasMore && pageNum > 1) return;
 
 		setFetching(true);
-
 		const value = {
-			url: CORE_DATA_ROUTES.API_ROUTES.VENDOR.INDEX,
+			url: "core/vendor",
 			params: {
 				term: searchKeyword,
 				name: vendorFilterData.name,
@@ -138,11 +136,11 @@ function _VendorTable({ open, close }) {
 		dispatch(setInsertType({ insertType: "update", module: "vendor" }));
 		dispatch(
 			editEntityData({
-				url: `${CORE_DATA_ROUTES.API_ROUTES.VENDOR.UPDATE}/${id}`,
+				url: `core/vendor/${id}`,
 				module: "vendor",
 			})
 		);
-		navigate(`${CORE_DATA_ROUTES.NAVIGATION_LINKS.VENDOR.UPDATE}/${id}`);
+		navigate(`/core/vendor/${id}`);
 	};
 
 	const handleDelete = (id) => {
@@ -176,7 +174,7 @@ function _VendorTable({ open, close }) {
 	const handleDeleteSuccess = async (id) => {
 		const resultAction = await dispatch(
 			deleteEntityData({
-				url: `${CORE_DATA_ROUTES.API_ROUTES.VENDOR.DELETE}/${id}`,
+				url: `core/vendor/${id}`,
 				module: "vendor",
 				id,
 			})
@@ -191,7 +189,7 @@ function _VendorTable({ open, close }) {
 				autoClose: 700,
 				style: { backgroundColor: "lightgray" },
 			});
-			navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.VENDOR.INDEX);
+			navigate("/core/vendor");
 			dispatch(setInsertType({ insertType: "create", module: "vendor" }));
 		} else {
 			notifications.show({
@@ -230,7 +228,7 @@ function _VendorTable({ open, close }) {
 	const handleCreateVendor = () => {
 		open();
 		dispatch(setInsertType({ insertType: "create", module: "vendor" }));
-		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.VENDOR.INDEX);
+		navigate("/core/vendor");
 	};
 
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateVendor()]]);
@@ -357,9 +355,7 @@ function _VendorTable({ open, close }) {
 				/>
 			</Box>
 			<DataTableFooter indexData={vendorListData} module="vendors" />
-			<VendorViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} vendorObject={vendorObject} />
+			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={vendorObject} />
 		</>
 	);
 }
-
-export default _VendorTable;
