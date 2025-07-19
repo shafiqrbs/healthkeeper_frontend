@@ -24,6 +24,7 @@ const DROPDOWN_DATA = Object.entries(ADVANCED_FILTER_SEARCH_OPERATOR.INPUT_PARAM
 }));
 
 export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField, fieldPrefix, bd = "auto" }) {
+	const [key, setKey] = useState(0);
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight;
 
@@ -86,6 +87,14 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 		},
 	});
 
+	const handleReset = () => {
+		setNameDropdown("");
+		setMobileDropdown("");
+		setCompanyNameDropdown("");
+		advanceSearchForm.reset();
+		setKey(key + 1);
+	};
+
 	const handleSubmit = (values) => {
 		console.log(values);
 	};
@@ -119,178 +128,171 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 					</Tooltip>
 				</Popover.Target>
 				<Popover.Dropdown>
-					<Box>
-						<form onSubmit={advanceSearchForm.onSubmit(handleSubmit)}>
-							<Box mt="es">
-								<Box className="boxBackground borderRadiusAll" pt="les" mb="es" pb="les">
-									<Text ta="center" fw={600} fz="sm">
-										{t("AdvanceSearch")}
-									</Text>
-								</Box>
-								<Box className="borderRadiusAll" bg="white">
-									<ScrollArea h={height / 3} scrollbarSize={2} scrollbars="y" type="never">
-										<Box p="xs">
-											<Grid columns={15} gutter={{ base: "xxxs" }}>
-												<Grid.Col span={3}>
-													<Text ta="left" fw={600} fz="sm" mt="xxxs">
-														{t("Name")}
-													</Text>
-												</Grid.Col>
-
-												<Grid.Col span={5}>
-													<SelectForm
-														tooltip={t("SelectSearchLikeValue")}
-														form={advanceSearchForm}
-														name="name_dropdown"
-														id="name_dropdown"
-														label=""
-														nextField="name"
-														placeholder="Search Like"
-														dropdownValue={DROPDOWN_DATA}
-														value={nameDropdown}
-														changeValue={setNameDropdown}
-													/>
-												</Grid.Col>
-												<Grid.Col span={7}>
-													<Box>
-														<InputForm
-															tooltip={t("NameValidateMessage")}
-															label=""
-															placeholder={t("Name")}
-															nextField={"mobile_dropdown"}
-															form={advanceSearchForm}
-															name={"name"}
-															id={"name"}
-															leftSection={<IconUserCircle size={16} opacity={0.5} />}
-															rightIcon={""}
-														/>
-													</Box>
-												</Grid.Col>
-											</Grid>
-										</Box>
-										<Box p="xs">
-											<Grid columns={15} gutter={{ base: "xxxs" }}>
-												<Grid.Col span={3}>
-													<Text ta="left" fw={600} fz="sm" mt="xxxs">
-														{t("Mobile")}
-													</Text>
-												</Grid.Col>
-
-												<Grid.Col span={5}>
-													<SelectForm
-														tooltip={t("SelectSearchLikeValue")}
-														form={advanceSearchForm}
-														name="mobile_dropdown"
-														id="mobile_dropdown"
-														nextField="mobile"
-														label=""
-														placeholder="Search Like"
-														dropdownValue={DROPDOWN_DATA}
-														value={mobileDropdown}
-														changeValue={setMobileDropdown}
-													/>
-												</Grid.Col>
-												<Grid.Col span={7}>
-													<Box>
-														<InputNumberForm
-															tooltip={t("MobileValidateMessage")}
-															label=""
-															placeholder={t("Mobile")}
-															nextField={"company_name_dropdown"}
-															form={advanceSearchForm}
-															name={"mobile"}
-															id={"mobile"}
-															leftSection={<IconDeviceMobile size={16} opacity={0.5} />}
-															rightIcon={""}
-														/>
-													</Box>
-												</Grid.Col>
-											</Grid>
-										</Box>
-										<Box p="xs">
-											<Grid columns={15} gutter={{ base: "xxxs" }}>
-												<Grid.Col span={3}>
-													<Text ta="left" fw={600} fz="sm" mt="xxxs">
-														{t("Company")}
-													</Text>
-												</Grid.Col>
-
-												<Grid.Col span={5}>
-													<SelectForm
-														tooltip={t("SelectSearchLikeValue")}
-														form={advanceSearchForm}
-														name="company_name_dropdown"
-														id="company_name_dropdown"
-														nextField="company_name"
-														label=""
-														placeholder="Search Like"
-														dropdownValue={DROPDOWN_DATA}
-														value={companyNameDropdown}
-														changeValue={setCompanyNameDropdown}
-													/>
-												</Grid.Col>
-												<Grid.Col span={7}>
-													<Box>
-														<InputForm
-															tooltip={t("CompanyNameValidateMessage")}
-															label=""
-															placeholder={t("CompanyName")}
-															nextField={"EntityFormSubmit"}
-															form={advanceSearchForm}
-															name={"company_name"}
-															id={"company_name"}
-															leftSection={<IconFileInvoice size={16} opacity={0.5} />}
-															rightIcon={""}
-														/>
-													</Box>
-												</Grid.Col>
-											</Grid>
-										</Box>
-									</ScrollArea>
-								</Box>
+					<form onSubmit={advanceSearchForm.onSubmit(handleSubmit)}>
+						<Box mt="es">
+							<Box className="boxBackground borderRadiusAll" pt="les" mb="es" pb="les">
+								<Text ta="center" fw={600} fz="sm">
+									{t("AdvanceSearch")}
+								</Text>
 							</Box>
-							<Box className="borderRadiusAll boxBackground" p="les">
-								<Flex gap="es" align="center" justify="space-between">
+							<Box className="borderRadiusAll" bg="white">
+								<ScrollArea h={height / 3} scrollbarSize={2} scrollbars="y" type="never">
+									<Box p="xs">
+										<Grid columns={15} gutter={{ base: "xxxs" }}>
+											<Grid.Col span={3}>
+												<Text ta="left" fw={600} fz="sm" mt="xxxs">
+													{t("Name")}
+												</Text>
+											</Grid.Col>
+
+											<Grid.Col span={5}>
+												<SelectForm
+													key={key}
+													tooltip={t("SelectSearchLikeValue")}
+													form={advanceSearchForm}
+													name="name_dropdown"
+													id="name_dropdown"
+													label=""
+													nextField="name"
+													placeholder="Search Like"
+													dropdownValue={DROPDOWN_DATA}
+													value={nameDropdown}
+													changeValue={setNameDropdown}
+												/>
+											</Grid.Col>
+											<Grid.Col span={7}>
+												<InputForm
+													tooltip={t("NameValidateMessage")}
+													label=""
+													placeholder={t("Name")}
+													nextField={"mobile_dropdown"}
+													form={advanceSearchForm}
+													name={"name"}
+													id={"name"}
+													leftSection={<IconUserCircle size={16} opacity={0.5} />}
+													rightIcon={""}
+												/>
+											</Grid.Col>
+										</Grid>
+									</Box>
+									<Box p="xs">
+										<Grid columns={15} gutter={{ base: "xxxs" }}>
+											<Grid.Col span={3}>
+												<Text ta="left" fw={600} fz="sm" mt="xxxs">
+													{t("Mobile")}
+												</Text>
+											</Grid.Col>
+
+											<Grid.Col span={5}>
+												<SelectForm
+													key={key}
+													tooltip={t("SelectSearchLikeValue")}
+													form={advanceSearchForm}
+													name="mobile_dropdown"
+													id="mobile_dropdown"
+													nextField="mobile"
+													label=""
+													placeholder="Search Like"
+													dropdownValue={DROPDOWN_DATA}
+													value={mobileDropdown}
+													changeValue={setMobileDropdown}
+												/>
+											</Grid.Col>
+											<Grid.Col span={7}>
+												<InputNumberForm
+													tooltip={t("MobileValidateMessage")}
+													label=""
+													placeholder={t("Mobile")}
+													nextField={"company_name_dropdown"}
+													form={advanceSearchForm}
+													name={"mobile"}
+													id={"mobile"}
+													leftSection={<IconDeviceMobile size={16} opacity={0.5} />}
+													rightIcon={""}
+												/>
+											</Grid.Col>
+										</Grid>
+									</Box>
+									<Box p="xs">
+										<Grid columns={15} gutter={{ base: "xxxs" }}>
+											<Grid.Col span={3}>
+												<Text ta="left" fw={600} fz="sm" mt="xxxs">
+													{t("Company")}
+												</Text>
+											</Grid.Col>
+
+											<Grid.Col span={5}>
+												<SelectForm
+													key={key}
+													tooltip={t("SelectSearchLikeValue")}
+													form={advanceSearchForm}
+													name="company_name_dropdown"
+													id="company_name_dropdown"
+													nextField="company_name"
+													label=""
+													placeholder="Search Like"
+													dropdownValue={DROPDOWN_DATA}
+													value={companyNameDropdown}
+													changeValue={setCompanyNameDropdown}
+												/>
+											</Grid.Col>
+											<Grid.Col span={7}>
+												<InputForm
+													tooltip={t("CompanyNameValidateMessage")}
+													label=""
+													placeholder={t("CompanyName")}
+													nextField={"EntityFormSubmit"}
+													form={advanceSearchForm}
+													name={"company_name"}
+													id={"company_name"}
+													leftSection={<IconFileInvoice size={16} opacity={0.5} />}
+													rightIcon={""}
+												/>
+											</Grid.Col>
+										</Grid>
+									</Box>
+								</ScrollArea>
+							</Box>
+						</Box>
+						<Box className="borderRadiusAll boxBackground" p="les">
+							<Flex gap="es" align="center" justify="space-between">
+								<Button
+									variant="outline"
+									c="var(--theme-primary-color-6)"
+									size="xs"
+									onClick={() => setAdvanceSearchFormOpened(false)}
+									style={{ border: "1px solid var(--theme-primary-color-6)" }}
+									leftSection={<IconX size={16} stroke={1.5} />}
+								>
+									<Text fz="sm" fw={400}>
+										{t("Close")}
+									</Text>
+								</Button>
+								<Flex gap="es" align="center">
 									<Button
-										variant="outline"
-										c="var(--theme-primary-color-6)"
+										variant="transparent"
+										size="sm"
+										color="var(--theme-error-color)"
+										onClick={handleReset}
+									>
+										<IconRefreshDot size={16} stroke={1.5} />
+									</Button>
+
+									<Button
 										size="xs"
-										onClick={() => setAdvanceSearchFormOpened(false)}
-										style={{ border: "1px solid var(--theme-primary-color-6)" }}
-										leftSection={<IconX size={16} stroke={1.5} />}
+										color="var(--theme-primary-color-6)"
+										type="submit"
+										id={"EntityFormSubmit"}
+										leftSection={<IconSearch size={16} />}
 									>
 										<Text fz="sm" fw={400}>
-											{t("Close")}
+											{t("Search")}
 										</Text>
 									</Button>
-									<Flex gap="es" align="center">
-										<Button
-											variant="transparent"
-											size="sm"
-											color="var(--theme-error-color)"
-											onClick={() => {
-												advanceSearchForm.reset();
-											}}
-										>
-											<IconRefreshDot size={16} stroke={1.5} />
-										</Button>
-
-										<Button
-											size="xs"
-											color="var(--theme-primary-color-6)"
-											type="submit"
-											id={"EntityFormSubmit"}
-											leftSection={<IconSearch size={16} />}
-										>
-											<Text fz="sm" fw={400}>
-												{t("Search")}
-											</Text>
-										</Button>
-									</Flex>
 								</Flex>
-							</Box>
-						</form>
-					</Box>
+							</Flex>
+						</Box>
+					</form>
 				</Popover.Dropdown>
 			</Popover>
 		</Box>
