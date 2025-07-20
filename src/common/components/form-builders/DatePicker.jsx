@@ -22,6 +22,7 @@ function DatePickerForm({
 	leftSection,
 	rightSection,
 	disabledFutureDate = false,
+	miw,
 }) {
 	const { t } = useTranslation();
 
@@ -50,6 +51,7 @@ function DatePickerForm({
 					label={label}
 					placeholder={placeholder}
 					mt={mt}
+					miw={miw}
 					autoComplete="off"
 					{...form.getInputProps(name)}
 					onKeyDown={getHotkeyHandler([

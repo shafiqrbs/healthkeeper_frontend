@@ -14,6 +14,7 @@ export default function KeywordSearch({ form }) {
 				placeholder="Select Date"
 				value={form.values.date}
 				onChange={(value) => form.setFieldValue("date", value)}
+				miw={200}
 			/>
 			<InputForm
 				placeholder="Keyword Search"

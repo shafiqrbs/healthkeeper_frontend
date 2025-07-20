@@ -44,10 +44,7 @@ export const getVendorFormInitialValues = (t) => {
 			diseaseProfile: hasLength({ min: 2, max: 20 }),
 			referredName: hasLength({ min: 2, max: 20 }),
 			marketingEx: hasLength({ min: 2, max: 20 }),
-			amount: (value) => {
-				if (!value) return t("AmountValidationRequired");
-				return null;
-			},
+			amount: hasLength({ min: 2, max: 20 }),
 		},
 	};
 };

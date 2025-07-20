@@ -18,6 +18,7 @@ export default function PrescriptionIndex() {
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
+	const [patientData, setPatientData] = useState({});
 
 	return (
 		<>
@@ -28,7 +29,7 @@ export default function PrescriptionIndex() {
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={25}>
-							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-2ms-ease-out">
+							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-ease-out">
 								<Box
 									className="right-arrow-button"
 									onClick={() => setIsOpenPatientInfo(!isOpenPatientInfo)}
@@ -38,12 +39,13 @@ export default function PrescriptionIndex() {
 								<PatientInformation
 									isOpenPatientInfo={isOpenPatientInfo}
 									setIsOpenPatientInfo={setIsOpenPatientInfo}
+									setPatientData={setPatientData}
 								/>
 							</Grid.Col>
-							<Grid.Col span={isOpenPatientInfo ? 17 : 23} className="animate-2ms-ease-out">
+							<Grid.Col span={isOpenPatientInfo ? 17 : 23} className="animate-ease-out">
 								<Grid columns={25} gutter="les">
 									<Grid.Col span={9}>
-										<PatientReport />
+										<PatientReport patientData={patientData} />
 									</Grid.Col>
 									<Grid.Col span={16}>
 										<AddMedicineForm />

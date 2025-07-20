@@ -3,7 +3,7 @@ import { Box, Button, Flex, SegmentedControl, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import PatientListEdit from "./PatientListEdit";
 
-export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatientInfo }) {
+export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatientInfo, setPatientData }) {
 	const { t } = useTranslation();
 
 	return (
@@ -34,15 +34,21 @@ export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatient
 				tabPanels={[
 					{
 						tab: "new",
-						component: <PatientListEdit isOpenPatientInfo={isOpenPatientInfo} />,
+						component: (
+							<PatientListEdit isOpenPatientInfo={isOpenPatientInfo} setPatientData={setPatientData} />
+						),
 					},
 					{
 						tab: "report",
-						component: <PatientListEdit isOpenPatientInfo={isOpenPatientInfo} />,
+						component: (
+							<PatientListEdit isOpenPatientInfo={isOpenPatientInfo} setPatientData={setPatientData} />
+						),
 					},
 					{
 						tab: "reVisit",
-						component: <PatientListEdit isOpenPatientInfo={isOpenPatientInfo} />,
+						component: (
+							<PatientListEdit isOpenPatientInfo={isOpenPatientInfo} setPatientData={setPatientData} />
+						),
 					},
 				]}
 			/>

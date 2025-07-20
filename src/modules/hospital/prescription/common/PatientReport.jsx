@@ -25,7 +25,7 @@ const BLOOD_GROUPS = [
 	{ label: "AB-", value: "AB-" },
 ];
 
-export default function PatientReport() {
+export default function PatientReport({ patientData }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const form = useForm({
@@ -77,15 +77,15 @@ export default function PatientReport() {
 		<Box bg="white" p="les">
 			<Stack gap="xxxs" bg="var(--theme-primary-color-1)" p="xs" className="borderRadiusAll">
 				<Flex justify="space-between">
-					<Text fw={600}>Md. Shafiqul Islam</Text>
-					<Text fz="sm">30-06-25</Text>
+					<Text fw={600}>{patientData.name}</Text>
+					<Text fz="sm">{patientData.date}</Text>
 				</Flex>
 				<Flex justify="space-between">
 					<Text fz="xs">
-						Patient ID: <b>20</b>
+						Patient ID: <b>{patientData.patientId || "N/A"}</b>
 					</Text>
 					<Text fz="xs">
-						{t("age")}: <b>25</b> - {t("gender")}: <b>Male</b>
+						{t("age")}: <b>{patientData.age}</b> - {t("gender")}: <b>{patientData.gender || "Male"}</b>
 					</Text>
 				</Flex>
 			</Stack>

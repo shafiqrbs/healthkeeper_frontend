@@ -7,13 +7,11 @@ import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
-import InputForm from "@/common/components/form-builders/InputForm";
+import InputForm from "@components/form-builders/InputForm";
 import { useOutletContext } from "react-router-dom";
+import InputAutoComplete from "@components/form-builders/InputAutoComplete";
 
-const GENERIC_OPTIONS = [
-	{ value: "napa", label: "Napa" },
-	{ value: "paracetamol", label: "Paracetamol (Acetaminophen)" },
-];
+const GENERIC_OPTIONS = ["Napa", "Paracetamol", "Paracetamol (Doxylamin)", "Paracetamol (Acetaminophen)"];
 const BRAND_OPTIONS = [
 	{ value: "napa", label: "Napa" },
 	{ value: "ace", label: "Ace" },
@@ -170,19 +168,20 @@ export default function AddMedicineForm() {
 					<Group grow w="100%" gap="les">
 						<SelectForm
 							form={form}
-							dropdownValue={GENERIC_OPTIONS}
-							value={form.values.generic}
-							changeValue={(v) => handleChange("generic", v)}
-							placeholder="Generic name"
-							w={150}
-						/>
-						<SelectForm
-							form={form}
+							name="brand"
 							dropdownValue={BRAND_OPTIONS}
 							value={form.values.brand}
 							changeValue={(v) => handleChange("brand", v)}
 							placeholder="Brand name"
-							w={150}
+						/>
+						<InputAutoComplete
+							tooltip="Enter generic name"
+							form={form}
+							name="generic"
+							data={GENERIC_OPTIONS}
+							value={form.values.generic}
+							changeValue={(v) => handleChange("generic", v)}
+							placeholder="Generic name"
 						/>
 					</Group>
 					<Group grow gap="les" w="100%">
@@ -192,7 +191,6 @@ export default function AddMedicineForm() {
 							value={form.values.dosage}
 							changeValue={(v) => handleChange("dosage", v)}
 							placeholder="Dosage"
-							w={100}
 						/>
 						<SelectForm
 							form={form}
@@ -200,7 +198,6 @@ export default function AddMedicineForm() {
 							value={form.values.frequency}
 							changeValue={(v) => handleChange("frequency", v)}
 							placeholder="Times"
-							w={100}
 						/>
 						<SelectForm
 							form={form}
@@ -208,7 +205,6 @@ export default function AddMedicineForm() {
 							value={form.values.timing}
 							changeValue={(v) => handleChange("timing", v)}
 							placeholder="Timing"
-							w={120}
 						/>
 						<SelectForm
 							form={form}
@@ -217,7 +213,6 @@ export default function AddMedicineForm() {
 							value={form.values.meditationDuration}
 							changeValue={(v) => handleChange("meditationDuration", v)}
 							placeholder="Meditation Duration"
-							w={120}
 						/>
 						<SelectForm
 							form={form}
@@ -225,7 +220,6 @@ export default function AddMedicineForm() {
 							value={form.values.durationUnit}
 							changeValue={(v) => handleChange("durationUnit", v)}
 							placeholder="Unit"
-							w={100}
 						/>
 						<Button onClick={handleAdd} variant="filled" bg="var(--theme-primary-color-6)">
 							{editIndex !== null ? "Update" : "Add"}
@@ -236,17 +230,17 @@ export default function AddMedicineForm() {
 			<Text fw={500} mb={8} px="sm" py="les" bg="var(--theme-primary-color-0)" mt="md">
 				List of Medicines
 			</Text>
-			{/* {medicines.map((medicine, index) => ( */}
 			<ScrollArea h={mainAreaHeight - 382}>
 				<Stack gap="xs" p="sm">
+					{/* {medicines.map((medicine, index) => ( */}
 					<MedicineListItem index={1} form={form} handleChange={handleChange} handleAdd={handleAdd} />
 					<MedicineListItem index={2} form={form} handleChange={handleChange} handleAdd={handleAdd} />
+					{/* ))} */}
 				</Stack>
 			</ScrollArea>
-			{/* ))} */}
 
 			{/* =================== Advise form =================== */}
-			<Grid columns={12} gutter="sm">
+			<Grid columns={12} gutter="sm" mt="xxs">
 				<Grid.Col span={7}>
 					<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
 						<Text bg="var(--theme-secondary-color-9)" fz="md" c="white" px="sm" py="les">
@@ -285,16 +279,18 @@ export default function AddMedicineForm() {
 								form={form}
 								label=""
 								tooltip="Discount on visit (%)"
+								name="visitPercent"
 								value={form.values.visitPercent}
-								changeValue={(v) => handleChange("visitTime", v)}
+								changeValue={(v) => handleChange("visitPercent", v)}
 								placeholder="Visit (%)"
 							/>
 							<InputForm
 								form={form}
 								label=""
 								tooltip="Discount on test (%)"
-								value={form.values.visitPercent}
-								changeValue={(v) => handleChange("visitTime", v)}
+								name="testPercent"
+								value={form.values.testPercent}
+								changeValue={(v) => handleChange("testPercent", v)}
 								placeholder="Test (%)"
 							/>
 						</Group>
@@ -303,7 +299,7 @@ export default function AddMedicineForm() {
 			</Grid>
 
 			{/* =================== button group =================== */}
-			<Button.Group mt="xxs">
+			<Button.Group bg="var(--theme-primary-color-0)">
 				<Button w="100%" bg="var(--theme-reset-btn-color)" leftSection={<IconRestore size={16} />}>
 					{t("reset")}
 				</Button>

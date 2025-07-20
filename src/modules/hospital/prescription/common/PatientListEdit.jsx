@@ -2,131 +2,136 @@ import { IconCalendar, IconPencil, IconUser, IconX } from "@tabler/icons-react";
 import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const patientList = [
 	{
 		id: 1,
 		date: "30-06-25",
 		name: "MD. Shafiqul",
-		patientId: "0000234",
-		mobile: "+88012345678",
+		patientId: "000231",
+		mobile: "+88017345650",
 	},
 	{
 		id: 2,
-		date: "30-06-25",
-		name: "MD. Shafiqul",
-		patientId: "0000234",
-		mobile: "+88012345678",
+		date: "31-06-25",
+		name: "John Doe",
+		patientId: "000232",
+		mobile: "+88016345673",
 	},
 	{
 		id: 3,
-		date: "30-06-25",
-		name: "MD. Shafiqul",
-		patientId: "0000234",
-		mobile: "+88012345678",
+		date: "23-06-25",
+		name: "Jane Doe",
+		patientId: "000233",
+		mobile: "+88015345677",
 	},
 	{
 		id: 4,
-		date: "30-06-25",
-		name: "MD. Shafiqul",
-		patientId: "0000234",
-		mobile: "+88012345678",
+		date: "19-06-25",
+		name: "John Smith",
+		patientId: "000234",
+		mobile: "+88019345600",
 	},
 	{
 		id: 5,
-		date: "30-06-25",
-		name: "MD. Shafiqul",
-		patientId: "0000234",
-		mobile: "+88012345678",
+		date: "05-06-25",
+		name: "Jane Smith",
+		patientId: "000235",
+		mobile: "+88019345667",
 	},
 	{
 		id: 6,
-		date: "30-06-25",
-		name: "MD. Shafiqul",
-		patientId: "0000234",
-		mobile: "+88012345678",
+		date: "13-06-25",
+		name: "John Doe",
+		patientId: "000236",
+		mobile: "+88017345688",
 	},
 	{
 		id: 7,
-		date: "30-06-25",
-		name: "MD. Shafiqul",
-		patientId: "0000234",
+		date: "12-06-25",
+		name: "Jane Doe",
+		patientId: "000237",
 		mobile: "+88012345678",
 	},
 	{
 		id: 8,
-		date: "30-06-25",
-		name: "MD. Shafiqul",
-		patientId: "0000234",
+		date: "08-06-25",
+		name: "John Smith",
+		patientId: "000238",
 		mobile: "+88012345678",
 	},
 	{
 		id: 9,
-		date: "30-06-25",
-		name: "MD. Shafiqul",
-		patientId: "0000234",
+		date: "07-06-25",
+		name: "Jane Smith",
+		patientId: "000239",
 		mobile: "+88012345678",
 	},
 	{
 		id: 10,
-		date: "30-06-25",
-		name: "MD. Shafiqul",
-		patientId: "0000234",
+		date: "06-06-25",
+		name: "John Doe",
+		patientId: "000240",
 		mobile: "+88012345678",
 	},
 	{
 		id: 11,
-		date: "30-06-25",
-		name: "MD. Shafiqul",
-		patientId: "0000234",
+		date: "05-06-25",
+		name: "Jane Smith",
+		patientId: "000241",
 		mobile: "+88012345678",
 	},
 	{
 		id: 12,
-		date: "30-06-25",
+		date: "04-06-25",
 		name: "MD. Shafiqul",
-		patientId: "0000234",
+		patientId: "000242",
 		mobile: "+88012345678",
 	},
 	{
 		id: 13,
-		date: "30-06-25",
+		date: "03-06-25",
 		name: "MD. Shafiqul",
-		patientId: "0000234",
+		patientId: "000243",
 		mobile: "+88012345678",
 	},
 	{
 		id: 14,
-		date: "30-06-25",
+		date: "02-06-25",
 		name: "MD. Shafiqul",
-		patientId: "0000234",
+		patientId: "000244",
 		mobile: "+88012345678",
 	},
 	{
 		id: 15,
-		date: "30-06-25",
+		date: "01-06-25",
 		name: "MD. Shafiqul",
-		patientId: "0000234",
+		patientId: "000245",
 		mobile: "+88012345678",
 	},
 	{
 		id: 16,
-		date: "30-06-25",
+		date: "01-06-25",
 		name: "MD. Shafiqul",
-		patientId: "0000234",
+		patientId: "000246",
 		mobile: "+88012345678",
 	},
 ];
 
-export default function PatientListEdit({ isOpenPatientInfo }) {
+export default function PatientListEdit({ isOpenPatientInfo, setPatientData }) {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const [selectPatient, setSelectPatient] = useState(patientList[1]);
 
+	useEffect(() => {
+		setPatientData(patientList[1]);
+	}, []);
+
 	const handleSelectPatient = (patient) => {
 		setSelectPatient(patient);
+		setPatientData(patient);
 	};
 
 	const handleEditClick = (id) => {

@@ -8,7 +8,7 @@ import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import React, { useCallback, useRef, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import KeywordSearch from "../common/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -133,6 +133,7 @@ const data = [
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
 export default function VisitTable() {
+	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [fetching, setFetching] = useState(false);
 	const { mainAreaHeight } = useOutletContext();
@@ -179,6 +180,10 @@ export default function VisitTable() {
 
 	const handleOpenViewOverview = () => {
 		openOverview();
+	};
+
+	const handlePrescription = (id) => {
+		navigate(`/hospital/prescription`);
 	};
 
 	return (
@@ -243,7 +248,7 @@ export default function VisitTable() {
 							title: t("Created"),
 							textAlignment: "right",
 							render: (item) => (
-								<Text fz="sm" onClick={() => handleView(item.id)} className="text-nowrap activate-link">
+								<Text fz="sm" onClick={() => handleView(item.id)} className="activate-link">
 									{item.created_at}
 								</Text>
 							),
@@ -251,11 +256,7 @@ export default function VisitTable() {
 						{
 							accessor: "created_by",
 							title: t("CreatedBy"),
-							render: (item) => (
-								<Text fz="sm" className="text-nowrap">
-									{item.created_by || "N/A"}
-								</Text>
-							),
+							render: (item) => item.created_by || "N/A",
 						},
 						{ accessor: "invoice_no", title: t("InvoiceNo") },
 						{ accessor: "visit_no", title: t("visitNo") },
@@ -282,12 +283,12 @@ export default function VisitTable() {
 										variant="default"
 										c="var(--theme-success-color)"
 										size="xs"
-										onClick={() => handleView(values.id)}
+										onClick={() => handlePrescription(values.id)}
 										radius="es"
 										leftSection={<IconEye size={18} />}
 										className="border-right-radius-none"
 									>
-										{t("View")}
+										{t("prescription")}
 									</Button>
 									<Menu
 										position="bottom-end"

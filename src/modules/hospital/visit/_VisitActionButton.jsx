@@ -179,10 +179,12 @@ export default function VisitActionButton({ form }) {
 										</Text>
 									</Box>
 									<InputNumberForm
+										label=""
 										form={form}
 										tooltip={t("enterAmount")}
 										placeholder={t("Amount")}
 										name="amount"
+										required
 									/>
 									<ActionIcon color="var(--theme-success-color)">
 										<IconArrowsSplit2 size={16} />

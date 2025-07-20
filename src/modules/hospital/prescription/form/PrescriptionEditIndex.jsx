@@ -28,10 +28,10 @@ export default function PrescriptionEditIndex() {
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={25}>
-							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-2ms-ease-out">
+							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-ease-out">
 								<Form form={form} />
 							</Grid.Col>
-							<Grid.Col span={isOpenPatientInfo ? 17 : 23} className="animate-2ms-ease-out">
+							<Grid.Col span={isOpenPatientInfo ? 17 : 23} className="animate-ease-out">
 								<Grid columns={25} gutter="les">
 									<Grid.Col span={9}>
 										<PatientReport />

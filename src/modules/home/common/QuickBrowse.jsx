@@ -17,6 +17,12 @@ import { useTranslation } from "react-i18next";
 
 const quickBrowseButtonData = [
 	{
+		label: "Ticket",
+		icon: IconStethoscope,
+		route: "/hospital/visit",
+		color: "var(--mantine-color-yellow-8)",
+	},
+	{
 		label: "reportDelivery",
 		icon: IconMailForward,
 		route: "/report-delivery",
@@ -39,12 +45,6 @@ const quickBrowseButtonData = [
 		icon: IconClipboardText,
 		route: "/report-prepare",
 		color: "var(--mantine-color-red-8)",
-	},
-	{
-		label: "doctorVisit",
-		icon: IconStethoscope,
-		route: "/hospital/visit",
-		color: "var(--mantine-color-yellow-8)",
 	},
 	{
 		label: "admission",
