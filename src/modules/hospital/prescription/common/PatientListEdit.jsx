@@ -3,6 +3,8 @@ import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon } from "@mantine/
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { setInsertType } from "@/app/store/core/crudSlice";
+import { useDispatch } from "react-redux";
 
 const patientList = [
 	{
@@ -120,10 +122,11 @@ const patientList = [
 ];
 
 export default function PatientListEdit({ isOpenPatientInfo, setPatientData }) {
-	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const [selectPatient, setSelectPatient] = useState(patientList[1]);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		setPatientData(patientList[1]);
@@ -136,6 +139,12 @@ export default function PatientListEdit({ isOpenPatientInfo, setPatientData }) {
 
 	const handleEditClick = (id) => {
 		navigate(`/hospital/prescription/edit/${id}`);
+		dispatch(
+			setInsertType({
+				insertType: "edit",
+				module: "prescription",
+			})
+		);
 	};
 
 	return (

@@ -1,14 +1,16 @@
 import React from "react";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import { Box, Grid, Stack, Text, List, Divider, Paper, Title, Group, ScrollArea } from "@mantine/core";
+import { Box, Grid, Stack, Text, List, Divider, Paper, Title, Group, ScrollArea, Flex, Button } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function VisitDetailsDrawer({ opened, close }) {
 	const { mainAreaHeight } = useOutletContext();
+	const { t } = useTranslation();
 
 	return (
 		<GlobalDrawer opened={opened} close={close} title="Visit Details" size="45%">
-			<ScrollArea scrollbars="y" type="hover" h={mainAreaHeight - 60}>
+			<ScrollArea scrollbars="y" type="hover" h={mainAreaHeight - 110}>
 				<Grid columns={14} h="100%" w="100%" mt="xs">
 					{/* =============== left column with patient info, OLE, complaints, investigation =============== */}
 					<Grid.Col span={6} h="100%">
@@ -160,6 +162,14 @@ export default function VisitDetailsDrawer({ opened, close }) {
 					</Grid.Col>
 				</Grid>
 			</ScrollArea>
+			<Flex justify="flex-end" mt="xs" gap="xxxs">
+				<Button variant="filled" color="var(--theme-tertiary-color-6)">
+					{t("Share")}
+				</Button>
+				<Button variant="filled" color="var(--theme-print-color)">
+					{t("Print")}
+				</Button>
+			</Flex>
 		</GlobalDrawer>
 	);
 }

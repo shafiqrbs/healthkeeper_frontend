@@ -230,7 +230,7 @@ export default function AddMedicineForm() {
 			<Text fw={500} mb={8} px="sm" py="les" bg="var(--theme-primary-color-0)" mt="md">
 				List of Medicines
 			</Text>
-			<ScrollArea h={mainAreaHeight - 382}>
+			<ScrollArea h={mainAreaHeight - 402}>
 				<Stack gap="xs" p="sm">
 					{/* {medicines.map((medicine, index) => ( */}
 					<MedicineListItem index={1} form={form} handleChange={handleChange} handleAdd={handleAdd} />
@@ -240,8 +240,8 @@ export default function AddMedicineForm() {
 			</ScrollArea>
 
 			{/* =================== Advise form =================== */}
-			<Grid columns={12} gutter="sm" mt="xxs">
-				<Grid.Col span={7}>
+			<Grid columns={12} gutter="xxxs" mt="xxs" p="les">
+				<Grid.Col span={6}>
 					<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
 						<Text bg="var(--theme-secondary-color-9)" fz="md" c="white" px="sm" py="les">
 							Advise
@@ -260,7 +260,7 @@ export default function AddMedicineForm() {
 						</Box>
 					</Box>
 				</Grid.Col>
-				<Grid.Col span={5}>
+				<Grid.Col span={6}>
 					<Box bg="var(--theme-primary-color-0)" p="sm">
 						<DatePickerForm
 							form={form}
@@ -299,7 +299,7 @@ export default function AddMedicineForm() {
 			</Grid>
 
 			{/* =================== button group =================== */}
-			<Button.Group bg="var(--theme-primary-color-0)">
+			<Button.Group bg="var(--theme-primary-color-0)" p="les">
 				<Button w="100%" bg="var(--theme-reset-btn-color)" leftSection={<IconRestore size={16} />}>
 					{t("reset")}
 				</Button>

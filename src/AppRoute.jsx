@@ -70,7 +70,6 @@ import DomainUserIndex from "@modules/domain/master-user/DomainUserIndex";
 // import VoucherCreateIndex from "@modules/accounting/voucher-create/VoucherCreateIndex";
 // import DiscountDashboard from "@modules/discount/dashboard/DiscountDashboard";
 import PrescriptionIndex from "@/modules/hospital/prescription/PrescriptionIndex";
-import PrescriptionEditIndex from "@/modules/hospital/prescription/form/PrescriptionEditIndex";
 import VisitIndex from "@/modules/hospital/visit/VisitIndex";
 import NotFound from "@components/layout/NotFound";
 import HospitalConfigIndex from "@modules/settings/HospitalConfigIndex";
@@ -121,7 +120,7 @@ function AppRoute() {
 				<Route path="/hospital/">
 					<Route path="visit" element={<VisitIndex />} />
 					<Route path="prescription" element={<PrescriptionIndex />} />
-					<Route path="prescription/edit/:id" element={<PrescriptionEditIndex />} />
+					<Route path="prescription/edit/:id" element={<PrescriptionIndex />} />
 				</Route>
 				<Route path="/settings/">
 					<Route path="hospital-config/:id" element={<HospitalConfigIndex />} />

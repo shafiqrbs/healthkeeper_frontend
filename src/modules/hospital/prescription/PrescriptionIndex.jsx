@@ -7,10 +7,9 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
 import { Box, Flex, Grid } from "@mantine/core";
-import PatientInformation from "./common/PatientInformation";
 import PatientReport from "./common/PatientReport";
 import AddMedicineForm from "./common/AddMedicineForm";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import Form from "./form/Form";
 
 export default function PrescriptionIndex() {
 	const { t } = useTranslation();
@@ -30,13 +29,8 @@ export default function PrescriptionIndex() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={25}>
 							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-ease-out">
-								<Box
-									className="right-arrow-button"
-									onClick={() => setIsOpenPatientInfo(!isOpenPatientInfo)}
-								>
-									{isOpenPatientInfo ? <IconChevronLeft size={20} /> : <IconChevronRight size={20} />}
-								</Box>
-								<PatientInformation
+								<Form
+									form={form}
 									isOpenPatientInfo={isOpenPatientInfo}
 									setIsOpenPatientInfo={setIsOpenPatientInfo}
 									setPatientData={setPatientData}

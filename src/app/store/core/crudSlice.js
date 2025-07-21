@@ -163,6 +163,19 @@ const initialState = {
 		validationMessages: [],
 	},
 	// -------------------- hospital modules stops -------------------------
+	// -------------------- prescription modules starts -------------------------
+	prescription: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		validation: false,
+		insertType: "create",
+		data: {},
+		editData: {},
+		filterData: { name: "" },
+		validationMessages: [],
+	},
+	// -------------------- prescription modules stops -------------------------
 	// -------------------- production modules stops -------------------------
 	searchKeyword: "",
 	searchKeywordTooltip: false,
