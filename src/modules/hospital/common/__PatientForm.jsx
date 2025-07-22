@@ -4,8 +4,8 @@ import { Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@man
 import { useState, useEffect } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconChevronRight, IconCirclePlusFilled } from "@tabler/icons-react";
-import { useOutletContext } from "react-router-dom";
+import { IconChevronRight, IconCirclePlusFilled, IconX } from "@tabler/icons-react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -15,7 +15,8 @@ import { DISEASE_PROFILE, DISTRICT_LIST } from "@/constants";
 import { calculateAge } from "@/common/utils";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 
-export default function __PatientForm({ form, handleSubmit }) {
+export default function __PatientForm({ form, handleSubmit, canClose = false }) {
+	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
 
@@ -28,9 +29,12 @@ export default function __PatientForm({ form, handleSubmit }) {
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
 			<form onSubmit={form.onSubmit(handleSubmit)}>
-				<Text px="sm" fw={600} fz="sm" pb="xs">
-					{t("patientInformation")}
-				</Text>
+				<Flex align="center" gap="xs" justify="space-between" px="sm" pb="xs">
+					<Text fw={600} fz="sm">
+						{t("patientInformation")}
+					</Text>
+					{canClose && <IconX className="cursor-pointer" size="16px" onClick={() => navigate(-1)} />}
+				</Flex>
 				<TabsWithSearch
 					hideSearchbar={true}
 					tabList={["new", "report", "reVisit"]}

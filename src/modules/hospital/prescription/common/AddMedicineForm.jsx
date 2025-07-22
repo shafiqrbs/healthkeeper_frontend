@@ -265,7 +265,7 @@ export default function AddMedicineForm() {
 				</Grid>
 			</Box>
 
-			<Text fw={500} mb={8} px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
+			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
 				List of Medicines
 			</Text>
 			<ScrollArea h={mainAreaHeight - 492} bg="white">
