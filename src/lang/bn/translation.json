@@ -873,5 +873,13 @@
 	"PharmacyAndBilling": "ফার্মেসি ও বিলিং",
 	"billing": "বিলিং",
 	"patientManagement": "রোগী ব্যবস্থাপনা",
-	"totalAge": "মোট বয়স"
+	"totalAge": "মোট বয়স",
+	"DummyMessage": "ডামি মেসেজ",
+	"RoomNoValidateMessage": "রুম নম্বরটি সঠিকভাবে লিখুন",
+	"Comment": "মন্তব্য",
+	"AdmissionNoValidateMessage": "ভর্তির নম্বরটি সঠিকভাবে লিখুন",
+	"ReferredNameValidateMessage": "রেফারারের নামটি সঠিকভাবে লিখুন",
+	"ReferredName": "রেফারারের নাম",
+	"AdmissionNo": "ভর্তির নম্বর",
+	"RoomNo": "রুম নম্বর"
 }

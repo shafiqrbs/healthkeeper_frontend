@@ -6,6 +6,7 @@ import { IconX } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import PatientReportAction from "./PatientReportAction";
 
 const OLE_OPTIONS = ["Investigation", "Investigation", "Investigation", "Investigation"];
 const CHIEF_COMPLAINTS = ["Fever (For 2 days)", "Runny Nose", "Headache"];
@@ -228,35 +229,7 @@ export default function PatientReport({ patientData }) {
 					</Stack>
 				</Box>
 			</ScrollArea>
-			<Button.Group>
-				<Button
-					w="30%"
-					px="xs"
-					variant="filled"
-					color="var(--theme-primary-color-6)"
-					bg="var(--theme-primary-color-6)"
-				>
-					{t("referred")}
-				</Button>
-				<Button
-					w="32%"
-					px="xs"
-					variant="filled"
-					color="var(--theme-primary-color-6)"
-					bg="var(--theme-secondary-color-5)"
-				>
-					{t("admission")}
-				</Button>
-				<Button
-					w="38%"
-					px="xs"
-					variant="filled"
-					color="var(--theme-primary-color-6)"
-					bg="var(--theme-secondary-color-8)"
-				>
-					{t("roomReferred")}
-				</Button>
-			</Button.Group>
+			<PatientReportAction form={form} />
 		</Box>
 	);
 }

@@ -1316,5 +1316,13 @@
 	"users": "Users",
 	"staff": "Staff",
 	"patientManagement": "Patient Management",
-	"totalAge": "Total Age"
+	"totalAge": "Total Age",
+	"DummyMessage": "Enter message here",
+	"RoomNoValidateMessage": "Please enter a valid room number",
+	"Comment": "Comment",
+	"AdmissionNoValidateMessage": "Please enter a valid admission number",
+	"ReferredNameValidateMessage": "Please enter a valid referred name",
+	"ReferredName": "Referred Name",
+	"AdmissionNo": "Admission No",
+	"RoomNo": "Room No"
 }

@@ -20,8 +20,10 @@ export default function DrawerStickyFooter({ type }) {
 							/*leftSection={<IconRestore size={16} />}*/
 						>
 							<Flex direction={`column`} gap={0}>
-							<Text>{t("Reset")}</Text>
-								<Flex direction={`column`} align={'center'} fz={'12'} c={'gray.6'}>alt+r</Flex>
+								<Text>{t("Reset")}</Text>
+								<Flex direction={`column`} align={"center"} fz={"12"} c={"gray.6"}>
+									alt+r
+								</Flex>
 							</Flex>
 						</Button>
 						<Button
@@ -31,10 +33,12 @@ export default function DrawerStickyFooter({ type }) {
 							id="EntityFormSubmit"
 							/*leftSection={<IconDeviceFloppy size={16} />}*/
 						>
-						<Flex direction={`column`} gap={0}>
-							<Text>{t(type === "create" ? "CreateAndSave" : "UpdateAndSave")}</Text>
-							<Flex direction={`column`} align={'center'} fz={'12'} c={'white'}>alt+s</Flex>
-						</Flex>
+							<Flex direction={`column`} gap={0}>
+								<Text>{t(type === "create" ? "CreateAndSave" : "UpdateAndSave")}</Text>
+								<Flex direction={`column`} align={"center"} fz={"12"} c={"white"}>
+									alt+s
+								</Flex>
+							</Flex>
 						</Button>
 					</Flex>
 				</Box>
