@@ -1324,5 +1324,8 @@
 	"ReferredNameValidateMessage": "Please enter a valid referred name",
 	"ReferredName": "Referred Name",
 	"AdmissionNo": "Admission No",
-	"RoomNo": "Room No"
+	"RoomNo": "Room No",
+	"Ticket": "Ticket",
+	"doctorRevisit": "Doctor Revisit",
+	"doctorReport": "Doctor Report"
 }

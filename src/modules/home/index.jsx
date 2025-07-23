@@ -1,4 +1,3 @@
-import React from "react";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import { Box, Flex, Grid, ScrollArea } from "@mantine/core";
 import Navigation from "@/common/components/layout/Navigation";

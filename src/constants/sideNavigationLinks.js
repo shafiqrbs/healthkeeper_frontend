@@ -35,42 +35,42 @@ export const sideNavigationLinks = {
 			icon: IconPrescription,
 			color: "#E53834",
 		},
-		{
-			label: "Accounting",
-			path: "/",
-			icon: IconFileInvoice,
-			color: "#4050B5",
-		},
-		{
-			label: "hrPayroll",
-			path: "/",
-			icon: IconUser,
-			color: "#F59E0D",
-		},
-		{
-			label: "manageWebsite",
-			path: "/",
-			icon: IconWorldWww,
-			color: "#07B6D4",
-		},
-		{
-			label: "media",
-			path: "/",
-			icon: IconPhoto,
-			color: "#11B880",
-		},
-		{
-			label: "manageAppearance",
-			path: "/",
-			icon: IconSettings,
-			color: "#1E88E5",
-		},
-		{
-			label: "invoiceSmsEmail",
-			path: "/",
-			icon: IconPhone,
-			color: "#4CB050",
-		},
+		// {
+		// 	label: "Accounting",
+		// 	path: "/",
+		// 	icon: IconFileInvoice,
+		// 	color: "#4050B5",
+		// },
+		// {
+		// 	label: "hrPayroll",
+		// 	path: "/",
+		// 	icon: IconUser,
+		// 	color: "#F59E0D",
+		// },
+		// {
+		// 	label: "manageWebsite",
+		// 	path: "/",
+		// 	icon: IconWorldWww,
+		// 	color: "#07B6D4",
+		// },
+		// {
+		// 	label: "media",
+		// 	path: "/",
+		// 	icon: IconPhoto,
+		// 	color: "#11B880",
+		// },
+		// {
+		// 	label: "manageAppearance",
+		// 	path: "/",
+		// 	icon: IconSettings,
+		// 	color: "#1E88E5",
+		// },
+		// {
+		// 	label: "invoiceSmsEmail",
+		// 	path: "/",
+		// 	icon: IconPhone,
+		// 	color: "#4CB050",
+		// },
 	],
 	base: [
 		{

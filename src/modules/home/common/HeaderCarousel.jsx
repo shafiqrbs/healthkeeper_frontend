@@ -1,4 +1,3 @@
-import React from "react";
 import { Carousel } from "@mantine/carousel";
 import { Flex, NumberFormatter, Progress, Text } from "@mantine/core";
 import classes from "@assets/css/Carousel.module.css";
@@ -15,7 +14,7 @@ const slides = [
 	},
 	{
 		icon: IconCreditCardPay,
-		title: "expense",
+		title: "Ticket",
 		color: "var(--theme-primary-color-7)",
 		amount: 30000,
 		progress: 50,

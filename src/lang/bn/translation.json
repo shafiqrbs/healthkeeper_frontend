@@ -881,5 +881,8 @@
 	"ReferredNameValidateMessage": "রেফারারের নামটি সঠিকভাবে লিখুন",
 	"ReferredName": "রেফারারের নাম",
 	"AdmissionNo": "ভর্তির নম্বর",
-	"RoomNo": "রুম নম্বর"
+	"RoomNo": "রুম নম্বর",
+	"Ticket": "টিকেট",
+	"doctorRevisit": "ডাক্তার পুনরায় ভিজিট",
+	"doctorReport": "ডাক্তার রিপোর্ট"
 }

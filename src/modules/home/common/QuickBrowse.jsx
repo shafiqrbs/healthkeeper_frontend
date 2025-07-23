@@ -30,13 +30,13 @@ const quickBrowseButtonData = [
 		color: "var(--mantine-color-blue-7)",
 	},
 	{
-		label: "addDiagnostic",
+		label: "doctorRevisit",
 		icon: IconTestPipe,
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR_REVISIT.INDEX,
 		color: "var(--theme-secondary-color-8)",
 	},
 	{
-		label: "reportDelivery",
+		label: "doctorReport",
 		icon: IconMailForward,
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR_REPORT.INDEX,
 		color: "var(--mantine-color-indigo-8)",

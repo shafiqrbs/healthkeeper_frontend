@@ -1,14 +1,15 @@
+import { useCallback, useRef, useState } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
+
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
-import { IconArrowRight, IconDotsVertical, IconEye, IconTrashX } from "@tabler/icons-react";
+import { IconArrowRight, IconDotsVertical, IconTrashX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { rem } from "@mantine/core";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
-import React, { useCallback, useRef, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
 import KeywordSearch from "../common/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -281,12 +282,13 @@ export default function Table() {
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
 									<Button
-										variant="default"
-										c="var(--theme-success-color)"
+										variant="filled"
+										bg="var(--theme-success-color)"
+										c="white"
 										size="xs"
 										onClick={() => handlePrescription(values.id)}
 										radius="es"
-										leftSection={<IconEye size={18} />}
+										rightSection={<IconArrowRight size={18} />}
 										className="border-right-radius-none"
 									>
 										{t("prescription")}
