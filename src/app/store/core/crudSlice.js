@@ -176,7 +176,45 @@ const initialState = {
 		validationMessages: [],
 	},
 	// -------------------- prescription modules stops -------------------------
-	// -------------------- production modules stops -------------------------
+	// -------------------- admission modules starts -------------------------
+	admission: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		validation: false,
+		insertType: "create",
+		data: {},
+		editData: {},
+		filterData: { name: "" },
+		validationMessages: [],
+	},
+	// -------------------- admission modules stops -------------------------
+	// -------------------- doctor report modules starts -------------------------
+	doctorReport: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		validation: false,
+		insertType: "create",
+		data: {},
+		editData: {},
+		filterData: { name: "" },
+		validationMessages: [],
+	},
+	// -------------------- doctor report modules stops -------------------------
+	// -------------------- doctor revisit modules starts -------------------------
+	doctorRevisit: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		validation: false,
+		insertType: "create",
+		data: {},
+		editData: {},
+		filterData: { name: "" },
+		validationMessages: [],
+	},
+	// -------------------- doctor revisit modules stops -------------------------
 	searchKeyword: "",
 	searchKeywordTooltip: false,
 	globalFetching: false,

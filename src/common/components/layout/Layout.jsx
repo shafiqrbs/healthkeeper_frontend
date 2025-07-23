@@ -7,7 +7,7 @@ import Footer from "./Footer";
 import MainDashboard from "@modules/dashboard/MainDashboard";
 import useConfigData from "@hooks/config-data/useConfigData";
 import { getLoggedInUser } from "@/common/utils";
-import HomeIndex from "@modules/home/HomeIndex";
+import HomeIndex from "@/modules/home";
 
 const Layout = () => {
 	const user = getLoggedInUser();

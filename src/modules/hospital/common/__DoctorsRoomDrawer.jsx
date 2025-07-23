@@ -5,7 +5,7 @@ import { IconDoor, IconUsers } from "@tabler/icons-react";
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
-import PatientList from "../prescription/common/PatientList";
+import PatientList from "./PatientList";
 
 const doctorData = [
 	{

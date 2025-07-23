@@ -1,0 +1,106 @@
+export const MASTER_DATA_ROUTES = {
+	API_ROUTES: {
+		LAB_USER: {
+			INDEX: "master-data/lab-user",
+			CREATE: "master-data/lab-user/create",
+			UPDATE: "master-data/lab-user/update",
+			VIEW: "master-data/lab-user/view",
+			DELETE: "master-data/lab-user/delete",
+		},
+	},
+	NAVIGATION_LINKS: {
+		LAB_USER: {
+			INDEX: "/master-data/lab-user",
+			CREATE: "/master-data/lab-user/create",
+			UPDATE: "/master-data/lab-user/update",
+			VIEW: "/master-data/lab-user/view",
+			DELETE: "/master-data/lab-user/delete",
+		},
+	},
+};
+
+export const CORE_DATA_ROUTES = {
+	API_ROUTES: {
+		VENDOR: {
+			INDEX: "core/vendor",
+			CREATE: "core/vendor/create",
+			UPDATE: "core/vendor",
+			VIEW: "core/vendor/view",
+		},
+	},
+	NAVIGATION_LINKS: {
+		VENDOR: {
+			INDEX: "/core/vendor",
+			CREATE: "/core/vendor/create",
+			UPDATE: "/core/vendor",
+			VIEW: "/core/vendor/view",
+		},
+	},
+};
+
+export const HOSPITAL_DATA_ROUTES = {
+	API_ROUTES: {
+		VISIT: {
+			INDEX: "hospital/visit",
+			CREATE: "hospital/visit/create",
+			UPDATE: "hospital/visit",
+			VIEW: "hospital/visit/view",
+		},
+		PRESCRIPTION: {
+			INDEX: "hospital/prescription",
+			CREATE: "hospital/prescription/create",
+			UPDATE: "hospital/prescription",
+			VIEW: "hospital/prescription/view",
+		},
+		ADMISSION: {
+			INDEX: "hospital/admission",
+			CREATE: "hospital/admission/create",
+			UPDATE: "hospital/admission",
+			VIEW: "hospital/admission/view",
+		},
+		DOCTOR_REPORT: {
+			INDEX: "hospital/doctor-report",
+			CREATE: "hospital/doctor-report/create",
+			UPDATE: "hospital/doctor-report",
+			VIEW: "hospital/doctor-report/view",
+		},
+		DOCTOR_REVISIT: {
+			INDEX: "hospital/doctor-revisit",
+			CREATE: "hospital/doctor-revisit/create",
+			UPDATE: "hospital/doctor-revisit",
+			VIEW: "hospital/doctor-revisit/view",
+		},
+	},
+	NAVIGATION_LINKS: {
+		VISIT: {
+			INDEX: "/hospital/visit",
+			CREATE: "/hospital/visit/create",
+			UPDATE: "/hospital/visit",
+			VIEW: "/hospital/visit/view",
+		},
+		PRESCRIPTION: {
+			INDEX: "/hospital/prescription",
+			CREATE: "/hospital/prescription/create",
+			UPDATE: "/hospital/prescription",
+			VIEW: "/hospital/prescription/view",
+		},
+		ADMISSION: {
+			INDEX: "/hospital/admission",
+			CREATE: "/hospital/admission/create",
+			UPDATE: "/hospital/admission",
+			VIEW: "/hospital/admission/view",
+		},
+		DOCTOR_REPORT: {
+			INDEX: "/hospital/doctor-report",
+			CREATE: "/hospital/doctor-report/create",
+			UPDATE: "/hospital/doctor-report",
+			VIEW: "/hospital/doctor-report/view",
+		},
+		DOCTOR_REVISIT: {
+			INDEX: "/hospital/doctor-revisit",
+			CREATE: "/hospital/doctor-revisit/create",
+			UPDATE: "/hospital/doctor-revisit",
+			VIEW: "/hospital/doctor-revisit/view",
+		},
+	},
+};

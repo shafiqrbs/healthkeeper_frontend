@@ -7,11 +7,11 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
 import { Box, Flex, Grid } from "@mantine/core";
-import PatientReport from "./common/PatientReport";
-import AddMedicineForm from "./common/AddMedicineForm";
-import Form from "./form/Form";
+import PatientReport from "../common/PatientReport";
+import AddMedicineForm from "../common/AddMedicineForm";
+import Form from "./form/_Form";
 
-export default function PrescriptionIndex() {
+export default function Index() {
 	const { t } = useTranslation();
 	const form = useForm(getPrescriptionFormInitialValues(t));
 	const progress = useGetLoadingProgress();

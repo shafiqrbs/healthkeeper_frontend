@@ -9,7 +9,7 @@ import GrandTotalOverview from "./common/GrandTotalOverview";
 import SparkLineOverview from "./common/SparkLineOverview";
 import HomeSkeleton from "@components/skeletons/HomeSkeleton";
 
-export default function HomeIndex({ height }) {
+export default function Index({ height }) {
 	const progress = useGetLoadingProgress();
 
 	return (

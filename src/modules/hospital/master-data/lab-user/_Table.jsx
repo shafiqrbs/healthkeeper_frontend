@@ -27,6 +27,7 @@ import CreateButton from "@components/buttons/CreateButton.jsx";
 import DataTableFooter from "@components/tables/DataTableFooter.jsx";
 import { sortBy } from "lodash";
 import { useOs } from "@mantine/hooks";
+import { MASTER_DATA_ROUTES } from "@/constants/appRoutes.js";
 
 const PER_PAGE = 50;
 
@@ -69,7 +70,7 @@ export default function _Table({ open, close }) {
 
 		setFetching(true);
 		const value = {
-			url: "core/vendor",
+			url: MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.INDEX,
 			params: {
 				term: searchKeyword,
 				name: vendorFilterData.name,
@@ -174,13 +175,13 @@ export default function _Table({ open, close }) {
 	const handleDeleteSuccess = async (id) => {
 		const resultAction = await dispatch(
 			deleteEntityData({
-				url: `core/vendor/${id}`,
-				module: "vendor",
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.DELETE}/${id}`,
+				module: "lab-user",
 				id,
 			})
 		);
 		if (deleteEntityData.fulfilled.match(resultAction)) {
-			dispatch(setRefetchData({ module: "vendor", refetching: true }));
+			dispatch(setRefetchData({ module: "lab-user", refetching: true }));
 			notifications.show({
 				color: SUCCESS_NOTIFICATION_COLOR,
 				title: t("DeleteSuccessfully"),
@@ -189,8 +190,8 @@ export default function _Table({ open, close }) {
 				autoClose: 700,
 				style: { backgroundColor: "lightgray" },
 			});
-			navigate("/core/vendor");
-			dispatch(setInsertType({ insertType: "create", module: "vendor" }));
+			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX);
+			dispatch(setInsertType({ insertType: "create", module: "lab-user" }));
 		} else {
 			notifications.show({
 				color: ERROR_NOTIFICATION_COLOR,
@@ -237,7 +238,7 @@ export default function _Table({ open, close }) {
 		<>
 			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
 				<Flex align="center" justify="space-between" gap={4}>
-					<KeywordSearch module="vendor" />
+					<KeywordSearch module="lab-user" />
 					<CreateButton handleModal={handleCreateVendor} text="CreateVendor" />
 				</Flex>
 			</Box>

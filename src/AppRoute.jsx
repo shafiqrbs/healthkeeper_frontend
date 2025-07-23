@@ -69,11 +69,14 @@ import DomainUserIndex from "@modules/domain/master-user/DomainUserIndex";
 // import DiscountConfigIndex from "@modules/discount/config/DiscountConfigIndex";
 // import VoucherCreateIndex from "@modules/accounting/voucher-create/VoucherCreateIndex";
 // import DiscountDashboard from "@modules/discount/dashboard/DiscountDashboard";
-import PrescriptionIndex from "@/modules/hospital/prescription/PrescriptionIndex";
-import VisitIndex from "@/modules/hospital/visit/VisitIndex";
-import NotFound from "@components/layout/NotFound";
 import HospitalConfigIndex from "@modules/settings/HospitalConfigIndex";
-import LabUserIndex from "@/modules/hospital/master-data/lab-user/Index";
+import PrescriptionIndex from "@/modules/hospital/prescription";
+import VisitIndex from "@/modules/hospital/visit";
+import LabUserIndex from "@/modules/hospital/master-data/lab-user";
+import DoctorReportIndex from "@/modules/hospital/doctor-report";
+import DoctorRevisitIndex from "@/modules/hospital/doctor-revisit";
+import AdmissionIndex from "@/modules/hospital/admission";
+import NotFound from "@components/layout/NotFound";
 
 function AppRoute() {
 	return (
@@ -119,8 +122,23 @@ function AppRoute() {
 				</Route>
 				<Route path="/hospital/">
 					<Route path="visit" element={<VisitIndex />} />
-					<Route path="prescription" element={<PrescriptionIndex />} />
-					<Route path="prescription/edit/:id" element={<PrescriptionIndex />} />
+
+					<Route path="admission" element={<AdmissionIndex />} />
+
+					<Route path="prescription">
+						<Route index element={<PrescriptionIndex />} />
+						<Route path="edit/:id" element={<PrescriptionIndex />} />
+					</Route>
+
+					<Route path="doctor-report">
+						<Route index element={<DoctorReportIndex />} />
+						<Route path="edit/:id" element={<DoctorReportIndex />} />
+					</Route>
+
+					<Route path="doctor-revisit">
+						<Route index element={<DoctorRevisitIndex />} />
+						<Route path="edit/:id" element={<DoctorRevisitIndex />} />
+					</Route>
 				</Route>
 				<Route path="/settings/">
 					<Route path="hospital-config/:id" element={<HospitalConfigIndex />} />

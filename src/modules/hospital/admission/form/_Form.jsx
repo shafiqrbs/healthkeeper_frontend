@@ -2,7 +2,7 @@ import PatientForm from "../../common/__PatientForm";
 import { useDispatch, useSelector } from "react-redux";
 import { Box } from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import PatientInformation from "../common/PatientInformation";
+import PatientInformation from "../../common/PatientInformation";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { setInsertType } from "@/app/store/core/crudSlice";
@@ -13,21 +13,12 @@ export default function Form({ form, isOpenPatientInfo, setIsOpenPatientInfo, se
 	const insertType = useSelector((state) => state.crud.prescription.insertType);
 
 	useEffect(() => {
-		if (params.id) {
-			dispatch(
-				setInsertType({
-					insertType: "edit",
-					module: "prescription",
-				})
-			);
-		} else {
-			dispatch(
-				setInsertType({
-					insertType: "create",
-					module: "prescription",
-				})
-			);
-		}
+		dispatch(
+			setInsertType({
+				insertType: params.id ? "edit" : "create",
+				module: "admission",
+			})
+		);
 	}, [params, dispatch]);
 
 	const handleSubmit = (values) => {

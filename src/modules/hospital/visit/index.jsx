@@ -4,14 +4,14 @@ import Navigation from "@components/layout/Navigation";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import { useOutletContext } from "react-router-dom";
 import Form from "./form/_Form";
-import VisitTable from "./_VisitTable";
-import VisitActionButton from "./_VisitActionButton";
+import VisitTable from "./_Table";
+import ActionButtons from "./_ActionButtons";
 import { useForm } from "@mantine/form";
 import { getVendorFormInitialValues } from "./helpers/request";
 import { useTranslation } from "react-i18next";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 
-export default function VisitIndex() {
+export default function Index() {
 	const { t } = useTranslation();
 	const form = useForm(getVendorFormInitialValues(t));
 	const progress = useGetLoadingProgress();
@@ -31,7 +31,7 @@ export default function VisitIndex() {
 							</Grid.Col>
 							<Grid.Col span={16}>
 								<VisitTable />
-								<VisitActionButton form={form} />
+								<ActionButtons form={form} />
 							</Grid.Col>
 						</Grid>
 					</Flex>

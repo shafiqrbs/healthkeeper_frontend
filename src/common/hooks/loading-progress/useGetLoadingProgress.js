@@ -6,7 +6,7 @@ export function useGetLoadingProgress() {
 	useEffect(() => {
 		const timer = setInterval(() => {
 			setProgress((oldProgress) => Math.min(oldProgress + 10, 100));
-		}, 100);
+		}, 70);
 
 		return () => clearInterval(timer);
 	}, []);

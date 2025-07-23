@@ -12,8 +12,9 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import KeywordSearch from "../common/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import VisitDetailsDrawer from "./__VisitDetailsDrawer";
-import VisitOverviewDrawer from "./__VisitOverviewDrawer";
+import DetailsDrawer from "./__DetailsDrawer";
+import OverviewDrawer from "./__OverviewDrawer";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
 
 const data = [
 	{
@@ -132,7 +133,7 @@ const data = [
 
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
-export default function VisitTable() {
+export default function Table() {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [fetching, setFetching] = useState(false);
@@ -183,7 +184,7 @@ export default function VisitTable() {
 	};
 
 	const handlePrescription = (id) => {
-		navigate(`/hospital/prescription`);
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
 	};
 
 	return (
@@ -347,8 +348,8 @@ export default function VisitTable() {
 				/>
 			</Box>
 			<DataTableFooter indexData={data} module="visit" />
-			<VisitDetailsDrawer opened={opened} close={close} />
-			<VisitOverviewDrawer opened={openedOverview} close={closeOverview} />
+			<DetailsDrawer opened={opened} close={close} />
+			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 		</Box>
 	);
 }

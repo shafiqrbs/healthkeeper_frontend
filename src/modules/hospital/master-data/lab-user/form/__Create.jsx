@@ -10,6 +10,7 @@ import { IconCheck, IconAlertCircle } from "@tabler/icons-react";
 import { rem, Text } from "@mantine/core";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
+import { MASTER_DATA_ROUTES } from "@/constants/appRoutes";
 
 export default function __Create({ form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -31,9 +32,9 @@ export default function __Create({ form, close }) {
 		try {
 			setIsLoading(true);
 			const value = {
-				url: "core/vendor",
+				url: MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.CREATE,
 				data: values,
-				module: "vendor",
+				module: "lab-user",
 			};
 
 			const resultAction = await dispatch(storeEntityData(value));
@@ -51,7 +52,7 @@ export default function __Create({ form, close }) {
 				form.reset();
 				close(); // close the drawer
 				setCustomerData(null);
-				dispatch(setRefetchData({ module: "vendor", refetching: true }));
+				dispatch(setRefetchData({ module: "lab-user", refetching: true }));
 				notifications.show({
 					color: SUCCESS_NOTIFICATION_COLOR,
 					title: t("CreateSuccessfully"),

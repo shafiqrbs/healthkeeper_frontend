@@ -10,9 +10,9 @@ import { storeEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/apiRoutes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
 
-export default function VisitActionButton({ form }) {
+export default function ActionButtons({ form }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const [isSubmitting, setIsSubmitting] = useState(false);

@@ -11,7 +11,7 @@ import { updateEntityData } from "@/app/store/core/crudThunk";
 import { useParams, useNavigate } from "react-router-dom";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
 import { setInsertType } from "@/app/store/core/crudSlice";
-import { MASTER_DATA_ROUTES } from "@/constants/apiRoutes";
+import { MASTER_DATA_ROUTES } from "@/constants/appRoutes";
 
 export default function __Update({ form, close }) {
 	const [isLoading, setIsLoading] = useState(false);

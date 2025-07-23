@@ -4,7 +4,7 @@ import { Box, Grid, Stack, Text, List, Divider, Paper, Title, Group, ScrollArea,
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-export default function VisitDetailsDrawer({ opened, close }) {
+export default function DetailsDrawer({ opened, close }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
 

@@ -14,6 +14,7 @@ import {
 } from "@tabler/icons-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
 
 const quickBrowseButtonData = [
 	{
@@ -23,16 +24,22 @@ const quickBrowseButtonData = [
 		color: "var(--mantine-color-yellow-8)",
 	},
 	{
-		label: "reportDelivery",
-		icon: IconMailForward,
-		route: "/report-delivery",
-		color: "var(--mantine-color-indigo-8)",
+		label: "admission",
+		icon: IconBed,
+		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX,
+		color: "var(--mantine-color-blue-7)",
 	},
 	{
 		label: "addDiagnostic",
 		icon: IconTestPipe,
-		route: "/add-diagnostic",
+		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR_REVISIT.INDEX,
 		color: "var(--theme-secondary-color-8)",
+	},
+	{
+		label: "reportDelivery",
+		icon: IconMailForward,
+		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR_REPORT.INDEX,
+		color: "var(--mantine-color-indigo-8)",
 	},
 	{
 		label: "diagnosis",
@@ -45,12 +52,6 @@ const quickBrowseButtonData = [
 		icon: IconClipboardText,
 		route: "/report-prepare",
 		color: "var(--mantine-color-red-8)",
-	},
-	{
-		label: "admission",
-		icon: IconBed,
-		route: "/admission",
-		color: "var(--mantine-color-blue-7)",
 	},
 ];
 

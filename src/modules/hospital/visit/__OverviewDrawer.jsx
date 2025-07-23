@@ -51,7 +51,7 @@ const roomCollectionColumns = [
 	{ key: "amount", label: "amount" },
 ];
 
-export default function VisitOverviewDrawer({ opened, close }) {
+export default function OverviewDrawer({ opened, close }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 
