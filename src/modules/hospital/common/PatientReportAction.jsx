@@ -3,8 +3,22 @@ import { useTranslation } from "react-i18next";
 import CompactDrawer from "@components/drawers/CompactDrawer";
 import { useDisclosure } from "@mantine/hooks";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
-import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
+import SelectForm from "@components/form-builders/SelectForm";
+
+const roomsOptions = [
+	{ value: "101", label: "101" },
+	{ value: "102", label: "102" },
+	{ value: "103", label: "103" },
+	{ value: "104", label: "104" },
+	{ value: "105", label: "105" },
+];
+
+const referredOptions = [
+	{ value: "Dr. John Doe", label: "Dr. John Doe" },
+	{ value: "Dr. Jane Smith", label: "Dr. Jane Smith" },
+	{ value: "Dr. Jim Beam", label: "Dr. Jim Beam" },
+];
 
 export default function PatientReportAction({ form }) {
 	const { t } = useTranslation();
@@ -64,9 +78,12 @@ export default function PatientReportAction({ form }) {
 						</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
-						<InputForm
+						<SelectForm
 							tooltip={t("ReferredNameValidateMessage")}
 							label=""
+							dropdownValue={referredOptions}
+							value={form.values.referred_name}
+							changeValue={(v) => form.setFieldValue("referred_name", v)}
 							placeholder={t("ReferredName")}
 							required={true}
 							nextField="name"
@@ -106,24 +123,6 @@ export default function PatientReportAction({ form }) {
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
-						<Text fz="sm">
-							{t("AdmissionNo")} <RequiredAsterisk />
-						</Text>
-					</Grid.Col>
-					<Grid.Col span={13}>
-						<InputForm
-							tooltip={t("AdmissionNoValidateMessage")}
-							label=""
-							placeholder={t("AdmissionNo")}
-							required={true}
-							nextField="name"
-							form={form}
-							name="admission_no"
-							mt={0}
-							id="admission_no"
-						/>
-					</Grid.Col>
-					<Grid.Col span={7}>
 						<Text fz="sm">{t("Comment")}</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
@@ -158,7 +157,10 @@ export default function PatientReportAction({ form }) {
 						</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
-						<InputForm
+						<SelectForm
+							dropdownValue={roomsOptions}
+							value={form.values.room_no}
+							changeValue={(v) => form.setFieldValue("room_no", v)}
 							tooltip={t("RoomNoValidateMessage")}
 							label=""
 							placeholder={t("RoomNo")}

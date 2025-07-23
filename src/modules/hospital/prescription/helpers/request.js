@@ -4,7 +4,7 @@ const initialValues = {
 	name: "",
 };
 
-export const getPrescriptionFormInitialValues = (t) => {
+export const getPrescriptionFormInitialValues = () => {
 	return {
 		initialValues,
 
@@ -24,12 +24,11 @@ const medicineInitialValues = {
 	unit: "",
 };
 
-export const getMedicineFormInitialValues = (t) => {
+export const getMedicineFormInitialValues = () => {
 	return {
 		initialValues: medicineInitialValues,
 
 		validate: {
-			generic: (value) => (value ? null : "Generic name is required"),
 			brand: (value) => (value ? null : "Brand name is required"),
 			dosage: (value) => (value ? null : "Dosage is required"),
 			times: (value) => (value ? null : "Times is required"),

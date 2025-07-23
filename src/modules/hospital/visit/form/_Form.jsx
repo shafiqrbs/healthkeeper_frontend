@@ -12,7 +12,7 @@ export default function _Form({ form }) {
 				position: "top-right",
 			});
 		}
-	}, [form.errors]);
+	}, [form]);
 
 	const handleSubmit = (values) => {
 		console.log(values);

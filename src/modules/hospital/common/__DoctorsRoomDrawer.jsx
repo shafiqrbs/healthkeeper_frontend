@@ -1,11 +1,9 @@
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import { Box, Flex, Grid, Text, ScrollArea } from "@mantine/core";
+import { Box, Grid, Text, ScrollArea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconDoor, IconUsers } from "@tabler/icons-react";
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import TabsWithSearch from "@components/advance-search/TabsWithSearch";
-import PatientList from "./PatientList";
+import RoomCard from "./RoomCard";
 
 const doctorData = [
 	{
@@ -34,6 +32,10 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 		form.setFieldValue("roomNo", room);
 	};
 
+	const handleRoomClick = (room) => {
+		selectRoom(room + 1);
+	};
+
 	return (
 		<GlobalDrawer
 			opened={opened}
@@ -51,35 +53,12 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 						</Text>
 						<ScrollArea h={height} scrollbars="y" p="xs">
 							{[...Array(20)].map((_, index) => (
-								<Box
+								<RoomCard
 									key={index}
-									p="xs"
-									bg="var(--theme-tertiary-color-0)"
-									mb="les"
-									className={`borderRadiusAll cursor-pointer ${
-										selectedRoom === index ? "active-box" : ""
-									}`}
-									onClick={() => selectRoom(index)}
-								>
-									<Flex justify="space-between" mb="xxxs">
-										<Text fw={500} c="var(--theme-tertiary-color-6)" fz="sm">
-											Patient
-										</Text>
-										<Flex align="center" gap="xxxs">
-											<IconUsers color="var(--theme-primary-color-6)" size={16} stroke={1.5} />
-											<Text fz="sm">234</Text>
-										</Flex>
-									</Flex>
-									<Flex justify="space-between">
-										<Text fw={500} c="var(--theme-tertiary-color-6)" fz="sm">
-											Room
-										</Text>
-										<Flex align="center" gap="xxxs">
-											<IconDoor color="var(--theme-primary-color-6)" size={16} stroke={1.5} />
-											<Text fz="sm">001</Text>
-										</Flex>
-									</Flex>
-								</Box>
+									room={index + 1}
+									selectedRoom={selectedRoom}
+									handleRoomClick={handleRoomClick}
+								/>
 							))}
 						</ScrollArea>
 					</Box>

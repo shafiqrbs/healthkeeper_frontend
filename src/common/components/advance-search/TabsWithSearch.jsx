@@ -1,9 +1,16 @@
 import { Box, Flex, Tabs, TextInput, FloatingIndicator, Button } from "@mantine/core";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import tabClass from "@assets/css/Tab.module.css";
+import { IconSearch } from "@tabler/icons-react";
 
-export default function TabsWithSearch({ expand = true, tabPanels, tabList, hideSearchbar = false }) {
+export default function TabsWithSearch({
+	expand = true,
+	tabPanels,
+	tabList,
+	hideSearchbar = false,
+	searchbarContainerBg = "var(--theme-secondary-color-5)",
+}) {
 	const { t } = useTranslation();
 	const [rootRef, setRootRef] = useState(null);
 	const [tabValue, setTabValue] = useState(tabList[0]);
@@ -49,8 +56,12 @@ export default function TabsWithSearch({ expand = true, tabPanels, tabList, hide
 				<Tabs.Panel key={tab.tab} value={tab.tab}>
 					<Box py={hideSearchbar ? "0" : "xs"} bg="white">
 						{!hideSearchbar && (
-							<Box p="xs" bg="var(--theme-secondary-color-5)">
-								<TextInput name="search" placeholder={t("search")} />
+							<Box p="xs" bg={searchbarContainerBg}>
+								<TextInput
+									leftSection={<IconSearch size={18} />}
+									name="search"
+									placeholder={t("search")}
+								/>
 							</Box>
 						)}
 						{tab.component}

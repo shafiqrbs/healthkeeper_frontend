@@ -101,7 +101,7 @@ export default function ActionButtons({ form }) {
 								id="referredName"
 								nextField="referredName"
 								value={form.values.referredName}
-								required
+								disabled
 								dropdownValue={["Dr. Rahim Khan", "MBBS Kamruzzaman"]}
 								rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 							/>
@@ -111,7 +111,7 @@ export default function ActionButtons({ form }) {
 								label={t("marketingEx")}
 								placeholder="Mr. Doland Rak"
 								name="marketingEx"
-								required
+								disabled
 								dropdownValue={["Mr. Rahim", "Mr. Karim"]}
 								value={form.values.marketingEx}
 								tooltip={t("enterPatientMarketingEx")}

@@ -169,6 +169,7 @@ export default function PatientListEdit({ isOpenPatientInfo, setPatientData }) {
 			<ScrollArea scrollbars="y" h={mainAreaHeight - 230}>
 				{patientList.map((patient) => (
 					<Grid
+						key={patient.id}
 						columns={14}
 						my="es"
 						p="les"

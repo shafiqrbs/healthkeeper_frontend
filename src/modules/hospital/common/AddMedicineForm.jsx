@@ -1,8 +1,8 @@
+import { useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import { Box, Button, Group, ActionIcon, Text, Stack, Flex, Grid, ScrollArea, Divider, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconPencil, IconPlus, IconRestore, IconTrash } from "@tabler/icons-react";
-import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -124,7 +124,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 
 export default function AddMedicineForm() {
 	const { t } = useTranslation();
-	const form = useForm(getMedicineFormInitialValues(t));
+	const form = useForm(getMedicineFormInitialValues());
 	const [medicines, setMedicines] = useState([]);
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
@@ -176,7 +176,6 @@ export default function AddMedicineForm() {
 							value={form.values.generic}
 							changeValue={(v) => handleChange("generic", v)}
 							placeholder="Generic name"
-							required
 						/>
 					</Group>
 					<Group grow gap="les" w="100%">
@@ -246,18 +245,18 @@ export default function AddMedicineForm() {
 			<Box bg="white" px="sm" mt="xxs">
 				<Grid columns={19}>
 					<Grid.Col span={6}>
-						<Text>1. Napa</Text>
-						<Text>2. Paracetamol</Text>
+						<Text fz="xs">1. Napa</Text>
+						<Text fz="xs">2. Paracetamol</Text>
 					</Grid.Col>
 					<Divider orientation="vertical" />
 					<Grid.Col span={6}>
-						<Text>Brand name: </Text>
-						<Text>Strength: </Text>
-						<Text>Form: </Text>
+						<Text fz="xs">Brand name: </Text>
+						<Text fz="xs">Strength: </Text>
+						<Text fz="xs">Form: </Text>
 					</Grid.Col>
 					<Divider orientation="vertical" />
 					<Grid.Col span={6}>
-						<Text fz="sm" className="truncate-lines">
+						<Text fz="xs" className="truncate-lines">
 							It is a long established fact that a reader will be distracted by the readable content of a
 							page when looking.
 						</Text>
@@ -268,7 +267,7 @@ export default function AddMedicineForm() {
 			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
 				List of Medicines
 			</Text>
-			<ScrollArea h={mainAreaHeight - 492} bg="white">
+			<ScrollArea h={mainAreaHeight - 462} bg="white">
 				<Stack gap="xs" p="sm">
 					{medicines.map((medicine, index) => (
 						<MedicineListItem
@@ -326,6 +325,7 @@ export default function AddMedicineForm() {
 								value={form.values.visitPercent}
 								changeValue={(v) => handleChange("visitPercent", v)}
 								placeholder="Visit (%)"
+								disabled
 							/>
 							<InputForm
 								form={form}
@@ -335,6 +335,7 @@ export default function AddMedicineForm() {
 								value={form.values.testPercent}
 								changeValue={(v) => handleChange("testPercent", v)}
 								placeholder="Test (%)"
+								disabled
 							/>
 						</Group>
 					</Box>

@@ -1,11 +1,10 @@
-import React from "react";
 import { Box, Flex, Grid } from "@mantine/core";
 import Navigation from "@components/layout/Navigation";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import { useOutletContext } from "react-router-dom";
 import Form from "./form/_Form";
 import VisitTable from "./_Table";
-import ActionButtons from "./_ActionButtons";
+import ActionButtons from "../common/_ActionButtons";
 import { useForm } from "@mantine/form";
 import { getVendorFormInitialValues } from "./helpers/request";
 import { useTranslation } from "react-i18next";

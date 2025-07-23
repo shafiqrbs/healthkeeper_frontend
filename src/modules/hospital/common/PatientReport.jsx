@@ -1,5 +1,5 @@
-import { Box, Flex, Stack, Text, Group, Checkbox, ActionIcon, Select, ScrollArea, Button } from "@mantine/core";
-import React, { useState } from "react";
+import { Box, Flex, Stack, Text, Group, Checkbox, ActionIcon, Select, ScrollArea } from "@mantine/core";
+import { useState } from "react";
 import InputForm from "@components/form-builders/InputForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import { IconX } from "@tabler/icons-react";
