@@ -16,6 +16,7 @@ import {
 	Tooltip,
 	ActionIcon,
 	Checkbox,
+	List,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconCheck, IconDeviceFloppy, IconXboxX, IconPlus, IconUsersGroup } from "@tabler/icons-react";

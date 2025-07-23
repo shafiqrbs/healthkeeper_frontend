@@ -1,7 +1,6 @@
-import React from "react";
-import { ActionIcon, Grid, Box, Drawer, Text, Flex } from "@mantine/core";
+import { Grid, Box, Drawer, Text, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconArrowLeft, IconX } from "@tabler/icons-react";
+import { IconArrowLeft } from "@tabler/icons-react";
 
 export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }) {
 	const { t } = useTranslation();

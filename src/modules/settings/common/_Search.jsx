@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { rem, Grid, Tooltip, TextInput, ActionIcon } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconInfoCircle, IconRestore, IconSearch, IconX, IconPdf, IconFileTypeXls } from "@tabler/icons-react";

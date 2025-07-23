@@ -1,10 +1,9 @@
-import React from "react";
 import { IconDashboard, IconUsers } from "@tabler/icons-react";
 import { Button, Flex, Tooltip, ScrollArea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
-export default function _Navigation({ module, id }) {
+export default function _Navigation() {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 30;
@@ -31,7 +30,7 @@ export default function _Navigation({ module, id }) {
 							variant="light"
 							color="black"
 							radius="xl"
-							onClick={(e) => {
+							onClick={() => {
 								navigate("/domain");
 							}}
 						>
@@ -62,7 +61,7 @@ export default function _Navigation({ module, id }) {
 							variant="light"
 							color="black"
 							radius="xl"
-							onClick={(e) => {
+							onClick={() => {
 								navigate("/domain/user");
 							}}
 						>
@@ -93,7 +92,7 @@ export default function _Navigation({ module, id }) {
 							variant="light"
 							color="black"
 							radius="xl"
-							onClick={(e) => {
+							onClick={() => {
 								navigate("/domain/head");
 							}}
 						>
@@ -125,7 +124,7 @@ export default function _Navigation({ module, id }) {
 							variant="light"
 							color="black"
 							radius="xl"
-							onClick={(e) => {
+							onClick={() => {
 								navigate("/domain/sitemap");
 							}}
 						>

@@ -87,7 +87,7 @@ const opdData = [
 	},
 ];
 
-export default function Overview({ height }) {
+export default function _Overview({ height }) {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 

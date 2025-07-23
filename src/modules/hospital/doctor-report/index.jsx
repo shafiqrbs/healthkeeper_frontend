@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "./helpers/request";
 import { useOutletContext } from "react-router-dom";

@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
@@ -9,7 +8,7 @@ import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
 import { getInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
-import Shortcut from "@/modules/shortcut/Shortcut";
+// import Shortcut from "@/modules/shortcut/Shortcut";
 import IndexForm from "./form/__IndexForm";
 import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
