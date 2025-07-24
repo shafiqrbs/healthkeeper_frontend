@@ -83,7 +83,7 @@ export default function Index() {
 													setPatientData={setPatientData}
 												/>
 											),
-											activeColor: "var(--theme-primary-color-6)",
+											activeColor: "var(--theme-warn-color-6)",
 										},
 									]}
 								/>

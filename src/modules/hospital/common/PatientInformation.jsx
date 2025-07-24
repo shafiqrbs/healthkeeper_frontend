@@ -51,6 +51,7 @@ export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatient
 								action="report"
 							/>
 						),
+						activeColor: "var(--theme-secondary-color-6)",
 					},
 					{
 						tab: "reVisit",
@@ -61,6 +62,7 @@ export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatient
 								action="reVisit"
 							/>
 						),
+						activeColor: "var(--theme-warn-color-6)",
 					},
 				]}
 			/>
