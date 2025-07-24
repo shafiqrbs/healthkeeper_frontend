@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import tabClass from "@assets/css/Tab.module.css";
 import { IconSearch } from "@tabler/icons-react";
 
+const DEFAULT_ACTIVE_COLOR = "var(--theme-primary-color-6)";
+
 export default function TabsWithSearch({
 	expand = true,
 	tabPanels,
@@ -27,13 +29,21 @@ export default function TabsWithSearch({
 				<Flex w="100%" justify={expand ? "space-between" : "center"}>
 					{expand ? (
 						<>
-							{tabList.map((tab) => (
+							{tabList.map((tab, index) => (
 								<Tabs.Tab
 									w="32%"
 									key={tab}
 									value={tab}
 									ref={setControlRef(tab)}
 									className={tabClass.tab}
+									styles={{
+										tab: {
+											backgroundColor:
+												tabValue === tab
+													? tabPanels[index].activeColor || DEFAULT_ACTIVE_COLOR
+													: "transparent",
+										},
+									}}
 								>
 									{t(tab)}
 								</Tabs.Tab>

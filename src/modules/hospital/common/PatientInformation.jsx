@@ -1,7 +1,7 @@
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import { Box, Button, Flex, SegmentedControl, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import PatientListEdit from "./PatientListEdit";
+import PatientListWithActions from "./PatientListWithActions";
 
 export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatientInfo, setPatientData }) {
 	const { t } = useTranslation();
@@ -35,19 +35,31 @@ export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatient
 					{
 						tab: "new",
 						component: (
-							<PatientListEdit isOpenPatientInfo={isOpenPatientInfo} setPatientData={setPatientData} />
+							<PatientListWithActions
+								isOpenPatientInfo={isOpenPatientInfo}
+								setPatientData={setPatientData}
+								action="edit"
+							/>
 						),
 					},
 					{
 						tab: "report",
 						component: (
-							<PatientListEdit isOpenPatientInfo={isOpenPatientInfo} setPatientData={setPatientData} />
+							<PatientListWithActions
+								isOpenPatientInfo={isOpenPatientInfo}
+								setPatientData={setPatientData}
+								action="report"
+							/>
 						),
 					},
 					{
 						tab: "reVisit",
 						component: (
-							<PatientListEdit isOpenPatientInfo={isOpenPatientInfo} setPatientData={setPatientData} />
+							<PatientListWithActions
+								isOpenPatientInfo={isOpenPatientInfo}
+								setPatientData={setPatientData}
+								action="reVisit"
+							/>
 						),
 					},
 				]}

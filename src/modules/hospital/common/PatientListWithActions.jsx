@@ -1,4 +1,4 @@
-import { IconCalendar, IconPencil, IconUser, IconX } from "@tabler/icons-react";
+import { IconCalendar, IconPencil, IconPrinter, IconUser, IconX } from "@tabler/icons-react";
 import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -121,7 +121,7 @@ const patientList = [
 	},
 ];
 
-export default function PatientListEdit({ isOpenPatientInfo, setPatientData }) {
+export default function PatientListWithActions({ isOpenPatientInfo, setPatientData, action = "edit" }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
@@ -147,6 +147,45 @@ export default function PatientListEdit({ isOpenPatientInfo, setPatientData }) {
 		);
 	};
 
+	const renderActionButtons = (patient) => {
+		if (action === "report") {
+			return (
+				<>
+					<Button variant="filled" size="xs" bg="var(--theme-secondary-color-6)" aria-label="report" miw={76}>
+						{t("report")}
+					</Button>
+					<ActionIcon variant="transparent" bg="white" aria-label="close">
+						<IconPrinter size={16} stroke={1.5} color="var(--theme-secondary-color-6)" />
+					</ActionIcon>
+				</>
+			);
+		} else if (action === "reVisit") {
+			return (
+				<>
+					<Button variant="filled" size="xs" bg="var(--theme-warn-color-6)" aria-label="confirm" miw={76}>
+						{t("reVisit")}
+					</Button>
+					<ActionIcon variant="transparent" bg="white" aria-label="close">
+						<IconX size={16} stroke={1.5} color="var(--theme-error-color)" />
+					</ActionIcon>
+				</>
+			);
+		} else if (action === "edit" && selectPatient.id !== patient.id) {
+			return (
+				<>
+					<Button variant="filled" size="xs" bg="var(--theme-primary-color-6)" aria-label="confirm" miw={76}>
+						{t("confirm")}
+					</Button>
+					<ActionIcon onClick={() => handleEditClick(patient.id)} variant="solid" bg="white">
+						<IconX size={16} stroke={1.5} color="var(--theme-error-color)" />
+					</ActionIcon>
+				</>
+			);
+		}
+
+		return null;
+	};
+
 	return (
 		<Box pos="relative">
 			<Flex
@@ -157,14 +196,14 @@ export default function PatientListEdit({ isOpenPatientInfo, setPatientData }) {
 				justify={isOpenPatientInfo ? "" : "center"}
 				mt="xxxs"
 			>
-				<Text ta="center" fz="sm" fw={500}>
-					S/N
-				</Text>
 				{isOpenPatientInfo && (
 					<Text ta="center" fz="sm" fw={500}>
-						Patient Name
+						S/N
 					</Text>
 				)}
+				<Text ta="center" fz="sm" fw={500}>
+					Patient Name
+				</Text>
 			</Flex>
 			<ScrollArea scrollbars="y" h={mainAreaHeight - 230}>
 				{patientList.map((patient) => (
@@ -181,13 +220,13 @@ export default function PatientListEdit({ isOpenPatientInfo, setPatientData }) {
 						}
 						onClick={() => handleSelectPatient(patient)}
 					>
-						<Grid.Col span={isOpenPatientInfo ? 1 : 14}>
-							<Text fz="sm" fw={500} ta="center">
-								{patient.id}.
-							</Text>
-						</Grid.Col>
-						{isOpenPatientInfo && (
+						{isOpenPatientInfo ? (
 							<>
+								<Grid.Col span={1}>
+									<Text fz="sm" fw={500} ta="center">
+										{patient.id}.
+									</Text>
+								</Grid.Col>
 								<Grid.Col span={4}>
 									<Flex align="center" gap="es">
 										<IconCalendar size={16} stroke={1.5} />
@@ -204,7 +243,7 @@ export default function PatientListEdit({ isOpenPatientInfo, setPatientData }) {
 								</Grid.Col>
 								<Grid.Col span={4}>
 									<Flex align="center" h="100%" justify="flex-end" gap="les">
-										{selectPatient.id === patient.id ? (
+										{selectPatient.id === patient.id && action === "edit" && (
 											<>
 												<Button
 													variant="filled"
@@ -227,25 +266,22 @@ export default function PatientListEdit({ isOpenPatientInfo, setPatientData }) {
 													/>
 												</ActionIcon>
 											</>
-										) : (
-											<>
-												<Button
-													variant="filled"
-													size="xs"
-													bg="var(--theme-primary-color-6)"
-													aria-label="confirm"
-													miw={76}
-												>
-													{t("confirm")}
-												</Button>
-												<ActionIcon variant="transparent" aria-label="close">
-													<IconX size={16} stroke={1.5} color="var(--theme-error-color)" />
-												</ActionIcon>
-											</>
 										)}
+										{renderActionButtons(patient)}
 									</Flex>
 								</Grid.Col>
 							</>
+						) : (
+							<Grid.Col span={14}>
+								<Flex align="center" gap="es">
+									<IconCalendar size={16} stroke={1.5} />
+									<Text fz="sm">{patient.date}</Text>
+								</Flex>
+								<Flex align="center" gap="es">
+									<IconUser size={16} stroke={1.5} />
+									<Text fz="sm">{patient.patientId}</Text>
+								</Flex>
+							</Grid.Col>
 						)}
 					</Grid>
 				))}

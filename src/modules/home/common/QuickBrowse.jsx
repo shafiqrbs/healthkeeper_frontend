@@ -20,7 +20,7 @@ const quickBrowseButtonData = [
 	{
 		label: "Ticket",
 		icon: IconStethoscope,
-		route: "/hospital/visit",
+		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
 		color: "var(--mantine-color-yellow-8)",
 	},
 	{
@@ -30,16 +30,16 @@ const quickBrowseButtonData = [
 		color: "var(--mantine-color-blue-7)",
 	},
 	{
-		label: "doctorRevisit",
-		icon: IconTestPipe,
-		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR_REVISIT.INDEX,
-		color: "var(--theme-secondary-color-8)",
+		label: "reportDelivery",
+		icon: IconMailForward,
+		route: "/report-delivery",
+		color: "var(--mantine-color-indigo-8)",
 	},
 	{
-		label: "doctorReport",
-		icon: IconMailForward,
-		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR_REPORT.INDEX,
-		color: "var(--mantine-color-indigo-8)",
+		label: "addDiagnostic",
+		icon: IconTestPipe,
+		route: "/add-diagnostic",
+		color: "var(--theme-secondary-color-8)",
 	},
 	{
 		label: "diagnosis",

@@ -58,18 +58,6 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "hospital/admission",
 			VIEW: "hospital/admission/view",
 		},
-		DOCTOR_REPORT: {
-			INDEX: "hospital/doctor-report",
-			CREATE: "hospital/doctor-report/create",
-			UPDATE: "hospital/doctor-report",
-			VIEW: "hospital/doctor-report/view",
-		},
-		DOCTOR_REVISIT: {
-			INDEX: "hospital/doctor-revisit",
-			CREATE: "hospital/doctor-revisit/create",
-			UPDATE: "hospital/doctor-revisit",
-			VIEW: "hospital/doctor-revisit/view",
-		},
 	},
 	NAVIGATION_LINKS: {
 		VISIT: {
@@ -89,18 +77,6 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "/hospital/admission/create",
 			UPDATE: "/hospital/admission",
 			VIEW: "/hospital/admission/view",
-		},
-		DOCTOR_REPORT: {
-			INDEX: "/hospital/doctor-report",
-			CREATE: "/hospital/doctor-report/create",
-			UPDATE: "/hospital/doctor-report",
-			VIEW: "/hospital/doctor-report/view",
-		},
-		DOCTOR_REVISIT: {
-			INDEX: "/hospital/doctor-revisit",
-			CREATE: "/hospital/doctor-revisit/create",
-			UPDATE: "/hospital/doctor-revisit",
-			VIEW: "/hospital/doctor-revisit/view",
 		},
 	},
 };

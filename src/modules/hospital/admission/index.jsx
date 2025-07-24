@@ -11,7 +11,7 @@ import PatientReport from "../common/PatientReport";
 import ActionButtons from "../common/_ActionButtons";
 import { Form as PatientForm } from "../common/__PatientForm";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
-import PatientListEdit from "../common/PatientListEdit";
+import PatientListWithActions from "../common/PatientListWithActions";
 import RoomCard from "../common/RoomCard";
 
 export default function Index() {
@@ -57,7 +57,7 @@ export default function Index() {
 										{
 											tab: "new",
 											component: (
-												<PatientListEdit
+												<PatientListWithActions
 													isOpenPatientInfo={isOpenPatientInfo}
 													setPatientData={setPatientData}
 												/>
@@ -65,11 +65,25 @@ export default function Index() {
 										},
 										{
 											tab: "report",
-											component: <Text>Report</Text>,
+											component: (
+												<PatientListWithActions
+													action="report"
+													isOpenPatientInfo={isOpenPatientInfo}
+													setPatientData={setPatientData}
+												/>
+											),
+											activeColor: "var(--theme-secondary-color-6)",
 										},
 										{
 											tab: "reVisit",
-											component: <Text>Report</Text>,
+											component: (
+												<PatientListWithActions
+													action="reVisit"
+													isOpenPatientInfo={isOpenPatientInfo}
+													setPatientData={setPatientData}
+												/>
+											),
+											activeColor: "var(--theme-primary-color-6)",
 										},
 									]}
 								/>

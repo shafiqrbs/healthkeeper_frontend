@@ -184,8 +184,8 @@ export default function Table() {
 		openOverview();
 	};
 
-	const handlePrescription = (id) => {
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+	const handleAdmission = (id) => {
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
 	};
 
 	return (
@@ -286,12 +286,12 @@ export default function Table() {
 										bg="var(--theme-success-color)"
 										c="white"
 										size="xs"
-										onClick={() => handlePrescription(values.id)}
+										onClick={() => handleAdmission(values.id)}
 										radius="es"
 										rightSection={<IconArrowRight size={18} />}
 										className="border-right-radius-none"
 									>
-										{t("prescription")}
+										{t("Admission")}
 									</Button>
 									<Menu
 										position="bottom-end"

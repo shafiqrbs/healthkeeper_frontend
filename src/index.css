@@ -31,6 +31,16 @@
     --theme-tertiary-color-7: var(--mantine-color-gray-7);
     --theme-tertiary-color-8: var(--mantine-color-gray-8);
 
+    --theme-warn-color-0: var(--mantine-color-orange-0);
+    --theme-warn-color-1: var(--mantine-color-orange-1);
+    --theme-warn-color-2: var(--mantine-color-orange-2);
+    --theme-warn-color-3: var(--mantine-color-orange-3);
+    --theme-warn-color-4: var(--mantine-color-orange-4);
+    --theme-warn-color-5: var(--mantine-color-orange-5);
+    --theme-warn-color-6: var(--mantine-color-orange-6);
+    --theme-warn-color-7: var(--mantine-color-orange-7);
+    --theme-warn-color-8: var(--mantine-color-orange-8);
+
     --theme-success-color: var(--mantine-color-green-6);
     --theme-remove-color: var(--mantine-color-red-6);
     --theme-delete-color: var(--mantine-color-red-6);

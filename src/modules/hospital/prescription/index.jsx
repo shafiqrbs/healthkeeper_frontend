@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "./helpers/request";
 import { useOutletContext } from "react-router-dom";
@@ -28,7 +28,7 @@ export default function Index() {
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={25}>
-							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-ease-out">
+							<Grid.Col span={isOpenPatientInfo ? 8 : 3} pos="relative" className="animate-ease-out">
 								<Form
 									form={form}
 									isOpenPatientInfo={isOpenPatientInfo}
@@ -36,7 +36,7 @@ export default function Index() {
 									setPatientData={setPatientData}
 								/>
 							</Grid.Col>
-							<Grid.Col span={isOpenPatientInfo ? 17 : 23} className="animate-ease-out">
+							<Grid.Col span={isOpenPatientInfo ? 17 : 22} className="animate-ease-out">
 								<Grid columns={25} gutter="les">
 									<Grid.Col span={9}>
 										<PatientReport patientData={patientData} />

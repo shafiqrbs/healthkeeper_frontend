@@ -16,7 +16,6 @@
     border-radius: 4px;
 
     &[data-active] {
-        background-color: var(--theme-primary-color-6);
         color: white;
     }
 }
