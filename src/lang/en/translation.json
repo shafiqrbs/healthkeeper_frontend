@@ -1327,5 +1327,6 @@
 	"RoomNo": "Room No",
 	"Ticket": "Ticket",
 	"doctorRevisit": "Doctor Revisit",
-	"doctorReport": "Doctor Report"
+	"doctorReport": "Doctor Report",
+	"EmergencyInformation": "Emergency Information"
 }

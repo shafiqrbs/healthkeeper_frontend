@@ -58,6 +58,12 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "hospital/admission",
 			VIEW: "hospital/admission/view",
 		},
+		EMERGENCY: {
+			INDEX: "hospital/emergency",
+			CREATE: "hospital/emergency/create",
+			UPDATE: "hospital/emergency",
+			VIEW: "hospital/emergency/view",
+		},
 	},
 	NAVIGATION_LINKS: {
 		VISIT: {
@@ -77,6 +83,12 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "/hospital/admission/create",
 			UPDATE: "/hospital/admission",
 			VIEW: "/hospital/admission/view",
+		},
+		EMERGENCY: {
+			INDEX: "/hospital/emergency",
+			CREATE: "/hospital/emergency/create",
+			UPDATE: "/hospital/emergency",
+			VIEW: "/hospital/emergency/view",
 		},
 	},
 };

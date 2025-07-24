@@ -184,15 +184,15 @@ export default function Table() {
 		openOverview();
 	};
 
-	const handlePrescription = () => {
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+	const handleAdmission = () => {
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
 	};
 
 	return (
 		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
-					{t("visitInformation")}
+					{t("EmergencyInformation")}
 				</Text>
 				<Flex gap="xs" align="center">
 					<Tabs mt="xs" variant="none" value={value} onChange={setValue}>
@@ -286,12 +286,12 @@ export default function Table() {
 										bg="var(--theme-success-color)"
 										c="white"
 										size="xs"
-										onClick={() => handlePrescription(values.id)}
+										onClick={() => handleAdmission(values.id)}
 										radius="es"
 										rightSection={<IconArrowRight size={18} />}
 										className="border-right-radius-none"
 									>
-										{t("prescription")}
+										{t("Admission")}
 									</Button>
 									<Menu
 										position="bottom-end"

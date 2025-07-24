@@ -90,7 +90,7 @@ export default function ActionButtons({ form }) {
 						/>
 					</Grid.Col>
 					<Grid.Col span={8} px="xs" bg="var(--theme-tertiary-color-0)">
-						<Stack>
+						{/* <Stack>
 							<SelectForm
 								key={referredNameKey}
 								form={form}
@@ -117,7 +117,7 @@ export default function ActionButtons({ form }) {
 								tooltip={t("enterPatientMarketingEx")}
 								rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 							/>
-						</Stack>
+						</Stack> */}
 					</Grid.Col>
 					<Grid.Col span={8} bg="var(--theme-tertiary-color-1)" px="xs">
 						<Stack gap="xs" className="method-carousel">

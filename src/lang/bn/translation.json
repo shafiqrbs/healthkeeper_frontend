@@ -884,5 +884,6 @@
 	"RoomNo": "রুম নম্বর",
 	"Ticket": "টিকেট",
 	"doctorRevisit": "ডাক্তার পুনরায় ভিজিট",
-	"doctorReport": "ডাক্তার রিপোর্ট"
+	"doctorReport": "ডাক্তার রিপোর্ট",
+	"EmergencyInformation": "জরুরি তথ্য"
 }

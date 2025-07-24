@@ -74,6 +74,7 @@ import PrescriptionIndex from "@/modules/hospital/prescription";
 import VisitIndex from "@/modules/hospital/visit";
 import LabUserIndex from "@/modules/hospital/master-data/lab-user";
 import AdmissionIndex from "@/modules/hospital/admission";
+import EmergencyIndex from "@/modules/hospital/emergency";
 import NotFound from "@components/layout/NotFound";
 
 function AppRoute() {
@@ -127,6 +128,8 @@ function AppRoute() {
 						<Route index element={<PrescriptionIndex />} />
 						<Route path="edit/:id" element={<PrescriptionIndex />} />
 					</Route>
+
+					<Route path="emergency" element={<EmergencyIndex />} />
 				</Route>
 				<Route path="/settings/">
 					<Route path="hospital-config/:id" element={<HospitalConfigIndex />} />
