@@ -12,8 +12,8 @@ export default function _IndexForm({ form, close, mode }) {
 	const dispatch = useDispatch();
 
 	// =============== selectors ================
-	const insertType = useSelector((state) => state.crud.vendor.insertType);
-	const vendorFilterData = useSelector((state) => state.crud.vendor.filterData);
+	const insertType = useSelector((state) => state.crud.labUser.insertType);
+	const vendorFilterData = useSelector((state) => state.crud.labUser.filterData);
 
 	// =============== memoized values ================
 	const isEditMode = mode === "edit";
@@ -28,7 +28,7 @@ export default function _IndexForm({ form, close, mode }) {
 
 	// =============== handle edit mode initialization ================
 	const handleEditMode = () => {
-		dispatch(setInsertType({ insertType: "update", module: "vendor" }));
+		dispatch(setInsertType({ insertType: "update", module: "labUser" }));
 		dispatch(
 			editEntityData({
 				url: `core/vendor/${id}`,
@@ -39,18 +39,18 @@ export default function _IndexForm({ form, close, mode }) {
 
 	// =============== handle create mode initialization ================
 	const handleCreateMode = () => {
-		dispatch(setInsertType({ insertType: "create", module: "vendor" }));
+		dispatch(setInsertType({ insertType: "create", module: "labUser" }));
 		dispatch(setSearchKeyword(""));
 		dispatch(
 			setFilterData({
-				module: "vendor",
+				module: "labUser",
 				data: {
 					...vendorFilterData,
 					...defaultFilterData,
 				},
 			})
 		);
-		navigate("/core/vendor", { replace: true });
+		navigate("/master-data/lab-user", { replace: true });
 	};
 
 	// =============== effect to handle mode switching ================

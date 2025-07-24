@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import VendorForm from "./___LabUserForm";
 import { modals } from "@mantine/modals";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -12,6 +11,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
 import { setInsertType } from "@/app/store/core/crudSlice";
 import { MASTER_DATA_ROUTES } from "@/constants/appRoutes";
+import ___Form from "@modules/hospital/master-data/lab-user/form/___Form";
 
 export default function __Update({ form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +38,7 @@ export default function __Update({ form, close }) {
 			const value = {
 				url: `${MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.UPDATE}/${id}`,
 				data: values,
-				module: "lab-user",
+				module: "labUser",
 			};
 
 			const resultAction = await dispatch(updateEntityData(value));
@@ -68,7 +68,7 @@ export default function __Update({ form, close }) {
 				setTimeout(() => {
 					useVendorDataStoreIntoLocalStorage();
 					form.reset();
-					dispatch(setInsertType({ insertType: "create", module: "vendor" }));
+					dispatch(setInsertType({ insertType: "create", module: "labUser" }));
 					setIsLoading(false);
 					close(); // close the drawer
 					navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX, { replace: true });
@@ -89,7 +89,7 @@ export default function __Update({ form, close }) {
 	}
 
 	return (
-		<VendorForm
+		<___Form
 			type="update"
 			form={form}
 			data={vendorUpdateData}

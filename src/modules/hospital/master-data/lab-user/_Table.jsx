@@ -79,7 +79,7 @@ export default function _Table({ open, close }) {
 				page: pageNum,
 				offset: PER_PAGE,
 			},
-			module: "vendor",
+			module: "labUser",
 		};
 
 		try {
@@ -95,7 +95,7 @@ export default function _Table({ open, close }) {
 				if (append && pageNum > 1) {
 					dispatch(
 						setItemData({
-							module: "vendor",
+							module: "labUser",
 							data: {
 								...vendorListData,
 								data: [...vendorListData.data, ...newData],
@@ -141,7 +141,7 @@ export default function _Table({ open, close }) {
 				module: "vendor",
 			})
 		);
-		navigate(`/core/vendor/${id}`);
+		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.UPDATE}/${id}`);
 	};
 
 	const handleDelete = (id) => {
@@ -176,12 +176,12 @@ export default function _Table({ open, close }) {
 		const resultAction = await dispatch(
 			deleteEntityData({
 				url: `${MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.DELETE}/${id}`,
-				module: "lab-user",
+				module: "labUser",
 				id,
 			})
 		);
 		if (deleteEntityData.fulfilled.match(resultAction)) {
-			dispatch(setRefetchData({ module: "lab-user", refetching: true }));
+			dispatch(setRefetchData({ module: "labUser", refetching: true }));
 			notifications.show({
 				color: SUCCESS_NOTIFICATION_COLOR,
 				title: t("DeleteSuccessfully"),
@@ -191,7 +191,7 @@ export default function _Table({ open, close }) {
 				style: { backgroundColor: "lightgray" },
 			});
 			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX);
-			dispatch(setInsertType({ insertType: "create", module: "lab-user" }));
+			dispatch(setInsertType({ insertType: "create", module: "labUser" }));
 		} else {
 			notifications.show({
 				color: ERROR_NOTIFICATION_COLOR,
@@ -226,20 +226,20 @@ export default function _Table({ open, close }) {
 		}
 	};
 
-	const handleCreateVendor = () => {
+	const handleCreateForm = () => {
 		open();
-		dispatch(setInsertType({ insertType: "create", module: "vendor" }));
-		navigate("/core/vendor");
+		dispatch(setInsertType({ insertType: "create", module: "labUser" }));
+		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX);
 	};
 
-	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateVendor()]]);
+	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
 
 	return (
 		<>
 			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
 				<Flex align="center" justify="space-between" gap={4}>
-					<KeywordSearch module="lab-user" />
-					<CreateButton handleModal={handleCreateVendor} text="CreateVendor" />
+					<KeywordSearch module="labUser" />
+					<CreateButton handleModal={handleCreateForm} text="AddLabUser" />
 				</Flex>
 			</Box>
 			<Box className="borderRadiusAll border-top-none">
@@ -271,7 +271,7 @@ export default function _Table({ open, close }) {
 								</Text>
 							),
 						},
-						{ accessor: "company_name", title: t("CompanyName"), sortable: true },
+						{ accessor: "company_name", title: t("Designation"), sortable: true },
 						{ accessor: "mobile", title: t("Mobile"), sortable: true },
 						{
 							accessor: "status",
@@ -355,7 +355,7 @@ export default function _Table({ open, close }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={vendorListData} module="vendors" />
+			<DataTableFooter indexData={vendorListData} module="labUser" />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={vendorObject} />
 		</>
 	);

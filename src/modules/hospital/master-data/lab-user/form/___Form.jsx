@@ -11,7 +11,7 @@ import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 
-export default function __LabUserForm({
+export default function ___Form({
 	form,
 	type = "create",
 	data,
@@ -69,26 +69,7 @@ export default function __LabUserForm({
 							<Stack justify="space-between" className="drawer-form-stack-vertical">
 								<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 									<Stack>
-										<Grid align="center" columns={20}>
-											<Grid.Col span={6}>
-												<Text fz="sm">
-													{t("CompanyName")} <RequiredAsterisk />
-												</Text>
-											</Grid.Col>
-											<Grid.Col span={14}>
-												<InputForm
-													tooltip={t("CompanyNameValidateMessage")}
-													label=""
-													placeholder={t("CompanyName")}
-													required={true}
-													nextField="name"
-													form={form}
-													name="company_name"
-													mt={0}
-													id="company_name"
-												/>
-											</Grid.Col>
-										</Grid>
+
 										<Grid align="center" columns={20}>
 											<Grid.Col span={6}>
 												<Text fz="sm">

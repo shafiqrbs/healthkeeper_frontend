@@ -22,7 +22,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 						<Flex align="center" gap={8}>
 							<IconArrowLeft size={16} />{" "}
 							<Text mt="es" fz={16} fw={500}>
-								{t("VendorDetailsData")}
+								{t("LabUserDetailsData")}
 							</Text>
 						</Flex>
 					</Drawer.Title>
@@ -31,21 +31,22 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 				<Box mb={0} h={height}>
 					<Box p={"md"} className="borderRadiusAll" h={height}>
 						<Box>
-							<Grid columns={24}>
-								<Grid.Col span={"8"} className="drawer-form-input-label">
-									{t("CompanyName")}
-								</Grid.Col>
-								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>
-									{showData && showData.company_name && showData.company_name}
-								</Grid.Col>
-							</Grid>
+
 							<Grid columns={24}>
 								<Grid.Col span={"8"} className="drawer-form-input-label">
 									{t("Name")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>{showData && showData.name && showData.name}</Grid.Col>
+							</Grid>
+							<Grid columns={24}>
+								<Grid.Col span={"8"} className="drawer-form-input-label">
+									{t("Designation")}
+								</Grid.Col>
+								<Grid.Col span={"1"}>:</Grid.Col>
+								<Grid.Col span={"auto"}>
+									{showData && showData.company_name && showData.company_name}
+								</Grid.Col>
 							</Grid>
 							<Grid columns={24}>
 								<Grid.Col span={"8"} className="drawer-form-input-label">
@@ -63,13 +64,6 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 								<Grid.Col span={"auto"}>{showData && showData.email && showData.email}</Grid.Col>
 							</Grid>
 
-							<Grid columns={24}>
-								<Grid.Col span={"8"} className="drawer-form-input-label">
-									{t("Address")}
-								</Grid.Col>
-								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>{showData && showData.address && showData.address}</Grid.Col>
-							</Grid>
 						</Box>
 					</Box>
 				</Box>

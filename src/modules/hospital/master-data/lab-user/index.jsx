@@ -12,6 +12,7 @@ import { useForm } from "@mantine/form";
 import IndexForm from "./form/__IndexForm";
 import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
+import _Table from "./_Table";
 
 export default function Index({ mode = "create" }) {
 	const { t } = useTranslation();
@@ -36,7 +37,7 @@ export default function Index({ mode = "create" }) {
 				<>
 					<CoreHeaderNavbar
 						module="core"
-						pageTitle={t("ManageVendor")}
+						pageTitle={t("ManageLabUser")}
 						roles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""
@@ -51,30 +52,17 @@ export default function Index({ mode = "create" }) {
 
 							<Grid.Col span={matches ? 36 : 34}>
 								<Box bg="white" p="xs" className="borderRadiusAll">
-									<VendorTable open={open} close={close} />
+									<_Table open={open} close={close} />
 								</Box>
 							</Grid.Col>
 
 							<GlobalDrawer
 								opened={opened}
 								close={close}
-								title={mode === "create" ? t("CreateVendor") : t("UpdateVendor")}
+								title={mode === "create" ? t("CreateLabUser") : t("UpdateLabUser")}
 							>
 								<IndexForm form={form} mode={mode} close={close} />
 							</GlobalDrawer>
-
-							{/* {!matches && (
-								<Grid.Col span={2}>
-									<Box bg="white" className="borderRadiusAll" pt="sm">
-										<Shortcut
-											form={form} // have to reset the form in shortcut
-											FormSubmit="EntityFormSubmit"
-											Name="name"
-											inputType="select"
-										/>
-									</Box>
-								</Grid.Col>
-							)} */}
 						</Grid>
 					</Box>
 				</>

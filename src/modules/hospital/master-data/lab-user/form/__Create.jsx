@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import VendorForm from "./___LabUserForm";
 import { modals } from "@mantine/modals";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { useDispatch } from "react-redux";
@@ -11,6 +10,7 @@ import { rem, Text } from "@mantine/core";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
 import { MASTER_DATA_ROUTES } from "@/constants/appRoutes";
+import ___Form from "@modules/hospital/master-data/lab-user/form/___Form";
 
 export default function __Create({ form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +34,7 @@ export default function __Create({ form, close }) {
 			const value = {
 				url: MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.CREATE,
 				data: values,
-				module: "lab-user",
+				module: "labUser",
 			};
 
 			const resultAction = await dispatch(storeEntityData(value));
@@ -52,7 +52,7 @@ export default function __Create({ form, close }) {
 				form.reset();
 				close(); // close the drawer
 				setCustomerData(null);
-				dispatch(setRefetchData({ module: "lab-user", refetching: true }));
+				dispatch(setRefetchData({ module: "labUser", refetching: true }));
 				notifications.show({
 					color: SUCCESS_NOTIFICATION_COLOR,
 					title: t("CreateSuccessfully"),
@@ -78,7 +78,7 @@ export default function __Create({ form, close }) {
 	}
 
 	return (
-		<VendorForm
+		<___Form
 			form={form}
 			handleSubmit={handleSubmit}
 			customerData={customerData}

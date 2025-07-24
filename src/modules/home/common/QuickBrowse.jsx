@@ -56,13 +56,13 @@ const quickBrowseButtonData = [
 ];
 
 const quickBrowseCardData = [
-	{
+	/*{
 		label: "commission",
 		icon: IconChecklist,
 		route: "/commission",
 		color: "var(--mantine-color-indigo-7)",
 		backgroundColor: "var(--mantine-color-indigo-0)",
-	},
+	},*/
 	{
 		label: "diagnosticTest",
 		icon: IconMicroscope,
@@ -77,27 +77,27 @@ const quickBrowseCardData = [
 		color: "var(--mantine-color-cyan-7)",
 		backgroundColor: "var(--mantine-color-cyan-0)",
 	},
-	{
+	/*{
 		label: "itemIssue",
 		icon: IconBuildingHospital,
 		route: "/item-issue",
 		color: "var(--mantine-color-red-7)",
 		backgroundColor: "var(--mantine-color-red-0)",
-	},
+	},*/
 	{
-		label: "newDoctor",
+		label: "OPDQueue",
 		icon: IconStethoscope,
-		route: "/new-doctor",
+		route: "/hospital/visit",
 		color: "var(--mantine-color-yellow-7)",
 		backgroundColor: "var(--mantine-color-yellow-0)",
 	},
-	{
+	/*{
 		label: "manageStock",
 		icon: IconPackageExport,
 		route: "/manage-stock",
 		color: "var(--mantine-color-blue-7)",
 		backgroundColor: "var(--mantine-color-blue-0)",
-	},
+	},*/
 ];
 
 export default function QuickBrowse() {

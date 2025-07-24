@@ -162,6 +162,22 @@ const SITEMAP_SECTIONS = [
 				icon: IconUser,
 			},
 		],
+	},{
+		title: "MasterData",
+		icon: IconUsers,
+		color: "var(--mantine-color-indigo-6)",
+		links: [
+			{
+				label: "LabUsers",
+				route: "/master-data/lab-user",
+				icon: IconUsers,
+			},
+			{
+				label: "staff",
+				route: "/staff",
+				icon: IconUser,
+			},
+		],
 	},
 ];
 

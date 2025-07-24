@@ -12,7 +12,7 @@ export const MASTER_DATA_ROUTES = {
 		LAB_USER: {
 			INDEX: "/master-data/lab-user",
 			CREATE: "/master-data/lab-user/create",
-			UPDATE: "/master-data/lab-user/update",
+			UPDATE: "/master-data/lab-user",
 			VIEW: "/master-data/lab-user/view",
 			DELETE: "/master-data/lab-user/delete",
 		},

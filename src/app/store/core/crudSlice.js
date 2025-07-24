@@ -33,6 +33,15 @@ const initialState = {
 		validation: false,
 		filterData: { name: "", mobile: "", email: "" },
 	},
+	labUser: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "", mobile: "", email: "" },
+	},
 	customer: {
 		isLoading: true,
 		refetching: true,
