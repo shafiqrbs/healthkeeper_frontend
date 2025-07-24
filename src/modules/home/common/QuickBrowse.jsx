@@ -18,7 +18,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
 
 const quickBrowseButtonData = [
 	{
-		label: "Ticket",
+		label: "Outdoor Ticket",
 		icon: IconStethoscope,
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
 		color: "var(--mantine-color-yellow-8)",
@@ -36,15 +36,15 @@ const quickBrowseButtonData = [
 		color: "var(--mantine-color-indigo-8)",
 	},
 	{
-		label: "addDiagnostic",
+		label: "Medicine",
 		icon: IconTestPipe,
 		route: "/add-diagnostic",
 		color: "var(--theme-secondary-color-8)",
 	},
 	{
-		label: "diagnosis",
+		label: "Emergency",
 		icon: IconTestPipe2,
-		route: "/diagnosis",
+		route: "/hospital/emergency",
 		color: "var(--mantine-color-cyan-8)",
 	},
 	{
@@ -71,7 +71,7 @@ const quickBrowseCardData = [
 		backgroundColor: "var(--theme-secondary-color-0)",
 	},
 	{
-		label: "payment",
+		label: "Billing",
 		icon: IconWallet,
 		route: "/payment",
 		color: "var(--mantine-color-cyan-7)",
