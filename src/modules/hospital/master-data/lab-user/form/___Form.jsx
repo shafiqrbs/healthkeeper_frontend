@@ -73,14 +73,14 @@ export default function ___Form({
 										<Grid align="center" columns={20}>
 											<Grid.Col span={6}>
 												<Text fz="sm">
-													{t("VendorName")} <RequiredAsterisk />
+													{t("UserName")} <RequiredAsterisk />
 												</Text>
 											</Grid.Col>
 											<Grid.Col span={14}>
 												<InputForm
 													form={form}
 													tooltip={t("VendorNameValidateMessage")}
-													placeholder={t("VendorName")}
+													placeholder={t("UserName")}
 													required={true}
 													name="name"
 													id="name"
@@ -92,7 +92,26 @@ export default function ___Form({
 										<Grid align="center" columns={20}>
 											<Grid.Col span={6}>
 												<Text fz="sm">
-													{t("VendorMobile")} <RequiredAsterisk />
+													{t("Designation")} <RequiredAsterisk />
+												</Text>
+											</Grid.Col>
+											<Grid.Col span={14}>
+												<InputForm
+													form={form}
+													tooltip={t("VendorNameValidateMessage")}
+													placeholder={t("Designation")}
+													required={true}
+													name="name"
+													id="name"
+													nextField="mobile"
+													mt="xxxs"
+												/>
+											</Grid.Col>
+										</Grid>
+										<Grid align="center" columns={20}>
+											<Grid.Col span={6}>
+												<Text fz="sm">
+													{t("Mobile")} <RequiredAsterisk />
 												</Text>
 											</Grid.Col>
 											<Grid.Col span={14}>
@@ -129,21 +148,7 @@ export default function ___Form({
 												/>
 											</Grid.Col>
 										</Grid>
-										<Grid align="center" columns={20}>
-											<Grid.Col span={20}>
-												<TextAreaForm
-													tooltip={t("AddressValidateMessage")}
-													label={t("Address")}
-													placeholder={t("Address")}
-													required={false}
-													nextField="EntityFormSubmit"
-													name="address"
-													form={form}
-													mt="xxxs"
-													id="address"
-												/>
-											</Grid.Col>
-										</Grid>
+
 									</Stack>
 								</ScrollArea>
 								<DrawerStickyFooter type={type} />
