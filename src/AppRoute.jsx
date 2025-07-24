@@ -70,12 +70,13 @@ import DomainUserIndex from "@modules/domain/master-user/DomainUserIndex";
 // import VoucherCreateIndex from "@modules/accounting/voucher-create/VoucherCreateIndex";
 // import DiscountDashboard from "@modules/discount/dashboard/DiscountDashboard";
 import HospitalConfigIndex from "@modules/settings/HospitalConfigIndex";
-import PrescriptionIndex from "@/modules/hospital/prescription";
-import VisitIndex from "@/modules/hospital/visit";
-import LabUserIndex from "@/modules/hospital/master-data/lab-user";
-import AdmissionIndex from "@/modules/hospital/admission";
-import EmergencyIndex from "@/modules/hospital/emergency";
+import PrescriptionIndex from "@modules/hospital/prescription";
+import VisitIndex from "@modules/hospital/visit";
+import LabUserIndex from "@modules/hospital/master-data/lab-user";
+import AdmissionIndex from "@modules/hospital/admission";
+import EmergencyIndex from "@modules/hospital/emergency";
 import NotFound from "@components/layout/NotFound";
+import CustomerIndex from "@modules/hospital/customer";
 
 function AppRoute() {
 	return (
@@ -129,8 +130,14 @@ function AppRoute() {
 						<Route path="edit/:id" element={<PrescriptionIndex />} />
 					</Route>
 
+					<Route path="customer">
+						<Route index element={<CustomerIndex />} />
+						<Route path="edit/:id" element={<CustomerIndex mode="edit" />} />
+					</Route>
+
 					<Route path="emergency" element={<EmergencyIndex />} />
 				</Route>
+
 				<Route path="/settings/">
 					<Route path="hospital-config/:id" element={<HospitalConfigIndex />} />
 				</Route>

@@ -1,5 +1,4 @@
-import React from "react";
-import { Group, Menu, rem, ActionIcon, Text } from "@mantine/core";
+import { Group, Menu, rem, ActionIcon, Text, Flex, Tooltip } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import classes from "@assets/css/HeaderSearch.module.css";
 import { IconInfoCircle } from "@tabler/icons-react";
@@ -15,11 +14,7 @@ function CoreHeaderNavbar({ pageTitle, module, pageDescription }) {
 
 	const links = coreHeaderLinks[module].topBarLinks;
 	const items = links.map((link, index) => (
-		<NavLink
-			key={index}
-			to={link.link}
-			className={location.pathname == link.link ? classes.active : classes.link}
-		>
+		<NavLink key={index} to={link.link} className={location.pathname == link.link ? classes.active : classes.link}>
 			{t(link.label)}
 		</NavLink>
 	));
@@ -81,11 +76,7 @@ function CoreHeaderNavbar({ pageTitle, module, pageDescription }) {
 											key={index}
 											component="button"
 											onClick={() => navigate(link.link)}
-											leftSection={
-												<link.icon
-													style={{ width: rem(14), height: rem(14) }}
-												/>
-											}
+											leftSection={<link.icon style={{ width: rem(14), height: rem(14) }} />}
 										>
 											{t(link.label)}
 										</Menu.Item>

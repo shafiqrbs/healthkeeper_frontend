@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
@@ -79,13 +79,7 @@ function CustomerIndex() {
 	return (
 		<>
 			{progress !== 100 && (
-				<Progress
-					color="var(--theme-primary-color-7)"
-					size={"sm"}
-					striped
-					animated
-					value={progress}
-				/>
+				<Progress color="var(--theme-primary-color-7)" size={"sm"} striped animated value={progress} />
 			)}
 			{progress === 100 && (
 				<>

@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import {
 	Group,
@@ -31,6 +30,7 @@ import {
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import classes from "@assets/css/FeaturesCards.module.css";
+import { CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/appRoutes";
 
 // =============== sitemap sections and links for hospital management system ================
 const SITEMAP_SECTIONS = [
@@ -111,8 +111,13 @@ const SITEMAP_SECTIONS = [
 				icon: IconShoppingCart,
 			},
 			{
+				label: "Customer",
+				route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.INDEX,
+				icon: IconReportMoney,
+			},
+			{
 				label: "Vendor",
-				route: "/core/vendor",
+				route: CORE_DATA_ROUTES.NAVIGATION_LINKS.VENDOR.INDEX,
 				icon: IconReportMoney,
 			},
 		],
@@ -162,14 +167,15 @@ const SITEMAP_SECTIONS = [
 				icon: IconUser,
 			},
 		],
-	},{
+	},
+	{
 		title: "MasterData",
 		icon: IconUsers,
 		color: "var(--mantine-color-indigo-6)",
 		links: [
 			{
 				label: "LabUsers",
-				route: "/master-data/lab-user",
+				route: MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX,
 				icon: IconUsers,
 			},
 			{
@@ -200,7 +206,7 @@ export default function SitemapIndex() {
 			<ScrollArea h={height} scrollbarSize={2} type="never">
 				<SimpleGrid cols={{ base: 1, md: 3, lg: 4 }} spacing="xs">
 					{/* =============== render sitemap cards dynamically ================ */}
-					{SITEMAP_SECTIONS.map((section, idx) => (
+					{SITEMAP_SECTIONS.map((section) => (
 						<Card
 							key={section.title}
 							shadow="md"

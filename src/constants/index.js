@@ -5,6 +5,18 @@ export const ERROR_NOTIFICATION_COLOR = "#FA5252";
 
 export const DISEASE_PROFILE = ["Diabetic", "Hypertension", "Asthma", "Allergy", "Other"];
 
+export const MODULES = {
+	PRODUCTION: "production",
+	PROCUREMENT: "procurement",
+	INVENTORY: "inventory",
+	REPORTING: "reporting",
+	VISIT: "visit",
+	ADMISSION: "admission",
+	EMERGENCY: "emergency",
+	PRESCRIPTION: "prescription",
+	CUSTOMER: "customer",
+};
+
 // =============== all 64 districts of bangladesh in alphabetical order ================
 export const DISTRICT_LIST = [
 	"Bagerhat",

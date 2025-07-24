@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useHotkeys } from "@mantine/hooks";
 
 import InputForm from "@components/form-builders/InputForm";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
 import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 
 import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
@@ -68,6 +69,7 @@ export default function ___Form({
 							<Stack justify="space-between" className="drawer-form-stack-vertical">
 								<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 									<Stack>
+
 										<Grid align="center" columns={20}>
 											<Grid.Col span={6}>
 												<Text fz="sm">
@@ -146,6 +148,7 @@ export default function ___Form({
 												/>
 											</Grid.Col>
 										</Grid>
+
 									</Stack>
 								</ScrollArea>
 								<DrawerStickyFooter type={type} />

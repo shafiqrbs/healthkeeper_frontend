@@ -1328,5 +1328,6 @@
 	"Ticket": "Ticket",
 	"doctorRevisit": "Doctor Revisit",
 	"doctorReport": "Doctor Report",
-	"EmergencyInformation": "Emergency Information"
+	"EmergencyInformation": "Emergency Information",
+	"AddCustomer": "Add Customer"
 }
