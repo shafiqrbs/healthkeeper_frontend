@@ -1,7 +1,7 @@
 import PatientForm from "../../common/__PatientForm";
 import { useDispatch, useSelector } from "react-redux";
 import { Box } from "@mantine/core";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { IconDoorEnter, IconDoorExit } from "@tabler/icons-react";
 import PatientInformation from "../../common/PatientInformation";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -30,7 +30,7 @@ export default function Form({ form, isOpenPatientInfo, setIsOpenPatientInfo, se
 			{insertType === "create" ? (
 				<>
 					<Box className="right-arrow-button" onClick={() => setIsOpenPatientInfo(!isOpenPatientInfo)}>
-						{isOpenPatientInfo ? <IconChevronLeft size={20} /> : <IconChevronRight size={20} />}
+						{isOpenPatientInfo ? <IconDoorEnter size={20} /> : <IconDoorExit size={20} />}
 					</Box>
 					<PatientInformation
 						isOpenPatientInfo={isOpenPatientInfo}
