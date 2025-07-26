@@ -886,5 +886,6 @@
 	"doctorRevisit": "ডাক্তার পুনরায় ভিজিট",
 	"doctorReport": "ডাক্তার রিপোর্ট",
 	"EmergencyInformation": "জরুরি তথ্য",
-	"AddCustomer": "কাস্টমার যোগ করুন"
+	"AddCustomer": "কাস্টমার যোগ করুন",
+	"CustomerData": "কাস্টমার ডেটা"
 }

@@ -1,17 +1,8 @@
 import { useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
-import {
-	Grid,
-	Box,
-	ScrollArea,
-	Group,
-	Stack,
-	Checkbox,
-	Tooltip,
-	LoadingOverlay,
-} from "@mantine/core";
+import { Grid, Box, ScrollArea, Group, Stack, Checkbox, Tooltip, LoadingOverlay } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useHotkeys, useMediaQuery } from "@mantine/hooks";
+import { useHotkeys } from "@mantine/hooks";
 
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -19,6 +10,7 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
+import { DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
 function ___DomainForm({
 	form,
@@ -38,21 +30,20 @@ function ___DomainForm({
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 100; //TabList height 104
-	const matches = useMediaQuery("(max-width: 64em)");
 
 	const { data: businessModelDropdown } = useGlobalDropdownData({
-		path: "utility/select/setting",
-		utility: "businessModel",
+		path: DROPDOWNS.BUSINESS_MODEL.PATH,
+		utility: DROPDOWNS.BUSINESS_MODEL.UTILITY,
 		params: {
-			"dropdown-type": "business-model",
+			"dropdown-type": DROPDOWNS.BUSINESS_MODEL.TYPE,
 		},
 	});
 
 	const { data: modulesData } = useGlobalDropdownData({
-		path: "utility/select/setting",
-		utility: "module",
+		path: DROPDOWNS.MODULE.PATH,
+		utility: DROPDOWNS.MODULE.UTILITY,
 		params: {
-			"dropdown-type": "module",
+			"dropdown-type": DROPDOWNS.MODULE.TYPE,
 		},
 	});
 
@@ -102,13 +93,7 @@ function ___DomainForm({
 								overlayProps={{ radius: "sm", blur: 1 }}
 							/>
 							<Stack justify="space-between" px="xs" className="borderRadiusAll">
-								<ScrollArea
-									h={height}
-									scrollbarSize={2}
-									scrollbars="y"
-									type="hover"
-									mb={16}
-								>
+								<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover" mb={16}>
 									<Box>
 										<Box mt={8}>
 											<SelectForm
@@ -232,15 +217,8 @@ function ___DomainForm({
 												<Group mt="xs">
 													<Stack>
 														{modulesData.map((module, index) => (
-															<Tooltip
-																key={index}
-																mt="8"
-																label={t(module.label)}
-															>
-																<Checkbox
-																	value={module.slug}
-																	label={t(module.label)}
-																/>
+															<Tooltip key={index} mt="8" label={t(module.label)}>
+																<Checkbox value={module.slug} label={t(module.label)} />
 															</Tooltip>
 														))}
 													</Stack>
@@ -259,20 +237,14 @@ function ___DomainForm({
 												>
 													<Group mt="xs">
 														<Stack>
-															{productTypeCheckbox.map(
-																(type, index) => (
-																	<Tooltip
-																		key={index}
-																		mt="8"
+															{productTypeCheckbox.map((type, index) => (
+																<Tooltip key={index} mt="8" label={t(type.name)}>
+																	<Checkbox
+																		value={String(type.id)}
 																		label={t(type.name)}
-																	>
-																		<Checkbox
-																			value={String(type.id)}
-																			label={t(type.name)}
-																		/>
-																	</Tooltip>
-																)
-															)}
+																	/>
+																</Tooltip>
+															))}
 														</Stack>
 													</Group>
 												</Checkbox.Group>

@@ -1,6 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getGlobalDropdown } from "./utilityThunk";
 
+export const DROPDOWNS = {
+	CUSTOMER_GROUP: { UTILITY: "customerGroup", TYPE: "customer-group", PATH: "utility/select/setting" },
+	BUSINESS_MODEL: { UTILITY: "businessModel", TYPE: "business-model", PATH: "utility/select/setting" },
+	MODULE: { UTILITY: "module", TYPE: "module", PATH: "utility/select/setting" },
+	COUNTRY: { UTILITY: "country", TYPE: "country", PATH: "core/select/countries" },
+	CURRENCY: { UTILITY: "currency", TYPE: "currency", PATH: "utility/select/currencies" },
+	POS_INVOICE_MODE: { UTILITY: "posInvoiceMode", TYPE: "pos-invoice-mode", PATH: "utility/select/setting" },
+};
+
 const initialState = {
 	isLoading: true,
 	fetching: true,
@@ -11,6 +20,7 @@ const initialState = {
 	// posInvoiceMode
 	// country
 	// currency
+	// customerGroup
 };
 
 const utilitySlice = createSlice({

@@ -1,18 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
-import {
-	Button,
-	Flex,
-	Grid,
-	Group,
-	Box,
-	ScrollArea,
-	Text,
-	Title,
-	Stack,
-	LoadingOverlay,
-	rem,
-} from "@mantine/core";
+import { Button, Flex, Grid, Group, Box, ScrollArea, Text, Title, Stack, LoadingOverlay, rem } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconCheck, IconDeviceFloppy, IconRestore } from "@tabler/icons-react";
 import { useHotkeys } from "@mantine/hooks";
@@ -29,6 +17,7 @@ import { showEntityData } from "@/app/store/core/crudThunk.js";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
+import { DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
 // Reusable Components
 const SectionHeader = ({ title, classNames = "pt-4", isTopBar = false }) => (
@@ -135,15 +124,13 @@ function ConfigurationForm({
 	const dispatch = useDispatch();
 	const [formLoad, setFormLoad] = useState(true);
 	const [countryId, setCountryId] = useState(configData?.country_id?.toString() || "");
-	const [businessModelId, setBusinessModelId] = useState(
-		configData?.business_model_id?.toString() || ""
-	);
+	const [businessModelId, setBusinessModelId] = useState(configData?.business_model_id?.toString() || "");
 	const [currencyId, setCurrencyId] = useState(configData?.currency_id?.toString() || "");
 
 	const { data: posInvoiceModeDropdown } = useGlobalDropdownData({
 		path: "utility/select/setting",
-		params: { "dropdown-type": "pos-invoice-mode" },
-		utility: "posInvoiceMode",
+		params: { "dropdown-type": DROPDOWNS.POS_INVOICE_MODE.TYPE },
+		utility: DROPDOWNS.POS_INVOICE_MODE.UTILITY,
 	});
 
 	const { isOnline, mainAreaHeight } = useOutletContext();
@@ -151,18 +138,18 @@ function ConfigurationForm({
 
 	const { data: businessModelDropdown } = useGlobalDropdownData({
 		path: "utility/select/setting",
-		utility: "businessModel",
-		params: { "dropdown-type": "business-model" },
+		utility: DROPDOWNS.BUSINESS_MODEL.UTILITY,
+		params: { "dropdown-type": DROPDOWNS.BUSINESS_MODEL.TYPE },
 	});
 
 	const { data: countryDropdown } = useGlobalDropdownData({
 		path: "core/select/countries",
-		utility: "country",
+		utility: DROPDOWNS.COUNTRY.UTILITY,
 	});
 
 	const { data: currencyDropdown } = useGlobalDropdownData({
 		path: "utility/select/currencies",
-		utility: "currency",
+		utility: DROPDOWNS.CURRENCY.UTILITY,
 	});
 
 	useEffect(() => {
@@ -787,9 +774,7 @@ function ConfigurationForm({
 															className="btnPrimaryBg"
 															type="submit"
 															id="EntityFormSubmit"
-															leftSection={
-																<IconDeviceFloppy size={16} />
-															}
+															leftSection={<IconDeviceFloppy size={16} />}
 														>
 															<Flex direction="column" gap={0}>
 																<Text fz={14} fw={400}>
@@ -816,12 +801,7 @@ function ConfigurationForm({
 										</Grid>
 									</Box>
 									<Box px="xs" className="borderRadiusAll mx-10">
-										<ScrollArea
-											h={height}
-											scrollbarSize={2}
-											scrollbars="y"
-											type="never"
-										>
+										<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
 											<Box pt="xs">
 												{switchConfigs.config.map((config) => (
 													<SwitchWithLabel
@@ -833,11 +813,7 @@ function ConfigurationForm({
 														form={form}
 														id={config.name}
 														configData={configData}
-														pt={
-															config.name === "custom_invoice"
-																? "3"
-																: "4"
-														}
+														pt={config.name === "custom_invoice" ? "3" : "4"}
 													/>
 												))}
 
@@ -866,11 +842,7 @@ function ConfigurationForm({
 														form={form}
 														id={config.name}
 														configData={configData}
-														mb={
-															config.name === "is_active_sms"
-																? "xs"
-																: undefined
-														}
+														mb={config.name === "is_active_sms" ? "xs" : undefined}
 													/>
 												))}
 											</Box>
@@ -882,12 +854,7 @@ function ConfigurationForm({
 
 						<Grid.Col span={1}>
 							<Box bg="white" className="borderRadiusAll" pt="md">
-								<Shortcut
-									form={form}
-									FormSubmit="EntityFormSubmit"
-									Name="name"
-									inputType="select"
-								/>
+								<Shortcut form={form} FormSubmit="EntityFormSubmit" Name="name" inputType="select" />
 							</Box>
 						</Grid.Col>
 					</Grid>

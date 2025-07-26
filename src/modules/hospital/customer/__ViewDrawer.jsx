@@ -22,7 +22,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 						<Flex align="center" gap={8}>
 							<IconArrowLeft size={16} />{" "}
 							<Text mt="es" fz={16} fw={500}>
-								{t("LabUserDetailsData")}
+								{t("CustomerData")}
 							</Text>
 						</Flex>
 					</Drawer.Title>
@@ -31,7 +31,6 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 				<Box mb={0} h={height}>
 					<Box p={"md"} className="borderRadiusAll" h={height}>
 						<Box>
-
 							<Grid columns={24}>
 								<Grid.Col span={"8"} className="drawer-form-input-label">
 									{t("Name")}
@@ -63,7 +62,6 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>{showData && showData.email && showData.email}</Grid.Col>
 							</Grid>
-
 						</Box>
 					</Box>
 				</Box>

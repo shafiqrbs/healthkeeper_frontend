@@ -17,6 +17,7 @@ import { showEntityData } from "@/app/store/core/crudThunk.js";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
+import { DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
 // Reusable Components
 const SectionHeader = ({ title, classNames = "pt-4", isTopBar = false }) => (
@@ -127,28 +128,28 @@ function ConfigurationForm({
 	const [currencyId, setCurrencyId] = useState(configData?.currency_id?.toString() || "");
 
 	const { data: posInvoiceModeDropdown } = useGlobalDropdownData({
-		path: "utility/select/setting",
-		params: { "dropdown-type": "pos-invoice-mode" },
-		utility: "posInvoiceMode",
+		path: DROPDOWNS.POS_INVOICE_MODE.PATH,
+		params: { "dropdown-type": DROPDOWNS.POS_INVOICE_MODE.TYPE },
+		utility: DROPDOWNS.POS_INVOICE_MODE.UTILITY,
 	});
 
 	const { isOnline, mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 100; //TabList height 104
 
 	const { data: businessModelDropdown } = useGlobalDropdownData({
-		path: "utility/select/setting",
-		utility: "businessModel",
-		params: { "dropdown-type": "business-model" },
+		path: DROPDOWNS.BUSINESS_MODEL.PATH,
+		utility: DROPDOWNS.BUSINESS_MODEL.UTILITY,
+		params: { "dropdown-type": DROPDOWNS.BUSINESS_MODEL.TYPE },
 	});
 
 	const { data: countryDropdown } = useGlobalDropdownData({
-		path: "core/select/countries",
-		utility: "country",
+		path: DROPDOWNS.COUNTRY.PATH,
+		utility: DROPDOWNS.COUNTRY.UTILITY,
 	});
 
 	const { data: currencyDropdown } = useGlobalDropdownData({
-		path: "utility/select/currencies",
-		utility: "currency",
+		path: DROPDOWNS.CURRENCY.PATH,
+		utility: DROPDOWNS.CURRENCY.UTILITY,
 	});
 
 	useEffect(() => {

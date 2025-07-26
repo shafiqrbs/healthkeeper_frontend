@@ -1,12 +1,18 @@
 import { hasLength } from "@mantine/form";
 
 const initialValues = {
-	company_name: "",
 	name: "",
 	mobile: "",
 	email: "",
 	customer_id: "",
 	address: "",
+	customer_group_id: "",
+	reference_id: "",
+	credit_limit: "",
+	alternative_mobile: "",
+	location_id: "",
+	marketing_id: "",
+	discount_percent: "",
 };
 
 export const getInitialValues = (t) => {
@@ -14,7 +20,6 @@ export const getInitialValues = (t) => {
 		initialValues,
 
 		validate: {
-			company_name: hasLength({ min: 2, max: 20 }),
 			name: hasLength({ min: 2, max: 20 }),
 			mobile: (value) => {
 				if (!value) return t("MobileValidationRequired");

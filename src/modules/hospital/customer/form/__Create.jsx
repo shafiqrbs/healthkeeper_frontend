@@ -8,9 +8,9 @@ import { notifications } from "@mantine/notifications";
 import { IconCheck, IconAlertCircle } from "@tabler/icons-react";
 import { rem, Text } from "@mantine/core";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants";
-import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
+import useCustomerDataStoreIntoLocalStorage from "@hooks/local-storage/useCustomerDataStoreIntoLocalStorage";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
-import ___Form from "@modules/hospital/master-data/lab-user/form/___Form";
+import Form from "./___Form";
 
 export default function __Create({ module, form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +48,7 @@ export default function __Create({ module, form, close }) {
 					form.setErrors(errorObject);
 				}
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
-				useVendorDataStoreIntoLocalStorage();
+				useCustomerDataStoreIntoLocalStorage();
 				form.reset();
 				close(); // close the drawer
 				setCustomerData(null);
@@ -78,7 +78,7 @@ export default function __Create({ module, form, close }) {
 	}
 
 	return (
-		<___Form
+		<Form
 			form={form}
 			handleSubmit={handleSubmit}
 			customerData={customerData}

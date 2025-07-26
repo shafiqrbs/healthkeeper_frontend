@@ -66,7 +66,7 @@ export const HOSPITAL_DATA_ROUTES = {
 		},
 		CUSTOMER: {
 			INDEX: "core/customer",
-			CREATE: "core/customer/create",
+			CREATE: "core/customer",
 			UPDATE: "core/customer",
 			DELETE: "core/customer",
 		},
@@ -98,8 +98,8 @@ export const HOSPITAL_DATA_ROUTES = {
 		},
 		CUSTOMER: {
 			INDEX: "/hospital/customer",
-			CREATE: "/hospital/customer/create",
-			UPDATE: "/hospital/customer",
+			CREATE: "/hospital/customer",
+			UPDATE: "/hospital/customer/edit",
 			VIEW: "/hospital/customer/view",
 		},
 	},

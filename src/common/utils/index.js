@@ -6,6 +6,10 @@ export const getCoreVendors = () => {
 	return JSON.parse(localStorage.getItem("core-vendors") || "[]");
 };
 
+export const getCustomers = () => {
+	return JSON.parse(localStorage.getItem("core-customers") || "[]");
+};
+
 export const getUserRole = () => {
 	try {
 		const parsedUser = getLoggedInUser();

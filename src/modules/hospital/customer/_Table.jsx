@@ -21,7 +21,7 @@ import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/cru
 import tableCss from "@assets/css/Table.module.css";
 import ViewDrawer from "./__ViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
-import { getCoreVendors } from "@/common/utils/index.js";
+import { getCustomers } from "@/common/utils";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import CreateButton from "@components/buttons/CreateButton.jsx";
 import DataTableFooter from "@components/tables/DataTableFooter.jsx";
@@ -158,20 +158,6 @@ export default function _Table({ module, open, close }) {
 		});
 	};
 
-	const handleStatusChange = (id) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: {
-				confirm: "Active",
-				cancel: "Inactive",
-			},
-			confirmProps: { color: "var(--theme-delete-color)" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => console.log(id),
-		});
-	};
-
 	const handleDeleteSuccess = async (id) => {
 		const resultAction = await dispatch(
 			deleteEntityData({
@@ -202,10 +188,10 @@ export default function _Table({ module, open, close }) {
 	};
 
 	const handleDataShow = (id) => {
-		const coreVendors = getCoreVendors();
-		const foundVendors = coreVendors.find((type) => type.id == id);
-		if (foundVendors) {
-			setCustomerObject(foundVendors);
+		const customers = getCustomers();
+		const foundCustomers = customers.find((customer) => customer.id == id);
+		if (foundCustomers) {
+			setCustomerObject(foundCustomers);
 			setViewDrawer(true);
 		} else {
 			notifications.show({
@@ -229,7 +215,7 @@ export default function _Table({ module, open, close }) {
 	const handleCreateForm = () => {
 		open();
 		dispatch(setInsertType({ insertType: "create", module }));
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.INDEX);
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.CREATE);
 	};
 
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
@@ -262,6 +248,13 @@ export default function _Table({ module, open, close }) {
 							render: (item) => customerListData.data?.indexOf(item) + 1,
 						},
 						{
+							accessor: "id",
+							title: t("ID"),
+							textAlignment: "right",
+							sortable: true,
+							render: (item) => item.id,
+						},
+						{
 							accessor: "name",
 							title: t("Name"),
 							sortable: true,
@@ -271,22 +264,24 @@ export default function _Table({ module, open, close }) {
 								</Text>
 							),
 						},
-						{ accessor: "company_name", title: t("Designation"), sortable: true },
+						{
+							accessor: "customer_group",
+							title: t("CustomerGroup"),
+							sortable: true,
+							render: (values) => values.customer_group || "N/A",
+						},
 						{ accessor: "mobile", title: t("Mobile"), sortable: true },
 						{
-							accessor: "status",
-							title: t("Status"),
-							render: (values) => (
-								<Button
-									onClick={() => handleStatusChange(values.id)}
-									variant="filled"
-									c="white"
-									size="compact-xs"
-									bg={values.status === 1 ? "var(--theme-success-color)" : "var(--theme-error-color)"}
-								>
-									{values.status === 1 ? "Active" : "Inactive"}
-								</Button>
-							),
+							accessor: "credit_limit",
+							title: t("CreditLimit"),
+							sortable: true,
+							render: (values) => values.credit_limit,
+						},
+						{
+							accessor: "discount_percent",
+							title: t("DiscountPercent"),
+							sortable: true,
+							render: (values) => values.discount_percent,
 						},
 						{
 							accessor: "action",
