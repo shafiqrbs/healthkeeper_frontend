@@ -46,8 +46,8 @@ export default function _Table({ module, open, close }) {
 	const [fetching, setFetching] = useState(false);
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const refetchData = useSelector((state) => state.crud[module].refetching);
-	const customerListData = useSelector((state) => state.crud[module].data);
-	const customerFilterData = useSelector((state) => state.crud[module].filterData);
+	const listData = useSelector((state) => state.crud[module].data);
+	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	const [customerObject, setCustomerObject] = useState({});
 	const navigate = useNavigate();
@@ -58,12 +58,12 @@ export default function _Table({ module, open, close }) {
 		direction: "asc",
 	});
 
-	const [records, setRecords] = useState(sortBy(customerListData.data, "name"));
+	const [records, setRecords] = useState(sortBy(listData.data, "name"));
 
 	useEffect(() => {
-		const data = sortBy(customerListData.data, sortStatus.columnAccessor);
+		const data = sortBy(listData.data, sortStatus.columnAccessor);
 		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
-	}, [sortStatus, customerListData.data]);
+	}, [sortStatus, listData.data]);
 
 	const fetchData = async (pageNum = 1, append = false) => {
 		if (!hasMore && pageNum > 1) return;
@@ -73,9 +73,9 @@ export default function _Table({ module, open, close }) {
 			url: HOSPITAL_DATA_ROUTES.API_ROUTES.CUSTOMER.INDEX,
 			params: {
 				term: searchKeyword,
-				name: customerFilterData.name,
-				mobile: customerFilterData.mobile,
-				company_name: customerFilterData.company_name,
+				name: filterData.name,
+				mobile: filterData.mobile,
+				company_name: filterData.company_name,
 				page: pageNum,
 				offset: PER_PAGE,
 			},
@@ -97,8 +97,8 @@ export default function _Table({ module, open, close }) {
 						setItemData({
 							module,
 							data: {
-								...customerListData,
-								data: [...customerListData.data, ...newData],
+								...listData,
+								data: [...listData.data, ...newData],
 								total: total,
 							},
 						})
@@ -131,7 +131,7 @@ export default function _Table({ module, open, close }) {
 			// reset scroll position when data is refreshed
 			scrollViewportRef.current?.scrollTo(0, 0);
 		}
-	}, [dispatch, searchKeyword, customerFilterData, refetchData, isMounted, id]);
+	}, [dispatch, searchKeyword, filterData, refetchData, isMounted, id]);
 
 	const handleCustomerEdit = (id) => {
 		dispatch(setInsertType({ insertType: "update", module }));
@@ -245,7 +245,7 @@ export default function _Table({ module, open, close }) {
 							title: t("S/N"),
 							textAlignment: "right",
 							sortable: true,
-							render: (item) => customerListData.data?.indexOf(item) + 1,
+							render: (item) => listData.data?.indexOf(item) + 1,
 						},
 						{
 							accessor: "id",
@@ -350,7 +350,7 @@ export default function _Table({ module, open, close }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={customerListData} module={module} />
+			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={customerObject} />
 		</>
 	);

@@ -1,4 +1,3 @@
-import React from "react";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { Box, Flex, ScrollArea, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
@@ -66,6 +65,7 @@ export default function OverviewDrawer({ opened, close }) {
 				<Box className="borderRadiusAll" mt="xxxs" px="xs">
 					{collectionOverviewData.map((item, index) => (
 						<Flex
+							key={index}
 							justify="space-between"
 							align="center"
 							className={index !== collectionOverviewData.length - 1 ? "borderBottomDashed" : ""}

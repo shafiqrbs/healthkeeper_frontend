@@ -16,7 +16,7 @@ export default function __Create({ module, form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const [customerData, setCustomerData] = useState(null);
+	const [indexData, setIndexData] = useState(null);
 
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
@@ -51,7 +51,7 @@ export default function __Create({ module, form, close }) {
 				useCustomerDataStoreIntoLocalStorage();
 				form.reset();
 				close(); // close the drawer
-				setCustomerData(null);
+				setIndexData(null);
 				dispatch(setRefetchData({ module, refetching: true }));
 				notifications.show({
 					color: SUCCESS_NOTIFICATION_COLOR,
@@ -81,8 +81,8 @@ export default function __Create({ module, form, close }) {
 		<Form
 			form={form}
 			handleSubmit={handleSubmit}
-			customerData={customerData}
-			setCustomerData={setCustomerData}
+			data={indexData}
+			setIndexData={setIndexData}
 			isLoading={isLoading}
 			setIsLoading={setIsLoading}
 		/>

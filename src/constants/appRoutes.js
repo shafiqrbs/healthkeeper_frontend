@@ -41,10 +41,11 @@ export const CORE_DATA_ROUTES = {
 export const HOSPITAL_DATA_ROUTES = {
 	API_ROUTES: {
 		VISIT: {
-			INDEX: "hospital/visit",
-			CREATE: "hospital/visit/create",
-			UPDATE: "hospital/visit",
-			VIEW: "hospital/visit/view",
+			INDEX: "core/customer",
+			CREATE: "core/customer",
+			UPDATE: "core/customer",
+			VIEW: "core/customer",
+			DELETE: "core/customer",
 		},
 		PRESCRIPTION: {
 			INDEX: "hospital/prescription",

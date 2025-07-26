@@ -2,7 +2,7 @@ import { hasLength } from "@mantine/form";
 
 const initialValues = {
 	appointment: "",
-	patientName: "",
+	name: "",
 	mobile: "",
 	gender: "male",
 	height: "",
@@ -31,7 +31,7 @@ export const getVendorFormInitialValues = (t) => {
 		initialValues,
 
 		validate: {
-			patientName: hasLength({ min: 2, max: 20 }),
+			name: hasLength({ min: 2, max: 20 }),
 			mobile: (value) => {
 				if (!value) return t("MobileValidationRequired");
 				return null;

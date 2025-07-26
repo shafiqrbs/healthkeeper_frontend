@@ -26,7 +26,7 @@ const initialState = {
 	},
 	user: {
 		isLoading: true,
-		refetching: true,
+		refetching: false,
 		error: null,
 		data: {},
 		editData: {},
@@ -43,8 +43,9 @@ const initialState = {
 		filterData: { name: "", mobile: "", email: "" },
 	},
 	customer: {
+		insertType: "create",
 		isLoading: true,
-		refetching: true,
+		refetching: false,
 		error: null,
 		data: {},
 		editData: {},
@@ -168,7 +169,7 @@ const initialState = {
 		insertType: "create",
 		data: {},
 		editData: {},
-		filterData: { name: "" },
+		filterData: { name: "", date: new Date(), keywordSearch: "" },
 		validationMessages: [],
 	},
 	// -------------------- hospital modules stops -------------------------
@@ -224,8 +225,8 @@ const initialState = {
 		validationMessages: [],
 	},
 	// -------------------- doctor revisit modules stops -------------------------
-	searchKeyword: "",
-	searchKeywordTooltip: false,
+	searchKeyword: "", // keep it for compatibility issues, remove it in no time
+	searchKeywordTooltip: false, // keep it for compatibility issues, remove it in no time
 	globalFetching: false,
 };
 
@@ -265,7 +266,7 @@ const crudSlice = createSlice({
 		setValidationData: (state, action) => {
 			state.validation = action.payload;
 		},
-		setInventoryShowDataEmpty: (state, action) => {
+		setInventoryShowDataEmpty: (state) => {
 			state.config.data = {};
 		},
 		setRefetchData: (state, action) => {

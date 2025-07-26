@@ -14,15 +14,7 @@ import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
-export default function ___Form({
-	form,
-	type = "create",
-	data,
-	handleSubmit,
-	setCustomerData,
-	isLoading,
-	setIsLoading,
-}) {
+export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
@@ -60,7 +52,7 @@ export default function ___Form({
 				marketing_id: data.marketing_id,
 				discount_percent: data.discount_percent,
 			});
-			setCustomerData(data.customer_id);
+			setIndexData(data.customer_id);
 
 			const timeoutId = setTimeout(() => {
 				setIsLoading(false);

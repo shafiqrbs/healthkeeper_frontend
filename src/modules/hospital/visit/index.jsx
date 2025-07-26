@@ -3,12 +3,15 @@ import Navigation from "@components/layout/Navigation";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import { useOutletContext } from "react-router-dom";
 import Form from "./form/_Form";
-import VisitTable from "./_Table";
+import Table from "./_Table";
 import ActionButtons from "../common/_ActionButtons";
 import { useForm } from "@mantine/form";
 import { getVendorFormInitialValues } from "./helpers/request";
 import { useTranslation } from "react-i18next";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
+import { MODULES } from "@/constants";
+
+const module = MODULES.VISIT;
 
 export default function Index() {
 	const { t } = useTranslation();
@@ -26,11 +29,11 @@ export default function Index() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={24}>
 							<Grid.Col span={8}>
-								<Form form={form} />
+								<Form form={form} module={module} />
 							</Grid.Col>
 							<Grid.Col span={16}>
-								<VisitTable />
-								<ActionButtons form={form} />
+								<Table module={module} />
+								<ActionButtons form={form} module={module} />
 							</Grid.Col>
 						</Grid>
 					</Flex>

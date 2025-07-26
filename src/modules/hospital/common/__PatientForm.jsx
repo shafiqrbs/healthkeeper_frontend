@@ -15,7 +15,7 @@ import { DISEASE_PROFILE, DISTRICT_LIST } from "@/constants";
 import { calculateAge } from "@/common/utils";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 
-export default function PatientForm({ form, handleSubmit, canClose = false }) {
+export default function PatientForm({ form, canClose = false }) {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
@@ -28,7 +28,7 @@ export default function PatientForm({ form, handleSubmit, canClose = false }) {
 
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
-			<form onSubmit={form.onSubmit(handleSubmit)}>
+			<form>
 				<Flex align="center" gap="xs" justify="space-between" px="sm" pb="xs">
 					<Text fw={600} fz="sm">
 						{t("patientInformation")}
@@ -41,9 +41,7 @@ export default function PatientForm({ form, handleSubmit, canClose = false }) {
 					tabPanels={[
 						{
 							tab: "new",
-							component: (
-								<Form form={form} handleSubmit={handleSubmit} openDoctorsRoom={openDoctorsRoom} />
-							),
+							component: <Form form={form} openDoctorsRoom={openDoctorsRoom} />,
 						},
 						{
 							tab: "report",
@@ -61,7 +59,7 @@ export default function PatientForm({ form, handleSubmit, canClose = false }) {
 	);
 }
 
-export function Form({ form, handleSubmit, openDoctorsRoom, showTitle = false, heightOffset = 116 }) {
+export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 116 }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
@@ -115,10 +113,10 @@ export function Form({ form, handleSubmit, openDoctorsRoom, showTitle = false, h
 								label=""
 								tooltip={t("enterPatientName")}
 								placeholder="John Doe"
-								name="patientName"
+								name="name"
 								id="patientName"
 								nextField="mobile"
-								value={form.values.patientName}
+								value={form.values.name}
 								required
 							/>
 						</Grid.Col>

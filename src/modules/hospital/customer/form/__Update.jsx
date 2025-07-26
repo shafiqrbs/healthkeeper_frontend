@@ -15,12 +15,12 @@ import Form from "@modules/hospital/customer/form/___Form";
 
 export default function __Update({ module, form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
-	const [customerData, setCustomerData] = useState(null);
+	const [indexData, setIndexData] = useState(null);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const vendorUpdateData = useSelector((state) => state.crud[module].editData);
+	const indexUpdateData = useSelector((state) => state.crud[module].editData);
 
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
@@ -72,7 +72,7 @@ export default function __Update({ module, form, close }) {
 					setIsLoading(false);
 					close(); // close the drawer
 					navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.INDEX, { replace: true });
-					setCustomerData(null);
+					setIndexData(null);
 				}, 700);
 			}
 		} catch (error) {
@@ -92,10 +92,10 @@ export default function __Update({ module, form, close }) {
 		<Form
 			type="update"
 			form={form}
-			data={vendorUpdateData}
+			data={indexUpdateData}
 			handleSubmit={handleSubmit}
-			customerData={customerData}
-			setCustomerData={setCustomerData}
+			indexData={indexData}
+			setIndexData={setIndexData}
 			isLoading={isLoading}
 			setIsLoading={setIsLoading}
 		/>

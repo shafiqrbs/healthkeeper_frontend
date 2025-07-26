@@ -68,7 +68,7 @@ export const storeEntityData = createAsyncThunk("store", async (value, { rejectW
 	}
 });
 
-export const editEntityData = createAsyncThunk("edit", async (value) => {
+export const editEntityData = createAsyncThunk("edit", async (value, { rejectWithValue }) => {
 	try {
 		const response = await editData(value);
 		return { ...response, module: value.module };

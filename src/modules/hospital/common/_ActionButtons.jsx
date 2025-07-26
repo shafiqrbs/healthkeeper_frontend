@@ -11,8 +11,10 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import { useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
+import { notifications } from "@mantine/notifications";
+import { setRefetchData } from "@/app/store/core/crudSlice";
 
-export default function ActionButtons({ form }) {
+export default function ActionButtons({ form, module }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,7 +43,7 @@ export default function ActionButtons({ form }) {
 				const data = {
 					url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.CREATE,
 					data: formValue,
-					module: "visit",
+					module,
 				};
 
 				const resultAction = await dispatch(storeEntityData(data));
@@ -50,6 +52,7 @@ export default function ActionButtons({ form }) {
 					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
 				} else {
 					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
+					setRefetchData({ module, refetching: true });
 					form.reset();
 				}
 			} catch (error) {
@@ -57,6 +60,16 @@ export default function ActionButtons({ form }) {
 				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
 			} finally {
 				setIsSubmitting(false);
+			}
+		} else {
+			if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
+				console.error(form.errors);
+				notifications.show({
+					title: "Error",
+					message: "Please fill all the fields",
+					color: "red",
+					position: "top-right",
+				});
 			}
 		}
 	};
@@ -90,7 +103,7 @@ export default function ActionButtons({ form }) {
 						/>
 					</Grid.Col>
 					<Grid.Col span={8} px="xs" bg="var(--theme-tertiary-color-0)">
-						{/* <Stack>
+						<Stack>
 							<SelectForm
 								key={referredNameKey}
 								form={form}
@@ -117,7 +130,7 @@ export default function ActionButtons({ form }) {
 								tooltip={t("enterPatientMarketingEx")}
 								rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 							/>
-						</Stack> */}
+						</Stack>
 					</Grid.Col>
 					<Grid.Col span={8} bg="var(--theme-tertiary-color-1)" px="xs">
 						<Stack gap="xs" className="method-carousel">
