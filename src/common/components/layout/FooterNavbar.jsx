@@ -21,6 +21,7 @@ function FooterNavbar() {
 	const links = [
 		{ link: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.INDEX, label: `${t("Customer")} (alt+c)` },
 		{ link: "/sitemap", label: `${t("Sitemap")} (alt+t)` },
+		{ link: `/inventory/config`, label: `${t("Configuration")} (alt+g)` },
 		{ link: `/settings/hospital-config/${configData?.domain?.id}`, label: `${t("Settings")} (alt+s)` },
 	];
 

@@ -34,12 +34,12 @@ import { modals } from "@mantine/modals";
 import productsDataStoreIntoLocalStorage from "../../../global-hook/local-storage/productsDataStoreIntoLocalStorage.js";
 
 function _UpdateProduct(props) {
-  const { categoryDropdown } = props;
+  const { categoryDropdown,product_config } = props;
   const { id } = useParams();
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const { isOnline, mainAreaHeight } = useOutletContext();
-  const height = mainAreaHeight - 104; //TabList height 104
+  const height = mainAreaHeight - 98; //TabList height 104
   const configData = localStorage.getItem("config-data")
     ? JSON.parse(localStorage.getItem("config-data"))
     : [];
@@ -101,7 +101,33 @@ function _UpdateProduct(props) {
       min_quantity: entityEditData.min_quantity
         ? entityEditData.min_quantity
         : "",
+
+
     });
+
+    /*if (product_config?.is_sku!==1){
+      form.setValues({
+        sales_price:  entityEditData.sales_price ? entityEditData.sales_price : "",
+        purchase_price: entityEditData.purchase_price ? entityEditData.purchase_price : "",
+      })
+    }*/
+
+    if (product_config?.is_sku !== 1) {
+      /*const multiPriceValues = {};
+
+      entityEditData?.multi_price_field?.price_field?.forEach((price) => {
+        multiPriceValues[price.price_field_slug] = price.price ?? "";
+      });
+
+      console.log(multiPriceValues)*/
+
+      form.setValues({
+        sales_price: entityEditData.sales_price ?? "",
+        purchase_price: entityEditData.purchase_price ?? "",
+        // ...multiPriceValues
+      });
+    }
+
 
     dispatch(setFormLoading(false));
     setTimeout(() => {
@@ -169,6 +195,8 @@ function _UpdateProduct(props) {
                     product_name: values.name,
                     alternative_name: values.alternative_name,
                     bangla_name: values.bangla_name,
+                    purchase_price: product_config?.is_sku===1? values.purchase_price:entityEditData.purchase_price,
+                    sales_price: product_config?.is_sku===1? values.sales_price:entityEditData.sales_price
                   };
                 }
                 return product;
@@ -202,7 +230,7 @@ function _UpdateProduct(props) {
       >
         <Box pl={`xs`} pr={"xs"} className={"borderRadiusAll"}>
           <ScrollArea
-            h={height}
+            h={height-40}
             scrollbarSize={1}
             scrollbars="y"
             // type="never"
@@ -373,8 +401,81 @@ function _UpdateProduct(props) {
                   </Grid.Col>
                 </Grid>
               </Box>
+
+              {
+                product_config?.is_sku !==1 &&
+                  <>
+                  <Box mt={"xs"}>
+                    <Grid gutter={{ base: 6 }}>
+                      <Grid.Col span={6}>
+                        <InputForm
+                            tooltip={t("PurchasePrice")}
+                            label={t("PurchasePrice")}
+                            placeholder={t("PurchasePrice")}
+                            required={false}
+                            form={form}
+                            name={"purchase_price"}
+                            mt={8}
+                            id={"purchase_price"}
+                        />
+                      </Grid.Col>
+                      <Grid.Col span={6}>
+                        <InputForm
+                            tooltip={t("SalesPrice")}
+                            label={t("SalesPrice")}
+                            placeholder={t("SalesPrice")}
+                            required={false}
+                            form={form}
+                            name={"sales_price"}
+                            mt={8}
+                            id={"sales_price"}
+                        />
+                      </Grid.Col>
+                    </Grid>
+                  </Box>
+
+                  {/*{ product_config?.is_multi_price===1 &&
+                      <Box mt={"xs"}>
+                        <Grid gutter={{ base: 6 }}>
+                          {entityEditData?.multi_price_field?.price_field?.map((price, index) => (
+                              <Grid.Col span={6} key={index}>
+                                <InputForm
+                                    tooltip={price?.price_field_name}
+                                    label={price?.price_field_name}
+                                    placeholder={price?.price_field_name}
+                                    required={false}
+                                    form={form}
+                                    name={price?.price_field_slug}
+                                    mt={8}
+                                    id={price?.price_field_slug}
+                                    value={price}
+                                />
+                              </Grid.Col>
+                          ))}
+                        </Grid>
+                      </Box>
+                  }*/}
+
+                  </>
+              }
+
+
             </Box>
           </ScrollArea>
+          <Box>
+            <Button
+                size="md"
+                className={'btnPrimaryBg'}
+                type="submit"
+                fullWidth={'true'}
+                id="SkuManagementFormSubmit"
+                leftSection={<IconDeviceFloppy size={16} />}
+            >
+              <Text fz={18} fw={400}>
+                {t("UpdateProduct")}
+              </Text>
+            </Button>
+          </Box>
         </Box>
       </form>
     </Box>

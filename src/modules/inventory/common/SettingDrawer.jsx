@@ -24,7 +24,7 @@ import FormGeneric from "../inventory-configuration/FormGeneric.jsx";
 import { coreSettingDropdown } from "../../../../store/core/utilitySlice.js";
 import { setDropdownLoad } from "../../../../store/core/crudSlice.js";
 import { useDispatch, useSelector } from "react-redux";
-import getDomainConfig from "../../../global-hook/config-data/getDomainConfig.js";
+import PosForm from "../inventory-configuration/PosForm.jsx";
 
 function SettingDrawer(props) {
   const {
@@ -36,6 +36,7 @@ function SettingDrawer(props) {
     config_requisition,
     id,
   } = props;
+
   const { isOnline, mainAreaHeight } = useOutletContext();
   const { t, i18n } = useTranslation();
   const height = mainAreaHeight - 100; //TabList height 104
@@ -44,7 +45,7 @@ function SettingDrawer(props) {
   };
   const dispatch = useDispatch();
   const dropdownLoad = useSelector((state) => state.utilitySlice.dropdownLoad);
-
+  let config_sales = domainConfigData?.inventory_config?.config_sales;
   const dropdownData = useSelector(
     (state) => state.utilitySlice.customerGroupDropdownData
   );
@@ -87,18 +88,22 @@ function SettingDrawer(props) {
       case "Sales":
         return (
           <SalesForm
-            height={height + 56}
-            id={id}
             customerGroupDropdownData={groupDropdownData}
+            height={height + 56}
+            config_sales={config_sales}
+            id={id}
+            domainConfigData={domainConfigData}
+            closeDrawer={closeDrawer}
           />
         );
       case "Purchase":
         return (
           <PurchaseForm
-            height={height}
-            config_purchase={config_purchase}
+            height={height+60}
+            domainConfigData={domainConfigData}
             id={id}
             vendorGroupDropdownData={groupVendorDropdownData}
+            closeDrawer={closeDrawer}
           />
         );
       case "Requisition":
@@ -107,11 +112,19 @@ function SettingDrawer(props) {
             height={height}
             config_requisition={config_requisition}
             id={id}
+            closeDrawer={closeDrawer}
+          />
+        );
+      case "Pos":
+        return (
+          <PosForm
+            height={height}
+            id={id}
           />
         );
       default:
         return (
-          <FormGeneric height={height} salesConfig={domainConfigData?.inventory_config?.config_sales} id={id} />
+          <FormGeneric height={height} salesConfig={domainConfigData?.inventory_config?.config_sales} id={id} closeDrawer={closeDrawer} />
         );
     }
   };
@@ -168,7 +181,8 @@ function SettingDrawer(props) {
                           {isOnline &&
                             (module === "Sales" ||
                               module === "Purchase" ||
-                              module === "Requisition") && (
+                              module === "Requisition" ||
+                              module === "Pos") && (
                               <Button
                                 size="xs"
                                 className={"btnPrimaryBg"}
@@ -186,6 +200,10 @@ function SettingDrawer(props) {
                                     document
                                       .getElementById("RequisitionFormSubmit")
                                       .click();
+                                  } else if (module === "Pos") {
+                                    document
+                                      .getElementById("PosFormSubmit")
+                                      .click();
                                   }
                                 }}
                               >
@@ -201,7 +219,7 @@ function SettingDrawer(props) {
                     </Grid.Col>
                   </Grid>
                 </Box>
-                <Box pl={`xs`} pr={"xs"} className={"borderRadiusAll"}>
+                <Box className={"borderRadiusAll"}>
                   {renderForm()}
                 </Box>
               </Box>

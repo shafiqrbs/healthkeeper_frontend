@@ -34,12 +34,12 @@ import Sitemap from "@modules/sitemap/SitemapIndex";
 // import ProductionSettingIndex from "@modules/production/settings/ProductionSettingIndex";
 // import RecipeItemsIndex from "@modules/production/recipe-items/RecipeItemsIndex";
 // import RecipeIndex from "@modules/production/recipe-items/recipe/RecipeIndex";
-// import InventoryConfigurationIndex from "@modules/inventory/inventory-configuration/InventoryConfigurationIndex";
 // import ParticularIndex from "@modules/inventory/particular/ParticularIndex";
 // import InhouseIndex from "@modules/production/production-inhouse/InhouseIndex";
 // import SettingsIndex from "@modules/core/settings/SettingsIndex";
 
 // import StockIndex from "@modules/inventory/stock/StockIndex";
+import InventoryConfigurationIndex from "@modules/inventory/inventory-configuration/InventoryConfigurationIndex";
 import ConfigurationIndex from "@modules/domain/configuration/ConfigurationIndex";
 import DomainUserIndex from "@modules/domain/master-user/DomainUserIndex";
 // import SitemapIndex from "@modules/domain/sitemap/SitemapIndex";
@@ -145,51 +145,11 @@ function AppRoute() {
 					<Route path="lab-user" element={<LabUserIndex />} />
 				</Route>
 				<Route path="sitemap" element={<Sitemap />} />
-				{/* <Route path="/inventory/">
-          <Route path="sales/edit/:id" element={<SalesEdit />} />
-          <Route path="sales" element={<SalesIndex />} />
-          <Route path="sales-invoice" element={<SalesInvoice />} />
-          <Route path="purchase/edit/:id" element={<PurchaseEdit />} />
-          <Route path="purchase" element={<PurchaseIndex />} />
-          <Route path="purchase-invoice" element={<PurchaseInvoice />} />
-          <Route path="opening-stock" element={<OpeningStockIndex />} />
-          <Route
-            path="opening-approve-stock"
-            element={<OpeningApproveIndex />}
-          />
-          <Route path="product" element={<ProductIndex />} />
-          <Route path="product/:id" element={<ProductIndex />} />
-          <Route path="category" element={<CategoryIndex />} />
-          <Route path="category/:categoryId" element={<CategoryIndex />} />
-          <Route path="category-group" element={<CategoryGroupIndex />} />
-          <Route path="category-group/:id" element={<CategoryGroupIndex />} />
-          <Route path="config" element={<InventoryConfigurationIndex />} />
-          <Route path="invoice-batch" element={<InvoiceBatchIndex />} />
-          <Route path="particular" element={<ParticularIndex />} />
-          <Route path="particular/:id" element={<ParticularIndex />} />
-          <Route path="product-settings" element={<ProductSettingsIndex />} />
-          <Route
-            path="product-settings/:id"
-            element={<ProductSettingsIndex />}
-          />
-          <Route path="config" element={<InventoryConfigurationIndex />} />
-          <Route path="stock" element={<StockIndex />} />
-          <Route
-            path="stock-reconciliation"
-            element={<ReconciliationIndex />}
-          />
-          <Route
-            path="stock-reconciliation/:id"
-            element={<ReconciliationIndex />}
-          />
-          <Route path="stock-transfer" element={<TransferIndex />} />
-          <Route path="stock-transfer/:id" element={<TransferIndex />} />
-          <Route path="coupon-code" element={<CouponIndex />} />
-          <Route path="coupon-code/:id" element={<CouponIndex />} />
-          <Route path="barcode-print" element={<BarcodePrintIndex />} />
-        </Route>
+				<Route path="/inventory/">
+					<Route path="config" element={<InventoryConfigurationIndex />} />
+				</Route>
 
-        <Route path="/discount">
+				{/*<Route path="/discount">
           <Route path="" element={<DiscountDashboard />} />
           <Route path="users" element={<DiscountUserIndex />} />
           <Route path="config" element={<DiscountConfigIndex />} />

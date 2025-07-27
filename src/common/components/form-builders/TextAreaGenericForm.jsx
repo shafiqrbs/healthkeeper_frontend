@@ -1,27 +1,22 @@
-import React from "react";
 import { Tooltip, Textarea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconInfoCircle, IconX } from "@tabler/icons-react";
 import { getHotkeyHandler } from "@mantine/hooks";
-import inputCss from "../../assets/css/InputField.module.css";
+import inputCss from "@assets/css/InputField.module.css";
 
-function TextAreaGenericForm(props) {
-	const {
-		label,
-		placeholder,
-		required,
-		nextField,
-		name,
-		form,
-		tooltip,
-		mt,
-		id,
-		minRows,
-		autosize,
-		maxRows,
-		style,
-		size,
-	} = props;
+function TextAreaGenericForm({
+	label,
+	placeholder,
+	required,
+	nextField,
+	name,
+	form,
+	tooltip,
+	mt,
+	id,
+	minRows,
+	maxRows,
+}) {
 	const { t } = useTranslation();
 	return (
 		<>
@@ -52,19 +47,14 @@ function TextAreaGenericForm(props) {
 						onKeyDown={getHotkeyHandler([
 							[
 								"Enter",
-								(e) => {
+								() => {
 									document.getElementById(nextField).focus();
 								},
 							],
 						])}
 						rightSection={
 							form.values[name] ? (
-								<Tooltip
-									label={t("Close")}
-									withArrow
-									bg="var(--theme-error-color)"
-									c="white"
-								>
+								<Tooltip label={t("Close")} withArrow bg="var(--theme-error-color)" c="white">
 									<IconX
 										color="var(--theme-error-color)"
 										size={16}

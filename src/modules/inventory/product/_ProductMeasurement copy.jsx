@@ -165,18 +165,10 @@ function _ProductMeasurement(props) {
         const resultAction = await dispatch(storeEntityData(value));
 
         if (storeEntityData.rejected.match(resultAction)) {
-            showNotificationComponent(
-                resultAction.payload?.message || t('ErrorOccurred'),
-                'red',
-                'lightgray'
-            );
+            showNotificationComponent(resultAction.payload?.message || t('ErrorOccurred'), 'red');
             setReloadMeasurementData(true);
         } else if (storeEntityData.fulfilled.match(resultAction)) {
-            showNotificationComponent(
-                t('Update'),
-                'teal',
-                'lightgray'
-            );
+            showNotificationComponent(t('Update'), 'teal');
             setReloadMeasurementData(true);
         }
     };
@@ -196,15 +188,7 @@ function _ProductMeasurement(props) {
                         );
 
                         if (isUnitIdExists) {
-                            showNotificationComponent(
-                                "Unit already exists",
-                                'red',
-                                'lightgray',
-                                'Data will be loaded in 3 seconds, you cannot close this yet',
-                                true,
-                                1000,
-                                true
-                            );
+                            showNotificationComponent("Unit already exists", 'red', 'Data will be loaded in 3 seconds, you cannot close this yet', true, 1000, true);
                             return;
                         }
 
@@ -220,15 +204,7 @@ function _ProductMeasurement(props) {
                         form.reset();
                         setSaveCreateLoading(true);
 
-                        showNotificationComponent(
-                            t("UpdateSuccessfully"),
-                            'teal',
-                            'lightgray',
-                            'Data will be loaded in 3 seconds, you cannot close this yet',
-                            true,
-                            1000,
-                            true
-                        );
+                        showNotificationComponent(t("UpdateSuccessfully"), 'teal', 'Data will be loaded in 3 seconds, you cannot close this yet', true, 1000, true);
 
                         setTimeout(() => {
                             setReloadMeasurementData(true);
@@ -311,7 +287,7 @@ function _ProductMeasurement(props) {
                                         {!saveCreateLoading && isOnline && (
                                             <Button
                                                 size="xs"
-                                                color={`red.3`}
+                                                color='var(--theme-primary-color-6)'
                                                 type="submit"
                                                 id="EntityFormSubmit"
                                                 leftSection={<IconDeviceFloppy size={18}/>}
@@ -388,7 +364,7 @@ function _ProductMeasurement(props) {
                                                                     'is_sales'
                                                                 );
                                                             }}
-                                                            color="red"
+                                                            color='var(--theme-primary-color-6)'
                                                             variant="outline"
                                                             radius="xl"
                                                             size="md"
@@ -406,7 +382,7 @@ function _ProductMeasurement(props) {
                                                                     'is_purchase'
                                                                 );
                                                             }}
-                                                            color="red"
+                                                            color='var(--theme-primary-color-6)'
                                                             variant="outline"
                                                             radius="xl"
                                                             size="md"
@@ -417,7 +393,7 @@ function _ProductMeasurement(props) {
                                                         <ActionIcon
                                                             size="sm"
                                                             variant="transparent"
-                                                            color="red"
+                                                            color='var( --theme-remove-color)'
                                                             onClick={() => {
                                                                 dispatch(deleteEntityData(
                                                                         "inventory/product/measurement/" + unit.id

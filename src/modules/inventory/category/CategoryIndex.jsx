@@ -6,16 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import CategoryTable from "./CategoryTable";
 import CategoryForm from "./CategoryForm";
 import CategoryUpdateForm from "./CategoryUpdateForm.jsx";
-import {
-	editEntityData,
-	setFormLoading,
-	setSearchKeyword,
-} from "../../../../store/core/crudSlice.js";
-import {
-	setDropdownLoad,
-	setEntityNewData,
-	setInsertType,
-} from "../../../../store/inventory/crudSlice.js";
+import { editEntityData, setFormLoading, setSearchKeyword } from "../../../../store/core/crudSlice.js";
+import { setDropdownLoad, setEntityNewData, setInsertType } from "../../../../store/inventory/crudSlice.js";
 import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
 import getConfigData from "../../../global-hook/config-data/getConfigData.js";
 import InventoryHeaderNavbar from "../../domain/configuration/InventoryHeaderNavbar";
@@ -38,17 +30,14 @@ function CategoryIndex() {
 
 	useEffect(() => {
 		categoryId
-			? (dispatch(setInsertType("update")),
-			  dispatch(editEntityData(`inventory/category-group/${categoryId}`)))
+			? (dispatch(setInsertType("update")), dispatch(editEntityData(`inventory/category-group/${categoryId}`)))
 			: (dispatch(setInsertType("create")),
 			  dispatch(setSearchKeyword("")),
 			  dispatch(setEntityNewData([])),
 			  navigate("/inventory/category", { replace: true }));
 	}, [categoryId, dispatch, navigate]);
 
-	const groupCategoryDropdownData = useSelector(
-		(state) => state.inventoryUtilitySlice.groupCategoryDropdown
-	);
+	const groupCategoryDropdownData = useSelector((state) => state.inventoryUtilitySlice.groupCategoryDropdown);
 	let groupCategoryDropdown =
 		groupCategoryDropdownData && groupCategoryDropdownData.length > 0
 			? groupCategoryDropdownData.map((type, index) => {
@@ -67,7 +56,7 @@ function CategoryIndex() {
 		<>
 			{progress !== 100 && (
 				<Progress
-					color="red"
+					color="var(--theme-primary-color-6)"
 					size={"sm"}
 					striped
 					animated
@@ -97,13 +86,9 @@ function CategoryIndex() {
 									</Grid.Col>
 									<Grid.Col span={9}>
 										{insertType === "create" ? (
-											<CategoryForm
-												groupCategoryDropdown={groupCategoryDropdown}
-											/>
+											<CategoryForm groupCategoryDropdown={groupCategoryDropdown} />
 										) : (
-											<CategoryUpdateForm
-												groupCategoryDropdown={groupCategoryDropdown}
-											/>
+											<CategoryUpdateForm groupCategoryDropdown={groupCategoryDropdown} />
 										)}
 									</Grid.Col>
 								</Grid>

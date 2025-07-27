@@ -1,26 +1,95 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { rem, Grid, Tooltip, TextInput, ActionIcon } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconInfoCircle,
-	IconRestore,
-	IconSearch,
-	IconX,
-	IconPdf,
-	IconFileTypeXls,
-} from "@tabler/icons-react";
+import { IconInfoCircle, IconRestore, IconSearch, IconX, IconPdf, IconFileTypeXls } from "@tabler/icons-react";
 import { useHotkeys } from "@mantine/hooks";
 import { useDispatch, useSelector } from "react-redux";
-import { setGlobalFetching, setSearchKeyword } from "@/app/store/core/crudSlice.js";
 
-export default function Search(props) {
+export default function Search({ module }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 
 	const [searchKeywordTooltip, setSearchKeywordTooltip] = useState(false);
 
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
+	const categoryFilterData = useSelector((state) => state.crud.categoryFilterData);
 	const userFilterData = useSelector((state) => state.crud.userFilterData);
+
+	const productFilterData = useSelector((state) => state.crud.productFilterData);
+
+	// =============== handle search input change ================
+	const handleSearchInputChange = (e) => {
+		dispatch(setSearchKeyword(e.currentTarget.value));
+		e.target.value !== ""
+			? setSearchKeywordTooltip(false)
+			: (setSearchKeywordTooltip(true),
+			  setTimeout(() => {
+					setSearchKeywordTooltip(false);
+			  }, 1000));
+	};
+
+	// =============== handle clear search keyword ================
+	const handleClearSearchKeyword = () => {
+		dispatch(setSearchKeyword(""));
+	};
+
+	// =============== handle search button click ================
+	const handleSearchButtonClick = () => {
+		searchKeyword.length > 0
+			? setSearchKeywordTooltip(false)
+			: (setSearchKeywordTooltip(true),
+			  setTimeout(() => {
+					setSearchKeywordTooltip(false);
+			  }, 1500));
+	};
+
+	// =============== handle reset button click ================
+	const handleResetButtonClick = () => {
+		dispatch(setSearchKeyword(""));
+		if (module === "product") {
+			// dispatch(
+			// 	setProductFilterData({
+			// 		...productFilterData,
+			// 		name: "",
+			// 		alternative_name: "",
+			// 		sales_price: "",
+			// 		sku: "",
+			// 	})
+			// );
+		} else if (module === "category") {
+			// dispatch(
+			// 	setCategoryFilterData({
+			// 		...categoryFilterData,
+			// 		name: "",
+			// 		parent_name: "",
+			// 	})
+			// );
+		} else if (module === "user") {
+			// dispatch(
+			// 	setUserFilterData({
+			// 		...userFilterData,
+			// 		keyword: "",
+			// 	})
+			// );
+		}
+	};
+
+	// =============== handle pdf download click ================
+	const handlePdfDownloadClick = () => {
+		searchKeyword.length > 0
+			? setSearchKeywordTooltip(false)
+			: (setSearchKeywordTooltip(true),
+			  setTimeout(() => {
+					setSearchKeywordTooltip(false);
+			  }, 1500));
+	};
+
+	// =============== handle excel download click ================
+	const handleExcelDownloadClick = () => {
+		if (module === "stock") {
+			setDownloadStockXls(true);
+		}
+	};
 
 	useHotkeys(
 		[
@@ -36,12 +105,12 @@ export default function Search(props) {
 
 	const handleKeyDown = (event) => {
 		if (event.key === "Enter" && searchKeyword.length > 0) {
-			dispatch(setGlobalFetching(true)), setSearchKeywordTooltip(false);
+			dispatch(setFetching(true)), setSearchKeywordTooltip(false);
 		} else {
-			setSearchKeywordTooltip(true),
-				setTimeout(() => {
-					setSearchKeywordTooltip(false);
-				}, 1500);
+			setSearchKeywordTooltip(true);
+			setTimeout(() => {
+				setSearchKeywordTooltip(false);
+			}, 1500);
 		}
 	};
 
@@ -55,7 +124,7 @@ export default function Search(props) {
 						px={16}
 						py={2}
 						position="top-end"
-						color="red"
+						color="var(--theme-primary-color-6)"
 						withArrow
 						offset={2}
 						zIndex={100}
@@ -66,15 +135,7 @@ export default function Search(props) {
 							size="sm"
 							placeholder={t("EnterSearchAnyKeyword")}
 							onKeyDown={handleKeyDown}
-							onChange={(e) => {
-								dispatch(setSearchKeyword(e.currentTarget.value));
-								e.target.value !== ""
-									? setSearchKeywordTooltip(false)
-									: (setSearchKeywordTooltip(true),
-									  setTimeout(() => {
-											setSearchKeywordTooltip(false);
-									  }, 1000));
-							}}
+							onChange={handleSearchInputChange}
 							value={searchKeyword}
 							id={"SearchKeyword"}
 							rightSection={
@@ -84,9 +145,7 @@ export default function Search(props) {
 											color={`red`}
 											size={16}
 											opacity={0.5}
-											onClick={() => {
-												dispatch(setSearchKeyword(""));
-											}}
+											onClick={handleClearSearchKeyword}
 										/>
 									</Tooltip>
 								) : (
@@ -111,15 +170,7 @@ export default function Search(props) {
 							c={"red.4"}
 							size="lg"
 							aria-label="Filter"
-							onClick={() => {
-								searchKeyword.length > 0
-									? (dispatch(setGlobalFetching(true)),
-									  setSearchKeywordTooltip(false))
-									: (setSearchKeywordTooltip(true),
-									  setTimeout(() => {
-											setSearchKeywordTooltip(false);
-									  }, 1500));
-							}}
+							onClick={handleSearchButtonClick}
 						>
 							<Tooltip
 								label={t("SearchButton")}
@@ -151,40 +202,7 @@ export default function Search(props) {
 									duration: 500,
 								}}
 							>
-								<IconRestore
-									style={{ width: rem(18) }}
-									stroke={1.5}
-									onClick={() => {
-										dispatch(setSearchKeyword(""));
-										dispatch(setGlobalFetching(true));
-										if (props.module === "product") {
-											dispatch(
-												setProductFilterData({
-													...productFilterData,
-													name: "",
-													alternative_name: "",
-													sales_price: "",
-													sku: "",
-												})
-											);
-										} else if (props.module === "category") {
-											dispatch(
-												setCategoryFilterData({
-													...categoryFilterData,
-													name: "",
-													parent_name: "",
-												})
-											);
-										} else if (props.module === "user") {
-											dispatch(
-												setUserFilterData({
-													...userFilterData,
-													keyword: "",
-												})
-											);
-										}
-									}}
-								/>
+								<IconRestore style={{ width: rem(18) }} stroke={1.5} onClick={handleResetButtonClick} />
 							</Tooltip>
 						</ActionIcon>
 						<ActionIcon
@@ -192,15 +210,7 @@ export default function Search(props) {
 							c={"green.8"}
 							size="lg"
 							aria-label="Filter"
-							onClick={() => {
-								searchKeyword.length > 0
-									? (dispatch(setGlobalFetching(true)),
-									  setSearchKeywordTooltip(false))
-									: (setSearchKeywordTooltip(true),
-									  setTimeout(() => {
-											setSearchKeywordTooltip(false);
-									  }, 1500));
-							}}
+							onClick={handlePdfDownloadClick}
 						>
 							<Tooltip
 								label={t("DownloadPdfFile")}
@@ -224,11 +234,7 @@ export default function Search(props) {
 							c={"green.8"}
 							size="lg"
 							aria-label="Filter"
-							onClick={() => {
-								if (props.module === "stock") {
-									props.setDownloadStockXls(true);
-								}
-							}}
+							onClick={handleExcelDownloadClick}
 						>
 							<Tooltip
 								label={t("DownloadExcelFile")}

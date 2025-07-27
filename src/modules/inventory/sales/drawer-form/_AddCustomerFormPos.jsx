@@ -537,10 +537,10 @@ function _AddCustomerFormPos(props) {
                                                         setCustomerDrawer(false);
                                                     }
                                                     if (resultAction.payload?.status !== 200) {
-                                                        showNotificationComponent(resultAction.payload?.message || 'Error updating invoice', 'red', '', '', true);
+                                                        showNotificationComponent(resultAction.payload?.message || 'Error updating invoice', 'red', '', true);
                                                     }
                                                 } catch (error) {
-                                                    showNotificationComponent('Request failed. Please try again.', 'red', '', '', true);
+                                                    showNotificationComponent('Request failed. Please try again.', 'red', '', true);
                                                     console.error('Error updating invoice:', error);
                                                 }finally {
                                                     setReloadInvoiceData(true)
@@ -606,7 +606,7 @@ function _AddCustomerFormPos(props) {
                                                             <ActionIcon
                                                                 size="sm"
                                                                 variant="outline"
-                                                                color="red"
+                                                                color='var(--theme-primary-color-6)'
                                                                 radius="xl"
                                                                 aria-label="Settings"
                                                             >

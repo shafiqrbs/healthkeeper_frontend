@@ -1,4 +1,3 @@
-import React from "react";
 import { useParams } from "react-router-dom";
 import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
@@ -14,15 +13,10 @@ export default function DomainUserIndex() {
 
 	return (
 		<>
-			{progress !== 100 ? (
-				<Progress
-					color="var(--theme-primary-color-7)"
-					size={"sm"}
-					striped
-					animated
-					value={progress}
-				/>
-			) : (
+			{progress !== 100 && (
+				<Progress color="var(--theme-primary-color-6)" size={"sm"} striped animated value={progress} />
+			)}
+			{progress === 100 && (
 				<>
 					<DomainHeaderNavbar
 						pageTitle={t("ManageDomain")}

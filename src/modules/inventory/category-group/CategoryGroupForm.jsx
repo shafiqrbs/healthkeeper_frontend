@@ -34,7 +34,7 @@ function CategoryGroupForm() {
             name: '', status: true
         },
         validate: {
-            name: hasLength({ min: 2, max: 20 }),
+            name: hasLength({ min: 2}),
         }
     });
 
@@ -146,7 +146,7 @@ function CategoryGroupForm() {
                                                             nextField={'CategoryFormSubmit'}
                                                             name={'status'}
                                                             form={form}
-                                                            color="red"
+                                                            color='var(--theme-primary-color-6)'
                                                             id={'status'}
                                                             position={'left'}
                                                             defaultChecked={1}

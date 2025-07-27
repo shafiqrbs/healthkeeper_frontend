@@ -84,7 +84,7 @@ function ProductCategoryDrawer(props) {
                             <ActionIcon
                                 mr={'sm'}
                                 radius="xl"
-                                color="red.6" size="md"
+                                color='var( --theme-remove-color)'  size="md"
                                 onClick={closeModel}
                             >
                                 <IconX style={{ width: '100%', height: '100%' }} stroke={1.5} />
@@ -186,7 +186,7 @@ function ProductCategoryDrawer(props) {
                                                                             nextField={saveId}
                                                                             name={'status'}
                                                                             form={categoryForm}
-                                                                            color="red"
+                                                                            color='var(--theme-primary-color-6)'
                                                                             id={'category_status'}
                                                                             position={'left'}
                                                                             defaultChecked={1}
@@ -209,7 +209,7 @@ function ProductCategoryDrawer(props) {
                                                                 <ActionIcon
                                                                     variant="transparent"
                                                                     size="sm"
-                                                                    color="red.6"
+                                                                    color='var( --theme-remove-color)'
                                                                     onClick={closeModel}
                                                                     ml={'4'}
                                                                 >

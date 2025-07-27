@@ -9,13 +9,15 @@ import _CreateOpeningForm from "./_CreateOpeningForm.jsx";
 function OpeningStockIndex() {
 	const { t, i18n } = useTranslation();
 	const progress = getLoadingProgress();
-	const { configData } = getConfigData();
+
+	const domainConfigData = JSON.parse(localStorage.getItem("domain-config-data"));
+	let configData = domainConfigData?.inventory_config;
 
 	return (
 		<>
 			{progress !== 100 && (
 				<Progress
-					color="red"
+					color="var(--theme-primary-color-6)"
 					size={"sm"}
 					striped
 					animated
@@ -30,6 +32,7 @@ function OpeningStockIndex() {
 							<_SalesPurchaseHeaderNavbar
 								pageTitle={t("OpeningStock")}
 								roles={t("Roles")}
+								configData={configData}
 							/>
 							<Box p={"8"}>
 								<_CreateOpeningForm currencySymbol={configData?.currency?.symbol} />

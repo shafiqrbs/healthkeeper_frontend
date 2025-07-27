@@ -15,14 +15,14 @@ import {
     rem,
     Checkbox,
     Tooltip,
-    LoadingOverlay
+    LoadingOverlay, List
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
     IconEdit,
     IconPrinter,
     IconReceipt, IconDotsVertical, IconTrashX,
-    IconCheck,
+    IconCheck, IconChevronsRight, IconEyeEdit,IconPencil
 } from "@tabler/icons-react";
 import { DataTable } from 'mantine-datatable';
 import { useDispatch, useSelector } from "react-redux";
@@ -46,7 +46,7 @@ import {showNotificationComponent} from "../../../core-component/showNotificatio
 import Navigation from "../common/Navigation.jsx";
 
 function _SalesTable(props) {
-    const {isWarehouse} = props
+    const {isWarehouse,configData} = props
     const navigate = useNavigate();
     const printRef = useRef()
     const dispatch = useDispatch();
@@ -88,6 +88,7 @@ function _SalesTable(props) {
     useHotkeys([['alt+n', () => {
         navigate('/inventory/sales-invoice');
     }]], []);
+
     const rows = salesViewData && salesViewData.sales_items && salesViewData.sales_items.map((element, index) => (
         <Table.Tr key={element.name}>
             <Table.Td fz="xs" width={'20'}>{index + 1}</Table.Td>
@@ -107,14 +108,7 @@ function _SalesTable(props) {
     useEffect(() => {
         dispatch(setDeleteMessage(''))
         if (entityDataDelete === 'success') {
-            notifications.show({
-                color: 'red',
-                title: t('DeleteSuccessfully'),
-                icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-                loading: false,
-                autoClose: 700,
-                style: { backgroundColor: 'lightgray' },
-            });
+            showNotificationComponent(t('DeleteSuccessfully'), 'red')
 
             setTimeout(() => {
                 dispatch(setFetching(true))
@@ -195,19 +189,20 @@ function _SalesTable(props) {
             if (showInstantEntityData.fulfilled.match(resultAction)) {
                 if (resultAction.payload.data.status === 200) {
                     // Show success notification
-                    showNotificationComponent(t("SalesComplete"), 'teal', 'lightgray', null, false, 1000, true)
+                    showNotificationComponent(t("SalesComplete"), 'teal', null, false, 1000, true)
                 }else{
-                    showNotificationComponent('Failed to process', 'red', 'lightgray', null, false, 1000, true)
+                    showNotificationComponent('Failed to process', 'red', null, false, 1000, true)
                 }
             }
         } catch (error) {
             console.error("Error updating entity:", error);
-            showNotificationComponent('Failed to process', 'red', 'lightgray', null, false, 1000, true)
+            showNotificationComponent('Failed to process', 'red', null, false, 1000, true)
         }finally {
             fetchData();
         }
 
     };
+
 
     return (
         <>
@@ -228,8 +223,7 @@ function _SalesTable(props) {
             </Box>
             <Box>
                 <Grid columns={24} gutter={{ base: 8 }}>
-                    <Grid.Col span={1} ><Navigation module={"sales"}/></Grid.Col>
-                    <Grid.Col span={14} >
+                    <Grid.Col span={15} >
                         <Box bg={'white'} p={'xs'} className={'borderRadiusAll'} >
                             <Box className={'borderRadiusAll'}>
                                 <DataTable
@@ -247,6 +241,11 @@ function _SalesTable(props) {
                                             title: t('S/N'),
                                             textAlignment: 'right',
                                             render: (item) => (
+                                                <>
+                                                {configData?.is_batch_invoice !== 1 &&(
+                                                    indexData.data.indexOf(item) + 1
+                                                )}
+                                                {configData?.is_batch_invoice ===1 &&(
                                                 <Tooltip color="green" withArrow={'center'} label={item.invoice + ' - ' + item.customerName}>
                                                     <Checkbox
                                                         value={item.id}
@@ -260,6 +259,8 @@ function _SalesTable(props) {
                                                         disabled={item?.invoice_batch_id ? true : false}
                                                     />
                                                 </Tooltip>
+                                                )}
+                                                </>
                                             )
                                         },
 
@@ -272,7 +273,7 @@ function _SalesTable(props) {
                                                     component="a"
                                                     size="sm"
                                                     variant="subtle"
-                                                    c="red.6"
+                                                    c='var(--theme-primary-color-6)'
                                                     onClick={(e) => {
                                                         e.preventDefault();
                                                         setLoading(true)
@@ -327,7 +328,7 @@ function _SalesTable(props) {
                                                 <Group gap={4} justify="right" wrap="nowrap">
                                                     <Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
                                                         <Menu.Target>
-                                                            <ActionIcon size="sm" variant="outline" color="red" radius="xl" aria-label="Settings">
+                                                            <ActionIcon size="sm" variant="outline" color='var(--theme-primary-color-6)' radius="xl" aria-label="Settings">
                                                                 <IconDotsVertical height={'18'} width={'18'} stroke={1.5} />
                                                             </ActionIcon>
                                                         </Menu.Target>
@@ -348,9 +349,17 @@ function _SalesTable(props) {
                                                                         });
                                                                     }}
                                                                     component="a"
+                                                                    color="green"
+                                                                    leftSection={
+                                                                        <IconChevronsRight
+                                                                            style={{
+                                                                                width: rem(14),
+                                                                                height: rem(14)
+                                                                            }}/>
+                                                                    }
                                                                     w={'200'}
                                                                 >
-                                                                    {t('SalesProcess')}
+                                                                    {t("Approve")}
                                                                 </Menu.Item>
                                                             }
 
@@ -383,6 +392,9 @@ function _SalesTable(props) {
                                                                     }}
                                                                     component="a"
                                                                     w={'200'}
+                                                                    leftSection={
+                                                                        <IconPencil style={{width: rem(14), height: rem(14)}} />
+                                                                    }
                                                                 >
                                                                     {t('Edit')}
                                                                 </Menu.Item>
@@ -396,6 +408,9 @@ function _SalesTable(props) {
                                                                     data?.invoice_batch_id ? setChecked(true) : setChecked(false)
                                                                 }}
                                                                 component="a"
+                                                                leftSection={
+                                                                    <IconEyeEdit style={{width: rem(14), height: rem(14)}} />
+                                                                }
                                                                 w={'200'}
                                                             >
                                                                 {t('Show')}
@@ -461,7 +476,6 @@ function _SalesTable(props) {
                         </Box>
 
                     </Grid.Col>
-
                     <Grid.Col span={8} >
 
                         <Box bg={'white'} p={'xs'} className={'borderRadiusAll'} ref={printRef} pos="relative">

@@ -1,12 +1,32 @@
-import React from "react";
-import { Group, Menu, rem, ActionIcon, Text, Tooltip, Flex } from "@mantine/core";
+import React, { useEffect, useState } from "react";
+import {
+	Box,
+	Button,
+	Grid,
+	Progress,
+	Title,
+	Group,
+	Burger,
+	Menu,
+	rem,
+	ActionIcon,
+	Text,
+	NavLink,
+	Flex,
+	Tooltip,
+} from "@mantine/core";
+import { getHotkeyHandler, useDisclosure, useHotkeys, useToggle } from "@mantine/hooks";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 import classes from "@assets/css/HeaderSearch.module.css";
-import { IconBuildingStore, IconInfoCircle, IconMap2 } from "@tabler/icons-react";
+import { IconBuildingStore, IconInfoCircle, IconMap2, IconSearch, IconSettings } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function DomainHeaderNavbar({ pageTitle, pageDescription }) {
-	const { t } = useTranslation();
+function DomainHeaderNavbar(props) {
+	const { pageTitle, pageDescription, roles, currancySymbol, allowZeroPercentage } = props;
+	const { t, i18n } = useTranslation();
+	const dispatch = useDispatch();
+	const [opened, { toggle }] = useDisclosure(false);
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -14,8 +34,8 @@ function DomainHeaderNavbar({ pageTitle, pageDescription }) {
 		{ link: "/domain", label: t("Domains") },
 		{ link: "/domain/user", label: t("DomainMasterUser") },
 		{ link: "/domain/head", label: t("DomainHead") },
+		{ link: "/domain/sitemap", label: t("Sitemap") },
 	];
-
 	const items = links.map((link) => (
 		<a
 			key={link.label}
@@ -32,13 +52,13 @@ function DomainHeaderNavbar({ pageTitle, pageDescription }) {
 
 	const menuItems = [
 		{
-			label: "Sitemap",
+			label: t("Sitemap"),
 			path: "/domain/sitemap",
 			icon: <IconMap2 style={{ width: rem(14), height: rem(14) }} />,
 		},
 		{
-			label: "BranchManagement",
-			path: "/domain/branch-management",
+			label: t("DomainMasterUser"),
+			path: "/domain/user",
 			icon: <IconBuildingStore style={{ width: rem(14), height: rem(14) }} />,
 		},
 	];
@@ -61,10 +81,7 @@ function DomainHeaderNavbar({ pageTitle, pageDescription }) {
 									position={"right"}
 									c={"white"}
 									bg={"gray.6"}
-									transitionProps={{
-										transition: "pop-bottom-left",
-										duration: 500,
-									}}
+									transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 								>
 									<IconInfoCircle size={16} color={"gray"} />
 								</Tooltip>
@@ -84,13 +101,7 @@ function DomainHeaderNavbar({ pageTitle, pageDescription }) {
 							mr={"8"}
 						>
 							<Menu.Target>
-								<ActionIcon
-									mt={"4"}
-									variant="filled"
-									color="red.5"
-									radius="xl"
-									aria-label="Settings"
-								>
+								<ActionIcon mt={"4"} variant="filled" color="red.5" radius="xl" aria-label="Settings">
 									<IconInfoCircle height={"12"} width={"12"} stroke={1.5} />
 								</ActionIcon>
 							</Menu.Target>

@@ -89,7 +89,7 @@ function _PurchaseSearch(props) {
                 px={16}
                 py={2}
                 position="top-end"
-                color="red"
+                color='var(--theme-primary-color-6)'
                 withArrow
                 offset={2}
                 zIndex={100}
@@ -122,8 +122,8 @@ function _PurchaseSearch(props) {
                     purchaseFilterData.searchKeyword ? (
                       <Tooltip label={t("Close")} withArrow bg={`red.5`}>
                         <IconX
-                          color={`red`}
-                          size={16}
+                            color='var( --theme-remove-color)'
+                            size={16}
                           opacity={0.5}
                           onClick={() => {
                             dispatch(
@@ -157,7 +157,7 @@ function _PurchaseSearch(props) {
                 px={16}
                 py={2}
                 position="top-end"
-                color="red"
+                color='var(--theme-primary-color-6)'
                 withArrow
                 offset={2}
                 zIndex={100}
@@ -201,7 +201,7 @@ function _PurchaseSearch(props) {
                 px={16}
                 py={2}
                 position="top-end"
-                color="red"
+                color='var(--theme-primary-color-6)'
                 withArrow
                 offset={2}
                 zIndex={100}
@@ -256,7 +256,7 @@ function _PurchaseSearch(props) {
                 px={16}
                 py={2}
                 position="top-end"
-                color="red"
+                color='var(--theme-primary-color-6)'
                 withArrow
                 offset={2}
                 zIndex={100}

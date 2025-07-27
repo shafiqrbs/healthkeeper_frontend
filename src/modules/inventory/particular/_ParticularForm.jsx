@@ -36,7 +36,7 @@ function _ParticularForm(props) {
         },
         validate: {
             particular_type_id: isNotEmpty(),
-            name: hasLength({min: 2, max: 30}),
+            name: hasLength({min: 1, max: 30}),
         }
     });
 
@@ -170,7 +170,7 @@ function _ParticularForm(props) {
                                                                 nextField={formSubmitId}
                                                                 name={'status'}
                                                                 form={settingsForm}
-                                                                color="red"
+                                                                color='var(--theme-primary-color-6)'
                                                                 id={'status'}
                                                                 position={'left'}
                                                                 defaultChecked={1}

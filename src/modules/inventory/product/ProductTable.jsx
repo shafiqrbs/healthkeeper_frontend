@@ -1,519 +1,445 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import React, {useEffect, useState, useRef, useMemo} from "react";
+import {useNavigate, useOutletContext} from "react-router-dom";
 import {
-  Group,
-  Box,
-  ActionIcon,
-  Text,
-  Menu,
-  rem,
-  Switch,
-  Flex,
-  Image,
-  Modal,
-  Button,
+    Group,
+    Box,
+    ActionIcon,
+    Text,
+    Menu,
+    rem,
+    Switch,
+    Flex,
+    Image,
+    Modal,
+    Button, Paper,
 } from "@mantine/core";
-import { useTranslation } from "react-i18next";
-import { IconCheck, IconDotsVertical, IconTrashX } from "@tabler/icons-react";
-import { DataTable } from "mantine-datatable";
-import { useDispatch, useSelector } from "react-redux";
+import {useTranslation} from "react-i18next";
+import {IconCheck, IconDotsVertical, IconTrashX} from "@tabler/icons-react";
+import {DataTable} from "mantine-datatable";
+import {useDispatch, useSelector} from "react-redux";
 import {
-  editEntityData,
-  getIndexEntityData,
-  setFetching,
-  setFormLoading,
-  setInsertType,
-  showEntityData,
-  deleteEntityData,
-  getStatusInlineUpdateData,
-  storeEntityData,
+    getIndexEntityData,
+    deleteEntityData,
+    editEntityData,
+    showEntityData,
+    setInsertType,
+    setFormLoading,
+    getStatusInlineUpdateData,
 } from "../../../../store/core/crudSlice.js";
 import _ProductSearch from "./_ProductSearch";
-import { modals } from "@mantine/modals";
+import {modals} from "@mantine/modals";
 import tableCss from "../../../../assets/css/Table.module.css";
 import ProductViewDrawer from "./ProductViewDrawer.jsx";
 import OverviewModal from "../product-overview/OverviewModal.jsx";
-import { showNotificationComponent } from "../../../core-component/showNotificationComponent.jsx";
+import {showNotificationComponent} from "../../../core-component/showNotificationComponent.jsx";
 import AddMeasurement from "../modal/AddMeasurement.jsx";
-import { Carousel } from "@mantine/carousel";
+import {Carousel} from "@mantine/carousel";
 import "@mantine/carousel/styles.css";
 import Autoplay from "embla-carousel-autoplay";
 import __DrawerAddon from "./__DrawerAddon";
+import {data} from "../../accounting/balance-entry/BalanceBarChart.jsx";
 
-function ProductTable(props) {
-  const { categoryDropdown } = props;
-  const dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
-  const { isOnline, mainAreaHeight } = useOutletContext();
-  const height = mainAreaHeight - 98; //TabList height 104
+function ProductTable({categoryDropdown}) {
+    const dispatch = useDispatch();
+    const {t} = useTranslation();
+    const {mainAreaHeight} = useOutletContext();
+    const height = mainAreaHeight - 150;
 
-  const [userRole, setUserRole] = useState(() => {
-    const userRoleData = localStorage.getItem("user");
-    if (!userRoleData) return [];
+    const scrollViewportRef = useRef(null);
 
-    try {
-      const parsedUser = JSON.parse(userRoleData);
+    const navigate = useNavigate();
+    const perPage = 50;
+    const [page, setPage] = useState(1);
+    const [allDataLoaded, setAllDataLoaded] = useState(false);
 
-      if (!parsedUser.access_control_role) return [];
+    const [indexData, setIndexData] = useState({data: [], total: 0});
 
-      if (Array.isArray(parsedUser.access_control_role)) {
-        return parsedUser.access_control_role;
-      }
+    const [fetching, setFetching] = useState(false);
 
-      if (typeof parsedUser.access_control_role === "string") {
+    const searchKeyword = useSelector((state) => state.crudSlice.searchKeyword);
+    const productFilterData = useSelector((state) => state.inventoryCrudSlice.productFilterData);
+    const fetchingReload = useSelector((state) => state.crudSlice.fetching);
+
+    const [viewModal, setViewModal] = useState(false);
+    const [measurementDrawer, setMeasurementDrawer] = useState(false);
+    const [addonDrawer, setAddonDrawer] = useState(false);
+    const [id, setId] = useState(null);
+    const [switchEnable, setSwitchEnable] = useState({});
+
+    // Load user role
+    const [userRole] = useState(() => {
         try {
-          if (parsedUser.access_control_role.trim() === "") return [];
-          return JSON.parse(parsedUser.access_control_role);
-        } catch (parseError) {
-          console.error("Error parsing access_control_role:", parseError);
-          return [];
+            const userData = localStorage.getItem("user");
+            if (!userData) return [];
+            const user = JSON.parse(userData);
+
+            if (Array.isArray(user.access_control_role)) return user.access_control_role;
+            if (typeof user.access_control_role === "string") {
+                return user.access_control_role.trim() ? JSON.parse(user.access_control_role) : [];
+            }
+            return [];
+        } catch {
+            return [];
         }
-      }
+    });
 
-      return [];
-    } catch (error) {
-      console.error("Error parsing user data from localStorage:", error);
-      return [];
-    }
-  });
+    const fetchData = async (loadPage = 1, reset = false) => {
+        setFetching(true);
 
-  const perPage = 50;
-  const [page, setPage] = useState(1);
-  const [viewModal, setViewModal] = useState(false);
-  const [measurementDrawer, setMeasurementDrawer] = useState(false);
-  const [id, setId] = useState("null");
+        const value = {
+            url: "inventory/product",
+            param: {
+                term: searchKeyword,
+                name: productFilterData.name,
+                alternative_name: productFilterData.alternative_name,
+                sku: productFilterData.sku,
+                sales_price: productFilterData.sales_price,
+                product_type_id: productFilterData.product_type_id,
+                category_id: productFilterData.category_id,
+                page: loadPage,
+                offset: perPage,
+                type: "product",
+            },
+        };
 
-  const [fetching, setFetching] = useState(true);
-  const searchKeyword = useSelector((state) => state.crudSlice.searchKeyword);
-  const productFilterData = useSelector(
-    (state) => state.inventoryCrudSlice.productFilterData
-  );
-  const fetchingReload = useSelector((state) => state.crudSlice.fetching);
+        try {
+            const resultAction = await dispatch(getIndexEntityData(value));
 
-  const [switchEnable, setSwitchEnable] = useState({});
+            if (getIndexEntityData.rejected.match(resultAction)) {
+                console.error("Error:", resultAction);
+            } else if (getIndexEntityData.fulfilled.match(resultAction)) {
+                const newData = resultAction.payload?.data ?? [];
+                const total = resultAction.payload?.total ?? 0;
 
-  const handleSwitch = (event, item) => {
-    setSwitchEnable((prev) => ({ ...prev, [item.product_id]: true }));
-    const value = {
-      url: "inventory/product/status/inline-update/" + item.product_id,
-    };
-    dispatch(getStatusInlineUpdateData(value));
-    setTimeout(() => {
-      setSwitchEnable((prev) => ({ ...prev, [item.product_id]: false }));
-    }, 3000);
-  };
+                if (reset) {
+                    setIndexData({data: newData, total});
+                } else {
+                    setIndexData((prev) => ({
+                        ...prev,
+                        data: [...prev.data, ...newData],
+                    }));
+                }
 
-  const navigate = useNavigate();
-
-  const [indexData, setIndexData] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const value = {
-        url: "inventory/product",
-        param: {
-          term: searchKeyword,
-          name: productFilterData.name,
-          alternative_name: productFilterData.alternative_name,
-          sku: productFilterData.sku,
-          sales_price: productFilterData.sales_price,
-          page: page,
-          offset: perPage,
-          type: "product",
-        },
-      };
-
-      try {
-        const resultAction = await dispatch(getIndexEntityData(value));
-
-        if (getIndexEntityData.rejected.match(resultAction)) {
-          console.error("Error:", resultAction);
-        } else if (getIndexEntityData.fulfilled.match(resultAction)) {
-          setIndexData(resultAction.payload);
-          setFetching(false);
+                setPage(loadPage);
+                if (newData.length < perPage || indexData.data.length + newData.length >= total) {
+                    setAllDataLoaded(true);
+                }
+            }
+        } catch (err) {
+            console.error("Unexpected error:", err);
+        } finally {
+            setFetching(false);
         }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      }
     };
 
-    fetchData();
-  }, [
-    dispatch,
-    searchKeyword,
-    productFilterData,
-    page,
-    perPage,
-    fetchingReload,
-  ]);
-  const productDeleteHandle = async (id) => {
-    const resultAction = await dispatch(
-      deleteEntityData("inventory/product/" + id)
-    );
-    if (resultAction.payload.data.status === 200) {
-      showNotificationComponent(
-        t("DeleteSuccessfully"),
-        "red",
-        "lightgray",
-        "",
-        true,
-        1000,
-        true
-      );
-    } else {
-      showNotificationComponent(
-        "Something went wrong",
-        "red",
-        "lightgray",
-        "",
-        true,
-        1000,
-        true
-      );
-    }
-    setFetching(true);
-  };
+    useEffect(() => {
+        setPage(1);
+        setAllDataLoaded(false);
+        fetchData(1, true);
+    }, [searchKeyword, productFilterData, fetchingReload]);
 
-  // addonDrawer
-  const [addonDrawer, setAddonDrawer] = useState(false);
+    const handleScrollToBottom = () => {
+        if (!fetching && !allDataLoaded) {
+            fetchData(page + 1);
+        }
+    };
 
-  return (
-    <>
-      <Box
-        pl={`xs`}
-        pr={8}
-        pt={"6"}
-        pb={"4"}
-        className={"boxBackground borderRadiusAll border-bottom-none"}
-      >
-        <_ProductSearch
-          module={"product"}
-          categoryDropdown={categoryDropdown}
-        />
-      </Box>
-      <Box className={"borderRadiusAll border-top-none"}>
-        <DataTable
-          classNames={{
-            root: tableCss.root,
-            table: tableCss.table,
-            header: tableCss.header,
-            footer: tableCss.footer,
-            pagination: tableCss.pagination,
-          }}
-          records={indexData.data}
-          columns={[
-            {
-              accessor: "index",
-              title: t("S/N"),
-              textAlignment: "right   ",
-              render: (item) => indexData.data.indexOf(item) + 1,
-            },
-            { accessor: "product_type", title: t("NatureOfProduct") },
-            { accessor: "category_name", title: t("Category") },
-            { accessor: "product_name", title: t("Name") },
-            { accessor: "alternative_name", title: t("DisplayName") },
-            {
-              accessor: "unit_name",
-              title: t("Unit"),
-              render: (item) => (
-                <Text
-                  component="a"
-                  size="sm"
-                  variant="subtle"
-                  c="red.4"
-                  onClick={() => {
-                    setId(item.product_id);
-                    setMeasurementDrawer(true);
-                  }}
-                  style={{ cursor: "pointer" }}
-                >
-                  {item.unit_name}
-                </Text>
-              ),
-            },
-            { accessor: "quantity", title: t("Quantity"), textAlign: "center" },
-            {
-              accessor: "feature_image",
-              textAlign: "center",
-              title: t("Image"),
-              width: "100px",
+    const handleSwitch = (event, item) => {
+        setSwitchEnable((prev) => ({...prev, [item.product_id]: true}));
+        dispatch(getStatusInlineUpdateData({
+            url: "inventory/product/status/inline-update/" + item.product_id,
+        }));
+        setTimeout(() => {
+            setSwitchEnable((prev) => ({...prev, [item.product_id]: false}));
+        }, 3000);
+    };
 
-              render: (item) => {
-                const [opened, setOpened] = useState(false);
-                const autoplay = useRef(Autoplay({ delay: 2000 }));
-                const images = [
-                  item?.images?.feature_image
-                    ? `${import.meta.env.VITE_IMAGE_GATEWAY_URL}/${
-                        item?.images?.feature_image
-                      }`
-                    : null,
-                  item?.images?.path_one
-                    ? `${import.meta.env.VITE_IMAGE_GATEWAY_URL}/${
-                        item?.images?.path_one
-                      }`
-                    : null,
-                  item?.images?.path_two
-                    ? `${import.meta.env.VITE_IMAGE_GATEWAY_URL}/${
-                        item?.images?.path_two
-                      }`
-                    : null,
-                  item?.images?.path_three
-                    ? `${import.meta.env.VITE_IMAGE_GATEWAY_URL}/${
-                        item?.images?.path_three
-                      }`
-                    : null,
-                  item?.images?.path_four
-                    ? `${import.meta.env.VITE_IMAGE_GATEWAY_URL}/${
-                        item?.images?.path_four
-                      }`
-                    : null,
-                ].filter(Boolean);
+    const productDeleteHandle = async (id) => {
+        const resultAction = await dispatch(deleteEntityData(`inventory/product/${id}`));
+        const status = resultAction?.payload?.data?.status;
+        if (status === 200) {
+            showNotificationComponent(t("DeleteSuccessfully"), "red");
+            fetchData(1, true);
+        } else {
+            showNotificationComponent("Something went wrong", "red");
+        }
+    };
 
-                return (
-                  <>
-                    <Image
-                      mih={50}
-                      mah={50}
-                      fit="contain"
-                      src={
-                        images.length > 0
-                          ? images[0]
-                          : `https://placehold.co/120x80/FFFFFF/2f9e44?text=${encodeURIComponent(
-                              item.product_name
-                            )}`
-                      }
-                      style={{ cursor: "pointer" }}
-                      onClick={() => setOpened(true)}
-                    />
+    const [sortStatus, setSortStatus] = useState({
+        columnAccessor: 'product_name',
+        direction: 'asc'
+    });
 
-                    <Modal
-                      opened={opened}
-                      onClose={() => setOpened(false)}
-                      size="lg"
-                      centered
-                      styles={{
-                        content: { overflow: "hidden" }, // Ensure modal content doesn't overflow
-                      }}
-                    >
-                      <Carousel
-                        withIndicators
-                        height={700}
-                        // plugins={[autoplay.current]}
-                        onMouseEnter={autoplay.current.stop}
-                        onMouseLeave={autoplay.current.reset}
-                      >
-                        {images.map((img, index) => (
-                          <Carousel.Slide key={index}>
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: "100%",
-                                overflow: "hidden",
-                              }}
-                            >
-                              <Image
-                                src={img}
-                                fit="contain"
-                                style={{
-                                  transition: "transform 0.3s ease-in-out",
-                                  maxWidth: "100%", // Ensure image fits within the slide
-                                  maxHeight: "100%",
-                                }}
-                                onMouseEnter={(e) =>
-                                  (e.currentTarget.style.transform =
-                                    "scale(1.2)")
-                                }
-                                onMouseLeave={(e) =>
-                                  (e.currentTarget.style.transform = "scale(1)")
-                                }
-                              />
-                            </div>
-                          </Carousel.Slide>
-                        ))}
-                      </Carousel>
-                    </Modal>
-                  </>
-                );
-              },
-            },
-            {
-              accessor: "status",
-              title: t("Status"),
-              textAlign: "center",
-              render: (item) => (
-                <Flex justify="center" align="center">
-                  <Switch
-                    disabled={switchEnable[item.product_id] || false || item.parent_id}
-                    defaultChecked={item.status == 1 ? true : false}
-                    color="red"
-                    radius="xs"
-                    size="md"
-                    onLabel="Enable"
-                    offLabel="Disable"
-                    onChange={(event) => {
-                      handleSwitch(event.currentTarget.checked, item);
-                    }}
-                  />
-                </Flex>
-              ),
-            },
-            {
-              accessor: "action",
-              title: t("Action"),
-              textAlign: "right",
-              render: (data) => (
-                <Group gap={4} justify="right" wrap="nowrap">
-                  <Menu
-                    position="bottom-end"
-                    offset={3}
-                    withArrow
-                    trigger="hover"
-                    openDelay={100}
-                    closeDelay={400}
-                  >
-                    <Menu.Target>
-                      <ActionIcon
-                        size="sm"
-                        variant="outline"
-                        color="red"
-                        radius="xl"
-                        aria-label="Settings"
-                      >
-                        <IconDotsVertical
-                          height={"18"}
-                          width={"18"}
-                          stroke={1.5}
-                        />
-                      </ActionIcon>
-                    </Menu.Target>
-                    <Menu.Dropdown>
-                      {!data.parent_id &&
-                        ["role_inventory_manager", "role_domain"].some(
-                          (value) => userRole.includes(value)
-                        ) && (
-                          <Menu.Item
-                            onClick={() => {
-                              dispatch(setInsertType("update"));
-                              dispatch(
-                                editEntityData("inventory/product/" + data.product_id)
-                              );
-                              dispatch(setFormLoading(true));
-                              navigate(`/inventory/product/${data.product_id}`);
-                            }}
-                          >
-                            {t("Edit")}
-                          </Menu.Item>
-                        )}
+    // Memoized Sorted Data
+    const sortedRecords = useMemo(() => {
+        if (!indexData?.data) return [];
 
-                      <Menu.Item
-                        onClick={() => {
-                          setViewModal(true);
-                          dispatch(
-                            showEntityData("inventory/product/" + data.product_id)
-                          );
-                        }}
-                        target="_blank"
-                        component="a"
-                        w={"200"}
-                      >
-                        {t("Show")}
-                      </Menu.Item>
-                      <Menu.Item
-                        onClick={() => {
-                          setId(data.product_id);
-                          setAddonDrawer(true);
-                        }}
-                        target="_blank"
-                        component="a"
-                        w={"200"}
-                      >
-                        {t("Addon")}
-                      </Menu.Item>
-                      {!data.parent_id &&
-                        ["role_inventory_manager", "role_domain"].some(
-                          (value) => userRole.includes(value)
-                        ) && (
-                          <Menu.Item
-                            target="_blank"
-                            component="a"
-                            w={"200"}
-                            mt={"2"}
-                            bg={"red.1"}
-                            c={"red.6"}
-                            onClick={() => {
-                              modals.openConfirmModal({
-                                title: (
-                                  <Text size="md">
-                                    {" "}
-                                    {t("FormConfirmationTitle")}
-                                  </Text>
-                                ),
-                                children: (
-                                  <Text size="sm">
-                                    {" "}
-                                    {t("FormConfirmationMessage")}
-                                  </Text>
-                                ),
-                                labels: {
-                                  confirm: "Confirm",
-                                  cancel: "Cancel",
-                                },
-                                confirmProps: { color: "red.6" },
-                                onCancel: () => console.log("Cancel"),
-                                onConfirm: () => {
-                                  productDeleteHandle(data.product_id);
-                                },
-                              });
-                            }}
-                            rightSection={
-                              <IconTrashX
-                                style={{ width: rem(14), height: rem(14) }}
-                              />
+        return [...indexData.data].sort((a, b) => {
+            const aVal = a[sortStatus.columnAccessor];
+            const bVal = b[sortStatus.columnAccessor];
+
+            if (aVal == null) return 1;
+            if (bVal == null) return -1;
+
+            const valA = typeof aVal === 'string' ? aVal.toLowerCase() : aVal;
+            const valB = typeof bVal === 'string' ? bVal.toLowerCase() : bVal;
+
+            if (valA < valB) return sortStatus.direction === 'asc' ? -1 : 1;
+            if (valA > valB) return sortStatus.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }, [indexData?.data, sortStatus]);
+
+
+    return (
+        <>
+            <Box pl="xs" pr={8} pt="6" pb="4" className="boxBackground borderRadiusAll border-bottom-none">
+                <_ProductSearch module="product" categoryDropdown={categoryDropdown}/>
+            </Box>
+
+            <Box className="borderRadiusAll border-top-none">
+                <DataTable
+                    records={sortedRecords}
+                    classNames={{ thead: 'custom-header', tbody: 'custom-body' }} // replace with actual tableCss if needed
+                    columns={[
+                        {
+                            accessor: 'index',
+                            title: t('S/N'),
+                            textAlignment: 'right',
+                            render: (item) => (sortedRecords.indexOf(item) ?? -1) + 1
+                        },
+                        {
+                            accessor: 'product_type',
+                            title: t('NatureOfProduct'),
+                            sortable: true
+                        },
+                        {
+                            accessor: 'category_name',
+                            title: t('Category'),
+                            sortable: true
+                        },
+                        {
+                            accessor: 'product_name',
+                            title: t('Name'),
+                            sortable: true
+                        },
+                        {
+                            accessor: 'unit_name',
+                            title: t('Unit'),
+                            sortable: true,
+                            render: (item) => (
+                                <Button
+                                    component="a"
+                                    size="compact-xs"
+                                    radius="xs"
+                                    color="var(--theme-primary-color-4)"
+                                    variant="filled"
+                                    fw="100"
+                                    fz="12"
+                                    onClick={() => {
+                                        setId(item.product_id);
+                                        setMeasurementDrawer(true);
+                                    }}
+                                >
+                                    {item.unit_name}
+                                </Button>
+                            )
+                        },
+                        {
+                            accessor: 'quantity',
+                            title: t('Quantity'),
+                            textAlign: 'center'
+                        },
+                        {
+                            accessor: 'feature_image',
+                            title: t('Image'),
+                            textAlign: 'center',
+                            width: '100px',
+                            render: (item) => {
+                                const [opened, setOpened] = useState(false);
+                                const autoplay = useRef(Autoplay({ delay: 2000 }));
+
+                                const images = [
+                                    item?.images?.feature_image,
+                                    item?.images?.path_one,
+                                    item?.images?.path_two,
+                                    item?.images?.path_three,
+                                    item?.images?.path_four
+                                ]
+                                    .filter(Boolean)
+                                    .map(img => `${img}`);
+
+                                return (
+                                    images?.[0] && (
+                                        <Image
+                                            mih={50}
+                                            mah={50}
+                                            fit="contain"
+                                            src={`${import.meta.env.VITE_IMAGE_GATEWAY_URL}/storage/${images[0]}`}
+                                            style={{ cursor: 'pointer' }}
+                                            onClick={() => setOpened(true)}
+                                        />
+                                    )
+                                );
                             }
-                          >
-                            {t("Delete")}
-                          </Menu.Item>
+                        },
+                        {
+                            accessor: 'status',
+                            title: t('Status'),
+                            textAlign: 'center',
+                            render: (item) => (
+                                <Flex justify="center" align="center">
+                                    <Switch
+                                        disabled={switchEnable[item.product_id] || item.parent_id}
+                                        defaultChecked={item.status === 1}
+                                        color="var(--theme-primary-color-6)"
+                                        radius="xs"
+                                        size="md"
+                                        onLabel="Enable"
+                                        offLabel="Disable"
+                                        onChange={(e) => handleSwitch(e, item)}
+                                    />
+                                </Flex>
+                            )
+                        },
+                        {
+                            accessor: 'action',
+                            title: t('Action'),
+                            textAlign: 'right',
+                            render: (item) => (
+                                <Group gap={4} justify="right" wrap="nowrap">
+                                    <Menu
+                                        position="bottom-end"
+                                        withArrow
+                                        trigger="hover"
+                                        width={200}
+                                        openDelay={100}
+                                        closeDelay={400}
+                                    >
+                                        <Menu.Target>
+                                            <ActionIcon
+                                                size="sm"
+                                                variant="outline"
+                                                color="var(--theme-primary-color-6)"
+                                                radius="xl"
+                                            >
+                                                <IconDotsVertical height={18} width={18} stroke={1.5} />
+                                            </ActionIcon>
+                                        </Menu.Target>
+                                        <Menu.Dropdown>
+                                            {!item.parent_id &&
+                                                ['role_inventory_manager', 'role_domain'].some((role) =>
+                                                    userRole.includes(role)
+                                                ) && (
+                                                    <Menu.Item
+                                                        onClick={() => {
+                                                            dispatch(setInsertType('update'));
+                                                            dispatch(editEntityData(`inventory/product/${item.product_id}`));
+                                                            dispatch(setFormLoading(true));
+                                                            navigate(`/inventory/product/${item.product_id}`);
+                                                        }}
+                                                    >
+                                                        {t('Edit')}
+                                                    </Menu.Item>
+                                                )}
+                                            <Menu.Item
+                                                onClick={() => {
+                                                    setViewModal(true);
+                                                    dispatch(showEntityData(`inventory/product/${item.product_id}`));
+                                                }}
+                                            >
+                                                {t('Show')}
+                                            </Menu.Item>
+                                            <Menu.Item
+                                                onClick={() => {
+                                                    setId(item.product_id);
+                                                    setAddonDrawer(true);
+                                                }}
+                                            >
+                                                {t('Addon')}
+                                            </Menu.Item>
+                                            {!item.parent_id &&
+                                                ['role_inventory_manager', 'role_domain'].some((role) =>
+                                                    userRole.includes(role)
+                                                ) && (
+                                                    <Menu.Item
+                                                        bg="red.1"
+                                                        c="var(--theme-primary-color-6)"
+                                                        onClick={() =>
+                                                            modals.openConfirmModal({
+                                                                title: <Text size="md">{t('FormConfirmationTitle')}</Text>,
+                                                                children: (
+                                                                    <Text size="sm">{t('FormConfirmationMessage')}</Text>
+                                                                ),
+                                                                labels: { confirm: 'Confirm', cancel: 'Cancel' },
+                                                                confirmProps: { color: 'red.6' },
+                                                                onConfirm: () => productDeleteHandle(item.product_id)
+                                                            })
+                                                        }
+                                                        rightSection={
+                                                            <IconTrashX style={{ width: rem(14), height: rem(14) }} />
+                                                        }
+                                                    >
+                                                        {t('Delete')}
+                                                    </Menu.Item>
+                                                )}
+                                        </Menu.Dropdown>
+                                    </Menu>
+                                </Group>
+                            )
+                        }
+                    ]}
+                    sortStatus={sortStatus}
+                    onSortStatusChange={setSortStatus}
+                    fetching={fetching}
+                    loaderSize="xs"
+                    loaderColor="grape"
+                    height={height}
+                    scrollViewportRef={scrollViewportRef}
+                    onScrollToBottom={handleScrollToBottom}
+                />
+
+                {/* Footer */}
+                <Paper p="xs" mt="xs" withBorder>
+                    <Group justify="space-between">
+                        <Text size="sm">
+                            Showing <b>{sortedRecords.length}</b> of{' '}
+                            <b>{indexData?.total || 0}</b> products
+                        </Text>
+                        {!fetching && sortedRecords.length === 0 && (
+                            <Text size="xs" color="dimmed">
+                                {t('No products found')}
+                            </Text>
                         )}
-                    </Menu.Dropdown>
-                  </Menu>
-                </Group>
-              ),
-            },
-          ]}
-          fetching={fetching}
-          totalRecords={indexData.total}
-          recordsPerPage={perPage}
-          page={page}
-          onPageChange={(p) => {
-            setPage(p);
-            dispatch(setFetching(true));
-          }}
-          loaderSize="xs"
-          loaderColor="grape"
-          height={height}
-          scrollAreaProps={{ type: "never" }}
-        />
-      </Box>
-      {viewModal && (
-        <OverviewModal viewModal={viewModal} setViewModal={setViewModal} />
-      )}
-      {measurementDrawer && (
-        <AddMeasurement
-          measurementDrawer={measurementDrawer}
-          setMeasurementDrawer={setMeasurementDrawer}
-          id={id}
-        />
-      )}
-      {addonDrawer && (
-        <__DrawerAddon
-          addonDrawer={addonDrawer}
-          setAddonDrawer={setAddonDrawer}
-          id={id}
-        />
-      )}
-    </>
-  );
+                        {!fetching && sortedRecords.length !== 0 && !fetching && (
+                            <Text size="xs" color="dimmed">
+                                {t('Scroll to load more...')}
+                            </Text>
+                        )}
+                        {fetching && (
+                            <Text size="xs" color="dimmed">
+                                {t('LoadingProducts')}...
+                            </Text>
+                        )}
+                    </Group>
+                </Paper>
+            </Box>
+
+            {viewModal && (
+                <OverviewModal viewModal={viewModal} setViewModal={setViewModal}/>
+            )}
+            {measurementDrawer && (
+                <AddMeasurement
+                    measurementDrawer={measurementDrawer}
+                    setMeasurementDrawer={setMeasurementDrawer}
+                    id={id}
+                />
+            )}
+            {addonDrawer && (
+                <__DrawerAddon addonDrawer={addonDrawer} setAddonDrawer={setAddonDrawer} id={id}/>
+            )}
+        </>
+    );
 }
 
 export default ProductTable;

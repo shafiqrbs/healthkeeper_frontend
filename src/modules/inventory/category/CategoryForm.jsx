@@ -41,7 +41,7 @@ function CategoryForm(props) {
         },
         validate: {
             parent: isNotEmpty(),
-            name: hasLength({ min: 2, max: 20 }),
+            name: hasLength({ min: 2}),
         }
     });
 
@@ -199,7 +199,7 @@ function CategoryForm(props) {
                                                             nextField={'CategoryFormSubmit'}
                                                             name={'status'}
                                                             form={form}
-                                                            color="red"
+                                                            color='var(--theme-primary-color-6)'
                                                             id={'status'}
                                                             position={'left'}
                                                             defaultChecked={1}

@@ -15,6 +15,7 @@ export const MODULES = {
 	EMERGENCY: "emergency",
 	PRESCRIPTION: "prescription",
 	CUSTOMER: "customer",
+	DOMAIN: "domain",
 };
 
 // =============== all 64 districts of bangladesh in alphabetical order ================

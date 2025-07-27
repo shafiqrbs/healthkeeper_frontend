@@ -43,9 +43,7 @@ function ProductIndex() {
 	}, [id, dispatch, navigate]);
 
 	const dropdownLoad = useSelector((state) => state.inventoryCrudSlice.dropdownLoad);
-	const categoryDropdownData = useSelector(
-		(state) => state.inventoryUtilitySlice.categoryDropdownData
-	);
+	const categoryDropdownData = useSelector((state) => state.inventoryUtilitySlice.categoryDropdownData);
 
 	let categoryDropdown =
 		categoryDropdownData && categoryDropdownData.length > 0
@@ -70,7 +68,7 @@ function ProductIndex() {
 		<>
 			{progress !== 100 && (
 				<Progress
-					color="red"
+					color="var(--theme-primary-color-6)"
 					size={"sm"}
 					striped
 					animated
@@ -86,9 +84,7 @@ function ProductIndex() {
 								pageTitle={t("ManageProduct")}
 								roles={t("Roles")}
 								allowZeroPercentage={domainConfigData?.inventory_config?.zero_stock}
-								currencySymbol={
-									domainConfigData?.inventory_config?.currency?.symbol
-								}
+								currencySymbol={domainConfigData?.inventory_config?.currency?.symbol}
 							/>
 							<Box p={"8"}>
 								<Grid columns={24} gutter={{ base: 8 }}>
@@ -98,14 +94,8 @@ function ProductIndex() {
 									{insertType === "create" ? (
 										<>
 											<Grid.Col span={14}>
-												<Box
-													bg={"white"}
-													p={"xs"}
-													className={"borderRadiusAll"}
-												>
-													<ProductTable
-														categoryDropdown={categoryDropdown}
-													/>
+												<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+													<ProductTable categoryDropdown={categoryDropdown} />
 												</Box>
 											</Grid.Col>
 											<Grid.Col span={9}>

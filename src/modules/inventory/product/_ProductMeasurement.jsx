@@ -170,14 +170,10 @@ function _ProductMeasurement(props) {
     const resultAction = await dispatch(storeEntityData(value));
 
     if (storeEntityData.rejected.match(resultAction)) {
-      showNotificationComponent(
-        resultAction.payload?.message || t("ErrorOccurred"),
-        "red",
-        "lightgray"
-      );
+      showNotificationComponent(resultAction.payload?.message || t("ErrorOccurred"), "red");
       setReloadMeasurementData(true);
     } else if (storeEntityData.fulfilled.match(resultAction)) {
-      showNotificationComponent(t("Update"), "teal", "lightgray");
+      showNotificationComponent(t("Update"), "teal");
       setReloadMeasurementData(true);
     }
   };
@@ -197,15 +193,7 @@ function _ProductMeasurement(props) {
             );
 
             if (isUnitIdExists) {
-              showNotificationComponent(
-                "Unit already exists",
-                "red",
-                "lightgray",
-                "Data will be loaded in 3 seconds, you cannot close this yet",
-                true,
-                1000,
-                true
-              );
+              showNotificationComponent("Unit already exists", "red", "Data will be loaded in 3 seconds, you cannot close this yet", true, 1000, true);
               return;
             }
 
@@ -221,15 +209,7 @@ function _ProductMeasurement(props) {
             form.reset();
             setSaveCreateLoading(true);
 
-            showNotificationComponent(
-              t("UpdateSuccessfully"),
-              "teal",
-              "lightgray",
-              "Data will be loaded in 3 seconds, you cannot close this yet",
-              true,
-              1000,
-              true
-            );
+            showNotificationComponent(t("UpdateSuccessfully"), "teal", "Data will be loaded in 3 seconds, you cannot close this yet", true, 1000, true);
 
             setTimeout(() => {
               setReloadMeasurementData(true);
@@ -244,16 +224,9 @@ function _ProductMeasurement(props) {
     >
       <Box >
         <Grid columns={32} gutter={{ base: 8 }}>
-          <Grid.Col span={12}>
-            <Stack
-                h={height}
-                bg="var(--mantine-color-body)"
-                align="stretch"
-                justify="space-between"
-                className={"borderRadiusAll"}
-            >
-              <Box variant="default">&nbsp;</Box>
-              <Box className={"boxBackground"}>
+          <Grid.Col span={10}>
+            <Box>
+              <Box className={"boxBackground"} h={height-48}>
                 <Box p={'xs'}>
                   <InputButtonForm
                       tooltip={t("EnterQuantity")}
@@ -291,33 +264,34 @@ function _ProductMeasurement(props) {
                       changeValue={setMeasurementUnitData}
                   />
                 </Box>
-                <Box
-                    p={`xs`}
-                    className={"titleBackground"}
-                >
-                  <>
-                    {!saveCreateLoading && isOnline && (
-                        <Button
-                            size="xs"
-                            className={'btnPrimaryBg'}
-                            type="submit"
-                            fullWidth={'true'}
-                            id="ProductMeasurementFormSubmit"
-                            leftSection={<IconDeviceFloppy size={18} />}
-                        >
-                          <Flex direction={`column`} gap={0}>
-                            <Text fz={14} fw={400}>
-                              {t("AddMeasurement")}
-                            </Text>
-                          </Flex>
-                        </Button>
-                    )}
-                  </>
-                </Box>
               </Box>
-            </Stack>
+              <Box
+                  p={`xs`}
+                  className={"titleBackground"}
+              >
+                <>
+                  {!saveCreateLoading && isOnline && (
+                      <Button
+                          size="md"
+                          className={'btnPrimaryBg'}
+                          type="submit"
+                          fullWidth={'true'}
+                          id="SkuManagementFormSubmit"
+                          leftSection={<IconDeviceFloppy size={16} />}
+                      >
+                        <Flex direction={`column`} gap={0}>
+                          <Text fz={18} fw={400}>
+                            {t("AddMeasurement")}
+                          </Text>
+                        </Flex>
+                      </Button>
+
+                  )}
+                </>
+              </Box>
+            </Box>
           </Grid.Col>
-          <Grid.Col span={20}>
+          <Grid.Col span={22}>
             <Box className={"borderRadiusAll"}>
           <ScrollArea
             h={height}
@@ -378,7 +352,7 @@ function _ProductMeasurement(props) {
                                 "is_sales"
                               );
                             }}
-                            color="red"
+                            color='var(--theme-primary-color-6)'
                             variant="outline"
                             radius="xl"
                             size="md"
@@ -396,7 +370,7 @@ function _ProductMeasurement(props) {
                                 "is_purchase"
                               );
                             }}
-                            color="red"
+                            color='var(--theme-primary-color-6)'
                             variant="outline"
                             radius="xl"
                             size="md"
@@ -407,7 +381,7 @@ function _ProductMeasurement(props) {
                           <ActionIcon
                             size="sm"
                             variant="transparent"
-                            color="red"
+                            color='var( --theme-remove-color)'
                             onClick={() => {
                               dispatch(
                                 deleteEntityData(

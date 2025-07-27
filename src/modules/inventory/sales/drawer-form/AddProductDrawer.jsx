@@ -34,10 +34,10 @@ function AddProductDrawer(props) {
         <Drawer.Overlay />
         <Drawer.Content>
           <ScrollArea
-            h={height + 100}
+            h={height + 58}
             scrollbarSize={2}
             type="never"
-            bg={"gray.1"}
+            bg={"white"}
           >
             <Flex
               mih={40}
@@ -50,7 +50,7 @@ function AddProductDrawer(props) {
               <ActionIcon
                 mr={"sm"}
                 radius="xl"
-                color="grey.6"
+                color='var( --theme-remove-color)'
                 size="md"
                 variant="outline"
                 onClick={closeModel}

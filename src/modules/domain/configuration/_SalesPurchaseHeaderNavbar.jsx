@@ -1,47 +1,23 @@
-import React, { useEffect, useState } from "react";
-import {
-	Box,
-	Button,
-	Grid,
-	Progress,
-	Title,
-	Group,
-	Burger,
-	Menu,
-	rem,
-	ActionIcon,
-	Text,
-} from "@mantine/core";
-import { getHotkeyHandler, useDisclosure, useHotkeys, useToggle } from "@mantine/hooks";
+import { Group, Menu, rem, ActionIcon, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import classes from "../../../../assets/css/HeaderSearch.module.css";
-import {
-	IconInfoCircle,
-	IconTrash,
-	IconSearch,
-	IconSettings,
-	IconTable,
-} from "@tabler/icons-react";
+import classes from "@assets/css/HeaderSearch.module.css";
+import { IconInfoCircle, IconSettings, IconTable } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function _SalesPurchaseHeaderNavbar(props) {
-	const { t, i18n } = useTranslation();
+function _SalesPurchaseHeaderNavbar({ pageTitle, configData }) {
+	const { t } = useTranslation();
 
-	const { pageTitle, configData } = props;
-	const dispatch = useDispatch();
-	const [opened, { toggle }] = useDisclosure(false);
 	const navigate = useNavigate();
 	const location = useLocation();
+
 	const links = [
-		configData?.is_batch_invoice === 1
-			? { link: "/inventory/invoice-batch", label: t("InvoiceBatch") }
-			: "",
+		configData?.is_batch_invoice === 1 ? { link: "/inventory/invoice-batch", label: t("InvoiceBatch") } : "",
 		{ link: "/inventory/sales", label: t("Sales") },
 		{ link: "/inventory/sales-invoice", label: t("NewSales") },
 		{ link: "/inventory/purchase", label: t("Purchase") },
 		{ link: "/inventory/purchase-invoice", label: t("NewPurchase") },
 	];
+
 	const items = links.map((link) => (
 		<a
 			key={link.label}
@@ -55,6 +31,7 @@ function _SalesPurchaseHeaderNavbar(props) {
 			{link.label}
 		</a>
 	));
+
 	return (
 		<>
 			<header className={classes.header}>
@@ -75,13 +52,7 @@ function _SalesPurchaseHeaderNavbar(props) {
 							mr={"8"}
 						>
 							<Menu.Target>
-								<ActionIcon
-									mt={"4"}
-									variant="filled"
-									color="red.5"
-									radius="xl"
-									aria-label="Settings"
-								>
+								<ActionIcon mt={"4"} variant="filled" color="red.5" radius="xl" aria-label="Settings">
 									<IconInfoCircle height={"12"} width={"12"} stroke={1.5} />
 								</ActionIcon>
 							</Menu.Target>
@@ -89,36 +60,30 @@ function _SalesPurchaseHeaderNavbar(props) {
 								<Menu.Item
 									href="/inventory/opening-stock"
 									component="button"
-									onClick={(e) => {
+									onClick={() => {
 										navigate("/inventory/opening-stock");
 									}}
-									leftSection={
-										<IconTable style={{ width: rem(14), height: rem(14) }} />
-									}
+									leftSection={<IconTable style={{ width: rem(14), height: rem(14) }} />}
 								>
 									{t("OpeningStock")}
 								</Menu.Item>
 								<Menu.Item
 									href="/inventory/opening-approve-stock"
 									component="button"
-									onClick={(e) => {
+									onClick={() => {
 										navigate("/inventory/opening-approve-stock");
 									}}
-									leftSection={
-										<IconTable style={{ width: rem(14), height: rem(14) }} />
-									}
+									leftSection={<IconTable style={{ width: rem(14), height: rem(14) }} />}
 								>
 									{t("ApproveStock")}
 								</Menu.Item>
 								<Menu.Item
 									href="/inventory/config"
 									component="button"
-									onClick={(e) => {
+									onClick={() => {
 										navigate("/inventory/config");
 									}}
-									leftSection={
-										<IconSettings style={{ width: rem(14), height: rem(14) }} />
-									}
+									leftSection={<IconSettings style={{ width: rem(14), height: rem(14) }} />}
 								>
 									{t("Setting")}
 								</Menu.Item>

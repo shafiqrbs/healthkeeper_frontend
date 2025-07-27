@@ -611,7 +611,7 @@ function _UpdateInvoice(props) {
                                                 <ActionIcon
                                                     size="sm"
                                                     variant="subtle"
-                                                    color="red"
+                                                    color='var( --theme-remove-color)'
                                                     onClick={() => {
                                                         let data = tempCardProducts ? tempCardProducts : [];
                                                         data = data.filter(d => d.id !== item.id);

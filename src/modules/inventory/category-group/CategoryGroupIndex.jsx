@@ -7,11 +7,7 @@ import CategoryGroupTable from "./CategoryGroupTable.jsx";
 import CategoryGroupForm from "./CategoryGroupForm.jsx";
 import CategoryGroupUpdateForm from "./CategoryGroupUpdateForm.jsx";
 import { setSearchKeyword } from "../../../../store/core/crudSlice.js";
-import {
-	editEntityData,
-	setEntityNewData,
-	setInsertType,
-} from "../../../../store/inventory/crudSlice.js";
+import { editEntityData, setEntityNewData, setInsertType } from "../../../../store/inventory/crudSlice.js";
 import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
 import getConfigData from "../../../global-hook/config-data/getConfigData.js";
 import InventoryHeaderNavbar from "../../domain/configuration/InventoryHeaderNavbar.jsx";
@@ -32,8 +28,7 @@ function CategoryGroupIndex() {
 
 	useEffect(() => {
 		id
-			? (dispatch(setInsertType("update")),
-			  dispatch(editEntityData(`inventory/category-group/${id}`)))
+			? (dispatch(setInsertType("update")), dispatch(editEntityData(`inventory/category-group/${id}`)))
 			: (dispatch(setInsertType("create")),
 			  dispatch(setSearchKeyword("")),
 			  dispatch(setEntityNewData([])),
@@ -44,7 +39,7 @@ function CategoryGroupIndex() {
 		<>
 			{progress !== 100 && (
 				<Progress
-					color="red"
+					color="var(--theme-primary-color-6)"
 					size={"sm"}
 					striped
 					animated
@@ -73,11 +68,7 @@ function CategoryGroupIndex() {
 										</Box>
 									</Grid.Col>
 									<Grid.Col span={9}>
-										{insertType === "create" ? (
-											<CategoryGroupForm />
-										) : (
-											<CategoryGroupUpdateForm />
-										)}
+										{insertType === "create" ? <CategoryGroupForm /> : <CategoryGroupUpdateForm />}
 									</Grid.Col>
 								</Grid>
 							</Box>

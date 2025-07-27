@@ -1,181 +1,394 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Grid, Checkbox, ScrollArea, Button, Text } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { Box, Grid, ScrollArea, Button, Text } from "@mantine/core";
+import { isNotEmpty, useForm } from "@mantine/form";
 import { useDispatch } from "react-redux";
 import { modals } from "@mantine/modals";
 import { useHotkeys } from "@mantine/hooks";
-import { setValidationData, storeEntityData } from "../../../../store/core/crudSlice";
-import getDomainConfig from "../../../global-hook/config-data/getDomainConfig";
-import SelectForm from "../../../form-builders/SelectForm";
-import { showNotificationComponent } from "../../../core-component/showNotificationComponent";
+import { setValidationData } from "@/app/store/core/crudSlice";
+import { storeEntityData } from "@/app/store/core/crudThunk";
+import useDomainConfig from "@hooks/config-data/useDomainConfig";
+import SelectForm from "@components/form-builders/SelectForm";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import InputCheckboxForm from "@components/form-builders/InputCheckboxForm";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 
-function SalesForm({ customerGroupDropdownData, height, id }) {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const [saveCreateLoading, setSaveCreateLoading] = useState(false);
-  const [customerGroupData, setCustomerGroupData] = useState(null);
-  const { domainConfig, fetchDomainConfig } = getDomainConfig();
+function SalesForm({ customerGroupDropdownData, height, domainConfig, closeDrawer }) {
+	const { t } = useTranslation();
+	const dispatch = useDispatch();
+	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
+	const { fetchDomainConfig } = useDomainConfig();
+	const id = domainConfig?.id;
+	const config_sales = domainConfig?.inventory_config?.config_sales;
+	const [customerGroupData, setCustomerGroupData] = useState(null);
 
-  const salesConfig = useMemo(() => domainConfig?.inventory_config?.config_sales || {}, [domainConfig]);
+	const productNature = useGlobalDropdownData("product_nature");
 
-  const fields = [
-    { name: "discount_with_customer", label: "DiscountWithCustomer" },
-    { name: "due_sales_without_customer", label: "DueSalesWithoutCustomer" },
-    { name: "is_measurement_enable", label: "MeasurementEnable" },
-    { name: "is_multi_price", label: "MultiPrice" },
-    { name: "is_sales_auto_approved", label: "SalesAutoApproved" },
-    { name: "is_zero_receive_allow", label: "ZeroReceiveAllow" },
-    { name: "item_sales_percent", label: "ItemSalesPercent" },
-    { name: "search_by_category", label: "SearchByCategory" },
-    { name: "search_by_product_nature", label: "SearchByProductNature" },
-    { name: "search_by_vendor", label: "SearchByVendor" },
-    { name: "search_by_warehouse", label: "SearchByWarehouse" },
-    { name: "show_product", label: "ShowProduct" },
-    { name: "zero_stock", label: "ZeroStock" },
-  ];
+	useEffect(() => {
+		setCustomerGroupData(config_sales?.default_customer_group_id?.toString());
+	}, [domainConfig]);
 
-  const form = useForm({
-    initialValues: {
-      default_customer_group_id: 0,
-      ...fields.reduce((acc, field) => ({ ...acc, [field.name]: 0 }), {})
-    },
-  });
+	const form = useForm({
+		initialValues: {
+			default_customer_group_id: config_sales?.default_customer_group_id || "",
+			discount_with_customer: config_sales?.discount_with_customer || "",
+			due_sales_without_customer: config_sales?.due_sales_without_customer || "",
+			is_multi_price: config_sales?.is_multi_price || "",
+			is_sales_auto_approved: config_sales?.is_sales_auto_approved || "",
+			is_measurement_enable: config_sales?.is_measurement_enable || "",
+			is_zero_receive_allow: config_sales?.is_zero_receive_allow || "",
+			item_sales_percent: config_sales?.item_sales_percent || "",
+			search_by_category: config_sales?.search_by_category || "",
+			search_by_product_nature: config_sales?.search_by_product_nature || "",
+			search_by_vendor: config_sales?.search_by_vendor || "",
+			search_by_warehouse: config_sales?.search_by_warehouse || "",
+			show_product: config_sales?.show_product || "",
+			is_bonus_quantity: config_sales?.is_bonus_quantity || "",
+			is_barcode: config_sales?.is_barcode || "",
+			zero_stock: config_sales?.zero_stock || "",
+		},
+		validate: {
+			default_customer_group_id: isNotEmpty(),
+		},
+	});
 
-  useEffect(() => {
-    if (salesConfig) {
-      form.setValues({
-        default_customer_group_id: salesConfig.default_customer_group_id || 0,
-        ...fields.reduce((acc, field) => ({ ...acc, [field.name]: salesConfig[field.name] || 0 }), {})
-      });
-    }
-  }, [salesConfig]);
+	const productNatureSelectedIds = useMemo(() => {
+		try {
+			const rawValue = config_sales?.sales_product_nature;
+			if (!rawValue) return [];
+			const parsed = JSON.parse(rawValue);
+			return Array.isArray(parsed) ? parsed : [];
+		} catch (e) {
+			console.error("Invalid JSON in sales_product_nature:", e);
+			return [];
+		}
+	}, [config_sales]);
 
-  const handleSalesFormSubmit = (values) => {
-    dispatch(setValidationData(false));
-    modals.openConfirmModal({
-      title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
-      children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
-      labels: { confirm: t("Submit"), cancel: t("Cancel") },
-      confirmProps: { color: "red" },
-      onCancel: () => {},
-      onConfirm: () => handleSalesConfirmSubmit(values),
-    });
-  };
+	useEffect(() => {
+		if (!config_sales?.sales_product_nature) return;
 
-  const handleSalesConfirmSubmit = async (values) => {
-    const payload = {
-      url: `domain/config/inventory-sales/${id}`,
-      data: {
-        ...values,
-        ...fields.reduce((acc, field) => ({
-          ...acc,
-          [field.name]: values[field.name] === true || values[field.name] === 1 ? 1 : 0,
-        }), {})
-      }
-    };
+		const parsedProductNature = Array.isArray(config_sales.sales_product_nature)
+			? config_sales.sales_product_nature
+			: JSON.parse(config_sales.sales_product_nature || "[]");
 
-    try {
-      setSaveCreateLoading(true);
-      const result = await dispatch(storeEntityData(payload));
-      if (storeEntityData.fulfilled.match(result) && result.payload?.data?.status === 200) {
-        await fetchDomainConfig();
-        showNotificationComponent(t("UpdateSuccessfully"), "teal");
-      } else {
-        showNotificationComponent(t("UpdateFailed"), "red");
-      }
+		if (!parsedProductNature.length) return;
 
-    } catch (err) {
-      console.error(err);
-      showNotificationComponent(t("UpdateFailed"), "red");
-    } finally {
-      setSaveCreateLoading(false);
-    }
-  };
+		const values = {};
+		parsedProductNature.forEach((nature) => {
+			const natureId = Number(nature);
+			values[`${natureId}_salesProductNature`] = productNatureSelectedIds.includes(natureId) ? 1 : 0;
+		});
+		form.setValues(values);
+	}, [dispatch, config_sales, productNatureSelectedIds]);
 
-  useHotkeys([
-    ["alt+s", () => document.getElementById("SalesFormSubmit")?.click()]
-  ], []);
+	useEffect(() => {
+		if (config_sales) {
+			form.setValues({
+				default_customer_group_id: config_sales?.default_customer_group_id || null,
+				discount_with_customer: config_sales?.discount_with_customer || 0,
+				due_sales_without_customer: config_sales?.due_sales_without_customer || 0,
+				is_multi_price: config_sales?.is_multi_price || 0,
+				is_sales_auto_approved: config_sales?.is_sales_auto_approved || 0,
+				is_measurement_enable: config_sales?.is_measurement_enable || 0,
+				is_zero_receive_allow: config_sales?.is_zero_receive_allow || 0,
+				item_sales_percent: config_sales?.item_sales_percent || 0,
+				search_by_category: config_sales?.search_by_category || 0,
+				search_by_product_nature: config_sales?.search_by_product_nature || 0,
+				search_by_vendor: config_sales?.search_by_vendor || 0,
+				search_by_warehouse: config_sales?.search_by_warehouse || 0,
+				show_product: config_sales?.show_product || 0,
+				is_bonus_quantity: config_sales?.is_bonus_quantity || 0,
+				is_barcode: config_sales?.is_barcode || 0,
+				zero_stock: config_sales?.zero_stock || 0,
+			});
+		}
+	}, [dispatch, config_sales]);
 
-  return (
-      <ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
-        <form onSubmit={form.onSubmit(handleSalesFormSubmit)}>
-          <Box pt="xs" pl="xs">
+	const handleSalesFormSubmit = (values) => {
+		dispatch(setValidationData(false));
+		modals.openConfirmModal({
+			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Submit"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => {},
+			onConfirm: () => handleSalesConfirmSubmit(values),
+		});
+	};
 
-            {/* CustomerGroup Field */}
-            <Grid columns={24} gutter={{ base: 1 }}>
-              <Grid.Col span={12} fz="sm" mt={8}>
-                {t("CustomerGroup")}
-              </Grid.Col>
-              <Grid.Col span={12}>
-                <SelectForm
-                    tooltip={t("ChooseCustomerGroup")}
-                    label=""
-                    placeholder={t("ChooseCustomerGroup")}
-                    required
-                    name="default_customer_group_id"
-                    form={form}
-                    dropdownValue={customerGroupDropdownData}
-                    id="default_customer_group_id"
-                    searchable={false}
-                    value={
-                      customerGroupData
-                          ? String(customerGroupData)
-                          : salesConfig?.default_customer_group_id
-                              ? String(salesConfig.default_customer_group_id)
-                              : null
-                    }
-                    changeValue={setCustomerGroupData}
-                />
-              </Grid.Col>
-            </Grid>
+	const handleSalesConfirmSubmit = async (values) => {
+		const properties = [
+			"discount_with_customer",
+			"due_sales_without_customer",
+			"is_multi_price",
+			"is_sales_auto_approved",
+			"is_zero_receive_allow",
+			"item_sales_percent",
+			"search_by_category",
+			"search_by_product_nature",
+			"search_by_vendor",
+			"search_by_warehouse",
+			"show_product",
+			"is_bonus_quantity",
+			"is_barcode",
+			"zero_stock",
+		];
 
-            {/* Dynamic checkbox fields */}
-            {fields.map((field, idx) => (
-                <Box key={idx} mt="xs">
-                  <Grid
-                      gutter={{ base: 1 }}
-                      style={{ cursor: "pointer" }}
-                      onClick={() =>
-                          form.setFieldValue(field.name, form.values[field.name] === 1 ? 0 : 1)
-                      }
-                  >
-                    <Grid.Col span={11} fz="sm" pt="1">
-                      {t(field.label)}
-                    </Grid.Col>
-                    <Grid.Col span={1}>
-                      <Checkbox
-                          pr="xs"
-                          checked={form.values[field.name] === 1}
-                          color="red"
-                          {...form.getInputProps(field.name, { type: "checkbox" })}
-                          onChange={(event) =>
-                              form.setFieldValue(
-                                  field.name,
-                                  event.currentTarget.checked ? 1 : 0
-                              )
-                          }
-                          styles={{ input: { borderColor: "red" } }}
-                      />
-                    </Grid.Col>
-                  </Grid>
-                </Box>
-            ))}
+		properties.forEach((property) => {
+			values[property] = values[property] === true || values[property] == 1 ? 1 : 0;
+		});
 
-          </Box>
+		const selectedProductNature = [];
 
-          {/* Hidden submit button */}
-          <Button
-              id="SalesFormSubmit"
-              type="submit"
-              style={{ display: "none" }}
-              loading={saveCreateLoading}
-          >
-            {t("Submit")}
-          </Button>
-        </form>
-      </ScrollArea>
-  );
+		Object.entries(values).forEach(([key, value]) => {
+			if (value === 1 && key.includes("salesProductNature")) {
+				const [id, group] = key.split("_");
+				if (group === "salesProductNature") selectedProductNature.push(Number(id));
+			}
+		});
+
+		values["sales_product_nature"] = selectedProductNature;
+
+		const payload = {
+			url: `domain/config/inventory-sales/${id}`,
+			data: values,
+		};
+
+		try {
+			setSaveCreateLoading(true);
+			const result = await dispatch(storeEntityData(payload));
+			if (storeEntityData.fulfilled.match(result) && result.payload?.data?.status === 200) {
+				fetchDomainConfig();
+				showNotificationComponent(t("UpdateSuccessfully"), "teal");
+				setTimeout(() => {
+					closeDrawer();
+				}, 1000);
+			} else {
+				showNotificationComponent(t("UpdateFailed"), "red");
+			}
+		} catch (err) {
+			console.error(err);
+			showNotificationComponent(t("UpdateFailed"), "red");
+		} finally {
+			setSaveCreateLoading(false);
+		}
+	};
+
+	useHotkeys([["alt+s", () => document.getElementById("SalesFormSubmit")?.click()]], []);
+
+	const renderHeadCheckboxes = (type) => (
+		<>
+			{productNature?.map((head) => (
+				<Box key={`${head.value}_${type}`}>
+					<InputCheckboxForm
+						form={form}
+						label={head.label}
+						field={`${head.value}_${type}`}
+						name={`${head.value}_${type}`}
+						value={head.value}
+					/>
+				</Box>
+			))}
+		</>
+	);
+
+	return (
+		<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
+			<form onSubmit={form.onSubmit(handleSalesFormSubmit)}>
+				<Box pt="xs">
+					{/* CustomerGroup Field */}
+					<Box pl="sm">
+						<Grid columns={24} gutter={{ base: 1 }}>
+							<Grid.Col span={12} fz="sm" mt={8}>
+								{t("CustomerGroup")}
+							</Grid.Col>
+							<Grid.Col span={12}>
+								<SelectForm
+									tooltip={t("ChooseCustomerGroup")}
+									label=""
+									placeholder={t("ChooseCustomerGroup")}
+									required
+									name="default_customer_group_id"
+									form={form}
+									dropdownValue={customerGroupDropdownData}
+									id="default_customer_group_id"
+									searchable={false}
+									value={customerGroupData}
+									changeValue={setCustomerGroupData}
+								/>
+							</Grid.Col>
+						</Grid>
+					</Box>
+
+					<Box bg="gray.1" px="sm" py="xs" mt="xs">
+						<Text fz={14} fw={600}>
+							Product sales nature
+						</Text>
+					</Box>
+					<Box pl="sm">
+						<Box>{productNature && <>{renderHeadCheckboxes("salesProductNature")}</>}</Box>
+					</Box>
+
+					<Box bg="gray.1" px="sm" py="xs" mt="xs">
+						<Text fz={14} fw={600}>
+							Customer Settings
+						</Text>
+					</Box>
+					<Box pl="sm">
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("DiscountWithCustomer")}
+								field={"discount_with_customer"}
+								name={"discount_with_customer"}
+							/>
+						</Box>
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("DueSalesWithoutCustomer")}
+								field={"due_sales_without_customer"}
+								name={"due_sales_without_customer"}
+							/>
+						</Box>
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("BonusQuantity")}
+								field={"is_bonus_quantity"}
+								name={"is_bonus_quantity"}
+							/>
+						</Box>
+					</Box>
+
+					<Box bg="gray.1" px="sm" py="xs" mt="xs">
+						<Text fz={14} fw={600}>
+							Sales & Pricing Settings
+						</Text>
+					</Box>
+					<Box pl="sm">
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("MultiPrice")}
+								field={"is_multi_price"}
+								name={"is_multi_price"}
+							/>
+						</Box>
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("SalesAutoApproved")}
+								field={"is_sales_auto_approved"}
+								name={"is_sales_auto_approved"}
+							/>
+						</Box>
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("ItemSalesPercent")}
+								field={"item_sales_percent"}
+								name={"item_sales_percent"}
+							/>
+						</Box>
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("ZeroReceiveAllow")}
+								field={"is_zero_receive_allow"}
+								name={"is_zero_receive_allow"}
+							/>
+						</Box>
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("ZeroStock")}
+								field={"zero_stock"}
+								name={"zero_stock"}
+							/>
+						</Box>
+					</Box>
+
+					<Box bg="gray.1" px="sm" py="xs" mt="xs">
+						<Text fz={14} fw={600}>
+							Product Display & Search Options
+						</Text>
+					</Box>
+					<Box pl="sm">
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("ShowProduct")}
+								field={"show_product"}
+								name={"show_product"}
+							/>
+						</Box>
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("ShowBarcode")}
+								field={"is_barcode"}
+								name={"is_barcode"}
+							/>
+						</Box>
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("SearchByCategory")}
+								field={"search_by_category"}
+								name={"search_by_category"}
+							/>
+						</Box>
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("SearchByProductNature")}
+								field={"search_by_product_nature"}
+								name={"search_by_product_nature"}
+							/>
+						</Box>
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("SearchByVendor")}
+								field={"search_by_vendor"}
+								name={"search_by_vendor"}
+							/>
+						</Box>
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("SearchByWarehouse")}
+								field={"search_by_warehouse"}
+								name={"search_by_warehouse"}
+							/>
+						</Box>
+					</Box>
+
+					<Box bg="gray.1" px="sm" py="xs" mt="xs">
+						<Text fz={14} fw={600}>
+							Product Configuration
+						</Text>
+					</Box>
+					<Box pl="sm">
+						<Box>
+							<InputCheckboxForm
+								form={form}
+								label={t("MeasurementEnable")}
+								field={"is_measurement_enable"}
+								name={"is_measurement_enable"}
+							/>
+						</Box>
+					</Box>
+				</Box>
+
+				{/* Hidden submit button */}
+				<Button id="SalesFormSubmit" type="submit" style={{ display: "none" }} loading={saveCreateLoading}>
+					{t("Submit")}
+				</Button>
+			</form>
+		</ScrollArea>
+	);
 }
 
 export default SalesForm;

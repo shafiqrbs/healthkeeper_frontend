@@ -3,11 +3,7 @@ import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-	setEntityNewData,
-	setSearchKeyword,
-	setFormLoading,
-} from "../../../../store/inventory/crudSlice.js";
+import { setEntityNewData, setSearchKeyword, setFormLoading } from "../../../../store/inventory/crudSlice.js";
 import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
 import { useNavigate, useParams } from "react-router-dom";
 import _ParticularTable from "./_ParticularTable.jsx";
@@ -27,9 +23,7 @@ function ParticularIndex() {
 
 	const insertType = useSelector((state) => state.productionCrudSlice.insertType);
 	const settingTypeDropdown = getParticularTypeDropdownData();
-	const configData = localStorage.getItem("config-data")
-		? JSON.parse(localStorage.getItem("config-data"))
-		: [];
+	const configData = localStorage.getItem("config-data") ? JSON.parse(localStorage.getItem("config-data")) : [];
 	const [particularFetching, setParticularFetching] = useState(true);
 
 	useEffect(() => {
@@ -49,7 +43,7 @@ function ParticularIndex() {
 		<>
 			{progress !== 100 && (
 				<Progress
-					color="red"
+					color="var(--theme-primary-color-6)"
 					size={"sm"}
 					striped
 					animated

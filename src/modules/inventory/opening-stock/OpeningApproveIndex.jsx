@@ -9,13 +9,15 @@ import _OpeningApproveTable from "./_OpeningApproveTable.jsx";
 function OpeningApproveIndex() {
 	const { t, i18n } = useTranslation();
 	const progress = getLoadingProgress();
-	const { configData } = getConfigData();
+
+	const domainConfigData = JSON.parse(localStorage.getItem("domain-config-data"));
+	let configData = domainConfigData?.inventory_config;
 
 	return (
 		<>
 			{progress !== 100 && (
 				<Progress
-					color="red"
+					color="var(--theme-primary-color-6)"
 					size={"sm"}
 					striped
 					animated
@@ -30,12 +32,11 @@ function OpeningApproveIndex() {
 							<_SalesPurchaseHeaderNavbar
 								pageTitle={t("ApproveStock")}
 								roles={t("Roles")}
+								configData={configData}
 								currencySymbol={configData?.currency?.symbol}
 							/>
 							<Box p={"8"}>
-								<_OpeningApproveTable
-									currencySymbol={configData?.currency?.symbol}
-								/>
+								<_OpeningApproveTable currencySymbol={configData?.currency?.symbol} />
 							</Box>
 						</>
 					)}

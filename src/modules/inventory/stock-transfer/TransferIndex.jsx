@@ -8,11 +8,7 @@ import { Progress, Box, Grid } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-	setInsertType,
-	editEntityData,
-	setFormLoading,
-} from "../../../../store/inventory/crudSlice";
+import { setInsertType, editEntityData, setFormLoading } from "../../../../store/inventory/crudSlice";
 import TransferUpdateForm from "./TransferUpdateForm";
 
 export default function TransferIndex() {
@@ -39,7 +35,7 @@ export default function TransferIndex() {
 		<>
 			{progress !== 100 && (
 				<Progress
-					color="red"
+					color="var(--theme-primary-color-6)"
 					size={"sm"}
 					striped
 					animated
@@ -65,11 +61,7 @@ export default function TransferIndex() {
 										</Box>
 									</Grid.Col>
 									<Grid.Col span={9}>
-										{insertType === "create" ? (
-											<TransferForm />
-										) : (
-											<TransferUpdateForm />
-										)}
+										{insertType === "create" ? <TransferForm /> : <TransferUpdateForm />}
 									</Grid.Col>
 								</Grid>
 							</Box>

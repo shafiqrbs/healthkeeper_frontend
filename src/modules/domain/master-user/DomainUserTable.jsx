@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Group, Box, Button, LoadingOverlay, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
@@ -9,14 +9,12 @@ import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
 import _Search from "../common/_Search.jsx";
 import { IconArrowRight } from "@tabler/icons-react";
-import { useForm } from "@mantine/form";
 import { getIndexEntityData, showEntityData } from "@/app/store/core/crudThunk.js";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData.js";
-import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent.jsx";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import commonDataStoreIntoLocalStorage from "@hooks/local-storage/useCommonDataStoreIntoLocalStorage.js";
 import orderProcessDropdownLocalDataStore from "@hooks/local-storage/useOrderProcessDropdownLocalDataStore.js";
 
-export default function DomainUserTable({ id }) {
+export default function DomainUserTable() {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
@@ -27,9 +25,8 @@ export default function DomainUserTable({ id }) {
 	const [page, setPage] = useState(1);
 	const [loading, setLoading] = useState(true);
 	const [indexData, setIndexData] = useState([]);
-	const [refresh, setRefresh] = useState(false);
 
-	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
+	const searchKeyword = useSelector((state) => state.crudSlice.searchKeyword);
 
 	const loginUser = (userInfo) => {
 		try {
@@ -37,8 +34,8 @@ export default function DomainUserTable({ id }) {
 				title: t("Confirm Login"),
 				children: (
 					<Text size="sm">
-						Are you sure you want to login as <strong>{userInfo.username}</strong>? This
-						will log you out of your current session.
+						Are you sure you want to login as <strong>{userInfo.username}</strong>? This will log you out of
+						your current session.
 					</Text>
 				),
 				labels: { confirm: t("Confirm"), cancel: t("Cancel") },
@@ -46,24 +43,15 @@ export default function DomainUserTable({ id }) {
 				onCancel: () => console.log("Login cancelled"),
 				onConfirm: async () => {
 					const resultAction = await dispatch(
-						showEntityData(
-							"domain/b2b/impersonate/" + userInfo.domain_id + "/" + userInfo.id
-						)
+						showEntityData("domain/b2b/impersonate/" + userInfo.domain_id + "/" + userInfo.id)
 					);
 					if (showEntityData.rejected.match(resultAction)) {
 						console.log("Error" + resultAction);
 					} else if (showEntityData.fulfilled.match(resultAction)) {
 						if (resultAction.payload.data.status === 200) {
-							localStorage.setItem(
-								"user",
-								JSON.stringify(resultAction.payload.data.data)
-							);
-							const allLocal = commonDataStoreIntoLocalStorage(
-								resultAction.payload.data.data.id
-							);
-							const orderProcess = orderProcessDropdownLocalDataStore(
-								resultAction.payload.data.data.id
-							);
+							localStorage.setItem("user", JSON.stringify(resultAction.payload.data.data));
+							commonDataStoreIntoLocalStorage(resultAction.payload.data.data.id);
+							orderProcessDropdownLocalDataStore(resultAction.payload.data.data.id);
 							navigate("/");
 						}
 					}
@@ -74,14 +62,6 @@ export default function DomainUserTable({ id }) {
 			return {};
 		}
 	};
-
-	const form = useForm({
-		initialValues: {
-			mode_id: "",
-		},
-	});
-
-	const domainTypeDropdownData = useGlobalDropdownData("domain_type", refresh);
 
 	const fetchData = useCallback(async () => {
 		setLoading(true);
@@ -107,7 +87,6 @@ export default function DomainUserTable({ id }) {
 			showNotificationComponent(t("Unexpected fetch error"), "red");
 		} finally {
 			setLoading(false);
-			setRefresh(false);
 		}
 	}, [dispatch, searchKeyword, page, perPage, t]);
 
@@ -146,9 +125,7 @@ export default function DomainUserTable({ id }) {
 							title: t("S/N"),
 							textAlignment: "right",
 							render: (item) => {
-								const index = (indexData?.data || []).findIndex(
-									(i) => i.id === item.id
-								);
+								const index = (indexData?.data || []).findIndex((i) => i.id === item.id);
 								return index + 1 + (page - 1) * perPage;
 							},
 						},
@@ -187,7 +164,6 @@ export default function DomainUserTable({ id }) {
 					page={page}
 					onPageChange={(p) => {
 						setPage(p);
-						setRefresh(true);
 					}}
 					loaderSize="xs"
 					loaderColor="grape"

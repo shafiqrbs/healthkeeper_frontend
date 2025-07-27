@@ -1,11 +1,11 @@
 import {isNotEmpty, useForm} from "@mantine/form";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import __PosVendorSection from "./__PosVendorSection";
 import {Box, Text, ActionIcon, Group, TextInput} from "@mantine/core";
 import {DataTable} from "mantine-datatable";
 import tableCss from "../../../../assets/css/Table.module.css";
 import {useTranslation} from "react-i18next";
-import {IconPercentage, IconSum, IconX} from "@tabler/icons-react";
+import {IconSum, IconX} from "@tabler/icons-react";
 import {useOutletContext} from "react-router-dom";
 import __PosPurchaseInvoiceSection from "./__PosPurchaseInvoiceSection.jsx";
 import {getHotkeyHandler, useToggle} from "@mantine/hooks";
@@ -20,10 +20,10 @@ export default function __PosPurchaseForm(props) {
     const {
         isSMSActive,
         currencySymbol,
-        domainId,
         tempCardProducts,
         setLoadCardProducts,
         isWarehouse,
+        domainConfigData,
     } = props;
 
     //common hooks
@@ -32,6 +32,7 @@ export default function __PosPurchaseForm(props) {
     const height = mainAreaHeight - 170;
     const [fetching, setFetching] = useState(false);
     const dispatch = useDispatch();
+    const [warehouseData, setWarehouseData] = useState(null);
 
     // form
     const form = useForm({
@@ -50,16 +51,12 @@ export default function __PosPurchaseForm(props) {
         validate: {
             transaction_mode_id: isNotEmpty(),
             vendor_id: isNotEmpty(),
+            warehouse_id: (value) => (isWarehouse ? isNotEmpty()(value) : null),
         },
     });
 
-    //calculate subTotal amount
     let purchaseSubTotalAmount = tempCardProducts?.reduce((total, item) => total + item.sub_total, 0) || 0;
-
-    //customer dropdown data
     const [vendorsDropdownData, setVendorsDropdownData] = useState([]);
-
-    //customer hook
     const [vendorData, setVendorData] = useState(null);
 
     // setting defualt customer
@@ -82,31 +79,14 @@ export default function __PosPurchaseForm(props) {
         fetchVendors();
     }, []);
 
-    //default customer hook
     const [defaultVendorId, setDefaultVendorId] = useState(null);
-
-    //Custoemr object hook
     const [vendorObject, setVendorObject] = useState({});
-
-    //sales discount amount hook
     const [purchaseDiscountAmount, setPurchaseDiscountAmount] = useState(0);
-
-    //order process hook
     const [orderProcess, setOrderProcess] = useState(null);
-
-    //vat amount hook
     const [purchaseVatAmount, setPurchaseVatAmount] = useState(0);
-
-    //sales total amount hook
     const [purchaseTotalAmount, setPurchaseTotalAmount] = useState(0);
-
-    // sales due amount hook
     const [purchaseDueAmount, setPurchaseDueAmount] = useState(0);
-
-    //return or due text hook
     const [returnOrDueText, setReturnOrDueText] = useState("Due");
-
-    //discount type hook
     const [discountType, setDiscountType] = useToggle(["Flat", "Percent"]);
 
     // calculate sales total amount after discount and vat change
@@ -198,6 +178,7 @@ export default function __PosPurchaseForm(props) {
                     // formValue["created_by_id"] = Number(createdBy["id"]);
                     formValue["process"] = form.values.order_process;
                     formValue["narration"] = form.values.narration;
+                    formValue["warehouse_id"] = form.values.warehouse_id;
                     formValue["invoice_date"] =
                         form.values.invoice_date &&
                         new Date(form.values.invoice_date).toLocaleDateString(
@@ -227,6 +208,7 @@ export default function __PosPurchaseForm(props) {
                         setOrderProcess(null);
                         setLoadCardProducts(true);
                         setVendorObject(null);
+                        setWarehouseData(null)
                     }, 700);
                 })}
             >
@@ -418,7 +400,7 @@ export default function __PosPurchaseForm(props) {
                                             <ActionIcon
                                                 size="sm"
                                                 variant="subtle"
-                                                color="red"
+                                                color='var( --theme-remove-color)'
                                                 onClick={() => {
                                                     const dataString = localStorage.getItem(
                                                         "temp-purchase-products"
@@ -461,7 +443,7 @@ export default function __PosPurchaseForm(props) {
                             justify="space-between"
                             align="center"
                             pt={0}
-                            bg={"#f8eedf"}
+                            bg='var(--theme-primary-color-2)'
                         >
                             <Group spacing="xs" pl={"xs"}>
                                 <IconSum size="1.25em"/>
@@ -480,6 +462,7 @@ export default function __PosPurchaseForm(props) {
                 </Box>
                 <Box>
                     <__PosPurchaseInvoiceSection
+                        domainConfigData={domainConfigData}
                         setVendorsDropdownData={setVendorsDropdownData}
                         vendorsDropdownData={vendorsDropdownData}
                         form={form}
@@ -497,6 +480,8 @@ export default function __PosPurchaseForm(props) {
                         purchaseDueAmount={purchaseDueAmount}
                         setLoadCardProducts={setLoadCardProducts}
                         isWarehouse={isWarehouse}
+                        warehouseData={warehouseData}
+                        setWarehouseData={setWarehouseData}
                     />
                 </Box>
             </form>

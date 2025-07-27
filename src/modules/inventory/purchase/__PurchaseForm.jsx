@@ -30,7 +30,7 @@ import { notifications } from "@mantine/notifications";
 import vendorDataStoreIntoLocalStorage from "../../../global-hook/local-storage/vendorDataStoreIntoLocalStorage.js";
 import DatePickerForm from "../../../form-builders/DatePicker.jsx";
 import AddVendorDrawer from "../sales/drawer-form/AddVendorDrawer.jsx";
-import VendorViewDrawer from "../../core/vendor/__VendorViewDrawer.jsx";
+import VendorViewDrawer from "../../core/vendor/VendorViewDrawer.jsx";
 import _PurchaseDrawerForPrint from './print-drawer/_PurchaseDrawerForPrint.jsx'
 
 function __PurchaseForm(props) {
@@ -430,7 +430,7 @@ function __PurchaseForm(props) {
                                         px={16}
                                         py={2}
                                         position="top-end"
-                                        color="red"
+                                        color='var(--theme-primary-color-6)'
                                         withArrow
                                         offset={2}
                                         zIndex={0}

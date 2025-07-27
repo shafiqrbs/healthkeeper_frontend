@@ -20,9 +20,7 @@ function StockIndex() {
 	const { configData } = getConfigData();
 
 	const dropdownLoad = useSelector((state) => state.inventoryCrudSlice.dropdownLoad);
-	const categoryDropdownData = useSelector(
-		(state) => state.inventoryUtilitySlice.categoryDropdownData
-	);
+	const categoryDropdownData = useSelector((state) => state.inventoryUtilitySlice.categoryDropdownData);
 
 	let categoryDropdown =
 		categoryDropdownData && categoryDropdownData.length > 0
@@ -49,7 +47,7 @@ function StockIndex() {
 		<>
 			{progress !== 100 && (
 				<Progress
-					color="red"
+					color="var(--theme-primary-color-6)"
 					size={"sm"}
 					striped
 					animated

@@ -146,7 +146,7 @@ function _ParticularUpdateForm(props) {
                                                             !saveCreateLoading && isOnline &&
                                                             <Button
                                                                 size="xs"
-                                                                calssName={'btnPrimaryBg'}
+                                                                className={'btnPrimaryBg'}
                                                                 type="submit"
                                                                 id={formSubmitId}
                                                                 leftSection={<IconDeviceFloppy size={16} />}
@@ -205,7 +205,7 @@ function _ParticularUpdateForm(props) {
                                                                 nextField={formSubmitId}
                                                                 name={'status'}
                                                                 form={settingsForm}
-                                                                color="red"
+                                                                color='var(--theme-primary-color-6)'
                                                                 id={'status'}
                                                                 position={'left'}
                                                                 checked={settingsForm.values.status == 1 ? true : false}

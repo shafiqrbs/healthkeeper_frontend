@@ -1,37 +1,31 @@
-import React from "react";
 import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
-import InventoryHeaderNavbar from "../../domain/configuration/InventoryHeaderNavbar.jsx";
+import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress.js";
 import Navigation from "../common/Navigation.jsx";
-import InventoryConfigarationForm from "./InventoryConfigarationForm.jsx";
-import getDomainConfig from "../../../global-hook/config-data/getDomainConfig.js";
+import InventoryConfigurationForm from "./InventoryConfigurationForm.jsx";
+import _SalesPurchaseHeaderNavbar from "../../domain/configuration/_SalesPurchaseHeaderNavbar.jsx";
 
 function InventoryConfigurationIndex() {
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 
-	const progress = getLoadingProgress();
+	const progress = useGetLoadingProgress();
 
 	const domainConfigData = JSON.parse(localStorage.getItem("domain-config-data"));
+	let configData = domainConfigData?.inventory_config;
 
 	return (
 		<>
 			{progress !== 100 && (
-				<Progress
-					color="var(--theme-primary-color-7)"
-					size={"sm"}
-					striped
-					animated
-					value={progress}
-				/>
+				<Progress color="var(--theme-primary-color-6)" size={"sm"} striped animated value={progress} />
 			)}
 			{progress === 100 && (
 				<>
-					<InventoryHeaderNavbar
-						pageTitle={t("ProductConfiguration")}
+					<_SalesPurchaseHeaderNavbar
+						pageTitle={t("ManageSales")}
 						roles={t("Roles")}
-						allowZeroPercentage=""
-						currencySymbol=""
+						configData={configData}
+						allowZeroPercentage={configData?.zero_stock}
+						currancySymbol={configData?.currency?.symbol}
 					/>
 					<Box p={"8"}>
 						<Grid columns={24} gutter={{ base: 8 }}>
@@ -39,7 +33,7 @@ function InventoryConfigurationIndex() {
 								<Navigation module={"config"} />
 							</Grid.Col>
 							<Grid.Col span={23}>
-								<InventoryConfigarationForm />
+								<InventoryConfigurationForm />
 							</Grid.Col>
 						</Grid>
 					</Box>

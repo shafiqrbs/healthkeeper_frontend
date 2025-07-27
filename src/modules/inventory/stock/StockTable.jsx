@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import {
   Group,
@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 import {
   getIndexEntityData,
   setFetching,
-} from "../../../../store/production/crudSlice.js";
+} from "../../../../store/core/crudSlice.js";
 import tableCss from "../../../../assets/css/Table.module.css";
 import __StockSearch from "./__StockSearch.jsx";
 import { setDeleteMessage } from "../../../../store/inventory/crudSlice.js";
@@ -52,7 +52,8 @@ function StockTable(props) {
   const perPage = 50;
   const [page, setPage] = useState(1);
 
-  const fetching = useSelector((state) => state.productionCrudSlice.fetching);
+  const fetchingReload = useSelector((state) => state.crudSlice.fetching);
+  const [fetching, setFetching] = useState(true);
   const searchKeyword = useSelector((state) => state.crudSlice.searchKeyword);
   const [indexData, setIndexData] = useState([]);
   const productFilterData = useSelector(
@@ -64,9 +65,10 @@ function StockTable(props) {
 
   // Sync `configData` with localStorage
   const [configData, setConfigData] = useState(() => {
-    const storedConfigData = localStorage.getItem("config-data");
+    const storedConfigData = localStorage.getItem("domain-config-data");
     return storedConfigData ? JSON.parse(storedConfigData) : [];
   });
+  const product_config = configData?.inventory_config?.config_product;
 
   const [viewModal, setViewModal] = useState(false);
 
@@ -98,7 +100,9 @@ function StockTable(props) {
           alternative_name: productFilterData.alternative_name,
           sku: productFilterData.sku,
           sales_price: productFilterData.sales_price,
-          page: page,
+          product_type_id: productFilterData.product_type_id,
+          category_id: productFilterData.category_id,
+          page: searchKeyword ? 1: page,
           offset: perPage,
           type: "stock",
         },
@@ -111,7 +115,7 @@ function StockTable(props) {
           console.error("Error:", resultAction);
         } else if (getIndexEntityData.fulfilled.match(resultAction)) {
           setIndexData(resultAction.payload);
-          setFetching(false);
+          setFetching(false)
         }
       } catch (err) {
         console.error("Unexpected error:", err);
@@ -119,7 +123,7 @@ function StockTable(props) {
     };
 
     fetchData();
-  }, [fetching, downloadStockXLS]);
+  }, [fetching, downloadStockXLS, searchKeyword, productFilterData, page]);
 
   useEffect(() => {
     dispatch(setDeleteMessage(""));
@@ -134,16 +138,16 @@ function StockTable(props) {
       });
 
       setTimeout(() => {
-        dispatch(setFetching(true));
+        setFetching(true)
       }, 700);
     }
   }, [entityDataDelete]);
 
-  const [isColor, setColor] = useState(configData?.is_color === 1);
-  const [isGrade, setGrade] = useState(configData?.is_grade === 1);
-  const [isSize, setSize] = useState(configData?.is_size === 1);
-  const [isModel, setModel] = useState(configData?.is_model === 1);
-  const [isBrand, setBrand] = useState(configData?.is_brand === 1);
+  const [isColor, setColor] = useState(product_config?.sku_color === 1);
+  const [isGrade, setGrade] = useState(product_config?.sku_grade === 1);
+  const [isSize, setSize] = useState(product_config?.sku_size === 1);
+  const [isModel, setModel] = useState(product_config?.sku_model === 1);
+  const [isBrand, setBrand] = useState(product_config?.sku_brand === 1);
 
   useEffect(() => {
     if (downloadStockXLS) {
@@ -189,7 +193,35 @@ function StockTable(props) {
       location_id: "",
     },
   });
-  const [locationMap, setLocationMap] = useState({});
+
+
+
+
+  const [sortStatus, setSortStatus] = useState({
+    columnAccessor: 'product_name',
+    direction: 'asc'
+  });
+
+  // Memoized Sorted Data
+  const sortedRecords = useMemo(() => {
+    if (!indexData?.data) return [];
+
+    return [...indexData.data].sort((a, b) => {
+      const aVal = a[sortStatus.columnAccessor];
+      const bVal = b[sortStatus.columnAccessor];
+
+      if (aVal == null) return 1;
+      if (bVal == null) return -1;
+
+      const valA = typeof aVal === 'string' ? aVal.toLowerCase() : aVal;
+      const valB = typeof bVal === 'string' ? bVal.toLowerCase() : bVal;
+
+      if (valA < valB) return sortStatus.direction === 'asc' ? -1 : 1;
+      if (valA > valB) return sortStatus.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [indexData?.data, sortStatus]);
+
 
   return (
     <>
@@ -216,36 +248,46 @@ function StockTable(props) {
             footer: tableCss.footer,
             pagination: tableCss.pagination,
           }}
-          records={indexData.data}
+          records={sortedRecords}
           columns={[
             {
               accessor: "index",
               title: t("S/N"),
               textAlignment: "right",
-              render: (item) => indexData.data.indexOf(item) + 1 + (page - 1) * perPage,
+              render: (_row, index) => index + 1 + (page - 1) * perPage,
             },
-            // { accessor: "product_type", title: t("NatureOfProduct") },
-            { accessor: "category_name", title: t("Category") },
-            { accessor: "product_name", title: t("Name") },
-            { accessor: "barcode", title: t("Barcode") },
-            // { accessor: "alternative_name", title: t("AlternativeName") },
+            { accessor: "product_type", title: t("NatureOfProduct") ,sortable: true},
+            { accessor: "category_name", title: t("Category"),sortable: true },
+            { accessor: "product_name", title: t("Name"),sortable: true },
+            { accessor: "barcode", title: t("Barcode"),sortable: true },
+            { accessor: "rem_quantity", title: t("Quantity"), textAlign: "center" },
+            { accessor: "brand_name", title: t("Brand"), hidden: !isBrand },
+            { accessor: "grade_name", title: t("Grade"), hidden: !isGrade },
+            { accessor: "color_name", title: t("Color"), hidden: !isColor },
+            { accessor: "size_name", title: t("Size"), hidden: !isSize },
+            { accessor: "model_name", title: t("Model"), hidden: !isModel },
+
             {
               accessor: "unit_name",
               title: t("Unit"),
               render: (item) => (
-                <Text
-                  component="a"
-                  size="sm"
-                  variant="subtle"
-                  c="red.4"
-                  onClick={() => {
-                    setId(item.product_id);
-                    setMeasurementDrawer(true);
-                  }}
-                  style={{ cursor: "pointer" }}
-                >
-                  {item.unit_name}
-                </Text>
+                  <Button
+                      component="a"
+                      size="compact-xs"
+                      radius="xs"
+                      color='var(--theme-primary-color-4)'
+                      variant="filled"
+                      fw={"100"}
+                      fz={"12"}
+                      onClick={() => {
+                        setId(item.product_id);
+                        setMeasurementDrawer(true);
+                      }}
+                  >
+                    {item.unit_name}
+                  </Button>
+
+
               ),
             },
             {
@@ -258,109 +300,9 @@ function StockTable(props) {
               title: t("SalesPrice"),
               textAlign: "center",
             },
-            {
-              accessor: "feature_image",
-              textAlign: "center",
-              title: t("Image"),
-              render: (item) => {
-                const [opened, setOpened] = useState(false);
-                const autoplay = useRef(Autoplay({ delay: 2000 }));
-
-                const images = [
-                  item?.images?.feature_image ? `${import.meta.env.VITE_IMAGE_GATEWAY_URL}/${item?.images?.feature_image}` : null,
-                  item?.images?.path_one ? `${import.meta.env.VITE_IMAGE_GATEWAY_URL}/${item?.images?.path_one}` : null,
-                  item?.images?.path_two ? `${import.meta.env.VITE_IMAGE_GATEWAY_URL}/${item?.images?.path_two}` : null,
-                  item?.images?.path_three ? `${import.meta.env.VITE_IMAGE_GATEWAY_URL}/${item?.images?.path_three}` : null,
-                  item?.images?.path_four ? `${import.meta.env.VITE_IMAGE_GATEWAY_URL}/${item?.images?.path_four}` : null,
-              ].filter(Boolean);
-
-                return (
-                  <>
-                    <Image
-                      mih={50}
-                      mah={50}
-                      fit="contain"
-                      src={
-                        images.length > 0
-                          ? images[0]
-                          : `https://placehold.co/120x80/FFFFFF/2f9e44?text=${encodeURIComponent(
-                              item.product_name
-                            )}`
-                      }
-                      style={{ cursor: "pointer" }}
-                      onClick={() => setOpened(true)}
-                    />
-
-                    <Modal
-                      opened={opened}
-                      onClose={() => setOpened(false)}
-                      size="lg"
-                      centered
-                      styles={{
-                        content: { overflow: "hidden" }, // Ensure modal content doesn't overflow
-                      }}
-                    >
-                      <Carousel
-                        withIndicators
-                        height={700}
-                        // plugins={[autoplay.current]}
-                        onMouseEnter={autoplay.current.stop}
-                        onMouseLeave={autoplay.current.reset}
-                      >
-                        {images.map((img, index) => (
-                          <Carousel.Slide key={index}>
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: "100%",
-                                overflow: "hidden",
-                              }}
-                            >
-                              <Image
-                                src={img}
-                                fit="contain"
-                                style={{
-                                  transition: "transform 0.3s ease-in-out",
-                                  maxWidth: "100%", // Ensure image fits within the slide
-                                  maxHeight: "100%",
-                                }}
-                                onMouseEnter={(e) =>
-                                  (e.currentTarget.style.transform =
-                                    "scale(1.2)")
-                                }
-                                onMouseLeave={(e) =>
-                                  (e.currentTarget.style.transform = "scale(1)")
-                                }
-                              />
-                            </div>
-                          </Carousel.Slide>
-                        ))}
-                      </Carousel>
-                    </Modal>
-                  </>
-                );
-              },
-            },
             { accessor: "vat", title: t("Vat") },
-            // { accessor: "average_price", title: t("AveragePrice"), textAlign : "center" },
-            {
-              accessor: "bonus_quantity",
-              title: t("BonusQuantityTable"),
-              textAlign: "center",
-            },
-            { accessor: "quantity", title: t("Quantity"), textAlign: "center" },
-            {
-              accessor: "rem_quantity",
-              title: t("RemainQuantity"),
-              textAlign: "center",
-            },
-            { accessor: "brand_name", title: t("Brand"), hidden: !isBrand },
-            { accessor: "grade_name", title: t("Grade"), hidden: !isGrade },
-            { accessor: "color_name", title: t("Color"), hidden: !isColor },
-            { accessor: "size_name", title: t("Size"), hidden: !isSize },
-            { accessor: "model_name", title: t("Model"), hidden: !isModel },
+
+
             {
               accessor: "status",
               title: t("Status"),
@@ -368,40 +310,14 @@ function StockTable(props) {
                 <>
                   <Switch
                     disabled={swtichEnable[item.product_id] || false}
-                    checked={checked[item.product_id] || item.status == 1}
-                    color="red"
+                    checked={checked[item.product_id] || item.status === 1}
+                    color='var(--theme-primary-color-6)'
                     radius="xs"
                     size="md"
                     onLabel="Enable"
                     offLabel="Disable"
                     onChange={(event) => {
                       handleSwtich(event, item);
-                    }}
-                  />
-                </>
-              ),
-            },
-            {
-              accessor: "location",
-              title: t("Location"),
-              textAlign: "center",
-              render: (item) => (
-                <>
-                  <SelectForm
-                    tooltip={t("ChooseProductLocation")}
-                    placeholder={t("ChooseProductLocation")}
-                    required={true}
-                    name={"location_id"}
-                    form={form}
-                    dropdownValue={locationData}
-                    id={"location_id"}
-                    searchable={true}
-                    value={locationMap[item.product_id] || null}
-                    changeValue={(value) => {
-                      setLocationMap((prev) => ({
-                        ...prev,
-                        [item.product_id]: value,
-                      }));
                     }}
                   />
                 </>
@@ -420,7 +336,7 @@ function StockTable(props) {
                     variant="filled"
                     fw={"100"}
                     fz={"12"}
-                    color="red.3"
+                    color='var(--theme-primary-color-6)'
                     mr={"4"}
                     onClick={() => {
                       dispatch(showEntityData("inventory/product/" + item.product_id));
@@ -430,92 +346,98 @@ function StockTable(props) {
                     {" "}
                     {t("View")}
                   </Button>
+                  {!item.parent_id &&
                   <Menu
-                    position="bottom-end"
-                    offset={3}
-                    withArrow
-                    trigger="hover"
-                    openDelay={100}
-                    closeDelay={400}
+                      position="bottom-end"
+                      offset={3}
+                      withArrow
+                      trigger="hover"
+                      openDelay={100}
+                      closeDelay={400}
                   >
                     <Menu.Target>
                       <ActionIcon
-                        size="sm"
-                        variant="outline"
-                        color="red"
-                        radius="xl"
-                        aria-label="Settings"
+                          size="sm"
+                          variant="outline"
+                          color='var(--theme-primary-color-6)'
+                          radius="xl"
+                          aria-label="Settings"
                       >
                         <IconDotsVertical
-                          height={"18"}
-                          width={"18"}
-                          stroke={1.5}
+                            height={"18"}
+                            width={"18"}
+                            stroke={1.5}
                         />
                       </ActionIcon>
                     </Menu.Target>
                     <Menu.Dropdown>
                       <Menu.Item
-                        onClick={() => {
-                          dispatch(setInsertType("update"));
-                          dispatch(
-                            editEntityData("inventory/product/" + item.product_id)
-                          );
-                          dispatch(setFormLoading(true));
-                          navigate(`/inventory/product/${item.product_id}`);
-                        }}
+                          onClick={() => {
+                            dispatch(setInsertType("update"));
+                            dispatch(
+                                editEntityData("inventory/product/" + item.product_id)
+                            );
+                            dispatch(setFormLoading(true));
+                            navigate(`/inventory/product/${item.product_id}`);
+                          }}
                       >
                         {t("Edit")}
                       </Menu.Item>
+
                       <Menu.Item
-                        target="_blank"
-                        component="a"
-                        w={"200"}
-                        mt={"2"}
-                        bg={"red.1"}
-                        c={"red.6"}
-                        onClick={() => {
-                          modals.openConfirmModal({
-                            title: (
-                              <Text size="md">
-                                {" "}
-                                {t("FormConfirmationTitle")}
-                              </Text>
-                            ),
-                            children: (
-                              <Text size="sm">
-                                {" "}
-                                {t("FormConfirmationMessage")}
-                              </Text>
-                            ),
-                            labels: { confirm: "Confirm", cancel: "Cancel" },
-                            confirmProps: { color: "red.6" },
-                            onCancel: () => console.log("Cancel"),
-                            onConfirm: () => {
-                              console.log("ok pressed");
-                            },
-                          });
-                        }}
-                        rightSection={
-                          <IconTrashX
-                            style={{ width: rem(14), height: rem(14) }}
-                          />
-                        }
+                          target="_blank"
+                          component="a"
+                          w={"200"}
+                          mt={"2"}
+                          bg={"red.1"}
+                          c={"red.6"}
+                          onClick={() => {
+                            modals.openConfirmModal({
+                              title: (
+                                  <Text size="md">
+                                    {" "}
+                                    {t("FormConfirmationTitle")}
+                                  </Text>
+                              ),
+                              children: (
+                                  <Text size="sm">
+                                    {" "}
+                                    {t("FormConfirmationMessage")}
+                                  </Text>
+                              ),
+                              labels: {confirm: "Confirm", cancel: "Cancel"},
+                              confirmProps: {color: "red.6"},
+                              onCancel: () => console.log("Cancel"),
+                              onConfirm: () => {
+                                console.log("ok pressed");
+                              },
+                            });
+                          }}
+                          rightSection={
+                            <IconTrashX
+                                style={{width: rem(14), height: rem(14)}}
+                            />
+                          }
                       >
                         {t("Delete")}
                       </Menu.Item>
                     </Menu.Dropdown>
                   </Menu>
+                  }
+
                 </Group>
               ),
             },
           ]}
-          fetching={fetching || downloadStockXLS}
+          fetching={fetching || downloadStockXLS || fetchingReload}
           totalRecords={indexData.total}
+          sortStatus={sortStatus}
+          onSortStatusChange={setSortStatus}
           recordsPerPage={perPage}
           page={page}
           onPageChange={(p) => {
             setPage(p);
-            dispatch(setFetching(true));
+            setFetching(true)
           }}
           loaderSize="xs"
           loaderColor="grape"
