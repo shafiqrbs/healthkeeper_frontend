@@ -31,7 +31,8 @@ import { MASTER_DATA_ROUTES } from "@/constants/appRoutes.js";
 
 const PER_PAGE = 50;
 
-export default function _Table({ open, close }) {
+export default function _Table({ module,open, close }) {
+
 	const isMounted = useMounted();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -79,7 +80,7 @@ export default function _Table({ open, close }) {
 				page: pageNum,
 				offset: PER_PAGE,
 			},
-			module: "labUser",
+			module,
 		};
 
 		try {
@@ -95,7 +96,7 @@ export default function _Table({ open, close }) {
 				if (append && pageNum > 1) {
 					dispatch(
 						setItemData({
-							module: "labUser",
+							module,
 							data: {
 								...vendorListData,
 								data: [...vendorListData.data, ...newData],
@@ -176,12 +177,12 @@ export default function _Table({ open, close }) {
 		const resultAction = await dispatch(
 			deleteEntityData({
 				url: `${MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.DELETE}/${id}`,
-				module: "labUser",
+				module,
 				id,
 			})
 		);
 		if (deleteEntityData.fulfilled.match(resultAction)) {
-			dispatch(setRefetchData({ module: "labUser", refetching: true }));
+			dispatch(setRefetchData({ module, refetching: true }));
 			notifications.show({
 				color: SUCCESS_NOTIFICATION_COLOR,
 				title: t("DeleteSuccessfully"),
@@ -191,7 +192,7 @@ export default function _Table({ open, close }) {
 				style: { backgroundColor: "lightgray" },
 			});
 			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX);
-			dispatch(setInsertType({ insertType: "create", module: "labUser" }));
+			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
 				color: ERROR_NOTIFICATION_COLOR,
@@ -228,7 +229,7 @@ export default function _Table({ open, close }) {
 
 	const handleCreateForm = () => {
 		open();
-		dispatch(setInsertType({ insertType: "create", module: "labUser" }));
+		dispatch(setInsertType({ insertType: "create", module }));
 		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX);
 	};
 
@@ -238,7 +239,7 @@ export default function _Table({ open, close }) {
 		<>
 			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
 				<Flex align="center" justify="space-between" gap={4}>
-					<KeywordSearch module="labUser" />
+					<KeywordSearch module={module} />
 					<CreateButton handleModal={handleCreateForm} text="AddLabUser" />
 				</Flex>
 			</Box>
@@ -355,7 +356,7 @@ export default function _Table({ open, close }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={vendorListData} module="labUser" />
+			<DataTableFooter indexData={vendorListData} module={module} />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={vendorObject} />
 		</>
 	);

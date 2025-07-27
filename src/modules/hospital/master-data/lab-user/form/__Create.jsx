@@ -12,7 +12,7 @@ import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/use
 import { MASTER_DATA_ROUTES } from "@/constants/appRoutes";
 import ___Form from "@modules/hospital/master-data/lab-user/form/___Form";
 
-export default function __Create({ form, close }) {
+export default function __Create({ module,form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();

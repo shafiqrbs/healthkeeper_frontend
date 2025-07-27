@@ -13,7 +13,8 @@ import IndexForm from "./form/__IndexForm";
 import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
-
+import {MODULE_LABUSESR} from "@/constants";
+const module = MODULE_LABUSESR
 export default function Index({ mode = "create" }) {
 	const { t } = useTranslation();
 	const form = useForm(getInitialValues(t));
@@ -52,7 +53,7 @@ export default function Index({ mode = "create" }) {
 
 							<Grid.Col span={matches ? 36 : 34}>
 								<Box bg="white" p="xs" className="borderRadiusAll">
-									<_Table open={open} close={close} />
+									<_Table module={module} open={open} close={close} />
 								</Box>
 							</Grid.Col>
 
@@ -61,7 +62,7 @@ export default function Index({ mode = "create" }) {
 								close={close}
 								title={mode === "create" ? t("CreateLabUser") : t("UpdateLabUser")}
 							>
-								<IndexForm form={form} mode={mode} close={close} />
+								<IndexForm module={module} form={form} mode={mode} close={close} />
 							</GlobalDrawer>
 						</Grid>
 					</Box>

@@ -6,7 +6,7 @@ import { setFilterData, setSearchKeyword, setInsertType } from "@/app/store/core
 import __Update from "./__Update";
 import __Create from "./__Create";
 
-export default function _IndexForm({ form, close, mode }) {
+export default function _IndexForm({module, form, close, mode }) {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export default function _IndexForm({ form, close, mode }) {
 
 	// =============== handle edit mode initialization ================
 	const handleEditMode = () => {
-		dispatch(setInsertType({ insertType: "update", module: "labUser" }));
+		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
 				url: `core/vendor/${id}`,
@@ -39,11 +39,11 @@ export default function _IndexForm({ form, close, mode }) {
 
 	// =============== handle create mode initialization ================
 	const handleCreateMode = () => {
-		dispatch(setInsertType({ insertType: "create", module: "labUser" }));
+		dispatch(setInsertType({ insertType: "create", module}));
 		dispatch(setSearchKeyword(""));
 		dispatch(
 			setFilterData({
-				module: "labUser",
+				module,
 				data: {
 					...vendorFilterData,
 					...defaultFilterData,
@@ -64,8 +64,8 @@ export default function _IndexForm({ form, close, mode }) {
 
 	// =============== render form based on mode ================
 	if (insertType === "create") {
-		return <__Create form={form} close={close} />;
+		return <__Create module={module} form={form} close={close} />;
 	}
 
-	return <__Update form={form} close={close} />;
+	return <__Update module={module} form={form} close={close} />;
 }
