@@ -1,20 +1,13 @@
-import React from "react";
 import { Button, Center, Container, Group, Paper, Stack, Text, Title, rem } from "@mantine/core";
-import { IconHome } from "@tabler/icons-react";
+import { IconArrowLeft, IconHome } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
 export default function NotFound() {
 	const navigate = useNavigate();
 	return (
 		<Center mih="100vh" p={0}>
-			<Container size={440}>
-				<Paper
-					shadow="xl"
-					p="xl"
-					radius="xl"
-					withBorder
-					style={{ background: "rgba(255,255,255,0.95)" }}
-				>
+			<Container size={450}>
+				<Paper shadow="xl" p="xl" radius="xl" withBorder style={{ background: "rgba(255,255,255,0.95)" }}>
 					<Stack align="center" gap={0}>
 						<Title
 							order={1}
@@ -34,6 +27,16 @@ export default function NotFound() {
 							Try checking the URL or return to the homepage.
 						</Text>
 						<Group justify="center" mt={rem(16)}>
+							{" "}
+							<Button
+								leftSection={<IconArrowLeft size={20} />}
+								variant="outline"
+								size="md"
+								radius="xl"
+								onClick={() => navigate(-1)}
+							>
+								Go Back
+							</Button>
 							<Button
 								leftSection={<IconHome size={20} />}
 								variant="gradient"
@@ -41,9 +44,7 @@ export default function NotFound() {
 								size="md"
 								radius="xl"
 								style={{ transition: "transform 0.2s", fontWeight: 600 }}
-								onMouseOver={(e) =>
-									(e.currentTarget.style.transform = "scale(1.05)")
-								}
+								onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
 								onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
 								onClick={() => navigate("/")}
 							>

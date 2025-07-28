@@ -18,6 +18,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
+
 	const { data: customerGroupDropdown } = useGlobalDropdownData({
 		path: DROPDOWNS.CUSTOMER_GROUP.PATH,
 		params: { "dropdown-type": DROPDOWNS.CUSTOMER_GROUP.TYPE },
@@ -25,15 +26,15 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	});
 
 	const { data: locationDropdown } = useGlobalDropdownData({
-		path: "utility/select/setting",
-		params: { "dropdown-type": "location" },
-		utility: "location",
+		path: DROPDOWNS.LOCATION.PATH,
+		params: { "dropdown-type": DROPDOWNS.LOCATION.TYPE },
+		utility: DROPDOWNS.LOCATION.UTILITY,
 	});
 
 	const { data: executiveDropdown } = useGlobalDropdownData({
-		path: "utility/select/setting",
-		params: { "dropdown-type": "marketing-executive" },
-		utility: "marketingExecutive",
+		path: DROPDOWNS.MARKETING_EXECUTIVE.PATH,
+		params: { "dropdown-type": DROPDOWNS.MARKETING_EXECUTIVE.TYPE },
+		utility: DROPDOWNS.MARKETING_EXECUTIVE.UTILITY,
 	});
 
 	useEffect(() => {

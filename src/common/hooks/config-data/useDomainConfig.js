@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { showEntityData } from "@/app/store/core/crudThunk.js";
+import { getIndexEntityData } from "@/app/store/core/crudThunk.js";
 import { DOMAIN_DATA_ROUTES } from "@/constants/appRoutes";
 
 const useDomainConfig = (autoFetch = true) => {
 	const dispatch = useDispatch();
-	const domainConfig = useSelector((state) => state.crud.domain.data);
+	const domainConfig = useSelector((state) => state.crud.domain.data?.data);
 
 	const [path, setPath] = useState(DOMAIN_DATA_ROUTES.API_ROUTES.DOMAIN.INDEX);
 
@@ -13,7 +13,7 @@ const useDomainConfig = (autoFetch = true) => {
 		(customPath) => {
 			const effectivePath = customPath || path;
 			if (effectivePath) {
-				dispatch(showEntityData({ url: effectivePath, module: "domain" }));
+				dispatch(getIndexEntityData({ url: effectivePath, module: "domain" }));
 			}
 		},
 		[dispatch, path]
@@ -27,7 +27,7 @@ const useDomainConfig = (autoFetch = true) => {
 
 	// Save domainConfig to localStorage whenever it changes
 	useEffect(() => {
-		if (domainConfig) {
+		if (domainConfig?.id) {
 			localStorage.setItem("domain-config-data", JSON.stringify(domainConfig));
 		}
 	}, [domainConfig]);

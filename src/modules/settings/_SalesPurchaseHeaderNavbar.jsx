@@ -1,4 +1,3 @@
-import React from "react";
 import { Group, Menu, rem, ActionIcon, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import classes from "@assets/css/HeaderSearch.module.css";
@@ -31,65 +30,63 @@ function _SalesPurchaseHeaderNavbar({ pageTitle, configData }) {
 		</a>
 	));
 	return (
-		<>
-			<header className={classes.header}>
-				<div className={classes.inner}>
-					<Group ml="xs">
-						<Text>{pageTitle}</Text>
+		<header className={classes.header}>
+			<div className={classes.inner}>
+				<Group ml="xs">
+					<Text>{pageTitle}</Text>
+				</Group>
+				<Group>
+					<Group ml="xs" gap="les" className={classes.links} visibleFrom="sm" mt="es">
+						{items}
 					</Group>
-					<Group>
-						<Group ml="xs" gap="les" className={classes.links} visibleFrom="sm" mt="es">
-							{items}
-						</Group>
-						<Menu withArrow arrowPosition="center" trigger="hover" openDelay={100} closeDelay={400} mr="xs">
-							<Menu.Target>
-								<ActionIcon
-									mt="es"
-									variant="filled"
-									color="var(--theme-error-color)"
-									radius="xl"
-									aria-label="Settings"
-								>
-									<IconInfoCircle height={"12"} width={"12"} stroke={1.5} />
-								</ActionIcon>
-							</Menu.Target>
-							<Menu.Dropdown>
-								<Menu.Item
-									href="/inventory/opening-stock"
-									component="button"
-									onClick={(e) => {
-										navigate("/inventory/opening-stock");
-									}}
-									leftSection={<IconTable style={{ width: rem(14), height: rem(14) }} />}
-								>
-									{t("OpeningStock")}
-								</Menu.Item>
-								<Menu.Item
-									href="/inventory/opening-approve-stock"
-									component="button"
-									onClick={(e) => {
-										navigate("/inventory/opening-approve-stock");
-									}}
-									leftSection={<IconTable style={{ width: rem(14), height: rem(14) }} />}
-								>
-									{t("ApproveStock")}
-								</Menu.Item>
-								<Menu.Item
-									href="/inventory/config"
-									component="button"
-									onClick={(e) => {
-										navigate("/inventory/config");
-									}}
-									leftSection={<IconSettings style={{ width: rem(14), height: rem(14) }} />}
-								>
-									{t("Setting")}
-								</Menu.Item>
-							</Menu.Dropdown>
-						</Menu>
-					</Group>
-				</div>
-			</header>
-		</>
+					<Menu withArrow arrowPosition="center" trigger="hover" openDelay={100} closeDelay={400} mr="xs">
+						<Menu.Target>
+							<ActionIcon
+								mt="es"
+								variant="filled"
+								color="var(--theme-error-color)"
+								radius="xl"
+								aria-label="Settings"
+							>
+								<IconInfoCircle height={"12"} width={"12"} stroke={1.5} />
+							</ActionIcon>
+						</Menu.Target>
+						<Menu.Dropdown>
+							<Menu.Item
+								href="/inventory/opening-stock"
+								component="button"
+								onClick={(e) => {
+									navigate("/inventory/opening-stock");
+								}}
+								leftSection={<IconTable style={{ width: rem(14), height: rem(14) }} />}
+							>
+								{t("OpeningStock")}
+							</Menu.Item>
+							<Menu.Item
+								href="/inventory/opening-approve-stock"
+								component="button"
+								onClick={(e) => {
+									navigate("/inventory/opening-approve-stock");
+								}}
+								leftSection={<IconTable style={{ width: rem(14), height: rem(14) }} />}
+							>
+								{t("ApproveStock")}
+							</Menu.Item>
+							<Menu.Item
+								href="/inventory/config"
+								component="button"
+								onClick={(e) => {
+									navigate("/inventory/config");
+								}}
+								leftSection={<IconSettings style={{ width: rem(14), height: rem(14) }} />}
+							>
+								{t("Setting")}
+							</Menu.Item>
+						</Menu.Dropdown>
+					</Menu>
+				</Group>
+			</div>
+		</header>
 	);
 }
 

@@ -24,6 +24,8 @@ const theme = createTheme({
 	fontSizes: {
 		xxs: "10px",
 		xxxs: "8px",
+		les: "6px",
+		es: "2px",
 	},
 	spacing: {
 		xxs: "10px",

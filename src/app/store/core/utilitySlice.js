@@ -8,19 +8,17 @@ export const DROPDOWNS = {
 	COUNTRY: { UTILITY: "country", TYPE: "country", PATH: "core/select/countries" },
 	CURRENCY: { UTILITY: "currency", TYPE: "currency", PATH: "utility/select/currencies" },
 	POS_INVOICE_MODE: { UTILITY: "posInvoiceMode", TYPE: "pos-invoice-mode", PATH: "utility/select/setting" },
+	ACCOUNT: { UTILITY: "account", TYPE: "sub-head", PATH: "accounting/select/head" },
+	ACCOUNT_LEDGER: { UTILITY: "accountLedger", TYPE: "ledger", PATH: "accounting/select/head" },
+	VOUCHER: { UTILITY: "voucher", TYPE: "voucher", PATH: "accounting/select/voucher" },
+	LOCATION: { UTILITY: "location", TYPE: "location", PATH: "utility/select/setting" },
+	MARKETING_EXECUTIVE: { UTILITY: "marketingExecutive", TYPE: "marketing-executive", PATH: "utility/select/setting" },
 };
 
 const initialState = {
 	isLoading: true,
 	fetching: true,
 	dynamicDropdownData: {},
-	// dynamic dropdowns data will be stored in the following format:
-	// businessModel
-	// module
-	// posInvoiceMode
-	// country
-	// currency
-	// customerGroup
 };
 
 const utilitySlice = createSlice({

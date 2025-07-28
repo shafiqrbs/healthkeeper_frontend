@@ -109,7 +109,8 @@ export const HOSPITAL_DATA_ROUTES = {
 export const DOMAIN_DATA_ROUTES = {
 	API_ROUTES: {
 		DOMAIN: {
-			INDEX: "domain/global",
+			INDEX: "domain/config",
+			CREATE: "domain/config/accounting",
 		},
 	},
 	NAVIGATION_LINKS: {

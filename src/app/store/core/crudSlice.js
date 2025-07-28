@@ -151,13 +151,14 @@ const initialState = {
 	// -------------------- domain modules starts -------------------------
 	domain: {
 		isLoading: true,
-		refetching: true,
+		refetching: false,
 		error: null,
 		validation: false,
 		insertType: "create",
 		data: {},
 		editData: {},
 		filterData: { name: "" },
+		validationMessages: [],
 	},
 	// -------------------- domain modules stops -------------------------
 	// -------------------- hospital modules starts -------------------------
