@@ -7,12 +7,19 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
 import { Box, Flex, Grid, ScrollArea, Text } from "@mantine/core";
-import ActionButtons from "../common/_ActionButtons";
-import { Form as PatientForm } from "../common/__PatientForm";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
-import PatientListWithActions from "../common/PatientListWithActions";
 import RoomCard from "../common/RoomCard";
 import PatientListAdmission from "../common/PatientListAdmission";
+import History from "./common/tabs/History";
+import Investigation from "./common/tabs/Investigation";
+import Medicine from "./common/tabs/Medicine";
+import Advice from "./common/tabs/Advice";
+import Instruction from "./common/tabs/Instruction";
+import OT from "./common/tabs/OT";
+import Charge from "./common/tabs/Charge";
+import Billing from "./common/tabs/Billing";
+import FinalBill from "./common/tabs/FinalBill";
+import Discharge from "./common/tabs/Discharge";
 
 export default function Index() {
 	const { t } = useTranslation();
@@ -65,11 +72,11 @@ export default function Index() {
 										},
 										{
 											tab: "Cabin",
-											component: <Text>Report</Text>,
+											component: <Text>Cabins</Text>,
 										},
 										{
 											tab: "ICU",
-											component: <Text>Report</Text>,
+											component: <Text>ICUs</Text>,
 										},
 									]}
 								/>
@@ -92,31 +99,60 @@ export default function Index() {
 							</Grid.Col>
 							<Grid.Col span={14} className="animate-ease-out">
 								<TabsWithSearch
-									tabList={["Ward", "Cabin", "ICU"]}
-									searchbarContainerBg="var(--theme-primary-color-1)"
+									tabList={[
+										"History",
+										"Investigation",
+										"Medicine",
+										"Advice",
+										"Instruction",
+										"OT",
+										"Charge",
+										"Billing",
+										"Final Bill",
+										"Discharge",
+									]}
+									hideSearchbar
 									tabPanels={[
 										{
-											tab: "Ward",
-											component: (
-												<ScrollArea h={mainAreaHeight - 366} bg="white" p="xxxs">
-													{Array.from({ length: 3 }).map((_, index) => (
-														<RoomCard
-															key={index}
-															room={index + 1}
-															selectedRoom={selectedRoom}
-															handleRoomClick={handleRoomClick}
-														/>
-													))}
-												</ScrollArea>
-											),
+											tab: "History",
+											component: <History />,
 										},
 										{
-											tab: "Cabin",
-											component: <Text>Report</Text>,
+											tab: "Investigation",
+											component: <Investigation />,
 										},
 										{
-											tab: "ICU",
-											component: <Text>Report</Text>,
+											tab: "Medicine",
+											component: <Medicine />,
+										},
+										{
+											tab: "Advice",
+											component: <Advice />,
+										},
+
+										{
+											tab: "Instruction",
+											component: <Instruction />,
+										},
+										{
+											tab: "OT",
+											component: <OT />,
+										},
+										{
+											tab: "Charge",
+											component: <Charge />,
+										},
+										{
+											tab: "Billing",
+											component: <Billing />,
+										},
+										{
+											tab: "Final Bill",
+											component: <FinalBill />,
+										},
+										{
+											tab: "Discharge",
+											component: <Discharge />,
 										},
 									]}
 								/>

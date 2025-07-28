@@ -317,7 +317,7 @@ export default function AddMedicineForm() {
 					</Box>
 				</Grid.Col>
 				<Grid.Col span={6}>
-					<Box bg="var(--theme-primary-color-0)" p="sm">
+					<Box bg="var(--theme-primary-color-0)" h="100%" p="sm">
 						<DatePickerForm
 							form={form}
 							label={t("followUpDate")}
@@ -327,7 +327,7 @@ export default function AddMedicineForm() {
 							handleChange={(v) => handleChange("followUpDate", v)}
 							placeholder="Follow up date"
 						/>
-						<Text mt="xs" fz="sm">
+						{/* <Text mt="xs" fz="sm">
 							{t("specialDiscount")}
 						</Text>
 						<Group grow gap="sm">
@@ -351,7 +351,7 @@ export default function AddMedicineForm() {
 								placeholder="Test (%)"
 								disabled
 							/>
-						</Group>
+						</Group> */}
 					</Box>
 				</Grid.Col>
 			</Grid>

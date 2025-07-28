@@ -23,7 +23,7 @@ export default function PatientListAdmission() {
 	const navigate = useNavigate();
 
 	const handleAdmissionOverview = () => {
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION_OVERVIEW.INDEX);
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION_LIST.INDEX);
 	};
 
 	const selectPatient = (patient) => {
@@ -31,52 +31,62 @@ export default function PatientListAdmission() {
 	};
 
 	return (
-		<ScrollArea bg="white" h={mainAreaHeight - 124} scrollbars="y" px="xxxs">
-			{data.map((item) => (
-				<Grid
-					columns={12}
-					key={item.id}
-					onClick={() => selectPatient(item)}
-					my="xs"
-					bg={
-						selectedPatient.id === item.id
-							? "var(--theme-primary-color-0)"
-							: "var(--theme-tertiary-color-0)"
-					}
-					px="xs"
-					gutter="xs"
-				>
-					<Grid.Col span={4}>
-						<Flex align="center" gap="xxxs">
-							<IconCalendarWeek size={16} stroke={1.5} />
-							<Text fz="sm">{item.date}</Text>
-						</Flex>
-						<Flex align="center" gap="xxxs">
-							<IconUser size={16} stroke={1.5} />
-							<Text fz="sm">{item.patients}</Text>
-						</Flex>
-					</Grid.Col>
-					<Grid.Col span={8}>
-						<Flex justify="space-between" align="center">
-							<Box>
-								<Text fz="sm">{item.name}</Text>
-								<Text fz="sm">{item.mobile}</Text>
-							</Box>
-							<Button.Group>
-								<Button
-									bg="var(--theme-primary-color-6)"
-									c="white"
-									size="xs"
-									bd="1px solid var(--theme-tertiary-color-3)"
-									onClick={handleAdmissionOverview}
-								>
-									{t("Admission")}
-								</Button>
-							</Button.Group>
-						</Flex>
-					</Grid.Col>
-				</Grid>
-			))}
-		</ScrollArea>
+		<Box>
+			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="xxxs">
+				<Text ta="center" fz="sm" fw={500}>
+					S/N
+				</Text>
+				<Text ta="center" fz="sm" fw={500}>
+					Patient Name
+				</Text>
+			</Flex>
+			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="xxxs">
+				{data.map((item) => (
+					<Grid
+						columns={12}
+						key={item.id}
+						onClick={() => selectPatient(item)}
+						my="xs"
+						bg={
+							selectedPatient.id === item.id
+								? "var(--theme-primary-color-0)"
+								: "var(--theme-tertiary-color-0)"
+						}
+						px="xs"
+						gutter="xs"
+					>
+						<Grid.Col span={4}>
+							<Flex align="center" gap="xxxs">
+								<IconCalendarWeek size={16} stroke={1.5} />
+								<Text fz="sm">{item.date}</Text>
+							</Flex>
+							<Flex align="center" gap="xxxs">
+								<IconUser size={16} stroke={1.5} />
+								<Text fz="sm">{item.patients}</Text>
+							</Flex>
+						</Grid.Col>
+						<Grid.Col span={8}>
+							<Flex justify="space-between" align="center">
+								<Box>
+									<Text fz="sm">{item.name}</Text>
+									<Text fz="sm">{item.mobile}</Text>
+								</Box>
+								<Button.Group>
+									<Button
+										bg="var(--theme-primary-color-6)"
+										c="white"
+										size="xs"
+										bd="1px solid var(--theme-tertiary-color-3)"
+										onClick={handleAdmissionOverview}
+									>
+										{t("Admission")}
+									</Button>
+								</Button.Group>
+							</Flex>
+						</Grid.Col>
+					</Grid>
+				))}
+			</ScrollArea>
+		</Box>
 	);
 }

@@ -51,6 +51,7 @@
     --theme-notice-color: var(--mantine-color-gray-6);
     --theme-validation-error-color: var(--mantine-color-red-6);
     --theme-validation-success-color: var(--mantine-color-blue-6);
+    --theme-tab-save-color: var(--mantine-color-blue-9);
 
     --theme-reset-btn-color: var(--mantine-color-gray-6);
     --theme-reset-btn-color-hover: var(--mantine-color-gray-8);
@@ -126,6 +127,10 @@ body {
 .borderLeft,
 .borderRight {
     border: 1px solid rgba(182, 138, 61, 0.35);
+}
+
+.borderBottomHeading {
+    border-bottom: 1px solid var(--theme-tertiary-color-4) !important;
 }
 
 .borderBottomDashed {

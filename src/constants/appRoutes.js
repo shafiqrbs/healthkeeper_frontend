@@ -91,11 +91,11 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/admission",
 			VIEW: "/hospital/admission/view",
 		},
-		ADMISSION_OVERVIEW: {
-			INDEX: "/hospital/admission-overview",
-			CREATE: "/hospital/admission-overview/create",
-			UPDATE: "/hospital/admission-overview",
-			VIEW: "/hospital/admission-overview/view",
+		ADMISSION_LIST: {
+			INDEX: "/hospital/admission-list",
+			CREATE: "/hospital/admission-list/create",
+			UPDATE: "/hospital/admission-list",
+			VIEW: "/hospital/admission-list/view",
 		},
 		EMERGENCY: {
 			INDEX: "/hospital/emergency",

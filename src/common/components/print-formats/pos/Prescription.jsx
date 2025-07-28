@@ -13,6 +13,7 @@ const Prescription = forwardRef((props, ref) => {
 		<Box display="none">
 			<Box ref={ref} w="80mm" p={8} bg="white" mx="auto">
 				<Stack gap={2}>
+					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="center" align="center" gap={10}>
 						<Image src={TbImage} alt="TB Hospital" width={44} height={44} fit="contain" />
 						<Stack gap={0} ta="left">
@@ -24,42 +25,83 @@ const Prescription = forwardRef((props, ref) => {
 						</Stack>
 					</Group>
 					<DashedLine />
+
+					{/* =============== prescription title =============== */}
 					<Text size="sm" fw={700} ta="center">
 						PRESCRIPTION
 					</Text>
 					<DashedLine />
-					<Text size="xs">Patient: [Name]</Text>
-					<Text size="xs">Age: [Age] Gender: [M/F]</Text>
-					<Text size="xs">ID: [Patient ID]</Text>
+
+					{/* =============== patient information section =============== */}
+					<Text size="xs" fw={600}>
+						Patient Information:
+					</Text>
+					<Text size="xs">Name: [Patient Name]</Text>
+					<Text size="xs">Patient ID: [Patient ID]</Text>
 					<Text size="xs">Contact: [Phone]</Text>
 					<Text size="xs">Address: [Address]</Text>
+					<Text size="xs">Room No: [Room Number]</Text>
 					<DashedLine />
+
+					{/* =============== diagnosis section =============== */}
 					<Text size="xs">Diagnosis: [Diagnosis/Complaint]</Text>
 					<DashedLine />
+
+					{/* =============== invoice and fees section =============== */}
 					<Text size="sm" fw={600}>
-						Medicines
+						Invoice Details:
 					</Text>
-					<Stack gap={0}>
-						<Text size="xs">1. [Medicine Name 1]</Text>
-						<Text size="xs">2. [Medicine Name 2]</Text>
-						<Text size="xs">3. [Medicine Name 3]</Text>
-					</Stack>
-					<DashedLine />
-					<Text size="sm" fw={600}>
-						Tests
-					</Text>
-					<Stack gap={0}>
-						<Text size="xs">- [Test 1]</Text>
-						<Text size="xs">- [Test 2]</Text>
-					</Stack>
-					<DashedLine />
-					<Text size="xs">Instructions: [Instructions/Notes]</Text>
-					<DashedLine />
-					<Text size="xs">Doctor: [Doctor Name]</Text>
-					<Text size="xs">Specialization: [Specialization]</Text>
+					<Text size="xs">Invoice No: [INV-001]</Text>
 					<Text size="xs">Date: {new Date().toLocaleDateString()}</Text>
-					<Text size="xs">Next Visit: [Next Visit Date]</Text>
 					<DashedLine />
+
+					<Text size="xs" fw={600}>
+						Fees Breakdown:
+					</Text>
+					<Group justify="space-between">
+						<Text size="xs">Consultation Fee:</Text>
+						<Text size="xs">৳[Amount]</Text>
+					</Group>
+					<Group justify="space-between">
+						<Text size="xs">Room Charges:</Text>
+						<Text size="xs">৳[Amount]</Text>
+					</Group>
+					<Group justify="space-between">
+						<Text size="xs">Medicine Cost:</Text>
+						<Text size="xs">৳[Amount]</Text>
+					</Group>
+					<Group justify="space-between">
+						<Text size="xs">Test Charges:</Text>
+						<Text size="xs">৳[Amount]</Text>
+					</Group>
+					<Group justify="space-between">
+						<Text size="xs">Other Services:</Text>
+						<Text size="xs">৳[Amount]</Text>
+					</Group>
+					<DashedLine />
+					<Group justify="space-between">
+						<Text size="xs" fw={600}>
+							Total Amount:
+						</Text>
+						<Text size="xs" fw={600}>
+							৳[Total]
+						</Text>
+					</Group>
+					<Group justify="space-between">
+						<Text size="xs">Discount:</Text>
+						<Text size="xs">৳[Discount]</Text>
+					</Group>
+					<Group justify="space-between">
+						<Text size="xs" fw={600}>
+							Net Payable:
+						</Text>
+						<Text size="xs" fw={600}>
+							৳[Net Amount]
+						</Text>
+					</Group>
+					<DashedLine />
+
+					{/* =============== footer section =============== */}
 					<Text size="xs" ta="center">
 						Get well soon!
 					</Text>

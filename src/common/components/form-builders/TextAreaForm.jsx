@@ -1,4 +1,3 @@
-import React from "react";
 import { Tooltip, Textarea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconInfoCircle, IconX } from "@tabler/icons-react";
@@ -64,12 +63,7 @@ function TextAreaForm({
 							showRightSection ? (
 								<>
 									{form.values[name] ? (
-										<Tooltip
-											label={t("Close")}
-											withArrow
-											bg="var(--theme-error-color)"
-											c="white"
-										>
+										<Tooltip label={t("Close")} withArrow bg="var(--theme-error-color)" c="white">
 											<IconX
 												color="var(--theme-error-color)"
 												size={16}

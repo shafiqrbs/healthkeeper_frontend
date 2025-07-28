@@ -73,7 +73,7 @@ import HospitalConfigIndex from "@modules/settings/HospitalConfigIndex";
 import PrescriptionIndex from "@modules/hospital/prescription";
 import VisitIndex from "@modules/hospital/visit";
 import LabUserIndex from "@modules/hospital/master-data/lab-user";
-import AdmissionOverviewIndex from "@modules/hospital/admission-overview";
+import AdmissionListIndex from "@/modules/hospital/admission-list";
 import AdmissionIndex from "@modules/hospital/admission";
 import EmergencyIndex from "@modules/hospital/emergency";
 import NotFound from "@components/layout/NotFound";
@@ -125,7 +125,7 @@ function AppRoute() {
 					<Route path="visit" element={<VisitIndex />} />
 
 					<Route path="admission" element={<AdmissionIndex />} />
-					<Route path="admission-overview" element={<AdmissionOverviewIndex />} />
+					<Route path="admission-list" element={<AdmissionListIndex />} />
 
 					<Route path="prescription">
 						<Route index element={<PrescriptionIndex />} />

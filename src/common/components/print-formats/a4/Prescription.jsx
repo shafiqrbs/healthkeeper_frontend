@@ -205,10 +205,9 @@ const Prescription = forwardRef((props, ref) => {
 					<Text size="lg" fw={600} mb="sm" c="var(--theme-primary-color-6)">
 						Instructions
 					</Text>
-					<Box p="sm" mih={80} bd="1px solid var(--theme-tertiary-color-4)" style={{ borderRadius: "4px" }}>
+					<Box p="sm" bd="1px solid var(--theme-tertiary-color-4)" style={{ borderRadius: "4px" }}>
 						<Text size="sm">• [General instructions for patient]</Text>
 						<Text size="sm">• [Dietary restrictions if any]</Text>
-						<Text size="sm">• [Lifestyle modifications]</Text>
 					</Box>
 				</Box>
 
@@ -217,13 +216,13 @@ const Prescription = forwardRef((props, ref) => {
 					<Text size="lg" fw={600} mb="sm" c="var(--theme-primary-color-6)">
 						Recommended Tests
 					</Text>
-					<Box p="sm" mih={60} bd="1px solid var(--theme-tertiary-color-4)" style={{ borderRadius: "4px" }}>
+					<Box p="sm" bd="1px solid var(--theme-tertiary-color-4)" style={{ borderRadius: "4px" }}>
 						<Text size="sm">[List of recommended tests]</Text>
 					</Box>
 				</Box>
 
 				{/* Footer */}
-				<Box mt="xl">
+				<Box mt="sm">
 					<Divider mb="lg" />
 					<Group justify="space-between">
 						<Box>
