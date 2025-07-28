@@ -5,6 +5,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { setInsertType } from "@/app/store/core/crudSlice";
 import { useDispatch } from "react-redux";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
 
 const patientList = [
 	{
@@ -121,7 +122,12 @@ const patientList = [
 	},
 ];
 
-export default function PatientListWithActions({ isOpenPatientInfo, setPatientData, action = "edit" }) {
+export default function PatientListWithActions({
+	isOpenPatientInfo = true,
+	setPatientData,
+	action = "edit",
+	buttonText,
+}) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
@@ -138,7 +144,7 @@ export default function PatientListWithActions({ isOpenPatientInfo, setPatientDa
 	};
 
 	const handleEditClick = (id) => {
-		navigate(`/hospital/prescription/edit/${id}`);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.UPDATE}/${id}`);
 		dispatch(
 			setInsertType({
 				insertType: "edit",

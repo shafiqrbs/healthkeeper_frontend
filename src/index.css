@@ -418,6 +418,10 @@ input[type=radio]:checked+label>img {
     padding-top: 4px !important;
 }
 
+.mt-1 {
+    margin-top: 1px !important;
+}
+
 .mt-4 {
     margin-top: 4px !important;
 }
@@ -593,4 +597,22 @@ input[type=radio]:checked+label>img {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.watermark {
+    position: relative;
+    z-index: 0;
+}
+
+.watermark::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url(./assets/images/tb_logo.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 80%;
+    opacity: 0.04;
+    z-index: -1;
+    pointer-events: none;
 }

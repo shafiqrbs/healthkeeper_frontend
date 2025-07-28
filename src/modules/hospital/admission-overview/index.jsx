@@ -7,7 +7,6 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
 import { Box, Flex, Grid, ScrollArea, Text } from "@mantine/core";
-import PatientReport from "../common/PatientReport";
 import ActionButtons from "../common/_ActionButtons";
 import { Form as PatientForm } from "../common/__PatientForm";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
@@ -20,7 +19,6 @@ export default function Index() {
 	const form = useForm(getPrescriptionFormInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const [patientData, setPatientData] = useState({});
 	const [selectedRoom, setSelectedRoom] = useState(null);
 
@@ -29,7 +27,7 @@ export default function Index() {
 	};
 
 	const handleSubmit = (values) => {
-		console.log(values);
+		console.log(values, patientData);
 	};
 
 	const openDoctorsRoom = () => {
@@ -45,7 +43,38 @@ export default function Index() {
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={25}>
-							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-ease-out">
+							<Grid.Col span={4} pos="relative" className="animate-ease-out">
+								<TabsWithSearch
+									tabList={["Ward", "Cabin", "ICU"]}
+									searchbarContainerBg="var(--theme-primary-color-1)"
+									tabPanels={[
+										{
+											tab: "Ward",
+											component: (
+												<ScrollArea h={mainAreaHeight - 140} bg="white" p="xxxs">
+													{Array.from({ length: 3 }).map((_, index) => (
+														<RoomCard
+															key={index}
+															room={index + 1}
+															selectedRoom={selectedRoom}
+															handleRoomClick={handleRoomClick}
+														/>
+													))}
+												</ScrollArea>
+											),
+										},
+										{
+											tab: "Cabin",
+											component: <Text>Report</Text>,
+										},
+										{
+											tab: "ICU",
+											component: <Text>Report</Text>,
+										},
+									]}
+								/>
+							</Grid.Col>
+							<Grid.Col span={7} pos="relative" className="animate-ease-out">
 								<Box px="sm" py="md" bg="white">
 									<Text fw={600} fz="sm">
 										{t("patientInformation")}
@@ -61,62 +90,36 @@ export default function Index() {
 									]}
 								/>
 							</Grid.Col>
-							<Grid.Col span={isOpenPatientInfo ? 17 : 23} className="animate-ease-out">
-								<Grid columns={25} gutter="les">
-									<Grid.Col span={7}>
-										<TabsWithSearch
-											tabList={["Ward", "Cabin", "ICU"]}
-											expand={isOpenPatientInfo}
-											searchbarContainerBg="var(--theme-primary-color-1)"
-											tabPanels={[
-												{
-													tab: "Ward",
-													component: (
-														<ScrollArea h={mainAreaHeight - 366} bg="white" p="xxxs">
-															{Array.from({ length: 3 }).map((_, index) => (
-																<RoomCard
-																	key={index}
-																	room={index + 1}
-																	selectedRoom={selectedRoom}
-																	handleRoomClick={handleRoomClick}
-																/>
-															))}
-														</ScrollArea>
-													),
-												},
-												{
-													tab: "Cabin",
-													component: <Text>Report</Text>,
-												},
-												{
-													tab: "ICU",
-													component: <Text>Report</Text>,
-												},
-											]}
-										/>
-									</Grid.Col>
-									<Grid.Col span={9}>
-										<PatientForm
-											form={form}
-											handleSubmit={handleSubmit}
-											openDoctorsRoom={openDoctorsRoom}
-											showTitle={true}
-											heightOffset={288}
-										/>
-									</Grid.Col>
-									<Grid.Col span={9}>
-										<PatientForm
-											form={form}
-											handleSubmit={handleSubmit}
-											openDoctorsRoom={openDoctorsRoom}
-											showTitle={true}
-											heightOffset={288}
-										/>
-									</Grid.Col>
-									<Grid.Col span={25}>
-										<ActionButtons form={form} />
-									</Grid.Col>
-								</Grid>
+							<Grid.Col span={14} className="animate-ease-out">
+								<TabsWithSearch
+									tabList={["Ward", "Cabin", "ICU"]}
+									searchbarContainerBg="var(--theme-primary-color-1)"
+									tabPanels={[
+										{
+											tab: "Ward",
+											component: (
+												<ScrollArea h={mainAreaHeight - 366} bg="white" p="xxxs">
+													{Array.from({ length: 3 }).map((_, index) => (
+														<RoomCard
+															key={index}
+															room={index + 1}
+															selectedRoom={selectedRoom}
+															handleRoomClick={handleRoomClick}
+														/>
+													))}
+												</ScrollArea>
+											),
+										},
+										{
+											tab: "Cabin",
+											component: <Text>Report</Text>,
+										},
+										{
+											tab: "ICU",
+											component: <Text>Report</Text>,
+										},
+									]}
+								/>
 							</Grid.Col>
 						</Grid>
 					</Flex>

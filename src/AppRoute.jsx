@@ -4,7 +4,7 @@ import Layout from "@components/layout/Layout";
 // import SampleDashboard from "@modules/sample-module/DashBoard";
 // import CustomerIndex from "@modules/core/customer/CustomerIndex";
 // import UserIndex from "@modules/core/user/UserIndex";
-import VendorIndex from "@/modules/core/vendor/VendorIndex";
+import VendorIndex from "@modules/core/vendor/VendorIndex";
 // import ProductionConfigurationIndex from "@modules/production/configuraton/ConfigurationIndex";
 // import CategoryGroupIndex from "@modules/inventory/category-group/CategoryGroupIndex";
 // import CategoryIndex from "@modules/inventory/category/CategoryIndex";
@@ -73,6 +73,7 @@ import HospitalConfigIndex from "@modules/settings/HospitalConfigIndex";
 import PrescriptionIndex from "@modules/hospital/prescription";
 import VisitIndex from "@modules/hospital/visit";
 import LabUserIndex from "@modules/hospital/master-data/lab-user";
+import AdmissionOverviewIndex from "@modules/hospital/admission-overview";
 import AdmissionIndex from "@modules/hospital/admission";
 import EmergencyIndex from "@modules/hospital/emergency";
 import NotFound from "@components/layout/NotFound";
@@ -124,6 +125,7 @@ function AppRoute() {
 					<Route path="visit" element={<VisitIndex />} />
 
 					<Route path="admission" element={<AdmissionIndex />} />
+					<Route path="admission-overview" element={<AdmissionOverviewIndex />} />
 
 					<Route path="prescription">
 						<Route index element={<PrescriptionIndex />} />

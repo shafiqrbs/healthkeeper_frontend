@@ -1,4 +1,3 @@
-import React from "react";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { Box, Grid, Stack, Text, List, Divider, Paper, Title, Group, ScrollArea, Flex, Button } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";

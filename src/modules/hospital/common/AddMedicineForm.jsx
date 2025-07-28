@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import { Box, Button, Group, ActionIcon, Text, Stack, Flex, Grid, ScrollArea, Divider, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -10,6 +10,9 @@ import DatePickerForm from "@components/form-builders/DatePicker";
 import InputForm from "@components/form-builders/InputForm";
 import { useOutletContext } from "react-router-dom";
 import InputAutoComplete from "@components/form-builders/InputAutoComplete";
+import { useReactToPrint } from "react-to-print";
+import Prescription from "@/common/components/print-formats/a4/Prescription";
+import PrescriptionPos from "@/common/components/print-formats/pos/Prescription";
 
 const GENERIC_OPTIONS = ["Napa", "Paracetamol", "Paracetamol (Doxylamin)", "Paracetamol (Acetaminophen)"];
 const BRAND_OPTIONS = [
@@ -128,6 +131,8 @@ export default function AddMedicineForm() {
 	const [medicines, setMedicines] = useState([]);
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
+	const prescriptionA4Ref = useRef(null);
+	const prescriptionPosRef = useRef(null);
 
 	const handleChange = (field, value) => {
 		form.setFieldValue(field, value);
@@ -152,6 +157,15 @@ export default function AddMedicineForm() {
 			setEditIndex(null);
 		}
 	};
+
+	const handlePrintPrescriptionA4 = useReactToPrint({
+		documentTitle: `prescription-${Date.now().toLocaleString()}`,
+		content: () => prescriptionA4Ref.current,
+	});
+
+	const handlePrescriptionPosPrint = useReactToPrint({
+		content: () => prescriptionPosRef.current,
+	});
 
 	return (
 		<Box component="form" onSubmit={form.onSubmit(handleAdd)} className="borderRadiusAll" bg="white">
@@ -353,16 +367,18 @@ export default function AddMedicineForm() {
 				<Button w="100%" bg="var(--theme-prescription-btn-color)">
 					{t("prescription")}
 				</Button>
-				<Button w="100%" bg="var(--theme-print-btn-color)">
+				<Button onClick={handlePrintPrescriptionA4} w="100%" bg="var(--theme-print-btn-color)" type="button">
 					{t("a4Print")}
 				</Button>
-				<Button w="100%" bg="var(--theme-pos-btn-color)">
+				<Button onClick={handlePrescriptionPosPrint} w="100%" bg="var(--theme-pos-btn-color)" type="button">
 					{t("Pos")}
 				</Button>
 				<Button w="100%" bg="var(--theme-save-btn-color)">
 					{t("Save")}
 				</Button>
 			</Button.Group>
+			<Prescription ref={prescriptionA4Ref} />
+			<PrescriptionPos ref={prescriptionPosRef} />
 		</Box>
 	);
 }
