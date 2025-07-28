@@ -43,10 +43,10 @@ export default function History() {
 
 	return (
 		<Box h={mainAreaHeight - 63} p="xs">
-			<Grid columns={24} gutter="xs">
-				<Grid.Col span={8}>
+			<Grid columns={24} gutter="xs" h="100%" styles={{ inner: { height: "100%" } }}>
+				<Grid.Col span={8} h="100%">
 					<TabSubHeading title="History" bg="var(--theme-primary-color-0)" />
-					<Box bg="var(--theme-primary-color-0)" p="xxxs">
+					<Box bg="var(--theme-primary-color-0)" p="xxxs" h={mainAreaHeight - 63 - 70}>
 						<TextAreaForm
 							label="Chief Complaints"
 							placeholder="Complaining of high fever, sore throat, and body ache since yesterday."

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from "react";
+import { forwardRef, useEffect } from "react";
 import { Tooltip, Select } from "@mantine/core";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import { useDispatch } from "react-redux";
@@ -131,5 +131,7 @@ const SelectForm = forwardRef(
 		);
 	}
 );
+
+SelectForm.displayName = "SelectForm";
 
 export default SelectForm;

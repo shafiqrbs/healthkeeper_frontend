@@ -125,7 +125,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 	);
 }
 
-export default function AddMedicineForm() {
+export default function AddMedicineForm({ hideAdviseForm = false, hideActionButtons = false }) {
 	const { t } = useTranslation();
 	const form = useForm(getMedicineFormInitialValues());
 	const [medicines, setMedicines] = useState([]);
@@ -255,7 +255,6 @@ export default function AddMedicineForm() {
 					</Group>
 				</Group>
 			</Box>
-
 			<Box bg="white" px="sm" mt="xxs">
 				<Grid columns={19}>
 					<Grid.Col span={6}>
@@ -277,7 +276,6 @@ export default function AddMedicineForm() {
 					</Grid.Col>
 				</Grid>
 			</Box>
-
 			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
 				List of Medicines
 			</Text>
@@ -294,40 +292,40 @@ export default function AddMedicineForm() {
 					))}
 				</Stack>
 			</ScrollArea>
-
 			{/* =================== Advise form =================== */}
-			<Grid columns={12} gutter="xxxs" mt="xxs" p="les">
-				<Grid.Col span={6}>
-					<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
-						<Text bg="var(--theme-secondary-color-9)" fz="md" c="white" px="sm" py="les">
-							Advise
-						</Text>
-						<Box p="sm">
-							<TextAreaForm
-								form={form}
-								label=""
-								value={form.values.advise}
-								name="advise"
-								handleChange={(v) => handleChange("advise", v)}
-								placeholder="Write a advice..."
-								showRightSection={false}
-								style={{ input: { height: "92px" } }}
-							/>
+			{!hideAdviseForm && (
+				<Grid columns={12} gutter="xxxs" mt="xxs" p="les">
+					<Grid.Col span={6}>
+						<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
+							<Text bg="var(--theme-secondary-color-9)" fz="md" c="white" px="sm" py="les">
+								Advise
+							</Text>
+							<Box p="sm">
+								<TextAreaForm
+									form={form}
+									label=""
+									value={form.values.advise}
+									name="advise"
+									handleChange={(v) => handleChange("advise", v)}
+									placeholder="Write a advice..."
+									showRightSection={false}
+									style={{ input: { height: "92px" } }}
+								/>
+							</Box>
 						</Box>
-					</Box>
-				</Grid.Col>
-				<Grid.Col span={6}>
-					<Box bg="var(--theme-primary-color-0)" h="100%" p="sm">
-						<DatePickerForm
-							form={form}
-							label={t("followUpDate")}
-							tooltip="Enter follow up date"
-							name="followUpDate"
-							value={form.values.followUpDate}
-							handleChange={(v) => handleChange("followUpDate", v)}
-							placeholder="Follow up date"
-						/>
-						{/* <Text mt="xs" fz="sm">
+					</Grid.Col>
+					<Grid.Col span={6}>
+						<Box bg="var(--theme-primary-color-0)" h="100%" p="sm">
+							<DatePickerForm
+								form={form}
+								label={t("followUpDate")}
+								tooltip="Enter follow up date"
+								name="followUpDate"
+								value={form.values.followUpDate}
+								handleChange={(v) => handleChange("followUpDate", v)}
+								placeholder="Follow up date"
+							/>
+							{/* <Text mt="xs" fz="sm">
 							{t("specialDiscount")}
 						</Text>
 						<Group grow gap="sm">
@@ -352,31 +350,38 @@ export default function AddMedicineForm() {
 								disabled
 							/>
 						</Group> */}
-					</Box>
-				</Grid.Col>
-			</Grid>
-
-			{/* =================== button group =================== */}
-			<Button.Group bg="var(--theme-primary-color-0)" p="les">
-				<Button w="100%" bg="var(--theme-reset-btn-color)" leftSection={<IconRestore size={16} />}>
-					{t("reset")}
-				</Button>
-				<Button w="100%" bg="var(--theme-hold-btn-color)">
-					{t("Hold")}
-				</Button>
-				<Button w="100%" bg="var(--theme-prescription-btn-color)">
-					{t("prescription")}
-				</Button>
-				<Button onClick={handlePrintPrescriptionA4} w="100%" bg="var(--theme-print-btn-color)" type="button">
-					{t("a4Print")}
-				</Button>
-				<Button onClick={handlePrescriptionPosPrint} w="100%" bg="var(--theme-pos-btn-color)" type="button">
-					{t("Pos")}
-				</Button>
-				<Button w="100%" bg="var(--theme-save-btn-color)">
-					{t("Save")}
-				</Button>
-			</Button.Group>
+						</Box>
+					</Grid.Col>
+				</Grid>
+			)}
+			{!hideActionButtons && (
+				// =================== button group ===================
+				<Button.Group bg="var(--theme-primary-color-0)" p="les">
+					<Button w="100%" bg="var(--theme-reset-btn-color)" leftSection={<IconRestore size={16} />}>
+						{t("reset")}
+					</Button>
+					<Button w="100%" bg="var(--theme-hold-btn-color)">
+						{t("Hold")}
+					</Button>
+					<Button w="100%" bg="var(--theme-prescription-btn-color)">
+						{t("prescription")}
+					</Button>
+					<Button
+						onClick={handlePrintPrescriptionA4}
+						w="100%"
+						bg="var(--theme-print-btn-color)"
+						type="button"
+					>
+						{t("a4Print")}
+					</Button>
+					<Button onClick={handlePrescriptionPosPrint} w="100%" bg="var(--theme-pos-btn-color)" type="button">
+						{t("Pos")}
+					</Button>
+					<Button w="100%" bg="var(--theme-save-btn-color)">
+						{t("Save")}
+					</Button>
+				</Button.Group>
+			)}
 			<Prescription ref={prescriptionA4Ref} />
 			<PrescriptionPos ref={prescriptionPosRef} />
 		</Box>
