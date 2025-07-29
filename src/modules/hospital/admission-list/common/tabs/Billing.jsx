@@ -52,13 +52,13 @@ export default function Billing() {
 			<Grid columns={24} gutter="xs" h="100%" styles={{ inner: { height: "100%" } }}>
 				<Grid.Col span={8}>
 					<Box className="borderRadiusAll" h="100%">
-						<TabSubHeading title="Charge" />
+						<TabSubHeading title="Billing" />
 						<BillingTable data={billing} />
 					</Box>
 				</Grid.Col>
 				<Grid.Col span={16}>
 					<Box className="borderRadiusAll" h="100%">
-						<TabSubHeading title="Charge Details" />
+						<TabSubHeading title="Billing Details" />
 						<Box p="xs">
 							<ScrollArea h={mainAreaHeight - 520}>
 								{billingDetails.map((item) => (

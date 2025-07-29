@@ -126,7 +126,7 @@ export default function PatientListWithActions({
 	isOpenPatientInfo = true,
 	setPatientData,
 	action = "edit",
-	buttonText,
+	setIsOpenPatientInfo,
 }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -141,6 +141,7 @@ export default function PatientListWithActions({
 	const handleSelectPatient = (patient) => {
 		setSelectPatient(patient);
 		setPatientData(patient);
+		// setIsOpenPatientInfo(false);
 	};
 
 	const handleEditClick = (id) => {

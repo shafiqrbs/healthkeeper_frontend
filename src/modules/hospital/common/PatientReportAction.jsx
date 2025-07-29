@@ -106,6 +106,8 @@ export default function PatientReportAction({ form }) {
 							name="comment"
 							mt={0}
 							id="comment"
+							showRightSection={false}
+							style={{ input: { height: 100 } }}
 						/>
 					</Grid.Col>
 				</Grid>
@@ -135,6 +137,8 @@ export default function PatientReportAction({ form }) {
 							name="comment"
 							mt={0}
 							id="comment"
+							showRightSection={false}
+							style={{ input: { height: 100 } }}
 						/>
 					</Grid.Col>
 				</Grid>
@@ -185,6 +189,8 @@ export default function PatientReportAction({ form }) {
 							name="comment"
 							mt={0}
 							id="comment"
+							showRightSection={false}
+							style={{ input: { height: 100 } }}
 						/>
 					</Grid.Col>
 				</Grid>

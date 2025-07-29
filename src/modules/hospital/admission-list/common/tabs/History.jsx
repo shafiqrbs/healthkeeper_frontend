@@ -1,6 +1,6 @@
 import TabSubHeading from "@modules/hospital/common/TabSubHeading";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { Badge, Box, Flex, Grid, Text } from "@mantine/core";
+import { Badge, Box, Flex, Grid, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
 import TabsActionButtons from "@modules/hospital/common/TabsActionButtons";
@@ -46,30 +46,37 @@ export default function History() {
 			<Grid columns={24} gutter="xs" h="100%" styles={{ inner: { height: "100%" } }}>
 				<Grid.Col span={8} h="100%">
 					<TabSubHeading title="History" bg="var(--theme-primary-color-0)" />
-					<Box bg="var(--theme-primary-color-0)" p="xxxs" h={mainAreaHeight - 63 - 70}>
-						<TextAreaForm
-							label="Chief Complaints"
-							placeholder="Complaining of high fever, sore throat, and body ache since yesterday."
-							rows={10}
-							className="borderRadiusAll"
-							form={form}
-							name="history"
-							showRightSection={false}
-							style={{ input: { height: "149px" }, label: { marginBottom: "4px" } }}
-						/>
-						<TextAreaForm
-							mt="sm"
-							label="Chief Complaints"
-							placeholder="Write a text."
-							rows={10}
-							className="borderRadiusAll"
-							form={form}
-							name="history"
-							showRightSection={false}
-							style={{ input: { height: "149px" }, label: { marginBottom: "4px" } }}
-						/>
+					<Stack
+						justify="space-between"
+						bg="var(--theme-primary-color-0)"
+						p="xxxs"
+						h={mainAreaHeight - 63 - 70}
+					>
+						<Box>
+							<TextAreaForm
+								label="Chief Complaints"
+								placeholder="Complaining of high fever, sore throat, and body ache since yesterday."
+								rows={10}
+								className="borderRadiusAll"
+								form={form}
+								name="history"
+								showRightSection={false}
+								style={{ input: { height: "149px" }, label: { marginBottom: "4px" } }}
+							/>
+							<TextAreaForm
+								mt="sm"
+								label="Chief Complaints"
+								placeholder="Write a text."
+								rows={10}
+								className="borderRadiusAll"
+								form={form}
+								name="history"
+								showRightSection={false}
+								style={{ input: { height: "149px" }, label: { marginBottom: "4px" } }}
+							/>
+						</Box>
 						<TabsActionButtons handleReset={() => {}} handleSave={handleSubmit} />
-					</Box>
+					</Stack>
 				</Grid.Col>
 				<Grid.Col span={16}>
 					<Box className="borderRadiusAll" h="100%">

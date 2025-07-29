@@ -23,13 +23,10 @@ const data = [
 		index: 1,
 		created_at: "2025-01-15",
 		created_by: "Dr. Smith",
-		invoice_no: "INV-001",
 		visit_no: "VIS-001",
-		appointment: "2025-01-15 10:00 AM",
 		patient_id: "P001",
 		patient_name: "John Doe",
 		doctor_name: "Dr. Johnson",
-		referred_name: "Dr. Williams",
 		diseases: "Hypertension, Diabetes",
 		total_amount: "150.00",
 		payment_status: "paid",
@@ -39,13 +36,10 @@ const data = [
 		index: 2,
 		created_at: "2025-01-16",
 		created_by: "Dr. Brown",
-		invoice_no: "INV-002",
 		visit_no: "VIS-002",
-		appointment: "2025-01-16 02:30 PM",
 		patient_id: "P002",
 		patient_name: "Jane Smith",
 		doctor_name: "Dr. Davis",
-		referred_name: "Dr. Wilson",
 		diseases: "Asthma",
 		total_amount: "200.00",
 		payment_status: "pending",
@@ -55,13 +49,10 @@ const data = [
 		index: 3,
 		created_at: "2025-01-17",
 		created_by: "Dr. Garcia",
-		invoice_no: "INV-003",
 		visit_no: "VIS-003",
-		appointment: "2025-01-17 09:15 AM",
 		patient_id: "P003",
 		patient_name: "Mike Johnson",
 		doctor_name: "Dr. Martinez",
-		referred_name: "Dr. Anderson",
 		diseases: "Heart Disease",
 		total_amount: "300.00",
 		payment_status: "paid",
@@ -71,13 +62,10 @@ const data = [
 		index: 4,
 		created_at: "2025-01-18",
 		created_by: "Dr. Lee",
-		invoice_no: "INV-004",
 		visit_no: "VIS-004",
-		appointment: "2025-01-18 11:45 AM",
 		patient_id: "P004",
 		patient_name: "Sarah Wilson",
 		doctor_name: "Dr. Taylor",
-		referred_name: "Dr. Thomas",
 		diseases: "Migraine",
 		total_amount: "120.00",
 		payment_status: "paid",
@@ -87,13 +75,10 @@ const data = [
 		index: 5,
 		created_at: "2025-01-19",
 		created_by: "Dr. Rodriguez",
-		invoice_no: "INV-005",
 		visit_no: "VIS-005",
-		appointment: "2025-01-19 03:20 PM",
 		patient_id: "P005",
 		patient_name: "David Brown",
 		doctor_name: "Dr. White",
-		referred_name: "Dr. Harris",
 		diseases: "Arthritis",
 		total_amount: "180.00",
 		payment_status: "pending",
@@ -103,13 +88,10 @@ const data = [
 		index: 6,
 		created_at: "2025-01-19",
 		created_by: "Dr. Rodriguez",
-		invoice_no: "INV-005",
 		visit_no: "VIS-005",
-		appointment: "2025-01-19 03:20 PM",
 		patient_id: "P005",
 		patient_name: "David Brown",
 		doctor_name: "Dr. White",
-		referred_name: "Dr. Harris",
 		diseases: "Arthritis",
 		total_amount: "180.00",
 		payment_status: "pending",
@@ -119,13 +101,10 @@ const data = [
 		index: 7,
 		created_at: "2025-01-19",
 		created_by: "Dr. Rodriguez",
-		invoice_no: "INV-005",
 		visit_no: "VIS-005",
-		appointment: "2025-01-19 03:20 PM",
 		patient_id: "P005",
 		patient_name: "David Brown",
 		doctor_name: "Dr. White",
-		referred_name: "Dr. Harris",
 		diseases: "Arthritis",
 		total_amount: "180.00",
 		payment_status: "pending",
@@ -260,13 +239,10 @@ export default function Table() {
 							title: t("CreatedBy"),
 							render: (item) => item.created_by || "N/A",
 						},
-						{ accessor: "invoice_no", title: t("InvoiceNo") },
 						{ accessor: "visit_no", title: t("visitNo") },
-						{ accessor: "appointment", title: t("appointment") },
 						{ accessor: "patient_id", title: t("patientId") },
 						{ accessor: "patient_name", title: t("Name") },
 						{ accessor: "doctor_name", title: t("doctor") },
-						{ accessor: "referred_name", title: t("referred") },
 						{ accessor: "diseases", title: t("diseases") },
 						{ accessor: "total_amount", title: t("Total") },
 						{
@@ -281,6 +257,17 @@ export default function Table() {
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
+									<Button
+										variant="filled"
+										bg="var(--theme-primary-color-6)"
+										c="white"
+										size="xs"
+										onClick={() => handleAdmission(values.id)}
+										radius="es"
+										rightSection={<IconArrowRight size={18} />}
+									>
+										{t("Prescription")}
+									</Button>
 									<Button
 										variant="filled"
 										bg="var(--theme-success-color)"

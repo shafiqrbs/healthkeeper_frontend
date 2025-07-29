@@ -28,7 +28,7 @@ const Prescription = forwardRef((props, ref) => {
 
 					{/* =============== prescription title =============== */}
 					<Text size="sm" fw={700} ta="center">
-						PRESCRIPTION
+						TICKET
 					</Text>
 					<DashedLine />
 

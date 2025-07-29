@@ -128,7 +128,11 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 export default function AddMedicineForm({ hideAdviseForm = false, hideActionButtons = false }) {
 	const { t } = useTranslation();
 	const form = useForm(getMedicineFormInitialValues());
-	const [medicines, setMedicines] = useState([]);
+	const [medicines, setMedicines] = useState([
+		{ generic: "Napa", brand: "Napa", dosage: "1 tab", times: "1", timing: "before", unit: "day" },
+		{ generic: "Heparin", brand: "Heparin", dosage: "1 tab", times: "1", timing: "before", unit: "day" },
+		{ generic: "Paracetamol", brand: "Paracetamol", dosage: "1 tab", times: "1", timing: "before", unit: "day" },
+	]);
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const prescriptionA4Ref = useRef(null);

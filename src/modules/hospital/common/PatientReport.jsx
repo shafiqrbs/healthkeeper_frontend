@@ -104,7 +104,7 @@ export default function PatientReport({ patientData }) {
 							mt={0}
 							styles={{ input: { padding: "es", fontSize: "sm" } }}
 						/>
-						<InputForm
+						{/* <InputForm
 							value={vitals.sugar}
 							label={t("sugar")}
 							name="sugar"
@@ -113,7 +113,7 @@ export default function PatientReport({ patientData }) {
 							placeholder="5.6"
 							mt={0}
 							styles={{ input: { padding: "es", fontSize: "sm" } }}
-						/>
+						/> */}
 					</Group>
 					<Group gap="les" grow w="100%" px="les">
 						<InputForm
@@ -141,7 +141,7 @@ export default function PatientReport({ patientData }) {
 					</Group>
 				</Flex>
 
-				<Box bg="var(--theme-primary-color-0)" p="xs" mt="xxxs" mb="xxxs" className="borderRadiusAll">
+				{/* <Box bg="var(--theme-primary-color-0)" p="xs" mt="xxxs" mb="xxxs" className="borderRadiusAll">
 					<Text fw={600} fz="sm" mb="xxxs">
 						{t("ole")}
 					</Text>
@@ -158,7 +158,7 @@ export default function PatientReport({ patientData }) {
 							/>
 						))}
 					</Stack>
-				</Box>
+				</Box> */}
 
 				<Box bg="var(--theme-primary-color-0)" p="xs" mt="xxxs" mb="xxxs" className="borderRadiusAll">
 					<Text fw={600} fz="sm" mb="xxxs">

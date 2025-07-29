@@ -37,6 +37,7 @@ export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatient
 						component: (
 							<PatientListWithActions
 								isOpenPatientInfo={isOpenPatientInfo}
+								setIsOpenPatientInfo={setIsOpenPatientInfo}
 								setPatientData={setPatientData}
 								action="edit"
 							/>

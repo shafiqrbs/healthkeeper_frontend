@@ -90,7 +90,7 @@ export default function Investigation() {
 				</Grid.Col>
 				<Grid.Col span={15}>
 					<Box className="borderRadiusAll" h="100%">
-						<TabSubHeading title="Chief Complaints Details" />
+						<TabSubHeading title="Investigation Details" />
 						<Box p="xs">
 							{complainDetails.map((item) => (
 								<Flex key={item.id} gap="xs" mb="xxxs">
