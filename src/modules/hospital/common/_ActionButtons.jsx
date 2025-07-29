@@ -1,9 +1,8 @@
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { ActionIcon, Box, Button, Checkbox, Flex, Grid, Image, Stack, Text } from "@mantine/core";
+import { ActionIcon, Box, Button, Checkbox, Flex, Grid, Stack, Text } from "@mantine/core";
 import { IconArrowsSplit2, IconCirclePlusFilled, IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
-import { Carousel } from "@mantine/carousel";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useDispatch } from "react-redux";
 import { storeEntityData } from "@/app/store/core/crudThunk";
@@ -16,6 +15,7 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useReactToPrint } from "react-to-print";
 import Prescription from "@components/print-formats/a4/Prescription";
 import PrescriptionPos from "@components/print-formats/pos/Prescription";
+import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 
 export default function ActionButtons({ form, module }) {
 	const prescriptionA4Ref = useRef(null);
@@ -148,34 +148,10 @@ export default function ActionButtons({ form, module }) {
 						</Grid.Col>
 						<Grid.Col span={8} bg="var(--theme-tertiary-color-1)" px="xs">
 							<Stack gap="xs" className="method-carousel">
-								<Carousel
-									height={50}
-									align="start"
-									slideSize="20%"
-									bg="var(--theme-tertiary-color-0)"
-									py="les"
-									loop
-								>
-									{PAYMENT_METHODS.map((method) => (
-										<Carousel.Slide key={method.id} onClick={() => selectPaymentMethod(method)}>
-											<Stack
-												bd={
-													paymentMethod.id === method.id
-														? "2px solid var(--theme-secondary-color-8)"
-														: "2px solid transparent"
-												}
-												h="100%"
-												justify="space-between"
-												align="center"
-												gap="0"
-												className="cursor-pointer"
-											>
-												<Image src={method.icon} alt={method.label} w={30} />
-												<Text fz="xxs">{method.label}</Text>
-											</Stack>
-										</Carousel.Slide>
-									))}
-								</Carousel>
+								<PaymentMethodsCarousel
+									selectPaymentMethod={selectPaymentMethod}
+									paymentMethod={paymentMethod}
+								/>
 								<Box>
 									<Flex justify="space-between" mb="xxxs">
 										<Flex fz="sm" align="center" gap="xs">

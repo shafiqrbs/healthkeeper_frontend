@@ -1,9 +1,10 @@
-import { ActionIcon, Badge, Box, Button, Flex, Grid, Group, Text } from "@mantine/core";
+import { ActionIcon, Badge, Box, Button, Flex, Grid, Group, ScrollArea, Text } from "@mantine/core";
 import TabSubHeading from "@modules/hospital/common/TabSubHeading";
 import BillingTable from "@modules/hospital/common/BillingTable";
 import { useOutletContext } from "react-router-dom";
 import { IconX } from "@tabler/icons-react";
 import BillingSummary from "@modules/hospital/common/BillingSummary";
+import BillingActions from "@modules/hospital/common/BillingActions";
 
 const billing = {
 	cabinCharge: 1000,
@@ -59,38 +60,45 @@ export default function Billing() {
 					<Box className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Charge Details" />
 						<Box p="xs">
-							{billingDetails.map((item) => (
-								<Flex key={item.id} gap="xs" mb="xxxs">
-									<Text>{item.id}.</Text>
-									<Box w="100%">
-										<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
-											{item.date}
-										</Badge>
-										<Flex align="center" justify="space-between">
-											<Text mt="es" fz="sm">
-												Method: {item.method}
-											</Text>
-											<Group gap="xxxs">
-												<Text variant="light" size="sm">
-													৳ {item.amount}
+							<ScrollArea h={mainAreaHeight - 520}>
+								{billingDetails.map((item) => (
+									<Flex key={item.id} gap="xs" mb="xxxs">
+										<Text>{item.id}.</Text>
+										<Box w="100%">
+											<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
+												{item.date}
+											</Badge>
+											<Flex align="center" justify="space-between">
+												<Text mt="es" fz="sm">
+													Method: {item.method}
 												</Text>
-												<Button
-													variant="filled"
-													size="compact-sm"
-													color="var(--theme-primary-color-6)"
-												>
-													Approve
-												</Button>
-												<ActionIcon variant="light" size="md" color="var(--theme-error-color)">
-													<IconX size={16} stroke={1.5} />
-												</ActionIcon>
-											</Group>
-										</Flex>
-									</Box>
-								</Flex>
-							))}
+												<Group gap="xxxs">
+													<Text variant="light" size="sm">
+														৳ {item.amount}
+													</Text>
+													<Button
+														variant="filled"
+														size="compact-sm"
+														color="var(--theme-primary-color-6)"
+													>
+														Approve
+													</Button>
+													<ActionIcon
+														variant="light"
+														size="md"
+														color="var(--theme-error-color)"
+													>
+														<IconX size={16} stroke={1.5} />
+													</ActionIcon>
+												</Group>
+											</Flex>
+										</Box>
+									</Flex>
+								))}
+							</ScrollArea>
 							<Box>
 								<BillingSummary data={billingSummary} />
+								<BillingActions />
 							</Box>
 						</Box>
 					</Box>
