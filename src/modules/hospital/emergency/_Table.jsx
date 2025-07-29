@@ -163,8 +163,12 @@ export default function Table() {
 		openOverview();
 	};
 
-	const handleAdmission = () => {
+	const handlePrescription = () => {
 		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+	};
+
+	const handleAdmission = () => {
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
 	};
 
 	return (
@@ -262,7 +266,7 @@ export default function Table() {
 										bg="var(--theme-primary-color-6)"
 										c="white"
 										size="xs"
-										onClick={() => handleAdmission(values.id)}
+										onClick={() => handlePrescription(values.id)}
 										radius="es"
 										rightSection={<IconArrowRight size={18} />}
 									>
