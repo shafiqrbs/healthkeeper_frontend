@@ -79,6 +79,12 @@ import EmergencyIndex from "@modules/hospital/emergency";
 import NotFound from "@components/layout/NotFound";
 import CustomerIndex from "@modules/hospital/customer";
 import MedicineIndex from "@modules/hospital/medicine";
+import LabIndex from "@modules/hospital/lab";
+import LabGroupIndex from "@modules/hospital/lab-group";
+import RequisitionIndex from "@modules/hospital/requisition";
+import InvestigationIndex from "@modules/hospital/investigation";
+import BillingIndex from "@modules/hospital/billing";
+import DoctorIndex from "@modules/hospital/doctor";
 
 function AppRoute() {
 	return (
@@ -140,7 +146,13 @@ function AppRoute() {
 
 					<Route path="emergency" element={<EmergencyIndex />} />
 
+					<Route path="lab-test" element={<LabIndex />} />
+					<Route path="lab-group-test" element={<LabGroupIndex />} />
 					<Route path="medicine" element={<MedicineIndex />} />
+					<Route path="medicine-requisition" element={<RequisitionIndex />} />
+					<Route path="investigation" element={<InvestigationIndex />} />
+					<Route path="billing" element={<BillingIndex />} />
+					<Route path="doctor" element={<DoctorIndex />} />
 				</Route>
 
 				<Route path="/settings/">

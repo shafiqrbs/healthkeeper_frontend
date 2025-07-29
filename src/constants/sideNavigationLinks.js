@@ -13,7 +13,7 @@ import {
 	IconWorldWww,
 	IconSettings,
 	IconPhone,
-	IconEmergencyBed,
+	IconEmergencyBed, IconMicroscopeOff, IconMedicineSyrup, IconStethoscope, IconBrandVlc, IconReportMedical,
 } from "@tabler/icons-react";
 
 export const sideNavigationLinks = {
@@ -34,49 +34,56 @@ export const sideNavigationLinks = {
 			label: "doctorPrescription",
 			path: "/hospital/prescription",
 			icon: IconPrescription,
-			color: "#E53834",
+			color: "#B5838D",
 		},
 		{
 			label: "Emergency",
 			path: "/hospital/emergency",
 			icon: IconEmergencyBed,
-			color: "#4050B5",
-		},
-		{
-			label: "Test",
-			path: "/hospital/test",
-			icon: IconBuildingHospital,
-			color: "#4050B5",
-		},
-		{
-			label: "Medicine",
-			path: "/hospital/medicine",
-			icon: IconBuildingHospital,
-			color: "#4050B5",
-		},
-		{
-			label: "Medicine Requisition",
-			path: "/hospital/medicine-requisition",
-			icon: IconBuildingHospital,
-			color: "#4050B5",
-		},
-		{
-			label: "Manage Test",
-			path: "/hospital/manage-test",
-			icon: IconBuildingHospital,
-			color: "#4050B5",
+			color: "#E63946",
 		},
 		{
 			label: "Billing",
 			path: "/hospital/billing",
 			icon: IconBuildingHospital,
-			color: "#4050B5",
+			color: "#6D597A",
 		},
+		{
+			label: "Lab Test",
+			path: "/hospital/lab-test",
+			icon: IconMicroscopeOff,
+			color: "#457B9D",
+		},
+		{
+			label: "Lab Group Test",
+			path: "/hospital/lab-group-test",
+			icon: IconMicroscopeOff,
+			color: "#4b9d45",
+		},
+		{
+			label: "Medicine",
+			path: "/hospital/medicine",
+			icon: IconMedicineSyrup,
+			color: "#2A9D8F",
+		},
+		{
+			label: "Requisition",
+			path: "/hospital/medicine-requisition",
+			icon: IconReportMedical,
+			color: "#F4A261",
+		},
+		{
+			label: "Manage Investigation",
+			path: "/hospital/investigation",
+			icon: IconBrandVlc,
+			color: "#A8DADC",
+		},
+
 		{
 			label: "Doctor",
 			path: "/hospital/doctor",
-			icon: IconBuildingHospital,
-			color: "#4050B5",
+			icon: IconStethoscope,
+			color: "#1D3557",
 		},
 
 		// {

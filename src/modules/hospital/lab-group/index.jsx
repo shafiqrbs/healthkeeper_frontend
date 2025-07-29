@@ -10,7 +10,7 @@ import {Box, Flex, Grid, Image, ScrollArea} from "@mantine/core";
 import PatientReport from "../common/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import Form from "./form/_Form";
-import image from "@assets/images/temp/medicine.png";
+import image from "@assets/images/temp/labtestgroup.png";
 
 export default function Index() {
 	const { t } = useTranslation();
