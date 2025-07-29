@@ -78,6 +78,7 @@ import AdmissionIndex from "@modules/hospital/admission";
 import EmergencyIndex from "@modules/hospital/emergency";
 import NotFound from "@components/layout/NotFound";
 import CustomerIndex from "@modules/hospital/customer";
+import MedicineIndex from "@modules/hospital/medicine";
 
 function AppRoute() {
 	return (
@@ -138,6 +139,8 @@ function AppRoute() {
 					</Route>
 
 					<Route path="emergency" element={<EmergencyIndex />} />
+
+					<Route path="medicine" element={<MedicineIndex />} />
 				</Route>
 
 				<Route path="/settings/">

@@ -42,6 +42,43 @@ export const sideNavigationLinks = {
 			icon: IconEmergencyBed,
 			color: "#4050B5",
 		},
+		{
+			label: "Test",
+			path: "/hospital/test",
+			icon: IconBuildingHospital,
+			color: "#4050B5",
+		},
+		{
+			label: "Medicine",
+			path: "/hospital/medicine",
+			icon: IconBuildingHospital,
+			color: "#4050B5",
+		},
+		{
+			label: "Medicine Requisition",
+			path: "/hospital/medicine-requisition",
+			icon: IconBuildingHospital,
+			color: "#4050B5",
+		},
+		{
+			label: "Manage Test",
+			path: "/hospital/manage-test",
+			icon: IconBuildingHospital,
+			color: "#4050B5",
+		},
+		{
+			label: "Billing",
+			path: "/hospital/billing",
+			icon: IconBuildingHospital,
+			color: "#4050B5",
+		},
+		{
+			label: "Doctor",
+			path: "/hospital/doctor",
+			icon: IconBuildingHospital,
+			color: "#4050B5",
+		},
+
 		// {
 		// 	label: "Accounting",
 		// 	path: "/",

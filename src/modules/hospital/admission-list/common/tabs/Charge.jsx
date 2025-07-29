@@ -1,6 +1,5 @@
 import TabSubHeading from "@modules/hospital/common/TabSubHeading";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { ActionIcon, Badge, Box, Button, Flex, Grid, MultiSelect, Stack, Text } from "@mantine/core";
+import { ActionIcon, Badge, Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
 import TabsActionButtons from "@modules/hospital/common/TabsActionButtons";
@@ -120,7 +119,7 @@ export default function Charge() {
 												Cabin No: {item.cabinNo}
 											</Text>
 											<Button variant="light" size="xs" color="var(--theme-primary-color-7)">
-												$ {item.charge}
+												৳ {item.charge}
 											</Button>
 										</Flex>
 										<Flex align="center" justify="space-between">
