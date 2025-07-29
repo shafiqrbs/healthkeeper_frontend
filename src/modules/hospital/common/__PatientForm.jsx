@@ -159,7 +159,7 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 							/>
 						</Grid.Col>
 					</Grid>
-					<Grid align="center" columns={20}>
+	{/*				<Grid align="center" columns={20}>
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("status")}</Text>
 						</Grid.Col>
@@ -200,7 +200,7 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 								/>
 							</Flex>
 						</Grid.Col>
-					</Grid>
+					</Grid>*/}
 					<Grid align="center" columns={20}>
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("dateOfBirth")}</Text>
@@ -258,7 +258,7 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 
 					<Grid align="center" columns={20}>
 						<Grid.Col span={6}>
-							<Text fz="sm">{t("identity")}</Text>
+							<Text fz="sm">{t("NID/BirthCertificate")}</Text>
 						</Grid.Col>
 						<Grid.Col span={14}>
 							<InputNumberForm
