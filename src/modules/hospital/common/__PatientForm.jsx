@@ -201,7 +201,7 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 							</Flex>
 						</Grid.Col>
 					</Grid>*/}
-					<Grid align="center" columns={20}>
+					{/*<Grid align="center" columns={20}>
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("dateOfBirth")}</Text>
 						</Grid.Col>
@@ -219,7 +219,7 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 								disabledFutureDate
 							/>
 						</Grid.Col>
-					</Grid>
+					</Grid>*/}
 					<Grid align="center" columns={20}>
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("age")}</Text>
@@ -229,7 +229,6 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 								<InputNumberForm
 									form={form}
 									label=""
-									readOnly={true}
 									placeholder="20"
 									tooltip={t("totalAge")}
 									name="age"
