@@ -164,7 +164,7 @@ export default function Table() {
 	};
 
 	const handleAdmission = () => {
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
 	};
 
 	return (
