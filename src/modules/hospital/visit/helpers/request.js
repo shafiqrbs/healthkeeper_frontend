@@ -1,7 +1,7 @@
 import { hasLength } from "@mantine/form";
 
 const initialValues = {
-	appointment: "",
+	appointment: new Date(),
 	name: "",
 	mobile: "",
 	gender: "male",
@@ -36,12 +36,11 @@ export const getVendorFormInitialValues = (t) => {
 				if (!value) return t("MobileValidationRequired");
 				return null;
 			},
-			bp: hasLength({ min: 2, max: 20 }),
 			identity: hasLength({ min: 2, max: 20 }),
 			district: hasLength({ min: 2, max: 20 }),
-			specialization: hasLength({ min: 2, max: 20 }),
-			doctorName: hasLength({ min: 2, max: 20 }),
-			diseaseProfile: hasLength({ min: 2, max: 20 }),
+			// specialization: hasLength({ min: 2, max: 20 }),
+			// doctorName: hasLength({ min: 2, max: 20 }),
+			// diseaseProfile: hasLength({ min: 2, max: 20 }),
 			// referredName: hasLength({ min: 2, max: 20 }),
 			// marketingEx: hasLength({ min: 2, max: 20 }),
 			amount: hasLength({ min: 2, max: 20 }),

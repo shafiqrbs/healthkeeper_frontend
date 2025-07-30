@@ -1,4 +1,4 @@
-import { Box, Flex, Grid } from "@mantine/core";
+import { Box, Flex, Grid, ScrollArea, Text } from "@mantine/core";
 import Navigation from "@components/layout/Navigation";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import { useOutletContext } from "react-router-dom";
@@ -10,6 +10,8 @@ import { getVendorFormInitialValues } from "./helpers/request";
 import { useTranslation } from "react-i18next";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import { MODULES } from "@/constants";
+import RoomCard from "../common/RoomCard";
+import { useState } from "react";
 
 const module = MODULES.VISIT;
 
@@ -18,6 +20,16 @@ export default function Index() {
 	const form = useForm(getVendorFormInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
+	const [selectedRoom, setSelectedRoom] = useState(1);
+
+	const selectRoom = (room) => {
+		setSelectedRoom(room);
+		form.setFieldValue("roomNo", room);
+	};
+
+	const handleRoomClick = (room) => {
+		selectRoom(room);
+	};
 
 	return (
 		<>
@@ -31,7 +43,30 @@ export default function Index() {
 							<Grid.Col span={8}>
 								<Form form={form} module={module} />
 							</Grid.Col>
-							<Grid.Col span={16}>
+							<Grid.Col span={4}>
+								<Box bg="white" className="borderRadiusAll">
+									<Text
+										py="xxs"
+										bg="var(--theme-primary-color-0"
+										className="borderRadiusTop"
+										px="sm"
+										fz="sm"
+									>
+										{t("selectRoom")}
+									</Text>
+									<ScrollArea h={mainAreaHeight - 54} scrollbars="y" p="xs">
+										{[...Array(20)].map((_, index) => (
+											<RoomCard
+												key={index}
+												room={index + 1}
+												selectedRoom={selectedRoom}
+												handleRoomClick={handleRoomClick}
+											/>
+										))}
+									</ScrollArea>
+								</Box>
+							</Grid.Col>
+							<Grid.Col span={12}>
 								<Table module={module} />
 								<ActionButtons form={form} module={module} />
 							</Grid.Col>

@@ -4,21 +4,56 @@ import { Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@man
 import { useState, useEffect } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconChevronRight, IconCirclePlusFilled, IconX } from "@tabler/icons-react";
+import { IconX } from "@tabler/icons-react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
-import { useDisclosure } from "@mantine/hooks";
-import { DISEASE_PROFILE, DISTRICT_LIST } from "@/constants";
+import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
+import { DISTRICT_LIST } from "@/constants";
 import { calculateAge } from "@/common/utils";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 
+const LOCAL_STORAGE_KEY = "patientFormData";
+
 export default function PatientForm({ form, canClose = false }) {
+	const firstRender = useIsFirstRender();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
+	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
+
+	// Load from localStorage on mount
+	useEffect(() => {
+		const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+		if (saved && firstRender) {
+			try {
+				const parsed = JSON.parse(saved);
+				Object.entries(parsed).forEach(([key, value]) => {
+					// Handle date fields - convert string back to Date object
+					if (key === "dateOfBirth" || key === "appointment") {
+						if (value && typeof value === "string") {
+							form.setFieldValue(key, new Date(value));
+						} else {
+							form.setFieldValue(key, value);
+						}
+					} else {
+						form.setFieldValue(key, value);
+					}
+				});
+			} catch (e) {
+				// Ignore parse errors
+				console.warn("Failed to parse saved form data:", e);
+			}
+		}
+	}, [firstRender]);
+
+	// Save to localStorage on every form change
+	useEffect(() => {
+		if (!firstRender) {
+			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(form.values));
+		}
+	}, [form.values]);
 
 	useEffect(() => {
 		const type = form.values.ageType || "year";
@@ -41,7 +76,7 @@ export default function PatientForm({ form, canClose = false }) {
 					tabPanels={[
 						{
 							tab: "new",
-							component: <Form form={form} openDoctorsRoom={openDoctorsRoom} />,
+							component: <Form form={form} />,
 						},
 						{
 							tab: "report",
@@ -59,15 +94,11 @@ export default function PatientForm({ form, canClose = false }) {
 	);
 }
 
-export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 116 }) {
+export function Form({ form, showTitle = false, heightOffset = 116 }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
 	const [gender, setGender] = useState("male");
-
-	const handleOpenDoctorsRoom = () => {
-		openDoctorsRoom();
-	};
 
 	const handleGenderChange = (val) => {
 		setGender(val);
@@ -100,6 +131,7 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 								nextField="patientName"
 								value={form.values.appointment}
 								required
+								disable
 							/>
 						</Grid.Col>
 					</Grid>
@@ -133,9 +165,82 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 								placeholder="01717171717"
 								name="mobile"
 								id="mobile"
-								nextField="gender"
+								nextField="dateOfBirth"
 								value={form.values.mobile}
 								required
+							/>
+						</Grid.Col>
+					</Grid>
+					<Grid align="center" columns={20}>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("dateOfBirth")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<DatePickerForm
+								form={form}
+								label=""
+								placeholder="23-06-2025"
+								tooltip={t("enterPatientDateOfBirth")}
+								name="dateOfBirth"
+								id="dateOfBirth"
+								nextField="age"
+								value={form.values.dateOfBirth}
+								required
+								disabledFutureDate
+							/>
+						</Grid.Col>
+					</Grid>
+					<Grid align="center" columns={20}>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("age")}</Text>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Flex gap="les">
+								<InputNumberForm
+									form={form}
+									label=""
+									placeholder="20"
+									tooltip={t("totalAge")}
+									name="age"
+									id="age"
+									nextField="district"
+									value={form.values.age}
+									required
+								/>
+							</Flex>
+						</Grid.Col>
+						<Grid.Col span={8}>
+							<SegmentedControl
+								fullWidth
+								color="var(--theme-primary-color-6)"
+								value={form.values.ageType}
+								defaultValue="year"
+								onChange={(val) => form.setFieldValue("ageType", val)}
+								data={[
+									{ label: t("day"), value: "day" },
+									{ label: t("mon"), value: "month" },
+									{ label: t("year"), value: "year" },
+								]}
+							/>
+						</Grid.Col>
+					</Grid>
+					<Grid align="center" columns={20}>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("district")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<SelectForm
+								form={form}
+								label=""
+								tooltip={t("enterPatientDistrict")}
+								placeholder="Dhaka"
+								name="district"
+								id="district"
+								nextField="identity"
+								value={form.values.district}
+								required
+								dropdownValue={DISTRICT_LIST}
+								searchable
 							/>
 						</Grid.Col>
 					</Grid>
@@ -159,7 +264,8 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 							/>
 						</Grid.Col>
 					</Grid>
-	{/*				<Grid align="center" columns={20}>
+
+					{/*				<Grid align="center" columns={20}>
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("status")}</Text>
 						</Grid.Col>
@@ -201,63 +307,10 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 							</Flex>
 						</Grid.Col>
 					</Grid>*/}
-					{/*<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("dateOfBirth")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<DatePickerForm
-								form={form}
-								label=""
-								placeholder="23-06-2025"
-								tooltip={t("enterPatientDateOfBirth")}
-								name="dateOfBirth"
-								id="dateOfBirth"
-								nextField="age"
-								value={form.values.dateOfBirth}
-								required
-								disabledFutureDate
-							/>
-						</Grid.Col>
-					</Grid>*/}
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("age")}</Text>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Flex gap="les">
-								<InputNumberForm
-									form={form}
-									label=""
-									placeholder="20"
-									tooltip={t("totalAge")}
-									name="age"
-									id="age"
-									nextField="ageType"
-									value={form.values.age}
-									required
-								/>
-							</Flex>
-						</Grid.Col>
-						<Grid.Col span={8}>
-							<SegmentedControl
-								fullWidth
-								color="var(--theme-primary-color-6)"
-								value={form.values.ageType}
-								defaultValue="year"
-								onChange={(val) => form.setFieldValue("ageType", val)}
-								data={[
-									{ label: t("day"), value: "day" },
-									{ label: t("mon"), value: "month" },
-									{ label: t("year"), value: "year" },
-								]}
-							/>
-						</Grid.Col>
-					</Grid>
 
 					<Grid align="center" columns={20}>
 						<Grid.Col span={6}>
-							<Text fz="sm">{t("NID/BirthCertificate")}</Text>
+							<Text fz="sm">{t("NIDBirthCertificate")}</Text>
 						</Grid.Col>
 						<Grid.Col span={14}>
 							<InputNumberForm
@@ -267,31 +320,13 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 								tooltip={t("enterPatientIdentity")}
 								name="identity"
 								id="identity"
-								nextField="district"
+								nextField="address"
 								value={form.values.identity}
 								required
 							/>
 						</Grid.Col>
 					</Grid>
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("district")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<SelectForm
-								form={form}
-								label=""
-								tooltip={t("enterPatientDistrict")}
-								placeholder="Dhaka"
-								name="district"
-								id="district"
-								nextField="address"
-								value={form.values.district}
-								required
-								dropdownValue={DISTRICT_LIST}
-							/>
-						</Grid.Col>
-					</Grid>
+
 					<Grid align="center" columns={20}>
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("address")}</Text>
@@ -304,14 +339,45 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 								placeholder="12 street, 123456"
 								name="address"
 								id="address"
-								nextField="roomNo"
+								nextField="comment"
 								value={form.values.address}
 								required
 							/>
 						</Grid.Col>
 					</Grid>
 
-					<Flex className="form-action-header full-bleed">
+					<Grid columns={20}>
+						<Grid.Col span={6} mt="xs">
+							<Text fz="sm">{t("FreeFor")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<SegmentedControl
+								fullWidth
+								color="var(--theme-primary-color-6)"
+								value={form.values.freeFor}
+								id="freeFor"
+								name="freeFor"
+								onChange={(val) => form.setFieldValue("freeFor", val)}
+								data={[
+									{ label: t("FreedomFighter"), value: "FreedomFighter" },
+									{ label: t("Disabled"), value: "Disabled" },
+									{ label: t("GovtService"), value: "GovtService" },
+								]}
+							/>
+							<TextAreaForm
+								form={form}
+								label=""
+								mt="xxs"
+								tooltip={t("enterComment")}
+								placeholder="Enter comment"
+								name="comment"
+								id="comment"
+								value={form.values.comment || ""}
+							/>
+						</Grid.Col>
+					</Grid>
+
+					{/* <Flex className="form-action-header full-bleed">
 						<Text fz="sm">{t("doctorInformation")}</Text>
 						<Flex align="center" gap="xs" onClick={handleOpenDoctorsRoom} className="cursor-pointer">
 							<Text fz="sm">{t("booked")}-05</Text> <IconChevronRight size="16px" />
@@ -395,7 +461,7 @@ export function Form({ form, openDoctorsRoom, showTitle = false, heightOffset = 
 								rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 							/>
 						</Grid.Col>
-					</Grid>
+					</Grid> */}
 				</Stack>
 			</ScrollArea>
 		</Box>

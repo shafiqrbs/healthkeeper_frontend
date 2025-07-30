@@ -17,6 +17,8 @@ import Prescription from "@components/print-formats/a4/Prescription";
 import PrescriptionPos from "@components/print-formats/pos/Prescription";
 import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 
+const LOCAL_STORAGE_KEY = "patientFormData";
+
 export default function ActionButtons({ form, module }) {
 	const prescriptionA4Ref = useRef(null);
 	const prescriptionPosRef = useRef(null);
@@ -59,6 +61,7 @@ export default function ActionButtons({ form, module }) {
 					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
 					setRefetchData({ module, refetching: true });
 					form.reset();
+					localStorage.removeItem(LOCAL_STORAGE_KEY);
 				}
 			} catch (error) {
 				console.error("Error submitting visit:", error);
@@ -90,6 +93,7 @@ export default function ActionButtons({ form, module }) {
 		setPaymentMethod(PAYMENT_METHODS[0]);
 		setReferredNameKey((prev) => prev + 1);
 		setMarketingExKey((prev) => prev + 1);
+		localStorage.removeItem(LOCAL_STORAGE_KEY);
 	};
 
 	const handlePrintPrescriptionA4 = useReactToPrint({
@@ -105,7 +109,7 @@ export default function ActionButtons({ form, module }) {
 			<Stack gap={0} justify="space-between" mt="xs">
 				<Box p="md" bg="white" className="borderRadiusAll">
 					<Grid columns={24}>
-						<Grid.Col span={8} bg="var(--theme-tertiary-color-1)" px="xs">
+						<Grid.Col span={12} bg="var(--theme-tertiary-color-1)" px="xs">
 							<TextAreaForm
 								form={form}
 								placeholder="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its"
@@ -116,8 +120,8 @@ export default function ActionButtons({ form, module }) {
 								style={{ input: { height: "114px" } }}
 							/>
 						</Grid.Col>
-						<Grid.Col span={8} px="xs" bg="var(--theme-tertiary-color-0)">
-							{/* <Stack>
+						{/*<Grid.Col span={8} px="xs" bg="var(--theme-tertiary-color-0)">
+							 <Stack>
 							<SelectForm
 								key={referredNameKey}
 								form={form}
@@ -144,9 +148,9 @@ export default function ActionButtons({ form, module }) {
 								tooltip={t("enterPatientMarketingEx")}
 								rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 							/>
-						</Stack> */}
-						</Grid.Col>
-						<Grid.Col span={8} bg="var(--theme-tertiary-color-1)" px="xs">
+						</Stack>
+						</Grid.Col> */}
+						<Grid.Col span={12} bg="var(--theme-tertiary-color-1)" px="xs">
 							<Stack gap="xs" className="method-carousel">
 								<PaymentMethodsCarousel
 									selectPaymentMethod={selectPaymentMethod}
