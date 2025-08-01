@@ -1407,5 +1407,6 @@
 	"GovtService": "G. Service",
 	"GuardianName": "Guardian Name",
 	"GuardianMobile": "Guardian Mobile",
-	"FileUpload": "File Upload"
+	"FileUpload": "File Upload",
+	"VisitList": "Visit List"
 }

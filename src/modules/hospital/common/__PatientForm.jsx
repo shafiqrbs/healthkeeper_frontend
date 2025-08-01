@@ -1,21 +1,10 @@
 import InputForm from "@components/form-builders/InputForm";
-import {
-	ActionIcon,
-	Box,
-	Button,
-	FileInput,
-	Flex,
-	Grid,
-	ScrollArea,
-	SegmentedControl,
-	Stack,
-	Text,
-} from "@mantine/core";
-import { useState, useEffect, useCallback } from "react";
+import { ActionIcon, Box, Button, FileInput, Flex, Grid, Modal, SegmentedControl, Stack, Text } from "@mantine/core";
+import { useEffect } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconArrowRight, IconUpload, IconX } from "@tabler/icons-react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { IconArrowRight, IconUpload } from "@tabler/icons-react";
+import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -24,64 +13,38 @@ import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
 import { DISTRICT_LIST } from "@/constants";
 import { calculateAge, calculateDetailedAge } from "@/common/utils";
 import _ActionButtons from "./_ActionButtons";
+import Table from "../visit/_Table";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
-export default function PatientForm({ form, canClose = false, module }) {
-	const firstRender = useIsFirstRender();
-	const navigate = useNavigate();
+export default function PatientForm({ form, module }) {
+	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
-
+	const [opened, { open, close }] = useDisclosure(false);
 	// Load from localStorage on mount
-	useEffect(() => {
-		const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-		if (saved && firstRender) {
-			try {
-				const parsed = JSON.parse(saved);
-				Object.entries(parsed).forEach(([key, value]) => {
-					// Handle date fields - convert string back to Date object
-					if (key === "dateOfBirth" || key === "appointment") {
-						if (value && typeof value === "string") {
-							form.setFieldValue(key, new Date(value));
-						} else {
-							form.setFieldValue(key, value);
-						}
-					} else {
-						form.setFieldValue(key, value);
-					}
-				});
-			} catch (e) {
-				// Ignore parse errors
-				console.warn("Failed to parse saved form data:", e);
-			}
-		}
-	}, [firstRender]);
-
-	// Save to localStorage on every form change
-	useEffect(() => {
-		if (!firstRender) {
-			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(form.values));
-		}
-	}, [form.values]);
 
 	useEffect(() => {
 		const type = form.values.ageType || "year";
-		const formattedAge = calculateAge(form.values.dateOfBirth, type);
+		const formattedAge = calculateAge(form.values.dob, type);
 		form.setFieldValue("age", formattedAge);
 
 		// Calculate detailed age from date of birth
-		if (form.values.dateOfBirth) {
-			const detailedAge = calculateDetailedAge(form.values.dateOfBirth);
-			form.setFieldValue("ageYear", detailedAge.years);
-			form.setFieldValue("ageMonth", detailedAge.months);
-			form.setFieldValue("ageDay", detailedAge.days);
+		if (form.values.dob) {
+			const detailedAge = calculateDetailedAge(form.values.dob);
+			form.setFieldValue("year", detailedAge.years);
+			form.setFieldValue("month", detailedAge.months);
+			form.setFieldValue("day", detailedAge.days);
 		}
-	}, [form.values.dateOfBirth]);
+	}, [form.values.dob]);
 
 	useEffect(() => {
 		document.getElementById("patientName").focus();
 	}, []);
+
+	const handleOpenViewOverview = () => {
+		open();
+	};
 
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
@@ -90,7 +53,6 @@ export default function PatientForm({ form, canClose = false, module }) {
 					<Text fw={600} fz="sm">
 						{t("patientInformation")}
 					</Text>
-					{/* {canClose && <IconX className="cursor-pointer" size="16px" onClick={() => navigate(-1)} />} */}
 					<Flex gap="xs">
 						<SegmentedControl
 							size="xs"
@@ -102,7 +64,7 @@ export default function PatientForm({ form, canClose = false, module }) {
 							}}
 						/>
 						<Button
-							// onClick={handleOpenViewOverview}
+							onClick={handleOpenViewOverview}
 							size="xs"
 							radius="es"
 							rightSection={<IconArrowRight size={16} />}
@@ -116,6 +78,9 @@ export default function PatientForm({ form, canClose = false, module }) {
 				<Form form={form} module={module} />
 			</form>
 			<DoctorsRoomDrawer form={form} opened={openedDoctorsRoom} close={closeDoctorsRoom} />
+			<Modal opened={opened} onClose={close} size="100%" centered>
+				<Table module={module} height={mainAreaHeight - 220} />
+			</Modal>
 		</Box>
 	);
 }
@@ -124,30 +89,61 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
-	const [gender, setGender] = useState("male");
-	const [type, setType] = useState("general");
+	const firstRender = useIsFirstRender();
+
+	// save to localStorage on every form change
+	useEffect(() => {
+		if (!firstRender) {
+			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(form.values));
+		}
+	}, [form.values]);
+
+	useEffect(() => {
+		const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+		if (saved && firstRender) {
+			try {
+				const parsed = JSON.parse(saved);
+				Object.entries(parsed).forEach(([key, value]) => {
+					// handle date fields - convert string back to Date object
+					if (key === "dob" || key === "appointment") {
+						if (value && typeof value === "string") {
+							form.setFieldValue(key, new Date(value));
+						} else {
+							form.setFieldValue(key, value);
+						}
+					} else {
+						form.setFieldValue(key, value);
+					}
+				});
+			} catch (err) {
+				// ignore parse errors
+				console.error("Failed to parse saved form data:", err);
+			}
+		}
+	}, [firstRender]);
 
 	const handleGenderChange = (val) => {
-		setGender(val);
 		form.setFieldValue("gender", val);
 	};
 
 	const handleTypeChange = (val) => {
-		setType(val);
 		form.setFieldValue("patient_type", val);
-		form.setFieldValue("guardianMobile", form.values.mobile);
+
+		if (val === "admission") {
+			form.setFieldValue("guardian_mobile", form.values.mobile);
+		}
 	};
 
-	// Handle manual age field updates
+	// handle manual age field updates
 	const handleAgeFieldChange = (field, value) => {
 		form.setFieldValue(field, value);
 
-		// Update the total age field when any of the detailed age fields change
-		const year = form.values.ageYear || 0;
-		const month = form.values.ageMonth || 0;
-		const day = form.values.ageDay || 0;
+		// update the total age field when any of the detailed age fields change
+		const year = form.values.year || 0;
+		const month = form.values.month || 0;
+		const day = form.values.day || 0;
 
-		// Calculate total age in years (approximate)
+		// calculate total age in years (approximate)
 		const totalAgeInYears = year + month / 12 + day / 365;
 		form.setFieldValue("age", Math.floor(totalAgeInYears));
 	};
@@ -155,7 +151,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 	return (
 		<Box>
 			{showTitle && (
-				<Flex bg="var(--theme-primary-color-0)" align="center" gap="xs" p="sm" justify="space-between">
+				<Flex bg="var(--theme-primary-color-0)" align="center" gap="xs" p="sm">
 					<Text fw={600} fz="sm">
 						{t("patientInformation")}
 					</Text>
@@ -172,7 +168,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								<SegmentedControl
 									fullWidth
 									color="var(--theme-primary-color-6)"
-									value={type}
+									value={form.values.patient_type}
 									id="patient_type"
 									name="patient_type"
 									onChange={(val) => handleTypeChange(val)}
@@ -210,7 +206,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								<SegmentedControl
 									fullWidth
 									color="var(--theme-primary-color-6)"
-									value={gender}
+									value={form.values.gender}
 									id="gender"
 									name="gender"
 									onChange={(val) => handleGenderChange(val)}
@@ -223,26 +219,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 							</Grid.Col>
 						</Grid>
 
-						{/* <Grid align="center" columns={20}>
-							<Grid.Col span={6}>
-								<Text fz="sm">{t("appointment")}</Text>
-							</Grid.Col>
-							<Grid.Col span={14}>
-								<DatePickerForm
-									form={form}
-									label=""
-									tooltip={t("bookYourAppointment")}
-									placeholder="23-06-2025"
-									name="appointment"
-									id="appointment"
-									nextField="patientName"
-									value={form.values.appointment}
-									required
-									disable
-								/>
-							</Grid.Col>
-						</Grid> */}
-
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Text fz="sm">{t("dateOfBirth")}</Text>
@@ -253,10 +229,10 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									label=""
 									placeholder="23-06-2025"
 									tooltip={t("enterPatientDateOfBirth")}
-									name="dateOfBirth"
-									id="dateOfBirth"
+									name="dob"
+									id="dob"
 									nextField="age"
-									value={form.values.dateOfBirth}
+									value={form.values.dob}
 									required
 									disabledFutureDate
 								/>
@@ -271,12 +247,12 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									<InputNumberForm
 										form={form}
 										label=""
-										placeholder="Y"
+										placeholder="Years"
 										tooltip={t("years")}
-										name="ageYear"
-										id="ageYear"
-										nextField="ageMonth"
-										value={form.values.ageYear}
+										name="year"
+										id="year"
+										nextField="month"
+										value={form.values.year}
 										min={0}
 										max={150}
 										leftSection={
@@ -284,17 +260,17 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 												{t("Y")}
 											</Text>
 										}
-										onChange={(value) => handleAgeFieldChange("ageYear", value)}
+										onChange={(value) => handleAgeFieldChange("year", value)}
 									/>
 									<InputNumberForm
 										form={form}
 										label=""
-										placeholder="M"
+										placeholder="Months"
 										tooltip={t("months")}
-										name="ageMonth"
-										id="ageMonth"
-										nextField="ageDay"
-										value={form.values.ageMonth}
+										name="month"
+										id="month"
+										nextField="day"
+										value={form.values.month}
 										min={0}
 										max={11}
 										leftSection={
@@ -302,17 +278,17 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 												{t("M")}
 											</Text>
 										}
-										onChange={(value) => handleAgeFieldChange("ageMonth", value)}
+										onChange={(value) => handleAgeFieldChange("month", value)}
 									/>
 									<InputNumberForm
 										form={form}
 										label=""
-										placeholder="D"
+										placeholder="Days"
 										tooltip={t("days")}
-										name="ageDay"
-										id="ageDay"
+										name="day"
+										id="day"
 										nextField="mobile"
-										value={form.values.ageDay}
+										value={form.values.day}
 										min={0}
 										max={31}
 										leftSection={
@@ -320,7 +296,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 												{t("D")}
 											</Text>
 										}
-										onChange={(value) => handleAgeFieldChange("ageDay", value)}
+										onChange={(value) => handleAgeFieldChange("day", value)}
 									/>
 								</Flex>
 							</Grid.Col>
@@ -364,135 +340,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								/>
 							</Grid.Col>
 						</Grid>
-
-						{/*				<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("status")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<Flex gap="les">
-								<InputNumberForm
-									form={form}
-									label=""
-									placeholder="170"
-									tooltip={t("enterPatientHeight")}
-									name="height"
-									id="height"
-									nextField="weight"
-									value={form.values.height}
-									required
-								/>
-								<InputNumberForm
-									form={form}
-									label=""
-									placeholder="60"
-									tooltip={t("enterPatientWeight")}
-									name="weight"
-									id="weight"
-									nextField="bp"
-									value={form.values.weight}
-									required
-								/>
-								<InputForm
-									form={form}
-									label=""
-									placeholder="120/80"
-									tooltip={t("enterPatientBp")}
-									name="bp"
-									id="bp"
-									nextField="dateOfBirth"
-									value={form.values.bp}
-									required
-								/>
-							</Flex>
-						</Grid.Col>
-					</Grid>*/}
-
-						{/* <Flex className="form-action-header full-bleed">
-						<Text fz="sm">{t("doctorInformation")}</Text>
-						<Flex align="center" gap="xs" onClick={handleOpenDoctorsRoom} className="cursor-pointer">
-							<Text fz="sm">{t("booked")}-05</Text> <IconChevronRight size="16px" />
-						</Flex>
-					</Flex>
-
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("roomNo")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14} onClick={openDoctorsRoom}>
-							<InputNumberForm
-								readOnly={true}
-								form={form}
-								label=""
-								tooltip={t("enterPatientRoomNo")}
-								placeholder="101"
-								name="roomNo"
-								id="roomNo"
-								nextField="specialization"
-								value={form.values.roomNo}
-								required
-							/>
-						</Grid.Col>
-					</Grid>
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("specialization")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14} onClick={openDoctorsRoom}>
-							<InputForm
-								readOnly={true}
-								form={form}
-								label=""
-								tooltip={t("enterPatientSpecialization")}
-								placeholder="Cardiologist"
-								name="specialization"
-								id="specialization"
-								nextField="doctorName"
-								value={form.values.specialization}
-								required
-							/>
-						</Grid.Col>
-					</Grid>
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("doctorName")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14} onClick={openDoctorsRoom}>
-							<InputForm
-								readOnly={true}
-								form={form}
-								label=""
-								tooltip={t("enterPatientDoctorName")}
-								placeholder="Dr. John Doe"
-								name="doctorName"
-								id="doctorName"
-								nextField="diseaseProfile"
-								value={form.values.doctorName}
-								required
-							/>
-						</Grid.Col>
-					</Grid>
-
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("diseaseProfile")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<SelectForm
-								form={form}
-								label=""
-								tooltip={t("enterPatientDiseaseProfile")}
-								placeholder="Diabetic"
-								name="diseaseProfile"
-								id="diseaseProfile"
-								nextField="referredName"
-								value={form.values.diseaseProfile}
-								required
-								dropdownValue={DISEASE_PROFILE}
-								rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
-							/>
-						</Grid.Col>
-					</Grid> */}
 					</Stack>
 				</Grid.Col>
 				<Grid.Col span={12}>
@@ -509,10 +356,10 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 											label=""
 											tooltip={t("enterGuardianName")}
 											placeholder="John Doe"
-											name="guardianName"
-											id="guardianName"
-											nextField="guardianMobile"
-											value={form.values.guardianName}
+											name="guardian_name"
+											id="guardian_name"
+											nextField="guardian_mobile"
+											value={form.values.guardian_name}
 											required
 										/>
 									</Grid.Col>
@@ -527,11 +374,11 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 											form={form}
 											label=""
 											tooltip={t("enterGuardianName")}
-											placeholder="John Doe"
-											name="guardianMobile"
-											id="guardianMobile"
+											placeholder="+8801711111111"
+											name="guardian_mobile"
+											id="guardian_mobile"
 											nextField="identity"
-											value={form.values.guardianMobile}
+											value={form.values.guardian_mobile}
 											required
 										/>
 									</Grid.Col>
@@ -618,7 +465,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 							<Grid.Col span={14}>
 								<FileInput
 									rightSection={
-										<ActionIcon>
+										<ActionIcon bg="var(--theme-primary-color-6)" color="white">
 											<IconUpload size="16px" stroke={1.5} />
 										</ActionIcon>
 									}

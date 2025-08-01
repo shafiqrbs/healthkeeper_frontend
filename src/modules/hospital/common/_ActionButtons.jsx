@@ -36,16 +36,13 @@ export default function ActionButtons({ form, module }) {
 
 			try {
 				const createdBy = JSON.parse(localStorage.getItem("user"));
-				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
 
 				const formValue = {
 					...form.values,
 					created_by_id: createdBy?.id,
-					visit_date: new Date().toLocaleDateString("en-CA", options),
-					amount: form.values.amount || 0,
-					is_confirm: form.values.isConfirm || false,
-					sms_alert: form.values.smsAlert || false,
 				};
+
+				return console.log(formValue);
 
 				const data = {
 					url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.CREATE,
@@ -187,7 +184,7 @@ export default function ActionButtons({ form, module }) {
 										</Box>
 										<Flex align="center" gap="xs">
 											<InputNumberForm
-												label=""
+												id="amount"
 												form={form}
 												tooltip={t("enterAmount")}
 												placeholder={t("Amount")}

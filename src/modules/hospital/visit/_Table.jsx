@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
@@ -36,15 +36,14 @@ const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
 const PER_PAGE = 20;
 
-export default function Table({ module }) {
+export default function Table({ module, height }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state.crud[module].data);
 	const refetch = useSelector((state) => state.crud[module].refetching);
 	const [fetching, setFetching] = useState(false);
-	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 34;
+
 	const scrollViewportRef = useRef(null);
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
@@ -344,7 +343,7 @@ export default function Table({ module }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 344}
+					height={height}
 					onScrollToBottom={loadMoreRecords}
 					scrollViewportRef={scrollViewportRef}
 					sortStatus={sortStatus}

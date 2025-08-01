@@ -13,7 +13,12 @@ import {
 	IconWorldWww,
 	IconSettings,
 	IconPhone,
-	IconEmergencyBed, IconMicroscopeOff, IconMedicineSyrup, IconStethoscope, IconBrandVlc, IconReportMedical,
+	IconEmergencyBed,
+	IconMicroscopeOff,
+	IconMedicineSyrup,
+	IconStethoscope,
+	IconBrandVlc,
+	IconReportMedical,
 } from "@tabler/icons-react";
 
 export const sideNavigationLinks = {
@@ -29,6 +34,12 @@ export const sideNavigationLinks = {
 			path: "/",
 			icon: IconBuildingHospital,
 			color: "#6F1126",
+		},
+		{
+			label: "VisitList",
+			path: "/hospital/visit/list",
+			icon: IconBuildingHospital,
+			color: "#1D3557",
 		},
 		{
 			label: "doctorPrescription",

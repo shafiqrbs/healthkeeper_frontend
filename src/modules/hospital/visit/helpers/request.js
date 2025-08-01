@@ -2,6 +2,8 @@ import { hasLength } from "@mantine/form";
 
 const initialValues = {
 	patient_type: "general",
+	room_id: "",
+	doctor_id: "",
 	appointment: new Date(),
 	name: "",
 	mobile: "",
@@ -9,19 +11,18 @@ const initialValues = {
 	height: "",
 	weight: "",
 	bp: "",
-	dateOfBirth: "",
+	dob: "",
+	day: "",
+	month: "",
+	year: "",
 	age: "",
-	ageType: "year",
-	ageYear: "",
-	ageMonth: "",
-	ageDay: "",
 	identity: "",
 	district: "Dhaka",
 	address: "",
 	roomNo: "",
 	specialization: "",
 	doctorName: "",
-	diseaseProfile: "Diabetic",
+	diseaseProfile: "",
 	referredName: "",
 	amount: 10,
 	marketingEx: "",
@@ -30,6 +31,10 @@ const initialValues = {
 	smsAlert: false,
 	freeFor: "",
 	comment: "",
+	guardian_name: "",
+	guardian_mobile: "",
+	email: "",
+	payment_mode: "",
 };
 
 export const getVendorFormInitialValues = (t) => {
@@ -42,14 +47,19 @@ export const getVendorFormInitialValues = (t) => {
 				if (!value) return t("MobileValidationRequired");
 				return null;
 			},
-			identity: hasLength({ min: 2, max: 20 }),
 			district: hasLength({ min: 2, max: 20 }),
-			// specialization: hasLength({ min: 2, max: 20 }),
-			// doctorName: hasLength({ min: 2, max: 20 }),
-			// diseaseProfile: hasLength({ min: 2, max: 20 }),
-			// referredName: hasLength({ min: 2, max: 20 }),
-			// marketingEx: hasLength({ min: 2, max: 20 }),
-			amount: hasLength({ min: 2, max: 20 }),
+			amount: (value) => {
+				if (!value) return t("AmountValidationRequired");
+				return null;
+			},
+			guardian_name: (value, values) => {
+				if (!value && values.patient_type === "admission") return t("NameValidationRequired");
+				return null;
+			},
+			guardian_mobile: (value, values) => {
+				if (!value && values.patient_type === "admission") return t("MobileValidationRequired");
+				return null;
+			},
 		},
 	};
 };
