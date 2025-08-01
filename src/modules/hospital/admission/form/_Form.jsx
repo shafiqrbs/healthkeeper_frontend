@@ -1,4 +1,4 @@
-import PatientForm from "../../common/__PatientForm";
+import PatientFormSingleGrid from "../../common/__PatientFormSingleGrid";
 import { useDispatch, useSelector } from "react-redux";
 import { Box } from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
@@ -39,7 +39,7 @@ export default function Form({ form, isOpenPatientInfo, setIsOpenPatientInfo, se
 					/>
 				</>
 			) : (
-				<PatientForm form={form} handleSubmit={handleSubmit} canClose={true} />
+				<PatientFormSingleGrid form={form} handleSubmit={handleSubmit} canClose={true} />
 			)}
 		</>
 	);

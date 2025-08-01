@@ -179,23 +179,25 @@ export default function ActionButtons({ form, module }) {
 											/>
 										</Flex>
 									</Flex>
-									<Flex gap="xs" align="center">
+									<Flex gap="xs" align="center" justify="space-between">
 										<Box bg="white" px="xs" py="les" className="borderRadiusAll">
 											<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
 												{t("Due")} ৳ {(20000).toLocaleString()}
 											</Text>
 										</Box>
-										<InputNumberForm
-											label=""
-											form={form}
-											tooltip={t("enterAmount")}
-											placeholder={t("Amount")}
-											name="amount"
-											required
-										/>
-										<ActionIcon color="var(--theme-success-color)">
-											<IconArrowsSplit2 size={16} />
-										</ActionIcon>
+										<Flex align="center" gap="xs">
+											<InputNumberForm
+												label=""
+												form={form}
+												tooltip={t("enterAmount")}
+												placeholder={t("Amount")}
+												name="amount"
+												required
+											/>
+											<ActionIcon color="var(--theme-success-color)">
+												<IconArrowsSplit2 size={16} />
+											</ActionIcon>
+										</Flex>
 									</Flex>
 								</Box>
 							</Stack>

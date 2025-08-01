@@ -1,10 +1,20 @@
-import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 import InputForm from "@components/form-builders/InputForm";
-import { Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
-import { useState, useEffect } from "react";
+import {
+	ActionIcon,
+	Box,
+	Button,
+	FileInput,
+	Flex,
+	Grid,
+	ScrollArea,
+	SegmentedControl,
+	Stack,
+	Text,
+} from "@mantine/core";
+import { useState, useEffect, useCallback } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconX } from "@tabler/icons-react";
+import { IconArrowRight, IconUpload, IconX } from "@tabler/icons-react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DatePickerForm from "@components/form-builders/DatePicker";
@@ -12,12 +22,12 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
 import { DISTRICT_LIST } from "@/constants";
-import { calculateAge } from "@/common/utils";
-import TabsWithSearch from "@components/advance-search/TabsWithSearch";
+import { calculateAge, calculateDetailedAge } from "@/common/utils";
+import _ActionButtons from "./_ActionButtons";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
-export default function PatientForm({ form, canClose = false }) {
+export default function PatientForm({ form, canClose = false, module }) {
 	const firstRender = useIsFirstRender();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -59,7 +69,19 @@ export default function PatientForm({ form, canClose = false }) {
 		const type = form.values.ageType || "year";
 		const formattedAge = calculateAge(form.values.dateOfBirth, type);
 		form.setFieldValue("age", formattedAge);
-	}, [form.values.dateOfBirth, form.values.ageType]);
+
+		// Calculate detailed age from date of birth
+		if (form.values.dateOfBirth) {
+			const detailedAge = calculateDetailedAge(form.values.dateOfBirth);
+			form.setFieldValue("ageYear", detailedAge.years);
+			form.setFieldValue("ageMonth", detailedAge.months);
+			form.setFieldValue("ageDay", detailedAge.days);
+		}
+	}, [form.values.dateOfBirth]);
+
+	useEffect(() => {
+		document.getElementById("patientName").focus();
+	}, []);
 
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
@@ -68,204 +90,282 @@ export default function PatientForm({ form, canClose = false }) {
 					<Text fw={600} fz="sm">
 						{t("patientInformation")}
 					</Text>
-					{canClose && <IconX className="cursor-pointer" size="16px" onClick={() => navigate(-1)} />}
+					{/* {canClose && <IconX className="cursor-pointer" size="16px" onClick={() => navigate(-1)} />} */}
+					<Flex gap="xs">
+						<SegmentedControl
+							size="xs"
+							color="var(--theme-primary-color-6)"
+							data={["New", "Re-Visit"]}
+							styles={{
+								root: { backgroundColor: "var(--theme-tertiary-color-1)" },
+								control: { width: "60px" },
+							}}
+						/>
+						<Button
+							// onClick={handleOpenViewOverview}
+							size="xs"
+							radius="es"
+							rightSection={<IconArrowRight size={16} />}
+							bg="var(--theme-success-color)"
+							c="white"
+						>
+							{t("Visit Table")}
+						</Button>
+					</Flex>
 				</Flex>
-				<TabsWithSearch
-					hideSearchbar={true}
-					tabList={["new", "report", "reVisit"]}
-					tabPanels={[
-						{
-							tab: "new",
-							component: <Form form={form} />,
-						},
-						{
-							tab: "report",
-							component: <Box>Report</Box>,
-						},
-						{
-							tab: "reVisit",
-							component: <Box>Re-Visit</Box>,
-						},
-					]}
-				/>
+				<Form form={form} module={module} />
 			</form>
 			<DoctorsRoomDrawer form={form} opened={openedDoctorsRoom} close={closeDoctorsRoom} />
 		</Box>
 	);
 }
 
-export function Form({ form, showTitle = false, heightOffset = 116 }) {
+export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
 	const [gender, setGender] = useState("male");
+	const [type, setType] = useState("general");
 
 	const handleGenderChange = (val) => {
 		setGender(val);
 		form.setFieldValue("gender", val);
 	};
 
+	const handleTypeChange = (val) => {
+		setType(val);
+		form.setFieldValue("patient_type", val);
+		form.setFieldValue("guardianMobile", form.values.mobile);
+	};
+
+	// Handle manual age field updates
+	const handleAgeFieldChange = (field, value) => {
+		form.setFieldValue(field, value);
+
+		// Update the total age field when any of the detailed age fields change
+		const year = form.values.ageYear || 0;
+		const month = form.values.ageMonth || 0;
+		const day = form.values.ageDay || 0;
+
+		// Calculate total age in years (approximate)
+		const totalAgeInYears = year + month / 12 + day / 365;
+		form.setFieldValue("age", Math.floor(totalAgeInYears));
+	};
+
 	return (
 		<Box>
 			{showTitle && (
-				<Flex bg="var(--theme-primary-color-0)" align="center" gap="xs" p="sm">
+				<Flex bg="var(--theme-primary-color-0)" align="center" gap="xs" p="sm" justify="space-between">
 					<Text fw={600} fz="sm">
 						{t("patientInformation")}
 					</Text>
 				</Flex>
 			)}
-			<ScrollArea scrollbars="y" type="never" h={height}>
-				<Stack className="form-stack-vertical">
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("appointment")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<DatePickerForm
-								form={form}
-								label=""
-								tooltip={t("bookYourAppointment")}
-								placeholder="23-06-2025"
-								name="appointment"
-								id="appointment"
-								nextField="patientName"
-								value={form.values.appointment}
-								required
-								disable
-							/>
-						</Grid.Col>
-					</Grid>
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("patientName")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<InputForm
-								form={form}
-								label=""
-								tooltip={t("enterPatientName")}
-								placeholder="John Doe"
-								name="name"
-								id="patientName"
-								nextField="mobile"
-								value={form.values.name}
-								required
-							/>
-						</Grid.Col>
-					</Grid>
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("mobile")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<PhoneNumber
-								form={form}
-								label=""
-								tooltip={t("enterPatientMobile")}
-								placeholder="01717171717"
-								name="mobile"
-								id="mobile"
-								nextField="dateOfBirth"
-								value={form.values.mobile}
-								required
-							/>
-						</Grid.Col>
-					</Grid>
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("dateOfBirth")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<DatePickerForm
-								form={form}
-								label=""
-								placeholder="23-06-2025"
-								tooltip={t("enterPatientDateOfBirth")}
-								name="dateOfBirth"
-								id="dateOfBirth"
-								nextField="age"
-								value={form.values.dateOfBirth}
-								required
-								disabledFutureDate
-							/>
-						</Grid.Col>
-					</Grid>
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("age")}</Text>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Flex gap="les">
-								<InputNumberForm
+			<Grid columns={24}>
+				<Grid.Col span={12}>
+					<Stack mih={height - 176} className="form-stack-vertical">
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("Type")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<SegmentedControl
+									fullWidth
+									color="var(--theme-primary-color-6)"
+									value={type}
+									id="patient_type"
+									name="patient_type"
+									onChange={(val) => handleTypeChange(val)}
+									data={[
+										{ label: t("General"), value: "general" },
+										{ label: t("Emergency"), value: "emergency" },
+										{ label: t("Admission"), value: "admission" },
+									]}
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("patientName")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<InputForm
 									form={form}
 									label=""
-									placeholder="20"
-									tooltip={t("totalAge")}
-									name="age"
-									id="age"
-									nextField="district"
-									value={form.values.age}
+									tooltip={t("enterPatientName")}
+									placeholder="John Doe"
+									name="name"
+									id="patientName"
+									nextField="mobile"
+									value={form.values.name}
 									required
 								/>
-							</Flex>
-						</Grid.Col>
-						<Grid.Col span={8}>
-							<SegmentedControl
-								fullWidth
-								color="var(--theme-primary-color-6)"
-								value={form.values.ageType}
-								defaultValue="year"
-								onChange={(val) => form.setFieldValue("ageType", val)}
-								data={[
-									{ label: t("day"), value: "day" },
-									{ label: t("mon"), value: "month" },
-									{ label: t("year"), value: "year" },
-								]}
-							/>
-						</Grid.Col>
-					</Grid>
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("district")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<SelectForm
-								form={form}
-								label=""
-								tooltip={t("enterPatientDistrict")}
-								placeholder="Dhaka"
-								name="district"
-								id="district"
-								nextField="identity"
-								value={form.values.district}
-								required
-								dropdownValue={DISTRICT_LIST}
-								searchable
-							/>
-						</Grid.Col>
-					</Grid>
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("gender")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<SegmentedControl
-								fullWidth
-								color="var(--theme-primary-color-6)"
-								value={gender}
-								id="gender"
-								name="gender"
-								onChange={(val) => handleGenderChange(val)}
-								data={[
-									{ label: t("male"), value: "male" },
-									{ label: t("female"), value: "female" },
-									{ label: t("other"), value: "other" },
-								]}
-							/>
-						</Grid.Col>
-					</Grid>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("gender")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<SegmentedControl
+									fullWidth
+									color="var(--theme-primary-color-6)"
+									value={gender}
+									id="gender"
+									name="gender"
+									onChange={(val) => handleGenderChange(val)}
+									data={[
+										{ label: t("male"), value: "male" },
+										{ label: t("female"), value: "female" },
+										{ label: t("other"), value: "other" },
+									]}
+								/>
+							</Grid.Col>
+						</Grid>
 
-					{/*				<Grid align="center" columns={20}>
+						{/* <Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("appointment")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<DatePickerForm
+									form={form}
+									label=""
+									tooltip={t("bookYourAppointment")}
+									placeholder="23-06-2025"
+									name="appointment"
+									id="appointment"
+									nextField="patientName"
+									value={form.values.appointment}
+									required
+									disable
+								/>
+							</Grid.Col>
+						</Grid> */}
+
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("dateOfBirth")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<DatePickerForm
+									form={form}
+									label=""
+									placeholder="23-06-2025"
+									tooltip={t("enterPatientDateOfBirth")}
+									name="dateOfBirth"
+									id="dateOfBirth"
+									nextField="age"
+									value={form.values.dateOfBirth}
+									required
+									disabledFutureDate
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("age")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<Flex gap="xs">
+									<InputNumberForm
+										form={form}
+										label=""
+										placeholder="Y"
+										tooltip={t("years")}
+										name="ageYear"
+										id="ageYear"
+										nextField="ageMonth"
+										value={form.values.ageYear}
+										min={0}
+										max={150}
+										leftSection={
+											<Text fz="sm" px="sm">
+												{t("Y")}
+											</Text>
+										}
+										onChange={(value) => handleAgeFieldChange("ageYear", value)}
+									/>
+									<InputNumberForm
+										form={form}
+										label=""
+										placeholder="M"
+										tooltip={t("months")}
+										name="ageMonth"
+										id="ageMonth"
+										nextField="ageDay"
+										value={form.values.ageMonth}
+										min={0}
+										max={11}
+										leftSection={
+											<Text fz="sm" px="sm">
+												{t("M")}
+											</Text>
+										}
+										onChange={(value) => handleAgeFieldChange("ageMonth", value)}
+									/>
+									<InputNumberForm
+										form={form}
+										label=""
+										placeholder="D"
+										tooltip={t("days")}
+										name="ageDay"
+										id="ageDay"
+										nextField="mobile"
+										value={form.values.ageDay}
+										min={0}
+										max={31}
+										leftSection={
+											<Text fz="sm" px="sm">
+												{t("D")}
+											</Text>
+										}
+										onChange={(value) => handleAgeFieldChange("ageDay", value)}
+									/>
+								</Flex>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("mobile")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<InputForm
+									form={form}
+									label=""
+									tooltip={t("enterPatientMobile")}
+									placeholder="+880 1717171717"
+									name="mobile"
+									id="mobile"
+									nextField="dateOfBirth"
+									value={form.values.mobile}
+									required
+								/>
+							</Grid.Col>
+						</Grid>
+
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("district")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<SelectForm
+									form={form}
+									label=""
+									tooltip={t("enterPatientDistrict")}
+									placeholder="Dhaka"
+									name="district"
+									id="district"
+									nextField="identity"
+									value={form.values.district}
+									required
+									dropdownValue={DISTRICT_LIST}
+									searchable
+								/>
+							</Grid.Col>
+						</Grid>
+
+						{/*				<Grid align="center" columns={20}>
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("status")}</Text>
 						</Grid.Col>
@@ -308,76 +408,7 @@ export function Form({ form, showTitle = false, heightOffset = 116 }) {
 						</Grid.Col>
 					</Grid>*/}
 
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("NIDBirthCertificate")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<InputNumberForm
-								form={form}
-								label=""
-								placeholder="1234567890"
-								tooltip={t("enterPatientIdentity")}
-								name="identity"
-								id="identity"
-								nextField="address"
-								value={form.values.identity}
-								required
-							/>
-						</Grid.Col>
-					</Grid>
-
-					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("address")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<TextAreaForm
-								form={form}
-								label=""
-								tooltip={t("enterPatientAddress")}
-								placeholder="12 street, 123456"
-								name="address"
-								id="address"
-								nextField="comment"
-								value={form.values.address}
-								required
-							/>
-						</Grid.Col>
-					</Grid>
-
-					<Grid columns={20}>
-						<Grid.Col span={6} mt="xs">
-							<Text fz="sm">{t("FreeFor")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<SegmentedControl
-								fullWidth
-								color="var(--theme-primary-color-6)"
-								value={form.values.freeFor}
-								id="freeFor"
-								name="freeFor"
-								onChange={(val) => form.setFieldValue("freeFor", val)}
-								data={[
-									{ label: t("FreedomFighter"), value: "FreedomFighter" },
-									{ label: t("Disabled"), value: "Disabled" },
-									{ label: t("GovtService"), value: "GovtService" },
-								]}
-							/>
-							<TextAreaForm
-								form={form}
-								label=""
-								mt="xxs"
-								tooltip={t("enterComment")}
-								placeholder="Enter comment"
-								name="comment"
-								id="comment"
-								value={form.values.comment || ""}
-							/>
-						</Grid.Col>
-					</Grid>
-
-					{/* <Flex className="form-action-header full-bleed">
+						{/* <Flex className="form-action-header full-bleed">
 						<Text fz="sm">{t("doctorInformation")}</Text>
 						<Flex align="center" gap="xs" onClick={handleOpenDoctorsRoom} className="cursor-pointer">
 							<Text fz="sm">{t("booked")}-05</Text> <IconChevronRight size="16px" />
@@ -462,8 +493,146 @@ export function Form({ form, showTitle = false, heightOffset = 116 }) {
 							/>
 						</Grid.Col>
 					</Grid> */}
-				</Stack>
-			</ScrollArea>
+					</Stack>
+				</Grid.Col>
+				<Grid.Col span={12}>
+					<Stack mih={height - 176} className="form-stack-vertical">
+						{form.values.patient_type === "admission" && (
+							<>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("GuardianName")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterGuardianName")}
+											placeholder="John Doe"
+											name="guardianName"
+											id="guardianName"
+											nextField="guardianMobile"
+											value={form.values.guardianName}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("GuardianMobile")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterGuardianName")}
+											placeholder="John Doe"
+											name="guardianMobile"
+											id="guardianMobile"
+											nextField="identity"
+											value={form.values.guardianMobile}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+							</>
+						)}
+
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("NIDBirthCertificate")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<InputNumberForm
+									form={form}
+									label=""
+									placeholder="1234567890"
+									tooltip={t("enterPatientIdentity")}
+									name="identity"
+									id="identity"
+									nextField="address"
+									value={form.values.identity}
+									required
+								/>
+							</Grid.Col>
+						</Grid>
+
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("address")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<TextAreaForm
+									form={form}
+									label=""
+									tooltip={t("enterPatientAddress")}
+									placeholder="12 street, 123456"
+									name="address"
+									id="address"
+									nextField="comment"
+									value={form.values.address}
+									required
+								/>
+							</Grid.Col>
+						</Grid>
+
+						<Grid columns={20}>
+							<Grid.Col span={6} mt="xs">
+								<Text fz="sm">{t("FreeFor")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<SegmentedControl
+									fullWidth
+									color="var(--theme-primary-color-6)"
+									value={form.values.freeFor}
+									id="freeFor"
+									name="freeFor"
+									onChange={(val) => form.setFieldValue("freeFor", val)}
+									data={[
+										{ label: t("No"), value: "" },
+										{ label: t("FreedomFighter"), value: "FreedomFighter" },
+										{ label: t("Disabled"), value: "Disabled" },
+										{ label: t("GovtService"), value: "GovtService" },
+									]}
+								/>
+								{form.values.freeFor && (
+									<TextAreaForm
+										form={form}
+										label=""
+										mt="xxs"
+										tooltip={t("enterComment")}
+										placeholder="Enter comment"
+										name="comment"
+										id="comment"
+										value={form.values.comment || ""}
+									/>
+								)}
+							</Grid.Col>
+						</Grid>
+
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("FileUpload")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<FileInput
+									rightSection={
+										<ActionIcon>
+											<IconUpload size="16px" stroke={1.5} />
+										</ActionIcon>
+									}
+									placeholder="Upload your file"
+									rightSectionPointerEvents="none"
+								/>
+							</Grid.Col>
+						</Grid>
+					</Stack>
+				</Grid.Col>
+				<Grid.Col span={24}>
+					<_ActionButtons form={form} module={module} />
+				</Grid.Col>
+			</Grid>
 		</Box>
 	);
 }

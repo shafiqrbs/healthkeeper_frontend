@@ -35,4 +35,10 @@ export const PAYMENT_METHODS = [
 		value: "nagad2",
 		icon: "/images/transaction-modes/nagad.svg",
 	},
+	{
+		id: 0,
+		label: "Paypal",
+		value: "paypal",
+		icon: "/images/transaction-modes/paypal.svg",
+	},
 ];

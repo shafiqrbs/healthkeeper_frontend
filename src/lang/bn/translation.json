@@ -787,8 +787,12 @@
 	"dateOfBirth": "জন্ম তারিখ",
 	"age": "বয়স",
 	"day": "দিন",
+	"days": "দিন",
 	"mon": "মাস",
+	"month": "মাস",
+	"months": "মাস",
 	"year": "বছর",
+	"years": "বছর",
 	"identity": "পরিচয়",
 	"district": "জেলা",
 	"selectDistrict": "জেলা নির্বাচন করুন",
@@ -958,5 +962,8 @@
 	"FreeFor": "ফ্রি ফর",
 	"FreedomFighter": "মুক্তিযোদ্ধা",
 	"Disabled": "বিধিমত ব্যক্তি",
-	"GovtService": "সরকারি সেবা"
+	"GovtService": "সরকারি সেবা",
+	"GuardianName": "পারিবারিকের নাম",
+	"GuardianMobile": "পারিবারিকের মোবাইল",
+	"FileUpload": "ফাইল আপলোড"
 }

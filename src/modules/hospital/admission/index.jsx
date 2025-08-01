@@ -9,7 +9,7 @@ import Navigation from "@components/layout/Navigation";
 import { Box, Flex, Grid, ScrollArea, Text } from "@mantine/core";
 import PatientReport from "../common/PatientReport";
 import ActionButtons from "../common/_ActionButtons";
-import { Form as PatientForm } from "../common/__PatientForm";
+import { Form as PatientForm } from "../common/__PatientFormSingleGrid";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import PatientListWithActions from "../common/PatientListWithActions";
 import RoomCard from "../common/RoomCard";

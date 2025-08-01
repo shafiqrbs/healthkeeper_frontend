@@ -1,6 +1,7 @@
 import { hasLength } from "@mantine/form";
 
 const initialValues = {
+	patient_type: "general",
 	appointment: new Date(),
 	name: "",
 	mobile: "",
@@ -11,6 +12,9 @@ const initialValues = {
 	dateOfBirth: "",
 	age: "",
 	ageType: "year",
+	ageYear: "",
+	ageMonth: "",
+	ageDay: "",
 	identity: "",
 	district: "Dhaka",
 	address: "",
@@ -19,11 +23,13 @@ const initialValues = {
 	doctorName: "",
 	diseaseProfile: "Diabetic",
 	referredName: "",
-	amount: "",
+	amount: 10,
 	marketingEx: "",
 	paymentMethod: "bkash",
 	isConfirm: false,
 	smsAlert: false,
+	freeFor: "",
+	comment: "",
 };
 
 export const getVendorFormInitialValues = (t) => {

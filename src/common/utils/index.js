@@ -60,6 +60,33 @@ export const calculateAge = (dob, type) => {
 	return value;
 };
 
+export const calculateDetailedAge = (dob) => {
+	if (!dob) return { years: 0, months: 0, days: 0 };
+
+	const birthDate = new Date(dob);
+	const today = new Date();
+
+	// Calculate years
+	let years = today.getFullYear() - birthDate.getFullYear();
+	let months = today.getMonth() - birthDate.getMonth();
+	let days = today.getDate() - birthDate.getDate();
+
+	// Adjust for negative months or days
+	if (days < 0) {
+		months--;
+		// Get the last day of the previous month
+		const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+		days += lastMonth.getDate();
+	}
+
+	if (months < 0) {
+		years--;
+		months += 12;
+	}
+
+	return { years, months, days };
+};
+
 export const formatDate = (date) => {
 	return new Date(date).toLocaleDateString("en-US", {
 		year: "numeric",

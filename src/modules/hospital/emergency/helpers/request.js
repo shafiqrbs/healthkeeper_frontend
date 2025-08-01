@@ -1,6 +1,7 @@
 import { hasLength } from "@mantine/form";
 
 const initialValues = {
+	type: "general",
 	appointment: "",
 	patientName: "",
 	mobile: "",
@@ -11,6 +12,9 @@ const initialValues = {
 	dateOfBirth: "",
 	age: "",
 	ageType: "year",
+	ageYear: "",
+	ageMonth: "",
+	ageDay: "",
 	identity: "",
 	district: "Dhaka",
 	address: "",
