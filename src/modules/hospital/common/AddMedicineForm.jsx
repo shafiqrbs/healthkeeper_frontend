@@ -2,12 +2,11 @@ import { useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import { Box, Button, Group, ActionIcon, Text, Stack, Flex, Grid, ScrollArea, Divider, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconCheck, IconPencil, IconPlus, IconRestore, IconTrash } from "@tabler/icons-react";
+import { IconCheck, IconPencil, IconPlus, IconRestore, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
-import InputForm from "@components/form-builders/InputForm";
 import { useOutletContext } from "react-router-dom";
 import InputAutoComplete from "@components/form-builders/InputAutoComplete";
 import { useReactToPrint } from "react-to-print";
@@ -49,6 +48,7 @@ const DURATION_UNIT_OPTIONS = [
 
 function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 	const [mode, setMode] = useState("view");
+	console.log(medicine);
 
 	const openEditMode = () => {
 		setMode("edit");
@@ -72,39 +72,47 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 			<Text mb="es">
 				{index}. {medicine.generic}
 			</Text>
-			<Group grow gap="les">
-				<Select
-					label=""
-					data={FREQUENCY_OPTIONS}
-					value={medicine.times}
-					placeholder="Times"
-					disabled={mode === "view"}
-					onChange={(v) => handleChange("times", v)}
-				/>
-				<Select
-					label=""
-					data={TIMING_OPTIONS}
-					value={medicine.timing}
-					placeholder="Timing"
-					disabled={mode === "view"}
-					onChange={(v) => handleChange("timing", v)}
-				/>
-				<Select
-					label=""
-					data={DOSAGE_OPTIONS}
-					value={medicine.dosage}
-					placeholder="Dosage"
-					disabled={mode === "view"}
-					onChange={(v) => handleChange("dosage", v)}
-				/>
-				<Select
-					label=""
-					data={DURATION_UNIT_OPTIONS}
-					value={medicine.unit}
-					placeholder="Unit"
-					disabled={mode === "view"}
-					onChange={(v) => handleChange("unit", v)}
-				/>
+			<Flex justify="space-between" align="center" gap="sm">
+				{mode === "view" ? (
+					<Box ml="md">
+						{medicine.dosage} ---- {medicine.times} time/s ---- {medicine.timing} meal
+					</Box>
+				) : (
+					<Group grow gap="les">
+						<Select
+							label=""
+							data={FREQUENCY_OPTIONS}
+							value={medicine.times}
+							placeholder="Times"
+							disabled={mode === "view"}
+							onChange={(v) => handleChange("times", v)}
+						/>
+						<Select
+							label=""
+							data={TIMING_OPTIONS}
+							value={medicine.timing}
+							placeholder="Timing"
+							disabled={mode === "view"}
+							onChange={(v) => handleChange("timing", v)}
+						/>
+						<Select
+							label=""
+							data={DOSAGE_OPTIONS}
+							value={medicine.dosage}
+							placeholder="Dosage"
+							disabled={mode === "view"}
+							onChange={(v) => handleChange("dosage", v)}
+						/>
+						<Select
+							label=""
+							data={DURATION_UNIT_OPTIONS}
+							value={medicine.unit}
+							placeholder="Unit"
+							disabled={mode === "view"}
+							onChange={(v) => handleChange("unit", v)}
+						/>
+					</Group>
+				)}
 				<Flex gap="les" justify="flex-end">
 					<ActionIcon variant="outline" color="var(--theme-primary-color-6)" onClick={handleEdit}>
 						<IconCheck size={18} stroke={1.5} />
@@ -117,10 +125,10 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 						color="var(--theme-error-color)"
 						onClick={() => handleDelete(index - 1)}
 					>
-						<IconTrash size={18} stroke={1.5} />
+						<IconX size={18} stroke={1.5} />
 					</ActionIcon>
 				</Flex>
-			</Group>
+			</Flex>
 		</Box>
 	);
 }
