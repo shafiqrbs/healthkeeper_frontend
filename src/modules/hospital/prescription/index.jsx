@@ -10,6 +10,7 @@ import { Box, Flex, Grid } from "@mantine/core";
 import PatientReport from "../common/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import Form from "./form/_Form";
+import BaseTabs from "@components/tabs/BaseTabs";
 
 export default function Index() {
 	const { t } = useTranslation();
@@ -18,6 +19,7 @@ export default function Index() {
 	const { mainAreaHeight } = useOutletContext();
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const [patientData, setPatientData] = useState({});
+	const [tabValue, setTabValue] = useState("All");
 
 	return (
 		<>
@@ -38,8 +40,15 @@ export default function Index() {
 							</Grid.Col>
 							<Grid.Col span={isOpenPatientInfo ? 17 : 22} className="animate-ease-out">
 								<Grid columns={25} gutter="les">
+									<Grid.Col span={25}>
+										<BaseTabs
+											tabValue={tabValue}
+											setTabValue={setTabValue}
+											tabList={["All", "Vitals", "Chief Complaints", "OLE", "Investigation"]}
+										/>
+									</Grid.Col>
 									<Grid.Col span={9}>
-										<PatientReport patientData={patientData} />
+										<PatientReport patientData={patientData} tabValue={tabValue} />
 									</Grid.Col>
 									<Grid.Col span={16}>
 										<AddMedicineForm />

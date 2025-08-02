@@ -1,34 +1,17 @@
-import { Box, Flex, Stack, Text, Group, Checkbox, ActionIcon, Select, ScrollArea } from "@mantine/core";
+import { Box, ScrollArea } from "@mantine/core";
 import { useState } from "react";
-import InputForm from "@components/form-builders/InputForm";
-import SelectForm from "@components/form-builders/SelectForm";
-import { IconX } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import PatientReportAction from "./PatientReportAction";
+import BasicInfoCard from "./tab-items/BasicInfoCard";
+import Vitals from "./tab-items/Vitals";
+import ChiefComplaints from "./tab-items/ChiefComplaints";
+import Investigation from "./tab-items/Investigation";
+import OLE from "./tab-items/OLE";
 
-const OLE_OPTIONS = ["Investigation", "Investigation", "Investigation", "Investigation"];
-const CHIEF_COMPLAINTS = ["Fever (For 2 days)", "Runny Nose", "Headache"];
-const INVESTIGATION_OPTIONS = [
-	{ label: "Chest X-Ray P/A", value: "Chest X-Ray P/A" },
-	{ label: "CBC", value: "CBC" },
-	{ label: "ECG", value: "ECG" },
-];
-const BLOOD_GROUPS = [
-	{ label: "A+", value: "A+" },
-	{ label: "A-", value: "A-" },
-	{ label: "B+", value: "B+" },
-	{ label: "B-", value: "B-" },
-	{ label: "O+", value: "O+" },
-	{ label: "O-", value: "O-" },
-	{ label: "AB+", value: "AB+" },
-	{ label: "AB-", value: "AB-" },
-];
-
-export default function PatientReport({ patientData }) {
-	const { t } = useTranslation();
+export default function PatientReport({ patientData, tabValue }) {
 	const { mainAreaHeight } = useOutletContext();
+	const height = mainAreaHeight - 118;
 	const form = useForm({
 		initialValues: {
 			bp: "120/80",
@@ -74,161 +57,55 @@ export default function PatientReport({ patientData }) {
 		setInvestigationList((prev) => prev.filter((_, i) => i !== idx));
 	};
 
+	const generateTabItems = () => {
+		console.log(tabValue);
+		if (tabValue === "All") {
+			return (
+				<ScrollArea h={height}>
+					<BasicInfoCard patientData={patientData} />
+					<Vitals vitals={vitals} form={form} />
+					<ChiefComplaints complaints={complaints} handleComplaintChange={handleComplaintChange} />
+					<Investigation
+						investigation={investigation}
+						setInvestigation={setInvestigation}
+						investigationList={investigationList}
+					/>
+				</ScrollArea>
+			);
+		} else if (tabValue === "Vitals") {
+			return (
+				<ScrollArea h={height}>
+					<Vitals vitals={vitals} form={form} />
+				</ScrollArea>
+			);
+		} else if (tabValue === "Chief Complaints") {
+			return (
+				<ScrollArea h={height}>
+					<ChiefComplaints complaints={complaints} handleComplaintChange={handleComplaintChange} />
+				</ScrollArea>
+			);
+		} else if (tabValue === "Investigation") {
+			return (
+				<ScrollArea h={height}>
+					<Investigation
+						investigation={investigation}
+						setInvestigation={setInvestigation}
+						investigationList={investigationList}
+					/>
+				</ScrollArea>
+			);
+		} else if (tabValue === "OLE") {
+			return (
+				<ScrollArea h={height}>
+					<OLE ole={ole} handleOleChange={handleOleChange} />
+				</ScrollArea>
+			);
+		}
+	};
+
 	return (
 		<Box bg="white" p="les">
-			<Stack gap="xxxs" bg="var(--theme-primary-color-1)" p="xs" className="borderRadiusAll">
-				<Flex justify="space-between">
-					<Text fw={600}>{patientData.name}</Text>
-					<Text fz="sm">{patientData.date}</Text>
-				</Flex>
-				<Flex justify="space-between">
-					<Text fz="xs">
-						Patient ID: <b>{patientData.patientId || "N/A"}</b>
-					</Text>
-					<Text fz="xs">
-						{t("age")}: <b>{patientData.age}</b> - {t("gender")}: <b>{patientData.gender || "Male"}</b>
-					</Text>
-				</Flex>
-			</Stack>
-
-			<ScrollArea scrollbars="y" h={mainAreaHeight - 136}>
-				<Flex gap="les" mt="xxxs" mb="xxxs" wrap="wrap">
-					<Group gap="les" grow w="100%" px="les">
-						<InputForm
-							value={vitals.bp}
-							label={t("bp")}
-							name="bp"
-							tooltip="Blood Pressure"
-							form={form}
-							placeholder="120/80"
-							mt={0}
-							styles={{ input: { padding: "es", fontSize: "sm" } }}
-						/>
-						{/* <InputForm
-							value={vitals.sugar}
-							label={t("sugar")}
-							name="sugar"
-							tooltip="Sugar"
-							form={form}
-							placeholder="5.6"
-							mt={0}
-							styles={{ input: { padding: "es", fontSize: "sm" } }}
-						/> */}
-					</Group>
-					<Group gap="les" grow w="100%" px="les">
-						<InputForm
-							value={vitals.weight}
-							label={t("weight")}
-							name="weight"
-							tooltip="Weight"
-							form={form}
-							placeholder="50"
-							mt={0}
-							styles={{ input: { padding: "es", fontSize: "sm" } }}
-						/>
-						<SelectForm
-							value={vitals.bloodGroup}
-							label={t("bloodGroup")}
-							name="bloodGroup"
-							form={form}
-							dropdownValue={BLOOD_GROUPS}
-							searchable={false}
-							clearable={false}
-							mt={0}
-							size="sm"
-							pt={0}
-						/>
-					</Group>
-				</Flex>
-
-				{/* <Box bg="var(--theme-primary-color-0)" p="xs" mt="xxxs" mb="xxxs" className="borderRadiusAll">
-					<Text fw={600} fz="sm" mb="xxxs">
-						{t("ole")}
-					</Text>
-					<Stack gap="xxxs" bg="white" p="sm" className="borderRadiusSmall">
-						{OLE_OPTIONS.map((label, idx) => (
-							<Checkbox
-								key={idx}
-								label={label}
-								size="sm"
-								checked={ole[idx]}
-								color="var(--theme-primary-color-6)"
-								onChange={() => handleOleChange(idx)}
-								styles={{ label: { fontSize: "sm" } }}
-							/>
-						))}
-					</Stack>
-				</Box> */}
-
-				<Box bg="var(--theme-primary-color-0)" p="xs" mt="xxxs" mb="xxxs" className="borderRadiusAll">
-					<Text fw={600} fz="sm" mb="xxxs">
-						Chief Complaints
-					</Text>
-					<Stack gap="xxxs" bg="white" p="sm" className="borderRadiusSmall">
-						{CHIEF_COMPLAINTS.map((label, idx) => (
-							<Checkbox
-								key={idx}
-								label={label}
-								size="sm"
-								checked={complaints[idx]}
-								color="var(--theme-primary-color-6)"
-								onChange={() => handleComplaintChange(idx)}
-								styles={{ label: { fontSize: "sm" } }}
-							/>
-						))}
-					</Stack>
-				</Box>
-
-				{/* Investigation */}
-				<Box bg="var(--theme-primary-color-0)" p="xs" mt="xxxs" className="borderRadiusAll">
-					<Text fw={600} fz="sm" mb="xxxs">
-						Investigation
-					</Text>
-					<Select
-						placeholder="Search"
-						data={INVESTIGATION_OPTIONS}
-						value={investigation}
-						onChange={setInvestigation}
-						searchable
-						nothingFoundMessage="No test found"
-						size="xs"
-						mb="xxxs"
-						onKeyDown={(e) => {
-							if (e.key === "Enter" && investigation) handleInvestigationAdd(investigation);
-						}}
-						onBlur={() => handleInvestigationAdd(investigation)}
-					/>
-					<Stack gap={0} bg="white" px="sm" className="borderRadiusAll">
-						{investigationList.map((item, idx) => (
-							<Flex
-								key={idx}
-								align="center"
-								justify="space-between"
-								px="es"
-								py="xs"
-								style={{
-									borderBottom:
-										idx !== investigationList.length - 1
-											? "1px solid var(--theme-tertiary-color-4)"
-											: "none",
-								}}
-							>
-								<Text fz="sm">
-									{idx + 1}. {item}
-								</Text>
-								<ActionIcon
-									color="red"
-									size="xs"
-									variant="subtle"
-									onClick={() => handleInvestigationRemove(idx)}
-								>
-									<IconX size={16} />
-								</ActionIcon>
-							</Flex>
-						))}
-					</Stack>
-				</Box>
-			</ScrollArea>
+			{generateTabItems()}
 			<PatientReportAction form={form} />
 		</Box>
 	);

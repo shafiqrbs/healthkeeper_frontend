@@ -48,7 +48,6 @@ const DURATION_UNIT_OPTIONS = [
 
 function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 	const [mode, setMode] = useState("view");
-	console.log(medicine);
 
 	const openEditMode = () => {
 		setMode("edit");
@@ -74,7 +73,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 			</Text>
 			<Flex justify="space-between" align="center" gap="sm">
 				{mode === "view" ? (
-					<Box ml="md">
+					<Box ml="md" fz="sm" c="var(--theme-tertiary-color-8)">
 						{medicine.dosage} ---- {medicine.times} time/s ---- {medicine.timing} meal
 					</Box>
 				) : (
@@ -291,7 +290,7 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
 				List of Medicines
 			</Text>
-			<ScrollArea h={mainAreaHeight - 462} bg="white">
+			<ScrollArea h={mainAreaHeight - 516} bg="white">
 				<Stack gap="xs" p="sm">
 					{medicines.map((medicine, index) => (
 						<MedicineListItem
