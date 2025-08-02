@@ -42,8 +42,6 @@ export default function ActionButtons({ form, module }) {
 					created_by_id: createdBy?.id,
 				};
 
-				return console.log(formValue);
-
 				const data = {
 					url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.CREATE,
 					data: formValue,

@@ -21,13 +21,9 @@ export default function Index() {
 	const { mainAreaHeight } = useOutletContext();
 	const [selectedRoom, setSelectedRoom] = useState(1);
 
-	const selectRoom = (room) => {
-		setSelectedRoom(room);
-		form.setFieldValue("roomNo", room);
-	};
-
 	const handleRoomClick = (room) => {
-		selectRoom(room);
+		setSelectedRoom(room);
+		form.setFieldValue("room_id", room);
 	};
 
 	return (
