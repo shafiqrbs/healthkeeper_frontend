@@ -7,11 +7,11 @@ export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatient
 	const { t } = useTranslation();
 
 	return (
-		<Box onMouseEnter={() => setIsOpenPatientInfo(true)}>
+		<Box onMouseEnter={() => setIsOpenPatientInfo(true)} onMouseLeave={() => setIsOpenPatientInfo(false)}>
 			<Flex justify={isOpenPatientInfo ? "space-between" : "center"} align="center" bg="white" py="xxxs" px="xs">
 				{isOpenPatientInfo ? (
 					<>
-						<Text>{t("patientInformation")}</Text>
+						<Text className="text-nowrap">{t("patientInformation")}</Text>
 						<SegmentedControl
 							size="xs"
 							color="var(--theme-primary-color-6)"
@@ -23,7 +23,7 @@ export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatient
 						/>
 					</>
 				) : (
-					<Button variant="filled" size="xs" aria-label="list">
+					<Button variant="filled" bg="var(--theme-primary-color-6)" w="100%" size="xs" aria-label="list">
 						{t("List")}
 					</Button>
 				)}

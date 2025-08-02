@@ -52,7 +52,7 @@ export default function TabsWithSearch({
 									))}
 								</>
 							) : (
-								<Button variant="filled" size="xs">
+								<Button variant="filled" bg="var(--theme-primary-color-6)" w="100%" size="xs">
 									{t(tabList[0])}
 								</Button>
 							)}
