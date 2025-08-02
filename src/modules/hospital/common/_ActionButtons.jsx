@@ -16,6 +16,7 @@ import { useReactToPrint } from "react-to-print";
 import Prescription from "@components/print-formats/a4/Prescription";
 import PrescriptionPos from "@components/print-formats/pos/Prescription";
 import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
+import { useHotkeys } from "@mantine/hooks";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -98,6 +99,13 @@ export default function ActionButtons({ form, module }) {
 	const handlePrescriptionPosPrint = useReactToPrint({
 		content: () => prescriptionPosRef.current,
 	});
+
+	useHotkeys([
+		["alt+s", handleSubmit],
+		["alt+r", handleReset],
+		["alt+4", handlePrintPrescriptionA4],
+		["alt+p", handlePrescriptionPosPrint],
+	]);
 
 	return (
 		<>

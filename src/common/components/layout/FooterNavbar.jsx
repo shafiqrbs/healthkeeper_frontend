@@ -14,14 +14,14 @@ function FooterNavbar() {
 	useHotkeys([
 		["alt+/", () => navigate("/")],
 		["alt+t", () => navigate("/sitemap")],
-		["alt+s", () => navigate(`/settings/hospital-config/${configData?.domain?.id}`)],
+		["alt+g", () => navigate(`/settings/hospital-config/${configData?.domain?.id}`)],
 		["alt+c", () => navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.INDEX)],
 	]);
 
 	const links = [
 		{ link: "/sitemap", label: `${t("Sitemap")} (alt+t)` },
 		{ link: `/inventory/config`, label: `${t("Configuration")} (alt+g)` },
-		{ link: `/settings/hospital-config/${configData?.domain?.id}`, label: `${t("Settings")} (alt+s)` },
+		{ link: `/settings/hospital-config/${configData?.domain?.id}`, label: `${t("Settings")} (alt+g)` },
 	];
 
 	const items = links.map((link) => (
