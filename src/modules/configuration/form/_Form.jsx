@@ -18,13 +18,10 @@ export default function _Form({ module }) {
 	const { t } = useTranslation();
 	const { isOnline, mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 104; //TabList height 104
-
 	const [activeTab, setActiveTab] = useState("Hospital");
-
 	const { domainConfig } = useDomainConfig();
 
-	const inventoryConfig = domainConfig?.inventory_config;
-	const configSales = inventoryConfig?.config_sales;
+
 	const id = domainConfig?.id;
 
 	const renderForm = () => {
@@ -34,7 +31,7 @@ export default function _Form({ module }) {
 			case "Accounting":
 				return <AccountingForm height={height} module={module} />;
 			default:
-				return <__FormGeneric height={height} module={module} config_sales={configSales} id={id} />;
+				return <__FormGeneric height={height} module={module} hospitalConfig={hospitalConfig} id={id} />;
 		}
 	};
 

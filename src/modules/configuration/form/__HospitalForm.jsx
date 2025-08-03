@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useTranslation } from "react-i18next";
 import { Box, ScrollArea, Button, Text, Flex, Stack, Grid } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -19,13 +19,18 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { MODULES } from "@/constants";
 import { getHospitalFormInitialValues } from "../helpers/request";
 import { CONFIGURATION_ROUTES } from "@/constants/appRoutes";
+import useDomainConfig from "@hooks/config-data/useDomainConfig";
+import {parseDateValue} from "@utils/index";
 
 const module = MODULES.HOSPITAL_CONFIG;
 
-export default function __HospitalForm({ height, config_sales, id }) {
+export default function __HospitalForm({ height, id }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
+	const { domainConfig } = useDomainConfig();
+	const hospital_config = domainConfig?.hospital_config;
+	console.log(hospital_config);
 
 	const form = useForm(getHospitalFormInitialValues());
 
@@ -39,6 +44,18 @@ export default function __HospitalForm({ height, config_sales, id }) {
 			onConfirm: () => handleConfirmFormSubmit(values),
 		});
 	};
+
+	useEffect(() => {
+		if (hospital_config) {
+			form.setValues({
+				opd_select_doctor: hospital_config?.opd_select_doctor || 0,
+				special_discount_doctor: hospital_config?.special_discount_doctor || 0,
+				special_discount_investigation: hospital_config?.special_discount_investigation || 0,
+
+			});
+		}
+	}, [dispatch, hospital_config]);
+
 
 	const handleConfirmFormSubmit = async (values) => {
 		const properties = ["opd_select_doctor", "special_discount_doctor", "special_discount_investigation"];
