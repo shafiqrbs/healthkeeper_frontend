@@ -8,7 +8,7 @@ import _SettingsForm from "./_SettingsForm.jsx";
 import SalesForm from "../inventory-configuration/SalesForm.js";
 import PurchaseForm from "../inventory-configuration/PurchaseForm.js";
 import RequisitionForm from "../inventory-configuration/RequisitionForm.js";
-import FormGeneric from "../form/__FormGeneric.jsx";
+import FormGeneric from "./__FormGeneric.jsx";
 import { coreSettingDropdown } from "../../../../store/core/utilitySlice.js";
 import { setDropdownLoad } from "../../../../store/core/crudSlice.js";
 import { useDispatch, useSelector } from "react-redux";

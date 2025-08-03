@@ -2,7 +2,7 @@ import { Box, Grid } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress.js";
 import Navigation from "./common/Navigation.jsx";
-import InventoryConfigurationForm from "./form/_Form.jsx";
+import Form from "./form/_Form.jsx";
 import _SalesPurchaseHeaderNavbar from "../domain/configuration/_SalesPurchaseHeaderNavbar.jsx";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton.jsx";
 import useDomainConfig from "@hooks/config-data/useDomainConfig.js";
@@ -37,7 +37,7 @@ export default function Index() {
 								<Navigation module="config" />
 							</Grid.Col>
 							<Grid.Col span={23}>
-								<InventoryConfigurationForm module={module} />
+								<Form module={module} />
 							</Grid.Col>
 						</Grid>
 					</Box>

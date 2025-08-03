@@ -5,10 +5,10 @@ import { useTranslation } from "react-i18next";
 import { IconDeviceFloppy } from "@tabler/icons-react";
 import Shortcut from "../../shortcut/Shortcut";
 import classes from "@assets/css/FeaturesCards.module.css";
-import __FormGeneric from "./__FormGeneric";
+import __FormGeneric from "../common/__FormGeneric";
 
-import _DomainDetailsSection from "../_DomainDetailsSection.jsx";
-import AccountingForm from "./__AccountingForm.jsx";
+import _DomainDetailsSection from "../common/_DomainDetailsSection";
+import AccountingForm from "../common/__AccountingForm.jsx";
 import useDomainConfig from "@hooks/config-data/useDomainConfig";
 
 const NAV_ITEMS = ["Domain", "Accounting", "Inventory", "Product", "Discount"];
