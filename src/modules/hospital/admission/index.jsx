@@ -14,6 +14,7 @@ import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import PatientListWithActions from "../common/PatientListWithActions";
 import RoomCard from "../common/RoomCard";
 import PatientListAdmission from "../common/PatientListAdmission";
+import EntityForm from "./form/EntityForm";
 
 export default function Index() {
 	const { t } = useTranslation();
@@ -95,22 +96,11 @@ export default function Index() {
 											]}
 										/>
 									</Grid.Col>
-									<Grid.Col span={9}>
-										<PatientForm
+									<Grid.Col span={18}>
+										<EntityForm
 											form={form}
 											handleSubmit={handleSubmit}
 											openDoctorsRoom={openDoctorsRoom}
-											showTitle={true}
-											heightOffset={288}
-										/>
-									</Grid.Col>
-									<Grid.Col span={9}>
-										<PatientForm
-											form={form}
-											handleSubmit={handleSubmit}
-											openDoctorsRoom={openDoctorsRoom}
-											showTitle={true}
-											heightOffset={288}
 										/>
 									</Grid.Col>
 									<Grid.Col span={25}>

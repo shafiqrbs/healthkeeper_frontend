@@ -966,5 +966,6 @@
 	"GuardianName": "পারিবারিকের নাম",
 	"GuardianMobile": "পারিবারিকের মোবাইল",
 	"FileUpload": "ফাইল আপলোড",
-	"VisitList": "ভিজিট তালিকা"
+	"VisitList": "ভিজিট তালিকা",
+	"AdmissionInformation": "ভর্তি তথ্য"
 }

@@ -20,7 +20,7 @@ function FooterNavbar() {
 
 	const links = [
 		{ link: "/sitemap", label: `${t("Sitemap")} (alt+t)` },
-		{ link: `/inventory/config`, label: `${t("Configuration")} (alt+g)` },
+		{ link: `/configuration`, label: `${t("Configuration")} (alt+g)` },
 		{ link: `/settings/hospital-config/${configData?.domain?.id}`, label: `${t("Settings")} (alt+g)` },
 	];
 

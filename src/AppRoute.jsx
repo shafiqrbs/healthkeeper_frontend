@@ -39,8 +39,8 @@ import Sitemap from "@modules/sitemap/SitemapIndex";
 // import SettingsIndex from "@modules/core/settings/SettingsIndex";
 
 // import StockIndex from "@modules/inventory/stock/StockIndex";
-import InventoryConfigurationIndex from "@modules/inventory/inventory-configuration/InventoryConfigurationIndex";
-import ConfigurationIndex from "@modules/domain/configuration/ConfigurationIndex";
+// import InventoryConfigurationIndex from "@modules/inventory/inventory-configuration/InventoryConfigurationIndex";
+import DomainConfigurationIndex from "@modules/domain/configuration/ConfigurationIndex";
 import DomainUserIndex from "@modules/domain/master-user/DomainUserIndex";
 // import SitemapIndex from "@modules/domain/sitemap/SitemapIndex";
 // import BatchIndex from "@modules/production/batch/BatchIndex";
@@ -86,6 +86,7 @@ import InvestigationIndex from "@modules/hospital/investigation";
 import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/doctor";
 import ListIndex from "./modules/hospital/visit/list";
+import ConfigurationIndex from "@modules/configuration";
 
 function AppRoute() {
 	return (
@@ -100,7 +101,7 @@ function AppRoute() {
 				<Route path="core/">
 					{/* <Route path="file-upload/">
             <Route path="" element={<FileUploadIndex />} />
-          </Route>
+            </Route>
           <Route path="customer" element={<CustomerIndex />} />
           <Route path="customer/:id" element={<CustomerIndex />} />
           <Route path="user" element={<UserIndex />} />
@@ -123,7 +124,7 @@ function AppRoute() {
 				<Route path="/domain/">
 					<Route path="" element={<DomainIndex />} />
 					<Route path="edit/:id" element={<DomainIndex mode="edit" />} />
-					<Route path="config/:id" element={<ConfigurationIndex />} />
+					<Route path="config/:id" element={<DomainConfigurationIndex />} />
 					<Route path="user" element={<DomainUserIndex />} />
 					{/* <Route path="sitemap" element={<SitemapIndex />} />
           <Route path="sitemap/:id" element={<SitemapIndex />} />
@@ -166,8 +167,8 @@ function AppRoute() {
 					<Route path="lab-user" element={<LabUserIndex />} />
 				</Route>
 				<Route path="sitemap" element={<Sitemap />} />
-				<Route path="/inventory/">
-					<Route path="config" element={<InventoryConfigurationIndex />} />
+				<Route path="/configuration/">
+					<Route index element={<ConfigurationIndex />} />
 				</Route>
 
 				{/*<Route path="/discount">

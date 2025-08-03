@@ -1,0 +1,48 @@
+import { Box, Grid } from "@mantine/core";
+import { useTranslation } from "react-i18next";
+import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress.js";
+import Navigation from "./common/Navigation.jsx";
+import InventoryConfigurationForm from "./form/_Form.jsx";
+import _SalesPurchaseHeaderNavbar from "../domain/configuration/_SalesPurchaseHeaderNavbar.jsx";
+import DefaultSkeleton from "@components/skeletons/DefaultSkeleton.jsx";
+import useDomainConfig from "@hooks/config-data/useDomainConfig.js";
+import { MODULES } from "@/constants/index.js";
+
+const module = MODULES.DOMAIN;
+
+export default function Index() {
+	const { t } = useTranslation();
+
+	const progress = useGetLoadingProgress();
+
+	const { domainConfig } = useDomainConfig();
+	const configData = domainConfig?.inventory_config;
+
+	return (
+		<>
+			{progress !== 100 ? (
+				<DefaultSkeleton />
+			) : (
+				<>
+					<_SalesPurchaseHeaderNavbar
+						pageTitle={t("Configuration")}
+						roles={t("Roles")}
+						configData={configData}
+						allowZeroPercentage={configData?.zero_stock}
+						currancySymbol={configData?.currency?.symbol}
+					/>
+					<Box p="xxxs">
+						<Grid columns={24} gutter={{ base: 8 }}>
+							<Grid.Col span={1}>
+								<Navigation module="config" />
+							</Grid.Col>
+							<Grid.Col span={23}>
+								<InventoryConfigurationForm module={module} />
+							</Grid.Col>
+						</Grid>
+					</Box>
+				</>
+			)}
+		</>
+	);
+}
