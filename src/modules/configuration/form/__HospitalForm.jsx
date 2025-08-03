@@ -1,61 +1,47 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Grid, Checkbox, ScrollArea, Button, Text, Center } from "@mantine/core";
+import { Box, ScrollArea, Button, Text, Flex, Stack, Grid } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch } from "react-redux";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
-import { IconCheck, IconX } from "@tabler/icons-react";
+import { IconCalendar, IconCheck, IconX } from "@tabler/icons-react";
 import { useHotkeys } from "@mantine/hooks";
-import { setValidationData } from "@/app/store/core/crudSlice.js";
-import { showEntityData, updateEntityData } from "@/app/store/core/crudThunk.js";
+import { showEntityData, updateEntityData, storeEntityData } from "@/app/store/core/crudThunk.js";
 import SelectForm from "@components/form-builders/SelectForm";
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
+import InputCheckboxForm from "@components/form-builders/InputCheckboxForm";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import { DROPDOWNS } from "@/app/store/core/utilitySlice";
+import DatePickerForm from "@components/form-builders/DatePicker";
+import InputNumberForm from "@components/form-builders/InputNumberForm";
+import { MODULES } from "@/constants";
+import { getHospitalFormInitialValues } from "../helpers/request";
+import { CONFIGURATION_ROUTES } from "@/constants/appRoutes";
 
-export default function __HospitalForm(props) {
-	const { height, config_sales, id } = props;
+const module = MODULES.HOSPITAL_CONFIG;
+
+export default function __HospitalForm({ height, config_sales, id }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
 
-	const form = useForm({
-		initialValues: {
-			search_by_vendor: config_sales?.search_by_vendor || "",
-			search_by_product_nature: config_sales?.search_by_product_nature || "",
-			search_by_category: config_sales?.search_by_category || "",
-			show_product: config_sales?.show_product || "",
-			is_measurement_enable: config_sales?.is_measurement_enable || "",
-			is_purchase_auto_approved: config_sales?.is_purchase_auto_approved || "",
-			default_vendor_group_id: config_sales?.default_vendor_group_id || "",
-			search_by_warehouse: config_sales?.search_by_warehouse || "",
-		},
-	});
+	const form = useForm(getHospitalFormInitialValues());
 
-	const handlePurchaseFormSubmit = (values) => {
-		dispatch(setValidationData(false));
-
+	const handleFormSubmit = (values) => {
 		modals.openConfirmModal({
 			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
-			onConfirm: () => handlePurchaseConfirmSubmit(values),
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleConfirmFormSubmit(values),
 		});
 	};
 
-	const handlePurchaseConfirmSubmit = async (values) => {
-		const properties = [
-			"search_by_vendor",
-			"search_by_product_nature",
-			"search_by_category",
-			"show_product",
-			"is_measurement_enable",
-			"is_purchase_auto_approved",
-			"default_vendor_group_id",
-			"search_by_warehouse",
-		];
+	const handleConfirmFormSubmit = async (values) => {
+		const properties = ["opd_select_doctor", "special_discount_doctor", "special_discount_investigation"];
 
 		properties.forEach((property) => {
 			values[property] = values[property] === true || values[property] == 1 ? 1 : 0;
@@ -65,16 +51,23 @@ export default function __HospitalForm(props) {
 			setSaveCreateLoading(true);
 
 			const value = {
-				url: `inventory/config-purchase-update/${id}`,
+				url: `${CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.CREATE}/${id}`,
 				data: values,
+				module,
 			};
-			console.log("value", values);
-			await dispatch(updateEntityData(value));
 
-			const resultAction = await dispatch(showEntityData("inventory/config"));
+			// await dispatch(updateEntityData(value));
+			await dispatch(storeEntityData(value));
+
+			const resultAction = await dispatch(
+				showEntityData({
+					url: `${CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.INDEX}/${id}`,
+					module,
+				})
+			);
 			if (showEntityData.fulfilled.match(resultAction)) {
 				if (resultAction.payload.data.status === 200) {
-					localStorage.setItem("config-data", JSON.stringify(resultAction.payload.data.data));
+					localStorage.setItem("hospital-config", JSON.stringify(resultAction.payload.data.data));
 				}
 			}
 
@@ -118,95 +111,108 @@ export default function __HospitalForm(props) {
 		[]
 	);
 
-	const [value, setValue] = useState(null);
+	const [voucherSalesReturnData, setVoucherSalesReturnData] = useState(null);
+
+	const { data: voucherDropdownData } = useGlobalDropdownData({
+		path: DROPDOWNS.VOUCHER.PATH,
+		params: { "dropdown-type": DROPDOWNS.VOUCHER.TYPE },
+		utility: DROPDOWNS.VOUCHER.UTILITY,
+	});
 
 	return (
 		<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
-			<form onSubmit={form.onSubmit(handlePurchaseFormSubmit)}>
-				<Box pt={"xs"} pl={"xs"}>
+			<form onSubmit={form.onSubmit(handleFormSubmit)}>
+				<Stack gap="les" mt="xs">
+					<InputCheckboxForm
+						tooltip="Select opd doctor"
+						label={t("OpdSelectDoctor")}
+						field="opd_select_doctor"
+						name="opd_select_doctor"
+						form={form}
+					/>
+					<InputCheckboxForm
+						tooltip="Select special discount doctor"
+						label={t("SpecialDiscountDoctor")}
+						field="special_discount_doctor"
+						name="special_discount_doctor"
+						form={form}
+					/>
+					<InputCheckboxForm
+						tooltip="Select special discount investigation"
+						label={t("SpecialDiscountInvestigation")}
+						field="special_discount_investigation"
+						name="special_discount_investigation"
+						form={form}
+					/>
+				</Stack>
 
+				{/* ======================= some demo components for reusing purposes ======================= */}
+				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+					<Grid.Col span={12} fz="sm" mt="xxxs">
+						{t("Select")}
+					</Grid.Col>
+					<Grid.Col span={12}>
+						<SelectForm
+							tooltip={t("ChooseVoucherSalesReturn")}
+							label=""
+							placeholder={t("ChooseVoucherSalesReturn")}
+							name="voucher_sales_return_id"
+							form={form}
+							dropdownValue={voucherDropdownData}
+							id="voucher_sales_return_id"
+							searchable={true}
+							value={voucherSalesReturnData}
+							changeValue={setVoucherSalesReturnData}
+						/>
+					</Grid.Col>
+				</Grid>
 
-					<Box mt={"xs"}>
-						<Grid
-							gutter={{ base: 1 }}
-							style={{ cursor: "pointer" }}
-							onClick={() =>
-								form.setFieldValue(
-									"is_purchase_auto_approved",
-									form.values.is_purchase_auto_approved === 1 ? 0 : 1
-								)
-							}
-						>
-							<Grid.Col span={6} fz={"sm"} pt={"1"}>
-								{t("PurchaseAutoApproved")}
-							</Grid.Col>
-							<Grid.Col span={6}>
-								<Center>
-									<Checkbox
-										pr="xs"
-										checked={form.values.is_purchase_auto_approved === 1}
-										color="var(--theme-primary-color-6)"
-										{...form.getInputProps("is_purchase_auto_approved", {
-											type: "checkbox",
-										})}
-										onChange={(event) =>
-											form.setFieldValue(
-												"is_purchase_auto_approved",
-												event.currentTarget.checked ? 1 : 0
-											)
-										}
-										styles={() => ({
-											input: {
-												borderColor: "red",
-											},
-										})}
-									/>
-								</Center>
-							</Grid.Col>
-						</Grid>
-					</Box>
-					<Box mt={"xs"}>
-						<Grid
-							gutter={{ base: 1 }}
-							style={{ cursor: "pointer" }}
-							onClick={() =>
-								form.setFieldValue(
-									"default_vendor_group_id",
-									form.values.default_vendor_group_id === 1 ? 0 : 1
-								)
-							}
-						>
-							<Grid.Col span={6} fz={"sm"} pt={"1"}>
-								{t("DefaultVendorGroup")}
-							</Grid.Col>
-							<Grid.Col span={6}>
-								<Center>
-									<Checkbox
-										pr="xs"
-										checked={form.values.default_vendor_group_id === 1}
-										color="var(--theme-primary-color-6)"
-										{...form.getInputProps("default_vendor_group_id", {
-											type: "checkbox",
-										})}
-										onChange={(event) =>
-											form.setFieldValue(
-												"default_vendor_group_id",
-												event.currentTarget.checked ? 1 : 0
-											)
-										}
-										styles={() => ({
-											input: {
-												borderColor: "red",
-											},
-										})}
-									/>
-								</Center>
-							</Grid.Col>
-						</Grid>
-					</Box>
-				</Box>
+				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+					<Grid.Col span={12} fz="sm" mt="xxxs">
+						{t("Text")}
+					</Grid.Col>
+					<Grid.Col span={12}>
+						<InputForm tooltip="" label="" placeholder="Text" name="text" form={form} id="text" />
+					</Grid.Col>
+				</Grid>
+				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+					<Grid.Col span={12} fz="sm" mt="xxxs">
+						{t("Number")}
+					</Grid.Col>
+					<Grid.Col span={12}>
+						<InputNumberForm
+							tooltip=""
+							label=""
+							placeholder="Number"
+							name="number"
+							form={form}
+							id="number"
+						/>
+					</Grid.Col>
+				</Grid>
 
-				<Button id="PurchaseFormSubmit" type="submit" style={{ display: "none" }}>
+				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+					<Grid.Col span={12} fz="sm" mt="xxxs">
+						{t("DatePicker")}
+					</Grid.Col>
+					<Grid.Col span={12}>
+						<DatePickerForm
+							tooltip={t("FinancialEndDateTooltip")}
+							label=""
+							placeholder={t("FinancialEndDate")}
+							required={false}
+							nextField="capital_investment_id"
+							form={form}
+							name="financial_end_date"
+							id="financial_end_date"
+							leftSection={<IconCalendar size={16} opacity={0.5} />}
+							rightSectionWidth={30}
+							closeIcon={true}
+						/>
+					</Grid.Col>
+				</Grid>
+
+				<Button id="HospitalFormSubmit" type="submit" style={{ display: "none" }}>
 					{t("Submit")}
 				</Button>
 			</form>

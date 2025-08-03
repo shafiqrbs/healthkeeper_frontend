@@ -13,7 +13,7 @@ const SelectForm = forwardRef(
 			color,
 			label,
 			placeholder,
-			required,
+			required = false,
 			nextField,
 			name,
 			form,

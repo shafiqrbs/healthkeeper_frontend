@@ -1409,5 +1409,8 @@
 	"GuardianMobile": "Guardian Mobile",
 	"FileUpload": "File Upload",
 	"VisitList": "Visit List",
-	"AdmissionInformation": "Admission Information"
+	"AdmissionInformation": "Admission Information",
+	"OpdSelectDoctor": "OPD Select Doctor",
+	"SpecialDiscountDoctor": "Special Discount Doctor",
+	"SpecialDiscountInvestigation": "Special Discount Investigation"
 }

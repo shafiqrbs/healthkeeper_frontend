@@ -125,3 +125,14 @@ export const DOMAIN_DATA_ROUTES = {
 		},
 	},
 };
+
+export const CONFIGURATION_ROUTES = {
+	API_ROUTES: {
+		HOSPITAL_CONFIG: {
+			INDEX: "domain/config/hospital",
+			CREATE: "domain/config/hospital",
+			UPDATE: "domain/config/hospital",
+			DELETE: "domain/config/hospital",
+		},
+	},
+};

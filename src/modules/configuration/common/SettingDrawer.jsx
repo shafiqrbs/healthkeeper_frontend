@@ -4,11 +4,11 @@ import { ActionIcon, Box, ScrollArea, Drawer, Text, Flex, Grid, Button, Title, S
 import { useTranslation } from "react-i18next";
 
 import { IconX, IconDeviceFloppy } from "@tabler/icons-react";
-import _SettingsForm from "./_SettingsForm.jsx";
+import _SettingsForm from "../form/_SettingsForm.jsx";
 import SalesForm from "../inventory-configuration/SalesForm.js";
 import PurchaseForm from "../inventory-configuration/PurchaseForm.js";
 import RequisitionForm from "../inventory-configuration/RequisitionForm.js";
-import FormGeneric from "./__FormGeneric.jsx";
+import FormGeneric from "../form/__FormGeneric.jsx";
 import { coreSettingDropdown } from "../../../../store/core/utilitySlice.js";
 import { setDropdownLoad } from "../../../../store/core/crudSlice.js";
 import { useDispatch, useSelector } from "react-redux";

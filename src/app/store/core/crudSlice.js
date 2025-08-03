@@ -226,6 +226,18 @@ const initialState = {
 		validationMessages: [],
 	},
 	// -------------------- doctor revisit modules stops -------------------------
+	// -------------------- configuration module starts -------------------------
+	hospitalConfig: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		validation: false,
+		data: {},
+		editData: {},
+		filterData: { name: "" },
+		validationMessages: [],
+	},
+	// -------------------- configuration module stops -------------------------
 	searchKeyword: "", // keep it for compatibility issues, remove it in no time
 	searchKeywordTooltip: false, // keep it for compatibility issues, remove it in no time
 	globalFetching: false,

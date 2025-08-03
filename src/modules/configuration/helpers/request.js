@@ -36,3 +36,15 @@ export const getAccountingFormInitialValues = (account_config) => {
 		initialValues: generateInitialValues(account_config),
 	};
 };
+
+export const generateHospitalFormValues = () => ({
+	opd_select_doctor: 0,
+	special_discount_doctor: 0,
+	special_discount_investigation: 0,
+});
+
+export const getHospitalFormInitialValues = (hospital_config) => {
+	return {
+		initialValues: generateHospitalFormValues(hospital_config),
+	};
+};

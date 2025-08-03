@@ -967,5 +967,8 @@
 	"GuardianMobile": "পারিবারিকের মোবাইল",
 	"FileUpload": "ফাইল আপলোড",
 	"VisitList": "ভিজিট তালিকা",
-	"AdmissionInformation": "ভর্তি তথ্য"
+	"AdmissionInformation": "ভর্তি তথ্য",
+	"OpdSelectDoctor": "ওপিডি ডাক্তার নির্বাচন করুন",
+	"SpecialDiscountDoctor": "বিশেষ ডিসকাউন্ট ডাক্তার",
+	"SpecialDiscountInvestigation": "বিশেষ ডিসকাউন্ট পরীক্ষা"
 }

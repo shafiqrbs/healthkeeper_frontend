@@ -1,61 +1,65 @@
-import React from "react";
-import { Tooltip, TextInput, Box, Grid, Checkbox } from "@mantine/core";
+import { Box, Checkbox, Flex, Text, Tooltip } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconInfoCircle, IconX } from "@tabler/icons-react";
-import { getHotkeyHandler } from "@mantine/hooks";
-import inputCss from "@assets/css/InputField.module.css";
 
-function InputCheckboxForm({
+export default function InputCheckboxForm({
 	label,
 	field,
 	name,
-	required,
-	nextField,
+	required = false,
 	form,
 	tooltip,
 	mt,
 	id,
-	disabled,
-	closeIcon,
-	color = "var(--theme-error-color)",
+	disabled = false,
+	color = "var(--theme-primary-color-6)",
 }) {
 	const { t } = useTranslation();
 
 	return (
 		<>
 			{form && (
-				<Box mt={"xs"}>
-					<Grid
-						gutter={{ base: 1 }}
+				<Box mt={mt} w="100%">
+					<Flex
+						align="center"
+						justify="space-between"
 						style={{ cursor: "pointer" }}
 						onClick={() => form.setFieldValue(field, form.values[field] === 1 ? 0 : 1)}
 					>
-						<Grid.Col span={11} fz={"sm"} pt={"1"}>
+						<Text fz="sm" pt="xs">
 							{t(label)}
-						</Grid.Col>
-						<Grid.Col span={1}>
+						</Text>
+						<Tooltip
+							label={tooltip}
+							opened={name in form.errors && !!form.errors[name]}
+							px={16}
+							py={2}
+							position="top-end"
+							bg="var(--theme-validation-error-color)"
+							c="white"
+							withArrow
+							offset={2}
+							zIndex={999}
+							transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
+						>
 							<Checkbox
+								id={id}
 								pr="xs"
+								name={name}
+								required={required}
+								disabled={disabled}
 								checked={form.values[field] === 1}
-								// {...form.getInputProps(field, {
-								// 	type: "checkbox",
-								// })}
 								color={color}
-								onChange={(event) =>
-									form.setFieldValue(field, event.currentTarget.checked ? 1 : 0)
-								}
-								styles={(theme) => ({
+								onChange={(event) => form.setFieldValue(field, event.currentTarget.checked ? 1 : 0)}
+								styles={() => ({
 									input: {
-										borderColor: "var(--theme-error-color)",
+										borderColor: "var(--theme-primary-color-6)",
 									},
 								})}
 							/>
-						</Grid.Col>
-					</Grid>
+						</Tooltip>
+					</Flex>
 				</Box>
 			)}
 		</>
 	);
 }
-
-export default InputCheckboxForm;

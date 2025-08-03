@@ -5,14 +5,14 @@ import { useTranslation } from "react-i18next";
 import { IconDeviceFloppy } from "@tabler/icons-react";
 import Shortcut from "../../shortcut/Shortcut";
 import classes from "@assets/css/FeaturesCards.module.css";
-import __FormGeneric from "../common/__FormGeneric";
+import __FormGeneric from "./__FormGeneric";
 
 import _DomainDetailsSection from "../common/_DomainDetailsSection";
-import AccountingForm from "../common/__AccountingForm.jsx";
+import AccountingForm from "./__AccountingForm.jsx";
 import useDomainConfig from "@hooks/config-data/useDomainConfig";
 import __HospitalForm from "@modules/configuration/form/__HospitalForm";
 
-const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product",];
+const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product"];
 
 export default function _Form({ module }) {
 	const { t } = useTranslation();
@@ -30,12 +30,27 @@ export default function _Form({ module }) {
 	const renderForm = () => {
 		switch (activeTab) {
 			case "Hospital":
-				return <__HospitalForm height={height} module={module} />;
+				return <__HospitalForm height={height} id={id} />;
 			case "Accounting":
 				return <AccountingForm height={height} module={module} />;
 			default:
 				return <__FormGeneric height={height} module={module} config_sales={configSales} id={id} />;
 		}
+	};
+
+	const submitButtonId = () => {
+		switch (activeTab) {
+			case "Hospital":
+				return "HospitalFormSubmit";
+			case "Accounting":
+				return "AccountingFormSubmit";
+			default:
+				return "DomainFormSubmit";
+		}
+	};
+
+	const handleSubmit = () => {
+		document.getElementById(submitButtonId()).click();
 	};
 
 	return (
@@ -93,16 +108,12 @@ export default function _Form({ module }) {
 								<Grid.Col span={6}>
 									<Stack right align="flex-end">
 										<>
-											{isOnline && activeTab === "Accounting" && (
+											{isOnline && (
 												<Button
 													size="xs"
 													className={"btnPrimaryBg"}
 													leftSection={<IconDeviceFloppy size={16} />}
-													onClick={() => {
-														if (activeTab === "Accounting") {
-															document.getElementById("AccountingFormSubmit").click();
-														}
-													}}
+													onClick={handleSubmit}
 												>
 													<Flex direction={`column`} gap={0}>
 														<Text fz={14} fw={400}>
@@ -127,11 +138,7 @@ export default function _Form({ module }) {
 			</Grid.Col>
 			<Grid.Col span={1}>
 				<Box bg="white" className="borderRadiusAll" pt="md">
-					<Shortcut
-						FormSubmit={activeTab === "Accounting" ? "AccountingFormSubmit" : "DomainFormSubmit"}
-						Name="name"
-						inputType="select"
-					/>
+					<Shortcut FormSubmit={submitButtonId()} Name="name" inputType="select" />
 				</Box>
 			</Grid.Col>
 		</Grid>
