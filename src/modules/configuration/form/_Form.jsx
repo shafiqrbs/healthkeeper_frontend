@@ -10,15 +10,16 @@ import __FormGeneric from "../common/__FormGeneric";
 import _DomainDetailsSection from "../common/_DomainDetailsSection";
 import AccountingForm from "../common/__AccountingForm.jsx";
 import useDomainConfig from "@hooks/config-data/useDomainConfig";
+import __HospitalForm from "@modules/configuration/form/__HospitalForm";
 
-const NAV_ITEMS = ["Domain", "Accounting", "Inventory", "Product", "Discount"];
+const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product",];
 
 export default function _Form({ module }) {
 	const { t } = useTranslation();
 	const { isOnline, mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 104; //TabList height 104
 
-	const [activeTab, setActiveTab] = useState("Accounting");
+	const [activeTab, setActiveTab] = useState("Hospital");
 
 	const { domainConfig } = useDomainConfig();
 
@@ -28,6 +29,8 @@ export default function _Form({ module }) {
 
 	const renderForm = () => {
 		switch (activeTab) {
+			case "Hospital":
+				return <__HospitalForm height={height} module={module} />;
 			case "Accounting":
 				return <AccountingForm height={height} module={module} />;
 			default:
