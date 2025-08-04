@@ -34,7 +34,6 @@ export default function PatientForm({ form, module }) {
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
 	const [opened, { open, close }] = useDisclosure(false);
-	// Load from localStorage on mount
 
 	useEffect(() => {
 		const type = form.values.ageType || "year";
@@ -188,7 +187,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										data={[
 											{ label: t("General"), value: "general" },
 											{ label: t("Emergency"), value: "emergency" },
-											{ label: t("Admission"), value: "admission" },
 										]}
 									/>
 								</Grid.Col>
@@ -205,7 +203,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										placeholder="John Doe"
 										name="name"
 										id="patientName"
-										nextField="mobile"
+										nextField="dob"
 										value={form.values.name}
 										required
 									/>
@@ -244,7 +242,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										tooltip={t("enterPatientDateOfBirth")}
 										name="dob"
 										id="dob"
-										nextField="age"
+										nextField="year"
 										value={form.values.dob}
 										required
 										disabledFutureDate
@@ -326,7 +324,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										placeholder="+880 1717171717"
 										name="mobile"
 										id="mobile"
-										nextField="dateOfBirth"
+										nextField="district"
 										value={form.values.mobile}
 										required
 									/>
@@ -340,7 +338,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								<Grid.Col span={14}>
 									<SelectForm
 										form={form}
-										label=""
 										tooltip={t("enterPatientDistrict")}
 										placeholder="Dhaka"
 										name="district"
@@ -359,7 +356,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 				<Grid.Col span={12}>
 					<ScrollArea h={height}>
 						<Stack mih={height} className="form-stack-vertical">
-							{form.values.patient_type === "admission" && (
+							{/* {form.values.patient_type === "admission" && (
 								<>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
@@ -399,7 +396,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										</Grid.Col>
 									</Grid>
 								</>
-							)}
+							)} */}
 
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
@@ -467,6 +464,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 											placeholder="Enter comment"
 											name="comment"
 											id="comment"
+											nextField="file"
 											value={form.values.comment || ""}
 										/>
 									)}
@@ -479,6 +477,8 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								</Grid.Col>
 								<Grid.Col span={14}>
 									<FileInput
+										id="file"
+										name="file"
 										rightSection={
 											<ActionIcon bg="var(--theme-primary-color-6)" color="white">
 												<IconUpload size="16px" stroke={1.5} />

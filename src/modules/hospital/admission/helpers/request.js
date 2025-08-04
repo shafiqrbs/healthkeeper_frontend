@@ -1,41 +1,16 @@
-import { hasLength } from "@mantine/form";
-
-const initialValues = {
-	name: "",
+const admissionInitialValues = {
+	patient_type: "general",
+	patient_name: "",
+	patient_mobile: "",
+	patient_gender: "",
+	patient_age: "",
+	patient_address: "",
+	patient_guardian_name: "",
+	patient_guardian_mobile: "",
 };
 
-export const getPrescriptionFormInitialValues = (t) => {
+export const getAdmissionFormInitialValues = () => {
 	return {
-		initialValues,
-
-		validate: {
-			name: hasLength({ min: 2, max: 20 }),
-		},
-	};
-};
-
-const medicineInitialValues = {
-	brand: "",
-	generic: "",
-	dosage: "",
-	times: "",
-	timing: "",
-	meditationDuration: "",
-	unit: "",
-};
-
-export const getMedicineFormInitialValues = (t) => {
-	return {
-		initialValues: medicineInitialValues,
-
-		validate: {
-			generic: (value) => (value ? null : "Generic name is required"),
-			brand: (value) => (value ? null : "Brand name is required"),
-			dosage: (value) => (value ? null : "Dosage is required"),
-			times: (value) => (value ? null : "Times is required"),
-			timing: (value) => (value ? null : "Timing is required"),
-			meditationDuration: (value) => (value ? null : "Meditation duration is required"),
-			unit: (value) => (value ? null : "Unit is required"),
-		},
+		initialValues: admissionInitialValues,
 	};
 };

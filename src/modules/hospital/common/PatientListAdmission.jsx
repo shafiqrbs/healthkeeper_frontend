@@ -16,7 +16,7 @@ const data = [
 	{ id: 8, date: "2025-01-08", patients: 241, name: "Pavel Islam", mobile: "+8801700099911" },
 ];
 
-export default function PatientListAdmission() {
+export default function PatientListAdmission({ isOpenPatientInfo, setIsOpenPatientInfo }) {
 	const [selectedPatient, setSelectedPatient] = useState(data[1]);
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();

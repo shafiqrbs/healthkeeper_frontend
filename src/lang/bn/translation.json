@@ -970,5 +970,9 @@
 	"AdmissionInformation": "ভর্তি তথ্য",
 	"OpdSelectDoctor": "ওপিডি ডাক্তার নির্বাচন করুন",
 	"SpecialDiscountDoctor": "বিশেষ ডিসকাউন্ট ডাক্তার",
-	"SpecialDiscountInvestigation": "বিশেষ ডিসকাউন্ট পরীক্ষা"
+	"SpecialDiscountInvestigation": "বিশেষ ডিসকাউন্ট পরীক্ষা",
+	"FMHName": "বাবা/মা/স্বামীর নাম",
+	"PresentAddress": "বর্তমান ঠিকানা",
+	"PermanentAddress": "স্থায়ী ঠিকানা",
+	"Religion": "ধর্ম"
 }

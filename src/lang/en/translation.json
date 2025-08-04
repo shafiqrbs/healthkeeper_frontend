@@ -1412,5 +1412,9 @@
 	"AdmissionInformation": "Admission Information",
 	"OpdSelectDoctor": "OPD Select Doctor",
 	"SpecialDiscountDoctor": "Special Discount Doctor",
-	"SpecialDiscountInvestigation": "Special Discount Investigation"
+	"SpecialDiscountInvestigation": "Special Discount Investigation",
+	"FMHName": "F/M/H Name",
+	"PresentAddress": "Present Address",
+	"PermanentAddress": "Permanent Address",
+	"Religion": "Religion"
 }

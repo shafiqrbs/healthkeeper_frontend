@@ -1,28 +1,24 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getPrescriptionFormInitialValues } from "./helpers/request";
+import { getAdmissionFormInitialValues } from "./helpers/request";
 import { useOutletContext } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
 import { Box, Flex, Grid, ScrollArea, Text } from "@mantine/core";
-import PatientReport from "../common/PatientReport";
 import ActionButtons from "../common/_ActionButtons";
-import { Form as PatientForm } from "../common/__PatientFormSingleGrid";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
-import PatientListWithActions from "../common/PatientListWithActions";
 import RoomCard from "../common/RoomCard";
 import PatientListAdmission from "../common/PatientListAdmission";
 import EntityForm from "./form/EntityForm";
 
 export default function Index() {
 	const { t } = useTranslation();
-	const form = useForm(getPrescriptionFormInitialValues(t));
+	const form = useForm(getAdmissionFormInitialValues());
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
-	const [patientData, setPatientData] = useState({});
 	const [selectedRoom, setSelectedRoom] = useState(null);
 
 	const handleRoomClick = (room) => {
@@ -31,10 +27,6 @@ export default function Index() {
 
 	const handleSubmit = (values) => {
 		console.log(values);
-	};
-
-	const openDoctorsRoom = () => {
-		console.log("openDoctorsRoom");
 	};
 
 	return (
@@ -57,7 +49,12 @@ export default function Index() {
 									tabPanels={[
 										{
 											tab: "list",
-											component: <PatientListAdmission />,
+											component: (
+												<PatientListAdmission
+													isOpenPatientInfo={isOpenPatientInfo}
+													setIsOpenPatientInfo={setIsOpenPatientInfo}
+												/>
+											),
 										},
 									]}
 								/>
@@ -97,11 +94,7 @@ export default function Index() {
 										/>
 									</Grid.Col>
 									<Grid.Col span={18}>
-										<EntityForm
-											form={form}
-											handleSubmit={handleSubmit}
-											openDoctorsRoom={openDoctorsRoom}
-										/>
+										<EntityForm form={form} handleSubmit={handleSubmit} />
 									</Grid.Col>
 									<Grid.Col span={25}>
 										<ActionButtons form={form} />
