@@ -62,7 +62,7 @@ export default function DomainDetailsSection({ domainConfig, height }) {
 
 						{domainConfig?.inventory_config?.config_product && (
 							<>
-								<Box ml="-md" pl="md" p="xs" mb="xs" ta="left" bg="gray.1">
+								<Box className={'inner-title-box'}>
 									<Title order={6} pt="4">
 										{t("ProductConfiguration")}
 									</Title>

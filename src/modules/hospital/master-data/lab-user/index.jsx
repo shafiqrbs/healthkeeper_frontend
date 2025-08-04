@@ -46,17 +46,16 @@ export default function Index({ mode = "create" }) {
 					<Box p="8">
 						<Grid columns={36} gutter={{ base: 8 }}>
 							{!matches && (
-								<Grid.Col span={2}>
-									<Navigation module="base" mainAreaHeight={mainAreaHeight} />
+								<Grid.Col span={6}>
+									<Navigation module="base" subModule={'baseSubmenu'} mainAreaHeight={mainAreaHeight} />
 								</Grid.Col>
 							)}
-
-							<Grid.Col span={matches ? 36 : 34}>
+							<Grid.Col span={matches ? 30 : 30}>
 								<Box bg="white" p="xs" className="borderRadiusAll">
 									<_Table module={module} open={open} close={close} />
 								</Box>
 							</Grid.Col>
-
+						</Grid>
 							<GlobalDrawer
 								opened={opened}
 								close={close}
@@ -64,7 +63,7 @@ export default function Index({ mode = "create" }) {
 							>
 								<IndexForm module={module} form={form} mode={mode} close={close} />
 							</GlobalDrawer>
-						</Grid>
+
 					</Box>
 				</>
 			)}

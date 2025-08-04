@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import { useTranslation } from "react-i18next";
-import { Box, ScrollArea, Button, Text, Flex, Stack, Grid } from "@mantine/core";
+import {Box, ScrollArea, Button, Text, Flex, Stack, Grid, Title} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch } from "react-redux";
 import { modals } from "@mantine/modals";
@@ -21,6 +21,8 @@ import { getHospitalFormInitialValues } from "../helpers/request";
 import { CONFIGURATION_ROUTES } from "@/constants/appRoutes";
 import useDomainConfig from "@hooks/config-data/useDomainConfig";
 import {parseDateValue} from "@utils/index";
+import {successNotification} from "@components/notification/successNotification";
+import {errorNotification} from "@components/notification/errorNotification";
 
 const module = MODULES.HOSPITAL_CONFIG;
 
@@ -30,7 +32,6 @@ export default function __HospitalForm({ height, id }) {
 	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
 	const { domainConfig } = useDomainConfig();
 	const hospital_config = domainConfig?.hospital_config;
-	console.log(hospital_config);
 
 	const form = useForm(getHospitalFormInitialValues());
 
@@ -48,9 +49,18 @@ export default function __HospitalForm({ height, id }) {
 	useEffect(() => {
 		if (hospital_config) {
 			form.setValues({
-				opd_select_doctor: hospital_config?.opd_select_doctor || 0,
+				message_admission: hospital_config?.message_admission || '',
+				message_diagnostic: hospital_config?.message_diagnostic || '',
+				message_visit: hospital_config?.message_visit || '',
 				special_discount_doctor: hospital_config?.special_discount_doctor || 0,
 				special_discount_investigation: hospital_config?.special_discount_investigation || 0,
+				prescription_show_referred: hospital_config?.prescription_show_referred || 0,
+				opd_select_doctor: hospital_config?.opd_select_doctor || 0,
+				is_marketing_executive: hospital_config?.is_marketing_executive || 0,
+				is_print_header: hospital_config?.is_print_header || 0,
+				is_invoice_title: hospital_config?.is_invoice_title || 0,
+				is_print_footer: hospital_config?.is_print_footer || 0,
+				is_print_report_header: hospital_config?.is_print_report_header || 0,
 
 			});
 		}
@@ -73,45 +83,18 @@ export default function __HospitalForm({ height, id }) {
 				module,
 			};
 
-			// await dispatch(updateEntityData(value));
-			await dispatch(storeEntityData(value));
-
-			const resultAction = await dispatch(
-				showEntityData({
-					url: `${CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.INDEX}/${id}`,
-					module,
-				})
-			);
+			const resultAction = await dispatch(storeEntityData(value));
 			if (showEntityData.fulfilled.match(resultAction)) {
 				if (resultAction.payload.data.status === 200) {
-					localStorage.setItem("hospital-config", JSON.stringify(resultAction.payload.data.data));
+					localStorage.setItem("domain-config-data", JSON.stringify(resultAction));
 				}
 			}
-
-			notifications.show({
-				color: "teal",
-				title: t("UpdateSuccessfully"),
-				icon: <IconCheck style={{ width: "18px", height: "18px" }} />,
-				loading: false,
-				autoClose: 700,
-				style: { backgroundColor: "lightgray" },
-			});
-
+			successNotification(t("UpdateSuccessfully"));
 			setTimeout(() => {
 				setSaveCreateLoading(false);
-			}, 700);
+			}, 500);
 		} catch (error) {
-			console.error("Error updating purchase config:", error);
-
-			notifications.show({
-				color: "red",
-				title: t("UpdateFailed"),
-				icon: <IconX style={{ width: "18px", height: "18px" }} />,
-				loading: false,
-				autoClose: 700,
-				style: { backgroundColor: "lightgray" },
-			});
-
+			errorNotification("Error updating purchase config:"+error.message);
 			setSaveCreateLoading(false);
 		}
 	};
@@ -139,44 +122,82 @@ export default function __HospitalForm({ height, id }) {
 	return (
 		<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
 			<form onSubmit={form.onSubmit(handleFormSubmit)}>
+				<Box p="md">
 				<Stack gap="les" mt="xs">
 					<InputCheckboxForm
-						tooltip="Select opd doctor"
+						label={t("PrescriptionShowReferred")}
+						field="prescription_show_referred"
+						name="prescription_show_referred"
+						form={form}
+					/>
+					<InputCheckboxForm
 						label={t("OpdSelectDoctor")}
 						field="opd_select_doctor"
 						name="opd_select_doctor"
 						form={form}
 					/>
 					<InputCheckboxForm
-						tooltip="Select special discount doctor"
+						label={t("MarketingExecutive")}
+						field="is_marketing_executive"
+						name="is_marketing_executive"
+						form={form}
+					/>
+					<InputCheckboxForm
 						label={t("SpecialDiscountDoctor")}
 						field="special_discount_doctor"
 						name="special_discount_doctor"
 						form={form}
 					/>
 					<InputCheckboxForm
-						tooltip="Select special discount investigation"
 						label={t("SpecialDiscountInvestigation")}
 						field="special_discount_investigation"
 						name="special_discount_investigation"
 						form={form}
 					/>
 				</Stack>
-
+				<Box className={'inner-title-box'}>
+					<Title order={6}>
+						{t("ProductConfiguration")}
+					</Title>
+				</Box>
 				{/* ======================= some demo components for reusing purposes ======================= */}
 				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{t("Select")}
+						{t("Message Admission")}
+					</Grid.Col>
+					<Grid.Col span={12}>
+						<InputForm tooltip="" label="" placeholder="Text" name="message_admission" form={form} id="message_admission" />
+					</Grid.Col>
+				</Grid>
+				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+					<Grid.Col span={12} fz="sm" mt="xxxs">
+						{t("Message Visit")}
+					</Grid.Col>
+					<Grid.Col span={12}>
+						<InputForm tooltip="" label="" placeholder="Text" name="message_visit" form={form} id="message_visit" />
+					</Grid.Col>
+				</Grid>
+				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+					<Grid.Col span={12} fz="sm" mt="xxxs">
+						{t("Message Diagnostic")}
+					</Grid.Col>
+					<Grid.Col span={12}>
+						<InputForm tooltip="" label="" placeholder="Text" name="message_diagnostic" form={form} id="message_diagnostic" />
+					</Grid.Col>
+				</Grid>
+				{/*<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+					<Grid.Col span={12} fz="sm" mt="xxxs">
+						{t("MessageAdmission")}
 					</Grid.Col>
 					<Grid.Col span={12}>
 						<SelectForm
-							tooltip={t("ChooseVoucherSalesReturn")}
+							tooltip={t("MessageAdmission")}
 							label=""
-							placeholder={t("ChooseVoucherSalesReturn")}
-							name="voucher_sales_return_id"
+							placeholder={t("MessageAdmission")}
+							name="message_admission"
 							form={form}
 							dropdownValue={voucherDropdownData}
-							id="voucher_sales_return_id"
+							id="message_admission"
 							searchable={true}
 							value={voucherSalesReturnData}
 							changeValue={setVoucherSalesReturnData}
@@ -227,11 +248,11 @@ export default function __HospitalForm({ height, id }) {
 							closeIcon={true}
 						/>
 					</Grid.Col>
-				</Grid>
-
+				</Grid>*/}
 				<Button id="HospitalFormSubmit" type="submit" style={{ display: "none" }}>
 					{t("Submit")}
 				</Button>
+				</Box>
 			</form>
 		</ScrollArea>
 	);

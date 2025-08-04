@@ -20,8 +20,11 @@ import {
 	IconBrandVlc,
 	IconReportMedical,
 } from "@tabler/icons-react";
+import { t } from 'i18next';
+
 
 export const sideNavigationLinks = {
+
 	home: [
 		{
 			label: "Dashboard",
@@ -134,42 +137,78 @@ export const sideNavigationLinks = {
 		// 	color: "#4CB050",
 		// },
 	],
+
 	base: [
 		{
-			label: "Customer",
-			path: "/core/customer",
+			label: "MasterData",
+			path: "/hospital/customer",
 			icon: IconDashboard,
 			color: "#4CAF50",
 		},
 		{
-			label: "Vendor",
-			path: "/core/vendor",
+			label: "Configuration",
+			path: "/configuration",
+			icon: IconDashboard,
+			color: "#4CAF50",
+		},
+	],
+	baseSubmenu: [
+		{
+			label:  t('Investigation'),
+			path: "/hospital/investigation",
+			icon: IconDashboard,
+			color: "#4CAF50",
+		},
+		{
+			label:  t('Category'),
+			path: "/hospital/ategory",
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 		{
-			label: "User",
+			label:  t('Doctor'),
+			path: "/hospital/doctor",
+			icon: IconDashboard,
+			color: "#6f1225",
+		},
+
+		{
+			label:  t('Nurse'),
+			path: "/hospital/nurse",
+			icon: IconDashboard,
+			color: "#6f1225",
+		},
+
+		{
+			label: t('labUser'),
+			path: "/hospital/doctor",
+			icon: IconDashboard,
+			color: "#6f1225",
+		},
+
+		{
+			label: t('Particular'),
 			path: "/core/user",
 			icon: IconCategory,
 			color: "#E53935",
 		},
 		{
-			label: "Warehouse",
+			label: t('Cabin'),
 			path: "/core/warehouse",
 			icon: IconIcons,
 			color: "#3F51B5",
 		},
 		{
-			label: "MarketingExecutive",
+			label: t('WARD&Romm'),
+			path: "/core/warehouse",
+			icon: IconIcons,
+			color: "#3F51B5",
+		},
+		{
+			label: t('MarketingExecutive'),
 			path: "/core/marketing-executive",
 			icon: IconShoppingBag,
 			color: "#F59E0B",
-		},
-		{
-			label: "Setting",
-			path: "/core/setting",
-			icon: IconShoppingCart,
-			color: "#06B6D4",
-		},
+		}
 	],
 };

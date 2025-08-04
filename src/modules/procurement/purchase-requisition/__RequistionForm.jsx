@@ -92,7 +92,7 @@ export default function __RequistionForm(props) {
           const resultAction = await dispatch(storeEntityData(value));
 
           if (storeEntityData.rejected.match(resultAction)) {
-            showNotificationComponent(
+            successNotification(
               resultAction.payload.message,
               "red",
               "lightgray",
@@ -102,7 +102,7 @@ export default function __RequistionForm(props) {
             );
           } else if (storeEntityData.fulfilled.match(resultAction)) {
             if (resultAction.payload.data.status === 200) {
-              showNotificationComponent(
+              successNotification(
                 resultAction.payload.data.message,
                 "teal",
                 "lightgray",
@@ -118,7 +118,7 @@ export default function __RequistionForm(props) {
                 setLoadCardProducts(true);
               }, 700);
             } else {
-              showNotificationComponent(
+              successNotification(
                 resultAction.payload.data.message,
                 "teal",
                 "lightgray",

@@ -31,7 +31,7 @@ export default function _Form({ module }) {
 			case "Accounting":
 				return <AccountingForm height={height} module={module} />;
 			default:
-				return <__FormGeneric height={height} module={module} hospitalConfig={hospitalConfig} id={id} />;
+				return <__FormGeneric height={height} module={module}  id={id} />;
 		}
 	};
 
@@ -124,7 +124,7 @@ export default function _Form({ module }) {
 								</Grid.Col>
 							</Grid>
 						</Box>
-						<Box px="xs" className="borderRadiusAll">
+						<Box className="borderRadiusAll">
 							{renderForm()}
 						</Box>
 					</Box>

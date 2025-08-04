@@ -1,4 +1,4 @@
-import { Box, Grid, Progress } from "@mantine/core";
+import {Box, Grid, Group, Progress} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
@@ -44,28 +44,26 @@ export default function Index({ mode = "create" }) {
 						currencySymbol=""
 					/>
 					<Box p="8">
-						<Grid columns={36} gutter={{ base: 8 }}>
-							{!matches && (
-								<Grid.Col span={2}>
-									<Navigation module="base" mainAreaHeight={mainAreaHeight} />
-								</Grid.Col>
-							)}
-
-							<Grid.Col span={matches ? 36 : 34}>
-								<Box bg="white" p="xs" className="borderRadiusAll">
-									<_Table module={module} open={open} close={close} />
-								</Box>
+					<Grid columns={36} gutter={{ base: 8 }}>
+						{!matches && (
+							<Grid.Col span={6}>
+								<Navigation module="base" subModule={'baseSubmenu'} mainAreaHeight={mainAreaHeight} />
 							</Grid.Col>
-
-							<GlobalDrawer
-								opened={opened}
-								close={close}
-								title={mode === "create" ? t("CreateCustomer") : t("UpdateCustomer")}
-							>
-								<IndexForm module={module} form={form} mode={mode} close={close} />
-							</GlobalDrawer>
-						</Grid>
+						)}
+						<Grid.Col span={matches ? 30 : 30}>
+							<Box bg="white" p="xs" className="borderRadiusAll">
+								<_Table module={module} open={open} close={close} />
+							</Box>
+						</Grid.Col>
+					</Grid>
+						<GlobalDrawer
+							opened={opened}
+							close={close}
+							title={mode === "create" ? t("CreateCustomer") : t("UpdateCustomer")}>
+							<IndexForm module={module} form={form} mode={mode} close={close} />
+						</GlobalDrawer>
 					</Box>
+
 				</>
 			)}
 		</>
