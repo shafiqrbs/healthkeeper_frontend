@@ -83,7 +83,7 @@ export default function EntityForm({ form, handleSubmit }) {
 										/>
 									</Grid.Col>
 								</Grid>
-								<Grid align="center" columns={20}>
+								{/* <Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("status")}</Text>
 									</Grid.Col>
@@ -124,7 +124,7 @@ export default function EntityForm({ form, handleSubmit }) {
 											/>
 										</Flex>
 									</Grid.Col>
-								</Grid>
+								</Grid> */}
 
 								<Flex className="form-action-header full-bleed">
 									<Text fz="sm">{t("doctorInformation")}</Text>

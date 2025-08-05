@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
@@ -13,9 +13,7 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "../common/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
-import DetailsDrawer from "./__DetailsDrawer";
-import OverviewDrawer from "./__OverviewDrawer";
+import ConfirmModal from "./confirm/__ConfirmModal";
 
 const data = [
 	{
@@ -113,17 +111,18 @@ const data = [
 
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
-export default function Table() {
-	const navigate = useNavigate();
+export default function Table({ module }) {
 	const { t } = useTranslation();
 	const [fetching, setFetching] = useState(false);
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 34;
+	const height = mainAreaHeight - 158;
 	const scrollViewportRef = useRef(null);
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
 	const [opened, { open, close }] = useDisclosure(false);
+	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
+
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -163,19 +162,15 @@ export default function Table() {
 		openOverview();
 	};
 
-	const handlePrescription = () => {
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
-	};
-
-	const handleAdmission = () => {
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
+	const handleConfirm = (id) => {
+		openConfirm();
 	};
 
 	return (
 		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
-					{t("EmergencyInformation")}
+					{t("AdmissionInformation")}
 				</Text>
 				<Flex gap="xs" align="center">
 					<Tabs mt="xs" variant="none" value={value} onChange={setValue}>
@@ -205,7 +200,7 @@ export default function Table() {
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch form={form} />
+				<KeywordSearch form={form} module={module} />
 			</Box>
 			<Box className="borderRadiusAll border-top-none" px="sm">
 				<DataTable
@@ -266,23 +261,11 @@ export default function Table() {
 										bg="var(--theme-primary-color-6)"
 										c="white"
 										size="xs"
-										onClick={() => handlePrescription(values.id)}
+										onClick={() => handleConfirm(values.id)}
 										radius="es"
 										rightSection={<IconArrowRight size={18} />}
 									>
-										{t("Prescription")}
-									</Button>
-									<Button
-										variant="filled"
-										bg="var(--theme-success-color)"
-										c="white"
-										size="xs"
-										onClick={() => handleAdmission(values.id)}
-										radius="es"
-										rightSection={<IconArrowRight size={18} />}
-										className="border-right-radius-none"
-									>
-										{t("Admission")}
+										{t("Confirm")}
 									</Button>
 									<Menu
 										position="bottom-end"
@@ -335,14 +318,13 @@ export default function Table() {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 344}
+					height={height}
 					onScrollToBottom={loadMoreRecords}
 					scrollViewportRef={scrollViewportRef}
 				/>
 			</Box>
 			<DataTableFooter indexData={data} module="visit" />
-			<DetailsDrawer opened={opened} close={close} />
-			<OverviewDrawer opened={openedOverview} close={closeOverview} />
+			<ConfirmModal opened={openedConfirm} close={closeConfirm} />
 		</Box>
 	);
 }
