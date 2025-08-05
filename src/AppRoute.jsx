@@ -87,6 +87,7 @@ import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/doctor";
 import ListIndex from "./modules/hospital/visit/list";
 import ConfigurationIndex from "@modules/configuration";
+import ConfirmIndex from "./modules/hospital/admission/confirm";
 
 function AppRoute() {
 	return (
@@ -136,7 +137,10 @@ function AppRoute() {
 						<Route path="list" element={<ListIndex />} />
 					</Route>
 
-					<Route path="admission" element={<AdmissionIndex />} />
+					<Route path="admission">
+						<Route index element={<AdmissionIndex />} />
+						<Route path="confirm" element={<ConfirmIndex />} />
+					</Route>
 					<Route path="admission-list" element={<AdmissionListIndex />} />
 
 					<Route path="prescription">

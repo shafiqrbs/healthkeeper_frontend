@@ -90,6 +90,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "/hospital/admission/create",
 			UPDATE: "/hospital/admission",
 			VIEW: "/hospital/admission/view",
+			CONFIRM: "/hospital/admission/confirm",
 		},
 		ADMISSION_LIST: {
 			INDEX: "/hospital/admission-list",

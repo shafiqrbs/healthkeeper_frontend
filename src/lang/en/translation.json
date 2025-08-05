@@ -1416,5 +1416,11 @@
 	"FMHName": "F/M/H Name",
 	"PresentAddress": "Present Address",
 	"PermanentAddress": "Permanent Address",
-	"Religion": "Religion"
+	"Religion": "Religion",
+	"RoomType": "Room Type",
+	"AssignConsultant": "Assign Consultant",
+	"AssignDoctor": "Assign Doctor",
+	"AssignNurse": "Assign Nurse",
+	"ReferredDoctor": "Referred Doctor",
+	"AdmissionConfirmation": "Admission Confirmation"
 }

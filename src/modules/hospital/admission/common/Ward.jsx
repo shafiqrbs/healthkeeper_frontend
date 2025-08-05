@@ -4,7 +4,7 @@ import RoomCard from "../../common/RoomCard";
 
 export default function Ward({ selectedRoom, handleRoomClick }) {
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 300;
+	const height = mainAreaHeight - 386;
 
 	return (
 		<Grid columns={24} gutter="xs">

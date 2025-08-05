@@ -14,6 +14,7 @@ import KeywordSearch from "../common/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "./confirm/__ConfirmModal";
+import { getAdmissionConfirmFormInitialValues } from "./helpers/request";
 
 const data = [
 	{
@@ -113,6 +114,8 @@ const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
 export default function Table({ module }) {
 	const { t } = useTranslation();
+	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
+
 	const [fetching, setFetching] = useState(false);
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
@@ -324,7 +327,7 @@ export default function Table({ module }) {
 				/>
 			</Box>
 			<DataTableFooter indexData={data} module="visit" />
-			<ConfirmModal opened={openedConfirm} close={closeConfirm} />
+			<ConfirmModal opened={openedConfirm} close={closeConfirm} form={confirmForm} />
 		</Box>
 	);
 }

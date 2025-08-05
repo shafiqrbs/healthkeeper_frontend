@@ -1,40 +1,81 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getAdmissionFormInitialValues } from "./helpers/request";
+import { getAdmissionFormInitialValues } from "../helpers/request";
 import { useOutletContext } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Flex, Grid, ScrollArea, Text } from "@mantine/core";
-import ActionButtons from "../common/_ActionButtons";
+import { Badge, Box, Flex, Grid, Text } from "@mantine/core";
+import ActionButtons from "../../common/_ActionButtons";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
-import RoomCard from "../common/RoomCard";
-import PatientListAdmission from "../common/PatientListAdmission";
-import EntityForm from "./form/EntityForm";
+import PatientListAdmission from "../../common/PatientListAdmission";
+import EntityForm from "../form/EntityForm";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
+import { MODULES } from "@/constants";
+import { useDispatch } from "react-redux";
+import { storeEntityData } from "@/app/store/core/crudThunk";
+import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
+import { setRefetchData } from "@/app/store/core/crudSlice";
+import { notifications } from "@mantine/notifications";
 
-const doctorData = [
-	{
-		id: 1,
-		name: "Dr. Shafiqul Islam",
-		specialty: "Cardiologist",
-	},
-];
+const module = MODULES.ADMISSION;
+const LOCAL_STORAGE_KEY = "patientFormData";
 
 export default function ConfirmIndex() {
+	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const form = useForm(getAdmissionFormInitialValues());
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
-	const [selectedRoom, setSelectedRoom] = useState(null);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const handleRoomClick = (room) => {
-		setSelectedRoom(room);
-	};
+	const handleSubmit = async () => {
+		if (!form.validate().hasErrors) {
+			setIsSubmitting(true);
 
-	const handleSubmit = (values) => {
-		console.log(values);
+			try {
+				const createdBy = JSON.parse(localStorage.getItem("user"));
+
+				const formValue = {
+					...form.values,
+					created_by_id: createdBy?.id,
+				};
+
+				const data = {
+					url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.CREATE,
+					data: formValue,
+					module,
+				};
+
+				const resultAction = await dispatch(storeEntityData(data));
+
+				if (storeEntityData.rejected.match(resultAction)) {
+					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
+				} else {
+					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
+					setRefetchData({ module, refetching: true });
+					form.reset();
+					localStorage.removeItem(LOCAL_STORAGE_KEY);
+				}
+			} catch (error) {
+				console.error("Error submitting visit:", error);
+				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
+			} finally {
+				setIsSubmitting(false);
+			}
+		} else {
+			if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
+				console.error(form.errors);
+				notifications.show({
+					title: "Error",
+					message: "Please fill all the fields",
+					color: "red",
+					position: "top-right",
+				});
+			}
+		}
 	};
 
 	return (
@@ -69,43 +110,68 @@ export default function ConfirmIndex() {
 							</Grid.Col>
 							<Grid.Col span={isOpenPatientInfo ? 17 : 23} className="animate-ease-out">
 								<Grid columns={25} gutter="les">
-									<Grid.Col span={7}>
-										<TabsWithSearch
-											tabList={["Ward", "Cabin", "ICU"]}
-											expand={isOpenPatientInfo}
-											searchbarContainerBg="var(--theme-primary-color-1)"
-											tabPanels={[
-												{
-													tab: "Ward",
-													component: (
-														<ScrollArea h={mainAreaHeight - 366} bg="white" p="xxxs">
-															{Array.from({ length: 3 }).map((_, index) => (
-																<RoomCard
-																	key={index}
-																	room={index + 1}
-																	selectedRoom={selectedRoom}
-																	handleRoomClick={handleRoomClick}
-																/>
-															))}
-														</ScrollArea>
-													),
-												},
-												{
-													tab: "Cabin",
-													component: <Text>Report</Text>,
-												},
-												{
-													tab: "ICU",
-													component: <Text>Report</Text>,
-												},
-											]}
-										/>
-									</Grid.Col>
-									<Grid.Col span={18}>
-										<EntityForm form={form} handleSubmit={handleSubmit} />
+									<Grid.Col span={25}>
+										<EntityForm form={form} />
 									</Grid.Col>
 									<Grid.Col span={25}>
-										<ActionButtons form={form} />
+										<Box p="xs" bg="white">
+											<Text fw={600} mb="sm">
+												{t("Invoice")}
+											</Text>
+											<Flex gap="xl">
+												<Flex gap="xs" mb="xxxs" align="center">
+													<Box>
+														<Badge
+															variant="light"
+															size="md"
+															color="var(--theme-secondary-color-7)"
+														>
+															12/12/2025
+														</Badge>
+														<Box mt="les">
+															<Text mt="es" fz="sm">
+																<strong>Admission Fee:</strong> 30 taka
+															</Text>
+															<Text mt="es" fz="sm">
+																<strong>Minimum Room:</strong> 3
+															</Text>
+														</Box>
+														<Text mt="es" fz="sm">
+															<strong>Total:</strong> (30 x 3) = 90 taka
+														</Text>
+													</Box>
+												</Flex>
+												<Flex gap="xs" mb="xxxs" align="center">
+													<Box>
+														<Badge
+															variant="light"
+															size="md"
+															color="var(--theme-secondary-color-7)"
+														>
+															Approved
+														</Badge>
+														<Box mt="les">
+															<Text mt="es" fz="sm">
+																<strong>Doctor:</strong> Shafiqul Islam
+															</Text>
+															<Text mt="es" fz="sm">
+																<strong>Nurse:</strong> Jane Doe
+															</Text>
+														</Box>
+														<Text mt="es" fz="sm">
+															<strong>Status:</strong> Approved
+														</Text>
+													</Box>
+												</Flex>
+											</Flex>
+										</Box>
+									</Grid.Col>
+									<Grid.Col span={25}>
+										<ActionButtons
+											form={form}
+											handleSubmit={handleSubmit}
+											isSubmitting={isSubmitting}
+										/>
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>

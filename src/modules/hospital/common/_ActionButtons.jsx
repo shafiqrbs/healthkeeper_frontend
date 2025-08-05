@@ -1,17 +1,10 @@
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { ActionIcon, Box, Button, Checkbox, Flex, Grid, Stack, Text } from "@mantine/core";
-import { IconArrowsSplit2, IconCirclePlusFilled, IconRestore } from "@tabler/icons-react";
+import { IconArrowsSplit2, IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import { useDispatch } from "react-redux";
-import { storeEntityData } from "@/app/store/core/crudThunk";
-import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { useRef, useState } from "react";
-import SelectForm from "@components/form-builders/SelectForm";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
-import { notifications } from "@mantine/notifications";
-import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useReactToPrint } from "react-to-print";
 import Prescription from "@components/print-formats/a4/Prescription";
 import PrescriptionPos from "@components/print-formats/pos/Prescription";
@@ -20,63 +13,11 @@ import { useHotkeys } from "@mantine/hooks";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
-export default function ActionButtons({ form, module }) {
+export default function ActionButtons({ form, isSubmitting, handleSubmit }) {
 	const prescriptionA4Ref = useRef(null);
 	const prescriptionPosRef = useRef(null);
 	const { t } = useTranslation();
-	const dispatch = useDispatch();
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
-	const [referredNameKey, setReferredNameKey] = useState(100);
-	const [marketingExKey, setMarketingExKey] = useState(10);
-
-	// =============== handle form submission ================
-	const handleSubmit = async () => {
-		if (!form.validate().hasErrors) {
-			setIsSubmitting(true);
-
-			try {
-				const createdBy = JSON.parse(localStorage.getItem("user"));
-
-				const formValue = {
-					...form.values,
-					created_by_id: createdBy?.id,
-				};
-
-				const data = {
-					url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.CREATE,
-					data: formValue,
-					module,
-				};
-
-				const resultAction = await dispatch(storeEntityData(data));
-
-				if (storeEntityData.rejected.match(resultAction)) {
-					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
-				} else {
-					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
-					setRefetchData({ module, refetching: true });
-					form.reset();
-					localStorage.removeItem(LOCAL_STORAGE_KEY);
-				}
-			} catch (error) {
-				console.error("Error submitting visit:", error);
-				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
-			} finally {
-				setIsSubmitting(false);
-			}
-		} else {
-			if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
-				console.error(form.errors);
-				notifications.show({
-					title: "Error",
-					message: "Please fill all the fields",
-					color: "red",
-					position: "top-right",
-				});
-			}
-		}
-	};
 
 	const selectPaymentMethod = (method) => {
 		form.setFieldValue("paymentMethod", method.value);
@@ -87,8 +28,6 @@ export default function ActionButtons({ form, module }) {
 	const handleReset = () => {
 		form.reset();
 		setPaymentMethod(PAYMENT_METHODS[0]);
-		setReferredNameKey((prev) => prev + 1);
-		setMarketingExKey((prev) => prev + 1);
 		localStorage.removeItem(LOCAL_STORAGE_KEY);
 	};
 

@@ -188,7 +188,7 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 							name="brand"
 							dropdownValue={BRAND_OPTIONS}
 							value={form.values.brand}
-							changeValue={(v) => handleChange("brand", v)}
+							// changeValue={(v) => handleChange("brand", v)}
 							placeholder="Brand name"
 							required
 							tooltip="Enter brand name"

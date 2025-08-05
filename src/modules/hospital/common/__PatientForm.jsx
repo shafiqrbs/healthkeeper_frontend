@@ -12,7 +12,7 @@ import {
 	Stack,
 	Text,
 } from "@mantine/core";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { IconArrowRight, IconUpload } from "@tabler/icons-react";
@@ -26,6 +26,12 @@ import { DISTRICT_LIST } from "@/constants";
 import { calculateAge, calculateDetailedAge } from "@/common/utils";
 import _ActionButtons from "./_ActionButtons";
 import Table from "../visit/_Table";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
+import { storeEntityData } from "@/app/store/core/crudThunk";
+import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
+import { setRefetchData } from "@/app/store/core/crudSlice";
+import { notifications } from "@mantine/notifications";
+import { useDispatch } from "react-redux";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -101,6 +107,8 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset - 176;
 	const firstRender = useIsFirstRender();
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const dispatch = useDispatch();
 
 	// save to localStorage on every form change
 	useEffect(() => {
@@ -157,6 +165,53 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 		// calculate total age in years (approximate)
 		const totalAgeInYears = year + month / 12 + day / 365;
 		form.setFieldValue("age", Math.floor(totalAgeInYears));
+	};
+
+	const handleSubmit = async () => {
+		if (!form.validate().hasErrors) {
+			setIsSubmitting(true);
+
+			try {
+				const createdBy = JSON.parse(localStorage.getItem("user"));
+
+				const formValue = {
+					...form.values,
+					created_by_id: createdBy?.id,
+				};
+
+				const data = {
+					url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.CREATE,
+					data: formValue,
+					module,
+				};
+
+				const resultAction = await dispatch(storeEntityData(data));
+
+				if (storeEntityData.rejected.match(resultAction)) {
+					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
+				} else {
+					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
+					setRefetchData({ module, refetching: true });
+					form.reset();
+					localStorage.removeItem(LOCAL_STORAGE_KEY);
+				}
+			} catch (error) {
+				console.error("Error submitting visit:", error);
+				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
+			} finally {
+				setIsSubmitting(false);
+			}
+		} else {
+			if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
+				console.error(form.errors);
+				notifications.show({
+					title: "Error",
+					message: "Please fill all the fields",
+					color: "red",
+					position: "top-right",
+				});
+			}
+		}
 	};
 
 	return (
@@ -493,7 +548,12 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 					</ScrollArea>
 				</Grid.Col>
 				<Grid.Col span={24} mt="-sm">
-					<_ActionButtons form={form} module={module} />
+					<_ActionButtons
+						form={form}
+						module={module}
+						handleSubmit={handleSubmit}
+						isSubmitting={isSubmitting}
+					/>
 				</Grid.Col>
 			</Grid>
 		</Box>

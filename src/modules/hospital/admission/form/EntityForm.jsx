@@ -2,7 +2,6 @@ import DatePickerForm from "@components/form-builders/DatePicker";
 import InputForm from "@components/form-builders/InputForm";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import SelectForm from "@components/form-builders/SelectForm";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
 import { IconChevronRight, IconCirclePlusFilled } from "@tabler/icons-react";
 import { useState } from "react";
@@ -13,12 +12,12 @@ import { useDisclosure } from "@mantine/hooks";
 
 const DISEASE_PROFILE = ["Diabetic", "Hypertension", "Asthma", "Allergy", "Other"];
 
-export default function EntityForm({ form, handleSubmit }) {
+export default function EntityForm({ form }) {
 	const [gender, setGender] = useState("male");
 	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 290;
+	const height = mainAreaHeight - 460;
 
 	const handleGenderChange = (val) => {
 		setGender(val);

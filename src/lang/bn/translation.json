@@ -974,5 +974,11 @@
 	"FMHName": "বাবা/মা/স্বামীর নাম",
 	"PresentAddress": "বর্তমান ঠিকানা",
 	"PermanentAddress": "স্থায়ী ঠিকানা",
-	"Religion": "ধর্ম"
+	"Religion": "ধর্ম",
+	"RoomType": "রুম টাইপ",
+	"AssignConsultant": "কন্সাল্টেন্ট বরাদ্দ করুন",
+	"AssignDoctor": "ডাক্তার বরাদ্দ করুন",
+	"AssignNurse": "নার্স বরাদ্দ করুন",
+	"ReferredDoctor": "রেফারারের ডাক্তার",
+	"AdmissionConfirmation": "ভর্তি নিশ্চিতকরণ"
 }
