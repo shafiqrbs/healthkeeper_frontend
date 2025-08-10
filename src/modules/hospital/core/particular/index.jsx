@@ -1,20 +1,20 @@
-import { Box, Grid, Progress } from "@mantine/core";
+import {Box, Grid, Group, Progress} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
-import VendorTable from "./_Table";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
 import { getInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
-// import Shortcut from "@/modules/shortcut/Shortcut";
 import IndexForm from "./form/__IndexForm";
-import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
+import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
-import {MODULE_LABUSESR} from "@/constants";
-const module = MODULE_LABUSESR
+import {MODULES_CORE} from "@/constants";
+
+const module = MODULES_CORE.PARTICULAR;
+
 export default function Index({ mode = "create" }) {
 	const { t } = useTranslation();
 	const form = useForm(getInitialValues(t));
@@ -22,7 +22,6 @@ export default function Index({ mode = "create" }) {
 	const matches = useMediaQuery("(max-width: 64em)");
 	const [opened, { open, close }] = useDisclosure(false);
 	const { mainAreaHeight } = useOutletContext();
-
 	return (
 		<>
 			{progress !== 100 ? (
@@ -38,33 +37,32 @@ export default function Index({ mode = "create" }) {
 				<>
 					<CoreHeaderNavbar
 						module="core"
-						pageTitle={t("ManageLabUser")}
+						pageTitle={t("ManageCustomer")}
 						roles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""
 					/>
 					<Box p="8">
-						<Grid columns={36} gutter={{ base: 8 }}>
-							{!matches && (
-								<Grid.Col span={6}>
-									<Navigation module="base" subModule={'baseSubmenu'} mainAreaHeight={mainAreaHeight} />
-								</Grid.Col>
-							)}
-							<Grid.Col span={matches ? 30 : 30}>
-								<Box bg="white" p="xs" className="borderRadiusAll">
-									<_Table module={module} open={open} close={close} />
-								</Box>
+					<Grid columns={36} gutter={{ base: 8 }}>
+						{!matches && (
+							<Grid.Col span={6}>
+								<Navigation menu="base" subMenu={'baseSubmenu'} mainAreaHeight={mainAreaHeight} />
 							</Grid.Col>
-						</Grid>
-							<GlobalDrawer
-								opened={opened}
-								close={close}
-								title={mode === "create" ? t("CreateLabUser") : t("UpdateLabUser")}
-							>
-								<IndexForm module={module} form={form} mode={mode} close={close} />
-							</GlobalDrawer>
-
+						)}
+						<Grid.Col span={matches ? 30 : 30}>
+							<Box bg="white" p="xs" className="borderRadiusAll">
+								<_Table module={module} open={open} close={close} />
+							</Box>
+						</Grid.Col>
+					</Grid>
+						<GlobalDrawer
+							opened={opened}
+							close={close}
+							title={mode === "create" ? t("CreateCustomer") : t("UpdateCustomer")}>
+							<IndexForm module={module} form={form} mode={mode} close={close} />
+						</GlobalDrawer>
 					</Box>
+
 				</>
 			)}
 		</>

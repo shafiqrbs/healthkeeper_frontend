@@ -10,7 +10,7 @@ import { updateEntityData } from "@/app/store/core/crudThunk";
 import { useParams, useNavigate } from "react-router-dom";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
 import { setInsertType } from "@/app/store/core/crudSlice";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import Form from "@modules/hospital/customer/form/___Form";
 
 export default function __Update({ module, form, close }) {

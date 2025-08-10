@@ -5,36 +5,37 @@ import { useTranslation } from "react-i18next";
 import { useHotkeys } from "@mantine/hooks";
 
 import InputForm from "@components/form-builders/InputForm";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
 import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 
 import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
+import SelectForm from "@components/form-builders/SelectForm";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import { DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
-export default function ___Form({
-	form,
-	type = "create",
-	data,
-	handleSubmit,
-	setCustomerData,
-	isLoading,
-	setIsLoading,
-}) {
+export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
+
+	const { data: customerGroupDropdown } = useGlobalDropdownData({
+		path: DROPDOWNS.CUSTOMER_GROUP.PATH,
+		params: { "dropdown-type": DROPDOWNS.CUSTOMER_GROUP.TYPE },
+		utility: DROPDOWNS.CUSTOMER_GROUP.UTILITY,
+	});
+
 
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
-				company_name: data.company_name,
+				particular_type: data.particular_type,
 				name: data.name,
-				mobile: data.mobile,
-				email: data.email,
-				customer_id: data.customer_id,
-				address: data.address,
+				short_name: data.short_name,
+
 			});
-			setCustomerData(data.customer_id);
+			setIndexData(data.id);
 
 			const timeoutId = setTimeout(() => {
 				setIsLoading(false);
@@ -63,7 +64,24 @@ export default function ___Form({
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
-									<Grid align="center" columns={20}>
+									<Grid align="center" columns={20} mt="xxxs">
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("ParticularType")}</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("CustomerGroupValidateMessage")}
+												placeholder={t("CustomerGroup")}
+												name="particular_type"
+												id="particular_type"
+												nextField="name"
+												value={form.values.customer_group}
+												dropdownValue={customerGroupDropdown}
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("UserName")} <RequiredAsterisk />
@@ -78,64 +96,24 @@ export default function ___Form({
 												name="name"
 												id="name"
 												nextField="mobile"
-												mt="xxxs"
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20}>
+									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("Designation")} <RequiredAsterisk />
+												{t("UserName")} <RequiredAsterisk />
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
 												form={form}
 												tooltip={t("VendorNameValidateMessage")}
-												placeholder={t("Designation")}
+												placeholder={t("UserName")}
 												required={true}
 												name="name"
 												id="name"
 												nextField="mobile"
-												mt="xxxs"
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("Mobile")} <RequiredAsterisk />
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<PhoneNumber
-												form={form}
-												tooltip={
-													form.errors.mobile ? form.errors.mobile : t("MobileValidateMessage")
-												}
-												placeholder={t("VendorMobile")}
-												required={true}
-												name="mobile"
-												id="mobile"
-												nextField="email"
-												mt="xxxs"
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("Email")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputForm
-												form={form}
-												tooltip={t("InvalidEmail")}
-												placeholder={t("Email")}
-												required={false}
-												name="email"
-												id="email"
-												nextField="customer_id"
-												mt="xxxs"
 											/>
 										</Grid.Col>
 									</Grid>

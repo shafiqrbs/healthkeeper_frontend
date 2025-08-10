@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getIndexEntityData } from "@/app/store/core/crudThunk.js";
-import { DOMAIN_DATA_ROUTES } from "@/constants/appRoutes";
+import { DOMAIN_DATA_ROUTES } from "@/constants/routes";
 
 const useDomainConfig = (autoFetch = true) => {
 	const dispatch = useDispatch();

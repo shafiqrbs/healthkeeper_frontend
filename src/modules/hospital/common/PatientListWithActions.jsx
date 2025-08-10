@@ -5,7 +5,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { setInsertType } from "@/app/store/core/crudSlice";
 import { useDispatch } from "react-redux";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 const patientList = [
 	{

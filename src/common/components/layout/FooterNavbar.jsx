@@ -4,7 +4,7 @@ import classes from "@assets/css/FooterNavbar.module.css";
 import { useNavigate } from "react-router-dom";
 import useConfigData from "@hooks/config-data/useConfigData";
 import { useHotkeys } from "@mantine/hooks";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 function FooterNavbar() {
 	const { configData } = useConfigData();

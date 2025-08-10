@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { Group, Box, ActionIcon, Text, rem, Flex, Button } from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, Switch} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
@@ -27,7 +27,8 @@ import CreateButton from "@components/buttons/CreateButton.jsx";
 import DataTableFooter from "@components/tables/DataTableFooter.jsx";
 import { sortBy } from "lodash";
 import { useOs } from "@mantine/hooks";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes.js";
+import { CORE_DATA_ROUTES } from "@/constants/routes.js";
+import {MASTER_DATA_ROUTES} from "@/constants/routes";
 
 const PER_PAGE = 50;
 
@@ -42,7 +43,6 @@ export default function _Table({ module, open, close }) {
 	const os = useOs();
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
-
 	const [fetching, setFetching] = useState(false);
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const refetchData = useSelector((state) => state.crud[module].refetching);
@@ -52,7 +52,7 @@ export default function _Table({ module, open, close }) {
 	const [customerObject, setCustomerObject] = useState({});
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
-
+	const [swtichEnable, setSwitchEnable] = useState({});
 	const [sortStatus, setSortStatus] = useState({
 		columnAccessor: "name",
 		direction: "asc",
@@ -70,7 +70,7 @@ export default function _Table({ module, open, close }) {
 
 		setFetching(true);
 		const value = {
-			url: HOSPITAL_DATA_ROUTES.API_ROUTES.CUSTOMER.INDEX,
+			url: MASTER_DATA_ROUTES.API_ROUTES.CATEGORY.INDEX,
 			params: {
 				term: searchKeyword,
 				name: filterData.name,
@@ -137,11 +137,11 @@ export default function _Table({ module, open, close }) {
 		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.CUSTOMER.UPDATE}/${id}`,
+				url: `${CORE_DATA_ROUTES.API_ROUTES.CATEGORY.UPDATE}/${id}`,
 				module,
 			})
 		);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.UPDATE}/${id}`);
+		navigate(`${CORE_DATA_ROUTES.NAVIGATION_LINKS.CATEGORY.UPDATE}/${id}`);
 	};
 
 	const handleDelete = (id) => {
@@ -161,7 +161,7 @@ export default function _Table({ module, open, close }) {
 	const handleDeleteSuccess = async (id) => {
 		const resultAction = await dispatch(
 			deleteEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.CUSTOMER.DELETE}/${id}`,
+				url: `${CORE_DATA_ROUTES.API_ROUTES.CATEGORY.DELETE}/${id}`,
 				module,
 				id,
 			})
@@ -176,7 +176,7 @@ export default function _Table({ module, open, close }) {
 				autoClose: 700,
 				style: { backgroundColor: "lightgray" },
 			});
-			navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.INDEX);
+			navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.CATEGORY);
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
@@ -213,9 +213,9 @@ export default function _Table({ module, open, close }) {
 	};
 
 	const handleCreateForm = () => {
-		open();
-		dispatch(setInsertType({ insertType: "create", module }));
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.CREATE);
+		 open();
+		 dispatch(setInsertType({ insertType: "create", module }));
+		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.CATEGORY);
 	};
 
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
@@ -225,7 +225,7 @@ export default function _Table({ module, open, close }) {
 			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
 				<Flex align="center" justify="space-between" gap={4}>
 					<KeywordSearch module={module} />
-					<CreateButton handleModal={handleCreateForm} text="AddCustomer" />
+					<CreateButton handleModal={handleCreateForm} text="AddNew" />
 				</Flex>
 			</Box>
 			<Box className="borderRadiusAll border-top-none">
@@ -248,13 +248,6 @@ export default function _Table({ module, open, close }) {
 							render: (item) => listData.data?.indexOf(item) + 1,
 						},
 						{
-							accessor: "id",
-							title: t("ID"),
-							textAlignment: "right",
-							sortable: true,
-							render: (item) => item.id,
-						},
-						{
 							accessor: "name",
 							title: t("Name"),
 							sortable: true,
@@ -265,24 +258,39 @@ export default function _Table({ module, open, close }) {
 							),
 						},
 						{
-							accessor: "customer_group",
-							title: t("CustomerGroup"),
+							accessor: "category_nature",
+							title: t("ProductNature"),
 							sortable: true,
 							render: (values) => values.customer_group || "N/A",
 						},
-						{ accessor: "mobile", title: t("Mobile"), sortable: true },
 						{
-							accessor: "credit_limit",
-							title: t("CreditLimit"),
+							accessor: "parent_name",
+							title: t("ParentName"),
 							sortable: true,
 							render: (values) => values.credit_limit,
 						},
-						{
-							accessor: "discount_percent",
-							title: t("DiscountPercent"),
-							sortable: true,
-							render: (values) => values.discount_percent,
+						{ accessor: 'status',textAlign: 'center', title: t('Status') ,
+							render: (item) => {
+								return (
+									<div className="centeredSwitchCell">
+										<Switch
+											disabled={swtichEnable[item.id] || false}
+											defaultChecked={item.status == 1 ? true : false}
+											color="red"
+											radius="xs"
+											size="md"
+											onLabel="Enable"
+											offLabel="Disable"
+											onChange={(event) => {
+												handleSwtich(event, item)
+											}}
+										/>
+									</div>
+								);
+							},
+							cellsClassName: tableCss.statusBackground
 						},
+
 						{
 							accessor: "action",
 							title: "",

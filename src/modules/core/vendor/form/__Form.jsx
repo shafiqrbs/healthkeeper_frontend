@@ -5,7 +5,7 @@ import { editEntityData } from "@/app/store/core/crudThunk";
 import { setFilterData, setSearchKeyword, setInsertType } from "@/app/store/core/crudSlice";
 import __Update from "./__Update";
 import __Create from "./__Create";
-import { CORE_DATA_ROUTES } from "@/constants/appRoutes";
+import { CORE_DATA_ROUTES } from "@/constants/routes";
 
 export default function _Form({ form, close, mode }) {
 	const { id } = useParams();

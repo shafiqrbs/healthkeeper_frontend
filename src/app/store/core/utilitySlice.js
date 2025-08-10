@@ -13,6 +13,24 @@ export const DROPDOWNS = {
 	VOUCHER: { UTILITY: "voucher", TYPE: "voucher", PATH: "accounting/select/voucher" },
 	LOCATION: { UTILITY: "location", TYPE: "location", PATH: "utility/select/setting" },
 	MARKETING_EXECUTIVE: { UTILITY: "marketingExecutive", TYPE: "marketing-executive", PATH: "utility/select/setting" },
+	CATEGORY_NATURE: { UTILITY: "categoryNature", TYPE: "product-type", PATH: "inventory/select/setting" },
+	CATEGORY_GROUP: { UTILITY: "categoryGroup", TYPE: "category", PATH: "inventory/select/group-category" },
+};
+
+export const HOSPITAL_DROPDOWNS = {
+	CUSTOMER_GROUP: { UTILITY: "customerGroup", TYPE: "customer-group", PATH: "utility/select/setting" },
+	BUSINESS_MODEL: { UTILITY: "businessModel", TYPE: "business-model", PATH: "utility/select/setting" },
+	MODULE: { UTILITY: "module", TYPE: "module", PATH: "utility/select/setting" },
+	COUNTRY: { UTILITY: "country", TYPE: "country", PATH: "core/select/countries" },
+	CURRENCY: { UTILITY: "currency", TYPE: "currency", PATH: "utility/select/currencies" },
+	POS_INVOICE_MODE: { UTILITY: "posInvoiceMode", TYPE: "pos-invoice-mode", PATH: "utility/select/setting" },
+	ACCOUNT: { UTILITY: "account", TYPE: "sub-head", PATH: "accounting/select/head" },
+	ACCOUNT_LEDGER: { UTILITY: "accountLedger", TYPE: "ledger", PATH: "accounting/select/head" },
+	VOUCHER: { UTILITY: "voucher", TYPE: "voucher", PATH: "accounting/select/voucher" },
+	LOCATION: { UTILITY: "location", TYPE: "location", PATH: "utility/select/setting" },
+	MARKETING_EXECUTIVE: { UTILITY: "marketingExecutive", TYPE: "marketing-executive", PATH: "utility/select/setting" },
+	CATEGORY_NATURE: { UTILITY: "categoryNature", TYPE: "product-type", PATH: "inventory/select/setting" },
+	CATEGORY_GROUP: { UTILITY: "categoryGroup", TYPE: "category", PATH: "inventory/select/group-category" },
 };
 
 const initialState = {

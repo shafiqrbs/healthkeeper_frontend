@@ -10,7 +10,7 @@ import { IconCheck, IconAlertCircle } from "@tabler/icons-react";
 import { rem, Text } from "@mantine/core";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
-import { CORE_DATA_ROUTES } from "@/constants/appRoutes";
+import { CORE_DATA_ROUTES } from "@/constants/routes";
 
 export default function __Create({ form, close }) {
 	const [isLoading, setIsLoading] = useState(false);

@@ -2,7 +2,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { IconCalendarWeek, IconUser } from "@tabler/icons-react";
 import { Box, Flex, Grid, Text, ScrollArea, Button } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 
 const data = [

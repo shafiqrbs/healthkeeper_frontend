@@ -1,20 +1,53 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
+		SELECT_DROPDOWN: {
+			PRODUCT_NATURE: "/inventory/select/setting",
+			CATEGORY_GROUP: "/inventory/select/group-category",
+			CATEGORY: "/inventory/select/category",
+		},
 		LAB_USER: {
-			INDEX: "master-data/lab-user",
-			CREATE: "master-data/lab-user/create",
-			UPDATE: "master-data/lab-user/update",
-			VIEW: "master-data/lab-user/view",
-			DELETE: "master-data/lab-user/delete",
+			INDEX: "hospital/core/lab-user",
+			CREATE: "hospital/core/lab-user/create",
+			UPDATE: "hospital/core/lab-user/update",
+			VIEW: "hospital/core/lab-user/view",
+			DELETE: "/hospital/core/lab-user/delete",
+		},
+		PARTICULAR: {
+			INDEX: "hospital/core/particular",
+			CREATE: "hospital/core/particular/create",
+			UPDATE: "hospital/core/particular/update",
+			VIEW: "hospital/core/particular/view",
+			DELETE: "hospital/core/particular/delete",
+		},
+		CATEGORY: {
+			INDEX: "inventory/category-group",
+			CREATE: "inventory/category-group",
+			UPDATE: "inventory/category-group",
+			VIEW: "inventory/category-group",
+			DELETE: "inventory/category-group",
 		},
 	},
 	NAVIGATION_LINKS: {
 		LAB_USER: {
-			INDEX: "/master-data/lab-user",
-			CREATE: "/master-data/lab-user/create",
-			UPDATE: "/master-data/lab-user",
-			VIEW: "/master-data/lab-user/view",
-			DELETE: "/master-data/lab-user/delete",
+			INDEX: "/hospital/core/lab-user",
+			CREATE: "/hospital/core/lab-user/create",
+			UPDATE: "/hospital/core/lab-user",
+			VIEW: "/hospital/core/lab-user/view",
+			DELETE: "/hospital/core/lab-user/delete",
+		},
+		PARTICULAR: {
+			INDEX: "/hospital/core/particular",
+			CREATE: "/hospital/core/particular/create",
+			UPDATE: "/hospital/core/core/particular",
+			VIEW: "/hospital/core/core/particular/view",
+			DELETE: "/hospital/core/core/particular/delete",
+		},
+		CATEGORY: {
+			INDEX: "/hospital/core/category",
+			CREATE: "/hospital/core/category/create",
+			UPDATE: "/hospital/core/core/category",
+			VIEW: "/hospital/core/core/category/view",
+			DELETE: "/hospital/core/core/category/delete",
 		},
 	},
 };

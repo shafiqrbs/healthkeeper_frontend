@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { modals } from "@mantine/modals";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -10,17 +10,17 @@ import { updateEntityData } from "@/app/store/core/crudThunk";
 import { useParams, useNavigate } from "react-router-dom";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
 import { setInsertType } from "@/app/store/core/crudSlice";
-import { MASTER_DATA_ROUTES } from "@/constants/appRoutes";
-import ___Form from "@modules/hospital/master-data/lab-user/form/___Form";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import Form from "@modules/hospital/customer/form/___Form";
 
-export default function __Update({ form, close }) {
+export default function __Update({ module, form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
-	const [customerData, setCustomerData] = useState(null);
+	const [indexData, setIndexData] = useState(null);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const vendorUpdateData = useSelector((state) => state.crud.vendor.editData);
+	const indexUpdateData = useSelector((state) => state.crud[module].editData);
 
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
@@ -36,9 +36,9 @@ export default function __Update({ form, close }) {
 	async function handleConfirmModal(values) {
 		try {
 			const value = {
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.UPDATE}/${id}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.CUSTOMER.UPDATE}/${id}`,
 				data: values,
-				module: "labUser",
+				module,
 			};
 
 			const resultAction = await dispatch(updateEntityData(value));
@@ -68,11 +68,11 @@ export default function __Update({ form, close }) {
 				setTimeout(() => {
 					useVendorDataStoreIntoLocalStorage();
 					form.reset();
-					dispatch(setInsertType({ insertType: "create", module: "labUser" }));
+					dispatch(setInsertType({ insertType: "create", module }));
 					setIsLoading(false);
 					close(); // close the drawer
-					navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX, { replace: true });
-					setCustomerData(null);
+					navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.INDEX, { replace: true });
+					setIndexData(null);
 				}, 700);
 			}
 		} catch (error) {
@@ -89,13 +89,13 @@ export default function __Update({ form, close }) {
 	}
 
 	return (
-		<___Form
+		<Form
 			type="update"
 			form={form}
-			data={vendorUpdateData}
+			data={indexUpdateData}
 			handleSubmit={handleSubmit}
-			customerData={customerData}
-			setCustomerData={setCustomerData}
+			indexData={indexData}
+			setIndexData={setIndexData}
 			isLoading={isLoading}
 			setIsLoading={setIsLoading}
 		/>

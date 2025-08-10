@@ -140,8 +140,51 @@ export const sideNavigationLinks = {
 
 	base: [
 		{
+			label: t('Dashboard'),
+			path: "/",
+			icon: IconHome,
+			color: "#4CAF50",
+		},
+		{
+			label:  t('OPD'),
+			path: "/",
+			icon: IconBuildingHospital,
+			color: "#6F1126",
+		},
+		{
+			label: "Emergency",
+			path: "/hospital/emergency",
+			icon: IconEmergencyBed,
+			color: "#E63946",
+		},
+
+		{
+			label: t('IPD'),
+			path: "/hospital/visit/list",
+			icon: IconBuildingHospital,
+			color: "#1D3557",
+		},
+		{
+			label: t('Billing'),
+			path: "/hospital/billing",
+			icon: IconBuildingHospital,
+			color: "#6D597A",
+		},
+		{
+			label:  t('Lab'),
+			path: "/hospital/lab-test",
+			icon: IconMicroscopeOff,
+			color: "#457B9D",
+		},
+		{
+			label: "Medicine",
+			path: "/hospital/medicine",
+			icon: IconMedicineSyrup,
+			color: "#2A9D8F",
+		},
+		{
 			label: "MasterData",
-			path: "/hospital/customer",
+			path: "/hospital/core/particular",
 			icon: IconDashboard,
 			color: "#4CAF50",
 		},
@@ -153,6 +196,77 @@ export const sideNavigationLinks = {
 		},
 	],
 	baseSubmenu: [
+		{
+			label:  t('Investigation'),
+			path: "/hospital/investigation",
+			icon: IconDashboard,
+			color: "#4CAF50",
+		},
+		{
+			label:  t('Category'),
+			path: "/hospital/ategory",
+			icon: IconDashboard,
+			color: "#6f1225",
+		},
+		{
+			label:  t('Doctor'),
+			path: "/hospital/doctor",
+			icon: IconDashboard,
+			color: "#6f1225",
+		},
+
+		{
+			label:  t('Nurse'),
+			path: "/hospital/nurse",
+			icon: IconDashboard,
+			color: "#6f1225",
+		},
+
+		{
+			label: t('labUser'),
+			path: "/hospital/doctor",
+			icon: IconDashboard,
+			color: "#6f1225",
+		},
+
+		{
+			label: t('Particular'),
+			path: "/core/user",
+			icon: IconCategory,
+			color: "#E53935",
+		},
+		{
+			label: t('Cabin'),
+			path: "/core/warehouse",
+			icon: IconIcons,
+			color: "#3F51B5",
+		},
+		{
+			label: t('WARD&Romm'),
+			path: "/core/warehouse",
+			icon: IconIcons,
+			color: "#3F51B5",
+		},
+		{
+			label: t('MarketingExecutive'),
+			path: "/core/marketing-executive",
+			icon: IconShoppingBag,
+			color: "#F59E0B",
+		},
+		{
+			label: t('Particular'),
+			path: "/hospital/masterdata/particular",
+			icon: IconShoppingBag,
+			color: "#F59E0B",
+		},
+		{
+			label: t('ParticularModule'),
+			path: "/hospital/masterdata/particular-module",
+			icon: IconShoppingBag,
+			color: "#F59E0B",
+		}
+	],
+	configSubmenu: [
 		{
 			label:  t('Investigation'),
 			path: "/hospital/investigation",

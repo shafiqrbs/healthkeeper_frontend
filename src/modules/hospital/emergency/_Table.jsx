@@ -13,9 +13,10 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "../common/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
 import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+
 
 const data = [
 	{

@@ -27,7 +27,7 @@ import CreateButton from "@components/buttons/CreateButton.jsx";
 import DataTableFooter from "@components/tables/DataTableFooter.jsx";
 import { sortBy } from "lodash";
 import { useOs } from "@mantine/hooks";
-import { CORE_DATA_ROUTES } from "@/constants/appRoutes.js";
+import { CORE_DATA_ROUTES } from "@/constants/routes.js";
 
 const PER_PAGE = 50;
 

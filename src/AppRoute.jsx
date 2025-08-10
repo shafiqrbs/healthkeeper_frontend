@@ -72,7 +72,8 @@ import DomainUserIndex from "@modules/domain/master-user/DomainUserIndex";
 import HospitalConfigIndex from "@modules/settings/HospitalConfigIndex";
 import PrescriptionIndex from "@modules/hospital/prescription";
 import VisitIndex from "@modules/hospital/visit";
-import LabUserIndex from "@modules/hospital/master-data/lab-user";
+import ParticularIndex from "@modules/hospital/core/particular";
+import CategoryIndex from "@modules/hospital/core/category";
 import AdmissionListIndex from "@/modules/hospital/admission-list";
 import AdmissionIndex from "@modules/hospital/admission";
 import EmergencyIndex from "@modules/hospital/emergency";
@@ -167,8 +168,9 @@ function AppRoute() {
 				<Route path="/settings/">
 					<Route path="hospital-config/:id" element={<HospitalConfigIndex />} />
 				</Route>
-				<Route path="/master-data/">
-					<Route path="lab-user" element={<LabUserIndex />} />
+				<Route path="/hospital/core/">
+					<Route path="particular" element={<ParticularIndex />} />
+					<Route path="category" element={<CategoryIndex />} />
 				</Route>
 				<Route path="sitemap" element={<Sitemap />} />
 				<Route path="/configuration/">

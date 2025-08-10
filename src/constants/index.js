@@ -19,9 +19,16 @@ export const MODULES = {
 	HOSPITAL_CONFIG: "hospitalConfig",
 };
 
+export const MODULES_CORE = {
+	PARTICULAR: "particular",
+	CATEGORY: "category",
+};
+
+
 //==================== Module Name ===========
 
 export const MODULE_LABUSESR = "labUser";
+export const MODULE_PARTICULAR = "particular";
 
 // =============== all 64 districts of bangladesh in alphabetical order ================
 

@@ -22,7 +22,7 @@ import KeywordSearch from "../common/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, getIndexEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setItemData, setRefetchData } from "@/app/store/core/crudSlice";

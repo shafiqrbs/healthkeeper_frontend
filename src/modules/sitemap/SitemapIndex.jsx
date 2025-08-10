@@ -30,7 +30,7 @@ import {
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import classes from "@assets/css/FeaturesCards.module.css";
-import { CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/appRoutes";
+import { CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 
 // =============== sitemap sections and links for hospital management system ================
 const SITEMAP_SECTIONS = [

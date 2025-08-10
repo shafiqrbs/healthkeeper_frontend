@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { sideNavigationLinks } from "@/constants/sideNavigationLinks";
 import classes from "@assets/css/FeaturesCards.module.css";
 const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product"];
-export default function Navigation({ module = "base",subModule = "", mainAreaHeight }) {
+export default function Navigation({ menu = "base",subMenu = "", mainAreaHeight }) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const links = useMemo(() => sideNavigationLinks[module], [module]);
-	const subLinks = useMemo(() => sideNavigationLinks[subModule], [subModule]);
+	const links = useMemo(() => sideNavigationLinks[menu], [menu]);
+	const subLinks = useMemo(() => sideNavigationLinks[subMenu], [subMenu]);
 	const [activeTab, setActiveTab] = useState("Hospital");
 	return (
 		<>
@@ -68,7 +68,7 @@ export default function Navigation({ module = "base",subModule = "", mainAreaHei
 						</ScrollArea>
 					</Grid.Col>
 					{
-						subModule &&(
+						subLinks?.length > 0 &&(
 							<Grid.Col span={9}>
 								<ScrollArea h={mainAreaHeight} bg="white" type="never" className="border-radius">
 									<Box mt={'xs'}>

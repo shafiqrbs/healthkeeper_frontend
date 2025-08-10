@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { Group, Box, ActionIcon, Text, rem, Flex, Button, Tooltip } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem, Flex, Button } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
@@ -21,18 +21,17 @@ import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/cru
 import tableCss from "@assets/css/Table.module.css";
 import ViewDrawer from "./__ViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
-import { getCoreVendors } from "@/common/utils/index.js";
+import { getCustomers } from "@/common/utils";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import CreateButton from "@components/buttons/CreateButton.jsx";
 import DataTableFooter from "@components/tables/DataTableFooter.jsx";
 import { sortBy } from "lodash";
 import { useOs } from "@mantine/hooks";
-import { MASTER_DATA_ROUTES } from "@/constants/appRoutes.js";
+import { CORE_DATA_ROUTES } from "@/constants/routes.js";
 
 const PER_PAGE = 50;
 
-export default function _Table({ module,open, close }) {
-
+export default function _Table({ module, open, close }) {
 	const isMounted = useMounted();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -43,14 +42,13 @@ export default function _Table({ module,open, close }) {
 	const os = useOs();
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
-
 	const [fetching, setFetching] = useState(false);
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
-	const refetchData = useSelector((state) => state.crud.vendor.refetching);
-	const vendorListData = useSelector((state) => state.crud.vendor.data);
-	const vendorFilterData = useSelector((state) => state.crud.vendor.filterData);
+	const refetchData = useSelector((state) => state.crud[module].refetching);
+	const listData = useSelector((state) => state.crud[module].data);
+	const filterData = useSelector((state) => state.crud[module].filterData);
 
-	const [vendorObject, setVendorObject] = useState({});
+	const [customerObject, setCustomerObject] = useState({});
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -59,24 +57,24 @@ export default function _Table({ module,open, close }) {
 		direction: "asc",
 	});
 
-	const [records, setRecords] = useState(sortBy(vendorListData.data, "name"));
+	const [records, setRecords] = useState(sortBy(listData.data, "name"));
 
 	useEffect(() => {
-		const data = sortBy(vendorListData.data, sortStatus.columnAccessor);
+		const data = sortBy(listData.data, sortStatus.columnAccessor);
 		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
-	}, [sortStatus, vendorListData.data]);
+	}, [sortStatus, listData.data]);
 
 	const fetchData = async (pageNum = 1, append = false) => {
 		if (!hasMore && pageNum > 1) return;
 
 		setFetching(true);
 		const value = {
-			url: MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.INDEX,
+			url: CORE_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
 			params: {
 				term: searchKeyword,
-				name: vendorFilterData.name,
-				mobile: vendorFilterData.mobile,
-				company_name: vendorFilterData.company_name,
+				name: filterData.name,
+				mobile: filterData.mobile,
+				company_name: filterData.company_name,
 				page: pageNum,
 				offset: PER_PAGE,
 			},
@@ -98,8 +96,8 @@ export default function _Table({ module,open, close }) {
 						setItemData({
 							module,
 							data: {
-								...vendorListData,
-								data: [...vendorListData.data, ...newData],
+								...listData,
+								data: [...listData.data, ...newData],
 								total: total,
 							},
 						})
@@ -132,17 +130,17 @@ export default function _Table({ module,open, close }) {
 			// reset scroll position when data is refreshed
 			scrollViewportRef.current?.scrollTo(0, 0);
 		}
-	}, [dispatch, searchKeyword, vendorFilterData, refetchData, isMounted, id]);
+	}, [dispatch, searchKeyword, filterData, refetchData, isMounted, id]);
 
-	const handleVendorEdit = (id) => {
-		dispatch(setInsertType({ insertType: "update", module: "vendor" }));
+	const handleCustomerEdit = (id) => {
+		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
-				url: `core/vendor/${id}`,
-				module: "vendor",
+				url: `${CORE_DATA_ROUTES.API_ROUTES.PARTICULAR.UPDATE}/${id}`,
+				module,
 			})
 		);
-		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.UPDATE}/${id}`);
+		navigate(`${CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.UPDATE}/${id}`);
 	};
 
 	const handleDelete = (id) => {
@@ -159,24 +157,10 @@ export default function _Table({ module,open, close }) {
 		});
 	};
 
-	const handleStatusChange = (id) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: {
-				confirm: "Active",
-				cancel: "Inactive",
-			},
-			confirmProps: { color: "var(--theme-delete-color)" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => console.log(id),
-		});
-	};
-
 	const handleDeleteSuccess = async (id) => {
 		const resultAction = await dispatch(
 			deleteEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.DELETE}/${id}`,
+				url: `${CORE_DATA_ROUTES.API_ROUTES.PARTICULAR.DELETE}/${id}`,
 				module,
 				id,
 			})
@@ -191,7 +175,7 @@ export default function _Table({ module,open, close }) {
 				autoClose: 700,
 				style: { backgroundColor: "lightgray" },
 			});
-			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX);
+			navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR);
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
@@ -203,10 +187,10 @@ export default function _Table({ module,open, close }) {
 	};
 
 	const handleDataShow = (id) => {
-		const coreVendors = getCoreVendors();
-		const foundVendors = coreVendors.find((type) => type.id == id);
-		if (foundVendors) {
-			setVendorObject(foundVendors);
+		const customers = getCustomers();
+		const foundCustomers = customers.find((customer) => customer.id == id);
+		if (foundCustomers) {
+			setCustomerObject(foundCustomers);
 			setViewDrawer(true);
 		} else {
 			notifications.show({
@@ -228,9 +212,9 @@ export default function _Table({ module,open, close }) {
 	};
 
 	const handleCreateForm = () => {
-		open();
-		dispatch(setInsertType({ insertType: "create", module }));
-		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX);
+		 open();
+		 dispatch(setInsertType({ insertType: "create", module }));
+		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR);
 	};
 
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
@@ -240,7 +224,7 @@ export default function _Table({ module,open, close }) {
 			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
 				<Flex align="center" justify="space-between" gap={4}>
 					<KeywordSearch module={module} />
-					<CreateButton handleModal={handleCreateForm} text="AddLabUser" />
+					<CreateButton handleModal={handleCreateForm} text="AddNew" />
 				</Flex>
 			</Box>
 			<Box className="borderRadiusAll border-top-none">
@@ -260,7 +244,14 @@ export default function _Table({ module,open, close }) {
 							title: t("S/N"),
 							textAlignment: "right",
 							sortable: true,
-							render: (item) => vendorListData.data?.indexOf(item) + 1,
+							render: (item) => listData.data?.indexOf(item) + 1,
+						},
+						{
+							accessor: "id",
+							title: t("ID"),
+							textAlignment: "right",
+							sortable: true,
+							render: (item) => item.id,
 						},
 						{
 							accessor: "name",
@@ -272,26 +263,28 @@ export default function _Table({ module,open, close }) {
 								</Text>
 							),
 						},
-						{ accessor: "company_name", title: t("Designation"), sortable: true },
+						{
+							accessor: "customer_group",
+							title: t("CustomerGroup"),
+							sortable: true,
+							render: (values) => values.customer_group || "N/A",
+						},
 						{ accessor: "mobile", title: t("Mobile"), sortable: true },
 						{
-							accessor: "status",
-							title: t("Status"),
-							render: (values) => (
-								<Button
-									onClick={() => handleStatusChange(values.id)}
-									variant="filled"
-									c="white"
-									size="compact-xs"
-									bg={values.status === 1 ? "var(--theme-success-color)" : "var(--theme-error-color)"}
-								>
-									{values.status === 1 ? "Active" : "Inactive"}
-								</Button>
-							),
+							accessor: "credit_limit",
+							title: t("CreditLimit"),
+							sortable: true,
+							render: (values) => values.credit_limit,
+						},
+						{
+							accessor: "discount_percent",
+							title: t("DiscountPercent"),
+							sortable: true,
+							render: (values) => values.discount_percent,
 						},
 						{
 							accessor: "action",
-							title: t(""),
+							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
@@ -300,7 +293,7 @@ export default function _Table({ module,open, close }) {
 										<Button.Group>
 											<Button
 												onClick={() => {
-													handleVendorEdit(values.id);
+													handleCustomerEdit(values.id);
 													open();
 												}}
 												variant="filled"
@@ -356,8 +349,8 @@ export default function _Table({ module,open, close }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={vendorListData} module={module} />
-			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={vendorObject} />
+			<DataTableFooter indexData={listData} module={module} />
+			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={customerObject} />
 		</>
 	);
 }

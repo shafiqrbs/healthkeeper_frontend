@@ -12,7 +12,7 @@ import { modals } from "@mantine/modals";
 import tableCss from "@assets/css/Table.module.css";
 import useConfigData from "@hooks/config-data/useConfigData.js";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
-import { DOMAIN_DATA_ROUTES } from "@/constants/appRoutes";
+import { DOMAIN_DATA_ROUTES } from "@/constants/routes";
 
 function DomainTable({ module }) {
 	const dispatch = useDispatch();

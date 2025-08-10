@@ -17,7 +17,7 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getAccountingFormInitialValues } from "../helpers/request";
 import { formatDateForMySQL, parseDateValue } from "@/common/utils";
-import { DOMAIN_DATA_ROUTES } from "@/constants/appRoutes";
+import { DOMAIN_DATA_ROUTES } from "@/constants/routes";
 
 export default function __AccountingForm({ height, module }) {
 	const { t } = useTranslation();

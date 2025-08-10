@@ -12,6 +12,17 @@ import {
 
 const initialState = {
 	// --------------- core modules starts -------------------
+
+	particular: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "", mobile: "", email: "" },
+	},
+
 	vendor: {
 		insertType: "create",
 		isLoading: true,

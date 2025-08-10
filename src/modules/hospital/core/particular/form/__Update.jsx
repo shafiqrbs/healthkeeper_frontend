@@ -1,22 +1,26 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { modals } from "@mantine/modals";
-import { storeEntityData } from "@/app/store/core/crudThunk";
-import { useDispatch } from "react-redux";
-import { setGlobalFetching, setRefetchData } from "@/app/store/core/crudSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconAlertCircle } from "@tabler/icons-react";
 import { rem, Text } from "@mantine/core";
-import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants";
+import { ERROR_NOTIFICATION_COLOR } from "@/constants";
+import { updateEntityData } from "@/app/store/core/crudThunk";
+import { useParams, useNavigate } from "react-router-dom";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
-import { MASTER_DATA_ROUTES } from "@/constants/appRoutes";
-import ___Form from "@modules/hospital/master-data/lab-user/form/___Form";
+import { setInsertType } from "@/app/store/core/crudSlice";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import Form from "@modules/hospital/customer/form/___Form";
 
-export default function __Create({ module,form, close }) {
+export default function __Update({ module, form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
+	const [indexData, setIndexData] = useState(null);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const [customerData, setCustomerData] = useState(null);
+	const navigate = useNavigate();
+	const { id } = useParams();
+	const indexUpdateData = useSelector((state) => state.crud[module].editData);
 
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
@@ -28,39 +32,48 @@ export default function __Create({ module,form, close }) {
 			onConfirm: () => handleConfirmModal(values),
 		});
 	};
+
 	async function handleConfirmModal(values) {
 		try {
-			setIsLoading(true);
 			const value = {
-				url: MASTER_DATA_ROUTES.API_ROUTES.LAB_USER.CREATE,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.CUSTOMER.UPDATE}/${id}`,
 				data: values,
-				module: "labUser",
+				module,
 			};
 
-			const resultAction = await dispatch(storeEntityData(value));
-			if (storeEntityData.rejected.match(resultAction)) {
+			const resultAction = await dispatch(updateEntityData(value));
+
+			if (updateEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
+
+				// Check if there are field validation errors and dynamically set them
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+						errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
 					});
+					// Display the errors using your form's `setErrors` function dynamically
 					form.setErrors(errorObject);
 				}
-			} else if (storeEntityData.fulfilled.match(resultAction)) {
-				useVendorDataStoreIntoLocalStorage();
-				form.reset();
-				close(); // close the drawer
-				setCustomerData(null);
-				dispatch(setRefetchData({ module: "labUser", refetching: true }));
+			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				notifications.show({
-					color: SUCCESS_NOTIFICATION_COLOR,
-					title: t("CreateSuccessfully"),
+					color: "teal",
+					title: t("UpdateSuccessfully"),
 					icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
 					loading: false,
-					autoClose: 1400,
+					autoClose: 700,
 					style: { backgroundColor: "lightgray" },
 				});
+
+				setTimeout(() => {
+					useVendorDataStoreIntoLocalStorage();
+					form.reset();
+					dispatch(setInsertType({ insertType: "create", module }));
+					setIsLoading(false);
+					close(); // close the drawer
+					navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.INDEX, { replace: true });
+					setIndexData(null);
+				}, 700);
 			}
 		} catch (error) {
 			console.error(error);
@@ -72,17 +85,17 @@ export default function __Create({ module,form, close }) {
 				autoClose: 2000,
 				style: { backgroundColor: "lightgray" },
 			});
-		} finally {
-			setIsLoading(false);
 		}
 	}
 
 	return (
-		<___Form
+		<Form
+			type="update"
 			form={form}
+			data={indexUpdateData}
 			handleSubmit={handleSubmit}
-			customerData={customerData}
-			setCustomerData={setCustomerData}
+			indexData={indexData}
+			setIndexData={setIndexData}
 			isLoading={isLoading}
 			setIsLoading={setIsLoading}
 		/>

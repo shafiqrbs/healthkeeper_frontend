@@ -18,7 +18,7 @@ import DatePickerForm from "@components/form-builders/DatePicker";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { MODULES } from "@/constants";
 import { getHospitalFormInitialValues } from "../helpers/request";
-import { CONFIGURATION_ROUTES } from "@/constants/appRoutes";
+import { CONFIGURATION_ROUTES } from "@/constants/routes";
 import useDomainConfig from "@hooks/config-data/useDomainConfig";
 import {parseDateValue} from "@utils/index";
 import {successNotification} from "@components/notification/successNotification";
