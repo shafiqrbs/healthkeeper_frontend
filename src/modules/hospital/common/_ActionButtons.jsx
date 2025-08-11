@@ -11,6 +11,7 @@ import PrescriptionPos from "@components/print-formats/pos/Prescription";
 import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 import { useHotkeys } from "@mantine/hooks";
 import Prescription2 from "@components/print-formats/a4/Prescription2";
+import Prescription3 from "@components/print-formats/a4/Prescription3";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -193,7 +194,8 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit }) {
 				</Button.Group>
 			</Stack>
 			{/* <Prescription ref={prescriptionA4Ref} /> */}
-			<Prescription2 ref={prescriptionA4Ref} />
+			{/* <Prescription2 ref={prescriptionA4Ref} /> */}
+			<Prescription3 ref={prescriptionA4Ref} />
 			<PrescriptionPos ref={prescriptionPosRef} />
 		</>
 	);

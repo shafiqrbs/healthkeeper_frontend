@@ -7,7 +7,7 @@ export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatient
 	const { t } = useTranslation();
 
 	return (
-		<Box onMouseEnter={() => setIsOpenPatientInfo(true)} onMouseLeave={() => setIsOpenPatientInfo(false)}>
+		<Box>
 			<Flex justify={isOpenPatientInfo ? "space-between" : "center"} align="center" bg="white" py="xxxs" px="xs">
 				{isOpenPatientInfo ? (
 					<>

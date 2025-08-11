@@ -141,7 +141,7 @@ export default function PatientListWithActions({
 	const handleSelectPatient = (patient) => {
 		setSelectPatient(patient);
 		setPatientData(patient);
-		// setIsOpenPatientInfo(false);
+		setIsOpenPatientInfo(false);
 	};
 
 	const handleEditClick = (id) => {

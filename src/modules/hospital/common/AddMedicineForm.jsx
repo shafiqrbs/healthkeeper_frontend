@@ -13,6 +13,7 @@ import { useReactToPrint } from "react-to-print";
 import Prescription from "@/common/components/print-formats/a4/Prescription";
 import PrescriptionPos from "@/common/components/print-formats/pos/Prescription";
 import Prescription2 from "@/common/components/print-formats/a4/Prescription2";
+import Prescription3 from "@/common/components/print-formats/a4/Prescription3";
 
 const GENERIC_OPTIONS = ["Napa", "Paracetamol", "Paracetamol (Doxylamin)", "Paracetamol (Acetaminophen)"];
 const BRAND_OPTIONS = [
@@ -395,7 +396,8 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 				</Button.Group>
 			)}
 			{/* <Prescription ref={prescriptionA4Ref} /> */}
-			<Prescription2 ref={prescriptionA4Ref} />
+			{/* <Prescription2 ref={prescriptionA4Ref} /> */}
+			<Prescription3 ref={prescriptionA4Ref} />
 			<PrescriptionPos ref={prescriptionPosRef} />
 		</Box>
 	);
