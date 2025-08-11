@@ -12,6 +12,7 @@ import InputAutoComplete from "@components/form-builders/InputAutoComplete";
 import { useReactToPrint } from "react-to-print";
 import Prescription from "@/common/components/print-formats/a4/Prescription";
 import PrescriptionPos from "@/common/components/print-formats/pos/Prescription";
+import Prescription2 from "@/common/components/print-formats/a4/Prescription2";
 
 const GENERIC_OPTIONS = ["Napa", "Paracetamol", "Paracetamol (Doxylamin)", "Paracetamol (Acetaminophen)"];
 const BRAND_OPTIONS = [
@@ -393,7 +394,8 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 					</Button>
 				</Button.Group>
 			)}
-			<Prescription ref={prescriptionA4Ref} />
+			{/* <Prescription ref={prescriptionA4Ref} /> */}
+			<Prescription2 ref={prescriptionA4Ref} />
 			<PrescriptionPos ref={prescriptionPosRef} />
 		</Box>
 	);

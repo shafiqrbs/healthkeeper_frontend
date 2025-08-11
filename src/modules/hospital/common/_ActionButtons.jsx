@@ -6,10 +6,11 @@ import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-import Prescription from "@components/print-formats/a4/Prescription";
+// import Prescription from "@components/print-formats/a4/Prescription";
 import PrescriptionPos from "@components/print-formats/pos/Prescription";
 import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 import { useHotkeys } from "@mantine/hooks";
+import Prescription2 from "@components/print-formats/a4/Prescription2";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -191,7 +192,8 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit }) {
 					</Button>
 				</Button.Group>
 			</Stack>
-			<Prescription ref={prescriptionA4Ref} />
+			{/* <Prescription ref={prescriptionA4Ref} /> */}
+			<Prescription2 ref={prescriptionA4Ref} />
 			<PrescriptionPos ref={prescriptionPosRef} />
 		</>
 	);
