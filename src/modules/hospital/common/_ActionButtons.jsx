@@ -156,13 +156,28 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit }) {
 						onClick={handleReset}
 						disabled={isSubmitting}
 					>
-						{t("reset")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("reset")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 1)
+							</Text>
+						</Stack>
 					</Button>
 					<Button w="100%" bg="var(--theme-hold-btn-color)" disabled={isSubmitting}>
-						{t("Hold")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("Hold")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 2)
+							</Text>
+						</Stack>
 					</Button>
 					<Button w="100%" bg="var(--theme-prescription-btn-color)" disabled={isSubmitting}>
-						{t("prescription")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("prescription")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 3)
+							</Text>
+						</Stack>
 					</Button>
 					<Button
 						onClick={handlePrintPrescriptionA4}
@@ -171,7 +186,12 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit }) {
 						disabled={isSubmitting}
 						type="button"
 					>
-						{t("a4Print")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("a4Print")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 4)
+							</Text>
+						</Stack>
 					</Button>
 					<Button
 						onClick={handlePrescriptionPosPrint}
@@ -180,7 +200,12 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit }) {
 						disabled={isSubmitting}
 						type="button"
 					>
-						{t("Pos")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("Pos")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + p)
+							</Text>
+						</Stack>
 					</Button>
 					<Button
 						w="100%"
@@ -189,7 +214,12 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit }) {
 						loading={isSubmitting}
 						disabled={isSubmitting}
 					>
-						{t("Save")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("Save")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + s)
+							</Text>
+						</Stack>
 					</Button>
 				</Button.Group>
 			</Stack>

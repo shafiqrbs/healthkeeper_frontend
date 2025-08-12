@@ -58,48 +58,54 @@ export default function PatientReport({ patientData, tabValue }) {
 	};
 
 	const generateTabItems = () => {
-		console.log(tabValue);
-		if (tabValue === "All") {
-			return (
-				<ScrollArea h={height}>
-					<BasicInfoCard patientData={patientData} />
-					<Vitals vitals={vitals} form={form} />
-					<ChiefComplaints complaints={complaints} handleComplaintChange={handleComplaintChange} />
-					<Investigation
-						investigation={investigation}
-						setInvestigation={setInvestigation}
-						investigationList={investigationList}
-					/>
-				</ScrollArea>
-			);
-		} else if (tabValue === "Vitals") {
-			return (
-				<ScrollArea h={height}>
-					<Vitals vitals={vitals} form={form} />
-				</ScrollArea>
-			);
-		} else if (tabValue === "Chief Complaints") {
-			return (
-				<ScrollArea h={height}>
-					<ChiefComplaints complaints={complaints} handleComplaintChange={handleComplaintChange} />
-				</ScrollArea>
-			);
-		} else if (tabValue === "Investigation") {
-			return (
-				<ScrollArea h={height}>
-					<Investigation
-						investigation={investigation}
-						setInvestigation={setInvestigation}
-						investigationList={investigationList}
-					/>
-				</ScrollArea>
-			);
-		} else if (tabValue === "OLE") {
-			return (
-				<ScrollArea h={height}>
-					<OLE ole={ole} handleOleChange={handleOleChange} />
-				</ScrollArea>
-			);
+		switch (tabValue) {
+			case "All":
+				return (
+					<ScrollArea h={height}>
+						<BasicInfoCard patientData={patientData} />
+						<Vitals vitals={vitals} form={form} />
+						<ChiefComplaints complaints={complaints} handleComplaintChange={handleComplaintChange} />
+						<Investigation
+							investigation={investigation}
+							setInvestigation={setInvestigation}
+							investigationList={investigationList}
+						/>
+					</ScrollArea>
+				);
+			case "Vitals":
+				return (
+					<ScrollArea h={height}>
+						<BasicInfoCard patientData={patientData} />
+						<Vitals vitals={vitals} form={form} />
+					</ScrollArea>
+				);
+			case "Chief Complaints":
+				return (
+					<ScrollArea h={height}>
+						<BasicInfoCard patientData={patientData} />
+						<ChiefComplaints complaints={complaints} handleComplaintChange={handleComplaintChange} />
+					</ScrollArea>
+				);
+			case "Investigation":
+				return (
+					<ScrollArea h={height}>
+						<BasicInfoCard patientData={patientData} />
+						<Investigation
+							investigation={investigation}
+							setInvestigation={setInvestigation}
+							investigationList={investigationList}
+						/>
+					</ScrollArea>
+				);
+			case "OLE":
+				return (
+					<ScrollArea h={height}>
+						<BasicInfoCard patientData={patientData} />
+						<OLE ole={ole} handleOleChange={handleOleChange} />
+					</ScrollArea>
+				);
+			default:
+				return null;
 		}
 	};
 

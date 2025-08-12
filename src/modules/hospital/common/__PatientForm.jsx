@@ -32,6 +32,7 @@ import { showNotificationComponent } from "@/common/components/core-component/sh
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import { useDispatch } from "react-redux";
+import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -255,7 +256,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										form={form}
 										label=""
 										tooltip={t("enterPatientName")}
-										placeholder="John Doe"
+										placeholder="Md. Abdul"
 										name="name"
 										id="patientName"
 										nextField="dob"
@@ -290,7 +291,19 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									<Text fz="sm">{t("dateOfBirth")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<DatePickerForm
+									{/* <DatePickerForm
+										form={form}
+										label=""
+										placeholder="23-06-2025"
+										tooltip={t("enterPatientDateOfBirth")}
+										name="dob"
+										id="dob"
+										nextField="year"
+										value={form.values.dob}
+										required
+										disabledFutureDate
+									/> */}
+									<DateSelectorForm
 										form={form}
 										label=""
 										placeholder="23-06-2025"
