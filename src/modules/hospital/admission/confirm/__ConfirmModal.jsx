@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import SelectForm from "@components/form-builders/SelectForm";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 const DEPARTMENT = [
 	{

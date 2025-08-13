@@ -14,7 +14,7 @@ import DatePickerForm from "@components/form-builders/DatePicker.jsx";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import useDomainConfig from "@hooks/config-data/useDomainConfig";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { DROPDOWNS } from "@/app/store/core/utilitySlice";
+import { ACCOUNTING_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getAccountingFormInitialValues } from "../helpers/request";
 import { formatDateForMySQL, parseDateValue } from "@/common/utils";
 import { DOMAIN_DATA_ROUTES } from "@/constants/routes";
@@ -28,21 +28,21 @@ export default function __AccountingForm({ height, module }) {
 	const account_config = domainConfig?.account_config;
 
 	const { data: accountDropdownData } = useGlobalDropdownData({
-		path: DROPDOWNS.ACCOUNT.PATH,
-		params: { "dropdown-type": DROPDOWNS.ACCOUNT.TYPE },
-		utility: DROPDOWNS.ACCOUNT.UTILITY,
+		path: ACCOUNTING_DROPDOWNSACCOUNT.PATH,
+		params: { "dropdown-type": ACCOUNTING_DROPDOWNSACCOUNT.TYPE },
+		utility: ACCOUNTING_DROPDOWNS.ACCOUNT.UTILITY,
 	});
 
 	const { data: accountingLedgerDropdownData } = useGlobalDropdownData({
-		path: DROPDOWNS.ACCOUNT_LEDGER.PATH,
-		params: { "dropdown-type": DROPDOWNS.ACCOUNT_LEDGER.TYPE },
-		utility: DROPDOWNS.ACCOUNT_LEDGER.UTILITY,
+		path: ACCOUNTING_DROPDOWNSACCOUNT_LEDGER.PATH,
+		params: { "dropdown-type": ACCOUNTING_DROPDOWNSACCOUNT_LEDGER.TYPE },
+		utility: ACCOUNTING_DROPDOWNS.ACCOUNT_LEDGER.UTILITY,
 	});
 
 	const { data: voucherDropdownData } = useGlobalDropdownData({
-		path: DROPDOWNS.VOUCHER.PATH,
-		params: { "dropdown-type": DROPDOWNS.VOUCHER.TYPE },
-		utility: DROPDOWNS.VOUCHER.UTILITY,
+		path: ACCOUNTING_DROPDOWNSVOUCHER.PATH,
+		params: { "dropdown-type": ACCOUNTING_DROPDOWNSVOUCHER.TYPE },
+		utility: ACCOUNTING_DROPDOWNS.VOUCHER.UTILITY,
 	});
 
 	const [accountCapitalData, setAccountCapitalData] = useState(null);

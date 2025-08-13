@@ -12,7 +12,7 @@ import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
@@ -20,14 +20,14 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const height = mainAreaHeight - 180; //TabList height 104
 
 	const { data: categoryNatureDropdown } = useGlobalDropdownData({
-		path: DROPDOWNS.CATEGORY_NATURE.PATH,
-		params: { "dropdown-type": DROPDOWNS.CATEGORY_NATURE.TYPE },
-		utility: DROPDOWNS.CATEGORY_NATURE.UTILITY,
+		path: CORE_DROPDOWNS.CATEGORY_NATURE.PATH,
+		params: { "dropdown-type": CORE_DROPDOWNS.CATEGORY_NATURE.TYPE },
+		utility: CORE_DROPDOWNS.CATEGORY_NATURE.UTILITY,
 	});
 
 	const { data: categoryGroupDropdown } = useGlobalDropdownData({
-		path: DROPDOWNS.CATEGORY_GROUP.PATH,
-		utility: DROPDOWNS.CATEGORY_GROUP.UTILITY,
+		path: CORE_DROPDOWNS.CATEGORY_GROUP.PATH,
+		utility: CORE_DROPDOWNS.CATEGORY_GROUP.UTILITY,
 	});
 
 

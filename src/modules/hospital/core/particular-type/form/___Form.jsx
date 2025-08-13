@@ -12,27 +12,20 @@ import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 
-	const { data: employeeDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.EMPLOYEE.PATH,
-		utility: CORE_DROPDOWNS.EMPLOYEE.UTILITY,
-	});
-
-	const { data: categoryDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.CATEGORY.PATH,
-		utility: CORE_DROPDOWNS.CATEGORY.UTILITY,
-	});
-
 	const { data: particularTypeDropdown } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.PATH,
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.UTILITY,
 	});
+
+	console.log(particularTypeDropdown);
+
 
 	useEffect(() => {
 		if (data && type === "update") {
@@ -40,9 +33,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 			form.setValues({
 				particular_type: data.particular_type,
 				name: data.name,
-				category_id: data.category_id,
-				employee_id: data.employee_id,
-				instruction: data.instruction,
+				short_name: data.short_name,
 
 			});
 			setIndexData(data.id);
@@ -58,7 +49,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 
 	useHotkeys(
 		[
-			["alt+n", () => document.getElementById("particular_type_id").focus()],
+			["alt+n", () => document.getElementById("company_name").focus()],
 			["alt+r", () => form.reset()],
 			["alt+s", () => document.getElementById("EntityFormSubmit").click()],
 		],
@@ -76,17 +67,16 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 								<Stack>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("ParticularType")} <RequiredAsterisk /></Text>
+											<Text fz="sm">{t("ParticularType")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
 												form={form}
-												tooltip={t("ParticularTypeValidateMessage")}
-												placeholder={t("ParticularType")}
+												tooltip={t("CustomerGroupValidateMessage")}
+												placeholder={t("CustomerGroup")}
 												name="particular_type_id"
 												id="particular_type_id"
-												nextField="category_id"
-												required={true}
+												nextField="name"
 												value={form.values.particular_type_id}
 												dropdownValue={particularTypeDropdown}
 											/>
@@ -94,71 +84,37 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("Category")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("CategoryValidateMessage")}
-												placeholder={t("Category")}
-												name="category_id"
-												id="category_id"
-												nextField="employee_id"
-												value={form.values.category_id}
-												dropdownValue={categoryDropdown}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("AssignEmployee")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("AssignEmployeeValidateMessage")}
-												placeholder={t("AssignEmployee")}
-												name="employee_id"
-												id="employee_id"
-												nextField="name"
-												value={form.values.employee_id}
-												dropdownValue={employeeDropdown}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
-										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("Name")} <RequiredAsterisk />
+												{t("UserName")} <RequiredAsterisk />
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
 												form={form}
-												tooltip={t("NameValidateMessage")}
-												placeholder={t("Name")}
-												required={false}
+												tooltip={t("VendorNameValidateMessage")}
+												placeholder={t("UserName")}
+												required={true}
 												name="name"
 												id="name"
-												nextField="price"
+												nextField="mobile"
 											/>
 										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("Instruction")}
+												{t("UserName")} <RequiredAsterisk />
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
 												form={form}
-												tooltip={t("PriceValidateMessage")}
-												placeholder={t("Instruction")}
-												required={false}
-												name="instruction"
-												id="instruction"
-												nextField=""
+												tooltip={t("VendorNameValidateMessage")}
+												placeholder={t("UserName")}
+												required={true}
+												name="name"
+												id="name"
+												nextField="mobile"
 											/>
 										</Grid.Col>
 									</Grid>

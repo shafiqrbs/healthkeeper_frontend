@@ -20,7 +20,27 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "", mobile: "", email: "" },
+		filterData: { name: ""},
+	},
+
+	particular_mode: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
+	particular_type: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: ""},
 	},
 
 	vendor: {

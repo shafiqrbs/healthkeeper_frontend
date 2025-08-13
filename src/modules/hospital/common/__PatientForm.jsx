@@ -26,7 +26,7 @@ import { DISTRICT_LIST } from "@/constants";
 import { calculateAge, calculateDetailedAge } from "@/common/utils";
 import _ActionButtons from "./_ActionButtons";
 import Table from "../visit/_Table";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";

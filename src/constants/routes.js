@@ -14,11 +14,28 @@ export const MASTER_DATA_ROUTES = {
 		},
 		PARTICULAR: {
 			INDEX: "hospital/core/particular",
-			CREATE: "hospital/core/particular/create",
+			CREATE: "hospital/core/particular",
 			UPDATE: "hospital/core/particular/update",
 			VIEW: "hospital/core/particular/view",
 			DELETE: "hospital/core/particular/delete",
 		},
+
+		PARTICULAR_TYPE: {
+			INDEX: "hospital/core/particular-type",
+			CREATE: "hospital/core/particular-type/create",
+			UPDATE: "hospital/core/particular-type/update",
+			VIEW: "hospital/core/particular-type/view",
+			DELETE: "hospital/core/particular-type/delete",
+		},
+
+		PARTICULAR_MODE: {
+			INDEX: "hospital/core/particular-mode",
+			CREATE: "hospital/core/particular-mode/create",
+			UPDATE: "hospital/core/particular-mode/update",
+			VIEW: "hospital/core/particular-mode/view",
+			DELETE: "hospital/core/particular-mode/delete",
+		},
+
 		CATEGORY: {
 			INDEX: "inventory/category-group",
 			CREATE: "inventory/category-group",
@@ -37,6 +54,20 @@ export const MASTER_DATA_ROUTES = {
 		},
 		PARTICULAR: {
 			INDEX: "/hospital/core/particular",
+			CREATE: "/hospital/core/particular/create",
+			UPDATE: "/hospital/core/core/particular",
+			VIEW: "/hospital/core/core/particular/view",
+			DELETE: "/hospital/core/core/particular/delete",
+		},
+		PARTICULAR_MODE: {
+			INDEX: "/hospital/core/particular-mode",
+			CREATE: "/hospital/core/particular/create",
+			UPDATE: "/hospital/core/core/particular",
+			VIEW: "/hospital/core/core/particular/view",
+			DELETE: "/hospital/core/core/particular/delete",
+		},
+		PARTICULAR_TYPE: {
+			INDEX: "/hospital/core/particular-type",
 			CREATE: "/hospital/core/particular/create",
 			UPDATE: "/hospital/core/core/particular",
 			VIEW: "/hospital/core/core/particular/view",

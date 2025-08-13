@@ -1,36 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getGlobalDropdown } from "./utilityThunk";
 
-export const DROPDOWNS = {
+export const CORE_DROPDOWNS = {
+	EMPLOYEE: { UTILITY: "employee", TYPE: "employee", PATH: "core/select/user" },
 	CUSTOMER_GROUP: { UTILITY: "customerGroup", TYPE: "customer-group", PATH: "utility/select/setting" },
 	BUSINESS_MODEL: { UTILITY: "businessModel", TYPE: "business-model", PATH: "utility/select/setting" },
 	MODULE: { UTILITY: "module", TYPE: "module", PATH: "utility/select/setting" },
 	COUNTRY: { UTILITY: "country", TYPE: "country", PATH: "core/select/countries" },
 	CURRENCY: { UTILITY: "currency", TYPE: "currency", PATH: "utility/select/currencies" },
 	POS_INVOICE_MODE: { UTILITY: "posInvoiceMode", TYPE: "pos-invoice-mode", PATH: "utility/select/setting" },
-	ACCOUNT: { UTILITY: "account", TYPE: "sub-head", PATH: "accounting/select/head" },
-	ACCOUNT_LEDGER: { UTILITY: "accountLedger", TYPE: "ledger", PATH: "accounting/select/head" },
-	VOUCHER: { UTILITY: "voucher", TYPE: "voucher", PATH: "accounting/select/voucher" },
 	LOCATION: { UTILITY: "location", TYPE: "location", PATH: "utility/select/setting" },
 	MARKETING_EXECUTIVE: { UTILITY: "marketingExecutive", TYPE: "marketing-executive", PATH: "utility/select/setting" },
 	CATEGORY_NATURE: { UTILITY: "categoryNature", TYPE: "product-type", PATH: "inventory/select/setting" },
-	CATEGORY_GROUP: { UTILITY: "categoryGroup", TYPE: "category", PATH: "inventory/select/group-category" },
+	CATEGORY_GROUP: { UTILITY: "categoryGroup", TYPE: "category-group", PATH: "inventory/select/group-category" },
+	CATEGORY: { UTILITY: "category", TYPE: "category", PATH: "inventory/select/category" },
+};
+
+export const ACCOUNTING_DROPDOWNS = {
+	ACCOUNT: { UTILITY: "account", TYPE: "sub-head", PATH: "accounting/select/head" },
+	ACCOUNT_LEDGER: { UTILITY: "accountLedger", TYPE: "ledger", PATH: "accounting/select/head" },
+	VOUCHER: { UTILITY: "voucher", TYPE: "voucher", PATH: "accounting/select/voucher" },
 };
 
 export const HOSPITAL_DROPDOWNS = {
-	CUSTOMER_GROUP: { UTILITY: "customerGroup", TYPE: "customer-group", PATH: "utility/select/setting" },
-	BUSINESS_MODEL: { UTILITY: "businessModel", TYPE: "business-model", PATH: "utility/select/setting" },
-	MODULE: { UTILITY: "module", TYPE: "module", PATH: "utility/select/setting" },
-	COUNTRY: { UTILITY: "country", TYPE: "country", PATH: "core/select/countries" },
-	CURRENCY: { UTILITY: "currency", TYPE: "currency", PATH: "utility/select/currencies" },
-	POS_INVOICE_MODE: { UTILITY: "posInvoiceMode", TYPE: "pos-invoice-mode", PATH: "utility/select/setting" },
-	ACCOUNT: { UTILITY: "account", TYPE: "sub-head", PATH: "accounting/select/head" },
-	ACCOUNT_LEDGER: { UTILITY: "accountLedger", TYPE: "ledger", PATH: "accounting/select/head" },
-	VOUCHER: { UTILITY: "voucher", TYPE: "voucher", PATH: "accounting/select/voucher" },
-	LOCATION: { UTILITY: "location", TYPE: "location", PATH: "utility/select/setting" },
-	MARKETING_EXECUTIVE: { UTILITY: "marketingExecutive", TYPE: "marketing-executive", PATH: "utility/select/setting" },
-	CATEGORY_NATURE: { UTILITY: "categoryNature", TYPE: "product-type", PATH: "inventory/select/setting" },
-	CATEGORY_GROUP: { UTILITY: "categoryGroup", TYPE: "category", PATH: "inventory/select/group-category" },
+	PARTICULAR_TYPE: { UTILITY: "particularType", PATH: "hospital/select/particular-type" },
 };
 
 const initialState = {

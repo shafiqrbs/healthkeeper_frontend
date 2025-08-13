@@ -69,12 +69,10 @@ export default function _Table({ module, open, close }) {
 
 		setFetching(true);
 		const value = {
-			url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+			url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MODE.INDEX,
 			params: {
 				term: searchKeyword,
 				name: filterData.name,
-				mobile: filterData.mobile,
-				company_name: filterData.company_name,
 				page: pageNum,
 				offset: PER_PAGE,
 			},
@@ -247,11 +245,11 @@ export default function _Table({ module, open, close }) {
 							render: (item) => listData.data?.indexOf(item) + 1,
 						},
 						{
-							accessor: "particular_type_name",
-							title: t("ParticularType"),
+							accessor: "id",
+							title: t("ID"),
 							textAlignment: "right",
 							sortable: true,
-							render: (item) => item.particular_type_name,
+							render: (item) => item.id,
 						},
 						{
 							accessor: "name",
@@ -264,10 +262,23 @@ export default function _Table({ module, open, close }) {
 							),
 						},
 						{
-							accessor: "category",
-							title: t("Category"),
-							sortable: false,
-							render: (values) => values.category || "N/A",
+							accessor: "customer_group",
+							title: t("CustomerGroup"),
+							sortable: true,
+							render: (values) => values.customer_group || "N/A",
+						},
+						{ accessor: "mobile", title: t("Mobile"), sortable: true },
+						{
+							accessor: "credit_limit",
+							title: t("CreditLimit"),
+							sortable: true,
+							render: (values) => values.credit_limit,
+						},
+						{
+							accessor: "discount_percent",
+							title: t("DiscountPercent"),
+							sortable: true,
+							render: (values) => values.discount_percent,
 						},
 						{
 							accessor: "action",

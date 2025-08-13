@@ -13,7 +13,6 @@ import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import InputCheckboxForm from "@components/form-builders/InputCheckboxForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { DROPDOWNS } from "@/app/store/core/utilitySlice";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { MODULES } from "@/constants";
@@ -32,6 +31,7 @@ export default function __HospitalForm({ height, id }) {
 	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
 	const { domainConfig } = useDomainConfig();
 	const hospital_config = domainConfig?.hospital_config;
+	const inventory_config = domainConfig?.inventory_config;
 
 	const form = useForm(getHospitalFormInitialValues());
 
@@ -68,8 +68,7 @@ export default function __HospitalForm({ height, id }) {
 
 
 	const handleConfirmFormSubmit = async (values) => {
-		const properties = ["opd_select_doctor", "special_discount_doctor", "special_discount_investigation"];
-
+		const properties = ["opd_select_doctor", "special_discount_doctor", "special_discount_investigation","prescription_temlate"];
 		properties.forEach((property) => {
 			values[property] = values[property] === true || values[property] == 1 ? 1 : 0;
 		});
@@ -113,11 +112,6 @@ export default function __HospitalForm({ height, id }) {
 
 	const [voucherSalesReturnData, setVoucherSalesReturnData] = useState(null);
 
-	const { data: voucherDropdownData } = useGlobalDropdownData({
-		path: DROPDOWNS.VOUCHER.PATH,
-		params: { "dropdown-type": DROPDOWNS.VOUCHER.TYPE },
-		utility: DROPDOWNS.VOUCHER.UTILITY,
-	});
 
 	return (
 		<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
@@ -157,34 +151,72 @@ export default function __HospitalForm({ height, id }) {
 				</Stack>
 				<Box className={'inner-title-box'}>
 					<Title order={6}>
-						{t("ProductConfiguration")}
+						{t("Operation Fee")}
 					</Title>
 				</Box>
 				{/* ======================= some demo components for reusing purposes ======================= */}
 				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{t("Message Admission")}
+						{hospital_config?.admission_fee.admission_fee_name}
 					</Grid.Col>
 					<Grid.Col span={12}>
-						<InputForm tooltip="" label="" placeholder="Text" name="message_admission" form={form} id="message_admission" />
+						{inventory_config?.currency?.symbol} {hospital_config?.admission_fee?.admission_fee_price} {inventory_config?.currency?.code}
 					</Grid.Col>
 				</Grid>
 				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{t("Message Visit")}
+						{hospital_config?.opd_ticket_fee.opd_ticket_fee_name}
 					</Grid.Col>
 					<Grid.Col span={12}>
-						<InputForm tooltip="" label="" placeholder="Text" name="message_visit" form={form} id="message_visit" />
+						{inventory_config?.currency?.symbol} {hospital_config?.opd_ticket_fee?.opd_ticket_fee_price} {inventory_config?.currency?.code}
 					</Grid.Col>
 				</Grid>
 				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{t("Message Diagnostic")}
+						{hospital_config?.emergency_fee.emergency_fee_name}
 					</Grid.Col>
 					<Grid.Col span={12}>
-						<InputForm tooltip="" label="" placeholder="Text" name="message_diagnostic" form={form} id="message_diagnostic" />
+						{inventory_config?.currency?.symbol} {hospital_config?.emergency_fee?.emergency_fee_price} {inventory_config?.currency?.code}
 					</Grid.Col>
 				</Grid>
+				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+					<Grid.Col span={12} fz="sm" mt="xxxs">
+						{hospital_config?.ot_fee.ot_fee_name}
+					</Grid.Col>
+					<Grid.Col span={12}>
+						{inventory_config?.currency?.symbol} {hospital_config?.ot_fee?.ot_fee_price} {inventory_config?.currency?.code}
+					</Grid.Col>
+				</Grid>
+				<Box className={'inner-title-box'}>
+						<Title order={6}>
+							{t("Messageing")}
+						</Title>
+					</Box>
+					{/* ======================= some demo components for reusing purposes ======================= */}
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{t("Message Admission")}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							<InputForm tooltip="" label="" placeholder="Text" name="message_admission" form={form} id="message_admission" />
+						</Grid.Col>
+					</Grid>
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{t("Message Visit")}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							<InputForm tooltip="" label="" placeholder="Text" name="message_visit" form={form} id="message_visit" />
+						</Grid.Col>
+					</Grid>
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{t("Message Diagnostic")}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							<InputForm tooltip="" label="" placeholder="Text" name="message_diagnostic" form={form} id="message_diagnostic" />
+						</Grid.Col>
+					</Grid>
 				{/*<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 					<Grid.Col span={12} fz="sm" mt="xxxs">
 						{t("MessageAdmission")}

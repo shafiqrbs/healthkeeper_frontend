@@ -22,6 +22,8 @@ export const MODULES = {
 export const MODULES_CORE = {
 	PARTICULAR: "particular",
 	CATEGORY: "category",
+	PARTICULAR_MODE: "particular_mode",
+	PARTICULAR_TYPE: "particular_type",
 };
 
 

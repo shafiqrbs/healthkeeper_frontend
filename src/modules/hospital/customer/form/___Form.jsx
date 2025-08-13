@@ -12,7 +12,7 @@ import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
@@ -20,21 +20,21 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const height = mainAreaHeight - 180; //TabList height 104
 
 	const { data: customerGroupDropdown } = useGlobalDropdownData({
-		path: DROPDOWNS.CUSTOMER_GROUP.PATH,
-		params: { "dropdown-type": DROPDOWNS.CUSTOMER_GROUP.TYPE },
-		utility: DROPDOWNS.CUSTOMER_GROUP.UTILITY,
+		path: CORE_DROPDOWNS.CUSTOMER_GROUP.PATH,
+		params: { "dropdown-type": CORE_DROPDOWNS.CUSTOMER_GROUP.TYPE },
+		utility: CORE_DROPDOWNS.CUSTOMER_GROUP.UTILITY,
 	});
 
 	const { data: locationDropdown } = useGlobalDropdownData({
-		path: DROPDOWNS.LOCATION.PATH,
-		params: { "dropdown-type": DROPDOWNS.LOCATION.TYPE },
-		utility: DROPDOWNS.LOCATION.UTILITY,
+		path: CORE_DROPDOWNS.LOCATION.PATH,
+		params: { "dropdown-type": CORE_DROPDOWNS.LOCATION.TYPE },
+		utility: CORE_DROPDOWNS.LOCATION.UTILITY,
 	});
 
 	const { data: executiveDropdown } = useGlobalDropdownData({
-		path: DROPDOWNS.MARKETING_EXECUTIVE.PATH,
-		params: { "dropdown-type": DROPDOWNS.MARKETING_EXECUTIVE.TYPE },
-		utility: DROPDOWNS.MARKETING_EXECUTIVE.UTILITY,
+		path: CORE_DROPDOWNS.MARKETING_EXECUTIVE.PATH,
+		params: { "dropdown-type": CORE_DROPDOWNS.MARKETING_EXECUTIVE.TYPE },
+		utility: CORE_DROPDOWNS.MARKETING_EXECUTIVE.UTILITY,
 	});
 
 	useEffect(() => {

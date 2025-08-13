@@ -21,7 +21,7 @@ import {
 	IconReportMedical,
 } from "@tabler/icons-react";
 import { t } from 'i18next';
-
+import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 
 export const sideNavigationLinks = {
 
@@ -255,13 +255,19 @@ export const sideNavigationLinks = {
 		},
 		{
 			label: t('Particular'),
-			path: "/hospital/masterdata/particular",
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX,
 			icon: IconShoppingBag,
 			color: "#F59E0B",
 		},
 		{
-			label: t('ParticularModule'),
-			path: "/hospital/masterdata/particular-module",
+			label: t('ParticularMode'),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR_MODE.INDEX,
+			icon: IconShoppingBag,
+			color: "#F59E0B",
+		},
+		{
+			label: t('ParticularType'),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR_TYPE.INDEX,
 			icon: IconShoppingBag,
 			color: "#F59E0B",
 		}

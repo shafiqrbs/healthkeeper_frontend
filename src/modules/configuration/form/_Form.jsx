@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Button, Flex, Grid, Box, ScrollArea, Text, Title, Stack, Card } from "@mantine/core";
+import {Button, Flex, Grid, Box, ScrollArea, Text, Title, Stack, Card, Group,ActionIcon} from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconDeviceFloppy } from "@tabler/icons-react";
+import {IconCheck, IconDeviceFloppy, IconRefreshDot} from "@tabler/icons-react";
 import Shortcut from "../../shortcut/Shortcut";
 import classes from "@assets/css/FeaturesCards.module.css";
 import __FormGeneric from "./__FormGeneric";
@@ -11,6 +11,9 @@ import _DomainDetailsSection from "../common/_DomainDetailsSection";
 import AccountingForm from "./__AccountingForm.jsx";
 import useDomainConfig from "@hooks/config-data/useDomainConfig";
 import __HospitalForm from "@modules/configuration/form/__HospitalForm";
+import {modals} from "@mantine/modals";
+import axios from "axios";
+import {notifications} from "@mantine/notifications";
 
 const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product"];
 
@@ -49,6 +52,37 @@ export default function _Form({ module }) {
 	const handleSubmit = () => {
 		document.getElementById(submitButtonId()).click();
 	};
+
+	function AccountingDataProcess(url) {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: "Confirm", cancel: "Cancel" },
+			confirmProps: { color: "red" },
+			onCancel: () => console.log("Cancel"),
+			onConfirm: async () => {
+				const response = await axios.get(`${import.meta.env.VITE_API_GATEWAY_URL}${url}`, {
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+						"X-Api-Key": import.meta.env.VITE_API_KEY,
+						"X-Api-User": JSON.parse(localStorage.getItem("user")).id,
+					},
+				});
+				if (response.data.message === "success") {
+					notifications.show({
+						color: "teal",
+						title: t("CreateSuccessfully"),
+						icon: <IconCheck style={{ width: "18px", height: "18px" }} />,
+						loading: false,
+						autoClose: 700,
+						style: { backgroundColor: "lightgray" },
+					});
+				}
+			},
+		});
+	}
+
 
 	return (
 		<Grid columns={24} gutter={{ base: 8 }}>
@@ -106,18 +140,26 @@ export default function _Form({ module }) {
 									<Stack right align="flex-end">
 										<>
 											{isOnline && (
-												<Button
-													size="xs"
-													className={"btnPrimaryBg"}
-													leftSection={<IconDeviceFloppy size={16} />}
-													onClick={handleSubmit}
-												>
-													<Flex direction={`column`} gap={0}>
-														<Text fz={14} fw={400}>
-															{t("UpdateAndSave")}
-														</Text>
-													</Flex>
-												</Button>
+												<>
+													<Group justify="center">
+														<Button
+															size="xs"
+															className={"btnPrimaryBg"}
+															leftSection={<IconDeviceFloppy size={16} />}
+															onClick={handleSubmit}>
+															<Flex direction={`column`} gap={0}>
+																<Text fz={14} fw={400}>
+																	{t("UpdateAndSave")}
+																</Text>
+															</Flex>
+														</Button>
+														<ActionIcon onClick={() => {
+															AccountingDataProcess(`/domain/config/hospital-reset/${id}`);
+														}} variant="filled" color="var(--theme-primary-color-3)" aria-label="Settings">
+															<IconRefreshDot style={{ width: '70%', height: '70%' }} stroke={1.5} />
+														</ActionIcon>
+													</Group>
+												</>
 											)}
 										</>
 									</Stack>

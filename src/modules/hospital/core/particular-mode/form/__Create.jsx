@@ -9,7 +9,7 @@ import { IconCheck, IconAlertCircle } from "@tabler/icons-react";
 import { rem, Text } from "@mantine/core";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants";
 import useCustomerDataStoreIntoLocalStorage from "@hooks/local-storage/useCustomerDataStoreIntoLocalStorage";
-import { MASTER_DATA_ROUTES } from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import Form from "./___Form";
 
 export default function __Create({ module, form, close }) {
@@ -32,7 +32,7 @@ export default function __Create({ module, form, close }) {
 		try {
 			setIsLoading(true);
 			const value = {
-				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.CREATE,
+				url: HOSPITAL_DATA_ROUTES.API_ROUTES.CUSTOMER.CREATE,
 				data: values,
 				module,
 			};

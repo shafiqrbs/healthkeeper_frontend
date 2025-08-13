@@ -10,7 +10,7 @@ import { getVendorFormInitialValues } from "./helpers/request";
 import { useTranslation } from "react-i18next";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import { useState } from "react";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/appRoutes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useDispatch } from "react-redux";
 import { storeEntityData } from "@/app/store/core/crudThunk";
