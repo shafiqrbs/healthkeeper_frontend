@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getGlobalDropdown } from "@/app/store/core/utilityThunk";
+import { setDynamicDropdownData } from "@/app/store/core/utilitySlice";
+
+// =============== utility function to get data from localStorage ================
+const getDataFromLocalStorage = (utility) => {
+	try {
+		const data = localStorage.getItem(utility);
+		return data ? JSON.parse(data) : null;
+	} catch (error) {
+		console.error(`Error reading ${utility} from localStorage:`, error);
+		return null;
+	}
+};
 
 const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 	const dispatch = useDispatch();
@@ -49,7 +61,21 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 
 	useEffect(() => {
 		if (!existingData?.length) {
-			dispatch(getGlobalDropdown(value));
+			// =============== check localStorage first ================
+			const localStorageData = getDataFromLocalStorage(utility);
+
+			if (localStorageData) {
+				// =============== if data exists in localStorage, set it to Redux store ================
+				dispatch(
+					setDynamicDropdownData({
+						key: utility,
+						data: { data: localStorageData },
+					})
+				);
+			} else {
+				// =============== if no data in localStorage, make API call ================
+				dispatch(getGlobalDropdown(value));
+			}
 		}
 	}, [dispatch, path, utility, type, JSON.stringify(params)]);
 

@@ -24,6 +24,7 @@ export const ACCOUNTING_DROPDOWNS = {
 
 export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_TYPE: { UTILITY: "particularType", PATH: "hospital/select/particular-type" },
+	PARTICULAR_MODE: { UTILITY: "particularMode", TYPE: "operation", PATH: "hospital/select/mode" },
 };
 
 const initialState = {

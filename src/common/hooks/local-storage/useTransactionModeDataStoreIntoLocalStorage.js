@@ -21,7 +21,7 @@ const useTransactionModeDataStoreIntoLocalStorage = async (user_id) => {
 				localStorage.setItem(localStorageKeys[i], JSON.stringify(response.data.data));
 			}
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 		}
 	}
 };

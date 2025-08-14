@@ -9,6 +9,7 @@ const useCommonDataStoreIntoLocalStorage = async (user_id) => {
 		{ url: "core/vendor/local-storage", key: "core-vendors" },
 		{ url: "core/user/local-storage", key: "core-users" },
 		{ url: "accounting/transaction-mode/local-storage", key: "accounting-transaction-mode" },
+		{ url: "hospital/select/mode?dropdown-type=operation", key: "particularMode" },
 	];
 
 	await Promise.all(

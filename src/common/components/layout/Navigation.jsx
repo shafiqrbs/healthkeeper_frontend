@@ -1,22 +1,20 @@
-import {useMemo, useState} from "react";
-import {Button, Flex, Text, Tooltip, ScrollArea, Grid, Box} from "@mantine/core";
+import { useMemo, useState } from "react";
+import { Button, Flex, Text, Tooltip, ScrollArea, Grid, Box } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { sideNavigationLinks } from "@/constants/sideNavigationLinks";
 import classes from "@assets/css/FeaturesCards.module.css";
 const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product"];
-export default function Navigation({ menu = "base",subMenu = "", mainAreaHeight }) {
+export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight }) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const links = useMemo(() => sideNavigationLinks[menu], [menu]);
 	const subLinks = useMemo(() => sideNavigationLinks[subMenu], [subMenu]);
 	const [activeTab, setActiveTab] = useState("Hospital");
-	console.log(links)
-	//console.log(subLinks)
 	return (
 		<>
 			<Box>
-				<Grid  columns={12} gutter={{ base: 8 }}>
+				<Grid columns={12} gutter={{ base: 8 }}>
 					<Grid.Col span={3}>
 						<ScrollArea miw={68} h={mainAreaHeight} bg="white" type="never" className="border-radius">
 							<Flex w={68} direction="column" px={4} py={13} gap={14}>
@@ -69,35 +67,34 @@ export default function Navigation({ menu = "base",subMenu = "", mainAreaHeight 
 							</Flex>
 						</ScrollArea>
 					</Grid.Col>
-					{
-						subLinks?.length > 0 &&(
-							<Grid.Col span={9}>
-								<ScrollArea h={mainAreaHeight} bg="white" type="never" className="border-radius">
-									<Box mt={'xs'}>
-										{subLinks.map((item, index) => (
-											<Box
-												key={index}
-												style={{
-													borderRadius: 4,
-													cursor: "pointer",
-												}}
-												className={`${classes["pressable-card"]} border-radius`}
-												mih={40}
-												m={'xxxs'}
-												mt="es"
-												variant="default"
-												onClick={() => navigate(item.path)}
-												bg={activeTab === item ? "#f8eedf" : "gray.1"} >
-												<Text size="sm" pt="xxxs" pl="xxxs" fw={500} c="black">
-													{t(item.label)}
-												</Text>
-											</Box>
-										))}
-									</Box>
-								</ScrollArea>
-							</Grid.Col>
-						)
-					}
+					{subLinks?.length > 0 && (
+						<Grid.Col span={9}>
+							<ScrollArea h={mainAreaHeight} bg="white" type="never" className="border-radius">
+								<Box mt={"xs"}>
+									{subLinks.map((item, index) => (
+										<Box
+											key={index}
+											style={{
+												borderRadius: 4,
+												cursor: "pointer",
+											}}
+											className={`${classes["pressable-card"]} border-radius`}
+											mih={40}
+											m={"xxxs"}
+											mt="es"
+											variant="default"
+											onClick={() => navigate(item.path)}
+											bg={activeTab === item ? "#f8eedf" : "gray.1"}
+										>
+											<Text size="sm" pt="xxxs" pl="xxxs" fw={500} c="black">
+												{t(item.label)}
+											</Text>
+										</Box>
+									))}
+								</Box>
+							</ScrollArea>
+						</Grid.Col>
+					)}
 				</Grid>
 			</Box>
 		</>
