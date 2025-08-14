@@ -11,6 +11,8 @@ import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constant
 import useCustomerDataStoreIntoLocalStorage from "@hooks/local-storage/useCustomerDataStoreIntoLocalStorage";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import Form from "./___Form";
+import {successNotification} from "@components/notification/successNotification";
+import {errorNotification} from "@components/notification/errorNotification";
 
 export default function __Create({ module, form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -48,30 +50,14 @@ export default function __Create({ module, form, close }) {
 					form.setErrors(errorObject);
 				}
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
-				useCustomerDataStoreIntoLocalStorage();
 				form.reset();
 				close(); // close the drawer
 				setIndexData(null);
 				dispatch(setRefetchData({ module, refetching: true }));
-				notifications.show({
-					color: SUCCESS_NOTIFICATION_COLOR,
-					title: t("CreateSuccessfully"),
-					icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-					loading: false,
-					autoClose: 1400,
-					style: { backgroundColor: "lightgray" },
-				});
+				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
-			console.error(error);
-			notifications.show({
-				color: ERROR_NOTIFICATION_COLOR,
-				title: error.message,
-				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-				loading: false,
-				autoClose: 2000,
-				style: { backgroundColor: "lightgray" },
-			});
+			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
 		} finally {
 			setIsLoading(false);
 		}

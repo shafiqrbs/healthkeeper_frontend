@@ -10,8 +10,8 @@ import { updateEntityData } from "@/app/store/core/crudThunk";
 import { useParams, useNavigate } from "react-router-dom";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
 import { setInsertType } from "@/app/store/core/crudSlice";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import Form from "@modules/hospital/customer/form/___Form";
+import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import Form from "./___Form";
 
 export default function __Update({ module, form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -35,8 +35,9 @@ export default function __Update({ module, form, close }) {
 
 	async function handleConfirmModal(values) {
 		try {
+
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.CUSTOMER.UPDATE}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.UPDATE}/${id}`,
 				data: values,
 				module,
 			};
@@ -71,7 +72,7 @@ export default function __Update({ module, form, close }) {
 					dispatch(setInsertType({ insertType: "create", module }));
 					setIsLoading(false);
 					close(); // close the drawer
-					navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.INDEX, { replace: true });
+					navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX, { replace: true });
 					setIndexData(null);
 				}, 700);
 			}
@@ -88,6 +89,7 @@ export default function __Update({ module, form, close }) {
 		}
 	}
 
+	console.log(form)
 	return (
 		<Form
 			type="update"

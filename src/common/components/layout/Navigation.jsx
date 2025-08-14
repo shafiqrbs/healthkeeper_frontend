@@ -11,6 +11,8 @@ export default function Navigation({ menu = "base",subMenu = "", mainAreaHeight 
 	const links = useMemo(() => sideNavigationLinks[menu], [menu]);
 	const subLinks = useMemo(() => sideNavigationLinks[subMenu], [subMenu]);
 	const [activeTab, setActiveTab] = useState("Hospital");
+	console.log(links)
+	//console.log(subLinks)
 	return (
 		<>
 			<Box>
@@ -74,7 +76,7 @@ export default function Navigation({ menu = "base",subMenu = "", mainAreaHeight 
 									<Box mt={'xs'}>
 										{subLinks.map((item, index) => (
 											<Box
-												key={item}
+												key={index}
 												style={{
 													borderRadius: 4,
 													cursor: "pointer",

@@ -38,7 +38,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
-				particular_type: data.particular_type,
+				particular_type_id: data.particular_type_id,
 				name: data.name,
 				category_id: data.category_id,
 				employee_id: data.employee_id,
@@ -140,7 +140,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												required={false}
 												name="name"
 												id="name"
-												nextField="price"
+												nextField="instruction"
 											/>
 										</Grid.Col>
 									</Grid>

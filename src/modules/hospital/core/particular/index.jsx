@@ -58,7 +58,7 @@ export default function Index({ mode = "create" }) {
 						<GlobalDrawer
 							opened={opened}
 							close={close}
-							title={mode === "create" ? t("CreateCustomer") : t("UpdateCustomer")}>
+							title={mode === "create" ? t("CreateParticular") : t("UpdateParticular")}>
 							<IndexForm module={module} form={form} mode={mode} close={close} />
 						</GlobalDrawer>
 					</Box>

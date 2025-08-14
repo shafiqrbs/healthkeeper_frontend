@@ -172,6 +172,7 @@ function AppRoute() {
 				</Route>
 				<Route path="/hospital/core/">
 					<Route path="particular" element={<ParticularIndex />} />
+					<Route path="particular/:id" element={<ParticularIndex mode={'edit'} />} />
 					<Route path="particular-mode" element={<ParticularModeIndex />} />
 					<Route path="particular-type" element={<ParticularTypeIndex />} />
 					<Route path="category" element={<CategoryIndex />} />

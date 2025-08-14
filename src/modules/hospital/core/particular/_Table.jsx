@@ -28,6 +28,8 @@ import DataTableFooter from "@components/tables/DataTableFooter.jsx";
 import { sortBy } from "lodash";
 import { useOs } from "@mantine/hooks";
 import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
+import {errorNotification} from "@components/notification/errorNotification";
+import {deleteNotification} from "@components/notification/deleteNotification";
 
 const PER_PAGE = 50;
 
@@ -47,8 +49,9 @@ export default function _Table({ module, open, close }) {
 	const refetchData = useSelector((state) => state.crud[module].refetching);
 	const listData = useSelector((state) => state.crud[module].data);
 	const filterData = useSelector((state) => state.crud[module].filterData);
+	const editData = useSelector((state) => state.crud[module].editData);
 
-	const [customerObject, setCustomerObject] = useState({});
+	const [entityObject, setEntityObject] = useState({});
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -73,8 +76,6 @@ export default function _Table({ module, open, close }) {
 			params: {
 				term: searchKeyword,
 				name: filterData.name,
-				mobile: filterData.mobile,
-				company_name: filterData.company_name,
 				page: pageNum,
 				offset: PER_PAGE,
 			},
@@ -83,12 +84,13 @@ export default function _Table({ module, open, close }) {
 
 		try {
 			const result = await dispatch(getIndexEntityData(value));
+
 			if (result.payload) {
 				const newData = result.payload.data;
-				const total = result.payload.total;
+				const total = result.payload.data.total;
 
 				// Update hasMore based on whether we've loaded all data
-				setHasMore(newData.length === PER_PAGE && pageNum * PER_PAGE < total);
+				setHasMore(newData.data.length === PER_PAGE && pageNum * PER_PAGE < total);
 
 				// If appending, combine with existing data
 				if (append && pageNum > 1) {
@@ -112,7 +114,9 @@ export default function _Table({ module, open, close }) {
 	};
 
 	const loadMoreRecords = useCallback(() => {
+		console.log(hasMore)
 		if (hasMore && !fetching) {
+			console.log(fetching)
 			const nextPage = page + 1;
 			setPage(nextPage);
 			fetchData(nextPage, true);
@@ -132,17 +136,16 @@ export default function _Table({ module, open, close }) {
 		}
 	}, [dispatch, searchKeyword, filterData, refetchData, isMounted, id]);
 
-	const handleCustomerEdit = (id) => {
+	const handleEntityEdit = (id) => {
 		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
-				url: `${CORE_DATA_ROUTES.API_ROUTES.PARTICULAR.UPDATE}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
 				module,
 			})
 		);
-		navigate(`${CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.UPDATE}/${id}`);
+		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX}/${id}`);
 	};
-
 	const handleDelete = (id) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
@@ -160,22 +163,15 @@ export default function _Table({ module, open, close }) {
 	const handleDeleteSuccess = async (id) => {
 		const resultAction = await dispatch(
 			deleteEntityData({
-				url: `${CORE_DATA_ROUTES.API_ROUTES.PARTICULAR.DELETE}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.DELETE}/${id}`,
 				module,
 				id,
 			})
 		);
 		if (deleteEntityData.fulfilled.match(resultAction)) {
 			dispatch(setRefetchData({ module, refetching: true }));
-			notifications.show({
-				color: SUCCESS_NOTIFICATION_COLOR,
-				title: t("DeleteSuccessfully"),
-				icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-				loading: false,
-				autoClose: 700,
-				style: { backgroundColor: "lightgray" },
-			});
-			navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR);
+			deleteNotification(t("DeletedSuccessfully"),ERROR_NOTIFICATION_COLOR);
+			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR);
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
@@ -185,36 +181,20 @@ export default function _Table({ module, open, close }) {
 			});
 		}
 	};
-
 	const handleDataShow = (id) => {
-		const customers = getCustomers();
-		const foundCustomers = customers.find((customer) => customer.id == id);
-		if (foundCustomers) {
-			setCustomerObject(foundCustomers);
-			setViewDrawer(true);
-		} else {
-			notifications.show({
-				color: "red",
-				title: t("Something Went wrong , please try again"),
-				icon: (
-					<IconAlertCircle
-						style={{
-							width: rem(18),
-							height: rem(18),
-						}}
-					/>
-				),
-				loading: false,
-				autoClose: 900,
-				style: { backgroundColor: "lightgray" },
-			});
-		}
+		dispatch(
+			editEntityData({
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
+				module,
+			})
+		);
+		setViewDrawer(true);
 	};
 
 	const handleCreateForm = () => {
 		 open();
-		 dispatch(setInsertType({ insertType: "create", module }));
-		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR);
+		  dispatch(setInsertType({ insertType: "create", module }));
+		  navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX);
 	};
 
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
@@ -280,7 +260,7 @@ export default function _Table({ module, open, close }) {
 										<Button.Group>
 											<Button
 												onClick={() => {
-													handleCustomerEdit(values.id);
+													handleEntityEdit(values.id);
 													open();
 												}}
 												variant="filled"
@@ -337,7 +317,7 @@ export default function _Table({ module, open, close }) {
 				/>
 			</Box>
 			<DataTableFooter indexData={listData} module={module} />
-			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={customerObject} />
+			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module} />
 		</>
 	);
 }

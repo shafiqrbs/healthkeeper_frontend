@@ -5,7 +5,7 @@ import { editEntityData } from "@/app/store/core/crudThunk";
 import { setFilterData, setSearchKeyword, setInsertType } from "@/app/store/core/crudSlice";
 import __Update from "./__Update";
 import __Create from "./__Create";
-import {CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES} from "@/constants/routes";
+import {CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
 import {CORE_NAV_LINKS} from "@/constants/mainDashboardLinks";
 
 export default function _IndexForm({ module, form, close, mode }) {
@@ -33,11 +33,12 @@ export default function _IndexForm({ module, form, close, mode }) {
 		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PARTICULAR.UPDATE}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
 				module,
 			})
 		);
 	};
+
 
 	// =============== handle create mode initialization ================
 	const handleCreateMode = () => {
@@ -52,7 +53,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 				},
 			})
 		);
-		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR, { replace: true });
+		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR, { replace: true });
 	};
 
 	// =============== effect to handle mode switching ================
@@ -65,6 +66,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 	}, [isEditMode]);
 
 	// =============== render form based on mode ================
+	console.log(insertType)
 	if (insertType === "create") {
 		return <__Create module={module} form={form} close={close} />;
 	}

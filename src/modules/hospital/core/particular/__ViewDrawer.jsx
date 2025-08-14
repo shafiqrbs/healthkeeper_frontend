@@ -1,17 +1,16 @@
 import { Grid, Box, Drawer, Text, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconArrowLeft } from "@tabler/icons-react";
+import {useSelector} from "react-redux";
 
-export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }) {
+export default function __ViewDrawer({ viewDrawer, setViewDrawer,module }) {
 	const { t } = useTranslation();
 	const height = 500; //TabList height 104
+	const entityObject = useSelector((state) => state.crud[module].editData);
 	const closeDrawer = () => {
 		setViewDrawer(false);
 	};
-	let showData = {};
-	if (entityObject) {
-		showData = entityObject;
-	}
+	console.log(entityObject)
 
 	return (
 		<Drawer.Root opened={viewDrawer} position="right" onClose={closeDrawer} offset={16}>
@@ -22,7 +21,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 						<Flex align="center" gap={8}>
 							<IconArrowLeft size={16} />{" "}
 							<Text mt="es" fz={16} fw={500}>
-								{t("CustomerData")}
+								{t("Particular")}
 							</Text>
 						</Flex>
 					</Drawer.Title>
@@ -36,7 +35,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 									{t("Name")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>{showData && showData.name && showData.name}</Grid.Col>
+								<Grid.Col span={"auto"}>{entityObject && entityObject.name && entityObject.name}</Grid.Col>
 							</Grid>
 							<Grid columns={24}>
 								<Grid.Col span={"8"} className="drawer-form-input-label">
@@ -44,7 +43,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>
-									{showData && showData.company_name && showData.company_name}
+									{entityObject && entityObject.company_name && entityObject.company_name}
 								</Grid.Col>
 							</Grid>
 							<Grid columns={24}>
@@ -52,7 +51,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 									{t("Mobile")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>{showData && showData.mobile && showData.mobile}</Grid.Col>
+								<Grid.Col span={"auto"}>{entityObject && entityObject.mobile && entityObject.mobile}</Grid.Col>
 							</Grid>
 
 							<Grid columns={24}>
@@ -60,7 +59,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 									{t("Email")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>{showData && showData.email && showData.email}</Grid.Col>
+								<Grid.Col span={"auto"}>{entityObject && entityObject.email && entityObject.email}</Grid.Col>
 							</Grid>
 						</Box>
 					</Box>
