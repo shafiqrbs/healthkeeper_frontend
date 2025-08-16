@@ -18,7 +18,6 @@ export default function Vitals({ vitals, form }) {
 	const { t } = useTranslation();
 	return (
 		<Flex gap="les" mt="xxxs" mb="xxxs" wrap="wrap">
-
 			<Group gap="les" grow w="100%" px="les">
 				<InputForm
 					value={vitals.bp}
@@ -51,6 +50,16 @@ export default function Vitals({ vitals, form }) {
 					mt={0}
 					size="sm"
 					pt={0}
+				/>
+				<InputForm
+					value={vitals.bp}
+					label={t("bp")}
+					name="bp"
+					tooltip="Blood Pressure"
+					form={form}
+					placeholder="120/80"
+					mt={0}
+					styles={{ input: { padding: "es", fontSize: "sm" } }}
 				/>
 			</Group>
 		</Flex>

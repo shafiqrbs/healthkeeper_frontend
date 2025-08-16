@@ -44,7 +44,7 @@ export default function Index() {
 										<BaseTabs
 											tabValue={tabValue}
 											setTabValue={setTabValue}
-											tabList={["All", "Vitals", "Chief Complaints", "OLE", "Investigation"]}
+											tabList={["All", "Chief Complaints", "OLE", "Investigation"]}
 										/>
 									</Grid.Col>
 									<Grid.Col span={9}>

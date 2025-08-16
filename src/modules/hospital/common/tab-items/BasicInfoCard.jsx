@@ -1,21 +1,14 @@
-import {Box, Divider, Flex, Group, Stack, Text} from "@mantine/core";
+import { Box, Divider, Flex, Group, Stack, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import InputForm from "@components/form-builders/InputForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import Vitals from "@modules/hospital/common/tab-items/Vitals";
-import {useState} from "react";
-import {useForm} from "@mantine/form";
+import { useState } from "react";
+import { useForm } from "@mantine/form";
 
-export default function BasicInfoCard({ patientData }) {
+export default function BasicInfoCard({ patientData, form }) {
 	const { t } = useTranslation();
-	const form = useForm({
-		initialValues: {
-			bp: "120/80",
-			sugar: "",
-			weight: "",
-			bloodGroup: "O+",
-		},
-	});
+
 	const [vitals, setVitals] = useState({
 		bp: "120/80",
 		sugar: "",
@@ -37,7 +30,7 @@ export default function BasicInfoCard({ patientData }) {
 				</Text>
 			</Flex>
 			<Divider></Divider>
-			<Box bg={'white'}>
+			<Box bg={"white"}>
 				<Vitals vitals={vitals} form={form} />
 			</Box>
 		</Stack>

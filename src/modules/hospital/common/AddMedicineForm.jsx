@@ -28,9 +28,13 @@ const DOSAGE_OPTIONS = [
 	{ value: "1 syringe", label: "1 Syringe" },
 ];
 const FREQUENCY_OPTIONS = [
-	{ value: "1", label: "1 time" },
-	{ value: "2", label: "2 times" },
-	{ value: "3", label: "3 times" },
+	{ value: "1+0+1", label: "1 + 0 + 1" },
+	{ value: "1+1+1", label: "1 + 1 + 1" },
+	{ value: "1+1+0", label: "1 + 1 + 0" },
+	{ value: "1+0+0", label: "1 + 0 + 0" },
+	{ value: "0+1+1", label: "0 + 1 + 1" },
+	{ value: "0+1+0", label: "0 + 1 + 0" },
+	{ value: "0+0+1", label: "0 + 0 + 1" },
 ];
 const MEDITATION_DURATION = [
 	{ value: "day", label: "Day" },
@@ -138,9 +142,33 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 	const { t } = useTranslation();
 	const form = useForm(getMedicineFormInitialValues());
 	const [medicines, setMedicines] = useState([
-		{ generic: "Napa", brand: "Napa", dosage: "1 tab", times: "1", timing: "before", unit: "day" },
-		{ generic: "Heparin", brand: "Heparin", dosage: "1 tab", times: "1", timing: "before", unit: "day" },
-		{ generic: "Paracetamol", brand: "Paracetamol", dosage: "1 tab", times: "1", timing: "before", unit: "day" },
+		{
+			generic: "Napa",
+			brand: "Napa",
+			dosage: "1 tab",
+			times: "1+0+1",
+			timing: "before",
+			unit: "day",
+			duration: "1",
+		},
+		{
+			generic: "Heparin",
+			brand: "Heparin",
+			dosage: "1 tab",
+			times: "1+1+1",
+			timing: "before",
+			unit: "day",
+			duration: "1",
+		},
+		{
+			generic: "Paracetamol",
+			brand: "Paracetamol",
+			dosage: "1 tab",
+			times: "1+0+1",
+			timing: "before",
+			unit: "day",
+			duration: "1",
+		},
 	]);
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
@@ -371,13 +399,28 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 				// =================== button group ===================
 				<Button.Group bg="var(--theme-primary-color-0)" p="les">
 					<Button w="100%" bg="var(--theme-reset-btn-color)" leftSection={<IconRestore size={16} />}>
-						{t("reset")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("reset")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 1)
+							</Text>
+						</Stack>
 					</Button>
 					<Button w="100%" bg="var(--theme-hold-btn-color)">
-						{t("Hold")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("Hold")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 2)
+							</Text>
+						</Stack>
 					</Button>
 					<Button w="100%" bg="var(--theme-prescription-btn-color)">
-						{t("prescription")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("prescription")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 3)
+							</Text>
+						</Stack>
 					</Button>
 					<Button
 						onClick={handlePrintPrescriptionA4}
@@ -385,13 +428,28 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 						bg="var(--theme-print-btn-color)"
 						type="button"
 					>
-						{t("a4Print")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("a4Print")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 4)
+							</Text>
+						</Stack>
 					</Button>
 					<Button onClick={handlePrescriptionPosPrint} w="100%" bg="var(--theme-pos-btn-color)" type="button">
-						{t("Pos")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("Pos")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + p)
+							</Text>
+						</Stack>
 					</Button>
 					<Button w="100%" bg="var(--theme-save-btn-color)">
-						{t("Save")}
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("Save")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + s)
+							</Text>
+						</Stack>
 					</Button>
 				</Button.Group>
 			)}
