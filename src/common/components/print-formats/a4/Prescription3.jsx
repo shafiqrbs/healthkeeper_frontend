@@ -10,15 +10,15 @@ const Prescription3 = forwardRef((props, ref) => {
 		<Box display="none">
 			<Box ref={ref} p="md" className="watermark" ff="Arial, sans-serif">
 				{/* =============== hospital header section ================ */}
-				<Box bd="2px solid #1e40af" mb="md" pb="xxs">
+				<Box bd="2px solid var(--theme-primary-color-9)" mb="md" pb="xxs">
 					<Grid>
 						<Grid.Col span={4}>
 							<Group ml="sm" align="center" h="100%">
-								<Image src={GLogo} alt="logo" width={110} height={110} />
+								<Image src={GLogo} alt="logo" width={90} height={90} />
 							</Group>
 						</Grid.Col>
 						<Grid.Col span={4}>
-							<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="md">
+							<Text ta="center" fw="bold" size="md" c="#1e40af" mt="md">
 								250 Bedded TB Hospital
 							</Text>
 							<Text ta="center" size="sm" c="gray">
@@ -28,13 +28,13 @@ const Prescription3 = forwardRef((props, ref) => {
 								Hotline: 01969910200
 							</Text>
 
-							<Text ta="center" fw="bold" size="xl" c="#1e40af" mt="lg">
+							<Text ta="center" mt="es" fw="bold" size="md" c="#1e40af">
 								Prescription
 							</Text>
 						</Grid.Col>
 						<Grid.Col span={4}>
 							<Group mr="sm" justify="flex-end" align="center" h="100%">
-								<Image src={TBLogo} alt="logo" width={110} height={110} />
+								<Image src={TBLogo} alt="logo" width={90} height={90} />
 							</Group>
 						</Grid.Col>
 					</Grid>

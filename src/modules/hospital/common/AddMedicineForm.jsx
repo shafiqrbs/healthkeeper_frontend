@@ -1,6 +1,19 @@
 import { useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import { Box, Button, Group, ActionIcon, Text, Stack, Flex, Grid, ScrollArea, Divider, Select } from "@mantine/core";
+import {
+	Box,
+	Button,
+	Group,
+	ActionIcon,
+	Text,
+	Stack,
+	Flex,
+	Grid,
+	ScrollArea,
+	Divider,
+	Select,
+	Menu,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconPencil, IconPlus, IconRestore, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
@@ -14,6 +27,8 @@ import Prescription from "@/common/components/print-formats/a4/Prescription";
 import PrescriptionPos from "@/common/components/print-formats/pos/Prescription";
 import Prescription2 from "@/common/components/print-formats/a4/Prescription2";
 import Prescription3 from "@/common/components/print-formats/a4/Prescription3";
+import PrescriptionPreview from "./PrescriptionPreview";
+import { useDisclosure } from "@mantine/hooks";
 
 const GENERIC_OPTIONS = ["Napa", "Paracetamol", "Paracetamol (Doxylamin)", "Paracetamol (Acetaminophen)"];
 const BRAND_OPTIONS = [
@@ -173,7 +188,27 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const prescriptionA4Ref = useRef(null);
+	const prescription2A4Ref = useRef(null);
+	const prescription3A4Ref = useRef(null);
 	const prescriptionPosRef = useRef(null);
+
+	const [opened, { open, close }] = useDisclosure(false);
+
+	// =============== create print functions using useReactToPrint hook ================
+	const printPrescriptionA4 = useReactToPrint({
+		documentTitle: `prescription-${Date.now().toLocaleString()}`,
+		content: () => prescriptionA4Ref.current,
+	});
+
+	const printPrescription2A4 = useReactToPrint({
+		documentTitle: `prescription-${Date.now().toLocaleString()}`,
+		content: () => prescription2A4Ref.current,
+	});
+
+	const printPrescription3A4 = useReactToPrint({
+		documentTitle: `prescription-${Date.now().toLocaleString()}`,
+		content: () => prescription3A4Ref.current,
+	});
 
 	const handleChange = (field, value) => {
 		form.setFieldValue(field, value);
@@ -199,14 +234,15 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 		}
 	};
 
-	const handlePrintPrescriptionA4 = useReactToPrint({
-		documentTitle: `prescription-${Date.now().toLocaleString()}`,
-		content: () => prescriptionA4Ref.current,
-	});
-
-	const handlePrescriptionPosPrint = useReactToPrint({
-		content: () => prescriptionPosRef.current,
-	});
+	const handlePrintPrescriptionA4 = (type) => {
+		if (type === 1) {
+			printPrescriptionA4();
+		} else if (type === 2) {
+			printPrescription2A4();
+		} else {
+			printPrescription3A4();
+		}
+	};
 
 	return (
 		<Box component="form" onSubmit={form.onSubmit(handleAdd)} className="borderRadiusAll" bg="white">
@@ -414,7 +450,7 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 							</Text>
 						</Stack>
 					</Button>
-					<Button w="100%" bg="var(--theme-prescription-btn-color)">
+					<Button w="100%" bg="var(--theme-prescription-btn-color)" onClick={open}>
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("prescription")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -422,27 +458,24 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 							</Text>
 						</Stack>
 					</Button>
-					<Button
-						onClick={handlePrintPrescriptionA4}
-						w="100%"
-						bg="var(--theme-print-btn-color)"
-						type="button"
-					>
-						<Stack gap={0} align="center" justify="center">
-							<Text>{t("a4Print")}</Text>
-							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-								(alt + 4)
-							</Text>
-						</Stack>
-					</Button>
-					<Button onClick={handlePrescriptionPosPrint} w="100%" bg="var(--theme-pos-btn-color)" type="button">
-						<Stack gap={0} align="center" justify="center">
-							<Text>{t("Pos")}</Text>
-							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-								(alt + p)
-							</Text>
-						</Stack>
-					</Button>
+					<Menu shadow="md" width={200}>
+						<Menu.Target>
+							<Button w="100%" bg="var(--theme-print-btn-color)" type="button">
+								<Stack gap={0} align="center" justify="center">
+									<Text>{t("a4Print")}</Text>
+									<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+										(alt + 4)
+									</Text>
+								</Stack>
+							</Button>
+						</Menu.Target>
+
+						<Menu.Dropdown>
+							<Menu.Item onClick={() => handlePrintPrescriptionA4(1)}>Template 1</Menu.Item>
+							<Menu.Item onClick={() => handlePrintPrescriptionA4(2)}>Template 2</Menu.Item>
+							<Menu.Item onClick={() => handlePrintPrescriptionA4(3)}>Template 3</Menu.Item>
+						</Menu.Dropdown>
+					</Menu>
 					<Button w="100%" bg="var(--theme-save-btn-color)">
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("Save")}</Text>
@@ -453,10 +486,12 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 					</Button>
 				</Button.Group>
 			)}
-			{/* <Prescription ref={prescriptionA4Ref} /> */}
-			 <Prescription2 ref={prescriptionA4Ref} />
-			<Prescription3 ref={prescriptionA4Ref} />
+			<Prescription ref={prescriptionA4Ref} />
+			<Prescription2 ref={prescription2A4Ref} />
+			<Prescription3 ref={prescription3A4Ref} />
 			<PrescriptionPos ref={prescriptionPosRef} />
+
+			<PrescriptionPreview opened={opened} close={close} />
 		</Box>
 	);
 }
