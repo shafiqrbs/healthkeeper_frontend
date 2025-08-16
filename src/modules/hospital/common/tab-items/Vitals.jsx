@@ -20,17 +20,7 @@ export default function Vitals({ vitals, form }) {
 		<Flex gap="les" mt="xxxs" mb="xxxs" wrap="wrap">
 			<Group gap="les" grow w="100%" px="les">
 				<InputForm
-					value={vitals.bp}
-					label={t("bp")}
-					name="bp"
-					tooltip="Blood Pressure"
-					form={form}
-					placeholder="120/80"
-					mt={0}
-					styles={{ input: { padding: "es", fontSize: "sm" } }}
-				/>
-				<InputForm
-					value={vitals.weight}
+					value={form.values.weight}
 					label={t("weight")}
 					name="weight"
 					tooltip="Weight"
@@ -40,7 +30,7 @@ export default function Vitals({ vitals, form }) {
 					styles={{ input: { padding: "es", fontSize: "sm" } }}
 				/>
 				<SelectForm
-					value={vitals.bloodGroup}
+					value={form.values.bloodGroup}
 					label={t("bloodGroup")}
 					name="bloodGroup"
 					form={form}
@@ -52,7 +42,7 @@ export default function Vitals({ vitals, form }) {
 					pt={0}
 				/>
 				<InputForm
-					value={vitals.bp}
+					value={form.values.bp}
 					label={t("bp")}
 					name="bp"
 					tooltip="Blood Pressure"

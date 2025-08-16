@@ -43,7 +43,7 @@ export default function PatientReport({ patientData, tabValue }) {
 			case "All":
 				return (
 					<ScrollArea h={height}>
-						<BasicInfoCard patientData={patientData} />
+						<BasicInfoCard patientData={patientData} form={form} />
 						<ChiefComplaints complaints={complaints} handleComplaintChange={handleComplaintChange} />
 						<Investigation
 							investigation={investigation}
@@ -55,14 +55,14 @@ export default function PatientReport({ patientData, tabValue }) {
 			case "Chief Complaints":
 				return (
 					<ScrollArea h={height}>
-						<BasicInfoCard patientData={patientData} />
+						<BasicInfoCard patientData={patientData} form={form} />
 						<ChiefComplaints complaints={complaints} handleComplaintChange={handleComplaintChange} />
 					</ScrollArea>
 				);
 			case "Investigation":
 				return (
 					<ScrollArea h={height}>
-						<BasicInfoCard patientData={patientData} />
+						<BasicInfoCard patientData={patientData} form={form} />
 						<Investigation
 							investigation={investigation}
 							setInvestigation={setInvestigation}
@@ -73,7 +73,7 @@ export default function PatientReport({ patientData, tabValue }) {
 			case "OLE":
 				return (
 					<ScrollArea h={height}>
-						<BasicInfoCard patientData={patientData} />
+						<BasicInfoCard patientData={patientData} form={form} />
 						<OLE ole={ole} handleOleChange={handleOleChange} />
 					</ScrollArea>
 				);
