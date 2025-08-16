@@ -9,7 +9,7 @@ import {
 	IconEdit,
 	IconEye,
 	IconChevronUp,
-	IconSelector,
+	IconSelector,IconDeviceFloppy
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,7 +28,10 @@ import DataTableFooter from "@components/tables/DataTableFooter.jsx";
 import { sortBy } from "lodash";
 import { useOs } from "@mantine/hooks";
 import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
-
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import {HOSPITAL_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import { useForm } from "@mantine/form";
+import SelectForm from "@components/form-builders/SelectForm";
 const PER_PAGE = 50;
 
 export default function _Table({ module, open, close }) {
@@ -37,7 +40,7 @@ export default function _Table({ module, open, close }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { id } = useParams();
-	const height = mainAreaHeight - 78; //TabList height 104
+	const height = mainAreaHeight - 48; //TabList height 104
 	const scrollViewportRef = useRef(null);
 	const os = useOs();
 	const [page, setPage] = useState(1);
@@ -52,56 +55,22 @@ export default function _Table({ module, open, close }) {
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
 
-	const [sortStatus, setSortStatus] = useState({
-		columnAccessor: "name",
-		direction: "asc",
+	const { data: particularTypeDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.UTILITY,
 	});
 
 	const [records, setRecords] = useState(sortBy(listData.data, "name"));
 
-	useEffect(() => {
-		const data = sortBy(listData.data, sortStatus.columnAccessor);
-		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
-	}, [sortStatus, listData.data]);
-
 	const fetchData = async (pageNum = 1, append = false) => {
-		if (!hasMore && pageNum > 1) return;
-
 		setFetching(true);
 		const value = {
 			url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_TYPE.INDEX,
-			params: {
-				term: searchKeyword,
-				name: filterData.name,
-				page: pageNum,
-				offset: PER_PAGE,
-			},
 			module,
 		};
-
 		try {
 			const result = await dispatch(getIndexEntityData(value));
-			if (result.payload) {
-				const newData = result.payload.data;
-				const total = result.payload.total;
 
-				// Update hasMore based on whether we've loaded all data
-				setHasMore(newData.length === PER_PAGE && pageNum * PER_PAGE < total);
-
-				// If appending, combine with existing data
-				if (append && pageNum > 1) {
-					dispatch(
-						setItemData({
-							module,
-							data: {
-								...listData,
-								data: [...listData.data, ...newData],
-								total: total,
-							},
-						})
-					);
-				}
-			}
 		} catch (err) {
 			console.error("Unexpected error:", err);
 		} finally {
@@ -109,122 +78,40 @@ export default function _Table({ module, open, close }) {
 		}
 	};
 
-	const loadMoreRecords = useCallback(() => {
-		if (hasMore && !fetching) {
-			const nextPage = page + 1;
-			setPage(nextPage);
-			fetchData(nextPage, true);
-		} else if (!hasMore) {
-			console.info("No more records");
-		}
-	}, [hasMore, fetching, page]);
-
 	// =============== combined logic for data fetching and scroll reset ================
-	useEffect(() => {
-		if ((!id && (isMounted || refetchData)) || (id && !refetchData)) {
-			fetchData(1, false);
-			setPage(1);
-			setHasMore(true);
-			// reset scroll position when data is refreshed
-			scrollViewportRef.current?.scrollTo(0, 0);
-		}
-	}, [dispatch, searchKeyword, filterData, refetchData, isMounted, id]);
 
-	const handleCustomerEdit = (id) => {
-		dispatch(setInsertType({ insertType: "update", module }));
-		dispatch(
-			editEntityData({
-				url: `${CORE_DATA_ROUTES.API_ROUTES.PARTICULAR.UPDATE}/${id}`,
-				module,
-			})
-		);
-		navigate(`${CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.UPDATE}/${id}`);
-	};
+	const form = useForm({
+		initialValues: {
+			mode_id: "",
+		},
+	});
 
-	const handleDelete = (id) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: {
-				confirm: "Confirm",
-				cancel: "Cancel",
-			},
-			confirmProps: { color: "var(--theme-delete-color)" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleDeleteSuccess(id),
-		});
-	};
+	const handleDomainTypeChange = async (id, value) => {
+		setDomainTypeMap((prev) => ({ ...prev, [id]: value }));
 
-	const handleDeleteSuccess = async (id) => {
-		const resultAction = await dispatch(
-			deleteEntityData({
-				url: `${CORE_DATA_ROUTES.API_ROUTES.PARTICULAR.DELETE}/${id}`,
-				module,
-				id,
-			})
-		);
-		if (deleteEntityData.fulfilled.match(resultAction)) {
-			dispatch(setRefetchData({ module, refetching: true }));
-			notifications.show({
-				color: SUCCESS_NOTIFICATION_COLOR,
-				title: t("DeleteSuccessfully"),
-				icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-				loading: false,
-				autoClose: 700,
-				style: { backgroundColor: "lightgray" },
-			});
-			navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR);
-			dispatch(setInsertType({ insertType: "create", module }));
-		} else {
-			notifications.show({
-				color: ERROR_NOTIFICATION_COLOR,
-				title: t("Delete Failed"),
-				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-			});
+		try {
+			const payload = {
+				url: "domain/b2b/inline-update/domain",
+				data: {
+					domain_id: id,
+					field_name: "domain_type",
+					value,
+				},
+			};
+			await dispatch(storeEntityData(payload));
+			setRefresh(true);
+		} catch (error) {
+			console.error("Domain type update failed", error);
+			showNotificationComponent(t("Update failed"), "red");
 		}
 	};
 
-	const handleDataShow = (id) => {
-		const customers = getCustomers();
-		const foundCustomers = customers.find((customer) => customer.id == id);
-		if (foundCustomers) {
-			setCustomerObject(foundCustomers);
-			setViewDrawer(true);
-		} else {
-			notifications.show({
-				color: "red",
-				title: t("Something Went wrong , please try again"),
-				icon: (
-					<IconAlertCircle
-						style={{
-							width: rem(18),
-							height: rem(18),
-						}}
-					/>
-				),
-				loading: false,
-				autoClose: 900,
-				style: { backgroundColor: "lightgray" },
-			});
-		}
-	};
-
-	const handleCreateForm = () => {
-		 open();
-		 dispatch(setInsertType({ insertType: "create", module }));
-		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR);
-	};
 
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
 
 	return (
 		<>
-			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
-				<Flex align="center" justify="space-between" gap={4}>
-					<KeywordSearch module={module} />
-					<CreateButton handleModal={handleCreateForm} text="AddNew" />
-				</Flex>
-			</Box>
+
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
 					classNames={{
@@ -241,20 +128,12 @@ export default function _Table({ module, open, close }) {
 							accessor: "index",
 							title: t("S/N"),
 							textAlignment: "right",
-							sortable: true,
 							render: (item) => listData.data?.indexOf(item) + 1,
 						},
-						{
-							accessor: "id",
-							title: t("ID"),
-							textAlignment: "right",
-							sortable: true,
-							render: (item) => item.id,
-						},
+
 						{
 							accessor: "name",
 							title: t("Name"),
-							sortable: true,
 							render: (values) => (
 								<Text className="activate-link" fz="sm" onClick={() => handleDataShow(values.id)}>
 									{values.name}
@@ -262,23 +141,23 @@ export default function _Table({ module, open, close }) {
 							),
 						},
 						{
-							accessor: "customer_group",
-							title: t("CustomerGroup"),
-							sortable: true,
-							render: (values) => values.customer_group || "N/A",
-						},
-						{ accessor: "mobile", title: t("Mobile"), sortable: true },
-						{
-							accessor: "credit_limit",
-							title: t("CreditLimit"),
-							sortable: true,
-							render: (values) => values.credit_limit,
-						},
-						{
-							accessor: "discount_percent",
-							title: t("DiscountPercent"),
-							sortable: true,
-							render: (values) => values.discount_percent,
+							accessor: "data_type",
+							title: t("DataType"),
+							width: "220px",
+							textAlign: "center",
+							render: (item) => (
+								<SelectForm
+									form={form}
+									tooltip={t("ParticularTypeValidateMessage")}
+									placeholder={t("ParticularType")}
+									name="data_type"
+									id="data_type"
+									nextField="category_id"
+									required={true}
+									value={form.values.particular_type_id}
+									dropdownValue={particularTypeDropdown}
+								/>
+							),
 						},
 						{
 							accessor: "action",
@@ -290,64 +169,30 @@ export default function _Table({ module, open, close }) {
 									<Group gap={4} justify="right" wrap="nowrap">
 										<Button.Group>
 											<Button
-												onClick={() => {
-													handleCustomerEdit(values.id);
-													open();
-												}}
-												variant="filled"
-												c="white"
-												size="xs"
-												radius="es"
-												leftSection={<IconEdit size={16} />}
-												className="border-right-radius-none btnPrimaryBg"
-											>
-												{t("Edit")}
-											</Button>
-											<Button
 												onClick={() => handleDataShow(values.id)}
 												variant="filled"
 												c="white"
 												bg="var(--theme-primary-color-6)"
 												size="xs"
 												radius="es"
-												leftSection={<IconEye size={16} />}
+												leftSection={<IconDeviceFloppy size={16} />}
 												className="border-left-radius-none"
 											>
-												{t("View")}
+												{t("Save")}
 											</Button>
-											<ActionIcon
-												onClick={() => handleDelete(values.id)}
-												className="action-icon-menu border-left-radius-none"
-												variant="light"
-												color="var(--theme-delete-color)"
-												radius="es"
-												ps="les"
-												aria-label="Settings"
-											>
-												<IconTrashX height={18} width={18} stroke={1.5} />
-											</ActionIcon>
 										</Button.Group>
 									</Group>
 								</>
 							),
 						},
 					]}
-					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 72}
-					onScrollToBottom={loadMoreRecords}
+					height={height}
 					scrollViewportRef={scrollViewportRef}
-					sortStatus={sortStatus}
-					onSortStatusChange={setSortStatus}
-					sortIcons={{
-						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
-					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={customerObject} />
 		</>
 	);
