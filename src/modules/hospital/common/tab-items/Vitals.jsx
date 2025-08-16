@@ -18,6 +18,7 @@ export default function Vitals({ vitals, form }) {
 	const { t } = useTranslation();
 	return (
 		<Flex gap="les" mt="xxxs" mb="xxxs" wrap="wrap">
+
 			<Group gap="les" grow w="100%" px="les">
 				<InputForm
 					value={vitals.bp}
@@ -29,18 +30,6 @@ export default function Vitals({ vitals, form }) {
 					mt={0}
 					styles={{ input: { padding: "es", fontSize: "sm" } }}
 				/>
-				{/* <InputForm
-							value={vitals.sugar}
-							label={t("sugar")}
-							name="sugar"
-							tooltip="Sugar"
-							form={form}
-							placeholder="5.6"
-							mt={0}
-							styles={{ input: { padding: "es", fontSize: "sm" } }}
-						/> */}
-			</Group>
-			<Group gap="les" grow w="100%" px="les">
 				<InputForm
 					value={vitals.weight}
 					label={t("weight")}

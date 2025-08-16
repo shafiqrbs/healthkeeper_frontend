@@ -63,7 +63,6 @@ export default function PatientReport({ patientData, tabValue }) {
 				return (
 					<ScrollArea h={height}>
 						<BasicInfoCard patientData={patientData} />
-						<Vitals vitals={vitals} form={form} />
 						<ChiefComplaints complaints={complaints} handleComplaintChange={handleComplaintChange} />
 						<Investigation
 							investigation={investigation}

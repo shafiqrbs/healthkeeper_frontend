@@ -396,7 +396,7 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 				</Button.Group>
 			)}
 			{/* <Prescription ref={prescriptionA4Ref} /> */}
-			{/* <Prescription2 ref={prescriptionA4Ref} /> */}
+			 <Prescription2 ref={prescriptionA4Ref} />
 			<Prescription3 ref={prescriptionA4Ref} />
 			<PrescriptionPos ref={prescriptionPosRef} />
 		</Box>
