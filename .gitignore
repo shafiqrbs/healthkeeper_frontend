@@ -6,7 +6,6 @@
 # Node artifact files
 node_modules/
 .env
-.env.dist
 dist/
 package-lock.json
 
