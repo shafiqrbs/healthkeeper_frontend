@@ -242,8 +242,8 @@ export const sideNavigationLinks = {
 			color: "#3F51B5",
 		},
 		{
-			label: t('WARD&Romm'),
-			path: "/core/warehouse",
+			label: t('Ward&Bed'),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED.INDEX,
 			icon: IconIcons,
 			color: "#3F51B5",
 		},

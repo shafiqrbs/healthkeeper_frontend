@@ -9,20 +9,11 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
+
 const module = MODULES.ADMISSION;
 
 export default function Index() {
-	const { data: particularModes } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_MODE.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE.UTILITY,
-	});
-
-	console.log("particularModes", particularModes);
-
 	const { hospitalConfigData } = useHospitalConfigData();
-	console.log("hospitalConfigData", hospitalConfigData);
-
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 

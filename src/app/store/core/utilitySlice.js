@@ -24,7 +24,15 @@ export const ACCOUNTING_DROPDOWNS = {
 
 export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_TYPE: { UTILITY: "particularType", PATH: "hospital/select/particular-type" },
-	PARTICULAR_MODE: { UTILITY: "particularMode", TYPE: "operation", PATH: "hospital/select/module" },
+
+//	PARTICULAR_MODE: { UTILITY: "particularMode", TYPE: "operation", PATH: "hospital/select/module" },
+
+	PARTICULAR_MODE: { UTILITY: "particularOperationMode", TYPE: "operation", PATH: "hospital/select/mode" },
+	PARTICULAR_PRINT_MODE: { UTILITY: "particularLabReportModes", TYPE: "print", PATH: "hospital/select/mode" },
+	PARTICULAR_REPORT_MODE: { UTILITY: "particularLabReportModes", TYPE: "lab-report-mode", PATH: "hospital/select/mode" },
+//	PARTICULAR_REPORT_MODE: { UTILITY: "particularLabReportModes", TYPE: "lab-report-mode", PATH: "hospital/select/mode" },
+//	PARTICULAR_REPORT_MODE: { UTILITY: "particularLabReportModes", TYPE: "lab-report-mode", PATH: "hospital/select/mode" },
+//	PARTICULAR_REPORT_MODE: { UTILITY: "particularLabReportModes", TYPE: "lab-report-mode", PATH: "hospital/select/mode" },
 };
 
 const initialState = {

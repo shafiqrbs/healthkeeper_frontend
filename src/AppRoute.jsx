@@ -73,6 +73,7 @@ import HospitalConfigIndex from "@modules/settings/HospitalConfigIndex";
 import PrescriptionIndex from "@modules/hospital/prescription";
 import VisitIndex from "@modules/hospital/visit";
 import ParticularIndex from "@modules/hospital/core/particular";
+import BedIndex from "@modules/hospital/core/bed";
 import ParticularModeIndex from "@modules/hospital/core/particular-mode";
 import ParticularTypeIndex from "@modules/hospital/core/particular-type";
 import CategoryIndex from "@modules/hospital/core/category";
@@ -173,6 +174,8 @@ function AppRoute() {
 				<Route path="/hospital/core/">
 					<Route path="particular" element={<ParticularIndex />} />
 					<Route path="particular/:id" element={<ParticularIndex mode={'edit'} />} />
+					<Route path="bed" element={<BedIndex  />} />
+					<Route path="bed/:id" element={<BedIndex mode={'edit'} />} />
 					<Route path="particular-mode" element={<ParticularModeIndex />} />
 					<Route path="particular-type" element={<ParticularTypeIndex />} />
 					<Route path="category" element={<CategoryIndex />} />

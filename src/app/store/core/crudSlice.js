@@ -23,6 +23,16 @@ const initialState = {
 		filterData: { name: ""},
 	},
 
+	bed: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: ""},
+	},
+
 	particular_mode: {
 		isLoading: true,
 		refetching: true,
@@ -257,7 +267,10 @@ const initialState = {
 		validationMessages: [],
 	},
 	// -------------------- doctor revisit modules stops -------------------------
+
+
 	// -------------------- configuration module starts -------------------------
+
 	hospitalConfig: {
 		isLoading: true,
 		refetching: false,
@@ -268,6 +281,22 @@ const initialState = {
 		filterData: { name: "" },
 		validationMessages: [],
 	},
+
+
+	// -------------------- configuration module starts -------------------------
+
+	hospitalSetting: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		validation: false,
+		data: {},
+		editData: {},
+		filterData: { name: "" },
+		validationMessages: [],
+	},
+
+
 	// -------------------- configuration module stops -------------------------
 	searchKeyword: "", // keep it for compatibility issues, remove it in no time
 	searchKeywordTooltip: false, // keep it for compatibility issues, remove it in no time
