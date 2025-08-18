@@ -92,6 +92,7 @@ import DoctorIndex from "@modules/hospital/doctor";
 import ListIndex from "./modules/hospital/visit/list";
 import ConfigurationIndex from "@modules/configuration";
 import ConfirmIndex from "./modules/hospital/admission/confirm";
+import IpdIndex from "./modules/hospital/admission/ipd";
 
 function AppRoute() {
 	return (
@@ -143,7 +144,12 @@ function AppRoute() {
 
 					<Route path="admission">
 						<Route index element={<AdmissionIndex />} />
+						<Route path="ipd" element={<IpdIndex />} />
 						<Route path="confirm" element={<ConfirmIndex />} />
+					</Route>
+					<Route path="ipd">
+						<Route index element={<IpdIndex />} />
+						<Route path="admission" element={<AdmissionIndex />} />
 					</Route>
 					<Route path="admission-list" element={<AdmissionListIndex />} />
 

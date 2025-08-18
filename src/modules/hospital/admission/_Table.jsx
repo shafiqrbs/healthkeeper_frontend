@@ -241,12 +241,10 @@ export default function Table({ module }) {
 							title: t("CreatedBy"),
 							render: (item) => item.created_by || "N/A",
 						},
-						{ accessor: "visit_no", title: t("visitNo") },
 						{ accessor: "patient_id", title: t("patientId") },
 						{ accessor: "patient_name", title: t("Name") },
 						{ accessor: "doctor_name", title: t("doctor") },
-						{ accessor: "diseases", title: t("diseases") },
-						{ accessor: "total_amount", title: t("Total") },
+						{ accessor: "cabin", title: t("Cabin/Bed") },
 						{
 							accessor: "payment_status",
 							title: t("paymentStatus"),

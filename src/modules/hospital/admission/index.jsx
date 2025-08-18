@@ -25,7 +25,6 @@ export default function Index() {
 				<Box p="md">
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-
 						<Table module={module} />
 					</Flex>
 				</Box>

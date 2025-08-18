@@ -12,7 +12,7 @@ import {
 
 } from "@tabler/icons-react";
 import SettingsForm from "../settings/SettingsForm.jsx";
-import getParticularTypeDropdownData from "../../../global-hook/dropdown/core/getSettingTypeDropdownData.js";
+import getParticularTypeDropdownData from "@/common/hooks/dropdown/useGlobalDropdownData.js";
 
 function CustomerGroupDrawer(props) {
     const { groupDrawer, setGroupDrawer, saveId } = props

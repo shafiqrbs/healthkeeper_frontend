@@ -147,7 +147,13 @@ export const sideNavigationLinks = {
 		},
 		{
 			label:  t('OPD'),
-			path: "/",
+			path: "/hospital/visit",
+			icon: IconBuildingHospital,
+			color: "#6F1126",
+		},
+		{
+			label:  t('Visited'),
+			path: "/hospital/visit/list",
 			icon: IconBuildingHospital,
 			color: "#6F1126",
 		},
@@ -157,10 +163,15 @@ export const sideNavigationLinks = {
 			icon: IconEmergencyBed,
 			color: "#E63946",
 		},
-
 		{
 			label: t('IPD'),
-			path: "/hospital/visit/list",
+			path: "/hospital/ipd",
+			icon: IconBuildingHospital,
+			color: "#1D3557",
+		},
+		{
+			label: t('Admission'),
+			path: "/hospital/ipd/admission",
 			icon: IconBuildingHospital,
 			color: "#1D3557",
 		},

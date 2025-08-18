@@ -14,13 +14,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { hasLength, isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
-import { setFetching } from "../../../../store/core/crudSlice.js";
-
 import _ShortcutMasterData from "../../shortcut/_ShortcutMasterData.jsx";
-import InputForm from "../../../form-builders/InputForm.jsx";
-import SelectForm from "../../../form-builders/SelectForm.jsx";
-import SwitchForm from "../../../form-builders/SwitchForm.jsx";
-import { setDropdownLoad, storeEntityData } from "../../../../store/inventory/crudSlice.js";
+
+
+import {
+    editEntityData,
+    setEntityNewData,
+    setFormLoading,
+    setInsertType,
+    setSearchKeyword,
+    setFetching,
+    setDropdownLoad, storeEntityData
+} from "@/app/store/core/crudSlice";
+
+import InputForm from "@components/form-builders/InputForm";
+import SelectForm from "@components/form-builders/SelectForm";
+import SwitchForm from "@components/form-builders/SwitchForm";
+
 
 
 function SettingsForm(props) {

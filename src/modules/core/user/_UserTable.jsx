@@ -6,17 +6,13 @@ import { IconCheck, IconDotsVertical, IconTrashX, IconAlertCircle } from "@table
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  deleteEntityData,
-  editEntityData,
-  getIndexEntityData,
-  setDeleteMessage,
-  setFetching,
   setFormLoading,
   setInsertType,
-} from "../../../../store/core/crudSlice.js";
+  setSearchKeyword,
+} from "@/app/store/core/crudSlice";
 import { modals } from "@mantine/modals";
 import KeywordSearch from "../../filter/KeywordSearch.jsx";
-import tableCss from "../../../../assets/css/Table.module.css";
+import tableCss from "@/assets/css/Table.module.css";
 import __UserViewDrawer from "./__UserViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
 

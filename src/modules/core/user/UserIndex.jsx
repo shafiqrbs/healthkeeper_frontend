@@ -11,8 +11,8 @@ import {
 	setFormLoading,
 	setInsertType,
 	setSearchKeyword,
-} from "../../../../store/core/crudSlice.js";
-import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
+} from "@/app/store/core/crudSlice";
+import { getLoadingProgress } from "@/common/hooks/loading-progress/useGetLoadingProgress.js";
 import CoreHeaderNavbar from "../CoreHeaderNavbar";
 import { useNavigate, useParams } from "react-router-dom";
 import Navigation from "../shared/Navigation.jsx";

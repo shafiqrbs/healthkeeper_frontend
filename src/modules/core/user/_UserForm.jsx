@@ -11,27 +11,28 @@ import {
     IconDeviceFloppy, IconUsersGroup,
 } from "@tabler/icons-react";
 import { useHotkeys } from "@mantine/hooks";
-import InputForm from "../../../form-builders/InputForm";
+import InputForm from "@components/form-builders/InputForm";
+import PasswordInputForm from "@components/form-builders/PasswordInputForm";
+import SelectForm from "@components/form-builders/SelectForm";
+import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 import {useDispatch, useSelector} from "react-redux";
-import PasswordInputForm from "../../../form-builders/PasswordInputForm";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { hasLength, isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import {
     editEntityData,
-    getIndexEntityData,
-    setEditEntityData,
-    setFetching, setFormLoading, setInsertType,
-    storeEntityData, updateEntityData,
-} from "../../../../store/core/crudSlice.js";
+    setEntityNewData,
+    setFormLoading,
+    setInsertType,
+    setSearchKeyword,
+} from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
-import PhoneNumber from "../../../form-builders/PhoneNumberInput.jsx";
 import Shortcut from "../../shortcut/Shortcut.jsx";
-import SelectForm from "../../../form-builders/SelectForm";
 import CustomerGroupDrawer from "../customer/CustomerGroupDrawer.jsx";
-import userDataStoreIntoLocalStorage from "../../../global-hook/local-storage/userDataStoreIntoLocalStorage.js";
-import {coreSettingDropdown} from "../../../../store/core/utilitySlice.js";
+import { getLoadingProgress } from "@/common/hooks/loading-progress/useGetLoadingProgress.js";
+import {coreSettingDropdown} from "@/app/store/core/crudSlice";
 import getCoreSettingEmployeeGroupDropdownData
-    from "../../../global-hook/dropdown/core/getCoreSettingEmployeeGroupDropdownData.js";
+    from "@/app/store/core/crudSlice";
 
 function _UserForm() {
     const { t, i18n } = useTranslation();
@@ -214,7 +215,7 @@ function _UserForm() {
                                                         </Box>
                                                     </Grid.Col>
                                                     <Grid.Col span={1}>
-                                                        <Box pt={'xl'}>
+                                                       {/* <Box pt={'xl'}>
                                                             <Tooltip
                                                                 ta="center"
                                                                 multiline
@@ -234,7 +235,7 @@ function _UserForm() {
                                                                         stroke={1.5}/>
                                                                 </ActionIcon>
                                                             </Tooltip>
-                                                        </Box>
+                                                        </Box>*/}
                                                     </Grid.Col>
                                                 </Grid>
                                             </Box>

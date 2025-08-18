@@ -98,7 +98,7 @@ export default function ConfirmModal({ opened, close, form }) {
 	};
 
 	return (
-		<GlobalDrawer opened={opened} close={close} title="Confirm Admission" size="90%">
+		<GlobalDrawer opened={opened} close={close} title="Confirm Admission" size="80%">
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Box py="sm">
 					<Grid columns={24}>

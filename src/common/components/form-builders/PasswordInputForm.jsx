@@ -2,7 +2,7 @@ import React from "react";
 import { PasswordInput, Tooltip } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { getHotkeyHandler } from "@mantine/hooks";
-import inputCss from "../../assets/css/InputField.module.css";
+import inputCss from "@/assets/css/InputField.module.css";
 
 function PasswordInputForm(props) {
 	const { label, placeholder, required, nextField, name, form, tooltip, mt, id, value } = props;

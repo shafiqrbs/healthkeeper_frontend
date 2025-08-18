@@ -21,37 +21,39 @@ import {
     IconDeviceFloppy, IconDoor, IconMapPin, IconUser, IconUsersGroup,
 } from "@tabler/icons-react";
 import {useHotkeys} from "@mantine/hooks";
-import InputForm from "../../../form-builders/InputForm";
 import {useDispatch, useSelector} from "react-redux";
 import {isNotEmpty, useForm} from "@mantine/form";
 import {modals} from "@mantine/modals";
 import {
-    setEditEntityData,
-    setFetching,
+    editEntityData,
+    setEntityNewData,
     setFormLoading,
     setInsertType,
-    updateEntityData, updateEntityDataWithFile,
-} from "../../../../store/core/crudSlice.js";
+    setSearchKeyword,
+} from "@/app/store/core/crudSlice";
+import { getLoadingProgress } from "@/common/hooks/loading-progress/useGetLoadingProgress.js";
 import {notifications} from "@mantine/notifications";
-import PasswordInputForm from "../../../form-builders/PasswordInputForm";
-import PhoneNumber from "../../../form-builders/PhoneNumberInput.jsx";
-import Shortcut from "../../shortcut/Shortcut.jsx";
-import SwitchForm from "../../../form-builders/SwitchForm.jsx";
-import SelectForm from "../../../form-builders/SelectForm.jsx";
-import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
-import TextAreaForm from "../../../form-builders/TextAreaForm.jsx";
+import PasswordInputForm from "@components/form-builders/PasswordInputForm";
 
-import accessControlRoleStaticData from "../../../global-hook/static-json-file/accessControlRole.json"
-import androidControlRoleStaticData from "../../../global-hook/static-json-file/androidControlRole.json"
+import SelectForm from "@components/form-builders/SelectForm";
+import InputForm from "@components/form-builders/InputForm";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
+import PhoneNumber from "@components/form-builders/PhoneNumberInput";
+
+import Shortcut from "../../shortcut/Shortcut.jsx";
+import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
+
+import accessControlRoleStaticData from "@/common/json/accessControlRole.json"
+import androidControlRoleStaticData from "@/common/json/androidControlRole.json"
 import CustomerGroupDrawer from "../customer/CustomerGroupDrawer.jsx";
 import getCoreSettingEmployeeGroupDropdownData
-    from "../../../global-hook/dropdown/core/getCoreSettingEmployeeGroupDropdownData.js";
+    from "@/common/hooks/dropdown/useGlobalDropdownData.js";
 import getCoreSettingDesignationDropdownData
-    from "../../../global-hook/dropdown/core/getCoreSettingDesignationDropdownData.js";
+    from "@/common/hooks/dropdown/useGlobalDropdownData.js";
 import getCoreSettingDepartmentDropdownData
-    from "../../../global-hook/dropdown/core/getCoreSettingDepartmentDropdownData.js";
+    from "@/common/hooks/dropdown/useGlobalDropdownData.js";
 import getCoreSettingLocationDropdownData
-    from "../../../global-hook/dropdown/core/getCoreSettingLocationDropdownData.js";
+    from "@/common/hooks/dropdown/useGlobalDropdownData.js";
 
 function _UserUpdateForm() {
     const {t, i18n} = useTranslation();
