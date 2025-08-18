@@ -3,6 +3,8 @@ import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import DashedDivider from "@components/core-component/DashedDivider";
+import CustomDivider from "@components/core-component/CustomDivider";
+import "@/index.css";
 
 const Prescription2 = forwardRef((props, ref) => {
 	return (
@@ -13,207 +15,352 @@ const Prescription2 = forwardRef((props, ref) => {
 				bg="var(--theme-primary-color-0)"
 				miw="210mm"
 				mih="100vh"
-				className="borderRadiusAll watermark"
-				style={{
-					fontFamily: "Arial, sans-serif",
-					lineHeight: 1.4,
-				}}
+				className="watermark"
+				ff="Arial, sans-serif"
+				lh={1.5}
+				fz={12}
 			>
 				{/* =============== header section with doctor information in bengali and english ================ */}
-				<Box bd="2px solid var(--theme-primary-color-9)" mb="md">
-					<Grid>
+				<Box bd="2px solid var(--theme-primary-color-9)" mb="sm" style={{ borderRadius: "4px" }}>
+					<Grid gutter="md">
 						<Grid.Col span={4}>
-							<Group ml="sm" align="center" h="100%">
-								<Image src={GLogo} alt="logo" width={90} height={90} />
+							<Group ml="md" align="center" h="100%">
+								<Image src={GLogo} alt="logo" width={80} height={80} />
 							</Group>
 						</Grid.Col>
 						<Grid.Col span={4}>
-							<Text ta="center" fw="bold" size="md" c="#1e40af" mt="md">
+							<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="xs">
 								250 Bedded TB Hospital
 							</Text>
-							<Text ta="center" size="sm" c="gray">
+							<Text ta="center" size="sm" c="gray" mt="xs">
 								Shyamolli, Dhaka-1207
 							</Text>
-							<Text ta="center" size="sm" c="gray">
+							<Text ta="center" size="sm" c="gray" mb="xs">
 								Hotline: 01969910200
 							</Text>
 
-							<Text ta="center" mt="les" fw="bold" size="md" c="#1e40af">
+							<Text ta="center" fw="bold" size="lg" c="#1e40af">
 								Prescription
 							</Text>
 						</Grid.Col>
 						<Grid.Col span={4}>
-							<Group mr="sm" justify="flex-end" align="center" h="100%">
-								<Image src={TBLogo} alt="logo" width={90} height={90} />
+							<Group mr="md" justify="flex-end" align="center" h="100%">
+								<Image src={TBLogo} alt="logo" width={80} height={80} />
 							</Group>
 						</Grid.Col>
 					</Grid>
 				</Box>
 
 				{/* =============== patient information section ================ */}
-				<Box>
-					<Grid>
-						<Grid.Col bd="1px solid black" span={3}>
-							<Group>
-								<Text size="sm" fw={500}>
-									রোগীর নাম:
-								</Text>
-								<Text size="sm">[Patient Name]</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid black" span={3}>
-							<Group>
-								<Text size="sm" fw={500}>
-									বয়স:
-								</Text>
-								<Text size="sm">[Age]</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid black" span={3}>
-							<Group>
-								<Text size="sm" fw={500}>
+				<Box mb="sm">
+					<Grid columns={12} gutter="xs" px={4}>
+						<Grid.Col bd="1px solid #555" span={3} p="xs">
+							<Group gap="xs">
+								<Text size="sm" fw={600}>
 									রোগীর আইডি:
 								</Text>
 								<Text size="sm">[Patient Id]</Text>
 							</Group>
 						</Grid.Col>
-						<Grid.Col bd="1px solid black" span={3}>
-							<Group>
-								<Text size="sm" fw={500}>
+						<Grid.Col bd="1px solid #555" span={5} p="xs">
+							<Group gap="xs">
+								<Text size="sm" fw={600}>
+									রোগীর নাম:
+								</Text>
+								<Text size="sm">[Patient Name]</Text>
+							</Group>
+						</Grid.Col>
+						<Grid.Col bd="1px solid #555" span={4} p="xs">
+							<Group gap="xs">
+								<Text size="sm" fw={600}>
+									মোবাইল:
+								</Text>
+								<Text size="sm">[Mobile]</Text>
+							</Group>
+						</Grid.Col>
+
+						<Grid.Col bd="1px solid #555" span={2} p="xs">
+							<Group gap="xs">
+								<Text size="sm" fw={600}>
+									বয়স:
+								</Text>
+								<Text size="sm">[Age]</Text>
+							</Group>
+						</Grid.Col>
+						<Grid.Col bd="1px solid #555" span={2} p="xs">
+							<Group gap="xs">
+								<Text size="sm" fw={600}>
 									লিঙ্গ:
 								</Text>
 								<Text size="sm">[Gender]</Text>
+							</Group>
+						</Grid.Col>
+						<Grid.Col bd="1px solid #555" span={2} p="xs">
+							<Group gap="xs">
+								<Text size="sm" fw={600}>
+									রক্তচাপ:
+								</Text>
+								<Text size="sm">[BP]</Text>
+							</Group>
+						</Grid.Col>
+
+						<Grid.Col bd="1px solid #555" span={2} p="xs">
+							<Group gap="xs">
+								<Text size="sm" fw={600}>
+									ওজন:
+								</Text>
+								<Text size="sm">[Weight]</Text>
+							</Group>
+						</Grid.Col>
+						<Grid.Col bd="1px solid #555" span={2} p="xs">
+							<Group gap="xs">
+								<Text size="sm" fw={600}>
+									রক্তের গ্রুপ:
+								</Text>
+								<Text size="sm">[O+]</Text>
+							</Group>
+						</Grid.Col>
+						<Grid.Col bd="1px solid #555" span={2} p="xs">
+							<Group gap="xs">
+								<Text size="sm" fw={600}>
+									ধরণ:
+								</Text>
+								<Text size="sm">[Type]</Text>
 							</Group>
 						</Grid.Col>
 					</Grid>
 				</Box>
 
 				{/* =============== medical notes and prescription area with rx symbol ================ */}
-				<Box mb="lg" style={{ position: "relative", minHeight: "400px" }}>
-					{/* Medical Notes Section - positioned to the right of Rx symbol */}
-					<Box mb="md">
-						<Stack gap={8}>
-							<Group gap="xs" mt="md">
-								<Text size="sm" fw={500} miw={35}>
-									C/C:
-								</Text>
-								<Text size="sm">[Chief Complaint]</Text>
-							</Group>
-							<Group gap="xs" mt={60}>
-								<Text size="sm" fw={500} miw={35}>
-									O/E:
-								</Text>
-								<Text size="sm">[On Examination]</Text>
-							</Group>
-							<Group gap="xs" my={60}>
-								<Text size="sm" fw={500} miw={35}>
-									InV:
-								</Text>
-								<Text size="sm">[Investigations]</Text>
-							</Group>
-						</Stack>
-					</Box>
-
-					{/* Large Prescription Writing Area - takes most of the space */}
-					<Box
-						mt="md"
-						mih={120}
-						bd="1px solid #bdc3c7"
-						p="sm"
-						bg="white"
-						className="borderRadiusAll"
-						style={{
-							borderRadius: "4px",
-						}}
-					>
-						{/* Prescription content placeholder */}
-						<Text size="sm" lh={1.8}>
-							[Prescription details will be written here...]
-						</Text>
-
-						{/* Additional prescription lines for better visual representation */}
-						<Box mt="md">
-							<Text size="sm" lh={2}>
-								[Medicine 1] - [Dosage] - [Frequency]
-							</Text>
-							<Text size="sm" lh={2}>
-								[Medicine 2] - [Dosage] - [Frequency]
-							</Text>
-							<Text size="sm" lh={2}>
-								[Medicine 3] - [Dosage] - [Frequency]
-							</Text>
-						</Box>
-					</Box>
-				</Box>
-
-				{/* =============== footer section with clinic information and visiting hours ================ */}
-				<Box mt={50}>
-					<Grid>
-						{/* Left side - Clinic Information */}
-						<Grid.Col span={6}>
-							<Stack gap="les">
-								<Text size="sm" fw={500} c="var(--theme-error-color)">
-									চেম্বার:
-								</Text>
-								<Group gap="xs">
-									<Text size="md" fw={600} c="#27ae60">
-										দিল্যাব এইড ডায়াগনোস্টিক সেন্টার
+				<Box style={{ position: "relative", minHeight: "350px" }} mb="lg">
+					<Grid columns={12} gutter="md">
+						<Grid.Col span={4}>
+							<Stack gap="0px">
+								<Box>
+									<Text size="sm" fw={600}>
+										C/C:
 									</Text>
-								</Group>
-								<Text size="sm" c="#27ae60">
-									সদর রোড, গাইবান্ধা, রংপুর।
-								</Text>
+									<CustomDivider borderStyle="dashed" w="90%" />
+								</Box>
+								<Box>
+									<Text size="sm" fw={600}>
+										H/O Past Illness:
+									</Text>
+									<CustomDivider borderStyle="dashed" w="90%" />
+								</Box>
+								<Box>
+									<Text size="sm" fw={600}>
+										Diagnosis:
+									</Text>
+									<CustomDivider borderStyle="dashed" w="90%" />
+								</Box>
+								<Box>
+									<Text size="sm" fw={600}>
+										ICD-11 listed diseases:
+									</Text>
+									<CustomDivider borderStyle="dashed" w="90%" />
+								</Box>
+								<Box>
+									<Text size="sm" fw={600}>
+										Comorbidity:
+									</Text>
+									<CustomDivider borderStyle="dashed" w="90%" />
+								</Box>
+								<Box>
+									<Text size="sm" fw={600}>
+										Treatment History:
+									</Text>
+									<CustomDivider borderStyle="dashed" w="90%" />
+								</Box>
+								<Box>
+									<Text size="sm" fw={600}>
+										On/Examination:
+									</Text>
+									<CustomDivider borderStyle="dashed" w="90%" />
+								</Box>
+								<Box>
+									<Text size="sm" fw={600}>
+										Investigation:
+									</Text>
+									<CustomDivider borderStyle="dashed" w="90%" />
+								</Box>
 							</Stack>
 						</Grid.Col>
-
-						{/* Right side - Visiting Hours */}
-						<Grid.Col span={6}>
-							<Stack gap={4} ta="right">
-								<Text size="sm" fw={500}>
-									রোগী দেখার সময়:
-								</Text>
-								<Text size="sm" c="var(--theme-error-color)">
-									বিকাল ৪টা থেকে রাত ৯টা
-								</Text>
-								<Text size="sm">শুক্রবার ও মঙ্গলবার</Text>
-								<Text size="sm" c="var(--theme-error-color)">
-									সিরিয়ালের জন্য।
-								</Text>
+						<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
+							<Stack gap="xs">
+								<Box>
+									<Text size="sm" fw={600} mb="xs">
+										1. [Medicine 1]
+									</Text>
+									<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
+										1+0+1 ( WITH DPI device ) --- GURGLE AFTER USE ---- 1 মাস
+									</Text>
+								</Box>
+								<Box>
+									<Text size="sm" fw={600} mb="xs">
+										2. [Medicine 2]
+									</Text>
+									<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
+										1 tab ---- 1 + 0 + 1 ---- 1 মাস
+									</Text>
+								</Box>
+								<Box>
+									<Text size="sm" fw={600} mb="xs">
+										3. TAB. CITIN 10 MG
+									</Text>
+									<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
+										1 tab ---- 1 + 0 + 1 ---- 1 মাস
+									</Text>
+								</Box>
+								<Box>
+									<Text size="sm" fw={600} mb="xs">
+										4. [Medicine 4]
+									</Text>
+									<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
+										0+0+1 ( WITH DPI device ) --- GURGLE AFTER USE ---- 2 মাস
+									</Text>
+								</Box>
 							</Stack>
+
+							<CustomDivider mt="xl" mb="md" />
+							<Text size="sm" fw={600} mb="xs">
+								অন্যান্য নির্দেশাবলী:
+							</Text>
+							<Text size="sm">রিপোর্ট সংগ্রহ করে দেখা করবেন |</Text>
 						</Grid.Col>
 					</Grid>
 				</Box>
 
-				<DashedDivider my="sm" />
-
-				<Box
-					mt="md"
-					mih={120}
-					bd="1px solid #bdc3c7"
-					p="sm"
-					bg="white"
-					className="borderRadiusAll"
-					style={{
-						borderRadius: "4px",
-					}}
-				>
-					{/* Prescription content placeholder */}
-					<Text size="sm" lh={1.8}>
-						[Prescription details will be written here...]
+				{/* =============== new prescription layout matching the image ================ */}
+				<Box p={20} bd="1px solid #555" style={{ borderRadius: "4px" }}>
+					{/* =============== top section with printed by and signature ================ */}
+					<Grid columns={12} gutter="md">
+						<Grid.Col span={6}>
+							<Stack gap="0px">
+								<Text size="sm" fw={600}>
+									Name:
+								</Text>
+								<CustomDivider w="80%" />
+								<Text size="sm" fw={600}>
+									Designation:
+								</Text>
+								<CustomDivider w="80%" />
+							</Stack>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text pt="50px" size="sm" fw={600}>
+								Signature:
+							</Text>
+							<CustomDivider w="80%" />
+						</Grid.Col>
+					</Grid>
+				</Box>
+				<DashedDivider mb="xs" />
+				{/* =============== hospital name center section ================ */}
+				{/* <Box ta="center" mb="xs">
+					<Text size="lg" fw={700} c="#1e40af">
+						250 Bedded TB Hospital. Shyamoli, Dhaka-1207
 					</Text>
+				</Box> */}
 
-					{/* Additional prescription lines for better visual representation */}
-					<Box mt="md">
-						<Text size="sm" lh={2}>
-							[Medicine 1] - [Dosage] - [Frequency]
-						</Text>
-						<Text size="sm" lh={2}>
-							[Medicine 2] - [Dosage] - [Frequency]
-						</Text>
-						<Text size="sm" lh={2}>
-							[Medicine 3] - [Dosage] - [Frequency]
-						</Text>
-					</Box>
+				{/* =============== bottom section with patient info and medication table ================ */}
+				<Grid columns={12} gutter="md" mb="lg">
+					<Grid.Col span={4}>
+						<Stack gap="6px">
+							<Text size="sm" fw={500}>
+								Patient Name: Nur Bepari
+							</Text>
+							<Text size="sm">(TBH20250724434).</Text>
+							<Text size="sm">Age: 68 Y. Sex: Male.</Text>
+							<Text size="sm" fw={600} mt="sm">
+								Doctor Comments:
+							</Text>
+							<CustomDivider w="90%" />
+						</Stack>
+					</Grid.Col>
+					<Grid.Col span={8}>
+						{/* =============== medication table ================ */}
+						<Box style={{ border: "1px solid #333", borderRadius: "4px", overflow: "hidden" }}>
+							<Grid columns={4}>
+								<Grid.Col
+									span={3}
+									p={10}
+									bg="#f8f9fa"
+									style={{
+										borderRight: "1px solid #333",
+										borderBottom: "1px solid #333",
+									}}
+								>
+									<Text size="sm" fw={600} pl={4} ta="left">
+										Generic
+									</Text>
+								</Grid.Col>
+								<Grid.Col
+									span={1}
+									p={10}
+									bg="#f8f9fa"
+									style={{
+										borderBottom: "1px solid #333",
+									}}
+								>
+									<Text size="sm" fw={600} ta="center">
+										Quantity
+									</Text>
+								</Grid.Col>
+								<Grid.Col
+									span={3}
+									p={10}
+									style={{
+										borderRight: "1px solid #333",
+										borderBottom: "1px solid #333",
+									}}
+								>
+									<Text size="sm" pl={4}>
+										1. CETIRIZINE 10MG TAB
+									</Text>
+								</Grid.Col>
+								<Grid.Col span={1} p={10} style={{ borderBottom: "1px solid #333" }}>
+									<Text size="sm" ta="center" fw={500}>
+										10
+									</Text>
+								</Grid.Col>
+								<Grid.Col
+									span={3}
+									p={10}
+									style={{
+										borderRight: "1px solid #333",
+										borderBottom: "1px solid #333",
+									}}
+								>
+									<Text size="sm" pl={4}>
+										2. OMEPRAZOLE 20MG CAP
+									</Text>
+								</Grid.Col>
+								<Grid.Col span={1} style={{ borderBottom: "1px solid #333" }}>
+									<Text size="sm" ta="center" fw={500}>
+										10
+									</Text>
+								</Grid.Col>
+								<Grid.Col span={3} p={10} style={{ borderRight: "1px solid #333" }}>
+									<Text size="sm" pl={4}>
+										3. CEFIXIME 200 MG CAP
+									</Text>
+								</Grid.Col>
+								<Grid.Col span={1} p={10}>
+									<Text size="sm" ta="center" fw={500}>
+										10
+									</Text>
+								</Grid.Col>
+							</Grid>
+						</Box>
+					</Grid.Col>
+				</Grid>
+
+				{/* =============== footer with prescribed by ================ */}
+				<Box ta="center" mt="xs">
+					<Text size="sm" fw={600} c="#1e40af">
+						Prescribed By: [Doctor Name]
+					</Text>
 				</Box>
 			</Box>
 		</Box>

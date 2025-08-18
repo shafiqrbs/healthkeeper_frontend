@@ -622,14 +622,17 @@ input[type=radio]:checked+label>img {
 }
 
 .inner-title-box {
-    margin-left: -16px;  /* assuming md = 16px */
+    margin-left: -16px;
+    /* assuming md = 16px */
     margin-right: -16px;
-    padding: 8px;        /* assuming xs = 8px */
+    padding: 8px;
+    /* assuming xs = 8px */
     padding-left: 16px;
     margin-bottom: 8px;
     text-align: left;
     margin-top: 8px;
-    background-color: var(--theme-tertiary-color-2); /* gray.1 from Mantine */
+    background-color: var(--theme-tertiary-color-2);
+    /* gray.1 from Mantine */
 }
 
 .centeredSwitchCell {
