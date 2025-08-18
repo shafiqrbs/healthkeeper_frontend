@@ -5,7 +5,7 @@ import { setGlobalFetching } from "@/app/store/core/crudSlice.js";
 import { useDispatch } from "react-redux";
 import CustomerFilterForm from "@modules/core/customer/CustomerFilterForm.jsx";
 import VendorFilterForm from "@/modules/filter/VendorFilterForm.jsx";
-import UserFilterForm from "@modules/core/user/UserFilterForm.jsx";
+import UserFilterForm from "@/modules/core/user_bk/UserFilterForm.jsx";
 import ProductFilterForm from "@modules/inventory/product/ProductFilterForm.jsx";
 import CategoryGroupFilterForm from "@modules/inventory/category-group/CategoryGroupFilterForm.jsx";
 import CategoryFilterForm from "@modules/inventory/category/CategoryFilterForm.jsx";
@@ -37,13 +37,7 @@ function FilterModel({ filterModel, setFilterModel, module }) {
 								{t("FilterData")}
 							</Text>
 						</Box>
-						<ActionIcon
-							mr={"sm"}
-							radius="xl"
-							color="red.6"
-							size="md"
-							onClick={closeModel}
-						>
+						<ActionIcon mr={"sm"} radius="xl" color="red.6" size="md" onClick={closeModel}>
 							<IconX style={{ width: "100%", height: "100%" }} stroke={1.5} />
 						</ActionIcon>
 					</Group>
@@ -52,16 +46,12 @@ function FilterModel({ filterModel, setFilterModel, module }) {
 						<Box bg={"white"} p={"xs"} className={"borderRadiusAll"} h={height - 37}>
 							{module === "customer" && <CustomerFilterForm module={module} />}
 							{module === "warehouse" && <WarehouseFilterForm module={module} />}
-							{module === "category-group" && (
-								<CategoryGroupFilterForm module={module} />
-							)}
+							{module === "category-group" && <CategoryGroupFilterForm module={module} />}
 							{module === "vendor" && <VendorFilterForm module={module} />}
 							{module === "user" && <UserFilterForm module={module} />}
 							{module === "product" && <ProductFilterForm module={module} />}
 							{module === "category" && <CategoryFilterForm module={module} />}
-							{module === "production-setting" && (
-								<__ProductionSettingFilterForm module={module} />
-							)}
+							{module === "production-setting" && <__ProductionSettingFilterForm module={module} />}
 							{module === "file-upload" && <FileUploadFilterForm module={module} />}
 						</Box>
 						<Box

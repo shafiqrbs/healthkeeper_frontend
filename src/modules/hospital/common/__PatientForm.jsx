@@ -291,18 +291,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									<Text fz="sm">{t("dateOfBirth")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									{/* <DatePickerForm
-										form={form}
-										label=""
-										placeholder="23-06-2025"
-										tooltip={t("enterPatientDateOfBirth")}
-										name="dob"
-										id="dob"
-										nextField="year"
-										value={form.values.dob}
-										required
-										disabledFutureDate
-									/> */}
 									<DateSelectorForm
 										form={form}
 										label=""

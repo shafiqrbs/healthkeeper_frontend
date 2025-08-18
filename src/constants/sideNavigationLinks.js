@@ -20,11 +20,10 @@ import {
 	IconBrandVlc,
 	IconReportMedical,
 } from "@tabler/icons-react";
-import { t } from 'i18next';
+import { t } from "i18next";
 import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 
 export const sideNavigationLinks = {
-
 	home: [
 		{
 			label: "Dashboard",
@@ -140,67 +139,73 @@ export const sideNavigationLinks = {
 
 	base: [
 		{
-			label: t('Dashboard'),
+			label: t("Dashboard"),
 			path: "/",
 			icon: IconHome,
 			color: "#4CAF50",
 		},
 		{
-			label:  t('OPD'),
+			label: t("OPD"),
 			path: "/hospital/visit",
 			icon: IconBuildingHospital,
 			color: "#6F1126",
 		},
 		{
-			label:  t('Visited'),
+			label: t("Visited"),
 			path: "/hospital/visit/list",
 			icon: IconBuildingHospital,
 			color: "#6F1126",
 		},
 		{
-			label: "Emergency",
+			label: t("Emergency"),
 			path: "/hospital/emergency",
 			icon: IconEmergencyBed,
 			color: "#E63946",
 		},
 		{
-			label: t('IPD'),
+			label: t("IPD"),
 			path: "/hospital/ipd",
 			icon: IconBuildingHospital,
 			color: "#1D3557",
 		},
 		{
-			label: t('Admission'),
+			label: t("User"),
+			path: "/core/user",
+			icon: IconUser,
+			color: "#457B9D",
+		},
+		{
+			label: t("Admission"),
 			path: "/hospital/ipd/admission",
 			icon: IconBuildingHospital,
 			color: "#1D3557",
 		},
 		{
-			label: t('Billing'),
+			label: t("Billing"),
 			path: "/hospital/billing",
 			icon: IconBuildingHospital,
 			color: "#6D597A",
 		},
 		{
-			label:  t('Lab'),
+			label: t("Lab"),
 			path: "/hospital/lab-test",
 			icon: IconMicroscopeOff,
 			color: "#457B9D",
 		},
 		{
-			label: "Medicine",
+			label: t("Medicine"),
 			path: "/hospital/medicine",
 			icon: IconMedicineSyrup,
 			color: "#2A9D8F",
 		},
 		{
-			label: "MasterData",
+			label: t("MasterData"),
 			path: "/hospital/core/particular",
 			icon: IconDashboard,
 			color: "#4CAF50",
 		},
 		{
-			label: "Configuration",
+			label: t("Configuration"),
 			path: "/configuration",
 			icon: IconDashboard,
 			color: "#4CAF50",
@@ -208,138 +213,138 @@ export const sideNavigationLinks = {
 	],
 	baseSubmenu: [
 		{
-			label:  t('Investigation'),
+			label: t("Investigation"),
 			path: "/hospital/investigation",
 			icon: IconDashboard,
 			color: "#4CAF50",
 		},
 		{
-			label:  t('Category'),
+			label: t("Category"),
 			path: "/hospital/ategory",
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 		{
-			label:  t('Doctor'),
+			label: t("Doctor"),
 			path: "/hospital/doctor",
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 
 		{
-			label:  t('Nurse'),
+			label: t("Nurse"),
 			path: "/hospital/nurse",
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 
 		{
-			label: t('labUser'),
+			label: t("labUser"),
 			path: "/hospital/doctor",
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 
 		{
-			label: t('Particular'),
+			label: t("Particular"),
 			path: "/core/user",
 			icon: IconCategory,
 			color: "#E53935",
 		},
 		{
-			label: t('Cabin'),
+			label: t("Cabin"),
 			path: "/core/warehouse",
 			icon: IconIcons,
 			color: "#3F51B5",
 		},
 		{
-			label: t('Ward&Bed'),
+			label: t("Ward&Bed"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED.INDEX,
 			icon: IconIcons,
 			color: "#3F51B5",
 		},
 		{
-			label: t('MarketingExecutive'),
+			label: t("MarketingExecutive"),
 			path: "/core/marketing-executive",
 			icon: IconShoppingBag,
 			color: "#F59E0B",
 		},
 		{
-			label: t('Particular'),
+			label: t("Particular"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX,
 			icon: IconShoppingBag,
 			color: "#F59E0B",
 		},
 		{
-			label: t('ParticularMode'),
+			label: t("ParticularMode"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR_MODE.INDEX,
 			icon: IconShoppingBag,
 			color: "#F59E0B",
 		},
 		{
-			label: t('ParticularType'),
+			label: t("ParticularType"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR_TYPE.INDEX,
 			icon: IconShoppingBag,
 			color: "#F59E0B",
-		}
+		},
 	],
 	configSubmenu: [
 		{
-			label:  t('Investigation'),
+			label: t("Investigation"),
 			path: "/hospital/investigation",
 			icon: IconDashboard,
 			color: "#4CAF50",
 		},
 		{
-			label:  t('Category'),
+			label: t("Category"),
 			path: "/hospital/ategory",
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 		{
-			label:  t('Doctor'),
+			label: t("Doctor"),
 			path: "/hospital/doctor",
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 
 		{
-			label:  t('Nurse'),
+			label: t("Nurse"),
 			path: "/hospital/nurse",
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 
 		{
-			label: t('labUser'),
+			label: t("labUser"),
 			path: "/hospital/doctor",
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 
 		{
-			label: t('Particular'),
+			label: t("Particular"),
 			path: "/core/user",
 			icon: IconCategory,
 			color: "#E53935",
 		},
 		{
-			label: t('Cabin'),
+			label: t("Cabin"),
 			path: "/core/warehouse",
 			icon: IconIcons,
 			color: "#3F51B5",
 		},
 		{
-			label: t('WARD&Romm'),
+			label: t("WARD&Romm"),
 			path: "/core/warehouse",
 			icon: IconIcons,
 			color: "#3F51B5",
 		},
 		{
-			label: t('MarketingExecutive'),
+			label: t("MarketingExecutive"),
 			path: "/core/marketing-executive",
 			icon: IconShoppingBag,
 			color: "#F59E0B",
-		}
+		},
 	],
 };

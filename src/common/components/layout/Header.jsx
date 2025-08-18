@@ -28,7 +28,7 @@ import SpotLightSearchModal from "@modules/modals/SpotLightSearchModal";
 import LanguagePickerStyle from "@assets/css/LanguagePicker.module.css";
 import flagBD from "@assets/images/flags/bd.svg";
 import flagGB from "@assets/images/flags/gb.svg";
-import logo_default from "@assets/images/logo_default.png";
+import logo_default from "@assets/images/tb_logo.png";
 import shortcutDropdownData from "@hooks/shortcut-dropdown/useShortcutDropdownData";
 import { useDisclosure, useFullscreen, useHotkeys, useMediaQuery } from "@mantine/hooks";
 import "@mantine/spotlight/styles.css";
@@ -105,6 +105,7 @@ const Logo = ({ configData, navigate }) => {
 				unselectable="on"
 				label={configData?.domain?.company_name || configData?.domain?.name || ""}
 				onClick={() => navigate("/")}
+				leftSection={<Image src={logo_default} width={26} height={26} />}
 			/>
 		);
 	}
@@ -123,13 +124,7 @@ const Logo = ({ configData, navigate }) => {
 						transition: "background 1s",
 					}}
 				>
-					<Image
-						mah={40}
-						radius="md"
-						src={`${import.meta.env.VITE_IMAGE_GATEWAY_URL}/uploads/inventory/logo/${
-							configData.path
-						}`}
-					/>
+					<Image mah={40} radius="md" src={logo_default} />
 				</Anchor>
 			</Tooltip>
 		</Flex>
@@ -233,12 +228,7 @@ const SearchInput = ({ value, onChange, onKeyDown, onClear }) => {
 
 // Action Item Component
 const ActionItem = ({ action, isSelected, onClick }) => (
-	<Link
-		id={`item-${action.index}`}
-		className={"link"}
-		to={getActionPath(action)}
-		onClick={onClick}
-	>
+	<Link id={`item-${action.index}`} className={"link"} to={getActionPath(action)} onClick={onClick}>
 		<Group
 			wrap="nowrap"
 			align="center"
@@ -297,20 +287,8 @@ const HeaderActions = ({
 	languageSelected,
 	handleLanguageChange,
 }) => (
-	<Flex
-		gap="sm"
-		justify="flex-end"
-		direction="row"
-		wrap="wrap"
-		mih={42}
-		align={"right"}
-		px={"xs"}
-		pr={"24"}
-	>
-		<LanguagePicker
-			languageSelected={languageSelected}
-			onLanguageChange={handleLanguageChange}
-		/>
+	<Flex gap="sm" justify="flex-end" direction="row" wrap="wrap" mih={42} align={"right"} px={"xs"} pr={"24"}>
+		<LanguagePicker languageSelected={languageSelected} onLanguageChange={handleLanguageChange} />
 		<Tooltip label={fullscreen ? t("NormalScreen") : t("Fullscreen")} bg={"#635031"} withArrow>
 			<ActionIcon className="mt-6 header-action-icon" onClick={toggle} variant="subtle">
 				{fullscreen ? <IconWindowMinimize size={18} /> : <IconWindowMaximize size={18} />}
@@ -336,11 +314,7 @@ const HeaderActions = ({
 				<IconLogout size={18} />
 			</ActionIcon>
 		</Tooltip>
-		<Tooltip
-			label={isOnline ? t("Online") : t("Offline")}
-			bg={isOnline ? "green.5" : "red.5"}
-			withArrow
-		>
+		<Tooltip label={isOnline ? t("Online") : t("Offline")} bg={isOnline ? "green.5" : "red.5"} withArrow>
 			<ActionIcon className="mt-6 header-action-icon" variant="filled" radius="xl">
 				{isOnline ? <IconWifi size={20} /> : <IconWifiOff size={20} />}
 			</ActionIcon>
@@ -350,15 +324,13 @@ const HeaderActions = ({
 
 export default function Header({ isOnline, configData, mainAreaHeight }) {
 	const userRole = getUserRole();
-	const [opened, { open, close }] = useDisclosure(false);
+	const [opened, { close }] = useDisclosure(false);
 	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const height = mainAreaHeight - 140;
 	const { toggle, fullscreen } = useFullscreen();
-	const [languageSelected, setLanguageSelected] = useState(
-		languages.find((item) => item.value === i18n.language)
-	);
+	const [languageSelected, setLanguageSelected] = useState(languages.find((item) => item.value === i18n.language));
 	const loginUser = getLoggedInUser();
 	const [shortcutModalOpen, setShortcutModalOpen] = useState(false);
 	const [value, setValue] = useState("");
@@ -438,9 +410,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 			setSelectedIndex((prevIndex) => (prevIndex + 1) % filteredItems.length);
 		} else if (event.key === "ArrowUp") {
 			event.preventDefault();
-			setSelectedIndex((prevIndex) =>
-				prevIndex <= 0 ? filteredItems.length - 1 : prevIndex - 1
-			);
+			setSelectedIndex((prevIndex) => (prevIndex <= 0 ? filteredItems.length - 1 : prevIndex - 1));
 		} else if (event.key === "Enter" && selectedIndex >= 0) {
 			handleActionSelect(filteredItems[selectedIndex]);
 		}
@@ -483,9 +453,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 
 	useEffect(() => {
 		if (selectedIndex >= 0 && filteredItems.length > 0) {
-			const selectedElement = document.getElementById(
-				`item-${filteredItems[selectedIndex].index}`
-			);
+			const selectedElement = document.getElementById(`item-${filteredItems[selectedIndex].index}`);
 			if (selectedElement) {
 				selectedElement.scrollIntoView({
 					behavior: "smooth",
@@ -506,9 +474,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 				<Modal.Overlay />
 				<Modal.Content p={"xs"}>
 					<Modal.Header ml={"xs"}>
-						<Modal.Title>
-							{configData?.domain?.company_name || configData?.domain?.name || ""}
-						</Modal.Title>
+						<Modal.Title>{configData?.domain?.company_name || configData?.domain?.name || ""}</Modal.Title>
 						<Modal.CloseButton />
 					</Modal.Header>
 					<Modal.Body>
@@ -523,11 +489,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 					</Grid.Col>
 					<Grid.Col span={matches2 ? 6 : matches ? 10 : 12}>
 						<Group gap={"md"} wrap="nowrap" mih={42}>
-							<SearchButton
-								matches2={matches2}
-								t={t}
-								onClick={() => setShortcutModalOpen(true)}
-							/>
+							<SearchButton matches2={matches2} t={t} onClick={() => setShortcutModalOpen(true)} />
 							<Modal
 								opened={shortcutModalOpen}
 								onClose={() => setShortcutModalOpen(false)}
@@ -564,9 +526,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 										<Stack spacing="xs">
 											{filteredItems
 												.reduce((groups, item) => {
-													const existingGroup = groups.find(
-														(g) => g.group === item.group
-													);
+													const existingGroup = groups.find((g) => g.group === item.group);
 													if (existingGroup) {
 														existingGroup.items.push(item);
 													} else {
@@ -579,12 +539,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 												}, [])
 												.map((groupData, groupIndex) => (
 													<Box key={groupIndex}>
-														<Text
-															size="sm"
-															fw="bold"
-															c="#828282"
-															pb={"xs"}
-														>
+														<Text size="sm" fw="bold" c="#828282" pb={"xs"}>
 															{groupData.group}
 														</Text>
 														<Stack
@@ -593,30 +548,20 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 															align="stretch"
 															gap="2"
 														>
-															{groupData.items.map(
-																(action, itemIndex) => (
-																	<ActionItem
-																		key={itemIndex}
-																		action={action}
-																		isSelected={
-																			filteredItems.indexOf(
-																				action
-																			) === selectedIndex
-																		}
-																		onClick={() => {
-																			setShortcutModalOpen(
-																				false
-																			);
-																			setValue("");
-																			navigate(
-																				getActionPath(
-																					action
-																				)
-																			);
-																		}}
-																	/>
-																)
-															)}
+															{groupData.items.map((action, itemIndex) => (
+																<ActionItem
+																	key={itemIndex}
+																	action={action}
+																	isSelected={
+																		filteredItems.indexOf(action) === selectedIndex
+																	}
+																	onClick={() => {
+																		setShortcutModalOpen(false);
+																		setValue("");
+																		navigate(getActionPath(action));
+																	}}
+																/>
+															))}
 														</Stack>
 													</Box>
 												))}
@@ -637,11 +582,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 												{t("SitemapDetails")}
 											</Text>
 										</div>
-										<Button
-											className={"btnPrimaryBg"}
-											size="xs"
-											onClick={() => navigate("/")}
-										>
+										<Button className={"btnPrimaryBg"} size="xs" onClick={() => navigate("/")}>
 											{t("Sitemap")}
 										</Button>
 									</Group>

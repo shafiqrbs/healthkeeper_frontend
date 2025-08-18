@@ -17,6 +17,7 @@ export const MODULES = {
 	CUSTOMER: "customer",
 	DOMAIN: "domain",
 	HOSPITAL_CONFIG: "hospitalConfig",
+	USER: "user",
 };
 
 export const MODULES_CORE = {
@@ -26,7 +27,6 @@ export const MODULES_CORE = {
 	PARTICULAR_MODE: "particular_mode",
 	PARTICULAR_TYPE: "particular_type",
 };
-
 
 //==================== Module Name ===========
 

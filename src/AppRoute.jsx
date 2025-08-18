@@ -89,10 +89,11 @@ import RequisitionIndex from "@modules/hospital/requisition";
 import InvestigationIndex from "@modules/hospital/investigation";
 import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/doctor";
-import ListIndex from "./modules/hospital/visit/list";
+import ListIndex from "@modules/hospital/visit/list";
 import ConfigurationIndex from "@modules/configuration";
-import ConfirmIndex from "./modules/hospital/admission/confirm";
-import IpdIndex from "./modules/hospital/admission/ipd";
+import ConfirmIndex from "@modules/hospital/admission/confirm";
+import IpdIndex from "@modules/hospital/admission/ipd";
+import UserIndex from "@/modules/core/user";
 
 function AppRoute() {
 	return (
@@ -105,13 +106,15 @@ function AppRoute() {
           <Route path="index" element={<SampleIndex />} />
         </Route> */}
 				<Route path="core/">
+					<Route path="user" element={<UserIndex />} />
+					<Route path="user/:id" element={<UserIndex />} />
 					{/* <Route path="file-upload/">
             <Route path="" element={<FileUploadIndex />} />
             </Route>
           <Route path="customer" element={<CustomerIndex />} />
           <Route path="customer/:id" element={<CustomerIndex />} />
-          <Route path="user" element={<UserIndex />} />
-          <Route path="user/:id" element={<UserIndex />} /> */}
+          
+           */}
 					<Route path="vendor" element={<VendorIndex />} />
 					<Route path="vendor/:id" element={<VendorIndex mode="edit" />} />
 					{/* <Route path="setting" element={<SettingsIndex />} />
@@ -151,6 +154,7 @@ function AppRoute() {
 						<Route index element={<IpdIndex />} />
 						<Route path="admission" element={<AdmissionIndex />} />
 					</Route>
+
 					<Route path="admission-list" element={<AdmissionListIndex />} />
 
 					<Route path="prescription">
@@ -179,9 +183,9 @@ function AppRoute() {
 				</Route>
 				<Route path="/hospital/core/">
 					<Route path="particular" element={<ParticularIndex />} />
-					<Route path="particular/:id" element={<ParticularIndex mode={'edit'} />} />
-					<Route path="bed" element={<BedIndex  />} />
-					<Route path="bed/:id" element={<BedIndex mode={'edit'} />} />
+					<Route path="particular/:id" element={<ParticularIndex mode={"edit"} />} />
+					<Route path="bed" element={<BedIndex />} />
+					<Route path="bed/:id" element={<BedIndex mode={"edit"} />} />
 					<Route path="particular-mode" element={<ParticularModeIndex />} />
 					<Route path="particular-type" element={<ParticularTypeIndex />} />
 					<Route path="category" element={<CategoryIndex />} />

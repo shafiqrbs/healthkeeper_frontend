@@ -20,7 +20,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: ""},
+		filterData: { name: "" },
 	},
 
 	bed: {
@@ -30,7 +30,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: ""},
+		filterData: { name: "" },
 	},
 
 	particular_mode: {
@@ -50,7 +50,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: ""},
+		filterData: { name: "" },
 	},
 
 	vendor: {
@@ -68,10 +68,12 @@ const initialState = {
 	user: {
 		isLoading: true,
 		refetching: false,
+		insertType: "create",
 		error: null,
 		data: {},
 		editData: {},
 		validation: false,
+		validationMessages: [],
 		filterData: { name: "", mobile: "", email: "" },
 	},
 	labUser: {
@@ -268,7 +270,6 @@ const initialState = {
 	},
 	// -------------------- doctor revisit modules stops -------------------------
 
-
 	// -------------------- configuration module starts -------------------------
 
 	hospitalConfig: {
@@ -282,7 +283,6 @@ const initialState = {
 		validationMessages: [],
 	},
 
-
 	// -------------------- configuration module starts -------------------------
 
 	hospitalSetting: {
@@ -295,7 +295,6 @@ const initialState = {
 		filterData: { name: "" },
 		validationMessages: [],
 	},
-
 
 	// -------------------- configuration module stops -------------------------
 	searchKeyword: "", // keep it for compatibility issues, remove it in no time

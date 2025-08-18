@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Box, Grid, Progress } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import _UserTable from "./_UserTable.jsx";
@@ -13,12 +13,12 @@ import {
 	setSearchKeyword,
 } from "@/app/store/core/crudSlice";
 import { getLoadingProgress } from "@/common/hooks/loading-progress/useGetLoadingProgress.js";
-import CoreHeaderNavbar from "../CoreHeaderNavbar";
+import CoreHeaderNavbar from "../CoreHeaderNavbar.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import Navigation from "../shared/Navigation.jsx";
 
 function UserIndex() {
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const insertType = useSelector((state) => state.crudSlice.insertType);
 	const userFilterData = useSelector((state) => state.crudSlice.userFilterData);
@@ -48,14 +48,7 @@ function UserIndex() {
 	return (
 		<>
 			{progress !== 100 && (
-				<Progress
-					color="red"
-					size={"sm"}
-					striped
-					animated
-					value={progress}
-					transitionDuration={200}
-				/>
+				<Progress color="red" size={"sm"} striped animated value={progress} transitionDuration={200} />
 			)}
 			{progress === 100 && (
 				<Box>
