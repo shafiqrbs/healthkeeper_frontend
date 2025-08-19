@@ -20,13 +20,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 
-
-	const { data: getParticularRooms } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_ROOM.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_ROOM.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_ROOM.UTILITY,
-	});
-
 	const { data: getParticularPatientModes } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_MODE.PATH,
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_MODE.TYPE },
@@ -45,16 +38,19 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.UTILITY,
 	});
 
-	console.log(data?.particular_details)
+	const { data: getParticularCabinModes } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_CABIN_MODE.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_CABIN_MODE.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_CABIN_MODE.UTILITY,
+	});
 
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
 				patient_mode_id: data?.particular_details?.patient_mode_id,
-				gender_mode_id: data?.particular_details?.gender_mode_id,
 				payment_mode_id: data?.particular_details?.payment_mode_id,
-				room_id: data?.particular_details?.room_id,
+				cabin_mode_id: data?.particular_details?.cabin_mode_id,
 				name: data.name,
 				price: data.price,
 			});
@@ -141,18 +137,18 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("RoomNo")}</Text>
+											<Text fz="sm">{t("CabinMode")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
 												form={form}
-												tooltip={t("RoomNoValidateMessage")}
-												placeholder={t("RoomNo")}
-												name="room_id"
-												id="room_id"
+												tooltip={t("CabinModeValidateMessage")}
+												placeholder={t("CabinMode")}
+												name="cabin_mode_id"
+												id="cabin_mode_id"
 												nextField="name"
-												value={form.values.room_id}
-												dropdownValue={getParticularRooms}
+												value={form.values.cabin_mode_id}
+												dropdownValue={getParticularCabinModes}
 											/>
 										</Grid.Col>
 									</Grid>
@@ -167,7 +163,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												form={form}
 												tooltip={t("NameValidateMessage")}
 												placeholder={t("Name")}
-												required={false}
+												required={true}
 												name="name"
 												id="name"
 												nextField="price"

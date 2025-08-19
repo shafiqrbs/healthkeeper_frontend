@@ -1,11 +1,11 @@
 import { hasLength } from "@mantine/form";
 
 const initialValues = {
-	particular_type_master_id: 17,
+	particular_type_master_id: 18,
 	patient_mode_id: "",
 	gender_mode_id: "",
 	payment_mode_id: "",
-	room_id: "",
+	cabin_mode_id: "",
 	name: "",
 	price: "",
 };
@@ -27,11 +27,10 @@ export const getInitialValues = (t) => {
 				if (!value) return t("PaymentModeValidationRequired");
 				return null;
 			},
-			room_id: (value) => {
-				if (!value) return t("RoomNoValidationRequired");
+			cabin_mode_id: (value) => {
+				if (!value) return t("CabinModeValidationRequired");
 				return null;
 			}
-
 
 		},
 	};

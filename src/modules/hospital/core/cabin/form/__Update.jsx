@@ -38,7 +38,7 @@ export default function __Update({ module, form, close }) {
 	async function handleConfirmModal(values) {
 		try {
 			const value = {
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.BED.UPDATE}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.CABIN.UPDATE}/${id}`,
 				data: values,
 				module,
 			};
@@ -65,7 +65,7 @@ export default function __Update({ module, form, close }) {
 					dispatch(setInsertType({ insertType: "create", module }));
 					setIsLoading(false);
 					close(); // close the drawer
-					navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED.INDEX, { replace: true });
+					navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.CABIN.INDEX, { replace: true });
 					setIndexData(null);
 				}, 700);
 			}

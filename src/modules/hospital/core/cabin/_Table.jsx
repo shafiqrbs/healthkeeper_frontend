@@ -60,10 +60,10 @@ export default function _Table({ module, open }) {
 		handleScrollToBottom,
 	} = useInfiniteTableScroll({
 		module,
-		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.BED.INDEX,
+		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.CABIN.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			particular_type: 'bed',
+			particular_type: 'cabin',
 			term: searchKeyword,
 		},
 		perPage: PER_PAGE,
@@ -76,11 +76,11 @@ export default function _Table({ module, open }) {
 		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.BED.VIEW}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.CABIN.VIEW}/${id}`,
 				module,
 			})
 		);
-		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED.INDEX}/${id}`);
+		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.CABIN.INDEX}/${id}`);
 	};
 
 	const handleDelete = (id) => {
@@ -97,7 +97,7 @@ export default function _Table({ module, open }) {
 	const handleDeleteSuccess = async (id) => {
 		const res = await dispatch(
 			deleteEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.BED.DELETE}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.CABIN.DELETE}/${id}`,
 				module,
 				id,
 			})
@@ -106,7 +106,7 @@ export default function _Table({ module, open }) {
 		if (deleteEntityData.fulfilled.match(res)) {
 			dispatch(setRefetchData({ module, refetching: true }));
 			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED);
+			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.CABIN);
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
@@ -120,7 +120,7 @@ export default function _Table({ module, open }) {
 	const handleDataShow = (id) => {
 		dispatch(
 			editEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.BED.VIEW}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.CABIN.VIEW}/${id}`,
 				module,
 			})
 		);
@@ -130,7 +130,7 @@ export default function _Table({ module, open }) {
 	const handleCreateForm = () => {
 		open();
 		dispatch(setInsertType({ insertType: "create", module }));
-		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED.INDEX);
+		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.CABIN.INDEX);
 	};
 
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);

@@ -22,6 +22,7 @@ export const MODULES = {
 
 export const MODULES_CORE = {
 	BED: "bed",
+	CABIN: "cabin",
 	PARTICULAR: "particular",
 	CATEGORY: "category",
 	PARTICULAR_MODE: "particular_mode",

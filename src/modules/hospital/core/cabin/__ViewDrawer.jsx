@@ -51,7 +51,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer,module }) {
 									{t("GenderMode")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>{entityObject && entityObject?.particular_details && entityObject?.particular_details?.gender_mode?.name}</Grid.Col>
+								<Grid.Col span={"auto"}>{entityObject && entityObject?.particular_details && entityObject?.particular_details?.dender_mode?.name}</Grid.Col>
 							</Grid>
 							<Grid columns={24}>
 								<Grid.Col span={"8"} className="drawer-form-input-label">

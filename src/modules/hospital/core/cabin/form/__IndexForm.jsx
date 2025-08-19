@@ -22,8 +22,6 @@ export default function _IndexForm({ module, form, close, mode }) {
 	const defaultFilterData = useMemo(
 		() => ({
 			name: "",
-			mobile: "",
-			company: "",
 		}),
 		[]
 	);
@@ -33,7 +31,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
-				url: `${MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED.VIEW}/${id}`,
+				url: `${MASTER_DATA_ROUTES.NAVIGATION_LINKS.CABIN.VIEW}/${id}`,
 				module,
 			})
 		);
@@ -53,7 +51,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 				},
 			})
 		);
-		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED, { replace: true });
+		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.CABIN, { replace: true });
 	};
 
 	// =============== effect to handle mode switching ================

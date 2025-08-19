@@ -24,7 +24,15 @@ export const MASTER_DATA_ROUTES = {
 		BED: {
 			INDEX: 		"hospital/core/particular",
 			CREATE: 	"hospital/core/particular",
-			UPDATE: 	"hospital/core/particular/update",
+			UPDATE: 	"hospital/core/particular",
+			VIEW: 		"hospital/core/particular",
+			DELETE: 	"hospital/core/particular",
+		},
+
+		CABIN: {
+			INDEX: 		"hospital/core/particular",
+			CREATE: 	"hospital/core/particular",
+			UPDATE: 	"hospital/core/particular",
 			VIEW: 		"hospital/core/particular",
 			DELETE: 	"hospital/core/particular",
 		},
@@ -74,6 +82,13 @@ export const MASTER_DATA_ROUTES = {
 			CREATE: "/hospital/core/bed/create",
 			UPDATE: "/hospital/core/bed/update",
 			VIEW: "/hospital/core/bed/view"
+		},
+
+		CABIN: {
+			INDEX: "/hospital/core/cabin",
+			CREATE: "/hospital/core/cabin/create",
+			UPDATE: "/hospital/core/cabin/update",
+			VIEW: "/hospital/core/cabin/view"
 		},
 
 		PARTICULAR_MODE: {

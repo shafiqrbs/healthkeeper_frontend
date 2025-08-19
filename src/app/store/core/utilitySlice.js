@@ -24,20 +24,22 @@ export const ACCOUNTING_DROPDOWNS = {
 };
 
 export const HOSPITAL_DROPDOWNS = {
+
 	PARTICULAR_TYPE: { UTILITY: "particularType", PATH: "hospital/select/particular-type" },
+
 
 	//	PARTICULAR_MODE: { UTILITY: "particularMode", TYPE: "operation", PATH: "hospital/select/module" },
 
+	PARTICULAR_ROOM: { UTILITY: "particularRoom", TYPE: "room", PATH: "hospital/select/particular" },
+
 	PARTICULAR_MODE: { UTILITY: "particularOperationMode", TYPE: "operation", PATH: "hospital/select/mode" },
 	PARTICULAR_PRINT_MODE: { UTILITY: "particularLabReportModes", TYPE: "print", PATH: "hospital/select/mode" },
-	PARTICULAR_REPORT_MODE: {
-		UTILITY: "particularLabReportModes",
-		TYPE: "lab-report-mode",
-		PATH: "hospital/select/mode",
-	},
-	//	PARTICULAR_REPORT_MODE: { UTILITY: "particularLabReportModes", TYPE: "lab-report-mode", PATH: "hospital/select/mode" },
-	//	PARTICULAR_REPORT_MODE: { UTILITY: "particularLabReportModes", TYPE: "lab-report-mode", PATH: "hospital/select/mode" },
-	//	PARTICULAR_REPORT_MODE: { UTILITY: "particularLabReportModes", TYPE: "lab-report-mode", PATH: "hospital/select/mode" },
+	PARTICULAR_REPORT_MODE: { UTILITY: "particularLabReportModes", TYPE: "lab-report-mode", PATH: "hospital/select/mode" },
+	PARTICULAR_PATIENT_MODE: { UTILITY: "particularPatientModes", TYPE: "patient-mode", PATH: "hospital/select/mode" },
+	PARTICULAR_GENDER_MODE: { UTILITY: "particularGenderModes", TYPE: "gender-mode", PATH: "hospital/select/mode" },
+	PARTICULAR_PAYMENT_MODE: { UTILITY: "particularPaymentModes", TYPE: "paying-mode", PATH: "hospital/select/mode" },
+	PARTICULAR_CABIN_MODE: { UTILITY: "particularCabinModes", TYPE: "cabin-mode", PATH: "hospital/select/mode" },
+
 };
 
 const initialState = {

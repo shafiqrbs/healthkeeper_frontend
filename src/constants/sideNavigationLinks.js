@@ -246,19 +246,22 @@ export const sideNavigationLinks = {
 		},
 
 		{
-			label: t("Particular"),
-			path: "/core/user",
+
+			label: t('Particular'),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX,
 			icon: IconCategory,
 			color: "#E53935",
 		},
 		{
-			label: t("Cabin"),
-			path: "/core/warehouse",
+
+			label: t('ManageCabin'),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.CABIN.INDEX,
 			icon: IconIcons,
 			color: "#3F51B5",
 		},
 		{
-			label: t("Ward&Bed"),
+
+			label: t('ManageBed'),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED.INDEX,
 			icon: IconIcons,
 			color: "#3F51B5",
