@@ -1,59 +1,36 @@
-import { useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { Button, rem, Grid, Box, ScrollArea, Text, Title, Flex, Stack } from "@mantine/core";
-import { useTranslation } from "react-i18next";
-import { IconCheck, IconDeviceFloppy } from "@tabler/icons-react";
-import { useHotkeys } from "@mantine/hooks";
-import InputForm from "@components/form-builders/InputForm";
-import PasswordInputForm from "@components/form-builders/PasswordInputForm";
-import SelectForm from "@components/form-builders/SelectForm";
-import PhoneNumber from "@components/form-builders/PhoneNumberInput";
-import { useDispatch } from "react-redux";
-import { useForm } from "@mantine/form";
-import { modals } from "@mantine/modals";
-import { editEntityData, setInsertType } from "@/app/store/core/crudSlice";
-import { notifications } from "@mantine/notifications";
-import Shortcut from "../../shortcut/Shortcut.jsx";
-import CustomerGroupDrawer from "../customer/CustomerGroupDrawer.js";
-import getCoreSettingEmployeeGroupDropdownData from "@/app/store/core/crudSlice";
-import { storeEntityData } from "@/app/store/core/crudThunk.js";
-import useUserDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useUserDataStoreIntoLocalStorage.js";
+import { useEffect } from "react";
+import { Box } from "@mantine/core";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { setInsertType, setSearchKeyword } from "@/app/store/core/crudSlice";
+import { editEntityData } from "@/app/store/core/crudThunk";
 import Create from "./Create.jsx";
-import { getUserFormValues } from "../helpers/request.js";
+import Update from "./Update.jsx";
+import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 
-export default function Form() {
-	const { t } = useTranslation();
-	const form = useForm(getUserFormValues(t));
+export default function Form({ module, mode }) {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const { id } = useParams();
+	const insertType = useSelector((state) => state.crud.user.insertType);
+	const isEditMode = mode === "edit";
 
-	const [groupDrawer, setGroupDrawer] = useState(false);
+	// =============== initialize based on mode ================
+	useEffect(() => {
+		if (isEditMode) {
+			dispatch(setInsertType({ insertType: "update", module }));
+			dispatch(
+				editEntityData({
+					url: `${MASTER_DATA_ROUTES.API_ROUTES.USER.UPDATE}/${id}`,
+					module,
+				})
+			);
+		} else {
+			dispatch(setInsertType({ insertType: "create", module }));
+			dispatch(setSearchKeyword(""));
+			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.USER.INDEX, { replace: true });
+		}
+	}, [isEditMode, id, dispatch, module, navigate]);
 
-	useHotkeys(
-		[
-			[
-				"alt+n",
-				() => {
-					!groupDrawer && document.getElementById("employee_group_id").click();
-				},
-			],
-			[
-				"alt+r",
-				() => {
-					form.reset();
-				},
-			],
-			[
-				"alt+s",
-				() => {
-					!groupDrawer && document.getElementById("EntityFormSubmit").click();
-				},
-			],
-		],
-		[]
-	);
-
-	return (
-		<Box>
-			<Create form={form} />
-		</Box>
-	);
+	return <Box>{insertType === "create" ? <Create module={module} /> : <Update module={module} />}</Box>;
 }

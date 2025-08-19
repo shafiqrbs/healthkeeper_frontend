@@ -13,10 +13,11 @@ import Navigation from "../shared/Navigation.jsx";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton.jsx";
 import { editEntityData, storeEntityData } from "@/app/store/core/crudThunk.js";
 import { MODULES } from "@/constants";
+import Form from "./form/Form.jsx";
 
 const module = MODULES.USER;
 
-export default function Index() {
+export default function Index({ mode = "create" }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const insertType = useSelector((state) => state.crud.user.insertType);
@@ -85,7 +86,8 @@ export default function Index() {
 								</Grid.Col>
 							)}
 							<Grid.Col span={insertType === "create" ? 9 : 24}>
-								{insertType === "create" ? <Create /> : <Update />}
+								{/* {insertType === "create" ? <Create /> : <Update />} */}
+								<Form module={module} mode={mode} />
 							</Grid.Col>
 						</Grid>
 					</Box>

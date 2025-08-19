@@ -15,6 +15,8 @@ export const CORE_DROPDOWNS = {
 	CATEGORY_NATURE: { UTILITY: "categoryNature", TYPE: "product-type", PATH: "inventory/select/setting" },
 	CATEGORY_GROUP: { UTILITY: "categoryGroup", TYPE: "category-group", PATH: "inventory/select/group-category" },
 	CATEGORY: { UTILITY: "category", TYPE: "category", PATH: "inventory/select/category" },
+	DESIGNATION: { UTILITY: "designation", TYPE: "designation", PATH: "core/select/user" },
+	DEPARTMENT: { UTILITY: "department", TYPE: "department", PATH: "core/select/user" },
 };
 
 export const ACCOUNTING_DROPDOWNS = {

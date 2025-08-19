@@ -108,7 +108,7 @@ function AppRoute() {
         </Route> */}
 				<Route path="core/">
 					<Route path="user" element={<UserIndex />} />
-					<Route path="user/:id" element={<UserIndex />} />
+					<Route path="user/:id" element={<UserIndex mode="edit" />} />
 					{/* <Route path="file-upload/">
             <Route path="" element={<FileUploadIndex />} />
             </Route>

@@ -1,5 +1,11 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
+		USER: {
+			INDEX: "core/user",
+			CREATE: "core/user/create",
+			UPDATE: "core/user",
+			VIEW: "core/user/view",
+		},
 		SELECT_DROPDOWN: {
 			PRODUCT_NATURE: "/inventory/select/setting",
 			CATEGORY_GROUP: "/inventory/select/group-category",
@@ -14,27 +20,27 @@ export const MASTER_DATA_ROUTES = {
 		},
 
 		PARTICULAR: {
-			INDEX: 		"hospital/core/particular",
-			CREATE: 	"hospital/core/particular",
-			UPDATE: 	"hospital/core/particular/update",
-			VIEW: 		"hospital/core/particular",
-			DELETE: 	"hospital/core/particular",
+			INDEX: "hospital/core/particular",
+			CREATE: "hospital/core/particular",
+			UPDATE: "hospital/core/particular/update",
+			VIEW: "hospital/core/particular",
+			DELETE: "hospital/core/particular",
 		},
 
 		BED: {
-			INDEX: 		"hospital/core/particular",
-			CREATE: 	"hospital/core/particular",
-			UPDATE: 	"hospital/core/particular",
-			VIEW: 		"hospital/core/particular",
-			DELETE: 	"hospital/core/particular",
+			INDEX: "hospital/core/particular",
+			CREATE: "hospital/core/particular",
+			UPDATE: "hospital/core/particular",
+			VIEW: "hospital/core/particular",
+			DELETE: "hospital/core/particular",
 		},
 
 		CABIN: {
-			INDEX: 		"hospital/core/particular",
-			CREATE: 	"hospital/core/particular",
-			UPDATE: 	"hospital/core/particular",
-			VIEW: 		"hospital/core/particular",
-			DELETE: 	"hospital/core/particular",
+			INDEX: "hospital/core/particular",
+			CREATE: "hospital/core/particular",
+			UPDATE: "hospital/core/particular",
+			VIEW: "hospital/core/particular",
+			DELETE: "hospital/core/particular",
 		},
 
 		PARTICULAR_TYPE: {
@@ -62,6 +68,12 @@ export const MASTER_DATA_ROUTES = {
 		},
 	},
 	NAVIGATION_LINKS: {
+		USER: {
+			INDEX: "/core/user",
+			CREATE: "/core/user",
+			UPDATE: "/core/user",
+			VIEW: "/core/user",
+		},
 		LAB_USER: {
 			INDEX: "/hospital/core/lab-user",
 			CREATE: "/hospital/core/lab-user/create",
@@ -74,21 +86,21 @@ export const MASTER_DATA_ROUTES = {
 			INDEX: "/hospital/core/particular",
 			CREATE: "/hospital/core/particular/create",
 			UPDATE: "/hospital/core/particular/update",
-			VIEW: "/hospital/core/particular/view"
+			VIEW: "/hospital/core/particular/view",
 		},
 
 		BED: {
 			INDEX: "/hospital/core/bed",
 			CREATE: "/hospital/core/bed/create",
 			UPDATE: "/hospital/core/bed/update",
-			VIEW: "/hospital/core/bed/view"
+			VIEW: "/hospital/core/bed/view",
 		},
 
 		CABIN: {
 			INDEX: "/hospital/core/cabin",
 			CREATE: "/hospital/core/cabin/create",
 			UPDATE: "/hospital/core/cabin/update",
-			VIEW: "/hospital/core/cabin/view"
+			VIEW: "/hospital/core/cabin/view",
 		},
 
 		PARTICULAR_MODE: {

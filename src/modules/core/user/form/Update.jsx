@@ -27,7 +27,7 @@ import {
 } from "@tabler/icons-react";
 import { useHotkeys } from "@mantine/hooks";
 import { useDispatch, useSelector } from "react-redux";
-import { isNotEmpty, useForm } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { setInsertType } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
@@ -44,14 +44,13 @@ import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import accessControlRoleStaticData from "@/common/json/accessControlRole.json";
 import androidControlRoleStaticData from "@/common/json/androidControlRole.json";
 import CustomerGroupDrawer from "../../customer/CustomerGroupDrawer";
-import getCoreSettingEmployeeGroupDropdownData from "@hooks/dropdown/useGlobalDropdownData.js";
-import getCoreSettingDesignationDropdownData from "@hooks/dropdown/useGlobalDropdownData.js";
-import getCoreSettingDepartmentDropdownData from "@hooks/dropdown/useGlobalDropdownData.js";
-import getCoreSettingLocationDropdownData from "@hooks/dropdown/useGlobalDropdownData.js";
 import { updateEntityData, updateEntityDataWithFile } from "@/app/store/core/crudThunk.js";
 import SwitchForm from "@components/form-builders/SwitchForm.jsx";
+import { getUserEditFormData } from "../helpers/request.js";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData.js";
+import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
-export default function Update() {
+export default function Update({ module }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { isOnline, mainAreaHeight } = useOutletContext();
@@ -68,56 +67,7 @@ export default function Update() {
 	const [designationData, setDesignationData] = useState(null);
 	const [locationData, setLocationData] = useState(null);
 
-	const form = useForm({
-		initialValues: {
-			employee_group_id: entityEditData?.employee_group_id || "",
-			name: entityEditData?.name || "",
-			username: entityEditData?.username || "",
-			email: entityEditData?.email || "",
-			mobile: entityEditData?.mobile || "",
-			enabled: entityEditData?.enabled || 0,
-			alternative_email: entityEditData?.alternative_email || null,
-			designation_id: entityEditData?.designation_id || null,
-			department_id: entityEditData?.department_id || null,
-			location_id: entityEditData?.location_id || null,
-			address: entityEditData?.address || null,
-			about_me: entityEditData?.about_me || null,
-		},
-		validate: {
-			employee_group_id: isNotEmpty(),
-			name: (value) => {
-				if (!value) return t("NameRequiredMessage");
-				if (value.length < 2) return t("NameLengthMessage");
-				return null;
-			},
-			username: (value) => {
-				if (!value) return t("UserNameRequiredMessage");
-				if (value.length < 2 || value.length > 20) return t("NameLengthMessage");
-				return null;
-			},
-			email: (value) => {
-				if (!value) return true;
-
-				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-				if (!emailRegex.test(value)) return t("EmailValidationInvalid");
-
-				return null;
-			},
-			mobile: (value) => {
-				if (!value) return t("MobileValidationRequired");
-				return null;
-			},
-			password: (value) => {
-				if (value && value.length < 6) return "Password must be at least 6 characters long";
-				return null;
-			},
-			confirm_password: (value, values) => {
-				if (values.password && !value) return "Confirm password is required";
-				if (values.password && value !== values.password) return "Passwords do not match";
-				return null;
-			},
-		},
-	});
+	const form = useForm(getUserEditFormData(entityEditData, t));
 
 	useEffect(() => {
 		setFormLoad(true);
@@ -324,12 +274,14 @@ export default function Update() {
 			return group1;
 		});
 	}
+
 	useEffect(() => {
 		if (selectedAndroidControlRoleData.length > 0) {
 			const result = removeMatchingData2([...androidControlRole], selectedAndroidControlRoleData);
 			setAndroidControlRole(result);
 		}
 	}, [selectedAndroidControlRoleData]);
+
 	const handleSelectAndroidControlRoleData = (group, action) => {
 		const newAvailableData = androidControlRole.map((g) => {
 			if (g.Group === group.Group) {
@@ -354,6 +306,7 @@ export default function Update() {
 
 		setSelectedAndroidControlRoleData(newSelectedData);
 	};
+
 	const handleDeselectAndroidControlRoleData = (group, action) => {
 		const newSelectedData = selectedAndroidControlRoleData.map((g) => {
 			if (g.Group === group.Group) {
@@ -400,6 +353,7 @@ export default function Update() {
 			</>
 		);
 	});
+
 	const previewsDigitalSignature = digitalSignature.map((file, index) => {
 		const imageUrl = URL.createObjectURL(file);
 		return (
@@ -418,65 +372,105 @@ export default function Update() {
 		);
 	});
 
-	const employeeGroupDropdown = getCoreSettingEmployeeGroupDropdownData(groupDrawer);
-	const designationDropdown = getCoreSettingDesignationDropdownData(groupDrawer);
-	const departmentDropdown = getCoreSettingDepartmentDropdownData(groupDrawer);
-	const locationDropdown = getCoreSettingLocationDropdownData(groupDrawer);
+	const { data: employeeGroupDropdown } = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.EMPLOYEE_GROUP.PATH,
+		utility: CORE_DROPDOWNS.EMPLOYEE_GROUP.UTILITY,
+	});
+
+	const { data: designationDropdown } = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.DESIGNATION.PATH,
+		utility: CORE_DROPDOWNS.DESIGNATION.UTILITY,
+	});
+
+	const { data: departmentDropdown } = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.DEPARTMENT.PATH,
+		utility: CORE_DROPDOWNS.DEPARTMENT.UTILITY,
+	});
+
+	const { data: locationDropdown } = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.LOCATION.PATH,
+		utility: CORE_DROPDOWNS.LOCATION.UTILITY,
+	});
+
+	const handleSubmit = (values) => {
+		form.values["access_control_role"] = selectedAccessControlRoleData;
+		form.values["android_control_role"] = selectedAndroidControlRoleData;
+
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Submit"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.log("Cancel"),
+			onConfirm: async () => {
+				const value = {
+					url: "core/user/" + entityEditData.id,
+					data: values,
+					module,
+				};
+
+				const resultAction = await dispatch(updateEntityData(value));
+
+				if (updateEntityData.rejected.match(resultAction)) {
+					const fieldErrors = resultAction.payload.errors;
+
+					// Check if there are field validation errors and dynamically set them
+					if (fieldErrors) {
+						const errorObject = {};
+						Object.keys(fieldErrors).forEach((key) => {
+							errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
+						});
+						// Display the errors using your form's `setErrors` function dynamically
+						form.setErrors(errorObject);
+					}
+				} else if (updateEntityData.fulfilled.match(resultAction)) {
+					notifications.show({
+						color: "teal",
+						title: t("UpdateSuccessfully"),
+						icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
+						loading: false,
+						autoClose: 700,
+						style: { backgroundColor: "lightgray" },
+					});
+
+					setTimeout(() => {
+						form.reset();
+						dispatch(setInsertType("create"));
+						setSaveCreateLoading(false);
+						navigate("/core/user", { replace: true });
+					}, 700);
+				}
+			},
+		});
+	};
+
+	const handleOnDrop = (e) => {
+		const value = {
+			url: "core/user/image-inline/" + entityEditData.id,
+			data: {
+				profile_image: e[0],
+			},
+			module,
+		};
+		dispatch(updateEntityDataWithFile(value));
+		setProfileImage(e);
+	};
+
+	const handleOnDropDigitalSignature = (e) => {
+		const value = {
+			url: "core/user/image-inline/" + entityEditData.id,
+			data: {
+				digital_signature: e[0],
+			},
+			module,
+		};
+		dispatch(updateEntityDataWithFile(value));
+		setDigitalSignature(e);
+	};
 
 	return (
 		<Box>
-			<form
-				onSubmit={form.onSubmit((values) => {
-					form.values["access_control_role"] = selectedAccessControlRoleData;
-					form.values["android_control_role"] = selectedAndroidControlRoleData;
-
-					modals.openConfirmModal({
-						title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-						children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-						labels: { confirm: t("Submit"), cancel: t("Cancel") },
-						confirmProps: { color: "red" },
-						onCancel: () => console.log("Cancel"),
-						onConfirm: async () => {
-							const value = {
-								url: "core/user/" + entityEditData.id,
-								data: values,
-							};
-
-							const resultAction = await dispatch(updateEntityData(value));
-
-							if (updateEntityData.rejected.match(resultAction)) {
-								const fieldErrors = resultAction.payload.errors;
-
-								// Check if there are field validation errors and dynamically set them
-								if (fieldErrors) {
-									const errorObject = {};
-									Object.keys(fieldErrors).forEach((key) => {
-										errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
-									});
-									// Display the errors using your form's `setErrors` function dynamically
-									form.setErrors(errorObject);
-								}
-							} else if (updateEntityData.fulfilled.match(resultAction)) {
-								notifications.show({
-									color: "teal",
-									title: t("UpdateSuccessfully"),
-									icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-									loading: false,
-									autoClose: 700,
-									style: { backgroundColor: "lightgray" },
-								});
-
-								setTimeout(() => {
-									form.reset();
-									dispatch(setInsertType("create"));
-									setSaveCreateLoading(false);
-									navigate("/core/user", { replace: true });
-								}, 700);
-							}
-						},
-					});
-				})}
-			>
+			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Box>
 					<Grid columns={24} gutter={{ base: 8 }}>
 						{/* start 1st Box */}
@@ -521,7 +515,6 @@ export default function Update() {
 																	nextField={"name"}
 																	name={"employee_group_id"}
 																	form={form}
-																	// dropdownValue={getCoreSettingEmployeeGroupDropdownData()}
 																	dropdownValue={employeeGroupDropdown}
 																	mt={8}
 																	id={"employee_group_id"}
@@ -1235,16 +1228,7 @@ export default function Update() {
 													<Dropzone
 														label={t("ChooseImage")}
 														accept={IMAGE_MIME_TYPE}
-														onDrop={(e) => {
-															const value = {
-																url: "core/user/image-inline/" + entityEditData.id,
-																data: {
-																	profile_image: e[0],
-																},
-															};
-															dispatch(updateEntityDataWithFile(value));
-															setProfileImage(e);
-														}}
+														onDrop={handleOnDrop}
 													>
 														<Text ta="center">
 															{profileImage &&
@@ -1296,16 +1280,7 @@ export default function Update() {
 													<Dropzone
 														label={t("ChooseImage")}
 														accept={IMAGE_MIME_TYPE}
-														onDrop={(e) => {
-															const value = {
-																url: "core/user/image-inline/" + entityEditData.id,
-																data: {
-																	digital_signature: e[0],
-																},
-															};
-															dispatch(updateEntityDataWithFile(value));
-															setDigitalSignature(e);
-														}}
+														onDrop={handleOnDropDigitalSignature}
 													>
 														<Text ta="center">
 															{digitalSignature &&

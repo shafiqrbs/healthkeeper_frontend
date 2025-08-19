@@ -84,6 +84,52 @@ export default function _Table({ module }) {
 	// 	}
 	// }, [entityDataDelete]);
 
+	const handleEdit = (id) => {
+		dispatch(
+			setInsertType({
+				insertType: "update",
+				module,
+			})
+		);
+		dispatch(
+			editEntityData({
+				url: `core/user/${id}`,
+				module,
+			})
+		);
+		navigate(`/core/user/${id}`);
+	};
+
+	const handleShow = (id) => {
+		const foundUsers = indexData?.data.find((type) => type.id == id);
+		if (foundUsers) {
+			setUserObject(foundUsers);
+			setViewDrawer(true);
+		} else {
+			notifications.show({
+				color: "red",
+				title: t("Something Went wrong , please try again"),
+				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+				loading: false,
+				autoClose: 900,
+				style: { backgroundColor: "lightgray" },
+			});
+		}
+	};
+
+	const handleDelete = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: "Confirm", cancel: "Cancel" },
+			confirmProps: { color: "red.6" },
+			onCancel: () => console.log("Cancel"),
+			onConfirm: () => {
+				dispatch(deleteEntityData("core/user/" + id));
+			},
+		});
+	};
+
 	return (
 		<>
 			<Box pl="xs" pr={8} pt="6" pb="4" className="boxBackground borderRadiusAll border-bottom-none">
@@ -137,21 +183,7 @@ export default function _Table({ module }) {
 										</Menu.Target>
 										<Menu.Dropdown>
 											<Menu.Item
-												onClick={() => {
-													dispatch(
-														setInsertType({
-															insertType: "update",
-															module,
-														})
-													);
-													dispatch(
-														editEntityData({
-															url: `core/user/${data.id}`,
-															module,
-														})
-													);
-													navigate(`/core/user/${data.id}`);
-												}}
+												onClick={() => handleEdit(data.id)}
 												target="_blank"
 												component="a"
 												w={200}
@@ -160,30 +192,7 @@ export default function _Table({ module }) {
 											</Menu.Item>
 
 											<Menu.Item
-												onClick={() => {
-													// dispatch(editEntityData('core/user/' + data.id))
-
-													const foundUsers = indexData?.data.find(
-														(type) => type.id == data.id
-													);
-													if (foundUsers) {
-														setUserObject(foundUsers);
-														setViewDrawer(true);
-													} else {
-														notifications.show({
-															color: "red",
-															title: t("Something Went wrong , please try again"),
-															icon: (
-																<IconAlertCircle
-																	style={{ width: rem(18), height: rem(18) }}
-																/>
-															),
-															loading: false,
-															autoClose: 900,
-															style: { backgroundColor: "lightgray" },
-														});
-													}
-												}}
+												onClick={() => handleShow(data.id)}
 												target="_blank"
 												component="a"
 												w={200}
@@ -197,20 +206,7 @@ export default function _Table({ module }) {
 												mt={2}
 												bg="red.1"
 												c="red.6"
-												onClick={() => {
-													modals.openConfirmModal({
-														title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-														children: (
-															<Text size="sm"> {t("FormConfirmationMessage")}</Text>
-														),
-														labels: { confirm: "Confirm", cancel: "Cancel" },
-														confirmProps: { color: "red.6" },
-														onCancel: () => console.log("Cancel"),
-														onConfirm: () => {
-															dispatch(deleteEntityData("core/user/" + data.id));
-														},
-													});
-												}}
+												onClick={() => handleDelete(data.id)}
 												rightSection={
 													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
 												}
