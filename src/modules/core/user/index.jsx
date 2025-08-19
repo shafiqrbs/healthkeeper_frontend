@@ -1,64 +1,21 @@
-import { useEffect } from "react";
 import { Box, Grid } from "@mantine/core";
-import { useDispatch, useSelector } from "react-redux";
 import _Table from "./_Table.jsx";
-import Create from "./form/Create.jsx";
-import Update from "./form/Update.jsx";
 import { useTranslation } from "react-i18next";
-import { setInsertType, setSearchKeyword } from "@/app/store/core/crudSlice";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress.js";
 import CoreHeaderNavbar from "../CoreHeaderNavbar.jsx";
-import { useNavigate, useParams } from "react-router-dom";
 import Navigation from "../shared/Navigation.jsx";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton.jsx";
-import { editEntityData, storeEntityData } from "@/app/store/core/crudThunk.js";
 import { MODULES } from "@/constants";
 import Form from "./form/Form.jsx";
+import { useSelector } from "react-redux";
 
 const module = MODULES.USER;
 
 export default function Index({ mode = "create" }) {
 	const { t } = useTranslation();
-	const dispatch = useDispatch();
-	const insertType = useSelector((state) => state.crud.user.insertType);
-	const userFilterData = useSelector((state) => state.crud.user.filterData);
+	const insertType = useSelector((state) => state.crud[module].insertType);
 
-	const { id } = useParams();
-	const navigate = useNavigate();
 	const progress = useGetLoadingProgress();
-
-	useEffect(() => {
-		id
-			? (dispatch(
-					setInsertType({
-						insertType: "update",
-						module,
-					})
-			  ),
-			  dispatch(
-					editEntityData({
-						url: `core/user/${id}`,
-						module,
-					})
-			  ))
-			: (dispatch(
-					setInsertType({
-						insertType: "create",
-						module,
-					})
-			  ),
-			  dispatch(setSearchKeyword("")),
-			  dispatch(
-					storeEntityData({
-						...userFilterData,
-						name: "",
-						mobile: "",
-						email: "",
-						module,
-					})
-			  ),
-			  navigate("/core/user", { replace: true }));
-	}, [id, dispatch, navigate]);
 
 	return (
 		<>
@@ -85,8 +42,7 @@ export default function Index({ mode = "create" }) {
 									</Box>
 								</Grid.Col>
 							)}
-							<Grid.Col span={insertType === "create" ? 9 : 24}>
-								{/* {insertType === "create" ? <Create /> : <Update />} */}
+							<Grid.Col span={insertType === "create" ? 9 : 23}>
 								<Form module={module} mode={mode} />
 							</Grid.Col>
 						</Grid>

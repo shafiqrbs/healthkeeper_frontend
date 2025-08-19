@@ -3,7 +3,8 @@ import { getGlobalDropdown } from "./utilityThunk";
 
 export const CORE_DROPDOWNS = {
 	EMPLOYEE: { UTILITY: "employee", TYPE: "employee", PATH: "core/select/user" },
-	EMPLOYEE_GROUP: { UTILITY: "employeeGroup", TYPE: "employee-group", PATH: "core/select/user" },
+	EMPLOYEE_GROUP: { UTILITY: "employeeGroup", TYPE: "employee-group", PATH: "core/select/setting" },
+	SETTING_TYPE: { UTILITY: "settingType", TYPE: "setting-type", PATH: "core/select/setting-type" },
 	CUSTOMER_GROUP: { UTILITY: "customerGroup", TYPE: "customer-group", PATH: "utility/select/setting" },
 	BUSINESS_MODEL: { UTILITY: "businessModel", TYPE: "business-model", PATH: "utility/select/setting" },
 	MODULE: { UTILITY: "module", TYPE: "module", PATH: "utility/select/setting" },
@@ -26,9 +27,7 @@ export const ACCOUNTING_DROPDOWNS = {
 };
 
 export const HOSPITAL_DROPDOWNS = {
-
 	PARTICULAR_TYPE: { UTILITY: "particularType", PATH: "hospital/select/particular-type" },
-
 
 	//	PARTICULAR_MODE: { UTILITY: "particularMode", TYPE: "operation", PATH: "hospital/select/module" },
 
@@ -36,12 +35,15 @@ export const HOSPITAL_DROPDOWNS = {
 
 	PARTICULAR_MODE: { UTILITY: "particularOperationMode", TYPE: "operation", PATH: "hospital/select/mode" },
 	PARTICULAR_PRINT_MODE: { UTILITY: "particularLabReportModes", TYPE: "print", PATH: "hospital/select/mode" },
-	PARTICULAR_REPORT_MODE: { UTILITY: "particularLabReportModes", TYPE: "lab-report-mode", PATH: "hospital/select/mode" },
+	PARTICULAR_REPORT_MODE: {
+		UTILITY: "particularLabReportModes",
+		TYPE: "lab-report-mode",
+		PATH: "hospital/select/mode",
+	},
 	PARTICULAR_PATIENT_MODE: { UTILITY: "particularPatientModes", TYPE: "patient-mode", PATH: "hospital/select/mode" },
 	PARTICULAR_GENDER_MODE: { UTILITY: "particularGenderModes", TYPE: "gender-mode", PATH: "hospital/select/mode" },
 	PARTICULAR_PAYMENT_MODE: { UTILITY: "particularPaymentModes", TYPE: "paying-mode", PATH: "hospital/select/mode" },
 	PARTICULAR_CABIN_MODE: { UTILITY: "particularCabinModes", TYPE: "cabin-mode", PATH: "hospital/select/mode" },
-
 };
 
 const initialState = {

@@ -2,7 +2,7 @@ export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
 		USER: {
 			INDEX: "core/user",
-			CREATE: "core/user/create",
+			CREATE: "core/user",
 			UPDATE: "core/user",
 			VIEW: "core/user/view",
 		},

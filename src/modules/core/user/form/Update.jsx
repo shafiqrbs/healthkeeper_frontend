@@ -58,8 +58,8 @@ export default function Update({ module }) {
 	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
 	const [setFormData, setFormDataForUpdate] = useState(false);
 	const [formLoad, setFormLoad] = useState(true);
-	const entityEditData = useSelector((state) => state.crud.user.editData);
-	const formLoading = useSelector((state) => state.crud.user.isLoading);
+	const entityEditData = useSelector((state) => state.crud[module].editData);
+	const formLoading = useSelector((state) => state.crud[module].isLoading);
 	const navigate = useNavigate();
 
 	const [employeeGroupData, setEmployeeGroupData] = useState(null);
@@ -375,21 +375,25 @@ export default function Update({ module }) {
 	const { data: employeeGroupDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.EMPLOYEE_GROUP.PATH,
 		utility: CORE_DROPDOWNS.EMPLOYEE_GROUP.UTILITY,
+		params: { "dropdown-type": CORE_DROPDOWNS.EMPLOYEE_GROUP.TYPE },
 	});
 
 	const { data: designationDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.DESIGNATION.PATH,
 		utility: CORE_DROPDOWNS.DESIGNATION.UTILITY,
+		params: { "dropdown-type": CORE_DROPDOWNS.DESIGNATION.TYPE },
 	});
 
 	const { data: departmentDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.DEPARTMENT.PATH,
 		utility: CORE_DROPDOWNS.DEPARTMENT.UTILITY,
+		params: { "dropdown-type": CORE_DROPDOWNS.DEPARTMENT.TYPE },
 	});
 
 	const { data: locationDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.LOCATION.PATH,
 		utility: CORE_DROPDOWNS.LOCATION.UTILITY,
+		params: { "dropdown-type": CORE_DROPDOWNS.LOCATION.TYPE },
 	});
 
 	const handleSubmit = (values) => {

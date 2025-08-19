@@ -1,4 +1,4 @@
-import {Box, Grid, Group, Progress} from "@mantine/core";
+import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
@@ -11,7 +11,7 @@ import IndexForm from "./form/__IndexForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
-import {MODULES_CORE} from "@/constants";
+import { MODULES_CORE } from "@/constants";
 
 const module = MODULES_CORE.BED;
 
@@ -43,26 +43,26 @@ export default function Index({ mode = "create" }) {
 						currencySymbol=""
 					/>
 					<Box p="8">
-					<Grid columns={36} gutter={{ base: 8 }}>
-						{!matches && (
-							<Grid.Col span={6}>
-								<Navigation menu="base" subMenu={'baseSubmenu'} mainAreaHeight={mainAreaHeight} />
+						<Grid columns={36} gutter={{ base: 8 }}>
+							{!matches && (
+								<Grid.Col span={6}>
+									<Navigation menu="base" subMenu={"baseSubmenu"} mainAreaHeight={mainAreaHeight} />
+								</Grid.Col>
+							)}
+							<Grid.Col span={matches ? 30 : 30}>
+								<Box bg="white" p="xs" className="borderRadiusAll">
+									<_Table module={module} open={open} close={close} />
+								</Box>
 							</Grid.Col>
-						)}
-						<Grid.Col span={matches ? 30 : 30}>
-							<Box bg="white" p="xs" className="borderRadiusAll">
-								<_Table module={module} open={open} close={close} />
-							</Box>
-						</Grid.Col>
-					</Grid>
+						</Grid>
 						<GlobalDrawer
 							opened={opened}
 							close={close}
-							title={mode === "create" ? t("CreateBed") : t("UpdateBed")}>
+							title={mode === "create" ? t("CreateBed") : t("UpdateBed")}
+						>
 							<IndexForm module={module} form={form} mode={mode} close={close} />
 						</GlobalDrawer>
 					</Box>
-
 				</>
 			)}
 		</>

@@ -12,10 +12,9 @@ export default function Form({ module, mode }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const insertType = useSelector((state) => state.crud.user.insertType);
+	const insertType = useSelector((state) => state.crud[module].insertType);
 	const isEditMode = mode === "edit";
 
-	// =============== initialize based on mode ================
 	useEffect(() => {
 		if (isEditMode) {
 			dispatch(setInsertType({ insertType: "update", module }));

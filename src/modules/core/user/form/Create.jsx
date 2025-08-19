@@ -62,6 +62,7 @@ export default function Create({ module }) {
 	const { data: employeeGroupDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.EMPLOYEE_GROUP.PATH,
 		utility: CORE_DROPDOWNS.EMPLOYEE_GROUP.UTILITY,
+		params: { "dropdown-type": CORE_DROPDOWNS.EMPLOYEE_GROUP.TYPE },
 	});
 
 	const handleSubmit = (values) => {
@@ -185,7 +186,6 @@ export default function Create({ module }) {
 																}
 																label={t("EmployeeGroup")}
 																placeholder={t("ChooseEmployeeGroup")}
-																required={true}
 																nextField={"name"}
 																name={"employee_group_id"}
 																form={form}
@@ -194,6 +194,7 @@ export default function Create({ module }) {
 																id={"employee_group_id"}
 																searchable={false}
 																changeValue={setEmployeeGroupData}
+																required
 															/>
 														</Box>
 													</Grid.Col>
