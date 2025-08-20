@@ -3,7 +3,7 @@ import { IconRestore, IconSearch, IconX } from "@tabler/icons-react";
 import AdvancedFilter from "../../../common/components/advance-search/AdvancedFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilterData } from "@/app/store/core/crudSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { DateInput } from "@mantine/dates";
 
 export default function KeywordSearch({
@@ -26,28 +26,37 @@ export default function KeywordSearch({
 	const [date, setDate] = useState(filterData.date ? new Date(filterData.date) : new Date());
 
 	// =============== handle search functionality ================
-	const handleSearch = (searchData) => {
-		const data = searchData || { keywordSearch, date };
-		dispatch(setFilterData({ module, data }));
-		if (onSearch) {
-			onSearch(data);
-		}
-	};
+	const handleSearch = useCallback(
+		(searchData) => {
+			const data = searchData || { keywordSearch, date };
+			dispatch(setFilterData({ module, data }));
+			if (onSearch) {
+				onSearch(data);
+			}
+		},
+		[dispatch, module, onSearch, keywordSearch, date]
+	);
 
 	// =============== handle keyword change ================
-	const handleKeywordChange = (value) => {
-		setKeywordSearch(value);
-		handleSearch({ keywordSearch: value, date });
-	};
+	const handleKeywordChange = useCallback(
+		(value) => {
+			setKeywordSearch(value);
+			handleSearch({ keywordSearch: value, date });
+		},
+		[handleSearch, date]
+	);
 
 	// =============== handle date change ================
-	const handleDateChange = (value) => {
-		setDate(value);
-		handleSearch({ keywordSearch, date: value });
-	};
+	const handleDateChange = useCallback(
+		(value) => {
+			setDate(value);
+			handleSearch({ keywordSearch, date: value });
+		},
+		[handleSearch, keywordSearch]
+	);
 
 	// =============== handle reset functionality ================
-	const handleReset = () => {
+	const handleReset = useCallback(() => {
 		setKeywordSearch("");
 		const newDate = new Date();
 		setDate(newDate);
@@ -56,12 +65,21 @@ export default function KeywordSearch({
 		if (onReset) {
 			onReset(resetData);
 		}
-	};
+	}, [dispatch, module, onReset]);
 
+	// Initialize state from Redux store only when module changes
 	useEffect(() => {
-		setKeywordSearch(filterData.keywordSearch || "");
-		setDate(filterData.date ? new Date(filterData.date) : new Date());
-	}, [module, filterData]);
+		const storedKeywordSearch = filterData.keywordSearch || "";
+		const storedDate = filterData.date ? new Date(filterData.date) : new Date();
+
+		// Only update state if values are different to prevent unnecessary re-renders
+		if (storedKeywordSearch !== keywordSearch) {
+			setKeywordSearch(storedKeywordSearch);
+		}
+		if (storedDate.getTime() !== date.getTime()) {
+			setDate(storedDate);
+		}
+	}, [module]); // Only depend on module, not filterData
 
 	return (
 		<Flex className={className}>

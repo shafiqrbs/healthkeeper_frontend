@@ -16,14 +16,27 @@ import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 import { useHotkeys } from "@mantine/hooks";
 import Prescription2 from "@components/print-formats/a4/Prescription2";
 import Prescription3 from "@components/print-formats/a4/Prescription3";
+import useHospitalConfigData from "@/common/hooks/config-data/useHospitalConfigData";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
-export default function ActionButtons({ form, isSubmitting, handleSubmit }) {
+export default function ActionButtons({ form, isSubmitting, handleSubmit, type = "prescription" }) {
 	const prescriptionA4Ref = useRef(null);
 	const prescriptionPosRef = useRef(null);
 	const { t } = useTranslation();
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
+
+	const { hospitalConfigData } = useHospitalConfigData();
+
+	console.log(hospitalConfigData);
+
+	// compute dynamic due/return based on configured fee and entered amount
+	const configuredDueAmount = Number(hospitalConfigData?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
+	const enteredAmount = Number(form?.values?.amount ?? 0);
+	const remainingBalance = configuredDueAmount - enteredAmount;
+	const isReturn = remainingBalance < 0;
+	const displayLabelKey = isReturn ? "Return" : "Due";
+	const displayAmount = Math.abs(remainingBalance);
 
 	const selectPaymentMethod = (method) => {
 		form.setFieldValue("paymentMethod", method.value);
@@ -106,6 +119,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit }) {
 								/>
 								<Box>
 									<Flex justify="space-between" mb="xxxs">
+										{/* {hospitalConfigData.is_active_sms ? ( */}
 										<Flex fz="sm" align="center" gap="xs">
 											Is Confirm{" "}
 											<Checkbox
@@ -116,21 +130,25 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit }) {
 												color="var(--theme-success-color)"
 											/>
 										</Flex>
-										<Flex fz="sm" align="center" gap="xs">
-											SMS Alert{" "}
-											<Checkbox
-												checked={form.values.smsAlert}
-												onChange={(event) =>
-													form.setFieldValue("smsAlert", event.currentTarget.checked)
-												}
-												color="var(--theme-success-color)"
-											/>
-										</Flex>
+										{/* ) : null} */}
+
+										{hospitalConfigData?.is_active_sms ? (
+											<Flex fz="sm" align="center" gap="xs">
+												SMS Alert{" "}
+												<Checkbox
+													checked={form.values.smsAlert}
+													onChange={(event) =>
+														form.setFieldValue("smsAlert", event.currentTarget.checked)
+													}
+													color="var(--theme-success-color)"
+												/>
+											</Flex>
+										) : null}
 									</Flex>
 									<Flex gap="xs" align="center" justify="space-between">
 										<Box bg="white" px="xs" py="les" className="borderRadiusAll">
 											<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
-												{t("Due")} ৳ {(20000).toLocaleString()}
+												{t(displayLabelKey)} ৳ {Number(displayAmount || 0).toLocaleString()}
 											</Text>
 										</Box>
 										<Flex align="center" gap="xs">
@@ -142,9 +160,11 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit }) {
 												name="amount"
 												required
 											/>
-											<ActionIcon color="var(--theme-success-color)">
-												<IconArrowsSplit2 size={16} />
-											</ActionIcon>
+											{hospitalConfigData?.payment_split ? (
+												<ActionIcon color="var(--theme-success-color)">
+													<IconArrowsSplit2 size={16} />
+												</ActionIcon>
+											) : null}
 										</Flex>
 									</Flex>
 								</Box>

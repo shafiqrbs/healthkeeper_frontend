@@ -1422,5 +1422,9 @@
 	"AssignDoctor": "Assign Doctor",
 	"AssignNurse": "Assign Nurse",
 	"ReferredDoctor": "Referred Doctor",
-	"AdmissionConfirmation": "Admission Confirmation"
+	"AdmissionConfirmation": "Admission Confirmation",
+	"DocumentType": "Document Type",
+	"NID": "NID",
+	"BirthCertificate": "Birth Certificate",
+	"DocumentNo": "Document No"
 }

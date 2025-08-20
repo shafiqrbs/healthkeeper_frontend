@@ -1,5 +1,5 @@
 import { notifications } from "@mantine/notifications";
-import __PatientForm from "../../common/__PatientForm";
+import EmergencyPatientForm from "../../common/__EmergencyPatientForm";
 import { useEffect } from "react";
 
 export default function _Form({ form }) {
@@ -18,5 +18,5 @@ export default function _Form({ form }) {
 		console.log(values);
 	};
 
-	return <__PatientForm form={form} handleSubmit={handleSubmit} />;
+	return <EmergencyPatientForm form={form} handleSubmit={handleSubmit} />;
 }

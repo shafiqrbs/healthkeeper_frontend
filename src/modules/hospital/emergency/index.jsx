@@ -90,7 +90,12 @@ export default function Index() {
 							</Grid.Col>
 							<Grid.Col span={16}>
 								<VisitTable />
-								<ActionButtons form={form} handleSubmit={handleSubmit} isSubmitting={isSubmitting} />
+								<ActionButtons
+									form={form}
+									handleSubmit={handleSubmit}
+									isSubmitting={isSubmitting}
+									type="emergency"
+								/>
 							</Grid.Col>
 						</Grid>
 					</Flex>

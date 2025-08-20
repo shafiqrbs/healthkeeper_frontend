@@ -980,5 +980,9 @@
 	"AssignDoctor": "ডাক্তার বরাদ্দ করুন",
 	"AssignNurse": "নার্স বরাদ্দ করুন",
 	"ReferredDoctor": "রেফারারের ডাক্তার",
-	"AdmissionConfirmation": "ভর্তি নিশ্চিতকরণ"
+	"AdmissionConfirmation": "ভর্তি নিশ্চিতকরণ",
+	"DocumentType": "ডকুমেন্ট টাইপ",
+	"NID": "এনআইডি",
+	"BirthCertificate": "জন্ম পরিচয়",
+	"DocumentNo": "ডকুমেন্ট নম্বর"
 }
