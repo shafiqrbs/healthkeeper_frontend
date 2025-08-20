@@ -29,7 +29,6 @@ export default function Create({ module }) {
 	const height = mainAreaHeight - 100; //TabList height 104
 	const form = useForm(getUserFormValues(t));
 	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
-	const [employeeGroupData, setEmployeeGroupData] = useState(null);
 	const navigate = useNavigate();
 
 	const [groupDrawer, setGroupDrawer] = useState(false);
@@ -154,7 +153,7 @@ export default function Create({ module }) {
 													{!saveCreateLoading && isOnline && (
 														<Button
 															size="xs"
-															className={"btnPrimaryBg"}
+															bg="var(--theme-primary-color-6)"
 															type="submit"
 															id="EntityFormSubmit"
 															leftSection={<IconDeviceFloppy size={16} />}
@@ -189,11 +188,11 @@ export default function Create({ module }) {
 																nextField={"name"}
 																name={"employee_group_id"}
 																form={form}
+																value={form.values.employee_group_id}
 																dropdownValue={employeeGroupDropdown}
 																mt={8}
 																id={"employee_group_id"}
 																searchable={false}
-																changeValue={setEmployeeGroupData}
 																required
 															/>
 														</Box>

@@ -5,6 +5,7 @@ export const MASTER_DATA_ROUTES = {
 			CREATE: "core/user",
 			UPDATE: "core/user",
 			VIEW: "core/user/view",
+			DELETE: "core/user",
 		},
 		SELECT_DROPDOWN: {
 			PRODUCT_NATURE: "/inventory/select/setting",

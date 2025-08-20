@@ -49,6 +49,8 @@ import SwitchForm from "@components/form-builders/SwitchForm.jsx";
 import { getUserEditFormData } from "../helpers/request.js";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData.js";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 
 export default function Update({ module }) {
 	const { t } = useTranslation();
@@ -408,7 +410,7 @@ export default function Update({ module }) {
 			onCancel: () => console.log("Cancel"),
 			onConfirm: async () => {
 				const value = {
-					url: "core/user/" + entityEditData.id,
+					url: `${MASTER_DATA_ROUTES.API_ROUTES.USER.UPDATE}/${entityEditData.id}`,
 					data: values,
 					module,
 				};
@@ -428,20 +430,13 @@ export default function Update({ module }) {
 						form.setErrors(errorObject);
 					}
 				} else if (updateEntityData.fulfilled.match(resultAction)) {
-					notifications.show({
-						color: "teal",
-						title: t("UpdateSuccessfully"),
-						icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-						loading: false,
-						autoClose: 700,
-						style: { backgroundColor: "lightgray" },
-					});
+					showNotificationComponent(t("UpdateSuccessfully"), "teal", "lightgray");
 
 					setTimeout(() => {
 						form.reset();
-						dispatch(setInsertType("create"));
+						dispatch(setInsertType({ insertType: "create", module }));
 						setSaveCreateLoading(false);
-						navigate("/core/user", { replace: true });
+						navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.USER.INDEX, { replace: true });
 					}, 700);
 				}
 			},
@@ -967,8 +962,8 @@ export default function Update({ module }) {
 													<>
 														{!saveCreateLoading && isOnline && (
 															<Button
+																bg="var(--theme-primary-color-6)"
 																size="xs"
-																className={"btnPrimaryBg"}
 																type="submit"
 																id="EntityFormSubmit"
 																leftSection={<IconDeviceFloppy size={16} />}

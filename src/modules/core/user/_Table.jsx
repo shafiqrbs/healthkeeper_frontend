@@ -2,16 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Group, Box, ActionIcon, Text, rem, Menu } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconDotsVertical, IconTrashX, IconAlertCircle } from "@tabler/icons-react";
+import { IconDotsVertical, IconTrashX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import { setInsertType } from "@/app/store/core/crudSlice";
+import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
 import { modals } from "@mantine/modals";
 import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import tableCss from "@/assets/css/Table.module.css";
 import __ViewDrawer from "./__ViewDrawer.jsx";
-import { notifications } from "@mantine/notifications";
 import { getIndexEntityData, editEntityData, deleteEntityData } from "@/app/store/core/crudThunk.js";
+import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 
 export default function _Table({ module }) {
 	const dispatch = useDispatch();
@@ -20,9 +21,9 @@ export default function _Table({ module }) {
 	const height = mainAreaHeight - 98; //TabList height 104
 	const [fetching, setFetching] = useState(true);
 
-	const searchKeyword = useSelector((state) => state.crud.user.searchKeyword);
-	const userFilterData = useSelector((state) => state.crud.user.filterData);
-	const fetchingReload = useSelector((state) => state.crud.user.fetching);
+	const searchKeyword = useSelector((state) => state.crud[module].searchKeyword);
+	const userFilterData = useSelector((state) => state.crud[module].filterData);
+	const fetchingReload = useSelector((state) => state.crud[module].refetching);
 
 	const perPage = 50;
 	const [page, setPage] = useState(1);
@@ -37,7 +38,7 @@ export default function _Table({ module }) {
 		const fetchData = async () => {
 			setFetching(true);
 			const value = {
-				url: "core/user",
+				url: MASTER_DATA_ROUTES.API_ROUTES.USER.INDEX,
 				params: {
 					term: searchKeyword,
 					name: userFilterData.name,
@@ -66,24 +67,6 @@ export default function _Table({ module }) {
 		fetchData();
 	}, [dispatch, searchKeyword, userFilterData, page, fetchingReload]);
 
-	// useEffect(() => {
-	// 	dispatch(setDeleteMessage(""));
-	// 	if (entityDataDelete.message === "delete") {
-	// 		notifications.show({
-	// 			color: "red",
-	// 			title: t("DeleteSuccessfully"),
-	// 			icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-	// 			loading: false,
-	// 			autoClose: 700,
-	// 			style: { backgroundColor: "lightgray" },
-	// 		});
-
-	// 		setTimeout(() => {
-	// 			dispatch(setFetching(true));
-	// 		}, 700);
-	// 	}
-	// }, [entityDataDelete]);
-
 	const handleEdit = (id) => {
 		dispatch(
 			setInsertType({
@@ -93,11 +76,11 @@ export default function _Table({ module }) {
 		);
 		dispatch(
 			editEntityData({
-				url: `core/user/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.USER.UPDATE}/${id}`,
 				module,
 			})
 		);
-		navigate(`/core/user/${id}`);
+		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.USER.INDEX}/${id}`);
 	};
 
 	const handleShow = (id) => {
@@ -106,14 +89,7 @@ export default function _Table({ module }) {
 			setUserObject(foundUsers);
 			setViewDrawer(true);
 		} else {
-			notifications.show({
-				color: "red",
-				title: t("Something Went wrong , please try again"),
-				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-				loading: false,
-				autoClose: 900,
-				style: { backgroundColor: "lightgray" },
-			});
+			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
 		}
 	};
 
@@ -124,8 +100,20 @@ export default function _Table({ module }) {
 			labels: { confirm: "Confirm", cancel: "Cancel" },
 			confirmProps: { color: "red.6" },
 			onCancel: () => console.log("Cancel"),
-			onConfirm: () => {
-				dispatch(deleteEntityData("core/user/" + id));
+			onConfirm: async () => {
+				const resultAction = await dispatch(
+					deleteEntityData({
+						url: `${MASTER_DATA_ROUTES.API_ROUTES.USER.DELETE}/${id}`,
+						module,
+						id,
+					})
+				);
+				if (deleteEntityData.fulfilled.match(resultAction)) {
+					showNotificationComponent(t("DeleteSuccessfully"), "red.6", "lightgray");
+					dispatch(setRefetchData({ module, refetching: true }));
+				} else {
+					showNotificationComponent(t("DeleteFailed"), "red.6", "lightgray");
+				}
 			},
 		});
 	};
