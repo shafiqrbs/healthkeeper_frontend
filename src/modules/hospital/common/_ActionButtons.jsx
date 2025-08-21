@@ -28,8 +28,6 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 
 	const { hospitalConfigData } = useHospitalConfigData();
 
-	console.log(hospitalConfigData);
-
 	// compute dynamic due/return based on configured fee and entered amount
 	const configuredDueAmount = Number(hospitalConfigData?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
 	const enteredAmount = Number(form?.values?.amount ?? 0);

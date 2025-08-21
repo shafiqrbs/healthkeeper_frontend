@@ -5,7 +5,7 @@ import { getIndexEntityData } from "@/app/store/core/crudThunk";
 const useHospitalSettingData = () => {
 	const dispatch = useDispatch();
 	const hospitalSettingData = useSelector((state) => state.crud.hospitalSetting?.data.data);
-	console.log(hospitalSettingData);
+
 	const fetchData = () => {
 		dispatch(
 			getIndexEntityData({

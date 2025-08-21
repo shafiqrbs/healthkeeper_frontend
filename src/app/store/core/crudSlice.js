@@ -23,6 +23,16 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	particularList: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
 	bed: {
 		isLoading: true,
 		refetching: true,
@@ -40,7 +50,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: ""},
+		filterData: { name: "" },
 	},
 
 	particular_mode: {

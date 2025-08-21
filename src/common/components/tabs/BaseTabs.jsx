@@ -5,7 +5,7 @@ import tabClass from "@assets/css/Tab.module.css";
 
 const DEFAULT_ACTIVE_COLOR = "var(--theme-primary-color-6)";
 
-export default function BaseTabs({ expand = true, tabList, tabValue, setTabValue }) {
+export default function BaseTabs({ width, expand = true, tabList, tabValue, setTabValue }) {
 	const { t } = useTranslation();
 	const [rootRef, setRootRef] = useState(null);
 
@@ -17,8 +17,20 @@ export default function BaseTabs({ expand = true, tabList, tabValue, setTabValue
 	};
 
 	return (
-		<Tabs variant="none" value={tabValue} onChange={setTabValue} className="borderRadiusAll">
-			<ScrollArea scrollbars="x" type="hover" bg="var(--theme-primary-color-0)">
+		<Tabs
+			style={{ overflow: "hidden" }}
+			variant="none"
+			value={tabValue}
+			onChange={setTabValue}
+			className="borderRadiusAll"
+		>
+			<ScrollArea
+				w={width}
+				style={{ overflowX: "hidden" }}
+				scrollbars="x"
+				type="hover"
+				bg="var(--theme-primary-color-0)"
+			>
 				{tabList.length > 1 && (
 					<Tabs.List px="sm" py="xxxs" className={tabClass.list} ref={setRootRef}>
 						<Flex w="100%" justify={expand ? "space-between" : "center"}>

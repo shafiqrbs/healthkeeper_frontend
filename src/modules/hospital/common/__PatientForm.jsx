@@ -529,7 +529,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Text fz="sm">{t("FileUpload")}</Text>
+									<Text fz="sm">{t("ImageUpload")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
 									<FileInput

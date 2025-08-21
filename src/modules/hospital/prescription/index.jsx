@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "./helpers/request";
 import { useOutletContext } from "react-router-dom";
@@ -11,6 +11,8 @@ import PatientReport from "../common/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import Form from "./form/_Form";
 import BaseTabs from "@components/tabs/BaseTabs";
+import useParticularsData from "@/common/hooks/useParticularsData";
+import { useElementSize } from "@mantine/hooks";
 
 export default function Index() {
 	const { t } = useTranslation();
@@ -19,7 +21,13 @@ export default function Index() {
 	const { mainAreaHeight } = useOutletContext();
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const [patientData, setPatientData] = useState({});
+	const { ref, width } = useElementSize();
+
 	const [tabValue, setTabValue] = useState("All");
+
+	const { particularsData } = useParticularsData();
+
+	const tabList = particularsData?.entities?.map((item) => `${item.name} ${item.id}`);
 
 	return (
 		<>
@@ -44,15 +52,18 @@ export default function Index() {
 										<BaseTabs
 											tabValue={tabValue}
 											setTabValue={setTabValue}
-											tabList={["All", "Chief Complaints", "OLE", "Investigation"]}
+											tabList={["All", ...tabList]}
+											width={width}
 										/>
 									</Grid.Col>
-									<Grid.Col span={9}>
-										<PatientReport patientData={patientData} tabValue={tabValue} />
-									</Grid.Col>
-									<Grid.Col span={16}>
-										<AddMedicineForm />
-									</Grid.Col>
+									<Flex ref={ref}>
+										<Grid.Col span={9}>
+											<PatientReport patientData={patientData} tabValue={tabValue} />
+										</Grid.Col>
+										<Grid.Col span={16}>
+											<AddMedicineForm />
+										</Grid.Col>
+									</Flex>
 								</Grid>
 							</Grid.Col>
 						</Grid>

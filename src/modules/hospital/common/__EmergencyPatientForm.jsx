@@ -86,7 +86,7 @@ export default function EmergencyPatientForm({ form, module }) {
 							bg="var(--theme-success-color)"
 							c="white"
 						>
-							{t("Visit Table")}
+							{t("VisitTable")}
 						</Button>
 					</Flex>
 				</Flex>
@@ -216,7 +216,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("patientName")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
+								<Grid.Col span={14} pb={0}>
 									<InputForm
 										form={form}
 										label=""
@@ -234,7 +234,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("gender")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
+								<Grid.Col span={14} pb={0}>
 									<SegmentedControl
 										fullWidth
 										color="var(--theme-primary-color-6)"
@@ -255,7 +255,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("dateOfBirth")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
+								<Grid.Col span={14} pb={0}>
 									<DateSelectorForm
 										form={form}
 										label=""
@@ -274,7 +274,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("age")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
+								<Grid.Col span={14} pb={0}>
 									<Flex gap="xs">
 										<InputNumberForm
 											form={form}
@@ -337,7 +337,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("mobile")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
+								<Grid.Col span={14} pb={0}>
 									<InputForm
 										form={form}
 										label=""
@@ -356,7 +356,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("district")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
+								<Grid.Col span={14} pb={0}>
 									<SelectForm
 										form={form}
 										tooltip={t("enterPatientDistrict")}
@@ -376,7 +376,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("DocumentType")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
+								<Grid.Col span={14} pb={0}>
 									<SegmentedControl
 										fullWidth
 										color="var(--theme-primary-color-6)"
@@ -395,7 +395,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("DocumentNo")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
+								<Grid.Col span={14} pb={0}>
 									<InputNumberForm
 										form={form}
 										label=""
@@ -414,7 +414,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("address")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
+								<Grid.Col span={14} pb={0}>
 									<TextAreaForm
 										form={form}
 										label=""
@@ -433,7 +433,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module }) {
 								<Grid.Col span={6} mt="xs">
 									<Text fz="sm">{t("FreeFor")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
+								<Grid.Col span={14} pb={0}>
 									<SegmentedControl
 										fullWidth
 										color="var(--theme-primary-color-6)"
@@ -466,9 +466,9 @@ export function Form({ form, showTitle = false, heightOffset = 72, module }) {
 
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Text fz="sm">{t("FileUpload")}</Text>
+									<Text fz="sm">{t("ImageUpload")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
+								<Grid.Col span={14} pb={0}>
 									<FileInput
 										id="file"
 										name="file"
