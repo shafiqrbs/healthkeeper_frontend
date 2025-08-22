@@ -2,84 +2,83 @@
   {
     "Group": "Operator",
     "actions": [
-      { "id": "role_operator", "label": "Operator" },
-      { "id": "role_hospital", "label": "Hospital" },
-      { "id": "role_operator", "label": "Operator" },
-      { "id": "role_doctor", "label": "Doctor" },
-      { "id": "role_nurse", "label": "Nurse" },
-      { "id": "role_admin", "label": "Admin" }
+      { "id": "operator_basic", "label": "Operator" },
+      { "id": "operator_hospital", "label": "Hospital" },
+      { "id": "operator_advanced", "label": "Advanced Operator" },
+      { "id": "operator_doctor_view", "label": "Doctor View" },
+      { "id": "operator_nurse_view", "label": "Nurse View" },
+      { "id": "operator_admin_view", "label": "Admin View" }
     ]
   },
   {
     "Group": "Doctor",
     "actions": [
-      { "id": "role_doctor", "label": "Doctor" },
-      { "id": "role_hospital", "label": "Hospital" },
-      { "id": "role_operator", "label": "Operator" },
-      { "id": "role_doctor", "label": "Doctor" },
-      { "id": "role_nurse", "label": "Nurse" },
-      { "id": "role_admin", "label": "Admin" }
+      { "id": "doctor_basic", "label": "Doctor" },
+      { "id": "doctor_hospital", "label": "Hospital" },
+      { "id": "doctor_operator", "label": "Operator Access" },
+      { "id": "doctor_advanced", "label": "Advanced Doctor" },
+      { "id": "doctor_nurse_manage", "label": "Nurse Management" },
+      { "id": "doctor_admin_access", "label": "Admin Access" }
     ]
   },
   {
     "Group": "Nurse",
     "actions": [
-      { "id": "role_nurse", "label": "Nurse" },
-      { "id": "role_hospital", "label": "Hospital" },
-      { "id": "role_operator", "label": "Operator" },
-      { "id": "role_doctor", "label": "Doctor" },
-      { "id": "role_nurse", "label": "Nurse" },
-      { "id": "role_admin", "label": "Admin" }
+      { "id": "nurse_basic", "label": "Nurse" },
+      { "id": "nurse_hospital", "label": "Hospital" },
+      { "id": "nurse_operator", "label": "Operator Access" },
+      { "id": "nurse_doctor_assist", "label": "Doctor Assistance" },
+      { "id": "nurse_advanced", "label": "Advanced Nurse" },
+      { "id": "nurse_admin_view", "label": "Admin View" }
     ]
   },
   {
     "Group": "Medicine",
     "actions": [
-      { "id": "role_inventory", "label": "InventoryAndProduct" },
-      { "id": "role_inventory_stock", "label": "InventoryStock" },
-      { "id": "role_inventory_manager", "label": "InventoryManager" },
-      { "id": "role_inventory_admin", "label": "InventoryAdmin" }
+      { "id": "medicine_inventory", "label": "InventoryAndProduct" },
+      { "id": "medicine_stock", "label": "InventoryStock" },
+      { "id": "medicine_manager", "label": "InventoryManager" },
+      { "id": "medicine_admin", "label": "InventoryAdmin" }
     ]
   },
   {
     "Group": "Billing",
     "actions": [
-      { "id": "role_inventory", "label": "InventoryAndProduct" },
-      { "id": "role_inventory_stock", "label": "InventoryStock" },
-      { "id": "role_inventory_manager", "label": "InventoryManager" },
-      { "id": "role_inventory_admin", "label": "InventoryAdmin" }
+      { "id": "billing_inventory", "label": "InventoryAndProduct" },
+      { "id": "billing_stock", "label": "InventoryStock" },
+      { "id": "billing_manager", "label": "InventoryManager" },
+      { "id": "billing_admin", "label": "InventoryAdmin" }
     ]
   },
   {
     "Group": "Reports",
     "actions": [
-      { "id": "role_hospital", "label": "Hospital" }
-
+      { "id": "reports_hospital", "label": "Hospital" },
+      { "id": "reports_basic", "label": "Basic Reports" },
+      { "id": "reports_advanced", "label": "Advanced Reports" }
     ]
   },
   {
     "Group": "Admin",
     "actions": [
-      { "id": "role_admin", "label": "Admin" },
-      { "id": "role_hospital", "label": "Hospital" },
-      { "id": "role_operator", "label": "Operator" },
-      { "id": "role_doctor", "label": "Doctor" },
-      { "id": "role_nurse", "label": "Nurse" },
-      { "id": "role_admin", "label": "Admin" },
-      { "id": "role_core", "label": "CoreAndMasterData" },
-      { "id": "role_core_manager", "label": "CoreManager" },
-      { "id": "role_core_admin", "label": "CoreAdmin" }
+      { "id": "admin_basic", "label": "Admin" },
+      { "id": "admin_hospital", "label": "Hospital" },
+      { "id": "admin_operator", "label": "Operator" },
+      { "id": "admin_doctor", "label": "Doctor" },
+      { "id": "admin_nurse", "label": "Nurse" },
+      { "id": "admin_advanced", "label": "Advanced Admin" },
+      { "id": "admin_core", "label": "CoreAndMasterData" },
+      { "id": "admin_core_manager", "label": "CoreManager" },
+      { "id": "admin_core_admin", "label": "CoreAdmin" }
     ]
   },
   {
-  "Group": "Accounting",
-  "actions": [
-    { "id": "role_accounting", "label": "Accounting" },
-    { "id": "role_accounting_voucher_entry", "label": "Voucher Entry" },
-    { "id": "role_accounting_voucher_approve", "label": "Voucher Approve" },
-    { "id": "role_accounting_admin", "label": "AccountingAdmin" }
-  ]
-}
+    "Group": "Accounting",
+    "actions": [
+      { "id": "accounting_basic", "label": "Accounting" },
+      { "id": "accounting_voucher_entry", "label": "Voucher Entry" },
+      { "id": "accounting_voucher_approve", "label": "Voucher Approve" },
+      { "id": "accounting_admin", "label": "AccountingAdmin" }
+    ]
+  }
 ]
-
-

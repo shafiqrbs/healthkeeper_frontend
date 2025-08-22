@@ -13,6 +13,9 @@
     "name": "Name",
     "email": "Email",
     "phone": "Phone",
-    "address": "Address"
+    "address": "Address",
+    "OperationModes": "Operation Modes",
+    "DataType": "Data Type",
+    "InsertSuccessfully": "Insert Successfully"
 
   }

@@ -12,6 +12,16 @@ const getCommonHeaders = () => {
 		"X-Api-User": user.id,
 	};
 };
+const getFileHeaders = () => {
+	const user = getLoggedInUser();
+	return {
+		Accept: "application/json",
+        "Content-Type": `multipart/form-data`,
+        "Access-Control-Allow-Origin": "*",
+		"X-Api-Key": API_KEY,
+		"X-Api-User": user.id,
+	};
+};
 export const getSelectDataWithParam = async (value) => {
 	try {
 		const response = await axios({
@@ -174,7 +184,7 @@ export const updateDataWithFile = async (value) => {
 		const response = await axios({
 			method: "POST",
 			url: `${API_BASE_URL}/${value.url}`,
-			headers: getCommonHeaders(),
+			headers: getFileHeaders(),
 			data: value.data,
 		});
 		return response;

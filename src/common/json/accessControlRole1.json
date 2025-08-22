@@ -1,0 +1,85 @@
+[
+  {
+    "Group": "Operator",
+    "actions": [
+      { "id": "role_operator", "label": "Operator" },
+      { "id": "role_hospital", "label": "Hospital" },
+      { "id": "role_operator", "label": "Operator" },
+      { "id": "role_doctor", "label": "Doctor" },
+      { "id": "role_nurse", "label": "Nurse" },
+      { "id": "role_admin", "label": "Admin" }
+    ]
+  },
+  {
+    "Group": "Doctor",
+    "actions": [
+      { "id": "role_doctor", "label": "Doctor" },
+      { "id": "role_hospital", "label": "Hospital" },
+      { "id": "role_operator", "label": "Operator" },
+      { "id": "role_doctor", "label": "Doctor" },
+      { "id": "role_nurse", "label": "Nurse" },
+      { "id": "role_admin", "label": "Admin" }
+    ]
+  },
+  {
+    "Group": "Nurse",
+    "actions": [
+      { "id": "role_nurse", "label": "Nurse" },
+      { "id": "role_hospital", "label": "Hospital" },
+      { "id": "role_operator", "label": "Operator" },
+      { "id": "role_doctor", "label": "Doctor" },
+      { "id": "role_nurse", "label": "Nurse" },
+      { "id": "role_admin", "label": "Admin" }
+    ]
+  },
+  {
+    "Group": "Medicine",
+    "actions": [
+      { "id": "role_inventory", "label": "InventoryAndProduct" },
+      { "id": "role_inventory_stock", "label": "InventoryStock" },
+      { "id": "role_inventory_manager", "label": "InventoryManager" },
+      { "id": "role_inventory_admin", "label": "InventoryAdmin" }
+    ]
+  },
+  {
+    "Group": "Billing",
+    "actions": [
+      { "id": "role_inventory", "label": "InventoryAndProduct" },
+      { "id": "role_inventory_stock", "label": "InventoryStock" },
+      { "id": "role_inventory_manager", "label": "InventoryManager" },
+      { "id": "role_inventory_admin", "label": "InventoryAdmin" }
+    ]
+  },
+  {
+    "Group": "Reports",
+    "actions": [
+      { "id": "role_hospital", "label": "Hospital" }
+
+    ]
+  },
+  {
+    "Group": "Admin",
+    "actions": [
+      { "id": "role_admin", "label": "Admin" },
+      { "id": "role_hospital", "label": "Hospital" },
+      { "id": "role_operator", "label": "Operator" },
+      { "id": "role_doctor", "label": "Doctor" },
+      { "id": "role_nurse", "label": "Nurse" },
+      { "id": "role_admin", "label": "Admin" },
+      { "id": "role_core", "label": "CoreAndMasterData" },
+      { "id": "role_core_manager", "label": "CoreManager" },
+      { "id": "role_core_admin", "label": "CoreAdmin" }
+    ]
+  },
+  {
+  "Group": "Accounting",
+  "actions": [
+    { "id": "role_accounting", "label": "Accounting" },
+    { "id": "role_accounting_voucher_entry", "label": "Voucher Entry" },
+    { "id": "role_accounting_voucher_approve", "label": "Voucher Approve" },
+    { "id": "role_accounting_admin", "label": "AccountingAdmin" }
+  ]
+}
+]
+
+

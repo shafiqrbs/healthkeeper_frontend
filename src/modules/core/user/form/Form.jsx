@@ -20,7 +20,7 @@ export default function Form({ module, mode }) {
 			dispatch(setInsertType({ insertType: "update", module }));
 			dispatch(
 				editEntityData({
-					url: `${MASTER_DATA_ROUTES.API_ROUTES.USER.UPDATE}/${id}`,
+					url: `${MASTER_DATA_ROUTES.API_ROUTES.USER.UPDATE}/${id}?application=hospital`,
 					module,
 				})
 			);

@@ -1,49 +1,37 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import {
-	Button,
-	rem,
-	Grid,
-	Box,
-	ScrollArea,
-	Text,
-	LoadingOverlay,
-	Title,
-	Flex,
-	Stack,
-	Tooltip,
-	Image,
-	ActionIcon, SegmentedControl,
+    Button,
+    Grid,
+    Box,
+    ScrollArea,
+    Text,
+    LoadingOverlay,
+    Title,
+    Flex,
+    Stack,
+    Tooltip,
+    Image,
+    SegmentedControl,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
-	IconArrowsExchange,
-	IconCheck,
-	IconDeviceFloppy,
-	IconDoor,
-	IconMapPin,
-	IconUser,
-	IconUsersGroup,
+    IconArrowsExchange,
+    IconDeviceFloppy,
 } from "@tabler/icons-react";
 import { useHotkeys } from "@mantine/hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { setInsertType } from "@/app/store/core/crudSlice";
-import { notifications } from "@mantine/notifications";
 import PasswordInputForm from "@components/form-builders/PasswordInputForm";
-
 import SelectForm from "@components/form-builders/SelectForm";
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import PhoneNumber from "@components/form-builders/PhoneNumberInput";
-
 import Shortcut from "../../../shortcut/Shortcut.jsx";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-
 import accessControlRoleStaticData from "@/common/json/accessControlRole.json";
-import androidControlRoleStaticData from "@/common/json/androidControlRole.json";
-import CustomerGroupDrawer from "../../customer/CustomerGroupDrawer";
 import { updateEntityData, updateEntityDataWithFile } from "@/app/store/core/crudThunk.js";
 import SwitchForm from "@components/form-builders/SwitchForm.jsx";
 import { getUserEditFormData } from "../helpers/request.js";
@@ -52,1099 +40,972 @@ import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
+import dayjs from "dayjs";
 
 export default function Update({ module }) {
-	const { t } = useTranslation();
-	const dispatch = useDispatch();
-	const { isOnline, mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 100; //TabList height 104
-	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
-	const [setFormData, setFormDataForUpdate] = useState(false);
-	const [formLoad, setFormLoad] = useState(true);
-	const entityEditData = useSelector((state) => state.crud[module].editData);
-	const formLoading = useSelector((state) => state.crud[module].isLoading);
-	const navigate = useNavigate();
+    const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const { isOnline, mainAreaHeight } = useOutletContext();
+    const height = mainAreaHeight - 100;
+    const [saveCreateLoading, setSaveCreateLoading] = useState(false);
+    const [setFormData, setFormDataForUpdate] = useState(false);
+    const [formLoad, setFormLoad] = useState(true);
+    const entityEditData = useSelector((state) => state.crud[module].editData);
+    const formLoading = useSelector((state) => state.crud[module].isLoading);
+    const navigate = useNavigate();
 
-	const [employeeGroupData, setEmployeeGroupData] = useState(null);
-	const [departmentData, setDepartmentData] = useState(null);
-	const [designationData, setDesignationData] = useState(null);
-	const [locationData, setLocationData] = useState(null);
+    const [employeeGroupData, setEmployeeGroupData] = useState(null);
+    const [departmentData, setDepartmentData] = useState(null);
+    const [designationData, setDesignationData] = useState(null);
 
-	const form = useForm(getUserEditFormData(entityEditData, t));
+    const form = useForm(getUserEditFormData(entityEditData, t));
 
-	useEffect(() => {
-		setFormLoad(true);
-		setFormDataForUpdate(true);
-	}, [dispatch, formLoading]);
+    useEffect(() => {
+        setFormLoad(true);
+        setFormDataForUpdate(true);
+    }, [dispatch, formLoading]);
 
-	const handleFormReset = () => {
-		if (entityEditData) {
-			const originalValues = {
-				name: entityEditData?.name || "",
-				username: entityEditData?.username || "",
-				email: entityEditData?.email || "",
-				mobile: entityEditData?.mobile || "",
-				password: "",
-				confirm_password: "",
-			};
-			form.setValues(originalValues);
-		}
-	};
+    const handleFormReset = () => {
+        if (entityEditData) {
+            const originalValues = {
+                name: entityEditData?.name || "",
+                username: entityEditData?.username || "",
+                email: entityEditData?.email || "",
+                mobile: entityEditData?.mobile || "",
+                password: "",
+                confirm_password: "",
+            };
+            form.setValues(originalValues);
+        }
+    };
 
-	useEffect(() => {
-		if (entityEditData) {
-			form.setValues({
-				employee_group_id: entityEditData?.employee_group_id || "",
-				name: entityEditData?.name || "",
-				employee_id: entityEditData?.employee_id || "",
-				username: entityEditData?.username || "",
-				email: entityEditData?.email || "",
-				mobile: entityEditData?.mobile || "",
-				enabled: entityEditData?.enabled || 0,
-				alternative_email: entityEditData?.alternative_email || null,
-				designation_id: entityEditData?.designation_id || null,
-				department_id: entityEditData?.department_id || null,
-				address: entityEditData?.address || null,
-				about_me: entityEditData?.about_me || null,
-			});
-		}
-		setTimeout(() => {
-			setFormLoad(false);
-			setFormDataForUpdate(false);
-		}, 500);
-	}, [dispatch, entityEditData]);
+    useEffect(() => {
+        if (entityEditData) {
+            form.setValues({
+                employee_group_id: entityEditData?.employee_group_id || "",
+                name: entityEditData?.name || "",
+                employee_id: entityEditData?.employee_id || "",
+                username: entityEditData?.username || "",
+                email: entityEditData?.email || "",
+                mobile: entityEditData?.mobile || "",
+                enabled: entityEditData?.enabled || 0,
+                alternative_email: entityEditData?.alternative_email || null,
+                designation_id: entityEditData?.designation_id || null,
+                department_id: entityEditData?.department_id || null,
+                address: entityEditData?.address || null,
+                about_me: entityEditData?.about_me || null,
+                gender: entityEditData?.gender || "male",
+                dob: entityEditData?.dob || null,
+            });
+        }
+        setTimeout(() => {
+            setFormLoad(false);
+            setFormDataForUpdate(false);
+        }, 500);
+    }, [dispatch, entityEditData]);
 
-	const [groupDrawer, setGroupDrawer] = useState(false);
+    useHotkeys(
+        [
+            [
+                "alt+n",
+                () => {
+                    document.getElementById("name").focus();
+                },
+            ],
+            [
+                "alt+r",
+                () => {
+                    form.reset();
+                },
+            ],
+            [
+                "alt+s",
+                () => {
+                    document.getElementById("EntityFormSubmit").click();
+                },
+            ],
+        ],
+        []
+    );
 
-	useHotkeys(
-		[
-			[
-				"alt+n",
-				() => {
-					!groupDrawer && document.getElementById("name").focus();
-				},
-			],
-			[
-				"alt+r",
-				() => {
-					form.reset();
-				},
-			],
-			[
-				"alt+s",
-				() => {
-					!groupDrawer && document.getElementById("EntityFormSubmit").click();
-				},
-			],
-		],
-		[]
-	);
+    // Access control role management - FIXED VERSION
+    const [accessControlRole, setAccessControlRole] = useState([]);
 
-	//start access control role
-	const [accessControlRole, setAccessControlRole] = useState(
-		accessControlRoleStaticData ? accessControlRoleStaticData : []
-	);
+    const [defaultGroupData] = useState([
+        { Group: "Operator", actions: [] },
+        { Group: "Doctor", actions: [] },
+        { Group: "Nurse", actions: [] },
+        { Group: "Medicine", actions: [] },
+        { Group: "Billing", actions: [] },
+        { Group: "Reports", actions: [] },
+        { Group: "Admin", actions: [] },
+        { Group: "Accounting", actions: [] },
+    ]);
 
-	const [defaultGroupData] = useState([
-		{ Group: "Accounting", actions: [] },
-		{ Group: "HR & Payroll", actions: [] },
-	]);
+    const [selectedAccessControlRoleData, setSelectedAccessControlRoleData] = useState([...defaultGroupData]);
 
-	const [selectedAccessControlRoleData, setSelectedAccessControlRoleData] = useState(defaultGroupData);
+// Initialize access control roles when component mounts
+    useEffect(() => {
+        if (accessControlRoleStaticData && accessControlRoleStaticData.length > 0) {
+            setAccessControlRole([...accessControlRoleStaticData]);
+        }
+    }, []);
 
-	useEffect(() => {
-		if (entityEditData && Array.isArray(entityEditData.access_control_roles)) {
-			if (entityEditData.access_control_roles.length > 0) {
-				setSelectedAccessControlRoleData(entityEditData.access_control_roles);
-			} else {
-				setSelectedAccessControlRoleData(defaultGroupData);
-			}
-		}
-	}, [entityEditData]);
+// Handle entity edit data loading
+    useEffect(() => {
+        if (entityEditData?.access_control_roles && Array.isArray(entityEditData.access_control_roles)) {
+            if (entityEditData.access_control_roles.length > 0) {
+                // Set the selected data from entityEditData
+                setSelectedAccessControlRoleData([...entityEditData.access_control_roles]);
+            } else {
+                // Reset to default if no roles are assigned
+                setSelectedAccessControlRoleData([...defaultGroupData]);
+            }
+        } else {
+            // Initialize with default empty structure if no data
+            setSelectedAccessControlRoleData([...defaultGroupData]);
+        }
+    }, [entityEditData?.access_control_roles]);
 
-	function removeMatchingData(data1, data2) {
-		return data1.map((group1) => {
-			const matchingGroup = data2.find((group2) => group2.Group === group1.Group);
+// Remove matching actions from available list when selected data changes
+    useEffect(() => {
+        if (selectedAccessControlRoleData.length > 0 && accessControlRoleStaticData) {
+            const result = removeMatchingActions([...accessControlRoleStaticData], selectedAccessControlRoleData);
+            setAccessControlRole(result);
+        }
+    }, [selectedAccessControlRoleData]);
 
-			if (matchingGroup) {
-				return {
-					...group1,
-					actions: group1.actions.filter((action1) => {
-						return !matchingGroup.actions.some((action2) => action2.id === action1.id);
-					}),
-				};
-			}
-			return group1;
-		});
-	}
+// Fixed removeMatchingActions function
+    const removeMatchingActions = (sourceData, selectedData) => {
+        return sourceData.map((group1) => {
+            const matchingGroup = selectedData.find((group2) => group2.Group === group1.Group);
 
-	useEffect(() => {
-		if (selectedAccessControlRoleData.length > 0) {
-			const result = removeMatchingData([...accessControlRole], selectedAccessControlRoleData);
-			setAccessControlRole(result);
-		}
-	}, [selectedAccessControlRoleData]);
+            if (matchingGroup && matchingGroup.actions && matchingGroup.actions.length > 0) {
+                return {
+                    ...group1,
+                    actions: group1.actions.filter((action1) => {
+                        return !matchingGroup.actions.some((action2) => action2.id === action1.id);
+                    }),
+                };
+            }
+            return { ...group1 };
+        });
+    };
 
-	const handleSelectAccessControlRoleData = (group, action) => {
-		const newAvailableData = accessControlRole.map((g) => {
-			if (g.Group === group.Group) {
-				return {
-					...g,
-					actions: g.actions.filter((a) => a.id !== action.id),
-				};
-			}
-			return g;
-		});
+// Fixed select handler
+    const handleSelectAccessControlRoleData = (group, action) => {
+        // Remove from available (accessControlRole)
+        setAccessControlRole(prevAvailable =>
+            prevAvailable.map((g) => {
+                if (g.Group === group.Group) {
+                    return {
+                        ...g,
+                        actions: g.actions.filter((a) => a.id !== action.id),
+                    };
+                }
+                return g;
+            })
+        );
 
-		setAccessControlRole(newAvailableData);
+        // Add to selected (selectedAccessControlRoleData)
+        setSelectedAccessControlRoleData(prevSelected =>
+            prevSelected.map((g) => {
+                if (g.Group === group.Group) {
+                    return {
+                        ...g,
+                        actions: [...g.actions, action],
+                    };
+                }
+                return g;
+            })
+        );
+    };
 
-		const newSelectedData = selectedAccessControlRoleData.map((g) => {
-			if (g.Group === group.Group) {
-				return {
-					...g,
-					actions: [...g.actions, action],
-				};
-			}
-			return g;
-		});
+// Fixed deselect handler
+    const handleDeselectAccessControlRoleData = (group, action) => {
+        // Remove from selected (selectedAccessControlRoleData)
+        setSelectedAccessControlRoleData(prevSelected =>
+            prevSelected.map((g) => {
+                if (g.Group === group.Group) {
+                    return {
+                        ...g,
+                        actions: g.actions.filter((a) => a.id !== action.id),
+                    };
+                }
+                return g;
+            })
+        );
 
-		setSelectedAccessControlRoleData(newSelectedData);
-	};
+        // Add back to available (accessControlRole)
+        setAccessControlRole(prevAvailable =>
+            prevAvailable.map((g) => {
+                if (g.Group === group.Group) {
+                    return {
+                        ...g,
+                        actions: [...g.actions, action],
+                    };
+                }
+                return g;
+            })
+        );
+    };
 
-	const handleDeselectAccessControlRoleData = (group, action) => {
-		const newSelectedData = selectedAccessControlRoleData.map((g) => {
-			if (g.Group === group.Group) {
-				return {
-					...g,
-					actions: g.actions.filter((a) => a.id !== action.id),
-				};
-			}
-			return g;
-		});
 
-		setSelectedAccessControlRoleData(newSelectedData);
+    // Image handling
+    const [profileImage, setProfileImage] = useState([]);
+    const [digitalSignature, setDigitalSignature] = useState([]);
 
-		const newAvailableData = accessControlRole.map((g) => {
-			if (g.Group === group.Group) {
-				return {
-					...g,
-					actions: [...g.actions, action],
-				};
-			}
-			return g;
-		});
+    const renderImagePreview = (imageArray, fallbackSrc = null) => {
+        if (imageArray.length > 0) {
+            const imageUrl = URL.createObjectURL(imageArray[0]);
+            return (
+                <Flex h={150} justify={"center"} align={"center"} mt={"xs"}>
+                    <Image
+                        h={150}
+                        w={150}
+                        fit="cover"
+                        src={imageUrl}
+                        onLoad={() => URL.revokeObjectURL(imageUrl)}
+                    />
+                </Flex>
+            );
+        } else if (fallbackSrc) {
+            return (
+                <Flex h={150} justify={"center"} align={"center"} mt={"xs"}>
+                    <Image
+                        h={150}
+                        w={150}
+                        fit="cover"
+                        src={fallbackSrc}
+                    />
+                </Flex>
+            );
+        }
+        return null;
+    };
 
-		setAccessControlRole(newAvailableData);
-	};
+    // Dropdown data
+    const { data: employeeGroupDropdown } = useGlobalDropdownData({
+        path: CORE_DROPDOWNS.EMPLOYEE_GROUP.PATH,
+        utility: CORE_DROPDOWNS.EMPLOYEE_GROUP.UTILITY,
+        params: { "dropdown-type": CORE_DROPDOWNS.EMPLOYEE_GROUP.TYPE },
+    });
 
-	// end access control role
+    const { data: designationDropdown } = useGlobalDropdownData({
+        path: CORE_DROPDOWNS.DESIGNATION.PATH,
+        utility: CORE_DROPDOWNS.DESIGNATION.UTILITY,
+        params: { "dropdown-type": CORE_DROPDOWNS.DESIGNATION.TYPE },
+    });
 
-	// start android control roles
-	const [androidControlRole, setAndroidControlRole] = useState(
-		androidControlRoleStaticData ? androidControlRoleStaticData : []
-	);
+    const { data: departmentDropdown } = useGlobalDropdownData({
+        path: CORE_DROPDOWNS.DEPARTMENT.PATH,
+        utility: CORE_DROPDOWNS.DEPARTMENT.UTILITY,
+        params: { "dropdown-type": CORE_DROPDOWNS.DEPARTMENT.TYPE },
+    });
 
-	const [defaultAndroidGroupData] = useState([
-		{ Group: "Android Accounting", actions: [] },
-		{ Group: "Android HR & Payroll", actions: [] },
-	]);
+    const handleGenderChange = (val) => {
+        form.setFieldValue("gender", val);
+    };
 
-	const [selectedAndroidControlRoleData, setSelectedAndroidControlRoleData] = useState(defaultAndroidGroupData);
+    const handleSubmit = (values) => {
+        const formattedDOB = dayjs(values.dob).format('YYYY-MM-DD');
 
-	useEffect(() => {
-		if (entityEditData && Array.isArray(entityEditData.android_control_role)) {
-			if (entityEditData.android_control_role.length > 0) {
-				setSelectedAndroidControlRoleData(entityEditData.android_control_role);
-			} else {
-				setSelectedAndroidControlRoleData(defaultAndroidGroupData);
-			}
-		}
-	}, [entityEditData]);
+        const formData = {
+            ...values,
+            access_control_role: selectedAccessControlRoleData,
+            dob: formattedDOB,
+        };
 
-	function removeMatchingData2(data1, data2) {
-		return data1.map((group1) => {
-			const matchingGroup = data2.find((group2) => group2.Group === group1.Group);
+        modals.openConfirmModal({
+            title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+            children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+            labels: { confirm: t("Submit"), cancel: t("Cancel") },
+            confirmProps: { color: "red" },
+            onCancel: () => console.log("Cancel"),
+            onConfirm: async () => {
+                setSaveCreateLoading(true);
+                const value = {
+                    url: `${MASTER_DATA_ROUTES.API_ROUTES.USER.UPDATE}/${entityEditData.id}`,
+                    data: formData,
+                    module,
+                };
 
-			if (matchingGroup) {
-				return {
-					...group1,
-					actions: group1.actions.filter((action1) => {
-						return !matchingGroup.actions.some((action2) => action2.id === action1.id);
-					}),
-				};
-			}
+                const resultAction = await dispatch(updateEntityData(value));
 
-			return group1;
-		});
-	}
+                if (updateEntityData.rejected.match(resultAction)) {
+                    const fieldErrors = resultAction.payload.errors;
+                    if (fieldErrors) {
+                        const errorObject = {};
+                        Object.keys(fieldErrors).forEach((key) => {
+                            errorObject[key] = fieldErrors[key][0];
+                        });
+                        form.setErrors(errorObject);
+                    }
+                    setSaveCreateLoading(false);
+                } else if (updateEntityData.fulfilled.match(resultAction)) {
+                    showNotificationComponent(t("UpdateSuccessfully"), "teal", "lightgray");
+                    setTimeout(() => {
+                        form.reset();
+                        dispatch(setInsertType({ insertType: "create", module }));
+                        setSaveCreateLoading(false);
+                        navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.USER.INDEX, { replace: true });
+                    }, 700);
+                }
+            },
+        });
+    };
 
-	useEffect(() => {
-		if (selectedAndroidControlRoleData.length > 0) {
-			const result = removeMatchingData2([...androidControlRole], selectedAndroidControlRoleData);
-			setAndroidControlRole(result);
-		}
-	}, [selectedAndroidControlRoleData]);
+    const handleProfileImageDrop = (files) => {
+        if (files.length > 0) {
+            const value = {
+                url: `core/user/image-inline/${entityEditData.id}`,
+                data: {
+                    profile_image: files[0],
+                },
+                module,
+            };
+            dispatch(updateEntityDataWithFile(value));
+            setProfileImage(files);
+        }
+    };
 
-	const handleSelectAndroidControlRoleData = (group, action) => {
-		const newAvailableData = androidControlRole.map((g) => {
-			if (g.Group === group.Group) {
-				return {
-					...g,
-					actions: g.actions.filter((a) => a.id !== action.id),
-				};
-			}
-			return g;
-		});
+    const handleDigitalSignatureDrop = (files) => {
+        if (files.length > 0) {
+            const value = {
+                url: `core/user/image-inline/${entityEditData.id}`,
+                data: {
+                    digital_signature: files[0],
+                },
+                module,
+            };
+            dispatch(updateEntityDataWithFile(value));
+            setDigitalSignature(files);
+        }
+    };
 
-		setAndroidControlRole(newAvailableData);
-		const newSelectedData = selectedAndroidControlRoleData.map((g) => {
-			if (g.Group === group.Group) {
-				return {
-					...g,
-					actions: [...g.actions, action],
-				};
-			}
-			return g;
-		});
+    return (
+        <Box>
+            <form onSubmit={form.onSubmit(handleSubmit)}>
+                <Box>
+                    <Grid columns={24} gutter={{ base: 8 }}>
+                        {/* User Information */}
+                        <Grid.Col span={7}>
+                            <Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+                                <Box bg={"white"}>
+                                    <Box
+                                        pl={`xs`}
+                                        pr={8}
+                                        pt={"6"}
+                                        pb={"6"}
+                                        mb={"4"}
+                                        className={"boxBackground borderRadiusAll"}
+                                    >
+                                        <Grid>
+                                            <Grid.Col span={6}>
+                                                <Title order={6} pt={"6"} pb={4}>
+                                                    {t("UpdateUser")}
+                                                </Title>
+                                            </Grid.Col>
+                                        </Grid>
+                                    </Box>
+                                    <Box pl={`xs`} pr={"xs"} className={"borderRadiusAll"}>
+                                        <ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
+                                            <Box>
+                                                <LoadingOverlay
+                                                    visible={formLoad}
+                                                    zIndex={1000}
+                                                    overlayProps={{ radius: "sm", blur: 2 }}
+                                                    loaderProps={{ color: "red.6" }}
+                                                />
+                                                <Box>
+                                                    <Grid gutter={{ base: 6 }}>
+                                                        <Grid.Col span={12}>
+                                                            <Box mt={"8"}>
+                                                                <SelectForm
+                                                                    tooltip={t("EmployeeGroup")}
+                                                                    label={t("EmployeeGroup")}
+                                                                    placeholder={t("ChooseEmployeeGroup")}
+                                                                    required={true}
+                                                                    nextField={"employee_id"}
+                                                                    name={"employee_group_id"}
+                                                                    form={form}
+                                                                    dropdownValue={employeeGroupDropdown}
+                                                                    mt={8}
+                                                                    id={"employee_group_id"}
+                                                                    searchable={false}
+                                                                    value={
+                                                                        employeeGroupData
+                                                                            ? employeeGroupData
+                                                                            : String(entityEditData?.employee_group_id || "")
+                                                                    }
+                                                                    changeValue={setEmployeeGroupData}
+                                                                />
+                                                            </Box>
+                                                        </Grid.Col>
+                                                    </Grid>
+                                                </Box>
+                                                <Box mt={"xs"}>
+                                                    <InputForm
+                                                        tooltip={t("EmployeeIDValidateMessage")}
+                                                        label={t("EmployeeID")}
+                                                        placeholder={t("EmployeeID")}
+                                                        required={true}
+                                                        nextField={"name"}
+                                                        form={form}
+                                                        name={"employee_id"}
+                                                        mt={0}
+                                                        id={"employee_id"}
+                                                    />
+                                                </Box>
+                                                <Box mt={"xs"}>
+                                                    <InputForm
+                                                        tooltip={t("UserNameValidateMessage")}
+                                                        label={t("Name")}
+                                                        placeholder={t("Name")}
+                                                        required={true}
+                                                        nextField={"email"}
+                                                        form={form}
+                                                        name={"name"}
+                                                        mt={0}
+                                                        id={"name"}
+                                                    />
+                                                </Box>
+                                                <Box mt={"xs"}>
+                                                    <InputForm
+                                                        form={form}
+                                                        tooltip={
+                                                            form.errors.email
+                                                                ? form.errors.email
+                                                                : t("RequiredAndInvalidEmail")
+                                                        }
+                                                        label={t("Email")}
+                                                        placeholder={t("Email")}
+                                                        required={true}
+                                                        name={"email"}
+                                                        id={"email"}
+                                                        nextField={"mobile"}
+                                                        mt={8}
+                                                    />
+                                                </Box>
+                                                <Box mt={"xs"}>
+                                                    <PhoneNumber
+                                                        tooltip={
+                                                            form.errors.mobile
+                                                                ? form.errors.mobile
+                                                                : t("MobileValidateMessage")
+                                                        }
+                                                        label={t("Mobile")}
+                                                        placeholder={t("Mobile")}
+                                                        required={true}
+                                                        nextField={"username"}
+                                                        name={"mobile"}
+                                                        form={form}
+                                                        mt={8}
+                                                        id={"mobile"}
+                                                    />
+                                                </Box>
+                                                <Box ml={'-xs'} mr={'-xs'} className={'inner-title-box'}>
+                                                    <Title order={6}>
+                                                        {t("LoginCredential")}
+                                                    </Title>
+                                                </Box>
+                                                <Box mt={"xs"}>
+                                                    <InputForm
+                                                        form={form}
+                                                        tooltip={
+                                                            form.errors.username
+                                                                ? form.errors.username
+                                                                : t("UserNameValidateMessage")
+                                                        }
+                                                        label={t("UserName")}
+                                                        placeholder={t("UserName")}
+                                                        required={true}
+                                                        name={"username"}
+                                                        id={"username"}
+                                                        nextField={"password"}
+                                                        mt={8}
+                                                    />
+                                                </Box>
+                                                <Box mt={"xs"}>
+                                                    <PasswordInputForm
+                                                        form={form}
+                                                        tooltip={t("RequiredPassword")}
+                                                        label={t("Password")}
+                                                        placeholder={t("Password")}
+                                                        required={false}
+                                                        name={"password"}
+                                                        id={"password"}
+                                                        nextField={"confirm_password"}
+                                                        mt={8}
+                                                    />
+                                                </Box>
+                                                <Box mt={"xs"}>
+                                                    <PasswordInputForm
+                                                        form={form}
+                                                        tooltip={t("ConfirmPasswordValidateMessage")}
+                                                        label={t("ConfirmPassword")}
+                                                        placeholder={t("ConfirmPassword")}
+                                                        required={false}
+                                                        name={"confirm_password"}
+                                                        id={"confirm_password"}
+                                                        nextField={"EntityFormSubmit"}
+                                                        mt={8}
+                                                    />
+                                                </Box>
+                                            </Box>
+                                        </ScrollArea>
+                                    </Box>
+                                </Box>
+                            </Box>
+                        </Grid.Col>
 
-		setSelectedAndroidControlRoleData(newSelectedData);
-	};
+                        {/* Access Control */}
+                        <Grid.Col span={9}>
+                            <Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+                                <Box bg={"white"}>
+                                    <Box
+                                        pl={`xs`}
+                                        pr={8}
+                                        pt={"6"}
+                                        pb={"6"}
+                                        mb={4}
+                                        className={"boxBackground borderRadiusAll"}
+                                    >
+                                        <Grid>
+                                            <Grid.Col span={6}>
+                                                <Title order={6} pt={4} pb={4}>
+                                                    {t("Enable&ACLInformation")}
+                                                </Title>
+                                            </Grid.Col>
+                                        </Grid>
+                                    </Box>
+                                </Box>
+                                <Box pl={`xs`} pr={"xs"} className={"borderRadiusAll"}>
+                                    <ScrollArea h={height + 1} scrollbarSize={2} scrollbars="y" type="never">
+                                        <Grid columns={12} gutter={0}>
+                                            <Grid.Col span={6}>
+                                                <Box mt={"md"} ml={"xs"}>
+                                                    <LoadingOverlay
+                                                        visible={formLoad}
+                                                        zIndex={1000}
+                                                        overlayProps={{ radius: "sm", blur: 2 }}
+                                                        loaderProps={{ color: "red.6" }}
+                                                    />
+                                                    <Grid gutter={{ base: 1 }}>
+                                                        <Grid.Col span={2}>
+                                                            <SwitchForm
+                                                                tooltip={t("Status")}
+                                                                label=""
+                                                                nextField={"EntityFormSubmit"}
+                                                                name={"enabled"}
+                                                                form={form}
+                                                                color="red"
+                                                                id={"enabled"}
+                                                                position={"left"}
+                                                                checked={entityEditData?.enabled || false}
+                                                            />
+                                                        </Grid.Col>
+                                                        <Grid.Col ml={"xs"} span={6} fz={"sm"} pt={"1"}>
+                                                            {t("Enabled")}
+                                                        </Grid.Col>
+                                                    </Grid>
+                                                </Box>
+                                            </Grid.Col>
+                                        </Grid>
+                                        <Box mt={"sm"}>
+                                            <Text fz={14} fw={400}>
+                                                {t("AccessControlRole")}
+                                            </Text>
+                                        </Box>
+                                        <Grid columns={24} gutter={0}>
+                                            <Grid.Col span={11}>
+                                                <Box mt={"xs"} className={"borderRadiusAll"} bg={"white"}>
+                                                    <ScrollArea
+                                                        h={height - 98}
+                                                        scrollbarSize={2}
+                                                        scrollbars="y"
+                                                        type="always"
+                                                        pb={"xs"}
+                                                    >
+                                                        {accessControlRole
+                                                            .filter((group) => group.actions.length > 0)
+                                                            .map((group) => (
+                                                                <Box key={group.Group} p={"sm"}>
+                                                                    <Text fz={"14"} fw={400} c={"dimmed"}>
+                                                                        {t(group.Group)}
+                                                                    </Text>
+                                                                    {group.actions.map((action) => (
+                                                                        <Box
+                                                                            key={action.id}
+                                                                            pl={"xs"}
+                                                                            pb={0}
+                                                                            mb={0}
+                                                                            pt={"8"}
+                                                                            onClick={() =>
+                                                                                handleSelectAccessControlRoleData(
+                                                                                    group,
+                                                                                    action
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <Text
+                                                                                style={{
+                                                                                    borderBottom: " 1px solid #e9ecef",
+                                                                                    cursor: "pointer",
+                                                                                }}
+                                                                                pb={2}
+                                                                                fz={"14"}
+                                                                                fw={400}
+                                                                            >
+                                                                                {t(action.label)}
+                                                                            </Text>
+                                                                        </Box>
+                                                                    ))}
+                                                                </Box>
+                                                            ))}
+                                                    </ScrollArea>
+                                                </Box>
+                                            </Grid.Col>
+                                            <Grid.Col span={2}>
+                                                <Flex h={height - 98} mt={"xs"} align={"center"} justify={"center"}>
+                                                    <IconArrowsExchange
+                                                        style={{ width: "70%", height: "70%" }}
+                                                        stroke={1}
+                                                    />
+                                                </Flex>
+                                            </Grid.Col>
+                                            <Grid.Col span={11}>
+                                                <Box mt={"xs"} className={"borderRadiusAll"} bg={"white"}>
+                                                    <ScrollArea
+                                                        h={height - 98}
+                                                        scrollbarSize={2}
+                                                        scrollbars="y"
+                                                        type="always"
+                                                        pb={"xs"}
+                                                    >
+                                                        {selectedAccessControlRoleData
+                                                            .filter((group) => group.actions.length > 0)
+                                                            .map((group) => (
+                                                                <Box key={group.Group} p={"sm"}>
+                                                                    <Text fz={"14"} fw={400} c={"dimmed"}>
+                                                                        {t(group.Group)}
+                                                                    </Text>
+                                                                    {group.actions.map((action) => (
+                                                                        <Box
+                                                                            key={action.id}
+                                                                            pl={"xs"}
+                                                                            pb={0}
+                                                                            mb={0}
+                                                                            pt={"8"}
+                                                                            onClick={() =>
+                                                                                handleDeselectAccessControlRoleData(
+                                                                                    group,
+                                                                                    action
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <Text
+                                                                                style={{
+                                                                                    borderBottom: " 1px solid #e9ecef",
+                                                                                    cursor: "pointer",
+                                                                                }}
+                                                                                pb={2}
+                                                                                fz={"14"}
+                                                                                fw={400}
+                                                                            >
+                                                                                {t(action.label)}
+                                                                            </Text>
+                                                                        </Box>
+                                                                    ))}
+                                                                </Box>
+                                                            ))}
+                                                    </ScrollArea>
+                                                </Box>
+                                            </Grid.Col>
+                                        </Grid>
+                                    </ScrollArea>
+                                </Box>
+                            </Box>
+                        </Grid.Col>
 
-	const handleDeselectAndroidControlRoleData = (group, action) => {
-		const newSelectedData = selectedAndroidControlRoleData.map((g) => {
-			if (g.Group === group.Group) {
-				return {
-					...g,
-					actions: g.actions.filter((a) => a.id !== action.id),
-				};
-			}
-			return g;
-		});
-
-		setSelectedAndroidControlRoleData(newSelectedData);
-		const newAvailableData = androidControlRole.map((g) => {
-			if (g.Group === group.Group) {
-				return {
-					...g,
-					actions: [...g.actions, action], // Re-add the deselected action
-				};
-			}
-			return g;
-		});
-
-		setAndroidControlRole(newAvailableData);
-	};
-	// end andriod access role
-
-	const [profileImage, setProfileImage] = useState([]);
-	const [digitalSignature, setDigitalSignature] = useState([]);
-
-	const previewsProfile = profileImage.map((file, index) => {
-		const imageUrl = URL.createObjectURL(file);
-		return (
-			<>
-				<Flex h={150} justify={"center"} align={"center"} mt={"xs"}>
-					<Image
-						h={150}
-						w={150}
-						fit="cover"
-						key={index}
-						src={imageUrl}
-						onLoad={() => URL.revokeObjectURL(imageUrl)}
-					/>
-				</Flex>
-			</>
-		);
-	});
-
-	const previewsDigitalSignature = digitalSignature.map((file, index) => {
-		const imageUrl = URL.createObjectURL(file);
-		return (
-			<>
-				<Flex h={150} justify={"center"} align={"center"} mt={"xs"}>
-					<Image
-						h={150}
-						w={150}
-						fit="cover"
-						key={index}
-						src={imageUrl}
-						onLoad={() => URL.revokeObjectURL(imageUrl)}
-					/>
-				</Flex>
-			</>
-		);
-	});
-
-	const { data: employeeGroupDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.EMPLOYEE_GROUP.PATH,
-		utility: CORE_DROPDOWNS.EMPLOYEE_GROUP.UTILITY,
-		params: { "dropdown-type": CORE_DROPDOWNS.EMPLOYEE_GROUP.TYPE },
-	});
-
-	const { data: designationDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.DESIGNATION.PATH,
-		utility: CORE_DROPDOWNS.DESIGNATION.UTILITY,
-		params: { "dropdown-type": CORE_DROPDOWNS.DESIGNATION.TYPE },
-	});
-
-	const { data: departmentDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.DEPARTMENT.PATH,
-		utility: CORE_DROPDOWNS.DEPARTMENT.UTILITY,
-		params: { "dropdown-type": CORE_DROPDOWNS.DEPARTMENT.TYPE },
-	});
-
-	const { data: locationDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.LOCATION.PATH,
-		utility: CORE_DROPDOWNS.LOCATION.UTILITY,
-		params: { "dropdown-type": CORE_DROPDOWNS.LOCATION.TYPE },
-	});
-
-	const handleGenderChange = (val) => {
-		form.setFieldValue("gender", val);
-	};
-
-	const handleSubmit = (values) => {
-		form.values["access_control_role"] = selectedAccessControlRoleData;
-		form.values["android_control_role"] = selectedAndroidControlRoleData;
-
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: { confirm: t("Submit"), cancel: t("Cancel") },
-			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
-			onConfirm: async () => {
-				const value = {
-					url: `${MASTER_DATA_ROUTES.API_ROUTES.USER.UPDATE}/${entityEditData.id}`,
-					data: values,
-					module,
-				};
-
-				const resultAction = await dispatch(updateEntityData(value));
-
-				if (updateEntityData.rejected.match(resultAction)) {
-					const fieldErrors = resultAction.payload.errors;
-
-					// Check if there are field validation errors and dynamically set them
-					if (fieldErrors) {
-						const errorObject = {};
-						Object.keys(fieldErrors).forEach((key) => {
-							errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
-						});
-						// Display the errors using your form's `setErrors` function dynamically
-						form.setErrors(errorObject);
-					}
-				} else if (updateEntityData.fulfilled.match(resultAction)) {
-					showNotificationComponent(t("UpdateSuccessfully"), "teal", "lightgray");
-
-					setTimeout(() => {
-						form.reset();
-						dispatch(setInsertType({ insertType: "create", module }));
-						setSaveCreateLoading(false);
-						navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.USER.INDEX, { replace: true });
-					}, 700);
-				}
-			},
-		});
-	};
-
-	const handleOnDrop = (e) => {
-		const value = {
-			url: "core/user/image-inline/" + entityEditData.id,
-			data: {
-				profile_image: e[0],
-			},
-			module,
-		};
-		dispatch(updateEntityDataWithFile(value));
-		setProfileImage(e);
-	};
-
-	const handleOnDropDigitalSignature = (e) => {
-		const value = {
-			url: "core/user/image-inline/" + entityEditData.id,
-			data: {
-				digital_signature: e[0],
-			},
-			module,
-		};
-		dispatch(updateEntityDataWithFile(value));
-		setDigitalSignature(e);
-	};
-
-	return (
-		<Box>
-			<form onSubmit={form.onSubmit(handleSubmit)}>
-				<Box>
-					<Grid columns={24} gutter={{ base: 8 }}>
-						{/* start 1st Box */}
-						<Grid.Col span={7}>
-							<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
-								<Box bg={"white"}>
-									<Box
-										pl={`xs`}
-										pr={8}
-										pt={"6"}
-										pb={"6"}
-										mb={"4"}
-										className={"boxBackground borderRadiusAll"}
-									>
-										<Grid>
-											<Grid.Col span={6}>
-												<Title order={6} pt={"6"} pb={4}>
-													{t("UpdateUser")}
-												</Title>
-											</Grid.Col>
-											<Grid.Col span={6}></Grid.Col>
-										</Grid>
-									</Box>
-									<Box pl={`xs`} pr={"xs"} className={"borderRadiusAll"}>
-										<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
-											<Box>
-												<LoadingOverlay
-													visible={formLoad}
-													zIndex={1000}
-													overlayProps={{ radius: "sm", blur: 2 }}
-													loaderProps={{ color: "red.6" }}
-												/>
-												<Box>
-													<Grid gutter={{ base: 6 }}>
-														<Grid.Col span={12}>
-															<Box mt={"8"}>
-																<SelectForm
-																	tooltip={t("EmployeeGroup")}
-																	label={t("EmployeeGroup")}
-																	placeholder={t("ChooseEmployeeGroup")}
-																	required={true}
-																	nextField={"name"}
-																	name={"employee_group_id"}
-																	form={form}
-																	dropdownValue={employeeGroupDropdown}
-																	mt={8}
-																	id={"employee_group_id"}
-																	searchable={false}
-																	value={
-																		employeeGroupData
-																			? employeeGroupData
-																			: String(entityEditData.employee_group_id)
-																	}
-																	changeValue={setEmployeeGroupData}
-																/>
-															</Box>
-														</Grid.Col>
-
-													</Grid>
-												</Box>
-												<Box mt={"xs"}>
-													<InputForm
-														tooltip={t("EmployeeIDValidateMessage")}
-														label={t("EmployeeID")}
-														placeholder={t("EmployeeID")}
-														required={true}
-														nextField={"name"}
-														form={form}
-														name={"employee_id"}
-														mt={0}
-														id={"employee_id"}
-													/>
-												</Box>
-												<Box mt={"xs"}>
-													<InputForm
-														tooltip={t("UserNameValidateMessage")}
-														label={t("Name")}
-														placeholder={t("Name")}
-														required={true}
-														nextField={"username"}
-														form={form}
-														name={"name"}
-														mt={0}
-														id={"name"}
-													/>
-												</Box>
-
-												<Box mt={"xs"}>
-													<InputForm
-														form={form}
-														tooltip={
-															form.errors.email
-																? form.errors.email
-																: t("RequiredAndInvalidEmail")
-														}
-														label={t("Email")}
-														placeholder={t("Email")}
-														required={true}
-														name={"email"}
-														id={"email"}
-														nextField={"mobile"}
-														mt={8}
-													/>
-												</Box>
-												<Box mt={"xs"}>
-													<PhoneNumber
-														tooltip={
-															form.errors.mobile
-																? form.errors.mobile
-																: t("MobileValidateMessage")
-														}
-														label={t("Mobile")}
-														placeholder={t("Mobile")}
-														required={true}
-														nextField={"password"}
-														name={"mobile"}
-														form={form}
-														mt={8}
-														id={"mobile"}
-													/>
-												</Box>
-												<Box ml={'-xs'} mr={'-xs'} className={'inner-title-box'}>
-													<Title order={6}>
-														{t("LoginCredential")}
-													</Title>
-												</Box>
-												<Box mt={"xs"}>
-													<InputForm
-														form={form}
-														tooltip={
-															form.errors.username
-																? form.errors.username
-																: t("UserNameValidateMessage")
-														}
-														label={t("UserName")}
-														placeholder={t("UserName")}
-														required={true}
-														name={"username"}
-														id={"username"}
-														nextField={"email"}
-														mt={8}
-													/>
-												</Box>
-
-												<Box mt={"xs"}>
-													<PasswordInputForm
-														form={form}
-														tooltip={t("RequiredPassword")}
-														label={t("Password")}
-														placeholder={t("Password")}
-														required={false}
-														name={"password"}
-														id={"password"}
-														nextField={"confirm_password"}
-														mt={8}
-													/>
-												</Box>
-												<Box mt={"xs"}>
-													<PasswordInputForm
-														form={form}
-														tooltip={t("ConfirmPasswordValidateMessage")}
-														label={t("ConfirmPassword")}
-														placeholder={t("ConfirmPassword")}
-														required={false}
-														name={"confirm_password"}
-														id={"confirm_password"}
-														nextField={"EntityFormSubmit"}
-														mt={8}
-													/>
-												</Box>
-											</Box>
-										</ScrollArea>
-									</Box>
-								</Box>
-							</Box>
-						</Grid.Col>
-						{/* end 1st Box */}
-
-						{/* start 2nd Box */}
-						<Grid.Col span={9}>
-							<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
-								<Box bg={"white"}>
-									<Box
-										pl={`xs`}
-										pr={8}
-										pt={"6"}
-										pb={"6"}
-										mb={4}
-										className={"boxBackground borderRadiusAll"}
-									>
-										<Grid>
-											<Grid.Col span={6}>
-												<Title order={6} pt={4} pb={4}>
-													{t("Enable&ACLInformation")}
-												</Title>
-											</Grid.Col>
-											<Grid.Col span={6}></Grid.Col>
-										</Grid>
-									</Box>
-								</Box>
-								<Box pl={`xs`} pr={"xs"} className={"borderRadiusAll"}>
-									<ScrollArea h={height + 1} scrollbarSize={2} scrollbars="y" type="never">
-										<Grid columns={12} gutter={0}>
-											<Grid.Col span={6}>
-												<Box mt={"md"} ml={"xs"}>
-													<LoadingOverlay
-														visible={formLoad}
-														zIndex={1000}
-														overlayProps={{ radius: "sm", blur: 2 }}
-														loaderProps={{ color: "red.6" }}
-													/>
-													<Grid gutter={{ base: 1 }}>
-														<Grid.Col span={2}>
-															<SwitchForm
-																tooltip={t("Status")}
-																label=""
-																nextField={"EntityFormSubmit"}
-																name={"enabled"}
-																form={form}
-																color="red"
-																id={"enabled"}
-																position={"left"}
-																checked={entityEditData.enabled || false}
-															/>
-														</Grid.Col>
-														<Grid.Col ml={"xs"} span={6} fz={"sm"} pt={"1"}>
-															{t("Enabled")}
-														</Grid.Col>
-													</Grid>
-												</Box>
-											</Grid.Col>
-										</Grid>
-										<Box mt={"sm"}>
-											<Text fz={14} fw={400}>
-												{t("AccessControlRole")}
-											</Text>
-										</Box>
-										<Grid columns={24} gutter={0}>
-											<Grid.Col span={11}>
-												<Box mt={"xs"} className={"borderRadiusAll"} bg={"white"}>
-													<ScrollArea
-														h={height-98}
-														scrollbarSize={2}
-														scrollbars="y"
-														type="always"
-														pb={"xs"}
-													>
-														{accessControlRole
-															.filter((group) => group.actions.length > 0)
-															.map((group) => (
-																<Box key={group.Group} p={"sm"}>
-																	<Text fz={"14"} fw={400} c={"dimmed"}>
-																		{t(group.Group)}
-																	</Text>
-																	{group.actions.map((action) => (
-																		<Box
-																			key={action.id}
-																			pl={"xs"}
-																			pb={0}
-																			mb={0}
-																			pt={"8"}
-																			onClick={() =>
-																				handleSelectAccessControlRoleData(
-																					group,
-																					action
-																				)
-																			}
-																		>
-																			<Text
-																				style={{
-																					borderBottom: " 1px solid #e9ecef",
-																					cursor: "pointer",
-																				}}
-																				pb={2}
-																				fz={"14"}
-																				fw={400}
-																			>
-																				{t(action.label)}
-																			</Text>
-																		</Box>
-																	))}
-																</Box>
-															))}
-													</ScrollArea>
-												</Box>
-											</Grid.Col>
-											<Grid.Col span={2}>
-												<Flex h={height-98} mt={"xs"} align={"center"} justify={"center"}>
-													<IconArrowsExchange
-														style={{ width: "70%", height: "70%" }}
-														stroke={1}
-													/>
-												</Flex>
-											</Grid.Col>
-											<Grid.Col span={11}>
-												<Box mt={"xs"} className={"borderRadiusAll"} bg={"white"}>
-													<ScrollArea
-														h={height-98}
-														scrollbarSize={2}
-														scrollbars="y"
-														type="always"
-														pb={"xs"}
-													>
-														{selectedAccessControlRoleData
-															.filter((group) => group.actions.length > 0)
-															.map((group) => (
-																<Box key={group.Group} p={"sm"}>
-																	<Text fz={"14"} fw={400} c={"dimmed"}>
-																		{t(group.Group)}
-																	</Text>
-																	{group.actions.map((action) => (
-																		<Box
-																			key={action.id}
-																			pl={"xs"}
-																			pb={0}
-																			mb={0}
-																			pt={"8"}
-																			onClick={() =>
-																				handleDeselectAccessControlRoleData(
-																					group,
-																					action
-																				)
-																			}
-																		>
-																			<Text
-																				style={{
-																					borderBottom: " 1px solid #e9ecef",
-																					cursor: "pointer",
-																				}}
-																				pb={2}
-																				fz={"14"}
-																				fw={400}
-																			>
-																				{t(action.label)}
-																			</Text>
-																		</Box>
-																	))}
-																</Box>
-															))}
-													</ScrollArea>
-												</Box>
-											</Grid.Col>
-										</Grid>
-									</ScrollArea>
-								</Box>
-							</Box>
-						</Grid.Col>
-						{/* end 2nd Box */}
-
-						{/* start 3rd Box */}
-						<Grid.Col span={7}>
-							<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
-								<Box bg={"white"}>
-									<Box
-										pl={`xs`}
-										pr={8}
-										pt={"6"}
-										pb={"6"}
-										mb={4}
-										className={"boxBackground borderRadiusAll"}
-									>
-										<Grid>
-											<Grid.Col span={6}>
-												<Title order={6} pt={4} pb={4}>
-													{t("Address&Others")}
-												</Title>
-											</Grid.Col>
-											<Grid.Col span={6}>
-												<Stack right align="flex-end">
-													<>
-														{!saveCreateLoading && isOnline && (
-															<Button
-																bg="var(--theme-primary-color-6)"
-																size="xs"
-																type="submit"
-																id="EntityFormSubmit"
-																leftSection={<IconDeviceFloppy size={16} />}
-															>
-																<Flex direction={`column`} gap={0}>
-																	<Text fz={14} fw={400}>
-																		{t("UpdateAndSave")}
-																	</Text>
-																</Flex>
-															</Button>
-														)}
-													</>
-												</Stack>
-											</Grid.Col>
-										</Grid>
-									</Box>
-								</Box>
-								<Box pl={`xs`} pr={"xs"} className={"borderRadiusAll"}>
-									<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
-										<Box>
-											<LoadingOverlay
-												visible={formLoad}
-												zIndex={1000}
-												overlayProps={{ radius: "sm", blur: 2 }}
-												loaderProps={{ color: "red.6" }}
-											/>
-											<Box mb={"xs"} mt={"xs"}>
-												<Grid align="center" columns={20}>
-													<Grid.Col span={6}>
-														<Text mt={'xs'} fz="sm">{t("Gender")}</Text>
-													</Grid.Col>
-													<Grid.Col span={12} pb={0}>
-														<SegmentedControl
-															fullWidth
-															color="var(--theme-primary-color-6)"
-															value={form.values.gender}
-															id="gender"
-															name="gender"
-															onChange={(val) => handleGenderChange(val)}
-															data={[
-																{ label: t("male"), value: "male" },
-																{ label: t("female"), value: "female" },
-																{ label: t("other"), value: "other" },
-															]}
-														/>
-													</Grid.Col>
-												</Grid>
-											</Box>
-											<Box mt={"xs"}>
-												<DateSelectorForm
-													form={form}
-													label={t("DeteOfBarth")}
-													placeholder="01-01-2020"
-													tooltip={t("enterDateOfBirth")}
-													name="dob"
-													id="dob"
-													nextField="email"
-													value={form.values.dob}
-													required={false}
-													disabledFutureDate
-												/>
-											</Box>
-											<Box mt={"xs"}>
-												<InputForm
-													form={form}
-													tooltip={
-														form.errors.email
-															? form.errors.email
-															: t("RequiredAndInvalidEmail")
-													}
-													label={t("AlternativeEmail")}
-													placeholder={t("AlternativeEmail")}
-													required={false}
-													name={"alternative_email"}
-													id={"alternative_email"}
-													nextField={"designation_id"}
-													mt={8}
-												/>
-											</Box>
-											<Box>
-												<Grid gutter={{ base: 2 }}>
-													<Grid.Col span={12}>
-														<Box mt={"8"}>
-															<SelectForm
-																tooltip={t("Designation")}
-																label={t("Designation")}
-																placeholder={t("ChooseDesignation")}
-																required={false}
-																nextField={"department_id"}
-																name={"designation_id"}
-																form={form}
-																dropdownValue={designationDropdown}
-																mt={8}
-																id={"designation_id"}
-																searchable={false}
-																value={
-																	designationData
-																		? designationData
-																		: String(entityEditData.designation_id)
-																}
-																changeValue={setDesignationData}
-															/>
-														</Box>
-													</Grid.Col>
-
-												</Grid>
-											</Box>
-											<Box>
-												<Grid gutter={{ base: 2 }}>
-													<Grid.Col span={12}>
-														<Box mt={"8"}>
-															<SelectForm
-																tooltip={t("Department")}
-																label={t("Department")}
-																placeholder={t("ChooseDepartment")}
-																required={false}
-																nextField={"address"}
-																name={"department_id"}
-																form={form}
-																dropdownValue={departmentDropdown}
-																mt={8}
-																id={"department_id"}
-																searchable={false}
-																value={
-																	departmentData
-																		? designationData
-																		: String(entityEditData.department_id)
-																}
-																changeValue={setDepartmentData}
-															/>
-														</Box>
-													</Grid.Col>
-
-												</Grid>
-											</Box>
-											<Box mt={"xs"}>
-												<TextAreaForm
-													tooltip={t("Address")}
-													label={t("Address")}
-													placeholder={t("Address")}
-													required={false}
-													nextField={"about_me"}
-													name={"address"}
-													form={form}
-													mt={8}
-													id={"address"}
-												/>
-											</Box>
-											<Box mt={"xs"}>
-												<TextAreaForm
-													tooltip={t("AboutMe")}
-													label={t("AboutMe")}
-													placeholder={t("AboutMe")}
-													required={false}
-													nextField={"is_selected"}
-													name={"about_me"}
-													form={form}
-													mt={8}
-													id={"about_me"}
-												/>
-											</Box>
-											<Box mt={"sm"}>
-												<Text fz={14} fw={400} mb={2}>
-													{t("ProfileImage")}
-												</Text>
-												<Tooltip
-													label={t("ChooseImage")}
-													opened={"path" in form.errors && !!form.errors["path"]}
-													px={16}
-													py={2}
-													position="top-end"
-													color="red"
-													withArrow
-													offset={2}
-													zIndex={999}
-													transitionProps={{
-														transition: "pop-bottom-left",
-														duration: 500,
-													}}
-												>
-													<Dropzone
-														label={t("ChooseImage")}
-														accept={IMAGE_MIME_TYPE}
-														onDrop={handleOnDrop}
-													>
-														<Text ta="center">
-															{profileImage &&
-															profileImage.length > 0 &&
-															profileImage[0].path ? (
-																profileImage[0].path
-															) : (
-																<span>
-																	{t("DropProfileImageHere")} (150 * 150){" "}
-																	<span style={{ color: "red" }}>*</span>
+                        {/* Additional Information */}
+                        <Grid.Col span={7}>
+                            <Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+                                <Box bg={"white"}>
+                                    <Box
+                                        pl={`xs`}
+                                        pr={8}
+                                        pt={"6"}
+                                        pb={"6"}
+                                        mb={4}
+                                        className={"boxBackground borderRadiusAll"}
+                                    >
+                                        <Grid>
+                                            <Grid.Col span={6}>
+                                                <Title order={6} pt={4} pb={4}>
+                                                    {t("Address&Others")}
+                                                </Title>
+                                            </Grid.Col>
+                                            <Grid.Col span={6}>
+                                                <Stack right align="flex-end">
+                                                    {/*{!saveCreateLoading && isOnline && (*/}
+                                                        <Button
+                                                            bg="var(--theme-primary-color-6)"
+                                                            size="xs"
+                                                            type="submit"
+                                                            id="EntityFormSubmit"
+                                                            leftSection={<IconDeviceFloppy size={16} />}
+                                                        >
+                                                            <Flex direction={`column`} gap={0}>
+                                                                <Text fz={14} fw={400}>
+                                                                    {t("UpdateAndSave")}
+                                                                </Text>
+                                                            </Flex>
+                                                        </Button>
+                                                    {/*)}*/}
+                                                </Stack>
+                                            </Grid.Col>
+                                        </Grid>
+                                    </Box>
+                                </Box>
+                                <Box pl={`xs`} pr={"xs"} className={"borderRadiusAll"}>
+                                    <ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
+                                        <Box>
+                                            <LoadingOverlay
+                                                visible={formLoad}
+                                                zIndex={1000}
+                                                overlayProps={{ radius: "sm", blur: 2 }}
+                                                loaderProps={{ color: "red.6" }}
+                                            />
+                                            <Box mb={"xs"} mt={"xs"}>
+                                                <Grid align="center" columns={20}>
+                                                    <Grid.Col span={6}>
+                                                        <Text mt={'xs'} fz="sm">{t("Gender")}</Text>
+                                                    </Grid.Col>
+                                                    <Grid.Col span={12} pb={0}>
+                                                        <SegmentedControl
+                                                            fullWidth
+                                                            color="var(--theme-primary-color-6)"
+                                                            value={form.values.gender || "male"}
+                                                            id="gender"
+                                                            name="gender"
+                                                            onChange={(val) => handleGenderChange(val)}
+                                                            data={[
+                                                                { label: t("male"), value: "male" },
+                                                                { label: t("female"), value: "female" },
+                                                                { label: t("other"), value: "other" },
+                                                            ]}
+                                                        />
+                                                    </Grid.Col>
+                                                </Grid>
+                                            </Box>
+                                            <Box mt={"xs"}>
+                                                <DateSelectorForm
+                                                    form={form}
+                                                    label={t("DeteOfBarth")}
+                                                    placeholder="01-01-2020"
+                                                    tooltip={t("enterDateOfBirth")}
+                                                    name="dob"
+                                                    id="dob"
+                                                    nextField="alternative_email"
+                                                    value={form.values.dob}
+                                                    required={false}
+                                                    disabledFutureDate
+                                                />
+                                            </Box>
+                                            <Box mt={"xs"}>
+                                                <InputForm
+                                                    form={form}
+                                                    tooltip={
+                                                        form.errors.alternative_email
+                                                            ? form.errors.alternative_email
+                                                            : t("RequiredAndInvalidEmail")
+                                                    }
+                                                    label={t("AlternativeEmail")}
+                                                    placeholder={t("AlternativeEmail")}
+                                                    required={false}
+                                                    name={"alternative_email"}
+                                                    id={"alternative_email"}
+                                                    nextField={"designation_id"}
+                                                    mt={8}
+                                                />
+                                            </Box>
+                                            <Box>
+                                                <Grid gutter={{ base: 2 }}>
+                                                    <Grid.Col span={12}>
+                                                        <Box mt={"8"}>
+                                                            <SelectForm
+                                                                tooltip={t("Designation")}
+                                                                label={t("Designation")}
+                                                                placeholder={t("ChooseDesignation")}
+                                                                required={false}
+                                                                nextField={"department_id"}
+                                                                name={"designation_id"}
+                                                                form={form}
+                                                                dropdownValue={designationDropdown}
+                                                                mt={8}
+                                                                id={"designation_id"}
+                                                                searchable={false}
+                                                                value={
+                                                                    designationData
+                                                                        ? designationData
+                                                                        : String(entityEditData?.designation_id || "")
+                                                                }
+                                                                changeValue={setDesignationData}
+                                                            />
+                                                        </Box>
+                                                    </Grid.Col>
+                                                </Grid>
+                                            </Box>
+                                            <Box>
+                                                <Grid gutter={{ base: 2 }}>
+                                                    <Grid.Col span={12}>
+                                                        <Box mt={"8"}>
+                                                            <SelectForm
+                                                                tooltip={t("Department")}
+                                                                label={t("Department")}
+                                                                placeholder={t("ChooseDepartment")}
+                                                                required={false}
+                                                                nextField={"address"}
+                                                                name={"department_id"}
+                                                                form={form}
+                                                                dropdownValue={departmentDropdown}
+                                                                mt={8}
+                                                                id={"department_id"}
+                                                                searchable={false}
+                                                                value={
+                                                                    departmentData
+                                                                        ? departmentData
+                                                                        : String(entityEditData?.department_id || "")
+                                                                }
+                                                                changeValue={setDepartmentData}
+                                                            />
+                                                        </Box>
+                                                    </Grid.Col>
+                                                </Grid>
+                                            </Box>
+                                            <Box mt={"xs"}>
+                                                <TextAreaForm
+                                                    tooltip={t("Address")}
+                                                    label={t("Address")}
+                                                    placeholder={t("Address")}
+                                                    required={false}
+                                                    nextField={"about_me"}
+                                                    name={"address"}
+                                                    form={form}
+                                                    mt={8}
+                                                    id={"address"}
+                                                />
+                                            </Box>
+                                            <Box mt={"xs"}>
+                                                <TextAreaForm
+                                                    tooltip={t("AboutMe")}
+                                                    label={t("AboutMe")}
+                                                    placeholder={t("AboutMe")}
+                                                    required={false}
+                                                    nextField={"EntityFormSubmit"}
+                                                    name={"about_me"}
+                                                    form={form}
+                                                    mt={8}
+                                                    id={"about_me"}
+                                                />
+                                            </Box>
+                                            <Box mt={"sm"}>
+                                                <Text fz={14} fw={400} mb={2}>
+                                                    {t("ProfileImage")}
+                                                </Text>
+                                                <Tooltip
+                                                    label={t("ChooseImage")}
+                                                    opened={"profile_image" in form.errors && !!form.errors["profile_image"]}
+                                                    px={16}
+                                                    py={2}
+                                                    position="top-end"
+                                                    color="red"
+                                                    withArrow
+                                                    offset={2}
+                                                    zIndex={999}
+                                                    transitionProps={{
+                                                        transition: "pop-bottom-left",
+                                                        duration: 500,
+                                                    }}
+                                                >
+                                                    <Dropzone
+                                                        label={t("ChooseImage")}
+                                                        accept={IMAGE_MIME_TYPE}
+                                                        onDrop={handleProfileImageDrop}
+                                                    >
+                                                        <Text ta="center">
+                                                            {profileImage && profileImage.length > 0 && profileImage[0].name ? (
+                                                                profileImage[0].name
+                                                            ) : (
+                                                                <span>
+																	{t("DropProfileImageHere")} (150 * 150)
 																</span>
-															)}
-														</Text>
-													</Dropzone>
-												</Tooltip>
-												{profileImage.length > 0 ? (
-													previewsProfile
-												) : (
-													<Flex h={150} justify={"center"} align={"center"} mt={"xs"}>
-														<Image
-															h={150}
-															w={150}
-															fit="cover"
-															key={9999}
-															src={entityEditData.path}
-														/>
-													</Flex>
-												)}
-											</Box>
-											<Box mt={"sm"}>
-												<Text fz={14} fw={400} mb={2}>
-													{t("DigitalSignature")}
-												</Text>
-												<Tooltip
-													label={t("ChooseImage")}
-													opened={"path" in form.errors && !!form.errors["path"]}
-													px={16}
-													py={2}
-													position="top-end"
-													color="red"
-													withArrow
-													offset={2}
-													zIndex={999}
-													transitionProps={{
-														transition: "pop-bottom-left",
-														duration: 500,
-													}}
-												>
-													<Dropzone
-														label={t("ChooseImage")}
-														accept={IMAGE_MIME_TYPE}
-														onDrop={handleOnDropDigitalSignature}
-													>
-														<Text ta="center">
-															{digitalSignature &&
-															digitalSignature.length > 0 &&
-															digitalSignature[0].path ? (
-																digitalSignature[0].path
-															) : (
-																<span>
-																	{t("DropDigitalSignatureHere")} (150 * 150){" "}
-																	<span style={{ color: "red" }}>*</span>
+                                                            )}
+                                                        </Text>
+                                                    </Dropzone>
+                                                </Tooltip>
+                                                {renderImagePreview(profileImage, entityEditData?.path)}
+                                            </Box>
+                                            <Box mt={"sm"}>
+                                                <Text fz={14} fw={400} mb={2}>
+                                                    {t("DigitalSignature")}
+                                                </Text>
+                                                <Tooltip
+                                                    label={t("ChooseImage")}
+                                                    opened={"digital_signature" in form.errors && !!form.errors["digital_signature"]}
+                                                    px={16}
+                                                    py={2}
+                                                    position="top-end"
+                                                    color="red"
+                                                    withArrow
+                                                    offset={2}
+                                                    zIndex={999}
+                                                    transitionProps={{
+                                                        transition: "pop-bottom-left",
+                                                        duration: 500,
+                                                    }}
+                                                >
+                                                    <Dropzone
+                                                        label={t("ChooseImage")}
+                                                        accept={IMAGE_MIME_TYPE}
+                                                        onDrop={handleDigitalSignatureDrop}
+                                                    >
+                                                        <Text ta="center">
+                                                            {digitalSignature && digitalSignature.length > 0 && digitalSignature[0].name ? (
+                                                                digitalSignature[0].name
+                                                            ) : (
+                                                                <span>
+																	{t("DropDigitalSignatureHere")} (150 * 150)
 																</span>
-															)}
-														</Text>
-													</Dropzone>
-												</Tooltip>
-												{digitalSignature.length > 0 ? (
-													previewsDigitalSignature
-												) : (
-													<Flex h={150} justify={"center"} align={"center"} mt={"xs"}>
-														<Image
-															h={150}
-															w={150}
-															fit="cover"
-															key={9999}
-															src={entityEditData.signature_path}
-														/>
-													</Flex>
-												)}
-											</Box>
-										</Box>
-									</ScrollArea>
-								</Box>
-							</Box>
-						</Grid.Col>
-						{/* end 3rd Box */}
+                                                            )}
+                                                        </Text>
+                                                    </Dropzone>
+                                                </Tooltip>
+                                                {renderImagePreview(digitalSignature, entityEditData?.signature_path)}
+                                            </Box>
+                                        </Box>
+                                    </ScrollArea>
+                                </Box>
+                            </Box>
+                        </Grid.Col>
 
-						{/* start 4rd Box */}
-						<Grid.Col span={1}>
-							<Box bg={"white"} className={"borderRadiusAll"} pt={"16"}>
-								<Shortcut
-									handleFormReset={handleFormReset}
-									entityEditData={entityEditData}
-									form={form}
-									FormSubmit={"EntityFormSubmit"}
-									Name={"name"}
-									inputType="select"
-								/>
-							</Box>
-						</Grid.Col>
-						{/* start 4rd Box */}
-					</Grid>
-				</Box>
-			</form>
-			{groupDrawer && (
-				<CustomerGroupDrawer
-					groupDrawer={groupDrawer}
-					setGroupDrawer={setGroupDrawer}
-					saveId={"EntityDrawerSubmit"}
-				/>
-			)}
-		</Box>
-	);
+                        {/* Shortcuts */}
+                        <Grid.Col span={1}>
+                            <Box bg={"white"} className={"borderRadiusAll"} pt={"16"}>
+                                <Shortcut
+                                    handleFormReset={handleFormReset}
+                                    entityEditData={entityEditData}
+                                    form={form}
+                                    FormSubmit={"EntityFormSubmit"}
+                                    Name={"name"}
+                                    inputType="select"
+                                />
+                            </Box>
+                        </Grid.Col>
+                    </Grid>
+                </Box>
+            </form>
+        </Box>
+    );
 }
