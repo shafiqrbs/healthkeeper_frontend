@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { Group, Box, ActionIcon, Text, rem, Flex, Button } from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, Stack, Select, Checkbox, Center} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
@@ -31,7 +31,11 @@ import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import {HOSPITAL_DROPDOWNS} from "@/app/store/core/utilitySlice";
 import { useForm } from "@mantine/form";
+import { DATA_TYPES } from "@/constants";
 import SelectForm from "@components/form-builders/SelectForm";
+import {storeEntityData} from "@/app/store/core/crudThunk";
+import {successNotification} from "@components/notification/successNotification";
+import {errorNotification} from "@components/notification/errorNotification";
 const PER_PAGE = 50;
 
 export default function _Table({ module, open, close }) {
@@ -60,7 +64,13 @@ export default function _Table({ module, open, close }) {
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.UTILITY,
 	});
 
-	const [records, setRecords] = useState(sortBy(listData.data, "name"));
+	const { data: getParticularOperationModes } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_OPERATION_MODE.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPERATION_MODE.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPERATION_MODE.UTILITY,
+	});
+
+	const [records, setRecords] = useState();
 
 	const fetchData = async (pageNum = 1, append = false) => {
 		setFetching(true);
@@ -69,15 +79,17 @@ export default function _Table({ module, open, close }) {
 			module,
 		};
 		try {
-			const result = await dispatch(getIndexEntityData(value));
-
+			const result = await dispatch(getIndexEntityData(value)).unwrap();
+			setRecords(result?.data?.data);
 		} catch (err) {
 			console.error("Unexpected error:", err);
 		} finally {
 			setFetching(false);
 		}
 	};
-
+	useEffect(()=>{
+		fetchData()
+	},[]);
 	// =============== combined logic for data fetching and scroll reset ================
 
 	const form = useForm({
@@ -86,27 +98,52 @@ export default function _Table({ module, open, close }) {
 		},
 	});
 
-	const handleDomainTypeChange = async (id, value) => {
-		setDomainTypeMap((prev) => ({ ...prev, [id]: value }));
-
-		try {
-			const payload = {
-				url: "domain/b2b/inline-update/domain",
-				data: {
-					domain_id: id,
-					field_name: "domain_type",
-					value,
-				},
-			};
-			await dispatch(storeEntityData(payload));
-			setRefresh(true);
-		} catch (error) {
-			console.error("Domain type update failed", error);
-			showNotificationComponent(t("Update failed"), "red");
-		}
+	const [submitFormData, setSubmitFormData] = useState({});
+	const handleDataTypeChange = (rowId, field, value) => {
+		setSubmitFormData((prev) => ({
+			...prev,
+			[rowId]: {
+				...prev[rowId],
+				[field]: value,
+			},
+		}));
 	};
 
 
+	const handleRowSubmit = async (rowId) => {
+
+		const formData = submitFormData[rowId];
+		if (!formData) return;
+		formData.particular_type_id = rowId;
+		try {
+			//setIsLoading(true);
+			const value = {
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_TYPE.CREATE,
+				data: formData,
+				module,
+			};
+			const resultAction = await dispatch(storeEntityData(value));
+			if (storeEntityData.rejected.match(resultAction)) {
+				const fieldErrors = resultAction.payload.errors;
+				if (fieldErrors) {
+					const errorObject = {};
+					Object.keys(fieldErrors).forEach((key) => {
+						errorObject[key] = fieldErrors[key][0];
+					});
+					form.setErrors(errorObject);
+				}
+			} else if (storeEntityData.fulfilled.match(resultAction)) {
+				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+			}
+		} catch (error) {
+			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
+		} finally {
+			//setIsLoading(false);
+		}
+		console.log(formData)
+	};
+
+	console.log(getParticularOperationModes)
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
 
 	return (
@@ -120,7 +157,6 @@ export default function _Table({ module, open, close }) {
 						body: tableCss.body,
 						header: tableCss.header,
 						footer: tableCss.footer,
-						pagination: tableCss.pagination,
 					}}
 					records={records}
 					columns={[
@@ -135,62 +171,83 @@ export default function _Table({ module, open, close }) {
 							accessor: "name",
 							title: t("Name"),
 							render: (values) => (
+								<>
 								<Text className="activate-link" fz="sm" onClick={() => handleDataShow(values.id)}>
 									{values.name}
+									<input type={"hidden"} name={'particular_type_id'} id={'particular_type_id'} value={values.id} />
 								</Text>
+								</>
 							),
 						},
 						{
 							accessor: "data_type",
 							title: t("DataType"),
 							width: "220px",
-							textAlign: "center",
 							render: (item) => (
-								<SelectForm
-									form={form}
-									tooltip={t("ParticularTypeValidateMessage")}
-									placeholder={t("ParticularType")}
-									name="data_type"
-									id="data_type"
-									nextField="category_id"
-									required={true}
-									value={form.values.particular_type_id}
-									dropdownValue={particularTypeDropdown}
+								<Select
+									placeholder= "SelectDataType"
+									data={DATA_TYPES}
+									value={submitFormData[item.id]?.data_type || ""}
+									onChange={(val) => handleDataTypeChange(item.id, "data_type", val)}
 								/>
 							),
 						},
 						{
-							accessor: "action",
-							title: "",
-							textAlign: "right",
-							titleClassName: "title-right",
-							render: (values) => (
-								<>
-									<Group gap={4} justify="right" wrap="nowrap">
-										<Button.Group>
-											<Button
-												onClick={() => handleDataShow(values.id)}
-												variant="filled"
-												c="white"
-												bg="var(--theme-primary-color-6)"
-												size="xs"
-												radius="es"
-												leftSection={<IconDeviceFloppy size={16} />}
-												className="border-left-radius-none"
-											>
-												{t("Save")}
-											</Button>
-										</Button.Group>
-									</Group>
-								</>
+							accessor: "operation_modes",
+							title: t("Operation Modes"),
+							width: "220px",
+							render: (item) => (
+								<Stack>
+									{getParticularOperationModes.map((mode) => (
+										<Checkbox
+											key={mode.id}
+											label={mode.label}
+											size="sm"
+											checked={submitFormData[item.id]?.operation_modes?.includes(mode.value) || false}
+											onChange={(e) => {
+												const checked = e.currentTarget.checked;
+												setSubmitFormData((prev) => {
+													const prevModes = prev[item.id]?.operation_modes || [];
+													return {
+														...prev,
+														[item.id]: {
+															...prev[item.id],
+															operation_modes: checked
+																? [...prevModes, mode.value]
+																: prevModes.filter((m) => m !== mode.value),
+														},
+													};
+												});
+											}}
+										/>
+									))}
+								</Stack>
 							),
 						},
+
+						{
+							accessor: "action",
+							title: "",
+							render: (item) => (
+								<Center>
+									<Button
+										onClick={() => handleRowSubmit(item.id)}
+										variant="filled"
+										size="xs"
+										className={'btnPrimaryBg'}
+										leftSection={<IconDeviceFloppy size={16} />}
+									>
+										{t("Save")}
+									</Button>
+								</Center>
+							),
+						},
+						,
 					]}
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
 					height={height}
-					scrollViewportRef={scrollViewportRef}
 				/>
 			</Box>
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={customerObject} />

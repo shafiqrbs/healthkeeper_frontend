@@ -46,10 +46,7 @@ export const MASTER_DATA_ROUTES = {
 
 		PARTICULAR_TYPE: {
 			INDEX: "hospital/core/particular-type",
-			CREATE: "hospital/core/particular-type/create",
-			UPDATE: "hospital/core/particular-type/update",
-			VIEW: "hospital/core/particular-type/view",
-			DELETE: "hospital/core/particular-type/delete",
+			CREATE: "hospital/core/particular-type",
 		},
 
 		PARTICULAR_MODE: {

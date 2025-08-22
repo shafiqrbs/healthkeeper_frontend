@@ -29,6 +29,8 @@ export const MODULES_CORE = {
 	PARTICULAR_TYPE: "particular_type",
 };
 
+export const DATA_TYPES = ['Input', 'Select', 'Searchable','Autocomplete','LabelInput','Checkbox','RadioButton','Textarea'];
+
 //==================== Module Name ===========
 
 export const MODULE_LABUSESR = "labUser";

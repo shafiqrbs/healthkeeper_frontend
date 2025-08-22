@@ -45,8 +45,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.UTILITY,
 	});
 
-	console.log(data?.particular_details)
-
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
