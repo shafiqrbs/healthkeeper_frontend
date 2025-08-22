@@ -4,6 +4,8 @@ import { getGlobalDropdown } from "./utilityThunk";
 export const CORE_DROPDOWNS = {
 	EMPLOYEE: { UTILITY: "employee", TYPE: "employee", PATH: "core/select/user" },
 	EMPLOYEE_GROUP: { UTILITY: "employeeGroup", TYPE: "employee-group", PATH: "core/select/setting" },
+	DESIGNATION: { UTILITY: "designation", TYPE: "designation", PATH: "core/select/setting" },
+	DEPARTMENT: { UTILITY: "department", TYPE: "department", PATH: "core/select/setting" },
 	SETTING_TYPE: { UTILITY: "settingType", TYPE: "setting-type", PATH: "core/select/setting-type" },
 	CUSTOMER_GROUP: { UTILITY: "customerGroup", TYPE: "customer-group", PATH: "utility/select/setting" },
 	BUSINESS_MODEL: { UTILITY: "businessModel", TYPE: "business-model", PATH: "utility/select/setting" },
@@ -16,8 +18,6 @@ export const CORE_DROPDOWNS = {
 	CATEGORY_NATURE: { UTILITY: "categoryNature", TYPE: "product-type", PATH: "inventory/select/setting" },
 	CATEGORY_GROUP: { UTILITY: "categoryGroup", TYPE: "category-group", PATH: "inventory/select/group-category" },
 	CATEGORY: { UTILITY: "category", TYPE: "category", PATH: "inventory/select/category" },
-	DESIGNATION: { UTILITY: "designation", TYPE: "designation", PATH: "core/select/user" },
-	DEPARTMENT: { UTILITY: "department", TYPE: "department", PATH: "core/select/user" },
 };
 
 export const ACCOUNTING_DROPDOWNS = {

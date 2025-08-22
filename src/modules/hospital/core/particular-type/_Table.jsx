@@ -36,6 +36,7 @@ import SelectForm from "@components/form-builders/SelectForm";
 import {storeEntityData} from "@/app/store/core/crudThunk";
 import {successNotification} from "@components/notification/successNotification";
 import {errorNotification} from "@components/notification/errorNotification";
+import {API_KEY} from "@/constants/index";
 const PER_PAGE = 50;
 
 export default function _Table({ module, open, close }) {
@@ -117,11 +118,25 @@ export default function _Table({ module, open, close }) {
 		formData.particular_type_id = rowId;
 		try {
 			//setIsLoading(true);
-			const value = {
+			/*const value = {
 				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_TYPE.CREATE,
 				data: formData,
 				module,
-			};
+			};*/
+
+			const response = await fetch('http://www.tbd.local/api/hospital/core/particular-type', {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": "*", // not really needed on client
+					"X-Api-Key": "poskeeper",
+					"X-Api-User": 15,
+				},
+				body: JSON.stringify(formData),
+			});
+			const result = await response.json();
+
 			const resultAction = await dispatch(storeEntityData(value));
 			if (storeEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;

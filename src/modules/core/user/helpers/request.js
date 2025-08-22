@@ -1,13 +1,19 @@
 import { isNotEmpty } from "@mantine/form";
 
 const initialValues = {
+	employee_group_id: "",
+	department_id: "",
+	employee_id: "",
 	name: "",
-	username: "",
+	gender: "",
+	designation_id: "",
+	dob: "",
+	mobile: "",
 	email: "",
+	address: "",
+	username: "",
 	password: "",
 	confirm_password: "",
-	mobile: "",
-	employee_group_id: "",
 };
 
 export const getUserFormValues = (t) => {
@@ -31,7 +37,6 @@ export const getUserFormValues = (t) => {
 			},
 			email: (value) => {
 				if (!value) return t("EnterEmail");
-
 				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 				if (!emailRegex.test(value)) return t("EmailValidationInvalid");
 

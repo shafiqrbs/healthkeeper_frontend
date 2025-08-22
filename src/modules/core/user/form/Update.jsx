@@ -13,7 +13,7 @@ import {
 	Stack,
 	Tooltip,
 	Image,
-	ActionIcon,
+	ActionIcon, SegmentedControl,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
@@ -51,6 +51,7 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData.js";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
+import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
 export default function Update({ module }) {
 	const { t } = useTranslation();
@@ -95,6 +96,7 @@ export default function Update({ module }) {
 			form.setValues({
 				employee_group_id: entityEditData?.employee_group_id || "",
 				name: entityEditData?.name || "",
+				employee_id: entityEditData?.employee_id || "",
 				username: entityEditData?.username || "",
 				email: entityEditData?.email || "",
 				mobile: entityEditData?.mobile || "",
@@ -102,7 +104,6 @@ export default function Update({ module }) {
 				alternative_email: entityEditData?.alternative_email || null,
 				designation_id: entityEditData?.designation_id || null,
 				department_id: entityEditData?.department_id || null,
-				location_id: entityEditData?.location_id || null,
 				address: entityEditData?.address || null,
 				about_me: entityEditData?.about_me || null,
 			});
@@ -398,6 +399,10 @@ export default function Update({ module }) {
 		params: { "dropdown-type": CORE_DROPDOWNS.LOCATION.TYPE },
 	});
 
+	const handleGenderChange = (val) => {
+		form.setFieldValue("gender", val);
+	};
+
 	const handleSubmit = (values) => {
 		form.values["access_control_role"] = selectedAccessControlRoleData;
 		form.values["android_control_role"] = selectedAndroidControlRoleData;
@@ -504,7 +509,7 @@ export default function Update({ module }) {
 												/>
 												<Box>
 													<Grid gutter={{ base: 6 }}>
-														<Grid.Col span={11}>
+														<Grid.Col span={12}>
 															<Box mt={"8"}>
 																<SelectForm
 																	tooltip={t("EmployeeGroup")}
@@ -527,37 +532,21 @@ export default function Update({ module }) {
 																/>
 															</Box>
 														</Grid.Col>
-														<Grid.Col span={1}>
-															<Box pt={"xl"}>
-																<Tooltip
-																	ta="center"
-																	multiline
-																	bg={"orange.8"}
-																	offset={{ crossAxis: "-110", mainAxis: "5" }}
-																	withArrow
-																	transitionProps={{ duration: 200 }}
-																	label={t("QuickEmployeeGroup")}
-																>
-																	<ActionIcon
-																		variant="outline"
-																		bg={"white"}
-																		size={"lg"}
-																		color="red.5"
-																		mt={"1"}
-																		aria-label="Settings"
-																		onClick={() => {
-																			setGroupDrawer(true);
-																		}}
-																	>
-																		<IconUsersGroup
-																			style={{ width: "100%", height: "70%" }}
-																			stroke={1.5}
-																		/>
-																	</ActionIcon>
-																</Tooltip>
-															</Box>
-														</Grid.Col>
+
 													</Grid>
+												</Box>
+												<Box mt={"xs"}>
+													<InputForm
+														tooltip={t("EmployeeIDValidateMessage")}
+														label={t("EmployeeID")}
+														placeholder={t("EmployeeID")}
+														required={true}
+														nextField={"name"}
+														form={form}
+														name={"employee_id"}
+														mt={0}
+														id={"employee_id"}
+													/>
 												</Box>
 												<Box mt={"xs"}>
 													<InputForm
@@ -572,23 +561,7 @@ export default function Update({ module }) {
 														id={"name"}
 													/>
 												</Box>
-												<Box mt={"xs"}>
-													<InputForm
-														form={form}
-														tooltip={
-															form.errors.username
-																? form.errors.username
-																: t("UserNameValidateMessage")
-														}
-														label={t("UserName")}
-														placeholder={t("UserName")}
-														required={true}
-														name={"username"}
-														id={"username"}
-														nextField={"email"}
-														mt={8}
-													/>
-												</Box>
+
 												<Box mt={"xs"}>
 													<InputForm
 														form={form}
@@ -623,6 +596,29 @@ export default function Update({ module }) {
 														id={"mobile"}
 													/>
 												</Box>
+												<Box ml={'-xs'} mr={'-xs'} className={'inner-title-box'}>
+													<Title order={6}>
+														{t("LoginCredential")}
+													</Title>
+												</Box>
+												<Box mt={"xs"}>
+													<InputForm
+														form={form}
+														tooltip={
+															form.errors.username
+																? form.errors.username
+																: t("UserNameValidateMessage")
+														}
+														label={t("UserName")}
+														placeholder={t("UserName")}
+														required={true}
+														name={"username"}
+														id={"username"}
+														nextField={"email"}
+														mt={8}
+													/>
+												</Box>
+
 												<Box mt={"xs"}>
 													<PasswordInputForm
 														form={form}
@@ -672,7 +668,7 @@ export default function Update({ module }) {
 										<Grid>
 											<Grid.Col span={6}>
 												<Title order={6} pt={4} pb={4}>
-													{t("Email&ACLInformation")}
+													{t("Enable&ACLInformation")}
 												</Title>
 											</Grid.Col>
 											<Grid.Col span={6}></Grid.Col>
@@ -720,10 +716,10 @@ export default function Update({ module }) {
 											<Grid.Col span={11}>
 												<Box mt={"xs"} className={"borderRadiusAll"} bg={"white"}>
 													<ScrollArea
-														h={height / 2 - 76}
+														h={height-98}
 														scrollbarSize={2}
 														scrollbars="y"
-														type="never"
+														type="always"
 														pb={"xs"}
 													>
 														{accessControlRole
@@ -766,7 +762,7 @@ export default function Update({ module }) {
 												</Box>
 											</Grid.Col>
 											<Grid.Col span={2}>
-												<Flex h={height / 2 - 76} mt={"xs"} align={"center"} justify={"center"}>
+												<Flex h={height-98} mt={"xs"} align={"center"} justify={"center"}>
 													<IconArrowsExchange
 														style={{ width: "70%", height: "70%" }}
 														stroke={1}
@@ -776,10 +772,10 @@ export default function Update({ module }) {
 											<Grid.Col span={11}>
 												<Box mt={"xs"} className={"borderRadiusAll"} bg={"white"}>
 													<ScrollArea
-														h={height / 2 - 76}
+														h={height-98}
 														scrollbarSize={2}
 														scrollbars="y"
-														type="never"
+														type="always"
 														pb={"xs"}
 													>
 														{selectedAccessControlRoleData
@@ -798,117 +794,6 @@ export default function Update({ module }) {
 																			pt={"8"}
 																			onClick={() =>
 																				handleDeselectAccessControlRoleData(
-																					group,
-																					action
-																				)
-																			}
-																		>
-																			<Text
-																				style={{
-																					borderBottom: " 1px solid #e9ecef",
-																					cursor: "pointer",
-																				}}
-																				pb={2}
-																				fz={"14"}
-																				fw={400}
-																			>
-																				{t(action.label)}
-																			</Text>
-																		</Box>
-																	))}
-																</Box>
-															))}
-													</ScrollArea>
-												</Box>
-											</Grid.Col>
-										</Grid>
-										<Box mt={"md"}>
-											<Text fz={14} fw={400}>
-												{t("AndroidControlRoles")}
-											</Text>
-										</Box>
-										<Grid columns={24} gutter={0} pb={"xs"}>
-											<Grid.Col span={11}>
-												<Box mt={"xs"} className={"borderRadiusAll"} bg={"white"}>
-													<ScrollArea
-														h={height / 2 - 76}
-														scrollbarSize={2}
-														scrollbars="y"
-														type="never"
-														pb={"xs"}
-													>
-														{androidControlRole
-															.filter((group) => group.actions.length > 0)
-															.map((group) => (
-																<Box key={group.Group} p={"sm"}>
-																	<Text fz={"14"} fw={400} c={"dimmed"}>
-																		{t(group.Group)}
-																	</Text>
-																	{group.actions.map((action) => (
-																		<Box
-																			key={action.id}
-																			pl={"xs"}
-																			pb={0}
-																			mb={0}
-																			pt={"8"}
-																			onClick={() =>
-																				handleSelectAndroidControlRoleData(
-																					group,
-																					action
-																				)
-																			}
-																		>
-																			<Text
-																				style={{
-																					borderBottom: " 1px solid #e9ecef",
-																					cursor: "pointer",
-																				}}
-																				pb={2}
-																				fz={"14"}
-																				fw={400}
-																			>
-																				{t(action.label)}
-																			</Text>
-																		</Box>
-																	))}
-																</Box>
-															))}
-													</ScrollArea>
-												</Box>
-											</Grid.Col>
-											<Grid.Col span={2}>
-												<Flex h={height / 2 - 76} mt={"xs"} align={"center"} justify={"center"}>
-													<IconArrowsExchange
-														style={{ width: "70%", height: "70%" }}
-														stroke={1}
-													/>
-												</Flex>
-											</Grid.Col>
-											<Grid.Col span={11}>
-												<Box mt={"xs"} className={"borderRadiusAll"} bg={"white"}>
-													<ScrollArea
-														h={height / 2 - 76}
-														scrollbarSize={2}
-														scrollbars="y"
-														type="never"
-														pb={"xs"}
-													>
-														{selectedAndroidControlRoleData
-															.filter((group) => group.actions.length > 0)
-															.map((group) => (
-																<Box key={group.Group} p={"sm"}>
-																	<Text fz={"14"} fw={400} c={"dimmed"}>
-																		{t(group.Group)}
-																	</Text>
-																	{group.actions.map((action) => (
-																		<Box
-																			key={action.id}
-																			pl={"xs"}
-																			pb={0}
-																			mb={0}
-																			pt={"8"}
-																			onClick={() =>
-																				handleDeselectAndroidControlRoleData(
 																					group,
 																					action
 																				)
@@ -990,6 +875,42 @@ export default function Update({ module }) {
 												overlayProps={{ radius: "sm", blur: 2 }}
 												loaderProps={{ color: "red.6" }}
 											/>
+											<Box mb={"xs"} mt={"xs"}>
+												<Grid align="center" columns={20}>
+													<Grid.Col span={6}>
+														<Text mt={'xs'} fz="sm">{t("Gender")}</Text>
+													</Grid.Col>
+													<Grid.Col span={12} pb={0}>
+														<SegmentedControl
+															fullWidth
+															color="var(--theme-primary-color-6)"
+															value={form.values.gender}
+															id="gender"
+															name="gender"
+															onChange={(val) => handleGenderChange(val)}
+															data={[
+																{ label: t("male"), value: "male" },
+																{ label: t("female"), value: "female" },
+																{ label: t("other"), value: "other" },
+															]}
+														/>
+													</Grid.Col>
+												</Grid>
+											</Box>
+											<Box mt={"xs"}>
+												<DateSelectorForm
+													form={form}
+													label={t("DeteOfBarth")}
+													placeholder="01-01-2020"
+													tooltip={t("enterDateOfBirth")}
+													name="dob"
+													id="dob"
+													nextField="email"
+													value={form.values.dob}
+													required={false}
+													disabledFutureDate
+												/>
+											</Box>
 											<Box mt={"xs"}>
 												<InputForm
 													form={form}
@@ -1009,7 +930,7 @@ export default function Update({ module }) {
 											</Box>
 											<Box>
 												<Grid gutter={{ base: 2 }}>
-													<Grid.Col span={11}>
+													<Grid.Col span={12}>
 														<Box mt={"8"}>
 															<SelectForm
 																tooltip={t("Designation")}
@@ -1032,48 +953,19 @@ export default function Update({ module }) {
 															/>
 														</Box>
 													</Grid.Col>
-													<Grid.Col span={1}>
-														<Box pt={"xl"}>
-															<Tooltip
-																ta="center"
-																multiline
-																bg={"orange.8"}
-																offset={{ crossAxis: "-110", mainAxis: "5" }}
-																withArrow
-																transitionProps={{ duration: 200 }}
-																label={t("QuickDesignationGroup")}
-															>
-																<ActionIcon
-																	variant="outline"
-																	bg={"white"}
-																	size={"lg"}
-																	color="red.5"
-																	mt={"1"}
-																	aria-label="Settings"
-																	onClick={() => {
-																		setGroupDrawer(true);
-																	}}
-																>
-																	<IconUser
-																		style={{ width: "100%", height: "70%" }}
-																		stroke={1.5}
-																	/>
-																</ActionIcon>
-															</Tooltip>
-														</Box>
-													</Grid.Col>
+
 												</Grid>
 											</Box>
 											<Box>
 												<Grid gutter={{ base: 2 }}>
-													<Grid.Col span={11}>
+													<Grid.Col span={12}>
 														<Box mt={"8"}>
 															<SelectForm
 																tooltip={t("Department")}
 																label={t("Department")}
 																placeholder={t("ChooseDepartment")}
 																required={false}
-																nextField={"location_id"}
+																nextField={"address"}
 																name={"department_id"}
 																form={form}
 																dropdownValue={departmentDropdown}
@@ -1089,96 +981,9 @@ export default function Update({ module }) {
 															/>
 														</Box>
 													</Grid.Col>
-													<Grid.Col span={1}>
-														<Box pt={"xl"}>
-															<Tooltip
-																ta="center"
-																multiline
-																bg={"orange.8"}
-																offset={{ crossAxis: "-110", mainAxis: "5" }}
-																withArrow
-																transitionProps={{ duration: 200 }}
-																label={t("QuickDepartmentGroup")}
-															>
-																<ActionIcon
-																	variant="outline"
-																	bg={"white"}
-																	size={"lg"}
-																	color="red.5"
-																	mt={"1"}
-																	aria-label="Settings"
-																	onClick={() => {
-																		setGroupDrawer(true);
-																	}}
-																>
-																	<IconDoor
-																		style={{ width: "100%", height: "70%" }}
-																		stroke={1.5}
-																	/>
-																</ActionIcon>
-															</Tooltip>
-														</Box>
-													</Grid.Col>
-												</Grid>
-											</Box>
-											<Box>
-												<Grid gutter={{ base: 2 }}>
-													<Grid.Col span={11}>
-														<Box mt={"8"}>
-															<SelectForm
-																tooltip={t("Location")}
-																label={t("Location")}
-																placeholder={t("ChooseLocation")}
-																required={false}
-																nextField={"address"}
-																name={"location_id"}
-																form={form}
-																dropdownValue={locationDropdown}
-																mt={8}
-																id={"location_id"}
-																searchable={false}
-																value={
-																	locationData
-																		? locationData
-																		: String(entityEditData.location_id)
-																}
-																changeValue={setLocationData}
-															/>
-														</Box>
-													</Grid.Col>
-													<Grid.Col span={1}>
-														<Box pt={"xl"}>
-															<Tooltip
-																ta="center"
-																multiline
-																bg={"orange.8"}
-																offset={{ crossAxis: "-110", mainAxis: "5" }}
-																withArrow
-																transitionProps={{ duration: 200 }}
-																label={t("QuickLocationGroup")}
-															>
-																<ActionIcon
-																	variant="outline"
-																	bg={"white"}
-																	size={"lg"}
-																	color="red.5"
-																	mt={"1"}
-																	aria-label="Settings"
-																	onClick={() => {
-																		setGroupDrawer(true);
-																	}}
-																>
-																	<IconMapPin
-																		style={{ width: "100%", height: "70%" }}
-																		stroke={1.5}
-																	/>
-																</ActionIcon>
-															</Tooltip>
-														</Box>
-													</Grid.Col>
-												</Grid>
-											</Box>
 
+												</Grid>
+											</Box>
 											<Box mt={"xs"}>
 												<TextAreaForm
 													tooltip={t("Address")}
