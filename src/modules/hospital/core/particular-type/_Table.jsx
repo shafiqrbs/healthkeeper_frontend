@@ -40,6 +40,8 @@ export default function _Table({ module }) {
     const [customerObject, setCustomerObject] = useState({});
     const [fetching, setFetching] = useState(false);
 
+    const listData = useSelector((state) => state.crud[module].data);
+
     const { data: getParticularOperationModes } = useGlobalDropdownData({
         path: HOSPITAL_DROPDOWNS.PARTICULAR_OPERATION_MODE.PATH,
         params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPERATION_MODE.TYPE },
@@ -184,7 +186,7 @@ export default function _Table({ module }) {
                         },
                         {
                             accessor: "operation_modes",
-                            title: t("OperationModes"),
+                            title: t("Operation Modes"),
                             width: "220px",
                             render: (item) => (
                                 <Stack>
