@@ -1,69 +1,39 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, Stack, Select, Checkbox, Center} from "@mantine/core";
+import { useEffect, useState, useRef } from "react";
+import { useOutletContext } from "react-router-dom";
+import { Box, Text, Button, Stack, Select, Checkbox, Center } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconTrashX,
-	IconAlertCircle,
-	IconCheck,
-	IconEdit,
-	IconEye,
-	IconChevronUp,
-	IconSelector,IconDeviceFloppy
-} from "@tabler/icons-react";
+import { IconDeviceFloppy } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import KeywordSearch from "@modules/filter/KeywordSearch";
-import { modals } from "@mantine/modals";
-import { useHotkeys, useMounted } from "@mantine/hooks";
-import { deleteEntityData, getIndexEntityData, editEntityData } from "@/app/store/core/crudThunk.js";
-import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/crudSlice.js";
+import { useHotkeys } from "@mantine/hooks";
+import { getIndexEntityData } from "@/app/store/core/crudThunk.js";
 import tableCss from "@assets/css/Table.module.css";
 import ViewDrawer from "./__ViewDrawer.jsx";
-import { notifications } from "@mantine/notifications";
-import { getCustomers } from "@/common/utils";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
-import CreateButton from "@components/buttons/CreateButton.jsx";
-import DataTableFooter from "@components/tables/DataTableFooter.jsx";
-import { sortBy } from "lodash";
 import { useOs } from "@mantine/hooks";
 import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import {HOSPITAL_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { useForm } from "@mantine/form";
 import { DATA_TYPES } from "@/constants";
 import SelectForm from "@components/form-builders/SelectForm";
-import {storeEntityData} from "@/app/store/core/crudThunk";
-import {successNotification} from "@components/notification/successNotification";
-import {errorNotification} from "@components/notification/errorNotification";
-import {API_KEY} from "@/constants/index";
+import { storeEntityData } from "@/app/store/core/crudThunk";
+import { successNotification } from "@components/notification/successNotification";
+import { errorNotification } from "@components/notification/errorNotification";
+import { API_KEY } from "@/constants/index";
 const PER_PAGE = 50;
 
-export default function _Table({ module, open, close }) {
-	const isMounted = useMounted();
+export default function _Table({ module }) {
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const { id } = useParams();
-	const height = mainAreaHeight - 48; //TabList height 104
-	const scrollViewportRef = useRef(null);
+	const height = mainAreaHeight - 48;
 	const os = useOs();
-	const [page, setPage] = useState(1);
-	const [hasMore, setHasMore] = useState(true);
 	const [fetching, setFetching] = useState(false);
-	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
-	const refetchData = useSelector((state) => state.crud[module].refetching);
 	const listData = useSelector((state) => state.crud[module].data);
-	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	const [customerObject, setCustomerObject] = useState({});
-	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
-
-	const { data: particularTypeDropdown } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.PATH,
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.UTILITY,
-	});
 
 	const { data: getParticularOperationModes } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_OPERATION_MODE.PATH,
@@ -88,9 +58,9 @@ export default function _Table({ module, open, close }) {
 			setFetching(false);
 		}
 	};
-	useEffect(()=>{
-		fetchData()
-	},[]);
+	useEffect(() => {
+		fetchData();
+	}, []);
 	// =============== combined logic for data fetching and scroll reset ================
 
 	const form = useForm({
@@ -110,9 +80,7 @@ export default function _Table({ module, open, close }) {
 		}));
 	};
 
-
 	const handleRowSubmit = async (rowId) => {
-
 		const formData = submitFormData[rowId];
 		if (!formData) return;
 		formData.particular_type_id = rowId;
@@ -124,7 +92,7 @@ export default function _Table({ module, open, close }) {
 				module,
 			};*/
 
-			const response = await fetch('http://www.tbd.local/api/hospital/core/particular-type', {
+			const response = await fetch("http://www.tbd.local/api/hospital/core/particular-type", {
 				method: "POST",
 				headers: {
 					Accept: "application/json",
@@ -148,22 +116,21 @@ export default function _Table({ module, open, close }) {
 					form.setErrors(errorObject);
 				}
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
-				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
-			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		} finally {
 			//setIsLoading(false);
 		}
-		console.log(formData)
+		console.log(formData);
 	};
 
-	console.log(getParticularOperationModes)
+	console.log(getParticularOperationModes);
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
 
 	return (
 		<>
-
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
 					classNames={{
@@ -187,10 +154,15 @@ export default function _Table({ module, open, close }) {
 							title: t("Name"),
 							render: (values) => (
 								<>
-								<Text className="activate-link" fz="sm" onClick={() => handleDataShow(values.id)}>
-									{values.name}
-									<input type={"hidden"} name={'particular_type_id'} id={'particular_type_id'} value={values.id} />
-								</Text>
+									<Text className="activate-link" fz="sm" onClick={() => handleDataShow(values.id)}>
+										{values.name}
+										<input
+											type={"hidden"}
+											name={"particular_type_id"}
+											id={"particular_type_id"}
+											value={values.id}
+										/>
+									</Text>
 								</>
 							),
 						},
@@ -200,7 +172,7 @@ export default function _Table({ module, open, close }) {
 							width: "220px",
 							render: (item) => (
 								<Select
-									placeholder= "SelectDataType"
+									placeholder="SelectDataType"
 									data={DATA_TYPES}
 									value={submitFormData[item.id]?.data_type || ""}
 									onChange={(val) => handleDataTypeChange(item.id, "data_type", val)}
@@ -218,7 +190,9 @@ export default function _Table({ module, open, close }) {
 											key={mode.id}
 											label={mode.label}
 											size="sm"
-											checked={submitFormData[item.id]?.operation_modes?.includes(mode.value) || false}
+											checked={
+												submitFormData[item.id]?.operation_modes?.includes(mode.value) || false
+											}
 											onChange={(e) => {
 												const checked = e.currentTarget.checked;
 												setSubmitFormData((prev) => {
@@ -249,7 +223,7 @@ export default function _Table({ module, open, close }) {
 										onClick={() => handleRowSubmit(item.id)}
 										variant="filled"
 										size="xs"
-										className={'btnPrimaryBg'}
+										className={"btnPrimaryBg"}
 										leftSection={<IconDeviceFloppy size={16} />}
 									>
 										{t("Save")}
@@ -257,7 +231,6 @@ export default function _Table({ module, open, close }) {
 								</Center>
 							),
 						},
-						,
 					]}
 					fetching={fetching}
 					loaderSize="xs"

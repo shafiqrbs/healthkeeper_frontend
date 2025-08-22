@@ -1,4 +1,4 @@
-import { Box, ScrollArea, Select, Checkbox, TextInput, Textarea, Stack, Text } from "@mantine/core";
+import { Box, ScrollArea, Select, Checkbox, TextInput, Textarea, Stack, Text, Autocomplete } from "@mantine/core";
 import { useState } from "react";
 import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
@@ -18,8 +18,9 @@ export default function PatientReport({ patientData, tabValue }) {
 		},
 	});
 
-	const { particularsData } = useParticularsData();
-
+	const { particularsData } = useParticularsData({ modeName: "Prescription" });
+	const tabParticulars = particularsData?.map((item) => item.particular_type);
+	console.log(tabParticulars);
 	const [dynamicFormData, setDynamicFormData] = useState({});
 
 	const handleDynamicFormChange = (sectionId, fieldName, value) => {
@@ -41,7 +42,7 @@ export default function PatientReport({ patientData, tabValue }) {
 		}
 
 		switch (data_type) {
-			case "checkbox":
+			case "Checkbox":
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => (
@@ -57,7 +58,7 @@ export default function PatientReport({ patientData, tabValue }) {
 					</Stack>
 				);
 
-			case "select":
+			case "Select":
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => (
@@ -65,7 +66,10 @@ export default function PatientReport({ patientData, tabValue }) {
 								key={`${id}-${index}`}
 								label={particular.name}
 								placeholder={`Select ${particular.name}`}
-								data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
+								data={particulars?.map((particular) => ({
+									value: `${particular.name} ${particular.id}`,
+									label: particular.name,
+								}))}
 								value={dynamicFormData[id]?.[particular.name] || ""}
 								onChange={(value) => handleDynamicFormChange(id, particular.name, value)}
 							/>
@@ -73,7 +77,7 @@ export default function PatientReport({ patientData, tabValue }) {
 					</Stack>
 				);
 
-			case "textinput":
+			case "Input":
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => (
@@ -90,7 +94,7 @@ export default function PatientReport({ patientData, tabValue }) {
 					</Stack>
 				);
 
-			case "textarea":
+			case "Textarea":
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => (
@@ -108,6 +112,72 @@ export default function PatientReport({ patientData, tabValue }) {
 					</Stack>
 				);
 
+			case "Searchable":
+				return (
+					<Stack gap="md">
+						{particulars?.map((particular, index) => (
+							<Select
+								searchable
+								key={`${id}-${index}`}
+								label={particular.name}
+								placeholder={`Select ${particular.name}`}
+								data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
+								value={dynamicFormData[id]?.[particular.name] || ""}
+								onChange={(value) => handleDynamicFormChange(id, particular.name, value)}
+							/>
+						))}
+					</Stack>
+				);
+
+			case "RadioButton":
+				return (
+					<Stack gap="md">
+						{particulars?.map((particular, index) => (
+							<Select
+								key={`${id}-${index}`}
+								label={particular.name}
+								placeholder={`Select ${particular.name}`}
+								data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
+								value={dynamicFormData[id]?.[particular.name] || ""}
+								onChange={(value) => handleDynamicFormChange(id, particular.name, value)}
+							/>
+						))}
+					</Stack>
+				);
+
+			case "Autocomplete":
+				return (
+					<Stack gap="md">
+						{particulars?.map((particular, index) => (
+							<Autocomplete
+								key={`${id}-${index}`}
+								label={particular.name}
+								placeholder={`Pick value or enter ${particular.name}`}
+								data={particulars?.map((p) => p.name)}
+								value={dynamicFormData[id]?.[particular.name] || ""}
+								onChange={(value) => handleDynamicFormChange(id, particular.name, value)}
+							/>
+						))}
+					</Stack>
+				);
+
+			case "LabelInput":
+				return (
+					<Stack gap="md">
+						{particulars?.map((particular, index) => (
+							<TextInput
+								key={`${id}-${index}`}
+								label={particular.name}
+								placeholder={`Enter ${particular.name}`}
+								value={dynamicFormData[id]?.[particular.name] || ""}
+								onChange={(event) =>
+									handleDynamicFormChange(id, particular.name, event.currentTarget.value)
+								}
+							/>
+						))}
+					</Stack>
+				);
+
 			default:
 				return <Text c="red">Unsupported data type: {data_type}</Text>;
 		}
@@ -115,20 +185,18 @@ export default function PatientReport({ patientData, tabValue }) {
 
 	// Find the current section based on tabValue
 	const getCurrentSection = () => {
-		if (!particularsData || !Array.isArray(particularsData)) {
+		if (!tabParticulars || !Array.isArray(tabParticulars)) {
 			return null;
 		}
 
 		// For "All" tab, return all sections
 		if (tabValue === "All") {
-			return particularsData;
+			return tabParticulars;
 		}
 
 		// For specific tabs, find matching section
-		return particularsData.find(
-			(section) =>
-				section.name.toLowerCase() === tabValue.toLowerCase() ||
-				section.slug === tabValue.toLowerCase().replace(/\s+/g, "-")
+		return tabParticulars.find(
+			(section) => `${section.name.toLowerCase()} ${section.id}` === tabValue.toLowerCase()
 		);
 	};
 

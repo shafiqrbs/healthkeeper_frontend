@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "./helpers/request";
 import { useOutletContext } from "react-router-dom";
@@ -25,9 +25,10 @@ export default function Index() {
 
 	const [tabValue, setTabValue] = useState("All");
 
-	const { particularsData } = useParticularsData();
+	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 
-	const tabList = particularsData?.entities?.map((item) => `${item.name} ${item.id}`);
+	const tabParticulars = particularsData?.map((item) => item.particular_type);
+	const tabList = tabParticulars?.map((item) => `${item.name} ${item.id}`);
 
 	return (
 		<>
@@ -52,7 +53,7 @@ export default function Index() {
 										<BaseTabs
 											tabValue={tabValue}
 											setTabValue={setTabValue}
-											tabList={["All", ...tabList]}
+											tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
 											width={width}
 										/>
 									</Grid.Col>
