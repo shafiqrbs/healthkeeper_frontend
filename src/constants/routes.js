@@ -145,7 +145,17 @@ export const CORE_DATA_ROUTES = {
 };
 
 export const HOSPITAL_DATA_ROUTES = {
+
 	API_ROUTES: {
+
+		OPD: {
+			INDEX: "hospital/opd",
+			CREATE: "hospital/opd",
+			UPDATE: "hospital/opd",
+			VIEW: "hospital/opd",
+			DELETE: "hospital/opd",
+		},
+
 		VISIT: {
 			INDEX: "core/customer",
 			CREATE: "core/customer",
@@ -153,6 +163,8 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "core/customer",
 			DELETE: "core/customer",
 		},
+
+
 		PRESCRIPTION: {
 			INDEX: "hospital/prescription",
 			CREATE: "hospital/prescription/create",

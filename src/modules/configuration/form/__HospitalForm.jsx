@@ -157,7 +157,7 @@ export default function __HospitalForm({ height, id }) {
 				{/* ======================= some demo components for reusing purposes ======================= */}
 				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{hospital_config?.admission_fee.admission_fee_name}
+						{hospital_config?.admission_fee?.admission_fee_name}
 					</Grid.Col>
 					<Grid.Col span={12}>
 						{inventory_config?.currency?.symbol} {hospital_config?.admission_fee?.admission_fee_price} {inventory_config?.currency?.code}
@@ -165,7 +165,7 @@ export default function __HospitalForm({ height, id }) {
 				</Grid>
 				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{hospital_config?.opd_ticket_fee.opd_ticket_fee_name}
+						{hospital_config?.opd_ticket_fee?.opd_ticket_fee_name}
 					</Grid.Col>
 					<Grid.Col span={12}>
 						{inventory_config?.currency?.symbol} {hospital_config?.opd_ticket_fee?.opd_ticket_fee_price} {inventory_config?.currency?.code}
@@ -173,7 +173,7 @@ export default function __HospitalForm({ height, id }) {
 				</Grid>
 				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{hospital_config?.emergency_fee.emergency_fee_name}
+						{hospital_config?.emergency_fee?.emergency_fee_name}
 					</Grid.Col>
 					<Grid.Col span={12}>
 						{inventory_config?.currency?.symbol} {hospital_config?.emergency_fee?.emergency_fee_price} {inventory_config?.currency?.code}
@@ -181,7 +181,7 @@ export default function __HospitalForm({ height, id }) {
 				</Grid>
 				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{hospital_config?.ot_fee.ot_fee_name}
+						{hospital_config?.ot_fee?.ot_fee_name}
 					</Grid.Col>
 					<Grid.Col span={12}>
 						{inventory_config?.currency?.symbol} {hospital_config?.ot_fee?.ot_fee_price} {inventory_config?.currency?.code}

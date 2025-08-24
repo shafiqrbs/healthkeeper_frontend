@@ -39,7 +39,7 @@ export default function Index() {
 								<Box bg="white" className="borderRadiusAll">
 									<Text
 										py="md"
-										bg="var(--theme-primary-color-0"
+										bg="var(--theme-secondary-color-3"
 										className="borderRadiusTop"
 										px="sm"
 										fz="sm"
@@ -53,7 +53,7 @@ export default function Index() {
 											placeholder={t("search")}
 										/>
 									</Box>
-									<ScrollArea h={mainAreaHeight - 54} scrollbars="y" p="xs">
+									<ScrollArea h={mainAreaHeight - 120} scrollbars="y" p="xs">
 										{[...Array(20)].map((_, index) => (
 											<RoomCard
 												key={index}

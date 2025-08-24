@@ -107,7 +107,7 @@ export default function PatientForm({ form, module }) {
 export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - heightOffset - 176;
+	const height = mainAreaHeight - heightOffset - 132;
 	const firstRender = useIsFirstRender();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const dispatch = useDispatch();
@@ -148,11 +148,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 	};
 
 	const handleTypeChange = (val) => {
-		form.setFieldValue("patient_type", val);
-
-		if (val === "admission") {
-			form.setFieldValue("guardian_mobile", form.values.mobile);
-		}
+		form.setFieldValue("identity_mode", val);
 	};
 
 	// handle manual age field updates
@@ -182,7 +178,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 				};
 
 				const data = {
-					url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.CREATE,
+					url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.CREATE,
 					data: formValue,
 					module,
 				};
@@ -242,9 +238,9 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										name="identity_mode"
 										onChange={(val) => handleTypeChange(val)}
 										data={[
-											{ label: t("NID"), value: "nid" },
-											{ label: t("BirthID"), value: "BirthID" },
-											{ label: t("HealthID"), value: "HealthID" },
+											{ label: t("NID"), value: "NID" },
+											{ label: t("BRID"), value: "BRID" },
+											{ label: t("HID"), value: "HID" },
 										]}
 									/>
 								</Grid.Col>
@@ -254,22 +250,20 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									<Text fz="sm">{t("NIDBirthCertificate")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<Group>
-										<InputNumberForm
-											form={form}
-											label=""
-											placeholder="1234567890"
-											tooltip={t("enterPatientIdentity")}
-											name="identity"
-											id="identity"
-											nextField="address"
-											value={form.values.identity}
-											required
-										/>
-										<ActionIcon>
-											<IconSearch />
-										</ActionIcon>
-									</Group>
+									<InputNumberForm
+										form={form}
+										label=""
+										placeholder="1234567890"
+										tooltip={t("enterPatientIdentity")}
+										name="identity"
+										id="identity"
+										nextField="address"
+										value={form.values.identity}
+										rightSection={<ActionIcon bg='var(--theme-secondary-color-6)'>
+											<IconSearch  size={'16'} />
+										</ActionIcon>}
+										required
+									/>
 								</Grid.Col>
 							</Grid>
 							<Grid align="center" columns={20}>

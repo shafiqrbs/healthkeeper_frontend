@@ -1,8 +1,10 @@
 import { hasLength } from "@mantine/form";
 
 const initialValues = {
-	identity_mode: "nid",
-	patient_type: "general",
+
+	identity_mode: "NID",
+	health_id: "",
+	patient_mode: "opd",
 	room_id: "",
 	doctor_id: "",
 	appointment: new Date(),
@@ -20,23 +22,22 @@ const initialValues = {
 	identity: "",
 	district: "Dhaka",
 	address: "",
-	roomNo: "",
 	specialization: "",
-	doctorName: "",
-	diseaseProfile: "",
-	referredName: "",
+	disease_profile: "",
+	referred_id: "",
 	amount: 10,
-	marketingEx: "",
-	paymentMethod: "bkash",
-	isConfirm: false,
-	smsAlert: false,
-	freeFor: "",
+	marketing_id: "",
 	comment: "",
 	guardian_name: "",
 	guardian_mobile: "",
 	email: "",
 	payment_mode: "",
+	free_identification: "",
+	patient_payment_mode_id: 30,
+	api_patient_content: "",
 	invoice_particulars: [{ id: 1, name: "Consultation", quantity: 10, price: 100 }],
+
+
 };
 
 export const getVendorFormInitialValues = (t) => {

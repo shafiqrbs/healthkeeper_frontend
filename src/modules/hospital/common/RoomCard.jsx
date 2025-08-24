@@ -1,5 +1,6 @@
-import { Box, Flex, Text } from "@mantine/core";
+import {Box, Flex, Image, Text} from "@mantine/core";
 import { IconDoor, IconUsers } from "@tabler/icons-react";
+import imgActive from "@assets/images/status/active.gif";
 
 export default function RoomCard({ room, selectedRoom, handleRoomClick }) {
 	return (
@@ -16,6 +17,10 @@ export default function RoomCard({ room, selectedRoom, handleRoomClick }) {
 				</Text>
 				<Flex align="center" gap="xxxs">
 					<IconUsers color="var(--theme-primary-color-6)" size={16} stroke={1.5} />
+					<Text fz="sm">234</Text>
+				</Flex>
+				<Flex align="center" gap="xxxs">
+					<Image radius="xl"  src={imgActive} />
 					<Text fz="sm">234</Text>
 				</Flex>
 			</Flex>
