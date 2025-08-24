@@ -27,7 +27,9 @@ export const ACCOUNTING_DROPDOWNS = {
 };
 
 export const HOSPITAL_DROPDOWNS = {
+
 	PARTICULAR_TYPE: { UTILITY: "particularType", PATH: "hospital/select/particular-type" },
+	PARTICULAR_MASTER_TYPE: { UTILITY: "particularMasterType", PATH: "hospital/select/particular-master-type" },
 
 	//	PARTICULAR_MODE: { UTILITY: "particularMode", TYPE: "operation", PATH: "hospital/select/module" },
 

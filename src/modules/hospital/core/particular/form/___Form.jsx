@@ -30,15 +30,15 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	});
 
 	const { data: particularTypeDropdown } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.PATH,
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.UTILITY,
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_MASTER_TYPE.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MASTER_TYPE.UTILITY,
 	});
 
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
-				particular_type_id: data.particular_type_id,
+				particular_type_master_id: data.particular_type_master_id,
 				name: data.name,
 				category_id: data.category_id,
 				employee_id: data.employee_id,
@@ -58,7 +58,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 
 	useHotkeys(
 		[
-			["alt+n", () => document.getElementById("particular_type_id").focus()],
+			["alt+n", () => document.getElementById("particular_type_master_id").focus()],
 			["alt+r", () => form.reset()],
 			["alt+s", () => document.getElementById("EntityFormSubmit").click()],
 		],
@@ -83,11 +83,11 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												form={form}
 												tooltip={t("ParticularTypeValidateMessage")}
 												placeholder={t("ParticularType")}
-												name="particular_type_id"
-												id="particular_type_id"
+												name="particular_type_master_id"
+												id="particular_type_master_id"
 												nextField="category_id"
 												required={true}
-												value={form.values.particular_type_id}
+												value={form.values.particular_type_master_id}
 												dropdownValue={particularTypeDropdown}
 											/>
 										</Grid.Col>
