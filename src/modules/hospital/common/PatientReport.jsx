@@ -1,14 +1,36 @@
-import { Box, ScrollArea, Select, Checkbox, TextInput, Textarea, Stack, Text, Autocomplete } from "@mantine/core";
-import { useState } from "react";
+import {
+	Box,
+	ScrollArea,
+	Select,
+	Checkbox,
+	TextInput,
+	Textarea,
+	Stack,
+	Text,
+	Autocomplete,
+	Radio,
+	Grid,
+	Flex,
+	ActionIcon,
+} from "@mantine/core";
+import { useState, useEffect } from "react";
 import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
 import PatientReportAction from "./PatientReportAction";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
+import { IconX } from "@tabler/icons-react";
 
-export default function PatientReport({ patientData, tabValue }) {
+export default function PatientReport({
+	patientData,
+	tabValue,
+	onDataChange = null,
+	formData = null,
+	setFormData = null,
+}) {
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 118;
+	const height = mainAreaHeight - 284;
+
 	const form = useForm({
 		initialValues: {
 			bp: "120/80",
@@ -20,18 +42,83 @@ export default function PatientReport({ patientData, tabValue }) {
 
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
-	console.log(tabParticulars);
-	const [dynamicFormData, setDynamicFormData] = useState({});
+
+	// Use external state if provided, otherwise use internal state
+	const [dynamicFormData, setDynamicFormData] = useState(formData?.dynamicFormData || {});
+	const [investigationList, setInvestigationList] = useState(formData?.investigationList || []);
+
+	// Update external state when internal state changes
+	const updateExternalState = (newDynamicFormData, newInvestigationList) => {
+		const transformedData = transformDynamicFormData(newDynamicFormData);
+		if (onDataChange) {
+			onDataChange({
+				basicInfo: form.values,
+				dynamicFormData: transformedData,
+				investigationList: newInvestigationList,
+			});
+		}
+		if (setFormData) {
+			setFormData({
+				basicInfo: form.values,
+				dynamicFormData: transformedData,
+				investigationList: newInvestigationList,
+			});
+		}
+	};
 
 	const handleDynamicFormChange = (sectionId, fieldName, value) => {
-		setDynamicFormData((prev) => ({
-			...prev,
+		const newDynamicFormData = {
+			...dynamicFormData,
 			[sectionId]: {
-				...prev[sectionId],
+				...dynamicFormData[sectionId],
 				[fieldName]: value,
 			},
-		}));
+		};
+		setDynamicFormData(newDynamicFormData);
+		updateExternalState(newDynamicFormData, investigationList);
 	};
+
+	const handleInvestigationRemove = (index) => {
+		const newInvestigationList = investigationList.filter((_, idx) => idx !== index);
+		setInvestigationList(newInvestigationList);
+		updateExternalState(dynamicFormData, newInvestigationList);
+	};
+
+	const handleInvestigationAdd = (value) => {
+		if (value && !investigationList.includes(value)) {
+			const newInvestigationList = [...investigationList, value];
+			setInvestigationList(newInvestigationList);
+			updateExternalState(dynamicFormData, newInvestigationList);
+		}
+	};
+
+	// Transform dynamic form data to use meaningful names instead of IDs
+	const transformDynamicFormData = (rawData) => {
+		const transformed = {};
+
+		if (!tabParticulars || tabParticulars.length === 0) {
+			console.log("tabParticulars not loaded yet, returning raw data");
+			return rawData;
+		}
+
+		Object.keys(rawData).forEach((sectionId) => {
+			const section = tabParticulars.find((s) => s.id.toString() === sectionId);
+			if (section) {
+				transformed[section.name] = rawData[sectionId];
+			} else {
+				console.log(`Section with ID ${sectionId} not found in tabParticulars`);
+			}
+		});
+
+		console.log("Transformed dynamic form data:", transformed);
+		return transformed;
+	};
+
+	// Update external state when form values change
+	useEffect(() => {
+		const transformedData = transformDynamicFormData(dynamicFormData);
+		updateExternalState(transformedData, investigationList);
+	}, [form.values, dynamicFormData, investigationList]);
 
 	// render dynamic form based on data type and particulars
 	const renderDynamicForm = (section) => {
@@ -60,36 +147,35 @@ export default function PatientReport({ patientData, tabValue }) {
 
 			case "Select":
 				return (
-					<Stack gap="md">
-						{particulars?.map((particular, index) => (
-							<Select
-								key={`${id}-${index}`}
-								label={particular.name}
-								placeholder={`Select ${particular.name}`}
-								data={particulars?.map((particular) => ({
-									value: `${particular.name} ${particular.id}`,
-									label: particular.name,
-								}))}
-								value={dynamicFormData[id]?.[particular.name] || ""}
-								onChange={(value) => handleDynamicFormChange(id, particular.name, value)}
-							/>
-						))}
-					</Stack>
+					<Select
+						label=""
+						placeholder={`Select ${name}`}
+						data={particulars?.map((particular) => ({
+							value: `${particular.name} ${particular.id}`,
+							label: particular.name,
+						}))}
+						value={dynamicFormData[id]?.[name] || ""}
+						onChange={(value) => handleDynamicFormChange(id, name, value)}
+					/>
 				);
 
 			case "Input":
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => (
-							<TextInput
-								key={`${id}-${index}`}
-								label={particular.name}
-								placeholder={`Enter ${particular.name}`}
-								value={dynamicFormData[id]?.[particular.name] || ""}
-								onChange={(event) =>
-									handleDynamicFormChange(id, particular.name, event.currentTarget.value)
-								}
-							/>
+							<Grid key={`${id}-${index}`}>
+								<Grid.Col span={4}>{particular.name}</Grid.Col>
+								<Grid.Col span={8}>
+									<TextInput
+										label=""
+										placeholder={`Enter ${particular.name}`}
+										value={dynamicFormData[id]?.[particular.name] || ""}
+										onChange={(event) =>
+											handleDynamicFormChange(id, particular.name, event.currentTarget.value)
+										}
+									/>
+								</Grid.Col>
+							</Grid>
 						))}
 					</Stack>
 				);
@@ -114,32 +200,31 @@ export default function PatientReport({ patientData, tabValue }) {
 
 			case "Searchable":
 				return (
-					<Stack gap="md">
-						{particulars?.map((particular, index) => (
-							<Select
-								searchable
-								key={`${id}-${index}`}
-								label={particular.name}
-								placeholder={`Select ${particular.name}`}
-								data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
-								value={dynamicFormData[id]?.[particular.name] || ""}
-								onChange={(value) => handleDynamicFormChange(id, particular.name, value)}
-							/>
-						))}
-					</Stack>
+					<Select
+						searchable
+						label={name}
+						placeholder={`Select ${name}`}
+						data={particulars?.map((p) => ({ value: `${p.name} ${p.id}`, label: p.name }))}
+						value={dynamicFormData[id]?.[name] || ""}
+						onChange={(value) => handleDynamicFormChange(id, name, value)}
+					/>
 				);
 
 			case "RadioButton":
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => (
-							<Select
+							<Radio
 								key={`${id}-${index}`}
 								label={particular.name}
-								placeholder={`Select ${particular.name}`}
-								data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
-								value={dynamicFormData[id]?.[particular.name] || ""}
-								onChange={(value) => handleDynamicFormChange(id, particular.name, value)}
+								checked={dynamicFormData[id]?.[particular.name] === particular.name}
+								onChange={(event) =>
+									handleDynamicFormChange(
+										id,
+										particular.name,
+										event.currentTarget.checked ? particular.name : ""
+									)
+								}
 							/>
 						))}
 					</Stack>
@@ -147,35 +232,51 @@ export default function PatientReport({ patientData, tabValue }) {
 
 			case "Autocomplete":
 				return (
-					<Stack gap="md">
-						{particulars?.map((particular, index) => (
-							<Autocomplete
-								key={`${id}-${index}`}
-								label={particular.name}
-								placeholder={`Pick value or enter ${particular.name}`}
-								data={particulars?.map((p) => p.name)}
-								value={dynamicFormData[id]?.[particular.name] || ""}
-								onChange={(value) => handleDynamicFormChange(id, particular.name, value)}
-							/>
-						))}
-					</Stack>
-				);
-
-			case "LabelInput":
-				return (
-					<Stack gap="md">
-						{particulars?.map((particular, index) => (
-							<TextInput
-								key={`${id}-${index}`}
-								label={particular.name}
-								placeholder={`Enter ${particular.name}`}
-								value={dynamicFormData[id]?.[particular.name] || ""}
-								onChange={(event) =>
-									handleDynamicFormChange(id, particular.name, event.currentTarget.value)
+					<>
+						<Autocomplete
+							label=""
+							placeholder={`Pick value or enter ${name}`}
+							data={particulars?.map((p) => ({ value: `${p.name} ${p.id}`, label: p.name }))}
+							value={dynamicFormData[id]?.[name] || ""}
+							onChange={(value) => {
+								handleDynamicFormChange(id, name, value);
+								if (value) {
+									handleInvestigationAdd(value);
+									// Clear the input after adding
+									handleDynamicFormChange(id, name, "");
 								}
-							/>
-						))}
-					</Stack>
+							}}
+						/>
+						<Stack gap={0} bg="white" px="sm" className="borderRadiusAll">
+							{investigationList.map((item, idx) => (
+								<Flex
+									key={idx}
+									align="center"
+									justify="space-between"
+									px="es"
+									py="xs"
+									style={{
+										borderBottom:
+											idx !== investigationList.length - 1
+												? "1px solid var(--theme-tertiary-color-4)"
+												: "none",
+									}}
+								>
+									<Text fz="sm">
+										{idx + 1}. {item}
+									</Text>
+									<ActionIcon
+										color="red"
+										size="xs"
+										variant="subtle"
+										onClick={() => handleInvestigationRemove(idx)}
+									>
+										<IconX size={16} />
+									</ActionIcon>
+								</Flex>
+							))}
+						</Stack>
+					</>
 				);
 
 			default:
@@ -205,45 +306,51 @@ export default function PatientReport({ patientData, tabValue }) {
 
 		if (!currentSection) {
 			return (
-				<ScrollArea h={height}>
-					<BasicInfoCard patientData={patientData} form={form} />
-					<Box p="md">
-						<Text c="dimmed">No data available for {tabValue}</Text>
-					</Box>
-				</ScrollArea>
+				<Box bg="white" p="les">
+					<ScrollArea h={height}>
+						<BasicInfoCard patientData={patientData} form={form} />
+						<Box p="md">
+							<Text c="dimmed">No data available for {tabValue}</Text>
+						</Box>
+					</ScrollArea>
+				</Box>
 			);
 		}
 
 		// Handle "All" tab - show all sections
 		if (tabValue === "All") {
 			return (
-				<ScrollArea h={height}>
+				<Box>
 					<BasicInfoCard patientData={patientData} form={form} />
-					<Stack gap="xl" p="md">
-						{currentSection.map((section) => (
-							<Box key={section.id}>
-								<Text fw={600} size="lg" mb="md">
-									{section.name}
-								</Text>
-								{renderDynamicForm(section)}
-							</Box>
-						))}
-					</Stack>
-				</ScrollArea>
+					<ScrollArea h={height}>
+						<Stack gap="xl" p="md">
+							{currentSection.map((section) => (
+								<Box key={section.id}>
+									<Text fw={600} size="lg" mb="md">
+										{section.name}
+									</Text>
+									{renderDynamicForm(section)}
+								</Box>
+							))}
+						</Stack>
+					</ScrollArea>
+				</Box>
 			);
 		}
 
 		// Handle specific tab
 		return (
-			<ScrollArea h={height}>
+			<Box>
 				<BasicInfoCard patientData={patientData} form={form} />
-				<Box p="md">
-					<Text fw={600} size="lg" mb="md">
-						{currentSection.name}
-					</Text>
-					{renderDynamicForm(currentSection)}
-				</Box>
-			</ScrollArea>
+				<ScrollArea h={height}>
+					<Box p="md">
+						<Text fw={600} size="lg" mb="md">
+							{currentSection.name}
+						</Text>
+						{renderDynamicForm(currentSection)}
+					</Box>
+				</ScrollArea>
+			</Box>
 		);
 	};
 

@@ -1,6 +1,5 @@
 import { Drawer, Flex, Text } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
-import React from "react";
 
 export default function GlobalDrawer({
 	opened,
@@ -11,6 +10,7 @@ export default function GlobalDrawer({
 	bg = "white",
 	keepMounted = false,
 	children,
+	offset = 42,
 }) {
 	return (
 		<Drawer.Root
@@ -18,14 +18,14 @@ export default function GlobalDrawer({
 			onClose={close}
 			position={position}
 			closeOnClickOutside={false}
-			offset={42}
+			offset={offset}
 			radius="sm"
 			size={size}
 			keepMounted={keepMounted}
 		>
 			<Drawer.Overlay />
 			<Drawer.Content bg={bg}>
-				<Drawer.Header className={'drawer-sticky-header'}>
+				<Drawer.Header className={"drawer-sticky-header"}>
 					<Drawer.Title>
 						<Flex align="center" gap={8}>
 							<IconArrowLeft size={16} />{" "}

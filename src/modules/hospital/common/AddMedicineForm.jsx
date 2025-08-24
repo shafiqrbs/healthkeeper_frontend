@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import {
 	Box,
@@ -23,12 +23,14 @@ import DatePickerForm from "@components/form-builders/DatePicker";
 import { useOutletContext } from "react-router-dom";
 import InputAutoComplete from "@components/form-builders/InputAutoComplete";
 import { useReactToPrint } from "react-to-print";
-import Prescription from "@/common/components/print-formats/a4/Prescription";
-import PrescriptionPos from "@/common/components/print-formats/pos/Prescription";
-import Prescription2 from "@/common/components/print-formats/a4/Prescription2";
-import Prescription3 from "@/common/components/print-formats/a4/Prescription3";
+import Prescription from "@components/print-formats/a4/Prescription";
+import PrescriptionPos from "@components/print-formats/pos/Prescription";
+import Prescription2 from "@components/print-formats/a4/Prescription2";
+import Prescription3 from "@components/print-formats/a4/Prescription3";
 import PrescriptionPreview from "./PrescriptionPreview";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useHotkeys } from "@mantine/hooks";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import InputNumberForm from "@components/form-builders/InputNumberForm";
 
 const GENERIC_OPTIONS = ["Napa", "Paracetamol", "Paracetamol (Doxylamin)", "Paracetamol (Acetaminophen)"];
 const BRAND_OPTIONS = [
@@ -51,12 +53,11 @@ const FREQUENCY_OPTIONS = [
 	{ value: "0+1+0", label: "0 + 1 + 0" },
 	{ value: "0+0+1", label: "0 + 0 + 1" },
 ];
-const MEDITATION_DURATION = [
+const DURATION_OPTIONS = [
 	{ value: "day", label: "Day" },
 	{ value: "month", label: "Month" },
-	{ value: "year", label: "Year" },
 ];
-const TIMING_OPTIONS = [
+const BY_MEAL_OPTIONS = [
 	{ value: "before", label: "30 min B" },
 	{ value: "after", label: "30 min A" },
 ];
@@ -90,12 +91,12 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 	return (
 		<Box>
 			<Text mb="es">
-				{index}. {medicine.generic}
+				{index}. {medicine.generic || medicine.brand}
 			</Text>
 			<Flex justify="space-between" align="center" gap="sm">
 				{mode === "view" ? (
 					<Box ml="md" fz="sm" c="var(--theme-tertiary-color-8)">
-						{medicine.dosage} ---- {medicine.times} time/s ---- {medicine.timing} meal
+						{medicine.dosage} ---- {medicine.times} time/s ---- {medicine.by_meal} meal
 					</Box>
 				) : (
 					<Group grow gap="les">
@@ -109,11 +110,11 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 						/>
 						<Select
 							label=""
-							data={TIMING_OPTIONS}
-							value={medicine.timing}
+							data={BY_MEAL_OPTIONS}
+							value={medicine.by_meal}
 							placeholder="Timing"
 							disabled={mode === "view"}
-							onChange={(v) => handleChange("timing", v)}
+							onChange={(v) => handleChange("by_meal", v)}
 						/>
 						<Select
 							label=""
@@ -153,36 +154,45 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 	);
 }
 
-export default function AddMedicineForm({ hideAdviseForm = false, hideActionButtons = false }) {
+export default function AddMedicineForm({
+	hideAdviseForm = false,
+	hideActionButtons = false,
+	onSubmit,
+	isSubmitting = false,
+	patientData = {},
+	prescriptionForm = null,
+	patientReportData = null,
+	setPatientReportData = null,
+}) {
 	const { t } = useTranslation();
 	const form = useForm(getMedicineFormInitialValues());
 	const [medicines, setMedicines] = useState([
 		{
-			generic: "Napa",
+			generic: "",
 			brand: "Napa",
 			dosage: "1 tab",
 			times: "1+0+1",
-			timing: "before",
-			unit: "day",
-			duration: "1",
+			by_meal: "before",
+			count: 10,
+			duration: "day",
 		},
 		{
-			generic: "Heparin",
+			generic: "",
 			brand: "Heparin",
 			dosage: "1 tab",
 			times: "1+1+1",
-			timing: "before",
-			unit: "day",
-			duration: "1",
+			by_meal: "before",
+			count: 1,
+			duration: "month",
 		},
 		{
-			generic: "Paracetamol",
+			generic: "",
 			brand: "Paracetamol",
 			dosage: "1 tab",
 			times: "1+0+1",
-			timing: "before",
-			unit: "day",
-			duration: "1",
+			by_meal: "before",
+			count: 1,
+			duration: "month",
 		},
 	]);
 	const [editIndex, setEditIndex] = useState(null);
@@ -193,6 +203,99 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 	const prescriptionPosRef = useRef(null);
 
 	const [opened, { open, close }] = useDisclosure(false);
+
+	// Load held prescription data on component mount
+	useEffect(() => {
+		const heldData = localStorage.getItem("prescription-hold-data");
+		if (heldData) {
+			try {
+				const parsedData = JSON.parse(heldData);
+				// Check if the held data is not too old (24 hours)
+				const heldTime = new Date(parsedData.timestamp);
+				const now = new Date();
+				const hoursDiff = (now - heldTime) / (1000 * 60 * 60);
+
+				if (hoursDiff < 24) {
+					setMedicines(parsedData.medicines || []);
+					if (parsedData.adviseForm) {
+						form.setValues(parsedData.adviseForm);
+					}
+					// Restore PatientReport data if available
+					if (parsedData.patientReportData && setPatientReportData) {
+						setPatientReportData(parsedData.patientReportData);
+					}
+					showNotificationComponent(t("Held prescription loaded"), "blue", "lightgray", true, 1000, true);
+				} else {
+					// Remove old held data
+					localStorage.removeItem("prescription-hold-data");
+				}
+			} catch (error) {
+				console.error("Error loading held prescription:", error);
+				localStorage.removeItem("prescription-hold-data");
+			}
+		}
+	}, []);
+
+	// Add hotkey for save functionality
+	useHotkeys([
+		[
+			"alt+s",
+			() => {
+				if (onSubmit) {
+					handlePrescriptionSubmit();
+				}
+			},
+		],
+		[
+			"alt+1",
+			() => {
+				setMedicines([]);
+				form.reset();
+				setEditIndex(null);
+				// Clear PatientReport data when resetting
+				if (setPatientReportData) {
+					setPatientReportData({
+						basicInfo: {},
+						dynamicFormData: {},
+						investigationList: [],
+					});
+				}
+				// Clear held data when resetting
+				localStorage.removeItem("prescription-hold-data");
+			},
+		],
+		[
+			"alt+2",
+			() => {
+				// Save current state to localStorage for later retrieval
+				const holdData = {
+					medicines,
+					adviseForm: form.values,
+					patientData,
+					patientReportData: patientReportData || {
+						basicInfo: {},
+						dynamicFormData: {},
+						investigationList: [],
+					},
+					timestamp: new Date().toISOString(),
+				};
+				localStorage.setItem("prescription-hold-data", JSON.stringify(holdData));
+				showNotificationComponent(t("Prescription held successfully"), "blue", "lightgray", true, 1000, true);
+			},
+		],
+		[
+			"alt+3",
+			() => {
+				open();
+			},
+		],
+		[
+			"alt+4",
+			() => {
+				handlePrintPrescriptionA4(1);
+			},
+		],
+	]);
 
 	// =============== create print functions using useReactToPrint hook ================
 	const printPrescriptionA4 = useReactToPrint({
@@ -241,6 +344,29 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 			printPrescription2A4();
 		} else {
 			printPrescription3A4();
+		}
+	};
+
+	// Handle prescription submission
+	const handlePrescriptionSubmit = async () => {
+		if (onSubmit) {
+			const prescriptionData = {
+				patientData,
+				medicines,
+				prescriptionForm: prescriptionForm?.values || {},
+				adviseForm: form.values,
+				patientReportData: patientReportData || {
+					basicInfo: {},
+					dynamicFormData: {},
+					investigationList: [],
+				},
+			};
+			const result = await onSubmit(prescriptionData);
+
+			// If submission was successful, clear held data
+			if (result !== false) {
+				localStorage.removeItem("prescription-hold-data");
+			}
 		}
 	};
 
@@ -293,7 +419,7 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 						<SelectForm
 							form={form}
 							name="timing"
-							dropdownValue={TIMING_OPTIONS}
+							dropdownValue={BY_MEAL_OPTIONS}
 							value={form.values.timing}
 							changeValue={(v) => handleChange("timing", v)}
 							placeholder="Timing"
@@ -303,23 +429,22 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 						<SelectForm
 							form={form}
 							label=""
-							name="meditationDuration"
-							dropdownValue={MEDITATION_DURATION}
-							value={form.values.meditationDuration}
-							changeValue={(v) => handleChange("meditationDuration", v)}
-							placeholder="Meditation Duration"
+							name="duration"
+							dropdownValue={DURATION_OPTIONS}
+							value={form.values.duration}
+							changeValue={(v) => handleChange("duration", v)}
+							placeholder="Duration"
 							required
 							tooltip="Enter meditation duration"
 						/>
-						<SelectForm
+						<InputNumberForm
 							form={form}
-							name="unit"
-							dropdownValue={DURATION_UNIT_OPTIONS}
-							value={form.values.unit}
-							changeValue={(v) => handleChange("unit", v)}
-							placeholder="Unit"
+							name="count"
+							value={form.values.count}
+							changeValue={(v) => handleChange("count", v)}
+							placeholder="Count"
 							required
-							tooltip="Enter duration unit"
+							tooltip="Enter count"
 						/>
 						<Button
 							leftSection={<IconPlus size={16} />}
@@ -434,7 +559,26 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 			{!hideActionButtons && (
 				// =================== button group ===================
 				<Button.Group bg="var(--theme-primary-color-0)" p="les">
-					<Button w="100%" bg="var(--theme-reset-btn-color)" leftSection={<IconRestore size={16} />}>
+					<Button
+						w="100%"
+						bg="var(--theme-reset-btn-color)"
+						leftSection={<IconRestore size={16} />}
+						onClick={() => {
+							setMedicines([]);
+							form.reset();
+							setEditIndex(null);
+							// Clear PatientReport data when resetting
+							if (setPatientReportData) {
+								setPatientReportData({
+									basicInfo: {},
+									dynamicFormData: {},
+									investigationList: [],
+								});
+							}
+							// Clear held data when resetting
+							localStorage.removeItem("prescription-hold-data");
+						}}
+					>
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("reset")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -442,7 +586,33 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 							</Text>
 						</Stack>
 					</Button>
-					<Button w="100%" bg="var(--theme-hold-btn-color)">
+					<Button
+						w="100%"
+						bg="var(--theme-hold-btn-color)"
+						onClick={() => {
+							// Save current state to localStorage for later retrieval
+							const holdData = {
+								medicines,
+								adviseForm: form.values,
+								patientData,
+								patientReportData: patientReportData || {
+									basicInfo: {},
+									dynamicFormData: {},
+									investigationList: [],
+								},
+								timestamp: new Date().toISOString(),
+							};
+							localStorage.setItem("prescription-hold-data", JSON.stringify(holdData));
+							showNotificationComponent(
+								t("Prescription held successfully"),
+								"blue",
+								"lightgray",
+								true,
+								1000,
+								true
+							);
+						}}
+					>
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("Hold")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -476,7 +646,13 @@ export default function AddMedicineForm({ hideAdviseForm = false, hideActionButt
 							<Menu.Item onClick={() => handlePrintPrescriptionA4(3)}>Template 3</Menu.Item>
 						</Menu.Dropdown>
 					</Menu>
-					<Button w="100%" bg="var(--theme-save-btn-color)">
+					<Button
+						w="100%"
+						bg="var(--theme-save-btn-color)"
+						onClick={handlePrescriptionSubmit}
+						loading={isSubmitting}
+						disabled={isSubmitting}
+					>
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("Save")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">

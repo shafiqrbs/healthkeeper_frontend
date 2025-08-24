@@ -19,9 +19,11 @@ const medicineInitialValues = {
 	generic: "",
 	dosage: "",
 	times: "",
-	timing: "",
-	meditationDuration: "",
-	unit: "",
+	by_meal: "",
+	duration: "",
+	count: 0,
+	advise: "",
+	followUpDate: null,
 };
 
 export const getMedicineFormInitialValues = () => {
@@ -32,9 +34,9 @@ export const getMedicineFormInitialValues = () => {
 			brand: (value) => (value ? null : "Brand name is required"),
 			dosage: (value) => (value ? null : "Dosage is required"),
 			times: (value) => (value ? null : "Times is required"),
-			timing: (value) => (value ? null : "Timing is required"),
-			meditationDuration: (value) => (value ? null : "Meditation duration is required"),
-			unit: (value) => (value ? null : "Unit is required"),
+			by_meal: (value) => (value ? null : "By meal is required"),
+			duration: (value) => (value ? null : "Meditation duration is required"),
+			count: (value) => (value ? null : "Count is required"),
 		},
 	};
 };
