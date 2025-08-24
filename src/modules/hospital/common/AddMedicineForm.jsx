@@ -31,12 +31,10 @@ import PrescriptionPreview from "./PrescriptionPreview";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
+import useMedicineData from "@/common/hooks/useMedicineData";
+import useMedicineGenericData from "@/common/hooks/useMedicineGenericData";
 
 const GENERIC_OPTIONS = ["Napa", "Paracetamol", "Paracetamol (Doxylamin)", "Paracetamol (Acetaminophen)"];
-const BRAND_OPTIONS = [
-	{ value: "napa", label: "Napa" },
-	{ value: "ace", label: "Ace" },
-];
 const DOSAGE_OPTIONS = [
 	{ value: "1 tab", label: "1 Tablet" },
 	{ value: "2 tab", label: "2 Tablets" },
@@ -68,7 +66,7 @@ const DURATION_UNIT_OPTIONS = [
 	{ value: "year", label: "Year" },
 ];
 
-function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
+function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit }) {
 	const [mode, setMode] = useState("view");
 
 	const openEditMode = () => {
@@ -90,8 +88,8 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 
 	return (
 		<Box>
-			<Text mb="es">
-				{index}. {medicine.generic || medicine.brand}
+			<Text mb="es" style={{ cursor: "pointer" }} onClick={onEdit}>
+				{index}. {medicine.generic || medicine.medicineName || medicine.medicine}
 			</Text>
 			<Flex justify="space-between" align="center" gap="sm">
 				{mode === "view" ? (
@@ -164,35 +162,20 @@ export default function AddMedicineForm({
 	patientReportData = null,
 	setPatientReportData = null,
 }) {
+	const { medicineData } = useMedicineData({ term: "" });
+	const { medicineGenericData } = useMedicineGenericData({ term: "" });
 	const { t } = useTranslation();
 	const form = useForm(getMedicineFormInitialValues());
 	const [medicines, setMedicines] = useState([
 		{
 			generic: "",
-			brand: "Napa",
+			medicine: "Napa",
+			medicineName: "Napa",
 			dosage: "1 tab",
 			times: "1+0+1",
 			by_meal: "before",
 			count: 10,
 			duration: "day",
-		},
-		{
-			generic: "",
-			brand: "Heparin",
-			dosage: "1 tab",
-			times: "1+1+1",
-			by_meal: "before",
-			count: 1,
-			duration: "month",
-		},
-		{
-			generic: "",
-			brand: "Paracetamol",
-			dosage: "1 tab",
-			times: "1+0+1",
-			by_meal: "before",
-			count: 1,
-			duration: "month",
 		},
 	]);
 	const [editIndex, setEditIndex] = useState(null);
@@ -315,16 +298,33 @@ export default function AddMedicineForm({
 
 	const handleChange = (field, value) => {
 		form.setFieldValue(field, value);
+
+		// If medicine field is being changed, also store the medicine name
+		if (field === "medicine" && value) {
+			const selectedMedicine = medicineData?.find((item) => item.id?.toString() === value);
+			if (selectedMedicine) {
+				form.setFieldValue("medicineName", selectedMedicine.name);
+			}
+		}
 	};
 
 	const handleAdd = () => {
+		// Ensure medicineName is set if not already present
+		let formData = { ...form.values };
+		if (formData.medicine && !formData.medicineName) {
+			const selectedMedicine = medicineData?.find((item) => item.id?.toString() === formData.medicine);
+			if (selectedMedicine) {
+				formData.medicineName = selectedMedicine.name;
+			}
+		}
+
 		if (editIndex !== null) {
 			const updated = [...medicines];
-			updated[editIndex] = { ...form.values };
+			updated[editIndex] = formData;
 			setMedicines(updated);
 			setEditIndex(null);
 		} else {
-			setMedicines([...medicines, { ...form.values }]);
+			setMedicines([...medicines, formData]);
 		}
 		form.reset();
 	};
@@ -335,6 +335,12 @@ export default function AddMedicineForm({
 			form.reset();
 			setEditIndex(null);
 		}
+	};
+
+	const handleEdit = (idx) => {
+		const medicineToEdit = medicines[idx];
+		form.setValues(medicineToEdit);
+		setEditIndex(idx);
 	};
 
 	const handlePrintPrescriptionA4 = (type) => {
@@ -377,19 +383,26 @@ export default function AddMedicineForm({
 					<Group grow w="100%" gap="les">
 						<SelectForm
 							form={form}
-							name="brand"
-							dropdownValue={BRAND_OPTIONS}
-							value={form.values.brand}
-							// changeValue={(v) => handleChange("brand", v)}
-							placeholder="Brand name"
+							name="medicine"
+							dropdownValue={medicineData?.map((item) => ({
+								label: item.name,
+								value: item.id?.toString(),
+							}))}
+							value={form.values.medicine}
+							changeValue={(v) => handleChange("medicine", v)}
+							placeholder="Medicine"
 							required
-							tooltip="Enter brand name"
+							tooltip="Select medicine"
 						/>
+
 						<InputAutoComplete
 							tooltip="Enter generic name"
 							form={form}
 							name="generic"
-							data={GENERIC_OPTIONS}
+							data={medicineGenericData?.map((item, index) => ({
+								label: `${item.name}`,
+								value: `${item.name} - ${index + 1}`,
+							}))}
 							value={form.values.generic}
 							changeValue={(v) => handleChange("generic", v)}
 							placeholder="Generic name"
@@ -418,13 +431,13 @@ export default function AddMedicineForm({
 						/>
 						<SelectForm
 							form={form}
-							name="timing"
+							name="by_meal"
 							dropdownValue={BY_MEAL_OPTIONS}
-							value={form.values.timing}
-							changeValue={(v) => handleChange("timing", v)}
-							placeholder="Timing"
+							value={form.values.by_meal}
+							changeValue={(v) => handleChange("by_meal", v)}
+							placeholder="By Meal"
 							required
-							tooltip="Enter meditation duration"
+							tooltip="Enter when to take medicine"
 						/>
 						<SelectForm
 							form={form}
@@ -452,12 +465,24 @@ export default function AddMedicineForm({
 							variant="filled"
 							bg="var(--theme-primary-color-6)"
 						>
-							Add
+							{editIndex !== null ? "Update" : "Add"}
 						</Button>
+						{editIndex !== null && (
+							<Button
+								onClick={() => {
+									form.reset();
+									setEditIndex(null);
+								}}
+								variant="outline"
+								color="gray"
+							>
+								Cancel
+							</Button>
+						)}
 					</Group>
 				</Group>
 			</Box>
-			<Box bg="white" px="sm" mt="xxs">
+			{/* <Box bg="white" px="sm" mt="xxs">
 				<Grid columns={19}>
 					<Grid.Col span={6}>
 						<Text fz="xs">1. Napa</Text>
@@ -477,11 +502,11 @@ export default function AddMedicineForm({
 						</Text>
 					</Grid.Col>
 				</Grid>
-			</Box>
+			</Box> */}
 			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
 				List of Medicines
 			</Text>
-			<ScrollArea h={mainAreaHeight - 516} bg="white">
+			<ScrollArea h={mainAreaHeight - 450} bg="white">
 				<Stack gap="xs" p="sm">
 					{medicines.map((medicine, index) => (
 						<MedicineListItem
@@ -490,6 +515,7 @@ export default function AddMedicineForm({
 							medicine={medicine}
 							setMedicines={setMedicines}
 							handleDelete={handleDelete}
+							onEdit={() => handleEdit(index)}
 						/>
 					))}
 				</Stack>

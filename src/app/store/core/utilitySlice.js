@@ -42,7 +42,11 @@ export const HOSPITAL_DROPDOWNS = {
 		TYPE: "lab-report-mode",
 		PATH: "hospital/select/mode",
 	},
-	PARTICULAR_OPERATION_MODE: { UTILITY: "particularPatientOperation", TYPE: "operation", PATH: "hospital/select/mode" },
+	PARTICULAR_OPERATION_MODE: {
+		UTILITY: "particularPatientOperation",
+		TYPE: "operation",
+		PATH: "hospital/select/mode",
+	},
 	PARTICULAR_PATIENT_MODE: { UTILITY: "particularPatientModes", TYPE: "patient-mode", PATH: "hospital/select/mode" },
 	PARTICULAR_GENDER_MODE: { UTILITY: "particularGenderModes", TYPE: "gender-mode", PATH: "hospital/select/mode" },
 	PARTICULAR_PAYMENT_MODE: { UTILITY: "particularPaymentModes", TYPE: "paying-mode", PATH: "hospital/select/mode" },

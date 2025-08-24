@@ -43,7 +43,7 @@ export default function Index() {
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
-	const tabList = tabParticulars?.map((item) => `${item.name} ${item.id}`);
+	const tabList = tabParticulars?.map((item) => item.name);
 
 	const handlePrescriptionSubmit = async (prescriptionData) => {
 		if (!patientData || Object.keys(patientData).length === 0) {
@@ -78,18 +78,10 @@ export default function Index() {
 				created_by_id: createdBy?.id,
 				patient_report: {
 					basic_info: prescriptionData.patientReportData?.basicInfo || {},
-					patient_examination: prescriptionData.patientReportData?.dynamicFormData || {},
-					chief_complaints: [],
-					comorbidity: [],
-					consultant: [],
-					diagnosis: [],
-					"diseases-profile": [],
-					ho_past_illness: [],
-					"icd-11-listed-diseases": [],
-					"on-examination": [],
-					"on-presentation": [],
-					"treatment-history": [],
-					investigation: prescriptionData.patientReportData?.investigationList || [],
+					patient_examination: {
+						...(prescriptionData.patientReportData?.dynamicFormData || {}),
+						investigation: prescriptionData.patientReportData?.investigationList || [],
+					},
 				},
 				...prescriptionData.prescriptionForm,
 			};

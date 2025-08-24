@@ -50,6 +50,7 @@ function InputAutoComplete({
 						mt={mt}
 						readOnly={readOnly}
 						disabled={disabled}
+						limit={10}
 						data={data}
 						{...form.getInputProps(name)}
 						onKeyDown={getHotkeyHandler([

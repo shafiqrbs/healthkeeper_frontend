@@ -73,6 +73,26 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	medicines: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { term: "" },
+	},
+
+	medicineGeneric: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { term: "" },
+	},
+
 	vendor: {
 		insertType: "create",
 		isLoading: true,

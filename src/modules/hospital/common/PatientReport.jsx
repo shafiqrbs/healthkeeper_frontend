@@ -96,12 +96,10 @@ export default function PatientReport({
 		const transformed = {};
 
 		if (!tabParticulars || tabParticulars.length === 0) {
-			console.log("tabParticulars not loaded yet, returning raw data");
 			return rawData;
 		}
 
 		Object.keys(rawData).forEach((sectionId) => {
-			console.log("sectionId", sectionId);
 			const section = tabParticulars.find((s) => s.id.toString() === sectionId);
 			if (section) {
 				transformed[section.name?.toLowerCase()?.replace(/\s+/g, "_")] = rawData[sectionId];
@@ -110,13 +108,11 @@ export default function PatientReport({
 			}
 		});
 
-		console.log("Transformed dynamic form data:", transformed);
 		return transformed;
 	};
 
 	// Update external state when form values change
 	useEffect(() => {
-		console.log("dynamicFormData", dynamicFormData);
 		const transformedData = transformDynamicFormData(dynamicFormData);
 		updateExternalState(transformedData, investigationList);
 	}, [form.values, dynamicFormData, investigationList]);
@@ -130,7 +126,7 @@ export default function PatientReport({
 		}
 
 		switch (data_type) {
-			case "Checkbox":
+			case "Checkbox": // it will add to the final result as object
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => (
@@ -146,13 +142,13 @@ export default function PatientReport({
 					</Stack>
 				);
 
-			case "Select":
+			case "Select": // it will add to the final result as array
 				return (
 					<Select
 						label=""
 						placeholder={`Select ${name}`}
 						data={particulars?.map((particular) => ({
-							value: `${particular.name} ${particular.id}`,
+							value: particular.name,
 							label: particular.name,
 						}))}
 						value={dynamicFormData[id]?.[name] || ""}
@@ -160,7 +156,7 @@ export default function PatientReport({
 					/>
 				);
 
-			case "Input":
+			case "Input": // it will add to the final result as object
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => (
@@ -181,7 +177,7 @@ export default function PatientReport({
 					</Stack>
 				);
 
-			case "Textarea":
+			case "Textarea": // it will add to the final result as object
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => (
@@ -199,19 +195,19 @@ export default function PatientReport({
 					</Stack>
 				);
 
-			case "Searchable":
+			case "Searchable": // it will add to the final result as array
 				return (
 					<Select
 						searchable
 						label={name}
 						placeholder={`Select ${name}`}
-						data={particulars?.map((p) => ({ value: `${p.name} ${p.id}`, label: p.name }))}
+						data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
 						value={dynamicFormData[id]?.[name] || ""}
 						onChange={(value) => handleDynamicFormChange(id, name, value)}
 					/>
 				);
 
-			case "RadioButton":
+			case "RadioButton": // it will add to the final result as object
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => (
@@ -231,13 +227,13 @@ export default function PatientReport({
 					</Stack>
 				);
 
-			case "Autocomplete":
+			case "Autocomplete": // it will add to the final result as array
 				return (
 					<>
 						<Autocomplete
 							label=""
 							placeholder={`Pick value or enter ${name}`}
-							data={particulars?.map((p) => ({ value: `${p.name} ${p.id}`, label: p.name }))}
+							data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
 							value={dynamicFormData[id]?.[name] || ""}
 							onChange={(value) => {
 								handleDynamicFormChange(id, name, value);
@@ -297,9 +293,7 @@ export default function PatientReport({
 		}
 
 		// For specific tabs, find matching section
-		return tabParticulars.find(
-			(section) => `${section.name.toLowerCase()} ${section.id}` === tabValue.toLowerCase()
-		);
+		return tabParticulars.find((section) => section.name.toLowerCase() === tabValue.toLowerCase());
 	};
 
 	const generateTabItems = () => {
@@ -346,7 +340,7 @@ export default function PatientReport({
 				<ScrollArea h={height}>
 					<Box p="md">
 						<Text fw={600} size="lg" mb="md">
-							{currentSection.name}
+							{currentSection?.name}
 						</Text>
 						{renderDynamicForm(currentSection)}
 					</Box>

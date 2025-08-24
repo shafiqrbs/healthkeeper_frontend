@@ -15,13 +15,14 @@ export const getPrescriptionFormInitialValues = () => {
 };
 
 const medicineInitialValues = {
-	brand: "",
+	medicine: "",
+	medicineName: "",
 	generic: "",
 	dosage: "",
 	times: "",
 	by_meal: "",
 	duration: "",
-	count: 0,
+	count: 1,
 	advise: "",
 	followUpDate: null,
 };
@@ -31,12 +32,12 @@ export const getMedicineFormInitialValues = () => {
 		initialValues: medicineInitialValues,
 
 		validate: {
-			brand: (value) => (value ? null : "Brand name is required"),
+			medicine: (value) => (value ? null : "Medicine is required"),
 			dosage: (value) => (value ? null : "Dosage is required"),
 			times: (value) => (value ? null : "Times is required"),
 			by_meal: (value) => (value ? null : "By meal is required"),
-			duration: (value) => (value ? null : "Meditation duration is required"),
-			count: (value) => (value ? null : "Count is required"),
+			duration: (value) => (value ? null : "Duration is required"),
+			count: (value) => (value > 0 ? null : "Count must be greater than 0"),
 		},
 	};
 };
