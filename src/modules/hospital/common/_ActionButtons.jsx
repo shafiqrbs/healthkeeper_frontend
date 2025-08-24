@@ -111,10 +111,10 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 						</Grid.Col> */}
 						<Grid.Col span={12} bg="var(--theme-tertiary-color-1)" px="xs">
 							<Stack gap="xs" className="method-carousel">
-								<PaymentMethodsCarousel
+								{/* <PaymentMethodsCarousel
 									selectPaymentMethod={selectPaymentMethod}
 									paymentMethod={paymentMethod}
-								/>
+								/> */}
 								<Box>
 									<Flex justify="space-between" mb="xxxs">
 										{/* {hospitalConfigData.is_active_sms ? ( */}
@@ -142,6 +142,29 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 												/>
 											</Flex>
 										) : null}
+									</Flex>
+									<Flex gap="xs" align="center" justify="space-between">
+										<Text>Received amount</Text>
+										<Box bg="white" px="xs" py="les" className="borderRadiusAll">
+											<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
+												{t(displayLabelKey)} ৳ {Number(displayAmount || 0).toLocaleString()}
+											</Text>
+										</Box>
+										<Flex align="center" gap="xs">
+											<InputNumberForm
+												id="amount"
+												form={form}
+												tooltip={t("enterAmount")}
+												placeholder={t("Amount")}
+												name="amount"
+												required
+											/>
+											{hospitalConfigData?.payment_split ? (
+												<ActionIcon color="var(--theme-success-color)">
+													<IconArrowsSplit2 size={16} />
+												</ActionIcon>
+											) : null}
+										</Flex>
 									</Flex>
 									<Flex gap="xs" align="center" justify="space-between">
 										<Box bg="white" px="xs" py="les" className="borderRadiusAll">

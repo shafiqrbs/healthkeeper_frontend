@@ -6,6 +6,7 @@ import {
 	FileInput,
 	Flex,
 	Grid,
+	Group,
 	Modal,
 	ScrollArea,
 	SegmentedControl,
@@ -15,7 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconArrowRight, IconUpload } from "@tabler/icons-react";
+import { IconArrowRight, IconSearch, IconUpload } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DatePickerForm from "@components/form-builders/DatePicker";
@@ -236,16 +237,46 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									<SegmentedControl
 										fullWidth
 										color="var(--theme-primary-color-6)"
-										value={form.values.patient_type}
-										id="patient_type"
-										name="patient_type"
+										value={form.values.identity_mode}
+										id="identity_mode"
+										name="identity_mode"
 										onChange={(val) => handleTypeChange(val)}
 										data={[
-											{ label: t("General"), value: "general" },
-											{ label: t("Emergency"), value: "emergency" },
+											{ label: t("NID"), value: "nid" },
+											{ label: t("BirthID"), value: "BirthID" },
+											{ label: t("HealthID"), value: "HealthID" },
 										]}
 									/>
 								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("NIDBirthCertificate")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<Group>
+										<InputNumberForm
+											form={form}
+											label=""
+											placeholder="1234567890"
+											tooltip={t("enterPatientIdentity")}
+											name="identity"
+											id="identity"
+											nextField="address"
+											value={form.values.identity}
+											required
+										/>
+										<ActionIcon>
+											<IconSearch />
+										</ActionIcon>
+									</Group>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("HealthID")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>{form.values.healthID || "3433242434"}</Grid.Col>
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
@@ -368,44 +399,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									</Flex>
 								</Grid.Col>
 							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("mobile")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<InputForm
-										form={form}
-										label=""
-										tooltip={t("enterPatientMobile")}
-										placeholder="+880 1717171717"
-										name="mobile"
-										id="mobile"
-										nextField="district"
-										value={form.values.mobile}
-										required
-									/>
-								</Grid.Col>
-							</Grid>
-
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("district")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<SelectForm
-										form={form}
-										tooltip={t("enterPatientDistrict")}
-										placeholder="Dhaka"
-										name="district"
-										id="district"
-										nextField="identity"
-										value={form.values.district}
-										required
-										dropdownValue={DISTRICT_LIST}
-										searchable
-									/>
-								</Grid.Col>
-							</Grid>
 						</Stack>
 					</ScrollArea>
 				</Grid.Col>
@@ -454,21 +447,99 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								</>
 							)} */}
 
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("NIDBirthCertificate")}</Text>
+							<Grid columns={20}>
+								<Grid.Col span={6} mt="xs">
+									<Text fz="sm">{t("FreeFor")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<InputNumberForm
+									<SegmentedControl
+										fullWidth
+										color="var(--theme-primary-color-6)"
+										value={form.values.patient_payment_mode_id}
+										id="patient_payment_mode_id"
+										name="patient_payment_mode_id"
+										onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
+										data={[
+											{ label: t("General"), value: "" },
+											{ label: t("FreedomFighter"), value: "FreedomFighter" },
+											{ label: t("Disabled"), value: "Disabled" },
+											{ label: t("GovtService"), value: "GovtService" },
+										]}
+									/>
+									{form.values.patient_payment_mode_id && (
+										<InputForm
+											form={form}
+											label=""
+											mt="xxs"
+											tooltip={t("enterFreeIdentificationId")}
+											placeholder="Enter Free ID"
+											name="free_identification_id"
+											id="free_identification_id"
+											nextField="file"
+											value={form.values.free_identification_id || ""}
+										/>
+									)}
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("GuardianName")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
 										form={form}
 										label=""
-										placeholder="1234567890"
-										tooltip={t("enterPatientIdentity")}
-										name="identity"
-										id="identity"
-										nextField="address"
-										value={form.values.identity}
+										tooltip={t("enterGuardianName")}
+										placeholder="John Doe"
+										name="guardian_name"
+										id="guardian_name"
+										nextField="guardian_mobile"
+										value={form.values.guardian_name}
 										required
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("RoomNumber")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>{form.values.room_number || "101"}</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("mobile")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("enterPatientMobile")}
+										placeholder="+880 1717171717"
+										name="mobile"
+										id="mobile"
+										nextField="district"
+										value={form.values.mobile}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("district")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SelectForm
+										form={form}
+										tooltip={t("enterPatientDistrict")}
+										placeholder="Dhaka"
+										name="district"
+										id="district"
+										nextField="identity"
+										value={form.values.district}
+										required
+										dropdownValue={DISTRICT_LIST}
+										searchable
 									/>
 								</Grid.Col>
 							</Grid>
@@ -491,42 +562,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									/>
 								</Grid.Col>
 							</Grid>
-
-							<Grid columns={20}>
-								<Grid.Col span={6} mt="xs">
-									<Text fz="sm">{t("FreeFor")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<SegmentedControl
-										fullWidth
-										color="var(--theme-primary-color-6)"
-										value={form.values.freeFor}
-										id="freeFor"
-										name="freeFor"
-										onChange={(val) => form.setFieldValue("freeFor", val)}
-										data={[
-											{ label: t("No"), value: "" },
-											{ label: t("FreedomFighter"), value: "FreedomFighter" },
-											{ label: t("Disabled"), value: "Disabled" },
-											{ label: t("GovtService"), value: "GovtService" },
-										]}
-									/>
-									{form.values.freeFor && (
-										<TextAreaForm
-											form={form}
-											label=""
-											mt="xxs"
-											tooltip={t("enterComment")}
-											placeholder="Enter comment"
-											name="comment"
-											id="comment"
-											nextField="file"
-											value={form.values.comment || ""}
-										/>
-									)}
-								</Grid.Col>
-							</Grid>
-
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("ImageUpload")}</Text>

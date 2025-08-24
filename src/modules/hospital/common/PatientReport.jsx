@@ -49,18 +49,17 @@ export default function PatientReport({
 
 	// Update external state when internal state changes
 	const updateExternalState = (newDynamicFormData, newInvestigationList) => {
-		const transformedData = transformDynamicFormData(newDynamicFormData);
 		if (onDataChange) {
 			onDataChange({
 				basicInfo: form.values,
-				dynamicFormData: transformedData,
+				dynamicFormData: newDynamicFormData,
 				investigationList: newInvestigationList,
 			});
 		}
 		if (setFormData) {
 			setFormData({
 				basicInfo: form.values,
-				dynamicFormData: transformedData,
+				dynamicFormData: newDynamicFormData,
 				investigationList: newInvestigationList,
 			});
 		}
@@ -102,9 +101,10 @@ export default function PatientReport({
 		}
 
 		Object.keys(rawData).forEach((sectionId) => {
+			console.log("sectionId", sectionId);
 			const section = tabParticulars.find((s) => s.id.toString() === sectionId);
 			if (section) {
-				transformed[section.name] = rawData[sectionId];
+				transformed[section.name?.toLowerCase()?.replace(/\s+/g, "_")] = rawData[sectionId];
 			} else {
 				console.log(`Section with ID ${sectionId} not found in tabParticulars`);
 			}
@@ -116,6 +116,7 @@ export default function PatientReport({
 
 	// Update external state when form values change
 	useEffect(() => {
+		console.log("dynamicFormData", dynamicFormData);
 		const transformedData = transformDynamicFormData(dynamicFormData);
 		updateExternalState(transformedData, investigationList);
 	}, [form.values, dynamicFormData, investigationList]);
