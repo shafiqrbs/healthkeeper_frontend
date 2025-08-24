@@ -107,9 +107,7 @@ export default function _Table({ module }) {
     const handleRowSubmit = async (rowId) => {
         const formData = submitFormData[rowId];
         if (!formData) return;
-
         formData.particular_type_id = rowId;
-
         const value = {
             url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_TYPE.CREATE,
             data: formData,
