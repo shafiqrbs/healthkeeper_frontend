@@ -14,7 +14,7 @@ export const getPrescriptionFormInitialValues = () => {
 	};
 };
 
-const medicineInitialValues = {
+export const medicineInitialValues = {
 	medicine: "",
 	medicineName: "",
 	generic: "",
@@ -32,7 +32,6 @@ export const getMedicineFormInitialValues = () => {
 		initialValues: medicineInitialValues,
 
 		validate: {
-			medicine: (value) => (value ? null : "Medicine is required"),
 			dosage: (value) => (value ? null : "Dosage is required"),
 			times: (value) => (value ? null : "Times is required"),
 			by_meal: (value) => (value ? null : "By meal is required"),

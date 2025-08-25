@@ -1,19 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import {
-	Box,
-	Button,
-	Group,
-	ActionIcon,
-	Text,
-	Stack,
-	Flex,
-	Grid,
-	ScrollArea,
-	Divider,
-	Select,
-	Menu,
-} from "@mantine/core";
+import { Box, Button, Group, ActionIcon, Text, Stack, Flex, Grid, ScrollArea, Select, Menu } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconPencil, IconPlus, IconRestore, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
@@ -162,13 +149,19 @@ export default function AddMedicineForm({
 	const { medicineData } = useMedicineData({ term: "" });
 	const { medicineGenericData } = useMedicineGenericData({ term: "" });
 
-	const by_meal_options =
-		medicineData
-			?.filter((item) => item.by_meal && item.by_meal.trim() !== "")
-			?.map((item) => ({
-				label: item.by_meal,
-				value: item.by_meal?.toLowerCase(),
-			})) || [];
+	const by_meal_options = [
+		...new Map(
+			medicineData
+				?.filter((item) => item.by_meal?.trim())
+				.map((item) => [
+					item.by_meal.toLowerCase(),
+					{
+						label: item.by_meal,
+						value: item.by_meal.toLowerCase(),
+					},
+				])
+		).values(),
+	];
 
 	const { t } = useTranslation();
 	const form = useForm(getMedicineFormInitialValues());
@@ -190,7 +183,7 @@ export default function AddMedicineForm({
 	const prescription2A4Ref = useRef(null);
 	const prescription3A4Ref = useRef(null);
 	const prescriptionPosRef = useRef(null);
-
+	const [forceUpdate, setForceUpdate] = useState(0);
 	const [opened, { open, close }] = useDisclosure(false);
 
 	// Load held prescription data on component mount
@@ -240,6 +233,7 @@ export default function AddMedicineForm({
 			() => {
 				setMedicines([]);
 				form.reset();
+
 				setEditIndex(null);
 				// Clear PatientReport data when resetting
 				if (setPatientReportData) {
@@ -327,11 +321,6 @@ export default function AddMedicineForm({
 					form.setFieldValue("duration", "month");
 				}
 
-				// Auto-populate generic name if available
-				if (selectedMedicine.generic) {
-					form.setFieldValue("generic", selectedMedicine.generic);
-				}
-
 				// Auto-populate dose_details if available (for times field)
 				if (selectedMedicine.dose_details) {
 					form.setFieldValue("times", selectedMedicine.dose_details);
@@ -377,7 +366,11 @@ export default function AddMedicineForm({
 		} else {
 			setMedicines([...medicines, formData]);
 		}
+
+		// =============== reset form with initial values to clear all fields ================
 		form.reset();
+
+		setForceUpdate((prev) => prev + 1);
 	};
 
 	const handleDelete = (idx) => {
@@ -460,7 +453,7 @@ export default function AddMedicineForm({
 	return (
 		<Box component="form" onSubmit={form.onSubmit(handleAdd)} className="borderRadiusAll" bg="white">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
-				<Group align="end" gap="les">
+				<Group key={forceUpdate} align="end" gap="les">
 					<Group grow w="100%" gap="les">
 						<SelectForm
 							form={form}
@@ -472,7 +465,6 @@ export default function AddMedicineForm({
 							value={form.values.medicine}
 							changeValue={(v) => handleChange("medicine", v)}
 							placeholder="Medicine"
-							required
 							tooltip="Select medicine"
 						/>
 
@@ -546,20 +538,8 @@ export default function AddMedicineForm({
 							variant="filled"
 							bg="var(--theme-primary-color-6)"
 						>
-							{editIndex !== null ? "Update" : "Add"}
+							{t("Add")}
 						</Button>
-						{editIndex !== null && (
-							<Button
-								onClick={() => {
-									form.reset();
-									setEditIndex(null);
-								}}
-								variant="outline"
-								color="gray"
-							>
-								Cancel
-							</Button>
-						)}
 					</Group>
 				</Group>
 			</Box>
@@ -674,6 +654,19 @@ export default function AddMedicineForm({
 						onClick={() => {
 							setMedicines([]);
 							form.reset();
+							// =============== force reset all form fields to ensure they are cleared ================
+							form.setValues({
+								medicine: "",
+								medicineName: "",
+								generic: "",
+								dosage: "",
+								times: "",
+								by_meal: "",
+								duration: "",
+								count: 1,
+								advise: "",
+								followUpDate: null,
+							});
 							setEditIndex(null);
 							// Clear PatientReport data when resetting
 							if (setPatientReportData) {
