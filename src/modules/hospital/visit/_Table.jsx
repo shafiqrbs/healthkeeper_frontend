@@ -24,7 +24,7 @@ import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteEntityData, getIndexEntityData } from "@/app/store/core/crudThunk";
+import {deleteEntityData, getIndexEntityData, showEntityData} from "@/app/store/core/crudThunk";
 import { setInsertType, setItemData, setRefetchData } from "@/app/store/core/crudSlice";
 import { sortBy } from "lodash";
 import { formatDate } from "@/common/utils";
@@ -189,8 +189,16 @@ export default function Table({ module, height }) {
 		}
 	};
 
-	const handlePrescription = (id) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${id}`);
+	const handlePrescription = async (id) => {
+		const resultAction = await dispatch(
+			showEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.SEND_TO_PRESCRIPTION}/${id}`,
+				module,
+				id,
+			})
+		).unwrap();
+		let prescription_id = resultAction?.data?.data.id;
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 	};
 
 	return (

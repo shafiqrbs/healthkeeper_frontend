@@ -14,7 +14,7 @@ import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
 import { useElementSize } from "@mantine/hooks";
 import { useDispatch } from "react-redux";
-import { storeEntityData } from "@/app/store/core/crudThunk";
+import {storeEntityData, updateEntityData} from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -27,6 +27,7 @@ export default function Index() {
 	const { prescriptionId } = useParams();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
+	const params = useParams();
 	const form = useForm(getPrescriptionFormInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
@@ -51,6 +52,7 @@ export default function Index() {
 	const tabList = tabParticulars?.map((item) => item.name);
 
 	const handlePrescriptionSubmit = async (prescriptionData) => {
+
 		if (!patientData || Object.keys(patientData).length === 0) {
 			showNotificationComponent(t("Please select a patient first"), "red", "lightgray", true, 1000, true);
 			return;
@@ -93,15 +95,15 @@ export default function Index() {
 
 			console.log("Final submission data:", formValue);
 
-			const data = {
-				url: HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.CREATE,
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${params.prescriptionId}`,
 				data: formValue,
-				module,
+				module
 			};
 
-			const resultAction = await dispatch(storeEntityData(data));
+			const resultAction = await dispatch(updateEntityData(value));
 
-			if (storeEntityData.rejected.match(resultAction)) {
+			if (updateEntityData.rejected.match(resultAction)) {
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
 			} else {
 				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 1000, true);

@@ -164,13 +164,15 @@ export const HOSPITAL_DATA_ROUTES = {
 			DELETE: "core/customer",
 		},
 
-
 		PRESCRIPTION: {
 			INDEX: "hospital/prescription",
-			CREATE: "hospital/prescription/create",
+			SEND_TO_PRESCRIPTION: "hospital/send-to-prescription",
+			EDIT: "hospital/prescription",
+			CREATE: "hospital/prescription",
 			UPDATE: "hospital/prescription",
 			VIEW: "hospital/prescription/view",
 		},
+
 		ADMISSION: {
 			INDEX: "hospital/admission",
 			CREATE: "hospital/admission/create",

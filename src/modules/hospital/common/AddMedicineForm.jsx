@@ -28,6 +28,7 @@ const DOSAGE_OPTIONS = [
 	{ value: "2 spoons", label: "2 Spoons" },
 	{ value: "1 syringe", label: "1 Syringe" },
 ];
+
 const FREQUENCY_OPTIONS = [
 	{ value: "1+0+1", label: "1 + 0 + 1" },
 	{ value: "1+1+1", label: "1 + 1 + 1" },
