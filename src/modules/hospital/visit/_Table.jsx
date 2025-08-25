@@ -31,6 +31,7 @@ import { formatDate } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
@@ -44,6 +45,7 @@ export default function Table({ module, height }) {
 	const refetch = useSelector((state) => state.crud[module].refetching);
 	const [fetching, setFetching] = useState(false);
 
+	const { hospitalConfigData } = useHospitalConfigData();
 	const scrollViewportRef = useRef(null);
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
@@ -78,7 +80,7 @@ export default function Table({ module, height }) {
 
 		setFetching(true);
 		const value = {
-			url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.INDEX,
+			url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 			params: {
 				term: filterData.keywordSearch,
 				page: pageNum,
@@ -259,19 +261,19 @@ export default function Table({ module, height }) {
 								</Text>
 							),
 						},
+						{ accessor: "appointment", title: t("appointment") },
+						{ accessor: "patient_id", title: t("PatientID") },
+						{ accessor: "health_id", title: t("HealthID") },
+						{ accessor: "name", title: t("Name") },
+						{ accessor: "mobile", title: t("Mobile") },
+						{ accessor: "gender", title: t("Gender") },
+						{ accessor: "patient_mode_name", title: t("PatientMode") },
+						{ accessor: "patient_payment_mode_name", title: t("PatientNature") },
+						{ accessor: "total", title: t("Total") },
 						{
 							accessor: "created_by",
 							title: t("CreatedBy"),
 							render: (item) => item.created_by || "N/A",
-						},
-						{ accessor: "appointment", title: t("appointment") },
-						{ accessor: "name", title: t("Name") },
-						{ accessor: "diseases", title: t("diseases") },
-						{ accessor: "total_amount", title: t("Total") },
-						{
-							accessor: "payment_status",
-							title: t("paymentStatus"),
-							render: (item) => t(item.payment_status),
 						},
 						{
 							accessor: "action",
