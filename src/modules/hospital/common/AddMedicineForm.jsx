@@ -34,7 +34,6 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@/common/hooks/useMedicineData";
 import useMedicineGenericData from "@/common/hooks/useMedicineGenericData";
 
-const GENERIC_OPTIONS = ["Napa", "Paracetamol", "Paracetamol (Doxylamin)", "Paracetamol (Acetaminophen)"];
 const DOSAGE_OPTIONS = [
 	{ value: "1 tab", label: "1 Tablet" },
 	{ value: "2 tab", label: "2 Tablets" },
@@ -50,15 +49,13 @@ const FREQUENCY_OPTIONS = [
 	{ value: "0+1+1", label: "0 + 1 + 1" },
 	{ value: "0+1+0", label: "0 + 1 + 0" },
 	{ value: "0+0+1", label: "0 + 0 + 1" },
+	{ value: "3+0+0", label: "3 + 0 + 0" },
 ];
 const DURATION_OPTIONS = [
 	{ value: "day", label: "Day" },
 	{ value: "month", label: "Month" },
 ];
-const BY_MEAL_OPTIONS = [
-	{ value: "before", label: "30 min B" },
-	{ value: "after", label: "30 min A" },
-];
+
 const DURATION_UNIT_OPTIONS = [
 	{ value: "day", label: "Day" },
 	{ value: "week", label: "Week" },
@@ -66,7 +63,7 @@ const DURATION_UNIT_OPTIONS = [
 	{ value: "year", label: "Year" },
 ];
 
-function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit }) {
+function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit, by_meal_options }) {
 	const [mode, setMode] = useState("view");
 
 	const openEditMode = () => {
@@ -108,7 +105,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 						/>
 						<Select
 							label=""
-							data={BY_MEAL_OPTIONS}
+							data={by_meal_options}
 							value={medicine.by_meal}
 							placeholder="Timing"
 							disabled={mode === "view"}
@@ -164,6 +161,15 @@ export default function AddMedicineForm({
 }) {
 	const { medicineData } = useMedicineData({ term: "" });
 	const { medicineGenericData } = useMedicineGenericData({ term: "" });
+
+	const by_meal_options =
+		medicineData
+			?.filter((item) => item.by_meal && item.by_meal.trim() !== "")
+			?.map((item) => ({
+				label: item.by_meal,
+				value: item.by_meal?.toLowerCase(),
+			})) || [];
+
 	const { t } = useTranslation();
 	const form = useForm(getMedicineFormInitialValues());
 	const [medicines, setMedicines] = useState([
@@ -299,22 +305,67 @@ export default function AddMedicineForm({
 	const handleChange = (field, value) => {
 		form.setFieldValue(field, value);
 
-		// If medicine field is being changed, also store the medicine name
+		// If medicine field is being changed, auto-populate other fields from medicine data
 		if (field === "medicine" && value) {
 			const selectedMedicine = medicineData?.find((item) => item.id?.toString() === value);
 			if (selectedMedicine) {
+				console.log("Selected medicine data:", selectedMedicine);
+
 				form.setFieldValue("medicineName", selectedMedicine.name);
+
+				// Auto-populate by_meal if available
+				if (selectedMedicine.by_meal) {
+					form.setFieldValue("by_meal", selectedMedicine.by_meal.toLowerCase());
+				}
+
+				// Auto-populate duration and count based on duration_day or duration_month
+				if (selectedMedicine.duration_day) {
+					form.setFieldValue("count", parseInt(selectedMedicine.duration_day) || 1);
+					form.setFieldValue("duration", "day");
+				} else if (selectedMedicine.duration_month) {
+					form.setFieldValue("count", parseInt(selectedMedicine.duration_month) || 1);
+					form.setFieldValue("duration", "month");
+				}
+
+				// Auto-populate generic name if available
+				if (selectedMedicine.generic) {
+					form.setFieldValue("generic", selectedMedicine.generic);
+				}
+
+				// Auto-populate dose_details if available (for times field)
+				if (selectedMedicine.dose_details) {
+					form.setFieldValue("times", selectedMedicine.dose_details);
+				}
+
+				console.log("Form values after auto-population:", form.values);
 			}
 		}
 	};
 
 	const handleAdd = () => {
-		// Ensure medicineName is set if not already present
+		// Ensure all medicine data is properly set before adding
 		let formData = { ...form.values };
-		if (formData.medicine && !formData.medicineName) {
+		if (formData.medicine) {
 			const selectedMedicine = medicineData?.find((item) => item.id?.toString() === formData.medicine);
 			if (selectedMedicine) {
-				formData.medicineName = selectedMedicine.name;
+				// Ensure all fields are populated with medicine data
+				formData.medicineName = selectedMedicine.name || formData.medicineName;
+				formData.generic = selectedMedicine.generic || formData.generic;
+				formData.by_meal = selectedMedicine.by_meal || formData.by_meal;
+
+				// Set duration and count based on available data
+				if (selectedMedicine.duration_day) {
+					formData.count = parseInt(selectedMedicine.duration_day) || formData.count;
+					formData.duration = "day";
+				} else if (selectedMedicine.duration_month) {
+					formData.count = parseInt(selectedMedicine.duration_month) || formData.count;
+					formData.duration = "month";
+				}
+
+				// Set times if dose_details is available
+				if (selectedMedicine.dose_details) {
+					formData.times = selectedMedicine.dose_details;
+				}
 			}
 		}
 
@@ -339,7 +390,37 @@ export default function AddMedicineForm({
 
 	const handleEdit = (idx) => {
 		const medicineToEdit = medicines[idx];
-		form.setValues(medicineToEdit);
+
+		// If editing a medicine that has a medicine ID, fetch the latest data
+		if (medicineToEdit.medicine) {
+			const selectedMedicine = medicineData?.find((item) => item.id?.toString() === medicineToEdit.medicine);
+			if (selectedMedicine) {
+				// Merge the existing medicine data with the latest medicine data
+				const updatedMedicineData = {
+					...medicineToEdit,
+					medicineName: selectedMedicine.name || medicineToEdit.medicineName,
+					generic: selectedMedicine.generic || medicineToEdit.generic,
+					by_meal: selectedMedicine.by_meal || medicineToEdit.by_meal,
+					times: selectedMedicine.dose_details || medicineToEdit.times,
+				};
+
+				// Update duration and count based on available data
+				if (selectedMedicine.duration_day) {
+					updatedMedicineData.count = parseInt(selectedMedicine.duration_day) || medicineToEdit.count;
+					updatedMedicineData.duration = "day";
+				} else if (selectedMedicine.duration_month) {
+					updatedMedicineData.count = parseInt(selectedMedicine.duration_month) || medicineToEdit.count;
+					updatedMedicineData.duration = "month";
+				}
+
+				form.setValues(updatedMedicineData);
+			} else {
+				form.setValues(medicineToEdit);
+			}
+		} else {
+			form.setValues(medicineToEdit);
+		}
+
 		setEditIndex(idx);
 	};
 
@@ -432,7 +513,7 @@ export default function AddMedicineForm({
 						<SelectForm
 							form={form}
 							name="by_meal"
-							dropdownValue={BY_MEAL_OPTIONS}
+							dropdownValue={by_meal_options}
 							value={form.values.by_meal}
 							changeValue={(v) => handleChange("by_meal", v)}
 							placeholder="By Meal"
@@ -516,6 +597,7 @@ export default function AddMedicineForm({
 							setMedicines={setMedicines}
 							handleDelete={handleDelete}
 							onEdit={() => handleEdit(index)}
+							by_meal_options={by_meal_options}
 						/>
 					))}
 				</Stack>
