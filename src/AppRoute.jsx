@@ -159,7 +159,7 @@ function AppRoute() {
 					<Route path="admission-list" element={<AdmissionListIndex />} />
 
 					<Route path="prescription">
-						<Route index element={<PrescriptionIndex />} />
+						<Route path=":prescriptionId" element={<PrescriptionIndex />} />
 						<Route path="edit/:id" element={<PrescriptionIndex />} />
 					</Route>
 
@@ -185,11 +185,11 @@ function AppRoute() {
 				<Route path="/hospital/core/">
 					<Route path="particular" element={<ParticularIndex />} />
 					<Route path="particular/:id" element={<ParticularIndex mode={"edit"} />} />
-					<Route path="particular/:id" element={<ParticularIndex mode={'edit'} />} />
-					<Route path="bed" element={<BedIndex  />} />
-					<Route path="bed/:id" element={<BedIndex mode={'edit'} />} />
-					<Route path="cabin" element={<CabinIndex  />} />
-					<Route path="cabin/:id" element={<CabinIndex mode={'edit'} />} />
+					<Route path="particular/:id" element={<ParticularIndex mode={"edit"} />} />
+					<Route path="bed" element={<BedIndex />} />
+					<Route path="bed/:id" element={<BedIndex mode={"edit"} />} />
+					<Route path="cabin" element={<CabinIndex />} />
+					<Route path="cabin/:id" element={<CabinIndex mode={"edit"} />} />
 					<Route path="particular-mode" element={<ParticularModeIndex />} />
 					<Route path="particular-type" element={<ParticularTypeIndex />} />
 					<Route path="category" element={<CategoryIndex />} />

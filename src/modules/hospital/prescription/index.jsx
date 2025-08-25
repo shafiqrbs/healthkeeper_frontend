@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "./helpers/request";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
@@ -11,7 +11,7 @@ import PatientReport from "../common/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import Form from "./form/_Form";
 import BaseTabs from "@components/tabs/BaseTabs";
-import useParticularsData from "@/common/hooks/useParticularsData";
+import useParticularsData from "@hooks/useParticularsData";
 import { useElementSize } from "@mantine/hooks";
 import { useDispatch } from "react-redux";
 import { storeEntityData } from "@/app/store/core/crudThunk";
@@ -19,10 +19,12 @@ import { showNotificationComponent } from "@/common/components/core-component/sh
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
+import usePrescriptionData from "@hooks/usePrescriptionData";
 
 const module = MODULES.PRESCRIPTION;
 
 export default function Index() {
+	const { prescriptionId } = useParams();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const form = useForm(getPrescriptionFormInitialValues(t));
@@ -41,6 +43,9 @@ export default function Index() {
 	const [tabValue, setTabValue] = useState("All");
 
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
+	const { prescriptionData } = usePrescriptionData({ prescriptionId });
+
+	console.log("prescriptionData", prescriptionData);
 
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);

@@ -93,6 +93,16 @@ const initialState = {
 		filterData: { term: "" },
 	},
 
+	prescriptionItem: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { term: "" },
+	},
+
 	vendor: {
 		insertType: "create",
 		isLoading: true,

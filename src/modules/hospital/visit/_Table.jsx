@@ -187,8 +187,8 @@ export default function Table({ module, height }) {
 		}
 	};
 
-	const handlePrescription = () => {
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+	const handlePrescription = (id) => {
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${id}`);
 	};
 
 	return (
