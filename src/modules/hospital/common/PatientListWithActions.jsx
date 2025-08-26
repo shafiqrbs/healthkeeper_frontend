@@ -145,6 +145,7 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 				const newData = result.payload?.data?.data || [];
 				setPatientList(newData);
 				setSelectPatient(newData.find((patient) => patient.id == params.prescriptionId));
+				setPatientData(newData.find((patient) => patient.id == params.prescriptionId));
 			}
 		} catch (err) {
 			console.error("Unexpected error:", err);

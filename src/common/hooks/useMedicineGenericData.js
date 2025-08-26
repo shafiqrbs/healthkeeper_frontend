@@ -17,10 +17,8 @@ const useMedicineGenericData = ({ term = "" }) => {
 	};
 
 	useEffect(() => {
-		if (!medicineGenericData?.length) {
-			fetchData();
-		}
-	}, [dispatch]);
+		fetchData();
+	}, [term]);
 
 	return { medicineGenericData, fetchData };
 };

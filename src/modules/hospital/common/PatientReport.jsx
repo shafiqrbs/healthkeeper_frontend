@@ -19,7 +19,7 @@ import { useOutletContext } from "react-router-dom";
 import PatientReportAction from "./PatientReportAction";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
-import { IconX } from "@tabler/icons-react";
+import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 
 export default function PatientReport({
 	patientData,
@@ -243,6 +243,7 @@ export default function PatientReport({
 									handleDynamicFormChange(id, name, "");
 								}
 							}}
+							rightSection={<IconCaretUpDownFilled size={16} />}
 						/>
 						<Stack gap={0} bg="white" px="sm" className="borderRadiusAll">
 							{investigationList.map((item, idx) => (

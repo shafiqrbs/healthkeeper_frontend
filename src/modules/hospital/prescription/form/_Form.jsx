@@ -47,7 +47,7 @@ export default function Form({ form, isOpenPatientInfo, setIsOpenPatientInfo, se
 		).unwrap();
 		setPrescription(resultAction?.data?.data);
 	};
-	console.log(prescription);
+
 	const handleCloseDrawer = () => {
 		closeDrawer();
 		navigate("/hospital/prescription");

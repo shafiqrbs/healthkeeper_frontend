@@ -20,25 +20,9 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@/common/hooks/useMedicineData";
 import useMedicineGenericData from "@/common/hooks/useMedicineGenericData";
+import useGlobalDropdownData from "@/common/hooks/dropdown/useGlobalDropdownData";
+import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 
-const DOSAGE_OPTIONS = [
-	{ value: "1 tab", label: "1 Tablet" },
-	{ value: "2 tab", label: "2 Tablets" },
-	{ value: "1 spoon", label: "1 Spoon" },
-	{ value: "2 spoons", label: "2 Spoons" },
-	{ value: "1 syringe", label: "1 Syringe" },
-];
-
-const FREQUENCY_OPTIONS = [
-	{ value: "1+0+1", label: "1 + 0 + 1" },
-	{ value: "1+1+1", label: "1 + 1 + 1" },
-	{ value: "1+1+0", label: "1 + 1 + 0" },
-	{ value: "1+0+0", label: "1 + 0 + 0" },
-	{ value: "0+1+1", label: "0 + 1 + 1" },
-	{ value: "0+1+0", label: "0 + 1 + 0" },
-	{ value: "0+0+1", label: "0 + 0 + 1" },
-	{ value: "3+0+0", label: "3 + 0 + 0" },
-];
 const DURATION_OPTIONS = [
 	{ value: "day", label: "Day" },
 	{ value: "month", label: "Month" },
@@ -51,8 +35,17 @@ const DURATION_UNIT_OPTIONS = [
 	{ value: "year", label: "Year" },
 ];
 
-function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit, by_meal_options }) {
+function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit }) {
 	const [mode, setMode] = useState("view");
+	const { data: by_meal_options } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
+		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
+	});
+
+	const { data: dosage_options } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
+		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
+	});
 
 	const openEditMode = () => {
 		setMode("edit");
@@ -85,14 +78,6 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit,
 					<Group grow gap="les">
 						<Select
 							label=""
-							data={FREQUENCY_OPTIONS}
-							value={medicine.times}
-							placeholder="Times"
-							disabled={mode === "view"}
-							onChange={(v) => handleChange("times", v)}
-						/>
-						<Select
-							label=""
 							data={by_meal_options}
 							value={medicine.by_meal}
 							placeholder="Timing"
@@ -101,7 +86,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit,
 						/>
 						<Select
 							label=""
-							data={DOSAGE_OPTIONS}
+							data={dosage_options}
 							value={medicine.dosage}
 							placeholder="Dosage"
 							disabled={mode === "view"}
@@ -147,37 +132,14 @@ export default function AddMedicineForm({
 	patientReportData = null,
 	setPatientReportData = null,
 }) {
-	const { medicineData } = useMedicineData({ term: "" });
-	const { medicineGenericData } = useMedicineGenericData({ term: "" });
-
-	const by_meal_options = [
-		...new Map(
-			medicineData
-				?.filter((item) => item.by_meal?.trim())
-				.map((item) => [
-					item.by_meal.toLowerCase(),
-					{
-						label: item.by_meal,
-						value: item.by_meal.toLowerCase(),
-					},
-				])
-		).values(),
-	];
+	const [medicineTerm, setMedicineTerm] = useState("");
+	const [medicineGenericTerm, setMedicineGenericTerm] = useState("");
+	const { medicineData } = useMedicineData({ term: medicineTerm });
+	const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
 
 	const { t } = useTranslation();
 	const form = useForm(getMedicineFormInitialValues());
-	const [medicines, setMedicines] = useState([
-		{
-			generic: "",
-			medicine: "Napa",
-			medicineName: "Napa",
-			dosage: "1 tab",
-			times: "1+0+1",
-			by_meal: "before",
-			count: 10,
-			duration: "day",
-		},
-	]);
+	const [medicines, setMedicines] = useState([]);
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const prescriptionA4Ref = useRef(null);
@@ -186,6 +148,16 @@ export default function AddMedicineForm({
 	const prescriptionPosRef = useRef(null);
 	const [forceUpdate, setForceUpdate] = useState(0);
 	const [opened, { open, close }] = useDisclosure(false);
+
+	const { data: by_meal_options } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
+		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
+	});
+
+	const { data: dosage_options } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
+		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
+	});
 
 	// Load held prescription data on component mount
 	useEffect(() => {
@@ -310,7 +282,7 @@ export default function AddMedicineForm({
 
 				// Auto-populate by_meal if available
 				if (selectedMedicine.by_meal) {
-					form.setFieldValue("by_meal", selectedMedicine.by_meal.toLowerCase());
+					form.setFieldValue("by_meal", selectedMedicine.by_meal);
 				}
 
 				// Auto-populate duration and count based on duration_day or duration_month
@@ -324,7 +296,7 @@ export default function AddMedicineForm({
 
 				// Auto-populate dose_details if available (for times field)
 				if (selectedMedicine.dose_details) {
-					form.setFieldValue("times", selectedMedicine.dose_details);
+					form.setFieldValue("dosage", selectedMedicine.dose_details);
 				}
 
 				console.log("Form values after auto-population:", form.values);
@@ -395,7 +367,7 @@ export default function AddMedicineForm({
 					medicineName: selectedMedicine.name || medicineToEdit.medicineName,
 					generic: selectedMedicine.generic || medicineToEdit.generic,
 					by_meal: selectedMedicine.by_meal || medicineToEdit.by_meal,
-					times: selectedMedicine.dose_details || medicineToEdit.times,
+					dose_details: selectedMedicine.dose_details || medicineToEdit.dose_details,
 				};
 
 				// Update duration and count based on available data
@@ -456,29 +428,33 @@ export default function AddMedicineForm({
 			<Box bg="var(--theme-primary-color-0)" p="sm">
 				<Group key={forceUpdate} align="end" gap="les">
 					<Group grow w="100%" gap="les">
-						<SelectForm
-							form={form}
+						<Select
+							searchable
+							onSearchChange={(v) => {
+								setMedicineTerm(v);
+							}}
 							name="medicine"
-							dropdownValue={medicineData?.map((item) => ({
+							data={medicineData?.map((item) => ({
 								label: item.name,
 								value: item.id?.toString(),
 							}))}
 							value={form.values.medicine}
-							changeValue={(v) => handleChange("medicine", v)}
+							onChange={(v) => handleChange("medicine", v)}
 							placeholder="Medicine"
 							tooltip="Select medicine"
 						/>
 
-						<InputAutoComplete
+						<Select
+							searchable
+							onSearchChange={(v) => setMedicineGenericTerm(v)}
 							tooltip="Enter generic name"
-							form={form}
 							name="generic"
 							data={medicineGenericData?.map((item, index) => ({
 								label: `${item.name}`,
 								value: `${item.name} - ${index + 1}`,
 							}))}
 							value={form.values.generic}
-							changeValue={(v) => handleChange("generic", v)}
+							onChange={(v) => handleChange("generic", v)}
 							placeholder="Generic name"
 						/>
 					</Group>
@@ -486,22 +462,12 @@ export default function AddMedicineForm({
 						<SelectForm
 							form={form}
 							name="dosage"
-							dropdownValue={DOSAGE_OPTIONS}
+							dropdownValue={dosage_options}
 							value={form.values.dosage}
 							changeValue={(v) => handleChange("dosage", v)}
 							placeholder="Dosage"
 							required
 							tooltip="Enter dosage"
-						/>
-						<SelectForm
-							form={form}
-							name="times"
-							dropdownValue={FREQUENCY_OPTIONS}
-							value={form.values.times}
-							changeValue={(v) => handleChange("times", v)}
-							placeholder="Times"
-							required
-							tooltip="Enter frequency"
 						/>
 						<SelectForm
 							form={form}
@@ -570,6 +536,11 @@ export default function AddMedicineForm({
 			</Text>
 			<ScrollArea h={mainAreaHeight - 450} bg="white">
 				<Stack gap="xs" p="sm">
+					{medicines.length === 0 && (
+						<Text fz="sm" c="var(--theme-secondary-color)">
+							No medicine added yet
+						</Text>
+					)}
 					{medicines.map((medicine, index) => (
 						<MedicineListItem
 							key={index}

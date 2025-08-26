@@ -11,16 +11,14 @@ const useMedicineData = ({ term = "" }) => {
 			getIndexEntityData({
 				url: "hospital/select/medicine",
 				module: "medicines",
-				params: { term },
+				params: { term: term || "" },
 			})
 		);
 	};
 
 	useEffect(() => {
-		if (!medicineData?.length) {
-			fetchData();
-		}
-	}, [dispatch]);
+		fetchData();
+	}, [term]);
 
 	return { medicineData, fetchData };
 };

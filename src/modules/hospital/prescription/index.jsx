@@ -27,7 +27,6 @@ export default function Index() {
 	const { prescriptionId } = useParams();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
-	const params = useParams();
 	const form = useForm(getPrescriptionFormInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
@@ -45,8 +44,6 @@ export default function Index() {
 
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const { prescriptionData } = usePrescriptionData({ prescriptionId });
-
-	console.log("prescriptionData", prescriptionData);
 
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);
@@ -92,10 +89,8 @@ export default function Index() {
 				...prescriptionData.prescriptionForm,
 			};
 
-			console.log("Final submission data:", formValue);
-
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${params.prescriptionId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${prescriptionId}`,
 				data: formValue,
 				module,
 			};

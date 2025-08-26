@@ -84,7 +84,7 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 			const transformedData = storeData.data?.map((item) => {
 				// =============== handle different data structures ================
 				const label = item.display_name || item.name || item.label || item.title || "";
-				const value = String(item.id || item.value || "");
+				const value = String(item.id || item.value || item.name);
 				const slug = item.slug || "";
 
 				// =============== handle special cases like country with code and phonecode ================

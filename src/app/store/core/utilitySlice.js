@@ -27,7 +27,8 @@ export const ACCOUNTING_DROPDOWNS = {
 };
 
 export const HOSPITAL_DROPDOWNS = {
-
+	BY_MEAL: { UTILITY: "byMeal", PATH: "hospital/select/bymeal" },
+	DOSAGE: { UTILITY: "dosage", PATH: "hospital/select/dosage" },
 	PARTICULAR_TYPE: { UTILITY: "particularType", PATH: "hospital/select/particular-type" },
 	PARTICULAR_MASTER_TYPE: { UTILITY: "particularMasterType", PATH: "hospital/select/particular-master-type" },
 
