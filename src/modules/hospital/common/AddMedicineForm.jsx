@@ -442,8 +442,11 @@ export default function AddMedicineForm({
 							onChange={(v) => handleChange("medicine", v)}
 							placeholder="Medicine"
 							tooltip="Select medicine"
+							nothingFoundMessage="Nothing found..."
+							onBlur={() => {
+								setMedicineTerm("");
+							}}
 						/>
-
 						<Select
 							searchable
 							onSearchChange={(v) => setMedicineGenericTerm(v)}
@@ -451,11 +454,15 @@ export default function AddMedicineForm({
 							name="generic"
 							data={medicineGenericData?.map((item, index) => ({
 								label: `${item.name}`,
-								value: `${item.name} - ${index + 1}`,
+								value: `${item.name} - ${index}`,
 							}))}
 							value={form.values.generic}
 							onChange={(v) => handleChange("generic", v)}
 							placeholder="Generic name"
+							nothingFoundMessage="Nothing found..."
+							onBlur={() => {
+								setMedicineGenericTerm("");
+							}}
 						/>
 					</Group>
 					<Group grow gap="les" w="100%">

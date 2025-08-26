@@ -1,23 +1,31 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 
 const useMedicineGenericData = ({ term = "" }) => {
 	const dispatch = useDispatch();
-	const medicineGenericData = useSelector((state) => state.crud.medicineGeneric.data?.data);
+	const [medicineGenericData, setMedicineGenericData] = useState([]);
 
-	const fetchData = () => {
-		dispatch(
+	const fetchData = async ({ search }) => {
+		const resultAction = await dispatch(
 			getIndexEntityData({
 				url: "hospital/select/medicine-generic",
 				module: "medicineGeneric",
-				params: { term },
+				params: { term: search || "" },
 			})
-		);
+		).unwrap();
+
+		if (resultAction?.data?.status === 200) {
+			setMedicineGenericData(resultAction.data?.data || []);
+		}
 	};
 
 	useEffect(() => {
-		fetchData();
+		if (term) {
+			fetchData({ search: term });
+		} else {
+			setMedicineGenericData([]);
+		}
 	}, [term]);
 
 	return { medicineGenericData, fetchData };
