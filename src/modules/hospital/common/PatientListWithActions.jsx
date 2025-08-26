@@ -135,17 +135,16 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 
 	const fetchData = async () => {
 		const value = {
-			url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+			url: HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX,
 			module,
 		};
-
 		try {
 			const result = await dispatch(getIndexEntityData(value));
 			if (result.payload) {
 				const newData = result.payload?.data?.data || [];
 				setPatientList(newData);
-				setSelectPatient(newData.find((patient) => patient.id == params.prescriptionId));
-				setPatientData(newData.find((patient) => patient.id == params.prescriptionId));
+				//setSelectPatient(newData.find((patient) => patient.id == params.prescriptionId));
+				//setPatientData(newData.find((patient) => patient.id == params.prescriptionId));
 			}
 		} catch (err) {
 			console.error("Unexpected error:", err);

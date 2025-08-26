@@ -65,6 +65,7 @@ export default function Table({ module, height }) {
 
 	const [records, setRecords] = useState(sortBy(listData.data, "name"));
 
+
 	useEffect(() => {
 		const data = sortBy(listData.data, sortStatus.columnAccessor);
 		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
@@ -265,7 +266,7 @@ export default function Table({ module, height }) {
 							textAlignment: "right",
 							render: (item) => (
 								<Text fz="sm" onClick={() => handleView(item.id)} className="activate-link text-nowrap">
-									{formatDate(item.created_at)}
+									{formatDate(item.created_at)+" #"+item.id}
 								</Text>
 							),
 						},

@@ -9,7 +9,7 @@ const usePrescriptionData = ({ prescriptionId }) => {
 	const fetchData = () => {
 		dispatch(
 			getIndexEntityData({
-				url: `hospital/send-to-prescription/${prescriptionId}`,
+				url: `hospital/prescription/${prescriptionId}`,
 				module: "prescription",
 			})
 		);
