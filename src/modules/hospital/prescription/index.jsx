@@ -14,7 +14,7 @@ import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
 import { useElementSize } from "@mantine/hooks";
 import { useDispatch } from "react-redux";
-import {storeEntityData, updateEntityData} from "@/app/store/core/crudThunk";
+import { updateEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -52,7 +52,6 @@ export default function Index() {
 	const tabList = tabParticulars?.map((item) => item.name);
 
 	const handlePrescriptionSubmit = async (prescriptionData) => {
-
 		if (!patientData || Object.keys(patientData).length === 0) {
 			showNotificationComponent(t("Please select a patient first"), "red", "lightgray", true, 1000, true);
 			return;
@@ -98,7 +97,7 @@ export default function Index() {
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${params.prescriptionId}`,
 				data: formValue,
-				module
+				module,
 			};
 
 			const resultAction = await dispatch(updateEntityData(value));
