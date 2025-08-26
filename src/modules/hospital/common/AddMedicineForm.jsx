@@ -15,7 +15,7 @@ import PrescriptionPos from "@components/print-formats/pos/Prescription";
 import Prescription2 from "@components/print-formats/a4/Prescription2";
 import Prescription3 from "@components/print-formats/a4/Prescription3";
 import PrescriptionPreview from "./PrescriptionPreview";
-import { useDisclosure, useHotkeys } from "@mantine/hooks";
+import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@/common/hooks/useMedicineData";
@@ -132,8 +132,8 @@ export default function AddMedicineForm({
 	patientReportData = null,
 	setPatientReportData = null,
 }) {
-	const [medicineTerm, setMedicineTerm] = useState("");
-	const [medicineGenericTerm, setMedicineGenericTerm] = useState("");
+	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
+	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
 	const { medicineData } = useMedicineData({ term: medicineTerm });
 	const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
 

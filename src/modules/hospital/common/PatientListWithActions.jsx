@@ -195,7 +195,7 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 					</ActionIcon>
 				</>
 			);
-		} else if (action === "edit" && selectPatient.id !== patient.id) {
+		} else if (action === "edit" && selectPatient?.id !== patient?.id) {
 			return (
 				<>
 					<Button variant="filled" size="xs" bg="var(--theme-primary-color-6)" aria-label="confirm" miw={76}>
@@ -239,7 +239,7 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 						p="les"
 						className="cursor-pointer"
 						bg={
-							selectPatient.id === patient.id
+							selectPatient?.id === patient?.id
 								? "var(--theme-primary-color-1)"
 								: "var(--theme-tertiary-color-0)"
 						}
@@ -268,7 +268,7 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 								</Grid.Col>
 								<Grid.Col span={3}>
 									<Flex align="center" h="100%" justify="flex-end" gap="les">
-										{selectPatient.id === patient.id && action === "edit" && (
+										{selectPatient?.id === patient?.id && action === "edit" && (
 											<>
 												<Button
 													variant="filled"
