@@ -1,7 +1,6 @@
 import { hasLength } from "@mantine/form";
 
 const initialValues = {
-
 	identity_mode: "NID",
 	health_id: "",
 	patient_mode: "opd",
@@ -36,8 +35,6 @@ const initialValues = {
 	patient_payment_mode_id: 30,
 	api_patient_content: "",
 	invoice_particulars: [{ id: 1, name: "Consultation", quantity: 10, price: 100 }],
-
-
 };
 
 export const getVendorFormInitialValues = (t) => {

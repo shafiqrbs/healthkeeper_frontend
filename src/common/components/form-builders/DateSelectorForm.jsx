@@ -34,6 +34,7 @@ export default function DateSelectorForm({
 	disabledFutureDate = false,
 	miw,
 	disabled = false,
+	onChange,
 }) {
 	const { t } = useTranslation();
 
@@ -66,6 +67,9 @@ export default function DateSelectorForm({
 
 	// =============== handle date change ================
 	const handleDateChange = (date) => {
+		if (onChange) {
+			onChange();
+		}
 		setSelectedDate(date);
 	};
 

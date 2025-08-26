@@ -13,7 +13,7 @@ import {
 	Stack,
 	Text,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { IconArrowRight, IconSearch, IconUpload } from "@tabler/icons-react";
@@ -42,20 +42,6 @@ export default function PatientForm({ form, module }) {
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
 	const [opened, { open, close }] = useDisclosure(false);
-
-	useEffect(() => {
-		const type = form.values.ageType || "year";
-		const formattedAge = calculateAge(form.values.dob, type);
-		form.setFieldValue("age", formattedAge);
-
-		// Calculate detailed age from date of birth
-		if (form.values.dob) {
-			const detailedAge = calculateDetailedAge(form.values.dob);
-			form.setFieldValue("year", detailedAge.years);
-			form.setFieldValue("month", detailedAge.months);
-			form.setFieldValue("day", detailedAge.days);
-		}
-	}, [form.values.dob]);
 
 	useEffect(() => {
 		document.getElementById("patientName").focus();
@@ -111,7 +97,21 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 	const firstRender = useIsFirstRender();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const dispatch = useDispatch();
+	const [updateKey, setUpdateKey] = useState(0);
 
+	const handleDobChange = () => {
+		const type = form.values.ageType || "year";
+		const formattedAge = calculateAge(form.values.dob, type);
+		form.setFieldValue("age", formattedAge);
+
+		// Calculate detailed age from date of birth
+		if (form.values.dob) {
+			const detailedAge = calculateDetailedAge(form.values.dob);
+			form.setFieldValue("year", detailedAge.years);
+			form.setFieldValue("month", detailedAge.months);
+			form.setFieldValue("day", detailedAge.days);
+		}
+	};
 	// save to localStorage on every form change
 	useEffect(() => {
 		if (!firstRender) {
@@ -151,33 +151,19 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 		form.setFieldValue("identity_mode", val);
 	};
 
-	// handle manual age field updates
-	const handleAgeFieldChange = (field, value) => {
-		form.setFieldValue(field, value);
-
-		// update the total age field when any of the detailed age fields change
-		const year = form.values.year || 0;
-		const month = form.values.month || 0;
-		const day = form.values.day || 0;
-
-		// calculate total age in years (approximate)
-		const totalAgeInYears = year + month / 12 + day / 365;
-		form.setFieldValue("age", Math.floor(totalAgeInYears));
-	};
-
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
 
 			try {
 				const createdBy = JSON.parse(localStorage.getItem("user"));
-                const options = {year: "numeric",month: "2-digit",day: "2-digit"};
+				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
 
 				const formValue = {
 					...form.values,
 					created_by_id: createdBy?.id,
-                    dob: new Date(form.values.dob).toLocaleDateString("en-CA", options),
-                    appointment: new Date(form.values.appointment).toLocaleDateString("en-CA", options)
+					dob: new Date(form.values.dob).toLocaleDateString("en-CA", options),
+					appointment: new Date(form.values.appointment).toLocaleDateString("en-CA", options),
 				};
 
 				const data = {
@@ -195,6 +181,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 					setRefetchData({ module, refetching: true });
 					form.reset();
 					localStorage.removeItem(LOCAL_STORAGE_KEY);
+					setUpdateKey((prev) => prev + 1);
 				}
 			} catch (error) {
 				console.error("Error submitting visit:", error);
@@ -262,9 +249,11 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										id="identity"
 										nextField="address"
 										value={form.values.identity}
-										rightSection={<ActionIcon bg='var(--theme-secondary-color-6)'>
-											<IconSearch  size={'16'} />
-										</ActionIcon>}
+										rightSection={
+											<ActionIcon bg="var(--theme-secondary-color-6)">
+												<IconSearch size={"16"} />
+											</ActionIcon>
+										}
 										required
 									/>
 								</Grid.Col>
@@ -273,7 +262,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("HealthID")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>{form.values.healthID || "3433242434"}</Grid.Col>
+								<Grid.Col span={14}>{form.values.healthID || "08934"}</Grid.Col>
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
@@ -320,9 +309,10 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								</Grid.Col>
 								<Grid.Col span={14}>
 									<DateSelectorForm
+										key={updateKey}
 										form={form}
 										label=""
-										placeholder="23-06-2025"
+										placeholder="Select Date of Birth"
 										tooltip={t("enterPatientDateOfBirth")}
 										name="dob"
 										id="dob"
@@ -330,6 +320,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										value={form.values.dob}
 										required
 										disabledFutureDate
+										onChange={handleDobChange}
 									/>
 								</Grid.Col>
 							</Grid>
@@ -347,7 +338,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 											name="year"
 											id="year"
 											nextField="month"
-											value={form.values.year}
 											min={0}
 											max={150}
 											leftSection={
@@ -355,7 +345,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 													{t("Y")}
 												</Text>
 											}
-											onChange={(value) => handleAgeFieldChange("year", value)}
 										/>
 										<InputNumberForm
 											form={form}
@@ -365,7 +354,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 											name="month"
 											id="month"
 											nextField="day"
-											value={form.values.month}
 											min={0}
 											max={11}
 											leftSection={
@@ -373,7 +361,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 													{t("M")}
 												</Text>
 											}
-											onChange={(value) => handleAgeFieldChange("month", value)}
 										/>
 										<InputNumberForm
 											form={form}
@@ -383,7 +370,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 											name="day"
 											id="day"
 											nextField="mobile"
-											value={form.values.day}
 											min={0}
 											max={31}
 											leftSection={
@@ -391,7 +377,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 													{t("D")}
 												</Text>
 											}
-											onChange={(value) => handleAgeFieldChange("day", value)}
 										/>
 									</Flex>
 								</Grid.Col>
@@ -457,13 +442,13 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										name="patient_payment_mode_id"
 										onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
 										data={[
-											{ label: t("General"), value: "" },
-											{ label: t("FreedomFighter"), value: "FreedomFighter" },
-											{ label: t("Disabled"), value: "Disabled" },
-											{ label: t("GovtService"), value: "GovtService" },
+											{ label: t("General"), value: "30" },
+											{ label: t("FreedomFighter"), value: "33" },
+											{ label: t("Disabled"), value: "55" },
+											{ label: t("GovtService"), value: "35" },
 										]}
 									/>
-									{form.values.patient_payment_mode_id && (
+									{form.values.patient_payment_mode_id !== "30" && (
 										<InputForm
 											form={form}
 											label=""
