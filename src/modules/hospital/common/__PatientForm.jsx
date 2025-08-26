@@ -171,10 +171,13 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 
 			try {
 				const createdBy = JSON.parse(localStorage.getItem("user"));
+                const options = {year: "numeric",month: "2-digit",day: "2-digit"};
 
 				const formValue = {
 					...form.values,
 					created_by_id: createdBy?.id,
+                    dob: new Date(form.values.dob).toLocaleDateString("en-CA", options),
+                    appointment: new Date(form.values.appointment).toLocaleDateString("en-CA", options)
 				};
 
 				const data = {
