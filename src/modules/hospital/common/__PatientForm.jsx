@@ -444,15 +444,9 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
 										data={[
 											{ label: t("General"), value: "30" },
-<<<<<<< HEAD
-											{ label: t("FreedomFighter"), value: "33" },
-											{ label: t("Disabled"), value: "55" },
-											{ label: t("GovtService"), value: "35" },
-=======
 											{ label: t("FreedomFighter"), value: "31" },
-											{ label: t("Disabled"), value: "32" },
-											{ label: t("GovtService"), value: "43" },
->>>>>>> 5d1207e (Rmegency module table update.)
+											{ label: t("GovtService"), value: "32" },
+											{ label: t("Disabled"), value: "44" },
 										]}
 									/>
 									{form.values.patient_payment_mode_id !== "30" && (
