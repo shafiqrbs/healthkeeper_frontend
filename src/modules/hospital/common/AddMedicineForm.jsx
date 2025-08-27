@@ -1,6 +1,19 @@
 import { useRef, useState, useEffect } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import { Box, Button, Group, ActionIcon, Text, Stack, Flex, Grid, ScrollArea, Select, Menu } from "@mantine/core";
+import {
+	Box,
+	Button,
+	Group,
+	ActionIcon,
+	Text,
+	Stack,
+	Flex,
+	Grid,
+	ScrollArea,
+	Select,
+	Menu,
+	Autocomplete,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconPencil, IconPlus, IconRestore, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
@@ -447,19 +460,19 @@ export default function AddMedicineForm({
 								setMedicineTerm("");
 							}}
 						/>
-						<Select
-							searchable
-							onSearchChange={(v) => setMedicineGenericTerm(v)}
+						<Autocomplete
 							tooltip="Enter generic name"
 							name="generic"
 							data={medicineGenericData?.map((item, index) => ({
 								label: `${item.name}`,
-								value: `${item.name} - ${index}`,
+								value: `${item.name} ${index}`,
 							}))}
 							value={form.values.generic}
-							onChange={(v) => handleChange("generic", v)}
+							onChange={(v) => {
+								handleChange("generic", v);
+								setMedicineGenericTerm(v);
+							}}
 							placeholder="Generic name"
-							nothingFoundMessage="Nothing found..."
 							onBlur={() => {
 								setMedicineGenericTerm("");
 							}}

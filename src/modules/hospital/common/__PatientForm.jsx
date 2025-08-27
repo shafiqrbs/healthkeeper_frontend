@@ -37,7 +37,7 @@ import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
-export default function PatientForm({ form, selectedRoom,module }) {
+export default function PatientForm({ form, selectedRoom, module }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
@@ -263,7 +263,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									<Text fz="sm">{t("HealthID")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>{form.values.healthID || ""}</Grid.Col>
-
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
@@ -445,8 +444,8 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										data={[
 											{ label: t("General"), value: "30" },
 											{ label: t("FreedomFighter"), value: "31" },
-											{ label: t("GovtService"), value: "32" },
-											{ label: t("Disabled"), value: "44" },
+											{ label: t("Disabled"), value: "32" },
+											{ label: t("GovtService"), value: "43" },
 										]}
 									/>
 									{form.values.patient_payment_mode_id !== "30" && (
