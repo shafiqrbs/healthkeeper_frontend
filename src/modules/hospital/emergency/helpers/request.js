@@ -1,33 +1,40 @@
 import { hasLength } from "@mantine/form";
 
 const initialValues = {
-	type: "general",
-	appointment: "",
-	patientName: "",
+	identity_mode: "NID",
+	health_id: "",
+	patient_mode: "emergency",
+	room_id: "971",
+	doctor_id: "",
+	appointment: new Date(),
+	name: "",
 	mobile: "",
 	gender: "male",
 	height: "",
 	weight: "",
 	bp: "",
-	dateOfBirth: "",
+	dob: "",
+	day: "",
+	month: "",
+	year: "",
 	age: "",
-	ageType: "year",
-	ageYear: "",
-	ageMonth: "",
-	ageDay: "",
 	identity: "",
 	district: "Dhaka",
 	address: "",
-	roomNo: "",
 	specialization: "",
-	doctorName: "",
-	diseaseProfile: "Diabetic",
-	referredName: "",
-	amount: "",
-	marketingEx: "",
-	paymentMethod: "bkash",
-	isConfirm: false,
-	smsAlert: false,
+	disease_profile: "",
+	referred_id: "",
+	amount: 30,
+	marketing_id: "",
+	comment: "",
+	guardian_name: "",
+	guardian_mobile: "",
+	email: "",
+	payment_mode: "",
+	free_identification: "",
+	patient_payment_mode_id: 30,
+	api_patient_content: "",
+	invoice_particulars: [{ id: 1, name: "Consultation", quantity: 30, price: 100 }],
 };
 
 export const getVendorFormInitialValues = (t) => {
@@ -35,20 +42,16 @@ export const getVendorFormInitialValues = (t) => {
 		initialValues,
 
 		validate: {
-			patientName: hasLength({ min: 2, max: 20 }),
+			name: hasLength({ min: 2, max: 20 }),
 			mobile: (value) => {
 				if (!value) return t("MobileValidationRequired");
 				return null;
 			},
-			bp: hasLength({ min: 2, max: 20 }),
-			identity: hasLength({ min: 2, max: 20 }),
-			district: hasLength({ min: 2, max: 20 }),
-			specialization: hasLength({ min: 2, max: 20 }),
-			doctorName: hasLength({ min: 2, max: 20 }),
-			diseaseProfile: hasLength({ min: 2, max: 20 }),
-			// referredName: hasLength({ min: 2, max: 20 }),
-			// marketingEx: hasLength({ min: 2, max: 20 }),
-			amount: hasLength({ min: 2, max: 20 }),
+			amount: (value) => {
+				if (!value) return t("AmountValidationRequired");
+				return null;
+			},
+
 		},
 	};
 };

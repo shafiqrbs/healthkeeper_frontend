@@ -47,7 +47,6 @@ export const getVendorFormInitialValues = (t) => {
 				if (!value) return t("MobileValidationRequired");
 				return null;
 			},
-			district: hasLength({ min: 2, max: 20 }),
 			amount: (value) => {
 				if (!value) return t("AmountValidationRequired");
 				return null;
