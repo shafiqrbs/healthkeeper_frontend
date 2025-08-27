@@ -2,129 +2,19 @@ import { IconCalendar, IconPencil, IconPrinter, IconUser, IconX } from "@tabler/
 import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { setInsertType } from "@/app/store/core/crudSlice";
 import { useDispatch } from "react-redux";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES } from "@/constants";
+import Prescription from "@components/print-formats/a4/Prescription2";
+import { useReactToPrint } from "react-to-print";
+
 const module = MODULES.VISIT;
-// const patientList = [
-// 	{
-// 		id: 1,
-// 		date: "30-06-25",
-// 		name: "MD. Shafiqul",
-// 		patientId: "000231",
-// 		mobile: "+88017345650",
-// 	},
-// 	{
-// 		id: 2,
-// 		date: "31-06-25",
-// 		name: "John Doe",
-// 		patientId: "000232",
-// 		mobile: "+88016345673",
-// 	},
-// 	{
-// 		id: 3,
-// 		date: "23-06-25",
-// 		name: "Jane Doe",
-// 		patientId: "000233",
-// 		mobile: "+88015345677",
-// 	},
-// 	{
-// 		id: 4,
-// 		date: "19-06-25",
-// 		name: "John Smith",
-// 		patientId: "000234",
-// 		mobile: "+88019345600",
-// 	},
-// 	{
-// 		id: 5,
-// 		date: "05-06-25",
-// 		name: "Jane Smith",
-// 		patientId: "000235",
-// 		mobile: "+88019345667",
-// 	},
-// 	{
-// 		id: 6,
-// 		date: "13-06-25",
-// 		name: "John Doe",
-// 		patientId: "000236",
-// 		mobile: "+88017345688",
-// 	},
-// 	{
-// 		id: 7,
-// 		date: "12-06-25",
-// 		name: "Jane Doe",
-// 		patientId: "000237",
-// 		mobile: "+88012345678",
-// 	},
-// 	{
-// 		id: 8,
-// 		date: "08-06-25",
-// 		name: "John Smith",
-// 		patientId: "000238",
-// 		mobile: "+88012345678",
-// 	},
-// 	{
-// 		id: 9,
-// 		date: "07-06-25",
-// 		name: "Jane Smith",
-// 		patientId: "000239",
-// 		mobile: "+88012345678",
-// 	},
-// 	{
-// 		id: 10,
-// 		date: "06-06-25",
-// 		name: "John Doe",
-// 		patientId: "000240",
-// 		mobile: "+88012345678",
-// 	},
-// 	{
-// 		id: 11,
-// 		date: "05-06-25",
-// 		name: "Jane Smith",
-// 		patientId: "000241",
-// 		mobile: "+88012345678",
-// 	},
-// 	{
-// 		id: 12,
-// 		date: "04-06-25",
-// 		name: "MD. Shafiqul",
-// 		patientId: "000242",
-// 		mobile: "+88012345678",
-// 	},
-// 	{
-// 		id: 13,
-// 		date: "03-06-25",
-// 		name: "MD. Shafiqul",
-// 		patientId: "000243",
-// 		mobile: "+88012345678",
-// 	},
-// 	{
-// 		id: 14,
-// 		date: "02-06-25",
-// 		name: "MD. Shafiqul",
-// 		patientId: "000244",
-// 		mobile: "+88012345678",
-// 	},
-// 	{
-// 		id: 15,
-// 		date: "01-06-25",
-// 		name: "MD. Shafiqul",
-// 		patientId: "000245",
-// 		mobile: "+88012345678",
-// 	},
-// 	{
-// 		id: 16,
-// 		date: "01-06-25",
-// 		name: "MD. Shafiqul",
-// 		patientId: "000246",
-// 		mobile: "+88012345678",
-// 	},
-// ];
 
 export default function PatientListWithActions({ isOpenPatientInfo = true, setPatientData, action = "edit" }) {
+	const prescriptionA4Ref = useRef(null);
 	const params = useParams();
 	const [patientList, setPatientList] = useState([]);
 	const dispatch = useDispatch();
@@ -132,6 +22,7 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 	const { mainAreaHeight } = useOutletContext();
 	const [selectPatient, setSelectPatient] = useState({});
 	const navigate = useNavigate();
+	const [prescriptionData, setPrescriptionData] = useState({});
 
 	const fetchData = async () => {
 		const value = {
@@ -143,8 +34,27 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 			if (result.payload) {
 				const newData = result.payload?.data?.data || [];
 				setPatientList(newData);
-				//setSelectPatient(newData.find((patient) => patient.id == params.prescriptionId));
-				//setPatientData(newData.find((patient) => patient.id == params.prescriptionId));
+				setSelectPatient(newData.find((patient) => patient?.id == params?.prescriptionId));
+				setPatientData(newData.find((patient) => patient?.id == params?.prescriptionId));
+			}
+		} catch (err) {
+			console.error("Unexpected error:", err);
+		}
+	};
+
+	const fetchPrescriptionData = async () => {
+		const value = {
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${params?.prescriptionId}`,
+			module,
+		};
+
+		try {
+			const result = await dispatch(getIndexEntityData(value));
+			if (result.payload) {
+				setPrescriptionData({
+					...result.payload?.data?.data,
+					json_content: JSON.parse(result.payload?.data?.data?.json_content || "{}") || {},
+				});
 			}
 		} catch (err) {
 			console.error("Unexpected error:", err);
@@ -154,6 +64,14 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 	useEffect(() => {
 		fetchData();
 	}, []);
+
+	useEffect(() => {
+		fetchPrescriptionData();
+	}, [params]);
+
+	const handlePrintPrescriptionA4 = useReactToPrint({
+		content: () => prescriptionA4Ref.current,
+	});
 
 	const handleSelectPatient = (patient) => {
 		setSelectPatient(patient);
@@ -275,6 +193,7 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 													bg="var(--theme-secondary-color-8)"
 													aria-label="print"
 													miw={76}
+													onClick={handlePrintPrescriptionA4}
 												>
 													{t("Print")}
 												</Button>
@@ -299,17 +218,18 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 							<Grid.Col span={14}>
 								<Flex align="center" gap="es">
 									<IconCalendar size={16} stroke={1.5} />
-									<Text fz="sm">{patient.date}</Text>
+									<Text fz="sm">{patient.appointment || "No Appointment"}</Text>
 								</Flex>
 								<Flex align="center" gap="es">
 									<IconUser size={16} stroke={1.5} />
-									<Text fz="sm">{patient.patientId}</Text>
+									<Text fz="sm">{patient.patient_id}</Text>
 								</Flex>
 							</Grid.Col>
 						)}
 					</Grid>
 				))}
 			</ScrollArea>
+			<Prescription ref={prescriptionA4Ref} data={prescriptionData} />
 		</Box>
 	);
 }

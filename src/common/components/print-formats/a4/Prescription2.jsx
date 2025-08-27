@@ -4,9 +4,21 @@ import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import DashedDivider from "@components/core-component/DashedDivider";
 import CustomDivider from "@components/core-component/CustomDivider";
+import { formatDate } from "@/common/utils";
 import "@/index.css";
 
-const Prescription2 = forwardRef((props, ref) => {
+const Prescription2 = forwardRef(({ data }, ref) => {
+	const patientInfo = data?.json_content || {};
+	const invoiceDetails = data?.invoice_details || {};
+	const patientReport = patientInfo?.patient_report || {};
+	const basicInfo = patientReport?.basic_info || {};
+	const patientExamination = patientReport?.patient_examination || {};
+	const medicines = patientInfo?.medicines || [];
+
+	const getValue = (value, defaultValue = "N/A") => {
+		return value || defaultValue;
+	};
+
 	return (
 		<Box display="none">
 			<Box
@@ -59,7 +71,7 @@ const Prescription2 = forwardRef((props, ref) => {
 								<Text size="sm" fw={600}>
 									রোগীর আইডি:
 								</Text>
-								<Text size="sm">[Patient Id]</Text>
+								<Text size="sm">{getValue(invoiceDetails?.free_identification)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={5} p="xs">
@@ -67,7 +79,7 @@ const Prescription2 = forwardRef((props, ref) => {
 								<Text size="sm" fw={600}>
 									রোগীর নাম:
 								</Text>
-								<Text size="sm">[Patient Name]</Text>
+								<Text size="sm">{getValue(patientInfo.name, "N/A")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={4} p="xs">
@@ -75,7 +87,7 @@ const Prescription2 = forwardRef((props, ref) => {
 								<Text size="sm" fw={600}>
 									মোবাইল:
 								</Text>
-								<Text size="sm">[Mobile]</Text>
+								<Text size="sm">{getValue(invoiceDetails?.mobile)}</Text>
 							</Group>
 						</Grid.Col>
 
@@ -84,7 +96,7 @@ const Prescription2 = forwardRef((props, ref) => {
 								<Text size="sm" fw={600}>
 									বয়স:
 								</Text>
-								<Text size="sm">[Age]</Text>
+								<Text size="sm">{getValue(data?.age, "N/A")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} p="xs">
@@ -92,7 +104,7 @@ const Prescription2 = forwardRef((props, ref) => {
 								<Text size="sm" fw={600}>
 									লিঙ্গ:
 								</Text>
-								<Text size="sm">[Gender]</Text>
+								<Text size="sm">N/A</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} p="xs">
@@ -100,7 +112,7 @@ const Prescription2 = forwardRef((props, ref) => {
 								<Text size="sm" fw={600}>
 									রক্তচাপ:
 								</Text>
-								<Text size="sm">[BP]</Text>
+								<Text size="sm">{getValue(basicInfo?.bp)}</Text>
 							</Group>
 						</Grid.Col>
 
@@ -109,7 +121,7 @@ const Prescription2 = forwardRef((props, ref) => {
 								<Text size="sm" fw={600}>
 									ওজন:
 								</Text>
-								<Text size="sm">[Weight]</Text>
+								<Text size="sm">{getValue(basicInfo?.weight)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} p="xs">
@@ -117,7 +129,7 @@ const Prescription2 = forwardRef((props, ref) => {
 								<Text size="sm" fw={600}>
 									রক্তের গ্রুপ:
 								</Text>
-								<Text size="sm">[O+]</Text>
+								<Text size="sm">{getValue(basicInfo?.bloodGroup)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} p="xs">
@@ -125,7 +137,7 @@ const Prescription2 = forwardRef((props, ref) => {
 								<Text size="sm" fw={600}>
 									ধরণ:
 								</Text>
-								<Text size="sm">[Type]</Text>
+								<Text size="sm">N/A</Text>
 							</Group>
 						</Grid.Col>
 					</Grid>
@@ -136,97 +148,131 @@ const Prescription2 = forwardRef((props, ref) => {
 					<Grid columns={12} gutter="md">
 						<Grid.Col span={4}>
 							<Stack gap="0px">
-								<Box>
-									<Text size="sm" fw={600}>
-										C/C:
-									</Text>
-									<CustomDivider borderStyle="dashed" w="90%" />
-								</Box>
-								<Box>
-									<Text size="sm" fw={600}>
-										H/O Past Illness:
-									</Text>
-									<CustomDivider borderStyle="dashed" w="90%" />
-								</Box>
-								<Box>
-									<Text size="sm" fw={600}>
-										Diagnosis:
-									</Text>
-									<CustomDivider borderStyle="dashed" w="90%" />
-								</Box>
-								<Box>
-									<Text size="sm" fw={600}>
-										ICD-11 listed diseases:
-									</Text>
-									<CustomDivider borderStyle="dashed" w="90%" />
-								</Box>
-								<Box>
-									<Text size="sm" fw={600}>
-										Comorbidity:
-									</Text>
-									<CustomDivider borderStyle="dashed" w="90%" />
-								</Box>
-								<Box>
-									<Text size="sm" fw={600}>
-										Treatment History:
-									</Text>
-									<CustomDivider borderStyle="dashed" w="90%" />
-								</Box>
-								<Box>
-									<Text size="sm" fw={600}>
-										On/Examination:
-									</Text>
-									<CustomDivider borderStyle="dashed" w="90%" />
-								</Box>
-								<Box>
-									<Text size="sm" fw={600}>
-										Investigation:
-									</Text>
-									<CustomDivider borderStyle="dashed" w="90%" />
-								</Box>
+								{patientExamination?.chief_complaints && (
+									<Box>
+										<Text size="sm" fw={600}>
+											C/C:
+										</Text>
+										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
+										<Text size="sm" c="gray" mt="-xs" mb="xs">
+											{Object.entries(patientExamination?.chief_complaints || {})
+												.map(([, value]) => value)
+												.join(", ") || "N/A"}
+										</Text>
+									</Box>
+								)}
+								{patientExamination?.ho_past_illness && (
+									<Box>
+										<Text size="sm" fw={600}>
+											H/O Past Illness:
+										</Text>
+										<CustomDivider borderStyle="dashed" w="90%" />
+										<Text size="sm" c="gray" mt="xs">
+											{Object.entries(patientExamination?.h_o_past_illness || {})
+												.filter(([, value]) => value)
+												.map(([key]) => key)
+												.join(", ") || "N/A"}
+										</Text>
+									</Box>
+								)}
+								{patientExamination?.diagnosis && (
+									<Box>
+										<Text size="sm" fw={600}>
+											Diagnosis:
+										</Text>
+										<CustomDivider borderStyle="dashed" w="90%" />
+										<Text size="sm" c="gray" mt="xs">
+											N/A
+										</Text>
+									</Box>
+								)}
+
+								{patientExamination?.icd_11_listed_diseases && (
+									<Box>
+										<Text size="sm" fw={600}>
+											ICD-11 listed diseases:
+										</Text>
+										<CustomDivider borderStyle="dashed" w="90%" />
+										<Text size="sm" c="gray" mt="xs">
+											{(patientExamination?.icd_11_listed_diseases || []).join(", ") || "N/A"}
+										</Text>
+									</Box>
+								)}
+
+								{patientExamination?.comorbidity && (
+									<Box>
+										<Text size="sm" fw={600}>
+											Comorbidity:
+										</Text>
+										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
+										<Text size="sm" c="gray" mt="-xs" mb="xs">
+											{Object.entries(patientExamination?.comorbidity || {})
+												.filter(([, value]) => value)
+												.map(([key]) => key)
+												.join(", ") || "N/A"}
+										</Text>
+									</Box>
+								)}
+								{patientExamination?.treatment_history && (
+									<Box>
+										<Text size="sm" fw={600}>
+											Treatment History:
+										</Text>
+										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
+										<Text size="sm" c="gray" mt="-xs" mb="xs">
+											N/A
+										</Text>
+									</Box>
+								)}
+								{patientExamination?.on_examination && (
+									<Box>
+										<Text size="sm" fw={600}>
+											On/Examination:
+										</Text>
+										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
+										<Text size="sm" c="gray" mt="-xs" mb="xs">
+											N/A
+										</Text>
+									</Box>
+								)}
+								{patientExamination?.investigation && (
+									<Box>
+										<Text size="sm" fw={600}>
+											Investigation:
+										</Text>
+										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
+										<Text size="sm" c="gray" mt="-xs" mb="xs">
+											{(patientExamination?.investigation || []).join(", ") || "N/A"}
+										</Text>
+									</Box>
+								)}
 							</Stack>
 						</Grid.Col>
 						<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
 							<Stack gap="xs">
-								<Box>
-									<Text size="sm" fw={600} mb="xs">
-										1. [Medicine 1]
+								{medicines.map((medicine, index) => (
+									<Box key={index}>
+										<Text size="sm" fw={600} mb="xs">
+											{index + 1}. {getValue(medicine.medicineName)}
+										</Text>
+										<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
+											{getValue(medicine.dosage)} {getValue(medicine.by_meal)}{" "}
+											{getValue(medicine.duration)} {getValue(medicine.count)}
+										</Text>
+									</Box>
+								))}
+								{medicines.length === 0 && (
+									<Text size="sm" c="gray">
+										No medicines prescribed
 									</Text>
-									<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
-										1+0+1 ( WITH DPI device ) --- GURGLE AFTER USE ---- 1 মাস
-									</Text>
-								</Box>
-								<Box>
-									<Text size="sm" fw={600} mb="xs">
-										2. [Medicine 2]
-									</Text>
-									<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
-										1 tab ---- 1 + 0 + 1 ---- 1 মাস
-									</Text>
-								</Box>
-								<Box>
-									<Text size="sm" fw={600} mb="xs">
-										3. TAB. CITIN 10 MG
-									</Text>
-									<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
-										1 tab ---- 1 + 0 + 1 ---- 1 মাস
-									</Text>
-								</Box>
-								<Box>
-									<Text size="sm" fw={600} mb="xs">
-										4. [Medicine 4]
-									</Text>
-									<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
-										0+0+1 ( WITH DPI device ) --- GURGLE AFTER USE ---- 2 মাস
-									</Text>
-								</Box>
+								)}
 							</Stack>
 
 							<CustomDivider mt="xl" mb="md" />
 							<Text size="sm" fw={600} mb="xs">
 								অন্যান্য নির্দেশাবলী:
 							</Text>
-							<Text size="sm">রিপোর্ট সংগ্রহ করে দেখা করবেন |</Text>
+							<Text size="sm">{getValue(patientInfo.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}</Text>
 						</Grid.Col>
 					</Grid>
 				</Box>
@@ -256,26 +302,22 @@ const Prescription2 = forwardRef((props, ref) => {
 					</Grid>
 				</Box>
 				<DashedDivider mb="xs" />
-				{/* =============== hospital name center section ================ */}
-				{/* <Box ta="center" mb="xs">
-					<Text size="lg" fw={700} c="#1e40af">
-						250 Bedded TB Hospital. Shyamoli, Dhaka-1207
-					</Text>
-				</Box> */}
 
 				{/* =============== bottom section with patient info and medication table ================ */}
 				<Grid columns={12} gutter="md" mb="lg">
 					<Grid.Col span={4}>
 						<Stack gap="6px">
 							<Text size="sm" fw={500}>
-								Patient Name: Nur Bepari
+								Patient Name: {getValue(patientInfo.name, "N/A")}
 							</Text>
-							<Text size="sm">(TBH20250724434).</Text>
-							<Text size="sm">Age: 68 Y. Sex: Male.</Text>
+							<Text size="sm">({getValue(invoiceDetails.free_identification)}).</Text>
+							<Text size="sm">Age: {getValue(data?.age, "N/A")} Y. Sex: N/A.</Text>
 							<Text size="sm" fw={600} mt="sm">
 								Doctor Comments:
 							</Text>
-							<CustomDivider w="90%" />
+							<Text size="sm" c="gray">
+								{getValue(patientInfo.advise, "N/A")}
+							</Text>
 						</Stack>
 					</Grid.Col>
 					<Grid.Col span={8}>
@@ -307,50 +349,49 @@ const Prescription2 = forwardRef((props, ref) => {
 										Quantity
 									</Text>
 								</Grid.Col>
-								<Grid.Col
-									span={3}
-									p={10}
-									style={{
-										borderRight: "1px solid #333",
-										borderBottom: "1px solid #333",
-									}}
-								>
-									<Text size="sm" pl={4}>
-										1. CETIRIZINE 10MG TAB
-									</Text>
-								</Grid.Col>
-								<Grid.Col span={1} p={10} style={{ borderBottom: "1px solid #333" }}>
-									<Text size="sm" ta="center" fw={500}>
-										10
-									</Text>
-								</Grid.Col>
-								<Grid.Col
-									span={3}
-									p={10}
-									style={{
-										borderRight: "1px solid #333",
-										borderBottom: "1px solid #333",
-									}}
-								>
-									<Text size="sm" pl={4}>
-										2. OMEPRAZOLE 20MG CAP
-									</Text>
-								</Grid.Col>
-								<Grid.Col span={1} style={{ borderBottom: "1px solid #333" }}>
-									<Text size="sm" ta="center" fw={500}>
-										10
-									</Text>
-								</Grid.Col>
-								<Grid.Col span={3} p={10} style={{ borderRight: "1px solid #333" }}>
-									<Text size="sm" pl={4}>
-										3. CEFIXIME 200 MG CAP
-									</Text>
-								</Grid.Col>
-								<Grid.Col span={1} p={10}>
-									<Text size="sm" ta="center" fw={500}>
-										10
-									</Text>
-								</Grid.Col>
+								{medicines.map((medicine, index) => (
+									<>
+										<Grid.Col
+											key={`name-${index}`}
+											span={3}
+											p={10}
+											style={{
+												borderRight: "1px solid #333",
+												borderBottom: index < medicines.length - 1 ? "1px solid #333" : "none",
+											}}
+										>
+											<Text size="sm" pl={4}>
+												{index + 1}. {getValue(medicine.medicineName)}
+											</Text>
+										</Grid.Col>
+										<Grid.Col
+											key={`count-${index}`}
+											span={1}
+											p={10}
+											style={{
+												borderBottom: index < medicines.length - 1 ? "1px solid #333" : "none",
+											}}
+										>
+											<Text size="sm" ta="center" fw={500}>
+												{getValue(medicine.count, "1")}
+											</Text>
+										</Grid.Col>
+									</>
+								))}
+								{medicines.length === 0 && (
+									<>
+										<Grid.Col span={3} p={10} style={{ borderRight: "1px solid #333" }}>
+											<Text size="sm" pl={4}>
+												No medicines
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={1} p={10}>
+											<Text size="sm" ta="center" fw={500}>
+												-
+											</Text>
+										</Grid.Col>
+									</>
+								)}
 							</Grid>
 						</Box>
 					</Grid.Col>
@@ -359,8 +400,16 @@ const Prescription2 = forwardRef((props, ref) => {
 				{/* =============== footer with prescribed by ================ */}
 				<Box ta="center" mt="xs">
 					<Text size="sm" fw={600} c="#1e40af">
-						Prescribed By: [Doctor Name]
+						Prescribed By: Doctor ID {getValue(data?.doctor_id, "N/A")}
 					</Text>
+					<Text size="sm" c="gray" mt="xs">
+						Prescription Date: {formatDate(patientInfo?.prescription_date)}
+					</Text>
+					{patientInfo?.follow_up_date && (
+						<Text size="sm" c="gray" mt="xs">
+							Follow Up Date: {formatDate(patientInfo?.follow_up_date)}
+						</Text>
+					)}
 				</Box>
 			</Box>
 		</Box>

@@ -1,16 +1,12 @@
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { ActionIcon, Box, Button, Checkbox, Flex, Grid, Stack, Text } from "@mantine/core";
-import { IconArrowsSplit2, IconRestore } from "@tabler/icons-react";
+import { Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
+import { IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useRef, useState } from "react";
-import SelectForm from "@components/form-builders/SelectForm";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { notifications } from "@mantine/notifications";
-import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useReactToPrint } from "react-to-print";
-// import Prescription from "@components/print-formats/a4/Prescription";
+import Prescription from "@components/print-formats/a4/Prescription";
 import PrescriptionPos from "@components/print-formats/pos/Prescription";
 import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 import { useHotkeys } from "@mantine/hooks";
@@ -66,7 +62,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 	return (
 		<>
 			<Stack gap={0} justify="space-between" mt="xs">
-				<Box p="sm" pl={0} bg="white" >
+				<Box p="sm" pl={0} bg="white">
 					<Grid columns={24}>
 						<Grid.Col span={12} bg="var(--theme-tertiary-color-1)" px="xs">
 							<TextAreaForm
@@ -79,7 +75,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								style={{ input: { height: "80px" } }}
 							/>
 						</Grid.Col>
-						<Grid.Col span={6} bg="var(--theme-tertiary-color-1)" px="xs" pt={'md'}>
+						<Grid.Col span={6} bg="var(--theme-tertiary-color-1)" px="xs" pt={"md"}>
 							{/*<Stack>
 								<SelectForm
 									key={referredNameKey}
@@ -109,7 +105,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								/>
 							</Stack>*/}
 							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t('Name')}</Text>
+								<Text fz="xs">{t("Name")}</Text>
 								<Box px="xs">
 									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
 										{form.values?.name}
@@ -117,7 +113,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								</Box>
 							</Flex>
 							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t('MobileNo')}</Text>
+								<Text fz="xs">{t("MobileNo")}</Text>
 								<Box px="xs">
 									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
 										{form.values?.mobile}
@@ -125,7 +121,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								</Box>
 							</Flex>
 							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t('Gender')}</Text>
+								<Text fz="xs">{t("Gender")}</Text>
 								<Box px="xs">
 									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
 										{form.values?.gender}
@@ -133,10 +129,10 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								</Box>
 							</Flex>
 							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t('Age')}</Text>
+								<Text fz="xs">{t("Age")}</Text>
 								<Box px="xs">
 									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-										{form.values.day} Days	{form.values.month} Month	{form.values.year} Year
+										{form.values.day} Days {form.values.month} Month {form.values.year} Year
 									</Text>
 								</Box>
 							</Flex>
@@ -145,12 +141,12 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 							<Stack gap="0" className="method-carousel">
 								{hospitalConfigData?.is_multi_payment ? (
 									<PaymentMethodsCarousel
-									selectPaymentMethod={selectPaymentMethod}
-									paymentMethod={paymentMethod}
+										selectPaymentMethod={selectPaymentMethod}
+										paymentMethod={paymentMethod}
 									/>
 								) : null}
 								<Flex gap="xss" align="center" justify="space-between">
-									<Text>{t('Fee')}</Text>
+									<Text>{t("Fee")}</Text>
 									<Box px="xs" py="les" className="borderRadiusAll">
 										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
 											৳ {Number(displayAmount || 0).toLocaleString()}
@@ -159,7 +155,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								</Flex>
 								<Flex align="center" justify="space-between">
 									<Text>Receive</Text>
-									<Box w={'100'}>
+									<Box w={"100"}>
 										<InputNumberForm
 											id="amount"
 											form={form}
@@ -170,11 +166,11 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 										/>
 									</Box>
 								</Flex>
-								<Flex align="center"  justify="space-between">
+								<Flex align="center" justify="space-between">
 									<Text>{t(displayLabelKey)}</Text>
 									<Box px="xs" py="les" className="borderRadiusAll">
 										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
-											 ৳ {Number(displayAmount || 0).toLocaleString()}
+											৳ {Number(displayAmount || 0).toLocaleString()}
 										</Text>
 									</Box>
 								</Flex>
@@ -182,8 +178,8 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 						</Grid.Col>
 					</Grid>
 				</Box>
-				<Box pl={'xs'} pr={'xs'}>
-					<Button.Group >
+				<Box pl={"xs"} pr={"xs"}>
+					<Button.Group>
 						<Button
 							w="100%"
 							bg="var(--theme-reset-btn-color)"
@@ -258,10 +254,9 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 						</Button>
 					</Button.Group>
 				</Box>
-
 			</Stack>
-			{/* <Prescription ref={prescriptionA4Ref} /> */}
-			{/* <Prescription2 ref={prescriptionA4Ref} /> */}
+			<Prescription ref={prescriptionA4Ref} />
+			<Prescription2 ref={prescriptionA4Ref} />
 			<Prescription3 ref={prescriptionA4Ref} />
 			<PrescriptionPos ref={prescriptionPosRef} />
 		</>
