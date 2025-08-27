@@ -1,5 +1,5 @@
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
+import {Box, Button, Divider, Flex, Grid, Stack, Text} from "@mantine/core";
 import { IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
@@ -62,9 +62,9 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 	return (
 		<>
 			<Stack gap={0} justify="space-between" mt="xs">
-				<Box p="sm" pl={0} bg="white">
+				<Box p="sm" pl={'md'} pr={'md'} bg="white">
 					<Grid columns={24}>
-						<Grid.Col span={12} bg="var(--theme-tertiary-color-1)" px="xs">
+						<Grid.Col span={12} bg="var(--theme-tertiary-color-0)" px="xs">
 							<TextAreaForm
 								form={form}
 								placeholder="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its"
@@ -75,7 +75,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								style={{ input: { height: "80px" } }}
 							/>
 						</Grid.Col>
-						<Grid.Col span={6} bg="var(--theme-tertiary-color-1)" px="xs" pt={"md"}>
+						<Grid.Col span={6} bg="var(--theme-secondary-color-0)" px="xs" pt={"md"}>
 							{/*<Stack>
 								<SelectForm
 									key={referredNameKey}
@@ -104,40 +104,43 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 									rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 								/>
 							</Stack>*/}
-							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t("Name")}</Text>
-								<Box px="xs">
-									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-										{form.values?.name}
-									</Text>
-								</Box>
-							</Flex>
-							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t("MobileNo")}</Text>
-								<Box px="xs">
-									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-										{form.values?.mobile}
-									</Text>
-								</Box>
-							</Flex>
-							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t("Gender")}</Text>
-								<Box px="xs">
-									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-										{form.values?.gender}
-									</Text>
-								</Box>
-							</Flex>
-							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t("Age")}</Text>
-								<Box px="xs">
-									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-										{form.values.day} Days {form.values.month} Month {form.values.year} Year
-									</Text>
-								</Box>
-							</Flex>
+							<Box>
+								<Flex gap="xss" align="center" justify="space-between">
+									<Text fz="xs">{t("Name")}</Text>
+									<Box px="xs">
+										<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
+											{form.values?.name}
+										</Text>
+									</Box>
+								</Flex>
+								<Flex gap="xss" align="center" justify="space-between">
+									<Text fz="xs">{t("MobileNo")}</Text>
+									<Box px="xs">
+										<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
+											{form.values?.mobile}
+										</Text>
+									</Box>
+								</Flex>
+								<Flex gap="xss" align="center" justify="space-between">
+									<Text fz="xs">{t("Gender")}</Text>
+									<Box px="xs">
+										<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
+											{form.values?.gender}
+										</Text>
+									</Box>
+								</Flex>
+								<Flex gap="xss" align="center" justify="space-between">
+									<Text fz="xs">{t("Age")}</Text>
+									<Box px="xs">
+										<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
+											{form.values.day} Days {form.values.month} Month {form.values.year} Year
+										</Text>
+									</Box>
+								</Flex>
+							</Box>
+
 						</Grid.Col>
-						<Grid.Col span={6} bg="var(--theme-tertiary-color-1)" px="xs">
+						<Grid.Col span={6} bg="var(--theme-primary-color-0)" px="xs">
 							<Stack gap="0" className="method-carousel">
 								{hospitalConfigData?.is_multi_payment ? (
 									<PaymentMethodsCarousel
@@ -147,7 +150,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								) : null}
 								<Flex gap="xss" align="center" justify="space-between">
 									<Text>{t("Fee")}</Text>
-									<Box px="xs" py="les" className="borderRadiusAll">
+									<Box px="xs" py="les">
 										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
 											৳ {Number(displayAmount || 0).toLocaleString()}
 										</Text>
@@ -168,7 +171,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								</Flex>
 								<Flex align="center" justify="space-between">
 									<Text>{t(displayLabelKey)}</Text>
-									<Box px="xs" py="les" className="borderRadiusAll">
+									<Box px="xs" py="les">
 										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
 											৳ {Number(displayAmount || 0).toLocaleString()}
 										</Text>
@@ -178,83 +181,83 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 						</Grid.Col>
 					</Grid>
 				</Box>
-				<Box pl={"xs"} pr={"xs"}>
-					<Button.Group>
-						<Button
-							w="100%"
-							bg="var(--theme-reset-btn-color)"
-							leftSection={<IconRestore size={16} />}
-							onClick={handleReset}
-							disabled={isSubmitting}
-						>
-							<Stack gap={0} align="center" justify="center">
-								<Text>{t("reset")}</Text>
-								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-									(alt + 1)
-								</Text>
-							</Stack>
-						</Button>
-						<Button w="100%" bg="var(--theme-hold-btn-color)" disabled={isSubmitting}>
-							<Stack gap={0} align="center" justify="center">
-								<Text>{t("Hold")}</Text>
-								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-									(alt + 2)
-								</Text>
-							</Stack>
-						</Button>
-						<Button w="100%" bg="var(--theme-prescription-btn-color)" disabled={isSubmitting}>
-							<Stack gap={0} align="center" justify="center">
-								<Text>{t("prescription")}</Text>
-								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-									(alt + 3)
-								</Text>
-							</Stack>
-						</Button>
-						<Button
-							onClick={handlePrintPrescriptionA4}
-							w="100%"
-							bg="var(--theme-print-btn-color)"
-							disabled={isSubmitting}
-							type="button"
-						>
-							<Stack gap={0} align="center" justify="center">
-								<Text>{t("a4Print")}</Text>
-								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-									(alt + 4)
-								</Text>
-							</Stack>
-						</Button>
-						<Button
-							onClick={handlePrescriptionPosPrint}
-							w="100%"
-							bg="var(--theme-pos-btn-color)"
-							disabled={isSubmitting}
-							type="button"
-						>
-							<Stack gap={0} align="center" justify="center">
-								<Text>{t("Pos")}</Text>
-								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-									(alt + p)
-								</Text>
-							</Stack>
-						</Button>
-						<Button
-							w="100%"
-							bg="var(--theme-save-btn-color)"
-							onClick={handleSubmit}
-							loading={isSubmitting}
-							disabled={isSubmitting}
-						>
-							<Stack gap={0} align="center" justify="center">
-								<Text>{t("Save")}</Text>
-								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-									(alt + s)
-								</Text>
-							</Stack>
-						</Button>
-					</Button.Group>
-				</Box>
 			</Stack>
+			<Box pl={"xs"} pr={"xs"}>
+				<Button.Group>
+					<Button
+						w="100%"
+						bg="var(--theme-reset-btn-color)"
+						leftSection={<IconRestore size={16} />}
+						onClick={handleReset}
+						disabled={isSubmitting}
+					>
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("reset")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 1)
+							</Text>
+						</Stack>
+					</Button>
+					<Button w="100%" bg="var(--theme-hold-btn-color)" disabled={isSubmitting}>
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("Hold")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 2)
+							</Text>
+						</Stack>
+					</Button>
+					<Button w="100%" bg="var(--theme-prescription-btn-color)" disabled={isSubmitting}>
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("prescription")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 3)
+							</Text>
+						</Stack>
+					</Button>
+					<Button
+						onClick={handlePrintPrescriptionA4}
+						w="100%"
+						bg="var(--theme-print-btn-color)"
+						disabled={isSubmitting}
+						type="button"
+					>
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("a4Print")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + 4)
+							</Text>
+						</Stack>
+					</Button>
+					<Button
+						onClick={handlePrescriptionPosPrint}
+						w="100%"
+						bg="var(--theme-pos-btn-color)"
+						disabled={isSubmitting}
+						type="button"
+					>
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("Pos")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + p)
+							</Text>
+						</Stack>
+					</Button>
+					<Button
+						w="100%"
+						bg="var(--theme-save-btn-color)"
+						onClick={handleSubmit}
+						loading={isSubmitting}
+						disabled={isSubmitting}
+					>
+						<Stack gap={0} align="center" justify="center">
+							<Text>{t("Save")}</Text>
+							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+								(alt + s)
+							</Text>
+						</Stack>
+					</Button>
+				</Button.Group>
+			</Box>
 			<Prescription ref={prescriptionA4Ref} />
 			<Prescription2 ref={prescriptionA4Ref} />
 			<Prescription3 ref={prescriptionA4Ref} />

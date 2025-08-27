@@ -42,7 +42,7 @@ export default function DateSelectorForm({
 	const [selectedDate, setSelectedDate] = useState(form.values[name] ? new Date(form.values[name]) : null);
 
 	// =============== years and months for custom header ================
-	const years = range(1990, getYear(new Date()) + 1, 1);
+	const years = range(1940, getYear(new Date()) + 1, 1);
 	const months = [
 		"January",
 		"February",

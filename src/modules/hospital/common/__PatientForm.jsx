@@ -2,7 +2,7 @@ import InputForm from "@components/form-builders/InputForm";
 import {
 	ActionIcon,
 	Box,
-	Button,
+	Button, Divider,
 	FileInput,
 	Flex,
 	Grid,
@@ -16,7 +16,7 @@ import {
 import { useEffect, useState, useMemo } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconArrowRight, IconSearch, IconUpload } from "@tabler/icons-react";
+import {IconArrowRight, IconInfoCircle, IconSearch, IconUpload} from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DatePickerForm from "@components/form-builders/DatePicker";
@@ -34,7 +34,8 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import { useDispatch } from "react-redux";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
-
+import { IMaskInput } from 'react-imask';
+import InputMaskForm from "@components/form-builders/InputMaskForm";
 const LOCAL_STORAGE_KEY = "patientFormData";
 
 export default function PatientForm({ form, selectedRoom, module }) {
@@ -207,63 +208,15 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 			{showTitle && (
 				<Flex bg="var(--theme-primary-color-0)" align="center" gap="xs" p="sm">
 					<Text fw={600} fz="sm">
-						{t("patientInformation")}
+						{t("PatientInformation")}
 					</Text>
 				</Flex>
 			)}
 			<Grid columns={24} gutter="sm">
 				<Grid.Col span={12}>
 					<ScrollArea h={height}>
-						<Stack mih={height} className="form-stack-vertical">
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("Type")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<SegmentedControl
-										fullWidth
-										color="var(--theme-primary-color-6)"
-										value={form.values.identity_mode}
-										id="identity_mode"
-										name="identity_mode"
-										onChange={(val) => handleTypeChange(val)}
-										data={[
-											{ label: t("NID"), value: "NID" },
-											{ label: t("BRID"), value: "BRID" },
-											{ label: t("HID"), value: "HID" },
-										]}
-									/>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("NIDBirthCertificate")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<InputNumberForm
-										form={form}
-										label=""
-										placeholder="1234567890"
-										tooltip={t("enterPatientIdentity")}
-										name="identity"
-										id="identity"
-										nextField="address"
-										value={form.values.identity}
-										rightSection={
-											<ActionIcon bg="var(--theme-secondary-color-6)">
-												<IconSearch size={"16"} />
-											</ActionIcon>
-										}
-										required
-									/>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("HealthID")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>{form.values.healthID || ""}</Grid.Col>
-							</Grid>
+							<Stack mih={height} className="form-stack-vertical">
+
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("patientName")}</Text>
@@ -280,189 +233,175 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										value={form.values.name}
 										required
 									/>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("gender")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<SegmentedControl
-										fullWidth
-										color="var(--theme-primary-color-6)"
-										value={form.values.gender}
-										id="gender"
-										name="gender"
-										onChange={(val) => handleGenderChange(val)}
-										data={[
-											{ label: t("male"), value: "male" },
-											{ label: t("female"), value: "female" },
-											{ label: t("other"), value: "other" },
-										]}
-									/>
-								</Grid.Col>
-							</Grid>
 
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("dateOfBirth")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<DateSelectorForm
-										key={updateKey}
-										form={form}
-										label=""
-										placeholder="Select Date of Birth"
-										tooltip={t("enterPatientDateOfBirth")}
-										name="dob"
-										id="dob"
-										nextField="year"
-										value={form.values.dob}
-										required
-										disabledFutureDate
-										onChange={handleDobChange}
-									/>
 								</Grid.Col>
 							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("age")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<Flex gap="xs">
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("mobile")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterPatientMobile")}
+											placeholder="+880 1717171717"
+											name="mobile"
+											id="mobile"
+											nextField="district"
+											value={form.values.mobile}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("gender")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<SegmentedControl
+											fullWidth
+											color="var(--theme-primary-color-6)"
+											value={form.values.gender}
+											id="gender"
+											name="gender"
+											onChange={(val) => handleGenderChange(val)}
+											data={[
+												{ label: t("male"), value: "male" },
+												{ label: t("female"), value: "female" },
+												{ label: t("other"), value: "other" },
+											]}
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("dateOfBirth")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputMaskForm
+											name="dob"
+											id="dob"
+											value={form.values.dob}
+											form={form}
+											label=""
+											tooltip={t("enterPatientBirthDate")}
+											placeholder="DD-MM-YYYY"
+											nextField="days"
+											maskInput='01-01-2000'
+											required={false}
+											onChange={handleDobChange}
+											rightSection={ <IconInfoCircle size={16} opacity={0.5} />}
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("age")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<Flex gap="xs">
+											<InputNumberForm
+												form={form}
+												label=""
+												placeholder="Days"
+												tooltip={t("days")}
+												name="day"
+												id="day"
+												nextField="mobile"
+												min={0}
+												max={31}
+												leftSection={
+													<Text fz="sm" px="sm">
+														{t("D")}
+													</Text>
+												}
+											/>
+											<InputNumberForm
+												form={form}
+												label=""
+												placeholder="Months"
+												tooltip={t("months")}
+												name="month"
+												id="month"
+												nextField="day"
+												min={0}
+												max={11}
+												leftSection={
+													<Text fz="sm" px="sm">
+														{t("M")}
+													</Text>
+												}
+											/>
+
+											<InputNumberForm
+												form={form}
+												label=""
+												placeholder="Years"
+												tooltip={t("years")}
+												name="year"
+												id="year"
+												nextField="month"
+												min={0}
+												max={150}
+												leftSection={
+													<Text fz="sm" px="sm">
+														{t("Y")}
+													</Text>
+												}
+											/>
+										</Flex>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("Type")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<SegmentedControl
+											fullWidth
+											color="var(--theme-primary-color-6)"
+											value={form.values.identity_mode}
+											id="identity_mode"
+											name="identity_mode"
+											onChange={(val) => handleTypeChange(val)}
+											data={[
+												{ label: t("NID"), value: "NID" },
+												{ label: t("BRID"), value: "BRID" },
+												{ label: t("HID"), value: "HID" },
+											]}
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("NIDBirthCertificate")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
 										<InputNumberForm
 											form={form}
 											label=""
-											placeholder="Years"
-											tooltip={t("years")}
-											name="year"
-											id="year"
-											nextField="month"
-											min={0}
-											max={150}
-											leftSection={
-												<Text fz="sm" px="sm">
-													{t("Y")}
-												</Text>
+											placeholder="1234567890"
+											tooltip={t("enterPatientIdentity")}
+											name="identity"
+											id="identity"
+											nextField="address"
+											value={form.values.identity}
+											rightSection={
+												<ActionIcon bg="var(--theme-secondary-color-6)">
+													<IconSearch size={"16"} />
+												</ActionIcon>
 											}
+											required
 										/>
-										<InputNumberForm
-											form={form}
-											label=""
-											placeholder="Months"
-											tooltip={t("months")}
-											name="month"
-											id="month"
-											nextField="day"
-											min={0}
-											max={11}
-											leftSection={
-												<Text fz="sm" px="sm">
-													{t("M")}
-												</Text>
-											}
-										/>
-										<InputNumberForm
-											form={form}
-											label=""
-											placeholder="Days"
-											tooltip={t("days")}
-											name="day"
-											id="day"
-											nextField="mobile"
-											min={0}
-											max={31}
-											leftSection={
-												<Text fz="sm" px="sm">
-													{t("D")}
-												</Text>
-											}
-										/>
-									</Flex>
-								</Grid.Col>
-							</Grid>
+									</Grid.Col>
+								</Grid>
 						</Stack>
 					</ScrollArea>
 				</Grid.Col>
 				<Grid.Col span={12}>
 					<ScrollArea h={height}>
 						<Stack mih={height} className="form-stack-vertical">
-							{/* {form.values.patient_type === "admission" && (
-								<>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("GuardianName")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputForm
-												form={form}
-												label=""
-												tooltip={t("enterGuardianName")}
-												placeholder="John Doe"
-												name="guardian_name"
-												id="guardian_name"
-												nextField="guardian_mobile"
-												value={form.values.guardian_name}
-												required
-											/>
-										</Grid.Col>
-									</Grid>
-
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("GuardianMobile")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputForm
-												form={form}
-												label=""
-												tooltip={t("enterGuardianName")}
-												placeholder="+8801711111111"
-												name="guardian_mobile"
-												id="guardian_mobile"
-												nextField="identity"
-												value={form.values.guardian_mobile}
-												required
-											/>
-										</Grid.Col>
-									</Grid>
-								</>
-							)} */}
-
-							<Grid columns={20}>
-								<Grid.Col span={6} mt="xs">
-									<Text fz="sm">{t("FreeFor")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<SegmentedControl
-										fullWidth
-										color="var(--theme-primary-color-6)"
-										value={form.values.patient_payment_mode_id}
-										id="patient_payment_mode_id"
-										name="patient_payment_mode_id"
-										onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
-										data={[
-											{ label: t("General"), value: "30" },
-											{ label: t("FreedomFighter"), value: "31" },
-											{ label: t("Disabled"), value: "32" },
-											{ label: t("GovtService"), value: "43" },
-										]}
-									/>
-									{form.values.patient_payment_mode_id !== "30" && (
-										<InputForm
-											form={form}
-											label=""
-											mt="xxs"
-											tooltip={t("enterFreeIdentificationId")}
-											placeholder="Enter Free ID"
-											name="free_identification_id"
-											id="free_identification_id"
-											nextField="file"
-											value={form.values.free_identification_id || ""}
-										/>
-									)}
-								</Grid.Col>
-							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("GuardianName")}</Text>
@@ -483,13 +422,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Text fz="sm">{t("RoomNumber")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>{/*{selectedRoom?.name || "No room selected"}*/}</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("mobile")}</Text>
+									<Text fz="sm">{t("GuardianMobile")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
 									<InputForm
@@ -505,7 +438,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									/>
 								</Grid.Col>
 							</Grid>
-
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("district")}</Text>
@@ -525,7 +457,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									/>
 								</Grid.Col>
 							</Grid>
-
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("address")}</Text>
@@ -544,36 +475,58 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									/>
 								</Grid.Col>
 							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("ImageUpload")}</Text>
+							<Grid columns={20}>
+								<Grid.Col span={6} mt="xs">
+									<Text fz="sm">{t("FreeFor")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<FileInput
-										id="file"
-										name="file"
-										rightSection={
-											<ActionIcon bg="var(--theme-primary-color-6)" color="white">
-												<IconUpload size="16px" stroke={1.5} />
-											</ActionIcon>
-										}
-										placeholder="Upload your file"
-										rightSectionPointerEvents="none"
+									<SegmentedControl
+										fullWidth
+										color="var(--theme-primary-color-6)"
+										value={form.values.patient_payment_mode_id}
+										id="patient_payment_mode_id"
+										name="patient_payment_mode_id"
+										onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
+										data={[
+											{ label: t("General"), value: "30" },
+											{ label: t("FreedomFighter"), value: "31" },
+											{ label: t("Disabled"), value: "32" },
+											{ label: t("GovtService"), value: "43" },
+										]}
 									/>
+								</Grid.Col>
+							</Grid>
+							<Grid columns={20}>
+								<Grid.Col span={6} mt="xs">
+								</Grid.Col>
+								<Grid.Col span={14}>
+									{form.values.patient_payment_mode_id !== "30" && (
+										<InputForm
+											form={form}
+											label=""
+											mt="xxs"
+											tooltip={t("enterFreeIdentificationId")}
+											placeholder="Enter Free ID"
+											name="free_identification_id"
+											id="free_identification_id"
+											nextField="file"
+											value={form.values.free_identification_id || ""}
+										/>
+									)}
 								</Grid.Col>
 							</Grid>
 						</Stack>
 					</ScrollArea>
 				</Grid.Col>
-				<Grid.Col span={24} mt="-sm">
-					<_ActionButtons
-						form={form}
-						module={module}
-						handleSubmit={handleSubmit}
-						isSubmitting={isSubmitting}
-					/>
-				</Grid.Col>
 			</Grid>
+			<Box>
+				<_ActionButtons
+					form={form}
+					module={module}
+					handleSubmit={handleSubmit}
+					isSubmitting={isSubmitting}
+				/>
+			</Box>
 		</Box>
 	);
 }

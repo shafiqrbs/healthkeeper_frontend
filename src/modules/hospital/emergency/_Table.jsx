@@ -403,7 +403,7 @@ export default function Table({module}) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 300}
+					height={height -118}
 					onScrollToBottom={loadMoreRecords}
 					scrollViewportRef={scrollViewportRef}
 				/>
