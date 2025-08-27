@@ -24,7 +24,7 @@ import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
-import {deleteEntityData, getIndexEntityData, showEntityData} from "@/app/store/core/crudThunk";
+import { deleteEntityData, getIndexEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setItemData, setRefetchData } from "@/app/store/core/crudSlice";
 import { sortBy } from "lodash";
 import { formatDate } from "@/common/utils";
@@ -38,7 +38,6 @@ const tabs = ["all", "closed", "done", "inProgress", "returned"];
 const PER_PAGE = 20;
 
 export default function Table({ module, height }) {
-
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -64,7 +63,6 @@ export default function Table({ module, height }) {
 	});
 
 	const [records, setRecords] = useState(sortBy(listData.data, "name"));
-
 
 	useEffect(() => {
 		const data = sortBy(listData.data, sortStatus.columnAccessor);
@@ -265,8 +263,12 @@ export default function Table({ module, height }) {
 							title: t("Created"),
 							textAlignment: "right",
 							render: (item) => (
-								<Text fz="sm" onClick={() => handleView(item.id)} className="activate-link text-nowrap">
-									{formatDate(item.created_at)}
+								<Text
+									fz="sm"
+									onClick={() => handleView(item?.id)}
+									className="activate-link text-nowrap"
+								>
+									{formatDate(item?.created_at)}
 								</Text>
 							),
 						},
@@ -283,7 +285,7 @@ export default function Table({ module, height }) {
 						{
 							accessor: "created_by",
 							title: t("CreatedBy"),
-							render: (item) => item.created_by || "N/A",
+							render: (item) => item?.created_by || "N/A",
 						},
 						{
 							accessor: "action",

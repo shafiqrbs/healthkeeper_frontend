@@ -14,7 +14,8 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 	const basicInfo = patientReport?.basic_info || {};
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = patientInfo?.medicines || [];
-
+	const customerInformation = data?.invoice_details?.customer_details || {};
+	console.log(customerInformation);
 	const getValue = (value, defaultValue = "N/A") => {
 		return value || defaultValue;
 	};
@@ -79,7 +80,7 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 								<Text size="sm" fw={600}>
 									রোগীর নাম:
 								</Text>
-								<Text size="sm">{getValue(patientInfo.name, "N/A")}</Text>
+								<Text size="sm">{getValue(customerInformation?.name, "N/A")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={4} p="xs">
@@ -87,7 +88,7 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 								<Text size="sm" fw={600}>
 									মোবাইল:
 								</Text>
-								<Text size="sm">{getValue(invoiceDetails?.mobile)}</Text>
+								<Text size="sm">{getValue(customerInformation?.mobile)}</Text>
 							</Group>
 						</Grid.Col>
 
@@ -96,7 +97,7 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 								<Text size="sm" fw={600}>
 									বয়স:
 								</Text>
-								<Text size="sm">{getValue(data?.age, "N/A")}</Text>
+								<Text size="sm">{getValue(customerInformation?.age, "N/A")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} p="xs">
@@ -104,7 +105,7 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 								<Text size="sm" fw={600}>
 									লিঙ্গ:
 								</Text>
-								<Text size="sm">N/A</Text>
+								<Text size="sm">{getValue(customerInformation?.gender, "N/A")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} p="xs">
