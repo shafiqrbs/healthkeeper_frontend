@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
@@ -16,6 +16,11 @@ import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import {useDispatch, useSelector} from "react-redux";
+import {sortBy} from "lodash";
+import {getIndexEntityData} from "@/app/store/core/crudThunk";
+import {setItemData} from "@/app/store/core/crudSlice";
+import {formatDate} from "@utils/index";
 
 
 const data = [
@@ -112,11 +117,16 @@ const data = [
 	},
 ];
 
+const PER_PAGE = 20;
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
-export default function Table() {
+export default function Table({module}) {
+
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
+	const listData = useSelector((state) => state.crud[module].data);
+	const refetch = useSelector((state) => state.crud[module].refetching);
 	const [fetching, setFetching] = useState(false);
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 34;
@@ -135,6 +145,21 @@ export default function Table() {
 	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
+	const filterData = useSelector((state) => state.crud[module].filterData);
+
+	const [sortStatus, setSortStatus] = useState({
+		columnAccessor: "name",
+		direction: "asc",
+	});
+
+	const [records, setRecords] = useState(sortBy(listData.data, "name"));
+
+
+	useEffect(() => {
+		const data = sortBy(listData.data, sortStatus.columnAccessor);
+		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
+	}, [sortStatus, listData.data]);
+
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
@@ -144,17 +169,65 @@ export default function Table() {
 		if (!hasMore && pageNum > 1) return;
 
 		setFetching(true);
+		const value = {
+			url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+			params: {
+				term: filterData.keywordSearch,
+				page: pageNum,
+				offset: PER_PAGE,
+			},
+			module,
+		};
+
+		try {
+			const result = await dispatch(getIndexEntityData(value));
+			if (result.payload) {
+				const newData = result.payload.data;
+				const total = result.payload.total;
+
+				// Update hasMore based on whether we've loaded all data
+				setHasMore(newData.length === PER_PAGE && pageNum * PER_PAGE < total);
+
+				// If appending, combine with existing data
+				if (append && pageNum > 1) {
+					dispatch(
+						setItemData({
+							module,
+							data: {
+								...listData,
+								data: [...listData.data, ...newData],
+								total,
+							},
+						})
+					);
+				}
+			}
+		} catch (err) {
+			console.error("Unexpected error:", err);
+		} finally {
+			setFetching(false);
+		}
 	};
 
 	const loadMoreRecords = useCallback(() => {
-		// if (hasMore && !fetching) {
-		// 	const nextPage = page + 1;
-		// 	setPage(nextPage);
-		// 	fetchData(nextPage, true);
-		// } else if (!hasMore) {
-		// 	console.info("No more records");
-		// }
+		if (hasMore && !fetching) {
+			const nextPage = page + 1;
+			setPage(nextPage);
+			fetchData(nextPage, true);
+		} else if (!hasMore) {
+			console.info("No more records");
+		}
 	}, [hasMore, fetching, page]);
+
+	useEffect(() => {
+		fetchData(1, false);
+		setPage(1);
+		setHasMore(true);
+		// reset scroll position when data is refreshed
+		scrollViewportRef.current?.scrollTo(0, 0);
+	}, [dispatch, refetch, filterData]);
+
+
 
 	const handleView = (id) => {
 		open();
@@ -221,21 +294,21 @@ export default function Table() {
 						footer: tableCss.footer,
 						pagination: tableCss.pagination,
 					}}
-					records={data}
+					records={records}
 					columns={[
 						{
 							accessor: "index",
 							title: t("S/N"),
 							textAlignment: "right",
-							render: (item) => item.index,
+							render: (_, index) => index + 1,
 						},
 						{
 							accessor: "created_at",
 							title: t("Created"),
 							textAlignment: "right",
 							render: (item) => (
-								<Text fz="sm" onClick={() => handleView(item.id)} className="activate-link">
-									{item.created_at}
+								<Text fz="sm" onClick={() => handleView(item.id)} className="activate-link text-nowrap">
+									{formatDate(item.created_at)}
 								</Text>
 							),
 						},
@@ -244,17 +317,11 @@ export default function Table() {
 							title: t("CreatedBy"),
 							render: (item) => item.created_by || "N/A",
 						},
-						{ accessor: "visit_no", title: t("visitNo") },
 						{ accessor: "patient_id", title: t("patientId") },
-						{ accessor: "patient_name", title: t("Name") },
+						{ accessor: "name", title: t("Name") },
+						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "doctor_name", title: t("doctor") },
-						{ accessor: "diseases", title: t("diseases") },
-						{ accessor: "total_amount", title: t("Total") },
-						{
-							accessor: "payment_status",
-							title: t("paymentStatus"),
-							render: (item) => t(item.payment_status),
-						},
+						{ accessor: "total", title: t("Total") },
 						{
 							accessor: "action",
 							title: t("Action"),
@@ -336,7 +403,7 @@ export default function Table() {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 344}
+					height={height - 300}
 					onScrollToBottom={loadMoreRecords}
 					scrollViewportRef={scrollViewportRef}
 				/>

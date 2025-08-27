@@ -90,7 +90,7 @@ export const calculateDetailedAge = (dob) => {
 export const formatDate = (date) => {
 	return new Date(date).toLocaleDateString("en-US", {
 		year: "numeric",
-		month: "long",
+		month: "numeric",
 		day: "numeric",
 	});
 };

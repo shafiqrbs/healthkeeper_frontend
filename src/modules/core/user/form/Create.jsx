@@ -147,7 +147,7 @@ export default function Create({ module }) {
 	return (
 		<Box>
 			<form onSubmit={form.onSubmit(handleSubmit)}>
-				<Grid columns={9} gutter={{ base: 8 }}>
+				<Grid columns={8} gutter={{ base: 8 }}>
 					<Grid.Col span={8}>
 						<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
 							<Box bg={"white"}>
@@ -501,11 +501,7 @@ export default function Create({ module }) {
 							</Box>
 						</Box>
 					</Grid.Col>
-					<Grid.Col span={1}>
-						<Box bg={"white"} className={"borderRadiusAll"} pt={"16"}>
-							<Shortcut form={form} FormSubmit={"EntityFormSubmit"} Name={"name"} inputType="select" />
-						</Box>
-					</Grid.Col>
+
 				</Grid>
 			</form>
 			{groupDrawer && (

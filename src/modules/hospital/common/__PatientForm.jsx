@@ -37,7 +37,7 @@ import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
-export default function PatientForm({ form, module }) {
+export default function PatientForm({ form, selectedRoom,module }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
@@ -262,7 +262,8 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("HealthID")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>{form.values.healthID || "08934"}</Grid.Col>
+								<Grid.Col span={14}>{form.values.healthID || ""}</Grid.Col>
+
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
@@ -443,9 +444,15 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
 										data={[
 											{ label: t("General"), value: "30" },
+<<<<<<< HEAD
 											{ label: t("FreedomFighter"), value: "33" },
 											{ label: t("Disabled"), value: "55" },
 											{ label: t("GovtService"), value: "35" },
+=======
+											{ label: t("FreedomFighter"), value: "31" },
+											{ label: t("Disabled"), value: "32" },
+											{ label: t("GovtService"), value: "43" },
+>>>>>>> 5d1207e (Rmegency module table update.)
 										]}
 									/>
 									{form.values.patient_payment_mode_id !== "30" && (
@@ -472,7 +479,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										form={form}
 										label=""
 										tooltip={t("enterGuardianName")}
-										placeholder="John Doe"
+										placeholder="EnterFather/Mother/Husband/Brother"
 										name="guardian_name"
 										id="guardian_name"
 										nextField="guardian_mobile"
@@ -485,7 +492,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("RoomNumber")}</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>{form.values.room_number || "101"}</Grid.Col>
+								<Grid.Col span={14}>{/*{selectedRoom?.name || "No room selected"}*/}</Grid.Col>
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>

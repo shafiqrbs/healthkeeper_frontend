@@ -19,6 +19,8 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 
 const module = MODULES.EMERGENCY;
+//const module = MODULES.VISIT;
+
 const LOCAL_STORAGE_KEY = "patientFormData";
 
 export default function Index() {
@@ -28,7 +30,6 @@ export default function Index() {
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [isSubmitting, setIsSubmitting] = useState(false);
-
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
@@ -89,7 +90,7 @@ export default function Index() {
 								<Form form={form} />
 							</Grid.Col>
 							<Grid.Col span={16}>
-								<VisitTable />
+								<VisitTable module={module} />
 								<ActionButtons
 									form={form}
 									handleSubmit={handleSubmit}

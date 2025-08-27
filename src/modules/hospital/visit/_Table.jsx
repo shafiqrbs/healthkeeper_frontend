@@ -38,13 +38,13 @@ const tabs = ["all", "closed", "done", "inProgress", "returned"];
 const PER_PAGE = 20;
 
 export default function Table({ module, height }) {
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state.crud[module].data);
 	const refetch = useSelector((state) => state.crud[module].refetching);
 	const [fetching, setFetching] = useState(false);
-
 	const { hospitalConfigData } = useHospitalConfigData();
 	const scrollViewportRef = useRef(null);
 	const [page, setPage] = useState(1);
@@ -266,11 +266,12 @@ export default function Table({ module, height }) {
 							textAlignment: "right",
 							render: (item) => (
 								<Text fz="sm" onClick={() => handleView(item.id)} className="activate-link text-nowrap">
-									{formatDate(item.created_at)+" #"+item.id}
+									{formatDate(item.created_at)}
 								</Text>
 							),
 						},
 						{ accessor: "appointment", title: t("appointment") },
+						{ accessor: "visiting_room", title: t("RoomNo") },
 						{ accessor: "patient_id", title: t("PatientID") },
 						{ accessor: "health_id", title: t("HealthID") },
 						{ accessor: "name", title: t("Name") },

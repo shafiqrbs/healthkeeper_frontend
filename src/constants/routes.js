@@ -154,6 +154,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "hospital/opd",
 			VIEW: "hospital/opd",
 			DELETE: "hospital/opd",
+			VISITING_ROOM: "hospital/visiting-room",
 		},
 
 		VISIT: {

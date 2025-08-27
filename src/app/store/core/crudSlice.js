@@ -267,6 +267,21 @@ const initialState = {
 		validationMessages: [],
 	},
 	// -------------------- hospital modules stops -------------------------
+
+	// -------------------- hospital modules starts -------------------------
+	emergency: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		validation: false,
+		insertType: "create",
+		data: {},
+		editData: {},
+		filterData: { name: "", date: new Date(), keywordSearch: "" },
+		validationMessages: [],
+	},
+	// -------------------- hospital modules stops -------------------------
+
 	// -------------------- prescription modules starts -------------------------
 	prescription: {
 		isLoading: true,

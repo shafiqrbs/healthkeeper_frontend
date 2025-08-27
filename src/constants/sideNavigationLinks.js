@@ -169,12 +169,6 @@ export const sideNavigationLinks = {
 			color: "#1D3557",
 		},
 		{
-			label: t("User"),
-			path: "/core/user",
-			icon: IconUser,
-			color: "#457B9D",
-		},
-		{
 			label: t("Admission"),
 			path: "/hospital/ipd/admission",
 			icon: IconBuildingHospital,
@@ -215,6 +209,12 @@ export const sideNavigationLinks = {
 		{
 			label: t("Investigation"),
 			path: "/hospital/investigation",
+			icon: IconDashboard,
+			color: "#4CAF50",
+		},
+		{
+			label: t("Users"),
+			path: "/core/user",
 			icon: IconDashboard,
 			color: "#4CAF50",
 		},

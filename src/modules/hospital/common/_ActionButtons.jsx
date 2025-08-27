@@ -66,7 +66,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 	return (
 		<>
 			<Stack gap={0} justify="space-between" mt="xs">
-				<Box p="sm" bg="white" >
+				<Box p="sm" pl={0} bg="white" >
 					<Grid columns={24}>
 						<Grid.Col span={12} bg="var(--theme-tertiary-color-1)" px="xs">
 							<TextAreaForm
@@ -79,7 +79,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								style={{ input: { height: "80px" } }}
 							/>
 						</Grid.Col>
-						<Grid.Col span={6} bg="var(--theme-tertiary-color-1)" px="xs">
+						<Grid.Col span={6} bg="var(--theme-tertiary-color-1)" px="xs" pt={'md'}>
 							{/*<Stack>
 								<SelectForm
 									key={referredNameKey}
@@ -109,34 +109,34 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								/>
 							</Stack>*/}
 							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t('Fee')}</Text>
+								<Text fz="xs">{t('Name')}</Text>
 								<Box px="xs">
 									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-										৳ {Number(displayAmount || 0).toLocaleString()}
+										{form.values?.name}
 									</Text>
 								</Box>
 							</Flex>
 							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t('Fee')}</Text>
+								<Text fz="xs">{t('MobileNo')}</Text>
 								<Box px="xs">
 									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-										৳ {Number(displayAmount || 0).toLocaleString()}
+										{form.values?.mobile}
 									</Text>
 								</Box>
 							</Flex>
 							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t('Fee')}</Text>
+								<Text fz="xs">{t('Gender')}</Text>
 								<Box px="xs">
 									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-										৳ {Number(displayAmount || 0).toLocaleString()}
+										{form.values?.gender}
 									</Text>
 								</Box>
 							</Flex>
 							<Flex gap="xss" align="center" justify="space-between">
-								<Text fz="xs">{t('Fee')}</Text>
+								<Text fz="xs">{t('Age')}</Text>
 								<Box px="xs">
 									<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-										৳ {Number(displayAmount || 0).toLocaleString()}
+										{form.values.day} Days	{form.values.month} Month	{form.values.year} Year
 									</Text>
 								</Box>
 							</Flex>

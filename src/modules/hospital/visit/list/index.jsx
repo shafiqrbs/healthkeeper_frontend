@@ -12,7 +12,6 @@ export default function ListIndex() {
 	const { mainAreaHeight } = useOutletContext();
 	const progress = useGetLoadingProgress();
 	const height = mainAreaHeight - 160;
-
 	return (
 		<>
 			{progress !== 100 ? (

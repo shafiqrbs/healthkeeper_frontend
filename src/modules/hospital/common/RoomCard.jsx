@@ -17,11 +17,11 @@ export default function RoomCard({ room, selectedRoom, handleRoomClick }) {
 				</Text>
 				<Flex align="center" gap="xxxs">
 					<IconUsers color="var(--theme-primary-color-6)" size={16} stroke={1.5} />
-					<Text fz="sm">234</Text>
+					<Text fz="sm">{room?.invoice_count}</Text>
 				</Flex>
 				<Flex align="center" gap="xxxs">
 					<Image radius="xl"  src={imgActive} />
-					<Text fz="sm">234</Text>
+					<Text fz="sm">{room?.invoice_count}</Text>
 				</Flex>
 			</Flex>
 			<Flex justify="space-between">
@@ -30,7 +30,7 @@ export default function RoomCard({ room, selectedRoom, handleRoomClick }) {
 				</Text>
 				<Flex align="center" gap="xxxs">
 					<IconDoor color="var(--theme-primary-color-6)" size={16} stroke={1.5} />
-					<Text fz="sm">001</Text>
+					<Text fz="sm">{room?.name}</Text>
 				</Flex>
 			</Flex>
 		</Box>
