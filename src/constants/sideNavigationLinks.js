@@ -290,6 +290,12 @@ export const sideNavigationLinks = {
 			icon: IconShoppingBag,
 			color: "#F59E0B",
 		},
+		{
+			label: t("Setting"),
+			path: "/core/setting",
+			icon: IconDashboard,
+			color: "#4CAF50",
+		},
 	],
 	configSubmenu: [
 		{

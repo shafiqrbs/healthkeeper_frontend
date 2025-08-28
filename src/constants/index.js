@@ -18,6 +18,7 @@ export const MODULES = {
 	DOMAIN: "domain",
 	HOSPITAL_CONFIG: "hospitalConfig",
 	USER: "user",
+	SETTING: "setting",
 };
 
 export const MODULES_CORE = {

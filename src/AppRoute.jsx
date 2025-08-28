@@ -95,6 +95,7 @@ import ConfigurationIndex from "@modules/configuration";
 import ConfirmIndex from "@modules/hospital/admission/confirm";
 import IpdIndex from "@modules/hospital/admission/ipd";
 import UserIndex from "@/modules/core/user";
+import SettingIndex from "@/modules/core/setting";
 
 function AppRoute() {
 	return (
@@ -109,6 +110,8 @@ function AppRoute() {
 				<Route path="core/">
 					<Route path="user" element={<UserIndex />} />
 					<Route path="user/:id" element={<UserIndex mode="edit" />} />
+					<Route path="setting" element={<SettingIndex />} />
+					<Route path="setting/:id" element={<SettingIndex mode="edit" />} />
 					{/* <Route path="file-upload/">
             <Route path="" element={<FileUploadIndex />} />
             </Route>

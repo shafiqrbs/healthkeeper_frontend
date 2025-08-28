@@ -7,6 +7,14 @@ export const MASTER_DATA_ROUTES = {
 			VIEW: "core/user/view",
 			DELETE: "core/user",
 		},
+		SETTING: {
+			INDEX: "core/setting",
+			CREATE: "core/setting",
+			UPDATE: "core/setting",
+			VIEW: "core/setting",
+			DELETE: "core/setting",
+		},
+
 		SELECT_DROPDOWN: {
 			PRODUCT_NATURE: "/inventory/select/setting",
 			CATEGORY_GROUP: "/inventory/select/group-category",
@@ -71,6 +79,12 @@ export const MASTER_DATA_ROUTES = {
 			CREATE: "/core/user",
 			UPDATE: "/core/user",
 			VIEW: "/core/user",
+		},
+		SETTING: {
+			INDEX: "/core/setting",
+			CREATE: "/core/setting",
+			UPDATE: "/core/setting",
+			VIEW: "/core/setting",
 		},
 		LAB_USER: {
 			INDEX: "/hospital/core/lab-user",

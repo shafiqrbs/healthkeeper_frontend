@@ -232,6 +232,15 @@ const initialState = {
 		editData: {},
 		filterData: { name: "", code: "", description: "" },
 	},
+	setting: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		editData: {},
+		filterData: { name: ""},
+	},
 	recipeItems: {
 		isLoading: true,
 		refetching: true,
