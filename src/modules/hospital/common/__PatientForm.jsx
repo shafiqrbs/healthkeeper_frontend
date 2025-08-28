@@ -2,7 +2,8 @@ import InputForm from "@components/form-builders/InputForm";
 import {
 	ActionIcon,
 	Box,
-	Button, Divider,
+	Button,
+	Divider,
 	FileInput,
 	Flex,
 	Grid,
@@ -16,7 +17,7 @@ import {
 import { useEffect, useState, useMemo } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import {IconArrowRight, IconInfoCircle, IconSearch, IconUpload} from "@tabler/icons-react";
+import { IconArrowRight, IconInfoCircle, IconSearch, IconUpload } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DatePickerForm from "@components/form-builders/DatePicker";
@@ -34,7 +35,6 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import { useDispatch } from "react-redux";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
-import { IMaskInput } from 'react-imask';
 import InputMaskForm from "@components/form-builders/InputMaskForm";
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -127,14 +127,14 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 				const parsed = JSON.parse(saved);
 				Object.entries(parsed).forEach(([key, value]) => {
 					// handle date fields - convert string back to Date object
-					if (key === "dob" || key === "appointment") {
+					if (key === "appointment") {
 						if (value && typeof value === "string") {
 							form.setFieldValue(key, new Date(value));
 						} else {
 							form.setFieldValue(key, value);
 						}
 					} else {
-						form.setFieldValue(key, value);
+						form.setFieldValue(key, value || "");
 					}
 				});
 			} catch (err) {
@@ -215,8 +215,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 			<Grid columns={24} gutter="sm">
 				<Grid.Col span={12}>
 					<ScrollArea h={height}>
-							<Stack mih={height} className="form-stack-vertical">
-
+						<Stack mih={height} className="form-stack-vertical">
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("patientName")}</Text>
@@ -233,169 +232,168 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										value={form.values.name}
 										required
 									/>
-
 								</Grid.Col>
 							</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("mobile")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<InputForm
-											form={form}
-											label=""
-											tooltip={t("enterPatientMobile")}
-											placeholder="+880 1717171717"
-											name="mobile"
-											id="mobile"
-											nextField="district"
-											value={form.values.mobile}
-											required
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("gender")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<SegmentedControl
-											fullWidth
-											color="var(--theme-primary-color-6)"
-											value={form.values.gender}
-											id="gender"
-											name="gender"
-											onChange={(val) => handleGenderChange(val)}
-											data={[
-												{ label: t("male"), value: "male" },
-												{ label: t("female"), value: "female" },
-												{ label: t("other"), value: "other" },
-											]}
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("dateOfBirth")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<InputMaskForm
-											name="dob"
-											id="dob"
-											value={form.values.dob}
-											form={form}
-											label=""
-											tooltip={t("enterPatientBirthDate")}
-											placeholder="DD-MM-YYYY"
-											nextField="days"
-											maskInput='01-01-2000'
-											required={false}
-											onChange={handleDobChange}
-											rightSection={ <IconInfoCircle size={16} opacity={0.5} />}
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("age")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<Flex gap="xs">
-											<InputNumberForm
-												form={form}
-												label=""
-												placeholder="Days"
-												tooltip={t("days")}
-												name="day"
-												id="day"
-												nextField="mobile"
-												min={0}
-												max={31}
-												leftSection={
-													<Text fz="sm" px="sm">
-														{t("D")}
-													</Text>
-												}
-											/>
-											<InputNumberForm
-												form={form}
-												label=""
-												placeholder="Months"
-												tooltip={t("months")}
-												name="month"
-												id="month"
-												nextField="day"
-												min={0}
-												max={11}
-												leftSection={
-													<Text fz="sm" px="sm">
-														{t("M")}
-													</Text>
-												}
-											/>
-
-											<InputNumberForm
-												form={form}
-												label=""
-												placeholder="Years"
-												tooltip={t("years")}
-												name="year"
-												id="year"
-												nextField="month"
-												min={0}
-												max={150}
-												leftSection={
-													<Text fz="sm" px="sm">
-														{t("Y")}
-													</Text>
-												}
-											/>
-										</Flex>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("Type")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<SegmentedControl
-											fullWidth
-											color="var(--theme-primary-color-6)"
-											value={form.values.identity_mode}
-											id="identity_mode"
-											name="identity_mode"
-											onChange={(val) => handleTypeChange(val)}
-											data={[
-												{ label: t("NID"), value: "NID" },
-												{ label: t("BRID"), value: "BRID" },
-												{ label: t("HID"), value: "HID" },
-											]}
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("NIDBirthCertificate")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("mobile")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("enterPatientMobile")}
+										placeholder="+880 1717171717"
+										name="mobile"
+										id="mobile"
+										nextField="district"
+										value={form.values.mobile}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("gender")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SegmentedControl
+										fullWidth
+										color="var(--theme-primary-color-6)"
+										value={form.values.gender}
+										id="gender"
+										name="gender"
+										onChange={(val) => handleGenderChange(val)}
+										data={[
+											{ label: t("male"), value: "male" },
+											{ label: t("female"), value: "female" },
+											{ label: t("other"), value: "other" },
+										]}
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("dateOfBirth")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputMaskForm
+										name="dob"
+										id="dob"
+										value={form.values.dob}
+										form={form}
+										label=""
+										tooltip={t("enterPatientBirthDate")}
+										placeholder="DD-MM-YYYY"
+										nextField="days"
+										maskInput="00-00-0000"
+										required={false}
+										onChange={handleDobChange}
+										rightSection={<IconInfoCircle size={16} opacity={0.5} />}
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("age")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<Flex gap="xs">
 										<InputNumberForm
 											form={form}
 											label=""
-											placeholder="1234567890"
-											tooltip={t("enterPatientIdentity")}
-											name="identity"
-											id="identity"
-											nextField="address"
-											value={form.values.identity}
-											rightSection={
-												<ActionIcon bg="var(--theme-secondary-color-6)">
-													<IconSearch size={"16"} />
-												</ActionIcon>
+											placeholder="Days"
+											tooltip={t("days")}
+											name="day"
+											id="day"
+											nextField="mobile"
+											min={0}
+											max={31}
+											leftSection={
+												<Text fz="sm" px="sm">
+													{t("D")}
+												</Text>
 											}
-											required
 										/>
-									</Grid.Col>
-								</Grid>
+										<InputNumberForm
+											form={form}
+											label=""
+											placeholder="Months"
+											tooltip={t("months")}
+											name="month"
+											id="month"
+											nextField="day"
+											min={0}
+											max={11}
+											leftSection={
+												<Text fz="sm" px="sm">
+													{t("M")}
+												</Text>
+											}
+										/>
+
+										<InputNumberForm
+											form={form}
+											label=""
+											placeholder="Years"
+											tooltip={t("years")}
+											name="year"
+											id="year"
+											nextField="month"
+											min={0}
+											max={150}
+											leftSection={
+												<Text fz="sm" px="sm">
+													{t("Y")}
+												</Text>
+											}
+										/>
+									</Flex>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("Type")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SegmentedControl
+										fullWidth
+										color="var(--theme-primary-color-6)"
+										value={form.values.identity_mode}
+										id="identity_mode"
+										name="identity_mode"
+										onChange={(val) => handleTypeChange(val)}
+										data={[
+											{ label: t("NID"), value: "NID" },
+											{ label: t("BRID"), value: "BRID" },
+											{ label: t("HID"), value: "HID" },
+										]}
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("NIDBirthCertificate")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputNumberForm
+										form={form}
+										label=""
+										placeholder="1234567890"
+										tooltip={t("enterPatientIdentity")}
+										name="identity"
+										id="identity"
+										nextField="address"
+										value={form.values.identity}
+										rightSection={
+											<ActionIcon bg="var(--theme-secondary-color-6)">
+												<IconSearch size={"16"} />
+											</ActionIcon>
+										}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
 						</Stack>
 					</ScrollArea>
 				</Grid.Col>
@@ -497,8 +495,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								</Grid.Col>
 							</Grid>
 							<Grid columns={20}>
-								<Grid.Col span={6} mt="xs">
-								</Grid.Col>
+								<Grid.Col span={6} mt="xs"></Grid.Col>
 								<Grid.Col span={14}>
 									{form.values.patient_payment_mode_id !== "30" && (
 										<InputForm
@@ -520,12 +517,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 				</Grid.Col>
 			</Grid>
 			<Box>
-				<_ActionButtons
-					form={form}
-					module={module}
-					handleSubmit={handleSubmit}
-					isSubmitting={isSubmitting}
-				/>
+				<_ActionButtons form={form} module={module} handleSubmit={handleSubmit} isSubmitting={isSubmitting} />
 			</Box>
 		</Box>
 	);

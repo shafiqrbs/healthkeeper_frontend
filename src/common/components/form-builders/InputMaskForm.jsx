@@ -1,9 +1,9 @@
-import { Tooltip, TextInput,InputBase } from "@mantine/core";
+import { Tooltip, InputBase } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconInfoCircle, IconX } from "@tabler/icons-react";
 import { getHotkeyHandler } from "@mantine/hooks";
 import inputCss from "@assets/css/InputField.module.css";
-import { IMaskInput } from 'react-imask';
+import { IMaskInput } from "react-imask";
 
 function InputMaskForm({
 	readOnly = false,
@@ -52,6 +52,7 @@ function InputMaskForm({
 						component={IMaskInput}
 						mask={maskInput}
 						{...form.getInputProps(name)}
+						value={form?.values[name] || ""}
 						onKeyDown={getHotkeyHandler([
 							[
 								"Enter",

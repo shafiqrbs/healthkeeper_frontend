@@ -2,7 +2,8 @@ import InputForm from "@components/form-builders/InputForm";
 import {
 	ActionIcon,
 	Box,
-	Button, Divider,
+	Button,
+	Divider,
 	FileInput,
 	Flex,
 	Grid,
@@ -15,12 +16,12 @@ import {
 import { useEffect, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import {IconArrowRight, IconInfoCircle, IconRestore, IconSearch, IconUpload} from "@tabler/icons-react";
+import { IconArrowRight, IconInfoCircle, IconRestore, IconSearch, IconUpload } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
-import {useDisclosure, useHotkeys, useIsFirstRender} from "@mantine/hooks";
+import { useDisclosure, useHotkeys, useIsFirstRender } from "@mantine/hooks";
 import { DISTRICT_LIST } from "@/constants";
 import { calculateAge, calculateDetailedAge } from "@/common/utils";
 import Table from "../visit/_Table";
@@ -33,8 +34,8 @@ import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 import InputMaskForm from "@components/form-builders/InputMaskForm";
 import PaymentMethodsCarousel from "@modules/hospital/common/PaymentMethodsCarousel";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-import {PAYMENT_METHODS} from "@/constants/paymentMethods";
-import {useReactToPrint} from "react-to-print";
+import { PAYMENT_METHODS } from "@/constants/paymentMethods";
+import { useReactToPrint } from "react-to-print";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -105,7 +106,7 @@ export default function EmergencyPatientForm({ form, module }) {
 	);
 }
 
-export function Form({ form, showTitle = false, heightOffset = 72, module, type = "emergency"  }) {
+export function Form({ form, showTitle = false, heightOffset = 72, module, type = "emergency" }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
@@ -160,14 +161,14 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 				const parsed = JSON.parse(saved);
 				Object.entries(parsed).forEach(([key, value]) => {
 					// handle date fields - convert string back to Date object
-					if (key === "dob" || key === "appointment") {
+					if (key === "appointment") {
 						if (value && typeof value === "string") {
 							form.setFieldValue(key, new Date(value));
 						} else {
 							form.setFieldValue(key, value);
 						}
 					} else {
-						form.setFieldValue(key, value);
+						form.setFieldValue(key, value || "");
 					}
 				});
 			} catch (err) {
@@ -253,7 +254,6 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 		}
 	};
 
-
 	return (
 		<Box>
 			{showTitle && (
@@ -266,7 +266,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 			<Box>
 				<Grid columns={12} gutter="sm">
 					<Grid.Col span={12}>
-						<ScrollArea h={height-92}>
+						<ScrollArea h={height - 92}>
 							<Stack mih={height} className="form-stack-vertical">
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
@@ -310,9 +310,17 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 											required
 										/>
 									</Grid.Col>
-									<Grid.Col span={5}><Text ta="right" pr={'xs'}>{form.values.healthID || t("HSID000000") }</Text></Grid.Col>
+									<Grid.Col span={5}>
+										<Text ta="right" pr={"xs"}>
+											{form.values.healthID || t("HSID000000")}
+										</Text>
+									</Grid.Col>
 								</Grid>
-								<Grid align="center" columns={20}><Grid.Col span={20}><Divider/></Grid.Col></Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={20}>
+										<Divider />
+									</Grid.Col>
+								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("patientName")}</Text>
@@ -331,7 +339,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 										/>
 									</Grid.Col>
 								</Grid>
-								<Grid align="center" columns={20} mt={'xs'}>
+								<Grid align="center" columns={20} mt={"xs"}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("mobile")}</Text>
 									</Grid.Col>
@@ -383,10 +391,10 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 											tooltip={t("enterPatientBirthDate")}
 											placeholder="00-00-0000"
 											nextField="days"
-											maskInput='01-01-2000'
+											maskInput="00-00-0000"
 											required={false}
 											onChange={handleDobChange}
-											rightSection={ <IconInfoCircle size={16} opacity={0.5} />}
+											rightSection={<IconInfoCircle size={16} opacity={0.5} />}
 										/>
 									</Grid.Col>
 								</Grid>
@@ -517,7 +525,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 										/>
 									</Grid.Col>
 								</Grid>
-								<Grid align="center" columns={20} mt={'xs'}>
+								<Grid align="center" columns={20} mt={"xs"}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("address")}</Text>
 									</Grid.Col>
@@ -553,7 +561,6 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 										</Box>
 									</Flex>
 								</Box>
-
 							</Grid.Col>
 							<Grid.Col span={8} bg="var(--theme-secondary-color-0)" px="xs">
 								<Flex align="center" justify="space-between">
@@ -625,7 +632,6 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 					</Button.Group>
 				</Box>
 			</Box>
-
 		</Box>
 	);
 }
