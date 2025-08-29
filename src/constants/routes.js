@@ -1,5 +1,12 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
+		INVESTIGATION: {
+			INDEX: "hospital/core/particular",
+			CREATE: "hospital/core/particular",
+			UPDATE: "hospital/core/particular",
+			VIEW: "hospital/core/particular",
+			DELETE: "hospital/core/particular",
+		},
 		USER: {
 			INDEX: "core/user",
 			CREATE: "core/user",
@@ -94,6 +101,13 @@ export const MASTER_DATA_ROUTES = {
 			UPDATE: "/hospital/core/lab-user",
 			VIEW: "/hospital/core/lab-user/view",
 			DELETE: "/hospital/core/lab-user/delete",
+		},
+
+		INVESTIGATION: {
+			INDEX: "/hospital/core/investigation",
+			CREATE: "/hospital/core/investigation/create",
+			UPDATE: "/hospital/core/investigation/update",
+			VIEW: "/hospital/core/investigation/view",
 		},
 
 		PARTICULAR: {

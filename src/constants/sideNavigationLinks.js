@@ -216,7 +216,7 @@ export const sideNavigationLinks = {
 	baseSubmenu: [
 		{
 			label: t("Investigation"),
-			path: "/hospital/investigation",
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX,
 			icon: IconDashboard,
 			color: "#4CAF50",
 		},

@@ -53,6 +53,16 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	investigation: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
 	particular_mode: {
 		isLoading: true,
 		refetching: true,

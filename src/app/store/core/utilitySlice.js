@@ -17,7 +17,6 @@ export const CORE_DROPDOWNS = {
 	MARKETING_EXECUTIVE: { UTILITY: "marketingExecutive", TYPE: "marketing-executive", PATH: "utility/select/setting" },
 	CATEGORY_NATURE: { UTILITY: "categoryNature", TYPE: "product-type", PATH: "inventory/select/setting" },
 	CATEGORY_GROUP: { UTILITY: "categoryGroup", TYPE: "category-group", PATH: "inventory/select/group-category" },
-	CATEGORY: { UTILITY: "category", TYPE: "category", PATH: "inventory/select/category" },
 };
 
 export const ACCOUNTING_DROPDOWNS = {
@@ -53,6 +52,7 @@ export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_GENDER_MODE: { UTILITY: "particularGenderModes", TYPE: "gender-mode", PATH: "hospital/select/mode" },
 	PARTICULAR_PAYMENT_MODE: { UTILITY: "particularPaymentModes", TYPE: "paying-mode", PATH: "hospital/select/mode" },
 	PARTICULAR_CABIN_MODE: { UTILITY: "particularCabinModes", TYPE: "cabin-mode", PATH: "hospital/select/mode" },
+	CATEGORY: { UTILITY: "category", TYPE: "category", PATH: "hospital/select/category" },
 };
 
 const initialState = {

@@ -1434,6 +1434,7 @@
 	"ManageDoctor": "Manage Doctor",
 	"ManageNurse": "Manage Nurse",
 	"ManageParticular": "Manage Particular",
+<<<<<<< HEAD
 	"DocumentNo": "Document No",
 	"EnterFatherMotherHusbandBrother": "Enter Father / Mother / Husband / Brother",
 	"EnterPatientDistrict": "Enter the patient's district",
@@ -1449,4 +1450,7 @@
 	"BanglaInformation": "Bangla Information",
 	"PersonalDetails": "Personal Details",
 	"SearchByRoomName": "Search by room name"
+	"CreateInvestigation": "Create Investigation",
+	"UpdateInvestigation": "Update Investigation",
+	"DocumentNo": "Document No"
 }

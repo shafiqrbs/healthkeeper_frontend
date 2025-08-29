@@ -22,6 +22,7 @@ export const MODULES = {
 };
 
 export const MODULES_CORE = {
+	INVESTIGATION: "investigation",
 	BED: "bed",
 	CABIN: "cabin",
 	PARTICULAR: "particular",
