@@ -493,6 +493,9 @@ input[type=radio]:checked+label>img {
     }
 }
 
+.user-none {
+    user-select: none !important;
+}
 
 /* // patent form */
 .form-stack-vertical {
@@ -501,7 +504,7 @@ input[type=radio]:checked+label>img {
     border-radius: 4px;
     padding: 14px;
     display: block;
-    gap: 8px!important;
+    gap: 8px !important;
 }
 
 .infinite-pagination-footer {

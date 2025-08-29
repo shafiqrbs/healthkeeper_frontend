@@ -16,12 +16,43 @@ const getFileHeaders = () => {
 	const user = getLoggedInUser();
 	return {
 		Accept: "application/json",
-        "Content-Type": `multipart/form-data`,
-        "Access-Control-Allow-Origin": "*",
+		"Content-Type": `multipart/form-data`,
+		"Access-Control-Allow-Origin": "*",
 		"X-Api-Key": API_KEY,
 		"X-Api-User": user.id,
 	};
 };
+
+export const getDataWithoutStore = async (value, headers = {}) => {
+	try {
+		const response = await axios({
+			method: "get",
+			url: `${API_BASE_URL}/${value.url}`,
+			headers: { ...getCommonHeaders(), ...headers },
+			params: value.params,
+		});
+		return response.data;
+	} catch (error) {
+		console.error("Error in getDataWithoutStore:", error);
+		throw error;
+	}
+};
+
+export const setDataWithoutStore = async (value, headers = {}) => {
+	try {
+		const response = await axios({
+			method: "post",
+			url: `${API_BASE_URL}/${value.url}`,
+			headers: { ...getCommonHeaders(), ...headers },
+			data: value.data,
+		});
+		return response.data;
+	} catch (error) {
+		console.error("Error in setDataWithoutStore:", error);
+		throw error;
+	}
+};
+
 export const getSelectDataWithParam = async (value) => {
 	try {
 		const response = await axios({

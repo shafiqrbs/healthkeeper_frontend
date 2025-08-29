@@ -19,8 +19,14 @@ function InputNumberForm({
 	closeIcon,
 	leftSection,
 	rightSection,
+	handleChange = () => {},
 }) {
 	const { t } = useTranslation();
+
+	const handleInputChange = (e) => {
+		form.setFieldValue(name, e.target.value);
+		handleChange(e.target.value);
+	};
 
 	return (
 		<>
@@ -50,6 +56,7 @@ function InputNumberForm({
 						disabled={disabled}
 						autoComplete="off"
 						{...form.getInputProps(name)}
+						onChange={handleInputChange}
 						onKeyDown={getHotkeyHandler([
 							[
 								"Enter",

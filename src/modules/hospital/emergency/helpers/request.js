@@ -47,11 +47,6 @@ export const getVendorFormInitialValues = (t) => {
 				if (!value) return t("MobileValidationRequired");
 				return null;
 			},
-			amount: (value) => {
-				if (!value) return t("AmountValidationRequired");
-				return null;
-			},
-
 		},
 	};
 };

@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import { MODULES } from "@/constants";
 import RoomCard from "../common/RoomCard";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { IconSearch } from "@tabler/icons-react";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
@@ -25,7 +25,19 @@ export default function Index() {
 	const [selectedRoom, setSelectedRoom] = useState(1);
 	const [records, setRecords] = useState([]);
 	const [fetching, setFetching] = useState([]);
+	const [searchQuery, setSearchQuery] = useState("");
 	const dispatch = useDispatch();
+
+	// =============== filter and sort records based on search query and invoice_count ================
+	const filteredAndSortedRecords = useMemo(() => {
+		if (!records || records.length === 0) return [];
+
+		// filter records by name (case insensitive)
+		const filtered = records.filter((item) => item.name?.toLowerCase().includes(searchQuery.toLowerCase()));
+
+		// sort by invoice_count in ascending order
+		return filtered.sort((a, b) => (a.invoice_count || 0) - (b.invoice_count || 0));
+	}, [records, searchQuery]);
 
 	const handleRoomClick = (room) => {
 		setSelectedRoom(room);
@@ -79,11 +91,13 @@ export default function Index() {
 										<TextInput
 											leftSection={<IconSearch size={18} />}
 											name="search"
-											placeholder={t("search")}
+											placeholder={t("SearchByRoomName")}
+											value={searchQuery}
+											onChange={(e) => setSearchQuery(e.target.value)}
 										/>
 									</Box>
 									<ScrollArea h={mainAreaHeight - 120} scrollbars="y" p="xs">
-										{records?.map((item, index) => (
+										{filteredAndSortedRecords?.map((item, index) => (
 											<RoomCard
 												key={index}
 												room={item}

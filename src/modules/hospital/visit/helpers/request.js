@@ -32,7 +32,7 @@ const initialValues = {
 	email: "",
 	payment_mode: "",
 	free_identification: "",
-	patient_payment_mode_id: 30,
+	patient_payment_mode_id: "30",
 	api_patient_content: "",
 	invoice_particulars: [{ id: 1, name: "Consultation", quantity: 10, price: 100 }],
 };
@@ -43,14 +43,10 @@ export const getVendorFormInitialValues = (t) => {
 
 		validate: {
 			name: hasLength({ min: 2, max: 20 }),
-			mobile: (value) => {
-				if (!value) return t("MobileValidationRequired");
-				return null;
-			},
-			amount: (value) => {
-				if (!value) return t("AmountValidationRequired");
-				return null;
-			},
+			// mobile: (value) => {
+			// 	if (!value) return t("MobileValidationRequired");
+			// 	return null;
+			// },
 			guardian_name: (value, values) => {
 				if (!value && values.patient_type === "admission") return t("NameValidationRequired");
 				return null;

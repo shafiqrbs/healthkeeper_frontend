@@ -3,42 +3,81 @@ import {
 	ActionIcon,
 	Box,
 	Button,
-	Divider,
-	FileInput,
 	Flex,
 	Grid,
-	Group,
+	LoadingOverlay,
 	Modal,
 	ScrollArea,
 	SegmentedControl,
 	Stack,
 	Text,
 } from "@mantine/core";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconArrowRight, IconInfoCircle, IconSearch, IconUpload } from "@tabler/icons-react";
+import { IconArrowRight, IconInfoCircle, IconSearch } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import DatePickerForm from "@components/form-builders/DatePicker";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
-import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
+import { useDisclosure, useHotkeys, useIsFirstRender } from "@mantine/hooks";
 import { DISTRICT_LIST } from "@/constants";
 import { calculateAge, calculateDetailedAge } from "@/common/utils";
 import _ActionButtons from "./_ActionButtons";
 import Table from "../visit/_Table";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
-import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import { useDispatch } from "react-redux";
-import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 import InputMaskForm from "@components/form-builders/InputMaskForm";
+import SegmentedControlForm from "@components/form-builders/SegmentedControlForm";
+import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
+import NIDDataPreviewModal from "./NIDDataPreviewModal";
+import InputMobileNumberForm from "@components/form-builders/InputMobileNumberForm";
 const LOCAL_STORAGE_KEY = "patientFormData";
 
-export default function PatientForm({ form, selectedRoom, module }) {
+const USER_NID_DATA = {
+	verifyToken: "a9a98eac-68c4-4dd1-9cb9-8127a5b44833",
+	citizenData: {
+		mobile: null,
+		fullName_English: "Md KarimI Mia",
+		motherName_English: "",
+		motherName_Bangla: "মোসাঃ ….. বেগম",
+		fatherName_English: "",
+		fatherName_Bangla: "মোঃ আঃ ……….",
+		permanentHouseholdNoText: null,
+		dob: "1986-05-10",
+		bin_BRN: null,
+		gender: 1,
+		fullName_Bangla: "মোঃ ….. ইসলাম",
+		presentHouseholdNoText: null,
+		citizen_nid: "1234567890",
+		permanentHouseholdNo: {
+			division: "Dhaka",
+			district: "Narayanganj",
+			upazilla: "Sonargaon",
+			unionOrWard: null,
+			mouzaOrMoholla: "Pailopara",
+			villageOrRoad: "Cengakandini",
+			houseOrHoldingNo: "",
+			address_line: null,
+		},
+		presentHouseholdNo: {
+			division: "Dhaka",
+			district: "Narayanganj",
+			upazilla: "Sonargaon",
+			unionOrWard: "Baridhi",
+			mouzaOrMoholla: "Pailopara",
+			villageOrRoad: "Cengakandini",
+			houseOrHoldingNo: "",
+			address_line: null,
+		},
+	},
+};
+
+export default function PatientForm({ form, module }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
@@ -92,13 +131,16 @@ export default function PatientForm({ form, selectedRoom, module }) {
 }
 
 export function Form({ form, showTitle = false, heightOffset = 116, module }) {
+	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
+	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset - 132;
 	const firstRender = useIsFirstRender();
+	const [userNidData, setUserNidData] = useState(USER_NID_DATA);
+	const [showUserData, setShowUserData] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const dispatch = useDispatch();
-	const [updateKey, setUpdateKey] = useState(0);
+	const [visible, setVisible] = useState(false);
 
 	const handleDobChange = () => {
 		const type = form.values.ageType || "year";
@@ -113,6 +155,19 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 			form.setFieldValue("day", detailedAge.days);
 		}
 	};
+
+	useEffect(() => {
+		handleDobChange();
+	}, [form.values.dob]);
+
+	useEffect(() => {
+		form.setFieldValue("guardian_name", form.values.name);
+	}, [form.values.name]);
+
+	useEffect(() => {
+		form.setFieldValue("guardian_mobile", form.values.mobile);
+	}, [form.values.mobile]);
+
 	// save to localStorage on every form change
 	useEffect(() => {
 		if (!firstRender) {
@@ -143,6 +198,27 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 			}
 		}
 	}, [firstRender]);
+
+	const handleContentChange = () => {
+		setShowUserData(false);
+	};
+
+	const handleNIDSearch = () => {
+		setShowUserData(true);
+		setVisible(true);
+		setTimeout(() => {
+			form.setFieldValue(
+				"guardian_name",
+				userNidData.citizenData.fatherName_English || userNidData.citizenData.motherName_English
+			);
+			form.setFieldValue("district", userNidData.citizenData.presentHouseholdNo.district);
+			form.setFieldValue(
+				"address",
+				`${userNidData.citizenData.presentHouseholdNo.division}, ${userNidData.citizenData.presentHouseholdNo.district}, ${userNidData.citizenData.presentHouseholdNo.upazilla}, ${userNidData.citizenData.presentHouseholdNo.unionOrWard}, ${userNidData.citizenData.presentHouseholdNo.mouzaOrMoholla}, ${userNidData.citizenData.presentHouseholdNo.villageOrRoad}, ${userNidData.citizenData.presentHouseholdNo.houseOrHoldingNo}`
+			);
+			setVisible(false);
+		}, 1000);
+	};
 
 	const handleGenderChange = (val) => {
 		form.setFieldValue("gender", val);
@@ -182,7 +258,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 					setRefetchData({ module, refetching: true });
 					form.reset();
 					localStorage.removeItem(LOCAL_STORAGE_KEY);
-					setUpdateKey((prev) => prev + 1);
 				}
 			} catch (error) {
 				console.error("Error submitting visit:", error);
@@ -204,7 +279,8 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 	};
 
 	return (
-		<Box>
+		<Box pos="relative">
+			<LoadingOverlay visible={visible} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 			{showTitle && (
 				<Flex bg="var(--theme-primary-color-0)" align="center" gap="xs" p="sm">
 					<Text fw={600} fz="sm">
@@ -218,7 +294,10 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 						<Stack mih={height} className="form-stack-vertical">
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Text fz="sm">{t("patientName")}</Text>
+									<Flex align="center" gap="es">
+										<Text fz="sm">{t("PatientName")}</Text>
+										<RequiredAsterisk />
+									</Flex>
 								</Grid.Col>
 								<Grid.Col span={14}>
 									<InputForm
@@ -228,25 +307,25 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										placeholder="Md. Abdul"
 										name="name"
 										id="patientName"
-										nextField="dob"
+										nextField="mobile"
 										value={form.values.name}
-										required
+										// required
 									/>
 								</Grid.Col>
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Text fz="sm">{t("mobile")}</Text>
+									<Text fz="sm">{t("Mobile")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<InputForm
+									<InputMobileNumberForm
 										form={form}
 										label=""
-										tooltip={t("enterPatientMobile")}
+										tooltip={t("EnterPatientMobile")}
 										placeholder="+880 1717171717"
 										name="mobile"
 										id="mobile"
-										nextField="district"
+										nextField="gender"
 										value={form.values.mobile}
 										required
 									/>
@@ -254,27 +333,31 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Text fz="sm">{t("gender")}</Text>
+									<Text fz="sm">{t("Gender")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<SegmentedControl
+									<SegmentedControlForm
 										fullWidth
 										color="var(--theme-primary-color-6)"
 										value={form.values.gender}
 										id="gender"
 										name="gender"
+										nextField="dob"
 										onChange={(val) => handleGenderChange(val)}
 										data={[
-											{ label: t("male"), value: "male" },
-											{ label: t("female"), value: "female" },
-											{ label: t("other"), value: "other" },
+											{ label: t("Male"), value: "male" },
+											{ label: t("Female"), value: "female" },
+											{ label: t("Other"), value: "other" },
 										]}
 									/>
 								</Grid.Col>
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Text fz="sm">{t("dateOfBirth")}</Text>
+									<Flex align="center" gap="es">
+										<Text fz="sm">{t("DateOfBirth")}</Text>
+										<RequiredAsterisk />
+									</Flex>
 								</Grid.Col>
 								<Grid.Col span={14}>
 									<InputMaskForm
@@ -283,19 +366,18 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										value={form.values.dob}
 										form={form}
 										label=""
-										tooltip={t("enterPatientBirthDate")}
+										tooltip={t("EnterPatientBirthDate")}
 										placeholder="DD-MM-YYYY"
 										nextField="days"
 										maskInput="00-00-0000"
 										required={false}
-										onChange={handleDobChange}
 										rightSection={<IconInfoCircle size={16} opacity={0.5} />}
 									/>
 								</Grid.Col>
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Text fz="sm">{t("age")}</Text>
+									<Text fz="sm">{t("Age")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
 									<Flex gap="xs">
@@ -306,7 +388,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 											tooltip={t("days")}
 											name="day"
 											id="day"
-											nextField="mobile"
+											nextField="month"
 											min={0}
 											max={31}
 											leftSection={
@@ -322,7 +404,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 											tooltip={t("months")}
 											name="month"
 											id="month"
-											nextField="day"
+											nextField="year"
 											min={0}
 											max={11}
 											leftSection={
@@ -339,7 +421,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 											tooltip={t("years")}
 											name="year"
 											id="year"
-											nextField="month"
+											nextField="identity_mode"
 											min={0}
 											max={150}
 											leftSection={
@@ -353,15 +435,19 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Text fz="sm">{t("Type")}</Text>
+									<Flex align="center" gap="es">
+										<Text fz="sm">{t("Type")}</Text>
+										<RequiredAsterisk />
+									</Flex>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<SegmentedControl
+									<SegmentedControlForm
 										fullWidth
 										color="var(--theme-primary-color-6)"
 										value={form.values.identity_mode}
 										id="identity_mode"
 										name="identity_mode"
+										nextField="identity"
 										onChange={(val) => handleTypeChange(val)}
 										data={[
 											{ label: t("NID"), value: "NID" },
@@ -380,13 +466,14 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 										form={form}
 										label=""
 										placeholder="1234567890"
-										tooltip={t("enterPatientIdentity")}
+										tooltip={t("EnterPatientIdentity")}
 										name="identity"
 										id="identity"
-										nextField="address"
+										nextField="district"
 										value={form.values.identity}
+										handleChange={handleContentChange}
 										rightSection={
-											<ActionIcon bg="var(--theme-secondary-color-6)">
+											<ActionIcon onClick={handleNIDSearch} bg="var(--theme-secondary-color-6)">
 												<IconSearch size={"16"} />
 											</ActionIcon>
 										}
@@ -394,6 +481,23 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									/>
 								</Grid.Col>
 							</Grid>
+							{showUserData && (
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("HID")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<Text
+											className="cursor-pointer user-none"
+											onClick={openNIDDataPreview}
+											fz="sm"
+											c="var(--theme-primary-color-6)"
+										>
+											{form.values.hid || "HID432343"}
+										</Text>
+									</Grid.Col>
+								</Grid>
+							)}
 						</Stack>
 					</ScrollArea>
 				</Grid.Col>
@@ -408,8 +512,8 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									<InputForm
 										form={form}
 										label=""
-										tooltip={t("enterGuardianName")}
-										placeholder="EnterFather/Mother/Husband/Brother"
+										tooltip={t("EnterGuardianName")}
+										placeholder={t("EnterFatherMotherHusbandBrother")}
 										name="guardian_name"
 										id="guardian_name"
 										nextField="guardian_mobile"
@@ -423,15 +527,15 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									<Text fz="sm">{t("GuardianMobile")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<InputForm
+									<InputMobileNumberForm
 										form={form}
 										label=""
-										tooltip={t("enterPatientMobile")}
+										tooltip={t("EnterGuardianMobile")}
 										placeholder="+880 1717171717"
-										name="mobile"
-										id="mobile"
+										name="guardian_mobile"
+										id="guardian_mobile"
 										nextField="district"
-										value={form.values.mobile}
+										value={form.values.guardian_mobile}
 										required
 									/>
 								</Grid.Col>
@@ -443,7 +547,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 								<Grid.Col span={14}>
 									<SelectForm
 										form={form}
-										tooltip={t("enterPatientDistrict")}
+										tooltip={t("EnterPatientDistrict")}
 										placeholder="Dhaka"
 										name="district"
 										id="district"
@@ -463,11 +567,11 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									<TextAreaForm
 										form={form}
 										label=""
-										tooltip={t("enterPatientAddress")}
+										tooltip={t("EnterPatientAddress")}
 										placeholder="12 street, 123456"
 										name="address"
 										id="address"
-										nextField="comment"
+										nextField="patient_payment_mode_id"
 										value={form.values.address}
 										required
 									/>
@@ -478,12 +582,13 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									<Text fz="sm">{t("FreeFor")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<SegmentedControl
+									<SegmentedControlForm
 										fullWidth
 										color="var(--theme-primary-color-6)"
 										value={form.values.patient_payment_mode_id}
 										id="patient_payment_mode_id"
 										name="patient_payment_mode_id"
+										nextField="free_identification_id"
 										onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
 										data={[
 											{ label: t("General"), value: "30" },
@@ -502,11 +607,10 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 											form={form}
 											label=""
 											mt="xxs"
-											tooltip={t("enterFreeIdentificationId")}
+											tooltip={t("EnterFreeIdentificationId")}
 											placeholder="Enter Free ID"
 											name="free_identification_id"
 											id="free_identification_id"
-											nextField="file"
 											value={form.values.free_identification_id || ""}
 										/>
 									)}
@@ -516,9 +620,14 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 					</ScrollArea>
 				</Grid.Col>
 			</Grid>
-			<Box>
-				<_ActionButtons form={form} module={module} handleSubmit={handleSubmit} isSubmitting={isSubmitting} />
-			</Box>
+			<_ActionButtons
+				type="opd_ticket"
+				form={form}
+				module={module}
+				handleSubmit={handleSubmit}
+				isSubmitting={isSubmitting}
+			/>
+			<NIDDataPreviewModal opened={openedNIDDataPreview} close={closeNIDDataPreview} userNidData={userNidData} />
 		</Box>
 	);
 }

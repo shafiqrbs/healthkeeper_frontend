@@ -22,6 +22,7 @@ function InputMaskForm({
 	rightSection,
 	maskInput,
 	styles = {},
+	onChange,
 }) {
 	const { t } = useTranslation();
 
@@ -51,8 +52,8 @@ function InputMaskForm({
 						placeholder={placeholder}
 						component={IMaskInput}
 						mask={maskInput}
+						onChange={onChange}
 						{...form.getInputProps(name)}
-						value={form?.values[name] || ""}
 						onKeyDown={getHotkeyHandler([
 							[
 								"Enter",

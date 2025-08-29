@@ -37,7 +37,7 @@ import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import { useReactToPrint } from "react-to-print";
 
-const LOCAL_STORAGE_KEY = "patientFormData";
+const LOCAL_STORAGE_KEY = "emergencyPatientFormData";
 
 export default function EmergencyPatientForm({ form, module }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -146,7 +146,6 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 		["alt+p", handlePrescriptionPosPrint],
 	]);
 
-	const [updateKey, setUpdateKey] = useState(0);
 	// save to localStorage on every form change
 	useEffect(() => {
 		if (!firstRender) {

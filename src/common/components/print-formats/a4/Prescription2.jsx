@@ -14,8 +14,8 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 	const basicInfo = patientReport?.basic_info || {};
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = patientInfo?.medicines || [];
-	const customerInformation = data?.invoice_details?.customer_details || {};
-	console.log(customerInformation);
+	const customerInformation = data?.invoice_details?.customer_details || data;
+
 	const getValue = (value, defaultValue = "N/A") => {
 		return value || defaultValue;
 	};

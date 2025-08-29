@@ -1,10 +1,10 @@
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import {Box, Button, Divider, Flex, Grid, Stack, Text} from "@mantine/core";
+import { Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
 import { IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import Prescription from "@components/print-formats/a4/Prescription";
 import PrescriptionPos from "@components/print-formats/pos/Prescription";
@@ -17,15 +17,22 @@ import useHospitalConfigData from "@/common/hooks/config-data/useHospitalConfigD
 const LOCAL_STORAGE_KEY = "patientFormData";
 
 export default function ActionButtons({ form, isSubmitting, handleSubmit, type = "prescription" }) {
+	const { hospitalConfigData } = useHospitalConfigData();
 	const prescriptionA4Ref = useRef(null);
 	const prescriptionPosRef = useRef(null);
 	const { t } = useTranslation();
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
+	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
 
-	const { hospitalConfigData } = useHospitalConfigData();
+	useEffect(() => {
+		const price =
+			form.values.patient_payment_mode_id !== "30" // only for general payment will be applicable
+				? 0
+				: Number(hospitalConfigData?.[`${type}_fee`]?.[`ticket_fee_price`] ?? 0);
+		setConfiguredDueAmount(price);
+		form.setFieldValue("amount", price);
+	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
 
-	// compute dynamic due/return based on configured fee and entered amount
-	const configuredDueAmount = Number(hospitalConfigData?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
 	const enteredAmount = Number(form?.values?.amount ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
 	const isReturn = remainingBalance < 0;
@@ -59,10 +66,15 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 		["alt+p", handlePrescriptionPosPrint],
 	]);
 
+	const handlePrescriptionPrint = () => {
+		handlePrintPrescriptionA4();
+		handleSubmit();
+	};
+
 	return (
 		<>
 			<Stack gap={0} justify="space-between" mt="xs">
-				<Box p="sm" pl={'md'} pr={'md'} bg="white">
+				<Box p="sm" pl={"md"} pr={"md"} bg="white">
 					<Grid columns={24}>
 						<Grid.Col span={12} bg="var(--theme-tertiary-color-0)" px="xs">
 							<TextAreaForm
@@ -138,7 +150,6 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 									</Box>
 								</Flex>
 							</Box>
-
 						</Grid.Col>
 						<Grid.Col span={6} bg="var(--theme-primary-color-0)" px="xs">
 							<Stack gap="0" className="method-carousel">
@@ -152,7 +163,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 									<Text>{t("Fee")}</Text>
 									<Box px="xs" py="les">
 										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
-											৳ {Number(displayAmount || 0).toLocaleString()}
+											৳ {Number(configuredDueAmount || 0).toLocaleString()}
 										</Text>
 									</Box>
 								</Flex>
@@ -165,7 +176,6 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 											tooltip={t("enterAmount")}
 											placeholder={t("Amount")}
 											name="amount"
-											required
 										/>
 									</Box>
 								</Flex>
@@ -206,7 +216,12 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 							</Text>
 						</Stack>
 					</Button>
-					<Button w="100%" bg="var(--theme-prescription-btn-color)" disabled={isSubmitting}>
+					<Button
+						w="100%"
+						onClick={handlePrescriptionPrint}
+						bg="var(--theme-prescription-btn-color)"
+						disabled={isSubmitting}
+					>
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("prescription")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -258,9 +273,9 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 					</Button>
 				</Button.Group>
 			</Box>
-			<Prescription ref={prescriptionA4Ref} />
-			<Prescription2 ref={prescriptionA4Ref} />
-			<Prescription3 ref={prescriptionA4Ref} />
+			{/* <Prescription ref={prescriptionA4Ref} /> */}
+			<Prescription2 data={form.values} ref={prescriptionA4Ref} />
+			{/* <Prescription3 ref={prescriptionA4Ref} /> */}
 			<PrescriptionPos ref={prescriptionPosRef} />
 		</>
 	);

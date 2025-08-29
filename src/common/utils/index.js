@@ -39,7 +39,10 @@ export const getUserRole = () => {
 
 export const calculateAge = (dob, type) => {
 	if (!dob) return "";
-	const birthDate = new Date(dob);
+	const day = dob.split("-")[0];
+	const month = dob.split("-")[1];
+	const year = dob.split("-")[2];
+	const birthDate = new Date(year, month - 1, day);
 	const today = new Date();
 	let value = 0;
 	if (type === "year") {
@@ -63,7 +66,11 @@ export const calculateAge = (dob, type) => {
 export const calculateDetailedAge = (dob) => {
 	if (!dob) return { years: 0, months: 0, days: 0 };
 
-	const birthDate = new Date(dob);
+	const day = dob.split("-")[0];
+	const month = dob.split("-")[1];
+	const year = dob.split("-")[2];
+
+	const birthDate = new Date(year, month - 1, day);
 	const today = new Date();
 
 	// Calculate years
