@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Grid, Box, ScrollArea, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
@@ -12,35 +12,21 @@ import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import InputNumberForm from "@components/form-builders/InputNumberForm";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
-
-	const { data: categoryNatureDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.CATEGORY_NATURE.PATH,
-		params: { "dropdown-type": CORE_DROPDOWNS.CATEGORY_NATURE.TYPE },
-		utility: CORE_DROPDOWNS.CATEGORY_NATURE.UTILITY,
-	});
-
-	const { data: categoryGroupDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.CATEGORY_GROUP.PATH,
-		utility: CORE_DROPDOWNS.CATEGORY_GROUP.UTILITY,
-	});
-
-
+	console.log(data)
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
-				category_nature_id: data.category_nature_id,
-				parent_id: data.parent_id,
 				name: data.name,
 			});
 			setIndexData(data.id);
-
 			const timeoutId = setTimeout(() => {
 				setIsLoading(false);
 			}, 500);
@@ -52,7 +38,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 
 	useHotkeys(
 		[
-			["alt+n", () => document.getElementById("company_name").focus()],
+			["alt+n", () => document.getElementById("patient_mode_id").focus()],
 			["alt+r", () => form.reset()],
 			["alt+s", () => document.getElementById("EntityFormSubmit").click()],
 		],
@@ -70,55 +56,19 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 								<Stack>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("CategoryNature")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("CategoryNatureValidateMessage")}
-												placeholder={t("CategoryNature")}
-												name="category_nature_id"
-												id="category_nature_id"
-												nextField="parent_id"
-											//	changeValue={setCategoryNature}
-												value={form.values.category_nature_id}
-												dropdownValue={categoryNatureDropdown}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("CategoryGroup")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("CategoryGroupValidateMessage")}
-												placeholder={t("CategoryGroup")}
-												name="parent_id"
-												id="parent_id"
-												nextField="name"
-												value={form.values.parent_id}
-												//changeValue={setParent}
-												dropdownValue={categoryGroupDropdown}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
-										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("CategoryName")} <RequiredAsterisk />
+												{t("Name")} <RequiredAsterisk />
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
 												form={form}
-												tooltip={t("VendorNameValidateMessage")}
-												placeholder={t("UserName")}
-												required={true}
+												tooltip={t("NameValidateMessage")}
+												placeholder={t("Name")}
+												required={false}
 												name="name"
 												id="name"
-												nextField="EntityFormSubmit"
+												nextField=""
 											/>
 										</Grid.Col>
 									</Grid>

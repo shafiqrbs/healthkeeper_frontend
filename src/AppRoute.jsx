@@ -196,6 +196,7 @@ function AppRoute() {
 					<Route path="particular-mode" element={<ParticularModeIndex />} />
 					<Route path="particular-type" element={<ParticularTypeIndex />} />
 					<Route path="category" element={<CategoryIndex />} />
+					<Route path="category/:id" element={<CategoryIndex mode={"edit"} />} />
 				</Route>
 				<Route path="sitemap" element={<Sitemap />} />
 				<Route path="/configuration/">

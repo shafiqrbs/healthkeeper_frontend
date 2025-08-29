@@ -2,8 +2,6 @@ import { hasLength } from "@mantine/form";
 
 const initialValues = {
 	name: "",
-	parent_id: "",
-	category_nature_id: "",
 };
 
 export const getInitialValues = (t) => {
@@ -14,3 +12,4 @@ export const getInitialValues = (t) => {
 		},
 	};
 };
+

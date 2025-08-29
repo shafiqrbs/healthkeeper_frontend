@@ -7,6 +7,7 @@ export const MASTER_DATA_ROUTES = {
 			VIEW: "core/user/view",
 			DELETE: "core/user",
 		},
+
 		SETTING: {
 			INDEX: "core/setting",
 			CREATE: "core/setting",
@@ -66,11 +67,11 @@ export const MASTER_DATA_ROUTES = {
 		},
 
 		CATEGORY: {
-			INDEX: "inventory/category-group",
-			CREATE: "inventory/category-group",
-			UPDATE: "inventory/category-group",
-			VIEW: "inventory/category-group",
-			DELETE: "inventory/category-group",
+			INDEX: "hospital/core/category",
+			CREATE: "hospital/core/category",
+			UPDATE: "hospital/core/category",
+			VIEW: "hospital/core/category",
+			DELETE: "hospital/core/category",
 		},
 	},
 	NAVIGATION_LINKS: {
@@ -86,6 +87,7 @@ export const MASTER_DATA_ROUTES = {
 			UPDATE: "/core/setting",
 			VIEW: "/core/setting",
 		},
+
 		LAB_USER: {
 			INDEX: "/hospital/core/lab-user",
 			CREATE: "/hospital/core/lab-user/create",

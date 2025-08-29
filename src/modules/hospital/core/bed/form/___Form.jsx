@@ -28,9 +28,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	});
 
 	const { data: getParticularPatientModes } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_MODE.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_MODE.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_MODE.UTILITY,
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_DISEASES_MODE.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_DISEASES_MODE.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_DISEASES_MODE.UTILITY,
 	});
 
 	const { data: getParticularGenderModes } = useGlobalDropdownData({
@@ -44,7 +44,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.TYPE },
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.UTILITY,
 	});
-
+	console.log(data)
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);

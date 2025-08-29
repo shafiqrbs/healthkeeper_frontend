@@ -5,13 +5,15 @@ import { useTranslation } from "react-i18next";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconAlertCircle } from "@tabler/icons-react";
 import { rem, Text } from "@mantine/core";
-import { ERROR_NOTIFICATION_COLOR } from "@/constants";
+import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { useParams, useNavigate } from "react-router-dom";
 import useVendorDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useVendorDataStoreIntoLocalStorage";
 import { setInsertType } from "@/app/store/core/crudSlice";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import Form from "@modules/hospital/customer/form/___Form";
+import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import Form from "./___Form";
+import {successNotification} from "@components/notification/successNotification";
+import {errorNotification} from "@components/notification/errorNotification";
 
 export default function __Update({ module, form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +23,7 @@ export default function __Update({ module, form, close }) {
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const indexUpdateData = useSelector((state) => state.crud[module].editData);
-
+	console.log(indexUpdateData)
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
@@ -36,7 +38,7 @@ export default function __Update({ module, form, close }) {
 	async function handleConfirmModal(values) {
 		try {
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.CUSTOMER.UPDATE}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.CATEGORY.UPDATE}/${id}`,
 				data: values,
 				module,
 			};
@@ -56,35 +58,19 @@ export default function __Update({ module, form, close }) {
 					form.setErrors(errorObject);
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
-				notifications.show({
-					color: "teal",
-					title: t("UpdateSuccessfully"),
-					icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-					loading: false,
-					autoClose: 700,
-					style: { backgroundColor: "lightgray" },
-				});
-
+				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
 				setTimeout(() => {
 					useVendorDataStoreIntoLocalStorage();
 					form.reset();
 					dispatch(setInsertType({ insertType: "create", module }));
 					setIsLoading(false);
 					close(); // close the drawer
-					navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.INDEX, { replace: true });
+					navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.CATEGORY.INDEX, { replace: true });
 					setIndexData(null);
 				}, 700);
 			}
 		} catch (error) {
-			console.error(error);
-			notifications.show({
-				color: ERROR_NOTIFICATION_COLOR,
-				title: error.message,
-				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-				loading: false,
-				autoClose: 2000,
-				style: { backgroundColor: "lightgray" },
-			});
+			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
 		}
 	}
 

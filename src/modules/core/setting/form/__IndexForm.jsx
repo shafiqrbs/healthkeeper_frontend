@@ -53,7 +53,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 				},
 			})
 		);
-		navigate(MASTER_DATA_ROUTES.API_ROUTES.SETTING, { replace: true });
+		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.SETTING.INDEX, { replace: true });
 	};
 
 	// =============== effect to handle mode switching ================

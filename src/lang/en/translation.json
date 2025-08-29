@@ -27,7 +27,7 @@
 	"CustomerInformationFormDetails": "We'll always let you know about customer information",
 	"Name": "Name",
 	"CustomerName": "Customer Name",
-	"NameValidateMessage": "Provide a valid name for the customer",
+	"NameValidateMessage": "Provide a valid name for the entity",
 	"CustomerGroup": "Customer Group",
 	"ChooseCustomerGroup": "Choose customer group",
 	"CreditLimit": "Credit Limit",
@@ -1427,5 +1427,12 @@
 	"DocumentType": "Document Type",
 	"NID": "NID",
 	"BirthCertificate": "Birth Certificate",
+	"ManageBed": "Manage Bed",
+	"ManageCabin": "Manage Cabin",
+	"ManageLabUser": "Manage Lab User",
+	"Doctor": "Doctor",
+	"ManageDoctor": "Manage Doctor",
+	"ManageNurse": "Manage Nurse",
+	"ManageParticular": "Manage Particular",
 	"DocumentNo": "Document No"
 }

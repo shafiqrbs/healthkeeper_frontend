@@ -1,11 +1,8 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, Switch} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
 	IconAlertCircle,
-	IconCheck,
 	IconEdit,
 	IconEye,
 	IconChevronUp,
@@ -13,145 +10,84 @@ import {
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import KeywordSearch from "@modules/filter/KeywordSearch";
+import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
-import { useHotkeys, useMounted } from "@mantine/hooks";
-import { deleteEntityData, getIndexEntityData, editEntityData } from "@/app/store/core/crudThunk.js";
-import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/crudSlice.js";
-import tableCss from "@assets/css/Table.module.css";
-import ViewDrawer from "./__ViewDrawer.jsx";
+import KeywordSearch from "@modules/filter/KeywordSearch";
+import ViewDrawer from "./__ViewDrawer";
 import { notifications } from "@mantine/notifications";
-import { getCustomers } from "@/common/utils";
-import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
-import CreateButton from "@components/buttons/CreateButton.jsx";
-import DataTableFooter from "@components/tables/DataTableFooter.jsx";
-import { sortBy } from "lodash";
-import { useOs } from "@mantine/hooks";
-import { CORE_DATA_ROUTES } from "@/constants/routes.js";
-import {MASTER_DATA_ROUTES} from "@/constants/routes";
+import { useOs, useHotkeys } from "@mantine/hooks";
+import CreateButton from "@components/buttons/CreateButton";
+import DataTableFooter from "@components/tables/DataTableFooter";
+import { MASTER_DATA_ROUTES } from "@/constants/routes";
+import tableCss from "@assets/css/Table.module.css";
+import {
+	deleteEntityData,
+	editEntityData,
+} from "@/app/store/core/crudThunk";
+import {
+	setInsertType,
+	setRefetchData,
+} from "@/app/store/core/crudSlice.js";
+import {
+	ERROR_NOTIFICATION_COLOR,
+} from "@/constants/index.js";
+import { deleteNotification } from "@components/notification/deleteNotification";
+import {useState} from "react";
+import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 
 const PER_PAGE = 50;
 
-export default function _Table({ module, open, close }) {
-	const isMounted = useMounted();
-	const { mainAreaHeight } = useOutletContext();
-	const dispatch = useDispatch();
+export default function _Table({ module, open }) {
 	const { t } = useTranslation();
-	const { id } = useParams();
-	const height = mainAreaHeight - 78; //TabList height 104
-	const scrollViewportRef = useRef(null);
 	const os = useOs();
-	const [page, setPage] = useState(1);
-	const [hasMore, setHasMore] = useState(true);
-	const [fetching, setFetching] = useState(false);
-	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
-	const refetchData = useSelector((state) => state.crud[module].refetching);
-	const listData = useSelector((state) => state.crud[module].data);
-	const filterData = useSelector((state) => state.crud[module].filterData);
-
-	const [customerObject, setCustomerObject] = useState({});
+	const dispatch = useDispatch();
+	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const [viewDrawer, setViewDrawer] = useState(false);
-	const [swtichEnable, setSwitchEnable] = useState({});
-	const [sortStatus, setSortStatus] = useState({
-		columnAccessor: "name",
-		direction: "asc",
+	const { id } = useParams();
+	const height = mainAreaHeight - 78;
+	console.log(module)
+	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
+	const filterData = useSelector((state) => state.crud[module].filterData);
+	const listData = useSelector((state) => state.crud[module].data);
+
+	// for infinity table data scroll, call the hook
+	const {
+		scrollRef,
+		records,
+		fetching,
+		sortStatus,
+		setSortStatus,
+		handleScrollToBottom,
+	} = useInfiniteTableScroll({
+		module,
+		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.CATEGORY.INDEX,
+		filterParams: {
+			type: 'category',
+			name: filterData?.name,
+			term: searchKeyword,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "name",
 	});
 
-	const [records, setRecords] = useState(sortBy(listData.data, "name"));
+	const [viewDrawer, setViewDrawer] = useState(false);
 
-	useEffect(() => {
-		const data = sortBy(listData.data, sortStatus.columnAccessor);
-		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
-	}, [sortStatus, listData.data]);
-
-	const fetchData = async (pageNum = 1, append = false) => {
-		if (!hasMore && pageNum > 1) return;
-
-		setFetching(true);
-		const value = {
-			url: MASTER_DATA_ROUTES.API_ROUTES.CATEGORY.INDEX,
-			params: {
-				term: searchKeyword,
-				name: filterData.name,
-				mobile: filterData.mobile,
-				company_name: filterData.company_name,
-				page: pageNum,
-				offset: PER_PAGE,
-			},
-			module,
-		};
-
-		try {
-			const result = await dispatch(getIndexEntityData(value));
-			if (result.payload) {
-				const newData = result.payload.data;
-				const total = result.payload.total;
-
-				// Update hasMore based on whether we've loaded all data
-				setHasMore(newData.length === PER_PAGE && pageNum * PER_PAGE < total);
-
-				// If appending, combine with existing data
-				if (append && pageNum > 1) {
-					dispatch(
-						setItemData({
-							module,
-							data: {
-								...listData,
-								data: [...listData.data, ...newData],
-								total: total,
-							},
-						})
-					);
-				}
-			}
-		} catch (err) {
-			console.error("Unexpected error:", err);
-		} finally {
-			setFetching(false);
-		}
-	};
-
-	const loadMoreRecords = useCallback(() => {
-		if (hasMore && !fetching) {
-			const nextPage = page + 1;
-			setPage(nextPage);
-			fetchData(nextPage, true);
-		} else if (!hasMore) {
-			console.info("No more records");
-		}
-	}, [hasMore, fetching, page]);
-
-	// =============== combined logic for data fetching and scroll reset ================
-	useEffect(() => {
-		if ((!id && (isMounted || refetchData)) || (id && !refetchData)) {
-			fetchData(1, false);
-			setPage(1);
-			setHasMore(true);
-			// reset scroll position when data is refreshed
-			scrollViewportRef.current?.scrollTo(0, 0);
-		}
-	}, [dispatch, searchKeyword, filterData, refetchData, isMounted, id]);
-
-	const handleCustomerEdit = (id) => {
+	const handleEntityEdit = (id) => {
 		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
-				url: `${CORE_DATA_ROUTES.API_ROUTES.CATEGORY.UPDATE}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.CATEGORY.VIEW}/${id}`,
 				module,
 			})
 		);
-		navigate(`${CORE_DATA_ROUTES.NAVIGATION_LINKS.CATEGORY.UPDATE}/${id}`);
+		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.CATEGORY.INDEX}/${id}`);
 	};
 
 	const handleDelete = (id) => {
 		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: {
-				confirm: "Confirm",
-				cancel: "Cancel",
-			},
+			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: "Confirm", cancel: "Cancel" },
 			confirmProps: { color: "var(--theme-delete-color)" },
 			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handleDeleteSuccess(id),
@@ -159,24 +95,18 @@ export default function _Table({ module, open, close }) {
 	};
 
 	const handleDeleteSuccess = async (id) => {
-		const resultAction = await dispatch(
+		const res = await dispatch(
 			deleteEntityData({
-				url: `${CORE_DATA_ROUTES.API_ROUTES.CATEGORY.DELETE}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.CATEGORY.DELETE}/${id}`,
 				module,
 				id,
 			})
 		);
-		if (deleteEntityData.fulfilled.match(resultAction)) {
+
+		if (deleteEntityData.fulfilled.match(res)) {
 			dispatch(setRefetchData({ module, refetching: true }));
-			notifications.show({
-				color: SUCCESS_NOTIFICATION_COLOR,
-				title: t("DeleteSuccessfully"),
-				icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-				loading: false,
-				autoClose: 700,
-				style: { backgroundColor: "lightgray" },
-			});
-			navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.CATEGORY);
+			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
+			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.CATEGORY);
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
@@ -188,34 +118,19 @@ export default function _Table({ module, open, close }) {
 	};
 
 	const handleDataShow = (id) => {
-		const customers = getCustomers();
-		const foundCustomers = customers.find((customer) => customer.id == id);
-		if (foundCustomers) {
-			setCustomerObject(foundCustomers);
-			setViewDrawer(true);
-		} else {
-			notifications.show({
-				color: "red",
-				title: t("Something Went wrong , please try again"),
-				icon: (
-					<IconAlertCircle
-						style={{
-							width: rem(18),
-							height: rem(18),
-						}}
-					/>
-				),
-				loading: false,
-				autoClose: 900,
-				style: { backgroundColor: "lightgray" },
-			});
-		}
+		dispatch(
+			editEntityData({
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.CATEGORY.VIEW}/${id}`,
+				module,
+			})
+		);
+		setViewDrawer(true);
 	};
 
 	const handleCreateForm = () => {
-		 open();
-		 dispatch(setInsertType({ insertType: "create", module }));
-		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.CATEGORY);
+		open();
+		dispatch(setInsertType({ insertType: "create", module }));
+		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.CATEGORY.INDEX);
 	};
 
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
@@ -228,6 +143,7 @@ export default function _Table({ module, open, close }) {
 					<CreateButton handleModal={handleCreateForm} text="AddNew" />
 				</Flex>
 			</Box>
+
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
 					classNames={{
@@ -244,65 +160,34 @@ export default function _Table({ module, open, close }) {
 							accessor: "index",
 							title: t("S/N"),
 							textAlignment: "right",
-							sortable: true,
-							render: (item) => listData.data?.indexOf(item) + 1,
+							sortable: false,
+							render: (_item, index) => index + 1,
 						},
 						{
 							accessor: "name",
 							title: t("Name"),
 							sortable: true,
 							render: (values) => (
-								<Text className="activate-link" fz="sm" onClick={() => handleDataShow(values.id)}>
+								<Text
+									className="activate-link"
+									fz="sm"
+									onClick={() => handleDataShow(values.id)}>
 									{values.name}
 								</Text>
 							),
 						},
-						{
-							accessor: "category_nature",
-							title: t("ProductNature"),
-							sortable: true,
-							render: (values) => values.customer_group || "N/A",
-						},
-						{
-							accessor: "parent_name",
-							title: t("ParentName"),
-							sortable: true,
-							render: (values) => values.credit_limit,
-						},
-						{ accessor: 'status',textAlign: 'center', title: t('Status') ,
-							render: (item) => {
-								return (
-									<div className="centeredSwitchCell">
-										<Switch
-											disabled={swtichEnable[item.id] || false}
-											defaultChecked={item.status == 1 ? true : false}
-											color="red"
-											radius="xs"
-											size="md"
-											onLabel="Enable"
-											offLabel="Disable"
-											onChange={(event) => {
-												handleSwtich(event, item)
-											}}
-										/>
-									</div>
-								);
-							},
-							cellsClassName: tableCss.statusBackground
-						},
-
 						{
 							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
-								<>
+									values.is_private ? null : (
 									<Group gap={4} justify="right" wrap="nowrap">
 										<Button.Group>
 											<Button
 												onClick={() => {
-													handleCustomerEdit(values.id);
+													handleEntityEdit(values.id);
 													open();
 												}}
 												variant="filled"
@@ -339,7 +224,8 @@ export default function _Table({ module, open, close }) {
 											</ActionIcon>
 										</Button.Group>
 									</Group>
-								</>
+									)
+
 							),
 						},
 					]}
@@ -348,18 +234,27 @@ export default function _Table({ module, open, close }) {
 					loaderSize="xs"
 					loaderColor="grape"
 					height={height - 72}
-					onScrollToBottom={loadMoreRecords}
-					scrollViewportRef={scrollViewportRef}
+					onScrollToBottom={handleScrollToBottom}
+					scrollViewportRef={scrollRef}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
-						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+						sorted: (
+							<IconChevronUp
+								color="var(--theme-tertiary-color-7)"
+								size={14}
+							/>
+						),
+						unsorted: (
+							<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
+						),
 					}}
 				/>
 			</Box>
+
 			<DataTableFooter indexData={listData} module={module} />
-			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={customerObject} />
+			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module} />
 		</>
 	);
 }
+

@@ -63,7 +63,6 @@ export default function _Table({ module, open }) {
 		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.SETTING.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			particular_type: 'bed',
 			term: searchKeyword,
 		},
 		perPage: PER_PAGE,
@@ -164,34 +163,6 @@ export default function _Table({ module, open }) {
 							render: (_item, index) => index + 1,
 						},
 						{
-							accessor: "patient_mode_name",
-							title: t("PatientMode"),
-							textAlignment: "right",
-							sortable: true,
-							render: (item) => item.patient_mode_name,
-						},
-						{
-							accessor: "gender_mode_name",
-							title: t("GenderMode"),
-							textAlignment: "right",
-							sortable: true,
-							render: (item) => item.gender_mode_name,
-						},
-						{
-							accessor: "payment_mode_name",
-							title: t("PaymentMode"),
-							textAlignment: "right",
-							sortable: true,
-							render: (item) => item.payment_mode_name,
-						},
-						{
-							accessor: "room_name",
-							title: t("Room No"),
-							textAlignment: "right",
-							sortable: true,
-
-						},
-						{
 							accessor: "name",
 							title: t("Name"),
 							sortable: true,
@@ -199,15 +170,14 @@ export default function _Table({ module, open }) {
 								<Text
 									className="activate-link"
 									fz="sm"
-									onClick={() => handleDataShow(values.id)}
-								>
+									onClick={() => handleDataShow(values.id)}>
 									{values.name}
 								</Text>
 							),
 						},
 						{
-							accessor: "display_name",
-							title: t("DisplayName"),
+							accessor: "setting_name",
+							title: t("SettingType"),
 							sortable: true,
 							render: (values) => (
 								<Text
@@ -215,64 +185,60 @@ export default function _Table({ module, open }) {
 									fz="sm"
 									onClick={() => handleDataShow(values.id)}
 								>
-									{values.display_name}
+									{values.setting_name}
 								</Text>
 							),
 						},
-
-						{
-							accessor: "price",
-							title: t("Price"),
-							sortable: false,
-						},
-
 						{
 							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
-								<Group gap={4} justify="right" wrap="nowrap">
-									<Button.Group>
-										<Button
-											onClick={() => {
-												handleEntityEdit(values.id);
-												open();
-											}}
-											variant="filled"
-											c="white"
-											size="xs"
-											radius="es"
-											leftSection={<IconEdit size={16} />}
-											className="border-right-radius-none btnPrimaryBg"
-										>
-											{t("Edit")}
-										</Button>
-										<Button
-											onClick={() => handleDataShow(values.id)}
-											variant="filled"
-											c="white"
-											bg="var(--theme-primary-color-6)"
-											size="xs"
-											radius="es"
-											leftSection={<IconEye size={16} />}
-											className="border-left-radius-none"
-										>
-											{t("View")}
-										</Button>
-										<ActionIcon
-											onClick={() => handleDelete(values.id)}
-											className="action-icon-menu border-left-radius-none"
-											variant="light"
-											color="var(--theme-delete-color)"
-											radius="es"
-											ps="les"
-											aria-label="Settings"
-										>
-											<IconTrashX height={18} width={18} stroke={1.5} />
-										</ActionIcon>
-									</Button.Group>
-								</Group>
+									values.is_private ? null : (
+									<Group gap={4} justify="right" wrap="nowrap">
+										<Button.Group>
+											<Button
+												onClick={() => {
+													handleEntityEdit(values.id);
+													open();
+												}}
+												variant="filled"
+												c="white"
+												size="xs"
+												radius="es"
+												leftSection={<IconEdit size={16} />}
+												className="border-right-radius-none btnPrimaryBg"
+											>
+												{t("Edit")}
+											</Button>
+											<Button
+												onClick={() => handleDataShow(values.id)}
+												variant="filled"
+												c="white"
+												bg="var(--theme-primary-color-6)"
+												size="xs"
+												radius="es"
+												leftSection={<IconEye size={16} />}
+												className="border-left-radius-none"
+											>
+												{t("View")}
+											</Button>
+											<ActionIcon
+												onClick={() => handleDelete(values.id)}
+												className="action-icon-menu border-left-radius-none"
+												variant="light"
+												color="var(--theme-delete-color)"
+												radius="es"
+												ps="les"
+												aria-label="Settings"
+											>
+												<IconTrashX height={18} width={18} stroke={1.5} />
+											</ActionIcon>
+										</Button.Group>
+									</Group>
+									)
+
 							),
 						},
 					]}

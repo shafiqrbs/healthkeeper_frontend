@@ -1,18 +1,17 @@
 import { Grid, Box, Drawer, Text, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconArrowLeft } from "@tabler/icons-react";
+import {useSelector} from "react-redux";
+import {useOutletContext} from "react-router-dom";
 
-export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }) {
+export default function __ViewDrawer({ viewDrawer, setViewDrawer,module }) {
 	const { t } = useTranslation();
-	const height = 500; //TabList height 104
+	const { mainAreaHeight } = useOutletContext();
+	const height = mainAreaHeight; //TabList height 104
+	const entityObject = useSelector((state) => state.crud[module].editData);
 	const closeDrawer = () => {
 		setViewDrawer(false);
 	};
-	let showData = {};
-	if (entityObject) {
-		showData = entityObject;
-	}
-
 	return (
 		<Drawer.Root opened={viewDrawer} position="right" onClose={closeDrawer} offset={16}>
 			<Drawer.Overlay />
@@ -22,7 +21,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 						<Flex align="center" gap={8}>
 							<IconArrowLeft size={16} />{" "}
 							<Text mt="es" fz={16} fw={500}>
-								{t("CustomerData")}
+								{t("ManageBed")}
 							</Text>
 						</Flex>
 					</Drawer.Title>
@@ -33,35 +32,56 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, entityObject }
 						<Box>
 							<Grid columns={24}>
 								<Grid.Col span={"8"} className="drawer-form-input-label">
+									{t("PaymentMode")}
+								</Grid.Col>
+								<Grid.Col span={"1"}>:</Grid.Col>
+								<Grid.Col span={"auto"}>{entityObject && entityObject?.particular_details && entityObject?.particular_details?.payment_mode?.name}</Grid.Col>
+							</Grid>
+							<Grid columns={24}>
+								<Grid.Col span={"8"} className="drawer-form-input-label">
+									{t("PatientMode")}
+								</Grid.Col>
+								<Grid.Col span={"1"}>:</Grid.Col>
+								<Grid.Col span={"auto"}>{entityObject && entityObject?.particular_details && entityObject?.particular_details?.patient_mode?.name}</Grid.Col>
+							</Grid>
+							<Grid columns={24}>
+								<Grid.Col span={"8"} className="drawer-form-input-label">
+									{t("GenderMode")}
+								</Grid.Col>
+								<Grid.Col span={"1"}>:</Grid.Col>
+								<Grid.Col span={"auto"}>{entityObject && entityObject?.particular_details && entityObject?.particular_details?.gender_mode?.name}</Grid.Col>
+							</Grid>
+							<Grid columns={24}>
+								<Grid.Col span={"8"} className="drawer-form-input-label">
+									{t("RoomNo")}
+								</Grid.Col>
+								<Grid.Col span={"1"}>:</Grid.Col>
+								<Grid.Col span={"auto"}>{entityObject && entityObject?.particular_details && entityObject?.particular_details?.room_no?.name}</Grid.Col>
+							</Grid>
+							<Grid columns={24}>
+								<Grid.Col span={"8"} className="drawer-form-input-label">
 									{t("Name")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>{showData && showData.name && showData.name}</Grid.Col>
+								<Grid.Col span={"auto"}>{entityObject && entityObject.name && entityObject.name}</Grid.Col>
 							</Grid>
 							<Grid columns={24}>
 								<Grid.Col span={"8"} className="drawer-form-input-label">
-									{t("Designation")}
+									{t("DisplayName")}
+								</Grid.Col>
+								<Grid.Col span={"1"}>:</Grid.Col>
+								<Grid.Col span={"auto"}>{entityObject && entityObject.display_name && entityObject.display_name}</Grid.Col>
+							</Grid>
+							<Grid columns={24}>
+								<Grid.Col span={"8"} className="drawer-form-input-label">
+									{t("Price")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>
-									{showData && showData.company_name && showData.company_name}
+									{entityObject && entityObject?.particular_details && entityObject?.price}
 								</Grid.Col>
-							</Grid>
-							<Grid columns={24}>
-								<Grid.Col span={"8"} className="drawer-form-input-label">
-									{t("Mobile")}
-								</Grid.Col>
-								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>{showData && showData.mobile && showData.mobile}</Grid.Col>
 							</Grid>
 
-							<Grid columns={24}>
-								<Grid.Col span={"8"} className="drawer-form-input-label">
-									{t("Email")}
-								</Grid.Col>
-								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>{showData && showData.email && showData.email}</Grid.Col>
-							</Grid>
 						</Box>
 					</Box>
 				</Box>

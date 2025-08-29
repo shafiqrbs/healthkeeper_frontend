@@ -21,9 +21,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const height = mainAreaHeight - 180; //TabList height 104
 
 	const { data: getParticularPatientModes } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_MODE.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_MODE.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_MODE.UTILITY,
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_DISEASES_MODE.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_DISEASES_MODE.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_DISEASES_MODE.UTILITY,
 	});
 
 	const { data: getParticularGenderModes } = useGlobalDropdownData({

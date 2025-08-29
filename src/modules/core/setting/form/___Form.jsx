@@ -21,40 +21,19 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const height = mainAreaHeight - 180; //TabList height 104
 
 
-	const { data: getParticularRooms } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_ROOM.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_ROOM.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_ROOM.UTILITY,
+	const { data: getEmployeeGroups} = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.SETTING_TYPE.PATH,
+		params: { "dropdown-type": CORE_DROPDOWNS.SETTING_TYPE.TYPE },
+		utility: CORE_DROPDOWNS.SETTING_TYPE.UTILITY,
 	});
 
-	const { data: getParticularPatientModes } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_MODE.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_MODE.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_MODE.UTILITY,
-	});
-
-	const { data: getParticularGenderModes } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_GENDER_MODE.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_GENDER_MODE.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_GENDER_MODE.UTILITY,
-	});
-
-	const { data: getParticularPaymentModes } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.UTILITY,
-	});
-
+	console.log(data)
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
-				patient_mode_id: data?.particular_details?.patient_mode_id,
-				gender_mode_id: data?.particular_details?.gender_mode_id,
-				payment_mode_id: data?.particular_details?.payment_mode_id,
-				room_id: data?.particular_details?.room_id,
+				setting_type_id: data?.setting_type_id,
 				name: data.name,
-				price: data.price,
 			});
 			setIndexData(data.id);
 			const timeoutId = setTimeout(() => {
@@ -86,74 +65,23 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 								<Stack>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("PatientMode")} <RequiredAsterisk /></Text>
+											<Text fz="sm">{t("SettingType")} <RequiredAsterisk /></Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
 												form={form}
-												tooltip={t("PatientModeValidateMessage")}
-												placeholder={t("PatientMode")}
-												name="patient_mode_id"
-												id="patient_mode_id"
-												nextField="gender_mode_id"
-												required={true}
-												value={form.values.patient_mode_id}
-												dropdownValue={getParticularPatientModes}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("GenderMode")} <RequiredAsterisk /></Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("GenderModeValidateMessage")}
-												placeholder={t("GenderMode")}
-												name="gender_mode_id"
-												id="gender_mode_id"
-												nextField="payment_mode_id"
-												required={true}
-												value={form.values.gender_mode_id}
-												dropdownValue={getParticularGenderModes}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("PaymentMode")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("PaymentModeValidateMessage")}
-												placeholder={t("PaymentMode")}
-												name="payment_mode_id"
-												id="payment_mode_id"
-												nextField="room_id"
-												value={form.values.payment_mode_id}
-												dropdownValue={getParticularPaymentModes}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("RoomNo")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("RoomNoValidateMessage")}
-												placeholder={t("RoomNo")}
-												name="room_id"
-												id="room_id"
+												tooltip={t("SettingTypeModeValidateMessage")}
+												placeholder={t("SettingType")}
+												name="setting_type_id"
+												id="setting_type_id"
 												nextField="name"
-												value={form.values.room_id}
-												dropdownValue={getParticularRooms}
+												required={true}
+												value={form.values.setting_type_id}
+												dropdownValue={getEmployeeGroups}
 											/>
 										</Grid.Col>
 									</Grid>
+
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
@@ -168,29 +96,10 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												required={false}
 												name="name"
 												id="name"
-												nextField="price"
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
-										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("Price")}
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputNumberForm
-												form={form}
-												tooltip={t("PriceValidateMessage")}
-												placeholder={t("Price")}
-												required={false}
-												name="price"
-												id="price"
 												nextField=""
 											/>
 										</Grid.Col>
 									</Grid>
-									<input type={"hidden"} value={'bed'} />
 								</Stack>
 							</ScrollArea>
 							<DrawerStickyFooter type={type} />

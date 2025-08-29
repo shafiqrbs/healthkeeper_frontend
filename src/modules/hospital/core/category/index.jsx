@@ -37,7 +37,7 @@ export default function Index({ mode = "create" }) {
 				<>
 					<CoreHeaderNavbar
 						module="core"
-						pageTitle={t("ManageCategory")}
+						pageTitle={t("ManageCustomer")}
 						roles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""
@@ -58,7 +58,7 @@ export default function Index({ mode = "create" }) {
 						<GlobalDrawer
 							opened={opened}
 							close={close}
-							title={mode === "create" ? t("CreateCustomer") : t("UpdateCustomer")}>
+							title={mode === "create" ? t("CreateCategory") : t("UpdateCategory")}>
 							<IndexForm module={module} form={form} mode={mode} close={close} />
 						</GlobalDrawer>
 					</Box>

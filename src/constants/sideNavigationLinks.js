@@ -99,110 +99,118 @@ export const sideNavigationLinks = {
 			color: "#1D3557",
 		},
 
-		// {
-		// 	label: "Accounting",
-		// 	path: "/",
-		// 	icon: IconFileInvoice,
-		// 	color: "#4050B5",
-		// },
-		// {
-		// 	label: "hrPayroll",
-		// 	path: "/",
-		// 	icon: IconUser,
-		// 	color: "#F59E0D",
-		// },
-		// {
-		// 	label: "manageWebsite",
-		// 	path: "/",
-		// 	icon: IconWorldWww,
-		// 	color: "#07B6D4",
-		// },
-		// {
-		// 	label: "media",
-		// 	path: "/",
-		// 	icon: IconPhoto,
-		// 	color: "#11B880",
-		// },
-		// {
-		// 	label: "manageAppearance",
-		// 	path: "/",
-		// 	icon: IconSettings,
-		// 	color: "#1E88E5",
-		// },
-		// {
-		// 	label: "invoiceSmsEmail",
-		// 	path: "/",
-		// 	icon: IconPhone,
-		// 	color: "#4CB050",
-		// },
 	],
-
 	base: [
 		{
 			label: t("Dashboard"),
 			path: "/",
 			icon: IconHome,
-			color: "#4CAF50",
+			color: "#4CAF50", // Green
 		},
 		{
 			label: t("OPD"),
 			path: "/hospital/visit",
 			icon: IconBuildingHospital,
-			color: "#6F1126",
+			color: "#E91E63", // Pink
 		},
 		{
-			label: t("Visited"),
+			label: t("Prescription"),
 			path: "/hospital/visit/list",
 			icon: IconBuildingHospital,
-			color: "#6F1126",
+			color: "#9C27B0", // Purple
 		},
 		{
 			label: t("Emergency"),
 			path: "/hospital/emergency",
 			icon: IconEmergencyBed,
-			color: "#E63946",
+			color: "#F44336", // Red
 		},
 		{
 			label: t("IPD"),
 			path: "/hospital/ipd",
 			icon: IconBuildingHospital,
-			color: "#1D3557",
+			color: "#3F51B5", // Indigo
 		},
 		{
 			label: t("Admission"),
 			path: "/hospital/ipd/admission",
 			icon: IconBuildingHospital,
-			color: "#1D3557",
+			color: "#00BCD4", // Cyan
 		},
 		{
 			label: t("Billing"),
 			path: "/hospital/billing",
 			icon: IconBuildingHospital,
-			color: "#6D597A",
+			color: "#FF9800", // Orange
+		},
+		{
+			label: t("Discharge"),
+			path: "/hospital/discharge",
+			icon: IconBuildingHospital,
+			color: "#795548", // Brown
+		},
+		{
+			label: t("Refund"),
+			path: "/hospital/refund",
+			icon: IconBuildingHospital,
+			color: "#009688", // Brown
 		},
 		{
 			label: t("Lab"),
 			path: "/hospital/lab-test",
 			icon: IconMicroscopeOff,
-			color: "#457B9D",
+			color: "#9E9D24", // Olive
 		},
 		{
 			label: t("Medicine"),
 			path: "/hospital/medicine",
 			icon: IconMedicineSyrup,
-			color: "#2A9D8F",
+			color: "#009688", // Teal
 		},
 		{
-			label: t("MasterData"),
+			label: t("Reports"),
+			path: "/hospital/reports",
+			icon: IconMedicineSyrup,
+			color: "#673AB7", // Deep Purple
+		},
+		{
+			label: t("Admin"),
 			path: "/hospital/core/particular",
 			icon: IconDashboard,
+			color: "#607D8B", // Blue Grey
+		},
+		{
+			label: t("Config"),
+			path: "/configuration",
+			icon: IconSettings,
+			color: "#FF5722", // Deep Orange
+		},
+	],
+	baseSubmenuIpd: [
+		{
+			label: t("IPD"),
+			path: "/hospital/ipd",
+			icon: IconDashboard,
 			color: "#4CAF50",
 		},
 		{
-			label: t("Configuration"),
-			path: "/configuration",
+			label: t("Admission"),
+			path: "/hospital/doctor",
 			icon: IconDashboard,
-			color: "#4CAF50",
+			color: "#6f1225",
+		},
+		{
+			label: t("Discharge"),
+			path: "/hospital/nurse",
+			icon: IconDashboard,
+			color: "#6f1225",
+		},
+
+		{
+			label: t("Billing"),
+			path: "/hospital/doctor",
+			icon: IconDashboard,
+			color: "#6f1225",
 		},
 	],
 	baseSubmenu: [
@@ -212,45 +220,27 @@ export const sideNavigationLinks = {
 			icon: IconDashboard,
 			color: "#4CAF50",
 		},
+
+
 		{
-			label: t("Users"),
-			path: "/core/user",
-			icon: IconDashboard,
-			color: "#4CAF50",
-		},
-		{
-			label: t("Category"),
-			path: "/hospital/ategory",
-			icon: IconDashboard,
-			color: "#6f1225",
-		},
-		{
-			label: t("Doctor"),
+			label: t("ManageDoctor"),
 			path: "/hospital/doctor",
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 
 		{
-			label: t("Nurse"),
+			label: t("ManageNurse"),
 			path: "/hospital/nurse",
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 
 		{
-			label: t("labUser"),
+			label: t("ManageLabUser"),
 			path: "/hospital/doctor",
 			icon: IconDashboard,
 			color: "#6f1225",
-		},
-
-		{
-
-			label: t('Particular'),
-			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX,
-			icon: IconCategory,
-			color: "#E53935",
 		},
 		{
 
@@ -266,29 +256,41 @@ export const sideNavigationLinks = {
 			icon: IconIcons,
 			color: "#3F51B5",
 		},
-		{
+		/*{
 			label: t("MarketingExecutive"),
 			path: "/core/marketing-executive",
 			icon: IconShoppingBag,
 			color: "#F59E0B",
-		},
+		},*/
 		{
-			label: t("Particular"),
+			label: t("ManageParticular"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX,
 			icon: IconShoppingBag,
 			color: "#F59E0B",
 		},
-		{
+		/*{
 			label: t("ParticularMode"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR_MODE.INDEX,
 			icon: IconShoppingBag,
 			color: "#F59E0B",
-		},
+		},*/
 		{
 			label: t("ParticularType"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR_TYPE.INDEX,
 			icon: IconShoppingBag,
 			color: "#F59E0B",
+		},
+		{
+			label: t("Users"),
+			path: "/core/user",
+			icon: IconDashboard,
+			color: "#4CAF50",
+		},
+		{
+			label: t("Category"),
+			path: "/hospital/core/category",
+			icon: IconDashboard,
+			color: "#6f1225",
 		},
 		{
 			label: t("Setting"),
@@ -297,63 +299,12 @@ export const sideNavigationLinks = {
 			color: "#4CAF50",
 		},
 	],
-	configSubmenu: [
+	baseSubmenuReport: [
 		{
-			label: t("Investigation"),
-			path: "/hospital/investigation",
+			label: t("Overview"),
+			path: "/hospital/report/overview",
 			icon: IconDashboard,
 			color: "#4CAF50",
-		},
-		{
-			label: t("Category"),
-			path: "/hospital/ategory",
-			icon: IconDashboard,
-			color: "#6f1225",
-		},
-		{
-			label: t("Doctor"),
-			path: "/hospital/doctor",
-			icon: IconDashboard,
-			color: "#6f1225",
-		},
-
-		{
-			label: t("Nurse"),
-			path: "/hospital/nurse",
-			icon: IconDashboard,
-			color: "#6f1225",
-		},
-
-		{
-			label: t("labUser"),
-			path: "/hospital/doctor",
-			icon: IconDashboard,
-			color: "#6f1225",
-		},
-
-		{
-			label: t("Particular"),
-			path: "/core/user",
-			icon: IconCategory,
-			color: "#E53935",
-		},
-		{
-			label: t("Cabin"),
-			path: "/core/warehouse",
-			icon: IconIcons,
-			color: "#3F51B5",
-		},
-		{
-			label: t("WARD&Romm"),
-			path: "/core/warehouse",
-			icon: IconIcons,
-			color: "#3F51B5",
-		},
-		{
-			label: t("MarketingExecutive"),
-			path: "/core/marketing-executive",
-			icon: IconShoppingBag,
-			color: "#F59E0B",
 		},
 	],
 };
