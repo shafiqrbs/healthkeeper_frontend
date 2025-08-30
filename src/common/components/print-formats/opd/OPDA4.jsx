@@ -19,7 +19,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 	const basicInfo = patientReport?.basic_info || {};
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = patientInfo?.medicines || [];
-	const customerInformation = data?.invoice_details?.customer_details || data;
+	// const data = data?.invoice_details?.customer_details || data;
 
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
@@ -71,7 +71,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={6} px="xs">
 							<Group gap="xs">
 								<Text size="md" fw={600}>
-									{customerInformation?.mode_name || "OPD"}
+									{data?.mode_name || "OPD"}
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -80,7 +80,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="md" fw={600}>
 									{t("Room")}
 								</Text>
-								<Text size="md">{getValue(customerInformation?.room_name || "100")}</Text>
+								<Text size="md">{getValue(data?.room_name || "100")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -88,7 +88,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("PatientID")}
 								</Text>
-								<Text size="xs">{getValue(invoiceDetails?.free_identification)}</Text>
+								<Text size="xs">{getValue(data?.patient_id)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -96,7 +96,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("HID")}
 								</Text>
-								<Text size="xs">{getValue(invoiceDetails?.hid)}</Text>
+								<Text size="xs">{getValue(data?.health_id)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -104,7 +104,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("OPDID")}
 								</Text>
-								<Text size="xs">{getValue(invoiceDetails?.hid)}</Text>
+								<Text size="xs">{getValue(data?.invoice)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -112,7 +112,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("Room")}
 								</Text>
-								<Text size="xs">{getValue(invoiceDetails?.hid)}</Text>
+								<Text size="xs">{getValue(data?.room_name)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={6} px="xs">
@@ -120,7 +120,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("PatientName")}
 								</Text>
-								<Text size="xs">{getValue(customerInformation?.name, "")}</Text>
+								<Text size="xs">{getValue(data?.name, "")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -128,7 +128,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("Mobile")}
 								</Text>
-								<Text size="xs">{getValue(customerInformation?.mobile)}</Text>
+								<Text size="xs">{getValue(data?.mobile)}</Text>
 							</Group>
 						</Grid.Col>
 
@@ -137,7 +137,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("Gender")}
 								</Text>
-								<Text size="xs">{getValue(customerInformation?.age, "N/A")}</Text>
+								<Text size="xs">{getValue(data?.gender, "N/A")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -145,7 +145,9 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("Age")}
 								</Text>
-								<Text size="xs">{getValue(customerInformation?.age, "N/A")}</Text>
+								<Text size="xs">
+									{data?.year}Y, {data?.month}M, {data?.day}D
+								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -153,16 +155,16 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("DOB")}
 								</Text>
-								<Text size="xs">{getValue(customerInformation?.gender, "N/A")}</Text>
+								<Text size="xs">{getValue(data?.dob, "N/A")}</Text>
 							</Group>
 						</Grid.Col>
 
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t("PaymentMode")}
+									{t("PayMode")}
 								</Text>
-								<Text size="xs">{getValue(basicInfo?.payment_mode_name)}</Text>
+								<Text size="xs">{getValue(data?.payment_mode_name)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -170,7 +172,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("Fee")}
 								</Text>
-								<Text size="xs">{getValue(basicInfo?.amount)}</Text>
+								<Text size="xs">{getValue(data?.amount, 0)}</Text>
 							</Group>
 						</Grid.Col>
 					</Grid>

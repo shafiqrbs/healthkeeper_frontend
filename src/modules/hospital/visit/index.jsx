@@ -112,7 +112,12 @@ export default function Index() {
 								</Box>
 							</Grid.Col>
 							<Grid.Col span={20}>
-								<Form form={form} selectedRoom={selectedRoom} module={module} />
+								<Form
+									form={form}
+									setSelectedRoom={setSelectedRoom}
+									selectedRoom={selectedRoom}
+									module={module}
+								/>
 							</Grid.Col>
 						</Grid>
 					</Flex>

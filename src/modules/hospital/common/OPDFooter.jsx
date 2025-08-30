@@ -1,43 +1,35 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import ActionButtons from "./_ActionButtons";
 import { useReactToPrint } from "react-to-print";
-import OPDDocument from "@/common/components/print-formats/opd/OPDA4";
-import OPDPos from "@/common/components/print-formats/opd/OPDPos";
-import Prescription2 from "@/common/components/print-formats/opd/Prescription2";
+import OPDDocument from "@components/print-formats/opd/OPDA4";
+import OPDPos from "@components/print-formats/opd/OPDPos";
 
 export default function OPDFooter({ form, isSubmitting, handleSubmit, type }) {
+	const [printData, setPrintData] = useState(null);
+	const [pendingPrint, setPendingPrint] = useState(null); // "a4" | "pos" | null
+
 	const opdDocumentA4Ref = useRef(null);
 	const opdDocumentPosRef = useRef(null);
-	const prescriptionRef = useRef(null);
 
-	const handleA4 = useReactToPrint({
-		content: () => opdDocumentA4Ref.current,
-	});
+	const printA4 = useReactToPrint({ content: () => opdDocumentA4Ref.current });
+	const printPos = useReactToPrint({ content: () => opdDocumentPosRef.current });
 
-	const handlePos = useReactToPrint({
-		content: () => opdDocumentPosRef.current,
-	});
+	// Run print only after data is updated
+	useEffect(() => {
+		if (!printData || !pendingPrint) return;
 
-	const handlePrescription = useReactToPrint({
-		content: () => prescriptionRef.current,
-	});
+		if (pendingPrint === "a4") printA4();
+		if (pendingPrint === "pos") printPos();
 
-	const handleA4PrintWithData = () => {
-		handleA4();
-		handleSubmit();
-	};
+		setPendingPrint(null);
+	}, [printData, pendingPrint]);
 
-	const handlePosPrintWithData = async () => {
+	const handlePrint = async (type) => {
 		const res = await handleSubmit();
-
-		if (res.status === 200) {
-			handlePos();
+		if (res?.status === 200) {
+			setPrintData(res.data);
+			setPendingPrint(type); // triggers effect after data updates
 		}
-	};
-
-	const handlePrescriptionPrint = () => {
-		handlePrescription();
-		handleSubmit();
 	};
 
 	return (
@@ -45,14 +37,12 @@ export default function OPDFooter({ form, isSubmitting, handleSubmit, type }) {
 			form={form}
 			isSubmitting={isSubmitting}
 			handleSubmit={handleSubmit}
-			handlePrescriptionPrint={handlePrescriptionPrint}
-			handleA4Print={handleA4PrintWithData}
-			handlePosPrint={handlePosPrintWithData}
+			handleA4Print={() => handlePrint("a4")}
+			handlePosPrint={() => handlePrint("pos")}
 			type={type}
 		>
-			<Prescription2 data={form.values} ref={prescriptionRef} />
-			<OPDDocument data={form.values} ref={opdDocumentA4Ref} />
-			<OPDPos data={form.values} ref={opdDocumentPosRef} />
+			<OPDDocument data={printData} ref={opdDocumentA4Ref} />
+			<OPDPos data={printData} ref={opdDocumentPosRef} />
 		</ActionButtons>
 	);
 }

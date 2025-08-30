@@ -78,7 +78,7 @@ const USER_NID_DATA = {
 	},
 };
 
-export default function PatientForm({ form, module, type = "opd_ticket" }) {
+export default function PatientForm({ form, module, type = "opd_ticket", setSelectedRoom }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
@@ -123,7 +123,12 @@ export default function PatientForm({ form, module, type = "opd_ticket" }) {
 				</Flex>
 				<Form form={form} module={module} type={type} />
 			</form>
-			<DoctorsRoomDrawer form={form} opened={openedDoctorsRoom} close={closeDoctorsRoom} />
+			<DoctorsRoomDrawer
+				form={form}
+				opened={openedDoctorsRoom}
+				close={closeDoctorsRoom}
+				setSelectedRoom={setSelectedRoom}
+			/>
 			<Modal opened={opened} onClose={close} size="100%" centered>
 				<Table module={module} height={mainAreaHeight - 220} />
 			</Modal>
@@ -131,7 +136,7 @@ export default function PatientForm({ form, module, type = "opd_ticket" }) {
 	);
 }
 
-export function Form({ form, showTitle = false, heightOffset = 116, module, type = "opd_ticket" }) {
+export function Form({ form, showTitle = false, heightOffset = 116, module, type = "opd_ticket", setSelectedRoom }) {
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 	const [openedRoomError, { open: openRoomError, close: closeRoomError }] = useDisclosure(false);
 	const dispatch = useDispatch();
@@ -244,6 +249,12 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 				return {};
 			}
 
+			if (!form.values.amount && form.values.patient_payment_mode_id == "30") {
+				showNotificationComponent(t("Amount is required"), "red", "lightgray", true, 1000, true);
+				setIsSubmitting(false);
+				return {};
+			}
+
 			try {
 				const createdBy = JSON.parse(localStorage.getItem("user"));
 				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
@@ -271,6 +282,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 					setRefetchData({ module, refetching: true });
 					form.reset();
 					localStorage.removeItem(LOCAL_STORAGE_KEY);
+					setSelectedRoom({});
 					return resultAction.payload.data;
 				}
 			} catch (error) {

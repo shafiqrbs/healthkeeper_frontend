@@ -18,7 +18,6 @@ export default function ActionButtons({
 	type = "prescription",
 	handlePosPrint,
 	handleA4Print,
-	handlePrescriptionPrint,
 	children,
 }) {
 	const { hospitalConfigData } = useHospitalConfigData();

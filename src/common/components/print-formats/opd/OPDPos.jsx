@@ -13,15 +13,6 @@ const DashedLine = () => (
 const OPDPos = forwardRef(({ data }, ref) => {
 	const user = getLoggedInUser();
 
-	const free_for =
-		data.patient_payment_mode_id === "31"
-			? "Freedom Fighter"
-			: data.patient_payment_mode_id === "32"
-			? "Disabled"
-			: data.patient_payment_mode_id === "33"
-			? "Govt Service"
-			: "";
-
 	return (
 		<Box display="none">
 			<Box ref={ref} w="80mm" p={8} bg="white" mx="auto">
@@ -46,36 +37,36 @@ const OPDPos = forwardRef(({ data }, ref) => {
 
 					{/* =============== prescription title =============== */}
 					<Text size="sm" fw={700} ta="center">
-						TICKET - {data.payment_mode_name}
+						TICKET - {data?.payment_mode_name}
 					</Text>
 					<DashedLine />
 
 					{/* =============== patient information section =============== */}
 
-					{/* <Table fz="10px" verticalSpacing={2} withRowBorders={false}>
+					<Table fz="10px" verticalSpacing={2} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td>
-									<strong>Created:</strong> {data.created}
+									<strong>Created:</strong> {data?.created}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>Appt. Date:</strong> {data.appointment}
+									<strong>Appt. Date:</strong> {data?.appointment}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>PID:</strong> {data.patient_id}
+									<strong>PID:</strong> {data?.patient_id}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>HID:</strong> {data.health_id}
+									<strong>HID:</strong> {data?.health_id}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>Mode:</strong> {data.mode_name}
+									<strong>Mode:</strong> {data?.mode_name}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>Room:</strong> {data.room_name}
+									<strong>Room:</strong> {data?.room_name}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
@@ -83,38 +74,38 @@ const OPDPos = forwardRef(({ data }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2}>
-									<strong>Name:</strong> {data.name}
+									<strong>Name:</strong> {data?.name}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2}>
-									<strong>Mobile:</strong> {data.mobile}
+									<strong>Mobile:</strong> {data?.mobile}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>Age:</strong> {data.year}Y {data.month}M {data.day}D
+									<strong>Age:</strong> {data?.year}Y {data?.month}M {data?.day}D
 								</Table.Td>
 								<Table.Td miw={100} align="right">
-									<strong>DOB:</strong> {data.dob}
+									<strong>DOB:</strong> {data?.dob}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2}>
-									<strong>Address:</strong> {data.address}
+									<strong>Address:</strong> {data?.address}
 								</Table.Td>
 							</Table.Tr>
 							{data?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>
-										<strong>Guardian Name:</strong> {data.guardian_name}
+										<strong>Guardian Name:</strong> {data?.guardian_name}
 									</Table.Td>
 								</Table.Tr>
 							)}
 							{data?.guardian_mobile && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>
-										<strong>Guardian Mobile:</strong> {data.guardian_mobile}
+										<strong>Guardian Mobile:</strong> {data?.guardian_mobile}
 									</Table.Td>
 								</Table.Tr>
 							)}
@@ -122,7 +113,7 @@ const OPDPos = forwardRef(({ data }, ref) => {
 								<Table.Td colSpan={2}></Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
-					</Table> */}
+					</Table>
 
 					<DashedLine />
 					<Group justify="space-between" px={12}>
@@ -130,7 +121,7 @@ const OPDPos = forwardRef(({ data }, ref) => {
 							Fee Amount:
 						</Text>
 						<Text size="xs" fw={600}>
-							৳ {data.amount || 0}
+							৳ {data?.amount || 0}
 						</Text>
 					</Group>
 					<DashedLine />
