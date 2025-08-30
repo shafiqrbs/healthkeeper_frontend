@@ -7,7 +7,6 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
 import { Badge, Box, Flex, Grid, Text } from "@mantine/core";
-import ActionButtons from "../../common/_ActionButtons";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import PatientListAdmission from "../../common/PatientListAdmission";
 import EntityForm from "../form/EntityForm";
@@ -18,6 +17,7 @@ import { storeEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
+import ConfirmFooter from "../../common/ConfirmFooter";
 
 const module = MODULES.ADMISSION;
 const LOCAL_STORAGE_KEY = "patientFormData";
@@ -167,10 +167,10 @@ export default function ConfirmIndex() {
 										</Box>
 									</Grid.Col>
 									<Grid.Col span={25}>
-										<ActionButtons
+										<ConfirmFooter
 											form={form}
-											handleSubmit={handleSubmit}
 											isSubmitting={isSubmitting}
+											handleSubmit={handleSubmit}
 										/>
 									</Grid.Col>
 								</Grid>

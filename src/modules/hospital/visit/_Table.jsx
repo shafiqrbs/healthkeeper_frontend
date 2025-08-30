@@ -32,6 +32,10 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
+import OPDDocument from "@components/print-formats/opd/OPDA4";
+import OPDPos from "@components/print-formats/opd/OPDPos";
+import { useReactToPrint } from "react-to-print";
+import { getDataWithoutStore } from "@/services/apiService";
 
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
@@ -54,6 +58,11 @@ export default function Table({ module, height }) {
 	const [rootRef, setRootRef] = useState(null);
 	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
+
+	const [printData, setPrintData] = useState({});
+
+	const posRef = useRef(null);
+	const a4Ref = useRef(null);
 
 	const filterData = useSelector((state) => state.crud[module].filterData);
 
@@ -200,6 +209,28 @@ export default function Table({ module, height }) {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 	};
 
+	const handlePos = useReactToPrint({
+		content: () => posRef.current,
+	});
+
+	const handleA4 = useReactToPrint({
+		content: () => a4Ref.current,
+	});
+
+	const handleA4Print = async (id) => {
+		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
+		setPrintData(res.data);
+
+		handleA4();
+	};
+
+	const handlePosPrint = async (id) => {
+		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
+		setPrintData(res.data);
+
+		handlePos();
+	};
+
 	return (
 		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -325,14 +356,10 @@ export default function Table({ module, height }) {
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
-											<Menu.Item
-												onClick={() => {
-													// handleVendorEdit(values.id);
-													// open();
-												}}
-											>
-												{t("Edit")}
+											<Menu.Item onClick={() => handleA4Print(values?.id)}>
+												{t("A4Print")}
 											</Menu.Item>
+											<Menu.Item onClick={() => handlePosPrint(values?.id)}>{t("Pos")}</Menu.Item>
 											<Menu.Item
 												onClick={() => handleDelete(values.id)}
 												bg="red.1"
@@ -371,6 +398,9 @@ export default function Table({ module, height }) {
 			<DataTableFooter indexData={listData} module="visit" />
 			<DetailsDrawer opened={opened} close={close} />
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
+
+			<OPDDocument data={printData} ref={a4Ref} />
+			<OPDPos data={printData} ref={posRef} />
 		</Box>
 	);
 }

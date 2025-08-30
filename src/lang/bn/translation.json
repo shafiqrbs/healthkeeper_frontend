@@ -995,5 +995,7 @@
 	"EnglishInformation": "ইংরেজি তথ্য",
 	"BanglaInformation": "বাংলা তথ্য",
 	"PersonalDetails": "ব্যক্তিগত তথ্য",
-	"SearchByRoomName": "রুম নাম অনুসন্ধান করুন"
+	"SearchByRoomName": "রুম নাম অনুসন্ধান করুন",
+	"PrintedBy": "প্রিন্ট করেছেন",
+	"PrintDateAndTime": "প্রিন্ট তারিখ ও সময়"
 }

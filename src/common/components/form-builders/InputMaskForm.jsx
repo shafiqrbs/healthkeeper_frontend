@@ -53,6 +53,7 @@ function InputMaskForm({
 						component={IMaskInput}
 						mask={maskInput}
 						onChange={onChange}
+						required={required}
 						{...form.getInputProps(name)}
 						onKeyDown={getHotkeyHandler([
 							[

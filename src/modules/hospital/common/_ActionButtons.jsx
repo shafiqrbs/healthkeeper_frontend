@@ -4,22 +4,25 @@ import { IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import { useEffect, useRef, useState } from "react";
-import { useReactToPrint } from "react-to-print";
-import Prescription from "@components/print-formats/a4/Prescription";
-import PrescriptionPos from "@components/print-formats/pos/Prescription";
+import { useEffect, useState } from "react";
 import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 import { useHotkeys } from "@mantine/hooks";
-import Prescription2 from "@components/print-formats/a4/Prescription2";
-import Prescription3 from "@components/print-formats/a4/Prescription3";
-import useHospitalConfigData from "@/common/hooks/config-data/useHospitalConfigData";
+import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
-export default function ActionButtons({ form, isSubmitting, handleSubmit, type = "prescription" }) {
+export default function ActionButtons({
+	form,
+	isSubmitting,
+	handleSubmit,
+	type = "prescription",
+	handlePosPrint,
+	handleA4Print,
+	handlePrescriptionPrint,
+	children,
+}) {
 	const { hospitalConfigData } = useHospitalConfigData();
-	const prescriptionA4Ref = useRef(null);
-	const prescriptionPosRef = useRef(null);
+
 	const { t } = useTranslation();
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
@@ -51,25 +54,12 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 		localStorage.removeItem(LOCAL_STORAGE_KEY);
 	};
 
-	const handlePrintPrescriptionA4 = useReactToPrint({
-		content: () => prescriptionA4Ref.current,
-	});
-
-	const handlePrescriptionPosPrint = useReactToPrint({
-		content: () => prescriptionPosRef.current,
-	});
-
 	useHotkeys([
 		["alt+s", handleSubmit],
 		["alt+r", handleReset],
-		["alt+4", handlePrintPrescriptionA4],
-		["alt+p", handlePrescriptionPosPrint],
+		["alt+shift+p", handleA4Print],
+		["alt+p", handlePosPrint],
 	]);
-
-	const handlePrescriptionPrint = () => {
-		handlePrintPrescriptionA4();
-		handleSubmit();
-	};
 
 	return (
 		<>
@@ -204,7 +194,7 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("reset")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-								(alt + 1)
+								(alt + r)
 							</Text>
 						</Stack>
 					</Button>
@@ -212,25 +202,25 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("Hold")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-								(alt + 2)
+								(alt + h)
 							</Text>
 						</Stack>
 					</Button>
 					<Button
 						w="100%"
-						onClick={handlePrescriptionPrint}
+						onClick={handleA4Print}
 						bg="var(--theme-prescription-btn-color)"
 						disabled={isSubmitting}
 					>
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("prescription")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-								(alt + 3)
+								(alt + shift + p)
 							</Text>
 						</Stack>
 					</Button>
-					<Button
-						onClick={handlePrintPrescriptionA4}
+					{/* <Button
+						onClick={handleA4Print}
 						w="100%"
 						bg="var(--theme-print-btn-color)"
 						disabled={isSubmitting}
@@ -242,9 +232,9 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 								(alt + 4)
 							</Text>
 						</Stack>
-					</Button>
+					</Button> */}
 					<Button
-						onClick={handlePrescriptionPosPrint}
+						onClick={handlePosPrint}
 						w="100%"
 						bg="var(--theme-pos-btn-color)"
 						disabled={isSubmitting}
@@ -273,10 +263,9 @@ export default function ActionButtons({ form, isSubmitting, handleSubmit, type =
 					</Button>
 				</Button.Group>
 			</Box>
-			{/* <Prescription ref={prescriptionA4Ref} /> */}
-			<Prescription2 data={form.values} ref={prescriptionA4Ref} />
-			{/* <Prescription3 ref={prescriptionA4Ref} /> */}
-			<PrescriptionPos ref={prescriptionPosRef} />
+
+			{/* ===================== prescription templates here ====================== */}
+			{children}
 		</>
 	);
 }

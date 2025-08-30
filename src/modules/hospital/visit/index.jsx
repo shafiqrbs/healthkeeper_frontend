@@ -52,10 +52,13 @@ export default function Index() {
 		};
 		try {
 			const result = await dispatch(getIndexEntityData(value)).unwrap();
-			const roomData = result?.data?.data || [];
+			const roomData = result?.data?.data?.entities || [];
+			const selectedId = result?.data?.data?.selected[0]?.id;
+			const selectedRoom = roomData.find((item) => item.id == selectedId);
+
 			setRecords(roomData);
-			setSelectedRoom(roomData[0]);
-			form.setFieldValue("room_id", roomData[0].id);
+			setSelectedRoom(selectedRoom);
+			form.setFieldValue("room_id", selectedRoom?.id);
 		} catch (err) {
 			console.error("Unexpected error:", err);
 		} finally {
@@ -85,7 +88,7 @@ export default function Index() {
 										px="sm"
 										fz="sm"
 									>
-										{t("selectRoom")}
+										{t("SelectRoom")}
 									</Text>
 									<Box mt="es" p="xs" bg="var(--theme-primary-color-0)">
 										<TextInput

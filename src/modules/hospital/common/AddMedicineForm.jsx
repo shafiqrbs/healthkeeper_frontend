@@ -23,10 +23,10 @@ import DatePickerForm from "@components/form-builders/DatePicker";
 import { useOutletContext } from "react-router-dom";
 import InputAutoComplete from "@components/form-builders/InputAutoComplete";
 import { useReactToPrint } from "react-to-print";
-import Prescription from "@components/print-formats/a4/Prescription";
-import PrescriptionPos from "@components/print-formats/pos/Prescription";
-import Prescription2 from "@components/print-formats/a4/Prescription2";
-import Prescription3 from "@components/print-formats/a4/Prescription3";
+import Prescription from "@/common/components/print-formats/prescription/PrescriptionA4";
+import PrescriptionPos from "@/common/components/print-formats/prescription/Prescription";
+import Prescription2 from "@/common/components/print-formats/prescription/Prescription2";
+import Prescription3 from "@/common/components/print-formats/prescription/Prescription3";
 import PrescriptionPreview from "./PrescriptionPreview";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
@@ -436,6 +436,22 @@ export default function AddMedicineForm({
 		}
 	};
 
+	const handleHoldData = () => {
+		const holdData = {
+			medicines,
+			adviseForm: form.values,
+			patientData,
+			patientReportData: patientReportData || {
+				basicInfo: {},
+				dynamicFormData: {},
+				investigationList: [],
+			},
+			timestamp: new Date().toISOString(),
+		};
+		localStorage.setItem("prescription-hold-data", JSON.stringify(holdData));
+		showNotificationComponent(t("Prescription held successfully"), "blue", "lightgray", true, 1000, true);
+	};
+
 	return (
 		<Box component="form" onSubmit={form.onSubmit(handleAdd)} className="borderRadiusAll" bg="white">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
@@ -679,33 +695,7 @@ export default function AddMedicineForm({
 							</Text>
 						</Stack>
 					</Button>
-					<Button
-						w="100%"
-						bg="var(--theme-hold-btn-color)"
-						onClick={() => {
-							// Save current state to localStorage for later retrieval
-							const holdData = {
-								medicines,
-								adviseForm: form.values,
-								patientData,
-								patientReportData: patientReportData || {
-									basicInfo: {},
-									dynamicFormData: {},
-									investigationList: [],
-								},
-								timestamp: new Date().toISOString(),
-							};
-							localStorage.setItem("prescription-hold-data", JSON.stringify(holdData));
-							showNotificationComponent(
-								t("Prescription held successfully"),
-								"blue",
-								"lightgray",
-								true,
-								1000,
-								true
-							);
-						}}
-					>
+					<Button w="100%" bg="var(--theme-hold-btn-color)" onClick={handleHoldData}>
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("Hold")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">

@@ -15,15 +15,14 @@ import {
 import { useEffect, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconArrowRight, IconInfoCircle, IconSearch } from "@tabler/icons-react";
+import { IconArrowRight, IconInfoCircle, IconSearch, IconAlertCircle } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
-import { useDisclosure, useHotkeys, useIsFirstRender } from "@mantine/hooks";
+import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
 import { DISTRICT_LIST } from "@/constants";
 import { calculateAge, calculateDetailedAge } from "@/common/utils";
-import _ActionButtons from "./_ActionButtons";
 import Table from "../visit/_Table";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
@@ -36,6 +35,8 @@ import SegmentedControlForm from "@components/form-builders/SegmentedControlForm
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import NIDDataPreviewModal from "./NIDDataPreviewModal";
 import InputMobileNumberForm from "@components/form-builders/InputMobileNumberForm";
+import OPDFooter from "./OPDFooter";
+import PrescriptionFooter from "./PrescriptionFooter";
 const LOCAL_STORAGE_KEY = "patientFormData";
 
 const USER_NID_DATA = {
@@ -77,7 +78,7 @@ const USER_NID_DATA = {
 	},
 };
 
-export default function PatientForm({ form, module }) {
+export default function PatientForm({ form, module, type = "opd_ticket" }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
@@ -96,10 +97,10 @@ export default function PatientForm({ form, module }) {
 			<form>
 				<Flex align="center" gap="xs" justify="space-between" px="sm" pb="xs">
 					<Text fw={600} fz="sm">
-						{t("patientInformation")}
+						{t("PatientInformation")}
 					</Text>
 					<Flex gap="xs">
-						<SegmentedControl
+						{/* <SegmentedControl
 							size="xs"
 							color="var(--theme-primary-color-6)"
 							data={["New", "Re-Visit"]}
@@ -107,7 +108,7 @@ export default function PatientForm({ form, module }) {
 								root: { backgroundColor: "var(--theme-tertiary-color-1)" },
 								control: { width: "60px" },
 							}}
-						/>
+						/> */}
 						<Button
 							onClick={handleOpenViewOverview}
 							size="xs"
@@ -120,7 +121,7 @@ export default function PatientForm({ form, module }) {
 						</Button>
 					</Flex>
 				</Flex>
-				<Form form={form} module={module} />
+				<Form form={form} module={module} type={type} />
 			</form>
 			<DoctorsRoomDrawer form={form} opened={openedDoctorsRoom} close={closeDoctorsRoom} />
 			<Modal opened={opened} onClose={close} size="100%" centered>
@@ -130,8 +131,9 @@ export default function PatientForm({ form, module }) {
 	);
 }
 
-export function Form({ form, showTitle = false, heightOffset = 116, module }) {
+export function Form({ form, showTitle = false, heightOffset = 116, module, type = "opd_ticket" }) {
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
+	const [openedRoomError, { open: openRoomError, close: closeRoomError }] = useDisclosure(false);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
@@ -204,6 +206,10 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 	};
 
 	const handleNIDSearch = () => {
+		if (!form.values.identity) {
+			showNotificationComponent(t("PleaseEnterNID"), "red", "lightgray", true, 1000, true);
+			return;
+		}
 		setShowUserData(true);
 		setVisible(true);
 		setTimeout(() => {
@@ -232,6 +238,12 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
 
+			if (!form.values.room_id) {
+				openRoomError();
+				setIsSubmitting(false);
+				return {};
+			}
+
 			try {
 				const createdBy = JSON.parse(localStorage.getItem("user"));
 				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
@@ -239,7 +251,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 				const formValue = {
 					...form.values,
 					created_by_id: createdBy?.id,
-					dob: new Date(form.values.dob).toLocaleDateString("en-CA", options),
+					dob: form.values.dob ? new Date(form.values.dob).toLocaleDateString("en-CA", options) : undefined,
 					appointment: new Date(form.values.appointment).toLocaleDateString("en-CA", options),
 				};
 
@@ -253,15 +265,18 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 
 				if (storeEntityData.rejected.match(resultAction)) {
 					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
+					return {};
 				} else {
 					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
 					setRefetchData({ module, refetching: true });
 					form.reset();
 					localStorage.removeItem(LOCAL_STORAGE_KEY);
+					return resultAction.payload.data;
 				}
 			} catch (error) {
 				console.error("Error submitting visit:", error);
 				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
+				return {};
 			} finally {
 				setIsSubmitting(false);
 			}
@@ -274,6 +289,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 					color: "red",
 					position: "top-right",
 				});
+				return {};
 			}
 		}
 	};
@@ -281,6 +297,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 	return (
 		<Box pos="relative">
 			<LoadingOverlay visible={visible} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+
 			{showTitle && (
 				<Flex bg="var(--theme-primary-color-0)" align="center" gap="xs" p="sm">
 					<Text fw={600} fz="sm">
@@ -315,10 +332,13 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Text fz="sm">{t("Mobile")}</Text>
+									<Flex align="center" gap="es">
+										<Text fz="sm">{t("Mobile")}</Text>
+										<RequiredAsterisk />
+									</Flex>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<InputMobileNumberForm
+									<InputNumberForm
 										form={form}
 										label=""
 										tooltip={t("EnterPatientMobile")}
@@ -363,14 +383,13 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 									<InputMaskForm
 										name="dob"
 										id="dob"
-										value={form.values.dob}
+										value={form.values?.dob}
 										form={form}
 										label=""
 										tooltip={t("EnterPatientBirthDate")}
 										placeholder="DD-MM-YYYY"
 										nextField="days"
 										maskInput="00-00-0000"
-										required={false}
 										rightSection={<IconInfoCircle size={16} opacity={0.5} />}
 									/>
 								</Grid.Col>
@@ -459,7 +478,13 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 							</Grid>
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Text fz="sm">{t("NIDBirthCertificate")}</Text>
+									<Text fz="sm">
+										{form.values.identity_mode === "NID"
+											? t("NID")
+											: form.values.identity_mode === "BRID"
+											? t("BRID")
+											: t("HID")}
+									</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
 									<InputNumberForm
@@ -620,14 +645,92 @@ export function Form({ form, showTitle = false, heightOffset = 116, module }) {
 					</ScrollArea>
 				</Grid.Col>
 			</Grid>
-			<_ActionButtons
-				type="opd_ticket"
-				form={form}
-				module={module}
-				handleSubmit={handleSubmit}
-				isSubmitting={isSubmitting}
-			/>
+			{type === "opd_ticket" ? (
+				<OPDFooter form={form} isSubmitting={isSubmitting} handleSubmit={handleSubmit} type="opd_ticket" />
+			) : (
+				<PrescriptionFooter
+					form={form}
+					isSubmitting={isSubmitting}
+					handleSubmit={handleSubmit}
+					type="prescription"
+				/>
+			)}
 			<NIDDataPreviewModal opened={openedNIDDataPreview} close={closeNIDDataPreview} userNidData={userNidData} />
+
+			{/* ============== required room selection =============== */}
+			<Modal
+				opened={openedRoomError}
+				onClose={closeRoomError}
+				size="md"
+				title={
+					<Flex align="center" gap="xs">
+						<IconAlertCircle size={20} color="var(--theme-error-color)" />
+						<Text fw={600} fz="lg">
+							{t("Room Selection Required")}
+						</Text>
+					</Flex>
+				}
+				styles={{
+					title: {
+						borderBottom: "1px solid var(--mantine-color-gray-3)",
+						paddingBottom: "var(--mantine-spacing-xs)",
+						marginBottom: "var(--mantine-spacing-md)",
+					},
+				}}
+			>
+				<Stack gap="md">
+					{/* =============== main error message with icon =============== */}
+					<Flex
+						align="center"
+						gap="sm"
+						p="md"
+						bg="var(--mantine-color-red-0)"
+						style={{ borderRadius: "8px", border: "1px solid var(--mantine-color-red-2)" }}
+					>
+						<IconAlertCircle size={24} color="var(--theme-error-color)" />
+						<Box>
+							<Text fw={600} c="var(--theme-error-color)" fz="md">
+								{t("Please select a room")}
+							</Text>
+							<Text c="dimmed" fz="sm" mt={4}>
+								{t("A room must be selected to continue with the patient registration")}
+							</Text>
+						</Box>
+					</Flex>
+
+					{/* =============== helpful information section =============== */}
+					<Box
+						p="md"
+						bg="var(--mantine-color-blue-0)"
+						style={{ borderRadius: "8px", border: "1px solid var(--mantine-color-blue-2)" }}
+					>
+						<Text fw={600} c="var(--mantine-color-blue-7)" fz="sm" mb="xs">
+							{t("Why is this required?")}
+						</Text>
+						<Text c="dimmed" fz="sm" lh={1.5}>
+							{t(
+								"Room selection helps in proper patient management, billing, and resource allocation. It ensures patients are assigned to appropriate care areas."
+							)}
+						</Text>
+					</Box>
+
+					{/* =============== action buttons =============== */}
+					<Flex gap="sm" justify="flex-end" pt="xs">
+						<Button variant="light" onClick={closeRoomError} color="gray">
+							{t("Close")}
+						</Button>
+						<Button
+							onClick={() => {
+								closeRoomError();
+								// you can add logic here to open room selection drawer/form
+							}}
+							color="var(--theme-primary-color-6)"
+						>
+							{t("Select Room")}
+						</Button>
+					</Flex>
+				</Stack>
+			</Modal>
 		</Box>
 	);
 }

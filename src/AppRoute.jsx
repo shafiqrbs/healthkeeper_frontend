@@ -96,6 +96,7 @@ import ConfirmIndex from "@modules/hospital/admission/confirm";
 import IpdIndex from "@modules/hospital/admission/ipd";
 import UserIndex from "@/modules/core/user";
 import SettingIndex from "@/modules/core/setting";
+import TestRoute from "@components/layout/TestRoute";
 
 function AppRoute() {
 	return (
@@ -274,6 +275,7 @@ function AppRoute() {
         </Route>
         <Route path="sitemap" element={<Sitemap />} /> */}
 			</Route>
+			<Route path="/test" element={<TestRoute />} />
 			<Route path="*" element={<NotFound />} />
 		</Routes>
 	);

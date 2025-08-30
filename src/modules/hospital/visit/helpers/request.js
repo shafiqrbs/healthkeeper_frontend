@@ -43,8 +43,9 @@ export const getVendorFormInitialValues = (t) => {
 
 		validate: {
 			name: hasLength({ min: 2, max: 20 }),
-			// mobile: (value) => {
-			// 	if (!value) return t("MobileValidationRequired");
+			mobile: hasLength({ min: 11, max: 14 }),
+			// dob: (value) => {
+			// 	if (!value) return t("DateOfBirthValidationRequired");
 			// 	return null;
 			// },
 			guardian_name: (value, values) => {

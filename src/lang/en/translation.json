@@ -1379,10 +1379,10 @@
 	"Investigation": "Investigation",
 	"ChiefComplaints": "Chief Complaints",
 	"Vitals": "Vitals",
-	"BloodPressure": "Blood Pressure",
+	"BloodPressure": "BP",
 	"Sugar": "Sugar",
 	"Weight": "Weight",
-	"BloodGroup": "Blood Group",
+	"BloodGroup": "BG",
 	"Ole": "OLE",
 	"NoTestFound": "No test found",
 	"BrandName": "Brand name",
@@ -1450,5 +1450,8 @@
 	"SearchByRoomName": "Search by room name",
 	"CreateInvestigation": "Create Investigation",
 	"UpdateInvestigation": "Update Investigation",
-	"DocumentNo": "Document No"
+	"DocumentNo": "Document No",
+	"PrintedBy": "Printed By",
+	"PrintDateAndTime": "Print Date & Time",
+	"PatientID": "PID"
 }

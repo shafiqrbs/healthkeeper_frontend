@@ -250,7 +250,7 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 							</Stack>
 						</Grid.Col>
 						<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
-							<Stack gap="xs">
+							<Stack gap="xs" mih={200}>
 								{medicines.map((medicine, index) => (
 									<Box key={index}>
 										<Text size="sm" fw={600} mb="xs">
@@ -262,11 +262,11 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 										</Text>
 									</Box>
 								))}
-								{medicines.length === 0 && (
+								{/* {medicines.length === 0 && (
 									<Text size="sm" c="gray">
 										No medicines prescribed
 									</Text>
-								)}
+								)} */}
 							</Stack>
 
 							<CustomDivider mt="xl" mb="md" />
