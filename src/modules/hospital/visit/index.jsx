@@ -52,8 +52,8 @@ export default function Index() {
 		};
 		try {
 			const result = await dispatch(getIndexEntityData(value)).unwrap();
-			const roomData = result?.data?.data?.entities || [];
-			const selectedId = result?.data?.data?.selected[0]?.id;
+			const roomData = result?.data?.data?.ipdRooms || [];
+			const selectedId = result?.data?.data?.selectedRoom;
 			const selectedRoom = roomData.find((item) => item.id == selectedId);
 
 			setRecords(roomData);
