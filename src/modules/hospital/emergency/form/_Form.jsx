@@ -1,22 +1,11 @@
-import { notifications } from "@mantine/notifications";
 import EmergencyPatientForm from "../../common/__EmergencyPatientForm";
-import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useForm } from "@mantine/form";
+import { getVendorFormInitialValues } from "../helpers/request";
 
-export default function _Form({ form }) {
-	useEffect(() => {
-		if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
-			notifications.show({
-				title: "Error",
-				message: "Please fill all the fields",
-				color: "red",
-				position: "top-right",
-			});
-		}
-	}, [form]);
+export default function _Form({ module }) {
+	const { t } = useTranslation();
+	const form = useForm(getVendorFormInitialValues(t));
 
-	const handleSubmit = (values) => {
-		console.log(values);
-	};
-
-	return <EmergencyPatientForm form={form} handleSubmit={handleSubmit} />;
+	return <EmergencyPatientForm form={form} module={module} />;
 }

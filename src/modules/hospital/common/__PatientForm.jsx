@@ -244,9 +244,25 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 				const [day, month, year] = form.values.dob.split("-").map(Number);
 				const dateObj = new Date(year, month - 1, day);
 
+				const today = new Date();
+
 				// strict validation: check if JS normalized it
 				const isValid =
 					dateObj.getFullYear() === year && dateObj.getMonth() === month - 1 && dateObj.getDate() === day;
+
+				// check if future date
+				if (dateObj > today) {
+					showNotificationComponent(
+						t("Date of birth can't be future date"),
+						"red",
+						"lightgray",
+						true,
+						1000,
+						true
+					);
+					setIsSubmitting(false);
+					return {};
+				}
 
 				const dob = isValid ? dateObj.toLocaleDateString("en-CA", options) : "invalid";
 

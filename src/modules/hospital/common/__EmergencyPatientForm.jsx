@@ -4,7 +4,6 @@ import {
 	Box,
 	Button,
 	Divider,
-	FileInput,
 	Flex,
 	Grid,
 	Modal,
@@ -14,15 +13,13 @@ import {
 	Text,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
-import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconArrowRight, IconInfoCircle, IconRestore, IconSearch, IconUpload } from "@tabler/icons-react";
+import { IconArrowRight, IconInfoCircle, IconSearch } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure, useHotkeys, useIsFirstRender } from "@mantine/hooks";
-import { DISTRICT_LIST } from "@/constants";
 import { calculateAge, calculateDetailedAge } from "@/common/utils";
 import Table from "../visit/_Table";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -30,14 +27,51 @@ import { storeEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch } from "react-redux";
-import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 import InputMaskForm from "@components/form-builders/InputMaskForm";
-import PaymentMethodsCarousel from "@modules/hospital/common/PaymentMethodsCarousel";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-import { PAYMENT_METHODS } from "@/constants/paymentMethods";
-import { useReactToPrint } from "react-to-print";
+import NIDDataPreviewModal from "./NIDDataPreviewModal";
 
 const LOCAL_STORAGE_KEY = "emergencyPatientFormData";
+
+// =============== sample user data for emergency patient ================
+const USER_EMERGENCY_DATA = {
+	verifyToken: "emergency-12345-abcde-67890-fghij",
+	citizenData: {
+		mobile: "+880 1717171717",
+		fullName_English: "Patient",
+		motherName_English: "Patient's Mother",
+		motherName_Bangla: "রোগীর মা",
+		fatherName_English: "Patient's Father",
+		fatherName_Bangla: "রোগীর বাবা",
+		permanentHouseholdNoText: null,
+		dob: "1990-01-01",
+		bin_BRN: null,
+		gender: 1,
+		fullName_Bangla: "রোগী",
+		presentHouseholdNoText: null,
+		citizen_nid: "1234567890",
+		permanentHouseholdNo: {
+			division: "Dhaka",
+			district: "Dhaka",
+			upazilla: "Dhaka City",
+			unionOrWard: "Ward",
+			mouzaOrMoholla: "Area",
+			villageOrRoad: "Street",
+			houseOrHoldingNo: "123",
+			address_line: "Address Line",
+		},
+		presentHouseholdNo: {
+			division: "Dhaka",
+			district: "Dhaka",
+			upazilla: "Dhaka City",
+			unionOrWard: "Ward",
+			mouzaOrMoholla: "Area",
+			villageOrRoad: "Street",
+			houseOrHoldingNo: "123",
+			address_line: "Address Line",
+		},
+	},
+};
 
 export default function EmergencyPatientForm({ form, module }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -50,7 +84,7 @@ export default function EmergencyPatientForm({ form, module }) {
 		const formattedAge = calculateAge(form.values.dob, type);
 		form.setFieldValue("age", formattedAge);
 
-		// Calculate detailed age from date of birth
+		// =============== calculate detailed age from date of birth ================
 		if (form.values.dob) {
 			const detailedAge = calculateDetailedAge(form.values.dob);
 			form.setFieldValue("year", detailedAge.years);
@@ -107,6 +141,9 @@ export default function EmergencyPatientForm({ form, module }) {
 }
 
 export function Form({ form, showTitle = false, heightOffset = 72, module, type = "emergency" }) {
+	const [openedHSIDDataPreview, { open: openHSIDDataPreview, close: closeHSIDDataPreview }] = useDisclosure(false);
+	const [showUserData, setShowUserData] = useState(false);
+	const [userEmergencyData] = useState(USER_EMERGENCY_DATA);
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
@@ -114,39 +151,21 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const dispatch = useDispatch();
 	const { hospitalConfigData } = useHospitalConfigData();
-
+	console.log(hospitalConfigData);
 	const configuredDueAmount = Number(hospitalConfigData?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
 	const enteredAmount = Number(form?.values?.amount ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
-	const isReturn = remainingBalance < 0;
-	const displayLabelKey = isReturn ? "Return" : "Due";
 	const displayAmount = Math.abs(remainingBalance);
 
-	const selectPaymentMethod = (method) => {
-		form.setFieldValue("paymentMethod", method.value);
-		setPaymentMethod(method);
-	};
 	const handleReset = () => {
 		form.reset();
-		setPaymentMethod(PAYMENT_METHODS[0]);
 		localStorage.removeItem(LOCAL_STORAGE_KEY);
+		setShowUserData(false);
 	};
 
-	const handlePrintPrescriptionA4 = useReactToPrint({
-		content: () => prescriptionA4Ref.current,
-	});
+	useHotkeys([["alt+r", handleReset]]);
 
-	const handlePrescriptionPosPrint = useReactToPrint({
-		content: () => prescriptionPosRef.current,
-	});
-
-	useHotkeys([
-		["alt+r", handleReset],
-		["alt+4", handlePrintPrescriptionA4],
-		["alt+p", handlePrescriptionPosPrint],
-	]);
-
-	// save to localStorage on every form change
+	// =============== save to localStorage on every form change ================
 	useEffect(() => {
 		if (!firstRender) {
 			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(form.values));
@@ -159,7 +178,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 			try {
 				const parsed = JSON.parse(saved);
 				Object.entries(parsed).forEach(([key, value]) => {
-					// handle date fields - convert string back to Date object
+					// =============== handle date fields - convert string back to Date object ================
 					if (key === "appointment") {
 						if (value && typeof value === "string") {
 							form.setFieldValue(key, new Date(value));
@@ -171,7 +190,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 					}
 				});
 			} catch (err) {
-				// ignore parse errors
+				// =============== ignore parse errors ================
 				console.error("Failed to parse saved form data:", err);
 			}
 		}
@@ -181,34 +200,97 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 		form.setFieldValue("gender", val);
 	};
 
-	// handle manual age field updates
-	const handleAgeFieldChange = (field, value) => {
-		form.setFieldValue(field, value);
+	const handleTypeChange = (val) => {
+		form.setFieldValue("identity_mode", val);
+	};
 
-		// update the total age field when any of the detailed age fields change
-		const year = form.values.year || 0;
-		const month = form.values.month || 0;
-		const day = form.values.day || 0;
+	const handleDobChange = () => {
+		const type = form.values.ageType || "year";
+		const formattedAge = calculateAge(form.values.dob, type);
+		form.setFieldValue("age", formattedAge);
 
-		// calculate total age in years (approximate)
-		const totalAgeInYears = year + month / 12 + day / 365;
-		form.setFieldValue("age", Math.floor(totalAgeInYears));
+		// =============== calculate detailed age from date of birth ================
+		if (form.values.dob) {
+			const detailedAge = calculateDetailedAge(form.values.dob);
+			form.setFieldValue("year", detailedAge.years);
+			form.setFieldValue("month", detailedAge.months);
+			form.setFieldValue("day", detailedAge.days);
+		}
+	};
+
+	// =============== handle HSID search and populate form fields ================
+	const handleHSIDSearch = () => {
+		if (!form.values.identity) {
+			showNotificationComponent(t("PleaseEnterIdentity"), "red", "lightgray", true, 1000, true);
+			return;
+		}
+		setShowUserData(true);
+
+		// =============== populate form fields with emergency data ================
+		setTimeout(() => {
+			form.setFieldValue("name", userEmergencyData.citizenData.fullName_English);
+			form.setFieldValue("mobile", userEmergencyData.citizenData.mobile);
+			form.setFieldValue("gender", userEmergencyData.citizenData.gender === 1 ? "male" : "female");
+			form.setFieldValue("dob", "01-01-1990");
+			form.setFieldValue(
+				"guardian_name",
+				userEmergencyData.citizenData.fatherName_English || userEmergencyData.citizenData.motherName_English
+			);
+			form.setFieldValue(
+				"address",
+				`${userEmergencyData.citizenData.presentHouseholdNo.division}, ${userEmergencyData.citizenData.presentHouseholdNo.district}, ${userEmergencyData.citizenData.presentHouseholdNo.upazilla}, ${userEmergencyData.citizenData.presentHouseholdNo.unionOrWard}, ${userEmergencyData.citizenData.presentHouseholdNo.mouzaOrMoholla}, ${userEmergencyData.citizenData.presentHouseholdNo.villageOrRoad}, ${userEmergencyData.citizenData.presentHouseholdNo.houseOrHoldingNo}`
+			);
+
+			// =============== trigger age calculation ================
+			handleDobChange();
+		}, 500);
 	};
 
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
 
+			if (!form.values.amount && form.values.patient_payment_mode_id == "30") {
+				showNotificationComponent(t("Amount is required"), "red", "lightgray", true, 1000, true);
+				setIsSubmitting(false);
+				return {};
+			}
+
 			try {
 				const createdBy = JSON.parse(localStorage.getItem("user"));
+				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+				const [day, month, year] = form.values.dob.split("-").map(Number);
+				const dateObj = new Date(year, month - 1, day);
+
+				const today = new Date();
+
+				// strict validation: check if JS normalized it
+				const isValid =
+					dateObj.getFullYear() === year && dateObj.getMonth() === month - 1 && dateObj.getDate() === day;
+
+				// check if future date
+				if (dateObj > today) {
+					showNotificationComponent(
+						t("Date of birth can't be future date"),
+						"red",
+						"lightgray",
+						true,
+						1000,
+						true
+					);
+					setIsSubmitting(false);
+					return {};
+				}
 
 				const formValue = {
 					...form.values,
 					created_by_id: createdBy?.id,
+					dob: isValid ? dateObj.toLocaleDateString("en-CA", options) : "invalid",
+					appointment: new Date(form.values.appointment).toLocaleDateString("en-CA", options),
 				};
 
 				const data = {
-					url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.CREATE,
+					url: HOSPITAL_DATA_ROUTES.API_ROUTES.EMERGENCY.CREATE,
 					data: formValue,
 					module,
 				};
@@ -218,13 +300,21 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 				if (storeEntityData.rejected.match(resultAction)) {
 					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
 				} else {
-					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
+					showNotificationComponent(
+						t("Emergency saved successfully"),
+						"green",
+						"lightgray",
+						true,
+						1000,
+						true
+					);
 					setRefetchData({ module, refetching: true });
 					form.reset();
 					localStorage.removeItem(LOCAL_STORAGE_KEY);
+					setShowUserData(false);
 				}
 			} catch (error) {
-				console.error("Error submitting visit:", error);
+				console.error("Error submitting emergency:", error);
 				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
 			} finally {
 				setIsSubmitting(false);
@@ -234,22 +324,6 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 				console.error(form.errors);
 				showNotificationComponent(t("PleaseFillAllFields"), "red", "lightgray", true, 1000, true);
 			}
-		}
-	};
-	const handleTypeChange = (val) => {
-		form.setFieldValue("identity_mode", val);
-	};
-	const handleDobChange = () => {
-		const type = form.values.ageType || "year";
-		const formattedAge = calculateAge(form.values.dob, type);
-		form.setFieldValue("age", formattedAge);
-
-		// Calculate detailed age from date of birth
-		if (form.values.dob) {
-			const detailedAge = calculateDetailedAge(form.values.dob);
-			form.setFieldValue("year", detailedAge.years);
-			form.setFieldValue("month", detailedAge.months);
-			form.setFieldValue("day", detailedAge.days);
 		}
 	};
 
@@ -302,19 +376,32 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 											nextField="address"
 											value={form.values.identity}
 											rightSection={
-												<ActionIcon bg="var(--theme-secondary-color-6)">
+												<ActionIcon
+													onClick={handleHSIDSearch}
+													bg="var(--theme-secondary-color-6)"
+												>
 													<IconSearch size={"16"} />
 												</ActionIcon>
 											}
 											required
 										/>
 									</Grid.Col>
-									<Grid.Col span={5}>
-										<Text ta="right" pr={"xs"}>
-											{form.values.healthID || t("HSID000000")}
-										</Text>
-									</Grid.Col>
+									{showUserData && (
+										<Grid.Col span={5}>
+											<Text
+												ta="right"
+												onClick={openHSIDDataPreview}
+												pr="xs"
+												fz="sm"
+												className="cursor-pointer user-none"
+												c="var(--theme-primary-color-6)"
+											>
+												{form.values.healthID || t("HSID000000")}
+											</Text>
+										</Grid.Col>
+									)}
 								</Grid>
+
 								<Grid align="center" columns={20}>
 									<Grid.Col span={20}>
 										<Divider />
@@ -508,13 +595,13 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("mobile")}</Text>
+										<Text fz="sm">{t("GuardianMobile")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14} pb={0}>
 										<InputForm
 											form={form}
 											label=""
-											tooltip={t("enterPatientMobile")}
+											tooltip={t("EnterPatientMobile")}
 											placeholder="+880 1717171717"
 											name="mobile"
 											id="mobile"
@@ -600,13 +687,7 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 								</Text>
 							</Stack>
 						</Button>
-						<Button
-							onClick={handlePrescriptionPosPrint}
-							w="100%"
-							bg="var(--theme-pos-btn-color)"
-							disabled={isSubmitting}
-							type="button"
-						>
+						<Button w="100%" bg="var(--theme-pos-btn-color)" disabled={isSubmitting} type="button">
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Pos")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -631,6 +712,11 @@ export function Form({ form, showTitle = false, heightOffset = 72, module, type 
 					</Button.Group>
 				</Box>
 			</Box>
+			<NIDDataPreviewModal
+				opened={openedHSIDDataPreview}
+				close={closeHSIDDataPreview}
+				userNidData={userEmergencyData}
+			/>
 		</Box>
 	);
 }

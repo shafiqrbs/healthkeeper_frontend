@@ -4,7 +4,7 @@ const initialValues = {
 	identity_mode: "NID",
 	health_id: "",
 	patient_mode: "emergency",
-	room_id: "971",
+	room_id: "927",
 	doctor_id: "",
 	appointment: new Date(),
 	name: "",
@@ -37,16 +37,16 @@ const initialValues = {
 	invoice_particulars: [{ id: 1, name: "Consultation", quantity: 30, price: 100 }],
 };
 
-export const getVendorFormInitialValues = (t) => {
+export const getVendorFormInitialValues = () => {
 	return {
 		initialValues,
 
 		validate: {
 			name: hasLength({ min: 2, max: 20 }),
-			mobile: (value) => {
-				if (!value) return t("MobileValidationRequired");
-				return null;
-			},
+			// mobile: (value) => {
+			// 	if (!value) return t("MobileValidationRequired");
+			// 	return null;
+			// },
 		},
 	};
 };
