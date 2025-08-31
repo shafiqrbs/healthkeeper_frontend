@@ -247,6 +247,7 @@ export default function ActionButtons({
 						</Stack>
 					</Button>
 					<Button
+						id="EntityFormSubmit"
 						w="100%"
 						bg="var(--theme-save-btn-color)"
 						onClick={handleSubmit}

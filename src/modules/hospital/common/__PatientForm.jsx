@@ -1,17 +1,5 @@
 import InputForm from "@components/form-builders/InputForm";
-import {
-	ActionIcon,
-	Box,
-	Button,
-	Flex,
-	Grid,
-	LoadingOverlay,
-	Modal,
-	ScrollArea,
-	SegmentedControl,
-	Stack,
-	Text,
-} from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, Grid, LoadingOverlay, Modal, ScrollArea, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -28,7 +16,6 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
-import { notifications } from "@mantine/notifications";
 import { useDispatch } from "react-redux";
 import InputMaskForm from "@components/form-builders/InputMaskForm";
 import SegmentedControlForm from "@components/form-builders/SegmentedControlForm";
@@ -121,7 +108,7 @@ export default function PatientForm({ form, module, type = "opd_ticket", setSele
 						</Button>
 					</Flex>
 				</Flex>
-				<Form form={form} module={module} type={type} setSelectedRoom={setSelectedRoom} />
+				<Form form={form} module={module} type={type} />
 			</form>
 			<DoctorsRoomDrawer
 				form={form}
@@ -136,7 +123,7 @@ export default function PatientForm({ form, module, type = "opd_ticket", setSele
 	);
 }
 
-export function Form({ form, showTitle = false, heightOffset = 116, module, type = "opd_ticket", setSelectedRoom }) {
+export function Form({ form, showTitle = false, heightOffset = 116, module, type = "opd_ticket" }) {
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 	const [openedRoomError, { open: openRoomError, close: closeRoomError }] = useDisclosure(false);
 	const dispatch = useDispatch();
@@ -166,10 +153,6 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 	useEffect(() => {
 		handleDobChange();
 	}, [form.values.dob]);
-
-	useEffect(() => {
-		form.setFieldValue("guardian_name", form.values.name);
-	}, [form.values.name]);
 
 	useEffect(() => {
 		form.setFieldValue("guardian_mobile", form.values.mobile);
@@ -258,11 +241,19 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 			try {
 				const createdBy = JSON.parse(localStorage.getItem("user"));
 				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+				const [day, month, year] = form.values.dob.split("-").map(Number);
+				const dateObj = new Date(year, month - 1, day);
+
+				// strict validation: check if JS normalized it
+				const isValid =
+					dateObj.getFullYear() === year && dateObj.getMonth() === month - 1 && dateObj.getDate() === day;
+
+				const dob = isValid ? dateObj.toLocaleDateString("en-CA", options) : "invalid";
 
 				const formValue = {
 					...form.values,
 					created_by_id: createdBy?.id,
-					dob: form.values.dob ? new Date(form.values.dob).toLocaleDateString("en-CA", options) : null,
+					dob,
 					appointment: new Date(form.values.appointment).toLocaleDateString("en-CA", options),
 				};
 
@@ -280,9 +271,11 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 				} else {
 					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
 					setRefetchData({ module, refetching: true });
+					const selectedRoom = form.values.room_id;
+					setShowUserData(false);
 					form.reset();
 					localStorage.removeItem(LOCAL_STORAGE_KEY);
-					setSelectedRoom({});
+					form.setFieldValue("room_id", selectedRoom);
 					return resultAction.payload.data;
 				}
 			} catch (error) {
@@ -295,14 +288,9 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 		} else {
 			if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
 				console.error(form.errors);
-				notifications.show({
-					title: "Error",
-					message: "Please fill all the fields",
-					color: "red",
-					position: "top-right",
-				});
-				return {};
+				showNotificationComponent(t("PleaseFillAllFields"), "red", "lightgray", true, 1000, true);
 			}
+			return {};
 		}
 	};
 
@@ -357,7 +345,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 										placeholder="+880 1717171717"
 										name="mobile"
 										id="mobile"
-										nextField="gender"
+										nextField="dob"
 										value={form.values.mobile}
 										required
 									/>
@@ -400,7 +388,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 										label=""
 										tooltip={t("EnterPatientBirthDate")}
 										placeholder="DD-MM-YYYY"
-										nextField="days"
+										nextField="day"
 										maskInput="00-00-0000"
 										rightSection={<IconInfoCircle size={16} opacity={0.5} />}
 									/>
@@ -452,7 +440,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 											tooltip={t("years")}
 											name="year"
 											id="year"
-											nextField="identity_mode"
+											nextField="identity"
 											min={0}
 											max={150}
 											leftSection={
@@ -506,7 +494,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 										tooltip={t("EnterPatientIdentity")}
 										name="identity"
 										id="identity"
-										nextField="district"
+										nextField="guardian_name"
 										value={form.values.identity}
 										handleChange={handleContentChange}
 										rightSection={
@@ -588,7 +576,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 										placeholder="Dhaka"
 										name="district"
 										id="district"
-										nextField="identity"
+										nextField="address"
 										value={form.values.district}
 										required
 										dropdownValue={DISTRICT_LIST}
@@ -608,7 +596,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 										placeholder="12 street, 123456"
 										name="address"
 										id="address"
-										nextField="patient_payment_mode_id"
+										nextField="free_identification_id"
 										value={form.values.address}
 										required
 									/>
@@ -648,6 +636,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 											placeholder="Enter Free ID"
 											name="free_identification_id"
 											id="free_identification_id"
+											nextField="EntityFormSubmit"
 											value={form.values.free_identification_id || ""}
 										/>
 									)}

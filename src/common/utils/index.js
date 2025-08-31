@@ -65,12 +65,14 @@ export const calculateAge = (dob, type) => {
 
 export const calculateDetailedAge = (dob) => {
 	if (!dob) return { years: 0, months: 0, days: 0 };
-
-	const day = dob.split("-")[0];
-	const month = dob.split("-")[1];
-	const year = dob.split("-")[2];
+	const [day, month, year] = dob.split("-").map(Number);
 
 	const birthDate = new Date(year, month - 1, day);
+	const isValid =
+		birthDate.getFullYear() === year && birthDate.getMonth() === month - 1 && birthDate.getDate() === day;
+
+	if (!isValid) return { years: 0, months: 0, days: 0 };
+
 	const today = new Date();
 
 	// Calculate years
