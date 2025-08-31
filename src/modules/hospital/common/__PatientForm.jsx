@@ -262,7 +262,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 				const formValue = {
 					...form.values,
 					created_by_id: createdBy?.id,
-					dob: form.values.dob ? new Date(form.values.dob).toLocaleDateString("en-CA", options) : undefined,
+					dob: form.values.dob ? new Date(form.values.dob).toLocaleDateString("en-CA", options) : null,
 					appointment: new Date(form.values.appointment).toLocaleDateString("en-CA", options),
 				};
 
