@@ -121,7 +121,7 @@ export default function PatientForm({ form, module, type = "opd_ticket", setSele
 						</Button>
 					</Flex>
 				</Flex>
-				<Form form={form} module={module} type={type} />
+				<Form form={form} module={module} type={type} setSelectedRoom={setSelectedRoom} />
 			</form>
 			<DoctorsRoomDrawer
 				form={form}
@@ -630,8 +630,8 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 										data={[
 											{ label: t("General"), value: "30" },
 											{ label: t("FreedomFighter"), value: "31" },
-											{ label: t("Disabled"), value: "32" },
-											{ label: t("GovtService"), value: "43" },
+											{ label: t("Disabled"), value: "29" },
+											{ label: t("GovtService"), value: "32" },
 										]}
 									/>
 								</Grid.Col>
