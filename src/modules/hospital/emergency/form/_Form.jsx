@@ -2,10 +2,117 @@ import EmergencyPatientForm from "../../common/__EmergencyPatientForm";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
 import { getVendorFormInitialValues } from "../helpers/request";
+import { useState } from "react";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { storeEntityData } from "@/app/store/core/crudThunk";
+import { setRefetchData } from "@/app/store/core/crudSlice";
+import { useDispatch } from "react-redux";
+
+const LOCAL_STORAGE_KEY = "emergencyPatientFormData";
 
 export default function _Form({ module }) {
+	const dispatch = useDispatch();
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
 	const form = useForm(getVendorFormInitialValues(t));
+	const [showUserData, setShowUserData] = useState(false);
 
-	return <EmergencyPatientForm form={form} module={module} />;
+	const handleSubmit = async () => {
+		if (!form.validate().hasErrors) {
+			setIsSubmitting(true);
+
+			if (!form.values.amount && form.values.patient_payment_mode_id == "30") {
+				showNotificationComponent(t("Amount is required"), "red", "lightgray", true, 1000, true);
+				setIsSubmitting(false);
+				return {};
+			}
+
+			try {
+				const createdBy = JSON.parse(localStorage.getItem("user"));
+				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+				const [day, month, year] = form.values.dob.split("-").map(Number);
+				const dateObj = new Date(year, month - 1, day);
+
+				const today = new Date();
+
+				// strict validation: check if JS normalized it
+				const isValid =
+					dateObj.getFullYear() === year && dateObj.getMonth() === month - 1 && dateObj.getDate() === day;
+
+				// check if future date
+				if (dateObj > today) {
+					showNotificationComponent(
+						t("Date of birth can't be future date"),
+						"red",
+						"lightgray",
+						true,
+						1000,
+						true
+					);
+					setIsSubmitting(false);
+					return {};
+				}
+
+				const formValue = {
+					...form.values,
+					created_by_id: createdBy?.id,
+					dob: isValid ? dateObj.toLocaleDateString("en-CA", options) : "invalid",
+					appointment: new Date(form.values.appointment).toLocaleDateString("en-CA", options),
+				};
+
+				const data = {
+					url: HOSPITAL_DATA_ROUTES.API_ROUTES.EMERGENCY.CREATE,
+					data: formValue,
+					module,
+				};
+
+				const resultAction = await dispatch(storeEntityData(data));
+
+				if (storeEntityData.rejected.match(resultAction)) {
+					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
+					return {};
+				} else {
+					showNotificationComponent(
+						t("Emergency saved successfully"),
+						"green",
+						"lightgray",
+						true,
+						1000,
+						true
+					);
+					setRefetchData({ module, refetching: true });
+					const selectedRoom = form.values.room_id;
+					form.reset();
+					localStorage.removeItem(LOCAL_STORAGE_KEY);
+					setShowUserData(false);
+					form.setFieldValue("room_id", selectedRoom);
+					return resultAction.payload.data;
+				}
+			} catch (error) {
+				console.error("Error submitting emergency:", error);
+				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
+				return {};
+			} finally {
+				setIsSubmitting(false);
+			}
+		} else {
+			if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
+				console.error(form.errors);
+				showNotificationComponent(t("PleaseFillAllFields"), "red", "lightgray", true, 1000, true);
+			}
+			return {};
+		}
+	};
+
+	return (
+		<EmergencyPatientForm
+			form={form}
+			module={module}
+			handleSubmit={handleSubmit}
+			isSubmitting={isSubmitting}
+			showUserData={showUserData}
+			setShowUserData={setShowUserData}
+		/>
+	);
 }

@@ -10,7 +10,7 @@ const DashedLine = () => (
 	</Text>
 );
 
-const OPDPos = forwardRef(({ data }, ref) => {
+const IPDPos = forwardRef(({ data }, ref) => {
 	const user = getLoggedInUser();
 
 	return (
@@ -153,6 +153,6 @@ const OPDPos = forwardRef(({ data }, ref) => {
 	);
 });
 
-OPDPos.displayName = "OPDPos";
+IPDPos.displayName = "IPDPos";
 
-export default OPDPos;
+export default IPDPos;

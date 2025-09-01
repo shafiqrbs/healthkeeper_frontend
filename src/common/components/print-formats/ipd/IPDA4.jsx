@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Group, Stack, Image, Flex } from "@mantine/core";
+import { Box, Text, Grid, Group, Stack, Image } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -6,12 +6,13 @@ import CustomDivider from "@components/core-component/CustomDivider";
 import "@/index.css";
 import DashedDivider from "../../core-component/DashedDivider";
 import { getLoggedInUser } from "@/common/utils";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
-const OPDDocument = forwardRef(({ data }, ref) => {
+const IPDA4 = forwardRef(({ data }, ref) => {
+	const { t } = useTranslation();
 	const user = getLoggedInUser();
 	const patientInfo = data?.json_content || {};
 	const invoiceDetails = data?.invoice_details || {};
@@ -408,6 +409,6 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 	);
 });
 
-OPDDocument.displayName = "OPDDocument";
+IPDA4.displayName = "IPDA4";
 
-export default OPDDocument;
+export default IPDA4;

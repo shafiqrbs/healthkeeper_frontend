@@ -24,7 +24,7 @@ const initialValues = {
 	specialization: "",
 	disease_profile: "",
 	referred_id: "",
-	amount: 30,
+	amount: 10,
 	marketing_id: "",
 	comment: "",
 	guardian_name: "",
@@ -32,7 +32,7 @@ const initialValues = {
 	email: "",
 	payment_mode: "",
 	free_identification: "",
-	patient_payment_mode_id: 30,
+	patient_payment_mode_id: "30",
 	api_patient_content: "",
 	invoice_particulars: [{ id: 1, name: "Consultation", quantity: 30, price: 100 }],
 };

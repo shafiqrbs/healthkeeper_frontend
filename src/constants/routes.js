@@ -175,9 +175,7 @@ export const CORE_DATA_ROUTES = {
 };
 
 export const HOSPITAL_DATA_ROUTES = {
-
 	API_ROUTES: {
-
 		OPD: {
 			INDEX: "hospital/opd",
 			CREATE: "hospital/opd",
@@ -211,10 +209,10 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "hospital/admission/view",
 		},
 		EMERGENCY: {
-			INDEX: "hospital/emergency",
-			CREATE: "hospital/emergency/create",
-			UPDATE: "hospital/emergency",
-			VIEW: "hospital/emergency/view",
+			INDEX: "hospital/opd",
+			CREATE: "hospital/opd",
+			UPDATE: "hospital/opd",
+			VIEW: "hospital/opd",
 		},
 		CUSTOMER: {
 			INDEX: "core/customer",
