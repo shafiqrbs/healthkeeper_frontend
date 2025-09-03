@@ -249,7 +249,7 @@ export default function _ReportFormatTable({ module, open }) {
 									render: (item) => (
 										<Select
 											placeholder="SelectDataType"
-											data={['xyz','abcd']}
+											data={['Test-1','Test-2','Test-3']}
 											value={submitFormData[item.id]?.parent_name || ""}
 											onChange={(val) => handleDataTypeChange(item.id, "parent_name", val)}
 										/>
