@@ -12,11 +12,29 @@ export const getInitialValues = (t) => {
 		initialValues,
 		validate: {
 			category_id: (value) => {
-				if (!value) return t("CategoryValidationRequired");
+				if (!value) return t("NameValidationRequired");
 				return null;
 			},
 			name: hasLength({ min: 1}),
 		},
 	};
 };
+
+const initialReportValues = {
+	parent_id: "",
+	name: "",
+	sample_value: "",
+	reference_value: "",
+	unit_name: "",
+};
+
+export const getInitialReportValues = (t) => {
+	return {
+		initialReportValues,
+		validate: {
+			name: hasLength({ min: 1}),
+		},
+	};
+};
+
 

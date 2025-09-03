@@ -12,7 +12,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer,module }) {
 	const closeDrawer = () => {
 		setViewDrawer(false);
 	};
-	console.log(entityObject)
+
 
 	return (
 		<Drawer.Root opened={viewDrawer} position="right" onClose={closeDrawer} offset={16}>

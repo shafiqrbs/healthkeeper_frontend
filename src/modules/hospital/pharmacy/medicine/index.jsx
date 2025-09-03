@@ -9,16 +9,15 @@ import { getInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
 import IndexForm from "./form/__IndexForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import {useOutletContext, useParams} from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
-import _ReportFormatTable from "./_ReportFormatTable";
-import {MODULES_CORE} from "@/constants";
+import {MODULES_PHARMACY} from "@/constants";
 
-const module = MODULES_CORE.INVESTIGATION;
+const module = MODULES_PHARMACY.STOCK;
 
 export default function Index({ mode = "create" }) {
+
 	const { t } = useTranslation();
-	const { reportFormat } = useParams();
 	const form = useForm(getInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
@@ -39,7 +38,7 @@ export default function Index({ mode = "create" }) {
 				<>
 					<CoreHeaderNavbar
 						module="core"
-						pageTitle={t("ManageInvestigation")}
+						pageTitle={t("ManageCustomer")}
 						roles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""
@@ -48,23 +47,19 @@ export default function Index({ mode = "create" }) {
 					<Grid columns={36} gutter={{ base: 8 }}>
 						{!matches && (
 							<Grid.Col span={6}>
-								<Navigation menu="base" subMenu={'baseSubmenu'} mainAreaHeight={mainAreaHeight} />
+								<Navigation menu="base" subMenu={'basePharmacySubmenu'} mainAreaHeight={mainAreaHeight} />
 							</Grid.Col>
 						)}
 						<Grid.Col span={matches ? 30 : 30}>
 							<Box bg="white" p="xs" className="borderRadiusAll">
-								{reportFormat === "report-format" ? (
-									<_ReportFormatTable module={module} open={open} close={close} />
-								) : (
-									<_Table module={module} open={open} close={close} />
-								)}
+								<_Table module={module} open={open} close={close} />
 							</Box>
 						</Grid.Col>
 					</Grid>
 						<GlobalDrawer
 							opened={opened}
 							close={close}
-							title={mode === "create" ? t("CreateInvestigation") : t("UpdateInvestigation")}>
+							title={mode === "create" ? t("CreateParticular") : t("UpdateParticular")}>
 							<IndexForm module={module} form={form} mode={mode} close={close} />
 						</GlobalDrawer>
 					</Box>

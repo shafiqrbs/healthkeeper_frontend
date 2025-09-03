@@ -83,6 +83,16 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	stock: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { term: "" },
+	},
+
 	medicines: {
 		isLoading: true,
 		refetching: false,

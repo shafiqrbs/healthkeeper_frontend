@@ -299,6 +299,39 @@ export const sideNavigationLinks = {
 			color: "#4CAF50",
 		},
 	],
+	basePharmacySubmenu: [
+		{
+			label: t("Pharmacy"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX,
+			icon: IconDashboard,
+			color: "#4CAF50",
+		},
+		{
+			label: t("Stock"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX,
+			icon: IconDashboard,
+			color: "#4CAF50",
+		},
+		{
+			label: t("Medicine"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX,
+			icon: IconDashboard,
+			color: "#4CAF50",
+		},
+		{
+			label: t("Requisition"),
+			path: "/hospital/doctor",
+			icon: IconDashboard,
+			color: "#6f1225",
+		},
+		{
+			label: t("Workorder"),
+			path: "/hospital/nurse",
+			icon: IconDashboard,
+			color: "#6f1225",
+		},
+
+	],
 	baseSubmenuReport: [
 		{
 			label: t("Overview"),

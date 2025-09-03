@@ -31,6 +31,11 @@ export const MODULES_CORE = {
 	PARTICULAR_TYPE: "particular_type",
 };
 
+export const MODULES_PHARMACY = {
+	MEDICINE: "medicine",
+	STOCK: "stock",
+};
+
 export const DATA_TYPES = ['Input', 'Select', 'Searchable','Autocomplete','LabelInput','Checkbox','RadioButton','Textarea'];
 
 //==================== Module Name ===========

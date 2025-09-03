@@ -33,7 +33,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.VIEW}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
 				module,
 			})
 		);
@@ -53,7 +53,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 				},
 			})
 		);
-		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED, { replace: true });
+		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR, { replace: true });
 	};
 
 	// =============== effect to handle mode switching ================
@@ -66,6 +66,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 	}, [isEditMode]);
 
 	// =============== render form based on mode ================
+	console.log(insertType)
 	if (insertType === "create") {
 		return <__Create module={module} form={form} close={close} />;
 	}

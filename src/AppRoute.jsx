@@ -88,6 +88,7 @@ import LabIndex from "@modules/hospital/lab";
 import LabGroupIndex from "@modules/hospital/lab-group";
 import RequisitionIndex from "@modules/hospital/requisition";
 import InvestigationIndex from "@modules/hospital/core/investigation";
+import MedicineStockIndex from "@modules/hospital/pharmacy/medicine";
 import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/doctor";
 import ListIndex from "@modules/hospital/visit/list";
@@ -201,6 +202,10 @@ function AppRoute() {
 					<Route path="particular-type" element={<ParticularTypeIndex />} />
 					<Route path="category" element={<CategoryIndex />} />
 					<Route path="category/:id" element={<CategoryIndex mode={"edit"} />} />
+				</Route>
+				<Route path="/hospital/pharmacy/">
+					<Route path="stock" element={<MedicineStockIndex />} />
+					<Route path="stock/:id" element={<MedicineStockIndex mode={"edit"} />} />
 				</Route>
 				<Route path="sitemap" element={<Sitemap />} />
 				<Route path="/configuration/">
