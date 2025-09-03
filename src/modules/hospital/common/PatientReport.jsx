@@ -13,113 +13,24 @@ import {
 	Flex,
 	ActionIcon,
 } from "@mantine/core";
-import { useState, useEffect, useCallback } from "react";
-import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
 import PatientReportAction from "./PatientReportAction";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 
-export default function PatientReport({ tabValue, onDataChange = null, formData = null, setFormData = null }) {
+export default function PatientReport({ tabValue, form = null }) {
+	console.log(form.values);
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 284;
-
-	const form = useForm({
-		initialValues: {
-			bp: "120/80",
-			weight: "",
-			bloodGroup: "O+",
-		},
-	});
 
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 
-	// Use external state if provided, otherwise use internal state
-	const [dynamicFormData, setDynamicFormData] = useState(formData?.dynamicFormData || {});
-	const [investigationList, setInvestigationList] = useState(formData?.investigationList || []);
-
-	// Build patient_examination payload in the desired API format
-	const buildPatientExamination = useCallback(
-		(rawData, investigations) => {
-			if (!tabParticulars || tabParticulars.length === 0) return {};
-
-			const result = {};
-
-			tabParticulars.forEach((section) => {
-				const { id: sectionId, slug, particulars = [] } = section;
-				const sectionKey = slug || String(sectionId);
-				const sectionRaw = rawData?.[sectionId] || {};
-
-				// Special handling for investigation bucket if present
-				if (sectionKey === "investigation") {
-					if (Array.isArray(investigations) && investigations.length > 0) {
-						const items = investigations.map((name) => {
-							const matched = particulars.find((p) => p.name === name);
-							return {
-								id: matched?.id ?? null,
-								name,
-							};
-						});
-						if (items.length > 0) result[sectionKey] = items;
-					}
-					return;
-				}
-
-				// General handling for other sections -> array of {id, name, value}
-				const items = [];
-				particulars.forEach((particular) => {
-					const fieldName = particular.name;
-					const value = sectionRaw?.[fieldName];
-
-					if (section.data_type === "Checkbox") {
-						if (value) {
-							items.push({ id: particular.id ?? null, name: fieldName, value: fieldName });
-						}
-						return;
-					}
-
-					if (section.data_type === "RadioButton") {
-						if (value === fieldName) {
-							items.push({ id: particular.id ?? null, name: fieldName, value: fieldName });
-						}
-						return;
-					}
-
-					// Input/Textarea/Select/Searchable/Autocomplete
-					if (value !== undefined && value !== null && String(value).trim() !== "") {
-						items.push({ id: particular.id ?? null, name: fieldName, value });
-					}
-				});
-
-				if (items.length > 0) {
-					result[sectionKey] = items;
-				}
-			});
-
-			return result;
-		},
-		[tabParticulars]
-	);
-
-	// Update external state when internal state changes
-	const updateExternalState = (newDynamicFormData, newInvestigationList) => {
-		const patientExamination = buildPatientExamination(newDynamicFormData, newInvestigationList);
-		const payload = {
-			basicInfo: form.values,
-			patient_examination: patientExamination,
-		};
-		if (onDataChange) {
-			onDataChange(payload);
-		}
-		if (setFormData) {
-			setFormData(payload);
-		}
-	};
-
 	const handleDynamicFormChange = ({ id, name, value, parentSlug }) => {
-		const existingList = Array.isArray(dynamicFormData[parentSlug]) ? dynamicFormData[parentSlug] : [];
+		const existingList = Array.isArray(form.values.dynamicFormData[parentSlug])
+			? form.values.dynamicFormData[parentSlug]
+			: [];
 
 		const existingIndex = existingList.findIndex((item) => item.id === id && item.name === name);
 
@@ -130,36 +41,57 @@ export default function PatientReport({ tabValue, onDataChange = null, formData 
 				: [...existingList, updatedItem];
 
 		const newDynamicFormData = {
-			...dynamicFormData,
+			...form.values.dynamicFormData,
 			[parentSlug]: updatedList,
 		};
 
-		console.log(newDynamicFormData);
-
-		setDynamicFormData(newDynamicFormData);
-		updateExternalState(newDynamicFormData, investigationList);
+		form.setFieldValue("dynamicFormData", newDynamicFormData);
 	};
 
-	const handleInvestigationRemove = (index) => {
-		const newInvestigationList = investigationList.filter((_, idx) => idx !== index);
-		setInvestigationList(newInvestigationList);
-		updateExternalState(dynamicFormData, newInvestigationList);
-	};
+	const handleInvestigationAdd = (value, sectionParticulars = null) => {
+		let selectedParticular = null;
 
-	const handleInvestigationAdd = (value) => {
-		if (value && !investigationList.includes(value)) {
-			const newInvestigationList = [...investigationList, value];
-			setInvestigationList(newInvestigationList);
-			updateExternalState(dynamicFormData, newInvestigationList);
+		if (sectionParticulars) {
+			selectedParticular = sectionParticulars.find((p) => p.name === value);
+		}
+
+		if (!selectedParticular) {
+			selectedParticular = particularsData
+				?.flatMap((section) => section.particulars || [])
+				.find((p) => p.name === value);
+		}
+
+		if (selectedParticular) {
+			// Add to dynamicFormData with the correct structure
+			const existingList = Array.isArray(form.values.dynamicFormData.investigation)
+				? form.values.dynamicFormData.investigation
+				: [];
+
+			// Check if this value already exists
+			const existingIndex = existingList.findIndex(
+				(item) => item.id === selectedParticular.id && item.name === selectedParticular.name
+			);
+
+			if (existingIndex === -1) {
+				// Add new item
+				const newItem = {
+					id: selectedParticular.id,
+					name: selectedParticular.name,
+					value: selectedParticular.name,
+				};
+
+				const updatedList = [...existingList, newItem];
+				const newDynamicFormData = {
+					...form.values.dynamicFormData,
+					investigation: updatedList,
+				};
+
+				form.setFieldValue("dynamicFormData", newDynamicFormData);
+				return;
+			}
 		}
 	};
 
-	// Update external state when form values change
-	useEffect(() => {
-		updateExternalState(dynamicFormData, investigationList);
-	}, [dynamicFormData, investigationList]);
-
-	// render dynamic form based on data type and particulars
 	const renderDynamicForm = (section) => {
 		const { id, name, data_type, particulars } = section;
 
@@ -172,7 +104,7 @@ export default function PatientReport({ tabValue, onDataChange = null, formData 
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => {
-							const value = dynamicFormData?.[section.slug]?.find(
+							const value = form.values.dynamicFormData?.[section.slug]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
 							)?.value;
 							return (
@@ -204,8 +136,9 @@ export default function PatientReport({ tabValue, onDataChange = null, formData 
 							label: particular.name,
 						}))}
 						value={
-							dynamicFormData?.[section.slug]?.find((item) => item.id === id && item.name === name)
-								?.value || ""
+							form.values.dynamicFormData?.[section.slug]?.find(
+								(item) => item.id === id && item.name === name
+							)?.value || ""
 						}
 						onChange={(value) =>
 							handleDynamicFormChange({
@@ -222,7 +155,7 @@ export default function PatientReport({ tabValue, onDataChange = null, formData 
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => {
-							const value = dynamicFormData?.[section.slug]?.find(
+							const value = form.values.dynamicFormData?.[section.slug]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
 							)?.value;
 							return (
@@ -253,7 +186,7 @@ export default function PatientReport({ tabValue, onDataChange = null, formData 
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => {
-							const value = dynamicFormData?.[section.slug]?.find(
+							const value = form.values.dynamicFormData?.[section.slug]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
 							)?.value;
 							return (
@@ -285,8 +218,9 @@ export default function PatientReport({ tabValue, onDataChange = null, formData 
 						placeholder={`Select ${name}`}
 						data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
 						value={
-							dynamicFormData?.[section.slug]?.find((item) => item.id === id && item.name === name)
-								?.value || ""
+							form.values.dynamicFormData?.[section.slug]?.find(
+								(item) => item.id === id && item.name === name
+							)?.value || ""
 						}
 						onChange={(value) =>
 							handleDynamicFormChange({
@@ -303,7 +237,7 @@ export default function PatientReport({ tabValue, onDataChange = null, formData 
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => {
-							const value = dynamicFormData?.[section.slug]?.find(
+							const value = form.values.dynamicFormData?.[section.slug]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
 							)?.value;
 							return (
@@ -332,34 +266,16 @@ export default function PatientReport({ tabValue, onDataChange = null, formData 
 							label=""
 							placeholder={`Pick value or enter ${name}`}
 							data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
-							value={
-								dynamicFormData?.[section.slug]?.find((item) => item.id === id && item.name === name)
-									?.value || ""
-							}
+							value=""
 							onChange={(value) => {
-								handleDynamicFormChange({
-									id: id,
-									name: name,
-									value: value,
-									parentSlug: section.slug,
-								});
-							}}
-							onKeyDown={(e) => {
-								if (e.key === "Enter" && e.target.value) {
-									handleDynamicFormChange({
-										id: id,
-										name: name,
-										value: e.target.value,
-										parentSlug: section.slug,
-									});
-									handleInvestigationAdd(e.target.value);
-									e.target.value = "";
+								if (value) {
+									handleInvestigationAdd(value, particulars);
 								}
 							}}
 							rightSection={<IconCaretUpDownFilled size={16} />}
 						/>
 						<Stack gap={0} bg="white" px="sm" className="borderRadiusAll">
-							{investigationList.map((item, idx) => (
+							{form.values.dynamicFormData?.[section.slug]?.map((item, idx) => (
 								<Flex
 									key={idx}
 									align="center"
@@ -368,19 +284,19 @@ export default function PatientReport({ tabValue, onDataChange = null, formData 
 									py="xs"
 									style={{
 										borderBottom:
-											idx !== investigationList.length - 1
+											idx !== form.values.dynamicFormData?.[section.slug]?.length - 1
 												? "1px solid var(--theme-tertiary-color-4)"
 												: "none",
 									}}
 								>
 									<Text fz="sm">
-										{idx + 1}. {item}
+										{idx + 1}. {item.name}
 									</Text>
 									<ActionIcon
 										color="red"
 										size="xs"
 										variant="subtle"
-										onClick={() => handleInvestigationRemove(idx)}
+										// onClick={() => handleInvestigationRemove(idx)}
 									>
 										<IconX size={16} />
 									</ActionIcon>

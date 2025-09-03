@@ -24,14 +24,10 @@ export default function Index() {
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [tabValue, setTabValue] = useState("All");
-	const form = useForm(getPrescriptionFormInitialValues(t));
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-	const [patientReportData, setPatientReportData] = useState({
-		basicInfo: {},
-		dynamicFormData: {},
-		investigationList: [],
-	});
+
+	const form = useForm(getPrescriptionFormInitialValues(t));
 
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);
@@ -72,20 +68,10 @@ export default function Index() {
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={9}>
-								<PatientReport
-									tabValue={tabValue}
-									onDataChange={setPatientReportData}
-									formData={patientReportData}
-									setFormData={setPatientReportData}
-								/>
+								<PatientReport tabValue={tabValue} form={form} />
 							</Grid.Col>
 							<Grid.Col span={15}>
-								<AddMedicineForm
-									module={module}
-									prescriptionForm={form}
-									patientReportData={patientReportData}
-									setPatientReportData={setPatientReportData}
-								/>
+								<AddMedicineForm module={module} form={form} />
 							</Grid.Col>
 						</Grid>
 					</Flex>

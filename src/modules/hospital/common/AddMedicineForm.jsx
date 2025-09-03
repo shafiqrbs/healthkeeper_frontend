@@ -144,14 +144,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 	);
 }
 
-export default function AddMedicineForm({
-	module,
-	prescriptionForm,
-	hideAdviseForm = false,
-	hideActionButtons = false,
-	patientReportData = null,
-	setPatientReportData = null,
-}) {
+export default function AddMedicineForm({ module, form }) {
 	const [updateKey, setUpdateKey] = useState(0);
 	const { prescriptionId } = useParams();
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -165,7 +158,7 @@ export default function AddMedicineForm({
 	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
 	const { medicineData } = useMedicineData({ term: medicineTerm });
 	const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
-	const form = useForm(getMedicineFormInitialValues());
+	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [medicines, setMedicines] = useState([]);
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
@@ -187,17 +180,11 @@ export default function AddMedicineForm({
 			"alt+1",
 			() => {
 				setMedicines([]);
-				form.reset();
+				medicineForm.reset();
 
 				setEditIndex(null);
 				// Clear PatientReport data when resetting
-				if (setPatientReportData) {
-					setPatientReportData({
-						basicInfo: {},
-						dynamicFormData: {},
-						investigationList: [],
-					});
-				}
+				medicineForm.reset();
 			},
 		],
 		[
@@ -238,37 +225,35 @@ export default function AddMedicineForm({
 	});
 
 	const handleChange = (field, value) => {
-		form.setFieldValue(field, value);
+		medicineForm.setFieldValue(field, value);
 
 		// If medicine field is being changed, auto-populate other fields from medicine data
 		if (field === "medicine_id" && value) {
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
-			console.log(medicineData, selectedMedicine, value);
 
 			if (selectedMedicine) {
-				console.log("Selected medicine data:", selectedMedicine);
-				form.setFieldValue("medicine_name", selectedMedicine.product_name);
-				form.setFieldValue("generic", selectedMedicine.generic);
-				form.setFieldValue("generic_id", selectedMedicine.generic_id);
-				form.setFieldValue("company", selectedMedicine.company);
+				medicineForm.setFieldValue("medicine_name", selectedMedicine.product_name);
+				medicineForm.setFieldValue("generic", selectedMedicine.generic);
+				medicineForm.setFieldValue("generic_id", selectedMedicine.generic_id);
+				medicineForm.setFieldValue("company", selectedMedicine.company);
 
 				// Auto-populate by_meal if available
 				if (selectedMedicine.by_meal) {
-					form.setFieldValue("by_meal", selectedMedicine.by_meal);
+					medicineForm.setFieldValue("by_meal", selectedMedicine.by_meal);
 				}
 
 				// Auto-populate duration and count based on duration_day or duration_month
 				if (selectedMedicine.duration_day) {
-					form.setFieldValue("amount", parseInt(selectedMedicine.duration_day) || 1);
-					form.setFieldValue("duration", "day");
+					medicineForm.setFieldValue("amount", parseInt(selectedMedicine.duration_day) || 1);
+					medicineForm.setFieldValue("duration", "day");
 				} else if (selectedMedicine.duration_month) {
-					form.setFieldValue("amount", parseInt(selectedMedicine.duration_month) || 1);
-					form.setFieldValue("duration", "month");
+					medicineForm.setFieldValue("amount", parseInt(selectedMedicine.duration_month) || 1);
+					medicineForm.setFieldValue("duration", "month");
 				}
 
 				// Auto-populate dose_details if available (for times field)
 				if (selectedMedicine.dose_details) {
-					form.setFieldValue("dose_details", selectedMedicine.dose_details);
+					medicineForm.setFieldValue("dose_details", selectedMedicine.dose_details);
 				}
 			}
 		}
@@ -309,13 +294,13 @@ export default function AddMedicineForm({
 		}
 
 		setUpdateKey((prev) => prev + 1);
-		form.reset();
+		medicineForm.reset();
 	};
 
 	const handleDelete = (idx) => {
 		setMedicines(medicines.filter((_, i) => i !== idx));
 		if (editIndex === idx) {
-			form.reset();
+			medicineForm.reset();
 			setEditIndex(null);
 		}
 	};
@@ -348,12 +333,12 @@ export default function AddMedicineForm({
 					updatedMedicineData.duration = "month";
 				}
 
-				form.setValues(updatedMedicineData);
+				medicineForm.setValues(updatedMedicineData);
 			} else {
-				form.setValues(medicineToEdit);
+				medicineForm.setValues(medicineToEdit);
 			}
 		} else {
-			form.setValues(medicineToEdit);
+			medicineForm.setValues(medicineToEdit);
 		}
 
 		setEditIndex(idx);
@@ -361,15 +346,11 @@ export default function AddMedicineForm({
 
 	const handleReset = () => {
 		setMedicines([]);
-		form.reset();
+		medicineForm.reset();
 		setEditIndex(null);
 		// Clear PatientReport data when resetting
-		if (setPatientReportData) {
-			setPatientReportData({
-				basicInfo: {},
-				dynamicFormData: {},
-				investigationList: [],
-			});
+		if (medicineForm) {
+			medicineForm.reset();
 		}
 		// Clear held data when resetting
 	};
@@ -397,15 +378,14 @@ export default function AddMedicineForm({
 
 			const formValue = {
 				medicines,
-				advise: prescriptionForm.values.advise || "",
-				follow_up_date: prescriptionForm.values.followUpDate || null,
+				advise: form.values.advise || "",
+				follow_up_date: form.values.follow_up_date || null,
 				prescription_date: new Date().toISOString().split("T")[0],
 				created_by_id: createdBy?.id,
 				patient_report: {
-					basic_info: patientReportData?.basicInfo || {},
-					patient_examination: dynamicFormData,
+					basic_info: form.values.basicInfo || {},
+					patient_examination: form.values.dynamicFormData,
 				},
-				...prescriptionForm.values,
 			};
 
 			const value = {
@@ -413,6 +393,7 @@ export default function AddMedicineForm({
 				data: formValue,
 				module,
 			};
+
 			return console.log(formValue);
 			// const resultAction = await dispatch(updateEntityData(value));
 
@@ -446,7 +427,7 @@ export default function AddMedicineForm({
 	return (
 		<Box className="borderRadiusAll" bg="white">
 			<Box
-				onSubmit={form.onSubmit(handleAdd)}
+				onSubmit={medicineForm.onSubmit(handleAdd)}
 				key={updateKey}
 				component="form"
 				bg="var(--theme-primary-color-0)"
@@ -464,7 +445,7 @@ export default function AddMedicineForm({
 								label: item.product_name,
 								value: item.product_id?.toString(),
 							}))}
-							value={form.values.medicine_id}
+							value={medicineForm.values.medicine_id}
 							onChange={(v) => handleChange("medicine_id", v)}
 							placeholder="Medicine"
 							tooltip="Select medicine"
@@ -478,7 +459,7 @@ export default function AddMedicineForm({
 								label: item.name,
 								value: `${item.name} ${index}`,
 							}))}
-							value={form.values.generic}
+							value={medicineForm.values.generic}
 							onChange={(v) => {
 								handleChange("generic", v);
 								setMedicineGenericTerm(v);
@@ -489,40 +470,40 @@ export default function AddMedicineForm({
 					</Group>
 					<Group grow gap="les" w="100%">
 						<SelectForm
-							form={form}
+							form={medicineForm}
 							name="dose_details"
 							dropdownValue={dosage_options}
-							value={form.values.dose_details}
+							value={medicineForm.values.dose_details}
 							placeholder="Dosage"
 							required
 							tooltip="Enter dosage"
 							withCheckIcon={false}
 						/>
 						<SelectForm
-							form={form}
+							form={medicineForm}
 							name="by_meal"
 							dropdownValue={by_meal_options}
-							value={form.values.by_meal}
+							value={medicineForm.values.by_meal}
 							placeholder="By Meal"
 							required
 							tooltip="Enter when to take medicine"
 							withCheckIcon={false}
 						/>
 						<SelectForm
-							form={form}
+							form={medicineForm}
 							label=""
 							name="duration"
 							dropdownValue={DURATION_OPTIONS}
-							value={form.values.duration}
+							value={medicineForm.values.duration}
 							placeholder="Duration"
 							required
 							tooltip="Enter meditation duration"
 							withCheckIcon={false}
 						/>
 						<InputNumberForm
-							form={form}
+							form={medicineForm}
 							name="amount"
-							value={form.values.amount}
+							value={medicineForm.values.amount}
 							placeholder="Amount"
 							required
 							tooltip="Enter amount"
@@ -562,7 +543,7 @@ export default function AddMedicineForm({
 				</Stack>
 			</ScrollArea>
 			{/* =================== Advise form =================== */}
-			{!hideAdviseForm && (
+			{
 				<Grid columns={12} gutter="xxxs" mt="xxs" p="les">
 					<Grid.Col span={6}>
 						<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
@@ -571,9 +552,9 @@ export default function AddMedicineForm({
 							</Text>
 							<Box p="sm">
 								<TextAreaForm
-									form={prescriptionForm}
+									form={form}
 									label=""
-									value={prescriptionForm.values.advise}
+									value={form.values.advise}
 									name="advise"
 									placeholder="Write a advice..."
 									showRightSection={false}
@@ -585,11 +566,11 @@ export default function AddMedicineForm({
 					<Grid.Col span={6}>
 						<Box bg="var(--theme-primary-color-0)" h="100%" p="sm">
 							<DatePickerForm
-								form={prescriptionForm}
-								label={t("follow_up_date")}
+								form={form}
+								label={t("FollowUpDate")}
 								tooltip="Enter follow up date"
 								name="follow_up_date"
-								value={prescriptionForm.values.follow_up_date}
+								value={form.values.follow_up_date}
 								placeholder="Follow up date"
 							/>
 							{/* <Text mt="xs" fz="sm">
@@ -620,8 +601,8 @@ export default function AddMedicineForm({
 						</Box>
 					</Grid.Col>
 				</Grid>
-			)}
-			{!hideActionButtons && (
+			}
+			{
 				// =================== button group ===================
 				<Button.Group bg="var(--theme-primary-color-0)" p="les">
 					<Button
@@ -668,7 +649,7 @@ export default function AddMedicineForm({
 						</Stack>
 					</Button>
 				</Button.Group>
-			)}
+			}
 			<Prescription ref={prescriptionA4Ref} />
 			<Prescription2 ref={prescription2A4Ref} />
 			<Prescription3 ref={prescription3A4Ref} />

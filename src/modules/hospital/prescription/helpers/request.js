@@ -1,6 +1,8 @@
 const initialValues = {
-	follow_up_date: new Date(),
+	basicInfo: { bp: "120/80", weight: "", bloodGroup: "O+" },
+	dynamicFormData: {},
 	advise: "",
+	follow_up_date: new Date(),
 };
 
 export const getPrescriptionFormInitialValues = () => {
