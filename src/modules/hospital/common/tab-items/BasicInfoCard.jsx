@@ -1,37 +1,40 @@
-import { Box, Divider, Flex, Group, Stack, Text } from "@mantine/core";
+import { Box, Divider, Flex, Stack, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import InputForm from "@components/form-builders/InputForm";
-import SelectForm from "@components/form-builders/SelectForm";
 import Vitals from "@modules/hospital/common/tab-items/Vitals";
-import { useState } from "react";
-import { useForm } from "@mantine/form";
+import { useParams } from "react-router-dom";
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
-export default function BasicInfoCard({ patientData, form }) {
+export default function BasicInfoCard({ form }) {
 	const { t } = useTranslation();
+	const { prescriptionId } = useParams();
 
-	const [vitals, setVitals] = useState({
-		bp: "120/80",
-		sugar: "",
-		weight: "",
-		bloodGroup: "O+",
+	const { data: prescriptionData } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});
+
 	return (
 		<Stack gap="xxxs" bg="var(--theme-primary-color-1)" p="xs" className="borderRadiusAll">
 			<Flex justify="space-between">
-				<Text fw={600}>{patientData?.name || "N/A"}</Text>
-				<Text fz="sm">{patientData?.appointment || "N/A"}</Text>
+				<Text fw={600}>{prescriptionData?.data?.name || "N/A"}</Text>
+				<Text fz="sm">{prescriptionData?.data?.appointment || "N/A"}</Text>
 			</Flex>
 			<Flex justify="space-between">
 				<Text fz="xs">
-					Patient ID: <b>{patientData?.id || "N/A"}</b>
+					Patient ID: <b>{prescriptionData?.data?.customer_id || "N/A"}</b>
 				</Text>
 				<Text fz="xs">
-					{t("age")}: <b>{patientData?.age}</b> - {t("gender")}: <b>{patientData?.gender || "Male"}</b>
+					{t("age")}:{" "}
+					<b>
+						{prescriptionData?.data?.year}Y, {prescriptionData?.data?.month || 0}M,{" "}
+						{prescriptionData?.data?.day || 0}D
+					</b>{" "}
+					- {t("gender")}: <b>{prescriptionData?.data?.gender || "N/A"}</b>
 				</Text>
 			</Flex>
-			<Divider></Divider>
-			<Box bg={"white"}>
-				<Vitals vitals={vitals} form={form} />
+			<Divider />
+			<Box bg="white">
+				<Vitals form={form} />
 			</Box>
 		</Stack>
 	);

@@ -13,7 +13,7 @@ import {
 	Flex,
 	ActionIcon,
 } from "@mantine/core";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
 import PatientReportAction from "./PatientReportAction";
@@ -21,20 +21,13 @@ import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 
-export default function PatientReport({
-	patientData,
-	tabValue,
-	onDataChange = null,
-	formData = null,
-	setFormData = null,
-}) {
+export default function PatientReport({ tabValue, onDataChange = null, formData = null, setFormData = null }) {
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 284;
 
 	const form = useForm({
 		initialValues: {
 			bp: "120/80",
-			sugar: "",
 			weight: "",
 			bloodGroup: "O+",
 		},
@@ -47,32 +40,102 @@ export default function PatientReport({
 	const [dynamicFormData, setDynamicFormData] = useState(formData?.dynamicFormData || {});
 	const [investigationList, setInvestigationList] = useState(formData?.investigationList || []);
 
+	// Build patient_examination payload in the desired API format
+	const buildPatientExamination = useCallback(
+		(rawData, investigations) => {
+			if (!tabParticulars || tabParticulars.length === 0) return {};
+
+			const result = {};
+
+			tabParticulars.forEach((section) => {
+				const { id: sectionId, slug, particulars = [] } = section;
+				const sectionKey = slug || String(sectionId);
+				const sectionRaw = rawData?.[sectionId] || {};
+
+				// Special handling for investigation bucket if present
+				if (sectionKey === "investigation") {
+					if (Array.isArray(investigations) && investigations.length > 0) {
+						const items = investigations.map((name) => {
+							const matched = particulars.find((p) => p.name === name);
+							return {
+								id: matched?.id ?? null,
+								name,
+							};
+						});
+						if (items.length > 0) result[sectionKey] = items;
+					}
+					return;
+				}
+
+				// General handling for other sections -> array of {id, name, value}
+				const items = [];
+				particulars.forEach((particular) => {
+					const fieldName = particular.name;
+					const value = sectionRaw?.[fieldName];
+
+					if (section.data_type === "Checkbox") {
+						if (value) {
+							items.push({ id: particular.id ?? null, name: fieldName, value: fieldName });
+						}
+						return;
+					}
+
+					if (section.data_type === "RadioButton") {
+						if (value === fieldName) {
+							items.push({ id: particular.id ?? null, name: fieldName, value: fieldName });
+						}
+						return;
+					}
+
+					// Input/Textarea/Select/Searchable/Autocomplete
+					if (value !== undefined && value !== null && String(value).trim() !== "") {
+						items.push({ id: particular.id ?? null, name: fieldName, value });
+					}
+				});
+
+				if (items.length > 0) {
+					result[sectionKey] = items;
+				}
+			});
+
+			return result;
+		},
+		[tabParticulars]
+	);
+
 	// Update external state when internal state changes
 	const updateExternalState = (newDynamicFormData, newInvestigationList) => {
+		const patientExamination = buildPatientExamination(newDynamicFormData, newInvestigationList);
+		const payload = {
+			basicInfo: form.values,
+			patient_examination: patientExamination,
+		};
 		if (onDataChange) {
-			onDataChange({
-				basicInfo: form.values,
-				dynamicFormData: newDynamicFormData,
-				investigationList: newInvestigationList,
-			});
+			onDataChange(payload);
 		}
 		if (setFormData) {
-			setFormData({
-				basicInfo: form.values,
-				dynamicFormData: newDynamicFormData,
-				investigationList: newInvestigationList,
-			});
+			setFormData(payload);
 		}
 	};
 
-	const handleDynamicFormChange = (sectionId, fieldName, value) => {
+	const handleDynamicFormChange = ({ id, name, value, parentSlug }) => {
+		const existingList = Array.isArray(dynamicFormData[parentSlug]) ? dynamicFormData[parentSlug] : [];
+
+		const existingIndex = existingList.findIndex((item) => item.id === id && item.name === name);
+
+		const updatedItem = { id, name, value };
+		const updatedList =
+			existingIndex > -1
+				? [...existingList.slice(0, existingIndex), updatedItem, ...existingList.slice(existingIndex + 1)]
+				: [...existingList, updatedItem];
+
 		const newDynamicFormData = {
 			...dynamicFormData,
-			[sectionId]: {
-				...dynamicFormData[sectionId],
-				[fieldName]: value,
-			},
+			[parentSlug]: updatedList,
 		};
+
+		console.log(newDynamicFormData);
+
 		setDynamicFormData(newDynamicFormData);
 		updateExternalState(newDynamicFormData, investigationList);
 	};
@@ -91,31 +154,10 @@ export default function PatientReport({
 		}
 	};
 
-	// Transform dynamic form data to use meaningful names instead of IDs
-	const transformDynamicFormData = (rawData) => {
-		const transformed = {};
-
-		if (!tabParticulars || tabParticulars.length === 0) {
-			return rawData;
-		}
-
-		Object.keys(rawData).forEach((sectionId) => {
-			const section = tabParticulars.find((s) => s.id.toString() === sectionId);
-			if (section) {
-				transformed[section.name?.toLowerCase()?.replace(/\s+/g, "_")] = rawData[sectionId];
-			} else {
-				console.log(`Section with ID ${sectionId} not found in tabParticulars`);
-			}
-		});
-
-		return transformed;
-	};
-
 	// Update external state when form values change
 	useEffect(() => {
-		const transformedData = transformDynamicFormData(dynamicFormData);
-		updateExternalState(transformedData, investigationList);
-	}, [form.values, dynamicFormData, investigationList]);
+		updateExternalState(dynamicFormData, investigationList);
+	}, [dynamicFormData, investigationList]);
 
 	// render dynamic form based on data type and particulars
 	const renderDynamicForm = (section) => {
@@ -126,23 +168,33 @@ export default function PatientReport({
 		}
 
 		switch (data_type) {
-			case "Checkbox": // it will add to the final result as object
+			case "Checkbox":
 				return (
 					<Stack gap="md">
-						{particulars?.map((particular, index) => (
-							<Checkbox
-								key={`${id}-${index}`}
-								label={particular.name}
-								checked={dynamicFormData[id]?.[particular.name] || false}
-								onChange={(event) =>
-									handleDynamicFormChange(id, particular.name, event.currentTarget.checked)
-								}
-							/>
-						))}
+						{particulars?.map((particular, index) => {
+							const value = dynamicFormData?.[section.slug]?.find(
+								(item) => item.id === particular.id && item.name === particular.name
+							)?.value;
+							return (
+								<Checkbox
+									key={`${id}-${index}`}
+									label={particular.name}
+									checked={value || false}
+									onChange={(event) =>
+										handleDynamicFormChange({
+											id: particular.id,
+											name: particular.name,
+											value: event.currentTarget.checked,
+											parentSlug: section.slug,
+										})
+									}
+								/>
+							);
+						})}
 					</Stack>
 				);
 
-			case "Select": // it will add to the final result as array
+			case "Select":
 				return (
 					<Select
 						label=""
@@ -151,96 +203,157 @@ export default function PatientReport({
 							value: particular.name,
 							label: particular.name,
 						}))}
-						value={dynamicFormData[id]?.[name] || ""}
-						onChange={(value) => handleDynamicFormChange(id, name, value)}
+						value={
+							dynamicFormData?.[section.slug]?.find((item) => item.id === id && item.name === name)
+								?.value || ""
+						}
+						onChange={(value) =>
+							handleDynamicFormChange({
+								id: id,
+								name: name,
+								value: value,
+								parentSlug: section.slug,
+							})
+						}
 					/>
 				);
 
-			case "Input": // it will add to the final result as object
+			case "Input":
 				return (
 					<Stack gap="md">
-						{particulars?.map((particular, index) => (
-							<Grid key={`${id}-${index}`}>
-								<Grid.Col span={4}>{particular.name}</Grid.Col>
-								<Grid.Col span={8}>
-									<TextInput
-										label=""
-										placeholder={`Enter ${particular.name}`}
-										value={dynamicFormData[id]?.[particular.name] || ""}
-										onChange={(event) =>
-											handleDynamicFormChange(id, particular.name, event.currentTarget.value)
-										}
-									/>
-								</Grid.Col>
-							</Grid>
-						))}
+						{particulars?.map((particular, index) => {
+							const value = dynamicFormData?.[section.slug]?.find(
+								(item) => item.id === particular.id && item.name === particular.name
+							)?.value;
+							return (
+								<Grid key={`${id}-${index}`}>
+									<Grid.Col span={4}>{particular.name}</Grid.Col>
+									<Grid.Col span={8}>
+										<TextInput
+											label=""
+											placeholder={`Enter ${particular.name}`}
+											value={value || ""}
+											onChange={(event) =>
+												handleDynamicFormChange({
+													id: particular.id,
+													name: particular.name,
+													value: event.currentTarget.value,
+													parentSlug: section.slug,
+												})
+											}
+										/>
+									</Grid.Col>
+								</Grid>
+							);
+						})}
 					</Stack>
 				);
 
-			case "Textarea": // it will add to the final result as object
+			case "Textarea":
 				return (
 					<Stack gap="md">
-						{particulars?.map((particular, index) => (
-							<Textarea
-								key={`${id}-${index}`}
-								label={particular.name}
-								placeholder={`Enter ${particular.name}`}
-								value={dynamicFormData[id]?.[particular.name] || ""}
-								onChange={(event) =>
-									handleDynamicFormChange(id, particular.name, event.currentTarget.value)
-								}
-								minRows={3}
-							/>
-						))}
+						{particulars?.map((particular, index) => {
+							const value = dynamicFormData?.[section.slug]?.find(
+								(item) => item.id === particular.id && item.name === particular.name
+							)?.value;
+							return (
+								<Textarea
+									key={`${id}-${index}`}
+									label={particular.name?.toUpperCase()}
+									placeholder={`Enter ${particular.name}`}
+									value={value || ""}
+									onChange={(event) =>
+										handleDynamicFormChange({
+											id: particular.id,
+											name: particular.name,
+											value: event.currentTarget.value,
+											parentSlug: section.slug,
+										})
+									}
+									minRows={3}
+								/>
+							);
+						})}
 					</Stack>
 				);
 
-			case "Searchable": // it will add to the final result as array
+			case "Searchable":
 				return (
 					<Select
 						searchable
 						label={name}
 						placeholder={`Select ${name}`}
 						data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
-						value={dynamicFormData[id]?.[name] || ""}
-						onChange={(value) => handleDynamicFormChange(id, name, value)}
+						value={
+							dynamicFormData?.[section.slug]?.find((item) => item.id === id && item.name === name)
+								?.value || ""
+						}
+						onChange={(value) =>
+							handleDynamicFormChange({
+								id: id,
+								name: name,
+								value: value,
+								parentSlug: section.slug,
+							})
+						}
 					/>
 				);
 
-			case "RadioButton": // it will add to the final result as object
+			case "RadioButton":
 				return (
 					<Stack gap="md">
-						{particulars?.map((particular, index) => (
-							<Radio
-								key={`${id}-${index}`}
-								label={particular.name}
-								checked={dynamicFormData[id]?.[particular.name] === particular.name}
-								onChange={(event) =>
-									handleDynamicFormChange(
-										id,
-										particular.name,
-										event.currentTarget.checked ? particular.name : ""
-									)
-								}
-							/>
-						))}
+						{particulars?.map((particular, index) => {
+							const value = dynamicFormData?.[section.slug]?.find(
+								(item) => item.id === particular.id && item.name === particular.name
+							)?.value;
+							return (
+								<Radio
+									key={`${id}-${index}`}
+									label={particular.name}
+									checked={value === particular.name}
+									onChange={(event) =>
+										handleDynamicFormChange({
+											id: particular.id,
+											name: particular.name,
+											value: event.currentTarget.checked ? particular.name : "",
+											parentSlug: section.slug,
+										})
+									}
+								/>
+							);
+						})}
 					</Stack>
 				);
 
-			case "Autocomplete": // it will add to the final result as array
+			case "Autocomplete":
 				return (
 					<>
 						<Autocomplete
 							label=""
 							placeholder={`Pick value or enter ${name}`}
 							data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
-							value={dynamicFormData[id]?.[name] || ""}
+							value={
+								dynamicFormData?.[section.slug]?.find((item) => item.id === id && item.name === name)
+									?.value || ""
+							}
 							onChange={(value) => {
-								handleDynamicFormChange(id, name, value);
-								if (value) {
-									handleInvestigationAdd(value);
-									// Clear the input after adding
-									handleDynamicFormChange(id, name, "");
+								handleDynamicFormChange({
+									id: id,
+									name: name,
+									value: value,
+									parentSlug: section.slug,
+								});
+							}}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" && e.target.value) {
+									handleDynamicFormChange({
+										id: id,
+										name: name,
+										value: e.target.value,
+										parentSlug: section.slug,
+									});
+									handleInvestigationAdd(e.target.value);
+									e.target.value = "";
 								}
 							}}
 							rightSection={<IconCaretUpDownFilled size={16} />}
@@ -304,7 +417,7 @@ export default function PatientReport({
 			return (
 				<Box bg="white" p="les">
 					<ScrollArea h={height}>
-						<BasicInfoCard patientData={patientData} form={form} />
+						<BasicInfoCard form={form} />
 						<Box p="md">
 							<Text c="dimmed">No data available for {tabValue}</Text>
 						</Box>
@@ -312,12 +425,11 @@ export default function PatientReport({
 				</Box>
 			);
 		}
-
 		// Handle "All" tab - show all sections
 		if (tabValue === "All") {
 			return (
 				<Box>
-					<BasicInfoCard patientData={patientData} form={form} />
+					<BasicInfoCard form={form} />
 					<ScrollArea h={height}>
 						<Stack gap="xl" p="md">
 							{currentSection.map((section) => (
@@ -337,7 +449,7 @@ export default function PatientReport({
 		// Handle specific tab
 		return (
 			<Box>
-				<BasicInfoCard patientData={patientData} form={form} />
+				<BasicInfoCard form={form} />
 				<ScrollArea h={height}>
 					<Box p="md">
 						<Text fw={600} size="lg" mb="md">

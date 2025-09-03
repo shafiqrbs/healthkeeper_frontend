@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import {
 	Box,
@@ -11,8 +11,8 @@ import {
 	Grid,
 	ScrollArea,
 	Select,
-	Menu,
 	Autocomplete,
+	NumberInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconPencil, IconPlus, IconRestore, IconX } from "@tabler/icons-react";
@@ -20,23 +20,25 @@ import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
-import { useOutletContext } from "react-router-dom";
-import InputAutoComplete from "@components/form-builders/InputAutoComplete";
+import { useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import Prescription from "@/common/components/print-formats/prescription/PrescriptionA4";
-import PrescriptionPos from "@/common/components/print-formats/prescription/Prescription";
-import Prescription2 from "@/common/components/print-formats/prescription/Prescription2";
-import Prescription3 from "@/common/components/print-formats/prescription/Prescription3";
+import Prescription from "@components/print-formats/prescription/PrescriptionA4";
+import PrescriptionPos from "@components/print-formats/prescription/Prescription";
+import Prescription2 from "@components/print-formats/prescription/Prescription2";
+import Prescription3 from "@components/print-formats/prescription/Prescription3";
 import PrescriptionPreview from "./PrescriptionPreview";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import useMedicineData from "@/common/hooks/useMedicineData";
-import useMedicineGenericData from "@/common/hooks/useMedicineGenericData";
-import useGlobalDropdownData from "@/common/hooks/dropdown/useGlobalDropdownData";
+import useMedicineData from "@hooks/useMedicineData";
+import useMedicineGenericData from "@hooks/useMedicineGenericData";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import { getLoggedInUser } from "@/common/utils";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 const DURATION_OPTIONS = [
+	// { value: "", label: "--Select Duration--" },
 	{ value: "day", label: "Day" },
 	{ value: "month", label: "Month" },
 ];
@@ -80,12 +82,12 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 	return (
 		<Box>
 			<Text mb="es" style={{ cursor: "pointer" }} onClick={onEdit}>
-				{index}. {medicine.generic || medicine.medicineName || medicine.medicine}
+				{index}. {medicine.medicine_name || medicine.generic}
 			</Text>
 			<Flex justify="space-between" align="center" gap="sm">
 				{mode === "view" ? (
 					<Box ml="md" fz="sm" c="var(--theme-tertiary-color-8)">
-						{medicine.dosage} ---- {medicine.times} time/s ---- {medicine.by_meal} meal
+						{medicine.dose_details} ---- {medicine.times} time/s ---- {medicine.by_meal}
 					</Box>
 				) : (
 					<Group grow gap="les">
@@ -100,18 +102,25 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 						<Select
 							label=""
 							data={dosage_options}
-							value={medicine.dosage}
+							value={medicine.dose_details}
 							placeholder="Dosage"
 							disabled={mode === "view"}
-							onChange={(v) => handleChange("dosage", v)}
+							onChange={(v) => handleChange("dose_details", v)}
 						/>
 						<Select
 							label=""
 							data={DURATION_UNIT_OPTIONS}
-							value={medicine.unit}
-							placeholder="Unit"
+							value={medicine.duration}
+							placeholder="Duration"
 							disabled={mode === "view"}
-							onChange={(v) => handleChange("unit", v)}
+							onChange={(v) => handleChange("duration", v)}
+						/>
+						<NumberInput
+							label=""
+							value={medicine.amount}
+							placeholder="Amount"
+							disabled={mode === "view"}
+							onChange={(v) => handleChange("amount", v)}
 						/>
 					</Group>
 				)}
@@ -136,30 +145,30 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 }
 
 export default function AddMedicineForm({
+	module,
+	prescriptionForm,
 	hideAdviseForm = false,
 	hideActionButtons = false,
-	onSubmit,
-	isSubmitting = false,
-	patientData = {},
-	prescriptionForm = null,
 	patientReportData = null,
 	setPatientReportData = null,
 }) {
-	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
-	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
-	const { medicineData } = useMedicineData({ term: medicineTerm });
-	const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
+	const [updateKey, setUpdateKey] = useState(0);
+	const { prescriptionId } = useParams();
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const { t } = useTranslation();
-	const form = useForm(getMedicineFormInitialValues());
-	const [medicines, setMedicines] = useState([]);
-	const [editIndex, setEditIndex] = useState(null);
-	const { mainAreaHeight } = useOutletContext();
 	const prescriptionA4Ref = useRef(null);
 	const prescription2A4Ref = useRef(null);
 	const prescription3A4Ref = useRef(null);
 	const prescriptionPosRef = useRef(null);
-	const [forceUpdate, setForceUpdate] = useState(0);
+	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
+	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
+	const { medicineData } = useMedicineData({ term: medicineTerm });
+	const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
+	const form = useForm(getMedicineFormInitialValues());
+	const [medicines, setMedicines] = useState([]);
+	const [editIndex, setEditIndex] = useState(null);
+	const { mainAreaHeight } = useOutletContext();
 	const [opened, { open, close }] = useDisclosure(false);
 
 	const { data: by_meal_options } = useGlobalDropdownData({
@@ -172,48 +181,8 @@ export default function AddMedicineForm({
 		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
 	});
 
-	// Load held prescription data on component mount
-	useEffect(() => {
-		const heldData = localStorage.getItem("prescription-hold-data");
-		if (heldData) {
-			try {
-				const parsedData = JSON.parse(heldData);
-				// Check if the held data is not too old (24 hours)
-				const heldTime = new Date(parsedData.timestamp);
-				const now = new Date();
-				const hoursDiff = (now - heldTime) / (1000 * 60 * 60);
-
-				if (hoursDiff < 24) {
-					setMedicines(parsedData.medicines || []);
-					if (parsedData.adviseForm) {
-						form.setValues(parsedData.adviseForm);
-					}
-					// Restore PatientReport data if available
-					if (parsedData.patientReportData && setPatientReportData) {
-						setPatientReportData(parsedData.patientReportData);
-					}
-					showNotificationComponent(t("Held prescription loaded"), "blue", "lightgray", true, 1000, true);
-				} else {
-					// Remove old held data
-					localStorage.removeItem("prescription-hold-data");
-				}
-			} catch (error) {
-				console.error("Error loading held prescription:", error);
-				localStorage.removeItem("prescription-hold-data");
-			}
-		}
-	}, []);
-
 	// Add hotkey for save functionality
 	useHotkeys([
-		[
-			"alt+s",
-			() => {
-				if (onSubmit) {
-					handlePrescriptionSubmit();
-				}
-			},
-		],
 		[
 			"alt+1",
 			() => {
@@ -229,26 +198,12 @@ export default function AddMedicineForm({
 						investigationList: [],
 					});
 				}
-				// Clear held data when resetting
-				localStorage.removeItem("prescription-hold-data");
 			},
 		],
 		[
 			"alt+2",
 			() => {
-				// Save current state to localStorage for later retrieval
-				const holdData = {
-					medicines,
-					adviseForm: form.values,
-					patientData,
-					patientReportData: patientReportData || {
-						basicInfo: {},
-						dynamicFormData: {},
-						investigationList: [],
-					},
-					timestamp: new Date().toISOString(),
-				};
-				localStorage.setItem("prescription-hold-data", JSON.stringify(holdData));
+				handleHoldData();
 				showNotificationComponent(t("Prescription held successfully"), "blue", "lightgray", true, 1000, true);
 			},
 		],
@@ -286,12 +241,16 @@ export default function AddMedicineForm({
 		form.setFieldValue(field, value);
 
 		// If medicine field is being changed, auto-populate other fields from medicine data
-		if (field === "medicine" && value) {
-			const selectedMedicine = medicineData?.find((item) => item.id?.toString() === value);
+		if (field === "medicine_id" && value) {
+			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
+			console.log(medicineData, selectedMedicine, value);
+
 			if (selectedMedicine) {
 				console.log("Selected medicine data:", selectedMedicine);
-
-				form.setFieldValue("medicineName", selectedMedicine.name);
+				form.setFieldValue("medicine_name", selectedMedicine.product_name);
+				form.setFieldValue("generic", selectedMedicine.generic);
+				form.setFieldValue("generic_id", selectedMedicine.generic_id);
+				form.setFieldValue("company", selectedMedicine.company);
 
 				// Auto-populate by_meal if available
 				if (selectedMedicine.by_meal) {
@@ -300,63 +259,57 @@ export default function AddMedicineForm({
 
 				// Auto-populate duration and count based on duration_day or duration_month
 				if (selectedMedicine.duration_day) {
-					form.setFieldValue("count", parseInt(selectedMedicine.duration_day) || 1);
+					form.setFieldValue("amount", parseInt(selectedMedicine.duration_day) || 1);
 					form.setFieldValue("duration", "day");
 				} else if (selectedMedicine.duration_month) {
-					form.setFieldValue("count", parseInt(selectedMedicine.duration_month) || 1);
+					form.setFieldValue("amount", parseInt(selectedMedicine.duration_month) || 1);
 					form.setFieldValue("duration", "month");
 				}
 
 				// Auto-populate dose_details if available (for times field)
 				if (selectedMedicine.dose_details) {
-					form.setFieldValue("dosage", selectedMedicine.dose_details);
+					form.setFieldValue("dose_details", selectedMedicine.dose_details);
 				}
-
-				console.log("Form values after auto-population:", form.values);
 			}
 		}
 	};
 
-	const handleAdd = () => {
-		// Ensure all medicine data is properly set before adding
-		let formData = { ...form.values };
-		if (formData.medicine) {
-			const selectedMedicine = medicineData?.find((item) => item.id?.toString() === formData.medicine);
-			if (selectedMedicine) {
-				// Ensure all fields are populated with medicine data
-				formData.medicineName = selectedMedicine.name || formData.medicineName;
-				formData.generic = selectedMedicine.generic || formData.generic;
-				formData.by_meal = selectedMedicine.by_meal || formData.by_meal;
+	const handleAdd = (values) => {
+		if (values.medicine_id) {
+			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() == values.medicine_id);
 
-				// Set duration and count based on available data
+			if (selectedMedicine) {
+				values.medicine_name = selectedMedicine.product_name || values.medicine_name;
+				values.generic = selectedMedicine.generic || values.generic;
+				values.generic_id = selectedMedicine.generic_id || values.generic_id;
+				values.company = selectedMedicine.company || values.company;
+				values.by_meal = selectedMedicine.by_meal || values.by_meal;
+
 				if (selectedMedicine.duration_day) {
-					formData.count = parseInt(selectedMedicine.duration_day) || formData.count;
-					formData.duration = "day";
+					values.amount = parseInt(selectedMedicine.duration_day) || values.amount;
+					values.duration = "day";
 				} else if (selectedMedicine.duration_month) {
-					formData.count = parseInt(selectedMedicine.duration_month) || formData.count;
-					formData.duration = "month";
+					values.amount = parseInt(selectedMedicine.duration_month) || values.amount;
+					values.duration = "month";
 				}
 
-				// Set times if dose_details is available
 				if (selectedMedicine.dose_details) {
-					formData.times = selectedMedicine.dose_details;
+					values.times = selectedMedicine.dose_details;
 				}
 			}
 		}
 
 		if (editIndex !== null) {
 			const updated = [...medicines];
-			updated[editIndex] = formData;
+			updated[editIndex] = values;
 			setMedicines(updated);
 			setEditIndex(null);
 		} else {
-			setMedicines([...medicines, formData]);
+			setMedicines([...medicines, values]);
 		}
 
-		// =============== reset form with initial values to clear all fields ================
+		setUpdateKey((prev) => prev + 1);
 		form.reset();
-
-		setForceUpdate((prev) => prev + 1);
 	};
 
 	const handleDelete = (idx) => {
@@ -371,24 +324,27 @@ export default function AddMedicineForm({
 		const medicineToEdit = medicines[idx];
 
 		// If editing a medicine that has a medicine ID, fetch the latest data
-		if (medicineToEdit.medicine) {
-			const selectedMedicine = medicineData?.find((item) => item.id?.toString() === medicineToEdit.medicine);
+		if (medicineToEdit.medicine_id) {
+			const selectedMedicine = medicineData?.find(
+				(item) => item.product_id?.toString() == medicineToEdit.medicine_id
+			);
 			if (selectedMedicine) {
 				// Merge the existing medicine data with the latest medicine data
 				const updatedMedicineData = {
 					...medicineToEdit,
-					medicineName: selectedMedicine.name || medicineToEdit.medicineName,
+					medicine_name: selectedMedicine.product_name || medicineToEdit.medicine_name,
 					generic: selectedMedicine.generic || medicineToEdit.generic,
+					generic_id: selectedMedicine.generic_id || medicineToEdit.generic_id,
 					by_meal: selectedMedicine.by_meal || medicineToEdit.by_meal,
 					dose_details: selectedMedicine.dose_details || medicineToEdit.dose_details,
 				};
 
 				// Update duration and count based on available data
 				if (selectedMedicine.duration_day) {
-					updatedMedicineData.count = parseInt(selectedMedicine.duration_day) || medicineToEdit.count;
+					updatedMedicineData.amount = parseInt(selectedMedicine.duration_day) || medicineToEdit.amount;
 					updatedMedicineData.duration = "day";
 				} else if (selectedMedicine.duration_month) {
-					updatedMedicineData.count = parseInt(selectedMedicine.duration_month) || medicineToEdit.count;
+					updatedMedicineData.amount = parseInt(selectedMedicine.duration_month) || medicineToEdit.amount;
 					updatedMedicineData.duration = "month";
 				}
 
@@ -403,6 +359,21 @@ export default function AddMedicineForm({
 		setEditIndex(idx);
 	};
 
+	const handleReset = () => {
+		setMedicines([]);
+		form.reset();
+		setEditIndex(null);
+		// Clear PatientReport data when resetting
+		if (setPatientReportData) {
+			setPatientReportData({
+				basicInfo: {},
+				dynamicFormData: {},
+				investigationList: [],
+			});
+		}
+		// Clear held data when resetting
+	};
+
 	const handlePrintPrescriptionA4 = (type) => {
 		if (type === 1) {
 			printPrescriptionA4();
@@ -413,74 +384,98 @@ export default function AddMedicineForm({
 		}
 	};
 
-	// Handle prescription submission
 	const handlePrescriptionSubmit = async () => {
-		if (onSubmit) {
-			const prescriptionData = {
-				patientData,
-				medicines,
-				prescriptionForm: prescriptionForm?.values || {},
-				adviseForm: form.values,
-				patientReportData: patientReportData || {
-					basicInfo: {},
-					dynamicFormData: {},
-					investigationList: [],
-				},
-			};
-			const result = await onSubmit(prescriptionData);
+		if (!medicines || medicines.length === 0) {
+			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, 1000, true);
+			return;
+		}
 
-			// If submission was successful, clear held data
-			if (result !== false) {
-				localStorage.removeItem("prescription-hold-data");
-			}
+		setIsSubmitting(true);
+
+		try {
+			const createdBy = getLoggedInUser();
+
+			const formValue = {
+				medicines,
+				advise: prescriptionForm.values.advise || "",
+				follow_up_date: prescriptionForm.values.followUpDate || null,
+				prescription_date: new Date().toISOString().split("T")[0],
+				created_by_id: createdBy?.id,
+				patient_report: {
+					basic_info: patientReportData?.basicInfo || {},
+					patient_examination: dynamicFormData,
+				},
+				...prescriptionForm.values,
+			};
+
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${prescriptionId}`,
+				data: formValue,
+				module,
+			};
+			return console.log(formValue);
+			// const resultAction = await dispatch(updateEntityData(value));
+
+			// if (updateEntityData.rejected.match(resultAction)) {
+			// 	showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
+			// } else {
+			// 	showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 1000, true);
+			// 	setRefetchData({ module, refetching: true });
+			// 	// Reset forms and data
+			// 	form.reset();
+			// 	setPatientReportData({
+			// 		basicInfo: {},
+			// 		dynamicFormData: {},
+			// 		investigationList: [],
+			// 	});
+			// 	return true; // Indicate successful submission
+			// }
+		} catch (error) {
+			console.error("Error submitting prescription:", error);
+			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
+			return false; // Indicate failed submission
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
 	const handleHoldData = () => {
-		const holdData = {
-			medicines,
-			adviseForm: form.values,
-			patientData,
-			patientReportData: patientReportData || {
-				basicInfo: {},
-				dynamicFormData: {},
-				investigationList: [],
-			},
-			timestamp: new Date().toISOString(),
-		};
-		localStorage.setItem("prescription-hold-data", JSON.stringify(holdData));
-		showNotificationComponent(t("Prescription held successfully"), "blue", "lightgray", true, 1000, true);
+		console.log("Hold your data");
 	};
 
 	return (
-		<Box component="form" onSubmit={form.onSubmit(handleAdd)} className="borderRadiusAll" bg="white">
-			<Box bg="var(--theme-primary-color-0)" p="sm">
-				<Group key={forceUpdate} align="end" gap="les">
+		<Box className="borderRadiusAll" bg="white">
+			<Box
+				onSubmit={form.onSubmit(handleAdd)}
+				key={updateKey}
+				component="form"
+				bg="var(--theme-primary-color-0)"
+				p="sm"
+			>
+				<Group align="end" gap="les">
 					<Group grow w="100%" gap="les">
 						<Select
 							searchable
 							onSearchChange={(v) => {
 								setMedicineTerm(v);
 							}}
-							name="medicine"
+							name="medicine_id"
 							data={medicineData?.map((item) => ({
-								label: item.name,
-								value: item.id?.toString(),
+								label: item.product_name,
+								value: item.product_id?.toString(),
 							}))}
-							value={form.values.medicine}
-							onChange={(v) => handleChange("medicine", v)}
+							value={form.values.medicine_id}
+							onChange={(v) => handleChange("medicine_id", v)}
 							placeholder="Medicine"
 							tooltip="Select medicine"
-							nothingFoundMessage="Nothing found..."
-							onBlur={() => {
-								setMedicineTerm("");
-							}}
+							nothingFoundMessage="Type to find medicine..."
+							onBlur={() => setMedicineTerm("")}
 						/>
 						<Autocomplete
 							tooltip="Enter generic name"
 							name="generic"
 							data={medicineGenericData?.map((item, index) => ({
-								label: `${item.name}`,
+								label: item.name,
 								value: `${item.name} ${index}`,
 							}))}
 							value={form.values.generic}
@@ -489,31 +484,29 @@ export default function AddMedicineForm({
 								setMedicineGenericTerm(v);
 							}}
 							placeholder="Generic name"
-							onBlur={() => {
-								setMedicineGenericTerm("");
-							}}
+							onBlur={() => setMedicineGenericTerm("")}
 						/>
 					</Group>
 					<Group grow gap="les" w="100%">
 						<SelectForm
 							form={form}
-							name="dosage"
+							name="dose_details"
 							dropdownValue={dosage_options}
-							value={form.values.dosage}
-							changeValue={(v) => handleChange("dosage", v)}
+							value={form.values.dose_details}
 							placeholder="Dosage"
 							required
 							tooltip="Enter dosage"
+							withCheckIcon={false}
 						/>
 						<SelectForm
 							form={form}
 							name="by_meal"
 							dropdownValue={by_meal_options}
 							value={form.values.by_meal}
-							changeValue={(v) => handleChange("by_meal", v)}
 							placeholder="By Meal"
 							required
 							tooltip="Enter when to take medicine"
+							withCheckIcon={false}
 						/>
 						<SelectForm
 							form={form}
@@ -521,19 +514,18 @@ export default function AddMedicineForm({
 							name="duration"
 							dropdownValue={DURATION_OPTIONS}
 							value={form.values.duration}
-							changeValue={(v) => handleChange("duration", v)}
 							placeholder="Duration"
 							required
 							tooltip="Enter meditation duration"
+							withCheckIcon={false}
 						/>
 						<InputNumberForm
 							form={form}
-							name="count"
-							value={form.values.count}
-							changeValue={(v) => handleChange("count", v)}
-							placeholder="Count"
+							name="amount"
+							value={form.values.amount}
+							placeholder="Amount"
 							required
-							tooltip="Enter count"
+							tooltip="Enter amount"
 						/>
 						<Button
 							leftSection={<IconPlus size={16} />}
@@ -546,27 +538,6 @@ export default function AddMedicineForm({
 					</Group>
 				</Group>
 			</Box>
-			{/* <Box bg="white" px="sm" mt="xxs">
-				<Grid columns={19}>
-					<Grid.Col span={6}>
-						<Text fz="xs">1. Napa</Text>
-						<Text fz="xs">2. Paracetamol</Text>
-					</Grid.Col>
-					<Divider orientation="vertical" />
-					<Grid.Col span={6}>
-						<Text fz="xs">Brand name: </Text>
-						<Text fz="xs">Strength: </Text>
-						<Text fz="xs">Form: </Text>
-					</Grid.Col>
-					<Divider orientation="vertical" />
-					<Grid.Col span={6}>
-						<Text fz="xs" className="truncate-lines">
-							It is a long established fact that a reader will be distracted by the readable content of a
-							page when looking.
-						</Text>
-					</Grid.Col>
-				</Grid>
-			</Box> */}
 			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
 				List of Medicines
 			</Text>
@@ -600,11 +571,10 @@ export default function AddMedicineForm({
 							</Text>
 							<Box p="sm">
 								<TextAreaForm
-									form={form}
+									form={prescriptionForm}
 									label=""
-									value={form.values.advise}
+									value={prescriptionForm.values.advise}
 									name="advise"
-									handleChange={(v) => handleChange("advise", v)}
 									placeholder="Write a advice..."
 									showRightSection={false}
 									style={{ input: { height: "92px" } }}
@@ -615,12 +585,11 @@ export default function AddMedicineForm({
 					<Grid.Col span={6}>
 						<Box bg="var(--theme-primary-color-0)" h="100%" p="sm">
 							<DatePickerForm
-								form={form}
-								label={t("followUpDate")}
+								form={prescriptionForm}
+								label={t("follow_up_date")}
 								tooltip="Enter follow up date"
-								name="followUpDate"
-								value={form.values.followUpDate}
-								handleChange={(v) => handleChange("followUpDate", v)}
+								name="follow_up_date"
+								value={prescriptionForm.values.follow_up_date}
 								placeholder="Follow up date"
 							/>
 							{/* <Text mt="xs" fz="sm">
@@ -659,34 +628,7 @@ export default function AddMedicineForm({
 						w="100%"
 						bg="var(--theme-reset-btn-color)"
 						leftSection={<IconRestore size={16} />}
-						onClick={() => {
-							setMedicines([]);
-							form.reset();
-							// =============== force reset all form fields to ensure they are cleared ================
-							form.setValues({
-								medicine: "",
-								medicineName: "",
-								generic: "",
-								dosage: "",
-								times: "",
-								by_meal: "",
-								duration: "",
-								count: 1,
-								advise: "",
-								followUpDate: null,
-							});
-							setEditIndex(null);
-							// Clear PatientReport data when resetting
-							if (setPatientReportData) {
-								setPatientReportData({
-									basicInfo: {},
-									dynamicFormData: {},
-									investigationList: [],
-								});
-							}
-							// Clear held data when resetting
-							localStorage.removeItem("prescription-hold-data");
-						}}
+						onClick={handleReset}
 					>
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("reset")}</Text>
@@ -711,24 +653,6 @@ export default function AddMedicineForm({
 							</Text>
 						</Stack>
 					</Button>
-					<Menu shadow="md" width={200}>
-						<Menu.Target>
-							<Button w="100%" bg="var(--theme-print-btn-color)" type="button">
-								<Stack gap={0} align="center" justify="center">
-									<Text>{t("a4Print")}</Text>
-									<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-										(alt + 4)
-									</Text>
-								</Stack>
-							</Button>
-						</Menu.Target>
-
-						<Menu.Dropdown>
-							<Menu.Item onClick={() => handlePrintPrescriptionA4(1)}>Template 1</Menu.Item>
-							<Menu.Item onClick={() => handlePrintPrescriptionA4(2)}>Template 2</Menu.Item>
-							<Menu.Item onClick={() => handlePrintPrescriptionA4(3)}>Template 3</Menu.Item>
-						</Menu.Dropdown>
-					</Menu>
 					<Button
 						w="100%"
 						bg="var(--theme-save-btn-color)"

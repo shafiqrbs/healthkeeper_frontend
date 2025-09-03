@@ -21,7 +21,7 @@ export default function ListIndex() {
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Box w="100%">
-							<Table module={module} height={height} />
+							<Table module={module} closeTable={() => {}} height={height} />
 						</Box>
 					</Flex>
 				</Box>

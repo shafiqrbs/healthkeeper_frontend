@@ -32,6 +32,7 @@ const SelectForm = forwardRef(
 			pt,
 			rightSection = undefined,
 			disabled = false,
+			withCheckIcon = true,
 		},
 		ref
 	) => {
@@ -124,6 +125,7 @@ const SelectForm = forwardRef(
 							allowDeselect={allowDeselect}
 							rightSection={rightSection}
 							disabled={disabled}
+							withCheckIcon={withCheckIcon}
 						/>
 					</Tooltip>
 				)}

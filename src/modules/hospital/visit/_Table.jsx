@@ -31,7 +31,6 @@ import { formatDate } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import OPDDocument from "@components/print-formats/opd/OPDA4";
 import OPDPos from "@components/print-formats/opd/OPDPos";
 import { useReactToPrint } from "react-to-print";
@@ -41,14 +40,13 @@ const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
 const PER_PAGE = 20;
 
-export default function Table({ module, height }) {
+export default function Table({ module, height, closeTable }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state.crud[module].data);
 	const refetch = useSelector((state) => state.crud[module].refetching);
 	const [fetching, setFetching] = useState(false);
-	const { hospitalConfigData } = useHospitalConfigData();
 	const scrollViewportRef = useRef(null);
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
@@ -191,7 +189,7 @@ export default function Table({ module, height }) {
 		} else {
 			notifications.show({
 				color: ERROR_NOTIFICATION_COLOR,
-				title: t("Delete Failed"),
+				title: t("DeleteFailed"),
 				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
 			});
 		}
@@ -205,7 +203,8 @@ export default function Table({ module, height }) {
 				id,
 			})
 		).unwrap();
-		let prescription_id = resultAction?.data?.data.id;
+		const prescription_id = resultAction?.data?.data.id;
+		closeTable();
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 	};
 
@@ -235,7 +234,7 @@ export default function Table({ module, height }) {
 		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
-					{t("visitInformation")}
+					{t("VisitInformation")}
 				</Text>
 				<Flex gap="xs" align="center">
 					<Tabs mt="xs" variant="none" value={value} onChange={setValue}>
@@ -260,7 +259,7 @@ export default function Table({ module, height }) {
 						bg="var(--theme-success-color)"
 						c="white"
 					>
-						{t("visitOverview")}
+						{t("VisitOverview")}
 					</Button>
 				</Flex>
 			</Flex>
@@ -303,7 +302,8 @@ export default function Table({ module, height }) {
 								</Text>
 							),
 						},
-						{ accessor: "appointment", title: t("appointment") },
+						{ accessor: "id", textAlign: "right", title: t("InvoiceID") },
+						{ accessor: "appointment", title: t("Appointment") },
 						{ accessor: "visiting_room", title: t("RoomNo") },
 						{ accessor: "patient_id", title: t("PatientID") },
 						{ accessor: "health_id", title: t("HealthID") },
@@ -335,7 +335,7 @@ export default function Table({ module, height }) {
 										rightSection={<IconArrowRight size={18} />}
 										className="border-right-radius-none"
 									>
-										{t("prescription")}
+										{t("Prescription")}
 									</Button>
 									<Menu
 										position="bottom-end"
@@ -373,7 +373,7 @@ export default function Table({ module, height }) {
 													/>
 												}
 											>
-												{t("Delete")}
+												{t("DeleteRecord")}
 											</Menu.Item>
 										</Menu.Dropdown>
 									</Menu>

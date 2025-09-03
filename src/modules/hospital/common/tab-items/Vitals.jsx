@@ -14,7 +14,7 @@ const BLOOD_GROUPS = [
 	{ label: "AB-", value: "AB-" },
 ];
 
-export default function Vitals({ vitals, form }) {
+export default function Vitals({ form }) {
 	const { t } = useTranslation();
 	return (
 		<Flex gap="les" mt="xxxs" mb="xxxs" wrap="wrap">

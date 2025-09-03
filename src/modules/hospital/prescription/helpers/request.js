@@ -1,30 +1,25 @@
-import { hasLength } from "@mantine/form";
-
 const initialValues = {
-	name: "",
+	follow_up_date: new Date(),
+	advise: "",
 };
 
 export const getPrescriptionFormInitialValues = () => {
 	return {
 		initialValues,
-
-		validate: {
-			name: hasLength({ min: 2, max: 20 }),
-		},
 	};
 };
 
 export const medicineInitialValues = {
-	medicine: "",
-	medicineName: "",
+	medicine_id: "",
+	medicine_name: "",
 	generic: "",
-	dosage: "",
+	generic_id: "",
+	company: "",
+	dose_details: "",
 	times: "",
 	by_meal: "",
 	duration: "",
-	count: 1,
-	advise: "",
-	followUpDate: null,
+	amount: 1,
 };
 
 export const getMedicineFormInitialValues = () => {
@@ -32,10 +27,10 @@ export const getMedicineFormInitialValues = () => {
 		initialValues: medicineInitialValues,
 
 		validate: {
-			dosage: (value) => (value ? null : "Dosage is required"),
+			dose_details: (value) => (value ? null : "Dose details is required"),
 			by_meal: (value) => (value ? null : "By meal is required"),
 			duration: (value) => (value ? null : "Duration is required"),
-			count: (value) => (value > 0 ? null : "Count must be greater than 0"),
+			amount: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},
 	};
 };

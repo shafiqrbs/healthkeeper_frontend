@@ -23,7 +23,7 @@ export default function _Form({ module }) {
 			setIsSubmitting(true);
 
 			if (!form.values.amount && form.values.patient_payment_mode_id == "30") {
-				showNotificationComponent(t("Amount is required"), "red", "lightgray", true, 1000, true);
+				showNotificationComponent(t("AmountsRequired"), "red", "lightgray", true, 1000, true);
 				setIsSubmitting(false);
 				return {};
 			}
@@ -42,14 +42,7 @@ export default function _Form({ module }) {
 
 				// check if future date
 				if (dateObj > today) {
-					showNotificationComponent(
-						t("Date of birth can't be future date"),
-						"red",
-						"lightgray",
-						true,
-						1000,
-						true
-					);
+					showNotificationComponent(t("DateOfBirthCantBeFutureDate"), "red", "lightgray", true, 1000, true);
 					setIsSubmitting(false);
 					return {};
 				}
@@ -91,7 +84,7 @@ export default function _Form({ module }) {
 				}
 			} catch (error) {
 				console.error("Error submitting emergency:", error);
-				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
+				showNotificationComponent(t("SomethingWentWrong"), "red", "lightgray", true, 1000, true);
 				return {};
 			} finally {
 				setIsSubmitting(false);
@@ -99,7 +92,7 @@ export default function _Form({ module }) {
 		} else {
 			if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
 				console.error(form.errors);
-				showNotificationComponent(t("PleaseFillAllFields"), "red", "lightgray", true, 1000, true);
+				showNotificationComponent(t("PleaseFillAllFieldsToSubmit"), "red", "lightgray", true, 1000, true);
 			}
 			return {};
 		}
