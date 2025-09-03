@@ -9,19 +9,23 @@ import { getInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
 import IndexForm from "./form/__IndexForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import { useOutletContext } from "react-router-dom";
+import {useOutletContext, useParams} from "react-router-dom";
 import _Table from "./_Table";
+import _ReportFormatTable from "./_ReportFormatTable";
 import {MODULES_CORE} from "@/constants";
 
 const module = MODULES_CORE.INVESTIGATION;
 
 export default function Index({ mode = "create" }) {
 	const { t } = useTranslation();
+	const { reportFormat } = useParams();
+
 	const form = useForm(getInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
 	const [opened, { open, close }] = useDisclosure(false);
 	const { mainAreaHeight } = useOutletContext();
+	console.log(reportFormat)
 	return (
 		<>
 			{progress !== 100 ? (
@@ -51,7 +55,11 @@ export default function Index({ mode = "create" }) {
 						)}
 						<Grid.Col span={matches ? 30 : 30}>
 							<Box bg="white" p="xs" className="borderRadiusAll">
-								<_Table module={module} open={open} close={close} />
+								{reportFormat === "report-format" ? (
+									<_ReportFormatTable module={module} open={open} close={close} />
+								) : (
+									<_Table module={module} open={open} close={close} />
+								)}
 							</Box>
 						</Grid.Col>
 					</Grid>

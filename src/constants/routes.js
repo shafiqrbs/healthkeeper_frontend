@@ -108,6 +108,7 @@ export const MASTER_DATA_ROUTES = {
 			CREATE: "/hospital/core/investigation/create",
 			UPDATE: "/hospital/core/investigation/update",
 			VIEW: "/hospital/core/investigation/view",
+			REPORT_FORMAT: "/hospital/core/investigation/report-format",
 		},
 
 		PARTICULAR: {

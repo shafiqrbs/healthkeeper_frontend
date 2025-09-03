@@ -13,7 +13,7 @@ import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
 import { MODULES_CORE } from "@/constants";
 
-const module = MODULES_CORE.BED;
+const module = MODULES_CORE.CABIN;
 
 export default function Index({ mode = "create" }) {
 	const { t } = useTranslation();
@@ -58,7 +58,7 @@ export default function Index({ mode = "create" }) {
 						<GlobalDrawer
 							opened={opened}
 							close={close}
-							title={mode === "create" ? t("CreateBed") : t("UpdateBed")}
+							title={mode === "create" ? t("CreateCabin") : t("UpdateCabin")}
 						>
 							<IndexForm module={module} form={form} mode={mode} close={close} />
 						</GlobalDrawer>

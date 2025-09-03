@@ -127,6 +127,16 @@ export default function _Table({ module, open }) {
 		setViewDrawer(true);
 	};
 
+	const handleReportFormatTable = (id) => {
+		dispatch(
+			editEntityData({
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.VIEW}/${id}`,
+				module,
+			})
+		);
+		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.REPORT_FORMAT}/${id}`);
+	};
+
 	const handleCreateForm = () => {
 		open();
 		dispatch(setInsertType({ insertType: "create", module }));
@@ -219,11 +229,12 @@ export default function _Table({ module, open }) {
 												open();
 											}}
 											variant="filled"
+											bg="var(--theme-secondary-color-5)"
 											c="white"
 											size="xs"
 											radius="es"
 											leftSection={<IconEdit size={16} />}
-											className="border-right-radius-none btnPrimaryBg"
+											className="border-right-radius-none"
 										>
 											{t("Edit")}
 										</Button>
@@ -231,13 +242,25 @@ export default function _Table({ module, open }) {
 											onClick={() => handleDataShow(values.id)}
 											variant="filled"
 											c="white"
-											bg="var(--theme-primary-color-6)"
+											bg="var(--theme-primary-color-5)"
 											size="xs"
 											radius="es"
 											leftSection={<IconEye size={16} />}
 											className="border-left-radius-none"
 										>
 											{t("View")}
+										</Button>
+										<Button
+											onClick={() => handleReportFormatTable(values.id)}
+											variant="filled"
+											c="white"
+											bg="var(--theme-warn-color-5)"
+											size="xs"
+											radius="es"
+											leftSection={<IconEye size={16} />}
+											className="border-left-radius-none"
+										>
+											{t("ReportFormat")}
 										</Button>
 										<ActionIcon
 											onClick={() => handleDelete(values.id)}

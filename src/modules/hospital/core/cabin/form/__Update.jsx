@@ -16,6 +16,7 @@ import {successNotification} from "@components/notification/successNotification"
 import {errorNotification} from "@components/notification/errorNotification";
 
 export default function __Update({ module, form, close }) {
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [indexData, setIndexData] = useState(null);
 	const dispatch = useDispatch();

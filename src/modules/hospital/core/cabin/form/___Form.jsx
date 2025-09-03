@@ -20,16 +20,10 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 
-	const { data: getParticularPatientModes } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_DISEASES_MODE.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_DISEASES_MODE.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_DISEASES_MODE.UTILITY,
-	});
-
-	const { data: getParticularGenderModes } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_GENDER_MODE.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_GENDER_MODE.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_GENDER_MODE.UTILITY,
+	const { data: getParticularPatientTypes } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_TYPE.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_TYPE.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_TYPE.UTILITY,
 	});
 
 	const { data: getParticularPaymentModes } = useGlobalDropdownData({
@@ -48,7 +42,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
-				patient_mode_id: data?.particular_details?.patient_mode_id,
+				patient_type_id: data?.particular_details?.patient_type_id,
 				payment_mode_id: data?.particular_details?.payment_mode_id,
 				cabin_mode_id: data?.particular_details?.cabin_mode_id,
 				name: data.name,
@@ -84,40 +78,23 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 								<Stack>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("PatientMode")} <RequiredAsterisk /></Text>
+											<Text fz="sm">{t("PatientType")} <RequiredAsterisk /></Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
 												form={form}
-												tooltip={t("PatientModeValidateMessage")}
-												placeholder={t("PatientMode")}
-												name="patient_mode_id"
-												id="patient_mode_id"
-												nextField="gender_mode_id"
-												required={true}
-												value={form.values.patient_mode_id}
-												dropdownValue={getParticularPatientModes}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("GenderMode")} <RequiredAsterisk /></Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("GenderModeValidateMessage")}
-												placeholder={t("GenderMode")}
-												name="gender_mode_id"
-												id="gender_mode_id"
+												tooltip={t("PatientTypeValidateMessage")}
+												placeholder={t("PatientType")}
+												name="patient_type_id"
+												id="patient_type_id"
 												nextField="payment_mode_id"
 												required={true}
-												value={form.values.gender_mode_id}
-												dropdownValue={getParticularGenderModes}
+												value={form.values.patient_type_id}
+												dropdownValue={getParticularPatientTypes}
 											/>
 										</Grid.Col>
 									</Grid>
+
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("PaymentMode")}</Text>
@@ -129,7 +106,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												placeholder={t("PaymentMode")}
 												name="payment_mode_id"
 												id="payment_mode_id"
-												nextField="room_id"
+												nextField="cabin_mode_id"
 												value={form.values.payment_mode_id}
 												dropdownValue={getParticularPaymentModes}
 											/>

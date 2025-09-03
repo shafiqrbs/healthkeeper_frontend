@@ -188,6 +188,7 @@ function AppRoute() {
 				</Route>
 				<Route path="/hospital/core/">
 					<Route path="investigation" element={<InvestigationIndex />} />
+					<Route path="investigation/:reportFormat/:id" element={<InvestigationIndex />} />
 					<Route path="investigation/:id" element={<InvestigationIndex mode={"edit"} />} />
 					<Route path="particular" element={<ParticularIndex />} />
 					<Route path="particular/:id" element={<ParticularIndex mode={"edit"} />} />
