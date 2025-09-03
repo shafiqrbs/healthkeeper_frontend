@@ -19,8 +19,7 @@ import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 
-export default function PatientReport({ tabValue, form = null }) {
-	console.log(form.values);
+export default function PatientReport({ tabValue, form = null, update }) {
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 284;
 
@@ -48,7 +47,7 @@ export default function PatientReport({ tabValue, form = null }) {
 		form.setFieldValue("dynamicFormData", newDynamicFormData);
 	};
 
-	const handleInvestigationAdd = (value, sectionParticulars = null) => {
+	const handleAutocompleteOptionAdd = (value, sectionParticulars = null, sectionSlug = null) => {
 		let selectedParticular = null;
 
 		if (sectionParticulars) {
@@ -63,8 +62,8 @@ export default function PatientReport({ tabValue, form = null }) {
 
 		if (selectedParticular) {
 			// Add to dynamicFormData with the correct structure
-			const existingList = Array.isArray(form.values.dynamicFormData.investigation)
-				? form.values.dynamicFormData.investigation
+			const existingList = Array.isArray(form.values.dynamicFormData[sectionSlug])
+				? form.values.dynamicFormData[sectionSlug]
 				: [];
 
 			// Check if this value already exists
@@ -83,7 +82,7 @@ export default function PatientReport({ tabValue, form = null }) {
 				const updatedList = [...existingList, newItem];
 				const newDynamicFormData = {
 					...form.values.dynamicFormData,
-					investigation: updatedList,
+					[sectionSlug]: updatedList,
 				};
 
 				form.setFieldValue("dynamicFormData", newDynamicFormData);
@@ -266,10 +265,14 @@ export default function PatientReport({ tabValue, form = null }) {
 							label=""
 							placeholder={`Pick value or enter ${name}`}
 							data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
-							value=""
 							onChange={(value) => {
 								if (value) {
-									handleInvestigationAdd(value, particulars);
+									handleAutocompleteOptionAdd(value, particulars, section.slug);
+								}
+							}}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") {
+									handleAutocompleteOptionAdd(e.target.value, particulars, section.slug);
 								}
 							}}
 							rightSection={<IconCaretUpDownFilled size={16} />}

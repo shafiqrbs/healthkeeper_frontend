@@ -21,7 +21,7 @@ export const medicineInitialValues = {
 	times: "",
 	by_meal: "",
 	duration: "",
-	amount: 1,
+	quantity: 1,
 };
 
 export const getMedicineFormInitialValues = () => {
@@ -32,7 +32,7 @@ export const getMedicineFormInitialValues = () => {
 			dose_details: (value) => (value ? null : "Dose details is required"),
 			by_meal: (value) => (value ? null : "By meal is required"),
 			duration: (value) => (value ? null : "Duration is required"),
-			amount: (value) => (value > 0 ? null : "Amount must be greater than 0"),
+			quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},
 	};
 };
