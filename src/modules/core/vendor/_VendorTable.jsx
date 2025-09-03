@@ -1,16 +1,8 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { Group, Box, ActionIcon, Text, rem, Flex, Button } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, Flex, Button } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconTrashX,
-	IconAlertCircle,
-	IconCheck,
-	IconEdit,
-	IconEye,
-	IconChevronUp,
-	IconSelector,
-} from "@tabler/icons-react";
+import { IconTrashX, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
@@ -20,7 +12,6 @@ import { deleteEntityData, getIndexEntityData, editEntityData } from "@/app/stor
 import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/crudSlice.js";
 import tableCss from "@assets/css/Table.module.css";
 import VendorViewDrawer from "./__VendorViewDrawer.jsx";
-import { notifications } from "@mantine/notifications";
 import { getCoreVendors } from "@/common/utils/index.js";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import CreateButton from "@components/buttons/CreateButton.jsx";
@@ -28,10 +19,11 @@ import DataTableFooter from "@components/tables/DataTableFooter.jsx";
 import { sortBy } from "lodash";
 import { useOs } from "@mantine/hooks";
 import { CORE_DATA_ROUTES } from "@/constants/routes.js";
+import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent.jsx";
 
 const PER_PAGE = 50;
 
-function _VendorTable({ open, close }) {
+function _VendorTable({ open }) {
 	const isMounted = useMounted();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -183,22 +175,11 @@ function _VendorTable({ open, close }) {
 		);
 		if (deleteEntityData.fulfilled.match(resultAction)) {
 			dispatch(setRefetchData({ module: "vendor", refetching: true }));
-			notifications.show({
-				color: SUCCESS_NOTIFICATION_COLOR,
-				title: t("DeleteSuccessfully"),
-				icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-				loading: false,
-				autoClose: 700,
-				style: { backgroundColor: "lightgray" },
-			});
+			showNotificationComponent(t("DeleteSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.VENDOR.INDEX);
 			dispatch(setInsertType({ insertType: "create", module: "vendor" }));
 		} else {
-			notifications.show({
-				color: ERROR_NOTIFICATION_COLOR,
-				title: t("Delete Failed"),
-				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-			});
+			showNotificationComponent(t("Delete Failed"), ERROR_NOTIFICATION_COLOR);
 		}
 	};
 
@@ -209,21 +190,7 @@ function _VendorTable({ open, close }) {
 			setVendorObject(foundVendors);
 			setViewDrawer(true);
 		} else {
-			notifications.show({
-				color: "red",
-				title: t("Something Went wrong , please try again"),
-				icon: (
-					<IconAlertCircle
-						style={{
-							width: rem(18),
-							height: rem(18),
-						}}
-					/>
-				),
-				loading: false,
-				autoClose: 900,
-				style: { backgroundColor: "lightgray" },
-			});
+			showNotificationComponent(t("Something Went wrong , please try again"), ERROR_NOTIFICATION_COLOR);
 		}
 	};
 

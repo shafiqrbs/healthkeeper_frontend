@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "./helpers/request";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
@@ -12,9 +13,13 @@ import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
 import { useDisclosure, useElementSize } from "@mantine/hooks";
-import { MODULES } from "@/constants";
+import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
 import { IconArrowRight } from "@tabler/icons-react";
 import Table from "../visit/_Table";
+import { getLoggedInUser } from "@/common/utils";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { updateEntityData } from "@/app/store/core/crudThunk";
+import { successNotification } from "@components/notification/successNotification";
 
 const module = MODULES.PRESCRIPTION;
 
@@ -26,14 +31,47 @@ export default function Index() {
 	const [tabValue, setTabValue] = useState("All");
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-
+	const { prescriptionId } = useParams();
 	const form = useForm(getPrescriptionFormInitialValues(t));
-
+	const dispatch = useDispatch();
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);
 
 	const handleOpenViewOverview = () => {
 		openOverview();
+	};
+
+	const handlePrescriptionUpdate = async ({ medicines = [] }) => {
+		try {
+			const createdBy = getLoggedInUser();
+
+			const formValue = {
+				is_completed: true,
+				medicines,
+				advise: form.values.advise || "",
+				follow_up_date: form.values.follow_up_date || null,
+				prescription_date: new Date().toISOString().split("T")[0],
+				created_by_id: createdBy?.id,
+				patient_report: {
+					basic_info: form.values.basicInfo || {},
+					patient_examination: form.values.dynamicFormData,
+				},
+			};
+
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${prescriptionId}`,
+				data: formValue,
+				module,
+			};
+
+			const resultAction = await dispatch(updateEntityData(value));
+
+			if (updateEntityData.rejected.match(resultAction)) {
+				successNotification(resultAction.payload.message, ERROR_NOTIFICATION_COLOR);
+			}
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
 	return (
@@ -68,10 +106,10 @@ export default function Index() {
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={9}>
-								<PatientReport tabValue={tabValue} form={form} />
+								<PatientReport tabValue={tabValue} form={form} update={handlePrescriptionUpdate} />
 							</Grid.Col>
 							<Grid.Col span={15}>
-								<AddMedicineForm module={module} form={form} />
+								<AddMedicineForm module={module} form={form} update={handlePrescriptionUpdate} />
 							</Grid.Col>
 						</Grid>
 					</Flex>

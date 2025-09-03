@@ -22,12 +22,8 @@ import TextAreaForm from "@components/form-builders/TextAreaForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import Prescription from "@components/print-formats/prescription/PrescriptionA4";
-import PrescriptionPos from "@components/print-formats/prescription/Prescription";
 import Prescription2 from "@components/print-formats/prescription/Prescription2";
-import Prescription3 from "@components/print-formats/prescription/Prescription3";
-import PrescriptionPreview from "./PrescriptionPreview";
-import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
+import { useDebouncedState, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
@@ -36,6 +32,10 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { updateEntityData } from "@/app/store/core/crudThunk";
+import { setRefetchData } from "@/app/store/core/crudSlice";
+import { useDispatch } from "react-redux";
+import { modals } from "@mantine/modals";
 
 const DURATION_OPTIONS = [
 	// { value: "", label: "--Select Duration--" },
@@ -51,6 +51,7 @@ const DURATION_UNIT_OPTIONS = [
 ];
 
 function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit }) {
+	const { t } = useTranslation();
 	const [mode, setMode] = useState("view");
 	const { data: by_meal_options } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
@@ -95,7 +96,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 							label=""
 							data={by_meal_options}
 							value={medicine.by_meal}
-							placeholder="Timing"
+							placeholder={t("Timing")}
 							disabled={mode === "view"}
 							onChange={(v) => handleChange("by_meal", v)}
 						/>
@@ -103,7 +104,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 							label=""
 							data={dosage_options}
 							value={medicine.dose_details}
-							placeholder="Dosage"
+							placeholder={t("Dosage")}
 							disabled={mode === "view"}
 							onChange={(v) => handleChange("dose_details", v)}
 						/>
@@ -111,16 +112,16 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 							label=""
 							data={DURATION_UNIT_OPTIONS}
 							value={medicine.duration}
-							placeholder="Duration"
+							placeholder={t("Duration")}
 							disabled={mode === "view"}
 							onChange={(v) => handleChange("duration", v)}
 						/>
 						<NumberInput
 							label=""
-							value={medicine.amount}
-							placeholder="Amount"
+							value={medicine.quantity}
+							placeholder={t("Quantity")}
 							disabled={mode === "view"}
-							onChange={(v) => handleChange("amount", v)}
+							onChange={(v) => handleChange("quantity", v)}
 						/>
 					</Group>
 				)}
@@ -145,15 +146,12 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 }
 
 export default function AddMedicineForm({ module, form }) {
+	const dispatch = useDispatch();
+	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
 	const { prescriptionId } = useParams();
 	const [isSubmitting, setIsSubmitting] = useState(false);
-
 	const { t } = useTranslation();
-	const prescriptionA4Ref = useRef(null);
-	const prescription2A4Ref = useRef(null);
-	const prescription3A4Ref = useRef(null);
-	const prescriptionPosRef = useRef(null);
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
 	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
 	const { medicineData } = useMedicineData({ term: medicineTerm });
@@ -162,7 +160,6 @@ export default function AddMedicineForm({ module, form }) {
 	const [medicines, setMedicines] = useState([]);
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
-	const [opened, { open, close }] = useDisclosure(false);
 
 	const { data: by_meal_options } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
@@ -195,33 +192,17 @@ export default function AddMedicineForm({ module, form }) {
 			},
 		],
 		[
-			"alt+3",
-			() => {
-				open();
-			},
-		],
-		[
 			"alt+4",
 			() => {
-				handlePrintPrescriptionA4(1);
+				handlePrintPrescription2A4();
 			},
 		],
 	]);
 
 	// =============== create print functions using useReactToPrint hook ================
-	const printPrescriptionA4 = useReactToPrint({
-		documentTitle: `prescription-${Date.now().toLocaleString()}`,
-		content: () => prescriptionA4Ref.current,
-	});
-
 	const printPrescription2A4 = useReactToPrint({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,
-	});
-
-	const printPrescription3A4 = useReactToPrint({
-		documentTitle: `prescription-${Date.now().toLocaleString()}`,
-		content: () => prescription3A4Ref.current,
 	});
 
 	const handleChange = (field, value) => {
@@ -244,10 +225,10 @@ export default function AddMedicineForm({ module, form }) {
 
 				// Auto-populate duration and count based on duration_day or duration_month
 				if (selectedMedicine.duration_day) {
-					medicineForm.setFieldValue("amount", parseInt(selectedMedicine.duration_day) || 1);
+					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_day) || 1);
 					medicineForm.setFieldValue("duration", "day");
 				} else if (selectedMedicine.duration_month) {
-					medicineForm.setFieldValue("amount", parseInt(selectedMedicine.duration_month) || 1);
+					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_month) || 1);
 					medicineForm.setFieldValue("duration", "month");
 				}
 
@@ -271,10 +252,10 @@ export default function AddMedicineForm({ module, form }) {
 				values.by_meal = selectedMedicine.by_meal || values.by_meal;
 
 				if (selectedMedicine.duration_day) {
-					values.amount = parseInt(selectedMedicine.duration_day) || values.amount;
+					values.quantity = parseInt(selectedMedicine.duration_day) || values.quantity;
 					values.duration = "day";
 				} else if (selectedMedicine.duration_month) {
-					values.amount = parseInt(selectedMedicine.duration_month) || values.amount;
+					values.quantity = parseInt(selectedMedicine.duration_month) || values.quantity;
 					values.duration = "month";
 				}
 
@@ -326,10 +307,10 @@ export default function AddMedicineForm({ module, form }) {
 
 				// Update duration and count based on available data
 				if (selectedMedicine.duration_day) {
-					updatedMedicineData.amount = parseInt(selectedMedicine.duration_day) || medicineToEdit.amount;
+					updatedMedicineData.quantity = parseInt(selectedMedicine.duration_day) || medicineToEdit.quantity;
 					updatedMedicineData.duration = "day";
 				} else if (selectedMedicine.duration_month) {
-					updatedMedicineData.amount = parseInt(selectedMedicine.duration_month) || medicineToEdit.amount;
+					updatedMedicineData.quantity = parseInt(selectedMedicine.duration_month) || medicineToEdit.quantity;
 					updatedMedicineData.duration = "month";
 				}
 
@@ -355,14 +336,19 @@ export default function AddMedicineForm({ module, form }) {
 		// Clear held data when resetting
 	};
 
-	const handlePrintPrescriptionA4 = (type) => {
-		if (type === 1) {
-			printPrescriptionA4();
-		} else if (type === 2) {
-			printPrescription2A4();
-		} else {
-			printPrescription3A4();
-		}
+	const handlePrintPrescription2A4 = () => {
+		printPrescription2A4();
+	};
+
+	const openConfirmationModal = () => {
+		modals.openConfirmModal({
+			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.log("Cancel"),
+			onConfirm: () => handlePrescriptionSubmit(),
+		});
 	};
 
 	const handlePrescriptionSubmit = async () => {
@@ -377,6 +363,7 @@ export default function AddMedicineForm({ module, form }) {
 			const createdBy = getLoggedInUser();
 
 			const formValue = {
+				is_completed: true,
 				medicines,
 				advise: form.values.advise || "",
 				follow_up_date: form.values.follow_up_date || null,
@@ -394,23 +381,18 @@ export default function AddMedicineForm({ module, form }) {
 				module,
 			};
 
-			return console.log(formValue);
-			// const resultAction = await dispatch(updateEntityData(value));
+			// return console.log(formValue);
+			const resultAction = await dispatch(updateEntityData(value));
 
-			// if (updateEntityData.rejected.match(resultAction)) {
-			// 	showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
-			// } else {
-			// 	showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 1000, true);
-			// 	setRefetchData({ module, refetching: true });
-			// 	// Reset forms and data
-			// 	form.reset();
-			// 	setPatientReportData({
-			// 		basicInfo: {},
-			// 		dynamicFormData: {},
-			// 		investigationList: [],
-			// 	});
-			// 	return true; // Indicate successful submission
-			// }
+			if (updateEntityData.rejected.match(resultAction)) {
+				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
+			} else {
+				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 1000, true);
+				setRefetchData({ module, refetching: true });
+				// Reset forms and data
+				form.reset();
+				return true; // Indicate successful submission
+			}
 		} catch (error) {
 			console.error("Error submitting prescription:", error);
 			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
@@ -447,13 +429,13 @@ export default function AddMedicineForm({ module, form }) {
 							}))}
 							value={medicineForm.values.medicine_id}
 							onChange={(v) => handleChange("medicine_id", v)}
-							placeholder="Medicine"
+							placeholder={t("Medicine")}
 							tooltip="Select medicine"
 							nothingFoundMessage="Type to find medicine..."
 							onBlur={() => setMedicineTerm("")}
 						/>
 						<Autocomplete
-							tooltip="Enter generic name"
+							tooltip={t("EnterGenericName")}
 							name="generic"
 							data={medicineGenericData?.map((item, index) => ({
 								label: item.name,
@@ -464,7 +446,7 @@ export default function AddMedicineForm({ module, form }) {
 								handleChange("generic", v);
 								setMedicineGenericTerm(v);
 							}}
-							placeholder="Generic name"
+							placeholder={t("GenericName")}
 							onBlur={() => setMedicineGenericTerm("")}
 						/>
 					</Group>
@@ -474,9 +456,9 @@ export default function AddMedicineForm({ module, form }) {
 							name="dose_details"
 							dropdownValue={dosage_options}
 							value={medicineForm.values.dose_details}
-							placeholder="Dosage"
+							placeholder={t("Dosage")}
 							required
-							tooltip="Enter dosage"
+							tooltip={t("EnterDosage")}
 							withCheckIcon={false}
 						/>
 						<SelectForm
@@ -484,9 +466,9 @@ export default function AddMedicineForm({ module, form }) {
 							name="by_meal"
 							dropdownValue={by_meal_options}
 							value={medicineForm.values.by_meal}
-							placeholder="By Meal"
+							placeholder={t("By Meal")}
 							required
-							tooltip="Enter when to take medicine"
+							tooltip={t("EnterWhenToTakeMedicine")}
 							withCheckIcon={false}
 						/>
 						<SelectForm
@@ -495,18 +477,18 @@ export default function AddMedicineForm({ module, form }) {
 							name="duration"
 							dropdownValue={DURATION_OPTIONS}
 							value={medicineForm.values.duration}
-							placeholder="Duration"
+							placeholder={t("Duration")}
 							required
-							tooltip="Enter meditation duration"
+							tooltip={t("EnterMeditationDuration")}
 							withCheckIcon={false}
 						/>
 						<InputNumberForm
 							form={medicineForm}
-							name="amount"
-							value={medicineForm.values.amount}
-							placeholder="Amount"
+							name="quantity"
+							value={medicineForm.values.quantity}
+							placeholder={t("Quantity")}
 							required
-							tooltip="Enter amount"
+							tooltip={t("EnterQuantity")}
 						/>
 						<Button
 							leftSection={<IconPlus size={16} />}
@@ -612,7 +594,7 @@ export default function AddMedicineForm({ module, form }) {
 						onClick={handleReset}
 					>
 						<Stack gap={0} align="center" justify="center">
-							<Text>{t("reset")}</Text>
+							<Text>{t("Reset")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 								(alt + 1)
 							</Text>
@@ -626,9 +608,9 @@ export default function AddMedicineForm({ module, form }) {
 							</Text>
 						</Stack>
 					</Button>
-					<Button w="100%" bg="var(--theme-prescription-btn-color)" onClick={open}>
+					<Button w="100%" bg="var(--theme-prescription-btn-color)" onClick={handlePrintPrescription2A4}>
 						<Stack gap={0} align="center" justify="center">
-							<Text>{t("prescription")}</Text>
+							<Text>{t("Prescription")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 								(alt + 3)
 							</Text>
@@ -637,7 +619,7 @@ export default function AddMedicineForm({ module, form }) {
 					<Button
 						w="100%"
 						bg="var(--theme-save-btn-color)"
-						onClick={handlePrescriptionSubmit}
+						onClick={openConfirmationModal}
 						loading={isSubmitting}
 						disabled={isSubmitting}
 					>
@@ -650,12 +632,7 @@ export default function AddMedicineForm({ module, form }) {
 					</Button>
 				</Button.Group>
 			}
-			<Prescription ref={prescriptionA4Ref} />
 			<Prescription2 ref={prescription2A4Ref} />
-			<Prescription3 ref={prescription3A4Ref} />
-			<PrescriptionPos ref={prescriptionPosRef} />
-
-			<PrescriptionPreview opened={opened} close={close} />
 		</Box>
 	);
 }
