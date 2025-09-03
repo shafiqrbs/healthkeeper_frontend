@@ -164,18 +164,11 @@ export default function _Table({ module, open }) {
 							render: (_item, index) => index + 1,
 						},
 						{
-							accessor: "patient_mode_name",
-							title: t("PatientMode"),
+							accessor: "patient_type_name",
+							title: t("PatientType"),
 							textAlignment: "right",
 							sortable: true,
-							render: (item) => item.patient_mode_name,
-						},
-						{
-							accessor: "gender_mode_name",
-							title: t("GenderMode"),
-							textAlignment: "right",
-							sortable: true,
-							render: (item) => item.gender_mode_name,
+							render: (item) => item.patient_type_name,
 						},
 						{
 							accessor: "payment_mode_name",
@@ -183,13 +176,6 @@ export default function _Table({ module, open }) {
 							textAlignment: "right",
 							sortable: true,
 							render: (item) => item.payment_mode_name,
-						},
-						{
-							accessor: "room_name",
-							title: t("Room No"),
-							textAlignment: "right",
-							sortable: true,
-
 						},
 						{
 							accessor: "name",

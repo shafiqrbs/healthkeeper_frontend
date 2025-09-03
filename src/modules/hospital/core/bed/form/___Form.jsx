@@ -20,6 +20,11 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 
+	const { data: getParticularPatientTypes } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_TYPE.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_TYPE.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_TYPE.UTILITY,
+	});
 
 	const { data: getParticularRooms } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_ROOM.PATH,
@@ -49,6 +54,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
+				payment_type_id: data?.particular_details?.payment_type_id,
 				patient_mode_id: data?.particular_details?.patient_mode_id,
 				gender_mode_id: data?.particular_details?.gender_mode_id,
 				payment_mode_id: data?.particular_details?.payment_mode_id,
@@ -84,6 +90,24 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
+									<Grid align="center" columns={20} mt="xxxs">
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("PatientType")} <RequiredAsterisk /></Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("PatientTypeValidateMessage")}
+												placeholder={t("PatientType")}
+												name="patient_type_id"
+												id="patient_type_id"
+												nextField="payment_mode_id"
+												required={true}
+												value={form.values.patient_type_id}
+												dropdownValue={getParticularPatientTypes}
+											/>
+										</Grid.Col>
+									</Grid>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("PatientMode")} <RequiredAsterisk /></Text>

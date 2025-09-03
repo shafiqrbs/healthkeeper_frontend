@@ -31,7 +31,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
-				url: `${MASTER_DATA_ROUTES.NAVIGATION_LINKS.CABIN.VIEW}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.CABIN.VIEW}/${id}`,
 				module,
 			})
 		);
