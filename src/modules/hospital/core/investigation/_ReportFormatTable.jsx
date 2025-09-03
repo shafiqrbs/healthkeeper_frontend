@@ -159,16 +159,16 @@ export default function _ReportFormatTable({ module, open }) {
 		setSubmitFormData(initialFormData);
 	}, [entityData]);
 
-	const handleDataTypeChange = (rowId, field, value) => {
-		setSubmitFormData(prev => ({
-			...prev,
-			[rowId]: {
-				...prev[rowId],
-				[field]: value,
-			},
-		}));
-	};
-	console.log(submitFormData)
+    const handleDataTypeChange = (rowId, field, value) => {
+        setSubmitFormData(prev => ({
+            ...prev,
+            [rowId]: {
+                ...prev[rowId],
+                [field]: value,
+            },
+        }));
+    };
+
 	const handleRowSubmit = async (rowId) => {
 		const formData = submitFormData[rowId];
 		if (!formData) return;
@@ -221,62 +221,69 @@ export default function _ReportFormatTable({ module, open }) {
 									textAlignment: "right",
 									render: (item) => entityData?.indexOf(item) + 1,
 								},
-								{
-									accessor: "name",
-									title: t("Name"),
-									render: (item) => (
-										<TextInput
-											placeholder="SelectDataType"
-											value={submitFormData[item.id]?.name || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "name", val)}
-										/>
-									),
-								},
-								{
-									accessor: "unit",
-									title: t("UnitName"),
-									render: (item) => (
-										<TextInput
-											placeholder="SelectDataType"
-											value={submitFormData[item.id]?.unit || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "unit", val)}
-										/>
-									),
-								},
-								{
-									accessor: "parent_name",
-									title: t("ParentName"),
-									render: (item) => (
-										<Select
-											placeholder="SelectDataType"
-											data={['Test-1','Test-2','Test-3']}
-											value={submitFormData[item.id]?.parent_name || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "parent_name", val)}
-										/>
-									),
-								},
-								{
-									accessor: "sample_value",
-									title: t("SampleValue"),
-									render: (item) => (
-										<TextInput
-											placeholder="SelectDataType"
-											value={submitFormData[item.id]?.sample_value || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "sample_value", val)}
-										/>
-									),
-								},
-								{
-									accessor: "reference_value",
-									title: t("ReferenceValue"),
-									render: (item) => (
-										<TextInput
-											placeholder="SelectDataType"
-											value={submitFormData[item.id]?.reference_value || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "reference_value", val)}
-										/>
-									),
-								},
+                                {
+                                    accessor: "name",
+                                    title: t("Name"),
+                                    render: (item) => (
+                                        <TextInput
+                                            placeholder="SelectDataType"
+                                            value={submitFormData[item.id]?.name || ""}
+                                            onChange={(val) => handleDataTypeChange(item.id, "name", val.target.value)}
+                                            onBlur={() => handleRowSubmit(item.id)}
+                                        />
+                                    ),
+                                },
+                                {
+                                    accessor: "unit",
+                                    title: t("UnitName"),
+                                    render: (item) => (
+                                        <TextInput
+                                            placeholder="SelectDataType"
+                                            value={submitFormData[item.id]?.unit || ""}
+                                            onChange={(val) => handleDataTypeChange(item.id, "unit", val.target.value)}
+                                            onBlur={() => handleRowSubmit(item.id)}
+                                        />
+                                    ),
+                                },
+                                {
+                                    accessor: "parent_name",
+                                    title: t("ParentName"),
+                                    render: (item) => (
+                                        <Select
+                                            placeholder="SelectDataType"
+                                            data={['Test-1', 'Test-2', 'Test-3']}
+                                            value={submitFormData[item.id]?.parent_name || ""}
+                                            onChange={(val) => {
+                                                handleDataTypeChange(item.id, "parent_name", val);
+                                                handleRowSubmit(item.id);
+                                            }}
+                                        />
+                                    ),
+                                },
+                                {
+                                    accessor: "sample_value",
+                                    title: t("SampleValue"),
+                                    render: (item) => (
+                                        <TextInput
+                                            placeholder="SelectDataType"
+                                            value={submitFormData[item.id]?.sample_value || ""}
+                                            onChange={(val) => handleDataTypeChange(item.id, "sample_value", val.target.value)}
+                                            onBlur={() => handleRowSubmit(item.id)}
+                                        />
+                                    ),
+                                },
+                                {
+                                    accessor: "reference_value",
+                                    title: t("ReferenceValue"),
+                                    render: (item) => (
+                                        <TextInput
+                                            placeholder="SelectDataType"
+                                            value={submitFormData[item.id]?.reference_value || ""}
+                                            onChange={(val) => handleDataTypeChange(item.id, "reference_value", val.target.value)}
+                                            onBlur={() => handleRowSubmit(item.id)}
+                                        />
+                                    ),
+                                },
 								{
 									accessor: "action",
 									title: "",

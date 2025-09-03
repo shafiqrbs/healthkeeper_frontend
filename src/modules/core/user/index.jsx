@@ -43,7 +43,7 @@ export default function Index({ mode = "create" }) {
 									</Box>
 								</Grid.Col>
 							)}
-							<Grid.Col span={insertType === "create" ? 9 : 23}>
+							<Grid.Col span={insertType === "create" ? 9 : 20}>
 								<Form module={module} mode={mode} />
 							</Grid.Col>
 						</Grid>
