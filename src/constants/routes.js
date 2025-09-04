@@ -80,6 +80,12 @@ export const MASTER_DATA_ROUTES = {
 			VIEW: "hospital/core/category",
 			DELETE: "hospital/core/category",
 		},
+
+		INVESTIGATION_REPORT_FORMAT: {
+			CREATE: "hospital/core/investigation",
+			UPDATE: "hospital/core/investigation",
+			DELETE: "hospital/core/investigation",
+		},
 	},
 	NAVIGATION_LINKS: {
 		USER: {

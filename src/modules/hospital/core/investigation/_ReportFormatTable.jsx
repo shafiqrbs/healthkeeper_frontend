@@ -38,7 +38,7 @@ import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
 import {
 	deleteEntityData,
-	editEntityData, getIndexEntityData, storeEntityData,
+	editEntityData, getIndexEntityData, storeEntityData, updateEntityData,
 } from "@/app/store/core/crudThunk";
 import {
 	setInsertType,
@@ -172,17 +172,14 @@ export default function _ReportFormatTable({ module, open }) {
 	const handleRowSubmit = async (rowId) => {
 		const formData = submitFormData[rowId];
 		if (!formData) return;
-		console.log(formData)
-		/*formData.particular_type_id = rowId;
 		const value = {
-			url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_TYPE.CREATE,
+			url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION_REPORT_FORMAT.UPDATE}/${rowId}`,
 			data: formData,
 			module,
 		};
-
 		try {
-			const resultAction = await dispatch(storeEntityData(value));
-			if (storeEntityData.rejected.match(resultAction)) {
+			const resultAction = await dispatch(updateEntityData(value));
+			if (updateEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
 				if (fieldErrors) {
 					const errorObject = {};
@@ -191,12 +188,12 @@ export default function _ReportFormatTable({ module, open }) {
 					});
 					form.setErrors(errorObject);
 				}
-			} else if (storeEntityData.fulfilled.match(resultAction)) {
-				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+			} else if (updateEntityData.fulfilled.match(resultAction)) {
+				successNotification(t("UpdateSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
 			errorNotification(error.message);
-		}*/
+		}
 	};
 
 	return (
