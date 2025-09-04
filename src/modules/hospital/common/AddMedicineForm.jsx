@@ -374,7 +374,7 @@ export default function AddMedicineForm({ module, form, existingMedicines }) {
 				prescription_date: new Date().toISOString().split("T")[0],
 				created_by_id: createdBy?.id,
 				patient_report: {
-					basic_info: form.values.basicInfo || {},
+					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,
 				},
 			};

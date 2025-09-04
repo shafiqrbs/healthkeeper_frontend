@@ -47,11 +47,10 @@ export default function Index() {
 	const form = useForm(getPrescriptionFormInitialValues(t, {}));
 
 	useEffect(() => {
-		if (prescriptionData?.data?.json_content) {
-			const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
-			form.setValues(updatedFormValues.initialValues);
-		}
-	}, [prescriptionData, t]);
+		// Always reset the form when prescription data changes
+		const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
+		form.setValues(updatedFormValues.initialValues);
+	}, [prescriptionData]);
 
 	const handleOpenViewOverview = () => {
 		openOverview();
@@ -69,7 +68,7 @@ export default function Index() {
 				prescription_date: new Date()?.toISOString()?.split("T")[0],
 				created_by_id: createdBy?.id,
 				patient_report: {
-					basic_info: form.values.basicInfo || {},
+					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,
 				},
 			};

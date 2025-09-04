@@ -1,10 +1,3 @@
-const initialValues = {
-	basicInfo: { bp: "120/80", weight: "", bloodGroup: "O+" },
-	dynamicFormData: {},
-	advise: "",
-	follow_up_date: new Date(),
-};
-
 export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
 	const parseDate = (dateValue) => {
 		if (!dateValue) return new Date();
@@ -17,7 +10,7 @@ export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
 	};
 
 	const formattedInitialFormValues = {
-		basicInfo: initialFormValues?.patient_report?.basic_info || initialValues.basicInfo,
+		basic_info: initialFormValues?.patient_report?.basic_info || { bp: "", weight: "", bloodGroup: "" },
 		dynamicFormData: initialFormValues?.patient_report?.patient_examination || {},
 		advise: initialFormValues?.advise || "",
 		follow_up_date: parseDate(initialFormValues?.follow_up_date),

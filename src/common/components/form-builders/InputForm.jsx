@@ -43,7 +43,7 @@ function InputForm({
 					<TextInput
 						type={type}
 						id={id}
-						onChange={handleChange}
+						onChange={handleChange || form.getInputProps(name).onChange}
 						styles={styles}
 						classNames={inputCss}
 						size="sm"
