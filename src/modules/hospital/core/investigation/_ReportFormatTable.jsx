@@ -58,10 +58,11 @@ export default function _ReportFormatTable({ module, open }) {
 	const [fetching, setFetching] = useState(false);
 	const [submitFormData, setSubmitFormData] = useState({});
 	const [isLoading, setIsLoading] = useState(false);
-
+	const refetching = useSelector((state)=>state.crud[module]?.refetching)
+	console.log(refetching)
 	useEffect(() => {
 		fetchData()
-	}, []);
+	}, [refetching]);
 
 	const fetchData = async () => {
 		const value = {
@@ -83,11 +84,11 @@ export default function _ReportFormatTable({ module, open }) {
 
 	const form = useForm(getInitialReportValues(t));
 
-	const handleDeleteSuccess = async (id) => {
+	const handleDeleteSuccess = async (report,id) => {
 
 		const res = await dispatch(
 			deleteEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.DELETE}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION_REPORT_FORMAT.DELETE}/${id}`,
 				module,
 				id,
 			})
@@ -96,7 +97,7 @@ export default function _ReportFormatTable({ module, open }) {
 		if (deleteEntityData.fulfilled.match(res)) {
 			dispatch(setRefetchData({ module, refetching: true }));
 			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED);
+			navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.REPORT_FORMAT}/${report}`);
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
@@ -300,7 +301,7 @@ export default function _ReportFormatTable({ module, open }) {
 											</ActionIcon>
 											<ActionIcon
 												color="var(--theme-delete-color)"
-												onClick={() => handleDelete(item.id)}
+												onClick={() => handleDeleteSuccess(id,item.id)}
 											>
 												<IconTrashX height={18} width={18} stroke={1.5} />
 											</ActionIcon>
@@ -344,6 +345,7 @@ export default function _ReportFormatTable({ module, open }) {
 											name="parent_id"
 											id="parent_id"
 											nextField="name"
+											dropdownValue={parents}
 											value={form.values.parent_id} // fixed: use correct field
 											required={false}
 										/>
