@@ -52,14 +52,13 @@ export default function _ReportFormatTable({ module, open }) {
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const height = mainAreaHeight - 78;
+	const height = mainAreaHeight - 48;
 	const entityObject = useSelector((state) => state.crud[module].editData);
 	const [records, setRecords] = useState([]);
 	const [fetching, setFetching] = useState(false);
 	const [submitFormData, setSubmitFormData] = useState({});
 	const [isLoading, setIsLoading] = useState(false);
 	const refetching = useSelector((state)=>state.crud[module]?.refetching)
-	console.log(refetching)
 	useEffect(() => {
 		fetchData()
 	}, [refetching]);
@@ -76,7 +75,7 @@ export default function _ReportFormatTable({ module, open }) {
 			console.error("Unexpected error:", err);
 		}
 	};
-	const entityData = records?.data?.report_format;
+	const entityData = records?.data?.investigation_report_format;
 	const parents = entityData?.map(p => ({
 		value: p.id?.toString(),   // keep everything string
 		label: p.name
@@ -118,12 +117,14 @@ export default function _ReportFormatTable({ module, open }) {
 			onConfirm: () => handleConfirmModal(values),
 		});
 	};
+
 	async function handleConfirmModal(values) {
+
 		try {
 			setIsLoading(true);
 			const value = {
-				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.CREATE,
-				data: values,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION_REPORT_FORMAT.CREATE}`,
+				data: {...values,particular_id:id},
 				module,
 			};
 
@@ -179,6 +180,10 @@ export default function _ReportFormatTable({ module, open }) {
 	const handleRowSubmit = async (rowId) => {
 		const formData = submitFormData[rowId];
 		if (!formData) return;
+		if (!formData.name || formData.name.trim() === "") {
+			errorNotification(t("Name is required"), ERROR_NOTIFICATION_COLOR);
+			return;
+		}
 		const value = {
 			url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION_REPORT_FORMAT.UPDATE}/${rowId}`,
 			data: formData,
@@ -229,7 +234,7 @@ export default function _ReportFormatTable({ module, open }) {
 									title: t("Name"),
 									render: (item) => (
 										<TextInput
-											placeholder="SelectDataType"
+											placeholder={t("Name")}
 											value={submitFormData[item.id]?.name || ""}
 											onChange={(val) => handleDataTypeChange(item.id, "name", val.target.value)}
 											onBlur={() => handleRowSubmit(item.id)}
@@ -241,7 +246,7 @@ export default function _ReportFormatTable({ module, open }) {
 									title: t("UnitName"),
 									render: (item) => (
 										<TextInput
-											placeholder="SelectDataType"
+											placeholder={t("UnitName")}
 											value={submitFormData[item.id]?.unit || ""}
 											onChange={(val) => handleDataTypeChange(item.id, "unit", val.target.value)}
 											onBlur={() => handleRowSubmit(item.id)}
@@ -253,7 +258,7 @@ export default function _ReportFormatTable({ module, open }) {
 									title: t("ParentName"),
 									render: (item) => (
 										<Select
-											placeholder="SelectDataType"
+											placeholder={t("ParentName")}
 											data={parents}
 											value={submitFormData[item.id]?.parent_id || ""}
 											onChange={(val) => {
@@ -268,7 +273,7 @@ export default function _ReportFormatTable({ module, open }) {
 									title: t("SampleValue"),
 									render: (item) => (
 										<TextInput
-											placeholder="SelectDataType"
+											placeholder={t("SampleValue")}
 											value={submitFormData[item.id]?.sample_value || ""}
 											onChange={(val) => handleDataTypeChange(item.id, "sample_value", val.target.value)}
 											onBlur={() => handleRowSubmit(item.id)}
@@ -280,7 +285,7 @@ export default function _ReportFormatTable({ module, open }) {
 									title: t("ReferenceValue"),
 									render: (item) => (
 										<TextInput
-											placeholder="SelectDataType"
+											placeholder={t("ReferenceValue")}
 											value={submitFormData[item.id]?.reference_value || ""}
 											onChange={(val) => handleDataTypeChange(item.id, "reference_value", val.target.value)}
 											onBlur={() => handleRowSubmit(item.id)}

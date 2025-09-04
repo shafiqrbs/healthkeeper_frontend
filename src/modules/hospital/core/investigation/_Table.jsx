@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput,NumberInput} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
@@ -20,9 +20,10 @@ import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
+import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import {
 	deleteEntityData,
-	editEntityData,
+	editEntityData, storeEntityData, updateEntityData,
 } from "@/app/store/core/crudThunk";
 import {
 	setInsertType,
@@ -32,8 +33,12 @@ import {
 	ERROR_NOTIFICATION_COLOR,
 } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
+import {successNotification} from "@components/notification/successNotification";
+import {SUCCESS_NOTIFICATION_COLOR} from "@/constants/index";
+import {errorNotification} from "@components/notification/errorNotification";
+import {useForm} from "@mantine/form";
 
 const PER_PAGE = 50;
 
@@ -45,7 +50,7 @@ export default function _Table({ module, open }) {
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const height = mainAreaHeight - 78;
-
+	const [submitFormData, setSubmitFormData] = useState({});
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
@@ -143,6 +148,68 @@ export default function _Table({ module, open }) {
 		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX);
 	};
 
+	const form = useForm({
+		initialValues: {
+			price: "",
+		}
+	});
+
+	useEffect(() => {
+		if (!records?.length) return;
+
+		const initialFormData = records.reduce((acc, item) => {
+
+			acc[item.id] = {
+				name: item.name || "",
+				price: item.price || "",
+			};
+
+			return acc;
+		}, {});
+
+		setSubmitFormData(initialFormData);
+	}, [records]);
+
+	const handleDataTypeChange = (rowId, field, value) => {
+		setSubmitFormData(prev => ({
+			...prev,
+			[rowId]: {
+				...prev[rowId],
+				[field]: value,
+			},
+		}));
+	};
+
+	const handleRowSubmit = async (rowId) => {
+		const formData = submitFormData[rowId];
+		if (!formData) return false;
+
+		// 🔎 find original row data
+		const originalRow = records.find((r) => r.id === rowId);
+		if (!originalRow) return false;
+
+		// ✅ check if there is any change
+		const isChanged = Object.keys(formData).some(
+			(key) => formData[key] !== originalRow[key]
+		);
+
+		if (!isChanged) {
+			// nothing changed → do not submit
+			return false;
+		}
+
+		const value = {
+			url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.INLINE_UPDATE}/${rowId}`,
+			data: formData,
+			module,
+		};
+		try {
+			const resultAction = await dispatch(storeEntityData(value));
+		} catch (error) {
+			errorNotification(error.message);
+		}
+	};
+
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
 
 	return (
@@ -184,14 +251,17 @@ export default function _Table({ module, open }) {
 							accessor: "name",
 							title: t("Name"),
 							sortable: true,
-							render: (values) => (
-								<Text
-									className="activate-link"
-									fz="sm"
-									onClick={() => handleDataShow(values.id)}
-								>
-									{values.name}
-								</Text>
+							render: (item) => (
+								<TextInput
+									size="xs"
+									className={inlineInputCss.inputText}
+									placeholder={t("Name")}
+									value={submitFormData[item.id]?.name || ""}
+									onChange={(event) =>
+										handleDataTypeChange(item.id, "name", event.currentTarget.value)
+									}
+									onBlur={() => handleRowSubmit(item.id)}
+								/>
 							),
 						},
 						{
@@ -213,6 +283,16 @@ export default function _Table({ module, open }) {
 							accessor: "price",
 							title: t("Price"),
 							sortable: false,
+							render: (item) => (
+								<NumberInput
+									size="xs"
+									className={inlineInputCss.inputNumber}
+									placeholder={t("Price")}
+									value={submitFormData[item.id]?.price || ""}
+									onChange={(val) => handleDataTypeChange(item.id, "price", val)}
+									onBlur={() => handleRowSubmit(item.id)}
+								/>
+							),
 						},
 
 						{
@@ -245,7 +325,6 @@ export default function _Table({ module, open }) {
 											bg="var(--theme-primary-color-5)"
 											size="xs"
 											radius="es"
-											leftSection={<IconEye size={16} />}
 											className="border-left-radius-none"
 										>
 											{t("View")}
@@ -257,10 +336,8 @@ export default function _Table({ module, open }) {
 											bg="var(--theme-warn-color-5)"
 											size="xs"
 											radius="es"
-											leftSection={<IconEye size={16} />}
-											className="border-left-radius-none"
 										>
-											{t("ReportFormat")}
+											{t("Format")}
 										</Button>
 										<ActionIcon
 											onClick={() => handleDelete(values.id)}

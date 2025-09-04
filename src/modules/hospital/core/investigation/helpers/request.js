@@ -20,6 +20,15 @@ export const getInitialValues = (t) => {
 	};
 };
 
+const initialInsertValues = {
+	particular_id:"",
+	parent_id: "",
+	name: "",
+	sample_value: "",
+	reference_value: "",
+	unit_name: "",
+};
+
 const initialReportValues = {
 	parent_id: "",
 	name: "",

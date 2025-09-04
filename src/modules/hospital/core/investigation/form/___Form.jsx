@@ -64,6 +64,10 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		],
 		[]
 	);
+	const selectReportFormat = [
+		{ value: '1', label: '1' },
+		{ value: '2', label: '2' }
+	];
 
 	return (
 		<form onSubmit={form.onSubmit(handleSubmit)}>
@@ -142,6 +146,26 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												required={false}
 												name="instruction"
 												id="instruction"
+												nextField=""
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="xxxs">
+										<Grid.Col span={6}>
+											<Text fz="sm">
+												{t("ReportFormat")}
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("PriceValidateMessage")}
+												placeholder={t("ReportFormat")}
+												dropdownValue={selectReportFormat}
+												required={false}
+												name="report_format"
+												id="report_format"
+												value={form.values.report_format||1}
 												nextField=""
 											/>
 										</Grid.Col>

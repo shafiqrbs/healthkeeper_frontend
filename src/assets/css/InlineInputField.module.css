@@ -2,9 +2,26 @@
 /* Input.module.css */
 
 .input {
-    border: 1px solid #b1aba1;
+    border: 1px solid;
+    border-color: var(--theme-primary-color-5);
+    text-align: center;
+    background-color: #f7f7f5
+}
+
+.inputNumber {
+    border: 1px solid;
+    border-color: var(--theme-primary-color-5);
     text-align: center;
     width: 120px;
+    background-color: #f7f7f5
+
+}
+
+.inputText {
+    border: 1px solid;
+    border-color: var(--theme-primary-color-5);
+    text-align: center;
+    width: 100%;
     background-color: #f7f7f5
 }
 
@@ -18,7 +35,8 @@
 .input{
     transition: none;
 &:focus-within {
-     border: 1px solid #905a23;
+     border: 1px solid;
+     border-color: var(--theme-secondary-color-5);
      background: #fbf7ef;
  }
 }

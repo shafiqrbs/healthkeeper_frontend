@@ -1,12 +1,15 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
+
 		INVESTIGATION: {
 			INDEX: "hospital/core/particular",
 			CREATE: "hospital/core/particular",
 			UPDATE: "hospital/core/particular",
+			INLINE_UPDATE: "hospital/core/particular/inline-update",
 			VIEW: "hospital/core/particular",
 			DELETE: "hospital/core/particular",
 		},
+
 		USER: {
 			INDEX: "core/user",
 			CREATE: "core/user",
