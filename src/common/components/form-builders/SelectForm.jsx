@@ -33,6 +33,7 @@ const SelectForm = forwardRef(
 			rightSection = undefined,
 			disabled = false,
 			withCheckIcon = true,
+			onBlur,
 		},
 		ref
 	) => {
@@ -105,6 +106,7 @@ const SelectForm = forwardRef(
 						transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 					>
 						<Select
+							onBlur={onBlur}
 							pt={pt}
 							classNames={inputCss}
 							ref={ref}

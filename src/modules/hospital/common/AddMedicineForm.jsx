@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import {
 	Box,
@@ -50,7 +50,7 @@ const DURATION_UNIT_OPTIONS = [
 	{ value: "year", label: "Year" },
 ];
 
-function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit }) {
+function MedicineListItem({ index, medicines, medicine, setMedicines, handleDelete, update }) {
 	const { t } = useTranslation();
 	const [mode, setMode] = useState("view");
 	const { data: by_meal_options } = useGlobalDropdownData({
@@ -78,11 +78,12 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 	const handleEdit = () => {
 		setMedicines((prev) => prev.map((m, i) => (i === index - 1 ? { ...m, ...medicine } : m)));
 		closeEditMode();
+		update(medicines.map((m, i) => (i === index - 1 ? { ...m, ...medicine } : m)));
 	};
 
 	return (
 		<Box>
-			<Text mb="es" style={{ cursor: "pointer" }} onClick={onEdit}>
+			<Text mb="es" style={{ cursor: "pointer" }}>
 				{index}. {medicine.medicine_name || medicine.generic}
 			</Text>
 			<Flex justify="space-between" align="center" gap="sm">
@@ -145,8 +146,16 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 	);
 }
 
-export default function AddMedicineForm({ module, form, existingMedicines }) {
+export default function AddMedicineForm({ module, form, update, medicines, setMedicines }) {
 	const dispatch = useDispatch();
+
+	// Handle onBlur update for form fields
+	const handleFieldBlur = () => {
+		// Only update if update function exists and form has data
+		if (update && form && form.values) {
+			update();
+		}
+	};
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
 	const { prescriptionId } = useParams();
@@ -157,7 +166,6 @@ export default function AddMedicineForm({ module, form, existingMedicines }) {
 	const { medicineData } = useMedicineData({ term: medicineTerm });
 	const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
 	const medicineForm = useForm(getMedicineFormInitialValues());
-	const [medicines, setMedicines] = useState([]);
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 
@@ -170,10 +178,6 @@ export default function AddMedicineForm({ module, form, existingMedicines }) {
 		path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
 		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
 	});
-
-	useEffect(() => {
-		setMedicines(existingMedicines || []);
-	}, [existingMedicines]);
 
 	// Add hotkey for save functionality
 	useHotkeys([
@@ -279,6 +283,7 @@ export default function AddMedicineForm({ module, form, existingMedicines }) {
 		}
 
 		setUpdateKey((prev) => prev + 1);
+		update([...medicines, values]);
 		medicineForm.reset();
 	};
 
@@ -288,45 +293,7 @@ export default function AddMedicineForm({ module, form, existingMedicines }) {
 			medicineForm.reset();
 			setEditIndex(null);
 		}
-	};
-
-	const handleEdit = (idx) => {
-		const medicineToEdit = medicines[idx];
-
-		// If editing a medicine that has a medicine ID, fetch the latest data
-		if (medicineToEdit.medicine_id) {
-			const selectedMedicine = medicineData?.find(
-				(item) => item.product_id?.toString() == medicineToEdit.medicine_id
-			);
-			if (selectedMedicine) {
-				// Merge the existing medicine data with the latest medicine data
-				const updatedMedicineData = {
-					...medicineToEdit,
-					medicine_name: selectedMedicine.product_name || medicineToEdit.medicine_name,
-					generic: selectedMedicine.generic || medicineToEdit.generic,
-					generic_id: selectedMedicine.generic_id || medicineToEdit.generic_id,
-					by_meal: selectedMedicine.by_meal || medicineToEdit.by_meal,
-					dose_details: selectedMedicine.dose_details || medicineToEdit.dose_details,
-				};
-
-				// Update duration and count based on available data
-				if (selectedMedicine.duration_day) {
-					updatedMedicineData.quantity = parseInt(selectedMedicine.duration_day) || medicineToEdit.quantity;
-					updatedMedicineData.duration = "day";
-				} else if (selectedMedicine.duration_month) {
-					updatedMedicineData.quantity = parseInt(selectedMedicine.duration_month) || medicineToEdit.quantity;
-					updatedMedicineData.duration = "month";
-				}
-
-				medicineForm.setValues(updatedMedicineData);
-			} else {
-				medicineForm.setValues(medicineToEdit);
-			}
-		} else {
-			medicineForm.setValues(medicineToEdit);
-		}
-
-		setEditIndex(idx);
+		update(medicines.filter((_, i) => i !== idx));
 	};
 
 	const handleReset = () => {
@@ -510,7 +477,7 @@ export default function AddMedicineForm({ module, form, existingMedicines }) {
 			</Text>
 			<ScrollArea h={mainAreaHeight - 450} bg="white">
 				<Stack gap="xs" p="sm">
-					{medicines.length === 0 && (
+					{medicines?.length === 0 && (
 						<Text fz="sm" c="var(--theme-secondary-color)">
 							No medicine added yet
 						</Text>
@@ -519,11 +486,11 @@ export default function AddMedicineForm({ module, form, existingMedicines }) {
 						<MedicineListItem
 							key={index}
 							index={index + 1}
+							medicines={medicines}
 							medicine={medicine}
 							setMedicines={setMedicines}
 							handleDelete={handleDelete}
-							onEdit={() => handleEdit(index)}
-							by_meal_options={by_meal_options}
+							update={update}
 						/>
 					))}
 				</Stack>
@@ -545,6 +512,7 @@ export default function AddMedicineForm({ module, form, existingMedicines }) {
 									placeholder="Write a advice..."
 									showRightSection={false}
 									style={{ input: { height: "92px" } }}
+									onBlur={handleFieldBlur}
 								/>
 							</Box>
 						</Box>
@@ -558,6 +526,7 @@ export default function AddMedicineForm({ module, form, existingMedicines }) {
 								name="follow_up_date"
 								value={form.values.follow_up_date}
 								placeholder="Follow up date"
+								onBlur={handleFieldBlur}
 							/>
 							{/* <Text mt="xs" fz="sm">
 							{t("specialDiscount")}

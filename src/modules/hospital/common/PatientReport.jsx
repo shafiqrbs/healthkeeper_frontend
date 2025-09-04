@@ -23,10 +23,18 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 284;
 
+	// Handle onBlur update for form fields
+	const handleFieldBlur = () => {
+		// Only update if update function exists and form has data
+		if (update && form && form.values) {
+			update();
+		}
+	};
+
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 
-	const handleDynamicFormChange = ({ id, name, value, parentSlug }) => {
+	const handleDynamicFormChange = ({ id, name, value, parentSlug, isCheckbox = false }) => {
 		const existingList = Array.isArray(form.values.dynamicFormData[parentSlug])
 			? form.values.dynamicFormData[parentSlug]
 			: [];
@@ -45,6 +53,11 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		};
 
 		form.setFieldValue("dynamicFormData", newDynamicFormData);
+
+		// For checkboxes, trigger instant update
+		if (isCheckbox && update && form && form.values) {
+			update();
+		}
 	};
 
 	const handleAutocompleteOptionAdd = (value, sectionParticulars = null, sectionSlug = null) => {
@@ -117,6 +130,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 											name: particular.name,
 											value: event.currentTarget.checked,
 											parentSlug: section.slug,
+											isCheckbox: true,
 										})
 									}
 								/>
@@ -147,6 +161,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 								parentSlug: section.slug,
 							})
 						}
+						onBlur={handleFieldBlur}
 					/>
 				);
 
@@ -173,6 +188,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 													parentSlug: section.slug,
 												})
 											}
+											onBlur={handleFieldBlur}
 										/>
 									</Grid.Col>
 								</Grid>
@@ -202,6 +218,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 											parentSlug: section.slug,
 										})
 									}
+									onBlur={handleFieldBlur}
 									minRows={3}
 								/>
 							);
@@ -229,6 +246,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 								parentSlug: section.slug,
 							})
 						}
+						onBlur={handleFieldBlur}
 					/>
 				);
 
@@ -252,6 +270,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 											parentSlug: section.slug,
 										})
 									}
+									onBlur={handleFieldBlur}
 								/>
 							);
 						})}
@@ -275,6 +294,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 									handleAutocompleteOptionAdd(e.target.value, particulars, section.slug);
 								}
 							}}
+							onBlur={handleFieldBlur}
 							rightSection={<IconCaretUpDownFilled size={16} />}
 						/>
 						<Stack gap={0} bg="white" px="sm" className="borderRadiusAll">
@@ -336,7 +356,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 			return (
 				<Box bg="white" p="les">
 					<ScrollArea h={height}>
-						<BasicInfoCard form={form} prescriptionData={prescriptionData} />
+						<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
 						<Box p="md">
 							<Text c="dimmed">No data available for {tabValue}</Text>
 						</Box>
@@ -348,7 +368,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		if (tabValue === "All") {
 			return (
 				<Box>
-					<BasicInfoCard form={form} prescriptionData={prescriptionData} />
+					<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
 					<ScrollArea h={height}>
 						<Stack gap="xl" p="md">
 							{currentSection.map((section) => (
@@ -368,7 +388,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		// Handle specific tab
 		return (
 			<Box>
-				<BasicInfoCard form={form} prescriptionData={prescriptionData} />
+				<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
 				<ScrollArea h={height}>
 					<Box p="md">
 						<Text fw={600} size="lg" mb="md">

@@ -20,6 +20,7 @@ function TextAreaForm({
 	style = {},
 	size,
 	showRightSection = true,
+	onBlur,
 }) {
 	const { t } = useTranslation();
 	return (
@@ -50,6 +51,7 @@ function TextAreaForm({
 						placeholder={placeholder}
 						mt={mt}
 						{...form.getInputProps(name && name)}
+						onBlur={onBlur || form.getInputProps(name).onBlur}
 						autoComplete="off"
 						onKeyDown={getHotkeyHandler([
 							[

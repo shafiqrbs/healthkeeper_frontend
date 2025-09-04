@@ -21,6 +21,7 @@ function InputForm({
 	rightSection,
 	styles = {},
 	handleChange,
+	onBlur,
 }) {
 	const { t } = useTranslation();
 
@@ -54,6 +55,7 @@ function InputForm({
 						disabled={disabled}
 						autoComplete="off"
 						{...form.getInputProps(name)}
+						onBlur={onBlur || form.getInputProps(name).onBlur}
 						onKeyDown={getHotkeyHandler([
 							[
 								"Enter",

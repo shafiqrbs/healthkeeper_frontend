@@ -25,6 +25,7 @@ import useDataWithoutStore from "@/common/hooks/useDataWithoutStore";
 const module = MODULES.PRESCRIPTION;
 
 export default function Index() {
+	const [medicines, setMedicines] = useState([]);
 	const { t } = useTranslation();
 	const { ref, width } = useElementSize();
 	const progress = useGetLoadingProgress();
@@ -50,19 +51,20 @@ export default function Index() {
 		// Always reset the form when prescription data changes
 		const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
 		form.setValues(updatedFormValues.initialValues);
+		setMedicines(existingMedicines || []);
 	}, [prescriptionData]);
 
 	const handleOpenViewOverview = () => {
 		openOverview();
 	};
 
-	const handlePrescriptionUpdate = async ({ medicines = [] }) => {
+	const handlePrescriptionUpdate = async (updatedMedicine) => {
 		try {
 			const createdBy = getLoggedInUser();
 
 			const formValue = {
 				is_completed: true,
-				medicines,
+				medicines: updatedMedicine || medicines,
 				advise: form.values.advise || "",
 				follow_up_date: form.values.follow_up_date || null,
 				prescription_date: new Date()?.toISOString()?.split("T")[0],
@@ -132,8 +134,9 @@ export default function Index() {
 								<AddMedicineForm
 									module={module}
 									form={form}
+									medicines={medicines}
+									setMedicines={setMedicines}
 									update={handlePrescriptionUpdate}
-									existingMedicines={existingMedicines}
 								/>
 							</Grid.Col>
 						</Grid>

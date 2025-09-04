@@ -2,7 +2,7 @@ import { Box, Divider, Flex, Stack, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import Vitals from "@modules/hospital/common/tab-items/Vitals";
 
-export default function BasicInfoCard({ form, prescriptionData }) {
+export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 	const { t } = useTranslation();
 
 	return (
@@ -26,7 +26,7 @@ export default function BasicInfoCard({ form, prescriptionData }) {
 			</Flex>
 			<Divider />
 			<Box bg="white">
-				<Vitals form={form} />
+				<Vitals form={form} onBlur={onBlur} />
 			</Box>
 		</Stack>
 	);

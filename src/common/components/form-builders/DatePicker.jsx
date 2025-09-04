@@ -23,6 +23,7 @@ function DatePickerForm({
 	disabledFutureDate = false,
 	miw,
 	disabled = false,
+	onBlur,
 }) {
 	const { t } = useTranslation();
 
@@ -55,10 +56,11 @@ function DatePickerForm({
 				miw={miw}
 				autoComplete="off"
 				{...form.getInputProps(name)}
+				onBlur={onBlur || form.getInputProps(name).onBlur}
 				onKeyDown={getHotkeyHandler([
 					[
 						"Enter",
-						(e) => {
+						() => {
 							nextField === "EntityFormSubmit"
 								? document.getElementById(nextField).click()
 								: document.getElementById(nextField).focus();

@@ -14,7 +14,7 @@ const BLOOD_GROUPS = [
 	{ label: "AB-", value: "AB-" },
 ];
 
-export default function Vitals({ form }) {
+export default function Vitals({ form, onBlur }) {
 	const { t } = useTranslation();
 	return (
 		<Flex gap="les" mt="xxxs" mb="xxxs" wrap="wrap">
@@ -27,6 +27,7 @@ export default function Vitals({ form }) {
 					placeholder="50"
 					mt={0}
 					styles={{ input: { padding: "es", fontSize: "sm" } }}
+					onBlur={onBlur}
 				/>
 				<SelectForm
 					form={form}
@@ -40,6 +41,7 @@ export default function Vitals({ form }) {
 					size="sm"
 					pt={0}
 					placeholder="A+"
+					onBlur={onBlur}
 				/>
 				<InputForm
 					label={t("bp")}
@@ -49,6 +51,7 @@ export default function Vitals({ form }) {
 					placeholder="120/80"
 					mt={0}
 					styles={{ input: { padding: "es", fontSize: "sm" } }}
+					onBlur={onBlur}
 				/>
 			</Group>
 		</Flex>
