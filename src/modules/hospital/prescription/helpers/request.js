@@ -5,9 +5,26 @@ const initialValues = {
 	follow_up_date: new Date(),
 };
 
-export const getPrescriptionFormInitialValues = () => {
+export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
+	const parseDate = (dateValue) => {
+		if (!dateValue) return new Date();
+		if (dateValue instanceof Date) return dateValue;
+		if (typeof dateValue === "string") {
+			const parsed = new Date(dateValue);
+			return isNaN(parsed.getTime()) ? new Date() : parsed;
+		}
+		return new Date();
+	};
+
+	const formattedInitialFormValues = {
+		basicInfo: initialFormValues?.patient_report?.basic_info || initialValues.basicInfo,
+		dynamicFormData: initialFormValues?.patient_report?.patient_examination || {},
+		advise: initialFormValues?.advise || "",
+		follow_up_date: parseDate(initialFormValues?.follow_up_date),
+	};
+
 	return {
-		initialValues,
+		initialValues: formattedInitialFormValues,
 	};
 };
 

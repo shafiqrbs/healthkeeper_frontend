@@ -19,7 +19,7 @@ import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 
-export default function PatientReport({ tabValue, form = null, update }) {
+export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 284;
 
@@ -336,7 +336,7 @@ export default function PatientReport({ tabValue, form = null, update }) {
 			return (
 				<Box bg="white" p="les">
 					<ScrollArea h={height}>
-						<BasicInfoCard form={form} />
+						<BasicInfoCard form={form} prescriptionData={prescriptionData} />
 						<Box p="md">
 							<Text c="dimmed">No data available for {tabValue}</Text>
 						</Box>
@@ -348,7 +348,7 @@ export default function PatientReport({ tabValue, form = null, update }) {
 		if (tabValue === "All") {
 			return (
 				<Box>
-					<BasicInfoCard form={form} />
+					<BasicInfoCard form={form} prescriptionData={prescriptionData} />
 					<ScrollArea h={height}>
 						<Stack gap="xl" p="md">
 							{currentSection.map((section) => (
@@ -368,7 +368,7 @@ export default function PatientReport({ tabValue, form = null, update }) {
 		// Handle specific tab
 		return (
 			<Box>
-				<BasicInfoCard form={form} />
+				<BasicInfoCard form={form} prescriptionData={prescriptionData} />
 				<ScrollArea h={height}>
 					<Box p="md">
 						<Text fw={600} size="lg" mb="md">

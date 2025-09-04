@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "./helpers/request";
@@ -20,6 +20,7 @@ import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
+import useDataWithoutStore from "@/common/hooks/useDataWithoutStore";
 
 const module = MODULES.PRESCRIPTION;
 
@@ -32,10 +33,25 @@ export default function Index() {
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const { prescriptionId } = useParams();
-	const form = useForm(getPrescriptionFormInitialValues(t));
 	const dispatch = useDispatch();
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);
+
+	const { data: prescriptionData } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
+	});
+
+	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
+	const existingMedicines = initialFormValues?.medicines || [];
+
+	const form = useForm(getPrescriptionFormInitialValues(t, {}));
+
+	useEffect(() => {
+		if (prescriptionData?.data?.json_content) {
+			const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
+			form.setValues(updatedFormValues.initialValues);
+		}
+	}, [prescriptionData, t]);
 
 	const handleOpenViewOverview = () => {
 		openOverview();
@@ -50,7 +66,7 @@ export default function Index() {
 				medicines,
 				advise: form.values.advise || "",
 				follow_up_date: form.values.follow_up_date || null,
-				prescription_date: new Date().toISOString().split("T")[0],
+				prescription_date: new Date()?.toISOString()?.split("T")[0],
 				created_by_id: createdBy?.id,
 				patient_report: {
 					basic_info: form.values.basicInfo || {},
@@ -106,10 +122,20 @@ export default function Index() {
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={9}>
-								<PatientReport tabValue={tabValue} form={form} update={handlePrescriptionUpdate} />
+								<PatientReport
+									tabValue={tabValue}
+									form={form}
+									update={handlePrescriptionUpdate}
+									prescriptionData={prescriptionData}
+								/>
 							</Grid.Col>
 							<Grid.Col span={15}>
-								<AddMedicineForm module={module} form={form} update={handlePrescriptionUpdate} />
+								<AddMedicineForm
+									module={module}
+									form={form}
+									update={handlePrescriptionUpdate}
+									existingMedicines={existingMedicines}
+								/>
 							</Grid.Col>
 						</Grid>
 					</Flex>

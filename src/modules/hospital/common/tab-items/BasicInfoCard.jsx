@@ -1,17 +1,9 @@
 import { Box, Divider, Flex, Stack, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import Vitals from "@modules/hospital/common/tab-items/Vitals";
-import { useParams } from "react-router-dom";
-import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
-export default function BasicInfoCard({ form }) {
+export default function BasicInfoCard({ form, prescriptionData }) {
 	const { t } = useTranslation();
-	const { prescriptionId } = useParams();
-
-	const { data: prescriptionData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
-	});
 
 	return (
 		<Stack gap="xxxs" bg="var(--theme-primary-color-1)" p="xs" className="borderRadiusAll">

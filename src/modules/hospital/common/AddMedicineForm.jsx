@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import {
 	Box,
@@ -145,7 +145,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, onEdit 
 	);
 }
 
-export default function AddMedicineForm({ module, form }) {
+export default function AddMedicineForm({ module, form, existingMedicines }) {
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
@@ -170,6 +170,10 @@ export default function AddMedicineForm({ module, form }) {
 		path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
 		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
 	});
+
+	useEffect(() => {
+		setMedicines(existingMedicines || []);
+	}, [existingMedicines]);
 
 	// Add hotkey for save functionality
 	useHotkeys([
@@ -390,7 +394,7 @@ export default function AddMedicineForm({ module, form }) {
 				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 1000, true);
 				setRefetchData({ module, refetching: true });
 				// Reset forms and data
-				form.reset();
+				// form.reset();
 				return true; // Indicate successful submission
 			}
 		} catch (error) {
@@ -511,7 +515,7 @@ export default function AddMedicineForm({ module, form }) {
 							No medicine added yet
 						</Text>
 					)}
-					{medicines.map((medicine, index) => (
+					{medicines?.map((medicine, index) => (
 						<MedicineListItem
 							key={index}
 							index={index + 1}
