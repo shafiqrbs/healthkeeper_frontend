@@ -88,7 +88,7 @@ import LabIndex from "@modules/hospital/lab";
 import LabGroupIndex from "@modules/hospital/lab-group";
 import RequisitionIndex from "@modules/hospital/requisition";
 import InvestigationIndex from "@modules/hospital/core/investigation";
-import MedicineStockIndex from "@modules/hospital/pharmacy/medicine";
+import MedicineStockIndex from "@modules/hospital/pharmacy/stock";
 import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/doctor";
 import ListIndex from "@modules/hospital/visit/list";
