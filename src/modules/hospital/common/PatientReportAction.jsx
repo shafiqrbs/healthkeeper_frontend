@@ -5,6 +5,8 @@ import { useDisclosure } from "@mantine/hooks";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import SelectForm from "@components/form-builders/SelectForm";
+import { useForm } from "@mantine/form";
+import { getPatientReportFormInitialValues } from "../prescription/helpers/request";
 
 const roomsOptions = [
 	{ value: "101", label: "101" },
@@ -20,11 +22,36 @@ const referredOptions = [
 	{ value: "Dr. Jim Beam", label: "Dr. Jim Beam" },
 ];
 
-export default function PatientReportAction({ form }) {
+export default function PatientReportAction() {
 	const { t } = useTranslation();
+	const form = useForm(getPatientReportFormInitialValues());
 	const [openedReferred, { open: openReferred, close: closeReferred }] = useDisclosure(false);
 	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
 	const [openedRoomReferred, { open: openRoomReferred, close: closeRoomReferred }] = useDisclosure(false);
+
+	const handleSubmit = (values) => {
+		if (values === "referred") {
+			const formValues = {
+				referred_name: form.values.referred_name,
+				comment: form.values.referred_comment,
+			};
+			console.log(formValues);
+			closeReferred();
+		} else if (values === "admission") {
+			const formValues = {
+				comment: form.values.admission_comment,
+			};
+			console.log(formValues);
+			closeAdmission();
+		} else if (values === "room_referred") {
+			const formValues = {
+				room_no: form.values.room_no,
+				comment: form.values.room_comment,
+			};
+			console.log(formValues);
+			closeRoomReferred();
+		}
+	};
 
 	return (
 		<>
@@ -57,24 +84,24 @@ export default function PatientReportAction({ form }) {
 					bg="var(--theme-secondary-color-8)"
 					onClick={openRoomReferred}
 				>
-					{t("roomReferred")}
+					{t("RoomReferred")}
 				</Button>
 			</Button.Group>
 			{/* ----------- referred drawer section --------- */}
 			<CompactDrawer
 				opened={openedReferred}
 				close={closeReferred}
-				save={() => {}}
+				save={() => handleSubmit("referred")}
 				position="right"
 				size="30%"
 				keepMounted={false}
 				bg="white"
-				title="Referred"
+				title={t("Referred")}
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
 						<Text fz="sm">
-							{t("Referred")} <RequiredAsterisk />
+							{t("ReferredName")} <RequiredAsterisk />
 						</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
@@ -103,7 +130,7 @@ export default function PatientReportAction({ form }) {
 							placeholder={t("DummyMessage")}
 							nextField="name"
 							form={form}
-							name="comment"
+							name="referred_comment"
 							mt={0}
 							id="comment"
 							showRightSection={false}
@@ -116,12 +143,12 @@ export default function PatientReportAction({ form }) {
 			<CompactDrawer
 				opened={openedAdmission}
 				close={closeAdmission}
-				save={() => {}}
+				save={() => handleSubmit("admission")}
 				position="right"
 				size="30%"
 				keepMounted={false}
 				bg="white"
-				title={t("admission")}
+				title={t("Admission")}
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
@@ -134,7 +161,7 @@ export default function PatientReportAction({ form }) {
 							placeholder={t("DummyMessage")}
 							nextField="name"
 							form={form}
-							name="comment"
+							name="admission_comment"
 							mt={0}
 							id="comment"
 							showRightSection={false}
@@ -147,12 +174,12 @@ export default function PatientReportAction({ form }) {
 			<CompactDrawer
 				opened={openedRoomReferred}
 				close={closeRoomReferred}
-				save={() => {}}
+				save={() => handleSubmit("room_referred")}
 				position="right"
 				size="30%"
 				keepMounted={false}
 				bg="white"
-				title={t("roomReferred")}
+				title={t("RoomReferred")}
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
@@ -186,7 +213,7 @@ export default function PatientReportAction({ form }) {
 							placeholder={t("DummyMessage")}
 							nextField="name"
 							form={form}
-							name="comment"
+							name="room_comment"
 							mt={0}
 							id="comment"
 							showRightSection={false}

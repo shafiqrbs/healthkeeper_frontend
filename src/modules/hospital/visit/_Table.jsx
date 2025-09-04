@@ -53,11 +53,20 @@ export default function Table({ module, height, closeTable }) {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 
+	const handlePos = useReactToPrint({
+		content: () => posRef.current,
+	});
+
+	const handleA4 = useReactToPrint({
+		content: () => a4Ref.current,
+	});
+
 	const [rootRef, setRootRef] = useState(null);
 	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
 	const [printData, setPrintData] = useState({});
+	const [type, setType] = useState(null);
 
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
@@ -75,6 +84,14 @@ export default function Table({ module, height, closeTable }) {
 		const data = sortBy(listData.data, sortStatus.columnAccessor);
 		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
 	}, [sortStatus, listData.data]);
+
+	useEffect(() => {
+		if (type === "a4") {
+			handleA4();
+		} else if (type === "pos") {
+			handlePos();
+		}
+	}, [printData, type]);
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -208,26 +225,16 @@ export default function Table({ module, height, closeTable }) {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 	};
 
-	const handlePos = useReactToPrint({
-		content: () => posRef.current,
-	});
-
-	const handleA4 = useReactToPrint({
-		content: () => a4Ref.current,
-	});
-
 	const handleA4Print = async (id) => {
 		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
 		setPrintData(res.data);
-
-		handleA4();
+		setType("a4");
 	};
 
 	const handlePosPrint = async (id) => {
 		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
 		setPrintData(res.data);
-
-		handlePos();
+		setType("pos");
 	};
 
 	return (
