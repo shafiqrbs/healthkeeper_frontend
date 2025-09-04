@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import {
 	Box,
@@ -22,7 +22,7 @@ import TextAreaForm from "@components/form-builders/TextAreaForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import Prescription2 from "@components/print-formats/prescription/Prescription2";
+import PrescriptionFull from "@components/print-formats/prescription/PrescriptionFull";
 import { useDebouncedState, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -148,14 +148,6 @@ function MedicineListItem({ index, medicines, medicine, setMedicines, handleDele
 
 export default function AddMedicineForm({ module, form, update, medicines, setMedicines }) {
 	const dispatch = useDispatch();
-
-	// Handle onBlur update for form fields
-	const handleFieldBlur = () => {
-		// Only update if update function exists and form has data
-		if (update && form && form.values) {
-			update();
-		}
-	};
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
 	const { prescriptionId } = useParams();
@@ -168,6 +160,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
+	const [printData, setPrintData] = useState(null);
 
 	const { data: by_meal_options } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
@@ -178,6 +171,23 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 		path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
 		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
 	});
+
+	const printPrescription2A4 = useReactToPrint({
+		documentTitle: `prescription-${Date.now().toLocaleString()}`,
+		content: () => prescription2A4Ref.current,
+	});
+
+	useEffect(() => {
+		if (!printData) return;
+		printPrescription2A4();
+	}, [printData]);
+
+	const handleFieldBlur = () => {
+		// Only update if update function exists and form has data
+		if (update && form && form.values) {
+			update();
+		}
+	};
 
 	// Add hotkey for save functionality
 	useHotkeys([
@@ -202,16 +212,18 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 		[
 			"alt+4",
 			() => {
-				handlePrintPrescription2A4();
+				printPrescription2A4();
+				showNotificationComponent(
+					t("Prescription printed successfully"),
+					"blue",
+					"lightgray",
+					true,
+					1000,
+					true
+				);
 			},
 		],
 	]);
-
-	// =============== create print functions using useReactToPrint hook ================
-	const printPrescription2A4 = useReactToPrint({
-		documentTitle: `prescription-${Date.now().toLocaleString()}`,
-		content: () => prescription2A4Ref.current,
-	});
 
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
@@ -307,10 +319,6 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 		// Clear held data when resetting
 	};
 
-	const handlePrintPrescription2A4 = () => {
-		printPrescription2A4();
-	};
-
 	const openConfirmationModal = () => {
 		modals.openConfirmModal({
 			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
@@ -325,7 +333,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 	const handlePrescriptionSubmit = async () => {
 		if (!medicines || medicines.length === 0) {
 			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, 1000, true);
-			return;
+			return {};
 		}
 
 		setIsSubmitting(true);
@@ -362,14 +370,22 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 				setRefetchData({ module, refetching: true });
 				// Reset forms and data
 				// form.reset();
-				return true; // Indicate successful submission
+				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {
 			console.error("Error submitting prescription:", error);
 			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
-			return false; // Indicate failed submission
+			return {}; // Indicate failed submission
 		} finally {
 			setIsSubmitting(false);
+		}
+	};
+
+	const handlePrescriptionPrintSubmit = async () => {
+		const result = await handlePrescriptionSubmit();
+
+		if (result.status === 200) {
+			setPrintData(result.data);
 		}
 	};
 
@@ -581,7 +597,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 							</Text>
 						</Stack>
 					</Button>
-					<Button w="100%" bg="var(--theme-prescription-btn-color)" onClick={handlePrintPrescription2A4}>
+					<Button w="100%" bg="var(--theme-prescription-btn-color)" onClick={handlePrescriptionPrintSubmit}>
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("Prescription")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -605,7 +621,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 					</Button>
 				</Button.Group>
 			}
-			<Prescription2 ref={prescription2A4Ref} />
+			<PrescriptionFull ref={prescription2A4Ref} data={printData} />
 		</Box>
 	);
 }

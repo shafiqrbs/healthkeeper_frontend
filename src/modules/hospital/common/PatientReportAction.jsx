@@ -64,7 +64,7 @@ export default function PatientReportAction() {
 					bg="var(--theme-primary-color-6)"
 					onClick={openReferred}
 				>
-					{t("referred")}
+					{t("Referred")}
 				</Button>
 				<Button
 					w="32%"
@@ -74,7 +74,7 @@ export default function PatientReportAction() {
 					bg="var(--theme-secondary-color-5)"
 					onClick={openAdmission}
 				>
-					{t("admission")}
+					{t("Admission")}
 				</Button>
 				<Button
 					w="38%"
