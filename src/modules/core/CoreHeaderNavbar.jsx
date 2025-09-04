@@ -46,45 +46,7 @@ function CoreHeaderNavbar({ pageTitle, module, pageDescription }) {
 							</Flex>
 						)}
 					</Group>
-					<Group>
-						<Group ml={50} gap={5} className={classes.links} visibleFrom="sm" mt={"2"}>
-							{items}
-						</Group>
-						{coreHeaderLinks[module]?.dropDownLinks?.length > 0 && (
-							<Menu
-								withArrow
-								arrowPosition="center"
-								trigger="hover"
-								openDelay={100}
-								closeDelay={400}
-								mr={"8"}
-							>
-								<Menu.Target>
-									<ActionIcon
-										mt={"4"}
-										variant="filled"
-										color="red.5"
-										radius="xl"
-										aria-label="Settings"
-									>
-										<IconInfoCircle height={12} width={12} stroke={1.5} />
-									</ActionIcon>
-								</Menu.Target>
-								<Menu.Dropdown>
-									{coreHeaderLinks[module]?.dropDownLinks?.map((link, index) => (
-										<Menu.Item
-											key={index}
-											component="button"
-											onClick={() => navigate(link.link)}
-											leftSection={<link.icon style={{ width: rem(14), height: rem(14) }} />}
-										>
-											{t(link.label)}
-										</Menu.Item>
-									))}
-								</Menu.Dropdown>
-							</Menu>
-						)}
-					</Group>
+
 				</div>
 			</header>
 		</>
