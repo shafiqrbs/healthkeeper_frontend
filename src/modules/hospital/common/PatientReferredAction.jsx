@@ -22,7 +22,7 @@ const referredOptions = [
 	{ value: "Dr. Jim Beam", label: "Dr. Jim Beam" },
 ];
 
-export default function PatientReportAction() {
+export default function PatientReferredAction() {
 	const { t } = useTranslation();
 	const form = useForm(getPatientReportFormInitialValues());
 	const [openedReferred, { open: openReferred, close: closeReferred }] = useDisclosure(false);

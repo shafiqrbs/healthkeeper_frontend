@@ -14,11 +14,12 @@ import {
 	ActionIcon,
 } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
-import PatientReportAction from "./PatientReportAction";
+import PatientReferredAction from "./PatientReferredAction";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 import { useState } from "react";
+import inputCss from "@assets/css/InputField.module.css";
 
 export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -178,7 +179,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 
 			case "Input":
 				return (
-					<Stack gap="md">
+					<Stack gap="xxs">
 						{particulars?.map((particular, index) => {
 							const value = form.values.dynamicFormData?.[section.slug]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
@@ -189,6 +190,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 									<Grid.Col span={8}>
 										<TextInput
 											label=""
+											classNames={inputCss}
 											placeholder={`Enter ${particular.name}`}
 											value={value || ""}
 											onChange={(event) =>
@@ -303,10 +305,11 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 									setAutocompleteValue("");
 								}, 0);
 							}}
+							classNames={inputCss}
 							onBlur={handleFieldBlur}
 							rightSection={<IconCaretUpDownFilled size={16} />}
 						/>
-						<Stack gap={0} bg="white" px="sm" className="borderRadiusAll">
+						<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
 							{form.values.dynamicFormData?.[section.slug]?.map((item, idx) => (
 								<Flex
 									key={idx}
@@ -382,9 +385,11 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 						<Stack gap="xl" p="md">
 							{currentSection.map((section) => (
 								<Box key={section.id}>
-									<Text fw={600} size="lg" mb="md">
-										{section.name}
-									</Text>
+									<Box bg="var(--theme-secondary-color-1)" mb="md" p="xxxs">
+										<Text fw={600} size="lg">
+											{section.name}
+										</Text>
+									</Box>
 									{renderDynamicForm(section)}
 								</Box>
 							))}
@@ -413,7 +418,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 	return (
 		<Box bg="white" p="les">
 			{generateTabItems()}
-			<PatientReportAction form={form} />
+			<PatientReferredAction form={form} />
 		</Box>
 	);
 }
