@@ -4,7 +4,7 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { Box, Button, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text, TextInput } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import { useState } from "react";
-import Ward from "../common/Ward";
+import Ward from "../common/Cabin";
 import { IconSearch } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import InputForm from "@components/form-builders/InputForm";

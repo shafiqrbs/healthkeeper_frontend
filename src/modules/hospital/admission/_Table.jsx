@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
@@ -15,6 +15,14 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "./confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from "./helpers/request";
+import { getIndexEntityData } from "@/app/store/core/crudThunk";
+import { setItemData } from "@/app/store/core/crudSlice";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { useDispatch, useSelector } from "react-redux";
+import { sortBy } from "lodash";
+import { formatDate } from "@/common/utils";
+
+const PER_PAGE = 20;
 
 const data = [
 	{
@@ -115,7 +123,9 @@ const tabs = ["all", "closed", "done", "inProgress", "returned"];
 export default function Table({ module }) {
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
-
+	const dispatch = useDispatch();
+	const listData = useSelector((state) => state.crud[module].data);
+	const refetch = useSelector((state) => state.crud[module].refetching);
 	const [fetching, setFetching] = useState(false);
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
@@ -125,16 +135,20 @@ export default function Table({ module }) {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-
+	const [rootRef, setRootRef] = useState(null);
+	const [value, setValue] = useState("all");
+	const [controlsRefs, setControlsRefs] = useState({});
+	const filterData = useSelector((state) => state.crud[module].filterData);
+	const [records, setRecords] = useState(sortBy(listData.data, "name"));
+	const [sortStatus, setSortStatus] = useState({
+		columnAccessor: "name",
+		direction: "asc",
+	});
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
 		},
 	});
-
-	const [rootRef, setRootRef] = useState(null);
-	const [value, setValue] = useState("all");
-	const [controlsRefs, setControlsRefs] = useState({});
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -145,17 +159,67 @@ export default function Table({ module }) {
 		if (!hasMore && pageNum > 1) return;
 
 		setFetching(true);
+		const value = {
+			url: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX,
+			params: {
+				term: filterData.keywordSearch,
+				page: pageNum,
+				offset: PER_PAGE,
+			},
+			module,
+		};
+
+		try {
+			const result = await dispatch(getIndexEntityData(value));
+			if (result.payload) {
+				const newData = result.payload.data;
+				const total = result.payload.total;
+
+				// Update hasMore based on whether we've loaded all data
+				setHasMore(newData.length === PER_PAGE && pageNum * PER_PAGE < total);
+
+				// If appending, combine with existing data
+				if (append && pageNum > 1) {
+					dispatch(
+						setItemData({
+							module,
+							data: {
+								...listData,
+								data: [...listData.data, ...newData],
+								total,
+							},
+						})
+					);
+				}
+			}
+		} catch (err) {
+			console.error("Unexpected error:", err);
+		} finally {
+			setFetching(false);
+		}
 	};
 
 	const loadMoreRecords = useCallback(() => {
-		// if (hasMore && !fetching) {
-		// 	const nextPage = page + 1;
-		// 	setPage(nextPage);
-		// 	fetchData(nextPage, true);
-		// } else if (!hasMore) {
-		// 	console.info("No more records");
-		// }
+		if (hasMore && !fetching) {
+			const nextPage = page + 1;
+			setPage(nextPage);
+			fetchData(nextPage, true);
+		} else if (!hasMore) {
+			console.info("No more records");
+		}
 	}, [hasMore, fetching, page]);
+
+	useEffect(() => {
+		fetchData(1, false);
+		setPage(1);
+		setHasMore(true);
+		// reset scroll position when data is refreshed
+		scrollViewportRef.current?.scrollTo(0, 0);
+	}, [refetch, filterData]);
+	useEffect(() => {
+		const data = sortBy(listData.data, sortStatus.columnAccessor);
+		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
+	}, [sortStatus, listData.data]);
 
 	const handleView = (id) => {
 		open();
@@ -218,13 +282,13 @@ export default function Table({ module }) {
 						footer: tableCss.footer,
 						pagination: tableCss.pagination,
 					}}
-					records={data}
+					records={records}
 					columns={[
 						{
 							accessor: "index",
 							title: t("S/N"),
 							textAlignment: "right",
-							render: (item) => item.index,
+							render: (_, index) => index + 1,
 						},
 						{
 							accessor: "created_at",
@@ -232,7 +296,7 @@ export default function Table({ module }) {
 							textAlignment: "right",
 							render: (item) => (
 								<Text fz="sm" onClick={() => handleView(item.id)} className="activate-link">
-									{item.created_at}
+									{formatDate(item.created_at)}
 								</Text>
 							),
 						},
@@ -242,9 +306,9 @@ export default function Table({ module }) {
 							render: (item) => item.created_by || "N/A",
 						},
 						{ accessor: "patient_id", title: t("patientId") },
-						{ accessor: "patient_name", title: t("Name") },
+						{ accessor: "name", title: t("Name") },
 						{ accessor: "doctor_name", title: t("doctor") },
-						{ accessor: "cabin", title: t("Cabin/Bed") },
+						{ accessor: "visiting_room", title: t("Cabin/Bed") },
 						{
 							accessor: "payment_status",
 							title: t("paymentStatus"),

@@ -1,16 +1,16 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import { Box, Button, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text, TextInput } from "@mantine/core";
+import { Box, Button, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import { useState } from "react";
-import Ward from "../common/Ward";
-import { IconSearch } from "@tabler/icons-react";
+import Cabin from "../common/Cabin";
 import { useTranslation } from "react-i18next";
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import Bed from "../common/Bed";
 
 const DEPARTMENT = [
 	{
@@ -103,7 +103,7 @@ export default function ConfirmModal({ opened, close, form }) {
 				<Box py="sm">
 					<Grid columns={24}>
 						<Grid.Col span={8}>
-							<Flex p="xs" gap="xs" bg="var(--theme-primary-color-0)" mb="sm">
+							{/* <Flex p="xs" gap="xs" bg="var(--theme-primary-color-0)" mb="sm">
 								<TextInput
 									leftSection={<IconSearch size={18} />}
 									name="searchPatient"
@@ -111,24 +111,23 @@ export default function ConfirmModal({ opened, close, form }) {
 									w="100%"
 								/>
 								<Button miw={100}>Process</Button>
-							</Flex>
+							</Flex> */}
 							<TabsWithSearch
-								tabList={["Ward", "Cabin", "ICU"]}
+								tabList={["Cabin", "Bed"]}
 								searchbarContainerBg="var(--theme-primary-color-1)"
+								tabWidth="48%"
 								tabPanels={[
 									{
-										tab: "Ward",
+										tab: "Cabin",
 										component: (
-											<Ward selectedRoom={selectedRoom} handleRoomClick={handleRoomClick} />
+											<Cabin selectedRoom={selectedRoom} handleRoomClick={handleRoomClick} />
 										),
 									},
 									{
-										tab: "Cabin",
-										component: <Text>Report</Text>,
-									},
-									{
-										tab: "ICU",
-										component: <Text>Report</Text>,
+										tab: "Bed",
+										component: (
+											<Bed selectedRoom={selectedRoom} handleRoomClick={handleRoomClick} />
+										),
 									},
 								]}
 							/>
@@ -138,93 +137,33 @@ export default function ConfirmModal({ opened, close, form }) {
 								<Stack mih={height} className="form-stack-vertical">
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("RoomType")}</Text>
+											<Text fz="sm">{t("RoomType")}:</Text>
 										</Grid.Col>
-										<Grid.Col span={14}>
-											<SegmentedControl
-												fullWidth
-												color="var(--theme-primary-color-6)"
-												value={form.values.roomType}
-												id="roomType"
-												name="roomType"
-												onChange={(val) => handleTypeChange(val)}
-												data={[
-													{ label: t("OPD"), value: "opd" },
-													{ label: t("Emergency"), value: "emergency" },
-												]}
-											/>
-										</Grid.Col>
+										<Grid.Col span={14}>{}</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("RoomNo")}</Text>
+											<Text fz="sm">{t("RoomNo")}:</Text>
 										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputForm
-												form={form}
-												label=""
-												tooltip={t("enterRoomName")}
-												placeholder="R1234"
-												name="roomNo"
-												id="roomNo"
-												nextField="dob"
-												value={form.values.roomNo}
-											/>
-										</Grid.Col>
+										<Grid.Col span={14}>{}</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("ReferredDoctor")}</Text>
+											<Text fz="sm">{t("ReferredDoctor")}:</Text>
 										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												label=""
-												tooltip={t("enterReferredDoctor")}
-												placeholder="Dr. Shafiqul Islam"
-												name="referredDoctor"
-												id="referredDoctor"
-												nextField="dob"
-												value={form.values.referredDoctor}
-												dropdownValue={DOCTORS}
-											/>
-										</Grid.Col>
+										<Grid.Col span={14}>{}</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("Designation")}</Text>
+											<Text fz="sm">{t("Designation")}:</Text>
 										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												label=""
-												tooltip={t("enterDesignation")}
-												placeholder="Cardiologist"
-												name="designation"
-												id="designation"
-												nextField="dob"
-												value={form.values.designation}
-												dropdownValue={DESIGNATION}
-											/>
-										</Grid.Col>
+										<Grid.Col span={14}>{}</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("Comment")}</Text>
+											<Text fz="sm">{t("Comment")}:</Text>
 										</Grid.Col>
-										<Grid.Col span={14}>
-											<TextAreaForm
-												form={form}
-												label=""
-												tooltip={t("enterComment")}
-												placeholder="Comment"
-												name="comment"
-												id="comment"
-												nextField="dob"
-												value={form.values.comment}
-												style={{ input: { height: "120px" } }}
-											/>
-										</Grid.Col>
+										<Grid.Col span={14}>{}</Grid.Col>
 									</Grid>
 								</Stack>
 							</ScrollArea>
@@ -240,7 +179,7 @@ export default function ConfirmModal({ opened, close, form }) {
 											<SelectForm
 												form={form}
 												label=""
-												tooltip={t("enterUnitName")}
+												tooltip={t("EnterUnitName")}
 												placeholder="R1234"
 												name="unitName"
 												id="unitName"
@@ -257,7 +196,7 @@ export default function ConfirmModal({ opened, close, form }) {
 											<SelectForm
 												form={form}
 												label=""
-												tooltip={t("enterDepartment")}
+												tooltip={t("EnterDepartment")}
 												placeholder="Cardiology"
 												name="department"
 												id="department"
@@ -274,7 +213,7 @@ export default function ConfirmModal({ opened, close, form }) {
 											<SelectForm
 												form={form}
 												label=""
-												tooltip={t("enterAssignConsultant")}
+												tooltip={t("EnterAssignConsultant")}
 												placeholder="Dr. Shafiqul Islam"
 												name="assignConsultant"
 												id="assignConsultant"
@@ -291,7 +230,7 @@ export default function ConfirmModal({ opened, close, form }) {
 											<SelectForm
 												form={form}
 												label=""
-												tooltip={t("enterAssignDoctor")}
+												tooltip={t("EnterAssignDoctor")}
 												placeholder="Dr. Shafiqul Islam"
 												name="assignDoctor"
 												id="assignDoctor"
@@ -308,7 +247,7 @@ export default function ConfirmModal({ opened, close, form }) {
 											<TextAreaForm
 												form={form}
 												label=""
-												tooltip={t("enterComment")}
+												tooltip={t("EnterComment")}
 												placeholder="Comment"
 												name="comment2"
 												id="comment2"
@@ -329,14 +268,17 @@ export default function ConfirmModal({ opened, close, form }) {
 								<Button type="submit" bg="var(--theme-primary-color-6)" color="white">
 									{t("Confirm")}
 								</Button>
-								<Button
+								<Button type="button" bg="var(--theme-tertiary-color-6)" color="white" onClick={close}>
+									{t("Cancel")}
+								</Button>
+								{/* <Button
 									type="button"
 									onClick={handleAdmissionConfirmation}
 									bg="var(--theme-primary-color-6)"
 									color="white"
 								>
 									{t("AdmissionConfirmation")}
-								</Button>
+								</Button> */}
 							</Flex>
 						</Grid.Col>
 					</Grid>

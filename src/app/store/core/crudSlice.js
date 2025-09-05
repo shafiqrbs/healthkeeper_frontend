@@ -35,7 +35,7 @@ const initialState = {
 
 	bed: {
 		isLoading: true,
-		refetching: true,
+		refetching: false,
 		error: null,
 		data: {},
 		editData: {},
@@ -55,7 +55,7 @@ const initialState = {
 
 	cabin: {
 		isLoading: true,
-		refetching: true,
+		refetching: false,
 		error: null,
 		data: {},
 		editData: {},
@@ -269,7 +269,7 @@ const initialState = {
 		validation: false,
 		data: {},
 		editData: {},
-		filterData: { name: ""},
+		filterData: { name: "" },
 	},
 	recipeItems: {
 		isLoading: true,

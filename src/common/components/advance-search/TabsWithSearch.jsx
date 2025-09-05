@@ -12,6 +12,7 @@ export default function TabsWithSearch({
 	tabList,
 	hideSearchbar = false,
 	searchbarContainerBg = "var(--theme-secondary-color-5)",
+	tabWidth = "32%",
 }) {
 	const { t } = useTranslation();
 	const [rootRef, setRootRef] = useState(null);
@@ -33,7 +34,7 @@ export default function TabsWithSearch({
 								<>
 									{tabList.map((tab, index) => (
 										<Tabs.Tab
-											w="32%"
+											w={tabWidth}
 											key={tab}
 											value={tab}
 											ref={setControlRef(tab)}

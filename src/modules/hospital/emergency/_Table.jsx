@@ -1,8 +1,8 @@
-import {useCallback, useEffect, useRef, useState} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Grid, Group, Menu, Tabs, Text } from "@mantine/core";
 import { IconArrowRight, IconDotsVertical, IconTrashX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -16,112 +16,18 @@ import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import {useDispatch, useSelector} from "react-redux";
-import {sortBy} from "lodash";
-import {getIndexEntityData} from "@/app/store/core/crudThunk";
-import {setItemData} from "@/app/store/core/crudSlice";
-import {formatDate} from "@utils/index";
-
-
-const data = [
-	{
-		id: 1,
-		index: 1,
-		created_at: "2025-01-15",
-		created_by: "Dr. Smith",
-		visit_no: "VIS-001",
-		patient_id: "P001",
-		patient_name: "John Doe",
-		doctor_name: "Dr. Johnson",
-		diseases: "Hypertension, Diabetes",
-		total_amount: "150.00",
-		payment_status: "paid",
-	},
-	{
-		id: 2,
-		index: 2,
-		created_at: "2025-01-16",
-		created_by: "Dr. Brown",
-		visit_no: "VIS-002",
-		patient_id: "P002",
-		patient_name: "Jane Smith",
-		doctor_name: "Dr. Davis",
-		diseases: "Asthma",
-		total_amount: "200.00",
-		payment_status: "pending",
-	},
-	{
-		id: 3,
-		index: 3,
-		created_at: "2025-01-17",
-		created_by: "Dr. Garcia",
-		visit_no: "VIS-003",
-		patient_id: "P003",
-		patient_name: "Mike Johnson",
-		doctor_name: "Dr. Martinez",
-		diseases: "Heart Disease",
-		total_amount: "300.00",
-		payment_status: "paid",
-	},
-	{
-		id: 4,
-		index: 4,
-		created_at: "2025-01-18",
-		created_by: "Dr. Lee",
-		visit_no: "VIS-004",
-		patient_id: "P004",
-		patient_name: "Sarah Wilson",
-		doctor_name: "Dr. Taylor",
-		diseases: "Migraine",
-		total_amount: "120.00",
-		payment_status: "paid",
-	},
-	{
-		id: 5,
-		index: 5,
-		created_at: "2025-01-19",
-		created_by: "Dr. Rodriguez",
-		visit_no: "VIS-005",
-		patient_id: "P005",
-		patient_name: "David Brown",
-		doctor_name: "Dr. White",
-		diseases: "Arthritis",
-		total_amount: "180.00",
-		payment_status: "pending",
-	},
-	{
-		id: 6,
-		index: 6,
-		created_at: "2025-01-19",
-		created_by: "Dr. Rodriguez",
-		visit_no: "VIS-005",
-		patient_id: "P005",
-		patient_name: "David Brown",
-		doctor_name: "Dr. White",
-		diseases: "Arthritis",
-		total_amount: "180.00",
-		payment_status: "pending",
-	},
-	{
-		id: 7,
-		index: 7,
-		created_at: "2025-01-19",
-		created_by: "Dr. Rodriguez",
-		visit_no: "VIS-005",
-		patient_id: "P005",
-		patient_name: "David Brown",
-		doctor_name: "Dr. White",
-		diseases: "Arthritis",
-		total_amount: "180.00",
-		payment_status: "pending",
-	},
-];
+import { useDispatch, useSelector } from "react-redux";
+import { sortBy } from "lodash";
+import { getIndexEntityData } from "@/app/store/core/crudThunk";
+import { setItemData } from "@/app/store/core/crudSlice";
+import { formatDate } from "@utils/index";
+import CompactDrawer from "@/common/components/drawers/CompactDrawer";
+import TextAreaForm from "@/common/components/form-builders/TextAreaForm";
 
 const PER_PAGE = 20;
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
-export default function Table({module}) {
-
+export default function Table({ module }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -135,9 +41,12 @@ export default function Table({module}) {
 	const [hasMore, setHasMore] = useState(true);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
+	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
+
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
+			admission_comment: "",
 		},
 	});
 
@@ -153,7 +62,6 @@ export default function Table({module}) {
 	});
 
 	const [records, setRecords] = useState(sortBy(listData.data, "name"));
-
 
 	useEffect(() => {
 		const data = sortBy(listData.data, sortStatus.columnAccessor);
@@ -227,8 +135,6 @@ export default function Table({module}) {
 		scrollViewportRef.current?.scrollTo(0, 0);
 	}, [dispatch, refetch, filterData]);
 
-
-
 	const handleView = (id) => {
 		open();
 	};
@@ -242,6 +148,7 @@ export default function Table({module}) {
 	};
 
 	const handleAdmission = () => {
+		console.log(form.values);
 		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
 	};
 
@@ -274,7 +181,7 @@ export default function Table({module}) {
 						bg="var(--theme-success-color)"
 						c="white"
 					>
-						{t("visitOverview")}
+						{t("VisitOverview")}
 					</Button>
 				</Flex>
 			</Flex>
@@ -345,7 +252,7 @@ export default function Table({module}) {
 										bg="var(--theme-success-color)"
 										c="white"
 										size="xs"
-										onClick={() => handleAdmission(values.id)}
+										onClick={openAdmission}
 										radius="es"
 										rightSection={<IconArrowRight size={18} />}
 										className="border-right-radius-none"
@@ -403,14 +310,44 @@ export default function Table({module}) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height -118}
+					height={height - 118}
 					onScrollToBottom={loadMoreRecords}
 					scrollViewportRef={scrollViewportRef}
 				/>
 			</Box>
-			<DataTableFooter indexData={data} module="visit" />
+			<DataTableFooter indexData={listData} module="visit" />
 			<DetailsDrawer opened={opened} close={close} />
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
+
+			<CompactDrawer
+				opened={openedAdmission}
+				close={closeAdmission}
+				save={() => handleAdmission()}
+				position="right"
+				size="30%"
+				keepMounted={false}
+				bg="white"
+				title={t("Admission")}
+			>
+				<Grid align="center" columns={20}>
+					<Grid.Col span={7}>
+						<Text fz="sm">{t("Comment")}</Text>
+					</Grid.Col>
+					<Grid.Col span={13}>
+						<TextAreaForm
+							tooltip={t("Comment")}
+							label=""
+							placeholder={t("DummyMessage")}
+							form={form}
+							name="admission_comment"
+							mt={0}
+							id="comment"
+							showRightSection={false}
+							style={{ input: { height: 100 } }}
+						/>
+					</Grid.Col>
+				</Grid>
+			</CompactDrawer>
 		</Box>
 	);
 }
