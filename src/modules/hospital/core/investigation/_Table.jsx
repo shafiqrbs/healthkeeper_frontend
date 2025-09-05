@@ -199,7 +199,7 @@ export default function _Table({ module, open }) {
 		}
 
 		const value = {
-			url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.INLINE_UPDATE}/${rowId}`,
+			url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
 			data: formData,
 			module,
 		};

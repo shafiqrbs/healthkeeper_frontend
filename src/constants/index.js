@@ -22,6 +22,7 @@ export const MODULES = {
 };
 
 export const MODULES_CORE = {
+	OPD_ROOM: "opd_room",
 	INVESTIGATION: "investigation",
 	BED: "bed",
 	CABIN: "cabin",

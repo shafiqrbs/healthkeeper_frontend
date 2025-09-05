@@ -88,6 +88,7 @@ import LabIndex from "@modules/hospital/lab";
 import LabGroupIndex from "@modules/hospital/lab-group";
 import RequisitionIndex from "@modules/hospital/requisition";
 import InvestigationIndex from "@modules/hospital/core/investigation";
+import OpdRoomIndex from "@modules/hospital/core/opd-room";
 import MedicineStockIndex from "@modules/hospital/pharmacy/stock";
 import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/doctor";
@@ -193,7 +194,8 @@ function AppRoute() {
 					<Route path="investigation/:id" element={<InvestigationIndex mode={"edit"} />} />
 					<Route path="particular" element={<ParticularIndex />} />
 					<Route path="particular/:id" element={<ParticularIndex mode={"edit"} />} />
-					<Route path="particular/:id" element={<ParticularIndex mode={"edit"} />} />
+					<Route path="opd-room" element={<OpdRoomIndex />} />
+					<Route path="opd-room/:id" element={<OpdRoomIndex mode={"edit"} />} />
 					<Route path="bed" element={<BedIndex />} />
 					<Route path="bed/:id" element={<BedIndex mode={"edit"} />} />
 					<Route path="cabin" element={<CabinIndex />} />

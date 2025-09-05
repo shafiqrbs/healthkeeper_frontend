@@ -5,7 +5,6 @@ export const MASTER_DATA_ROUTES = {
 			INDEX: "hospital/core/particular",
 			CREATE: "hospital/core/particular",
 			UPDATE: "hospital/core/particular",
-			INLINE_UPDATE: "hospital/core/particular/inline-update",
 			VIEW: "hospital/core/particular",
 			DELETE: "hospital/core/particular",
 		},
@@ -31,6 +30,15 @@ export const MASTER_DATA_ROUTES = {
 			CATEGORY_GROUP: "/inventory/select/group-category",
 			CATEGORY: "/inventory/select/category",
 		},
+
+		OPD_ROOM: {
+			INDEX: "hospital/core/particular",
+			CREATE: "hospital/core/particular/create",
+			UPDATE: "hospital/core/particular/update",
+			VIEW: "hospital/core/particular/view",
+			DELETE: "/hospital/core/particular/delete",
+		},
+
 		LAB_USER: {
 			INDEX: "hospital/core/lab-user",
 			CREATE: "hospital/core/lab-user/create",
@@ -45,6 +53,7 @@ export const MASTER_DATA_ROUTES = {
 			UPDATE: "hospital/core/particular/update",
 			VIEW: "hospital/core/particular",
 			DELETE: "hospital/core/particular",
+			INLINE_UPDATE: "hospital/core/particular/inline-update",
 		},
 
 		BED: {
@@ -125,6 +134,13 @@ export const MASTER_DATA_ROUTES = {
 			CREATE: "/hospital/core/particular/create",
 			UPDATE: "/hospital/core/particular/update",
 			VIEW: "/hospital/core/particular/view",
+		},
+
+		OPD_ROOM: {
+			INDEX: "/hospital/core/opd-room",
+			CREATE: "/hospital/core/opd-room/create",
+			UPDATE: "/hospital/core/opd-room/update",
+			VIEW: "/hospital/core/opd-room/view",
 		},
 
 		BED: {

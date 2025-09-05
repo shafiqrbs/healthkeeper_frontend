@@ -59,6 +59,7 @@ export default function _ReportFormatTable({ module, open }) {
 	const [submitFormData, setSubmitFormData] = useState({});
 	const [isLoading, setIsLoading] = useState(false);
 	const refetching = useSelector((state)=>state.crud[module]?.refetching)
+
 	useEffect(() => {
 		fetchData()
 	}, [refetching]);
@@ -76,6 +77,8 @@ export default function _ReportFormatTable({ module, open }) {
 		}
 	};
 	const entityData = records?.data?.investigation_report_format;
+
+
 	const parents = entityData?.map(p => ({
 		value: p.id?.toString(),   // keep everything string
 		label: p.name

@@ -43,6 +43,16 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	opd_room: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
 	cabin: {
 		isLoading: true,
 		refetching: true,

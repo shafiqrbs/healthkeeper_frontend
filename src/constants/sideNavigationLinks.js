@@ -256,6 +256,13 @@ export const sideNavigationLinks = {
 			icon: IconIcons,
 			color: "#3F51B5",
 		},
+		{
+
+			label: t('OPDRoom'),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.OPD_ROOM.INDEX,
+			icon: IconIcons,
+			color: "#3F51B5",
+		},
 		/*{
 			label: t("MarketingExecutive"),
 			path: "/core/marketing-executive",
