@@ -18,11 +18,13 @@ import PatientReportAction from "./PatientReportAction";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
+import { useState } from "react";
 
 export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 284;
 
+	const [autocompleteValue, setAutocompleteValue] = useState("");
 	// Handle onBlur update for form fields
 	const handleFieldBlur = () => {
 		// Only update if update function exists and form has data
@@ -102,6 +104,15 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 				return;
 			}
 		}
+	};
+
+	const handleAutocompleteOptionRemove = (idx, sectionSlug) => {
+		const updatedList = form.values.dynamicFormData[sectionSlug].filter((_, index) => index !== idx);
+		const newDynamicFormData = {
+			...form.values.dynamicFormData,
+			[sectionSlug]: updatedList,
+		};
+		form.setFieldValue("dynamicFormData", newDynamicFormData);
 	};
 
 	const renderDynamicForm = (section) => {
@@ -284,15 +295,13 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							label=""
 							placeholder={`Pick value or enter ${name}`}
 							data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
-							onChange={(value) => {
-								if (value) {
-									handleAutocompleteOptionAdd(value, particulars, section.slug);
-								}
-							}}
-							onKeyDown={(e) => {
-								if (e.key === "Enter") {
-									handleAutocompleteOptionAdd(e.target.value, particulars, section.slug);
-								}
+							value={autocompleteValue}
+							onChange={setAutocompleteValue}
+							onOptionSubmit={(value) => {
+								handleAutocompleteOptionAdd(value, particulars, section.slug);
+								setTimeout(() => {
+									setAutocompleteValue("");
+								}, 0);
 							}}
 							onBlur={handleFieldBlur}
 							rightSection={<IconCaretUpDownFilled size={16} />}
@@ -319,7 +328,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 										color="red"
 										size="xs"
 										variant="subtle"
-										// onClick={() => handleInvestigationRemove(idx)}
+										onClick={() => handleAutocompleteOptionRemove(idx, section.slug)}
 									>
 										<IconX size={16} />
 									</ActionIcon>

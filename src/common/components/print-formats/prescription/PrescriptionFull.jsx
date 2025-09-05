@@ -21,6 +21,8 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 		return value || defaultValue;
 	};
 
+	console.log(patientExamination?.ho_past_illness);
+
 	return (
 		<Box display="none">
 			<Box ref={ref} p="md" w="210mm" h="100vh" className="watermark" ff="Arial, sans-serif" lh={1.5} fz={12}>
@@ -158,10 +160,9 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										<Text size="sm" fw={600}>
 											H/O Past Illness:
 										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" />
+										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
 										<Text size="sm" c="gray" mt="xs">
 											{(patientExamination?.ho_past_illness || [])
-												.filter((item) => item.value)
 												.map((item) => item.name)
 												.join(", ") || "N/A"}
 										</Text>
@@ -172,8 +173,8 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										<Text size="sm" fw={600}>
 											Diagnosis:
 										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" />
-										<Text size="sm" c="gray" mt="xs">
+										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
+										<Text size="sm" c="gray" mt="0">
 											{(patientExamination?.diagnosis || [])
 												.map((item) => item.value)
 												.join(", ") || "N/A"}
@@ -186,7 +187,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										<Text size="sm" fw={600}>
 											ICD-11 listed diseases:
 										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" />
+										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
 										<Text size="sm" c="gray" mt="xs">
 											{(patientExamination?.icd_11_listed_diseases || []).join(", ") || "N/A"}
 										</Text>
@@ -238,7 +239,9 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										</Text>
 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
 										<Text size="sm" c="gray" mt="-xs" mb="xs">
-											{(patientExamination?.investigation || []).join(", ") || "N/A"}
+											{(patientExamination?.investigation || [])
+												.map((item) => item.value)
+												.join(", ") || "N/A"}
 										</Text>
 									</Box>
 								)}
