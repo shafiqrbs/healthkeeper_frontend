@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
 import {
-	IconAlertCircle, IconArrowDownLeft,
+	IconAlertCircle,
 	IconArrowRight,
 	IconCheck,
 	IconChevronUp,
@@ -38,15 +38,13 @@ import OPDDocument from "@components/print-formats/opd/OPDA4";
 import OPDPos from "@components/print-formats/opd/OPDPos";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
-import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-import useDomainConfig from "@hooks/config-data/useDomainConfig";
-import useDoaminHospitalConfigData from "@hooks/config-data/useDomainHospitalConfigData";
+import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
 
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
 const PER_PAGE = 20;
 
-export default function Table({ module, height, closeTable }) {
+export default function Table({ module, height, closeTable, availableClose = false }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -77,8 +75,6 @@ export default function Table({ module, height, closeTable }) {
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
 
-	const { hospitalConfigData } = useDoaminHospitalConfigData();
-	console.log(hospitalConfigData)
 	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	const [sortStatus, setSortStatus] = useState({
@@ -87,6 +83,8 @@ export default function Table({ module, height, closeTable }) {
 	});
 
 	const [records, setRecords] = useState(sortBy(listData.data, "name"));
+
+	console.log(records);
 
 	useEffect(() => {
 		const data = sortBy(listData.data, sortStatus.columnAccessor);
@@ -222,16 +220,7 @@ export default function Table({ module, height, closeTable }) {
 		}
 	};
 
-	const handlePrescription = async (id) => {
-		const resultAction = await dispatch(
-			showEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.SEND_TO_PRESCRIPTION}/${id}`,
-				module,
-				id,
-			})
-		).unwrap();
-		const prescription_id = resultAction?.data?.data.id;
-		closeTable();
+	const handlePrescription = async (prescription_id) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 	};
 
@@ -245,6 +234,35 @@ export default function Table({ module, height, closeTable }) {
 		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
 		setPrintData(res.data);
 		setType("pos");
+	};
+
+	const handleProcessPrescription = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: "Confirm", cancel: "Cancel" },
+			confirmProps: { color: "red" },
+			onCancel: () => console.log("Cancel"),
+			onConfirm: () => handleProcessConfirmation(id),
+		});
+	};
+
+	const handleProcessConfirmation = async (id) => {
+		const resultAction = await dispatch(
+			showEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.SEND_TO_PRESCRIPTION}/${id}`,
+				module,
+				id,
+			})
+		).unwrap();
+		const prescription_id = resultAction?.data?.data.id;
+		if (prescription_id) {
+			closeTable();
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
+		} else {
+			console.error(resultAction);
+			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
+		}
 	};
 
 	return (
@@ -278,18 +296,20 @@ export default function Table({ module, height, closeTable }) {
 					>
 						{t("VisitOverview")}
 					</Button>
-					<Flex gap="xs" align="center">
-						<Button
-							onClick={closeTable}
-							variant="outline"
-							size="xs"
-							radius="es"
-							leftSection={<IconX size={16} />}
-							color="var(--theme-delete-color)"
-						>
-							{t("Close")}
-						</Button>
-					</Flex>
+					{availableClose ? (
+						<Flex gap="xs" align="center">
+							<Button
+								onClick={closeTable}
+								variant="outline"
+								size="xs"
+								radius="es"
+								leftSection={<IconX size={16} />}
+								color="var(--theme-delete-color)"
+							>
+								{t("Close")}
+							</Button>
+						</Flex>
+					) : null}
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
@@ -352,18 +372,35 @@ export default function Table({ module, height, closeTable }) {
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
-									<Button
-										variant="filled"
-										bg="var(--theme-success-color)"
-										c="white"
-										size="xs"
-										onClick={() => handlePrescription(values.id)}
-										radius="es"
-										rightSection={<IconArrowRight size={18} />}
-										className="border-right-radius-none"
-									>
-										{t("Prescription")}
-									</Button>
+									{values?.prescription_id ? (
+										<Button
+											miw={124}
+											variant="filled"
+											bg="var(--theme-success-color)"
+											c="white"
+											size="xs"
+											onClick={() => handlePrescription(values.prescription_id)}
+											radius="es"
+											rightSection={<IconArrowRight size={18} />}
+											className="border-right-radius-none"
+										>
+											{t("Prescription")}
+										</Button>
+									) : (
+										<Button
+											miw={124}
+											variant="filled"
+											bg="var(--theme-primary-color-6)"
+											c="white"
+											size="xs"
+											onClick={() => handleProcessPrescription(values.id)}
+											radius="es"
+											rightSection={<IconArrowRight size={18} />}
+											className="border-right-radius-none"
+										>
+											{t("Process")}
+										</Button>
+									)}
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -392,7 +429,8 @@ export default function Table({ module, height, closeTable }) {
 														}}
 													/>
 												}
-												onClick={() => handleA4Print(values?.id)}>
+												onClick={() => handleA4Print(values?.id)}
+											>
 												{t("A4Print")}
 											</Menu.Item>
 											<Menu.Item
@@ -404,7 +442,9 @@ export default function Table({ module, height, closeTable }) {
 														}}
 													/>
 												}
-												onClick={() => handlePosPrint(values?.id)}>{t("Pos")}
+												onClick={() => handlePosPrint(values?.id)}
+											>
+												{t("Pos")}
 											</Menu.Item>
 											<Menu.Item
 												onClick={() => handleDelete(values.id)}

@@ -7,13 +7,10 @@ import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import { MODULES } from "@/constants";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
-import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-
 
 const module = MODULES.ADMISSION;
 
 export default function Index() {
-	const { hospitalConfigData } = useHospitalConfigData();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 

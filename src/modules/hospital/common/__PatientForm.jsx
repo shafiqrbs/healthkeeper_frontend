@@ -3,7 +3,14 @@ import { ActionIcon, Box, Button, Flex, Grid, LoadingOverlay, Modal, ScrollArea,
 import { useEffect, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconArrowRight, IconArrowUpRight,IconInfoCircle, IconSearch, IconAlertCircle,IconBed } from "@tabler/icons-react";
+import {
+	IconArrowRight,
+	IconArrowUpRight,
+	IconInfoCircle,
+	IconSearch,
+	IconAlertCircle,
+	IconBed,
+} from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -71,7 +78,7 @@ export default function PatientForm({ form, module, type = "opd_ticket", setSele
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
-	const [openedOpdRoom, { open: openOpdRoom , close: closeOpdRoom }] = useDisclosure(false);
+	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
 	const [opened, { open, close }] = useDisclosure(false);
 
 	useEffect(() => {
@@ -133,10 +140,16 @@ export default function PatientForm({ form, module, type = "opd_ticket", setSele
 				setSelectedRoom={setSelectedRoom}
 			/>
 			<Modal opened={opened} onClose={close} size="100%" centered withCloseButton={false}>
-				<Table module={module} closeTable={close} height={mainAreaHeight - 220} />
+				<Table module={module} closeTable={close} height={mainAreaHeight - 220} availableClose />
 			</Modal>
-			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered  withCloseButton={false}>
-				<OpdRoomModal openedOpdRoom={openedOpdRoom} closeOpdRoom={closeOpdRoom} module={module} closeTable={close} height={mainAreaHeight - 220} />
+			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered withCloseButton={false}>
+				<OpdRoomModal
+					openedOpdRoom={openedOpdRoom}
+					closeOpdRoom={closeOpdRoom}
+					module={module}
+					closeTable={close}
+					height={mainAreaHeight - 220}
+				/>
 			</Modal>
 		</Box>
 	);
