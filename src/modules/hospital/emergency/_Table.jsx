@@ -15,14 +15,17 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { sortBy } from "lodash";
-import { getIndexEntityData } from "@/app/store/core/crudThunk";
-import { setItemData } from "@/app/store/core/crudSlice";
+import {getIndexEntityData, storeEntityData} from "@/app/store/core/crudThunk";
+import {setItemData, setRefetchData} from "@/app/store/core/crudSlice";
 import { formatDate } from "@utils/index";
 import CompactDrawer from "@/common/components/drawers/CompactDrawer";
 import TextAreaForm from "@/common/components/form-builders/TextAreaForm";
+import {successNotification} from "@components/notification/successNotification";
+import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
+import {errorNotification} from "@components/notification/errorNotification";
 
 const PER_PAGE = 20;
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
@@ -38,6 +41,7 @@ export default function Table({ module }) {
 	const height = mainAreaHeight - 34;
 	const scrollViewportRef = useRef(null);
 	const [page, setPage] = useState(1);
+	const [selectedId, setSelectedId] = useState(null);
 	const [hasMore, setHasMore] = useState(true);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
@@ -46,6 +50,12 @@ export default function Table({ module }) {
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
+		},
+	});
+
+	const referredForm = useForm({
+		initialValues: {
+			referred_mode: "admission",
 			admission_comment: "",
 		},
 	});
@@ -147,10 +157,42 @@ export default function Table({ module }) {
 		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
 	};
 
-	const handleAdmission = () => {
-		console.log(form.values);
-		closeAdmission();
+	const handleSendToAdmission = (id) => {
+		setSelectedId(id)
+		openAdmission();
 		// navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
+	};
+
+	async function handleConfirmModal(values) {
+		try {
+			const value = {
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.REFERRED}/${selectedId}`,
+				data: {...values},
+				module,
+			};
+			const resultAction = await dispatch(storeEntityData(value));
+			if (storeEntityData.rejected.match(resultAction)) {
+				const fieldErrors = resultAction.payload.errors;
+				if (fieldErrors) {
+					const errorObject = {};
+					Object.keys(fieldErrors).forEach((key) => {
+						errorObject[key] = fieldErrors[key][0];
+					});
+					referredForm.setErrors(errorObject);
+				}
+			} else if (storeEntityData.fulfilled.match(resultAction)) {
+				referredForm.reset();
+				setSelctedId(null);
+				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+			}
+		} catch (error) {
+			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
+		}
+	}
+
+	const handleAdmission = (id) => {
+		handleConfirmModal(referredForm.values)
+		closeAdmission();
 	};
 
 	return (
@@ -253,7 +295,7 @@ export default function Table({ module }) {
 										bg="var(--theme-success-color)"
 										c="white"
 										size="xs"
-										onClick={openAdmission}
+										onClick={()=>handleSendToAdmission(values.id)}
 										radius="es"
 										rightSection={<IconArrowRight size={18} />}
 										className="border-right-radius-none"
@@ -323,7 +365,7 @@ export default function Table({ module }) {
 			<CompactDrawer
 				opened={openedAdmission}
 				close={closeAdmission}
-				save={handleAdmission}
+				save={()=>handleAdmission()}
 				position="right"
 				size="30%"
 				keepMounted={false}
@@ -338,9 +380,9 @@ export default function Table({ module }) {
 						<TextAreaForm
 							tooltip={t("Comment")}
 							label=""
-							placeholder={t("DummyMessage")}
-							form={form}
-							name="admission_comment"
+							placeholder={t("AdmissionComment")}
+							form={referredForm}
+							name="comment"
 							mt={0}
 							id="comment"
 							showRightSection={false}

@@ -1,5 +1,10 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
+
+		OPERATIONAL_API: {
+			REFERRED: "hospital/opd/referred",
+		},
+
 		INVESTIGATION: {
 			INDEX: "hospital/core/particular",
 			CREATE: "hospital/core/particular",
