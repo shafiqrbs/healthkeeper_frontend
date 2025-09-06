@@ -1,7 +1,9 @@
-import {Box, Divider, Flex, Grid, Stack, Text} from "@mantine/core";
+import {Box, Divider, Flex, Grid, Stack, Text,ThemeIcon} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import Vitals from "@modules/hospital/common/tab-items/Vitals";
-
+import {
+	IconSofa
+} from "@tabler/icons-react";
 export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 	const { t } = useTranslation();
 
@@ -27,7 +29,9 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 				<Grid w="100%" columns={24}>
 					<Grid.Col span={12}><Text>{t('Created')} {prescriptionData?.data?.created}</Text></Grid.Col>
 					<Grid.Col span={4} align={'right'}>{prescriptionData?.data?.payment_mode_name}</Grid.Col>
-					<Grid.Col span={6}>{t('Room')}: {prescriptionData?.data?.room_name}</Grid.Col>
+					<Grid.Col span={6}>
+					 {prescriptionData?.data?.room_name}</Grid.Col>
+
 				</Grid>
 			</Stack>
 			<Divider />

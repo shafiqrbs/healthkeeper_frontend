@@ -6,12 +6,10 @@ import DashedDivider from "@components/core-component/DashedDivider";
 import CustomDivider from "@components/core-component/CustomDivider";
 import { formatDate } from "@/common/utils";
 import "@/index.css";
-import useDoaminHospitalConfigData from "@hooks/config-data/useDomainHospitalConfigData";
-import {t} from "i18next";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {
-	const { hospitalConfigData } = useDoaminHospitalConfigData();
 	const patientInfo = JSON.parse(data?.json_content || "{}");
+
 	const invoiceDetails = data?.invoice_details || {};
 	const patientReport = patientInfo?.patient_report || {};
 	const basicInfo = patientReport?.basic_info || {};
@@ -23,7 +21,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 		return value || defaultValue;
 	};
 
-	console.log(customerInformation);
+	console.log(patientExamination?.ho_past_illness);
 
 	return (
 		<Box display="none">
@@ -38,17 +36,17 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						</Grid.Col>
 						<Grid.Col span={4}>
 							<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-								{hospitalConfigData?.organization_name}
+								250 Bedded TB Hospital
 							</Text>
 							<Text ta="center" size="sm" c="gray" mt="2">
-								{hospitalConfigData?.address}
+								Shyamolli, Dhaka-1207
 							</Text>
 							<Text ta="center" size="sm" c="gray" mb="2">
-								{t('হটলাইন')} {hospitalConfigData?.hotline}
+								Hotline: 01969910200
 							</Text>
 
 							<Text ta="center" fw="bold" size="lg" c="#1e40af">
-								{t('Prescription')}
+								Prescription
 							</Text>
 						</Grid.Col>
 						<Grid.Col span={4}>
@@ -70,7 +68,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={5} px="xs">
 							<Group gap="xs">
 								<Text size="sm" fw={600}>
-									{t('নাম')}:
+									রোগীর নাম:
 								</Text>
 								<Text size="sm">{getValue(customerInformation?.name, "N/A")}</Text>
 							</Group>
@@ -78,54 +76,63 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={4} px="xs">
 							<Group gap="xs">
 								<Text size="sm" fw={600}>
-									{t('মোবাইল')}:
+									মোবাইল:
 								</Text>
 								<Text size="sm">{getValue(customerInformation?.mobile)}</Text>
 							</Group>
 						</Grid.Col>
 
-						<Grid.Col bd="1px solid #555" span={4} px="xs">
+						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t('বয়স')}:
+								<Text size="sm" fw={600}>
+									বয়স:
 								</Text>
 								<Text size="sm">
 									{" "}
-									{customerInformation?.day || 0} D  {customerInformation?.month || ''} M {customerInformation?.year||''} Y
+									{invoiceDetails?.year}Y, {invoiceDetails?.month || 0}M,{" "}
+									{invoiceDetails?.day || 0}D
 								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t('লিঙ্গ')}:
+								<Text size="sm" fw={600}>
+									লিঙ্গ:
 								</Text>
-								<Text size="xs">{getValue(customerInformation?.gender, "N/A")}</Text>
+								<Text size="sm">{getValue(customerInformation?.gender, "N/A")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t('রক্তচাপ')}:
+								<Text size="sm" fw={600}>
+									রক্তচাপ:
 								</Text>
-								<Text size="xs">{getValue(basicInfo?.bp)}</Text>
+								<Text size="sm">{getValue(basicInfo?.bp)}</Text>
 							</Group>
 						</Grid.Col>
 
 						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t('ওজন')}:
+								<Text size="sm" fw={600}>
+									ওজন:
 								</Text>
-								<Text size="xs">{getValue(basicInfo?.weight)} {t('KG')}</Text>
+								<Text size="sm">{getValue(basicInfo?.weight)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t('রক্তের গ্রুপ')}:
+								<Text size="sm" fw={600}>
+									রক্তের গ্রুপ:
 								</Text>
-								<Text size="xs">{getValue(basicInfo?.bloodGroup)}</Text>
+								<Text size="sm">{getValue(basicInfo?.bloodGroup)}</Text>
+							</Group>
+						</Grid.Col>
+						<Grid.Col bd="1px solid #555" span={2} px="xs">
+							<Group gap="xs">
+								<Text size="sm" fw={600}>
+									ধরণ:
+								</Text>
+								<Text size="sm">N/A</Text>
 							</Group>
 						</Grid.Col>
 					</Grid>
