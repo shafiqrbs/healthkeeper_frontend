@@ -63,6 +63,30 @@ export const MASTER_DATA_ROUTES = {
 			DELETE: "hospital/core/particular",
 		},
 
+		DOCTOR: {
+			INDEX: "hospital/core/particular",
+			CREATE: "hospital/core/particular",
+			UPDATE: "hospital/core/particular",
+			VIEW: "hospital/core/particular",
+			DELETE: "hospital/core/particular",
+		},
+
+		NURSE: {
+			INDEX: "hospital/core/particular",
+			CREATE: "hospital/core/particular",
+			UPDATE: "hospital/core/particular",
+			VIEW: "hospital/core/particular",
+			DELETE: "hospital/core/particular",
+		},
+
+		STAFF: {
+			INDEX: "hospital/core/particular",
+			CREATE: "hospital/core/particular",
+			UPDATE: "hospital/core/particular",
+			VIEW: "hospital/core/particular",
+			DELETE: "hospital/core/particular",
+		},
+
 		CABIN: {
 			INDEX: "hospital/core/particular",
 			CREATE: "hospital/core/particular",
@@ -147,6 +171,27 @@ export const MASTER_DATA_ROUTES = {
 			CREATE: "/hospital/core/bed/create",
 			UPDATE: "/hospital/core/bed/update",
 			VIEW: "/hospital/core/bed/view",
+		},
+
+		DOCTOR: {
+			INDEX: "/hospital/core/doctor",
+			CREATE: "/hospital/core/doctor/create",
+			UPDATE: "/hospital/core/doctor/update",
+			VIEW: "/hospital/core/doctor/view",
+		},
+
+		NURSE: {
+			INDEX: "/hospital/core/nurse",
+			CREATE: "/hospital/core/nurse/create",
+			UPDATE: "/hospital/core/nurse/update",
+			VIEW: "/hospital/core/nurse/view",
+		},
+
+		STAFF: {
+			INDEX: "/hospital/core/staff",
+			CREATE: "/hospital/core/staff/create",
+			UPDATE: "/hospital/core/staff/update",
+			VIEW: "/hospital/core/staff/view",
 		},
 
 		CABIN: {

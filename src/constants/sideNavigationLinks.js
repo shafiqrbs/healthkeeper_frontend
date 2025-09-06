@@ -220,25 +220,23 @@ export const sideNavigationLinks = {
 			icon: IconDashboard,
 			color: "#4CAF50",
 		},
-
-
 		{
 			label: t("ManageDoctor"),
-			path: "/hospital/doctor",
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 
 		{
 			label: t("ManageNurse"),
-			path: "/hospital/nurse",
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.NURSE.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
 
 		{
 			label: t("ManageLabUser"),
-			path: "/hospital/doctor",
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.STAFF.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
 		},

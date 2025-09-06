@@ -43,6 +43,36 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	doctor: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
+	nurse: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
+	staff: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
 	opd_room: {
 		isLoading: true,
 		refetching: true,

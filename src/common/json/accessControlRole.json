@@ -2,34 +2,19 @@
   {
     "Group": "Operator",
     "actions": [
-      { "id": "operator_basic", "label": "Operator" },
-      { "id": "operator_hospital", "label": "Hospital" },
-      { "id": "operator_advanced", "label": "Advanced Operator" },
-      { "id": "operator_doctor_view", "label": "Doctor View" },
-      { "id": "operator_nurse_view", "label": "Nurse View" },
-      { "id": "operator_admin_view", "label": "Admin View" }
+      { "id": "operator_basic", "label": "Operator" }
     ]
   },
   {
     "Group": "Doctor",
     "actions": [
-      { "id": "doctor_basic", "label": "Doctor" },
-      { "id": "doctor_hospital", "label": "Hospital" },
-      { "id": "doctor_operator", "label": "Operator Access" },
-      { "id": "doctor_advanced", "label": "Advanced Doctor" },
-      { "id": "doctor_nurse_manage", "label": "Nurse Management" },
-      { "id": "doctor_admin_access", "label": "Admin Access" }
+      { "id": "doctor_basic", "label": "Doctor" }
     ]
   },
   {
     "Group": "Nurse",
     "actions": [
-      { "id": "nurse_basic", "label": "Nurse" },
-      { "id": "nurse_hospital", "label": "Hospital" },
-      { "id": "nurse_operator", "label": "Operator Access" },
-      { "id": "nurse_doctor_assist", "label": "Doctor Assistance" },
-      { "id": "nurse_advanced", "label": "Advanced Nurse" },
-      { "id": "nurse_admin_view", "label": "Admin View" }
+      { "id": "nurse_basic", "label": "Nurse" }
     ]
   },
   {

@@ -91,7 +91,7 @@ import InvestigationIndex from "@modules/hospital/core/investigation";
 import OpdRoomIndex from "@modules/hospital/core/opd-room";
 import MedicineStockIndex from "@modules/hospital/pharmacy/stock";
 import BillingIndex from "@modules/hospital/billing";
-import DoctorIndex from "@modules/hospital/doctor";
+import DoctorIndex from "@modules/hospital/core/doctor";
 import ListIndex from "@modules/hospital/visit/list";
 import ConfigurationIndex from "@modules/configuration";
 import ConfirmIndex from "@modules/hospital/admission/confirm";
@@ -198,10 +198,16 @@ function AppRoute() {
 					<Route path="opd-room/:id" element={<OpdRoomIndex mode={"edit"} />} />
 					<Route path="bed" element={<BedIndex />} />
 					<Route path="bed/:id" element={<BedIndex mode={"edit"} />} />
+					<Route path="doctor" element={<DoctorIndex />} />
+					<Route path="doctor/:id" element={<DoctorIndex mode={"edit"} />} />
+					<Route path="nurse" element={<DoctorIndex />} />
+					<Route path="nurse/:id" element={<DoctorIndex mode={"edit"} />} />
+					<Route path="lab" element={<DoctorIndex />} />
+					<Route path="lab/:id" element={<DoctorIndex mode={"edit"} />} />
 					<Route path="cabin" element={<CabinIndex />} />
 					<Route path="cabin/:id" element={<CabinIndex mode={"edit"} />} />
 					<Route path="particular-mode" element={<ParticularModeIndex />} />
-					<Route path="particular-type" element={<ParticularTypeIndex />} />
+					<Route path="particular-type" element={<ParticularTypeIndex />} />x
 					<Route path="category" element={<CategoryIndex />} />
 					<Route path="category/:id" element={<CategoryIndex mode={"edit"} />} />
 				</Route>
