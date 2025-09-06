@@ -9,24 +9,31 @@ import { hasLength, useForm } from "@mantine/form";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import InputAutoComplete from "@components/form-builders/InputAutoComplete";
+import { MASTER_DATA_ROUTES } from "@/constants/routes";
+import { storeEntityData } from "@/app/store/core/crudThunk";
+import { errorNotification } from "@/common/components/notification/errorNotification";
+import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { successNotification } from "@/common/components/notification/successNotification";
+import { useDispatch } from "react-redux";
 
-export default function PatientReferredAction() {
+export default function PatientReferredAction({ module = "emergency", invoiceId }) {
+	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const roomReferredForm = useForm({
 		initialValues: {
-			room_no: "",
-			room_comment: "",
+			opd_room_id: "",
+			comment: "",
 		},
 		validate: {
-			room_comment: hasLength({ min: 1 }),
+			comment: hasLength({ min: 1 }),
 		},
 	});
 	const admissionReferredForm = useForm({
 		initialValues: {
-			admission_comment: "",
+			comment: "",
 		},
 		validate: {
-			admission_comment: hasLength({ min: 1 }),
+			comment: hasLength({ min: 1 }),
 		},
 	});
 	const referredForm = useForm({
@@ -34,10 +41,10 @@ export default function PatientReferredAction() {
 			referred_id: null,
 			referred_name: "",
 			hospital: "",
-			referred_comment: "",
+			comment: "",
 		},
 		validate: {
-			referred_comment: hasLength({ min: 1 }),
+			comment: hasLength({ min: 1 }),
 		},
 	});
 	const [openedReferred, { open: openReferred, close: closeReferred }] = useDisclosure(false);
@@ -77,22 +84,45 @@ export default function PatientReferredAction() {
 	};
 
 	const handleRoomReferredSubmit = (values) => {
-		console.log(values);
-
+		handleConfirmSubmission({ ...values, referred_mode: "room" });
 		closeRoomReferred();
 	};
 
 	const handleAdmissionReferredSubmit = (values) => {
-		console.log(values);
-
+		handleConfirmSubmission({ ...values, referred_mode: "admission" });
 		closeAdmission();
 	};
 
 	const handleReferredSubmit = (values) => {
-		console.log(values);
-
+		handleConfirmSubmission({ ...values, referred_mode: "referred" });
 		closeReferred();
 	};
+
+	async function handleConfirmSubmission(values) {
+		try {
+			const value = {
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.REFERRED}/${invoiceId}`,
+				data: { ...values },
+				module,
+			};
+			const resultAction = await dispatch(storeEntityData(value));
+			if (storeEntityData.rejected.match(resultAction)) {
+				const fieldErrors = resultAction.payload.errors;
+				if (fieldErrors) {
+					const errorObject = {};
+					Object.keys(fieldErrors).forEach((key) => {
+						errorObject[key] = fieldErrors[key][0];
+					});
+					referredForm.setErrors(errorObject);
+				}
+			} else if (storeEntityData.fulfilled.match(resultAction)) {
+				referredForm.reset();
+				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+			}
+		} catch (error) {
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
+		}
+	}
 
 	return (
 		<>
@@ -190,7 +220,7 @@ export default function PatientReferredAction() {
 							placeholder={t("DummyMessage")}
 							nextField="name"
 							form={referredForm}
-							name="referred_comment"
+							name="comment"
 							mt={0}
 							id="comment"
 							required
@@ -223,7 +253,7 @@ export default function PatientReferredAction() {
 							placeholder={t("DummyMessage")}
 							nextField="name"
 							form={admissionReferredForm}
-							name="admission_comment"
+							name="comment"
 							mt={0}
 							id="comment"
 							showRightSection={false}
@@ -248,21 +278,21 @@ export default function PatientReferredAction() {
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
 						<Text fz="sm">
-							{t("RoomNo")} <RequiredAsterisk />
+							{t("Room")} <RequiredAsterisk />
 						</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<SelectForm
 							dropdownValue={roomsOptions}
-							value={roomReferredForm.values.room_no}
-							changeValue={(v) => roomReferredForm.setFieldValue("room_no", v)}
-							tooltip={t("RoomNoValidateMessage")}
+							value={roomReferredForm.values.opd_room_id}
+							changeValue={(v) => roomReferredForm.setFieldValue("opd_room_id", v)}
+							tooltip={t("RoomValidateMessage")}
 							label=""
-							placeholder={t("RoomNo")}
+							placeholder={t("Room")}
 							required
-							nextField="name"
+							nextField="comment"
 							form={roomReferredForm}
-							name="room_no"
+							name="opd_room_id"
 							mt={0}
 							id="room_no"
 						/>
@@ -275,9 +305,9 @@ export default function PatientReferredAction() {
 							tooltip={t("Comment")}
 							label=""
 							placeholder={t("DummyMessage")}
-							nextField="name"
+							nextField="comment"
 							form={roomReferredForm}
-							name="room_comment"
+							name="comment"
 							mt={0}
 							id="comment"
 							showRightSection={false}

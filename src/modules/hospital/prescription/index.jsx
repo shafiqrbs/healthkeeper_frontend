@@ -112,7 +112,7 @@ export default function Index() {
 							</Grid.Col>
 							<Grid.Col span={8}>
 								<Flex mt={"xs"} gap="md" justify="flex-end" align="center" wrap="wrap">
-									<PatientReferredAction form={form} />
+									<PatientReferredAction form={form} invoiceId={prescriptionData?.data?.invoice_id} />
 									<Button
 										onClick={handleOpenViewOverview}
 										size="xs"

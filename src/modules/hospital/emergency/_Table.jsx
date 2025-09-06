@@ -11,21 +11,21 @@ import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import KeywordSearch from "../common/KeywordSearch";
-import { useForm } from "@mantine/form";
+import { hasLength, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
-import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { sortBy } from "lodash";
-import {getIndexEntityData, storeEntityData} from "@/app/store/core/crudThunk";
-import {setItemData, setRefetchData} from "@/app/store/core/crudSlice";
+import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { setItemData, setRefetchData } from "@/app/store/core/crudSlice";
 import { formatDate } from "@utils/index";
 import CompactDrawer from "@/common/components/drawers/CompactDrawer";
 import TextAreaForm from "@/common/components/form-builders/TextAreaForm";
-import {successNotification} from "@components/notification/successNotification";
-import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
-import {errorNotification} from "@components/notification/errorNotification";
+import { successNotification } from "@components/notification/successNotification";
+import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { errorNotification } from "@components/notification/errorNotification";
 
 const PER_PAGE = 20;
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
@@ -57,6 +57,9 @@ export default function Table({ module }) {
 		initialValues: {
 			referred_mode: "admission",
 			admission_comment: "",
+		},
+		validate: {
+			admission_comment: hasLength({ min: 1 }),
 		},
 	});
 
@@ -158,16 +161,16 @@ export default function Table({ module }) {
 	};
 
 	const handleSendToAdmission = (id) => {
-		setSelectedId(id)
+		setSelectedId(id);
 		openAdmission();
 		// navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
 	};
 
-	async function handleConfirmModal(values) {
+	async function handleConfirmSubmission(values) {
 		try {
 			const value = {
 				url: `${MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.REFERRED}/${selectedId}`,
-				data: {...values},
+				data: { ...values },
 				module,
 			};
 			const resultAction = await dispatch(storeEntityData(value));
@@ -182,16 +185,17 @@ export default function Table({ module }) {
 				}
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
 				referredForm.reset();
-				setSelctedId(null);
-				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+				setSelectedId(null);
+				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
-			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
 
-	const handleAdmission = (id) => {
-		handleConfirmModal(referredForm.values)
+	const handleAdmission = () => {
+		console.log("i called");
+		handleConfirmSubmission(referredForm.values);
 		closeAdmission();
 	};
 
@@ -295,7 +299,7 @@ export default function Table({ module }) {
 										bg="var(--theme-success-color)"
 										c="white"
 										size="xs"
-										onClick={()=>handleSendToAdmission(values.id)}
+										onClick={() => handleSendToAdmission(values.id)}
 										radius="es"
 										rightSection={<IconArrowRight size={18} />}
 										className="border-right-radius-none"
@@ -365,12 +369,13 @@ export default function Table({ module }) {
 			<CompactDrawer
 				opened={openedAdmission}
 				close={closeAdmission}
-				save={()=>handleAdmission()}
+				save={handleAdmission}
 				position="right"
 				size="30%"
 				keepMounted={false}
 				bg="white"
 				title={t("Admission")}
+				form={referredForm}
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
@@ -382,10 +387,11 @@ export default function Table({ module }) {
 							label=""
 							placeholder={t("AdmissionComment")}
 							form={referredForm}
-							name="comment"
+							name="admission_comment"
 							mt={0}
 							id="comment"
 							showRightSection={false}
+							required
 							style={{ input: { height: 100 } }}
 						/>
 					</Grid.Col>
