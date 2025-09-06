@@ -153,8 +153,8 @@ export default function Index() {
 					</Flex>
 				</Box>
 			)}
-			<Modal opened={openedOverview} onClose={closeOverview} size="100%" centered>
-				<Table module={module} closeTable={closeOverview} height={mainAreaHeight - 220} />
+			<Modal opened={openedOverview} onClose={closeOverview} size="100%" centered withCloseButton={false}>
+				<Table module={module} closeTable={closeOverview} height={mainAreaHeight - 220} availableClose />
 			</Modal>
 		</>
 	);

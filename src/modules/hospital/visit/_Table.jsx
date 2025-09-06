@@ -38,7 +38,8 @@ import OPDDocument from "@components/print-formats/opd/OPDA4";
 import OPDPos from "@components/print-formats/opd/OPDPos";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
-import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import Prescription from "@components/print-formats/opd/Prescription2";
 
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
@@ -52,6 +53,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const refetch = useSelector((state) => state.crud[module].refetching);
 	const [fetching, setFetching] = useState(false);
 	const scrollViewportRef = useRef(null);
+	const prescriptionRef = useRef(null);
 	const [page, setPage] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
 	const [opened, { open, close }] = useDisclosure(false);
@@ -63,6 +65,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const handleA4 = useReactToPrint({
 		content: () => a4Ref.current,
+	});
+
+	const handlePrescriptionOption = useReactToPrint({
+		content: () => prescriptionRef.current,
 	});
 
 	const [rootRef, setRootRef] = useState(null);
@@ -84,8 +90,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const [records, setRecords] = useState(sortBy(listData.data, "name"));
 
-	console.log(records);
-
 	useEffect(() => {
 		const data = sortBy(listData.data, sortStatus.columnAccessor);
 		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
@@ -96,6 +100,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			handleA4();
 		} else if (type === "pos") {
 			handlePos();
+		} else if (type === "prescription") {
+			handlePrescriptionOption();
 		}
 	}, [printData, type]);
 
@@ -234,6 +240,15 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
 		setPrintData(res.data);
 		setType("pos");
+	};
+
+	const handlePrescriptionPrint = async (prescription_id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescription_id}`,
+		});
+
+		setPrintData(res.data);
+		setType("prescription");
 	};
 
 	const handleProcessPrescription = (id) => {
@@ -446,6 +461,23 @@ export default function Table({ module, height, closeTable, availableClose = fal
 											>
 												{t("Pos")}
 											</Menu.Item>
+											{values?.prescription_id && (
+												<>
+													<Menu.Item
+														leftSection={
+															<IconPrinter
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
+														}
+														onClick={() => handlePrescriptionPrint(values?.prescription_id)}
+													>
+														{t("Prescription")}
+													</Menu.Item>
+												</>
+											)}
 											<Menu.Item
 												onClick={() => handleDelete(values.id)}
 												c="red.6"
@@ -486,6 +518,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 			<OPDDocument data={printData} ref={a4Ref} />
 			<OPDPos data={printData} ref={posRef} />
+			<Prescription data={printData} ref={prescriptionRef} />
 		</Box>
 	);
 }
