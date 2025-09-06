@@ -1,5 +1,5 @@
 import { ActionIcon, Flex, TextInput } from "@mantine/core";
-import { IconRestore, IconSearch, IconX } from "@tabler/icons-react";
+import { IconFileTypeXls, IconRestore, IconSearch, IconX } from "@tabler/icons-react";
 import AdvancedFilter from "../../../common/components/advance-search/AdvancedFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilterData } from "@/app/store/core/crudSlice";
@@ -7,6 +7,7 @@ import { useEffect, useState, useCallback } from "react";
 import { DateInput } from "@mantine/dates";
 
 export default function KeywordSearch({
+	form,
 	module,
 	onSearch,
 	onReset,
@@ -29,6 +30,8 @@ export default function KeywordSearch({
 	const handleSearch = useCallback(
 		(searchData) => {
 			const data = searchData || { keywordSearch, date };
+			form.setFieldValue("keywordSearch", data.keywordSearch);
+			form.setFieldValue("date", data.created);
 			dispatch(setFilterData({ module, data }));
 			if (onSearch) {
 				onSearch(data);
@@ -38,19 +41,15 @@ export default function KeywordSearch({
 	);
 
 	// =============== handle keyword change ================
-	const handleKeywordChange = useCallback(
-		(value) => {
-			setKeywordSearch(value);
-			handleSearch({ keywordSearch: value, date });
-		},
-		[handleSearch, date]
-	);
+	const handleKeywordChange = (value) => {
+		setKeywordSearch(value);
+	};
 
 	// =============== handle date change ================
 	const handleDateChange = useCallback(
 		(value) => {
 			setDate(value);
-			handleSearch({ keywordSearch, date: value });
+			handleSearch({ keywordSearch, created: value });
 		},
 		[handleSearch, keywordSearch]
 	);
@@ -60,7 +59,7 @@ export default function KeywordSearch({
 		setKeywordSearch("");
 		const newDate = new Date();
 		setDate(newDate);
-		const resetData = { keywordSearch: "", date: newDate };
+		const resetData = { keywordSearch: "", created: newDate };
 		dispatch(setFilterData({ module, data: resetData }));
 		if (onReset) {
 			onReset(resetData);
@@ -106,13 +105,17 @@ export default function KeywordSearch({
 					<IconSearch size={16} stroke={1.5} />
 				</ActionIcon>
 
-				{showAdvancedFilter && <AdvancedFilter />}
-
 				{showReset && (
 					<ActionIcon c="var(--theme-tertiary-color-8)" bg="white" onClick={handleReset}>
 						<IconRestore size={16} stroke={1.5} />
 					</ActionIcon>
 				)}
+
+				{showAdvancedFilter && <AdvancedFilter />}
+
+				<ActionIcon c="var(--theme-success-color-3)" bg="white" onClick={handleReset}>
+					<IconFileTypeXls size={16} stroke={1.5} />
+				</ActionIcon>
 			</Flex>
 		</Flex>
 	);

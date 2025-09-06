@@ -50,6 +50,7 @@ export default function Table({ module }) {
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
+			created: "",
 		},
 	});
 
@@ -94,8 +95,10 @@ export default function Table({ module }) {
 			url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 			params: {
 				term: filterData.keywordSearch,
+				created: filterData.created,
 				page: pageNum,
 				offset: PER_PAGE,
+				patient_mode: "emergency",
 			},
 			module,
 		};
@@ -233,7 +236,7 @@ export default function Table({ module }) {
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch form={form} />
+				<KeywordSearch form={form} module={module} />
 			</Box>
 			<Box className="borderRadiusAll border-top-none" px="sm">
 				<DataTable

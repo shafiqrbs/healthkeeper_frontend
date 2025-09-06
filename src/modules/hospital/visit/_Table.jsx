@@ -120,6 +120,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				term: filterData.keywordSearch,
 				page: pageNum,
 				offset: PER_PAGE,
+				patient_mode: "opd",
 			},
 			module,
 		};
