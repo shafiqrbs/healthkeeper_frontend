@@ -149,7 +149,8 @@ export default function Table({ module }) {
 
 	const handleAdmission = () => {
 		console.log(form.values);
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
+		closeAdmission();
+		// navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
 	};
 
 	return (
@@ -322,7 +323,7 @@ export default function Table({ module }) {
 			<CompactDrawer
 				opened={openedAdmission}
 				close={closeAdmission}
-				save={() => handleAdmission()}
+				save={handleAdmission}
 				position="right"
 				size="30%"
 				keepMounted={false}

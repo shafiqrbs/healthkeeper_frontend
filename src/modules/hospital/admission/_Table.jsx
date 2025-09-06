@@ -24,100 +24,6 @@ import { formatDate } from "@/common/utils";
 
 const PER_PAGE = 20;
 
-const data = [
-	{
-		id: 1,
-		index: 1,
-		created_at: "2025-01-15",
-		created_by: "Dr. Smith",
-		visit_no: "VIS-001",
-		patient_id: "P001",
-		patient_name: "John Doe",
-		doctor_name: "Dr. Johnson",
-		diseases: "Hypertension, Diabetes",
-		total_amount: "150.00",
-		payment_status: "paid",
-	},
-	{
-		id: 2,
-		index: 2,
-		created_at: "2025-01-16",
-		created_by: "Dr. Brown",
-		visit_no: "VIS-002",
-		patient_id: "P002",
-		patient_name: "Jane Smith",
-		doctor_name: "Dr. Davis",
-		diseases: "Asthma",
-		total_amount: "200.00",
-		payment_status: "pending",
-	},
-	{
-		id: 3,
-		index: 3,
-		created_at: "2025-01-17",
-		created_by: "Dr. Garcia",
-		visit_no: "VIS-003",
-		patient_id: "P003",
-		patient_name: "Mike Johnson",
-		doctor_name: "Dr. Martinez",
-		diseases: "Heart Disease",
-		total_amount: "300.00",
-		payment_status: "paid",
-	},
-	{
-		id: 4,
-		index: 4,
-		created_at: "2025-01-18",
-		created_by: "Dr. Lee",
-		visit_no: "VIS-004",
-		patient_id: "P004",
-		patient_name: "Sarah Wilson",
-		doctor_name: "Dr. Taylor",
-		diseases: "Migraine",
-		total_amount: "120.00",
-		payment_status: "paid",
-	},
-	{
-		id: 5,
-		index: 5,
-		created_at: "2025-01-19",
-		created_by: "Dr. Rodriguez",
-		visit_no: "VIS-005",
-		patient_id: "P005",
-		patient_name: "David Brown",
-		doctor_name: "Dr. White",
-		diseases: "Arthritis",
-		total_amount: "180.00",
-		payment_status: "pending",
-	},
-	{
-		id: 6,
-		index: 6,
-		created_at: "2025-01-19",
-		created_by: "Dr. Rodriguez",
-		visit_no: "VIS-005",
-		patient_id: "P005",
-		patient_name: "David Brown",
-		doctor_name: "Dr. White",
-		diseases: "Arthritis",
-		total_amount: "180.00",
-		payment_status: "pending",
-	},
-	{
-		id: 7,
-		index: 7,
-		created_at: "2025-01-19",
-		created_by: "Dr. Rodriguez",
-		visit_no: "VIS-005",
-		patient_id: "P005",
-		patient_name: "David Brown",
-		doctor_name: "Dr. White",
-		diseases: "Arthritis",
-		total_amount: "180.00",
-		payment_status: "pending",
-	},
-];
-
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
 export default function Table({ module }) {
@@ -144,6 +50,7 @@ export default function Table({ module }) {
 		columnAccessor: "name",
 		direction: "asc",
 	});
+
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -388,7 +295,7 @@ export default function Table({ module }) {
 					scrollViewportRef={scrollViewportRef}
 				/>
 			</Box>
-			<DataTableFooter indexData={data} module="visit" />
+			<DataTableFooter indexData={records} module="visit" />
 			<ConfirmModal opened={openedConfirm} close={closeConfirm} form={confirmForm} />
 		</Box>
 	);

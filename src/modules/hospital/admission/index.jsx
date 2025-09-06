@@ -5,8 +5,6 @@ import { useOutletContext } from "react-router-dom";
 import Table from "./_Table";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import { MODULES } from "@/constants";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 
 const module = MODULES.ADMISSION;
 

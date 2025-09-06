@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import {Button, rem, Grid, Box, ScrollArea, Text, Title, Flex, Stack, SegmentedControl} from "@mantine/core";
+import { Button, rem, Grid, Box, ScrollArea, Text, Title, Flex, Stack, SegmentedControl } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconCheck, IconDeviceFloppy } from "@tabler/icons-react";
 import { useHotkeys } from "@mantine/hooks";
@@ -22,6 +22,7 @@ import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 import { getUserFormValues } from "../helpers/request.js";
 import { useForm } from "@mantine/form";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
+import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent.jsx";
 
 export default function Create({ module }) {
 	const { t } = useTranslation();
@@ -81,7 +82,6 @@ export default function Create({ module }) {
 		form.setFieldValue("gender", val);
 	};
 
-
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
@@ -111,34 +111,39 @@ export default function Create({ module }) {
 						form.setErrors(errorObject);
 					}
 				} else if (storeEntityData.fulfilled.match(resultAction)) {
-					notifications.show({
-						color: "teal",
-						title: t("CreateSuccessfully"),
-						icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-						loading: false,
-						autoClose: 700,
-						style: { backgroundColor: "lightgray" },
-					});
+					const userId = resultAction?.payload?.data?.data?.id;
 
-					setTimeout(() => {
-						useUserDataStoreIntoLocalStorage();
-						form.reset();
-						dispatch(
-							setInsertType({
-								insertType: "update",
-								module,
-							})
-						);
-						dispatch(
-							editEntityData({
-								url: `${MASTER_DATA_ROUTES.API_ROUTES.USER.UPDATE}/${resultAction?.payload?.data?.data?.id}`,
-								module,
-							})
-						);
-						navigate(
-							`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.USER.VIEW}/${resultAction?.payload?.data?.data?.id}`
-						);
-					}, 700);
+					if (userId) {
+						notifications.show({
+							color: "teal",
+							title: t("CreateSuccessfully"),
+							icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
+							loading: false,
+							autoClose: 700,
+							style: { backgroundColor: "lightgray" },
+						});
+
+						setTimeout(() => {
+							useUserDataStoreIntoLocalStorage();
+							form.reset();
+							dispatch(
+								setInsertType({
+									insertType: "update",
+									module,
+								})
+							);
+							dispatch(
+								editEntityData({
+									url: `${MASTER_DATA_ROUTES.API_ROUTES.USER.UPDATE}/${userId}`,
+									module,
+								})
+							);
+							navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.USER.VIEW}/${userId}`);
+						}, 700);
+					} else {
+						console.error(resultAction);
+						showNotificationComponent("Request failed. Please try again.", "red", "", "", true);
+					}
 				}
 			},
 		});
@@ -194,7 +199,9 @@ export default function Create({ module }) {
 											<Box>
 												<Grid align="center" columns={20}>
 													<Grid.Col span={6}>
-														<Text mt={'xs'} fz="sm">{t("EmployeeGroup")}</Text>
+														<Text mt={"xs"} fz="sm">
+															{t("EmployeeGroup")}
+														</Text>
 													</Grid.Col>
 													<Grid.Col span={14}>
 														<Box mt={"8"}>
@@ -221,7 +228,9 @@ export default function Create({ module }) {
 											<Box>
 												<Grid align="center" columns={20}>
 													<Grid.Col span={6}>
-														<Text mt={'xs'} fz="sm">{t("Department")}</Text>
+														<Text mt={"xs"} fz="sm">
+															{t("Department")}
+														</Text>
 													</Grid.Col>
 													<Grid.Col span={14}>
 														<SelectForm
@@ -246,114 +255,119 @@ export default function Create({ module }) {
 											<Box>
 												<Grid align="center" columns={20}>
 													<Grid.Col span={6}>
-														<Text mt={'xs'} fz="sm">{t("EmployeeID")}</Text>
+														<Text mt={"xs"} fz="sm">
+															{t("EmployeeID")}
+														</Text>
 													</Grid.Col>
 													<Grid.Col span={14}>
-												<InputForm
-													tooltip={
-														form.errors.employee_id
-															? form.errors.employee_id
-															: t("EmployeeIDValidateMessage")
-													}
-													placeholder={t("EmployeeID")}
-													required={true}
-													nextField={"name"}
-													form={form}
-													name={"employee_id"}
-													id={"employee_id"}
-												/>
+														<InputForm
+															tooltip={
+																form.errors.employee_id
+																	? form.errors.employee_id
+																	: t("EmployeeIDValidateMessage")
+															}
+															placeholder={t("EmployeeID")}
+															required={true}
+															nextField={"name"}
+															form={form}
+															name={"employee_id"}
+															id={"employee_id"}
+														/>
 													</Grid.Col>
 												</Grid>
 											</Box>
 											<Box>
 												<Grid align="center" columns={20}>
 													<Grid.Col span={6}>
-														<Text mt={'xs'} fz="sm">{t("Name")}</Text>
+														<Text mt={"xs"} fz="sm">
+															{t("Name")}
+														</Text>
 													</Grid.Col>
 													<Grid.Col span={14}>
-												<InputForm
-													tooltip={
-														form.errors.name
-															? form.errors.name
-															: t("UserNameValidateMessage")
-													}
-													placeholder={t("Name")}
-													required={true}
-													nextField={"designation_id"}
-													form={form}
-													name={"name"}
-													id={"name"}
-												/>
+														<InputForm
+															tooltip={
+																form.errors.name
+																	? form.errors.name
+																	: t("UserNameValidateMessage")
+															}
+															placeholder={t("Name")}
+															required={true}
+															nextField={"designation_id"}
+															form={form}
+															name={"name"}
+															id={"name"}
+														/>
 													</Grid.Col>
 												</Grid>
 											</Box>
 											<Box mb={"xs"}>
-											<Grid align="center" columns={20}>
-												<Grid.Col span={6}>
-													<Text mt={'xs'} fz="sm">{t("Gender")}</Text>
-												</Grid.Col>
-												<Grid.Col span={12} pb={0}>
-													<SegmentedControl
-														fullWidth
-														color="var(--theme-primary-color-6)"
-														value={form.values.gender}
-														id="gender"
-														name="gender"
-														onChange={(val) => handleGenderChange(val)}
-														data={[
-															{ label: t("male"), value: "male" },
-															{ label: t("female"), value: "female" },
-															{ label: t("other"), value: "other" },
-														]}
-													/>
-												</Grid.Col>
-											</Grid>
-											</Box>
-											<Box>
-
 												<Grid align="center" columns={20}>
-														<Grid.Col span={6}>
-															<Text fz="sm">{t("Designation")}</Text>
-														</Grid.Col>
-														<Grid.Col span={14}>
-															<SelectForm
-																tooltip={
-																	form.errors.designation_id
-																		? form.errors.designation_id
-																		: t("DesignationID")
-																}
-																placeholder={t("ChooseEmployeeGroup")}
-																nextField={"dob"}
-																name={"designation_id"}
-																form={form}
-																value={form.values.designation_id}
-																dropdownValue={employeeDesignations}
-																id={"designation_id"}
-																searchable={false}
-																required
-															/>
+													<Grid.Col span={6}>
+														<Text mt={"xs"} fz="sm">
+															{t("Gender")}
+														</Text>
+													</Grid.Col>
+													<Grid.Col span={12} pb={0}>
+														<SegmentedControl
+															fullWidth
+															color="var(--theme-primary-color-6)"
+															value={form.values.gender}
+															id="gender"
+															name="gender"
+															onChange={(val) => handleGenderChange(val)}
+															data={[
+																{ label: t("male"), value: "male" },
+																{ label: t("female"), value: "female" },
+																{ label: t("other"), value: "other" },
+															]}
+														/>
 													</Grid.Col>
 												</Grid>
 											</Box>
-											<Box mb={'xs'}>
-											<Grid align="center" columns={20}>
-												<Grid.Col span={6}>
-													<Text fz="sm">{t("dateOfBirth")}</Text>
-												</Grid.Col>
-												<Grid.Col span={14} pb={0}>
-													<DateSelectorForm
-														form={form}
-														placeholder="01-01-2020"
-														tooltip={t("enterDateOfBirth")}
-														name="dob"
-														id="dob"
-														nextField="email"
-														value={form.values.dob}
-														required
-														disabledFutureDate
-													/>
-												</Grid.Col>
-											</Grid>
+											<Box>
+												<Grid align="center" columns={20}>
+													<Grid.Col span={6}>
+														<Text fz="sm">{t("Designation")}</Text>
+													</Grid.Col>
+													<Grid.Col span={14}>
+														<SelectForm
+															tooltip={
+																form.errors.designation_id
+																	? form.errors.designation_id
+																	: t("DesignationID")
+															}
+															placeholder={t("ChooseEmployeeGroup")}
+															nextField={"dob"}
+															name={"designation_id"}
+															form={form}
+															value={form.values.designation_id}
+															dropdownValue={employeeDesignations}
+															id={"designation_id"}
+															searchable={false}
+															required
+														/>
+													</Grid.Col>
+												</Grid>
+											</Box>
+											<Box mb={"xs"}>
+												<Grid align="center" columns={20}>
+													<Grid.Col span={6}>
+														<Text fz="sm">{t("dateOfBirth")}</Text>
+													</Grid.Col>
+													<Grid.Col span={14} pb={0}>
+														<DateSelectorForm
+															form={form}
+															placeholder="01-01-2020"
+															tooltip={t("enterDateOfBirth")}
+															name="dob"
+															id="dob"
+															nextField="email"
+															value={form.values.dob}
+															required
+															disabledFutureDate
+														/>
+													</Grid.Col>
+												</Grid>
 											</Box>
 
 											<Box>
@@ -362,19 +376,19 @@ export default function Create({ module }) {
 														<Text fz="sm">{t("eMailAddress")}</Text>
 													</Grid.Col>
 													<Grid.Col span={14}>
-												<InputForm
-													form={form}
-													tooltip={
-														form.errors.email
-															? form.errors.email
-															: t("RequiredAndInvalidEmail")
-													}
-													placeholder={t("Email")}
-													required={true}
-													name={"email"}
-													id={"email"}
-													nextField={"mobile"}
-												/>
+														<InputForm
+															form={form}
+															tooltip={
+																form.errors.email
+																	? form.errors.email
+																	: t("RequiredAndInvalidEmail")
+															}
+															placeholder={t("Email")}
+															required={true}
+															name={"email"}
+															id={"email"}
+															nextField={"mobile"}
+														/>
 													</Grid.Col>
 												</Grid>
 											</Box>
@@ -384,19 +398,19 @@ export default function Create({ module }) {
 														<Text fz="sm">{t("MobilNo")}</Text>
 													</Grid.Col>
 													<Grid.Col span={14}>
-												<PhoneNumber
-													tooltip={
-														form.errors.mobile
-															? form.errors.mobile
-															: t("MobileValidateMessage")
-													}
-													placeholder={t("Mobile")}
-													required={true}
-													nextField={"username"}
-													name={"mobile"}
-													form={form}
-													id={"mobile"}
-												/>
+														<PhoneNumber
+															tooltip={
+																form.errors.mobile
+																	? form.errors.mobile
+																	: t("MobileValidateMessage")
+															}
+															placeholder={t("Mobile")}
+															required={true}
+															nextField={"username"}
+															name={"mobile"}
+															form={form}
+															id={"mobile"}
+														/>
 													</Grid.Col>
 												</Grid>
 											</Box>
@@ -417,15 +431,13 @@ export default function Create({ module }) {
 															required={true}
 															name={"address"}
 															id={"address"}
-															nextField=''
+															nextField=""
 														/>
 													</Grid.Col>
 												</Grid>
 											</Box>
-											<Box ml={'-xs'} mr={'-xs'} className={'inner-title-box'}>
-												<Title order={6}>
-													{t("LoginCredential")}
-												</Title>
+											<Box ml={"-xs"} mr={"-xs"} className={"inner-title-box"}>
+												<Title order={6}>{t("LoginCredential")}</Title>
 											</Box>
 											<Box>
 												<Grid align="center" columns={20}>
@@ -455,22 +467,21 @@ export default function Create({ module }) {
 														<Text fz="sm">{t("Password")}</Text>
 													</Grid.Col>
 													<Grid.Col span={14}>
-												<PasswordInputForm
-													tooltip={
-														form.errors.password
-															? form.errors.password
-															: t("RequiredPassword")
-													}
-													form={form}
-													placeholder={t("Password")}
-													required={true}
-													name={"password"}
-													id={"password"}
-													nextField={"confirm_password"}
-												/>
+														<PasswordInputForm
+															tooltip={
+																form.errors.password
+																	? form.errors.password
+																	: t("RequiredPassword")
+															}
+															form={form}
+															placeholder={t("Password")}
+															required={true}
+															name={"password"}
+															id={"password"}
+															nextField={"confirm_password"}
+														/>
 													</Grid.Col>
 												</Grid>
-
 											</Box>
 											<Box>
 												<Grid align="center" columns={20}>
@@ -478,30 +489,28 @@ export default function Create({ module }) {
 														<Text fz="sm">{t("ConfirmPassword")}</Text>
 													</Grid.Col>
 													<Grid.Col span={14}>
-												<PasswordInputForm
-													form={form}
-													tooltip={
-														form.errors.confirm_password
-															? form.errors.confirm_password
-															: t("ConfirmPasswordValidateMessage")
-													}
-													placeholder={t("ConfirmPassword")}
-													required={true}
-													name={"confirm_password"}
-													id={"confirm_password"}
-													nextField={"EntityFormSubmit"}
-												/>
+														<PasswordInputForm
+															form={form}
+															tooltip={
+																form.errors.confirm_password
+																	? form.errors.confirm_password
+																	: t("ConfirmPasswordValidateMessage")
+															}
+															placeholder={t("ConfirmPassword")}
+															required={true}
+															name={"confirm_password"}
+															id={"confirm_password"}
+															nextField={"EntityFormSubmit"}
+														/>
 													</Grid.Col>
 												</Grid>
 											</Box>
-
 										</Box>
 									</ScrollArea>
 								</Box>
 							</Box>
 						</Box>
 					</Grid.Col>
-
 				</Grid>
 			</form>
 			{groupDrawer && (
