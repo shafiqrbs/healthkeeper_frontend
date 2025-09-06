@@ -169,9 +169,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
-						<Text fz="sm">
-							{t("Hospital")} <RequiredAsterisk />
-						</Text>
+						<Text fz="sm">{t("Hospital")}</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<InputAutoComplete
@@ -190,9 +188,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 						/>
 					</Grid.Col>
 					<Grid.Col span={7}>
-						<Text fz="sm">
-							{t("ReferredName")} <RequiredAsterisk />
-						</Text>
+						<Text fz="sm">{t("ReferredName")}</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<InputAutoComplete
@@ -211,7 +207,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 						/>
 					</Grid.Col>
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Comment")}</Text>
+						<Text fz="sm">{t("Comment")}</Text> <RequiredAsterisk />
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<TextAreaForm
@@ -244,7 +240,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Comment")}</Text>
+						<Text fz="sm">{t("Comment")}</Text> <RequiredAsterisk />
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<TextAreaForm
@@ -277,9 +273,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
-						<Text fz="sm">
-							{t("Room")} <RequiredAsterisk />
-						</Text>
+						<Text fz="sm">{t("Room")}</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<SelectForm
@@ -298,7 +292,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 						/>
 					</Grid.Col>{" "}
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Comment")}</Text>
+						<Text fz="sm">{t("Comment")}</Text> <RequiredAsterisk />
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<TextAreaForm
