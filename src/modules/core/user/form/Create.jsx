@@ -352,13 +352,13 @@ export default function Create({ module }) {
 											<Box mb={"xs"}>
 												<Grid align="center" columns={20}>
 													<Grid.Col span={6}>
-														<Text fz="sm">{t("dateOfBirth")}</Text>
+														<Text fz="sm">{t("DateOfBirth")}</Text>
 													</Grid.Col>
 													<Grid.Col span={14} pb={0}>
 														<DateSelectorForm
 															form={form}
 															placeholder="01-01-2020"
-															tooltip={t("enterDateOfBirth")}
+															tooltip={t("EnterDateOfBirth")}
 															name="dob"
 															id="dob"
 															nextField="email"
@@ -373,7 +373,7 @@ export default function Create({ module }) {
 											<Box>
 												<Grid align="center" columns={20}>
 													<Grid.Col span={6}>
-														<Text fz="sm">{t("eMailAddress")}</Text>
+														<Text fz="sm">{t("EmailAddress")}</Text>
 													</Grid.Col>
 													<Grid.Col span={14}>
 														<InputForm

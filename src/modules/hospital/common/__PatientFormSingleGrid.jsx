@@ -191,14 +191,14 @@ export function Form({ form, showTitle = false, heightOffset = 116 }) {
 					</Grid>
 					<Grid align="center" columns={20}>
 						<Grid.Col span={6}>
-							<Text fz="sm">{t("dateOfBirth")}</Text>
+							<Text fz="sm">{t("DateOfBirth")}</Text>
 						</Grid.Col>
 						<Grid.Col span={14}>
 							<DatePickerForm
 								form={form}
 								label=""
 								placeholder="23-06-2025"
-								tooltip={t("enterPatientDateOfBirth")}
+								tooltip={t("EnterPatientDateOfBirth")}
 								name="dateOfBirth"
 								id="dateOfBirth"
 								nextField="age"
@@ -218,7 +218,7 @@ export function Form({ form, showTitle = false, heightOffset = 116 }) {
 									form={form}
 									label=""
 									placeholder="Y"
-									tooltip={t("years")}
+									tooltip={t("Years")}
 									name="ageYear"
 									id="ageYear"
 									nextField="ageMonth"
@@ -231,7 +231,7 @@ export function Form({ form, showTitle = false, heightOffset = 116 }) {
 									form={form}
 									label=""
 									placeholder="M"
-									tooltip={t("months")}
+									tooltip={t("Months")}
 									name="ageMonth"
 									id="ageMonth"
 									nextField="ageDay"
@@ -244,7 +244,7 @@ export function Form({ form, showTitle = false, heightOffset = 116 }) {
 									form={form}
 									label=""
 									placeholder="D"
-									tooltip={t("days")}
+									tooltip={t("Days")}
 									name="ageDay"
 									id="ageDay"
 									nextField="district"
@@ -264,7 +264,7 @@ export function Form({ form, showTitle = false, heightOffset = 116 }) {
 							<SelectForm
 								form={form}
 								label=""
-								tooltip={t("enterPatientDistrict")}
+								tooltip={t("EnterPatientDistrict")}
 								placeholder="Dhaka"
 								name="district"
 								id="district"
@@ -349,7 +349,7 @@ export function Form({ form, showTitle = false, heightOffset = 116 }) {
 								form={form}
 								label=""
 								placeholder="1234567890"
-								tooltip={t("enterPatientIdentity")}
+								tooltip={t("EnterPatientIdentity")}
 								name="identity"
 								id="identity"
 								nextField="address"
@@ -361,13 +361,13 @@ export function Form({ form, showTitle = false, heightOffset = 116 }) {
 
 					<Grid align="center" columns={20}>
 						<Grid.Col span={6}>
-							<Text fz="sm">{t("address")}</Text>
+							<Text fz="sm">{t("Address")}</Text>
 						</Grid.Col>
 						<Grid.Col span={14}>
 							<TextAreaForm
 								form={form}
 								label=""
-								tooltip={t("enterPatientAddress")}
+								tooltip={t("EnterPatientAddress")}
 								placeholder="12 street, 123456"
 								name="address"
 								id="address"
@@ -402,7 +402,7 @@ export function Form({ form, showTitle = false, heightOffset = 116 }) {
 									form={form}
 									label=""
 									mt="xxs"
-									tooltip={t("enterComment")}
+									tooltip={t("EnterComment")}
 									placeholder="Enter comment"
 									name="comment"
 									id="comment"
