@@ -22,7 +22,7 @@ import inputCss from "@assets/css/InputField.module.css";
 
 export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 284;
+	const height = mainAreaHeight - 260;
 
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	// Handle onBlur update for form fields
@@ -219,7 +219,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							return (
 								<Textarea
 									key={`${id}-${index}`}
-									label={particular.name?.toUpperCase()}
+									label={particulars.length === 1 ? "" : particular.name?.toUpperCase()}
 									placeholder={`Enter ${particular.name}`}
 									value={value || ""}
 									onChange={(event) =>

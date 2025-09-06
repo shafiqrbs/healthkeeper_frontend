@@ -1,4 +1,3 @@
-import React from "react";
 import { Tooltip, Autocomplete } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconInfoCircle, IconX } from "@tabler/icons-react";
@@ -21,6 +20,7 @@ function InputAutoComplete({
 	leftSection,
 	rightSection,
 	styles = {},
+	changeValue = null,
 }) {
 	const { t } = useTranslation();
 
@@ -53,6 +53,7 @@ function InputAutoComplete({
 						limit={10}
 						data={data}
 						{...form.getInputProps(name)}
+						onChange={changeValue || form.getInputProps(name).onChange}
 						onKeyDown={getHotkeyHandler([
 							[
 								"Enter",

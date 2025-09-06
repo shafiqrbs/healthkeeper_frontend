@@ -5,52 +5,93 @@ import { useDisclosure } from "@mantine/hooks";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import SelectForm from "@components/form-builders/SelectForm";
-import { useForm } from "@mantine/form";
-import { getPatientReportFormInitialValues } from "../prescription/helpers/request";
-
-const roomsOptions = [
-	{ value: "101", label: "101" },
-	{ value: "102", label: "102" },
-	{ value: "103", label: "103" },
-	{ value: "104", label: "104" },
-	{ value: "105", label: "105" },
-];
-
-const referredOptions = [
-	{ value: "Dr. John Doe", label: "Dr. John Doe" },
-	{ value: "Dr. Jane Smith", label: "Dr. Jane Smith" },
-	{ value: "Dr. Jim Beam", label: "Dr. Jim Beam" },
-];
+import { hasLength, useForm } from "@mantine/form";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import InputAutoComplete from "@components/form-builders/InputAutoComplete";
 
 export default function PatientReferredAction() {
 	const { t } = useTranslation();
-	const form = useForm(getPatientReportFormInitialValues());
+	const roomReferredForm = useForm({
+		initialValues: {
+			room_no: "",
+			room_comment: "",
+		},
+		validate: {
+			room_comment: hasLength({ min: 1 }),
+		},
+	});
+	const admissionReferredForm = useForm({
+		initialValues: {
+			admission_comment: "",
+		},
+		validate: {
+			admission_comment: hasLength({ min: 1 }),
+		},
+	});
+	const referredForm = useForm({
+		initialValues: {
+			referred_id: null,
+			referred_name: "",
+			hospital: "",
+			referred_comment: "",
+		},
+		validate: {
+			referred_comment: hasLength({ min: 1 }),
+		},
+	});
 	const [openedReferred, { open: openReferred, close: closeReferred }] = useDisclosure(false);
 	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
 	const [openedRoomReferred, { open: openRoomReferred, close: closeRoomReferred }] = useDisclosure(false);
 
-	const handleSubmit = (values) => {
-		if (values === "referred") {
-			const formValues = {
-				referred_name: form.values.referred_name,
-				comment: form.values.referred_comment,
-			};
-			console.log(formValues);
-			closeReferred();
-		} else if (values === "admission") {
-			const formValues = {
-				comment: form.values.admission_comment,
-			};
-			console.log(formValues);
-			closeAdmission();
-		} else if (values === "room_referred") {
-			const formValues = {
-				room_no: form.values.room_no,
-				comment: form.values.room_comment,
-			};
-			console.log(formValues);
-			closeRoomReferred();
-		}
+	const { data: roomsOptions } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.UTILITY,
+	});
+
+	const { data: doctorsOption } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.UTILITY,
+	});
+
+	const { data: hospitalsOption } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.HOSPITAL.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.HOSPITAL.TYPE },
+		utility: HOSPITAL_DROPDOWNS.HOSPITAL.UTILITY,
+	});
+
+	// =============== handle doctor selection change ================
+	const handleDoctorChange = (selectedName) => {
+		const selectedDoctor = doctorsOption?.find((doctor) => doctor.label === selectedName) || null;
+
+		referredForm.setFieldValue("referred_id", selectedDoctor?.value);
+		referredForm.setFieldValue("referred_name", selectedDoctor?.label || selectedName);
+	};
+
+	const handleHospitalChange = (selectedName) => {
+		const selectedHospital = hospitalsOption?.find((hospital) => hospital.label === selectedName) || null;
+
+		referredForm.setFieldValue("hospital", selectedHospital?.value || selectedName);
+	};
+
+	const handleRoomReferredSubmit = (values) => {
+		console.log(values);
+
+		closeRoomReferred();
+	};
+
+	const handleAdmissionReferredSubmit = (values) => {
+		console.log(values);
+
+		closeAdmission();
+	};
+
+	const handleReferredSubmit = (values) => {
+		console.log(values);
+
+		closeReferred();
 	};
 
 	return (
@@ -88,30 +129,52 @@ export default function PatientReferredAction() {
 			<CompactDrawer
 				opened={openedReferred}
 				close={closeReferred}
-				save={() => handleSubmit("referred")}
 				position="right"
 				size="30%"
 				keepMounted={false}
 				bg="white"
 				title={t("Referred")}
+				form={referredForm}
+				save={handleReferredSubmit}
 			>
 				<Grid align="center" columns={20}>
+					<Grid.Col span={7}>
+						<Text fz="sm">
+							{t("Hospital")} <RequiredAsterisk />
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={13}>
+						<InputAutoComplete
+							tooltip={t("HospitalValidateMessage")}
+							label=""
+							data={hospitalsOption}
+							value={referredForm.values.hospital}
+							changeValue={handleHospitalChange}
+							placeholder={t("Hospital")}
+							required
+							nextField="referred_name"
+							form={referredForm}
+							name="hospital"
+							mt={0}
+							id="hospital"
+						/>
+					</Grid.Col>
 					<Grid.Col span={7}>
 						<Text fz="sm">
 							{t("ReferredName")} <RequiredAsterisk />
 						</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
-						<SelectForm
+						<InputAutoComplete
 							tooltip={t("ReferredNameValidateMessage")}
 							label=""
-							dropdownValue={referredOptions}
-							value={form.values.referred_name}
-							changeValue={(v) => form.setFieldValue("referred_name", v)}
+							data={doctorsOption}
+							value={referredForm.values.referred_id}
+							changeValue={handleDoctorChange}
 							placeholder={t("ReferredName")}
-							required={true}
+							required
 							nextField="name"
-							form={form}
+							form={referredForm}
 							name="referred_name"
 							mt={0}
 							id="referred_name"
@@ -126,10 +189,11 @@ export default function PatientReferredAction() {
 							label=""
 							placeholder={t("DummyMessage")}
 							nextField="name"
-							form={form}
+							form={referredForm}
 							name="referred_comment"
 							mt={0}
 							id="comment"
+							required
 							showRightSection={false}
 							style={{ input: { height: 100 } }}
 						/>
@@ -140,12 +204,13 @@ export default function PatientReferredAction() {
 			<CompactDrawer
 				opened={openedAdmission}
 				close={closeAdmission}
-				save={() => handleSubmit("admission")}
 				position="right"
 				size="30%"
 				keepMounted={false}
 				bg="white"
 				title={t("Admission")}
+				form={admissionReferredForm}
+				save={handleAdmissionReferredSubmit}
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
@@ -157,11 +222,12 @@ export default function PatientReferredAction() {
 							label=""
 							placeholder={t("DummyMessage")}
 							nextField="name"
-							form={form}
+							form={admissionReferredForm}
 							name="admission_comment"
 							mt={0}
 							id="comment"
 							showRightSection={false}
+							required
 							style={{ input: { height: 100 } }}
 						/>
 					</Grid.Col>
@@ -169,9 +235,10 @@ export default function PatientReferredAction() {
 			</CompactDrawer>
 			{/* --------- room referred drawer section ---------- */}
 			<CompactDrawer
+				save={handleRoomReferredSubmit}
+				form={roomReferredForm}
 				opened={openedRoomReferred}
 				close={closeRoomReferred}
-				save={() => handleSubmit("room_referred")}
 				position="right"
 				size="30%"
 				keepMounted={false}
@@ -187,14 +254,14 @@ export default function PatientReferredAction() {
 					<Grid.Col span={13}>
 						<SelectForm
 							dropdownValue={roomsOptions}
-							value={form.values.room_no}
-							changeValue={(v) => form.setFieldValue("room_no", v)}
+							value={roomReferredForm.values.room_no}
+							changeValue={(v) => roomReferredForm.setFieldValue("room_no", v)}
 							tooltip={t("RoomNoValidateMessage")}
 							label=""
 							placeholder={t("RoomNo")}
-							required={true}
+							required
 							nextField="name"
-							form={form}
+							form={roomReferredForm}
 							name="room_no"
 							mt={0}
 							id="room_no"
@@ -209,11 +276,12 @@ export default function PatientReferredAction() {
 							label=""
 							placeholder={t("DummyMessage")}
 							nextField="name"
-							form={form}
+							form={roomReferredForm}
 							name="room_comment"
 							mt={0}
 							id="comment"
 							showRightSection={false}
+							required
 							style={{ input: { height: 100 } }}
 						/>
 					</Grid.Col>

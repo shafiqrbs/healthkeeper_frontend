@@ -32,9 +32,10 @@ export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_TYPE: { UTILITY: "particularType", PATH: "hospital/select/particular-type" },
 	PARTICULAR_MASTER_TYPE: { UTILITY: "particularMasterType", PATH: "hospital/select/particular-master-type" },
 
-	//	PARTICULAR_MODE: { UTILITY: "particularMode", TYPE: "operation", PATH: "hospital/select/module" },
-
 	PARTICULAR_ROOM: { UTILITY: "particularRoom", TYPE: "room", PATH: "hospital/select/particular" },
+	PARTICULAR_OPD_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/particular" },
+
+	PARTICULAR_DOCTOR: { UTILITY: "particularDoctor", TYPE: "doctor", PATH: "hospital/select/particular" },
 
 	PARTICULAR_MODE: { UTILITY: "particularOperationMode", TYPE: "operation", PATH: "hospital/select/mode" },
 	PARTICULAR_PRINT_MODE: { UTILITY: "particularLabReportModes", TYPE: "print", PATH: "hospital/select/mode" },
@@ -54,6 +55,8 @@ export const HOSPITAL_DROPDOWNS = {
 		TYPE: "patient-diseases-mode",
 		PATH: "hospital/select/mode",
 	},
+
+	HOSPITAL: { UTILITY: "hospital", TYPE: "hospital", PATH: "hospital/select/particular" },
 
 	PARTICULAR_PATIENT_TYPE: { UTILITY: "particularPatientTypes", TYPE: "patient-type", PATH: "hospital/select/mode" },
 	PARTICULAR_PATIENT_MODE: { UTILITY: "particularPatientModes", TYPE: "patient-mode", PATH: "hospital/select/mode" },

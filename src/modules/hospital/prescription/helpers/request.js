@@ -46,16 +46,3 @@ export const getMedicineFormInitialValues = () => {
 		},
 	};
 };
-
-export const getPatientReportFormInitialValues = () => {
-	return {
-		initialValues: {
-			type: "",
-			referred_name: "",
-			referred_comment: "",
-			admission_comment: "",
-			room_no: "",
-			room_comment: "",
-		},
-	};
-};

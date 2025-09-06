@@ -7,7 +7,7 @@ import CustomDivider from "@components/core-component/CustomDivider";
 import { formatDate } from "@/common/utils";
 import "@/index.css";
 import useDoaminHospitalConfigData from "@hooks/config-data/useDomainHospitalConfigData";
-import {t} from "i18next";
+import { t } from "i18next";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {
 	const { hospitalConfigData } = useDoaminHospitalConfigData();
@@ -22,8 +22,6 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 	const getValue = (value, defaultValue = "N/A") => {
 		return value || defaultValue;
 	};
-
-	console.log(customerInformation);
 
 	return (
 		<Box display="none">
@@ -44,11 +42,11 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								{hospitalConfigData?.address}
 							</Text>
 							<Text ta="center" size="sm" c="gray" mb="2">
-								{t('হটলাইন')} {hospitalConfigData?.hotline}
+								{t("হটলাইন")} {hospitalConfigData?.hotline}
 							</Text>
 
 							<Text ta="center" fw="bold" size="lg" c="#1e40af">
-								{t('Prescription')}
+								{t("Prescription")}
 							</Text>
 						</Grid.Col>
 						<Grid.Col span={4}>
@@ -70,7 +68,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={5} px="xs">
 							<Group gap="xs">
 								<Text size="sm" fw={600}>
-									{t('নাম')}:
+									{t("নাম")}:
 								</Text>
 								<Text size="sm">{getValue(customerInformation?.name, "N/A")}</Text>
 							</Group>
@@ -78,7 +76,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={4} px="xs">
 							<Group gap="xs">
 								<Text size="sm" fw={600}>
-									{t('মোবাইল')}:
+									{t("মোবাইল")}:
 								</Text>
 								<Text size="sm">{getValue(customerInformation?.mobile)}</Text>
 							</Group>
@@ -87,18 +85,19 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={4} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('বয়স')}:
+									{t("বয়স")}:
 								</Text>
 								<Text size="sm">
 									{" "}
-									{customerInformation?.day || 0} D  {customerInformation?.month || ''} M {customerInformation?.year||''} Y
+									{customerInformation?.day || 0} D {customerInformation?.month || ""} M{" "}
+									{customerInformation?.year || ""} Y
 								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('লিঙ্গ')}:
+									{t("লিঙ্গ")}:
 								</Text>
 								<Text size="xs">{getValue(customerInformation?.gender, "N/A")}</Text>
 							</Group>
@@ -106,7 +105,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('রক্তচাপ')}:
+									{t("রক্তচাপ")}:
 								</Text>
 								<Text size="xs">{getValue(basicInfo?.bp)}</Text>
 							</Group>
@@ -115,15 +114,17 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('ওজন')}:
+									{t("ওজন")}:
 								</Text>
-								<Text size="xs">{getValue(basicInfo?.weight)} {t('KG')}</Text>
+								<Text size="xs">
+									{getValue(basicInfo?.weight)} {t("KG")}
+								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('রক্তের গ্রুপ')}:
+									{t("রক্তের গ্রুপ")}:
 								</Text>
 								<Text size="xs">{getValue(basicInfo?.bloodGroup)}</Text>
 							</Group>

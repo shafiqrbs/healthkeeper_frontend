@@ -7,7 +7,7 @@ import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Button, Flex, Grid, Modal, Stack, Group } from "@mantine/core";
+import { Box, Button, Flex, Grid, Modal, Stack } from "@mantine/core";
 import PatientReport from "../common/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -20,7 +20,7 @@ import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
-import useDataWithoutStore from "@/common/hooks/useDataWithoutStore";
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientReferredAction from "@modules/hospital/common/PatientReferredAction";
 
 const module = MODULES.PRESCRIPTION;
@@ -111,14 +111,8 @@ export default function Index() {
 								</Stack>
 							</Grid.Col>
 							<Grid.Col span={8}>
-								<Flex
-									mt={"xs"}
-									gap="md"
-									justify="flex-start"
-									align="center"
-									direction="row-reverse"
-									wrap="wrap"
-								>
+								<Flex mt={"xs"} gap="md" justify="flex-end" align="center" wrap="wrap">
+									<PatientReferredAction form={form} />
 									<Button
 										onClick={handleOpenViewOverview}
 										size="xs"
@@ -129,7 +123,6 @@ export default function Index() {
 									>
 										{t("Visits")}
 									</Button>
-									<PatientReferredAction form={form} />
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={8}>
