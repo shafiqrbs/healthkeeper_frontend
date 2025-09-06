@@ -14,7 +14,6 @@ import {
 	ActionIcon,
 } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
-import PatientReferredAction from "./PatientReferredAction";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
@@ -418,7 +417,6 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 	return (
 		<Box bg="white" p="les">
 			{generateTabItems()}
-			<PatientReferredAction form={form} />
 		</Box>
 	);
 }

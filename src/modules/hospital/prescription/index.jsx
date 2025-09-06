@@ -7,7 +7,7 @@ import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import {Box, Button, Flex, Grid, Modal, Stack,Group} from "@mantine/core";
+import { Box, Button, Flex, Grid, Modal, Stack, Group } from "@mantine/core";
 import PatientReport from "../common/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -28,7 +28,7 @@ const module = MODULES.PRESCRIPTION;
 export default function Index() {
 	const [medicines, setMedicines] = useState([]);
 	const { t } = useTranslation();
-	const { ref, width } = useElementSize();
+	const { ref } = useElementSize();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [tabValue, setTabValue] = useState("All");
@@ -45,10 +45,6 @@ export default function Index() {
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
 	const existingMedicines = initialFormValues?.medicines || [];
-	const [openedReferred, { open: openReferred, close: closeReferred }] = useDisclosure(false);
-	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
-	const [openedRoomReferred, { open: openRoomReferred, close: closeRoomReferred }] = useDisclosure(false);
-
 
 	const form = useForm(getPrescriptionFormInitialValues(t, {}));
 
@@ -116,14 +112,13 @@ export default function Index() {
 							</Grid.Col>
 							<Grid.Col span={8}>
 								<Flex
-									mt={'xs'}
+									mt={"xs"}
 									gap="md"
 									justify="flex-start"
 									align="center"
 									direction="row-reverse"
 									wrap="wrap"
 								>
-
 									<Button
 										onClick={handleOpenViewOverview}
 										size="xs"
@@ -134,38 +129,7 @@ export default function Index() {
 									>
 										{t("Visits")}
 									</Button>
-									<Button.Group>
-
-										<Button
-											px="xs"
-											variant="filled"
-											color="var(--theme-warn-color-6)"
-											bg="var(--theme-warn-color-6)"
-											onClick={openRoomReferred}
-										>
-											{t("RoomReferred")}
-										</Button>
-										<Button
-											px="xs"
-											variant="filled"
-											color="var(--theme-primary-color-6)"
-											bg="var(--theme-primary-color-5)"
-											onClick={openAdmission}
-										>
-											{t("Admission")}
-										</Button>
-										<Button
-											px="xs"
-											variant="filled"
-											color="var(--theme-delete-color)"
-											bg="var(--theme-delete-color)"
-											onClick={openReferred}
-										>
-											{t("Referred")}
-										</Button>
-									</Button.Group>
-
-
+									<PatientReferredAction form={form} />
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={8}>
@@ -192,11 +156,6 @@ export default function Index() {
 			<Modal opened={openedOverview} onClose={closeOverview} size="100%" centered>
 				<Table module={module} closeTable={closeOverview} height={mainAreaHeight - 220} />
 			</Modal>
-			return (
-			<Box bg="white" p="les">
-				<PatientReferredAction form={form} />
-			</Box>
-			);
 		</>
 	);
 }

@@ -12,7 +12,8 @@ import {
 	ScrollArea,
 	Select,
 	Autocomplete,
-	NumberInput, Checkbox, Switch,
+	NumberInput,
+	Switch,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconPencil, IconPlus, IconRestore, IconX } from "@tabler/icons-react";
@@ -409,6 +410,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 							onSearchChange={(v) => {
 								setMedicineTerm(v);
 							}}
+							id="medicine_id"
 							name="medicine_id"
 							data={medicineData?.map((item) => ({
 								label: item.product_name,
@@ -423,6 +425,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 						/>
 						<Autocomplete
 							tooltip={t("EnterGenericName")}
+							id="generic"
 							name="generic"
 							data={medicineGenericData?.map((item, index) => ({
 								label: item.name,
@@ -437,11 +440,12 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 							onBlur={() => setMedicineGenericTerm("")}
 						/>
 					</Group>
-					<Grid w="100%" columns={12} gutter="xxxs" >
+					<Grid w="100%" columns={12} gutter="xxxs">
 						<Grid.Col span={6}>
 							<Group grow gap="les">
 								<SelectForm
 									form={medicineForm}
+									id="dose_details"
 									name="dose_details"
 									dropdownValue={dosage_options}
 									value={medicineForm.values.dose_details}
@@ -452,6 +456,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 								/>
 								<SelectForm
 									form={medicineForm}
+									id="by_meal"
 									name="by_meal"
 									dropdownValue={by_meal_options}
 									value={medicineForm.values.by_meal}
@@ -460,7 +465,6 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 									tooltip={t("EnterWhenToTakeMedicine")}
 									withCheckIcon={false}
 								/>
-
 							</Group>
 						</Grid.Col>
 						<Grid.Col span={6}>
@@ -468,6 +472,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 								<SelectForm
 									form={medicineForm}
 									label=""
+									id="duration"
 									name="duration"
 									dropdownValue={DURATION_OPTIONS}
 									value={medicineForm.values.duration}
@@ -478,6 +483,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 								/>
 								<InputNumberForm
 									form={medicineForm}
+									id="quantity"
 									name="quantity"
 									value={medicineForm.values.quantity}
 									placeholder={t("Quantity")}
@@ -498,21 +504,13 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 				</Group>
 			</Box>
 			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
-				{t('List of Medicines')}
+				{t("List of Medicines")}
 			</Text>
 			<ScrollArea h={mainAreaHeight - 420} bg="white">
 				<Stack gap="xs" p="sm">
 					{medicines?.length === 0 && (
-
-						<Flex
-						mih={220}
-						gap="md"
-						justify="center"
-						align="center"
-						direction="row"
-						wrap="wrap"
-						>
-							<Text w='100%' fz="sm" align={'center'} c="var(--theme-secondary-color)">
+						<Flex mih={220} gap="md" justify="center" align="center" direction="row" wrap="wrap">
+							<Text w="100%" fz="sm" align={"center"} c="var(--theme-secondary-color)">
 								{t("NoMedicineAddedYet")}
 							</Text>
 							<Button
@@ -520,11 +518,11 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 								type="submit"
 								variant="filled"
 								bg="var(--theme-primary-color-6)"
+								onClick={() => document.getElementById("medicine_id").focus()}
 							>
 								{t("SelectMedicine")}
 							</Button>
 						</Flex>
-
 					)}
 					{medicines?.map((medicine, index) => (
 						<MedicineListItem
@@ -569,7 +567,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 							<Box p="sm">
 								<DatePickerForm
 									form={form}
-									label=''
+									label=""
 									tooltip="Enter follow up date"
 									name="follow_up_date"
 									value={form.values.follow_up_date}
@@ -577,12 +575,12 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 									onBlur={handleFieldBlur}
 								/>
 							</Box>
-							<Box pl={'md'}>
+							<Box pl={"md"}>
 								<Switch
 									defaultChecked
 									color="red"
 									size="md"
-									label={t("ThisPrescriptionAsSaveTemplate")}
+									label={t("SaveThisPrescriptionAsTemplate")}
 								/>
 							</Box>
 

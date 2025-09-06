@@ -57,34 +57,31 @@ export default function PatientReferredAction() {
 		<>
 			<Button.Group>
 				<Button
-					w="30%"
 					px="xs"
 					variant="filled"
-					color="var(--theme-primary-color-6)"
-					bg="var(--theme-primary-color-6)"
-					onClick={openReferred}
+					color="var(--theme-warn-color-6)"
+					bg="var(--theme-warn-color-6)"
+					onClick={openRoomReferred}
 				>
-					{t("Referred")}
+					{t("RoomReferred")}
 				</Button>
 				<Button
-					w="32%"
 					px="xs"
 					variant="filled"
 					color="var(--theme-primary-color-6)"
-					bg="var(--theme-secondary-color-5)"
+					bg="var(--theme-primary-color-5)"
 					onClick={openAdmission}
 				>
 					{t("Admission")}
 				</Button>
 				<Button
-					w="38%"
 					px="xs"
 					variant="filled"
-					color="var(--theme-primary-color-6)"
-					bg="var(--theme-secondary-color-8)"
-					onClick={openRoomReferred}
+					color="var(--theme-delete-color)"
+					bg="var(--theme-delete-color)"
+					onClick={openReferred}
 				>
-					{t("RoomReferred")}
+					{t("Referred")}
 				</Button>
 			</Button.Group>
 			{/* ----------- referred drawer section --------- */}

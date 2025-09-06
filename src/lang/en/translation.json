@@ -1456,5 +1456,8 @@
 	"PatientID": "PID",
 	"VisitTable": "Visit Table",
 	"VisitOverview": "Visit Overview",
-	"InvoiceID": "Invoice ID"
+	"InvoiceID": "Invoice ID",
+	"SaveThisPrescriptionAsTemplate": "Save This Prescription as Template",
+	"SelectMedicine": "Select Medicine",
+	"NoMedicineAddedYet": "No Medicine Added Yet"
 }
