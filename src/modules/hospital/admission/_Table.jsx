@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
@@ -46,6 +46,7 @@ export default function Table({ module }) {
 	const [controlsRefs, setControlsRefs] = useState({});
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const [records, setRecords] = useState(sortBy(listData.data, "name"));
+	const navigate = useNavigate();
 	const [sortStatus, setSortStatus] = useState({
 		columnAccessor: "name",
 		direction: "asc",
@@ -67,11 +68,12 @@ export default function Table({ module }) {
 
 		setFetching(true);
 		const value = {
-			url: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX,
+			url: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
 			params: {
 				term: filterData.keywordSearch,
 				page: pageNum,
 				offset: PER_PAGE,
+				patient_mode: "ipd",
 			},
 			module,
 		};
@@ -104,6 +106,10 @@ export default function Table({ module }) {
 		} finally {
 			setFetching(false);
 		}
+	};
+
+	const handleDetailsAdmission = (id) => {
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD.INDEX}/${id}`, { replace: true });
 	};
 
 	const loadMoreRecords = useCallback(() => {
@@ -238,6 +244,17 @@ export default function Table({ module }) {
 										rightSection={<IconArrowRight size={18} />}
 									>
 										{t("Confirm")}
+									</Button>
+									<Button
+										variant="filled"
+										bg="var(--theme-secondary-color-6)"
+										c="white"
+										size="xs"
+										onClick={() => handleDetailsAdmission(values.id)}
+										radius="es"
+										rightSection={<IconArrowRight size={18} />}
+									>
+										{t("Process")}
 									</Button>
 									<Menu
 										position="bottom-end"

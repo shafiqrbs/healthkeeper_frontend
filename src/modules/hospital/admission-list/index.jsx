@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "./helpers/request";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
@@ -20,14 +20,18 @@ import Charge from "./common/tabs/Charge";
 import Billing from "./common/tabs/Billing";
 import FinalBill from "./common/tabs/FinalBill";
 import Discharge from "./common/tabs/Discharge";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { getDataWithoutStore } from "@/services/apiService";
 
 export default function Index() {
+	const { id } = useParams();
 	const { t } = useTranslation();
 	const form = useForm(getPrescriptionFormInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [patientData, setPatientData] = useState({});
 	const [selectedRoom, setSelectedRoom] = useState(null);
+	const [ipdData, setIpdData] = useState({});
 
 	const handleRoomClick = (room) => {
 		setSelectedRoom(room);
@@ -40,6 +44,20 @@ export default function Index() {
 	const openDoctorsRoom = () => {
 		console.log("openDoctorsRoom");
 	};
+
+	const fetchData = async () => {
+		const result = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+		});
+
+		setIpdData(result);
+	};
+
+	console.log(ipdData);
+
+	useEffect(() => {
+		fetchData();
+	}, [id]);
 
 	return (
 		<>

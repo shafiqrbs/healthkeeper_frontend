@@ -7,7 +7,7 @@ export default function Medicine() {
 
 	return (
 		<Box h={mainAreaHeight - 63} p="xs">
-			<AddMedicineForm hideActionButtons hideAdviseForm />
+			{/* <AddMedicineForm hideActionButtons hideAdviseForm /> */}
 		</Box>
 	);
 }

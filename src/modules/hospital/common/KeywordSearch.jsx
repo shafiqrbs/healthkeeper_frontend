@@ -27,18 +27,15 @@ export default function KeywordSearch({
 	const [date, setDate] = useState(filterData.date ? new Date(filterData.date) : new Date());
 
 	// =============== handle search functionality ================
-	const handleSearch = useCallback(
-		(searchData) => {
-			const data = searchData || { keywordSearch, date };
-			form.setFieldValue("keywordSearch", data.keywordSearch);
-			form.setFieldValue("date", data.created);
-			dispatch(setFilterData({ module, data }));
-			if (onSearch) {
-				onSearch(data);
-			}
-		},
-		[dispatch, module, onSearch, keywordSearch, date]
-	);
+	const handleSearch = (searchData) => {
+		const data = searchData || { keywordSearch, created: date };
+		form.setFieldValue("keywordSearch", data.keywordSearch);
+		form.setFieldValue("created", data.created);
+		dispatch(setFilterData({ module, data }));
+		if (onSearch) {
+			onSearch(data);
+		}
+	};
 
 	// =============== handle keyword change ================
 	const handleKeywordChange = (value) => {
@@ -46,13 +43,10 @@ export default function KeywordSearch({
 	};
 
 	// =============== handle date change ================
-	const handleDateChange = useCallback(
-		(value) => {
-			setDate(value);
-			handleSearch({ keywordSearch, created: value });
-		},
-		[handleSearch, keywordSearch]
-	);
+	const handleDateChange = (value) => {
+		setDate(value);
+		handleSearch({ keywordSearch, created: value });
+	};
 
 	// =============== handle reset functionality ================
 	const handleReset = useCallback(() => {

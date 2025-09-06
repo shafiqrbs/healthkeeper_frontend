@@ -68,7 +68,7 @@ export default function Table({ module }) {
 	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
-	const filterData = useSelector((state) => state.crud[module].filterData);
+	// const filterData = useSelector((state) => state.crud[module].filterData);
 
 	const [sortStatus, setSortStatus] = useState({
 		columnAccessor: "name",
@@ -94,8 +94,8 @@ export default function Table({ module }) {
 		const value = {
 			url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 			params: {
-				term: filterData.keywordSearch,
-				created: filterData.created,
+				// term: filterData.keywordSearch,
+				// created: filterData.created,
 				page: pageNum,
 				offset: PER_PAGE,
 				patient_mode: "emergency",
@@ -149,7 +149,7 @@ export default function Table({ module }) {
 		setHasMore(true);
 		// reset scroll position when data is refreshed
 		scrollViewportRef.current?.scrollTo(0, 0);
-	}, [dispatch, refetch, filterData]);
+	}, [dispatch, refetch]);
 
 	const handleView = (id) => {
 		open();

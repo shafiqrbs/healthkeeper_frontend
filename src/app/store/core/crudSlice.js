@@ -340,13 +340,13 @@ const initialState = {
 	// -------------------- hospital modules starts -------------------------
 	emergency: {
 		isLoading: true,
-		refetching: true,
+		refetching: false,
 		error: null,
 		validation: false,
 		insertType: "create",
 		data: {},
 		editData: {},
-		filterData: { name: "", date: new Date(), keywordSearch: "" },
+		filterData: { created: new Date(), keywordSearch: "" },
 		validationMessages: [],
 	},
 	// -------------------- hospital modules stops -------------------------

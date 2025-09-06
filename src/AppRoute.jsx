@@ -159,10 +159,9 @@ function AppRoute() {
 					</Route>
 					<Route path="ipd">
 						<Route index element={<IpdIndex />} />
+						<Route path=":id" element={<AdmissionListIndex />} />
 						<Route path="admission" element={<AdmissionIndex />} />
 					</Route>
-
-					<Route path="admission-list" element={<AdmissionListIndex />} />
 
 					<Route path="prescription">
 						<Route path=":prescriptionId" element={<PrescriptionIndex />} />

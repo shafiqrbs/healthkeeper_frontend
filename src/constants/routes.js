@@ -1,6 +1,5 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
-
 		OPERATIONAL_API: {
 			REFERRED: "hospital/opd/referred",
 		},
@@ -277,12 +276,13 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "hospital/prescription/view",
 		},
 
-		ADMISSION: {
-			INDEX: "hospital/opd",
-			CREATE: "hospital/admission/create",
-			UPDATE: "hospital/admission",
-			VIEW: "hospital/admission/view",
+		IPD: {
+			INDEX: "hospital/ipd",
+			CREATE: "hospital/ipd",
+			UPDATE: "hospital/ipd",
+			VIEW: "hospital/ipd",
 		},
+
 		EMERGENCY: {
 			INDEX: "hospital/opd",
 			CREATE: "hospital/opd",
@@ -316,11 +316,11 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "/hospital/admission/view",
 			CONFIRM: "/hospital/admission/confirm",
 		},
-		ADMISSION_LIST: {
-			INDEX: "/hospital/admission-list",
-			CREATE: "/hospital/admission-list/create",
-			UPDATE: "/hospital/admission-list",
-			VIEW: "/hospital/admission-list/view",
+		IPD: {
+			INDEX: "/hospital/ipd",
+			CREATE: "/hospital/ipd",
+			UPDATE: "/hospital/ipd",
+			VIEW: "/hospital/ipd",
 		},
 		EMERGENCY: {
 			INDEX: "/hospital/emergency",
