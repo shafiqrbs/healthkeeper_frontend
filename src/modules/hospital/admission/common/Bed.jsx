@@ -3,9 +3,15 @@ import { useOutletContext } from "react-router-dom";
 import RoomCard from "../../common/RoomCard";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getIndexEntityData } from "@/app/store/core/crudThunk";
+import { MASTER_DATA_ROUTES } from "@/constants/routes";
+import { useEffect } from "react";
+
+const PER_PAGE = 100;
 
 export default function Bed({ selectedRoom, handleRoomClick }) {
+	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const listData = useSelector((state) => state.crud.bed?.data?.data);
 	const height = mainAreaHeight - 320;
@@ -24,6 +30,20 @@ export default function Bed({ selectedRoom, handleRoomClick }) {
 			acc[paymentMode.slug] = filteredRooms;
 			return acc;
 		}, {}) || {};
+
+	const fetchData = () => {
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.BED.INDEX,
+				module: "bed",
+				params: { particular_type: "bed", term: "", page: 1, offset: PER_PAGE },
+			})
+		);
+	};
+
+	useEffect(() => {
+		fetchData();
+	}, []);
 
 	return (
 		<Grid columns={24} gutter="xs">
