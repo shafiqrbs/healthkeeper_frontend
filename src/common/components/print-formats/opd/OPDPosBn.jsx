@@ -14,11 +14,10 @@ const DashedLine = () => (
 	</Text>
 );
 
-const OPDPos = forwardRef(({ data }, ref) => {
+const OPDPosBn = forwardRef(({ data }, ref) => {
 	const user = getLoggedInUser();
 	const { t } = useTranslation();
 	const { hospitalConfigData } = useDoaminHospitalConfigData();
-	console.log(hospitalConfigData)
 	return (
 		<Box display="none">
 			<Box ref={ref} w="80mm" p={8} bg="white" mx="auto">
@@ -63,11 +62,11 @@ const OPDPos = forwardRef(({ data }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							{ data?.health_id &&(
-							<Table.Tr>
-								<Table.Td colspan={2} align="center">
-									<strong>HID:</strong> {data?.health_id}
-								</Table.Td>
-							</Table.Tr>
+								<Table.Tr>
+									<Table.Td colspan={2} align="center">
+										<strong>HID:</strong> {data?.health_id}
+									</Table.Td>
+								</Table.Tr>
 							)}
 							<Table.Tr>
 
@@ -173,6 +172,6 @@ const OPDPos = forwardRef(({ data }, ref) => {
 	);
 });
 
-OPDPos.displayName = "OPDPos";
+OPDPos.displayName = "OPDPosBn";
 
 export default OPDPos;

@@ -4,13 +4,16 @@ import { useNavigate } from "react-router-dom";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
 import {
-	IconAlertCircle,
+	IconAlertCircle, IconArrowDownLeft,
 	IconArrowRight,
 	IconCheck,
 	IconChevronUp,
 	IconDotsVertical,
 	IconSelector,
+	IconX,
 	IconTrashX,
+	IconPrinter,
+	IconScript,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -35,6 +38,9 @@ import OPDDocument from "@components/print-formats/opd/OPDA4";
 import OPDPos from "@components/print-formats/opd/OPDPos";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
+import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
+import useDomainConfig from "@hooks/config-data/useDomainConfig";
+import useDoaminHospitalConfigData from "@hooks/config-data/useDomainHospitalConfigData";
 
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
@@ -71,11 +77,13 @@ export default function Table({ module, height, closeTable }) {
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
 
+	const { hospitalConfigData } = useDoaminHospitalConfigData();
+	console.log(hospitalConfigData)
 	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	const [sortStatus, setSortStatus] = useState({
-		columnAccessor: "name",
-		direction: "asc",
+		columnAccessor: "created_at",
+		direction: "desc",
 	});
 
 	const [records, setRecords] = useState(sortBy(listData.data, "name"));
@@ -138,7 +146,9 @@ export default function Table({ module, height, closeTable }) {
 		} catch (err) {
 			console.error("Unexpected error:", err);
 		} finally {
-			setFetching(false);
+			setTimeout(() => {
+				setFetching(false);
+			}, 1000);
 		}
 	};
 
@@ -238,7 +248,7 @@ export default function Table({ module, height, closeTable }) {
 	};
 
 	return (
-		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
+		<Box w="100%" bg="white">
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
 					{t("VisitInformation")}
@@ -268,6 +278,18 @@ export default function Table({ module, height, closeTable }) {
 					>
 						{t("VisitOverview")}
 					</Button>
+					<Flex gap="xs" align="center">
+						<Button
+							onClick={closeTable}
+							variant="outline"
+							size="xs"
+							radius="es"
+							leftSection={<IconX size={16} />}
+							color="var(--theme-delete-color)"
+						>
+							{t("Close")}
+						</Button>
+					</Flex>
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
@@ -309,16 +331,14 @@ export default function Table({ module, height, closeTable }) {
 								</Text>
 							),
 						},
-						{ accessor: "id", textAlign: "right", title: t("InvoiceID") },
-						{ accessor: "appointment", title: t("Appointment") },
 						{ accessor: "visiting_room", title: t("RoomNo") },
+						{ accessor: "invoice", title: t("InvoiceID") },
 						{ accessor: "patient_id", title: t("PatientID") },
 						{ accessor: "health_id", title: t("HealthID") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "gender", title: t("Gender") },
-						{ accessor: "patient_mode_name", title: t("PatientMode") },
-						{ accessor: "patient_payment_mode_name", title: t("PatientNature") },
+						{ accessor: "patient_payment_mode_name", title: t("Patient") },
 						{ accessor: "total", title: t("Total") },
 						{
 							accessor: "created_by",
@@ -363,15 +383,33 @@ export default function Table({ module, height, closeTable }) {
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
-											<Menu.Item onClick={() => handleA4Print(values?.id)}>
+											<Menu.Item
+												leftSection={
+													<IconScript
+														style={{
+															width: rem(14),
+															height: rem(14),
+														}}
+													/>
+												}
+												onClick={() => handleA4Print(values?.id)}>
 												{t("A4Print")}
 											</Menu.Item>
-											<Menu.Item onClick={() => handlePosPrint(values?.id)}>{t("Pos")}</Menu.Item>
+											<Menu.Item
+												leftSection={
+													<IconPrinter
+														style={{
+															width: rem(14),
+															height: rem(14),
+														}}
+													/>
+												}
+												onClick={() => handlePosPrint(values?.id)}>{t("Pos")}
+											</Menu.Item>
 											<Menu.Item
 												onClick={() => handleDelete(values.id)}
-												bg="red.1"
 												c="red.6"
-												rightSection={
+												leftSection={
 													<IconTrashX
 														style={{
 															width: rem(14),
@@ -380,7 +418,7 @@ export default function Table({ module, height, closeTable }) {
 													/>
 												}
 											>
-												{t("DeleteRecord")}
+												{t("Delete")}
 											</Menu.Item>
 										</Menu.Dropdown>
 									</Menu>

@@ -62,10 +62,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 					<Grid columns={12} gutter="xs" px={4}>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
-								<Text size="sm" fw={600}>
-									রোগীর আইডি:
-								</Text>
-								<Text size="sm">{getValue(invoiceDetails?.free_identification)}</Text>
+								<Text size="sm">{getValue(customerInformation?.patient_id)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={5} px="xs">
@@ -90,7 +87,11 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								<Text size="sm" fw={600}>
 									বয়স:
 								</Text>
-								<Text size="sm">{getValue(customerInformation?.age, "N/A")}</Text>
+								<Text size="sm">
+									{" "}
+									{basicInfo?.year}Y, {basicInfo?.month || 0}M,{" "}
+									{basicInfo?.day || 0}D
+								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} px="xs">

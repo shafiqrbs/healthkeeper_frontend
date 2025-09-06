@@ -55,7 +55,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								{hospitalConfigData?.address}
 							</Text>
 							<Text ta="center" size="xs" c="gray" mb="2">
-								{t('হটলাইন')} {hospitalConfigData?.hotline}
+								Hotline: 01969910200
 							</Text>
 						</Grid.Col>
 						<Grid.Col span={4}>
@@ -72,26 +72,23 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={6} px="xs">
 							<Group gap="xs">
 								<Text size="md" fw={600}>
-									{t('মোড')} {data?.mode_name || "OPD"}
+									{data?.mode_name || "OPD"}
 								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={6} px="xs">
 							<Group gap="xs">
 								<Text size="md" fw={600}>
-									{t('বহির্বিভাগ কক্ষ')}
+									{t("Room")}
 								</Text>
 								<Text size="md">{getValue(data?.room_name || "100")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
-								<Text size="xs">{getValue(data?.invoice)}</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-
-							<Group gap="xs">
+								<Text size="xs" fw={600}>
+									{t("PatientID")}
+								</Text>
 								<Text size="xs">{getValue(data?.patient_id)}</Text>
 							</Group>
 						</Grid.Col>
@@ -104,12 +101,25 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs"/>
+							<Group gap="xs">
+								<Text size="xs" fw={600}>
+									{t("OPDID")}
+								</Text>
+								<Text size="xs">{getValue(data?.invoice)}</Text>
+							</Group>
+						</Grid.Col>
+						<Grid.Col bd="1px solid #555" span={3} px="xs">
+							<Group gap="xs">
+								<Text size="xs" fw={600}>
+									{t("Room")}
+								</Text>
+								<Text size="xs">{getValue(data?.room_name)}</Text>
+							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={6} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('নাম')}
+									{t("PatientName")}
 								</Text>
 								<Text size="xs">{getValue(data?.name, "")}</Text>
 							</Group>
@@ -117,7 +127,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('মোবাইল')}
+									{t("Mobile")}
 								</Text>
 								<Text size="xs">{getValue(data?.mobile)}</Text>
 							</Group>
@@ -126,7 +136,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('লিঙ্গ')}
+									{t("Gender")}
 								</Text>
 								<Text size="xs">{getValue(data?.gender, "N/A")}</Text>
 							</Group>
@@ -134,17 +144,17 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('বয়স')}
+									{t("Age")}
 								</Text>
 								<Text size="xs">
-									{data?.year} Y, {data?.month} M, {data?.day} D
+									{data?.year}Y, {data?.month}M, {data?.day}D
 								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('জন্ম তারিখ')}
+									{t("DOB")}
 								</Text>
 								<Text size="xs">{getValue(data?.dob, "N/A")}</Text>
 							</Group>
@@ -152,15 +162,18 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
+								<Text size="xs" fw={600}>
+									{t("PayMode")}
+								</Text>
 								<Text size="xs">{getValue(data?.payment_mode_name)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('ফি পরিমাণ')}
+									{t("Fee")}
 								</Text>
-								<Text size="xs">{getValue(data?.total, 0)}</Text>
+								<Text size="xs">{getValue(data?.amount, 0)}</Text>
 							</Group>
 						</Grid.Col>
 					</Grid>
@@ -289,34 +302,106 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 										</Box>
 									))}
 								</Box>
+								{/* {medicines.length === 0 && (
+									<Text size="xs" c="gray">
+										No medicines prescribed
+									</Text>
+								)} */}
+
 								<Box p="les">
 									<DashedDivider mb="0" mt="0" />
 									{/* =============== top section with printed by and signature ================ */}
 									<Grid columns={12} gutter="md">
 										<Grid.Col span={6}>
 											<Text mt="md" size="sm" fw={600}>
-												{t("ডাক্তারের নাম")}: .................................
+												{t("DoctorName")}: .................................
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={6}>
 											<Text mt="md" size="sm" fw={600}>
-												{t("পদবি")}: ..........................
+												{t("Designation")}: ..........................
 											</Text>
 										</Grid.Col>
 									</Grid>
 								</Box>
 							</Stack>
-				</Grid.Col>
+
+							{/* <CustomDivider mt="xl" mb="md" /> */}
+							{/* <Text size="xs" fw={600} mb="xs">
+								অন্যান্য নির্দেশাবলী:
+							</Text>
+							<Text size="xs">{getValue(patientInfo.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}</Text> */}
+						</Grid.Col>
 					</Grid>
 				</Box>
+
+				{/* =============== new prescription layout matching the image ================ */}
+				{/* <Box p={20} bd="1px solid #555" style={{ borderRadius: "4px" }}>
+					<Grid columns={12} gutter="md">
+						<Grid.Col span={6}>
+							<Stack gap="0px">
+								<Text size="xs" fw={600}>
+									Name:
+								</Text>
+								<CustomDivider w="80%" />
+								<Text size="xs" fw={600}>
+									Designation:
+								</Text>
+								<CustomDivider w="80%" />
+							</Stack>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text pt="50px" size="xs" fw={600}>
+								Signature:
+							</Text>
+							<CustomDivider w="80%" />
+						</Grid.Col>
+					</Grid>
+				</Box>
+				 */}
+				{/* <DashedDivider mb="xs" /> */}
+				{/* =============== bottom section with patient info and medication table ================ */}
+				{/* <Grid columns={12} gutter="md" mb="lg">
+					<Grid.Col span={4}>
+						<Stack gap="6px">
+							<Text size="xs" fw={500}>
+								Patient Name: {getValue(patientInfo.name, "N/A")}
+							</Text>
+							<Text size="xs">({getValue(invoiceDetails.free_identification)}).</Text>
+							<Text size="xs">Age: {getValue(data?.age, "N/A")} Y. Sex: N/A.</Text>
+							<Text size="xs" fw={600} mt="xs">
+								Doctor Comments:
+							</Text>
+							<Text size="xs" c="gray">
+								{getValue(patientInfo.advise, "N/A")}
+							</Text>
+						</Stack>
+					</Grid.Col>
+				</Grid> */}
+
+				{/* =============== footer with prescribed by ================ */}
+				{/* <Box ta="center" mt="xs">
+					<Text size="xs" fw={600} c="#1e40af">
+						Prescribed By: Doctor ID {getValue(data?.doctor_id, "N/A")}
+					</Text>
+					<Text size="xs" c="gray" mt="xs">
+						Prescription Date: {formatDate(patientInfo?.prescription_date)}
+					</Text>
+					{patientInfo?.follow_up_date && (
+						<Text size="xs" c="gray" mt="xs">
+							Follow Up Date: {formatDate(patientInfo?.follow_up_date)}
+						</Text>
+					)}
+				</Box> */}
+
 				<DashedDivider mt={0} mb={0} />
 				<Box ta="center">
 					<Text size="xs" c="gray" mt="xs">
-						<strong>{t('প্রিন্ট')}: </strong>
+						<strong>{t("PrintedBy")}: </strong>
 						{user?.name}
 					</Text>
 					<Text fz={8}>
-						{t('প্রিন্টের সময়')}: {new Date().toLocaleString()}
+						{t("PrintDateAndTime")}: {new Date().toLocaleString()}
 					</Text>
 				</Box>
 			</Box>

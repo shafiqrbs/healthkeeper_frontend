@@ -58,8 +58,8 @@ export default function _ReportFormatTable({ module, open }) {
 	const [fetching, setFetching] = useState(false);
 	const [submitFormData, setSubmitFormData] = useState({});
 	const [isLoading, setIsLoading] = useState(false);
-	const refetching = useSelector((state)=>state.crud[module]?.refetching)
 
+	const refetching = useSelector((state)=>state.crud[module]?.refetching)
 	useEffect(() => {
 		fetchData()
 	}, [refetching]);

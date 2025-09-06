@@ -17,14 +17,14 @@ const BLOOD_GROUPS = [
 export default function Vitals({ form, onBlur }) {
 	const { t } = useTranslation();
 	return (
-		<Flex gap="les" mt="xxxs" mb="xxxs" wrap="wrap">
+		<Flex gap="les" mb="xxxs" wrap="wrap">
 			<Group gap="les" grow w="100%" px="les">
 				<InputForm
 					form={form}
 					label={t("weight")}
 					name="basic_info.weight"
-					tooltip="Weight"
-					placeholder="50"
+					tooltip="Weight KG"
+					placeholder="50 KG"
 					mt={0}
 					styles={{ input: { padding: "es", fontSize: "sm" } }}
 					onBlur={onBlur}

@@ -3,7 +3,7 @@ import { ActionIcon, Box, Button, Flex, Grid, LoadingOverlay, Modal, ScrollArea,
 import { useEffect, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconArrowRight, IconInfoCircle, IconSearch, IconAlertCircle,IconBed } from "@tabler/icons-react";
+import { IconArrowRight, IconArrowUpRight,IconInfoCircle, IconSearch, IconAlertCircle,IconBed } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -116,7 +116,7 @@ export default function PatientForm({ form, module, type = "opd_ticket", setSele
 							onClick={handleOpenOpdRoom}
 							size="xs"
 							radius="es"
-							leftSection={<IconBed size={16} />}
+							rightSection={<IconArrowUpRight size={16} />}
 							bg="var(--theme-primary-color-5)"
 							c="white"
 						>
@@ -132,11 +132,11 @@ export default function PatientForm({ form, module, type = "opd_ticket", setSele
 				close={closeDoctorsRoom}
 				setSelectedRoom={setSelectedRoom}
 			/>
-			<Modal opened={opened} onClose={close} size="100%" centered>
+			<Modal opened={opened} onClose={close} size="100%" centered withCloseButton={false}>
 				<Table module={module} closeTable={close} height={mainAreaHeight - 220} />
 			</Modal>
-			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered>
-				<OpdRoomModal module={module} closeTable={close} height={mainAreaHeight - 220} />
+			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered  withCloseButton={false}>
+				<OpdRoomModal openedOpdRoom={openedOpdRoom} closeOpdRoom={closeOpdRoom} module={module} closeTable={close} height={mainAreaHeight - 220} />
 			</Modal>
 		</Box>
 	);
@@ -251,7 +251,7 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 				return {};
 			}
 
-			if (!form.values.amount && form.values.patient_payment_mode_id == "30") {
+			if (!form.values.amount && form.values.patient_payment_mode_id === "30") {
 				showNotificationComponent(t("AmountsRequired"), "red", "lightgray", true, 1000, true);
 				setIsSubmitting(false);
 				return {};

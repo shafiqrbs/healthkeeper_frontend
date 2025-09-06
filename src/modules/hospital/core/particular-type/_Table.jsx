@@ -34,11 +34,11 @@ export default function _Table({ module }) {
     const { mainAreaHeight } = useOutletContext();
     const height = mainAreaHeight - 48; //TabList height 104
 
-    const [records, setRecords] = useState([]);
     const [submitFormData, setSubmitFormData] = useState({});
     const [viewDrawer, setViewDrawer] = useState(false);
     const [customerObject, setCustomerObject] = useState({});
     const [fetching, setFetching] = useState(false);
+    const [records, setRecords] = useState([]);
 
     const listData = useSelector((state) => state.crud[module].data);
 
