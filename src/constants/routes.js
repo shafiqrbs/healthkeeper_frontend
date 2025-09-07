@@ -322,6 +322,13 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/ipd",
 			VIEW: "/hospital/ipd",
 		},
+
+		IPD_ADMISSION: {
+			INDEX: "/hospital/ipd-admission",
+			CREATE: "/hospital/ipd-admission",
+			UPDATE: "/hospital/ipd-admission",
+			VIEW: "/hospital/ipd-admission",
+		},
 		EMERGENCY: {
 			INDEX: "/hospital/emergency",
 			CREATE: "/hospital/emergency/create",

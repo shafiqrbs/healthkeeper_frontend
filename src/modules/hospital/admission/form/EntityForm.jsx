@@ -4,28 +4,92 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import { Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
 import { IconChevronRight, IconCirclePlusFilled } from "@tabler/icons-react";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useTranslation } from "react-i18next";
-import { useOutletContext } from "react-router-dom";
+import {useOutletContext, useParams} from "react-router-dom";
 import DoctorsRoomDrawer from "../../common/__DoctorsRoomDrawer";
 import { useDisclosure } from "@mantine/hooks";
+import {useSelector} from "react-redux";
+import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
+import {editEntityData, storeEntityData} from "@/app/store/core/crudThunk";
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import IPDFooter from "@modules/hospital/common/IPDFooter";
+import {showNotificationComponent} from "@components/core-component/showNotificationComponent";
+import {setRefetchData} from "@/app/store/core/crudSlice";
+import {notifications} from "@mantine/notifications";
 
 const DISEASE_PROFILE = ["Diabetic", "Hypertension", "Asthma", "Allergy", "Other"];
 
-export default function EntityForm({ form }) {
+export default function EntityForm({ form}) {
 	const [gender, setGender] = useState("male");
 	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
 	const { t } = useTranslation();
+	const { id } = useParams();
+	const [record, setRecord] = useState({})
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 460;
+	const height = mainAreaHeight - 260;
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
+	const handleSubmit = async () => {
+		if (!form.validate().hasErrors) {
+			setIsSubmitting(true);
+
+			try {
+				const createdBy = JSON.parse(localStorage.getItem("user"));
+
+				const formValue = {
+					...form.values,
+					created_by_id: createdBy?.id,
+				};
+
+				const data = {
+					url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.CREATE,
+					data: formValue,
+					module,
+				};
+
+				const resultAction = await dispatch(storeEntityData(data));
+
+				if (storeEntityData.rejected.match(resultAction)) {
+					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
+				} else {
+					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
+					setRefetchData({ module, refetching: true });
+					form.reset();
+					localStorage.removeItem(LOCAL_STORAGE_KEY);
+				}
+			} catch (error) {
+				console.error("Error submitting visit:", error);
+				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
+			} finally {
+				setIsSubmitting(false);
+			}
+		} else {
+			if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
+				console.error(form.errors);
+				notifications.show({
+					title: "Error",
+					message: "Please fill all the fields",
+					color: "red",
+					position: "top-right",
+				});
+			}
+		}
+	};
 	const handleGenderChange = (val) => {
 		setGender(val);
 	};
+	const {data:entity} = useDataWithoutStore({url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`})
+	const entities = entity?.data?.invoice_particular
+
+	useEffect(() => {
+		form.setValues({
+			name: entity?.data?.name,
+		});
+	}, [entity]);
 
 	const handleTypeChange = (val) => {
 		form.setFieldValue("patient_type", val);
-
 		if (val === "admission") {
 			form.setFieldValue("guardian_mobile", form.values.mobile);
 		}
@@ -42,27 +106,7 @@ export default function EntityForm({ form }) {
 							</Text>
 						</Box>
 						<ScrollArea scrollbars="y" type="never" h={height}>
-							<Stack className="form-stack-vertical">
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("Type")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<SegmentedControl
-											fullWidth
-											color="var(--theme-primary-color-6)"
-											value={form.values.patient_type}
-											id="patient_type"
-											name="patient_type"
-											onChange={(val) => handleTypeChange(val)}
-											data={[
-												{ label: t("General"), value: "general" },
-												{ label: t("Emergency"), value: "emergency" },
-												{ label: t("Admission"), value: "admission" },
-											]}
-										/>
-									</Grid.Col>
-								</Grid>
+							<Stack className="form-stack-vertical" h={height}>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("appointment")}</Text>
@@ -226,7 +270,7 @@ export default function EntityForm({ form }) {
 							</Text>
 						</Box>
 						<ScrollArea scrollbars="y" type="never" h={height}>
-							<Stack className="form-stack-vertical">
+							<Stack className="form-stack-vertical"  h={height}>
 								{form.values.patient_type === "admission" && (
 									<>
 										<Grid align="center" columns={20}>
@@ -447,6 +491,12 @@ export default function EntityForm({ form }) {
 					</Box>
 				</Grid.Col>
 			</Grid>
+			<IPDFooter
+				form={form}
+				entities={entities}
+				isSubmitting={isSubmitting}
+				handleSubmit={handleSubmit}
+			/>
 			<DoctorsRoomDrawer form={form} opened={openedDoctorsRoom} close={closeDoctorsRoom} />
 		</>
 	);

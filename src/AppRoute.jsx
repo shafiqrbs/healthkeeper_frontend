@@ -96,6 +96,7 @@ import ListIndex from "@modules/hospital/visit/list";
 import ConfigurationIndex from "@modules/configuration";
 import ConfirmIndex from "@modules/hospital/admission/confirm";
 import IpdIndex from "@modules/hospital/admission/ipd";
+import IpdAdmissionIndex from "@modules/hospital/admission/ipdAdmission";
 import UserIndex from "@/modules/core/user";
 import SettingIndex from "@/modules/core/setting";
 import TestRoute from "@components/layout/TestRoute";
@@ -161,6 +162,10 @@ function AppRoute() {
 						<Route index element={<IpdIndex />} />
 						<Route path=":id" element={<AdmissionListIndex />} />
 						<Route path="admission" element={<AdmissionIndex />} />
+					</Route>
+					<Route path="ipd-admission">
+						<Route index element={<IpdAdmissionIndex />} />
+						<Route path=":id" element={<IpdAdmissionIndex />} />
 					</Route>
 
 					<Route path="prescription">

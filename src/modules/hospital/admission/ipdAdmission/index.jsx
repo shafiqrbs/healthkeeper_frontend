@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getAdmissionFormInitialValues } from "../helpers/request";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext,useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
@@ -19,12 +19,14 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import IPDFooter from "../../common/IPDFooter";
 
+
 const module = MODULES.ADMISSION;
 const LOCAL_STORAGE_KEY = "patientFormData";
 
 export default function ConfirmIndex() {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
+	const { id } = useParams();
 	const form = useForm(getAdmissionFormInitialValues());
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
@@ -100,6 +102,7 @@ export default function ConfirmIndex() {
 											tab: "list",
 											component: (
 												<PatientListAdmission
+													selectedId={id}
 													isOpenPatientInfo={isOpenPatientInfo}
 													setIsOpenPatientInfo={setIsOpenPatientInfo}
 												/>
@@ -111,7 +114,17 @@ export default function ConfirmIndex() {
 							<Grid.Col span={isOpenPatientInfo ? 17 : 23} className="animate-ease-out">
 								<Grid columns={25} gutter="les">
 									<Grid.Col span={25}>
-										<EntityForm form={form} />
+										{id ? (
+											<EntityForm form={form} />
+										):(
+											<IPDFooter
+												form={form}
+												isSubmitting={isSubmitting}
+												handleSubmit={handleSubmit}
+											/>
+										)
+										}
+
 									</Grid.Col>
 									<Grid.Col span={25}>
 										<IPDFooter

@@ -24,7 +24,7 @@ import {IconArrowRight, IconDeviceFloppy,IconX, IconTrashX,IconWindowMinimize,Ic
 import {DataTable} from "mantine-datatable";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
-const PER_PAGE = 50;
+const PER_PAGE = 500;
 
 export default function OpdRoomModal({ openedOpdRoom, closeOpdRoom,module,height }) {
 	const { t } = useTranslation();

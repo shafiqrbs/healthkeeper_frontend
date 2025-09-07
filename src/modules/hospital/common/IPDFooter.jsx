@@ -1,5 +1,6 @@
 import ActionButtons from "./_ActionButtons";
+import IpdActionButtons from "@modules/hospital/common/_IpdActionButtons";
 
-export default function IPDFooter({ form, isSubmitting, handleSubmit, type = "prescription" }) {
-	return <ActionButtons form={form} isSubmitting={isSubmitting} handleSubmit={handleSubmit} type={type} />;
+export default function IPDFooter({ form, isSubmitting, handleSubmit,entities, type = "prescription" }) {
+	return <IpdActionButtons form={form} isSubmitting={isSubmitting} entities={entities} handleSubmit={handleSubmit} type={type} />;
 }
