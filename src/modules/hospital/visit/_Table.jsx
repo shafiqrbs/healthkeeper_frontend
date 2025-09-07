@@ -40,6 +40,7 @@ import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import Prescription from "@components/print-formats/opd/Prescription2";
+import { useForm } from "@mantine/form";
 
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
@@ -58,7 +59,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const [hasMore, setHasMore] = useState(true);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-
+	const form = useForm({
+		initialValues: {
+			keywordSearch: "",
+			created: "",
+		},
+	});
 	const handlePos = useReactToPrint({
 		content: () => posRef.current,
 	});
@@ -118,6 +124,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 			params: {
 				term: filterData.keywordSearch,
+				created: filterData.created,
 				page: pageNum,
 				offset: PER_PAGE,
 				patient_mode: "opd",
@@ -329,7 +336,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch module={module} />
+				<KeywordSearch module={module} form={form} />
 			</Box>
 			<Box className="borderRadiusAll border-top-none" px="sm">
 				<DataTable

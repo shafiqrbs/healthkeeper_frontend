@@ -18,13 +18,11 @@ export default function KeywordSearch({
 	showReset = true,
 	className = "keyword-search-box",
 }) {
-	const filterData = useSelector(
-		(state) => state.crud[module]?.filterData || { keywordSearch: "", date: new Date() }
-	);
+	const filterData = useSelector((state) => state.crud[module]?.filterData || { keywordSearch: "", created: "" });
 	const dispatch = useDispatch();
 
 	const [keywordSearch, setKeywordSearch] = useState(filterData.keywordSearch || "");
-	const [date, setDate] = useState(filterData.date ? new Date(filterData.date) : new Date());
+	const [date, setDate] = useState("");
 
 	// =============== handle search functionality ================
 	const handleSearch = (searchData) => {
@@ -60,24 +58,17 @@ export default function KeywordSearch({
 		}
 	}, [dispatch, module, onReset]);
 
-	// Initialize state from Redux store only when module changes
-	useEffect(() => {
-		const storedKeywordSearch = filterData.keywordSearch || "";
-		const storedDate = filterData.date ? new Date(filterData.date) : new Date();
-
-		// Only update state if values are different to prevent unnecessary re-renders
-		if (storedKeywordSearch !== keywordSearch) {
-			setKeywordSearch(storedKeywordSearch);
-		}
-		if (storedDate.getTime() !== date.getTime()) {
-			setDate(storedDate);
-		}
-	}, [module]); // Only depend on module, not filterData
-
 	return (
 		<Flex className={className}>
 			{showDatePicker && (
-				<DateInput name="date" placeholder="Select Date" value={date} onChange={handleDateChange} miw={200} />
+				<DateInput
+					clearable
+					name="created"
+					placeholder="Select Date"
+					value={date}
+					onChange={handleDateChange}
+					miw={200}
+				/>
 			)}
 			<TextInput
 				placeholder={placeholder}
@@ -93,6 +84,11 @@ export default function KeywordSearch({
 				}
 				styles={{ root: { width: "100%" } }}
 				onChange={(event) => handleKeywordChange(event.target.value)}
+				onKeyDown={(event) => {
+					if (event.key === "Enter") {
+						handleSearch();
+					}
+				}}
 			/>
 			<Flex gap="xxxs" align="center">
 				<ActionIcon c="var(--theme-primary-color-6)" bg="white" onClick={() => handleSearch()}>

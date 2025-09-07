@@ -332,7 +332,7 @@ const initialState = {
 		insertType: "create",
 		data: {},
 		editData: {},
-		filterData: { name: "", date: new Date(), keywordSearch: "" },
+		filterData: { created: "", keywordSearch: "" },
 		validationMessages: [],
 	},
 	// -------------------- hospital modules stops -------------------------
@@ -346,7 +346,7 @@ const initialState = {
 		insertType: "create",
 		data: {},
 		editData: {},
-		filterData: { created: new Date(), keywordSearch: "" },
+		filterData: { created: "", keywordSearch: "" },
 		validationMessages: [],
 	},
 	// -------------------- hospital modules stops -------------------------
