@@ -46,6 +46,7 @@ export default function Table({ module }) {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
+	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	const form = useForm({
 		initialValues: {
@@ -67,8 +68,6 @@ export default function Table({ module }) {
 	const [rootRef, setRootRef] = useState(null);
 	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
-
-	// const filterData = useSelector((state) => state.crud[module].filterData);
 
 	const [sortStatus, setSortStatus] = useState({
 		columnAccessor: "name",
@@ -94,8 +93,8 @@ export default function Table({ module }) {
 		const value = {
 			url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 			params: {
-				// term: filterData.keywordSearch,
-				// created: filterData.created,
+				term: filterData.keywordSearch,
+				created: filterData.created,
 				page: pageNum,
 				offset: PER_PAGE,
 				patient_mode: "emergency",
@@ -149,7 +148,7 @@ export default function Table({ module }) {
 		setHasMore(true);
 		// reset scroll position when data is refreshed
 		scrollViewportRef.current?.scrollTo(0, 0);
-	}, [dispatch, refetch]);
+	}, [dispatch, refetch, filterData]);
 
 	const handleView = (id) => {
 		open();
@@ -197,7 +196,6 @@ export default function Table({ module }) {
 	}
 
 	const handleAdmission = () => {
-		console.log("i called");
 		handleConfirmSubmission(referredForm.values);
 		closeAdmission();
 	};

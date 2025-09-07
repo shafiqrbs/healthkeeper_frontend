@@ -3,7 +3,7 @@ import { IconFileTypeXls, IconRestore, IconSearch, IconX } from "@tabler/icons-r
 import AdvancedFilter from "../../../common/components/advance-search/AdvancedFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilterData } from "@/app/store/core/crudSlice";
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { DateInput } from "@mantine/dates";
 
 export default function KeywordSearch({
@@ -27,6 +27,7 @@ export default function KeywordSearch({
 	// =============== handle search functionality ================
 	const handleSearch = (searchData) => {
 		const data = searchData || { keywordSearch, created: date };
+
 		form.setFieldValue("keywordSearch", data.keywordSearch);
 		form.setFieldValue("created", data.created);
 		dispatch(setFilterData({ module, data }));
@@ -49,9 +50,8 @@ export default function KeywordSearch({
 	// =============== handle reset functionality ================
 	const handleReset = useCallback(() => {
 		setKeywordSearch("");
-		const newDate = new Date();
-		setDate(newDate);
-		const resetData = { keywordSearch: "", created: newDate };
+		setDate("");
+		const resetData = { keywordSearch: "", created: "" };
 		dispatch(setFilterData({ module, data: resetData }));
 		if (onReset) {
 			onReset(resetData);
