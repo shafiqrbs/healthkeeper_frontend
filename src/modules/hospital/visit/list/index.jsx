@@ -11,7 +11,7 @@ const module = MODULES.VISIT;
 export default function ListIndex() {
 	const { mainAreaHeight } = useOutletContext();
 	const progress = useGetLoadingProgress();
-	const height = mainAreaHeight - 160;
+	const height = mainAreaHeight - 150;
 	return (
 		<>
 			{progress !== 100 ? (

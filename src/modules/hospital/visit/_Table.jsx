@@ -25,7 +25,7 @@ import KeywordSearch from "../common/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, getIndexEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setItemData, setRefetchData } from "@/app/store/core/crudSlice";
@@ -41,10 +41,11 @@ import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import Prescription from "@components/print-formats/opd/Prescription2";
 import { useForm } from "@mantine/form";
+import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
-const PER_PAGE = 20;
+const PER_PAGE = 200;
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const dispatch = useDispatch();
@@ -52,7 +53,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state.crud[module].data);
 	const refetch = useSelector((state) => state.crud[module].refetching);
-	const [fetching, setFetching] = useState(false);
 	const scrollViewportRef = useRef(null);
 	const prescriptionRef = useRef(null);
 	const [page, setPage] = useState(1);
@@ -89,18 +89,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const filterData = useSelector((state) => state.crud[module].filterData);
 
-	const [sortStatus, setSortStatus] = useState({
-		columnAccessor: "created_at",
-		direction: "desc",
-	});
-
-	const [records, setRecords] = useState(sortBy(listData.data, "name"));
-
-	useEffect(() => {
-		const data = sortBy(listData.data, sortStatus.columnAccessor);
-		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
-	}, [sortStatus, listData.data]);
-
 	useEffect(() => {
 		if (type === "a4") {
 			handleA4();
@@ -116,71 +104,25 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setControlsRefs(controlsRefs);
 	};
 
-	const fetchData = async (pageNum = 1, append = false) => {
-		if (!hasMore && pageNum > 1) return;
-
-		setFetching(true);
-		const value = {
-			url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-			params: {
-				term: filterData.keywordSearch,
-				created: filterData.created,
-				page: pageNum,
-				offset: PER_PAGE,
-				patient_mode: "opd",
-			},
-			module,
-		};
-
-		try {
-			const result = await dispatch(getIndexEntityData(value));
-			if (result.payload) {
-				const newData = result.payload.data;
-				const total = result.payload.total;
-
-				// Update hasMore based on whether we've loaded all data
-				setHasMore(newData.length === PER_PAGE && pageNum * PER_PAGE < total);
-
-				// If appending, combine with existing data
-				if (append && pageNum > 1) {
-					dispatch(
-						setItemData({
-							module,
-							data: {
-								...listData,
-								data: [...listData.data, ...newData],
-								total,
-							},
-						})
-					);
-				}
-			}
-		} catch (err) {
-			console.error("Unexpected error:", err);
-		} finally {
-			setTimeout(() => {
-				setFetching(false);
-			}, 1000);
-		}
-	};
-
-	const loadMoreRecords = useCallback(() => {
-		if (hasMore && !fetching) {
-			const nextPage = page + 1;
-			setPage(nextPage);
-			fetchData(nextPage, true);
-		} else if (!hasMore) {
-			console.info("No more records");
-		}
-	}, [hasMore, fetching, page]);
-
-	useEffect(() => {
-		fetchData(1, false);
-		setPage(1);
-		setHasMore(true);
-		// reset scroll position when data is refreshed
-		scrollViewportRef.current?.scrollTo(0, 0);
-	}, [dispatch, refetch, filterData]);
+	const {
+		scrollRef,
+		records,
+		fetching,
+		sortStatus,
+		setSortStatus,
+		handleScrollToBottom,
+	} = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			patient_mode: "opd",
+			term: filterData.keywordSearch,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+	});
 
 	const handleView = (id) => {
 		// =============== use the id parameter to pass to the drawer ================
@@ -338,13 +280,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			<Box px="sm" mb="sm">
 				<KeywordSearch module={module} form={form} />
 			</Box>
-			<Box className="borderRadiusAll border-top-none" px="sm">
+			<Box className="border-top-none"  px="sm">
 				<DataTable
 					striped
 					pinFirstColumn
 					pinLastColumn
 					stripedColor="var(--theme-tertiary-color-1)"
-					textSelectionDisabled
 					classNames={{
 						root: tableCss.root,
 						table: tableCss.table,
@@ -364,6 +305,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							accessor: "created_at",
 							title: t("Created"),
 							textAlignment: "right",
+							sortable: true,
 							render: (item) => (
 								<Text
 									fz="sm"
@@ -374,14 +316,14 @@ export default function Table({ module, height, closeTable, availableClose = fal
 								</Text>
 							),
 						},
-						{ accessor: "visiting_room", title: t("RoomNo") },
-						{ accessor: "invoice", title: t("InvoiceID") },
-						{ accessor: "patient_id", title: t("PatientID") },
+						{ accessor: "visiting_room",sortable: true, title: t("RoomNo") },
+						{ accessor: "invoice",sortable: true, title: t("InvoiceID") },
+						{ accessor: "patient_id",sortable: true, title: t("PatientID") },
 						{ accessor: "health_id", title: t("HealthID") },
-						{ accessor: "name", title: t("Name") },
+						{ accessor: "name", sortable: true,title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
-						{ accessor: "gender", title: t("Gender") },
-						{ accessor: "patient_payment_mode_name", title: t("Patient") },
+						{ accessor: "gender",sortable: true, title: t("Gender") },
+						{ accessor: "patient_payment_mode_name",sortable: true, title: t("Patient") },
 						{ accessor: "total", title: t("Total") },
 						{
 							accessor: "created_by",
@@ -506,17 +448,25 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							),
 						},
 					]}
+					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
 					height={height}
-					onScrollToBottom={loadMoreRecords}
-					scrollViewportRef={scrollViewportRef}
+					onScrollToBottom={handleScrollToBottom}
+					scrollViewportRef={scrollRef}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
-						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+						sorted: (
+							<IconChevronUp
+								color="var(--theme-tertiary-color-7)"
+								size={14}
+							/>
+						),
+						unsorted: (
+							<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
+						),
 					}}
 				/>
 			</Box>

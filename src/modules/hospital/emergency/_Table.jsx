@@ -26,6 +26,7 @@ import TextAreaForm from "@/common/components/form-builders/TextAreaForm";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
+import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
 const PER_PAGE = 20;
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
@@ -36,7 +37,6 @@ export default function Table({ module }) {
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state.crud[module].data);
 	const refetch = useSelector((state) => state.crud[module].refetching);
-	const [fetching, setFetching] = useState(false);
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 34;
 	const scrollViewportRef = useRef(null);
@@ -69,86 +69,31 @@ export default function Table({ module }) {
 	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
-	const [sortStatus, setSortStatus] = useState({
-		columnAccessor: "name",
-		direction: "asc",
-	});
-
-	const [records, setRecords] = useState(sortBy(listData.data, "name"));
-
-	useEffect(() => {
-		const data = sortBy(listData.data, sortStatus.columnAccessor);
-		setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
-	}, [sortStatus, listData.data]);
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
 
-	const fetchData = async (pageNum = 1, append = false) => {
-		if (!hasMore && pageNum > 1) return;
-
-		setFetching(true);
-		const value = {
-			url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-			params: {
-				term: filterData.keywordSearch,
-				created: filterData.created,
-				page: pageNum,
-				offset: PER_PAGE,
-				patient_mode: "emergency",
-			},
-			module,
-		};
-
-		try {
-			const result = await dispatch(getIndexEntityData(value));
-			if (result.payload) {
-				const newData = result.payload.data;
-				const total = result.payload.total;
-
-				// Update hasMore based on whether we've loaded all data
-				setHasMore(newData.length === PER_PAGE && pageNum * PER_PAGE < total);
-
-				// If appending, combine with existing data
-				if (append && pageNum > 1) {
-					dispatch(
-						setItemData({
-							module,
-							data: {
-								...listData,
-								data: [...listData.data, ...newData],
-								total,
-							},
-						})
-					);
-				}
-			}
-		} catch (err) {
-			console.error("Unexpected error:", err);
-		} finally {
-			setFetching(false);
-		}
-	};
-
-	const loadMoreRecords = useCallback(() => {
-		if (hasMore && !fetching) {
-			const nextPage = page + 1;
-			setPage(nextPage);
-			fetchData(nextPage, true);
-		} else if (!hasMore) {
-			console.info("No more records");
-		}
-	}, [hasMore, fetching, page]);
-
-	useEffect(() => {
-		fetchData(1, false);
-		setPage(1);
-		setHasMore(true);
-		// reset scroll position when data is refreshed
-		scrollViewportRef.current?.scrollTo(0, 0);
-	}, [dispatch, refetch, filterData]);
+	const {
+		scrollRef,
+		records,
+		fetching,
+		sortStatus,
+		setSortStatus,
+		handleScrollToBottom,
+	} = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			patient_mode: "emergency",
+			term: filterData.keywordSearch,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+	});
 
 	const handleView = (id) => {
 		open();
@@ -355,12 +300,15 @@ export default function Table({ module }) {
 							),
 						},
 					]}
+					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 118}
-					onScrollToBottom={loadMoreRecords}
-					scrollViewportRef={scrollViewportRef}
+					height={height-118}
+					onScrollToBottom={handleScrollToBottom}
+					scrollViewportRef={scrollRef}
+					sortStatus={sortStatus}
+					onSortStatusChange={setSortStatus}
 				/>
 			</Box>
 			<DataTableFooter indexData={listData} module="visit" />

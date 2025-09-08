@@ -11,6 +11,7 @@ const useInfiniteTableScroll = ({
                                     filterParams = {},
                                     perPage = 50,
                                     sortByKey = "name",
+                                    direction = "asc",
                                 }) => {
     const dispatch = useDispatch();
     const scrollRef = useRef(null);
@@ -25,20 +26,24 @@ const useInfiniteTableScroll = ({
 
     const [sortStatus, setSortStatus] = useState({
         columnAccessor: sortByKey,
-        direction: "asc",
+        direction,
     });
 
-    const [records, setRecords] = useState([]);
+    // Use data from redux store (keeps server-sorted)
+    const records = Array.isArray(listData.data) ? listData.data : [];
 
-    // fetch the data & combine with previous
+    // ---- fetch data from API
     const fetchData = async (pageNum = 1, append = false) => {
         setFetching(true);
+
         const value = {
             url: fetchUrl,
             params: {
                 ...filterParams,
                 page: pageNum,
                 offset: perPage,
+                sortBy: sortStatus.columnAccessor,
+                order: sortStatus.direction, // "asc" or "desc"
             },
             module,
         };
@@ -48,7 +53,7 @@ const useInfiniteTableScroll = ({
             const newItems = result.data?.data || [];
             const totalCount = result.data?.total || 0;
             const prevItems = append ? listData.data || [] : [];
-            const combined = [...prevItems, ...newItems];
+            const combined = append ? [...prevItems, ...newItems] : [...newItems];
 
             dispatch(
                 setItemData({
@@ -69,36 +74,35 @@ const useInfiniteTableScroll = ({
         }
     };
 
-    // scroll to bottom & fetch the data again
+    // ---- infinite scroll handler
     const handleScrollToBottom = useCallback(() => {
         if (!hasMore || fetching) return;
         const next = page + 1;
         setPage(next);
         fetchData(next, true);
-    }, [fetching, hasMore, page]);
+    }, [fetching, hasMore, page, sortStatus, filterParams]);
 
-    // re-fetch ta data at initial stage
-    const refetchAll = () => {
+    // ---- reset + refetch all
+    const refetchAll = useCallback(() => {
         setPage(1);
         setHasMore(true);
         scrollRef.current?.scrollTo?.({ top: 0, behavior: "smooth" });
         fetchData(1, false);
-    };
+    }, [sortStatus, filterParams]);
 
+    // ---- trigger refetch when filters, sort, or refetching changes
     useEffect(() => {
         if (isMounted || refetching) {
             refetchAll();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isMounted, JSON.stringify(filterParams), refetching]);
+    }, [
+        isMounted,
+        JSON.stringify(filterParams),
+        refetching,
+        sortStatus.columnAccessor,
+        sortStatus.direction,
+    ]);
 
-    // handle the sort order
-    useEffect(() => {
-        const sorted = sortBy(listData.data || [], sortStatus.columnAccessor);
-        setRecords(sortStatus.direction === "desc" ? sorted.reverse() : sorted);
-    }, [listData.data, sortStatus]);
-
-    // return the values for generate data-table
     return {
         scrollRef,
         records,
