@@ -1,28 +1,11 @@
 import TabSubHeading from "@modules/hospital/common/TabSubHeading";
-import { ActionIcon, Badge, Box, Button, Divider, Flex, Grid, Group, Text, TextInput } from "@mantine/core";
+import { ActionIcon, Autocomplete, Badge, Box, Button, Flex, Grid, Group, Stack, Text } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
-import { IconEye, IconSearch, IconX } from "@tabler/icons-react";
-import { useTranslation } from "react-i18next";
-import { Fragment } from "react";
-
-const investigationDetails = [
-	{
-		id: 1,
-		text: "Complete Blood Count (CBC)",
-	},
-	{
-		id: 2,
-		text: "Hemoglobin (Hb)",
-	},
-	{
-		id: 3,
-		text: "Blood Sugar - Fasting (FBS)",
-	},
-	{
-		id: 4,
-		text: "Thyroid Profile (T3, T4, TSH)",
-	},
-];
+import { IconCaretUpDownFilled, IconEye, IconX } from "@tabler/icons-react";
+import { useState } from "react";
+import useParticularsData from "@/common/hooks/useParticularsData";
+import inputCss from "@assets/css/InputField.module.css";
+import TabsActionButtons from "@/modules/hospital/common/TabsActionButtons";
 
 const complainDetails = [
 	{
@@ -47,9 +30,63 @@ const complainDetails = [
 	},
 ];
 
-export default function Investigation() {
-	const { t } = useTranslation();
+export default function Investigation({ form, handleSubmit }) {
 	const { mainAreaHeight } = useOutletContext();
+	const { particularsData } = useParticularsData({ modeName: "Admission" });
+
+	const investigationParticulars = particularsData?.find((item) => item.particular_type.name === "Investigation");
+
+	const [autocompleteValue, setAutocompleteValue] = useState("");
+
+	const handleAutocompleteOptionAdd = (value) => {
+		const allParticulars = investigationParticulars?.particular_type?.particulars || [];
+		const sectionParticulars = allParticulars.find((p) => p.name === value);
+
+		if (sectionParticulars) {
+			// Add to dynamicFormData with the correct structure
+			const currentDynamicFormData = form.values.dynamicFormData || {};
+			const existingList = Array.isArray(currentDynamicFormData["investigation"])
+				? currentDynamicFormData["investigation"]
+				: [];
+
+			// Check if this value already exists
+			const existingIndex = existingList.findIndex(
+				(item) => item.id === sectionParticulars.id && item.name === sectionParticulars.name
+			);
+
+			if (existingIndex === -1) {
+				// Add new item
+				const newItem = {
+					id: sectionParticulars.id,
+					name: sectionParticulars.name,
+					value: sectionParticulars.name,
+				};
+
+				const updatedList = [...existingList, newItem];
+				const newDynamicFormData = {
+					...(currentDynamicFormData || {}),
+					investigation: updatedList,
+				};
+
+				form.setFieldValue("dynamicFormData", newDynamicFormData);
+				return;
+			}
+		}
+	};
+
+	const handleAutocompleteOptionRemove = (idx, sectionSlug) => {
+		const safeSectionSlug = sectionSlug || "investigation";
+		const currentDynamicFormData = form.values.dynamicFormData || {};
+		const list = Array.isArray(currentDynamicFormData[safeSectionSlug])
+			? currentDynamicFormData[safeSectionSlug]
+			: [];
+		const updatedList = list.filter((_, index) => index !== idx);
+		const newDynamicFormData = {
+			...currentDynamicFormData,
+			[safeSectionSlug]: updatedList,
+		};
+		form.setFieldValue("dynamicFormData", newDynamicFormData);
+	};
 
 	return (
 		<Box h={mainAreaHeight - 63} p="xs">
@@ -57,34 +94,57 @@ export default function Investigation() {
 				<Grid.Col span={9}>
 					<Box className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Investigation" />
-						<Box p="xxxs">
-							<Box mx="-xxxs" p="xs" bg="var(--theme-secondary-color-5)">
-								<TextInput
-									leftSection={<IconSearch size={18} />}
-									name="search"
-									placeholder={t("search")}
-								/>
-							</Box>
-							<Box mt="sm">
-								{investigationDetails.map((item) => (
-									<Fragment key={item.id}>
-										<Flex gap="xs" mb="xxxs" justify="space-between" align="center">
-											<Text fz="xs">
-												{item.id}. {item.text}
-											</Text>
-											<Button
-												size="compact-xs"
-												fz="xxs"
-												px="xs"
-												bg="var(--theme-primary-color-6)"
-											>
-												Add
-											</Button>
-										</Flex>
-										<Divider mb="xs" />
-									</Fragment>
+						<Box p="xxxs" h={mainAreaHeight - 200}>
+							<Autocomplete
+								label=""
+								placeholder={`Pick value or enter Investigation`}
+								data={investigationParticulars?.particular_type?.particulars?.map((p) => ({
+									value: p.name,
+									label: p.name,
+								}))}
+								value={autocompleteValue}
+								onChange={setAutocompleteValue}
+								onOptionSubmit={(value) => {
+									handleAutocompleteOptionAdd(value);
+									setTimeout(() => {
+										setAutocompleteValue("");
+									}, 0);
+								}}
+								classNames={inputCss}
+								rightSection={<IconCaretUpDownFilled size={16} />}
+							/>
+							<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
+								{form.values.dynamicFormData?.investigation?.map((item, idx) => (
+									<Flex
+										key={idx}
+										align="center"
+										justify="space-between"
+										px="es"
+										py="xs"
+										style={{
+											borderBottom:
+												idx !== form.values.dynamicFormData?.investigation?.length - 1
+													? "1px solid var(--theme-tertiary-color-4)"
+													: "none",
+										}}
+									>
+										<Text fz="sm">
+											{idx + 1}. {item.name}
+										</Text>
+										<ActionIcon
+											color="red"
+											size="xs"
+											variant="subtle"
+											onClick={() => handleAutocompleteOptionRemove(idx, "investigation")}
+										>
+											<IconX size={16} />
+										</ActionIcon>
+									</Flex>
 								))}
-							</Box>
+							</Stack>
+						</Box>
+						<Box px="xs">
+							<TabsActionButtons handleReset={() => {}} handleSave={handleSubmit} />
 						</Box>
 					</Box>
 				</Grid.Col>
@@ -92,7 +152,7 @@ export default function Investigation() {
 					<Box className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Investigation Details" />
 						<Box p="xs">
-							{complainDetails.map((item) => (
+							{complainDetails?.map((item) => (
 								<Flex key={item.id} gap="xs" mb="xxxs">
 									<Text>{item.id}.</Text>
 									<Box w="100%">
@@ -100,7 +160,7 @@ export default function Investigation() {
 											{item.date}
 										</Badge>
 										<Box mt="es" fz="sm">
-											{item.items.map((item, index) => (
+											{item.items?.map((item, index) => (
 												<Flex key={index} justify="space-between" align="center" mb="les">
 													{index + 1}. {item}
 													<Group gap="xxxs">

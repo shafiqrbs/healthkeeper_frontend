@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getAdmissionFormInitialValues } from "../helpers/request";
-import { useOutletContext,useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
@@ -18,7 +18,6 @@ import { showNotificationComponent } from "@/common/components/core-component/sh
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import IPDFooter from "../../common/IPDFooter";
-
 
 const module = MODULES.ADMISSION;
 const LOCAL_STORAGE_KEY = "patientFormData";
@@ -115,16 +114,15 @@ export default function ConfirmIndex() {
 								<Grid columns={25} gutter="les">
 									<Grid.Col span={25}>
 										{id ? (
-											<EntityForm form={form} />
-										):(
+											<EntityForm form={form} module={module} />
+										) : (
 											<IPDFooter
 												form={form}
 												isSubmitting={isSubmitting}
 												handleSubmit={handleSubmit}
+												module={module}
 											/>
-										)
-										}
-
+										)}
 									</Grid.Col>
 									<Grid.Col span={25}>
 										<IPDFooter

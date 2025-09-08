@@ -4,28 +4,29 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import { Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
 import { IconChevronRight, IconCirclePlusFilled } from "@tabler/icons-react";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {useOutletContext, useParams} from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import DoctorsRoomDrawer from "../../common/__DoctorsRoomDrawer";
 import { useDisclosure } from "@mantine/hooks";
-import {useSelector} from "react-redux";
-import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
-import {editEntityData, storeEntityData} from "@/app/store/core/crudThunk";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { editEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import IPDFooter from "@modules/hospital/common/IPDFooter";
-import {showNotificationComponent} from "@components/core-component/showNotificationComponent";
-import {setRefetchData} from "@/app/store/core/crudSlice";
-import {notifications} from "@mantine/notifications";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import { setRefetchData } from "@/app/store/core/crudSlice";
+import { notifications } from "@mantine/notifications";
+import { useDispatch } from "react-redux";
 
 const DISEASE_PROFILE = ["Diabetic", "Hypertension", "Asthma", "Allergy", "Other"];
 
-export default function EntityForm({ form}) {
+export default function EntityForm({ form, module }) {
+	const dispatch = useDispatch();
 	const [gender, setGender] = useState("male");
 	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
 	const { t } = useTranslation();
 	const { id } = useParams();
-	const [record, setRecord] = useState({})
+	const [record, setRecord] = useState({});
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 260;
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,7 +57,6 @@ export default function EntityForm({ form}) {
 					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
 					setRefetchData({ module, refetching: true });
 					form.reset();
-					localStorage.removeItem(LOCAL_STORAGE_KEY);
 				}
 			} catch (error) {
 				console.error("Error submitting visit:", error);
@@ -79,8 +79,8 @@ export default function EntityForm({ form}) {
 	const handleGenderChange = (val) => {
 		setGender(val);
 	};
-	const {data:entity} = useDataWithoutStore({url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`})
-	const entities = entity?.data?.invoice_particular
+	const { data: entity } = useDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}` });
+	const entities = entity?.data?.invoice_particular;
 
 	useEffect(() => {
 		form.setValues({
@@ -270,7 +270,7 @@ export default function EntityForm({ form}) {
 							</Text>
 						</Box>
 						<ScrollArea scrollbars="y" type="never" h={height}>
-							<Stack className="form-stack-vertical"  h={height}>
+							<Stack className="form-stack-vertical" h={height}>
 								{form.values.patient_type === "admission" && (
 									<>
 										<Grid align="center" columns={20}>
@@ -491,12 +491,7 @@ export default function EntityForm({ form}) {
 					</Box>
 				</Grid.Col>
 			</Grid>
-			<IPDFooter
-				form={form}
-				entities={entities}
-				isSubmitting={isSubmitting}
-				handleSubmit={handleSubmit}
-			/>
+			<IPDFooter form={form} entities={entities} isSubmitting={isSubmitting} handleSubmit={handleSubmit} />
 			<DoctorsRoomDrawer form={form} opened={openedDoctorsRoom} close={closeDoctorsRoom} />
 		</>
 	);
