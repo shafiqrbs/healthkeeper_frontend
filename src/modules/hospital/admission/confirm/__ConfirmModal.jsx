@@ -30,8 +30,11 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 
 	const { hospitalSettingData } = useHospitalSettingData();
 	const { data: ipdData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${selectedId}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${selectedId}`,
 	});
+
+	console.log(ipdData);
+
 	const { data: doctorDropdown } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.PATH,
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.TYPE },
@@ -121,35 +124,179 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 						<Grid.Col span={8}>
 							<ScrollArea h={height}>
 								<Stack mih={height} className="form-stack-vertical">
+									{/* =============== patient basic information section =============== */}
 									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("RoomType")}:</Text>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("PatientName")}:</Text>
 										</Grid.Col>
-										<Grid.Col span={14}>{}</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.name || "-"}
+											</Text>
+										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("PatientId")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.patient_id || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("Mobile")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.mobile || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("Gender")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.gender || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("Age")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.year
+													? `${ipdData?.data?.year}Y, ${ipdData?.data?.month}M, ${ipdData?.data?.day}D`
+													: "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("DOB")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.dob || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("Address")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.address || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("NID")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.nid || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("IdentityMode")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.identity_mode || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("HealthId")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.health_id || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("GuardianName")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.guardian_name || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("GuardianMobile")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.guardian_mobile || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									{/* =============== admission details section =============== */}
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("Invoice")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.invoice || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
 											<Text fz="sm">{t("RoomNo")}:</Text>
 										</Grid.Col>
-										<Grid.Col span={14}>{}</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("ReferredDoctor")}:</Text>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.room_name || "-"}
+											</Text>
 										</Grid.Col>
-										<Grid.Col span={14}>{}</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("Designation")}:</Text>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("Mode")}:</Text>
 										</Grid.Col>
-										<Grid.Col span={14}>{}</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.mode_name || "-"}
+											</Text>
+										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("PaymentMode")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.payment_mode_name || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
 											<Text fz="sm">{t("Comment")}:</Text>
 										</Grid.Col>
-										<Grid.Col span={14}>{}</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.comment || "-"}
+											</Text>
+										</Grid.Col>
 									</Grid>
 								</Stack>
 							</ScrollArea>
