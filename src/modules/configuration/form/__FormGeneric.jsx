@@ -17,6 +17,8 @@ export default function __FormGeneric(props) {
 	const { height, config_sales, id } = props;
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
+	const [value, setValue] = useState(null);
+
 	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
 
 	const form = useForm({
@@ -118,15 +120,13 @@ export default function __FormGeneric(props) {
 		[]
 	);
 
-	const [value, setValue] = useState(null);
-
 	return (
 		<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
 			<form onSubmit={form.onSubmit(handlePurchaseFormSubmit)}>
-				<Box pt={"xs"} pl={"xs"}>
-					<Box mt={"xs"}>
+				<Box pt="xs" pl="xs">
+					<Box mt="xs">
 						<Grid gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
-							<Grid.Col span={6} fz={"sm"} pt={"1"}>
+							<Grid.Col span={6} fz="sm" pt="1px">
 								{t("SearchByVendor")}
 							</Grid.Col>
 							<Grid.Col span={6}>
@@ -147,9 +147,9 @@ export default function __FormGeneric(props) {
 							</Grid.Col>
 						</Grid>
 					</Box>
-					<Box mt={"xs"}>
+					<Box mt="xs">
 						<Grid gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
-							<Grid.Col span={6} fz={"sm"} pt={"1"}>
+							<Grid.Col span={6} fz="sm" pt="1px">
 								{t("SearchByProductNature")}
 							</Grid.Col>
 							<Grid.Col span={6}>
@@ -168,7 +168,7 @@ export default function __FormGeneric(props) {
 					</Box>
 					<Box mt={"xs"}>
 						<Grid gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
-							<Grid.Col span={6} fz={"sm"} pt={"1"}>
+							<Grid.Col span={6} fz="sm" pt="1px">
 								{t("SearchByCategory")}
 							</Grid.Col>
 							<Grid.Col span={6}>
@@ -188,13 +188,13 @@ export default function __FormGeneric(props) {
 							</Grid.Col>
 						</Grid>
 					</Box>
-					<Box mt={"xs"}>
+					<Box mt="xs">
 						<Grid
 							gutter={{ base: 1 }}
 							style={{ cursor: "pointer" }}
 							onClick={() => form.setFieldValue("show_product", form.values.show_product === 1 ? 0 : 1)}
 						>
-							<Grid.Col span={6} fz={"sm"} pt={"1"}>
+							<Grid.Col span={6} fz="sm" pt="1px">
 								{t("ShowProduct")}
 							</Grid.Col>
 							<Grid.Col span={6} align={"center"} justify={"center"}>
@@ -219,7 +219,7 @@ export default function __FormGeneric(props) {
 							</Grid.Col>
 						</Grid>
 					</Box>
-					<Box mt={"xs"}>
+					<Box mt="xs">
 						<Grid
 							gutter={{ base: 1 }}
 							style={{ cursor: "pointer" }}
@@ -230,7 +230,7 @@ export default function __FormGeneric(props) {
 								)
 							}
 						>
-							<Grid.Col span={6} fz={"sm"} pt={"1"}>
+							<Grid.Col span={6} fz="sm" pt="1px">
 								{t("MeasurementEnabled")}
 							</Grid.Col>
 							<Grid.Col span={6}>
@@ -258,7 +258,7 @@ export default function __FormGeneric(props) {
 							</Grid.Col>
 						</Grid>
 					</Box>
-					<Box mt={"xs"}>
+					<Box mt="xs">
 						<Grid
 							gutter={{ base: 1 }}
 							style={{ cursor: "pointer" }}
@@ -269,7 +269,7 @@ export default function __FormGeneric(props) {
 								)
 							}
 						>
-							<Grid.Col span={6} fz={"sm"} pt={"1"}>
+							<Grid.Col span={6} fz="sm" pt="1px">
 								{t("PurchaseAutoApproved")}
 							</Grid.Col>
 							<Grid.Col span={6}>
@@ -297,7 +297,7 @@ export default function __FormGeneric(props) {
 							</Grid.Col>
 						</Grid>
 					</Box>
-					<Box mt={"xs"}>
+					<Box mt="xs">
 						<Grid
 							gutter={{ base: 1 }}
 							style={{ cursor: "pointer" }}
@@ -308,7 +308,7 @@ export default function __FormGeneric(props) {
 								)
 							}
 						>
-							<Grid.Col span={6} fz={"sm"} pt={"1"}>
+							<Grid.Col span={6} fz="sm" pt="1px">
 								{t("DefaultVendorGroup")}
 							</Grid.Col>
 							<Grid.Col span={6}>

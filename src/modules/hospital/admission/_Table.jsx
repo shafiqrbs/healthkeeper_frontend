@@ -47,6 +47,7 @@ export default function Table({ module }) {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const [records, setRecords] = useState(sortBy(listData.data, "name"));
 	const navigate = useNavigate();
+	const [selectedId, setSelectedId] = useState(null);
 	const [sortStatus, setSortStatus] = useState({
 		columnAccessor: "name",
 		direction: "asc",
@@ -145,6 +146,7 @@ export default function Table({ module }) {
 	};
 
 	const handleConfirm = (id) => {
+		setSelectedId(id);
 		openConfirm();
 	};
 
@@ -315,7 +317,16 @@ export default function Table({ module }) {
 				/>
 			</Box>
 			<DataTableFooter indexData={records} module="visit" />
-			<ConfirmModal opened={openedConfirm} close={closeConfirm} form={confirmForm} />
+			<ConfirmModal
+				opened={openedConfirm}
+				close={() => {
+					closeConfirm();
+					setSelectedId(null);
+				}}
+				form={confirmForm}
+				selectedId={selectedId}
+				module={module}
+			/>
 		</Box>
 	);
 }

@@ -26,17 +26,14 @@ export const getAdmissionFormInitialValues = () => {
 };
 
 const admissionConfirmInitialValues = {
-	patient_type: "general",
-	roomNo: "",
-	roomType: "opd",
-	unitName: "",
-	department: "",
-	assignConsultant: "",
-	assignDoctor: "",
+	room_id: "",
+	admit_unit_id: "",
+	hms_invoice_id: "",
+	admit_doctor_id: "",
+	admit_consultant_id: "",
+	admit_department_id: "",
 	comment: "",
-	referredDoctor: "",
-	designation: "",
-	comment2: "",
+	patient_mode: "ipd",
 };
 
 export const getAdmissionConfirmFormInitialValues = () => {

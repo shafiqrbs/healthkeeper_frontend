@@ -1,96 +1,82 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import { Box, Button, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
+import { Box, Button, Flex, Grid, ScrollArea, Stack, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import { useState } from "react";
 import Cabin from "../common/Cabin";
 import { useTranslation } from "react-i18next";
-import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import Bed from "../common/Bed";
+import useHospitalSettingData from "@hooks/config-data/useHospitalSettingData";
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import useGlobalDropdownData from "@/common/hooks/dropdown/useGlobalDropdownData";
+import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import { storeEntityData } from "@/app/store/core/crudThunk";
+import { successNotification } from "@/common/components/notification/successNotification";
+import { errorNotification } from "@/common/components/notification/errorNotification";
+import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { useDispatch } from "react-redux";
 
-const DEPARTMENT = [
-	{
-		id: 1,
-		label: "Female Word",
-		value: "female",
-	},
-	{
-		id: 2,
-		label: "Male Ward",
-		value: "male",
-	},
-];
-
-const UNITS = [
-	{
-		label: "RMU-1",
-		value: "RMU-1",
-	},
-	{
-		label: "RMU-2",
-		value: "RMU-2",
-	},
-	{
-		label: "RMU-3",
-		value: "RMU-3",
-	},
-];
-
-const CONSULTANTS = [
-	{
-		label: "Dr. Shafiqul Islam",
-		value: "Dr. Shafiqul Islam",
-	},
-	{
-		label: "Dr. Shihab Islam",
-		value: "Dr. Shihab Islam",
-	},
-];
-
-const DOCTORS = [
-	{
-		label: "Dr. Shafiqul Islam",
-		value: "Dr. Shafiqul Islam",
-	},
-	{
-		label: "Dr. Shihab Islam",
-		value: "Dr. Shihab Islam",
-	},
-];
-
-const DESIGNATION = [
-	{
-		label: "Cardiologist",
-		value: "cardiologist",
-	},
-	{
-		label: "Neurologist",
-		value: "neurologist",
-	},
-];
-
-export default function ConfirmModal({ opened, close, form }) {
+export default function ConfirmModal({ opened, close, form, selectedId, module }) {
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 140;
 	const [selectedRoom, setSelectedRoom] = useState(null);
 	const { t } = useTranslation();
 
+	const { hospitalSettingData } = useHospitalSettingData();
+	const { data: ipdData } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${selectedId}`,
+	});
+	const { data: doctorDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.UTILITY,
+	});
+
+	const { data: consultantDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_CONSULTANT.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_CONSULTANT.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_CONSULTANT.UTILITY,
+	});
+
 	const handleRoomClick = (room) => {
-		form.setFieldValue("roomNo", room);
+		form.setFieldValue("room_id", room?.id?.toString());
 		setSelectedRoom(room);
 	};
 
-	const handleTypeChange = (val) => {
-		form.setFieldValue("roomType", val);
-	};
+	const handleSubmit = async (values) => {
+		try {
+			const formValue = { ...values, hms_invoice_id: selectedId };
 
-	const handleSubmit = (values) => {
-		console.log(values);
+			const value = {
+				url: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.CREATE,
+				data: formValue,
+				module,
+			};
+
+			const resultAction = await dispatch(storeEntityData(value));
+			if (storeEntityData.rejected.match(resultAction)) {
+				const fieldErrors = resultAction.payload.errors;
+				if (fieldErrors) {
+					const errorObject = {};
+					Object.keys(fieldErrors).forEach((key) => {
+						errorObject[key] = fieldErrors[key][0];
+					});
+					form.setErrors(errorObject);
+				}
+			} else if (storeEntityData.fulfilled.match(resultAction)) {
+				form.reset();
+				close(); // close the drawer
+				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+			}
+		} catch (error) {
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
+		}
 	};
 
 	const handleAdmissionConfirmation = () => {
@@ -173,18 +159,23 @@ export default function ConfirmModal({ opened, close, form }) {
 								<Stack mih={height} className="form-stack-vertical">
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("UnitName")}</Text>
+											<Text fz="sm">{t("Unit")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
 												form={form}
 												label=""
-												tooltip={t("EnterUnitName")}
+												tooltip={t("EnterUnit")}
 												placeholder="R1234"
-												name="unitName"
-												id="unitName"
-												value={form.values.unitName}
-												dropdownValue={UNITS}
+												name="admit_unit_id"
+												id="admit_unit_id"
+												value={form.values.admit_unit_id}
+												dropdownValue={hospitalSettingData?.["unit-group"]?.modes.map(
+													(mode) => ({
+														label: mode.name,
+														value: mode.id?.toString(),
+													})
+												)}
 											/>
 										</Grid.Col>
 									</Grid>
@@ -198,10 +189,13 @@ export default function ConfirmModal({ opened, close, form }) {
 												label=""
 												tooltip={t("EnterDepartment")}
 												placeholder="Cardiology"
-												name="department"
-												id="department"
-												value={form.values.department}
-												dropdownValue={DEPARTMENT}
+												name="admit_department_id"
+												id="admit_department_id"
+												value={form.values.admit_department_id}
+												dropdownValue={hospitalSettingData?.department?.modes.map((mode) => ({
+													label: mode.name,
+													value: mode.id?.toString(),
+												}))}
 											/>
 										</Grid.Col>
 									</Grid>
@@ -215,10 +209,10 @@ export default function ConfirmModal({ opened, close, form }) {
 												label=""
 												tooltip={t("EnterAssignConsultant")}
 												placeholder="Dr. Shafiqul Islam"
-												name="assignConsultant"
-												id="assignConsultant"
-												value={form.values.assignConsultant}
-												dropdownValue={CONSULTANTS}
+												name="admit_consultant_id"
+												id="admit_consultant_id"
+												value={form.values.admit_consultant_id}
+												dropdownValue={consultantDropdown}
 											/>
 										</Grid.Col>
 									</Grid>
@@ -232,10 +226,10 @@ export default function ConfirmModal({ opened, close, form }) {
 												label=""
 												tooltip={t("EnterAssignDoctor")}
 												placeholder="Dr. Shafiqul Islam"
-												name="assignDoctor"
-												id="assignDoctor"
-												value={form.values.assignDoctor}
-												dropdownValue={DOCTORS}
+												name="admit_doctor_id"
+												id="admit_doctor_id"
+												value={form.values.admit_doctor_id}
+												dropdownValue={doctorDropdown}
 											/>
 										</Grid.Col>
 									</Grid>
@@ -249,10 +243,10 @@ export default function ConfirmModal({ opened, close, form }) {
 												label=""
 												tooltip={t("EnterComment")}
 												placeholder="Comment"
-												name="comment2"
-												id="comment2"
+												name="comment"
+												id="comment"
 												nextField="dob"
-												value={form.values.comment2}
+												value={form.values.comment}
 												style={{ input: { height: "120px" } }}
 											/>
 										</Grid.Col>
