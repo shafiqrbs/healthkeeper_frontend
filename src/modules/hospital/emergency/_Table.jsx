@@ -18,7 +18,7 @@ import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { sortBy } from "lodash";
-import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import {getIndexEntityData, showEntityData, storeEntityData} from "@/app/store/core/crudThunk";
 import { setItemData, setRefetchData } from "@/app/store/core/crudSlice";
 import { formatDate } from "@utils/index";
 import CompactDrawer from "@/common/components/drawers/CompactDrawer";
@@ -27,6 +27,8 @@ import { successNotification } from "@components/notification/successNotificatio
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import {modals} from "@mantine/modals";
+import {showNotificationComponent} from "@components/core-component/showNotificationComponent";
 
 const PER_PAGE = 20;
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
@@ -103,9 +105,38 @@ export default function Table({ module }) {
 		openOverview();
 	};
 
-	const handlePrescription = () => {
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+	const handleProcessPrescription = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: "Confirm", cancel: "Cancel" },
+			confirmProps: { color: "red" },
+			onCancel: () => console.log("Cancel"),
+			onConfirm: () => handleProcessConfirmation(id),
+		});
 	};
+
+	const handleProcessConfirmation = async (id) => {
+		const resultAction = await dispatch(
+			showEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.SEND_TO_PRESCRIPTION}/${id}`,
+				module,
+				id,
+			})
+		).unwrap();
+		const prescription_id = resultAction?.data?.data.id;
+		if (prescription_id) {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
+		} else {
+			console.error(resultAction);
+			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
+		}
+	};
+
+	const handlePrescription = async (prescription_id) => {
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
+	};
+
 
 	const handleSendToAdmission = (id) => {
 		setSelectedId(id);
@@ -229,29 +260,57 @@ export default function Table({ module }) {
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
-									<Button
-										variant="filled"
-										bg="var(--theme-primary-color-6)"
-										c="white"
-										size="xs"
-										onClick={() => handlePrescription(values.id)}
-										radius="es"
-										rightSection={<IconArrowRight size={18} />}
-									>
-										{t("Prescription")}
-									</Button>
-									<Button
-										variant="filled"
-										bg="var(--theme-success-color)"
-										c="white"
-										size="xs"
-										onClick={() => handleSendToAdmission(values.id)}
-										radius="es"
-										rightSection={<IconArrowRight size={18} />}
-										className="border-right-radius-none"
-									>
-										{t("Admission")}
-									</Button>
+									{(
+										(
+											["New", "In-progress"].includes(values?.process) &&
+											values?.process !== "Closed"
+										) &&
+										!values?.referred_mode
+									) && (
+										values?.prescription_id ? (
+											<Button
+												miw={124}
+												variant="filled"
+												bg="var(--theme-primary-color-4)"
+												c="white"
+												size="xs"
+												onClick={() => handlePrescription(values.prescription_id)}
+												radius="es"
+												rightSection={<IconArrowRight size={18} />}
+											>
+												{t("Prescription")}
+											</Button>
+										) : (
+											<Button
+												miw={124}
+												variant="filled"
+												bg="var(--theme-primary-color-6)"
+												c="white"
+												size="xs"
+												onClick={() => handleProcessPrescription(values.id)}
+												radius="es"
+												rightSection={<IconArrowRight size={18} />}
+												className="border-right-radius-none"
+											>
+												{t("Prescription")}
+											</Button>
+										)
+									)}
+
+									{ values.process === "New" && !values.referred_mode && (
+										<Button
+											variant="filled"
+											bg="var(--theme-success-color)"
+											c="white"
+											size="xs"
+											onClick={() => handleSendToAdmission(values.id)}
+											radius="es"
+											rightSection={<IconArrowRight size={18} />}
+											className="border-right-radius-none"
+										>
+											{t("Admission")}
+										</Button>
+									)}
 									<Menu
 										position="bottom-end"
 										offset={3}

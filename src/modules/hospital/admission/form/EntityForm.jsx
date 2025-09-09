@@ -2,9 +2,10 @@ import DatePickerForm from "@components/form-builders/DatePicker";
 import InputForm from "@components/form-builders/InputForm";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import SelectForm from "@components/form-builders/SelectForm";
-import { Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
-import { IconChevronRight, IconCirclePlusFilled } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+
+import {ActionIcon, Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text} from "@mantine/core";
+import {IconChevronRight, IconCirclePlusFilled, IconSearch} from "@tabler/icons-react";
+import {useEffect, useState} from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import DoctorsRoomDrawer from "../../common/__DoctorsRoomDrawer";
@@ -13,10 +14,13 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { editEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import IPDFooter from "@modules/hospital/common/IPDFooter";
+
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import { useDispatch } from "react-redux";
+import {formatDate} from "@utils/index";
+
 
 const DISEASE_PROFILE = ["Diabetic", "Hypertension", "Asthma", "Allergy", "Other"];
 
@@ -26,10 +30,13 @@ export default function EntityForm({ form, module }) {
 	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
 	const { t } = useTranslation();
 	const { id } = useParams();
-	const [record, setRecord] = useState({});
+
+	const [record, setRecord] = useState({})
+	const [showUserData, setShowUserData] = useState({})
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 260;
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [openedHSIDDataPreview, { open: openHSIDDataPreview, close: closeHSIDDataPreview }] = useDisclosure(false);
 
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
@@ -79,20 +86,57 @@ export default function EntityForm({ form, module }) {
 	const handleGenderChange = (val) => {
 		setGender(val);
 	};
-	const { data: entity } = useDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}` });
-	const entities = entity?.data?.invoice_particular;
+	const {data:entity} = useDataWithoutStore({url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`})
+	const item = entity?.data
+	const entities = entity?.data?.invoice_particular
 
 	useEffect(() => {
 		form.setValues({
-			name: entity?.data?.name,
+			name: item?.name,
+			mobile: item?.mobile,
 		});
-	}, [entity]);
+	}, [item]);
+
+	const handleReset = () => {
+		form.reset();
+		localStorage.removeItem(LOCAL_STORAGE_KEY);
+		setShowUserData(false);
+	};
+
 
 	const handleTypeChange = (val) => {
 		form.setFieldValue("patient_type", val);
 		if (val === "admission") {
 			form.setFieldValue("guardian_mobile", form.values.mobile);
 		}
+	};
+
+	// =============== handle HSID search and populate form fields ================
+	const handleHSIDSearch = () => {
+		if (!form.values.identity) {
+			showNotificationComponent(t("PleaseEnterIdentity"), "red", "lightgray", true, 1000, true);
+			return;
+		}
+		setShowUserData(true);
+
+		// =============== populate form fields with emergency data ================
+		setTimeout(() => {
+			form.setFieldValue("name", userEmergencyData.citizenData.fullName_English);
+			form.setFieldValue("mobile", userEmergencyData.citizenData.mobile);
+			form.setFieldValue("gender", userEmergencyData.citizenData.gender === 1 ? "male" : "female");
+			form.setFieldValue("dob", "01-01-1990");
+			form.setFieldValue(
+				"guardian_name",
+				userEmergencyData.citizenData.fatherName_English || userEmergencyData.citizenData.motherName_English
+			);
+			form.setFieldValue(
+				"address",
+				`${userEmergencyData.citizenData.presentHouseholdNo.division}, ${userEmergencyData.citizenData.presentHouseholdNo.district}, ${userEmergencyData.citizenData.presentHouseholdNo.upazilla}, ${userEmergencyData.citizenData.presentHouseholdNo.unionOrWard}, ${userEmergencyData.citizenData.presentHouseholdNo.mouzaOrMoholla}, ${userEmergencyData.citizenData.presentHouseholdNo.villageOrRoad}, ${userEmergencyData.citizenData.presentHouseholdNo.houseOrHoldingNo}`
+			);
+
+			// =============== trigger age calculation ================
+			handleDobChange();
+		}, 500);
 	};
 
 	return (
@@ -106,27 +150,220 @@ export default function EntityForm({ form, module }) {
 							</Text>
 						</Box>
 						<ScrollArea scrollbars="y" type="never" h={height}>
-							<Stack className="form-stack-vertical" h={height}>
+							<Stack className="form-stack-vertical">
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("appointment")}</Text>
+										<Text fz="sm">{t("Created")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										{formatDate(item?.created)}
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("InvoiceID")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										{item?.invoice}
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("PatientID")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										{item?.patient_id}
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("patientName")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterPatientName")}
+											placeholder="Mr. Rahim"
+											name="name"
+											id="patientName"
+											nextField="mobile"
+											value={form.values.name}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("MobileNo")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterPatientName")}
+											placeholder={t("MobileNo")}
+											name="mobile"
+											id="patientName"
+											nextField="mobile"
+											value={form.values.mobile}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("dateOfBirth")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<DatePickerForm
 											form={form}
 											label=""
-											tooltip={t("bookYourAppointment")}
 											placeholder="23-06-2025"
-											name="appointment"
-											id="appointment"
-											nextField="patientName"
-											value={form.values.appointment}
+											tooltip={t("enterPatientDateOfBirth")}
+											name="dob"
+											id="dob"
+											nextField="age"
+											value={form.values.dob}
 											required
-											disable
+											disabledFutureDate
 										/>
 									</Grid.Col>
 								</Grid>
-								{/* <Grid align="center" columns={20}>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("Type")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<SegmentedControl
+											fullWidth
+											color="var(--theme-primary-color-6)"
+											value={form.values.identity_mode}
+											id="identity_mode"
+											name="identity_mode"
+											onChange={(val) => handleTypeChange(val)}
+											data={[
+												{ label: t("NID"), value: "NID" },
+												{ label: t("BRID"), value: "BRID" },
+												{ label: t("HID"), value: "HID" },
+											]}
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">
+											{form.values.identity_mode === "NID"
+												? t("NID")
+												: form.values.identity_mode === "BRID"
+													? t("BRID")
+													: t("HID")}
+										</Text>
+									</Grid.Col>
+									<Grid.Col span={9}>
+										<InputNumberForm
+											form={form}
+											label=""
+											placeholder="1234567890"
+											tooltip={t("enterPatientIdentity")}
+											name="identity"
+											id="identity"
+											nextField="guardian_name"
+											value={form.values.identity}
+											rightSection={
+												<ActionIcon
+													onClick={handleHSIDSearch}
+													bg="var(--theme-secondary-color-6)"
+												>
+													<IconSearch size={"16"} />
+												</ActionIcon>
+											}
+											required
+										/>
+									</Grid.Col>
+									{showUserData && (
+										<Grid.Col span={5}>
+											<Text
+												ta="right"
+												onClick={openHSIDDataPreview}
+												pr="xs"
+												fz="sm"
+												className="cursor-pointer user-none"
+												c="var(--theme-primary-color-6)"
+											>
+												{form.values.healthID || t("HSID000000")}
+											</Text>
+										</Grid.Col>
+									)}
+								</Grid>
+								<Flex className="form-action-header full-bleed">
+									<Text fz="sm">{t("Cabin/Bed")}</Text>
+									<Flex align="center" gap="xs"  className="cursor-pointer">
+										<Text fz="sm">{item?.room_name}</Text> <IconChevronRight size="16px" />
+									</Flex>
+								</Flex>
+
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("UnitName")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14} onClick={openDoctorsRoom}>
+										<Text fz="sm">{item?.admit_unit_name}</Text>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("Department")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<Text fz="sm">{item?.admit_department_name}</Text>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("Consultant")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<Text fz="sm">{item?.admit_consultant_name}</Text>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("AssignDoctor")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<Text fz="sm">{item?.admit_doctor_name}</Text>
+									</Grid.Col>
+								</Grid>
+								<Flex className="form-action-header full-bleed">
+									<Text fz="sm">{t("PrescriptionInformation")}</Text>
+									<Flex align="center" gap="xs"  className="cursor-pointer">
+										<Text fz="sm">{item?.prescription_id}</Text> <IconChevronRight size="16px" />
+									</Flex>
+								</Flex>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("PrescriptionDoctor")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14} >
+										<Text fz="sm">{item?.prescription_doctor_name}</Text>
+									</Grid.Col>
+								</Grid>
+							</Stack>
+						</ScrollArea>
+					</Box>
+				</Grid.Col>
+				<Grid.Col span={12}>
+					<Box className="borderRadiusAll">
+						<Box bg="var(--theme-primary-color-0)" p="sm">
+							<Text fw={600} fz="sm" py="es">
+								{t("PatientInformation")}
+							</Text>
+						</Box>
+						<ScrollArea scrollbars="y" type="never" h={height}>
+							<Stack className="form-stack-vertical">
+
+								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("status")}</Text>
 									</Grid.Col>
@@ -166,261 +403,6 @@ export default function EntityForm({ form, module }) {
 												required
 											/>
 										</Flex>
-									</Grid.Col>
-								</Grid> */}
-
-								<Flex className="form-action-header full-bleed">
-									<Text fz="sm">{t("doctorInformation")}</Text>
-									<Flex align="center" gap="xs" onClick={openDoctorsRoom} className="cursor-pointer">
-										<Text fz="sm">{t("booked")}-05</Text> <IconChevronRight size="16px" />
-									</Flex>
-								</Flex>
-
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("roomNo")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14} onClick={openDoctorsRoom}>
-										<InputNumberForm
-											readOnly={true}
-											form={form}
-											label=""
-											tooltip={t("enterPatientRoomNo")}
-											placeholder="101"
-											name="roomNo"
-											id="roomNo"
-											nextField="specialization"
-											value={form.values.roomNo}
-											required
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("specialization")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14} onClick={openDoctorsRoom}>
-										<InputForm
-											readOnly={true}
-											form={form}
-											label=""
-											tooltip={t("enterPatientSpecialization")}
-											placeholder="Cardiologist"
-											name="specialization"
-											id="specialization"
-											nextField="doctorName"
-											value={form.values.specialization}
-											required
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("doctorName")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14} onClick={openDoctorsRoom}>
-										<InputForm
-											readOnly={true}
-											form={form}
-											label=""
-											tooltip={t("enterPatientDoctorName")}
-											placeholder="Dr. John Doe"
-											name="doctorName"
-											id="doctorName"
-											nextField="diseaseProfile"
-											value={form.values.doctorName}
-											required
-										/>
-									</Grid.Col>
-								</Grid>
-
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("diseaseProfile")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<SelectForm
-											form={form}
-											tooltip={t("enterPatientDiseaseProfile")}
-											placeholder="Diabetic"
-											name="diseaseProfile"
-											id="diseaseProfile"
-											nextField="referredName"
-											value={form.values.diseaseProfile}
-											required
-											dropdownValue={DISEASE_PROFILE}
-											rightSection={
-												<IconCirclePlusFilled
-													color="var(--theme-primary-color-6)"
-													size="24px"
-												/>
-											}
-										/>
-									</Grid.Col>
-								</Grid>
-							</Stack>
-						</ScrollArea>
-					</Box>
-				</Grid.Col>
-				<Grid.Col span={12}>
-					<Box className="borderRadiusAll">
-						<Box bg="var(--theme-primary-color-0)" p="sm">
-							<Text fw={600} fz="sm" py="es">
-								{t("PatientInformation")}
-							</Text>
-						</Box>
-						<ScrollArea scrollbars="y" type="never" h={height}>
-							<Stack className="form-stack-vertical" h={height}>
-								{form.values.patient_type === "admission" && (
-									<>
-										<Grid align="center" columns={20}>
-											<Grid.Col span={6}>
-												<Text fz="sm">{t("GuardianName")}</Text>
-											</Grid.Col>
-											<Grid.Col span={14}>
-												<InputForm
-													form={form}
-													label=""
-													tooltip={t("enterGuardianName")}
-													placeholder="John Doe"
-													name="guardian_name"
-													id="guardian_name"
-													nextField="guardian_mobile"
-													value={form.values.guardian_name}
-													required
-												/>
-											</Grid.Col>
-										</Grid>
-
-										<Grid align="center" columns={20}>
-											<Grid.Col span={6}>
-												<Text fz="sm">{t("GuardianMobile")}</Text>
-											</Grid.Col>
-											<Grid.Col span={14}>
-												<InputForm
-													form={form}
-													label=""
-													tooltip={t("enterGuardianName")}
-													placeholder="+8801711111111"
-													name="guardian_mobile"
-													id="guardian_mobile"
-													nextField="identity"
-													value={form.values.guardian_mobile}
-													required
-												/>
-											</Grid.Col>
-										</Grid>
-									</>
-								)}
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("patientName")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<InputForm
-											form={form}
-											label=""
-											tooltip={t("enterPatientName")}
-											placeholder="Mr. Rahim"
-											name="name"
-											id="patientName"
-											nextField="mobile"
-											value={form.values.name}
-											required
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("gender")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<SegmentedControl
-											fullWidth
-											color="var(--theme-primary-color-6)"
-											value={gender}
-											id="gender"
-											name="gender"
-											onChange={(val) => handleGenderChange(val)}
-											data={[
-												{ label: t("male"), value: "male" },
-												{ label: t("female"), value: "female" },
-												{ label: t("other"), value: "other" },
-											]}
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("FMHName")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<InputForm
-											form={form}
-											label=""
-											tooltip={t("enterPatientName")}
-											placeholder="Mr. Rahim"
-											name="name"
-											id="patientName"
-											nextField="mobile"
-											value={form.values.name}
-											required
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("PresentAddress")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<InputForm
-											form={form}
-											label=""
-											tooltip={t("enterPresentAddress")}
-											placeholder="12 street, 123456"
-											name="presentAddress"
-											id="presentAddress"
-											nextField="permanentAddress"
-											value={form.values.presentAddress}
-											required
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("PermanentAddress")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<InputForm
-											form={form}
-											label=""
-											tooltip={t("enterPermanentAddress")}
-											placeholder="12 street, 123456"
-											name="permanentAddress"
-											id="permanentAddress"
-											nextField="dateOfBirth"
-											value={form.values.permanentAddress}
-											required
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("dateOfBirth")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<DatePickerForm
-											form={form}
-											label=""
-											placeholder="23-06-2025"
-											tooltip={t("enterPatientDateOfBirth")}
-											name="dateOfBirth"
-											id="dateOfBirth"
-											nextField="age"
-											value={form.values.dateOfBirth}
-											required
-											disabledFutureDate
-										/>
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
@@ -470,6 +452,174 @@ export default function EntityForm({ form, module }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
+										<Text fz="sm">{t("gender")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<SegmentedControl
+											fullWidth
+											color="var(--theme-primary-color-6)"
+											value={gender}
+											id="gender"
+											name="gender"
+											onChange={(val) => handleGenderChange(val)}
+											data={[
+												{ label: t("male"), value: "male" },
+												{ label: t("female"), value: "female" },
+												{ label: t("other"), value: "other" },
+											]}
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("FatherName")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterGuardianName")}
+											placeholder="John Doe"
+											name="guardian_name"
+											id="guardian_name"
+											nextField="guardian_mobile"
+											value={form.values.guardian_name}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("MotherName")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterGuardianName")}
+											placeholder="+8801711111111"
+											name="guardian_mobile"
+											id="guardian_mobile"
+											nextField="identity"
+											value={form.values.guardian_mobile}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("GuardianName")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterGuardianName")}
+											placeholder="John Doe"
+											name="guardian_name"
+											id="guardian_name"
+											nextField="guardian_mobile"
+											value={form.values.guardian_name}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+							</Stack>
+							<Stack className="form-stack-vertical">
+
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("GuardianMobile")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterGuardianName")}
+											placeholder="+8801711111111"
+											name="guardian_mobile"
+											id="guardian_mobile"
+											nextField="identity"
+											value={form.values.guardian_mobile}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("GuardianMobile")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterGuardianName")}
+											placeholder="+8801711111111"
+											name="guardian_mobile"
+											id="guardian_mobile"
+											nextField="identity"
+											value={form.values.guardian_mobile}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("RelationWithParent")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterPresentAddress")}
+											placeholder="12 street, 123456"
+											name="presentAddress"
+											id="presentAddress"
+											nextField="permanentAddress"
+											value={form.values.presentAddress}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("Profession")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterPresentAddress")}
+											placeholder="12 street, 123456"
+											name="presentAddress"
+											id="presentAddress"
+											nextField="permanentAddress"
+											value={form.values.presentAddress}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("PermanentAddress")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterPermanentAddress")}
+											placeholder="12 street, 123456"
+											name="permanentAddress"
+											id="permanentAddress"
+											nextField="dateOfBirth"
+											value={form.values.permanentAddress}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
 										<Text fz="sm">{t("Religion")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
@@ -478,6 +628,24 @@ export default function EntityForm({ form, module }) {
 											label=""
 											tooltip={t("enterReligion")}
 											placeholder="Islam"
+											name="religion"
+											id="religion"
+											nextField="bloodGroup"
+											value={form.values.religion}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("Nationality")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterReligion")}
+											placeholder="Bangladesh"
 											name="religion"
 											id="religion"
 											nextField="bloodGroup"

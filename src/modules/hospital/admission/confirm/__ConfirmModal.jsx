@@ -19,6 +19,7 @@ import { successNotification } from "@/common/components/notification/successNot
 import { errorNotification } from "@/common/components/notification/errorNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { useDispatch } from "react-redux";
+import useDoaminHospitalConfigData from "@hooks/config-data/useDomainHospitalConfigData";
 
 export default function ConfirmModal({ opened, close, form, selectedId, module }) {
 	const dispatch = useDispatch();
@@ -27,13 +28,11 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 	const height = mainAreaHeight - 140;
 	const [selectedRoom, setSelectedRoom] = useState(null);
 	const { t } = useTranslation();
-
+	const { hospitalConfigData } = useDoaminHospitalConfigData();
 	const { hospitalSettingData } = useHospitalSettingData();
 	const { data: ipdData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${selectedId}`,
 	});
-
-	console.log(ipdData);
 
 	const { data: doctorDropdown } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.PATH,
@@ -351,16 +350,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 											<Text fz="sm">{t("AssignConsultant")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												label=""
-												tooltip={t("EnterAssignConsultant")}
-												placeholder="Dr. Shafiqul Islam"
-												name="admit_consultant_id"
-												id="admit_consultant_id"
-												value={form.values.admit_consultant_id}
-												dropdownValue={consultantDropdown}
-											/>
+											{hospitalConfigData?.hospital_config?.consultant_doctor?.consultant_doctor_name}
 										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20}>

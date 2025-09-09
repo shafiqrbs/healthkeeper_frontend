@@ -30,7 +30,6 @@ const admissionConfirmInitialValues = {
 	admit_unit_id: "",
 	hms_invoice_id: "",
 	admit_doctor_id: "",
-	admit_consultant_id: "",
 	admit_department_id: "",
 	comment: "",
 	patient_mode: "ipd",

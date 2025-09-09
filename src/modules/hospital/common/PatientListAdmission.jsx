@@ -5,8 +5,9 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useEffect, useState } from "react";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES } from "@/constants";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { formatDate } from "@utils/index";
+import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
@@ -15,47 +16,35 @@ export default function PatientListAdmission() {
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const [records, setRecords] = useState([]);
-	const [fetching, setFetching] = useState(false);
 	const dispatch = useDispatch();
-
+	const filterData = useSelector((state) => state.crud[module].filterData);
+	const [selectedPatientId, setSelectedPatientId] = useState(id);
 	const handleAdmissionOverview = (id) => {
+		setSelectedPatientId(id)
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.VIEW}/${id}`);
 	};
 
-	const fetchData = async () => {
-		setFetching(true);
-		const value = {
-			url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-			params: {
-				page: 1,
-				offset: PER_PAGE,
-				patient_mode: "ipd",
-				process: "New",
-			},
-			module,
-		};
-		try {
-			const result = await dispatch(getIndexEntityData(value)).unwrap();
-			setRecords(result?.data?.data || []);
-		} catch (err) {
-			console.error("Unexpected error:", err);
-		} finally {
-			setTimeout(() => {
-				setFetching(false);
-			}, 1000);
-		}
-	};
-	useEffect(() => {
-		fetchData();
-	}, []);
-
-	const [selectedPatientId, setSelectedPatientId] = useState(id);
-
-	const selectPatient = (patient) => {
-		setSelectedPatientId(patient.id);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD.VIEW}/${patient.id}`);
-	};
+	const {
+		scrollRef,
+		records,
+		fetching,
+		sortStatus,
+		setSortStatus,
+		handleScrollToBottom,
+	} = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			patient_mode: "ipd",
+			process: "New",
+			term: filterData.keywordSearch,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+	});
+	console.log(selectedPatientId)
 
 	return (
 		<Box>
@@ -72,7 +61,7 @@ export default function PatientListAdmission() {
 					<Grid
 						columns={12}
 						key={item.id}
-						onClick={() => selectPatient(item)}
+						onClick={()=>handleAdmissionOverview(item.id)}
 						my="xs"
 						bg={
 							Number(selectedPatientId) === item?.id
@@ -88,9 +77,8 @@ export default function PatientListAdmission() {
 
 								<Text
 									fz="sm"
-									// onClick={() => handleView(item?.id)}
-									className="activate-link text-nowrap"
-								>
+									onClick={() => handleView(item?.id)}
+									className="activate-link text-nowrap">
 									{formatDate(item?.created_at)}
 								</Text>
 							</Flex>
@@ -123,6 +111,7 @@ export default function PatientListAdmission() {
 									>
 										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
 									</ActionIcon>
+
 								</Button.Group>
 							</Flex>
 						</Grid.Col>

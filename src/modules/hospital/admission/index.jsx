@@ -2,9 +2,10 @@ import { Box, Flex } from "@mantine/core";
 import Navigation from "@components/layout/Navigation";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import { useOutletContext } from "react-router-dom";
-import Table from "./_Table";
+
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import { MODULES } from "@/constants";
+import _Table from "@modules/hospital/admission/ipd/_Table";
 
 const module = MODULES.ADMISSION;
 
@@ -20,7 +21,7 @@ export default function Index() {
 				<Box p="md">
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-						<Table module={module} />
+						<_Table module={module} />
 					</Flex>
 				</Box>
 			)}

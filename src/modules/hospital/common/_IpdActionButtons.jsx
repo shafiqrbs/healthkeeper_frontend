@@ -23,7 +23,7 @@ export default function IpdActionButtons({
 	children,
 }) {
 	const { hospitalConfigData } = useHospitalConfigData();
-
+	console.log(entities)
 	const { t } = useTranslation();
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
@@ -102,41 +102,19 @@ export default function IpdActionButtons({
 										<Text fz="sm">{entity?.item_name}</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>
-										<Text fz="sm">Quantity</Text>
+										<Text fz="sm">{entity?.quantity}</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>
-										<Text fz="sm">Price</Text>
+										<Text fz="sm">{entity?.price}</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>
 										<Flex justify="space-between" align="center">
-											<Text fz="sm">Total</Text>
+											<Text fz="sm">{entity?.sub_total}</Text>
 										</Flex>
 									</Grid.Col>
 								</Grid>
 							))}
 
-							<Grid
-								columns={24}
-								my="0"
-								bg={"var(--theme-tertiary-color-0)"}
-								px="xs"
-								gutter="xs"
-							>
-								<Grid.Col span={12}>
-									<Text fz="sm">PARTICULAR</Text>
-								</Grid.Col>
-								<Grid.Col span={4}>
-									<Text fz="sm">Quantity</Text>
-								</Grid.Col>
-								<Grid.Col span={4}>
-									<Text fz="sm">Price</Text>
-								</Grid.Col>
-								<Grid.Col span={4}>
-									<Flex justify="space-between" align="center">
-										<Text fz="sm">Total</Text>
-									</Flex>
-								</Grid.Col>
-							</Grid>
 						</Grid.Col>
 						<Grid.Col span={6} bg="var(--theme-secondary-color-0)" px="xs" pt={"md"}>
 							<Box>

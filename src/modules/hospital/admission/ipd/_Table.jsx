@@ -10,11 +10,11 @@ import { rem } from "@mantine/core";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
-import KeywordSearch from "../common/KeywordSearch";
+import KeywordSearch from "../../common/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import ConfirmModal from "./confirm/__ConfirmModal";
-import { getAdmissionConfirmFormInitialValues } from "./helpers/request";
+import ConfirmModal from ".././confirm/__ConfirmModal";
+import { getAdmissionConfirmFormInitialValues } from ".././helpers/request";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { setItemData } from "@/app/store/core/crudSlice";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -27,7 +27,7 @@ const PER_PAGE = 20;
 
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
 
-export default function Table({ module }) {
+export default function _Table({ module }) {
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const dispatch = useDispatch();
@@ -76,7 +76,8 @@ export default function Table({ module }) {
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			patient_mode: "ipd",
+			referred_mode: "admission",
+			process: "In-progress",
 			term: filterData.keywordSearch,
 		},
 		perPage: PER_PAGE,
