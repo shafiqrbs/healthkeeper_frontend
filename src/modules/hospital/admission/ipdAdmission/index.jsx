@@ -116,9 +116,17 @@ export default function Index() {
 										{id ? (
 											<EntityForm form={form} module={module} />
 										) : (
-											<Box p="sm" pl={"md"} pr={"md"} bg="white" h={mainAreaHeight - 12}>
-												sdasdas
-											</Box>
+											<Flex
+												justify="center"
+												align="center"
+												p="sm"
+												pl={"md"}
+												pr={"md"}
+												bg="white"
+												h={mainAreaHeight - 12}
+											>
+												<Text>No patient selected, please select a patient</Text>
+											</Flex>
 										)}
 									</Grid.Col>
 								</Grid>

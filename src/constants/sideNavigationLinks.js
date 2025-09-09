@@ -132,7 +132,7 @@ export const sideNavigationLinks = {
 		},
 		{
 			label: t("IPDConfirm"),
-			path: "/hospital/ipd-confirm",
+			path: "/hospital/ipd",
 			icon: IconBuildingHospital,
 			color: "#00BCD4", // Cyan
 		},

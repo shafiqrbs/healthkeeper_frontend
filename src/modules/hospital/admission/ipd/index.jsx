@@ -18,11 +18,12 @@ import { showNotificationComponent } from "@/common/components/core-component/sh
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import IPDFooter from "../../common/IPDFooter";
+import Table from "./_Table";
 
 const module = MODULES.ADMISSION;
 const LOCAL_STORAGE_KEY = "patientFormData";
 
-export default function ConfirmIndex() {
+export default function Index() {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const form = useForm(getAdmissionFormInitialValues());
@@ -86,43 +87,7 @@ export default function ConfirmIndex() {
 				<Box p="md">
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-						<Grid w="100%" columns={25}>
-							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-ease-out">
-								<Box px="sm" py="md" bg="white">
-									<Text fw={600} fz="sm">
-										{t("patientInformation")}
-									</Text>
-								</Box>
-								<TabsWithSearch
-									tabList={["list"]}
-									tabPanels={[
-										{
-											tab: "list",
-											component: (
-												<PatientListAdmission
-													isOpenPatientInfo={isOpenPatientInfo}
-													setIsOpenPatientInfo={setIsOpenPatientInfo}
-												/>
-											),
-										},
-									]}
-								/>
-							</Grid.Col>
-							<Grid.Col span={isOpenPatientInfo ? 17 : 23} className="animate-ease-out">
-								<Grid columns={25} gutter="les">
-									<Grid.Col span={25}>
-										<EntityForm form={form} />
-									</Grid.Col>
-									<Grid.Col span={25}>
-										<IPDFooter
-											form={form}
-											isSubmitting={isSubmitting}
-											handleSubmit={handleSubmit}
-										/>
-									</Grid.Col>
-								</Grid>
-							</Grid.Col>
-						</Grid>
+						<Table module={module} />
 					</Flex>
 				</Box>
 			)}

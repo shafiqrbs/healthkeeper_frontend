@@ -39,8 +39,6 @@ export default function Index() {
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
 	});
 
-	console.log(ipdData);
-
 	const handleSubmit = async () => {
 		try {
 			const value = {
@@ -89,64 +87,78 @@ export default function Index() {
 								/>
 							</Grid.Col>
 							<Grid.Col span={16} className="animate-ease-out">
-								<TabsWithSearch
-									tabList={[
-										"History",
-										"Investigation",
-										"Medicine",
-										"Advice",
-										"Instruction",
-										"OT",
-										"Charge",
-										"Billing",
-										"Final Bill",
-										"Discharge",
-									]}
-									hideSearchbar
-									tabPanels={[
-										{
-											tab: "History",
-											component: <History />,
-										},
-										{
-											tab: "Investigation",
-											component: <Investigation form={form} handleSubmit={handleSubmit} />,
-										},
-										{
-											tab: "Medicine",
-											component: <Medicine />,
-										},
-										{
-											tab: "Advice",
-											component: <Advice />,
-										},
+								{id ? (
+									<TabsWithSearch
+										tabList={[
+											"History",
+											"Investigation",
+											"Medicine",
+											"Advice",
+											"Instruction",
+											"OT",
+											"Charge",
+											"Billing",
+											"Final Bill",
+											"Discharge",
+										]}
+										hideSearchbar
+										tabPanels={[
+											{
+												tab: "History",
+												component: <History />,
+											},
+											{
+												tab: "Investigation",
+												component: <Investigation form={form} handleSubmit={handleSubmit} />,
+											},
+											{
+												tab: "Medicine",
+												component: <Medicine />,
+											},
+											{
+												tab: "Advice",
+												component: <Advice />,
+											},
 
-										{
-											tab: "Instruction",
-											component: <Instruction />,
-										},
-										{
-											tab: "OT",
-											component: <OT />,
-										},
-										{
-											tab: "Charge",
-											component: <Charge />,
-										},
-										{
-											tab: "Billing",
-											component: <Billing />,
-										},
-										{
-											tab: "Final Bill",
-											component: <FinalBill />,
-										},
-										{
-											tab: "Discharge",
-											component: <Discharge />,
-										},
-									]}
-								/>
+											{
+												tab: "Instruction",
+												component: <Instruction />,
+											},
+											{
+												tab: "OT",
+												component: <OT />,
+											},
+											{
+												tab: "Charge",
+												component: <Charge />,
+											},
+											{
+												tab: "Billing",
+												component: <Billing />,
+											},
+											{
+												tab: "Final Bill",
+												component: <FinalBill />,
+											},
+											{
+												tab: "Discharge",
+												component: <Discharge />,
+											},
+										]}
+									/>
+								) : (
+									<Flex
+										justify="center"
+										align="center"
+										p="sm"
+										pl={"md"}
+										pr={"md"}
+										bg="white"
+										h={mainAreaHeight - 12}
+									>
+										<Text>No patient selected, please select a patient</Text>
+									</Flex>
+								)}
 							</Grid.Col>
 						</Grid>
 					</Flex>
