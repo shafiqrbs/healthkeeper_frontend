@@ -90,9 +90,14 @@ export default function Create({ module }) {
 			confirmProps: { color: "red" },
 			onCancel: () => console.log("Cancel"),
 			onConfirm: async () => {
-				const value = {
+                const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+                const formValue = {
+                    ...values,
+                    dob: new Date(form.values.dob).toLocaleDateString("en-CA", options),
+                };
+                const value = {
 					url: MASTER_DATA_ROUTES.API_ROUTES.USER.CREATE,
-					data: values,
+					data: formValue,
 					module,
 				};
 
