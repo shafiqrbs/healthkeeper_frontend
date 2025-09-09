@@ -6,7 +6,7 @@ import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
 import { Box, Flex, Grid, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
-import PatientListAdmission from "../common/PatientListAdmission";
+import Table from "./_Table";
 import History from "./common/tabs/History";
 import Investigation from "./common/tabs/Investigation";
 import Medicine from "./common/tabs/Medicine";
@@ -83,7 +83,7 @@ export default function Index() {
 									tabPanels={[
 										{
 											tab: "list",
-											component: <PatientListAdmission />,
+											component: <Table />,
 										},
 									]}
 								/>

@@ -78,7 +78,6 @@ import CabinIndex from "@modules/hospital/core/cabin";
 import ParticularModeIndex from "@modules/hospital/core/particular-mode";
 import ParticularTypeIndex from "@modules/hospital/core/particular-type";
 import CategoryIndex from "@modules/hospital/core/category";
-import AdmissionListIndex from "@/modules/hospital/admission-list";
 import AdmissionIndex from "@modules/hospital/admission";
 import EmergencyIndex from "@modules/hospital/emergency";
 import NotFound from "@components/layout/NotFound";
@@ -94,9 +93,10 @@ import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/core/doctor";
 import ListIndex from "@modules/hospital/visit/list";
 import ConfigurationIndex from "@modules/configuration";
-import ConfirmIndex from "@modules/hospital/admission/confirm";
+// import ConfirmIndex from "@modules/hospital/admission/confirm";
 import IpdIndex from "@modules/hospital/admission/ipd";
 import IpdAdmissionIndex from "@modules/hospital/admission/ipdAdmission";
+import IpdAdmittedIndex from "@modules/hospital/ipdAdmitted";
 import UserIndex from "@/modules/core/user";
 import SettingIndex from "@/modules/core/setting";
 import TestRoute from "@components/layout/TestRoute";
@@ -153,19 +153,24 @@ function AppRoute() {
 						<Route path="list" element={<ListIndex />} />
 					</Route>
 
-					<Route path="admission">
-						<Route index element={<AdmissionIndex />} />
-						<Route path="ipd" element={<IpdIndex />} />
-						<Route path="confirm" element={<ConfirmIndex />} />
-					</Route>
 					<Route path="ipd">
 						<Route index element={<IpdIndex />} />
-						<Route path=":id" element={<AdmissionListIndex />} />
+						{/* <Route path=":id" element={<IpdIndex />} /> */}
 						<Route path="admission" element={<AdmissionIndex />} />
 					</Route>
 					<Route path="ipd-admission">
 						<Route index element={<IpdAdmissionIndex />} />
 						<Route path=":id" element={<IpdAdmissionIndex />} />
+					</Route>
+					{/* <Route path="ipd-confirm">
+						<Route index element={<IpdConfirmIndex />} />
+						<Route path=":id" element={<AdmissionListIndex />} />
+						<Route path="ipd" element={<IpdIndex />} />
+						<Route path="confirm" element={<ConfirmIndex />} />
+					</Route> */}
+					<Route path="ipd-admitted">
+						<Route index element={<IpdAdmittedIndex />} />
+						<Route path=":id" element={<IpdAdmittedIndex />} />
 					</Route>
 
 					<Route path="prescription">

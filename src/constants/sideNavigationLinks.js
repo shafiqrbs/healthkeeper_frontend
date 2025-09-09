@@ -21,7 +21,7 @@ import {
 	IconReportMedical,
 } from "@tabler/icons-react";
 import { t } from "i18next";
-import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes.js";
 
 export const sideNavigationLinks = {
 	home: [
@@ -98,7 +98,6 @@ export const sideNavigationLinks = {
 			icon: IconStethoscope,
 			color: "#1D3557",
 		},
-
 	],
 	base: [
 		{
@@ -127,13 +126,19 @@ export const sideNavigationLinks = {
 		},
 		{
 			label: t("IPD"),
-			path: "/hospital/ipd",
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX,
 			icon: IconBuildingHospital,
 			color: "#3F51B5", // Indigo
 		},
 		{
-			label: t("Admission"),
-			path: "/hospital/ipd/admission",
+			label: t("IPDConfirm"),
+			path: "/hospital/ipd-confirm",
+			icon: IconBuildingHospital,
+			color: "#00BCD4", // Cyan
+		},
+		{
+			label: t("Admitted"),
+			path: "/hospital/ipd-admitted",
 			icon: IconBuildingHospital,
 			color: "#00BCD4", // Cyan
 		},
@@ -241,22 +246,19 @@ export const sideNavigationLinks = {
 			color: "#6f1225",
 		},
 		{
-
-			label: t('ManageCabin'),
+			label: t("ManageCabin"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.CABIN.INDEX,
 			icon: IconIcons,
 			color: "#3F51B5",
 		},
 		{
-
-			label: t('ManageBed'),
+			label: t("ManageBed"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED.INDEX,
 			icon: IconIcons,
 			color: "#3F51B5",
 		},
 		{
-
-			label: t('OPDRoom'),
+			label: t("OPDRoom"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.OPD_ROOM.INDEX,
 			icon: IconIcons,
 			color: "#3F51B5",
@@ -335,7 +337,6 @@ export const sideNavigationLinks = {
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
-
 	],
 	baseSubmenuReport: [
 		{

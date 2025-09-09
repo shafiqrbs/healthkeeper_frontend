@@ -8,7 +8,7 @@ import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
 import { Badge, Box, Flex, Grid, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
-import PatientListAdmission from "../../common/PatientListAdmission";
+import Table from "./_Table";
 import EntityForm from "../form/EntityForm";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
@@ -22,7 +22,7 @@ import IPDFooter from "../../common/IPDFooter";
 const module = MODULES.ADMISSION;
 const LOCAL_STORAGE_KEY = "patientFormData";
 
-export default function ConfirmIndex() {
+export default function Index() {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { id } = useParams();
@@ -100,7 +100,7 @@ export default function ConfirmIndex() {
 										{
 											tab: "list",
 											component: (
-												<PatientListAdmission
+												<Table
 													selectedId={id}
 													isOpenPatientInfo={isOpenPatientInfo}
 													setIsOpenPatientInfo={setIsOpenPatientInfo}
@@ -116,12 +116,11 @@ export default function ConfirmIndex() {
 										{id ? (
 											<EntityForm form={form} module={module} />
 										) : (
-											<Box p="sm" pl={"md"} pr={"md"} bg="white" h={mainAreaHeight-12}>
+											<Box p="sm" pl={"md"} pr={"md"} bg="white" h={mainAreaHeight - 12}>
 												sdasdas
 											</Box>
 										)}
 									</Grid.Col>
-
 								</Grid>
 							</Grid.Col>
 						</Grid>
