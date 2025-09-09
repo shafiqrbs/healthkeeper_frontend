@@ -251,7 +251,6 @@ export default function Table({ module }) {
 						{ accessor: "patient_id", title: t("patientId") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
-						{ accessor: "doctor_name", title: t("doctor") },
 						{ accessor: "total", title: t("Total") },
 						{
 							accessor: "action",
