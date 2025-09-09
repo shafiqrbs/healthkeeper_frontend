@@ -98,7 +98,7 @@ const IPDPos = forwardRef(({ data }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("বয়স")}</strong> {data?.year} Y {data?.month} M {data?.day} D
+									<strong>{t("বয়স")}</strong> {data?.day} {t("দিন")} {data?.month} {t("মাস")}  {data?.year} {t("বছর")}
 								</Table.Td>
 								<Table.Td miw={100} align="right">
 									<strong>{t("জন্ম তারিখ")}</strong> {data?.dob}
