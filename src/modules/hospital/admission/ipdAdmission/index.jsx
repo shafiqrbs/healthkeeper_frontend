@@ -116,21 +116,12 @@ export default function ConfirmIndex() {
 										{id ? (
 											<EntityForm form={form} module={module} />
 										) : (
-											<IPDFooter
-												form={form}
-												isSubmitting={isSubmitting}
-												handleSubmit={handleSubmit}
-												module={module}
-											/>
+											<Box p="sm" pl={"md"} pr={"md"} bg="white" h={mainAreaHeight-12}>
+												sdasdas
+											</Box>
 										)}
 									</Grid.Col>
-									<Grid.Col span={25}>
-										<IPDFooter
-											form={form}
-											isSubmitting={isSubmitting}
-											handleSubmit={handleSubmit}
-										/>
-									</Grid.Col>
+
 								</Grid>
 							</Grid.Col>
 						</Grid>
