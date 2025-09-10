@@ -58,12 +58,8 @@ function ConfigForm(props) {
 	const validationMessage = useSelector((state) => state.crudSlice.validationMessage);
 	const validation = useSelector((state) => state.crudSlice.validation);
 	const entityNewData = useSelector((state) => state.crudSlice.entityNewData);
-	const authorisedTypeDropdownData = useSelector(
-		(state) => state.utilityUtilitySlice.settingDropdown
-	);
-	const accountTypeDropdownData = useSelector(
-		(state) => state.utilityUtilitySlice.settingDropdown
-	);
+	const authorisedTypeDropdownData = useSelector((state) => state.utilityUtilitySlice.settingDropdown);
+	const accountTypeDropdownData = useSelector((state) => state.utilityUtilitySlice.settingDropdown);
 
 	const authorizedDropdown = getSettingAuthorizedTypeDropdownData();
 	const accountDropdown = getSettingAccountTypeDropdownData();
@@ -124,7 +120,7 @@ function ConfigForm(props) {
 								children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 								labels: { confirm: "Confirm", cancel: "Cancel" },
 								confirmProps: { color: "red" },
-								onCancel: () => console.log("Cancel"),
+								onCancel: () => console.info("Cancel"),
 								onConfirm: () => {
 									const formValue = { ...form.values };
 									formValue["path"] = files[0];
@@ -138,11 +134,7 @@ function ConfigForm(props) {
 									notifications.show({
 										color: "teal",
 										title: t("CreateSuccessfully"),
-										icon: (
-											<IconCheck
-												style={{ width: rem(18), height: rem(18) }}
-											/>
-										),
+										icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
 										loading: false,
 										autoClose: 700,
 										style: { backgroundColor: "lightgray" },
@@ -186,9 +178,7 @@ function ConfigForm(props) {
 															type="submit"
 															mt={4}
 															id="EntityFormSubmit"
-															leftSection={
-																<IconDeviceFloppy size={16} />
-															}
+															leftSection={<IconDeviceFloppy size={16} />}
 														>
 															<Flex direction={`column`} gap={0}>
 																<Text fz={12} fw={400}>
@@ -205,12 +195,7 @@ function ConfigForm(props) {
 								<Box pl={`xs`} pr={"xs"} mt={"xs"} className={"borderRadiusAll"}>
 									<Grid columns={24}>
 										<Grid.Col span={"auto"}>
-											<ScrollArea
-												h={height}
-												scrollbarSize={2}
-												scrollbars="y"
-												type="never"
-											>
+											<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
 												<Box>
 													<Box mt={"xs"}>
 														<SelectForm
@@ -231,9 +216,7 @@ function ConfigForm(props) {
 													</Box>
 													<Box mt={"xs"}>
 														<InputForm
-															tooltip={t(
-																"SubGroupNameValidateMessage"
-															)}
+															tooltip={t("SubGroupNameValidateMessage")}
 															label={t("Name")}
 															placeholder={t("Name")}
 															required={true}
@@ -246,9 +229,7 @@ function ConfigForm(props) {
 													</Box>
 													<Box mt={"xs"}>
 														<InputForm
-															tooltip={t(
-																"AccountCodeValidateMessage"
-															)}
+															tooltip={t("AccountCodeValidateMessage")}
 															label={t("AccountCode")}
 															placeholder={t("AccountCode")}
 															required={true}
@@ -289,12 +270,7 @@ function ConfigForm(props) {
 				</Grid.Col>
 				<Grid.Col span={1}>
 					<Box bg={"white"} className={"borderRadiusAll"} pt={"16"}>
-						<Shortcut
-							form={form}
-							FormSubmit={"EntityFormSubmit"}
-							Name={"method_id"}
-							inputType="select"
-						/>
+						<Shortcut form={form} FormSubmit={"EntityFormSubmit"} Name={"method_id"} inputType="select" />
 					</Box>
 				</Grid.Col>
 			</Grid>

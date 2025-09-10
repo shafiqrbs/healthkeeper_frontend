@@ -40,7 +40,7 @@ function FormGeneric(props) {
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handlePurchaseConfirmSubmit(values),
 		});
 	};

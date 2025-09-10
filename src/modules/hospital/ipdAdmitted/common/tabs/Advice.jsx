@@ -2,8 +2,13 @@ import TabSubHeading from "@modules/hospital/common/TabSubHeading";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { Badge, Box, Flex, Grid, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import TabsActionButtons from "@modules/hospital/common/TabsActionButtons";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { updateEntityData } from "@/app/store/core/crudThunk";
+import { successNotification } from "@/common/components/notification/successNotification";
+import { errorNotification } from "@/common/components/notification/errorNotification";
+import { useDispatch } from "react-redux";
 
 const adviceDetails = [
 	{
@@ -30,15 +35,34 @@ const adviceDetails = [
 
 export default function Advice() {
 	const { mainAreaHeight } = useOutletContext();
-
+	const dispatch = useDispatch();
+	const { id } = useParams();
 	const form = useForm({
 		initialValues: {
-			history: "",
+			advice: "",
 		},
 	});
 
-	const handleSubmit = (values) => {
-		console.log(values);
+	const handleSubmit = async () => {
+		try {
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
+				data: {
+					json_content: form.values?.advice,
+					module: "advice",
+				},
+				module: "admission",
+			};
+			const resultAction = await dispatch(updateEntityData(value));
+			if (resultAction.payload.success) {
+				console.log(resultAction.payload.data);
+				successNotification(resultAction.payload.message);
+			} else {
+				errorNotification(resultAction.payload.message);
+			}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	return (
@@ -53,7 +77,7 @@ export default function Advice() {
 							rows={10}
 							className="borderRadiusAll"
 							form={form}
-							name="history"
+							name="advice"
 							showRightSection={false}
 							style={{ input: { height: mainAreaHeight - 63 - 140 }, label: { marginBottom: "4px" } }}
 						/>

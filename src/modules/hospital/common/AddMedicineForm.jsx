@@ -326,7 +326,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handlePrescriptionSubmit(),
 		});
 	};

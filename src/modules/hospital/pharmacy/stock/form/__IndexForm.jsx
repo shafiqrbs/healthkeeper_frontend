@@ -5,8 +5,8 @@ import { editEntityData } from "@/app/store/core/crudThunk";
 import { setFilterData, setSearchKeyword, setInsertType } from "@/app/store/core/crudSlice";
 import __Update from "./__Update";
 import __Create from "./__Create";
-import {CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
-import {CORE_NAV_LINKS} from "@/constants/mainDashboardLinks";
+import { CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { CORE_NAV_LINKS } from "@/constants/mainDashboardLinks";
 
 export default function _IndexForm({ module, form, close, mode }) {
 	const { id } = useParams();
@@ -39,7 +39,6 @@ export default function _IndexForm({ module, form, close, mode }) {
 		);
 	};
 
-
 	// =============== handle create mode initialization ================
 	const handleCreateMode = () => {
 		dispatch(setInsertType({ insertType: "create", module }));
@@ -65,8 +64,6 @@ export default function _IndexForm({ module, form, close, mode }) {
 		}
 	}, [isEditMode]);
 
-	// =============== render form based on mode ================
-	console.log(insertType)
 	if (insertType === "create") {
 		return <__Create module={module} form={form} close={close} />;
 	}

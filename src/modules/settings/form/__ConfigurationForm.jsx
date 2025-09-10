@@ -218,7 +218,7 @@ function ConfigurationForm({
 			confirmProps: {
 				color: "var(--theme-error-color)",
 			},
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: () => {
 				dispatch(
 					showEntityData({

@@ -42,7 +42,7 @@ export default function __FormGeneric(props) {
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handlePurchaseConfirmSubmit(values),
 		});
 	};
@@ -70,7 +70,6 @@ export default function __FormGeneric(props) {
 				url: `inventory/config-purchase-update/${id}`,
 				data: values,
 			};
-			console.log("value", values);
 			await dispatch(updateEntityData(value));
 
 			const resultAction = await dispatch(showEntityData("inventory/config"));

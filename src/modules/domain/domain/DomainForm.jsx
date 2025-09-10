@@ -124,7 +124,7 @@ function DomainForm() {
 								children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 								labels: { confirm: "Submit", cancel: "Cancel" },
 								confirmProps: { color: "red.5" },
-								onCancel: () => console.log("Cancel"),
+								onCancel: () => console.info("Cancel"),
 								onConfirm: async () => {
 									const value = {
 										url: "domain/global",

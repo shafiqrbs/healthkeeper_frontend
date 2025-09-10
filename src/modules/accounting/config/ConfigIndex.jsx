@@ -54,7 +54,7 @@ function AccountingConfig() {
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: "Confirm", cancel: "Cancel" },
 			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: async () => {
 				const response = await axios.get(`${import.meta.env.VITE_API_GATEWAY_URL}${url}`, {
 					headers: {
@@ -105,19 +105,10 @@ function AccountingConfig() {
 								</Grid.Col>
 								<Grid.Col span={14}>
 									<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
-										<Card
-											shadow="md"
-											radius="md"
-											className={classes.card}
-											padding="lg"
-										>
+										<Card shadow="md" radius="md" className={classes.card} padding="lg">
 											<Grid>
 												<Grid.Col span={12}>
-													<Text
-														fz="md"
-														fw={500}
-														className={classes.cardTitle}
-													>
+													<Text fz="md" fw={500} className={classes.cardTitle}>
 														{t("AccountingandFinancial")}
 													</Text>
 												</Grid.Col>
@@ -143,9 +134,7 @@ function AccountingConfig() {
 															label={t("ResetHead")}
 															component="button"
 															onClick={() => {
-																AccountingDataProcess(
-																	"accounting/account-head-reset"
-																);
+																AccountingDataProcess("accounting/account-head-reset");
 															}}
 														/>
 													</List.Item>

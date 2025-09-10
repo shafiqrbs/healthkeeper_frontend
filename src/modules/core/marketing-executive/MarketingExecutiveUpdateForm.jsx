@@ -154,7 +154,7 @@ function MarketingExecutiveUpdateForm() {
 							children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 							labels: { confirm: "Submit", cancel: "Cancel" },
 							confirmProps: { color: "red" },
-							onCancel: () => console.log("Cancel"),
+							onCancel: () => console.info("Cancel"),
 							onConfirm: () => {
 								setSaveCreateLoading(true);
 								const value = {

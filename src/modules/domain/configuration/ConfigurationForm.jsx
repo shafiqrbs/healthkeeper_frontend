@@ -1110,7 +1110,7 @@ export default function ConfigurationForm() {
 																				cancel: "Cancel",
 																			},
 																			confirmProps: { color: "red.6" },
-																			onCancel: () => console.log("Cancel"),
+																			onCancel: () => console.info("Cancel"),
 																			onConfirm: () => {
 																				dispatch(
 																					showEntityData(

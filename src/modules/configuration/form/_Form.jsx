@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import {Button, Flex, Grid, Box, ScrollArea, Text, Title, Stack, Card, Group,ActionIcon} from "@mantine/core";
+import { Button, Flex, Grid, Box, ScrollArea, Text, Title, Stack, Card, Group, ActionIcon } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {IconCheck, IconDeviceFloppy, IconRefreshDot} from "@tabler/icons-react";
+import { IconCheck, IconDeviceFloppy, IconRefreshDot } from "@tabler/icons-react";
 import Shortcut from "../../shortcut/Shortcut";
 import classes from "@assets/css/FeaturesCards.module.css";
 import __FormGeneric from "./__FormGeneric";
@@ -11,9 +11,9 @@ import _DomainDetailsSection from "../common/_DomainDetailsSection";
 import AccountingForm from "./__AccountingForm.jsx";
 import useDomainConfig from "@hooks/config-data/useDomainConfig";
 import __HospitalForm from "@modules/configuration/form/__HospitalForm";
-import {modals} from "@mantine/modals";
+import { modals } from "@mantine/modals";
 import axios from "axios";
-import {notifications} from "@mantine/notifications";
+import { notifications } from "@mantine/notifications";
 
 const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product"];
 
@@ -24,7 +24,6 @@ export default function _Form({ module }) {
 	const [activeTab, setActiveTab] = useState("Hospital");
 	const { domainConfig } = useDomainConfig();
 
-
 	const id = domainConfig?.id;
 
 	const renderForm = () => {
@@ -34,7 +33,7 @@ export default function _Form({ module }) {
 			case "Accounting":
 				return <AccountingForm height={height} module={module} />;
 			default:
-				return <__FormGeneric height={height} module={module}  id={id} />;
+				return <__FormGeneric height={height} module={module} id={id} />;
 		}
 	};
 
@@ -59,7 +58,7 @@ export default function _Form({ module }) {
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: "Confirm", cancel: "Cancel" },
 			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: async () => {
 				const response = await axios.get(`${import.meta.env.VITE_API_GATEWAY_URL}${url}`, {
 					headers: {
@@ -82,7 +81,6 @@ export default function _Form({ module }) {
 			},
 		});
 	}
-
 
 	return (
 		<Grid columns={24} gutter={{ base: 8 }}>
@@ -146,17 +144,28 @@ export default function _Form({ module }) {
 															size="xs"
 															className={"btnPrimaryBg"}
 															leftSection={<IconDeviceFloppy size={16} />}
-															onClick={handleSubmit}>
+															onClick={handleSubmit}
+														>
 															<Flex direction={`column`} gap={0}>
 																<Text fz={14} fw={400}>
 																	{t("UpdateAndSave")}
 																</Text>
 															</Flex>
 														</Button>
-														<ActionIcon onClick={() => {
-															AccountingDataProcess(`/domain/config/hospital-reset/${id}`);
-														}} variant="filled" color="var(--theme-primary-color-3)" aria-label="Settings">
-															<IconRefreshDot style={{ width: '70%', height: '70%' }} stroke={1.5} />
+														<ActionIcon
+															onClick={() => {
+																AccountingDataProcess(
+																	`/domain/config/hospital-reset/${id}`
+																);
+															}}
+															variant="filled"
+															color="var(--theme-primary-color-3)"
+															aria-label="Settings"
+														>
+															<IconRefreshDot
+																style={{ width: "70%", height: "70%" }}
+																stroke={1.5}
+															/>
 														</ActionIcon>
 													</Group>
 												</>
@@ -166,9 +175,7 @@ export default function _Form({ module }) {
 								</Grid.Col>
 							</Grid>
 						</Box>
-						<Box className="borderRadiusAll">
-							{renderForm()}
-						</Box>
+						<Box className="borderRadiusAll">{renderForm()}</Box>
 					</Box>
 				</Box>
 			</Grid.Col>

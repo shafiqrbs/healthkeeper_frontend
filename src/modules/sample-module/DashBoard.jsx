@@ -131,12 +131,12 @@ function DashBoard() {
 					title: "Please confirm your action",
 					children: (
 						<Text size="sm">
-							This action is so important that you are required to confirm it with a
-							modal. Please click one of these buttons to proceed.
+							This action is so important that you are required to confirm it with a modal. Please click
+							one of these buttons to proceed.
 						</Text>
 					),
 					labels: { confirm: "Confirm", cancel: "Cancel" },
-					onCancel: () => console.log("Cancel"),
+					onCancel: () => console.info("Cancel"),
 					onConfirm: () => {
 						setSaveCreateLoading(true);
 
@@ -182,28 +182,15 @@ function DashBoard() {
 				</Tabs.List>
 
 				<Tabs.Panel value="ThreeGrid">
-					<ThreeGrid
-						isFormSubmit={isFormSubmit}
-						setFormSubmit={setFormSubmit}
-						f
-						form={form}
-					/>
+					<ThreeGrid isFormSubmit={isFormSubmit} setFormSubmit={setFormSubmit} f form={form} />
 				</Tabs.Panel>
 
 				<Tabs.Panel value="TwoGrid">
-					<TwoGrid
-						isFormSubmit={isFormSubmit}
-						setFormSubmit={setFormSubmit}
-						form={form}
-					/>
+					<TwoGrid isFormSubmit={isFormSubmit} setFormSubmit={setFormSubmit} form={form} />
 				</Tabs.Panel>
 
 				<Tabs.Panel value="FullForm">
-					<FullForm
-						isFormSubmit={isFormSubmit}
-						setFormSubmit={setFormSubmit}
-						form={form}
-					/>
+					<FullForm isFormSubmit={isFormSubmit} setFormSubmit={setFormSubmit} form={form} />
 				</Tabs.Panel>
 
 				<Tabs.Panel value="FullTable">

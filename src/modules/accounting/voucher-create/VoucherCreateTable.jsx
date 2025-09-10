@@ -54,13 +54,7 @@ function VoucherCreateTable(props) {
 	const [voucherCrateViewDrawer, setVoucherCreateViewDrawer] = useState(false);
 	return (
 		<>
-			<Box
-				pl={`xs`}
-				pr={8}
-				pt={"6"}
-				pb={"4"}
-				className={"boxBackground borderRadiusAll border-bottom-none"}
-			>
+			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
 				<KeywordSearch module={"customer"} />
 			</Box>
 			<Box className={"borderRadiusAll border-top-none"}>
@@ -128,11 +122,7 @@ function VoucherCreateTable(props) {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical
-													height={"18"}
-													width={"18"}
-													stroke={1.5}
-												/>
+												<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
@@ -140,15 +130,9 @@ function VoucherCreateTable(props) {
 												// href={`/inventory/sales/edit/${data.id}`}
 												onClick={() => {
 													dispatch(setInsertType("update"));
-													dispatch(
-														editEntityData(
-															`accounting/voucher-create/${data.id}`
-														)
-													);
+													dispatch(editEntityData(`accounting/voucher-create/${data.id}`));
 													dispatch(setFormLoading(true));
-													navigate(
-														`accounting/voucher-create/${data.id}`
-													);
+													navigate(`accounting/voucher-create/${data.id}`);
 												}}
 											>
 												{t("Edit")}
@@ -156,13 +140,9 @@ function VoucherCreateTable(props) {
 
 											<Menu.Item
 												onClick={() => {
-													console.log("ok");
+													console.info("ok");
 													setVoucherCreateViewDrawer(true);
-													dispatch(
-														showEntityData(
-															`accounting/voucher-create/${data.id}`
-														)
-													);
+													dispatch(showEntityData(`accounting/voucher-create/${data.id}`));
 													// dispatch(showEntityData('core/customer/' + data.id))
 												}}
 												target="_blank"
@@ -181,39 +161,26 @@ function VoucherCreateTable(props) {
 												c={"red.6"}
 												onClick={() => {
 													modals.openConfirmModal({
-														title: (
-															<Text size="md">
-																{" "}
-																{t("FormConfirmationTitle")}
-															</Text>
-														),
+														title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 														children: (
-															<Text size="sm">
-																{" "}
-																{t("FormConfirmationMessage")}
-															</Text>
+															<Text size="sm"> {t("FormConfirmationMessage")}</Text>
 														),
 														labels: {
 															confirm: "Confirm",
 															cancel: "Cancel",
 														},
-														onCancel: () => console.log("Cancel"),
+														onCancel: () => console.info("Cancel"),
 														confirmProps: { color: "red.6" },
 														onConfirm: () => {
 															dispatch(
-																deleteEntityData(
-																	"accounting/voucher-create/" +
-																		data.id
-																)
+																deleteEntityData("accounting/voucher-create/" + data.id)
 															);
 															dispatch(setFetching(true));
 														},
 													});
 												}}
 												rightSection={
-													<IconTrashX
-														style={{ width: rem(14), height: rem(14) }}
-													/>
+													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
 												}
 											>
 												{t("Delete")}

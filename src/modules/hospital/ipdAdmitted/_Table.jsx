@@ -37,7 +37,6 @@ export default function _Table() {
 		sortByKey: "created_at",
 		direction: "desc",
 	});
-	console.log(selectedPatientId);
 
 	return (
 		<Box>

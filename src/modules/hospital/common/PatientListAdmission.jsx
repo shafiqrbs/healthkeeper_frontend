@@ -5,7 +5,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useEffect, useState } from "react";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES } from "@/constants";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
@@ -20,18 +20,11 @@ export default function PatientListAdmission() {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
 	const handleAdmissionOverview = (id) => {
-		setSelectedPatientId(id)
+		setSelectedPatientId(id);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.VIEW}/${id}`);
 	};
 
-	const {
-		scrollRef,
-		records,
-		fetching,
-		sortStatus,
-		setSortStatus,
-		handleScrollToBottom,
-	} = useInfiniteTableScroll({
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
@@ -44,7 +37,6 @@ export default function PatientListAdmission() {
 		sortByKey: "created_at",
 		direction: "desc",
 	});
-	console.log(selectedPatientId)
 
 	return (
 		<Box>
@@ -61,7 +53,7 @@ export default function PatientListAdmission() {
 					<Grid
 						columns={12}
 						key={item.id}
-						onClick={()=>handleAdmissionOverview(item.id)}
+						onClick={() => handleAdmissionOverview(item.id)}
 						my="xs"
 						bg={
 							Number(selectedPatientId) === item?.id
@@ -78,7 +70,8 @@ export default function PatientListAdmission() {
 								<Text
 									fz="sm"
 									onClick={() => handleView(item?.id)}
-									className="activate-link text-nowrap">
+									className="activate-link text-nowrap"
+								>
 									{formatDate(item?.created_at)}
 								</Text>
 							</Flex>
@@ -111,7 +104,6 @@ export default function PatientListAdmission() {
 									>
 										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
 									</ActionIcon>
-
 								</Button.Group>
 							</Flex>
 						</Grid.Col>

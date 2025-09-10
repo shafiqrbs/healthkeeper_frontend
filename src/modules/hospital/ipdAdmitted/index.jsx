@@ -18,48 +18,16 @@ import Billing from "./common/tabs/Billing";
 import FinalBill from "./common/tabs/FinalBill";
 import Discharge from "./common/tabs/Discharge";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useForm } from "@mantine/form";
-import { updateEntityData } from "@/app/store/core/crudThunk";
 import { useDispatch } from "react-redux";
-import { successNotification } from "@components/notification/successNotification";
-import { errorNotification } from "@components/notification/errorNotification";
 
 export default function Index() {
-	const form = useForm({
-		dynamicFormData: {
-			investigation: [],
-		},
-	});
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-	const dispatch = useDispatch();
 	const { data: ipdData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
 	});
-
-	const handleSubmit = async () => {
-		try {
-			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
-				data: {
-					investigation: form.values.dynamicFormData?.investigation,
-					mode: "investigation",
-				},
-				module: "admission",
-			};
-			const resultAction = await dispatch(updateEntityData(value));
-			if (resultAction.payload.success) {
-				console.log(resultAction.payload.data);
-				successNotification(resultAction.payload.message);
-			} else {
-				errorNotification(resultAction.payload.message);
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	};
 
 	return (
 		<>
@@ -109,7 +77,7 @@ export default function Index() {
 											},
 											{
 												tab: "Investigation",
-												component: <Investigation form={form} handleSubmit={handleSubmit} />,
+												component: <Investigation />,
 											},
 											{
 												tab: "Medicine",

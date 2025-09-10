@@ -1,11 +1,17 @@
 import TabSubHeading from "@modules/hospital/common/TabSubHeading";
 import { ActionIcon, Autocomplete, Badge, Box, Button, Flex, Grid, Group, Stack, Text } from "@mantine/core";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { IconCaretUpDownFilled, IconEye, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import useParticularsData from "@/common/hooks/useParticularsData";
 import inputCss from "@assets/css/InputField.module.css";
 import TabsActionButtons from "@/modules/hospital/common/TabsActionButtons";
+import { useForm } from "@mantine/form";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { useDispatch } from "react-redux";
+import { updateEntityData } from "@/app/store/core/crudThunk";
+import { successNotification } from "@/common/components/notification/successNotification";
+import { errorNotification } from "@/common/components/notification/errorNotification";
 
 const complainDetails = [
 	{
@@ -30,7 +36,13 @@ const complainDetails = [
 	},
 ];
 
-export default function Investigation({ form, handleSubmit }) {
+export default function Investigation() {
+	const dispatch = useDispatch();
+	const { id } = useParams();
+	const form = useForm({
+		investigation: [],
+	});
+
 	const { mainAreaHeight } = useOutletContext();
 	const { particularsData } = useParticularsData({ modeName: "Admission" });
 
@@ -44,7 +56,7 @@ export default function Investigation({ form, handleSubmit }) {
 
 		if (sectionParticulars) {
 			// Add to dynamicFormData with the correct structure
-			const currentDynamicFormData = form.values.dynamicFormData || {};
+			const currentDynamicFormData = form.values.investigation || {};
 			const existingList = Array.isArray(currentDynamicFormData["investigation"])
 				? currentDynamicFormData["investigation"]
 				: [];
@@ -68,7 +80,7 @@ export default function Investigation({ form, handleSubmit }) {
 					investigation: updatedList,
 				};
 
-				form.setFieldValue("dynamicFormData", newDynamicFormData);
+				form.setFieldValue("investigation", newDynamicFormData);
 				return;
 			}
 		}
@@ -76,7 +88,7 @@ export default function Investigation({ form, handleSubmit }) {
 
 	const handleAutocompleteOptionRemove = (idx, sectionSlug) => {
 		const safeSectionSlug = sectionSlug || "investigation";
-		const currentDynamicFormData = form.values.dynamicFormData || {};
+		const currentDynamicFormData = form.values.investigation || {};
 		const list = Array.isArray(currentDynamicFormData[safeSectionSlug])
 			? currentDynamicFormData[safeSectionSlug]
 			: [];
@@ -85,7 +97,29 @@ export default function Investigation({ form, handleSubmit }) {
 			...currentDynamicFormData,
 			[safeSectionSlug]: updatedList,
 		};
-		form.setFieldValue("dynamicFormData", newDynamicFormData);
+		form.setFieldValue("investigation", newDynamicFormData);
+	};
+
+	const handleSubmit = async () => {
+		try {
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
+				data: {
+					investigation: form.values?.investigation,
+					mode: "investigation",
+				},
+				module: "admission",
+			};
+			const resultAction = await dispatch(updateEntityData(value));
+			if (resultAction.payload.success) {
+				console.log(resultAction.payload.data);
+				successNotification(resultAction.payload.message);
+			} else {
+				errorNotification(resultAction.payload.message);
+			}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	return (
@@ -114,7 +148,7 @@ export default function Investigation({ form, handleSubmit }) {
 								rightSection={<IconCaretUpDownFilled size={16} />}
 							/>
 							<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
-								{form.values.dynamicFormData?.investigation?.map((item, idx) => (
+								{form.values.investigation?.map((item, idx) => (
 									<Flex
 										key={idx}
 										align="center"
@@ -123,7 +157,7 @@ export default function Investigation({ form, handleSubmit }) {
 										py="xs"
 										style={{
 											borderBottom:
-												idx !== form.values.dynamicFormData?.investigation?.length - 1
+												idx !== form.values.investigation?.length - 1
 													? "1px solid var(--theme-tertiary-color-4)"
 													: "none",
 										}}

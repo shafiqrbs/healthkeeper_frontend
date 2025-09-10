@@ -12,7 +12,7 @@ import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
@@ -20,14 +20,12 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 
-
-	const { data: getEmployeeGroups} = useGlobalDropdownData({
+	const { data: getEmployeeGroups } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.SETTING_TYPE.PATH,
 		params: { "dropdown-type": CORE_DROPDOWNS.SETTING_TYPE.TYPE },
 		utility: CORE_DROPDOWNS.SETTING_TYPE.UTILITY,
 	});
 
-	console.log(data)
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
@@ -65,7 +63,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 								<Stack>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("SettingType")} <RequiredAsterisk /></Text>
+											<Text fz="sm">
+												{t("SettingType")} <RequiredAsterisk />
+											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm

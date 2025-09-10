@@ -18,7 +18,7 @@ import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { sortBy } from "lodash";
-import {getIndexEntityData, showEntityData, storeEntityData} from "@/app/store/core/crudThunk";
+import { getIndexEntityData, showEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { setItemData, setRefetchData } from "@/app/store/core/crudSlice";
 import { formatDate } from "@utils/index";
 import CompactDrawer from "@/common/components/drawers/CompactDrawer";
@@ -27,8 +27,8 @@ import { successNotification } from "@components/notification/successNotificatio
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import {modals} from "@mantine/modals";
-import {showNotificationComponent} from "@components/core-component/showNotificationComponent";
+import { modals } from "@mantine/modals";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 
 const PER_PAGE = 20;
 const tabs = ["all", "closed", "done", "inProgress", "returned"];
@@ -71,20 +71,12 @@ export default function Table({ module }) {
 	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
-
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
 
-	const {
-		scrollRef,
-		records,
-		fetching,
-		sortStatus,
-		setSortStatus,
-		handleScrollToBottom,
-	} = useInfiniteTableScroll({
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
@@ -111,7 +103,7 @@ export default function Table({ module }) {
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: "Confirm", cancel: "Cancel" },
 			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handleProcessConfirmation(id),
 		});
 	};
@@ -136,7 +128,6 @@ export default function Table({ module }) {
 	const handlePrescription = async (prescription_id) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 	};
-
 
 	const handleSendToAdmission = (id) => {
 		setSelectedId(id);
@@ -259,14 +250,10 @@ export default function Table({ module }) {
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
-									{(
-										(
-											["New", "In-progress"].includes(values?.process) &&
-											values?.process !== "Closed"
-										) &&
-										!values?.referred_mode
-									) && (
-										values?.prescription_id ? (
+									{["New", "In-progress"].includes(values?.process) &&
+										values?.process !== "Closed" &&
+										!values?.referred_mode &&
+										(values?.prescription_id ? (
 											<Button
 												miw={124}
 												variant="filled"
@@ -293,10 +280,9 @@ export default function Table({ module }) {
 											>
 												{t("Prescription")}
 											</Button>
-										)
-									)}
+										))}
 
-									{ values.process === "New" && !values.referred_mode && (
+									{values.process === "New" && !values.referred_mode && (
 										<Button
 											variant="filled"
 											bg="var(--theme-success-color)"
@@ -362,7 +348,7 @@ export default function Table({ module }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height-118}
+					height={height - 118}
 					onScrollToBottom={handleScrollToBottom}
 					scrollViewportRef={scrollRef}
 					sortStatus={sortStatus}

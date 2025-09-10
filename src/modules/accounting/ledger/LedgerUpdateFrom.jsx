@@ -147,7 +147,7 @@ function LedgerUpdateFrom(props) {
 						children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 						labels: { confirm: "Submit", cancel: "Cancel" },
 						confirmProps: { color: "red" },
-						onCancel: () => console.log("Cancel"),
+						onCancel: () => console.info("Cancel"),
 						onConfirm: () => {
 							setSaveCreateLoading(true);
 							const value = {
@@ -203,9 +203,7 @@ function LedgerUpdateFrom(props) {
 															className={"btnPrimaryBg"}
 															type="submit"
 															id="EntityFormSubmit"
-															leftSection={
-																<IconDeviceFloppy size={16} />
-															}
+															leftSection={<IconDeviceFloppy size={16} />}
 														>
 															<Flex direction={`column`} gap={0}>
 																<Text fz={14} fw={400}>
@@ -222,12 +220,7 @@ function LedgerUpdateFrom(props) {
 								<Box pl={`xs`} pr={"xs"} className={"borderRadiusAll"}>
 									<Grid columns={24}>
 										<Grid.Col span={"auto"}>
-											<ScrollArea
-												h={height}
-												scrollbarSize={2}
-												scrollbars="y"
-												type="never"
-											>
+											<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
 												<Box>
 													<Box mt={"8"}>
 														<SelectForm
@@ -246,9 +239,7 @@ function LedgerUpdateFrom(props) {
 																motherData
 																	? String(motherData)
 																	: entityEditData.mother_account_id
-																	? String(
-																			entityEditData.mother_account_id
-																	  )
+																	? String(entityEditData.mother_account_id)
 																	: null
 															}
 															changeValue={setMotherData}
@@ -256,9 +247,7 @@ function LedgerUpdateFrom(props) {
 													</Box>
 													<Box mt={"xs"}>
 														<InputForm
-															tooltip={t(
-																"SubGroupNameValidateMessage"
-															)}
+															tooltip={t("SubGroupNameValidateMessage")}
 															label={t("Name")}
 															placeholder={t("Name")}
 															required={true}
@@ -271,9 +260,7 @@ function LedgerUpdateFrom(props) {
 													</Box>
 													<Box mt={"xs"}>
 														<InputForm
-															tooltip={t(
-																"AccountCodeValidateMessage"
-															)}
+															tooltip={t("AccountCodeValidateMessage")}
 															label={t("AccountCode")}
 															placeholder={t("AccountCode")}
 															required={true}

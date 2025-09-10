@@ -1,16 +1,15 @@
 import { Grid, Box, Drawer, Text, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconArrowLeft } from "@tabler/icons-react";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
-export default function __ViewDrawer({ viewDrawer, setViewDrawer,module }) {
+export default function __ViewDrawer({ viewDrawer, setViewDrawer, module }) {
 	const { t } = useTranslation();
 	const height = 500; //TabList height 104
 	const entityObject = useSelector((state) => state.crud[module].editData);
 	const closeDrawer = () => {
 		setViewDrawer(false);
 	};
-	console.log(entityObject)
 
 	return (
 		<Drawer.Root opened={viewDrawer} position="right" onClose={closeDrawer} offset={16}>
@@ -35,7 +34,9 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer,module }) {
 									{t("Name")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>{entityObject && entityObject.name && entityObject.name}</Grid.Col>
+								<Grid.Col span={"auto"}>
+									{entityObject && entityObject.name && entityObject.name}
+								</Grid.Col>
 							</Grid>
 							<Grid columns={24}>
 								<Grid.Col span={"8"} className="drawer-form-input-label">
@@ -51,7 +52,9 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer,module }) {
 									{t("Mobile")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>{entityObject && entityObject.mobile && entityObject.mobile}</Grid.Col>
+								<Grid.Col span={"auto"}>
+									{entityObject && entityObject.mobile && entityObject.mobile}
+								</Grid.Col>
 							</Grid>
 
 							<Grid columns={24}>
@@ -59,7 +62,9 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer,module }) {
 									{t("Email")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
-								<Grid.Col span={"auto"}>{entityObject && entityObject.email && entityObject.email}</Grid.Col>
+								<Grid.Col span={"auto"}>
+									{entityObject && entityObject.email && entityObject.email}
+								</Grid.Col>
 							</Grid>
 						</Box>
 					</Box>

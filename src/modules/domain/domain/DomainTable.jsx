@@ -195,7 +195,7 @@ function DomainTable({ module }) {
 																<Text size="sm"> {t("FormConfirmationMessage")}</Text>
 															),
 															labels: { confirm: "Confirm", cancel: "Cancel" },
-															onCancel: () => console.log("Cancel"),
+															onCancel: () => console.info("Cancel"),
 															onConfirm: () => {
 																handleConfirmDomainReset(data.id);
 															},
@@ -224,7 +224,7 @@ function DomainTable({ module }) {
 																<Text size="sm"> {t("FormConfirmationMessage")}</Text>
 															),
 															labels: { confirm: "Confirm", cancel: "Cancel" },
-															onCancel: () => console.log("Cancel"),
+															onCancel: () => console.info("Cancel"),
 															onConfirm: () => {
 																handleConfirmDomainDelete(data.id);
 															},

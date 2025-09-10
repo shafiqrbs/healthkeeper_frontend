@@ -25,7 +25,7 @@ import KeywordSearch from "../common/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
-import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, getIndexEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setItemData, setRefetchData } from "@/app/store/core/crudSlice";
@@ -104,14 +104,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setControlsRefs(controlsRefs);
 	};
 
-	const {
-		scrollRef,
-		records,
-		fetching,
-		sortStatus,
-		setSortStatus,
-		handleScrollToBottom,
-	} = useInfiniteTableScroll({
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
@@ -207,7 +200,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: "Confirm", cancel: "Cancel" },
 			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handleProcessConfirmation(id),
 		});
 	};
@@ -280,7 +273,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			<Box px="sm" mb="sm">
 				<KeywordSearch module={module} form={form} />
 			</Box>
-			<Box className="border-top-none"  px="sm">
+			<Box className="border-top-none" px="sm">
 				<DataTable
 					striped
 					pinFirstColumn
@@ -316,14 +309,14 @@ export default function Table({ module, height, closeTable, availableClose = fal
 								</Text>
 							),
 						},
-						{ accessor: "visiting_room",sortable: true, title: t("RoomNo") },
-						{ accessor: "invoice",sortable: true, title: t("InvoiceID") },
-						{ accessor: "patient_id",sortable: true, title: t("PatientID") },
+						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
+						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
+						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
 						{ accessor: "health_id", title: t("HealthID") },
-						{ accessor: "name", sortable: true,title: t("Name") },
+						{ accessor: "name", sortable: true, title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
-						{ accessor: "gender",sortable: true, title: t("Gender") },
-						{ accessor: "patient_payment_mode_name",sortable: true, title: t("Patient") },
+						{ accessor: "gender", sortable: true, title: t("Gender") },
+						{ accessor: "patient_payment_mode_name", sortable: true, title: t("Patient") },
 						{ accessor: "total", title: t("Total") },
 						{
 							accessor: "created_by",
@@ -458,15 +451,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
-						sorted: (
-							<IconChevronUp
-								color="var(--theme-tertiary-color-7)"
-								size={14}
-							/>
-						),
-						unsorted: (
-							<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
-						),
+						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 					}}
 				/>
 			</Box>

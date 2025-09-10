@@ -112,7 +112,7 @@ function _SettingsForm(props) {
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
 			onCancel: () => {
-				console.log("Cancel");
+				console.info("Cancel");
 			},
 			onConfirm: () => handleConfirmSubmit(values), // Separate function for "onConfirm"
 		});

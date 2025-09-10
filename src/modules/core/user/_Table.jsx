@@ -99,7 +99,7 @@ export default function _Table({ module }) {
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: "Confirm", cancel: "Cancel" },
 			confirmProps: { color: "red.6" },
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: async () => {
 				const resultAction = await dispatch(
 					deleteEntityData({

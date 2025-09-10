@@ -213,7 +213,7 @@ function ConfigurationForm() {
 							children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 							labels: { confirm: t("Submit"), cancel: t("Cancel") },
 							confirmProps: { color: "red" },
-							onCancel: () => console.log("Cancel"),
+							onCancel: () => console.info("Cancel"),
 							onConfirm: () => {
 								const value = {
 									url: "core/customer",

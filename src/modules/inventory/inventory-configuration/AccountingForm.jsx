@@ -141,7 +141,7 @@ export default function AccountingForm({ height, module }) {
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handleAccountingConfirmSubmit(values),
 		});
 	};
@@ -180,7 +180,7 @@ export default function AccountingForm({ height, module }) {
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: "Confirm", cancel: "Cancel" },
 			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: async () => {
 				const response = await axios.get(`${import.meta.env.VITE_API_GATEWAY_URL}${url}`, {
 					headers: {

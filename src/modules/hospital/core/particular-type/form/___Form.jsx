@@ -24,9 +24,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.UTILITY,
 	});
 
-	console.log(particularTypeDropdown);
-
-
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
@@ -34,7 +31,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				particular_type: data.particular_type,
 				name: data.name,
 				short_name: data.short_name,
-
 			});
 			setIndexData(data.id);
 

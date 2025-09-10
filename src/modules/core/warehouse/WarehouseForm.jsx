@@ -77,7 +77,7 @@ function WarehouseForm({ adjustment }) {
 				children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
 				labels: { confirm: t("Submit"), cancel: t("Cancel") },
 				confirmProps: { color: "red" },
-				onCancel: () => console.log("Cancel"),
+				onCancel: () => console.info("Cancel"),
 				onConfirm: async () => {
 					const requestData = { url: "core/warehouse", data: form.values };
 					const resultAction = await dispatch(storeEntityData(requestData));
@@ -85,11 +85,7 @@ function WarehouseForm({ adjustment }) {
 					// Handle API errors
 					if (storeEntityData.rejected.match(resultAction)) {
 						const fieldErrors = resultAction.payload?.errors || {};
-						form.setErrors(
-							Object.fromEntries(
-								Object.entries(fieldErrors).map(([k, v]) => [k, v[0]])
-							)
-						);
+						form.setErrors(Object.fromEntries(Object.entries(fieldErrors).map(([k, v]) => [k, v[0]])));
 					} else {
 						notifications.show({
 							color: "teal",
@@ -154,12 +150,7 @@ function WarehouseForm({ adjustment }) {
 									</Grid>
 								</Box>
 								<Box pl={`xs`} pr={"xs"} className={"borderRadiusAll"}>
-									<ScrollArea
-										h={height}
-										scrollbarSize={2}
-										scrollbars="y"
-										type="never"
-									>
+									<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
 										<Box mt={"xs"}>
 											<InputForm
 												tooltip={t("EnterName")}

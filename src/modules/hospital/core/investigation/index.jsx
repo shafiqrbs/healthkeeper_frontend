@@ -1,4 +1,4 @@
-import {Box, Grid, Group, Progress} from "@mantine/core";
+import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
@@ -9,10 +9,10 @@ import { getInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
 import IndexForm from "./form/__IndexForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import {useOutletContext, useParams} from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import _Table from "./_Table";
 import _ReportFormatTable from "./_ReportFormatTable";
-import {MODULES_CORE} from "@/constants";
+import { MODULES_CORE } from "@/constants";
 
 const module = MODULES_CORE.INVESTIGATION;
 
@@ -24,6 +24,7 @@ export default function Index({ mode = "create" }) {
 	const matches = useMediaQuery("(max-width: 64em)");
 	const [opened, { open, close }] = useDisclosure(false);
 	const { mainAreaHeight } = useOutletContext();
+
 	return (
 		<>
 			{progress !== 100 ? (
@@ -45,30 +46,30 @@ export default function Index({ mode = "create" }) {
 						currencySymbol=""
 					/>
 					<Box p="8">
-					<Grid columns={36} gutter={{ base: 8 }}>
-						{!matches && (
-							<Grid.Col span={6}>
-								<Navigation menu="base" subMenu={'baseSubmenu'} mainAreaHeight={mainAreaHeight} />
+						<Grid columns={36} gutter={{ base: 8 }}>
+							{!matches && (
+								<Grid.Col span={6}>
+									<Navigation menu="base" subMenu={"baseSubmenu"} mainAreaHeight={mainAreaHeight} />
+								</Grid.Col>
+							)}
+							<Grid.Col span={matches ? 30 : 30}>
+								<Box bg="white" p="xs" className="borderRadiusAll">
+									{reportFormat === "report-format" ? (
+										<_ReportFormatTable module={module} open={open} close={close} />
+									) : (
+										<_Table module={module} open={open} close={close} />
+									)}
+								</Box>
 							</Grid.Col>
-						)}
-						<Grid.Col span={matches ? 30 : 30}>
-							<Box bg="white" p="xs" className="borderRadiusAll">
-								{reportFormat === "report-format" ? (
-									<_ReportFormatTable module={module} open={open} close={close} />
-								) : (
-									<_Table module={module} open={open} close={close} />
-								)}
-							</Box>
-						</Grid.Col>
-					</Grid>
+						</Grid>
 						<GlobalDrawer
 							opened={opened}
 							close={close}
-							title={mode === "create" ? t("CreateInvestigation") : t("UpdateInvestigation")}>
+							title={mode === "create" ? t("CreateInvestigation") : t("UpdateInvestigation")}
+						>
 							<IndexForm module={module} form={form} mode={mode} close={close} />
 						</GlobalDrawer>
 					</Box>
-
 				</>
 			)}
 		</>

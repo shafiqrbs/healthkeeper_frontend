@@ -1,67 +1,41 @@
-import { useEffect,useState } from "react";
-import {
-	Group,
-	Box,
-	ActionIcon,
-	Text,
-	Flex,
-	Button,
-	Grid,
-	Stack,
-	Select,
-	TextInput, rem
-} from "@mantine/core";
+import { useEffect, useState, useCallback } from "react";
+import { Group, Box, ActionIcon, Text, Flex, Button, Grid, Stack, Select, TextInput, rem } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconTrashX,
-	IconDeviceFloppy, IconAlertCircle,
-} from "@tabler/icons-react";
+import { IconTrashX, IconDeviceFloppy, IconAlertCircle } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
-import { useOs } from "@mantine/hooks";
-import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import {
-	deleteEntityData,
-	editEntityData, storeEntityData, updateEntityData,
-} from "@/app/store/core/crudThunk";
-import {
-	setRefetchData,
-} from "@/app/store/core/crudSlice.js";
-import {
-	ERROR_NOTIFICATION_COLOR,
-} from "@/constants/index.js";
+import { deleteEntityData, editEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import { setRefetchData } from "@/app/store/core/crudSlice.js";
+import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import InputForm from "@components/form-builders/InputForm";
-import {useForm} from "@mantine/form";
-import {getInitialReportValues} from "@modules/hospital/core/investigation/helpers/request";
-import {successNotification} from "@components/notification/successNotification";
-import {errorNotification} from "@components/notification/errorNotification";
+import { useForm } from "@mantine/form";
+import { getInitialReportValues } from "@modules/hospital/core/investigation/helpers/request";
+import { successNotification } from "@components/notification/successNotification";
+import { errorNotification } from "@components/notification/errorNotification";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import {SUCCESS_NOTIFICATION_COLOR} from "@/constants/index";
-import {deleteNotification} from "@components/notification/deleteNotification";
-import {setInsertType} from "@/app/store/core/crudSlice";
+import { SUCCESS_NOTIFICATION_COLOR } from "@/constants/index";
+import { deleteNotification } from "@components/notification/deleteNotification";
+import { setInsertType } from "@/app/store/core/crudSlice";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 
-export default function _ReportFormatTable({ module, open }) {
+export default function _ReportFormatTable({ module }) {
 	const { t } = useTranslation();
-	const os = useOs();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const height = mainAreaHeight - 48;
-	const entityObject = useSelector((state) => state.crud[module].editData);
 	const [records, setRecords] = useState([]);
-	const [fetching, setFetching] = useState(false);
+	const [fetching] = useState(false);
 	const [submitFormData, setSubmitFormData] = useState({});
-	const [isLoading, setIsLoading] = useState(false);
 
-
-	const {data:entity} = useDataWithoutStore({url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.VIEW}/${id}`})
+	const { data: entity } = useDataWithoutStore({ url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.VIEW}/${id}` });
 	const entityData = entity?.data?.investigation_report_format;
 
 	const parents =
@@ -72,11 +46,9 @@ export default function _ReportFormatTable({ module, open }) {
 			}))
 			.filter((p) => p.value && p.label) || []; // filter out empty entries
 
-
 	const form = useForm(getInitialReportValues(t));
 
-	const handleDeleteSuccess = async (report,id) => {
-
+	const handleDeleteSuccess = async (report, id) => {
 		const res = await dispatch(
 			deleteEntityData({
 				url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION_REPORT_FORMAT.DELETE}/${id}`,
@@ -111,12 +83,10 @@ export default function _ReportFormatTable({ module, open }) {
 	};
 
 	async function handleConfirmModal(values) {
-
 		try {
-			setIsLoading(true);
 			const value = {
 				url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION_REPORT_FORMAT.CREATE}`,
-				data: {...values,particular_id:id},
+				data: { ...values, particular_id: id },
 				module,
 			};
 
@@ -134,12 +104,10 @@ export default function _ReportFormatTable({ module, open }) {
 				form.reset();
 				close(); // close the drawer
 				dispatch(setRefetchData({ module, refetching: true }));
-				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
-			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
-		} finally {
-			setIsLoading(false);
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
 
@@ -160,7 +128,7 @@ export default function _ReportFormatTable({ module, open }) {
 	}, [entityData]);
 
 	const handleDataTypeChange = (rowId, field, value) => {
-		setSubmitFormData(prev => ({
+		setSubmitFormData((prev) => ({
 			...prev,
 			[rowId]: {
 				...prev[rowId],
@@ -193,7 +161,7 @@ export default function _ReportFormatTable({ module, open }) {
 					form.setErrors(errorObject);
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
-				successNotification(t("UpdateSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
 			errorNotification(error.message);
@@ -267,7 +235,9 @@ export default function _ReportFormatTable({ module, open }) {
 										<TextInput
 											placeholder={t("SampleValue")}
 											value={submitFormData[item.id]?.sample_value || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "sample_value", val.target.value)}
+											onChange={(val) =>
+												handleDataTypeChange(item.id, "sample_value", val.target.value)
+											}
 											onBlur={() => handleRowSubmit(item.id)}
 										/>
 									),
@@ -279,7 +249,9 @@ export default function _ReportFormatTable({ module, open }) {
 										<TextInput
 											placeholder={t("ReferenceValue")}
 											value={submitFormData[item.id]?.reference_value || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "reference_value", val.target.value)}
+											onChange={(val) =>
+												handleDataTypeChange(item.id, "reference_value", val.target.value)
+											}
 											onBlur={() => handleRowSubmit(item.id)}
 										/>
 									),
@@ -298,7 +270,7 @@ export default function _ReportFormatTable({ module, open }) {
 											</ActionIcon>
 											<ActionIcon
 												color="var(--theme-delete-color)"
-												onClick={() => handleDeleteSuccess(id,item.id)}
+												onClick={() => handleDeleteSuccess(id, item.id)}
 											>
 												<IconTrashX height={18} width={18} stroke={1.5} />
 											</ActionIcon>
@@ -314,7 +286,7 @@ export default function _ReportFormatTable({ module, open }) {
 					</Grid.Col>
 					<Grid.Col span={8}>
 						<form onSubmit={form.onSubmit(handleSubmit)}>
-							<Box pt={'4'} ml={'4'} pb={'4'} pr={'12'} bg="var(--theme-primary-color-1)" >
+							<Box pt={"4"} ml={"4"} pb={"4"} pr={"12"} bg="var(--theme-primary-color-1)">
 								<Stack right align="flex-end">
 									<Button
 										size="xs"

@@ -12,7 +12,7 @@ import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
@@ -49,7 +49,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.TYPE },
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.UTILITY,
 	});
-	console.log(data)
+
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
@@ -92,7 +92,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 								<Stack>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("PatientType")} <RequiredAsterisk /></Text>
+											<Text fz="sm">
+												{t("PatientType")} <RequiredAsterisk />
+											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -110,7 +112,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("PatientMode")} <RequiredAsterisk /></Text>
+											<Text fz="sm">
+												{t("PatientMode")} <RequiredAsterisk />
+											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -128,7 +132,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("GenderMode")} <RequiredAsterisk /></Text>
+											<Text fz="sm">
+												{t("GenderMode")} <RequiredAsterisk />
+											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -198,9 +204,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("Price")}
-											</Text>
+											<Text fz="sm">{t("Price")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputNumberForm
@@ -214,7 +218,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<input type={"hidden"} value={'bed'} />
+									<input type={"hidden"} value={"bed"} />
 								</Stack>
 							</ScrollArea>
 							<DrawerStickyFooter type={type} />

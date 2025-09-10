@@ -1,16 +1,5 @@
 import React, { useState } from "react";
-import {
-	Drawer,
-	Button,
-	Box,
-	Flex,
-	Text,
-	ScrollArea,
-	ActionIcon,
-	Group,
-	rem,
-	Center,
-} from "@mantine/core";
+import { Drawer, Button, Box, Flex, Text, ScrollArea, ActionIcon, Group, rem, Center } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { updateEntityDataWithFile } from "../../../store/core/crudSlice.js";
 import { useDispatch } from "react-redux";
@@ -96,13 +85,7 @@ function FileUploadModel(props) {
 								{t("CreateFile") + " " + props.filyType}
 							</Text>
 						</Box>
-						<ActionIcon
-							mr={"sm"}
-							radius="xl"
-							color="red.6"
-							size="md"
-							onClick={closeModel}
-						>
+						<ActionIcon mr={"sm"} radius="xl" color="red.6" size="md" onClick={closeModel}>
 							<IconX style={{ width: "100%", height: "100%" }} stroke={1.5} />
 						</ActionIcon>
 					</Group>
@@ -119,9 +102,7 @@ function FileUploadModel(props) {
 									p={0}
 								>
 									<Center h={100}>
-										<Text>
-											{excelFile ? excelFile.path : t("SelectCsvFile")}
-										</Text>
+										<Text>{excelFile ? excelFile.path : t("SelectCsvFile")}</Text>
 									</Center>
 								</Dropzone>
 							</Box>
@@ -148,31 +129,20 @@ function FileUploadModel(props) {
 												loading: true,
 												color: "red",
 												title: t("SelectCsvFile"),
-												message:
-													"Data will be loaded in 3 seconds, you cannot close this yet",
+												message: "Data will be loaded in 3 seconds, you cannot close this yet",
 												autoClose: 1000,
 												withCloseButton: true,
 											});
 										} else {
 											modals.openConfirmModal({
-												title: (
-													<Text size="md">
-														{" "}
-														{t("FormConfirmationTitle")}
-													</Text>
-												),
-												children: (
-													<Text size="sm">
-														{" "}
-														{t("FormConfirmationMessage")}
-													</Text>
-												),
+												title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+												children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 												labels: {
 													confirm: t("Submit"),
 													cancel: t("Cancel"),
 												},
 												confirmProps: { color: "red" },
-												onCancel: () => console.log("Cancel"),
+												onCancel: () => console.info("Cancel"),
 												onConfirm: () => {
 													const value = {
 														url: "core/file-upload/store",
@@ -182,9 +152,7 @@ function FileUploadModel(props) {
 														},
 													};
 													// console.log(value)
-													const dispatchUpdateEntityDataWithFile = async (
-														value
-													) => {
+													const dispatchUpdateEntityDataWithFile = async (value) => {
 														const dispatchResult = await dispatch(
 															updateEntityDataWithFile(value)
 														);
@@ -193,9 +161,7 @@ function FileUploadModel(props) {
 
 													dispatchUpdateEntityDataWithFile(value)
 														.then((response) => {
-															if (
-																response.payload.data.status == 200
-															) {
+															if (response.payload.data.status == 200) {
 																notifications.show({
 																	color: "teal",
 																	title: t("CreateSuccessfully"),
@@ -210,14 +176,11 @@ function FileUploadModel(props) {
 																	loading: false,
 																	autoClose: 700,
 																	style: {
-																		backgroundColor:
-																			"lightgray",
+																		backgroundColor: "lightgray",
 																	},
 																});
 
-																processUploadFile(
-																	response.payload.data.data.id
-																);
+																processUploadFile(response.payload.data.data.id);
 															}
 														})
 														.catch((error) => {

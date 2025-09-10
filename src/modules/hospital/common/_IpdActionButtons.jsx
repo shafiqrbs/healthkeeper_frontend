@@ -1,6 +1,6 @@
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import {ActionIcon, Box, Button, Flex, Grid, Stack, Text} from "@mantine/core";
-import {IconArrowNarrowRight, IconCalendarWeek, IconRestore, IconUser} from "@tabler/icons-react";
+import { ActionIcon, Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
+import { IconArrowNarrowRight, IconCalendarWeek, IconRestore, IconUser } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 import { useHotkeys } from "@mantine/hooks";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-import {formatDate} from "@utils/index";
+import { formatDate } from "@utils/index";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -23,7 +23,6 @@ export default function IpdActionButtons({
 	children,
 }) {
 	const { hospitalConfigData } = useHospitalConfigData();
-	console.log(entities)
 	const { t } = useTranslation();
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
@@ -64,17 +63,11 @@ export default function IpdActionButtons({
 
 	return (
 		<>
-			<Stack gap={0} justify="space-between" mt="xs" >
+			<Stack gap={0} justify="space-between" mt="xs">
 				<Box p="sm" pl={"md"} pr={"md"} bg="white">
 					<Grid columns={24}>
 						<Grid.Col span={12} bg="var(--theme-tertiary-color-0)" px="xs">
-							<Grid
-								columns={24}
-								my="xs"
-								bg={"var(--theme-primary-color-1)"}
-								px="xs"
-								gutter="xs"
-							>
+							<Grid columns={24} my="xs" bg={"var(--theme-primary-color-1)"} px="xs" gutter="xs">
 								<Grid.Col span={12}>
 									<Text fz="sm">PARTICULAR</Text>
 								</Grid.Col>
@@ -90,14 +83,8 @@ export default function IpdActionButtons({
 									</Flex>
 								</Grid.Col>
 							</Grid>
-							{entities?.map((entity)=>(
-								<Grid
-									columns={24}
-									my="0"
-									bg={"var(--theme-tertiary-color-0)"}
-									px="xs"
-									gutter="xs"
-								>
+							{entities?.map((entity) => (
+								<Grid columns={24} my="0" bg={"var(--theme-tertiary-color-0)"} px="xs" gutter="xs">
 									<Grid.Col span={12}>
 										<Text fz="sm">{entity?.item_name}</Text>
 									</Grid.Col>
@@ -114,7 +101,6 @@ export default function IpdActionButtons({
 									</Grid.Col>
 								</Grid>
 							))}
-
 						</Grid.Col>
 						<Grid.Col span={6} bg="var(--theme-secondary-color-0)" px="xs" pt={"md"}>
 							<Box>
@@ -191,7 +177,7 @@ export default function IpdActionButtons({
 							</Stack>
 						</Grid.Col>
 					</Grid>
-					<Box mt={'md'}>
+					<Box mt={"md"}>
 						<Button.Group>
 							<Button
 								w="100%"
@@ -262,7 +248,6 @@ export default function IpdActionButtons({
 					</Box>
 				</Box>
 			</Stack>
-
 
 			{/* ===================== prescription templates here ====================== */}
 			{children}

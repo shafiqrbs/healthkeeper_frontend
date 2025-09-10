@@ -21,8 +21,6 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 		return value || defaultValue;
 	};
 
-	console.log(patientExamination?.ho_past_illness);
-
 	return (
 		<Box display="none">
 			<Box ref={ref} p="md" w="210mm" h="100vh" className="watermark" ff="Arial, sans-serif" lh={1.5} fz={12}>
@@ -89,8 +87,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								</Text>
 								<Text size="sm">
 									{" "}
-									{invoiceDetails?.year}Y, {invoiceDetails?.month || 0}M,{" "}
-									{invoiceDetails?.day || 0}D
+									{invoiceDetails?.year}Y, {invoiceDetails?.month || 0}M, {invoiceDetails?.day || 0}D
 								</Text>
 							</Group>
 						</Grid.Col>

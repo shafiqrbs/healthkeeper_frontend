@@ -1,16 +1,9 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button} from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem, Flex, Button } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconTrashX,
-	IconAlertCircle,
-	IconEdit,
-	IconEye,
-	IconChevronUp,
-	IconSelector,
-} from "@tabler/icons-react";
+import { IconTrashX, IconAlertCircle, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
@@ -20,19 +13,11 @@ import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import {
-	deleteEntityData,
-	editEntityData,
-} from "@/app/store/core/crudThunk";
-import {
-	setInsertType,
-	setRefetchData,
-} from "@/app/store/core/crudSlice.js";
-import {
-	ERROR_NOTIFICATION_COLOR,
-} from "@/constants/index.js";
+import { deleteEntityData, editEntityData } from "@/app/store/core/crudThunk";
+import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
+import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import {useState} from "react";
+import { useState } from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 
 const PER_PAGE = 50;
@@ -43,22 +28,13 @@ export default function _Table({ module, open }) {
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const { id } = useParams();
 	const height = mainAreaHeight - 78;
-	console.log(module)
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
 
 	// for infinity table data scroll, call the hook
-	const {
-		scrollRef,
-		records,
-		fetching,
-		sortStatus,
-		setSortStatus,
-		handleScrollToBottom,
-	} = useInfiniteTableScroll({
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.SETTING.INDEX,
 		filterParams: {
@@ -167,10 +143,7 @@ export default function _Table({ module, open }) {
 							title: t("Name"),
 							sortable: true,
 							render: (values) => (
-								<Text
-									className="activate-link"
-									fz="sm"
-									onClick={() => handleDataShow(values.id)}>
+								<Text className="activate-link" fz="sm" onClick={() => handleDataShow(values.id)}>
 									{values.name}
 								</Text>
 							),
@@ -180,11 +153,7 @@ export default function _Table({ module, open }) {
 							title: t("SettingType"),
 							sortable: true,
 							render: (values) => (
-								<Text
-									className="activate-link"
-									fz="sm"
-									onClick={() => handleDataShow(values.id)}
-								>
+								<Text className="activate-link" fz="sm" onClick={() => handleDataShow(values.id)}>
 									{values.setting_name}
 								</Text>
 							),
@@ -194,8 +163,8 @@ export default function _Table({ module, open }) {
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",
-							render: (values) => (
-									values.is_private ? null : (
+							render: (values) =>
+								values.is_private ? null : (
 									<Group gap={4} justify="right" wrap="nowrap">
 										<Button.Group>
 											<Button
@@ -237,9 +206,7 @@ export default function _Table({ module, open }) {
 											</ActionIcon>
 										</Button.Group>
 									</Group>
-									)
-
-							),
+								),
 						},
 					]}
 					textSelectionDisabled
@@ -252,15 +219,8 @@ export default function _Table({ module, open }) {
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
-						sorted: (
-							<IconChevronUp
-								color="var(--theme-tertiary-color-7)"
-								size={14}
-							/>
-						),
-						unsorted: (
-							<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
-						),
+						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 					}}
 				/>
 			</Box>
@@ -270,4 +230,3 @@ export default function _Table({ module, open }) {
 		</>
 	);
 }
-

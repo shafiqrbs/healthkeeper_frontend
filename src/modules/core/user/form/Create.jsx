@@ -88,7 +88,7 @@ export default function Create({ module }) {
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
-			onCancel: () => console.log("Cancel"),
+			onCancel: () => console.info("Cancel"),
 			onConfirm: async () => {
                 const options = { year: "numeric", month: "2-digit", day: "2-digit" };
                 const formValue = {

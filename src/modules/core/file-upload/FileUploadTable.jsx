@@ -246,7 +246,7 @@ function FileUploadTable() {
 														),
 														labels: { confirm: "Confirm", cancel: "Cancel" },
 														confirmProps: { color: "red.6" },
-														onCancel: () => console.log("Cancel"),
+														onCancel: () => console.info("Cancel"),
 														onConfirm: () => {
 															uploadFileDeleteHandle(data.id);
 														},
