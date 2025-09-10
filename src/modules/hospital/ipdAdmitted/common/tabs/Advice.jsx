@@ -45,12 +45,16 @@ export default function Advice() {
 
 	const handleSubmit = async () => {
 		try {
+			const formValue = {
+				json_content: [{ id: null, name: "Advice", value: form.values?.advice }],
+				module: "advice",
+			};
+
+			console.log(formValue);
+
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
-				data: {
-					json_content: form.values?.advice,
-					module: "advice",
-				},
+				data: formValue,
 				module: "admission",
 			};
 			const resultAction = await dispatch(updateEntityData(value));

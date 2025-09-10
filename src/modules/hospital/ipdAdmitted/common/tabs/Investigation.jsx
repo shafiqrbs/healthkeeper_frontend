@@ -40,7 +40,9 @@ export default function Investigation() {
 	const dispatch = useDispatch();
 	const { id } = useParams();
 	const form = useForm({
-		investigation: [],
+		initialValues: {
+			investigation: [],
+		},
 	});
 
 	const { mainAreaHeight } = useOutletContext();
@@ -55,61 +57,51 @@ export default function Investigation() {
 		const sectionParticulars = allParticulars.find((p) => p.name === value);
 
 		if (sectionParticulars) {
-			// Add to dynamicFormData with the correct structure
-			const currentDynamicFormData = form.values.investigation || {};
-			const existingList = Array.isArray(currentDynamicFormData["investigation"])
-				? currentDynamicFormData["investigation"]
-				: [];
+			// =============== get current investigation list or initialize empty array ================
+			const currentList = Array.isArray(form.values.investigation) ? form.values.investigation : [];
 
-			// Check if this value already exists
-			const existingIndex = existingList.findIndex(
+			// =============== check if this value already exists ================
+			const existingIndex = currentList.findIndex(
 				(item) => item.id === sectionParticulars.id && item.name === sectionParticulars.name
 			);
 
 			if (existingIndex === -1) {
-				// Add new item
+				// =============== add new item to the list ================
 				const newItem = {
 					id: sectionParticulars.id,
 					name: sectionParticulars.name,
 					value: sectionParticulars.name,
 				};
 
-				const updatedList = [...existingList, newItem];
-				const newDynamicFormData = {
-					...(currentDynamicFormData || {}),
-					investigation: updatedList,
-				};
-
-				form.setFieldValue("investigation", newDynamicFormData);
+				const updatedList = [...currentList, newItem];
+				form.setFieldValue("investigation", updatedList);
 				return;
 			}
 		}
 	};
 
-	const handleAutocompleteOptionRemove = (idx, sectionSlug) => {
-		const safeSectionSlug = sectionSlug || "investigation";
-		const currentDynamicFormData = form.values.investigation || {};
-		const list = Array.isArray(currentDynamicFormData[safeSectionSlug])
-			? currentDynamicFormData[safeSectionSlug]
-			: [];
-		const updatedList = list.filter((_, index) => index !== idx);
-		const newDynamicFormData = {
-			...currentDynamicFormData,
-			[safeSectionSlug]: updatedList,
-		};
-		form.setFieldValue("investigation", newDynamicFormData);
+	const handleAutocompleteOptionRemove = (idx) => {
+		// =============== get current investigation list and remove item at index ================
+		const currentList = Array.isArray(form.values.investigation) ? form.values.investigation : [];
+		const updatedList = currentList.filter((_, index) => index !== idx);
+		form.setFieldValue("investigation", updatedList);
 	};
 
 	const handleSubmit = async () => {
 		try {
+			const formValue = {
+				json_content: form.values?.investigation,
+				module: "investigation",
+			};
+
+			console.log(formValue);
+
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
-				data: {
-					investigation: form.values?.investigation,
-					mode: "investigation",
-				},
+				data: formValue,
 				module: "admission",
 			};
+
 			const resultAction = await dispatch(updateEntityData(value));
 			if (resultAction.payload.success) {
 				console.log(resultAction.payload.data);
@@ -148,7 +140,7 @@ export default function Investigation() {
 								rightSection={<IconCaretUpDownFilled size={16} />}
 							/>
 							<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
-								{form.values.investigation?.map((item, idx) => (
+								{form.values?.investigation?.map((item, idx) => (
 									<Flex
 										key={idx}
 										align="center"
@@ -157,7 +149,7 @@ export default function Investigation() {
 										py="xs"
 										style={{
 											borderBottom:
-												idx !== form.values.investigation?.length - 1
+												idx !== form.values?.investigation?.length - 1
 													? "1px solid var(--theme-tertiary-color-4)"
 													: "none",
 										}}
@@ -169,7 +161,7 @@ export default function Investigation() {
 											color="red"
 											size="xs"
 											variant="subtle"
-											onClick={() => handleAutocompleteOptionRemove(idx, "investigation")}
+											onClick={() => handleAutocompleteOptionRemove(idx)}
 										>
 											<IconX size={16} />
 										</ActionIcon>

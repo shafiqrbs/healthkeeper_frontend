@@ -247,12 +247,16 @@ export default function Medicine() {
 
 	const handleSubmit = async () => {
 		try {
+			const formValue = {
+				json_content: medicines,
+				module: "medicine",
+			};
+
+			console.log(formValue);
+
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
-				data: {
-					json_content: medicines,
-					module: "medicine",
-				},
+				data: formValue,
 				module: "admission",
 			};
 			const resultAction = await dispatch(updateEntityData(value));
