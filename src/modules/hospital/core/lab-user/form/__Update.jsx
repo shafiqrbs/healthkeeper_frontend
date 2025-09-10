@@ -65,7 +65,7 @@ export default function __Update({ module, form, close }) {
 					dispatch(setInsertType({ insertType: "create", module }));
 					setIsLoading(false);
 					close(); // close the drawer
-					navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.INDEX, { replace: true });
+					navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX, { replace: true });
 					setIndexData(null);
 				}, 700);
 			}

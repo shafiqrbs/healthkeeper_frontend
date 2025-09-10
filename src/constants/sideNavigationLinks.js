@@ -241,7 +241,7 @@ export const sideNavigationLinks = {
 
 		{
 			label: t("ManageLabUser"),
-			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.STAFF.INDEX,
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
 		},

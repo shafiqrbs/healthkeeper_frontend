@@ -43,11 +43,11 @@ export const MASTER_DATA_ROUTES = {
 		},
 
 		LAB_USER: {
-			INDEX: "hospital/core/lab-user",
-			CREATE: "hospital/core/lab-user/create",
-			UPDATE: "hospital/core/lab-user/update",
-			VIEW: "hospital/core/lab-user/view",
-			DELETE: "/hospital/core/lab-user/delete",
+			INDEX: "hospital/core/particular",
+			CREATE: "hospital/core/particular",
+			UPDATE: "hospital/core/particular/update",
+			VIEW: "hospital/core/particular",
+			DELETE: "hospital/core/particular",
 		},
 
 		PARTICULAR: {
@@ -141,11 +141,11 @@ export const MASTER_DATA_ROUTES = {
 		},
 
 		LAB_USER: {
-			INDEX: "/hospital/core/lab-user",
-			CREATE: "/hospital/core/lab-user/create",
-			UPDATE: "/hospital/core/lab-user",
-			VIEW: "/hospital/core/lab-user/view",
-			DELETE: "/hospital/core/lab-user/delete",
+			INDEX: "/hospital/core/lab",
+			CREATE: "/hospital/core/lab/create",
+			UPDATE: "/hospital/core/labr",
+			VIEW: "/hospital/core/lab=/view",
+			DELETE: "/hospital/core/lab/delete",
 		},
 
 		INVESTIGATION: {

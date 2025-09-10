@@ -44,6 +44,7 @@ import TextAreaForm from "@components/form-builders/TextAreaForm";
 import {SUCCESS_NOTIFICATION_COLOR} from "@/constants/index";
 import {deleteNotification} from "@components/notification/deleteNotification";
 import {setInsertType} from "@/app/store/core/crudSlice";
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
 
 export default function _ReportFormatTable({ module, open }) {
 	const { t } = useTranslation();
@@ -59,30 +60,18 @@ export default function _ReportFormatTable({ module, open }) {
 	const [submitFormData, setSubmitFormData] = useState({});
 	const [isLoading, setIsLoading] = useState(false);
 
-	const refetching = useSelector((state)=>state.crud[module]?.refetching)
-	useEffect(() => {
-		fetchData()
-	}, [refetching]);
 
-	const fetchData = async () => {
-		const value = {
-			url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.VIEW}/${id}`,
-			module,
-		};
-		try {
-			const result = await dispatch(editEntityData(value)).unwrap();
-			setRecords(result?.data || []);
-		} catch (err) {
-			console.error("Unexpected error:", err);
-		}
-	};
-	const entityData = records?.data?.investigation_report_format;
+	const {data:entity} = useDataWithoutStore({url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.VIEW}/${id}`})
+	const entityData = entity?.data?.investigation_report_format;
 
+	const parents =
+		entityData
+			?.map((p) => ({
+				value: p?.id?.toString() || "", // keep everything string, handle null/undefined
+				label: p?.name || "", // handle null/undefined name
+			}))
+			.filter((p) => p.value && p.label) || []; // filter out empty entries
 
-	const parents = entityData?.map(p => ({
-		value: p.id?.toString(),   // keep everything string
-		label: p.name
-	})) || [];
 
 	const form = useForm(getInitialReportValues(t));
 

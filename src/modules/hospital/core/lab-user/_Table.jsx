@@ -65,11 +65,11 @@ export default function _Table({ module, open }) {
         handleScrollToBottom,
     } = useInfiniteTableScroll({
         module,
-        fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.DOCTOR.INDEX,
+        fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
         filterParams: {
             name: filterData?.name,
-            particular_type: 'doctor',
-            user_group: 'doctor',
+            particular_type: 'lab-user',
+            user_group: 'lab-user',
             term: searchKeyword,
         },
         perPage: PER_PAGE,
@@ -82,11 +82,11 @@ export default function _Table({ module, open }) {
         dispatch(setInsertType({ insertType: "update", module }));
         dispatch(
             editEntityData({
-                url: `${MASTER_DATA_ROUTES.API_ROUTES.DOCTOR.VIEW}/${id}`,
+                url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
                 module,
             })
         );
-        navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.INDEX}/${id}`);
+        navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX}/${id}`);
     };
 
     const { data: getParticularPaymentModes } = useGlobalDropdownData({
@@ -117,7 +117,7 @@ export default function _Table({ module, open }) {
     const handleDeleteSuccess = async (id) => {
         const res = await dispatch(
             deleteEntityData({
-                url: `${MASTER_DATA_ROUTES.API_ROUTES.DOCTOR.DELETE}/${id}`,
+                url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.DELETE}/${id}`,
                 module,
                 id,
             })
@@ -126,7 +126,7 @@ export default function _Table({ module, open }) {
         if (deleteEntityData.fulfilled.match(res)) {
             dispatch(setRefetchData({ module, refetching: true }));
             deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-            navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR);
+            navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER);
             dispatch(setInsertType({ insertType: "create", module }));
         } else {
             notifications.show({
@@ -140,7 +140,7 @@ export default function _Table({ module, open }) {
     const handleDataShow = (id) => {
         dispatch(
             editEntityData({
-                url: `${MASTER_DATA_ROUTES.API_ROUTES.DOCTOR.VIEW}/${id}`,
+                url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
                 module,
             })
         );
@@ -150,7 +150,7 @@ export default function _Table({ module, open }) {
     const handleCreateForm = () => {
         open();
         dispatch(setInsertType({ insertType: "create", module }));
-        navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.INDEX);
+        navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.LAB_USER.INDEX);
     };
 
     const form = useForm({

@@ -28,6 +28,7 @@ export const MODULES_CORE = {
 	CABIN: "cabin",
 	DOCTOR: "doctor",
 	NURSE: "nurse",
+	LAB_USER: "lab_user",
 	STAFF: "staff",
 	PARTICULAR: "particular",
 	CATEGORY: "category",
