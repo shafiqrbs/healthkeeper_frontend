@@ -5,6 +5,7 @@ export const CORE_DROPDOWNS = {
 	SETTING_TYPE: { UTILITY: "settingType", TYPE: "setting-type", PATH: "core/select/setting-type" },
 	EMPLOYEE: { UTILITY: "employee", TYPE: "employee", PATH: "core/select/user" },
 	EMPLOYEE_GROUP: { UTILITY: "employeeGroup", TYPE: "employee-group", PATH: "core/select/setting" },
+	RELIGION: { UTILITY: "religion", TYPE: "religion", PATH: "core/select/setting" },
 	DESIGNATION: { UTILITY: "designation", TYPE: "designation", PATH: "core/select/setting" },
 	DEPARTMENT: { UTILITY: "department", TYPE: "department", PATH: "core/select/setting" },
 	CUSTOMER_GROUP: { UTILITY: "customerGroup", TYPE: "customer-group", PATH: "utility/select/setting" },
@@ -27,6 +28,7 @@ export const ACCOUNTING_DROPDOWNS = {
 };
 
 export const HOSPITAL_DROPDOWNS = {
+
 	BY_MEAL: { UTILITY: "byMeal", PATH: "hospital/select/bymeal" },
 	DOSAGE: { UTILITY: "dosage", PATH: "hospital/select/dosage" },
 	PARTICULAR_TYPE: { UTILITY: "particularType", PATH: "hospital/select/particular-type" },

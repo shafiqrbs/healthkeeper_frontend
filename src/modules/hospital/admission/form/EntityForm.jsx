@@ -19,8 +19,9 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import { useDispatch } from "react-redux";
-import {formatDate} from "@utils/index";
-
+import {calculateAge, calculateDetailedAge, formatDate} from "@utils/index";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
 const DISEASE_PROFILE = ["Diabetic", "Hypertension", "Asthma", "Allergy", "Other"];
 
@@ -37,6 +38,18 @@ export default function EntityForm({ form, module }) {
 	const height = mainAreaHeight - 260;
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [openedHSIDDataPreview, { open: openHSIDDataPreview, close: closeHSIDDataPreview }] = useDisclosure(false);
+
+	const { data: countryDropdown } = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.COUNTRY.PATH,
+		utility: CORE_DROPDOWNS.COUNTRY.UTILITY,
+	});
+
+	const { data: religionDropdown } = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.RELIGION.PATH,
+		utility: CORE_DROPDOWNS.RELIGION.UTILITY,
+		params: { "dropdown-type": CORE_DROPDOWNS.RELIGION.TYPE },
+	});
+
 
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
@@ -91,9 +104,49 @@ export default function EntityForm({ form, module }) {
 	const entities = entity?.data?.invoice_particular
 
 	useEffect(() => {
+		let dobValue = null;
+
+		if (item?.dob) {
+			// If API sends "YYYY-MM-DD"
+			if (/^\d{4}-\d{2}-\d{2}$/.test(item.dob)) {
+				dobValue = new Date(item.dob + "T00:00:00"); // force ISO format
+			}
+			// If API sends "DD-MM-YYYY"
+			else if (/^\d{2}-\d{2}-\d{4}$/.test(item.dob)) {
+				const [day, month, year] = item.dob.split("-");
+				dobValue = new Date(`${year}-${month}-${day}T00:00:00`);
+			}
+			// else: try parsing normally
+			else {
+				const parsed = new Date(item.dob);
+				if (!isNaN(parsed)) {
+					dobValue = parsed;
+				}
+			}
+		}
+
 		form.setValues({
 			name: item?.name,
 			mobile: item?.mobile,
+			dob: dobValue,
+			identity: item?.identity,
+			identity_mode: item?.identity_mode,
+			nid: item?.nid,
+			bp: item?.bp,
+			day: item?.day,
+			month: item?.month,
+			year: item?.year,
+			gender: item?.gender,
+			father_name: item?.father_name,
+			mother_name: item?.mother_name,
+			guardian_name: item?.guardian_name,
+			guardian_mobile: item?.guardian_mobile,
+			relation_parent: item?.relation_parent,
+			profession: item?.profession,
+			address: item?.address,
+			permanent_address: item?.permanent_address,
+			religion_id: item?.religion_id,
+			country_id: item?.country_id,
 		});
 	}, [item]);
 
@@ -103,11 +156,17 @@ export default function EntityForm({ form, module }) {
 		setShowUserData(false);
 	};
 
+	const handleDobChange = () => {
+		const type = form.values.ageType || "year";
+		const formattedAge = calculateAge(form.values.dob, type);
+		form.setFieldValue("age", formattedAge);
 
-	const handleTypeChange = (val) => {
-		form.setFieldValue("patient_type", val);
-		if (val === "admission") {
-			form.setFieldValue("guardian_mobile", form.values.mobile);
+		// Calculate detailed age from date of birth
+		if (form.values.dob) {
+			const detailedAge = calculateDetailedAge(form.values.dob);
+			form.setFieldValue("year", detailedAge.years);
+			form.setFieldValue("month", detailedAge.months);
+			form.setFieldValue("day", detailedAge.days);
 		}
 	};
 
@@ -184,7 +243,7 @@ export default function EntityForm({ form, module }) {
 											form={form}
 											label=""
 											tooltip={t("enterPatientName")}
-											placeholder="Mr. Rahim"
+											placeholder={t("enterPatientName")}
 											name="name"
 											id="patientName"
 											nextField="mobile"
@@ -213,7 +272,7 @@ export default function EntityForm({ form, module }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("dateOfBirth")}</Text>
+										<Text fz="sm">{t("DOB")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<DatePickerForm
@@ -365,7 +424,7 @@ export default function EntityForm({ form, module }) {
 
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("status")}</Text>
+										<Text fz="sm">{t("PatientStatus")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<Flex gap="les">
@@ -414,12 +473,12 @@ export default function EntityForm({ form, module }) {
 											<InputNumberForm
 												form={form}
 												label=""
-												placeholder="Y"
+												placeholder="d"
 												tooltip={t("years")}
-												name="ageYear"
-												id="ageYear"
-												nextField="ageMonth"
-												value={form.values.ageYear}
+												name="day"
+												id="day"
+												nextField="month"
+												value={form.values.day}
 												min={0}
 												max={150}
 											/>
@@ -428,10 +487,10 @@ export default function EntityForm({ form, module }) {
 												label=""
 												placeholder="M"
 												tooltip={t("months")}
-												name="ageMonth"
-												id="ageMonth"
-												nextField="ageDay"
-												value={form.values.ageMonth}
+												name="month"
+												id="month"
+												nextField="year"
+												value={form.values.month}
 												min={0}
 												max={11}
 											/>
@@ -440,10 +499,10 @@ export default function EntityForm({ form, module }) {
 												label=""
 												placeholder="D"
 												tooltip={t("days")}
-												name="ageDay"
-												id="ageDay"
-												nextField="district"
-												value={form.values.ageDay}
+												name="year"
+												id="year"
+												nextField="father_name"
+												value={form.values.year}
 												min={0}
 												max={31}
 											/>
@@ -478,12 +537,12 @@ export default function EntityForm({ form, module }) {
 										<InputForm
 											form={form}
 											label=""
-											tooltip={t("enterGuardianName")}
-											placeholder="John Doe"
-											name="guardian_name"
-											id="guardian_name"
-											nextField="guardian_mobile"
-											value={form.values.guardian_name}
+											tooltip={t("EnterFatherName")}
+											placeholder={t("EnterFatherName")}
+											name="father_name"
+											id="father_name"
+											nextField="father_name"
+											value={form.values.father_name}
 											required
 										/>
 									</Grid.Col>
@@ -496,16 +555,19 @@ export default function EntityForm({ form, module }) {
 										<InputForm
 											form={form}
 											label=""
-											tooltip={t("enterGuardianName")}
-											placeholder="+8801711111111"
-											name="guardian_mobile"
-											id="guardian_mobile"
+											tooltip={t("EnterMotherName")}
+											placeholder={t("EnterMotherName")}
+											name="mother_name"
+											id="mother_name"
 											nextField="identity"
-											value={form.values.guardian_mobile}
+											value={form.values.mother_name}
 											required
 										/>
 									</Grid.Col>
 								</Grid>
+
+							</Stack>
+							<Stack className="form-stack-vertical">
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("GuardianName")}</Text>
@@ -514,8 +576,8 @@ export default function EntityForm({ form, module }) {
 										<InputForm
 											form={form}
 											label=""
-											tooltip={t("enterGuardianName")}
-											placeholder="John Doe"
+											tooltip={t("EnterGuardianName")}
+											placeholder={t("EnterGuardianName")}
 											name="guardian_name"
 											id="guardian_name"
 											nextField="guardian_mobile"
@@ -524,45 +586,25 @@ export default function EntityForm({ form, module }) {
 										/>
 									</Grid.Col>
 								</Grid>
-							</Stack>
-							<Stack className="form-stack-vertical">
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("GuardianMobile")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("enterGuardianName")}
+											placeholder="+8801711111111"
+											name="guardian_mobile"
+											id="guardian_mobile"
+											nextField="patient_relation"
+											value={form.values.guardian_mobile}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
 
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("GuardianMobile")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<InputForm
-											form={form}
-											label=""
-											tooltip={t("enterGuardianName")}
-											placeholder="+8801711111111"
-											name="guardian_mobile"
-											id="guardian_mobile"
-											nextField="identity"
-											value={form.values.guardian_mobile}
-											required
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("GuardianMobile")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<InputForm
-											form={form}
-											label=""
-											tooltip={t("enterGuardianName")}
-											placeholder="+8801711111111"
-											name="guardian_mobile"
-											id="guardian_mobile"
-											nextField="identity"
-											value={form.values.guardian_mobile}
-											required
-										/>
-									</Grid.Col>
-								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("RelationWithParent")}</Text>
@@ -571,12 +613,12 @@ export default function EntityForm({ form, module }) {
 										<InputForm
 											form={form}
 											label=""
-											tooltip={t("enterPresentAddress")}
-											placeholder="12 street, 123456"
-											name="presentAddress"
-											id="presentAddress"
-											nextField="permanentAddress"
-											value={form.values.presentAddress}
+											tooltip={t("EnterPatientRelation")}
+											placeholder={t("EnterPatientRelation")}
+											name="patient_relation"
+											id="patient_relation"
+											nextField="profession"
+											value={form.values.patient_relation}
 											required
 										/>
 									</Grid.Col>
@@ -589,12 +631,12 @@ export default function EntityForm({ form, module }) {
 										<InputForm
 											form={form}
 											label=""
-											tooltip={t("enterPresentAddress")}
-											placeholder="12 street, 123456"
-											name="presentAddress"
-											id="presentAddress"
-											nextField="permanentAddress"
-											value={form.values.presentAddress}
+											tooltip={t("EnterProfession")}
+											placeholder={t("EnterProfession")}
+											name="profession"
+											id="profession"
+											nextField="present_address"
+											value={form.values.profession}
 											required
 										/>
 									</Grid.Col>
@@ -607,10 +649,29 @@ export default function EntityForm({ form, module }) {
 										<InputForm
 											form={form}
 											label=""
-											tooltip={t("enterPermanentAddress")}
+											tooltip={t("EnterPresentAddress")}
 											placeholder="12 street, 123456"
-											name="permanentAddress"
-											id="permanentAddress"
+											name="address"
+											id="address"
+											nextField="permanent_address"
+											value={form.values.address}
+											required
+										/>
+									</Grid.Col>
+								</Grid>
+
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("PermanentAddress")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<InputForm
+											form={form}
+											label=""
+											tooltip={t("EnterPermanentAddress")}
+											placeholder="12 street, 123456"
+											name="permanent_address"
+											id="permanent_address"
 											nextField="dateOfBirth"
 											value={form.values.permanentAddress}
 											required
@@ -623,16 +684,15 @@ export default function EntityForm({ form, module }) {
 										<Text fz="sm">{t("Religion")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<InputForm
+										<SelectForm
 											form={form}
-											label=""
-											tooltip={t("enterReligion")}
-											placeholder="Islam"
-											name="religion"
-											id="religion"
-											nextField="bloodGroup"
-											value={form.values.religion}
-											required
+											tooltip={t("SelectReligionValidateMessage")}
+											placeholder={t("SelectReligion")}
+											name="religion_id"
+											id="religion_id"
+											nextField="name"
+											value={form.values.religion_id}
+											dropdownValue={religionDropdown}
 										/>
 									</Grid.Col>
 								</Grid>
@@ -641,16 +701,14 @@ export default function EntityForm({ form, module }) {
 										<Text fz="sm">{t("Nationality")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<InputForm
+										<SelectForm
 											form={form}
-											label=""
-											tooltip={t("enterReligion")}
-											placeholder="Bangladesh"
-											name="religion"
-											id="religion"
-											nextField="bloodGroup"
-											value={form.values.religion}
-											required
+											tooltip={t("NationalityValidateMessage")}
+											placeholder={t("Nationality")}
+											name="country_id"
+											id="country_id"
+											value={form.values.country_id}
+											dropdownValue={countryDropdown}
 										/>
 									</Grid.Col>
 								</Grid>
