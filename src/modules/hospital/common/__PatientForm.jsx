@@ -1,16 +1,22 @@
 import InputForm from "@components/form-builders/InputForm";
-import { ActionIcon, Box, Button, Flex, Grid, LoadingOverlay, Modal, ScrollArea, Stack, Text } from "@mantine/core";
+import {
+	ActionIcon,
+	Box,
+	Button,
+	Flex,
+	Grid,
+	LoadingOverlay,
+	Modal,
+	ScrollArea,
+	Select,
+	Stack,
+	Text,
+	TextInput,
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import {
-	IconArrowRight,
-	IconArrowUpRight,
-	IconInfoCircle,
-	IconSearch,
-	IconAlertCircle,
-	IconBed,
-} from "@tabler/icons-react";
+import { IconArrowRight, IconArrowUpRight, IconInfoCircle, IconSearch, IconAlertCircle } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -32,6 +38,7 @@ import InputMobileNumberForm from "@components/form-builders/InputMobileNumberFo
 import OPDFooter from "./OPDFooter";
 import PrescriptionFooter from "./PrescriptionFooter";
 import OpdRoomModal from "@modules/hospital/common/OpdRoomModal";
+import { useForm } from "@mantine/form";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -75,6 +82,12 @@ const USER_NID_DATA = {
 };
 
 export default function PatientForm({ form, module, type = "opd_ticket", setSelectedRoom }) {
+	const searchForm = useForm({
+		initialValues: {
+			type: "PID",
+			term: "",
+		},
+	});
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
@@ -92,15 +105,49 @@ export default function PatientForm({ form, module, type = "opd_ticket", setSele
 		openOpdRoom();
 	};
 
+	const handlePatientInfoSearch = (values) => {
+		try {
+			const formValue = {
+				...values,
+				term: searchForm.values.term,
+			};
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
-			<form>
-				<Flex align="center" gap="xs" justify="space-between" px="sm" pb="xs">
-					<Text fw={600} fz="sm">
-						{t("PatientInformation")}
-					</Text>
-					<Flex gap="xs">
-						{/* <SegmentedControl
+			<Flex align="center" gap="xs" justify="space-between" px="sm" pb="xs">
+				<Text fw={600} fz="sm">
+					{t("PatientInformation")}
+				</Text>
+				<Flex component="form" onSubmit={searchForm.onSubmit(handlePatientInfoSearch)} gap="les">
+					<Select
+						w={140}
+						onChange={(e) => searchForm.setFieldValue("type", e.target.value)}
+						name="type"
+						placeholder="Select"
+						data={["PID", "PresID", "HID", "NID", "BRID"]}
+						value={searchForm.values.type}
+					/>
+
+					<TextInput
+						w={300}
+						placeholder="Search"
+						type="search"
+						name="term"
+						value={searchForm.values.term}
+						onChange={(e) => searchForm.setFieldValue("term", e.target.value)}
+						rightSection={
+							<ActionIcon type="submit" bg="var(--theme-primary-color-6)">
+								<IconSearch size={16} />
+							</ActionIcon>
+						}
+					/>
+				</Flex>
+				<Flex gap="xs">
+					{/* <SegmentedControl
 							size="xs"
 							color="var(--theme-primary-color-6)"
 							data={["New", "Re-Visit"]}
@@ -109,30 +156,29 @@ export default function PatientForm({ form, module, type = "opd_ticket", setSele
 								control: { width: "60px" },
 							}}
 						/> */}
-						<Button
-							onClick={handleOpenViewOverview}
-							size="xs"
-							radius="es"
-							rightSection={<IconArrowRight size={16} />}
-							bg="var(--theme-success-color)"
-							c="white"
-						>
-							{t("VisitTable")}
-						</Button>
-						<Button
-							onClick={handleOpenOpdRoom}
-							size="xs"
-							radius="es"
-							rightSection={<IconArrowUpRight size={16} />}
-							bg="var(--theme-primary-color-5)"
-							c="white"
-						>
-							{t("OPDRoom")}
-						</Button>
-					</Flex>
+					<Button
+						onClick={handleOpenViewOverview}
+						size="xs"
+						radius="es"
+						rightSection={<IconArrowRight size={16} />}
+						bg="var(--theme-success-color)"
+						c="white"
+					>
+						{t("VisitTable")}
+					</Button>
+					<Button
+						onClick={handleOpenOpdRoom}
+						size="xs"
+						radius="es"
+						rightSection={<IconArrowUpRight size={16} />}
+						bg="var(--theme-primary-color-5)"
+						c="white"
+					>
+						{t("OPDRoom")}
+					</Button>
 				</Flex>
-				<Form form={form} module={module} type={type} />
-			</form>
+			</Flex>
+			<Form form={form} module={module} type={type} />
 			<DoctorsRoomDrawer
 				form={form}
 				opened={openedDoctorsRoom}
@@ -496,6 +542,27 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
 									<Flex align="center" gap="es">
+										<Text fz="sm">{t("Upazilla")}</Text> <RequiredAsterisk />
+									</Flex>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SelectForm
+										form={form}
+										tooltip={t("EnterPatientUpazilla")}
+										placeholder="Dhaka"
+										name="upazilla"
+										id="upazilla"
+										nextField="identity"
+										value={form.values.upazilla}
+										required
+										dropdownValue={DISTRICT_LIST}
+										searchable
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Flex align="center" gap="es">
 										<Text fz="sm">{t("Type")}</Text>
 										<RequiredAsterisk />
 									</Flex>
@@ -600,28 +667,9 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 										placeholder="+880 1717171717"
 										name="guardian_mobile"
 										id="guardian_mobile"
-										nextField="district"
+										nextField="address"
 										value={form.values.guardian_mobile}
 										required
-									/>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("district")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<SelectForm
-										form={form}
-										tooltip={t("EnterPatientDistrict")}
-										placeholder="Dhaka"
-										name="district"
-										id="district"
-										nextField="address"
-										value={form.values.district}
-										required
-										dropdownValue={DISTRICT_LIST}
-										searchable
 									/>
 								</Grid.Col>
 							</Grid>

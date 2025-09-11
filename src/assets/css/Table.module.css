@@ -20,6 +20,10 @@
             background-color: var(--mantine-datatable-striped-color);
         }
     }
+
+    &[data-highlight-on-hover] tbody tr:hover {
+        background: var(--theme-primary-color-1);
+    }
 }
 
 .header {
@@ -66,5 +70,5 @@
 }
 
 .statusBackground {
-    background-color: var(--mantine-color-gray-2)!important;
+    background-color: var(--mantine-color-gray-2) !important;
 }

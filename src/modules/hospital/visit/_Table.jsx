@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
@@ -25,11 +25,10 @@ import KeywordSearch from "../common/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
-import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteEntityData, getIndexEntityData, showEntityData } from "@/app/store/core/crudThunk";
-import { setInsertType, setItemData, setRefetchData } from "@/app/store/core/crudSlice";
-import { sortBy } from "lodash";
+import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
+import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
 import { formatDate } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
@@ -51,12 +50,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
+	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const listData = useSelector((state) => state.crud[module].data);
-	const refetch = useSelector((state) => state.crud[module].refetching);
-	const scrollViewportRef = useRef(null);
 	const prescriptionRef = useRef(null);
-	const [page, setPage] = useState(1);
-	const [hasMore, setHasMore] = useState(true);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const form = useForm({
@@ -118,8 +114,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	});
 
 	const handleView = (id) => {
-		// =============== use the id parameter to pass to the drawer ================
-		open();
+		setSelectedPrescriptionId(id);
+		setTimeout(() => open(), 10);
 	};
 
 	const handleOpenViewOverview = () => {
@@ -276,6 +272,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			<Box className="border-top-none" px="sm">
 				<DataTable
 					striped
+					highlightOnHover
 					pinFirstColumn
 					pinLastColumn
 					stripedColor="var(--theme-tertiary-color-1)"
@@ -287,6 +284,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						pagination: tableCss.pagination,
 					}}
 					records={records}
+					onRowClick={({ record }) => {
+						handleView(record?.prescription_id);
+					}}
 					columns={[
 						{
 							accessor: "index",
@@ -299,15 +299,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							title: t("Created"),
 							textAlignment: "right",
 							sortable: true,
-							render: (item) => (
-								<Text
-									fz="sm"
-									onClick={() => handleView(item?.id)}
-									className="activate-link text-nowrap"
-								>
-									{formatDate(item?.created_at)}
-								</Text>
-							),
+							render: (item) => <Text fz="sm">{formatDate(item?.created_at)}</Text>,
 						},
 						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
 						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
@@ -457,7 +449,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				/>
 			</Box>
 			<DataTableFooter indexData={listData} module="visit" />
-			<DetailsDrawer opened={opened} close={close} />
+			<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 
 			<OPDDocument data={printData} ref={a4Ref} />
