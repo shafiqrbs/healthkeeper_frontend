@@ -1,5 +1,18 @@
 import InputForm from "@components/form-builders/InputForm";
-import { ActionIcon, Box, Button, Flex, Grid, Modal, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
+import {
+	ActionIcon,
+	Box,
+	Button,
+	Flex,
+	Grid,
+	Modal,
+	ScrollArea,
+	SegmentedControl,
+	Select,
+	Stack,
+	Text,
+	TextInput,
+} from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { IconArrowRight, IconInfoCircle, IconSearch } from "@tabler/icons-react";
@@ -17,6 +30,7 @@ import NIDDataPreviewModal from "./NIDDataPreviewModal";
 import { useReactToPrint } from "react-to-print";
 import IPDA4 from "@components/print-formats/ipd/IPDA4";
 import IPDPos from "@components/print-formats/ipd/IPDPos";
+import { useForm } from "@mantine/form";
 
 // =============== sample user data for emergency patient ================
 const USER_EMERGENCY_DATA = {
@@ -70,6 +84,12 @@ export default function EmergencyPatientForm({
 }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
+	const searchForm = useForm({
+		initialValues: {
+			type: "PID",
+			term: "",
+		},
+	});
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
 	const [opened, { open, close }] = useDisclosure(false);
 
@@ -95,44 +115,74 @@ export default function EmergencyPatientForm({
 		open();
 	};
 
+	const handlePatientInfoSearch = (values) => {
+		try {
+			const formValue = {
+				...values,
+				term: searchForm.values.term,
+			};
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
-			<form>
-				<Flex align="center" gap="xs" justify="space-between" px="sm" pb="xs">
-					<Text fw={600} fz="sm">
-						{t("patientInformation")}
-					</Text>
-					<Flex gap="xs">
-						<SegmentedControl
-							size="xs"
-							color="var(--theme-primary-color-6)"
-							data={["New", "Re-Visit"]}
-							styles={{
-								root: { backgroundColor: "var(--theme-tertiary-color-1)" },
-								control: { width: "60px" },
-							}}
+			<Flex
+				component="form"
+				align="center"
+				justify="space-between"
+				onSubmit={searchForm.onSubmit(handlePatientInfoSearch)}
+				gap="les"
+				px="sm"
+				pb="les"
+			>
+				<TextInput
+					w={330}
+					placeholder="Search"
+					type="search"
+					name="term"
+					value={searchForm.values.term}
+					leftSectionWidth={100}
+					onChange={(e) => searchForm.setFieldValue("term", e.target.value)}
+					styles={{ input: { paddingInlineStart: "110px" } }}
+					leftSection={
+						<Select
+							bd="none"
+							onChange={(value) => searchForm.setFieldValue("type", value)}
+							name="type"
+							styles={{ input: { paddingInlineStart: "30px", paddingInlineEnd: "10px" } }}
+							placeholder="Select"
+							data={["PID", "PresID", "HID", "NID", "BRID"]}
+							value={searchForm.values.type}
 						/>
-						<Button
-							onClick={handleOpenViewOverview}
-							size="xs"
-							radius="es"
-							rightSection={<IconArrowRight size={16} />}
-							bg="var(--theme-success-color)"
-							c="white"
-						>
-							{t("VisitTable")}
-						</Button>
-					</Flex>
-				</Flex>
-				<Form
-					form={form}
-					module={module}
-					isSubmitting={isSubmitting}
-					handleSubmit={handleSubmit}
-					showUserData={showUserData}
-					setShowUserData={setShowUserData}
+					}
+					rightSection={
+						<ActionIcon type="submit" bg="var(--theme-primary-color-6)">
+							<IconSearch size={16} />
+						</ActionIcon>
+					}
 				/>
-			</form>
+
+				<Button
+					onClick={handleOpenViewOverview}
+					size="xs"
+					radius="es"
+					rightSection={<IconArrowRight size={16} />}
+					bg="var(--theme-success-color)"
+					c="white"
+				>
+					{t("VisitTable")}
+				</Button>
+			</Flex>
+			<Form
+				form={form}
+				module={module}
+				isSubmitting={isSubmitting}
+				handleSubmit={handleSubmit}
+				showUserData={showUserData}
+				setShowUserData={setShowUserData}
+			/>
 			<DoctorsRoomDrawer form={form} opened={openedDoctorsRoom} close={closeDoctorsRoom} />
 			<Modal opened={opened} onClose={close} size="100%" centered>
 				<Table module={module} height={mainAreaHeight - 220} />
@@ -310,7 +360,7 @@ export function Form({
 					<Grid columns={12} gutter="sm">
 						<Grid.Col span={12}>
 							<ScrollArea h={height - 92}>
-								<Stack mih={height} className="form-stack-vertical">
+								<Stack className="form-stack-vertical">
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("patientName")}</Text>

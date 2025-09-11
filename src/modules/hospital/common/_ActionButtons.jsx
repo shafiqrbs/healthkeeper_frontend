@@ -76,8 +76,8 @@ export default function ActionButtons({
 								style={{ input: { height: "80px" } }}
 							/>
 						</Grid.Col>
-						<Grid.Col span={6} bg="var(--theme-secondary-color-0)" px="xs" pt={"md"}>
-							{/*<Stack>
+						{/* <Grid.Col span={6} bg="var(--theme-secondary-color-0)" px="xs" pt={"md"}> */}
+						{/*<Stack>
 								<SelectForm
 									key={referredNameKey}
 									form={form}
@@ -105,7 +105,7 @@ export default function ActionButtons({
 									rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 								/>
 							</Stack>*/}
-							<Box>
+						{/* <Box>
 								<Flex gap="xss" align="center" justify="space-between">
 									<Text fz="xs">{t("Name")}</Text>
 									<Box px="xs">
@@ -139,8 +139,8 @@ export default function ActionButtons({
 									</Box>
 								</Flex>
 							</Box>
-						</Grid.Col>
-						<Grid.Col span={6} bg="var(--theme-primary-color-0)" px="xs">
+						</Grid.Col> */}
+						<Grid.Col span={12} bg="var(--theme-primary-color-0)" px="xs">
 							<Stack gap="0" className="method-carousel">
 								{hospitalConfigData?.is_multi_payment ? (
 									<PaymentMethodsCarousel
@@ -197,14 +197,14 @@ export default function ActionButtons({
 							</Text>
 						</Stack>
 					</Button>
-					<Button w="100%" bg="var(--theme-hold-btn-color)" disabled={isSubmitting}>
+					{/* <Button w="100%" bg="var(--theme-hold-btn-color)" disabled={isSubmitting}>
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("Hold")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 								(alt + h)
 							</Text>
 						</Stack>
-					</Button>
+					</Button> */}
 					<Button
 						w="100%"
 						onClick={handleA4Print}
