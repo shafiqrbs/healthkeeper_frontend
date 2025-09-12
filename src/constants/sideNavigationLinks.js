@@ -210,7 +210,6 @@ export const sideNavigationLinks = {
 			icon: IconDashboard,
 			color: "#6f1225",
 		},
-
 		{
 			label: t("Billing"),
 			path: "/hospital/doctor",
@@ -222,6 +221,12 @@ export const sideNavigationLinks = {
 		{
 			label: t("Investigation"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX,
+			icon: IconDashboard,
+			color: "#4CAF50",
+		},
+		{
+			label: t("TreatmentTemplates"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.INDEX,
 			icon: IconDashboard,
 			color: "#4CAF50",
 		},

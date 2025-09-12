@@ -125,7 +125,7 @@ export default function Index() {
 									</Button>
 								</Flex>
 							</Grid.Col>
-							<Grid.Col span={8}>
+							<Grid.Col span={7}>
 								<PatientReport
 									tabValue={tabValue}
 									form={form}
@@ -133,7 +133,7 @@ export default function Index() {
 									prescriptionData={prescriptionData}
 								/>
 							</Grid.Col>
-							<Grid.Col span={16}>
+							<Grid.Col span={17}>
 								<AddMedicineForm
 									module={module}
 									form={form}

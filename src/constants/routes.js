@@ -1,5 +1,13 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
+		TREATMENT_TEMPLATES: {
+			INDEX: "hospital/core/particular",
+			CREATE: "hospital/core/particular",
+			UPDATE: "hospital/core/particular",
+			VIEW: "hospital/core/particular",
+			DELETE: "hospital/core/particular",
+			INLINE_UPDATE: "hospital/core/particular",
+		},
 		OPERATIONAL_API: {
 			REFERRED: "hospital/opd/referred",
 		},
@@ -182,6 +190,12 @@ export const MASTER_DATA_ROUTES = {
 			CREATE: "/hospital/core/doctor/create",
 			UPDATE: "/hospital/core/doctor/update",
 			VIEW: "/hospital/core/doctor/view",
+		},
+		TREATMENT_TEMPLATES: {
+			INDEX: "/hospital/core/treatment-templates",
+			CREATE: "/hospital/core/treatment-templates/create",
+			UPDATE: "/hospital/core/treatment-templates/update",
+			VIEW: "/hospital/core/treatment-templates/view",
 		},
 
 		NURSE: {

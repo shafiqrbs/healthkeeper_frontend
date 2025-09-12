@@ -102,6 +102,7 @@ import IpdAdmittedIndex from "@modules/hospital/ipdAdmitted";
 import UserIndex from "@/modules/core/user";
 import SettingIndex from "@/modules/core/setting";
 import TestRoute from "@components/layout/TestRoute";
+import TreatmentTemplatesIndex from "@modules/hospital/core/treatmentTemplates";
 
 function AppRoute() {
 	return (
@@ -200,6 +201,11 @@ function AppRoute() {
 					<Route path="hospital-config/:id" element={<HospitalConfigIndex />} />
 				</Route>
 				<Route path="/hospital/core/">
+					<Route path="treatment-templates" element={<TreatmentTemplatesIndex />} />
+					<Route
+						path="treatment-templates/:reportFormat/:id"
+						element={<TreatmentTemplatesIndex mode={"edit"} />}
+					/>
 					<Route path="investigation" element={<InvestigationIndex />} />
 					<Route path="investigation/:reportFormat/:id" element={<InvestigationIndex />} />
 					<Route path="investigation/:id" element={<InvestigationIndex mode={"edit"} />} />

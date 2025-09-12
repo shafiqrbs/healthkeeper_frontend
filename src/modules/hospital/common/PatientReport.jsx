@@ -12,6 +12,7 @@ import {
 	Grid,
 	Flex,
 	ActionIcon,
+	Switch,
 } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
@@ -209,6 +210,42 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 					</Stack>
 				);
 
+			case "InputWithCheckbox":
+				return (
+					<Stack gap="xxs">
+						{particulars?.map((particular, index) => {
+							const value = form.values.dynamicFormData?.[section.slug]?.find(
+								(item) => item.id === particular.id && item.name === particular.name
+							)?.value;
+							return (
+								<Grid key={`${id}-${index}`}>
+									<Grid.Col span={4}>{particular.name}</Grid.Col>
+									<Grid.Col span={8}>
+										<Flex align="center" gap="les" justify="space-between">
+											<TextInput
+												label=""
+												classNames={inputCss}
+												placeholder={`Enter ${particular.name}`}
+												value={value || ""}
+												onChange={(event) =>
+													handleDynamicFormChange({
+														id: particular.id,
+														name: particular.name,
+														value: event.currentTarget.value,
+														parentSlug: section.slug,
+													})
+												}
+												onBlur={handleFieldBlur}
+											/>
+											<Switch size="lg" radius="sm" onLabel="Month" offLabel="Day" />
+										</Flex>
+									</Grid.Col>
+								</Grid>
+							);
+						})}
+					</Stack>
+				);
+
 			case "Textarea":
 				return (
 					<Stack gap="md">
@@ -381,15 +418,15 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 				<Box>
 					<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
 					<ScrollArea h={height}>
-						<Stack gap="xl" p="md">
+						<Stack gap="sm" my="les">
 							{currentSection.map((section) => (
 								<Box key={section.id}>
-									<Box bg="var(--theme-secondary-color-1)" mb="md" p="xxxs">
+									<Box bg="var(--theme-secondary-color-1)" p="xxxs">
 										<Text fw={600} size="lg">
 											{section.name}
 										</Text>
 									</Box>
-									{renderDynamicForm(section)}
+									<Box p="xs">{renderDynamicForm(section)}</Box>
 								</Box>
 							))}
 						</Stack>
@@ -403,20 +440,18 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 			<Box>
 				<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
 				<ScrollArea h={height}>
-					<Box p="md">
-						<Text fw={600} size="lg" mb="md">
-							{currentSection?.name}
-						</Text>
-						{renderDynamicForm(currentSection)}
+					<Box mt="les">
+						<Box bg="var(--theme-secondary-color-1)" p="xxxs">
+							<Text fw={600} size="lg">
+								{currentSection?.name}
+							</Text>
+						</Box>
+						<Box p="xs">{renderDynamicForm(currentSection)}</Box>
 					</Box>
 				</ScrollArea>
 			</Box>
 		);
 	};
 
-	return (
-		<Box bg="white" p="les">
-			{generateTabItems()}
-		</Box>
-	);
+	return <Box bg="white">{generateTabItems()}</Box>;
 }

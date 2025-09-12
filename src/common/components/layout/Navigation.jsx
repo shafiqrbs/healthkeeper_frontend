@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { sideNavigationLinks } from "@/constants/sideNavigationLinks";
 import classes from "@assets/css/FeaturesCards.module.css";
-const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product"];
+
 export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight }) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
