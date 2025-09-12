@@ -16,7 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconArrowUpRight, IconInfoCircle, IconSearch, IconAlertCircle, IconChevronRight } from "@tabler/icons-react";
+import { IconInfoCircle, IconSearch, IconAlertCircle, IconChevronRight } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -129,16 +129,16 @@ export default function PatientForm({
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
 			<Flex align="center" gap="xs" justify="space-between" px="sm" pb="xs">
-				<Flex component="form" onSubmit={searchForm.onSubmit(handlePatientInfoSearch)} gap="les">
+				<Box component="form" onSubmit={searchForm.onSubmit(handlePatientInfoSearch)} w="100%">
 					<TextInput
-						w={330}
+						w="100%"
 						placeholder="Search"
 						type="search"
 						name="term"
 						value={searchForm.values.term}
 						leftSectionWidth={100}
 						onChange={(e) => searchForm.setFieldValue("term", e.target.value)}
-						styles={{ input: { paddingInlineStart: "110px" } }}
+						styles={{ input: { paddingInlineStart: "110px", width: "100%" } }}
 						leftSection={
 							<Select
 								bd="none"
@@ -156,9 +156,9 @@ export default function PatientForm({
 							</ActionIcon>
 						}
 					/>
-				</Flex>
-				<Flex gap="xs">
-					{/* <SegmentedControl
+				</Box>
+				{/* <Flex gap="xs"> */}
+				{/* <SegmentedControl
 							size="xs"
 							color="var(--theme-primary-color-6)"
 							data={["New", "Re-Visit"]}
@@ -167,7 +167,7 @@ export default function PatientForm({
 								control: { width: "60px" },
 							}}
 						/> */}
-					{/* <Button
+				{/* <Button
 						onClick={handleOpenViewOverview}
 						size="xs"
 						radius="es"
@@ -177,7 +177,7 @@ export default function PatientForm({
 					>
 						{t("VisitTable")}
 					</Button> */}
-					<Button
+				{/* <Button
 						onClick={handleOpenOpdRoom}
 						size="xs"
 						radius="es"
@@ -186,8 +186,8 @@ export default function PatientForm({
 						c="white"
 					>
 						{t("OPDRoom")}
-					</Button>
-				</Flex>
+					</Button> */}
+				{/* </Flex> */}
 			</Flex>
 			<Form
 				form={form}
@@ -421,7 +421,7 @@ export function Form({
 				</Flex>
 			)}
 			<Box>
-				<ScrollArea h={height}>
+				<ScrollArea h={mainAreaHeight - 180}>
 					<Stack mih={height} className="form-stack-vertical">
 						<Flex className="form-action-header full-bleed">
 							<Text fz="sm">{t("Room")}</Text>
