@@ -12,10 +12,10 @@ import {
 	Select,
 	Autocomplete,
 	TextInput,
-	ActionIcon
+	ActionIcon, rem
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import {IconDeviceFloppy, IconPlus, IconTrashX} from "@tabler/icons-react";
+import {IconAlertCircle, IconDeviceFloppy, IconPlus, IconTrashX} from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "./helpers/request";
 import {useOutletContext, useParams} from "react-router-dom";
@@ -32,14 +32,16 @@ import MedicineListItem from "../../common/MedicineListItem";
 import inputCss from "@/assets/css/InputField.module.css";
 import InputAutoComplete from "@/common/components/form-builders/InputAutoComplete";
 import {MASTER_DATA_ROUTES} from "@/constants/routes";
-import {storeEntityData} from "@/app/store/core/crudThunk";
-import {setRefetchData} from "@/app/store/core/crudSlice";
+import {deleteEntityData, storeEntityData} from "@/app/store/core/crudThunk";
+import {setInsertType, setRefetchData} from "@/app/store/core/crudSlice";
 import {successNotification} from "@components/notification/successNotification";
 import {errorNotification} from "@components/notification/errorNotification";
 import {useDispatch} from "react-redux";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import {DataTable} from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
+import {deleteNotification} from "@components/notification/deleteNotification";
+import {notifications} from "@mantine/notifications";
 
 export default function AddMedicineForm({ medicines,module, setMedicines, baseHeight }) {
 	const prescription2A4Ref = useRef(null);
@@ -205,11 +207,26 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 		}
 	}
 
-	const handleDelete = (idx) => {
-		setMedicines(medicines.filter((_, i) => i !== idx));
-		if (editIndex === idx) {
-			medicineForm.reset();
-			setEditIndex(null);
+	const handleDeleteSuccess = async (report, id) => {
+		const res = await dispatch(
+			deleteEntityData({
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_MEDICINE_FORMAT.DELETE}/${id}`,
+				module,
+				id,
+			})
+		);
+
+		if (deleteEntityData.fulfilled.match(res)) {
+			dispatch(setRefetchData({ module, refetching: true }));
+			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
+			navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.TREATMENT_MEDICINE}/${report}`);
+			dispatch(setInsertType({ insertType: "create", module }));
+		} else {
+			notifications.show({
+				color: ERROR_NOTIFICATION_COLOR,
+				title: t("Delete Failed"),
+				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+			});
 		}
 	};
 
@@ -342,8 +359,28 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 						},
 						{
 							accessor: "medicine_name",
-							title: t("Name"),
+							title: t("MedicineName"),
+						},
+						{
+							accessor: "generic_name",
+							title: t("GenericName"),
+						},
+						{
+							accessor: "dosage",
+							title: t("Dosage"),
+						},
 
+						{
+							accessor: "by_meal",
+							title: t("ByMeal"),
+						},
+						{
+							accessor: "duration",
+							title: t("Duration"),
+						},
+						{
+							accessor: "quantity",
+							title: t("Quantity"),
 						},
 
 						{
@@ -371,7 +408,7 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={mainAreaHeight}
+					height={mainAreaHeight-150}
 				/>
 			</Box>
 		</Box>

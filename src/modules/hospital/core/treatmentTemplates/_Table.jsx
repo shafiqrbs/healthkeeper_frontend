@@ -59,7 +59,7 @@ export default function _Table({ module, open }) {
 				module,
 			})
 		);
-		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX}/${id}`);
+		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.INDEX}/${id}`);
 	};
 
 	const handleDelete = (id) => {

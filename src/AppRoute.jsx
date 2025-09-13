@@ -203,6 +203,7 @@ function AppRoute() {
 				</Route>
 				<Route path="/hospital/core/">
 					<Route path="treatment-templates" element={<TreatmentTemplatesIndex />} />
+					<Route path="treatment-templates/:id" element={<TreatmentTemplatesIndex mode={"edit"} />} />
 					<Route
 						path="treatment-templates/:treatmentFormat/:id"
 						element={<TreatmentTemplatesIndex mode="edit" />}

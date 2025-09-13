@@ -28,14 +28,13 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_TREATMENT_MODE.UTILITY,
 	});
 
-
+	console.log(data);
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
 				name: data.name,
-				content: data.content,
-				treatment_mode_id: data.treatment_mode_id,
+				treatment_mode_id: data?.particular_details?.treatment_mode_id,
 
 			});
 			setIndexData(data.id);
@@ -73,8 +72,8 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 										<Grid.Col span={14}>
 											<SelectForm
 												form={form}
-												tooltip={t("CategoryValidateMessage")}
-												placeholder={t("Category")}
+												tooltip={t("TreatmentTemplateForValidateMessage")}
+												placeholder={t("TreatmentTemplateFor")}
 												name="treatment_mode_id"
 												id="treatment_mode_id"
 												searchable='true'

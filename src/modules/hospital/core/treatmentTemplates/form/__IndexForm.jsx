@@ -16,7 +16,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 	// =============== selectors ================
 	const insertType = useSelector((state) => state.crud[module].insertType);
 	const vendorFilterData = useSelector((state) => state.crud[module].filterData);
-
+	console.log(insertType)
 	// =============== memoized values ================
 	const isEditMode = mode === "edit";
 	const defaultFilterData = useMemo(
