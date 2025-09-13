@@ -1,6 +1,5 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
-
 		TREATMENT_TEMPLATES: {
 			INDEX: "hospital/core/particular",
 			CREATE: "hospital/core/particular",
@@ -12,6 +11,7 @@ export const MASTER_DATA_ROUTES = {
 
 		OPERATIONAL_API: {
 			REFERRED: "hospital/opd/referred",
+			PATIENT_SEARCH: "hospital/patient-search",
 		},
 
 		INVESTIGATION: {

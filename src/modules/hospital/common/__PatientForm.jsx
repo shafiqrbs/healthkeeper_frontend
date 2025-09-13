@@ -27,7 +27,7 @@ import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
 import { calculateAge, calculateDetailedAge } from "@/common/utils";
 import Table from "../visit/_Table";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
@@ -43,6 +43,7 @@ import OpdRoomModal from "@modules/hospital/common/OpdRoomModal";
 import { useForm } from "@mantine/form";
 import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
 import RoomCard from "./RoomCard";
+import { getDataWithoutStore } from "@/services/apiService";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -100,6 +101,8 @@ export default function PatientForm({
 			term: "",
 		},
 	});
+
+	const [visible, setVisible] = useState(false);
 	const { mainAreaHeight } = useOutletContext();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
 	const [openedOpdRoom, { close: closeOpdRoom }] = useDisclosure(false);
@@ -141,38 +144,15 @@ export default function PatientForm({
 			if (searchForm.values.type === "PID") {
 				setIsSearching(true);
 				// Simulate API call delay
-				setTimeout(() => {
-					// Mock patient data - replace with actual API call
-					const mockPatients = [
-						{
-							id: 1,
-							name: "Md. Abdul Karim",
-							mobile: "+8801712345678",
-							dob: "1985-05-15",
-							pid: "PID001",
-							address: "Dhaka, Bangladesh",
-						},
-						{
-							id: 2,
-							name: "Fatima Begum",
-							mobile: "+8801712345679",
-							dob: "1990-08-22",
-							pid: "PID002",
-							address: "Chittagong, Bangladesh",
-						},
-						{
-							id: 3,
-							name: "Ahmed Hassan",
-							mobile: "+8801712345680",
-							dob: "1988-12-10",
-							pid: "PID003",
-							address: "Sylhet, Bangladesh",
-						},
-					];
-					setPatientSearchResults(mockPatients);
-					setShowPatientDropdown(true);
-					setIsSearching(false);
-				}, 1000);
+
+				const patients = await getDataWithoutStore({
+					url: MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.PATIENT_SEARCH,
+					params: { term: searchForm.values.term },
+				});
+
+				setPatientSearchResults(patients?.data || []);
+				setShowPatientDropdown(true);
+				setIsSearching(false);
 			} else {
 				// For other search types, use the original behavior
 				console.info(formValue);
@@ -183,17 +163,23 @@ export default function PatientForm({
 		}
 	};
 
-	const handlePatientSelect = (patient) => {
+	const handlePatientSelect = async (patientId) => {
+		setVisible(true);
+		const patient = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${patientId}`,
+		});
+
 		// Fill the form with selected patient data
-		form.setFieldValue("name", patient.name);
-		form.setFieldValue("mobile", patient.mobile);
-		form.setFieldValue("dob", patient.dob);
-		form.setFieldValue("address", patient.address);
+		form.setFieldValue("name", patient?.data?.name);
+		form.setFieldValue("mobile", patient?.data?.mobile);
+		form.setFieldValue("dob", patient?.data?.dob);
+		form.setFieldValue("address", patient?.data?.address);
 		// Close the dropdown
 		setShowPatientDropdown(false);
 		setPatientSearchResults([]);
 		// Clear the search term
 		searchForm.setFieldValue("term", "");
+		setVisible(false);
 	};
 
 	const getSearchPlaceholder = () => {
@@ -248,26 +234,26 @@ export default function PatientForm({
 					{/* Patient Search Dropdown */}
 					{showPatientDropdown && patientSearchResults.length > 0 && (
 						<Paper
+							style={{
+								zIndex: 1000,
+								overflowY: "auto",
+								border: "1px solid var(--mantine-color-gray-3)",
+							}}
 							shadow="md"
 							radius="md"
 							p="xs"
 							mt="xs"
-							style={{
-								position: "absolute",
-								top: "100%",
-								left: 0,
-								right: 0,
-								zIndex: 1000,
-								maxHeight: "300px",
-								overflowY: "auto",
-								border: "1px solid var(--mantine-color-gray-3)",
-							}}
+							pos="absolute"
+							top="100%"
+							left={0}
+							right={0}
+							mah="300px"
 						>
 							<Stack gap="xs">
 								<Text fw={600} fz="sm" c="dimmed" px="xs">
 									Select a patient:
 								</Text>
-								{patientSearchResults.map((patient) => (
+								{patientSearchResults?.map((patient) => (
 									<Paper
 										key={patient.id}
 										p="sm"
@@ -277,7 +263,7 @@ export default function PatientForm({
 											border: "1px solid var(--mantine-color-gray-2)",
 											transition: "all 0.2s ease",
 										}}
-										onClick={() => handlePatientSelect(patient)}
+										onClick={() => handlePatientSelect(patient.id)}
 										onMouseEnter={(e) => {
 											e.currentTarget.style.backgroundColor = "var(--mantine-color-gray-0)";
 											e.currentTarget.style.borderColor = "var(--mantine-color-blue-3)";
@@ -287,59 +273,41 @@ export default function PatientForm({
 											e.currentTarget.style.borderColor = "var(--mantine-color-gray-2)";
 										}}
 									>
-										<Group gap="sm">
-											<Avatar size="sm" color="blue">
-												{patient.name.charAt(0)}
-											</Avatar>
-											<Box style={{ flex: 1 }}>
+										<Grid columns={24} w="100%">
+											<Grid.Col span={2}>
+												<Flex align="center" justify="center" h="100%">
+													<Avatar size="sm" color="blue">
+														{patient.name.charAt(0)}
+													</Avatar>
+												</Flex>
+											</Grid.Col>
+											<Grid.Col span={8}>
 												<Text fw={600} fz="sm">
 													{patient.name}
 												</Text>
 												<Text fz="xs" c="dimmed">
-													{patient.mobile} • {patient.dob} • {patient.pid}
+													{patient.mobile}
 												</Text>
-												<Text fz="xs" c="dimmed">
-													{patient.address}
+											</Grid.Col>
+											<Grid.Col span={6}>
+												<Text fw={500} fz="xs">
+													NID: {patient.nid}
 												</Text>
-											</Box>
-										</Group>
+												<Text fz="xs">Invoice: {patient.invoice}</Text>
+											</Grid.Col>
+											<Grid.Col span={8}>
+												<Text fw={500} fz="xs">
+													PID: {patient.patient_id}
+												</Text>
+												<Text fz="xs">HID: {patient.health_id}</Text>
+											</Grid.Col>
+										</Grid>
 									</Paper>
 								))}
 							</Stack>
 						</Paper>
 					)}
 				</Box>
-				{/* <Flex gap="xs"> */}
-				{/* <SegmentedControl
-							size="xs"
-							color="var(--theme-primary-color-6)"
-							data={["New", "Re-Visit"]}
-							styles={{
-								root: { backgroundColor: "var(--theme-tertiary-color-1)" },
-								control: { width: "60px" },
-							}}
-						/> */}
-				{/* <Button
-						onClick={handleOpenViewOverview}
-						size="xs"
-						radius="es"
-						rightSection={<IconArrowRight size={16} />}
-						bg="var(--theme-success-color)"
-						c="white"
-					>
-						{t("VisitTable")}
-					</Button> */}
-				{/* <Button
-						onClick={handleOpenOpdRoom}
-						size="xs"
-						radius="es"
-						rightSection={<IconArrowUpRight size={16} />}
-						bg="var(--theme-primary-color-5)"
-						c="white"
-					>
-						{t("OPDRoom")}
-					</Button> */}
-				{/* </Flex> */}
 			</Flex>
 			<Form
 				form={form}
@@ -348,6 +316,8 @@ export default function PatientForm({
 				handleRoomClick={handleRoomClick}
 				filteredAndSortedRecords={filteredAndSortedRecords}
 				selectedRoom={selectedRoom}
+				visible={visible}
+				setVisible={setVisible}
 			/>
 			<DoctorsRoomDrawer
 				form={form}
@@ -380,6 +350,8 @@ export function Form({
 	handleRoomClick,
 	filteredAndSortedRecords,
 	selectedRoom,
+	visible,
+	setVisible,
 }) {
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 	const [openedRoomError, { open: openRoomError, close: closeRoomError }] = useDisclosure(false);
@@ -392,7 +364,6 @@ export function Form({
 	const [userNidData] = useState(USER_NID_DATA);
 	const [showUserData, setShowUserData] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [visible, setVisible] = useState(false);
 
 	const locations = useSelector((state) => state.crud.locations.data);
 
