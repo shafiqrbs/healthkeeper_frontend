@@ -1,8 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import { Box, Button, Group, Text, Stack, Flex, Grid, ScrollArea, Select, Autocomplete, Switch } from "@mantine/core";
+import {
+	Box,
+	Button,
+	Group,
+	Text,
+	Stack,
+	Flex,
+	Grid,
+	ScrollArea,
+	Select,
+	Autocomplete,
+	Switch,
+	Tooltip,
+	ActionIcon,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconPlus, IconReportMedical, IconRestore } from "@tabler/icons-react";
+import { IconDirectionSignFilled, IconHistory, IconPlus, IconReportMedical, IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -27,7 +41,7 @@ import MedicineListItem from "./MedicineListItem";
 import { DURATION_TYPES } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
 
-export default function AddMedicineForm({ module, form, update, medicines, setMedicines, baseHeight }) {
+export default function AddMedicineForm({ module, form, update, medicines, setMedicines, baseHeight, setShowHistory }) {
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
@@ -305,16 +319,12 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 	const handleAdviseTemplate = (label) => {
 		const existingAdvise = form.values.advise;
 
-		if (existingAdvise.includes(label)) {
+		if (existingAdvise?.includes(label)) {
 			showNotificationComponent(t("AdviseAlreadyExists"), "red", "lightgray", true, 1000, true);
 			return;
 		}
 
-		if (existingAdvise) {
-			form.setFieldValue("advise", `${existingAdvise} ${label}.`);
-		} else {
-			form.setFieldValue("advise", `${label}.`);
-		}
+		form.setFieldValue("advise", label);
 	};
 
 	return (
@@ -445,9 +455,34 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 					</Grid>
 				</Group>
 			</Box>
-			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
-				{t("ListOfMedicines")}
-			</Text>
+			<Flex bg="var(--theme-primary-color-0)" mb="les" justify="space-between" align="center" py="les" mt="xs">
+				<Text fw={500} px="sm">
+					{t("ListOfMedicines")}
+				</Text>
+				<Flex px="les" gap="les">
+					<Tooltip label="History">
+						<ActionIcon
+							variant="gradient"
+							size="lg"
+							gradient={{ from: "blue", to: "cyan", deg: 90 }}
+							onClick={() => setShowHistory((prev) => !prev)}
+						>
+							<IconHistory />
+						</ActionIcon>
+					</Tooltip>
+
+					<Tooltip label="Referred">
+						<ActionIcon
+							variant="gradient"
+							size="lg"
+							gradient={{ from: "blue", to: "cyan", deg: 90 }}
+							onClick={() => setShowHistory((prev) => !prev)}
+						>
+							<IconDirectionSignFilled />
+						</ActionIcon>
+					</Tooltip>
+				</Flex>
+			</Flex>
 			<ScrollArea h={baseHeight ? baseHeight : mainAreaHeight - 420} bg="white">
 				<Stack gap="xs" p="sm">
 					{medicines?.length === 0 && (

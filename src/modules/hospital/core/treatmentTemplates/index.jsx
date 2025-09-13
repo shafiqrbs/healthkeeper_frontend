@@ -45,7 +45,7 @@ export default function Index({ mode = "create" }) {
 						allowZeroPercentage=""
 						currencySymbol=""
 					/>
-					<Box p="8">
+					<Box p="8px">
 						<Grid columns={36} gutter={{ base: 8 }}>
 							{!matches && (
 								<Grid.Col span={6}>

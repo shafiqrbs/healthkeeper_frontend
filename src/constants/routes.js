@@ -166,7 +166,7 @@ export const MASTER_DATA_ROUTES = {
 		LAB_USER: {
 			INDEX: "/hospital/core/lab",
 			CREATE: "/hospital/core/lab/create",
-			UPDATE: "/hospital/core/labr",
+			UPDATE: "/hospital/core/lab",
 			VIEW: "/hospital/core/lab=/view",
 			DELETE: "/hospital/core/lab/delete",
 		},

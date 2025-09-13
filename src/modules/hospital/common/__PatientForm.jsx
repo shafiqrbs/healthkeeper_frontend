@@ -12,9 +12,6 @@ import {
 	Stack,
 	Text,
 	TextInput,
-	Paper,
-	Group,
-	Avatar,
 } from "@mantine/core";
 import { useEffect, useState, useRef } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
@@ -44,6 +41,7 @@ import { useForm } from "@mantine/form";
 import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
 import RoomCard from "./RoomCard";
 import { getDataWithoutStore } from "@/services/apiService";
+import PatientSearchResult from "./PatientSearchResult";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -233,79 +231,7 @@ export default function PatientForm({
 
 					{/* Patient Search Dropdown */}
 					{showPatientDropdown && patientSearchResults.length > 0 && (
-						<Paper
-							style={{
-								zIndex: 1000,
-								overflowY: "auto",
-								border: "1px solid var(--mantine-color-gray-3)",
-							}}
-							shadow="md"
-							radius="md"
-							p="xs"
-							mt="xs"
-							pos="absolute"
-							top="100%"
-							left={0}
-							right={0}
-							mah="300px"
-						>
-							<Stack gap="xs">
-								<Text fw={600} fz="sm" c="dimmed" px="xs">
-									Select a patient:
-								</Text>
-								{patientSearchResults?.map((patient) => (
-									<Paper
-										key={patient.id}
-										p="sm"
-										radius="sm"
-										style={{
-											cursor: "pointer",
-											border: "1px solid var(--mantine-color-gray-2)",
-											transition: "all 0.2s ease",
-										}}
-										onClick={() => handlePatientSelect(patient.id)}
-										onMouseEnter={(e) => {
-											e.currentTarget.style.backgroundColor = "var(--mantine-color-gray-0)";
-											e.currentTarget.style.borderColor = "var(--mantine-color-blue-3)";
-										}}
-										onMouseLeave={(e) => {
-											e.currentTarget.style.backgroundColor = "transparent";
-											e.currentTarget.style.borderColor = "var(--mantine-color-gray-2)";
-										}}
-									>
-										<Grid columns={24} w="100%">
-											<Grid.Col span={2}>
-												<Flex align="center" justify="center" h="100%">
-													<Avatar size="sm" color="blue">
-														{patient.name.charAt(0)}
-													</Avatar>
-												</Flex>
-											</Grid.Col>
-											<Grid.Col span={8}>
-												<Text fw={600} fz="sm">
-													{patient.name}
-												</Text>
-												<Text fz="xs" c="dimmed">
-													{patient.mobile}
-												</Text>
-											</Grid.Col>
-											<Grid.Col span={6}>
-												<Text fw={500} fz="xs">
-													NID: {patient.nid}
-												</Text>
-												<Text fz="xs">Invoice: {patient.invoice}</Text>
-											</Grid.Col>
-											<Grid.Col span={8}>
-												<Text fw={500} fz="xs">
-													PID: {patient.patient_id}
-												</Text>
-												<Text fz="xs">HID: {patient.health_id}</Text>
-											</Grid.Col>
-										</Grid>
-									</Paper>
-								))}
-							</Stack>
-						</Paper>
+						<PatientSearchResult results={patientSearchResults} handlePatientSelect={handlePatientSelect} />
 					)}
 				</Box>
 			</Flex>
@@ -852,17 +778,13 @@ export function Form({
 							</Grid.Col>
 						</Grid>
 						<Grid columns={20}>
-							<Grid.Col span={6}>
-								<Text fz="sm">{t("FreeFor")}</Text>
-							</Grid.Col>
-							<Grid.Col span={14} py="es">
+							<Grid.Col span={20} pt="es">
 								<SegmentedControlForm
 									fullWidth
 									color="var(--theme-primary-color-6)"
 									value={form.values.patient_payment_mode_id}
 									id="patient_payment_mode_id"
 									name="patient_payment_mode_id"
-									nextField="free_identification_id"
 									onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
 									data={[
 										{ label: t("General"), value: "30" },
@@ -873,20 +795,18 @@ export function Form({
 									]}
 								/>
 							</Grid.Col>
-						</Grid>
-						<Grid columns={20}>
-							<Grid.Col span={6} mt="xs"></Grid.Col>
+							<Grid.Col span={6}></Grid.Col>
 							<Grid.Col span={14}>
 								{form.values.patient_payment_mode_id !== "30" && (
 									<InputForm
 										form={form}
+										pt={0}
 										label=""
-										mt="xxs"
-										tooltip={t("EnterFreeIdentificationId")}
+										tooltip={t("enterFreeIdentificationId")}
 										placeholder="Enter Free ID"
 										name="free_identification_id"
 										id="free_identification_id"
-										nextField="EntityFormSubmit"
+										nextField="amount"
 										value={form.values.free_identification_id || ""}
 									/>
 								)}

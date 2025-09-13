@@ -7,7 +7,7 @@ import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Button, Flex, Grid, Modal, Stack } from "@mantine/core";
+import { Box, Button, Flex, Grid, Modal, Paper, ScrollArea, Stack, Text } from "@mantine/core";
 import PatientReport from "../common/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -22,10 +22,32 @@ import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientReferredAction from "@modules/hospital/common/PatientReferredAction";
+import DetailsDrawer from "./__DetailsDrawer";
 
 const module = MODULES.PRESCRIPTION;
 
+const PRESCRIPTION_HISTORY_LIST = [
+	{
+		id: 1,
+		label: "Prescription 1",
+		invoice: "1234567890",
+	},
+	{
+		id: 2,
+		label: "Prescription 2",
+		invoice: "1234567890",
+	},
+	{
+		id: 3,
+		label: "Prescription 3",
+		invoice: "1234567890",
+	},
+];
+
 export default function Index() {
+	const [opened, { open, close }] = useDisclosure(false);
+	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
+	const [showHistory, setShowHistory] = useState(false);
 	const [medicines, setMedicines] = useState([]);
 	const { t } = useTranslation();
 	const { ref } = useElementSize();
@@ -92,6 +114,15 @@ export default function Index() {
 		}
 	};
 
+	const handleViewPrescription = (id) => {
+		setSelectedPrescriptionId(id);
+		setTimeout(() => open(), 10);
+	};
+
+	const handleHistoricalPrescription = (id) => {
+		console.info(id);
+	};
+
 	return (
 		<>
 			{progress !== 100 ? (
@@ -133,14 +164,57 @@ export default function Index() {
 									prescriptionData={prescriptionData}
 								/>
 							</Grid.Col>
-							<Grid.Col span={17}>
+							<Grid.Col span={showHistory ? 13 : 17}>
 								<AddMedicineForm
 									module={module}
 									form={form}
 									medicines={medicines}
 									setMedicines={setMedicines}
 									update={handlePrescriptionUpdate}
+									setShowHistory={setShowHistory}
 								/>
+							</Grid.Col>
+							<Grid.Col display={showHistory ? "block" : "none"} span={4}>
+								<ScrollArea
+									pos="relative"
+									h={mainAreaHeight - 68}
+									bg="white"
+									className="borderRadiusAll"
+								>
+									<Stack p="xs" gap="xs">
+										{PRESCRIPTION_HISTORY_LIST.map((item) => (
+											<Paper
+												key={item.id}
+												p="sm"
+												radius="sm"
+												style={{
+													cursor: "pointer",
+													border: "1px solid var(--mantine-color-gray-2)",
+													transition: "all 0.2s ease",
+												}}
+												onClick={() => handleViewPrescription(item.id)}
+												onMouseEnter={(e) => {
+													e.currentTarget.style.backgroundColor =
+														"var(--mantine-color-gray-0)";
+													e.currentTarget.style.borderColor = "var(--mantine-color-blue-3)";
+												}}
+												onMouseLeave={(e) => {
+													e.currentTarget.style.backgroundColor = "transparent";
+													e.currentTarget.style.borderColor = "var(--mantine-color-gray-2)";
+												}}
+											>
+												<Box>
+													<Text fw={600} fz="sm">
+														{item.label}
+													</Text>
+													<Text fz="xs" c="dimmed">
+														Invoice: {item.invoice}
+													</Text>
+												</Box>
+											</Paper>
+										))}
+									</Stack>
+								</ScrollArea>
 							</Grid.Col>
 						</Grid>
 					</Flex>
@@ -149,6 +223,8 @@ export default function Index() {
 			<Modal opened={openedOverview} onClose={closeOverview} size="100%" centered withCloseButton={false}>
 				<Table module={module} closeTable={closeOverview} height={mainAreaHeight - 220} availableClose />
 			</Modal>
+
+			<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 		</>
 	);
 }

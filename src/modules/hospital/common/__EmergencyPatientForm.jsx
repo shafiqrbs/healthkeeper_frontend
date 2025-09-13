@@ -36,7 +36,10 @@ import RequiredAsterisk from "@/common/components/form-builders/RequiredAsterisk
 import SelectForm from "@/common/components/form-builders/SelectForm";
 import { useDispatch, useSelector } from "react-redux";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { getDataWithoutStore } from "@/services/apiService";
+import PatientSearchResult from "./PatientSearchResult";
+import SegmentedControlForm from "@/common/components/form-builders/SegmentedControlForm";
 
 // =============== sample user data for emergency patient ================
 const USER_NID_DATA = {
@@ -97,6 +100,11 @@ export default function EmergencyPatientForm({
 	});
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
 	const [opened, { open, close }] = useDisclosure(false);
+	const [patientSearchResults, setPatientSearchResults] = useState([]);
+	const [showPatientDropdown, setShowPatientDropdown] = useState(false);
+	const [isSearching, setIsSearching] = useState(false);
+	const [visible, setVisible] = useState(false);
+	const searchContainerRef = useRef(null);
 
 	useEffect(() => {
 		const type = form.values.ageType || "year";
@@ -113,37 +121,106 @@ export default function EmergencyPatientForm({
 	}, [form.values.dob]);
 
 	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+				setShowPatientDropdown(false);
+				setPatientSearchResults([]);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
+	useEffect(() => {
 		document.getElementById("patientName").focus();
 	}, []);
 
-	const handlePatientInfoSearch = (values) => {
+	const handlePatientInfoSearch = async (values) => {
 		try {
 			const formValue = {
 				...values,
 				term: searchForm.values.term,
 			};
-			console.info(formValue);
+
+			// If PID is selected, show patient dropdown with mock data
+			if (searchForm.values.type === "PID") {
+				setIsSearching(true);
+				// Simulate API call delay
+
+				const patients = await getDataWithoutStore({
+					url: MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.PATIENT_SEARCH,
+					params: { term: searchForm.values.term },
+				});
+
+				setPatientSearchResults(patients?.data || []);
+				setShowPatientDropdown(true);
+				setIsSearching(false);
+			} else {
+				// For other search types, use the original behavior
+				console.info(formValue);
+			}
 		} catch (err) {
 			console.error(err);
+			setIsSearching(false);
 		}
+	};
+
+	const handlePatientSelect = async (patientId) => {
+		setVisible(true);
+		const patient = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${patientId}`,
+		});
+
+		// Fill the form with selected patient data
+		form.setFieldValue("name", patient?.data?.name);
+		form.setFieldValue("mobile", patient?.data?.mobile);
+		form.setFieldValue("dob", patient?.data?.dob);
+		form.setFieldValue("address", patient?.data?.address);
+		// Close the dropdown
+		setShowPatientDropdown(false);
+		setPatientSearchResults([]);
+		// Clear the search term
+		searchForm.setFieldValue("term", "");
+		setVisible(false);
+	};
+
+	const getSearchPlaceholder = () => {
+		if (searchForm.values.type === "PID") {
+			return "Search with your phone number, date of birth...";
+		}
+		return "Search";
 	};
 
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
-			<Box component="form" onSubmit={searchForm.onSubmit(handlePatientInfoSearch)} px="sm" pb="les">
+			<Box
+				ref={searchContainerRef}
+				component="form"
+				onSubmit={searchForm.onSubmit(handlePatientInfoSearch)}
+				w="100%"
+				style={{ position: "relative" }}
+			>
 				<TextInput
 					w="100%"
-					placeholder="Search"
+					placeholder={getSearchPlaceholder()}
 					type="search"
 					name="term"
 					value={searchForm.values.term}
 					leftSectionWidth={100}
 					onChange={(e) => searchForm.setFieldValue("term", e.target.value)}
-					styles={{ input: { paddingInlineStart: "110px" } }}
+					styles={{ input: { paddingInlineStart: "110px", width: "100%" } }}
 					leftSection={
 						<Select
 							bd="none"
-							onChange={(value) => searchForm.setFieldValue("type", value)}
+							onChange={(value) => {
+								searchForm.setFieldValue("type", value);
+								// Close dropdown when type changes
+								setShowPatientDropdown(false);
+								setPatientSearchResults([]);
+							}}
 							name="type"
 							styles={{ input: { paddingInlineStart: "30px", paddingInlineEnd: "10px" } }}
 							placeholder="Select"
@@ -152,26 +229,22 @@ export default function EmergencyPatientForm({
 						/>
 					}
 					rightSection={
-						<ActionIcon type="submit" bg="var(--theme-primary-color-6)">
+						<ActionIcon type="submit" bg="var(--theme-primary-color-6)" loading={isSearching}>
 							<IconSearch size={16} />
 						</ActionIcon>
 					}
 				/>
 
-				{/* <Button
-					onClick={handleOpenViewOverview}
-					size="xs"
-					radius="es"
-					rightSection={<IconArrowRight size={16} />}
-					bg="var(--theme-success-color)"
-					c="white"
-				>
-					{t("VisitTable")}
-				</Button> */}
+				{/* Patient Search Dropdown */}
+				{showPatientDropdown && patientSearchResults.length > 0 && (
+					<PatientSearchResult results={patientSearchResults} handlePatientSelect={handlePatientSelect} />
+				)}
 			</Box>
 			<Form
 				form={form}
 				module={module}
+				visible={visible}
+				setVisible={setVisible}
 				isSubmitting={isSubmitting}
 				handleSubmit={handleSubmit}
 				showUserData={showUserData}
@@ -194,6 +267,8 @@ export function Form({
 	handleSubmit,
 	showUserData,
 	setShowUserData,
+	visible,
+	setVisible,
 }) {
 	const dispatch = useDispatch();
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
@@ -209,7 +284,6 @@ export function Form({
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 
 	const [userNidData, setUserNidData] = useState(USER_NID_DATA);
-	const [visible, setVisible] = useState(false);
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
@@ -644,11 +718,8 @@ export function Form({
 										</Grid.Col>
 									</Grid>
 									<Grid columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("FreeFor")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14} py="es">
-											<SegmentedControl
+										<Grid.Col span={20} pt="sm">
+											<SegmentedControlForm
 												fullWidth
 												color="var(--theme-primary-color-6)"
 												value={form.values.patient_payment_mode_id}
@@ -663,11 +734,14 @@ export function Form({
 													{ label: t("MDR"), value: "50" },
 												]}
 											/>
+										</Grid.Col>
+										<Grid.Col span={6}></Grid.Col>
+										<Grid.Col span={14}>
 											{form.values.patient_payment_mode_id !== "30" && (
 												<InputForm
 													form={form}
+													pt={0}
 													label=""
-													mt="xxs"
 													tooltip={t("enterFreeIdentificationId")}
 													placeholder="Enter Free ID"
 													name="free_identification_id"
