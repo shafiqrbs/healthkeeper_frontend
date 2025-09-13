@@ -22,6 +22,14 @@ export const MASTER_DATA_ROUTES = {
 			DELETE: "hospital/core/particular",
 		},
 
+		MEDICINEDOSAGE: {
+			INDEX: "hospital/core/medicinedosage",
+			CREATE: "hospital/core/medicinedosage",
+			UPDATE: "hospital/core/medicinedosage",
+			VIEW: "hospital/core/medicinedosage",
+			DELETE: "hospital/core/medicinedosage",
+		},
+
 		USER: {
 			INDEX: "core/user",
 			CREATE: "core/user",
