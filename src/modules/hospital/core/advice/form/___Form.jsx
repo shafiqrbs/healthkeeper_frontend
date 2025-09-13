@@ -12,7 +12,7 @@ import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
@@ -21,21 +21,12 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const height = mainAreaHeight - 180; //TabList height 104
 
 
-
-	const { data: getTreatmentModes } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_TREATMENT_MODE.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_TREATMENT_MODE.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_TREATMENT_MODE.UTILITY,
-	});
-
-
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
 				name: data.name,
-				treatment_mode_id: data.treatment_mode_id,
-
+				content: data.content,
 			});
 			setIndexData(data.id);
 			const timeoutId = setTimeout(() => {
@@ -65,24 +56,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
-									<Grid align="center" columns={20} mt="xxxs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("TreatmentMode")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("CategoryValidateMessage")}
-												placeholder={t("Category")}
-												name="treatment_mode_id"
-												id="treatment_mode_id"
-												searchable='true'
-												nextField="name"
-												value={form.values.treatment_mode_id}
-												dropdownValue={getTreatmentModes}
-											/>
-										</Grid.Col>
-									</Grid>
+
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
@@ -101,6 +75,25 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
+									<Grid align="center" columns={20} mt="xxxs">
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("Content")}</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<TextAreaForm
+												form={form}
+												tooltip={t("contentValidateMessage")}
+												placeholder={t("content")}
+												required={false}
+												h={'120'}
+												minRows={18}
+												name="content"
+												id="content"
+												nextField=""
+											/>
+										</Grid.Col>
+									</Grid>
+									<input type={"hidden"} value={"bed"} />
 								</Stack>
 							</ScrollArea>
 							<DrawerStickyFooter type={type} />

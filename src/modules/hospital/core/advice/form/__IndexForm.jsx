@@ -53,7 +53,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 				},
 			})
 		);
-		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES, { replace: true });
+		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.ADVICE, { replace: true });
 	};
 
 	// =============== effect to handle mode switching ================

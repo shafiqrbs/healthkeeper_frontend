@@ -34,7 +34,7 @@ export default function __Create({ module, form, close }) {
 		try {
 			setIsLoading(true);
 			const value = {
-				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.CREATE,
+				url: MASTER_DATA_ROUTES.API_ROUTES.BED.CREATE,
 				data: values,
 				module,
 			};

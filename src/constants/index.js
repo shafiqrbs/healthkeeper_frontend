@@ -25,6 +25,8 @@ export const MODULES_CORE = {
 	OPD_ROOM: "opd_room",
 	INVESTIGATION: "investigation",
 	BED: "bed",
+	ADVICE: "advice",
+	TREATMENT_TEMPLATES: "treatment",
 	CABIN: "cabin",
 	DOCTOR: "doctor",
 	NURSE: "nurse",

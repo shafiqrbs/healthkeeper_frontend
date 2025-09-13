@@ -1,5 +1,6 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
+
 		TREATMENT_TEMPLATES: {
 			INDEX: "hospital/core/particular",
 			CREATE: "hospital/core/particular",
@@ -8,6 +9,7 @@ export const MASTER_DATA_ROUTES = {
 			DELETE: "hospital/core/particular",
 			INLINE_UPDATE: "hospital/core/particular",
 		},
+
 		OPERATIONAL_API: {
 			REFERRED: "hospital/opd/referred",
 		},
@@ -133,6 +135,11 @@ export const MASTER_DATA_ROUTES = {
 			UPDATE: "hospital/core/investigation",
 			DELETE: "hospital/core/investigation",
 		},
+		TREATMENT_MEDICINE_FORMAT: {
+			CREATE: "hospital/core/treatment",
+			UPDATE: "hospital/core/treatment",
+			DELETE: "hospital/core/treatment",
+		},
 	},
 	NAVIGATION_LINKS: {
 		USER: {
@@ -171,6 +178,20 @@ export const MASTER_DATA_ROUTES = {
 			VIEW: "/hospital/core/particular/view",
 		},
 
+		ADVICE: {
+			INDEX: "/hospital/core/advice",
+			CREATE: "/hospital/core/advice/create",
+			UPDATE: "/hospital/core/advice/update",
+			VIEW: "/hospital/core/advice/view",
+		},
+
+		ICULAR: {
+			INDEX: "/hospital/core/particular",
+			CREATE: "/hospital/core/particular/create",
+			UPDATE: "/hospital/core/particular/update",
+			VIEW: "/hospital/core/particular/view",
+		},
+
 		OPD_ROOM: {
 			INDEX: "/hospital/core/opd-room",
 			CREATE: "/hospital/core/opd-room/create",
@@ -191,11 +212,13 @@ export const MASTER_DATA_ROUTES = {
 			UPDATE: "/hospital/core/doctor/update",
 			VIEW: "/hospital/core/doctor/view",
 		},
+
 		TREATMENT_TEMPLATES: {
 			INDEX: "/hospital/core/treatment-templates",
 			CREATE: "/hospital/core/treatment-templates/create",
 			UPDATE: "/hospital/core/treatment-templates/update",
 			VIEW: "/hospital/core/treatment-templates/view",
+			TREATMENT_MEDICINE: "/hospital/core/treatment-templates/treatment-format",
 		},
 
 		NURSE: {

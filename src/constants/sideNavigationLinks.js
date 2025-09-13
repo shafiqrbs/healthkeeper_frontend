@@ -268,6 +268,12 @@ export const sideNavigationLinks = {
 			icon: IconIcons,
 			color: "#3F51B5",
 		},
+		{
+			label: t("ManageAdvice"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.ADVICE.INDEX,
+			icon: IconDashboard,
+			color: "#6f1225",
+		},
 		/*{
 			label: t("MarketingExecutive"),
 			path: "/core/marketing-executive",

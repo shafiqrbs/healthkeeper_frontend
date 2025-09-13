@@ -59,6 +59,12 @@ export const HOSPITAL_DROPDOWNS = {
 		PATH: "hospital/select/mode",
 	},
 
+	PARTICULAR_TREATMENT_MODE: {
+		UTILITY: "treatmentModes",
+		TYPE: "treatment-mode",
+		PATH: "hospital/select/mode",
+	},
+
 	HOSPITAL: { UTILITY: "hospital", TYPE: "hospital", PATH: "hospital/select/particular" },
 
 	PARTICULAR_PATIENT_TYPE: { UTILITY: "particularPatientTypes", TYPE: "patient-type", PATH: "hospital/select/mode" },

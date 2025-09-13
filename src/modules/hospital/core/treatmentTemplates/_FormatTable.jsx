@@ -20,7 +20,7 @@ import { setInsertType } from "@/app/store/core/crudSlice";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import AddMedicineForm from "../../common/AddMedicineForm";
 
-export default function _ReportFormatTable({ module }) {
+export default function _FormatTable({ module }) {
 	const { t } = useTranslation();
 	const form = useForm(getInitialReportValues(t));
 	const [medicines, setMedicines] = useState([]);
@@ -79,9 +79,10 @@ export default function _ReportFormatTable({ module }) {
 
 	async function handleConfirmModal(values) {
 		try {
+			console.log(values)
 			const value = {
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION_REPORT_FORMAT.CREATE}`,
-				data: { ...values, particular_id: id },
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_MEDICINE_FORMAT.CREATE}`,
+				data: { ...values, treatment_template_id: id },
 				module,
 			};
 
@@ -141,7 +142,7 @@ export default function _ReportFormatTable({ module }) {
 			return;
 		}
 		const value = {
-			url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION_REPORT_FORMAT.UPDATE}/${rowId}`,
+			url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_MEDICINE_FORMAT.UPDATE}/${rowId}`,
 			data: formData,
 			module,
 		};

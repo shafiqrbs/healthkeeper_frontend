@@ -43,6 +43,16 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	advice: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
 	doctor: {
 		isLoading: true,
 		refetching: false,
@@ -74,6 +84,16 @@ const initialState = {
 	},
 
 	opd_room: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
+	treatment: {
 		isLoading: true,
 		refetching: true,
 		error: null,

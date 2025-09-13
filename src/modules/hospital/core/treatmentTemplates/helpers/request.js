@@ -1,20 +1,15 @@
 import { hasLength } from "@mantine/form";
 
 const initialValues = {
-	particular_type_master_id: 9,
-	category_id: "",
+	particular_type_master_id: 24,
 	name: "",
-	price: "",
+	treatment_mode_id: "",
 };
 
 export const getInitialValues = (t) => {
 	return {
 		initialValues,
 		validate: {
-			category_id: (value) => {
-				if (!value) return t("NameValidationRequired");
-				return null;
-			},
 			name: hasLength({ min: 1}),
 		},
 	};

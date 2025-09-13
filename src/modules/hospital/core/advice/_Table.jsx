@@ -1,9 +1,16 @@
-import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, NumberInput } from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button} from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconTrashX, IconAlertCircle, IconEdit, IconChevronUp, IconSelector } from "@tabler/icons-react";
+import {
+	IconTrashX,
+	IconAlertCircle,
+	IconEdit,
+	IconEye,
+	IconChevronUp,
+	IconSelector,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
@@ -13,14 +20,20 @@ import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import inlineInputCss from "@assets/css/InlineInputField.module.css";
-import { deleteEntityData, editEntityData, storeEntityData } from "@/app/store/core/crudThunk";
-import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
-import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
+import {
+	deleteEntityData,
+	editEntityData,
+} from "@/app/store/core/crudThunk";
+import {
+	setInsertType,
+	setRefetchData,
+} from "@/app/store/core/crudSlice.js";
+import {
+	ERROR_NOTIFICATION_COLOR,
+} from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import { useEffect, useState } from "react";
+import {useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import { errorNotification } from "@components/notification/errorNotification";
 
 const PER_PAGE = 50;
 
@@ -30,19 +43,27 @@ export default function _Table({ module, open }) {
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
+	const { id } = useParams();
 	const height = mainAreaHeight - 78;
-	const [submitFormData, setSubmitFormData] = useState({});
+
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
 
 	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+	const {
+		scrollRef,
+		records,
+		fetching,
+		sortStatus,
+		setSortStatus,
+		handleScrollToBottom,
+	} = useInfiniteTableScroll({
 		module,
 		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			particular_type: "treatment-template",
+			particular_type: 'advice',
 			term: searchKeyword,
 		},
 		perPage: PER_PAGE,
@@ -59,7 +80,7 @@ export default function _Table({ module, open }) {
 				module,
 			})
 		);
-		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX}/${id}`);
+		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.ADVICE.INDEX}/${id}`);
 	};
 
 	const handleDelete = (id) => {
@@ -85,7 +106,7 @@ export default function _Table({ module, open }) {
 		if (deleteEntityData.fulfilled.match(res)) {
 			dispatch(setRefetchData({ module, refetching: true }));
 			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-
+			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED);
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
@@ -106,73 +127,10 @@ export default function _Table({ module, open }) {
 		setViewDrawer(true);
 	};
 
-	const handleReportFormatTable = (id) => {
-		dispatch(
-			editEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
-				module,
-			})
-		);
-		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.TREATMENT_MEDICINE}/${id}`);
-	};
-
 	const handleCreateForm = () => {
 		open();
 		dispatch(setInsertType({ insertType: "create", module }));
-		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.INDEX);
-	};
-
-	useEffect(() => {
-		if (!records?.length) return;
-
-		const initialFormData = records.reduce((acc, item) => {
-			acc[item.id] = {
-				name: item.name || "",
-				price: item.price || "",
-			};
-
-			return acc;
-		}, {});
-
-		setSubmitFormData(initialFormData);
-	}, [records]);
-
-	const handleDataTypeChange = (rowId, field, value) => {
-		setSubmitFormData((prev) => ({
-			...prev,
-			[rowId]: {
-				...prev[rowId],
-				[field]: value,
-			},
-		}));
-	};
-
-	const handleRowSubmit = async (rowId) => {
-		const formData = submitFormData[rowId];
-		if (!formData) return false;
-
-		// 🔎 find original row data
-		const originalRow = records.find((r) => r.id === rowId);
-		if (!originalRow) return false;
-
-		// ✅ check if there is any change
-		const isChanged = Object.keys(formData).some((key) => formData[key] !== originalRow[key]);
-
-		if (!isChanged) {
-			// nothing changed → do not submit
-			return false;
-		}
-
-		const value = {
-			url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INLINE_UPDATE}/${rowId}`,
-			data: formData,
-			module,
-		};
-		try {
-			await dispatch(storeEntityData(value));
-		} catch (error) {
-			errorNotification(error.message);
-		}
+		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.ADVICE.INDEX);
 	};
 
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
@@ -206,29 +164,34 @@ export default function _Table({ module, open }) {
 							render: (_item, index) => index + 1,
 						},
 						{
-							accessor: "treatment_mode_name",
-							title: t("TreatmentMode"),
-							textAlignment: "right",
-							sortable: true,
-							render: (item) => item.treatment_mode_name,
-						},
-						{
 							accessor: "name",
 							title: t("Name"),
 							sortable: true,
-							render: (item) => (
-								<TextInput
-									size="xs"
-									className={inlineInputCss.inputText}
-									placeholder={t("Name")}
-									value={submitFormData[item.id]?.name || ""}
-									onChange={(event) =>
-										handleDataTypeChange(item.id, "name", event.currentTarget.value)
-									}
-									onBlur={() => handleRowSubmit(item.id)}
-								/>
+							render: (values) => (
+								<Text
+									className="activate-link"
+									fz="sm"
+									onClick={() => handleDataShow(values.id)}
+								>
+									{values.name}
+								</Text>
 							),
 						},
+						{
+							accessor: "content",
+							title: t("Advice"),
+							sortable: true,
+							render: (values) => (
+								<Text
+									className="activate-link"
+									fz="sm"
+									onClick={() => handleDataShow(values.id)}
+								>
+									{values.content}
+								</Text>
+							),
+						},
+
 						{
 							accessor: "action",
 							title: "",
@@ -243,12 +206,11 @@ export default function _Table({ module, open }) {
 												open();
 											}}
 											variant="filled"
-											bg="var(--theme-secondary-color-5)"
 											c="white"
 											size="xs"
 											radius="es"
 											leftSection={<IconEdit size={16} />}
-											className="border-right-radius-none"
+											className="border-right-radius-none btnPrimaryBg"
 										>
 											{t("Edit")}
 										</Button>
@@ -256,22 +218,13 @@ export default function _Table({ module, open }) {
 											onClick={() => handleDataShow(values.id)}
 											variant="filled"
 											c="white"
-											bg="var(--theme-primary-color-5)"
+											bg="var(--theme-primary-color-6)"
 											size="xs"
 											radius="es"
+											leftSection={<IconEye size={16} />}
 											className="border-left-radius-none"
 										>
 											{t("View")}
-										</Button>
-										<Button
-											onClick={() => handleReportFormatTable(values.id)}
-											variant="filled"
-											c="white"
-											bg="var(--theme-warn-color-5)"
-											size="xs"
-											radius="es"
-										>
-											{t("Format")}
 										</Button>
 										<ActionIcon
 											onClick={() => handleDelete(values.id)}
@@ -299,8 +252,15 @@ export default function _Table({ module, open }) {
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
-						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+						sorted: (
+							<IconChevronUp
+								color="var(--theme-tertiary-color-7)"
+								size={14}
+							/>
+						),
+						unsorted: (
+							<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
+						),
 					}}
 				/>
 			</Box>
@@ -310,3 +270,4 @@ export default function _Table({ module, open }) {
 		</>
 	);
 }
+
