@@ -63,7 +63,7 @@ export const MASTER_DATA_ROUTES = {
 		LAB_USER: {
 			INDEX: "hospital/core/particular",
 			CREATE: "hospital/core/particular",
-			UPDATE: "hospital/core/particular/update",
+			UPDATE: "hospital/core/particular",
 			VIEW: "hospital/core/particular",
 			DELETE: "hospital/core/particular",
 		},
@@ -71,7 +71,7 @@ export const MASTER_DATA_ROUTES = {
 		PARTICULAR: {
 			INDEX: "hospital/core/particular",
 			CREATE: "hospital/core/particular",
-			UPDATE: "hospital/core/particular/update",
+			UPDATE: "hospital/core/particular",
 			VIEW: "hospital/core/particular",
 			DELETE: "hospital/core/particular",
 			INLINE_UPDATE: "hospital/core/particular/inline-update",

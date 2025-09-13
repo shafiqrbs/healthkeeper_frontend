@@ -301,6 +301,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 		console.log("Hold your data");
 	};
 
+
 	const handleAdviseTemplate = (label) => {
 		const existingAdvise = form.values.advise;
 
@@ -407,7 +408,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 									id="duration"
 									name="duration"
 									dropdownValue={DURATION_TYPES}
-									value={medicineForm.values.duration}
+									value={medicineForm.values.duration||"Day"}
 									placeholder={t("Duration")}
 									required
 									tooltip={t("EnterMeditationDuration")}
@@ -423,24 +424,23 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 								</Button>
 							</Group>
 						</Grid.Col>
-						<Grid.Col span={2}>
-							<Group grow gap="les">
-								<SelectForm
-									form={medicineForm}
-									label=""
-									id="treatments"
-									name="treatments"
-									dropdownValue={treatmentData?.data?.map((item) => ({
-										label: item.name,
-										value: item.id?.toString(),
-									}))}
-									value={medicineForm.values.treatments}
-									placeholder={t("TreatmentMedicine")}
-									required
-									tooltip={t("TreatmentMedicine")}
-									withCheckIcon={false}
-								/>
-							</Group>
+						<Grid.Col span={2} bg="var(--mantine-color-indigo-6)">
+							<SelectForm
+								mt={'2'}
+								form={medicineForm}
+								label=""
+								id="treatments"
+								name="treatments"
+								dropdownValue={treatmentData?.data?.map((item) => ({
+									label: item.name,
+									value: item.id?.toString(),
+								}))}
+								value={medicineForm.values.treatments}
+								placeholder={t("TreatmentMedicine")}
+								required
+								tooltip={t("TreatmentMedicine")}
+								withCheckIcon={false}
+							/>
 						</Grid.Col>
 					</Grid>
 				</Group>
@@ -490,7 +490,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 			{form && (
 				<>
 					<Grid columns={12} gutter="xxxs" mt="xxs" p="les">
-						<Grid.Col span={2}>
+						<Grid.Col span={3}>
 							<Box fz="md" c="white">
 								<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
 									{t("AdviseTemplate")}
@@ -506,7 +506,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 											onClick={() => handleAdviseTemplate(advise?.content)}
 											px="les"
 											bd="1px solid var(--theme-primary-color-0)"
-											mb="les"
+											mb="2"
 											className="cursor-pointer"
 										>
 											<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
@@ -514,11 +514,12 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 												{advise?.name}
 											</Text>
 										</Flex>
+
 									))}
 								</ScrollArea>
 							</Box>
 						</Grid.Col>
-						<Grid.Col span={4}>
+						<Grid.Col span={6}>
 							<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
 								<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
 									{t("Advise")}
@@ -537,7 +538,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 								</Box>
 							</Box>
 						</Grid.Col>
-						<Grid.Col span={6}>
+						<Grid.Col span={3}>
 							<Box bg="var(--theme-primary-color-0)" h="100%">
 								<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="les">
 									{t("FollowUpDate")}
@@ -557,7 +558,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 									<Switch
 										defaultChecked
 										color="red"
-										size="md"
+										size="xs"
 										label={t("SaveThisPrescriptionAsTemplate")}
 									/>
 								</Box>

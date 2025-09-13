@@ -135,6 +135,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							)?.value;
 							return (
 								<Checkbox
+									size="xs"
 									key={`${id}-${index}`}
 									label={particular.name}
 									checked={value || false}
@@ -188,7 +189,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							)?.value;
 							return (
 								<Grid key={`${id}-${index}`}>
-									<Grid.Col span={4}>{particular.name}</Grid.Col>
+									<Grid.Col span={4} fz={'xs'}>{particular.name}</Grid.Col>
 									<Grid.Col span={8}>
 										<TextInput
 											label=""
@@ -222,10 +223,12 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							)?.value;
 							return (
 								<Grid key={`${id}-${index}`}>
-									<Grid.Col span={4}>{particular.name}</Grid.Col>
+									<Grid.Col span={4} fz={'xs'}>{particular.name}</Grid.Col>
 									<Grid.Col span={8}>
 										<Flex align="center" gap="les" justify="space-between">
 											<TextInput
+												size="xs"
+												w={'70%'}
 												label=""
 												classNames={inputCss}
 												placeholder={`Enter ${particular.name}`}
@@ -241,15 +244,16 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 												onBlur={handleFieldBlur}
 											/>
 											<Select
-												w={100}
+												w={'30%'}
 												label=""
+												size="xs"
 												placeholder={t("Day")}
 												data={DURATION_TYPES}
 												classNames={inputCss}
 												value={
 													form.values.dynamicFormData?.[section.slug]?.find(
 														(item) =>
-															item.id == particular.id && item.name == particular.name
+															item.id === particular.id && item.name === particular.name
 													)?.duration || "Day"
 												}
 												onChange={(option) => {
@@ -280,6 +284,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							)?.value;
 							return (
 								<Textarea
+									size="xs"
 									key={`${id}-${index}`}
 									label={particulars.length === 1 ? "" : particular.name?.toUpperCase()}
 									placeholder={`Enter ${particular.name}`}
@@ -326,7 +331,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 
 			case "RadioButton":
 				return (
-					<Stack gap="md">
+					<Stack gap="md" fz={'xs'}>
 						{particulars?.map((particular, index) => {
 							const value = form.values.dynamicFormData?.[section.slug]?.find(
 								(item) => item.id === particular.id && item.name === particular.name

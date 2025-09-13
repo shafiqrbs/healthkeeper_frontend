@@ -38,7 +38,7 @@ export const medicineInitialValues = {
 	generic: "",
 	generic_id: "",
 	company: "",
-	dose_details: "",
+	dosage: "",
 	times: "",
 	by_meal: "",
 	duration: "",
@@ -50,7 +50,7 @@ export const getMedicineFormInitialValues = () => {
 		initialValues: medicineInitialValues,
 
 		validate: {
-			dose_details: (value) => (value ? null : "Dose details is required"),
+			dosage: (value) => (value ? null : "Dose details is required"),
 			duration: (value) => (value ? null : "Duration is required"),
 			quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},

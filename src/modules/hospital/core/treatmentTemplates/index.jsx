@@ -14,7 +14,7 @@ import _Table from "./_Table";
 import _FormatTable from "./_FormatTable";
 import { MODULES_CORE } from "@/constants";
 
-const module = MODULES_CORE.INVESTIGATION;
+const module = MODULES_CORE.TREATMENT_TEMPLATES;
 
 export default function Index({ mode = "create" }) {
 	const { t } = useTranslation();

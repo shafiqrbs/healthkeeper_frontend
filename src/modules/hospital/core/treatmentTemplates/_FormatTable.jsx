@@ -167,7 +167,7 @@ export default function _FormatTable({ module }) {
 
 	return (
 		<Box className="border-top-none">
-			<AddMedicineForm medicines={medicines} setMedicines={setMedicines} baseHeight={height - 170} />
+			<AddMedicineForm medicines={medicines} module={module} setMedicines={setMedicines} baseHeight={height - 170} />
 		</Box>
 	);
 }

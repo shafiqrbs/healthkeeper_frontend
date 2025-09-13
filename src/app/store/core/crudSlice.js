@@ -95,7 +95,7 @@ const initialState = {
 
 	treatment: {
 		isLoading: true,
-		refetching: true,
+		refetching: false,
 		error: null,
 		data: {},
 		editData: {},

@@ -34,6 +34,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 			setIsLoading(true);
 			form.setValues({
 				name: data.name,
+				content: data.content,
 				treatment_mode_id: data.treatment_mode_id,
 
 			});

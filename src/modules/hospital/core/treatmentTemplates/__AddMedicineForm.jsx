@@ -1,11 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import { Box, Button, Group, Text, Stack, Flex, Grid, ScrollArea, Select, Autocomplete } from "@mantine/core";
+import {
+	Box,
+	Button,
+	Group,
+	Text,
+	Stack,
+	Flex,
+	Grid,
+	ScrollArea,
+	Select,
+	Autocomplete,
+	TextInput,
+	ActionIcon
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconPlus } from "@tabler/icons-react";
+import {IconDeviceFloppy, IconPlus, IconTrashX} from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "./helpers/request";
-import { useOutletContext } from "react-router-dom";
+import {useOutletContext, useParams} from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { useDebouncedState, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
@@ -14,12 +27,21 @@ import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
-import { DURATION_TYPES } from "@/constants";
+import {DURATION_TYPES, ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
 import MedicineListItem from "../../common/MedicineListItem";
 import inputCss from "@/assets/css/InputField.module.css";
 import InputAutoComplete from "@/common/components/form-builders/InputAutoComplete";
+import {MASTER_DATA_ROUTES} from "@/constants/routes";
+import {storeEntityData} from "@/app/store/core/crudThunk";
+import {setRefetchData} from "@/app/store/core/crudSlice";
+import {successNotification} from "@components/notification/successNotification";
+import {errorNotification} from "@components/notification/errorNotification";
+import {useDispatch} from "react-redux";
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import {DataTable} from "mantine-datatable";
+import tableCss from "@assets/css/Table.module.css";
 
-export default function AddMedicineForm({ medicines, setMedicines, baseHeight }) {
+export default function AddMedicineForm({ medicines,module, setMedicines, baseHeight }) {
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
 	const { t } = useTranslation();
@@ -31,7 +53,9 @@ export default function AddMedicineForm({ medicines, setMedicines, baseHeight })
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const [printData, setPrintData] = useState(null);
-
+	const { id } = useParams();
+	const [fetching] = useState(false);
+	const dispatch = useDispatch();
 	const { data: by_meal_options } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
 		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
@@ -42,15 +66,9 @@ export default function AddMedicineForm({ medicines, setMedicines, baseHeight })
 		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
 	});
 
-	const printPrescription2A4 = useReactToPrint({
-		documentTitle: `prescription-${Date.now().toLocaleString()}`,
-		content: () => prescription2A4Ref.current,
-	});
-
-	useEffect(() => {
-		if (!printData) return;
-		printPrescription2A4();
-	}, [printData]);
+	const { data: entity } = useDataWithoutStore({ url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.VIEW}/${id}` });
+	const entityData = entity?.data?.treatment_medicine_format;
+	console.log(entityData)
 
 	// Add hotkey for save functionality
 	useHotkeys([
@@ -86,7 +104,7 @@ export default function AddMedicineForm({ medicines, setMedicines, baseHeight })
 
 		// If medicine field is being changed, auto-populate other fields from medicine data
 		if (field === "medicine_id" && value) {
-			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
+			const selectedMedicine = medicineData?.find((item) => item.stock_id?.toString() === value);
 
 			if (selectedMedicine) {
 				medicineForm.setFieldValue("medicine_name", selectedMedicine.product_name);
@@ -102,24 +120,25 @@ export default function AddMedicineForm({ medicines, setMedicines, baseHeight })
 				// Auto-populate duration and count based on duration_day or duration_month
 				if (selectedMedicine.duration_day) {
 					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_day) || 1);
-					medicineForm.setFieldValue("duration", "day");
+					medicineForm.setFieldValue("duration", "Day");
 				} else if (selectedMedicine.duration_month) {
 					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_month) || 1);
-					medicineForm.setFieldValue("duration", "month");
+					medicineForm.setFieldValue("duration", "Month");
 				}
 
-				// Auto-populate dose_details if available (for times field)
+				// Auto-populate dosage if available (for times field)
 				if (selectedMedicine.dose_details) {
-					medicineForm.setFieldValue("dose_details", selectedMedicine.dose_details);
+					medicineForm.setFieldValue("dosage", selectedMedicine.dose_details);
 				}
 			}
+
 		}
 	};
 
 	const handleAdd = (values) => {
+
 		if (values.medicine_id) {
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() == values.medicine_id);
-
 			if (selectedMedicine) {
 				values.medicine_name = selectedMedicine.product_name || values.medicine_name;
 				values.generic = selectedMedicine.generic || values.generic;
@@ -135,11 +154,14 @@ export default function AddMedicineForm({ medicines, setMedicines, baseHeight })
 					values.duration = "month";
 				}
 
-				if (selectedMedicine.dose_details) {
-					values.times = selectedMedicine.dose_details;
+				if (selectedMedicine.dosage) {
+					values.times = selectedMedicine.dosage;
 				}
 			}
+
 		}
+
+		handleConfirmModal(values);
 
 		if (editIndex !== null) {
 			const updated = [...medicines];
@@ -153,6 +175,35 @@ export default function AddMedicineForm({ medicines, setMedicines, baseHeight })
 		setUpdateKey((prev) => prev + 1);
 		medicineForm.reset();
 	};
+
+	async function handleConfirmModal(values) {
+		try {
+			const value = {
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_MEDICINE_FORMAT.CREATE}`,
+				data: { ...values, treatment_template_id: id },
+				module,
+			};
+
+			const resultAction = await dispatch(storeEntityData(value));
+			if (storeEntityData.rejected.match(resultAction)) {
+				const fieldErrors = resultAction.payload.errors;
+				if (fieldErrors) {
+					const errorObject = {};
+					Object.keys(fieldErrors).forEach((key) => {
+						errorObject[key] = fieldErrors[key][0];
+					});
+					form.setErrors(errorObject);
+				}
+			} else if (storeEntityData.fulfilled.match(resultAction)) {
+				medicineForm.reset();
+				close(); // close the drawer
+				dispatch(setRefetchData({ module, refetching: true }));
+				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+			}
+		} catch (error) {
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
+		}
+	}
 
 	const handleDelete = (idx) => {
 		setMedicines(medicines.filter((_, i) => i !== idx));
@@ -182,7 +233,7 @@ export default function AddMedicineForm({ medicines, setMedicines, baseHeight })
 							name="medicine_id"
 							data={medicineData?.map((item) => ({
 								label: item.product_name,
-								value: item.product_id?.toString(),
+								value: item.stock_id?.toString(),
 							}))}
 							value={medicineForm.values.medicine_id}
 							onChange={(v) => handleChange("medicine_id", v)}
@@ -215,10 +266,10 @@ export default function AddMedicineForm({ medicines, setMedicines, baseHeight })
 							<Group grow gap="les">
 								<InputAutoComplete
 									form={medicineForm}
-									id="dose_details"
-									name="dose_details"
+									id="dosage"
+									name="dosage"
 									data={dosage_options}
-									value={medicineForm.values.dose_details}
+									value={medicineForm.values.dosage}
 									placeholder={t("Dosage")}
 									required
 									tooltip={t("EnterDosage")}
@@ -272,46 +323,58 @@ export default function AddMedicineForm({ medicines, setMedicines, baseHeight })
 					</Grid>
 				</Group>
 			</Box>
-			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
-				{t("ListOfMedicines")}
-			</Text>
-			<ScrollArea h={baseHeight ? baseHeight : mainAreaHeight - 420} bg="white">
-				<Stack gap="xs" p="sm">
-					{medicines?.length === 0 && (
-						<Flex
-							mih={baseHeight ? baseHeight - 50 : 220}
-							gap="md"
-							justify="center"
-							align="center"
-							direction="column"
-							wrap="wrap"
-						>
-							<Text w="100%" fz="sm" align={"center"} c="var(--theme-secondary-color)">
-								{t("NoMedicineAddedYet")}
-							</Text>
-							<Button
-								leftSection={<IconPlus size={16} />}
-								type="submit"
-								variant="filled"
-								bg="var(--theme-primary-color-6)"
-								onClick={() => document.getElementById("medicine_id").focus()}
-							>
-								{t("SelectMedicine")}
-							</Button>
-						</Flex>
-					)}
-					{medicines?.map((medicine, index) => (
-						<MedicineListItem
-							key={index}
-							index={index + 1}
-							medicines={medicines}
-							medicine={medicine}
-							setMedicines={setMedicines}
-							handleDelete={handleDelete}
-						/>
-					))}
-				</Stack>
-			</ScrollArea>
+			<Box>
+				<DataTable
+					classNames={{
+						root: tableCss.root,
+						table: tableCss.table,
+						body: tableCss.body,
+						header: tableCss.header,
+						footer: tableCss.footer,
+					}}
+					records={entityData}
+					columns={[
+						{
+							accessor: "index",
+							title: t("S/N"),
+							textAlignment: "right",
+							render: (item) => entityData?.indexOf(item) + 1,
+						},
+						{
+							accessor: "medicine_name",
+							title: t("Name"),
+
+						},
+
+						{
+							accessor: "action",
+							title: "",
+							width: "100px",
+							render: (item) => (
+								<Group justify="center">
+									<ActionIcon
+										color="var(--theme-secondary-color-6)"
+										onClick={() => handleRowSubmit(item.id)}
+									>
+										<IconDeviceFloppy height={18} width={18} stroke={1.5} />
+									</ActionIcon>
+									<ActionIcon
+										color="var(--theme-delete-color)"
+										onClick={() => handleDeleteSuccess(id, item.id)}
+									>
+										<IconTrashX height={18} width={18} stroke={1.5} />
+									</ActionIcon>
+								</Group>
+							),
+						},
+					]}
+					fetching={fetching}
+					loaderSize="xs"
+					loaderColor="grape"
+					height={mainAreaHeight}
+				/>
+				)}
+			</Box>
 		</Box>
 	);
 }
