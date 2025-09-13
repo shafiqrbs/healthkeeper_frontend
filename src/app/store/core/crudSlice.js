@@ -430,6 +430,15 @@ const initialState = {
 		validationMessages: [],
 	},
 
+	// location module starts
+	locations: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		validation: false,
+		data: [],
+	},
+
 	// -------------------- configuration module stops -------------------------
 	searchKeyword: "", // keep it for compatibility issues, remove it in no time
 	searchKeywordTooltip: false, // keep it for compatibility issues, remove it in no time

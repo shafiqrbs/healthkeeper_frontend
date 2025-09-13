@@ -273,6 +273,14 @@ export const HOSPITAL_DATA_ROUTES = {
 			VISITING_ROOM: "hospital/visiting-room",
 		},
 
+		LOCATIONS: {
+			INDEX: "hospital/select/location",
+			CREATE: "hospital/select/location",
+			UPDATE: "hospital/select/location",
+			VIEW: "hospital/select/location",
+			DELETE: "hospital/select/location",
+		},
+
 		VISIT: {
 			INDEX: "core/customer",
 			CREATE: "core/customer",

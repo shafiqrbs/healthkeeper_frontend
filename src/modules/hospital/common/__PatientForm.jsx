@@ -22,14 +22,13 @@ import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
-import { DISTRICT_LIST } from "@/constants";
 import { calculateAge, calculateDetailedAge } from "@/common/utils";
 import Table from "../visit/_Table";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { storeEntityData } from "@/app/store/core/crudThunk";
+import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import InputMaskForm from "@components/form-builders/InputMaskForm";
 import SegmentedControlForm from "@components/form-builders/SegmentedControlForm";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
@@ -99,7 +98,6 @@ export default function PatientForm({
 		},
 	});
 	const { mainAreaHeight } = useOutletContext();
-	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
 	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
 	const [opened, { open, close }] = useDisclosure(false);
@@ -108,19 +106,13 @@ export default function PatientForm({
 		document.getElementById("patientName").focus();
 	}, []);
 
-	const handleOpenViewOverview = () => {
-		open();
-	};
-	const handleOpenOpdRoom = () => {
-		openOpdRoom();
-	};
-
 	const handlePatientInfoSearch = (values) => {
 		try {
 			const formValue = {
 				...values,
 				term: searchForm.values.term,
 			};
+			console.info(formValue);
 		} catch (err) {
 			console.error(err);
 		}
@@ -241,6 +233,12 @@ export function Form({
 	const [showUserData, setShowUserData] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [visible, setVisible] = useState(false);
+
+	const locations = useSelector((state) => state.crud.locations.data);
+
+	useEffect(() => {
+		dispatch(getIndexEntityData({ module: "locations", url: HOSPITAL_DATA_ROUTES.API_ROUTES.LOCATIONS.INDEX }));
+	}, []);
 
 	const handleDobChange = () => {
 		const type = form.values.ageType || "year";
@@ -426,7 +424,7 @@ export function Form({
 						<Flex className="form-action-header full-bleed">
 							<Text fz="sm">{t("Room")}</Text>
 							<Flex align="center" gap="xs" className="cursor-pointer" onClick={openRoom}>
-								<Text fz="sm">{form.values.room_id}</Text> <IconChevronRight size="16px" />
+								<Text fz="sm">{selectedRoom?.name}</Text> <IconChevronRight size="16px" />
 							</Flex>
 						</Flex>
 						<Grid align="center" columns={20}>
@@ -475,7 +473,7 @@ export function Form({
 							<Grid.Col span={6}>
 								<Text fz="sm">{t("Gender")}</Text>
 							</Grid.Col>
-							<Grid.Col span={14}>
+							<Grid.Col span={14} py="es">
 								<SegmentedControlForm
 									fullWidth
 									color="var(--theme-primary-color-6)"
@@ -588,7 +586,10 @@ export function Form({
 									nextField="identity"
 									value={form.values.upazilla}
 									required
-									dropdownValue={DISTRICT_LIST}
+									dropdownValue={locations?.data?.map((location) => ({
+										label: location.name,
+										value: location.id?.toString(),
+									}))}
 									searchable
 								/>
 							</Grid.Col>
@@ -600,7 +601,7 @@ export function Form({
 									<RequiredAsterisk />
 								</Flex>
 							</Grid.Col>
-							<Grid.Col span={14}>
+							<Grid.Col span={14} py="es">
 								<SegmentedControlForm
 									fullWidth
 									color="var(--theme-primary-color-6)"
@@ -720,10 +721,10 @@ export function Form({
 							</Grid.Col>
 						</Grid>
 						<Grid columns={20}>
-							<Grid.Col span={6} mt="xs">
+							<Grid.Col span={6}>
 								<Text fz="sm">{t("FreeFor")}</Text>
 							</Grid.Col>
-							<Grid.Col span={14}>
+							<Grid.Col span={14} py="es">
 								<SegmentedControlForm
 									fullWidth
 									color="var(--theme-primary-color-6)"
@@ -737,6 +738,7 @@ export function Form({
 										{ label: t("FreedomFighter"), value: "31" },
 										{ label: t("Disabled"), value: "29" },
 										{ label: t("GovtService"), value: "32" },
+										{ label: t("MDR"), value: "50" },
 									]}
 								/>
 							</Grid.Col>
