@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import { Box, Button, Group, Text, Stack, Flex, Grid, ScrollArea, Select, Autocomplete, Switch } from "@mantine/core";
+import { Box, Button, Group, Text, Stack, Flex, Grid, ScrollArea, Select, Autocomplete } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconPlus } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "./helpers/request";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { useDebouncedState, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
@@ -17,6 +17,7 @@ import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { DURATION_TYPES } from "@/constants";
 import MedicineListItem from "../../common/MedicineListItem";
 import inputCss from "@/assets/css/InputField.module.css";
+import InputAutoComplete from "@/common/components/form-builders/InputAutoComplete";
 
 export default function AddMedicineForm({ medicines, setMedicines, baseHeight }) {
 	const prescription2A4Ref = useRef(null);
@@ -212,22 +213,22 @@ export default function AddMedicineForm({ medicines, setMedicines, baseHeight })
 					<Grid w="100%" columns={12} gutter="xxxs">
 						<Grid.Col span={6}>
 							<Group grow gap="les">
-								<SelectForm
+								<InputAutoComplete
 									form={medicineForm}
 									id="dose_details"
 									name="dose_details"
-									dropdownValue={dosage_options}
+									data={dosage_options}
 									value={medicineForm.values.dose_details}
 									placeholder={t("Dosage")}
 									required
 									tooltip={t("EnterDosage")}
 									withCheckIcon={false}
 								/>
-								<SelectForm
+								<InputAutoComplete
 									form={medicineForm}
 									id="by_meal"
 									name="by_meal"
-									dropdownValue={by_meal_options}
+									data={by_meal_options}
 									value={medicineForm.values.by_meal}
 									placeholder={t("By Meal")}
 									tooltip={t("EnterWhenToTakeMedicine")}
@@ -246,12 +247,12 @@ export default function AddMedicineForm({ medicines, setMedicines, baseHeight })
 									required
 									tooltip={t("EnterQuantity")}
 								/>
-								<SelectForm
+								<InputAutoComplete
 									form={medicineForm}
 									label=""
 									id="duration"
 									name="duration"
-									dropdownValue={DURATION_TYPES}
+									data={DURATION_TYPES}
 									value={medicineForm.values.duration}
 									placeholder={t("Duration")}
 									required
