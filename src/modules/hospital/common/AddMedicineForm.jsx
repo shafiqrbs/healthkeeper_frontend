@@ -1,21 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import {
-	Box,
-	Button,
-	Group,
-	Text,
-	Stack,
-	Flex,
-	Grid,
-	ScrollArea,
-	Select,
-	Autocomplete,
-	Switch,
-	Menu,
-} from "@mantine/core";
+import { Box, Button, Group, Text, Stack, Flex, Grid, ScrollArea, Select, Autocomplete, Switch } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconPlus, IconReportMedical, IconRestore, IconTemplate } from "@tabler/icons-react";
+import { IconPlus, IconReportMedical, IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -31,40 +18,14 @@ import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getLoggedInUser } from "@/common/utils";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { updateEntityData } from "@/app/store/core/crudThunk";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
 import MedicineListItem from "./MedicineListItem";
 import { DURATION_TYPES } from "@/constants";
-
-const ADVISE_TEMPLATES = [
-	{
-		id: 1,
-		label: "Drink Water",
-	},
-	{
-		id: 2,
-		label: "Take Medicine",
-	},
-	{
-		id: 3,
-		label: "Bathe in hot water",
-	},
-	{
-		id: 4,
-		label: "Go early to the bed",
-	},
-	{
-		id: 5,
-		label: "Medicine after food",
-	},
-	{
-		id: 6,
-		label: "Medicine before food",
-	},
-];
+import inputCss from "@/assets/css/InputField.module.css";
 
 export default function AddMedicineForm({ module, form, update, medicines, setMedicines, baseHeight }) {
 	const dispatch = useDispatch();
@@ -81,6 +42,8 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const [printData, setPrintData] = useState(null);
+	const adviceData = useSelector((state) => state.crud.advice.data);
+	const treatmentData = useSelector((state) => state.crud.treatment.data);
 
 	const { data: by_meal_options } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
@@ -96,6 +59,31 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,
 	});
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+				params: {
+					particular_type: "advice",
+					page: 1,
+					offset: 500,
+				},
+				module: "advice",
+			})
+		);
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+				params: {
+					particular_type: "treatment-template",
+					page: 1,
+					offset: 500,
+				},
+				module: "treatment",
+			})
+		);
+	}, []);
 
 	useEffect(() => {
 		if (!printData) return;
@@ -356,6 +344,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 							tooltip="Select medicine"
 							nothingFoundMessage="Type to find medicine..."
 							onBlur={() => setMedicineTerm("")}
+							classNames={inputCss}
 						/>
 						<Autocomplete
 							tooltip={t("EnterGenericName")}
@@ -372,6 +361,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 							}}
 							placeholder={t("GenericName")}
 							onBlur={() => setMedicineGenericTerm("")}
+							classNames={inputCss}
 						/>
 					</Group>
 					<Grid w="100%" columns={12} gutter="xxxs">
@@ -400,7 +390,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 								/>
 							</Group>
 						</Grid.Col>
-						<Grid.Col span={6}>
+						<Grid.Col span={4}>
 							<Group grow gap="les">
 								<InputNumberForm
 									form={medicineForm}
@@ -431,16 +421,23 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 								>
 									{t("Add")}
 								</Button>
+							</Group>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<Group grow gap="les">
 								<SelectForm
 									form={medicineForm}
 									label=""
 									id="treatments"
 									name="treatments"
-									dropdownValue={DURATION_TYPES}
-									value={medicineForm.values.duration}
-									placeholder={t("SelectTreatments")}
+									dropdownValue={treatmentData?.data?.map((item) => ({
+										label: item.name,
+										value: item.id?.toString(),
+									}))}
+									value={medicineForm.values.treatments}
+									placeholder={t("TreatmentMedicine")}
 									required
-									tooltip={t("SelectTreatments")}
+									tooltip={t("TreatmentMedicine")}
 									withCheckIcon={false}
 								/>
 							</Group>
@@ -449,7 +446,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 				</Group>
 			</Box>
 			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
-				{t("List of Medicines")}
+				{t("ListOfMedicines")}
 			</Text>
 			<ScrollArea h={baseHeight ? baseHeight : mainAreaHeight - 420} bg="white">
 				<Stack gap="xs" p="sm">
@@ -499,14 +496,14 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 									{t("AdviseTemplate")}
 								</Text>
 								<ScrollArea h={96} p="les" className="borderRadiusAll">
-									{ADVISE_TEMPLATES.map((advise) => (
+									{adviceData?.data?.map((advise) => (
 										<Flex
 											align="center"
 											gap="les"
 											bg="var(--theme-primary-color-0)"
 											c="dark"
 											key={advise.id}
-											onClick={() => handleAdviseTemplate(advise.label)}
+											onClick={() => handleAdviseTemplate(advise?.content)}
 											px="les"
 											bd="1px solid var(--theme-primary-color-0)"
 											mb="les"
@@ -514,7 +511,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 										>
 											<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
 											<Text mt="es" fz={13}>
-												{advise.label}
+												{advise?.name}
 											</Text>
 										</Flex>
 									))}
@@ -596,28 +593,6 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 
 					{/* =================== submission button here =================== */}
 					<Button.Group bg="var(--theme-primary-color-0)" p="les">
-						<Menu shadow="md" width={200}>
-							<Menu.Target>
-								<Button
-									type="button"
-									w="100%"
-									bg="var(--theme-primary-color-6)"
-									leftSection={<IconTemplate size={16} />}
-								>
-									<Stack gap={0} align="center" justify="center">
-										<Text>{t("Template")}</Text>
-										<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-											(alt + T)
-										</Text>
-									</Stack>
-								</Button>
-							</Menu.Target>
-							<Menu.Dropdown>
-								<Menu.Item onClick={() => {}}>Treatment Template 1</Menu.Item>
-								<Menu.Item onClick={() => {}}>Treatment Template 2</Menu.Item>
-								<Menu.Item onClick={() => {}}>Treatment Template 3</Menu.Item>
-							</Menu.Dropdown>
-						</Menu>
 						<Button
 							w="100%"
 							bg="var(--theme-reset-btn-color)"

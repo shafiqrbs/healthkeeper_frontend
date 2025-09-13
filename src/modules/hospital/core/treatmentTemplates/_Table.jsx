@@ -1,4 +1,4 @@
-import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, NumberInput } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconTrashX, IconAlertCircle, IconEdit, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";

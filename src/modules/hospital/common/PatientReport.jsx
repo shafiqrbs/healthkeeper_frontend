@@ -12,7 +12,6 @@ import {
 	Grid,
 	Flex,
 	ActionIcon,
-	Switch,
 } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
@@ -21,10 +20,12 @@ import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import inputCss from "@assets/css/InputField.module.css";
 import { DURATION_TYPES } from "@/constants";
+import { useTranslation } from "react-i18next";
 
 export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 260;
+	const height = mainAreaHeight - 246;
+	const { t } = useTranslation();
 
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	// Handle onBlur update for form fields
@@ -38,14 +39,14 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 
-	const handleDynamicFormChange = ({ id, name, value, parentSlug, isCheckbox = false }) => {
+	const handleDynamicFormChange = ({ id, name, value, parentSlug, isCheckbox = false, duration = null }) => {
 		const existingList = Array.isArray(form.values.dynamicFormData[parentSlug])
 			? form.values.dynamicFormData[parentSlug]
 			: [];
 
 		const existingIndex = existingList.findIndex((item) => item.id === id && item.name === name);
 
-		const updatedItem = { id, name, value };
+		const updatedItem = { id, name, value, duration };
 		const updatedList =
 			existingIndex > -1
 				? [...existingList.slice(0, existingIndex), updatedItem, ...existingList.slice(existingIndex + 1)]
@@ -239,29 +240,28 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 												}
 												onBlur={handleFieldBlur}
 											/>
-											{/* <Switch size="lg" radius="sm" onLabel="Month" offLabel="Day" /> */}
-
 											<Select
 												w={100}
 												label=""
-												placeholder={`Day`}
+												placeholder={t("Day")}
 												data={DURATION_TYPES}
-												value="Day"
 												classNames={inputCss}
-												// value={
-												// 	form.values.dynamicFormData?.[section.slug]?.find(
-												// 		(item) => item.id === id && item.name === name
-												// 	)?.value || ""
-												// }
-												// onChange={(value) =>
-												// 	handleDynamicFormChange({
-												// 		id: id,
-												// 		name: name,
-												// 		value: value,
-												// 		parentSlug: section.slug,
-												// 	})
-												// }
-												// onBlur={handleFieldBlur}
+												value={
+													form.values.dynamicFormData?.[section.slug]?.find(
+														(item) =>
+															item.id == particular.id && item.name == particular.name
+													)?.duration || "Day"
+												}
+												onChange={(option) => {
+													handleDynamicFormChange({
+														id: particular.id,
+														name: particular.name,
+														value: value,
+														duration: option,
+														parentSlug: section.slug,
+													});
+												}}
+												onBlur={handleFieldBlur}
 											/>
 										</Flex>
 									</Grid.Col>

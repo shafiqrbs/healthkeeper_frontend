@@ -205,7 +205,7 @@ function AppRoute() {
 					<Route path="treatment-templates" element={<TreatmentTemplatesIndex />} />
 					<Route
 						path="treatment-templates/:treatmentFormat/:id"
-						element={<TreatmentTemplatesIndex mode={"edit"} />}
+						element={<TreatmentTemplatesIndex mode="edit" />}
 					/>
 					<Route path="investigation" element={<InvestigationIndex />} />
 					<Route path="investigation/:reportFormat/:id" element={<InvestigationIndex />} />

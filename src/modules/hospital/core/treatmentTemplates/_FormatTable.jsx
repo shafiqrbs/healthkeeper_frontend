@@ -18,7 +18,7 @@ import { SUCCESS_NOTIFICATION_COLOR } from "@/constants/index";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import { setInsertType } from "@/app/store/core/crudSlice";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import AddMedicineForm from "../../common/AddMedicineForm";
+import AddMedicineForm from "./__AddMedicineForm";
 
 export default function _FormatTable({ module }) {
 	const { t } = useTranslation();
@@ -79,7 +79,7 @@ export default function _FormatTable({ module }) {
 
 	async function handleConfirmModal(values) {
 		try {
-			console.log(values)
+			console.log(values);
 			const value = {
 				url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_MEDICINE_FORMAT.CREATE}`,
 				data: { ...values, treatment_template_id: id },
