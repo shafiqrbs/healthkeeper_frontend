@@ -373,7 +373,6 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 					loaderColor="grape"
 					height={mainAreaHeight}
 				/>
-				)}
 			</Box>
 		</Box>
 	);
