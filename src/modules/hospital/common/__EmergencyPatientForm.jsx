@@ -202,6 +202,8 @@ export default function EmergencyPatientForm({
 				onSubmit={searchForm.onSubmit(handlePatientInfoSearch)}
 				w="100%"
 				style={{ position: "relative" }}
+				px="sm"
+				pb="les"
 			>
 				<TextInput
 					w="100%"
