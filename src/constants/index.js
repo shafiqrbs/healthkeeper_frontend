@@ -41,7 +41,19 @@ export const MODULES_PHARMACY = {
 	STOCK: "stock",
 };
 
-export const DATA_TYPES = ['Input', 'Select', 'Searchable','Autocomplete','LabelInput','Checkbox','RadioButton','Textarea'];
+export const DATA_TYPES = [
+	"Input",
+	"Select",
+	"Searchable",
+	"Autocomplete",
+	"LabelInput",
+	"Checkbox",
+	"RadioButton",
+	"Textarea",
+	"InputWithCheckbox",
+];
+
+export const DURATION_TYPES = ["Day", "Week", "Month", "Year"];
 
 //==================== Module Name ===========
 

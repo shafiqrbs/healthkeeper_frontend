@@ -20,6 +20,7 @@ import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import inputCss from "@assets/css/InputField.module.css";
+import { DURATION_TYPES } from "@/constants";
 
 export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -210,6 +211,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 					</Stack>
 				);
 
+			// case "InputWithCheckbox":
 			case "InputWithCheckbox":
 				return (
 					<Stack gap="xxs">
@@ -237,7 +239,30 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 												}
 												onBlur={handleFieldBlur}
 											/>
-											<Switch size="lg" radius="sm" onLabel="Month" offLabel="Day" />
+											{/* <Switch size="lg" radius="sm" onLabel="Month" offLabel="Day" /> */}
+
+											<Select
+												w={100}
+												label=""
+												placeholder={`Day`}
+												data={DURATION_TYPES}
+												value="Day"
+												classNames={inputCss}
+												// value={
+												// 	form.values.dynamicFormData?.[section.slug]?.find(
+												// 		(item) => item.id === id && item.name === name
+												// 	)?.value || ""
+												// }
+												// onChange={(value) =>
+												// 	handleDynamicFormChange({
+												// 		id: id,
+												// 		name: name,
+												// 		value: value,
+												// 		parentSlug: section.slug,
+												// 	})
+												// }
+												// onBlur={handleFieldBlur}
+											/>
 										</Flex>
 									</Grid.Col>
 								</Grid>

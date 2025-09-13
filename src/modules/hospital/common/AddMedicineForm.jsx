@@ -37,12 +37,7 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch } from "react-redux";
 import { modals } from "@mantine/modals";
 import MedicineListItem from "./MedicineListItem";
-
-const DURATION_OPTIONS = [
-	// { value: "", label: "--Select Duration--" },
-	{ value: "day", label: "Day" },
-	{ value: "month", label: "Month" },
-];
+import { DURATION_TYPES } from "@/constants";
 
 const ADVISE_TEMPLATES = [
 	{
@@ -400,7 +395,6 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 									dropdownValue={by_meal_options}
 									value={medicineForm.values.by_meal}
 									placeholder={t("By Meal")}
-									required
 									tooltip={t("EnterWhenToTakeMedicine")}
 									withCheckIcon={false}
 								/>
@@ -408,18 +402,6 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Group grow gap="les">
-								<SelectForm
-									form={medicineForm}
-									label=""
-									id="duration"
-									name="duration"
-									dropdownValue={DURATION_OPTIONS}
-									value={medicineForm.values.duration}
-									placeholder={t("Duration")}
-									required
-									tooltip={t("EnterMeditationDuration")}
-									withCheckIcon={false}
-								/>
 								<InputNumberForm
 									form={medicineForm}
 									id="quantity"
@@ -429,14 +411,38 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 									required
 									tooltip={t("EnterQuantity")}
 								/>
+								<SelectForm
+									form={medicineForm}
+									label=""
+									id="duration"
+									name="duration"
+									dropdownValue={DURATION_TYPES}
+									value={medicineForm.values.duration}
+									placeholder={t("Duration")}
+									required
+									tooltip={t("EnterMeditationDuration")}
+									withCheckIcon={false}
+								/>
 								<Button
 									leftSection={<IconPlus size={16} />}
 									type="submit"
 									variant="filled"
-									bg="var(--theme-primary-color-6)"
+									bg="var(--theme-secondary-color-6)"
 								>
 									{t("Add")}
 								</Button>
+								<SelectForm
+									form={medicineForm}
+									label=""
+									id="treatments"
+									name="treatments"
+									dropdownValue={DURATION_TYPES}
+									value={medicineForm.values.duration}
+									placeholder={t("SelectTreatments")}
+									required
+									tooltip={t("SelectTreatments")}
+									withCheckIcon={false}
+								/>
 							</Group>
 						</Grid.Col>
 					</Grid>
