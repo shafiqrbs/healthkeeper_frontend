@@ -12,8 +12,11 @@ import {
 	Stack,
 	Text,
 	TextInput,
+	Paper,
+	Group,
+	Avatar,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { IconInfoCircle, IconSearch, IconAlertCircle, IconChevronRight } from "@tabler/icons-react";
@@ -99,32 +102,120 @@ export default function PatientForm({
 	});
 	const { mainAreaHeight } = useOutletContext();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
-	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
-	const [opened, { open, close }] = useDisclosure(false);
+	const [openedOpdRoom, { close: closeOpdRoom }] = useDisclosure(false);
+	const [opened, { close }] = useDisclosure(false);
+
+	// Patient search states
+	const [patientSearchResults, setPatientSearchResults] = useState([]);
+	const [showPatientDropdown, setShowPatientDropdown] = useState(false);
+	const [isSearching, setIsSearching] = useState(false);
+	const searchContainerRef = useRef(null);
 
 	useEffect(() => {
 		document.getElementById("patientName").focus();
 	}, []);
 
-	const handlePatientInfoSearch = (values) => {
+	// Handle click outside to close dropdown
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+				setShowPatientDropdown(false);
+				setPatientSearchResults([]);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
+	const handlePatientInfoSearch = async (values) => {
 		try {
 			const formValue = {
 				...values,
 				term: searchForm.values.term,
 			};
-			console.info(formValue);
+
+			// If PID is selected, show patient dropdown with mock data
+			if (searchForm.values.type === "PID") {
+				setIsSearching(true);
+				// Simulate API call delay
+				setTimeout(() => {
+					// Mock patient data - replace with actual API call
+					const mockPatients = [
+						{
+							id: 1,
+							name: "Md. Abdul Karim",
+							mobile: "+8801712345678",
+							dob: "1985-05-15",
+							pid: "PID001",
+							address: "Dhaka, Bangladesh",
+						},
+						{
+							id: 2,
+							name: "Fatima Begum",
+							mobile: "+8801712345679",
+							dob: "1990-08-22",
+							pid: "PID002",
+							address: "Chittagong, Bangladesh",
+						},
+						{
+							id: 3,
+							name: "Ahmed Hassan",
+							mobile: "+8801712345680",
+							dob: "1988-12-10",
+							pid: "PID003",
+							address: "Sylhet, Bangladesh",
+						},
+					];
+					setPatientSearchResults(mockPatients);
+					setShowPatientDropdown(true);
+					setIsSearching(false);
+				}, 1000);
+			} else {
+				// For other search types, use the original behavior
+				console.info(formValue);
+			}
 		} catch (err) {
 			console.error(err);
+			setIsSearching(false);
 		}
+	};
+
+	const handlePatientSelect = (patient) => {
+		// Fill the form with selected patient data
+		form.setFieldValue("name", patient.name);
+		form.setFieldValue("mobile", patient.mobile);
+		form.setFieldValue("dob", patient.dob);
+		form.setFieldValue("address", patient.address);
+		// Close the dropdown
+		setShowPatientDropdown(false);
+		setPatientSearchResults([]);
+		// Clear the search term
+		searchForm.setFieldValue("term", "");
+	};
+
+	const getSearchPlaceholder = () => {
+		if (searchForm.values.type === "PID") {
+			return "Search with your phone number, date of birth...";
+		}
+		return "Search";
 	};
 
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
 			<Flex align="center" gap="xs" justify="space-between" px="sm" pb="xs">
-				<Box component="form" onSubmit={searchForm.onSubmit(handlePatientInfoSearch)} w="100%">
+				<Box
+					ref={searchContainerRef}
+					component="form"
+					onSubmit={searchForm.onSubmit(handlePatientInfoSearch)}
+					w="100%"
+					style={{ position: "relative" }}
+				>
 					<TextInput
 						w="100%"
-						placeholder="Search"
+						placeholder={getSearchPlaceholder()}
 						type="search"
 						name="term"
 						value={searchForm.values.term}
@@ -134,7 +225,12 @@ export default function PatientForm({
 						leftSection={
 							<Select
 								bd="none"
-								onChange={(value) => searchForm.setFieldValue("type", value)}
+								onChange={(value) => {
+									searchForm.setFieldValue("type", value);
+									// Close dropdown when type changes
+									setShowPatientDropdown(false);
+									setPatientSearchResults([]);
+								}}
 								name="type"
 								styles={{ input: { paddingInlineStart: "30px", paddingInlineEnd: "10px" } }}
 								placeholder="Select"
@@ -143,11 +239,75 @@ export default function PatientForm({
 							/>
 						}
 						rightSection={
-							<ActionIcon type="submit" bg="var(--theme-primary-color-6)">
+							<ActionIcon type="submit" bg="var(--theme-primary-color-6)" loading={isSearching}>
 								<IconSearch size={16} />
 							</ActionIcon>
 						}
 					/>
+
+					{/* Patient Search Dropdown */}
+					{showPatientDropdown && patientSearchResults.length > 0 && (
+						<Paper
+							shadow="md"
+							radius="md"
+							p="xs"
+							mt="xs"
+							style={{
+								position: "absolute",
+								top: "100%",
+								left: 0,
+								right: 0,
+								zIndex: 1000,
+								maxHeight: "300px",
+								overflowY: "auto",
+								border: "1px solid var(--mantine-color-gray-3)",
+							}}
+						>
+							<Stack gap="xs">
+								<Text fw={600} fz="sm" c="dimmed" px="xs">
+									Select a patient:
+								</Text>
+								{patientSearchResults.map((patient) => (
+									<Paper
+										key={patient.id}
+										p="sm"
+										radius="sm"
+										style={{
+											cursor: "pointer",
+											border: "1px solid var(--mantine-color-gray-2)",
+											transition: "all 0.2s ease",
+										}}
+										onClick={() => handlePatientSelect(patient)}
+										onMouseEnter={(e) => {
+											e.currentTarget.style.backgroundColor = "var(--mantine-color-gray-0)";
+											e.currentTarget.style.borderColor = "var(--mantine-color-blue-3)";
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.backgroundColor = "transparent";
+											e.currentTarget.style.borderColor = "var(--mantine-color-gray-2)";
+										}}
+									>
+										<Group gap="sm">
+											<Avatar size="sm" color="blue">
+												{patient.name.charAt(0)}
+											</Avatar>
+											<Box style={{ flex: 1 }}>
+												<Text fw={600} fz="sm">
+													{patient.name}
+												</Text>
+												<Text fz="xs" c="dimmed">
+													{patient.mobile} • {patient.dob} • {patient.pid}
+												</Text>
+												<Text fz="xs" c="dimmed">
+													{patient.address}
+												</Text>
+											</Box>
+										</Group>
+									</Paper>
+								))}
+							</Stack>
+						</Paper>
+					)}
 				</Box>
 				{/* <Flex gap="xs"> */}
 				{/* <SegmentedControl
@@ -229,7 +389,7 @@ export function Form({
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset - 132;
 	const firstRender = useIsFirstRender();
-	const [userNidData, setUserNidData] = useState(USER_NID_DATA);
+	const [userNidData] = useState(USER_NID_DATA);
 	const [showUserData, setShowUserData] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [visible, setVisible] = useState(false);
