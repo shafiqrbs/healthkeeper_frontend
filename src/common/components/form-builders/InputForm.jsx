@@ -6,6 +6,7 @@ import inputCss from "@assets/css/InputField.module.css";
 
 function InputForm({
 	readOnly = false,
+	pt,
 	label = "",
 	placeholder = "",
 	required = false,
@@ -42,6 +43,7 @@ function InputForm({
 					transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 				>
 					<TextInput
+						pt={pt}
 						type={type}
 						id={id}
 						onChange={handleChange || form.getInputProps(name).onChange}

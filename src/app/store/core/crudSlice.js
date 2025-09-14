@@ -43,6 +43,16 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	advice: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
 	doctor: {
 		isLoading: true,
 		refetching: false,
@@ -76,6 +86,16 @@ const initialState = {
 	opd_room: {
 		isLoading: true,
 		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
+	treatment: {
+		isLoading: true,
+		refetching: false,
 		error: null,
 		data: {},
 		editData: {},
@@ -428,6 +448,15 @@ const initialState = {
 		editData: {},
 		filterData: { name: "" },
 		validationMessages: [],
+	},
+
+	// location module starts
+	locations: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		validation: false,
+		data: [],
 	},
 
 	// -------------------- configuration module stops -------------------------

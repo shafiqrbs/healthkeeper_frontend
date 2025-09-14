@@ -57,6 +57,12 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.UTILITY,
 	});
 
+	const { data: referredRoomsOptions } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.UTILITY,
+	});
+
 	const { data: doctorsOption } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.PATH,
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.TYPE },
@@ -273,11 +279,11 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Room")}</Text>
+						<Text fz="sm">{t("Room")}<RequiredAsterisk /></Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<SelectForm
-							dropdownValue={roomsOptions}
+							dropdownValue={referredRoomsOptions}
 							value={roomReferredForm.values.opd_room_id}
 							changeValue={(v) => roomReferredForm.setFieldValue("opd_room_id", v)}
 							tooltip={t("RoomValidateMessage")}
@@ -292,7 +298,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 						/>
 					</Grid.Col>{" "}
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Comment")}</Text> <RequiredAsterisk />
+						<Text fz="sm">{t("Comment")}<RequiredAsterisk /></Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<TextAreaForm

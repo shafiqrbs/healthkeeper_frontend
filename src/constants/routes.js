@@ -1,7 +1,17 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
+		TREATMENT_TEMPLATES: {
+			INDEX: "hospital/core/treatment",
+			CREATE: "hospital/core/particular",
+			UPDATE: "hospital/core/particular",
+			VIEW: "hospital/core/treatment",
+			DELETE: "hospital/core/particular",
+			INLINE_UPDATE: "hospital/core/particular",
+		},
+
 		OPERATIONAL_API: {
 			REFERRED: "hospital/opd/referred",
+			PATIENT_SEARCH: "hospital/patient-search",
 		},
 
 		INVESTIGATION: {
@@ -10,6 +20,14 @@ export const MASTER_DATA_ROUTES = {
 			UPDATE: "hospital/core/particular",
 			VIEW: "hospital/core/particular",
 			DELETE: "hospital/core/particular",
+		},
+
+		MEDICINEDOSAGE: {
+			INDEX: "hospital/core/medicinedosage",
+			CREATE: "hospital/core/medicinedosage",
+			UPDATE: "hospital/core/medicinedosage",
+			VIEW: "hospital/core/medicinedosage",
+			DELETE: "hospital/core/medicinedosage",
 		},
 
 		USER: {
@@ -45,7 +63,7 @@ export const MASTER_DATA_ROUTES = {
 		LAB_USER: {
 			INDEX: "hospital/core/particular",
 			CREATE: "hospital/core/particular",
-			UPDATE: "hospital/core/particular/update",
+			UPDATE: "hospital/core/particular",
 			VIEW: "hospital/core/particular",
 			DELETE: "hospital/core/particular",
 		},
@@ -53,7 +71,7 @@ export const MASTER_DATA_ROUTES = {
 		PARTICULAR: {
 			INDEX: "hospital/core/particular",
 			CREATE: "hospital/core/particular",
-			UPDATE: "hospital/core/particular/update",
+			UPDATE: "hospital/core/particular",
 			VIEW: "hospital/core/particular",
 			DELETE: "hospital/core/particular",
 			INLINE_UPDATE: "hospital/core/particular/inline-update",
@@ -125,6 +143,11 @@ export const MASTER_DATA_ROUTES = {
 			UPDATE: "hospital/core/investigation",
 			DELETE: "hospital/core/investigation",
 		},
+		TREATMENT_MEDICINE_FORMAT: {
+			CREATE: "hospital/core/treatment",
+			UPDATE: "hospital/core/treatment",
+			DELETE: "hospital/core/treatment",
+		},
 	},
 	NAVIGATION_LINKS: {
 		USER: {
@@ -143,7 +166,7 @@ export const MASTER_DATA_ROUTES = {
 		LAB_USER: {
 			INDEX: "/hospital/core/lab",
 			CREATE: "/hospital/core/lab/create",
-			UPDATE: "/hospital/core/labr",
+			UPDATE: "/hospital/core/lab",
 			VIEW: "/hospital/core/lab=/view",
 			DELETE: "/hospital/core/lab/delete",
 		},
@@ -157,6 +180,20 @@ export const MASTER_DATA_ROUTES = {
 		},
 
 		PARTICULAR: {
+			INDEX: "/hospital/core/particular",
+			CREATE: "/hospital/core/particular/create",
+			UPDATE: "/hospital/core/particular/update",
+			VIEW: "/hospital/core/particular/view",
+		},
+
+		ADVICE: {
+			INDEX: "/hospital/core/advice",
+			CREATE: "/hospital/core/advice/create",
+			UPDATE: "/hospital/core/advice/update",
+			VIEW: "/hospital/core/advice/view",
+		},
+
+		ICULAR: {
 			INDEX: "/hospital/core/particular",
 			CREATE: "/hospital/core/particular/create",
 			UPDATE: "/hospital/core/particular/update",
@@ -182,6 +219,14 @@ export const MASTER_DATA_ROUTES = {
 			CREATE: "/hospital/core/doctor/create",
 			UPDATE: "/hospital/core/doctor/update",
 			VIEW: "/hospital/core/doctor/view",
+		},
+
+		TREATMENT_TEMPLATES: {
+			INDEX: "/hospital/core/treatment-templates",
+			CREATE: "/hospital/core/treatment-templates/create",
+			UPDATE: "/hospital/core/treatment-templates/update",
+			VIEW: "/hospital/core/treatment-templates/view",
+			TREATMENT_MEDICINE: "/hospital/core/treatment-templates/treatment-format",
 		},
 
 		NURSE: {
@@ -259,6 +304,14 @@ export const HOSPITAL_DATA_ROUTES = {
 			VISITING_ROOM: "hospital/visiting-room",
 		},
 
+		LOCATIONS: {
+			INDEX: "hospital/select/location",
+			CREATE: "hospital/select/location",
+			UPDATE: "hospital/select/location",
+			VIEW: "hospital/select/location",
+			DELETE: "hospital/select/location",
+		},
+
 		VISIT: {
 			INDEX: "core/customer",
 			CREATE: "core/customer",
@@ -270,6 +323,7 @@ export const HOSPITAL_DATA_ROUTES = {
 		PRESCRIPTION: {
 			INDEX: "hospital/prescription",
 			SEND_TO_PRESCRIPTION: "hospital/send-to-prescription",
+			PATIENT_PRESCRIPTION: "hospital/prescription/patient",
 			EDIT: "hospital/prescription",
 			CREATE: "hospital/prescription",
 			UPDATE: "hospital/prescription",

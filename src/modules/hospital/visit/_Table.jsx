@@ -321,7 +321,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
-								<Group gap={4} justify="right" wrap="nowrap">
+								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									{values?.prescription_id ? (
 										<Button
 											miw={124}

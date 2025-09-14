@@ -7,25 +7,30 @@ import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Button, Flex, Grid, Modal, Stack } from "@mantine/core";
+import { Box, Button, Flex, Grid, Modal, Paper, ScrollArea, Stack, Text } from "@mantine/core";
 import PatientReport from "../common/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
 import { useDisclosure, useElementSize } from "@mantine/hooks";
-import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
+import {ERROR_NOTIFICATION_COLOR, MODULES, MODULES_CORE} from "@/constants";
 import { IconArrowRight } from "@tabler/icons-react";
 import Table from "../visit/_Table";
 import { getLoggedInUser } from "@/common/utils";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { updateEntityData } from "@/app/store/core/crudThunk";
+import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import {getIndexEntityData, updateEntityData} from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientReferredAction from "@modules/hospital/common/PatientReferredAction";
+import DetailsDrawer from "./__DetailsDrawer";
+import PatientPrescriptionHistoryList from "@modules/hospital/common/PatientPrescriptionHistoryList";
 
 const module = MODULES.PRESCRIPTION;
 
 export default function Index() {
+	const [opened, { open, close }] = useDisclosure(false);
+	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
+	const [showHistory, setShowHistory] = useState(false);
 	const [medicines, setMedicines] = useState([]);
 	const { t } = useTranslation();
 	const { ref } = useElementSize();
@@ -39,9 +44,15 @@ export default function Index() {
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);
 
+	const [fetching, setFetching] = useState(false);
+	const [records, setRecords] = useState([]);
+	const [customerId, setCustomerId] = useState();
+
 	const { data: prescriptionData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});
+
+
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
 	const existingMedicines = initialFormValues?.medicines || [];
@@ -53,11 +64,32 @@ export default function Index() {
 		const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
 		form.setValues(updatedFormValues.initialValues);
 		setMedicines(existingMedicines || []);
+		setCustomerId(prescriptionData?.data?.customer_id)
 	}, [prescriptionData]);
 
 	const handleOpenViewOverview = () => {
 		openOverview();
 	};
+
+	const fetchData = async () => {
+		setFetching(true);
+		const value = {
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}`,
+			module,
+		};
+		try {
+			const result = await dispatch(getIndexEntityData(value)).unwrap();
+			setRecords(result?.data?.data || []);
+			console.log(records)
+		} catch (err) {
+			console.error("Unexpected error:", err);
+		} finally {
+			setFetching(false);
+		}
+	};
+	useEffect(() => {
+		fetchData();
+	}, [customerId]);
 
 	const handlePrescriptionUpdate = async (updatedMedicine) => {
 		try {
@@ -90,6 +122,15 @@ export default function Index() {
 		} catch (error) {
 			console.error(error);
 		}
+	};
+
+	const handleViewPrescription = (id) => {
+		setSelectedPrescriptionId(id);
+		setTimeout(() => open(), 10);
+	};
+
+	const handleHistoricalPrescription = (id) => {
+		console.info(id);
 	};
 
 	return (
@@ -125,7 +166,7 @@ export default function Index() {
 									</Button>
 								</Flex>
 							</Grid.Col>
-							<Grid.Col span={8}>
+							<Grid.Col span={7}>
 								<PatientReport
 									tabValue={tabValue}
 									form={form}
@@ -133,14 +174,18 @@ export default function Index() {
 									prescriptionData={prescriptionData}
 								/>
 							</Grid.Col>
-							<Grid.Col span={16}>
+							<Grid.Col span={showHistory ? 13 : 17}>
 								<AddMedicineForm
 									module={module}
 									form={form}
 									medicines={medicines}
 									setMedicines={setMedicines}
 									update={handlePrescriptionUpdate}
+									setShowHistory={setShowHistory}
 								/>
+							</Grid.Col>
+							<Grid.Col display={showHistory ? "block" : "none"} span={4}>
+								<PatientPrescriptionHistoryList historyList={records} />
 							</Grid.Col>
 						</Grid>
 					</Flex>
@@ -149,6 +194,8 @@ export default function Index() {
 			<Modal opened={openedOverview} onClose={closeOverview} size="100%" centered withCloseButton={false}>
 				<Table module={module} closeTable={closeOverview} height={mainAreaHeight - 220} availableClose />
 			</Modal>
+
+			<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 		</>
 	);
 }

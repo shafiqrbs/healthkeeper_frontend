@@ -40,7 +40,6 @@ export const getMedicineFormInitialValues = () => {
 
 		validate: {
 			dose_details: (value) => (value ? null : "Dose details is required"),
-			by_meal: (value) => (value ? null : "By meal is required"),
 			duration: (value) => (value ? null : "Duration is required"),
 			quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},

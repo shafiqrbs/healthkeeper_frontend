@@ -1,15 +1,18 @@
-import {Box, Flex, Image, Text} from "@mantine/core";
+import { Box, Flex, Image, Text } from "@mantine/core";
 import { IconDoor, IconUsers } from "@tabler/icons-react";
 import imgActive from "@assets/images/status/active.gif";
 
-export default function RoomCard({ room, selectedRoom, handleRoomClick }) {
+export default function RoomCard({ room, selectedRoom, handleRoomClick, closeRoom }) {
 	return (
 		<Box
 			p="xs"
 			bg="var(--theme-tertiary-color-0)"
 			mb="les"
 			className={`borderRadiusAll cursor-pointer ${selectedRoom === room ? "active-box" : ""}`}
-			onClick={() => handleRoomClick(room)}
+			onClick={() => {
+				handleRoomClick(room);
+				closeRoom();
+			}}
 		>
 			<Flex justify="space-between" mb="xxxs">
 				<Text fw={500} c="var(--theme-tertiary-color-6)" fz="sm">
@@ -20,7 +23,7 @@ export default function RoomCard({ room, selectedRoom, handleRoomClick }) {
 					<Text fz="sm">{room?.invoice_count}</Text>
 				</Flex>
 				<Flex align="center" gap="xxxs">
-					<Image radius="xl"  src={imgActive} />
+					<Image radius="xl" src={imgActive} />
 					<Text fz="sm">{room?.invoice_count}</Text>
 				</Flex>
 			</Flex>

@@ -2,7 +2,7 @@ import { Tooltip, Textarea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconInfoCircle, IconX } from "@tabler/icons-react";
 import { getHotkeyHandler } from "@mantine/hooks";
-import inputCss from "@assets/css/InputField.module.css";
+import inputCss from "@assets/css/TextAreaInputField.module.css";
 
 function TextAreaForm({
 	label,

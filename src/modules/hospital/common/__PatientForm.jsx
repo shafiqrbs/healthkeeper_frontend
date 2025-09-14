@@ -13,23 +13,22 @@ import {
 	Text,
 	TextInput,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconArrowRight, IconArrowUpRight, IconInfoCircle, IconSearch, IconAlertCircle } from "@tabler/icons-react";
+import { IconInfoCircle, IconSearch, IconAlertCircle, IconChevronRight, IconX } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
-import { DISTRICT_LIST } from "@/constants";
 import { calculateAge, calculateDetailedAge } from "@/common/utils";
 import Table from "../visit/_Table";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { storeEntityData } from "@/app/store/core/crudThunk";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import InputMaskForm from "@components/form-builders/InputMaskForm";
 import SegmentedControlForm from "@components/form-builders/SegmentedControlForm";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
@@ -39,6 +38,10 @@ import OPDFooter from "./OPDFooter";
 import PrescriptionFooter from "./PrescriptionFooter";
 import OpdRoomModal from "@modules/hospital/common/OpdRoomModal";
 import { useForm } from "@mantine/form";
+import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
+import RoomCard from "./RoomCard";
+import { getDataWithoutStore } from "@/services/apiService";
+import PatientSearchResult from "./PatientSearchResult";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -81,104 +84,180 @@ const USER_NID_DATA = {
 	},
 };
 
-export default function PatientForm({ form, module, type = "opd_ticket", setSelectedRoom }) {
+export default function PatientForm({
+	form,
+	module,
+	type = "opd_ticket",
+	setSelectedRoom,
+	handleRoomClick,
+	filteredAndSortedRecords,
+	selectedRoom,
+}) {
 	const searchForm = useForm({
 		initialValues: {
 			type: "PID",
 			term: "",
 		},
 	});
+
+	const [visible, setVisible] = useState(false);
 	const { mainAreaHeight } = useOutletContext();
-	const { t } = useTranslation();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
-	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
-	const [opened, { open, close }] = useDisclosure(false);
+	const [openedOpdRoom, { close: closeOpdRoom }] = useDisclosure(false);
+	const [opened, { close }] = useDisclosure(false);
+
+	// Patient search states
+	const [patientSearchResults, setPatientSearchResults] = useState([]);
+	const [showPatientDropdown, setShowPatientDropdown] = useState(false);
+	const [isSearching, setIsSearching] = useState(false);
+	const searchContainerRef = useRef(null);
 
 	useEffect(() => {
 		document.getElementById("patientName").focus();
 	}, []);
 
-	const handleOpenViewOverview = () => {
-		open();
-	};
-	const handleOpenOpdRoom = () => {
-		openOpdRoom();
-	};
+	// Handle click outside to close dropdown
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+				setShowPatientDropdown(false);
+				setPatientSearchResults([]);
+			}
+		};
 
-	const handlePatientInfoSearch = (values) => {
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
+	const handlePatientInfoSearch = async (values) => {
 		try {
 			const formValue = {
 				...values,
 				term: searchForm.values.term,
 			};
+
+			// If PID is selected, show patient dropdown with mock data
+			if (searchForm.values.type === "PID") {
+				setIsSearching(true);
+				// Simulate API call delay
+
+				const patients = await getDataWithoutStore({
+					url: MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.PATIENT_SEARCH,
+					params: { term: searchForm.values.term },
+				});
+
+				setPatientSearchResults(patients?.data || []);
+				setShowPatientDropdown(true);
+				setIsSearching(false);
+			} else {
+				// For other search types, use the original behavior
+				console.info(formValue);
+			}
 		} catch (err) {
 			console.error(err);
+			setIsSearching(false);
 		}
+	};
+
+	const handlePatientSelect = async (patientId) => {
+		setVisible(true);
+		const patient = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${patientId}`,
+		});
+
+		// Fill the form with selected patient data
+		form.setFieldValue("name", patient?.data?.name);
+		form.setFieldValue("mobile", patient?.data?.mobile);
+		form.setFieldValue("dob", patient?.data?.dob);
+		form.setFieldValue("address", patient?.data?.address);
+		// Close the dropdown
+		setShowPatientDropdown(false);
+		setPatientSearchResults([]);
+		// Clear the search term
+		searchForm.setFieldValue("term", "");
+		setVisible(false);
+	};
+
+	const getSearchPlaceholder = () => {
+		if (searchForm.values.type === "PID") {
+			return "Search with your phone number, date of birth...";
+		}
+		return "Search";
 	};
 
 	return (
 		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
-			<Flex align="center" gap="xs" justify="space-between" px="sm" pb="xs">
-				<Text fw={600} fz="sm">
-					{t("PatientInformation")}
-				</Text>
-				<Flex component="form" onSubmit={searchForm.onSubmit(handlePatientInfoSearch)} gap="les">
-					<Select
-						w={140}
-						onChange={(e) => searchForm.setFieldValue("type", e.target.value)}
-						name="type"
-						placeholder="Select"
-						data={["PID", "PresID", "HID", "NID", "BRID"]}
-						value={searchForm.values.type}
-					/>
-
+			<Flex align="center" gap="xs" justify="space-between" px="sm" pb="les">
+				<Box
+					ref={searchContainerRef}
+					component="form"
+					onSubmit={searchForm.onSubmit(handlePatientInfoSearch)}
+					w="100%"
+					style={{ position: "relative" }}
+				>
 					<TextInput
-						w={300}
-						placeholder="Search"
+						w="100%"
+						placeholder={getSearchPlaceholder()}
 						type="search"
 						name="term"
 						value={searchForm.values.term}
+						leftSectionWidth={100}
 						onChange={(e) => searchForm.setFieldValue("term", e.target.value)}
+						styles={{ input: { paddingInlineStart: "110px", width: "100%" } }}
+						leftSection={
+							<Select
+								bd="none"
+								onChange={(value) => {
+									searchForm.setFieldValue("type", value);
+									// Close dropdown when type changes
+									setShowPatientDropdown(false);
+									setPatientSearchResults([]);
+								}}
+								name="type"
+								styles={{ input: { paddingInlineStart: "30px", paddingInlineEnd: "10px" } }}
+								placeholder="Select"
+								data={["PID", "PresID", "HID", "NID", "BRID"]}
+								value={searchForm.values.type}
+							/>
+						}
 						rightSection={
-							<ActionIcon type="submit" bg="var(--theme-primary-color-6)">
-								<IconSearch size={16} />
-							</ActionIcon>
+							showPatientDropdown ? (
+								<ActionIcon
+									type="button"
+									bg="var(--theme-error-color)"
+									onClick={(e) => {
+										e.stopPropagation();
+										setShowPatientDropdown(false);
+									}}
+								>
+									<IconX size={16} />
+								</ActionIcon>
+							) : (
+								<ActionIcon type="submit" bg="var(--theme-primary-color-6)" loading={isSearching}>
+									<IconSearch size={16} />
+								</ActionIcon>
+							)
 						}
 					/>
-				</Flex>
-				<Flex gap="xs">
-					{/* <SegmentedControl
-							size="xs"
-							color="var(--theme-primary-color-6)"
-							data={["New", "Re-Visit"]}
-							styles={{
-								root: { backgroundColor: "var(--theme-tertiary-color-1)" },
-								control: { width: "60px" },
-							}}
-						/> */}
-					<Button
-						onClick={handleOpenViewOverview}
-						size="xs"
-						radius="es"
-						rightSection={<IconArrowRight size={16} />}
-						bg="var(--theme-success-color)"
-						c="white"
-					>
-						{t("VisitTable")}
-					</Button>
-					<Button
-						onClick={handleOpenOpdRoom}
-						size="xs"
-						radius="es"
-						rightSection={<IconArrowUpRight size={16} />}
-						bg="var(--theme-primary-color-5)"
-						c="white"
-					>
-						{t("OPDRoom")}
-					</Button>
-				</Flex>
+
+					{/* Patient Search Dropdown */}
+					{showPatientDropdown && (
+						<PatientSearchResult results={patientSearchResults} handlePatientSelect={handlePatientSelect} />
+					)}
+				</Box>
 			</Flex>
-			<Form form={form} module={module} type={type} />
+			<Form
+				form={form}
+				module={module}
+				type={type}
+				handleRoomClick={handleRoomClick}
+				filteredAndSortedRecords={filteredAndSortedRecords}
+				selectedRoom={selectedRoom}
+				visible={visible}
+				setVisible={setVisible}
+			/>
 			<DoctorsRoomDrawer
 				form={form}
 				opened={openedDoctorsRoom}
@@ -201,18 +280,35 @@ export default function PatientForm({ form, module, type = "opd_ticket", setSele
 	);
 }
 
-export function Form({ form, showTitle = false, heightOffset = 116, module, type = "opd_ticket" }) {
+export function Form({
+	form,
+	showTitle = false,
+	heightOffset = 116,
+	module,
+	type = "opd_ticket",
+	handleRoomClick,
+	filteredAndSortedRecords,
+	selectedRoom,
+	visible,
+	setVisible,
+}) {
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 	const [openedRoomError, { open: openRoomError, close: closeRoomError }] = useDisclosure(false);
+	const [openedRoom, { open: openRoom, close: closeRoom }] = useDisclosure(false);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset - 132;
 	const firstRender = useIsFirstRender();
-	const [userNidData, setUserNidData] = useState(USER_NID_DATA);
+	const [userNidData] = useState(USER_NID_DATA);
 	const [showUserData, setShowUserData] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [visible, setVisible] = useState(false);
+
+	const locations = useSelector((state) => state.crud.locations.data);
+
+	useEffect(() => {
+		dispatch(getIndexEntityData({ module: "locations", url: HOSPITAL_DATA_ROUTES.API_ROUTES.LOCATIONS.INDEX }));
+	}, []);
 
 	const handleDobChange = () => {
 		const type = form.values.ageType || "year";
@@ -392,349 +488,346 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 					</Text>
 				</Flex>
 			)}
-			<Grid columns={24} gutter="sm">
-				<Grid.Col span={12}>
-					<ScrollArea h={height}>
-						<Stack mih={height} className="form-stack-vertical">
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Flex align="center" gap="es">
-										<Text fz="sm">{t("PatientName")}</Text>
-										<RequiredAsterisk />
-									</Flex>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<InputForm
-										form={form}
-										label=""
-										tooltip={t("enterPatientName")}
-										placeholder="Md. Abdul"
-										name="name"
-										id="patientName"
-										nextField="mobile"
-										value={form.values.name}
-										// required
-									/>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Flex align="center" gap="es">
-										<Text fz="sm">{t("Mobile")}</Text>
-										<RequiredAsterisk />
-									</Flex>
-								</Grid.Col>
-								<Grid.Col span={14}>
+			<Box>
+				<ScrollArea h={mainAreaHeight - 180}>
+					<Stack mih={height} className="form-stack-vertical">
+						<Flex className="form-action-header full-bleed">
+							<Text fz="sm">{t("Room")}</Text>
+							<Flex align="center" gap="xs" className="cursor-pointer" onClick={openRoom}>
+								<Text fz="sm">{selectedRoom?.name}</Text> <IconChevronRight size="16px" />
+							</Flex>
+						</Flex>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Flex align="center" gap="es">
+									<Text fz="sm">{t("PatientName")}</Text>
+									<RequiredAsterisk />
+								</Flex>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<InputForm
+									form={form}
+									label=""
+									tooltip={t("enterPatientName")}
+									placeholder="Md. Abdul"
+									name="name"
+									id="patientName"
+									nextField="mobile"
+									value={form.values.name}
+									// required
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Flex align="center" gap="es">
+									<Text fz="sm">{t("Mobile")}</Text>
+									<RequiredAsterisk />
+								</Flex>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<InputNumberForm
+									form={form}
+									label=""
+									tooltip={t("EnterPatientMobile")}
+									placeholder="+880 1717171717"
+									name="mobile"
+									id="mobile"
+									nextField="dob"
+									value={form.values.mobile}
+									required
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("Gender")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14} py="es">
+								<SegmentedControlForm
+									fullWidth
+									color="var(--theme-primary-color-6)"
+									value={form.values.gender}
+									id="gender"
+									name="gender"
+									nextField="dob"
+									onChange={(val) => handleGenderChange(val)}
+									data={[
+										{ label: t("Male"), value: "male" },
+										{ label: t("Female"), value: "female" },
+										{ label: t("Other"), value: "other" },
+									]}
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Flex align="center" gap="es">
+									<Text fz="sm">{t("DateOfBirth")}</Text>
+									<RequiredAsterisk />
+								</Flex>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<InputMaskForm
+									name="dob"
+									id="dob"
+									value={form.values?.dob}
+									form={form}
+									label=""
+									tooltip={t("EnterPatientBirthDate")}
+									placeholder="DD-MM-YYYY"
+									nextField="day"
+									maskInput="00-00-0000"
+									rightSection={<IconInfoCircle size={16} opacity={0.5} />}
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("Age")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<Flex gap="xs">
 									<InputNumberForm
 										form={form}
 										label=""
-										tooltip={t("EnterPatientMobile")}
-										placeholder="+880 1717171717"
-										name="mobile"
-										id="mobile"
-										nextField="dob"
-										value={form.values.mobile}
-										required
+										placeholder="Days"
+										tooltip={t("days")}
+										name="day"
+										id="day"
+										nextField="month"
+										min={0}
+										max={31}
+										leftSection={
+											<Text fz="sm" px="sm">
+												{t("D")}
+											</Text>
+										}
 									/>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("Gender")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<SegmentedControlForm
-										fullWidth
-										color="var(--theme-primary-color-6)"
-										value={form.values.gender}
-										id="gender"
-										name="gender"
-										nextField="dob"
-										onChange={(val) => handleGenderChange(val)}
-										data={[
-											{ label: t("Male"), value: "male" },
-											{ label: t("Female"), value: "female" },
-											{ label: t("Other"), value: "other" },
-										]}
-									/>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Flex align="center" gap="es">
-										<Text fz="sm">{t("DateOfBirth")}</Text>
-										<RequiredAsterisk />
-									</Flex>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<InputMaskForm
-										name="dob"
-										id="dob"
-										value={form.values?.dob}
+									<InputNumberForm
 										form={form}
 										label=""
-										tooltip={t("EnterPatientBirthDate")}
-										placeholder="DD-MM-YYYY"
-										nextField="day"
-										maskInput="00-00-0000"
-										rightSection={<IconInfoCircle size={16} opacity={0.5} />}
+										placeholder="Months"
+										tooltip={t("months")}
+										name="month"
+										id="month"
+										nextField="year"
+										min={0}
+										max={11}
+										leftSection={
+											<Text fz="sm" px="sm">
+												{t("M")}
+											</Text>
+										}
 									/>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("Age")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<Flex gap="xs">
-										<InputNumberForm
-											form={form}
-											label=""
-											placeholder="Days"
-											tooltip={t("days")}
-											name="day"
-											id="day"
-											nextField="month"
-											min={0}
-											max={31}
-											leftSection={
-												<Text fz="sm" px="sm">
-													{t("D")}
-												</Text>
-											}
-										/>
-										<InputNumberForm
-											form={form}
-											label=""
-											placeholder="Months"
-											tooltip={t("months")}
-											name="month"
-											id="month"
-											nextField="year"
-											min={0}
-											max={11}
-											leftSection={
-												<Text fz="sm" px="sm">
-													{t("M")}
-												</Text>
-											}
-										/>
 
-										<InputNumberForm
-											form={form}
-											label=""
-											placeholder="Years"
-											tooltip={t("years")}
-											name="year"
-											id="year"
-											nextField="identity"
-											min={0}
-											max={150}
-											leftSection={
-												<Text fz="sm" px="sm">
-													{t("Y")}
-												</Text>
-											}
-										/>
-									</Flex>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Flex align="center" gap="es">
-										<Text fz="sm">{t("Upazilla")}</Text> <RequiredAsterisk />
-									</Flex>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<SelectForm
+									<InputNumberForm
 										form={form}
-										tooltip={t("EnterPatientUpazilla")}
-										placeholder="Dhaka"
-										name="upazilla"
-										id="upazilla"
+										label=""
+										placeholder="Years"
+										tooltip={t("years")}
+										name="year"
+										id="year"
 										nextField="identity"
-										value={form.values.upazilla}
-										required
-										dropdownValue={DISTRICT_LIST}
-										searchable
+										min={0}
+										max={150}
+										leftSection={
+											<Text fz="sm" px="sm">
+												{t("Y")}
+											</Text>
+										}
 									/>
-								</Grid.Col>
-							</Grid>
+								</Flex>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Flex align="center" gap="es">
+									<Text fz="sm">{t("Upazilla")}</Text> <RequiredAsterisk />
+								</Flex>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<SelectForm
+									form={form}
+									tooltip={t("EnterPatientUpazilla")}
+									placeholder="Dhaka"
+									name="upazilla"
+									id="upazilla"
+									nextField="identity"
+									value={form.values.upazilla}
+									required
+									dropdownValue={locations?.data?.map((location) => ({
+										label: location.name,
+										value: location.id?.toString(),
+									}))}
+									searchable
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Flex align="center" gap="es">
+									<Text fz="sm">{t("Type")}</Text>
+									<RequiredAsterisk />
+								</Flex>
+							</Grid.Col>
+							<Grid.Col span={14} py="es">
+								<SegmentedControlForm
+									fullWidth
+									color="var(--theme-primary-color-6)"
+									value={form.values.identity_mode}
+									id="identity_mode"
+									name="identity_mode"
+									nextField="identity"
+									onChange={(val) => handleTypeChange(val)}
+									data={[
+										{ label: t("NID"), value: "NID" },
+										{ label: t("BRID"), value: "BRID" },
+										{ label: t("HID"), value: "HID" },
+									]}
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">
+									{form.values.identity_mode === "NID"
+										? t("NID")
+										: form.values.identity_mode === "BRID"
+										? t("BRID")
+										: t("HID")}
+								</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<InputNumberForm
+									form={form}
+									label=""
+									placeholder="1234567890"
+									tooltip={t("EnterPatientIdentity")}
+									name="identity"
+									id="identity"
+									nextField="guardian_name"
+									value={form.values.identity}
+									handleChange={handleContentChange}
+									rightSection={
+										<ActionIcon onClick={handleNIDSearch} bg="var(--theme-secondary-color-6)">
+											<IconSearch size={"16"} />
+										</ActionIcon>
+									}
+									required
+								/>
+							</Grid.Col>
+						</Grid>
+						{showUserData && (
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>
-									<Flex align="center" gap="es">
-										<Text fz="sm">{t("Type")}</Text>
-										<RequiredAsterisk />
-									</Flex>
+									<Text fz="sm">{t("HID")}</Text>
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<SegmentedControlForm
-										fullWidth
-										color="var(--theme-primary-color-6)"
-										value={form.values.identity_mode}
-										id="identity_mode"
-										name="identity_mode"
-										nextField="identity"
-										onChange={(val) => handleTypeChange(val)}
-										data={[
-											{ label: t("NID"), value: "NID" },
-											{ label: t("BRID"), value: "BRID" },
-											{ label: t("HID"), value: "HID" },
-										]}
-									/>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">
-										{form.values.identity_mode === "NID"
-											? t("NID")
-											: form.values.identity_mode === "BRID"
-											? t("BRID")
-											: t("HID")}
+									<Text
+										className="cursor-pointer user-none"
+										onClick={openNIDDataPreview}
+										fz="sm"
+										c="var(--theme-primary-color-6)"
+									>
+										{form.values.hid || "HID432343"}
 									</Text>
 								</Grid.Col>
-								<Grid.Col span={14}>
-									<InputNumberForm
-										form={form}
-										label=""
-										placeholder="1234567890"
-										tooltip={t("EnterPatientIdentity")}
-										name="identity"
-										id="identity"
-										nextField="guardian_name"
-										value={form.values.identity}
-										handleChange={handleContentChange}
-										rightSection={
-											<ActionIcon onClick={handleNIDSearch} bg="var(--theme-secondary-color-6)">
-												<IconSearch size={"16"} />
-											</ActionIcon>
-										}
-										required
-									/>
-								</Grid.Col>
 							</Grid>
-							{showUserData && (
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("HID")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<Text
-											className="cursor-pointer user-none"
-											onClick={openNIDDataPreview}
-											fz="sm"
-											c="var(--theme-primary-color-6)"
-										>
-											{form.values.hid || "HID432343"}
-										</Text>
-									</Grid.Col>
-								</Grid>
-							)}
-						</Stack>
-					</ScrollArea>
-				</Grid.Col>
-				<Grid.Col span={12}>
-					<ScrollArea h={height}>
-						<Stack mih={height} className="form-stack-vertical">
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("GuardianName")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
+						)}
+
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("GuardianName")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<InputForm
+									form={form}
+									label=""
+									tooltip={t("EnterGuardianName")}
+									placeholder={t("EnterFatherMotherHusbandBrother")}
+									name="guardian_name"
+									id="guardian_name"
+									nextField="guardian_mobile"
+									value={form.values.guardian_name}
+									required
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("GuardianMobile")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<InputMobileNumberForm
+									form={form}
+									label=""
+									tooltip={t("EnterGuardianMobile")}
+									placeholder="+880 1717171717"
+									name="guardian_mobile"
+									id="guardian_mobile"
+									nextField="address"
+									value={form.values.guardian_mobile}
+									required
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("address")}</Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<TextAreaForm
+									form={form}
+									label=""
+									tooltip={t("EnterPatientAddress")}
+									placeholder="12 street, 123456"
+									name="address"
+									id="address"
+									nextField="free_identification_id"
+									value={form.values.address}
+									required
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid columns={20}>
+							<Grid.Col span={20} pt="es">
+								<SegmentedControlForm
+									fullWidth
+									color="var(--theme-primary-color-6)"
+									value={form.values.patient_payment_mode_id}
+									id="patient_payment_mode_id"
+									name="patient_payment_mode_id"
+									onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
+									data={[
+										{ label: t("General"), value: "30" },
+										{ label: t("FreedomFighter"), value: "31" },
+										{ label: t("Disabled"), value: "29" },
+										{ label: t("GovtService"), value: "32" },
+										{ label: t("MDR"), value: "50" },
+									]}
+								/>
+							</Grid.Col>
+							<Grid.Col span={6}></Grid.Col>
+							<Grid.Col span={14}>
+								{form.values.patient_payment_mode_id !== "30" && (
 									<InputForm
 										form={form}
+										pt={0}
 										label=""
-										tooltip={t("EnterGuardianName")}
-										placeholder={t("EnterFatherMotherHusbandBrother")}
-										name="guardian_name"
-										id="guardian_name"
-										nextField="guardian_mobile"
-										value={form.values.guardian_name}
-										required
+										tooltip={t("enterFreeIdentificationId")}
+										placeholder="Enter Free ID"
+										name="free_identification_id"
+										id="free_identification_id"
+										nextField="amount"
+										value={form.values.free_identification_id || ""}
 									/>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("GuardianMobile")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<InputMobileNumberForm
-										form={form}
-										label=""
-										tooltip={t("EnterGuardianMobile")}
-										placeholder="+880 1717171717"
-										name="guardian_mobile"
-										id="guardian_mobile"
-										nextField="address"
-										value={form.values.guardian_mobile}
-										required
-									/>
-								</Grid.Col>
-							</Grid>
-							<Grid align="center" columns={20}>
-								<Grid.Col span={6}>
-									<Text fz="sm">{t("address")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<TextAreaForm
-										form={form}
-										label=""
-										tooltip={t("EnterPatientAddress")}
-										placeholder="12 street, 123456"
-										name="address"
-										id="address"
-										nextField="free_identification_id"
-										value={form.values.address}
-										required
-									/>
-								</Grid.Col>
-							</Grid>
-							<Grid columns={20}>
-								<Grid.Col span={6} mt="xs">
-									<Text fz="sm">{t("FreeFor")}</Text>
-								</Grid.Col>
-								<Grid.Col span={14}>
-									<SegmentedControlForm
-										fullWidth
-										color="var(--theme-primary-color-6)"
-										value={form.values.patient_payment_mode_id}
-										id="patient_payment_mode_id"
-										name="patient_payment_mode_id"
-										nextField="free_identification_id"
-										onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
-										data={[
-											{ label: t("General"), value: "30" },
-											{ label: t("FreedomFighter"), value: "31" },
-											{ label: t("Disabled"), value: "29" },
-											{ label: t("GovtService"), value: "32" },
-										]}
-									/>
-								</Grid.Col>
-							</Grid>
-							<Grid columns={20}>
-								<Grid.Col span={6} mt="xs"></Grid.Col>
-								<Grid.Col span={14}>
-									{form.values.patient_payment_mode_id !== "30" && (
-										<InputForm
-											form={form}
-											label=""
-											mt="xxs"
-											tooltip={t("EnterFreeIdentificationId")}
-											placeholder="Enter Free ID"
-											name="free_identification_id"
-											id="free_identification_id"
-											nextField="EntityFormSubmit"
-											value={form.values.free_identification_id || ""}
-										/>
-									)}
-								</Grid.Col>
-							</Grid>
-						</Stack>
-					</ScrollArea>
-				</Grid.Col>
-			</Grid>
+								)}
+							</Grid.Col>
+						</Grid>
+					</Stack>
+				</ScrollArea>
+			</Box>
 			{type === "opd_ticket" ? (
 				<OPDFooter form={form} isSubmitting={isSubmitting} handleSubmit={handleSubmit} type="opd_ticket" />
 			) : (
@@ -821,6 +914,27 @@ export function Form({ form, showTitle = false, heightOffset = 116, module, type
 					</Flex>
 				</Stack>
 			</Modal>
+
+			<GlobalDrawer
+				opened={openedRoom}
+				close={closeRoom}
+				title="Select a Room"
+				size="20%"
+				bg="var(--theme-primary-color-0)"
+				keepMounted
+			>
+				<ScrollArea h={mainAreaHeight - 70} scrollbars="y" mt="xs" p="xs" bg="white">
+					{filteredAndSortedRecords?.map((item, index) => (
+						<RoomCard
+							key={index}
+							room={item}
+							selectedRoom={selectedRoom}
+							handleRoomClick={handleRoomClick}
+							closeRoom={closeRoom}
+						/>
+					))}
+				</ScrollArea>
+			</GlobalDrawer>
 		</Box>
 	);
 }

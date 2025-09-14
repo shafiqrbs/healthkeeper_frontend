@@ -65,7 +65,7 @@ export default function ActionButtons({
 			<Stack gap={0} justify="space-between" mt="xs">
 				<Box p="sm" pl={"md"} pr={"md"} bg="white">
 					<Grid columns={24}>
-						<Grid.Col span={12} bg="var(--theme-tertiary-color-0)" px="xs">
+						{/* <Grid.Col span={12} bg="var(--theme-tertiary-color-0)" px="xs">
 							<TextAreaForm
 								form={form}
 								placeholder="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its"
@@ -75,9 +75,9 @@ export default function ActionButtons({
 								name="remark"
 								style={{ input: { height: "80px" } }}
 							/>
-						</Grid.Col>
-						<Grid.Col span={6} bg="var(--theme-secondary-color-0)" px="xs" pt={"md"}>
-							{/*<Stack>
+						</Grid.Col> */}
+						{/* <Grid.Col span={6} bg="var(--theme-secondary-color-0)" px="xs" pt={"md"}> */}
+						{/*<Stack>
 								<SelectForm
 									key={referredNameKey}
 									form={form}
@@ -105,7 +105,7 @@ export default function ActionButtons({
 									rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
 								/>
 							</Stack>*/}
-							<Box>
+						{/* <Box>
 								<Flex gap="xss" align="center" justify="space-between">
 									<Text fz="xs">{t("Name")}</Text>
 									<Box px="xs">
@@ -139,45 +139,50 @@ export default function ActionButtons({
 									</Box>
 								</Flex>
 							</Box>
+						</Grid.Col> */}
+						{/* <Grid.Col span={24} bg="var(--theme-primary-color-0)" px="xs"> */}
+						<Grid.Col span={8} bg="var(--theme-primary-color-0)" px="xs">
+							<Flex gap="xss" align="center" justify="space-between">
+								<Text>{t("Fee")}</Text>
+								<Box px="xs" py="les">
+									<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
+										৳ {Number(configuredDueAmount || 0).toLocaleString()}
+									</Text>
+								</Box>
+							</Flex>
 						</Grid.Col>
-						<Grid.Col span={6} bg="var(--theme-primary-color-0)" px="xs">
-							<Stack gap="0" className="method-carousel">
-								{hospitalConfigData?.is_multi_payment ? (
-									<PaymentMethodsCarousel
-										selectPaymentMethod={selectPaymentMethod}
-										paymentMethod={paymentMethod}
+						<Grid.Col span={8} bg="var(--theme-primary-color-0)" px="xs">
+							<Flex align="center" justify="space-between">
+								<Box w="100%">
+									<InputNumberForm
+										id="amount"
+										form={form}
+										tooltip={t("enterAmount")}
+										placeholder={t("Amount")}
+										name="amount"
 									/>
-								) : null}
-								<Flex gap="xss" align="center" justify="space-between">
-									<Text>{t("Fee")}</Text>
-									<Box px="xs" py="les">
-										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
-											৳ {Number(configuredDueAmount || 0).toLocaleString()}
-										</Text>
-									</Box>
-								</Flex>
-								<Flex align="center" justify="space-between">
-									<Text>Receive</Text>
-									<Box w={"100"}>
-										<InputNumberForm
-											id="amount"
-											form={form}
-											tooltip={t("enterAmount")}
-											placeholder={t("Amount")}
-											name="amount"
-										/>
-									</Box>
-								</Flex>
-								<Flex align="center" justify="space-between">
-									<Text>{t(displayLabelKey)}</Text>
-									<Box px="xs" py="les">
-										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
-											৳ {Number(displayAmount || 0).toLocaleString()}
-										</Text>
-									</Box>
-								</Flex>
-							</Stack>
+								</Box>
+							</Flex>
 						</Grid.Col>
+						<Grid.Col span={8} bg="var(--theme-primary-color-0)" px="xs">
+							<Flex align="center" justify="space-between">
+								<Text>{t(displayLabelKey)}</Text>
+								<Box px="xs" py="les">
+									<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
+										৳ {Number(displayAmount || 0).toLocaleString()}
+									</Text>
+								</Box>
+							</Flex>
+						</Grid.Col>
+						<Stack gap="0" className="method-carousel">
+							{hospitalConfigData?.is_multi_payment ? (
+								<PaymentMethodsCarousel
+									selectPaymentMethod={selectPaymentMethod}
+									paymentMethod={paymentMethod}
+								/>
+							) : null}
+						</Stack>
+						{/* </Grid.Col> */}
 					</Grid>
 				</Box>
 			</Stack>
@@ -197,14 +202,14 @@ export default function ActionButtons({
 							</Text>
 						</Stack>
 					</Button>
-					<Button w="100%" bg="var(--theme-hold-btn-color)" disabled={isSubmitting}>
+					{/* <Button w="100%" bg="var(--theme-hold-btn-color)" disabled={isSubmitting}>
 						<Stack gap={0} align="center" justify="center">
 							<Text>{t("Hold")}</Text>
 							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 								(alt + h)
 							</Text>
 						</Stack>
-					</Button>
+					</Button> */}
 					<Button
 						w="100%"
 						onClick={handleA4Print}

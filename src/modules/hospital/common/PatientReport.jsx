@@ -19,10 +19,13 @@ import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import inputCss from "@assets/css/InputField.module.css";
+import { DURATION_TYPES } from "@/constants";
+import { useTranslation } from "react-i18next";
 
 export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 260;
+	const height = mainAreaHeight - 246;
+	const { t } = useTranslation();
 
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	// Handle onBlur update for form fields
@@ -36,14 +39,14 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 
-	const handleDynamicFormChange = ({ id, name, value, parentSlug, isCheckbox = false }) => {
+	const handleDynamicFormChange = ({ id, name, value, parentSlug, isCheckbox = false, duration = null }) => {
 		const existingList = Array.isArray(form.values.dynamicFormData[parentSlug])
 			? form.values.dynamicFormData[parentSlug]
 			: [];
 
 		const existingIndex = existingList.findIndex((item) => item.id === id && item.name === name);
 
-		const updatedItem = { id, name, value };
+		const updatedItem = { id, name, value, duration };
 		const updatedList =
 			existingIndex > -1
 				? [...existingList.slice(0, existingIndex), updatedItem, ...existingList.slice(existingIndex + 1)]
@@ -132,6 +135,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							)?.value;
 							return (
 								<Checkbox
+									size="xs"
 									key={`${id}-${index}`}
 									label={particular.name}
 									checked={value || false}
@@ -185,7 +189,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							)?.value;
 							return (
 								<Grid key={`${id}-${index}`}>
-									<Grid.Col span={4}>{particular.name}</Grid.Col>
+									<Grid.Col span={4} fz={'xs'}>{particular.name}</Grid.Col>
 									<Grid.Col span={8}>
 										<TextInput
 											label=""
@@ -209,6 +213,68 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 					</Stack>
 				);
 
+			// case "InputWithCheckbox":
+			case "InputWithCheckbox":
+				return (
+					<Stack gap="xxs">
+						{particulars?.map((particular, index) => {
+							const value = form.values.dynamicFormData?.[section.slug]?.find(
+								(item) => item.id === particular.id && item.name === particular.name
+							)?.value;
+							return (
+								<Grid key={`${id}-${index}`}>
+									<Grid.Col span={4} fz={'xs'}>{particular.name}</Grid.Col>
+									<Grid.Col span={8}>
+										<Flex align="center" gap="les" justify="space-between">
+											<TextInput
+												size="xs"
+												w={'70%'}
+												label=""
+												classNames={inputCss}
+												placeholder={`Enter ${particular.name}`}
+												value={value || ""}
+												onChange={(event) =>
+													handleDynamicFormChange({
+														id: particular.id,
+														name: particular.name,
+														value: event.currentTarget.value,
+														parentSlug: section.slug,
+													})
+												}
+												onBlur={handleFieldBlur}
+											/>
+											<Select
+												w={'30%'}
+												label=""
+												size="xs"
+												placeholder={t("Day")}
+												data={DURATION_TYPES}
+												classNames={inputCss}
+												value={
+													form.values.dynamicFormData?.[section.slug]?.find(
+														(item) =>
+															item.id === particular.id && item.name === particular.name
+													)?.duration || "Day"
+												}
+												onChange={(option) => {
+													handleDynamicFormChange({
+														id: particular.id,
+														name: particular.name,
+														value: value,
+														duration: option,
+														parentSlug: section.slug,
+													});
+												}}
+												onBlur={handleFieldBlur}
+											/>
+										</Flex>
+									</Grid.Col>
+								</Grid>
+							);
+						})}
+					</Stack>
+				);
+
 			case "Textarea":
 				return (
 					<Stack gap="md">
@@ -218,6 +284,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							)?.value;
 							return (
 								<Textarea
+									size="xs"
 									key={`${id}-${index}`}
 									label={particulars.length === 1 ? "" : particular.name?.toUpperCase()}
 									placeholder={`Enter ${particular.name}`}
@@ -264,7 +331,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 
 			case "RadioButton":
 				return (
-					<Stack gap="md">
+					<Stack gap="md" fz={'xs'}>
 						{particulars?.map((particular, index) => {
 							const value = form.values.dynamicFormData?.[section.slug]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
@@ -381,15 +448,15 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 				<Box>
 					<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
 					<ScrollArea h={height}>
-						<Stack gap="xl" p="md">
+						<Stack gap="sm" my="les">
 							{currentSection.map((section) => (
 								<Box key={section.id}>
-									<Box bg="var(--theme-secondary-color-1)" mb="md" p="xxxs">
+									<Box bg="var(--theme-secondary-color-1)" p="xxxs">
 										<Text fw={600} size="lg">
 											{section.name}
 										</Text>
 									</Box>
-									{renderDynamicForm(section)}
+									<Box p="xs">{renderDynamicForm(section)}</Box>
 								</Box>
 							))}
 						</Stack>
@@ -403,20 +470,18 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 			<Box>
 				<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
 				<ScrollArea h={height}>
-					<Box p="md">
-						<Text fw={600} size="lg" mb="md">
-							{currentSection?.name}
-						</Text>
-						{renderDynamicForm(currentSection)}
+					<Box mt="les">
+						<Box bg="var(--theme-secondary-color-1)" p="xxxs">
+							<Text fw={600} size="lg">
+								{currentSection?.name}
+							</Text>
+						</Box>
+						<Box p="xs">{renderDynamicForm(currentSection)}</Box>
 					</Box>
 				</ScrollArea>
 			</Box>
 		);
 	};
 
-	return (
-		<Box bg="white" p="les">
-			{generateTabItems()}
-		</Box>
-	);
+	return <Box bg="white">{generateTabItems()}</Box>;
 }

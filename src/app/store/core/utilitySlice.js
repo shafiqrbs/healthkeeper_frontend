@@ -35,7 +35,9 @@ export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_MASTER_TYPE: { UTILITY: "particularMasterType", PATH: "hospital/select/particular-master-type" },
 
 	PARTICULAR_ROOM: { UTILITY: "particularRoom", TYPE: "room", PATH: "hospital/select/particular" },
-	PARTICULAR_OPD_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/particular" },
+
+	PARTICULAR_OPD_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/opdroom" },
+	PARTICULAR_OPD_REFERRED_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/opdreferredroom" },
 
 	PARTICULAR_DOCTOR: { UTILITY: "particularDoctor", TYPE: "doctor", PATH: "hospital/select/particular" },
 	PARTICULAR_CONSULTANT: { UTILITY: "particularConsultant", TYPE: "consultant", PATH: "hospital/select/particular" },
@@ -56,6 +58,12 @@ export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_PATIENT_DISEASES_MODE: {
 		UTILITY: "particularPatientModes",
 		TYPE: "patient-diseases-mode",
+		PATH: "hospital/select/mode",
+	},
+
+	PARTICULAR_TREATMENT_MODE: {
+		UTILITY: "treatmentModes",
+		TYPE: "treatment-mode",
 		PATH: "hospital/select/mode",
 	},
 

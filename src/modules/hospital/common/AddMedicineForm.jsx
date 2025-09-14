@@ -4,7 +4,6 @@ import {
 	Box,
 	Button,
 	Group,
-	ActionIcon,
 	Text,
 	Stack,
 	Flex,
@@ -12,11 +11,12 @@ import {
 	ScrollArea,
 	Select,
 	Autocomplete,
-	NumberInput,
 	Switch,
+	Tooltip,
+	ActionIcon,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconCheck, IconPencil, IconPlus, IconRestore, IconX } from "@tabler/icons-react";
+import { IconDirectionSignFilled, IconHistory, IconPlus, IconReportMedical, IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -32,122 +32,16 @@ import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getLoggedInUser } from "@/common/utils";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { updateEntityData } from "@/app/store/core/crudThunk";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
+import MedicineListItem from "./MedicineListItem";
+import { DURATION_TYPES } from "@/constants";
+import inputCss from "@/assets/css/InputField.module.css";
 
-const DURATION_OPTIONS = [
-	// { value: "", label: "--Select Duration--" },
-	{ value: "day", label: "Day" },
-	{ value: "month", label: "Month" },
-];
-
-const DURATION_UNIT_OPTIONS = [
-	{ value: "day", label: "Day" },
-	{ value: "week", label: "Week" },
-	{ value: "month", label: "Month" },
-	{ value: "year", label: "Year" },
-];
-
-function MedicineListItem({ index, medicines, medicine, setMedicines, handleDelete, update }) {
-	const { t } = useTranslation();
-	const [mode, setMode] = useState("view");
-	const { data: by_meal_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
-		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
-	});
-
-	const { data: dosage_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
-		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
-	});
-
-	const openEditMode = () => {
-		setMode("edit");
-	};
-
-	const closeEditMode = () => {
-		setMode("view");
-	};
-
-	const handleChange = (field, value) => {
-		setMedicines((prev) => prev.map((m, i) => (i === index - 1 ? { ...m, [field]: value } : m)));
-	};
-
-	const handleEdit = () => {
-		setMedicines((prev) => prev.map((m, i) => (i === index - 1 ? { ...m, ...medicine } : m)));
-		closeEditMode();
-		update(medicines.map((m, i) => (i === index - 1 ? { ...m, ...medicine } : m)));
-	};
-
-	return (
-		<Box>
-			<Text mb="es" style={{ cursor: "pointer" }}>
-				{index}. {medicine.medicine_name || medicine.generic}
-			</Text>
-			<Flex justify="space-between" align="center" gap="0">
-				{mode === "view" ? (
-					<Box ml="md" fz="xs" c="var(--theme-tertiary-color-8)">
-						{medicine.dose_details} ---- {medicine.times} time/s ---- {medicine.by_meal}
-					</Box>
-				) : (
-					<Group grow gap="les">
-						<Select
-							label=""
-							data={by_meal_options}
-							value={medicine.by_meal}
-							placeholder={t("Timing")}
-							disabled={mode === "view"}
-							onChange={(v) => handleChange("by_meal", v)}
-						/>
-						<Select
-							label=""
-							data={dosage_options}
-							value={medicine.dose_details}
-							placeholder={t("Dosage")}
-							disabled={mode === "view"}
-							onChange={(v) => handleChange("dose_details", v)}
-						/>
-						<Select
-							label=""
-							data={DURATION_UNIT_OPTIONS}
-							value={medicine.duration}
-							placeholder={t("Duration")}
-							disabled={mode === "view"}
-							onChange={(v) => handleChange("duration", v)}
-						/>
-						<NumberInput
-							label=""
-							value={medicine.quantity}
-							placeholder={t("Quantity")}
-							disabled={mode === "view"}
-							onChange={(v) => handleChange("quantity", v)}
-						/>
-					</Group>
-				)}
-				<Flex gap="les" justify="flex-end">
-					<ActionIcon variant="outline" color="var(--theme-primary-color-6)" onClick={handleEdit}>
-						<IconCheck size={18} stroke={1.5} />
-					</ActionIcon>
-					<ActionIcon variant="outline" color="var(--theme-secondary-color-6)" onClick={openEditMode}>
-						<IconPencil size={18} stroke={1.5} />
-					</ActionIcon>
-					<ActionIcon
-						variant="outline"
-						color="var(--theme-error-color)"
-						onClick={() => handleDelete(index - 1)}
-					>
-						<IconX size={18} stroke={1.5} />
-					</ActionIcon>
-				</Flex>
-			</Flex>
-		</Box>
-	);
-}
-
-export default function AddMedicineForm({ module, form, update, medicines, setMedicines }) {
+export default function AddMedicineForm({ module, form, update, medicines, setMedicines, baseHeight, setShowHistory }) {
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
@@ -162,6 +56,8 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const [printData, setPrintData] = useState(null);
+	const adviceData = useSelector((state) => state.crud.advice.data);
+	const treatmentData = useSelector((state) => state.crud.treatment.data);
 
 	const { data: by_meal_options } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
@@ -177,6 +73,30 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,
 	});
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+				params: {
+					particular_type: "advice",
+					page: 1,
+					offset: 500,
+				},
+				module: "advice",
+			})
+		);
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
+				params: {
+					particular_type: "treatment-template",
+					treatment_mode: "opd-treatment",
+				},
+				module: "treatment",
+			})
+		);
+	}, []);
 
 	useEffect(() => {
 		if (!printData) return;
@@ -296,7 +216,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 		}
 
 		setUpdateKey((prev) => prev + 1);
-		update([...medicines, values]);
+		if (update) update([...medicines, values]);
 		medicineForm.reset();
 	};
 
@@ -306,7 +226,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 			medicineForm.reset();
 			setEditIndex(null);
 		}
-		update(medicines.filter((_, i) => i !== idx));
+		if (update) update(medicines.filter((_, i) => i !== idx));
 	};
 
 	const handleReset = () => {
@@ -394,6 +314,30 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 		console.log("Hold your data");
 	};
 
+	const handleAdviseTemplate = (content) => {
+		if (!content) {
+			showNotificationComponent(t("AdviseContentNotAvailable"), "red", "lightgray", true, 1000, true);
+			return;
+		}
+
+		const existingAdvise = form.values.advise;
+
+		if (existingAdvise?.includes(content)) {
+			showNotificationComponent(t("AdviseAlreadyExists"), "red", "lightgray", true, 1000, true);
+			return;
+		}
+
+		form.setFieldValue("advise", content);
+	};
+
+	const populateMedicineData = (v) => {
+		const selectedTreatment = treatmentData?.data?.find((item) => item.id?.toString() === v);
+		if (selectedTreatment) {
+			setMedicines(selectedTreatment.treatment_medicine_format);
+			if (update) update(selectedTreatment.treatment_medicine_format);
+		}
+	};
+
 	return (
 		<Box className="borderRadiusAll" bg="white">
 			<Box
@@ -406,6 +350,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 				<Group align="end" gap="les">
 					<Group grow w="100%" gap="les">
 						<Select
+							clearable
 							searchable
 							onSearchChange={(v) => {
 								setMedicineTerm(v);
@@ -422,6 +367,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 							tooltip="Select medicine"
 							nothingFoundMessage="Type to find medicine..."
 							onBlur={() => setMedicineTerm("")}
+							classNames={inputCss}
 						/>
 						<Autocomplete
 							tooltip={t("EnterGenericName")}
@@ -438,6 +384,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 							}}
 							placeholder={t("GenericName")}
 							onBlur={() => setMedicineGenericTerm("")}
+							classNames={inputCss}
 						/>
 					</Group>
 					<Grid w="100%" columns={12} gutter="xxxs">
@@ -461,26 +408,13 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 									dropdownValue={by_meal_options}
 									value={medicineForm.values.by_meal}
 									placeholder={t("By Meal")}
-									required
 									tooltip={t("EnterWhenToTakeMedicine")}
 									withCheckIcon={false}
 								/>
 							</Group>
 						</Grid.Col>
-						<Grid.Col span={6}>
+						<Grid.Col span={4}>
 							<Group grow gap="les">
-								<SelectForm
-									form={medicineForm}
-									label=""
-									id="duration"
-									name="duration"
-									dropdownValue={DURATION_OPTIONS}
-									value={medicineForm.values.duration}
-									placeholder={t("Duration")}
-									required
-									tooltip={t("EnterMeditationDuration")}
-									withCheckIcon={false}
-								/>
 								<InputNumberForm
 									form={medicineForm}
 									id="quantity"
@@ -490,26 +424,89 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 									required
 									tooltip={t("EnterQuantity")}
 								/>
+								<SelectForm
+									form={medicineForm}
+									label=""
+									id="duration"
+									name="duration"
+									dropdownValue={DURATION_TYPES}
+									value={medicineForm.values.duration || "Day"}
+									placeholder={t("Duration")}
+									required
+									tooltip={t("EnterMeditationDuration")}
+									withCheckIcon={false}
+								/>
 								<Button
 									leftSection={<IconPlus size={16} />}
 									type="submit"
 									variant="filled"
-									bg="var(--theme-primary-color-6)"
+									bg="var(--theme-secondary-color-6)"
 								>
 									{t("Add")}
 								</Button>
 							</Group>
 						</Grid.Col>
+						<Grid.Col span={2} bg="var(--mantine-color-indigo-6)">
+							<SelectForm
+								mt={"2"}
+								form={medicineForm}
+								label=""
+								id="treatments"
+								name="treatments"
+								dropdownValue={treatmentData?.data?.map((item) => ({
+									label: item.name,
+									value: item.id?.toString(),
+								}))}
+								value={medicineForm.values.treatments}
+								placeholder={t("TreatmentMedicine")}
+								required
+								tooltip={t("TreatmentMedicine")}
+								withCheckIcon={false}
+								changeValue={populateMedicineData}
+							/>
+						</Grid.Col>
 					</Grid>
 				</Group>
 			</Box>
-			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
-				{t("List of Medicines")}
-			</Text>
-			<ScrollArea h={mainAreaHeight - 420} bg="white">
+			<Flex bg="var(--theme-primary-color-0)" mb="les" justify="space-between" align="center" py="les" mt="xs">
+				<Text fw={500} px="sm">
+					{t("ListOfMedicines")}
+				</Text>
+				<Flex px="les" gap="les">
+					<Tooltip label="History">
+						<ActionIcon
+							variant="gradient"
+							size="lg"
+							gradient={{ from: "blue", to: "cyan", deg: 90 }}
+							onClick={() => setShowHistory((prev) => !prev)}
+						>
+							<IconHistory />
+						</ActionIcon>
+					</Tooltip>
+
+					<Tooltip label="Referred">
+						<ActionIcon
+							variant="gradient"
+							size="lg"
+							gradient={{ from: "blue", to: "cyan", deg: 90 }}
+							onClick={() => setShowHistory((prev) => !prev)}
+						>
+							<IconDirectionSignFilled />
+						</ActionIcon>
+					</Tooltip>
+				</Flex>
+			</Flex>
+			<ScrollArea h={baseHeight ? baseHeight : mainAreaHeight - 420} bg="white">
 				<Stack gap="xs" p="sm">
 					{medicines?.length === 0 && (
-						<Flex mih={220} gap="md" justify="center" align="center" direction="row" wrap="wrap">
+						<Flex
+							mih={baseHeight ? baseHeight - 50 : 220}
+							gap="md"
+							justify="center"
+							align="center"
+							direction="column"
+							wrap="wrap"
+						>
 							<Text w="100%" fz="sm" align={"center"} c="var(--theme-secondary-color)">
 								{t("NoMedicineAddedYet")}
 							</Text>
@@ -538,53 +535,82 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 				</Stack>
 			</ScrollArea>
 			{/* =================== Advise form =================== */}
-			{
-				<Grid columns={12} gutter="xxxs" mt="xxs" p="les">
-					<Grid.Col span={6}>
-						<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
-							<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
-								{t("Advise")}
-							</Text>
-							<Box p="sm">
-								<TextAreaForm
-									form={form}
-									label=""
-									value={form.values.advise}
-									name="advise"
-									placeholder="Write a advice..."
-									showRightSection={false}
-									style={{ input: { height: "72px" } }}
-									onBlur={handleFieldBlur}
-								/>
+			{form && (
+				<>
+					<Grid columns={12} gutter="xxxs" mt="xxs" p="les">
+						<Grid.Col span={3}>
+							<Box fz="md" c="white">
+								<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
+									{t("AdviseTemplate")}
+								</Text>
+								<ScrollArea h={96} p="les" className="borderRadiusAll">
+									{adviceData?.data?.map((advise) => (
+										<Flex
+											align="center"
+											gap="les"
+											bg="var(--theme-primary-color-0)"
+											c="dark"
+											key={advise.id}
+											onClick={() => handleAdviseTemplate(advise?.content)}
+											px="les"
+											bd="1px solid var(--theme-primary-color-0)"
+											mb="2"
+											className="cursor-pointer"
+										>
+											<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
+											<Text mt="es" fz={13}>
+												{advise?.name}
+											</Text>
+										</Flex>
+									))}
+								</ScrollArea>
 							</Box>
-						</Box>
-					</Grid.Col>
-					<Grid.Col span={6}>
-						<Box bg="var(--theme-primary-color-0)" h="100%">
-							<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="les">
-								{t("FollowUpDate")}
-							</Text>
-							<Box p="sm">
-								<DatePickerForm
-									form={form}
-									label=""
-									tooltip="Enter follow up date"
-									name="follow_up_date"
-									value={form.values.follow_up_date}
-									placeholder="Follow up date"
-									onBlur={handleFieldBlur}
-								/>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
+								<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
+									{t("Advise")}
+								</Text>
+								<Box p="sm">
+									<TextAreaForm
+										form={form}
+										label=""
+										value={form.values.advise}
+										name="advise"
+										placeholder="Write a advice..."
+										showRightSection={false}
+										style={{ input: { height: "72px" } }}
+										onBlur={handleFieldBlur}
+									/>
+								</Box>
 							</Box>
-							<Box pl={"md"}>
-								<Switch
-									defaultChecked
-									color="red"
-									size="md"
-									label={t("SaveThisPrescriptionAsTemplate")}
-								/>
-							</Box>
+						</Grid.Col>
+						<Grid.Col span={3}>
+							<Box bg="var(--theme-primary-color-0)" h="100%">
+								<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="les">
+									{t("FollowUpDate")}
+								</Text>
+								<Box p="sm">
+									<DatePickerForm
+										form={form}
+										label=""
+										tooltip="Enter follow up date"
+										name="follow_up_date"
+										value={form.values.follow_up_date}
+										placeholder="Follow up date"
+										onBlur={handleFieldBlur}
+									/>
+								</Box>
+								<Box pl={"md"}>
+									<Switch
+										defaultChecked
+										color="red"
+										size="xs"
+										label={t("SaveThisPrescriptionAsTemplate")}
+									/>
+								</Box>
 
-							{/* <Text mt="xs" fz="sm">
+								{/* <Text mt="xs" fz="sm">
 							{t("specialDiscount")}
 						</Text>
 						<Group grow gap="sm">
@@ -609,72 +635,63 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 								disabled
 							/>
 						</Group> */}
-						</Box>
-					</Grid.Col>
-				</Grid>
-			}
-			{
-				// =================== button group ===================
-				<Button.Group bg="var(--theme-primary-color-0)" p="les">
-					<Button
-						w="100%"
-						bg="var(--theme-primary-color-6)"
-						leftSection={<IconRestore size={16} />}
-						onClick={handleReset}
-					>
-						<Stack gap={0} align="center" justify="center">
-							<Text>{t("Template")}</Text>
-							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-								(alt + T)
-							</Text>
-						</Stack>
-					</Button>
-					<Button
-						w="100%"
-						bg="var(--theme-reset-btn-color)"
-						leftSection={<IconRestore size={16} />}
-						onClick={handleReset}
-					>
-						<Stack gap={0} align="center" justify="center">
-							<Text>{t("Reset")}</Text>
-							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-								(alt + 1)
-							</Text>
-						</Stack>
-					</Button>
-					<Button w="100%" bg="var(--theme-hold-btn-color)" onClick={handleHoldData}>
-						<Stack gap={0} align="center" justify="center">
-							<Text>{t("Hold")}</Text>
-							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-								(alt + 2)
-							</Text>
-						</Stack>
-					</Button>
-					<Button w="100%" bg="var(--theme-prescription-btn-color)" onClick={handlePrescriptionPrintSubmit}>
-						<Stack gap={0} align="center" justify="center">
-							<Text>{t("Prescription")}</Text>
-							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-								(alt + 3)
-							</Text>
-						</Stack>
-					</Button>
-					<Button
-						w="100%"
-						bg="var(--theme-save-btn-color)"
-						onClick={openConfirmationModal}
-						loading={isSubmitting}
-						disabled={isSubmitting}
-					>
-						<Stack gap={0} align="center" justify="center">
-							<Text>{t("Save")}</Text>
-							<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-								(alt + s)
-							</Text>
-						</Stack>
-					</Button>
-				</Button.Group>
-			}
-			<PrescriptionFull ref={prescription2A4Ref} data={printData} />
+							</Box>
+						</Grid.Col>
+					</Grid>
+
+					{/* =================== submission button here =================== */}
+					<Button.Group bg="var(--theme-primary-color-0)" p="les">
+						<Button
+							w="100%"
+							bg="var(--theme-reset-btn-color)"
+							leftSection={<IconRestore size={16} />}
+							onClick={handleReset}
+						>
+							<Stack gap={0} align="center" justify="center">
+								<Text>{t("Reset")}</Text>
+								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+									(alt + 1)
+								</Text>
+							</Stack>
+						</Button>
+						<Button w="100%" bg="var(--theme-hold-btn-color)" onClick={handleHoldData}>
+							<Stack gap={0} align="center" justify="center">
+								<Text>{t("Hold")}</Text>
+								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+									(alt + 2)
+								</Text>
+							</Stack>
+						</Button>
+						<Button
+							w="100%"
+							bg="var(--theme-prescription-btn-color)"
+							onClick={handlePrescriptionPrintSubmit}
+						>
+							<Stack gap={0} align="center" justify="center">
+								<Text>{t("Prescription")}</Text>
+								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+									(alt + 3)
+								</Text>
+							</Stack>
+						</Button>
+						<Button
+							w="100%"
+							bg="var(--theme-save-btn-color)"
+							onClick={openConfirmationModal}
+							loading={isSubmitting}
+							disabled={isSubmitting}
+						>
+							<Stack gap={0} align="center" justify="center">
+								<Text>{t("Save")}</Text>
+								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+									(alt + s)
+								</Text>
+							</Stack>
+						</Button>
+					</Button.Group>
+					<PrescriptionFull ref={prescription2A4Ref} data={printData} />
+				</>
+			)}
 		</Box>
 	);
 }
