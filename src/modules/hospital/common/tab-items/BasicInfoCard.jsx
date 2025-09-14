@@ -11,9 +11,9 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 		<Stack gap="xxxs" bg="var(--theme-primary-color-1)" p="xs" pb={'xxxs'} className="borderRadiusAll">
 			<Stack gap={0} ta="left">
 				<Grid w="100%" columns={24}>
-					<Grid.Col span={8}>{prescriptionData?.data?.invoice || "N/A"}</Grid.Col>
-					<Grid.Col span={8} align={'right'}>{prescriptionData?.data?.patient_id || "N/A"}</Grid.Col>
-					<Grid.Col span={8}>{t('HID')} {prescriptionData?.data?.health_id || ""}</Grid.Col>
+					<Grid.Col span={8} fz={'sm'}>{prescriptionData?.data?.invoice || "N/A"}</Grid.Col>
+					<Grid.Col span={8} fz={'sm'} align={'right'}>{prescriptionData?.data?.patient_id || "N/A"}</Grid.Col>
+					<Grid.Col span={8} fz={'sm'} >{t('HID')} {prescriptionData?.data?.health_id || ""}</Grid.Col>
 				</Grid>
 				<Grid w="100%" columns={24}>
 					<Grid.Col span={12}><Text fw={600}>{prescriptionData?.data?.name}</Text></Grid.Col>
@@ -27,9 +27,9 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 						</Grid.Col>
 				</Grid>
 				<Grid w="100%" columns={24}>
-					<Grid.Col span={12}><Text>{t('Created')} {prescriptionData?.data?.created}</Text></Grid.Col>
-					<Grid.Col span={4} align={'right'}>{prescriptionData?.data?.payment_mode_name}</Grid.Col>
-					<Grid.Col span={6}>
+					<Grid.Col span={12}><Text fz={'sm'}>{t('Created')} {prescriptionData?.data?.created}</Text></Grid.Col>
+					<Grid.Col span={4} fz={'sm'} align={'right'}>{prescriptionData?.data?.payment_mode_name}</Grid.Col>
+					<Grid.Col span={6} fz={'sm'}>
 					 {prescriptionData?.data?.room_name}</Grid.Col>
 
 				</Grid>

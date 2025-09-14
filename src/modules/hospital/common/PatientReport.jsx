@@ -447,12 +447,12 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 			return (
 				<Box>
 					<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
-					<ScrollArea h={height}>
+					<ScrollArea h={height+20} >
 						<Stack gap="sm" my="les">
 							{currentSection.map((section) => (
 								<Box key={section.id}>
 									<Box bg="var(--theme-secondary-color-1)" p="xxxs">
-										<Text fw={600} size="lg">
+										<Text fw={600} size="sm">
 											{section.name}
 										</Text>
 									</Box>
@@ -469,7 +469,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		return (
 			<Box>
 				<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
-				<ScrollArea h={height}>
+				<ScrollArea h={height+300}>
 					<Box mt="les">
 						<Box bg="var(--theme-secondary-color-1)" p="xxxs">
 							<Text fw={600} size="lg">
