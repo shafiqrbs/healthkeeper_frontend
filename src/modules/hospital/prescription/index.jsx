@@ -13,36 +13,19 @@ import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
 import { useDisclosure, useElementSize } from "@mantine/hooks";
-import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
+import {ERROR_NOTIFICATION_COLOR, MODULES, MODULES_CORE} from "@/constants";
 import { IconArrowRight } from "@tabler/icons-react";
 import Table from "../visit/_Table";
 import { getLoggedInUser } from "@/common/utils";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { updateEntityData } from "@/app/store/core/crudThunk";
+import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import {getIndexEntityData, updateEntityData} from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientReferredAction from "@modules/hospital/common/PatientReferredAction";
 import DetailsDrawer from "./__DetailsDrawer";
+import PatientPrescriptionHistoryList from "@modules/hospital/common/PatientPrescriptionHistoryList";
 
 const module = MODULES.PRESCRIPTION;
-
-const PRESCRIPTION_HISTORY_LIST = [
-	{
-		id: 1,
-		label: "Prescription 1",
-		invoice: "1234567890",
-	},
-	{
-		id: 2,
-		label: "Prescription 2",
-		invoice: "1234567890",
-	},
-	{
-		id: 3,
-		label: "Prescription 3",
-		invoice: "1234567890",
-	},
-];
 
 export default function Index() {
 	const [opened, { open, close }] = useDisclosure(false);
@@ -61,9 +44,15 @@ export default function Index() {
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);
 
+	const [fetching, setFetching] = useState(false);
+	const [records, setRecords] = useState([]);
+	const [customerId, setCustomerId] = useState();
+
 	const { data: prescriptionData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});
+
+
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
 	const existingMedicines = initialFormValues?.medicines || [];
@@ -75,11 +64,32 @@ export default function Index() {
 		const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
 		form.setValues(updatedFormValues.initialValues);
 		setMedicines(existingMedicines || []);
+		setCustomerId(prescriptionData?.data?.customer_id)
 	}, [prescriptionData]);
 
 	const handleOpenViewOverview = () => {
 		openOverview();
 	};
+
+	const fetchData = async () => {
+		setFetching(true);
+		const value = {
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}`,
+			module,
+		};
+		try {
+			const result = await dispatch(getIndexEntityData(value)).unwrap();
+			setRecords(result?.data?.data || []);
+			console.log(records)
+		} catch (err) {
+			console.error("Unexpected error:", err);
+		} finally {
+			setFetching(false);
+		}
+	};
+	useEffect(() => {
+		fetchData();
+	}, [customerId]);
 
 	const handlePrescriptionUpdate = async (updatedMedicine) => {
 		try {
@@ -175,46 +185,7 @@ export default function Index() {
 								/>
 							</Grid.Col>
 							<Grid.Col display={showHistory ? "block" : "none"} span={4}>
-								<ScrollArea
-									pos="relative"
-									h={mainAreaHeight - 68}
-									bg="white"
-									className="borderRadiusAll"
-								>
-									<Stack p="xs" gap="xs">
-										{PRESCRIPTION_HISTORY_LIST.map((item) => (
-											<Paper
-												key={item.id}
-												p="sm"
-												radius="sm"
-												style={{
-													cursor: "pointer",
-													border: "1px solid var(--mantine-color-gray-2)",
-													transition: "all 0.2s ease",
-												}}
-												onClick={() => handleViewPrescription(item.id)}
-												onMouseEnter={(e) => {
-													e.currentTarget.style.backgroundColor =
-														"var(--mantine-color-gray-0)";
-													e.currentTarget.style.borderColor = "var(--mantine-color-blue-3)";
-												}}
-												onMouseLeave={(e) => {
-													e.currentTarget.style.backgroundColor = "transparent";
-													e.currentTarget.style.borderColor = "var(--mantine-color-gray-2)";
-												}}
-											>
-												<Box>
-													<Text fw={600} fz="sm">
-														{item.label}
-													</Text>
-													<Text fz="xs" c="dimmed">
-														Invoice: {item.invoice}
-													</Text>
-												</Box>
-											</Paper>
-										))}
-									</Stack>
-								</ScrollArea>
+								<PatientPrescriptionHistoryList historyList={records} />
 							</Grid.Col>
 						</Grid>
 					</Flex>

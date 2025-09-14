@@ -323,6 +323,7 @@ export const HOSPITAL_DATA_ROUTES = {
 		PRESCRIPTION: {
 			INDEX: "hospital/prescription",
 			SEND_TO_PRESCRIPTION: "hospital/send-to-prescription",
+			PATIENT_PRESCRIPTION: "hospital/prescription/patient",
 			EDIT: "hospital/prescription",
 			CREATE: "hospital/prescription",
 			UPDATE: "hospital/prescription",
