@@ -1,4 +1,3 @@
-
 import {
     Group,
     Box,
@@ -9,7 +8,7 @@ import {
     Button,
     TextInput,
     Select,
-    Loader, Checkbox,
+    Checkbox,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
@@ -19,10 +18,11 @@ import {
     IconEye,
     IconChevronUp,
     IconSelector,
+    IconGripVertical,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
@@ -39,12 +39,15 @@ import {
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { errorNotification } from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
+
+// ✅ drag and drop
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 const PER_PAGE = 50;
 
@@ -54,11 +57,11 @@ export default function _Table({ module, open }) {
     const dispatch = useDispatch();
     const { mainAreaHeight } = useOutletContext();
     const navigate = useNavigate();
-    const { id } = useParams();
     const height = mainAreaHeight - 78;
 
     const [submitFormData, setSubmitFormData] = useState({});
     const [updatingRows, setUpdatingRows] = useState({});
+    const [dragging, setDragging] = useState(false);
 
     const searchKeyword = useSelector((state) => state.crud.searchKeyword);
     const filterData = useSelector((state) => state.crud[module].filterData);
@@ -165,13 +168,14 @@ export default function _Table({ module, open }) {
 
         setSubmitFormData((prev) => {
             const newData = { ...prev };
-            records.forEach((item) => {
+            records.forEach((item, idx) => {
                 if (!newData[item.id]) {
                     newData[item.id] = {
                         name: item.name ?? "",
                         unit_id: item.unit_id?.toString() ?? "",
                         opd_room_id: item.opd_room_id?.toString() ?? "",
                         opd_referred: item?.opd_referred ?? false,
+                        ordering: item.ordering ?? idx + 1,
                     };
                 }
             });
@@ -180,8 +184,6 @@ export default function _Table({ module, open }) {
     }, [records]);
 
     const handleFieldChange = async (rowId, field, value) => {
-
-        console.log(value,submitFormData);
         setSubmitFormData((prev) => ({
             ...prev,
             [rowId]: { ...prev[rowId], [field]: value },
@@ -193,7 +195,7 @@ export default function _Table({ module, open }) {
             await dispatch(
                 storeEntityData({
                     url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
-                    data: { [field]: value }, // only changed field
+                    data: { [field]: value },
                     module,
                 })
             );
@@ -204,9 +206,55 @@ export default function _Table({ module, open }) {
         }
     };
 
-    useHotkeys([
-        [os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()],
-    ]);
+    // 🔹 Drag and drop reorder
+    const reorder = (list, startIndex, endIndex) => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+        return result;
+    };
+
+    const handleDragEnd = async (result) => {
+        if (!result.destination) return;
+
+        const newRecords = reorder(records, result.source.index, result.destination.index);
+
+        // update local form data ordering
+        setSubmitFormData((prev) => {
+            const newData = { ...prev };
+            newRecords.forEach((item, idx) => {
+                newData[item.id] = { ...newData[item.id], ordering: idx + 1 };
+            });
+            return newData;
+        });
+
+        setDragging(true);
+
+        try {
+            await dispatch(
+                storeEntityData({
+                    url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.ORDERING}`,
+                    data: {
+                        order: newRecords.map((item, idx) => ({
+                            id: item.id,
+                            ordering: idx + 1,
+                        }))
+                    },
+                    module,
+                })
+            );
+
+            // ✅ Trigger refetch
+            dispatch(setRefetchData({ module, refetching: true }));
+        } catch (error) {
+            errorNotification(error.message);
+        } finally {
+            setDragging(false);
+        }
+
+    };
+
+    useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
 
     return (
         <>
@@ -217,145 +265,204 @@ export default function _Table({ module, open }) {
             </Box>
 
             <Box className="borderRadiusAll border-top-none">
-                <DataTable
-                    classNames={{
-                        root: tableCss.root,
-                        table: tableCss.table,
-                        body: tableCss.body,
-                        header: tableCss.header,
-                        footer: tableCss.footer,
-                        pagination: tableCss.pagination,
-                    }}
-                    records={records}
-                    columns={[
-                        {
-                            accessor: "index",
-                            title: t("S/N"),
-                            render: (_item, index) => index + 1,
-                        },
-                        {
-                            accessor: "name",
-                            title: t("Name"),
-                            render: (item) => (
-                                <TextInput
-                                    size="xs"
-                                    className={inlineInputCss.inputText}
-                                    placeholder={t("Name")}
-                                    value={submitFormData[item.id]?.name ?? ""}
-                                    onChange={(e) =>
-                                        setSubmitFormData((prev) => ({
-                                            ...prev,
-                                            [item.id]: {
-                                                ...prev[item.id],
-                                                name: e.currentTarget.value,
-                                            },
-                                        }))
-                                    }
-                                    onBlur={() => handleFieldChange(item.id, "name", submitFormData[item.id]?.name ?? "")}
-                                    rightSection={updatingRows[item.id]}
+                <DragDropContext onDragEnd={handleDragEnd}>
+                    <Droppable droppableId="doctor-table">
+                        {(provided) => (
+                            <div ref={provided.innerRef} {...provided.droppableProps}>
+                                <DataTable
+                                    classNames={{
+                                        root: tableCss.root,
+                                        table: tableCss.table,
+                                        body: tableCss.body,
+                                        header: tableCss.header,
+                                        footer: tableCss.footer,
+                                        pagination: tableCss.pagination,
+                                    }}
+                                    records={records}
+                                    columns={[
+                                        {
+                                            accessor: "drag",
+                                            title: "",
+                                            width: 40,
+                                            render: (item, index) => (
+                                                <Draggable
+                                                    key={item.id}
+                                                    draggableId={item.id.toString()}
+                                                    index={index}
+                                                >
+                                                    {(provided) => (
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                            style={{
+                                                                cursor: "grab",
+                                                                ...provided.draggableProps.style,
+                                                            }}
+                                                        >
+                                                            <IconGripVertical size={16} />
+                                                        </div>
+                                                    )}
+                                                </Draggable>
+                                            ),
+                                        },
+                                        {
+                                            accessor: "index",
+                                            title: t("S/N"),
+                                            render: (_item, index) => index + 1,
+                                        },
+                                        {
+                                            accessor: "name",
+                                            title: t("Name"),
+                                            render: (item) => (
+                                                <TextInput
+                                                    size="xs"
+                                                    className={inlineInputCss.inputText}
+                                                    placeholder={t("Name")}
+                                                    value={submitFormData[item.id]?.name ?? ""}
+                                                    onChange={(e) =>
+                                                        setSubmitFormData((prev) => ({
+                                                            ...prev,
+                                                            [item.id]: {
+                                                                ...prev[item.id],
+                                                                name: e.currentTarget.value,
+                                                            },
+                                                        }))
+                                                    }
+                                                    onBlur={() =>
+                                                        handleFieldChange(
+                                                            item.id,
+                                                            "name",
+                                                            submitFormData[item.id]?.name ?? ""
+                                                        )
+                                                    }
+                                                    rightSection={updatingRows[item.id]}
+                                                />
+                                            ),
+                                        },
+                                        {
+                                            accessor: "unit_id",
+                                            title: t("UnitName"),
+                                            render: (item) => (
+                                                <Select
+                                                    placeholder={t("SelectUnitName")}
+                                                    data={getParticularPaymentModes}
+                                                    value={submitFormData[item.id]?.unit_id ?? ""}
+                                                    onChange={(val) =>
+                                                        handleFieldChange(item.id, "unit_id", val)
+                                                    }
+                                                    rightSection={updatingRows[item.id]}
+                                                />
+                                            ),
+                                        },
+                                        {
+                                            accessor: "opd_room_id",
+                                            title: t("OPDRoom"),
+                                            render: (item) => (
+                                                <Select
+                                                    placeholder={t("SelectOpdRoom")}
+                                                    data={getOpdRooms}
+                                                    value={submitFormData[item.id]?.opd_room_id ?? ""}
+                                                    onChange={(val) =>
+                                                        handleFieldChange(item.id, "opd_room_id", val)
+                                                    }
+                                                    rightSection={updatingRows[item.id]}
+                                                />
+                                            ),
+                                        },
+                                        {
+                                            accessor: "opd_referred",
+                                            title: t("OPDRoom"),
+                                            render: (item) => (
+                                                <Checkbox
+                                                    key={item.id}
+                                                    size="sm"
+                                                    checked={submitFormData[item.id]?.opd_referred ?? false}
+                                                    onChange={(val) =>
+                                                        handleFieldChange(
+                                                            item.id,
+                                                            "opd_referred",
+                                                            val.currentTarget.checked
+                                                        )
+                                                    }
+                                                />
+                                            ),
+                                        },
+                                        {
+                                            accessor: "action",
+                                            title: "",
+                                            render: (values) => (
+                                                <Group gap={4} justify="right" wrap="nowrap">
+                                                    <Button.Group>
+                                                        <Button
+                                                            onClick={() => {
+                                                                handleEntityEdit(values.id);
+                                                                open();
+                                                            }}
+                                                            variant="filled"
+                                                            c="white"
+                                                            size="xs"
+                                                            radius="es"
+                                                            leftSection={<IconEdit size={16} />}
+                                                            className="border-right-radius-none btnPrimaryBg"
+                                                        >
+                                                            {t("Edit")}
+                                                        </Button>
+                                                        <Button
+                                                            onClick={() => handleDataShow(values.id)}
+                                                            variant="filled"
+                                                            c="white"
+                                                            bg="var(--theme-primary-color-6)"
+                                                            size="xs"
+                                                            radius="es"
+                                                            leftSection={<IconEye size={16} />}
+                                                            className="border-left-radius-none"
+                                                        >
+                                                            {t("View")}
+                                                        </Button>
+                                                        <ActionIcon
+                                                            onClick={() => handleDelete(values.id)}
+                                                            className="action-icon-menu border-left-radius-none"
+                                                            variant="light"
+                                                            color="var(--theme-delete-color)"
+                                                            radius="es"
+                                                            aria-label="Settings"
+                                                        >
+                                                            <IconTrashX height={18} width={18} stroke={1.5} />
+                                                        </ActionIcon>
+                                                    </Button.Group>
+                                                </Group>
+                                            ),
+                                        },
+                                    ]}
+                                    fetching={fetching}
+                                    loaderSize="xs"
+                                    loaderColor="grape"
+                                    height={height - 72}
+                                    onScrollToBottom={handleScrollToBottom}
+                                    scrollViewportRef={scrollRef}
+                                    sortStatus={sortStatus}
+                                    onSortStatusChange={setSortStatus}
+                                    sortIcons={{
+                                        sorted: (
+                                            <IconChevronUp
+                                                color="var(--theme-tertiary-color-7)"
+                                                size={14}
+                                            />
+                                        ),
+                                        unsorted: (
+                                            <IconSelector
+                                                color="var(--theme-tertiary-color-7)"
+                                                size={14}
+                                            />
+                                        ),
+                                    }}
                                 />
-                            ),
-                        },
-                        {
-                            accessor: "unit_id",
-                            title: t("UnitName"),
-                            render: (item) => (
-                                <Select
-                                    placeholder={t("SelectUnitName")}
-                                    data={getParticularPaymentModes}
-                                    value={submitFormData[item.id]?.unit_id ?? ""}
-                                    onChange={(val) => handleFieldChange(item.id, "unit_id", val)}
-                                    rightSection={updatingRows[item.id]}
-                                />
-                            ),
-                        },
-                        {
-                            accessor: "opd_room_id",
-                            title: t("OPDRoom"),
-                            render: (item) => (
-                                <Select
-                                    placeholder={t("SelectOpdRoom")}
-                                    data={getOpdRooms}
-                                    value={submitFormData[item.id]?.opd_room_id ?? ""}
-                                    onChange={(val) => handleFieldChange(item.id, "opd_room_id", val)}
-                                    rightSection={updatingRows[item.id]}
-                                />
-                            ),
-                        },
-                        {
-                            accessor: "opd_referred",
-                            title: t("OPDRoom"),
-                            render: (item) => (
-                                <Checkbox
-                                    key={item.id}
-                                    size="sm"
-                                    checked={
-                                        submitFormData[item.id]?.opd_referred ?? false
-                                    }
-                                    onChange={(val) => handleFieldChange(item.id, "opd_referred", val.currentTarget.checked)}
-                                />
-                            ),
-                        },
-                        {
-                            accessor: "action",
-                            title: "",
-                            render: (values) => (
-                                <Group gap={4} justify="right" wrap="nowrap">
-                                    <Button.Group>
-                                        <Button
-                                            onClick={() => {
-                                                handleEntityEdit(values.id);
-                                                open();
-                                            }}
-                                            variant="filled"
-                                            c="white"
-                                            size="xs"
-                                            radius="es"
-                                            leftSection={<IconEdit size={16} />}
-                                            className="border-right-radius-none btnPrimaryBg"
-                                        >
-                                            {t("Edit")}
-                                        </Button>
-                                        <Button
-                                            onClick={() => handleDataShow(values.id)}
-                                            variant="filled"
-                                            c="white"
-                                            bg="var(--theme-primary-color-6)"
-                                            size="xs"
-                                            radius="es"
-                                            leftSection={<IconEye size={16} />}
-                                            className="border-left-radius-none"
-                                        >
-                                            {t("View")}
-                                        </Button>
-                                        <ActionIcon
-                                            onClick={() => handleDelete(values.id)}
-                                            className="action-icon-menu border-left-radius-none"
-                                            variant="light"
-                                            color="var(--theme-delete-color)"
-                                            radius="es"
-                                            aria-label="Settings"
-                                        >
-                                            <IconTrashX height={18} width={18} stroke={1.5} />
-                                        </ActionIcon>
-                                    </Button.Group>
-                                </Group>
-                            ),
-                        },
-                    ]}
-                    fetching={fetching}
-                    loaderSize="xs"
-                    loaderColor="grape"
-                    height={height - 72}
-                    onScrollToBottom={handleScrollToBottom}
-                    scrollViewportRef={scrollRef}
-                    sortStatus={sortStatus}
-                    onSortStatusChange={setSortStatus}
-                    sortIcons={{
-                        sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-                        unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
-                    }}
-                />
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
             </Box>
 
             <DataTableFooter indexData={listData} module={module} />
@@ -363,3 +470,4 @@ export default function _Table({ module, open }) {
         </>
     );
 }
+
