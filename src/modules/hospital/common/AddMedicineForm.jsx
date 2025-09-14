@@ -88,11 +88,10 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 		);
 		dispatch(
 			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
 				params: {
 					particular_type: "treatment-template",
-					page: 1,
-					offset: 500,
+					treatment_mode: "opd-treatment",
 				},
 				module: "treatment",
 			})
@@ -315,16 +314,28 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 		console.log("Hold your data");
 	};
 
+	const handleAdviseTemplate = (content) => {
+		if (!content) {
+			showNotificationComponent(t("AdviseContentNotAvailable"), "red", "lightgray", true, 1000, true);
+			return;
+		}
 
-	const handleAdviseTemplate = (label) => {
 		const existingAdvise = form.values.advise;
 
-		if (existingAdvise?.includes(label)) {
+		if (existingAdvise?.includes(content)) {
 			showNotificationComponent(t("AdviseAlreadyExists"), "red", "lightgray", true, 1000, true);
 			return;
 		}
 
-		form.setFieldValue("advise", label);
+		form.setFieldValue("advise", content);
+	};
+
+	const populateMedicineData = (v) => {
+		const selectedTreatment = treatmentData?.data?.find((item) => item.id?.toString() === v);
+		if (selectedTreatment) {
+			setMedicines(selectedTreatment.treatment_medicine_format);
+			if (update) update(selectedTreatment.treatment_medicine_format);
+		}
 	};
 
 	return (
@@ -339,6 +350,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 				<Group align="end" gap="les">
 					<Group grow w="100%" gap="les">
 						<Select
+							clearable
 							searchable
 							onSearchChange={(v) => {
 								setMedicineTerm(v);
@@ -418,7 +430,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 									id="duration"
 									name="duration"
 									dropdownValue={DURATION_TYPES}
-									value={medicineForm.values.duration||"Day"}
+									value={medicineForm.values.duration || "Day"}
 									placeholder={t("Duration")}
 									required
 									tooltip={t("EnterMeditationDuration")}
@@ -436,7 +448,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 						</Grid.Col>
 						<Grid.Col span={2} bg="var(--mantine-color-indigo-6)">
 							<SelectForm
-								mt={'2'}
+								mt={"2"}
 								form={medicineForm}
 								label=""
 								id="treatments"
@@ -450,6 +462,7 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 								required
 								tooltip={t("TreatmentMedicine")}
 								withCheckIcon={false}
+								changeValue={populateMedicineData}
 							/>
 						</Grid.Col>
 					</Grid>
@@ -549,7 +562,6 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 												{advise?.name}
 											</Text>
 										</Flex>
-
 									))}
 								</ScrollArea>
 							</Box>

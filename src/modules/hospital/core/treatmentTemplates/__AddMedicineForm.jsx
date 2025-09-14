@@ -1,50 +1,32 @@
-import { useEffect, useRef, useState } from "react";
-import SelectForm from "@components/form-builders/SelectForm";
-import {
-	Box,
-	Button,
-	Group,
-	Text,
-	Stack,
-	Flex,
-	Grid,
-	ScrollArea,
-	Select,
-	Autocomplete,
-	TextInput,
-	ActionIcon, rem
-} from "@mantine/core";
+import { useState } from "react";
+import { Box, Button, Group, Grid, Select, Autocomplete, ActionIcon, rem } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import {IconAlertCircle, IconDeviceFloppy, IconPlus, IconTrashX} from "@tabler/icons-react";
+import { IconAlertCircle, IconDeviceFloppy, IconPlus, IconTrashX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "./helpers/request";
-import {useOutletContext, useParams} from "react-router-dom";
-import { useReactToPrint } from "react-to-print";
+import { useOutletContext, useParams } from "react-router-dom";
 import { useDebouncedState, useHotkeys } from "@mantine/hooks";
-import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
-import {DURATION_TYPES, ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
-import MedicineListItem from "../../common/MedicineListItem";
+import { DURATION_TYPES, ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
 import InputAutoComplete from "@/common/components/form-builders/InputAutoComplete";
-import {MASTER_DATA_ROUTES} from "@/constants/routes";
-import {deleteEntityData, storeEntityData} from "@/app/store/core/crudThunk";
-import {setInsertType, setRefetchData} from "@/app/store/core/crudSlice";
-import {successNotification} from "@components/notification/successNotification";
-import {errorNotification} from "@components/notification/errorNotification";
-import {useDispatch} from "react-redux";
+import { MASTER_DATA_ROUTES } from "@/constants/routes";
+import { deleteEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { setInsertType } from "@/app/store/core/crudSlice";
+import { successNotification } from "@components/notification/successNotification";
+import { errorNotification } from "@components/notification/errorNotification";
+import { useDispatch } from "react-redux";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import {DataTable} from "mantine-datatable";
+import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
-import {deleteNotification} from "@components/notification/deleteNotification";
-import {notifications} from "@mantine/notifications";
+import { deleteNotification } from "@components/notification/deleteNotification";
+import { notifications } from "@mantine/notifications";
 
-export default function AddMedicineForm({ medicines,module, setMedicines, baseHeight }) {
-	const prescription2A4Ref = useRef(null);
+export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	const [updateKey, setUpdateKey] = useState(0);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -54,10 +36,9 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
-	const [printData, setPrintData] = useState(null);
 	const { id } = useParams();
-	const [fetching] = useState(false);
 	const dispatch = useDispatch();
+
 	const { data: by_meal_options } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
 		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
@@ -68,9 +49,16 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
 	});
 
-	const { data: entity } = useDataWithoutStore({ url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.VIEW}/${id}` });
+	const {
+		data: entity,
+		refetch: refetchEntity,
+		isLoading: isLoadingEntity,
+	} = useDataWithoutStore({
+		url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.VIEW}/${id}`,
+	});
+
 	const entityData = entity?.data?.treatment_medicine_format;
-	console.log(entityData)
+	console.log(entityData);
 
 	// Add hotkey for save functionality
 	useHotkeys([
@@ -83,20 +71,6 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 				setEditIndex(null);
 				// Clear PatientReport data when resetting
 				medicineForm.reset();
-			},
-		],
-		[
-			"alt+4",
-			() => {
-				printPrescription2A4();
-				showNotificationComponent(
-					t("Prescription printed successfully"),
-					"blue",
-					"lightgray",
-					true,
-					1000,
-					true
-				);
 			},
 		],
 	]);
@@ -133,12 +107,10 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 					medicineForm.setFieldValue("dosage", selectedMedicine.dose_details);
 				}
 			}
-
 		}
 	};
 
 	const handleAdd = (values) => {
-
 		if (values.medicine_id) {
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() == values.medicine_id);
 			if (selectedMedicine) {
@@ -160,7 +132,6 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 					values.times = selectedMedicine.dosage;
 				}
 			}
-
 		}
 
 		handleConfirmModal(values);
@@ -194,13 +165,12 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 					Object.keys(fieldErrors).forEach((key) => {
 						errorObject[key] = fieldErrors[key][0];
 					});
-					form.setErrors(errorObject);
+					medicineForm.setErrors(errorObject);
 				}
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
 				medicineForm.reset();
-				close(); // close the drawer
-				dispatch(setRefetchData({ module, refetching: true }));
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				await refetchEntity();
 			}
 		} catch (error) {
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
@@ -217,9 +187,9 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 		);
 
 		if (deleteEntityData.fulfilled.match(res)) {
-			dispatch(setRefetchData({ module, refetching: true }));
 			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-			navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.TREATMENT_MEDICINE}/${report}`);
+			// navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.TREATMENT_MEDICINE}/${report}`);
+			await refetchEntity();
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
@@ -228,6 +198,10 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
 			});
 		}
+	};
+
+	const handleRowSubmit = (rowId) => {
+		console.info(rowId);
 	};
 
 	return (
@@ -242,6 +216,7 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 				<Group align="end" gap="les">
 					<Group grow w="100%" gap="les">
 						<Select
+							clearable
 							searchable
 							onSearchChange={(v) => {
 								setMedicineTerm(v);
@@ -362,7 +337,7 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 							title: t("MedicineName"),
 						},
 						{
-							accessor: "generic_name",
+							accessor: "generic",
 							title: t("GenericName"),
 						},
 						{
@@ -405,10 +380,10 @@ export default function AddMedicineForm({ medicines,module, setMedicines, baseHe
 							),
 						},
 					]}
-					fetching={fetching}
+					fetching={isLoadingEntity}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={mainAreaHeight-150}
+					height={mainAreaHeight - 150}
 				/>
 			</Box>
 		</Box>

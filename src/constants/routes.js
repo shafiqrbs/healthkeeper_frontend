@@ -1,10 +1,10 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
 		TREATMENT_TEMPLATES: {
-			INDEX: "hospital/core/particular",
+			INDEX: "hospital/core/treatment",
 			CREATE: "hospital/core/particular",
 			UPDATE: "hospital/core/particular",
-			VIEW: "hospital/core/particular",
+			VIEW: "hospital/core/treatment",
 			DELETE: "hospital/core/particular",
 			INLINE_UPDATE: "hospital/core/particular",
 		},

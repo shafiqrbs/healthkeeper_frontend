@@ -51,7 +51,7 @@ export default function MedicineListItem({ index, medicines, medicine, setMedici
 			<Flex justify="space-between" align="center" gap="0">
 				{mode === "view" ? (
 					<Box ml="md" fz="xs" c="var(--theme-tertiary-color-8)">
-						{medicine.dose_details} ---- {medicine.times} time/s ---- {medicine.by_meal}
+						{medicine.dose_details || medicine.dosage} ---- {medicine.times} time/s ---- {medicine.by_meal}
 					</Box>
 				) : (
 					<Group grow gap="les">

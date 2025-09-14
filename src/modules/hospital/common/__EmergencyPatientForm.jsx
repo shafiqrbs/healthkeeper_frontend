@@ -238,7 +238,7 @@ export default function EmergencyPatientForm({
 				/>
 
 				{/* Patient Search Dropdown */}
-				{showPatientDropdown && patientSearchResults.length > 0 && (
+				{showPatientDropdown && (
 					<PatientSearchResult results={patientSearchResults} handlePatientSelect={handlePatientSelect} />
 				)}
 			</Box>

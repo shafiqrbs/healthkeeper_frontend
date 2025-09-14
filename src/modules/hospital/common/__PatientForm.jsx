@@ -16,7 +16,7 @@ import {
 import { useEffect, useState, useRef } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconInfoCircle, IconSearch, IconAlertCircle, IconChevronRight } from "@tabler/icons-react";
+import { IconInfoCircle, IconSearch, IconAlertCircle, IconChevronRight, IconX } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -223,14 +223,27 @@ export default function PatientForm({
 							/>
 						}
 						rightSection={
-							<ActionIcon type="submit" bg="var(--theme-primary-color-6)" loading={isSearching}>
-								<IconSearch size={16} />
-							</ActionIcon>
+							showPatientDropdown ? (
+								<ActionIcon
+									type="button"
+									bg="var(--theme-error-color)"
+									onClick={(e) => {
+										e.stopPropagation();
+										setShowPatientDropdown(false);
+									}}
+								>
+									<IconX size={16} />
+								</ActionIcon>
+							) : (
+								<ActionIcon type="submit" bg="var(--theme-primary-color-6)" loading={isSearching}>
+									<IconSearch size={16} />
+								</ActionIcon>
+							)
 						}
 					/>
 
 					{/* Patient Search Dropdown */}
-					{showPatientDropdown && patientSearchResults.length > 0 && (
+					{showPatientDropdown && (
 						<PatientSearchResult results={patientSearchResults} handlePatientSelect={handlePatientSelect} />
 					)}
 				</Box>

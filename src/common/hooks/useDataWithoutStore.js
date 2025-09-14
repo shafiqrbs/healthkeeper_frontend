@@ -20,9 +20,13 @@ export default function useDataWithoutStore({ url, params, headers }) {
 		}
 	};
 
+	const refetch = async () => {
+		await fetchData();
+	};
+
 	useEffect(() => {
 		fetchData();
 	}, [url, params, headers]);
 
-	return { isLoading, error, data };
+	return { isLoading, error, data, refetch };
 }
