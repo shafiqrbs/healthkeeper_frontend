@@ -17,7 +17,7 @@ const useParticularsData = ({ modeName }) => {
 	};
 
 	useEffect(() => {
-		if (!particularsData?.length) {
+		if (!particularsData?.entities?.length) {
 			fetchData();
 		}
 	}, [dispatch]);

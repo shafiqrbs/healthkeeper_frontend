@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import TbImage from "@assets/images/tb_logo.png";
 import GovtLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import { getLoggedInUser } from "@/common/utils";
-import useDomainHospitalConfigData from "@hooks/config-data/useDomainHospitalConfigData";
+import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { useTranslation } from "react-i18next";
 
 const DashedLine = () => (
@@ -15,7 +15,7 @@ const DashedLine = () => (
 const IPDPos = forwardRef(({ data }, ref) => {
 	const user = getLoggedInUser();
 	const { t } = useTranslation();
-	const { hospitalConfigData } = useDomainHospitalConfigData();
+	const { hospitalConfigData } = useHospitalConfigData();
 	return (
 		<Box display="none">
 			<Box ref={ref} w="80mm" p={8} bg="white" mx="auto">
@@ -98,7 +98,8 @@ const IPDPos = forwardRef(({ data }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("বয়স")}</strong> {data?.day} {t("দিন")} {data?.month} {t("মাস")}  {data?.year} {t("বছর")}
+									<strong>{t("বয়স")}</strong> {data?.day} {t("দিন")} {data?.month} {t("মাস")}{" "}
+									{data?.year} {t("বছর")}
 								</Table.Td>
 								<Table.Td miw={100} align="right">
 									<strong>{t("জন্ম তারিখ")}</strong> {data?.dob}

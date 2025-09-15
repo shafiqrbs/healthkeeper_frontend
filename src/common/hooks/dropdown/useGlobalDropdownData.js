@@ -17,7 +17,6 @@ const getDataFromLocalStorage = (utility) => {
 const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 	const dispatch = useDispatch();
 	const [dropdownData, setDropdownData] = useState([]);
-	const existingData = useSelector((state) => state.utility.dynamicDropdownData[utility]);
 
 	const value = {
 		url: path,
@@ -60,7 +59,7 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 	});
 
 	useEffect(() => {
-		if (!existingData?.length) {
+		if (!storeData?.length && !storeData?.data?.length) {
 			// =============== check localStorage first ================
 			const localStorageData = getDataFromLocalStorage(utility);
 

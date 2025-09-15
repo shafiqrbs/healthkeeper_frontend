@@ -7,7 +7,7 @@ import "@/index.css";
 import DashedDivider from "../../core-component/DashedDivider";
 import { getLoggedInUser } from "@/common/utils";
 import { t } from "i18next";
-import useDoaminHospitalConfigData from "@hooks/config-data/useDomainHospitalConfigData";
+import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
@@ -55,7 +55,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								{hospitalConfigData?.address}
 							</Text>
 							<Text ta="center" size="xs" c="gray" mb="2">
-								{t('হটলাইন')} {hospitalConfigData?.hotline}
+								{t("হটলাইন")} {hospitalConfigData?.hotline}
 							</Text>
 						</Grid.Col>
 						<Grid.Col span={4}>
@@ -72,14 +72,14 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={6} px="xs">
 							<Group gap="xs">
 								<Text size="md" fw={600}>
-									{t('মোড')} {data?.mode_name || "OPD"}
+									{t("মোড")} {data?.mode_name || "OPD"}
 								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={6} px="xs">
 							<Group gap="xs">
 								<Text size="md" fw={600}>
-									{t('বহির্বিভাগ কক্ষ')}
+									{t("বহির্বিভাগ কক্ষ")}
 								</Text>
 								<Text size="md">{getValue(data?.room_name || "100")}</Text>
 							</Group>
@@ -90,7 +90,6 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
-
 							<Group gap="xs">
 								<Text size="xs">{getValue(data?.patient_id)}</Text>
 							</Group>
@@ -104,12 +103,12 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs"/>
+							<Group gap="xs" />
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={6} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('নাম')}
+									{t("নাম")}
 								</Text>
 								<Text size="xs">{getValue(data?.name, "")}</Text>
 							</Group>
@@ -117,7 +116,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('মোবাইল')}
+									{t("মোবাইল")}
 								</Text>
 								<Text size="xs">{getValue(data?.mobile)}</Text>
 							</Group>
@@ -126,7 +125,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('লিঙ্গ')}
+									{t("লিঙ্গ")}
 								</Text>
 								<Text size="xs">{getValue(data?.gender, "N/A")}</Text>
 							</Group>
@@ -134,7 +133,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('বয়স')}
+									{t("বয়স")}
 								</Text>
 								<Text size="xs">
 									{data?.year} Y, {data?.month} M, {data?.day} D
@@ -144,7 +143,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('জন্ম তারিখ')}
+									{t("জন্ম তারিখ")}
 								</Text>
 								<Text size="xs">{getValue(data?.dob, "N/A")}</Text>
 							</Group>
@@ -158,7 +157,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t('ফি পরিমাণ')}
+									{t("ফি পরিমাণ")}
 								</Text>
 								<Text size="xs">{getValue(data?.total, 0)}</Text>
 							</Group>
@@ -306,17 +305,17 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 									</Grid>
 								</Box>
 							</Stack>
-				</Grid.Col>
+						</Grid.Col>
 					</Grid>
 				</Box>
 				<DashedDivider mt={0} mb={0} />
 				<Box ta="center">
 					<Text size="xs" c="gray" mt="xs">
-						<strong>{t('প্রিন্ট')}: </strong>
+						<strong>{t("প্রিন্ট")}: </strong>
 						{user?.name}
 					</Text>
 					<Text fz={8}>
-						{t('প্রিন্টের সময়')}: {new Date().toLocaleString()}
+						{t("প্রিন্টের সময়")}: {new Date().toLocaleString()}
 					</Text>
 				</Box>
 			</Box>

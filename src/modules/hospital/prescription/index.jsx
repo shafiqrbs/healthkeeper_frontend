@@ -7,23 +7,24 @@ import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Button, Flex, Grid, Modal, Paper, ScrollArea, Stack, Text } from "@mantine/core";
+import { Box, Button, Flex, Grid, Modal, Stack } from "@mantine/core";
 import PatientReport from "../common/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
 import { useDisclosure, useElementSize } from "@mantine/hooks";
-import {ERROR_NOTIFICATION_COLOR, MODULES, MODULES_CORE} from "@/constants";
+import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
 import { IconArrowRight } from "@tabler/icons-react";
 import Table from "../visit/_Table";
 import { getLoggedInUser } from "@/common/utils";
-import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
-import {getIndexEntityData, updateEntityData} from "@/app/store/core/crudThunk";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientReferredAction from "@modules/hospital/common/PatientReferredAction";
 import DetailsDrawer from "./__DetailsDrawer";
 import PatientPrescriptionHistoryList from "@modules/hospital/common/PatientPrescriptionHistoryList";
+import { getDataWithoutStore } from "@/services/apiService";
 
 const module = MODULES.PRESCRIPTION;
 
@@ -52,8 +53,6 @@ export default function Index() {
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});
 
-
-
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
 	const existingMedicines = initialFormValues?.medicines || [];
 
@@ -64,7 +63,7 @@ export default function Index() {
 		const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
 		form.setValues(updatedFormValues.initialValues);
 		setMedicines(existingMedicines || []);
-		setCustomerId(prescriptionData?.data?.customer_id)
+		setCustomerId(prescriptionData?.data?.customer_id);
 	}, [prescriptionData]);
 
 	const handleOpenViewOverview = () => {
@@ -73,22 +72,22 @@ export default function Index() {
 
 	const fetchData = async () => {
 		setFetching(true);
-		const value = {
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}`,
-			module,
-		};
 		try {
-			const result = await dispatch(getIndexEntityData(value)).unwrap();
+			const result = await getDataWithoutStore({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}`,
+			});
 			setRecords(result?.data?.data || []);
-			console.log(records)
 		} catch (err) {
 			console.error("Unexpected error:", err);
 		} finally {
 			setFetching(false);
 		}
 	};
+
 	useEffect(() => {
-		fetchData();
+		if (customerId) {
+			fetchData();
+		}
 	}, [customerId]);
 
 	const handlePrescriptionUpdate = async (updatedMedicine) => {
@@ -195,7 +194,9 @@ export default function Index() {
 				<Table module={module} closeTable={closeOverview} height={mainAreaHeight - 220} availableClose />
 			</Modal>
 
-			<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+			{selectedPrescriptionId && (
+				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+			)}
 		</>
 	);
 }

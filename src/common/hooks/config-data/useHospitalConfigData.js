@@ -1,18 +1,27 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
+import { setItemData } from "@/app/store/core/crudSlice";
+
+const localHospitalConfigData = JSON.parse(localStorage.getItem("hospital-config") || "{}");
 
 const useHospitalConfigData = () => {
 	const dispatch = useDispatch();
 	const hospitalConfigData = useSelector((state) => state.crud.hospitalConfig.data?.data);
 
 	const fetchData = () => {
-		dispatch(
-			getIndexEntityData({
-				url: "hospital/config",
-				module: "hospitalConfig",
-			})
-		);
+		// available inside the localstorage then use that
+		if (localHospitalConfigData?.id) {
+			dispatch(setItemData({ module: "hospitalConfig", data: localHospitalConfigData }));
+		} else {
+			// fetch from the server
+			dispatch(
+				getIndexEntityData({
+					url: "hospital/config",
+					module: "hospitalConfig",
+				})
+			);
+		}
 	};
 
 	useEffect(() => {
@@ -21,7 +30,7 @@ const useHospitalConfigData = () => {
 		}
 	}, [dispatch]);
 
-	return { hospitalConfigData: hospitalConfigData?.hospital_config, fetchData };
+	return { hospitalConfigData: hospitalConfigData, fetchData };
 };
 
 export default useHospitalConfigData;

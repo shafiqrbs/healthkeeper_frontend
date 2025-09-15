@@ -1,5 +1,3 @@
-import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { ActionIcon, Box, Flex, Group, NumberInput, Select, Text } from "@mantine/core";
 import { IconCheck, IconPencil, IconX } from "@tabler/icons-react";
 import { useState } from "react";
@@ -12,18 +10,18 @@ const DURATION_UNIT_OPTIONS = [
 	{ value: "year", label: "Year" },
 ];
 
-export default function MedicineListItem({ index, medicines, medicine, setMedicines, handleDelete, update }) {
+export default function MedicineListItem({
+	by_meal_options,
+	dosage_options,
+	index,
+	medicines,
+	medicine,
+	setMedicines,
+	handleDelete,
+	update,
+}) {
 	const { t } = useTranslation();
 	const [mode, setMode] = useState("view");
-	const { data: by_meal_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
-		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
-	});
-
-	const { data: dosage_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
-		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
-	});
 
 	const openEditMode = () => {
 		setMode("edit");

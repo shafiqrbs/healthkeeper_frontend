@@ -7,7 +7,7 @@ import "@/index.css";
 import DashedDivider from "../../core-component/DashedDivider";
 import { getLoggedInUser } from "@/common/utils";
 import { t } from "i18next";
-import useDoaminHospitalConfigData from "@hooks/config-data/useDomainHospitalConfigData";
+import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;

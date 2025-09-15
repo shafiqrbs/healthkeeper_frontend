@@ -6,7 +6,7 @@ import DashedDivider from "@components/core-component/DashedDivider";
 import CustomDivider from "@components/core-component/CustomDivider";
 import { formatDate } from "@/common/utils";
 import "@/index.css";
-import useDoaminHospitalConfigData from "@hooks/config-data/useDomainHospitalConfigData";
+import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {

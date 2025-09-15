@@ -530,6 +530,8 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 							setMedicines={setMedicines}
 							handleDelete={handleDelete}
 							update={update}
+							by_meal_options={by_meal_options}
+							dosage_options={dosage_options}
 						/>
 					))}
 				</Stack>

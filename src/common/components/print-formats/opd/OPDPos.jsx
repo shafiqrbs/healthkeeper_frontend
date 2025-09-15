@@ -4,7 +4,7 @@ import TbImage from "@assets/images/tb_logo.png";
 import GovtLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import { getLoggedInUser } from "@/common/utils";
 import { useTranslation } from "react-i18next";
-import useDomainHospitalConfigData from "@hooks/config-data/useDomainHospitalConfigData";
+import useDomainHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
 const DashedLine = () => (
 	<Text size="xxs" ta="center" ff="monospace">
@@ -99,7 +99,8 @@ const OPDPos = forwardRef(({ data }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("বয়স")}</strong> {data?.day} {t("দিন")} {data?.month} {t("মাস")}  {data?.year} {t("বছর")}
+									<strong>{t("বয়স")}</strong> {data?.day} {t("দিন")} {data?.month} {t("মাস")}{" "}
+									{data?.year} {t("বছর")}
 								</Table.Td>
 								<Table.Td miw={100} align="right">
 									<strong>{t("জন্ম তারিখ")}</strong> {data?.dob}

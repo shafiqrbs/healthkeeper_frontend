@@ -449,7 +449,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				/>
 			</Box>
 			<DataTableFooter indexData={listData} module="visit" />
-			<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+			{selectedPrescriptionId && (
+				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+			)}
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 
 			<OPDDocument data={printData} ref={a4Ref} />

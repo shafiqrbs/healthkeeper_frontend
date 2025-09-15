@@ -19,7 +19,7 @@ import { successNotification } from "@/common/components/notification/successNot
 import { errorNotification } from "@/common/components/notification/errorNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { useDispatch } from "react-redux";
-import useDoaminHospitalConfigData from "@hooks/config-data/useDomainHospitalConfigData";
+import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
 export default function ConfirmModal({ opened, close, form, selectedId, module }) {
 	const dispatch = useDispatch();
@@ -350,7 +350,10 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 											<Text fz="sm">{t("AssignConsultant")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
-											{hospitalConfigData?.hospital_config?.consultant_doctor?.consultant_doctor_name}
+											{
+												hospitalConfigData?.hospital_config?.consultant_doctor
+													?.consultant_doctor_name
+											}
 										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20}>
