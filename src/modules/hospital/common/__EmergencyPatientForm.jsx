@@ -177,7 +177,7 @@ export default function EmergencyPatientForm({
 		// Fill the form with selected patient data
 		form.setFieldValue("name", patient?.data?.name);
 		form.setFieldValue("mobile", patient?.data?.mobile);
-		form.setFieldValue("dob", patient?.data?.dob);
+		//form.setFieldValue("dob", patient?.data?.dob);
 		form.setFieldValue("address", patient?.data?.address);
 		form.setFieldValue("customer_id", patient?.data?.id);
 		// Close the dropdown
@@ -291,7 +291,8 @@ export function Form({
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
 	const firstRender = useIsFirstRender();
-	const { hospitalConfigData } = useHospitalConfigData();
+	const { hospitalConfigData:globalConfig } = useHospitalConfigData();
+	const  hospitalConfigData = globalConfig?.hospital_config
 
 	const enteredAmount = Number(form?.values?.amount ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;

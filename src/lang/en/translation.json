@@ -1459,5 +1459,7 @@
 	"InvoiceID": "Invoice ID",
 	"SaveThisPrescriptionAsTemplate": "Save This Prescription as Template",
 	"SelectMedicine": "Select Medicine",
-	"NoMedicineAddedYet": "No Medicine Added Yet"
+	"NoMedicineAddedYet": "No Medicine Added Yet",
+	"SaveAsPrescriptionTemplate": "Save as Prescription Template",
+	"ListOfMedicines": "List of Medicines"
 }

@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, NumberInput,TextInput} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, NumberInput, TextInput, Checkbox} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
     IconTrashX,
@@ -32,7 +32,7 @@ import {
     ERROR_NOTIFICATION_COLOR,
 } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import {useForm} from "@mantine/form";
@@ -52,7 +52,7 @@ export default function _Table({ module, open }) {
     const searchKeyword = useSelector((state) => state.crud.searchKeyword);
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
-
+    const [updatingRows, setUpdatingRows] = useState({});
     // for infinity table data scroll, call the hook
     const {
         scrollRef,
@@ -142,19 +142,24 @@ export default function _Table({ module, open }) {
         }
     });
 
+
+
     useEffect(() => {
         if (!records?.length) return;
-
-        const initialFormData = records.reduce((acc, item) => {
-
-            acc[item.id] = {
-                name: item.name || "",
-            };
-            return acc;
-        }, {});
-
-        setSubmitFormData(initialFormData);
+        setSubmitFormData((prev) => {
+            const newData = { ...prev };
+            records.forEach((item, idx) => {
+                if (!newData[item.id]) {
+                    newData[item.id] = {
+                        name: item.name ?? "",
+                        opd_referred: item?.opd_referred ?? false,
+                    };
+                }
+            });
+            return newData;
+        });
     }, [records]);
+
 
     const handleDataTypeChange = (rowId, field, value) => {
         setSubmitFormData(prev => ({
@@ -164,6 +169,29 @@ export default function _Table({ module, open }) {
                 [field]: value,
             },
         }));
+    };
+
+    const handleFieldChange = async (rowId, field, value) => {
+        setSubmitFormData((prev) => ({
+            ...prev,
+            [rowId]: { ...prev[rowId], [field]: value },
+        }));
+
+        setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
+
+        try {
+            await dispatch(
+                storeEntityData({
+                    url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
+                    data: { [field]: value },
+                    module,
+                })
+            );
+        } catch (error) {
+            errorNotification(error.message);
+        } finally {
+            setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
+        }
     };
 
     const handleRowSubmit = async (rowId) => {
@@ -227,13 +255,6 @@ export default function _Table({ module, open }) {
                             render: (_item, index) => index + 1,
                         },
                         {
-                            accessor: "particular_type_name",
-                            title: t("ParticularType"),
-                            textAlignment: "right",
-                            sortable: true,
-                            render: (item) => item.particular_type_name,
-                        },
-                        {
                             accessor: "name",
                             title: t("Name"),
                             sortable: true,
@@ -251,10 +272,22 @@ export default function _Table({ module, open }) {
                             ),
                         },
                         {
-                            accessor: "category",
-                            title: t("Category"),
-                            sortable: false,
-                            render: (values) => values.category || "N/A",
+                            accessor: "opd_referred",
+                            title: t("OPDReferredRoom"),
+                            render: (item) => (
+                                <Checkbox
+                                    key={item.id}
+                                    size="sm"
+                                    checked={submitFormData[item.id]?.opd_referred ?? false}
+                                    onChange={(val) =>
+                                        handleFieldChange(
+                                            item.id,
+                                            "opd_referred",
+                                            val.currentTarget.checked
+                                        )
+                                    }
+                                />
+                            ),
                         },
                         {
                             accessor: "action",

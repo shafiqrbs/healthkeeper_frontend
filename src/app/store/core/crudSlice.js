@@ -103,6 +103,16 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	particular_matrix: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
 	cabin: {
 		isLoading: true,
 		refetching: false,

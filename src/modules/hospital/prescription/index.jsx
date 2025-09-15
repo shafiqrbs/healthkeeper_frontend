@@ -74,9 +74,9 @@ export default function Index() {
 		setFetching(true);
 		try {
 			const result = await getDataWithoutStore({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}/${prescriptionId}`,
 			});
-			setRecords(result?.data?.data || []);
+			setRecords(result?.data || []);
 		} catch (err) {
 			console.error("Unexpected error:", err);
 		} finally {
@@ -89,6 +89,8 @@ export default function Index() {
 			fetchData();
 		}
 	}, [customerId]);
+	const hasRecords = records && records.length > 0;
+
 
 	const handlePrescriptionUpdate = async (updatedMedicine) => {
 		try {
@@ -178,14 +180,18 @@ export default function Index() {
 									module={module}
 									form={form}
 									medicines={medicines}
+									hasRecords={hasRecords}
 									setMedicines={setMedicines}
 									update={handlePrescriptionUpdate}
 									setShowHistory={setShowHistory}
+									prescriptionData={prescriptionData}
 								/>
 							</Grid.Col>
-							<Grid.Col display={showHistory ? "block" : "none"} span={4}>
-								<PatientPrescriptionHistoryList historyList={records} />
-							</Grid.Col>
+							{hasRecords && (
+								<Grid.Col display={showHistory ? "block" : "none"} span={4}>
+									<PatientPrescriptionHistoryList historyList={records} />
+								</Grid.Col>
+							)}
 						</Grid>
 					</Flex>
 				</Box>

@@ -44,13 +44,6 @@ export default function _Table({ module }) {
     const [updatingRows, setUpdatingRows] = useState({});
     const [dragging, setDragging] = useState(false);
 
-    const listData = useSelector((state) => state.crud[module].data);
-
-    const { data: getParticularOperationModes } = useGlobalDropdownData({
-        path: HOSPITAL_DROPDOWNS.PARTICULAR_OPERATION_MODE.PATH,
-        params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPERATION_MODE.TYPE },
-        utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPERATION_MODE.UTILITY,
-    });
 
     const form = useForm({
         initialValues: {
@@ -61,12 +54,13 @@ export default function _Table({ module }) {
     const fetchData = async () => {
         setFetching(true);
         const value = {
-            url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_TYPE.INDEX,
+            url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MATRIX.INDEX,
             module,
         };
         try {
             const result = await dispatch(getIndexEntityData(value)).unwrap();
             setRecords(result?.data?.data || []);
+            console.log(records)
         } catch (err) {
             console.error("Unexpected error:", err);
         } finally {
@@ -79,63 +73,6 @@ export default function _Table({ module }) {
     }, []);
 
 
-    useEffect(() => {
-        if (!records?.length) return;
-
-        const initialFormData = records.reduce((acc, item) => {
-            const modes = Array.from(
-                new Set((item.particular_matrix || []).map(p => p.particular_mode_id))
-            );
-
-            acc[item.id] = {
-                data_type: item.data_type || "",
-                operation_modes: modes,
-            };
-
-            return acc;
-        }, {});
-
-        setSubmitFormData(initialFormData);
-    }, [records]);
-
-    const handleDataTypeChange = (rowId, field, value) => {
-        setSubmitFormData(prev => ({
-            ...prev,
-            [rowId]: {
-                ...prev[rowId],
-                [field]: value,
-            },
-        }));
-    };
-
-    const handleRowSubmit = async (rowId) => {
-        const formData = submitFormData[rowId];
-        if (!formData) return;
-        formData.particular_type_id = rowId;
-        const value = {
-            url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_TYPE.CREATE,
-            data: formData,
-            module,
-        };
-
-        try {
-            const resultAction = await dispatch(storeEntityData(value));
-            if (storeEntityData.rejected.match(resultAction)) {
-                const fieldErrors = resultAction.payload.errors;
-                if (fieldErrors) {
-                    const errorObject = {};
-                    Object.keys(fieldErrors).forEach((key) => {
-                        errorObject[key] = fieldErrors[key][0];
-                    });
-                    form.setErrors(errorObject);
-                }
-            } else if (storeEntityData.fulfilled.match(resultAction)) {
-                successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
-            }
-        } catch (error) {
-            errorNotification(error.message);
-        }
-    };
 
     // 🔹 Drag and drop reorder
     const reorder = (list, startIndex, endIndex) => {
@@ -164,7 +101,7 @@ export default function _Table({ module }) {
         try {
             await dispatch(
                 storeEntityData({
-                    url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.ORDERING}`,
+                    url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MATRIX.ORDERING}`,
                     data: {
                         order: newRecords.map((item, idx) => ({
                             id: item.id,
@@ -237,84 +174,32 @@ export default function _Table({ module }) {
                             render: (item) => records?.indexOf(item) + 1,
                         },
                         {
-                            accessor: "name",
-                            title: t("Name"),
+                            accessor: "mode_name",
+                            title: t("ModeName"),
                             render: (values) => (
                                 <>
                                     <Text
-                                        className="activate-link"
                                         fz="sm"
-                                        onClick={() => setCustomerObject(values)}
                                     >
-                                        {values.name}
+                                        {values.mode_name}
                                     </Text>
                                 </>
                             ),
                         },
                         {
-                            accessor: "data_type",
-                            title: t("DataType"),
-                            width: "220px",
-                            render: (item) => (
-                                <Select
-                                    placeholder="SelectDataType"
-                                    data={DATA_TYPES}
-                                    value={submitFormData[item.id]?.data_type || ""}
-                                    onChange={(val) => handleDataTypeChange(item.id, "data_type", val)}
-                                />
-                            ),
-                        },
-                        {
-                            accessor: "operation_modes",
-                            title: t("Operation Modes"),
-                            width: "220px",
-                            render: (item) => (
-                                <Stack>
-                                    {getParticularOperationModes.map((mode) => (
-                                        <Checkbox
-                                            key={mode.id}
-                                            label={mode.label}
-                                            size="sm"
-                                            checked={
-                                                submitFormData[item.id]?.operation_modes?.includes(Number(mode.value)) || false
-                                            }
-                                            onChange={(e) => {
-                                                const checked = e.currentTarget.checked;
-                                                setSubmitFormData((prev) => {
-                                                    const prevModes = prev[item.id]?.operation_modes || [];
-                                                    return {
-                                                        ...prev,
-                                                        [item.id]: {
-                                                            ...prev[item.id],
-                                                            operation_modes: checked
-                                                                ? [...prevModes, Number(mode.value)]
-                                                                : prevModes.filter((m) => m !== Number(mode.value)),
-                                                        },
-                                                    };
-                                                });
-                                            }}
-                                        />
-                                    ))}
-                                </Stack>
-                            ),
-                        },
-                        {
-                            accessor: "action",
-                            title: "",
-                            render: (item) => (
-                                <Center>
-                                    <Button
-                                        onClick={() => handleRowSubmit(item.id)}
-                                        variant="filled"
-                                        size="xs"
-                                        className="btnPrimaryBg"
-                                        leftSection={<IconDeviceFloppy size={16} />}
+                            accessor: "hms_particular_type_name",
+                            title: t("ParticularType"),
+                            render: (values) => (
+                                <>
+                                    <Text
+                                        fz="sm"
                                     >
-                                        {t("Save")}
-                                    </Button>
-                                </Center>
+                                        {values.hms_particular_type_name}
+                                    </Text>
+                                </>
                             ),
                         },
+
                     ]}
                     fetching={fetching}
                     loaderSize="xs"

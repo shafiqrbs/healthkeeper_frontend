@@ -11,18 +11,19 @@ import {
 	ActionIcon,
 	Flex,
 	Tabs,
-	FloatingIndicator, Button
+	FloatingIndicator, Button, Checkbox
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {MASTER_DATA_ROUTES} from "@/constants/routes";
-import {editEntityData, getIndexEntityData} from "@/app/store/core/crudThunk";
+import {editEntityData, getIndexEntityData, storeEntityData} from "@/app/store/core/crudThunk";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import tableCss from "@assets/css/Table.module.css";
 import {IconArrowRight, IconDeviceFloppy,IconX, IconTrashX,IconWindowMinimize,IconArrowDownLeft} from "@tabler/icons-react";
 import {DataTable} from "mantine-datatable";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
+import {errorNotification} from "@components/notification/errorNotification";
 
 const PER_PAGE = 500;
 
@@ -36,7 +37,7 @@ export default function OpdRoomModal({ openedOpdRoom, closeOpdRoom,module,height
 	const listData = useSelector((state) => state.crud[module].data);
 	const [fetching, setFetching] = useState(false);
 	const [records, setRecords] = useState([]);
-
+	const [updatingRows, setUpdatingRows] = useState({});
 	const fetchData = async () => {
 		setFetching(true);
 		const value = {
@@ -63,6 +64,44 @@ export default function OpdRoomModal({ openedOpdRoom, closeOpdRoom,module,height
 		fetchData();
 	}, []);
 
+	useEffect(() => {
+		if (!records?.length) return;
+		setSubmitFormData((prev) => {
+			const newData = { ...prev };
+			records.forEach((item, idx) => {
+				if (!newData[item.id]) {
+					newData[item.id] = {
+						name: item.name ?? "",
+						status: item?.status ?? false,
+					};
+				}
+			});
+			return newData;
+		});
+	}, [records]);
+
+	const handleFieldChange = async (rowId, field, value) => {
+		setSubmitFormData((prev) => ({
+			...prev,
+			[rowId]: { ...prev[rowId], [field]: value },
+		}));
+
+		setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
+
+		try {
+			await dispatch(
+				storeEntityData({
+					url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
+					data: { [field]: value },
+					module,
+				})
+			);
+		} catch (error) {
+			errorNotification(error.message);
+		} finally {
+			setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
+		}
+	};
 
 	return (
 		<Box>
@@ -102,17 +141,34 @@ export default function OpdRoomModal({ openedOpdRoom, closeOpdRoom,module,height
 						render: (item) => records?.indexOf(item) + 1,
 					},
 					{
-						accessor: "particular_type_name",
-						title: t("ParticularType"),
+						accessor: "name",
+						title: t("Name"),
 						textAlignment: "right",
 						sortable: true,
-						render: (item) => item.particular_type_name,
+						render: (item) => item.name,
 					},
 					{
-						accessor: "category",
-						title: t("Category"),
-						sortable: false,
-						render: (values) => values.category || "N/A",
+						accessor: "opd_referred",
+						title: t("ReferredRoom"),
+						render: (item) => (item.opd_referred === 1 ? "Yes" : "No"),
+					},
+					{
+						accessor: "status",
+						title: t("Status"),
+						render: (item) => (
+							<Checkbox
+								key={item.id}
+								size="sm"
+								checked={submitFormData[item.id]?.status ?? false}
+								onChange={(val) =>
+									handleFieldChange(
+										item.id,
+										"status",
+										val.currentTarget.checked
+									)
+								}
+							/>
+						),
 					},
 				]}
 				fetching={fetching}

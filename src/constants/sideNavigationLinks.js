@@ -341,6 +341,13 @@ export const sideNavigationLinks = {
 			allowedRoles: ["role_domain", "accounting_admin"],
 		},
 		{
+			label: t("ParticularMatrix"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR_MATRIX.INDEX,
+			icon: IconDashboard,
+			color: "#6f1225",
+			allowedRoles: ["role_domain", "accounting_admin"],
+		},
+		{
 			label: t("Users"),
 			path: "/core/user",
 			icon: IconDashboard,

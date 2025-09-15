@@ -175,7 +175,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Hospital")}</Text>
+						<Text fz="sm">{t("Hospital")}<RequiredAsterisk /></Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<InputAutoComplete
@@ -190,6 +190,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 							form={referredForm}
 							name="hospital"
 							mt={0}
+							required
 							id="hospital"
 						/>
 					</Grid.Col>
@@ -213,7 +214,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 						/>
 					</Grid.Col>
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Comment")}</Text> <RequiredAsterisk />
+						<Text fz="sm">{t("Comment")}<RequiredAsterisk /></Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<TextAreaForm
@@ -246,7 +247,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Comment")}</Text> <RequiredAsterisk />
+						<Text fz="sm">{t("Comment")}<RequiredAsterisk /></Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<TextAreaForm

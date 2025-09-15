@@ -13,6 +13,8 @@ export default function PatientPrescriptionHistoryList({ historyList }) {
 		setSelectedPrescriptionId(id);
 		setTimeout(() => open(), 10);
 	};
+
+
 	return (
 		<ScrollArea pos="relative" h={mainAreaHeight - 68} bg="white" className="borderRadiusAll">
 			<Stack p="xs" gap="xs">

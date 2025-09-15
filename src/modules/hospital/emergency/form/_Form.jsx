@@ -31,7 +31,7 @@ export default function _Form({ module }) {
 			try {
 				const createdBy = JSON.parse(localStorage.getItem("user"));
 				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-				const [day, month, year] = form.values.dob.split("-").map(Number);
+				const [day, month, year] = form.values.dob?.split("-").map(Number);
 				const dateObj = new Date(year, month - 1, day);
 
 				const today = new Date();

@@ -12,7 +12,7 @@ const useHospitalConfigData = () => {
 	const fetchData = () => {
 		// available inside the localstorage then use that
 		if (localHospitalConfigData?.id) {
-			dispatch(setItemData({ module: "hospitalConfig", data: localHospitalConfigData }));
+			dispatch(setItemData({ module: "hospitalConfig", data: {data:localHospitalConfigData} }));
 		} else {
 			// fetch from the server
 			dispatch(

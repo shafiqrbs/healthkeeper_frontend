@@ -4,7 +4,7 @@ import {
 	Box,
 	Button,
 	Flex,
-	Grid,
+	Grid, Group,
 	LoadingOverlay,
 	Modal,
 	ScrollArea,
@@ -16,7 +16,7 @@ import {
 import { useEffect, useState, useRef } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconInfoCircle, IconSearch, IconAlertCircle, IconChevronRight, IconX } from "@tabler/icons-react";
+import { IconInfoCircle, IconSearch, IconAlertCircle, IconChevronRight,IconAdjustmentsCog, IconX } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -268,15 +268,7 @@ export default function PatientForm({
 			<Modal opened={opened} onClose={close} size="100%" centered withCloseButton={false}>
 				<Table module={module} closeTable={close} height={mainAreaHeight - 220} availableClose />
 			</Modal>
-			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered withCloseButton={false}>
-				<OpdRoomModal
-					openedOpdRoom={openedOpdRoom}
-					closeOpdRoom={closeOpdRoom}
-					module={module}
-					closeTable={close}
-					height={mainAreaHeight - 220}
-				/>
-			</Modal>
+
 		</Box>
 	);
 }
@@ -296,6 +288,7 @@ export function Form({
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 	const [openedRoomError, { open: openRoomError, close: closeRoomError }] = useDisclosure(false);
 	const [openedRoom, { open: openRoom, close: closeRoom }] = useDisclosure(false);
+	const [openedOpdRoom, { open: openOpdRoom ,close: closeOpdRoom }] = useDisclosure(false);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
@@ -493,9 +486,16 @@ export function Form({
 				<ScrollArea h={mainAreaHeight - 180}>
 					<Stack mih={height} className="form-stack-vertical">
 						<Flex className="form-action-header full-bleed">
-							<Text fz="sm">{t("Room")}</Text>
-							<Flex align="center" gap="xs" className="cursor-pointer" onClick={openRoom}>
-								<Text fz="sm">{selectedRoom?.name}</Text> <IconChevronRight size="16px" />
+							<Text fz="sm">{t("OPDRoom")}</Text>
+							<Flex align="center" gap="xs" className="cursor-pointer">
+								<Group>
+									<Button variant="light" onClick={openOpdRoom}  size={'xs'} leftSection={<IconAdjustmentsCog size="16px" />} >Manage</Button>
+									<Button   size={'xs'} onClick={openRoom} color="var('--theme-primary-color-2')" rightSection={<IconChevronRight size="16px" />}>
+										{selectedRoom?.name}
+									</Button>
+
+								</Group>
+
 							</Flex>
 						</Flex>
 						<Grid align="center" columns={20}>
@@ -936,6 +936,15 @@ export function Form({
 					))}
 				</ScrollArea>
 			</GlobalDrawer>
+			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered withCloseButton={false}>
+				<OpdRoomModal
+					openedOpdRoom={openedOpdRoom}
+					closeOpdRoom={closeOpdRoom}
+					module={module}
+					closeTable={close}
+					height={mainAreaHeight - 220}
+				/>
+			</Modal>
 		</Box>
 	);
 }

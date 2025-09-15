@@ -36,6 +36,7 @@ export const MODULES_CORE = {
 	CATEGORY: "category",
 	PARTICULAR_MODE: "particular_mode",
 	PARTICULAR_TYPE: "particular_type",
+	PARTICULAR_MATRIX: "particular_matrix",
 };
 
 export const MODULES_PHARMACY = {

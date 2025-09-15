@@ -123,6 +123,11 @@ export const MASTER_DATA_ROUTES = {
 			CREATE: "hospital/core/particular-type",
 		},
 
+		PARTICULAR_MATRIX: {
+			INDEX: "hospital/mode/matrix",
+			ORDERING: "hospital/mode/matrix-ordering",
+		},
+
 		PARTICULAR_MODE: {
 			INDEX: "hospital/core/particular-mode",
 			CREATE: "hospital/core/particular-mode/create",
@@ -168,8 +173,12 @@ export const MASTER_DATA_ROUTES = {
 			INDEX: "/hospital/core/lab",
 			CREATE: "/hospital/core/lab/create",
 			UPDATE: "/hospital/core/lab",
-			VIEW: "/hospital/core/lab=/view",
+			VIEW: "/hospital/core/lab/view",
 			DELETE: "/hospital/core/lab/delete",
+		},
+
+		PARTICULAR_MATRIX: {
+			INDEX: "/hospital/core/particular-matrix",
 		},
 
 		INVESTIGATION: {

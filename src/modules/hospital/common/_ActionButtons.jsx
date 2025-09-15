@@ -20,8 +20,8 @@ export default function ActionButtons({
 	handleA4Print,
 	children,
 }) {
-	const { hospitalConfigData } = useHospitalConfigData();
-
+	const { hospitalConfigData:globalConfig } = useHospitalConfigData();
+	const  hospitalConfigData = globalConfig?.hospital_config
 	const { t } = useTranslation();
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
