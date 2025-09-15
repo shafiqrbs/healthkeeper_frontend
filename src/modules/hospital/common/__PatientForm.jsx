@@ -172,6 +172,7 @@ export default function PatientForm({
 		form.setFieldValue("mobile", patient?.data?.mobile);
 		form.setFieldValue("dob", patient?.data?.dob);
 		form.setFieldValue("address", patient?.data?.address);
+		form.setFieldValue("customer_id", patient?.data?.id);
 		// Close the dropdown
 		setShowPatientDropdown(false);
 		setPatientSearchResults([]);

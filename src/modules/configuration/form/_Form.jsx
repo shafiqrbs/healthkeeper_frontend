@@ -14,8 +14,9 @@ import __HospitalForm from "@modules/configuration/form/__HospitalForm";
 import { modals } from "@mantine/modals";
 import axios from "axios";
 import { notifications } from "@mantine/notifications";
+import HealthShareForm from "./__HealthShareForm.jsx";
 
-const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product"];
+const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product", "HealthShare"];
 
 export default function _Form({ module }) {
 	const { t } = useTranslation();
@@ -32,6 +33,8 @@ export default function _Form({ module }) {
 				return <__HospitalForm height={height} id={id} />;
 			case "Accounting":
 				return <AccountingForm height={height} module={module} />;
+			case "HealthShare":
+				return <HealthShareForm height={height} id={id} />;
 			default:
 				return <__FormGeneric height={height} module={module} id={id} />;
 		}
@@ -43,6 +46,8 @@ export default function _Form({ module }) {
 				return "HospitalFormSubmit";
 			case "Accounting":
 				return "AccountingFormSubmit";
+			case "HealthShare":
+				return "HealthShareFormSubmit";
 			default:
 				return "DomainFormSubmit";
 		}

@@ -59,6 +59,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		initialValues: {
 			keywordSearch: "",
 			created: "",
+			room_id: "",
 		},
 	});
 	const handlePos = useReactToPrint({
@@ -107,6 +108,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			name: filterData?.name,
 			patient_mode: "opd",
 			term: filterData.keywordSearch,
+			room_id: filterData.room_id,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",

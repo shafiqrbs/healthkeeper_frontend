@@ -54,6 +54,7 @@ export default function Table({ module }) {
 		initialValues: {
 			keywordSearch: "",
 			created: "",
+			room_id: "",
 		},
 	});
 
@@ -83,6 +84,7 @@ export default function Table({ module }) {
 			name: filterData?.name,
 			patient_mode: "emergency",
 			term: filterData.keywordSearch,
+			room_id: filterData.room_id,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",

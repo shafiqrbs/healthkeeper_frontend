@@ -1,6 +1,6 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {Box, ScrollArea, Button, Text, Flex, Stack, Grid, Title} from "@mantine/core";
+import { Box, ScrollArea, Button, Text, Flex, Stack, Grid, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch } from "react-redux";
 import { modals } from "@mantine/modals";
@@ -19,9 +19,9 @@ import { MODULES } from "@/constants";
 import { getHospitalFormInitialValues } from "../helpers/request";
 import { CONFIGURATION_ROUTES } from "@/constants/routes";
 import useDomainConfig from "@hooks/config-data/useDomainConfig";
-import {parseDateValue} from "@utils/index";
-import {successNotification} from "@components/notification/successNotification";
-import {errorNotification} from "@components/notification/errorNotification";
+import { parseDateValue } from "@utils/index";
+import { successNotification } from "@components/notification/successNotification";
+import { errorNotification } from "@components/notification/errorNotification";
 
 const module = MODULES.HOSPITAL_CONFIG;
 
@@ -49,9 +49,9 @@ export default function __HospitalForm({ height, id }) {
 	useEffect(() => {
 		if (hospital_config) {
 			form.setValues({
-				message_admission: hospital_config?.message_admission || '',
-				message_diagnostic: hospital_config?.message_diagnostic || '',
-				message_visit: hospital_config?.message_visit || '',
+				message_admission: hospital_config?.message_admission || "",
+				message_diagnostic: hospital_config?.message_diagnostic || "",
+				message_visit: hospital_config?.message_visit || "",
 				special_discount_doctor: hospital_config?.special_discount_doctor || 0,
 				special_discount_investigation: hospital_config?.special_discount_investigation || 0,
 				prescription_show_referred: hospital_config?.prescription_show_referred || 0,
@@ -61,14 +61,17 @@ export default function __HospitalForm({ height, id }) {
 				is_invoice_title: hospital_config?.is_invoice_title || 0,
 				is_print_footer: hospital_config?.is_print_footer || 0,
 				is_print_report_header: hospital_config?.is_print_report_header || 0,
-
 			});
 		}
 	}, [dispatch, hospital_config]);
 
-
 	const handleConfirmFormSubmit = async (values) => {
-		const properties = ["opd_select_doctor", "special_discount_doctor", "special_discount_investigation","prescription_temlate"];
+		const properties = [
+			"opd_select_doctor",
+			"special_discount_doctor",
+			"special_discount_investigation",
+			"prescription_temlate",
+		];
 		properties.forEach((property) => {
 			values[property] = values[property] === true || values[property] == 1 ? 1 : 0;
 		});
@@ -93,7 +96,7 @@ export default function __HospitalForm({ height, id }) {
 				setSaveCreateLoading(false);
 			}, 500);
 		} catch (error) {
-			errorNotification("Error updating purchase config:"+error.message);
+			errorNotification("Error updating purchase config:" + error.message);
 			setSaveCreateLoading(false);
 		}
 	};
@@ -110,87 +113,84 @@ export default function __HospitalForm({ height, id }) {
 		[]
 	);
 
-	const [voucherSalesReturnData, setVoucherSalesReturnData] = useState(null);
-
-
 	return (
 		<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
 			<form onSubmit={form.onSubmit(handleFormSubmit)}>
 				<Box p="md">
-				<Stack gap="les" mt="xs">
-					<InputCheckboxForm
-						label={t("PrescriptionShowReferred")}
-						field="prescription_show_referred"
-						name="prescription_show_referred"
-						form={form}
-					/>
-					<InputCheckboxForm
-						label={t("OpdSelectDoctor")}
-						field="opd_select_doctor"
-						name="opd_select_doctor"
-						form={form}
-					/>
-					<InputCheckboxForm
-						label={t("MarketingExecutive")}
-						field="is_marketing_executive"
-						name="is_marketing_executive"
-						form={form}
-					/>
-					<InputCheckboxForm
-						label={t("SpecialDiscountDoctor")}
-						field="special_discount_doctor"
-						name="special_discount_doctor"
-						form={form}
-					/>
-					<InputCheckboxForm
-						label={t("SpecialDiscountInvestigation")}
-						field="special_discount_investigation"
-						name="special_discount_investigation"
-						form={form}
-					/>
-				</Stack>
-				<Box className={'inner-title-box'}>
-					<Title order={6}>
-						{t("Operation Fee")}
-					</Title>
-				</Box>
-				{/* ======================= some demo components for reusing purposes ======================= */}
-				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{hospital_config?.admission_fee?.admission_fee_name}
-					</Grid.Col>
-					<Grid.Col span={12}>
-						{inventory_config?.currency?.symbol} {hospital_config?.admission_fee?.admission_fee_price} {inventory_config?.currency?.code}
-					</Grid.Col>
-				</Grid>
-				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{hospital_config?.opd_ticket_fee?.opd_ticket_fee_name}
-					</Grid.Col>
-					<Grid.Col span={12}>
-						{inventory_config?.currency?.symbol} {hospital_config?.opd_ticket_fee?.opd_ticket_fee_price} {inventory_config?.currency?.code}
-					</Grid.Col>
-				</Grid>
-				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{hospital_config?.emergency_fee?.emergency_fee_name}
-					</Grid.Col>
-					<Grid.Col span={12}>
-						{inventory_config?.currency?.symbol} {hospital_config?.emergency_fee?.emergency_fee_price} {inventory_config?.currency?.code}
-					</Grid.Col>
-				</Grid>
-				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-					<Grid.Col span={12} fz="sm" mt="xxxs">
-						{hospital_config?.ot_fee?.ot_fee_name}
-					</Grid.Col>
-					<Grid.Col span={12}>
-						{inventory_config?.currency?.symbol} {hospital_config?.ot_fee?.ot_fee_price} {inventory_config?.currency?.code}
-					</Grid.Col>
-				</Grid>
-				<Box className={'inner-title-box'}>
-						<Title order={6}>
-							{t("Messageing")}
-						</Title>
+					<Stack gap="les" mt="xs">
+						<InputCheckboxForm
+							label={t("PrescriptionShowReferred")}
+							field="prescription_show_referred"
+							name="prescription_show_referred"
+							form={form}
+						/>
+						<InputCheckboxForm
+							label={t("OpdSelectDoctor")}
+							field="opd_select_doctor"
+							name="opd_select_doctor"
+							form={form}
+						/>
+						<InputCheckboxForm
+							label={t("MarketingExecutive")}
+							field="is_marketing_executive"
+							name="is_marketing_executive"
+							form={form}
+						/>
+						<InputCheckboxForm
+							label={t("SpecialDiscountDoctor")}
+							field="special_discount_doctor"
+							name="special_discount_doctor"
+							form={form}
+						/>
+						<InputCheckboxForm
+							label={t("SpecialDiscountInvestigation")}
+							field="special_discount_investigation"
+							name="special_discount_investigation"
+							form={form}
+						/>
+					</Stack>
+					<Box className={"inner-title-box"}>
+						<Title order={6}>{t("Operation Fee")}</Title>
+					</Box>
+					{/* ======================= some demo components for reusing purposes ======================= */}
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{hospital_config?.admission_fee?.admission_fee_name}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							{inventory_config?.currency?.symbol} {hospital_config?.admission_fee?.admission_fee_price}{" "}
+							{inventory_config?.currency?.code}
+						</Grid.Col>
+					</Grid>
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{hospital_config?.opd_ticket_fee?.opd_ticket_fee_name}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							{inventory_config?.currency?.symbol} {hospital_config?.opd_ticket_fee?.opd_ticket_fee_price}{" "}
+							{inventory_config?.currency?.code}
+						</Grid.Col>
+					</Grid>
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{hospital_config?.emergency_fee?.emergency_fee_name}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							{inventory_config?.currency?.symbol} {hospital_config?.emergency_fee?.emergency_fee_price}{" "}
+							{inventory_config?.currency?.code}
+						</Grid.Col>
+					</Grid>
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{hospital_config?.ot_fee?.ot_fee_name}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							{inventory_config?.currency?.symbol} {hospital_config?.ot_fee?.ot_fee_price}{" "}
+							{inventory_config?.currency?.code}
+						</Grid.Col>
+					</Grid>
+					<Box className={"inner-title-box"}>
+						<Title order={6}>{t("Messageing")}</Title>
 					</Box>
 					{/* ======================= some demo components for reusing purposes ======================= */}
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
@@ -198,7 +198,14 @@ export default function __HospitalForm({ height, id }) {
 							{t("Message Admission")}
 						</Grid.Col>
 						<Grid.Col span={12}>
-							<InputForm tooltip="" label="" placeholder="Text" name="message_admission" form={form} id="message_admission" />
+							<InputForm
+								tooltip=""
+								label=""
+								placeholder="Text"
+								name="message_admission"
+								form={form}
+								id="message_admission"
+							/>
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
@@ -206,7 +213,14 @@ export default function __HospitalForm({ height, id }) {
 							{t("Message Visit")}
 						</Grid.Col>
 						<Grid.Col span={12}>
-							<InputForm tooltip="" label="" placeholder="Text" name="message_visit" form={form} id="message_visit" />
+							<InputForm
+								tooltip=""
+								label=""
+								placeholder="Text"
+								name="message_visit"
+								form={form}
+								id="message_visit"
+							/>
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
@@ -214,10 +228,17 @@ export default function __HospitalForm({ height, id }) {
 							{t("Message Diagnostic")}
 						</Grid.Col>
 						<Grid.Col span={12}>
-							<InputForm tooltip="" label="" placeholder="Text" name="message_diagnostic" form={form} id="message_diagnostic" />
+							<InputForm
+								tooltip=""
+								label=""
+								placeholder="Text"
+								name="message_diagnostic"
+								form={form}
+								id="message_diagnostic"
+							/>
 						</Grid.Col>
 					</Grid>
-				{/*<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+					{/*<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 					<Grid.Col span={12} fz="sm" mt="xxxs">
 						{t("MessageAdmission")}
 					</Grid.Col>
@@ -281,9 +302,9 @@ export default function __HospitalForm({ height, id }) {
 						/>
 					</Grid.Col>
 				</Grid>*/}
-				<Button id="HospitalFormSubmit" type="submit" style={{ display: "none" }}>
-					{t("Submit")}
-				</Button>
+					<Button id="HospitalFormSubmit" type="submit" style={{ display: "none" }}>
+						{t("Submit")}
+					</Button>
 				</Box>
 			</form>
 		</ScrollArea>
