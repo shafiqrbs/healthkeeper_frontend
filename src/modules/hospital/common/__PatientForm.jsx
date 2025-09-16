@@ -601,7 +601,6 @@ export function Form({
 							<Grid.Col span={6}>
 								<Flex align="center" gap="es">
 									<Text fz="sm">{t("DateOfBirth")}</Text>
-									<RequiredAsterisk />
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={14}>

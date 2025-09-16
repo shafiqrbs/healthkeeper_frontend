@@ -2,13 +2,17 @@
   {
     "Group": "Operator",
     "actions": [
-      { "id": "operator_basic", "label": "Operator" }
+      { "id": "operator_basic", "label": "Operator" },
+      { "id": "operator_manager", "label": "Operator Manager" }
     ]
   },
   {
     "Group": "Doctor",
     "actions": [
-      { "id": "doctor_basic", "label": "Doctor" }
+      { "id": "doctor_basic", "label": "Doctor" },
+      { "id": "opd_prescription", "label": "OPD Prescription" },
+      { "id": "ipd_prescription", "label": "IPD Prescription" },
+      { "id": "ipd_confirm", "label": "IPD Confirm" }
     ]
   },
   {
