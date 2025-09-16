@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useTranslation } from "react-i18next";
 import { Box, Grid, ScrollArea, Button, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -12,33 +12,38 @@ import { CONFIGURATION_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { successNotification } from "@/common/components/notification/successNotification";
 import { errorNotification } from "@/common/components/notification/errorNotification";
+import useDomainConfig from "@hooks/config-data/useDomainConfig";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
 
 const module = MODULES.HOSPITAL_CONFIG;
 
 export default function __HealthShareForm({ height, id }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
-
+	const { domainConfig } = useDomainConfig();
+	const hospital_config = domainConfig?.hospital_config;
 	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
 
 	const form = useForm({
 		initialValues: {
-			nax_auth_token: "",
+			x_auth_token: "",
 			client_id: "",
 			email: "",
 			nid_url: "",
+			patient_url: "",
 			health_share_url: "",
 			health_share_token: "",
 			health_share_password: ""
 		},
 		validate: {
 			x_auth_token: (value) => (value?.trim() ? null : t("SubGroupNameValidateMessage")),
-			client_id: (value) => (value?.trim() ? null : t("Narration")),
-			email: (value) => (value?.trim() ? null : t("Narration")),
-			nid_url: (value) => (value?.trim() ? null : t("Narration")),
-			health_share_url: (value) => (value?.trim() ? null : t("Narration")),
-			health_share_token: (value) => (value?.trim() ? null : t("Narration")),
-			health_share_password: (value) => (value?.trim() ? null : t("Narration")),
+			client_id: (value) => (value?.trim() ? null : t("SubGroupNameValidateMessage")),
+			email: (value) => (value?.trim() ? null : t("SubGroupNameValidateMessage")),
+			nid_url: (value) => (value?.trim() ? null : t("SubGroupNameValidateMessage")),
+			health_share_url: (value) => (value?.trim() ? null : t("SubGroupNameValidateMessage")),
+			health_share_token: (value) => (value?.trim() ? null : t("SubGroupNameValidateMessage")),
+			health_share_password: (value) => (value?.trim() ? null : t("SubGroupNameValidateMessage")),
+			patient_url: (value) => (value?.trim() ? null : t("SubGroupNameValidateMessage")),
 		},
 	});
 
@@ -56,6 +61,23 @@ export default function __HealthShareForm({ height, id }) {
 			});
 		}
 	};
+
+	useEffect(() => {
+		if (hospital_config) {
+			form.setValues({
+				health_share_url: hospital_config?.share_health?.health_share_url || "",
+				email: hospital_config?.share_health?.email || "",
+				health_share_password: hospital_config?.share_health?.health_share_password || "",
+				x_auth_token: hospital_config?.share_health?.x_auth_token || "",
+				client_id: hospital_config?.share_health?.client_id || "",
+				nid_url: hospital_config?.share_health?.nid_url || "",
+				health_share_token: hospital_config?.share_health?.health_share_token || "",
+				patient_url: hospital_config?.share_health?.patient_url || "",
+
+			});
+		}
+	}, [dispatch, hospital_config]);
+
 
 	const handleConfirmFormSubmit = async (values) => {
 		const properties = ["name", "narration"];
@@ -106,10 +128,10 @@ export default function __HealthShareForm({ height, id }) {
 				<Box pt="xs" pl="xs">
 
 					<Grid mt="xs" gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
-						<Grid.Col span={4} fz="sm" >
+						<Grid.Col span={3} fz="sm" >
 							{t("HealthShareUrl")}
 						</Grid.Col>
-						<Grid.Col span={8}>
+						<Grid.Col span={9}>
 							<InputForm
 								tooltip={t("HealthShareUrlValidateMessage")}
 								label={""}
@@ -124,10 +146,10 @@ export default function __HealthShareForm({ height, id }) {
 					</Grid>
 
 					<Grid mt="xs" gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
-						<Grid.Col span={4} fz="sm" >
+						<Grid.Col span={3} fz="sm" >
 							{t("Email")}
 						</Grid.Col>
-						<Grid.Col span={8}>
+						<Grid.Col span={9}>
 							<InputForm
 								tooltip={t("EmailValidateMessage")}
 								label={""}
@@ -140,12 +162,11 @@ export default function __HealthShareForm({ height, id }) {
 							/>
 						</Grid.Col>
 					</Grid>
-
 					<Grid mt="xs" gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
-						<Grid.Col span={4} fz="sm" >
+						<Grid.Col span={3} fz="sm" >
 							{t("Password")}
 						</Grid.Col>
-						<Grid.Col span={8}>
+						<Grid.Col span={9}>
 							<InputForm
 								tooltip={t("EmailValidateMessage")}
 								label={""}
@@ -158,12 +179,11 @@ export default function __HealthShareForm({ height, id }) {
 							/>
 						</Grid.Col>
 					</Grid>
-
 					<Grid mt="xs" gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
-						<Grid.Col span={4} fz="sm" >
-							{t("Name")}
+						<Grid.Col span={3} fz="sm" >
+							{t("ClientID")}
 						</Grid.Col>
-						<Grid.Col span={8}>
+						<Grid.Col span={9}>
 							<InputForm
 								tooltip={t("ClientIDValidateMessage")}
 								label={""}
@@ -178,11 +198,11 @@ export default function __HealthShareForm({ height, id }) {
 					</Grid>
 
 					<Grid mt="xs" gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
-						<Grid.Col span={4} fz="sm" >
+						<Grid.Col span={3} fz="sm" >
 							{t("HealthShareToken")}
 						</Grid.Col>
-						<Grid.Col span={8}>
-							<InputForm
+						<Grid.Col span={9}>
+							<TextAreaForm
 								tooltip={t("HealthShareTokenValidateMessage")}
 								label={""}
 								placeholder={t("HealthShareToken")}
@@ -196,10 +216,10 @@ export default function __HealthShareForm({ height, id }) {
 					</Grid>
 
 					<Grid mt="xs" gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
-						<Grid.Col span={4} fz="sm" >
+						<Grid.Col span={3} fz="sm" >
 							{t("XAuthToken")}
 						</Grid.Col>
-						<Grid.Col span={8}>
+						<Grid.Col span={9}>
 							<InputForm
 								tooltip={t("XAuthTokenValidateMessage")}
 								label={""}
@@ -214,10 +234,10 @@ export default function __HealthShareForm({ height, id }) {
 					</Grid>
 
 					<Grid mt="xs" gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
-						<Grid.Col span={4} fz="sm" >
+						<Grid.Col span={3} fz="sm" >
 							{t("PatientUrl")}
 						</Grid.Col>
-						<Grid.Col span={8}>
+						<Grid.Col span={9}>
 							<InputForm
 								tooltip={t("PatientUrlValidateMessage")}
 								label={""}
@@ -231,10 +251,10 @@ export default function __HealthShareForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					<Grid mt="xs" gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
-						<Grid.Col span={4} fz="sm" >
+						<Grid.Col span={3} fz="sm" >
 							{t("NIDUrl")}
 						</Grid.Col>
-						<Grid.Col span={8}>
+						<Grid.Col span={9}>
 							<InputForm
 								tooltip={t("NIDUrlValidateMessage")}
 								label={""}

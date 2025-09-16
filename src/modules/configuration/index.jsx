@@ -12,12 +12,7 @@ const module = MODULES.DOMAIN;
 
 export default function Index() {
 	const { t } = useTranslation();
-
 	const progress = useGetLoadingProgress();
-
-	const { domainConfig } = useDomainConfig();
-	const configData = domainConfig?.inventory_config;
-
 	return (
 		<>
 			{progress !== 100 ? (
@@ -27,9 +22,6 @@ export default function Index() {
 					<_SalesPurchaseHeaderNavbar
 						pageTitle={t("Configuration")}
 						roles={t("Roles")}
-						configData={configData}
-						allowZeroPercentage={configData?.zero_stock}
-						currancySymbol={configData?.currency?.symbol}
 					/>
 					<Box p="xxxs">
 						<Grid columns={24} gutter={{ base: 2 }}>
