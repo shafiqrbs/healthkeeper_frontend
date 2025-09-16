@@ -51,12 +51,6 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
 	const [openedRoomReferred, { open: openRoomReferred, close: closeRoomReferred }] = useDisclosure(false);
 
-	const { data: roomsOptions } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.UTILITY,
-	});
-
 	const { data: referredRoomsOptions } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.PATH,
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.TYPE },
@@ -175,7 +169,10 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Hospital")}<RequiredAsterisk /></Text>
+						<Text fz="sm">
+							{t("Hospital")}
+							<RequiredAsterisk />
+						</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<InputAutoComplete
@@ -214,7 +211,10 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 						/>
 					</Grid.Col>
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Comment")}<RequiredAsterisk /></Text>
+						<Text fz="sm">
+							{t("Comment")}
+							<RequiredAsterisk />
+						</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<TextAreaForm
@@ -247,7 +247,10 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Comment")}<RequiredAsterisk /></Text>
+						<Text fz="sm">
+							{t("Comment")}
+							<RequiredAsterisk />
+						</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<TextAreaForm
@@ -280,7 +283,10 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Room")}<RequiredAsterisk /></Text>
+						<Text fz="sm">
+							{t("Room")}
+							<RequiredAsterisk />
+						</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<SelectForm
@@ -299,7 +305,10 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 						/>
 					</Grid.Col>{" "}
 					<Grid.Col span={7}>
-						<Text fz="sm">{t("Comment")}<RequiredAsterisk /></Text>
+						<Text fz="sm">
+							{t("Comment")}
+							<RequiredAsterisk />
+						</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
 						<TextAreaForm

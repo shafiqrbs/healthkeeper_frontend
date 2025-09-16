@@ -589,7 +589,7 @@ export function Form({
 												value={form.values.upazilla_id}
 												required
 												dropdownValue={locations?.data?.map((location) => ({
-													label: `${location.name} - ${location.district}`,
+													label: `${location.district} - ${location.name}`,
 													value: location.id?.toString(),
 												}))}
 												searchable

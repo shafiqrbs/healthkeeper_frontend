@@ -50,6 +50,7 @@ import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
 import RoomCard from "./RoomCard";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
+import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } from "@/services/patientSearchService";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -145,9 +146,9 @@ export default function PatientForm({
 				term: searchForm.values.term,
 			};
 
+			setIsSearching(true);
 			// If PID is selected, show patient dropdown with mock data
 			if (searchForm.values.type === "PID") {
-				setIsSearching(true);
 				// Simulate API call delay
 
 				const patients = await getDataWithoutStore({
@@ -158,12 +159,31 @@ export default function PatientForm({
 				setPatientSearchResults(patients?.data || []);
 				setShowPatientDropdown(true);
 				setIsSearching(false);
+			} else if (searchForm.values.type === "HID") {
+				const patients = await getPatientSearchByHID(searchForm.values.term);
+				console.log(patients);
+
+				// setPatientSearchResults(patients?.data || []);
+				// setShowPatientDropdown(true);
+			} else if (searchForm.values.type === "NID") {
+				const patients = await getPatientSearchByNID(searchForm.values.term);
+				console.log(patients);
+
+				// setPatientSearchResults(patients?.data || []);
+				// setShowPatientDropdown(true);
+			} else if (searchForm.values.type === "BRID") {
+				const patients = await getPatientSearchByBRN(searchForm.values.term);
+				console.log(patients);
+
+				// setPatientSearchResults(patients?.data || []);
+				// setShowPatientDropdown(true);
 			} else {
 				// For other search types, use the original behavior
 				console.info(formValue);
 			}
 		} catch (err) {
 			console.error(err);
+		} finally {
 			setIsSearching(false);
 		}
 	};
@@ -674,7 +694,7 @@ export function Form({
 									value={form.values.upazilla_id}
 									required
 									dropdownValue={locations?.data?.map((location) => ({
-										label: `${location.district} - ${location.name}`,
+										label: `${location.district || "District"} - ${location.name}`,
 										value: location.id?.toString(),
 									}))}
 									searchable

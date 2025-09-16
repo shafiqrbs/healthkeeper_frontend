@@ -3,27 +3,67 @@ import InputForm from "@components/form-builders/InputForm";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import SelectForm from "@components/form-builders/SelectForm";
 
-import {ActionIcon, Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text} from "@mantine/core";
-import {IconChevronRight, IconCirclePlusFilled, IconSearch} from "@tabler/icons-react";
-import {useEffect, useState} from "react";
+import { ActionIcon, Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
+import { IconChevronRight, IconSearch } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import DoctorsRoomDrawer from "../../common/__DoctorsRoomDrawer";
 import { useDisclosure } from "@mantine/hooks";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { editEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import IPDFooter from "@modules/hospital/common/IPDFooter";
 
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
-import { useDispatch } from "react-redux";
-import {calculateAge, calculateDetailedAge, formatDate} from "@utils/index";
+import { useDispatch, useSelector } from "react-redux";
+import { calculateAge, calculateDetailedAge, formatDate } from "@utils/index";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { CORE_DROPDOWNS, HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import useHospitalSettingData from "@/common/hooks/config-data/useHospitalSettingData";
+import useHospitalConfigData from "@/common/hooks/config-data/useHospitalConfigData";
+import TextAreaForm from "@/common/components/form-builders/TextAreaForm";
 
-const DISEASE_PROFILE = ["Diabetic", "Hypertension", "Asthma", "Allergy", "Other"];
+const USER_NID_DATA = {
+	verifyToken: "a9a98eac-68c4-4dd1-9cb9-8127a5b44833",
+	citizenData: {
+		mobile: null,
+		fullName_English: "Md KarimI Mia",
+		motherName_English: "",
+		motherName_Bangla: "মোসাঃ ….. বেগম",
+		fatherName_English: "",
+		fatherName_Bangla: "মোঃ আঃ ……….",
+		permanentHouseholdNoText: null,
+		dob: "1986-05-10",
+		bin_BRN: null,
+		gender: 1,
+		fullName_Bangla: "মোঃ ….. ইসলাম",
+		presentHouseholdNoText: null,
+		citizen_nid: "1234567890",
+		permanentHouseholdNo: {
+			division: "Dhaka",
+			district: "Narayanganj",
+			upazilla: "Sonargaon",
+			unionOrWard: null,
+			mouzaOrMoholla: "Pailopara",
+			villageOrRoad: "Cengakandini",
+			houseOrHoldingNo: "",
+			address_line: null,
+		},
+		presentHouseholdNo: {
+			division: "Dhaka",
+			district: "Narayanganj",
+			upazilla: "Sonargaon",
+			unionOrWard: "Baridhi",
+			mouzaOrMoholla: "Pailopara",
+			villageOrRoad: "Cengakandini",
+			houseOrHoldingNo: "",
+			address_line: null,
+		},
+	},
+};
 
 export default function EntityForm({ form, module }) {
 	const dispatch = useDispatch();
@@ -31,13 +71,19 @@ export default function EntityForm({ form, module }) {
 	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
 	const { t } = useTranslation();
 	const { id } = useParams();
-
-	const [record, setRecord] = useState({})
-	const [showUserData, setShowUserData] = useState({})
+	const [admissionData, setAdmissionData] = useState(USER_NID_DATA);
+	const [showUserData, setShowUserData] = useState({});
 	const { mainAreaHeight } = useOutletContext();
+	const { hospitalConfigData } = useHospitalConfigData();
 	const height = mainAreaHeight - 260;
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const { hospitalSettingData } = useHospitalSettingData();
 	const [openedHSIDDataPreview, { open: openHSIDDataPreview, close: closeHSIDDataPreview }] = useDisclosure(false);
+	const locations = useSelector((state) => state.crud.locations.data);
+
+	useEffect(() => {
+		dispatch(getIndexEntityData({ module: "locations", url: HOSPITAL_DATA_ROUTES.API_ROUTES.LOCATIONS.INDEX }));
+	}, []);
 
 	const { data: countryDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.COUNTRY.PATH,
@@ -50,6 +96,11 @@ export default function EntityForm({ form, module }) {
 		params: { "dropdown-type": CORE_DROPDOWNS.RELIGION.TYPE },
 	});
 
+	const { data: doctorDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.UTILITY,
+	});
 
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
@@ -99,9 +150,9 @@ export default function EntityForm({ form, module }) {
 	const handleGenderChange = (val) => {
 		setGender(val);
 	};
-	const {data:entity} = useDataWithoutStore({url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`})
-	const item = entity?.data
-	const entities = entity?.data?.invoice_particular
+	const { data: entity } = useDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}` });
+	const item = entity?.data;
+	const entities = entity?.data?.invoice_particular;
 
 	useEffect(() => {
 		let dobValue = null;
@@ -147,14 +198,11 @@ export default function EntityForm({ form, module }) {
 			permanent_address: item?.permanent_address,
 			religion_id: item?.religion_id,
 			country_id: item?.country_id,
+			admit_doctor_id: item?.admit_doctor_id,
+			admit_unit_id: item?.admit_unit_id,
+			admit_department_id: item?.admit_department_id,
 		});
 	}, [item]);
-
-	const handleReset = () => {
-		form.reset();
-		localStorage.removeItem(LOCAL_STORAGE_KEY);
-		setShowUserData(false);
-	};
 
 	const handleDobChange = () => {
 		const type = form.values.ageType || "year";
@@ -180,17 +228,17 @@ export default function EntityForm({ form, module }) {
 
 		// =============== populate form fields with emergency data ================
 		setTimeout(() => {
-			form.setFieldValue("name", userEmergencyData.citizenData.fullName_English);
-			form.setFieldValue("mobile", userEmergencyData.citizenData.mobile);
-			form.setFieldValue("gender", userEmergencyData.citizenData.gender === 1 ? "male" : "female");
+			form.setFieldValue("name", admissionData.citizenData.fullName_English);
+			form.setFieldValue("mobile", admissionData.citizenData.mobile);
+			form.setFieldValue("gender", admissionData.citizenData.gender === 1 ? "male" : "female");
 			form.setFieldValue("dob", "01-01-1990");
 			form.setFieldValue(
 				"guardian_name",
-				userEmergencyData.citizenData.fatherName_English || userEmergencyData.citizenData.motherName_English
+				admissionData.citizenData.fatherName_English || admissionData.citizenData.motherName_English
 			);
 			form.setFieldValue(
 				"address",
-				`${userEmergencyData.citizenData.presentHouseholdNo.division}, ${userEmergencyData.citizenData.presentHouseholdNo.district}, ${userEmergencyData.citizenData.presentHouseholdNo.upazilla}, ${userEmergencyData.citizenData.presentHouseholdNo.unionOrWard}, ${userEmergencyData.citizenData.presentHouseholdNo.mouzaOrMoholla}, ${userEmergencyData.citizenData.presentHouseholdNo.villageOrRoad}, ${userEmergencyData.citizenData.presentHouseholdNo.houseOrHoldingNo}`
+				`${admissionData.citizenData.presentHouseholdNo.division}, ${admissionData.citizenData.presentHouseholdNo.district}, ${admissionData.citizenData.presentHouseholdNo.upazilla}, ${admissionData.citizenData.presentHouseholdNo.unionOrWard}, ${admissionData.citizenData.presentHouseholdNo.mouzaOrMoholla}, ${admissionData.citizenData.presentHouseholdNo.villageOrRoad}, ${admissionData.citizenData.presentHouseholdNo.houseOrHoldingNo}`
 			);
 
 			// =============== trigger age calculation ================
@@ -214,25 +262,19 @@ export default function EntityForm({ form, module }) {
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("Created")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>
-										{formatDate(item?.created)}
-									</Grid.Col>
+									<Grid.Col span={14}>{formatDate(item?.created)}</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("InvoiceID")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>
-										{item?.invoice}
-									</Grid.Col>
+									<Grid.Col span={14}>{item?.invoice}</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("PatientID")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>
-										{item?.patient_id}
-									</Grid.Col>
+									<Grid.Col span={14}>{item?.patient_id}</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
@@ -291,6 +333,30 @@ export default function EntityForm({ form, module }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
+										<Flex align="center" gap="es">
+											<Text fz="sm">{t("Upazilla")}</Text>
+										</Flex>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<SelectForm
+											form={form}
+											tooltip={t("EnterPatientUpazilla")}
+											placeholder="Upazilla - District"
+											name="upazilla_id"
+											id="upazilla_id"
+											nextField="identity"
+											value={form.values.upazilla_id}
+											required
+											dropdownValue={locations?.data?.map((location) => ({
+												label: `${location.district || "District"} - ${location.name}`,
+												value: location.id?.toString(),
+											}))}
+											searchable
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
 										<Text fz="sm">{t("Type")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
@@ -300,7 +366,6 @@ export default function EntityForm({ form, module }) {
 											value={form.values.identity_mode}
 											id="identity_mode"
 											name="identity_mode"
-											onChange={(val) => handleTypeChange(val)}
 											data={[
 												{ label: t("NID"), value: "NID" },
 												{ label: t("BRID"), value: "BRID" },
@@ -315,8 +380,8 @@ export default function EntityForm({ form, module }) {
 											{form.values.identity_mode === "NID"
 												? t("NID")
 												: form.values.identity_mode === "BRID"
-													? t("BRID")
-													: t("HID")}
+												? t("BRID")
+												: t("HID")}
 										</Text>
 									</Grid.Col>
 									<Grid.Col span={9}>
@@ -357,7 +422,7 @@ export default function EntityForm({ form, module }) {
 								</Grid>
 								<Flex className="form-action-header full-bleed">
 									<Text fz="sm">{t("Cabin/Bed")}</Text>
-									<Flex align="center" gap="xs"  className="cursor-pointer">
+									<Flex align="center" gap="xs" className="cursor-pointer">
 										<Text fz="sm">{item?.room_name}</Text> <IconChevronRight size="16px" />
 									</Flex>
 								</Flex>
@@ -366,8 +431,20 @@ export default function EntityForm({ form, module }) {
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("UnitName")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14} onClick={openDoctorsRoom}>
-										<Text fz="sm">{item?.admit_unit_name}</Text>
+									<Grid.Col span={14}>
+										<SelectForm
+											form={form}
+											label=""
+											tooltip={t("EnterUnit")}
+											placeholder="R1234"
+											name="admit_unit_id"
+											id="admit_unit_id"
+											value={form.values.admit_unit_id?.toString()}
+											dropdownValue={hospitalSettingData?.["unit-group"]?.modes.map((mode) => ({
+												label: mode.name,
+												value: mode.id?.toString(),
+											}))}
+										/>
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
@@ -375,15 +452,27 @@ export default function EntityForm({ form, module }) {
 										<Text fz="sm">{t("Department")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<Text fz="sm">{item?.admit_department_name}</Text>
+										<SelectForm
+											form={form}
+											label=""
+											tooltip={t("EnterDepartment")}
+											placeholder="Cardiology"
+											name="admit_department_id"
+											id="admit_department_id"
+											value={form.values.admit_department_id?.toString()}
+											dropdownValue={hospitalSettingData?.department?.modes.map((mode) => ({
+												label: mode.name,
+												value: mode.id?.toString(),
+											}))}
+										/>
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("Consultant")}</Text>
+										<Text fz="sm">{t("AssignConsultant")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<Text fz="sm">{item?.admit_consultant_name}</Text>
+										{hospitalConfigData?.hospital_config?.consultant_doctor?.consultant_doctor_name}
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
@@ -391,12 +480,40 @@ export default function EntityForm({ form, module }) {
 										<Text fz="sm">{t("AssignDoctor")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<Text fz="sm">{item?.admit_doctor_name}</Text>
+										<SelectForm
+											form={form}
+											label=""
+											tooltip={t("EnterAssignDoctor")}
+											placeholder="Dr. Shafiqul Islam"
+											name="admit_doctor_id"
+											id="admit_doctor_id"
+											value={form.values.admit_doctor_id?.toString()}
+											dropdownValue={doctorDropdown}
+										/>
 									</Grid.Col>
 								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("Comment")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<TextAreaForm
+											form={form}
+											label=""
+											tooltip={t("EnterComment")}
+											placeholder="Comment"
+											name="comment"
+											id="comment"
+											nextField="dob"
+											value={form.values.comment}
+											style={{ input: { height: "60px" } }}
+										/>
+									</Grid.Col>
+								</Grid>
+
 								<Flex className="form-action-header full-bleed">
 									<Text fz="sm">{t("PrescriptionInformation")}</Text>
-									<Flex align="center" gap="xs"  className="cursor-pointer">
+									<Flex align="center" gap="xs" className="cursor-pointer">
 										<Text fz="sm">{item?.prescription_id}</Text> <IconChevronRight size="16px" />
 									</Flex>
 								</Flex>
@@ -404,7 +521,7 @@ export default function EntityForm({ form, module }) {
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("PrescriptionDoctor")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14} >
+									<Grid.Col span={14}>
 										<Text fz="sm">{item?.prescription_doctor_name}</Text>
 									</Grid.Col>
 								</Grid>
@@ -421,7 +538,6 @@ export default function EntityForm({ form, module }) {
 						</Box>
 						<ScrollArea scrollbars="y" type="never" h={height}>
 							<Stack className="form-stack-vertical">
-
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("PatientStatus")}</Text>
@@ -565,7 +681,6 @@ export default function EntityForm({ form, module }) {
 										/>
 									</Grid.Col>
 								</Grid>
-
 							</Stack>
 							<Stack className="form-stack-vertical">
 								<Grid align="center" columns={20}>
