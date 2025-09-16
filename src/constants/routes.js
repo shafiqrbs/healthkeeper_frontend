@@ -435,6 +435,7 @@ export const CONFIGURATION_ROUTES = {
 			CREATE: "domain/config/hospital",
 			UPDATE: "domain/config/hospital",
 			DELETE: "domain/config/hospital",
+			HEALTH_SHARE: "hospital/core/health-share",
 		},
 	},
 };
