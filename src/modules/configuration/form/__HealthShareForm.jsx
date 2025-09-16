@@ -196,7 +196,6 @@ export default function __HealthShareForm({ height, id }) {
 							/>
 						</Grid.Col>
 					</Grid>
-
 					<Grid mt="xs" gutter={{ base: 1 }} style={{ cursor: "pointer" }}>
 						<Grid.Col span={3} fz="sm" >
 							{t("HealthShareToken")}

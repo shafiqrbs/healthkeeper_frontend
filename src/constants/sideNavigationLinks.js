@@ -21,7 +21,7 @@ import {
 	IconReportMedical,
 } from "@tabler/icons-react";
 import { t } from "i18next";
-import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes.js";
+import { HOSPITAL_DATA_ROUTES,PHARMACY_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes.js";
 
 export const sideNavigationLinks = {
 	home: [
@@ -190,8 +190,8 @@ export const sideNavigationLinks = {
 			allowedRoles: ["role_domain", "accounting_admin"],
 		},
 		{
-			label: t("Medicine"),
-			path: "/hospital/medicine",
+			label: t("Pharmacy"),
+			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.PHARMACY.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
 			allowedRoles: ["role_domain", "accounting_admin"],
@@ -372,35 +372,28 @@ export const sideNavigationLinks = {
 	basePharmacySubmenu: [
 		{
 			label: t("Pharmacy"),
-			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX,
+			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.PHARMACY.INDEX,
 			icon: IconDashboard,
 			color: "#4CAF50",
 			allowedRoles: ["role_domain", "accounting_admin"],
 		},
 		{
 			label: t("Stock"),
-			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX,
+			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STOCK.INDEX,
 			icon: IconDashboard,
-			color: "#4CAF50",
-			allowedRoles: ["role_domain", "accounting_admin"],
-		},
-		{
-			label: t("Medicine"),
-			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX,
-			icon: IconDashboard,
-			color: "#4CAF50",
+			color: "#6f1225",
 			allowedRoles: ["role_domain", "accounting_admin"],
 		},
 		{
 			label: t("Requisition"),
-			path: "/hospital/doctor",
+			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
 			allowedRoles: ["role_domain", "accounting_admin"],
 		},
 		{
 			label: t("Workorder"),
-			path: "/hospital/nurse",
+			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
 			allowedRoles: ["role_domain", "accounting_admin"],

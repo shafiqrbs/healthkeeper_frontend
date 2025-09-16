@@ -30,7 +30,7 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 		<Box>
 			<Grid columns={12} gutter={{ base: 8 }}>
 				<Grid.Col span={3}>
-					<ScrollArea miw={68} h={mainAreaHeight} bg="white" type="never" className="border-radius">
+					<ScrollArea miw={68} h={mainAreaHeight-28} bg="white" type="never" className="border-radius">
 						<Flex w={68} direction="column" px={4} py={13} gap={14}>
 							{links.map((item, index) => (
 								<Flex key={index} direction="column" align="center">

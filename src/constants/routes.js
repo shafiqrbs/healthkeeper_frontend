@@ -284,6 +284,37 @@ export const MASTER_DATA_ROUTES = {
 	},
 };
 
+export const PHARMACY_DATA_ROUTES = {
+
+	NAVIGATION_LINKS: {
+		PHARMACY: {
+			INDEX: "/pharmacy",
+		},
+		STOCK: {
+			INDEX: "/pharmacy/core/stock",
+			CREATE: "/pharmacy/core/stock",
+			UPDATE: "/pharmacy/core/stock",
+			VIEW: "/pharmacy/core/stock",
+			DELETE: "/pharmacy/core/stock",
+		},
+
+		REQUISITION: {
+			INDEX: "/pharmacy/requisition",
+			CREATE: "/pharmacy/requisition",
+			UPDATE: "/pharmacy/requisition",
+			VIEW: "/pharmacy/requisition",
+			DELETE: "/pharmacy/requisition",
+		},
+
+		WORKORDER: {
+			INDEX: "/pharmacy/core/workorder",
+			CREATE: "/pharmacy/core/workorder",
+			UPDATE: "/pharmacy/core/workorder",
+			VIEW: "/pharmacy/core/workorder",
+			DELETE: "/pharmacy/core/workorder",
+		},
+	},
+}
 export const CORE_DATA_ROUTES = {
 	API_ROUTES: {
 		VENDOR: {
@@ -411,6 +442,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/customer/edit",
 			VIEW: "/hospital/customer/view",
 		},
+
 	},
 };
 

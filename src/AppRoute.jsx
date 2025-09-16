@@ -90,7 +90,9 @@ import RequisitionIndex from "@modules/hospital/requisition";
 import InvestigationIndex from "@modules/hospital/core/investigation";
 import ParticularMatrixIndex from "@modules/hospital/core/particular-matrix";
 import OpdRoomIndex from "@modules/hospital/core/opd-room";
-import MedicineStockIndex from "@modules/hospital/pharmacy/stock";
+import PharmacyIndex from "@modules/pharmacy/dashboard";
+import PharmacyStockIndex from "@modules/pharmacy/stock";
+import PharmacyRequisitionIndex from "@modules/pharmacy/requisition";
 import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/core/doctor";
 import NurseIndex from "@modules/hospital/core/nurse";
@@ -148,6 +150,13 @@ function AppRoute() {
 					<Route path="edit/:id" element={<DomainIndex mode="edit" />} />
 					<Route path="config/:id" element={<DomainConfigurationIndex />} />
 					<Route path="user" element={<DomainUserIndex />} />
+				</Route>
+				<Route path="/pharmacy">
+					<Route path="" element={<PharmacyIndex />} />
+					<Route path="requisition" element={<PharmacyRequisitionIndex />} />
+				</Route>
+				<Route path="/pharmacy/core/">
+					<Route path="stock" element={<PharmacyStockIndex />} />
 				</Route>
 				<Route path="/hospital/">
 					<Route path="visit">
@@ -223,10 +232,7 @@ function AppRoute() {
 					<Route path="category" element={<CategoryIndex />} />
 					<Route path="category/:id" element={<CategoryIndex mode={"edit"} />} />
 				</Route>
-				<Route path="/hospital/pharmacy/">
-					<Route path="stock" element={<MedicineStockIndex />} />
-					<Route path="stock/:id" element={<MedicineStockIndex mode={"edit"} />} />
-				</Route>
+
 				<Route path="sitemap" element={<Sitemap />} />
 				<Route path="/configuration/">
 					<Route index element={<ConfigurationIndex />} />

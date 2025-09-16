@@ -11,11 +11,12 @@ import IndexForm from "./form/__IndexForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
-import {MODULES_CORE} from "@/constants";
+import {MODULES_PHARMACY} from "@/constants";
 
-const module = MODULES_CORE.PARTICULAR;
+const module = MODULES_PHARMACY.STOCK;
 
 export default function Index({ mode = "create" }) {
+
 	const { t } = useTranslation();
 	const form = useForm(getInitialValues(t));
 	const progress = useGetLoadingProgress();
@@ -37,7 +38,7 @@ export default function Index({ mode = "create" }) {
 				<>
 					<CoreHeaderNavbar
 						module="core"
-						pageTitle={t("ManageLabUser")}
+						pageTitle={t("ManageCustomer")}
 						roles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""
@@ -46,12 +47,12 @@ export default function Index({ mode = "create" }) {
 					<Grid columns={36} gutter={{ base: 8 }}>
 						{!matches && (
 							<Grid.Col span={6}>
-								<Navigation menu="base" subMenu={'baseSubmenu'} mainAreaHeight={mainAreaHeight} />
+								<Navigation menu="base" subMenu={'basePharmacySubmenu'} mainAreaHeight={mainAreaHeight} />
 							</Grid.Col>
 						)}
 						<Grid.Col span={matches ? 30 : 30}>
 							<Box bg="white" p="xs" className="borderRadiusAll">
-								<_Table module={module} open={open} close={close} />
+								Pharmacy Dashboard
 							</Box>
 						</Grid.Col>
 					</Grid>

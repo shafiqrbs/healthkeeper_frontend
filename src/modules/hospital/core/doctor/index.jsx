@@ -37,7 +37,7 @@ export default function Index({ mode = "create" }) {
 				<>
 					<CoreHeaderNavbar
 						module="core"
-						pageTitle={t("ManageCustomer")}
+						pageTitle={t("ManageDoctor")}
 						roles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""
