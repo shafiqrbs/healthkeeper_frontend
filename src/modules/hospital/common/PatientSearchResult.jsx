@@ -38,7 +38,7 @@ export default function PatientSearchResult({ results, handlePatientSelect }) {
 									border: "1px solid var(--mantine-color-gray-2)",
 									transition: "all 0.2s ease",
 								}}
-								onClick={() => handlePatientSelect(patient.id)}
+								onClick={() => handlePatientSelect(patient.id, patient)}
 								onMouseEnter={(e) => {
 									e.currentTarget.style.backgroundColor = "var(--mantine-color-gray-0)";
 									e.currentTarget.style.borderColor = "var(--mantine-color-blue-3)";

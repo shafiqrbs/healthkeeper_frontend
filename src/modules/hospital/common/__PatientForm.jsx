@@ -168,7 +168,7 @@ export default function PatientForm({
 		}
 	};
 
-	const handlePatientSelect = async (patientId) => {
+	const handlePatientSelect = async (patientId, selectedPatient) => {
 		setVisible(true);
 		const patient = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${patientId}`,
@@ -179,7 +179,7 @@ export default function PatientForm({
 		form.setFieldValue("mobile", patient?.data?.mobile);
 		form.setFieldValue("dob", patient?.data?.dob);
 		form.setFieldValue("address", patient?.data?.address);
-		form.setFieldValue("customer_id", patient?.data?.customer_id || "");
+		form.setFieldValue("customer_id", selectedPatient?.customer_id || "");
 		// Close the dropdown
 		setShowPatientDropdown(false);
 		setPatientSearchResults([]);
@@ -667,14 +667,14 @@ export function Form({
 								<SelectForm
 									form={form}
 									tooltip={t("EnterPatientUpazilla")}
-									placeholder="Upazilla - District"
+									placeholder="District - Upazilla"
 									name="upazilla_id"
 									id="upazilla_id"
 									nextField="identity"
 									value={form.values.upazilla_id}
 									required
 									dropdownValue={locations?.data?.map((location) => ({
-										label: `${location.name} - ${location.district}`,
+										label: `${location.district} - ${location.name}`,
 										value: location.id?.toString(),
 									}))}
 									searchable
