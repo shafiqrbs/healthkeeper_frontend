@@ -20,57 +20,6 @@ export default function Index() {
 
 	return (
 		<>
-			{/* {progress !== 100 ? (
-				<DefaultSkeleton />
-			) : (
-				<Box p="md">
-					<Flex w="100%" gap="sm">
-						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-						<Grid w="100%" columns={24}>
-							<Grid.Col span={4}>
-								<Box bg="white" className="borderRadiusAll">
-									<Text
-										py="md"
-										bg="var(--theme-secondary-color-3"
-										className="borderRadiusTop"
-										px="sm"
-										fz="sm"
-									>
-										{t("SelectRoom")}
-									</Text>
-									<Box mt="es" p="xs" bg="var(--theme-primary-color-0)">
-										<TextInput
-											leftSection={<IconSearch size={18} />}
-											name="search"
-											placeholder={t("SearchByRoomName")}
-											value={searchQuery}
-											onChange={(e) => setSearchQuery(e.target.value)}
-										/>
-									</Box>
-									<ScrollArea h={mainAreaHeight - 120} scrollbars="y" p="xs">
-										{filteredAndSortedRecords?.map((item, index) => (
-											<RoomCard
-												key={index}
-												room={item}
-												selectedRoom={selectedRoom}
-												handleRoomClick={handleRoomClick}
-											/>
-										))}
-									</ScrollArea>
-								</Box>
-							</Grid.Col>
-							<Grid.Col span={20}>
-								<Form
-									form={form}
-									setSelectedRoom={setSelectedRoom}
-									selectedRoom={selectedRoom}
-									module={module}
-								/>
-							</Grid.Col>
-						</Grid>
-					</Flex>
-				</Box>
-			)} */}
 			{progress !== 100 ? (
 				<DefaultSkeleton />
 			) : (

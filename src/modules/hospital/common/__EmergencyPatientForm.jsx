@@ -291,8 +291,8 @@ export function Form({
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
 	const firstRender = useIsFirstRender();
-	const { hospitalConfigData:globalConfig } = useHospitalConfigData();
-	const  hospitalConfigData = globalConfig?.hospital_config
+	const { hospitalConfigData: globalConfig } = useHospitalConfigData();
+	const hospitalConfigData = globalConfig?.hospital_config;
 
 	const enteredAmount = Number(form?.values?.amount ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
@@ -582,14 +582,14 @@ export function Form({
 											<SelectForm
 												form={form}
 												tooltip={t("EnterPatientUpazilla")}
-												placeholder="Dhaka"
-												name="upazilla"
-												id="upazilla"
+												placeholder="Upazilla - District"
+												name="upazilla_id"
+												id="upazilla_id"
 												nextField="identity"
-												value={form.values.upazilla}
+												value={form.values.upazilla_id}
 												required
 												dropdownValue={locations?.data?.map((location) => ({
-													label: location.name,
+													label: `${location.name} - ${location.district}`,
 													value: location.id?.toString(),
 												}))}
 												searchable

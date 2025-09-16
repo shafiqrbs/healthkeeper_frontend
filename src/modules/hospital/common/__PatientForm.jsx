@@ -4,7 +4,8 @@ import {
 	Box,
 	Button,
 	Flex,
-	Grid, Group,
+	Grid,
+	Group,
 	LoadingOverlay,
 	Modal,
 	ScrollArea,
@@ -16,7 +17,14 @@ import {
 import { useEffect, useState, useRef } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconInfoCircle, IconSearch, IconAlertCircle, IconChevronRight,IconAdjustmentsCog, IconX } from "@tabler/icons-react";
+import {
+	IconInfoCircle,
+	IconSearch,
+	IconAlertCircle,
+	IconChevronRight,
+	IconAdjustmentsCog,
+	IconX,
+} from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -103,7 +111,6 @@ export default function PatientForm({
 	const [visible, setVisible] = useState(false);
 	const { mainAreaHeight } = useOutletContext();
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
-	const [openedOpdRoom, { close: closeOpdRoom }] = useDisclosure(false);
 	const [opened, { close }] = useDisclosure(false);
 
 	// Patient search states
@@ -172,7 +179,7 @@ export default function PatientForm({
 		form.setFieldValue("mobile", patient?.data?.mobile);
 		form.setFieldValue("dob", patient?.data?.dob);
 		form.setFieldValue("address", patient?.data?.address);
-		form.setFieldValue("customer_id", patient?.data?.id);
+		form.setFieldValue("customer_id", patient?.data?.customer_id || "");
 		// Close the dropdown
 		setShowPatientDropdown(false);
 		setPatientSearchResults([]);
@@ -268,7 +275,6 @@ export default function PatientForm({
 			<Modal opened={opened} onClose={close} size="100%" centered withCloseButton={false}>
 				<Table module={module} closeTable={close} height={mainAreaHeight - 220} availableClose />
 			</Modal>
-
 		</Box>
 	);
 }
@@ -288,7 +294,7 @@ export function Form({
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 	const [openedRoomError, { open: openRoomError, close: closeRoomError }] = useDisclosure(false);
 	const [openedRoom, { open: openRoom, close: closeRoom }] = useDisclosure(false);
-	const [openedOpdRoom, { open: openOpdRoom ,close: closeOpdRoom }] = useDisclosure(false);
+	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
@@ -489,13 +495,23 @@ export function Form({
 							<Text fz="sm">{t("OPDRoom")}</Text>
 							<Flex align="center" gap="xs" className="cursor-pointer">
 								<Group>
-									<Button variant="light" onClick={openOpdRoom}  size={'xs'} leftSection={<IconAdjustmentsCog size="16px" />} >Manage</Button>
-									<Button   size={'xs'} onClick={openRoom} color="var('--theme-primary-color-2')" rightSection={<IconChevronRight size="16px" />}>
+									<Button
+										variant="light"
+										onClick={openOpdRoom}
+										size={"xs"}
+										leftSection={<IconAdjustmentsCog size="16px" />}
+									>
+										Manage
+									</Button>
+									<Button
+										size={"xs"}
+										onClick={openRoom}
+										color="var('--theme-primary-color-2')"
+										rightSection={<IconChevronRight size="16px" />}
+									>
 										{selectedRoom?.name}
 									</Button>
-
 								</Group>
-
 							</Flex>
 						</Flex>
 						<Grid align="center" columns={20}>
@@ -651,14 +667,14 @@ export function Form({
 								<SelectForm
 									form={form}
 									tooltip={t("EnterPatientUpazilla")}
-									placeholder="Dhaka"
-									name="upazilla"
-									id="upazilla"
+									placeholder="Upazilla - District"
+									name="upazilla_id"
+									id="upazilla_id"
 									nextField="identity"
-									value={form.values.upazilla}
+									value={form.values.upazilla_id}
 									required
 									dropdownValue={locations?.data?.map((location) => ({
-										label: location.name,
+										label: `${location.name} - ${location.district}`,
 										value: location.id?.toString(),
 									}))}
 									searchable
@@ -937,13 +953,7 @@ export function Form({
 				</ScrollArea>
 			</GlobalDrawer>
 			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered withCloseButton={false}>
-				<OpdRoomModal
-					openedOpdRoom={openedOpdRoom}
-					closeOpdRoom={closeOpdRoom}
-					module={module}
-					closeTable={close}
-					height={mainAreaHeight - 220}
-				/>
+				<OpdRoomModal closeOpdRoom={closeOpdRoom} closeTable={close} height={mainAreaHeight - 220} />
 			</Modal>
 		</Box>
 	);

@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
-import {IconArrowRight, IconChevronUp, IconDotsVertical, IconSelector, IconTrashX} from "@tabler/icons-react";
+import { IconArrowRight, IconChevronUp, IconDotsVertical, IconSelector, IconTrashX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { rem } from "@mantine/core";
@@ -15,11 +15,8 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from ".././confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from ".././helpers/request";
-import { getIndexEntityData } from "@/app/store/core/crudThunk";
-import { setItemData } from "@/app/store/core/crudSlice";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useDispatch, useSelector } from "react-redux";
-import { sortBy } from "lodash";
+import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
@@ -30,14 +27,8 @@ const tabs = ["all", "closed", "done", "inProgress", "returned"];
 export default function _Table({ module }) {
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
-	const dispatch = useDispatch();
-	const listData = useSelector((state) => state.crud[module].data);
-	const refetch = useSelector((state) => state.crud[module].refetching);
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
-	const scrollViewportRef = useRef(null);
-	const [page, setPage] = useState(1);
-	const [hasMore, setHasMore] = useState(true);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
@@ -52,6 +43,7 @@ export default function _Table({ module }) {
 		initialValues: {
 			keywordSearch: "",
 			created: "",
+			room_id: "",
 		},
 	});
 
@@ -64,14 +56,7 @@ export default function _Table({ module }) {
 		setControlsRefs(controlsRefs);
 	};
 
-	const {
-		scrollRef,
-		records,
-		fetching,
-		sortStatus,
-		setSortStatus,
-		handleScrollToBottom,
-	} = useInfiniteTableScroll({
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
@@ -84,7 +69,6 @@ export default function _Table({ module }) {
 		sortByKey: "created_at",
 		direction: "desc",
 	});
-
 
 	const handleView = (id) => {
 		open();
@@ -267,15 +251,8 @@ export default function _Table({ module }) {
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
-						sorted: (
-							<IconChevronUp
-								color="var(--theme-tertiary-color-7)"
-								size={14}
-							/>
-						),
-						unsorted: (
-							<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
-						),
+						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 					}}
 				/>
 			</Box>

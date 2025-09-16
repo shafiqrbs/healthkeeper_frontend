@@ -1,12 +1,12 @@
 import { Grid, ScrollArea, Text } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
-import RoomCard from "../../common/RoomCard";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { useDispatch, useSelector } from "react-redux";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import { useEffect } from "react";
+import DetailedRoomCard from "../../common/DetailedRoomCard";
 
 const PER_PAGE = 100;
 
@@ -73,7 +73,7 @@ export default function Bed({ selectedRoom, handleRoomClick }) {
 							pr={isLastColumn ? "xxxs" : undefined}
 						>
 							{rooms.map((room) => (
-								<RoomCard
+								<DetailedRoomCard
 									key={room.id}
 									room={room}
 									selectedRoom={selectedRoom}

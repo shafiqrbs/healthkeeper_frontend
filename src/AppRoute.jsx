@@ -148,9 +148,6 @@ function AppRoute() {
 					<Route path="edit/:id" element={<DomainIndex mode="edit" />} />
 					<Route path="config/:id" element={<DomainConfigurationIndex />} />
 					<Route path="user" element={<DomainUserIndex />} />
-					{/* <Route path="sitemap" element={<SitemapIndex />} />
-          <Route path="sitemap/:id" element={<SitemapIndex />} />
-          <Route path="branch-management" element={<BranchManagementIndex />} /> */}
 				</Route>
 				<Route path="/hospital/">
 					<Route path="visit">
@@ -160,19 +157,11 @@ function AppRoute() {
 
 					<Route path="ipd">
 						<Route index element={<IpdIndex />} />
-						{/* <Route path=":id" element={<IpdIndex />} /> */}
-						{/* <Route path="admission" element={<AdmissionIndex />} /> */}
 					</Route>
 					<Route path="ipd-admission">
 						<Route index element={<IpdAdmissionIndex />} />
 						<Route path=":id" element={<IpdAdmissionIndex />} />
 					</Route>
-					{/* <Route path="ipd-confirm">
-						<Route index element={<IpdConfirmIndex />} />
-						<Route path=":id" element={<AdmissionListIndex />} />
-						<Route path="ipd" element={<IpdIndex />} />
-						<Route path="confirm" element={<ConfirmIndex />} />
-					</Route> */}
 					<Route path="ipd-admitted">
 						<Route index element={<IpdAdmittedIndex />} />
 						<Route path=":id" element={<IpdAdmittedIndex />} />
