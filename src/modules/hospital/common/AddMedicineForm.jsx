@@ -47,6 +47,7 @@ import MedicineListItem from "./MedicineListItem";
 import { DURATION_TYPES } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
+import InputForm from "@components/form-builders/InputForm";
 
 export default function AddMedicineForm({
 	module,
@@ -368,126 +369,169 @@ export default function AddMedicineForm({
 				bg="var(--theme-primary-color-0)"
 				p="sm"
 			>
-				<Group align="end" gap="les">
-					<Group grow w="100%" gap="les">
-						<Select
-							clearable
-							searchable
-							onSearchChange={(v) => {
-								setMedicineTerm(v);
-							}}
-							id="medicine_id"
-							name="medicine_id"
-							data={medicineData?.map((item) => ({
-								label: item.product_name,
-								value: item.product_id?.toString(),
-							}))}
-							value={medicineForm.values.medicine_id}
-							onChange={(v) => handleChange("medicine_id", v)}
-							placeholder={t("Medicine")}
-							tooltip="Select medicine"
-							nothingFoundMessage="Type to find medicine..."
-							onBlur={() => setMedicineTerm("")}
-							classNames={inputCss}
-						/>
-						<Autocomplete
-							tooltip={t("EnterGenericName")}
-							id="generic"
-							name="generic"
-							data={medicineGenericData?.map((item, index) => ({
-								label: item.name,
-								value: `${item.name} ${index}`,
-							}))}
-							value={medicineForm.values.generic}
-							onChange={(v) => {
-								handleChange("generic", v);
-								setMedicineGenericTerm(v);
-							}}
-							placeholder={t("GenericName")}
-							onBlur={() => setMedicineGenericTerm("")}
-							classNames={inputCss}
-						/>
-					</Group>
-					<Grid w="100%" columns={12} gutter="xxxs">
-						<Grid.Col span={6}>
-							<Group grow gap="les">
-								<SelectForm
-									form={medicineForm}
-									id="dose_details"
-									name="dose_details"
-									dropdownValue={dosage_options}
-									value={medicineForm.values.dose_details}
-									placeholder={t("Dosage")}
-									required
-									tooltip={t("EnterDosage")}
-									withCheckIcon={false}
-								/>
-								<SelectForm
-									form={medicineForm}
-									id="by_meal"
-									name="by_meal"
-									dropdownValue={by_meal_options}
-									value={medicineForm.values.by_meal}
-									placeholder={t("By Meal")}
-									tooltip={t("EnterWhenToTakeMedicine")}
-									withCheckIcon={false}
-								/>
-							</Group>
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<Group grow gap="les">
-								<InputNumberForm
-									form={medicineForm}
-									id="quantity"
-									name="quantity"
-									value={medicineForm.values.quantity}
-									placeholder={t("Quantity")}
-									required
-									tooltip={t("EnterQuantity")}
-								/>
-								<SelectForm
-									form={medicineForm}
-									label=""
-									id="duration"
-									name="duration"
-									dropdownValue={DURATION_TYPES}
-									value={medicineForm.values.duration || "Day"}
-									placeholder={t("Duration")}
-									required
-									tooltip={t("EnterMeditationDuration")}
-									withCheckIcon={false}
-								/>
-								<Button
-									leftSection={<IconPlus size={16} />}
-									type="submit"
-									variant="filled"
-									bg="var(--theme-secondary-color-6)"
-								>
-									{t("Add")}
-								</Button>
-							</Group>
-						</Grid.Col>
-						<Grid.Col span={2} bg="var(--mantine-color-indigo-6)">
+				<Grid w="100%" columns={24} gutter="xxxs">
+					<Grid.Col span={18}>
+						<Group align="end" gap="les">
+							<Grid w="100%" columns={12} gutter="xxxs">
+								<Grid.Col span={6}>
+									<Group grow w="100%" gap="les">
+										<Select
+											clearable
+											searchable
+											onSearchChange={(v) => {
+												setMedicineTerm(v);
+											}}
+											id="medicine_id"
+											name="medicine_id"
+											data={medicineData?.map((item) => ({
+												label: item.product_name,
+												value: item.product_id?.toString(),
+											}))}
+											value={medicineForm.values.medicine_id}
+											onChange={(v) => handleChange("medicine_id", v)}
+											placeholder={t("Medicine")}
+											tooltip="Select medicine"
+											nothingFoundMessage="Type to find medicine..."
+											onBlur={() => setMedicineTerm("")}
+											classNames={inputCss}
+										/>
+									</Group>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Group grow w="100%" gap="les">
+
+										<Autocomplete
+											tooltip={t("EnterGenericName")}
+											id="generic"
+											name="generic"
+											data={medicineGenericData?.map((item, index) => ({
+												label: item.name,
+												value: `${item.name} ${index}`,
+											}))}
+											value={medicineForm.values.generic}
+											onChange={(v) => {
+												handleChange("generic", v);
+												setMedicineGenericTerm(v);
+											}}
+											placeholder={t("GenericName")}
+											onBlur={() => setMedicineGenericTerm("")}
+											classNames={inputCss}
+										/>
+
+									</Group>
+								</Grid.Col>
+
+							</Grid>
+							<Grid w="100%" columns={12} gutter="xxxs">
+								<Grid.Col span={6}>
+									<Group grow gap="les">
+										<SelectForm
+											form={medicineForm}
+											id="dose_details"
+											name="dose_details"
+											dropdownValue={dosage_options}
+											value={medicineForm.values.dose_details}
+											placeholder={t("Dosage")}
+											required
+											tooltip={t("EnterDosage")}
+											withCheckIcon={false}
+										/>
+										<SelectForm
+											form={medicineForm}
+											id="by_meal"
+											name="by_meal"
+											dropdownValue={by_meal_options}
+											value={medicineForm.values.by_meal}
+											placeholder={t("By Meal")}
+											tooltip={t("EnterWhenToTakeMedicine")}
+											withCheckIcon={false}
+										/>
+									</Group>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Group grow gap="les">
+										<InputNumberForm
+											form={medicineForm}
+											id="quantity"
+											name="quantity"
+											value={medicineForm.values.quantity}
+											placeholder={t("Quantity")}
+											required
+											tooltip={t("EnterQuantity")}
+										/>
+										<SelectForm
+											form={medicineForm}
+											label=""
+											id="duration"
+											name="duration"
+											dropdownValue={DURATION_TYPES}
+											value={medicineForm.values.duration || "Day"}
+											placeholder={t("Duration")}
+											required
+											tooltip={t("EnterMeditationDuration")}
+											withCheckIcon={false}
+										/>
+										<Button
+											leftSection={<IconPlus size={16} />}
+											type="submit"
+											variant="filled"
+											bg="var(--theme-secondary-color-6)"
+										>
+											{t("Add")}
+										</Button>
+									</Group>
+								</Grid.Col>
+							</Grid>
+						</Group>
+					</Grid.Col>
+					<Grid.Col span={6} bg={'white'}>
+						<Grid w="100%" columns={12} gutter="xxxs">
+							<Grid.Col span={12}>
+								<Group grow gap="les">
 							<SelectForm
-								mt={"2"}
-								form={medicineForm}
-								label=""
-								id="treatments"
-								name="treatments"
-								dropdownValue={treatmentData?.data?.map((item) => ({
-									label: item.name,
-									value: item.id?.toString(),
-								}))}
-								value={medicineForm.values.treatments}
-								placeholder={t("TreatmentMedicine")}
-								required
-								tooltip={t("TreatmentMedicine")}
-								withCheckIcon={false}
-								changeValue={populateMedicineData}
-							/>
-						</Grid.Col>
-					</Grid>
-				</Group>
+							form={medicineForm}
+							label=""
+							id="treatments"
+							name="treatments"
+							dropdownValue={treatmentData?.data?.map((item) => ({
+								label: item.name,
+								value: item.id?.toString(),
+							}))}
+							value={medicineForm.values.treatments}
+							placeholder={t("TreatmentTemplate")}
+							required
+							tooltip={t("TreatmentTemplate")}
+							withCheckIcon={false}
+							changeValue={populateMedicineData}
+						/>
+								</Group>
+							</Grid.Col>
+						</Grid>
+						<Grid w="100%" columns={12} gutter="xxxs">
+							<Grid.Col span={12}>
+								<Group grow gap="les" mt={'xxxs'}>
+								<Button
+									size="xs"
+									type="button"
+									variant="outline"
+									color="red"
+								>
+									{t("RxEmergency")}
+								</Button>
+									<Button
+										size="xs"
+										type="button"
+										variant="outline"
+										color="gray"
+									>
+										{t("Instruction")}
+									</Button>
+								</Group>
+							</Grid.Col>
+						</Grid>
+					</Grid.Col>
+				</Grid>
+
 			</Box>
 			<Flex bg="var(--theme-primary-color-0)" mb="les" justify="space-between" align="center" py="les" mt="xs">
 				<Text fw={500} px="sm">
@@ -620,6 +664,17 @@ export default function AddMedicineForm({
 										value={form.values.follow_up_date}
 										placeholder="Follow up date"
 										onBlur={handleFieldBlur}
+									/>
+								</Box>
+								<Box pl="sm" pr="sm">
+									<InputForm
+										form={form}
+										label=""
+										tooltip="Discount on visit (%)"
+										name="PharmacyInstruction"
+										value={form.values.visitPercent}
+										changeValue={(v) => handleChange("visitPercent", v)}
+										placeholder="PharmacyInstruction"
 									/>
 								</Box>
 								{/*<Box pl={"md"}>

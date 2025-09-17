@@ -250,19 +250,19 @@ export default function EntityForm({ form, module }) {
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("Created")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>{formatDate(item?.created)}</Grid.Col>
+									<Grid.Col span={14} fz={'xs'}>{formatDate(item?.created_at)}</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("InvoiceID")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>{item?.invoice}</Grid.Col>
+									<Grid.Col span={14} fz={'xs'}>{item?.invoice}</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("PatientID")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>{item?.patient_id}</Grid.Col>
+									<Grid.Col span={14} fz={'xs'}>{item?.patient_id}</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>

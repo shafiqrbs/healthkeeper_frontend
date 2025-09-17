@@ -69,7 +69,7 @@ export default function IpdActionButtons({
 						<Grid.Col span={12} bg="var(--theme-tertiary-color-0)" px="xs">
 							<Grid columns={24} my="xs" bg={"var(--theme-primary-color-1)"} px="xs" gutter="xs">
 								<Grid.Col span={12}>
-									<Text fz="sm">PARTICULAR</Text>
+									<Text fz="sm">Particular</Text>
 								</Grid.Col>
 								<Grid.Col span={4}>
 									<Text fz="sm">Quantity</Text>
@@ -86,17 +86,17 @@ export default function IpdActionButtons({
 							{entities?.map((entity) => (
 								<Grid columns={24} my="0" bg={"var(--theme-tertiary-color-0)"} px="xs" gutter="xs">
 									<Grid.Col span={12}>
-										<Text fz="sm">{entity?.item_name}</Text>
+										<Text fz="xs">{entity?.item_name}</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>
-										<Text fz="sm">{entity?.quantity}</Text>
+										<Text fz="xs">{entity?.quantity}</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>
-										<Text fz="sm">{entity?.price}</Text>
+										<Text fz="xs">{entity?.price}</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>
 										<Flex justify="space-between" align="center">
-											<Text fz="sm">{entity?.sub_total}</Text>
+											<Text fz="xs">{entity?.sub_total}</Text>
 										</Flex>
 									</Grid.Col>
 								</Grid>
