@@ -1,7 +1,9 @@
 const admissionInitialValues = {
 	patient_type: "general",
 	appointment: "",
-	roomNo: "",
+	father_name: "",
+	mother_name: "",
+	profession: "",
 	specialization: "",
 	doctorName: "",
 	diseaseProfile: "",
@@ -9,14 +11,23 @@ const admissionInitialValues = {
 	guardian_mobile: "",
 	name: "",
 	gender: "male",
-	fmhName: "",
-	presentAddress: "",
+	address: "",
 	permanentAddress: "",
-	dateOfBirth: "",
-	ageYear: "",
-	ageMonth: "",
-	ageDay: "",
-	religion: "",
+	dob: "",
+	year: "",
+	month: "",
+	day: "",
+	country_id: "",
+	admit_doctor_id: "",
+	admit_unit_id: "",
+	admit_department_id: "",
+	comment: "",
+	patient_relation: "",
+	upazilla_id: "",
+	bp: "",
+	weight: "",
+	height: "",
+
 };
 
 export const getAdmissionFormInitialValues = () => {
@@ -27,11 +38,6 @@ export const getAdmissionFormInitialValues = () => {
 
 const admissionConfirmInitialValues = {
 	room_id: "",
-	admit_unit_id: "",
-	hms_invoice_id: "",
-	admit_doctor_id: "",
-	admit_department_id: "",
-	comment: "",
 	patient_mode: "ipd",
 };
 

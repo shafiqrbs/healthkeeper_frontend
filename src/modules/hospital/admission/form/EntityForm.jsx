@@ -10,8 +10,8 @@ import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import DoctorsRoomDrawer from "../../common/__DoctorsRoomDrawer";
 import { useDisclosure } from "@mantine/hooks";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import {getIndexEntityData, storeEntityData, updateEntityData} from "@/app/store/core/crudThunk";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import IPDFooter from "@modules/hospital/common/IPDFooter";
 
@@ -115,17 +115,17 @@ export default function EntityForm({ form, module }) {
 				};
 
 				const data = {
-					url: HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.CREATE,
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
 					data: formValue,
 					module,
 				};
 
-				const resultAction = await dispatch(storeEntityData(data));
+				const resultAction = await dispatch(updateEntityData(data));
 
 				if (storeEntityData.rejected.match(resultAction)) {
 					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
 				} else {
-					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
+					showNotificationComponent(t("Patient admitted successfully"), "green", "lightgray", true, 1000, true);
 					setRefetchData({ module, refetching: true });
 					form.reset();
 				}
@@ -153,7 +153,7 @@ export default function EntityForm({ form, module }) {
 	const { data: entity } = useDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}` });
 	const item = entity?.data;
 	const entities = entity?.data?.invoice_particular;
-
+	console.log(entity)
 	useEffect(() => {
 		let dobValue = null;
 
@@ -175,15 +175,15 @@ export default function EntityForm({ form, module }) {
 				}
 			}
 		}
-
 		form.setValues({
 			name: item?.name,
 			mobile: item?.mobile,
 			dob: dobValue,
-			identity: item?.identity,
+			identity: item?.nid,
 			identity_mode: item?.identity_mode,
-			nid: item?.nid,
 			bp: item?.bp,
+			weight: item?.weight,
+			height: item?.height,
 			day: item?.day,
 			month: item?.month,
 			year: item?.year,
@@ -192,15 +192,16 @@ export default function EntityForm({ form, module }) {
 			mother_name: item?.mother_name,
 			guardian_name: item?.guardian_name,
 			guardian_mobile: item?.guardian_mobile,
-			relation_parent: item?.relation_parent,
+			patient_relation: item?.patient_relation,
 			profession: item?.profession,
 			address: item?.address,
 			permanent_address: item?.permanent_address,
 			religion_id: item?.religion_id,
-			country_id: item?.country_id,
 			admit_doctor_id: item?.admit_doctor_id,
 			admit_unit_id: item?.admit_unit_id,
 			admit_department_id: item?.admit_department_id,
+			upazilla_id: item?.upazilla_id,
+			country_id: item?.country_id,
 		});
 	}, [item]);
 
