@@ -189,7 +189,9 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							)?.value;
 							return (
 								<Grid key={`${id}-${index}`}>
-									<Grid.Col span={4} fz={'xs'}>{particular.name}</Grid.Col>
+									<Grid.Col span={4} fz={"xs"}>
+										{particular.name}
+									</Grid.Col>
 									<Grid.Col span={8}>
 										<TextInput
 											label=""
@@ -213,7 +215,6 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 					</Stack>
 				);
 
-			// case "InputWithCheckbox":
 			case "InputWithCheckbox":
 				return (
 					<Stack gap="xxs">
@@ -223,12 +224,14 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							)?.value;
 							return (
 								<Grid key={`${id}-${index}`}>
-									<Grid.Col span={4} fz={'xs'}>{particular.name}</Grid.Col>
+									<Grid.Col span={4} fz={"xs"}>
+										{particular.name}
+									</Grid.Col>
 									<Grid.Col span={8}>
 										<Flex align="center" gap="les" justify="space-between">
 											<TextInput
 												size="xs"
-												w={'70%'}
+												w={"70%"}
 												label=""
 												classNames={inputCss}
 												placeholder={`Enter ${particular.name}`}
@@ -244,7 +247,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 												onBlur={handleFieldBlur}
 											/>
 											<Select
-												w={'30%'}
+												w={"30%"}
 												label=""
 												size="xs"
 												placeholder={t("Day")}
@@ -261,7 +264,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 														id: particular.id,
 														name: particular.name,
 														value: value,
-														duration: option,
+														duration: option || "Day",
 														parentSlug: section.slug,
 													});
 												}}
@@ -331,7 +334,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 
 			case "RadioButton":
 				return (
-					<Stack gap="md" fz={'xs'}>
+					<Stack gap="md" fz={"xs"}>
 						{particulars?.map((particular, index) => {
 							const value = form.values.dynamicFormData?.[section.slug]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
@@ -447,7 +450,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 			return (
 				<Box>
 					<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
-					<ScrollArea h={height+20} >
+					<ScrollArea h={height + 20}>
 						<Stack gap="sm" my="les">
 							{currentSection.map((section) => (
 								<Box key={section.id}>
@@ -469,7 +472,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		return (
 			<Box>
 				<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
-				<ScrollArea h={height+300}>
+				<ScrollArea h={height + 300}>
 					<Box mt="les">
 						<Box bg="var(--theme-secondary-color-1)" p="xxxs">
 							<Text fw={600} size="lg">

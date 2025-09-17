@@ -23,6 +23,8 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 		return value || defaultValue;
 	};
 
+	console.log(patientExamination?.chief_complaints);
+
 	return (
 		<Box display="none">
 			<Box ref={ref} p="md" w="210mm" h="100vh" className="watermark" ff="Arial, sans-serif" lh={1.5} fz={12}>
@@ -145,7 +147,9 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
 										<Text size="sm" c="gray" mt="-xs" mb="xs">
 											{(patientExamination?.chief_complaints || [])
-												.map((item) => `${item.name}: ${item.value}`)
+												.map(
+													(item) => `${item.name}: ${item.value} ${item.duration || "Day"}/s`
+												)
 												.join(", ") || "N/A"}
 										</Text>
 									</Box>
@@ -158,7 +162,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
 										<Text size="sm" c="gray" mt="xs">
 											{(patientExamination?.ho_past_illness || [])
-												.map((item) => item.name)
+												.map((item) => `${item.name} ${item.duration || "Day/s"}`)
 												.join(", ") || "N/A"}
 										</Text>
 									</Box>

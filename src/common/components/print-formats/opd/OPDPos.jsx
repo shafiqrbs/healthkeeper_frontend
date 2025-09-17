@@ -22,8 +22,8 @@ const OPDPos = forwardRef(({ data }, ref) => {
 			<Box ref={ref} w="80mm" p={8} bg="white" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
-					<Group justify="center" align="center" gap={8}>
-						<Image src={GovtLogo} alt="Govt Logo" width={44} height={44} fit="contain" />
+					<Group justify="space-between" align="center" gap={8}>
+						<Image src={GovtLogo} alt="Govt Logo" width={30} height={30} fit="contain" />
 						<Stack gap={0} ta="left">
 							<Text ta="center" size="xs" fw={700}>
 								{hospitalConfigData?.organization_name}
@@ -35,7 +35,7 @@ const OPDPos = forwardRef(({ data }, ref) => {
 								{t("হটলাইন")} {hospitalConfigData?.hotline}
 							</Text>
 						</Stack>
-						<Image src={TbImage} alt="TB Hospital" width={44} height={44} fit="contain" />
+						<Image src={TbImage} alt="TB Hospital" width={30} height={30} fit="contain" />
 					</Group>
 					<DashedLine />
 

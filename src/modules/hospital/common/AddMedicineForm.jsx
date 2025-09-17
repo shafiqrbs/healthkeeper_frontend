@@ -11,12 +11,18 @@ import {
 	ScrollArea,
 	Select,
 	Autocomplete,
-	Switch,
 	Tooltip,
 	ActionIcon,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconFirstAidKit, IconHistory, IconPlus, IconReportMedical, IconRestore,IconArrowRight } from "@tabler/icons-react";
+import {
+	IconFirstAidKit,
+	IconHistory,
+	IconPlus,
+	IconReportMedical,
+	IconRestore,
+	IconArrowRight,
+} from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -24,7 +30,7 @@ import DatePickerForm from "@components/form-builders/DatePicker";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import PrescriptionFull from "@components/print-formats/prescription/PrescriptionFull";
-import {useDebouncedState, useDisclosure, useHotkeys} from "@mantine/hooks";
+import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
@@ -42,7 +48,17 @@ import { DURATION_TYPES } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 
-export default function AddMedicineForm({ module, form, update, medicines, setMedicines, baseHeight, setShowHistory,prescriptionData,hasRecords }) {
+export default function AddMedicineForm({
+	module,
+	form,
+	update,
+	medicines,
+	setMedicines,
+	baseHeight,
+	setShowHistory,
+	prescriptionData,
+	hasRecords,
+}) {
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
@@ -60,7 +76,6 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 	const adviceData = useSelector((state) => state.crud.advice.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [opened, { open, close }] = useDisclosure(false);
-	const [selectedPrescriptionContent, setSelectedPrescriptionContent] = useState(null);
 	const { data: by_meal_options } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
 		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
@@ -481,26 +496,22 @@ export default function AddMedicineForm({ module, form, update, medicines, setMe
 				<Flex px="les" gap="les">
 					{prescriptionData?.data?.patient_referred_id && (
 						<Tooltip label="Referred">
-							<ActionIcon
-								size="lg"
-								bg={'red'}
-								onClick={() => handleReferredViewPrescription()}
-							>
+							<ActionIcon size="lg" bg={"red"} onClick={() => handleReferredViewPrescription()}>
 								<IconFirstAidKit />
 							</ActionIcon>
 						</Tooltip>
 					)}
 					{hasRecords && (
-					<Tooltip label="History">
-						<Button
-							variant="filled"
-							onClick={() => setShowHistory((prev) => !prev)}
-							leftSection={<IconHistory size={14} />}
-							rightSection={<IconArrowRight size={14} />}
-						>
-							{t("History")}
-						</Button>
-					</Tooltip>
+						<Tooltip label="History">
+							<Button
+								variant="filled"
+								onClick={() => setShowHistory((prev) => !prev)}
+								leftSection={<IconHistory size={14} />}
+								rightSection={<IconArrowRight size={14} />}
+							>
+								{t("History")}
+							</Button>
+						</Tooltip>
 					)}
 				</Flex>
 			</Flex>

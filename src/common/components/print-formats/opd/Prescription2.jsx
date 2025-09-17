@@ -160,7 +160,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
 										<Text size="sm" c="gray" mt="xs">
 											{(patientExamination?.ho_past_illness || [])
-												.map((item) => item.name)
+												.map((item) => `${item.name} ${item.duration}`)
 												.join(", ") || "N/A"}
 										</Text>
 									</Box>
