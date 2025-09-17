@@ -1,18 +1,11 @@
 import {
 	IconDashboard,
-	IconCategory,
 	IconIcons,
 	IconShoppingBag,
-	IconShoppingCart,
 	IconHome,
 	IconBuildingHospital,
 	IconPrescription,
-	IconPhoto,
-	IconFileInvoice,
-	IconUser,
-	IconWorldWww,
 	IconSettings,
-	IconPhone,
 	IconEmergencyBed,
 	IconMicroscopeOff,
 	IconMedicineSyrup,
@@ -21,7 +14,7 @@ import {
 	IconReportMedical,
 } from "@tabler/icons-react";
 import { t } from "i18next";
-import { HOSPITAL_DATA_ROUTES,PHARMACY_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes.js";
+import { HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes.js";
 
 export const sideNavigationLinks = {
 	home: [
@@ -261,6 +254,13 @@ export const sideNavigationLinks = {
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.INDEX,
 			icon: IconDashboard,
 			color: "#4CAF50",
+			allowedRoles: ["role_domain", "accounting_admin"],
+		},
+		{
+			label: t("ManageTemplates"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.TEMPLATE.INDEX,
+			icon: IconDashboard,
+			color: "#6f1225",
 			allowedRoles: ["role_domain", "accounting_admin"],
 		},
 		{

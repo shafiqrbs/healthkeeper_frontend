@@ -1,26 +1,21 @@
-import { Box, Grid, Group, Progress } from "@mantine/core";
+import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useMediaQuery } from "@mantine/hooks";
 
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
-import { getInitialValues } from "./helpers/request";
-import { useForm } from "@mantine/form";
-import IndexForm from "./form/__IndexForm";
-import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
 import { MODULES_CORE } from "@/constants";
+import Details from "./Details";
 
 const module = MODULES_CORE.PARTICULAR;
 
-export default function Index({ mode = "create" }) {
+export default function Index({ mode }) {
 	const { t } = useTranslation();
-	const form = useForm(getInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
-	const [opened, { open, close }] = useDisclosure(false);
 	const { mainAreaHeight } = useOutletContext();
 	return (
 		<>
@@ -37,7 +32,7 @@ export default function Index({ mode = "create" }) {
 				<>
 					<CoreHeaderNavbar
 						module="core"
-						pageTitle={t("ManageDoctor")}
+						pageTitle={t("ManageTemplate")}
 						roles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""
@@ -51,17 +46,10 @@ export default function Index({ mode = "create" }) {
 							)}
 							<Grid.Col span={matches ? 30 : 30}>
 								<Box bg="white" p="xs" className="borderRadiusAll">
-									<_Table module={module} open={open} close={close} />
+									{mode === "details" ? <Details /> : <_Table module={module} />}
 								</Box>
 							</Grid.Col>
 						</Grid>
-						<GlobalDrawer
-							opened={opened}
-							close={close}
-							title={mode === "create" ? t("CreateParticular") : t("UpdateParticular")}
-						>
-							<IndexForm module={module} form={form} mode={mode} close={close} />
-						</GlobalDrawer>
 					</Box>
 				</>
 			)}

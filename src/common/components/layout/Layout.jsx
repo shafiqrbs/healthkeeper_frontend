@@ -1,10 +1,8 @@
-import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useNetwork, useViewportSize } from "@mantine/hooks";
 import { AppShell } from "@mantine/core";
 import Header from "./Header";
 import Footer from "./Footer";
-import MainDashboard from "@modules/dashboard/MainDashboard";
 import useConfigData from "@hooks/config-data/useConfigData";
 import { getLoggedInUser } from "@/common/utils";
 import HomeIndex from "@/modules/home";

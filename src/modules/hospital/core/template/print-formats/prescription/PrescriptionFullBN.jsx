@@ -9,27 +9,31 @@ import "@/index.css";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {
 	const patientInfo = JSON.parse(data?.json_content || "{}");
-	console.log("PatientInfo", patientInfo);
 
+	const invoiceDetails = data?.invoice_details || {};
 	const patientReport = patientInfo?.patient_report || {};
-	console.log("PatientReport", patientReport);
-
 	const basicInfo = patientReport?.basic_info || {};
-	console.log("BasicInfo", basicInfo);
 	const patientExamination = patientReport?.patient_examination || {};
-	console.log("patientExamination", patientExamination);
 	const medicines = patientInfo?.medicines || [];
-	console.log("medicines", medicines);
 	const customerInformation = data?.invoice_details?.customer_details || data;
-	console.log("customerInformation", customerInformation);
 
 	const getValue = (value, defaultValue = "N/A") => {
 		return value || defaultValue;
 	};
 
 	return (
-		<Box display="none">
-			<Box ref={ref} p="md" w="210mm" h="100vh" className="watermark" ff="Arial, sans-serif" lh={1.5} fz={12}>
+		<Box>
+			<Box
+				ref={ref}
+				p="md"
+				w="210mm"
+				h="100vh"
+				className="watermark"
+				ff="Arial, sans-serif"
+				lh={1.5}
+				fz={12}
+				bd="1px solid black"
+			>
 				{/* =============== header section with doctor information in bengali and english ================ */}
 				<Box mb="sm">
 					<Grid gutter="md">
@@ -93,7 +97,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								</Text>
 								<Text size="sm">
 									{" "}
-									{basicInfo?.year}Y, {basicInfo?.month || 0}M, {basicInfo?.day || 0}D
+									{invoiceDetails?.year}Y, {invoiceDetails?.month || 0}M, {invoiceDetails?.day || 0}D
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -167,7 +171,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
 										<Text size="sm" c="gray" mt="xs">
 											{(patientExamination?.ho_past_illness || [])
-												.map((item) => `${item.name} ${item.duration}`)
+												.map((item) => item.name)
 												.join(", ") || "N/A"}
 										</Text>
 									</Box>

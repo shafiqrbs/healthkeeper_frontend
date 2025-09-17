@@ -91,7 +91,6 @@ export default function Index() {
 	}, [customerId]);
 	const hasRecords = records && records.length > 0;
 
-
 	const handlePrescriptionUpdate = async (updatedMedicine) => {
 		try {
 			const createdBy = getLoggedInUser();
@@ -123,15 +122,6 @@ export default function Index() {
 		} catch (error) {
 			console.error(error);
 		}
-	};
-
-	const handleViewPrescription = (id) => {
-		setSelectedPrescriptionId(id);
-		setTimeout(() => open(), 10);
-	};
-
-	const handleHistoricalPrescription = (id) => {
-		console.info(id);
 	};
 
 	return (

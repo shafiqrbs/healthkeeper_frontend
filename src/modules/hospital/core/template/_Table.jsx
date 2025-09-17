@@ -1,0 +1,100 @@
+import { Box, Flex, Button } from "@mantine/core";
+import { useTranslation } from "react-i18next";
+import { IconChevronUp, IconSelector, IconEye } from "@tabler/icons-react";
+import { DataTable } from "mantine-datatable";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import KeywordSearch from "@modules/filter/KeywordSearch";
+import DataTableFooter from "@components/tables/DataTableFooter";
+import tableCss from "@assets/css/Table.module.css";
+import { MASTER_DATA_ROUTES } from "@/constants/routes";
+
+const templateData = [
+	{ name: "OPDA4", module: "opd", id: 1 },
+	{ name: "OPDPos", module: "opd", id: 2 },
+	{ name: "PrescriptionFull", module: "prescription", id: 3 },
+];
+
+export default function _Table({ module }) {
+	const navigate = useNavigate();
+	const { t } = useTranslation();
+	const { mainAreaHeight } = useOutletContext();
+	const height = mainAreaHeight - 78;
+
+	const handleDataShow = (name) => {
+		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.TEMPLATE.INDEX}/${name}`);
+	};
+
+	return (
+		<>
+			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none">
+				<Flex align="center" justify="space-between" gap={4}>
+					<KeywordSearch module={module} />
+				</Flex>
+			</Box>
+
+			<Box className="borderRadiusAll border-top-none">
+				<DataTable
+					classNames={{
+						root: tableCss.root,
+						table: tableCss.table,
+						body: tableCss.body,
+						header: tableCss.header,
+						footer: tableCss.footer,
+						pagination: tableCss.pagination,
+					}}
+					records={templateData}
+					columns={[
+						{
+							accessor: "index",
+							title: t("S/N"),
+							render: (_item, index) => index + 1,
+						},
+						{
+							accessor: "name",
+							title: t("TemplateName"),
+							render: (values) => values.name,
+						},
+						{
+							accessor: "module",
+							title: t("TemplateModule"),
+							render: (values) => values.module,
+						},
+						{
+							accessor: "action",
+							title: "",
+							textAlign: "right",
+							render: (values) => (
+								<Button
+									onClick={() => {
+										handleDataShow(values.name);
+									}}
+									variant="filled"
+									c="white"
+									size="xs"
+									radius="es"
+									leftSection={<IconEye size={16} />}
+									className="border-right-radius-none"
+									bg="var(--theme-primary-color-6)"
+								>
+									{t("ShowTemplate")}
+								</Button>
+							),
+						},
+					]}
+					fetching={false}
+					loaderSize="xs"
+					loaderColor="grape"
+					height={height - 72}
+					onScrollToBottom={() => {}}
+					scrollViewportRef={null}
+					sortIcons={{
+						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+					}}
+				/>
+			</Box>
+
+			<DataTableFooter indexData={templateData} module={module} />
+		</>
+	);
+}

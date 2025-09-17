@@ -107,6 +107,8 @@ import UserIndex from "@/modules/core/user";
 import SettingIndex from "@/modules/core/setting";
 import TestRoute from "@components/layout/TestRoute";
 import TreatmentTemplatesIndex from "@modules/hospital/core/treatmentTemplates";
+import AdminLayout from "./common/components/layout/AdminLayout";
+import TemplateIndex from "./modules/hospital/core/template";
 
 function AppRoute() {
 	return (
@@ -201,6 +203,7 @@ function AppRoute() {
 					<Route path="hospital-config/:id" element={<HospitalConfigIndex />} />
 				</Route>
 				<Route path="/hospital/core/">
+					{/* <Route path="/hospital/core/" element={<AdminLayout />}> */}
 					<Route path="treatment-templates" element={<TreatmentTemplatesIndex />} />
 					<Route path="treatment-templates/:id" element={<TreatmentTemplatesIndex mode={"edit"} />} />
 					<Route
@@ -211,6 +214,8 @@ function AppRoute() {
 					<Route path="particular-matrix" element={<ParticularMatrixIndex />} />
 					<Route path="investigation/:reportFormat/:id" element={<InvestigationIndex />} />
 					<Route path="investigation/:id" element={<InvestigationIndex mode={"edit"} />} />
+					<Route path="template" element={<TemplateIndex />} />
+					<Route path="template/:name" element={<TemplateIndex mode={"details"} />} />
 					<Route path="particular" element={<ParticularIndex />} />
 					<Route path="particular/:id" element={<ParticularIndex mode={"edit"} />} />
 					<Route path="opd-room" element={<OpdRoomIndex />} />

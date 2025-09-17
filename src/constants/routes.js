@@ -75,7 +75,7 @@ export const MASTER_DATA_ROUTES = {
 			VIEW: "hospital/core/particular",
 			DELETE: "hospital/core/particular",
 			INLINE_UPDATE: "hospital/core/particular/inline-update",
-            ORDERING: "hospital/core/particular/ordering",
+			ORDERING: "hospital/core/particular/ordering",
 		},
 
 		BED: {
@@ -179,6 +179,13 @@ export const MASTER_DATA_ROUTES = {
 
 		PARTICULAR_MATRIX: {
 			INDEX: "/hospital/core/particular-matrix",
+		},
+
+		TEMPLATE: {
+			INDEX: "/hospital/core/template",
+			CREATE: "/hospital/core/template/create",
+			UPDATE: "/hospital/core/template/update",
+			VIEW: "/hospital/core/template/view",
 		},
 
 		INVESTIGATION: {
@@ -285,7 +292,6 @@ export const MASTER_DATA_ROUTES = {
 };
 
 export const PHARMACY_DATA_ROUTES = {
-
 	NAVIGATION_LINKS: {
 		PHARMACY: {
 			INDEX: "/pharmacy",
@@ -314,7 +320,7 @@ export const PHARMACY_DATA_ROUTES = {
 			DELETE: "/pharmacy/core/workorder",
 		},
 	},
-}
+};
 export const CORE_DATA_ROUTES = {
 	API_ROUTES: {
 		VENDOR: {
@@ -442,7 +448,6 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/customer/edit",
 			VIEW: "/hospital/customer/view",
 		},
-
 	},
 };
 
