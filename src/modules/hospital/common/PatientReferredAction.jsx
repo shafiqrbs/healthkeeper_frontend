@@ -187,7 +187,6 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 							form={referredForm}
 							name="hospital"
 							mt={0}
-							required
 							id="hospital"
 						/>
 					</Grid.Col>

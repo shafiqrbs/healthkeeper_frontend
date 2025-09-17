@@ -27,7 +27,6 @@ const admissionInitialValues = {
 	bp: "",
 	weight: "",
 	height: "",
-
 };
 
 export const getAdmissionFormInitialValues = () => {

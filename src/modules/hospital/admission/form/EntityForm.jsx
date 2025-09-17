@@ -1,17 +1,16 @@
-import DatePickerForm from "@components/form-builders/DatePicker";
 import InputForm from "@components/form-builders/InputForm";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import SelectForm from "@components/form-builders/SelectForm";
 
 import { ActionIcon, Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
-import { IconChevronRight, IconSearch } from "@tabler/icons-react";
+import { IconChevronRight, IconInfoCircle, IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import DoctorsRoomDrawer from "../../common/__DoctorsRoomDrawer";
 import { useDisclosure } from "@mantine/hooks";
-import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
-import {getIndexEntityData, storeEntityData, updateEntityData} from "@/app/store/core/crudThunk";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import IPDFooter from "@modules/hospital/common/IPDFooter";
 
@@ -25,6 +24,7 @@ import { CORE_DROPDOWNS, HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlic
 import useHospitalSettingData from "@/common/hooks/config-data/useHospitalSettingData";
 import useHospitalConfigData from "@/common/hooks/config-data/useHospitalConfigData";
 import TextAreaForm from "@/common/components/form-builders/TextAreaForm";
+import InputMaskForm from "@/common/components/form-builders/InputMaskForm";
 
 const USER_NID_DATA = {
 	verifyToken: "a9a98eac-68c4-4dd1-9cb9-8127a5b44833",
@@ -125,7 +125,14 @@ export default function EntityForm({ form, module }) {
 				if (storeEntityData.rejected.match(resultAction)) {
 					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
 				} else {
-					showNotificationComponent(t("Patient admitted successfully"), "green", "lightgray", true, 1000, true);
+					showNotificationComponent(
+						t("Patient admitted successfully"),
+						"green",
+						"lightgray",
+						true,
+						1000,
+						true
+					);
 					setRefetchData({ module, refetching: true });
 					form.reset();
 				}
@@ -153,32 +160,12 @@ export default function EntityForm({ form, module }) {
 	const { data: entity } = useDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}` });
 	const item = entity?.data;
 	const entities = entity?.data?.invoice_particular;
-	console.log(entity)
+	console.log(entity);
 	useEffect(() => {
-		let dobValue = null;
-
-		if (item?.dob) {
-			// If API sends "YYYY-MM-DD"
-			if (/^\d{4}-\d{2}-\d{2}$/.test(item.dob)) {
-				dobValue = new Date(item.dob + "T00:00:00"); // force ISO format
-			}
-			// If API sends "DD-MM-YYYY"
-			else if (/^\d{2}-\d{2}-\d{4}$/.test(item.dob)) {
-				const [day, month, year] = item.dob.split("-");
-				dobValue = new Date(`${year}-${month}-${day}T00:00:00`);
-			}
-			// else: try parsing normally
-			else {
-				const parsed = new Date(item.dob);
-				if (!isNaN(parsed)) {
-					dobValue = parsed;
-				}
-			}
-		}
 		form.setValues({
 			name: item?.name,
 			mobile: item?.mobile,
-			dob: dobValue,
+			dob: item?.dob,
 			identity: item?.nid,
 			identity_mode: item?.identity_mode,
 			bp: item?.bp,
@@ -318,17 +305,17 @@ export default function EntityForm({ form, module }) {
 										<Text fz="sm">{t("DOB")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<DatePickerForm
-											form={form}
-											label=""
-											placeholder="23-06-2025"
-											tooltip={t("enterPatientDateOfBirth")}
+										<InputMaskForm
 											name="dob"
 											id="dob"
-											nextField="age"
-											value={form.values.dob}
-											required
-											disabledFutureDate
+											value={form.values?.dob}
+											form={form}
+											label=""
+											tooltip={t("EnterPatientBirthDate")}
+											placeholder="DD-MM-YYYY"
+											nextField="day"
+											maskInput="00-00-0000"
+											rightSection={<IconInfoCircle size={16} opacity={0.5} />}
 										/>
 									</Grid.Col>
 								</Grid>
@@ -364,7 +351,7 @@ export default function EntityForm({ form, module }) {
 										<SegmentedControl
 											fullWidth
 											color="var(--theme-primary-color-6)"
-											value={form.values.identity_mode}
+											value={form.values.identity_mode?.toUpperCase()}
 											id="identity_mode"
 											name="identity_mode"
 											data={[
