@@ -12,7 +12,81 @@ import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigDat
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
-const OPDDocument = forwardRef(({ data }, ref) => {
+// =============== default data structure for opd a4 document ================
+const defaultData = {
+	id: 1,
+	invoice: "INV-987654321",
+	patient_id: "PT-987654321",
+	health_id: "HID-987654321",
+	name: "John Doe",
+	mobile: "01717171717",
+	gender: "Male",
+	year: 25,
+	month: 1,
+	day: 1,
+	dob: "2000-01-01",
+	payment_mode_name: "Cash",
+	total: 100,
+	mode_name: "OPD",
+	room_name: "100",
+	json_content: {
+		medicines: [
+			{
+				medicineName: "Paracetamol 500mg",
+				dosage: "1+1+1",
+				by_meal: "After meal",
+				duration: "7 days",
+				count: "21 tablets",
+			},
+			{
+				medicineName: "Amoxicillin 250mg",
+				dosage: "1+0+1",
+				by_meal: "After meal",
+				duration: "5 days",
+				count: "10 capsules",
+			},
+		],
+		patient_report: {
+			basic_info: {
+				bp: "120/80",
+				weight: "70",
+				bloodGroup: "A+",
+			},
+			patient_examination: {
+				chief_complaints: {
+					fever: "High fever for 2 days",
+					cough: "Dry cough",
+					headache: "Severe headache",
+				},
+				ho_past_illness: {
+					diabetes: true,
+					hypertension: false,
+					asthma: true,
+				},
+				diagnosis: {
+					viral_fever: true,
+					upper_respiratory_infection: true,
+				},
+				icd_11_listed_diseases: ["J06.9", "R50.9"],
+				comorbidity: {
+					diabetes: true,
+					hypertension: false,
+				},
+				treatment_history: {
+					previous_treatment: "None",
+				},
+				on_examination: {
+					temperature: "102°F",
+					pulse: "90 bpm",
+					blood_pressure: "120/80 mmHg",
+				},
+				investigation: ["CBC", "Blood Sugar", "Chest X-ray"],
+			},
+		},
+	},
+};
+
+const OPDDocument = forwardRef(({ data = defaultData }, ref) => {
 	const user = getLoggedInUser();
 	const patientInfo = data?.json_content || {};
 	const invoiceDetails = data?.invoice_details || {};
@@ -20,7 +94,6 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 	const basicInfo = patientReport?.basic_info || {};
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = patientInfo?.medicines || [];
-	// const data = data?.invoice_details?.customer_details || data;
 	const { hospitalConfigData } = useDoaminHospitalConfigData();
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
@@ -50,13 +123,13 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						</Grid.Col>
 						<Grid.Col span={4}>
 							<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-								{hospitalConfigData?.organization_name || "Hospital"}
+								{getValue(hospitalConfigData?.organization_name, "")}
 							</Text>
 							<Text ta="center" size="xs" c="gray" mt="2">
-								{hospitalConfigData?.address || "Uttara"}
+								{getValue(hospitalConfigData?.address, "")}
 							</Text>
 							<Text ta="center" size="xs" c="gray" mb="2">
-								{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
+								{t("হটলাইন")} {getValue(hospitalConfigData?.hotline, "")}
 							</Text>
 						</Grid.Col>
 						<Grid.Col span={4}>
@@ -73,7 +146,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 						<Grid.Col bd="1px solid #555" span={6} px="xs">
 							<Group gap="xs">
 								<Text size="md" fw={600}>
-									{t("মোড")} {data?.mode_name || "OPD"}
+									{t("মোড")} {getValue(data?.mode_name, "")}
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -82,17 +155,17 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="md" fw={600}>
 									{t("বহির্বিভাগ কক্ষ")}
 								</Text>
-								<Text size="md">{getValue(data?.room_name || "100")}</Text>
+								<Text size="md">{getValue(data?.room_name, "")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
-								<Text size="xs">{getValue(data?.invoice || "INV-987654321")}</Text>
+								<Text size="xs">{getValue(data?.invoice, "")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
-								<Text size="xs">{getValue(data?.patient_id || "PT-987654321")}</Text>
+								<Text size="xs">{getValue(data?.patient_id, "")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -100,7 +173,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("HID")}
 								</Text>
-								<Text size="xs">{getValue(data?.health_id || "HID-987654321")}</Text>
+								<Text size="xs">{getValue(data?.health_id, "")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -111,7 +184,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("নাম")}
 								</Text>
-								<Text size="xs">{getValue(data?.name, "John Doe")}</Text>
+								<Text size="xs">{getValue(data?.name, "")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -119,7 +192,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("মোবাইল")}
 								</Text>
-								<Text size="xs">{getValue(data?.mobile || "01717171717")}</Text>
+								<Text size="xs">{getValue(data?.mobile, "")}</Text>
 							</Group>
 						</Grid.Col>
 
@@ -137,7 +210,8 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 									{t("বয়স")}
 								</Text>
 								<Text size="xs">
-									{data?.year || 25} Y, {data?.month || 1} M, {data?.day || 1} D
+									{getValue(data?.year, 25)} Y, {getValue(data?.month, 1)} M, {getValue(data?.day, 1)}{" "}
+									D
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -146,13 +220,13 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("জন্ম তারিখ")}
 								</Text>
-								<Text size="xs">{getValue(data?.dob, "2000-01-01")}</Text>
+								<Text size="xs">{getValue(data?.dob, "")}</Text>
 							</Group>
 						</Grid.Col>
 
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
-								<Text size="xs">{getValue(data?.payment_mode_name || "Cash")}</Text>
+								<Text size="xs">{getValue(data?.payment_mode_name, "Cash")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -160,7 +234,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("ফি পরিমাণ")}
 								</Text>
-								<Text size="xs">{getValue(data?.total, 100)}</Text>
+								<Text size="xs">{getValue(data?.total, 0)}</Text>
 							</Group>
 						</Grid.Col>
 					</Grid>
@@ -191,7 +265,7 @@ const OPDDocument = forwardRef(({ data }, ref) => {
 										</Text>
 										<CustomDivider borderStyle="dashed" w="90%" />
 										<Text size="xs" c="gray" mt="xs">
-											{Object.entries(patientExamination?.h_o_past_illness || {})
+											{Object.entries(patientExamination?.ho_past_illness || {})
 												.filter(([, value]) => value)
 												.map(([key]) => key)
 												.join(", ") || "Headache, Fever"}

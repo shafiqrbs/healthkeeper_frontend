@@ -37,7 +37,10 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 	};
 
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
-	const tabParticulars = particularsData?.map((item) => item.particular_type);
+	const tabParticulars = particularsData?.map((item) => ({
+		...item.particular_type,
+		is_additional_field: item.is_additional_field || 0,
+	}));
 
 	const handleDynamicFormChange = ({ id, name, value, parentSlug, isCheckbox = false, duration = null }) => {
 		const existingList = Array.isArray(form.values.dynamicFormData[parentSlug])
@@ -119,7 +122,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 	};
 
 	const renderDynamicForm = (section) => {
-		const { id, name, data_type, particulars } = section;
+		const { id, name, data_type, particulars, is_additional_field } = section;
 
 		if (!particulars || particulars.length === 0) {
 			return <Text c="dimmed">No particulars defined for {name}</Text>;
@@ -151,33 +154,65 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 								/>
 							);
 						})}
+						{is_additional_field === 0 && (
+							<Textarea
+								label="Other Instructions"
+								placeholder="Enter other instructions"
+								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
+								// onChange={(event) =>
+								// 	handleDynamicFormChange({
+								// 		id: id,
+								// 		name: name,
+								// 		value: event.currentTarget.value,
+								// 		parentSlug: section.slug,
+								// 	})
+								// }
+							/>
+						)}
 					</Stack>
 				);
 
 			case "Select":
 				return (
-					<Select
-						label=""
-						placeholder={`Select ${name}`}
-						data={particulars?.map((particular) => ({
-							value: particular.name,
-							label: particular.name,
-						}))}
-						value={
-							form.values.dynamicFormData?.[section.slug]?.find(
-								(item) => item.id === id && item.name === name
-							)?.value || ""
-						}
-						onChange={(value) =>
-							handleDynamicFormChange({
-								id: id,
-								name: name,
-								value: value,
-								parentSlug: section.slug,
-							})
-						}
-						onBlur={handleFieldBlur}
-					/>
+					<Stack gap="md">
+						<Select
+							label=""
+							placeholder={`Select ${name}`}
+							data={particulars?.map((particular) => ({
+								value: particular.name,
+								label: particular.name,
+							}))}
+							value={
+								form.values.dynamicFormData?.[section.slug]?.find(
+									(item) => item.id === id && item.name === name
+								)?.value || ""
+							}
+							onChange={(value) =>
+								handleDynamicFormChange({
+									id: id,
+									name: name,
+									value: value,
+									parentSlug: section.slug,
+								})
+							}
+							onBlur={handleFieldBlur}
+						/>
+						{is_additional_field === 0 && (
+							<Textarea
+								label="Other Instructions"
+								placeholder="Enter other instructions"
+								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
+								// onChange={(event) =>
+								// 	handleDynamicFormChange({
+								// 		id: id,
+								// 		name: name,
+								// 		value: event.currentTarget.value,
+								// 		parentSlug: section.slug,
+								// 	})
+								// }
+							/>
+						)}
+					</Stack>
 				);
 
 			case "Input":
@@ -212,6 +247,22 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 								</Grid>
 							);
 						})}
+
+						{is_additional_field === 0 && (
+							<Textarea
+								label="Other Instructions"
+								placeholder="Enter other instructions"
+								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
+								// onChange={(event) =>
+								// 	handleDynamicFormChange({
+								// 		id: id,
+								// 		name: name,
+								// 		value: event.currentTarget.value,
+								// 		parentSlug: section.slug,
+								// 	})
+								// }
+							/>
+						)}
 					</Stack>
 				);
 
@@ -275,6 +326,22 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 								</Grid>
 							);
 						})}
+
+						{is_additional_field === 0 && (
+							<Textarea
+								label="Other Instructions"
+								placeholder="Enter other instructions"
+								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
+								// onChange={(event) =>
+								// 	handleDynamicFormChange({
+								// 		id: id,
+								// 		name: name,
+								// 		value: event.currentTarget.value,
+								// 		parentSlug: section.slug,
+								// 	})
+								// }
+							/>
+						)}
 					</Stack>
 				);
 
@@ -305,6 +372,22 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 								/>
 							);
 						})}
+
+						{is_additional_field === 0 && (
+							<Textarea
+								label="Other Instructions"
+								placeholder="Enter other instructions"
+								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
+								// onChange={(event) =>
+								// 	handleDynamicFormChange({
+								// 		id: id,
+								// 		name: name,
+								// 		value: event.currentTarget.value,
+								// 		parentSlug: section.slug,
+								// 	})
+								// }
+							/>
+						)}
 					</Stack>
 				);
 
@@ -356,6 +439,22 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 								/>
 							);
 						})}
+
+						{is_additional_field === 0 && (
+							<Textarea
+								label="Other Instructions"
+								placeholder="Enter other instructions"
+								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
+								// onChange={(event) =>
+								// 	handleDynamicFormChange({
+								// 		id: id,
+								// 		name: name,
+								// 		value: event.currentTarget.value,
+								// 		parentSlug: section.slug,
+								// 	})
+								// }
+							/>
+						)}
 					</Stack>
 				);
 
@@ -407,6 +506,22 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 								</Flex>
 							))}
 						</Stack>
+
+						{is_additional_field === 0 && (
+							<Textarea
+								label="Other Instructions"
+								placeholder="Enter other instructions"
+								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
+								// onChange={(event) =>
+								// 	handleDynamicFormChange({
+								// 		id: id,
+								// 		name: name,
+								// 		value: event.currentTarget.value,
+								// 		parentSlug: section.slug,
+								// 	})
+								// }
+							/>
+						)}
 					</>
 				);
 
