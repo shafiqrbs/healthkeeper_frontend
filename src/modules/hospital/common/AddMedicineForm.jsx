@@ -825,6 +825,52 @@ export default function AddMedicineForm({
 						placeholder={t("EmergencyPrescription")}
 						data={["1234567890", "1234567891", "1234567892"]}
 					/>
+
+					{/* <Autocomplete
+						label=""
+						placeholder={`Pick value or enter ${name}`}
+						data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
+						value={autocompleteValue}
+						onChange={setAutocompleteValue}
+						onOptionSubmit={(value) => {
+							handleAutocompleteOptionAdd(value, particulars, section.slug);
+							setTimeout(() => {
+								setAutocompleteValue("");
+							}, 0);
+						}}
+						classNames={inputCss}
+						onBlur={handleFieldBlur}
+						rightSection={<IconCaretUpDownFilled size={16} />}
+					/>
+					<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
+						{form.values.dynamicFormData?.[section.slug]?.map((item, idx) => (
+							<Flex
+								key={idx}
+								align="center"
+								justify="space-between"
+								px="es"
+								py="xs"
+								style={{
+									borderBottom:
+										idx !== form.values.dynamicFormData?.[section.slug]?.length - 1
+											? "1px solid var(--theme-tertiary-color-4)"
+											: "none",
+								}}
+							>
+								<Text fz="sm">
+									{idx + 1}. {item.name}
+								</Text>
+								<ActionIcon
+									color="red"
+									size="xs"
+									variant="subtle"
+									onClick={() => handleAutocompleteOptionRemove(idx, section.slug)}
+								>
+									<IconX size={16} />
+								</ActionIcon>
+							</Flex>
+						))}
+					</Stack> */}
 					<Flex justify="flex-end" gap="xs">
 						<Button
 							leftSection={<IconDeviceFloppy size={22} />}
