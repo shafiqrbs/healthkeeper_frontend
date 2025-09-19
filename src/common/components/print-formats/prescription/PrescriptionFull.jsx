@@ -7,9 +7,10 @@ import CustomDivider from "@components/core-component/CustomDivider";
 import { formatDate } from "@/common/utils";
 import "@/index.css";
 import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {
+	const { t } = useTranslation();
 	const { hospitalConfigData } = useDoaminHospitalConfigData();
 	const patientInfo = JSON.parse(data?.json_content || "{}");
 	const invoiceDetails = data?.invoice_details || {};
@@ -22,8 +23,6 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 	const getValue = (value, defaultValue = "N/A") => {
 		return value || defaultValue;
 	};
-
-	console.log(patientExamination?.chief_complaints);
 
 	return (
 		<Box display="none">

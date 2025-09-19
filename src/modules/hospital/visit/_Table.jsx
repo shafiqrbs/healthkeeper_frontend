@@ -42,7 +42,7 @@ import Prescription from "@components/print-formats/opd/Prescription2";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
-const tabs = ["all", "closed", "done", "inProgress", "returned"];
+const tabs = ["all", "prescription", "Non-Prescription"];
 
 const PER_PAGE = 200;
 

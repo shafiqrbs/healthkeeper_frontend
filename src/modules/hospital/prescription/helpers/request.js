@@ -14,6 +14,7 @@ export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
 		dynamicFormData: initialFormValues?.patient_report?.patient_examination || {},
 		advise: initialFormValues?.advise || "",
 		follow_up_date: parseDate(initialFormValues?.follow_up_date),
+		instruction: "",
 	};
 
 	return {
@@ -30,7 +31,7 @@ export const medicineInitialValues = {
 	dose_details: "",
 	times: "",
 	by_meal: "",
-	duration: "",
+	duration: "Day",
 	quantity: 1,
 };
 
@@ -40,7 +41,6 @@ export const getMedicineFormInitialValues = () => {
 
 		validate: {
 			dose_details: (value) => (value ? null : "Dose details is required"),
-			duration: (value) => (value ? null : "Duration is required"),
 			quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},
 	};

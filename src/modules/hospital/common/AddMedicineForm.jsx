@@ -13,6 +13,7 @@ import {
 	Autocomplete,
 	Tooltip,
 	ActionIcon,
+	Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
@@ -22,6 +23,9 @@ import {
 	IconReportMedical,
 	IconRestore,
 	IconArrowRight,
+	IconDeviceFloppy,
+	IconX,
+	IconTrash,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
@@ -48,6 +52,7 @@ import { DURATION_TYPES } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import InputForm from "@components/form-builders/InputForm";
+import GlobalDrawer from "@components/drawers/GlobalDrawer";
 
 export default function AddMedicineForm({
 	module,
@@ -62,6 +67,7 @@ export default function AddMedicineForm({
 }) {
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
+	const prescriptionPrintRef = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
 	const { prescriptionId } = useParams();
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,6 +83,9 @@ export default function AddMedicineForm({
 	const adviceData = useSelector((state) => state.crud.advice.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [opened, { open, close }] = useDisclosure(false);
+	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
+	const [openedInstruction, { open: openInstruction, close: closeInstruction }] = useDisclosure(false);
+
 	const { data: by_meal_options } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
 		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
@@ -126,6 +135,15 @@ export default function AddMedicineForm({
 		if (update && form && form.values) {
 			update();
 		}
+	};
+
+	const handleInstructionSave = () => {
+		form.setFieldValue("instruction", form.values.instruction);
+		closeInstruction();
+	};
+
+	const handleEmergencyPrescriptionSave = () => {
+		console.log("Emergency prescription saved");
 	};
 
 	// Add hotkey for save functionality
@@ -269,13 +287,13 @@ export default function AddMedicineForm({
 		});
 	};
 
-	const handlePrescriptionSubmit = async () => {
+	const handlePrescriptionSubmit = async (skipLoading) => {
 		if (!medicines || medicines.length === 0) {
 			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, 1000, true);
 			return {};
 		}
 
-		setIsSubmitting(true);
+		!skipLoading && setIsSubmitting(true);
 
 		try {
 			const createdBy = getLoggedInUser();
@@ -316,12 +334,20 @@ export default function AddMedicineForm({
 			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
 			return {}; // Indicate failed submission
 		} finally {
-			setIsSubmitting(false);
+			!skipLoading && setIsSubmitting(false);
 		}
 	};
 
 	const handlePrescriptionPrintSubmit = async () => {
-		const result = await handlePrescriptionSubmit();
+		const result = await handlePrescriptionSubmit(false);
+
+		if (result.status === 200) {
+			setPrintData(result.data);
+		}
+	};
+
+	const handlePrescriptionPreview = async () => {
+		const result = await handlePrescriptionSubmit(true);
 
 		if (result.status === 200) {
 			setPrintData(result.data);
@@ -374,53 +400,44 @@ export default function AddMedicineForm({
 						<Group align="end" gap="les">
 							<Grid w="100%" columns={12} gutter="xxxs">
 								<Grid.Col span={6}>
-									<Group grow w="100%" gap="les">
-										<Select
-											clearable
-											searchable
-											onSearchChange={(v) => {
-												setMedicineTerm(v);
-											}}
-											id="medicine_id"
-											name="medicine_id"
-											data={medicineData?.map((item) => ({
-												label: item.product_name,
-												value: item.product_id?.toString(),
-											}))}
-											value={medicineForm.values.medicine_id}
-											onChange={(v) => handleChange("medicine_id", v)}
-											placeholder={t("Medicine")}
-											tooltip="Select medicine"
-											nothingFoundMessage="Type to find medicine..."
-											onBlur={() => setMedicineTerm("")}
-											classNames={inputCss}
-										/>
-									</Group>
+									<Select
+										clearable
+										searchable
+										onSearchChange={setMedicineTerm}
+										id="medicine_id"
+										name="medicine_id"
+										data={medicineData?.map((item) => ({
+											label: item.product_name,
+											value: item.product_id?.toString(),
+										}))}
+										value={medicineForm.values.medicine_id}
+										onChange={(v) => handleChange("medicine_id", v)}
+										placeholder={t("Medicine")}
+										tooltip="Select medicine"
+										nothingFoundMessage="Type to find medicine..."
+										onBlur={() => setMedicineTerm("")}
+										classNames={inputCss}
+									/>
 								</Grid.Col>
 								<Grid.Col span={6}>
-									<Group grow w="100%" gap="les">
-
-										<Autocomplete
-											tooltip={t("EnterGenericName")}
-											id="generic"
-											name="generic"
-											data={medicineGenericData?.map((item, index) => ({
-												label: item.name,
-												value: `${item.name} ${index}`,
-											}))}
-											value={medicineForm.values.generic}
-											onChange={(v) => {
-												handleChange("generic", v);
-												setMedicineGenericTerm(v);
-											}}
-											placeholder={t("GenericName")}
-											onBlur={() => setMedicineGenericTerm("")}
-											classNames={inputCss}
-										/>
-
-									</Group>
+									<Autocomplete
+										tooltip={t("EnterGenericName")}
+										id="generic"
+										name="generic"
+										data={medicineGenericData?.map((item, index) => ({
+											label: item.generic,
+											value: `${item.name} ${index}`,
+										}))}
+										value={medicineForm.values.generic}
+										onChange={(v) => {
+											handleChange("generic", v);
+											setMedicineGenericTerm(v);
+										}}
+										placeholder={t("GenericName")}
+										onBlur={() => setMedicineGenericTerm("")}
+										classNames={inputCss}
+									/>
 								</Grid.Col>
-
 							</Grid>
 							<Grid w="100%" columns={12} gutter="xxxs">
 								<Grid.Col span={6}>
@@ -476,6 +493,7 @@ export default function AddMedicineForm({
 											type="submit"
 											variant="filled"
 											bg="var(--theme-secondary-color-6)"
+											size="compact-md"
 										>
 											{t("Add")}
 										</Button>
@@ -484,45 +502,47 @@ export default function AddMedicineForm({
 							</Grid>
 						</Group>
 					</Grid.Col>
-					<Grid.Col span={6} bg={'white'}>
+					<Grid.Col span={6} bg={"white"}>
 						<Grid w="100%" columns={12} gutter="xxxs">
 							<Grid.Col span={12}>
 								<Group grow gap="les">
-							<SelectForm
-							form={medicineForm}
-							label=""
-							id="treatments"
-							name="treatments"
-							dropdownValue={treatmentData?.data?.map((item) => ({
-								label: item.name,
-								value: item.id?.toString(),
-							}))}
-							value={medicineForm.values.treatments}
-							placeholder={t("TreatmentTemplate")}
-							required
-							tooltip={t("TreatmentTemplate")}
-							withCheckIcon={false}
-							changeValue={populateMedicineData}
-						/>
+									<SelectForm
+										form={medicineForm}
+										label=""
+										id="treatments"
+										name="treatments"
+										dropdownValue={treatmentData?.data?.map((item) => ({
+											label: item.name,
+											value: item.id?.toString(),
+										}))}
+										value={medicineForm.values.treatments}
+										placeholder={t("TreatmentTemplate")}
+										required
+										tooltip={t("TreatmentTemplate")}
+										withCheckIcon={false}
+										changeValue={populateMedicineData}
+									/>
 								</Group>
 							</Grid.Col>
 						</Grid>
 						<Grid w="100%" columns={12} gutter="xxxs">
 							<Grid.Col span={12}>
-								<Group grow gap="les" mt={'xxxs'}>
-								<Button
-									size="xs"
-									type="button"
-									variant="outline"
-									color="red"
-								>
-									{t("RxEmergency")}
-								</Button>
+								<Group grow gap="les" mt="es">
+									<Button
+										size="xs"
+										type="button"
+										variant="outline"
+										color="red"
+										onClick={openExPrescription}
+									>
+										{t("RxEmergency")}
+									</Button>
 									<Button
 										size="xs"
 										type="button"
 										variant="outline"
 										color="gray"
+										onClick={openInstruction}
 									>
 										{t("Instruction")}
 									</Button>
@@ -531,7 +551,6 @@ export default function AddMedicineForm({
 						</Grid>
 					</Grid.Col>
 				</Grid>
-
 			</Box>
 			<Flex bg="var(--theme-primary-color-0)" mb="les" justify="space-between" align="center" py="les" mt="xs">
 				<Text fw={500} px="sm">
@@ -559,7 +578,10 @@ export default function AddMedicineForm({
 					)}
 				</Flex>
 			</Flex>
-			<ScrollArea h={baseHeight ? baseHeight : mainAreaHeight - 420} bg="white">
+			<ScrollArea
+				h={baseHeight ? baseHeight : form.values.instruction ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
+				bg="white"
+			>
 				<Stack gap="xs" p="sm">
 					{medicines?.length === 0 && (
 						<Flex
@@ -599,6 +621,18 @@ export default function AddMedicineForm({
 					))}
 				</Stack>
 			</ScrollArea>
+
+			{form.values.instruction && (
+				<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between" align="center">
+					<Text w="100%">
+						<strong>{t("Instruction")}:</strong> {form.values.instruction}
+					</Text>
+					<ActionIcon color="var(--theme-error-color)" onClick={() => form.setFieldValue("instruction", "")}>
+						<IconTrash size={16} />
+					</ActionIcon>
+				</Flex>
+			)}
+
 			{/* =================== Advise form =================== */}
 			{form && (
 				<>
@@ -739,6 +773,14 @@ export default function AddMedicineForm({
 								</Text>
 							</Stack>
 						</Button>
+						<Button w="100%" bg="var(--theme-save-btn-color)" onClick={handlePrescriptionPreview}>
+							<Stack gap={0} align="center" justify="center">
+								<Text>{t("Preview")}</Text>
+								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+									(alt + 4)
+								</Text>
+							</Stack>
+						</Button>
 						<Button
 							w="100%"
 							bg="var(--theme-prescription-btn-color)"
@@ -766,9 +808,63 @@ export default function AddMedicineForm({
 							</Stack>
 						</Button>
 					</Button.Group>
-					<PrescriptionFull ref={prescription2A4Ref} data={printData} />
+					{printData && <PrescriptionFull ref={prescription2A4Ref} data={printData} />}
+					{/* ----------- prescription preview ------------  */}
+					{/* <PrescriptionFull ref={prescriptionPrintRef} data={printPreviewPrescriptionData} /> */}
 				</>
 			)}
+			<GlobalDrawer
+				opened={openedExPrescription}
+				close={closeExPrescription}
+				title={t("EmergencyPrescription")}
+				size="28%"
+			>
+				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
+					<Autocomplete
+						label="Enter Patient ID"
+						placeholder={t("EmergencyPrescription")}
+						data={["1234567890", "1234567891", "1234567892"]}
+					/>
+					<Flex justify="flex-end" gap="xs">
+						<Button
+							leftSection={<IconDeviceFloppy size={22} />}
+							bg="var(--theme-primary-color-6)"
+							onClick={handleEmergencyPrescriptionSave}
+							w="120px"
+						>
+							{t("Save")}
+						</Button>
+						<Button leftSection={<IconX size={16} />} bg="gray.6" onClick={closeExPrescription} w="120px">
+							{t("Cancel")}
+						</Button>
+					</Flex>
+				</Stack>
+			</GlobalDrawer>
+			<GlobalDrawer opened={openedInstruction} close={closeInstruction} title={t("Instruction")} size="28%">
+				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
+					<TextAreaForm
+						label="Enter Instruction"
+						placeholder={t("Instruction")}
+						form={form}
+						name="instruction"
+						value={form.values.instruction}
+						onBlur={handleFieldBlur}
+					/>
+					<Flex justify="flex-end" gap="xs">
+						<Button
+							leftSection={<IconDeviceFloppy size={16} />}
+							bg="var(--theme-primary-color-6)"
+							onClick={handleInstructionSave}
+							w="120px"
+						>
+							{t("Save")}
+						</Button>
+						<Button leftSection={<IconX size={22} />} bg="gray.6" onClick={closeInstruction} w="120px">
+							{t("Cancel")}
+						</Button>
+					</Flex>
+				</Stack>
+			</GlobalDrawer>
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 		</Box>
 	);
