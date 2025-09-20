@@ -54,7 +54,13 @@ import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } f
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
-const ALLOWED_MANAGER_ROLES = ["operator_manager", "admin_doctor", "admin_operator", "admin_administrator"];
+const ALLOWED_MANAGER_ROLES = [
+	"operator_manager",
+	"admin_doctor",
+	"admin_operator",
+	"admin_administrator",
+	"accounting_admin",
+];
 const ALLOWED_ADMIN_ROLES = ["admin_basic", "admin_hospital", "admin_administrator"];
 
 const USER_NID_DATA = {

@@ -23,7 +23,7 @@ const quickBrowseButtonData = [
 		icon: IconStethoscope,
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
 		color: "var(--mantine-color-yellow-8)",
-		allowedRoles: ["doctor", "nurse", "admin"],
+		allowedRoles: ["admin_administrator", "nurse", "admin"],
 	},
 	{
 		label: "admission",
