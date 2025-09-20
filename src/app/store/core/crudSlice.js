@@ -53,6 +53,16 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	exemergency: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
 	doctor: {
 		isLoading: true,
 		refetching: false,

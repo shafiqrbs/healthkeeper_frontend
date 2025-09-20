@@ -82,6 +82,7 @@ export default function AddMedicineForm({
 	const { mainAreaHeight } = useOutletContext();
 	const [printData, setPrintData] = useState(null);
 	const adviceData = useSelector((state) => state.crud.advice.data);
+	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
@@ -116,6 +117,17 @@ export default function AddMedicineForm({
 					offset: 500,
 				},
 				module: "advice",
+			})
+		);
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+				params: {
+					particular_type: "rx-emergency",
+					page: 1,
+					offset: 500,
+				},
+				module: "exemergency",
 			})
 		);
 		dispatch(
@@ -880,11 +892,11 @@ export default function AddMedicineForm({
 						<Autocomplete
 							label="Enter Patient ID"
 							placeholder={t("EmergencyPrescription")}
-							data={adviceData?.data?.map((p) => ({ value: p.name, label: p.name })) || []}
+							data={emergencyData?.data?.map((p) => ({ value: p.name, label: p.name })) || []}
 							value={autocompleteValue}
 							onChange={setAutocompleteValue}
 							onOptionSubmit={(value) => {
-								handleAutocompleteOptionAdd(value, adviceData?.data, "exEmergency");
+								handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
 								setTimeout(() => {
 									setAutocompleteValue("");
 								}, 0);
