@@ -71,6 +71,8 @@ import DomainUserIndex from "@modules/domain/master-user/DomainUserIndex";
 // import DiscountDashboard from "@modules/discount/dashboard/DiscountDashboard";
 import HospitalConfigIndex from "@modules/settings/HospitalConfigIndex";
 import PrescriptionIndex from "@modules/hospital/prescription";
+import PrescriptionOpd from "@modules/hospital/prescription/opd";
+import PrescriptionIpd from "@modules/hospital/prescription/ipd";
 import VisitIndex from "@modules/hospital/visit";
 import ParticularIndex from "@modules/hospital/core/particular";
 import BedIndex from "@modules/hospital/core/bed";
@@ -179,8 +181,10 @@ function AppRoute() {
 					</Route>
 
 					<Route path="prescription">
-						<Route path=":prescriptionId" element={<PrescriptionIndex />} />
-						<Route path="edit/:id" element={<PrescriptionIndex />} />
+						<Route index element={<PrescriptionIndex />} />
+						<Route path=":prescriptionId" element={<PrescriptionOpd />} />
+						<Route path=":prescriptionId" element={<PrescriptionIpd />} />
+						<Route path="edit/:id" element={<PrescriptionOpd />} />
 					</Route>
 
 					<Route path="customer">

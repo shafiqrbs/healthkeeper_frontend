@@ -399,6 +399,7 @@ export const HOSPITAL_DATA_ROUTES = {
 		},
 	},
 	NAVIGATION_LINKS: {
+
 		VISIT: {
 			INDEX: "/hospital/visit",
 			CREATE: "/hospital/visit/create",
