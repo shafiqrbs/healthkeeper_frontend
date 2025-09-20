@@ -326,7 +326,7 @@ export const DOCTOR_DATA_ROUTES = {
 	NAVIGATION_LINKS: {
 		DOCTOR: {
 			DASHBOARD: "/hospital/doctor",
-			OPD: "/hospital/doctor/ipd",
+			OPD: "/hospital/doctor/opd",
 			OPD_PRESCRIPTION: "/hospital/doctor/ipd-prescription",
 			EMERGENCY: "/hospital/doctor/emergency",
 			IPD: "/hospital/doctor/ipd",

@@ -15,19 +15,15 @@ import {
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useHotkeys, useOs } from "@mantine/hooks";
-import tableCss from "@assets/css/Table.module.css";
 import ViewDrawer from "./__ViewDrawer.jsx";
 import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { useForm } from "@mantine/form";
-import {DATA_TYPES, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
-import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
 import {getIndexEntityData, storeEntityData} from "@/app/store/core/crudThunk";
 import {useOutletContext} from "react-router-dom";
 import {setRefetchData} from "@/app/store/core/crudSlice";
 import {DragDropContext, Draggable, Droppable} from "@hello-pangea/dnd";
+import tableCss from "@assets/css/TableAdmin.module.css";
 
 export default function _Table({ module }) {
     const dispatch = useDispatch();
@@ -216,7 +212,7 @@ export default function _Table({ module }) {
                             render: (values) => (
                                 <>
                                     <Text
-                                        fz="sm"
+                                        fz="xs"
                                     >
                                         {values.mode_name}
                                     </Text>
@@ -229,7 +225,7 @@ export default function _Table({ module }) {
                             render: (values) => (
                                 <>
                                     <Text
-                                        fz="sm"
+                                        fz="xs"
                                     >
                                         {values.hms_particular_type_name}
                                     </Text>

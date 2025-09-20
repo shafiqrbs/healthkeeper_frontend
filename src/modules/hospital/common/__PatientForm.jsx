@@ -333,9 +333,6 @@ export function Form({
 	const [showUserData, setShowUserData] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const userRoles = getUserRole();
-
-	console.log(userRoles);
-
 	const locations = useSelector((state) => state.crud.locations.data);
 
 	useEffect(() => {

@@ -19,7 +19,7 @@ import { useOs, useHotkeys } from "@mantine/hooks";
 import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
-import tableCss from "@assets/css/Table.module.css";
+import tableCss from "@assets/css/TableAdmin.module.css";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import {
 	deleteEntityData,
@@ -271,7 +271,7 @@ export default function _Table({ module, open }) {
 							render: (values) => (
 								<Text
 									className="activate-link"
-									fz="sm"
+									fz="xs"
 									onClick={() => handleDataShow(values.id)}
 								>
 									{values.display_name}
@@ -302,56 +302,58 @@ export default function _Table({ module, open }) {
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
-									<Button.Group>
-										<Button
-											onClick={() => {
-												handleEntityEdit(values.id);
-												open();
-											}}
-											variant="filled"
-											bg="var(--theme-secondary-color-5)"
-											c="white"
-											size="xs"
-											radius="es"
-											leftSection={<IconEdit size={16} />}
-											className="border-right-radius-none"
-										>
-											{t("Edit")}
-										</Button>
-										<Button
-											onClick={() => handleDataShow(values.id)}
-											variant="filled"
-											c="white"
-											bg="var(--theme-primary-color-5)"
-											size="xs"
-											radius="es"
-											className="border-left-radius-none"
-										>
-											{t("View")}
-										</Button>
-										<Button
-											onClick={() => handleReportFormatTable(values.id)}
-											variant="filled"
-											c="white"
-											bg="var(--theme-warn-color-5)"
-											size="xs"
-											radius="es"
-										>
-											{t("Format")}
-										</Button>
-										<ActionIcon
-											onClick={() => handleDelete(values.id)}
-											className="action-icon-menu border-left-radius-none"
-											variant="light"
-											color="var(--theme-delete-color)"
-											radius="es"
-											ps="les"
-											aria-label="Settings"
-										>
-											<IconTrashX height={18} width={18} stroke={1.5} />
-										</ActionIcon>
-									</Button.Group>
-								</Group>
+							<Button.Group>
+								<Button
+									onClick={() => {
+										handleEntityEdit(values.id);
+										open();
+									}}
+									variant="filled"
+									c="white"
+									fw={400}
+									size="compact-xs"
+									radius="es"
+									leftSection={<IconEdit size={12} />}
+									className="border-right-radius-none btnPrimaryBg"
+								>
+									{t("Edit")}
+								</Button>
+								<Button
+									onClick={() => handleDataShow(values.id)}
+									variant="filled"
+									c="white"
+									bg="var(--theme-primary-color-6)"
+									size="compact-xs"
+									radius="es"
+									fw={400}
+									leftSection={<IconEye size={12} />}
+									className="border-left-radius-none"
+								>
+									{t("View")}
+								</Button>
+								<Button
+									onClick={() => handleReportFormatTable(values.id)}
+									variant="filled"
+									c="white"
+									bg="var(--theme-warn-color-5)"
+									fw={400}
+									size="compact-xs"
+									radius="es"
+								>
+									{t("Format")}
+								</Button>
+								<ActionIcon
+									size="xs"
+									onClick={() => handleDelete(values.id)}
+									variant="light"
+									color="var(--theme-delete-color)"
+									radius="es"
+									aria-label="Settings"
+								>
+									<IconTrashX stroke={1.5} />
+								</ActionIcon>
+							</Button.Group>
+						</Group>
 							),
 						},
 					]}

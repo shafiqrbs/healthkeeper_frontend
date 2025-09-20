@@ -5,7 +5,7 @@ import { DataTable } from "mantine-datatable";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import DataTableFooter from "@components/tables/DataTableFooter";
-import tableCss from "@assets/css/Table.module.css";
+import tableCss from "@assets/css/TableAdmin.module.css";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 
 const templateData = [
@@ -70,13 +70,14 @@ export default function _Table({ module }) {
 									}}
 									variant="filled"
 									c="white"
-									size="xs"
+									fw={400}
+									size="compact-xs"
 									radius="es"
 									leftSection={<IconEye size={16} />}
 									className="border-right-radius-none"
 									bg="var(--theme-primary-color-6)"
 								>
-									{t("ShowTemplate")}
+									{t("Template")}
 								</Button>
 							),
 						},

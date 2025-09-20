@@ -2,7 +2,7 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { Box, Flex, ScrollArea, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconBed, IconCoinTaka } from "@tabler/icons-react";
-import CollectionTable from "../common/CollectionTable";
+import CollectionTable from "../CollectionTable";
 import { useOutletContext } from "react-router-dom";
 
 const collectionOverviewData = [

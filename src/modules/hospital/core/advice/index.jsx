@@ -19,7 +19,6 @@ export default function Index({ mode = "create" }) {
 	const [opened, { open, close }] = useDisclosure(false);
 
 	const { setPageTitle } = useOutletContext();
-
 	useEffect(() => {
 		setPageTitle(t("ManageAdvice"));
 	}, [t, setPageTitle]);

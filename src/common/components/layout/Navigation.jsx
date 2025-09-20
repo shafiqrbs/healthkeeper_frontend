@@ -85,25 +85,23 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 				{subLinks?.length > 0 && (
 					<Grid.Col span={9}>
 						<ScrollArea h={mainAreaHeight - 28} bg="white" type="never" className="border-radius">
-							<Box mt={"xs"}>
+							<Box>
+								<Box pl="xxxs"  pt={'xxxs'} pb={'xxxs'} mb={'xxxs'} bg='var(--theme-primary-color-1)'>{t('AdminMenu')}</Box>
 								{subLinks.map((item, index) => (
 									<Box
 										key={index}
 										style={{
-											borderRadius: 4,
 											cursor: "pointer",
 										}}
-										className={`${classes["pressable-card"]} border-radius ${
+
+										className={`${classes["pressable-card"]}  ${
 											location.pathname === item.path ? classes["active-link"] : ""
 										}`}
-										mih={40}
-										m={"xxxs"}
-										mt="es"
 										variant="default"
 										onClick={() => navigate(item.path)}
-										bg={location.pathname === item.path ? "#f8eedf" : "gray.1"}
+										bg={location.pathname === item.path ? "gray.1" : "#ffffff"}
 									>
-										<Text size="sm" pt="xxxs" pl="xxxs" fw={500} c="black">
+										<Text size="xs" pt="xxxs" pb="xxxs" pl="xxxs" fw={500} c="black">
 											{t(item.label)}
 										</Text>
 									</Box>

@@ -93,6 +93,7 @@ import InvestigationIndex from "@modules/hospital/core/investigation";
 import ParticularMatrixIndex from "@modules/hospital/core/particular-matrix";
 import OpdRoomIndex from "@modules/hospital/core/opd-room";
 import DoctorDashboard from "@modules/hospital/doctor/dashboard";
+import DoctorOpd from "@modules/hospital/doctor/opd";
 import PharmacyIndex from "@modules/pharmacy/dashboard";
 import PharmacyStockIndex from "@modules/pharmacy/stock";
 import PharmacyRequisitionIndex from "@modules/pharmacy/requisition";
@@ -112,6 +113,7 @@ import TestRoute from "@components/layout/TestRoute";
 import TreatmentTemplatesIndex from "@modules/hospital/core/treatmentTemplates";
 import AdminLayout from "./common/components/layout/AdminLayout";
 import TemplateIndex from "./modules/hospital/core/template";
+import DoctorLayout from "@components/layout/DoctorLayout";
 
 function AppRoute() {
 	return (
@@ -202,9 +204,9 @@ function AppRoute() {
 					<Route path="medicine-requisition" element={<RequisitionIndex />} />
 					<Route path="investigation" element={<InvestigationIndex />} />
 					<Route path="billing" element={<BillingIndex />} />
-					<Route path="doctor">
+					<Route path="doctor" element={<DoctorLayout />}>
 						<Route index element={<DoctorDashboard />} />
-						<Route path="opd" element={<DoctorDashboard />} />
+						<Route path="opd" element={<DoctorOpd />} />
 						<Route path="emergency" element={<DoctorDashboard />} />
 						<Route path="ipd" element={<DoctorDashboard />} />
 						<Route path="requisition" element={<PharmacyRequisitionIndex />} />

@@ -19,7 +19,7 @@ import { useOs, useHotkeys } from "@mantine/hooks";
 import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
-import tableCss from "@assets/css/Table.module.css";
+import tableCss from "@assets/css/TableAdmin.module.css";
 import {
 	deleteEntityData,
 	editEntityData,
@@ -198,7 +198,7 @@ export default function _Table({ module, open }) {
 							render: (values) => (
 								<Text
 									className="activate-link"
-									fz="sm"
+									fz="xs"
 									onClick={() => handleDataShow(values.id)}
 								>
 									{values.name}
@@ -212,7 +212,7 @@ export default function _Table({ module, open }) {
 							render: (values) => (
 								<Text
 									className="activate-link"
-									fz="sm"
+									fz="xs"
 									onClick={() => handleDataShow(values.id)}
 								>
 									{values.display_name}
@@ -241,9 +241,10 @@ export default function _Table({ module, open }) {
 											}}
 											variant="filled"
 											c="white"
-											size="xs"
+											fw={400}
+											size="compact-xs"
 											radius="es"
-											leftSection={<IconEdit size={16} />}
+											leftSection={<IconEdit size={12} />}
 											className="border-right-radius-none btnPrimaryBg"
 										>
 											{t("Edit")}
@@ -253,23 +254,23 @@ export default function _Table({ module, open }) {
 											variant="filled"
 											c="white"
 											bg="var(--theme-primary-color-6)"
-											size="xs"
+											size="compact-xs"
 											radius="es"
-											leftSection={<IconEye size={16} />}
+											fw={400}
+											leftSection={<IconEye size={12} />}
 											className="border-left-radius-none"
 										>
 											{t("View")}
 										</Button>
 										<ActionIcon
+											size="xs"
 											onClick={() => handleDelete(values.id)}
-											className="action-icon-menu border-left-radius-none"
 											variant="light"
 											color="var(--theme-delete-color)"
 											radius="es"
-											ps="les"
 											aria-label="Settings"
 										>
-											<IconTrashX height={18} width={18} stroke={1.5} />
+											<IconTrashX stroke={1.5} />
 										</ActionIcon>
 									</Button.Group>
 								</Group>

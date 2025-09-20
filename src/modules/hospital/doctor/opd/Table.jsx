@@ -21,10 +21,10 @@ import { rem } from "@mantine/core";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
-import KeywordSearch from "../common/KeywordSearch";
+import KeywordSearch from "@modules/hospital/common/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
-import DetailsDrawer from "./__DetailsDrawer";
-import OverviewDrawer from "./__OverviewDrawer";
+import DetailsDrawer from "@modules/hospital/common/drawer/__DetailsDrawer";
+import OverviewDrawer from "@modules/hospital/common/drawer/__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
@@ -42,7 +42,11 @@ import Prescription from "@components/print-formats/opd/Prescription2";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
-const tabs = ["all", "prescription", "Non-Prescription"];
+const  tabs =[
+	{ label: 'All', value: 'all' },
+	{ label: 'Prescription', value: 'prescription' },
+	{ label: 'Non-prescription', value: 'non-prescription' },
+]
 
 const PER_PAGE = 200;
 
@@ -55,6 +59,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
+	const [processTab, setProcessTab] = useState("all");
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -109,6 +114,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			patient_mode: "opd",
 			term: filterData.keywordSearch,
 			room_id: filterData.room_id,
+			prescription_mode: processTab,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -228,15 +234,15 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					{t("VisitInformation")}
 				</Text>
 				<Flex gap="xs" align="center">
-					<Tabs mt="xs" variant="none" value={value} onChange={setValue}>
+					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab}>
-									{t(tab)}
+								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
+									{t(tab.label)}
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={value ? controlsRefs[value] : null}
+								target={processTab ? controlsRefs[processTab] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
@@ -269,7 +275,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch module={module} form={form} />
+				<KeywordSearch showOpdRoom module={module} form={form} />
 			</Box>
 			<Box className="border-top-none" px="sm">
 				<DataTable

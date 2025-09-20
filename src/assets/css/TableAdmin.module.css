@@ -17,8 +17,8 @@
         }
             td {
                 font-size: 12px!important;
-                margin: 0!important;
-                padding: 0!important;
+                margin: 2px!important;
+                padding: 2px!important;
                 border-bottom:1px solid #f0f1f9!important;
             }
             td:first-child {

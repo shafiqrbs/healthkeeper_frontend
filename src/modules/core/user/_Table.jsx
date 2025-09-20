@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
 import { modals } from "@mantine/modals";
 import KeywordSearch from "../../filter/KeywordSearch.jsx";
-import tableCss from "@/assets/css/Table.module.css";
+import tableCss from "@assets/css/TableAdmin.module.css";
 import __ViewDrawer from "./__ViewDrawer.jsx";
 import { getIndexEntityData, editEntityData, deleteEntityData } from "@/app/store/core/crudThunk.js";
 import { MASTER_DATA_ROUTES } from "@/constants/routes.js";

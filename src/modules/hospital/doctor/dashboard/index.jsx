@@ -12,8 +12,10 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
 import {MODULES_PHARMACY} from "@/constants";
+import {useEffect} from "react";
 
 const module = MODULES_PHARMACY.STOCK;
+
 
 export default function Index({ mode = "create" }) {
 
@@ -23,44 +25,15 @@ export default function Index({ mode = "create" }) {
 	const matches = useMediaQuery("(max-width: 64em)");
 	const [opened, { open, close }] = useDisclosure(false);
 	const { mainAreaHeight } = useOutletContext();
+	const { setPageTitle } = useOutletContext();
+	useEffect(() => {
+		setPageTitle(t("DoctorDashboard"));
+	}, [t, setPageTitle]);
 	return (
 		<>
-			{progress !== 100 ? (
-				<Progress
-					color="var(--theme-reset-btn-color)"
-					size="sm"
-					striped
-					animated
-					value={progress}
-					transitionDuration={200}
-				/>
-			) : (
-				<>
-					<CoreHeaderNavbar
-						module="core"
-						pageTitle={t("ManageCustomer")}
-						roles={t("Roles")}
-						allowZeroPercentage=""
-						currencySymbol=""
-					/>
-					<Box p="8">
-					<Grid columns={36} gutter={{ base: 8 }}>
-						{!matches && (
-							<Grid.Col span={6}>
-								<Navigation menu="base" subMenu={'baseDoctorSubmenu'} mainAreaHeight={mainAreaHeight} />
-							</Grid.Col>
-						)}
-						<Grid.Col span={matches ? 30 : 30}>
-							<Box bg="white" p="xs" className="borderRadiusAll">
-								Doctor Dashboard
-							</Box>
-						</Grid.Col>
-					</Grid>
-						sadasdasd
-					</Box>
-
-				</>
-			)}
+			<Box bg="white" p="xs" className="borderRadiusAll">
+				Doctor Dashboard
+			</Box>
 		</>
 	);
 }

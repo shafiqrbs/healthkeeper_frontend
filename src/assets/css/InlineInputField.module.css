@@ -5,24 +5,36 @@
     border: 1px solid;
     border-color: var(--theme-primary-color-5);
     text-align: center;
-    background-color: #f7f7f5
+    background-color:white;
 }
 
-.inputNumber {
+.inputNumber input{
     border: 1px solid;
-    border-color: var(--theme-primary-color-5);
+    border-color: var(--theme-tertiary-color-0);
     text-align: center;
-    width: 120px;
-    background-color: #f7f7f5
+    background-color:white;
 
 }
 
-.inputText {
+.inputText input{
     border: 1px solid;
-    border-color: var(--theme-primary-color-5);
-    text-align: center;
+    border-color: var(--theme-tertiary-color-0);
+    text-align: left!important;
+    font-size: 12px!important;
     width: 100%;
-    background-color: #f7f7f5
+    background-color:white;
+    padding-left:8px!important;
+    border-radius: 2px!important;
+}
+.inputText select{
+    border: 1px solid;
+    border-color: var(--theme-tertiary-color-0);
+    text-align: left!important;
+    font-size: 12px!important;
+    width: 100%;
+    background-color: #f7f7f5;
+    padding-left:8px!important;
+    border-radius: 2px!important;
 }
 
 /* Style the placeholder */

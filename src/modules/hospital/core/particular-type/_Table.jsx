@@ -15,7 +15,7 @@ import {
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useHotkeys, useOs } from "@mantine/hooks";
-import tableCss from "@assets/css/Table.module.css";
+import tableCss from "@assets/css/TableAdmin.module.css";
 import ViewDrawer from "./__ViewDrawer.jsx";
 import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
@@ -28,6 +28,8 @@ import {getIndexEntityData, storeEntityData} from "@/app/store/core/crudThunk";
 import {useOutletContext} from "react-router-dom";
 import {setRefetchData} from "@/app/store/core/crudSlice";
 import {DragDropContext, Draggable, Droppable} from "@hello-pangea/dnd";
+import inlineInputCss from "@assets/css/InlineInputField.module.css";
+
 
 export default function _Table({ module }) {
     const dispatch = useDispatch();
@@ -243,7 +245,7 @@ export default function _Table({ module }) {
                                 <>
                                     <Text
                                         className="activate-link"
-                                        fz="sm"
+                                        fz="xs"
                                         onClick={() => setCustomerObject(values)}
                                     >
                                         {values.name}
@@ -257,6 +259,8 @@ export default function _Table({ module }) {
                             width: "220px",
                             render: (item) => (
                                 <Select
+                                    size="xs"
+                                    className={inlineInputCss.inputText}
                                     placeholder="SelectDataType"
                                     data={DATA_TYPES}
                                     value={submitFormData[item.id]?.data_type || ""}
@@ -274,7 +278,7 @@ export default function _Table({ module }) {
                                         <Checkbox
                                             key={mode.id}
                                             label={mode.label}
-                                            size="sm"
+                                            size="xs"
                                             checked={
                                                 submitFormData[item.id]?.operation_modes?.includes(Number(mode.value)) || false
                                             }
@@ -306,12 +310,12 @@ export default function _Table({ module }) {
                                     <Button
                                         onClick={() => handleRowSubmit(item.id)}
                                         variant="filled"
-                                        size="xs"
+                                        fw={400}
+                                        size="compact-xs"
+                                        radius="es"
                                         className="btnPrimaryBg"
                                         leftSection={<IconDeviceFloppy size={16} />}
-                                    >
-                                        {t("Save")}
-                                    </Button>
+                                    >{t("Save")}</Button>
                                 </Center>
                             ),
                         },

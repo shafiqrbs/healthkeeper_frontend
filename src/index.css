@@ -84,6 +84,8 @@
     --theme-tooltip-color: var(--mantine-color-gray-6);
 
     --theme-carousel-item-color: var(--mantine-color-green-8);
+
+    --theme-menu-three-dot: var(--mantine-color-red-6);
 }
 
 /* -----------------scrollbar------------------ */

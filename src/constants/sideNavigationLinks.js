@@ -171,13 +171,6 @@ export const sideNavigationLinks = {
 		},
 
 		{
-			label: t("ManageTemplates"),
-			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.TEMPLATE.INDEX,
-			icon: IconDashboard,
-			color: "#6f1225",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-		{
 			label: t("ManageDoctor"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.INDEX,
 			icon: IconDashboard,
@@ -257,6 +250,13 @@ export const sideNavigationLinks = {
 		{
 			label: t("ParticularMatrix"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR_MATRIX.INDEX,
+			icon: IconDashboard,
+			color: "#6f1225",
+			allowedRoles: ["role_domain", "admin_administrator"],
+		},
+		{
+			label: t("ManageTemplates"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.TEMPLATE.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
 			allowedRoles: ["role_domain", "admin_administrator"],

@@ -12,7 +12,7 @@ import { useOs, useHotkeys } from "@mantine/hooks";
 import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
-import tableCss from "@assets/css/Table.module.css";
+import tableCss from "@assets/css/TableAdmin.module.css";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { deleteEntityData, editEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
@@ -245,8 +245,9 @@ export default function _Table({ module, open }) {
 											variant="filled"
 											bg="var(--theme-secondary-color-5)"
 											c="white"
-											size="xs"
+											size="compact-xs"
 											radius="es"
+											fw={400}
 											leftSection={<IconEdit size={16} />}
 											className="border-right-radius-none"
 										>
@@ -257,8 +258,9 @@ export default function _Table({ module, open }) {
 											variant="filled"
 											c="white"
 											bg="var(--theme-primary-color-5)"
-											size="xs"
+											size="compact-xs"
 											radius="es"
+											fw={400}
 											className="border-left-radius-none"
 										>
 											{t("View")}
@@ -268,21 +270,21 @@ export default function _Table({ module, open }) {
 											variant="filled"
 											c="white"
 											bg="var(--theme-warn-color-5)"
-											size="xs"
+											size="compact-xs"
 											radius="es"
+											fw={400}
 										>
 											{t("Format")}
 										</Button>
 										<ActionIcon
+											size="xs"
 											onClick={() => handleDelete(values.id)}
-											className="action-icon-menu border-left-radius-none"
 											variant="light"
 											color="var(--theme-delete-color)"
 											radius="es"
-											ps="les"
 											aria-label="Settings"
 										>
-											<IconTrashX height={18} width={18} stroke={1.5} />
+											<IconTrashX stroke={1.5} />
 										</ActionIcon>
 									</Button.Group>
 								</Group>

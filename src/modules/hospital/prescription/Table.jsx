@@ -28,7 +28,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
-import {formatDate, getLoggedInHospitalUser} from "@/common/utils";
+import {formatDate, getLoggedInHospitalUser, getUserRole} from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -49,6 +49,7 @@ const  tabs =[
 		]
 
 const PER_PAGE = 200;
+const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const dispatch = useDispatch();
@@ -60,8 +61,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const userHospitalConfig = getLoggedInHospitalUser();
+	const userRoles = getUserRole();
 	const opdRoomId = userHospitalConfig?.particular_details?.opd_room_id;
-
+	const userId = userHospitalConfig?.employee_id;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -82,7 +84,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	});
 
 	const [rootRef, setRootRef] = useState(null);
-	const [tabValue, setTabValue] = useState("all");
+	const [processTab, setProcessTab] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
 	const [printData, setPrintData] = useState({});
@@ -116,7 +118,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			patient_mode: "opd",
 			term: filterData.keywordSearch,
 			room_id: opdRoomId,
-			prescription_mode: tabValue,
+			prescription_mode: processTab,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -236,7 +238,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					{t("VisitInformation")}
 				</Text>
 				<Flex gap="xs" align="center">
-					<Tabs mt="xs" variant="none" value={tabValue} onChange={setTabValue}>
+					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
 								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
@@ -244,7 +246,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={tabValue ? controlsRefs[tabValue] : null}
+								target={processTab ? controlsRefs[processTab] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
@@ -292,15 +294,15 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						{
 							accessor: "index",
 							title: t("S/N"),
-							textAlignment: "right",
-							render: (_, index) => index + 1,
+							textAlignment: "center",
+							render: (_,index) => index + 1,
 						},
 						{
 							accessor: "created_at",
 							title: t("Created"),
 							textAlignment: "right",
 							sortable: true,
-							render: (item) => <Text fz="sm">{formatDate(item?.created_at)}</Text>,
+							render: (item) => <Text fz="xs">{formatDate(item?.created_at)}</Text>,
 						},
 						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
 						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
@@ -323,35 +325,35 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{values?.prescription_id ? (
+									{values?.prescription_id && userId == values?.prescription_created_by_id ? (
 										<Button
-											miw={124}
 											variant="filled"
 											bg="var(--theme-success-color)"
 											c="white"
-											size="xs"
+											fw={400}
+											size="compact-xs"
 											onClick={() => handlePrescription(values.prescription_id)}
 											radius="es"
-											rightSection={<IconArrowRight size={18} />}
+											rightSection={<IconArrowRight size={12} />}
 											className="border-right-radius-none"
 										>
 											{t("Prescription")}
 										</Button>
-									) : (
+									) : !values?.prescription_id ? (
 										<Button
-											miw={124}
+											fw={400}
 											variant="filled"
 											bg="var(--theme-primary-color-6)"
 											c="white"
-											size="xs"
+											size="compact-xs"
 											onClick={() => handleProcessPrescription(values.id)}
 											radius="es"
-											rightSection={<IconArrowRight size={18} />}
+											rightSection={<IconArrowRight size={12} />}
 											className="border-right-radius-none"
 										>
 											{t("Process")}
 										</Button>
-									)}
+									):(null)}
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -362,8 +364,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 									>
 										<Menu.Target>
 											<ActionIcon
-												className="action-icon-menu border-left-radius-none"
-												variant="default"
+												className="border-left-radius-none"
+												variant="transparent"
+												color='var(--theme-menu-three-dot)'
 												radius="es"
 												aria-label="Settings"
 											>
@@ -414,6 +417,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 													</Menu.Item>
 												</>
 											)}
+											{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && (
 											<Menu.Item
 												onClick={() => handleDelete(values.id)}
 												c="red.6"
@@ -428,6 +432,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 											>
 												{t("Delete")}
 											</Menu.Item>
+											)}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>
