@@ -56,7 +56,7 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 											variant="light"
 											color="black"
 											onClick={() => navigate(item.path)}
-											className={location.pathname === item.path ? classes["active-link"] : ""}
+											// className={location.pathname === item.path ? classes["active-link"] : ""}
 										>
 											<Flex align="center">
 												<item.icon size={22} color="white" />
