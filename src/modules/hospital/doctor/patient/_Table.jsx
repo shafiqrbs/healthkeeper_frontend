@@ -24,11 +24,12 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "../common/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "./__DetailsDrawer";
+import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
-import {formatDate, getLoggedInHospitalUser} from "@/common/utils";
+import { formatDate } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -41,12 +42,7 @@ import Prescription from "@components/print-formats/opd/Prescription2";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
-
-const  tabs =[
-		{ label: 'All', value: 'all' },
-		{ label: 'Prescription', value: 'prescription' },
-		{ label: 'Non-prescription', value: 'non-prescription' },
-		]
+const tabs = ["all", "prescription", "Non-Prescription"];
 
 const PER_PAGE = 200;
 
@@ -59,14 +55,11 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-	const userHospitalConfig = getLoggedInHospitalUser();
-	const opdRoomId = userHospitalConfig?.particular_details?.opd_room_id;
-
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
 			created: "",
-			room_id: opdRoomId,
+			room_id: "",
 		},
 	});
 	const handlePos = useReactToPrint({
@@ -82,7 +75,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	});
 
 	const [rootRef, setRootRef] = useState(null);
-	const [tabValue, setTabValue] = useState("all");
+	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
 	const [printData, setPrintData] = useState({});
@@ -115,8 +108,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			name: filterData?.name,
 			patient_mode: "opd",
 			term: filterData.keywordSearch,
-			room_id: opdRoomId,
-			prescription_mode: tabValue,
+			room_id: filterData.room_id,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -221,7 +213,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		).unwrap();
 		const prescription_id = resultAction?.data?.data.id;
 		if (prescription_id) {
-			if(closeTable)closeTable();
+			closeTable();
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 		} else {
 			console.error(resultAction);
@@ -236,21 +228,30 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					{t("VisitInformation")}
 				</Text>
 				<Flex gap="xs" align="center">
-					<Tabs mt="xs" variant="none" value={tabValue} onChange={setTabValue}>
+					<Tabs mt="xs" variant="none" value={value} onChange={setValue}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
-									{t(tab.label)}
+								<Tabs.Tab value={tab} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab}>
+									{t(tab)}
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={tabValue ? controlsRefs[tabValue] : null}
+								target={value ? controlsRefs[value] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
 						</Tabs.List>
 					</Tabs>
-
+					<Button
+						onClick={handleOpenViewOverview}
+						size="xs"
+						radius="es"
+						rightSection={<IconArrowRight size={16} />}
+						bg="var(--theme-success-color)"
+						c="white"
+					>
+						{t("VisitOverview")}
+					</Button>
 					{availableClose ? (
 						<Flex gap="xs" align="center">
 							<Button
@@ -268,7 +269,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch  module={module} form={form} />
+				<KeywordSearch module={module} form={form} />
 			</Box>
 			<Box className="border-top-none" px="sm">
 				<DataTable
@@ -453,6 +454,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			{selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
+			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 
 			<OPDDocument data={printData} ref={a4Ref} />
 			<OPDPos data={printData} ref={posRef} />

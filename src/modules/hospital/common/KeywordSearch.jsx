@@ -21,6 +21,7 @@ export default function KeywordSearch({
 	showDatePicker = true,
 	showAdvancedFilter = true,
 	showReset = true,
+	showOpdRoom = false,
 	className = "keyword-search-box",
 }) {
 	const filterData = useSelector((state) => state.crud[module]?.filterData || { keywordSearch: "", created: "" });
@@ -129,15 +130,17 @@ export default function KeywordSearch({
 					}
 				}}
 			/>
-			<Select
-				clearable
-				placeholder="Room"
-				loading={fetching}
-				data={records.map((item) => ({ label: item.name, value: item.id?.toString() }))}
-				value={form.values.room_id}
-				onChange={(value) => handleRoomChange(value)}
-				w={250}
-			/>
+			{ showOpdRoom &&(
+				<Select
+					clearable
+					placeholder="Room"
+					loading={fetching}
+					data={records.map((item) => ({ label: item.name, value: item.id?.toString() }))}
+					value={form.values.room_id}
+					onChange={(value) => handleRoomChange(value)}
+					w={250}
+				/>
+			)}
 			<Flex gap="xxxs" align="center">
 				<ActionIcon c="var(--theme-primary-color-6)" bg="white" onClick={() => handleSearch()}>
 					<IconSearch size={16} stroke={1.5} />

@@ -1,6 +1,9 @@
 export const getLoggedInUser = () => {
 	return JSON.parse(localStorage.getItem("user") || "{}");
 };
+export const getLoggedInHospitalUser = () => {
+	return JSON.parse(localStorage.getItem("hospital-user") || "{}");
+};
 
 export const getCoreVendors = () => {
 	return JSON.parse(localStorage.getItem("core-vendors") || "[]");

@@ -322,6 +322,17 @@ export const PHARMACY_DATA_ROUTES = {
 		},
 	},
 };
+export const DOCTOR_DATA_ROUTES = {
+	NAVIGATION_LINKS: {
+		DOCTOR: {
+			DASHBOARD: "/hospital/doctor",
+			OPD: "/hospital/doctor/ipd",
+			OPD_PRESCRIPTION: "/hospital/doctor/ipd-prescription",
+			EMERGENCY: "/hospital/doctor/emergency",
+			IPD: "/hospital/doctor/ipd",
+		}
+	},
+};
 export const CORE_DATA_ROUTES = {
 	API_ROUTES: {
 		VENDOR: {
@@ -340,7 +351,6 @@ export const CORE_DATA_ROUTES = {
 		},
 	},
 };
-
 export const HOSPITAL_DATA_ROUTES = {
 	API_ROUTES: {
 		OPD: {
@@ -453,7 +463,6 @@ export const HOSPITAL_DATA_ROUTES = {
 		},
 	},
 };
-
 export const DOMAIN_DATA_ROUTES = {
 	API_ROUTES: {
 		DOMAIN: {
@@ -475,6 +484,7 @@ export const CONFIGURATION_ROUTES = {
 			CREATE: "domain/config/hospital",
 			UPDATE: "domain/config/hospital",
 			DELETE: "domain/config/hospital",
+			USER_INFO: "hospital/core/userinfo",
 			HEALTH_SHARE: "hospital/core/health-share",
 		},
 	},

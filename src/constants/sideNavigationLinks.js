@@ -14,7 +14,7 @@ import {
 	IconReportMedical,
 } from "@tabler/icons-react";
 import { t } from "i18next";
-import { HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes.js";
+import { HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES, MASTER_DATA_ROUTES,DOCTOR_DATA_ROUTES } from "@/constants/routes.js";
 
 export const sideNavigationLinks = {
 	base: [
@@ -30,7 +30,7 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
 			icon: IconBuildingHospital,
 			color: "#E91E63", // Pink
-			allowedRoles: ["role_domain", "admin_administrator", "doctor_opd"],
+			allowedRoles: ["role_domain", "admin_administrator","operator_opd","operator_manager"],
 		},
 		{
 			label: t("Prescription"),
@@ -38,6 +38,13 @@ export const sideNavigationLinks = {
 			icon: IconBuildingHospital,
 			color: "#9C27B0", // Purple
 			allowedRoles: ["role_domain", "admin_administrator", "doctor_opd"],
+		},
+		{
+			label: t("Doctor"),
+			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.DASHBOARD,
+			icon: IconBuildingHospital,
+			color: "#9C27B0", // Purple
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_admin"],
 		},
 		{
 			label: t("Emergency"),
@@ -162,13 +169,7 @@ export const sideNavigationLinks = {
 			color: "#4CAF50",
 			allowedRoles: ["role_domain", "admin_administrator", "nurse_basic"],
 		},
-		{
-			label: t("TreatmentTemplates"),
-			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.INDEX,
-			icon: IconDashboard,
-			color: "#4CAF50",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
+
 		{
 			label: t("ManageTemplates"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.TEMPLATE.INDEX,
@@ -260,6 +261,7 @@ export const sideNavigationLinks = {
 			color: "#6f1225",
 			allowedRoles: ["role_domain", "admin_administrator"],
 		},
+
 		{
 			label: t("Users"),
 			path: "/core/user",
@@ -272,6 +274,13 @@ export const sideNavigationLinks = {
 			path: "/hospital/core/category",
 			icon: IconDashboard,
 			color: "#6f1225",
+			allowedRoles: ["role_domain", "admin_administrator"],
+		},
+		{
+			label: t("TreatmentTemplates"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.INDEX,
+			icon: IconDashboard,
+			color: "#4CAF50",
 			allowedRoles: ["role_domain", "admin_administrator"],
 		},
 		{
@@ -311,6 +320,37 @@ export const sideNavigationLinks = {
 			color: "#6f1225",
 			allowedRoles: ["role_domain", "admin_administrator"],
 		},
+	],
+	baseDoctorSubmenu: [
+		{
+			label: t("Dashboard"),
+			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.DASHBOARD,
+			icon: IconDashboard,
+			color: "#4CAF50",
+			allowedRoles: ["role_domain", "admin_administrator","doctor_admin"],
+		},
+		{
+			label: t("OPD"),
+			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.OPD,
+			icon: IconDashboard,
+			color: "#6f1225",
+			allowedRoles: ["role_domain", "admin_administrator","doctor_admin"],
+		},
+		{
+			label: t("Emergency"),
+			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.EMERGENCY,
+			icon: IconDashboard,
+			color: "#6f1225",
+			allowedRoles: ["role_domain", "admin_administrator","doctor_admin"],
+		},
+		{
+			label: t("IPD"),
+			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.IPD,
+			icon: IconDashboard,
+			color: "#6f1225",
+			allowedRoles: ["role_domain", "admin_administrator","doctor_admin"],
+		},
+
 	],
 	baseSubmenuReport: [
 		{

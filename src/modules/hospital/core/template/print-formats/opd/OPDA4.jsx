@@ -8,6 +8,8 @@ import DashedDivider from "@/common/components/core-component/DashedDivider";
 import { getLoggedInUser } from "@/common/utils";
 import { t } from "i18next";
 import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
@@ -98,6 +100,9 @@ const OPDDocument = forwardRef(({ data = defaultData }, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
+	const { data: prescriptionData } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/50`,
+	});
 
 	return (
 		<Box>

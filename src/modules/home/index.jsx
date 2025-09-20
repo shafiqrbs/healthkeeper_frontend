@@ -7,10 +7,13 @@ import QuickBrowse from "./common/QuickBrowse";
 import GrandTotalOverview from "./common/GrandTotalOverview";
 import SparkLineOverview from "./common/SparkLineOverview";
 import HomeSkeleton from "@components/skeletons/HomeSkeleton";
+import {useEffect} from "react";
+import {getLoggedInUser} from "@utils/index";
+import useHospitalUserData from "@hooks/useHospitalUserData";
 
 export default function Index({ height }) {
 	const progress = useGetLoadingProgress();
-
+	const {userInfo} = useHospitalUserData();
 	return (
 		<>
 			{progress !== 100 ? (
