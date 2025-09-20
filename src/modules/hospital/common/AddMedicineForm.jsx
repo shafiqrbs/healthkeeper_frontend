@@ -27,6 +27,7 @@ import {
 	IconX,
 	IconTrash,
 	IconCaretUpDownFilled,
+	IconMedicineSyrup,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
@@ -210,15 +211,6 @@ export default function AddMedicineForm({
 
 		// close drawer
 		closeExPrescription();
-
-		showNotificationComponent(
-			t("Emergency prescription saved successfully"),
-			"green",
-			"lightgray",
-			true,
-			1000,
-			true
-		);
 	};
 
 	// Add hotkey for save functionality
@@ -380,6 +372,8 @@ export default function AddMedicineForm({
 				follow_up_date: form.values.follow_up_date || null,
 				prescription_date: new Date().toISOString().split("T")[0],
 				created_by_id: createdBy?.id,
+				exEmergency: form.values.exEmergency || [],
+				instruction: form.values.instruction || "",
 				patient_report: {
 					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,
@@ -462,7 +456,7 @@ export default function AddMedicineForm({
 			"exEmergency",
 			form.values?.exEmergency?.filter((_, index) => index !== idx)
 		);
-		if (update) update(form.values?.exEmergency?.filter((_, index) => index !== idx));
+		if (update) update();
 	};
 
 	const handleReferredViewPrescription = () => {
@@ -666,7 +660,7 @@ export default function AddMedicineForm({
 				bg="white"
 			>
 				<Stack gap="2px" p="sm">
-					{medicines?.length === 0 && (
+					{medicines?.length === 0 && form.values.exEmergency?.length === 0 && (
 						<Flex
 							mih={baseHeight ? baseHeight - 50 : 220}
 							gap="md"
@@ -693,9 +687,12 @@ export default function AddMedicineForm({
 						<>
 							{form.values?.exEmergency?.map((item, idx) => (
 								<Flex justify="space-between" key={idx} align="center" gap="les">
-									<Text className="capitalize" fz="14px">
-										{idx + 1}. {item.value}
-									</Text>
+									<Flex align="center">
+										<IconMedicineSyrup stroke={1.5} size={20} />
+										<Text className="capitalize" fz="14px">
+											{item.value}
+										</Text>
+									</Flex>
 									<ActionIcon
 										variant="outline"
 										color="var(--theme-error-color)"
@@ -711,7 +708,7 @@ export default function AddMedicineForm({
 					{medicines?.map((medicine, index) => (
 						<MedicineListItem
 							key={index}
-							index={(form.values?.exEmergency?.length || index) + 1}
+							index={index + 1}
 							medicines={medicines}
 							medicine={medicine}
 							setMedicines={setMedicines}
@@ -729,7 +726,11 @@ export default function AddMedicineForm({
 					<Text w="100%">
 						<strong>{t("Instruction")}:</strong> {form.values.instruction}
 					</Text>
-					<ActionIcon color="var(--theme-error-color)" onClick={() => form.setFieldValue("instruction", "")}>
+					<ActionIcon
+						variant="outline"
+						color="var(--theme-error-color)"
+						onClick={() => form.setFieldValue("instruction", "")}
+					>
 						<IconTrash size={16} />
 					</ActionIcon>
 				</Flex>

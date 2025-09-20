@@ -1,5 +1,5 @@
 import { ActionIcon, Autocomplete, Box, Flex, Grid, Input, NumberInput, Stack, Text } from "@mantine/core";
-import { IconCheck, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import { IconCheck, IconMedicineSyrup, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -47,23 +47,22 @@ export default function MedicineListItem({
 			const medicineIndex = index - 1;
 			const current = prev[medicineIndex];
 			const baseInstruction = {
-				dose_details: current.dose_details || current.dosage || "",
+				dose_details: current?.dose_details || current.dosage || "",
 				by_meal: current.by_meal || "",
 				quantity: current.quantity || 1,
 				duration: current.duration || "Day",
 				outdoor_medicine_number: current.outdoor_medicine_number || "",
 				doctor_comment: current.doctor_comment || "",
 			};
-			const existingInstructions =
-				current.instructions && current.instructions.length > 0 ? current.instructions : [baseInstruction];
+			const existingDosages = current.dosages && current.dosages.length > 0 ? current.dosages : [baseInstruction];
 			const toDuplicate =
 				typeof instructionIndex === "number" &&
 				instructionIndex >= 0 &&
-				instructionIndex < existingInstructions.length
-					? existingInstructions[instructionIndex]
-					: existingInstructions[existingInstructions.length - 1];
-			const updatedInstructions = [...existingInstructions, { ...toDuplicate }];
-			const updatedMedicine = { ...current, instructions: updatedInstructions };
+				instructionIndex < existingDosages.length
+					? existingDosages[instructionIndex]
+					: existingDosages[existingDosages.length - 1];
+			const updatedDosages = [...existingDosages, { ...toDuplicate }];
+			const updatedMedicine = { ...current, dosages: updatedDosages };
 			const newList = prev.map((m, i) => (i === medicineIndex ? updatedMedicine : m));
 			if (typeof update === "function") update(newList);
 			return newList;
@@ -74,14 +73,14 @@ export default function MedicineListItem({
 		setMedicines((prev) => {
 			const medicineIndex = index - 1;
 			const current = prev[medicineIndex];
-			const existingInstructions = current.instructions || [];
+			const existingDosages = current.dosages || [];
 			let updatedMedicine = { ...current };
-			if (existingInstructions.length > 1) {
-				const updatedInstructions = existingInstructions.filter((_, i) => i !== instructionIndex);
-				updatedMedicine = { ...current, instructions: updatedInstructions };
+			if (existingDosages.length > 1) {
+				const updatedDosages = existingDosages.filter((_, i) => i !== instructionIndex);
+				updatedMedicine = { ...current, dosages: updatedDosages };
 			} else {
 				const rest = { ...current };
-				delete rest.instructions;
+				delete rest.dosages;
 				updatedMedicine = rest;
 			}
 			const newList = prev.map((m, i) => (i === medicineIndex ? updatedMedicine : m));
@@ -91,14 +90,14 @@ export default function MedicineListItem({
 	};
 
 	const openInstructionEdit = (insIndex) => {
-		// ensure instructions array exists before editing
-		if (!medicine.instructions || medicine.instructions.length === 0) {
+		// ensure dosages array exists before editing
+		if (!medicine.dosages || medicine.dosages.length === 0) {
 			setMedicines((prev) => {
 				const medicineIndex = index - 1;
 				const current = prev[medicineIndex];
 				const seeded = [
 					{
-						dose_details: current.dose_details || current.dosage || "",
+						dose_details: current?.dose_details || current.dosage || "",
 						by_meal: current.by_meal || "",
 						quantity: current.quantity || 1,
 						duration: current.duration || "Day",
@@ -106,7 +105,7 @@ export default function MedicineListItem({
 						doctor_comment: current.doctor_comment || "",
 					},
 				];
-				const updated = prev.map((m, i) => (i === medicineIndex ? { ...current, instructions: seeded } : m));
+				const updated = prev.map((m, i) => (i === medicineIndex ? { ...current, dosages: seeded } : m));
 				if (typeof update === "function") update(updated);
 				return updated;
 			});
@@ -120,9 +119,9 @@ export default function MedicineListItem({
 		setMedicines((prev) => {
 			const medicineIndex = index - 1;
 			const current = prev[medicineIndex];
-			const instructions = current.instructions ? [...current.instructions] : [];
-			instructions[insIndex] = { ...instructions[insIndex], [field]: value };
-			const updatedMedicine = { ...current, instructions };
+			const dosages = current.dosages ? [...current.dosages] : [];
+			dosages[insIndex] = { ...dosages[insIndex], [field]: value };
+			const updatedMedicine = { ...current, dosages };
 			const newList = prev.map((medicine, index) => (index === medicineIndex ? updatedMedicine : medicine));
 			if (typeof update === "function") update(newList);
 			return newList;
@@ -132,9 +131,12 @@ export default function MedicineListItem({
 	return (
 		<Box>
 			<Flex justify="space-between" align="center" gap="0">
-				<Text fz="14px" mb="es" className="cursor-pointer capitalize">
-					{index}. {medicine.medicine_name || medicine.generic}
-				</Text>
+				<Flex align="center" gap="es">
+					<IconMedicineSyrup stroke={1.5} size={20} />
+					<Text fz="14px" className="cursor-pointer capitalize">
+						{medicine.medicine_name || medicine.generic}
+					</Text>
+				</Flex>
 				<Flex gap="les" justify="flex-end">
 					<ActionIcon
 						variant="outline"
@@ -147,11 +149,11 @@ export default function MedicineListItem({
 			</Flex>
 			{mode === "view" ? (
 				<Stack gap="es">
-					{(medicine.instructions && medicine.instructions.length > 0
-						? medicine.instructions
+					{(medicine.dosages && medicine.dosages.length > 0
+						? medicine.dosages
 						: [
 								{
-									dose_details: medicine.dose_details || medicine.dosage || "",
+									dose_details: medicine?.dose_details || medicine.dosage || "",
 									by_meal: medicine.by_meal || "",
 									quantity: medicine.quantity || 1,
 									duration: medicine.duration || "Day",
@@ -181,7 +183,7 @@ export default function MedicineListItem({
 												size="xs"
 												label=""
 												data={dosage_options}
-												value={instruction.dose_details}
+												value={instruction?.dose_details}
 												placeholder={t("Dosage")}
 												onChange={(v) =>
 													handleInstructionFieldChange(insIndex, "dose_details", v)
@@ -264,7 +266,7 @@ export default function MedicineListItem({
 								) : (
 									<>
 										<Box className="capitalize" fz="xs" c="var(--theme-tertiary-color-8)">
-											{instruction.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
+											{instruction?.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
 											---- {instruction.quantity} ---- {instruction.duration}{" "}
 											{isFirstItem &&
 												`---- ${
@@ -305,7 +307,7 @@ export default function MedicineListItem({
 							size="xs"
 							label=""
 							data={dosage_options}
-							value={medicine.dose_details}
+							value={medicine?.dose_details}
 							placeholder={t("Dosage")}
 							disabled={mode === "view"}
 							onChange={(v) => handleChange("dose_details", v)}

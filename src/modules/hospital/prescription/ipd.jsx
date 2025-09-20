@@ -102,6 +102,8 @@ export default function Index() {
 				follow_up_date: form.values.follow_up_date || null,
 				prescription_date: new Date()?.toISOString()?.split("T")[0],
 				created_by_id: createdBy?.id,
+				exEmergency: form.values.exEmergency || [],
+				instruction: form.values.instruction || "",
 				patient_report: {
 					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,

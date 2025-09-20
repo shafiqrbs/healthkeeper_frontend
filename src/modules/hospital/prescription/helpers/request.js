@@ -14,7 +14,8 @@ export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
 		dynamicFormData: initialFormValues?.patient_report?.patient_examination || {},
 		advise: initialFormValues?.advise || "",
 		follow_up_date: parseDate(initialFormValues?.follow_up_date),
-		instruction: "",
+		instruction: initialFormValues?.instruction || "",
+		exEmergency: initialFormValues?.exEmergency || [],
 	};
 
 	return {
