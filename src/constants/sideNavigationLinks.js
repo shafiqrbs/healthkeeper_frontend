@@ -17,135 +17,48 @@ import { t } from "i18next";
 import { HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes.js";
 
 export const sideNavigationLinks = {
-	home: [
-		{
-			label: "Dashboard",
-			path: "/",
-			icon: IconHome,
-			color: "#4CAF50",
-			allowedRoles: ["role_domain", "admin_administrator", "nurse_basic", "doctor_basic"],
-		},
-		{
-			label: "hospitalAndDiagnostic",
-			path: "/",
-			icon: IconBuildingHospital,
-			color: "#6F1126",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-		{
-			label: "VisitList",
-			path: "/hospital/visit/list",
-			icon: IconBuildingHospital,
-			color: "#1D3557",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-		{
-			label: "doctorPrescription",
-			path: "/hospital/prescription",
-			icon: IconPrescription,
-			color: "#B5838D",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-		{
-			label: "Emergency",
-			path: "/hospital/emergency",
-			icon: IconEmergencyBed,
-			color: "#E63946",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-		{
-			label: "Billing",
-			path: "/hospital/billing",
-			icon: IconBuildingHospital,
-			color: "#6D597A",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-		{
-			label: "Lab Test",
-			path: "/hospital/lab-test",
-			icon: IconMicroscopeOff,
-			color: "#457B9D",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-		{
-			label: "Lab Group Test",
-			path: "/hospital/lab-group-test",
-			icon: IconMicroscopeOff,
-			color: "#4b9d45",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-		{
-			label: "Medicine",
-			path: "/hospital/medicine",
-			icon: IconMedicineSyrup,
-			color: "#2A9D8F",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-		{
-			label: "Requisition",
-			path: "/hospital/medicine-requisition",
-			icon: IconReportMedical,
-			color: "#F4A261",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-		{
-			label: "Manage Investigation",
-			path: "/hospital/investigation",
-			icon: IconBrandVlc,
-			color: "#A8DADC",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-
-		{
-			label: "Doctor",
-			path: "/hospital/doctor",
-			icon: IconStethoscope,
-			color: "#1D3557",
-			allowedRoles: ["role_domain", "admin_administrator"],
-		},
-	],
 	base: [
 		{
 			label: t("Dashboard"),
 			path: "/",
 			icon: IconHome,
 			color: "#4CAF50", // Green
-			allowedRoles: ["role_domain", "admin_administrator", "nurse_basic", "doctor_basic"],
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_opd", "doctor_ipd"],
 		},
 		{
 			label: t("OPD"),
-			path: "/hospital/visit",
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
 			icon: IconBuildingHospital,
 			color: "#E91E63", // Pink
-			allowedRoles: ["role_domain", "admin_administrator", "nurse_basic", "doctor_basic"],
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_opd"],
 		},
 		{
 			label: t("Prescription"),
-			path: "/hospital/visit/list",
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX,
 			icon: IconBuildingHospital,
 			color: "#9C27B0", // Purple
-			allowedRoles: ["role_domain", "admin_administrator", "nurse_basic", "doctor_basic"],
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_opd"],
 		},
 		{
 			label: t("Emergency"),
-			path: "/hospital/emergency",
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EMERGENCY.INDEX,
 			icon: IconEmergencyBed,
 			color: "#F44336", // Red
-			allowedRoles: ["role_domain", "admin_administrator", "nurse_basic", "doctor_basic"],
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_emergency"],
 		},
 		{
 			label: t("IPD"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX,
 			icon: IconBuildingHospital,
 			color: "#3F51B5", // Indigo
-			allowedRoles: ["role_domain", "admin_administrator", "nurse_basic", "doctor_basic"],
+			allowedRoles: ["role_domain", "admin_administrator","doctor_ipd"],
 		},
 		{
 			label: t("IPDConfirm"),
-			path: "/hospital/ipd",
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.CONFIRM,
 			icon: IconBuildingHospital,
 			color: "#00BCD4", // Cyan
-			allowedRoles: ["role_domain", "admin_administrator"],
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd_confirm"],
 		},
 		{
 			label: t("Admitted"),
