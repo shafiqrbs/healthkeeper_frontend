@@ -1,10 +1,7 @@
-import { Box, Grid, Progress } from "@mantine/core";
+import { Box } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useDisclosure } from "@mantine/hooks";
 
-import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
-import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
-import Navigation from "@components/layout/Navigation";
 import { getInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
 import IndexForm from "./form/__IndexForm";
@@ -13,6 +10,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import _Table from "./_Table";
 import _FormatTable from "./_FormatTable";
 import { MODULES_CORE } from "@/constants";
+import { useEffect } from "react";
 
 const module = MODULES_CORE.TREATMENT_TEMPLATES;
 
@@ -20,58 +18,28 @@ export default function Index({ mode = "create" }) {
 	const { t } = useTranslation();
 	const { treatmentFormat } = useParams();
 	const form = useForm(getInitialValues(t));
-	const progress = useGetLoadingProgress();
-	const matches = useMediaQuery("(max-width: 64em)");
 	const [opened, { open, close }] = useDisclosure(false);
-	const { mainAreaHeight } = useOutletContext();
+
+	const { setPageTitle } = useOutletContext();
+
+	useEffect(() => {
+		setPageTitle(t("ManageTreatmentTemplates"));
+	}, [t, setPageTitle]);
 
 	return (
-		<>
-			{progress !== 100 ? (
-				<Progress
-					color="var(--theme-reset-btn-color)"
-					size="sm"
-					striped
-					animated
-					value={progress}
-					transitionDuration={200}
-				/>
+		<Box bg="white" p="xs" className="borderRadiusAll">
+			{treatmentFormat === "treatment-format" ? (
+				<_FormatTable module={module} open={open} close={close} />
 			) : (
-				<>
-					<CoreHeaderNavbar
-						module="core"
-						pageTitle={t("ManageTreatmentTemplates")}
-						roles={t("Roles")}
-						allowZeroPercentage=""
-						currencySymbol=""
-					/>
-					<Box p="8px">
-						<Grid columns={36} gutter={{ base: 8 }}>
-							{!matches && (
-								<Grid.Col span={6}>
-									<Navigation menu="base" subMenu={"baseSubmenu"} mainAreaHeight={mainAreaHeight} />
-								</Grid.Col>
-							)}
-							<Grid.Col span={matches ? 30 : 30}>
-								<Box bg="white" p="xs" className="borderRadiusAll">
-									{treatmentFormat === "treatment-format" ? (
-										<_FormatTable module={module} open={open} close={close} />
-									) : (
-										<_Table module={module} open={open} close={close} />
-									)}
-								</Box>
-							</Grid.Col>
-						</Grid>
-						<GlobalDrawer
-							opened={opened}
-							close={close}
-							title={mode === "create" ? t("CreateTreatmentTemplates") : t("UpdateTreatmentTemplates")}
-						>
-							<IndexForm module={module} form={form} mode={mode} close={close} />
-						</GlobalDrawer>
-					</Box>
-				</>
+				<_Table module={module} open={open} close={close} />
 			)}
-		</>
+			<GlobalDrawer
+				opened={opened}
+				close={close}
+				title={mode === "create" ? t("CreateTreatmentTemplates") : t("UpdateTreatmentTemplates")}
+			>
+				<IndexForm module={module} form={form} mode={mode} close={close} />
+			</GlobalDrawer>
+		</Box>
 	);
 }

@@ -1,13 +1,12 @@
-import { Group, Menu, rem, ActionIcon, Text, Flex, Tooltip } from "@mantine/core";
+import { Group, Text, Flex, Tooltip } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import classes from "@assets/css/HeaderSearch.module.css";
 import { IconInfoCircle } from "@tabler/icons-react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { coreHeaderLinks } from "@/constants/headerLinks";
 
 function CoreHeaderNavbar({ pageTitle, module, pageDescription }) {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const location = useLocation();
 
 	if (!module) return <Text c="red">CoreHeaderNavbar: No module name is provided</Text>;
@@ -46,7 +45,6 @@ function CoreHeaderNavbar({ pageTitle, module, pageDescription }) {
 							</Flex>
 						)}
 					</Group>
-
 				</div>
 			</header>
 		</>

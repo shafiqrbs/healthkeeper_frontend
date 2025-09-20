@@ -1,16 +1,16 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Button, Flex, Text, Tooltip, ScrollArea, Grid, Box } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { sideNavigationLinks } from "@/constants/sideNavigationLinks";
-import classes from "@assets/css/FeaturesCards.module.css";
+import classes from "@assets/css/Navigation.module.css";
 import { getUserRole } from "@/common/utils";
 
 export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight }) {
-	const [activeTab, setActiveTab] = useState("Hospital");
 	const userRole = getUserRole();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
+	const location = useLocation();
 
 	const links = useMemo(() => {
 		const menuLinks = sideNavigationLinks[menu] || [];
@@ -56,6 +56,7 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 											variant="light"
 											color="black"
 											onClick={() => navigate(item.path)}
+											className={location.pathname === item.path ? classes["active-link"] : ""}
 										>
 											<Flex align="center">
 												<item.icon size={22} color="white" />
@@ -92,13 +93,15 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 											borderRadius: 4,
 											cursor: "pointer",
 										}}
-										className={`${classes["pressable-card"]} border-radius`}
+										className={`${classes["pressable-card"]} border-radius ${
+											location.pathname === item.path ? classes["active-link"] : ""
+										}`}
 										mih={40}
 										m={"xxxs"}
 										mt="es"
 										variant="default"
 										onClick={() => navigate(item.path)}
-										bg={activeTab === item ? "#f8eedf" : "gray.1"}
+										bg={location.pathname === item.path ? "#f8eedf" : "gray.1"}
 									>
 										<Text size="sm" pt="xxxs" pl="xxxs" fw={500} c="black">
 											{t(item.label)}

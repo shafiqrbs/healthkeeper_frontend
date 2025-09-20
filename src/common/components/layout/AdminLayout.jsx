@@ -7,6 +7,7 @@ import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
 import { Navigate, Outlet } from "react-router-dom";
 import { getLoggedInUser } from "@/common/utils";
+import { useState } from "react";
 
 export default function AdminLayout() {
 	const { t } = useTranslation();
@@ -16,6 +17,8 @@ export default function AdminLayout() {
 	const user = getLoggedInUser();
 	const networkStatus = useNetwork();
 	const { height } = useViewportSize();
+
+	const [pageTitle, setPageTitle] = useState(() => t("ManageCustomer"));
 
 	// check authentication
 	if (!user?.id) {
@@ -43,7 +46,7 @@ export default function AdminLayout() {
 				<>
 					<CoreHeaderNavbar
 						module="core"
-						pageTitle={t("ManageCustomer")}
+						pageTitle={pageTitle}
 						roles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""
@@ -56,9 +59,7 @@ export default function AdminLayout() {
 								</Grid.Col>
 							)}
 							<Grid.Col span={matches ? 30 : 30}>
-								<Box bg="white" p="xs" className="borderRadiusAll">
-									<Outlet context={{ isOnline: networkStatus.online, mainAreaHeight }} />
-								</Box>
+								<Outlet context={{ isOnline: networkStatus.online, mainAreaHeight, setPageTitle }} />
 							</Grid.Col>
 						</Grid>
 					</Box>

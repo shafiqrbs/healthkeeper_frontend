@@ -81,7 +81,7 @@ import CabinIndex from "@modules/hospital/core/cabin";
 import ParticularModeIndex from "@modules/hospital/core/particular-mode";
 import ParticularTypeIndex from "@modules/hospital/core/particular-type";
 import CategoryIndex from "@modules/hospital/core/category";
-import AdmissionIndex from "@modules/hospital/admission";
+// import AdmissionIndex from "@modules/hospital/admission";
 import EmergencyIndex from "@modules/hospital/emergency";
 import NotFound from "@components/layout/NotFound";
 import CustomerIndex from "@modules/hospital/customer";
@@ -214,8 +214,8 @@ function AppRoute() {
 				<Route path="/settings/">
 					<Route path="hospital-config/:id" element={<HospitalConfigIndex />} />
 				</Route>
-				<Route path="/hospital/core/">
-					{/* <Route path="/hospital/core/" element={<AdminLayout />}> */}
+				{/* <Route path="/hospital/core/"> */}
+				<Route path="/hospital/core/" element={<AdminLayout />}>
 					<Route path="treatment-templates" element={<TreatmentTemplatesIndex />} />
 					<Route path="treatment-templates/:id" element={<TreatmentTemplatesIndex mode={"edit"} />} />
 					<Route
