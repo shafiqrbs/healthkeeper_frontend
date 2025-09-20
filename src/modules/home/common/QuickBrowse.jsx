@@ -15,6 +15,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { getUserRole } from "@/common/utils";
 
 const quickBrowseButtonData = [
 	{
@@ -22,36 +23,42 @@ const quickBrowseButtonData = [
 		icon: IconStethoscope,
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
 		color: "var(--mantine-color-yellow-8)",
+		allowedRoles: ["doctor", "nurse", "admin"],
 	},
 	{
 		label: "admission",
 		icon: IconBed,
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX,
 		color: "var(--mantine-color-blue-7)",
+		allowedRoles: ["doctor", "nurse", "admin"],
 	},
 	{
 		label: "reportDelivery",
 		icon: IconMailForward,
 		route: "/report-delivery",
 		color: "var(--mantine-color-indigo-8)",
+		allowedRoles: ["doctor", "nurse", "admin"],
 	},
 	{
 		label: "Medicine",
 		icon: IconTestPipe,
 		route: "/add-diagnostic",
 		color: "var(--theme-secondary-color-8)",
+		allowedRoles: ["doctor", "nurse", "admin"],
 	},
 	{
 		label: "Emergency",
 		icon: IconTestPipe2,
 		route: "/hospital/emergency",
 		color: "var(--mantine-color-cyan-8)",
+		allowedRoles: ["doctor", "nurse", "admin"],
 	},
 	{
 		label: "reportPrepared",
 		icon: IconClipboardText,
 		route: "/report-prepare",
 		color: "var(--mantine-color-red-8)",
+		allowedRoles: ["doctor", "nurse", "admin"],
 	},
 ];
 
@@ -62,6 +69,7 @@ const quickBrowseCardData = [
 		route: "/commission",
 		color: "var(--mantine-color-indigo-7)",
 		backgroundColor: "var(--mantine-color-indigo-0)",
+		allowedRoles: ["doctor", "nurse", "admin"],
 	},*/
 	{
 		label: "diagnosticTest",
@@ -69,6 +77,7 @@ const quickBrowseCardData = [
 		route: "/diagnostic-test",
 		color: "var(--theme-secondary-color-9)",
 		backgroundColor: "var(--theme-secondary-color-0)",
+		allowedRoles: ["doctor", "nurse", "admin"],
 	},
 	{
 		label: "Billing",
@@ -76,6 +85,7 @@ const quickBrowseCardData = [
 		route: "/payment",
 		color: "var(--mantine-color-cyan-7)",
 		backgroundColor: "var(--mantine-color-cyan-0)",
+		allowedRoles: ["doctor", "nurse", "admin"],
 	},
 	/*{
 		label: "itemIssue",
@@ -83,6 +93,7 @@ const quickBrowseCardData = [
 		route: "/item-issue",
 		color: "var(--mantine-color-red-7)",
 		backgroundColor: "var(--mantine-color-red-0)",
+		allowedRoles: ["doctor", "nurse", "admin"],
 	},*/
 	{
 		label: "OPDQueue",
@@ -90,6 +101,7 @@ const quickBrowseCardData = [
 		route: "/hospital/visit",
 		color: "var(--mantine-color-yellow-7)",
 		backgroundColor: "var(--mantine-color-yellow-0)",
+		allowedRoles: ["doctor", "nurse", "admin"],
 	},
 	/*{
 		label: "manageStock",
@@ -103,6 +115,11 @@ const quickBrowseCardData = [
 export default function QuickBrowse() {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
+	const userRole = getUserRole();
+
+	const filteredQuickBrowseButtonData = quickBrowseButtonData.filter((item) =>
+		item.allowedRoles.some((role) => userRole.includes(role))
+	);
 
 	return (
 		<Card padding="lg" radius="sm" h="100%">
@@ -115,7 +132,7 @@ export default function QuickBrowse() {
 			</Card.Section>
 
 			<Grid columns={9} gutter="md" mt="md">
-				{quickBrowseButtonData.map((item) => (
+				{filteredQuickBrowseButtonData.map((item) => (
 					<Grid.Col span={3} key={item.label}>
 						<Link to={item.route} style={{ textDecoration: "none" }}>
 							<Button leftSection={<item.icon size={16} />} color="white" bg={item.color} fullWidth>

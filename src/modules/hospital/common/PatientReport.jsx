@@ -128,8 +128,8 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 			return <Text c="dimmed">No particulars defined for {name}</Text>;
 		}
 
-		switch (data_type) {
-			case "Checkbox":
+		switch (data_type?.toLowerCase()) {
+			case "checkbox":
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => {
@@ -172,7 +172,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 					</Stack>
 				);
 
-			case "Select":
+			case "select":
 				return (
 					<Stack gap="md">
 						<Select
@@ -215,7 +215,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 					</Stack>
 				);
 
-			case "Input":
+			case "input":
 				return (
 					<Stack gap="xxs">
 						{particulars?.map((particular, index) => {
@@ -266,7 +266,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 					</Stack>
 				);
 
-			case "InputWithCheckbox":
+			case "inputwithcheckbox":
 				return (
 					<Stack gap="xxs">
 						{particulars?.map((particular, index) => {
@@ -345,7 +345,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 					</Stack>
 				);
 
-			case "Textarea":
+			case "textarea":
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => {
@@ -391,7 +391,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 					</Stack>
 				);
 
-			case "Searchable":
+			case "searchable":
 				return (
 					<Select
 						searchable
@@ -415,7 +415,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 					/>
 				);
 
-			case "RadioButton":
+			case "radioButton":
 				return (
 					<Stack gap="md" fz={"xs"}>
 						{particulars?.map((particular, index) => {
@@ -458,7 +458,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 					</Stack>
 				);
 
-			case "Autocomplete":
+			case "autocomplete":
 				return (
 					<>
 						<Autocomplete
