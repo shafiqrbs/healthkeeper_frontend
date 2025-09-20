@@ -4,9 +4,8 @@
     "Group": "Doctor",
     "actions": [
       { "id": "doctor_opd", "label": "OPD" },
-      { "id": "doctor_opd_prescription", "label": "OPD" },
       { "id": "doctor_emergency", "label": "Emergency" },
-      { "id": "doctor_ipd_prescription", "label": "IPD" },
+      { "id": "doctor_ipd", "label": "IPD" },
       { "id": "doctor_ipd_confirm", "label": "IPD In-charge" },
       { "id": "doctor_lab", "label": "Lab" }
     ]
