@@ -1,5 +1,5 @@
 import { ActionIcon, Autocomplete, Box, Flex, Grid, Input, NumberInput, Stack, Text } from "@mantine/core";
-import { IconCheck, IconPencil, IconPlus, IconX } from "@tabler/icons-react";
+import { IconCheck, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -123,7 +123,7 @@ export default function MedicineListItem({
 			const instructions = current.instructions ? [...current.instructions] : [];
 			instructions[insIndex] = { ...instructions[insIndex], [field]: value };
 			const updatedMedicine = { ...current, instructions };
-			const newList = prev.map((m, i) => (i === medicineIndex ? updatedMedicine : m));
+			const newList = prev.map((medicine, index) => (index === medicineIndex ? updatedMedicine : medicine));
 			if (typeof update === "function") update(newList);
 			return newList;
 		});
@@ -132,7 +132,7 @@ export default function MedicineListItem({
 	return (
 		<Box>
 			<Flex justify="space-between" align="center" gap="0">
-				<Text mb="es" style={{ cursor: "pointer" }}>
+				<Text fz="14px" mb="es" className="cursor-pointer capitalize">
 					{index}. {medicine.medicine_name || medicine.generic}
 				</Text>
 				<Flex gap="les" justify="flex-end">
@@ -141,12 +141,12 @@ export default function MedicineListItem({
 						color="var(--theme-error-color)"
 						onClick={() => handleDelete(index - 1)}
 					>
-						<IconX size={18} stroke={1.5} />
+						<IconTrash size={18} stroke={1.5} />
 					</ActionIcon>
 				</Flex>
 			</Flex>
 			{mode === "view" ? (
-				<Stack gap="xs">
+				<Stack gap="es">
 					{(medicine.instructions && medicine.instructions.length > 0
 						? medicine.instructions
 						: [
@@ -159,128 +159,149 @@ export default function MedicineListItem({
 									doctor_comment: medicine.doctor_comment || "",
 								},
 						  ]
-					).map((instruction, insIndex) => (
-						<Flex key={insIndex} ml="md" gap="xs" align="center">
-							<ActionIcon
-								size="xs"
-								variant="outline"
-								color="var(--theme-primary-color-6)"
-								onClick={() => handleAddInstruction(insIndex)}
-							>
-								<IconPlus size={16} />
-							</ActionIcon>
-							{editingInstructionIndex === insIndex ? (
-								<Grid gap="xs" columns={24}>
-									<Grid.Col span={4}>
-										<Autocomplete
-											size="xs"
-											label=""
-											data={dosage_options}
-											value={instruction.dose_details}
-											placeholder={t("Dosage")}
-											onChange={(v) => handleInstructionFieldChange(insIndex, "dose_details", v)}
-										/>
-									</Grid.Col>
-									<Grid.Col span={5}>
-										<Autocomplete
-											label=""
-											size="xs"
-											data={by_meal_options}
-											value={instruction.by_meal}
-											placeholder={t("Timing")}
-											onChange={(v) => handleInstructionFieldChange(insIndex, "by_meal", v)}
-										/>
-									</Grid.Col>
-									<Grid.Col span={2}>
-										<NumberInput
-											size="xs"
-											label=""
-											value={instruction.quantity}
-											placeholder={t("Quantity")}
-											onChange={(v) => handleInstructionFieldChange(insIndex, "quantity", v)}
-										/>
-									</Grid.Col>
-									<Grid.Col span={2}>
-										<Autocomplete
-											size="xs"
-											label=""
-											data={DURATION_UNIT_OPTIONS}
-											value={instruction.duration}
-											placeholder={t("Duration")}
-											onChange={(v) => handleInstructionFieldChange(insIndex, "duration", v)}
-										/>
-									</Grid.Col>
-									{insIndex === 0 && (
-										<>
-											<Grid.Col span={3}>
-												<Input
-													size="xs"
-													label=""
-													placeholder={t("OutdoorMedicineNumber")}
-													value={instruction.outdoor_medicine_number}
-													onChange={(v) =>
-														handleInstructionFieldChange(
-															insIndex,
-															"outdoor_medicine_number",
-															v
-														)
-													}
-												/>
-											</Grid.Col>
-											<Grid.Col span={4}>
-												<Input
-													size="xs"
-													label=""
-													placeholder={t("DoctorComment")}
-													value={instruction.doctor_comment}
-													onChange={(v) =>
-														handleInstructionFieldChange(insIndex, "doctor_comment", v)
-													}
-												/>
-											</Grid.Col>
-										</>
-									)}
-									<Grid.Col span={1}>
-										<ActionIcon
-											variant="outline"
-											color="var(--theme-primary-color-6)"
-											onClick={closeInstructionEdit}
-										>
-											<IconCheck size={16} />
-										</ActionIcon>
-									</Grid.Col>
-								</Grid>
-							) : (
-								<>
-									<Box fz="xs" c="var(--theme-tertiary-color-8)">
-										{instruction.dose_details || instruction.dosage} ---- {instruction.by_meal} ----{" "}
-										{instruction.quantity} ---- {instruction.duration}
-									</Box>
-									{insIndex !== 0 && (
-										<ActionIcon
-											variant="outline"
-											color="var(--theme-error-color)"
-											onClick={() => handleDeleteInstruction(insIndex)}
-										>
-											<IconX size={14} stroke={1.5} />
-										</ActionIcon>
-									)}
+					).map((instruction, insIndex) => {
+						const isFirstItem = insIndex === 0;
+
+						return (
+							<Flex key={insIndex} ml={isFirstItem ? "md" : "44px"} gap="xs" align="center">
+								{isFirstItem && (
 									<ActionIcon
+										size="xs"
 										variant="outline"
-										color="var(--theme-secondary-color-6)"
-										onClick={() => openInstructionEdit(insIndex)}
+										color="var(--theme-primary-color-6)"
+										onClick={() => handleAddInstruction(insIndex)}
 									>
-										<IconPencil size={14} />
+										<IconPlus size={16} />
 									</ActionIcon>
-								</>
-							)}
-						</Flex>
-					))}
+								)}
+								{editingInstructionIndex === insIndex ? (
+									<Grid spacing="0px" columns={24}>
+										<Grid.Col span={4}>
+											<Autocomplete
+												size="xs"
+												label=""
+												data={dosage_options}
+												value={instruction.dose_details}
+												placeholder={t("Dosage")}
+												onChange={(v) =>
+													handleInstructionFieldChange(insIndex, "dose_details", v)
+												}
+											/>
+										</Grid.Col>
+										<Grid.Col span={5}>
+											<Autocomplete
+												label=""
+												size="xs"
+												data={by_meal_options}
+												value={instruction.by_meal}
+												placeholder={t("Timing")}
+												onChange={(v) => handleInstructionFieldChange(insIndex, "by_meal", v)}
+											/>
+										</Grid.Col>
+										<Grid.Col span={2}>
+											<NumberInput
+												size="xs"
+												label=""
+												value={instruction.quantity}
+												placeholder={t("Quantity")}
+												onChange={(v) => handleInstructionFieldChange(insIndex, "quantity", v)}
+											/>
+										</Grid.Col>
+										<Grid.Col span={2}>
+											<Autocomplete
+												size="xs"
+												label=""
+												data={DURATION_UNIT_OPTIONS}
+												value={instruction.duration}
+												placeholder={t("Duration")}
+												onChange={(v) => handleInstructionFieldChange(insIndex, "duration", v)}
+											/>
+										</Grid.Col>
+										{isFirstItem && (
+											<>
+												<Grid.Col span={2}>
+													<Input
+														size="xs"
+														label=""
+														placeholder={t("OutdoorMedicineNumber")}
+														value={instruction.outdoor_medicine_number}
+														onChange={(event) =>
+															handleInstructionFieldChange(
+																insIndex,
+																"outdoor_medicine_number",
+																event.target.value
+															)
+														}
+													/>
+												</Grid.Col>
+												<Grid.Col span={4}>
+													<Input
+														size="xs"
+														label=""
+														placeholder={t("DoctorComment")}
+														value={instruction.doctor_comment}
+														onChange={(event) =>
+															handleInstructionFieldChange(
+																insIndex,
+																"doctor_comment",
+																event.target.value
+															)
+														}
+													/>
+												</Grid.Col>
+											</>
+										)}
+										<Grid.Col span={1}>
+											<ActionIcon
+												variant="outline"
+												color="var(--theme-primary-color-6)"
+												onClick={closeInstructionEdit}
+											>
+												<IconCheck size={16} />
+											</ActionIcon>
+										</Grid.Col>
+									</Grid>
+								) : (
+									<>
+										<Box className="capitalize" fz="xs" c="var(--theme-tertiary-color-8)">
+											{instruction.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
+											---- {instruction.quantity} ---- {instruction.duration}{" "}
+											{isFirstItem &&
+												`---- ${
+													instruction.outdoor_medicine_number || t("NoOutdoorMedicineNumber")
+												} ---- ${instruction.doctor_comment || t("NoDoctorComment")}`}
+										</Box>
+
+										<Flex align="center">
+											<ActionIcon
+												variant="transparent"
+												color="var(--theme-secondary-color-6)"
+												onClick={() => openInstructionEdit(insIndex)}
+												ml="md"
+											>
+												<IconPencil size={18} />
+											</ActionIcon>
+											{!isFirstItem && (
+												<ActionIcon
+													variant="transparent"
+													color="var(--theme-error-color)"
+													onClick={() => handleDeleteInstruction(insIndex)}
+												>
+													<IconX size={18} stroke={1.5} />
+												</ActionIcon>
+											)}
+										</Flex>
+									</>
+								)}
+							</Flex>
+						);
+					})}
 				</Stack>
 			) : (
 				<Grid gap="es" columns={20}>
 					<Grid.Col span={7}>
 						<Autocomplete
+							clearable
 							size="xs"
 							label=""
 							data={dosage_options}
@@ -292,6 +313,7 @@ export default function MedicineListItem({
 					</Grid.Col>
 					<Grid.Col span={7}>
 						<Autocomplete
+							clearable
 							size="xs"
 							label=""
 							data={by_meal_options}
@@ -313,6 +335,7 @@ export default function MedicineListItem({
 					</Grid.Col>
 					<Grid.Col span={3}>
 						<Autocomplete
+							clearable
 							size="xs"
 							label=""
 							data={DURATION_UNIT_OPTIONS}

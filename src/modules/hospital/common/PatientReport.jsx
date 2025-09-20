@@ -68,6 +68,21 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		}
 	};
 
+	// =============== handler for other instructions field ================
+	const handleOtherInstructionsChange = (parentSlug, value) => {
+		const currentData = form.values.dynamicFormData[parentSlug] || [];
+
+		// if currentData is an array, we need to store other_instructions separately
+		// if it's an object, we can add the property directly
+		const newDynamicFormData = {
+			...form.values.dynamicFormData,
+			[parentSlug]: Array.isArray(currentData) ? currentData : { ...currentData, other_instructions: value },
+			[`${parentSlug}_other_instructions`]: value,
+		};
+
+		form.setFieldValue("dynamicFormData", newDynamicFormData);
+	};
+
 	const handleAutocompleteOptionAdd = (value, sectionParticulars = null, sectionSlug = null) => {
 		let selectedParticular = null;
 
@@ -154,19 +169,14 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 								/>
 							);
 						})}
-						{is_additional_field === 0 && (
+						{is_additional_field === 1 && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
-								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
-								// onChange={(event) =>
-								// 	handleDynamicFormChange({
-								// 		id: id,
-								// 		name: name,
-								// 		value: event.currentTarget.value,
-								// 		parentSlug: section.slug,
-								// 	})
-								// }
+								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								onChange={(event) =>
+									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+								}
 							/>
 						)}
 					</Stack>
@@ -197,19 +207,15 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							}
 							onBlur={handleFieldBlur}
 						/>
-						{is_additional_field === 0 && (
+						{is_additional_field === 1 && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
-								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
-								// onChange={(event) =>
-								// 	handleDynamicFormChange({
-								// 		id: id,
-								// 		name: name,
-								// 		value: event.currentTarget.value,
-								// 		parentSlug: section.slug,
-								// 	})
-								// }
+								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								onChange={(event) =>
+									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+								}
+								onBlur={handleFieldBlur}
 							/>
 						)}
 					</Stack>
@@ -248,19 +254,15 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							);
 						})}
 
-						{is_additional_field === 0 && (
+						{is_additional_field === 1 && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
-								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
-								// onChange={(event) =>
-								// 	handleDynamicFormChange({
-								// 		id: id,
-								// 		name: name,
-								// 		value: event.currentTarget.value,
-								// 		parentSlug: section.slug,
-								// 	})
-								// }
+								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								onChange={(event) =>
+									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+								}
+								onBlur={handleFieldBlur}
 							/>
 						)}
 					</Stack>
@@ -327,19 +329,15 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							);
 						})}
 
-						{is_additional_field === 0 && (
+						{is_additional_field === 1 && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
-								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
-								// onChange={(event) =>
-								// 	handleDynamicFormChange({
-								// 		id: id,
-								// 		name: name,
-								// 		value: event.currentTarget.value,
-								// 		parentSlug: section.slug,
-								// 	})
-								// }
+								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								onChange={(event) =>
+									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+								}
+								onBlur={handleFieldBlur}
 							/>
 						)}
 					</Stack>
@@ -373,19 +371,15 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							);
 						})}
 
-						{is_additional_field === 0 && (
+						{is_additional_field === 1 && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
-								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
-								// onChange={(event) =>
-								// 	handleDynamicFormChange({
-								// 		id: id,
-								// 		name: name,
-								// 		value: event.currentTarget.value,
-								// 		parentSlug: section.slug,
-								// 	})
-								// }
+								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								onChange={(event) =>
+									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+								}
+								onBlur={handleFieldBlur}
 							/>
 						)}
 					</Stack>
@@ -393,26 +387,39 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 
 			case "searchable":
 				return (
-					<Select
-						searchable
-						label={name}
-						placeholder={`Select ${name}`}
-						data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
-						value={
-							form.values.dynamicFormData?.[section.slug]?.find(
-								(item) => item.id === id && item.name === name
-							)?.value || ""
-						}
-						onChange={(value) =>
-							handleDynamicFormChange({
-								id: id,
-								name: name,
-								value: value,
-								parentSlug: section.slug,
-							})
-						}
-						onBlur={handleFieldBlur}
-					/>
+					<Stack gap="md">
+						<Select
+							searchable
+							label={name}
+							placeholder={`Select ${name}`}
+							data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
+							value={
+								form.values.dynamicFormData?.[section.slug]?.find(
+									(item) => item.id === id && item.name === name
+								)?.value || ""
+							}
+							onChange={(value) =>
+								handleDynamicFormChange({
+									id: id,
+									name: name,
+									value: value,
+									parentSlug: section.slug,
+								})
+							}
+							onBlur={handleFieldBlur}
+						/>
+						{is_additional_field === 1 && (
+							<Textarea
+								label="Other Instructions"
+								placeholder="Enter other instructions"
+								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								onChange={(event) =>
+									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+								}
+								onBlur={handleFieldBlur}
+							/>
+						)}
+					</Stack>
 				);
 
 			case "radioButton":
@@ -440,19 +447,15 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							);
 						})}
 
-						{is_additional_field === 0 && (
+						{is_additional_field === 1 && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
-								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
-								// onChange={(event) =>
-								// 	handleDynamicFormChange({
-								// 		id: id,
-								// 		name: name,
-								// 		value: event.currentTarget.value,
-								// 		parentSlug: section.slug,
-								// 	})
-								// }
+								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								onChange={(event) =>
+									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+								}
+								onBlur={handleFieldBlur}
 							/>
 						)}
 					</Stack>
@@ -507,19 +510,15 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							))}
 						</Stack>
 
-						{is_additional_field === 0 && (
+						{is_additional_field === 1 && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
-								value={form.values.dynamicFormData?.[section.slug]?.other_instructions || ""}
-								// onChange={(event) =>
-								// 	handleDynamicFormChange({
-								// 		id: id,
-								// 		name: name,
-								// 		value: event.currentTarget.value,
-								// 		parentSlug: section.slug,
-								// 	})
-								// }
+								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								onChange={(event) =>
+									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+								}
+								onBlur={handleFieldBlur}
 							/>
 						)}
 					</>

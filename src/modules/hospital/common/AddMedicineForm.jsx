@@ -13,7 +13,7 @@ import {
 	Autocomplete,
 	Tooltip,
 	ActionIcon,
-	Textarea,
+	TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
@@ -26,6 +26,7 @@ import {
 	IconDeviceFloppy,
 	IconX,
 	IconTrash,
+	IconCaretUpDownFilled,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
@@ -86,6 +87,10 @@ export default function AddMedicineForm({
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
 	const [openedInstruction, { open: openInstruction, close: closeInstruction }] = useDisclosure(false);
 
+	// =============== autocomplete state for emergency prescription ================
+	const [autocompleteValue, setAutocompleteValue] = useState("");
+	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
+
 	const { data: by_meal_options } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
 		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
@@ -142,8 +147,66 @@ export default function AddMedicineForm({
 		closeInstruction();
 	};
 
+	// =============== handler for adding autocomplete option to temporary list ================
+	const handleAutocompleteOptionAdd = (value, data, type) => {
+		const selectedItem = data?.find((item) => item.name === value);
+		if (selectedItem) {
+			const newItem = {
+				id: selectedItem.id || Date.now(),
+				name: selectedItem.name,
+				value: selectedItem.name,
+				type: type,
+				isEditable: true,
+			};
+			setTempEmergencyItems((prev) => [...prev, newItem]);
+		}
+	};
+
+	// =============== handler for updating temporary item value ================
+	const handleTempItemChange = (index, newValue) => {
+		setTempEmergencyItems((prev) => prev.map((item, idx) => (idx === index ? { ...item, value: newValue } : item)));
+	};
+
+	// =============== handler for removing temporary item ================
+	const handleTempItemRemove = (index) => {
+		setTempEmergencyItems((prev) => prev.filter((_, idx) => idx !== index));
+	};
+
+	// =============== handler for saving emergency prescription ================
 	const handleEmergencyPrescriptionSave = () => {
-		console.log("Emergency prescription saved");
+		if (tempEmergencyItems.length === 0) {
+			showNotificationComponent(
+				t("Please add at least one emergency item"),
+				"red",
+				"lightgray",
+				true,
+				1000,
+				true
+			);
+			return;
+		}
+
+		// add temporary items to form.values.exEmergency
+		const currentExEmergency = form.values.exEmergency || [];
+		const newExEmergency = [...currentExEmergency, ...tempEmergencyItems];
+
+		form.setFieldValue("exEmergency", newExEmergency);
+
+		// clear temporary items and autocomplete
+		setTempEmergencyItems([]);
+		setAutocompleteValue("");
+
+		// close drawer
+		closeExPrescription();
+
+		showNotificationComponent(
+			t("Emergency prescription saved successfully"),
+			"green",
+			"lightgray",
+			true,
+			1000,
+			true
+		);
 	};
 
 	// Add hotkey for save functionality
@@ -382,6 +445,14 @@ export default function AddMedicineForm({
 		}
 	};
 
+	const handleDeleteExEmergency = (idx) => {
+		form.setFieldValue(
+			"exEmergency",
+			form.values?.exEmergency?.filter((_, index) => index !== idx)
+		);
+		if (update) update(form.values?.exEmergency?.filter((_, index) => index !== idx));
+	};
+
 	const handleReferredViewPrescription = () => {
 		setTimeout(() => open(), 10);
 	};
@@ -582,7 +653,7 @@ export default function AddMedicineForm({
 				h={baseHeight ? baseHeight : form.values.instruction ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
 				bg="white"
 			>
-				<Stack gap="xs" p="sm">
+				<Stack gap="2px" p="sm">
 					{medicines?.length === 0 && (
 						<Flex
 							mih={baseHeight ? baseHeight - 50 : 220}
@@ -606,10 +677,29 @@ export default function AddMedicineForm({
 							</Button>
 						</Flex>
 					)}
+					{form.values?.exEmergency?.length > 0 && (
+						<>
+							{form.values?.exEmergency?.map((item, idx) => (
+								<Flex justify="space-between" key={idx} align="center" gap="les">
+									<Text className="capitalize" fz="14px">
+										{idx + 1}. {item.value}
+									</Text>
+									<ActionIcon
+										variant="outline"
+										color="var(--theme-error-color)"
+										onClick={() => handleDeleteExEmergency(idx)}
+									>
+										<IconTrash size={16} />
+									</ActionIcon>
+								</Flex>
+							))}
+						</>
+					)}
+
 					{medicines?.map((medicine, index) => (
 						<MedicineListItem
 							key={index}
-							index={index + 1}
+							index={(form.values?.exEmergency?.length || index) + 1}
 							medicines={medicines}
 							medicine={medicine}
 							setMedicines={setMedicines}
@@ -711,40 +801,6 @@ export default function AddMedicineForm({
 										placeholder="PharmacyInstruction"
 									/>
 								</Box>
-								{/*<Box pl={"md"}>
-									<Switch
-										defaultChecked
-										color="red"
-										size="xs"
-										label={t("SaveAsPrescriptionTemplate")}
-									/>
-								</Box>*/}
-
-								{/* <Text mt="xs" fz="sm">
-							{t("specialDiscount")}
-						</Text>
-						<Group grow gap="sm">
-							<InputForm
-								form={form}
-								label=""
-								tooltip="Discount on visit (%)"
-								name="visitPercent"
-								value={form.values.visitPercent}
-								changeValue={(v) => handleChange("visitPercent", v)}
-								placeholder="Visit (%)"
-								disabled
-							/>
-							<InputForm
-								form={form}
-								label=""
-								tooltip="Discount on test (%)"
-								name="testPercent"
-								value={form.values.testPercent}
-								changeValue={(v) => handleChange("testPercent", v)}
-								placeholder="Test (%)"
-								disabled
-							/>
-						</Group> */}
 							</Box>
 						</Grid.Col>
 					</Grid>
@@ -820,58 +876,68 @@ export default function AddMedicineForm({
 				size="28%"
 			>
 				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
-					<Autocomplete
-						label="Enter Patient ID"
-						placeholder={t("EmergencyPrescription")}
-						data={["1234567890", "1234567891", "1234567892"]}
-					/>
-
-					{/* <Autocomplete
-						label=""
-						placeholder={`Pick value or enter ${name}`}
-						data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
-						value={autocompleteValue}
-						onChange={setAutocompleteValue}
-						onOptionSubmit={(value) => {
-							handleAutocompleteOptionAdd(value, particulars, section.slug);
-							setTimeout(() => {
-								setAutocompleteValue("");
-							}, 0);
-						}}
-						classNames={inputCss}
-						onBlur={handleFieldBlur}
-						rightSection={<IconCaretUpDownFilled size={16} />}
-					/>
-					<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
-						{form.values.dynamicFormData?.[section.slug]?.map((item, idx) => (
-							<Flex
-								key={idx}
-								align="center"
-								justify="space-between"
-								px="es"
-								py="xs"
-								style={{
-									borderBottom:
-										idx !== form.values.dynamicFormData?.[section.slug]?.length - 1
-											? "1px solid var(--theme-tertiary-color-4)"
-											: "none",
-								}}
-							>
-								<Text fz="sm">
-									{idx + 1}. {item.name}
+					<Box>
+						<Autocomplete
+							label="Enter Patient ID"
+							placeholder={t("EmergencyPrescription")}
+							data={adviceData?.data?.map((p) => ({ value: p.name, label: p.name })) || []}
+							value={autocompleteValue}
+							onChange={setAutocompleteValue}
+							onOptionSubmit={(value) => {
+								handleAutocompleteOptionAdd(value, adviceData?.data, "exEmergency");
+								setTimeout(() => {
+									setAutocompleteValue("");
+								}, 0);
+							}}
+							classNames={inputCss}
+							onBlur={handleFieldBlur}
+							rightSection={<IconCaretUpDownFilled size={16} />}
+						/>
+						{/* =============== temporary items list with editable text inputs ================ */}
+						{tempEmergencyItems?.length > 0 && (
+							<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
+								<Text fw={600} fz="sm" mt="xs" c="var(--theme-primary-color)">
+									{t("PendingItems")} ({tempEmergencyItems?.length})
 								</Text>
-								<ActionIcon
-									color="red"
-									size="xs"
-									variant="subtle"
-									onClick={() => handleAutocompleteOptionRemove(idx, section.slug)}
-								>
-									<IconX size={16} />
-								</ActionIcon>
-							</Flex>
-						))}
-					</Stack> */}
+								{tempEmergencyItems?.map((item, idx) => (
+									<Flex
+										key={idx}
+										align="center"
+										justify="space-between"
+										px="es"
+										py="xs"
+										style={{
+											borderBottom:
+												idx !== tempEmergencyItems?.length - 1
+													? "1px solid var(--theme-tertiary-color-4)"
+													: "none",
+										}}
+									>
+										<TextInput
+											value={item.value}
+											onChange={(event) => handleTempItemChange(idx, event.currentTarget.value)}
+											placeholder="Edit value..."
+											size="xs"
+											w="70%"
+											classNames={inputCss}
+										/>
+										<ActionIcon
+											color="red"
+											size="xs"
+											variant="subtle"
+											onClick={() => handleTempItemRemove(idx)}
+										>
+											<IconX size={16} />
+										</ActionIcon>
+									</Flex>
+								))}
+							</Stack>
+						)}
+					</Box>
 					<Flex justify="flex-end" gap="xs">
+						<Button leftSection={<IconX size={16} />} bg="gray.6" onClick={closeExPrescription} w="120px">
+							{t("Cancel")}
+						</Button>
 						<Button
 							leftSection={<IconDeviceFloppy size={22} />}
 							bg="var(--theme-primary-color-6)"
@@ -879,9 +945,6 @@ export default function AddMedicineForm({
 							w="120px"
 						>
 							{t("Save")}
-						</Button>
-						<Button leftSection={<IconX size={16} />} bg="gray.6" onClick={closeExPrescription} w="120px">
-							{t("Cancel")}
 						</Button>
 					</Flex>
 				</Stack>

@@ -25,7 +25,7 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 			(link) => link.allowedRoles && link.allowedRoles.some((role) => userRole.includes(role))
 		);
 	}, [subMenu, userRole]);
-	console.log(getUserRole())
+
 	return (
 		<Box>
 			<Grid columns={12} gutter={{ base: 8 }}>

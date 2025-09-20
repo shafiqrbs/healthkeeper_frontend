@@ -9,19 +9,11 @@ import "@/index.css";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {
 	const patientInfo = JSON.parse(data?.json_content || "{}");
-	console.log("PatientInfo", patientInfo);
-
 	const patientReport = patientInfo?.patient_report || {};
-	console.log("PatientReport", patientReport);
-
 	const basicInfo = patientReport?.basic_info || {};
-	console.log("BasicInfo", basicInfo);
 	const patientExamination = patientReport?.patient_examination || {};
-	console.log("patientExamination", patientExamination);
 	const medicines = patientInfo?.medicines || [];
-	console.log("medicines", medicines);
 	const customerInformation = data?.invoice_details?.customer_details || data;
-	console.log("customerInformation", customerInformation);
 
 	const getValue = (value, defaultValue = "N/A") => {
 		return value || defaultValue;

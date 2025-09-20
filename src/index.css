@@ -528,6 +528,10 @@ input[type=radio]:checked+label>img {
     padding-block: 6px;
 }
 
+.capitalize {
+    text-transform: capitalize !important;
+}
+
 .full-bleed {
     box-shadow: 0 0 0 100vmax white !important;
     clip-path: inset(0 -100vmax) !important;
