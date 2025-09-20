@@ -90,7 +90,7 @@ export default function _Table({ module, open }) {
 
     const [viewDrawer, setViewDrawer] = useState(false);
 
-    const { data: getParticularPaymentModes } = useGlobalDropdownData({
+    const { data: getParticularUnits } = useGlobalDropdownData({
         path: HOSPITAL_DROPDOWNS.PARTICULAR_UNIT_MODE.PATH,
         params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_UNIT_MODE.TYPE },
         utility: HOSPITAL_DROPDOWNS.PARTICULAR_UNIT_MODE.UTILITY,
@@ -346,7 +346,7 @@ export default function _Table({ module, open }) {
                                             render: (item) => (
                                                 <Select
                                                     placeholder={t("SelectUnitName")}
-                                                    data={getParticularPaymentModes}
+                                                    data={getParticularUnits}
                                                     value={submitFormData[item.id]?.unit_id ?? ""}
                                                     onChange={(val) =>
                                                         handleFieldChange(item.id, "unit_id", val)
@@ -370,24 +370,7 @@ export default function _Table({ module, open }) {
                                                 />
                                             ),
                                         },
-                                        {
-                                            accessor: "opd_referred",
-                                            title: t("OPDRoom"),
-                                            render: (item) => (
-                                                <Checkbox
-                                                    key={item.id}
-                                                    size="sm"
-                                                    checked={submitFormData[item.id]?.opd_referred ?? false}
-                                                    onChange={(val) =>
-                                                        handleFieldChange(
-                                                            item.id,
-                                                            "opd_referred",
-                                                            val.currentTarget.checked
-                                                        )
-                                                    }
-                                                />
-                                            ),
-                                        },
+
                                         {
                                             accessor: "action",
                                             title: "",

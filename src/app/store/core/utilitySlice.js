@@ -36,7 +36,7 @@ export const HOSPITAL_DROPDOWNS = {
 
 	PARTICULAR_ROOM: { UTILITY: "particularRoom", TYPE: "room", PATH: "hospital/select/particular" },
 
-	PARTICULAR_OPD_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/opdroom" },
+	PARTICULAR_OPD_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/allopdroom" },
 	PARTICULAR_OPD_REFERRED_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/opdreferredroom" },
 
 	PARTICULAR_DOCTOR: { UTILITY: "particularDoctor", TYPE: "doctor", PATH: "hospital/select/particular" },

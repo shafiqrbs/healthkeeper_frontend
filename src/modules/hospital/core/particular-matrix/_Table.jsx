@@ -72,7 +72,44 @@ export default function _Table({ module }) {
         fetchData();
     }, []);
 
+    // Initialize form state once per row
+    useEffect(() => {
+        if (!records?.length) return;
+        setSubmitFormData((prev) => {
+            const newData = { ...prev };
+            records.forEach((item, idx) => {
+                if (!newData[item.id]) {
+                    newData[item.id] = {
+                        is_additional_field: item?.is_additional_field ?? false,
+                    };
+                }
+            });
+            return newData;
+        });
+    }, [records]);
 
+    const handleFieldChange = async (rowId, field, value) => {
+        setSubmitFormData((prev) => ({
+            ...prev,
+            [rowId]: { ...prev[rowId], [field]: value },
+        }));
+
+        setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
+
+        try {
+            await dispatch(
+                storeEntityData({
+                    url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MATRIX.INLINE_UPDATE}/${rowId}`,
+                    data: { [field]: value },
+                    module,
+                })
+            );
+        } catch (error) {
+            errorNotification(error.message);
+        } finally {
+            setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
+        }
+    };
 
     // 🔹 Drag and drop reorder
     const reorder = (list, startIndex, endIndex) => {
@@ -197,6 +234,24 @@ export default function _Table({ module }) {
                                         {values.hms_particular_type_name}
                                     </Text>
                                 </>
+                            ),
+                        },
+                        {
+                            accessor: "is_additional_field",
+                            title: t("AdditionalField"),
+                            render: (item) => (
+                                <Checkbox
+                                    key={item.id}
+                                    size="sm"
+                                    checked={submitFormData[item.id]?.is_additional_field ?? false}
+                                    onChange={(val) =>
+                                        handleFieldChange(
+                                            item.id,
+                                            "is_additional_field",
+                                            val.currentTarget.checked
+                                        )
+                                    }
+                                />
                             ),
                         },
 

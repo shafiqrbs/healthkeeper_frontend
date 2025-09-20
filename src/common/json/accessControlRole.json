@@ -1,42 +1,44 @@
 [
-  {
-    "Group": "Operator",
-    "actions": [
-      { "id": "operator_basic", "label": "Operator" },
-      { "id": "operator_manager", "label": "Operator Manager" }
-    ]
-  },
+
   {
     "Group": "Doctor",
     "actions": [
-      { "id": "doctor_basic", "label": "Doctor" },
-      { "id": "opd_prescription", "label": "OPD Prescription" },
-      { "id": "ipd_prescription", "label": "IPD Prescription" },
-      { "id": "ipd_confirm", "label": "IPD Confirm" }
+      { "id": "doctor_opd", "label": "OPD" },
+      { "id": "doctor_opd_prescription", "label": "OPD" },
+      { "id": "doctor_emergency", "label": "Emergency" },
+      { "id": "doctor_ipd_prescription", "label": "IPD" },
+      { "id": "doctor_ipd_confirm", "label": "IPD In-charge" },
+      { "id": "doctor_lab", "label": "Lab" }
     ]
   },
   {
     "Group": "Nurse",
     "actions": [
-      { "id": "nurse_basic", "label": "Nurse" }
+      { "id": "nurse_basic", "label": "Nurse" },
+      { "id": "nurse_incharge", "label": "Nurse In-charge" }
     ]
   },
   {
-    "Group": "Medicine",
+    "Group": "Pharmacy",
     "actions": [
-      { "id": "medicine_inventory", "label": "InventoryAndProduct" },
-      { "id": "medicine_stock", "label": "InventoryStock" },
-      { "id": "medicine_manager", "label": "InventoryManager" },
-      { "id": "medicine_admin", "label": "InventoryAdmin" }
+      { "id": "pharmacy_operator", "label": "Operator" },
+      { "id": "pharmacy_pharmacist", "label": "Pharmacist" },
+      { "id": "pharmacy_manager", "label": "Manager" }
+    ]
+  },
+  {
+    "Group": "Operator",
+    "actions": [
+      { "id": "operator_opd", "label": "OPD Operator" },
+      { "id": "operator_emergency", "label": "Emergency" },
+      { "id": "operator_manager", "label": "Operator Manager" }
     ]
   },
   {
     "Group": "Billing",
     "actions": [
-      { "id": "billing_inventory", "label": "InventoryAndProduct" },
-      { "id": "billing_stock", "label": "InventoryStock" },
-      { "id": "billing_manager", "label": "InventoryManager" },
-      { "id": "billing_admin", "label": "InventoryAdmin" }
+      { "id": "billing_cash", "label": "Operator" },
+      { "id": "billing_manager", "label": "Manager" }
     ]
   },
   {
@@ -55,19 +57,9 @@
       { "id": "admin_operator", "label": "Operator" },
       { "id": "admin_doctor", "label": "Doctor" },
       { "id": "admin_nurse", "label": "Nurse" },
-      { "id": "admin_advanced", "label": "Advanced Admin" },
-      { "id": "admin_core", "label": "CoreAndMasterData" },
-      { "id": "admin_core_manager", "label": "CoreManager" },
-      { "id": "admin_core_admin", "label": "CoreAdmin" }
-    ]
-  },
-  {
-    "Group": "Accounting",
-    "actions": [
-      { "id": "accounting_basic", "label": "Accounting" },
-      { "id": "accounting_voucher_entry", "label": "Voucher Entry" },
-      { "id": "accounting_voucher_approve", "label": "Voucher Approve" },
-      { "id": "accounting_admin", "label": "AccountingAdmin" }
+      { "id": "admin_pharmacy", "label": "Pharmacy" }
     ]
   }
+
+
 ]

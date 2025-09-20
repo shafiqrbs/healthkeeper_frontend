@@ -126,6 +126,7 @@ export const MASTER_DATA_ROUTES = {
 		PARTICULAR_MATRIX: {
 			INDEX: "hospital/mode/matrix",
 			ORDERING: "hospital/mode/matrix-ordering",
+			INLINE_UPDATE: "hospital/mode/matrix-inline-update",
 		},
 
 		PARTICULAR_MODE: {
