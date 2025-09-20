@@ -52,6 +52,7 @@
     "Group": "Admin",
     "actions": [
       { "id": "admin_basic", "label": "Admin" },
+      { "id": "admin_administrator", "label": "Administrator" },
       { "id": "admin_hospital", "label": "Hospital" },
       { "id": "admin_operator", "label": "Operator" },
       { "id": "admin_doctor", "label": "Doctor" },
