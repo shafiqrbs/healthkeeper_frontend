@@ -30,7 +30,7 @@ import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
-import { calculateAge, calculateDetailedAge } from "@/common/utils";
+import { calculateAge, calculateDetailedAge, getLoggedInUser, getUserRole } from "@/common/utils";
 import Table from "../visit/_Table";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
@@ -53,6 +53,9 @@ import PatientSearchResult from "./PatientSearchResult";
 import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } from "@/services/patientSearchService";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
+
+const ALLOWED_MANAGER_ROLES = ["operator_manager", "admin_doctor", "admin_operator", "admin_administrator"];
+const ALLOWED_ADMIN_ROLES = ["admin_basic", "admin_hospital", "admin_administrator"];
 
 const USER_NID_DATA = {
 	verifyToken: "a9a98eac-68c4-4dd1-9cb9-8127a5b44833",
@@ -323,6 +326,9 @@ export function Form({
 	const [userNidData] = useState(USER_NID_DATA);
 	const [showUserData, setShowUserData] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const userRoles = getUserRole();
+
+	console.log(userRoles);
 
 	const locations = useSelector((state) => state.crud.locations.data);
 
@@ -515,14 +521,16 @@ export function Form({
 							<Text fz="sm">{t("OPDRoom")}</Text>
 							<Flex align="center" gap="xs" className="cursor-pointer">
 								<Group>
-									<Button
-										variant="light"
-										onClick={openOpdRoom}
-										size={"xs"}
-										leftSection={<IconAdjustmentsCog size="16px" />}
-									>
-										Manage
-									</Button>
+									{userRoles.some((role) => ALLOWED_MANAGER_ROLES.includes(role)) && (
+										<Button
+											variant="light"
+											onClick={openOpdRoom}
+											size={"xs"}
+											leftSection={<IconAdjustmentsCog size="16px" />}
+										>
+											Manage
+										</Button>
+									)}
 									<Button
 										size={"xs"}
 										onClick={openRoom}
