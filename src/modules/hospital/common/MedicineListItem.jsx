@@ -178,8 +178,8 @@ export default function MedicineListItem({
 									</ActionIcon>
 								)}
 								{editingInstructionIndex === insIndex ? (
-									<Grid spacing="0px" columns={24}>
-										<Grid.Col span={4}>
+									<Grid gutter="les" columns={24}>
+										<Grid.Col span={5}>
 											<Autocomplete
 												size="xs"
 												label=""
@@ -189,6 +189,7 @@ export default function MedicineListItem({
 												onChange={(v) =>
 													handleInstructionFieldChange(insIndex, "dose_details", v)
 												}
+												clearable
 											/>
 										</Grid.Col>
 										<Grid.Col span={5}>
@@ -199,9 +200,10 @@ export default function MedicineListItem({
 												value={instruction.by_meal}
 												placeholder={t("Timing")}
 												onChange={(v) => handleInstructionFieldChange(insIndex, "by_meal", v)}
+												clearable
 											/>
 										</Grid.Col>
-										<Grid.Col span={2}>
+										<Grid.Col span={3}>
 											<NumberInput
 												size="xs"
 												label=""
@@ -210,7 +212,7 @@ export default function MedicineListItem({
 												onChange={(v) => handleInstructionFieldChange(insIndex, "quantity", v)}
 											/>
 										</Grid.Col>
-										<Grid.Col span={2}>
+										<Grid.Col span={3}>
 											<Autocomplete
 												size="xs"
 												label=""

@@ -14,6 +14,7 @@ import {
 	Tooltip,
 	ActionIcon,
 	TextInput,
+	Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
@@ -926,13 +927,12 @@ export default function AddMedicineForm({
 													: "none",
 										}}
 									>
-										<TextInput
+										<Textarea
 											value={item.value}
 											onChange={(event) => handleTempItemChange(idx, event.currentTarget.value)}
 											placeholder="Edit value..."
-											size="xs"
-											w="70%"
-											classNames={inputCss}
+											w="90%"
+											styles={{ input: { height: "80px" } }}
 										/>
 										<ActionIcon
 											color="red"
