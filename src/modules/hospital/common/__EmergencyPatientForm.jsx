@@ -25,7 +25,6 @@ import { useDisclosure, useHotkeys, useIsFirstRender } from "@mantine/hooks";
 import { calculateAge, calculateDetailedAge } from "@/common/utils";
 import Table from "../visit/_Table";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import InputMaskForm from "@components/form-builders/InputMaskForm";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import NIDDataPreviewModal from "./NIDDataPreviewModal";
 import { useReactToPrint } from "react-to-print";
@@ -39,7 +38,8 @@ import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
-import SegmentedControlForm from "@/common/components/form-builders/SegmentedControlForm";
+import SegmentedControlForm from "@components/form-builders/SegmentedControlForm";
+import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
 // =============== sample user data for emergency patient ================
 const USER_NID_DATA = {
@@ -108,12 +108,15 @@ export default function EmergencyPatientForm({
 
 	useEffect(() => {
 		const type = form.values.ageType || "year";
-		const formattedAge = calculateAge(form.values.dob, type);
+		const formattedDOB = new Date(form.values.dob)
+			.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" })
+			.replace(/\//g, "-");
+		const formattedAge = calculateAge(formattedDOB, type);
 		form.setFieldValue("age", formattedAge);
 
-		// =============== calculate detailed age from date of birth ================
+		// Calculate detailed age from date of birth
 		if (form.values.dob) {
-			const detailedAge = calculateDetailedAge(form.values.dob);
+			const detailedAge = calculateDetailedAge(formattedDOB);
 			form.setFieldValue("year", detailedAge.years);
 			form.setFieldValue("month", detailedAge.months);
 			form.setFieldValue("day", detailedAge.days);
@@ -499,19 +502,16 @@ export function Form({
 											<Text fz="sm">{t("DateOfBirth")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
-											<InputMaskForm
+											<DateSelectorForm
+												form={form}
+												placeholder="01-01-2020"
+												tooltip={t("EnterDateOfBirth")}
 												name="dob"
 												id="dob"
-												value={form.values.dob}
-												form={form}
-												label=""
-												tooltip={t("enterPatientBirthDate")}
-												placeholder="DD-MM-YYYY"
 												nextField="day"
-												maskInput="00-00-0000"
-												required={false}
-												onChange={handleDobChange}
-												rightSection={<IconInfoCircle size={16} opacity={0.5} />}
+												value={form.values.dob}
+												required
+												disabledFutureDate
 											/>
 										</Grid.Col>
 									</Grid>

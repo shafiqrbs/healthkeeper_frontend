@@ -30,14 +30,13 @@ import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
-import { calculateAge, calculateDetailedAge, getLoggedInUser, getUserRole } from "@/common/utils";
+import { calculateAge, calculateDetailedAge, getUserRole } from "@/common/utils";
 import Table from "../visit/_Table";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch, useSelector } from "react-redux";
-import InputMaskForm from "@components/form-builders/InputMaskForm";
 import SegmentedControlForm from "@components/form-builders/SegmentedControlForm";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import NIDDataPreviewModal from "./NIDDataPreviewModal";
@@ -51,6 +50,7 @@ import RoomCard from "./RoomCard";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
 import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } from "@/services/patientSearchService";
+import DateSelectorForm from "@/common/components/form-builders/DateSelectorForm";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -61,7 +61,6 @@ const ALLOWED_MANAGER_ROLES = [
 	"admin_administrator",
 	"accounting_admin",
 ];
-const ALLOWED_ADMIN_ROLES = ["admin_basic", "admin_hospital", "admin_administrator"];
 
 const USER_NID_DATA = {
 	verifyToken: "a9a98eac-68c4-4dd1-9cb9-8127a5b44833",
@@ -341,12 +340,15 @@ export function Form({
 
 	const handleDobChange = () => {
 		const type = form.values.ageType || "year";
-		const formattedAge = calculateAge(form.values.dob, type);
+		const formattedDOB = new Date(form.values.dob)
+			.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" })
+			.replace(/\//g, "-");
+		const formattedAge = calculateAge(formattedDOB, type);
 		form.setFieldValue("age", formattedAge);
 
 		// Calculate detailed age from date of birth
 		if (form.values.dob) {
-			const detailedAge = calculateDetailedAge(form.values.dob);
+			const detailedAge = calculateDetailedAge(formattedDOB);
 			form.setFieldValue("year", detailedAge.years);
 			form.setFieldValue("month", detailedAge.months);
 			form.setFieldValue("day", detailedAge.days);
@@ -615,17 +617,16 @@ export function Form({
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={14}>
-								<InputMaskForm
+								<DateSelectorForm
+									form={form}
+									placeholder="01-01-2020"
+									tooltip={t("EnterDateOfBirth")}
 									name="dob"
 									id="dob"
-									value={form.values?.dob}
-									form={form}
-									label=""
-									tooltip={t("EnterPatientBirthDate")}
-									placeholder="DD-MM-YYYY"
 									nextField="day"
-									maskInput="00-00-0000"
-									rightSection={<IconInfoCircle size={16} opacity={0.5} />}
+									value={form.values.dob}
+									required
+									disabledFutureDate
 								/>
 							</Grid.Col>
 						</Grid>

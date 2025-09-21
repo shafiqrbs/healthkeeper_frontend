@@ -195,7 +195,7 @@ export default function DateSelectorForm({
 						minDate={disable ? new Date() : undefined}
 						maxDate={disabledFutureDate ? new Date() : undefined}
 						renderCustomHeader={renderCustomHeader}
-						dateFormat="dd/MM/yyyy"
+						dateFormat="dd-MM-yyyy"
 						showYearDropdown
 						showMonthDropdown
 						dropdownMode="select"
