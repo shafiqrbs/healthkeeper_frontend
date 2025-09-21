@@ -23,6 +23,7 @@ export default function MedicineListItem({
 	const { t } = useTranslation();
 	const [mode, setMode] = useState("view");
 	const [editingInstructionIndex, setEditingInstructionIndex] = useState(null);
+	const [viewAction, setViewAction] = useState(true);
 
 	const openEditMode = () => {
 		setMode("edit");
@@ -265,7 +266,13 @@ export default function MedicineListItem({
 									</Grid>
 								) : (
 									<>
-										<Box className="capitalize" fz="xs" c="var(--theme-tertiary-color-8)">
+										<Box
+											onMouseEnter={() => setViewAction(true)}
+											onMouseLeave={() => setViewAction(true)}
+											className="capitalize"
+											fz="xs"
+											c="var(--theme-tertiary-color-8)"
+										>
 											{instruction?.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
 											---- {instruction.quantity} ---- {instruction.duration}{" "}
 											{isFirstItem &&
@@ -274,7 +281,7 @@ export default function MedicineListItem({
 												} ---- ${instruction.doctor_comment || t("NoDoctorComment")}`}
 										</Box>
 
-										<Flex align="center">
+										<Flex align="center" display={viewAction ? "flex" : "none"}>
 											<ActionIcon
 												variant="transparent"
 												color="var(--theme-secondary-color-6)"

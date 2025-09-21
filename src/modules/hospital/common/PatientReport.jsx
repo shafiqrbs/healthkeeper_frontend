@@ -27,7 +27,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 	const height = mainAreaHeight - 246;
 	const { t } = useTranslation();
 
-	const [autocompleteValue, setAutocompleteValue] = useState("");
+	const [autocompleteValues, setAutocompleteValues] = useState({});
 	// Handle onBlur update for form fields
 	const handleFieldBlur = () => {
 		// Only update if update function exists and form has data
@@ -468,12 +468,12 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 							label=""
 							placeholder={`Pick value or enter ${name}`}
 							data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
-							value={autocompleteValue}
-							onChange={setAutocompleteValue}
+							value={autocompleteValues[section.slug] || ""}
+							onChange={(value) => setAutocompleteValues((prev) => ({ ...prev, [section.slug]: value }))}
 							onOptionSubmit={(value) => {
 								handleAutocompleteOptionAdd(value, particulars, section.slug);
 								setTimeout(() => {
-									setAutocompleteValue("");
+									setAutocompleteValues((prev) => ({ ...prev, [section.slug]: "" }));
 								}, 0);
 							}}
 							classNames={inputCss}
