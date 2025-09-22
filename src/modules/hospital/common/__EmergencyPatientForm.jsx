@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconInfoCircle, IconRestore, IconSearch } from "@tabler/icons-react";
+import { IconRestore, IconSearch } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -99,7 +99,7 @@ export default function EmergencyPatientForm({
 		},
 	});
 	const [openedDoctorsRoom, { close: closeDoctorsRoom }] = useDisclosure(false);
-	const [opened, { open, close }] = useDisclosure(false);
+	const [opened, { close }] = useDisclosure(false);
 	const [patientSearchResults, setPatientSearchResults] = useState([]);
 	const [showPatientDropdown, setShowPatientDropdown] = useState(false);
 	const [isSearching, setIsSearching] = useState(false);
@@ -180,7 +180,7 @@ export default function EmergencyPatientForm({
 		// Fill the form with selected patient data
 		form.setFieldValue("name", patient?.data?.name);
 		form.setFieldValue("mobile", patient?.data?.mobile);
-		//form.setFieldValue("dob", patient?.data?.dob);
+		form.setFieldValue("dob", patient?.data?.dob ? new Date(patient.data.dob) : null);
 		form.setFieldValue("address", patient?.data?.address);
 		form.setFieldValue("customer_id", patient?.data?.id);
 		// Close the dropdown
@@ -289,7 +289,7 @@ export function Form({
 
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 
-	const [userNidData, setUserNidData] = useState(USER_NID_DATA);
+	const [userNidData] = useState(USER_NID_DATA);
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
@@ -363,7 +363,7 @@ export function Form({
 				const parsed = JSON.parse(saved);
 				Object.entries(parsed).forEach(([key, value]) => {
 					// =============== handle date fields - convert string back to Date object ================
-					if (key === "appointment") {
+					if (key === "appointment" || key === "dob") {
 						if (value && typeof value === "string") {
 							form.setFieldValue(key, new Date(value));
 						} else {
@@ -502,6 +502,11 @@ export function Form({
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<DateSelectorForm
+												key={
+													form.values.dob
+														? new Date(form.values.dob).toISOString()
+														: "dob-empty"
+												}
 												form={form}
 												placeholder="01-01-2020"
 												tooltip={t("EnterDateOfBirth")}

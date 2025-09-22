@@ -13,6 +13,18 @@ export const getCustomers = () => {
 	return JSON.parse(localStorage.getItem("core-customers") || "[]");
 };
 
+export const formatDOB = (dob) => {
+	try {
+		if (!dob) return "";
+		return new Date(dob)
+			.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" })
+			.replace(/\//g, "-");
+	} catch (err) {
+		console.error(err);
+		return "";
+	}
+};
+
 export const getUserRole = () => {
 	try {
 		const parsedUser = getLoggedInUser();

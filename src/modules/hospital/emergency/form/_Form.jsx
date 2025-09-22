@@ -8,6 +8,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch } from "react-redux";
+import { formatDOB, getLoggedInUser } from "@/common/utils";
 
 const LOCAL_STORAGE_KEY = "emergencyPatientFormData";
 
@@ -29,9 +30,10 @@ export default function _Form({ module }) {
 			}
 
 			try {
-				const createdBy = JSON.parse(localStorage.getItem("user"));
+				const createdBy = getLoggedInUser();
 				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-				const [day, month, year] = form.values.dob?.split("-").map(Number);
+				const formattedDOB = formatDOB(form.values.dob);
+				const [day, month, year] = formattedDOB.split("-").map(Number);
 				const dateObj = new Date(year, month - 1, day);
 
 				const today = new Date();

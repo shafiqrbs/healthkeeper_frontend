@@ -17,20 +17,13 @@ import {
 import { useEffect, useState, useRef } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import {
-	IconInfoCircle,
-	IconSearch,
-	IconAlertCircle,
-	IconChevronRight,
-	IconAdjustmentsCog,
-	IconX,
-} from "@tabler/icons-react";
+import { IconSearch, IconAlertCircle, IconChevronRight, IconAdjustmentsCog, IconX } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
-import { calculateAge, calculateDetailedAge, getUserRole } from "@/common/utils";
+import { calculateAge, calculateDetailedAge, formatDOB, getLoggedInUser, getUserRole } from "@/common/utils";
 import Table from "../visit/_Table";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
@@ -205,7 +198,7 @@ export default function PatientForm({
 		// Fill the form with selected patient data
 		form.setFieldValue("name", patient?.data?.name);
 		form.setFieldValue("mobile", patient?.data?.mobile);
-		form.setFieldValue("dob", patient?.data?.dob);
+		form.setFieldValue("dob", patient?.data?.dob ? new Date(patient.data.dob) : null);
 		form.setFieldValue("address", patient?.data?.address);
 		form.setFieldValue("customer_id", selectedPatient?.customer_id || "");
 		// Close the dropdown
@@ -340,9 +333,7 @@ export function Form({
 
 	const handleDobChange = () => {
 		const type = form.values.ageType || "year";
-		const formattedDOB = new Date(form.values.dob)
-			.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" })
-			.replace(/\//g, "-");
+		const formattedDOB = formatDOB(form.values.dob);
 		const formattedAge = calculateAge(formattedDOB, type);
 		form.setFieldValue("age", formattedAge);
 
@@ -377,7 +368,7 @@ export function Form({
 				const parsed = JSON.parse(saved);
 				Object.entries(parsed).forEach(([key, value]) => {
 					// handle date fields - convert string back to Date object
-					if (key === "appointment") {
+					if (key === "appointment" || key === "dob") {
 						if (value && typeof value === "string") {
 							form.setFieldValue(key, new Date(value));
 						} else {
@@ -444,9 +435,10 @@ export function Form({
 			}
 
 			try {
-				const createdBy = JSON.parse(localStorage.getItem("user"));
+				const createdBy = getLoggedInUser();
+				const formattedDOB = formatDOB(form.values.dob);
 				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-				const [day, month, year] = form.values.dob.split("-").map(Number);
+				const [day, month, year] = formattedDOB.split("-").map(Number);
 				const dateObj = new Date(year, month - 1, day);
 
 				const today = new Date();
@@ -618,6 +610,7 @@ export function Form({
 							</Grid.Col>
 							<Grid.Col span={14}>
 								<DateSelectorForm
+									key={form.values.dob ? new Date(form.values.dob).toISOString() : "dob-empty"}
 									form={form}
 									placeholder="01-01-2020"
 									tooltip={t("EnterDateOfBirth")}
