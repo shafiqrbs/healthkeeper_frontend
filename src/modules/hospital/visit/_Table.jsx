@@ -29,7 +29,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
-import { formatDate } from "@/common/utils";
+import {formatDate, getLoggedInHospitalUser, getUserRole} from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -42,10 +42,14 @@ import Prescription from "@components/print-formats/opd/Prescription2";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
-const tabs = ["all", "prescription", "Non-Prescription"];
+const  tabs =[
+	{ label: 'All', value: 'all' },
+	{ label: 'Prescription', value: 'prescription' },
+	{ label: 'Non-prescription', value: 'non-prescription' },
+]
 
 const PER_PAGE = 200;
-
+const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -73,7 +77,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const handlePrescriptionOption = useReactToPrint({
 		content: () => prescriptionRef.current,
 	});
-
+	const [processTab, setProcessTab] = useState("all");
 	const [rootRef, setRootRef] = useState(null);
 	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
@@ -83,7 +87,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
-
+	const userHospitalConfig = getLoggedInHospitalUser();
+	const userRoles = getUserRole();
+	const userId = userHospitalConfig?.employee_id;
 	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	useEffect(() => {
@@ -100,7 +106,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
-
+	const today = new Date();;
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
@@ -109,6 +115,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			patient_mode: "opd",
 			term: filterData.keywordSearch,
 			room_id: filterData.room_id,
+			prescription_mode: processTab,
+			created: filterData?.created || formatDate(today),
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -228,15 +236,15 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					{t("VisitInformation")}
 				</Text>
 				<Flex gap="xs" align="center">
-					<Tabs mt="xs" variant="none" value={value} onChange={setValue}>
+					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab}>
-									{t(tab)}
+								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
+									{t(tab.label)}
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={value ? controlsRefs[value] : null}
+								target={processTab ? controlsRefs[processTab] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
@@ -301,15 +309,13 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							title: t("Created"),
 							textAlignment: "right",
 							sortable: true,
-							render: (item) => <Text fz="sm">{formatDate(item?.created_at)}</Text>,
+							render: (item) => <Text fz="xs">{formatDate(item?.created_at)}</Text>,
 						},
 						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
 						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
 						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
-						{ accessor: "health_id", title: t("HealthID") },
 						{ accessor: "name", sortable: true, title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
-						{ accessor: "gender", sortable: true, title: t("Gender") },
 						{ accessor: "patient_payment_mode_name", sortable: true, title: t("Patient") },
 						{ accessor: "total", title: t("Total") },
 						{
@@ -324,35 +330,35 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{values?.prescription_id ? (
+									{values?.prescription_id && userId == values?.prescription_created_by_id ? (
 										<Button
-											miw={124}
 											variant="filled"
 											bg="var(--theme-success-color)"
 											c="white"
-											size="xs"
+											fw={400}
+											size="compact-xs"
 											onClick={() => handlePrescription(values.prescription_id)}
 											radius="es"
-											rightSection={<IconArrowRight size={18} />}
+											rightSection={<IconArrowRight size={12} />}
 											className="border-right-radius-none"
 										>
 											{t("Prescription")}
 										</Button>
-									) : (
+									) : !values?.prescription_id ? (
 										<Button
-											miw={124}
+											fw={400}
 											variant="filled"
 											bg="var(--theme-primary-color-6)"
 											c="white"
-											size="xs"
+											size="compact-xs"
 											onClick={() => handleProcessPrescription(values.id)}
 											radius="es"
-											rightSection={<IconArrowRight size={18} />}
+											rightSection={<IconArrowRight size={12} />}
 											className="border-right-radius-none"
 										>
 											{t("Process")}
 										</Button>
-									)}
+									):(null)}
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -363,8 +369,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 									>
 										<Menu.Target>
 											<ActionIcon
-												className="action-icon-menu border-left-radius-none"
-												variant="default"
+												className="border-left-radius-none"
+												variant="transparent"
+												color='var(--theme-menu-three-dot)'
 												radius="es"
 												aria-label="Settings"
 											>
@@ -415,23 +422,26 @@ export default function Table({ module, height, closeTable, availableClose = fal
 													</Menu.Item>
 												</>
 											)}
-											<Menu.Item
-												onClick={() => handleDelete(values.id)}
-												c="red.6"
-												leftSection={
-													<IconTrashX
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-											>
-												{t("Delete")}
-											</Menu.Item>
+											{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && (
+												<Menu.Item
+													onClick={() => handleDelete(values.id)}
+													c="red.6"
+													leftSection={
+														<IconTrashX
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+												>
+													{t("Delete")}
+												</Menu.Item>
+											)}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>
+
 							),
 						},
 					]}
