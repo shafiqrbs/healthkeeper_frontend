@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { sortBy } from "lodash";
 import { getIndexEntityData, showEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { setItemData, setRefetchData } from "@/app/store/core/crudSlice";
-import { formatDate } from "@utils/index";
+import {formatDate, getLoggedInHospitalUser, getUserRole} from "@utils/index";
 import CompactDrawer from "@/common/components/drawers/CompactDrawer";
 import TextAreaForm from "@/common/components/form-builders/TextAreaForm";
 import { successNotification } from "@components/notification/successNotification";
@@ -30,8 +30,12 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { modals } from "@mantine/modals";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 
-const PER_PAGE = 20;
-const tabs = ["all", "closed", "done", "inProgress", "returned"];
+const PER_PAGE = 200;
+const  tabs =[
+	{ label: 'All', value: 'all' },
+	{ label: 'Prescription', value: 'prescription' },
+	{ label: 'Non-prescription', value: 'non-prescription' },
+]
 
 export default function Table({ module }) {
 	const dispatch = useDispatch();
@@ -49,7 +53,10 @@ export default function Table({ module }) {
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
 	const filterData = useSelector((state) => state.crud[module].filterData);
-
+	const [processTab, setProcessTab] = useState("all");
+	const userHospitalConfig = getLoggedInHospitalUser();
+	const userRoles = getUserRole();
+	const userId = userHospitalConfig?.employee_id;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -76,7 +83,7 @@ export default function Table({ module }) {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
-
+	const today = new Date();
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
@@ -85,6 +92,8 @@ export default function Table({ module }) {
 			patient_mode: "emergency",
 			term: filterData.keywordSearch,
 			room_id: filterData.room_id,
+			prescription_mode: processTab,
+			created: filterData?.created || formatDate(today),
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -176,15 +185,15 @@ export default function Table({ module }) {
 					{t("EmergencyInformation")}
 				</Text>
 				<Flex gap="xs" align="center">
-					<Tabs mt="xs" variant="none" value={value} onChange={setValue}>
+					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab}>
-									{t(tab)}
+								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
+									{t(tab.label)}
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={value ? controlsRefs[value] : null}
+								target={processTab ? controlsRefs[processTab] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
@@ -231,7 +240,7 @@ export default function Table({ module }) {
 							title: t("Created"),
 							textAlignment: "right",
 							render: (item) => (
-								<Text fz="sm" onClick={() => handleView(item.id)} className="activate-link text-nowrap">
+								<Text fz="xs" onClick={() => handleView(item.id)} className="activate-link text-nowrap">
 									{formatDate(item.created_at)}
 								</Text>
 							),
@@ -261,7 +270,8 @@ export default function Table({ module }) {
 												variant="filled"
 												bg="var(--theme-primary-color-4)"
 												c="white"
-												size="xs"
+												fw={'400'}
+												size="compact-xs"
 												onClick={() => handlePrescription(values.prescription_id)}
 												radius="es"
 												rightSection={<IconArrowRight size={18} />}
@@ -274,9 +284,10 @@ export default function Table({ module }) {
 												variant="filled"
 												bg="var(--theme-primary-color-6)"
 												c="white"
-												size="xs"
+												size="compact-xs"
 												onClick={() => handleProcessPrescription(values.id)}
 												radius="es"
+												fw={'400'}
 												rightSection={<IconArrowRight size={18} />}
 												className="border-right-radius-none"
 											>
@@ -289,9 +300,10 @@ export default function Table({ module }) {
 											variant="filled"
 											bg="var(--theme-success-color)"
 											c="white"
-											size="xs"
+											size="compact-xs"
 											onClick={() => handleSendToAdmission(values.id)}
 											radius="es"
+											fw={'400'}
 											rightSection={<IconArrowRight size={18} />}
 											className="border-right-radius-none"
 										>
@@ -309,7 +321,7 @@ export default function Table({ module }) {
 										<Menu.Target>
 											<ActionIcon
 												className="action-icon-menu border-left-radius-none"
-												variant="default"
+												variant="transparent"
 												radius="es"
 												aria-label="Settings"
 											>
