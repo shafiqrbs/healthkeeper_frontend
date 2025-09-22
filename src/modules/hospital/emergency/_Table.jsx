@@ -33,10 +33,12 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 const PER_PAGE = 200;
 const  tabs =[
 	{ label: 'All', value: 'all' },
+	{ label: 'Admission', value: 'admission' },
 	{ label: 'Prescription', value: 'prescription' },
 	{ label: 'Non-prescription', value: 'non-prescription' },
 ]
-
+const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
+const ALLOWED_DOCTOR_ROLES = [ "doctor_emergency"];
 export default function Table({ module }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -261,6 +263,9 @@ export default function Table({ module }) {
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
+
+									{userRoles.some((role) => ALLOWED_DOCTOR_ROLES.includes(role)) && (
+<>
 									{["New", "In-progress"].includes(values?.process) &&
 										values?.process !== "Closed" &&
 										!values?.referred_mode &&
@@ -310,6 +315,8 @@ export default function Table({ module }) {
 											{t("Admission")}
 										</Button>
 									)}
+									</>
+										)}
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -318,6 +325,7 @@ export default function Table({ module }) {
 										openDelay={100}
 										closeDelay={400}
 									>
+
 										<Menu.Target>
 											<ActionIcon
 												className="action-icon-menu border-left-radius-none"
@@ -329,19 +337,21 @@ export default function Table({ module }) {
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
-											<Menu.Item
-												onClick={() => {
-													// handleVendorEdit(values.id);
-													// open();
-												}}
-											>
-												{t("Edit")}
-											</Menu.Item>
-											<Menu.Item
-												// onClick={() => handleDelete(values.id)}
-												bg="red.1"
-												c="red.6"
-												rightSection={
+											{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && (
+												<>
+													<Menu.Item
+														onClick={() => {
+															// handleVendorEdit(values.id);
+															// open();
+														}}
+													>
+														{t("Edit")}
+													</Menu.Item>
+													<Menu.Item
+													// onClick={() => handleDelete(values.id)}
+													bg="red.1"
+													c="red.6"
+													rightSection={
 													<IconTrashX
 														style={{
 															width: rem(14),
@@ -349,9 +359,11 @@ export default function Table({ module }) {
 														}}
 													/>
 												}
-											>
-												{t("Delete")}
-											</Menu.Item>
+													>
+													{t("Delete")}
+													</Menu.Item>
+												</>
+												)}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>

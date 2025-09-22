@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput,NumberInput} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, NumberInput, Checkbox} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
@@ -33,7 +33,7 @@ import {
 	ERROR_NOTIFICATION_COLOR,
 } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import {successNotification} from "@components/notification/successNotification";
 import {SUCCESS_NOTIFICATION_COLOR} from "@/constants/index";
@@ -156,12 +156,11 @@ export default function _Table({ module, open }) {
 
 	useEffect(() => {
 		if (!records?.length) return;
-
 		const initialFormData = records.reduce((acc, item) => {
-
 			acc[item.id] = {
 				name: item.name || "",
 				price: item.price || "",
+				is_available: item?.is_available ?? false,
 			};
 
 			return acc;
@@ -291,6 +290,24 @@ export default function _Table({ module, open }) {
 									value={submitFormData[item.id]?.price || ""}
 									onChange={(val) => handleDataTypeChange(item.id, "price", val)}
 									onBlur={() => handleRowSubmit(item.id)}
+								/>
+							),
+						},
+						{
+							accessor: "is_available",
+							title: t("Available"),
+							render: (item) => (
+								<Checkbox
+									key={item.id}
+									size="sm"
+									checked={submitFormData[item.id]?.is_available ?? false}
+									onChange={(val) =>
+										handleRowSubmit(
+											item.id,
+											"is_available",
+											val.currentTarget.checked
+										)
+									}
 								/>
 							),
 						},

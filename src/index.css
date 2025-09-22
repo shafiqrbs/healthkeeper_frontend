@@ -666,3 +666,9 @@ input[type=radio]:checked+label>img {
     justify-content: center;
     gap: 6px;
 }
+
+.custom-textarea {
+    width: 220px!important;
+    height: 160px!important;
+    resize: none; /* prevent manual resize */
+}

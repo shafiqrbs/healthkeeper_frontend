@@ -4,15 +4,14 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
-import tableCss from "@assets/css/Table.module.css";
+import tableCss from "@assets/css/TableAdmin.module.css";
 import { DataTable } from "mantine-datatable";
 import { IconX } from "@tabler/icons-react";
 import { errorNotification } from "@components/notification/errorNotification";
 import { MODULES_CORE } from "@/constants";
-
 const PER_PAGE = 500;
 const opdRoomModule = MODULES_CORE.OPD_ROOM;
-
+const module = MODULES_CORE.PARTICULAR;
 export default function OpdRoomModal({ closeOpdRoom, height }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();

@@ -785,6 +785,7 @@ export function Form({
 											<InputNumberForm
 												id="amount"
 												form={form}
+												value={form?.values?.configuredDueAmount || ""}
 												tooltip={t("EnterAmount")}
 												placeholder={t("Amount")}
 												name="amount"

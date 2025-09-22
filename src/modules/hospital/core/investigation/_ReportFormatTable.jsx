@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Group, Box, ActionIcon, Text, Flex, Button, Grid, Stack, Select, TextInput, rem } from "@mantine/core";
+import {Group, Box, ActionIcon, Text, Flex, Button, Grid, Stack, Select, TextInput, rem, Textarea} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconTrashX, IconDeviceFloppy, IconAlertCircle } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
@@ -174,13 +174,7 @@ export default function _ReportFormatTable({ module }) {
 				<Grid w="100%" columns={24}>
 					<Grid.Col span={16}>
 						<DataTable
-							classNames={{
-								root: tableCss.root,
-								table: tableCss.table,
-								body: tableCss.body,
-								header: tableCss.header,
-								footer: tableCss.footer,
-							}}
+
 							records={entityData}
 							columns={[
 								{
@@ -246,13 +240,17 @@ export default function _ReportFormatTable({ module }) {
 									accessor: "reference_value",
 									title: t("ReferenceValue"),
 									render: (item) => (
-										<TextInput
+										<Textarea
 											placeholder={t("ReferenceValue")}
 											value={submitFormData[item.id]?.reference_value || ""}
 											onChange={(val) =>
 												handleDataTypeChange(item.id, "reference_value", val.target.value)
 											}
 											onBlur={() => handleRowSubmit(item.id)}
+											classNames={{
+												input: "custom-textarea",
+											}}
+
 										/>
 									),
 								},
@@ -356,8 +354,8 @@ export default function _ReportFormatTable({ module }) {
 											label={t("UnitName")}
 											tooltip={t("UnitName")}
 											placeholder={t("UnitName")}
-											name="unit_name"
-											id="unit_name"
+											name="unit"
+											id="unit"
 											nextField="reference_value"
 											value={form.values.unit_name}
 										/>
