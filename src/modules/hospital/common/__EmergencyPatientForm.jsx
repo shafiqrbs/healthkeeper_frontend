@@ -327,7 +327,6 @@ export function Form({
 		setConfiguredDueAmount(price);
 		form.setFieldValue("amount", price);
 	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
-
 	const handlePrint = async (type) => {
 		const res = await handleSubmit();
 

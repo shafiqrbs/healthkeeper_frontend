@@ -15,13 +15,14 @@ export default function ActionButtons({
 	form,
 	isSubmitting,
 	handleSubmit,
-	type = "prescription",
+	type = "opd_ticket",
 	handlePosPrint,
 	handleA4Print,
 	children,
 }) {
 	const { hospitalConfigData:globalConfig } = useHospitalConfigData();
 	const  hospitalConfigData = globalConfig?.hospital_config
+
 	const { t } = useTranslation();
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
@@ -30,11 +31,10 @@ export default function ActionButtons({
 		const price =
 			form.values.patient_payment_mode_id !== "30" // only for general payment will be applicable
 				? 0
-				: Number(hospitalConfigData?.[`${type}_fee`]?.[`ticket_fee_price`] ?? 0);
+				: Number(hospitalConfigData?.[`${type}_fee`]?.[`opd_ticket_fee_price`] ?? 0);
 		setConfiguredDueAmount(price);
 		form.setFieldValue("amount", price);
 	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
-
 	const enteredAmount = Number(form?.values?.amount ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
 	const isReturn = remainingBalance < 0;
