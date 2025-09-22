@@ -25,21 +25,21 @@ const quickBrowseButtonData = [
 		icon: IconStethoscope,
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
 		color: "var(--mantine-color-yellow-8)",
-		allowedRoles: ["admin_administrator", "operator_opd","operator_manager"],
+		allowedRoles: ["admin_administrator", "operator_opd", "operator_manager"],
 	},
 	{
 		label: "IPD",
 		icon: IconBed,
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX,
 		color: "var(--mantine-color-blue-7)",
-		allowedRoles:["admin_administrator", "operator_opd","operator_manager"],
+		allowedRoles: ["admin_administrator", "operator_opd", "operator_manager"],
 	},
 	{
 		label: "Emergency",
 		icon: IconTestPipe2,
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EMERGENCY.INDEX,
 		color: "var(--mantine-color-cyan-8)",
-		allowedRoles: ["admin_administrator", "operator_opd","operator_manager"],
+		allowedRoles: ["admin_administrator", "operator_opd", "operator_manager"],
 	},
 	{
 		label: "reportDelivery",
@@ -72,7 +72,7 @@ const quickBrowseCardData = [
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
 		color: "var(--theme-secondary-color-9)",
 		backgroundColor: "var(--theme-secondary-color-0)",
-		allowedRoles: ["admin_administrator","operator_opd","operator_manager"],
+		allowedRoles: ["admin_administrator", "operator_opd", "operator_manager"],
 	},
 	{
 		label: "Emergency",
@@ -80,7 +80,7 @@ const quickBrowseCardData = [
 		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EMERGENCY.INDEX,
 		color: "var(--mantine-color-cyan-8)",
 		backgroundColor: "var(--mantine-color-cyan-0)",
-		allowedRoles: ["admin_administrator","operator_ipd","operator_manager"],
+		allowedRoles: ["admin_administrator", "operator_ipd", "operator_manager"],
 	},
 	{
 		label: "IPD",
@@ -88,7 +88,7 @@ const quickBrowseCardData = [
 		route: "/payment",
 		color: "var(--mantine-color-cyan-7)",
 		backgroundColor: "var(--mantine-color-cyan-0)",
-		allowedRoles: ["admin_administrator","operator_ipd","operator_manager"],
+		allowedRoles: ["admin_administrator", "operator_ipd", "operator_manager"],
 	},
 
 	/*{
@@ -140,7 +140,7 @@ export default function Operator() {
 							</Text>
 						</Flex>
 					</Card.Section>
-					<Grid columns={9} gutter="md"  mt="md">
+					<Grid columns={9} gutter="md" mt="md">
 						{filteredQuickBrowseCardData.map((item) => (
 							<Grid.Col span={3} key={item.label}>
 								<Box
@@ -180,7 +180,7 @@ export default function Operator() {
 							</Text>
 						</Flex>
 					</Card.Section>
-				<DailyOverview/>
+					<DailyOverview />
 				</Card>
 			</Grid.Col>
 		</Grid>

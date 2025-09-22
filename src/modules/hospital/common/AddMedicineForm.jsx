@@ -189,14 +189,7 @@ export default function AddMedicineForm({
 	// =============== handler for saving emergency prescription ================
 	const handleEmergencyPrescriptionSave = () => {
 		if (tempEmergencyItems.length === 0) {
-			showNotificationComponent(
-				t("Please add at least one emergency item"),
-				"red",
-				"lightgray",
-				true,
-				1000,
-				true
-			);
+			showNotificationComponent(t("Please add at least one emergency item"), "red", "lightgray", true, 700, true);
 			return;
 		}
 
@@ -231,21 +224,14 @@ export default function AddMedicineForm({
 			"alt+2",
 			() => {
 				handleHoldData();
-				showNotificationComponent(t("Prescription held successfully"), "blue", "lightgray", true, 1000, true);
+				showNotificationComponent(t("Prescription held successfully"), "blue", "lightgray", true, 700, true);
 			},
 		],
 		[
 			"alt+4",
 			() => {
 				printPrescription2A4();
-				showNotificationComponent(
-					t("Prescription printed successfully"),
-					"blue",
-					"lightgray",
-					true,
-					1000,
-					true
-				);
+				showNotificationComponent(t("Prescription printed successfully"), "blue", "lightgray", true, 700, true);
 			},
 		],
 	]);
@@ -357,7 +343,7 @@ export default function AddMedicineForm({
 
 	const handlePrescriptionSubmit = async (skipLoading) => {
 		if (!medicines || medicines.length === 0) {
-			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, 1000, true);
+			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, 700, true);
 			return {};
 		}
 
@@ -391,9 +377,9 @@ export default function AddMedicineForm({
 			const resultAction = await dispatch(updateEntityData(value));
 
 			if (updateEntityData.rejected.match(resultAction)) {
-				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
+				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
-				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 1000, true);
+				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 700, true);
 				setRefetchData({ module, refetching: true });
 				// Reset forms and data
 				// form.reset();
@@ -401,7 +387,7 @@ export default function AddMedicineForm({
 			}
 		} catch (error) {
 			console.error("Error submitting prescription:", error);
-			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
+			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
 			return {}; // Indicate failed submission
 		} finally {
 			!skipLoading && setIsSubmitting(false);
@@ -430,14 +416,14 @@ export default function AddMedicineForm({
 
 	const handleAdviseTemplate = (content) => {
 		if (!content) {
-			showNotificationComponent(t("AdviseContentNotAvailable"), "red", "lightgray", true, 1000, true);
+			showNotificationComponent(t("AdviseContentNotAvailable"), "red", "lightgray", true, 700, true);
 			return;
 		}
 
 		const existingAdvise = form.values.advise;
 
 		if (existingAdvise?.includes(content)) {
-			showNotificationComponent(t("AdviseAlreadyExists"), "red", "lightgray", true, 1000, true);
+			showNotificationComponent(t("AdviseAlreadyExists"), "red", "lightgray", true, 700, true);
 			return;
 		}
 

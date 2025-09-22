@@ -405,7 +405,7 @@ export function Form({
 	// =============== handle HSID search and populate form fields ================
 	const handleNIDSearch = () => {
 		if (!form.values.identity) {
-			showNotificationComponent(t("PleaseEnterNID"), "red", "lightgray", true, 1000, true);
+			showNotificationComponent(t("PleaseEnterNID"), "red", "lightgray", true, 700, true);
 			return;
 		}
 		setShowUserData(true);
@@ -726,7 +726,7 @@ export function Form({
 										</Grid.Col>
 									</Grid>
 									<Grid columns={20}>
-										<Grid.Col span={20} pt="sm">
+										{/* <Grid.Col span={20} pt="sm">
 											<SegmentedControlForm
 												fullWidth
 												color="var(--theme-primary-color-6)"
@@ -742,7 +742,7 @@ export function Form({
 													{ label: t("MDR"), value: "50" },
 												]}
 											/>
-										</Grid.Col>
+										</Grid.Col> */}
 										<Grid.Col span={6}></Grid.Col>
 										<Grid.Col span={14}>
 											{form.values.patient_payment_mode_id !== "30" && (

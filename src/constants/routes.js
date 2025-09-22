@@ -330,7 +330,7 @@ export const DOCTOR_DATA_ROUTES = {
 			OPD_PRESCRIPTION: "/hospital/doctor/ipd-prescription",
 			EMERGENCY: "/hospital/doctor/emergency",
 			IPD: "/hospital/doctor/ipd",
-		}
+		},
 	},
 };
 export const CORE_DATA_ROUTES = {
@@ -409,7 +409,6 @@ export const HOSPITAL_DATA_ROUTES = {
 		},
 	},
 	NAVIGATION_LINKS: {
-
 		VISIT: {
 			INDEX: "/hospital/visit",
 			CREATE: "/hospital/visit/create",
@@ -486,6 +485,7 @@ export const CONFIGURATION_ROUTES = {
 			DELETE: "domain/config/hospital",
 			USER_INFO: "hospital/core/userinfo",
 			HEALTH_SHARE: "hospital/core/health-share",
+			OPD_DASHBOARD: "hospital/reports/dashboard-daily-summary",
 		},
 	},
 };

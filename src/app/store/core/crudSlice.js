@@ -13,6 +13,14 @@ import {
 const initialState = {
 	// --------------- core modules starts -------------------
 
+	dashboardDailySummary: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+	},
 	particular: {
 		isLoading: true,
 		refetching: true,
@@ -95,7 +103,7 @@ const initialState = {
 
 	opd_room: {
 		isLoading: true,
-		refetching: true,
+		refetching: false,
 		error: null,
 		data: {},
 		editData: {},

@@ -48,7 +48,7 @@ export default function ConfigurationForm() {
 					setCurrencyId(result.data.data.currency_id?.toString() || "");
 				}
 			} catch (error) {
-				showNotificationComponent(t("FailedToFetchData"), "red", null, false, 1000);
+				showNotificationComponent(t("FailedToFetchData"), "red", null, false, 700);
 			} finally {
 				setFormLoad(false);
 			}
@@ -242,7 +242,7 @@ export default function ConfigurationForm() {
 			};
 			const result = await dispatch(updateEntityData(value)).unwrap();
 			if (result.data.message === "success") {
-				showNotificationComponent(t("UpdateSuccessfully"), "teal", null, false, 1000);
+				showNotificationComponent(t("UpdateSuccessfully"), "teal", null, false, 700);
 				const resultAction = await dispatch(showEntityData({ url: "inventory/config", module: "inventory" }));
 				if (showEntityData.fulfilled.match(resultAction)) {
 					if (resultAction.payload.data.status === 200) {
@@ -251,7 +251,7 @@ export default function ConfigurationForm() {
 				}
 			}
 		} catch (error) {
-			showNotificationComponent(t("FailedToUpdateData"), "red", null, false, 1000);
+			showNotificationComponent(t("FailedToUpdateData"), "red", null, false, 700);
 		} finally {
 			setSaveCreateLoading(false);
 		}

@@ -52,16 +52,16 @@ export default function ConfirmIndex() {
 				const resultAction = await dispatch(storeEntityData(data));
 
 				if (storeEntityData.rejected.match(resultAction)) {
-					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
+					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 				} else {
-					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 1000, true);
+					showNotificationComponent(t("Visit saved successfully"), "green", "lightgray", true, 700, true);
 					setRefetchData({ module, refetching: true });
 					form.reset();
 					localStorage.removeItem(LOCAL_STORAGE_KEY);
 				}
 			} catch (error) {
 				console.error("Error submitting visit:", error);
-				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
+				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
 			} finally {
 				setIsSubmitting(false);
 			}

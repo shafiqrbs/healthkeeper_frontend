@@ -14,6 +14,7 @@ export default function _Form({ form, module }) {
 	const [searchQuery, setSearchQuery] = useState("");
 	const dispatch = useDispatch();
 	const rooms = useSelector((state) => state.crud[roomModule].data);
+	const refetching = useSelector((state) => state.crud[roomModule].refetching);
 
 	const filteredAndSortedRecords = useMemo(() => {
 		if (!records || records.length === 0) return [];
@@ -54,7 +55,7 @@ export default function _Form({ form, module }) {
 	};
 
 	useEffect(() => {
-		if (rooms?.data?.ipdRooms?.length) {
+		if (rooms?.data?.ipdRooms?.length && !refetching) {
 			setRecords(rooms.data.ipdRooms);
 			const selectedId = rooms?.data?.selectedRoom;
 			const selectedRoom = rooms.data?.ipdRooms?.find((item) => item.id === selectedId);
@@ -63,7 +64,7 @@ export default function _Form({ form, module }) {
 		} else {
 			fetchData();
 		}
-	}, []);
+	}, [refetching]);
 
 	return (
 		<__PatientForm

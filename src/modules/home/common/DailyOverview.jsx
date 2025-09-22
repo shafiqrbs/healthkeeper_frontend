@@ -1,9 +1,12 @@
-import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { Box, Flex, ScrollArea, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconBed, IconCoinTaka } from "@tabler/icons-react";
 import CollectionTable from "../../hospital/common/CollectionTable";
-import { useOutletContext } from "react-router-dom";
+import { MODULES_CORE } from "@/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getIndexEntityData } from "@/app/store/core/crudThunk";
+import { CONFIGURATION_ROUTES } from "@/constants/routes";
 
 const collectionOverviewData = [
 	{
@@ -15,40 +18,44 @@ const collectionOverviewData = [
 		label: "totalCollection",
 		value: 50000,
 		icon: IconCoinTaka,
-	}
-];
-
-const userCollectionData = [
-	{ id: 70, patient: "20 Per", name: "MD Nazmul Hossain", amount: 2200 },
-	{ id: 39, patient: "20 Per", name: "MD Nazmul Hossain", amount: 2200 },
-	{ id: 56, patient: "20 Per", name: "MD Nazmul Hossain", amount: 2200 },
-	{ id: 58, patient: "20 Per", name: "MD Nazmul Hossain", amount: 2200 },
-];
-
-const roomBaseCollectionData = [
-	{ id: 70, patient: "20 Per", room: "Room 1", amount: 2200 },
-	{ id: 39, patient: "20 Per", room: "Room 1", amount: 2200 },
-	{ id: 56, patient: "20 Per", room: "Room 1", amount: 2200 },
-	{ id: 58, patient: "20 Per", room: "Room 1", amount: 2200 },
+	},
 ];
 
 // =============== column configurations for different table types ================
 const userCollectionColumns = [
 	{ key: "name", label: "name" },
 	{ key: "patient", label: "patient" },
-	{ key: "amount", label: "amount" },
+	{ key: "total", label: "total" },
 ];
 
 const roomCollectionColumns = [
-	{ key: "room", label: "room" },
+	{ key: "name", label: "name" },
 	{ key: "patient", label: "patient" },
-	{ key: "amount", label: "amount" },
+	{ key: "total", label: "total" },
 ];
 
+const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
+
 export default function DailyOverview() {
+	const dispatch = useDispatch();
 	const { t } = useTranslation();
+	const records = useSelector((state) => state.crud[module].data);
+
+	console.log(records.data);
+
+	const userCollectionData = records.data?.patientMode || [];
+	const roomBaseCollectionData = records.data?.roomBase || [];
+
+	useEffect(() => {
+		if (Object.keys(records?.data || {})?.length === 0) {
+			dispatch(
+				getIndexEntityData({ module, url: CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.OPD_DASHBOARD })
+			);
+		}
+	}, [dispatch]);
+
 	return (
-		<ScrollArea mt="sm" >
+		<ScrollArea mt="sm">
 			<Box className="borderRadiusAll" mt="xxxs" px="xs">
 				{collectionOverviewData.map((item, index) => (
 					<Flex

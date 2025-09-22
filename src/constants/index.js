@@ -37,6 +37,7 @@ export const MODULES_CORE = {
 	PARTICULAR_MODE: "particular_mode",
 	PARTICULAR_TYPE: "particular_type",
 	PARTICULAR_MATRIX: "particular_matrix",
+	DASHBOARD_DAILY_SUMMARY: "dashboardDailySummary",
 };
 
 export const MODULES_PHARMACY = {

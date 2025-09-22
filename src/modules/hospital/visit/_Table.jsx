@@ -29,7 +29,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
-import {formatDate, getLoggedInHospitalUser, getUserRole} from "@/common/utils";
+import { formatDate, getLoggedInHospitalUser, getUserRole } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -42,14 +42,14 @@ import Prescription from "@components/print-formats/opd/Prescription2";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
-const  tabs =[
-	{ label: 'All', value: 'all' },
-	{ label: 'Prescription', value: 'prescription' },
-	{ label: 'Non-prescription', value: 'non-prescription' },
-]
+const tabs = [
+	{ label: "All", value: "all" },
+	{ label: "Prescription", value: "prescription" },
+	{ label: "Non-prescription", value: "non-prescription" },
+];
 
 const PER_PAGE = 200;
-const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
+const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -59,10 +59,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
+	const today = new Date();
+
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: "",
+			created: formatDate(today),
 			room_id: "",
 		},
 	});
@@ -79,7 +81,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	});
 	const [processTab, setProcessTab] = useState("all");
 	const [rootRef, setRootRef] = useState(null);
-	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
 	const [printData, setPrintData] = useState({});
@@ -90,7 +91,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const userHospitalConfig = getLoggedInHospitalUser();
 	const userRoles = getUserRole();
 	const userId = userHospitalConfig?.employee_id;
-	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	useEffect(() => {
 		if (type === "a4") {
@@ -106,17 +106,16 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
-	const today = new Date();
+
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
-			name: filterData?.name,
 			patient_mode: "opd",
-			term: filterData.keywordSearch,
-			room_id: filterData.room_id,
+			term: form.values.keywordSearch,
+			room_id: form.values.room_id,
 			prescription_mode: processTab,
-			created: filterData?.created || formatDate(today),
+			created: form.values.created,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -221,7 +220,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		).unwrap();
 		const prescription_id = resultAction?.data?.data.id;
 		if (prescription_id) {
-			closeTable();
+			if (closeTable) closeTable();
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 		} else {
 			console.error(resultAction);
@@ -239,7 +238,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={tab.value}
+								>
 									{t(tab.label)}
 								</Tabs.Tab>
 							))}
@@ -358,7 +362,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 										>
 											{t("Process")}
 										</Button>
-									):(null)}
+									) : null}
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -371,7 +375,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 											<ActionIcon
 												className="border-left-radius-none"
 												variant="transparent"
-												color='var(--theme-menu-three-dot)'
+												color="var(--theme-menu-three-dot)"
 												radius="es"
 												aria-label="Settings"
 											>
@@ -441,7 +445,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 										</Menu.Dropdown>
 									</Menu>
 								</Group>
-
 							),
 						},
 					]}

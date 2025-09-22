@@ -1,4 +1,4 @@
-import { Tooltip, TextInput, Box } from "@mantine/core";
+import { Tooltip, TextInput } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconInfoCircle, IconX } from "@tabler/icons-react";
 import { getHotkeyHandler } from "@mantine/hooks";

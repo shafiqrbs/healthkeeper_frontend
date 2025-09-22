@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
@@ -17,12 +17,10 @@ import DetailsDrawer from "./__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
-import { sortBy } from "lodash";
-import { getIndexEntityData, showEntityData, storeEntityData } from "@/app/store/core/crudThunk";
-import { setItemData, setRefetchData } from "@/app/store/core/crudSlice";
-import {formatDate, getLoggedInHospitalUser, getUserRole} from "@utils/index";
-import CompactDrawer from "@/common/components/drawers/CompactDrawer";
-import TextAreaForm from "@/common/components/form-builders/TextAreaForm";
+import { showEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { formatDate, getUserRole } from "@utils/index";
+import CompactDrawer from "@components/drawers/CompactDrawer";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
@@ -31,34 +29,29 @@ import { modals } from "@mantine/modals";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 
 const PER_PAGE = 200;
-const  tabs =[
-	{ label: 'All', value: 'all' },
-	{ label: 'Admission', value: 'admission' },
-	{ label: 'Prescription', value: 'prescription' },
-	{ label: 'Non-prescription', value: 'non-prescription' },
-]
-const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
-const ALLOWED_DOCTOR_ROLES = [ "doctor_emergency"];
+const tabs = [
+	{ label: "All", value: "all" },
+	{ label: "Admission", value: "admission" },
+	{ label: "Prescription", value: "prescription" },
+	{ label: "Non-prescription", value: "non-prescription" },
+];
+const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
+const ALLOWED_DOCTOR_ROLES = ["doctor_emergency"];
 export default function Table({ module }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state.crud[module].data);
-	const refetch = useSelector((state) => state.crud[module].refetching);
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 34;
-	const scrollViewportRef = useRef(null);
-	const [page, setPage] = useState(1);
 	const [selectedId, setSelectedId] = useState(null);
-	const [hasMore, setHasMore] = useState(true);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const [processTab, setProcessTab] = useState("all");
-	const userHospitalConfig = getLoggedInHospitalUser();
 	const userRoles = getUserRole();
-	const userId = userHospitalConfig?.employee_id;
+
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -78,7 +71,6 @@ export default function Table({ module }) {
 	});
 
 	const [rootRef, setRootRef] = useState(null);
-	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
 	const setControlRef = (val) => (node) => {
@@ -190,7 +182,12 @@ export default function Table({ module }) {
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={tab.value}
+								>
 									{t(tab.label)}
 								</Tabs.Tab>
 							))}
@@ -263,60 +260,59 @@ export default function Table({ module }) {
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
-
 									{userRoles.some((role) => ALLOWED_DOCTOR_ROLES.includes(role)) && (
-<>
-									{["New", "In-progress"].includes(values?.process) &&
-										values?.process !== "Closed" &&
-										!values?.referred_mode &&
-										(values?.prescription_id ? (
-											<Button
-												miw={124}
-												variant="filled"
-												bg="var(--theme-primary-color-4)"
-												c="white"
-												fw={'400'}
-												size="compact-xs"
-												onClick={() => handlePrescription(values.prescription_id)}
-												radius="es"
-												rightSection={<IconArrowRight size={18} />}
-											>
-												{t("Prescription")}
-											</Button>
-										) : (
-											<Button
-												miw={124}
-												variant="filled"
-												bg="var(--theme-primary-color-6)"
-												c="white"
-												size="compact-xs"
-												onClick={() => handleProcessPrescription(values.id)}
-												radius="es"
-												fw={'400'}
-												rightSection={<IconArrowRight size={18} />}
-												className="border-right-radius-none"
-											>
-												{t("Prescription")}
-											</Button>
-										))}
+										<>
+											{["New", "In-progress"].includes(values?.process) &&
+												values?.process !== "Closed" &&
+												!values?.referred_mode &&
+												(values?.prescription_id ? (
+													<Button
+														miw={124}
+														variant="filled"
+														bg="var(--theme-primary-color-4)"
+														c="white"
+														fw={"400"}
+														size="compact-xs"
+														onClick={() => handlePrescription(values.prescription_id)}
+														radius="es"
+														rightSection={<IconArrowRight size={18} />}
+													>
+														{t("Prescription")}
+													</Button>
+												) : (
+													<Button
+														miw={124}
+														variant="filled"
+														bg="var(--theme-primary-color-6)"
+														c="white"
+														size="compact-xs"
+														onClick={() => handleProcessPrescription(values.id)}
+														radius="es"
+														fw={"400"}
+														rightSection={<IconArrowRight size={18} />}
+														className="border-right-radius-none"
+													>
+														{t("Prescription")}
+													</Button>
+												))}
 
-									{values.process === "New" && !values.referred_mode && (
-										<Button
-											variant="filled"
-											bg="var(--theme-success-color)"
-											c="white"
-											size="compact-xs"
-											onClick={() => handleSendToAdmission(values.id)}
-											radius="es"
-											fw={'400'}
-											rightSection={<IconArrowRight size={18} />}
-											className="border-right-radius-none"
-										>
-											{t("Admission")}
-										</Button>
+											{values.process === "New" && !values.referred_mode && (
+												<Button
+													variant="filled"
+													bg="var(--theme-success-color)"
+													c="white"
+													size="compact-xs"
+													onClick={() => handleSendToAdmission(values.id)}
+													radius="es"
+													fw={"400"}
+													rightSection={<IconArrowRight size={18} />}
+													className="border-right-radius-none"
+												>
+													{t("Admission")}
+												</Button>
+											)}
+										</>
 									)}
-									</>
-										)}
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -325,7 +321,6 @@ export default function Table({ module }) {
 										openDelay={100}
 										closeDelay={400}
 									>
-
 										<Menu.Target>
 											<ActionIcon
 												className="action-icon-menu border-left-radius-none"
@@ -348,22 +343,22 @@ export default function Table({ module }) {
 														{t("Edit")}
 													</Menu.Item>
 													<Menu.Item
-													// onClick={() => handleDelete(values.id)}
-													bg="red.1"
-													c="red.6"
-													rightSection={
-													<IconTrashX
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
+														// onClick={() => handleDelete(values.id)}
+														bg="red.1"
+														c="red.6"
+														rightSection={
+															<IconTrashX
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
+														}
 													>
-													{t("Delete")}
+														{t("Delete")}
 													</Menu.Item>
 												</>
-												)}
+											)}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>

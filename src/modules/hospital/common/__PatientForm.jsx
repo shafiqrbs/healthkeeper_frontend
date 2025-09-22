@@ -38,12 +38,12 @@ import OPDFooter from "./OPDFooter";
 import PrescriptionFooter from "./PrescriptionFooter";
 import OpdRoomModal from "@modules/hospital/common/OpdRoomModal";
 import { useForm } from "@mantine/form";
-import GlobalDrawer from "@/common/components/drawers/GlobalDrawer";
+import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import RoomCard from "./RoomCard";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
 import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } from "@/services/patientSearchService";
-import DateSelectorForm from "@/common/components/form-builders/DateSelectorForm";
+import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -391,7 +391,7 @@ export function Form({
 
 	const handleNIDSearch = () => {
 		if (!form.values.identity) {
-			showNotificationComponent(t("PleaseEnterNID"), "red", "lightgray", true, 1000, true);
+			showNotificationComponent(t("PleaseEnterNID"), "red", "lightgray", true, 700, true);
 			return;
 		}
 		setShowUserData(true);
@@ -429,7 +429,7 @@ export function Form({
 			}
 
 			if (!form.values.amount && form.values.patient_payment_mode_id === "30") {
-				showNotificationComponent(t("AmountsRequired"), "red", "lightgray", true, 1000, true);
+				showNotificationComponent(t("AmountsRequired"), "red", "lightgray", true, 700, true);
 				setIsSubmitting(false);
 				return {};
 			}
@@ -449,7 +449,7 @@ export function Form({
 
 				// check if future date
 				if (dateObj > today) {
-					showNotificationComponent(t("DateOfBirthCantBeFutureDate"), "red", "lightgray", true, 1000, true);
+					showNotificationComponent(t("DateOfBirthCantBeFutureDate"), "red", "lightgray", true, 700, true);
 					setIsSubmitting(false);
 					return {};
 				}
@@ -472,10 +472,10 @@ export function Form({
 				const resultAction = await dispatch(storeEntityData(data));
 
 				if (storeEntityData.rejected.match(resultAction)) {
-					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
+					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 					return {};
 				} else {
-					showNotificationComponent(t("VisitSavedSuccessfully"), "green", "lightgray", true, 1000, true);
+					showNotificationComponent(t("VisitSavedSuccessfully"), "green", "lightgray", true, 700, true);
 					setRefetchData({ module, refetching: true });
 					const selectedRoom = form.values.room_id;
 					setShowUserData(false);
@@ -486,7 +486,7 @@ export function Form({
 				}
 			} catch (error) {
 				console.error("Error submitting visit:", error);
-				showNotificationComponent(t("SomethingWentWrong"), "red", "lightgray", true, 1000, true);
+				showNotificationComponent(t("SomethingWentWrong"), "red", "lightgray", true, 700, true);
 				return {};
 			} finally {
 				setIsSubmitting(false);
@@ -494,7 +494,7 @@ export function Form({
 		} else {
 			if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
 				console.error(form.errors);
-				showNotificationComponent(t("PleaseFillAllFieldsToSubmit"), "red", "lightgray", true, 1000, true);
+				showNotificationComponent(t("PleaseFillAllFieldsToSubmit"), "red", "lightgray", true, 700, true);
 			}
 			return {};
 		}

@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setFilterData } from "@/app/store/core/crudSlice";
 import { useState, useCallback, useEffect } from "react";
 import { DateInput } from "@mantine/dates";
+import { formatDate } from "@/common/utils";
+import { useDebouncedCallback } from "@mantine/hooks";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES_CORE } from "@/constants";
@@ -24,13 +26,17 @@ export default function KeywordSearch({
 	showOpdRoom = false,
 	className = "keyword-search-box",
 }) {
-	const filterData = useSelector((state) => state.crud[module]?.filterData || { keywordSearch: "", created: "" });
 	const dispatch = useDispatch();
 	const [fetching, setFetching] = useState(false);
 	const [records, setRecords] = useState([]);
-	const [keywordSearch, setKeywordSearch] = useState(filterData.keywordSearch || "");
-	const [date, setDate] = useState("");
+	const [keywordSearch, setKeywordSearch] = useState(form.values.keywordSearch || "");
+	const [date, setDate] = useState(null);
 	const rooms = useSelector((state) => state.crud[roomModule].data);
+
+	// =============== debounce keyword to control api calls via form state ================
+	const debouncedSetKeywordInForm = useDebouncedCallback((value) => {
+		form.setFieldValue("keywordSearch", value);
+	}, 500);
 
 	const fetchData = async () => {
 		setFetching(true);
@@ -52,6 +58,15 @@ export default function KeywordSearch({
 	};
 
 	useEffect(() => {
+		if (form.values?.keywordSearch) {
+			setKeywordSearch(form.values.keywordSearch);
+		}
+		if (form.values?.created) {
+			const [day, month, year] = String(form.values.created).split("-");
+			const parsed = new Date(Number(year), Number(month) - 1, Number(day));
+			setDate(isNaN(parsed) ? null : parsed);
+		}
+
 		if (rooms?.data?.ipdRooms?.length) {
 			setRecords(rooms.data.ipdRooms);
 		} else {
@@ -61,11 +76,12 @@ export default function KeywordSearch({
 
 	// =============== handle search functionality ================
 	const handleSearch = (searchData) => {
-		const data = searchData || { keywordSearch, created: date, room_id: form.values.room_id };
+		const data = searchData || {
+			keywordSearch,
+			created: date ? formatDate(date) : "",
+			room_id: form.values.room_id,
+		};
 
-		form.setFieldValue("keywordSearch", data.keywordSearch);
-		form.setFieldValue("created", data.created);
-		dispatch(setFilterData({ module, data }));
 		if (onSearch) {
 			onSearch(data);
 		}
@@ -74,18 +90,24 @@ export default function KeywordSearch({
 	// =============== handle keyword change ================
 	const handleKeywordChange = (value) => {
 		setKeywordSearch(value);
+		debouncedSetKeywordInForm(value);
 	};
 
 	// =============== handle date change ================
 	const handleDateChange = (value) => {
+		form.setFieldValue("created", value ? formatDate(value) : "");
 		setDate(value);
-		handleSearch({ keywordSearch, created: value, room_id: form.values.room_id });
+		handleSearch({ keywordSearch, created: value ? formatDate(value) : "", room_id: form.values.room_id });
 	};
 
 	// =============== handle reset functionality ================
 	const handleReset = useCallback(() => {
+		form.setFieldValue("keywordSearch", "");
+		debouncedSetKeywordInForm.flush?.();
+		form.setFieldValue("created", null);
+		form.setFieldValue("room_id", "");
 		setKeywordSearch("");
-		setDate("");
+		setDate(null);
 		const resetData = { keywordSearch: "", created: "", room_id: "" };
 		dispatch(setFilterData({ module, data: resetData }));
 		if (onReset) {
@@ -130,7 +152,7 @@ export default function KeywordSearch({
 					}
 				}}
 			/>
-			{ showOpdRoom &&(
+			{showOpdRoom && (
 				<Select
 					clearable
 					placeholder="Room"

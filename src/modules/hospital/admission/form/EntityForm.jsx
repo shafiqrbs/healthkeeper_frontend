@@ -123,14 +123,14 @@ export default function EntityForm({ form, module }) {
 				const resultAction = await dispatch(updateEntityData(data));
 
 				if (storeEntityData.rejected.match(resultAction)) {
-					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 1000, true);
+					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 				} else {
 					showNotificationComponent(
 						t("Patient admitted successfully"),
 						"green",
 						"lightgray",
 						true,
-						1000,
+						700,
 						true
 					);
 					setRefetchData({ module, refetching: true });
@@ -138,7 +138,7 @@ export default function EntityForm({ form, module }) {
 				}
 			} catch (error) {
 				console.error("Error submitting visit:", error);
-				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 1000, true);
+				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
 			} finally {
 				setIsSubmitting(false);
 			}
@@ -209,7 +209,7 @@ export default function EntityForm({ form, module }) {
 	// =============== handle HSID search and populate form fields ================
 	const handleHSIDSearch = () => {
 		if (!form.values.identity) {
-			showNotificationComponent(t("PleaseEnterIdentity"), "red", "lightgray", true, 1000, true);
+			showNotificationComponent(t("PleaseEnterIdentity"), "red", "lightgray", true, 700, true);
 			return;
 		}
 		setShowUserData(true);
@@ -250,19 +250,25 @@ export default function EntityForm({ form, module }) {
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("Created")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14} fz={'xs'}>{formatDate(item?.created_at)}</Grid.Col>
+									<Grid.Col span={14} fz={"xs"}>
+										{formatDate(item?.created_at)}
+									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("InvoiceID")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14} fz={'xs'}>{item?.invoice}</Grid.Col>
+									<Grid.Col span={14} fz={"xs"}>
+										{item?.invoice}
+									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("PatientID")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14} fz={'xs'}>{item?.patient_id}</Grid.Col>
+									<Grid.Col span={14} fz={"xs"}>
+										{item?.patient_id}
+									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
