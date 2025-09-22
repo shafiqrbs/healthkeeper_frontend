@@ -44,6 +44,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
 import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } from "@/services/patientSearchService";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
+import { MODULES_CORE } from "@/constants";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -93,6 +94,8 @@ const USER_NID_DATA = {
 		},
 	},
 };
+
+const roomModule = MODULES_CORE.OPD_ROOM;
 
 export default function PatientForm({
 	form,
@@ -476,12 +479,10 @@ export function Form({
 					return {};
 				} else {
 					showNotificationComponent(t("VisitSavedSuccessfully"), "green", "lightgray", true, 700, true);
-					setRefetchData({ module, refetching: true });
-					const selectedRoom = form.values.room_id;
 					setShowUserData(false);
 					form.reset();
 					localStorage.removeItem(LOCAL_STORAGE_KEY);
-					form.setFieldValue("room_id", selectedRoom);
+					dispatch(setRefetchData({ module: roomModule, refetching: true }));
 					return resultAction.payload.data;
 				}
 			} catch (error) {
