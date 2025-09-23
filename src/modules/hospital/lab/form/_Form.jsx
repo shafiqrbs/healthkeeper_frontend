@@ -1,16 +1,12 @@
 import PatientForm from "../../common/__PatientForm";
-import { useDispatch, useSelector } from "react-redux";
-import { Box } from "@mantine/core";
-import { IconDoorEnter, IconDoorExit } from "@tabler/icons-react";
-import PatientInformation from "../../common/PatientInformation";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { setInsertType } from "@/app/store/core/crudSlice";
 
-export default function Form({ form, isOpenPatientInfo, setIsOpenPatientInfo, setPatientData }) {
+export default function Form({ form }) {
 	const params = useParams();
 	const dispatch = useDispatch();
-	const insertType = useSelector((state) => state.crud.prescription.insertType);
 
 	useEffect(() => {
 		dispatch(
@@ -27,20 +23,7 @@ export default function Form({ form, isOpenPatientInfo, setIsOpenPatientInfo, se
 
 	return (
 		<>
-			{insertType === "create" ? (
-				<>
-					<Box className="right-arrow-button" onClick={() => setIsOpenPatientInfo(!isOpenPatientInfo)}>
-						{isOpenPatientInfo ? <IconDoorEnter size={20} /> : <IconDoorExit size={20} />}
-					</Box>
-					<PatientInformation
-						isOpenPatientInfo={isOpenPatientInfo}
-						setIsOpenPatientInfo={setIsOpenPatientInfo}
-						setPatientData={setPatientData}
-					/>
-				</>
-			) : (
-				<PatientForm form={form} handleSubmit={handleSubmit} canClose={true} />
-			)}
+			<PatientForm form={form} handleSubmit={handleSubmit} canClose={true} />
 		</>
 	);
 }

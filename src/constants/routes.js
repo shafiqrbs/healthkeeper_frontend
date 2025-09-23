@@ -407,6 +407,13 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "core/customer",
 			DELETE: "core/customer",
 		},
+		LAB_TEST: {
+			INDEX: "hospital/lab-investigation",
+			CREATE: "hospital/lab-investigation",
+			UPDATE: "hospital/lab-investigation",
+			VIEW: "hospital/lab-investigation",
+			DELETE: "hospital/lab-investigation",
+		},
 	},
 	NAVIGATION_LINKS: {
 		VISIT: {
@@ -459,6 +466,12 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "/hospital/customer",
 			UPDATE: "/hospital/customer/edit",
 			VIEW: "/hospital/customer/view",
+		},
+		LAB_TEST: {
+			INDEX: "/hospital/lab-investigation",
+			CREATE: "/hospital/lab-investigation",
+			UPDATE: "/hospital/lab-investigation",
+			VIEW: "/hospital/lab-test",
 		},
 	},
 };

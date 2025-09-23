@@ -19,6 +19,7 @@ export const MODULES = {
 	HOSPITAL_CONFIG: "hospitalConfig",
 	USER: "user",
 	SETTING: "setting",
+	LAB_TEST: "labTest",
 };
 
 export const MODULES_CORE = {

@@ -12,7 +12,14 @@ import {
 
 const initialState = {
 	// --------------- core modules starts -------------------
-
+	labTest: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+	},
 	dashboardDailySummary: {
 		isLoading: true,
 		refetching: false,

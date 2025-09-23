@@ -130,7 +130,9 @@ function AppRoute() {
 					<Route
 						path="emergency"
 						element={
-							<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_emergency","operator_emergency"]}>
+							<ProtectedRoute
+								roles={["role_domain", "admin_administrator", "doctor_emergency", "operator_emergency"]}
+							>
 								<EmergencyIndex />
 							</ProtectedRoute>
 						}
@@ -139,7 +141,9 @@ function AppRoute() {
 						<Route
 							index
 							element={
-								<ProtectedRoute roles={["role_domain","doctor_ipd", "admin_administrator", "doctor_opd"]}>
+								<ProtectedRoute
+									roles={["role_domain", "doctor_ipd", "admin_administrator", "doctor_opd"]}
+								>
 									<PrescriptionIndex />
 								</ProtectedRoute>
 							}
@@ -147,7 +151,16 @@ function AppRoute() {
 						<Route
 							path=":prescriptionId"
 							element={
-								<ProtectedRoute roles={["role_domain","doctor_ipd", "admin_administrator", "doctor_opd","doctor_emergency","admin_doctor"]}>
+								<ProtectedRoute
+									roles={[
+										"role_domain",
+										"doctor_ipd",
+										"admin_administrator",
+										"doctor_opd",
+										"doctor_emergency",
+										"admin_doctor",
+									]}
+								>
 									<PrescriptionOpd />
 								</ProtectedRoute>
 							}
@@ -156,7 +169,9 @@ function AppRoute() {
 						<Route
 							path=":prescriptionId"
 							element={
-								<ProtectedRoute roles={["doctor_opd", "admin_administrator", "doctor_ipd", "admin_doctor"]}>
+								<ProtectedRoute
+									roles={["doctor_opd", "admin_administrator", "doctor_ipd", "admin_doctor"]}
+								>
 									<PrescriptionIpd />
 								</ProtectedRoute>
 							}
@@ -190,10 +205,24 @@ function AppRoute() {
 						/>
 					</Route>
 
-
-
 					<Route
 						path="lab-test"
+						element={
+							<ProtectedRoute roles={["role_domain", "admin_administrator", "lab_test"]}>
+								<LabIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="lab-test/:id"
+						element={
+							<ProtectedRoute roles={["role_domain", "admin_administrator", "lab_test"]}>
+								<LabIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="lab-test/:id/report/:reportId"
 						element={
 							<ProtectedRoute roles={["role_domain", "admin_administrator", "lab_test"]}>
 								<LabIndex />
