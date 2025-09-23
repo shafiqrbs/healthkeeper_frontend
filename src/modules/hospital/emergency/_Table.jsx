@@ -36,7 +36,7 @@ const tabs = [
 	{ label: "Non-prescription", value: "non-prescription" },
 ];
 const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
-const ALLOWED_DOCTOR_ROLES = ["doctor_emergency","admin_administrator"];
+const ALLOWED_DOCTOR_ROLES = ["doctor_emergency", "admin_administrator"];
 export default function Table({ module }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -48,9 +48,10 @@ export default function Table({ module }) {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
-	const filterData = useSelector((state) => state.crud[module].filterData);
 	const [processTab, setProcessTab] = useState("all");
 	const userRoles = getUserRole();
+
+	const today = new Date();
 
 	const form = useForm({
 		initialValues: {
@@ -77,15 +78,13 @@ export default function Table({ module }) {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
-	const today = new Date();
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
-			name: filterData?.name,
 			patient_mode: "emergency",
-			term: filterData.keywordSearch,
-			room_id: filterData.room_id,
+			term: form.values?.keywordSearch,
+			room_id: form.values?.room_id,
 			prescription_mode: processTab,
 			created: form.values.created,
 		},
