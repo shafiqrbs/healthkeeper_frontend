@@ -140,8 +140,16 @@ function AppRoute() {
 						<Route
 							path=":prescriptionId"
 							element={
-								<ProtectedRoute roles={["role_domain","doctor_ipd", "admin_administrator", "doctor_opd"]}>
+								<ProtectedRoute roles={["role_domain","doctor_ipd", "admin_administrator", "doctor_opd","operator_emergency"]}>
 									<PrescriptionOpd />
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path="emergency"
+							element={
+								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_emergency","operator_emergency"]}>
+									<EmergencyIndex />
 								</ProtectedRoute>
 							}
 						/>
@@ -182,14 +190,7 @@ function AppRoute() {
 						/>
 					</Route>
 
-					<Route
-						path="emergency"
-						element={
-							<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_emergency","operator_emergency"]}>
-								<EmergencyIndex />
-							</ProtectedRoute>
-						}
-					/>
+
 
 					<Route
 						path="lab-test"
