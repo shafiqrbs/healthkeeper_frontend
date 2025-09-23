@@ -23,7 +23,7 @@ export const sideNavigationLinks = {
 			path: "/",
 			icon: IconHome,
 			color: "#4CAF50", // Green
-			allowedRoles: ["role_domain", "admin_administrator", "doctor_opd", "doctor_opd", "doctor_ipd","operator_opd", "operator_manager", "operator_emergency"],
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_opd", "doctor_opd", "doctor_ipd","operator_opd", "operator_manager", "operator_emergency", "doctor_emergency"],
 		},
 		{
 			label: t("OPD"),
