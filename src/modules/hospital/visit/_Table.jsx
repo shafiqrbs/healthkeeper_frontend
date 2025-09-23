@@ -366,13 +366,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 										>
 											{t("Process")}
 										</Button>
-<<<<<<< HEAD
-									) : null}
-=======
 									):(null)}
 										</>
 										)}
->>>>>>> 2b5606e (Update drag & drop.)
+
 									<Menu
 										position="bottom-end"
 										offset={3}
