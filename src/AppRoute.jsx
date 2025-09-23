@@ -127,7 +127,14 @@ function AppRoute() {
 						/>
 						<Route path=":id" element={<IpdAdmittedIndex />} />
 					</Route>
-
+					<Route
+						path="emergency"
+						element={
+							<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_emergency","operator_emergency"]}>
+								<EmergencyIndex />
+							</ProtectedRoute>
+						}
+					/>
 					<Route path="prescription">
 						<Route
 							index
@@ -145,14 +152,7 @@ function AppRoute() {
 								</ProtectedRoute>
 							}
 						/>
-						<Route
-							path="emergency"
-							element={
-								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_emergency","operator_emergency"]}>
-									<EmergencyIndex />
-								</ProtectedRoute>
-							}
-						/>
+
 						<Route
 							path=":prescriptionId"
 							element={
