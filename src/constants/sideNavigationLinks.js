@@ -51,7 +51,7 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EMERGENCY.INDEX,
 			icon: IconEmergencyBed,
 			color: "#F44336", // Red
-			allowedRoles: ["role_domain", "admin_administrator", "doctor_emergency"],
+			allowedRoles: ["role_domain", "admin_administrator","doctor_emergency","operator_emergency"],
 		},
 		{
 			label: t("IPD"),

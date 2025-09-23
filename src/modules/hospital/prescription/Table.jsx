@@ -50,6 +50,7 @@ const  tabs =[
 
 const PER_PAGE = 200;
 const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
+const ALLOWED_OPD_ROLES = [ "doctor_opd", "admin_administrator"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const dispatch = useDispatch();
@@ -327,6 +328,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+
+
+										{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
+											<>
 									{values?.prescription_id && userId == values?.prescription_created_by_id ? (
 										<Button
 											variant="filled"
@@ -356,6 +361,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 											{t("Process")}
 										</Button>
 									):(null)}
+											</>
+											)}
+
 									<Menu
 										position="bottom-end"
 										offset={3}
