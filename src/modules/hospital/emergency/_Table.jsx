@@ -36,7 +36,7 @@ const tabs = [
 	{ label: "Non-prescription", value: "non-prescription" },
 ];
 const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
-const ALLOWED_DOCTOR_ROLES = ["doctor_emergency"];
+const ALLOWED_DOCTOR_ROLES = ["doctor_emergency","admin_administrator"];
 export default function Table({ module }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -55,7 +55,7 @@ export default function Table({ module }) {
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: "",
+			created: formatDate(new Date()),
 			room_id: "",
 		},
 	});
@@ -87,7 +87,7 @@ export default function Table({ module }) {
 			term: filterData.keywordSearch,
 			room_id: filterData.room_id,
 			prescription_mode: processTab,
-			created: filterData?.created || formatDate(today),
+			created: form.values.created,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",

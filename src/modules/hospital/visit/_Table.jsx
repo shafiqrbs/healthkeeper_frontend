@@ -61,12 +61,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-	const today = new Date();
+
 
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: formatDate(today),
+			created: formatDate(new Date()),
 			room_id: "",
 		},
 	});

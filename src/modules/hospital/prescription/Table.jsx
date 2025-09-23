@@ -67,10 +67,11 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: "",
+			created: formatDate(new Date()),
 			room_id: opdRoomId,
 		},
 	});
+
 	const handlePos = useReactToPrint({
 		content: () => posRef.current,
 	});
@@ -119,7 +120,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			term: filterData.keywordSearch,
 			room_id: opdRoomId,
 			prescription_mode: processTab,
-			created: filterData?.created ? new Date(filterData?.created).toLocaleDateString("en-CA", options) :  new Date().toLocaleDateString("en-CA", options),
+			created: form.values.created,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
