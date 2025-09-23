@@ -10,12 +10,11 @@ import HomeSkeleton from "@components/skeletons/HomeSkeleton";
 import {useEffect} from "react";
 import {getLoggedInHospitalUser, getLoggedInUser, getUserRole} from "@utils/index";
 import useHospitalUserData from "@hooks/useHospitalUserData";
-import Operator from "@modules/home/operator/Operator";
 
 const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
 const ALLOWED_OPERATOR_ROLES = [ "operator_opd", "operator_manager", "operator_emergency"];
 
-export default function Index({ height }) {
+export default function IndexOld({ height }) {
 	const progress = useGetLoadingProgress();
 	const {userInfo} = useHospitalUserData();
 	const userRoles = getUserRole();
@@ -29,11 +28,28 @@ export default function Index({ height }) {
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={height} />
 						{/* ================= carousel part ================== */}
-						<Box w="100%">
-
-							{userRoles.some((role) => ALLOWED_OPERATOR_ROLES.includes(role)) && (
-								<Operator />
-							)}
+						<Box>
+							<HeaderCarousel />
+							<ScrollArea mt="md" scrollbars="y" type="never" h={height - 146}>
+								{/* ================= overviews part ================== */}
+								<Grid columns={40} gutter={{ base: "md" }}>
+									<Grid.Col span={20}>
+										<QuickBrowse />
+										{/*{userRoles.some((role) => ALLOWED_OPERATOR_ROLES.includes(role)) && (
+											<QuickBrowse />
+										)}*/}
+									</Grid.Col>
+									<Grid.Col span={20}>
+										<Overview />
+									</Grid.Col>
+									<Grid.Col span={20}>
+										<GrandTotalOverview />
+									</Grid.Col>
+									<Grid.Col span={20}>
+										<SparkLineOverview />
+									</Grid.Col>
+								</Grid>
+							</ScrollArea>
 						</Box>
 					</Flex>
 				</Box>

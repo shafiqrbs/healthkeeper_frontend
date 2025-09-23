@@ -56,7 +56,6 @@ export default function _Table({ module }) {
         try {
             const result = await dispatch(getIndexEntityData(value)).unwrap();
             setRecords(result?.data?.data || []);
-            console.log(records)
         } catch (err) {
             console.error("Unexpected error:", err);
         } finally {
@@ -150,6 +149,7 @@ export default function _Table({ module }) {
         } catch (error) {
             errorNotification(error.message);
         } finally {
+            fetchData()
             setDragging(false);
         }
 

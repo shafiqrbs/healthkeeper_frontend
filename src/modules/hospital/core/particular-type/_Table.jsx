@@ -166,7 +166,7 @@ export default function _Table({ module }) {
         try {
             await dispatch(
                 storeEntityData({
-                    url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.ORDERING}`,
+                    url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MATRIX.ORDERING}`,
                     data: {
                         order: newRecords.map((item, idx) => ({
                             id: item.id,

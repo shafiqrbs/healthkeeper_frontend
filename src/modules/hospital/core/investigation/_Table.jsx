@@ -169,14 +169,27 @@ export default function _Table({ module, open }) {
 		setSubmitFormData(initialFormData);
 	}, [records]);
 
-	const handleDataTypeChange = (rowId, field, value) => {
-		setSubmitFormData(prev => ({
+	const handleFieldChange = async (rowId, field, value) => {
+		setSubmitFormData((prev) => ({
 			...prev,
-			[rowId]: {
-				...prev[rowId],
-				[field]: value,
-			},
+			[rowId]: { ...prev[rowId], [field]: value },
 		}));
+
+		setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
+
+		try {
+			await dispatch(
+				storeEntityData({
+					url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
+					data: { [field]: value },
+					module,
+				})
+			);
+		} catch (error) {
+			errorNotification(error.message);
+		} finally {
+			setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
+		}
 	};
 
 	const handleRowSubmit = async (rowId) => {
@@ -302,7 +315,7 @@ export default function _Table({ module, open }) {
 									size="sm"
 									checked={submitFormData[item.id]?.is_available ?? false}
 									onChange={(val) =>
-										handleRowSubmit(
+										handleFieldChange(
 											item.id,
 											"is_available",
 											val.currentTarget.checked

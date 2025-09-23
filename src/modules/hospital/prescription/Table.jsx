@@ -62,7 +62,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const userHospitalConfig = getLoggedInHospitalUser();
 	const userRoles = getUserRole();
-	const opdRoomId = userHospitalConfig?.particular_details?.opd_room_id;
+	const opdRoomId = userHospitalConfig?.particular_details?.room_id;
 	const userId = userHospitalConfig?.employee_id;
 	const form = useForm({
 		initialValues: {
@@ -109,7 +109,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
-
+	const options = {year: 'numeric',month: '2-digit',day: '2-digit'};
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
@@ -119,6 +119,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			term: filterData.keywordSearch,
 			room_id: opdRoomId,
 			prescription_mode: processTab,
+			created: filterData?.created ? new Date(filterData?.created).toLocaleDateString("en-CA", options) :  new Date().toLocaleDateString("en-CA", options),
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
