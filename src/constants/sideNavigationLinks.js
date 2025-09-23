@@ -44,7 +44,7 @@ export const sideNavigationLinks = {
 			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.DASHBOARD,
 			icon: IconBuildingHospital,
 			color: "#9C27B0", // Purple
-			allowedRoles: ["role_domain", "admin_administrator", "doctor_admin"],
+			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
 		},
 		{
 			label: t("Emergency"),
@@ -327,28 +327,28 @@ export const sideNavigationLinks = {
 			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.DASHBOARD,
 			icon: IconDashboard,
 			color: "#4CAF50",
-			allowedRoles: ["role_domain", "admin_administrator","doctor_admin"],
+			allowedRoles: ["role_domain", "admin_administrator","admin_doctor"],
 		},
 		{
 			label: t("OPD"),
 			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.OPD,
 			icon: IconDashboard,
 			color: "#6f1225",
-			allowedRoles: ["role_domain", "admin_administrator","doctor_admin"],
+			allowedRoles: ["role_domain", "admin_administrator","admin_doctor"],
 		},
 		{
 			label: t("Emergency"),
 			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.EMERGENCY,
 			icon: IconDashboard,
 			color: "#6f1225",
-			allowedRoles: ["role_domain", "admin_administrator","doctor_admin"],
+			allowedRoles: ["role_domain", "admin_administrator","admin_doctor"],
 		},
 		{
 			label: t("IPD"),
 			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.IPD,
 			icon: IconDashboard,
 			color: "#6f1225",
-			allowedRoles: ["role_domain", "admin_administrator","doctor_admin"],
+			allowedRoles: ["role_domain", "admin_administrator","admin_doctor"],
 		},
 
 	],
