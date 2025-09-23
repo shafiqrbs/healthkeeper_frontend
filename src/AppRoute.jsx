@@ -140,7 +140,7 @@ function AppRoute() {
 						<Route
 							path=":prescriptionId"
 							element={
-								<ProtectedRoute roles={["role_domain","doctor_ipd", "admin_administrator", "doctor_opd","operator_emergency"]}>
+								<ProtectedRoute roles={["role_domain","doctor_ipd", "admin_administrator", "doctor_opd","doctor_emergency","admin_doctor"]}>
 									<PrescriptionOpd />
 								</ProtectedRoute>
 							}
