@@ -15,7 +15,7 @@ import Operator from "@modules/home/operator/Operator";
 const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
 const ALLOWED_OPERATOR_ROLES = [ "operator_opd", "operator_manager", "operator_emergency"];
 
-export default function Index_oldx({ height }) {
+export default function Index({ height }) {
 	const progress = useGetLoadingProgress();
 	const {userInfo} = useHospitalUserData();
 	const userRoles = getUserRole();

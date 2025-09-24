@@ -103,7 +103,11 @@ const OPDPos = forwardRef(({ data }, ref) => {
 									{data?.year} {t("বছর")}
 								</Table.Td>
 								<Table.Td miw={100} align="right">
-									<strong>{t("জন্ম তারিখ")}</strong> {data?.dob}
+									{data?.dob && (
+									<>
+									<strong>{t("জন্ম")}</strong> {data?.dob}
+									</>
+									)}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
