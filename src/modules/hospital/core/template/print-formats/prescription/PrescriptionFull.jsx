@@ -1,3 +1,5 @@
+// NOTE: this template will replace this file: src/common/components/print-formats/prescription/PrescriptionFull.jsx
+
 import { Box, Text, Grid, Group, Stack, Image, Flex } from "@mantine/core";
 import { forwardRef, useState } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
@@ -277,10 +279,10 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						</Grid.Col>
 						<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
 							<Stack gap="2" mih={200}>
-								{exEmergencies.map((emeregncy, index) => (
+								{exEmergencies.map((emergency, index) => (
 									<Box key={index}>
 										<Text size="xs" fw={600}>
-											{index + 1}. {getValue(emeregncy.value)}
+											{index + 1}. {getValue(emergency.value)}
 										</Text>
 									</Box>
 								))}
@@ -427,6 +429,6 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 	);
 });
 
-PrescriptionFull.displayName = "Prescription2";
+PrescriptionFull.displayName = "PrescriptionFull";
 
 export default PrescriptionFull;
