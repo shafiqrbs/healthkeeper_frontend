@@ -56,8 +56,10 @@ function TextAreaForm({
 						onKeyDown={getHotkeyHandler([
 							[
 								"Enter",
-								(e) => {
-									document.getElementById(nextField).focus();
+								() => {
+									nextField && nextField === "EntityFormSubmit"
+										? document.getElementById(nextField).click()
+										: document.getElementById(nextField).focus();
 								},
 							],
 						])}

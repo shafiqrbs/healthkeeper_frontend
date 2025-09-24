@@ -63,7 +63,7 @@ export default function DateSelectorForm({
 		if (selectedDate) {
 			form.setFieldValue(name, selectedDate);
 		}
-	}, [selectedDate, form, name]);
+	}, [selectedDate, name]);
 
 	// =============== handle date change ================
 	const handleDateChange = (date) => {

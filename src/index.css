@@ -534,6 +534,14 @@ input[type=radio]:checked+label>img {
     text-transform: capitalize !important;
 }
 
+.mantine-TextInput-error {
+    display: none !important;
+}
+
+[data-error=true].mantine-Input-wrapper {
+    margin-bottom: 0;
+}
+
 .full-bleed {
     box-shadow: 0 0 0 100vmax white !important;
     clip-path: inset(0 -100vmax) !important;
@@ -668,7 +676,8 @@ input[type=radio]:checked+label>img {
 }
 
 .custom-textarea {
-    width: 220px!important;
-    height: 160px!important;
-    resize: none; /* prevent manual resize */
+    width: 220px !important;
+    height: 160px !important;
+    resize: none;
+    /* prevent manual resize */
 }

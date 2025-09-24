@@ -1,7 +1,7 @@
 // NOTE: this template will replace this file: src/common/components/print-formats/prescription/PrescriptionFull.jsx
 
 import { Box, Text, Grid, Group, Stack, Image, Flex } from "@mantine/core";
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import DashedDivider from "@components/core-component/DashedDivider";
@@ -13,15 +13,15 @@ import { t } from "i18next";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
-const PrescriptionFull = forwardRef(({ data }, ref) => {
+const PrescriptionFull = forwardRef((props, ref) => {
 	const { data: prescriptionData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/59`,
 	});
 	const patientInfo = prescriptionData?.data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
-	const invoiceDetails = prescriptionData?.data?.invoice_details || {};
+	// const invoiceDetails = prescriptionData?.data?.invoice_details || {};
 	const patientReport = jsonContent?.patient_report || {};
-	const basicInfo = patientReport?.basic_info || {};
+	const order = patientReport?.order || {};
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = jsonContent?.medicines || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
@@ -33,7 +33,147 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 
 	console.log(jsonContent);
 
-	const [digitalSignature, setDigitalSignature] = useState([]);
+	//	const [digitalSignature, setDigitalSignature] = useState([]);
+
+	// Normalize order into an array of keys sorted by their index
+	const normalizeOrder = (inputOrder) => {
+		if (Array.isArray(inputOrder)) {
+			const entries = inputOrder.flatMap((obj) => Object.entries(obj));
+			return entries.sort((a, b) => a[1] - b[1]).map(([key]) => key);
+		}
+		if (inputOrder && typeof inputOrder === "object") {
+			return Object.keys(inputOrder).sort((a, b) => (inputOrder?.[a] ?? 0) - (inputOrder?.[b] ?? 0));
+		}
+		return [];
+	};
+
+	const orderedExamKeys = normalizeOrder(order);
+
+	const hasArrayWithLength = (arr) => Array.isArray(arr) && arr.length > 0;
+
+	const SectionWrapper = ({ label, children }) => (
+		<Box>
+			<Text size="sm" fw={600}>
+				{label}
+			</Text>
+			<CustomDivider mb="es" borderStyle="dashed" w="90%" />
+			{children}
+		</Box>
+	);
+
+	const renderNumberedList = (items, formatItem) => {
+		return (
+			<Stack gap="0px" mt="0">
+				{items.map((item, idx) => (
+					<Text key={idx} size="xs" c="black.5" mt="0">
+						{idx + 1}. {formatItem(item)}
+					</Text>
+				))}
+			</Stack>
+		);
+	};
+
+	const renderPlainJoined = (items, mapFn) => (
+		<Text size="xs" c="black.5" mt="0">
+			{items.map(mapFn).join(", ") || "Headache, Fever"}
+		</Text>
+	);
+
+	const renderOtherInstructions = (key) => {
+		const otherKey = `${key}_other_instructions`;
+		const text = patientExamination?.[otherKey];
+		if (!text) return null;
+		return (
+			<Text size="xs" c="gray" mt="xs">
+				{text}
+			</Text>
+		);
+	};
+
+	const renderExaminationSection = (key) => {
+		const dataArray = patientExamination?.[key];
+		if (!hasArrayWithLength(dataArray)) return null;
+
+		switch (key) {
+			case "chief_complaints": {
+				return (
+					<SectionWrapper label="C/C:">
+						{renderNumberedList(
+							dataArray,
+							(item) => `${item.name}: ${item.value} ${item.duration || "Day"}/s`
+						)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+			case "investigation": {
+				return (
+					<SectionWrapper label="Investigation:">
+						{renderNumberedList(dataArray, (item) => `${item.value}`)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+			case "ho_past_illness": {
+				return (
+					<SectionWrapper label="H/O Past Illness:">
+						{renderPlainJoined(dataArray, (item) => `${item.name}`)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+			case "diagnosis": {
+				return (
+					<SectionWrapper label="Diagnosis:">
+						{renderPlainJoined(dataArray, (item) => `${item.value}`)}
+					</SectionWrapper>
+				);
+			}
+			case "icd_11_listed_diseases": {
+				return (
+					<SectionWrapper label="ICD-11 listed diseases:">
+						<Text size="xs" c="black.5" mt="0">
+							{dataArray.join(", ") || "Headache, Fever"}
+						</Text>
+					</SectionWrapper>
+				);
+			}
+			case "comorbidity": {
+				return (
+					<SectionWrapper label="Comorbidity:">
+						{renderPlainJoined(
+							dataArray.filter((item) => item.value),
+							(item) => `${item.name}`
+						)}
+					</SectionWrapper>
+				);
+			}
+			case "treatment-history": {
+				return (
+					<SectionWrapper label="Treatment History:">
+						{renderPlainJoined(dataArray, (item) => `${item.value}`)}
+					</SectionWrapper>
+				);
+			}
+			case "cabin": {
+				return (
+					<SectionWrapper label="Cabin:">
+						{renderPlainJoined(dataArray, (item) => `${item.name}: ${item.value}`)}
+					</SectionWrapper>
+				);
+			}
+			default: {
+				// Generic renderer: prefer value, fallback to name
+				return (
+					<SectionWrapper label={`${key.replaceAll("_", " ")}:`}>
+						{renderPlainJoined(dataArray, (item) => `${item.value ?? item.name ?? ""}`)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+		}
+	};
+
 	const renderImagePreview = (imageArray, fallbackSrc = null) => {
 		if (imageArray.length > 0) {
 			const imageUrl = URL.createObjectURL(imageArray[0]);
@@ -169,112 +309,11 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 					<Grid columns={12} gutter="md">
 						<Grid.Col span={4}>
 							<Stack gap="0px">
-								{patientExamination?.chief_complaints && (
-									<Box>
-										<Text size="sm" fw={600}>
-											C/C:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.chief_complaints || [])
-												.map(
-													(item) => `${item.name}: ${item.value} ${item.duration || "Day"}/s`
-												)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.ho_past_illness && (
-									<Box>
-										<Text size="sm" fw={600}>
-											H/O Past Illness:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.ho_past_illness || [])
-												.map((item) => `${item.name}`)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.diagnosis && (
-									<Box>
-										<Text size="sm" fw={600}>
-											Diagnosis:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.diagnosis || [])
-												.map((item) => item.value)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-
-								{patientExamination?.icd_11_listed_diseases && (
-									<Box>
-										<Text size="sm" fw={600}>
-											ICD-11 listed diseases:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.icd_11_listed_diseases || []).join(", ") ||
-												"Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-
-								{patientExamination?.comorbidity && (
-									<Box>
-										<Text size="sm" fw={600}>
-											Comorbidity:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.comorbidity || [])
-												.filter((item) => item.value)
-												.map((item) => item.name)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.["treatment-history"] && (
-									<Box>
-										<Text size="sm" fw={600}>
-											Treatment History:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.["treatment-history"] || [])
-												.map((item) => item.value)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.on_examination && (
-									<Box>
-										<Text size="sm" fw={600}>
-											On/Examination:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="sm" c="gray" mt="-xs" mb="xs">
-											Headache, Fever
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.investigation && (
-									<Box>
-										<Text size="sm" fw={600}>
-											Investigation:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.investigation || [])
-												.map((item) => item.value)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
+								{(orderedExamKeys.length > 0 ? orderedExamKeys : Object.keys(patientExamination || {}))
+									.filter((key) => hasArrayWithLength(patientExamination?.[key]))
+									.map((key) => (
+										<Box key={key}>{renderExaminationSection(key)}</Box>
+									))}
 							</Stack>
 						</Grid.Col>
 						<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
@@ -338,7 +377,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Text size="sm" fw={600}>
-								{renderImagePreview(digitalSignature, patientInfo?.signature_path)}
+								{renderImagePreview([], patientInfo?.signature_path)}
 							</Text>
 						</Grid.Col>
 					</Grid>

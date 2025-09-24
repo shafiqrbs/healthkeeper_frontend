@@ -44,17 +44,27 @@ export const getVendorFormInitialValues = (t) => {
 
 		validate: {
 			name: hasLength({ min: 2, max: 20 }),
-			mobile: hasLength({ min: 11, max: 14 }),
-			// dob: (value) => {
-			// 	if (!value) return t("DateOfBirthValidationRequired");
-			// 	return null;
-			// },
-			guardian_name: (value, values) => {
-				if (!value && values.patient_type === "admission") return t("NameValidationRequired");
-				return null;
+			day: (_, values) => {
+				const isEmpty = (v) => v === "" || v === null || v === undefined;
+				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
+					? t("Age is required")
+					: null;
 			},
-			guardian_mobile: (value, values) => {
-				if (!value && values.patient_type === "admission") return t("MobileValidationRequired");
+			month: (_, values) => {
+				const isEmpty = (v) => v === "" || v === null || v === undefined;
+				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
+					? t("Age is required")
+					: null;
+			},
+			year: (_, values) => {
+				const isEmpty = (v) => v === "" || v === null || v === undefined;
+				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
+					? t("Age is required")
+					: null;
+			},
+			upazilla_id: hasLength({ min: 2, max: 20 }),
+			amount: (value, values) => {
+				if (!Number(value) && values.patient_payment_mode_id == "30") return t("AmountIsRequired");
 				return null;
 			},
 		},

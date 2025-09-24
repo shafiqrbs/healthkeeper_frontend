@@ -38,7 +38,6 @@ import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
-import SegmentedControlForm from "@components/form-builders/SegmentedControlForm";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
 // =============== sample user data for emergency patient ================
@@ -84,6 +83,8 @@ const USER_NID_DATA = {
 const LOCAL_STORAGE_KEY = "emergencyPatientFormData";
 
 export default function EmergencyPatientForm({
+	resetKey,
+	setResetKey,
 	form,
 	module,
 	isSubmitting,
@@ -254,6 +255,8 @@ export default function EmergencyPatientForm({
 				isSubmitting={isSubmitting}
 				handleSubmit={handleSubmit}
 				showUserData={showUserData}
+				resetKey={resetKey}
+				setResetKey={setResetKey}
 				setShowUserData={setShowUserData}
 			/>
 			<DoctorsRoomDrawer form={form} opened={openedDoctorsRoom} close={closeDoctorsRoom} />
@@ -275,12 +278,13 @@ export function Form({
 	setShowUserData,
 	visible,
 	setVisible,
+	resetKey,
+	setResetKey,
 }) {
 	const dispatch = useDispatch();
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
 	const [printData, setPrintData] = useState(null);
 	const [pendingPrint, setPendingPrint] = useState(null); // "a4" | "pos" | null
-
 	const ipdDocumentA4Ref = useRef(null);
 	const ipdDocumentPosRef = useRef(null);
 
@@ -327,6 +331,7 @@ export function Form({
 		setConfiguredDueAmount(price);
 		form.setFieldValue("amount", price);
 	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
+
 	const handlePrint = async (type) => {
 		const res = await handleSubmit();
 
@@ -342,6 +347,7 @@ export function Form({
 	};
 
 	const handleReset = () => {
+		setResetKey((prev) => prev + 1);
 		form.reset();
 		localStorage.removeItem(LOCAL_STORAGE_KEY);
 		setShowUserData(false);
@@ -388,24 +394,10 @@ export function Form({
 		form.setFieldValue("identity_mode", val);
 	};
 
-	const handleDobChange = () => {
-		const type = form.values.ageType || "year";
-		const formattedAge = calculateAge(form.values.dob, type);
-		form.setFieldValue("age", formattedAge);
-
-		// =============== calculate detailed age from date of birth ================
-		if (form.values.dob) {
-			const detailedAge = calculateDetailedAge(form.values.dob);
-			form.setFieldValue("year", detailedAge.years);
-			form.setFieldValue("month", detailedAge.months);
-			form.setFieldValue("day", detailedAge.days);
-		}
-	};
-
 	// =============== handle HSID search and populate form fields ================
 	const handleNIDSearch = () => {
 		if (!form.values.identity) {
-			showNotificationComponent(t("PleaseEnterNID"), "red", "lightgray", true, 700, true);
+			showNotificationComponent(t("PleaseEnterNID"), "red", "lightgray", "", true, 700, true);
 			return;
 		}
 		setShowUserData(true);
@@ -442,7 +434,10 @@ export function Form({
 								<Stack className="form-stack-vertical">
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("patientName")}</Text>
+											<Flex gap="es">
+												<Text fz="sm">{t("patientName")}</Text>
+												<RequiredAsterisk />
+											</Flex>
 										</Grid.Col>
 										<Grid.Col span={14} pb={0}>
 											<InputForm
@@ -463,7 +458,7 @@ export function Form({
 											<Text fz="sm">{t("mobile")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14} pb={0}>
-											<InputForm
+											<InputNumberForm
 												form={form}
 												label=""
 												tooltip={t("enterPatientMobile")}
@@ -512,7 +507,7 @@ export function Form({
 												tooltip={t("EnterDateOfBirth")}
 												name="dob"
 												id="dob"
-												nextField="day"
+												nextField="year"
 												value={form.values.dob}
 												required
 												disabledFutureDate
@@ -521,7 +516,10 @@ export function Form({
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("age")}</Text>
+											<Flex>
+												<Text fz="sm">{t("age")}</Text>
+												<RequiredAsterisk />
+											</Flex>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<Flex gap="xs">
@@ -529,7 +527,7 @@ export function Form({
 													form={form}
 													label=""
 													placeholder="Days"
-													tooltip={t("days")}
+													tooltip={t("EnterDays")}
 													name="day"
 													id="day"
 													nextField="month"
@@ -545,7 +543,7 @@ export function Form({
 													form={form}
 													label=""
 													placeholder="Months"
-													tooltip={t("months")}
+													tooltip={t("EnterMonths")}
 													name="month"
 													id="month"
 													nextField="year"
@@ -561,10 +559,10 @@ export function Form({
 													form={form}
 													label=""
 													placeholder="Years"
-													tooltip={t("years")}
+													tooltip={t("EnterYears")}
 													name="year"
 													id="year"
-													nextField="upazilla"
+													nextField="upazilla_id"
 													min={0}
 													max={150}
 													leftSection={
@@ -584,6 +582,7 @@ export function Form({
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
+												key={`${resetKey}-upazilla_id`}
 												form={form}
 												tooltip={t("EnterPatientUpazilla")}
 												placeholder="Upazilla - District"
@@ -719,7 +718,7 @@ export function Form({
 												placeholder="12 street, 123456"
 												name="address"
 												id="address"
-												nextField="amount"
+												nextField="EntityFormSubmit"
 												value={form.values.address}
 												required
 											/>
@@ -845,6 +844,7 @@ export function Form({
 								disabled={isSubmitting}
 								type="button"
 								onClick={() => handlePrint("pos")}
+								id="EntityFormSubmit"
 							>
 								<Stack gap={0} align="center" justify="center">
 									<Text>{t("Pos")}</Text>
@@ -859,7 +859,6 @@ export function Form({
 								onClick={handleSubmit}
 								loading={isSubmitting}
 								disabled={isSubmitting}
-								id="EntityFormSubmit"
 							>
 								<Stack gap={0} align="center" justify="center">
 									<Text>{t("Save")}</Text>

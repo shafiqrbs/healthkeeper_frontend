@@ -20,8 +20,8 @@ export default function ActionButtons({
 	handleA4Print,
 	children,
 }) {
-	const { hospitalConfigData:globalConfig } = useHospitalConfigData();
-	const  hospitalConfigData = globalConfig?.hospital_config
+	const { hospitalConfigData: globalConfig } = useHospitalConfigData();
+	const hospitalConfigData = globalConfig?.hospital_config;
 
 	const { t } = useTranslation();
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
@@ -238,6 +238,7 @@ export default function ActionButtons({
 						</Stack>
 					</Button> */}
 					<Button
+						id="EntityFormSubmit"
 						onClick={handlePosPrint}
 						w="100%"
 						bg="var(--theme-pos-btn-color)"
@@ -252,7 +253,6 @@ export default function ActionButtons({
 						</Stack>
 					</Button>
 					<Button
-						id="EntityFormSubmit"
 						w="100%"
 						bg="var(--theme-save-btn-color)"
 						onClick={handleSubmit}

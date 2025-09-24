@@ -315,6 +315,7 @@ export function Form({
 	visible,
 	setVisible,
 }) {
+	const [resetKey, setResetKey] = useState(0);
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 	const [openedRoomError, { open: openRoomError, close: closeRoomError }] = useDisclosure(false);
 	const [openedRoom, { open: openRoom, close: closeRoom }] = useDisclosure(false);
@@ -431,8 +432,7 @@ export function Form({
 				return {};
 			}
 
-			if (!form.values.amount && form.values.patient_payment_mode_id === "30") {
-				showNotificationComponent(t("AmountsRequired"), "red", "lightgray", true, 700, true);
+			if (!form.values.amount && form.values.patient_payment_mode_id == "30") {
 				setIsSubmitting(false);
 				return {};
 			}
@@ -475,12 +475,13 @@ export function Form({
 				const resultAction = await dispatch(storeEntityData(data));
 
 				if (storeEntityData.rejected.match(resultAction)) {
-					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+					showNotificationComponent(resultAction.payload.message, "red", "lightgray", "", true, 700, true);
 					return {};
 				} else {
-					showNotificationComponent(t("VisitSavedSuccessfully"), "green", "lightgray", true, 700, true);
+					showNotificationComponent(t("VisitSavedSuccessfully"), "green", "lightgray", "", true, 700, true);
 					setShowUserData(false);
 					form.reset();
+					setResetKey((prev) => prev + 1);
 					localStorage.removeItem(LOCAL_STORAGE_KEY);
 					dispatch(setRefetchData({ module: roomModule, refetching: true }));
 					return resultAction.payload.data;
@@ -565,7 +566,6 @@ export function Form({
 							<Grid.Col span={6}>
 								<Flex align="center" gap="es">
 									<Text fz="sm">{t("Mobile")}</Text>
-									<RequiredAsterisk />
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={14}>
@@ -578,7 +578,6 @@ export function Form({
 									id="mobile"
 									nextField="dob"
 									value={form.values.mobile}
-									required
 								/>
 							</Grid.Col>
 						</Grid>
@@ -617,7 +616,7 @@ export function Form({
 									tooltip={t("EnterDateOfBirth")}
 									name="dob"
 									id="dob"
-									nextField="day"
+									nextField="year"
 									value={form.values.dob}
 									required
 									disabledFutureDate
@@ -626,7 +625,10 @@ export function Form({
 						</Grid>
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
-								<Text fz="sm">{t("Age")}</Text>
+								<Flex>
+									<Text fz="sm">{t("Age")}</Text>
+									<RequiredAsterisk />
+								</Flex>
 							</Grid.Col>
 							<Grid.Col span={14}>
 								<Flex gap="xs">
@@ -634,7 +636,7 @@ export function Form({
 										form={form}
 										label=""
 										placeholder="Days"
-										tooltip={t("days")}
+										tooltip={t("EnterDays")}
 										name="day"
 										id="day"
 										nextField="month"
@@ -650,7 +652,7 @@ export function Form({
 										form={form}
 										label=""
 										placeholder="Months"
-										tooltip={t("months")}
+										tooltip={t("EnterMonths")}
 										name="month"
 										id="month"
 										nextField="year"
@@ -667,7 +669,7 @@ export function Form({
 										form={form}
 										label=""
 										placeholder="Years"
-										tooltip={t("years")}
+										tooltip={t("EnterYears")}
 										name="year"
 										id="year"
 										nextField="identity"
@@ -690,8 +692,9 @@ export function Form({
 							</Grid.Col>
 							<Grid.Col span={14}>
 								<SelectForm
+									key={resetKey}
 									form={form}
-									tooltip={t("EnterPatientUpazilla")}
+									tooltip={t("EnterUpazilla")}
 									placeholder="District - Upazilla"
 									name="upazilla_id"
 									id="upazilla_id"
@@ -708,10 +711,7 @@ export function Form({
 						</Grid>
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
-								<Flex align="center" gap="es">
-									<Text fz="sm">{t("Type")}</Text>
-									<RequiredAsterisk />
-								</Flex>
+								<Text fz="sm">{t("Type")}</Text>
 							</Grid.Col>
 							<Grid.Col span={14} py="es">
 								<SegmentedControlForm
@@ -826,7 +826,7 @@ export function Form({
 									placeholder="12 street, 123456"
 									name="address"
 									id="address"
-									nextField="free_identification_id"
+									nextField="EntityFormSubmit"
 									value={form.values.address}
 									required
 								/>

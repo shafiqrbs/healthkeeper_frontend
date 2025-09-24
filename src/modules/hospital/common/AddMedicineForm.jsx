@@ -66,6 +66,7 @@ export default function AddMedicineForm({
 	setShowHistory,
 	prescriptionData,
 	hasRecords,
+	tabParticulars,
 }) {
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
@@ -350,6 +351,7 @@ export default function AddMedicineForm({
 
 		try {
 			const createdBy = getLoggedInUser();
+			console.info(tabParticulars);
 
 			const formValue = {
 				is_completed: true,
@@ -364,6 +366,9 @@ export default function AddMedicineForm({
 				patient_report: {
 					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,
+					order: tabParticulars.map((item, index) => ({
+						[item.slug]: index,
+					})),
 				},
 			};
 

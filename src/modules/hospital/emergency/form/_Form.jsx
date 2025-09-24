@@ -18,7 +18,7 @@ export default function _Form({ module }) {
 	const { t } = useTranslation();
 	const form = useForm(getVendorFormInitialValues(t));
 	const [showUserData, setShowUserData] = useState(false);
-
+	const [resetKey, setResetKey] = useState(0);
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
@@ -70,11 +70,10 @@ export default function _Form({ module }) {
 				} else {
 					showNotificationComponent(t("Emergency saved successfully"), "green", "lightgray", true, 700, true);
 					setRefetchData({ module, refetching: true });
-					const selectedRoom = form.values.room_id;
 					form.reset();
 					localStorage.removeItem(LOCAL_STORAGE_KEY);
+					setResetKey((prev) => prev + 1);
 					setShowUserData(false);
-					form.setFieldValue("room_id", selectedRoom);
 					return resultAction.payload.data;
 				}
 			} catch (error) {
@@ -101,6 +100,8 @@ export default function _Form({ module }) {
 			isSubmitting={isSubmitting}
 			showUserData={showUserData}
 			setShowUserData={setShowUserData}
+			resetKey={resetKey}
+			setResetKey={setResetKey}
 		/>
 	);
 }

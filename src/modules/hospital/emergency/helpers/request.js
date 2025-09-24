@@ -38,16 +38,35 @@ const initialValues = {
 	invoice_particulars: [{ id: 1, name: "Consultation", quantity: 30, price: 100 }],
 };
 
-export const getVendorFormInitialValues = () => {
+export const getVendorFormInitialValues = (t) => {
 	return {
 		initialValues,
 
 		validate: {
 			name: hasLength({ min: 2, max: 20 }),
-			// mobile: (value) => {
-			// 	if (!value) return t("MobileValidationRequired");
-			// 	return null;
-			// },
+			day: (_, values) => {
+				const isEmpty = (v) => v === "" || v === null || v === undefined;
+				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
+					? t("Age is required")
+					: null;
+			},
+			month: (_, values) => {
+				const isEmpty = (v) => v === "" || v === null || v === undefined;
+				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
+					? t("Age is required")
+					: null;
+			},
+			year: (_, values) => {
+				const isEmpty = (v) => v === "" || v === null || v === undefined;
+				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
+					? t("Age is required")
+					: null;
+			},
+			upazilla_id: hasLength({ min: 2, max: 20 }),
+			amount: (value, values) => {
+				if (!Number(value) && values.patient_payment_mode_id == "30") return t("AmountIsRequired");
+				return null;
+			},
 		},
 	};
 };

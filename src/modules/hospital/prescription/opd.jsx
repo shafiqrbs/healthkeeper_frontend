@@ -107,6 +107,9 @@ export default function Index() {
 				patient_report: {
 					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,
+					order: tabParticulars.map((item, index) => ({
+						[item.slug]: index,
+					})),
 				},
 			};
 
@@ -177,6 +180,7 @@ export default function Index() {
 									update={handlePrescriptionUpdate}
 									setShowHistory={setShowHistory}
 									prescriptionData={prescriptionData}
+									tabParticulars={tabParticulars}
 								/>
 							</Grid.Col>
 							{hasRecords && (
