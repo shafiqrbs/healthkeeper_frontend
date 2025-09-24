@@ -14,33 +14,18 @@ export default function MedicineListItem({
 	by_meal_options,
 	dosage_options,
 	index,
-	medicines,
 	medicine,
 	setMedicines,
 	handleDelete,
 	update,
 }) {
 	const { t } = useTranslation();
-	const [mode, setMode] = useState("view");
+	const [mode] = useState("view");
 	const [editingInstructionIndex, setEditingInstructionIndex] = useState(null);
 	const [viewAction, setViewAction] = useState(true);
 
-	const openEditMode = () => {
-		setMode("edit");
-	};
-
-	const closeEditMode = () => {
-		setMode("view");
-	};
-
 	const handleChange = (field, value) => {
 		setMedicines((prev) => prev.map((m, i) => (i === index - 1 ? { ...m, [field]: value } : m)));
-	};
-
-	const handleEdit = () => {
-		setMedicines((prev) => prev.map((m, i) => (i === index - 1 ? { ...m, ...medicine } : m)));
-		closeEditMode();
-		update(medicines.map((m, i) => (i === index - 1 ? { ...m, ...medicine } : m)));
 	};
 
 	const handleAddInstruction = (instructionIndex) => {
@@ -52,8 +37,6 @@ export default function MedicineListItem({
 				by_meal: current.by_meal || "",
 				quantity: current.quantity || 1,
 				duration: current.duration || "Day",
-				outdoor_medicine_number: current.outdoor_medicine_number || "",
-				doctor_comment: current.doctor_comment || "",
 			};
 			const existingDosages = current.dosages && current.dosages.length > 0 ? current.dosages : [baseInstruction];
 			const toDuplicate =
@@ -102,8 +85,6 @@ export default function MedicineListItem({
 						by_meal: current.by_meal || "",
 						quantity: current.quantity || 1,
 						duration: current.duration || "Day",
-						outdoor_medicine_number: current.outdoor_medicine_number || "",
-						doctor_comment: current.doctor_comment || "",
 					},
 				];
 				const updated = prev.map((m, i) => (i === medicineIndex ? { ...current, dosages: seeded } : m));
@@ -158,8 +139,6 @@ export default function MedicineListItem({
 									by_meal: medicine.by_meal || "",
 									quantity: medicine.quantity || 1,
 									duration: medicine.duration || "Day",
-									outdoor_medicine_number: medicine.outdoor_medicine_number || "",
-									doctor_comment: medicine.doctor_comment || "",
 								},
 						  ]
 					).map((instruction, insIndex) => {
@@ -229,13 +208,9 @@ export default function MedicineListItem({
 														size="xs"
 														label=""
 														placeholder={t("OutdoorMedicineNumber")}
-														value={instruction.outdoor_medicine_number}
+														value={medicine.opd_quantity}
 														onChange={(event) =>
-															handleInstructionFieldChange(
-																insIndex,
-																"outdoor_medicine_number",
-																event.target.value
-															)
+															handleChange("opd_quantity", event.target.value)
 														}
 													/>
 												</Grid.Col>
@@ -244,13 +219,9 @@ export default function MedicineListItem({
 														size="xs"
 														label=""
 														placeholder={t("DoctorComment")}
-														value={instruction.doctor_comment}
+														value={medicine.doctor_comment}
 														onChange={(event) =>
-															handleInstructionFieldChange(
-																insIndex,
-																"doctor_comment",
-																event.target.value
-															)
+															handleChange("doctor_comment", event.target.value)
 														}
 													/>
 												</Grid.Col>
@@ -278,9 +249,9 @@ export default function MedicineListItem({
 											{instruction?.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
 											---- {instruction.quantity} ---- {instruction.duration}{" "}
 											{isFirstItem &&
-												`---- ${
-													instruction.outdoor_medicine_number || t("NoOutdoorMedicineNumber")
-												} ---- ${instruction.doctor_comment || t("NoDoctorComment")}`}
+												`---- ${medicine.opd_quantity || t("NoOutdoorMedicineNumber")} ---- ${
+													medicine.doctor_comment || t("NoDoctorComment")
+												}`}
 										</Box>
 
 										<Flex align="center" display={viewAction ? "flex" : "none"}>

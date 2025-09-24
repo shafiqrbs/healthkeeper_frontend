@@ -28,7 +28,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
-import {formatDate, getLoggedInHospitalUser, getUserRole} from "@/common/utils";
+import { formatDate, getLoggedInHospitalUser, getUserRole } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -41,16 +41,15 @@ import Prescription from "@components/print-formats/opd/Prescription2";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
-
-const  tabs =[
-		{ label: 'All', value: 'all' },
-		{ label: 'Prescription', value: 'prescription' },
-		{ label: 'Non-prescription', value: 'non-prescription' },
-		]
+const tabs = [
+	{ label: "All", value: "all" },
+	{ label: "Prescription", value: "prescription" },
+	{ label: "Non-prescription", value: "non-prescription" },
+];
 
 const PER_PAGE = 200;
-const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
-const ALLOWED_OPD_ROLES = [ "doctor_opd", "admin_administrator"];
+const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
+const ALLOWED_OPD_ROLES = ["doctor_opd", "admin_administrator"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const dispatch = useDispatch();
@@ -111,7 +110,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
-	const options = {year: 'numeric',month: '2-digit',day: '2-digit'};
+
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
@@ -226,7 +225,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		).unwrap();
 		const prescription_id = resultAction?.data?.data.id;
 		if (prescription_id) {
-			if(closeTable)closeTable();
+			if (closeTable) closeTable();
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 		} else {
 			console.error(resultAction);
@@ -244,7 +243,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={tab.value}
+								>
 									{t(tab.label)}
 								</Tabs.Tab>
 							))}
@@ -273,7 +277,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch  module={module} form={form} />
+				<KeywordSearch module={module} form={form} />
 			</Box>
 			<Box className="border-top-none" px="sm">
 				<DataTable
@@ -298,7 +302,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							accessor: "index",
 							title: t("S/N"),
 							textAlignment: "center",
-							render: (_,index) => index + 1,
+							render: (_, index) => index + 1,
 						},
 						{
 							accessor: "created_at",
@@ -328,41 +332,39 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-
-
-										{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
-											<>
-									{values?.prescription_id && userId == values?.prescription_created_by_id ? (
-										<Button
-											variant="filled"
-											bg="var(--theme-success-color)"
-											c="white"
-											fw={400}
-											size="compact-xs"
-											onClick={() => handlePrescription(values.prescription_id)}
-											radius="es"
-											rightSection={<IconArrowRight size={12} />}
-											className="border-right-radius-none"
-										>
-											{t("Prescription")}
-										</Button>
-									) : !values?.prescription_id ? (
-										<Button
-											fw={400}
-											variant="filled"
-											bg="var(--theme-primary-color-6)"
-											c="white"
-											size="compact-xs"
-											onClick={() => handleProcessPrescription(values.id)}
-											radius="es"
-											rightSection={<IconArrowRight size={12} />}
-											className="border-right-radius-none"
-										>
-											{t("Process")}
-										</Button>
-									):(null)}
-											</>
-											)}
+									{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
+										<>
+											{values?.prescription_id && userId == values?.prescription_created_by_id ? (
+												<Button
+													variant="filled"
+													bg="var(--theme-success-color)"
+													c="white"
+													fw={400}
+													size="compact-xs"
+													onClick={() => handlePrescription(values.prescription_id)}
+													radius="es"
+													rightSection={<IconArrowRight size={12} />}
+													className="border-right-radius-none"
+												>
+													{t("Prescription")}
+												</Button>
+											) : !values?.prescription_id ? (
+												<Button
+													fw={400}
+													variant="filled"
+													bg="var(--theme-primary-color-6)"
+													c="white"
+													size="compact-xs"
+													onClick={() => handleProcessPrescription(values.id)}
+													radius="es"
+													rightSection={<IconArrowRight size={12} />}
+													className="border-right-radius-none"
+												>
+													{t("Process")}
+												</Button>
+											) : null}
+										</>
+									)}
 
 									<Menu
 										position="bottom-end"
@@ -376,7 +378,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 											<ActionIcon
 												className="border-left-radius-none"
 												variant="transparent"
-												color='var(--theme-menu-three-dot)'
+												color="var(--theme-menu-three-dot)"
 												radius="es"
 												aria-label="Settings"
 											>
@@ -428,20 +430,20 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												</>
 											)}
 											{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && (
-											<Menu.Item
-												onClick={() => handleDelete(values.id)}
-												c="red.6"
-												leftSection={
-													<IconTrashX
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-											>
-												{t("Delete")}
-											</Menu.Item>
+												<Menu.Item
+													onClick={() => handleDelete(values.id)}
+													c="red.6"
+													leftSection={
+														<IconTrashX
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+												>
+													{t("Delete")}
+												</Menu.Item>
 											)}
 										</Menu.Dropdown>
 									</Menu>

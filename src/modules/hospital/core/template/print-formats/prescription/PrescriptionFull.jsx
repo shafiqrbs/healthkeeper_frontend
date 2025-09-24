@@ -1,5 +1,5 @@
-import {Box, Text, Grid, Group, Stack, Image, Table, Flex} from "@mantine/core";
-import {forwardRef, useState} from "react";
+import { Box, Text, Grid, Group, Stack, Image, Flex } from "@mantine/core";
+import { forwardRef, useState } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import DashedDivider from "@components/core-component/DashedDivider";
@@ -9,25 +9,28 @@ import "@/index.css";
 import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {
 	const { data: prescriptionData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/59`,
 	});
-	const patientInfo = prescriptionData?. data || {};
+	const patientInfo = prescriptionData?.data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
-	const invoiceDetails = prescriptionData?. data?.invoice_details || {};
+	const invoiceDetails = prescriptionData?.data?.invoice_details || {};
 	const patientReport = jsonContent?.patient_report || {};
 	const basicInfo = patientReport?.basic_info || {};
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = jsonContent?.medicines || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useDoaminHospitalConfigData();
+
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-	console.log(jsonContent)
+
+	console.log(jsonContent);
+
 	const [digitalSignature, setDigitalSignature] = useState([]);
 	const renderImagePreview = (imageArray, fallbackSrc = null) => {
 		if (imageArray.length > 0) {
@@ -128,8 +131,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								</Text>
 								<Text size="xs">
 									{" "}
-									{patientInfo?.day || 1} D {patientInfo?.month || 1} M{" "}
-									{patientInfo?.year || ""} Y
+									{patientInfo?.day || 1} D {patientInfo?.month || 1} M {patientInfo?.year || ""} Y
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -138,7 +140,10 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("লিঙ্গ")}:
 								</Text>
-								<Text size="xs">{patientInfo?.gender && patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}</Text>
+								<Text size="xs">
+									{patientInfo?.gender &&
+										patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
+								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} px="xs">
@@ -282,7 +287,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								{medicines.map((medicine, index) => (
 									<Box key={index}>
 										<Text size="xs" fw={600}>
-											{index + 1}. {getValue(medicine.medicine_name)}
+											{exEmergencies.length + index + 1}. {getValue(medicine.medicine_name)}
 										</Text>
 										{(medicine.dosages || []).map((dose, dIdx) => (
 											<Text
@@ -295,21 +300,24 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 												{getValue(dose.by_meal)} {" ------- "}
 												{getValue(dose.quantity)} {getValue(medicine.duration)}
 											</Text>
-										))}{
-										<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
-											{getValue(medicine.dose_details)} {" -------"} {getValue(medicine.by_meal)}{" -------"}
-											{getValue(medicine.quantity)} {getValue(medicine.duration)}
-										</Text>
-									   }
+										))}
+										{
+											<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
+												{getValue(medicine.dose_details)} {" -------"}{" "}
+												{getValue(medicine.by_meal)}
+												{" -------"}
+												{getValue(medicine.quantity)} {getValue(medicine.duration)}
+											</Text>
+										}
 									</Box>
 								))}
 							</Stack>
-							<Box mt="4" mb={'4'} style={{ borderBottom: `1px solid #444` }} />
+							<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
 							<Text size="sm" fw={600}>
 								অন্যান্য নির্দেশাবলী:
 							</Text>
 							<Text size="sm">{getValue(jsonContent.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}</Text>
-							<Box mt="4" mb={'4'} style={{ borderBottom: `1px solid #444` }} />
+							<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
 							<Text size="sm" fw={600}>
 								বিশেষ নির্দেশাবলী:
 							</Text>
@@ -322,9 +330,9 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 				<Box bd="1px solid #555" style={{ borderRadius: "4px" }}>
 					{/* =============== top section with printed by and signature ================ */}
 					<Grid columns={12} gutter="0">
-						<Grid.Col span={6} pl={'xl'} pt={'md'}>
-							<Text fz={'xl'}>{patientInfo?.doctor_name}</Text>
-							<Text fz={'xs'}>{patientInfo?.designation_name}</Text>
+						<Grid.Col span={6} pl={"xl"} pt={"md"}>
+							<Text fz={"xl"}>{patientInfo?.doctor_name}</Text>
+							<Text fz={"xs"}>{patientInfo?.designation_name}</Text>
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Text size="sm" fw={600}>
@@ -333,19 +341,19 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						</Grid.Col>
 					</Grid>
 				</Box>
-				<DashedDivider  />
+				<DashedDivider />
 				{/* =============== bottom section with patient info and medication table ================ */}
 				<Grid columns={12} gutter="md" mb="lg">
 					<Grid.Col span={4}>
 						<Stack gap="6px">
 							<Text size="sm" fw={500}>
-								Name: {getValue(patientInfo?.name, )}
+								Name: {getValue(patientInfo?.name)}
 							</Text>
 							<Text size="sm" fw={500}>
-								Mobile: {getValue(patientInfo?.mobile, )}
+								Mobile: {getValue(patientInfo?.mobile)}
 							</Text>
 							<Text size="xs" fw={500}>
-								Room: {getValue(patientInfo?.room_name, )}
+								Room: {getValue(patientInfo?.room_name)}
 							</Text>
 							<Text size="xs">
 								Age: {getValue(patientInfo?.year, "25")} Y. Sex:{patientInfo?.gender}
@@ -354,42 +362,48 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								Doctor Comments:
 							</Text>
 							<Text size="xs" c="gray">
-								{getValue(jsonContent?.pharmacy_instruction )}
+								{getValue(jsonContent?.pharmacy_instruction)}
 							</Text>
 						</Stack>
 					</Grid.Col>
 					<Grid.Col span={8}>
 						{/* =============== medication table ================ */}
 						<Box style={{ border: "1px solid #333", borderRadius: "4px", overflow: "hidden" }}>
-							<Grid columns={24} p={8} bg="#f8f9fa"
-								  style={{
-									  borderBottom: "1px solid #333",
-								  }}>
+							<Grid
+								columns={24}
+								p={8}
+								bg="#f8f9fa"
+								style={{
+									borderBottom: "1px solid #333",
+								}}
+							>
 								<Grid.Col span={20} m={0} p={0}>
 									<Text size="xs" pl={4}>
 										Generic Name
 									</Text>
 								</Grid.Col>
-								<Grid.Col span={4} m={0} p={0}><Text size="sm" ta="center" fw={500}>
-									Quantity
-								</Text></Grid.Col>
+								<Grid.Col span={4} m={0} p={0}>
+									<Text size="sm" ta="center" fw={500}>
+										Quantity
+									</Text>
+								</Grid.Col>
 							</Grid>
-								{medicines?.map((medicine, index) => (
-									<>
+							{medicines?.map((medicine, index) => (
+								<>
 									<Grid columns={24} m={4} p={4}>
 										<Grid.Col span={20} m={0} p={0}>
 											<Text size="xs" pl={4}>
-													{index + 1}. {getValue(medicine.generic)}
+												{index + 1}. {getValue(medicine.generic)}
 											</Text>
 										</Grid.Col>
-										<Grid.Col span={4} m={0} p={0}><Text size="sm" ta="center" fw={500}>
-											{getValue(medicine.quantity, "1")}
-										</Text></Grid.Col>
+										<Grid.Col span={4} m={0} p={0}>
+											<Text size="sm" ta="center" fw={500}>
+												{getValue(medicine.quantity, "1")}
+											</Text>
+										</Grid.Col>
 									</Grid>
-									</>
-									))}
-
-
+								</>
+							))}
 						</Box>
 					</Grid.Col>
 				</Grid>

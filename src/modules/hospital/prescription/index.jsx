@@ -5,7 +5,6 @@ import { useOutletContext } from "react-router-dom";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import { MODULES } from "@/constants";
 import Table from "./Table";
-import {getLoggedInHospitalUser, getLoggedInUser} from "@utils/index";
 
 const module = MODULES.VISIT;
 

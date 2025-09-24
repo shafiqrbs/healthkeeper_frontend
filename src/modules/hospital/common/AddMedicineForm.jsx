@@ -13,7 +13,6 @@ import {
 	Autocomplete,
 	Tooltip,
 	ActionIcon,
-	TextInput,
 	Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -361,6 +360,7 @@ export default function AddMedicineForm({
 				created_by_id: createdBy?.id,
 				exEmergency: form.values.exEmergency || [],
 				instruction: form.values.instruction || "",
+				pharmacyInstruction: form.values.pharmacyInstruction || "",
 				patient_report: {
 					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,
@@ -794,10 +794,10 @@ export default function AddMedicineForm({
 									<InputForm
 										form={form}
 										label=""
-										tooltip="Discount on visit (%)"
-										name="PharmacyInstruction"
-										value={form.values.visitPercent}
-										changeValue={(v) => handleChange("visitPercent", v)}
+										id="pharmacyInstruction"
+										tooltip="Pharmacy Instruction"
+										name="pharmacyInstruction"
+										value={form.values.pharmacyInstruction}
 										placeholder="PharmacyInstruction"
 									/>
 								</Box>

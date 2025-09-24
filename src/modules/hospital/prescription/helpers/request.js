@@ -16,6 +16,7 @@ export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
 		follow_up_date: parseDate(initialFormValues?.follow_up_date),
 		instruction: initialFormValues?.instruction || "",
 		exEmergency: initialFormValues?.exEmergency || [],
+		pharmacyInstruction: initialFormValues?.pharmacyInstruction || "",
 	};
 
 	return {
