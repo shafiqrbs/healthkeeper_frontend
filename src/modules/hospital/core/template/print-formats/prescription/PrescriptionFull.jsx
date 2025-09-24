@@ -1,5 +1,5 @@
-import { Box, Text, Grid, Group, Stack, Image } from "@mantine/core";
-import { forwardRef } from "react";
+import {Box, Text, Grid, Group, Stack, Image, Table, Flex} from "@mantine/core";
+import {forwardRef, useState} from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import DashedDivider from "@components/core-component/DashedDivider";
@@ -8,211 +8,43 @@ import { formatDate } from "@/common/utils";
 import "@/index.css";
 import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
-
-const patientInfo = {
-	advise: "Take medicine after you take food",
-	is_completed: true,
-	created_by_id: 15,
-	follow_up_date: "2025-09-10T05:30:54.021Z",
-	prescription_date: "2025-09-14",
-};
-const basicInfo = {
-	bp: null,
-	weight: "60",
-	bloodGroup: "O+",
-};
-const patientExamination = {
-	comorbidity: [
-		{
-			id: 930,
-			name: "DM",
-			value: true,
-		},
-		{
-			id: 931,
-			name: "HTN",
-			value: true,
-		},
-	],
-	investigation: [
-		{
-			id: 698,
-			name: "CBC",
-			value: "CBC",
-		},
-		{
-			id: 737,
-			name: "S.Creatinine",
-			value: "S.Creatinine",
-		},
-	],
-	ho_past_illness: [
-		{
-			id: 936,
-			name: "PTB",
-			value: false,
-		},
-		{
-			id: 937,
-			name: "Asthma",
-			value: true,
-		},
-		{
-			id: 939,
-			name: "COVID-19",
-			value: true,
-		},
-	],
-	chief_complaints: [
-		{
-			id: 940,
-			name: "Fever",
-			value: "1",
-			duration: "Day",
-		},
-		{
-			id: 941,
-			name: "Cough",
-			value: "2",
-			duration: "Day",
-		},
-	],
-};
-const medicines = [
-	{
-		id: 5,
-		dosage: "3+0+0",
-		period: null,
-		status: 1,
-		by_meal: "( IN EMPTY STOMACH )",
-		generic: "PARACETAMOL BP 10MG/ML INFUSION",
-		duration: "Day",
-		quantity: 1,
-		config_id: 2,
-		is_delete: 0,
-		created_at: "2025-09-14T03:19:04.000000Z",
-		updated_at: "2025-09-14T03:19:04.000000Z",
-		dosage_form: null,
-		instruction: null,
-		medicine_id: 16833,
-		medicine_name: "Inf. Napa 10MG/ML",
-		total_quantity: null,
-		medicine_dosage_id: null,
-		treatment_template_id: 1096,
-	},
-	{
-		id: 6,
-		dosage: "2 PUFFS / NOSTRIL DAILY",
-		period: null,
-		status: 1,
-		by_meal: "GURGLE AFTER USES",
-		generic: "PARACETAMOL 125 MG SUPP.",
-		duration: "Day",
-		quantity: 1,
-		config_id: 2,
-		is_delete: 0,
-		created_at: "2025-09-14T03:19:23.000000Z",
-		updated_at: "2025-09-14T03:19:23.000000Z",
-		dosage_form: null,
-		instruction: null,
-		medicine_id: 17259,
-		medicine_name: "SUPP. NAPA 125MG",
-		total_quantity: null,
-		medicine_dosage_id: null,
-		treatment_template_id: 1096,
-	},
-	{
-		id: 7,
-		dosage: "1+1+1",
-		period: null,
-		status: 1,
-		by_meal: "( After meal )",
-		generic: "PARACETAMOL 500MG TAB",
-		duration: "Day",
-		quantity: 3,
-		config_id: 2,
-		is_delete: 0,
-		created_at: "2025-09-14T03:19:33.000000Z",
-		updated_at: "2025-09-14T03:19:33.000000Z",
-		dosage_form: null,
-		instruction: null,
-		medicine_id: 18100,
-		medicine_name: "Tab. Napa Rapid 500mg",
-		total_quantity: null,
-		medicine_dosage_id: null,
-		treatment_template_id: 1096,
-	},
-	{
-		times: null,
-		by_meal: "( IN EMPTY STOMACH )",
-		company: null,
-		generic: "TRANEXAMIC ACID 500mg CAP",
-		duration: "day",
-		quantity: 5,
-		generic_id: "611",
-		treatments: "1096",
-		medicine_id: "16451",
-		dose_details: "1+0+1",
-		medicine_name: "CAP. ANAXYL 500MG",
-	},
-];
-const customerInformation = {
-	id: 43,
-	invoice_id: 64,
-	created: "10-09-25",
-	appointment: "10-09-25",
-	invoice: null,
-	total: "0",
-	comment: null,
-	customer_id: 186,
-	name: "Md. Ibrahim Kabir",
-	mobile: "01759228885",
-	guardian_name: null,
-	guardian_mobile: "01759228885",
-	patient_id: "PID-092500016",
-	health_id: null,
-	gender: "male",
-	year: null,
-	month: null,
-	day: 46,
-	doctor_name: "hospital",
-	designation_name: null,
-	blood_pressure: null,
-	diabetes: null,
-	json_content:
-		'{"advise": "Take medicine after you take food", "medicines": [{"id": 5, "dosage": "3+0+0", "period": null, "status": 1, "by_meal": "( IN EMPTY STOMACH )", "generic": "PARACETAMOL BP 10MG/ML INFUSION", "duration": "Day", "quantity": 1, "config_id": 2, "is_delete": 0, "created_at": "2025-09-14T03:19:04.000000Z", "updated_at": "2025-09-14T03:19:04.000000Z", "dosage_form": null, "instruction": null, "medicine_id": 16833, "medicine_name": "Inf. Napa 10MG/ML", "total_quantity": null, "medicine_dosage_id": null, "treatment_template_id": 1096}, {"id": 6, "dosage": "2 PUFFS / NOSTRIL DAILY", "period": null, "status": 1, "by_meal": "GURGLE AFTER USES", "generic": "PARACETAMOL 125 MG SUPP.", "duration": "Day", "quantity": 1, "config_id": 2, "is_delete": 0, "created_at": "2025-09-14T03:19:23.000000Z", "updated_at": "2025-09-14T03:19:23.000000Z", "dosage_form": null, "instruction": null, "medicine_id": 17259, "medicine_name": "SUPP. NAPA 125MG", "total_quantity": null, "medicine_dosage_id": null, "treatment_template_id": 1096}, {"id": 7, "dosage": "1+1+1", "period": null, "status": 1, "by_meal": "( After meal )", "generic": "PARACETAMOL 500MG TAB", "duration": "Day", "quantity": 3, "config_id": 2, "is_delete": 0, "created_at": "2025-09-14T03:19:33.000000Z", "updated_at": "2025-09-14T03:19:33.000000Z", "dosage_form": null, "instruction": null, "medicine_id": 18100, "medicine_name": "Tab. Napa Rapid 500mg", "total_quantity": null, "medicine_dosage_id": null, "treatment_template_id": 1096}, {"times": null, "by_meal": "( IN EMPTY STOMACH )", "company": null, "generic": "TRANEXAMIC ACID 500mg CAP", "duration": "day", "quantity": 5, "generic_id": "611", "treatments": "1096", "medicine_id": "16451", "dose_details": "1+0+1", "medicine_name": "CAP. ANAXYL 500MG"}], "is_completed": true, "created_by_id": 15, "follow_up_date": "2025-09-10T05:30:54.021Z", "patient_report": {"basic_info": {"bp": null, "weight": "60", "bloodGroup": "O+"}, "patient_examination": {"comorbidity": [{"id": 930, "name": "DM", "value": true}, {"id": 931, "name": "HTN", "value": true}], "investigation": [{"id": 698, "name": "CBC", "value": "CBC"}, {"id": 737, "name": "S.Creatinine", "value": "S.Creatinine"}], "ho_past_illness": [{"id": 936, "name": "PTB", "value": false}, {"id": 937, "name": "Asthma", "value": true}, {"id": 939, "name": "COVID-19", "value": true, "duration": null}], "chief_complaints": [{"id": 940, "name": "Fever", "value": "1  day"}, {"id": 941, "name": "Cough", "value": "2 days"}]}}, "prescription_date": "2025-09-14"}',
-	follow_up_date: null,
-	weight: null,
-	height: null,
-	dob: null,
-	identity_mode: "NID",
-	nid: null,
-	address: "Dhaka, Narayanganj, Sonargaon, Baridhi, Pailopara, Cengakandini,",
-	created_by_user_name: "hospital",
-	created_by_name: "hospital",
-	created_by_id: 15,
-	room_name: null,
-	mode_name: "OPD",
-	payment_mode_name: "Govt. Service",
-	process: "Closed",
-	patient_referred_id: null,
-	referred_json_content: null,
-	invoice_particular: [
-		{
-			id: 37,
-			hms_invoice_id: 43,
-			item_name: null,
-			quantity: 1,
-			price: 10,
-		},
-	],
-};
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {
+	const { data: prescriptionData } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/59`,
+	});
+	const patientInfo = prescriptionData?. data || {};
+	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
+	const invoiceDetails = prescriptionData?. data?.invoice_details || {};
+	const patientReport = jsonContent?.patient_report || {};
+	const basicInfo = patientReport?.basic_info || {};
+	const patientExamination = patientReport?.patient_examination || {};
+	const medicines = jsonContent?.medicines || [];
+	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useDoaminHospitalConfigData();
-
-	const getValue = (value, defaultValue = "N/A") => {
+	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
+	};
+	console.log(jsonContent)
+	const [digitalSignature, setDigitalSignature] = useState([]);
+	const renderImagePreview = (imageArray, fallbackSrc = null) => {
+		if (imageArray.length > 0) {
+			const imageUrl = URL.createObjectURL(imageArray[0]);
+			return (
+				<Flex h={80} justify={"center"} align={"center"} mt={"xs"}>
+					<Image h={80} w={80} fit="cover" src={imageUrl} onLoad={() => URL.revokeObjectURL(imageUrl)} />
+				</Flex>
+			);
+		} else if (fallbackSrc) {
+			return (
+				<Flex h={80} justify={"center"} align={"center"} mt={"xs"}>
+					<Image h={80} w={80} fit="cover" src={fallbackSrc} />
+				</Flex>
+			);
+		}
+		return null;
 	};
 
 	return (
@@ -262,25 +94,30 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 				{/* =============== patient information section ================ */}
 				<Box mb="sm">
 					<Grid columns={12} gutter="xs" px={4}>
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
+						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
-								<Text size="sm">{getValue(customerInformation?.patient_id || "PT-987654321")}</Text>
+								<Text size="xs">{getValue(patientInfo?.invoice || "PT-987654321")}</Text>
 							</Group>
 						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={5} px="xs">
+						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
-								<Text size="sm" fw={600}>
-									{t("নাম")}:
-								</Text>
-								<Text size="sm">{getValue(customerInformation?.name, "John Doe")}</Text>
+								<Text size="xs">{getValue(patientInfo?.patient_id || "PT-987654321")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={4} px="xs">
 							<Group gap="xs">
-								<Text size="sm" fw={600}>
+								<Text size="xs" fw={600}>
+									{t("নাম")}:
+								</Text>
+								<Text size="sm">{getValue(patientInfo?.name, "John Doe")}</Text>
+							</Group>
+						</Grid.Col>
+						<Grid.Col bd="1px solid #555" span={4} px="xs">
+							<Group gap="xs">
+								<Text size="xs" fw={600}>
 									{t("মোবাইল")}:
 								</Text>
-								<Text size="sm">{getValue(customerInformation?.mobile || "01717171717")}</Text>
+								<Text size="xs">{getValue(patientInfo?.mobile || "01717171717")}</Text>
 							</Group>
 						</Grid.Col>
 
@@ -289,10 +126,10 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("বয়স")}:
 								</Text>
-								<Text size="sm">
+								<Text size="xs">
 									{" "}
-									{customerInformation?.day || 1} D {customerInformation?.month || 1} M{" "}
-									{customerInformation?.year || ""} Y
+									{patientInfo?.day || 1} D {patientInfo?.month || 1} M{" "}
+									{patientInfo?.year || ""} Y
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -301,34 +138,20 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("লিঙ্গ")}:
 								</Text>
-								<Text size="xs">{getValue(customerInformation?.gender, "Male")}</Text>
+								<Text size="xs">{patientInfo?.gender && patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
-									{t("রক্তচাপ")}:
+									{t("জন্ম")}
 								</Text>
-								<Text size="xs">{getValue(basicInfo?.bp || "120/80")}</Text>
+								<Text size="xs">{patientInfo?.dob || ""}</Text>
 							</Group>
 						</Grid.Col>
-
-						<Grid.Col bd="1px solid #555" span={2} px="xs">
+						<Grid.Col bd="1px solid #555" span={4} px="xs">
 							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("ওজন")}:
-								</Text>
-								<Text size="xs">
-									{getValue(basicInfo?.weight || 70)} {t("KG")}
-								</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={2} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("রক্তের গ্রুপ")}:
-								</Text>
-								<Text size="xs">{getValue(basicInfo?.bloodGroup || "A+")}</Text>
+								<strong>তারিখ:</strong> {patientInfo?.created || ""}
 							</Group>
 						</Grid.Col>
 					</Grid>
@@ -345,7 +168,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 											C/C:
 										</Text>
 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="sm" c="gray" mt="-xs" mb="xs">
+										<Text size="xs" c="black.5" mt="0">
 											{(patientExamination?.chief_complaints || [])
 												.map(
 													(item) => `${item.name}: ${item.value} ${item.duration || "Day"}/s`
@@ -359,8 +182,8 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										<Text size="sm" fw={600}>
 											H/O Past Illness:
 										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
-										<Text size="sm" c="gray" mt="xs">
+										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
+										<Text size="xs" c="black.5" mt="0">
 											{(patientExamination?.ho_past_illness || [])
 												.map((item) => `${item.name}`)
 												.join(", ") || "Headache, Fever"}
@@ -372,8 +195,8 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										<Text size="sm" fw={600}>
 											Diagnosis:
 										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
-										<Text size="sm" c="gray" mt="0">
+										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
+										<Text size="xs" c="black.5" mt="0">
 											{(patientExamination?.diagnosis || [])
 												.map((item) => item.value)
 												.join(", ") || "Headache, Fever"}
@@ -386,8 +209,8 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										<Text size="sm" fw={600}>
 											ICD-11 listed diseases:
 										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
-										<Text size="sm" c="gray" mt="xs">
+										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
+										<Text size="xs" c="black.5" mt="0">
 											{(patientExamination?.icd_11_listed_diseases || []).join(", ") ||
 												"Headache, Fever"}
 										</Text>
@@ -400,7 +223,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 											Comorbidity:
 										</Text>
 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="sm" c="gray" mt="-xs" mb="xs">
+										<Text size="xs" c="black.5" mt="0">
 											{(patientExamination?.comorbidity || [])
 												.filter((item) => item.value)
 												.map((item) => item.name)
@@ -414,7 +237,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 											Treatment History:
 										</Text>
 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="sm" c="gray" mt="-xs" mb="xs">
+										<Text size="xs" c="black.5" mt="0">
 											{(patientExamination?.["treatment-history"] || [])
 												.map((item) => item.value)
 												.join(", ") || "Headache, Fever"}
@@ -438,7 +261,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 											Investigation:
 										</Text>
 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="sm" c="gray" mt="-xs" mb="xs">
+										<Text size="xs" c="black.5" mt="0">
 											{(patientExamination?.investigation || [])
 												.map((item) => item.value)
 												.join(", ") || "Headache, Fever"}
@@ -448,146 +271,125 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 							</Stack>
 						</Grid.Col>
 						<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
-							<Stack gap="xs" mih={200}>
-								{medicines.map((medicine, index) => (
+							<Stack gap="2" mih={200}>
+								{exEmergencies.map((emeregncy, index) => (
 									<Box key={index}>
-										<Text size="sm" fw={600} mb="xs">
-											{index + 1}. {getValue(medicine.medicine_name)}
-										</Text>
-										<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
-											{getValue(medicine.dose_details)} {getValue(medicine.by_meal)}{" "}
-											{getValue(medicine.duration)} {getValue(medicine.quantity)}
+										<Text size="xs" fw={600}>
+											{index + 1}. {getValue(emeregncy.value)}
 										</Text>
 									</Box>
 								))}
+								{medicines.map((medicine, index) => (
+									<Box key={index}>
+										<Text size="xs" fw={600}>
+											{index + 1}. {getValue(medicine.medicine_name)}
+										</Text>
+										{(medicine.dosages || []).map((dose, dIdx) => (
+											<Text
+												key={dose.id ?? dIdx}
+												size="xs"
+												c="var(--theme-tertiary-color-8)"
+												ml="md"
+											>
+												{getValue(dose.dose_details)} {" ------- "}
+												{getValue(dose.by_meal)} {" ------- "}
+												{getValue(dose.quantity)} {getValue(medicine.duration)}
+											</Text>
+										))}{
+										<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
+											{getValue(medicine.dose_details)} {" -------"} {getValue(medicine.by_meal)}{" -------"}
+											{getValue(medicine.quantity)} {getValue(medicine.duration)}
+										</Text>
+									   }
+									</Box>
+								))}
 							</Stack>
-
-							<CustomDivider mt="xl" mb="md" />
-							<Text size="sm" fw={600} mb="xs">
+							<Box mt="4" mb={'4'} style={{ borderBottom: `1px solid #444` }} />
+							<Text size="sm" fw={600}>
 								অন্যান্য নির্দেশাবলী:
 							</Text>
-							<Text size="sm">{getValue(patientInfo.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}</Text>
+							<Text size="sm">{getValue(jsonContent.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}</Text>
+							<Box mt="4" mb={'4'} style={{ borderBottom: `1px solid #444` }} />
+							<Text size="sm" fw={600}>
+								বিশেষ নির্দেশাবলী:
+							</Text>
+							<Text size="sm">{getValue(jsonContent.instruction)}</Text>
 						</Grid.Col>
 					</Grid>
 				</Box>
 
 				{/* =============== new prescription layout matching the image ================ */}
-				<Box p={20} bd="1px solid #555" style={{ borderRadius: "4px" }}>
+				<Box bd="1px solid #555" style={{ borderRadius: "4px" }}>
 					{/* =============== top section with printed by and signature ================ */}
-					<Grid columns={12} gutter="md">
-						<Grid.Col span={6}>
-							<Stack gap="0px">
-								<Text size="sm" fw={600}>
-									Name:
-								</Text>
-								<CustomDivider w="80%" />
-								<Text size="sm" fw={600}>
-									Designation:
-								</Text>
-								<CustomDivider w="80%" />
-							</Stack>
+					<Grid columns={12} gutter="0">
+						<Grid.Col span={6} pl={'xl'} pt={'md'}>
+							<Text fz={'xl'}>{patientInfo?.doctor_name}</Text>
+							<Text fz={'xs'}>{patientInfo?.designation_name}</Text>
 						</Grid.Col>
 						<Grid.Col span={6}>
-							<Text pt="50px" size="sm" fw={600}>
-								Signature:
+							<Text size="sm" fw={600}>
+								{renderImagePreview(digitalSignature, patientInfo?.signature_path)}
 							</Text>
-							<CustomDivider w="80%" />
 						</Grid.Col>
 					</Grid>
 				</Box>
-				<DashedDivider mb="xs" />
-
+				<DashedDivider  />
 				{/* =============== bottom section with patient info and medication table ================ */}
 				<Grid columns={12} gutter="md" mb="lg">
 					<Grid.Col span={4}>
 						<Stack gap="6px">
 							<Text size="sm" fw={500}>
-								Patient Name: {getValue(customerInformation?.name, "John Doe")}
+								Name: {getValue(patientInfo?.name, )}
 							</Text>
-							<Text size="sm">
-								Age: {getValue(customerInformation?.year, "25")} Y. Sex:{customerInformation?.gender}
+							<Text size="sm" fw={500}>
+								Mobile: {getValue(patientInfo?.mobile, )}
 							</Text>
-							<Text size="sm" fw={600} mt="sm">
+							<Text size="xs" fw={500}>
+								Room: {getValue(patientInfo?.room_name, )}
+							</Text>
+							<Text size="xs">
+								Age: {getValue(patientInfo?.year, "25")} Y. Sex:{patientInfo?.gender}
+							</Text>
+							<Text size="sm" fw={600}>
 								Doctor Comments:
 							</Text>
-							<Text size="sm" c="gray">
-								{getValue(patientInfo?.advise, "Headache, Fever")}
+							<Text size="xs" c="gray">
+								{getValue(jsonContent?.pharmacy_instruction )}
 							</Text>
 						</Stack>
 					</Grid.Col>
 					<Grid.Col span={8}>
 						{/* =============== medication table ================ */}
 						<Box style={{ border: "1px solid #333", borderRadius: "4px", overflow: "hidden" }}>
-							<Grid columns={4}>
-								<Grid.Col
-									span={3}
-									p={10}
-									bg="#f8f9fa"
-									style={{
-										borderRight: "1px solid #333",
-										borderBottom: "1px solid #333",
-									}}
-								>
-									<Text size="sm" fw={600} pl={4} ta="left">
-										Generic
+							<Grid columns={24} p={8} bg="#f8f9fa"
+								  style={{
+									  borderBottom: "1px solid #333",
+								  }}>
+								<Grid.Col span={20} m={0} p={0}>
+									<Text size="xs" pl={4}>
+										Generic Name
 									</Text>
 								</Grid.Col>
-								<Grid.Col
-									span={1}
-									p={10}
-									bg="#f8f9fa"
-									style={{
-										borderBottom: "1px solid #333",
-									}}
-								>
-									<Text size="sm" fw={600} ta="center">
-										Quantity
-									</Text>
-								</Grid.Col>
+								<Grid.Col span={4} m={0} p={0}><Text size="sm" ta="center" fw={500}>
+									Quantity
+								</Text></Grid.Col>
+							</Grid>
 								{medicines?.map((medicine, index) => (
 									<>
-										<Grid.Col
-											key={`name-${index}`}
-											span={3}
-											p={10}
-											style={{
-												borderRight: "1px solid #333",
-												borderBottom: index < medicines.length - 1 ? "1px solid #333" : "none",
-											}}
-										>
-											<Text size="sm" pl={4}>
-												{index + 1}. {getValue(medicine.generic)}
+									<Grid columns={24} m={4} p={4}>
+										<Grid.Col span={20} m={0} p={0}>
+											<Text size="xs" pl={4}>
+													{index + 1}. {getValue(medicine.generic)}
 											</Text>
 										</Grid.Col>
-										<Grid.Col
-											key={`count-${index}`}
-											span={1}
-											p={10}
-											style={{
-												borderBottom: index < medicines.length - 1 ? "1px solid #333" : "none",
-											}}
-										>
-											<Text size="sm" ta="center" fw={500}>
-												{getValue(medicine.amount, "1")}
-											</Text>
-										</Grid.Col>
+										<Grid.Col span={4} m={0} p={0}><Text size="sm" ta="center" fw={500}>
+											{getValue(medicine.quantity, "1")}
+										</Text></Grid.Col>
+									</Grid>
 									</>
-								))}
-								{medicines?.length === 0 && (
-									<>
-										<Grid.Col span={3} p={10} style={{ borderRight: "1px solid #333" }}>
-											<Text size="sm" pl={4}>
-												No medicines
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={1} p={10}>
-											<Text size="sm" ta="center" fw={500}>
-												-
-											</Text>
-										</Grid.Col>
-									</>
-								)}
-							</Grid>
+									))}
+
+
 						</Box>
 					</Grid.Col>
 				</Grid>
@@ -595,7 +397,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 				{/* =============== footer with prescribed by ================ */}
 				<Box ta="center" mt="xs">
 					<Text size="sm" fw={600} c="#1e40af">
-						Prescribed By: Doctor ID {getValue(data?.doctor_id, "DOC-987654321")}
+						Prescribed By: Doctor ID {getValue(patientInfo?.employee_id, "DOC-987654321")}
 					</Text>
 					<Text size="sm" c="gray" mt="xs">
 						Prescription Date: {formatDate(new Date())}

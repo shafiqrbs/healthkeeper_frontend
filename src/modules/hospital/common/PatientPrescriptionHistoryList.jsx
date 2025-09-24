@@ -3,6 +3,7 @@ import { Box, Text, ScrollArea, Stack, Paper } from "@mantine/core";
 import { useState } from "react";
 import DetailsDrawer from "@modules/hospital/visit/__DetailsDrawer";
 import { useDisclosure } from "@mantine/hooks";
+import {formatDate} from "@utils/index";
 
 export default function PatientPrescriptionHistoryList({ historyList }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -39,12 +40,19 @@ export default function PatientPrescriptionHistoryList({ historyList }) {
 						}}
 					>
 						<Box>
+							<Text fz="xs" c="dimmed">
+								Created: {formatDate(item?.created_at)}
+							</Text>
 							<Text fw={600} fz="sm">
 								{item.name}
 							</Text>
 							<Text fz="xs" c="dimmed">
-								Invoice: {item.mobile}
+								Mobile: {item.mobile}
 							</Text>
+							<Text fz="xs" c="dimmed">
+								Invoice: {item?.patient_invoice}
+							</Text>
+
 						</Box>
 					</Paper>
 				))}

@@ -89,7 +89,9 @@ export default function Index() {
 			fetchData();
 		}
 	}, [customerId]);
+
 	const hasRecords = records && records.length > 0;
+
 
 	const handlePrescriptionUpdate = async (updatedMedicine) => {
 		try {

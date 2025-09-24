@@ -5,7 +5,7 @@ import TBLogo from "@assets/images/tb_logo.png";
 import CustomDivider from "@components/core-component/CustomDivider";
 import "@/index.css";
 import DashedDivider from "@/common/components/core-component/DashedDivider";
-import { getLoggedInUser } from "@/common/utils";
+import {formatDate, getLoggedInUser} from "@/common/utils";
 import { t } from "i18next";
 import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
@@ -15,95 +15,24 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 // =============== default data structure for opd a4 document ================
-const defaultData = {
-	id: 1,
-	invoice: "INV-987654321",
-	patient_id: "PT-987654321",
-	health_id: "HID-987654321",
-	name: "John Doe",
-	mobile: "01717171717",
-	gender: "Male",
-	year: 25,
-	month: 1,
-	day: 1,
-	dob: "2000-01-01",
-	payment_mode_name: "Cash",
-	total: 100,
-	mode_name: "OPD",
-	room_name: "100",
-	json_content: {
-		medicines: [
-			{
-				medicineName: "Paracetamol 500mg",
-				dosage: "1+1+1",
-				by_meal: "After meal",
-				duration: "7 days",
-				count: "21 tablets",
-			},
-			{
-				medicineName: "Amoxicillin 250mg",
-				dosage: "1+0+1",
-				by_meal: "After meal",
-				duration: "5 days",
-				count: "10 capsules",
-			},
-		],
-		patient_report: {
-			basic_info: {
-				bp: "120/80",
-				weight: "70",
-				bloodGroup: "A+",
-			},
-			patient_examination: {
-				chief_complaints: {
-					fever: "High fever for 2 days",
-					cough: "Dry cough",
-					headache: "Severe headache",
-				},
-				ho_past_illness: {
-					diabetes: true,
-					hypertension: false,
-					asthma: true,
-				},
-				diagnosis: {
-					viral_fever: true,
-					upper_respiratory_infection: true,
-				},
-				icd_11_listed_diseases: ["J06.9", "R50.9"],
-				comorbidity: {
-					diabetes: true,
-					hypertension: false,
-				},
-				treatment_history: {
-					previous_treatment: "None",
-				},
-				on_examination: {
-					temperature: "102°F",
-					pulse: "90 bpm",
-					blood_pressure: "120/80 mmHg",
-				},
-				investigation: ["CBC", "Blood Sugar", "Chest X-ray"],
-			},
-		},
-	},
-};
 
-const OPDDocument = forwardRef(({ data = defaultData }, ref) => {
+
+const OPDDocument = forwardRef(({ref}) => {
 	const user = getLoggedInUser();
-	const patientInfo = data?.json_content || {};
-	const invoiceDetails = data?.invoice_details || {};
-	const patientReport = patientInfo?.patient_report || {};
+	const { data: prescriptionData } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/59`,
+	});
+	const patientInfo = prescriptionData?. data || {};
+	const jsonContent = prescriptionData?. data?.json_content || {};
+	const invoiceDetails = prescriptionData?. data?.invoice_details || {};
+	const patientReport = jsonContent?.patient_report || {};
 	const basicInfo = patientReport?.basic_info || {};
 	const patientExamination = patientReport?.patient_examination || {};
-	const medicines = patientInfo?.medicines || [];
+	const medicines = jsonContent?.medicines || [];
 	const { hospitalConfigData } = useDoaminHospitalConfigData();
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-	const { data: prescriptionData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/50`,
-	});
-
 	return (
 		<Box>
 			<Box
@@ -151,7 +80,7 @@ const OPDDocument = forwardRef(({ data = defaultData }, ref) => {
 						<Grid.Col bd="1px solid #555" span={6} px="xs">
 							<Group gap="xs">
 								<Text size="md" fw={600}>
-									{t("মোড")} {getValue(data?.mode_name, "")}
+									{t("প্রকার")} {getValue(patientInfo?.mode_name, "")}
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -160,17 +89,17 @@ const OPDDocument = forwardRef(({ data = defaultData }, ref) => {
 								<Text size="md" fw={600}>
 									{t("বহির্বিভাগ কক্ষ")}
 								</Text>
-								<Text size="md">{getValue(data?.room_name, "")}</Text>
+								<Text size="md">{getValue(patientInfo?.room_name, "")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
-								<Text size="xs">{getValue(data?.invoice, "")}</Text>
+								<Text size="xs">{getValue(patientInfo?.invoice, "")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
-								<Text size="xs">{getValue(data?.patient_id, "")}</Text>
+								<Text size="xs">{getValue(patientInfo?.patient_id, "")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -178,7 +107,7 @@ const OPDDocument = forwardRef(({ data = defaultData }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("HID")}
 								</Text>
-								<Text size="xs">{getValue(data?.health_id, "")}</Text>
+								<Text size="xs">{getValue(patientInfo?.health_id, "")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -189,7 +118,7 @@ const OPDDocument = forwardRef(({ data = defaultData }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("নাম")}
 								</Text>
-								<Text size="xs">{getValue(data?.name, "")}</Text>
+								<Text size="xs">{getValue(patientInfo?.name, "")}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -197,7 +126,7 @@ const OPDDocument = forwardRef(({ data = defaultData }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("মোবাইল")}
 								</Text>
-								<Text size="xs">{getValue(data?.mobile, "")}</Text>
+								<Text size="xs">{getValue(patientInfo?.mobile, "")}</Text>
 							</Group>
 						</Grid.Col>
 
@@ -206,7 +135,12 @@ const OPDDocument = forwardRef(({ data = defaultData }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("লিঙ্গ")}
 								</Text>
-								<Text size="xs">{getValue(data?.gender, "Male")}</Text>
+								<Text size="xs">{patientInfo?.gender && patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}</Text>
+							</Group>
+						</Grid.Col>
+						<Grid.Col bd="1px solid #555" span={3} px="xs">
+							<Group gap="xs">
+								<Text size="xs">{t("তারিখ")}: {getValue(patientInfo?.created)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -215,7 +149,7 @@ const OPDDocument = forwardRef(({ data = defaultData }, ref) => {
 									{t("বয়স")}
 								</Text>
 								<Text size="xs">
-									{getValue(data?.year, 25)} Y, {getValue(data?.month, 1)} M, {getValue(data?.day, 1)}{" "}
+									{getValue(patientInfo?.year, 25)} Y, {getValue(patientInfo?.month, 1)} M, {getValue(patientInfo?.day, 1)}{" "}
 									D
 								</Text>
 							</Group>
@@ -225,21 +159,17 @@ const OPDDocument = forwardRef(({ data = defaultData }, ref) => {
 								<Text size="xs" fw={600}>
 									{t("জন্ম তারিখ")}
 								</Text>
-								<Text size="xs">{getValue(data?.dob, "")}</Text>
+								<Text size="xs">{getValue(patientInfo?.dob, "")}</Text>
 							</Group>
 						</Grid.Col>
 
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs">
-								<Text size="xs">{getValue(data?.payment_mode_name, "Cash")}</Text>
-							</Group>
-						</Grid.Col>
+
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
 								<Text size="xs" fw={600}>
 									{t("ফি পরিমাণ")}
 								</Text>
-								<Text size="xs">{getValue(data?.total, 0)}</Text>
+								<Text size="xs">{getValue(patientInfo?.total, 0)}</Text>
 							</Group>
 						</Grid.Col>
 					</Grid>
