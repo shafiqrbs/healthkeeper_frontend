@@ -30,7 +30,7 @@ import {
 	IconMedicineSyrup,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { getMedicineFormInitialValues } from "../prescription/helpers/request";
+import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -49,13 +49,13 @@ import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
-import MedicineListItem from "./MedicineListItem";
+import MedicineListItem from "@hospital-components/MedicineListItem";
 import { DURATION_TYPES } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import PrescriptionPreview from "./PrescriptionPreview";
+import PrescriptionPreview from "@hospital-components/PrescriptionPreview";
 
 export default function AddMedicineForm({
 	module,
@@ -155,7 +155,6 @@ export default function AddMedicineForm({
 			update();
 		}
 	};
-
 	// =============== handler for adding autocomplete option to temporary list ================
 	const handleAutocompleteOptionAdd = (value, data, type) => {
 		const selectedItem = data?.find((item) => item.name === value);

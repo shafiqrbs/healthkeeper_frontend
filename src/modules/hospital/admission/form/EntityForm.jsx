@@ -2,7 +2,7 @@ import InputForm from "@components/form-builders/InputForm";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import SelectForm from "@components/form-builders/SelectForm";
 
-import { ActionIcon, Box, Flex, Grid, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
+import { ActionIcon, Box, Flex, Grid, LoadingOverlay, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
 import { IconChevronRight, IconInfoCircle, IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,7 +12,6 @@ import { useDisclosure } from "@mantine/hooks";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import IPDFooter from "@modules/hospital/common/IPDFooter";
 
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { setRefetchData } from "@/app/store/core/crudSlice";
@@ -25,6 +24,7 @@ import useHospitalSettingData from "@/common/hooks/config-data/useHospitalSettin
 import useHospitalConfigData from "@/common/hooks/config-data/useHospitalConfigData";
 import TextAreaForm from "@/common/components/form-builders/TextAreaForm";
 import InputMaskForm from "@/common/components/form-builders/InputMaskForm";
+import IpdActionButtons from "../../common/_IpdActionButtons";
 
 const USER_NID_DATA = {
 	verifyToken: "a9a98eac-68c4-4dd1-9cb9-8127a5b44833",
@@ -123,22 +123,22 @@ export default function EntityForm({ form, module }) {
 				const resultAction = await dispatch(updateEntityData(data));
 
 				if (storeEntityData.rejected.match(resultAction)) {
-					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+					showNotificationComponent(resultAction.payload.message, "red", "lightgray", "", true, 500, true);
 				} else {
 					showNotificationComponent(
 						t("Patient admitted successfully"),
 						"green",
 						"lightgray",
+						"",
 						true,
 						700,
 						true
 					);
 					setRefetchData({ module, refetching: true });
-					form.reset();
 				}
 			} catch (error) {
 				console.error("Error submitting visit:", error);
-				showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
+				showNotificationComponent(t("Something went wrong"), "red", "lightgray", "", true, 700, true);
 			} finally {
 				setIsSubmitting(false);
 			}
@@ -157,38 +157,15 @@ export default function EntityForm({ form, module }) {
 	const handleGenderChange = (val) => {
 		setGender(val);
 	};
-	const { data: entity } = useDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}` });
+	const { data: entity, isLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
+	});
 	const item = entity?.data;
 	const entities = entity?.data?.invoice_particular;
-	console.log(entity);
+
 	useEffect(() => {
-		form.setValues({
-			name: item?.name,
-			mobile: item?.mobile,
-			dob: item?.dob,
-			identity: item?.nid,
-			identity_mode: item?.identity_mode,
-			bp: item?.bp,
-			weight: item?.weight,
-			height: item?.height,
-			day: item?.day,
-			month: item?.month,
-			year: item?.year,
-			gender: item?.gender,
-			father_name: item?.father_name,
-			mother_name: item?.mother_name,
-			guardian_name: item?.guardian_name,
-			guardian_mobile: item?.guardian_mobile,
-			patient_relation: item?.patient_relation,
-			profession: item?.profession,
-			address: item?.address,
-			permanent_address: item?.permanent_address,
-			religion_id: item?.religion_id,
-			admit_doctor_id: item?.admit_doctor_id,
-			admit_unit_id: item?.admit_unit_id,
-			admit_department_id: item?.admit_department_id,
-			upazilla_id: item?.upazilla_id,
-			country_id: item?.country_id,
+		Object.entries(item || {})?.forEach(([key, value]) => {
+			form.setFieldValue(key, value);
 		});
 	}, [item]);
 
@@ -209,7 +186,7 @@ export default function EntityForm({ form, module }) {
 	// =============== handle HSID search and populate form fields ================
 	const handleHSIDSearch = () => {
 		if (!form.values.identity) {
-			showNotificationComponent(t("PleaseEnterIdentity"), "red", "lightgray", true, 700, true);
+			showNotificationComponent(t("PleaseEnterIdentity"), "red", "lightgray", "", true, 700, true);
 			return;
 		}
 		setShowUserData(true);
@@ -235,7 +212,8 @@ export default function EntityForm({ form, module }) {
 	};
 
 	return (
-		<>
+		<Box pos="relative">
+			<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 			<Grid columns={24} gutter="les">
 				<Grid.Col span={12}>
 					<Box className="borderRadiusAll">
@@ -583,8 +561,8 @@ export default function EntityForm({ form, module }) {
 											<InputNumberForm
 												form={form}
 												label=""
-												placeholder="d"
-												tooltip={t("years")}
+												placeholder="D"
+												tooltip={t("Days")}
 												name="day"
 												id="day"
 												nextField="month"
@@ -596,7 +574,7 @@ export default function EntityForm({ form, module }) {
 												form={form}
 												label=""
 												placeholder="M"
-												tooltip={t("months")}
+												tooltip={t("Months")}
 												name="month"
 												id="month"
 												nextField="year"
@@ -607,7 +585,7 @@ export default function EntityForm({ form, module }) {
 											<InputNumberForm
 												form={form}
 												label=""
-												placeholder="D"
+												placeholder="Y"
 												tooltip={t("days")}
 												name="year"
 												id="year"
@@ -826,8 +804,14 @@ export default function EntityForm({ form, module }) {
 					</Box>
 				</Grid.Col>
 			</Grid>
-			<IPDFooter form={form} entities={entities} isSubmitting={isSubmitting} handleSubmit={handleSubmit} />
+			<IpdActionButtons
+				form={form}
+				isSubmitting={isSubmitting}
+				entities={entities}
+				handleSubmit={handleSubmit}
+				type="admission"
+			/>
 			<DoctorsRoomDrawer form={form} opened={openedDoctorsRoom} close={closeDoctorsRoom} />
-		</>
+		</Box>
 	);
 }

@@ -18,16 +18,19 @@ import Billing from "./common/tabs/Billing";
 import FinalBill from "./common/tabs/FinalBill";
 import Discharge from "./common/tabs/Discharge";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useDispatch } from "react-redux";
+import AdmissionPrescription from "./common/AdmissionPrescription";
 
 export default function Index() {
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
+
 	const { data: ipdData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
 	});
+
+	const isPrescriptionAvailable = false;
 
 	return (
 		<>
@@ -55,77 +58,83 @@ export default function Index() {
 								/>
 							</Grid.Col>
 							<Grid.Col span={16} className="animate-ease-out">
-								{id ? (
-									<TabsWithSearch
-										tabList={[
-											"History",
-											"Investigation",
-											"Medicine",
-											"Advice",
-											"Instruction",
-											"OT",
-											"Charge",
-											"Billing",
-											"Final Bill",
-											"Discharge",
-										]}
-										hideSearchbar
-										tabPanels={[
-											{
-												tab: "History",
-												component: <History />,
-											},
-											{
-												tab: "Investigation",
-												component: <Investigation />,
-											},
-											{
-												tab: "Medicine",
-												component: <Medicine />,
-											},
-											{
-												tab: "Advice",
-												component: <Advice />,
-											},
-
-											{
-												tab: "Instruction",
-												component: <Instruction />,
-											},
-											{
-												tab: "OT",
-												component: <OT />,
-											},
-											{
-												tab: "Charge",
-												component: <Charge />,
-											},
-											{
-												tab: "Billing",
-												component: <Billing />,
-											},
-											{
-												tab: "Final Bill",
-												component: <FinalBill />,
-											},
-											{
-												tab: "Discharge",
-												component: <Discharge />,
-											},
-										]}
-									/>
+								{!isPrescriptionAvailable ? (
+									<AdmissionPrescription />
 								) : (
-									<Flex
-										justify="center"
-										align="center"
-										p="sm"
-										pl={"md"}
-										pr={"md"}
-										bg="white"
-										h={mainAreaHeight - 12}
-									>
-										<Text>No patient selected, please select a patient</Text>
-									</Flex>
+									<>
+										{id ? (
+											<TabsWithSearch
+												tabList={[
+													"History",
+													"Investigation",
+													"Medicine",
+													"Advice",
+													"Instruction",
+													"OT",
+													"Charge",
+													"Billing",
+													"Final Bill",
+													"Discharge",
+												]}
+												hideSearchbar
+												tabPanels={[
+													{
+														tab: "History",
+														component: <History />,
+													},
+													{
+														tab: "Investigation",
+														component: <Investigation />,
+													},
+													{
+														tab: "Medicine",
+														component: <Medicine />,
+													},
+													{
+														tab: "Advice",
+														component: <Advice />,
+													},
+
+													{
+														tab: "Instruction",
+														component: <Instruction />,
+													},
+													{
+														tab: "OT",
+														component: <OT />,
+													},
+													{
+														tab: "Charge",
+														component: <Charge />,
+													},
+													{
+														tab: "Billing",
+														component: <Billing />,
+													},
+													{
+														tab: "Final Bill",
+														component: <FinalBill />,
+													},
+													{
+														tab: "Discharge",
+														component: <Discharge />,
+													},
+												]}
+											/>
+										) : (
+											<Flex
+												justify="center"
+												align="center"
+												p="sm"
+												pl={"md"}
+												pr={"md"}
+												bg="white"
+												h={mainAreaHeight - 12}
+											>
+												<Text>No patient selected, please select a patient</Text>
+											</Flex>
+										)}
+									</>
 								)}
 							</Grid.Col>
 						</Grid>

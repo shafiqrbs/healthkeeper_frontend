@@ -1,6 +1,5 @@
-import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { ActionIcon, Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
-import { IconArrowNarrowRight, IconCalendarWeek, IconRestore, IconUser } from "@tabler/icons-react";
+import { Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
+import { IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -8,7 +7,6 @@ import { useEffect, useState } from "react";
 import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 import { useHotkeys } from "@mantine/hooks";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-import { formatDate } from "@utils/index";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -28,10 +26,7 @@ export default function IpdActionButtons({
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
 
 	useEffect(() => {
-		const price =
-			form.values.patient_payment_mode_id !== "30" // only for general payment will be applicable
-				? 0
-				: Number(hospitalConfigData?.[`${type}_fee`]?.[`ticket_fee_price`] ?? 0);
+		const price = Number(hospitalConfigData?.hospital_config?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
 		setConfiguredDueAmount(price);
 		form.setFieldValue("amount", price);
 	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
@@ -84,7 +79,14 @@ export default function IpdActionButtons({
 								</Grid.Col>
 							</Grid>
 							{entities?.map((entity) => (
-								<Grid columns={24} my="0" bg={"var(--theme-tertiary-color-0)"} px="xs" gutter="xs">
+								<Grid
+									key={entity?.id}
+									columns={24}
+									my="0"
+									bg={"var(--theme-tertiary-color-0)"}
+									px="xs"
+									gutter="xs"
+								>
 									<Grid.Col span={12}>
 										<Text fz="xs">{entity?.item_name}</Text>
 									</Grid.Col>

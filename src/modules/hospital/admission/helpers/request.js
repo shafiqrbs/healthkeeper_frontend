@@ -27,11 +27,18 @@ const admissionInitialValues = {
 	bp: "",
 	weight: "",
 	height: "",
+	amount: "",
 };
 
 export const getAdmissionFormInitialValues = () => {
 	return {
 		initialValues: admissionInitialValues,
+		validate: {
+			amount: (value) => {
+				if (!Number(value)) return "Amount is required";
+				return null;
+			},
+		},
 	};
 };
 

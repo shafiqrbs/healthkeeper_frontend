@@ -8,6 +8,7 @@ export default defineConfig({
 		alias: {
 			"@": "/src",
 			"@components": "/src/common/components",
+			"@hospital-components": "/src/modules/hospital/common",
 			"@utils": "/src/common/utils",
 			"@assets": "/src/assets",
 			"@hooks": "/src/common/hooks",
