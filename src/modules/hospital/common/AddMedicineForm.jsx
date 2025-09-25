@@ -55,6 +55,7 @@ import inputCss from "@/assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import PrescriptionPreview from "./PrescriptionPreview";
 
 export default function AddMedicineForm({
 	module,
@@ -70,7 +71,6 @@ export default function AddMedicineForm({
 }) {
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
-	const prescriptionPrintRef = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
 	const { prescriptionId } = useParams();
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,7 +89,8 @@ export default function AddMedicineForm({
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
 	const [openedInstruction, { open: openInstruction, close: closeInstruction }] = useDisclosure(false);
-
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
+		useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
@@ -407,13 +408,13 @@ export default function AddMedicineForm({
 		}
 	};
 
-	const handlePrescriptionPreview = async () => {
-		const result = await handlePrescriptionSubmit(true);
+	// const handlePrescriptionPreview = async () => {
+	// 	const result = await handlePrescriptionSubmit(true);
 
-		if (result.status === 200) {
-			setPrintData(result.data);
-		}
-	};
+	// 	if (result.status === 200) {
+	// 		setPrintData(result.data);
+	// 	}
+	// };
 
 	const handleHoldData = () => {
 		console.log("Hold your data");
@@ -834,7 +835,7 @@ export default function AddMedicineForm({
 								</Text>
 							</Stack>
 						</Button>
-						<Button w="100%" bg="var(--theme-save-btn-color)" onClick={handlePrescriptionPreview}>
+						<Button w="100%" bg="var(--theme-save-btn-color)" onClick={openPrescriptionPreview}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Preview")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -978,6 +979,19 @@ export default function AddMedicineForm({
 					</Flex>
 				</Stack>
 			</GlobalDrawer>
+			{/* prescription preview */}
+			{prescriptionId && (
+				<GlobalDrawer
+					opened={openedPrescriptionPreview}
+					close={closePrescriptionPreview}
+					title={t("PrescriptionPreview")}
+					size="50%"
+				>
+					<Box my="sm">
+						<PrescriptionPreview prescriptionId={prescriptionId} />
+					</Box>
+				</GlobalDrawer>
+			)}
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 		</Box>
 	);
