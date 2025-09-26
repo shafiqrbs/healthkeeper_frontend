@@ -7,7 +7,8 @@
       { "id": "doctor_emergency", "label": "Emergency" },
       { "id": "doctor_ipd", "label": "IPD" },
       { "id": "doctor_ipd_confirm", "label": "IPD In-charge" },
-      { "id": "doctor_lab", "label": "Lab" }
+      { "id": "doctor_lab", "label": "Lab" },
+      { "id": "lab_assistant", "label": "Lab Assistant" }
     ]
   },
   {
@@ -52,7 +53,6 @@
     "Group": "Admin",
     "actions": [
       { "id": "admin_basic", "label": "Admin" },
-      { "id": "admin_administrator", "label": "Administrator" },
       { "id": "admin_hospital", "label": "Hospital" },
       { "id": "admin_operator", "label": "Operator" },
       { "id": "admin_doctor", "label": "Doctor" },

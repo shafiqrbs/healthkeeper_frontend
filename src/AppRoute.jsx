@@ -24,6 +24,7 @@ import NotFound from "@components/layout/NotFound";
 import CustomerIndex from "@modules/hospital/customer";
 import MedicineIndex from "@modules/hospital/medicine";
 import LabIndex from "@modules/hospital/lab";
+import EpharmaIndex from "@modules/hospital/epharma";
 import LabGroupIndex from "@modules/hospital/lab-group";
 import RequisitionIndex from "@modules/hospital/requisition";
 import InvestigationIndex from "@modules/hospital/core/investigation";
@@ -208,7 +209,7 @@ function AppRoute() {
 					<Route
 						path="lab-test"
 						element={
-							<ProtectedRoute roles={["role_domain", "admin_administrator", "lab_test"]}>
+							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "lab_doctor"]}>
 								<LabIndex />
 							</ProtectedRoute>
 						}
@@ -216,7 +217,7 @@ function AppRoute() {
 					<Route
 						path="lab-test/:id"
 						element={
-							<ProtectedRoute roles={["role_domain", "admin_administrator", "lab_test"]}>
+							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "lab_doctor"]}>
 								<LabIndex />
 							</ProtectedRoute>
 						}
@@ -224,11 +225,28 @@ function AppRoute() {
 					<Route
 						path="lab-test/:id/report/:reportId"
 						element={
-							<ProtectedRoute roles={["role_domain", "admin_administrator", "lab_test"]}>
+							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "lab_doctor"]}>
 								<LabIndex />
 							</ProtectedRoute>
 						}
 					/>
+					<Route
+						path="epharma"
+						element={
+							<ProtectedRoute roles={["pharmacy_operator","pharmacy_pharmacist","pharmacy_manager","admin_administrator"]}>
+								<EpharmaIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="epharma/:id"
+						element={
+							<ProtectedRoute roles={["pharmacy_operator","pharmacy_pharmacist","pharmacy_manager","admin_administrator"]}>
+								<EpharmaIndex />
+							</ProtectedRoute>
+						}
+					/>
+
 					<Route path="lab-group-test" element={<LabGroupIndex />} />
 					<Route path="medicine" element={<MedicineIndex />} />
 					<Route path="medicine-requisition" element={<RequisitionIndex />} />

@@ -1,12 +1,12 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import {Box, Text, ScrollArea, Stack, Grid, TextInput, Flex, Button} from "@mantine/core";
+import {Box, Text, ScrollArea, Stack, Grid, TextInput, Flex, Button, Center} from "@mantine/core";
 import { useEffect, useState,useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { IconChevronUp, IconSelector,IconPrinter } from "@tabler/icons-react";
+import {IconChevronUp, IconSelector, IconPrinter, IconThumbUp,IconThumbDown} from "@tabler/icons-react";
 import { formatDate } from "@/common/utils";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import {useForm} from "@mantine/form";
@@ -22,32 +22,18 @@ import {useDispatch} from "react-redux";
 import {useHotkeys} from "@mantine/hooks";
 
 const module = MODULES_CORE.LAB_USER;
-export default function DiagnosticReport() {
+export default function Medicine({entity}) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const inputsRef = useRef([]);
 	const { mainAreaHeight } = useOutletContext();
 	const form = useForm(getFormValues(t));
-	const [diagnosticReport, setDiagnosticReport] = useState([]);
 	const [submitFormData, setSubmitFormData] = useState({});
 	const [updatingRows, setUpdatingRows] = useState({});
 	const { id, reportId } = useParams();
 	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
-	useEffect(() => {
-		if (id && reportId) {
-			(async () => {
-				const res = await getDataWithoutStore({
-					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX}/${id}/report/${reportId}`,
-				});
-				form.reset()
-				setDiagnosticReport(res?.data);
-			})();
-		}
-	}, [id, reportId]);
-	useEffect(() => {
-		form.setFieldValue("comment",diagnosticReport.comment?diagnosticReport.comment:null)
-	}, [diagnosticReport]);
-	//const handleDataTypeChange = () => {};
+
+	const handleRowSubmit = () => {};
 	const handleFieldChange = async (rowId, field, value) => {
 
 		setSubmitFormData((prev) => ({
@@ -126,10 +112,10 @@ export default function DiagnosticReport() {
 		<Box className="borderRadiusAll" bg="white">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
 				<Text fw={600} fz="sm" py="es">
-					{t("DiagnosticReportPrepared")}: {diagnosticReport?.name}
+					{t("Medicines")}
 				</Text>
 			</Box>
-			{reportId ? (
+			{entity?.sales_items ? (
 				<>
 					<Box className="border-top-none" px="sm" mt={'xs'}>
 							<DataTable
@@ -144,7 +130,7 @@ export default function DiagnosticReport() {
 									footer: tableCss.footer,
 									pagination: tableCss.pagination,
 								}}
-								records={diagnosticReport?.reports || []}
+								records={entity?.sales_items || []}
 								columns={[
 									{
 										accessor: "index",
@@ -157,135 +143,70 @@ export default function DiagnosticReport() {
 										title: t("Name"),
 									},
 									{
-										accessor: "result",
-										title: t("Result"),
+										accessor: "quantity",
+										width: "200px",
+										title: t("Quantity"),
 										render: (item) => (
-											diagnosticReport.process === "Done" ?
+											entity.process === "Done" ?
 												item.result
 												:
 												<>
 													<TextInput
 														size="xs"
 														fz="xs"
-														value={item?.result}
+														value={item?.quantity}
 														ref={(el) => (inputsRef.current[item.id] = el)}
 														onKeyDown={(e) => handleKeyDown(e, item.id)}
-
 														onBlur={(e) =>
-															handleFieldChange(item.id, "result", e.target.value)
+															handleFieldChange(item.id, "quantity", e.target.value)
 														}
 													/>
 												</>
 										),
 									},
 									{
-										accessor: "unit",
+										accessor: "uom",
 										title: t("Unit"),
 									},
 									{
-										accessor: "reference_value",
-										title: t("ReferenceValue"),
+										accessor: "action",
+										title: "",
+										render: (item) => (
+											<Center>
+												<Button.Group>
+												<Button
+													onClick={() => handleRowSubmit(item.id)}
+													variant="filled"
+													fw={400}
+													size="compact-xs"
+													radius="es"
+													className="btnPrimaryBg"
+													leftSection={<IconThumbUp size={16} />}
+												>{t("Accept")}</Button>
+												<Button
+													onClick={() => handleRowSubmit(item.id)}
+													variant="filled"
+													fw={400}
+													size="compact-xs"
+													radius="es"
+													bg={'red'}
+													leftSection={<IconThumbDown size={16} />}
+												>{t("Omit")}</Button>
+													</Button.Group>
+											</Center>
+										),
 									},
+
 								]}
 								loaderSize="xs"
 								loaderColor="grape"
-								height={mainAreaHeight - 316}
+								height={mainAreaHeight-72}
 								sortIcons={{
 									sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 									unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 								}}
 							/>
 						</Box>
-					<Stack gap={0} justify="space-between" mt="xs" >
-						<form onSubmit={form.onSubmit(handleSubmit)}>
-						<Box p="sm" pl={"md"} pr={"md"} bg="var(--theme-tertiary-color-1)">
-							<Box w="100%">
-								{diagnosticReport?.process === "Done" ? (
-									<>
-										<strong>Comment:</strong> {diagnosticReport?.comment}
-									</>
-								) : (
-									<TextAreaForm
-										id="comment"
-										form={form}
-										tooltip={t("EnterComment")}
-										placeholder={t("EnterComment")}
-										name="comment"
-									/>
-								)}
-							</Box>
-							<Box  mt={'xs'}>
-								<Grid columns={12}>
-									<Grid.Col span={6} className="animate-ease-out">
-										{diagnosticReport?.process === "Done" && (
-										<Flex
-											mih={50}
-											gap="xs"
-											justify="flex-start"
-											align="center"
-											direction="row"
-											wrap="wrap"
-										>
-											<Button
-												size="md"
-												color="var(--theme-secondary-color-5)"
-												type="button"
-												id="EntityFormSubmit"
-												rightSection={<IconPrinter  size="18px" />}
-											>
-												<Flex direction={`column`} gap={0}>
-													<Text>{t("Print")}</Text>
-												</Flex>
-											</Button>
-
-										</Flex>
-										)}
-									</Grid.Col>
-									<Grid.Col span={6} className="animate-ease-out">
-										<Flex
-											mih={50}
-											gap="xs"
-											justify="flex-end"
-											align="center"
-											direction="row"
-											wrap="wrap"
-										>
-											{diagnosticReport?.process === "New" && (
-											<Button
-												size="md"
-												className="btnPrimaryBg"
-												type="submit"
-												id="handleSubmit">
-												<Flex direction={`column`} gap={0}>
-													<Text>{t("Save")}</Text>
-													<Flex direction={`column`} align={"center"} fz={"12"} c={"white"}>
-														alt+s
-													</Flex>
-												</Flex>
-											</Button>
-											)}
-											{diagnosticReport?.process === "In-progress" && (
-												<Button
-													size="md"
-													bg="var(--theme-primary-color-6)"
-													type="submit"
-													id="handleSubmit">
-													<Flex direction={`column`} gap={0}>
-														<Text>{t("Confirm")}</Text>
-														<Flex direction={`column`} align={"center"} fz={"12"} c={"white"}>
-															alt+s
-														</Flex>
-													</Flex>
-												</Button>
-											)}
-										</Flex>
-									</Grid.Col>
-								</Grid>
-							</Box>
-						</Box>
-						</form>
-					</Stack>
-
 				</>
 			) : (
 				<Box bg="white" >

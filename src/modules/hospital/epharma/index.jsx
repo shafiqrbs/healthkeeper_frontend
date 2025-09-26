@@ -4,13 +4,15 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import {Box, Flex, Grid, Stack, Text} from "@mantine/core";
-import TabsWithSearch from "@components/advance-search/TabsWithSearch";
-import Table from "./_Table";
-import Test from "./Test";
-import DiagnosticReport from "./DiagnosticReport";
+import {ActionIcon, Box, Flex, Grid, Select, Stack, Text, TextInput} from "@mantine/core";
 import {getDataWithoutStore} from "@/services/apiService";
 import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
+import {IconSearch, IconX} from "@tabler/icons-react";
+import PatientSearchResult from "@modules/hospital/common/PatientSearchResult";
+import InputForm from "@components/form-builders/InputForm";
+import {useForm} from "@mantine/form";
+import {getFormValues} from "@modules/hospital/epharma/helpers/request";
+import Medicine from "@modules/hospital/epharma/Medicine";
 
 export default function Index() {
 	const { t } = useTranslation();
@@ -23,15 +25,15 @@ export default function Index() {
 		if (id) {
 			(async () => {
 				const res = await getDataWithoutStore({
-					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX}/${id}`,
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.EPHARMA.INDEX}/${id}`,
 				});
 				setDiagnosticReport(res?.data);
 			})();
 		}
 	}, [id]);
 	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
-	console.log(diagnosticReport)
 	const entity = diagnosticReport || {};
+	const sales = diagnosticReport?.sales || {};
 	const col1 = [
 
 		{ label: "Patient ID", value: safe(entity.patient_id) },
@@ -58,7 +60,7 @@ export default function Index() {
 	];
 
 	const columns = [col1, col2, col3, col4];
-
+	const form = useForm(getFormValues(t));
 	return (
 		<>
 			{progress !== 100 ? (
@@ -68,33 +70,28 @@ export default function Index() {
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" gutter="xs" columns={24}>
-							<Grid.Col span={6} pos="relative" className="animate-ease-out">
-								<Box px="sm" py="md" bg="white">
-									<Text fw={600} fz="sm">
-										{t("patientInformation")}
-									</Text>
-								</Box>
-								<TabsWithSearch
-									tabList={["list"]}
-									tabPanels={[
-										{
-											tab: "list",
-											component: (
-												<Table
-													selectedId={id}
-													isOpenPatientInfo={isOpenPatientInfo}
-													setIsOpenPatientInfo={setIsOpenPatientInfo}
+							<Grid.Col span={6} pos="relative" className="animate-ease-out" >
+								<Box px="sm" py="md"  h={mainAreaHeight-12} bg="var(--theme-secondary-color-0)">
+									<Box bg="white">
+										<InputForm
+											label=""
+											form={form}
+											tooltip={t("PatientBarcodeScan")}
+											placeholder={t("PatientBarcodeScan")}
+											name="patient"
+											id="patientName"
+											leftSection={
+												<IconSearch
+													size={20}
+													color="var(--theme-tertiary-color-6)"
 												/>
-											),
-										},
-									]}
-								/>
-							</Grid.Col>
-							<Grid.Col span={18} className="animate-ease-out">
-								<Box bg="var(--theme-secondary-color-0)" p="sm">
+											}
+										/>
+									</Box>
+									<Box p="sm">
 									<Grid columns={24}>
 										{columns.map((rows, colIdx) => (
-											<Grid.Col key={colIdx} span={6}>
+											<Grid.Col key={colIdx} span={24}>
 												<Stack gap={2}>
 													{rows.map((row, idx) => (
 														<Text key={idx} fz="sm">{`${row.label}: ${row.value}`}</Text>
@@ -104,14 +101,10 @@ export default function Index() {
 										))}
 									</Grid>
 								</Box>
-								<Grid columns={18}>
-									<Grid.Col span={4} className="animate-ease-out">
-										<Test entity={entity} />
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<DiagnosticReport />
-									</Grid.Col>
-								</Grid>
+								</Box>
+							</Grid.Col>
+							<Grid.Col span={18} className="animate-ease-out">
+								<Medicine entity={sales} />
 							</Grid.Col>
 
 						</Grid>

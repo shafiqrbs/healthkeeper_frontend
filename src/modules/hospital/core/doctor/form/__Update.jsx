@@ -58,7 +58,7 @@ export default function __Update({ module, form, close }) {
 					form.setErrors(errorObject);
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
-				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+				successNotification(t("UpdateSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
 				setTimeout(() => {
 					useVendorDataStoreIntoLocalStorage();
 					form.reset();

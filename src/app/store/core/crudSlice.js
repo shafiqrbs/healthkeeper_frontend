@@ -48,6 +48,16 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	lab_user: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
 	bed: {
 		isLoading: true,
 		refetching: false,

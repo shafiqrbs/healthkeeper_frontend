@@ -420,6 +420,15 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "hospital/lab-investigation",
 			VIEW: "hospital/lab-investigation",
 			DELETE: "hospital/lab-investigation",
+			INLINE_UPDATE: "hospital/lab-investigation/report/inline-update",
+		},
+		EPHARMA: {
+			INDEX: "hospital/epharma",
+			CREATE: "hospital/epharma",
+			UPDATE: "hospital/epharma",
+			VIEW: "hospital/epharma",
+			DELETE: "hospital/epharma",
+			INLINE_UPDATE: "hospital/lab-investigation/report/inline-update",
 		},
 	},
 	NAVIGATION_LINKS: {
@@ -475,10 +484,16 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "/hospital/customer/view",
 		},
 		LAB_TEST: {
-			INDEX: "/hospital/lab-investigation",
-			CREATE: "/hospital/lab-investigation",
-			UPDATE: "/hospital/lab-investigation",
+			INDEX: "/hospital/lab-test",
+			CREATE: "/hospital/lab-test",
+			UPDATE: "/hospital/lab-test",
 			VIEW: "/hospital/lab-test",
+		},
+		EPHARMA: {
+			INDEX: "/hospital/epharma",
+			CREATE: "/hospital/epharma",
+			UPDATE: "/hospital/epharma",
+			VIEW: "/hospital/epharma",
 		},
 	},
 };

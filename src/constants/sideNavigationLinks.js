@@ -97,17 +97,24 @@ export const sideNavigationLinks = {
 		},
 		{
 			label: t("Lab"),
-			path: "/hospital/lab-test",
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX,
 			icon: IconMicroscopeOff,
 			color: "#9E9D24", // Olive
-			allowedRoles: ["role_domain", "admin_administrator"],
+			allowedRoles: [ "doctor_lab","lab_assistant", "admin_administrator"],
+		},
+		{
+			label: t("ePharama"),
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.INDEX,
+			icon: IconMedicineSyrup,
+			color: "#009688", // Teal
+			allowedRoles: ["pharmacy_operator","pharmacy_pharmacist","pharmacy_manager","admin_administrator"],
 		},
 		{
 			label: t("Pharmacy"),
 			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.PHARMACY.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
-			allowedRoles: ["role_domain", "admin_administrator"],
+			allowedRoles: ["pharmacy_pharmacist","pharmacy_manager","pharmacy_operator","admin_administrator"],
 		},
 		{
 			label: t("Reports"),
