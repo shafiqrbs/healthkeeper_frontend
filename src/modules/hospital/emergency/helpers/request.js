@@ -62,7 +62,7 @@ export const getVendorFormInitialValues = (t) => {
 					? t("Age is required")
 					: null;
 			},
-			upazilla_id: hasLength({ min: 2, max: 20 }),
+			// upazilla_id: hasLength({ min: 2, max: 20 }),
 			amount: (value, values) => {
 				if (!Number(value) && values.patient_payment_mode_id == "30") return t("AmountIsRequired");
 				return null;
