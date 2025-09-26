@@ -2,54 +2,41 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "../helpers/request";
-import { useOutletContext, useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
-import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
-import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
-import Navigation from "@components/layout/Navigation";
-import { Box, Button, Flex, Grid, Stack } from "@mantine/core";
+import { Box, Grid, Stack } from "@mantine/core";
 import PatientReport from "./PatientReport";
 import AddMedicineForm from "./AddMedicineForm.jsx";
 import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
-import { useDisclosure, useElementSize } from "@mantine/hooks";
+import { useDisclosure } from "@mantine/hooks";
 import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
-import { IconArrowRight } from "@tabler/icons-react";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import PatientReferredAction from "@modules/hospital/common/PatientReferredAction";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 
-const module = MODULES.PRESCRIPTION;
+const module = MODULES.ADMISSION;
 
-export default function AdmissionPrescription() {
+export default function AdmissionPrescription({ selectedPrescriptionId }) {
 	const [opened, { open, close }] = useDisclosure(false);
-	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const [showHistory, setShowHistory] = useState(false);
 	const [medicines, setMedicines] = useState([]);
 	const { t } = useTranslation();
-	const { ref } = useElementSize();
-	const progress = useGetLoadingProgress();
-	const { mainAreaHeight } = useOutletContext();
 	const [tabValue, setTabValue] = useState("All");
-	const { particularsData } = useParticularsData({ modeName: "Prescription" });
-	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-	const { prescriptionId } = useParams();
+	const { particularsData } = useParticularsData({ modeName: "Admission" });
 	const dispatch = useDispatch();
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);
 
-	const [fetching, setFetching] = useState(false);
 	const [records, setRecords] = useState([]);
 	const [customerId, setCustomerId] = useState();
 
 	const { data: prescriptionData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${selectedPrescriptionId}`,
 	});
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
@@ -65,21 +52,14 @@ export default function AdmissionPrescription() {
 		setCustomerId(prescriptionData?.data?.customer_id);
 	}, [prescriptionData]);
 
-	const handleOpenViewOverview = () => {
-		openOverview();
-	};
-
 	const fetchData = async () => {
-		setFetching(true);
 		try {
 			const result = await getDataWithoutStore({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}/${prescriptionId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}/${selectedPrescriptionId}`,
 			});
 			setRecords(result?.data || []);
 		} catch (err) {
 			console.error("Unexpected error:", err);
-		} finally {
-			setFetching(false);
 		}
 	};
 
@@ -91,7 +71,7 @@ export default function AdmissionPrescription() {
 
 	const hasRecords = records && records.length > 0;
 
-	const handlePrescriptionUpdate = async (updatedMedicine) => {
+	const handleAdmissionPrescriptionUpdate = async (updatedMedicine) => {
 		try {
 			const createdBy = getLoggedInUser();
 
@@ -114,9 +94,9 @@ export default function AdmissionPrescription() {
 			};
 
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${prescriptionId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${selectedPrescriptionId}`,
 				data: formValue,
-				module,
+				module: "prescription",
 			};
 
 			const resultAction = await dispatch(updateEntityData(value));
@@ -142,12 +122,7 @@ export default function AdmissionPrescription() {
 					</Stack>
 				</Grid.Col>
 				<Grid.Col span={7}>
-					<PatientReport
-						tabValue={tabValue}
-						form={form}
-						update={handlePrescriptionUpdate}
-						prescriptionData={prescriptionData}
-					/>
+					<PatientReport tabValue={tabValue} form={form} prescriptionData={prescriptionData} />
 				</Grid.Col>
 				<Grid.Col span={showHistory ? 13 : 17}>
 					<AddMedicineForm
@@ -156,7 +131,6 @@ export default function AdmissionPrescription() {
 						medicines={medicines}
 						hasRecords={hasRecords}
 						setMedicines={setMedicines}
-						update={handlePrescriptionUpdate}
 						setShowHistory={setShowHistory}
 						prescriptionData={prescriptionData}
 						tabParticulars={tabParticulars}

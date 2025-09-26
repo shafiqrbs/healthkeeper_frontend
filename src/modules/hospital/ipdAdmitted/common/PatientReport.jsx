@@ -24,7 +24,7 @@ import { useTranslation } from "react-i18next";
 
 export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 246;
+	const height = mainAreaHeight - 260;
 	const { t } = useTranslation();
 
 	const [autocompleteValues, setAutocompleteValues] = useState({});
@@ -36,7 +36,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		}
 	};
 
-	const { particularsData } = useParticularsData({ modeName: "Prescription" });
+	const { particularsData } = useParticularsData({ modeName: "Admission" });
 	const tabParticulars = particularsData?.map((item) => ({
 		...item.particular_type,
 		is_additional_field: item.is_additional_field || 0,
@@ -564,7 +564,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 			return (
 				<Box>
 					<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
-					<ScrollArea h={height + 20}>
+					<ScrollArea h={height}>
 						<Stack gap="sm" my="les">
 							{currentSection.map((section) => (
 								<Box key={section.id}>
@@ -586,7 +586,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		return (
 			<Box>
 				<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
-				<ScrollArea h={height + 300}>
+				<ScrollArea h={height}>
 					<Box mt="les">
 						<Box bg="var(--theme-secondary-color-1)" p="xxxs">
 							<Text fw={600} size="lg">

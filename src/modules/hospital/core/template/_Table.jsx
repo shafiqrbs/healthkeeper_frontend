@@ -12,6 +12,9 @@ const templateData = [
 	{ name: "OPDA4", module: "opd", id: 1 },
 	{ name: "OPDPos", module: "opd", id: 2 },
 	{ name: "PrescriptionFull", module: "prescription", id: 3 },
+	{ name: "IPD", module: "ipd", id: 4 },
+	{ name: "LabTest", module: "lab-test", id: 5 },
+	{ name: "Discharge", module: "discharge", id: 6 },
 ];
 
 export default function _Table({ module }) {

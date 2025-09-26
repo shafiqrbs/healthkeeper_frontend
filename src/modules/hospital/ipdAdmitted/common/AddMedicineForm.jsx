@@ -32,7 +32,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import DatePickerForm from "@components/form-builders/DatePicker";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import PrescriptionFull from "@components/print-formats/prescription/PrescriptionFull";
@@ -53,7 +52,6 @@ import MedicineListItem from "@hospital-components/MedicineListItem";
 import { DURATION_TYPES } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
-import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import PrescriptionPreview from "@hospital-components/PrescriptionPreview";
 
@@ -72,7 +70,7 @@ export default function AddMedicineForm({
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
-	const { prescriptionId } = useParams();
+	const { id } = useParams();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -367,7 +365,7 @@ export default function AddMedicineForm({
 			};
 
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${prescriptionId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${id}`,
 				data: formValue,
 				module,
 			};
@@ -717,7 +715,7 @@ export default function AddMedicineForm({
 			{form && (
 				<>
 					<Grid columns={12} gutter="xxxs" mt="xxs" p="les">
-						<Grid.Col span={3}>
+						<Grid.Col span={5}>
 							<Box fz="md" c="white">
 								<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
 									{t("AdviseTemplate")}
@@ -745,7 +743,7 @@ export default function AddMedicineForm({
 								</ScrollArea>
 							</Box>
 						</Grid.Col>
-						<Grid.Col span={6}>
+						<Grid.Col span={7}>
 							<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
 								<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
 									{t("Advise")}
@@ -760,35 +758,6 @@ export default function AddMedicineForm({
 										showRightSection={false}
 										style={{ input: { height: "72px" } }}
 										onBlur={handleFieldBlur}
-									/>
-								</Box>
-							</Box>
-						</Grid.Col>
-						<Grid.Col span={3}>
-							<Box bg="var(--theme-primary-color-0)" h="100%">
-								<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="les">
-									{t("FollowUpDate")}
-								</Text>
-								<Box p="sm">
-									<DatePickerForm
-										form={form}
-										label=""
-										tooltip="Enter follow up date"
-										name="follow_up_date"
-										value={form.values.follow_up_date}
-										placeholder="Follow up date"
-										onBlur={handleFieldBlur}
-									/>
-								</Box>
-								<Box pl="sm" pr="sm">
-									<InputForm
-										form={form}
-										label=""
-										id="pharmacyInstruction"
-										tooltip="Pharmacy Instruction"
-										name="pharmacyInstruction"
-										value={form.values.pharmacyInstruction}
-										placeholder="PharmacyInstruction"
 									/>
 								</Box>
 							</Box>
@@ -939,7 +908,7 @@ export default function AddMedicineForm({
 				</Stack>
 			</GlobalDrawer>
 			{/* prescription preview */}
-			{prescriptionId && (
+			{id && (
 				<GlobalDrawer
 					opened={openedPrescriptionPreview}
 					close={closePrescriptionPreview}
@@ -947,7 +916,7 @@ export default function AddMedicineForm({
 					size="50%"
 				>
 					<Box my="sm">
-						<PrescriptionPreview prescriptionId={prescriptionId} />
+						<PrescriptionPreview prescriptionId={id} />
 					</Box>
 				</GlobalDrawer>
 			)}

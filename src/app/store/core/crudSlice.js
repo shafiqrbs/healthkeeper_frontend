@@ -422,7 +422,7 @@ const initialState = {
 	// -------------------- admission modules starts -------------------------
 	admission: {
 		isLoading: true,
-		refetching: true,
+		refetching: false,
 		error: null,
 		validation: false,
 		insertType: "create",

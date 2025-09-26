@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
-import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
 import { Box, Flex, Grid, Text } from "@mantine/core";
@@ -17,20 +16,15 @@ import Charge from "./common/tabs/Charge";
 import Billing from "./common/tabs/Billing";
 import FinalBill from "./common/tabs/FinalBill";
 import Discharge from "./common/tabs/Discharge";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import AdmissionPrescription from "./common/AdmissionPrescription";
+import { useState } from "react";
 
 export default function Index() {
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-
-	const { data: ipdData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
-	});
-
-	const isPrescriptionAvailable = false;
+	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 
 	return (
 		<>
@@ -52,89 +46,90 @@ export default function Index() {
 									tabPanels={[
 										{
 											tab: "list",
-											component: <Table />,
+											component: (
+												<Table
+													selectedPrescriptionId={selectedPrescriptionId}
+													setSelectedPrescriptionId={setSelectedPrescriptionId}
+												/>
+											),
 										},
 									]}
 								/>
 							</Grid.Col>
 							<Grid.Col span={16} className="animate-ease-out">
-								{!isPrescriptionAvailable ? (
-									<AdmissionPrescription />
-								) : (
-									<>
-										{id ? (
-											<TabsWithSearch
-												tabList={[
-													"History",
-													"Investigation",
-													"Medicine",
-													"Advice",
-													"Instruction",
-													"OT",
-													"Charge",
-													"Billing",
-													"Final Bill",
-													"Discharge",
-												]}
-												hideSearchbar
-												tabPanels={[
-													{
-														tab: "History",
-														component: <History />,
-													},
-													{
-														tab: "Investigation",
-														component: <Investigation />,
-													},
-													{
-														tab: "Medicine",
-														component: <Medicine />,
-													},
-													{
-														tab: "Advice",
-														component: <Advice />,
-													},
+								{selectedPrescriptionId && id ? (
+									<TabsWithSearch
+										tabList={[
+											"History",
+											"Investigation",
+											"Medicine",
+											"Advice",
+											"Instruction",
+											"OT",
+											"Charge",
+											"Billing",
+											"Final Bill",
+											"Discharge",
+										]}
+										hideSearchbar
+										tabPanels={[
+											{
+												tab: "History",
+												component: <History />,
+											},
+											{
+												tab: "Investigation",
+												component: <Investigation />,
+											},
+											{
+												tab: "Medicine",
+												component: <Medicine />,
+											},
+											{
+												tab: "Advice",
+												component: <Advice />,
+											},
 
-													{
-														tab: "Instruction",
-														component: <Instruction />,
-													},
-													{
-														tab: "OT",
-														component: <OT />,
-													},
-													{
-														tab: "Charge",
-														component: <Charge />,
-													},
-													{
-														tab: "Billing",
-														component: <Billing />,
-													},
-													{
-														tab: "Final Bill",
-														component: <FinalBill />,
-													},
-													{
-														tab: "Discharge",
-														component: <Discharge />,
-													},
-												]}
-											/>
-										) : (
-											<Flex
-												justify="center"
-												align="center"
-												p="sm"
-												pl={"md"}
-												pr={"md"}
-												bg="white"
-												h={mainAreaHeight - 12}
-											>
-												<Text>No patient selected, please select a patient</Text>
-											</Flex>
-										)}
-									</>
+											{
+												tab: "Instruction",
+												component: <Instruction />,
+											},
+											{
+												tab: "OT",
+												component: <OT />,
+											},
+											{
+												tab: "Charge",
+												component: <Charge />,
+											},
+											{
+												tab: "Billing",
+												component: <Billing />,
+											},
+											{
+												tab: "Final Bill",
+												component: <FinalBill />,
+											},
+											{
+												tab: "Discharge",
+												component: <Discharge />,
+											},
+										]}
+									/>
+								) : !selectedPrescriptionId && id ? (
+									<AdmissionPrescription selectedPrescriptionId={selectedPrescriptionId} />
+								) : (
+									<Flex
+										justify="center"
+										align="center"
+										p="sm"
+										pl={"md"}
+										pr={"md"}
+										bg="white"
+										h={mainAreaHeight - 12}
+									>
+										<Text>No patient selected, please select a patient</Text>
+									</Flex>
 								)}
 							</Grid.Col>
 						</Grid>

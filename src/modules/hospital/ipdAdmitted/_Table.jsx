@@ -1,30 +1,29 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { IconCalendarWeek, IconUser, IconArrowNarrowRight } from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon } from "@mantine/core";
+import { IconCalendarWeek, IconUser, IconArrowRight } from "@tabler/icons-react";
+import { Box, Flex, Grid, Text, ScrollArea, Button } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useEffect, useState } from "react";
-import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES } from "@/constants";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import { useTranslation } from "react-i18next";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
 
-export default function _Table() {
-	const { id } = useParams();
+export default function _Table({ selectedPrescriptionId, setSelectedPrescriptionId }) {
+	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const [selectedPatientId, setSelectedPatientId] = useState(id);
-	const handleAdmissionOverview = (id) => {
-		setSelectedPatientId(id);
+	const { id } = useParams();
+
+	const handleAdmissionOverview = (prescriptionId, id) => {
+		setSelectedPrescriptionId(prescriptionId);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}`, { replace: true });
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+	const { records } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
@@ -53,13 +52,9 @@ export default function _Table() {
 					<Grid
 						columns={12}
 						key={item.id}
-						onClick={() => handleAdmissionOverview(item.id)}
+						onClick={() => handleAdmissionOverview(item.prescription_id, item.id)}
 						my="xs"
-						bg={
-							Number(selectedPatientId) === item?.id
-								? "var(--theme-primary-color-0)"
-								: "var(--theme-tertiary-color-0)"
-						}
+						bg={Number(id) === item?.id ? "var(--theme-primary-color-0)" : "var(--theme-tertiary-color-0)"}
 						px="xs"
 						gutter="xs"
 					>
@@ -69,7 +64,7 @@ export default function _Table() {
 
 								<Text
 									fz="sm"
-									onClick={() => handleView(item?.id)}
+									onClick={() => handleAdmissionOverview(item.prescription_id)}
 									className="activate-link text-nowrap"
 								>
 									{formatDate(item?.created_at)}
@@ -80,7 +75,7 @@ export default function _Table() {
 								<Text fz="sm">{item.patient_id}</Text>
 							</Flex>
 						</Grid.Col>
-						<Grid.Col span={4}>
+						<Grid.Col span={3}>
 							<Flex align="center" gap="xxxs">
 								<Box>
 									<Text fz="sm">{item.name}</Text>
@@ -88,23 +83,36 @@ export default function _Table() {
 								</Box>
 							</Flex>
 						</Grid.Col>
-						<Grid.Col span={4}>
+						<Grid.Col span={5}>
 							<Flex justify="space-between" align="center">
 								<Box>
 									<Text fz="sm">{item.patient_payment_mode_name}</Text>
 									<Text fz="sm">{item.visiting_room}</Text>
 								</Box>
-								<Button.Group>
-									<ActionIcon
+								<Flex direction="column">
+									<Button
 										variant="filled"
-										onClick={() => handleAdmissionOverview(item.id)}
-										color="var(--theme-primary-color-6)"
-										radius="xs"
-										aria-label="Settings"
+										bg="var(--theme-primary-color-6)"
+										c="white"
+										size="xs"
+										onClick={() => handleAdmissionOverview(item.prescription_id)}
+										radius="es"
+										rightSection={<IconArrowRight size={18} />}
 									>
-										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
-									</ActionIcon>
-								</Button.Group>
+										{t("Confirm")}
+									</Button>
+									<Button
+										variant="filled"
+										bg="var(--theme-secondary-color-6)"
+										c="white"
+										size="xs"
+										onClick={() => handleAdmissionOverview(item.prescription_id)}
+										radius="es"
+										rightSection={<IconArrowRight size={18} />}
+									>
+										{t("Process")}
+									</Button>
+								</Flex>
 							</Flex>
 						</Grid.Col>
 					</Grid>

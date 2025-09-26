@@ -1,9 +1,11 @@
 import { Box, ScrollArea } from "@mantine/core";
 import { useParams, useOutletContext } from "react-router-dom";
 import OPDA4 from "./print-formats/opd/OPDA4";
-import Prescription2 from "./print-formats/opd/Prescription2";
 import PrescriptionFull from "./print-formats/prescription/PrescriptionFull";
 import OPDPos from "./print-formats/opd/OPDPos";
+import IPD from "./print-formats/ipd/IPDA4";
+import LabTest from "./print-formats/lab-test/LabTest";
+import Discharge from "./print-formats/discharge/Discharge";
 
 export default function Details() {
 	const { name } = useParams();
@@ -19,6 +21,9 @@ export default function Details() {
 					{name === "OPDA4" && <OPDA4 />}
 					{name === "OPDPos" && <OPDPos />}
 					{name === "PrescriptionFull" && <PrescriptionFull />}
+					{name === "IPD" && <IPD />}
+					{name === "LabTest" && <LabTest />}
+					{name === "Discharge" && <Discharge />}
 				</Box>
 			</ScrollArea>
 		</>

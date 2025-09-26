@@ -1,27 +1,40 @@
-import { hasLength } from "@mantine/form";
+export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
+	const parseDate = (dateValue) => {
+		if (!dateValue) return new Date();
+		if (dateValue instanceof Date) return dateValue;
+		if (typeof dateValue === "string") {
+			const parsed = new Date(dateValue);
+			return isNaN(parsed.getTime()) ? new Date() : parsed;
+		}
+		return new Date();
+	};
 
-const initialValues = {
-	name: "",
-};
+	const formattedInitialFormValues = {
+		basic_info: initialFormValues?.patient_report?.basic_info || { bp: "", weight: "", bloodGroup: "" },
+		dynamicFormData: initialFormValues?.patient_report?.patient_examination || {},
+		advise: initialFormValues?.advise || "",
+		follow_up_date: parseDate(initialFormValues?.follow_up_date),
+		instruction: initialFormValues?.instruction || "",
+		exEmergency: initialFormValues?.exEmergency || [],
+		pharmacyInstruction: initialFormValues?.pharmacyInstruction || "",
+	};
 
-export const getPrescriptionFormInitialValues = (t) => {
 	return {
-		initialValues,
-
-		validate: {
-			name: hasLength({ min: 2, max: 20 }),
-		},
+		initialValues: formattedInitialFormValues,
 	};
 };
 
-const medicineInitialValues = {
-	brand: "",
+export const medicineInitialValues = {
+	medicine_id: "",
+	medicine_name: "",
 	generic: "",
-	dosage: "",
+	generic_id: "",
+	company: "",
+	dose_details: "",
 	times: "",
-	timing: "",
-	meditationDuration: "",
-	unit: "",
+	by_meal: "",
+	duration: "Day",
+	quantity: 1,
 };
 
 export const getMedicineFormInitialValues = () => {
@@ -29,7 +42,8 @@ export const getMedicineFormInitialValues = () => {
 		initialValues: medicineInitialValues,
 
 		validate: {
-			generic: (value) => (value ? null : "Generic name is required"),
+			dose_details: (value) => (value ? null : "Dose details is required"),
+			quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},
 	};
 };

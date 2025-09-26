@@ -4,7 +4,7 @@ import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import CustomDivider from "@components/core-component/CustomDivider";
 import "@/index.css";
-import DashedDivider from "../../core-component/DashedDivider";
+import DashedDivider from "@components/core-component/DashedDivider";
 import { getLoggedInUser } from "@/common/utils";
 import { useTranslation } from "react-i18next";
 
