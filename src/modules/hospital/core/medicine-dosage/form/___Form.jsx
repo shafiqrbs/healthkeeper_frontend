@@ -13,35 +13,22 @@ import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+const dosages =['Cap',"Tab",'Injc'];
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 
-	const { data: employeeDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.EMPLOYEE.PATH,
-		utility: CORE_DROPDOWNS.EMPLOYEE.UTILITY,
-	});
-
-	const { data: categoryDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.CATEGORY.PATH,
-		utility: CORE_DROPDOWNS.CATEGORY.UTILITY,
-	});
-
-	const { data: particularTypeDropdown } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_MASTER_TYPE.PATH,
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MASTER_TYPE.UTILITY,
-	});
 
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
-				particular_type_master_id: data.particular_type_master_id,
 				name: data.name,
-				category_id: data.category_id,
-				employee_id: data.employee_id,
+				name_bn: data.name_bn,
+				dosage_form: data.dosage_form,
+				quantity: data.quantity,
 				instruction: data.instruction,
 
 			});
@@ -74,25 +61,27 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
+
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("ParticularType")} <RequiredAsterisk /></Text>
+											<Text fz="sm">
+												{t("DosageForm")} <RequiredAsterisk />
+											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
 												form={form}
-												tooltip={t("ParticularTypeValidateMessage")}
-												placeholder={t("ParticularType")}
-												name="particular_type_master_id"
-												id="particular_type_master_id"
-												nextField="category_id"
-												required={true}
-												value={form.values.particular_type_master_id}
-												dropdownValue={particularTypeDropdown}
+												tooltip={t("DosageFormValidateMessage")}
+												placeholder={t("DosageForm")}
+												required={false}
+												dropdownValue={dosages}
+												name="dosage_form"
+												id="dosage_form"
+												value={form.values.dosage_form}
+												nextField="name"
 											/>
 										</Grid.Col>
 									</Grid>
-
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
@@ -107,6 +96,42 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												required={false}
 												name="name"
 												id="name"
+												nextField="name_bn"
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="xxxs">
+										<Grid.Col span={6}>
+											<Text fz="sm">
+												{t("Name BN")} <RequiredAsterisk />
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputForm
+												form={form}
+												tooltip={t("NameValidateMessage")}
+												placeholder={t("Name")}
+												required={false}
+												name="name_bn"
+												id="name_bn"
+												nextField="instruction"
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="xxxs">
+										<Grid.Col span={6}>
+											<Text fz="sm">
+												{t("Quantity")} <RequiredAsterisk />
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputForm
+												form={form}
+												tooltip={t("NameValidateMessage")}
+												placeholder={t("Name")}
+												required={false}
+												name="quantity"
+												id="quantity"
 												nextField="instruction"
 											/>
 										</Grid.Col>

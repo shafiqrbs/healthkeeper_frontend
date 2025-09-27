@@ -39,6 +39,7 @@ import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/core/doctor";
 import NurseIndex from "@modules/hospital/core/nurse";
 import LabUserIndex from "@modules/hospital/core/lab-user";
+import DosageIndex from "@modules/hospital/core/medicine-dosage";
 import ListIndex from "@modules/hospital/visit/list";
 import ConfigurationIndex from "@modules/configuration";
 import IpdIndex from "@modules/hospital/admission/ipd";
@@ -306,6 +307,8 @@ function AppRoute() {
 					<Route path="nurse/:id" element={<NurseIndex mode={"edit"} />} />
 					<Route path="lab" element={<LabUserIndex />} />
 					<Route path="lab/:id" element={<LabUserIndex mode={"edit"} />} />
+					<Route path="dosage" element={<DosageIndex />} />
+					<Route path="dosage/:id" element={<DosageIndex mode={"edit"} />} />
 					<Route path="cabin" element={<CabinIndex />} />
 					<Route path="cabin/:id" element={<CabinIndex mode={"edit"} />} />
 					<Route path="particular-mode" element={<ParticularModeIndex />} />

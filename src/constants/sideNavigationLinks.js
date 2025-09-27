@@ -270,6 +270,14 @@ export const sideNavigationLinks = {
 		},
 
 		{
+			label: t("Dosage"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.DOSAGE.INDEX,
+			icon: IconIcons,
+			color: "#3F51B5",
+			allowedRoles: ["role_domain", "admin_administrator"],
+		},
+
+		{
 			label: t("Users"),
 			path: "/core/user",
 			icon: IconDashboard,

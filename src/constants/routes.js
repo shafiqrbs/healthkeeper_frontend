@@ -22,6 +22,14 @@ export const MASTER_DATA_ROUTES = {
 			DELETE: "hospital/core/particular",
 		},
 
+		DOSAGE: {
+			INDEX: "hospital/core/dosage",
+			CREATE: "hospital/core/dosage",
+			UPDATE: "hospital/core/dosage",
+			VIEW: "hospital/core/dosage",
+			DELETE: "hospital/core/dosage",
+		},
+
 		MEDICINEDOSAGE: {
 			INDEX: "hospital/core/medicinedosage",
 			CREATE: "hospital/core/medicinedosage",
@@ -176,6 +184,14 @@ export const MASTER_DATA_ROUTES = {
 			UPDATE: "/hospital/core/lab",
 			VIEW: "/hospital/core/lab/view",
 			DELETE: "/hospital/core/lab/delete",
+		},
+
+		DOSAGE: {
+			INDEX: "/hospital/core/dosage",
+			CREATE: "/hospital/core/dosage",
+			UPDATE: "/hospital/core/dosage",
+			VIEW: "/hospital/core/dosage",
+			DELETE: "/hospital/core/dosage",
 		},
 
 		PARTICULAR_MATRIX: {

@@ -33,6 +33,7 @@ export const MODULES_CORE = {
 	NURSE: "nurse",
 	LAB_USER: "lab_user",
 	STAFF: "staff",
+	DOSAGE: "dosage",
 	PARTICULAR: "particular",
 	CATEGORY: "category",
 	PARTICULAR_MODE: "particular_mode",
