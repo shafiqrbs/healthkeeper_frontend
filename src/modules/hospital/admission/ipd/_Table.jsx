@@ -22,7 +22,13 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
 const PER_PAGE = 20;
 
-const tabs = ["all", "closed", "done", "inProgress", "returned"];
+
+const tabs = [
+	{ label: "All", value: "all" },
+	{ label: "New", value: "new" },
+	{ label: "In-progress", value: "in-progress" },
+	{ label: "Confirmed", value: "Confirmed" },
+];
 
 export default function _Table({ module }) {
 	const { t } = useTranslation();
@@ -38,7 +44,7 @@ export default function _Table({ module }) {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const navigate = useNavigate();
 	const [selectedId, setSelectedId] = useState(null);
-
+	const [processTab, setProcessTab] = useState("all");
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -90,15 +96,20 @@ export default function _Table({ module }) {
 					{t("AdmissionInformation")}
 				</Text>
 				<Flex gap="xs" align="center">
-					<Tabs mt="xs" variant="none" value={value} onChange={setValue}>
+					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab}>
-									{t(tab)}
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={tab.value}
+								>
+									{t(tab.label)}
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={value ? controlsRefs[value] : null}
+								target={processTab ? controlsRefs[processTab] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
@@ -145,7 +156,7 @@ export default function _Table({ module }) {
 							title: t("Created"),
 							textAlignment: "right",
 							render: (item) => (
-								<Text fz="sm" onClick={() => handleView(item.id)} className="activate-link">
+								<Text fz="xs" onClick={() => handleView(item.id)} className="activate-link">
 									{formatDate(item.created_at)}
 								</Text>
 							),
@@ -175,9 +186,10 @@ export default function _Table({ module }) {
 										variant="filled"
 										bg="var(--theme-primary-color-6)"
 										c="white"
-										size="xs"
+										size="compact-xs"
 										onClick={() => handleConfirm(values.id)}
 										radius="es"
+										fw={400}
 										rightSection={<IconArrowRight size={18} />}
 									>
 										{t("Confirm")}
@@ -186,57 +198,14 @@ export default function _Table({ module }) {
 										variant="filled"
 										bg="var(--theme-secondary-color-6)"
 										c="white"
-										size="xs"
+										size="compact-xs"
+										fw={400}
 										onClick={() => handleDetailsAdmission(values.id)}
 										radius="es"
 										rightSection={<IconArrowRight size={18} />}
 									>
 										{t("Process")}
 									</Button>
-									<Menu
-										position="bottom-end"
-										offset={3}
-										withArrow
-										trigger="hover"
-										openDelay={100}
-										closeDelay={400}
-									>
-										<Menu.Target>
-											<ActionIcon
-												className="action-icon-menu border-left-radius-none"
-												variant="default"
-												radius="es"
-												aria-label="Settings"
-											>
-												<IconDotsVertical height={18} width={18} stroke={1.5} />
-											</ActionIcon>
-										</Menu.Target>
-										<Menu.Dropdown>
-											<Menu.Item
-												onClick={() => {
-													// handleVendorEdit(values.id);
-													// open();
-												}}
-											>
-												{t("Edit")}
-											</Menu.Item>
-											<Menu.Item
-												// onClick={() => handleDelete(values.id)}
-												bg="red.1"
-												c="red.6"
-												rightSection={
-													<IconTrashX
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-											>
-												{t("Delete")}
-											</Menu.Item>
-										</Menu.Dropdown>
-									</Menu>
 								</Group>
 							),
 						},
