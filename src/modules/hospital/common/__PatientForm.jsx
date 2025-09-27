@@ -848,9 +848,9 @@ export function Form({
 									data={[
 										{ label: t("General"), value: "30" },
 										{ label: t("FreedomFighter"), value: "31" },
-										{ label: t("Disabled"), value: "29" },
+										{ label: t("Disabled"), value: "43" },
 										{ label: t("GovtService"), value: "32" },
-										{ label: t("MDR"), value: "50" },
+										{ label: t("MDR"), value: "46" },
 									]}
 								/>
 							</Grid.Col>

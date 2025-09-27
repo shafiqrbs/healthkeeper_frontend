@@ -237,7 +237,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		<Box w="100%" bg="white">
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
-					{t("VisitInformation")}
+					{t("PrescriptionInformation")}
 				</Text>
 				<Flex gap="xs" align="center">
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
@@ -334,7 +334,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
 										<>
-											{values?.prescription_id && userId == values?.prescription_created_by_id ? (
+											{values?.prescription_id && values?.process != "closed" && !values.referred_mode && userId == values?.prescription_created_by_id ? (
 												<Button
 													variant="filled"
 													bg="var(--theme-success-color)"
@@ -348,7 +348,21 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												>
 													{t("Prescription")}
 												</Button>
-											) : !values?.prescription_id ? (
+											) : values?.prescription_id && values.referred_mode == 'room' ? (
+												<Button
+													variant="filled"
+													bg="var(--theme-success-color)"
+													c="white"
+													fw={400}
+													size="compact-xs"
+													onClick={() => handlePrescription(values.prescription_id)}
+													radius="es"
+													rightSection={<IconArrowRight size={12} />}
+													className="border-right-radius-none"
+												>
+													{t("Prescription")}
+												</Button>
+											) : !values?.prescription_id || values.referred_mode == 'room' ? (
 												<Button
 													fw={400}
 													variant="filled"
@@ -428,22 +442,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 														{t("Prescription")}
 													</Menu.Item>
 												</>
-											)}
-											{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && (
-												<Menu.Item
-													onClick={() => handleDelete(values.id)}
-													c="red.6"
-													leftSection={
-														<IconTrashX
-															style={{
-																width: rem(14),
-																height: rem(14),
-															}}
-														/>
-													}
-												>
-													{t("Delete")}
-												</Menu.Item>
 											)}
 										</Menu.Dropdown>
 									</Menu>

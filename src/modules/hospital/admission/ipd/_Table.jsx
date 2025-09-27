@@ -26,8 +26,8 @@ const PER_PAGE = 20;
 const tabs = [
 	{ label: "All", value: "all" },
 	{ label: "New", value: "new" },
-	{ label: "In-progress", value: "in-progress" },
 	{ label: "Confirmed", value: "Confirmed" },
+	{ label: "In-progress", value: "in-progress" },
 ];
 
 export default function _Table({ module }) {
@@ -48,7 +48,7 @@ export default function _Table({ module }) {
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: "",
+			created: formatDate(new Date()),
 			room_id: "",
 		},
 	});
@@ -68,7 +68,8 @@ export default function _Table({ module }) {
 		filterParams: {
 			name: filterData?.name,
 			referred_mode: "admission",
-			process: "In-progress",
+			ipd_mode: processTab,
+			created: form.values.created,
 			term: filterData.keywordSearch,
 		},
 		perPage: PER_PAGE,
