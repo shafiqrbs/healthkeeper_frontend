@@ -1,9 +1,9 @@
-import TabSubHeading from "@modules/hospital/common/TabSubHeading";
+import TabSubHeading from "@hospital-components/TabSubHeading";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { Badge, Box, Flex, Grid, MultiSelect, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
-import TabsActionButtons from "@modules/hospital/common/TabsActionButtons";
+import TabsActionButtons from "@hospital-components/TabsActionButtons";
 import SelectForm from "@components/form-builders/SelectForm";
 
 const otDetails = [

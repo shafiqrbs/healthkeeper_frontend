@@ -1,6 +1,6 @@
 // NOTE: this template will replace this file: src/common/components/print-formats/prescription/PrescriptionFull.jsx
 
-import { Box, Text, Grid, Group, Stack, Image, Flex } from "@mantine/core";
+import { Box, Text, Grid, Group, Stack, Image, Flex, LoadingOverlay } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -14,7 +14,7 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
-	const { data: prescriptionData } = useDataWithoutStore({
+	const { data: prescriptionData, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});
 	const patientInfo = prescriptionData?.data || {};
@@ -30,10 +30,6 @@ const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-
-	console.log(jsonContent);
-
-	//	const [digitalSignature, setDigitalSignature] = useState([]);
 
 	// Normalize order into an array of keys sorted by their index
 	const normalizeOrder = (inputOrder) => {
@@ -193,276 +189,268 @@ const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
 	};
 
 	return (
-		<Box>
-			<Box
-				ref={ref}
-				p="md"
-				w="210mm"
-				mih="1122px"
-				className="watermark"
-				ff="Arial, sans-serif"
-				lh={1.5}
-				fz={12}
-				bd="1px solid black"
-			>
-				{/* =============== header section with doctor information in bengali and english ================ */}
-				<Box mb="sm">
-					<Grid gutter="md">
-						<Grid.Col span={4}>
-							<Group ml="md" align="center" h="100%">
-								<Image src={GLogo} alt="logo" width={80} height={80} />
-							</Group>
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-								{hospitalConfigData?.organization_name || "Hospital"}
-							</Text>
-							<Text ta="center" size="sm" c="gray" mt="2">
-								{hospitalConfigData?.address || "Uttara"}
-							</Text>
-							<Text ta="center" size="sm" c="gray" mb="2">
-								{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
-							</Text>
-
-							<Text ta="center" fw="bold" size="lg" c="#1e40af">
-								{t("Prescription")}
-							</Text>
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<Group mr="md" justify="flex-end" align="center" h="100%">
-								<Image src={TBLogo} alt="logo" width={80} height={80} />
-							</Group>
-						</Grid.Col>
-					</Grid>
-				</Box>
-
-				{/* =============== patient information section ================ */}
-				<Box mb="sm">
-					<Grid columns={12} gutter="xs" px={4}>
-						<Grid.Col bd="1px solid #555" span={2} px="xs">
-							<Group gap="xs">
-								<Text size="xs">{getValue(patientInfo?.invoice || "PT-987654321")}</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={2} px="xs">
-							<Group gap="xs">
-								<Text size="xs">{getValue(patientInfo?.patient_id || "PT-987654321")}</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={4} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("নাম")}:
-								</Text>
-								<Text size="sm">{getValue(patientInfo?.name, "John Doe")}</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={4} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("মোবাইল")}:
-								</Text>
-								<Text size="xs">{getValue(patientInfo?.mobile || "01717171717")}</Text>
-							</Group>
-						</Grid.Col>
-
-						<Grid.Col bd="1px solid #555" span={4} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("বয়স")}:
-								</Text>
-								<Text size="xs">
-									{" "}
-									{patientInfo?.day || 1} D {patientInfo?.month || 1} M {patientInfo?.year || ""} Y
-								</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={2} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("লিঙ্গ")}:
-								</Text>
-								<Text size="xs">
-									{patientInfo?.gender &&
-										patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
-								</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={2} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("জন্ম")}
-								</Text>
-								<Text size="xs">{patientInfo?.dob || ""}</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={4} px="xs">
-							<Group gap="xs">
-								<strong>তারিখ:</strong> {patientInfo?.created || ""}
-							</Group>
-						</Grid.Col>
-					</Grid>
-				</Box>
-
-				{/* =============== medical notes and prescription area with rx symbol ================ */}
-				<Box style={{ position: "relative", minHeight: "350px" }} mb="sm">
-					<Grid columns={12} gutter="md">
-						<Grid.Col span={4}>
-							<Stack gap="0px">
-								{(orderedExamKeys.length > 0 ? orderedExamKeys : Object.keys(patientExamination || {}))
-									.filter((key) => hasArrayWithLength(patientExamination?.[key]))
-									.map((key) => (
-										<Box key={key}>{renderExaminationSection(key)}</Box>
-									))}
-							</Stack>
-						</Grid.Col>
-						<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
-							<Stack gap="2" mih={200}>
-								{exEmergencies.map((emergency, index) => (
-									<Box key={index}>
-										<Text size="xs" fw={600}>
-											{index + 1}. {getValue(emergency.value)}
-										</Text>
-									</Box>
-								))}
-								{medicines.map((medicine, index) => (
-									<Box key={index}>
-										<Text size="xs" fw={600}>
-											{exEmergencies.length + index + 1}. {getValue(medicine.medicine_name)}
-										</Text>
-										{(medicine.dosages || []).map((dose, dIdx) => (
-											<Text
-												key={dose.id ?? dIdx}
-												size="xs"
-												c="var(--theme-tertiary-color-8)"
-												ml="md"
-											>
-												{getValue(dose.dose_details)} {" ------- "}
-												{getValue(dose.by_meal)} {" ------- "}
-												{getValue(dose.quantity)} {getValue(medicine.duration)}
-											</Text>
-										))}
-										{
-											<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
-												{getValue(medicine.dose_details)} {" -------"}{" "}
-												{getValue(medicine.by_meal)}
-												{" -------"}
-												{getValue(medicine.quantity)} {getValue(medicine.duration)}
-											</Text>
-										}
-									</Box>
-								))}
-							</Stack>
-							<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
-							<Text size="sm" fw={600}>
-								অন্যান্য নির্দেশাবলী:
-							</Text>
-							<Text size="sm">{getValue(jsonContent.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}</Text>
-							<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
-							<Text size="sm" fw={600}>
-								বিশেষ নির্দেশাবলী:
-							</Text>
-							<Text size="sm">{getValue(jsonContent.instruction)}</Text>
-						</Grid.Col>
-					</Grid>
-				</Box>
-
-				{/* =============== new prescription layout matching the image ================ */}
-				<Box bd="1px solid #555" style={{ borderRadius: "4px" }}>
-					{/* =============== top section with printed by and signature ================ */}
-					<Grid columns={12} gutter="0">
-						<Grid.Col span={6} pl={"xl"} pt={"md"}>
-							<Text fz={"xl"}>{patientInfo?.doctor_name}</Text>
-							<Text fz={"xs"}>{patientInfo?.designation_name}</Text>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Text size="sm" fw={600}>
-								{renderImagePreview([], patientInfo?.signature_path)}
-							</Text>
-						</Grid.Col>
-					</Grid>
-				</Box>
-				<DashedDivider />
-				{/* =============== bottom section with patient info and medication table ================ */}
-				<Grid columns={12} gutter="md" mb="lg">
+		<Box
+			ref={ref}
+			p="md"
+			w="210mm"
+			mih="1122px"
+			className="watermark"
+			ff="Arial, sans-serif"
+			lh={1.5}
+			fz={12}
+			bd="1px solid black"
+			pos="relative"
+		>
+			<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+			{/* =============== header section with doctor information in bengali and english ================ */}
+			<Box mb="sm">
+				<Grid gutter="md">
 					<Grid.Col span={4}>
-						<Stack gap="6px">
-							<Text size="sm" fw={500}>
-								Name: {getValue(patientInfo?.name)}
+						<Group ml="md" align="center" h="100%">
+							<Image src={GLogo} alt="logo" width={80} height={80} />
+						</Group>
+					</Grid.Col>
+					<Grid.Col span={4}>
+						<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
+							{hospitalConfigData?.organization_name || "Hospital"}
+						</Text>
+						<Text ta="center" size="sm" c="gray" mt="2">
+							{hospitalConfigData?.address || "Uttara"}
+						</Text>
+						<Text ta="center" size="sm" c="gray" mb="2">
+							{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
+						</Text>
+
+						<Text ta="center" fw="bold" size="lg" c="#1e40af">
+							{t("Prescription")}
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={4}>
+						<Group mr="md" justify="flex-end" align="center" h="100%">
+							<Image src={TBLogo} alt="logo" width={80} height={80} />
+						</Group>
+					</Grid.Col>
+				</Grid>
+			</Box>
+
+			{/* =============== patient information section ================ */}
+			<Box mb="sm">
+				<Grid columns={12} gutter="xs" px={4}>
+					<Grid.Col bd="1px solid #555" span={2} px="xs">
+						<Group gap="xs">
+							<Text size="xs">{getValue(patientInfo?.invoice || "PT-987654321")}</Text>
+						</Group>
+					</Grid.Col>
+					<Grid.Col bd="1px solid #555" span={2} px="xs">
+						<Group gap="xs">
+							<Text size="xs">{getValue(patientInfo?.patient_id || "PT-987654321")}</Text>
+						</Group>
+					</Grid.Col>
+					<Grid.Col bd="1px solid #555" span={4} px="xs">
+						<Group gap="xs">
+							<Text size="xs" fw={600}>
+								{t("নাম")}:
 							</Text>
-							<Text size="sm" fw={500}>
-								Mobile: {getValue(patientInfo?.mobile)}
+							<Text size="sm">{getValue(patientInfo?.name, "John Doe")}</Text>
+						</Group>
+					</Grid.Col>
+					<Grid.Col bd="1px solid #555" span={4} px="xs">
+						<Group gap="xs">
+							<Text size="xs" fw={600}>
+								{t("মোবাইল")}:
 							</Text>
-							<Text size="xs" fw={500}>
-								Room: {getValue(patientInfo?.room_name)}
+							<Text size="xs">{getValue(patientInfo?.mobile || "01717171717")}</Text>
+						</Group>
+					</Grid.Col>
+
+					<Grid.Col bd="1px solid #555" span={4} px="xs">
+						<Group gap="xs">
+							<Text size="xs" fw={600}>
+								{t("বয়স")}:
 							</Text>
 							<Text size="xs">
-								Age: {getValue(patientInfo?.year, "25")} Y. Sex:{patientInfo?.gender}
+								{" "}
+								{patientInfo?.day || 1} D {patientInfo?.month || 1} M {patientInfo?.year || ""} Y
 							</Text>
-							<Text size="sm" fw={600}>
-								Doctor Comments:
+						</Group>
+					</Grid.Col>
+					<Grid.Col bd="1px solid #555" span={2} px="xs">
+						<Group gap="xs">
+							<Text size="xs" fw={600}>
+								{t("লিঙ্গ")}:
 							</Text>
-							<Text size="xs" c="gray">
-								{getValue(jsonContent?.pharmacy_instruction)}
+							<Text size="xs">
+								{patientInfo?.gender &&
+									patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
 							</Text>
+						</Group>
+					</Grid.Col>
+					<Grid.Col bd="1px solid #555" span={2} px="xs">
+						<Group gap="xs">
+							<Text size="xs" fw={600}>
+								{t("জন্ম")}
+							</Text>
+							<Text size="xs">{patientInfo?.dob || ""}</Text>
+						</Group>
+					</Grid.Col>
+					<Grid.Col bd="1px solid #555" span={4} px="xs">
+						<Group gap="xs">
+							<strong>তারিখ:</strong> {patientInfo?.created || ""}
+						</Group>
+					</Grid.Col>
+				</Grid>
+			</Box>
+
+			{/* =============== medical notes and prescription area with rx symbol ================ */}
+			<Box style={{ position: "relative", minHeight: "350px" }} mb="sm">
+				<Grid columns={12} gutter="md">
+					<Grid.Col span={4}>
+						<Stack gap="0px">
+							{(orderedExamKeys.length > 0 ? orderedExamKeys : Object.keys(patientExamination || {}))
+								.filter((key) => hasArrayWithLength(patientExamination?.[key]))
+								.map((key) => (
+									<Box key={key}>{renderExaminationSection(key)}</Box>
+								))}
 						</Stack>
 					</Grid.Col>
-					<Grid.Col span={8}>
-						{/* =============== medication table ================ */}
-						<Box style={{ border: "1px solid #333", borderRadius: "4px", overflow: "hidden" }}>
-							<Grid
-								columns={24}
-								p={8}
-								bg="#f8f9fa"
-								style={{
-									borderBottom: "1px solid #333",
-								}}
-							>
+					<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
+						<Stack gap="2" mih={200}>
+							{exEmergencies.map((emergency, index) => (
+								<Box key={index}>
+									<Text size="xs" fw={600}>
+										{index + 1}. {getValue(emergency.value)}
+									</Text>
+								</Box>
+							))}
+							{medicines.map((medicine, index) => (
+								<Box key={index}>
+									<Text size="xs" fw={600}>
+										{exEmergencies.length + index + 1}. {getValue(medicine.medicine_name)}
+									</Text>
+									{(medicine.dosages || []).map((dose, dIdx) => (
+										<Text key={dose.id ?? dIdx} size="xs" c="var(--theme-tertiary-color-8)" ml="md">
+											{getValue(dose.dose_details)} {" ------- "}
+											{getValue(dose.by_meal)} {" ------- "}
+											{getValue(dose.quantity)} {getValue(medicine.duration)}
+										</Text>
+									))}
+									{
+										<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
+											{getValue(medicine.dose_details)} {" -------"} {getValue(medicine.by_meal)}
+											{" -------"}
+											{getValue(medicine.quantity)} {getValue(medicine.duration)}
+										</Text>
+									}
+								</Box>
+							))}
+						</Stack>
+						<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
+						<Text size="sm" fw={600}>
+							অন্যান্য নির্দেশাবলী:
+						</Text>
+						<Text size="sm">{getValue(jsonContent.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}</Text>
+						<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
+						<Text size="sm" fw={600}>
+							বিশেষ নির্দেশাবলী:
+						</Text>
+						<Text size="sm">{getValue(jsonContent.instruction)}</Text>
+					</Grid.Col>
+				</Grid>
+			</Box>
+
+			{/* =============== new prescription layout matching the image ================ */}
+			<Box bd="1px solid #555" style={{ borderRadius: "4px" }}>
+				{/* =============== top section with printed by and signature ================ */}
+				<Grid columns={12} gutter="0">
+					<Grid.Col span={6} pl={"xl"} pt={"md"}>
+						<Text fz={"xl"}>{patientInfo?.doctor_name}</Text>
+						<Text fz={"xs"}>{patientInfo?.designation_name}</Text>
+					</Grid.Col>
+					<Grid.Col span={6}>
+						<Text size="sm" fw={600}>
+							{renderImagePreview([], patientInfo?.signature_path)}
+						</Text>
+					</Grid.Col>
+				</Grid>
+			</Box>
+			<DashedDivider />
+			{/* =============== bottom section with patient info and medication table ================ */}
+			<Grid columns={12} gutter="md" mb="lg">
+				<Grid.Col span={4}>
+					<Stack gap="6px">
+						<Text size="sm" fw={500}>
+							Name: {getValue(patientInfo?.name)}
+						</Text>
+						<Text size="sm" fw={500}>
+							Mobile: {getValue(patientInfo?.mobile)}
+						</Text>
+						<Text size="xs" fw={500}>
+							Room: {getValue(patientInfo?.room_name)}
+						</Text>
+						<Text size="xs">
+							Age: {getValue(patientInfo?.year, "25")} Y. Sex:{patientInfo?.gender}
+						</Text>
+						<Text size="sm" fw={600}>
+							Doctor Comments:
+						</Text>
+						<Text size="xs" c="gray">
+							{getValue(jsonContent?.pharmacy_instruction)}
+						</Text>
+					</Stack>
+				</Grid.Col>
+				<Grid.Col span={8}>
+					{/* =============== medication table ================ */}
+					<Box bd="1px solid #333" style={{ borderRadius: "4px", overflow: "hidden" }}>
+						<Grid
+							columns={24}
+							p={8}
+							bg="#f8f9fa"
+							style={{
+								borderBottom: "1px solid #333",
+							}}
+						>
+							<Grid.Col span={20} m={0} p={0}>
+								<Text size="xs" pl={4}>
+									Generic Name
+								</Text>
+							</Grid.Col>
+							<Grid.Col span={4} m={0} p={0}>
+								<Text size="sm" ta="center" fw={500}>
+									Quantity
+								</Text>
+							</Grid.Col>
+						</Grid>
+						{medicines?.map((medicine, index) => (
+							<Grid key={index} columns={24} m={4} p={4}>
 								<Grid.Col span={20} m={0} p={0}>
 									<Text size="xs" pl={4}>
-										Generic Name
+										{index + 1}. {getValue(medicine.generic)}
 									</Text>
 								</Grid.Col>
 								<Grid.Col span={4} m={0} p={0}>
 									<Text size="sm" ta="center" fw={500}>
-										Quantity
+										{getValue(medicine.quantity, "1")}
 									</Text>
 								</Grid.Col>
 							</Grid>
-							{medicines?.map((medicine, index) => (
-								<>
-									<Grid columns={24} m={4} p={4}>
-										<Grid.Col span={20} m={0} p={0}>
-											<Text size="xs" pl={4}>
-												{index + 1}. {getValue(medicine.generic)}
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} m={0} p={0}>
-											<Text size="sm" ta="center" fw={500}>
-												{getValue(medicine.quantity, "1")}
-											</Text>
-										</Grid.Col>
-									</Grid>
-								</>
-							))}
-						</Box>
-					</Grid.Col>
-				</Grid>
+						))}
+					</Box>
+				</Grid.Col>
+			</Grid>
 
-				{/* =============== footer with prescribed by ================ */}
-				<Box ta="center" mt="xs">
-					<Text size="sm" fw={600} c="#1e40af">
-						Prescribed By: Doctor ID {getValue(patientInfo?.employee_id, "DOC-987654321")}
-					</Text>
+			{/* =============== footer with prescribed by ================ */}
+			<Box ta="center" mt="xs">
+				<Text size="sm" fw={600} c="#1e40af">
+					Prescribed By: Doctor ID {getValue(patientInfo?.employee_id, "DOC-987654321")}
+				</Text>
+				<Text size="sm" c="gray" mt="xs">
+					Prescription Date: {formatDate(new Date())}
+				</Text>
+				{patientInfo?.follow_up_date && (
 					<Text size="sm" c="gray" mt="xs">
-						Prescription Date: {formatDate(new Date())}
+						Follow Up Date: {formatDate(new Date())}
 					</Text>
-					{patientInfo?.follow_up_date && (
-						<Text size="sm" c="gray" mt="xs">
-							Follow Up Date: {formatDate(new Date())}
-						</Text>
-					)}
-				</Box>
+				)}
 			</Box>
 		</Box>
 	);

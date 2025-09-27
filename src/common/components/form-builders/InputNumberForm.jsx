@@ -5,6 +5,7 @@ import { getHotkeyHandler } from "@mantine/hooks";
 import inputCss from "@assets/css/InputField.module.css";
 
 function InputNumberForm({
+	w = null,
 	label,
 	placeholder,
 	required,
@@ -48,6 +49,7 @@ function InputNumberForm({
 						type="number"
 						classNames={inputCss}
 						id={id}
+						w={w || undefined}
 						size="sm"
 						label={label}
 						placeholder={placeholder}

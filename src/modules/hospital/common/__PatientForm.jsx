@@ -36,7 +36,7 @@ import NIDDataPreviewModal from "./NIDDataPreviewModal";
 import InputMobileNumberForm from "@components/form-builders/InputMobileNumberForm";
 import OPDFooter from "./OPDFooter";
 import PrescriptionFooter from "./PrescriptionFooter";
-import OpdRoomModal from "@modules/hospital/common/OpdRoomModal";
+import OpdRoomModal from "@hospital-components/OpdRoomModal";
 import { useForm } from "@mantine/form";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import RoomCard from "./RoomCard";

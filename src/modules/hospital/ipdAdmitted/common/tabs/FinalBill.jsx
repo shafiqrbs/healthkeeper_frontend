@@ -1,9 +1,9 @@
 import { Box, Grid, ScrollArea, Table } from "@mantine/core";
-import TabSubHeading from "@modules/hospital/common/TabSubHeading";
-import BillingTable from "@modules/hospital/common/BillingTable";
+import TabSubHeading from "@hospital-components/TabSubHeading";
+import BillingTable from "@hospital-components/BillingTable";
 import { useOutletContext } from "react-router-dom";
-import BillingSummary from "@modules/hospital/common/BillingSummary";
-import BillingActions from "@modules/hospital/common/BillingActions";
+import BillingSummary from "@hospital-components/BillingSummary";
+import BillingActions from "@hospital-components/BillingActions";
 
 const billing = {
 	cabinCharge: 1000,

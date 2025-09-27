@@ -432,7 +432,7 @@ export const HOSPITAL_DATA_ROUTES = {
 		PRESCRIPTION: {
 			INDEX: "/hospital/prescription",
 			CREATE: "/hospital/prescription/create",
-			UPDATE: "/hospital/prescription/edit",
+			UPDATE: "/hospital/prescription",
 			VIEW: "/hospital/prescription/view",
 		},
 		ADMISSION: {

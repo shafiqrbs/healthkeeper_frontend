@@ -13,6 +13,7 @@ export default function TabsWithSearch({
 	hideSearchbar = false,
 	searchbarContainerBg = "var(--theme-secondary-color-5)",
 	tabWidth = "32%",
+	leftSection = null,
 }) {
 	const { t } = useTranslation();
 	const [rootRef, setRootRef] = useState(null);
@@ -30,6 +31,7 @@ export default function TabsWithSearch({
 				{tabList.length > 1 && (
 					<Tabs.List px="sm" py="xxxs" className={tabClass.list} ref={setRootRef}>
 						<Flex w="100%" justify={expand ? "space-between" : "center"}>
+							{leftSection}
 							{expand ? (
 								<>
 									{tabList.map((tab, index) => (

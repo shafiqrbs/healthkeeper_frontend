@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Flex, Grid, Text } from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, Grid, SegmentedControl, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import Table from "./_Table";
 import History from "./common/tabs/History";
@@ -17,14 +18,30 @@ import Billing from "./common/tabs/Billing";
 import FinalBill from "./common/tabs/FinalBill";
 import Discharge from "./common/tabs/Discharge";
 import AdmissionPrescription from "./common/AdmissionPrescription";
-import { useState } from "react";
+import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import PrescriptionPreview from "@hospital-components/PrescriptionPreview";
+import { useDisclosure } from "@mantine/hooks";
+import Room from "./common/tabs/Room";
+import { IconPencil } from "@tabler/icons-react";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 export default function Index() {
+	const navigate = useNavigate();
+	const [ipdMode, setIpdMode] = useState("ipd_prescription");
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
+		useDisclosure(false);
+
+	const showTabs = selectedPrescriptionId && id;
+	const showPrescriptionForm = !selectedPrescriptionId && id;
+
+	const handlePrescriptionEdit = () => {
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.UPDATE}/${selectedPrescriptionId}`);
+	};
 
 	return (
 		<>
@@ -36,11 +53,21 @@ export default function Index() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={24}>
 							<Grid.Col span={8} pos="relative" className="animate-ease-out">
-								<Box px="sm" py="md" bg="white">
+								<Flex align="center" justify="space-between" px="sm" py="xs" bg="white">
 									<Text fw={600} fz="sm">
 										{t("patientInformation")}
 									</Text>
-								</Box>
+									<SegmentedControl
+										size="sm"
+										color="var(--theme-primary-color-6)"
+										value={ipdMode}
+										onChange={setIpdMode}
+										data={[
+											{ label: t("IPDPrescription"), value: "ipd_prescription" },
+											{ label: t("IPDManage"), value: "ipd_manage" },
+										]}
+									/>
+								</Flex>
 								<TabsWithSearch
 									tabList={["list"]}
 									tabPanels={[
@@ -48,6 +75,7 @@ export default function Index() {
 											tab: "list",
 											component: (
 												<Table
+													ipdMode={ipdMode}
 													selectedPrescriptionId={selectedPrescriptionId}
 													setSelectedPrescriptionId={setSelectedPrescriptionId}
 												/>
@@ -57,12 +85,13 @@ export default function Index() {
 								/>
 							</Grid.Col>
 							<Grid.Col span={16} className="animate-ease-out">
-								{selectedPrescriptionId && id ? (
+								{showTabs ? (
 									<TabsWithSearch
 										tabList={[
 											"History",
 											"Investigation",
 											"Medicine",
+											"Room",
 											"Advice",
 											"Instruction",
 											"OT",
@@ -84,6 +113,10 @@ export default function Index() {
 											{
 												tab: "Medicine",
 												component: <Medicine />,
+											},
+											{
+												tab: "Room",
+												component: <Room />,
 											},
 											{
 												tab: "Advice",
@@ -115,8 +148,30 @@ export default function Index() {
 												component: <Discharge />,
 											},
 										]}
+										leftSection={
+											<Flex gap="les">
+												<ActionIcon
+													onClick={handlePrescriptionEdit}
+													bg="var(--theme-primary-color-6)"
+													h="100%"
+													w="36px"
+												>
+													<IconPencil size={18} />
+												</ActionIcon>
+												<Button
+													onClick={openPrescriptionPreview}
+													miw={120}
+													mr="les"
+													bg="var(--theme-primary-color-6)"
+													c="white"
+													fw={400}
+												>
+													Prescription
+												</Button>
+											</Flex>
+										}
 									/>
-								) : !selectedPrescriptionId && id ? (
+								) : showPrescriptionForm ? (
 									<AdmissionPrescription selectedPrescriptionId={selectedPrescriptionId} />
 								) : (
 									<Flex
@@ -136,6 +191,16 @@ export default function Index() {
 					</Flex>
 				</Box>
 			)}
+			<GlobalDrawer
+				opened={openedPrescriptionPreview}
+				close={closePrescriptionPreview}
+				title={t("PrescriptionPreview")}
+				size="50%"
+			>
+				<Box my="sm">
+					<PrescriptionPreview prescriptionId={selectedPrescriptionId} />
+				</Box>
+			</GlobalDrawer>
 		</>
 	);
 }

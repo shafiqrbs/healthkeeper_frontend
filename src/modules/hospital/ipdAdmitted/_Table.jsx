@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
 
-export default function _Table({ selectedPrescriptionId, setSelectedPrescriptionId }) {
+export default function _Table({ selectedPrescriptionId, setSelectedPrescriptionId, ipdMode }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
@@ -31,6 +31,7 @@ export default function _Table({ selectedPrescriptionId, setSelectedPrescription
 			patient_mode: "ipd",
 			process: "New",
 			term: filterData.keywordSearch,
+			ipd_mode: ipdMode,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",

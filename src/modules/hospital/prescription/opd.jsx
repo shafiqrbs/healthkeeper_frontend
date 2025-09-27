@@ -21,9 +21,9 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import PatientReferredAction from "@modules/hospital/common/PatientReferredAction";
+import PatientReferredAction from "@hospital-components/PatientReferredAction";
 import DetailsDrawer from "./__DetailsDrawer";
-import PatientPrescriptionHistoryList from "@modules/hospital/common/PatientPrescriptionHistoryList";
+import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
 
 const module = MODULES.PRESCRIPTION;

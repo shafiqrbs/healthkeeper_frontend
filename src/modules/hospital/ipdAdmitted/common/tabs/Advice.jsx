@@ -1,9 +1,9 @@
-import TabSubHeading from "@modules/hospital/common/TabSubHeading";
+import TabSubHeading from "@hospital-components/TabSubHeading";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { Badge, Box, Flex, Grid, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useOutletContext, useParams } from "react-router-dom";
-import TabsActionButtons from "@modules/hospital/common/TabsActionButtons";
+import TabsActionButtons from "@hospital-components/TabsActionButtons";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@/common/components/notification/successNotification";

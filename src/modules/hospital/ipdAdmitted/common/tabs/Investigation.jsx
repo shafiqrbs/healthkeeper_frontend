@@ -1,17 +1,17 @@
-import TabSubHeading from "@modules/hospital/common/TabSubHeading";
+import TabSubHeading from "@hospital-components/TabSubHeading";
 import { ActionIcon, Autocomplete, Badge, Box, Button, Flex, Grid, Group, Stack, Text } from "@mantine/core";
 import { useOutletContext, useParams } from "react-router-dom";
 import { IconCaretUpDownFilled, IconEye, IconX } from "@tabler/icons-react";
 import { useState } from "react";
-import useParticularsData from "@/common/hooks/useParticularsData";
+import useParticularsData from "@hooks/useParticularsData";
 import inputCss from "@assets/css/InputField.module.css";
-import TabsActionButtons from "@/modules/hospital/common/TabsActionButtons";
+import TabsActionButtons from "@hospital-components/TabsActionButtons";
 import { useForm } from "@mantine/form";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch } from "react-redux";
 import { updateEntityData } from "@/app/store/core/crudThunk";
-import { successNotification } from "@/common/components/notification/successNotification";
-import { errorNotification } from "@/common/components/notification/errorNotification";
+import { successNotification } from "@components/notification/successNotification";
+import { errorNotification } from "@components/notification/errorNotification";
 
 const complainDetails = [
 	{
@@ -91,10 +91,8 @@ export default function Investigation() {
 		try {
 			const formValue = {
 				json_content: form.values?.investigation,
-				module: "investigation",
+				ipd_module: "investigation",
 			};
-
-			console.log(formValue);
 
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,

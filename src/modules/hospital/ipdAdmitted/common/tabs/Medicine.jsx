@@ -67,11 +67,13 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 	};
 
 	const handleChange = (field, value) => {
-		setMedicines((prev) => prev.map((m, i) => (i === index - 1 ? { ...m, [field]: value } : m)));
+		setMedicines((prev) =>
+			prev.map((medicine, i) => (i === index - 1 ? { ...medicine, [field]: value } : medicine))
+		);
 	};
 
 	const handleEdit = () => {
-		setMedicines((prev) => prev.map((m, i) => (i === index - 1 ? { ...m, ...medicine } : m)));
+		setMedicines((prev) => prev.map((medicine, i) => (i === index - 1 ? { ...medicine, ...medicine } : medicine)));
 		closeEditMode();
 	};
 
@@ -83,42 +85,54 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 			<Flex justify="space-between" align="center" gap="0">
 				{mode === "view" ? (
 					<Box ml="md" fz="xs" c="var(--theme-tertiary-color-8)">
-						{medicine.dose_details} ---- {medicine.times} time/s ---- {medicine.by_meal}
+						{medicine.dose_details} ---- {medicine.by_meal} ---- {medicine.duration} ----{" "}
+						{medicine.quantity}
 					</Box>
 				) : (
-					<Group grow gap="les">
-						<Select
-							label=""
-							data={by_meal_options}
-							value={medicine.by_meal}
-							placeholder={t("Timing")}
-							disabled={mode === "view"}
-							onChange={(v) => handleChange("by_meal", v)}
-						/>
-						<Select
-							label=""
-							data={dosage_options}
-							value={medicine.dose_details}
-							placeholder={t("Dosage")}
-							disabled={mode === "view"}
-							onChange={(v) => handleChange("dose_details", v)}
-						/>
-						<Select
-							label=""
-							data={DURATION_UNIT_OPTIONS}
-							value={medicine.duration}
-							placeholder={t("Duration")}
-							disabled={mode === "view"}
-							onChange={(v) => handleChange("duration", v)}
-						/>
-						<NumberInput
-							label=""
-							value={medicine.quantity}
-							placeholder={t("Quantity")}
-							disabled={mode === "view"}
-							onChange={(v) => handleChange("quantity", v)}
-						/>
-					</Group>
+					<Grid columns={24} gutter="xs">
+						<Grid.Col span={7}>
+							<Autocomplete
+								clearable
+								label=""
+								data={dosage_options}
+								value={medicine.dose_details}
+								placeholder={t("Dosage")}
+								disabled={mode === "view"}
+								onChange={(v) => handleChange("dose_details", v)}
+							/>
+						</Grid.Col>
+						<Grid.Col span={7}>
+							<Autocomplete
+								clearable
+								label=""
+								data={by_meal_options}
+								value={medicine.by_meal}
+								placeholder={t("Timing")}
+								disabled={mode === "view"}
+								onChange={(v) => handleChange("by_meal", v)}
+							/>
+						</Grid.Col>
+
+						<Grid.Col span={3}>
+							<Select
+								label=""
+								data={DURATION_UNIT_OPTIONS}
+								value={medicine.duration}
+								placeholder={t("Duration")}
+								disabled={mode === "view"}
+								onChange={(v) => handleChange("duration", v)}
+							/>
+						</Grid.Col>
+						<Grid.Col span={3}>
+							<NumberInput
+								label=""
+								value={medicine.quantity}
+								placeholder={t("Quantity")}
+								disabled={mode === "view"}
+								onChange={(v) => handleChange("quantity", v)}
+							/>
+						</Grid.Col>
+					</Grid>
 				)}
 				<Flex gap="les" justify="flex-end">
 					<ActionIcon variant="outline" color="var(--theme-primary-color-6)" onClick={handleEdit}>

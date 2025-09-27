@@ -62,7 +62,7 @@ export default function DetailedRoomCard({ room, selectedRoom, handleRoomClick, 
 			}`}
 			onClick={() => {
 				handleRoomClick(room);
-				closeRoom();
+				if (closeRoom) closeRoom();
 			}}
 			style={{
 				border:

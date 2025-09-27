@@ -1,8 +1,8 @@
-import TabSubHeading from "@modules/hospital/common/TabSubHeading";
+import TabSubHeading from "@hospital-components/TabSubHeading";
 import { ActionIcon, Badge, Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useOutletContext } from "react-router-dom";
-import TabsActionButtons from "@modules/hospital/common/TabsActionButtons";
+import TabsActionButtons from "@hospital-components/TabsActionButtons";
 import SelectForm from "@components/form-builders/SelectForm";
 import DatePickerForm from "@/common/components/form-builders/DatePicker";
 import { IconX } from "@tabler/icons-react";

@@ -21,10 +21,10 @@ import { rem } from "@mantine/core";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
-import KeywordSearch from "@modules/hospital/common/KeywordSearch";
+import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
-import DetailsDrawer from "@modules/hospital/common/drawer/__DetailsDrawer";
-import OverviewDrawer from "@modules/hospital/common/drawer/__OverviewDrawer";
+import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
+import OverviewDrawer from "@hospital-components/drawer/__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
@@ -42,11 +42,11 @@ import Prescription from "@components/print-formats/opd/Prescription2";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
-const  tabs =[
-	{ label: 'All', value: 'all' },
-	{ label: 'Prescription', value: 'prescription' },
-	{ label: 'Non-prescription', value: 'non-prescription' },
-]
+const tabs = [
+	{ label: "All", value: "all" },
+	{ label: "Prescription", value: "prescription" },
+	{ label: "Non-prescription", value: "non-prescription" },
+];
 
 const PER_PAGE = 200;
 
@@ -237,7 +237,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={tab.value}
+								>
 									{t(tab.label)}
 								</Tabs.Tab>
 							))}
