@@ -19,6 +19,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import DetailsDrawer from "@modules/hospital/visit/__DetailsDrawer";
 
 const PER_PAGE = 20;
 
@@ -45,6 +46,7 @@ export default function _Table({ module }) {
 	const navigate = useNavigate();
 	const [selectedId, setSelectedId] = useState(null);
 	const [processTab, setProcessTab] = useState("all");
+	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -78,12 +80,14 @@ export default function _Table({ module }) {
 	});
 
 	const handleView = (id) => {
-		open();
+		setSelectedPrescriptionId(id);
+		setTimeout(() => open(), 10);
 	};
 
 	const handleOpenViewOverview = () => {
 		openOverview();
 	};
+
 
 	const handleConfirm = (id) => {
 		setSelectedId(id);
@@ -134,6 +138,7 @@ export default function _Table({ module }) {
 			<Box className="borderRadiusAll border-top-none" px="sm">
 				<DataTable
 					striped
+					highlightOnHover
 					pinFirstColumn
 					pinLastColumn
 					stripedColor="var(--theme-tertiary-color-1)"
@@ -145,6 +150,10 @@ export default function _Table({ module }) {
 						pagination: tableCss.pagination,
 					}}
 					records={records}
+					onRowClick={({ record }) => {
+						if (!record?.prescription_id) return alert('NoPrescriptionGenerated');
+						handleView(record?.prescription_id);
+					}}
 					columns={[
 						{
 							accessor: "index",
@@ -182,7 +191,7 @@ export default function _Table({ module }) {
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
-								<Group gap={4} justify="right" wrap="nowrap">
+								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									<Button
 										variant="filled"
 										bg="var(--theme-primary-color-6)"
@@ -195,18 +204,7 @@ export default function _Table({ module }) {
 									>
 										{t("Confirm")}
 									</Button>
-									<Button
-										variant="filled"
-										bg="var(--theme-secondary-color-6)"
-										c="white"
-										size="compact-xs"
-										fw={400}
-										onClick={() => handleDetailsAdmission(values.id)}
-										radius="es"
-										rightSection={<IconArrowRight size={18} />}
-									>
-										{t("Process")}
-									</Button>
+
 								</Group>
 							),
 						},
@@ -237,6 +235,9 @@ export default function _Table({ module }) {
 				selectedId={selectedId}
 				module={module}
 			/>
+			{selectedPrescriptionId && (
+				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+			)}
 		</Box>
 	);
 }

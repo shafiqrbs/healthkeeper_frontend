@@ -336,40 +336,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
-									<>
-										{values?.prescription_id && values?.process != "Closed" && !values.referred_mode  && userId == values?.prescription_created_by_id ? (
-										<Button
-											variant="filled"
-											bg="var(--theme-success-color)"
-											c="white"
-											fw={400}
-											size="compact-xs"
-											onClick={() => handlePrescription(values.prescription_id)}
-											radius="es"
-											rightSection={<IconArrowRight size={12} />}
-											className="border-right-radius-none"
-										>
-											{t("Prescription")}
-										</Button>
-									) : !values?.prescription_id && values?.process != "Closed" && !values.referred_mode? (
-										<Button
-											fw={400}
-											variant="filled"
-											bg="var(--theme-primary-color-6)"
-											c="white"
-											size="compact-xs"
-											onClick={() => handleProcessPrescription(values.id)}
-											radius="es"
-											rightSection={<IconArrowRight size={12} />}
-											className="border-right-radius-none"
-										>
-											{t("Process")}
-										</Button>
-									):(null)}
-										</>
-										)}
-
 									<Menu
 										position="bottom-end"
 										offset={3}
