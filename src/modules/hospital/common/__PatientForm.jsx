@@ -352,9 +352,10 @@ export function Form({
 
 	useEffect(() => {
 		handleDobChange();
-	}, [form.values.dob]);
+	}, [JSON.stringify(form.values.dob)]);
 
 	useEffect(() => {
+		console.log("mobile trigeering");
 		form.setFieldValue("guardian_mobile", form.values.mobile);
 	}, [form.values.mobile]);
 
@@ -647,6 +648,7 @@ export function Form({
 												{t("D")}
 											</Text>
 										}
+										readOnly={form.values.dob}
 									/>
 									<InputNumberForm
 										form={form}
@@ -663,6 +665,7 @@ export function Form({
 												{t("M")}
 											</Text>
 										}
+										readOnly={form.values.dob}
 									/>
 
 									<InputNumberForm
@@ -680,6 +683,7 @@ export function Form({
 												{t("Y")}
 											</Text>
 										}
+										readOnly={form.values.dob}
 									/>
 								</Flex>
 							</Grid.Col>
@@ -891,7 +895,7 @@ export function Form({
 					<Flex align="center" gap="xs">
 						<IconAlertCircle size={20} color="var(--theme-error-color)" />
 						<Text fw={600} fz="lg">
-							{t("Room Selection Required")}
+							{t("RoomSelectionRequired")}
 						</Text>
 					</Flex>
 				}
@@ -951,7 +955,7 @@ export function Form({
 							}}
 							color="var(--theme-primary-color-6)"
 						>
-							{t("Select Room")}
+							{t("SelectRoom")}
 						</Button>
 					</Flex>
 				</Stack>

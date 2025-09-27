@@ -170,7 +170,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
 						<Text fz="sm">
-							{t("Hospital")}
+							{t("ReferredTo")}
 							<RequiredAsterisk />
 						</Text>
 					</Grid.Col>
@@ -179,34 +179,15 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 							tooltip={t("HospitalValidateMessage")}
 							label=""
 							data={hospitalsOption}
-							value={referredForm.values.hospital}
+							value={referredForm.values.referredTo}
 							changeValue={handleHospitalChange}
-							placeholder={t("Hospital")}
+							placeholder={t("ReferredTo")}
 							required
 							nextField="referred_name"
 							form={referredForm}
 							name="hospital"
 							mt={0}
 							id="hospital"
-						/>
-					</Grid.Col>
-					<Grid.Col span={7}>
-						<Text fz="sm">{t("ReferredName")}</Text>
-					</Grid.Col>
-					<Grid.Col span={13}>
-						<InputAutoComplete
-							tooltip={t("ReferredNameValidateMessage")}
-							label=""
-							data={doctorsOption}
-							value={referredForm.values.referred_id}
-							changeValue={handleDoctorChange}
-							placeholder={t("ReferredName")}
-							required
-							nextField="name"
-							form={referredForm}
-							name="referred_name"
-							mt={0}
-							id="referred_name"
 						/>
 					</Grid.Col>
 					<Grid.Col span={7}>

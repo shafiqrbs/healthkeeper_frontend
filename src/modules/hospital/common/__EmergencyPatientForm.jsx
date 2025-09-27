@@ -122,7 +122,7 @@ export default function EmergencyPatientForm({
 			form.setFieldValue("month", detailedAge.months);
 			form.setFieldValue("day", detailedAge.days);
 		}
-	}, [form.values.dob]);
+	}, [JSON.stringify(form.values.dob)]);
 
 	useEffect(() => {
 		const handleClickOutside = (event) => {
@@ -538,6 +538,7 @@ export function Form({
 															{t("D")}
 														</Text>
 													}
+													readOnly={form.values.dob}
 												/>
 												<InputNumberForm
 													form={form}
@@ -554,6 +555,7 @@ export function Form({
 															{t("M")}
 														</Text>
 													}
+													readOnly={form.values.dob}
 												/>
 												<InputNumberForm
 													form={form}
@@ -570,6 +572,7 @@ export function Form({
 															{t("Y")}
 														</Text>
 													}
+													readOnly={form.values.dob}
 												/>
 											</Flex>
 										</Grid.Col>
@@ -725,23 +728,6 @@ export function Form({
 										</Grid.Col>
 									</Grid>
 									<Grid columns={20}>
-										{/* <Grid.Col span={20} pt="sm">
-											<SegmentedControlForm
-												fullWidth
-												color="var(--theme-primary-color-6)"
-												value={form.values.patient_payment_mode_id}
-												id="patient_payment_mode_id"
-												name="patient_payment_mode_id"
-												onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
-												data={[
-													{ label: t("General"), value: "30" },
-													{ label: t("FreedomFighter"), value: "31" },
-													{ label: t("Disabled"), value: "29" },
-													{ label: t("GovtService"), value: "32" },
-													{ label: t("MDR"), value: "50" },
-												]}
-											/>
-										</Grid.Col> */}
 										<Grid.Col span={6}></Grid.Col>
 										<Grid.Col span={14}>
 											{form.values.patient_payment_mode_id !== "30" && (

@@ -27,6 +27,7 @@ export default function OPDFooter({ form, isSubmitting, handleSubmit, type }) {
 	const handlePrint = async (type) => {
 		const res = await handleSubmit();
 		if (res?.status === 200) {
+			console.log(res);
 			setPrintData(res.data);
 			setPendingPrint(type); // triggers effect after data updates
 		}

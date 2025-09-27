@@ -62,6 +62,8 @@ export default function DateSelectorForm({
 	useEffect(() => {
 		if (selectedDate) {
 			form.setFieldValue(name, selectedDate);
+		} else {
+			form.setFieldValue(name, "");
 		}
 	}, [selectedDate, name]);
 
