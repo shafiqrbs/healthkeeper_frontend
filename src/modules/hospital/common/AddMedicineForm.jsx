@@ -302,7 +302,9 @@ export default function AddMedicineForm({
 
 		setUpdateKey((prev) => prev + 1);
 		if (update) update([...medicines, values]);
+
 		medicineForm.reset();
+		setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
 	};
 
 	const handleDelete = (idx) => {
@@ -338,7 +340,7 @@ export default function AddMedicineForm({
 
 	const handlePrescriptionSubmit = async (skipLoading) => {
 		if (!medicines || medicines.length === 0) {
-			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, 700, true);
+			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, "", 2000, true);
 			return {};
 		}
 
