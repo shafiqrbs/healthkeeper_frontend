@@ -1,12 +1,15 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { IconCalendarWeek, IconUser, IconArrowRight } from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, Button } from "@mantine/core";
+import {IconCalendarWeek, IconUser, IconArrowRight, IconArrowNarrowRight} from "@tabler/icons-react";
+import {Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
+import {useForm} from "@mantine/form";
+import {showEntityData} from "@/app/store/core/crudThunk";
+import {showNotificationComponent} from "@components/core-component/showNotificationComponent";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
@@ -15,23 +18,49 @@ export default function _Table({ selectedPrescriptionId, setSelectedPrescription
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const { id } = useParams();
+	const form = useForm({
+		initialValues: {
+			keywordSearch: "",
+			created: formatDate(new Date()),
+		},
+	});
+
 
 	const handleAdmissionOverview = (prescriptionId, id) => {
 		setSelectedPrescriptionId(prescriptionId);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}`, { replace: true });
 	};
 
+	const handleProcessConfirmation = async (id) => {
+		const resultAction = await dispatch(
+			showEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.SEND_TO_PRESCRIPTION}/${id}`,
+				module,
+				id,
+			})
+		).unwrap();
+		const prescription_id = resultAction?.data?.data.id;
+		if (prescription_id) {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${prescription_id}`);
+		} else {
+			console.error(resultAction);
+			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
+		}
+	};
+
+
 	const { records } = useInfiniteTableScroll({
 		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
 		filterParams: {
 			name: filterData?.name,
 			patient_mode: "ipd",
-			process: "New",
 			term: filterData.keywordSearch,
-			ipd_mode: ipdMode,
+			prescription_mode: ipdMode,
+		//	created: form.values.created,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -91,18 +120,17 @@ export default function _Table({ selectedPrescriptionId, setSelectedPrescription
 									<Text fz="sm">{item.visiting_room}</Text>
 								</Box>
 								<Flex direction="column">
-									<Button
+
+									<ActionIcon
 										variant="filled"
-										bg="var(--theme-primary-color-6)"
-										c="white"
-										size="xs"
-										onClick={() => handleAdmissionOverview(item.prescription_id)}
-										radius="es"
-										rightSection={<IconArrowRight size={18} />}
+										onClick={() => handleProcessConfirmation(item.id)}
+										color="var(--theme-primary-color-6)"
+										radius="xs"
+										aria-label="Settings"
 									>
-										{t("Confirm")}
-									</Button>
-									<Button
+										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
+									</ActionIcon>
+									{/*<Button
 										variant="filled"
 										bg="var(--theme-secondary-color-6)"
 										c="white"
@@ -112,7 +140,7 @@ export default function _Table({ selectedPrescriptionId, setSelectedPrescription
 										rightSection={<IconArrowRight size={18} />}
 									>
 										{t("Process")}
-									</Button>
+									</Button>*/}
 								</Flex>
 							</Flex>
 						</Grid.Col>

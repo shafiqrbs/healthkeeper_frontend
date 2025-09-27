@@ -24,10 +24,11 @@ import { useDisclosure } from "@mantine/hooks";
 import Room from "./common/tabs/Room";
 import { IconPencil } from "@tabler/icons-react";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
 
 export default function Index() {
 	const navigate = useNavigate();
-	const [ipdMode, setIpdMode] = useState("ipd_prescription");
+	const [ipdMode, setIpdMode] = useState("non-prescription");
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const progress = useGetLoadingProgress();
@@ -42,6 +43,9 @@ export default function Index() {
 	const handlePrescriptionEdit = () => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.UPDATE}/${selectedPrescriptionId}`);
 	};
+
+
+
 
 	return (
 		<>
@@ -63,8 +67,8 @@ export default function Index() {
 										value={ipdMode}
 										onChange={setIpdMode}
 										data={[
-											{ label: t("IPDPrescription"), value: "ipd_prescription" },
-											{ label: t("IPDManage"), value: "ipd_manage" },
+											{ label: t("IPDPrescription"), value: "non-prescription" },
+											{ label: t("IPDManage"), value: "prescription" },
 										]}
 									/>
 								</Flex>
@@ -172,7 +176,7 @@ export default function Index() {
 										}
 									/>
 								) : showPrescriptionForm ? (
-									<AdmissionPrescription selectedPrescriptionId={selectedPrescriptionId} />
+									<AdmissionPrescription/>
 								) : (
 									<Flex
 										justify="center"

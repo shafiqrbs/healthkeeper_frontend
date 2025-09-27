@@ -18,10 +18,11 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
+import {useParams} from "react-router-dom";
 
 const module = MODULES.ADMISSION;
 
-export default function AdmissionPrescription({ selectedPrescriptionId }) {
+export default function AdmissionPrescription() {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [showHistory, setShowHistory] = useState(false);
 	const [medicines, setMedicines] = useState([]);
@@ -31,13 +32,16 @@ export default function AdmissionPrescription({ selectedPrescriptionId }) {
 	const dispatch = useDispatch();
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);
-
+	const { id } = useParams();
 	const [records, setRecords] = useState([]);
 	const [customerId, setCustomerId] = useState();
 
+
+
 	const { data: prescriptionData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${selectedPrescriptionId}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
 	});
+	console.log(prescriptionData);
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
 	const existingMedicines = initialFormValues?.medicines || [];
@@ -55,7 +59,7 @@ export default function AdmissionPrescription({ selectedPrescriptionId }) {
 	const fetchData = async () => {
 		try {
 			const result = await getDataWithoutStore({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}/${selectedPrescriptionId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}/${id}`,
 			});
 			setRecords(result?.data || []);
 		} catch (err) {
@@ -94,7 +98,7 @@ export default function AdmissionPrescription({ selectedPrescriptionId }) {
 			};
 
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${selectedPrescriptionId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${id}`,
 				data: formValue,
 				module: "prescription",
 			};
@@ -142,8 +146,8 @@ export default function AdmissionPrescription({ selectedPrescriptionId }) {
 					</Grid.Col>
 				)}
 			</Grid>
-			{selectedPrescriptionId && (
-				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+			{id && (
+				<DetailsDrawer opened={opened} close={close} prescriptionId={id} />
 			)}
 		</Box>
 	);

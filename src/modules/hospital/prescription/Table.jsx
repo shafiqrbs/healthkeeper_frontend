@@ -62,8 +62,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const userHospitalConfig = getLoggedInHospitalUser();
 	const userRoles = getUserRole();
-	const opdRoomId = userHospitalConfig?.particular_details?.room_id;
 	const userId = userHospitalConfig?.employee_id;
+	const opdRoomId = userHospitalConfig?.particular_details?.room_id;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",

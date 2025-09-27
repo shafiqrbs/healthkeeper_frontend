@@ -128,6 +128,7 @@ function AppRoute() {
 							}
 						/>
 						<Route path=":id" element={<IpdAdmittedIndex />} />
+						<Route path="prescription/:id" element={<IpdAdmittedIndex />} />
 					</Route>
 					<Route
 						path="emergency"

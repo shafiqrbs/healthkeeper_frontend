@@ -17,7 +17,7 @@ import ConfirmModal from ".././confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from ".././helpers/request";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
-import { formatDate } from "@/common/utils";
+import {formatDate, getLoggedInHospitalUser, getUserRole} from "@/common/utils";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@modules/hospital/visit/__DetailsDrawer";
 
@@ -25,11 +25,12 @@ const PER_PAGE = 20;
 
 
 const tabs = [
-	{ label: "All", value: "all" },
 	{ label: "New", value: "new" },
-	{ label: "Confirmed", value: "Confirmed" },
-	{ label: "In-progress", value: "in-progress" },
+	{ label: "Confirmed", value: "confirmed" },
+	{ label: "Admitted", value: "admitted" },
 ];
+
+const ALLOWED_CONFIRMED_ROLES = ["doctor_opd", "admin_administrator"];
 
 export default function _Table({ module }) {
 	const { t } = useTranslation();
@@ -40,13 +41,15 @@ export default function _Table({ module }) {
 	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [rootRef, setRootRef] = useState(null);
-	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const navigate = useNavigate();
 	const [selectedId, setSelectedId] = useState(null);
-	const [processTab, setProcessTab] = useState("all");
+	const [processTab, setProcessTab] = useState("new");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
+	const userHospitalConfig = getLoggedInHospitalUser();
+	const userRoles = getUserRole();
+	const userId = userHospitalConfig?.employee_id;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -171,19 +174,22 @@ export default function _Table({ module }) {
 								</Text>
 							),
 						},
-						{
-							accessor: "created_by",
-							title: t("CreatedBy"),
-							render: (item) => item.created_by || "N/A",
-						},
 						{ accessor: "patient_id", title: t("patientId") },
 						{ accessor: "name", title: t("Name") },
-						{ accessor: "doctor_name", title: t("doctor") },
-						{ accessor: "visiting_room", title: t("Cabin/Bed") },
+						{ accessor: "mobile", title: t("Mobile") },
+						...(processTab === "admitted"
+							? [
+								{ accessor: "admit_consultant_name", title: t("Consultant") },
+								{ accessor: "admit_unit_name", title: t("Unit") },
+								{ accessor: "admit_department_name", title: t("Department") },
+								{ accessor: "admit_doctor_name", title: t("Doctor") },
+								{ accessor: "visiting_room", title: t("Cabin/Bed") },
+							]
+							: []),
 						{
-							accessor: "payment_status",
-							title: t("paymentStatus"),
-							render: (item) => t(item.payment_status),
+							accessor: "total",
+							title: t("Amount"),
+							render: (item) => t(item.total),
 						},
 						{
 							accessor: "action",
@@ -191,21 +197,27 @@ export default function _Table({ module }) {
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
-								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									<Button
-										variant="filled"
-										bg="var(--theme-primary-color-6)"
-										c="white"
-										size="compact-xs"
-										onClick={() => handleConfirm(values.id)}
-										radius="es"
-										fw={400}
-										rightSection={<IconArrowRight size={18} />}
-									>
-										{t("Confirm")}
-									</Button>
 
-								</Group>
+								<>
+									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && values.process == "ipd" && (
+											<Button
+												variant="filled"
+												bg="var(--theme-primary-color-6)"
+												c="white"
+												size="compact-xs"
+												onClick={() => handleConfirm(values.id)}
+												radius="es"
+												fw={400}
+												rightSection={<IconArrowRight size={18} />}
+											>
+												{t("Confirm")}
+											</Button>
+										)}
+									</Group>
+
+								</>
+
 							),
 						},
 					]}

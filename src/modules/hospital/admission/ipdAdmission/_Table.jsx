@@ -8,6 +8,7 @@ import { MODULES } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import {useForm} from "@mantine/form";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
@@ -24,13 +25,21 @@ export default function _Table() {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.VIEW}/${id}`);
 	};
 
+	const form = useForm({
+		initialValues: {
+			keywordSearch: "",
+			created: formatDate(new Date()),
+		},
+	});
+
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
 			name: filterData?.name,
 			patient_mode: "ipd",
-			process: "New",
+			process: "confirmed",
+			created: form.values.created,
 			term: filterData.keywordSearch,
 		},
 		perPage: PER_PAGE,

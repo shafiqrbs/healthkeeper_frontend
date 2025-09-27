@@ -75,7 +75,7 @@ export default function EntityForm({ form, module }) {
 	const [showUserData, setShowUserData] = useState({});
 	const { mainAreaHeight } = useOutletContext();
 	const { hospitalConfigData } = useHospitalConfigData();
-	const height = mainAreaHeight - 260;
+	const height = mainAreaHeight - 248;
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { hospitalSettingData } = useHospitalSettingData();
 	const [openedHSIDDataPreview, { open: openHSIDDataPreview, close: closeHSIDDataPreview }] = useDisclosure(false);
