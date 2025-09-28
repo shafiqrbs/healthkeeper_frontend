@@ -126,18 +126,18 @@ export default function EntityForm({ form, module }) {
 					showNotificationComponent(resultAction.payload.message, "red", "lightgray", "", true, 500, true);
 				} else {
 					showNotificationComponent(
-						t("Patient admitted successfully"),
+						t("PatientAdmittedSuccessfully"),
 						"green",
 						"lightgray",
 						"",
 						true,
-						700,
+						1000,
 						true
 					);
 					setRefetchData({ module, refetching: true });
 				}
 			} catch (error) {
-				console.error("Error submitting visit:", error);
+				console.error("Error submitting admission:", error);
 				showNotificationComponent(t("Something went wrong"), "red", "lightgray", "", true, 700, true);
 			} finally {
 				setIsSubmitting(false);
@@ -147,7 +147,7 @@ export default function EntityForm({ form, module }) {
 				console.error(form.errors);
 				notifications.show({
 					title: "Error",
-					message: "Please fill all the fields",
+					message: t("PleaseFillAllFieldsToSubmit"),
 					color: "red",
 					position: "top-right",
 				});

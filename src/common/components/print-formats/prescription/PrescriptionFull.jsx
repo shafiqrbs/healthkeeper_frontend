@@ -471,7 +471,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 	};
 
 	return (
-		<Box>
+		<Box display="none">
 			<Box
 				ref={ref}
 				p="md"

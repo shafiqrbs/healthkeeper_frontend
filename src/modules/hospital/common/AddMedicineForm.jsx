@@ -33,7 +33,7 @@ import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import PrescriptionFull from "@components/print-formats/prescription/PrescriptionFull";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
@@ -69,6 +69,7 @@ export default function AddMedicineForm({
 	hasRecords,
 	tabParticulars,
 }) {
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
@@ -334,11 +335,11 @@ export default function AddMedicineForm({
 			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handlePrescriptionSubmit(),
+			onConfirm: () => handlePrescriptionSubmit({ skipLoading: false, redirect: true }),
 		});
 	};
 
-	const handlePrescriptionSubmit = async (skipLoading) => {
+	const handlePrescriptionSubmit = async ({ skipLoading = false, redirect = false }) => {
 		if (!medicines || medicines.length === 0) {
 			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, "", 2000, true);
 			return {};
@@ -348,7 +349,6 @@ export default function AddMedicineForm({
 
 		try {
 			const createdBy = getLoggedInUser();
-			console.info(tabParticulars);
 
 			const formValue = {
 				is_completed: true,
@@ -383,8 +383,7 @@ export default function AddMedicineForm({
 			} else {
 				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 700, true);
 				setRefetchData({ module, refetching: true });
-				// Reset forms and data
-				// form.reset();
+				if (redirect) navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {
@@ -397,7 +396,7 @@ export default function AddMedicineForm({
 	};
 
 	const handlePrescriptionPrintSubmit = async () => {
-		const result = await handlePrescriptionSubmit(false);
+		const result = await handlePrescriptionSubmit({ skipLoading: false, redirect: false });
 
 		if (result.status === 200) {
 			setPrintData(result.data);

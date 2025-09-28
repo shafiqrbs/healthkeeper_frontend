@@ -1,23 +1,7 @@
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import {
-	Box,
-	Grid,
-	Stack,
-	Text,
-	List,
-	Divider,
-	Paper,
-	Title,
-	Group,
-	ScrollArea,
-	Flex,
-	Button,
-	LoadingOverlay,
-} from "@mantine/core";
+import { Box, Grid, Stack, Text, List, Divider, Paper, Title, Group, ScrollArea, Flex, Button } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PrescriptionFull from "@/common/components/print-formats/prescription/PrescriptionFull";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -31,7 +15,6 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescriptionFullRef.current,
 	});
-
 
 	// =============== parse prescription data and handle null cases ================
 	const prescription = prescriptionData?.data;
@@ -47,7 +30,7 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 	const isPrescriptionDataAvailable = prescription && jsonContent;
 
 	return (
-		<GlobalDrawer opened={opened} close={close}  title="Prescription Details" size="45%">
+		<GlobalDrawer opened={opened} close={close} title="Prescription Details" size="45%">
 			<Box pos="relative">
 				{isPrescriptionDataAvailable ? (
 					<ScrollArea scrollbars="y" type="hover" h={mainAreaHeight - 110}>

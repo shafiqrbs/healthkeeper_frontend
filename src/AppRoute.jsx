@@ -169,7 +169,7 @@ function AppRoute() {
 							}
 						/>
 
-						<Route
+						{/* <Route
 							path=":prescriptionId"
 							element={
 								<ProtectedRoute
@@ -178,7 +178,7 @@ function AppRoute() {
 									<PrescriptionOpd />
 								</ProtectedRoute>
 							}
-						/>
+						/> */}
 						<Route
 							path="edit/:id"
 							element={
@@ -235,7 +235,14 @@ function AppRoute() {
 					<Route
 						path="epharma"
 						element={
-							<ProtectedRoute roles={["pharmacy_operator","pharmacy_pharmacist","pharmacy_manager","admin_administrator"]}>
+							<ProtectedRoute
+								roles={[
+									"pharmacy_operator",
+									"pharmacy_pharmacist",
+									"pharmacy_manager",
+									"admin_administrator",
+								]}
+							>
 								<EpharmaIndex />
 							</ProtectedRoute>
 						}
@@ -243,7 +250,14 @@ function AppRoute() {
 					<Route
 						path="epharma/:id"
 						element={
-							<ProtectedRoute roles={["pharmacy_operator","pharmacy_pharmacist","pharmacy_manager","admin_administrator"]}>
+							<ProtectedRoute
+								roles={[
+									"pharmacy_operator",
+									"pharmacy_pharmacist",
+									"pharmacy_manager",
+									"admin_administrator",
+								]}
+							>
 								<EpharmaIndex />
 							</ProtectedRoute>
 						}

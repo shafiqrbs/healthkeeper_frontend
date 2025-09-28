@@ -50,7 +50,7 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 	const isPrescriptionDataAvailable = prescription && jsonContent;
 
 	return (
-		<GlobalDrawer opened={opened} close={close} title="Prescription Details" size="45%">
+		<GlobalDrawer opened={opened} close={close} title="Prescription Details" size="50%">
 			<Box pos="relative">
 				<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{isPrescriptionDataAvailable ? (

@@ -35,6 +35,7 @@ export default function ActionButtons({
 		setConfiguredDueAmount(price);
 		form.setFieldValue("amount", price);
 	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
+
 	const enteredAmount = Number(form?.values?.amount ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
 	const isReturn = remainingBalance < 0;
@@ -53,8 +54,13 @@ export default function ActionButtons({
 		localStorage.removeItem(LOCAL_STORAGE_KEY);
 	};
 
+	const handleFinalSubmission = async () => {
+		const res = await handleSubmit();
+		console.log(res);
+	};
+
 	useHotkeys([
-		["alt+s", handleSubmit],
+		["alt+s", handleFinalSubmission],
 		["alt+r", handleReset],
 		["alt+shift+p", handleA4Print],
 		["alt+p", handlePosPrint],
@@ -65,82 +71,6 @@ export default function ActionButtons({
 			<Stack gap={0} justify="space-between" mt="xs">
 				<Box p="sm" pl={"md"} pr={"md"} bg="white">
 					<Grid columns={24}>
-						{/* <Grid.Col span={12} bg="var(--theme-tertiary-color-0)" px="xs">
-							<TextAreaForm
-								form={form}
-								placeholder="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its"
-								label={t("remark")}
-								tooltip={t("enterRemark")}
-								showRightSection={false}
-								name="remark"
-								style={{ input: { height: "80px" } }}
-							/>
-						</Grid.Col> */}
-						{/* <Grid.Col span={6} bg="var(--theme-secondary-color-0)" px="xs" pt={"md"}> */}
-						{/*<Stack>
-								<SelectForm
-									key={referredNameKey}
-									form={form}
-									label={t("referredName")}
-									tooltip={t("enterPatientReferredName")}
-									placeholder="Dr. Holand"
-									name="referredName"
-									id="referredName"
-									nextField="referredName"
-									value={form.values.referredName}
-									disabled
-									dropdownValue={["Dr. Rahim Khan", "MBBS Kamruzzaman"]}
-									rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
-								/>
-								<SelectForm
-									key={marketingExKey}
-									form={form}
-									label={t("marketingEx")}
-									placeholder="Mr. Doland Rak"
-									name="marketingEx"
-									disabled
-									dropdownValue={["Mr. Rahim", "Mr. Karim"]}
-									value={form.values.marketingEx}
-									tooltip={t("enterPatientMarketingEx")}
-									rightSection={<IconCirclePlusFilled color="var(--theme-primary-color-6)" size="24px" />}
-								/>
-							</Stack>*/}
-						{/* <Box>
-								<Flex gap="xss" align="center" justify="space-between">
-									<Text fz="xs">{t("Name")}</Text>
-									<Box px="xs">
-										<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-											{form.values?.name}
-										</Text>
-									</Box>
-								</Flex>
-								<Flex gap="xss" align="center" justify="space-between">
-									<Text fz="xs">{t("MobileNo")}</Text>
-									<Box px="xs">
-										<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-											{form.values?.mobile}
-										</Text>
-									</Box>
-								</Flex>
-								<Flex gap="xss" align="center" justify="space-between">
-									<Text fz="xs">{t("Gender")}</Text>
-									<Box px="xs">
-										<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-											{form.values?.gender}
-										</Text>
-									</Box>
-								</Flex>
-								<Flex gap="xss" align="center" justify="space-between">
-									<Text fz="xs">{t("Age")}</Text>
-									<Box px="xs">
-										<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-											{form.values.day} Days {form.values.month} Month {form.values.year} Year
-										</Text>
-									</Box>
-								</Flex>
-							</Box>
-						</Grid.Col> */}
-						{/* <Grid.Col span={24} bg="var(--theme-primary-color-0)" px="xs"> */}
 						<Grid.Col span={8} bg="var(--theme-primary-color-0)" px="xs">
 							<Flex gap="xss" align="center" justify="space-between">
 								<Text>{t("Fee")}</Text>
@@ -255,7 +185,7 @@ export default function ActionButtons({
 					<Button
 						w="100%"
 						bg="var(--theme-save-btn-color)"
-						onClick={handleSubmit}
+						onClick={handleFinalSubmission}
 						loading={isSubmitting}
 						disabled={isSubmitting}
 					>
