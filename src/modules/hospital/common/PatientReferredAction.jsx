@@ -16,7 +16,7 @@ import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constant
 import { successNotification } from "@/common/components/notification/successNotification";
 import { useDispatch } from "react-redux";
 
-export default function PatientReferredAction({ module = "emergency", invoiceId }) {
+export default function PatientReferredAction({ module = "emergency", invoiceId, form }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const roomReferredForm = useForm({
@@ -86,16 +86,19 @@ export default function PatientReferredAction({ module = "emergency", invoiceId 
 	const handleRoomReferredSubmit = (values) => {
 		handleConfirmSubmission({ ...values, referred_mode: "room" });
 		closeRoomReferred();
+		form.setFieldValue("comment", values.comment);
 	};
 
 	const handleAdmissionReferredSubmit = (values) => {
 		handleConfirmSubmission({ ...values, referred_mode: "admission" });
 		closeAdmission();
+		form.setFieldValue("comment", values.comment);
 	};
 
 	const handleReferredSubmit = (values) => {
 		handleConfirmSubmission({ ...values, referred_mode: "referred" });
 		closeReferred();
+		form.setFieldValue("comment", values.comment);
 	};
 
 	async function handleConfirmSubmission(values) {

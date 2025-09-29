@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import tabClass from "@assets/css/Tab.module.css";
 import { IconSearch } from "@tabler/icons-react";
+import { DateInput } from "@mantine/dates";
 
 const DEFAULT_ACTIVE_COLOR = "var(--theme-primary-color-6)";
 
@@ -14,15 +15,22 @@ export default function TabsWithSearch({
 	searchbarContainerBg = "var(--theme-secondary-color-5)",
 	tabWidth = "32%",
 	leftSection = null,
+	showDatePicker = true,
+	rightSection = null,
 }) {
 	const { t } = useTranslation();
 	const [rootRef, setRootRef] = useState(null);
 	const [tabValue, setTabValue] = useState(tabList[0]);
 	const [controlsRefs, setControlsRefs] = useState({});
+	const [date, setDate] = useState(null);
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
+	};
+
+	const handleDateChange = (date) => {
+		setDate(date);
 	};
 
 	return (
@@ -53,6 +61,7 @@ export default function TabsWithSearch({
 											{t(tab)}
 										</Tabs.Tab>
 									))}
+									{rightSection}
 								</>
 							) : (
 								<Button variant="filled" bg="var(--theme-primary-color-6)" w="100%" size="xs">
@@ -73,13 +82,24 @@ export default function TabsWithSearch({
 				<Tabs.Panel key={tab.tab} value={tab.tab}>
 					<Box py={hideSearchbar || tabList.length === 1 ? "0" : "xs"} bg="white">
 						{!hideSearchbar && (
-							<Box p="xs" bg={searchbarContainerBg}>
+							<Flex gap="les" p="xs" bg={searchbarContainerBg}>
+								{showDatePicker && (
+									<DateInput
+										clearable
+										name="created"
+										placeholder="Select Date"
+										value={date}
+										onChange={handleDateChange}
+										w={280}
+									/>
+								)}
 								<TextInput
+									w="100%"
 									leftSection={<IconSearch size={18} />}
 									name="search"
 									placeholder={t("search")}
 								/>
-							</Box>
+							</Flex>
 						)}
 						{tab.component}
 					</Box>

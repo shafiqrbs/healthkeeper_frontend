@@ -1,33 +1,33 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import {IconCalendarWeek, IconUser, IconArrowRight, IconArrowNarrowRight} from "@tabler/icons-react";
-import {Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon} from "@mantine/core";
+import { IconCalendarWeek, IconUser, IconArrowRight, IconArrowNarrowRight } from "@tabler/icons-react";
+import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
-import {useForm} from "@mantine/form";
-import {showEntityData} from "@/app/store/core/crudThunk";
-import {showNotificationComponent} from "@components/core-component/showNotificationComponent";
+import { useForm } from "@mantine/form";
+import { showEntityData } from "@/app/store/core/crudThunk";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
 
-export default function _Table({ selectedPrescriptionId, setSelectedPrescriptionId, ipdMode }) {
+export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const { id } = useParams();
+
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
 			created: formatDate(new Date()),
 		},
 	});
-
 
 	const handleAdmissionOverview = (prescriptionId, id) => {
 		setSelectedPrescriptionId(prescriptionId);
@@ -43,16 +43,20 @@ export default function _Table({ selectedPrescriptionId, setSelectedPrescription
 			})
 		).unwrap();
 		const prescription_id = resultAction?.data?.data.id;
+		const isPrescribed = resultAction?.data?.data?.json_content;
 		if (prescription_id) {
-			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${prescription_id}`);
+			navigate(
+				`${
+					HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION
+				}/${prescription_id}?mode=prescription${isPrescribed ? "&tabs=true" : ""}`
+			);
 		} else {
 			console.error(resultAction);
-			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
+			showNotificationComponent(t("SomethingWentWrongPleaseTryAgain"), "red.6", "lightgray");
 		}
 	};
 
-
-	const { records } = useInfiniteTableScroll({
+	const { records, fetching } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
 		filterParams: {
@@ -60,7 +64,7 @@ export default function _Table({ selectedPrescriptionId, setSelectedPrescription
 			patient_mode: "ipd",
 			term: filterData.keywordSearch,
 			prescription_mode: ipdMode,
-		//	created: form.values.created,
+			//	created: form.values.created,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -68,7 +72,13 @@ export default function _Table({ selectedPrescriptionId, setSelectedPrescription
 	});
 
 	return (
-		<Box>
+		<Box pos="relative">
+			<LoadingOverlay
+				visible={fetching}
+				zIndex={1000}
+				overlayProps={{ radius: "sm", blur: 2 }}
+				loaderProps={{ color: "red" }}
+			/>
 			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="xxxs">
 				<Text ta="center" fz="sm" fw={500}>
 					S/N
@@ -82,9 +92,13 @@ export default function _Table({ selectedPrescriptionId, setSelectedPrescription
 					<Grid
 						columns={12}
 						key={item.id}
-						onClick={() => handleAdmissionOverview(item.prescription_id, item.id)}
+						onClick={() => handleProcessConfirmation(item.id)}
 						my="xs"
-						bg={Number(id) === item?.id ? "var(--theme-primary-color-0)" : "var(--theme-tertiary-color-0)"}
+						bg={
+							typeof id !== "undefined" && id == item?.prescription_id
+								? "var(--theme-primary-color-0)"
+								: "var(--theme-tertiary-color-0)"
+						}
 						px="xs"
 						gutter="xs"
 					>
@@ -120,7 +134,6 @@ export default function _Table({ selectedPrescriptionId, setSelectedPrescription
 									<Text fz="sm">{item.visiting_room}</Text>
 								</Box>
 								<Flex direction="column">
-
 									<ActionIcon
 										variant="filled"
 										onClick={() => handleProcessConfirmation(item.id)}

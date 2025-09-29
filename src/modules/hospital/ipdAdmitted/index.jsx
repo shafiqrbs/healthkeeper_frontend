@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
@@ -22,11 +22,12 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import PrescriptionPreview from "@hospital-components/PrescriptionPreview";
 import { useDisclosure } from "@mantine/hooks";
 import Room from "./common/tabs/Room";
-import { IconPencil } from "@tabler/icons-react";
+import { IconPencil, IconPrescription } from "@tabler/icons-react";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import useDataWithoutStore from "@hooks/useDataWithoutStore";
 
 export default function Index() {
+	const [searchParams, setSearchParams] = useSearchParams();
+	const queryValue = searchParams.get("mode");
 	const navigate = useNavigate();
 	const [ipdMode, setIpdMode] = useState("non-prescription");
 	const { t } = useTranslation();
@@ -37,15 +38,26 @@ export default function Index() {
 	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
 		useDisclosure(false);
 
-	const showTabs = selectedPrescriptionId && id;
+	const showTabs = searchParams.get("tabs") === "true";
 	const showPrescriptionForm = !selectedPrescriptionId && id;
 
 	const handlePrescriptionEdit = () => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.UPDATE}/${selectedPrescriptionId}`);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.UPDATE}/${id}`);
 	};
 
+	const handleChangeIpdMode = () => {
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX, {
+			replace: true,
+		});
+	};
 
-
+	useEffect(() => {
+		if (queryValue === "prescription") {
+			setIpdMode(queryValue);
+		} else {
+			setIpdMode("non-prescription");
+		}
+	}, [queryValue]);
 
 	return (
 		<>
@@ -59,13 +71,19 @@ export default function Index() {
 							<Grid.Col span={8} pos="relative" className="animate-ease-out">
 								<Flex align="center" justify="space-between" px="sm" py="xs" bg="white">
 									<Text fw={600} fz="sm">
-										{t("patientInformation")}
+										{t("PatientInformation")}
 									</Text>
 									<SegmentedControl
 										size="sm"
 										color="var(--theme-primary-color-6)"
 										value={ipdMode}
-										onChange={setIpdMode}
+										onChange={(value) => {
+											setIpdMode(value);
+											// =============== clear search params when IPDPrescription is selected ================
+											if (value === "non-prescription") {
+												handleChangeIpdMode();
+											}
+										}}
 										data={[
 											{ label: t("IPDPrescription"), value: "non-prescription" },
 											{ label: t("IPDManage"), value: "prescription" },
@@ -152,7 +170,7 @@ export default function Index() {
 												component: <Discharge />,
 											},
 										]}
-										leftSection={
+										rightSection={
 											<Flex gap="les">
 												<ActionIcon
 													onClick={handlePrescriptionEdit}
@@ -162,21 +180,19 @@ export default function Index() {
 												>
 													<IconPencil size={18} />
 												</ActionIcon>
-												<Button
+												<ActionIcon
 													onClick={openPrescriptionPreview}
-													miw={120}
-													mr="les"
 													bg="var(--theme-primary-color-6)"
-													c="white"
-													fw={400}
+													h="100%"
+													w="36px"
 												>
-													Prescription
-												</Button>
+													<IconPrescription size={18} />
+												</ActionIcon>
 											</Flex>
 										}
 									/>
 								) : showPrescriptionForm ? (
-									<AdmissionPrescription/>
+									<AdmissionPrescription />
 								) : (
 									<Flex
 										justify="center"

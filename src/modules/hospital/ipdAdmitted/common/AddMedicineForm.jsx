@@ -32,7 +32,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import PrescriptionFull from "@components/print-formats/prescription/PrescriptionFull";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
@@ -67,6 +67,7 @@ export default function AddMedicineForm({
 	hasRecords,
 	tabParticulars,
 }) {
+	const [searchParams, setSearchParams] = useSearchParams();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
@@ -380,6 +381,9 @@ export default function AddMedicineForm({
 				setRefetchData({ module, refetching: true });
 				// Reset forms and data
 				// form.reset();
+				const allParams = Object.fromEntries(searchParams.entries());
+				setSearchParams({ ...allParams, tabs: "true" });
+
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {
@@ -788,7 +792,7 @@ export default function AddMedicineForm({
 								</Text>
 							</Stack>
 						</Button>
-						<Button w="100%" bg="var(--theme-save-btn-color)" onClick={openPrescriptionPreview}>
+						<Button w="100%" bg="var(--theme-error-color)" onClick={openPrescriptionPreview}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Preview")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -796,7 +800,7 @@ export default function AddMedicineForm({
 								</Text>
 							</Stack>
 						</Button>
-						<Button
+						{/* <Button
 							w="100%"
 							bg="var(--theme-prescription-btn-color)"
 							onClick={handlePrescriptionPrintSubmit}
@@ -807,7 +811,7 @@ export default function AddMedicineForm({
 									(alt + 3)
 								</Text>
 							</Stack>
-						</Button>
+						</Button> */}
 						<Button
 							w="100%"
 							bg="var(--theme-save-btn-color)"

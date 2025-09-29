@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "../helpers/request";
 import { useForm } from "@mantine/form";
-import { Box, Grid, Stack } from "@mantine/core";
+import { Box, Grid, LoadingOverlay, Stack } from "@mantine/core";
 import PatientReport from "./PatientReport";
 import AddMedicineForm from "./AddMedicineForm.jsx";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -18,7 +18,7 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const module = MODULES.ADMISSION;
 
@@ -36,12 +36,9 @@ export default function AdmissionPrescription() {
 	const [records, setRecords] = useState([]);
 	const [customerId, setCustomerId] = useState();
 
-
-
-	const { data: prescriptionData } = useDataWithoutStore({
+	const { data: prescriptionData, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
 	});
-	console.log(prescriptionData);
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
 	const existingMedicines = initialFormValues?.medicines || [];
@@ -114,7 +111,8 @@ export default function AdmissionPrescription() {
 	};
 
 	return (
-		<Box>
+		<Box pos="relative">
+			<LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
 			<Grid columns={24} gutter="les">
 				<Grid.Col span={24}>
 					<Stack gap={0} ta="left">
@@ -146,9 +144,7 @@ export default function AdmissionPrescription() {
 					</Grid.Col>
 				)}
 			</Grid>
-			{id && (
-				<DetailsDrawer opened={opened} close={close} prescriptionId={id} />
-			)}
+			{id && <DetailsDrawer opened={opened} close={close} prescriptionId={id} />}
 		</Box>
 	);
 }

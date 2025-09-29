@@ -700,18 +700,18 @@ export default function AddMedicineForm({
 				</Stack>
 			</ScrollArea>
 
-			{form.values.instruction && (
+			{form.values.comment && (
 				<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between" align="center">
 					<Text w="100%">
-						<strong>{t("Instruction")}:</strong> {form.values.instruction}
+						<strong>{t("ReferredComment")}:</strong> {form.values.comment}
 					</Text>
-					<ActionIcon
+					{/* <ActionIcon
 						variant="outline"
 						color="var(--theme-error-color)"
-						onClick={() => form.setFieldValue("instruction", "")}
+						onClick={() => form.setFieldValue("comment", "")}
 					>
 						<IconTrash size={16} />
-					</ActionIcon>
+					</ActionIcon> */}
 				</Flex>
 			)}
 
