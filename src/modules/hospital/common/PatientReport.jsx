@@ -136,6 +136,13 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		form.setFieldValue("dynamicFormData", newDynamicFormData);
 	};
 
+	const handleNextFieldKeyDown = (event, nextField) => {
+		if (event.key === "Enter") {
+			event.preventDefault();
+			document.getElementById(nextField).focus();
+		}
+	};
+
 	const renderDynamicForm = (section) => {
 		const { id, name, data_type, particulars, is_additional_field } = section;
 
@@ -235,6 +242,9 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 									</Grid.Col>
 									<Grid.Col span={8}>
 										<TextInput
+											id={`${id}-${index}`}
+											name={`${id}-${index}`}
+											onKeyDown={(event) => handleNextFieldKeyDown(event, `${id}-${index + 1}`)}
 											label=""
 											classNames={inputCss}
 											placeholder={`Enter ${particular.name}`}
@@ -286,6 +296,11 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 												size="xs"
 												w={"70%"}
 												label=""
+												id={`${id}-${index}`}
+												name={`${id}-${index}`}
+												onKeyDown={(event) =>
+													handleNextFieldKeyDown(event, `${id}-${index + 1}`)
+												}
 												classNames={inputCss}
 												placeholder={`Enter ${particular.name}`}
 												value={value || ""}
