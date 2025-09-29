@@ -1,23 +1,7 @@
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import {
-	Box,
-	Grid,
-	Stack,
-	Text,
-	List,
-	Divider,
-	Paper,
-	Title,
-	Group,
-	ScrollArea,
-	Flex,
-	Button,
-	LoadingOverlay,
-} from "@mantine/core";
+import { Box, Grid, Stack, Text, List, Divider, Paper, Title, Group, ScrollArea, Flex, Button } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PrescriptionFull from "@/common/components/print-formats/prescription/PrescriptionFull";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -32,7 +16,6 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 		content: () => prescriptionFullRef.current,
 	});
 
-
 	// =============== parse prescription data and handle null cases ================
 	const prescription = prescriptionData?.data;
 	const jsonContent = prescription?.referred_json_content ? JSON.parse(prescription.referred_json_content) : null;
@@ -43,11 +26,126 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 	const advice = jsonContent?.advise;
 	const followUpDate = jsonContent?.follow_up_date;
 
+	// =============== ordering helpers (follow jsonContent.patient_report.order) ================
+	const normalizeOrder = (inputOrder) => {
+		if (Array.isArray(inputOrder)) {
+			const entries = inputOrder.flatMap((obj) => Object.entries(obj));
+			return entries.sort((a, b) => a[1] - b[1]).map(([key]) => key);
+		}
+		if (inputOrder && typeof inputOrder === "object") {
+			return Object.keys(inputOrder).sort((a, b) => (inputOrder?.[a] ?? 0) - (inputOrder?.[b] ?? 0));
+		}
+		return [];
+	};
+
+	const orderedExamKeys = normalizeOrder(patientReport?.order);
+	const sectionKeys = ["chief_complaints", "investigation", "comorbidity", "ho_past_illness"];
+	const keysToRender = orderedExamKeys.length ? orderedExamKeys.filter((k) => sectionKeys.includes(k)) : sectionKeys;
+
+	const renderSection = (key) => {
+		switch (key) {
+			case "chief_complaints":
+				return (
+					<>
+						<Divider
+							mt="xs"
+							label={
+								<Text size="xs" c={"var(--theme-tertiary-color-7)"}>
+									Chief Complaints
+								</Text>
+							}
+							labelPosition="left"
+						/>
+						{patientExamination?.chief_complaints && patientExamination.chief_complaints.length > 0 && (
+							<List size="sm" pl="sm" spacing="es">
+								{patientExamination.chief_complaints.map((complaint, index) => (
+									<List.Item key={index}>
+										{complaint.name} {complaint.value ? `(${complaint.value})` : ""}
+									</List.Item>
+								))}
+							</List>
+						)}
+					</>
+				);
+			case "investigation":
+				return (
+					<>
+						<Divider
+							mt="xs"
+							label={
+								<Text size="xs" c={"var(--theme-tertiary-color-7)"}>
+									Investigation
+								</Text>
+							}
+							labelPosition="left"
+						/>
+						{patientExamination?.investigation && patientExamination.investigation.length > 0 && (
+							<List c={"var(--theme-tertiary-color-9)"} type="ordered" size="sm" pl="sm" spacing="es">
+								{patientExamination.investigation.map((investigation, index) => (
+									<List.Item key={index}>
+										{investigation.name} {investigation.value ? `(${investigation.value})` : ""}
+									</List.Item>
+								))}
+							</List>
+						)}
+					</>
+				);
+			case "comorbidity":
+				return (
+					<>
+						<Divider
+							mt="xs"
+							label={
+								<Text size="xs" c={"var(--theme-tertiary-color-7)"}>
+									Comorbidity
+								</Text>
+							}
+							labelPosition="left"
+						/>
+						{patientExamination?.comorbidity && patientExamination.comorbidity.length > 0 && (
+							<List size="sm" pl="sm" spacing="es">
+								{patientExamination.comorbidity
+									.filter((item) => item.value)
+									.map((item, index) => (
+										<List.Item key={index}>{item.name}</List.Item>
+									))}
+							</List>
+						)}
+					</>
+				);
+			case "ho_past_illness":
+				return (
+					<>
+						<Divider
+							mt="xs"
+							label={
+								<Text size="xs" c={"var(--theme-tertiary-color-7)"}>
+									Past Illness
+								</Text>
+							}
+							labelPosition="left"
+						/>
+						{patientExamination?.ho_past_illness && patientExamination.ho_past_illness.length > 0 && (
+							<List size="sm" pl="sm" spacing="es">
+								{patientExamination.ho_past_illness
+									.filter((item) => item.value)
+									.map((item, index) => (
+										<List.Item key={index}>{item.name}</List.Item>
+									))}
+							</List>
+						)}
+					</>
+				);
+			default:
+				return null;
+		}
+	};
+
 	// =============== check if prescription data is available ================
 	const isPrescriptionDataAvailable = prescription && jsonContent;
 
 	return (
-		<GlobalDrawer opened={opened} close={close}  title="Prescription Details" size="45%">
+		<GlobalDrawer opened={opened} close={close} title="Prescription Details" size="45%">
 			<Box pos="relative">
 				{isPrescriptionDataAvailable ? (
 					<ScrollArea scrollbars="y" type="hover" h={mainAreaHeight - 110}>
@@ -108,105 +206,106 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 												</Text>
 											</Text>
 										</Stack>
-										<Divider
-											mt="xs"
-											label={
-												<Text size="xs" c="var(--theme-tertiary-color-7)">
-													Chief Complaints
-												</Text>
-											}
-											labelPosition="left"
-										/>
+
 										{patientExamination?.chief_complaints &&
-										patientExamination.chief_complaints.length > 0 ? (
-											<List size="sm" pl="sm" spacing="es">
-												{patientExamination.chief_complaints.map((complaint, index) => (
-													<List.Item key={index}>
-														{complaint.name} {complaint.value ? `(${complaint.value})` : ""}
-													</List.Item>
-												))}
-											</List>
-										) : (
-											<Text size="sm" c="var(--theme-tertiary-color-7)" fs="italic">
-												No chief complaints recorded
-											</Text>
-										)}
-										<Divider
-											mt="xs"
-											label={
-												<Text size="xs" c="var(--theme-tertiary-color-7)">
-													Investigation
-												</Text>
-											}
-											labelPosition="left"
-										/>
+											patientExamination.chief_complaints.length > 0 && (
+												<>
+													<Divider
+														mt="xs"
+														label={
+															<Text size="xs" c="var(--theme-tertiary-color-7)">
+																Chief Complaints
+															</Text>
+														}
+														labelPosition="left"
+													/>
+													<List size="sm" pl="sm" spacing="es">
+														{patientExamination.chief_complaints.map((complaint, index) => (
+															<List.Item key={index}>
+																{complaint.name}{" "}
+																{complaint.value ? `(${complaint.value})` : ""}
+															</List.Item>
+														))}
+													</List>
+												</>
+											)}
+
 										{patientExamination?.investigation &&
-										patientExamination.investigation.length > 0 ? (
-											<List
-												c="var(--theme-tertiary-color-9)"
-												type="ordered"
-												size="sm"
-												pl="sm"
-												spacing="es"
-											>
-												{patientExamination.investigation.map((investigation, index) => (
-													<List.Item key={index}>
-														{investigation.name}{" "}
-														{investigation.value ? `(${investigation.value})` : ""}
-													</List.Item>
-												))}
-											</List>
-										) : (
-											<Text size="sm" c="var(--theme-tertiary-color-7)" fs="italic">
-												No investigations ordered
-											</Text>
-										)}
-										<Divider
-											mt="xs"
-											label={
-												<Text size="xs" c="var(--theme-tertiary-color-7)">
-													Comorbidity
-												</Text>
-											}
-											labelPosition="left"
-										/>
+											patientExamination.investigation.length > 0 && (
+												<>
+													<Divider
+														mt="xs"
+														label={
+															<Text size="xs" c="var(--theme-tertiary-color-7)">
+																Investigation
+															</Text>
+														}
+														labelPosition="left"
+													/>
+													<List
+														c="var(--theme-tertiary-color-9)"
+														type="ordered"
+														size="sm"
+														pl="sm"
+														spacing="es"
+													>
+														{patientExamination.investigation.map(
+															(investigation, index) => (
+																<List.Item key={index}>
+																	{investigation.name}{" "}
+																	{investigation.value
+																		? `(${investigation.value})`
+																		: ""}
+																</List.Item>
+															)
+														)}
+													</List>
+												</>
+											)}
+
 										{patientExamination?.comorbidity &&
-										patientExamination.comorbidity.length > 0 ? (
-											<List size="sm" pl="sm" spacing="es">
-												{patientExamination.comorbidity
-													.filter((item) => item.value)
-													.map((item, index) => (
-														<List.Item key={index}>{item.name}</List.Item>
-													))}
-											</List>
-										) : (
-											<Text size="sm" c="var(--theme-tertiary-color-7)" fs="italic">
-												No comorbidity recorded
-											</Text>
-										)}
-										<Divider
-											mt="xs"
-											label={
-												<Text size="xs" c="var(--theme-tertiary-color-7)">
-													Past Illness
-												</Text>
-											}
-											labelPosition="left"
-										/>
+											patientExamination.comorbidity.length > 0 && (
+												<>
+													<Divider
+														mt="xs"
+														label={
+															<Text size="xs" c="var(--theme-tertiary-color-7)">
+																Comorbidity
+															</Text>
+														}
+														labelPosition="left"
+													/>
+													<List size="sm" pl="sm" spacing="es">
+														{patientExamination.comorbidity
+															.filter((item) => item.value)
+															.map((item, index) => (
+																<List.Item key={index}>{item.name}</List.Item>
+															))}
+													</List>
+												</>
+											)}
+
 										{patientExamination?.ho_past_illness &&
-										patientExamination.ho_past_illness.length > 0 ? (
-											<List size="sm" pl="sm" spacing="es">
-												{patientExamination.ho_past_illness
-													.filter((item) => item.value)
-													.map((item, index) => (
-														<List.Item key={index}>{item.name}</List.Item>
-													))}
-											</List>
-										) : (
-											<Text size="sm" c="var(--theme-tertiary-color-7)" fs="italic">
-												No past illness recorded
-											</Text>
-										)}
+											patientExamination.ho_past_illness.length > 0 && (
+												<>
+													<Divider
+														mt="xs"
+														label={
+															<Text size="xs" c="var(--theme-tertiary-color-7)">
+																Past Illness
+															</Text>
+														}
+														labelPosition="left"
+													/>
+													<List size="sm" pl="sm" spacing="es">
+														{patientExamination.ho_past_illness
+															.filter((item) => item.value)
+															.map((item, index) => (
+																<List.Item key={index}>{item.name}</List.Item>
+															))}
+													</List>
+												</>
+											)}
 									</Stack>
 								</Paper>
 							</Grid.Col>

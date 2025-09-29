@@ -14,7 +14,6 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
-	console.log("prescriptionId", prescriptionId);
 	const { data: prescriptionData, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});
@@ -252,7 +251,7 @@ const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
 							<Text size="xs" fw={600}>
 								{t("নাম")}:
 							</Text>
-							<Text size="sm">{getValue(patientInfo?.name, "John Doe")}</Text>
+							<Text size="sm">{getValue(patientInfo?.name, "N/A")}</Text>
 						</Group>
 					</Grid.Col>
 					<Grid.Col bd="1px solid #555" span={4} px="xs">
@@ -260,7 +259,7 @@ const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
 							<Text size="xs" fw={600}>
 								{t("মোবাইল")}:
 							</Text>
-							<Text size="xs">{getValue(patientInfo?.mobile || "01717171717")}</Text>
+							<Text size="xs">{getValue(patientInfo?.mobile || "N/A")}</Text>
 						</Group>
 					</Grid.Col>
 
@@ -296,7 +295,7 @@ const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
 					</Grid.Col>
 					<Grid.Col bd="1px solid #555" span={4} px="xs">
 						<Group gap="xs">
-							<strong>তারিখ:</strong> {patientInfo?.created || ""}
+							<strong>তারিখ:</strong> {patientInfo?.created || "-"}
 						</Group>
 					</Grid.Col>
 				</Grid>
@@ -335,13 +334,11 @@ const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
 											{getValue(dose.quantity)} {getValue(medicine.duration)}
 										</Text>
 									))}
-									{
-										<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
-											{getValue(medicine.dose_details)} {" -------"} {getValue(medicine.by_meal)}
-											{" -------"}
-											{getValue(medicine.quantity)} {getValue(medicine.duration)}
-										</Text>
-									}
+									<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
+										{getValue(medicine.dose_details)} {" -------"} {getValue(medicine.by_meal)}
+										{" -------"}
+										{getValue(medicine.quantity)} {getValue(medicine.duration)}
+									</Text>
 								</Box>
 							))}
 						</Stack>
@@ -363,7 +360,7 @@ const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
 			<Box bd="1px solid #555" style={{ borderRadius: "4px" }}>
 				{/* =============== top section with printed by and signature ================ */}
 				<Grid columns={12} gutter="0">
-					<Grid.Col span={6} pl={"xl"} pt={"md"}>
+					<Grid.Col span={6} pl="xl" pt="md">
 						<Text fz={"xl"}>{patientInfo?.doctor_name}</Text>
 						<Text fz={"xs"}>{patientInfo?.designation_name}</Text>
 					</Grid.Col>
