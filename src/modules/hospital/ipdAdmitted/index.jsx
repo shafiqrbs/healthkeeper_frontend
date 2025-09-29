@@ -4,14 +4,9 @@ import { useNavigate, useOutletContext, useParams, useSearchParams } from "react
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-<<<<<<< HEAD
 import { ActionIcon, Box, Flex, Grid, SegmentedControl, Text } from "@mantine/core";
-=======
-import {ActionIcon, Box, Button, Flex, Grid, Group, SegmentedControl, Text} from "@mantine/core";
->>>>>>> eca11af (Update table process button)
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import Table from "./_Table";
-import History from "./common/tabs/History";
 import Investigation from "./common/tabs/Investigation";
 import Medicine from "./common/tabs/Medicine";
 import Advice from "./common/tabs/Advice";
