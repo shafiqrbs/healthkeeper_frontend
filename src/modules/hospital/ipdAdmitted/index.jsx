@@ -4,7 +4,11 @@ import { useNavigate, useOutletContext, useParams, useSearchParams } from "react
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
+<<<<<<< HEAD
 import { ActionIcon, Box, Flex, Grid, SegmentedControl, Text } from "@mantine/core";
+=======
+import {ActionIcon, Box, Button, Flex, Grid, Group, SegmentedControl, Text} from "@mantine/core";
+>>>>>>> eca11af (Update table process button)
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import Table from "./_Table";
 import History from "./common/tabs/History";
@@ -113,7 +117,6 @@ export default function Index() {
 								{showTabs ? (
 									<TabsWithSearch
 										tabList={[
-											"History",
 											"Investigation",
 											"Medicine",
 											"Room",
@@ -127,10 +130,6 @@ export default function Index() {
 										]}
 										hideSearchbar
 										tabPanels={[
-											{
-												tab: "History",
-												component: <History />,
-											},
 											{
 												tab: "Investigation",
 												component: <Investigation />,
@@ -177,7 +176,7 @@ export default function Index() {
 											<Flex gap="les">
 												<ActionIcon
 													onClick={handlePrescriptionEdit}
-													bg="var(--theme-primary-color-6)"
+													bg="var(--theme-secondary-color-6)"
 													h="100%"
 													w="36px"
 												>

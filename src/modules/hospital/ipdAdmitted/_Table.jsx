@@ -138,6 +138,8 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 									<Text fz="sm">{item.visiting_room}</Text>
 								</Box>
 								<Flex direction="column">
+
+									{ ipdMode === "non-prescription" &&(
 									<ActionIcon
 										variant="filled"
 										onClick={() => handleProcessConfirmation(item.id)}
@@ -147,17 +149,18 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 									>
 										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
 									</ActionIcon>
-									{/*<Button
+									)}
+									{ ipdMode === "prescription" &&(
+										<ActionIcon
 										variant="filled"
-										bg="var(--theme-secondary-color-6)"
-										c="white"
-										size="xs"
 										onClick={() => handleAdmissionOverview(item.prescription_id)}
-										radius="es"
-										rightSection={<IconArrowRight size={18} />}
-									>
-										{t("Process")}
-									</Button>*/}
+										color="var(--theme-secondary-color-6)"
+										radius="xs"
+										aria-label="Settings"
+										>
+										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
+										</ActionIcon>
+									)}
 								</Flex>
 							</Flex>
 						</Grid.Col>
