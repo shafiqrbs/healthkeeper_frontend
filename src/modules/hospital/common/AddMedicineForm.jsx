@@ -635,7 +635,7 @@ export default function AddMedicineForm({
 				</Flex>
 			</Flex>
 			<ScrollArea
-				h={baseHeight ? baseHeight : form.values.instruction ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
+				h={baseHeight ? baseHeight : form.values.comment ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
 				bg="white"
 			>
 				<Stack gap="2px" p="sm">

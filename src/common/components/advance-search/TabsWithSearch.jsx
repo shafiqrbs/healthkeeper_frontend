@@ -2,7 +2,7 @@ import { Box, Flex, Tabs, TextInput, FloatingIndicator, Button, ScrollArea } fro
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import tabClass from "@assets/css/Tab.module.css";
-import { IconSearch } from "@tabler/icons-react";
+import { IconCalendar, IconSearch } from "@tabler/icons-react";
 import { DateInput } from "@mantine/dates";
 
 const DEFAULT_ACTIVE_COLOR = "var(--theme-primary-color-6)";
@@ -91,6 +91,7 @@ export default function TabsWithSearch({
 										value={date}
 										onChange={handleDateChange}
 										w={280}
+										leftSection={<IconCalendar size={18} />}
 									/>
 								)}
 								<TextInput

@@ -88,6 +88,11 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 				</Text>
 			</Flex>
 			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="xxxs">
+				{records?.length === 0 && (
+					<Flex justify="center" align="center">
+						<Text fz="sm">{t("NoDataAvailable")}</Text>
+					</Flex>
+				)}
 				{records?.map((item) => (
 					<Grid
 						columns={12}
@@ -105,7 +110,6 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 						<Grid.Col span={4}>
 							<Flex align="center" gap="xxxs">
 								<IconCalendarWeek size={16} stroke={1.5} />
-
 								<Text
 									fz="sm"
 									onClick={() => handleAdmissionOverview(item.prescription_id)}

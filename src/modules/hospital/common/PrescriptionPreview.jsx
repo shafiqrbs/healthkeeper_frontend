@@ -14,6 +14,7 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
+	console.log("prescriptionId", prescriptionId);
 	const { data: prescriptionData, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});

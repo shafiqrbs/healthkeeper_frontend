@@ -4,7 +4,7 @@ import { useNavigate, useOutletContext, useParams, useSearchParams } from "react
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { ActionIcon, Box, Button, Flex, Grid, SegmentedControl, Text } from "@mantine/core";
+import { ActionIcon, Box, Flex, Grid, SegmentedControl, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import Table from "./_Table";
 import History from "./common/tabs/History";
@@ -42,7 +42,10 @@ export default function Index() {
 	const showPrescriptionForm = !selectedPrescriptionId && id;
 
 	const handlePrescriptionEdit = () => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.UPDATE}/${id}`);
+		const allParams = Object.fromEntries(searchParams.entries());
+		const { tabs, ...restParams } = allParams;
+		console.info(tabs);
+		setSearchParams(restParams);
 	};
 
 	const handleChangeIpdMode = () => {
@@ -211,16 +214,18 @@ export default function Index() {
 					</Flex>
 				</Box>
 			)}
-			<GlobalDrawer
-				opened={openedPrescriptionPreview}
-				close={closePrescriptionPreview}
-				title={t("PrescriptionPreview")}
-				size="50%"
-			>
-				<Box my="sm">
-					<PrescriptionPreview prescriptionId={selectedPrescriptionId} />
-				</Box>
-			</GlobalDrawer>
+			{id && (
+				<GlobalDrawer
+					opened={openedPrescriptionPreview}
+					close={closePrescriptionPreview}
+					title={t("PrescriptionPreview")}
+					size="50%"
+				>
+					<Box my="sm">
+						<PrescriptionPreview prescriptionId={id} />
+					</Box>
+				</GlobalDrawer>
+			)}
 		</>
 	);
 }
