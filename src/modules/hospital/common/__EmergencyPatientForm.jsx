@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconRestore, IconSearch } from "@tabler/icons-react";
+import { IconRestore, IconSearch, IconX } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -139,7 +139,7 @@ export default function EmergencyPatientForm({
 	}, []);
 
 	useEffect(() => {
-		document.getElementById("patientName").focus();
+		document.getElementById("patientName")?.focus();
 	}, []);
 
 	const handlePatientInfoSearch = async (values) => {
@@ -236,7 +236,12 @@ export default function EmergencyPatientForm({
 						/>
 					}
 					rightSection={
-						<ActionIcon type="submit" bg="var(--theme-primary-color-6)" loading={isSearching}>
+						<ActionIcon
+							disabled={!searchForm.values?.term}
+							type="submit"
+							bg="var(--theme-primary-color-6)"
+							loading={isSearching}
+						>
 							<IconSearch size={16} />
 						</ActionIcon>
 					}
@@ -423,7 +428,7 @@ export function Form({
 				{showTitle && (
 					<Flex bg="var(--theme-primary-color-0)" align="center" gap="xs" p="sm">
 						<Text fw={600} fz="sm">
-							{t("patientInformation")}
+							{t("PatientInformation")}
 						</Text>
 					</Flex>
 				)}
@@ -435,7 +440,7 @@ export function Form({
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Flex gap="es">
-												<Text fz="sm">{t("patientName")}</Text>
+												<Text fz="sm">{t("PatientName")}</Text>
 												<RequiredAsterisk />
 											</Flex>
 										</Grid.Col>
@@ -443,10 +448,10 @@ export function Form({
 											<InputForm
 												form={form}
 												label=""
-												tooltip={t("enterPatientName")}
+												tooltip={t("EnterPatientName")}
 												placeholder="Md. Abdul"
 												name="name"
-												id="patientName"
+												id="PatientName"
 												nextField="mobile"
 												value={form.values.name}
 												required
@@ -455,13 +460,13 @@ export function Form({
 									</Grid>
 									<Grid align="center" columns={20} mt={"xs"}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("mobile")}</Text>
+											<Text fz="sm">{t("Mobile")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14} pb={0}>
 											<InputNumberForm
 												form={form}
 												label=""
-												tooltip={t("enterPatientMobile")}
+												tooltip={t("EnterPatientMobile")}
 												placeholder="+880 1717171717"
 												name="mobile"
 												id="mobile"
@@ -473,7 +478,7 @@ export function Form({
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("gender")}</Text>
+											<Text fz="sm">{t("Gender")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14} pb={0}>
 											<SegmentedControl
@@ -504,7 +509,7 @@ export function Form({
 												}
 												form={form}
 												placeholder="01-01-2020"
-												tooltip={t("EnterDateOfBirth")}
+												tooltip={t("EnterPatientDateOfBirth")}
 												name="dob"
 												id="dob"
 												nextField="year"
@@ -517,7 +522,7 @@ export function Form({
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Flex>
-												<Text fz="sm">{t("age")}</Text>
+												<Text fz="sm">{t("Age")}</Text>
 												<RequiredAsterisk />
 											</Flex>
 										</Grid.Col>
@@ -527,7 +532,7 @@ export function Form({
 													form={form}
 													label=""
 													placeholder="Days"
-													tooltip={t("EnterDays")}
+													tooltip={t("EnterPatientDays")}
 													name="day"
 													id="day"
 													nextField="month"
@@ -544,7 +549,7 @@ export function Form({
 													form={form}
 													label=""
 													placeholder="Months"
-													tooltip={t("EnterMonths")}
+													tooltip={t("EnterPatientMonths")}
 													name="month"
 													id="month"
 													nextField="year"
@@ -681,7 +686,7 @@ export function Form({
 											<InputForm
 												form={form}
 												label=""
-												tooltip={t("enterGuardianName")}
+												tooltip={t("EnterGuardianName")}
 												placeholder="EnterFather/Mother/Husband/Brother"
 												name="guardian_name"
 												id="guardian_name"
@@ -699,7 +704,7 @@ export function Form({
 											<InputForm
 												form={form}
 												label=""
-												tooltip={t("EnterPatientMobile")}
+												tooltip={t("EnterGuardianMobile")}
 												placeholder="+880 1717171717"
 												name="guardian_mobile"
 												id="guardian_mobile"
@@ -711,13 +716,13 @@ export function Form({
 									</Grid>
 									<Grid align="center" columns={20} mt={"xs"}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("address")}</Text>
+											<Text fz="sm">{t("Address")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14} pb={0}>
 											<TextAreaForm
 												form={form}
 												label=""
-												tooltip={t("enterPatientAddress")}
+												tooltip={t("EnterPatientAddress")}
 												placeholder="12 street, 123456"
 												name="address"
 												id="address"
@@ -735,7 +740,7 @@ export function Form({
 													form={form}
 													pt={0}
 													label=""
-													tooltip={t("enterFreeIdentificationId")}
+													tooltip={t("EnterFreeIdentificationId")}
 													placeholder="Enter Free ID"
 													name="free_identification_id"
 													id="free_identification_id"
@@ -795,7 +800,7 @@ export function Form({
 							</Grid>
 						</Box>
 					</Stack>
-					<Box pl={"xs"} pr={"xs"}>
+					<Box pl="xs" pr="xs">
 						<Button.Group>
 							<Button
 								w="100%"
@@ -805,7 +810,7 @@ export function Form({
 								disabled={isSubmitting}
 							>
 								<Stack gap={0} align="center" justify="center">
-									<Text>{t("reset")}</Text>
+									<Text>{t("Reset")}</Text>
 									<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 										(alt + r)
 									</Text>
@@ -818,7 +823,7 @@ export function Form({
 								onClick={() => handlePrint("a4")}
 							>
 								<Stack gap={0} align="center" justify="center">
-									<Text>{t("prescription")}</Text>
+									<Text>{t("Prescription")}</Text>
 									<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 										(alt + 3)
 									</Text>
@@ -833,7 +838,7 @@ export function Form({
 								id="EntityFormSubmit"
 							>
 								<Stack gap={0} align="center" justify="center">
-									<Text>{t("Pos")}</Text>
+									<Text>{t("POS")}</Text>
 									<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 										(alt + p)
 									</Text>

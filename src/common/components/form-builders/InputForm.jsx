@@ -63,8 +63,8 @@ function InputForm({
 								"Enter",
 								() => {
 									nextField && nextField === "EntityFormSubmit"
-										? document.getElementById(nextField).click()
-										: document.getElementById(nextField).focus();
+										? document.getElementById(nextField)?.click()
+										: document.getElementById(nextField)?.focus();
 								},
 							],
 						])}

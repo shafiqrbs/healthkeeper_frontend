@@ -145,6 +145,8 @@ export default function PatientForm({
 
 	const handlePatientInfoSearch = async (values) => {
 		try {
+			if (!searchForm.values?.term) return;
+
 			const formValue = {
 				...values,
 				term: searchForm.values.term,
@@ -255,22 +257,14 @@ export default function PatientForm({
 							/>
 						}
 						rightSection={
-							showPatientDropdown ? (
-								<ActionIcon
-									type="button"
-									bg="var(--theme-error-color)"
-									onClick={(e) => {
-										e.stopPropagation();
-										setShowPatientDropdown(false);
-									}}
-								>
-									<IconX size={16} />
-								</ActionIcon>
-							) : (
-								<ActionIcon type="submit" bg="var(--theme-primary-color-6)" loading={isSearching}>
-									<IconSearch size={16} />
-								</ActionIcon>
-							)
+							<ActionIcon
+								disabled={!searchForm.values?.term}
+								type="submit"
+								bg="var(--theme-primary-color-6)"
+								loading={isSearching}
+							>
+								<IconSearch size={16} />
+							</ActionIcon>
 						}
 					/>
 

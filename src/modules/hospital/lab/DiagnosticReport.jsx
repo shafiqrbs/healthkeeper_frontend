@@ -1,25 +1,25 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import {Box, Text, ScrollArea, Stack, Grid, TextInput, Flex, Button} from "@mantine/core";
-import { useEffect, useState,useRef } from "react";
+import { Box, Text, ScrollArea, Stack, Grid, TextInput, Flex, Button } from "@mantine/core";
+import { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
-import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { IconChevronUp, IconSelector,IconPrinter } from "@tabler/icons-react";
+import { IconChevronUp, IconSelector, IconPrinter } from "@tabler/icons-react";
 import { formatDate } from "@/common/utils";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import {useForm} from "@mantine/form";
-import {getFormValues} from "@modules/hospital/lab/helpers/request";
+import { useForm } from "@mantine/form";
+import { getFormValues } from "@modules/hospital/lab/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import {modals} from "@mantine/modals";
-import {storeEntityData, updateEntityData} from "@/app/store/core/crudThunk";
-import {setRefetchData} from "@/app/store/core/crudSlice";
-import {successNotification} from "@components/notification/successNotification";
-import {ERROR_NOTIFICATION_COLOR, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
-import {errorNotification} from "@components/notification/errorNotification";
-import {useDispatch} from "react-redux";
-import {useHotkeys} from "@mantine/hooks";
+import { modals } from "@mantine/modals";
+import { storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import { setRefetchData } from "@/app/store/core/crudSlice";
+import { successNotification } from "@components/notification/successNotification";
+import { ERROR_NOTIFICATION_COLOR, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { errorNotification } from "@components/notification/errorNotification";
+import { useDispatch } from "react-redux";
+import { useHotkeys } from "@mantine/hooks";
 
 const module = MODULES_CORE.LAB_USER;
 export default function DiagnosticReport() {
@@ -39,17 +39,16 @@ export default function DiagnosticReport() {
 				const res = await getDataWithoutStore({
 					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX}/${id}/report/${reportId}`,
 				});
-				form.reset()
+				form.reset();
 				setDiagnosticReport(res?.data);
 			})();
 		}
 	}, [id, reportId]);
 	useEffect(() => {
-		form.setFieldValue("comment",diagnosticReport.comment?diagnosticReport.comment:null)
+		form.setFieldValue("comment", diagnosticReport.comment ? diagnosticReport.comment : null);
 	}, [diagnosticReport]);
 	//const handleDataTypeChange = () => {};
 	const handleFieldChange = async (rowId, field, value) => {
-
 		setSubmitFormData((prev) => ({
 			...prev,
 			[rowId]: { ...prev[rowId], [field]: value },
@@ -109,18 +108,13 @@ export default function DiagnosticReport() {
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
-				successNotification(t("UpdateSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
-			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
-	useHotkeys(
-		[
-			["alt+s", () => document.getElementById("EntityFormSubmit").click()],
-		],
-		[]
-	);
+	useHotkeys([["alt+s", () => document.getElementById("EntityFormSubmit").click()]], []);
 
 	return (
 		<Box className="borderRadiusAll" bg="white">
@@ -131,164 +125,171 @@ export default function DiagnosticReport() {
 			</Box>
 			{reportId ? (
 				<>
-					<Box className="border-top-none" px="sm" mt={'xs'}>
-							<DataTable
-								striped
-								highlightOnHover
-								pinFirstColumn
-								stripedColor="var(--theme-tertiary-color-1)"
-								classNames={{
-									root: tableCss.root,
-									table: tableCss.table,
-									header: tableCss.header,
-									footer: tableCss.footer,
-									pagination: tableCss.pagination,
-								}}
-								records={diagnosticReport?.reports || []}
-								columns={[
-									{
-										accessor: "index",
-										title: t("S/N"),
-										textAlignment: "right",
-										render: (_, index) => index + 1,
-									},
-									{
-										accessor: "name",
-										title: t("Name"),
-									},
-									{
-										accessor: "result",
-										title: t("Result"),
-										render: (item) => (
-											diagnosticReport.process === "Done" ?
-												item.result
-												:
-												<>
-													<TextInput
-														size="xs"
-														fz="xs"
-														value={item?.result}
-														ref={(el) => (inputsRef.current[item.id] = el)}
-														onKeyDown={(e) => handleKeyDown(e, item.id)}
-
-														onBlur={(e) =>
-															handleFieldChange(item.id, "result", e.target.value)
-														}
-													/>
-												</>
+					<Box className="border-top-none" px="sm" mt={"xs"}>
+						<DataTable
+							striped
+							highlightOnHover
+							pinFirstColumn
+							stripedColor="var(--theme-tertiary-color-1)"
+							classNames={{
+								root: tableCss.root,
+								table: tableCss.table,
+								header: tableCss.header,
+								footer: tableCss.footer,
+								pagination: tableCss.pagination,
+							}}
+							records={diagnosticReport?.reports || []}
+							columns={[
+								{
+									accessor: "index",
+									title: t("S/N"),
+									textAlignment: "right",
+									render: (_, index) => index + 1,
+								},
+								{
+									accessor: "name",
+									title: t("Name"),
+								},
+								{
+									accessor: "result",
+									title: t("Result"),
+									render: (item) =>
+										diagnosticReport.process === "Done" ? (
+											item.result
+										) : (
+											<>
+												<TextInput
+													size="xs"
+													fz="xs"
+													value={item?.result}
+													ref={(el) => (inputsRef.current[item.id] = el)}
+													onKeyDown={(e) => handleKeyDown(e, item.id)}
+													onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}
+												/>
+											</>
 										),
-									},
-									{
-										accessor: "unit",
-										title: t("Unit"),
-									},
-									{
-										accessor: "reference_value",
-										title: t("ReferenceValue"),
-									},
-								]}
-								loaderSize="xs"
-								loaderColor="grape"
-								height={mainAreaHeight - 316}
-								sortIcons={{
-									sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-									unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
-								}}
-							/>
-						</Box>
-					<Stack gap={0} justify="space-between" mt="xs" >
+								},
+								{
+									accessor: "unit",
+									title: t("Unit"),
+								},
+								{
+									accessor: "reference_value",
+									title: t("ReferenceValue"),
+								},
+							]}
+							loaderSize="xs"
+							loaderColor="grape"
+							height={mainAreaHeight - 316}
+							sortIcons={{
+								sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+								unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+							}}
+						/>
+					</Box>
+					<Stack gap={0} justify="space-between" mt="xs">
 						<form onSubmit={form.onSubmit(handleSubmit)}>
-						<Box p="sm" pl={"md"} pr={"md"} bg="var(--theme-tertiary-color-1)">
-							<Box w="100%">
-								{diagnosticReport?.process === "Done" ? (
-									<>
-										<strong>Comment:</strong> {diagnosticReport?.comment}
-									</>
-								) : (
-									<TextAreaForm
-										id="comment"
-										form={form}
-										tooltip={t("EnterComment")}
-										placeholder={t("EnterComment")}
-										name="comment"
-									/>
-								)}
-							</Box>
-							<Box  mt={'xs'}>
-								<Grid columns={12}>
-									<Grid.Col span={6} className="animate-ease-out">
-										{diagnosticReport?.process === "Done" && (
-										<Flex
-											mih={50}
-											gap="xs"
-											justify="flex-start"
-											align="center"
-											direction="row"
-											wrap="wrap"
-										>
-											<Button
-												size="md"
-												color="var(--theme-secondary-color-5)"
-												type="button"
-												id="EntityFormSubmit"
-												rightSection={<IconPrinter  size="18px" />}
-											>
-												<Flex direction={`column`} gap={0}>
-													<Text>{t("Print")}</Text>
-												</Flex>
-											</Button>
-
-										</Flex>
-										)}
-									</Grid.Col>
-									<Grid.Col span={6} className="animate-ease-out">
-										<Flex
-											mih={50}
-											gap="xs"
-											justify="flex-end"
-											align="center"
-											direction="row"
-											wrap="wrap"
-										>
-											{diagnosticReport?.process === "New" && (
-											<Button
-												size="md"
-												className="btnPrimaryBg"
-												type="submit"
-												id="handleSubmit">
-												<Flex direction={`column`} gap={0}>
-													<Text>{t("Save")}</Text>
-													<Flex direction={`column`} align={"center"} fz={"12"} c={"white"}>
-														alt+s
-													</Flex>
-												</Flex>
-											</Button>
-											)}
-											{diagnosticReport?.process === "In-progress" && (
-												<Button
-													size="md"
-													bg="var(--theme-primary-color-6)"
-													type="submit"
-													id="handleSubmit">
-													<Flex direction={`column`} gap={0}>
-														<Text>{t("Confirm")}</Text>
-														<Flex direction={`column`} align={"center"} fz={"12"} c={"white"}>
-															alt+s
+							<Box p="sm" pl={"md"} pr={"md"} bg="var(--theme-tertiary-color-1)">
+								<Box w="100%">
+									{diagnosticReport?.process === "Done" ? (
+										<>
+											<strong>Comment:</strong> {diagnosticReport?.comment}
+										</>
+									) : (
+										<TextAreaForm
+											id="comment"
+											form={form}
+											tooltip={t("EnterComment")}
+											placeholder={t("EnterComment")}
+											name="comment"
+										/>
+									)}
+								</Box>
+								<Box mt={"xs"}>
+									<Grid columns={12}>
+										<Grid.Col span={6} className="animate-ease-out">
+											{diagnosticReport?.process === "Done" && (
+												<Flex
+													mih={50}
+													gap="xs"
+													justify="flex-start"
+													align="center"
+													direction="row"
+													wrap="wrap"
+												>
+													<Button
+														size="md"
+														color="var(--theme-secondary-color-5)"
+														type="button"
+														id="EntityFormSubmit"
+														rightSection={<IconPrinter size="18px" />}
+													>
+														<Flex direction={`column`} gap={0}>
+															<Text>{t("Print")}</Text>
 														</Flex>
-													</Flex>
-												</Button>
+													</Button>
+												</Flex>
 											)}
-										</Flex>
-									</Grid.Col>
-								</Grid>
+										</Grid.Col>
+										<Grid.Col span={6} className="animate-ease-out">
+											<Flex
+												mih={50}
+												gap="xs"
+												justify="flex-end"
+												align="center"
+												direction="row"
+												wrap="wrap"
+											>
+												{diagnosticReport?.process === "New" && (
+													<Button
+														size="md"
+														className="btnPrimaryBg"
+														type="submit"
+														id="handleSubmit"
+													>
+														<Flex direction={`column`} gap={0}>
+															<Text>{t("Save")}</Text>
+															<Flex
+																direction={`column`}
+																align={"center"}
+																fz={"12"}
+																c={"white"}
+															>
+																alt+s
+															</Flex>
+														</Flex>
+													</Button>
+												)}
+												{diagnosticReport?.process === "In-progress" && (
+													<Button
+														size="md"
+														bg="var(--theme-primary-color-6)"
+														type="submit"
+														id="handleSubmit"
+													>
+														<Flex direction={`column`} gap={0}>
+															<Text>{t("Confirm")}</Text>
+															<Flex
+																direction={`column`}
+																align={"center"}
+																fz={"12"}
+																c={"white"}
+															>
+																alt+s
+															</Flex>
+														</Flex>
+													</Button>
+												)}
+											</Flex>
+										</Grid.Col>
+									</Grid>
+								</Box>
 							</Box>
-						</Box>
 						</form>
 					</Stack>
-
 				</>
 			) : (
-				<Box bg="white" >
+				<Box bg="white">
 					<Stack
 						h={mainAreaHeight - 154}
 						bg="var(--mantine-color-body)"
@@ -296,7 +297,7 @@ export default function DiagnosticReport() {
 						justify="center"
 						gap="md"
 					>
-						{t('NoTestSelected')}
+						{t("NoTestSelected")}
 					</Stack>
 				</Box>
 			)}
