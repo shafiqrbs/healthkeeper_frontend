@@ -856,9 +856,9 @@ export default function AddMedicineForm({
 							</Stack>
 						</Button>
 					</Button.Group>
-					{printData && <PrescriptionFull ref={prescription2A4Ref} data={printData} />}
-					{/* ----------- prescription preview ------------  */}
-					{/* <PrescriptionFull ref={prescriptionPrintRef} data={printPreviewPrescriptionData} /> */}
+					{printData && (
+						<PrescriptionFull ref={prescription2A4Ref} data={printData} prescriptionId={prescriptionId} />
+					)}
 				</>
 			)}
 			<GlobalDrawer

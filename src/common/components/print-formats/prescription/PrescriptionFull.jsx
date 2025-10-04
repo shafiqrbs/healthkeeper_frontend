@@ -1,425 +1,7 @@
-// import { Box, Text, Grid, Group, Stack, Image } from "@mantine/core";
-// import { forwardRef } from "react";
-// import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
-// import TBLogo from "@assets/images/tb_logo.png";
-// import DashedDivider from "@components/core-component/DashedDivider";
-// import CustomDivider from "@components/core-component/CustomDivider";
-// import { formatDate } from "@/common/utils";
-// import "@/index.css";
-// import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-// import { useTranslation } from "react-i18next";
-
-// const PrescriptionFull = forwardRef(({ data }, ref) => {
-// 	const { t } = useTranslation();
-// 	const { hospitalConfigData } = useDoaminHospitalConfigData();
-// 	const patientInfo = JSON.parse(data?.json_content || "{}");
-// 	const invoiceDetails = data?.invoice_details || {};
-// 	const patientReport = patientInfo?.patient_report || {};
-// 	const basicInfo = patientReport?.basic_info || {};
-// 	const patientExamination = patientReport?.patient_examination || {};
-// 	const medicines = patientInfo?.medicines || [];
-// 	const customerInformation = data?.invoice_details?.customer_details || data;
-
-// 	const getValue = (value, defaultValue = "N/A") => {
-// 		return value || defaultValue;
-// 	};
-
-// 	return (
-// 		<Box display="none">
-// 			<Box ref={ref} p="md" w="210mm" h="100vh" className="watermark" ff="Arial, sans-serif" lh={1.5} fz={12}>
-// 				{/* =============== header section with doctor information in bengali and english ================ */}
-// 				<Box mb="sm">
-// 					<Grid gutter="md">
-// 						<Grid.Col span={4}>
-// 							<Group ml="md" align="center" h="100%">
-// 								<Image src={GLogo} alt="logo" width={80} height={80} />
-// 							</Group>
-// 						</Grid.Col>
-// 						<Grid.Col span={4}>
-// 							<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-// 								{hospitalConfigData?.organization_name}
-// 							</Text>
-// 							<Text ta="center" size="sm" c="gray" mt="2">
-// 								{hospitalConfigData?.address}
-// 							</Text>
-// 							<Text ta="center" size="sm" c="gray" mb="2">
-// 								{t("হটলাইন")} {hospitalConfigData?.hotline}
-// 							</Text>
-
-// 							<Text ta="center" fw="bold" size="lg" c="#1e40af">
-// 								{t("Prescription")}
-// 							</Text>
-// 						</Grid.Col>
-// 						<Grid.Col span={4}>
-// 							<Group mr="md" justify="flex-end" align="center" h="100%">
-// 								<Image src={TBLogo} alt="logo" width={80} height={80} />
-// 							</Group>
-// 						</Grid.Col>
-// 					</Grid>
-// 				</Box>
-
-// 				{/* =============== patient information section ================ */}
-// 				<Box mb="sm">
-// 					<Grid columns={12} gutter="xs" px={4}>
-// 						<Grid.Col bd="1px solid #555" span={3} px="xs">
-// 							<Group gap="xs">
-// 								<Text size="sm">{getValue(customerInformation?.patient_id)}</Text>
-// 							</Group>
-// 						</Grid.Col>
-// 						<Grid.Col bd="1px solid #555" span={5} px="xs">
-// 							<Group gap="xs">
-// 								<Text size="sm" fw={600}>
-// 									{t("নাম")}:
-// 								</Text>
-// 								<Text size="sm">{getValue(customerInformation?.name, "N/A")}</Text>
-// 							</Group>
-// 						</Grid.Col>
-// 						<Grid.Col bd="1px solid #555" span={4} px="xs">
-// 							<Group gap="xs">
-// 								<Text size="sm" fw={600}>
-// 									{t("মোবাইল")}:
-// 								</Text>
-// 								<Text size="sm">{getValue(customerInformation?.mobile)}</Text>
-// 							</Group>
-// 						</Grid.Col>
-
-// 						<Grid.Col bd="1px solid #555" span={4} px="xs">
-// 							<Group gap="xs">
-// 								<Text size="xs" fw={600}>
-// 									{t("বয়স")}:
-// 								</Text>
-// 								<Text size="sm">
-// 									{" "}
-// 									{customerInformation?.day || 0} D {customerInformation?.month || ""} M{" "}
-// 									{customerInformation?.year || ""} Y
-// 								</Text>
-// 							</Group>
-// 						</Grid.Col>
-// 						<Grid.Col bd="1px solid #555" span={2} px="xs">
-// 							<Group gap="xs">
-// 								<Text size="xs" fw={600}>
-// 									{t("লিঙ্গ")}:
-// 								</Text>
-// 								<Text size="xs">{getValue(customerInformation?.gender, "N/A")}</Text>
-// 							</Group>
-// 						</Grid.Col>
-// 						<Grid.Col bd="1px solid #555" span={2} px="xs">
-// 							<Group gap="xs">
-// 								<Text size="xs" fw={600}>
-// 									{t("রক্তচাপ")}:
-// 								</Text>
-// 								<Text size="xs">{getValue(basicInfo?.bp)}</Text>
-// 							</Group>
-// 						</Grid.Col>
-
-// 						<Grid.Col bd="1px solid #555" span={2} px="xs">
-// 							<Group gap="xs">
-// 								<Text size="xs" fw={600}>
-// 									{t("ওজন")}:
-// 								</Text>
-// 								<Text size="xs">
-// 									{getValue(basicInfo?.weight)} {t("KG")}
-// 								</Text>
-// 							</Group>
-// 						</Grid.Col>
-// 						<Grid.Col bd="1px solid #555" span={2} px="xs">
-// 							<Group gap="xs">
-// 								<Text size="xs" fw={600}>
-// 									{t("রক্তের গ্রুপ")}:
-// 								</Text>
-// 								<Text size="xs">{getValue(basicInfo?.bloodGroup)}</Text>
-// 							</Group>
-// 						</Grid.Col>
-// 					</Grid>
-// 				</Box>
-
-// 				{/* =============== medical notes and prescription area with rx symbol ================ */}
-// 				<Box style={{ position: "relative", minHeight: "350px" }} mb="sm">
-// 					<Grid columns={12} gutter="md">
-// 						<Grid.Col span={4}>
-// 							<Stack gap="0px">
-// 								{patientExamination?.chief_complaints && (
-// 									<Box>
-// 										<Text size="sm" fw={600}>
-// 											C/C:
-// 										</Text>
-// 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-// 										<Text size="sm" c="gray" mt="-xs" mb="xs">
-// 											{(patientExamination?.chief_complaints || [])
-// 												.map(
-// 													(item) => `${item.name}: ${item.value} ${item.duration || "Day"}/s`
-// 												)
-// 												.join(", ") || "N/A"}
-// 										</Text>
-// 									</Box>
-// 								)}
-// 								{patientExamination?.ho_past_illness && (
-// 									<Box>
-// 										<Text size="sm" fw={600}>
-// 											H/O Past Illness:
-// 										</Text>
-// 										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
-// 										<Text size="sm" c="gray" mt="xs">
-// 											{(patientExamination?.ho_past_illness || [])
-// 												.map((item) => `${item.name} ${item.duration || "Day/s"}`)
-// 												.join(", ") || "N/A"}
-// 										</Text>
-// 									</Box>
-// 								)}
-// 								{patientExamination?.diagnosis && (
-// 									<Box>
-// 										<Text size="sm" fw={600}>
-// 											Diagnosis:
-// 										</Text>
-// 										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
-// 										<Text size="sm" c="gray" mt="0">
-// 											{(patientExamination?.diagnosis || [])
-// 												.map((item) => item.value)
-// 												.join(", ") || "N/A"}
-// 										</Text>
-// 									</Box>
-// 								)}
-
-// 								{patientExamination?.icd_11_listed_diseases && (
-// 									<Box>
-// 										<Text size="sm" fw={600}>
-// 											ICD-11 listed diseases:
-// 										</Text>
-// 										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
-// 										<Text size="sm" c="gray" mt="xs">
-// 											{(patientExamination?.icd_11_listed_diseases || []).join(", ") || "N/A"}
-// 										</Text>
-// 									</Box>
-// 								)}
-
-// 								{patientExamination?.comorbidity && (
-// 									<Box>
-// 										<Text size="sm" fw={600}>
-// 											Comorbidity:
-// 										</Text>
-// 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-// 										<Text size="sm" c="gray" mt="-xs" mb="xs">
-// 											{(patientExamination?.comorbidity || [])
-// 												.filter((item) => item.value)
-// 												.map((item) => item.name)
-// 												.join(", ") || "N/A"}
-// 										</Text>
-// 									</Box>
-// 								)}
-// 								{patientExamination?.["treatment-history"] && (
-// 									<Box>
-// 										<Text size="sm" fw={600}>
-// 											Treatment History:
-// 										</Text>
-// 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-// 										<Text size="sm" c="gray" mt="-xs" mb="xs">
-// 											{(patientExamination?.["treatment-history"] || [])
-// 												.map((item) => item.value)
-// 												.join(", ") || "N/A"}
-// 										</Text>
-// 									</Box>
-// 								)}
-// 								{patientExamination?.on_examination && (
-// 									<Box>
-// 										<Text size="sm" fw={600}>
-// 											On/Examination:
-// 										</Text>
-// 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-// 										<Text size="sm" c="gray" mt="-xs" mb="xs">
-// 											N/A
-// 										</Text>
-// 									</Box>
-// 								)}
-// 								{patientExamination?.investigation && (
-// 									<Box>
-// 										<Text size="sm" fw={600}>
-// 											Investigation:
-// 										</Text>
-// 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-// 										<Text size="sm" c="gray" mt="-xs" mb="xs">
-// 											{(patientExamination?.investigation || [])
-// 												.map((item) => item.value)
-// 												.join(", ") || "N/A"}
-// 										</Text>
-// 									</Box>
-// 								)}
-// 							</Stack>
-// 						</Grid.Col>
-// 						<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
-// 							<Stack gap="xs" mih={200}>
-// 								{medicines.map((medicine, index) => (
-// 									<Box key={index}>
-// 										<Text size="sm" fw={600} mb="xs">
-// 											{index + 1}. {getValue(medicine.medicine_name)}
-// 										</Text>
-// 										<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
-// 											{getValue(medicine.dose_details)} {getValue(medicine.by_meal)}{" "}
-// 											{getValue(medicine.duration)} {getValue(medicine.quantity)}
-// 										</Text>
-// 									</Box>
-// 								))}
-// 								{/* {medicines.length === 0 && (
-// 									<Text size="sm" c="gray">
-// 										No medicines prescribed
-// 									</Text>
-// 								)} */}
-// 							</Stack>
-
-// 							<CustomDivider mt="xl" mb="md" />
-// 							<Text size="sm" fw={600} mb="xs">
-// 								অন্যান্য নির্দেশাবলী:
-// 							</Text>
-// 							<Text size="sm">{getValue(patientInfo.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}</Text>
-// 						</Grid.Col>
-// 					</Grid>
-// 				</Box>
-
-// 				{/* =============== new prescription layout matching the image ================ */}
-// 				<Box p={20} bd="1px solid #555" style={{ borderRadius: "4px" }}>
-// 					{/* =============== top section with printed by and signature ================ */}
-// 					<Grid columns={12} gutter="md">
-// 						<Grid.Col span={6}>
-// 							<Stack gap="0px">
-// 								<Text size="sm" fw={600}>
-// 									Name:
-// 								</Text>
-// 								<CustomDivider w="80%" />
-// 								<Text size="sm" fw={600}>
-// 									Designation:
-// 								</Text>
-// 								<CustomDivider w="80%" />
-// 							</Stack>
-// 						</Grid.Col>
-// 						<Grid.Col span={6}>
-// 							<Text pt="50px" size="sm" fw={600}>
-// 								Signature:
-// 							</Text>
-// 							<CustomDivider w="80%" />
-// 						</Grid.Col>
-// 					</Grid>
-// 				</Box>
-// 				<DashedDivider mb="xs" />
-
-// 				{/* =============== bottom section with patient info and medication table ================ */}
-// 				<Grid columns={12} gutter="md" mb="lg">
-// 					<Grid.Col span={4}>
-// 						<Stack gap="6px">
-// 							<Text size="sm" fw={500}>
-// 								Patient Name: {getValue(customerInformation?.name, "N/A")}
-// 							</Text>
-// 							<Text size="sm">
-// 								Age: {getValue(customerInformation?.year, "N/A")} Y. Sex:{customerInformation?.gender}
-// 							</Text>
-// 							<Text size="sm" fw={600} mt="sm">
-// 								Doctor Comments:
-// 							</Text>
-// 							<Text size="sm" c="gray">
-// 								{getValue(patientInfo?.advise, "N/A")}
-// 							</Text>
-// 						</Stack>
-// 					</Grid.Col>
-// 					<Grid.Col span={8}>
-// 						{/* =============== medication table ================ */}
-// 						<Box style={{ border: "1px solid #333", borderRadius: "4px", overflow: "hidden" }}>
-// 							<Grid columns={4}>
-// 								<Grid.Col
-// 									span={3}
-// 									p={10}
-// 									bg="#f8f9fa"
-// 									style={{
-// 										borderRight: "1px solid #333",
-// 										borderBottom: "1px solid #333",
-// 									}}
-// 								>
-// 									<Text size="sm" fw={600} pl={4} ta="left">
-// 										Generic
-// 									</Text>
-// 								</Grid.Col>
-// 								<Grid.Col
-// 									span={1}
-// 									p={10}
-// 									bg="#f8f9fa"
-// 									style={{
-// 										borderBottom: "1px solid #333",
-// 									}}
-// 								>
-// 									<Text size="sm" fw={600} ta="center">
-// 										Quantity
-// 									</Text>
-// 								</Grid.Col>
-// 								{medicines?.map((medicine, index) => (
-// 									<>
-// 										<Grid.Col
-// 											key={`name-${index}`}
-// 											span={3}
-// 											p={10}
-// 											style={{
-// 												borderRight: "1px solid #333",
-// 												borderBottom: index < medicines.length - 1 ? "1px solid #333" : "none",
-// 											}}
-// 										>
-// 											<Text size="sm" pl={4}>
-// 												{index + 1}. {getValue(medicine.generic)}
-// 											</Text>
-// 										</Grid.Col>
-// 										<Grid.Col
-// 											key={`count-${index}`}
-// 											span={1}
-// 											p={10}
-// 											style={{
-// 												borderBottom: index < medicines.length - 1 ? "1px solid #333" : "none",
-// 											}}
-// 										>
-// 											<Text size="sm" ta="center" fw={500}>
-// 												{getValue(medicine.amount, "1")}
-// 											</Text>
-// 										</Grid.Col>
-// 									</>
-// 								))}
-// 								{medicines?.length === 0 && (
-// 									<>
-// 										<Grid.Col span={3} p={10} style={{ borderRight: "1px solid #333" }}>
-// 											<Text size="sm" pl={4}>
-// 												No medicines
-// 											</Text>
-// 										</Grid.Col>
-// 										<Grid.Col span={1} p={10}>
-// 											<Text size="sm" ta="center" fw={500}>
-// 												-
-// 											</Text>
-// 										</Grid.Col>
-// 									</>
-// 								)}
-// 							</Grid>
-// 						</Box>
-// 					</Grid.Col>
-// 				</Grid>
-
-// 				{/* =============== footer with prescribed by ================ */}
-// 				<Box ta="center" mt="xs">
-// 					<Text size="sm" fw={600} c="#1e40af">
-// 						Prescribed By: Doctor ID {getValue(data?.doctor_id, "N/A")}
-// 					</Text>
-// 					<Text size="sm" c="gray" mt="xs">
-// 						Prescription Date: {formatDate(patientInfo?.prescription_date)}
-// 					</Text>
-// 					{patientInfo?.follow_up_date && (
-// 						<Text size="sm" c="gray" mt="xs">
-// 							Follow Up Date: {formatDate(patientInfo?.follow_up_date)}
-// 						</Text>
-// 					)}
-// 				</Box>
-// 			</Box>
-// 		</Box>
-// 	);
-// });
-
-// PrescriptionFull.displayName = "Prescription2";
-
-// export default PrescriptionFull;
+// NOTE: this template will replace this file: src/common/components/print-formats/prescription/PrescriptionFull.jsx
 
 import { Box, Text, Grid, Group, Stack, Image, Flex } from "@mantine/core";
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import DashedDivider from "@components/core-component/DashedDivider";
@@ -428,18 +10,16 @@ import { formatDate } from "@/common/utils";
 import "@/index.css";
 import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
-import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {
-	const { data: prescriptionData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/59`,
-	});
-	const patientInfo = prescriptionData?.data || {};
+	// const { data: prescriptionData } = useDataWithoutStore({
+	// 	url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
+	// });
+	const patientInfo = data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
-	const invoiceDetails = prescriptionData?.data?.invoice_details || {};
+	// const invoiceDetails = prescriptionData?.data?.invoice_details || {};
 	const patientReport = jsonContent?.patient_report || {};
-	const basicInfo = patientReport?.basic_info || {};
+	const order = patientReport?.order || {};
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = jsonContent?.medicines || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
@@ -449,9 +29,147 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 		return value || defaultValue;
 	};
 
-	console.log(jsonContent);
+	//	const [digitalSignature, setDigitalSignature] = useState([]);
 
-	const [digitalSignature, setDigitalSignature] = useState([]);
+	// Normalize order into an array of keys sorted by their index
+	const normalizeOrder = (inputOrder) => {
+		if (Array.isArray(inputOrder)) {
+			const entries = inputOrder.flatMap((obj) => Object.entries(obj));
+			return entries.sort((a, b) => a[1] - b[1]).map(([key]) => key);
+		}
+		if (inputOrder && typeof inputOrder === "object") {
+			return Object.keys(inputOrder).sort((a, b) => (inputOrder?.[a] ?? 0) - (inputOrder?.[b] ?? 0));
+		}
+		return [];
+	};
+
+	const orderedExamKeys = normalizeOrder(order);
+
+	const hasArrayWithLength = (arr) => Array.isArray(arr) && arr.length > 0;
+
+	const SectionWrapper = ({ label, children }) => (
+		<Box>
+			<Text size="sm" fw={600}>
+				{label}
+			</Text>
+			<CustomDivider mb="es" borderStyle="dashed" w="90%" />
+			{children}
+		</Box>
+	);
+
+	const renderNumberedList = (items, formatItem) => {
+		return (
+			<Stack gap="0px" mt="0">
+				{items.map((item, idx) => (
+					<Text key={idx} size="xs" c="black.5" mt="0">
+						{idx + 1}. {formatItem(item)}
+					</Text>
+				))}
+			</Stack>
+		);
+	};
+
+	const renderPlainJoined = (items, mapFn) => (
+		<Text size="xs" c="black.5" mt="0">
+			{items.map(mapFn).join(", ") || "Headache, Fever"}
+		</Text>
+	);
+
+	const renderOtherInstructions = (key) => {
+		const otherKey = `${key}_other_instructions`;
+		const text = patientExamination?.[otherKey];
+		if (!text) return null;
+		return (
+			<Text size="xs" c="gray" mt="xs">
+				{text}
+			</Text>
+		);
+	};
+
+	const renderExaminationSection = (key) => {
+		const dataArray = patientExamination?.[key];
+		if (!hasArrayWithLength(dataArray)) return null;
+
+		switch (key) {
+			case "chief_complaints": {
+				return (
+					<SectionWrapper label="C/C:">
+						{renderNumberedList(
+							dataArray,
+							(item) => `${item.name}: ${item.value} ${item.duration || "Day"}/s`
+						)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+			case "investigation": {
+				return (
+					<SectionWrapper label="Investigation:">
+						{renderNumberedList(dataArray, (item) => `${item.value}`)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+			case "ho_past_illness": {
+				return (
+					<SectionWrapper label="H/O Past Illness:">
+						{renderPlainJoined(dataArray, (item) => `${item.name}`)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+			case "diagnosis": {
+				return (
+					<SectionWrapper label="Diagnosis:">
+						{renderPlainJoined(dataArray, (item) => `${item.value}`)}
+					</SectionWrapper>
+				);
+			}
+			case "icd_11_listed_diseases": {
+				return (
+					<SectionWrapper label="ICD-11 listed diseases:">
+						<Text size="xs" c="black.5" mt="0">
+							{dataArray.join(", ") || "Headache, Fever"}
+						</Text>
+					</SectionWrapper>
+				);
+			}
+			case "comorbidity": {
+				return (
+					<SectionWrapper label="Comorbidity:">
+						{renderPlainJoined(
+							dataArray.filter((item) => item.value),
+							(item) => `${item.name}`
+						)}
+					</SectionWrapper>
+				);
+			}
+			case "treatment-history": {
+				return (
+					<SectionWrapper label="Treatment History:">
+						{renderPlainJoined(dataArray, (item) => `${item.value}`)}
+					</SectionWrapper>
+				);
+			}
+			case "cabin": {
+				return (
+					<SectionWrapper label="Cabin:">
+						{renderPlainJoined(dataArray, (item) => `${item.name}: ${item.value}`)}
+					</SectionWrapper>
+				);
+			}
+			default: {
+				// Generic renderer: prefer value, fallback to name
+				return (
+					<SectionWrapper label={`${key.replaceAll("_", " ")}:`}>
+						{renderPlainJoined(dataArray, (item) => `${item.value ?? item.name ?? ""}`)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+		}
+	};
+
 	const renderImagePreview = (imageArray, fallbackSrc = null) => {
 		if (imageArray.length > 0) {
 			const imageUrl = URL.createObjectURL(imageArray[0]);
@@ -551,7 +269,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								</Text>
 								<Text size="xs">
 									{" "}
-									{patientInfo?.day || 1} D {patientInfo?.month || 1} M {patientInfo?.year || ""} Y
+									{patientInfo?.day || 0} D {patientInfo?.month || 0} M {patientInfo?.year || 0} Y
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -587,112 +305,11 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 					<Grid columns={12} gutter="md">
 						<Grid.Col span={4}>
 							<Stack gap="0px">
-								{patientExamination?.chief_complaints && (
-									<Box>
-										<Text size="sm" fw={600}>
-											C/C:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.chief_complaints || [])
-												.map(
-													(item) => `${item.name}: ${item.value} ${item.duration || "Day"}/s`
-												)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.ho_past_illness && (
-									<Box>
-										<Text size="sm" fw={600}>
-											H/O Past Illness:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.ho_past_illness || [])
-												.map((item) => `${item.name}`)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.diagnosis && (
-									<Box>
-										<Text size="sm" fw={600}>
-											Diagnosis:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.diagnosis || [])
-												.map((item) => item.value)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-
-								{patientExamination?.icd_11_listed_diseases && (
-									<Box>
-										<Text size="sm" fw={600}>
-											ICD-11 listed diseases:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.icd_11_listed_diseases || []).join(", ") ||
-												"Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-
-								{patientExamination?.comorbidity && (
-									<Box>
-										<Text size="sm" fw={600}>
-											Comorbidity:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.comorbidity || [])
-												.filter((item) => item.value)
-												.map((item) => item.name)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.["treatment-history"] && (
-									<Box>
-										<Text size="sm" fw={600}>
-											Treatment History:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.["treatment-history"] || [])
-												.map((item) => item.value)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.on_examination && (
-									<Box>
-										<Text size="sm" fw={600}>
-											On/Examination:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="sm" c="gray" mt="-xs" mb="xs">
-											Headache, Fever
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.investigation && (
-									<Box>
-										<Text size="sm" fw={600}>
-											Investigation:
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="black.5" mt="0">
-											{(patientExamination?.investigation || [])
-												.map((item) => item.value)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
+								{(orderedExamKeys.length > 0 ? orderedExamKeys : Object.keys(patientExamination || {}))
+									.filter((key) => hasArrayWithLength(patientExamination?.[key]))
+									.map((key) => (
+										<Box key={key}>{renderExaminationSection(key)}</Box>
+									))}
 							</Stack>
 						</Grid.Col>
 						<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
@@ -709,26 +326,27 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 										<Text size="xs" fw={600}>
 											{exEmergencies.length + index + 1}. {getValue(medicine.medicine_name)}
 										</Text>
-										{(medicine.dosages || []).map((dose, dIdx) => (
-											<Text
-												key={dose.id ?? dIdx}
-												size="xs"
-												c="var(--theme-tertiary-color-8)"
-												ml="md"
-											>
-												{getValue(dose.dose_details)} {" ------- "}
-												{getValue(dose.by_meal)} {" ------- "}
-												{getValue(dose.quantity)} {getValue(medicine.duration)}
-											</Text>
-										))}
-										{
+										{medicine.dosages ? (
+											medicine.dosages?.map((dose, dIdx) => (
+												<Text
+													key={dose.id ?? dIdx}
+													size="xs"
+													c="var(--theme-tertiary-color-8)"
+													ml="md"
+												>
+													{getValue(dose.dose_details)} {" ------- "}
+													{getValue(dose.by_meal)} {" ------- "}
+													{getValue(dose.quantity)} {getValue(medicine.duration)}
+												</Text>
+											))
+										) : (
 											<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
 												{getValue(medicine.dose_details)} {" -------"}{" "}
 												{getValue(medicine.by_meal)}
 												{" -------"}
 												{getValue(medicine.quantity)} {getValue(medicine.duration)}
 											</Text>
-										}
+										)}
 									</Box>
 								))}
 							</Stack>
@@ -756,7 +374,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Text size="sm" fw={600}>
-								{renderImagePreview(digitalSignature, patientInfo?.signature_path)}
+								{renderImagePreview([], patientInfo?.signature_path)}
 							</Text>
 						</Grid.Col>
 					</Grid>

@@ -1,4 +1,4 @@
-import { ActionIcon, Autocomplete, Box, Flex, Grid, Input, NumberInput, Stack, Text } from "@mantine/core";
+import { ActionIcon, Autocomplete, Box, Flex, Grid, Input, NumberInput, Select, Stack, Text } from "@mantine/core";
 import { IconCheck, IconMedicineSyrup, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -192,7 +192,7 @@ export default function MedicineListItem({
 											/>
 										</Grid.Col>
 										<Grid.Col span={3}>
-											<Autocomplete
+											<Select
 												size="xs"
 												label=""
 												data={DURATION_UNIT_OPTIONS}

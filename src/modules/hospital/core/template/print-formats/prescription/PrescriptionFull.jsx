@@ -13,9 +13,9 @@ import { t } from "i18next";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
-const PrescriptionFull = forwardRef((props, ref) => {
+const PrescriptionFull = forwardRef(({ prescriptionId }, ref) => {
 	const { data: prescriptionData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/59`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId || "59"}`,
 	});
 	const patientInfo = prescriptionData?.data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
@@ -30,8 +30,6 @@ const PrescriptionFull = forwardRef((props, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-
-	console.log(jsonContent);
 
 	//	const [digitalSignature, setDigitalSignature] = useState([]);
 
@@ -273,7 +271,7 @@ const PrescriptionFull = forwardRef((props, ref) => {
 								</Text>
 								<Text size="xs">
 									{" "}
-									{patientInfo?.day || 1} D {patientInfo?.month || 1} M {patientInfo?.year || ""} Y
+									{patientInfo?.day || 0} D {patientInfo?.month || 0} M {patientInfo?.year || 0} Y
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -330,26 +328,27 @@ const PrescriptionFull = forwardRef((props, ref) => {
 										<Text size="xs" fw={600}>
 											{exEmergencies.length + index + 1}. {getValue(medicine.medicine_name)}
 										</Text>
-										{(medicine.dosages || []).map((dose, dIdx) => (
-											<Text
-												key={dose.id ?? dIdx}
-												size="xs"
-												c="var(--theme-tertiary-color-8)"
-												ml="md"
-											>
-												{getValue(dose.dose_details)} {" ------- "}
-												{getValue(dose.by_meal)} {" ------- "}
-												{getValue(dose.quantity)} {getValue(medicine.duration)}
-											</Text>
-										))}
-										{
+										{medicine.dosages ? (
+											medicine.dosages?.map((dose, dIdx) => (
+												<Text
+													key={dose.id ?? dIdx}
+													size="xs"
+													c="var(--theme-tertiary-color-8)"
+													ml="md"
+												>
+													{getValue(dose.dose_details)} {" ------- "}
+													{getValue(dose.by_meal)} {" ------- "}
+													{getValue(dose.quantity)} {getValue(medicine.duration)}
+												</Text>
+											))
+										) : (
 											<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
 												{getValue(medicine.dose_details)} {" -------"}{" "}
 												{getValue(medicine.by_meal)}
 												{" -------"}
 												{getValue(medicine.quantity)} {getValue(medicine.duration)}
 											</Text>
-										}
+										)}
 									</Box>
 								))}
 							</Stack>
