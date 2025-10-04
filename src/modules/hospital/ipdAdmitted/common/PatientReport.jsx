@@ -24,7 +24,7 @@ import { useTranslation } from "react-i18next";
 
 export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 260;
+	const height = mainAreaHeight - 230;
 	const { t } = useTranslation();
 
 	const [autocompleteValues, setAutocompleteValues] = useState({});

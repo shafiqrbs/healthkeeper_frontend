@@ -457,7 +457,7 @@ export default function AddMedicineForm({
 				onSubmit={medicineForm.onSubmit(handleAdd)}
 				key={updateKey}
 				component="form"
-				bg="var(--theme-primary-color-0)"
+				bg="var(--theme-secondary-color-0)"
 				p="sm"
 			>
 				<Grid w="100%" columns={24} gutter="xxxs">

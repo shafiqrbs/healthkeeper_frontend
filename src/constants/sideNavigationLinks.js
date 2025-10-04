@@ -279,14 +279,21 @@ export const sideNavigationLinks = {
 
 		{
 			label: t("Users"),
-			path: "/core/user",
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.USER.INDEX,
 			icon: IconDashboard,
 			color: "#4CAF50",
 			allowedRoles: ["role_domain", "admin_administrator"],
 		},
 		{
 			label: t("Category"),
-			path: "/hospital/core/category",
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.CATEGORY.INDEX,
+			icon: IconDashboard,
+			color: "#6f1225",
+			allowedRoles: ["role_domain", "admin_administrator"],
+		},
+		{
+			label: t("Store"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.STORE.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
 			allowedRoles: ["role_domain", "admin_administrator"],
@@ -300,7 +307,7 @@ export const sideNavigationLinks = {
 		},
 		{
 			label: t("Setting"),
-			path: "/core/setting",
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.SETTING.INDEX,
 			icon: IconDashboard,
 			color: "#4CAF50",
 			allowedRoles: ["role_domain", "admin_administrator"],
@@ -331,6 +338,13 @@ export const sideNavigationLinks = {
 		{
 			label: t("Workorder"),
 			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX,
+			icon: IconDashboard,
+			color: "#6f1225",
+			allowedRoles: ["role_domain", "admin_administrator"],
+		},
+		{
+			label: t("Medicine"),
+			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
 			allowedRoles: ["role_domain", "admin_administrator"],

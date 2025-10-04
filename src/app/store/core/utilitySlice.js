@@ -8,6 +8,7 @@ export const CORE_DROPDOWNS = {
 	RELIGION: { UTILITY: "religion", TYPE: "religion", PATH: "core/select/setting" },
 	DESIGNATION: { UTILITY: "designation", TYPE: "designation", PATH: "core/select/setting" },
 	DEPARTMENT: { UTILITY: "department", TYPE: "department", PATH: "core/select/setting" },
+	WAREHOUSE: { UTILITY: "warehouse", TYPE: "warehouse", PATH: "core/select/warehouse" },
 	CUSTOMER_GROUP: { UTILITY: "customerGroup", TYPE: "customer-group", PATH: "utility/select/setting" },
 	BUSINESS_MODEL: { UTILITY: "businessModel", TYPE: "business-model", PATH: "utility/select/setting" },
 	MODULE: { UTILITY: "module", TYPE: "module", PATH: "utility/select/setting" },

@@ -5,6 +5,7 @@ import GovtLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import { getLoggedInUser } from "@/common/utils";
 import { useTranslation } from "react-i18next";
 import useDomainHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
+import Barcode from "react-barcode";
 
 const DashedLine = () => (
 	<Text size="xxs" ta="center" ff="monospace">
@@ -16,23 +17,23 @@ const OPDPos = forwardRef(({ data }, ref) => {
 	const user = getLoggedInUser();
 	const { t } = useTranslation();
 	const { hospitalConfigData } = useDomainHospitalConfigData();
-
+	const patientInfo = data
 	return (
 		<Box display="none">
-			<Box ref={ref} w="80mm" p={8} bg="white" mx="auto">
+			<Box ref={ref} w="80mm" p={8} bg="white" mx="auto" bd="1px solid black">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="space-between" align="center" gap={8}>
 						<Image src={GovtLogo} alt="Govt Logo" width={30} height={30} fit="contain" />
 						<Stack gap={0} ta="left">
 							<Text ta="center" size="xs" fw={700}>
-								{hospitalConfigData?.organization_name}
+								{hospitalConfigData?.organization_name || "Hospital"}
 							</Text>
 							<Text ta="center" size="xxs">
-								{hospitalConfigData?.address}
+								{hospitalConfigData?.address || "Uttara"}
 							</Text>
 							<Text ta="center" size="8px">
-								{t("হটলাইন")} {hospitalConfigData?.hotline}
+								{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
 							</Text>
 						</Stack>
 						<Image src={TbImage} alt="TB Hospital" width={30} height={30} fit="contain" />
@@ -41,10 +42,10 @@ const OPDPos = forwardRef(({ data }, ref) => {
 
 					{/* =============== prescription title =============== */}
 					<Text size="sm" fw={700} ta="center">
-						{t("টিকিট")} - {data?.payment_mode_name}
+						{t("টিকিট")} - {patientInfo?.payment_mode_name || "Cash"}
 					</Text>
 					<Text size="xs" fw={700} ta="center">
-						<strong>{t("বহির্বিভাগ কক্ষ")}:</strong> {data?.room_name}
+						<strong>{t("বহির্বিভাগ কক্ষ")}:</strong> {patientInfo?.room_name || "Room 1"}
 					</Text>
 					<DashedLine />
 
@@ -54,31 +55,31 @@ const OPDPos = forwardRef(({ data }, ref) => {
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td>
-									<strong>তারিখ:</strong> {data?.created}
+									<strong>তারিখ:</strong> {patientInfo?.created || "2021-01-01"}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>অ্যাপয়েন্টমেন্ট তারিখ:</strong> {data?.appointment}
+
 								</Table.Td>
 							</Table.Tr>
-							{data?.health_id && (
+							{patientInfo?.health_id && (
 								<Table.Tr>
 									<Table.Td colspan={2} align="center">
-										<strong>HID:</strong> {data?.health_id}
+										<strong>HID:</strong> {patientInfo?.health_id || "HID-987654321"}
 									</Table.Td>
 								</Table.Tr>
 							)}
 							<Table.Tr>
 								<Table.Td>
-									<strong>{data?.invoice}</strong>
+									<strong>{patientInfo?.invoice || "INV-987654321"}</strong>
 								</Table.Td>
-								<Table.Td align="right">{data?.patient_id}</Table.Td>
+								<Table.Td align="right">{patientInfo?.patient_id || "PT-987654321"}</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>মোড:</strong> {data?.mode_name}
+									<strong>মোড:</strong> {patientInfo?.mode_name || "OPD"}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>কক্ষ:</strong> {data?.room_name}
+									<strong>কক্ষ:</strong> {patientInfo?.room_name || "Room 1"}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
@@ -86,46 +87,47 @@ const OPDPos = forwardRef(({ data }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2}>
-									<strong>{t("নাম")}:</strong> {data?.name}
+									<strong>{t("নাম")}:</strong> {patientInfo?.name || "John Doe"}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("লিঙ্গ")}:</strong> {data?.gender}
+									<strong>{t("লিঙ্গ")}:</strong> {patientInfo?.gender && patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>{t("মোবাইল")}:</strong> {data?.mobile}
+									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || "01717171717"}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("বয়স")}</strong> {data?.day} {t("দিন")} {data?.month} {t("মাস")}{" "}
-									{data?.year} {t("বছর")}
+									<strong>{t("বয়স")}</strong> {patientInfo?.day || 1} {t("দিন")} {patientInfo?.month || 1}{" "}
+									{t("মাস")} {patientInfo?.year} {t("বছর")}
 								</Table.Td>
 								<Table.Td miw={100} align="right">
-									{data?.dob && (
-									<>
-									<strong>{t("জন্ম")}</strong> {data?.dob}
-									</>
+									{patientInfo?.dob && (
+										<>
+											<strong>{t("জন্ম")}</strong> {patientInfo?.dob}
+										</>
 									)}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2}>
-									<strong>{t("ঠিকানা")}</strong> {data?.address}
+									<strong>{t("ঠিকানা")}</strong> {patientInfo?.address || "Uttara"}
 								</Table.Td>
 							</Table.Tr>
-							{data?.guardian_name && (
+							{patientInfo?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>
-										<strong>{t("অভিভাবকের নাম")}:</strong> {data?.guardian_name}
+										<strong>{t("অভিভাবকের নাম")}:</strong> {patientInfo?.guardian_name || "John Doe"}
 									</Table.Td>
 								</Table.Tr>
 							)}
-							{data?.guardian_mobile && data?.guardian_name && (
+							{patientInfo?.guardian_mobile && patientInfo?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>
-										<strong>{t("অভিভাবকের মোবাইল")}:</strong> {data?.guardian_mobile}
+										<strong>{t("অভিভাবকের মোবাইল")}:</strong>{" "}
+										{patientInfo?.guardian_mobile || "01717171717"}
 									</Table.Td>
 								</Table.Tr>
 							)}
@@ -141,7 +143,7 @@ const OPDPos = forwardRef(({ data }, ref) => {
 							{t("ফি পরিমাণ")}:
 						</Text>
 						<Text size="xs" fw={600}>
-							৳ {data?.total || 0}
+							৳ {patientInfo?.total || 100}
 						</Text>
 					</Group>
 					<DashedLine />
@@ -151,15 +153,21 @@ const OPDPos = forwardRef(({ data }, ref) => {
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("প্রস্তুতকারী")}:</strong> {data?.created_by_name}
+									<strong>{t("প্রস্তুতকারী")}:</strong> {patientInfo?.created_by_name || "John Doe"}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>{t("প্রিন্ট")}:</strong> {user?.name}
+									<strong>{t("প্রিন্ট")}:</strong> {user?.name || "John Doe"}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
-									<strong>{t("প্রিন্টের সময়")}:</strong> {new Date().toLocaleString()}
+									<Barcode fontSize={'12'} width={'1'} height={'40'} value={patientInfo?.barcode}/>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr>
+								<Table.Td colSpan={2} align="center">
+									<strong>{t("প্রিন্টের সময়")}:</strong>{" "}
+									{new Date().toLocaleString() || "2021-01-01"}
 								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>

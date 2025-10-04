@@ -69,6 +69,16 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	medicine: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
 	bed: {
 		isLoading: true,
 		refetching: false,
@@ -369,6 +379,15 @@ const initialState = {
 		filterData: { name: "", code: "", description: "" },
 	},
 	setting: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		editData: {},
+		filterData: { name: "" },
+	},
+	store: {
 		isLoading: true,
 		refetching: true,
 		error: null,

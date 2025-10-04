@@ -116,7 +116,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			patient_mode: "opd",
+			patient_mode: ['opd','emergency'],
 			term: filterData.keywordSearch,
 			room_id: opdRoomId,
 			prescription_mode: processTab,

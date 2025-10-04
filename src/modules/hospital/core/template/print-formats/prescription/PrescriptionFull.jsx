@@ -12,10 +12,13 @@ import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigDat
 import { t } from "i18next";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import Barcode from "react-barcode";
 
-const PrescriptionFull = forwardRef(({ prescriptionId }, ref) => {
+
+const PrescriptionFull = forwardRef((props, ref) => {
+
 	const { data: prescriptionData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId || "59"}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/79`,
 	});
 	const patientInfo = prescriptionData?.data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
@@ -326,8 +329,9 @@ const PrescriptionFull = forwardRef(({ prescriptionId }, ref) => {
 								{medicines.map((medicine, index) => (
 									<Box key={index}>
 										<Text size="xs" fw={600}>
-											{exEmergencies.length + index + 1}. {getValue(medicine.medicine_name)}
+											{exEmergencies.length + index + 1}. {getValue(medicine.medicine_id ? medicine.medicine_name : medicine.generic)}
 										</Text>
+
 										{medicine.dosages ? (
 											medicine.dosages?.map((dose, dIdx) => (
 												<Text
@@ -343,9 +347,8 @@ const PrescriptionFull = forwardRef(({ prescriptionId }, ref) => {
 											))
 										) : (
 											<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
-												{getValue(medicine.dose_details)} {" -------"}{" "}
-												{getValue(medicine.by_meal)}
-												{" -------"}
+												{getValue(medicine.dose_details)} {" ------- "}
+												{getValue(medicine.by_meal)} {" ------- "}
 												{getValue(medicine.quantity)} {getValue(medicine.duration)}
 											</Text>
 										)}
@@ -354,14 +357,22 @@ const PrescriptionFull = forwardRef(({ prescriptionId }, ref) => {
 							</Stack>
 							<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
 							<Text size="sm" fw={600}>
-								অন্যান্য নির্দেশাবলী:
+								উপদেশ: {getValue(jsonContent.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}
 							</Text>
-							<Text size="sm">{getValue(jsonContent.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}</Text>
-							<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
-							<Text size="sm" fw={600}>
-								বিশেষ নির্দেশাবলী:
-							</Text>
-							<Text size="sm">{getValue(jsonContent.instruction)}</Text>
+							{patientInfo?.referred_comment && (
+								<>
+									<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
+									<Text size="xs" fw={400}>
+										উল্লেখিত: {getValue(patientInfo?.referred_comment)}
+									</Text>
+								</>
+							)}
+
+							{jsonContent?.follow_up_date && (
+								<Text size="sm" c="gray" mt="xs">
+									Follow Up Date: {formatDate(jsonContent?.follow_up_date)}
+								</Text>
+							)}
 						</Grid.Col>
 					</Grid>
 				</Box>
@@ -373,6 +384,9 @@ const PrescriptionFull = forwardRef(({ prescriptionId }, ref) => {
 						<Grid.Col span={6} pl={"xl"} pt={"md"}>
 							<Text fz={"xl"}>{patientInfo?.doctor_name}</Text>
 							<Text fz={"xs"}>{patientInfo?.designation_name}</Text>
+							<Text fz="xs">
+								Doctor ID {getValue(patientInfo?.employee_id, )}
+							</Text>
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Text size="sm" fw={600}>
@@ -386,23 +400,23 @@ const PrescriptionFull = forwardRef(({ prescriptionId }, ref) => {
 				<Grid columns={12} gutter="md" mb="lg">
 					<Grid.Col span={4}>
 						<Stack gap="6px">
-							<Text size="sm" fw={500}>
+							<Text size="xs" fw={500}>
 								Name: {getValue(patientInfo?.name)}
 							</Text>
-							<Text size="sm" fw={500}>
-								Mobile: {getValue(patientInfo?.mobile)}
-							</Text>
 							<Text size="xs" fw={500}>
-								Room: {getValue(patientInfo?.room_name)}
+								Mobile: {getValue(patientInfo?.mobile)}
 							</Text>
 							<Text size="xs">
 								Age: {getValue(patientInfo?.year, "25")} Y. Sex:{patientInfo?.gender}
 							</Text>
-							<Text size="sm" fw={600}>
-								Doctor Comments:
+							<Text size="xs" fw={600} c="#1e40af">
+								Doctor By: {getValue(patientInfo?.doctor_name)}
 							</Text>
-							<Text size="xs" c="gray">
-								{getValue(jsonContent?.pharmacy_instruction)}
+							<Text size="xs">
+								Doctor ID- {getValue(patientInfo?.employee_id, )}
+							</Text>
+							<Text size="xs">
+								Designation: {getValue(patientInfo?.designation_name)}
 							</Text>
 						</Stack>
 					</Grid.Col>
@@ -430,37 +444,32 @@ const PrescriptionFull = forwardRef(({ prescriptionId }, ref) => {
 							</Grid>
 							{medicines?.map((medicine, index) => (
 								<>
+									{medicine.medicine_id && medicine?.opd_quantity > 0 && (
 									<Grid columns={24} m={4} p={4}>
 										<Grid.Col span={20} m={0} p={0}>
 											<Text size="xs" pl={4}>
-												{index + 1}. {getValue(medicine.generic)}
+												{index + 1}. {getValue(medicine.medicine_id ? medicine.generic : '')}
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={4} m={0} p={0}>
 											<Text size="sm" ta="center" fw={500}>
-												{getValue(medicine.quantity, "1")}
+												{getValue(medicine?.opd_quantity, "")}
 											</Text>
 										</Grid.Col>
 									</Grid>
+									)}
 								</>
 							))}
 						</Box>
+						<Box align={'center'}><Barcode fontSize={'12'} width={'1'} height={'40'} value={patientInfo?.barcode}/></Box>
 					</Grid.Col>
 				</Grid>
 
 				{/* =============== footer with prescribed by ================ */}
 				<Box ta="center" mt="xs">
-					<Text size="sm" fw={600} c="#1e40af">
-						Prescribed By: Doctor ID {getValue(patientInfo?.employee_id, "DOC-987654321")}
-					</Text>
 					<Text size="sm" c="gray" mt="xs">
 						Prescription Date: {formatDate(new Date())}
 					</Text>
-					{patientInfo?.follow_up_date && (
-						<Text size="sm" c="gray" mt="xs">
-							Follow Up Date: {formatDate(new Date())}
-						</Text>
-					)}
 				</Box>
 			</Box>
 		</Box>

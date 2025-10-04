@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import useDomainHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
+import Barcode from "react-barcode";
 
 const DashedLine = () => (
 	<Text size="xxs" ta="center" ff="monospace">
@@ -19,7 +20,7 @@ const OPDPos = forwardRef(({ref}) => {
 	const { t } = useTranslation();
 	const { hospitalConfigData } = useDomainHospitalConfigData();
 	const { data: prescriptionData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/59`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/79`,
 	});
 	const patientInfo = prescriptionData?. data || {};
 
@@ -162,6 +163,11 @@ const OPDPos = forwardRef(({ref}) => {
 								</Table.Td>
 								<Table.Td align="right">
 									<strong>{t("প্রিন্ট")}:</strong> {user?.name || "John Doe"}
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr>
+								<Table.Td colSpan={2} align="center">
+									<Barcode fontSize={'12'} width={'1'} height={'40'} value={patientInfo?.barcode}/>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>

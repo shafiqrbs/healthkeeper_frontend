@@ -1532,10 +1532,11 @@
 	"AccountingConfiguration": "Accounting Configuration",
 	"PrescriptionShowReferred": "Prescription Show Referred",
 	"HealthShare": "Health Share",
-	"HealthShareUrl": "Health Share Url",
+	"HealthShareUrl": "Health Share URL",
 	"ClientID": "Client ID",
 	"HealthShareToken": "Health Share Token",
 	"XAuthToken": "X Auth Token",
-	"PatientUrl": "Patient Url",
-	"NIDUrl": "NID Url"
+	"PatientUrl": "Patient URL",
+	"NIDUrl": "NID URL",
+	"ListOfMedicines": "List of Medicines"
 }

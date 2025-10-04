@@ -38,7 +38,7 @@ import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import {useForm} from "@mantine/form";
 import {errorNotification} from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import {HOSPITAL_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import {CORE_DROPDOWNS, HOSPITAL_DROPDOWNS} from "@/app/store/core/utilitySlice";
 
 const PER_PAGE = 50;
 
@@ -51,6 +51,7 @@ export default function _Table({ module, open }) {
     const { id } = useParams();
     const height = mainAreaHeight - 78;
     const [submitFormData, setSubmitFormData] = useState({});
+    const [updatingRows, setUpdatingRows] = useState({});
     const searchKeyword = useSelector((state) => state.crud.searchKeyword);
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
@@ -89,19 +90,22 @@ export default function _Table({ module, open }) {
         navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX}/${id}`);
     };
 
-    const { data: getParticularPaymentModes } = useGlobalDropdownData({
+    const { data: warehouseDropdown } = useGlobalDropdownData({
+        path: CORE_DROPDOWNS.WAREHOUSE.PATH,
+        utility: CORE_DROPDOWNS.WAREHOUSE.UTILITY,
+    });
+
+    const { data: getParticularUnits } = useGlobalDropdownData({
         path: HOSPITAL_DROPDOWNS.PARTICULAR_UNIT_MODE.PATH,
         params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_UNIT_MODE.TYPE },
         utility: HOSPITAL_DROPDOWNS.PARTICULAR_UNIT_MODE.UTILITY,
     });
-
 
     const { data: getOpdRooms } = useGlobalDropdownData({
         path: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.PATH,
         params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.TYPE },
         utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.UTILITY,
     });
-
 
     const handleDelete = (id) => {
         modals.openConfirmModal({
@@ -158,9 +162,9 @@ export default function _Table({ module, open }) {
             name: "",
             unit_id: "",
             opd_room_id: "",
+            store_id: "",
         }
     });
-
 
     useEffect(() => {
         if (!records?.length) return;
@@ -169,6 +173,7 @@ export default function _Table({ module, open }) {
                 name: item.name || "",
                 unit_id: item.unit_id || "",
                 opd_room_id: item.opd_room_id || "",
+                store_id: item.store_id || "",
             };
             return acc;
         }, {});
@@ -176,14 +181,27 @@ export default function _Table({ module, open }) {
         setSubmitFormData(initialFormData);
     }, [records]);
 
-    const handleDataTypeChange = (rowId, field, value) => {
-        setSubmitFormData(prev => ({
+    const handleFieldChange = async (rowId, field, value) => {
+        setSubmitFormData((prev) => ({
             ...prev,
-            [rowId]: {
-                ...prev[rowId],
-                [field]: value,
-            },
+            [rowId]: { ...prev[rowId], [field]: value },
         }));
+
+        setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
+
+        try {
+            await dispatch(
+                storeEntityData({
+                    url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
+                    data: { [field]: value },
+                    module,
+                })
+            );
+        } catch (error) {
+            errorNotification(error.message);
+        } finally {
+            setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
+        }
     };
 
     const handleRowSubmit = async (rowId) => {
@@ -254,11 +272,24 @@ export default function _Table({ module, open }) {
                                     size="xs"
                                     className={inlineInputCss.inputText}
                                     placeholder={t("Name")}
-                                    value={submitFormData[item.id]?.name || ""}
-                                    onChange={(event) =>
-                                        handleDataTypeChange(item.id, "name", event.currentTarget.value)
+                                    value={submitFormData[item.id]?.name ?? ""}
+                                    onChange={(e) =>
+                                        setSubmitFormData((prev) => ({
+                                            ...prev,
+                                            [item.id]: {
+                                                ...prev[item.id],
+                                                name: e.currentTarget.value,
+                                            },
+                                        }))
                                     }
-                                    onBlur={() => handleRowSubmit(item.id)}
+                                    onBlur={() =>
+                                        handleFieldChange(
+                                            item.id,
+                                            "name",
+                                            submitFormData[item.id]?.name ?? ""
+                                        )
+                                    }
+                                    rightSection={updatingRows[item.id]}
                                 />
                             ),
                         },
@@ -270,12 +301,12 @@ export default function _Table({ module, open }) {
                                     size="xs"
                                     className={inlineInputCss.inputText}
                                     placeholder={t("SelectUnitName")}
-                                    data={getParticularPaymentModes}
-                                    value={submitFormData[item.id]?.unit_id || ""}
-                                    onChange={(val) => {
-                                        handleDataTypeChange(item.id, "unit_id", val);
-                                        handleRowSubmit(item.id);
-                                    }}
+                                    data={getParticularUnits}
+                                    value={ String(submitFormData[item.id]?.unit_id) ?? ""}
+                                    onChange={(val) =>
+                                        handleFieldChange(item.id, "unit_id", val)
+                                    }
+                                    rightSection={updatingRows[item.id]}
                                 />
                             ),
                         },
@@ -286,12 +317,29 @@ export default function _Table({ module, open }) {
                                 <Select
                                     size="xs"
                                     className={inlineInputCss.inputText}
-                                    placeholder={t("SelectOPDRoom")}
+                                    placeholder={t("SelectOpdRoom")}
                                     data={getOpdRooms}
-                                    value={submitFormData[item.id]?.opd_room_id || ""}
+                                    value={ String(submitFormData[item.id]?.opd_room_id) ?? ""}
+                                    onChange={(val) =>
+                                        handleFieldChange(item.id, "opd_room_id", val)
+                                    }
+                                    rightSection={updatingRows[item.id]}
+                                />
+                            ),
+                        },
+
+                        {
+                            accessor: "store_id",
+                            title: t("Store"),
+                            render: (item) => (
+                                <Select
+                                    size="xs"
+                                    className={inlineInputCss.inputText}
+                                    placeholder={t("SelectStore")}
+                                    data={warehouseDropdown}
+                                    value={String(submitFormData[item.id]?.store_id) || ""}
                                     onChange={(val) => {
-                                        handleDataTypeChange(item.id, "opd_room_id", val);
-                                        handleRowSubmit(item.id);
+                                        handleFieldChange(item.id, "store_id", val);
                                     }}
                                 />
                             ),

@@ -54,6 +54,15 @@ export const MASTER_DATA_ROUTES = {
 			DELETE: "core/setting",
 		},
 
+		STORE: {
+			INDEX: "core/warehouse",
+			CREATE: "core/warehouse",
+			UPDATE: "core/warehouse",
+			VIEW: "core/warehouse",
+			DELETE: "core/warehouse",
+		},
+
+
 		SELECT_DROPDOWN: {
 			PRODUCT_NATURE: "/inventory/select/setting",
 			CATEGORY_GROUP: "/inventory/select/group-category",
@@ -165,12 +174,21 @@ export const MASTER_DATA_ROUTES = {
 		},
 	},
 	NAVIGATION_LINKS: {
+
 		USER: {
 			INDEX: "/core/user",
 			CREATE: "/core/user",
 			UPDATE: "/core/user",
 			VIEW: "/core/user",
 		},
+
+		STORE: {
+			INDEX: "/core/store",
+			CREATE: "/core/store",
+			UPDATE: "/core/store",
+			VIEW: "/core/store",
+		},
+
 		SETTING: {
 			INDEX: "/core/setting",
 			CREATE: "/core/setting",
@@ -309,10 +327,28 @@ export const MASTER_DATA_ROUTES = {
 };
 
 export const PHARMACY_DATA_ROUTES = {
+	API_ROUTES: {
+		MEDICINE: {
+			INDEX: "pharmacy/medicine",
+			CREATE: "pharmacy/medicine",
+			UPDATE: "pharmacy/medicine",
+			VIEW: "pharmacy/medicine",
+			DELETE: "pharmacy/medicine",
+			INLINE_UPDATE: "pharmacy/medicine/inline-update",
+		},
+	},
 	NAVIGATION_LINKS: {
 		PHARMACY: {
 			INDEX: "/pharmacy",
 		},
+		MEDICINE: {
+			INDEX: "/pharmacy/core/medicine",
+			CREATE: "/pharmacy/core/medicine",
+			UPDATE: "/pharmacy/core/medicine",
+			VIEW: "/pharmacy/core/medicine",
+			DELETE: "/pharmacy/core/medicine",
+		},
+
 		STOCK: {
 			INDEX: "/pharmacy/core/stock",
 			CREATE: "/pharmacy/core/stock",

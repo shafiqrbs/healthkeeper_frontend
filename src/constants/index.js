@@ -19,6 +19,7 @@ export const MODULES = {
 	HOSPITAL_CONFIG: "hospitalConfig",
 	USER: "user",
 	SETTING: "setting",
+	STORE: "store",
 	LAB_TEST: "labTest",
 };
 

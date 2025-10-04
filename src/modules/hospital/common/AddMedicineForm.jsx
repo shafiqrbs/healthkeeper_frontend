@@ -703,15 +703,8 @@ export default function AddMedicineForm({
 			{form.values.comment && (
 				<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between" align="center">
 					<Text w="100%">
-						<strong>{t("ReferredComment")}:</strong> {form.values.comment}
+						<strong>{t("Referred")}:</strong> {form.values.comment}
 					</Text>
-					{/* <ActionIcon
-						variant="outline"
-						color="var(--theme-error-color)"
-						onClick={() => form.setFieldValue("comment", "")}
-					>
-						<IconTrash size={16} />
-					</ActionIcon> */}
 				</Flex>
 			)}
 

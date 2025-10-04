@@ -1,5 +1,5 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { IconCalendarWeek, IconUser, IconArrowRight, IconArrowNarrowRight } from "@tabler/icons-react";
+import { IconCalendarWeek, IconUser, IconArrowRight, IconArrowNarrowRight,IconBed } from "@tabler/icons-react";
 import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
@@ -80,22 +80,22 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 				loaderProps={{ color: "red" }}
 			/>
 			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="xxxs">
-				<Text ta="center" fz="sm" fw={500}>
+				<Text ta="center" fz="xs" fw={500}>
 					S/N
 				</Text>
-				<Text ta="center" fz="sm" fw={500}>
+				<Text ta="center" fz="xs" fw={500}>
 					Patient Name
 				</Text>
 			</Flex>
 			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="xxxs">
 				{records?.length === 0 && (
 					<Flex justify="center" align="center">
-						<Text fz="sm">{t("NoDataAvailable")}</Text>
+						<Text fz="xs">{t("NoDataAvailable")}</Text>
 					</Flex>
 				)}
 				{records?.map((item) => (
 					<Grid
-						columns={12}
+						columns={18}
 						key={item.id}
 						onClick={() => handleProcessConfirmation(item.id)}
 						my="xs"
@@ -107,11 +107,11 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 						px="xs"
 						gutter="xs"
 					>
-						<Grid.Col span={4}>
+						<Grid.Col span={8}>
 							<Flex align="center" gap="xxxs">
 								<IconCalendarWeek size={16} stroke={1.5} />
 								<Text
-									fz="sm"
+									fz="xs"
 									onClick={() => handleAdmissionOverview(item.prescription_id)}
 									className="activate-link text-nowrap"
 								>
@@ -120,45 +120,41 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 							</Flex>
 							<Flex align="center" gap="xxxs">
 								<IconUser size={16} stroke={1.5} />
-								<Text fz="sm">{item.patient_id}</Text>
+								<Text fz="xs">{item.patient_id}</Text>
 							</Flex>
-						</Grid.Col>
-						<Grid.Col span={3}>
 							<Flex align="center" gap="xxxs">
-								<Box>
-									<Text fz="sm">{item.name}</Text>
-									<Text fz="sm">{item.mobile}</Text>
-								</Box>
+								<IconBed size={16} stroke={1.5} />
+								<Text fz="xs">{item.visiting_room}</Text>
 							</Flex>
 						</Grid.Col>
-						<Grid.Col span={5}>
+						<Grid.Col span={10}>
 							<Flex justify="space-between" align="center">
 								<Box>
-									<Text fz="sm">{item.patient_payment_mode_name}</Text>
-									<Text fz="sm">{item.visiting_room}</Text>
+									<Text fz="xs">{item.name}</Text>
+									<Text fz="xs">{item.mobile}</Text>
+									<Text fz="xs">{item.patient_payment_mode_name}</Text>
 								</Box>
 								<Flex direction="column">
-
 									{ ipdMode === "non-prescription" &&(
-									<ActionIcon
-										variant="filled"
-										onClick={() => handleProcessConfirmation(item.id)}
-										color="var(--theme-primary-color-6)"
-										radius="xs"
-										aria-label="Settings"
-									>
-										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
-									</ActionIcon>
+										<ActionIcon
+											variant="filled"
+											onClick={() => handleProcessConfirmation(item.id)}
+											color="var(--theme-primary-color-6)"
+											radius="xs"
+											aria-label="Settings"
+										>
+											<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
+										</ActionIcon>
 									)}
 									{ ipdMode === "prescription" &&(
 										<ActionIcon
-										variant="filled"
-										onClick={() => handleAdmissionOverview(item.prescription_id)}
-										color="var(--theme-secondary-color-6)"
-										radius="xs"
-										aria-label="Settings"
+											variant="filled"
+											onClick={() => handleAdmissionOverview(item.prescription_id)}
+											color="var(--theme-secondary-color-6)"
+											radius="xs"
+											aria-label="Settings"
 										>
-										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
+											<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
 										</ActionIcon>
 									)}
 								</Flex>

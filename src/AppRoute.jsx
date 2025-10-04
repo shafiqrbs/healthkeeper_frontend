@@ -19,10 +19,10 @@ import CabinIndex from "@modules/hospital/core/cabin";
 import ParticularModeIndex from "@modules/hospital/core/particular-mode";
 import ParticularTypeIndex from "@modules/hospital/core/particular-type";
 import CategoryIndex from "@modules/hospital/core/category";
+import StoreIndex from "@modules/core/store";
 import EmergencyIndex from "@modules/hospital/emergency";
 import NotFound from "@components/layout/NotFound";
 import CustomerIndex from "@modules/hospital/customer";
-import MedicineIndex from "@modules/hospital/medicine";
 import LabIndex from "@modules/hospital/lab";
 import EpharmaIndex from "@modules/hospital/epharma";
 import LabGroupIndex from "@modules/hospital/lab-group";
@@ -34,6 +34,7 @@ import DoctorDashboard from "@modules/hospital/doctor/dashboard";
 import DoctorOpd from "@modules/hospital/doctor/opd";
 import PharmacyIndex from "@modules/pharmacy/dashboard";
 import PharmacyStockIndex from "@modules/pharmacy/stock";
+import MedicineIndex from "@modules/pharmacy/medicine";
 import PharmacyRequisitionIndex from "@modules/pharmacy/requisition";
 import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/core/doctor";
@@ -64,7 +65,8 @@ function AppRoute() {
 					<Route path="user/:id" element={<UserIndex mode="edit" />} />
 					<Route path="setting" element={<SettingIndex />} />
 					<Route path="setting/:id" element={<SettingIndex mode="edit" />} />
-
+					<Route path="store" element={<StoreIndex />} />
+					<Route path="store/:id" element={<StoreIndex mode={"edit"} />} />
 					<Route path="vendor" element={<VendorIndex />} />
 					<Route path="vendor/:id" element={<VendorIndex mode="edit" />} />
 				</Route>
@@ -78,7 +80,9 @@ function AppRoute() {
 					<Route path="" element={<PharmacyIndex />} />
 					<Route path="requisition" element={<PharmacyRequisitionIndex />} />
 				</Route>
-
+				<Route path="/pharmacy/core/">
+					<Route path="medicine" element={<MedicineIndex />} />
+				</Route>
 				<Route path="/pharmacy/core/">
 					<Route path="stock" element={<PharmacyStockIndex />} />
 				</Route>

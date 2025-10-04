@@ -41,7 +41,6 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 	const orderedExamKeys = normalizeOrder(patientReport?.order);
 	const sectionKeys = ["chief_complaints", "investigation", "comorbidity", "ho_past_illness"];
 	const keysToRender = orderedExamKeys.length ? orderedExamKeys.filter((k) => sectionKeys.includes(k)) : sectionKeys;
-
 	const renderSection = (key) => {
 		switch (key) {
 			case "chief_complaints":
@@ -143,17 +142,15 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 
 	// =============== check if prescription data is available ================
 	const isPrescriptionDataAvailable = prescription && jsonContent;
-
 	return (
-		<GlobalDrawer opened={opened} close={close} title="Prescription Details" size="45%">
+		<GlobalDrawer opened={opened} close={close} title="Prescription Details" size="60%">
 			<Box pos="relative">
 				{isPrescriptionDataAvailable ? (
-					<ScrollArea scrollbars="y" type="hover" h={mainAreaHeight - 110}>
-						<Grid columns={14} h="100%" w="100%" mt="xs">
+					<Grid columns={16} h="100%" w="100%" mt="xs">
 							{/* =============== left column with patient info, OLE, complaints, investigation =============== */}
 							<Grid.Col span={6} h="100%">
 								<Paper withBorder p="lg" radius="sm" bg="var(--theme-tertiary-color-0)" h="100%">
-									<Stack gap="md">
+									<ScrollArea scrollbars="y" type="hover" h={mainAreaHeight - 180}>
 										<Box>
 											<Title order={4} fw={700} mb="es">
 												{prescription?.name || "N/A"}
@@ -306,13 +303,13 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 													</List>
 												</>
 											)}
-									</Stack>
+									</ScrollArea>
 								</Paper>
 							</Grid.Col>
 							{/* =============== right column with medicine, advice, follow up =============== */}
-							<Grid.Col span={8} h="100%">
+							<Grid.Col span={10} h="100%">
 								<Paper withBorder p="lg" radius="sm" h="100%" bg="white">
-									<Stack gap="lg" h="100%">
+									<ScrollArea scrollbars="y" type="hover" h={mainAreaHeight - 180}>
 										<Box>
 											<Group align="center" mb="xs">
 												<Title order={5} fw={600} c="var(--theme-tertiary-color-9)">
@@ -327,14 +324,15 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 																medicine.generic ||
 																"Unknown Medicine"}
 															<Text size="xs" mt="es" c="var(--theme-tertiary-color-7)">
-																{medicine.quantity &&
-																	`${medicine.quantity} ${
-																		medicine.duration || "days"
-																	}`}
-																{medicine.times && `, ${medicine.times} times`}
-																{medicine.by_meal && `, ${medicine.by_meal}`}
 																{medicine.dose_details &&
-																	`, Dose: ${medicine.dose_details}`}
+																`${medicine.dose_details}`}
+
+																{medicine.by_meal && `, ------${medicine.by_meal}`}
+																{medicine.quantity &&
+																`----------- ${medicine.quantity} ${
+																	medicine.duration || "days"
+																}`}
+
 															</Text>
 														</List.Item>
 													))}
@@ -344,6 +342,7 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 													No medicines prescribed
 												</Text>
 											)}
+
 										</Box>
 										<Divider
 											mt="xs"
@@ -355,44 +354,75 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 											labelPosition="left"
 										/>
 										<Box>
-											<Text size="sm" c="var(--theme-tertiary-color-7)">
+											<Text size="sm" pl={'md'} pt={'xs'} c="var(--theme-tertiary-color-7)">
 												{advice || "No advice provided"}
 											</Text>
 										</Box>
 										<Divider
-											mt="xs"
 											label={
-												<Text size="xs" c="var(--theme-tertiary-color-7)">
-													Follow up & Discount
+												<Text size="xs" pb={'xs'} pt={'xs'}  c="var(--theme-tertiary-color-7)">
+													Referred Information
 												</Text>
 											}
 											labelPosition="left"
 										/>
-										<Group gap="xl" align="flex-start">
-											<Box>
-												<Text fw={500} size="sm">
-													Follow up
-												</Text>
-												<Text size="sm" c="var(--theme-tertiary-color-7)">
-													{followUpDate
-														? new Date(followUpDate).toLocaleDateString()
-														: "Not scheduled"}
-												</Text>
-											</Box>
-										</Group>
+										{prescription?.referred_room && (
 										<Box>
-											<Text fw={500} size="sm">
-												Doctor
-											</Text>
-											<Text size="sm" c="var(--theme-tertiary-color-7)">
-												{prescription?.doctor_name || "N/A"}
+											<Text size="sm" pl={'md'} c="var(--theme-tertiary-color-7)">
+											Room: {prescription?.referred_room}
 											</Text>
 										</Box>
-									</Stack>
+										)}
+										{prescription?.referred_hospital && (
+											<Box>
+												<Text size="sm" pl={'md'} c="var(--theme-tertiary-color-7)">
+													Refer To: {prescription?.referred_hospital}
+												</Text>
+											</Box>
+										)}
+										<Box>
+											<Text size="sm" pl={'md'} c="var(--theme-tertiary-color-7)">
+												{prescription?.referred_comment}
+											</Text>
+										</Box>
+										<Divider
+											label={
+												<Text size="xs" pb={'xs'} pt={'xs'} c="var(--theme-tertiary-color-7)">
+													Follow up
+												</Text>
+											}
+											labelPosition="left"
+										/>
+										<Group gap="xs" align="flex-justify">
+											<Grid columns={12}  w="100%">
+												<Grid.Col span={6} h="100%">
+													<Box>
+														<Text pl={'md'} fw={500} size="sm">
+															Follow up
+														</Text>
+														<Text size="sm" pl={'md'} c="var(--theme-tertiary-color-7)">
+															{followUpDate
+																? new Date(followUpDate).toLocaleDateString()
+																: "Not scheduled"}
+														</Text>
+													</Box>
+												</Grid.Col>
+												<Grid.Col span={6} h="100%">
+													<Box>
+														<Text fw={500} size="sm">
+															Doctor
+														</Text>
+														<Text size="sm" c="var(--theme-tertiary-color-7)">
+															{prescription?.doctor_name || "N/A"}
+														</Text>
+													</Box>
+												</Grid.Col>
+											</Grid>
+										</Group>
+									</ScrollArea>
 								</Paper>
 							</Grid.Col>
 						</Grid>
-					</ScrollArea>
 				) : (
 					<Stack p="xl" ta="center" h={mainAreaHeight - 110} justify="center" gap={0} align="center">
 						<Text size="lg" c="var(--theme-tertiary-color-7)" fw={500} mb="md">

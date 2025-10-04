@@ -50,7 +50,7 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 	const isPrescriptionDataAvailable = prescription && jsonContent;
 
 	return (
-		<GlobalDrawer opened={opened} close={close} title="Prescription Details" size="45%">
+		<GlobalDrawer opened={opened} close={close} title="Prescription Details" size="60%">
 			<Box pos="relative">
 				<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{isPrescriptionDataAvailable ? (
@@ -268,7 +268,7 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 											mt="xs"
 											label={
 												<Text size="xs" c="var(--theme-tertiary-color-7)">
-													Follow up & Discount
+													Follow up
 												</Text>
 											}
 											labelPosition="left"
@@ -284,15 +284,16 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 														: "Not scheduled"}
 												</Text>
 											</Box>
+											<Box>
+												<Text fw={500} size="sm">
+													Doctor
+												</Text>
+												<Text size="sm" c="var(--theme-tertiary-color-7)">
+													{prescription?.doctor_name || "N/A"}
+												</Text>
+											</Box>
 										</Group>
-										<Box>
-											<Text fw={500} size="sm">
-												Doctor
-											</Text>
-											<Text size="sm" c="var(--theme-tertiary-color-7)">
-												{prescription?.doctor_name || "N/A"}
-											</Text>
-										</Box>
+
 									</Stack>
 								</Paper>
 							</Grid.Col>

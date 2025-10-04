@@ -67,10 +67,10 @@ export default function Index() {
 				<DefaultSkeleton />
 			) : (
 				<Box p="md">
-					<Flex w="100%" gap="sm">
+					<Flex w="100%" gap="xs">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-						<Grid w="100%" columns={24}>
-							<Grid.Col span={8} pos="relative" className="animate-ease-out">
+						<Grid w="100%" columns={24} gutter={'xs'}>
+							<Grid.Col span={6} pos="relative" className="animate-ease-out">
 								<Flex align="center" justify="space-between" px="sm" py="xs" bg="white">
 									<Text fw={600} fz="sm">
 										{t("PatientInformation")}
@@ -87,8 +87,8 @@ export default function Index() {
 											}
 										}}
 										data={[
-											{ label: t("IPDPrescription"), value: "non-prescription" },
-											{ label: t("IPDManage"), value: "prescription" },
+											{ label: t("Prescription"), value: "non-prescription" },
+											{ label: t("Manage"), value: "prescription" },
 										]}
 									/>
 								</Flex>
@@ -108,7 +108,7 @@ export default function Index() {
 									]}
 								/>
 							</Grid.Col>
-							<Grid.Col span={16} className="animate-ease-out">
+							<Grid.Col span={18} className="animate-ease-out">
 								{showTabs ? (
 									<TabsWithSearch
 										tabList={[

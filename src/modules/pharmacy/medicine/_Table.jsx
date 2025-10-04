@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
     IconTrashX,
@@ -18,11 +18,11 @@ import { notifications } from "@mantine/notifications";
 import { useOs, useHotkeys } from "@mantine/hooks";
 import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { MASTER_DATA_ROUTES } from "@/constants/routes";
+import { MASTER_DATA_ROUTES , PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
 import {
     deleteEntityData,
-    editEntityData,
+    editEntityData, storeEntityData,
 } from "@/app/store/core/crudThunk";
 import {
     setInsertType,
@@ -32,8 +32,10 @@ import {
     ERROR_NOTIFICATION_COLOR,
 } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
+import inlineInputCss from "@assets/css/InlineInputField.module.css";
+import {errorNotification} from "@components/notification/errorNotification";
 
 const PER_PAGE = 50;
 
@@ -45,7 +47,7 @@ export default function _Table({ module, open }) {
     const navigate = useNavigate();
     const { id } = useParams();
     const height = mainAreaHeight - 78;
-
+    const [submitFormData, setSubmitFormData] = useState({});
     const searchKeyword = useSelector((state) => state.crud.searchKeyword);
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
@@ -60,7 +62,7 @@ export default function _Table({ module, open }) {
         handleScrollToBottom,
     } = useInfiniteTableScroll({
         module,
-        fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+        fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.INDEX,
         filterParams: {
             name: filterData?.name,
             term: searchKeyword,
@@ -75,11 +77,11 @@ export default function _Table({ module, open }) {
         dispatch(setInsertType({ insertType: "update", module }));
         dispatch(
             editEntityData({
-                url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
+                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.VIEW}/${id}`,
                 module,
             })
         );
-        navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX}/${id}`);
+        navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX}/${id}`);
     };
 
     const handleDelete = (id) => {
@@ -105,7 +107,7 @@ export default function _Table({ module, open }) {
         if (deleteEntityData.fulfilled.match(res)) {
             dispatch(setRefetchData({ module, refetching: true }));
             deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-            navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR);
+            navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX);
             dispatch(setInsertType({ insertType: "create", module }));
         } else {
             notifications.show({
@@ -119,7 +121,7 @@ export default function _Table({ module, open }) {
     const handleDataShow = (id) => {
         dispatch(
             editEntityData({
-                url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
+                url: `${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.VIEW}/${id}`,
                 module,
             })
         );
@@ -129,7 +131,62 @@ export default function _Table({ module, open }) {
     const handleCreateForm = () => {
         open();
         dispatch(setInsertType({ insertType: "create", module }));
-        navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX);
+        navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX);
+    };
+
+    useEffect(() => {
+        if (!records?.length) return;
+        const initialFormData = records.reduce((acc, item) => {
+            acc[item.id] = {
+                company: item.company || "",
+                product_name: item.product_name || "",
+                generic: item.generic || "",
+                opd_quantity: item.opd_quantity || "",
+            };
+            return acc;
+        }, {});
+
+        setSubmitFormData(initialFormData);
+    }, [records]);
+
+    const handleDataTypeChange = (rowId, field, value) => {
+        setSubmitFormData(prev => ({
+            ...prev,
+            [rowId]: {
+                ...prev[rowId],
+                [field]: value,
+            },
+        }));
+    };
+
+    const handleRowSubmit = async (rowId) => {
+        const formData = submitFormData[rowId];
+        if (!formData) return false;
+
+        // 🔎 find original row data
+        const originalRow = records.find((r) => r.id === rowId);
+        if (!originalRow) return false;
+
+        // ✅ check if there is any change
+        const isChanged = Object.keys(formData).some(
+            (key) => formData[key] !== originalRow[key]
+        );
+
+        if (!isChanged) {
+            // nothing changed → do not submit
+            return false;
+        }
+
+        const value = {
+            url: `${PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.INLINE_UPDATE}/${rowId}`,
+            data: formData,
+            module,
+        };
+        try {
+            const resultAction = await dispatch(storeEntityData(value));
+        } catch (error) {
+            errorNotification(error.message);
+        }
     };
 
     useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
@@ -163,32 +220,80 @@ export default function _Table({ module, open }) {
                             render: (_item, index) => index + 1,
                         },
                         {
-                            accessor: "particular_type_name",
-                            title: t("ParticularType"),
-                            textAlignment: "right",
+                            accessor: "company",
+                            title: t("Company"),
                             sortable: true,
-                            render: (item) => item.particular_type_name,
-                        },
-                        {
-                            accessor: "name",
-                            title: t("Name"),
-                            sortable: true,
-                            render: (values) => (
-                                <Text
-                                    className="activate-link"
-                                    fz="sm"
-                                    onClick={() => handleDataShow(values.id)}
-                                >
-                                    {values.name}
-                                </Text>
+                            render: (item) => (
+                                <TextInput
+                                    size="xs"
+                                    className={inlineInputCss.inputText}
+                                    placeholder={t("Name")}
+                                    value={submitFormData[item.id]?.company || ""}
+                                    onChange={(event) =>
+                                        handleDataTypeChange(item.id, "company", event.currentTarget.value)
+                                    }
+                                    onBlur={() => handleRowSubmit(item.id)}
+                                />
                             ),
                         },
                         {
-                            accessor: "category",
-                            title: t("Category"),
-                            sortable: false,
-                            render: (values) => values.category || "N/A",
+                            accessor: "product_name",
+                            title: t("MedicineName"),
+                            sortable: true,
+                            render: (item) => (
+                                <TextInput
+                                    size="xs"
+                                    className={inlineInputCss.inputText}
+                                    placeholder={t("product_name")}
+                                    value={submitFormData[item.id]?.product_name || ""}
+                                    onChange={(event) =>
+                                        handleDataTypeChange(item.id, "product_name", event.currentTarget.value)
+                                    }
+                                    onBlur={() => handleRowSubmit(item.id)}
+                                />
+                            ),
                         },
+                         {
+                            accessor: "generic",
+                            title: t("Generic"),
+                            sortable: true,
+                            render: (item) => (
+                                <TextInput
+                                    size="xs"
+                                    className={inlineInputCss.inputText}
+                                    placeholder={t("Name")}
+                                    value={submitFormData[item.id]?.generic || ""}
+                                    onChange={(event) =>
+                                        handleDataTypeChange(item.id, "generic", event.currentTarget.value)
+                                    }
+                                    onBlur={() => handleRowSubmit(item.id)}
+                                />
+                            ),
+                        },
+                         {
+                            accessor: "dose_details",
+                            title: t("Dose"),
+                            sortable: true,
+                        },
+
+                        {
+                            accessor: "opd_quantity",
+                            title: t("OPDQuantitiy"),
+                            sortable: true,
+                            render: (item) => (
+                                <TextInput
+                                    size="xs"
+                                    className={inlineInputCss.inputText}
+                                    placeholder={t("opd_quantity")}
+                                    value={submitFormData[item.id]?.opd_quantity || ""}
+                                    onChange={(event) =>
+                                        handleDataTypeChange(item.id, "opd_quantity", event.currentTarget.value)
+                                    }
+                                    onBlur={() => handleRowSubmit(item.id)}
+                                />
+                            ),
+                        },
+
                         {
                             accessor: "action",
                             title: "",
@@ -197,42 +302,16 @@ export default function _Table({ module, open }) {
                             render: (values) => (
                                 <Group gap={4} justify="right" wrap="nowrap">
                                     <Button.Group>
-                                        <Button
-                                            onClick={() => {
-                                                handleEntityEdit(values.id);
-                                                open();
-                                            }}
-                                            variant="filled"
-                                            c="white"
-                                            size="xs"
-                                            radius="es"
-                                            leftSection={<IconEdit size={16} />}
-                                            className="border-right-radius-none btnPrimaryBg"
-                                        >
-                                            {t("Edit")}
-                                        </Button>
-                                        <Button
-                                            onClick={() => handleDataShow(values.id)}
-                                            variant="filled"
-                                            c="white"
-                                            bg="var(--theme-primary-color-6)"
-                                            size="xs"
-                                            radius="es"
-                                            leftSection={<IconEye size={16} />}
-                                            className="border-left-radius-none"
-                                        >
-                                            {t("View")}
-                                        </Button>
                                         <ActionIcon
+                                            size="sm"
+                                            variant="outline"
+                                            radius="xs"
                                             onClick={() => handleDelete(values.id)}
-                                            className="action-icon-menu border-left-radius-none"
-                                            variant="light"
                                             color="var(--theme-delete-color)"
-                                            radius="es"
-                                            ps="les"
+                                            fw={400}
                                             aria-label="Settings"
                                         >
-                                            <IconTrashX height={18} width={18} stroke={1.5} />
+                                            <IconTrashX stroke={1} />
                                         </ActionIcon>
                                     </Button.Group>
                                 </Group>
