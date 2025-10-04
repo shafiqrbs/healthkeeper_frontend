@@ -7,12 +7,13 @@ import Navigation from "@components/layout/Navigation";
 import {ActionIcon, Box, Flex, Grid, Select, Stack, Text, TextInput} from "@mantine/core";
 import {getDataWithoutStore} from "@/services/apiService";
 import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
-import {IconSearch, IconX} from "@tabler/icons-react";
+import {IconSearch, IconX,IconBarcode} from "@tabler/icons-react";
 import PatientSearchResult from "@modules/hospital/common/PatientSearchResult";
 import InputForm from "@components/form-builders/InputForm";
 import {useForm} from "@mantine/form";
 import {getFormValues} from "@modules/hospital/epharma/helpers/request";
 import Medicine from "@modules/hospital/epharma/Medicine";
+import {formatDate} from "@utils/index";
 
 export default function Index() {
 	const { t } = useTranslation();
@@ -61,6 +62,19 @@ export default function Index() {
 
 	const columns = [col1, col2, col3, col4];
 	const form = useForm(getFormValues(t));
+
+	const handleSearch = (searchData) => {
+		const data = searchData || {
+			keywordSearch,
+			created: date ? formatDate(date) : "",
+			room_id: form.values.room_id,
+		};
+
+		if (onSearch) {
+			onSearch(data);
+		}
+	};
+
 	return (
 		<>
 			{progress !== 100 ? (
@@ -81,10 +95,15 @@ export default function Index() {
 											name="patient"
 											id="patientName"
 											leftSection={
-												<IconSearch
+												<IconBarcode
 													size={20}
 													color="var(--theme-tertiary-color-6)"
 												/>
+											}
+											rightSection={
+												<ActionIcon variant="filled" bg="var(--theme-primary-color-6)"  onClick={() => handleSearch()}>
+													<IconSearch size={16} stroke={1.5} />
+												</ActionIcon>
 											}
 										/>
 									</Box>
