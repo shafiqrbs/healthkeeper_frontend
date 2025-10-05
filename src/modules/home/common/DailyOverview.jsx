@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { CONFIGURATION_ROUTES } from "@/constants/routes";
-import {formatDate, getLoggedInUser, getUserRole} from "@utils/index";
+import { formatDate, getLoggedInUser, getUserRole } from "@utils/index";
 
 const collectionOverviewData = [
 	{
@@ -38,48 +38,30 @@ const roomCollectionColumns = [
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
 export default function DailyOverview() {
-	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const records = useSelector((state) => state.crud[module].data);
-	const user = getLoggedInUser();
-	const roles = getUserRole();
 
-	console.log(roles)
-	const collectionSummaryData = records.data?.summary || [];
+	const collectionSummaryData = records.data?.summary[0] || {};
 	const userCollectionData = records.data?.patientMode || [];
 	const roomBaseCollectionData = records.data?.roomBase || [];
-	useEffect(() => {
-		if (Object.keys(records?.data || {})?.length === 0) {
-			dispatch(
-				getIndexEntityData({ module,
-					url: CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.OPD_DASHBOARD,
-					params:{
-						'created': formatDate(new Date()),
-						'created_by_id': roles.includes('operator_manager') ? undefined:user?.id
-					}
-				})
-			);
-		}
-	}, [dispatch]);
 
 	return (
-		<ScrollArea mt="sm">
+		<ScrollArea h={600} mt="sm">
 			<Box className="borderRadiusAll" mt="xxxs" px="xs">
-				{collectionOverviewData.map((item, index) => (
-					<Flex
-						key={index}
-						justify="space-between"
-						align="center"
-						className={index !== collectionOverviewData.length - 1 ? "borderBottomDashed" : ""}
-						py="xxxs"
-					>
-							<Text>{t(item.label)}</Text>
-						<Flex align="center" gap="xs" w="80px">
-							<item.icon color="var(--theme-primary-color-6)" />
-							<Text fz="sm">{item.value}</Text>
-						</Flex>
+				<Flex justify="space-between" align="center" className="borderBottomDashed" py="xxxs">
+					<Text>{t("Patient")}</Text>
+					<Flex align="center" gap="xs" w="80px">
+						<IconBed color="var(--theme-primary-color-6)" />
+						<Text fz="sm">{collectionSummaryData?.patient || 0}</Text>
 					</Flex>
-				))}
+				</Flex>
+				<Flex justify="space-between" align="center" py="xxxs">
+					<Text>{t("Collection")}</Text>
+					<Flex align="center" gap="xs" w="80px">
+						<IconCoinTaka color="var(--theme-primary-color-6)" />
+						<Text fz="sm">{collectionSummaryData?.total || 0}</Text>
+					</Flex>
+				</Flex>
 			</Box>
 			<CollectionTable data={userCollectionData} columns={userCollectionColumns} title="userCollection" />
 			<CollectionTable data={roomBaseCollectionData} columns={roomCollectionColumns} title="roomCollection" />

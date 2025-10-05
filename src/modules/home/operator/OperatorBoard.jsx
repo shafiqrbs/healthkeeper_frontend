@@ -1,69 +1,16 @@
-import { Box, Button, Card, Divider, Flex, Grid, Stack, Text } from "@mantine/core";
-import {
-	IconBed,
-	IconBuildingHospital,
-	IconChecklist,
-	IconClipboardText,
-	IconMailForward,
-	IconMicroscope,
-	IconPackageExport,
-	IconStethoscope,
-	IconTestPipe,
-	IconTestPipe2,
-	IconWallet,
-} from "@tabler/icons-react";
-import { Link, useNavigate } from "react-router-dom";
+import { ActionIcon, Box, Card, Flex, Grid, Stack, Text, rem } from "@mantine/core";
+import { IconFileTypePdf, IconMicroscope, IconStethoscope, IconWallet } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { getUserRole } from "@/common/utils";
-import OperatorOverview from "@modules/home/operator/OperatorOverview";
+import { CONFIGURATION_ROUTES, HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { formatDate, getLoggedInUser, getUserRole } from "@/common/utils";
 import DailyOverview from "@modules/home/common/DailyOverview";
-
-const quickBrowseButtonData = [
-	{
-		label: "Outdoor Ticket",
-		icon: IconStethoscope,
-		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
-		color: "var(--mantine-color-yellow-8)",
-		allowedRoles: ["admin_administrator", "operator_opd", "operator_manager"],
-	},
-	{
-		label: "IPD",
-		icon: IconBed,
-		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX,
-		color: "var(--mantine-color-blue-7)",
-		allowedRoles: ["admin_administrator", "operator_opd", "operator_manager"],
-	},
-	{
-		label: "Emergency",
-		icon: IconTestPipe2,
-		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EMERGENCY.INDEX,
-		color: "var(--mantine-color-cyan-8)",
-		allowedRoles: ["admin_administrator", "operator_opd", "operator_manager"],
-	},
-	{
-		label: "reportDelivery",
-		icon: IconMailForward,
-		route: "/report-delivery",
-		color: "var(--mantine-color-indigo-8)",
-		allowedRoles: ["doctor", "nurse", "admin"],
-	},
-	{
-		label: "Medicine",
-		icon: IconTestPipe,
-		route: "/add-diagnostic",
-		color: "var(--theme-secondary-color-8)",
-		allowedRoles: ["doctor", "nurse", "admin"],
-	},
-
-	{
-		label: "reportPrepared",
-		icon: IconClipboardText,
-		route: "/report-prepare",
-		color: "var(--mantine-color-red-8)",
-		allowedRoles: ["doctor", "nurse", "admin"],
-	},
-];
+import { useReactToPrint } from "react-to-print";
+import { useEffect, useRef } from "react";
+import Home from "@components/print-formats/operator/Home";
+import { getIndexEntityData } from "@/app/store/core/crudThunk";
+import { MODULES_CORE } from "@/constants";
+import { useDispatch, useSelector } from "react-redux";
 
 const quickBrowseCardData = [
 	{
@@ -116,18 +63,37 @@ const quickBrowseCardData = [
 	},*/
 ];
 
-export default function Operator() {
+const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
+
+export default function OperatorBoard() {
+	const roles = getUserRole();
+	const user = getLoggedInUser();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const userRole = getUserRole();
-
-	const filteredQuickBrowseButtonData = quickBrowseButtonData.filter((item) =>
-		item.allowedRoles.some((role) => userRole.includes(role))
-	);
-
+	const homeRef = useRef(null);
+	const dispatch = useDispatch();
+	const records = useSelector((state) => state.crud[module].data);
 	const filteredQuickBrowseCardData = quickBrowseCardData.filter((item) =>
 		item.allowedRoles.some((role) => userRole.includes(role))
 	);
+
+	const handleHomeOverviewPrint = useReactToPrint({
+		content: () => homeRef.current,
+	});
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				module,
+				url: CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.OPD_DASHBOARD,
+				params: {
+					created: formatDate(new Date()),
+					created_by_id: roles.includes("operator_manager") ? undefined : user?.id,
+				},
+			})
+		);
+	}, []);
 
 	return (
 		<Grid columns={40} gutter={{ base: "md" }}>
@@ -136,7 +102,7 @@ export default function Operator() {
 					<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
 						<Flex align="center" h="100%" px="lg">
 							<Text pb={0} fz="sm" c="white" fw={500}>
-								{t("quickBrowse")}
+								{t("QuickBrowse")}
 							</Text>
 						</Flex>
 					</Card.Section>
@@ -174,13 +140,22 @@ export default function Operator() {
 			<Grid.Col span={20}>
 				<Card padding="lg" radius="sm" h="100%">
 					<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
-						<Flex align="center" h="100%" px="lg">
+						<Flex align="center" h="100%" px="lg" justify="space-between">
 							<Text pb={0} fz="sm" c="white" fw={500}>
 								{t("CollectionOverview")}
 							</Text>
+							<ActionIcon variant="default" c={"green.8"} size="md" aria-label="Filter">
+								<IconFileTypePdf
+									style={{ width: rem(20) }}
+									stroke={1.5}
+									onClick={handleHomeOverviewPrint}
+								/>
+							</ActionIcon>
 						</Flex>
 					</Card.Section>
 					<DailyOverview />
+					{/* print component for home overview */}
+					{records?.data && <Home ref={homeRef} data={records.data} />}
 				</Card>
 			</Grid.Col>
 		</Grid>

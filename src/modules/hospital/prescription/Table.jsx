@@ -37,7 +37,7 @@ import OPDPos from "@components/print-formats/opd/OPDPos";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import Prescription from "@components/print-formats/opd/Prescription2";
+import Prescription from "@/common/components/print-formats/opd/PrescriptionFull";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
@@ -116,7 +116,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			patient_mode: ['opd','emergency'],
+			patient_mode: ["opd", "emergency"],
 			term: filterData.keywordSearch,
 			room_id: opdRoomId,
 			prescription_mode: processTab,
@@ -334,7 +334,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
 										<>
-											{values?.prescription_id && values?.process != "closed" && !values.referred_mode && userId == values?.prescription_created_by_id ? (
+											{values?.prescription_id &&
+											values?.process != "closed" &&
+											!values.referred_mode &&
+											userId == values?.prescription_created_by_id ? (
 												<Button
 													variant="filled"
 													bg="var(--theme-success-color)"
@@ -348,7 +351,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												>
 													{t("Prescription")}
 												</Button>
-											) : values?.prescription_id && values.referred_mode == 'room' ? (
+											) : values?.prescription_id && values.referred_mode == "room" ? (
 												<Button
 													variant="filled"
 													bg="var(--theme-success-color)"
@@ -362,7 +365,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												>
 													{t("Prescription")}
 												</Button>
-											) : !values?.prescription_id || values.referred_mode == 'room' ? (
+											) : !values?.prescription_id || values.referred_mode == "room" ? (
 												<Button
 													fw={400}
 													variant="filled"

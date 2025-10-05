@@ -38,7 +38,7 @@ import OPDPos from "@components/print-formats/opd/OPDPos";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import Prescription from "@components/print-formats/opd/Prescription2";
+import Prescription from "@/common/components/print-formats/opd/PrescriptionFull";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 

@@ -1,25 +1,18 @@
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
-import { Box, Flex, Grid, ScrollArea } from "@mantine/core";
+import { Box, Flex } from "@mantine/core";
 import Navigation from "@/common/components/layout/Navigation";
-import HeaderCarousel from "./common/HeaderCarousel";
-import Overview from "./common/Overview";
-import QuickBrowse from "./common/QuickBrowse";
-import GrandTotalOverview from "./common/GrandTotalOverview";
-import SparkLineOverview from "./common/SparkLineOverview";
 import HomeSkeleton from "@components/skeletons/HomeSkeleton";
-import { useEffect } from "react";
-import { getLoggedInHospitalUser, getLoggedInUser, getUserRole } from "@utils/index";
-import useHospitalUserData from "@hooks/useHospitalUserData";
-import Operator from "@modules/home/operator/Operator";
+import { getUserRole } from "@utils/index";
+import OperatorBoard from "@/modules/home/operator/OperatorBoard";
+import AdminBoard from "./operator/AdminBoard";
 
 const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
 const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_emergency"];
 
 export default function Index({ height }) {
 	const progress = useGetLoadingProgress();
-	const { userInfo } = useHospitalUserData();
 	const userRoles = getUserRole();
-	const userId = userInfo?.employee_id;
+
 	return (
 		<>
 			{progress !== 100 ? (
@@ -30,10 +23,8 @@ export default function Index({ height }) {
 						<Navigation module="home" mainAreaHeight={height} />
 						{/* ================= carousel part ================== */}
 						<Box w="100%">
-
-							{userRoles.some((role) => ALLOWED_OPERATOR_ROLES.includes(role)) && (
-								<Operator />
-							)}
+							{userRoles.some((role) => ALLOWED_OPERATOR_ROLES.includes(role)) && <OperatorBoard />}
+							{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && <AdminBoard />}
 						</Box>
 					</Flex>
 				</Box>

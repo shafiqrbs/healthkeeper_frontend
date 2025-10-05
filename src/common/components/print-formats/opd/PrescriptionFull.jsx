@@ -1,4 +1,4 @@
-import {Box, Text, Grid, Group, Stack, Image, Flex} from "@mantine/core";
+import { Box, Text, Grid, Group, Stack, Image, Flex } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -7,11 +7,10 @@ import CustomDivider from "@components/core-component/CustomDivider";
 import { formatDate } from "@/common/utils";
 import "@/index.css";
 import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-import {t} from "i18next";
+import { t } from "i18next";
 import Barcode from "react-barcode";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {
-
 	const patientInfo = data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
 	const patientReport = jsonContent?.patient_report || {};
@@ -182,7 +181,6 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 		return null;
 	};
 
-
 	return (
 		<Box display="none">
 			<Box>
@@ -265,7 +263,8 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 									</Text>
 									<Text size="xs">
 										{" "}
-										{patientInfo?.day || 1} D {patientInfo?.month || 1} M {patientInfo?.year || ""} Y
+										{patientInfo?.day || 1} D {patientInfo?.month || 1} M {patientInfo?.year || ""}{" "}
+										Y
 									</Text>
 								</Group>
 							</Grid.Col>
@@ -276,7 +275,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 									</Text>
 									<Text size="xs">
 										{patientInfo?.gender &&
-										patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
+											patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
 									</Text>
 								</Group>
 							</Grid.Col>
@@ -301,7 +300,10 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 						<Grid columns={12} gutter="md">
 							<Grid.Col span={4}>
 								<Stack gap="0px">
-									{(orderedExamKeys.length > 0 ? orderedExamKeys : Object.keys(patientExamination || {}))
+									{(orderedExamKeys.length > 0
+										? orderedExamKeys
+										: Object.keys(patientExamination || {})
+									)
 										.filter((key) => hasArrayWithLength(patientExamination?.[key]))
 										.map((key) => (
 											<Box key={key}>{renderExaminationSection(key)}</Box>
@@ -320,7 +322,10 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 									{medicines.map((medicine, index) => (
 										<Box key={index}>
 											<Text size="xs" fw={600}>
-												{exEmergencies.length + index + 1}. {getValue(medicine.medicine_id ? medicine.medicine_name : medicine.generic)}
+												{exEmergencies.length + index + 1}.{" "}
+												{getValue(
+													medicine.medicine_id ? medicine.medicine_name : medicine.generic
+												)}
 											</Text>
 											{medicine.dosages && medicine.dosages.length > 0 ? (
 												(medicine.dosages || []).map((dose, dIdx) => (
@@ -374,9 +379,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 							<Grid.Col span={6} pl={"xl"} pt={"md"}>
 								<Text fz={"xl"}>{patientInfo?.doctor_name}</Text>
 								<Text fz={"xs"}>{patientInfo?.designation_name}</Text>
-								<Text fz="xs">
-									Doctor ID {getValue(patientInfo?.employee_id, )}
-								</Text>
+								<Text fz="xs">Doctor ID {getValue(patientInfo?.employee_id)}</Text>
 							</Grid.Col>
 							<Grid.Col span={6}>
 								<Text size="sm" fw={600}>
@@ -402,12 +405,8 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 								<Text size="xs" fw={600} c="#1e40af">
 									Doctor By: {getValue(patientInfo?.doctor_name)}
 								</Text>
-								<Text size="xs">
-									Doctor ID- {getValue(patientInfo?.employee_id, )}
-								</Text>
-								<Text size="xs">
-									Designation: {getValue(patientInfo?.designation_name)}
-								</Text>
+								<Text size="xs">Doctor ID- {getValue(patientInfo?.employee_id)}</Text>
+								<Text size="xs">Designation: {getValue(patientInfo?.designation_name)}</Text>
 							</Stack>
 						</Grid.Col>
 						<Grid.Col span={8}>
@@ -438,7 +437,8 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 											<Grid columns={24} m={4} p={4}>
 												<Grid.Col span={20} m={0} p={0}>
 													<Text size="xs" pl={4}>
-														{index + 1}. {getValue(medicine.medicine_id ? medicine.generic : '')}
+														{index + 1}.{" "}
+														{getValue(medicine.medicine_id ? medicine.generic : "")}
 													</Text>
 												</Grid.Col>
 												<Grid.Col span={4} m={0} p={0}>
@@ -451,7 +451,9 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 									</>
 								))}
 							</Box>
-							<Box align={'center'}><Barcode fontSize={'12'} width={'1'} height={'40'} value={patientInfo?.barcode}/></Box>
+							<Box align={"center"}>
+								<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.barcode} />
+							</Box>
 						</Grid.Col>
 					</Grid>
 
@@ -467,6 +469,6 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 	);
 });
 
-PrescriptionFull.displayName = "Prescription2";
+PrescriptionFull.displayName = "PrescriptionFull";
 
 export default PrescriptionFull;

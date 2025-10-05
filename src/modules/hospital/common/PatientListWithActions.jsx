@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES } from "@/constants";
-import Prescription from "@/common/components/print-formats/opd/Prescription2";
+import Prescription from "@/common/components/print-formats/opd/PrescriptionFull";
 import { useReactToPrint } from "react-to-print";
 
 const module = MODULES.VISIT;
