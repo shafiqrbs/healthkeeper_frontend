@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
@@ -29,7 +30,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
-import { formatDate, getLoggedInHospitalUser, getUserRole } from "@/common/utils";
+import { formatDate, getLoggedInHospitalUser, getLoggedInUser, getUserRole } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -49,10 +50,24 @@ const tabs = [
 ];
 
 const PER_PAGE = 200;
-const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
-const ALLOWED_OPD_ROLES = [ "doctor_opd", "admin_administrator"];
+const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
+const ALLOWED_OPD_ROLES = ["doctor_opd", "admin_administrator"];
+
+const CSV_HEADERS = [
+	{ label: "S/N", key: "sn" },
+	{ label: "Created", key: "created" },
+	{ label: "RoomNo", key: "visiting_room" },
+	{ label: "InvoiceID", key: "invoice" },
+	{ label: "PatientID", key: "patient_id" },
+	{ label: "Name", key: "name" },
+	{ label: "Mobile", key: "mobile" },
+	{ label: "Patient", key: "patient_payment_mode_name" },
+	{ label: "Total", key: "total" },
+	{ label: "CreatedBy", key: "created_by" },
+];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
+	const csvLinkRef = useRef(null);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -61,7 +76,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-
 
 	const form = useForm({
 		initialValues: {
@@ -109,6 +123,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setControlsRefs(controlsRefs);
 	};
 
+	const user = getLoggedInUser();
+	console.log(userRoles);
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
@@ -118,6 +134,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			room_id: form.values.room_id,
 			prescription_mode: processTab,
 			created: form.values.created,
+			created_by_id:
+				userRoles.includes("operator_manager") || userRoles.includes("admin_administrator")
+					? undefined
+					: user?.id,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -230,6 +250,26 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		}
 	};
 
+	const csvData =
+		records?.map((item, index) => ({
+			sn: index + 1,
+			created: formatDate(item?.created_at),
+			visiting_room: item?.visiting_room ?? "",
+			invoice: item?.invoice ?? "",
+			patient_id: item?.patient_id ?? "",
+			name: item?.name ?? "",
+			mobile: item?.mobile ?? "",
+			patient_payment_mode_name: item?.patient_payment_mode_name ?? "",
+			total: item?.total ?? "",
+			created_by: item?.created_by ?? "N/A",
+		})) || [];
+
+	const handleCSVDownload = () => {
+		if (csvLinkRef?.current?.link) {
+			csvLinkRef.current.link.click();
+		}
+	};
+
 	return (
 		<Box w="100%" bg="white">
 			<Flex justify="space-between" align="center" px="sm">
@@ -283,7 +323,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch module={module} form={form} />
+				<KeywordSearch module={module} form={form} handleCSVDownload={handleCSVDownload} />
 			</Box>
 			<Box className="border-top-none" px="sm">
 				<DataTable
@@ -424,11 +464,21 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			{selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
+
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 
 			<OPDDocument data={printData} ref={a4Ref} />
 			<OPDPos data={printData} ref={posRef} />
 			<Prescription data={printData} ref={prescriptionRef} />
+
+			{/* Hidden CSV link for exporting current table rows */}
+			<CSVLink
+				data={csvData}
+				headers={CSV_HEADERS}
+				filename={`visits-${formatDate(new Date())}.csv`}
+				style={{ display: "none" }}
+				ref={csvLinkRef}
+			/>
 		</Box>
 	);
 }

@@ -25,6 +25,7 @@ export default function KeywordSearch({
 	showReset = true,
 	showOpdRoom = false,
 	className = "keyword-search-box",
+	handleCSVDownload = () => {},
 }) {
 	const dispatch = useDispatch();
 	const [fetching, setFetching] = useState(false);
@@ -176,7 +177,7 @@ export default function KeywordSearch({
 
 				{showAdvancedFilter && <AdvancedFilter />}
 
-				<ActionIcon c="var(--theme-success-color-3)" bg="white" onClick={handleReset}>
+				<ActionIcon c="var(--theme-success-color-3)" bg="white" onClick={handleCSVDownload}>
 					<IconFileTypeXls size={16} stroke={1.5} />
 				</ActionIcon>
 			</Flex>

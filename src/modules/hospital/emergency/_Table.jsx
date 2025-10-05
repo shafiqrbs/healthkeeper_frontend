@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Grid, Group, Menu, Tabs, Text } from "@mantine/core";
@@ -18,7 +19,7 @@ import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { showEntityData, storeEntityData } from "@/app/store/core/crudThunk";
-import { formatDate, getUserRole } from "@utils/index";
+import { formatDate, getLoggedInUser, getUserRole } from "@utils/index";
 import CompactDrawer from "@components/drawers/CompactDrawer";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { successNotification } from "@components/notification/successNotification";
@@ -37,7 +38,19 @@ const tabs = [
 ];
 const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
 const ALLOWED_DOCTOR_ROLES = ["doctor_emergency", "admin_administrator"];
+
+const CSV_HEADERS = [
+	{ label: "S/N", key: "sn" },
+	{ label: "Created", key: "created" },
+	{ label: "CreatedBy", key: "created_by" },
+	{ label: "PatientID", key: "patient_id" },
+	{ label: "Name", key: "name" },
+	{ label: "Mobile", key: "mobile" },
+	{ label: "Total", key: "total" },
+];
+
 export default function Table({ module }) {
+	const csvLinkRef = useRef(null);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -50,8 +63,8 @@ export default function Table({ module }) {
 	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
 	const [processTab, setProcessTab] = useState("all");
 	const userRoles = getUserRole();
-
-	const today = new Date();
+	const user = getLoggedInUser();
+	// removed unused 'today'
 
 	const form = useForm({
 		initialValues: {
@@ -87,13 +100,17 @@ export default function Table({ module }) {
 			room_id: form.values?.room_id,
 			prescription_mode: processTab,
 			created: form.values.created,
+			created_by_id:
+				userRoles.includes("operator_manager") || userRoles.includes("admin_administrator")
+					? undefined
+					: user?.id,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
 		direction: "desc",
 	});
 
-	const handleView = (id) => {
+	const handleView = () => {
 		open();
 	};
 
@@ -171,6 +188,23 @@ export default function Table({ module }) {
 		closeAdmission();
 	};
 
+	const csvData =
+		records?.map((item, index) => ({
+			sn: index + 1,
+			created: formatDate(item?.created_at),
+			created_by: item?.created_by || "N/A",
+			patient_id: item?.patient_id || "",
+			name: item?.name || "",
+			mobile: item?.mobile || "",
+			total: item?.total || "",
+		})) || [];
+
+	const handleCSVDownload = () => {
+		if (csvLinkRef?.current?.link) {
+			csvLinkRef.current.link.click();
+		}
+	};
+
 	return (
 		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -210,7 +244,7 @@ export default function Table({ module }) {
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch form={form} module={module} />
+				<KeywordSearch form={form} module={module} handleCSVDownload={handleCSVDownload} />
 			</Box>
 			<Box className="borderRadiusAll border-top-none" px="sm">
 				<DataTable
@@ -410,6 +444,15 @@ export default function Table({ module }) {
 					</Grid.Col>
 				</Grid>
 			</CompactDrawer>
+
+			{/* Hidden CSV link for exporting current table rows */}
+			<CSVLink
+				data={csvData}
+				headers={CSV_HEADERS}
+				filename={`emergency-${formatDate(new Date())}.csv`}
+				style={{ display: "none" }}
+				ref={csvLinkRef}
+			/>
 		</Box>
 	);
 }

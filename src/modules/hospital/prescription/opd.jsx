@@ -7,7 +7,7 @@ import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Button, Flex, Grid, Modal, Stack } from "@mantine/core";
+import { Box, Button, Flex, Grid, Modal, Stack, LoadingOverlay } from "@mantine/core";
 import PatientReport from "../common/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -49,7 +49,7 @@ export default function Index() {
 	const [records, setRecords] = useState([]);
 	const [customerId, setCustomerId] = useState();
 
-	const { data: prescriptionData } = useDataWithoutStore({
+	const { data: prescriptionData, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});
 
@@ -134,7 +134,8 @@ export default function Index() {
 			{progress !== 100 ? (
 				<DefaultSkeleton />
 			) : (
-				<Box p="md">
+				<Box p="md" pos="relative">
+					<LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
 					<Flex w="100%" gap="sm" ref={ref}>
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid columns={24} gutter="les">

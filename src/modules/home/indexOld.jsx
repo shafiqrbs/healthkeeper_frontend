@@ -7,16 +7,16 @@ import QuickBrowse from "./common/QuickBrowse";
 import GrandTotalOverview from "./common/GrandTotalOverview";
 import SparkLineOverview from "./common/SparkLineOverview";
 import HomeSkeleton from "@components/skeletons/HomeSkeleton";
-import {useEffect} from "react";
-import {getLoggedInHospitalUser, getLoggedInUser, getUserRole} from "@utils/index";
+import { useEffect } from "react";
+import { getLoggedInHospitalUser, getLoggedInUser, getUserRole } from "@utils/index";
 import useHospitalUserData from "@hooks/useHospitalUserData";
 
-const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
-const ALLOWED_OPERATOR_ROLES = [ "operator_opd", "operator_manager", "operator_emergency"];
+const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
+const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_emergency"];
 
 export default function IndexOld({ height }) {
 	const progress = useGetLoadingProgress();
-	const {userInfo} = useHospitalUserData();
+	const { userInfo } = useHospitalUserData();
 	const userRoles = getUserRole();
 	const userId = userInfo?.employee_id;
 	return (
@@ -50,6 +50,9 @@ export default function IndexOld({ height }) {
 									</Grid.Col>
 								</Grid>
 							</ScrollArea>
+							<Box w="100%">
+								{userRoles.some((role) => ALLOWED_OPERATOR_ROLES.includes(role)) && <Operator />}
+							</Box>
 						</Box>
 					</Flex>
 				</Box>

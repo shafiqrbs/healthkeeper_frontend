@@ -7,17 +7,17 @@ import QuickBrowse from "./common/QuickBrowse";
 import GrandTotalOverview from "./common/GrandTotalOverview";
 import SparkLineOverview from "./common/SparkLineOverview";
 import HomeSkeleton from "@components/skeletons/HomeSkeleton";
-import {useEffect} from "react";
-import {getLoggedInHospitalUser, getLoggedInUser, getUserRole} from "@utils/index";
+import { useEffect } from "react";
+import { getLoggedInHospitalUser, getLoggedInUser, getUserRole } from "@utils/index";
 import useHospitalUserData from "@hooks/useHospitalUserData";
 import Operator from "@modules/home/operator/Operator";
 
-const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator"];
-const ALLOWED_OPERATOR_ROLES = [ "operator_opd", "operator_manager", "operator_emergency"];
+const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
+const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_emergency"];
 
 export default function Index({ height }) {
 	const progress = useGetLoadingProgress();
-	const {userInfo} = useHospitalUserData();
+	const { userInfo } = useHospitalUserData();
 	const userRoles = getUserRole();
 	const userId = userInfo?.employee_id;
 	return (
