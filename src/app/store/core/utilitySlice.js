@@ -28,6 +28,13 @@ export const ACCOUNTING_DROPDOWNS = {
 	VOUCHER: { UTILITY: "voucher", TYPE: "voucher", PATH: "accounting/select/voucher" },
 };
 
+export const PHARMACY_DROPDOWNS = {
+	BY_MEAL: { UTILITY: "byMeal", PATH: "medicine/select/bymeal" },
+	DOSAGE: { UTILITY: "dosage", PATH: "medicine/select/dosage" },
+	GENERIC: { UTILITY: "generic", PATH: "medicine/select/generic" },
+};
+
+
 export const HOSPITAL_DROPDOWNS = {
 
 	BY_MEAL: { UTILITY: "byMeal", PATH: "hospital/select/bymeal" },

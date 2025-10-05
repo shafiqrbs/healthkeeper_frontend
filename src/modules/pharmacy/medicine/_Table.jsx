@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, Select} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
     IconTrashX,
@@ -36,6 +36,8 @@ import {useEffect, useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import {errorNotification} from "@components/notification/errorNotification";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import {PHARMACY_DROPDOWNS} from "@/app/store/core/utilitySlice";
 
 const PER_PAGE = 50;
 
@@ -51,6 +53,19 @@ export default function _Table({ module, open }) {
     const searchKeyword = useSelector((state) => state.crud.searchKeyword);
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
+
+
+    const { data: byMealDropdown } = useGlobalDropdownData({
+        path: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
+        utility: PHARMACY_DROPDOWNS.BY_MEAL.UTILITY,
+    });
+
+    const { data: dosageDropdown } = useGlobalDropdownData({
+        path: PHARMACY_DROPDOWNS.DOSAGE.PATH,
+        utility: PHARMACY_DROPDOWNS.DOSAGE.UTILITY,
+    });
+
+    console.log(dosageDropdown)
 
     // for infinity table data scroll, call the hook
     const {
@@ -275,7 +290,40 @@ export default function _Table({ module, open }) {
                             title: t("Dose"),
                             sortable: true,
                         },
-
+                        {
+                            accessor: "medicine_dosage_id",
+                            title: t("MedicineDosage"),
+                            render: (item) => (
+                                <Select
+                                    size="xs"
+                                    className={inlineInputCss.inputText}
+                                    placeholder={t("SelectDosage")}
+                                    data={dosageDropdown}
+                                    value={submitFormData[item.id]?.medicine_dosage_id || ""}
+                                    onChange={(val) => {
+                                        handleDataTypeChange(item.id, "medicine_dosage_id", val);
+                                        handleRowSubmit(item.id);
+                                    }}
+                                />
+                            ),
+                        },
+                        {
+                            accessor: "medicine_bymeal_id",
+                            title: t("MedicineDosage"),
+                            render: (item) => (
+                                <Select
+                                    size="xs"
+                                    className={inlineInputCss.inputText}
+                                    placeholder={t("SelectByMeal")}
+                                    data={byMealDropdown}
+                                    value={submitFormData[item.id]?.medicine_bymeal_id || ""}
+                                    onChange={(val) => {
+                                        handleDataTypeChange(item.id, "medicine_bymeal_id", val);
+                                        handleRowSubmit(item.id);
+                                    }}
+                                />
+                            ),
+                        },
                         {
                             accessor: "opd_quantity",
                             title: t("OPDQuantitiy"),

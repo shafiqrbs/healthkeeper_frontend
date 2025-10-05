@@ -254,6 +254,11 @@ export default function _Table({ module, open }) {
                             render: (_item, index) => index + 1,
                         },
                         {
+                            accessor: "mode",
+                            title: t("Mode"),
+                            sortable: true,
+                        },
+                        {
                             accessor: "dosage_form",
                             title: t("DosageForm"),
                             sortable: true,

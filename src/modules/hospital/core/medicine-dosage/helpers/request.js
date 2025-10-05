@@ -12,8 +12,11 @@ const initialValues = {
 export const getInitialValues = (t) => {
 	return {
 		initialValues,
-
 		validate: {
+			mode: (value) => {
+				if (!value) return t("ModeTypeValidationRequired");
+				return null;
+			},
 			name: hasLength({ min: 1}),
 			name_bn: hasLength({ min: 1 }),
 		},

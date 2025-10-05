@@ -43,6 +43,8 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		}
 	}, [data, type]);
 
+	const modes =['Dosage','Bymeal']
+
 	useHotkeys(
 		[
 			["alt+n", () => document.getElementById("particular_type_master_id").focus()],
@@ -65,7 +67,27 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("DosageForm")} <RequiredAsterisk />
+												{t("Mode")} <RequiredAsterisk />
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("ModeFormValidateMessage")}
+												placeholder={t("Mode")}
+												required={false}
+												dropdownValue={modes}
+												name="mode"
+												id="mode"
+												value={form.values.mode}
+												nextField="dosage_form"
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="xxxs">
+										<Grid.Col span={6}>
+											<Text fz="sm">
+												{t("DosageForm")}
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
@@ -103,32 +125,32 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("Name BN")} <RequiredAsterisk />
+												{t("NameBangla")} <RequiredAsterisk />
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
 												form={form}
-												tooltip={t("NameValidateMessage")}
-												placeholder={t("Name")}
+												tooltip={t("NameBanglaValidateMessage")}
+												placeholder={t("NameBangla")}
 												required={false}
 												name="name_bn"
 												id="name_bn"
-												nextField="instruction"
+												nextField="quantity"
 											/>
 										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("Quantity")} <RequiredAsterisk />
+												{t("Quantity")}
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
 												form={form}
 												tooltip={t("NameValidateMessage")}
-												placeholder={t("Name")}
+												placeholder={t("Quantity")}
 												required={false}
 												name="quantity"
 												id="quantity"
