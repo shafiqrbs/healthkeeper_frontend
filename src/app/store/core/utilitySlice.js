@@ -23,9 +23,11 @@ export const CORE_DROPDOWNS = {
 };
 
 export const ACCOUNTING_DROPDOWNS = {
+
 	ACCOUNT: { UTILITY: "account", TYPE: "sub-head", PATH: "accounting/select/head" },
 	ACCOUNT_LEDGER: { UTILITY: "accountLedger", TYPE: "ledger", PATH: "accounting/select/head" },
 	VOUCHER: { UTILITY: "voucher", TYPE: "voucher", PATH: "accounting/select/voucher" },
+
 };
 
 export const PHARMACY_DROPDOWNS = {
@@ -47,7 +49,12 @@ export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_OPD_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/allopdroom" },
 	PARTICULAR_OPD_REFERRED_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/opdreferredroom" },
 
-	PARTICULAR_DOCTOR: { UTILITY: "particularDoctor", TYPE: "doctor", PATH: "hospital/select/particular" },
+	PARTICULAR_DOCTOR: {
+		UTILITY: "particularDoctor",
+		TYPE: "doctor",
+		PATH: "hospital/select/particular"
+	},
+
 	PARTICULAR_CONSULTANT: { UTILITY: "particularConsultant", TYPE: "consultant", PATH: "hospital/select/particular" },
 
 	PARTICULAR_MODE: { UTILITY: "particularOperationMode", TYPE: "operation", PATH: "hospital/select/mode" },

@@ -444,7 +444,7 @@ export default function EntityForm({ form, module }) {
 										<Text fz="sm">{t("AssignConsultant")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										{hospitalConfigData?.hospital_config?.consultant_doctor?.consultant_doctor_name}
+										{item?.admit_consultant_name}
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>

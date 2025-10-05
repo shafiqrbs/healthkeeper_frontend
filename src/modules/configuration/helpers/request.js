@@ -38,6 +38,10 @@ export const getAccountingFormInitialValues = (account_config) => {
 };
 
 export const generateHospitalFormValues = () => ({
+	consultant_by_id: '',
+	opd_store_id: '',
+	ipd_store_id: '',
+	ot_store_id: '',
 	opd_select_doctor: 0,
 	special_discount_doctor: 0,
 	special_discount_investigation: 0,

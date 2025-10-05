@@ -38,6 +38,8 @@ import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import {errorNotification} from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import {PHARMACY_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import {debounce} from "lodash";
+import {useForm} from "@mantine/form";
 
 const PER_PAGE = 50;
 
@@ -64,8 +66,6 @@ export default function _Table({ module, open }) {
         path: PHARMACY_DROPDOWNS.DOSAGE.PATH,
         utility: PHARMACY_DROPDOWNS.DOSAGE.UTILITY,
     });
-
-    console.log(dosageDropdown)
 
     // for infinity table data scroll, call the hook
     const {
@@ -149,6 +149,17 @@ export default function _Table({ module, open }) {
         navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX);
     };
 
+    const form = useForm({
+        initialValues: {
+            company: "",
+            product_name: "",
+            generic: "",
+            opd_quantity: "",
+            medicine_dosage_id: "",
+            medicine_bymeal_id: "",
+        }
+    });
+
     useEffect(() => {
         if (!records?.length) return;
         const initialFormData = records.reduce((acc, item) => {
@@ -157,6 +168,8 @@ export default function _Table({ module, open }) {
                 product_name: item.product_name || "",
                 generic: item.generic || "",
                 opd_quantity: item.opd_quantity || "",
+                medicine_dosage_id: item.medicine_dosage_id || "",
+                medicine_bymeal_id: item.medicine_bymeal_id || "",
             };
             return acc;
         }, {});
@@ -164,45 +177,40 @@ export default function _Table({ module, open }) {
         setSubmitFormData(initialFormData);
     }, [records]);
 
-    const handleDataTypeChange = (rowId, field, value) => {
+    const handleDataTypeChange = (rowId, field, value, submitNow = false) => {
+        const updatedRow = {
+            ...submitFormData[rowId],
+            [field]: value,
+        };
+
         setSubmitFormData(prev => ({
             ...prev,
-            [rowId]: {
-                ...prev[rowId],
-                [field]: value,
-            },
+            [rowId]: updatedRow,
         }));
+
+        // optional immediate submit (for Select)
+        if (submitNow) {
+            handleRowSubmit(rowId, updatedRow);
+        }
     };
 
-    const handleRowSubmit = async (rowId) => {
-        const formData = submitFormData[rowId];
-        if (!formData) return false;
-
-        // 🔎 find original row data
-        const originalRow = records.find((r) => r.id === rowId);
-        if (!originalRow) return false;
-
-        // ✅ check if there is any change
-        const isChanged = Object.keys(formData).some(
-            (key) => formData[key] !== originalRow[key]
-        );
-
-        if (!isChanged) {
-            // nothing changed → do not submit
-            return false;
-        }
+    const handleRowSubmit = async (rowId, updatedRow = null) => {
+        const rowData = updatedRow || submitFormData[rowId];
+        if (!rowData) return;
 
         const value = {
             url: `${PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.INLINE_UPDATE}/${rowId}`,
-            data: formData,
+            data: rowData,
             module,
         };
+
         try {
-            const resultAction = await dispatch(storeEntityData(value));
+            await dispatch(storeEntityData(value));
         } catch (error) {
             errorNotification(error.message);
         }
     };
+
 
     useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
 
@@ -242,7 +250,7 @@ export default function _Table({ module, open }) {
                                 <TextInput
                                     size="xs"
                                     className={inlineInputCss.inputText}
-                                    placeholder={t("Name")}
+                                    placeholder={t("CompanyName")}
                                     value={submitFormData[item.id]?.company || ""}
                                     onChange={(event) =>
                                         handleDataTypeChange(item.id, "company", event.currentTarget.value)
@@ -254,7 +262,7 @@ export default function _Table({ module, open }) {
                         {
                             accessor: "product_name",
                             title: t("MedicineName"),
-                            sortable: true,
+                            sortable: false,
                             render: (item) => (
                                 <TextInput
                                     size="xs"
@@ -271,7 +279,7 @@ export default function _Table({ module, open }) {
                          {
                             accessor: "generic",
                             title: t("Generic"),
-                            sortable: true,
+                             sortable: false,
                             render: (item) => (
                                 <TextInput
                                     size="xs"
@@ -288,7 +296,7 @@ export default function _Table({ module, open }) {
                          {
                             accessor: "dose_details",
                             title: t("Dose"),
-                            sortable: true,
+                             sortable: false,
                         },
                         {
                             accessor: "medicine_dosage_id",
@@ -299,40 +307,39 @@ export default function _Table({ module, open }) {
                                     className={inlineInputCss.inputText}
                                     placeholder={t("SelectDosage")}
                                     data={dosageDropdown}
-                                    value={submitFormData[item.id]?.medicine_dosage_id || ""}
+                                    value={ String(submitFormData[item.id]?.medicine_dosage_id) ?? ""}
                                     onChange={(val) => {
-                                        handleDataTypeChange(item.id, "medicine_dosage_id", val);
-                                        handleRowSubmit(item.id);
+                                        handleDataTypeChange(item.id, "medicine_dosage_id", val,true);
                                     }}
                                 />
                             ),
                         },
                         {
                             accessor: "medicine_bymeal_id",
-                            title: t("MedicineDosage"),
+                            title: t("MedicineByMeal"),
                             render: (item) => (
                                 <Select
                                     size="xs"
                                     className={inlineInputCss.inputText}
                                     placeholder={t("SelectByMeal")}
                                     data={byMealDropdown}
-                                    value={submitFormData[item.id]?.medicine_bymeal_id || ""}
+                                    value={ String(submitFormData[item.id]?.medicine_bymeal_id) ?? ""}
                                     onChange={(val) => {
-                                        handleDataTypeChange(item.id, "medicine_bymeal_id", val);
-                                        handleRowSubmit(item.id);
+                                        handleDataTypeChange(item.id, "medicine_bymeal_id", val,true);
                                     }}
                                 />
                             ),
                         },
                         {
                             accessor: "opd_quantity",
-                            title: t("OPDQuantitiy"),
-                            sortable: true,
+                            title: t("OPDQty"),
+                            width: 80,
+                            sortable: false,
                             render: (item) => (
                                 <TextInput
                                     size="xs"
                                     className={inlineInputCss.inputText}
-                                    placeholder={t("opd_quantity")}
+                                    placeholder={t("Quantity")}
                                     value={submitFormData[item.id]?.opd_quantity || ""}
                                     onChange={(event) =>
                                         handleDataTypeChange(item.id, "opd_quantity", event.currentTarget.value)

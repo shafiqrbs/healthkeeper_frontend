@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, ScrollArea, Button, Text, Flex, Stack, Grid, Title } from "@mantine/core";
+import {Box, ScrollArea, Button, Text, Flex, Stack, Grid, Title, Select} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch } from "react-redux";
 import { modals } from "@mantine/modals";
@@ -22,6 +22,8 @@ import useDomainConfig from "@hooks/config-data/useDomainConfig";
 import { parseDateValue } from "@utils/index";
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
+import {CORE_DROPDOWNS,HOSPITAL_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import inlineInputCss from "@assets/css/InlineInputField.module.css";
 
 const module = MODULES.HOSPITAL_CONFIG;
 
@@ -46,6 +48,18 @@ export default function __HospitalForm({ height, id }) {
 		});
 	};
 
+	const { data: warehouseDropdown } = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.WAREHOUSE.PATH,
+		utility: CORE_DROPDOWNS.WAREHOUSE.UTILITY,
+	});
+	const { data: employeeDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.UTILITY,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.TYPE },
+
+	});
+	console.log(employeeDropdown)
+
 	useEffect(() => {
 		if (hospital_config) {
 			form.setValues({
@@ -60,7 +74,10 @@ export default function __HospitalForm({ height, id }) {
 				is_print_header: hospital_config?.is_print_header || 0,
 				is_invoice_title: hospital_config?.is_invoice_title || 0,
 				is_print_footer: hospital_config?.is_print_footer || 0,
-				is_print_report_header: hospital_config?.is_print_report_header || 0,
+				opd_store_id: hospital_config?.opd_store_id || 0,
+				ot_store_id: hospital_config?.ot_store_id || 0,
+				ipd_store_id: hospital_config?.ipd_store_id || 0,
+				consultant_by_id: hospital_config?.consultant_by_id || 0,
 			});
 		}
 	}, [dispatch, hospital_config]);
@@ -189,6 +206,82 @@ export default function __HospitalForm({ height, id }) {
 							{inventory_config?.currency?.code}
 						</Grid.Col>
 					</Grid>
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{t("Consultant")}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							<SelectForm
+								form={form}
+								tooltip={t("ConsultantByValidateMessage")}
+								placeholder={t("ConsultantBy")}
+								name="consultant_by_id"
+								id="consultant_by_id"
+								nextField="opd_store_id"
+								required={true}
+								value={form.values.consultant_by_id}
+								dropdownValue={employeeDropdown}
+							/>
+						</Grid.Col>
+					</Grid>
+					<Box className={"inner-title-box"}>
+						<Title order={6}>{t("StoreSetup")}</Title>
+					</Box>
+					{/* ======================= some demo components for reusing purposes ======================= */}
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{t("OPDStore")}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							<SelectForm
+								form={form}
+								tooltip={t("OPDStoreValidateMessage")}
+								placeholder={t("OPDStore")}
+								name="opd_store_id"
+								id="opd_store_id"
+								nextField="ipd_store_id"
+								required={true}
+								value={form.values.opd_store_id}
+								dropdownValue={warehouseDropdown}
+							/>
+						</Grid.Col>
+					</Grid>
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{t("IPDStore")}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							<SelectForm
+								form={form}
+								tooltip={t("OPDStoreValidateMessage")}
+								placeholder={t("OPDStore")}
+								name="ipd_store_id"
+								id="ipd_store_id"
+								nextField="ot_store_id"
+								required={true}
+								value={form.values.ipd_store_id}
+								dropdownValue={warehouseDropdown}
+							/>
+						</Grid.Col>
+					</Grid>
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{t("OTStore")}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							<SelectForm
+								form={form}
+								tooltip={t("OPDStoreValidateMessage")}
+								placeholder={t("OPDStore")}
+								name="ot_store_id"
+								id="ot_store_id"
+								required={false}
+								value={form.values.ot_store_id}
+								dropdownValue={warehouseDropdown}
+							/>
+						</Grid.Col>
+					</Grid>
+
 					<Box className={"inner-title-box"}>
 						<Title order={6}>{t("Messageing")}</Title>
 					</Box>
