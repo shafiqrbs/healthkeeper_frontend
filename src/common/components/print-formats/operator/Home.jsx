@@ -91,8 +91,14 @@ const Home = forwardRef((data, ref) => {
 							</Flex>
 						</Flex>
 					</Box>
-					<CollectionTable data={userCollectionData} columns={userCollectionColumns} title="userCollection" />
 					<CollectionTable
+						stripedColor="var(--theme-tertiary-color-2)"
+						data={userCollectionData}
+						columns={userCollectionColumns}
+						title="userCollection"
+					/>
+					<CollectionTable
+						stripedColor="var(--theme-tertiary-color-2)"
 						data={roomBaseCollectionData}
 						columns={roomCollectionColumns}
 						title="roomCollection"

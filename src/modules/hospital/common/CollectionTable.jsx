@@ -2,7 +2,7 @@ import { Box, Flex, Table, Text } from "@mantine/core";
 import { IconCoinTaka } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 
-export default function CollectionTable({ data, columns, title }) {
+export default function CollectionTable({ data, columns, title, stripedColor = "var(--theme-primary-color-0)" }) {
 	const { t } = useTranslation();
 
 	const rows = data.map((item, index) => (
@@ -35,7 +35,7 @@ export default function CollectionTable({ data, columns, title }) {
 				</Box>
 			)}
 			<Box className="borderRadiusAll">
-				<Table stickyHeader striped stripedColor="var(--theme-primary-color-0)">
+				<Table stickyHeader striped stripedColor={stripedColor}>
 					<Table.Thead>
 						<Table.Tr>
 							{columns.map((column, index) => {
