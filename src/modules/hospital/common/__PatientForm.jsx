@@ -510,7 +510,7 @@ export function Form({
 			)}
 			<Box>
 				<ScrollArea h={mainAreaHeight - 180}>
-					<Stack mih={height} className="form-stack-vertical">
+					<Stack className="form-stack-vertical">
 						<Flex className="form-action-header full-bleed">
 							<Text fz="sm">{t("OPDRoom")}</Text>
 							<Flex align="center" gap="xs" className="cursor-pointer">
@@ -551,7 +551,7 @@ export function Form({
 									placeholder="Md. Abdul"
 									name="name"
 									id="patientName"
-									nextField="mobile"
+									nextField="year"
 									value={form.values.name}
 									// required
 								/>
@@ -559,21 +559,53 @@ export function Form({
 						</Grid>
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
-								<Flex align="center" gap="es">
-									<Text fz="sm">{t("Mobile")}</Text>
+								<Flex>
+									<Text fz="sm">{t("Age")}</Text>
+									<RequiredAsterisk />
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={14}>
-								<InputNumberForm
-									form={form}
-									label=""
-									tooltip={t("EnterPatientMobile")}
-									placeholder="+880 1717171717"
-									name="mobile"
-									id="mobile"
-									nextField="dob"
-									value={form.values.mobile}
-								/>
+								<Flex gap="xs">
+									<InputNumberForm
+										form={form}
+										label=""
+										placeholder="Years"
+										tooltip={t("EnterYears")}
+										name="year"
+										id="year"
+										nextField="mobile"
+										min={0}
+										max={150}
+										readOnly={form.values.dob}
+									/>
+
+									<InputNumberForm
+										form={form}
+										label=""
+										placeholder="Months"
+										tooltip={t("EnterMonths")}
+										name="month"
+										id="month"
+										nextField="year"
+										min={0}
+										max={11}
+										readOnly={form.values.dob}
+									/>
+									<InputNumberForm
+										form={form}
+										label=""
+										placeholder="Days"
+										tooltip={t("EnterDays")}
+										name="day"
+										id="day"
+										nextField="month"
+										min={0}
+										max={31}
+										readOnly={form.values.dob}
+									/>
+
+
+								</Flex>
 							</Grid.Col>
 						</Grid>
 						<Grid align="center" columns={20}>
@@ -597,7 +629,7 @@ export function Form({
 								/>
 							</Grid.Col>
 						</Grid>
-						<Grid align="center" columns={20}>
+						{/*<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Flex align="center" gap="es">
 									<Text fz="sm">{t("DateOfBirth")}</Text>
@@ -617,69 +649,25 @@ export function Form({
 									disabledFutureDate
 								/>
 							</Grid.Col>
-						</Grid>
+						</Grid>*/}
+
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
-								<Flex>
-									<Text fz="sm">{t("Age")}</Text>
-									<RequiredAsterisk />
+								<Flex align="center" gap="es">
+									<Text fz="sm">{t("Mobile")}</Text>
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={14}>
-								<Flex gap="xs">
-									<InputNumberForm
-										form={form}
-										label=""
-										placeholder="Days"
-										tooltip={t("EnterDays")}
-										name="day"
-										id="day"
-										nextField="month"
-										min={0}
-										max={31}
-										leftSection={
-											<Text fz="sm" px="sm">
-												{t("D")}
-											</Text>
-										}
-										readOnly={form.values.dob}
-									/>
-									<InputNumberForm
-										form={form}
-										label=""
-										placeholder="Months"
-										tooltip={t("EnterMonths")}
-										name="month"
-										id="month"
-										nextField="year"
-										min={0}
-										max={11}
-										leftSection={
-											<Text fz="sm" px="sm">
-												{t("M")}
-											</Text>
-										}
-										readOnly={form.values.dob}
-									/>
-
-									<InputNumberForm
-										form={form}
-										label=""
-										placeholder="Years"
-										tooltip={t("EnterYears")}
-										name="year"
-										id="year"
-										nextField="identity"
-										min={0}
-										max={150}
-										leftSection={
-											<Text fz="sm" px="sm">
-												{t("Y")}
-											</Text>
-										}
-										readOnly={form.values.dob}
-									/>
-								</Flex>
+								<InputNumberForm
+									form={form}
+									label=""
+									tooltip={t("EnterPatientMobile")}
+									placeholder="+880 1717171717"
+									name="mobile"
+									id="mobile"
+									nextField="dob"
+									value={form.values.mobile}
+								/>
 							</Grid.Col>
 						</Grid>
 						<Grid align="center" columns={20}>
@@ -776,7 +764,7 @@ export function Form({
 							</Grid>
 						)}
 
-						<Grid align="center" columns={20}>
+{/*						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Text fz="sm">{t("GuardianName")}</Text>
 							</Grid.Col>
@@ -829,7 +817,7 @@ export function Form({
 									required
 								/>
 							</Grid.Col>
-						</Grid>
+						</Grid>*/}
 						<Grid columns={20}>
 							<Grid.Col span={20} pt="es">
 								<SegmentedControlForm

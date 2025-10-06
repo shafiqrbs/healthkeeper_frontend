@@ -20,7 +20,7 @@ const OPDPos = forwardRef(({ data }, ref) => {
 	const patientInfo = data
 	return (
 		<Box display="none">
-			<Box ref={ref} w="80mm" p={8} bg="white" mx="auto" bd="1px solid black">
+			<Box ref={ref} w="80mm" p={8} bg="white" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="space-between" align="center" gap={8}>
@@ -75,14 +75,6 @@ const OPDPos = forwardRef(({ data }, ref) => {
 								<Table.Td align="right">{patientInfo?.patient_id || "PT-987654321"}</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td>
-									<strong>মোড:</strong> {patientInfo?.mode_name || "OPD"}
-								</Table.Td>
-								<Table.Td align="right">
-									<strong>কক্ষ:</strong> {patientInfo?.room_name || "Room 1"}
-								</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
 								<Table.Td colSpan={2}></Table.Td>
 							</Table.Tr>
 							<Table.Tr>
@@ -92,16 +84,8 @@ const OPDPos = forwardRef(({ data }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("লিঙ্গ")}:</strong> {patientInfo?.gender && patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
-								</Table.Td>
-								<Table.Td align="right">
-									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || "01717171717"}
-								</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td>
-									<strong>{t("বয়স")}</strong> {patientInfo?.day || 1} {t("দিন")} {patientInfo?.month || 1}{" "}
-									{t("মাস")} {patientInfo?.year} {t("বছর")}
+									<strong>{t("বয়স")}</strong> {patientInfo?.year} {t("বছর")} {patientInfo?.month || 1}{" "}
+									{t("মাস")} {patientInfo?.day || 1} {t("দিন")}
 								</Table.Td>
 								<Table.Td miw={100} align="right">
 									{patientInfo?.dob && (
@@ -112,8 +96,17 @@ const OPDPos = forwardRef(({ data }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
+								<Table.Td>
+									<strong>{t("লিঙ্গ")}:</strong> {patientInfo?.gender && patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
+								</Table.Td>
+								<Table.Td align="right">
+									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || "01717171717"}
+								</Table.Td>
+							</Table.Tr>
+
+							<Table.Tr>
 								<Table.Td colSpan={2}>
-									<strong>{t("ঠিকানা")}</strong> {patientInfo?.address || "Uttara"}
+									<strong>{t("ঠিকানা")}</strong> {[patientInfo?.upazila, patientInfo?.district].filter(Boolean).join(", ")}
 								</Table.Td>
 							</Table.Tr>
 							{patientInfo?.guardian_name && (
@@ -152,27 +145,27 @@ const OPDPos = forwardRef(({ data }, ref) => {
 					<Table withRowBorders={false} fz={10}>
 						<Table.Tbody>
 							<Table.Tr>
-								<Table.Td>
-									<strong>{t("প্রস্তুতকারী")}:</strong> {patientInfo?.created_by_name || "John Doe"}
-								</Table.Td>
-								<Table.Td align="right">
-									<strong>{t("প্রিন্ট")}:</strong> {user?.name || "John Doe"}
+								<Table.Td colSpan={2} align="center">
+									<Barcode fontSize={'12'} width={'1'} height={'40'} value={patientInfo?.invoice}/>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td colSpan={2} align="center">
-									<Barcode fontSize={'12'} width={'1'} height={'40'} value={patientInfo?.barcode}/>
+								<Table.Td>
+									<strong>{t("CreatedBy")}:</strong> {patientInfo?.created_by_name || "John Doe"}
+								</Table.Td>
+								<Table.Td align="right">
+									<strong>{t("PrintedBy")}:</strong> {user?.name || "John Doe"}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
 									<strong>{t("প্রিন্টের সময়")}:</strong>{" "}
-									{new Date().toLocaleString() || "2021-01-01"}
+									{new Date().toLocaleString()}
 								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
-					<Text size="xxs" ta="center">
+					<Text size="xxs" ta="center" pb={'xl'}>
 						© {new Date().getFullYear()} © {hospitalConfigData?.organization_name}{" "}
 						{t("সর্বস্বত্ব সংরক্ষিত")}।
 					</Text>
