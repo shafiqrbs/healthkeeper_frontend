@@ -155,7 +155,7 @@ export default function OperatorBoard() {
 					</Card.Section>
 					<DailyOverview />
 					{/* print component for home overview */}
-					{records?.data && <Home ref={homeRef} data={records.data} />}
+					{records?.data && <Home ref={homeRef} data={records?.data || []} />}
 				</Card>
 			</Grid.Col>
 		</Grid>

@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Group, Image, Flex, ScrollArea } from "@mantine/core";
+import { Box, Text, Grid, Group, Image, Flex, ScrollArea, Table } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -6,7 +6,7 @@ import "@/index.css";
 import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
 import { IconBed, IconCoinTaka } from "@tabler/icons-react";
-import CollectionTable from "@modules/hospital/common/CollectionTable";
+import { useTranslation } from "react-i18next";
 
 const Home = forwardRef((data, ref) => {
 	const { hospitalConfigData } = useDoaminHospitalConfigData();
@@ -16,14 +16,11 @@ const Home = forwardRef((data, ref) => {
 	const collectionSummaryData = records.data?.summary[0] || {};
 	const userCollectionData = records.data?.patientMode || [];
 	const roomBaseCollectionData = records.data?.roomBase || [];
+	const userBasedCollectionData = records.data?.userBase || [];
+	const paymentCollectionData = records.data?.paymentMode || [];
+	const doctorCollectionData = records.data?.doctorMode || [];
 
-	const userCollectionColumns = [
-		{ key: "name", label: "name" },
-		{ key: "patient", label: "patient" },
-		{ key: "total", label: "total" },
-	];
-
-	const roomCollectionColumns = [
+	const collectionColumn = [
 		{ key: "name", label: "name" },
 		{ key: "patient", label: "patient" },
 		{ key: "total", label: "total" },
@@ -91,23 +88,82 @@ const Home = forwardRef((data, ref) => {
 							</Flex>
 						</Flex>
 					</Box>
-					<CollectionTable
-						stripedColor="var(--theme-tertiary-color-2)"
-						data={userCollectionData}
-						columns={userCollectionColumns}
-						title="userCollection"
+					<PrintingTable data={userCollectionData} columns={collectionColumn} title="UserCollection" />
+					<PrintingTable data={roomBaseCollectionData} columns={collectionColumn} title="RoomCollection" />
+					<PrintingTable data={userBasedCollectionData} columns={collectionColumn} title="UserCollection" />
+					<PrintingTable
+						data={paymentCollectionData}
+						columns={collectionColumn}
+						title="PaymentModeCollection"
 					/>
-					<CollectionTable
-						stripedColor="var(--theme-tertiary-color-2)"
-						data={roomBaseCollectionData}
-						columns={roomCollectionColumns}
-						title="roomCollection"
+					<PrintingTable
+						data={doctorCollectionData}
+						columns={collectionColumn}
+						title="DoctorModeCollection"
 					/>
 				</ScrollArea>
 			</Box>
 		</Box>
 	);
 });
+
+function PrintingTable({ data, columns, title }) {
+	const { t } = useTranslation();
+
+	const rows = data?.map((item, index) => (
+		<Table.Tr key={item.id || index} py="xs">
+			{columns?.map((column, colIndex) => {
+				const isLastColumn = columns.length - 1 === colIndex;
+				return (
+					<Table.Td fz="xs" py="es" align={isLastColumn ? "right" : "left"} key={colIndex}>
+						{isLastColumn ? (
+							<Flex align="center" gap="xxxs" justify="flex-end">
+								<IconCoinTaka size={16} color="var(--theme-primary-color-6)" />
+								<Text fz="sm">{item[column.key] || "0"}</Text>
+							</Flex>
+						) : (
+							<>{item[column.key] || "-"}</>
+						)}
+					</Table.Td>
+				);
+			})}
+		</Table.Tr>
+	));
+
+	return (
+		<Box my="lg">
+			{title && (
+				<Box mb="xxxs">
+					<Text fz="sm" fw={600}>
+						{t(title)}
+					</Text>
+				</Box>
+			)}
+			<Box className="borderRadiusAll">
+				<Table stickyHeader striped stripedColor="var(--theme-primary-color-0)">
+					<Table.Thead>
+						<Table.Tr py="xs">
+							{columns?.map((column, index) => {
+								const isLastColumn = columns.length - 1 === index;
+								return (
+									<Table.Th
+										key={index}
+										tt="capitalize"
+										ta={isLastColumn ? "right" : "left"}
+										align={isLastColumn ? "right" : "left"}
+									>
+										{t(column.label)}
+									</Table.Th>
+								);
+							})}
+						</Table.Tr>
+					</Table.Thead>
+					<Table.Tbody>{rows}</Table.Tbody>
+				</Table>
+			</Box>
+		</Box>
+	);
+}
 
 Home.displayName = "Home";
 

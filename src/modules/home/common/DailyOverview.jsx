@@ -3,33 +3,10 @@ import { useTranslation } from "react-i18next";
 import { IconBed, IconCoinTaka } from "@tabler/icons-react";
 import CollectionTable from "../../hospital/common/CollectionTable";
 import { MODULES_CORE } from "@/constants";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { getIndexEntityData } from "@/app/store/core/crudThunk";
-import { CONFIGURATION_ROUTES } from "@/constants/routes";
-import { formatDate, getLoggedInUser, getUserRole } from "@utils/index";
-
-const collectionOverviewData = [
-	{
-		label: "totalPatient",
-		value: 25,
-		icon: IconBed,
-	},
-	{
-		label: "totalCollection",
-		value: 50000,
-		icon: IconCoinTaka,
-	},
-];
+import { useSelector } from "react-redux";
 
 // =============== column configurations for different table types ================
-const userCollectionColumns = [
-	{ key: "name", label: "name" },
-	{ key: "patient", label: "patient" },
-	{ key: "total", label: "total" },
-];
-
-const roomCollectionColumns = [
+const collectionColumns = [
 	{ key: "name", label: "name" },
 	{ key: "patient", label: "patient" },
 	{ key: "total", label: "total" },
@@ -42,8 +19,12 @@ export default function DailyOverview() {
 	const records = useSelector((state) => state.crud[module].data);
 
 	const collectionSummaryData = records.data?.summary[0] || {};
-	const userCollectionData = records.data?.patientMode || [];
+	const patientModeCollectionData = records.data?.patientMode || [];
 	const roomBaseCollectionData = records.data?.roomBase || [];
+
+	const userBasedCollectionData = records.data?.userBase || [];
+	const paymentCollectionData = records.data?.paymentMode || [];
+	const doctorCollectionData = records.data?.doctorMode || [];
 
 	return (
 		<ScrollArea h={600} mt="sm">
@@ -63,8 +44,11 @@ export default function DailyOverview() {
 					</Flex>
 				</Flex>
 			</Box>
-			<CollectionTable data={userCollectionData} columns={userCollectionColumns} title="userCollection" />
-			<CollectionTable data={roomBaseCollectionData} columns={roomCollectionColumns} title="roomCollection" />
+			<CollectionTable data={patientModeCollectionData} columns={collectionColumns} title="UserCollection" />
+			<CollectionTable data={roomBaseCollectionData} columns={collectionColumns} title="RoomCollection" />
+			<CollectionTable data={userBasedCollectionData} columns={collectionColumns} title="UserCollection" />
+			<CollectionTable data={paymentCollectionData} columns={collectionColumns} title="PaymentModeCollection" />
+			<CollectionTable data={doctorCollectionData} columns={collectionColumns} title="DoctorModeCollection" />
 		</ScrollArea>
 	);
 }

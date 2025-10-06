@@ -54,7 +54,7 @@ export default function Table({ module }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const listData = useSelector((state) => state.crud[module].data);
+	const listData = useSelector((state) => state.crud[module]?.data);
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 34;
 	const [selectedId, setSelectedId] = useState(null);

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 export default function CollectionTable({ data, columns, title, stripedColor = "var(--theme-primary-color-0)" }) {
 	const { t } = useTranslation();
 
-	const rows = data.map((item, index) => (
+	const rows = data?.map((item, index) => (
 		<Table.Tr key={item.id || index}>
 			{columns.map((column, colIndex) => {
 				const isLastColumn = columns.length - 1 === colIndex;
@@ -14,10 +14,10 @@ export default function CollectionTable({ data, columns, title, stripedColor = "
 						{isLastColumn ? (
 							<Flex align="center" gap="xxxs" justify="flex-end">
 								<IconCoinTaka size={16} color="var(--theme-primary-color-6)" />
-								<Text fz="sm">{item[column.key]}</Text>
+								<Text fz="sm">{item[column.key] || "0"}</Text>
 							</Flex>
 						) : (
-							<>{item[column.key]}</>
+							<>{item[column.key] || "-"}</>
 						)}
 					</Table.Td>
 				);
