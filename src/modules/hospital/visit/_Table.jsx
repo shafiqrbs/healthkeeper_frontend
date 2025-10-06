@@ -15,6 +15,7 @@ import {
 	IconTrashX,
 	IconPrinter,
 	IconScript,
+	IconPencil,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -42,6 +43,8 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import Prescription from "@/common/components/print-formats/opd/PrescriptionFull";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
+import useDataWithoutStore from "@/common/hooks/useDataWithoutStore";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -50,8 +53,6 @@ const tabs = [
 ];
 
 const PER_PAGE = 200;
-const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
-const ALLOWED_OPD_ROLES = ["doctor_opd", "admin_administrator"];
 
 const CSV_HEADERS = [
 	{ label: "S/N", key: "sn" },
@@ -76,6 +77,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
+	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
+	const [singlePatientData, setSinglePatientData] = useState({});
 
 	const form = useForm({
 		initialValues: {
@@ -124,7 +127,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	};
 
 	const user = getLoggedInUser();
-	console.log(userRoles);
+
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
@@ -270,6 +273,18 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		}
 	};
 
+	const patientUpdate = async (e, id) => {
+		e.stopPropagation();
+
+		const { data } = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${id}`,
+		});
+
+		setSinglePatientData(data);
+
+		setTimeout(() => openPatientUpdate(), 100);
+	};
+
 	return (
 		<Box w="100%" bg="white">
 			<Flex justify="space-between" align="center" px="sm">
@@ -374,56 +389,56 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",
-							render: (values) => (
-								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									<Menu
-										position="bottom-end"
-										offset={3}
-										withArrow
-										trigger="hover"
-										openDelay={100}
-										closeDelay={400}
-									>
-										<Menu.Target>
+							render: (values) => {
+								return (
+									<Flex justify="flex-end">
+										{formatDate(new Date()) === formatDate(values?.created_at) && (
 											<ActionIcon
-												className="border-left-radius-none"
 												variant="transparent"
-												color="var(--theme-menu-three-dot)"
-												radius="es"
-												aria-label="Settings"
+												onClick={(e) => patientUpdate(e, values?.id)}
 											>
-												<IconDotsVertical height={18} width={18} stroke={1.5} />
+												<IconPencil size={18} color="var(--theme-success-color)" />
 											</ActionIcon>
-										</Menu.Target>
-										<Menu.Dropdown>
-											<Menu.Item
-												leftSection={
-													<IconScript
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-												onClick={() => handleA4Print(values?.id)}
+										)}
+										<Group
+											onClick={(e) => e.stopPropagation()}
+											gap={4}
+											justify="right"
+											wrap="nowrap"
+										>
+											<Menu
+												position="bottom-end"
+												offset={3}
+												withArrow
+												trigger="hover"
+												openDelay={100}
+												closeDelay={400}
 											>
-												{t("A4Print")}
-											</Menu.Item>
-											<Menu.Item
-												leftSection={
-													<IconPrinter
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-												onClick={() => handlePosPrint(values?.id)}
-											>
-												{t("Pos")}
-											</Menu.Item>
-											{values?.prescription_id && (
-												<>
+												<Menu.Target>
+													<ActionIcon
+														className="border-left-radius-none"
+														variant="transparent"
+														color="var(--theme-menu-three-dot)"
+														radius="es"
+														aria-label="Settings"
+													>
+														<IconDotsVertical height={18} width={18} stroke={1.5} />
+													</ActionIcon>
+												</Menu.Target>
+												<Menu.Dropdown>
+													<Menu.Item
+														leftSection={
+															<IconScript
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
+														}
+														onClick={() => handleA4Print(values?.id)}
+													>
+														{t("A4Print")}
+													</Menu.Item>
 													<Menu.Item
 														leftSection={
 															<IconPrinter
@@ -433,16 +448,35 @@ export default function Table({ module, height, closeTable, availableClose = fal
 																}}
 															/>
 														}
-														onClick={() => handlePrescriptionPrint(values?.prescription_id)}
+														onClick={() => handlePosPrint(values?.id)}
 													>
-														{t("Prescription")}
+														{t("Pos")}
 													</Menu.Item>
-												</>
-											)}
-										</Menu.Dropdown>
-									</Menu>
-								</Group>
-							),
+													{values?.prescription_id && (
+														<>
+															<Menu.Item
+																leftSection={
+																	<IconPrinter
+																		style={{
+																			width: rem(14),
+																			height: rem(14),
+																		}}
+																	/>
+																}
+																onClick={() =>
+																	handlePrescriptionPrint(values?.prescription_id)
+																}
+															>
+																{t("Prescription")}
+															</Menu.Item>
+														</>
+													)}
+												</Menu.Dropdown>
+											</Menu>
+										</Group>
+									</Flex>
+								);
+							},
 						},
 					]}
 					textSelectionDisabled
@@ -470,6 +504,13 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			<OPDDocument data={printData} ref={a4Ref} />
 			<OPDPos data={printData} ref={posRef} />
 			<Prescription data={printData} ref={prescriptionRef} />
+
+			<PatientUpdateDrawer
+				type="opd"
+				opened={openedPatientUpdate}
+				close={closePatientUpdate}
+				data={singlePatientData}
+			/>
 
 			{/* Hidden CSV link for exporting current table rows */}
 			<CSVLink

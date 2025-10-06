@@ -4,7 +4,7 @@ import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Grid, Group, Menu, Tabs, Text } from "@mantine/core";
-import { IconArrowRight, IconDotsVertical, IconTrashX } from "@tabler/icons-react";
+import { IconArrowRight, IconDotsVertical, IconPencil, IconTrashX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { rem } from "@mantine/core";
@@ -28,6 +28,8 @@ import { errorNotification } from "@components/notification/errorNotification";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { modals } from "@mantine/modals";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import { getDataWithoutStore } from "@/services/apiService";
+import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 
 const PER_PAGE = 200;
 const tabs = [
@@ -64,6 +66,8 @@ export default function Table({ module }) {
 	const [processTab, setProcessTab] = useState("all");
 	const userRoles = getUserRole();
 	const user = getLoggedInUser();
+	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
+	const [singlePatientData, setSinglePatientData] = useState({});
 	// removed unused 'today'
 
 	const form = useForm({
@@ -205,6 +209,18 @@ export default function Table({ module }) {
 		}
 	};
 
+	const patientUpdate = async (e, id) => {
+		e.stopPropagation();
+
+		const { data } = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${id}`,
+		});
+
+		setSinglePatientData(data);
+
+		setTimeout(() => openPatientUpdate(), 100);
+	};
+
 	return (
 		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -292,109 +308,120 @@ export default function Table({ module }) {
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
-								<Group gap={4} justify="right" wrap="nowrap">
-									{userRoles.some((role) => ALLOWED_DOCTOR_ROLES.includes(role)) && (
-										<>
-											{["New", "In-progress"].includes(values?.process) &&
-												values?.process !== "Closed" &&
-												!values?.referred_mode &&
-												(values?.prescription_id ? (
+								<Flex justify="flex-end">
+									<Group gap={4} justify="right" wrap="nowrap">
+										{userRoles.some((role) => ALLOWED_DOCTOR_ROLES.includes(role)) && (
+											<>
+												{["New", "In-progress"].includes(values?.process) &&
+													values?.process !== "Closed" &&
+													!values?.referred_mode &&
+													(values?.prescription_id ? (
+														<Button
+															miw={124}
+															variant="filled"
+															bg="var(--theme-primary-color-4)"
+															c="white"
+															fw={"400"}
+															size="compact-xs"
+															onClick={() => handlePrescription(values.prescription_id)}
+															radius="es"
+															rightSection={<IconArrowRight size={18} />}
+														>
+															{t("Prescription")}
+														</Button>
+													) : (
+														<Button
+															miw={124}
+															variant="filled"
+															bg="var(--theme-primary-color-6)"
+															c="white"
+															size="compact-xs"
+															onClick={() => handleProcessPrescription(values.id)}
+															radius="es"
+															fw={"400"}
+															rightSection={<IconArrowRight size={18} />}
+															className="border-right-radius-none"
+														>
+															{t("Prescription")}
+														</Button>
+													))}
+
+												{values.process === "New" && !values.referred_mode && (
 													<Button
-														miw={124}
 														variant="filled"
-														bg="var(--theme-primary-color-4)"
-														c="white"
-														fw={"400"}
-														size="compact-xs"
-														onClick={() => handlePrescription(values.prescription_id)}
-														radius="es"
-														rightSection={<IconArrowRight size={18} />}
-													>
-														{t("Prescription")}
-													</Button>
-												) : (
-													<Button
-														miw={124}
-														variant="filled"
-														bg="var(--theme-primary-color-6)"
+														bg="var(--theme-success-color)"
 														c="white"
 														size="compact-xs"
-														onClick={() => handleProcessPrescription(values.id)}
+														onClick={() => handleSendToAdmission(values.id)}
 														radius="es"
 														fw={"400"}
 														rightSection={<IconArrowRight size={18} />}
 														className="border-right-radius-none"
 													>
-														{t("Prescription")}
+														{t("Admission")}
 													</Button>
-												))}
-
-											{values.process === "New" && !values.referred_mode && (
-												<Button
-													variant="filled"
-													bg="var(--theme-success-color)"
-													c="white"
-													size="compact-xs"
-													onClick={() => handleSendToAdmission(values.id)}
-													radius="es"
-													fw={"400"}
-													rightSection={<IconArrowRight size={18} />}
-													className="border-right-radius-none"
-												>
-													{t("Admission")}
-												</Button>
-											)}
-										</>
-									)}
-									<Menu
-										position="bottom-end"
-										offset={3}
-										withArrow
-										trigger="hover"
-										openDelay={100}
-										closeDelay={400}
-									>
-										<Menu.Target>
+												)}
+											</>
+										)}
+										{formatDate(new Date()) === formatDate(values?.created_at) && (
 											<ActionIcon
-												className="action-icon-menu border-left-radius-none"
 												variant="transparent"
-												radius="es"
-												aria-label="Settings"
+												onClick={(e) => patientUpdate(e, values?.id)}
 											>
-												<IconDotsVertical height={18} width={18} stroke={1.5} />
+												<IconPencil size={18} color="var(--theme-success-color)" />
 											</ActionIcon>
-										</Menu.Target>
-										<Menu.Dropdown>
-											{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && (
-												<>
-													<Menu.Item
-														onClick={() => {
-															// handleVendorEdit(values.id);
-															// open();
-														}}
-													>
-														{t("Edit")}
-													</Menu.Item>
-													<Menu.Item
-														// onClick={() => handleDelete(values.id)}
-														bg="red.1"
-														c="red.6"
-														rightSection={
-															<IconTrashX
-																style={{
-																	width: rem(14),
-																	height: rem(14),
-																}}
-															/>
-														}
-													>
-														{t("Delete")}
-													</Menu.Item>
-												</>
-											)}
-										</Menu.Dropdown>
-									</Menu>
-								</Group>
+										)}
+
+										<Menu
+											position="bottom-end"
+											offset={3}
+											withArrow
+											trigger="hover"
+											openDelay={100}
+											closeDelay={400}
+										>
+											<Menu.Target>
+												<ActionIcon
+													className="action-icon-menu border-left-radius-none"
+													variant="transparent"
+													radius="es"
+													aria-label="Settings"
+												>
+													<IconDotsVertical height={18} width={18} stroke={1.5} />
+												</ActionIcon>
+											</Menu.Target>
+											<Menu.Dropdown>
+												{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && (
+													<>
+														<Menu.Item
+															onClick={() => {
+																// handleVendorEdit(values.id);
+																// open();
+															}}
+														>
+															{t("Edit")}
+														</Menu.Item>
+														<Menu.Item
+															// onClick={() => handleDelete(values.id)}
+															bg="red.1"
+															c="red.6"
+															rightSection={
+																<IconTrashX
+																	style={{
+																		width: rem(14),
+																		height: rem(14),
+																	}}
+																/>
+															}
+														>
+															{t("Delete")}
+														</Menu.Item>
+													</>
+												)}
+											</Menu.Dropdown>
+										</Menu>
+									</Group>
+								</Flex>
 							),
 						},
 					]}
@@ -452,6 +479,13 @@ export default function Table({ module }) {
 				filename={`emergency-${formatDate(new Date())}.csv`}
 				style={{ display: "none" }}
 				ref={csvLinkRef}
+			/>
+
+			<PatientUpdateDrawer
+				type="emergency"
+				opened={openedPatientUpdate}
+				close={closePatientUpdate}
+				data={singlePatientData}
 			/>
 		</Box>
 	);
