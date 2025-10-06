@@ -28,19 +28,12 @@ export default function Index() {
 				<Box p="md">
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-						<Grid w="100%" columns={25}>
-							<Grid.Col span={isOpenPatientInfo ? 8 : 3} pos="relative" className="animate-ease-out">
-								<Form
-									form={form}
-									isOpenPatientInfo={isOpenPatientInfo}
-									setIsOpenPatientInfo={setIsOpenPatientInfo}
-									setPatientData={setPatientData}
-								/>
+						<Grid w="100%" columns={24}>
+							<Grid.Col span={6} pos="relative" className="animate-ease-out">
+
 							</Grid.Col>
-							<Grid.Col span={isOpenPatientInfo ? 17 : 22} className="animate-ease-out">
-								<ScrollArea h={mainAreaHeight-10} type="never">
-								<Image src={image} alt="medicine" />
-								</ScrollArea>
+							<Grid.Col span={18} className="animate-ease-out">
+
 							</Grid.Col>
 						</Grid>
 					</Flex>
