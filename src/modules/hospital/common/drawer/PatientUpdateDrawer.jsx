@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import SegmentedControlForm from "@components/form-builders/SegmentedControlForm";
 import { MODULES_CORE } from "@/constants";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
@@ -22,11 +21,43 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 		initialValues: {
 			name: "",
 			mobile: "",
-			identity: "",
+			nid: type === "opd" ? "" : undefined,
 			year: "",
 			month: "",
 			day: "",
 			room_id: "",
+		},
+		validate: {
+			name: (value) => {
+				if (!value) return "Name is required";
+				return null;
+			},
+			gender: (value) => {
+				if (!value) return "Gender is required";
+				return null;
+			},
+			day: (_, values) => {
+				const isEmpty = (v) => v === "" || v === null || v === undefined;
+				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
+					? "Age is required"
+					: null;
+			},
+			month: (_, values) => {
+				const isEmpty = (v) => v === "" || v === null || v === undefined;
+				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
+					? "Age is required"
+					: null;
+			},
+			year: (_, values) => {
+				const isEmpty = (v) => v === "" || v === null || v === undefined;
+				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
+					? "Age is required"
+					: null;
+			},
+			room_id: (value) => {
+				if (!value && type === "opd") return "Room is required";
+				return null;
+			},
 		},
 	});
 
@@ -36,7 +67,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 	useEffect(() => {
 		form.setFieldValue("name", data?.name || "");
 		form.setFieldValue("mobile", data?.mobile || "");
-		form.setFieldValue("identity", data?.nid || "");
+		form.setFieldValue("nid", data?.nid || "");
 		form.setFieldValue("year", data?.year || "");
 		form.setFieldValue("month", data?.month || "");
 		form.setFieldValue("day", data?.day || "");
@@ -91,129 +122,6 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 			<Box component="form" onSubmit={form.onSubmit(handleSubmit)} pt="lg">
 				<Stack mih={mainAreaHeight - 100} justify="space-between">
 					<Grid align="center" columns={20}>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("Name")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<InputForm
-								form={form}
-								label=""
-								tooltip={t("EnterPatientName")}
-								placeholder="Md. Abdul"
-								name="name"
-								id="name"
-								nextField="mobile"
-								value={form.values.name}
-							/>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("Mobile")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<InputForm
-								form={form}
-								label=""
-								tooltip={t("EnterPatientMobile")}
-								placeholder="+880 1700000000"
-								name="mobile"
-								id="mobile"
-								nextField="identity"
-								value={form.values.mobile}
-							/>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("Gender")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14} py="es">
-							<SegmentedControlForm
-								fullWidth
-								color="var(--theme-primary-color-6)"
-								value={form.values.gender}
-								id="gender"
-								name="gender"
-								nextField="dob"
-								onChange={(val) => form.setFieldValue("gender", val)}
-								data={[
-									{ label: t("Male"), value: "male" },
-									{ label: t("Female"), value: "female" },
-									{ label: t("Other"), value: "other" },
-								]}
-							/>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("Age")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<Flex gap="xs">
-								<InputNumberForm
-									form={form}
-									label=""
-									placeholder="Days"
-									tooltip={t("EnterDays")}
-									name="day"
-									id="day"
-									nextField="month"
-									min={0}
-									max={31}
-									leftSection={
-										<Text fz="sm" px="sm">
-											{t("D")}
-										</Text>
-									}
-									readOnly={form.values.dob}
-								/>
-								<InputNumberForm
-									form={form}
-									label=""
-									placeholder="Months"
-									tooltip={t("EnterMonths")}
-									name="month"
-									id="month"
-									nextField="year"
-									min={0}
-									max={11}
-									leftSection={
-										<Text fz="sm" px="sm">
-											{t("M")}
-										</Text>
-									}
-									readOnly={form.values.dob}
-								/>
-
-								<InputNumberForm
-									form={form}
-									label=""
-									placeholder="Years"
-									tooltip={t("EnterYears")}
-									name="year"
-									id="year"
-									nextField="identity"
-									min={0}
-									max={150}
-									leftSection={
-										<Text fz="sm" px="sm">
-											{t("Y")}
-										</Text>
-									}
-									readOnly={form.values.dob}
-								/>
-							</Flex>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("Identity")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<InputForm
-								form={form}
-								label=""
-								tooltip={t("EnterPatientIdentity")}
-								placeholder="1234567890"
-								name="identity"
-								id="identity"
-								nextField="year"
-								value={form.values.identity}
-							/>
-						</Grid.Col>
 						{type === "opd" && (
 							<>
 								<Grid.Col span={6}>
@@ -237,6 +145,111 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 								</Grid.Col>
 							</>
 						)}
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("Name")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<InputForm
+								form={form}
+								label=""
+								tooltip={t("EnterPatientName")}
+								placeholder="Md. Abdul"
+								name="name"
+								id="name"
+								nextField="mobile"
+								value={form.values.name}
+							/>
+						</Grid.Col>
+
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("Age")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<Flex gap="xs">
+								<InputNumberForm
+									form={form}
+									label=""
+									placeholder="Years"
+									tooltip={t("EnterYears")}
+									name="year"
+									id="year"
+									nextField="month"
+									min={0}
+									max={150}
+								/>
+								<InputNumberForm
+									form={form}
+									label=""
+									placeholder="Months"
+									tooltip={t("EnterMonths")}
+									name="month"
+									id="month"
+									nextField="day"
+									min={0}
+									max={11}
+								/>
+								<InputNumberForm
+									form={form}
+									label=""
+									placeholder="Days"
+									tooltip={t("EnterDays")}
+									name="day"
+									id="day"
+									nextField="month"
+									min={0}
+									max={31}
+								/>
+							</Flex>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("Gender")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14} py="es">
+							<SelectForm
+								form={form}
+								label=""
+								tooltip={t("EnterPatientGender")}
+								placeholder="Male"
+								name="gender"
+								id="gender"
+								value={form.values.gender}
+								dropdownValue={[
+									{ label: t("Male"), value: "male" },
+									{ label: t("Female"), value: "female" },
+									{ label: t("Other"), value: "other" },
+								]}
+								clearable={false}
+							/>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("Mobile")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<InputForm
+								form={form}
+								label=""
+								tooltip={t("EnterPatientMobile")}
+								placeholder="+880 1700000000"
+								name="mobile"
+								id="mobile"
+								nextField="nid"
+								value={form.values.mobile}
+							/>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("NID")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<InputForm
+								form={form}
+								label=""
+								tooltip={t("EnterPatientIdentity")}
+								placeholder="1234567890"
+								name="nid"
+								id="nid"
+								value={form.values.identity}
+							/>
+						</Grid.Col>
 					</Grid>
 
 					<Flex gap="xs" justify="flex-end">

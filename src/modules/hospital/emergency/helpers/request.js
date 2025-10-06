@@ -47,19 +47,19 @@ export const getVendorFormInitialValues = (t) => {
 			day: (_, values) => {
 				const isEmpty = (v) => v === "" || v === null || v === undefined;
 				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
-					? t("Age is required")
+					? "Age is required"
 					: null;
 			},
 			month: (_, values) => {
 				const isEmpty = (v) => v === "" || v === null || v === undefined;
 				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
-					? t("Age is required")
+					? "Age is required"
 					: null;
 			},
 			year: (_, values) => {
 				const isEmpty = (v) => v === "" || v === null || v === undefined;
 				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
-					? t("Age is required")
+					? "Age is required"
 					: null;
 			},
 			// upazilla_id: hasLength({ min: 2, max: 20 }),
