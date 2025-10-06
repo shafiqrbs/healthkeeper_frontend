@@ -28,7 +28,9 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 	const handleSubmit = async (values) => {
 		try {
 			// if(type === "opd") {
+			//      update(opd_url)
 			// } else {
+			//      update(emergency_url)
 			// }
 			console.log(values);
 		} catch (error) {
