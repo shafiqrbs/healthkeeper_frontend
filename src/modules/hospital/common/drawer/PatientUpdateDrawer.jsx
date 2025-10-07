@@ -6,13 +6,18 @@ import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import { MODULES_CORE } from "@/constants";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { getIndexEntityData } from "@/app/store/core/crudThunk";
+import {ERROR_NOTIFICATION_COLOR, MODULES, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
+import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import {getIndexEntityData, updateEntityData} from "@/app/store/core/crudThunk";
 import { useDispatch } from "react-redux";
 import SelectForm from "@components/form-builders/SelectForm";
+import {successNotification} from "@components/notification/successNotification";
+import useVendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage";
+import {setInsertType} from "@/app/store/core/crudSlice";
+import {errorNotification} from "@components/notification/errorNotification";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
+const module = MODULES.VISIT;
 
 export default function PatientUpdateDrawer({ opened, close, type, data }) {
 	const [records, setRecords] = useState([]);
@@ -78,18 +83,41 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 		}
 	}, [data]);
 
-	const handleSubmit = async (values) => {
+
+	async function handleSubmit(values) {
 		try {
-			// if(type === "opd") {
-			//      update(opd_url)
-			// } else {
-			//      update(emergency_url)
-			// }
-			console.log(values);
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.UPDATE}/${data?.id}`,
+				data: values,
+				module,
+			};
+			const resultAction = await dispatch(updateEntityData(value));
+			if (updateEntityData.rejected.match(resultAction)) {
+				const fieldErrors = resultAction.payload.errors;
+
+				// Check if there are field validation errors and dynamically set them
+				if (fieldErrors) {
+					const errorObject = {};
+					Object.keys(fieldErrors).forEach((key) => {
+						errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
+					});
+					// Display the errors using your form's `setErrors` function dynamically
+					form.setErrors(errorObject);
+				}
+			} else if (updateEntityData.fulfilled.match(resultAction)) {
+				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+				setTimeout(() => {
+					useVendorDataStoreIntoLocalStorage();
+					form.reset();
+					dispatch(setInsertType({ insertType: "create", module }));
+					close(); // close the drawer
+					setIndexData(null);
+				}, 700);
+			}
 		} catch (error) {
-			console.log(error);
+			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
 		}
-	};
+	}
 
 	const filteredAndSortedRecords = useMemo(() => {
 		if (!records || records.length === 0) return [];
@@ -102,11 +130,9 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 			url: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VISITING_ROOM,
 			module: roomModule,
 		};
-
 		try {
 			const result = await dispatch(getIndexEntityData(value)).unwrap();
 			const roomData = result?.data?.data?.ipdRooms || [];
-
 			setRecords(roomData);
 		} catch (err) {
 			console.error("Unexpected error:", err);
