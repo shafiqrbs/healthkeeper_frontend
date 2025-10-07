@@ -528,7 +528,7 @@ export default function AddMedicineForm({
 											form={medicineForm}
 											id="dose_details"
 											name="dose_details"
-											dropdownValue={dosage_options.map((dosage) => ({
+											dropdownValue={dosage_options?.map((dosage) => ({
 												value: dosage.id?.toString(),
 												label: dosage.name,
 											}))}

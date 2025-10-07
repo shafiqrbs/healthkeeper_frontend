@@ -69,7 +69,7 @@ export default function Index() {
 				<Box p="md">
 					<Flex w="100%" gap="xs">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-						<Grid w="100%" columns={24} gutter={'xs'}>
+						<Grid w="100%" columns={24} gutter={"xs"}>
 							<Grid.Col span={6} pos="relative" className="animate-ease-out">
 								<Flex align="center" justify="space-between" px="sm" py="xs" bg="white">
 									<Text fw={600} fz="sm">
@@ -116,8 +116,8 @@ export default function Index() {
 											"Medicine",
 											"Room",
 											"Advice",
-											"Instruction",
-											"OT",
+											// "Instruction",
+											// "OT",
 											"Charge",
 											"Billing",
 											"Final Bill",
@@ -142,14 +142,14 @@ export default function Index() {
 												component: <Advice />,
 											},
 
-											{
-												tab: "Instruction",
-												component: <Instruction />,
-											},
-											{
-												tab: "OT",
-												component: <OT />,
-											},
+											// {
+											// 	tab: "Instruction",
+											// 	component: <Instruction />,
+											// },
+											// {
+											// 	tab: "OT",
+											// 	component: <OT />,
+											// },
 											{
 												tab: "Charge",
 												component: <Charge />,
