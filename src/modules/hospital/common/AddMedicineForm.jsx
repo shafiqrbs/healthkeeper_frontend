@@ -56,6 +56,7 @@ import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__Refrerr
 import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import PrescriptionPreview from "./PrescriptionPreview";
+import CreateDosageDrawer from "./drawer/CreateDosageDrawer";
 
 export default function AddMedicineForm({
 	module,
@@ -88,22 +89,25 @@ export default function AddMedicineForm({
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [opened, { open, close }] = useDisclosure(false);
+	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
 	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
 		useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
+	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
+	const refetching = useSelector((state) => state.crud.dosage?.refetching);
 
 	const { data: by_meal_options } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
 		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
 	});
 
-	const { data: dosage_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
-		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
-	});
+	// const { data: dosage_options } = useGlobalDropdownData({
+	// 	path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
+	// 	utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
+	// });
 
 	const printPrescription2A4 = useReactToPrint({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
@@ -144,6 +148,19 @@ export default function AddMedicineForm({
 			})
 		);
 	}, []);
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.DOSAGE.INDEX,
+				module: "dosage",
+				params: {
+					page: 1,
+					offset: 500,
+				},
+			})
+		);
+	}, [refetching]);
 
 	useEffect(() => {
 		if (!printData) return;
@@ -511,7 +528,10 @@ export default function AddMedicineForm({
 											form={medicineForm}
 											id="dose_details"
 											name="dose_details"
-											dropdownValue={dosage_options}
+											dropdownValue={dosage_options.map((dosage) => ({
+												value: dosage.id?.toString(),
+												label: dosage.name,
+											}))}
 											value={medicineForm.values.dose_details}
 											placeholder={t("Dosage")}
 											required
@@ -590,19 +610,31 @@ export default function AddMedicineForm({
 								</Group>
 							</Grid.Col>
 						</Grid>
-						<Grid w="100%" columns={12} gutter="xxxs">
-							<Grid.Col span={12}>
-								<Group grow gap="les" mt="es">
-									<Button
-										size="xs"
-										type="button"
-										variant="outline"
-										color="red"
-										onClick={openExPrescription}
-									>
-										{t("RxEmergency")}
-									</Button>
-								</Group>
+						<Grid w="100%" columns={12} gutter="les" mt="4px">
+							<Grid.Col span={6}>
+								<Button
+									leftSection={<IconPlus size={16} />}
+									w="100%"
+									size="xs"
+									type="button"
+									variant="outline"
+									color="green"
+									onClick={openDosageForm}
+								>
+									{t("AddDosage")}
+								</Button>
+							</Grid.Col>
+							<Grid.Col span={6}>
+								<Button
+									w="100%"
+									size="xs"
+									type="button"
+									variant="outline"
+									color="red"
+									onClick={openExPrescription}
+								>
+									{t("RxEmergency")}
+								</Button>
 							</Grid.Col>
 						</Grid>
 					</Grid.Col>
@@ -947,6 +979,8 @@ export default function AddMedicineForm({
 				</GlobalDrawer>
 			)}
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
+
+			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
 		</Box>
 	);
 }

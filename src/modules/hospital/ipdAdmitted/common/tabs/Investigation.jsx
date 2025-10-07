@@ -94,6 +94,8 @@ export default function Investigation() {
 				ipd_module: "investigation",
 			};
 
+			console.log(formValue);
+
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
 				data: formValue,

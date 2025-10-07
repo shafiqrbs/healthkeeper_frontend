@@ -263,7 +263,7 @@ export default function Medicine() {
 		try {
 			const formValue = {
 				json_content: medicines,
-				module: "medicine",
+				ipd_module: "medicine",
 			};
 
 			console.log(formValue);
