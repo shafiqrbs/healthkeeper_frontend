@@ -10,7 +10,7 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import {HOSPITAL_DROPDOWNS, PHARMACY_DROPDOWNS} from "@/app/store/core/utilitySlice";
 import { DURATION_TYPES, ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
 import InputAutoComplete from "@/common/components/form-builders/InputAutoComplete";
@@ -39,14 +39,15 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	const { id } = useParams();
 	const dispatch = useDispatch();
 
+
 	const { data: by_meal_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
-		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
+		path: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
+		utility: PHARMACY_DROPDOWNS.BY_MEAL.UTILITY,
 	});
 
 	const { data: dosage_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
-		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
+		path: PHARMACY_DROPDOWNS.DOSAGE.PATH,
+		utility: PHARMACY_DROPDOWNS.DOSAGE.UTILITY,
 	});
 
 	const {
@@ -56,7 +57,6 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	} = useDataWithoutStore({
 		url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.VIEW}/${id}`,
 	});
-
 	const entityData = entity?.data?.treatment_medicine_format;
 	console.log(entityData);
 
@@ -316,7 +316,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 				</Group>
 			</Box>
 			<Box>
-				<DataTable
+				{/*<DataTable
 					classNames={{
 						root: tableCss.root,
 						table: tableCss.table,
@@ -384,7 +384,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 					loaderSize="xs"
 					loaderColor="grape"
 					height={mainAreaHeight - 150}
-				/>
+				/>*/}
 			</Box>
 		</Box>
 	);

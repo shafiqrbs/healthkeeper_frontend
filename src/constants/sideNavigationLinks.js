@@ -58,7 +58,7 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX,
 			icon: IconBuildingHospital,
 			color: "#3F51B5", // Indigo
-			allowedRoles: ["role_domain", "admin_administrator","doctor_ipd"],
+			allowedRoles: ["role_domain", "admin_administrator","doctor_ipd","ipd_admission"],
 		},
 		{
 			label: t("IPDConfirm"),
@@ -72,28 +72,28 @@ export const sideNavigationLinks = {
 			path: "/hospital/ipd-admitted",
 			icon: IconBuildingHospital,
 			color: "#00BCD4", // Cyan
-			allowedRoles: ["role_domain", "admin_administrator"],
+			allowedRoles: ["role_domain", "admin_administrator","doctor_ipd","nurse_basic","nurse_incharge"],
 		},
 		{
 			label: t("Billing"),
 			path: "/hospital/billing",
 			icon: IconBuildingHospital,
 			color: "#FF9800", // Orange
-			allowedRoles: ["role_domain", "admin_administrator"],
+			allowedRoles: ["role_domain", "admin_administrator","billing_cash","billing_manager"],
 		},
 		{
 			label: t("Discharge"),
 			path: "/hospital/discharge",
 			icon: IconBuildingHospital,
 			color: "#795548", // Brown
-			allowedRoles: ["role_domain", "admin_administrator"],
+			allowedRoles: ["role_domain", "admin_administrator","doctor_ipd"],
 		},
 		{
 			label: t("Refund"),
 			path: "/hospital/refund",
 			icon: IconBuildingHospital,
 			color: "#009688", // Brown
-			allowedRoles: ["role_domain", "admin_administrator"],
+			allowedRoles: ["role_domain", "admin_administrator","billing_manager","billing_cash"],
 		},
 		{
 			label: t("Lab"),

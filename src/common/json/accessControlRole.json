@@ -31,6 +31,7 @@
     "actions": [
       { "id": "operator_opd", "label": "OPD Operator" },
       { "id": "operator_emergency", "label": "Emergency" },
+      { "id": "ipd_admission", "label": "IPD Admission" },
       { "id": "operator_manager", "label": "Operator Manager" }
     ]
   },
