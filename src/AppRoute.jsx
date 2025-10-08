@@ -295,7 +295,7 @@ function AppRoute() {
 				<Route
 					path="/hospital/core/"
 					element={
-						<ProtectedRoute roles={["role_domain", "admin_administrator"]}>
+						<ProtectedRoute roles={["role_domain", "admin_administrator", "admin_hospital"]}>
 							<AdminLayout />
 						</ProtectedRoute>
 					}

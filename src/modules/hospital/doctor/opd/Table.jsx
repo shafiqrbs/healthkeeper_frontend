@@ -341,7 +341,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 											variant="filled"
 											bg="var(--theme-success-color)"
 											c="white"
-											size="xs"
+											size="compact-xs"
 											onClick={() => handlePrescription(values.prescription_id)}
 											radius="es"
 											rightSection={<IconArrowRight size={18} />}
@@ -355,7 +355,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 											variant="filled"
 											bg="var(--theme-primary-color-6)"
 											c="white"
-											size="xs"
+											size="compact-xs"
 											onClick={() => handleProcessPrescription(values.id)}
 											radius="es"
 											rightSection={<IconArrowRight size={18} />}
