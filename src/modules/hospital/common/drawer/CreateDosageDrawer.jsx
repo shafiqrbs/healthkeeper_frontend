@@ -78,6 +78,7 @@ export default function CreateDosageDrawer({ opened, close }) {
 				form.reset();
 				close(); // close the drawer
 				dispatch(setRefetchData({ module, refetching: true }));
+				dispatch(setRefetchData({ module: "byMeal", refetching: true }));
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {

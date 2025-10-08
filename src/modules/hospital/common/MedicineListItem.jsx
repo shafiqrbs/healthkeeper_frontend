@@ -1,4 +1,5 @@
-import { ActionIcon, Autocomplete, Box, Flex, Grid, Input, NumberInput, Select, Stack, Text } from "@mantine/core";
+import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
+import { ActionIcon, Box, Flex, Grid, Input, NumberInput, Select, Stack, Text } from "@mantine/core";
 import { IconCheck, IconMedicineSyrup, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -25,7 +26,22 @@ export default function MedicineListItem({
 	const [viewAction, setViewAction] = useState(true);
 
 	const handleChange = (field, value) => {
+		if (field === "opd_quantity") {
+			console.log("Value: ", value, "Restrict Opd Quantity: ", medicine.opd_limit);
+			if (value > medicine.opd_limit) {
+				showNotificationComponent(t("OpdQuantityCannotBeGreaterThanOpdQuantity"), "error");
+				return;
+			}
+		}
 		setMedicines((prev) => prev.map((m, i) => (i === index - 1 ? { ...m, [field]: value } : m)));
+	};
+
+	const getByMeal = (id) => {
+		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
+	};
+
+	const getDosage = (id) => {
+		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
 	};
 
 	const handleAddInstruction = (instructionIndex) => {
@@ -33,8 +49,10 @@ export default function MedicineListItem({
 			const medicineIndex = index - 1;
 			const current = prev[medicineIndex];
 			const baseInstruction = {
-				dose_details: current?.dose_details || current.dosage || "",
-				by_meal: current.by_meal || "",
+				medicine_dosage_id: current?.medicine_dosage_id || "",
+				medicine_bymeal_id: current?.medicine_bymeal_id || "",
+				dose_details: getDosage(current?.medicine_dosage_id) || "",
+				by_meal: getByMeal(current?.medicine_bymeal_id) || "",
 				quantity: current.quantity || 1,
 				duration: current.duration || "Day",
 			};
@@ -81,8 +99,10 @@ export default function MedicineListItem({
 				const current = prev[medicineIndex];
 				const seeded = [
 					{
-						dose_details: current?.dose_details || current.dosage || "",
-						by_meal: current.by_meal || "",
+						medicine_dosage_id: current?.medicine_dosage_id || "",
+						medicine_bymeal_id: current?.medicine_bymeal_id || "",
+						dose_details: getDosage(current?.medicine_dosage_id) || "",
+						by_meal: getByMeal(current?.medicine_bymeal_id) || "",
 						quantity: current.quantity || 1,
 						duration: current.duration || "Day",
 					},
@@ -95,17 +115,29 @@ export default function MedicineListItem({
 		setEditingInstructionIndex(insIndex);
 	};
 
-	const closeInstructionEdit = () => setEditingInstructionIndex(null);
+	const closeInstructionEdit = () => {
+		setEditingInstructionIndex(null);
+		if (update) update();
+	};
 
 	const handleInstructionFieldChange = (insIndex, field, value) => {
 		setMedicines((prev) => {
 			const medicineIndex = index - 1;
 			const current = prev[medicineIndex];
 			const dosages = current.dosages ? [...current.dosages] : [];
-			dosages[insIndex] = { ...dosages[insIndex], [field]: value };
+
+			if (field === "medicine_bymeal_id") {
+				const by_meal = getByMeal(value);
+				dosages[insIndex] = { ...dosages[insIndex], [field]: value, by_meal };
+			} else if (field === "medicine_dosage_id") {
+				const dose_details = getDosage(value);
+				dosages[insIndex] = { ...dosages[insIndex], [field]: value, dose_details };
+			} else {
+				dosages[insIndex] = { ...dosages[insIndex], [field]: value };
+			}
+
 			const updatedMedicine = { ...current, dosages };
 			const newList = prev.map((medicine, index) => (index === medicineIndex ? updatedMedicine : medicine));
-			if (typeof update === "function") update(newList);
 			return newList;
 		});
 	};
@@ -135,8 +167,10 @@ export default function MedicineListItem({
 						? medicine.dosages
 						: [
 								{
-									dose_details: medicine?.dose_details || medicine.dosage || "",
-									by_meal: medicine.by_meal || "",
+									medicine_dosage_id: medicine?.medicine_dosage_id || "",
+									medicine_bymeal_id: medicine?.medicine_bymeal_id || "",
+									dose_details: getDosage(medicine?.medicine_dosage_id) || "",
+									by_meal: getByMeal(medicine?.medicine_bymeal_id) || "",
 									quantity: medicine.quantity || 1,
 									duration: medicine.duration || "Day",
 								},
@@ -159,27 +193,33 @@ export default function MedicineListItem({
 								{editingInstructionIndex === insIndex ? (
 									<Grid gutter="les" columns={24}>
 										<Grid.Col span={5}>
-											<Autocomplete
+											<Select
 												size="xs"
 												label=""
-												data={dosage_options}
-												value={instruction?.dose_details}
+												data={dosage_options?.map((dosage) => ({
+													value: dosage.id?.toString(),
+													label: dosage.name,
+												}))}
+												value={instruction?.medicine_dosage_id?.toString()}
 												placeholder={t("Dosage")}
 												onChange={(v) =>
-													handleInstructionFieldChange(insIndex, "dose_details", v)
+													handleInstructionFieldChange(insIndex, "medicine_dosage_id", v)
 												}
-												clearable
 											/>
 										</Grid.Col>
 										<Grid.Col span={5}>
-											<Autocomplete
+											<Select
 												label=""
 												size="xs"
-												data={by_meal_options}
-												value={instruction.by_meal}
+												data={by_meal_options?.map((byMeal) => ({
+													value: byMeal.id?.toString(),
+													label: byMeal.name,
+												}))}
+												value={instruction.medicine_bymeal_id?.toString()}
 												placeholder={t("Timing")}
-												onChange={(v) => handleInstructionFieldChange(insIndex, "by_meal", v)}
-												clearable
+												onChange={(v) =>
+													handleInstructionFieldChange(insIndex, "medicine_bymeal_id", v)
+												}
 											/>
 										</Grid.Col>
 										<Grid.Col span={3}>
@@ -282,27 +322,31 @@ export default function MedicineListItem({
 			) : (
 				<Grid gap="es" columns={20}>
 					<Grid.Col span={7}>
-						<Autocomplete
-							clearable
+						<Select
 							size="xs"
 							label=""
-							data={dosage_options}
-							value={medicine?.dose_details}
+							data={dosage_options?.map((dosage) => ({
+								value: dosage.id?.toString(),
+								label: dosage.name,
+							}))}
+							value={medicine?.medicine_dosage_id?.toString()}
 							placeholder={t("Dosage")}
 							disabled={mode === "view"}
-							onChange={(v) => handleChange("dose_details", v)}
+							onChange={(v) => handleChange("medicine_dosage_id", v)}
 						/>
 					</Grid.Col>
 					<Grid.Col span={7}>
-						<Autocomplete
-							clearable
+						<Select
 							size="xs"
 							label=""
-							data={by_meal_options}
-							value={medicine.by_meal}
+							data={by_meal_options?.map((byMeal) => ({
+								value: byMeal.id?.toString(),
+								label: byMeal.name,
+							}))}
+							value={medicine.medicine_bymeal_id?.toString()}
 							placeholder={t("Timing")}
 							disabled={mode === "view"}
-							onChange={(v) => handleChange("by_meal", v)}
+							onChange={(v) => handleChange("medicine_bymeal_id", v)}
 						/>
 					</Grid.Col>
 					<Grid.Col span={3}>
@@ -316,7 +360,7 @@ export default function MedicineListItem({
 						/>
 					</Grid.Col>
 					<Grid.Col span={3}>
-						<Autocomplete
+						<Select
 							clearable
 							size="xs"
 							label=""

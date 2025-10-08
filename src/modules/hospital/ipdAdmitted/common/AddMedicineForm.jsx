@@ -40,8 +40,6 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
@@ -55,6 +53,7 @@ import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__Refrerr
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import PrescriptionPreview from "@hospital-components/PrescriptionPreview";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
+import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 
 export default function AddMedicineForm({
 	module,
@@ -95,18 +94,23 @@ export default function AddMedicineForm({
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
 
-	const { data: by_meal_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
-		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
-	});
-
 	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
+	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
+	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 
 	const printPrescription2A4 = useReactToPrint({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,
 	});
+
+	const getByMeal = (id) => {
+		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
+	};
+
+	const getDosage = (id) => {
+		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
+	};
 
 	useEffect(() => {
 		dispatch(
@@ -146,7 +150,7 @@ export default function AddMedicineForm({
 	useEffect(() => {
 		dispatch(
 			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.DOSAGE.INDEX,
+				url: PHARMACY_DROPDOWNS.DOSAGE.PATH,
 				module: "dosage",
 				params: {
 					page: 1,
@@ -155,6 +159,19 @@ export default function AddMedicineForm({
 			})
 		);
 	}, [refetching]);
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
+				module: "byMeal",
+				params: {
+					page: 1,
+					offset: 500,
+				},
+			})
+		);
+	}, [bymealRefetching]);
 
 	useEffect(() => {
 		if (!printData) return;
@@ -254,10 +271,13 @@ export default function AddMedicineForm({
 				medicineForm.setFieldValue("generic", selectedMedicine.generic);
 				medicineForm.setFieldValue("generic_id", selectedMedicine.generic_id);
 				medicineForm.setFieldValue("company", selectedMedicine.company);
+				medicineForm.setFieldValue("opd_quantity", selectedMedicine?.opd_quantity || 0);
+				medicineForm.setFieldValue("opd_limit", selectedMedicine?.opd_quantity || 0);
 
 				// Auto-populate by_meal if available
-				if (selectedMedicine.by_meal) {
-					medicineForm.setFieldValue("by_meal", selectedMedicine.by_meal);
+				if (selectedMedicine.medicine_bymeal_id) {
+					medicineForm.setFieldValue("medicine_bymeal_id", selectedMedicine.medicine_bymeal_id?.toString());
+					medicineForm.setFieldValue("by_meal", getByMeal(selectedMedicine.medicine_bymeal_id));
 				}
 
 				// Auto-populate duration and count based on duration_day or duration_month
@@ -270,8 +290,9 @@ export default function AddMedicineForm({
 				}
 
 				// Auto-populate dose_details if available (for times field)
-				if (selectedMedicine.dose_details) {
-					medicineForm.setFieldValue("dose_details", selectedMedicine.dose_details);
+				if (selectedMedicine.medicine_dosage_id) {
+					medicineForm.setFieldValue("medicine_dosage_id", selectedMedicine.medicine_dosage_id?.toString());
+					medicineForm.setFieldValue("dose_details", getDosage(selectedMedicine.medicine_dosage_id));
 				}
 			}
 		}
@@ -522,13 +543,13 @@ export default function AddMedicineForm({
 									<Group grow gap="les">
 										<SelectForm
 											form={medicineForm}
-											id="dose_details"
-											name="dose_details"
+											id="medicine_dosage_id"
+											name="medicine_dosage_id"
 											dropdownValue={dosage_options?.map((dosage) => ({
 												value: dosage.id?.toString(),
 												label: dosage.name,
 											}))}
-											value={medicineForm.values.dose_details}
+											value={medicineForm.values.medicine_dosage_id}
 											placeholder={t("Dosage")}
 											required
 											tooltip={t("EnterDosage")}
@@ -536,10 +557,13 @@ export default function AddMedicineForm({
 										/>
 										<SelectForm
 											form={medicineForm}
-											id="by_meal"
-											name="by_meal"
-											dropdownValue={by_meal_options}
-											value={medicineForm.values.by_meal}
+											id="medicine_bymeal_id"
+											name="medicine_bymeal_id"
+											dropdownValue={by_meal_options?.map((byMeal) => ({
+												value: byMeal.id?.toString(),
+												label: byMeal.name,
+											}))}
+											value={medicineForm.values.medicine_bymeal_id}
 											placeholder={t("By Meal")}
 											tooltip={t("EnterWhenToTakeMedicine")}
 											withCheckIcon={false}

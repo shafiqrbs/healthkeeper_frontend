@@ -58,10 +58,19 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
-
 	dosage: {
 		isLoading: true,
-		refetching: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
+	byMeal: {
+		isLoading: true,
+		refetching: false,
 		error: null,
 		data: {},
 		editData: {},
