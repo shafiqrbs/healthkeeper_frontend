@@ -299,6 +299,7 @@ export default function AddMedicineForm({
 	};
 
 	const handleAdd = (values) => {
+		console.log("values: ", values);
 		if (values.medicine_id) {
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() == values.medicine_id);
 
@@ -307,7 +308,7 @@ export default function AddMedicineForm({
 				values.generic = selectedMedicine.generic || values.generic;
 				values.generic_id = selectedMedicine.generic_id || values.generic_id;
 				values.company = selectedMedicine.company || values.company;
-				values.by_meal = selectedMedicine.by_meal || values.by_meal;
+				values.opd_quantity = selectedMedicine?.opd_quantity || 0;
 
 				if (selectedMedicine.duration_day) {
 					values.quantity = parseInt(selectedMedicine.duration_day) || values.quantity;
@@ -317,24 +318,38 @@ export default function AddMedicineForm({
 					values.duration = "month";
 				}
 
-				if (selectedMedicine.dose_details) {
-					values.times = selectedMedicine.dose_details;
+				if (selectedMedicine.medicine_dosage_id) {
+					values.medicine_dosage_id = selectedMedicine.medicine_dosage_id?.toString();
+					values.dose_details = getDosage(selectedMedicine.medicine_dosage_id);
+				}
+
+				if (selectedMedicine.medicine_bymeal_id) {
+					values.medicine_bymeal_id = selectedMedicine.medicine_bymeal_id?.toString();
+					values.by_meal = getByMeal(selectedMedicine.medicine_bymeal_id);
 				}
 			}
-		}
+			if (editIndex !== null) {
+				const updated = [...medicines];
+				updated[editIndex] = values;
+				setMedicines(updated);
+				setEditIndex(null);
+			} else {
+				setMedicines([...medicines, values]);
 
-		if (editIndex !== null) {
-			const updated = [...medicines];
-			updated[editIndex] = values;
-			setMedicines(updated);
+				if (selectedMedicine?.medicine_bymeal_id) {
+					values.medicine_bymeal_id = selectedMedicine.medicine_bymeal_id?.toString();
+					values.by_meal = getByMeal(selectedMedicine.medicine_bymeal_id);
+				}
+
+				setMedicines([...medicines, values]);
+				setUpdateKey((prev) => prev + 1);
+				if (update) update([...medicines, values]);
+
+				medicineForm.reset();
+				setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
+			}
 			setEditIndex(null);
-		} else {
-			setMedicines([...medicines, values]);
 		}
-
-		setUpdateKey((prev) => prev + 1);
-		if (update) update([...medicines, values]);
-		medicineForm.reset();
 	};
 
 	const handleDelete = (idx) => {

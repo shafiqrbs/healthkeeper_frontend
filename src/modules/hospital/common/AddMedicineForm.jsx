@@ -328,6 +328,19 @@ export default function AddMedicineForm({
 					values.medicine_bymeal_id = selectedMedicine.medicine_bymeal_id?.toString();
 					values.by_meal = getByMeal(selectedMedicine.medicine_bymeal_id);
 				}
+			}
+			if (editIndex !== null) {
+				const updated = [...medicines];
+				updated[editIndex] = values;
+				setMedicines(updated);
+				setEditIndex(null);
+			} else {
+				setMedicines([...medicines, values]);
+
+				if (selectedMedicine?.medicine_bymeal_id) {
+					values.medicine_bymeal_id = selectedMedicine.medicine_bymeal_id?.toString();
+					values.by_meal = getByMeal(selectedMedicine.medicine_bymeal_id);
+				}
 
 				setMedicines([...medicines, values]);
 				setUpdateKey((prev) => prev + 1);
@@ -336,8 +349,8 @@ export default function AddMedicineForm({
 				medicineForm.reset();
 				setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
 			}
+			setEditIndex(null);
 		}
-		setEditIndex(null);
 	};
 
 	const handleDelete = (idx) => {
