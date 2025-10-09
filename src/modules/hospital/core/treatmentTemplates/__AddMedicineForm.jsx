@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Box, Button, Group, Grid, Select, Autocomplete, ActionIcon, rem } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { Box, Button, Group, Grid, Select, Autocomplete, rem, ActionIcon } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconAlertCircle, IconDeviceFloppy, IconPlus, IconTrashX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
@@ -9,22 +9,21 @@ import { useDebouncedState, useHotkeys } from "@mantine/hooks";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import {HOSPITAL_DROPDOWNS, PHARMACY_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { DURATION_TYPES, ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
-import InputAutoComplete from "@/common/components/form-builders/InputAutoComplete";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
-import { deleteEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { deleteEntityData, getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType } from "@/app/store/core/crudSlice";
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { DataTable } from "mantine-datatable";
-import tableCss from "@assets/css/Table.module.css";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import { notifications } from "@mantine/notifications";
+import SelectForm from "@/common/components/form-builders/SelectForm";
+import { DataTable } from "mantine-datatable";
+import tableCss from "@assets/css/Table.module.css";
 
 export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	const [updateKey, setUpdateKey] = useState(0);
@@ -38,17 +37,10 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { id } = useParams();
 	const dispatch = useDispatch();
-
-
-	const { data: by_meal_options } = useGlobalDropdownData({
-		path: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
-		utility: PHARMACY_DROPDOWNS.BY_MEAL.UTILITY,
-	});
-
-	const { data: dosage_options } = useGlobalDropdownData({
-		path: PHARMACY_DROPDOWNS.DOSAGE.PATH,
-		utility: PHARMACY_DROPDOWNS.DOSAGE.UTILITY,
-	});
+	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
+	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
+	const refetching = useSelector((state) => state.crud.dosage?.refetching);
+	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 
 	const {
 		data: entity,
@@ -57,6 +49,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	} = useDataWithoutStore({
 		url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.VIEW}/${id}`,
 	});
+	console.log(entity);
 	const entityData = entity?.data?.treatment_medicine_format;
 	console.log(entityData);
 
@@ -75,36 +68,74 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 		],
 	]);
 
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: PHARMACY_DROPDOWNS.DOSAGE.PATH,
+				module: "dosage",
+				params: {
+					page: 1,
+					offset: 500,
+				},
+			})
+		);
+	}, [refetching]);
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
+				module: "byMeal",
+				params: {
+					page: 1,
+					offset: 500,
+				},
+			})
+		);
+	}, [bymealRefetching]);
+
+	const getByMeal = (id) => {
+		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
+	};
+
+	const getDosage = (id) => {
+		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
+	};
+
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
 
 		// If medicine field is being changed, auto-populate other fields from medicine data
 		if (field === "medicine_id" && value) {
-			const selectedMedicine = medicineData?.find((item) => item.stock_id?.toString() === value);
+			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
 
 			if (selectedMedicine) {
 				medicineForm.setFieldValue("medicine_name", selectedMedicine.product_name);
 				medicineForm.setFieldValue("generic", selectedMedicine.generic);
 				medicineForm.setFieldValue("generic_id", selectedMedicine.generic_id);
 				medicineForm.setFieldValue("company", selectedMedicine.company);
+				medicineForm.setFieldValue("opd_quantity", selectedMedicine?.opd_quantity || 0);
+				medicineForm.setFieldValue("opd_limit", selectedMedicine?.opd_quantity || 0);
 
 				// Auto-populate by_meal if available
-				if (selectedMedicine.by_meal) {
-					medicineForm.setFieldValue("by_meal", selectedMedicine.by_meal);
+				if (selectedMedicine.medicine_bymeal_id) {
+					medicineForm.setFieldValue("medicine_bymeal_id", selectedMedicine.medicine_bymeal_id?.toString());
+					medicineForm.setFieldValue("by_meal", getByMeal(selectedMedicine.medicine_bymeal_id));
 				}
 
 				// Auto-populate duration and count based on duration_day or duration_month
 				if (selectedMedicine.duration_day) {
 					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_day) || 1);
-					medicineForm.setFieldValue("duration", "Day");
+					medicineForm.setFieldValue("duration", "day");
 				} else if (selectedMedicine.duration_month) {
 					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_month) || 1);
-					medicineForm.setFieldValue("duration", "Month");
+					medicineForm.setFieldValue("duration", "month");
 				}
 
-				// Auto-populate dosage if available (for times field)
-				if (selectedMedicine.dose_details) {
-					medicineForm.setFieldValue("dosage", selectedMedicine.dose_details);
+				// Auto-populate dose_details if available (for times field)
+				if (selectedMedicine.medicine_dosage_id) {
+					medicineForm.setFieldValue("medicine_dosage_id", selectedMedicine.medicine_dosage_id?.toString());
+					medicineForm.setFieldValue("dose_details", getDosage(selectedMedicine.medicine_dosage_id));
 				}
 			}
 		}
@@ -225,7 +256,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 							name="medicine_id"
 							data={medicineData?.map((item) => ({
 								label: item.product_name,
-								value: item.stock_id?.toString(),
+								value: item.product_id?.toString(),
 							}))}
 							value={medicineForm.values.medicine_id}
 							onChange={(v) => handleChange("medicine_id", v)}
@@ -256,24 +287,30 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 					<Grid w="100%" columns={12} gutter="xxxs">
 						<Grid.Col span={6}>
 							<Group grow gap="les">
-								<InputAutoComplete
+								<SelectForm
 									form={medicineForm}
-									id="dosage"
-									name="dosage"
-									data={dosage_options}
-									value={medicineForm.values.dosage}
+									id="medicine_dosage_id"
+									name="medicine_dosage_id"
+									dropdownValue={dosage_options?.map((dosage) => ({
+										value: dosage.id?.toString(),
+										label: dosage.name,
+									}))}
+									value={medicineForm.values.medicine_dosage_id}
 									placeholder={t("Dosage")}
 									required
 									tooltip={t("EnterDosage")}
 									withCheckIcon={false}
 								/>
-								<InputAutoComplete
+								<SelectForm
 									form={medicineForm}
-									id="by_meal"
-									name="by_meal"
-									data={by_meal_options}
-									value={medicineForm.values.by_meal}
-									placeholder={t("By Meal")}
+									id="medicine_bymeal_id"
+									name="medicine_bymeal_id"
+									dropdownValue={by_meal_options?.map((byMeal) => ({
+										value: byMeal.id?.toString(),
+										label: byMeal.name,
+									}))}
+									value={medicineForm.values.medicine_bymeal_id}
+									placeholder={t("ByMeal")}
 									tooltip={t("EnterWhenToTakeMedicine")}
 									withCheckIcon={false}
 								/>
@@ -290,12 +327,12 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 									required
 									tooltip={t("EnterQuantity")}
 								/>
-								<InputAutoComplete
+								<SelectForm
 									form={medicineForm}
 									label=""
 									id="duration"
 									name="duration"
-									data={DURATION_TYPES}
+									dropdownValue={DURATION_TYPES}
 									value={medicineForm.values.duration}
 									placeholder={t("Duration")}
 									required
@@ -316,7 +353,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 				</Group>
 			</Box>
 			<Box>
-				{/*<DataTable
+				<DataTable
 					classNames={{
 						root: tableCss.root,
 						table: tableCss.table,
@@ -384,7 +421,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 					loaderSize="xs"
 					loaderColor="grape"
 					height={mainAreaHeight - 150}
-				/>*/}
+				/>
 			</Box>
 		</Box>
 	);

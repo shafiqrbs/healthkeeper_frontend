@@ -38,11 +38,14 @@ export const medicineInitialValues = {
 	generic: "",
 	generic_id: "",
 	company: "",
-	dosage: "",
-	times: "",
+	dose_details: "",
 	by_meal: "",
-	duration: "",
+	medicine_dosage_id: "",
+	medicine_bymeal_id: "",
+	times: "",
+	duration: "Day",
 	quantity: 1,
+	opd_quantity: 0,
 };
 
 export const getMedicineFormInitialValues = () => {
@@ -50,8 +53,7 @@ export const getMedicineFormInitialValues = () => {
 		initialValues: medicineInitialValues,
 
 		validate: {
-			dosage: (value) => (value ? null : "Dose details is required"),
-			duration: (value) => (value ? null : "Duration is required"),
+			medicine_dosage_id: (value) => (value ? null : "Dosage is required"),
 			quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},
 	};
