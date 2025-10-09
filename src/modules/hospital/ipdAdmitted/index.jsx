@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useOutletContext, useParams, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
@@ -26,6 +26,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 export default function Index() {
 	const [searchParams, setSearchParams] = useSearchParams();
+	const { state } = useLocation();
 	const queryValue = searchParams.get("mode");
 	const navigate = useNavigate();
 	const [ipdMode, setIpdMode] = useState("non-prescription");

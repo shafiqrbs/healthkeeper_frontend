@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import { notifications } from "@mantine/notifications";
-import SelectForm from "@/common/components/form-builders/SelectForm";
+import SelectForm from "@components/form-builders/SelectForm";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
 
@@ -108,8 +108,6 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 		// If medicine field is being changed, auto-populate other fields from medicine data
 		if (field === "medicine_id" && value) {
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
-
-			console.log(selectedMedicine, getByMeal(selectedMedicine.medicine_bymeal_id));
 
 			if (selectedMedicine) {
 				medicineForm.setFieldValue("medicine_name", selectedMedicine.product_name);

@@ -1,5 +1,5 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { IconCalendarWeek, IconUser, IconArrowRight, IconArrowNarrowRight,IconBed } from "@tabler/icons-react";
+import { IconCalendarWeek, IconUser, IconArrowRight, IconArrowNarrowRight, IconBed } from "@tabler/icons-react";
 import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
@@ -44,11 +44,15 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 		).unwrap();
 		const prescription_id = resultAction?.data?.data.id;
 		const isPrescribed = resultAction?.data?.data?.json_content;
-		if (prescription_id) {
+
+		if (isPrescribed) {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}?tabs=true`, {
+				state: { prescriptionId: prescription_id },
+				replace: true,
+			});
+		} else if (prescription_id) {
 			navigate(
-				`${
-					HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION
-				}/${prescription_id}?mode=prescription${isPrescribed ? "&tabs=true" : ""}`
+				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${prescription_id}?mode=prescription`
 			);
 		} else {
 			console.error(resultAction);
@@ -135,7 +139,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 									<Text fz="xs">{item.patient_payment_mode_name}</Text>
 								</Box>
 								<Flex direction="column">
-									{ ipdMode === "non-prescription" &&(
+									{ipdMode === "non-prescription" && (
 										<ActionIcon
 											variant="filled"
 											onClick={() => handleProcessConfirmation(item.id)}
@@ -143,10 +147,13 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 											radius="xs"
 											aria-label="Settings"
 										>
-											<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
+											<IconArrowNarrowRight
+												style={{ width: "70%", height: "70%" }}
+												stroke={1.5}
+											/>
 										</ActionIcon>
 									)}
-									{ ipdMode === "prescription" &&(
+									{ipdMode === "prescription" && (
 										<ActionIcon
 											variant="filled"
 											onClick={() => handleAdmissionOverview(item.prescription_id)}
@@ -154,7 +161,10 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 											radius="xs"
 											aria-label="Settings"
 										>
-											<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
+											<IconArrowNarrowRight
+												style={{ width: "70%", height: "70%" }}
+												stroke={1.5}
+											/>
 										</ActionIcon>
 									)}
 								</Flex>
