@@ -182,7 +182,6 @@ export default function EmergencyPatientForm({
 		form.setFieldValue("name", patient?.data?.name);
 		form.setFieldValue("mobile", patient?.data?.mobile);
 		form.setFieldValue("dob", patient?.data?.dob ? new Date(patient.data.dob) : null);
-		form.setFieldValue("address", patient?.data?.address);
 		form.setFieldValue("customer_id", patient?.data?.id);
 		// Close the dropdown
 		setShowPatientDropdown(false);
@@ -531,16 +530,16 @@ export function Form({
 												<InputNumberForm
 													form={form}
 													label=""
-													placeholder="Days"
-													tooltip={t("EnterPatientDays")}
-													name="day"
-													id="day"
+													placeholder="Years"
+													tooltip={t("EnterYears")}
+													name="year"
+													id="year"
 													nextField="month"
 													min={0}
-													max={31}
+													max={150}
 													leftSection={
 														<Text fz="sm" px="sm">
-															{t("D")}
+															{t("Y")}
 														</Text>
 													}
 													readOnly={form.values.dob}
@@ -552,7 +551,7 @@ export function Form({
 													tooltip={t("EnterPatientMonths")}
 													name="month"
 													id="month"
-													nextField="year"
+													nextField="day"
 													min={0}
 													max={11}
 													leftSection={
@@ -565,20 +564,21 @@ export function Form({
 												<InputNumberForm
 													form={form}
 													label=""
-													placeholder="Years"
-													tooltip={t("EnterYears")}
-													name="year"
-													id="year"
+													placeholder="Days"
+													tooltip={t("EnterPatientDays")}
+													name="day"
+													id="day"
 													nextField="upazilla_id"
 													min={0}
-													max={150}
+													max={31}
 													leftSection={
 														<Text fz="sm" px="sm">
-															{t("Y")}
+															{t("D")}
 														</Text>
 													}
 													readOnly={form.values.dob}
 												/>
+
 											</Flex>
 										</Grid.Col>
 									</Grid>
@@ -714,24 +714,7 @@ export function Form({
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt={"xs"}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("Address")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14} pb={0}>
-											<TextAreaForm
-												form={form}
-												label=""
-												tooltip={t("EnterPatientAddress")}
-												placeholder="12 street, 123456"
-												name="address"
-												id="address"
-												nextField="EntityFormSubmit"
-												value={form.values.address}
-												required
-											/>
-										</Grid.Col>
-									</Grid>
+
 									<Grid columns={20}>
 										<Grid.Col span={6}></Grid.Col>
 										<Grid.Col span={14}>

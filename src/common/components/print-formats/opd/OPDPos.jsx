@@ -154,7 +154,7 @@ const OPDPos = forwardRef(({ data }, ref) => {
 									<strong>{t("CreatedBy")}:</strong> {patientInfo?.created_by_name || "John Doe"}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>{t("PrintedBy")}:</strong> {user?.name || "John Doe"}
+									<strong>{t("PrintedBy")}:</strong> {user?.name}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
