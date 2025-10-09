@@ -283,7 +283,7 @@ export function Form({
 	visible,
 	setVisible,
 	resetKey,
-	setResetKey,
+	setResetKey,hospitalConfigData
 }) {
 	const dispatch = useDispatch();
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
@@ -296,14 +296,11 @@ export function Form({
 	const printPos = useReactToPrint({ content: () => ipdDocumentPosRef.current });
 
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
-
 	const [userNidData] = useState(USER_NID_DATA);
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
 	const firstRender = useIsFirstRender();
-	const { hospitalConfigData: globalConfig } = useHospitalConfigData();
-	const hospitalConfigData = globalConfig?.hospital_config;
 
 	const enteredAmount = Number(form?.values?.amount ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
@@ -334,14 +331,13 @@ export function Form({
 				: Number(hospitalConfigData?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
 		setConfiguredDueAmount(price);
 		form.setFieldValue("amount", price);
-	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
 
+	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
 	const handlePrint = async (type) => {
 		const res = await handleSubmit();
 
 		if (res?.status === 200) {
 			setPrintData(res?.data);
-			console.log("Hit there");
 			setPendingPrint(type);
 		}
 	};
@@ -537,11 +533,6 @@ export function Form({
 													nextField="month"
 													min={0}
 													max={150}
-													leftSection={
-														<Text fz="sm" px="sm">
-															{t("Y")}
-														</Text>
-													}
 													readOnly={form.values.dob}
 												/>
 												<InputNumberForm
@@ -554,11 +545,6 @@ export function Form({
 													nextField="day"
 													min={0}
 													max={11}
-													leftSection={
-														<Text fz="sm" px="sm">
-															{t("M")}
-														</Text>
-													}
 													readOnly={form.values.dob}
 												/>
 												<InputNumberForm
@@ -571,11 +557,6 @@ export function Form({
 													nextField="upazilla_id"
 													min={0}
 													max={31}
-													leftSection={
-														<Text fz="sm" px="sm">
-															{t("D")}
-														</Text>
-													}
 													readOnly={form.values.dob}
 												/>
 

@@ -9,6 +9,7 @@ import { storeEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch } from "react-redux";
 import { formatDOB, getLoggedInUser } from "@/common/utils";
+import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
 const LOCAL_STORAGE_KEY = "emergencyPatientFormData";
 
@@ -19,16 +20,16 @@ export default function _Form({ module }) {
 	const form = useForm(getVendorFormInitialValues(t));
 	const [showUserData, setShowUserData] = useState(false);
 	const [resetKey, setResetKey] = useState(0);
+	const { hospitalConfigData: globalConfig } = useHospitalConfigData();
+	const hospitalConfigData = globalConfig?.hospital_config;
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
-
 			if (!form.values.amount && form.values.patient_payment_mode_id == "30") {
 				showNotificationComponent(t("AmountsRequired"), "red", "lightgray", true, 700, true);
 				setIsSubmitting(false);
 				return {};
 			}
-
 			try {
 				const createdBy = getLoggedInUser();
 				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
@@ -52,6 +53,7 @@ export default function _Form({ module }) {
 				const formValue = {
 					...form.values,
 					created_by_id: createdBy?.id,
+					room_id: hospitalConfigData?.emergency_room_id,
 					dob: isValid ? dateObj.toLocaleDateString("en-CA", options) : "invalid",
 					appointment: new Date(form.values.appointment).toLocaleDateString("en-CA", options),
 				};
@@ -97,6 +99,7 @@ export default function _Form({ module }) {
 			form={form}
 			module={module}
 			handleSubmit={handleSubmit}
+			hospitalConfigData={hospitalConfigData}
 			isSubmitting={isSubmitting}
 			showUserData={showUserData}
 			setShowUserData={setShowUserData}

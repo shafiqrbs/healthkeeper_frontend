@@ -1,10 +1,10 @@
-import { useState, useRef } from "react";
+import {useState, useRef, useEffect} from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Grid, Group, Menu, Tabs, Text } from "@mantine/core";
-import { IconArrowRight, IconDotsVertical, IconPencil, IconTrashX } from "@tabler/icons-react";
+import {IconArrowRight, IconDotsVertical, IconPencil, IconPrinter, IconScript, IconTrashX} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { rem } from "@mantine/core";
@@ -30,6 +30,10 @@ import { modals } from "@mantine/modals";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
+import OPDDocument from "@components/print-formats/opd/OPDA4";
+import OPDPos from "@components/print-formats/opd/OPDPos";
+import Prescription from "@components/print-formats/opd/PrescriptionFull";
+import {useReactToPrint} from "react-to-print";
 
 const PER_PAGE = 200;
 const tabs = [
@@ -90,6 +94,20 @@ export default function Table({ module }) {
 
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
+	const [printData, setPrintData] = useState({});
+	const [type, setType] = useState(null);
+	const posRef = useRef(null);
+	const a4Ref = useRef(null);
+	const prescriptionRef = useRef(null);
+	const handlePos = useReactToPrint({
+		content: () => posRef.current,
+	});
+	const handleA4 = useReactToPrint({
+		content: () => a4Ref.current,
+	});
+	const handlePrescriptionOption = useReactToPrint({
+		content: () => prescriptionRef.current,
+	});
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -221,6 +239,38 @@ export default function Table({ module }) {
 		setTimeout(() => openPatientUpdate(), 100);
 	};
 
+	useEffect(() => {
+		if (type === "a4") {
+			handleA4();
+		} else if (type === "pos") {
+			handlePos();
+		} else if (type === "prescription") {
+			handlePrescriptionOption();
+		}
+	}, [printData, type]);
+
+
+	const handleA4Print = async (id) => {
+		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
+		setPrintData(res.data);
+		setType("a4");
+	};
+
+	const handlePosPrint = async (id) => {
+		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
+		setPrintData(res.data);
+		setType("pos");
+	};
+
+	const handlePrescriptionPrint = async (prescription_id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescription_id}`,
+		});
+
+		setPrintData(res.data);
+		setType("prescription");
+	};
+
 	return (
 		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -345,24 +395,25 @@ export default function Table({ module }) {
 															{t("Prescription")}
 														</Button>
 													))}
-
-												{values.process === "New" && !values.referred_mode && (
-													<Button
-														variant="filled"
-														bg="var(--theme-success-color)"
-														c="white"
-														size="compact-xs"
-														onClick={() => handleSendToAdmission(values.id)}
-														radius="es"
-														fw={"400"}
-														rightSection={<IconArrowRight size={18} />}
-														className="border-right-radius-none"
-													>
-														{t("Admission")}
-													</Button>
-												)}
 											</>
 										)}
+
+											{values.process === "New" && !values.referred_mode && (
+												<Button
+													variant="filled"
+													bg="var(--theme-success-color)"
+													c="white"
+													size="compact-xs"
+													onClick={() => handleSendToAdmission(values.id)}
+													radius="es"
+													fw={"400"}
+													rightSection={<IconArrowRight size={18} />}
+													className="border-right-radius-none"
+												>
+													{t("Admission")}
+												</Button>
+											)}
+
 										{formatDate(new Date()) === formatDate(values?.created_at) && (
 											<ActionIcon
 												variant="transparent"
@@ -391,30 +442,48 @@ export default function Table({ module }) {
 												</ActionIcon>
 											</Menu.Target>
 											<Menu.Dropdown>
-												{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && (
+												<Menu.Item
+													leftSection={
+														<IconScript
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+													onClick={() => handleA4Print(values?.id)}
+												>
+													{t("A4Print")}
+												</Menu.Item>
+												<Menu.Item
+													leftSection={
+														<IconPrinter
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+													onClick={() => handlePosPrint(values?.id)}
+												>
+													{t("Pos")}
+												</Menu.Item>
+												{values?.prescription_id && (
 													<>
 														<Menu.Item
-															onClick={() => {
-																// handleVendorEdit(values.id);
-																// open();
-															}}
-														>
-															{t("Edit")}
-														</Menu.Item>
-														<Menu.Item
-															// onClick={() => handleDelete(values.id)}
-															bg="red.1"
-															c="red.6"
-															rightSection={
-																<IconTrashX
+															leftSection={
+																<IconPrinter
 																	style={{
 																		width: rem(14),
 																		height: rem(14),
 																	}}
 																/>
 															}
+															onClick={() =>
+																handlePrescriptionPrint(values?.prescription_id)
+															}
 														>
-															{t("Delete")}
+															{t("Prescription")}
 														</Menu.Item>
 													</>
 												)}
@@ -487,6 +556,11 @@ export default function Table({ module }) {
 				close={closePatientUpdate}
 				data={singlePatientData}
 			/>
+			<OverviewDrawer opened={openedOverview} close={closeOverview} />
+
+			<OPDDocument data={printData} ref={a4Ref} />
+			<OPDPos data={printData} ref={posRef} />
+			<Prescription data={printData} ref={prescriptionRef} />
 		</Box>
 	);
 }

@@ -42,6 +42,7 @@ export const generateHospitalFormValues = () => ({
 	opd_store_id: '',
 	ipd_store_id: '',
 	ot_store_id: '',
+	emergency_room_id: '',
 	opd_select_doctor: 0,
 	special_discount_doctor: 0,
 	special_discount_investigation: 0,

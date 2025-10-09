@@ -58,8 +58,13 @@ export default function __HospitalForm({ height, id }) {
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.TYPE },
 
 	});
-	console.log(employeeDropdown)
 
+	const { data: emergencyRoomDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.UTILITY,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.TYPE },
+
+	});
 	useEffect(() => {
 		if (hospital_config) {
 			form.setValues({
@@ -74,10 +79,11 @@ export default function __HospitalForm({ height, id }) {
 				is_print_header: hospital_config?.is_print_header || 0,
 				is_invoice_title: hospital_config?.is_invoice_title || 0,
 				is_print_footer: hospital_config?.is_print_footer || 0,
-				opd_store_id: hospital_config?.opd_store_id || 0,
-				ot_store_id: hospital_config?.ot_store_id || 0,
-				ipd_store_id: hospital_config?.ipd_store_id || 0,
-				consultant_by_id: hospital_config?.consultant_by_id || 0,
+				opd_store_id: hospital_config?.opd_store_id || "",
+				ot_store_id: hospital_config?.ot_store_id || "",
+				ipd_store_id: hospital_config?.ipd_store_id || "",
+				consultant_by_id: hospital_config?.consultant_by_id || "",
+				emergency_room_id: hospital_config?.emergency_room_id || "",
 			});
 		}
 	}, [dispatch, hospital_config]);
@@ -204,6 +210,24 @@ export default function __HospitalForm({ height, id }) {
 						<Grid.Col span={12}>
 							{inventory_config?.currency?.symbol} {hospital_config?.ot_fee?.ot_fee_price}{" "}
 							{inventory_config?.currency?.code}
+						</Grid.Col>
+					</Grid>
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{t("EmergencyRoom")}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							<SelectForm
+								form={form}
+								tooltip={t("SelectEmergencyRoomValidateMessage")}
+								placeholder={t("SelectEmergencyRoom")}
+								name="emergency_room_id"
+								id="emergency_room_id"
+								nextField="consultant_by_id"
+								required={true}
+								value={form.values.emergency_room_id}
+								dropdownValue={emergencyRoomDropdown}
+							/>
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>

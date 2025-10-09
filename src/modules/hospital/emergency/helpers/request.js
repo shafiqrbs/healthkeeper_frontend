@@ -5,7 +5,7 @@ const initialValues = {
 	health_id: "",
 	patient_mode: "emergency",
 	customer_id: "",
-	room_id: "927",
+	room_id: "",
 	doctor_id: "",
 	appointment: new Date(),
 	name: "",
