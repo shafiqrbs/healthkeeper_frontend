@@ -109,6 +109,8 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 		if (field === "medicine_id" && value) {
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
 
+			console.log(selectedMedicine, getByMeal(selectedMedicine.medicine_bymeal_id));
+
 			if (selectedMedicine) {
 				medicineForm.setFieldValue("medicine_name", selectedMedicine.product_name);
 				medicineForm.setFieldValue("generic", selectedMedicine.generic);
@@ -116,6 +118,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 				medicineForm.setFieldValue("company", selectedMedicine.company);
 				medicineForm.setFieldValue("opd_quantity", selectedMedicine?.opd_quantity || 0);
 				medicineForm.setFieldValue("opd_limit", selectedMedicine?.opd_quantity || 0);
+				medicineForm.setFieldValue("stock_id", selectedMedicine?.stock_id?.toString());
 
 				// Auto-populate by_meal if available
 				if (selectedMedicine.medicine_bymeal_id) {
