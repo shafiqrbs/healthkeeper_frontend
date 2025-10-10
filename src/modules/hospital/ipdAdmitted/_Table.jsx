@@ -47,13 +47,16 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 		const isPrescribed = resultAction?.data?.data?.json_content;
 
 		if (isPrescribed) {
-			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}?tabs=true`, {
-				state: { prescriptionId: prescription_id },
-				replace: true,
-			});
+			navigate(
+				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}?tabs=true&redirect=prescription`,
+				{
+					state: { prescriptionId: prescription_id },
+					replace: true,
+				}
+			);
 		} else if (prescription_id) {
 			navigate(
-				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${prescription_id}?mode=prescription&itemid=${id}`
+				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${prescription_id}?redirect=prescription&itemid=${id}`
 			);
 		} else {
 			console.error(resultAction);

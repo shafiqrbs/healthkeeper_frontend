@@ -1,71 +1,72 @@
 import TabSubHeading from "@hospital-components/TabSubHeading";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { Badge, Box, Flex, Grid, Text } from "@mantine/core";
+import { Badge, Box, Flex, Grid, LoadingOverlay, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useOutletContext, useParams } from "react-router-dom";
 import TabsActionButtons from "@hospital-components/TabsActionButtons";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { updateEntityData } from "@/app/store/core/crudThunk";
+import { MODULES_CORE } from "@/constants";
+import { storeEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@/common/components/notification/successNotification";
 import { errorNotification } from "@/common/components/notification/errorNotification";
 import { useDispatch } from "react-redux";
-
-const adviceDetails = [
-	{
-		id: 1,
-		label: "Patient presents with persistent headache and dizziness for 3 days.",
-		date: "25-06-25",
-	},
-	{
-		id: 2,
-		label: "Complaining of high fever, sore throat, and body ache since yesterday.",
-		date: "26-06-25",
-	},
-	{
-		id: 3,
-		label: "Severe abdominal pain in the lower right quadrant since morning.",
-		date: "27-06-25",
-	},
-	{
-		id: 4,
-		label: "Severe abdominal pain in the lower right quadrant since morning.",
-		date: "28-06-25",
-	},
-];
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Advice() {
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
 	const { id } = useParams();
+	const { t } = useTranslation();
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const form = useForm({
 		initialValues: {
 			advice: "",
 		},
 	});
 
+	const {
+		data: adviceData,
+		refetch: refetchAdviceData,
+		isLoading,
+	} = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.TRANSACTION}/${id}`,
+		params: {
+			mode: "advice",
+		},
+	});
+
 	const handleSubmit = async () => {
+		setIsSubmitting(true);
 		try {
 			const formValue = {
-				json_content: [{ id: null, name: "Advice", value: form.values?.advice }],
-				module: "advice",
+				json_content: [{ name: "Advice", value: form.values?.advice }],
+				ipd_module: "advice",
 			};
-
-			console.log(formValue);
 
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PROCESS}/${id}`,
 				data: formValue,
-				module: "admission",
+				params: {
+					mode: "advice",
+				},
+				module: MODULES_CORE.ADVICE,
 			};
-			const resultAction = await dispatch(updateEntityData(value));
-			if (resultAction.payload.success) {
-				console.log(resultAction.payload.data);
-				successNotification(resultAction.payload.message);
+
+			const resultAction = await dispatch(storeEntityData(value)).unwrap();
+
+			if (resultAction.status === 200) {
+				successNotification(t("AdviceAddedSuccessfully"));
+				await refetchAdviceData();
+				form.reset();
 			} else {
-				errorNotification(resultAction.payload.message);
+				errorNotification(t("AdviceAddedFailed"));
 			}
 		} catch (err) {
 			console.error(err);
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
@@ -85,23 +86,43 @@ export default function Advice() {
 							showRightSection={false}
 							style={{ input: { height: mainAreaHeight - 63 - 140 }, label: { marginBottom: "4px" } }}
 						/>
-						<TabsActionButtons handleReset={() => {}} handleSave={handleSubmit} />
+						<TabsActionButtons
+							isSubmitting={isSubmitting}
+							handleReset={() => {}}
+							handleSave={handleSubmit}
+						/>
 					</Box>
 				</Grid.Col>
 				<Grid.Col span={16}>
 					<Box className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Advice Details" />
-						<Box p="xs">
-							{adviceDetails.map((item) => (
-								<Flex key={item.id} gap="xs" mb="xxxs">
-									<Text>{item.id}.</Text>
-									<Box>
+						<Box p="xs" pos="relative" h={mainAreaHeight - 138}>
+							<LoadingOverlay
+								visible={isLoading}
+								zIndex={1000}
+								overlayProps={{ radius: "sm", blur: 2 }}
+							/>
+							{adviceData?.data?.length === 0 && (
+								<Flex h="100%" justify="center" align="center">
+									<Text fz="sm">{t("NoDataAvailable")}</Text>
+								</Flex>
+							)}
+							{adviceData?.data?.map((item, index) => (
+								<Flex key={index} gap="xs" mb="xxxs">
+									<Text>{index + 1}.</Text>
+									<Box w="100%">
 										<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
-											{item.date}
+											{item.created}
 										</Badge>
-										<Text mt="es" fz="sm">
-											{item.label}
-										</Text>
+										<Box mt="es" fz="sm">
+											{item?.invoice_particular?.map((particular, idx) => (
+												<Flex key={idx} justify="space-between" align="center">
+													<Text fz="xs">
+														{idx + 1}. {particular.name}
+													</Text>
+												</Flex>
+											))}
+										</Box>
 									</Box>
 								</Flex>
 							))}

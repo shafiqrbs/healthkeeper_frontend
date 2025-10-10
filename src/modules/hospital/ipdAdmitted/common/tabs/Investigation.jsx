@@ -1,47 +1,40 @@
 import TabSubHeading from "@hospital-components/TabSubHeading";
-import { ActionIcon, Autocomplete, Badge, Box, Button, Flex, Grid, Group, Stack, Text } from "@mantine/core";
+import { ActionIcon, Autocomplete, Badge, Box, Flex, Grid, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { useOutletContext, useParams } from "react-router-dom";
-import { IconCaretUpDownFilled, IconEye, IconX } from "@tabler/icons-react";
+import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import useParticularsData from "@hooks/useParticularsData";
 import inputCss from "@assets/css/InputField.module.css";
 import TabsActionButtons from "@hospital-components/TabsActionButtons";
 import { useForm } from "@mantine/form";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { MODULES_CORE } from "@/constants";
 import { useDispatch } from "react-redux";
-import { updateEntityData } from "@/app/store/core/crudThunk";
+import { storeEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
-
-const complainDetails = [
-	{
-		id: 1,
-		items: ["Complete Blood Count (CBC)", "Hemoglobin (Hb)"],
-		date: "25-06-25",
-	},
-	{
-		id: 2,
-		items: ["Complete Blood Count (CBC)", "Hemoglobin (Hb)"],
-		date: "25-06-25",
-	},
-	{
-		id: 3,
-		items: ["Complete Blood Count (CBC)", "Hemoglobin (Hb)"],
-		date: "25-06-25",
-	},
-	{
-		id: 4,
-		items: ["Complete Blood Count (CBC)", "Hemoglobin (Hb)"],
-		date: "25-06-25",
-	},
-];
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import { useTranslation } from "react-i18next";
 
 export default function Investigation() {
 	const dispatch = useDispatch();
 	const { id } = useParams();
+	const { t } = useTranslation();
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const form = useForm({
 		initialValues: {
 			investigation: [],
+		},
+	});
+
+	const {
+		data: investigationData,
+		refetch: refetchInvestigationData,
+		isLoading,
+	} = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.TRANSACTION}/${id}`,
+		params: {
+			mode: "investigation",
 		},
 	});
 
@@ -88,29 +81,35 @@ export default function Investigation() {
 	};
 
 	const handleSubmit = async () => {
+		setIsSubmitting(true);
 		try {
 			const formValue = {
 				json_content: form.values?.investigation,
 				ipd_module: "investigation",
 			};
 
-			console.log(formValue);
-
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PROCESS}/${id}`,
 				data: formValue,
-				module: "admission",
+				params: {
+					mode: "investigation",
+				},
+				module: MODULES_CORE.INVESTIGATION,
 			};
 
-			const resultAction = await dispatch(updateEntityData(value));
-			if (resultAction.payload.success) {
-				console.log(resultAction.payload.data);
-				successNotification(resultAction.payload.message);
+			const resultAction = await dispatch(storeEntityData(value)).unwrap();
+
+			if (resultAction.status === 200) {
+				successNotification(t("InvestigationAddedSuccessfully"));
+				await refetchInvestigationData();
+				form.reset();
 			} else {
-				errorNotification(resultAction.payload.message);
+				errorNotification(t("InvestigationAddedFailed"));
 			}
 		} catch (err) {
 			console.error(err);
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
@@ -170,26 +169,42 @@ export default function Investigation() {
 							</Stack>
 						</Box>
 						<Box px="xs">
-							<TabsActionButtons handleReset={() => {}} handleSave={handleSubmit} />
+							<TabsActionButtons
+								isSubmitting={isSubmitting}
+								handleReset={() => {}}
+								handleSave={handleSubmit}
+							/>
 						</Box>
 					</Box>
 				</Grid.Col>
 				<Grid.Col span={15}>
 					<Box className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Investigation Details" />
-						<Box p="xs">
-							{complainDetails?.map((item) => (
-								<Flex key={item.id} gap="xs" mb="xxxs">
-									<Text>{item.id}.</Text>
+						<Box p="xs" pos="relative" h={mainAreaHeight - 138}>
+							<LoadingOverlay
+								visible={isLoading}
+								zIndex={1000}
+								overlayProps={{ radius: "sm", blur: 2 }}
+							/>
+							{investigationData?.data?.length === 0 && (
+								<Flex h="100%" justify="center" align="center">
+									<Text fz="sm">{t("NoDataAvailable")}</Text>
+								</Flex>
+							)}
+							{investigationData?.data?.map((item, index) => (
+								<Flex key={index} gap="xs" mb="xxxs">
+									<Text>{index + 1}.</Text>
 									<Box w="100%">
 										<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
-											{item.date}
+											{item.created}
 										</Badge>
 										<Box mt="es" fz="sm">
-											{item.items?.map((item, index) => (
-												<Flex key={index} justify="space-between" align="center" mb="les">
-													{index + 1}. {item}
-													<Group gap="xxxs">
+											{item?.invoice_particular?.map((particular, idx) => (
+												<Flex key={idx} justify="space-between" align="center">
+													<Text fz="xs">
+														{idx + 1}. {particular.name}
+													</Text>
+													{/* <Group gap="xxxs">
 														<Button
 															variant="light"
 															color="var(--theme-primary-color-5)"
@@ -211,7 +226,7 @@ export default function Investigation() {
 														>
 															<IconX size={16} stroke={1.5} />
 														</ActionIcon>
-													</Group>
+													</Group> */}
 												</Flex>
 											))}
 										</Box>

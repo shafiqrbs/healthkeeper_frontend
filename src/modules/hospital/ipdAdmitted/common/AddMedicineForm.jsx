@@ -426,7 +426,7 @@ export default function AddMedicineForm({
 				// Reset forms and data
 				// form.reset();
 				navigate(
-					`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${ipdId}?tabs=true&mode=prescription`,
+					`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${ipdId}?tabs=true&redirect=prescription`,
 					{
 						replace: true,
 					}

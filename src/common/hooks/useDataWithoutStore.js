@@ -26,7 +26,7 @@ export default function useDataWithoutStore({ url, params, headers }) {
 
 	useEffect(() => {
 		fetchData();
-	}, [url, params, headers]);
+	}, [url, JSON.stringify(params), JSON.stringify(headers)]);
 
 	return { isLoading, error, data, refetch };
 }

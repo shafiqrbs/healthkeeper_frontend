@@ -62,7 +62,6 @@ export const MASTER_DATA_ROUTES = {
 			DELETE: "core/warehouse",
 		},
 
-
 		SELECT_DROPDOWN: {
 			PRODUCT_NATURE: "/inventory/select/setting",
 			CATEGORY_GROUP: "/inventory/select/group-category",
@@ -174,7 +173,6 @@ export const MASTER_DATA_ROUTES = {
 		},
 	},
 	NAVIGATION_LINKS: {
-
 		USER: {
 			INDEX: "/core/user",
 			CREATE: "/core/user",
@@ -455,6 +453,8 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "hospital/ipd",
 			UPDATE: "hospital/ipd",
 			VIEW: "hospital/ipd",
+			TRANSACTION: "hospital/ipd/transaction",
+			PROCESS: "hospital/ipd/data-process",
 		},
 
 		EMERGENCY: {

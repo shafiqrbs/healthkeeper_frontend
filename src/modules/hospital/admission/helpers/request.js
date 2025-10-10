@@ -44,10 +44,10 @@ export const getAdmissionFormInitialValues = () => {
 				if (!value) return "Department is required";
 				return null;
 			},
-			religion_id: (value) => {
-				if (!value) return "Religion is required";
-				return null;
-			},
+			// religion_id: (value) => {
+			// 	if (!value) return "Religion is required";
+			// 	return null;
+			// },
 		},
 	};
 };

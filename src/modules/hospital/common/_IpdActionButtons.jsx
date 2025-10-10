@@ -149,7 +149,7 @@ export default function IpdActionButtons({
 									<Text fz="xs">{t("PatientMode")}</Text>
 									<Box px="xs">
 										<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
-											{item?.parent_patient_mode_name}
+											{item?.parent_patient_mode_name || "N/A"}
 										</Text>
 									</Box>
 								</Flex>

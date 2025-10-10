@@ -26,8 +26,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 export default function Index() {
 	const [searchParams, setSearchParams] = useSearchParams();
-	const { state } = useLocation();
-	const queryValue = searchParams.get("mode");
+	const queryValue = searchParams.get("redirect");
 	const navigate = useNavigate();
 	const [ipdMode, setIpdMode] = useState("non-prescription");
 	const { t } = useTranslation();
@@ -82,7 +81,6 @@ export default function Index() {
 										value={ipdMode}
 										onChange={(value) => {
 											setIpdMode(value);
-											// =============== clear search params when IPDPrescription is selected ================
 											if (value === "non-prescription") {
 												handleChangeIpdMode();
 											}
@@ -115,8 +113,8 @@ export default function Index() {
 										tabList={[
 											"Investigation",
 											"Medicine",
-											"Room",
-											"Advice",
+											// "Room",
+											// "Advice",
 											// "Instruction",
 											// "OT",
 											"Charge",

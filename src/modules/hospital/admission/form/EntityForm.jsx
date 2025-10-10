@@ -109,6 +109,7 @@ export default function EntityForm({ form, module }) {
 
 				const formValue = {
 					...form.values,
+					dob: formatDate(form.values.dob),
 					created_by_id: createdBy?.id,
 				};
 
@@ -155,6 +156,7 @@ export default function EntityForm({ form, module }) {
 
 	const handleGenderChange = (val) => {
 		setGender(val);
+		form.setFieldValue("gender", val);
 	};
 
 	const { data: entity, isLoading } = useDataWithoutStore({
@@ -605,7 +607,7 @@ export default function EntityForm({ form, module }) {
 										<SegmentedControl
 											fullWidth
 											color="var(--theme-primary-color-6)"
-											value={gender}
+											value={form.values.gender}
 											id="gender"
 											name="gender"
 											onChange={(val) => handleGenderChange(val)}

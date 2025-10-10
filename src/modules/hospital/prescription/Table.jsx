@@ -334,10 +334,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
 										<>
-											{values?.prescription_id &&
-											values?.process != "closed" &&
-											!values.referred_mode &&
-											userId == values?.prescription_created_by_id ? (
+											{values?.prescription_id && userId == values?.prescription_created_by_id ? (
 												<Button
 													variant="filled"
 													bg="var(--theme-success-color)"
