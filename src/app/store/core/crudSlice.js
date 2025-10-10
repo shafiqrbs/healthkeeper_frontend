@@ -98,6 +98,16 @@ const initialState = {
 		filterData: { name: "" },
 	},
 
+	billing: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { name: "" },
+	},
+
 	advice: {
 		isLoading: true,
 		refetching: false,

@@ -245,12 +245,7 @@ export const MASTER_DATA_ROUTES = {
 			VIEW: "/hospital/core/advice/view",
 		},
 
-		ICULAR: {
-			INDEX: "/hospital/core/particular",
-			CREATE: "/hospital/core/particular/create",
-			UPDATE: "/hospital/core/particular/update",
-			VIEW: "/hospital/core/particular/view",
-		},
+
 
 		OPD_ROOM: {
 			INDEX: "/hospital/core/opd-room",
@@ -430,6 +425,14 @@ export const HOSPITAL_DATA_ROUTES = {
 			DELETE: "core/customer",
 		},
 
+		BILLING: {
+			INDEX: "hospital/billing",
+			CREATE: "hospital/billing",
+			UPDATE: "hospital/billing",
+			VIEW: "hospital/billing",
+			DELETE: "hospital/billing",
+		},
+
 		PRESCRIPTION: {
 			INDEX: "hospital/prescription",
 			SEND_TO_PRESCRIPTION: "hospital/send-to-prescription",
@@ -541,6 +544,12 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "/hospital/lab-test",
 			UPDATE: "/hospital/lab-test",
 			VIEW: "/hospital/lab-test",
+		},
+		BILLING: {
+			INDEX: "/hospital/billing",
+			CREATE: "/hospital/billing",
+			UPDATE: "/hospital/billing",
+			VIEW: "/hospital/billing",
 		},
 		EPHARMA: {
 			INDEX: "/hospital/epharma",

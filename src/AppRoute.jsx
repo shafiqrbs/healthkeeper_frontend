@@ -271,7 +271,30 @@ function AppRoute() {
 					<Route path="medicine" element={<MedicineIndex />} />
 					<Route path="medicine-requisition" element={<RequisitionIndex />} />
 					<Route path="investigation" element={<InvestigationIndex />} />
-					<Route path="billing" element={<BillingIndex />} />
+					<Route
+						path="billing"
+						element={
+							<ProtectedRoute roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}>
+								<BillingIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="billing/:id"
+						element={
+							<ProtectedRoute roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}>
+								<BillingIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="billing/:id/payment/:transactionId"
+						element={
+							<ProtectedRoute roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}>
+								<BillingIndex />
+							</ProtectedRoute>
+						}
+					/>
 
 					<Route
 						path="doctor"

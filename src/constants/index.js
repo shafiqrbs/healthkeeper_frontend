@@ -21,6 +21,7 @@ export const MODULES = {
 	SETTING: "setting",
 	STORE: "store",
 	LAB_TEST: "labTest",
+	BILLING: "billing",
 };
 
 export const MODULES_CORE = {
