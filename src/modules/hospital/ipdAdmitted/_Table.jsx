@@ -1,4 +1,4 @@
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams, useLocation } from "react-router-dom";
 import { IconCalendarWeek, IconUser, IconArrowRight, IconArrowNarrowRight, IconBed } from "@tabler/icons-react";
 import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -19,6 +19,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const { state } = useLocation();
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const { id } = useParams();
 
@@ -52,7 +53,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 			});
 		} else if (prescription_id) {
 			navigate(
-				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${prescription_id}?mode=prescription`
+				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${prescription_id}?mode=prescription&itemid=${id}`
 			);
 		} else {
 			console.error(resultAction);
@@ -104,7 +105,8 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 						onClick={() => handleProcessConfirmation(item.id)}
 						my="xs"
 						bg={
-							typeof id !== "undefined" && id == item?.prescription_id
+							(typeof id !== "undefined" && id == item?.prescription_id) ||
+							state?.prescriptionId == item?.prescription_id
 								? "var(--theme-primary-color-0)"
 								: "var(--theme-tertiary-color-0)"
 						}

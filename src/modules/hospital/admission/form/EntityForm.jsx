@@ -3,11 +3,11 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import SelectForm from "@components/form-builders/SelectForm";
 
 import { ActionIcon, Box, Flex, Grid, LoadingOverlay, ScrollArea, SegmentedControl, Stack, Text } from "@mantine/core";
-import { IconChevronRight, IconInfoCircle, IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
-import DoctorsRoomDrawer from "../../common/__DoctorsRoomDrawer";
+import DoctorsRoomDrawer from "@hospital-components/__DoctorsRoomDrawer";
 import { useDisclosure } from "@mantine/hooks";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
@@ -17,14 +17,13 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import { useDispatch, useSelector } from "react-redux";
-import { calculateAge, calculateDetailedAge, formatDate } from "@utils/index";
+import { calculateDetailedAge, formatDate, formatDOB } from "@utils/index";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS, HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
-import useHospitalSettingData from "@/common/hooks/config-data/useHospitalSettingData";
-import useHospitalConfigData from "@/common/hooks/config-data/useHospitalConfigData";
-import TextAreaForm from "@/common/components/form-builders/TextAreaForm";
-import InputMaskForm from "@/common/components/form-builders/InputMaskForm";
-import IpdActionButtons from "../../common/_IpdActionButtons";
+import useHospitalSettingData from "@hooks/config-data/useHospitalSettingData";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
+import IpdActionButtons from "@hospital-components/_IpdActionButtons";
+import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
 const USER_NID_DATA = {
 	verifyToken: "a9a98eac-68c4-4dd1-9cb9-8127a5b44833",
@@ -74,7 +73,6 @@ export default function EntityForm({ form, module }) {
 	const [admissionData, setAdmissionData] = useState(USER_NID_DATA);
 	const [showUserData, setShowUserData] = useState({});
 	const { mainAreaHeight } = useOutletContext();
-	const { hospitalConfigData } = useHospitalConfigData();
 	const height = mainAreaHeight - 248;
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { hospitalSettingData } = useHospitalSettingData();
@@ -154,12 +152,15 @@ export default function EntityForm({ form, module }) {
 			}
 		}
 	};
+
 	const handleGenderChange = (val) => {
 		setGender(val);
 	};
+
 	const { data: entity, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
 	});
+
 	const item = entity?.data;
 	const entities = entity?.data?.invoice_particular;
 
@@ -169,14 +170,14 @@ export default function EntityForm({ form, module }) {
 		});
 	}, [item]);
 
-	const handleDobChange = () => {
-		const type = form.values.ageType || "year";
-		const formattedAge = calculateAge(form.values.dob, type);
-		form.setFieldValue("age", formattedAge);
+	useEffect(() => {
+		handleDobChange();
+	}, [JSON.stringify(form.values.dob)]);
 
-		// Calculate detailed age from date of birth
+	const handleDobChange = () => {
 		if (form.values.dob) {
-			const detailedAge = calculateDetailedAge(form.values.dob);
+			const formattedDOB = formatDOB(form.values.dob);
+			const detailedAge = calculateDetailedAge(formattedDOB);
 			form.setFieldValue("year", detailedAge.years);
 			form.setFieldValue("month", detailedAge.months);
 			form.setFieldValue("day", detailedAge.days);
@@ -209,6 +210,10 @@ export default function EntityForm({ form, module }) {
 			// =============== trigger age calculation ================
 			handleDobChange();
 		}, 500);
+	};
+
+	const handleTypeChange = (val) => {
+		form.setFieldValue("identity_mode", val);
 	};
 
 	return (
@@ -256,8 +261,8 @@ export default function EntityForm({ form, module }) {
 										<InputForm
 											form={form}
 											label=""
-											tooltip={t("enterPatientName")}
-											placeholder={t("enterPatientName")}
+											tooltip={t("EnterPatientName")}
+											placeholder={t("EnterPatientName")}
 											name="name"
 											id="patientName"
 											nextField="mobile"
@@ -274,7 +279,7 @@ export default function EntityForm({ form, module }) {
 										<InputForm
 											form={form}
 											label=""
-											tooltip={t("enterPatientName")}
+											tooltip={t("EnterPatientName")}
 											placeholder={t("MobileNo")}
 											name="mobile"
 											id="patientName"
@@ -289,17 +294,19 @@ export default function EntityForm({ form, module }) {
 										<Text fz="sm">{t("DOB")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<InputMaskForm
+										<DateSelectorForm
+											key={
+												form.values.dob ? new Date(form.values.dob).toISOString() : "dob-empty"
+											}
+											form={form}
+											placeholder="01-01-2020"
+											tooltip={t("EnterDateOfBirth")}
 											name="dob"
 											id="dob"
-											value={form.values?.dob}
-											form={form}
-											label=""
-											tooltip={t("EnterPatientBirthDate")}
-											placeholder="DD-MM-YYYY"
-											nextField="day"
-											maskInput="00-00-0000"
-											rightSection={<IconInfoCircle size={16} opacity={0.5} />}
+											nextField="year"
+											value={form.values.dob}
+											required
+											disabledFutureDate
 										/>
 									</Grid.Col>
 								</Grid>
@@ -343,6 +350,7 @@ export default function EntityForm({ form, module }) {
 												{ label: t("BRID"), value: "BRID" },
 												{ label: t("HID"), value: "HID" },
 											]}
+											onChange={(val) => handleTypeChange(val)}
 										/>
 									</Grid.Col>
 								</Grid>
@@ -361,7 +369,7 @@ export default function EntityForm({ form, module }) {
 											form={form}
 											label=""
 											placeholder="1234567890"
-											tooltip={t("enterPatientIdentity")}
+											tooltip={t("EnterPatientIdentity")}
 											name="identity"
 											id="identity"
 											nextField="guardian_name"
@@ -394,8 +402,8 @@ export default function EntityForm({ form, module }) {
 								</Grid>
 								<Flex className="form-action-header full-bleed">
 									<Text fz="sm">{t("Cabin/Bed")}</Text>
-									<Flex align="center" gap="xs" className="cursor-pointer">
-										<Text fz="sm">{item?.room_name}</Text> <IconChevronRight size="16px" />
+									<Flex align="center" gap="xs">
+										<Text fz="sm">{entities?.[0]?.item_name}</Text>
 									</Flex>
 								</Flex>
 
@@ -407,7 +415,7 @@ export default function EntityForm({ form, module }) {
 										<SelectForm
 											form={form}
 											label=""
-											tooltip={t("EnterUnit")}
+											tooltip={t("EnterUnitName")}
 											placeholder="R1234"
 											name="admit_unit_id"
 											id="admit_unit_id"
@@ -427,7 +435,7 @@ export default function EntityForm({ form, module }) {
 										<SelectForm
 											form={form}
 											label=""
-											tooltip={t("EnterDepartment")}
+											tooltip={t("EnterDepartmentName")}
 											placeholder="Cardiology"
 											name="admit_department_id"
 											id="admit_department_id"
@@ -443,9 +451,7 @@ export default function EntityForm({ form, module }) {
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("AssignConsultant")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>
-										{item?.admit_consultant_name}
-									</Grid.Col>
+									<Grid.Col span={14}>{item?.admit_consultant_name}</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
@@ -455,7 +461,7 @@ export default function EntityForm({ form, module }) {
 										<SelectForm
 											form={form}
 											label=""
-											tooltip={t("EnterAssignDoctor")}
+											tooltip={t("EnterAssignDoctorName")}
 											placeholder="Dr. Shafiqul Islam"
 											name="admit_doctor_id"
 											id="admit_doctor_id"
@@ -472,7 +478,7 @@ export default function EntityForm({ form, module }) {
 										<TextAreaForm
 											form={form}
 											label=""
-											tooltip={t("EnterComment")}
+											tooltip={t("EnterCommentText")}
 											placeholder="Comment"
 											name="comment"
 											id="comment"
@@ -483,12 +489,6 @@ export default function EntityForm({ form, module }) {
 									</Grid.Col>
 								</Grid>
 
-								<Flex className="form-action-header full-bleed">
-									<Text fz="sm">{t("PrescriptionInformation")}</Text>
-									<Flex align="center" gap="xs" className="cursor-pointer">
-										<Text fz="sm">{item?.prescription_id}</Text> <IconChevronRight size="16px" />
-									</Flex>
-								</Flex>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("PrescriptionDoctor")}</Text>
@@ -520,7 +520,7 @@ export default function EntityForm({ form, module }) {
 												form={form}
 												label=""
 												placeholder="170"
-												tooltip={t("enterPatientHeight")}
+												tooltip={t("EnterPatientHeight")}
 												name="height"
 												id="height"
 												nextField="weight"
@@ -531,7 +531,7 @@ export default function EntityForm({ form, module }) {
 												form={form}
 												label=""
 												placeholder="60"
-												tooltip={t("enterPatientWeight")}
+												tooltip={t("EnterPatientWeight")}
 												name="weight"
 												id="weight"
 												nextField="bp"
@@ -542,7 +542,7 @@ export default function EntityForm({ form, module }) {
 												form={form}
 												label=""
 												placeholder="120/80"
-												tooltip={t("enterPatientBp")}
+												tooltip={t("EnterPatientBp")}
 												name="bp"
 												id="bp"
 												nextField="dateOfBirth"
@@ -561,19 +561,19 @@ export default function EntityForm({ form, module }) {
 											<InputNumberForm
 												form={form}
 												label=""
-												placeholder="D"
-												tooltip={t("Days")}
-												name="day"
-												id="day"
-												nextField="month"
-												value={form.values.day}
+												placeholder="Years"
+												tooltip={t("days")}
+												name="year"
+												id="year"
+												nextField="father_name"
+												value={form.values.year}
 												min={0}
-												max={150}
+												max={31}
 											/>
 											<InputNumberForm
 												form={form}
 												label=""
-												placeholder="M"
+												placeholder="Months"
 												tooltip={t("Months")}
 												name="month"
 												id="month"
@@ -585,14 +585,14 @@ export default function EntityForm({ form, module }) {
 											<InputNumberForm
 												form={form}
 												label=""
-												placeholder="Y"
-												tooltip={t("days")}
-												name="year"
-												id="year"
-												nextField="father_name"
-												value={form.values.year}
+												placeholder="Days"
+												tooltip={t("Days")}
+												name="day"
+												id="day"
+												nextField="month"
+												value={form.values.day}
 												min={0}
-												max={31}
+												max={150}
 											/>
 										</Flex>
 									</Grid.Col>
@@ -681,7 +681,7 @@ export default function EntityForm({ form, module }) {
 										<InputForm
 											form={form}
 											label=""
-											tooltip={t("enterGuardianName")}
+											tooltip={t("EnterGuardianName")}
 											placeholder="+8801711111111"
 											name="guardian_mobile"
 											id="guardian_mobile"
@@ -694,7 +694,7 @@ export default function EntityForm({ form, module }) {
 
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("RelationWithParent")}</Text>
+										<Text fz="sm">{t("RelationWithPatient")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
@@ -730,7 +730,7 @@ export default function EntityForm({ form, module }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("PermanentAddress")}</Text>
+										<Text fz="sm">{t("PresentAddress")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
@@ -810,6 +810,7 @@ export default function EntityForm({ form, module }) {
 				entities={entities}
 				handleSubmit={handleSubmit}
 				type="admission"
+				item={item}
 			/>
 			<DoctorsRoomDrawer form={form} opened={openedDoctorsRoom} close={closeDoctorsRoom} />
 		</Box>

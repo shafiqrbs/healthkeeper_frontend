@@ -190,7 +190,7 @@ export default function Index() {
 										}
 									/>
 								) : showPrescriptionForm ? (
-									<AdmissionPrescription />
+									<AdmissionPrescription ipdId={id} />
 								) : (
 									<Flex
 										justify="center"

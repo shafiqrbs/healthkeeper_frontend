@@ -1538,5 +1538,6 @@
 	"XAuthToken": "X Auth Token",
 	"PatientUrl": "Patient URL",
 	"NIDUrl": "NID URL",
-	"ListOfMedicines": "List of Medicines"
+	"ListOfMedicines": "List of Medicines",
+	"RelationWithPatient": "Relation with Patient"
 }

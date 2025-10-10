@@ -1,12 +1,13 @@
-import { Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
+import { Box, Button, Flex, Grid, NumberInput, Stack, Text } from "@mantine/core";
 import { IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useEffect, useState } from "react";
 import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
-import { useHotkeys } from "@mantine/hooks";
+import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
+import IPDDetailsDrawer from "./drawer/__IPDDetailsDrawer";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -17,16 +18,19 @@ export default function IpdActionButtons({
 	handleSubmit,
 	type = "prescription",
 	handlePosPrint,
-	handleA4Print,
+	item,
 	children,
 }) {
+	const isOpdRedirect = item?.parent_patient_mode_slug === "opd";
 	const { hospitalConfigData } = useHospitalConfigData();
 	const { t } = useTranslation();
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
+	const [openedDetails, { open: openDetails, close: closeDetails }] = useDisclosure(false);
 
 	useEffect(() => {
-		const price = Number(hospitalConfigData?.hospital_config?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
+		let price = Number(hospitalConfigData?.hospital_config?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
+		price = isOpdRedirect ? 0 : price;
 		setConfiguredDueAmount(price);
 		form.setFieldValue("amount", price);
 	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
@@ -49,10 +53,17 @@ export default function IpdActionButtons({
 		localStorage.removeItem(LOCAL_STORAGE_KEY);
 	};
 
+	const handleIPDDetails = async () => {
+		await handleSubmit();
+		if (!form.validate().hasErrors) {
+			openDetails();
+		}
+	};
+
 	useHotkeys([
 		["alt+s", handleSubmit],
 		["alt+r", handleReset],
-		["alt+shift+p", handleA4Print],
+		["alt+shift+p", handleIPDDetails],
 		["alt+p", handlePosPrint],
 	]);
 
@@ -78,7 +89,7 @@ export default function IpdActionButtons({
 									</Flex>
 								</Grid.Col>
 							</Grid>
-							{entities?.map((entity) => (
+							{entities?.map((entity, index) => (
 								<Grid
 									key={entity?.id}
 									columns={24}
@@ -91,7 +102,11 @@ export default function IpdActionButtons({
 										<Text fz="xs">{entity?.item_name}</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>
-										<Text fz="xs">{entity?.quantity}</Text>
+										{index === 0 ? (
+											<NumberInput mt="-sm" size="xs" fz="xs" py="xs" value={entity?.quantity} />
+										) : (
+											<Text fz="xs">{entity?.quantity}</Text>
+										)}
 									</Grid.Col>
 									<Grid.Col span={4}>
 										<Text fz="xs">{entity?.price}</Text>
@@ -131,6 +146,14 @@ export default function IpdActionButtons({
 									</Box>
 								</Flex>
 								<Flex gap="xss" align="center" justify="space-between">
+									<Text fz="xs">{t("PatientMode")}</Text>
+									<Box px="xs">
+										<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
+											{item?.parent_patient_mode_name}
+										</Text>
+									</Box>
+								</Flex>
+								<Flex gap="xss" align="center" justify="space-between">
 									<Text fz="xs">{t("Age")}</Text>
 									<Box px="xs">
 										<Text fz="xs" fw={600} style={{ textWrap: "nowrap" }}>
@@ -160,6 +183,7 @@ export default function IpdActionButtons({
 									<Text>Receive</Text>
 									<Box w={"100"}>
 										<InputNumberForm
+											disabled={isOpdRedirect}
 											id="amount"
 											form={form}
 											tooltip={t("enterAmount")}
@@ -205,27 +229,12 @@ export default function IpdActionButtons({
 							</Button>
 							<Button
 								w="100%"
-								onClick={handleA4Print}
+								onClick={handleIPDDetails}
 								bg="var(--theme-prescription-btn-color)"
 								disabled={isSubmitting}
 							>
 								<Stack gap={0} align="center" justify="center">
-									<Text>{t("prescription")}</Text>
-									<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-										(alt + shift + p)
-									</Text>
-								</Stack>
-							</Button>
-
-							<Button
-								onClick={handlePosPrint}
-								w="100%"
-								bg="var(--theme-pos-btn-color)"
-								disabled={isSubmitting}
-								type="button"
-							>
-								<Stack gap={0} align="center" justify="center">
-									<Text>{t("Pos")}</Text>
+									<Text>{t("Preview")}</Text>
 									<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 										(alt + p)
 									</Text>
@@ -253,6 +262,8 @@ export default function IpdActionButtons({
 
 			{/* ===================== prescription templates here ====================== */}
 			{children}
+
+			<IPDDetailsDrawer opened={openedDetails} close={closeDetails} prescriptionId={item?.prescription_id} />
 		</>
 	);
 }

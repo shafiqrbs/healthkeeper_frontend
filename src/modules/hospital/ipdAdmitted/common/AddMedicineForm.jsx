@@ -32,7 +32,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
+import { useLocation, useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import PrescriptionFull from "@components/print-formats/prescription/PrescriptionFull";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
@@ -54,6 +54,7 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import PrescriptionPreview from "@hospital-components/PrescriptionPreview";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
 import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import { useNavigate } from "react-router-dom";
 
 export default function AddMedicineForm({
 	module,
@@ -66,8 +67,9 @@ export default function AddMedicineForm({
 	prescriptionData,
 	hasRecords,
 	tabParticulars,
+	ipdId,
 }) {
-	const [searchParams, setSearchParams] = useSearchParams();
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
@@ -299,7 +301,6 @@ export default function AddMedicineForm({
 	};
 
 	const handleAdd = (values) => {
-		console.log("values: ", values);
 		if (values.medicine_id) {
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() == values.medicine_id);
 
@@ -384,16 +385,10 @@ export default function AddMedicineForm({
 	};
 
 	const handlePrescriptionSubmit = async (skipLoading) => {
-		if (!medicines || medicines.length === 0) {
-			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, 700, true);
-			return {};
-		}
-
 		!skipLoading && setIsSubmitting(true);
 
 		try {
 			const createdBy = getLoggedInUser();
-			console.info(tabParticulars);
 
 			const formValue = {
 				is_completed: true,
@@ -430,8 +425,12 @@ export default function AddMedicineForm({
 				setRefetchData({ module, refetching: true });
 				// Reset forms and data
 				// form.reset();
-				const allParams = Object.fromEntries(searchParams.entries());
-				setSearchParams({ ...allParams, tabs: "true" });
+				navigate(
+					`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${ipdId}?tabs=true&mode=prescription`,
+					{
+						replace: true,
+					}
+				);
 
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
@@ -443,22 +442,6 @@ export default function AddMedicineForm({
 			!skipLoading && setIsSubmitting(false);
 		}
 	};
-
-	const handlePrescriptionPrintSubmit = async () => {
-		const result = await handlePrescriptionSubmit(false);
-
-		if (result.status === 200) {
-			setPrintData(result.data);
-		}
-	};
-
-	// const handlePrescriptionPreview = async () => {
-	// 	const result = await handlePrescriptionSubmit(true);
-
-	// 	if (result.status === 200) {
-	// 		setPrintData(result.data);
-	// 	}
-	// };
 
 	const handleHoldData = () => {
 		console.log("Hold your data");

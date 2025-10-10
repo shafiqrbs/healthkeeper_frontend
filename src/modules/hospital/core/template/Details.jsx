@@ -6,6 +6,7 @@ import OPDPos from "./print-formats/opd/OPDPos";
 import IPD from "./print-formats/ipd/IPDA4";
 import LabTest from "./print-formats/lab-test/LabTest";
 import Discharge from "./print-formats/discharge/Discharge";
+import IPDDetails from "./print-formats/ipd/IPDDetails";
 
 export default function Details() {
 	const { name } = useParams();
@@ -22,6 +23,7 @@ export default function Details() {
 					{name === "OPDPos" && <OPDPos />}
 					{name === "PrescriptionFull" && <PrescriptionFull />}
 					{name === "IPD" && <IPD />}
+					{name === "IPDDetails" && <IPDDetails />}
 					{name === "LabTest" && <LabTest />}
 					{name === "Discharge" && <Discharge />}
 				</Box>

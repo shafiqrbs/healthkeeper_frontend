@@ -17,7 +17,7 @@ const admissionInitialValues = {
 	year: "",
 	month: "",
 	day: "",
-	country_id: "",
+	country_id: "19",
 	admit_doctor_id: "",
 	admit_unit_id: "",
 	admit_department_id: "",
@@ -28,14 +28,24 @@ const admissionInitialValues = {
 	weight: "",
 	height: "",
 	amount: "",
+	admit_consultant_id: "",
+	religion_id: "",
 };
 
 export const getAdmissionFormInitialValues = () => {
 	return {
 		initialValues: admissionInitialValues,
 		validate: {
-			amount: (value) => {
-				if (!Number(value)) return "Amount is required";
+			admit_unit_id: (value) => {
+				if (!value) return "Unit is required";
+				return null;
+			},
+			admit_department_id: (value) => {
+				if (!value) return "Department is required";
+				return null;
+			},
+			religion_id: (value) => {
+				if (!value) return "Religion is required";
 				return null;
 			},
 		},

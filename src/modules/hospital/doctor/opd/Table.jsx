@@ -23,7 +23,7 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
-import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
+import DetailsDrawer from "@/modules/hospital/common/drawer/__IPDDetailsDrawer";
 import OverviewDrawer from "@hospital-components/drawer/__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";

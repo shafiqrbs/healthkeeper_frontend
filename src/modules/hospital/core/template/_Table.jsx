@@ -15,6 +15,7 @@ const templateData = [
 	{ name: "IPD", module: "ipd", id: 4 },
 	{ name: "LabTest", module: "lab-test", id: 5 },
 	{ name: "Discharge", module: "discharge", id: 6 },
+	{ name: "IPDDetails", module: "ipd", id: 7 },
 ];
 
 export default function _Table({ module }) {

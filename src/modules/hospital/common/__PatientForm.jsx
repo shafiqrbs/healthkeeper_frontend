@@ -16,8 +16,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState, useRef } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconSearch, IconAlertCircle, IconChevronRight, IconAdjustmentsCog, IconX } from "@tabler/icons-react";
+import { IconSearch, IconAlertCircle, IconChevronRight, IconAdjustmentsCog } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -33,7 +32,6 @@ import { useDispatch, useSelector } from "react-redux";
 import SegmentedControlForm from "@components/form-builders/SegmentedControlForm";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import NIDDataPreviewModal from "./NIDDataPreviewModal";
-import InputMobileNumberForm from "@components/form-builders/InputMobileNumberForm";
 import OPDFooter from "./OPDFooter";
 import PrescriptionFooter from "./PrescriptionFooter";
 import OpdRoomModal from "@hospital-components/OpdRoomModal";
@@ -43,7 +41,6 @@ import RoomCard from "./RoomCard";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
 import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } from "@/services/patientSearchService";
-import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 import { MODULES_CORE } from "@/constants";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
@@ -300,7 +297,6 @@ export default function PatientForm({
 export function Form({
 	form,
 	showTitle = false,
-	heightOffset = 116,
 	module,
 	type = "opd_ticket",
 	handleRoomClick,
@@ -317,7 +313,6 @@ export function Form({
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - heightOffset - 132;
 	const firstRender = useIsFirstRender();
 	const [userNidData] = useState(USER_NID_DATA);
 	const [showUserData, setShowUserData] = useState(false);
@@ -603,8 +598,6 @@ export function Form({
 										max={31}
 										readOnly={form.values.dob}
 									/>
-
-
 								</Flex>
 							</Grid.Col>
 						</Grid>
@@ -764,7 +757,7 @@ export function Form({
 							</Grid>
 						)}
 
-{/*						<Grid align="center" columns={20}>
+						{/*						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Text fz="sm">{t("GuardianName")}</Text>
 							</Grid.Col>

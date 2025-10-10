@@ -965,5 +965,6 @@
 	"PersonalDetails": "ব্যক্তিগত তথ্য",
 	"SearchByRoomName": "রুম নাম অনুসন্ধান করুন",
 	"PrintedBy": "প্রিন্ট করেছেন",
-	"PrintDateAndTime": "প্রিন্ট তারিখ ও সময়"
+	"PrintDateAndTime": "প্রিন্ট তারিখ ও সময়",
+	"RelationWithPatient": "রোগীর সম্পর্ক"
 }

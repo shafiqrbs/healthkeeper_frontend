@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "../helpers/request";
 import { useForm } from "@mantine/form";
@@ -9,35 +8,31 @@ import AddMedicineForm from "./AddMedicineForm.jsx";
 import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
 import { useDisclosure } from "@mantine/hooks";
-import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
-import { getLoggedInUser } from "@/common/utils";
+import { MODULES } from "@/constants";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { updateEntityData } from "@/app/store/core/crudThunk";
-import { successNotification } from "@components/notification/successNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
-import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
+import DetailsDrawer from "@/modules/hospital/common/drawer/__IPDDetailsDrawer";
 import { useParams } from "react-router-dom";
 
 const module = MODULES.ADMISSION;
 
-export default function AdmissionPrescription() {
-	const [opened, { open, close }] = useDisclosure(false);
+export default function AdmissionPrescription({ ipdId }) {
+	const { id } = useParams();
+	const [opened, { close }] = useDisclosure(false);
 	const [showHistory, setShowHistory] = useState(false);
 	const [medicines, setMedicines] = useState([]);
 	const { t } = useTranslation();
 	const [tabValue, setTabValue] = useState("All");
 	const { particularsData } = useParticularsData({ modeName: "Admission" });
-	const dispatch = useDispatch();
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);
-	const { id } = useParams();
 	const [records, setRecords] = useState([]);
 	const [customerId, setCustomerId] = useState();
 
 	const { data: prescriptionData, isLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${ipdId}`,
 	});
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
@@ -72,44 +67,6 @@ export default function AdmissionPrescription() {
 
 	const hasRecords = records && records.length > 0;
 
-	const handleAdmissionPrescriptionUpdate = async (updatedMedicine) => {
-		try {
-			const createdBy = getLoggedInUser();
-
-			const formValue = {
-				is_completed: true,
-				medicines: updatedMedicine || medicines,
-				advise: form.values.advise || "",
-				follow_up_date: form.values.follow_up_date || null,
-				prescription_date: new Date()?.toISOString()?.split("T")[0],
-				created_by_id: createdBy?.id,
-				exEmergency: form.values.exEmergency || [],
-				instruction: form.values.instruction || "",
-				patient_report: {
-					basic_info: form.values.basic_info || {},
-					patient_examination: form.values.dynamicFormData,
-					order: tabParticulars.map((item, index) => ({
-						[item.slug]: index,
-					})),
-				},
-			};
-
-			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${id}`,
-				data: formValue,
-				module: "prescription",
-			};
-
-			const resultAction = await dispatch(updateEntityData(value));
-
-			if (updateEntityData.rejected.match(resultAction)) {
-				successNotification(resultAction.payload.message, ERROR_NOTIFICATION_COLOR);
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
 	return (
 		<Box pos="relative">
 			<LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
@@ -136,6 +93,7 @@ export default function AdmissionPrescription() {
 						setShowHistory={setShowHistory}
 						prescriptionData={prescriptionData}
 						tabParticulars={tabParticulars}
+						ipdId={ipdId}
 					/>
 				</Grid.Col>
 				{hasRecords && (
