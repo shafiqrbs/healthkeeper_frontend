@@ -91,9 +91,6 @@ export default function Investigation() {
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PROCESS}/${id}`,
 				data: formValue,
-				params: {
-					mode: "investigation",
-				},
 				module: MODULES_CORE.INVESTIGATION,
 			};
 

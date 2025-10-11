@@ -97,13 +97,14 @@ export const getDataWithoutParam = async (value) => {
 	}
 };
 
-export const createData = async ({ url, data }) => {
+export const createData = async ({ url, data, params }) => {
 	try {
 		const response = await axios({
 			method: "POST",
 			url: `${API_BASE_URL}/${url}`,
 			headers: getCommonHeaders(),
 			data,
+			params,
 		});
 		return response;
 	} catch (error) {
@@ -130,13 +131,14 @@ export const editData = async (value) => {
 	}
 };
 
-export const updateData = async ({ url, data }) => {
+export const updateData = async ({ url, data, params }) => {
 	try {
 		const response = await axios({
 			method: "PATCH",
 			url: `${API_BASE_URL}/${url}`,
 			headers: getCommonHeaders(),
 			data,
+			params,
 		});
 		return response;
 	} catch (error) {

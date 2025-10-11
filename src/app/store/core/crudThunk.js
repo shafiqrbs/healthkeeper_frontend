@@ -48,7 +48,7 @@ export const getStatusInlineUpdateData = createAsyncThunk("status-update", async
 
 export const storeEntityData = createAsyncThunk("store", async (value, { rejectWithValue }) => {
 	try {
-		const response = await createData(value);
+		const response = await createData({ url: value.url, data: value.data, params: value.params });
 		if (response.status !== 200) {
 			return rejectWithValue({
 				message: response.message,
@@ -84,7 +84,7 @@ export const editEntityData = createAsyncThunk("edit", async (value, { rejectWit
 
 export const updateEntityData = createAsyncThunk("update", async (value, { rejectWithValue }) => {
 	try {
-		const response = await updateData(value);
+		const response = await updateData({ url: value.url, data: value.data, params: value.params });
 
 		if (response.success === false) {
 			return rejectWithValue({

@@ -3,6 +3,7 @@ import {
 	Autocomplete,
 	Box,
 	Button,
+	Badge,
 	Flex,
 	Grid,
 	Group,
@@ -13,50 +14,36 @@ import {
 	Text,
 } from "@mantine/core";
 import { useOutletContext, useParams } from "react-router-dom";
-import SelectForm from "@/common/components/form-builders/SelectForm";
-import InputNumberForm from "@/common/components/form-builders/InputNumberForm";
-import { IconCheck, IconPencil, IconPlus, IconX } from "@tabler/icons-react";
+import SelectForm from "@components/form-builders/SelectForm";
+import InputNumberForm from "@components/form-builders/InputNumberForm";
+import { IconCheck, IconHistory, IconPencil, IconPlus, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import useGlobalDropdownData from "@/common/hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
-import { useDebouncedState } from "@mantine/hooks";
-import useMedicineData from "@/common/hooks/useMedicineData";
-import useMedicineGenericData from "@/common/hooks/useMedicineGenericData";
+import { useEffect, useState } from "react";
+import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useDebouncedState, useDisclosure } from "@mantine/hooks";
+import useMedicineData from "@hooks/useMedicineData";
+import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import { getMedicineFormInitialValues } from "../../helpers/request";
 import { useForm } from "@mantine/form";
 import TabsActionButtons from "@/modules/hospital/common/TabsActionButtons";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { updateEntityData } from "@/app/store/core/crudThunk";
-import { successNotification } from "@/common/components/notification/successNotification";
-import { errorNotification } from "@/common/components/notification/errorNotification";
-import { useDispatch } from "react-redux";
+import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { successNotification } from "@components/notification/successNotification";
+import { errorNotification } from "@components/notification/errorNotification";
+import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import useDataWithoutStore from "@/common/hooks/useDataWithoutStore";
 
 const DURATION_OPTIONS = [
-	// { value: "", label: "--Select Duration--" },
-	{ value: "day", label: "Day" },
-	{ value: "month", label: "Month" },
-];
-
-const DURATION_UNIT_OPTIONS = [
 	{ value: "day", label: "Day" },
 	{ value: "week", label: "Week" },
 	{ value: "month", label: "Month" },
 	{ value: "year", label: "Year" },
 ];
 
-function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
+function MedicineListItem({ index, medicine, setMedicines, handleDelete, dosage_options, by_meal_options }) {
 	const { t } = useTranslation();
 	const [mode, setMode] = useState("view");
-	const { data: by_meal_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
-		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
-	});
-
-	const { data: dosage_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
-		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
-	});
 
 	const openEditMode = () => {
 		setMode("edit");
@@ -66,9 +53,36 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 		setMode("view");
 	};
 
+	const getByMeal = (id) => {
+		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
+	};
+
+	const getDosage = (id) => {
+		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
+	};
+
 	const handleChange = (field, value) => {
 		setMedicines((prev) =>
-			prev.map((medicine, i) => (i === index - 1 ? { ...medicine, [field]: value } : medicine))
+			prev.map((med, i) => {
+				if (i === index - 1) {
+					const updatedMedicine = { ...med, [field]: value };
+
+					// =============== add by_meal field when medicine_bymeal_id changes ================
+					if (field === "medicine_bymeal_id") {
+						const by_meal = getByMeal(value);
+						updatedMedicine.by_meal = by_meal;
+					}
+
+					// =============== add dose_details field when medicine_dosage_id changes ================
+					if (field === "medicine_dosage_id") {
+						const dose_details = getDosage(value);
+						updatedMedicine.dose_details = dose_details;
+					}
+
+					return updatedMedicine;
+				}
+				return med;
+			})
 		);
 	};
 
@@ -79,52 +93,48 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 
 	return (
 		<Box>
-			<Text mb="es" style={{ cursor: "pointer" }}>
+			<Text mb="es" fz="sm" className="cursor-pointer">
 				{index}. {medicine.medicine_name || medicine.generic}
 			</Text>
 			<Flex justify="space-between" align="center" gap="0">
 				{mode === "view" ? (
 					<Box ml="md" fz="xs" c="var(--theme-tertiary-color-8)">
-						{medicine.dose_details} ---- {medicine.by_meal} ---- {medicine.duration} ----{" "}
-						{medicine.quantity}
+						{medicine.dose_details} ---- {medicine.by_meal} ---- {medicine.quantity} ----{" "}
+						{medicine.duration}
 					</Box>
 				) : (
 					<Grid columns={24} gutter="xs">
 						<Grid.Col span={7}>
-							<Autocomplete
-								clearable
+							<Select
+								size="xs"
 								label=""
-								data={dosage_options}
-								value={medicine.dose_details}
+								data={dosage_options?.map((dosage) => ({
+									value: dosage.id?.toString(),
+									label: dosage.name,
+								}))}
+								value={medicine.medicine_dosage_id}
 								placeholder={t("Dosage")}
 								disabled={mode === "view"}
-								onChange={(v) => handleChange("dose_details", v)}
+								onChange={(v) => handleChange("medicine_dosage_id", v)}
 							/>
 						</Grid.Col>
 						<Grid.Col span={7}>
-							<Autocomplete
-								clearable
-								label=""
-								data={by_meal_options}
-								value={medicine.by_meal}
-								placeholder={t("Timing")}
-								disabled={mode === "view"}
-								onChange={(v) => handleChange("by_meal", v)}
-							/>
-						</Grid.Col>
-
-						<Grid.Col span={3}>
 							<Select
+								size="xs"
 								label=""
-								data={DURATION_UNIT_OPTIONS}
-								value={medicine.duration}
-								placeholder={t("Duration")}
+								data={by_meal_options?.map((byMeal) => ({
+									value: byMeal.id?.toString(),
+									label: byMeal.name,
+								}))}
+								value={medicine.medicine_bymeal_id}
+								placeholder={t("ByMeal")}
 								disabled={mode === "view"}
-								onChange={(v) => handleChange("duration", v)}
+								onChange={(v) => handleChange("medicine_bymeal_id", v)}
 							/>
 						</Grid.Col>
 						<Grid.Col span={3}>
 							<NumberInput
+								size="xs"
 								label=""
 								value={medicine.quantity}
 								placeholder={t("Quantity")}
@@ -132,15 +142,30 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 								onChange={(v) => handleChange("quantity", v)}
 							/>
 						</Grid.Col>
+						<Grid.Col span={3}>
+							<Select
+								size="xs"
+								label=""
+								data={DURATION_OPTIONS}
+								value={medicine.duration}
+								placeholder={t("Duration")}
+								disabled={mode === "view"}
+								onChange={(v) => handleChange("duration", v)}
+							/>
+						</Grid.Col>
 					</Grid>
 				)}
 				<Flex gap="les" justify="flex-end">
-					<ActionIcon variant="outline" color="var(--theme-primary-color-6)" onClick={handleEdit}>
-						<IconCheck size={18} stroke={1.5} />
-					</ActionIcon>
-					<ActionIcon variant="outline" color="var(--theme-secondary-color-6)" onClick={openEditMode}>
-						<IconPencil size={18} stroke={1.5} />
-					</ActionIcon>
+					{mode === "view" ? (
+						<ActionIcon variant="outline" color="var(--theme-secondary-color-6)" onClick={openEditMode}>
+							<IconPencil size={18} stroke={1.5} />
+						</ActionIcon>
+					) : (
+						<ActionIcon variant="outline" color="var(--theme-primary-color-6)" onClick={handleEdit}>
+							<IconCheck size={18} stroke={1.5} />
+						</ActionIcon>
+					)}
+
 					<ActionIcon
 						variant="outline"
 						color="var(--theme-error-color)"
@@ -157,6 +182,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete }) {
 export default function Medicine() {
 	const [medicines, setMedicines] = useState([]);
 	const [updateKey, setUpdateKey] = useState(0);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { id } = useParams();
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -167,14 +193,43 @@ export default function Medicine() {
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
-	const { data: by_meal_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.BY_MEAL.PATH,
-		utility: HOSPITAL_DROPDOWNS.BY_MEAL.UTILITY,
-	});
+	const [openedMedicineHistory, { open: openMedicineHistory, close: closeMedicineHistory }] = useDisclosure(false);
+	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
+	const refetching = useSelector((state) => state.crud.dosage?.refetching);
+	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
+	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
 
-	const { data: dosage_options } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.DOSAGE.PATH,
-		utility: HOSPITAL_DROPDOWNS.DOSAGE.UTILITY,
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: PHARMACY_DROPDOWNS.DOSAGE.PATH,
+				module: "dosage",
+				params: {
+					page: 1,
+					offset: 500,
+				},
+			})
+		);
+	}, [refetching]);
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
+				module: "byMeal",
+				params: {
+					page: 1,
+					offset: 500,
+				},
+			})
+		);
+	}, [bymealRefetching]);
+
+	const { data: medicineHistoryData, refetch: refetchMedicineData } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.TRANSACTION}/${id}`,
+		params: {
+			mode: "medicine",
+		},
 	});
 
 	// Add hotkey for save functionality
@@ -192,8 +247,9 @@ export default function Medicine() {
 				medicineForm.setFieldValue("company", selectedMedicine.company);
 
 				// Auto-populate by_meal if available
-				if (selectedMedicine.by_meal) {
-					medicineForm.setFieldValue("by_meal", selectedMedicine.by_meal);
+				if (selectedMedicine.medicine_bymeal_id) {
+					medicineForm.setFieldValue("medicine_bymeal_id", selectedMedicine.medicine_bymeal_id?.toString());
+					medicineForm.setFieldValue("by_meal", getByMeal(selectedMedicine.medicine_bymeal_id));
 				}
 
 				// Auto-populate duration and count based on duration_day or duration_month
@@ -205,24 +261,32 @@ export default function Medicine() {
 					medicineForm.setFieldValue("duration", "month");
 				}
 
-				// Auto-populate dose_details if available (for times field)
-				if (selectedMedicine.dose_details) {
-					medicineForm.setFieldValue("dose_details", selectedMedicine.dose_details);
+				if (selectedMedicine.medicine_dosage_id) {
+					medicineForm.setFieldValue("medicine_dosage_id", selectedMedicine.medicine_dosage_id?.toString());
+					medicineForm.setFieldValue("dose_details", getDosage(selectedMedicine.medicine_dosage_id));
 				}
 			}
 		}
 	};
 
+	const getByMeal = (id) => {
+		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
+	};
+
+	const getDosage = (id) => {
+		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
+	};
+
 	const handleAdd = (values) => {
 		if (values.medicine_id) {
-			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() == values.medicine_id);
-
+			const selectedMedicine = medicineData?.find(
+				(item) => item.product_id?.toString() === values.medicine_id?.toString()
+			);
 			if (selectedMedicine) {
 				values.medicine_name = selectedMedicine.product_name || values.medicine_name;
 				values.generic = selectedMedicine.generic || values.generic;
 				values.generic_id = selectedMedicine.generic_id || values.generic_id;
 				values.company = selectedMedicine.company || values.company;
-				values.by_meal = selectedMedicine.by_meal || values.by_meal;
 
 				if (selectedMedicine.duration_day) {
 					values.quantity = parseInt(selectedMedicine.duration_day) || values.quantity;
@@ -232,9 +296,8 @@ export default function Medicine() {
 					values.duration = "month";
 				}
 
-				if (selectedMedicine.dose_details) {
-					values.times = selectedMedicine.dose_details;
-				}
+				values.dose_details = getDosage(values.medicine_dosage_id);
+				values.by_meal = getByMeal(values.medicine_bymeal_id);
 			}
 		}
 
@@ -252,7 +315,7 @@ export default function Medicine() {
 	};
 
 	const handleDelete = (idx) => {
-		setMedicines(medicines.filter((_, i) => i !== idx));
+		setMedicines(medicines.filter((_, index) => index !== idx));
 		if (editIndex === idx) {
 			medicineForm.reset();
 			setEditIndex(null);
@@ -260,28 +323,31 @@ export default function Medicine() {
 	};
 
 	const handleSubmit = async () => {
+		setIsSubmitting(true);
 		try {
 			const formValue = {
 				json_content: medicines,
 				ipd_module: "medicine",
 			};
 
-			console.log(formValue);
-
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PROCESS}/${id}`,
 				data: formValue,
-				module: "admission",
+				module: "medicine",
 			};
-			const resultAction = await dispatch(updateEntityData(value));
-			if (resultAction.payload.success) {
-				console.log(resultAction.payload.data);
-				successNotification(resultAction.payload.message);
+			const resultAction = await dispatch(storeEntityData(value)).unwrap();
+			if (resultAction.status === 200) {
+				successNotification(t("MedicineAddedSuccessfully"));
+				await refetchMedicineData();
+				setMedicines([]);
+				openMedicineHistory();
 			} else {
-				errorNotification(resultAction.payload.message);
+				errorNotification(t("MedicineAddedFailed"));
 			}
 		} catch (err) {
 			console.error(err);
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
@@ -336,10 +402,13 @@ export default function Medicine() {
 							<Group grow gap="les">
 								<SelectForm
 									form={medicineForm}
-									id="dose_details"
-									name="dose_details"
-									dropdownValue={dosage_options}
-									value={medicineForm.values.dose_details}
+									id="medicine_dosage_id"
+									name="medicine_dosage_id"
+									dropdownValue={dosage_options?.map((dosage) => ({
+										value: dosage.id?.toString(),
+										label: dosage.name,
+									}))}
+									value={medicineForm.values.medicine_dosage_id}
 									placeholder={t("Dosage")}
 									required
 									tooltip={t("EnterDosage")}
@@ -347,11 +416,14 @@ export default function Medicine() {
 								/>
 								<SelectForm
 									form={medicineForm}
-									id="by_meal"
-									name="by_meal"
-									dropdownValue={by_meal_options}
-									value={medicineForm.values.by_meal}
-									placeholder={t("By Meal")}
+									id="medicine_bymeal_id"
+									name="medicine_bymeal_id"
+									dropdownValue={by_meal_options?.map((byMeal) => ({
+										value: byMeal.id?.toString(),
+										label: byMeal.name,
+									}))}
+									value={medicineForm.values.medicine_bymeal_id}
+									placeholder={t("ByMeal")}
 									required
 									tooltip={t("EnterWhenToTakeMedicine")}
 									withCheckIcon={false}
@@ -360,6 +432,15 @@ export default function Medicine() {
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Group grow gap="les">
+								<InputNumberForm
+									form={medicineForm}
+									id="quantity"
+									name="quantity"
+									value={medicineForm.values.quantity}
+									placeholder={t("Quantity")}
+									required
+									tooltip={t("EnterQuantity")}
+								/>
 								<SelectForm
 									form={medicineForm}
 									label=""
@@ -372,15 +453,7 @@ export default function Medicine() {
 									tooltip={t("EnterMeditationDuration")}
 									withCheckIcon={false}
 								/>
-								<InputNumberForm
-									form={medicineForm}
-									id="quantity"
-									name="quantity"
-									value={medicineForm.values.quantity}
-									placeholder={t("Quantity")}
-									required
-									tooltip={t("EnterQuantity")}
-								/>
+
 								<Button
 									leftSection={<IconPlus size={16} />}
 									type="submit"
@@ -394,9 +467,25 @@ export default function Medicine() {
 					</Grid>
 				</Group>
 			</Box>
-			<Text fw={500} mb="les" px="sm" py="les" bg="var(--theme-primary-color-0)" mt="sm">
-				{t("List of Medicines")}
-			</Text>
+			<Flex
+				justify="space-between"
+				align="center"
+				bg="var(--theme-primary-color-0)"
+				mt="sm"
+				mb="les"
+				px="sm"
+				py="les"
+			>
+				<Text fw={500}>{t("ListOfMedicines")}</Text>
+				<Button
+					leftSection={<IconHistory size={16} />}
+					variant="filled"
+					bg="var(--theme-primary-color-6)"
+					onClick={openMedicineHistory}
+				>
+					{t("History")}
+				</Button>
+			</Flex>
 			<ScrollArea h={mainAreaHeight - 220}>
 				<Box gap="xs" p="sm" h={mainAreaHeight - 280}>
 					{medicines?.length === 0 && (
@@ -424,15 +513,56 @@ export default function Medicine() {
 							medicine={medicine}
 							setMedicines={setMedicines}
 							handleDelete={handleDelete}
+							dosage_options={dosage_options}
+							by_meal_options={by_meal_options}
 						/>
 					))}
 				</Box>
 				<Box px="xs">
 					<Box ml="auto" w={300}>
-						<TabsActionButtons handleReset={() => {}} handleSave={handleSubmit} />
+						<TabsActionButtons
+							handleReset={() => {}}
+							handleSave={handleSubmit}
+							isSubmitting={isSubmitting}
+						/>
 					</Box>
 				</Box>
 			</ScrollArea>
+			<GlobalDrawer
+				opened={openedMedicineHistory}
+				close={closeMedicineHistory}
+				title={t("MedicineHistory")}
+				size="36%"
+			>
+				{medicineHistoryData?.data?.length === 0 && (
+					<Flex h="100%" justify="center" align="center">
+						<Text fz="sm">{t("NoDataAvailable")}</Text>
+					</Flex>
+				)}
+				{medicineHistoryData?.data?.map((item, index) => (
+					<Flex key={index} gap="xs" mb="xxxs">
+						<Text>{index + 1}.</Text>
+						<Box w="100%">
+							<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
+								{item.created}
+							</Badge>
+							<Box mt="es" fz="sm">
+								{item?.invoice_particular?.map((particular, idx) => (
+									<Box key={idx}>
+										<Text fz="xs">
+											{idx + 1}. {particular.medicine_name}
+										</Text>
+										<Box ml="md" fz="xs" c="var(--theme-tertiary-color-8)">
+											{particular.dose_details} ---- {particular.by_meal} ----{" "}
+											{particular.quantity} ---- {particular.duration}
+										</Box>
+									</Box>
+								))}
+							</Box>
+						</Box>
+					</Flex>
+				))}
+			</GlobalDrawer>
 		</Box>
 	);
 }

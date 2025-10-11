@@ -46,7 +46,8 @@ export const getMedicineFormInitialValues = () => {
 
 		validate: {
 			medicine_dosage_id: (value) => (value ? null : "Dosage is required"),
-			quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
+			medicine_bymeal_id: (value) => (value ? null : "By Meal is required"),
+			quantity: (value) => (value > 0 ? null : "Quantity must be greater than 0"),
 		},
 	};
 };
