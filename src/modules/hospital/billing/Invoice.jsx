@@ -10,6 +10,7 @@ import {
 	ActionIcon,
 	Select,
 	Autocomplete,
+	LoadingOverlay,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
@@ -19,7 +20,7 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
 import { modals } from "@mantine/modals";
-import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -34,7 +35,7 @@ const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospita
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
 
-export default function Invoice({ entity }) {
+export default function Invoice({ entity, setRefetchBillingKey }) {
 	const { t } = useTranslation();
 	const form = useForm(getFormValues(t));
 	const dispatch = useDispatch();
@@ -48,6 +49,7 @@ export default function Invoice({ entity }) {
 	const investigationParticulars = particularsData?.find((item) => item.particular_type.name === "Investigation");
 	const cabinListData = useSelector((state) => state.crud.cabin?.data?.data);
 	const bedListData = useSelector((state) => state.crud.bed?.data?.data);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const getRoomData = () => {
 		if (form.values.roomType === "cabin") {
@@ -171,6 +173,68 @@ export default function Invoice({ entity }) {
 		}
 	}
 
+	const handleInvestigationSubmit = async () => {
+		setIsSubmitting(true);
+		try {
+			const formValue = {
+				json_content: form.values?.investigation,
+				ipd_module: "investigation",
+			};
+
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PROCESS}/${id}`,
+				data: formValue,
+				module: "admission",
+			};
+
+			const resultAction = await dispatch(storeEntityData(value)).unwrap();
+
+			if (resultAction.status === 200) {
+				successNotification(t("InvestigationAddedSuccessfully"));
+				// await refetchInvestigationData();
+				setRefetchBillingKey(Date.now());
+				form.reset();
+			} else {
+				errorNotification(t("InvestigationAddedFailed"));
+			}
+		} catch (err) {
+			console.error(err);
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
+	const handleRoomSubmit = async () => {
+		setIsSubmitting(true);
+		try {
+			const formValue = {
+				json_content: { room: form.values?.room, quantity: form.values?.quantity },
+				ipd_module: "room",
+			};
+
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PROCESS}/${id}`,
+				data: formValue,
+				module: "admission",
+			};
+
+			const resultAction = await dispatch(storeEntityData(value)).unwrap();
+
+			if (resultAction.status === 200) {
+				successNotification(t("RoomAddedSuccessfully"));
+				// await refetchInvestigationData();
+				setRefetchBillingKey(Date.now());
+				form.reset();
+			} else {
+				errorNotification(t("RoomAddedFailed"));
+			}
+		} catch (err) {
+			console.error(err);
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
 	return (
 		<Box className="borderRadiusAll" bg="white">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
@@ -181,7 +245,8 @@ export default function Invoice({ entity }) {
 			{id ? (
 				<>
 					<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 320}>
-						<Stack className="form-stack-vertical" p="xs">
+						<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+						<Stack className="form-stack-vertical" p="xs" pos="relative">
 							{test?.invoice_transaction?.map((item, index) => (
 								<Box key={index} className="borderRadiusAll" bg="white" p="sm">
 									<Text fz="sm">{item.invoice_created}</Text>
@@ -261,13 +326,85 @@ export default function Invoice({ entity }) {
 												/>
 											</Grid.Col>
 										</Grid>
+										<Box w="100%" bg="white">
+											<Grid columns={18} gutter="xs">
+												<Grid.Col span={18} className="animate-ease-out" px="xs">
+													<ScrollArea scrollbars="y" type="never" h="116" mx="xs">
+														<Stack
+															gap={0}
+															bg="white"
+															px="sm"
+															className="borderRadiusAll"
+															mt="xxs"
+														>
+															{form.values?.investigation?.map((item, idx) => (
+																<Flex
+																	key={idx}
+																	align="center"
+																	justify="space-between"
+																	px="es"
+																	py="xs"
+																	style={{
+																		borderBottom:
+																			idx !==
+																			form.values?.investigation?.length - 1
+																				? "1px solid var(--theme-tertiary-color-4)"
+																				: "none",
+																	}}
+																>
+																	<Text fz="sm">
+																		{idx + 1}. {item.name}
+																	</Text>
+																	<ActionIcon
+																		color="red"
+																		size="xs"
+																		variant="subtle"
+																		onClick={() =>
+																			handleAutocompleteOptionRemove(idx)
+																		}
+																	>
+																		<IconX size={16} />
+																	</ActionIcon>
+																</Flex>
+															))}
+														</Stack>
+													</ScrollArea>
+													<Box mt="xs">
+														<Button.Group>
+															<Button
+																id="EntityFormSubmit"
+																w="100%"
+																size="compact-sm"
+																bg="var(--theme-pos-btn-color)"
+																type="button"
+																disabled={isSubmitting}
+															>
+																<Stack gap={0} align="center" justify="center">
+																	<Text fz="xs">{t("Print")}</Text>
+																</Stack>
+															</Button>
+															<Button
+																w="100%"
+																size="compact-sm"
+																bg="var(--theme-save-btn-color)"
+																loading={isSubmitting}
+																onClick={handleInvestigationSubmit}
+															>
+																<Stack gap={0} align="center" justify="center">
+																	<Text fz="xs">{t("Save")}</Text>
+																</Stack>
+															</Button>
+														</Button.Group>
+													</Box>
+												</Grid.Col>
+											</Grid>
+										</Box>
 									</Tabs.Panel>
 									<Tabs.Panel value="bed-cabin" bg="white">
-										<Grid mt="xs" mx="xs" gutter="xs" align="center" columns={20}>
-											<Grid.Col span={16}>
-												<Flex gap="xs">
+										<Stack justify="space-between">
+											<Grid mt="xs" mx="xs" gutter="xs" align="center" columns={20}>
+												<Grid.Col span={20}>
 													<Select
-														w={90}
 														label=""
 														name="roomType"
 														id="roomType"
@@ -283,6 +420,7 @@ export default function Invoice({ entity }) {
 															form.setFieldValue("room", ""); // Clear room selection when roomType changes
 															fetchData(value); // Fetch appropriate data
 														}}
+														mb="xs"
 													/>
 													<Select
 														name="room"
@@ -293,80 +431,39 @@ export default function Invoice({ entity }) {
 														onChange={(value) => form.setFieldValue("room", value)}
 														disabled={!form.values.roomType}
 													/>
-												</Flex>
-											</Grid.Col>
-											<Grid.Col span={4}>
-												<InputNumberForm
-													form={form}
-													label=""
-													tooltip={t("EnterPatientMobile")}
-													placeholder="quantitiy"
-													name="mobile"
-													id="mobile"
-													nextField="dob"
-													value=""
-												/>
-											</Grid.Col>
-										</Grid>
+												</Grid.Col>
+											</Grid>
+											<Box w="100%" bg="white">
+												<Grid columns={18} gutter="xs">
+													<Grid.Col span={18} className="animate-ease-out" px="xs">
+														<Flex mt="xs" align="center" gap="xs">
+															<InputNumberForm
+																form={form}
+																label=""
+																tooltip={t("EnterBillingQuantity")}
+																placeholder="quantity"
+																name="quantity"
+																id="quantity"
+																nextField="dob"
+																size="xs"
+															/>
+															<Button
+																w="100%"
+																size="compact-sm"
+																bg="var(--theme-save-btn-color)"
+																onClick={handleRoomSubmit}
+															>
+																<Stack gap={0} align="center" justify="center">
+																	<Text fz="xs">{t("Save")}</Text>
+																</Stack>
+															</Button>
+														</Flex>
+													</Grid.Col>
+												</Grid>
+											</Box>
+										</Stack>
 									</Tabs.Panel>
 								</Tabs>
-								<Box w="100%" bg="white">
-									<Grid columns={18} gutter="xs">
-										<Grid.Col span={18} className="animate-ease-out" px="xs">
-											<ScrollArea scrollbars="y" type="never" h="116" mx="xs">
-												<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
-													{form.values?.investigation?.map((item, idx) => (
-														<Flex
-															key={idx}
-															align="center"
-															justify="space-between"
-															px="es"
-															py="xs"
-															style={{
-																borderBottom:
-																	idx !== form.values?.investigation?.length - 1
-																		? "1px solid var(--theme-tertiary-color-4)"
-																		: "none",
-															}}
-														>
-															<Text fz="sm">
-																{idx + 1}. {item.name}
-															</Text>
-															<ActionIcon
-																color="red"
-																size="xs"
-																variant="subtle"
-																onClick={() => handleAutocompleteOptionRemove(idx)}
-															>
-																<IconX size={16} />
-															</ActionIcon>
-														</Flex>
-													))}
-												</Stack>
-											</ScrollArea>
-											<Box mt="xs">
-												<Button.Group>
-													<Button
-														id="EntityFormSubmit"
-														w="100%"
-														size="compact-sm"
-														bg="var(--theme-pos-btn-color)"
-														type="button"
-													>
-														<Stack gap={0} align="center" justify="center">
-															<Text fz="xs">{t("Print")}</Text>
-														</Stack>
-													</Button>
-													<Button w="100%" size="compact-sm" bg="var(--theme-save-btn-color)">
-														<Stack gap={0} align="center" justify="center">
-															<Text fz="xs">{t("Save")}</Text>
-														</Stack>
-													</Button>
-												</Button.Group>
-											</Box>
-										</Grid.Col>
-									</Grid>
-								</Box>
 							</Box>
 						</form>
 					</Box>

@@ -21,6 +21,7 @@ function InputNumberForm({
 	leftSection,
 	rightSection,
 	handleChange = () => {},
+	size = "sm",
 }) {
 	const { t } = useTranslation();
 
@@ -50,7 +51,7 @@ function InputNumberForm({
 						classNames={inputCss}
 						id={id}
 						w={w || undefined}
-						size="sm"
+						size={size}
 						label={label}
 						placeholder={placeholder}
 						mt={mt}

@@ -22,6 +22,7 @@ export default function Index() {
 	const { mainAreaHeight } = useOutletContext();
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const [diagnosticReport, setDiagnosticReport] = useState([]);
+	const [refetchBillingKey, setRefetchBillingKey] = useState(0);
 
 	useEffect(() => {
 		if (id) {
@@ -32,7 +33,7 @@ export default function Index() {
 				setDiagnosticReport(res?.data);
 			})();
 		}
-	}, [id]);
+	}, [id, refetchBillingKey]);
 
 	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
 
@@ -97,7 +98,7 @@ export default function Index() {
 							<Grid.Col span={18} className="animate-ease-out">
 								<Grid columns={18} gutter="2">
 									<Grid.Col span={6} className="animate-ease-out">
-										<Invoice entity={entity} />
+										<Invoice entity={entity} setRefetchBillingKey={setRefetchBillingKey} />
 									</Grid.Col>
 									<Grid.Col span={12}>
 										<InvoiceDetails />

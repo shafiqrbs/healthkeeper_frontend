@@ -120,9 +120,9 @@ export default function Investigation() {
 							<Autocomplete
 								label=""
 								placeholder={`Pick value or enter Investigation`}
-								data={investigationParticulars?.particular_type?.particulars?.map((p) => ({
-									value: p.name,
-									label: p.name,
+								data={investigationParticulars?.particular_type?.particulars?.map((particular) => ({
+									value: particular.name,
+									label: particular.name,
 								}))}
 								value={autocompleteValue}
 								onChange={setAutocompleteValue}
