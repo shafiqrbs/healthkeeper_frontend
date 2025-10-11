@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, NumberInput, Checkbox} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, NumberInput, Checkbox, Select} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
@@ -39,6 +39,8 @@ import {successNotification} from "@components/notification/successNotification"
 import {SUCCESS_NOTIFICATION_COLOR} from "@/constants/index";
 import {errorNotification} from "@components/notification/errorNotification";
 import {useForm} from "@mantine/form";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import {HOSPITAL_DROPDOWNS} from "@/app/store/core/utilitySlice";
 
 const PER_PAGE = 50;
 
@@ -51,6 +53,7 @@ export default function _Table({ module, open }) {
 	const { id } = useParams();
 	const height = mainAreaHeight - 78;
 	const [submitFormData, setSubmitFormData] = useState({});
+	const [updatingRows, setUpdatingRows] = useState({});
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
@@ -87,6 +90,12 @@ export default function _Table({ module, open }) {
 		);
 		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX}/${id}`);
 	};
+
+	const { data: getInvestigationGroups } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_INVESTIGATION_GROUP.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_INVESTIGATION_GROUP.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_INVESTIGATION_GROUP.UTILITY,
+	});
 
 	const handleDelete = (id) => {
 		modals.openConfirmModal({
@@ -161,6 +170,8 @@ export default function _Table({ module, open }) {
 				name: item.name || "",
 				price: item.price || "",
 				is_available: item?.is_available ?? false,
+				report_format: item?.report_format ?? false,
+				investigation_group_id: item.investigation_group_id?.toString() ?? "",
 			};
 
 			return acc;
@@ -290,6 +301,23 @@ export default function _Table({ module, open }) {
 								</Text>
 							),
 						},
+						{
+							accessor: "investigation_group_id",
+							title: t("UnitName"),
+							render: (item) => (
+								<Select
+									size="xs"
+									className={inlineInputCss.inputText}
+									placeholder={t("investigationGroupName")}
+									data={getInvestigationGroups}
+									value={submitFormData[item.id]?.investigation_group_id ?? ""}
+									onChange={(val) =>
+										handleFieldChange(item.id, "investigation_group_id", val)
+									}
+									rightSection={updatingRows[item.id]}
+								/>
+							),
+						},
 
 						{
 							accessor: "price",
@@ -318,6 +346,24 @@ export default function _Table({ module, open }) {
 										handleFieldChange(
 											item.id,
 											"is_available",
+											val.currentTarget.checked
+										)
+									}
+								/>
+							),
+						},
+						{
+							accessor: "report_format",
+							title: t("Report"),
+							render: (item) => (
+								<Checkbox
+									key={item.id}
+									size="sm"
+									checked={submitFormData[item.id]?.report_format ?? false}
+									onChange={(val) =>
+										handleFieldChange(
+											item.id,
+											"report_format",
 											val.currentTarget.checked
 										)
 									}

@@ -379,23 +379,44 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 							title: t("GenericName"),
 						},
 						{
-							accessor: "dosage",
+							accessor: "medicine_dosage",
 							title: t("Dosage"),
+							render: (item) => item?.medicine_dosage?.name,
 						},
 
 						{
-							accessor: "by_meal",
-							title: t("ByMeal"),
+							accessor: "medicine_dosage",
+							title: t("DosageBn"),
+							render: (item) => item?.medicine_dosage?.name_bn,
 						},
+
 						{
-							accessor: "duration",
-							title: t("Duration"),
+							accessor: "medicine_dosage",
+							title: t("DosageQuantity"),
+							render: (item) => item?.medicine_dosage?.quantity,
 						},
+
+						{
+							accessor: "medicine_bymeal",
+							title: t("ByMeal"),
+							render: (item) => item?.medicine_bymeal?.name,
+						},
+
+						{
+							accessor: "medicine_bymeal",
+							title: t("ByMealBn"),
+							render: (item) => item?.medicine_bymeal?.name_bn,
+						},
+
 						{
 							accessor: "quantity",
 							title: t("Quantity"),
 						},
-
+						{
+							accessor: "duration",
+							title: t("Duration"),
+							render: (item) => item?.duration,
+						},
 						{
 							accessor: "action",
 							title: "",
@@ -403,16 +424,11 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 							render: (item) => (
 								<Group justify="center">
 									<ActionIcon
-										color="var(--theme-secondary-color-6)"
-										onClick={() => handleRowSubmit(item.id)}
-									>
-										<IconDeviceFloppy height={18} width={18} stroke={1.5} />
-									</ActionIcon>
-									<ActionIcon
+										size="compact-xs"
 										color="var(--theme-delete-color)"
 										onClick={() => handleDeleteSuccess(id, item.id)}
 									>
-										<IconTrashX height={18} width={18} stroke={1.5} />
+										<IconTrashX height={16} width={16} stroke={1.5} />
 									</ActionIcon>
 								</Group>
 							),

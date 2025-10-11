@@ -89,6 +89,7 @@ export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_GENDER_MODE: { UTILITY: "particularGenderModes", TYPE: "gender-mode", PATH: "hospital/select/mode" },
 	PARTICULAR_PAYMENT_MODE: { UTILITY: "particularPaymentModes", TYPE: "paying-mode", PATH: "hospital/select/mode" },
 	PARTICULAR_UNIT_MODE: { UTILITY: "particularPaymentModes", TYPE: "unit-group", PATH: "hospital/select/mode" },
+	PARTICULAR_INVESTIGATION_GROUP: { UTILITY: "particularPaymentModes", TYPE: "investigation-group", PATH: "hospital/select/mode" },
 	PARTICULAR_CABIN_MODE: { UTILITY: "particularCabinModes", TYPE: "cabin-mode", PATH: "hospital/select/mode" },
 	CATEGORY: { UTILITY: "category", TYPE: "category", PATH: "hospital/select/category" },
 };
