@@ -23,6 +23,9 @@ import { useDisclosure } from "@mantine/hooks";
 import Room from "./common/tabs/Room";
 import { IconPencil, IconPrescription } from "@tabler/icons-react";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { MODULES } from "@/constants";
+
+const module = MODULES.ADMISSION;
 
 export default function Index() {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -93,6 +96,7 @@ export default function Index() {
 								</Flex>
 								<TabsWithSearch
 									tabList={["list"]}
+									module={module}
 									tabPanels={[
 										{
 											tab: "list",

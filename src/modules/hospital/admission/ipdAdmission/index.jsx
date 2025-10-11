@@ -39,6 +39,7 @@ export default function Index() {
 								</Box>
 								<TabsWithSearch
 									tabList={["list"]}
+									module={module}
 									tabPanels={[
 										{
 											tab: "list",

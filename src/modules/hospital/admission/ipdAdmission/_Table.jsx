@@ -8,7 +8,7 @@ import { MODULES } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import {useForm} from "@mantine/form";
+import { useForm } from "@mantine/form";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
@@ -39,7 +39,7 @@ export default function _Table() {
 			name: filterData?.name,
 			patient_mode: "ipd",
 			process: "confirmed",
-			created: form.values.created,
+			created: filterData.created,
 			term: filterData.keywordSearch,
 		},
 		perPage: PER_PAGE,

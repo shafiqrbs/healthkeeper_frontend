@@ -1,16 +1,19 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import {Box, Flex, Grid, Stack, Text} from "@mantine/core";
+import { Box, Flex, Grid, Stack, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import Table from "./_Table";
 import Invoice from "./Invoice";
 import InvoiceDetails from "./InvoiceDetails";
-import {getDataWithoutStore} from "@/services/apiService";
-import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
+import { getDataWithoutStore } from "@/services/apiService";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { MODULES } from "@/constants";
+
+const module = MODULES.BILLING;
 
 export default function Index() {
 	const { t } = useTranslation();
@@ -30,14 +33,12 @@ export default function Index() {
 		}
 	}, [id]);
 	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
-	console.log(diagnosticReport)
+	console.log(diagnosticReport);
 	const entity = diagnosticReport || {};
 	const col1 = [
-
 		{ label: "Patient ID", value: safe(entity.patient_id) },
 		{ label: "Health ID", value: safe(entity.health_id) },
 		{ label: "Prescription ID", value: safe(entity.invoice) },
-
 	];
 
 	const col2 = [
@@ -76,6 +77,7 @@ export default function Index() {
 								</Box>
 								<TabsWithSearch
 									tabList={["list"]}
+									module={module}
 									tabPanels={[
 										{
 											tab: "list",
@@ -100,7 +102,6 @@ export default function Index() {
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>
-
 						</Grid>
 					</Flex>
 				</Box>

@@ -30,6 +30,21 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 		},
 	});
 
+	const { records, fetching } = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			patient_mode: "ipd",
+			term: filterData.keywordSearch,
+			prescription_mode: ipdMode,
+			created: filterData.created,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+	});
+
 	const handleAdmissionOverview = (prescriptionId, id) => {
 		setSelectedPrescriptionId(prescriptionId);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}`, { replace: true });
@@ -63,21 +78,6 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 			showNotificationComponent(t("SomethingWentWrongPleaseTryAgain"), "red.6", "lightgray");
 		}
 	};
-
-	const { records, fetching } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			patient_mode: "ipd",
-			term: filterData.keywordSearch,
-			prescription_mode: ipdMode,
-			//	created: form.values.created,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
 
 	return (
 		<Box pos="relative">

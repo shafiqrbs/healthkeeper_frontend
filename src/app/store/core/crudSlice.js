@@ -35,7 +35,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	particularList: {
@@ -45,7 +45,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	lab_user: {
@@ -55,7 +55,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	dosage: {
@@ -65,7 +65,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	byMeal: {
@@ -75,7 +75,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	medicine: {
@@ -85,7 +85,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	bed: {
@@ -95,7 +95,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	billing: {
@@ -105,7 +105,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	advice: {
@@ -115,7 +115,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	exemergency: {
@@ -125,7 +125,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	doctor: {
@@ -135,7 +135,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	nurse: {
@@ -145,7 +145,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	staff: {
@@ -155,7 +155,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	opd_room: {
@@ -165,7 +165,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	treatment: {
@@ -175,7 +175,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	particular_matrix: {
@@ -185,7 +185,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	cabin: {
@@ -195,7 +195,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	investigation: {
@@ -205,7 +205,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	particular_mode: {
@@ -215,7 +215,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	particular_type: {
@@ -225,7 +225,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 
 	stock: {
@@ -487,7 +487,7 @@ const initialState = {
 		insertType: "create",
 		data: {},
 		editData: {},
-		filterData: { name: "" },
+		filterData: { created: "", keywordSearch: "" },
 		validationMessages: [],
 	},
 	// -------------------- admission modules stops -------------------------

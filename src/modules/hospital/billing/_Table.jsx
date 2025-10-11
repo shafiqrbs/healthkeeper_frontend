@@ -6,6 +6,7 @@ import { useState } from "react";
 import { MODULES } from "@/constants";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import { useSelector } from "react-redux";
 
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
@@ -15,6 +16,7 @@ export default function _Table() {
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
+	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	const handleAdmissionOverview = (id) => {
 		setSelectedPatientId(id);
@@ -27,6 +29,10 @@ export default function _Table() {
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
 		direction: "desc",
+		filterParams: {
+			created: filterData.created,
+			term: filterData.keywordSearch,
+		},
 	});
 
 	const handleView = (id) => {
@@ -94,7 +100,6 @@ export default function _Table() {
 								</Button.Group>
 							</Flex>
 						</Grid.Col>
-						
 					</Grid>
 				))}
 			</ScrollArea>

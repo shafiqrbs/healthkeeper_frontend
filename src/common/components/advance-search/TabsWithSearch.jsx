@@ -1,9 +1,12 @@
-import { Box, Flex, Tabs, TextInput, FloatingIndicator, Button, ScrollArea } from "@mantine/core";
-import { useState } from "react";
+import { Box, Flex, Tabs, TextInput, FloatingIndicator, Button, ScrollArea, ActionIcon } from "@mantine/core";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import tabClass from "@assets/css/Tab.module.css";
 import { IconCalendar, IconSearch } from "@tabler/icons-react";
 import { DateInput } from "@mantine/dates";
+import { useDispatch } from "react-redux";
+import { setFilterData } from "@/app/store/core/crudSlice";
+import { useDebouncedState } from "@mantine/hooks";
 
 const DEFAULT_ACTIVE_COLOR = "var(--theme-primary-color-6)";
 
@@ -17,12 +20,19 @@ export default function TabsWithSearch({
 	leftSection = null,
 	showDatePicker = true,
 	rightSection = null,
+	module = null,
 }) {
+	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const [rootRef, setRootRef] = useState(null);
 	const [tabValue, setTabValue] = useState(tabList[0]);
 	const [controlsRefs, setControlsRefs] = useState({});
 	const [date, setDate] = useState(null);
+	const [search, setSearch] = useDebouncedState("", 300);
+
+	useEffect(() => {
+		dispatch(setFilterData({ module, data: { created: date, keywordSearch: search } }));
+	}, [module, date, search]);
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -31,6 +41,10 @@ export default function TabsWithSearch({
 
 	const handleDateChange = (date) => {
 		setDate(date);
+	};
+
+	const handleSearch = () => {
+		console.log("search", search);
 	};
 
 	return (
@@ -91,14 +105,21 @@ export default function TabsWithSearch({
 										value={date}
 										onChange={handleDateChange}
 										w={280}
+										valueFormat="DD-MM-YYYY"
 										leftSection={<IconCalendar size={18} />}
 									/>
 								)}
 								<TextInput
 									w="100%"
-									leftSection={<IconSearch size={18} />}
 									name="search"
-									placeholder={t("search")}
+									placeholder={t("Search")}
+									rightSection={
+										<ActionIcon variant="outline" color="var(--theme-secondary-color-6)">
+											<IconSearch size={16} onClick={handleSearch} />
+										</ActionIcon>
+									}
+									defaultValue={search}
+									onChange={(event) => setSearch(event.target.value)}
 								/>
 							</Flex>
 						)}

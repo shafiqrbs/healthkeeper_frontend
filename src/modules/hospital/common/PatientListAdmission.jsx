@@ -2,10 +2,9 @@ import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { IconCalendarWeek, IconUser, IconArrowNarrowRight } from "@tabler/icons-react";
 import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useEffect, useState } from "react";
-import { getIndexEntityData } from "@/app/store/core/crudThunk";
+import { useState } from "react";
 import { MODULES } from "@/constants";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
@@ -16,7 +15,6 @@ export default function PatientListAdmission() {
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
 	const handleAdmissionOverview = (id) => {
