@@ -344,7 +344,6 @@ export function Form({
 	}, [JSON.stringify(form.values.dob)]);
 
 	useEffect(() => {
-		console.log("mobile trigeering");
 		form.setFieldValue("guardian_mobile", form.values.mobile);
 	}, [form.values.mobile]);
 

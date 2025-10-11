@@ -4,7 +4,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Flex, Grid, Stack, Text } from "@mantine/core";
+import { Box, Flex, Grid, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import Table from "./_Table";
 import Invoice from "./Invoice";
@@ -22,6 +22,7 @@ export default function Index() {
 	const { mainAreaHeight } = useOutletContext();
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const [diagnosticReport, setDiagnosticReport] = useState([]);
+
 	useEffect(() => {
 		if (id) {
 			(async () => {
@@ -32,8 +33,9 @@ export default function Index() {
 			})();
 		}
 	}, [id]);
+
 	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
-	console.log(diagnosticReport);
+
 	const entity = diagnosticReport || {};
 	const col1 = [
 		{ label: "Patient ID", value: safe(entity.patient_id) },
@@ -72,7 +74,7 @@ export default function Index() {
 							<Grid.Col span={6} pos="relative" className="animate-ease-out">
 								<Box px="sm" py="md" bg="white">
 									<Text fw={600} fz="sm">
-										{t("patientInformation")}
+										{t("PatientInformation")}
 									</Text>
 								</Box>
 								<TabsWithSearch

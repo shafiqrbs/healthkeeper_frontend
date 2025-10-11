@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Button, Flex, Text, Tooltip, ScrollArea, Grid, Box } from "@mantine/core";
+import { Button, Flex, Text, Tooltip, ScrollArea, Grid, Box, Menu } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import { sideNavigationLinks } from "@/constants/sideNavigationLinks";
@@ -47,21 +47,50 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 											duration: 500,
 										}}
 									>
-										<Button
-											bg={item.color}
-											h={46}
-											w={46}
-											px={8}
-											radius="xl"
-											variant="light"
-											color="black"
-											onClick={() => navigate(item.path)}
-											// className={location.pathname === item.path ? classes["active-link"] : ""}
+										<Menu
+											shadow="md"
+											offset={0}
+											width={200}
+											position="right"
+											trigger="hover"
+											withArrow
 										>
-											<Flex align="center">
-												<item.icon size={22} color="white" />
-											</Flex>
-										</Button>
+											<Menu.Target>
+												<Button
+													bg={item.color}
+													h={46}
+													w={46}
+													px={8}
+													radius="xl"
+													variant="light"
+													color="black"
+													onClick={() => {
+														item.subMenu ? null : navigate(item.path);
+													}}
+												>
+													<Flex align="center">
+														<item.icon size={22} color="white" />
+													</Flex>
+												</Button>
+											</Menu.Target>
+											{item.subMenu && (
+												<Menu.Dropdown
+													styles={{
+														dropdown: { border: "1px solid var(--theme-primary-color-1)" },
+													}}
+												>
+													{item.subMenu.map((subItem, index) => (
+														<Menu.Item
+															key={index}
+															onClick={() => navigate(subItem.path)}
+															leftSection={<subItem.icon size={14} />}
+														>
+															{t(subItem.label)}
+														</Menu.Item>
+													))}
+												</Menu.Dropdown>
+											)}
+										</Menu>
 									</Tooltip>
 									<Flex direction="column" align="center" className="mt-4">
 										<Text
@@ -86,14 +115,15 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 					<Grid.Col span={9}>
 						<ScrollArea h={mainAreaHeight - 28} bg="white" type="never" className="border-radius">
 							<Box>
-								<Box pl="xxxs"  pt={'xxxs'} pb={'xxxs'} mb={'xxxs'} bg='var(--theme-primary-color-1)'>{t('AdminMenu')}</Box>
+								<Box pl="xxxs" pt={"xxxs"} pb={"xxxs"} mb={"xxxs"} bg="var(--theme-primary-color-1)">
+									{t("AdminMenu")}
+								</Box>
 								{subLinks.map((item, index) => (
 									<Box
 										key={index}
 										style={{
 											cursor: "pointer",
 										}}
-
 										className={`${classes["pressable-card"]}  ${
 											location.pathname === item.path ? classes["active-link"] : ""
 										}`}
@@ -101,7 +131,17 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 										onClick={() => navigate(item.path)}
 										bg={location.pathname === item.path ? "gray.1" : "#ffffff"}
 									>
-										<Text size="xs" pt="xxxs" pb="xxxs" pl="xxxs" fw={500} c="black">
+										<Text
+											size="xs"
+											py="xxxs"
+											pl="xxxs"
+											fw={500}
+											c={
+												location.pathname === item.path
+													? "var(--theme-primary-color-8)"
+													: "black"
+											}
+										>
 											{t(item.label)}
 										</Text>
 									</Box>
