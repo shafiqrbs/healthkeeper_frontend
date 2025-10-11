@@ -8,9 +8,9 @@ import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
 import { useDispatch, useSelector } from "react-redux";
-import SelectForm from "@/common/components/form-builders/SelectForm";
+import SelectForm from "@components/form-builders/SelectForm";
 import { useTranslation } from "react-i18next";
-import InputNumberForm from "@/common/components/form-builders/InputNumberForm";
+import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useEffect, useCallback } from "react";
 
 const roomDetails = [

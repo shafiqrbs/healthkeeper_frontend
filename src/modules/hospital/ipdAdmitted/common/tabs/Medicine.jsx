@@ -547,10 +547,10 @@ export default function Medicine() {
 								{item.created}
 							</Badge>
 							<Box mt="es" fz="sm">
-								{item?.invoice_particular?.map((particular, idx) => (
+								{item?.sales_items?.map((particular, idx) => (
 									<Box key={idx}>
 										<Text fz="xs">
-											{idx + 1}. {particular.medicine_name}
+											{idx + 1}. {particular.item_name}
 										</Text>
 										<Box ml="md" fz="xs" c="var(--theme-tertiary-color-8)">
 											{particular.dose_details} ---- {particular.by_meal} ----{" "}
