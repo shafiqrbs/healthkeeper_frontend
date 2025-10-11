@@ -22,6 +22,7 @@ export default function _Form({ module }) {
 	const [resetKey, setResetKey] = useState(0);
 	const { hospitalConfigData: globalConfig } = useHospitalConfigData();
 	const hospitalConfigData = globalConfig?.hospital_config;
+
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
@@ -99,7 +100,6 @@ export default function _Form({ module }) {
 			form={form}
 			module={module}
 			handleSubmit={handleSubmit}
-			hospitalConfigData={hospitalConfigData}
 			isSubmitting={isSubmitting}
 			showUserData={showUserData}
 			setShowUserData={setShowUserData}

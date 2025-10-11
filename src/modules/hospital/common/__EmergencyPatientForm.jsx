@@ -91,6 +91,7 @@ export default function EmergencyPatientForm({
 	handleSubmit,
 	showUserData,
 	setShowUserData,
+	hospitalConfigData
 }) {
 	const { mainAreaHeight } = useOutletContext();
 	const searchForm = useForm({
@@ -283,7 +284,7 @@ export function Form({
 	visible,
 	setVisible,
 	resetKey,
-	setResetKey,hospitalConfigData
+	setResetKey
 }) {
 	const dispatch = useDispatch();
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
@@ -291,7 +292,8 @@ export function Form({
 	const [pendingPrint, setPendingPrint] = useState(null); // "a4" | "pos" | null
 	const ipdDocumentA4Ref = useRef(null);
 	const ipdDocumentPosRef = useRef(null);
-
+	const { hospitalConfigData: globalConfig } = useHospitalConfigData();
+	const hospitalConfigData = globalConfig?.hospital_config;
 	const printA4 = useReactToPrint({ content: () => ipdDocumentA4Ref.current });
 	const printPos = useReactToPrint({ content: () => ipdDocumentPosRef.current });
 
@@ -301,7 +303,7 @@ export function Form({
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
 	const firstRender = useIsFirstRender();
-
+	console.log(hospitalConfigData)
 	const enteredAmount = Number(form?.values?.amount ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
 	const isReturn = remainingBalance < 0;
@@ -333,6 +335,7 @@ export function Form({
 		form.setFieldValue("amount", price);
 
 	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
+	console.log(hospitalConfigData);
 	const handlePrint = async (type) => {
 		const res = await handleSubmit();
 
