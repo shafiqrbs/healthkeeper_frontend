@@ -21,6 +21,7 @@ function InputNumberForm({
 	leftSection,
 	rightSection,
 	handleChange = () => {},
+	min = undefined,
 	size = "sm",
 }) {
 	const { t } = useTranslation();
@@ -57,6 +58,7 @@ function InputNumberForm({
 						mt={mt}
 						readOnly={readOnly}
 						disabled={disabled}
+						min={min}
 						autoComplete="off"
 						{...form.getInputProps(name)}
 						onChange={handleInputChange}

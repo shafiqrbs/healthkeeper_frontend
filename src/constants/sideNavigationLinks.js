@@ -57,6 +57,28 @@ export const sideNavigationLinks = {
 			icon: IconBuildingHospital,
 			color: "#9C27B0", // Purple
 			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
+			subMenu: [
+				{
+					label: t("Dashboard"),
+					path: "/hospital/doctor",
+					icon: IconDashboard,
+				},
+				{
+					label: t("OPD"),
+					path: "/hospital/doctor/opd",
+					icon: IconBuildingHospital,
+				},
+				{
+					label: t("Emergency"),
+					path: "/hospital/doctor/emergency",
+					icon: IconEmergencyBed,
+				},
+				{
+					label: t("IPD"),
+					path: "/hospital/doctor/ipd",
+					icon: IconEmergencyBed,
+				},
+			],
 		},
 		{
 			label: t("Emergency"),

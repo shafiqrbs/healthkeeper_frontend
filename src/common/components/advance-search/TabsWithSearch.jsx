@@ -7,6 +7,7 @@ import { DateInput } from "@mantine/dates";
 import { useDispatch } from "react-redux";
 import { setFilterData } from "@/app/store/core/crudSlice";
 import { useDebouncedState } from "@mantine/hooks";
+import { formatDate } from "@/common/utils";
 
 const DEFAULT_ACTIVE_COLOR = "var(--theme-primary-color-6)";
 
@@ -27,11 +28,13 @@ export default function TabsWithSearch({
 	const [rootRef, setRootRef] = useState(null);
 	const [tabValue, setTabValue] = useState(tabList[0]);
 	const [controlsRefs, setControlsRefs] = useState({});
-	const [date, setDate] = useState(null);
+	const [date, setDate] = useState(new Date());
 	const [search, setSearch] = useDebouncedState("", 300);
 
 	useEffect(() => {
-		dispatch(setFilterData({ module, data: { created: date, keywordSearch: search } }));
+		dispatch(
+			setFilterData({ module, data: { created: date ? formatDate(date) : undefined, keywordSearch: search } })
+		);
 	}, [module, date, search]);
 
 	const setControlRef = (val) => (node) => {

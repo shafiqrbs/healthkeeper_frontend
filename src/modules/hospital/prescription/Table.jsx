@@ -37,7 +37,7 @@ import OPDPos from "@components/print-formats/opd/OPDPos";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import Prescription from "@/common/components/print-formats/opd/PrescriptionFull";
+import PrescriptionFull from "@components/print-formats/opd/PrescriptionFull";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
@@ -60,10 +60,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-	const userHospitalConfig = getLoggedInHospitalUser();
+	const hospitalConfig = getLoggedInHospitalUser();
 	const userRoles = getUserRole();
-	const userId = userHospitalConfig?.employee_id;
-	const opdRoomId = userHospitalConfig?.particular_details?.room_id;
+	const userId = hospitalConfig?.employee_id;
+	const opdRoomId = hospitalConfig?.particular_details?.room_id;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -330,123 +330,136 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",
-							render: (values) => (
-								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
-										<>
-											{values?.prescription_id && userId == values?.prescription_created_by_id ? (
-												<Button
-													variant="filled"
-													bg="var(--theme-success-color)"
-													c="white"
-													fw={400}
-													size="compact-xs"
-													onClick={() => handlePrescription(values.prescription_id)}
-													radius="es"
-													rightSection={<IconArrowRight size={12} />}
-													className="border-right-radius-none"
-												>
-													{t("Prescription")}
-												</Button>
-											) : values?.prescription_id && values.referred_mode == "room" ? (
-												<Button
-													variant="filled"
-													bg="var(--theme-success-color)"
-													c="white"
-													fw={400}
-													size="compact-xs"
-													onClick={() => handlePrescription(values.prescription_id)}
-													radius="es"
-													rightSection={<IconArrowRight size={12} />}
-													className="border-right-radius-none"
-												>
-													{t("Prescription")}
-												</Button>
-											) : !values?.prescription_id || values.referred_mode == "room" ? (
-												<Button
-													fw={400}
-													variant="filled"
-													bg="var(--theme-primary-color-6)"
-													c="white"
-													size="compact-xs"
-													onClick={() => handleProcessPrescription(values.id)}
-													radius="es"
-													rightSection={<IconArrowRight size={12} />}
-													className="border-right-radius-none"
-												>
-													{t("Process")}
-												</Button>
-											) : null}
-										</>
-									)}
-
-									<Menu
-										position="bottom-end"
-										offset={3}
-										withArrow
-										trigger="hover"
-										openDelay={100}
-										closeDelay={400}
-									>
-										<Menu.Target>
-											<ActionIcon
-												className="border-left-radius-none"
-												variant="transparent"
-												color="var(--theme-menu-three-dot)"
-												radius="es"
-												aria-label="Settings"
-											>
-												<IconDotsVertical height={18} width={18} stroke={1.5} />
-											</ActionIcon>
-										</Menu.Target>
-										<Menu.Dropdown>
-											<Menu.Item
-												leftSection={
-													<IconScript
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-												onClick={() => handleA4Print(values?.id)}
-											>
-												{t("A4Print")}
-											</Menu.Item>
-											<Menu.Item
-												leftSection={
-													<IconPrinter
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-												onClick={() => handlePosPrint(values?.id)}
-											>
-												{t("Pos")}
-											</Menu.Item>
-											{values?.prescription_id && (
-												<>
-													<Menu.Item
-														leftSection={
-															<IconPrinter
-																style={{
-																	width: rem(14),
-																	height: rem(14),
-																}}
-															/>
-														}
-														onClick={() => handlePrescriptionPrint(values?.prescription_id)}
+							render: (values) => {
+								console.log(
+									"prescriptionId",
+									values?.prescription_id,
+									"userId",
+									userId,
+									"prescriptionCreatedById",
+									values?.prescription_created_by_id
+								);
+								return (
+									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+										{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
+											<>
+												{values?.prescription_id &&
+												userId == values?.prescription_created_by_id ? (
+													<Button
+														variant="filled"
+														bg="var(--theme-success-color)"
+														c="white"
+														fw={400}
+														size="compact-xs"
+														onClick={() => handlePrescription(values.prescription_id)}
+														radius="es"
+														rightSection={<IconArrowRight size={12} />}
+														className="border-right-radius-none"
 													>
 														{t("Prescription")}
-													</Menu.Item>
-												</>
-											)}
-										</Menu.Dropdown>
-									</Menu>
-								</Group>
-							),
+													</Button>
+												) : values?.prescription_id && values.referred_mode == "room" ? (
+													<Button
+														variant="filled"
+														bg="var(--theme-success-color)"
+														c="white"
+														fw={400}
+														size="compact-xs"
+														onClick={() => handlePrescription(values.prescription_id)}
+														radius="es"
+														rightSection={<IconArrowRight size={12} />}
+														className="border-right-radius-none"
+													>
+														{t("Prescription")}
+													</Button>
+												) : !values?.prescription_id || values.referred_mode == "room" ? (
+													<Button
+														fw={400}
+														variant="filled"
+														bg="var(--theme-primary-color-6)"
+														c="white"
+														size="compact-xs"
+														onClick={() => handleProcessPrescription(values.id)}
+														radius="es"
+														rightSection={<IconArrowRight size={12} />}
+														className="border-right-radius-none"
+													>
+														{t("Process")}
+													</Button>
+												) : null}
+											</>
+										)}
+
+										<Menu
+											position="bottom-end"
+											offset={3}
+											withArrow
+											trigger="hover"
+											openDelay={100}
+											closeDelay={400}
+										>
+											<Menu.Target>
+												<ActionIcon
+													className="border-left-radius-none"
+													variant="transparent"
+													color="var(--theme-menu-three-dot)"
+													radius="es"
+													aria-label="Settings"
+												>
+													<IconDotsVertical height={18} width={18} stroke={1.5} />
+												</ActionIcon>
+											</Menu.Target>
+											<Menu.Dropdown>
+												<Menu.Item
+													leftSection={
+														<IconScript
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+													onClick={() => handleA4Print(values?.id)}
+												>
+													{t("A4Print")}
+												</Menu.Item>
+												<Menu.Item
+													leftSection={
+														<IconPrinter
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+													onClick={() => handlePosPrint(values?.id)}
+												>
+													{t("Pos")}
+												</Menu.Item>
+												{values?.prescription_id && (
+													<>
+														<Menu.Item
+															leftSection={
+																<IconPrinter
+																	style={{
+																		width: rem(14),
+																		height: rem(14),
+																	}}
+																/>
+															}
+															onClick={() =>
+																handlePrescriptionPrint(values?.prescription_id)
+															}
+														>
+															{t("Prescription")}
+														</Menu.Item>
+													</>
+												)}
+											</Menu.Dropdown>
+										</Menu>
+									</Group>
+								);
+							},
 						},
 					]}
 					textSelectionDisabled
@@ -471,7 +484,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 			<OPDDocument data={printData} ref={a4Ref} />
 			<OPDPos data={printData} ref={posRef} />
-			<Prescription data={printData} ref={prescriptionRef} />
+			<PrescriptionFull data={printData} ref={prescriptionRef} />
 		</Box>
 	);
 }

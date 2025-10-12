@@ -29,7 +29,9 @@ import { useDispatch, useSelector } from "react-redux";
 import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 import inputCss from "@assets/css/InputField.module.css";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import IPDAllPrint from "@/common/components/print-formats/ipd/IPDAllPrint";
+import { useReactToPrint } from "react-to-print";
 
 const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator"];
 const module = MODULES.BILLING;
@@ -50,6 +52,9 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 	const cabinListData = useSelector((state) => state.crud.cabin?.data?.data);
 	const bedListData = useSelector((state) => state.crud.bed?.data?.data);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const ipdAllPrintRef = useRef(null);
+
+	const printIPDAll = useReactToPrint({ content: () => ipdAllPrintRef.current });
 
 	const getRoomData = () => {
 		if (form.values.roomType === "cabin") {
@@ -246,15 +251,16 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 		}
 	};
 
-	console.log(selectedTransactionId, test?.invoice_transaction);
-
 	return (
 		<Box className="borderRadiusAll" bg="white">
-			<Box bg="var(--theme-primary-color-0)" p="sm">
-				<Text fw={600} fz="sm" py="es">
+			<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between">
+				<Text fw={600} fz="sm" py="es" px="xs">
 					{t("InvoiceTransaction")}
 				</Text>
-			</Box>
+				<Button onClick={printIPDAll} bg="var(--theme-secondary-color-6)" color="white" size="xs">
+					{t("AllPrint")}
+				</Button>
+			</Flex>
 			{id ? (
 				<>
 					<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 320}>
@@ -352,29 +358,15 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 											<Grid columns={18} gutter="xs">
 												<Grid.Col span={18} className="animate-ease-out" px="xs">
 													<ScrollArea scrollbars="y" type="never" h="116" mx="xs">
-														<Stack
-															gap={0}
-															bg="white"
-															px="sm"
-															className="borderRadiusAll"
-															mt="xxs"
-														>
+														<Stack gap={0} bg="white" mt="xxs">
 															{form.values?.investigation?.map((item, idx) => (
 																<Flex
 																	key={idx}
 																	align="center"
 																	justify="space-between"
-																	px="es"
-																	py="xs"
-																	style={{
-																		borderBottom:
-																			idx !==
-																			form.values?.investigation?.length - 1
-																				? "1px solid var(--theme-tertiary-color-4)"
-																				: "none",
-																	}}
+																	py="es"
 																>
-																	<Text fz="sm">
+																	<Text fz="xs">
 																		{idx + 1}. {item.name}
 																	</Text>
 																	<ActionIcon
@@ -495,6 +487,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}
+			<IPDAllPrint data={test} ref={ipdAllPrintRef} />
 		</Box>
 	);
 }

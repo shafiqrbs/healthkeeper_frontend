@@ -10,6 +10,7 @@ import { formatDate } from "@/common/utils";
 import "@/index.css";
 import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
+import Barcode from "react-barcode";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {
 	// const { data: prescriptionData } = useDataWithoutStore({
@@ -442,6 +443,9 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 									</Grid>
 								</>
 							))}
+						</Box>
+						<Box align={"center"}>
+							<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.barcode} />
 						</Box>
 					</Grid.Col>
 				</Grid>

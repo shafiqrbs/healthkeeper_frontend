@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react";
 import { getDataWithoutStore } from "@/services/apiService";
-import {getLoggedInHospitalUser, getLoggedInUser} from "@utils/index";
-import {CONFIGURATION_ROUTES} from "@/constants/routes";
+import { getLoggedInHospitalUser, getLoggedInUser } from "@utils/index";
+import { CONFIGURATION_ROUTES } from "@/constants/routes";
 
 export default function useHospitalUserData() {
 	const [error, setError] = useState(null);
 	const [data, setData] = useState(null);
 	const user = getLoggedInUser();
 	const existHospitalUser = getLoggedInHospitalUser();
-	const url = `${CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.USER_INFO}/${user.id}`
+	const url = `${CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.USER_INFO}/${user.id}`;
+
 	const fetchData = async () => {
 		setError(null);
 		setData(null);
 		try {
-			if(existHospitalUser?.id){
+			if (existHospitalUser?.id) {
 				setData(existHospitalUser);
-			}else{
-				const response = await getDataWithoutStore({url});
+			} else {
+				const response = await getDataWithoutStore({ url });
 				setData(response);
 				localStorage.setItem("hospital-user", JSON.stringify(response.data));
 			}
@@ -24,6 +25,7 @@ export default function useHospitalUserData() {
 			setError(error);
 		}
 	};
+
 	const refetch = async () => {
 		await fetchData();
 	};
@@ -32,5 +34,5 @@ export default function useHospitalUserData() {
 		fetchData();
 	}, []);
 
-	return {error, userInfo:data, refetch };
+	return { error, userInfo: data, refetch };
 }

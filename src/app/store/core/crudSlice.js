@@ -9,6 +9,7 @@ import {
 	updateEntityData,
 	updateEntityDataWithFile,
 } from "./crudThunk";
+import { formatDate } from "@/common/utils";
 
 const initialState = {
 	// --------------- core modules starts -------------------
@@ -35,7 +36,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	particularList: {
@@ -45,7 +46,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	lab_user: {
@@ -55,7 +56,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	dosage: {
@@ -65,7 +66,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	byMeal: {
@@ -75,7 +76,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	medicine: {
@@ -95,7 +96,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	billing: {
@@ -105,7 +106,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	advice: {
@@ -115,7 +116,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	exemergency: {
@@ -125,7 +126,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	doctor: {
@@ -135,7 +136,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	nurse: {
@@ -145,7 +146,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	staff: {
@@ -155,7 +156,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	opd_room: {
@@ -165,7 +166,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	treatment: {
@@ -175,7 +176,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	particular_matrix: {
@@ -205,7 +206,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	particular_mode: {
@@ -215,7 +216,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	particular_type: {
@@ -225,7 +226,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
 	stock: {
@@ -460,7 +461,7 @@ const initialState = {
 		insertType: "create",
 		data: {},
 		editData: {},
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 		validationMessages: [],
 	},
 	// -------------------- hospital modules stops -------------------------
@@ -487,7 +488,7 @@ const initialState = {
 		insertType: "create",
 		data: {},
 		editData: {},
-		filterData: { created: "", keywordSearch: "" },
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 		validationMessages: [],
 	},
 	// -------------------- admission modules stops -------------------------

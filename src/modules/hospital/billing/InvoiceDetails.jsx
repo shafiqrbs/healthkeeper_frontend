@@ -88,6 +88,7 @@ export default function InvoiceDetails() {
 			onConfirm: () => handleConfirmModal(values),
 		});
 	};
+
 	async function handleConfirmModal(values) {
 		try {
 			const value = {
@@ -110,6 +111,7 @@ export default function InvoiceDetails() {
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
+			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
@@ -208,7 +210,7 @@ export default function InvoiceDetails() {
 													<Grid.Col span={12}>
 														<Flex align="right" gap="es">
 															<Text fz="xs">
-																{invoiceDetails?.created_doctor_info?.name} asdasd adsa
+																{invoiceDetails?.created_doctor_info?.name}
 															</Text>
 														</Flex>
 													</Grid.Col>
@@ -221,7 +223,7 @@ export default function InvoiceDetails() {
 													</Grid.Col>
 													<Grid.Col span={12}>
 														<Flex align="right" gap="es">
-															<Text fz="sm">{invoiceDetails?.total}</Text>
+															<Text fz="sm">{invoiceDetails?.total || 0}</Text>
 														</Flex>
 													</Grid.Col>
 												</Grid>
@@ -245,12 +247,11 @@ export default function InvoiceDetails() {
 													<InputNumberForm
 														form={form}
 														label=""
-														tooltip={t("EnterPatientMobile")}
-														placeholder={invoiceDetails?.total}
-														name="mobile"
-														id="mobile"
-														nextField="dob"
-														value={invoiceDetails?.total}
+														tooltip={t("EnterQuantity")}
+														placeholder={t("Amount")}
+														name="quantity"
+														id="quantity"
+														value={invoiceDetails?.total || 0}
 													/>
 												</Grid.Col>
 											</Grid>
@@ -267,7 +268,12 @@ export default function InvoiceDetails() {
 															<Text fz="xs">{t("Print")}</Text>
 														</Stack>
 													</Button>
-													<Button w="100%" size="compact-sm" bg="var(--theme-save-btn-color)">
+													<Button
+														type="submit"
+														w="100%"
+														size="compact-sm"
+														bg="var(--theme-save-btn-color)"
+													>
 														<Stack gap={0} align="center" justify="center">
 															<Text fz="xs">{t("Save")}</Text>
 														</Stack>
