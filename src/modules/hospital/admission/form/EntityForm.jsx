@@ -24,6 +24,7 @@ import useHospitalSettingData from "@hooks/config-data/useHospitalSettingData";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import IpdActionButtons from "@hospital-components/_IpdActionButtons";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
+import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 
 const USER_NID_DATA = {
 	verifyToken: "a9a98eac-68c4-4dd1-9cb9-8127a5b44833",
@@ -99,6 +100,18 @@ export default function EntityForm({ form, module }) {
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.TYPE },
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.UTILITY,
 	});
+
+	const BLOOD_GROUPS = [
+		{ label: "A+", value: "A+" },
+		{ label: "A-", value: "A-" },
+		{ label: "B+", value: "B+" },
+		{ label: "B-", value: "B-" },
+		{ label: "O+", value: "O+" },
+		{ label: "O-", value: "O-" },
+		{ label: "AB+", value: "AB+" },
+		{ label: "AB-", value: "AB-" },
+	];
+
 
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
@@ -293,6 +306,26 @@ export default function EntityForm({ form, module }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
+										<Text fz="sm">{t("gender")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<SegmentedControl
+											fullWidth
+											color="var(--theme-primary-color-6)"
+											value={form.values.gender}
+											id="gender"
+											name="gender"
+											onChange={(val) => handleGenderChange(val)}
+											data={[
+												{ label: t("male"), value: "male" },
+												{ label: t("female"), value: "female" },
+												{ label: t("other"), value: "other" },
+											]}
+										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
 										<Text fz="sm">{t("DOB")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
@@ -310,6 +343,51 @@ export default function EntityForm({ form, module }) {
 											required
 											disabledFutureDate
 										/>
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("age")}</Text>
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<Flex gap="xs">
+											<InputNumberForm
+												form={form}
+												label=""
+												placeholder="Years"
+												tooltip={t("days")}
+												name="year"
+												id="year"
+												nextField="father_name"
+												value={form.values.year}
+												min={0}
+												max={31}
+											/>
+											<InputNumberForm
+												form={form}
+												label=""
+												placeholder="Months"
+												tooltip={t("Months")}
+												name="month"
+												id="month"
+												nextField="year"
+												value={form.values.month}
+												min={0}
+												max={11}
+											/>
+											<InputNumberForm
+												form={form}
+												label=""
+												placeholder="Days"
+												tooltip={t("Days")}
+												name="day"
+												id="day"
+												nextField="month"
+												value={form.values.day}
+												min={0}
+												max={150}
+											/>
+										</Flex>
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
@@ -438,7 +516,7 @@ export default function EntityForm({ form, module }) {
 											form={form}
 											label=""
 											tooltip={t("EnterDepartmentName")}
-											placeholder="Cardiology"
+											placeholder="Medicine"
 											name="admit_department_id"
 											id="admit_department_id"
 											value={form.values.admit_department_id?.toString()}
@@ -464,7 +542,7 @@ export default function EntityForm({ form, module }) {
 											form={form}
 											label=""
 											tooltip={t("EnterAssignDoctorName")}
-											placeholder="Dr. Shafiqul Islam"
+											placeholder="HeadofUnitDoctor"
 											name="admit_doctor_id"
 											id="admit_doctor_id"
 											value={form.values.admit_doctor_id?.toString()}
@@ -514,21 +592,49 @@ export default function EntityForm({ form, module }) {
 							<Stack className="form-stack-vertical">
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("PatientStatus")}</Text>
+										<Text fz="sm">{t("SpO2")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>
+									<Grid.Col span={5}>
 										<Flex gap="les">
 											<InputNumberForm
 												form={form}
 												label=""
-												placeholder="170"
-												tooltip={t("EnterPatientHeight")}
-												name="height"
-												id="height"
-												nextField="weight"
-												value={form.values.height}
+												placeholder={t("SpO2")}
+												tooltip={t("EnterPatientSpO2")}
+												name="oxygen"
+												id="oxygen"
+												nextField="temperature"
+												value={form.values.oxygen}
 												required
 											/>
+										</Flex>
+									</Grid.Col>
+									<Grid.Col span={4}>
+										<Text fz="sm">{t("Temperature")}</Text>
+									</Grid.Col>
+									<Grid.Col span={5}>
+										<Flex gap="les">
+											<InputNumberForm
+												form={form}
+												label=""
+												placeholder={t("Temperature")}
+												tooltip={t("EnterPatientTemperature")}
+												name="temperature"
+												id="temperature"
+												nextField="weight"
+												value={form.values.temperature}
+												required
+											/>
+										</Flex>
+
+									</Grid.Col>
+								</Grid>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("Weight")}</Text>
+									</Grid.Col>
+									<Grid.Col span={5}>
+										<Flex gap="les">
 											<InputNumberForm
 												form={form}
 												label=""
@@ -540,6 +646,13 @@ export default function EntityForm({ form, module }) {
 												value={form.values.weight}
 												required
 											/>
+										</Flex>
+									</Grid.Col>
+									<Grid.Col span={4}>
+										<Text fz="sm">{t("Blood/Presure")}</Text>
+									</Grid.Col>
+									<Grid.Col span={5}>
+										<Flex gap="les">
 											<InputForm
 												form={form}
 												label=""
@@ -547,7 +660,7 @@ export default function EntityForm({ form, module }) {
 												tooltip={t("EnterPatientBp")}
 												name="bp"
 												id="bp"
-												nextField="dateOfBirth"
+												nextField="pulse"
 												value={form.values.bp}
 												required
 											/>
@@ -556,66 +669,80 @@ export default function EntityForm({ form, module }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("age")}</Text>
+										<Text fz="sm">{t("Pulse")}</Text>
 									</Grid.Col>
-									<Grid.Col span={14}>
-										<Flex gap="xs">
+									<Grid.Col span={5}>
+										<Flex gap="les">
 											<InputNumberForm
 												form={form}
 												label=""
-												placeholder="Years"
-												tooltip={t("days")}
-												name="year"
-												id="year"
-												nextField="father_name"
-												value={form.values.year}
-												min={0}
-												max={31}
+												placeholder={t("Pulse")}
+												tooltip={t("EnterPatientPulse")}
+												name="pulse"
+												id="pulse"
+												nextField="blood_sugar"
+												value={form.values.pulse}
+												required
 											/>
-											<InputNumberForm
+										</Flex>
+									</Grid.Col>
+									<Grid.Col span={4}>
+										<Text fz="sm">{t("Blood/Sugar")}</Text>
+									</Grid.Col>
+									<Grid.Col span={5}>
+										<Flex gap="les">
+											<InputForm
 												form={form}
 												label=""
-												placeholder="Months"
-												tooltip={t("Months")}
-												name="month"
-												id="month"
-												nextField="year"
-												value={form.values.month}
-												min={0}
-												max={11}
-											/>
-											<InputNumberForm
-												form={form}
-												label=""
-												placeholder="Days"
-												tooltip={t("Days")}
-												name="day"
-												id="day"
-												nextField="month"
-												value={form.values.day}
-												min={0}
-												max={150}
+												placeholder={t("BloodSugar")}
+												tooltip={t("BloodSugar")}
+												name="blood_sugar"
+												id="blood_sugar"
+												nextField="blood_group"
+												value={form.values.blood_sugar}
+												required
 											/>
 										</Flex>
 									</Grid.Col>
 								</Grid>
+
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("gender")}</Text>
+										<Text fz="sm">{t("bloodGroup")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<SegmentedControl
-											fullWidth
-											color="var(--theme-primary-color-6)"
-											value={form.values.gender}
-											id="gender"
-											name="gender"
-											onChange={(val) => handleGenderChange(val)}
-											data={[
-												{ label: t("male"), value: "male" },
-												{ label: t("female"), value: "female" },
-												{ label: t("other"), value: "other" },
-											]}
+
+										<SelectForm
+											form={form}
+											name="blood_group"
+											id="blood_group"
+											dropdownValue={BLOOD_GROUPS}
+											value={form.values?.blood_group}
+											mt={0}
+											size="sm"
+											pt={0}
+											placeholder="A+"
+										/>
+									</Grid.Col>
+								</Grid>
+
+							</Stack>
+							<Stack className="form-stack-vertical" mt={'xs'}>
+								<Grid align="center" columns={20}>
+									<Grid.Col span={6}>
+										<Text fz="sm">{t("Religion")}<RequiredAsterisk /></Text>
+
+									</Grid.Col>
+									<Grid.Col span={14}>
+										<SelectForm
+											form={form}
+											tooltip={t("SelectReligionValidateMessage")}
+											placeholder={t("SelectReligion")}
+											name="religion_id"
+											id="religion_id"
+											nextField="name"
+											value={form.values.religion_id}
+											dropdownValue={religionDropdown}
 										/>
 									</Grid.Col>
 								</Grid>
@@ -655,11 +782,9 @@ export default function EntityForm({ form, module }) {
 										/>
 									</Grid.Col>
 								</Grid>
-							</Stack>
-							<Stack className="form-stack-vertical">
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("GuardianName")}</Text>
+										<Text fz="sm">{t("GuardianName")}<RequiredAsterisk /></Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
@@ -675,9 +800,9 @@ export default function EntityForm({ form, module }) {
 										/>
 									</Grid.Col>
 								</Grid>
-								<Grid align="center" columns={20}>
+								<Grid align="center" columns={20} >
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("GuardianMobile")}</Text>
+										<Text fz="sm">{t("GuardianMobile")}<RequiredAsterisk /></Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
@@ -732,7 +857,8 @@ export default function EntityForm({ form, module }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("PresentAddress")}</Text>
+										<Text fz="sm">{t("PresentAddress")}<RequiredAsterisk /></Text>
+
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
@@ -768,23 +894,7 @@ export default function EntityForm({ form, module }) {
 									</Grid.Col>
 								</Grid>
 
-								<Grid align="center" columns={20}>
-									<Grid.Col span={6}>
-										<Text fz="sm">{t("Religion")}</Text>
-									</Grid.Col>
-									<Grid.Col span={14}>
-										<SelectForm
-											form={form}
-											tooltip={t("SelectReligionValidateMessage")}
-											placeholder={t("SelectReligion")}
-											name="religion_id"
-											id="religion_id"
-											nextField="name"
-											value={form.values.religion_id}
-											dropdownValue={religionDropdown}
-										/>
-									</Grid.Col>
-								</Grid>
+
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
 										<Text fz="sm">{t("Nationality")}</Text>

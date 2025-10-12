@@ -31,6 +31,7 @@ const theme = createTheme({
 		xxs: "10px",
 		xxxs: "8px",
 		les: "6px",
+		mes: "4px",
 		es: "2px",
 	},
 });

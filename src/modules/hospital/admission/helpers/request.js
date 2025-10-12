@@ -24,9 +24,13 @@ const admissionInitialValues = {
 	comment: "",
 	patient_relation: "",
 	upazilla_id: "",
+	oxygen: "",
+	temperature: "",
+	pulse: "",
 	bp: "",
 	weight: "",
-	height: "",
+	blood_sugar: "",
+	blood_group: "",
 	amount: "",
 	admit_consultant_id: "",
 	religion_id: "",
@@ -44,10 +48,22 @@ export const getAdmissionFormInitialValues = () => {
 				if (!value) return "Department is required";
 				return null;
 			},
-			// religion_id: (value) => {
-			// 	if (!value) return "Religion is required";
-			// 	return null;
-			// },
+			religion_id: (value) => {
+				if (!value) return "Religion is required";
+			 	return null;
+			 	},
+			guardian_name: (value) => {
+				if (!value) return "Guardian name is required";
+				return null;
+			},
+			guardian_mobile: (value) => {
+				if (!value) return "Guardian mobile is required";
+				return null;
+			},
+			address: (value) => {
+				if (!value) return "Present address is required";
+				return null;
+			},
 		},
 	};
 };
