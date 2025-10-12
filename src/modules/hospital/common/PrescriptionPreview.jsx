@@ -12,6 +12,7 @@ import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigDat
 import { t } from "i18next";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import Barcode from "react-barcode";
 
 const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
 	const { data: prescriptionData, isLoading } = useDataWithoutStore({
@@ -440,6 +441,9 @@ const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
 								</Grid.Col>
 							</Grid>
 						))}
+					</Box>
+					<Box align={"center"}>
+						<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.barcode} />
 					</Box>
 				</Grid.Col>
 			</Grid>
