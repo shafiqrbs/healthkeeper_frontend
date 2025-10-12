@@ -1,13 +1,12 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import { Box, Text, ScrollArea, Stack, Grid, TextInput, Flex, Button } from "@mantine/core";
+import { Box, Text, Stack, Grid, Flex, Button } from "@mantine/core";
 import { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
-import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import {IconChevronUp, IconSelector, IconPrinter, IconRestore} from "@tabler/icons-react";
-import { formatDate } from "@/common/utils";
+import { IconChevronUp, IconSelector } from "@tabler/icons-react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -22,32 +21,32 @@ import { useDispatch } from "react-redux";
 import { useHotkeys } from "@mantine/hooks";
 
 const module = MODULES_CORE.BILLING;
+
 export default function InvoiceDetails() {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const inputsRef = useRef([]);
 	const { mainAreaHeight } = useOutletContext();
 	const form = useForm(getFormValues(t));
-	const [diagnosticReport, setDiagnosticReport] = useState([]);
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
-	const [submitFormData, setSubmitFormData] = useState({});
 	const [updatingRows, setUpdatingRows] = useState({});
 	const { id, transactionId } = useParams();
-	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
+	const [fetching, setFetching] = useState(false);
+
 	useEffect(() => {
 		if (id && transactionId) {
+			setFetching(true);
 			(async () => {
 				const res = await getDataWithoutStore({
 					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INDEX}/${id}/payment/${transactionId}`,
 				});
 				form.reset();
 				setInvoiceDetails(res?.data);
+				setFetching(false);
 			})();
 		}
 	}, [id, transactionId]);
 
-	console.log(invoiceDetails)
-	//const handleDataTypeChange = () => {};
 	const handleFieldChange = async (rowId, field, value) => {
 		setSubmitFormData((prev) => ({
 			...prev,
@@ -138,7 +137,7 @@ export default function InvoiceDetails() {
 								footer: tableCss.footer,
 								pagination: tableCss.pagination,
 							}}
-							records={invoiceDetails?.items|| []}
+							records={invoiceDetails?.items || []}
 							columns={[
 								{
 									accessor: "index",
@@ -161,8 +160,9 @@ export default function InvoiceDetails() {
 								{
 									accessor: "unit",
 									title: t("SubTotal"),
-								}
+								},
 							]}
+							fetching={fetching}
 							loaderSize="xs"
 							loaderColor="grape"
 							height={mainAreaHeight - 170}
@@ -172,103 +172,110 @@ export default function InvoiceDetails() {
 							}}
 						/>
 					</Box>
-					<Box gap={0} justify="space-between" mt="xs"  >
+					<Box gap={0} justify="space-between" mt="xs">
 						<form onSubmit={form.onSubmit(handleSubmit)}>
-							<Box >
-								<Box bg="white" pl={"xs"} pr={"xs"} pb={'xs'}>
-									<Box w="100%">
-										<Box>
-											<Grid columns={18} gutter="xs" >
-												<Grid.Col span={6} className="animate-ease-out" bg="var(--theme-primary-color-0)" px="xs">
-													<Box mt={'md'}>
-														<TextAreaForm
-															id="comment"
-															form={form}
-															tooltip={t("EnterComment")}
-															placeholder={t("EnterComment")}
-															name="comment"
-														/>
-													</Box>
+							<Box bg="white" px="xs" pb="xs">
+								<Box w="100%">
+									<Grid columns={18} gutter="xs">
+										<Grid.Col
+											span={6}
+											className="animate-ease-out"
+											bg="var(--theme-primary-color-0)"
+											px="xs"
+										>
+											<Box mt="md">
+												<TextAreaForm
+													id="comment"
+													form={form}
+													tooltip={t("EnterComment")}
+													placeholder={t("EnterComment")}
+													name="comment"
+												/>
+											</Box>
+										</Grid.Col>
+										<Grid.Col
+											span={6}
+											bg="var(--theme-tertiary-color-1)"
+											className="animate-ease-out"
+										>
+											<Box mt="xs">
+												<Grid align="center" columns={20}>
+													<Grid.Col span={8}>
+														<Flex justify="flex-end" align="center" gap="es">
+															<Text fz="xs">{t("CreatedBy")}</Text>
+														</Flex>
+													</Grid.Col>
+													<Grid.Col span={12}>
+														<Flex align="right" gap="es">
+															<Text fz="xs">
+																{invoiceDetails?.created_doctor_info?.name} asdasd adsa
+															</Text>
+														</Flex>
+													</Grid.Col>
+												</Grid>
+												<Grid align="center" columns={20}>
+													<Grid.Col span={8}>
+														<Flex justify="flex-end" align="center" gap="es">
+															<Text fz="sm">{t("Total")}</Text>
+														</Flex>
+													</Grid.Col>
+													<Grid.Col span={12}>
+														<Flex align="right" gap="es">
+															<Text fz="sm">{invoiceDetails?.total}</Text>
+														</Flex>
+													</Grid.Col>
+												</Grid>
+											</Box>
+										</Grid.Col>
+										<Grid.Col
+											span={6}
+											className="animate-ease-out"
+											bg="var(--theme-secondary-color-0)"
+											px="xs"
+										>
+											<Grid align="center" columns={20}>
+												<Grid.Col span={10}>
+													<Flex justify="flex-end" align="center" gap="es">
+														<Text fz="sm" fw={"800"}>
+															{t("Receive")}
+														</Text>
+													</Flex>
 												</Grid.Col>
-												<Grid.Col span={6} bg="var(--theme-tertiary-color-1)" className="animate-ease-out">
-													<Box mt={'xs'}>
-														<Grid align="center" columns={20}>
-															<Grid.Col span={8}>
-																<Flex justify="flex-end"
-																	  align="center" gap="es">
-																	<Text fz="xs">{t("CreatedBy")}</Text>
-																</Flex>
-															</Grid.Col>
-															<Grid.Col span={12}>
-																<Flex align="right" gap="es">
-																	<Text fz="xs">{invoiceDetails?.created_doctor_info?.name} asdasd adsa</Text>
-																</Flex>
-															</Grid.Col>
-														</Grid>
-														<Grid align="center" columns={20}>
-															<Grid.Col span={8}>
-																<Flex justify="flex-end"
-																	  align="center" gap="es">
-																	<Text fz="sm" >{t("Total")}</Text>
-																</Flex>
-															</Grid.Col>
-															<Grid.Col span={12}>
-																<Flex align="right" gap="es">
-																	<Text fz="sm">{invoiceDetails?.total}</Text>
-																</Flex>
-															</Grid.Col>
-														</Grid>
-													</Box>
-												</Grid.Col>
-												<Grid.Col span={6} className="animate-ease-out" bg="var(--theme-secondary-color-0)" px="xs">
-													<Grid align="center" columns={20}>
-														<Grid.Col span={10}>
-															<Flex justify="flex-end" align="center" gap="es">
-																<Text fz="sm" fw={'800'}>{t("Receive")}</Text>
-															</Flex>
-														</Grid.Col>
-														<Grid.Col span={10}>
-															<InputNumberForm
-																form={form}
-																label=""
-																tooltip={t("EnterPatientMobile")}
-																placeholder={invoiceDetails?.total}
-																name="mobile"
-																id="mobile"
-																nextField="dob"
-																value={invoiceDetails?.total}
-															/>
-														</Grid.Col>
-
-													</Grid>
-													<Box mt={'xs'}>
-														<Button.Group>
-															<Button
-																id="EntityFormSubmit"
-																w="100%"
-																size="compact-sm"
-																bg="var(--theme-pos-btn-color)"
-																type="button"
-															>
-																<Stack gap={0} align="center" justify="center">
-																	<Text fz="xs">{t("Print")}</Text>
-																</Stack>
-															</Button>
-															<Button
-																w="100%"
-																size="compact-sm"
-																bg="var(--theme-save-btn-color)">
-																<Stack gap={0} align="center" justify="center">
-																	<Text fz="xs">{t("Save")}</Text>
-																</Stack>
-															</Button>
-														</Button.Group>
-													</Box>
+												<Grid.Col span={10}>
+													<InputNumberForm
+														form={form}
+														label=""
+														tooltip={t("EnterPatientMobile")}
+														placeholder={invoiceDetails?.total}
+														name="mobile"
+														id="mobile"
+														nextField="dob"
+														value={invoiceDetails?.total}
+													/>
 												</Grid.Col>
 											</Grid>
-										</Box>
-
-									</Box>
+											<Box mt="xs">
+												<Button.Group>
+													<Button
+														id="EntityFormSubmit"
+														w="100%"
+														size="compact-sm"
+														bg="var(--theme-pos-btn-color)"
+														type="button"
+													>
+														<Stack gap={0} align="center" justify="center">
+															<Text fz="xs">{t("Print")}</Text>
+														</Stack>
+													</Button>
+													<Button w="100%" size="compact-sm" bg="var(--theme-save-btn-color)">
+														<Stack gap={0} align="center" justify="center">
+															<Text fz="xs">{t("Save")}</Text>
+														</Stack>
+													</Button>
+												</Button.Group>
+											</Box>
+										</Grid.Col>
+									</Grid>
 								</Box>
 							</Box>
 						</form>

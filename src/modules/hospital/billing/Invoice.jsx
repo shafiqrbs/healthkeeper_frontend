@@ -15,7 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
-import { getUserRole } from "@utils/index";
+import { formatDate, getUserRole } from "@utils/index";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -41,7 +41,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const test = entity;
-	const { id } = useParams();
+	const { id, transactionId: selectedTransactionId } = useParams();
 	const navigate = useNavigate();
 	const userRoles = getUserRole();
 	const [autocompleteValue, setAutocompleteValue] = useState("");
@@ -205,10 +205,21 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 	};
 
 	const handleRoomSubmit = async () => {
-		setIsSubmitting(true);
 		try {
+			setIsSubmitting(true);
+			if (!form.values?.room || !form.values?.quantity) {
+				errorNotification(t("PleaseFillAllFieldsToSubmit"), ERROR_NOTIFICATION_COLOR);
+				setIsSubmitting(false);
+				return;
+			}
 			const formValue = {
-				json_content: { room: form.values?.room, quantity: form.values?.quantity },
+				json_content: [
+					{
+						id: form.values?.room,
+						quantity: form.values?.quantity,
+						start_date: formatDate(new Date()),
+					},
+				],
 				ipd_module: "room",
 			};
 
@@ -235,6 +246,8 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 		}
 	};
 
+	console.log(selectedTransactionId, test?.invoice_transaction);
+
 	return (
 		<Box className="borderRadiusAll" bg="white">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
@@ -248,7 +261,16 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 						<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 						<Stack className="form-stack-vertical" p="xs" pos="relative">
 							{test?.invoice_transaction?.map((item, index) => (
-								<Box key={index} className="borderRadiusAll" bg="white" p="sm">
+								<Box
+									key={index}
+									className="borderRadiusAll"
+									bg={
+										selectedTransactionId == item.hms_invoice_transaction_id
+											? "var(--theme-primary-color-1)"
+											: "white"
+									}
+									p="sm"
+								>
 									<Text fz="sm">{item.invoice_created}</Text>
 									<Text fz="xs">Status:{item?.process}</Text>
 									<Text fz="xs">Amount:{Number(item?.total, 2)}</Text>
@@ -401,7 +423,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 										</Box>
 									</Tabs.Panel>
 									<Tabs.Panel value="bed-cabin" bg="white">
-										<Stack justify="space-between">
+										<Stack justify="space-between" h={mainAreaHeight - 570}>
 											<Grid mt="xs" mx="xs" gutter="xs" align="center" columns={20}>
 												<Grid.Col span={20}>
 													<Select
