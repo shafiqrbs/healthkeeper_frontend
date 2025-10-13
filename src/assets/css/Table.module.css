@@ -8,7 +8,6 @@
 
 .table {
     tr {
-        font-size: 12px!important;
         background-color: white;
         margin: 0!important;
         padding-left: 8px!important;
@@ -16,7 +15,6 @@
             cursor: pointer;
         }
             td {
-                font-size: 12px!important;
                 margin-top: 2px!important;
                 margin-bottom: 2px!important;
                 padding-top: 0!important;
@@ -43,7 +41,6 @@
 .header {
     th {
         background-color: var(--theme-primary-color-1) !important;
-        font-size: 14px!important;
         font-weight: 500;
         text-align: left!important;
         color: var(--mantine-color-gray-8);
@@ -63,7 +60,6 @@
 
 .footer {
     color: #656565;
-    font-size: 13px;
 
     th,
     td {

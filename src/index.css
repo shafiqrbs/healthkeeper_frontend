@@ -93,6 +93,11 @@
     --scrollarea-scrollbar-size: 6px !important;
 }
 
+html {
+    transition: all 0.2s ease-in-out;
+}
+
+
 body {
     overflow: hidden;
 }

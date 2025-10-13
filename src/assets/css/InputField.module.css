@@ -5,7 +5,6 @@
 /* Input.module.css */
 .input {
     border: 1px solid var(--mantine-color-blue-8) !important;
-    height: 32px !important;
     min-height: auto !important;
 }
 
