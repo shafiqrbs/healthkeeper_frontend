@@ -42,6 +42,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
 import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } from "@/services/patientSearchService";
 import { MODULES_CORE } from "@/constants";
+import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -553,6 +554,27 @@ export function Form({
 						</Grid>
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
+								<Flex align="center" gap="es">
+									<Text fz="sm">{t("DateOfBirth")}</Text>
+								</Flex>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<DateSelectorForm
+									key={form.values.dob ? new Date(form.values.dob).toISOString() : "dob-empty"}
+									form={form}
+									placeholder="01-01-2020"
+									tooltip={t("EnterDateOfBirth")}
+									name="dob"
+									id="dob"
+									nextField="year"
+									value={form.values.dob}
+									required
+									disabledFutureDate
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
 								<Flex>
 									<Text fz="sm">{t("Age")}</Text>
 									<RequiredAsterisk />
@@ -621,28 +643,6 @@ export function Form({
 								/>
 							</Grid.Col>
 						</Grid>
-						{/*<Grid align="center" columns={20}>
-							<Grid.Col span={6}>
-								<Flex align="center" gap="es">
-									<Text fz="sm">{t("DateOfBirth")}</Text>
-								</Flex>
-							</Grid.Col>
-							<Grid.Col span={14}>
-								<DateSelectorForm
-									key={form.values.dob ? new Date(form.values.dob).toISOString() : "dob-empty"}
-									form={form}
-									placeholder="01-01-2020"
-									tooltip={t("EnterDateOfBirth")}
-									name="dob"
-									id="dob"
-									nextField="year"
-									value={form.values.dob}
-									required
-									disabledFutureDate
-								/>
-							</Grid.Col>
-						</Grid>*/}
-
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Flex align="center" gap="es">
