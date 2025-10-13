@@ -115,16 +115,13 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 					<Grid.Col span={9}>
 						<ScrollArea h={mainAreaHeight - 28} bg="white" type="never" className="border-radius">
 							<Box>
-								<Box pl="xxxs" pt={"xxxs"} pb={"xxxs"} mb={"xxxs"} bg="var(--theme-primary-color-1)">
+								<Box pl="xxxs" py="xxxs" mb={"xxxs"} bg="var(--theme-primary-color-1)">
 									{t("AdminMenu")}
 								</Box>
 								{subLinks.map((item, index) => (
 									<Box
 										key={index}
-										style={{
-											cursor: "pointer",
-										}}
-										className={`${classes["pressable-card"]}  ${
+										className={`cursor-pointer ${classes["pressable-card"]}  ${
 											location.pathname === item.path ? classes["active-link"] : ""
 										}`}
 										variant="default"
