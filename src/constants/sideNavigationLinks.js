@@ -116,6 +116,20 @@ export const sideNavigationLinks = {
 			allowedRoles: ["role_domain", "admin_administrator", "billing_cash", "billing_manager"],
 		},
 		{
+			label: t("Billing"),
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
+			icon: IconBuildingHospital,
+			color: "#9C27B0", // Purple
+			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
+			subMenu: [
+				{
+					label: t("IPDBilling"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
+					icon: IconDashboard,
+				},
+			],
+		},
+		{
 			label: t("Discharge"),
 			path: "/hospital/discharge",
 			icon: IconBuildingHospital,
