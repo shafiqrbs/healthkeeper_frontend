@@ -10,6 +10,14 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { IconArrowLeft } from "@tabler/icons-react";
 import IPDDetails from "@components/print-formats/ipd/IPDDetails";
+import EmergencyA4EN from "@components/print-formats/emergency/EmergencyA4EN";
+import EmergencyA4BN from "@components/print-formats/emergency/EmergencyA4BN";
+import EmergencyPosEN from "@components/print-formats/emergency/EmergencyPosEN";
+import EmergencyPosBN from "@components/print-formats/emergency/EmergencyPosBN";
+import IPDPrescriptionFullBN from "@components/print-formats/ipd/IPDPrescriptionFullBN";
+import IPDPrescriptionFullEN from "@components/print-formats/ipd/IPDPrescriptionFullEN";
+import LabReportA4EN from "@components/print-formats/lab-reports/LabReportA4EN";
+import LabReportA4BN from "@components/print-formats/lab-reports/LabReportA4BN";
 
 const STATIC_OPD_ID = 59;
 const STATIC_PRESCRIPTION_ID = 59;
@@ -56,6 +64,26 @@ export default function Details() {
 							<OPDPosBN data={OPDData?.data} preview />
 						</LoadingWrapper>
 					)}
+					{name === "EmergencyA4EN" && (
+						<LoadingWrapper isLoading={isOPDLoading}>
+							<EmergencyA4EN data={OPDData?.data} preview />
+						</LoadingWrapper>
+					)}
+					{name === "EmergencyA4BN" && (
+						<LoadingWrapper isLoading={isOPDLoading}>
+							<EmergencyA4BN data={OPDData?.data} preview />
+						</LoadingWrapper>
+					)}
+					{name === "EmergencyPosEN" && (
+						<LoadingWrapper isLoading={isOPDLoading}>
+							<EmergencyPosEN data={OPDData?.data} preview />
+						</LoadingWrapper>
+					)}
+					{name === "EmergencyPosBN" && (
+						<LoadingWrapper isLoading={isOPDLoading}>
+							<EmergencyPosBN data={OPDData?.data} preview />
+						</LoadingWrapper>
+					)}
 					{name === "PrescriptionFullEN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
 							<PrescriptionFullEN preview data={prescriptionData?.data} />
@@ -69,6 +97,26 @@ export default function Details() {
 					{name === "IPDDetails" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
 							<IPDDetails preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "IPDPrescriptionFullBN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<IPDPrescriptionFullBN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "IPDPrescriptionFullEN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<IPDPrescriptionFullEN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "LabReportA4EN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<LabReportA4EN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "LabReportA4BN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<LabReportA4BN preview data={prescriptionData?.data} />
 						</LoadingWrapper>
 					)}
 				</Box>

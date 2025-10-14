@@ -30,7 +30,7 @@ import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 import inputCss from "@assets/css/InputField.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import IPDAllPrint from "@/common/components/print-formats/ipd/AllPrint";
+import IPDAllPrint from "@components/print-formats/ipd/IPDAllPrint";
 import { useReactToPrint } from "react-to-print";
 
 const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator"];

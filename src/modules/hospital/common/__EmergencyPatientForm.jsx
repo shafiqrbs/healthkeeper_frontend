@@ -27,8 +27,8 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import NIDDataPreviewModal from "./NIDDataPreviewModal";
 import { useReactToPrint } from "react-to-print";
-import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
-import OPDPosBN from "@components/print-formats/opd/OPDPosBN";
+import EmergencyA4BN from "@components/print-formats/emergency/EmergencyA4BN";
+import EmergencyPosBN from "@components/print-formats/emergency/EmergencyPosBN";
 import { useForm } from "@mantine/form";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
@@ -830,8 +830,8 @@ export function Form({
 					userNidData={userNidData}
 				/>
 			</Box>
-			<OPDA4BN data={printData} ref={emergencyA4Ref} />
-			<OPDPosBN data={printData} ref={emergencyPosRef} />
+			<EmergencyA4BN data={printData} ref={emergencyA4Ref} />
+			<EmergencyPosBN data={printData} ref={emergencyPosRef} />
 		</>
 	);
 }

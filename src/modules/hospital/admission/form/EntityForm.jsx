@@ -6,7 +6,7 @@ import { ActionIcon, Box, Flex, Grid, LoadingOverlay, ScrollArea, SegmentedContr
 import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import DoctorsRoomDrawer from "@hospital-components/__DoctorsRoomDrawer";
 import { useDisclosure } from "@mantine/hooks";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -66,6 +66,7 @@ const USER_NID_DATA = {
 };
 
 export default function EntityForm({ form, module }) {
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [gender, setGender] = useState("male");
 	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
@@ -146,6 +147,7 @@ export default function EntityForm({ form, module }) {
 						true
 					);
 					setRefetchData({ module, refetching: true });
+					navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX, { replace: true });
 				}
 			} catch (error) {
 				console.error("Error submitting admission:", error);

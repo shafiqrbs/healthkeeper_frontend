@@ -2,15 +2,13 @@ import { Box, Text, Grid, Group, Stack, Image, Flex } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
-import DashedDivider from "@components/core-component/DashedDivider";
 import CustomDivider from "@components/core-component/CustomDivider";
 import { formatDate } from "@/common/utils";
 import "@/index.css";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
-import Barcode from "react-barcode";
 
-const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
+const IPDPrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
 	const patientReport = jsonContent?.patient_report || {};
@@ -386,74 +384,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 							</Grid.Col>
 						</Grid>
 					</Box>
-					<DashedDivider />
-					{/* =============== bottom section with patient info and medication table ================ */}
-					<Grid columns={12} gutter="md" mb="lg">
-						<Grid.Col span={4}>
-							<Stack gap="6px">
-								<Text size="xs" fw={500}>
-									Name: {getValue(patientInfo?.name)}
-								</Text>
-								<Text size="xs" fw={500}>
-									Mobile: {getValue(patientInfo?.mobile)}
-								</Text>
-								<Text size="xs">
-									Age: {getValue(patientInfo?.year, "25")} Y. Sex:{patientInfo?.gender}
-								</Text>
-								<Text size="xs" fw={600} c="#1e40af">
-									Doctor By: {getValue(patientInfo?.doctor_name)}
-								</Text>
-								<Text size="xs">Doctor ID- {getValue(patientInfo?.employee_id)}</Text>
-								<Text size="xs">Designation: {getValue(patientInfo?.designation_name)}</Text>
-							</Stack>
-						</Grid.Col>
-						<Grid.Col span={8}>
-							{/* =============== medication table ================ */}
-							<Box style={{ border: "1px solid #333", borderRadius: "4px", overflow: "hidden" }}>
-								<Grid
-									columns={24}
-									p={8}
-									bg="#f8f9fa"
-									style={{
-										borderBottom: "1px solid #333",
-									}}
-								>
-									<Grid.Col span={20} m={0} p={0}>
-										<Text size="xs" pl={4}>
-											Generic Name
-										</Text>
-									</Grid.Col>
-									<Grid.Col span={4} m={0} p={0}>
-										<Text size="sm" ta="center" fw={500}>
-											Quantity
-										</Text>
-									</Grid.Col>
-								</Grid>
-								{medicines?.map((medicine, index) => (
-									<>
-										{medicine.medicine_id && medicine?.opd_quantity > 0 && (
-											<Grid columns={24} m={4} p={4}>
-												<Grid.Col span={20} m={0} p={0}>
-													<Text size="xs" pl={4}>
-														{index + 1}.{" "}
-														{getValue(medicine.medicine_id ? medicine.generic : "")}
-													</Text>
-												</Grid.Col>
-												<Grid.Col span={4} m={0} p={0}>
-													<Text size="sm" ta="center" fw={500}>
-														{getValue(medicine?.opd_quantity, "")}
-													</Text>
-												</Grid.Col>
-											</Grid>
-										)}
-									</>
-								))}
-							</Box>
-							<Box align={"center"}>
-								<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.barcode} />
-							</Box>
-						</Grid.Col>
-					</Grid>
 
 					{/* =============== footer with prescribed by ================ */}
 					<Box ta="center" mt="xs">
@@ -467,6 +397,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	);
 });
 
-PrescriptionFullBN.displayName = "PrescriptionFullBN";
+IPDPrescriptionFullEN.displayName = "IPDPrescriptionFullEN";
 
-export default PrescriptionFullBN;
+export default IPDPrescriptionFullEN;

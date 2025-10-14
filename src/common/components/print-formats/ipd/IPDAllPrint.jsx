@@ -10,7 +10,7 @@ import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
 import Barcode from "react-barcode";
 
-const AllPrint = forwardRef(({ data, preview = false }, ref) => {
+const IPDAllPrint = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
 	const patientReport = jsonContent?.patient_report || {};
@@ -467,6 +467,6 @@ const AllPrint = forwardRef(({ data, preview = false }, ref) => {
 	);
 });
 
-AllPrint.displayName = "AllPrint";
+IPDAllPrint.displayName = "IPDAllPrint";
 
-export default AllPrint;
+export default IPDAllPrint;

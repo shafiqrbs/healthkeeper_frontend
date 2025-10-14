@@ -30,9 +30,9 @@ import { modals } from "@mantine/modals";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
-import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
-import OPDPosBn from "@/common/components/print-formats/opd/OPDPosBN";
-import Prescription from "@/common/components/print-formats/prescription/PrescriptionFullBN";
+import EmergencyA4BN from "@components/print-formats/emergency/EmergencyA4BN";
+import EmergencyPosBN from "@components/print-formats/emergency/EmergencyPosBN";
+import Prescription from "@components/print-formats/prescription/PrescriptionFullBN";
 import { useReactToPrint } from "react-to-print";
 
 const PER_PAGE = 200;
@@ -557,8 +557,8 @@ export default function Table({ module }) {
 			/>
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 
-			<OPDA4BN data={printData} ref={a4Ref} />
-			<OPDPosBn data={printData} ref={posRef} />
+			<EmergencyA4BN data={printData} ref={a4Ref} />
+			<EmergencyPosBN data={printData} ref={posRef} />
 			<Prescription data={printData} ref={prescriptionRef} />
 		</Box>
 	);

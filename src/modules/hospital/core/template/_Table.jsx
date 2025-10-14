@@ -9,15 +9,23 @@ import tableCss from "@assets/css/TableAdmin.module.css";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 
 const templateData = [
-	{ name: "OPDA4EN", module: "opd", id: 10 },
-	{ name: "OPDA4BN", module: "opd", id: 11 },
-	{ name: "OPDPosEN", module: "opd", id: 12 },
-	{ name: "OPDPosBN", module: "opd", id: 13 },
-	{ name: "PrescriptionFullEN", module: "prescription", id: 14 },
-	{ name: "PrescriptionFullBN", module: "prescription", id: 15 },
-	{ name: "LabTest", module: "lab-test", id: 17 },
-	{ name: "Discharge", module: "discharge", id: 18 },
-	{ name: "IPDDetails", module: "ipd", id: 19 },
+	{ name: "OPDA4EN", module: "opd", id: 1 },
+	{ name: "OPDA4BN", module: "opd", id: 2 },
+	{ name: "OPDPosEN", module: "opd", id: 3 },
+	{ name: "OPDPosBN", module: "opd", id: 4 },
+	{ name: "EmergencyA4EN", module: "emergency", id: 5 },
+	{ name: "EmergencyA4BN", module: "emergency", id: 6 },
+	{ name: "EmergencyPosEN", module: "emergency", id: 7 },
+	{ name: "EmergencyPosBN", module: "emergency", id: 8 },
+	{ name: "PrescriptionFullEN", module: "prescription", id: 9 },
+	{ name: "PrescriptionFullBN", module: "prescription", id: 10 },
+	{ name: "LabTest", module: "lab-test", id: 11 },
+	{ name: "Discharge", module: "discharge", id: 12 },
+	{ name: "IPDDetails", module: "ipd", id: 13 },
+	{ name: "IPDPrescriptionFullBN", module: "ipd", id: 14 },
+	{ name: "IPDPrescriptionFullEN", module: "ipd", id: 15 },
+	{ name: "LabReportA4EN", module: "lab-reports", id: 16 },
+	{ name: "LabReportA4BN", module: "lab-reports", id: 17 },
 ];
 
 export default function _Table({ module }) {
