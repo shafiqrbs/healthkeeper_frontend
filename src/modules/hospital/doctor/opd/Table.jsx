@@ -33,12 +33,12 @@ import { formatDate } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import OPDDocument from "@components/print-formats/opd/OPDA4";
-import OPDPos from "@components/print-formats/opd/OPDPos";
+import OPDA4BN from "@/common/components/print-formats/opd/OPDA4BN";
+import OPDPosBn from "@/common/components/print-formats/opd/OPDPosBN";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import Prescription from "@/common/components/print-formats/opd/PrescriptionFull";
+import Prescription from "@/common/components/print-formats/opd/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
@@ -467,7 +467,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			)}
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 
-			<OPDDocument data={printData} ref={a4Ref} />
+			<OPDA4BN data={printData} ref={a4Ref} />
 			<OPDPos data={printData} ref={posRef} />
 			<Prescription data={printData} ref={prescriptionRef} />
 		</Box>

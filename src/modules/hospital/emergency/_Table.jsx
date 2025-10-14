@@ -1,10 +1,10 @@
-import {useState, useRef, useEffect} from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Grid, Group, Menu, Tabs, Text } from "@mantine/core";
-import {IconArrowRight, IconDotsVertical, IconPencil, IconPrinter, IconScript, IconTrashX} from "@tabler/icons-react";
+import { IconArrowRight, IconDotsVertical, IconPencil, IconPrinter, IconScript } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { rem } from "@mantine/core";
@@ -30,10 +30,10 @@ import { modals } from "@mantine/modals";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
-import OPDDocument from "@components/print-formats/opd/OPDA4";
-import OPDPos from "@components/print-formats/opd/OPDPos";
-import Prescription from "@components/print-formats/opd/PrescriptionFull";
-import {useReactToPrint} from "react-to-print";
+import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
+import OPDPosBn from "@/common/components/print-formats/opd/OPDPosBN";
+import Prescription from "@/common/components/print-formats/opd/PrescriptionFullBN";
+import { useReactToPrint } from "react-to-print";
 
 const PER_PAGE = 200;
 const tabs = [
@@ -249,7 +249,6 @@ export default function Table({ module }) {
 		}
 	}, [printData, type]);
 
-
 	const handleA4Print = async (id) => {
 		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
 		setPrintData(res.data);
@@ -398,21 +397,21 @@ export default function Table({ module }) {
 											</>
 										)}
 
-											{values.process === "New" && !values.referred_mode && (
-												<Button
-													variant="filled"
-													bg="var(--theme-success-color)"
-													c="white"
-													size="compact-xs"
-													onClick={() => handleSendToAdmission(values.id)}
-													radius="es"
-													fw={"400"}
-													rightSection={<IconArrowRight size={18} />}
-													className="border-right-radius-none"
-												>
-													{t("Admission")}
-												</Button>
-											)}
+										{values.process === "New" && !values.referred_mode && (
+											<Button
+												variant="filled"
+												bg="var(--theme-success-color)"
+												c="white"
+												size="compact-xs"
+												onClick={() => handleSendToAdmission(values.id)}
+												radius="es"
+												fw={"400"}
+												rightSection={<IconArrowRight size={18} />}
+												className="border-right-radius-none"
+											>
+												{t("Admission")}
+											</Button>
+										)}
 
 										{formatDate(new Date()) === formatDate(values?.created_at) && (
 											<ActionIcon
@@ -558,8 +557,8 @@ export default function Table({ module }) {
 			/>
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 
-			<OPDDocument data={printData} ref={a4Ref} />
-			<OPDPos data={printData} ref={posRef} />
+			<OPDA4BN data={printData} ref={a4Ref} />
+			<OPDPosBn data={printData} ref={posRef} />
 			<Prescription data={printData} ref={prescriptionRef} />
 		</Box>
 	);

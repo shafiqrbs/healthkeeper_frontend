@@ -665,7 +665,7 @@ export function Form({
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Flex align="center" gap="es">
-									<Text fz="sm">{t("Upazilla")}</Text> <RequiredAsterisk />
+									<Text fz="sm">{t("Upazilla")}</Text>
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={14}>
@@ -678,7 +678,6 @@ export function Form({
 									id="upazilla_id"
 									nextField="identity"
 									value={form.values.upazilla_id}
-									required
 									dropdownValue={locations?.data?.map((location) => ({
 										label: `${location.district || "District"} - ${location.name}`,
 										value: location.id?.toString(),

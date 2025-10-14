@@ -13,13 +13,15 @@ const DashedLine = () => (
 	</Text>
 );
 
-const OPDPos = forwardRef(({ data }, ref) => {
+const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 	const user = getLoggedInUser();
 	const { t } = useTranslation();
 	const { hospitalConfigData } = useDomainHospitalConfigData();
-	const patientInfo = data
+
+	const patientInfo = data || {};
+
 	return (
-		<Box display="none">
+		<Box display={preview ? "block" : "none"}>
 			<Box ref={ref} w="80mm" p={8} bg="white" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
@@ -45,7 +47,7 @@ const OPDPos = forwardRef(({ data }, ref) => {
 						{t("টিকিট")} - {patientInfo?.payment_mode_name || "Cash"}
 					</Text>
 					<Text size="xs" fw={700} ta="center">
-						<strong>{t("বহির্বিভাগ কক্ষ")}:</strong> {patientInfo?.room_name || "Room 1"}
+						<strong>{t("বহির্বিভাগ কক্ষ")}:</strong> {patientInfo?.room_name || ""}
 					</Text>
 					<DashedLine />
 
@@ -55,37 +57,35 @@ const OPDPos = forwardRef(({ data }, ref) => {
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td>
-									<strong>তারিখ:</strong> {patientInfo?.created || "2021-01-01"}
+									<strong>তারিখ:</strong> {patientInfo?.created || ""}
 								</Table.Td>
-								<Table.Td align="right">
-
-								</Table.Td>
+								<Table.Td align="right"></Table.Td>
 							</Table.Tr>
 							{patientInfo?.health_id && (
 								<Table.Tr>
 									<Table.Td colspan={2} align="center">
-										<strong>HID:</strong> {patientInfo?.health_id || "HID-987654321"}
+										<strong>HID:</strong> {patientInfo?.health_id || ""}
 									</Table.Td>
 								</Table.Tr>
 							)}
 							<Table.Tr>
 								<Table.Td>
-									<strong>{patientInfo?.invoice || "INV-987654321"}</strong>
+									<strong>{patientInfo?.invoice || ""}</strong>
 								</Table.Td>
-								<Table.Td align="right">{patientInfo?.patient_id || "PT-987654321"}</Table.Td>
+								<Table.Td align="right">{patientInfo?.patient_id || ""}</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2}></Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2}>
-									<strong>{t("নাম")}:</strong> {patientInfo?.name || "John Doe"}
+									<strong>{t("নাম")}:</strong> {patientInfo?.name || ""}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("বয়স")}</strong> {patientInfo?.year} {t("বছর")} {patientInfo?.month || 1}{" "}
-									{t("মাস")} {patientInfo?.day || 1} {t("দিন")}
+									<strong>{t("বয়স")}</strong> {patientInfo?.year || 0} {t("বছর")}{" "}
+									{patientInfo?.month || 0} {t("মাস")} {patientInfo?.day || 0} {t("দিন")}
 								</Table.Td>
 								<Table.Td miw={100} align="right">
 									{patientInfo?.dob && (
@@ -97,30 +97,32 @@ const OPDPos = forwardRef(({ data }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("লিঙ্গ")}:</strong> {patientInfo?.gender && patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
+									<strong>{t("লিঙ্গ")}:</strong>{" "}
+									{patientInfo?.gender &&
+										patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || "01717171717"}
+									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || ""}
 								</Table.Td>
 							</Table.Tr>
 
 							<Table.Tr>
 								<Table.Td colSpan={2}>
-									<strong>{t("ঠিকানা")}</strong> {[patientInfo?.upazila, patientInfo?.district].filter(Boolean).join(", ")}
+									<strong>{t("ঠিকানা")}</strong>{" "}
+									{[patientInfo?.upazila, patientInfo?.district].filter(Boolean).join(", ")}
 								</Table.Td>
 							</Table.Tr>
 							{patientInfo?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>
-										<strong>{t("অভিভাবকের নাম")}:</strong> {patientInfo?.guardian_name || "John Doe"}
+										<strong>{t("অভিভাবকের নাম")}:</strong> {patientInfo?.guardian_name || ""}
 									</Table.Td>
 								</Table.Tr>
 							)}
 							{patientInfo?.guardian_mobile && patientInfo?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>
-										<strong>{t("অভিভাবকের মোবাইল")}:</strong>{" "}
-										{patientInfo?.guardian_mobile || "01717171717"}
+										<strong>{t("অভিভাবকের মোবাইল")}:</strong> {patientInfo?.guardian_mobile || ""}
 									</Table.Td>
 								</Table.Tr>
 							)}
@@ -136,7 +138,7 @@ const OPDPos = forwardRef(({ data }, ref) => {
 							{t("ফি পরিমাণ")}:
 						</Text>
 						<Text size="xs" fw={600}>
-							৳ {patientInfo?.total || 100}
+							৳ {patientInfo?.total || 0}
 						</Text>
 					</Group>
 					<DashedLine />
@@ -146,12 +148,12 @@ const OPDPos = forwardRef(({ data }, ref) => {
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
-									<Barcode fontSize={'12'} width={'1'} height={'40'} value={patientInfo?.invoice}/>
+									<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.invoice} />
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("CreatedBy")}:</strong> {patientInfo?.created_by_name || "John Doe"}
+									<strong>{t("CreatedBy")}:</strong> {patientInfo?.created_by_name || ""}
 								</Table.Td>
 								<Table.Td align="right">
 									<strong>{t("PrintedBy")}:</strong> {user?.name}
@@ -159,13 +161,12 @@ const OPDPos = forwardRef(({ data }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
-									<strong>{t("প্রিন্টের সময়")}:</strong>{" "}
-									{new Date().toLocaleString()}
+									<strong>{t("প্রিন্টের সময়")}:</strong> {new Date().toLocaleString()}
 								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
-					<Text size="xxs" ta="center" pb={'xl'}>
+					<Text size="xxs" ta="center" pb={"xl"}>
 						© {new Date().getFullYear()} © {hospitalConfigData?.organization_name}{" "}
 						{t("সর্বস্বত্ব সংরক্ষিত")}।
 					</Text>
@@ -175,6 +176,6 @@ const OPDPos = forwardRef(({ data }, ref) => {
 	);
 });
 
-OPDPos.displayName = "OPDPos";
+OPDPosBN.displayName = "OPDPosBN";
 
-export default OPDPos;
+export default OPDPosBN;

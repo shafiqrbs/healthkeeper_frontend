@@ -2,39 +2,29 @@ import { Box, Text, Grid, Group, Stack, Image } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
-import CustomDivider from "@components/core-component/CustomDivider";
 import "@/index.css";
-import DashedDivider from "@/common/components/core-component/DashedDivider";
-import {formatDate, getLoggedInUser} from "@/common/utils";
+import DashedDivider from "@components/core-component/DashedDivider";
+import { getLoggedInUser } from "@/common/utils";
 import { t } from "i18next";
-import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
+import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
-// =============== default data structure for opd a4 document ================
-
-
-const OPDDocument = forwardRef(({ref}) => {
+const OPDA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const user = getLoggedInUser();
-	const { data: prescriptionData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/59`,
-	});
-	const patientInfo = prescriptionData?. data || {};
-	const jsonContent = prescriptionData?. data?.json_content || {};
-	const invoiceDetails = prescriptionData?. data?.invoice_details || {};
-	const patientReport = jsonContent?.patient_report || {};
-	const basicInfo = patientReport?.basic_info || {};
-	const patientExamination = patientReport?.patient_examination || {};
+
+	const patientInfo = data || {};
+	const jsonContent = data?.json_content || {};
 	const medicines = jsonContent?.medicines || [];
-	const { hospitalConfigData } = useDoaminHospitalConfigData();
+	const { hospitalConfigData } = useHospitalConfigData();
+
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
+
 	return (
-		<Box>
+		<Box display={preview ? "block" : "none"}>
 			<Box
 				ref={ref}
 				p="md"
@@ -135,12 +125,17 @@ const OPDDocument = forwardRef(({ref}) => {
 								<Text size="xs" fw={600}>
 									{t("লিঙ্গ")}
 								</Text>
-								<Text size="xs">{patientInfo?.gender && patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}</Text>
+								<Text size="xs">
+									{patientInfo?.gender &&
+										patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
+								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
-								<Text size="xs">{t("তারিখ")}: {getValue(patientInfo?.created)}</Text>
+								<Text size="xs">
+									{t("তারিখ")}: {getValue(patientInfo?.created)}
+								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
@@ -149,8 +144,8 @@ const OPDDocument = forwardRef(({ref}) => {
 									{t("বয়স")}
 								</Text>
 								<Text size="xs">
-									{getValue(patientInfo?.year, 25)} Y, {getValue(patientInfo?.month, 1)} M, {getValue(patientInfo?.day, 1)}{" "}
-									D
+									{getValue(patientInfo?.year, 25)} Y, {getValue(patientInfo?.month, 1)} M,{" "}
+									{getValue(patientInfo?.day, 1)} D
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -162,7 +157,6 @@ const OPDDocument = forwardRef(({ref}) => {
 								<Text size="xs">{getValue(patientInfo?.dob, "")}</Text>
 							</Group>
 						</Grid.Col>
-
 
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
@@ -178,108 +172,7 @@ const OPDDocument = forwardRef(({ref}) => {
 				{/* =============== medical notes and prescription area with rx symbol ================ */}
 				<Box style={{ position: "relative", minHeight: "350px" }} mb="lg">
 					<Grid columns={12} gutter="md">
-						<Grid.Col span={4}>
-							<Stack gap="0px">
-								{patientExamination?.chief_complaints && (
-									<Box>
-										<Text size="xs" fw={600}>
-											{t("ChiefComplaints")}
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="gray" mt="-xs" mb="xs">
-											{Object.entries(patientExamination?.chief_complaints || {})
-												.map(([, value]) => value)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.ho_past_illness && (
-									<Box>
-										<Text size="xs" fw={600}>
-											{t("HOPastIllness")}
-										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" />
-										<Text size="xs" c="gray" mt="xs">
-											{Object.entries(patientExamination?.ho_past_illness || {})
-												.filter(([, value]) => value)
-												.map(([key]) => key)
-												.join(", ") || "Headache, Fever"}
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.diagnosis && (
-									<Box>
-										<Text size="xs" fw={600}>
-											{t("Diagnosis")}
-										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" />
-										<Text size="xs" c="gray" mt="xs">
-											N/A
-										</Text>
-									</Box>
-								)}
-
-								{patientExamination?.icd_11_listed_diseases && (
-									<Box>
-										<Text size="xs" fw={600}>
-											{t("ICD11ListedDiseases")}
-										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" />
-										<Text size="xs" c="gray" mt="xs">
-											{(patientExamination?.icd_11_listed_diseases || []).join(", ") || "N/A"}
-										</Text>
-									</Box>
-								)}
-
-								{patientExamination?.comorbidity && (
-									<Box>
-										<Text size="xs" fw={600}>
-											{t("Comorbidity")}
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="gray" mt="-xs" mb="xs">
-											{Object.entries(patientExamination?.comorbidity || {})
-												.filter(([, value]) => value)
-												.map(([key]) => key)
-												.join(", ") || "N/A"}
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.treatment_history && (
-									<Box>
-										<Text size="xs" fw={600}>
-											{t("TreatmentHistory")}
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="gray" mt="-xs" mb="xs">
-											N/A
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.on_examination && (
-									<Box>
-										<Text size="xs" fw={600}>
-											{t("OnExamination")}
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="gray" mt="-xs" mb="xs">
-											N/A
-										</Text>
-									</Box>
-								)}
-								{patientExamination?.investigation && (
-									<Box>
-										<Text size="xs" fw={600}>
-											{t("Investigation")}
-										</Text>
-										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
-										<Text size="xs" c="gray" mt="-xs" mb="xs">
-											{(patientExamination?.investigation || []).join(", ") || "N/A"}
-										</Text>
-									</Box>
-								)}
-							</Stack>
-						</Grid.Col>
+						<Grid.Col span={4}></Grid.Col>
 						<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
 							<Stack gap="xs" h={PAPER_HEIGHT - 330} justify="space-between">
 								<Box>
@@ -333,6 +226,6 @@ const OPDDocument = forwardRef(({ref}) => {
 	);
 });
 
-OPDDocument.displayName = "OPDDocument";
+OPDA4BN.displayName = "OPDA4BN";
 
-export default OPDDocument;
+export default OPDA4BN;

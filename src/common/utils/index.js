@@ -156,3 +156,32 @@ export const parseDateValue = (dateString) => {
 		return "";
 	}
 };
+
+export const waitForDataAndPrint = (ref, printFun, maxAttempts = 50, currentAttempt = 0) => {
+	console.log(`waitForDataAndPrint called with ref:`, ref, `attempt: ${currentAttempt}/${maxAttempts}`);
+
+	// Prevent infinite waiting
+	if (currentAttempt >= maxAttempts) {
+		console.error("Max attempts reached, giving up on print");
+		return;
+	}
+
+	// If ref is null, wait a bit more for the component to mount
+	if (!ref?.current) {
+		console.log("Ref is null, waiting for component to mount...");
+		setTimeout(() => waitForDataAndPrint(ref, printFun, maxAttempts, currentAttempt + 1), 100);
+		return;
+	}
+
+	// If component is ready, print
+	if (ref.current.isReady) {
+		console.log("Component is ready, printing...");
+		printFun();
+	} else if (ref.current.isLoading) {
+		console.log("Component is still loading, waiting...");
+		setTimeout(() => waitForDataAndPrint(ref, printFun, maxAttempts, currentAttempt + 1), 100);
+	} else {
+		console.log("Component not ready and not loading, retrying...");
+		setTimeout(() => waitForDataAndPrint(ref, printFun, maxAttempts, currentAttempt + 1), 200);
+	}
+};

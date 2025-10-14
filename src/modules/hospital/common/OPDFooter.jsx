@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import ActionButtons from "./_ActionButtons";
 import { useReactToPrint } from "react-to-print";
-import OPDDocument from "@components/print-formats/opd/OPDA4";
-import OPDPos from "@components/print-formats/opd/OPDPos";
+import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
+import OPDPosBn from "@/common/components/print-formats/opd/OPDPosBN";
 
 export default function OPDFooter({ form, isSubmitting, handleSubmit, type }) {
 	const [printData, setPrintData] = useState(null);
@@ -42,8 +42,8 @@ export default function OPDFooter({ form, isSubmitting, handleSubmit, type }) {
 			handlePosPrint={() => handlePrint("pos")}
 			type={type}
 		>
-			<OPDDocument data={printData} ref={opdDocumentA4Ref} />
-			<OPDPos data={printData} ref={opdDocumentPosRef} />
+			<OPDA4BN data={printData} ref={opdDocumentA4Ref} />
+			<OPDPosBn data={printData} ref={opdDocumentPosRef} />
 		</ActionButtons>
 	);
 }

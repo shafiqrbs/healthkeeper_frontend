@@ -6,11 +6,11 @@ import DashedDivider from "@components/core-component/DashedDivider";
 import CustomDivider from "@components/core-component/CustomDivider";
 import { formatDate } from "@/common/utils";
 import "@/index.css";
-import useDoaminHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
+import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
 import Barcode from "react-barcode";
 
-const PrescriptionFull = forwardRef(({ data }, ref) => {
+const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
 	const patientReport = jsonContent?.patient_report || {};
@@ -18,7 +18,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = jsonContent?.medicines || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
-	const { hospitalConfigData } = useDoaminHospitalConfigData();
+	const { hospitalConfigData } = useHospitalConfigData();
 
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
@@ -182,7 +182,7 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 	};
 
 	return (
-		<Box display="none">
+		<Box display={preview ? "block" : "none"}>
 			<Box>
 				<Box
 					ref={ref}
@@ -469,6 +469,6 @@ const PrescriptionFull = forwardRef(({ data }, ref) => {
 	);
 });
 
-PrescriptionFull.displayName = "PrescriptionFull";
+PrescriptionFullEN.displayName = "PrescriptionFullEN";
 
-export default PrescriptionFull;
+export default PrescriptionFullEN;

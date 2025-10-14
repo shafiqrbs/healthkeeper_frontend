@@ -11,7 +11,6 @@ import {
 	IconDotsVertical,
 	IconSelector,
 	IconX,
-	IconTrashX,
 	IconPrinter,
 	IconScript,
 } from "@tabler/icons-react";
@@ -32,12 +31,12 @@ import { formatDate, getLoggedInHospitalUser, getUserRole } from "@/common/utils
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import OPDDocument from "@components/print-formats/opd/OPDA4";
-import OPDPos from "@components/print-formats/opd/OPDPos";
+import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
+import OPDPosBn from "@/common/components/print-formats/opd/OPDPosBN";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import PrescriptionFull from "@components/print-formats/opd/PrescriptionFull";
+import PrescriptionFull from "@/common/components/print-formats/opd/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
@@ -482,8 +481,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
 
-			<OPDDocument data={printData} ref={a4Ref} />
-			<OPDPos data={printData} ref={posRef} />
+			<OPDA4BN data={printData} ref={a4Ref} />
+			<OPDPosBn data={printData} ref={posRef} />
 			<PrescriptionFull data={printData} ref={prescriptionRef} />
 		</Box>
 	);

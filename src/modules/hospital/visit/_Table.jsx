@@ -12,7 +12,6 @@ import {
 	IconDotsVertical,
 	IconSelector,
 	IconX,
-	IconTrashX,
 	IconPrinter,
 	IconScript,
 	IconPencil,
@@ -31,20 +30,19 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
-import { formatDate, getLoggedInHospitalUser, getLoggedInUser, getUserRole } from "@/common/utils";
+import { formatDate, getLoggedInUser, getUserRole } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import OPDDocument from "@components/print-formats/opd/OPDA4";
-import OPDPos from "@components/print-formats/opd/OPDPos";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import Prescription from "@/common/components/print-formats/opd/PrescriptionFull";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
-import useDataWithoutStore from "@/common/hooks/useDataWithoutStore";
+import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
+import OPDPosBN from "@components/print-formats/opd/OPDPosBN";
+import PrescriptionFullBN from "@components/print-formats/opd/PrescriptionFullBN";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -107,9 +105,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
-	const userHospitalConfig = getLoggedInHospitalUser();
 	const userRoles = getUserRole();
-	const userId = userHospitalConfig?.employee_id;
 
 	useEffect(() => {
 		if (type === "a4") {
@@ -501,9 +497,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 
-			<OPDDocument data={printData} ref={a4Ref} />
-			<OPDPos data={printData} ref={posRef} />
-			<Prescription data={printData} ref={prescriptionRef} />
+			<OPDA4BN data={printData} ref={a4Ref} />
+			<OPDPosBN data={printData} ref={posRef} />
+			<PrescriptionFullBN data={printData} ref={prescriptionRef} />
 
 			<PatientUpdateDrawer
 				type="opd"

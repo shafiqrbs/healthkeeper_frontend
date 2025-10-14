@@ -18,7 +18,6 @@ import { ModalsProvider } from "@mantine/modals";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./app/store";
 import { Provider } from "react-redux";
-import { useResponsiveScale } from "./utils/useResponsiveScale.js"; // 👈 import this
 
 const theme = createTheme({
 	primaryColor: "indigo",
@@ -38,12 +37,6 @@ const theme = createTheme({
 	},
 });
 
-// Wrapper to activate responsive scaling
-function ResponsiveRoot() {
-	useResponsiveScale();
-	return <App />;
-}
-
 ReactDOM.createRoot(document.getElementById("root")).render(
 	<React.StrictMode>
 		<MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
@@ -52,7 +45,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 				<Provider store={store}>
 					<PersistGate loading={null} persistor={persistor}>
 						<ModalsProvider>
-							<ResponsiveRoot />
+							<App />
 						</ModalsProvider>
 					</PersistGate>
 				</Provider>

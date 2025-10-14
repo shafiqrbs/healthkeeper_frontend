@@ -1,4 +1,4 @@
-import OPDPos from "../print-formats/opd/OPDPos";
+import OPDPos from "../print-formats/opd/OPDPosBN";
 
 const DATA = {
 	id: 31,

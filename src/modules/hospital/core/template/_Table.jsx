@@ -9,13 +9,16 @@ import tableCss from "@assets/css/TableAdmin.module.css";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 
 const templateData = [
-	{ name: "OPDA4", module: "opd", id: 1 },
-	{ name: "OPDPos", module: "opd", id: 2 },
-	{ name: "PrescriptionFull", module: "prescription", id: 3 },
-	{ name: "IPD", module: "ipd", id: 4 },
-	{ name: "LabTest", module: "lab-test", id: 5 },
-	{ name: "Discharge", module: "discharge", id: 6 },
-	{ name: "IPDDetails", module: "ipd", id: 7 },
+	{ name: "OPDA4EN", module: "opd", id: 10 },
+	{ name: "OPDA4BN", module: "opd", id: 11 },
+	{ name: "OPDPosEN", module: "opd", id: 12 },
+	{ name: "OPDPosBN", module: "opd", id: 13 },
+	{ name: "PrescriptionFullEN", module: "prescription", id: 14 },
+	{ name: "PrescriptionFullBN", module: "prescription", id: 15 },
+	{ name: "IPD", module: "ipd", id: 16 },
+	{ name: "LabTest", module: "lab-test", id: 17 },
+	{ name: "Discharge", module: "discharge", id: 18 },
+	{ name: "IPDDetails", module: "ipd", id: 19 },
 ];
 
 export default function _Table({ module }) {
