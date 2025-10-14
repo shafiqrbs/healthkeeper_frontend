@@ -30,8 +30,12 @@ export default function Index() {
 				<Box p="md">
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-						<Grid w="100%" columns={25}>
-							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-ease-out">
+						{id ? (
+							<Box w="100%">
+								<EntityForm form={form} module={module} />
+							</Box>
+						) : (
+							<Box>
 								<Box px="sm" py="md" bg="white">
 									<Text fw={600} fz="sm">
 										{t("PatientInformation")}
@@ -53,29 +57,8 @@ export default function Index() {
 										},
 									]}
 								/>
-							</Grid.Col>
-							<Grid.Col span={isOpenPatientInfo ? 17 : 23} className="animate-ease-out">
-								<Grid columns={25} gutter="les">
-									<Grid.Col span={25}>
-										{id ? (
-											<EntityForm form={form} module={module} />
-										) : (
-											<Flex
-												justify="center"
-												align="center"
-												p="sm"
-												pl={"md"}
-												pr={"md"}
-												bg="white"
-												h={mainAreaHeight - 12}
-											>
-												<Text>No patient selected, please select a patient</Text>
-											</Flex>
-										)}
-									</Grid.Col>
-								</Grid>
-							</Grid.Col>
-						</Grid>
+							</Box>
+						)}
 					</Flex>
 				</Box>
 			)}
