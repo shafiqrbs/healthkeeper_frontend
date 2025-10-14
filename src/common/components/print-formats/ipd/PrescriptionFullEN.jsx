@@ -10,7 +10,7 @@ import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
 import Barcode from "react-barcode";
 
-const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
+const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
 	const patientReport = jsonContent?.patient_report || {};
@@ -231,12 +231,12 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 						<Grid columns={12} gutter="xs" px={4}>
 							<Grid.Col bd="1px solid #555" span={2} px="xs">
 								<Group gap="xs">
-									<Text size="xs">{getValue(patientInfo?.invoice || "PT-987654321")}</Text>
+									<Text size="xs">{getValue(patientInfo?.invoice || "")}</Text>
 								</Group>
 							</Grid.Col>
 							<Grid.Col bd="1px solid #555" span={2} px="xs">
 								<Group gap="xs">
-									<Text size="xs">{getValue(patientInfo?.patient_id || "PT-987654321")}</Text>
+									<Text size="xs">{getValue(patientInfo?.patient_id || "")}</Text>
 								</Group>
 							</Grid.Col>
 							<Grid.Col bd="1px solid #555" span={4} px="xs">
@@ -244,7 +244,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("নাম")}:
 									</Text>
-									<Text size="sm">{getValue(patientInfo?.name, "John Doe")}</Text>
+									<Text size="sm">{getValue(patientInfo?.name, "")}</Text>
 								</Group>
 							</Grid.Col>
 							<Grid.Col bd="1px solid #555" span={4} px="xs">
@@ -252,7 +252,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("মোবাইল")}:
 									</Text>
-									<Text size="xs">{getValue(patientInfo?.mobile || "01717171717")}</Text>
+									<Text size="xs">{getValue(patientInfo?.mobile || "")}</Text>
 								</Group>
 							</Grid.Col>
 
@@ -262,9 +262,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										{t("বয়স")}:
 									</Text>
 									<Text size="xs">
-										{" "}
-										{patientInfo?.day || 1} D {patientInfo?.month || 1} M {patientInfo?.year || ""}{" "}
-										Y
+										{patientInfo?.year || 0} Y {patientInfo?.month || 0} M {patientInfo?.day || 0} D
 									</Text>
 								</Group>
 							</Grid.Col>
@@ -469,6 +467,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	);
 });
 
-PrescriptionFullBN.displayName = "PrescriptionFullBN";
+PrescriptionFullEN.displayName = "PrescriptionFullEN";
 
-export default PrescriptionFullBN;
+export default PrescriptionFullEN;

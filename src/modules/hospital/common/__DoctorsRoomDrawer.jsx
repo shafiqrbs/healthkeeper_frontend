@@ -49,7 +49,7 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 				<Grid.Col span={6}>
 					<Box bg="white" className="borderRadiusAll" mt="xs">
 						<Text bg="var(--theme-primary-color-6" className="borderRadiusTop" c="white" p="sm" fz="sm">
-							{t("selectRoom")}
+							{t("SelectRoom")}
 						</Text>
 						<ScrollArea h={height} scrollbars="y" p="xs">
 							{[...Array(20)].map((_, index) => (
@@ -66,7 +66,7 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 				<Grid.Col span={6}>
 					<Box bg="white" className="borderRadiusAll" mt="xs">
 						<Text bg="var(--theme-secondary-color-9" className="borderRadiusTop" c="white" p="sm" fz="sm">
-							{t("selectDoctor")}
+							{t("SelectDoctor")}
 						</Text>
 						<ScrollArea h={height} scrollbars="y" p="xs">
 							{selectedRoom && (

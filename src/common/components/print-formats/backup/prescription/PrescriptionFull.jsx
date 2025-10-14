@@ -13,9 +13,6 @@ import { t } from "i18next";
 import Barcode from "react-barcode";
 
 const PrescriptionFull = forwardRef(({ data }, ref) => {
-	// const { data: prescriptionData } = useDataWithoutStore({
-	// 	url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
-	// });
 	const patientInfo = data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
 	// const invoiceDetails = prescriptionData?.data?.invoice_details || {};

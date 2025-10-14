@@ -32,9 +32,9 @@ import {
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { useLocation, useOutletContext, useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import PrescriptionFull from "@components/print-formats/prescription/PrescriptionFull";
+import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -877,7 +877,7 @@ export default function AddMedicineForm({
 							</Stack>
 						</Button>
 					</Button.Group>
-					{printData && <PrescriptionFull ref={prescription2A4Ref} data={printData} />}
+					{printData && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />}
 					{/* ----------- prescription preview ------------  */}
 					{/* <PrescriptionFull ref={prescriptionPrintRef} data={printPreviewPrescriptionData} /> */}
 				</>

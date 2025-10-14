@@ -9,15 +9,21 @@ import PrescriptionFullBN from "@components/print-formats/prescription/Prescript
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { IconArrowLeft } from "@tabler/icons-react";
+import IPDDetails from "@components/print-formats/ipd/IPDDetails";
 
-const STATIC_ID = 59;
+const STATIC_OPD_ID = 59;
+const STATIC_PRESCRIPTION_ID = 59;
 
 export default function Details() {
 	const { name } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const { data: OPDData, isLoading: isOPDLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${STATIC_ID}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${STATIC_OPD_ID}`,
+	});
+
+	const { data: prescriptionData, isLoading: isPrescriptionLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${STATIC_PRESCRIPTION_ID}`,
 	});
 
 	return (
@@ -50,8 +56,21 @@ export default function Details() {
 							<OPDPosBN data={OPDData?.data} preview />
 						</LoadingWrapper>
 					)}
-					{name === "PrescriptionFullEN" && <PrescriptionFullEN preview />}
-					{name === "PrescriptionFullBN" && <PrescriptionFullBN preview />}
+					{name === "PrescriptionFullEN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<PrescriptionFullEN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "PrescriptionFullBN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<PrescriptionFullBN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "IPDDetails" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<IPDDetails preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
 				</Box>
 			</ScrollArea>
 		</>

@@ -205,13 +205,13 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 							</Grid.Col>
 							<Grid.Col span={4}>
 								<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-									{hospitalConfigData?.organization_name || ""}
+									{hospitalConfigData?.organization_name || "Hospital"}
 								</Text>
 								<Text ta="center" size="sm" c="gray" mt="2">
-									{hospitalConfigData?.address || ""}
+									{hospitalConfigData?.address || "Uttara"}
 								</Text>
 								<Text ta="center" size="sm" c="gray" mb="2">
-									{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
+									{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
 								</Text>
 
 								<Text ta="center" fw="bold" size="lg" c="#1e40af">

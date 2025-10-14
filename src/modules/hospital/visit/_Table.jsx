@@ -42,7 +42,7 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
 import OPDPosBN from "@components/print-formats/opd/OPDPosBN";
-import PrescriptionFullBN from "@components/print-formats/opd/PrescriptionFullBN";
+import PrescriptionFullBN from "@/common/components/print-formats/prescription/PrescriptionFullBN";
 
 const tabs = [
 	{ label: "All", value: "all" },

@@ -2,13 +2,13 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["src/*"],
 			"@components/*": ["src/common/components/*"],
 			"@hospital-components/*": ["src/modules/hospital/common/*"],
 			"@utils/*": ["src/common/utils/*"],
 			"@assets/*": ["src/assets/*"],
 			"@hooks/*": ["src/common/hooks/*"],
-			"@modules/*": ["src/modules/*"]
+			"@modules/*": ["src/modules/*"],
+			"@/*": ["src/*"]
 		}
 	},
 	"exclude": ["node_modules"]

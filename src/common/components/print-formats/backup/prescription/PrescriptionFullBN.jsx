@@ -7,8 +7,9 @@ import CustomDivider from "@components/core-component/CustomDivider";
 import { formatDate } from "@/common/utils";
 import "@/index.css";
 
-const Prescription2 = forwardRef(({ data }, ref) => {
-	const patientInfo = data?.json_content || {};
+const PrescriptionFull = forwardRef(({ data }, ref) => {
+	const patientInfo = JSON.parse(data?.json_content || "{}");
+
 	const invoiceDetails = data?.invoice_details || {};
 	const patientReport = patientInfo?.patient_report || {};
 	const basicInfo = patientReport?.basic_info || {};
@@ -22,19 +23,9 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 
 	return (
 		<Box display="none">
-			<Box
-				ref={ref}
-				p="md"
-				bg="var(--theme-primary-color-0)"
-				miw="210mm"
-				mih="100vh"
-				className="watermark"
-				ff="Arial, sans-serif"
-				lh={1.5}
-				fz={12}
-			>
+			<Box ref={ref} p="md" w="210mm" h="100vh" className="watermark" ff="Arial, sans-serif" lh={1.5} fz={12}>
 				{/* =============== header section with doctor information in bengali and english ================ */}
-				<Box bd="2px solid var(--theme-primary-color-9)" mb="sm" style={{ borderRadius: "4px" }}>
+				<Box mb="sm">
 					<Grid gutter="md">
 						<Grid.Col span={4}>
 							<Group ml="md" align="center" h="100%">
@@ -69,10 +60,7 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 					<Grid columns={12} gutter="xs" px={4}>
 						<Grid.Col bd="1px solid #555" span={3} px="xs">
 							<Group gap="xs">
-								<Text size="sm" fw={600}>
-									রোগীর আইডি:
-								</Text>
-								<Text size="sm">{getValue(invoiceDetails?.free_identification)}</Text>
+								<Text size="sm">{getValue(customerInformation?.patient_id)}</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={5} px="xs">
@@ -97,7 +85,10 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 								<Text size="sm" fw={600}>
 									বয়স:
 								</Text>
-								<Text size="sm">{getValue(customerInformation?.age, "N/A")}</Text>
+								<Text size="sm">
+									{" "}
+									{invoiceDetails?.year}Y, {invoiceDetails?.month || 0}M, {invoiceDetails?.day || 0}D
+								</Text>
 							</Group>
 						</Grid.Col>
 						<Grid.Col bd="1px solid #555" span={2} px="xs">
@@ -156,8 +147,8 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 										</Text>
 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
 										<Text size="sm" c="gray" mt="-xs" mb="xs">
-											{Object.entries(patientExamination?.chief_complaints || {})
-												.map(([, value]) => value)
+											{(patientExamination?.chief_complaints || [])
+												.map((item) => `${item.name}: ${item.value}`)
 												.join(", ") || "N/A"}
 										</Text>
 									</Box>
@@ -167,11 +158,10 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 										<Text size="sm" fw={600}>
 											H/O Past Illness:
 										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" />
+										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
 										<Text size="sm" c="gray" mt="xs">
-											{Object.entries(patientExamination?.h_o_past_illness || {})
-												.filter(([, value]) => value)
-												.map(([key]) => key)
+											{(patientExamination?.ho_past_illness || [])
+												.map((item) => item.name)
 												.join(", ") || "N/A"}
 										</Text>
 									</Box>
@@ -181,9 +171,11 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 										<Text size="sm" fw={600}>
 											Diagnosis:
 										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" />
-										<Text size="sm" c="gray" mt="xs">
-											N/A
+										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
+										<Text size="sm" c="gray" mt="0">
+											{(patientExamination?.diagnosis || [])
+												.map((item) => item.value)
+												.join(", ") || "N/A"}
 										</Text>
 									</Box>
 								)}
@@ -193,7 +185,7 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 										<Text size="sm" fw={600}>
 											ICD-11 listed diseases:
 										</Text>
-										<CustomDivider borderStyle="dashed" w="90%" />
+										<CustomDivider borderStyle="dashed" w="90%" mb="es" />
 										<Text size="sm" c="gray" mt="xs">
 											{(patientExamination?.icd_11_listed_diseases || []).join(", ") || "N/A"}
 										</Text>
@@ -207,21 +199,23 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 										</Text>
 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
 										<Text size="sm" c="gray" mt="-xs" mb="xs">
-											{Object.entries(patientExamination?.comorbidity || {})
-												.filter(([, value]) => value)
-												.map(([key]) => key)
+											{(patientExamination?.comorbidity || [])
+												.filter((item) => item.value)
+												.map((item) => item.name)
 												.join(", ") || "N/A"}
 										</Text>
 									</Box>
 								)}
-								{patientExamination?.treatment_history && (
+								{patientExamination?.["treatment-history"] && (
 									<Box>
 										<Text size="sm" fw={600}>
 											Treatment History:
 										</Text>
 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
 										<Text size="sm" c="gray" mt="-xs" mb="xs">
-											N/A
+											{(patientExamination?.["treatment-history"] || [])
+												.map((item) => item.value)
+												.join(", ") || "N/A"}
 										</Text>
 									</Box>
 								)}
@@ -243,7 +237,9 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 										</Text>
 										<CustomDivider mb="es" borderStyle="dashed" w="90%" />
 										<Text size="sm" c="gray" mt="-xs" mb="xs">
-											{(patientExamination?.investigation || []).join(", ") || "N/A"}
+											{(patientExamination?.investigation || [])
+												.map((item) => item.value)
+												.join(", ") || "N/A"}
 										</Text>
 									</Box>
 								)}
@@ -254,11 +250,11 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 								{medicines.map((medicine, index) => (
 									<Box key={index}>
 										<Text size="sm" fw={600} mb="xs">
-											{index + 1}. {getValue(medicine.medicineName)}
+											{index + 1}. {getValue(medicine.medicine_name)}
 										</Text>
 										<Text size="sm" c="var(--theme-tertiary-color-8)" ml="md">
-											{getValue(medicine.dosage)} {getValue(medicine.by_meal)}{" "}
-											{getValue(medicine.duration)} {getValue(medicine.count)}
+											{getValue(medicine.dose_details)} {getValue(medicine.by_meal)}{" "}
+											{getValue(medicine.duration)} {getValue(medicine.quantity)}
 										</Text>
 									</Box>
 								))}
@@ -309,15 +305,16 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 					<Grid.Col span={4}>
 						<Stack gap="6px">
 							<Text size="sm" fw={500}>
-								Patient Name: {getValue(patientInfo.name, "N/A")}
+								Patient Name: {getValue(customerInformation?.name, "N/A")}
 							</Text>
-							<Text size="sm">({getValue(invoiceDetails.free_identification)}).</Text>
-							<Text size="sm">Age: {getValue(data?.age, "N/A")} Y. Sex: N/A.</Text>
+							<Text size="sm">
+								Age: {getValue(customerInformation?.year, "N/A")} Y. Sex:{customerInformation?.gender}
+							</Text>
 							<Text size="sm" fw={600} mt="sm">
 								Doctor Comments:
 							</Text>
 							<Text size="sm" c="gray">
-								{getValue(patientInfo.advise, "N/A")}
+								{getValue(patientInfo?.advise, "N/A")}
 							</Text>
 						</Stack>
 					</Grid.Col>
@@ -350,7 +347,7 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 										Quantity
 									</Text>
 								</Grid.Col>
-								{medicines.map((medicine, index) => (
+								{medicines?.map((medicine, index) => (
 									<>
 										<Grid.Col
 											key={`name-${index}`}
@@ -362,7 +359,7 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 											}}
 										>
 											<Text size="sm" pl={4}>
-												{index + 1}. {getValue(medicine.medicineName)}
+												{index + 1}. {getValue(medicine.generic)}
 											</Text>
 										</Grid.Col>
 										<Grid.Col
@@ -374,12 +371,12 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 											}}
 										>
 											<Text size="sm" ta="center" fw={500}>
-												{getValue(medicine.count, "1")}
+												{getValue(medicine.amount, "1")}
 											</Text>
 										</Grid.Col>
 									</>
 								))}
-								{medicines.length === 0 && (
+								{medicines?.length === 0 && (
 									<>
 										<Grid.Col span={3} p={10} style={{ borderRight: "1px solid #333" }}>
 											<Text size="sm" pl={4}>
@@ -417,6 +414,6 @@ const Prescription2 = forwardRef(({ data }, ref) => {
 	);
 });
 
-Prescription2.displayName = "Prescription2";
+PrescriptionFull.displayName = "Prescription2";
 
-export default Prescription2;
+export default PrescriptionFull;

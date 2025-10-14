@@ -112,7 +112,6 @@ export default function EntityForm({ form, module }) {
 		{ label: "AB-", value: "AB-" },
 	];
 
-
 	const handleSubmit = async () => {
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
@@ -626,7 +625,6 @@ export default function EntityForm({ form, module }) {
 												required
 											/>
 										</Flex>
-
 									</Grid.Col>
 								</Grid>
 								<Grid align="center" columns={20}>
@@ -711,7 +709,6 @@ export default function EntityForm({ form, module }) {
 										<Text fz="sm">{t("bloodGroup")}</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
-
 										<SelectForm
 											form={form}
 											name="blood_group"
@@ -725,13 +722,14 @@ export default function EntityForm({ form, module }) {
 										/>
 									</Grid.Col>
 								</Grid>
-
 							</Stack>
-							<Stack className="form-stack-vertical" mt={'xs'}>
+							<Stack className="form-stack-vertical" mt={"xs"}>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("Religion")}<RequiredAsterisk /></Text>
-
+										<Text fz="sm">
+											{t("Religion")}
+											<RequiredAsterisk />
+										</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<SelectForm
@@ -784,7 +782,10 @@ export default function EntityForm({ form, module }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("GuardianName")}<RequiredAsterisk /></Text>
+										<Text fz="sm">
+											{t("GuardianName")}
+											<RequiredAsterisk />
+										</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
@@ -800,9 +801,12 @@ export default function EntityForm({ form, module }) {
 										/>
 									</Grid.Col>
 								</Grid>
-								<Grid align="center" columns={20} >
+								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("GuardianMobile")}<RequiredAsterisk /></Text>
+										<Text fz="sm">
+											{t("GuardianMobile")}
+											<RequiredAsterisk />
+										</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
@@ -857,8 +861,10 @@ export default function EntityForm({ form, module }) {
 								</Grid>
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>
-										<Text fz="sm">{t("PresentAddress")}<RequiredAsterisk /></Text>
-
+										<Text fz="sm">
+											{t("PresentAddress")}
+											<RequiredAsterisk />
+										</Text>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<InputForm
@@ -893,7 +899,6 @@ export default function EntityForm({ form, module }) {
 										/>
 									</Grid.Col>
 								</Grid>
-
 
 								<Grid align="center" columns={20}>
 									<Grid.Col span={6}>

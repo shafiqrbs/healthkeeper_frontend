@@ -35,7 +35,7 @@ import TextAreaForm from "@components/form-builders/TextAreaForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import PrescriptionFull from "@components/print-formats/prescription/PrescriptionFull";
+import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -54,7 +54,6 @@ import inputCss from "@/assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import PrescriptionPreview from "./PrescriptionPreview";
 import CreateDosageDrawer from "./drawer/CreateDosageDrawer";
 
 export default function AddMedicineForm({
@@ -912,11 +911,9 @@ export default function AddMedicineForm({
 							</Stack>
 						</Button>
 					</Button.Group>
-					{printData && (
-						<PrescriptionFull ref={prescription2A4Ref} data={printData} prescriptionId={prescriptionId} />
-					)}
 				</>
 			)}
+			{printData && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />}
 			<GlobalDrawer
 				opened={openedExPrescription}
 				close={closeExPrescription}
@@ -1005,7 +1002,7 @@ export default function AddMedicineForm({
 					size="50%"
 				>
 					<Box my="sm">
-						<PrescriptionPreview prescriptionId={prescriptionId} />
+						<PrescriptionFullBN data={printData} preview />
 					</Box>
 				</GlobalDrawer>
 			)}

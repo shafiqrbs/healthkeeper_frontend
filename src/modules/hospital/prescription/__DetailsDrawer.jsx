@@ -18,7 +18,7 @@ import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import PrescriptionFull from "@/common/components/print-formats/prescription/PrescriptionFull";
+import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 
@@ -319,7 +319,7 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 					</Flex>
 				)}
 			</Box>
-			{prescriptionData?.data && <PrescriptionFull data={prescriptionData?.data} ref={prescriptionFullRef} />}
+			{prescriptionData?.data && <PrescriptionFullBN data={prescriptionData?.data} ref={prescriptionFullRef} />}
 		</GlobalDrawer>
 	);
 }

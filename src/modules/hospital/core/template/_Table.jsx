@@ -15,7 +15,6 @@ const templateData = [
 	{ name: "OPDPosBN", module: "opd", id: 13 },
 	{ name: "PrescriptionFullEN", module: "prescription", id: 14 },
 	{ name: "PrescriptionFullBN", module: "prescription", id: 15 },
-	{ name: "IPD", module: "ipd", id: 16 },
 	{ name: "LabTest", module: "lab-test", id: 17 },
 	{ name: "Discharge", module: "discharge", id: 18 },
 	{ name: "IPDDetails", module: "ipd", id: 19 },

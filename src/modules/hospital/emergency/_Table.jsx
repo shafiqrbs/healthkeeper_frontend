@@ -32,7 +32,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
 import OPDPosBn from "@/common/components/print-formats/opd/OPDPosBN";
-import Prescription from "@/common/components/print-formats/opd/PrescriptionFullBN";
+import Prescription from "@/common/components/print-formats/prescription/PrescriptionFullBN";
 import { useReactToPrint } from "react-to-print";
 
 const PER_PAGE = 200;

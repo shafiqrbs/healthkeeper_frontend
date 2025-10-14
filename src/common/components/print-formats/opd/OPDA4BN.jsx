@@ -144,8 +144,8 @@ const OPDA4BN = forwardRef(({ data, preview = false }, ref) => {
 									{t("বয়স")}
 								</Text>
 								<Text size="xs">
-									{getValue(patientInfo?.year, 25)} Y, {getValue(patientInfo?.month, 1)} M,{" "}
-									{getValue(patientInfo?.day, 1)} D
+									{getValue(patientInfo?.year, 0)} Y, {getValue(patientInfo?.month, 0)} M,{" "}
+									{getValue(patientInfo?.day, 0)} D
 								</Text>
 							</Group>
 						</Grid.Col>

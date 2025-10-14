@@ -23,7 +23,7 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
-import DetailsDrawer from "@/modules/hospital/common/drawer/__IPDDetailsDrawer";
+import DetailsDrawer from "@hospital-components/drawer/__IPDDetailsDrawer";
 import OverviewDrawer from "@hospital-components/drawer/__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,12 +33,12 @@ import { formatDate } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import OPDA4BN from "@/common/components/print-formats/opd/OPDA4BN";
-import OPDPosBn from "@/common/components/print-formats/opd/OPDPosBN";
+import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
+import OPDPosBN from "@components/print-formats/opd/OPDPosBN";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import Prescription from "@/common/components/print-formats/opd/PrescriptionFullBN";
+import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
@@ -80,7 +80,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	});
 
 	const [rootRef, setRootRef] = useState(null);
-	const [value, setValue] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
 	const [printData, setPrintData] = useState({});
@@ -468,8 +467,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 
 			<OPDA4BN data={printData} ref={a4Ref} />
-			<OPDPos data={printData} ref={posRef} />
-			<Prescription data={printData} ref={prescriptionRef} />
+			<OPDPosBN data={printData} ref={posRef} />
+			<PrescriptionFullBN data={printData} ref={prescriptionRef} />
 		</Box>
 	);
 }

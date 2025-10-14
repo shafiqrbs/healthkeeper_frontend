@@ -15,8 +15,7 @@ import {
 	TextInput,
 } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconRestore, IconSearch, IconX } from "@tabler/icons-react";
+import { IconRestore, IconSearch } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -28,11 +27,11 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import NIDDataPreviewModal from "./NIDDataPreviewModal";
 import { useReactToPrint } from "react-to-print";
-import IPDA4 from "@components/print-formats/ipd/IPDA4";
-import IPDPos from "@components/print-formats/ipd/IPDPos";
+import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
+import OPDPosBN from "@components/print-formats/opd/OPDPosBN";
 import { useForm } from "@mantine/form";
-import RequiredAsterisk from "@/common/components/form-builders/RequiredAsterisk";
-import SelectForm from "@/common/components/form-builders/SelectForm";
+import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
+import SelectForm from "@components/form-builders/SelectForm";
 import { useDispatch, useSelector } from "react-redux";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
@@ -45,7 +44,7 @@ const USER_NID_DATA = {
 	verifyToken: "a9a98eac-68c4-4dd1-9cb9-8127a5b44833",
 	citizenData: {
 		mobile: null,
-		fullName_English: "Md KarimI Mia",
+		fullName_English: "Md Karim Mia",
 		motherName_English: "",
 		motherName_Bangla: "মোসাঃ ….. বেগম",
 		fatherName_English: "",
@@ -91,7 +90,6 @@ export default function EmergencyPatientForm({
 	handleSubmit,
 	showUserData,
 	setShowUserData,
-	hospitalConfigData
 }) {
 	const { mainAreaHeight } = useOutletContext();
 	const searchForm = useForm({
@@ -284,18 +282,18 @@ export function Form({
 	visible,
 	setVisible,
 	resetKey,
-	setResetKey
+	setResetKey,
 }) {
 	const dispatch = useDispatch();
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
 	const [printData, setPrintData] = useState(null);
 	const [pendingPrint, setPendingPrint] = useState(null); // "a4" | "pos" | null
-	const ipdDocumentA4Ref = useRef(null);
-	const ipdDocumentPosRef = useRef(null);
+	const emergencyA4Ref = useRef(null);
+	const emergencyPosRef = useRef(null);
 	const { hospitalConfigData: globalConfig } = useHospitalConfigData();
 	const hospitalConfigData = globalConfig?.hospital_config;
-	const printA4 = useReactToPrint({ content: () => ipdDocumentA4Ref.current });
-	const printPos = useReactToPrint({ content: () => ipdDocumentPosRef.current });
+	const printA4 = useReactToPrint({ content: () => emergencyA4Ref.current });
+	const printPos = useReactToPrint({ content: () => emergencyPosRef.current });
 
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 	const [userNidData] = useState(USER_NID_DATA);
@@ -303,7 +301,7 @@ export function Form({
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - heightOffset;
 	const firstRender = useIsFirstRender();
-	console.log(hospitalConfigData)
+
 	const enteredAmount = Number(form?.values?.amount ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
 	const isReturn = remainingBalance < 0;
@@ -333,9 +331,8 @@ export function Form({
 				: Number(hospitalConfigData?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
 		setConfiguredDueAmount(price);
 		form.setFieldValue("amount", price);
-
 	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
-	console.log(hospitalConfigData);
+
 	const handlePrint = async (type) => {
 		const res = await handleSubmit();
 
@@ -456,7 +453,7 @@ export function Form({
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt={"xs"}>
+									<Grid align="center" columns={20} mt="xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Mobile")}</Text>
 										</Grid.Col>
@@ -562,14 +559,13 @@ export function Form({
 													max={31}
 													readOnly={form.values.dob}
 												/>
-
 											</Flex>
 										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Flex align="center" gap="es">
-												<Text fz="sm">{t("Upazilla")}</Text> <RequiredAsterisk />
+												<Text fz="sm">{t("Upazilla")}</Text>
 											</Flex>
 										</Grid.Col>
 										<Grid.Col span={14}>
@@ -834,8 +830,8 @@ export function Form({
 					userNidData={userNidData}
 				/>
 			</Box>
-			<IPDA4 data={printData} ref={ipdDocumentA4Ref} />
-			<IPDPos data={printData} ref={ipdDocumentPosRef} />
+			<OPDA4BN data={printData} ref={emergencyA4Ref} />
+			<OPDPosBN data={printData} ref={emergencyPosRef} />
 		</>
 	);
 }

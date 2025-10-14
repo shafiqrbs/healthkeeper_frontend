@@ -6,13 +6,13 @@ export default defineConfig({
 	plugins: [react()],
 	resolve: {
 		alias: {
-			"@": "/src",
 			"@components": "/src/common/components",
 			"@hospital-components": "/src/modules/hospital/common",
 			"@utils": "/src/common/utils",
 			"@assets": "/src/assets",
 			"@hooks": "/src/common/hooks",
 			"@modules": "/src/modules",
+			"@": "/src",
 
 			"@tabler/icons-react": "@tabler/icons-react/dist/esm/icons/index.mjs",
 		},
