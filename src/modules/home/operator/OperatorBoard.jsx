@@ -95,7 +95,7 @@ export default function OperatorBoard({height}) {
 			})
 		);
 	}, []);
-	console.log(height)
+
 	return (
 		<Grid columns={40} h={height} gutter={{ base: "xs" }}>
 			<Grid.Col span={20}>
