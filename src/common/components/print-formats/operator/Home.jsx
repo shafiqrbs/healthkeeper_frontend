@@ -59,7 +59,7 @@ const Home = forwardRef((data, ref) => {
 							</Text>
 
 							<Text ta="center" fw="bold" size="lg" c="#1e40af">
-								{t("Prescription")}
+								{t("DailySummaryReports")}
 							</Text>
 						</Grid.Col>
 						<Grid.Col span={4}>
@@ -149,6 +149,7 @@ function PrintingTable({ data, columns, title }) {
 									<Table.Th
 										key={index}
 										tt="capitalize"
+										width={'350px'}
 										ta={isLastColumn ? "right" : "left"}
 										align={isLastColumn ? "right" : "left"}
 									>

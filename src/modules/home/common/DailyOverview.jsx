@@ -14,7 +14,7 @@ const collectionColumns = [
 
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
-export default function DailyOverview() {
+export default function DailyOverview({height}) {
 	const { t } = useTranslation();
 	const records = useSelector((state) => state.crud[module].data);
 
@@ -27,7 +27,7 @@ export default function DailyOverview() {
 	const doctorCollectionData = records.data?.doctorMode || [];
 
 	return (
-		<ScrollArea h={600} mt="sm">
+		<ScrollArea h={height-72} mt="sm">
 			<Box className="borderRadiusAll" mt="xxxs" px="xs">
 				<Flex justify="space-between" align="center" className="borderBottomDashed" py="xxxs">
 					<Text>{t("Patient")}</Text>

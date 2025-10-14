@@ -44,6 +44,7 @@ export default function CollectionTable({ data, columns, title, stripedColor = "
 									<Table.Th
 										key={index}
 										tt="capitalize"
+										width='350px'
 										ta={isLastColumn ? "right" : "left"}
 										align={isLastColumn ? "right" : "left"}
 									>

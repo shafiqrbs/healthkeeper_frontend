@@ -11,6 +11,7 @@ import Home from "@components/print-formats/operator/Home";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES_CORE } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
+import SummaryReports from "@modules/hospital/reports/sales-summary/SummaryReports";
 
 const quickBrowseCardData = [
 	{
@@ -65,13 +66,13 @@ const quickBrowseCardData = [
 
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
-export default function OperatorBoard() {
+export default function OperatorBoard({height}) {
 	const roles = getUserRole();
 	const user = getLoggedInUser();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const userRole = getUserRole();
-	const homeRef = useRef(null);
+	const summaryReportsRef = useRef(null);
 	const dispatch = useDispatch();
 	const records = useSelector((state) => state.crud[module].data);
 	const filteredQuickBrowseCardData = quickBrowseCardData.filter((item) =>
@@ -79,7 +80,7 @@ export default function OperatorBoard() {
 	);
 
 	const handleHomeOverviewPrint = useReactToPrint({
-		content: () => homeRef.current,
+		content: () => summaryReportsRef.current,
 	});
 
 	useEffect(() => {
@@ -94,11 +95,11 @@ export default function OperatorBoard() {
 			})
 		);
 	}, []);
-
+	console.log(height)
 	return (
-		<Grid columns={40} gutter={{ base: "md" }}>
+		<Grid columns={40} h={height} gutter={{ base: "xs" }}>
 			<Grid.Col span={20}>
-				<Card padding="lg" radius="sm" h="100%">
+				<Card padding="lg" radius="sm" h={height-8}>
 					<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
 						<Flex align="center" h="100%" px="lg">
 							<Text pb={0} fz="sm" c="white" fw={500}>
@@ -138,7 +139,7 @@ export default function OperatorBoard() {
 				</Card>
 			</Grid.Col>
 			<Grid.Col span={20}>
-				<Card padding="lg" radius="sm" h="100%">
+				<Card padding="lg" radius="sm" >
 					<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
 						<Flex align="center" h="100%" px="lg" justify="space-between">
 							<Text pb={0} fz="sm" c="white" fw={500}>
@@ -146,16 +147,16 @@ export default function OperatorBoard() {
 							</Text>
 							<ActionIcon variant="default" c={"green.8"} size="md" aria-label="Filter">
 								<IconFileTypePdf
-									style={{ width: rem(20) }}
-									stroke={1.5}
+									style={{ width: rem(16) }}
+									stroke={1.2}
 									onClick={handleHomeOverviewPrint}
 								/>
 							</ActionIcon>
 						</Flex>
 					</Card.Section>
-					<DailyOverview />
+					<DailyOverview height={height} />
 					{/* print component for home overview */}
-					{records?.data && <Home ref={homeRef} data={records?.data || []} />}
+					{records?.data && <SummaryReports ref={summaryReportsRef} data={records?.data || []} />}
 				</Card>
 			</Grid.Col>
 		</Grid>

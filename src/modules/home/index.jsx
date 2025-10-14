@@ -22,9 +22,9 @@ export default function Index({ height }) {
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={height} />
 						{/* ================= carousel part ================== */}
-						<Box w="100%">
-							{userRoles.some((role) => ALLOWED_OPERATOR_ROLES.includes(role)) && <OperatorBoard />}
-							{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && <AdminBoard />}
+						<Box w="100%" mainAreaHeight={height}>
+							{userRoles.some((role) => ALLOWED_OPERATOR_ROLES.includes(role)) && <OperatorBoard height={height} />}
+							{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && <AdminBoard height={height} />}
 						</Box>
 					</Flex>
 				</Box>

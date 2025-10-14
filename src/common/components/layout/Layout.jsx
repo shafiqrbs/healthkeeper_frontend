@@ -22,7 +22,6 @@ function useBrowserHeight() {
 		1.0: 0,
 	};
 	return height + (scaleAdjustments[scale] ?? 0);
-
 }
 
 const Layout = () => {
