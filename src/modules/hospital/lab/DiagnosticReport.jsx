@@ -1,14 +1,12 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import { Box, Text, ScrollArea, Stack, Grid, TextInput, Flex, Button } from "@mantine/core";
+import { Box, Text, Stack, Grid, TextInput, Flex, Button } from "@mantine/core";
 import { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
-import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import { IconChevronUp, IconSelector, IconPrinter } from "@tabler/icons-react";
-import { formatDate } from "@/common/utils";
-import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -22,7 +20,8 @@ import { useDispatch } from "react-redux";
 import { useHotkeys } from "@mantine/hooks";
 
 const module = MODULES_CORE.LAB_USER;
-export default function DiagnosticReport() {
+
+export default function DiagnosticReport({ refetchDiagnosticReport }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const inputsRef = useRef([]);
@@ -32,21 +31,28 @@ export default function DiagnosticReport() {
 	const [submitFormData, setSubmitFormData] = useState({});
 	const [updatingRows, setUpdatingRows] = useState({});
 	const { id, reportId } = useParams();
+	const [fetching, setFetching] = useState(false);
+
 	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
+
 	useEffect(() => {
 		if (id && reportId) {
 			(async () => {
+				setFetching(true);
 				const res = await getDataWithoutStore({
 					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX}/${id}/report/${reportId}`,
 				});
 				form.reset();
 				setDiagnosticReport(res?.data);
+				setFetching(false);
 			})();
 		}
 	}, [id, reportId]);
+
 	useEffect(() => {
 		form.setFieldValue("comment", diagnosticReport.comment ? diagnosticReport.comment : null);
 	}, [diagnosticReport]);
+
 	//const handleDataTypeChange = () => {};
 	const handleFieldChange = async (rowId, field, value) => {
 		setSubmitFormData((prev) => ({
@@ -89,6 +95,7 @@ export default function DiagnosticReport() {
 			onConfirm: () => handleConfirmModal(values),
 		});
 	};
+
 	async function handleConfirmModal(values) {
 		try {
 			const value = {
@@ -108,6 +115,7 @@ export default function DiagnosticReport() {
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
+				refetchDiagnosticReport();
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
@@ -181,6 +189,7 @@ export default function DiagnosticReport() {
 							loaderSize="xs"
 							loaderColor="grape"
 							height={mainAreaHeight - 316}
+							fetching={fetching}
 							sortIcons={{
 								sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 								unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
