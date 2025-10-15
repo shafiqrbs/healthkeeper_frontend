@@ -47,36 +47,6 @@ export default function InvoiceDetails() {
 		}
 	}, [id, transactionId]);
 
-	const handleFieldChange = async (rowId, field, value) => {
-		setSubmitFormData((prev) => ({
-			...prev,
-			[rowId]: { ...prev[rowId], [field]: value },
-		}));
-		setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
-		try {
-			await dispatch(
-				storeEntityData({
-					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INLINE_UPDATE}/${rowId}`,
-					data: { [field]: value },
-					module,
-				})
-			);
-		} catch (error) {
-			errorNotification(error.message);
-		} finally {
-			setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
-		}
-	};
-
-	const handleKeyDown = (e, index) => {
-		if (e.key === "Enter") {
-			e.preventDefault(); // prevent form submit
-			const nextInput = inputsRef.current[index + 1];
-			if (nextInput) {
-				nextInput.focus(); // move to next
-			}
-		}
-	};
 
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
@@ -167,7 +137,7 @@ export default function InvoiceDetails() {
 							fetching={fetching}
 							loaderSize="xs"
 							loaderColor="grape"
-							height={mainAreaHeight - 170}
+							height={mainAreaHeight - 162}
 							sortIcons={{
 								sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 								unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
@@ -247,10 +217,10 @@ export default function InvoiceDetails() {
 													<InputNumberForm
 														form={form}
 														label=""
-														tooltip={t("EnterQuantity")}
+														tooltip={t("EnterAmount")}
 														placeholder={t("Amount")}
-														name="quantity"
-														id="quantity"
+														name="amount"
+														id="amount"
 														value={invoiceDetails?.total || 0}
 													/>
 												</Grid.Col>

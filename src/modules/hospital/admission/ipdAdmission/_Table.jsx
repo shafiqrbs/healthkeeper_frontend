@@ -1,34 +1,82 @@
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { IconCalendarWeek, IconUser, IconArrowNarrowRight } from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
-import { MODULES } from "@/constants";
-import { useSelector } from "react-redux";
-import { formatDate } from "@utils/index";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import { useNavigate, useOutletContext } from "react-router-dom";
+
+import DataTableFooter from "@components/tables/DataTableFooter";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
+import {
+	IconArrowNarrowRight,
+	IconArrowRight,
+	IconChevronUp,
+	IconDotsVertical,
+	IconSelector,
+	IconTrashX
+} from "@tabler/icons-react";
+import { DataTable } from "mantine-datatable";
+import { useTranslation } from "react-i18next";
+import { rem } from "@mantine/core";
+import tableCss from "@assets/css/Table.module.css";
+import filterTabsCss from "@assets/css/FilterTabs.module.css";
+
+import KeywordSearch from "../../common/KeywordSearch";
 import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import ConfirmModal from ".././confirm/__ConfirmModal";
+import { getAdmissionConfirmFormInitialValues } from ".././helpers/request";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { useSelector } from "react-redux";
+import {formatDate, getLoggedInHospitalUser, getUserRole} from "@/common/utils";
+import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import DetailsDrawer from "@modules/hospital/visit/__DetailsDrawer";
 
-const module = MODULES.ADMISSION;
-const PER_PAGE = 500;
+const PER_PAGE = 20;
 
-export default function _Table() {
-	const { id } = useParams();
+
+const tabs = [
+	{ label: "Confirmed", value: "confirmed" },
+	{ label: "Admitted", value: "admitted" },
+];
+
+const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "admin_administrator"];
+
+export default function _Table({ module }) {
+	const { t } = useTranslation();
+	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const { mainAreaHeight } = useOutletContext();
-	const navigate = useNavigate();
+	const height = mainAreaHeight - 158;
+	const [opened, { open, close }] = useDisclosure(false);
+	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
+	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
+	const [rootRef, setRootRef] = useState(null);
+	const [controlsRefs, setControlsRefs] = useState({});
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const [selectedPatientId, setSelectedPatientId] = useState(id);
-	const handleAdmissionOverview = (id) => {
-		setSelectedPatientId(id);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.VIEW}/${id}`);
-	};
-
+	const navigate = useNavigate();
+	const [selectedId, setSelectedId] = useState(null);
+	const [processTab, setProcessTab] = useState("confirmed");
+	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
+	const userHospitalConfig = getLoggedInHospitalUser();
+	const userRoles = getUserRole();
+	const userId = userHospitalConfig?.employee_id;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
 			created: formatDate(new Date()),
+			room_id: "",
 		},
 	});
+
+	const handleDetailsAdmission = (id) => {
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD.INDEX}/${id}`, { replace: true });
+	};
+
+	const setControlRef = (val) => (node) => {
+		controlsRefs[val] = node;
+		setControlsRefs(controlsRefs);
+	};
+
+	const handleAdmissionOverview = (id) => {
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.VIEW}/${id}`);
+	};
+
 
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
@@ -36,8 +84,8 @@ export default function _Table() {
 		filterParams: {
 			name: filterData?.name,
 			patient_mode: "ipd",
-			process: "confirmed",
 			created: filterData.created,
+			process: processTab,
 			term: filterData.keywordSearch,
 		},
 		perPage: PER_PAGE,
@@ -45,79 +93,162 @@ export default function _Table() {
 		direction: "desc",
 	});
 
-	return (
-		<Box>
-			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="xxxs">
-				<Text ta="center" fz="sm" fw={500}>
-					S/N
-				</Text>
-				<Text ta="center" fz="sm" fw={500}>
-					Patient Name
-				</Text>
-			</Flex>
-			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="xxxs">
-				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
-				{records?.map((item) => (
-					<Grid
-						columns={12}
-						key={item.id}
-						onClick={() => handleAdmissionOverview(item.id)}
-						my="xs"
-						bg={
-							Number(selectedPatientId) === item?.id
-								? "var(--theme-primary-color-0)"
-								: "var(--theme-tertiary-color-0)"
-						}
-						px="xs"
-						gutter="xs"
-					>
-						<Grid.Col span={4}>
-							<Flex align="center" gap="xxxs">
-								<IconCalendarWeek size={16} stroke={1.5} />
+	const handleView = (id) => {
+		setSelectedPrescriptionId(id);
+		setTimeout(() => open(), 10);
+	};
 
-								<Text
-									fz="sm"
-									onClick={() => handleView(item?.id)}
-									className="activate-link text-nowrap"
+	const handleOpenViewOverview = () => {
+		openOverview();
+	};
+
+
+	const handleConfirm = (id) => {
+		setSelectedId(id);
+		openConfirm();
+	};
+
+	return (
+		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
+			<Flex justify="space-between" align="center" px="sm">
+				<Text fw={600} fz="sm" py="xs">
+					{t("AdmissionInformation")}
+				</Text>
+				<Flex gap="xs" align="center">
+					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
+						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
+							{tabs.map((tab) => (
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={tab.value}
 								>
-									{formatDate(item?.created_at)}
+									{t(tab.label)}
+								</Tabs.Tab>
+							))}
+							<FloatingIndicator
+								target={processTab ? controlsRefs[processTab] : null}
+								parent={rootRef}
+								className={filterTabsCss.indicator}
+							/>
+						</Tabs.List>
+					</Tabs>
+				</Flex>
+			</Flex>
+			<Box px="sm" mb="sm">
+				<KeywordSearch form={form} module={module} />
+			</Box>
+			<Box className="borderRadiusAll border-top-none" px="sm">
+				<DataTable
+					striped
+					highlightOnHover
+					pinFirstColumn
+					pinLastColumn
+					stripedColor="var(--theme-tertiary-color-1)"
+					classNames={{
+						root: tableCss.root,
+						table: tableCss.table,
+						header: tableCss.header,
+						footer: tableCss.footer,
+						pagination: tableCss.pagination,
+					}}
+					records={records}
+					onRowClick={({ record }) => {
+						if (!record?.prescription_id) return alert('NoPrescriptionGenerated');
+						handleView(record?.prescription_id);
+					}}
+					columns={[
+						{
+							accessor: "index",
+							title: t("S/N"),
+							textAlignment: "right",
+							render: (_, index) => index + 1,
+						},
+						{
+							accessor: "created_at",
+							title: t("Created"),
+							textAlignment: "right",
+							render: (item) => (
+								<Text fz="xs" onClick={() => handleView(item.id)} className="activate-link">
+									{formatDate(item.created_at)}
 								</Text>
-							</Flex>
-							<Flex align="center" gap="xxxs">
-								<IconUser size={16} stroke={1.5} />
-								<Text fz="sm">{item.patient_id}</Text>
-							</Flex>
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<Flex align="center" gap="xxxs">
-								<Box>
-									<Text fz="sm">{item.name}</Text>
-									<Text fz="sm">{item.mobile}</Text>
-								</Box>
-							</Flex>
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<Flex justify="space-between" align="center">
-								<Box>
-									<Text fz="sm">{item.patient_payment_mode_name}</Text>
-									<Text fz="sm">{item.visiting_room}</Text>
-								</Box>
-								<Button.Group>
-									<ActionIcon
-										variant="filled"
-										onClick={() => handleAdmissionOverview(item.id)}
-										color="var(--theme-primary-color-6)"
-										radius="xs"
-										aria-label="Settings"
-									>
-										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
-									</ActionIcon>
-								</Button.Group>
-							</Flex>
-						</Grid.Col>
-					</Grid>
-				))}
-			</ScrollArea>
+							),
+						},
+						{ accessor: "patient_id", title: t("patientId") },
+						{ accessor: "name", title: t("Name") },
+						{ accessor: "mobile", title: t("Mobile") },
+						{ accessor: "gender", title: t("Gender") },
+						{ accessor: "admit_consultant_name", title: t("Consultant") },
+						{ accessor: "admit_unit_name", title: t("Unit") },
+						{ accessor: "admit_department_name", title: t("Department") },
+						{ accessor: "admit_doctor_name", title: t("Doctor") },
+						{ accessor: "visiting_room", title: t("Cabin/Bed") },
+						{
+							accessor: "total",
+							title: t("Amount"),
+							render: (item) => t(item.total),
+						},
+						{
+							accessor: "action",
+							title: t("Action"),
+							textAlign: "right",
+							titleClassName: "title-right",
+							render: (item) => (
+
+								<>
+									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && item.process === "confirmed" && (
+											<Button.Group>
+												<Button
+													variant="filled"
+													onClick={() => handleAdmissionOverview(item.id)}
+													color="var(--theme-primary-color-6)"
+													radius="xs"
+													size={'compact-xs'}
+													aria-label="Settings"
+													rightSection={<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />}
+												>
+													Process
+												</Button>
+											</Button.Group>
+										)}
+									</Group>
+
+								</>
+
+							),
+						},
+					]}
+					textSelectionDisabled
+					fetching={fetching}
+					loaderSize="xs"
+					loaderColor="grape"
+					height={height}
+					onScrollToBottom={handleScrollToBottom}
+					scrollViewportRef={scrollRef}
+					sortStatus={sortStatus}
+					onSortStatusChange={setSortStatus}
+					sortIcons={{
+						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+					}}
+				/>
+			</Box>
+			<DataTableFooter indexData={records} module="visit" />
+			<ConfirmModal
+				opened={openedConfirm}
+				close={() => {
+					closeConfirm();
+					setSelectedId(null);
+				}}
+				form={confirmForm}
+				selectedId={selectedId}
+				module={module}
+			/>
+			{selectedPrescriptionId && (
+				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+			)}
 		</Box>
 	);
 }

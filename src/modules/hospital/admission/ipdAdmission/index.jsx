@@ -21,7 +21,7 @@ export default function Index() {
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
-
+	const module = MODULES.ADMISSION;
 	return (
 		<>
 			{progress !== 100 ? (
@@ -35,29 +35,7 @@ export default function Index() {
 								<EntityForm form={form} module={module} />
 							</Box>
 						) : (
-							<Box>
-								<Box px="sm" py="md" bg="white">
-									<Text fw={600} fz="sm">
-										{t("PatientInformation")}
-									</Text>
-								</Box>
-								<TabsWithSearch
-									tabList={["list"]}
-									module={module}
-									tabPanels={[
-										{
-											tab: "list",
-											component: (
-												<Table
-													selectedId={id}
-													isOpenPatientInfo={isOpenPatientInfo}
-													setIsOpenPatientInfo={setIsOpenPatientInfo}
-												/>
-											),
-										},
-									]}
-								/>
-							</Box>
+							<Table module={module} />
 						)}
 					</Flex>
 				</Box>

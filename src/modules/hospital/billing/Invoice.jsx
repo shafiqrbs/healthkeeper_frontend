@@ -257,7 +257,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 				<Text fw={600} fz="sm" py="es" px="xs">
 					{t("InvoiceTransaction")}
 				</Text>
-				<Button onClick={printIPDAll} bg="var(--theme-secondary-color-6)" color="white" size="xs">
+				<Button onClick={printIPDAll} bg="var(--theme-secondary-color-6)" color="white" size="compact-xs">
 					{t("AllPrint")}
 				</Button>
 			</Flex>
@@ -357,7 +357,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 										<Box w="100%" bg="white">
 											<Grid columns={18} gutter="xs">
 												<Grid.Col span={18} className="animate-ease-out" px="xs">
-													<ScrollArea scrollbars="y" type="never" h="116" mx="xs">
+													<ScrollArea scrollbars="y" type="never" h="118" mx="xs">
 														<Stack gap={0} bg="white" mt="xxs">
 															{form.values?.investigation?.map((item, idx) => (
 																<Flex
@@ -415,7 +415,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 										</Box>
 									</Tabs.Panel>
 									<Tabs.Panel value="bed-cabin" bg="white">
-										<Stack justify="space-between" h={mainAreaHeight - 570}>
+										<Stack justify="space-between" h={mainAreaHeight - 600}>
 											<Grid mt="xs" mx="xs" gutter="xs" align="center" columns={20}>
 												<Grid.Col span={20}>
 													<Select
@@ -449,7 +449,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 											</Grid>
 											<Box w="100%" bg="white">
 												<Grid columns={18} gutter="xs">
-													<Grid.Col span={18} className="animate-ease-out" px="xs">
+													<Grid.Col span={18} className="animate-ease-out" px="xs" pb={'xs'}>
 														<Flex mt="xs" align="center" gap="xs">
 															<InputNumberForm
 																form={form}
@@ -458,7 +458,6 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 																placeholder="quantity"
 																name="quantity"
 																id="quantity"
-																nextField="dob"
 																size="xs"
 															/>
 															<Button
