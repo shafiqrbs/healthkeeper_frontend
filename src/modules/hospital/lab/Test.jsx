@@ -3,7 +3,10 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { IconPrinter, IconTag } from "@tabler/icons-react";
-import { getLoggedInHospitalUser, getUserRole } from "@utils/index";
+import { getUserRole } from "@utils/index";
+import { useRef, useState } from "react";
+import Barcode from "react-barcode";
+import { useReactToPrint } from "react-to-print";
 
 const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"];
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
@@ -14,16 +17,21 @@ export default function Test({ entity, isLoading }) {
 	const test = entity;
 	const { id } = useParams();
 	const navigate = useNavigate();
-	const userHospitalConfig = getLoggedInHospitalUser();
 	const userRoles = getUserRole();
-	const userId = userHospitalConfig?.employee_id;
+	const barCodeRef = useRef(null);
+	const [barcodeValue, setBarcodeValue] = useState("");
+
+	const printBarCodeValue = useReactToPrint({
+		content: () => barCodeRef.current,
+	});
 
 	const handleTest = (reportId) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${reportId}`);
 	};
 
 	const handleBarcodeTag = (barcode) => {
-		console.log(barcode);
+		setBarcodeValue(barcode);
+		requestAnimationFrame(() => printBarCodeValue());
 	};
 
 	return (
@@ -107,6 +115,13 @@ export default function Test({ entity, isLoading }) {
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}
+
+			{/* ----------- barcode generator ---------- */}
+			<Box display="none">
+				<Box ref={barCodeRef}>
+					<Barcode fontSize="12" width="1" height="40" value={barcodeValue || "E0TK34GI"} />
+				</Box>
+			</Box>
 		</Box>
 	);
 }
