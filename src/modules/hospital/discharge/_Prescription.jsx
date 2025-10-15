@@ -24,7 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import { getMedicineFormInitialValues } from "../../helpers/request";
+import { getMedicineFormInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
 import TabsActionButtons from "@hospital-components/TabsActionButtons";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -179,7 +179,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, dosage_
 	);
 }
 
-export default function Medicine() {
+export default function Prescription() {
 	const [medicines, setMedicines] = useState([]);
 	const [updateKey, setUpdateKey] = useState(0);
 	const [isSubmitting, setIsSubmitting] = useState(false);

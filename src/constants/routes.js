@@ -243,8 +243,6 @@ export const MASTER_DATA_ROUTES = {
 			VIEW: "/hospital/core/advice/view",
 		},
 
-
-
 		OPD_ROOM: {
 			INDEX: "/hospital/core/opd-room",
 			CREATE: "/hospital/core/opd-room/create",
@@ -492,6 +490,12 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "/hospital/visit/create",
 			UPDATE: "/hospital/visit",
 			VIEW: "/hospital/visit/view",
+		},
+		DISCHARGE: {
+			INDEX: "/hospital/discharge",
+			CREATE: "/hospital/discharge",
+			UPDATE: "/hospital/discharge",
+			VIEW: "/hospital/discharge/view",
 		},
 		PRESCRIPTION: {
 			INDEX: "/hospital/prescription",

@@ -119,7 +119,7 @@ export default function Test({ entity, isLoading }) {
 			{/* ----------- barcode generator ---------- */}
 			<Box display="none">
 				<Box ref={barCodeRef}>
-					<Barcode fontSize="12" width="1" height="40" value={barcodeValue || "E0TK34GI"} />
+					<Barcode fontSize="12" width="1" height="40" value={barcodeValue || "BARCODETEST"} />
 				</Box>
 			</Box>
 		</Box>

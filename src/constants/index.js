@@ -7,6 +7,7 @@ export const DISEASE_PROFILE = ["Diabetic", "Hypertension", "Asthma", "Allergy",
 
 export const MODULES = {
 	PRODUCTION: "production",
+	DISCHARGE: "discharge",
 	PROCUREMENT: "procurement",
 	INVENTORY: "inventory",
 	REPORTING: "reporting",

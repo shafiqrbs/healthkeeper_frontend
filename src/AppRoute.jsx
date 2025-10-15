@@ -46,14 +46,15 @@ import ConfigurationIndex from "@modules/configuration";
 import IpdIndex from "@modules/hospital/admission/ipd";
 import IpdAdmissionIndex from "@modules/hospital/admission/ipdAdmission";
 import IpdAdmittedIndex from "@modules/hospital/ipdAdmitted";
-import UserIndex from "@/modules/core/user";
-import SettingIndex from "@/modules/core/setting";
+import UserIndex from "@modules/core/user";
+import SettingIndex from "@modules/core/setting";
 import TestRoute from "@components/layout/TestRoute";
 import TreatmentTemplatesIndex from "@modules/hospital/core/treatmentTemplates";
 import AdminLayout from "./common/components/layout/AdminLayout";
-import TemplateIndex from "./modules/hospital/core/template";
+import TemplateIndex from "@modules/hospital/core/template";
 import DoctorLayout from "@components/layout/DoctorLayout";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import DischargeIndex from "@modules/hospital/discharge";
 
 function AppRoute() {
 	return (
@@ -107,6 +108,24 @@ function AppRoute() {
 							element={
 								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_ipd"]}>
 									<IpdIndex />
+								</ProtectedRoute>
+							}
+						/>
+					</Route>
+					<Route path="discharge">
+						<Route
+							index
+							element={
+								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_ipd"]}>
+									<DischargeIndex />
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path=":dischargeId"
+							element={
+								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_ipd"]}>
+									<DischargeIndex />
 								</ProtectedRoute>
 							}
 						/>
@@ -274,7 +293,9 @@ function AppRoute() {
 					<Route
 						path="billing"
 						element={
-							<ProtectedRoute roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}>
+							<ProtectedRoute
+								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+							>
 								<BillingIndex />
 							</ProtectedRoute>
 						}
@@ -282,7 +303,9 @@ function AppRoute() {
 					<Route
 						path="billing/:id"
 						element={
-							<ProtectedRoute roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}>
+							<ProtectedRoute
+								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+							>
 								<BillingIndex />
 							</ProtectedRoute>
 						}
@@ -290,7 +313,9 @@ function AppRoute() {
 					<Route
 						path="billing/:id/payment/:transactionId"
 						element={
-							<ProtectedRoute roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}>
+							<ProtectedRoute
+								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+							>
 								<BillingIndex />
 							</ProtectedRoute>
 						}

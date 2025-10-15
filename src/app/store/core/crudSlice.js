@@ -492,6 +492,19 @@ const initialState = {
 		validationMessages: [],
 	},
 	// -------------------- admission modules stops -------------------------
+	// -------------------- admission modules starts -------------------------
+	discharge: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		validation: false,
+		insertType: "create",
+		data: {},
+		editData: {},
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
+		validationMessages: [],
+	},
+	// -------------------- admission modules stops -------------------------
 	// -------------------- doctor report modules starts -------------------------
 	doctorReport: {
 		isLoading: true,
