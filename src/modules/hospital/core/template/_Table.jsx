@@ -26,6 +26,8 @@ const templateData = [
 	{ name: "IPDPrescriptionFullEN", module: "ipd", id: 15 },
 	{ name: "LabReportA4EN", module: "lab-reports", id: 16 },
 	{ name: "LabReportA4BN", module: "lab-reports", id: 17 },
+	{ name: "DischargeA4BN", module: "discharge", id: 18 },
+	{ name: "DischargeA4EN", module: "discharge", id: 19 },
 ];
 
 export default function _Table({ module }) {

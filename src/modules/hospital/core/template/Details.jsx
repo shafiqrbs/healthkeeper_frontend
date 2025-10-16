@@ -18,6 +18,8 @@ import IPDPrescriptionFullBN from "@components/print-formats/ipd/IPDPrescription
 import IPDPrescriptionFullEN from "@components/print-formats/ipd/IPDPrescriptionFullEN";
 import LabReportA4EN from "@components/print-formats/lab-reports/LabReportA4EN";
 import LabReportA4BN from "@components/print-formats/lab-reports/LabReportA4BN";
+import DischargeA4BN from "@components/print-formats/discharge/DischargeA4BN";
+import DischargeA4EN from "@components/print-formats/discharge/DischargeA4EN";
 
 const STATIC_OPD_ID = 59;
 const STATIC_PRESCRIPTION_ID = 59;
@@ -117,6 +119,16 @@ export default function Details() {
 					{name === "LabReportA4BN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
 							<LabReportA4BN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "DischargeA4BN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<DischargeA4BN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "DischargeA4EN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<DischargeA4EN preview data={prescriptionData?.data} />
 						</LoadingWrapper>
 					)}
 				</Box>

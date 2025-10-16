@@ -48,7 +48,7 @@ export const MODULES_CORE = {
 export const MODULES_PHARMACY = {
 	MEDICINE: "medicine",
 	STOCK: "stock",
-	REQUISTION: "requisition",
+	REQUISITION: "requisition",
 	WORKORDER: "workorder",
 	STORE_REQUISTION: "store_requisition",
 	STORE_ISSUE: "store_issue",
