@@ -14,11 +14,9 @@ import {
 	Tooltip,
 	ActionIcon,
 	Textarea,
-	LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
-	IconFirstAidKit,
 	IconHistory,
 	IconPlus,
 	IconReportMedical,
@@ -52,16 +50,14 @@ import { modals } from "@mantine/modals";
 import MedicineListItem from "@hospital-components/MedicineListItem";
 import { DURATION_TYPES, MODULES } from "@/constants";
 import inputCss from "@assets/css/InputField.module.css";
-import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
-import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import HistoryPrescription from "./HistoryPrescription";
 
 const module = MODULES.DISCHARGE;
 
-export default function Prescription({ setShowHistory, hasRecords, setCustomerId, baseHeight }) {
+export default function Prescription({ setShowHistory, hasRecords, baseHeight }) {
 	const form = useForm({
 		initialValues: {
 			exEmergency: [],
@@ -103,13 +99,6 @@ export default function Prescription({ setShowHistory, hasRecords, setCustomerId
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,
 	});
-
-	const { data: prescriptionData, isLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${dischargeId}`,
-	});
-
-	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
-	const existingMedicines = initialFormValues?.medicines || [];
 
 	useEffect(() => {
 		dispatch(
@@ -176,14 +165,6 @@ export default function Prescription({ setShowHistory, hasRecords, setCustomerId
 		if (!printData) return;
 		printPrescription2A4();
 	}, [printData]);
-
-	useEffect(() => {
-		// Always reset the form when prescription data changes
-		const updatedFormValues = getMedicineFormInitialValues(t, initialFormValues);
-		form.setValues(updatedFormValues.initialValues);
-		setMedicines(existingMedicines || []);
-		setCustomerId(prescriptionData?.data?.customer_id);
-	}, [prescriptionData]);
 
 	// =============== handler for adding autocomplete option to temporary list ================
 	const handleAutocompleteOptionAdd = (value, data, type) => {
@@ -489,12 +470,6 @@ export default function Prescription({ setShowHistory, hasRecords, setCustomerId
 
 	return (
 		<Box className="borderRadiusAll" bg="white" pos="relative">
-			<LoadingOverlay
-				visible={isLoading}
-				zIndex={1000}
-				overlayProps={{ radius: "sm", blur: 2 }}
-				loaderProps={{ color: "red" }}
-			/>
 			<Box
 				onSubmit={medicineForm.onSubmit(handleAdd)}
 				key={updateKey}
@@ -678,13 +653,6 @@ export default function Prescription({ setShowHistory, hasRecords, setCustomerId
 							<IconHistory size={16} />
 						</ActionIcon>
 					</Tooltip>
-					{prescriptionData?.data?.patient_referred_id && (
-						<Tooltip label="Referred">
-							<ActionIcon size="lg" bg={"red"} onClick={() => handleReferredViewPrescription()}>
-								<IconFirstAidKit />
-							</ActionIcon>
-						</Tooltip>
-					)}
 					{hasRecords && (
 						<Tooltip label="History">
 							<Button
@@ -1017,7 +985,7 @@ export default function Prescription({ setShowHistory, hasRecords, setCustomerId
 				</GlobalDrawer>
 			)}
 
-			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
+			{/* <ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} /> */}
 
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
 		</Box>

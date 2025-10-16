@@ -1,5 +1,5 @@
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { Box, Button, LoadingOverlay, Stack } from "@mantine/core";
+import { Box, Button, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -25,9 +25,18 @@ export default function HistoryPrescription({ setMedicines, closeHistoryMedicine
 		<Box my="sm" pos="relative">
 			<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 			<Stack bd="1px solid var(--theme-tertiary-color-4)" px="sm" py="md" style={{ borderRadius: "4px" }}>
-				{existingMedicines.map((medicine) => (
-					<Box key={medicine.id}>{medicine.medicine_name}</Box>
+				{existingMedicines.map((medicine, index) => (
+					<Box key={medicine.id}>
+						{index + 1}. {medicine.medicine_name}
+					</Box>
 				))}
+				{existingMedicines.length === 0 && (
+					<Box justify="center" align="center" h="100%">
+						<Text fz="sm" c="var(--theme-secondary-color)">
+							{t("NoMedicinesFound")}
+						</Text>
+					</Box>
+				)}
 			</Stack>
 			<Button
 				leftSection={<IconPlus size={16} />}
@@ -35,6 +44,7 @@ export default function HistoryPrescription({ setMedicines, closeHistoryMedicine
 				variant="filled"
 				color="var(--theme-primary-color-6)"
 				onClick={pushMedicineToForm}
+				disabled={existingMedicines.length === 0}
 			>
 				{t("Insert")}
 			</Button>
