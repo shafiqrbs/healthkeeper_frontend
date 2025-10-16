@@ -339,108 +339,6 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 	const matches = useMediaQuery("(max-width: 1070px)");
 	const matches2 = useMediaQuery("(max-width: 768px)");
 
-	const getActions = () => {
-		const actions = shortcutDropdownData(t, configData);
-		let index = 0;
-		return actions.map((group) => ({
-			...group,
-			actions: group.actions.map((action) => ({
-				...action,
-				index: index++,
-				group: group.group,
-			})),
-		}));
-	};
-
-	const hasAccessToGroup = (group) => {
-		if (userRole.includes("role_domain")) return true;
-
-		switch (group) {
-			case "Production":
-			case "প্রোডাকশন":
-				return userRole.includes("role_production");
-			case "Core":
-			case "কেন্দ্র":
-				return userRole.includes("role_core");
-			case "Inventory":
-			case "ইনভেন্টরি":
-				return userRole.includes("role_inventory");
-			case "Domain":
-			case "ডোমেইন":
-				return userRole.includes("role_domain");
-			case "Accounting":
-			case "একাউন্টিং":
-				return userRole.includes("role_accounting");
-			case "Procurement":
-				return userRole.includes("role_procurement");
-			case "Sales & Purchase":
-				return userRole.includes("role_sales_purchase");
-			default:
-				return false;
-		}
-	};
-
-	const filterList = (searchValue) => {
-		const updatedList = getActions().reduce((acc, group) => {
-			if (hasAccessToGroup(group.group)) {
-				const filteredActions = group.actions.filter((action) =>
-					action.label.toLowerCase().includes(searchValue.toLowerCase())
-				);
-				return [...acc, ...filteredActions];
-			}
-			return acc;
-		}, []);
-
-		setFilteredItems(updatedList);
-		setSelectedIndex(-1);
-	};
-
-	const clearSearch = () => {
-		setValue("");
-		const allActions = getActions().reduce((acc, group) => [...acc, ...group.actions], []);
-		setFilteredItems(allActions);
-		setSelectedIndex(0);
-	};
-
-	const handleKeyDown = (event) => {
-		if (filteredItems.length === 0) return;
-
-		if (event.key === "ArrowDown") {
-			event.preventDefault();
-			setSelectedIndex((prevIndex) => (prevIndex + 1) % filteredItems.length);
-		} else if (event.key === "ArrowUp") {
-			event.preventDefault();
-			setSelectedIndex((prevIndex) => (prevIndex <= 0 ? filteredItems.length - 1 : prevIndex - 1));
-		} else if (event.key === "Enter" && selectedIndex >= 0) {
-			handleActionSelect(filteredItems[selectedIndex]);
-		}
-	};
-
-	const handleActionSelect = (selectedAction) => {
-		if (selectedAction) {
-			const path = getActionPath(selectedAction);
-			navigate(path);
-			setValue("");
-			setShortcutModalOpen(false);
-		}
-	};
-
-	const handleSearchChange = (event) => {
-		setValue(event.target.value);
-		filterList(event.target.value);
-	};
-
-	const handleLanguageChange = (item) => {
-		setLanguageSelected(item);
-		i18n.changeLanguage(item.value);
-	};
-
-	const handleLogout = () => {
-		dispatch(setInventoryShowDataEmpty());
-		localStorage.clear();
-		navigate("/login");
-	};
-
 	useHotkeys(
 		[
 			["alt+k", () => setShortcutModalOpen(true)],
@@ -468,6 +366,108 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 		setFilteredItems(allActions);
 	}, [shortcutModalOpen === true]);
 
+	function getActions() {
+		const actions = shortcutDropdownData(t, configData);
+		let index = 0;
+		return actions.map((group) => ({
+			...group,
+			actions: group.actions.map((action) => ({
+				...action,
+				index: index++,
+				group: group.group,
+			})),
+		}));
+	}
+
+	function hasAccessToGroup(group) {
+		if (userRole.includes("role_domain")) return true;
+
+		switch (group) {
+			case "Production":
+			case "প্রোডাকশন":
+				return userRole.includes("role_production");
+			case "Core":
+			case "কেন্দ্র":
+				return userRole.includes("role_core");
+			case "Inventory":
+			case "ইনভেন্টরি":
+				return userRole.includes("role_inventory");
+			case "Domain":
+			case "ডোমেইন":
+				return userRole.includes("role_domain");
+			case "Accounting":
+			case "একাউন্টিং":
+				return userRole.includes("role_accounting");
+			case "Procurement":
+				return userRole.includes("role_procurement");
+			case "Sales & Purchase":
+				return userRole.includes("role_sales_purchase");
+			default:
+				return false;
+		}
+	}
+
+	function filterList(searchValue) {
+		const updatedList = getActions().reduce((acc, group) => {
+			if (hasAccessToGroup(group.group)) {
+				const filteredActions = group.actions.filter((action) =>
+					action.label.toLowerCase().includes(searchValue.toLowerCase())
+				);
+				return [...acc, ...filteredActions];
+			}
+			return acc;
+		}, []);
+
+		setFilteredItems(updatedList);
+		setSelectedIndex(-1);
+	}
+
+	function clearSearch() {
+		setValue("");
+		const allActions = getActions().reduce((acc, group) => [...acc, ...group.actions], []);
+		setFilteredItems(allActions);
+		setSelectedIndex(0);
+	}
+
+	function handleKeyDown(event) {
+		if (filteredItems.length === 0) return;
+
+		if (event.key === "ArrowDown") {
+			event.preventDefault();
+			setSelectedIndex((prevIndex) => (prevIndex + 1) % filteredItems.length);
+		} else if (event.key === "ArrowUp") {
+			event.preventDefault();
+			setSelectedIndex((prevIndex) => (prevIndex <= 0 ? filteredItems.length - 1 : prevIndex - 1));
+		} else if (event.key === "Enter" && selectedIndex >= 0) {
+			handleActionSelect(filteredItems[selectedIndex]);
+		}
+	}
+
+	function handleActionSelect(selectedAction) {
+		if (selectedAction) {
+			const path = getActionPath(selectedAction);
+			navigate(path);
+			setValue("");
+			setShortcutModalOpen(false);
+		}
+	}
+
+	function handleSearchChange(event) {
+		setValue(event.target.value);
+		filterList(event.target.value);
+	}
+
+	function handleLanguageChange(item) {
+		setLanguageSelected(item);
+		i18n.changeLanguage(item.value);
+	}
+
+	function handleLogout() {
+		dispatch(setInventoryShowDataEmpty());
+		localStorage.clear();
+		navigate("/login");
+	}
+
 	return (
 		<>
 			<Modal.Root opened={opened} onClose={close} size="64%">
@@ -482,112 +482,14 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 					</Modal.Body>
 				</Modal.Content>
 			</Modal.Root>
-			<Box bg="var(--theme-primary-color-6)" mb="2" pos="relative">
-				<Grid columns={24} justify="space-between" gutter={{ base: 2 }}>
+			<Box bg="var(--theme-primary-color-6)" pos="relative">
+				<Grid columns={24} align="center" gutter={{ base: 2 }}>
 					<Grid.Col span={6}>
 						<Logo configData={configData} navigate={navigate} />
 					</Grid.Col>
 					<Grid.Col span={matches2 ? 6 : matches ? 10 : 12}>
-						<Group gap={"md"} wrap="nowrap" mih={42}>
+						<Group align="center" gap={"md"} wrap="nowrap" mih={42}>
 							<SearchButton matches2={matches2} t={t} onClick={() => setShortcutModalOpen(true)} />
-							<Modal
-								opened={shortcutModalOpen}
-								onClose={() => setShortcutModalOpen(false)}
-								centered
-								size="450"
-								padding="md"
-								radius="md"
-								styles={{
-									title: {
-										width: "100%",
-										margin: 0,
-										padding: 0,
-									},
-								}}
-								overlayProps={{
-									backgroundOpacity: 0.7,
-									blur: 3,
-								}}
-								title={
-									<Box>
-										<SearchInput
-											value={value}
-											onChange={handleSearchChange}
-											onKeyDown={handleKeyDown}
-											onClear={clearSearch}
-										/>
-									</Box>
-								}
-								transitionProps={{ transition: "fade", duration: 200 }}
-							>
-								<Divider my="sm" mt={0} />
-								<ScrollArea type={"never"} scrollbars="y" h={height}>
-									{filteredItems.length > 0 ? (
-										<Stack spacing="xs">
-											{filteredItems
-												.reduce((groups, item) => {
-													const existingGroup = groups.find((g) => g.group === item.group);
-													if (existingGroup) {
-														existingGroup.items.push(item);
-													} else {
-														groups.push({
-															group: item.group,
-															items: [item],
-														});
-													}
-													return groups;
-												}, [])
-												.map((groupData, groupIndex) => (
-													<Box key={groupIndex}>
-														<Text size="sm" fw="bold" c="#828282" pb={"xs"}>
-															{groupData.group}
-														</Text>
-														<Stack
-															bg="var(--mantine-color-body)"
-															justify="flex-start"
-															align="stretch"
-															gap="2"
-														>
-															{groupData.items.map((action, itemIndex) => (
-																<ActionItem
-																	key={itemIndex}
-																	action={action}
-																	isSelected={
-																		filteredItems.indexOf(action) === selectedIndex
-																	}
-																	onClick={() => {
-																		setShortcutModalOpen(false);
-																		setValue("");
-																		navigate(getActionPath(action));
-																	}}
-																/>
-															))}
-														</Stack>
-													</Box>
-												))}
-										</Stack>
-									) : (
-										<Text align="center" mt="md" c="dimmed">
-											{t("NoResultsFound")}
-										</Text>
-									)}
-								</ScrollArea>
-								<div className={"titleBackground"}>
-									<Group justify="space-between" mt={"xs"}>
-										<div>
-											<Text fw={500} fz="sm">
-												{t("Sitemap")}
-											</Text>
-											<Text size="xs" c="dimmed">
-												{t("SitemapDetails")}
-											</Text>
-										</div>
-										<Button className={"btnPrimaryBg"} size="xs" onClick={() => navigate("/")}>
-											{t("Sitemap")}
-										</Button>
-									</Group>
-								</div>
-							</Modal>
 						</Group>
 					</Grid.Col>
 					<Grid.Col span={matches2 ? 12 : matches ? 8 : 6}>
@@ -604,6 +506,103 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 					</Grid.Col>
 				</Grid>
 			</Box>
+			{/* ============ option modal ============ */}
+			<Modal
+				opened={shortcutModalOpen}
+				onClose={() => setShortcutModalOpen(false)}
+				centered
+				size="450"
+				padding="md"
+				radius="md"
+				styles={{
+					title: {
+						width: "100%",
+						margin: 0,
+						padding: 0,
+					},
+				}}
+				overlayProps={{
+					backgroundOpacity: 0.7,
+					blur: 3,
+				}}
+				title={
+					<Box>
+						<SearchInput
+							value={value}
+							onChange={handleSearchChange}
+							onKeyDown={handleKeyDown}
+							onClear={clearSearch}
+						/>
+					</Box>
+				}
+				transitionProps={{ transition: "fade", duration: 200 }}
+			>
+				<Divider my="sm" mt={0} />
+				<ScrollArea type={"never"} scrollbars="y" h={height}>
+					{filteredItems.length > 0 ? (
+						<Stack spacing="xs">
+							{filteredItems
+								.reduce((groups, item) => {
+									const existingGroup = groups.find((g) => g.group === item.group);
+									if (existingGroup) {
+										existingGroup.items.push(item);
+									} else {
+										groups.push({
+											group: item.group,
+											items: [item],
+										});
+									}
+									return groups;
+								}, [])
+								.map((groupData, groupIndex) => (
+									<Box key={groupIndex}>
+										<Text size="sm" fw="bold" c="#828282" pb={"xs"}>
+											{groupData.group}
+										</Text>
+										<Stack
+											bg="var(--mantine-color-body)"
+											justify="flex-start"
+											align="stretch"
+											gap="2"
+										>
+											{groupData.items.map((action, itemIndex) => (
+												<ActionItem
+													key={itemIndex}
+													action={action}
+													isSelected={filteredItems.indexOf(action) === selectedIndex}
+													onClick={() => {
+														setShortcutModalOpen(false);
+														setValue("");
+														navigate(getActionPath(action));
+													}}
+												/>
+											))}
+										</Stack>
+									</Box>
+								))}
+						</Stack>
+					) : (
+						<Text align="center" mt="md" c="dimmed">
+							{t("NoResultsFound")}
+						</Text>
+					)}
+				</ScrollArea>
+				<div className={"titleBackground"}>
+					<Group justify="space-between" mt={"xs"}>
+						<div>
+							<Text fw={500} fz="sm">
+								{t("Sitemap")}
+							</Text>
+							<Text size="xs" c="dimmed">
+								{t("SitemapDetails")}
+							</Text>
+						</div>
+						<Button className={"btnPrimaryBg"} size="xs" onClick={() => navigate("/")}>
+							{t("Sitemap")}
+						</Button>
+					</Group>
+				</div>
+			</Modal>
 		</>
 	);
 }

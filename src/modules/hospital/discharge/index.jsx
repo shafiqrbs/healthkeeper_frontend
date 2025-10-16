@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
@@ -12,12 +12,19 @@ import { useDisclosure } from "@mantine/hooks";
 import { MODULES } from "@/constants";
 import Table from "./_Table";
 import Prescription from "./_Prescription";
+import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
+import { getDataWithoutStore } from "@/services/apiService";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 const module = MODULES.ADMISSION;
 
 export default function Index() {
+	const [showHistory, setShowHistory] = useState(false);
+	const [fetching, setFetching] = useState(false);
+	const [records, setRecords] = useState([]);
+	const [customerId, setCustomerId] = useState("");
 	const { dischargeId } = useParams();
-	const [dischargeMode, setDischargeMode] = useState("archive");
+	const [dischargeMode, setDischargeMode] = useState("current");
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const progress = useGetLoadingProgress();
@@ -25,6 +32,28 @@ export default function Index() {
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
 		useDisclosure(false);
+
+	const fetchData = async () => {
+		setFetching(true);
+		try {
+			const result = await getDataWithoutStore({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}/${dischargeId}`,
+			});
+			setRecords(result?.data || []);
+		} catch (err) {
+			console.error("Unexpected error:", err);
+		} finally {
+			setFetching(false);
+		}
+	};
+
+	useEffect(() => {
+		if (customerId) {
+			fetchData();
+		}
+	}, [customerId]);
+
+	const hasRecords = records && records.length > 0;
 
 	return (
 		<>
@@ -72,7 +101,12 @@ export default function Index() {
 							</Grid.Col>
 							<Grid.Col span={18} className="animate-ease-out">
 								{dischargeId ? (
-									<Prescription />
+									<Prescription
+										setCustomerId={setCustomerId}
+										hasRecords={hasRecords}
+										setShowHistory={setShowHistory}
+										baseHeight={mainAreaHeight - 370}
+									/>
 								) : (
 									<Flex
 										justify="center"
@@ -86,6 +120,11 @@ export default function Index() {
 									</Flex>
 								)}
 							</Grid.Col>
+							{hasRecords && (
+								<Grid.Col display={showHistory ? "block" : "none"} span={4}>
+									<PatientPrescriptionHistoryList historyList={records} />
+								</Grid.Col>
+							)}
 						</Grid>
 					</Flex>
 				</Box>

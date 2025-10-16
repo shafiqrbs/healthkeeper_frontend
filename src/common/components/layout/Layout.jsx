@@ -1,21 +1,23 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useNetwork, useViewportSize } from "@mantine/hooks";
+import { useNetwork } from "@mantine/hooks";
 import { AppShell } from "@mantine/core";
 import Header from "./Header";
 import Footer from "./Footer";
 import useConfigData from "@hooks/config-data/useConfigData";
 import { getLoggedInUser } from "@/common/utils";
 import HomeIndex from "@/modules/home";
-import {useMantineScale} from "@/hooks/useMantineScale";
-import {useEffect, useState} from "react";
+import { useMantineScale } from "@/hooks/useMantineScale";
+import { useEffect, useState } from "react";
 function useBrowserHeight() {
 	const [height, setHeight] = useState(window.innerHeight);
 	const scale = useMantineScale();
+
 	useEffect(() => {
 		const handleResize = () => setHeight(window.innerHeight);
 		window.addEventListener("resize", handleResize);
 		return () => window.removeEventListener("resize", handleResize);
 	}, []);
+
 	const scaleAdjustments = {
 		0.75: 200,
 		0.9: 80,
@@ -27,14 +29,14 @@ function useBrowserHeight() {
 const Layout = () => {
 	const user = getLoggedInUser();
 	const networkStatus = useNetwork();
-//	const { height } = useViewportSize();
+	//	const { height } = useViewportSize();
 	//const { height }  = useState(window.innerHeight);
 	const height = useBrowserHeight();
 	const scale = useMantineScale();
 	const location = useLocation();
 	const paramPath = location.pathname;
 	const { configData } = useConfigData();
-	console.log(height);
+
 	// check authentication
 	if (!user?.id) {
 		console.info("Not logged in, redirecting to login page.");

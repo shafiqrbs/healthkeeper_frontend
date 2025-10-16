@@ -1,189 +1,79 @@
+import { useEffect, useRef, useState } from "react";
+import SelectForm from "@components/form-builders/SelectForm";
 import {
-	ActionIcon,
-	Autocomplete,
 	Box,
 	Button,
-	Badge,
+	Group,
+	Text,
+	Stack,
 	Flex,
 	Grid,
-	Group,
-	NumberInput,
 	ScrollArea,
 	Select,
-	Stack,
-	Text,
+	Autocomplete,
+	Tooltip,
+	ActionIcon,
+	Textarea,
+	LoadingOverlay,
 } from "@mantine/core";
-import { useOutletContext, useParams } from "react-router-dom";
-import SelectForm from "@components/form-builders/SelectForm";
-import InputNumberForm from "@components/form-builders/InputNumberForm";
-import { IconCheck, IconHistory, IconPencil, IconPlus, IconX } from "@tabler/icons-react";
+import { useForm } from "@mantine/form";
+import {
+	IconFirstAidKit,
+	IconHistory,
+	IconPlus,
+	IconReportMedical,
+	IconRestore,
+	IconArrowRight,
+	IconDeviceFloppy,
+	IconX,
+	IconTrash,
+	IconCaretUpDownFilled,
+	IconMedicineSyrup,
+} from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
-import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
-import { useDispatch, useSelector } from "react-redux";
-import { useDebouncedState, useDisclosure } from "@mantine/hooks";
+import { getMedicineFormInitialValues } from "./helpers/request";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
+import DatePickerForm from "@components/form-builders/DatePicker";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
+import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
+import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import { getMedicineFormInitialValues } from "./helpers/request";
-import { useForm } from "@mantine/form";
-import TabsActionButtons from "@hospital-components/TabsActionButtons";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
-import { successNotification } from "@components/notification/successNotification";
-import { errorNotification } from "@components/notification/errorNotification";
+import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import { getLoggedInUser } from "@/common/utils";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import { setRefetchData } from "@/app/store/core/crudSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { modals } from "@mantine/modals";
+import MedicineListItem from "@hospital-components/MedicineListItem";
+import { DURATION_TYPES, MODULES } from "@/constants";
+import inputCss from "@assets/css/InputField.module.css";
+import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
+import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import HistoryPrescription from "./HistoryPrescription";
 
-const DURATION_OPTIONS = [
-	{ value: "day", label: "Day" },
-	{ value: "week", label: "Week" },
-	{ value: "month", label: "Month" },
-	{ value: "year", label: "Year" },
-];
+const module = MODULES.DISCHARGE;
 
-function MedicineListItem({ index, medicine, setMedicines, handleDelete, dosage_options, by_meal_options }) {
-	const { t } = useTranslation();
-	const [mode, setMode] = useState("view");
-
-	const openEditMode = () => {
-		setMode("edit");
-	};
-
-	const closeEditMode = () => {
-		setMode("view");
-	};
-
-	const getByMeal = (id) => {
-		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
-	const getDosage = (id) => {
-		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
-	const handleChange = (field, value) => {
-		setMedicines((prev) =>
-			prev.map((med, i) => {
-				if (i === index - 1) {
-					const updatedMedicine = { ...med, [field]: value };
-
-					// =============== add by_meal field when medicine_bymeal_id changes ================
-					if (field === "medicine_bymeal_id") {
-						const by_meal = getByMeal(value);
-						updatedMedicine.by_meal = by_meal;
-					}
-
-					// =============== add dose_details field when medicine_dosage_id changes ================
-					if (field === "medicine_dosage_id") {
-						const dose_details = getDosage(value);
-						updatedMedicine.dose_details = dose_details;
-					}
-
-					return updatedMedicine;
-				}
-				return med;
-			})
-		);
-	};
-
-	const handleEdit = () => {
-		setMedicines((prev) => prev.map((medicine, i) => (i === index - 1 ? { ...medicine, ...medicine } : medicine)));
-		closeEditMode();
-	};
-
-	return (
-		<Box>
-			<Text mb="es" fz="sm" className="cursor-pointer">
-				{index}. {medicine.medicine_name || medicine.generic}
-			</Text>
-			<Flex justify="space-between" align="center" gap="0">
-				{mode === "view" ? (
-					<Box ml="md" fz="xs" c="var(--theme-tertiary-color-8)">
-						{medicine.dose_details} ---- {medicine.by_meal} ---- {medicine.quantity} ----{" "}
-						{medicine.duration}
-					</Box>
-				) : (
-					<Grid columns={24} gutter="xs">
-						<Grid.Col span={7}>
-							<Select
-								size="xs"
-								label=""
-								data={dosage_options?.map((dosage) => ({
-									value: dosage.id?.toString(),
-									label: dosage.name,
-								}))}
-								value={medicine.medicine_dosage_id}
-								placeholder={t("Dosage")}
-								disabled={mode === "view"}
-								onChange={(v) => handleChange("medicine_dosage_id", v)}
-							/>
-						</Grid.Col>
-						<Grid.Col span={7}>
-							<Select
-								size="xs"
-								label=""
-								data={by_meal_options?.map((byMeal) => ({
-									value: byMeal.id?.toString(),
-									label: byMeal.name,
-								}))}
-								value={medicine.medicine_bymeal_id}
-								placeholder={t("ByMeal")}
-								disabled={mode === "view"}
-								onChange={(v) => handleChange("medicine_bymeal_id", v)}
-							/>
-						</Grid.Col>
-						<Grid.Col span={3}>
-							<NumberInput
-								size="xs"
-								label=""
-								value={medicine.quantity}
-								placeholder={t("Quantity")}
-								disabled={mode === "view"}
-								onChange={(v) => handleChange("quantity", v)}
-							/>
-						</Grid.Col>
-						<Grid.Col span={3}>
-							<Select
-								size="xs"
-								label=""
-								data={DURATION_OPTIONS}
-								value={medicine.duration}
-								placeholder={t("Duration")}
-								disabled={mode === "view"}
-								onChange={(v) => handleChange("duration", v)}
-							/>
-						</Grid.Col>
-					</Grid>
-				)}
-				<Flex gap="les" justify="flex-end">
-					{mode === "view" ? (
-						<ActionIcon variant="outline" color="var(--theme-secondary-color-6)" onClick={openEditMode}>
-							<IconPencil size={18} stroke={1.5} />
-						</ActionIcon>
-					) : (
-						<ActionIcon variant="outline" color="var(--theme-primary-color-6)" onClick={handleEdit}>
-							<IconCheck size={18} stroke={1.5} />
-						</ActionIcon>
-					)}
-
-					<ActionIcon
-						variant="outline"
-						color="var(--theme-error-color)"
-						onClick={() => handleDelete(index - 1)}
-					>
-						<IconX size={18} stroke={1.5} />
-					</ActionIcon>
-				</Flex>
-			</Flex>
-		</Box>
-	);
-}
-
-export default function Prescription() {
+export default function Prescription({ setShowHistory, hasRecords, setCustomerId, baseHeight }) {
+	const form = useForm({
+		initialValues: {
+			exEmergency: [],
+		},
+	});
 	const [medicines, setMedicines] = useState([]);
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
+	const { dischargeId } = useParams();
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const { id } = useParams();
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
 	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
@@ -192,12 +82,69 @@ export default function Prescription() {
 	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
-	const dispatch = useDispatch();
-	const [openedMedicineHistory, { open: openMedicineHistory, close: closeMedicineHistory }] = useDisclosure(false);
-	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
-	const refetching = useSelector((state) => state.crud.dosage?.refetching);
+	const [printData, setPrintData] = useState(null);
+	const adviceData = useSelector((state) => state.crud.advice.data);
+	const emergencyData = useSelector((state) => state.crud.exemergency.data);
+	const treatmentData = useSelector((state) => state.crud.treatment.data);
+	const [opened, { open, close }] = useDisclosure(false);
+	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
+	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
+		useDisclosure(false);
+	// =============== autocomplete state for emergency prescription ================
+	const [autocompleteValue, setAutocompleteValue] = useState("");
+	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
 	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
 	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
+	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
+	const refetching = useSelector((state) => state.crud.dosage?.refetching);
+	const [openedHistoryMedicine, { open: openHistoryMedicine, close: closeHistoryMedicine }] = useDisclosure(false);
+	const printPrescription2A4 = useReactToPrint({
+		documentTitle: `prescription-${Date.now().toLocaleString()}`,
+		content: () => prescription2A4Ref.current,
+	});
+
+	const { data: prescriptionData, isLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${dischargeId}`,
+	});
+
+	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
+	const existingMedicines = initialFormValues?.medicines || [];
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+				params: {
+					particular_type: "advice",
+					page: 1,
+					offset: 500,
+				},
+				module: "advice",
+			})
+		);
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+				params: {
+					particular_type: "rx-emergency",
+					page: 1,
+					offset: 500,
+				},
+				module: "exemergency",
+			})
+		);
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
+				params: {
+					particular_type: "treatment-template",
+					treatment_mode: "opd-treatment",
+				},
+				module: "treatment",
+			})
+		);
+	}, []);
 
 	useEffect(() => {
 		dispatch(
@@ -225,14 +172,102 @@ export default function Prescription() {
 		);
 	}, [bymealRefetching]);
 
-	const { data: medicineHistoryData, refetch: refetchMedicineData } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.TRANSACTION}/${id}`,
-		params: {
-			mode: "medicine",
-		},
-	});
+	useEffect(() => {
+		if (!printData) return;
+		printPrescription2A4();
+	}, [printData]);
+
+	useEffect(() => {
+		// Always reset the form when prescription data changes
+		const updatedFormValues = getMedicineFormInitialValues(t, initialFormValues);
+		form.setValues(updatedFormValues.initialValues);
+		setMedicines(existingMedicines || []);
+		setCustomerId(prescriptionData?.data?.customer_id);
+	}, [prescriptionData]);
+
+	// =============== handler for adding autocomplete option to temporary list ================
+	const handleAutocompleteOptionAdd = (value, data, type) => {
+		const selectedItem = data?.find((item) => item.name === value);
+		if (selectedItem) {
+			const newItem = {
+				id: selectedItem.id || Date.now(),
+				name: selectedItem.name,
+				value: selectedItem.name,
+				type: type,
+				isEditable: true,
+			};
+			setTempEmergencyItems((prev) => [...prev, newItem]);
+		}
+	};
+
+	// =============== handler for updating temporary item value ================
+	const handleTempItemChange = (index, newValue) => {
+		setTempEmergencyItems((prev) => prev.map((item, idx) => (idx === index ? { ...item, value: newValue } : item)));
+	};
+
+	// =============== handler for removing temporary item ================
+	const handleTempItemRemove = (index) => {
+		setTempEmergencyItems((prev) => prev.filter((_, idx) => idx !== index));
+	};
+
+	// =============== handler for saving emergency prescription ================
+	const handleEmergencyPrescriptionSave = () => {
+		if (tempEmergencyItems.length === 0) {
+			showNotificationComponent(t("Please add at least one emergency item"), "red", "lightgray", true, 700, true);
+			return;
+		}
+
+		// add temporary items to form.values.exEmergency
+		const currentExEmergency = form.values.exEmergency || [];
+		const newExEmergency = [...currentExEmergency, ...tempEmergencyItems];
+
+		form.setFieldValue("exEmergency", newExEmergency);
+
+		// clear temporary items and autocomplete
+		setTempEmergencyItems([]);
+		setAutocompleteValue("");
+
+		// close drawer
+		closeExPrescription();
+	};
 
 	// Add hotkey for save functionality
+	useHotkeys([
+		[
+			"alt+1",
+			() => {
+				setMedicines([]);
+				medicineForm.reset();
+
+				setEditIndex(null);
+				// Clear PatientReport data when resetting
+				medicineForm.reset();
+			},
+		],
+		[
+			"alt+2",
+			() => {
+				handleHoldData();
+				showNotificationComponent(t("Prescription held successfully"), "blue", "lightgray", true, 700, true);
+			},
+		],
+		[
+			"alt+4",
+			() => {
+				printPrescription2A4();
+				showNotificationComponent(t("Prescription printed successfully"), "blue", "lightgray", true, 700, true);
+			},
+		],
+	]);
+
+	const getByMeal = (id) => {
+		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
+	};
+
+	const getDosage = (id) => {
+		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
+	};
+
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
 
@@ -245,6 +280,8 @@ export default function Prescription() {
 				medicineForm.setFieldValue("generic", selectedMedicine.generic);
 				medicineForm.setFieldValue("generic_id", selectedMedicine.generic_id);
 				medicineForm.setFieldValue("company", selectedMedicine.company);
+				medicineForm.setFieldValue("opd_quantity", selectedMedicine?.opd_quantity || 0);
+				medicineForm.setFieldValue("opd_limit", selectedMedicine?.opd_quantity || 0);
 
 				// Auto-populate by_meal if available
 				if (selectedMedicine.medicine_bymeal_id) {
@@ -261,6 +298,7 @@ export default function Prescription() {
 					medicineForm.setFieldValue("duration", "month");
 				}
 
+				// Auto-populate dose_details if available (for times field)
 				if (selectedMedicine.medicine_dosage_id) {
 					medicineForm.setFieldValue("medicine_dosage_id", selectedMedicine.medicine_dosage_id?.toString());
 					medicineForm.setFieldValue("dose_details", getDosage(selectedMedicine.medicine_dosage_id));
@@ -269,24 +307,16 @@ export default function Prescription() {
 		}
 	};
 
-	const getByMeal = (id) => {
-		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
-	const getDosage = (id) => {
-		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
 	const handleAdd = (values) => {
 		if (values.medicine_id) {
-			const selectedMedicine = medicineData?.find(
-				(item) => item.product_id?.toString() === values.medicine_id?.toString()
-			);
+			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() == values.medicine_id);
+
 			if (selectedMedicine) {
 				values.medicine_name = selectedMedicine.product_name || values.medicine_name;
 				values.generic = selectedMedicine.generic || values.generic;
 				values.generic_id = selectedMedicine.generic_id || values.generic_id;
 				values.company = selectedMedicine.company || values.company;
+				values.opd_quantity = selectedMedicine?.opd_quantity || 0;
 
 				if (selectedMedicine.duration_day) {
 					values.quantity = parseInt(selectedMedicine.duration_day) || values.quantity;
@@ -296,22 +326,37 @@ export default function Prescription() {
 					values.duration = "month";
 				}
 
-				values.dose_details = getDosage(values.medicine_dosage_id);
-				values.by_meal = getByMeal(values.medicine_bymeal_id);
+				if (selectedMedicine.medicine_dosage_id) {
+					values.medicine_dosage_id = selectedMedicine.medicine_dosage_id?.toString();
+					values.dose_details = getDosage(selectedMedicine.medicine_dosage_id);
+				}
+
+				if (selectedMedicine.medicine_bymeal_id) {
+					values.medicine_bymeal_id = selectedMedicine.medicine_bymeal_id?.toString();
+					values.by_meal = getByMeal(selectedMedicine.medicine_bymeal_id);
+				}
 			}
-		}
+			if (editIndex !== null) {
+				const updated = [...medicines];
+				updated[editIndex] = values;
+				setMedicines(updated);
+				setEditIndex(null);
+			} else {
+				setMedicines([...medicines, values]);
 
-		if (editIndex !== null) {
-			const updated = [...medicines];
-			updated[editIndex] = values;
-			setMedicines(updated);
+				if (selectedMedicine?.medicine_bymeal_id) {
+					values.medicine_bymeal_id = selectedMedicine.medicine_bymeal_id?.toString();
+					values.by_meal = getByMeal(selectedMedicine.medicine_bymeal_id);
+				}
+
+				setMedicines([...medicines, values]);
+				setUpdateKey((prev) => prev + 1);
+
+				medicineForm.reset();
+				setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
+			}
 			setEditIndex(null);
-		} else {
-			setMedicines([...medicines, values]);
 		}
-
-		setUpdateKey((prev) => prev + 1);
-		medicineForm.reset();
 	};
 
 	const handleDelete = (idx) => {
@@ -322,37 +367,134 @@ export default function Prescription() {
 		}
 	};
 
-	const handleSubmit = async () => {
-		setIsSubmitting(true);
-		try {
-			const formValue = {
-				json_content: medicines,
-				ipd_module: "medicine",
-			};
+	const handleReset = () => {
+		setMedicines([]);
+		medicineForm.reset();
+		setEditIndex(null);
 
-			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PROCESS}/${id}`,
-				data: formValue,
-				module: "medicine",
-			};
-			const resultAction = await dispatch(storeEntityData(value)).unwrap();
-			if (resultAction.status === 200) {
-				successNotification(t("MedicineAddedSuccessfully"));
-				await refetchMedicineData();
-				setMedicines([]);
-				openMedicineHistory();
-			} else {
-				errorNotification(t("MedicineAddedFailed"));
-			}
-		} catch (err) {
-			console.error(err);
-		} finally {
-			setIsSubmitting(false);
+		if (medicineForm) {
+			medicineForm.reset();
 		}
 	};
 
+	const openConfirmationModal = () => {
+		modals.openConfirmModal({
+			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handlePrescriptionSubmit({ skipLoading: false, redirect: true }),
+		});
+	};
+
+	const handlePrescriptionSubmit = async ({ skipLoading = false, redirect = false }) => {
+		if (!medicines || medicines.length === 0) {
+			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, "", 2000, true);
+			return {};
+		}
+
+		!skipLoading && setIsSubmitting(true);
+
+		try {
+			const createdBy = getLoggedInUser();
+
+			const formValue = {
+				is_completed: true,
+				medicines,
+				advise: form.values.advise || "",
+				follow_up_date: form.values.follow_up_date || null,
+				prescription_date: new Date().toISOString().split("T")[0],
+				created_by_id: createdBy?.id,
+				exEmergency: form.values.exEmergency || [],
+				instruction: form.values.instruction || "",
+				pharmacyInstruction: form.values.pharmacyInstruction || "",
+			};
+
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.DISCHARGE.UPDATE}/${dischargeId}`,
+				data: formValue,
+				module,
+			};
+
+			// return console.log(formValue);
+			const resultAction = await dispatch(updateEntityData(value));
+
+			if (updateEntityData.rejected.match(resultAction)) {
+				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+			} else {
+				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 700, true);
+				setRefetchData({ module, refetching: true });
+				if (redirect) navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+				return resultAction.payload?.data || {}; // Indicate successful submission
+			}
+		} catch (error) {
+			console.error("Error submitting prescription:", error);
+			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
+			return {}; // Indicate failed submission
+		} finally {
+			!skipLoading && setIsSubmitting(false);
+		}
+	};
+
+	const handlePrescriptionPrintSubmit = async () => {
+		const result = await handlePrescriptionSubmit({ skipLoading: false, redirect: false });
+
+		if (result.status === 200) {
+			setPrintData(result.data);
+		}
+	};
+
+	const handleHoldData = () => {
+		console.log("Hold your data");
+	};
+
+	const handleAdviseTemplate = (content) => {
+		if (!content) {
+			showNotificationComponent(t("AdviseContentNotAvailable"), "red", "lightgray", true, 700, true);
+			return;
+		}
+
+		const existingAdvise = form.values.advise;
+
+		if (existingAdvise?.includes(content)) {
+			showNotificationComponent(t("AdviseAlreadyExists"), "red", "lightgray", true, 700, true);
+			return;
+		}
+
+		form.setFieldValue("advise", content);
+	};
+
+	const populateMedicineData = (v) => {
+		const selectedTreatment = treatmentData?.data?.find((item) => item.id?.toString() === v);
+		if (selectedTreatment) {
+			setMedicines(selectedTreatment.treatment_medicine_format);
+		}
+	};
+
+	const handleDeleteExEmergency = (idx) => {
+		form.setFieldValue(
+			"exEmergency",
+			form.values?.exEmergency?.filter((_, index) => index !== idx)
+		);
+	};
+
+	const handleHistoryMedicine = () => {
+		console.log("History Medicine");
+	};
+
+	const handleReferredViewPrescription = () => {
+		setTimeout(() => open(), 10);
+	};
+
 	return (
-		<Box className="borderRadiusAll" bg="white">
+		<Box className="borderRadiusAll" bg="white" pos="relative">
+			<LoadingOverlay
+				visible={isLoading}
+				zIndex={1000}
+				overlayProps={{ radius: "sm", blur: 2 }}
+				loaderProps={{ color: "red" }}
+			/>
 			<Box
 				onSubmit={medicineForm.onSubmit(handleAdd)}
 				key={updateKey}
@@ -360,209 +502,524 @@ export default function Prescription() {
 				bg="var(--theme-primary-color-0)"
 				p="sm"
 			>
-				<Group align="end" gap="les">
-					<Group grow w="100%" gap="les">
-						<Select
-							searchable
-							onSearchChange={(v) => {
-								setMedicineTerm(v);
-							}}
-							id="medicine_id"
-							name="medicine_id"
-							data={medicineData?.map((item) => ({
-								label: item.product_name,
-								value: item.product_id?.toString(),
-							}))}
-							value={medicineForm.values.medicine_id}
-							onChange={(v) => handleChange("medicine_id", v)}
-							placeholder={t("Medicine")}
-							tooltip="Select medicine"
-							nothingFoundMessage="Type to find medicine..."
-							onBlur={() => setMedicineTerm("")}
-						/>
-						<Autocomplete
-							tooltip={t("EnterGenericName")}
-							id="generic"
-							name="generic"
-							data={medicineGenericData?.map((item, index) => ({
-								label: item.name,
-								value: `${item.name} ${index}`,
-							}))}
-							value={medicineForm.values.generic}
-							onChange={(v) => {
-								handleChange("generic", v);
-								setMedicineGenericTerm(v);
-							}}
-							placeholder={t("GenericName")}
-							onBlur={() => setMedicineGenericTerm("")}
-						/>
-					</Group>
-					<Grid w="100%" columns={12} gutter="xxxs">
-						<Grid.Col span={6}>
-							<Group grow gap="les">
-								<SelectForm
-									form={medicineForm}
-									id="medicine_dosage_id"
-									name="medicine_dosage_id"
-									dropdownValue={dosage_options?.map((dosage) => ({
-										value: dosage.id?.toString(),
-										label: dosage.name,
-									}))}
-									value={medicineForm.values.medicine_dosage_id}
-									placeholder={t("Dosage")}
-									required
-									tooltip={t("EnterDosage")}
-									withCheckIcon={false}
-								/>
-								<SelectForm
-									form={medicineForm}
-									id="medicine_bymeal_id"
-									name="medicine_bymeal_id"
-									dropdownValue={by_meal_options?.map((byMeal) => ({
-										value: byMeal.id?.toString(),
-										label: byMeal.name,
-									}))}
-									value={medicineForm.values.medicine_bymeal_id}
-									placeholder={t("ByMeal")}
-									required
-									tooltip={t("EnterWhenToTakeMedicine")}
-									withCheckIcon={false}
-								/>
-							</Group>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Group grow gap="les">
-								<InputNumberForm
-									form={medicineForm}
-									id="quantity"
-									name="quantity"
-									value={medicineForm.values.quantity}
-									placeholder={t("Quantity")}
-									required
-									tooltip={t("EnterQuantity")}
-								/>
-								<SelectForm
-									form={medicineForm}
-									label=""
-									id="duration"
-									name="duration"
-									dropdownValue={DURATION_OPTIONS}
-									value={medicineForm.values.duration}
-									placeholder={t("Duration")}
-									required
-									tooltip={t("EnterMeditationDuration")}
-									withCheckIcon={false}
-								/>
-
+				<Grid w="100%" columns={24} gutter="xxxs">
+					<Grid.Col span={18}>
+						<Group align="end" gap="les">
+							<Grid w="100%" columns={12} gutter="xxxs">
+								<Grid.Col span={6}>
+									<Select
+										clearable
+										searchable
+										onSearchChange={setMedicineTerm}
+										id="medicine_id"
+										name="medicine_id"
+										data={medicineData?.map((item) => ({
+											label: item.product_name,
+											value: item.product_id?.toString(),
+										}))}
+										value={medicineForm.values.medicine_id}
+										onChange={(v) => handleChange("medicine_id", v)}
+										placeholder={t("Medicine")}
+										tooltip="Select medicine"
+										nothingFoundMessage="Type to find medicine..."
+										onBlur={() => setMedicineTerm("")}
+										classNames={inputCss}
+									/>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Autocomplete
+										tooltip={t("EnterGenericName")}
+										id="generic"
+										name="generic"
+										data={medicineGenericData?.map((item, index) => ({
+											label: item.generic,
+											value: `${item.name} ${index}`,
+										}))}
+										value={medicineForm.values.generic}
+										onChange={(v) => {
+											handleChange("generic", v);
+											setMedicineGenericTerm(v);
+										}}
+										placeholder={t("GenericName")}
+										onBlur={() => setMedicineGenericTerm("")}
+										classNames={inputCss}
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid w="100%" columns={12} gutter="xxxs">
+								<Grid.Col span={6}>
+									<Group grow gap="les">
+										<SelectForm
+											form={medicineForm}
+											id="medicine_dosage_id"
+											name="medicine_dosage_id"
+											dropdownValue={dosage_options?.map((dosage) => ({
+												value: dosage.id?.toString(),
+												label: dosage.name,
+											}))}
+											value={medicineForm.values.medicine_dosage_id}
+											placeholder={t("Dosage")}
+											required
+											tooltip={t("EnterDosage")}
+											withCheckIcon={false}
+										/>
+										<SelectForm
+											form={medicineForm}
+											id="medicine_bymeal_id"
+											name="medicine_bymeal_id"
+											dropdownValue={by_meal_options?.map((byMeal) => ({
+												value: byMeal.id?.toString(),
+												label: byMeal.name,
+											}))}
+											value={medicineForm.values.medicine_bymeal_id}
+											placeholder={t("By Meal")}
+											tooltip={t("EnterWhenToTakeMedicine")}
+											withCheckIcon={false}
+										/>
+									</Group>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Group grow gap="les">
+										<InputNumberForm
+											form={medicineForm}
+											id="quantity"
+											name="quantity"
+											value={medicineForm.values.quantity}
+											placeholder={t("Quantity")}
+											required
+											tooltip={t("EnterQuantity")}
+										/>
+										<SelectForm
+											form={medicineForm}
+											label=""
+											id="duration"
+											name="duration"
+											dropdownValue={DURATION_TYPES}
+											value={medicineForm.values.duration || "Day"}
+											placeholder={t("Duration")}
+											required
+											tooltip={t("EnterMeditationDuration")}
+											withCheckIcon={false}
+										/>
+										<Button
+											leftSection={<IconPlus size={16} />}
+											type="submit"
+											variant="filled"
+											bg="var(--theme-secondary-color-6)"
+											size="compact-md"
+										>
+											{t("Add")}
+										</Button>
+									</Group>
+								</Grid.Col>
+							</Grid>
+						</Group>
+					</Grid.Col>
+					<Grid.Col span={6} bg={"white"}>
+						<Grid w="100%" columns={12} gutter="xxxs">
+							<Grid.Col span={12}>
+								<Group grow gap="les">
+									<SelectForm
+										form={medicineForm}
+										label=""
+										id="treatments"
+										name="treatments"
+										dropdownValue={treatmentData?.data?.map((item) => ({
+											label: item.name,
+											value: item.id?.toString(),
+										}))}
+										value={medicineForm.values.treatments}
+										placeholder={t("TreatmentTemplate")}
+										required
+										tooltip={t("TreatmentTemplate")}
+										withCheckIcon={false}
+										changeValue={populateMedicineData}
+									/>
+								</Group>
+							</Grid.Col>
+						</Grid>
+						<Grid w="100%" columns={12} gutter="les" mt="4px">
+							<Grid.Col span={6}>
 								<Button
 									leftSection={<IconPlus size={16} />}
-									type="submit"
-									variant="filled"
-									bg="var(--theme-primary-color-6)"
+									w="100%"
+									size="xs"
+									type="button"
+									variant="outline"
+									color="green"
+									onClick={openDosageForm}
 								>
-									{t("Add")}
+									{t("AddDosage")}
 								</Button>
-							</Group>
-						</Grid.Col>
-					</Grid>
-				</Group>
+							</Grid.Col>
+							<Grid.Col span={6}>
+								<Button
+									w="100%"
+									size="xs"
+									type="button"
+									variant="outline"
+									color="red"
+									onClick={openExPrescription}
+								>
+									{t("RxEmergency")}
+								</Button>
+							</Grid.Col>
+						</Grid>
+					</Grid.Col>
+				</Grid>
 			</Box>
-			<Flex
-				justify="space-between"
-				align="center"
-				bg="var(--theme-primary-color-0)"
-				mt="sm"
-				mb="les"
-				px="sm"
-				py="les"
-			>
-				<Text fw={500}>{t("ListOfMedicines")}</Text>
-				<Button
-					leftSection={<IconHistory size={16} />}
-					variant="filled"
-					bg="var(--theme-primary-color-6)"
-					onClick={openMedicineHistory}
-				>
-					{t("History")}
-				</Button>
-			</Flex>
-			<ScrollArea h={mainAreaHeight - 220}>
-				<Box gap="xs" p="sm" h={mainAreaHeight - 280}>
-					{medicines?.length === 0 && (
-						<Stack justify="center" align="center" h={mainAreaHeight - 320}>
-							<Box>
-								<Text mb="md" w="100%" fz="sm" align={"center"} c="var(--theme-secondary-color)">
-									{t("NoMedicineAddedYet")}
-								</Text>
-								<Button
-									leftSection={<IconPlus size={16} />}
-									type="submit"
-									variant="filled"
-									bg="var(--theme-primary-color-6)"
-									onClick={() => document.getElementById("medicine_id").focus()}
-								>
-									{t("SelectMedicine")}
-								</Button>
-							</Box>
-						</Stack>
+			<Flex bg="var(--theme-primary-color-0)" mb="les" justify="space-between" align="center" py="les" mt="xs">
+				<Text fw={500} px="sm">
+					{t("ListOfMedicines")}
+				</Text>
+				<Flex px="les" gap="les">
+					<Tooltip label={t("HistoryMedicine")}>
+						<ActionIcon size="lg" bg="var(--theme-primary-color-6)" onClick={openHistoryMedicine}>
+							<IconHistory size={16} />
+						</ActionIcon>
+					</Tooltip>
+					{prescriptionData?.data?.patient_referred_id && (
+						<Tooltip label="Referred">
+							<ActionIcon size="lg" bg={"red"} onClick={() => handleReferredViewPrescription()}>
+								<IconFirstAidKit />
+							</ActionIcon>
+						</Tooltip>
 					)}
+					{hasRecords && (
+						<Tooltip label="History">
+							<Button
+								variant="filled"
+								onClick={() => setShowHistory((prev) => !prev)}
+								leftSection={<IconHistory size={14} />}
+								rightSection={<IconArrowRight size={14} />}
+							>
+								{t("History")}
+							</Button>
+						</Tooltip>
+					)}
+				</Flex>
+			</Flex>
+			<ScrollArea
+				h={baseHeight ? baseHeight : form.values.comment ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
+				bg="white"
+			>
+				<Stack gap="2px" p="sm">
+					{medicines?.length === 0 && form.values.exEmergency?.length === 0 && (
+						<Flex
+							mih={baseHeight ? baseHeight - 50 : 220}
+							gap="md"
+							justify="center"
+							align="center"
+							direction="column"
+							wrap="wrap"
+						>
+							<Text w="100%" fz="sm" align={"center"} c="var(--theme-secondary-color)">
+								{t("NoMedicineAddedYet")}
+							</Text>
+							<Button
+								leftSection={<IconPlus size={16} />}
+								type="submit"
+								variant="filled"
+								bg="var(--theme-primary-color-6)"
+								onClick={() => document.getElementById("medicine_id").focus()}
+							>
+								{t("SelectMedicine")}
+							</Button>
+						</Flex>
+					)}
+					{form.values?.exEmergency?.length > 0 && (
+						<>
+							{form.values?.exEmergency?.map((item, idx) => (
+								<Flex justify="space-between" key={idx} align="center" gap="les">
+									<Flex align="center">
+										<IconMedicineSyrup stroke={1.5} size={20} />
+										<Text className="capitalize" fz="14px">
+											{item.value}
+										</Text>
+									</Flex>
+									<ActionIcon
+										variant="outline"
+										color="var(--theme-error-color)"
+										onClick={() => handleDeleteExEmergency(idx)}
+									>
+										<IconTrash size={16} />
+									</ActionIcon>
+								</Flex>
+							))}
+						</>
+					)}
+
 					{medicines?.map((medicine, index) => (
 						<MedicineListItem
 							key={index}
 							index={index + 1}
+							medicines={medicines}
 							medicine={medicine}
 							setMedicines={setMedicines}
 							handleDelete={handleDelete}
-							dosage_options={dosage_options}
 							by_meal_options={by_meal_options}
+							dosage_options={dosage_options}
 						/>
 					))}
-				</Box>
-				<Box px="xs">
-					<Box ml="auto" w={300}>
-						<TabsActionButtons
-							handleReset={() => {}}
-							handleSave={handleSubmit}
-							isSubmitting={isSubmitting}
-						/>
-					</Box>
-				</Box>
+				</Stack>
 			</ScrollArea>
-			<GlobalDrawer
-				opened={openedMedicineHistory}
-				close={closeMedicineHistory}
-				title={t("MedicineHistory")}
-				size="36%"
-			>
-				{medicineHistoryData?.data?.length === 0 && (
-					<Flex h="100%" justify="center" align="center">
-						<Text fz="sm">{t("NoDataAvailable")}</Text>
-					</Flex>
-				)}
-				{medicineHistoryData?.data?.map((item, index) => (
-					<Flex key={index} gap="xs" mb="xxxs">
-						<Text>{index + 1}.</Text>
-						<Box w="100%">
-							<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
-								{item.created}
-							</Badge>
-							<Box mt="es" fz="sm">
-								{item?.sales_items?.map((particular, idx) => (
-									<Box key={idx}>
-										<Text fz="xs">
-											{idx + 1}. {particular.item_name}
-										</Text>
-										<Box ml="md" fz="xs" c="var(--theme-tertiary-color-8)">
-											{particular.dose_details} ---- {particular.by_meal} ----{" "}
-											{particular.quantity} ---- {particular.duration}
-										</Box>
-									</Box>
-								))}
+
+			{form.values.comment && (
+				<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between" align="center">
+					<Text w="100%">
+						<strong>{t("Referred")}:</strong> {form.values.comment}
+					</Text>
+				</Flex>
+			)}
+
+			{/* =================== Advise form =================== */}
+			{form && (
+				<>
+					<Grid columns={12} gutter="xxxs" mt="xxs" p="les">
+						<Grid.Col span={3}>
+							<Box fz="md" c="white">
+								<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
+									{t("AdviseTemplate")}
+								</Text>
+								<ScrollArea h={96} p="les" className="borderRadiusAll">
+									{adviceData?.data?.map((advise) => (
+										<Flex
+											align="center"
+											gap="les"
+											bg="var(--theme-primary-color-0)"
+											c="dark"
+											key={advise.id}
+											onClick={() => handleAdviseTemplate(advise?.content)}
+											px="les"
+											bd="1px solid var(--theme-primary-color-0)"
+											mb="2"
+											className="cursor-pointer"
+										>
+											<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
+											<Text mt="es" fz={13}>
+												{advise?.name}
+											</Text>
+										</Flex>
+									))}
+								</ScrollArea>
 							</Box>
-						</Box>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
+								<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
+									{t("Advise")}
+								</Text>
+								<Box p="sm">
+									<TextAreaForm
+										form={form}
+										label=""
+										value={form.values.advise}
+										name="advise"
+										placeholder="Write a advice..."
+										showRightSection={false}
+										style={{ input: { height: "72px" } }}
+									/>
+								</Box>
+							</Box>
+						</Grid.Col>
+						<Grid.Col span={3}>
+							<Box bg="var(--theme-primary-color-0)" h="100%">
+								<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="les">
+									{t("FollowUpDate")}
+								</Text>
+								<Box p="sm">
+									<DatePickerForm
+										form={form}
+										label=""
+										tooltip="Enter follow up date"
+										name="follow_up_date"
+										value={form.values.follow_up_date}
+										placeholder="Follow up date"
+									/>
+								</Box>
+								<Box pl="sm" pr="sm">
+									<InputForm
+										form={form}
+										label=""
+										id="pharmacyInstruction"
+										tooltip="Pharmacy Instruction"
+										name="pharmacyInstruction"
+										value={form.values.pharmacyInstruction}
+										placeholder="PharmacyInstruction"
+									/>
+								</Box>
+							</Box>
+						</Grid.Col>
+					</Grid>
+
+					{/* =================== submission button here =================== */}
+					<Button.Group bg="var(--theme-primary-color-0)" p="les">
+						<Button
+							w="100%"
+							bg="var(--theme-reset-btn-color)"
+							leftSection={<IconRestore size={16} />}
+							onClick={handleReset}
+						>
+							<Stack gap={0} align="center" justify="center">
+								<Text>{t("Reset")}</Text>
+								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+									(alt + 1)
+								</Text>
+							</Stack>
+						</Button>
+
+						<Button w="100%" bg="var(--theme-hold-btn-color)" onClick={handleHoldData}>
+							<Stack gap={0} align="center" justify="center">
+								<Text>{t("Hold")}</Text>
+								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+									(alt + 2)
+								</Text>
+							</Stack>
+						</Button>
+						<Button w="100%" bg="var(--theme-save-btn-color)" onClick={openPrescriptionPreview}>
+							<Stack gap={0} align="center" justify="center">
+								<Text>{t("Preview")}</Text>
+								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+									(alt + 4)
+								</Text>
+							</Stack>
+						</Button>
+						<Button
+							w="100%"
+							bg="var(--theme-prescription-btn-color)"
+							onClick={handlePrescriptionPrintSubmit}
+						>
+							<Stack gap={0} align="center" justify="center">
+								<Text>{t("Prescription")}</Text>
+								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+									(alt + 3)
+								</Text>
+							</Stack>
+						</Button>
+						<Button
+							w="100%"
+							bg="var(--theme-save-btn-color)"
+							onClick={openConfirmationModal}
+							loading={isSubmitting}
+							disabled={isSubmitting}
+						>
+							<Stack gap={0} align="center" justify="center">
+								<Text>{t("Save")}</Text>
+								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+									(alt + s)
+								</Text>
+							</Stack>
+						</Button>
+					</Button.Group>
+				</>
+			)}
+			{printData && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />}
+			<GlobalDrawer
+				opened={openedExPrescription}
+				close={closeExPrescription}
+				title={t("EmergencyPrescription")}
+				size="28%"
+			>
+				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
+					<Box>
+						<Autocomplete
+							label="Enter Patient ID"
+							placeholder={t("EmergencyPrescription")}
+							data={emergencyData?.data?.map((p) => ({ value: p.name, label: p.name })) || []}
+							value={autocompleteValue}
+							onChange={setAutocompleteValue}
+							onOptionSubmit={(value) => {
+								handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
+								setTimeout(() => {
+									setAutocompleteValue("");
+								}, 0);
+							}}
+							classNames={inputCss}
+							rightSection={<IconCaretUpDownFilled size={16} />}
+						/>
+						{/* =============== temporary items list with editable text inputs ================ */}
+						{tempEmergencyItems?.length > 0 && (
+							<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
+								<Text fw={600} fz="sm" mt="xs" c="var(--theme-primary-color)">
+									{t("PendingItems")} ({tempEmergencyItems?.length})
+								</Text>
+								{tempEmergencyItems?.map((item, idx) => (
+									<Flex
+										key={idx}
+										align="center"
+										justify="space-between"
+										px="es"
+										py="xs"
+										style={{
+											borderBottom:
+												idx !== tempEmergencyItems?.length - 1
+													? "1px solid var(--theme-tertiary-color-4)"
+													: "none",
+										}}
+									>
+										<Textarea
+											value={item.value}
+											onChange={(event) => handleTempItemChange(idx, event.currentTarget.value)}
+											placeholder="Edit value..."
+											w="90%"
+											styles={{ input: { height: "80px" } }}
+										/>
+										<ActionIcon
+											color="red"
+											size="xs"
+											variant="subtle"
+											onClick={() => handleTempItemRemove(idx)}
+										>
+											<IconX size={16} />
+										</ActionIcon>
+									</Flex>
+								))}
+							</Stack>
+						)}
+					</Box>
+					<Flex justify="flex-end" gap="xs">
+						<Button leftSection={<IconX size={16} />} bg="gray.6" onClick={closeExPrescription} w="120px">
+							{t("Cancel")}
+						</Button>
+						<Button
+							leftSection={<IconDeviceFloppy size={22} />}
+							bg="var(--theme-primary-color-6)"
+							onClick={handleEmergencyPrescriptionSave}
+							w="120px"
+						>
+							{t("Save")}
+						</Button>
 					</Flex>
-				))}
+				</Stack>
 			</GlobalDrawer>
+			{/* prescription preview */}
+			{dischargeId && (
+				<GlobalDrawer
+					opened={openedPrescriptionPreview}
+					close={closePrescriptionPreview}
+					title={t("PrescriptionPreview")}
+					size="50%"
+				>
+					<Box my="sm">
+						<PrescriptionFullBN data={printData} preview />
+					</Box>
+				</GlobalDrawer>
+			)}
+
+			{dischargeId && (
+				<GlobalDrawer
+					opened={openedHistoryMedicine}
+					close={closeHistoryMedicine}
+					title={t("PreviousPrescription")}
+					size="25%"
+				>
+					<HistoryPrescription setMedicines={setMedicines} closeHistoryMedicine={closeHistoryMedicine} />
+				</GlobalDrawer>
+			)}
+
+			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
+
+			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
 		</Box>
 	);
 }

@@ -330,14 +330,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => {
-								console.log(
-									"prescriptionId",
-									values?.prescription_id,
-									"userId",
-									userId,
-									"prescriptionCreatedById",
-									values?.prescription_created_by_id
-								);
 								return (
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 										{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (

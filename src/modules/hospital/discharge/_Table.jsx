@@ -4,7 +4,7 @@ import { Box, Flex, Grid, Text, ScrollArea, ActionIcon, LoadingOverlay } from "@
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDate } from "@utils/index";
+import { formatDate } from "@utils";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
 import { showEntityData } from "@/app/store/core/crudThunk";
@@ -17,20 +17,18 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
-	const { state } = useLocation();
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const { id } = useParams();
+	const { dischargeId } = useParams();
 
 	const { records, fetching } = useInfiniteTableScroll({
 		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
-			name: filterData?.name,
-			patient_mode: "ipd",
-			term: filterData.keywordSearch,
-			prescription_mode: ipdMode,
-			created: filterData.created,
+			// name: filterData?.name,
+			// patient_mode: "ipd",
+			// term: filterData.keywordSearch,
+			prescription_mode: "prescription",
+			// created: filterData.created,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -43,26 +41,10 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 	};
 
 	const handleProcessConfirmation = async (id) => {
-		const resultAction = await dispatch(
-			showEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.SEND_TO_PRESCRIPTION}/${id}`,
-				module,
-				id,
-			})
-		).unwrap();
-
-		const prescription_id = resultAction?.data?.data.id;
-		const isPrescribed = resultAction?.data?.data?.json_content;
-
-		if (isPrescribed) {
-			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DISCHARGE.INDEX}/${id}`, {
-				replace: true,
-			});
-		} else if (prescription_id) {
-			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DISCHARGE.INDEX}/${prescription_id}`);
+		if (id) {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DISCHARGE.INDEX}/${id}`);
 		} else {
-			console.error(resultAction);
-			showNotificationComponent(t("SomethingWentWrongPleaseTryAgain"), "red.6", "lightgray");
+			showNotificationComponent(t("NoDataAvailable"), "red.6", "lightgray");
 		}
 	};
 
@@ -92,11 +74,10 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 					<Grid
 						columns={18}
 						key={item.id}
-						onClick={() => handleProcessConfirmation(item.id)}
+						onClick={() => handleProcessConfirmation(item.prescription_id)}
 						my="xs"
 						bg={
-							(typeof id !== "undefined" && id == item?.prescription_id) ||
-							state?.prescriptionId == item?.prescription_id
+							typeof dischargeId !== "undefined" && dischargeId == item?.prescription_id
 								? "var(--theme-primary-color-0)"
 								: "var(--theme-tertiary-color-0)"
 						}
