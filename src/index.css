@@ -548,7 +548,8 @@ input[type=radio]:checked+label>img {
     text-transform: capitalize !important;
 }
 
-.mantine-TextInput-error {
+.mantine-TextInput-error,
+.mantine-DateInput-error {
     display: none !important;
 }
 

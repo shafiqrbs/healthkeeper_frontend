@@ -6,7 +6,7 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
 import { useForm } from "@mantine/form";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { ERROR_NOTIFICATION_COLOR, MODULES_PHARMACY, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { IconDeviceFloppy } from "@tabler/icons-react";
 import InputForm from "@components/form-builders/InputForm";
@@ -19,13 +19,16 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
 import __FromTable from "./form/__FormTable";
-import { getInitialAddItem } from "@modules/pharmacy/requisition/helpers/request";
+import { getInitialValues } from "./helpers/request";
+import { useDispatch } from "react-redux";
 
 const module = MODULES_PHARMACY.REQUISITION;
 
 export default function Index() {
+	const { id } = useParams();
+	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const form = useForm(getInitialAddItem(t));
+	const form = useForm(getInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
 	const [opened, { open, close }] = useDisclosure(false);
@@ -102,7 +105,7 @@ export default function Index() {
 									/>
 								</Grid.Col>
 							)}
-							<Grid.Col span={matches ? 10 : 10}>
+							{/* <Grid.Col span={matches ? 10 : 10}>
 								<Box bg="white" p="xs" className="borderRadiusAll">
 									<form onSubmit={form.onSubmit(handleSubmit)}>
 										<Box p={"xxs"} bg="var(--theme-primary-color-1)">
@@ -191,8 +194,8 @@ export default function Index() {
 										</Box>
 									</form>
 								</Box>
-							</Grid.Col>
-							<Grid.Col span={matches ? 20 : 20}>
+							</Grid.Col> */}
+							<Grid.Col span={30}>
 								<Box bg="white" p="xs" className="borderRadiusAll">
 									<__FromTable module={module} open={open} close={close} />
 								</Box>

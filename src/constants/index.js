@@ -23,6 +23,7 @@ export const MODULES = {
 	STORE: "store",
 	LAB_TEST: "labTest",
 	BILLING: "billing",
+	FINAL_BILLING: "finalBilling",
 };
 
 export const MODULES_CORE = {

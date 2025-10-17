@@ -34,6 +34,8 @@ const SelectForm = forwardRef(
 			disabled = false,
 			withCheckIcon = true,
 			onBlur,
+			onSearchChange = () => {},
+			nothingFoundMessage = "",
 		},
 		ref
 	) => {
@@ -106,6 +108,7 @@ const SelectForm = forwardRef(
 						transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 					>
 						<Select
+							onSearchChange={onSearchChange}
 							onBlur={onBlur}
 							pt={pt}
 							classNames={inputCss}
@@ -128,6 +131,7 @@ const SelectForm = forwardRef(
 							rightSection={rightSection}
 							disabled={disabled}
 							withCheckIcon={withCheckIcon}
+							nothingFoundMessage={nothingFoundMessage}
 						/>
 					</Tooltip>
 				)}

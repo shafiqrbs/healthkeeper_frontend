@@ -54,6 +54,7 @@ import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
 import HistoryPrescription from "./HistoryPrescription";
+import DischargeA4BN from "@components/print-formats/discharge/DischargeA4BN";
 
 const module = MODULES.DISCHARGE;
 
@@ -63,10 +64,11 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 			exEmergency: [],
 		},
 	});
+	const createdBy = getLoggedInUser();
 	const [medicines, setMedicines] = useState([]);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const prescription2A4Ref = useRef(null);
+	const dischargeA4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
 	const { dischargeId } = useParams();
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,7 +84,6 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 	const adviceData = useSelector((state) => state.crud.advice.data);
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
-	const [opened, { open, close }] = useDisclosure(false);
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
 	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
@@ -95,9 +96,10 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
 	const [openedHistoryMedicine, { open: openHistoryMedicine, close: closeHistoryMedicine }] = useDisclosure(false);
-	const printPrescription2A4 = useReactToPrint({
-		documentTitle: `prescription-${Date.now().toLocaleString()}`,
-		content: () => prescription2A4Ref.current,
+
+	const printDischargeA4 = useReactToPrint({
+		documentTitle: `discharge-${Date.now().toLocaleString()}`,
+		content: () => dischargeA4Ref.current,
 	});
 
 	useEffect(() => {
@@ -163,7 +165,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 
 	useEffect(() => {
 		if (!printData) return;
-		printPrescription2A4();
+		printDischargeA4();
 	}, [printData]);
 
 	// =============== handler for adding autocomplete option to temporary list ================
@@ -235,7 +237,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 		[
 			"alt+4",
 			() => {
-				printPrescription2A4();
+				printDischargeA4();
 				showNotificationComponent(t("Prescription printed successfully"), "blue", "lightgray", true, 700, true);
 			},
 		],
@@ -365,21 +367,14 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handlePrescriptionSubmit({ skipLoading: false, redirect: true }),
+			onConfirm: () => handleDischargeSubmit({ skipLoading: false, redirect: true }),
 		});
 	};
 
-	const handlePrescriptionSubmit = async ({ skipLoading = false, redirect = false }) => {
-		if (!medicines || medicines.length === 0) {
-			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, "", 2000, true);
-			return {};
-		}
-
+	const handleDischargeSubmit = async ({ skipLoading = false, redirect = false }) => {
 		!skipLoading && setIsSubmitting(true);
 
 		try {
-			const createdBy = getLoggedInUser();
-
 			const formValue = {
 				is_completed: true,
 				medicines,
@@ -410,16 +405,16 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {
-			console.error("Error submitting prescription:", error);
-			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
+			console.error("Error submitting discharge:", error);
+			showNotificationComponent(t("SomethingWentWrong"), "red", "lightgray", true, 700, true);
 			return {}; // Indicate failed submission
 		} finally {
 			!skipLoading && setIsSubmitting(false);
 		}
 	};
 
-	const handlePrescriptionPrintSubmit = async () => {
-		const result = await handlePrescriptionSubmit({ skipLoading: false, redirect: false });
+	const handleDischargePrintSubmit = async () => {
+		const result = await handleDischargeSubmit({ skipLoading: false, redirect: false });
 
 		if (result.status === 200) {
 			setPrintData(result.data);
@@ -427,7 +422,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 	};
 
 	const handleHoldData = () => {
-		console.log("Hold your data");
+		console.log("HoldYourData");
 	};
 
 	const handleAdviseTemplate = (content) => {
@@ -458,14 +453,6 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 			"exEmergency",
 			form.values?.exEmergency?.filter((_, index) => index !== idx)
 		);
-	};
-
-	const handleHistoryMedicine = () => {
-		console.log("History Medicine");
-	};
-
-	const handleReferredViewPrescription = () => {
-		setTimeout(() => open(), 10);
 	};
 
 	return (
@@ -852,13 +839,9 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 								</Text>
 							</Stack>
 						</Button>
-						<Button
-							w="100%"
-							bg="var(--theme-prescription-btn-color)"
-							onClick={handlePrescriptionPrintSubmit}
-						>
+						<Button w="100%" bg="var(--theme-secondary-color-6)" onClick={handleDischargePrintSubmit}>
 							<Stack gap={0} align="center" justify="center">
-								<Text>{t("Prescription")}</Text>
+								<Text>{t("Print")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 									(alt + 3)
 								</Text>
@@ -881,7 +864,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 					</Button.Group>
 				</>
 			)}
-			{printData && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />}
+			{printData && <DischargeA4BN ref={dischargeA4Ref} data={printData} />}
 			<GlobalDrawer
 				opened={openedExPrescription}
 				close={closeExPrescription}

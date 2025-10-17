@@ -108,13 +108,7 @@ export const sideNavigationLinks = {
 			color: "#00BCD4", // Cyan
 			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd", "nurse_basic", "nurse_incharge"],
 		},
-		{
-			label: t("Billing"),
-			path: "/hospital/billing",
-			icon: IconBuildingHospital,
-			color: "#FF9800", // Orange
-			allowedRoles: ["role_domain", "admin_administrator", "billing_cash", "billing_manager"],
-		},
+
 		{
 			label: t("Billing"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
@@ -128,6 +122,13 @@ export const sideNavigationLinks = {
 					icon: IconDashboard,
 				},
 			],
+		},
+		{
+			label: t("FinalBilling"),
+			path: "/hospital/final-billing",
+			icon: IconBuildingHospital,
+			color: "#FF9800", // Orange
+			allowedRoles: ["role_domain", "admin_administrator", "billing_cash", "billing_manager"],
 		},
 		{
 			label: t("Discharge"),
@@ -402,7 +403,7 @@ export const sideNavigationLinks = {
 		},
 		{
 			label: t("Workorder"),
-			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX,
+			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
 			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],

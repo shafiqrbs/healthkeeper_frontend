@@ -55,6 +55,7 @@ import TemplateIndex from "@modules/hospital/core/template";
 import DoctorLayout from "@components/layout/DoctorLayout";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import DischargeIndex from "@modules/hospital/discharge";
+import FinalBillingIndex from "@modules/hospital/final-billing";
 
 function AppRoute() {
 	return (
@@ -321,6 +322,26 @@ function AppRoute() {
 						}
 					/>
 
+					<Route
+						path="final-billing"
+						element={
+							<ProtectedRoute
+								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+							>
+								<FinalBillingIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="final-billing/:id"
+						element={
+							<ProtectedRoute
+								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+							>
+								<FinalBillingIndex />
+							</ProtectedRoute>
+						}
+					/>
 					<Route
 						path="doctor"
 						element={

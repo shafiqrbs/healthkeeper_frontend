@@ -1,32 +1,27 @@
 import { hasLength } from "@mantine/form";
 
 const initialValues = {
-	vendor: "",
+	medicine_id: "",
+	quantity: "",
+	expected_date: "",
 };
 
 export const getInitialValues = (t) => {
 	return {
 		initialValues,
 		validate: {
-			vendor: (value) => {
-				if (!value) return t("VendorValidationRequired");
+			medicine_id: (value) => {
+				if (!value) return t("MedicineValidationRequired");
 				return null;
-			}
-
-		},
-	};
-};
-
-
-const initialAddItemValues = {
-	name: "",
-};
-
-export const getInitialAddItem = (t) => {
-	return {
-		initialAddItemValues,
-		validate: {
-			name: hasLength({ min: 1, max: 200 }),
+			},
+			quantity: (value) => {
+				if (!value) return t("QuantityValidationRequired");
+				return null;
+			},
+			expected_date: (value) => {
+				if (!value) return t("ExpectedDateValidationRequired");
+				return null;
+			},
 		},
 	};
 };

@@ -29,6 +29,13 @@ export const MASTER_DATA_ROUTES = {
 			VIEW: "hospital/core/dosage",
 			DELETE: "hospital/core/dosage",
 		},
+		REQUISITION: {
+			INDEX: "pharmacy/requisition",
+			CREATE: "pharmacy/requisition",
+			UPDATE: "pharmacy/requisition",
+			VIEW: "pharmacy/requisition",
+			DELETE: "pharmacy/requisition",
+		},
 
 		MEDICINEDOSAGE: {
 			INDEX: "hospital/core/medicinedosage",
@@ -434,6 +441,13 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "hospital/billing",
 			DELETE: "hospital/billing",
 		},
+		FINAL_BILLING: {
+			INDEX: "hospital/final-billing",
+			CREATE: "hospital/final-billing",
+			UPDATE: "hospital/final-billing",
+			VIEW: "hospital/final-billing",
+			DELETE: "hospital/final-billing",
+		},
 
 		PRESCRIPTION: {
 			INDEX: "hospital/prescription",
@@ -560,6 +574,12 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "/hospital/billing",
 			UPDATE: "/hospital/billing",
 			VIEW: "/hospital/billing",
+		},
+		FINAL_BILLING: {
+			INDEX: "/hospital/final-billing",
+			CREATE: "/hospital/final-billing",
+			UPDATE: "/hospital/final-billing",
+			VIEW: "/hospital/final-billing",
 		},
 		EPHARMA: {
 			INDEX: "/hospital/epharma",

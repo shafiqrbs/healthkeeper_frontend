@@ -4,14 +4,14 @@ import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
 import DashedDivider from "@components/core-component/DashedDivider";
-import { getLoggedInUser } from "@/common/utils";
+import { formatDate, getLoggedInUser } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
-const DischargeA4BN = forwardRef(({ preview = false }, ref) => {
+const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const user = getLoggedInUser();
 
 	const { hospitalConfigData } = useHospitalConfigData();
@@ -64,7 +64,7 @@ const DischargeA4BN = forwardRef(({ preview = false }, ref) => {
 
 				<Box mt="sm" fz="sm">
 					<Text fz="sm" fw={700}>
-						তারিখ: ____ / ____ / ______
+						তারিখ: {formatDate(new Date())}
 					</Text>
 					<Text fz="sm" mt={"sm"}>
 						বরাবর,
@@ -101,15 +101,19 @@ const DischargeA4BN = forwardRef(({ preview = false }, ref) => {
 					<Text fz="sm">• Apzalen 2 BP - 1+1+1 --- Gurgle after water --- 50</Text>
 					<Text fz="sm">• Ciprofloxacin 500 mg BD --- After food --- 20</Text>
 					<Text fz="sm">• Azithromycin 500 mg BD --- After food --- 10</Text>
+
+					{data.medicines?.map((medicine) => (
+						<Text key={medicine.medicine_id} fz="sm" mt="sm" fw={600}>
+							{medicine?.medicine_name}
+						</Text>
+					))}
 					<Text fz="sm" mt={"sm"} fw={600}>
 						অতিরিক্ত পরামর্শ ও নির্দেশনা:
 					</Text>
-					<Text fz="sm">১. ____________________________________________</Text>
-					<Text fz="sm">২. ____________________________________________</Text>
-					<Text fz="sm">৩. ____________________________________________</Text>
-					<Text fz="sm" mt={"xs"}>
-						রোগীকে ____ / ____ / ______ তারিখে (বা প্রয়োজনবোধে তার আগে) ফলো‑আপের জন্য উপস্থিত হতে পরামর্শ
-						দেওয়া হলো।
+					<Text fz="sm">{data?.advice}</Text>
+					<Text fz="sm" mt="xs">
+						রোগীকে {formatDate(data?.follow_up_date)} তারিখে (বা প্রয়োজনবোধে তার আগে) ফলো‑আপের জন্য উপস্থিত
+						হতে পরামর্শ দেওয়া হলো।
 					</Text>
 					<Text fz="sm" mt={"xs"}>
 						উপরোক্ত তথ্যসমূহ যথাযথভাবে হাসপাতালের নথিতে সংরক্ষণ করার জন্য অনুরোধ করা হলো।
