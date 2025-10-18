@@ -1,28 +1,26 @@
 import { useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
-import { IconArrowRight, IconChevronUp, IconDotsVertical, IconSelector, IconTrashX } from "@tabler/icons-react";
+import { Box, Button, Flex, FloatingIndicator, Group, Tabs, Text } from "@mantine/core";
+import { IconArrowRight, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
-import { rem } from "@mantine/core";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import KeywordSearch from "../../common/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import ConfirmModal from ".././confirm/__ConfirmModal";
-import { getAdmissionConfirmFormInitialValues } from ".././helpers/request";
+import ConfirmModal from "../confirm/__ConfirmModal";
+import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
-import {formatDate, getLoggedInHospitalUser, getUserRole} from "@/common/utils";
+import { formatDate, getUserRole } from "@/common/utils";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@modules/hospital/visit/__DetailsDrawer";
 
 const PER_PAGE = 20;
-
 
 const tabs = [
 	{ label: "New", value: "new" },
@@ -43,13 +41,11 @@ export default function _Table({ module }) {
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const navigate = useNavigate();
 	const [selectedId, setSelectedId] = useState(null);
 	const [processTab, setProcessTab] = useState("new");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const userHospitalConfig = getLoggedInHospitalUser();
 	const userRoles = getUserRole();
-	const userId = userHospitalConfig?.employee_id;
+
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -57,10 +53,6 @@ export default function _Table({ module }) {
 			room_id: "",
 		},
 	});
-
-	const handleDetailsAdmission = (id) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD.INDEX}/${id}`, { replace: true });
-	};
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -90,7 +82,6 @@ export default function _Table({ module }) {
 	const handleOpenViewOverview = () => {
 		openOverview();
 	};
-
 
 	const handleConfirm = (id) => {
 		setSelectedId(id);
@@ -131,7 +122,7 @@ export default function _Table({ module }) {
 						bg="var(--theme-success-color)"
 						c="white"
 					>
-						{t("visitOverview")}
+						{t("VisitOverview")}
 					</Button>
 				</Flex>
 			</Flex>
@@ -154,7 +145,7 @@ export default function _Table({ module }) {
 					}}
 					records={records}
 					onRowClick={({ record }) => {
-						if (!record?.prescription_id) return alert('NoPrescriptionGenerated');
+						if (!record?.prescription_id) return alert("NoPrescriptionGenerated");
 						handleView(record?.prescription_id);
 					}}
 					columns={[
@@ -179,12 +170,12 @@ export default function _Table({ module }) {
 						{ accessor: "mobile", title: t("Mobile") },
 						...(processTab === "admitted"
 							? [
-								{ accessor: "admit_consultant_name", title: t("Consultant") },
-								{ accessor: "admit_unit_name", title: t("Unit") },
-								{ accessor: "admit_department_name", title: t("Department") },
-								{ accessor: "admit_doctor_name", title: t("Doctor") },
-								{ accessor: "visiting_room", title: t("Cabin/Bed") },
-							]
+									{ accessor: "admit_consultant_name", title: t("Consultant") },
+									{ accessor: "admit_unit_name", title: t("Unit") },
+									{ accessor: "admit_department_name", title: t("Department") },
+									{ accessor: "admit_doctor_name", title: t("Doctor") },
+									{ accessor: "visiting_room", title: t("Cabin/Bed") },
+							  ]
 							: []),
 						{
 							accessor: "total",
@@ -197,27 +188,25 @@ export default function _Table({ module }) {
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
-
 								<>
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && values.process == "ipd" && (
-											<Button
-												variant="filled"
-												bg="var(--theme-primary-color-6)"
-												c="white"
-												size="compact-xs"
-												onClick={() => handleConfirm(values.id)}
-												radius="es"
-												fw={400}
-												rightSection={<IconArrowRight size={18} />}
-											>
-												{t("Confirm")}
-											</Button>
-										)}
+										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+											values.process == "ipd" && (
+												<Button
+													variant="filled"
+													bg="var(--theme-primary-color-6)"
+													c="white"
+													size="compact-xs"
+													onClick={() => handleConfirm(values.id)}
+													radius="es"
+													fw={400}
+													rightSection={<IconArrowRight size={18} />}
+												>
+													{t("Confirm")}
+												</Button>
+											)}
 									</Group>
-
 								</>
-
 							),
 						},
 					]}

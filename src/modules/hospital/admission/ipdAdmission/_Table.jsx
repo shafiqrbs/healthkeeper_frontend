@@ -9,7 +9,7 @@ import {
 	IconChevronUp,
 	IconDotsVertical,
 	IconSelector,
-	IconTrashX
+	IconTrashX,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -24,12 +24,11 @@ import ConfirmModal from ".././confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from ".././helpers/request";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
-import {formatDate, getLoggedInHospitalUser, getUserRole} from "@/common/utils";
+import { formatDate, getLoggedInHospitalUser, getUserRole } from "@/common/utils";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@modules/hospital/visit/__DetailsDrawer";
 
 const PER_PAGE = 20;
-
 
 const tabs = [
 	{ label: "Confirmed", value: "confirmed" },
@@ -77,7 +76,6 @@ export default function _Table({ module }) {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.VIEW}/${id}`);
 	};
 
-
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
@@ -101,7 +99,6 @@ export default function _Table({ module }) {
 	const handleOpenViewOverview = () => {
 		openOverview();
 	};
-
 
 	const handleConfirm = (id) => {
 		setSelectedId(id);
@@ -155,7 +152,7 @@ export default function _Table({ module }) {
 					}}
 					records={records}
 					onRowClick={({ record }) => {
-						if (!record?.prescription_id) return alert('NoPrescriptionGenerated');
+						if (!record?.prescription_id) return alert("NoPrescriptionGenerated");
 						handleView(record?.prescription_id);
 					}}
 					columns={[
@@ -195,28 +192,31 @@ export default function _Table({ module }) {
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (item) => (
-
 								<>
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && item.process === "confirmed" && (
-											<Button.Group>
-												<Button
-													variant="filled"
-													onClick={() => handleAdmissionOverview(item.id)}
-													color="var(--theme-primary-color-6)"
-													radius="xs"
-													size={'compact-xs'}
-													aria-label="Settings"
-													rightSection={<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />}
-												>
-													Process
-												</Button>
-											</Button.Group>
-										)}
+										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+											item.process === "confirmed" && (
+												<Button.Group>
+													<Button
+														variant="filled"
+														onClick={() => handleAdmissionOverview(item.id)}
+														color="var(--theme-primary-color-6)"
+														radius="xs"
+														size={"compact-xs"}
+														aria-label="Settings"
+														rightSection={
+															<IconArrowNarrowRight
+																style={{ width: "70%", height: "70%" }}
+																stroke={1.5}
+															/>
+														}
+													>
+														Process
+													</Button>
+												</Button.Group>
+											)}
 									</Group>
-
 								</>
-
 							),
 						},
 					]}

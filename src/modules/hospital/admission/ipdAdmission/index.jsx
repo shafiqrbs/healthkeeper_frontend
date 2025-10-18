@@ -1,13 +1,10 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { getAdmissionFormInitialValues } from "../helpers/request";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Flex, Grid, Text } from "@mantine/core";
-import TabsWithSearch from "@components/advance-search/TabsWithSearch";
+import { Box, Flex } from "@mantine/core";
 import Table from "./_Table";
 import EntityForm from "../form/EntityForm";
 import { MODULES } from "@/constants";
@@ -15,12 +12,10 @@ import { MODULES } from "@/constants";
 const module = MODULES.ADMISSION;
 
 export default function Index() {
-	const { t } = useTranslation();
 	const { id } = useParams();
 	const form = useForm(getAdmissionFormInitialValues());
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const module = MODULES.ADMISSION;
 	return (
 		<>

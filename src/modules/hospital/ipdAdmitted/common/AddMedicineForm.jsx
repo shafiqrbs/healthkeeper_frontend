@@ -32,7 +32,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
@@ -67,8 +67,8 @@ export default function AddMedicineForm({
 	prescriptionData,
 	hasRecords,
 	tabParticulars,
-	ipdId,
 }) {
+	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
@@ -95,6 +95,7 @@ export default function AddMedicineForm({
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
+	const ipdId = searchParams.get("ipd");
 
 	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
@@ -428,7 +429,7 @@ export default function AddMedicineForm({
 				navigate(
 					`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${ipdId}?tabs=true&redirect=prescription`,
 					{
-						replace: true,
+						state: { prescriptionId: id },
 					}
 				);
 

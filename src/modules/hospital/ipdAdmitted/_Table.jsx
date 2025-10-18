@@ -1,20 +1,44 @@
 import { useNavigate, useOutletContext, useParams, useLocation } from "react-router-dom";
-import { IconCalendarWeek, IconUser, IconArrowRight, IconArrowNarrowRight, IconBed } from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
+import {
+	IconCalendarWeek,
+	IconUser,
+	IconArrowNarrowRight,
+	IconBed,
+	IconArrowRight,
+	IconChevronUp,
+	IconSelector,
+} from "@tabler/icons-react";
+import {
+	Box,
+	Flex,
+	Grid,
+	Text,
+	ScrollArea,
+	ActionIcon,
+	LoadingOverlay,
+	Group,
+	Button,
+	SegmentedControl,
+} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDate } from "@utils/index";
+import { formatDate, getUserRole } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
 import { showEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import KeywordSearch from "@hospital-components/KeywordSearch";
+import { DataTable } from "mantine-datatable";
+import tableCss from "@assets/css/Table.module.css";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
 
-export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
+const ALLOWED_CONFIRMED_ROLES = ["doctor_opd", "admin_administrator"];
+
+export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
@@ -22,6 +46,8 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 	const { state } = useLocation();
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const { id } = useParams();
+	const height = mainAreaHeight - 100;
+	const userRoles = getUserRole();
 
 	const form = useForm({
 		initialValues: {
@@ -30,7 +56,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 		},
 	});
 
-	const { records, fetching } = useInfiniteTableScroll({
+	const { records, fetching, sortStatus, setSortStatus, handleScrollToBottom, scrollRef } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
 		filterParams: {
@@ -45,9 +71,15 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 		direction: "desc",
 	});
 
-	const handleAdmissionOverview = (prescriptionId, id) => {
+	const handleManageOverview = (prescriptionId, id) => {
 		setSelectedPrescriptionId(prescriptionId);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}`, { replace: true });
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}?tabs=true&redirect=prescription`, {
+			state: { prescriptionId: prescriptionId },
+		});
+	};
+
+	const handleChangeIpdMode = () => {
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX);
 	};
 
 	const handleProcessConfirmation = async (id) => {
@@ -66,12 +98,11 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}?tabs=true&redirect=prescription`,
 				{
 					state: { prescriptionId: prescription_id },
-					replace: true,
 				}
 			);
 		} else if (prescription_id) {
 			navigate(
-				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${prescription_id}?redirect=prescription&itemid=${id}`
+				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${prescription_id}?redirect=prescription&ipd=${id}`
 			);
 		} else {
 			console.error(resultAction);
@@ -81,103 +112,124 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 
 	return (
 		<Box pos="relative">
-			<LoadingOverlay
-				visible={fetching}
-				zIndex={1000}
-				overlayProps={{ radius: "sm", blur: 2 }}
-				loaderProps={{ color: "red" }}
-			/>
-			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="xxxs">
-				<Text ta="center" fz="xs" fw={500}>
-					S/N
-				</Text>
-				<Text ta="center" fz="xs" fw={500}>
-					Patient Name
-				</Text>
-			</Flex>
-			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="xxxs">
-				{records?.length === 0 && (
-					<Flex justify="center" align="center">
-						<Text fz="xs">{t("NoDataAvailable")}</Text>
-					</Flex>
-				)}
-				{records?.map((item) => (
-					<Grid
-						columns={18}
-						key={item.id}
-						onClick={() => handleProcessConfirmation(item.id)}
-						my="xs"
-						bg={
-							(typeof id !== "undefined" && id == item?.prescription_id) ||
-							state?.prescriptionId == item?.prescription_id
-								? "var(--theme-primary-color-0)"
-								: "var(--theme-tertiary-color-0)"
+			{/* ------------------------------------ start here ----------------------------------- */}
+
+			<Flex align="center" justify="space-between">
+				<KeywordSearch form={form} module={module} />
+
+				<SegmentedControl
+					w={220}
+					size="sm"
+					color="var(--theme-primary-color-6)"
+					value={ipdMode}
+					onChange={(value) => {
+						setIpdMode(value);
+						if (value === "non-prescription") {
+							handleChangeIpdMode();
 						}
-						px="xs"
-						gutter="xs"
-					>
-						<Grid.Col span={8}>
-							<Flex align="center" gap="xxxs">
-								<IconCalendarWeek size={16} stroke={1.5} />
-								<Text
-									fz="xs"
-									onClick={() => handleAdmissionOverview(item.prescription_id)}
-									className="activate-link text-nowrap"
-								>
-									{formatDate(item?.created_at)}
+					}}
+					data={[
+						{ label: t("Prescription"), value: "non-prescription" },
+						{ label: t("Manage"), value: "prescription" },
+					]}
+				/>
+			</Flex>
+			<Box className="borderRadiusAll border-top-none">
+				<DataTable
+					striped
+					highlightOnHover
+					pinFirstColumn
+					pinLastColumn
+					stripedColor="var(--theme-tertiary-color-1)"
+					classNames={{
+						root: tableCss.root,
+						table: tableCss.table,
+						header: tableCss.header,
+						footer: tableCss.footer,
+						pagination: tableCss.pagination,
+					}}
+					records={records}
+					columns={[
+						{
+							accessor: "index",
+							title: t("S/N"),
+							textAlignment: "right",
+							render: (_, index) => index + 1,
+						},
+						{
+							accessor: "created_at",
+							title: t("Created"),
+							textAlignment: "right",
+							render: (item) => (
+								<Text fz="xs" className="activate-link">
+									{formatDate(item.created_at)}
 								</Text>
-							</Flex>
-							<Flex align="center" gap="xxxs">
-								<IconUser size={16} stroke={1.5} />
-								<Text fz="xs">{item.patient_id}</Text>
-							</Flex>
-							<Flex align="center" gap="xxxs">
-								<IconBed size={16} stroke={1.5} />
-								<Text fz="xs">{item.visiting_room}</Text>
-							</Flex>
-						</Grid.Col>
-						<Grid.Col span={10}>
-							<Flex justify="space-between" align="center">
-								<Box>
-									<Text fz="xs">{item.name}</Text>
-									<Text fz="xs">{item.mobile}</Text>
-									<Text fz="xs">{item.patient_payment_mode_name}</Text>
-								</Box>
-								<Flex direction="column">
-									{ipdMode === "non-prescription" && (
-										<ActionIcon
-											variant="filled"
-											onClick={() => handleProcessConfirmation(item.id)}
-											color="var(--theme-primary-color-6)"
-											radius="xs"
-											aria-label="Settings"
-										>
-											<IconArrowNarrowRight
-												style={{ width: "70%", height: "70%" }}
-												stroke={1.5}
-											/>
-										</ActionIcon>
-									)}
-									{ipdMode === "prescription" && (
-										<ActionIcon
-											variant="filled"
-											onClick={() => handleAdmissionOverview(item.prescription_id)}
-											color="var(--theme-secondary-color-6)"
-											radius="xs"
-											aria-label="Settings"
-										>
-											<IconArrowNarrowRight
-												style={{ width: "70%", height: "70%" }}
-												stroke={1.5}
-											/>
-										</ActionIcon>
-									)}
-								</Flex>
-							</Flex>
-						</Grid.Col>
-					</Grid>
-				))}
-			</ScrollArea>
+							),
+						},
+						{ accessor: "patient_id", title: t("patientId") },
+						{ accessor: "name", title: t("Name") },
+						{ accessor: "mobile", title: t("Mobile") },
+						{
+							accessor: "total",
+							title: t("Amount"),
+							render: (item) => t(item.total),
+						},
+						{
+							accessor: "action",
+							title: t("Action"),
+							textAlign: "right",
+							titleClassName: "title-right",
+							render: (values) => (
+								<>
+									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+										{ipdMode === "non-prescription" && (
+											<Button
+												rightSection={<IconArrowNarrowRight size={18} />}
+												onClick={() => handleProcessConfirmation(values.id)}
+												variant="filled"
+												color="var(--theme-primary-color-6)"
+												radius="xs"
+												aria-label="Settings"
+												size="compact-xs"
+												fw={400}
+											>
+												{t("Process")}
+											</Button>
+										)}
+										{ipdMode === "prescription" && values.prescription_id && (
+											<Button
+												rightSection={<IconArrowNarrowRight size={18} />}
+												onClick={() => handleManageOverview(values.prescription_id, values.id)}
+												variant="filled"
+												color="var(--theme-primary-color-6)"
+												radius="xs"
+												aria-label="Settings"
+												size="compact-xs"
+												fw={400}
+											>
+												{t("Manage")}
+											</Button>
+										)}
+									</Group>
+								</>
+							),
+						},
+					]}
+					textSelectionDisabled
+					fetching={fetching}
+					loaderSize="xs"
+					loaderColor="grape"
+					height={height}
+					onScrollToBottom={handleScrollToBottom}
+					scrollViewportRef={scrollRef}
+					sortStatus={sortStatus}
+					onSortStatusChange={setSortStatus}
+					sortIcons={{
+						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+					}}
+				/>
+			</Box>
 		</Box>
 	);
 }

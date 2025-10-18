@@ -4,14 +4,12 @@ import { useLocation, useNavigate, useOutletContext, useParams, useSearchParams 
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { ActionIcon, Box, Flex, Grid, SegmentedControl, Text } from "@mantine/core";
+import { ActionIcon, Box, Flex, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import Table from "./_Table";
 import Investigation from "./common/tabs/Investigation";
 import Medicine from "./common/tabs/Medicine";
 import Advice from "./common/tabs/Advice";
-import Instruction from "./common/tabs/Instruction";
-import OT from "./common/tabs/OT";
 import Charge from "./common/tabs/Charge";
 import Billing from "./common/tabs/Billing";
 import FinalBill from "./common/tabs/FinalBill";
@@ -23,14 +21,11 @@ import { useDisclosure } from "@mantine/hooks";
 import Room from "./common/tabs/Room";
 import { IconPencil, IconPrescription } from "@tabler/icons-react";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { MODULES } from "@/constants";
-
-const module = MODULES.ADMISSION;
 
 export default function Index() {
+	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryValue = searchParams.get("redirect");
-	const navigate = useNavigate();
 	const [ipdMode, setIpdMode] = useState("non-prescription");
 	const { t } = useTranslation();
 	const { id } = useParams();
@@ -40,20 +35,15 @@ export default function Index() {
 	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
 		useDisclosure(false);
 
+	const { state } = useLocation();
+
 	const showTabs = searchParams.get("tabs") === "true";
 	const showPrescriptionForm = !selectedPrescriptionId && id;
 
 	const handlePrescriptionEdit = () => {
-		const allParams = Object.fromEntries(searchParams.entries());
-		const { tabs, ...restParams } = allParams;
-		console.info(tabs);
-		setSearchParams(restParams);
-	};
-
-	const handleChangeIpdMode = () => {
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX, {
-			replace: true,
-		});
+		navigate(
+			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${state?.prescriptionId}?redirect=prescription&ipd=${id}`
+		);
 	};
 
 	useEffect(() => {
@@ -72,46 +62,9 @@ export default function Index() {
 				<Box p="md">
 					<Flex w="100%" gap="xs">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-						<Grid w="100%" columns={24} gutter={"xs"}>
-							<Grid.Col span={6} pos="relative" className="animate-ease-out">
-								<Flex align="center" justify="space-between" px="sm" py="xs" bg="white">
-									<Text fw={600} fz="sm">
-										{t("PatientInformation")}
-									</Text>
-									<SegmentedControl
-										size="sm"
-										color="var(--theme-primary-color-6)"
-										value={ipdMode}
-										onChange={(value) => {
-											setIpdMode(value);
-											if (value === "non-prescription") {
-												handleChangeIpdMode();
-											}
-										}}
-										data={[
-											{ label: t("Prescription"), value: "non-prescription" },
-											{ label: t("Manage"), value: "prescription" },
-										]}
-									/>
-								</Flex>
-								<TabsWithSearch
-									tabList={["list"]}
-									module={module}
-									tabPanels={[
-										{
-											tab: "list",
-											component: (
-												<Table
-													ipdMode={ipdMode}
-													selectedPrescriptionId={selectedPrescriptionId}
-													setSelectedPrescriptionId={setSelectedPrescriptionId}
-												/>
-											),
-										},
-									]}
-								/>
-							</Grid.Col>
-							<Grid.Col span={18} className="animate-ease-out">
+
+						{id ? (
+							<Box w="100%">
 								{showTabs ? (
 									<TabsWithSearch
 										tabList={[
@@ -192,22 +145,30 @@ export default function Index() {
 										}
 									/>
 								) : showPrescriptionForm ? (
-									<AdmissionPrescription ipdId={id} />
+									<AdmissionPrescription />
 								) : (
 									<Flex
 										justify="center"
 										align="center"
 										p="sm"
-										pl={"md"}
-										pr={"md"}
+										px="md"
 										bg="white"
 										h={mainAreaHeight - 12}
 									>
 										<Text>No patient selected, please select a patient</Text>
 									</Flex>
 								)}
-							</Grid.Col>
-						</Grid>
+							</Box>
+						) : (
+							<Box w="100%">
+								<Table
+									ipdMode={ipdMode}
+									setIpdMode={setIpdMode}
+									selectedPrescriptionId={selectedPrescriptionId}
+									setSelectedPrescriptionId={setSelectedPrescriptionId}
+								/>
+							</Box>
+						)}
 					</Flex>
 				</Box>
 			)}

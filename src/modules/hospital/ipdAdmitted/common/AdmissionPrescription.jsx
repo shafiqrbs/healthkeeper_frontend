@@ -18,7 +18,7 @@ import { useParams } from "react-router-dom";
 
 const module = MODULES.ADMISSION;
 
-export default function AdmissionPrescription({ ipdId }) {
+export default function AdmissionPrescription() {
 	const { id } = useParams();
 	const [opened, { close }] = useDisclosure(false);
 	const [showHistory, setShowHistory] = useState(false);
@@ -32,7 +32,7 @@ export default function AdmissionPrescription({ ipdId }) {
 	const [customerId, setCustomerId] = useState();
 
 	const { data: prescriptionData, isLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${ipdId}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
 	});
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
@@ -93,7 +93,6 @@ export default function AdmissionPrescription({ ipdId }) {
 						setShowHistory={setShowHistory}
 						prescriptionData={prescriptionData}
 						tabParticulars={tabParticulars}
-						ipdId={ipdId}
 					/>
 				</Grid.Col>
 				{hasRecords && (
