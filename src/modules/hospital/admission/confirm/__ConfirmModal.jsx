@@ -14,6 +14,7 @@ import { successNotification } from "@/common/components/notification/successNot
 import { errorNotification } from "@/common/components/notification/errorNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { useDispatch } from "react-redux";
+import { capitalizeWords } from "@/common/utils";
 
 export default function ConfirmModal({ opened, close, form, selectedId, module }) {
 	const dispatch = useDispatch();
@@ -72,6 +73,16 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 									{/* =============== patient basic information section =============== */}
 									<Grid align="center" columns={20}>
 										<Grid.Col span={10}>
+											<Text fz="sm">{t("Created")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.created || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
 											<Text fz="sm">{t("PatientName")}:</Text>
 										</Grid.Col>
 										<Grid.Col span={10}>
@@ -92,6 +103,26 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={10}>
+											<Text fz="sm">{t("Invoice")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.invoice || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("HealthId")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.health_id || "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
 											<Text fz="sm">{t("Mobile")}:</Text>
 										</Grid.Col>
 										<Grid.Col span={10}>
@@ -106,19 +137,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 										</Grid.Col>
 										<Grid.Col span={10}>
 											<Text fz="sm" fw={500}>
-												{ipdData?.data?.gender || "-"}
-											</Text>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={10}>
-											<Text fz="sm">{t("Age")}:</Text>
-										</Grid.Col>
-										<Grid.Col span={10}>
-											<Text fz="sm" fw={500}>
-												{ipdData?.data?.year
-													? `${ipdData?.data?.year}Y, ${ipdData?.data?.month}M, ${ipdData?.data?.day}D`
-													: "-"}
+												{capitalizeWords(ipdData?.data?.gender || "-")}
 											</Text>
 										</Grid.Col>
 									</Grid>
@@ -132,6 +151,19 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 											</Text>
 										</Grid.Col>
 									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={10}>
+											<Text fz="sm">{t("Age")}:</Text>
+										</Grid.Col>
+										<Grid.Col span={10}>
+											<Text fz="sm" fw={500}>
+												{ipdData?.data?.year
+													? `${ipdData?.data?.year} Year, ${ipdData?.data?.month||0} Month, ${ipdData?.data?.day||0} Day`
+													: "-"}
+											</Text>
+										</Grid.Col>
+									</Grid>
+
 									<Grid align="center" columns={20}>
 										<Grid.Col span={10}>
 											<Text fz="sm">{t("Address")}:</Text>
@@ -162,16 +194,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 											</Text>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={10}>
-											<Text fz="sm">{t("HealthId")}:</Text>
-										</Grid.Col>
-										<Grid.Col span={10}>
-											<Text fz="sm" fw={500}>
-												{ipdData?.data?.health_id || "-"}
-											</Text>
-										</Grid.Col>
-									</Grid>
+
 									<Grid align="center" columns={20}>
 										<Grid.Col span={10}>
 											<Text fz="sm">{t("GuardianName")}:</Text>
@@ -193,16 +216,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 										</Grid.Col>
 									</Grid>
 									{/* =============== admission details section =============== */}
-									<Grid align="center" columns={20}>
-										<Grid.Col span={10}>
-											<Text fz="sm">{t("Invoice")}:</Text>
-										</Grid.Col>
-										<Grid.Col span={10}>
-											<Text fz="sm" fw={500}>
-												{ipdData?.data?.invoice || "-"}
-											</Text>
-										</Grid.Col>
-									</Grid>
+
 									<Grid align="center" columns={20}>
 										<Grid.Col span={10}>
 											<Text fz="sm">{t("RoomNo")}:</Text>

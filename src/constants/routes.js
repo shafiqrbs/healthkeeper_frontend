@@ -12,6 +12,7 @@ export const MASTER_DATA_ROUTES = {
 		OPERATIONAL_API: {
 			REFERRED: "hospital/opd/referred",
 			PATIENT_SEARCH: "hospital/patient-search",
+			ROOM_CABIN: "hospital/room-cabin",
 		},
 
 		INVESTIGATION: {

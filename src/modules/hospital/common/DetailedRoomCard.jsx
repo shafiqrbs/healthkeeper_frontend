@@ -79,24 +79,9 @@ export default function DetailedRoomCard({ room, selectedRoom, handleRoomClick, 
 			{/* =============== main content grid ================ */}
 			<Stack gap="xxxs">
 				{/* =============== compact information rows ================ */}
-				<Group justify="space-between" align="center">
-					<Flex align="center" gap="xxxs">
-						<IconDoor color="var(--theme-primary-color-6)" size={14} stroke={1.5} />
-						<Text fw={400} c="var(--theme-tertiary-color-6)" fz="xs">
-							Room
-						</Text>
-					</Flex>
-					<Flex align="center" gap="xxxs">
-						<Text fw={500} fz="xs">
-							{room?.room_name || room?.name}
-						</Text>
-						<Badge color={statusInfo.color} variant={statusInfo.variant} size="xs">
-							{statusInfo.text}
-						</Badge>
-					</Flex>
-				</Group>
 
-				<Group justify="space-between" align="center">
+
+{/*				<Group justify="space-between" align="center">
 					<Flex align="center" gap="xxxs">
 						<IconStethoscope color="var(--theme-primary-color-6)" size={14} stroke={1.5} />
 						<Text fw={400} c="var(--theme-tertiary-color-6)" fz="xs">
@@ -125,7 +110,7 @@ export default function DetailedRoomCard({ room, selectedRoom, handleRoomClick, 
 							{room?.payment_mode_name}
 						</Badge>
 						<Flex align="center" gap="xxxs">
-							{/* {getGenderIcon(room?.gender_mode_name)} */}
+							 {getGenderIcon(room?.gender_mode_name)}
 							<Text fz="xs" fw={500}>
 								{room?.gender_mode_name}
 							</Text>
@@ -143,9 +128,9 @@ export default function DetailedRoomCard({ room, selectedRoom, handleRoomClick, 
 					<Badge size="xs" variant="light" color="teal">
 						{room?.particular_type_name}
 					</Badge>
-				</Group>
+				</Group>*/}
 
-				{room?.treatment_mode_name && (
+				{/*{room?.treatment_mode_name && (
 					<Group justify="space-between" align="center">
 						<Flex align="center" gap="xxxs">
 							<IconActivity color="var(--theme-primary-color-6)" size={14} stroke={1.5} />
@@ -157,9 +142,9 @@ export default function DetailedRoomCard({ room, selectedRoom, handleRoomClick, 
 							{room?.treatment_mode_name}
 						</Badge>
 					</Group>
-				)}
+				)}*/}
 
-				{room?.opd_referred !== undefined && (
+				{/*{room?.opd_referred !== undefined && (
 					<Group justify="space-between" align="center">
 						<Text fw={400} c="var(--theme-tertiary-color-6)" fz="xs">
 							OPD Referred
@@ -172,22 +157,25 @@ export default function DetailedRoomCard({ room, selectedRoom, handleRoomClick, 
 							{room?.opd_referred ? "Yes" : "No"}
 						</Badge>
 					</Group>
-				)}
+				)}*/}
 				<Divider />
 				<Group justify="space-between" align="center">
 					<Flex align="center" gap="xxxs">
-						<IconUsers color="var(--theme-primary-color-6)" size={14} stroke={1.5} />
+						<IconDoor color="var(--theme-primary-color-6)" size={14} stroke={1.5} />
 						<Text fw={400} c="var(--theme-tertiary-color-6)" fz="xs">
-							Patients
+							{room?.room_name || room?.name}
 						</Text>
 					</Flex>
-					<Group gap="xxxs" align="center">
-						<Text fw={600} fz="xs">
-							{room?.invoice_count || 0}
+					<Flex align="center" gap="xxxs">
+						<Text fw={500} fz="xs">
+							{room?.price || room?.price}
 						</Text>
-						<Image radius="xl" src={imgActive} width={12} height={12} />
-					</Group>
+						<Badge color={statusInfo.color} variant={statusInfo.variant} size="xs">
+							{statusInfo.text}
+						</Badge>
+					</Flex>
 				</Group>
+
 			</Stack>
 		</Box>
 	);

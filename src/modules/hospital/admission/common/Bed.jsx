@@ -34,7 +34,7 @@ export default function Bed({ selectedRoom, handleRoomClick }) {
 	const fetchData = () => {
 		dispatch(
 			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.BED.INDEX,
+				url: MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.ROOM_CABIN,
 				module: "bed",
 				params: { particular_type: "bed", term: "", page: 1, offset: PER_PAGE },
 			})

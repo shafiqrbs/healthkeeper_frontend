@@ -25,6 +25,19 @@ export const formatDOB = (dob) => {
 	}
 };
 
+export function capitalize(text) {
+	if (!text) return "";
+	return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}
+
+export function capitalizeWords(text) {
+	if (!text) return "";
+	return text
+		.split(" ")
+		.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+		.join(" ");
+}
+
 export const getUserRole = () => {
 	try {
 		const parsedUser = getLoggedInUser();

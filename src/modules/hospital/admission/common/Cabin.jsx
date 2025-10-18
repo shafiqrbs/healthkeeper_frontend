@@ -34,7 +34,7 @@ export default function Cabin({ selectedRoom, handleRoomClick }) {
 	const fetchData = () => {
 		dispatch(
 			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.CABIN.INDEX,
+				url: MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.ROOM_CABIN,
 				module: "cabin",
 				params: { particular_type: "cabin", term: "", page: 1, offset: PER_PAGE },
 			})

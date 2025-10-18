@@ -47,7 +47,7 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 						{t("টিকিট")} - {patientInfo?.payment_mode_name || "Cash"}
 					</Text>
 					<Text size="xs" fw={700} ta="center">
-						<strong>{t("বহির্বিভাগ কক্ষ")}:</strong> {patientInfo?.room_name || ""}
+						<strong>{t("ইমার্জেন্সি কক্ষ")}</strong>
 					</Text>
 					<DashedLine />
 

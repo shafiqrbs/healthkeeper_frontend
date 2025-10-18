@@ -44,6 +44,9 @@ const tabs = [
 	{ label: "All", value: "all" },
 	{ label: "Prescription", value: "prescription" },
 	{ label: "Non-prescription", value: "non-prescription" },
+	{ label: "Room Referred", value: "room" },
+	{ label: "Admission", value: "admission" },
+	{ label: "Referred", value: "referred" },
 ];
 
 const PER_PAGE = 200;
