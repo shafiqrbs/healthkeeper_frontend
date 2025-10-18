@@ -7,6 +7,7 @@ import { getUserRole } from "@utils/index";
 import { useRef, useState } from "react";
 import Barcode from "react-barcode";
 import { useReactToPrint } from "react-to-print";
+import LabReportA4BN from "@components/print-formats/lab-reports/LabReportA4BN";
 
 const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"];
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
@@ -20,13 +21,23 @@ export default function Test({ entity, isLoading }) {
 	const userRoles = getUserRole();
 	const barCodeRef = useRef(null);
 	const [barcodeValue, setBarcodeValue] = useState("");
+	const labReportRef = useRef(null);
+	const [labReportData, setLabReportData] = useState(null);
 
+	const printLabReport = useReactToPrint({
+		content: () => labReportRef.current,
+	});
 	const printBarCodeValue = useReactToPrint({
 		content: () => barCodeRef.current,
 	});
 
 	const handleTest = (reportId) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${reportId}`);
+	};
+
+	const handleLabReport = (id) => {
+		setLabReportData({ id });
+		requestAnimationFrame(printLabReport);
 	};
 
 	const handleBarcodeTag = (barcode) => {
@@ -87,7 +98,7 @@ export default function Test({ entity, isLoading }) {
 													</Button>
 													<ActionIcon
 														bg="var(--theme-secondary-color-6)"
-														onClick={() => handleTest(item.invoice_particular_id)}
+														onClick={() => handleLabReport(item.invoice_particular_id)}
 														color="white"
 													>
 														<IconPrinter color="white" size={16} />
@@ -122,6 +133,8 @@ export default function Test({ entity, isLoading }) {
 					<Barcode fontSize="12" width="1" height="40" value={barcodeValue || "BARCODETEST"} />
 				</Box>
 			</Box>
+
+			<LabReportA4BN data={labReportData} ref={labReportRef} />
 		</Box>
 	);
 }

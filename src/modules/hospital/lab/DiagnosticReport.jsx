@@ -18,6 +18,8 @@ import { ERROR_NOTIFICATION_COLOR, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } fr
 import { errorNotification } from "@components/notification/errorNotification";
 import { useDispatch } from "react-redux";
 import { useHotkeys } from "@mantine/hooks";
+import LabReportA4BN from "@components/print-formats/lab-reports/LabReportA4BN";
+import { useReactToPrint } from "react-to-print";
 
 const module = MODULES_CORE.LAB_USER;
 
@@ -31,9 +33,18 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 	const [submitFormData, setSubmitFormData] = useState({});
 	const [updatingRows, setUpdatingRows] = useState({});
 	const { id, reportId } = useParams();
+	const labReportRef = useRef(null);
+	const [labReportData, setLabReportData] = useState(null);
 	const [fetching, setFetching] = useState(false);
 
-	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
+	const handleLabReport = (id) => {
+		setLabReportData({ id: id });
+		requestAnimationFrame(printLabReport);
+	};
+
+	const printLabReport = useReactToPrint({
+		content: () => labReportRef.current,
+	});
 
 	useEffect(() => {
 		if (id && reportId) {
@@ -227,6 +238,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 													wrap="wrap"
 												>
 													<Button
+														onClick={() => handleLabReport(diagnosticReport?.id)}
 														size="md"
 														color="var(--theme-secondary-color-5)"
 														type="button"
@@ -310,6 +322,8 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 					</Stack>
 				</Box>
 			)}
+
+			<LabReportA4BN data={labReportData} ref={labReportRef} />
 		</Box>
 	);
 }

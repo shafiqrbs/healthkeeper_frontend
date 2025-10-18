@@ -16,7 +16,7 @@ import {
 import { useOutletContext, useParams } from "react-router-dom";
 import SelectForm from "@components/form-builders/SelectForm";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import { IconCheck, IconHistory, IconPencil, IconPlus, IconX } from "@tabler/icons-react";
+import { IconCheck, IconPencil, IconPlus, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
@@ -31,7 +31,6 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
-import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 
 const DURATION_OPTIONS = [
