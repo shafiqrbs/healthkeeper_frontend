@@ -24,7 +24,7 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import KeywordSearch from "../common/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
-import DetailsDrawer from "./__DetailsDrawer";
+import DetailsDrawer from "../common/drawer/__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";

@@ -42,6 +42,7 @@ const DURATION_OPTIONS = [
 ];
 
 function MedicineListItem({ index, medicine, setMedicines, handleDelete, dosage_options, by_meal_options }) {
+	console.log(medicine);
 	const { t } = useTranslation();
 	const [mode, setMode] = useState("view");
 
@@ -96,7 +97,7 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, dosage_
 			<Text mb="es" fz="sm" className="cursor-pointer">
 				{index}. {medicine.medicine_name || medicine.generic}
 			</Text>
-			<Flex justify="space-between" align="center" gap="0">
+			<Flex justify="space-between" align="center" gap="10px">
 				{mode === "view" ? (
 					<Box ml="md" fz="xs" c="var(--theme-tertiary-color-8)">
 						{medicine.dose_details} ---- {medicine.by_meal} ---- {medicine.quantity} ----{" "}
@@ -298,6 +299,7 @@ export default function Medicine() {
 
 				values.dose_details = getDosage(values.medicine_dosage_id);
 				values.by_meal = getByMeal(values.medicine_bymeal_id);
+				console.log(values.dose_details, values.by_meal);
 			}
 		}
 
@@ -467,102 +469,98 @@ export default function Medicine() {
 					</Grid>
 				</Group>
 			</Box>
-			<Flex
-				justify="space-between"
-				align="center"
-				bg="var(--theme-primary-color-0)"
-				mt="sm"
-				mb="les"
-				px="sm"
-				py="les"
-			>
-				<Text fw={500}>{t("ListOfMedicines")}</Text>
-				<Button
-					leftSection={<IconHistory size={16} />}
-					variant="filled"
-					bg="var(--theme-primary-color-6)"
-					onClick={openMedicineHistory}
-				>
-					{t("History")}
-				</Button>
-			</Flex>
-			<ScrollArea h={mainAreaHeight - 220}>
-				<Box gap="xs" p="sm" h={mainAreaHeight - 280}>
-					{medicines?.length === 0 && (
-						<Stack justify="center" align="center" h={mainAreaHeight - 320}>
-							<Box>
-								<Text mb="md" w="100%" fz="sm" align={"center"} c="var(--theme-secondary-color)">
-									{t("NoMedicineAddedYet")}
-								</Text>
-								<Button
-									leftSection={<IconPlus size={16} />}
-									type="submit"
-									variant="filled"
-									bg="var(--theme-primary-color-6)"
-									onClick={() => document.getElementById("medicine_id").focus()}
-								>
-									{t("SelectMedicine")}
-								</Button>
-							</Box>
-						</Stack>
-					)}
-					{medicines?.map((medicine, index) => (
-						<MedicineListItem
-							key={index}
-							index={index + 1}
-							medicine={medicine}
-							setMedicines={setMedicines}
-							handleDelete={handleDelete}
-							dosage_options={dosage_options}
-							by_meal_options={by_meal_options}
-						/>
-					))}
-				</Box>
-				<Box px="xs">
-					<Box ml="auto" w={300}>
-						<TabsActionButtons
-							handleReset={() => {}}
-							handleSave={handleSubmit}
-							isSubmitting={isSubmitting}
-						/>
-					</Box>
-				</Box>
-			</ScrollArea>
-			<GlobalDrawer
-				opened={openedMedicineHistory}
-				close={closeMedicineHistory}
-				title={t("MedicineHistory")}
-				size="36%"
-			>
-				{medicineHistoryData?.data?.length === 0 && (
-					<Flex h="100%" justify="center" align="center">
-						<Text fz="sm">{t("NoDataAvailable")}</Text>
-					</Flex>
-				)}
-				{medicineHistoryData?.data?.map((item, index) => (
-					<Flex key={index} gap="xs" mb="xxxs">
-						<Text>{index + 1}.</Text>
-						<Box w="100%">
-							<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
-								{item.created}
-							</Badge>
-							<Box mt="es" fz="sm">
-								{item?.sales_items?.map((particular, idx) => (
-									<Box key={idx}>
-										<Text fz="xs">
-											{idx + 1}. {particular.item_name}
-										</Text>
-										<Box ml="md" fz="xs" c="var(--theme-tertiary-color-8)">
-											{particular.dose_details} ---- {particular.by_meal} ----{" "}
-											{particular.quantity} ---- {particular.duration}
+			<ScrollArea h={mainAreaHeight - 170}>
+				<Grid columns={24} gutter="sm" p="sm" h={mainAreaHeight - 240}>
+					<Grid.Col span={14}>
+						<Stack h={mainAreaHeight - 200} justify="space-between">
+							<Box bd="1px solid var(--theme-tertiary-color-3)" className="borderRadiusAll" p="sm">
+								{medicines?.length === 0 && (
+									<Stack justify="center" align="center" h={mainAreaHeight - 320}>
+										<Box>
+											<Text
+												mb="md"
+												w="100%"
+												fz="sm"
+												align={"center"}
+												c="var(--theme-secondary-color)"
+											>
+												{t("NoMedicineAddedYet")}
+											</Text>
+											<Button
+												leftSection={<IconPlus size={16} />}
+												type="submit"
+												variant="filled"
+												bg="var(--theme-primary-color-6)"
+												onClick={() => document.getElementById("medicine_id").focus()}
+											>
+												{t("SelectMedicine")}
+											</Button>
 										</Box>
-									</Box>
+									</Stack>
+								)}
+								{medicines?.map((medicine, index) => (
+									<MedicineListItem
+										key={index}
+										index={index + 1}
+										medicine={medicine}
+										setMedicines={setMedicines}
+										handleDelete={handleDelete}
+										dosage_options={dosage_options}
+										by_meal_options={by_meal_options}
+									/>
 								))}
 							</Box>
-						</Box>
-					</Flex>
-				))}
-			</GlobalDrawer>
+							<Box px="xs">
+								<Box ml="auto" w={300}>
+									<TabsActionButtons
+										handleReset={() => {}}
+										handleSave={handleSubmit}
+										isSubmitting={isSubmitting}
+									/>
+								</Box>
+							</Box>
+						</Stack>
+					</Grid.Col>
+
+					<Grid.Col span={10}>
+						<ScrollArea
+							h={mainAreaHeight - 200}
+							bd="1px solid var(--theme-tertiary-color-3)"
+							className="borderRadiusAll"
+							p="sm"
+						>
+							{medicineHistoryData?.data?.length === 0 && (
+								<Flex h="100%" justify="center" align="center">
+									<Text fz="sm">{t("NoDataAvailable")}</Text>
+								</Flex>
+							)}
+							{medicineHistoryData?.data?.map((item, index) => (
+								<Flex key={index} gap="xs" mb="xxxs">
+									<Text>{index + 1}.</Text>
+									<Box w="100%">
+										<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
+											{item.created}
+										</Badge>
+										<Box mt="es" fz="sm">
+											{JSON.parse(item?.json_content || "[]")?.map((particular, idx) => (
+												<Box key={idx}>
+													<Text fz="xs">
+														{idx + 1}. {particular.medicine_name}
+													</Text>
+													<Box ml="md" fz="xs" c="var(--theme-tertiary-color-8)">
+														{particular.dose_details} ---- {particular.by_meal} ----{" "}
+														{particular.quantity} ---- {particular.duration}
+													</Box>
+												</Box>
+											))}
+										</Box>
+									</Box>
+								</Flex>
+							))}
+						</ScrollArea>
+					</Grid.Col>
+				</Grid>
+			</ScrollArea>
 		</Box>
 	);
 }

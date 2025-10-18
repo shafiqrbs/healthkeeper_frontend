@@ -10,8 +10,8 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import Bed from "../common/Bed";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { storeEntityData } from "@/app/store/core/crudThunk";
-import { successNotification } from "@/common/components/notification/successNotification";
-import { errorNotification } from "@/common/components/notification/errorNotification";
+import { successNotification } from "@components/notification/successNotification";
+import { errorNotification } from "@components/notification/errorNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { useDispatch } from "react-redux";
 import { capitalizeWords } from "@/common/utils";
@@ -58,12 +58,13 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
+			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	};
 
 	return (
-		<GlobalDrawer opened={opened} close={close} title="Confirm Admission" size="60%">
+		<GlobalDrawer opened={opened} close={close} title={t("ConfirmAdmission")} size="60%">
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Box py="sm">
 					<Grid columns={24}>
@@ -158,7 +159,9 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 										<Grid.Col span={10}>
 											<Text fz="sm" fw={500}>
 												{ipdData?.data?.year
-													? `${ipdData?.data?.year} Year, ${ipdData?.data?.month||0} Month, ${ipdData?.data?.day||0} Day`
+													? `${ipdData?.data?.year} Year, ${
+															ipdData?.data?.month || 0
+													  } Month, ${ipdData?.data?.day || 0} Day`
 													: "-"}
 											</Text>
 										</Grid.Col>
@@ -271,9 +274,11 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 								<Button miw={100}>Process</Button>
 							</Flex> */}
 							<TabsWithSearch
+								module="cabin"
 								tabList={["Cabin", "Bed"]}
 								searchbarContainerBg="var(--theme-primary-color-1)"
 								tabWidth="48%"
+								showDatePicker={false}
 								tabPanels={[
 									{
 										tab: "Cabin",

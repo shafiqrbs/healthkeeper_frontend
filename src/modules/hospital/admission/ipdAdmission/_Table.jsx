@@ -26,7 +26,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
 import { formatDate, getLoggedInHospitalUser, getUserRole } from "@/common/utils";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import DetailsDrawer from "@modules/hospital/visit/__DetailsDrawer";
+import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 
 const PER_PAGE = 20;
 

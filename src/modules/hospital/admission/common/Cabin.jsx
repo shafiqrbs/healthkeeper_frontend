@@ -14,6 +14,7 @@ export default function Cabin({ selectedRoom, handleRoomClick }) {
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const listData = useSelector((state) => state.crud.cabin?.data?.data);
+	const filterData = useSelector((state) => state.crud.cabin?.filterData);
 	const height = mainAreaHeight - 320;
 
 	const { data: getParticularPaymentModes } = useGlobalDropdownData({
@@ -36,14 +37,14 @@ export default function Cabin({ selectedRoom, handleRoomClick }) {
 			getIndexEntityData({
 				url: MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.ROOM_CABIN,
 				module: "cabin",
-				params: { particular_type: "cabin", term: "", page: 1, offset: PER_PAGE },
+				params: { particular_type: "cabin", term: filterData?.keywordSearch || "", page: 1, offset: PER_PAGE },
 			})
 		);
 	};
 
 	useEffect(() => {
 		fetchData();
-	}, []);
+	}, [filterData.keywordSearch]);
 
 	return (
 		<Grid columns={24} gutter="xs">
@@ -53,7 +54,7 @@ export default function Cabin({ selectedRoom, handleRoomClick }) {
 				const rooms = filteredRoomsByPaymentMode[paymentMode.slug] || [];
 
 				return (
-					<Grid.Col key={paymentMode.slug} span={columnSpan}>
+					<Grid.Col key={index} span={columnSpan}>
 						<Text
 							mt="xxxs"
 							ta="center"
@@ -72,9 +73,9 @@ export default function Cabin({ selectedRoom, handleRoomClick }) {
 							pl={index === 0 ? "xxxs" : undefined}
 							pr={isLastColumn ? "xxxs" : undefined}
 						>
-							{rooms.map((room) => (
+							{rooms.map((room, idx) => (
 								<DetailedRoomCard
-									key={room.id}
+									key={idx}
 									room={room}
 									selectedRoom={selectedRoom}
 									handleRoomClick={handleRoomClick}

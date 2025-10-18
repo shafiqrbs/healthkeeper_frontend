@@ -601,7 +601,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		return (
 			<Box>
 				<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
-				<ScrollArea h={height + 300}>
+				<ScrollArea h={mainAreaHeight - 240}>
 					<Box mt="les">
 						<Box bg="var(--theme-secondary-color-1)" p="xxxs">
 							<Text fw={600} size="lg">

@@ -19,6 +19,7 @@ import {
 	Group,
 	Button,
 	SegmentedControl,
+	Tabs,
 } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
@@ -32,11 +33,17 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
+import DataTableFooter from "@components/tables/DataTableFooter";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
 
 const ALLOWED_CONFIRMED_ROLES = ["doctor_opd", "admin_administrator"];
+
+const tabs = [
+	{ label: "Prescription", value: "prescription" },
+	{ label: "Manage", value: "manage" },
+];
 
 export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode }) {
 	const { t } = useTranslation();
@@ -113,7 +120,32 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 	return (
 		<Box pos="relative">
 			{/* ------------------------------------ start here ----------------------------------- */}
-
+			{/* <Flex justify="space-between" align="center" px="sm">
+				<Text fw={600} fz="sm" py="xs">
+					{t("AdmissionInformation")}
+				</Text>
+				<Flex gap="xs" align="center">
+					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
+						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
+							{tabs.map((tab) => (
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={tab.value}
+								>
+									{t(tab.label)}
+								</Tabs.Tab>
+							))}
+							<FloatingIndicator
+								target={processTab ? controlsRefs[processTab] : null}
+								parent={rootRef}
+								className={filterTabsCss.indicator}
+							/>
+						</Tabs.List>
+					</Tabs>
+				</Flex>
+			</Flex> */}
 			<Flex align="center" justify="space-between">
 				<KeywordSearch form={form} module={module} />
 
@@ -230,6 +262,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 					}}
 				/>
 			</Box>
+			<DataTableFooter indexData={records} module="ipd" />
 		</Box>
 	);
 }

@@ -49,8 +49,10 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 	// =============== check if prescription data is available ================
 	const isPrescriptionDataAvailable = prescription && jsonContent;
 
+	console.log("Medicines: ", medicines);
+
 	return (
-		<GlobalDrawer opened={opened} close={close} title="Prescription Details" size="60%">
+		<GlobalDrawer opened={opened} close={close} title={t("PrescriptionDetails")} size="60%">
 			<Box pos="relative">
 				<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{isPrescriptionDataAvailable ? (
@@ -232,14 +234,15 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 																medicine.generic ||
 																"Unknown Medicine"}
 															<Text size="xs" mt="es" c="var(--theme-tertiary-color-7)">
+																{medicine.medicine_bymeal &&
+																	`${medicine.medicine_bymeal?.name}`}
+																{medicine.medicine_dosage &&
+																	`, Dose: ${medicine.medicine_dosage?.name}, `}
 																{medicine.quantity &&
 																	`${medicine.quantity} ${
-																		medicine.duration || "days"
+																		medicine.duration + "/s" || "day/s"
 																	}`}
 																{medicine.times && `, ${medicine.times} times`}
-																{medicine.by_meal && `, ${medicine.by_meal}`}
-																{medicine.dose_details &&
-																	`, Dose: ${medicine.dose_details}`}
 															</Text>
 														</List.Item>
 													))}

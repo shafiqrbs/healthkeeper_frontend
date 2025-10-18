@@ -1,9 +1,9 @@
 import { useOutletContext } from "react-router-dom";
 import { Box, Text, ScrollArea, Stack, Paper } from "@mantine/core";
 import { useState } from "react";
-import DetailsDrawer from "@modules/hospital/visit/__DetailsDrawer";
+import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { useDisclosure } from "@mantine/hooks";
-import {formatDate} from "@utils/index";
+import { formatDate } from "@utils/index";
 
 export default function PatientPrescriptionHistoryList({ historyList }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -14,7 +14,6 @@ export default function PatientPrescriptionHistoryList({ historyList }) {
 		setSelectedPrescriptionId(id);
 		setTimeout(() => open(), 10);
 	};
-
 
 	return (
 		<ScrollArea pos="relative" h={mainAreaHeight - 68} bg="white" className="borderRadiusAll">
@@ -52,7 +51,6 @@ export default function PatientPrescriptionHistoryList({ historyList }) {
 							<Text fz="xs" c="dimmed">
 								Invoice: {item?.patient_invoice}
 							</Text>
-
 						</Box>
 					</Paper>
 				))}

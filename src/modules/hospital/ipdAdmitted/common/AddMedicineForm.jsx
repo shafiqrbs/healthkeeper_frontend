@@ -51,10 +51,10 @@ import { DURATION_TYPES } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import PrescriptionPreview from "@hospital-components/PrescriptionPreview";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
 import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { useNavigate } from "react-router-dom";
+import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 
 export default function AddMedicineForm({
 	module,
@@ -96,6 +96,7 @@ export default function AddMedicineForm({
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
 	const ipdId = searchParams.get("ipd");
+	const [mountPreviewDrawer, setMountPreviewDrawer] = useState(false);
 
 	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
@@ -143,7 +144,7 @@ export default function AddMedicineForm({
 				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
 				params: {
 					particular_type: "treatment-template",
-					treatment_mode: "opd-treatment",
+					treatment_mode: "ipd-treatment",
 				},
 				module: "treatment",
 			})
@@ -385,7 +386,7 @@ export default function AddMedicineForm({
 		});
 	};
 
-	const handlePrescriptionSubmit = async (skipLoading) => {
+	const handlePrescriptionSubmit = async (skipLoading, redirect = true) => {
 		!skipLoading && setIsSubmitting(true);
 
 		try {
@@ -426,12 +427,14 @@ export default function AddMedicineForm({
 				setRefetchData({ module, refetching: true });
 				// Reset forms and data
 				// form.reset();
-				navigate(
-					`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${ipdId}?tabs=true&redirect=prescription`,
-					{
-						state: { prescriptionId: id },
-					}
-				);
+				if (redirect) {
+					navigate(
+						`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${ipdId}?tabs=true&redirect=prescription`,
+						{
+							state: { prescriptionId: id },
+						}
+					);
+				}
 
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
@@ -482,6 +485,17 @@ export default function AddMedicineForm({
 
 	const handleReferredViewPrescription = () => {
 		setTimeout(() => open(), 10);
+	};
+
+	const handlePrescriptionOverview = async () => {
+		const result = await handlePrescriptionSubmit(true, false);
+
+		if (result.status === 200) {
+			setMountPreviewDrawer(true);
+			requestAnimationFrame(() => openPrescriptionPreview());
+		} else {
+			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
+		}
 	};
 
 	return (
@@ -843,7 +857,7 @@ export default function AddMedicineForm({
 								</Text>
 							</Stack>
 						</Button>
-						<Button w="100%" bg="var(--theme-error-color)" onClick={openPrescriptionPreview}>
+						<Button w="100%" bg="var(--theme-error-color)" onClick={handlePrescriptionOverview}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Preview")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -963,17 +977,15 @@ export default function AddMedicineForm({
 				</Stack>
 			</GlobalDrawer>
 			{/* prescription preview */}
-			{id && (
-				<GlobalDrawer
+			{id && mountPreviewDrawer && (
+				<DetailsDrawer
 					opened={openedPrescriptionPreview}
-					close={closePrescriptionPreview}
-					title={t("PrescriptionPreview")}
-					size="50%"
-				>
-					<Box my="sm">
-						<PrescriptionPreview prescriptionId={id} />
-					</Box>
-				</GlobalDrawer>
+					close={() => {
+						closePrescriptionPreview();
+						setMountPreviewDrawer(false);
+					}}
+					prescriptionId={id}
+				/>
 			)}
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 

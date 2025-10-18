@@ -90,7 +90,7 @@ export default function ConfirmIndex() {
 							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-ease-out">
 								<Box px="sm" py="md" bg="white">
 									<Text fw={600} fz="sm">
-										{t("patientInformation")}
+										{t("PatientInformation")}
 									</Text>
 								</Box>
 								<TabsWithSearch
