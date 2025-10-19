@@ -26,7 +26,7 @@ export default function Index() {
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const queryValue = searchParams.get("redirect");
-	const [ipdMode, setIpdMode] = useState("non-prescription");
+	const [ipdMode, setIpdMode] = useState("prescription");
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const progress = useGetLoadingProgress();
@@ -45,14 +45,6 @@ export default function Index() {
 			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${state?.prescriptionId}?redirect=prescription&ipd=${id}`
 		);
 	};
-
-	useEffect(() => {
-		if (queryValue === "prescription") {
-			setIpdMode(queryValue);
-		} else {
-			setIpdMode("non-prescription");
-		}
-	}, [queryValue]);
 
 	return (
 		<>

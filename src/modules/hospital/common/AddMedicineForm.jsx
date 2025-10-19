@@ -50,11 +50,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
 import MedicineListItem from "./MedicineListItem";
 import { DURATION_TYPES } from "@/constants";
-import inputCss from "@/assets/css/InputField.module.css";
+import inputCss from "@assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "./drawer/CreateDosageDrawer";
+import DetailsDrawer from "../prescription/__DetailsDrawer";
 
 export default function AddMedicineForm({
 	module,
@@ -68,6 +69,7 @@ export default function AddMedicineForm({
 	hasRecords,
 	tabParticulars,
 }) {
+	const [mountPreview, setMountPreview] = useState(false);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
@@ -419,6 +421,12 @@ export default function AddMedicineForm({
 		if (result.status === 200) {
 			setPrintData(result.data);
 		}
+	};
+
+	const handlePrescriptionPreview = async () => {
+		await handlePrescriptionSubmit({ skipLoading: false, redirect: false });
+		setMountPreview(true);
+		requestAnimationFrame(openPrescriptionPreview);
 	};
 
 	// const handlePrescriptionPreview = async () => {
@@ -850,7 +858,7 @@ export default function AddMedicineForm({
 								</Text>
 							</Stack>
 						</Button>
-						<Button w="100%" bg="var(--theme-save-btn-color)" onClick={openPrescriptionPreview}>
+						<Button w="100%" bg="var(--theme-save-btn-color)" onClick={handlePrescriptionPreview}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Preview")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -968,17 +976,15 @@ export default function AddMedicineForm({
 				</Stack>
 			</GlobalDrawer>
 			{/* prescription preview */}
-			{prescriptionId && (
-				<GlobalDrawer
+			{prescriptionId && mountPreview && (
+				<DetailsDrawer
 					opened={openedPrescriptionPreview}
-					close={closePrescriptionPreview}
-					title={t("PrescriptionPreview")}
-					size="50%"
-				>
-					<Box my="sm">
-						<PrescriptionFullBN data={printData} preview />
-					</Box>
-				</GlobalDrawer>
+					close={() => {
+						closePrescriptionPreview();
+						requestAnimationFrame(() => setMountPreview(false));
+					}}
+					prescriptionId={prescriptionId}
+				/>
 			)}
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 
