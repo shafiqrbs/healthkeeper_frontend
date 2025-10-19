@@ -159,7 +159,7 @@ export default function _Table({ module, open }) {
 
 	const form = useForm({
 		initialValues: {
-			price: "",
+			price: 0,
 		}
 	});
 
@@ -168,7 +168,7 @@ export default function _Table({ module, open }) {
 		const initialFormData = records.reduce((acc, item) => {
 			acc[item.id] = {
 				name: item.name || "",
-				price: item.price || "",
+				price: item.price?.toString() || 0,
 				is_available: item?.is_available ?? false,
 				report_format: item?.report_format ?? false,
 				investigation_group_id: item.investigation_group_id?.toString() ?? "",
@@ -180,26 +180,21 @@ export default function _Table({ module, open }) {
 		setSubmitFormData(initialFormData);
 	}, [records]);
 
-	const handleFieldChange = async (rowId, field, value) => {
-		setSubmitFormData((prev) => ({
+
+	const handleDataTypeChange = (rowId, field, value, submitNow = false) => {
+		const updatedRow = {
+			...submitFormData[rowId],
+			[field]: value,
+		};
+
+		setSubmitFormData(prev => ({
 			...prev,
-			[rowId]: { ...prev[rowId], [field]: value },
+			[rowId]: updatedRow,
 		}));
 
-		setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
-
-		try {
-			await dispatch(
-				storeEntityData({
-					url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
-					data: { [field]: value },
-					module,
-				})
-			);
-		} catch (error) {
-			errorNotification(error.message);
-		} finally {
-			setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
+		// optional immediate submit (for Select)
+		if (submitNow) {
+			handleRowSubmit(rowId, updatedRow);
 		}
 	};
 
@@ -311,9 +306,9 @@ export default function _Table({ module, open }) {
 									placeholder={t("investigationGroupName")}
 									data={getInvestigationGroups}
 									value={submitFormData[item.id]?.investigation_group_id ?? ""}
-									onChange={(val) =>
-										handleFieldChange(item.id, "investigation_group_id", val)
-									}
+									onChange={(val) => {
+										handleDataTypeChange(item.id, "investigation_group_id", val,true);
+									}}
 									rightSection={updatingRows[item.id]}
 								/>
 							),
@@ -343,10 +338,11 @@ export default function _Table({ module, open }) {
 									size="sm"
 									checked={submitFormData[item.id]?.is_available ?? false}
 									onChange={(val) =>
-										handleFieldChange(
+										handleDataTypeChange(
 											item.id,
 											"is_available",
-											val.currentTarget.checked
+											val.currentTarget.checked,
+											true
 										)
 									}
 								/>
@@ -361,10 +357,11 @@ export default function _Table({ module, open }) {
 									size="sm"
 									checked={submitFormData[item.id]?.report_format ?? false}
 									onChange={(val) =>
-										handleFieldChange(
+										handleDataTypeChange(
 											item.id,
 											"report_format",
-											val.currentTarget.checked
+											val.currentTarget.checked,
+											true
 										)
 									}
 								/>
