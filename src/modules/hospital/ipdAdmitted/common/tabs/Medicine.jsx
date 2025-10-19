@@ -13,6 +13,7 @@ import {
 	Stack,
 	Text,
 } from "@mantine/core";
+import inputCss from "@assets/css/InputField.module.css";
 import { useOutletContext, useParams } from "react-router-dom";
 import SelectForm from "@components/form-builders/SelectForm";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -41,7 +42,6 @@ const DURATION_OPTIONS = [
 ];
 
 function MedicineListItem({ index, medicine, setMedicines, handleDelete, dosage_options, by_meal_options }) {
-	console.log(medicine);
 	const { t } = useTranslation();
 	const [mode, setMode] = useState("view");
 
@@ -267,6 +267,16 @@ export default function Medicine() {
 				}
 			}
 		}
+
+		if (field === "medicine_bymeal_id" && value) {
+			medicineForm.setFieldValue("medicine_bymeal_id", value?.toString());
+			medicineForm.setFieldValue("by_meal", getByMeal(value));
+		}
+
+		if (field === "medicine_dosage_id" && value) {
+			medicineForm.setFieldValue("medicine_dosage_id", value?.toString());
+			medicineForm.setFieldValue("dose_details", getDosage(value));
+		}
 	};
 
 	const getByMeal = (id) => {
@@ -278,30 +288,6 @@ export default function Medicine() {
 	};
 
 	const handleAdd = (values) => {
-		if (values.medicine_id) {
-			const selectedMedicine = medicineData?.find(
-				(item) => item.product_id?.toString() === values.medicine_id?.toString()
-			);
-			if (selectedMedicine) {
-				values.medicine_name = selectedMedicine.product_name || values.medicine_name;
-				values.generic = selectedMedicine.generic || values.generic;
-				values.generic_id = selectedMedicine.generic_id || values.generic_id;
-				values.company = selectedMedicine.company || values.company;
-
-				if (selectedMedicine.duration_day) {
-					values.quantity = parseInt(selectedMedicine.duration_day) || values.quantity;
-					values.duration = "day";
-				} else if (selectedMedicine.duration_month) {
-					values.quantity = parseInt(selectedMedicine.duration_month) || values.quantity;
-					values.duration = "month";
-				}
-
-				values.dose_details = getDosage(values.medicine_dosage_id);
-				values.by_meal = getByMeal(values.medicine_bymeal_id);
-				console.log(values.dose_details, values.by_meal);
-			}
-		}
-
 		if (editIndex !== null) {
 			const updated = [...medicines];
 			updated[editIndex] = values;
@@ -364,6 +350,7 @@ export default function Medicine() {
 				<Group align="end" gap="les">
 					<Group grow w="100%" gap="les">
 						<Select
+							classNames={inputCss}
 							searchable
 							onSearchChange={(v) => {
 								setMedicineTerm(v);
@@ -382,6 +369,7 @@ export default function Medicine() {
 							onBlur={() => setMedicineTerm("")}
 						/>
 						<Autocomplete
+							classNames={inputCss}
 							tooltip={t("EnterGenericName")}
 							id="generic"
 							name="generic"
@@ -401,11 +389,11 @@ export default function Medicine() {
 					<Grid w="100%" columns={12} gutter="xxxs">
 						<Grid.Col span={6}>
 							<Group grow gap="les">
-								<SelectForm
-									form={medicineForm}
+								<Select
+									classNames={inputCss}
 									id="medicine_dosage_id"
 									name="medicine_dosage_id"
-									dropdownValue={dosage_options?.map((dosage) => ({
+									data={dosage_options?.map((dosage) => ({
 										value: dosage.id?.toString(),
 										label: dosage.name,
 									}))}
@@ -413,13 +401,13 @@ export default function Medicine() {
 									placeholder={t("Dosage")}
 									required
 									tooltip={t("EnterDosage")}
-									withCheckIcon={false}
+									onChange={(v) => handleChange("medicine_dosage_id", v)}
 								/>
-								<SelectForm
-									form={medicineForm}
+								<Select
+									classNames={inputCss}
 									id="medicine_bymeal_id"
 									name="medicine_bymeal_id"
-									dropdownValue={by_meal_options?.map((byMeal) => ({
+									data={by_meal_options?.map((byMeal) => ({
 										value: byMeal.id?.toString(),
 										label: byMeal.name,
 									}))}
@@ -427,7 +415,7 @@ export default function Medicine() {
 									placeholder={t("ByMeal")}
 									required
 									tooltip={t("EnterWhenToTakeMedicine")}
-									withCheckIcon={false}
+									onChange={(v) => handleChange("medicine_bymeal_id", v)}
 								/>
 							</Group>
 						</Grid.Col>

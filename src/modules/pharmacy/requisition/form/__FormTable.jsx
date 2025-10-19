@@ -1,34 +1,27 @@
-import { Group, Box, ActionIcon, Text, rem, Flex, Button, Grid } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, Flex, Button, Grid, Select } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconAlertCircle, IconChevronUp, IconX, IconSelector, IconDeviceFloppy } from "@tabler/icons-react";
+import inputCss from "@assets/css/TextAreaInputField.module.css";
+import { IconChevronUp, IconX, IconSelector, IconEye, IconPlus, IconDeviceFloppy } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
-import { notifications } from "@mantine/notifications";
-import { useOs, useHotkeys, useDebouncedState } from "@mantine/hooks";
+import { useOs, useHotkeys, useDebouncedState, useDisclosure } from "@mantine/hooks";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import { deleteEntityData, editEntityData, storeEntityData } from "@/app/store/core/crudThunk";
-import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
-import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
-import { deleteNotification } from "@components/notification/deleteNotification";
+import { setInsertType } from "@/app/store/core/crudSlice.js";
 import { useState } from "react";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import { successNotification } from "@components/notification/successNotification";
-import { SUCCESS_NOTIFICATION_COLOR } from "@/constants/index";
-import { errorNotification } from "@components/notification/errorNotification";
 import { useForm } from "@mantine/form";
 import { getInitialValues } from "../helpers/request";
-import SelectForm from "@components/form-builders/SelectForm";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import useMedicineData from "@hooks/useMedicineData";
-import { formatDate, getLoggedInUser } from "@utils/index";
-
-const PER_PAGE = 50;
+import { formatDate } from "@utils/index";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
+import GlobalDrawer from "@components/drawers/GlobalDrawer";
 
 export default function __FromTable({ module, open }) {
+	const [records, setRecords] = useState([]);
 	const { t } = useTranslation();
 	const os = useOs();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -37,115 +30,45 @@ export default function __FromTable({ module, open }) {
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const height = mainAreaHeight - 78;
-
-	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
-	const filterData = useSelector((state) => state.crud[module].filterData);
-
-	const user = getLoggedInUser();
-	console.log(user);
-
-	async function handleConfirmModal(values) {
-		try {
-			const value = {
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.REQUISITION.CREATE}`,
-				data: {
-					item: { ...values, expected_date: formatDate(values.expected_date) },
-					username: user.username,
-					userId: user.id,
-				},
-				module,
-			};
-
-			const resultAction = await dispatch(storeEntityData(value));
-			if (storeEntityData.rejected.match(resultAction)) {
-				const fieldErrors = resultAction.payload.errors;
-				if (fieldErrors) {
-					const errorObject = {};
-					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
-					});
-					form.setErrors(errorObject);
-				}
-			} else if (storeEntityData.fulfilled.match(resultAction)) {
-				form.reset();
-				close(); // close the drawer
-				dispatch(setRefetchData({ module, refetching: true }));
-				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-			}
-		} catch (error) {
-			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
-		}
-	}
+	const [resetKey, setResetKey] = useState(0);
 
 	const form = useForm(getInitialValues(t));
+	const [openedDrawer, { open: openDrawer, close: closeDrawer }] = useDisclosure(false);
+	const [requisitions, setRequisitions] = useState([]);
 
 	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.REQUISITION.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			term: searchKeyword,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "name",
-	});
+	// const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+	// 	module,
+	// 	fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.REQUISITION.INDEX,
+	// 	filterParams: {
+	// 		name: filterData?.name,
+	// 		term: searchKeyword,
+	// 	},
+	// 	perPage: PER_PAGE,
+	// 	sortByKey: "name",
+	// });
 
-	const [viewDrawer, setViewDrawer] = useState(false);
+	async function handleRequisitionAdd(values) {
+		setRecords([...records, values]);
 
-	const handleEntityEdit = (id) => {
-		dispatch(setInsertType({ insertType: "update", module }));
-		dispatch(
-			editEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
-				module,
-			})
-		);
-		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX}/${id}`);
-	};
+		form.reset();
+		setMedicineTerm("");
+		setResetKey(Date.now());
+	}
 
-	const handleDelete = (id) => {
+	const handleRequisitionDelete = (id) => {
 		modals.openConfirmModal({
 			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: "Confirm", cancel: "Cancel" },
 			confirmProps: { color: "var(--theme-delete-color)" },
 			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleDeleteSuccess(id),
+			onConfirm: () => handleRequisitionDeleteSuccess(id),
 		});
 	};
 
-	const handleDeleteSuccess = async (id) => {
-		const res = await dispatch(
-			deleteEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.DELETE}/${id}`,
-				module,
-				id,
-			})
-		);
-
-		if (deleteEntityData.fulfilled.match(res)) {
-			dispatch(setRefetchData({ module, refetching: true }));
-			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-			navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR);
-			dispatch(setInsertType({ insertType: "create", module }));
-		} else {
-			notifications.show({
-				color: ERROR_NOTIFICATION_COLOR,
-				title: t("Delete Failed"),
-				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-			});
-		}
-	};
-
-	const handleDataShow = (id) => {
-		dispatch(
-			editEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
-				module,
-			})
-		);
-		setViewDrawer(true);
+	const handleRequisitionDeleteSuccess = async (id) => {
+		setRecords(records.filter((_, index) => index !== id));
 	};
 
 	const handleCreateForm = () => {
@@ -156,21 +79,33 @@ export default function __FromTable({ module, open }) {
 
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
 
+	const handleMedicineChange = (value) => {
+		console.log(medicineData);
+		form.setFieldValue("medicine_id", value);
+		const selectedMedicine = medicineData.find((medicine) => medicine.product_id == value);
+		form.setFieldValue("medicine_name", selectedMedicine.product_name);
+	};
+
+	const handleRequisitionSave = () => {
+		console.log(records);
+	};
+
 	return (
 		<>
 			<Box
 				component="form"
-				onSubmit={form.onSubmit(handleConfirmModal)}
+				onSubmit={form.onSubmit(handleRequisitionAdd)}
 				p="xs"
 				h="52px"
 				className="boxBackground border-bottom-none"
 			>
 				<Grid columns={24} gutter={{ base: 8 }}>
 					<Grid.Col span={7}>
-						<SelectForm
+						<Select
+							key={resetKey}
 							searchable
 							onSearchChange={setMedicineTerm}
-							form={form}
+							onChange={(value) => handleMedicineChange(value)}
 							tooltip={t("NameValidationMessage")}
 							placeholder={t("Medicine")}
 							name="medicine_id"
@@ -178,15 +113,16 @@ export default function __FromTable({ module, open }) {
 							nextField="quantity"
 							value={form.values.medicine_id}
 							required={true}
-							dropdownValue={medicineData?.map((item) => ({
+							data={medicineData?.map((item) => ({
 								label: item.product_name,
 								value: item.product_id?.toString(),
 							}))}
 							onBlur={() => setMedicineTerm("")}
 							nothingFoundMessage="Type to find medicine..."
+							classNames={inputCss}
 						/>
 					</Grid.Col>
-					<Grid.Col span={7}>
+					<Grid.Col span={6}>
 						<InputNumberForm
 							form={form}
 							tooltip={t("QuantityValidationMessage")}
@@ -210,18 +146,32 @@ export default function __FromTable({ module, open }) {
 							required={true}
 						/>
 					</Grid.Col>
-					<Grid.Col span={3}>
-						<Flex h="100%" align="center" justify="flex-end">
+					<Grid.Col span={4}>
+						<Flex h="100%" align="center" justify="flex-end" gap={6}>
 							<Button
 								size="xs"
-								bg="var(--theme-primary-color-6)"
+								bg="var(--theme-secondary-color-6)"
 								type="submit"
 								id="EntityFormSubmit"
-								leftSection={<IconDeviceFloppy size={16} />}
+								leftSection={<IconPlus size={16} />}
 							>
 								<Flex direction={`column`} gap={0}>
 									<Text fz={14} fw={400}>
-										{t("Submit")}
+										{t("Add")}
+									</Text>
+								</Flex>
+							</Button>
+							<Button
+								size="xs"
+								bg="var(--theme-primary-color-6)"
+								type="button"
+								id="EntityFormSubmit"
+								leftSection={<IconEye size={16} />}
+								onClick={openDrawer}
+							>
+								<Flex direction={`column`} gap={0}>
+									<Text fz={14} fw={400}>
+										{t("ViewList")}
 									</Text>
 								</Flex>
 							</Button>
@@ -249,8 +199,8 @@ export default function __FromTable({ module, open }) {
 							render: (_item, index) => index + 1,
 						},
 						{
-							accessor: "name",
-							title: t("Name"),
+							accessor: "medicine_name",
+							title: t("MedicineName"),
 							sortable: true,
 						},
 						{
@@ -270,17 +220,17 @@ export default function __FromTable({ module, open }) {
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",
-							render: (values) => (
+							render: (_, index) => (
 								<Group gap={4} justify="right" wrap="nowrap">
 									<Button.Group>
 										<ActionIcon
 											size="md"
-											onClick={() => handleDelete(values.id)}
-											className="action-icon-menu border-left-radius-none"
+											onClick={() => handleRequisitionDelete(index)}
+											className="border-left-radius-none"
 											variant="transparent"
 											color="var(--theme-delete-color)"
 											radius="es"
-											aria-label="Settings"
+											aria-label="delete"
 										>
 											<IconX height={18} width={18} stroke={1.5} />
 										</ActionIcon>
@@ -290,20 +240,51 @@ export default function __FromTable({ module, open }) {
 						},
 					]}
 					textSelectionDisabled
-					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 18}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
-					sortStatus={sortStatus}
-					onSortStatusChange={setSortStatus}
+					height={height - 118}
 					sortIcons={{
 						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 					}}
 				/>
+
+				<Flex bg="white" justify="space-between" align="center" p="xs" className="borderRadiusAll">
+					<TextAreaForm
+						width={500}
+						form={form}
+						placeholder={t("Comment")}
+						name="comment"
+						id="comment"
+						nextField="EntityFormSubmit"
+						value={form.values.comment}
+						required={true}
+					/>
+					<Button
+						onClick={handleRequisitionSave}
+						size="md"
+						leftSection={<IconDeviceFloppy size={20} />}
+						type="submit"
+						bg="var(--theme-primary-color-6)"
+						color="white"
+					>
+						{t("Save")}
+					</Button>
+				</Flex>
 			</Box>
+
+			<GlobalDrawer title={t("RequisitionList")} opened={openedDrawer} close={closeDrawer}>
+				<Box>
+					{requisitions.map((requisition) => (
+						<Box key={requisition.id}>
+							<Text>{requisition.medicine.name}</Text>
+							<Text>{requisition.quantity}</Text>
+							<Text>{formatDate(requisition.expected_date)}</Text>
+							<Text>{requisition.comment}</Text>
+						</Box>
+					))}
+				</Box>
+			</GlobalDrawer>
 		</>
 	);
 }

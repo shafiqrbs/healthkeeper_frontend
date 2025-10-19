@@ -27,13 +27,14 @@ export default function MedicineListItem({
 
 	const handleChange = (field, value) => {
 		if (field === "opd_quantity") {
-			console.log("Value: ", value, "Restrict Opd Quantity: ", medicine.opd_limit);
 			if (value > medicine.opd_limit) {
 				showNotificationComponent(t("OpdQuantityCannotBeGreaterThanOpdQuantity"), "error");
 				return;
 			}
 		}
-		setMedicines((prev) => prev.map((m, i) => (i === index - 1 ? { ...m, [field]: value } : m)));
+		setMedicines((prev) =>
+			prev.map((medicine, index) => (index === index - 1 ? { ...medicine, [field]: value } : medicine))
+		);
 	};
 
 	const getByMeal = (id) => {
@@ -48,6 +49,7 @@ export default function MedicineListItem({
 		setMedicines((prev) => {
 			const medicineIndex = index - 1;
 			const current = prev[medicineIndex];
+
 			const baseInstruction = {
 				medicine_dosage_id: current?.medicine_dosage_id || "",
 				medicine_bymeal_id: current?.medicine_bymeal_id || "",
@@ -56,16 +58,21 @@ export default function MedicineListItem({
 				quantity: current.quantity || 1,
 				duration: current.duration || "Day",
 			};
+
 			const existingDosages = current.dosages && current.dosages.length > 0 ? current.dosages : [baseInstruction];
+
 			const toDuplicate =
 				typeof instructionIndex === "number" &&
 				instructionIndex >= 0 &&
 				instructionIndex < existingDosages.length
 					? existingDosages[instructionIndex]
 					: existingDosages[existingDosages.length - 1];
+
 			const updatedDosages = [...existingDosages, { ...toDuplicate }];
 			const updatedMedicine = { ...current, dosages: updatedDosages };
-			const newList = prev.map((m, i) => (i === medicineIndex ? updatedMedicine : m));
+
+			const newList = prev.map((medicine, index) => (index === medicineIndex ? updatedMedicine : medicine));
+
 			if (typeof update === "function") update(newList);
 			return newList;
 		});
@@ -177,7 +184,6 @@ export default function MedicineListItem({
 						  ]
 					).map((instruction, insIndex) => {
 						const isFirstItem = insIndex === 0;
-
 						return (
 							<Flex key={insIndex} ml={isFirstItem ? "md" : "44px"} gap="xs" align="center">
 								{isFirstItem && (
@@ -236,7 +242,7 @@ export default function MedicineListItem({
 												size="xs"
 												label=""
 												data={DURATION_UNIT_OPTIONS}
-												value={instruction.duration}
+												value={instruction.duration?.toLowerCase()}
 												placeholder={t("Duration")}
 												onChange={(v) => handleInstructionFieldChange(insIndex, "duration", v)}
 											/>

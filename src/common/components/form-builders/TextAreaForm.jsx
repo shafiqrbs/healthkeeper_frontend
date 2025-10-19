@@ -5,6 +5,7 @@ import { getHotkeyHandler } from "@mantine/hooks";
 import inputCss from "@assets/css/TextAreaInputField.module.css";
 
 function TextAreaForm({
+	width,
 	label,
 	placeholder,
 	required,
@@ -40,6 +41,7 @@ function TextAreaForm({
 					transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
 				>
 					<Textarea
+						w={width}
 						styles={style}
 						maxRows={maxRows}
 						classNames={inputCss}

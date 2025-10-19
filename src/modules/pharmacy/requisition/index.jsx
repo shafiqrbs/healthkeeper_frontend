@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Grid, Progress, ScrollArea, Stack, Text } from "@mantine/core";
+import { Box, Grid, Progress, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
@@ -8,9 +8,6 @@ import Navigation from "@components/layout/Navigation";
 import { useForm } from "@mantine/form";
 import { useOutletContext, useParams } from "react-router-dom";
 import { ERROR_NOTIFICATION_COLOR, MODULES_PHARMACY, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import { IconDeviceFloppy } from "@tabler/icons-react";
-import InputForm from "@components/form-builders/InputForm";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
 
 import { modals } from "@mantine/modals";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
@@ -70,6 +67,7 @@ export default function Index() {
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
+			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
@@ -105,96 +103,6 @@ export default function Index() {
 									/>
 								</Grid.Col>
 							)}
-							{/* <Grid.Col span={matches ? 10 : 10}>
-								<Box bg="white" p="xs" className="borderRadiusAll">
-									<form onSubmit={form.onSubmit(handleSubmit)}>
-										<Box p={"xxs"} bg="var(--theme-primary-color-1)">
-											<Stack align="flex-start">{t("AddProduct")}</Stack>
-										</Box>
-										<ScrollArea h={mainAreaHeight - 140}>
-											<Box p={"xxs"}>
-												<Grid align="center">
-													<Grid.Col span={12} pb={0}></Grid.Col>
-												</Grid>
-												<Grid align="center">
-													<Grid.Col span={12} pb={0}>
-														<InputForm
-															form={form}
-															label={t("Name")}
-															tooltip={t("NameValidationMessage")}
-															placeholder={t("ParameterName")}
-															name="name"
-															id="name"
-															nextField="sample_value"
-															value={form.values.name}
-															required={true}
-														/>
-													</Grid.Col>
-												</Grid>
-												<Grid align="center">
-													<Grid.Col span={12} pb={0}>
-														<InputForm
-															form={form}
-															label={t("SampleValue")}
-															tooltip={t("SampleValue")}
-															placeholder={t("SampleValue")}
-															name="sample_value"
-															id="sample_value"
-															nextField="unit_name"
-															value={form.values.sample_value}
-														/>
-													</Grid.Col>
-												</Grid>
-												<Grid align="center">
-													<Grid.Col span={12} pb={0}>
-														<InputForm
-															form={form}
-															label={t("UnitName")}
-															tooltip={t("UnitName")}
-															placeholder={t("UnitName")}
-															name="unit_name"
-															id="unit_name"
-															nextField="reference_value"
-															value={form.values.unit_name}
-														/>
-													</Grid.Col>
-												</Grid>
-												<Grid align="center">
-													<Grid.Col span={12} pb={0}>
-														<TextAreaForm
-															form={form}
-															label={t("ReferenceValue")}
-															tooltip={t("ReferenceValue")}
-															placeholder={t("ReferenceValue")}
-															name="reference_value"
-															id="reference_value"
-															nextField=""
-															value={form.values.reference_value}
-														/>
-													</Grid.Col>
-												</Grid>
-											</Box>
-										</ScrollArea>
-										<Box p={"xxs"} bg="var(--theme-primary-color-1)">
-											<Stack right align="flex-end">
-												<Button
-													size="xs"
-													bg="var(--theme-secondary-color-6)"
-													type="submit"
-													id="EntityFormSubmit"
-													leftSection={<IconDeviceFloppy size={16} />}
-												>
-													<Flex direction={`column`} gap={0}>
-														<Text fz={14} fw={400}>
-															{t("Add")}
-														</Text>
-													</Flex>
-												</Button>
-											</Stack>
-										</Box>
-									</form>
-								</Box>
-							</Grid.Col> */}
 							<Grid.Col span={30}>
 								<Box bg="white" p="xs" className="borderRadiusAll">
 									<__FromTable module={module} open={open} close={close} />
