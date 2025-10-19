@@ -278,6 +278,7 @@ export default function EntityForm({ form, module }) {
 										</Flex>
 									</Flex>
 
+
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("UnitName")}</Text>
@@ -942,6 +943,453 @@ export default function EntityForm({ form, module }) {
 						</Box>
 					</Grid.Col>
 				</Grid>
+=======
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("bloodGroup")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SelectForm
+										form={form}
+										name="blood_group"
+										id="blood_group"
+										dropdownValue={BLOOD_GROUPS}
+										value={form.values?.blood_group}
+										mt={0}
+										size="sm"
+										pt={0}
+										placeholder="A+"
+									/>
+								</Grid.Col>
+							</Grid>
+						</Stack>
+						<Stack  p={'xs'} gap={'mes'}>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("patientName")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterPatientName")}
+										placeholder={t("EnterPatientName")}
+										name="name"
+										id="patientName"
+										nextField="mobile"
+										value={form.values.name}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("MobileNo")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterPatientName")}
+										placeholder={t("MobileNo")}
+										name="mobile"
+										id="patientName"
+										nextField="mobile"
+										value={form.values.mobile}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("gender")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SegmentedControl
+										fullWidth
+										color="var(--theme-primary-color-6)"
+										value={form.values.gender}
+										id="gender"
+										name="gender"
+										onChange={(val) => handleGenderChange(val)}
+										data={[
+											{ label: t("male"), value: "male" },
+											{ label: t("female"), value: "female" },
+											{ label: t("other"), value: "other" },
+										]}
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("DOB")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<DateSelectorForm
+										key={
+											form.values.dob ? form.values?.dob : "dob-empty"
+										}
+										form={form}
+										placeholder="01-01-2020"
+										tooltip={t("EnterDateOfBirth")}
+										name="dob"
+										id="dob"
+										nextField="year"
+										value={form.values.dob}
+										required
+										disabledFutureDate
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("age")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<Flex gap="xs">
+										<InputNumberForm
+											form={form}
+											label=""
+											placeholder="Years"
+											tooltip={t("days")}
+											name="year"
+											id="year"
+											nextField="father_name"
+											value={form.values.year}
+											min={0}
+											max={31}
+										/>
+										<InputNumberForm
+											form={form}
+											label=""
+											placeholder="Months"
+											tooltip={t("Months")}
+											name="month"
+											id="month"
+											nextField="year"
+											value={form.values.month}
+											min={0}
+											max={11}
+										/>
+										<InputNumberForm
+											form={form}
+											label=""
+											placeholder="Days"
+											tooltip={t("Days")}
+											name="day"
+											id="day"
+											nextField="month"
+											value={form.values.day}
+											min={0}
+											max={150}
+										/>
+									</Flex>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">
+										{t("Religion")}
+										<RequiredAsterisk />
+									</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SelectForm
+										form={form}
+										tooltip={t("SelectReligionValidateMessage")}
+										placeholder={t("SelectReligion")}
+										name="religion_id"
+										id="religion_id"
+										nextField="name"
+										value={form.values.religion_id}
+										dropdownValue={religionDropdown}
+									/>
+								</Grid.Col>
+							</Grid>
+						</Stack>
+					</ScrollArea>
+				</Box>
+				</Grid.Col>
+				<Grid.Col className="form-stack-vertical" span={8}>
+					<Box>
+					<Box bg="var(--theme-primary-color-0)" p="sm">
+						<Text fw={600} fz="sm" py="es">
+							{t("AdmissionInformation")}
+						</Text>
+					</Box>
+					<ScrollArea scrollbars="y" type="never" h={height}>
+						<Stack p='xs' gap={'mes'}>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("Type")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SegmentedControl
+										fullWidth
+										color="var(--theme-primary-color-6)"
+										value={form.values.identity_mode?.toUpperCase()}
+										id="identity_mode"
+										name="identity_mode"
+										data={[
+											{ label: t("NID"), value: "NID" },
+											{ label: t("BRID"), value: "BRID" },
+											{ label: t("HID"), value: "HID" },
+										]}
+										onChange={(val) => handleTypeChange(val)}
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">
+										{form.values.identity_mode === "NID"
+											? t("NID")
+											: form.values.identity_mode === "BRID"
+												? t("BRID")
+												: t("HID")}
+									</Text>
+								</Grid.Col>
+								<Grid.Col span={9}>
+									<InputNumberForm
+										form={form}
+										label=""
+										placeholder="1234567890"
+										tooltip={t("EnterPatientIdentity")}
+										name="identity"
+										id="identity"
+										nextField="guardian_name"
+										value={form.values.identity}
+										rightSection={
+											<ActionIcon
+												onClick={handleHSIDSearch}
+												bg="var(--theme-secondary-color-6)"
+											>
+												<IconSearch size={"16"} />
+											</ActionIcon>
+										}
+										required
+									/>
+								</Grid.Col>
+								{showUserData && (
+									<Grid.Col span={5}>
+										<Text
+											ta="right"
+											onClick={openHSIDDataPreview}
+											pr="xs"
+											fz="sm"
+											className="cursor-pointer user-none"
+											c="var(--theme-primary-color-6)"
+										>
+											{form.values.healthID || t("HSID000000")}
+										</Text>
+									</Grid.Col>
+								)}
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("FatherName")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterFatherName")}
+										placeholder={t("EnterFatherName")}
+										name="father_name"
+										id="father_name"
+										nextField="father_name"
+										value={form.values.father_name}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("MotherName")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterMotherName")}
+										placeholder={t("EnterMotherName")}
+										name="mother_name"
+										id="mother_name"
+										nextField="identity"
+										value={form.values.mother_name}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">
+										{t("GuardianName")}
+										<RequiredAsterisk />
+									</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterGuardianName")}
+										placeholder={t("EnterGuardianName")}
+										name="guardian_name"
+										id="guardian_name"
+										nextField="guardian_mobile"
+										value={form.values.guardian_name}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">
+										{t("GuardianMobile")}
+										<RequiredAsterisk />
+									</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterGuardianName")}
+										placeholder="+8801711111111"
+										name="guardian_mobile"
+										id="guardian_mobile"
+										nextField="patient_relation"
+										value={form.values.guardian_mobile}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("RelationWithPatient")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterPatientRelation")}
+										placeholder={t("EnterPatientRelation")}
+										name="patient_relation"
+										id="patient_relation"
+										nextField="profession"
+										value={form.values.patient_relation}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("Profession")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterProfession")}
+										placeholder={t("EnterProfession")}
+										name="profession"
+										id="profession"
+										nextField="present_address"
+										value={form.values.profession}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Flex align="center" gap="es">
+										<Text fz="sm">{t("Upazilla")}</Text>
+									</Flex>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SelectForm
+										form={form}
+										tooltip={t("EnterPatientUpazilla")}
+										placeholder="Upazilla - District"
+										name="upazilla_id"
+										id="upazilla_id"
+										nextField="identity"
+										value={form.values.upazilla_id}
+										required
+										dropdownValue={locations?.data?.map((location) => ({
+											label: `${location.district || "District"} - ${location.name}`,
+											value: location.id?.toString(),
+										}))}
+										searchable
+									/>
+								</Grid.Col>
+							</Grid>
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">
+										{t("PresentAddress")}
+										<RequiredAsterisk />
+									</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterPresentAddress")}
+										placeholder="12 street, 123456"
+										name="address"
+										id="address"
+										nextField="permanent_address"
+										value={form.values.address}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("PermanentAddress")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterPermanentAddress")}
+										placeholder="12 street, 123456"
+										name="permanent_address"
+										id="permanent_address"
+										nextField="dateOfBirth"
+										value={form.values.permanentAddress}
+										required
+									/>
+								</Grid.Col>
+							</Grid>
+
+							<Grid align="center" columns={20}>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("Nationality")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<SelectForm
+										form={form}
+										tooltip={t("NationalityValidateMessage")}
+										placeholder={t("Nationality")}
+										name="country_id"
+										id="country_id"
+										value={form.values.country_id}
+										dropdownValue={countryDropdown}
+									/>
+								</Grid.Col>
+							</Grid>
+						</Stack>
+					</ScrollArea>
+					</Box>
+				</Grid.Col>
+			</Grid>
+>>>>>>> cd4691f (Update Config)
 			</Box>
 			<IpdActionButtons
 				form={form}

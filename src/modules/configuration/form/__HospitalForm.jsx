@@ -68,6 +68,7 @@ export default function __HospitalForm({ height, id }) {
 	useEffect(() => {
 		if (hospital_config) {
 			form.setValues({
+				minimum_days_room_rent: hospital_config?.minimum_days_room_rent || "",
 				message_admission: hospital_config?.message_admission || "",
 				message_diagnostic: hospital_config?.message_diagnostic || "",
 				message_visit: hospital_config?.message_visit || "",
@@ -93,7 +94,7 @@ export default function __HospitalForm({ height, id }) {
 			"opd_select_doctor",
 			"special_discount_doctor",
 			"special_discount_investigation",
-			"prescription_temlate",
+			"prescription_template",
 		];
 		properties.forEach((property) => {
 			values[property] = values[property] === true || values[property] == 1 ? 1 : 0;
@@ -214,6 +215,21 @@ export default function __HospitalForm({ height, id }) {
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 						<Grid.Col span={12} fz="sm" mt="xxxs">
+							{t("MinimumDaysRoomRent")}
+						</Grid.Col>
+						<Grid.Col span={12}>
+							<InputForm
+								tooltip=""
+								label=""
+								placeholder="Text"
+								name="minimum_days_room_rent"
+								form={form}
+								id="minimum_days_room_rent"
+							/>
+						</Grid.Col>
+					</Grid>
+					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
+						<Grid.Col span={12} fz="sm" mt="xxxs">
 							{t("EmergencyRoom")}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -310,6 +326,7 @@ export default function __HospitalForm({ height, id }) {
 						<Title order={6}>{t("Messageing")}</Title>
 					</Box>
 					{/* ======================= some demo components for reusing purposes ======================= */}
+
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
 						<Grid.Col span={12} fz="sm" mt="xxxs">
 							{t("Message Admission")}
