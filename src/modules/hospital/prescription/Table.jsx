@@ -22,7 +22,7 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import KeywordSearch from "../common/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
-import DetailsDrawer from "./__DetailsDrawer";
+import DetailsDrawer from "../common/drawer/__DetailsDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";

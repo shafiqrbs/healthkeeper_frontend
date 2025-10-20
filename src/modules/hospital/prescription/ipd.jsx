@@ -22,7 +22,7 @@ import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientReferredAction from "@hospital-components/PatientReferredAction";
-import DetailsDrawer from "./__DetailsDrawer";
+import DetailsDrawer from "../common/drawer/__DetailsDrawer";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
 

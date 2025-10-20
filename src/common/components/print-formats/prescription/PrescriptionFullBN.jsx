@@ -20,8 +20,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useHospitalConfigData();
 
-	console.log(medicines);
-
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
@@ -382,7 +380,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Text fz="xs">Doctor ID {getValue(patientInfo?.employee_id)}</Text>
 							</Grid.Col>
 							<Grid.Col span={6}>
-								<Text size="sm" fw={600}>
+								<Text size="sm" fw={600} mb="xs">
 									{renderImagePreview([], patientInfo?.signature_path)}
 								</Text>
 							</Grid.Col>
@@ -433,7 +431,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Grid>
 								{medicines?.map((medicine, index) => (
 									<>
-										{medicine.medicine_id && medicine?.opd_quantity > 0 && (
+										{medicine.medicine_id && (
 											<Grid columns={24} m={4} p={4}>
 												<Grid.Col span={20} m={0} p={0}>
 													<Text size="xs" pl={4}>
@@ -443,7 +441,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												</Grid.Col>
 												<Grid.Col span={4} m={0} p={0}>
 													<Text size="sm" ta="center" fw={500}>
-														{getValue(medicine?.opd_quantity, "")}
+														{getValue(medicine?.opd_quantity, 0)}
 													</Text>
 												</Grid.Col>
 											</Grid>
@@ -451,7 +449,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									</>
 								))}
 							</Box>
-							<Box align={"center"}>
+							<Box mt="sm" align="center">
 								<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.barcode} />
 							</Box>
 						</Grid.Col>

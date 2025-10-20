@@ -55,7 +55,7 @@ import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__Refrerr
 import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "./drawer/CreateDosageDrawer";
-import DetailsDrawer from "../prescription/__DetailsDrawer";
+import DetailsDrawer from "./drawer/__DetailsDrawer";
 
 export default function AddMedicineForm({
 	module,
