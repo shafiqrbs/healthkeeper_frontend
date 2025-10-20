@@ -54,3 +54,4 @@ Thumbs.db
 
 .vscode/
 data/note.txt
+yarn.lock
