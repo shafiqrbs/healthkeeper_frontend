@@ -49,9 +49,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	} = useDataWithoutStore({
 		url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.VIEW}/${id}`,
 	});
-	console.log(entity);
 	const entityData = entity?.data?.treatment_medicine_format;
-	console.log(entityData);
 
 	// Add hotkey for save functionality
 	useHotkeys([
@@ -140,32 +138,19 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 				}
 			}
 		}
+
+		if (field === "medicine_bymeal_id" && value) {
+			medicineForm.setFieldValue("medicine_bymeal_id", value?.toString());
+			medicineForm.setFieldValue("by_meal", getByMeal(value));
+		}
+
+		if (field === "medicine_dosage_id" && value) {
+			medicineForm.setFieldValue("medicine_dosage_id", value?.toString());
+			medicineForm.setFieldValue("dose_details", getDosage(value));
+		}
 	};
 
 	const handleAdd = (values) => {
-		if (values.medicine_id) {
-			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() == values.medicine_id);
-			if (selectedMedicine) {
-				values.medicine_name = selectedMedicine.product_name || values.medicine_name;
-				values.generic = selectedMedicine.generic || values.generic;
-				values.generic_id = selectedMedicine.generic_id || values.generic_id;
-				values.company = selectedMedicine.company || values.company;
-				values.by_meal = selectedMedicine.by_meal || values.by_meal;
-
-				if (selectedMedicine.duration_day) {
-					values.quantity = parseInt(selectedMedicine.duration_day) || values.quantity;
-					values.duration = "day";
-				} else if (selectedMedicine.duration_month) {
-					values.quantity = parseInt(selectedMedicine.duration_month) || values.quantity;
-					values.duration = "month";
-				}
-
-				if (selectedMedicine.dosage) {
-					values.times = selectedMedicine.dosage;
-				}
-			}
-		}
-
 		handleConfirmModal(values);
 
 		if (editIndex !== null) {

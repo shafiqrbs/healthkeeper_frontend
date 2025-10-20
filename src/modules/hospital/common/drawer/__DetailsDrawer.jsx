@@ -46,6 +46,8 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 	const advice = jsonContent?.advise;
 	const followUpDate = jsonContent?.follow_up_date;
 
+	console.log(medicines);
+
 	return (
 		<GlobalDrawer opened={opened} close={close} title="Prescription Details" size="50%">
 			<Box pos="relative">
@@ -226,14 +228,34 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 														{medicine.medicine_name ||
 															medicine.generic ||
 															"Unknown Medicine"}
-														<Text size="xs" mt="es" c="var(--theme-tertiary-color-7)">
-															{medicine.quantity &&
-																`${medicine.quantity} ${medicine.duration || "days"}`}
-															{medicine.times && `, ${medicine.times} times`}
-															{medicine.by_meal && `, ${medicine.by_meal}`}
-															{medicine.dose_details &&
-																`, Dose: ${medicine.dose_details}`}
-														</Text>
+
+														{medicine.dosages && medicine.dosages.length > 0 ? (
+															<List type="ordered" size="sm" pl="md" spacing="es">
+																{medicine.dosages.map((dose, index) => (
+																	<List.Item key={index}>
+																		{dose.quantity &&
+																			`${dose.quantity} ${
+																				dose.duration || "days"
+																			}`}
+																		{dose.times && `, ${dose.times} times`}
+																		{dose.by_meal && `, ${dose.by_meal}`}
+																		{dose.dose_details &&
+																			`, Dose: ${dose.dose_details}`}
+																	</List.Item>
+																))}
+															</List>
+														) : (
+															<Text size="xs" mt="es" c="var(--theme-tertiary-color-7)">
+																{medicine.quantity &&
+																	`${medicine.quantity} ${
+																		medicine.duration || "days"
+																	}`}
+																{medicine.times && `, ${medicine.times} times`}
+																{medicine.by_meal && `, ${medicine.by_meal}`}
+																{medicine.dose_details &&
+																	`, Dose: ${medicine.dose_details}`}
+															</Text>
+														)}
 													</List.Item>
 												))}
 											</List>

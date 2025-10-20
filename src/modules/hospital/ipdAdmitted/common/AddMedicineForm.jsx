@@ -300,59 +300,34 @@ export default function AddMedicineForm({
 				}
 			}
 		}
+
+		if (field === "medicine_bymeal_id" && value) {
+			medicineForm.setFieldValue("medicine_bymeal_id", value?.toString());
+			medicineForm.setFieldValue("by_meal", getByMeal(value));
+		}
+
+		if (field === "medicine_dosage_id" && value) {
+			medicineForm.setFieldValue("medicine_dosage_id", value?.toString());
+			medicineForm.setFieldValue("dose_details", getDosage(value));
+		}
 	};
 
 	const handleAdd = (values) => {
-		if (values.medicine_id) {
-			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() == values.medicine_id);
-
-			if (selectedMedicine) {
-				values.medicine_name = selectedMedicine.product_name || values.medicine_name;
-				values.generic = selectedMedicine.generic || values.generic;
-				values.generic_id = selectedMedicine.generic_id || values.generic_id;
-				values.company = selectedMedicine.company || values.company;
-				values.opd_quantity = selectedMedicine?.opd_quantity || 0;
-
-				if (selectedMedicine.duration_day) {
-					values.quantity = parseInt(selectedMedicine.duration_day) || values.quantity;
-					values.duration = "day";
-				} else if (selectedMedicine.duration_month) {
-					values.quantity = parseInt(selectedMedicine.duration_month) || values.quantity;
-					values.duration = "month";
-				}
-
-				if (selectedMedicine.medicine_dosage_id) {
-					values.medicine_dosage_id = selectedMedicine.medicine_dosage_id?.toString();
-					values.dose_details = getDosage(selectedMedicine.medicine_dosage_id);
-				}
-
-				if (selectedMedicine.medicine_bymeal_id) {
-					values.medicine_bymeal_id = selectedMedicine.medicine_bymeal_id?.toString();
-					values.by_meal = getByMeal(selectedMedicine.medicine_bymeal_id);
-				}
-			}
-			if (editIndex !== null) {
-				const updated = [...medicines];
-				updated[editIndex] = values;
-				setMedicines(updated);
-				setEditIndex(null);
-			} else {
-				setMedicines([...medicines, values]);
-
-				if (selectedMedicine?.medicine_bymeal_id) {
-					values.medicine_bymeal_id = selectedMedicine.medicine_bymeal_id?.toString();
-					values.by_meal = getByMeal(selectedMedicine.medicine_bymeal_id);
-				}
-
-				setMedicines([...medicines, values]);
-				setUpdateKey((prev) => prev + 1);
-				if (update) update([...medicines, values]);
-
-				medicineForm.reset();
-				setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
-			}
+		if (editIndex !== null) {
+			const updated = [...medicines];
+			updated[editIndex] = values;
+			setMedicines(updated);
 			setEditIndex(null);
+		} else {
+			setMedicines([...medicines, values]);
+			setUpdateKey((prev) => prev + 1);
+
+			if (update) update([...medicines, values]);
+
+			medicineForm.reset();
+			setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
 		}
+		setEditIndex(null);
 	};
 
 	const handleDelete = (idx) => {
@@ -981,8 +956,8 @@ export default function AddMedicineForm({
 				<DetailsDrawer
 					opened={openedPrescriptionPreview}
 					close={() => {
-						closePrescriptionPreview();
 						setMountPreviewDrawer(false);
+						requestAnimationFrame(closePrescriptionPreview);
 					}}
 					prescriptionId={id}
 				/>

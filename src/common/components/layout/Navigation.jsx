@@ -67,6 +67,9 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 													onClick={() => {
 														item.subMenu ? null : navigate(item.path);
 													}}
+													onAuxClick={() => {
+														item.subMenu ? null : window.open(item.path, "_blank");
+													}}
 												>
 													<Flex align="center">
 														<item.icon size={22} color="white" />
