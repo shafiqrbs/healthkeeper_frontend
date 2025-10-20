@@ -56,6 +56,9 @@ import DoctorLayout from "@components/layout/DoctorLayout";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import DischargeIndex from "@modules/hospital/discharge";
 import FinalBillingIndex from "@modules/hospital/final-billing";
+import PharmacyRequisitionManage from "@modules/pharmacy/requisition/manage";
+import PharmacyWorkorderIndex from "@modules/pharmacy/workorder";
+import PharmacyWorkorderManage from "@modules/pharmacy/workorder/manage";
 
 function AppRoute() {
 	return (
@@ -79,14 +82,18 @@ function AppRoute() {
 					<Route path="user" element={<DomainUserIndex />} />
 				</Route>
 				<Route path="/pharmacy">
-					<Route path="" element={<PharmacyIndex />} />
+					<Route index element={<PharmacyIndex />} />
 					<Route path="requisition" element={<PharmacyRequisitionIndex />} />
+					<Route path="requisition/manage" element={<PharmacyRequisitionManage />} />
+					<Route path="requisition/manage/:id" element={<PharmacyRequisitionManage mode="edit" />} />
 				</Route>
 				<Route path="/pharmacy/core/">
 					<Route path="medicine" element={<MedicineIndex />} />
-				</Route>
-				<Route path="/pharmacy/core/">
 					<Route path="stock" element={<PharmacyStockIndex />} />
+
+					<Route path="workorder" element={<PharmacyWorkorderIndex />} />
+					<Route path="workorder/manage" element={<PharmacyWorkorderManage />} />
+					<Route path="workorder/manage/:id" element={<PharmacyWorkorderManage mode="edit" />} />
 				</Route>
 				<Route path="/hospital/">
 					<Route path="visit">

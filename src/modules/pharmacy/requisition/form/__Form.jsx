@@ -1,52 +1,62 @@
-import { Group, Box, ActionIcon, Text, Flex, Button, Grid, Select } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, Flex, Button, Grid, Select, Stack } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import inputCss from "@assets/css/TextAreaInputField.module.css";
-import { IconChevronUp, IconX, IconSelector, IconEye, IconPlus, IconDeviceFloppy } from "@tabler/icons-react";
+import {
+	IconChevronUp,
+	IconX,
+	IconSelector,
+	IconEye,
+	IconPlus,
+	IconDeviceFloppy,
+	IconHistory,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch } from "react-redux";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { modals } from "@mantine/modals";
-import { useOs, useHotkeys, useDebouncedState, useDisclosure } from "@mantine/hooks";
-import { MASTER_DATA_ROUTES } from "@/constants/routes";
+import { useDebouncedState, useDisclosure } from "@mantine/hooks";
+import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import { setInsertType } from "@/app/store/core/crudSlice.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
-import { getInitialValues } from "../helpers/request";
+import { getInitialValues, getRequisitionFormInitialValues } from "../helpers/request";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import useMedicineData from "@hooks/useMedicineData";
-import { formatDate } from "@utils/index";
+import { formatDate, getLoggedInUser } from "@utils/index";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import { getDataWithoutStore } from "@/services/apiService";
 
-export default function __FromTable({ module, open }) {
+export default function __Form({ module }) {
+	const { id } = useParams();
 	const [records, setRecords] = useState([]);
 	const { t } = useTranslation();
-	const os = useOs();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
 	const { medicineData } = useMedicineData({ term: medicineTerm });
-	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const height = mainAreaHeight - 78;
 	const [resetKey, setResetKey] = useState(0);
 
 	const form = useForm(getInitialValues(t));
+	const requisitionForm = useForm(getRequisitionFormInitialValues(t));
 	const [openedDrawer, { open: openDrawer, close: closeDrawer }] = useDisclosure(false);
 	const [requisitions, setRequisitions] = useState([]);
 
-	// for infinity table data scroll, call the hook
-	// const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-	// 	module,
-	// 	fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.REQUISITION.INDEX,
-	// 	filterParams: {
-	// 		name: filterData?.name,
-	// 		term: searchKeyword,
-	// 	},
-	// 	perPage: PER_PAGE,
-	// 	sortByKey: "name",
-	// });
+	useEffect(() => {
+		if (id) {
+			fetchSingleRequisitionData();
+		}
+	}, [id]);
+
+	async function fetchSingleRequisitionData() {
+		const response = await getDataWithoutStore({
+			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.REQUISITION.VIEW}/${id}`,
+			params: {},
+		});
+		setRequisitions(response?.data?.data);
+	}
 
 	async function handleRequisitionAdd(values) {
 		setRecords([...records, values]);
@@ -71,23 +81,34 @@ export default function __FromTable({ module, open }) {
 		setRecords(records.filter((_, index) => index !== id));
 	};
 
-	const handleCreateForm = () => {
-		open();
-		dispatch(setInsertType({ insertType: "create", module }));
-		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX);
-	};
-
-	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
-
 	const handleMedicineChange = (value) => {
-		console.log(medicineData);
-		form.setFieldValue("medicine_id", value);
 		const selectedMedicine = medicineData.find((medicine) => medicine.product_id == value);
+		console.log(selectedMedicine);
+		form.setFieldValue("medicine_id", value);
 		form.setFieldValue("medicine_name", selectedMedicine.product_name);
+		form.setFieldValue("generic", selectedMedicine.generic);
 	};
 
-	const handleRequisitionSave = () => {
-		console.log(records);
+	const handleRequisitionSave = (values) => {
+		const data = {
+			...values,
+			expected_date: formatDate(values.expected_date),
+			content: records,
+			created_by_id: getLoggedInUser()?.id,
+		};
+		console.log(data);
+	};
+
+	const handleResetRequisition = () => {
+		setRecords([]);
+		setMedicineTerm("");
+		setResetKey(Date.now());
+		form.reset();
+		requisitionForm.reset();
+	};
+
+	const handleViewList = () => {
+		navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX);
 	};
 
 	return (
@@ -100,7 +121,7 @@ export default function __FromTable({ module, open }) {
 				className="boxBackground border-bottom-none"
 			>
 				<Grid columns={24} gutter={{ base: 8 }}>
-					<Grid.Col span={7}>
+					<Grid.Col span={9}>
 						<Select
 							key={resetKey}
 							searchable
@@ -122,7 +143,7 @@ export default function __FromTable({ module, open }) {
 							classNames={inputCss}
 						/>
 					</Grid.Col>
-					<Grid.Col span={6}>
+					<Grid.Col span={8}>
 						<InputNumberForm
 							form={form}
 							tooltip={t("QuantityValidationMessage")}
@@ -135,18 +156,6 @@ export default function __FromTable({ module, open }) {
 						/>
 					</Grid.Col>
 					<Grid.Col span={7}>
-						<DatePickerForm
-							form={form}
-							tooltip={t("NameValidationMessage")}
-							placeholder={t("ExpectedDate")}
-							name="expected_date"
-							id="expected_date"
-							nextField="EntityFormSubmit"
-							value={form.values.expected_date}
-							required={true}
-						/>
-					</Grid.Col>
-					<Grid.Col span={4}>
 						<Flex h="100%" align="center" justify="flex-end" gap={6}>
 							<Button
 								size="xs"
@@ -167,7 +176,7 @@ export default function __FromTable({ module, open }) {
 								type="button"
 								id="EntityFormSubmit"
 								leftSection={<IconEye size={16} />}
-								onClick={openDrawer}
+								onClick={handleViewList}
 							>
 								<Flex direction={`column`} gap={0}>
 									<Text fz={14} fw={400}>
@@ -204,16 +213,16 @@ export default function __FromTable({ module, open }) {
 							sortable: true,
 						},
 						{
+							accessor: "generic",
+							title: t("GenericName"),
+							sortable: false,
+							render: (item) => item.generic || "N/A",
+						},
+						{
 							accessor: "quantity",
 							title: t("Quantity"),
 							sortable: false,
 							render: (item) => item.quantity,
-						},
-						{
-							accessor: "expected_date",
-							title: t("ExpectedDate"),
-							sortable: false,
-							render: (item) => formatDate(item.expected_date),
 						},
 						{
 							accessor: "action",
@@ -242,34 +251,73 @@ export default function __FromTable({ module, open }) {
 					textSelectionDisabled
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 118}
+					height={height - 180}
 					sortIcons={{
 						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 					}}
 				/>
 
-				<Flex bg="white" justify="space-between" align="center" p="xs" className="borderRadiusAll">
-					<TextAreaForm
-						width={500}
-						form={form}
-						placeholder={t("Comment")}
-						name="comment"
-						id="comment"
-						nextField="EntityFormSubmit"
-						value={form.values.comment}
-						required={true}
-					/>
-					<Button
-						onClick={handleRequisitionSave}
-						size="md"
-						leftSection={<IconDeviceFloppy size={20} />}
-						type="submit"
-						bg="var(--theme-primary-color-6)"
-						color="white"
-					>
-						{t("Save")}
-					</Button>
+				<Flex
+					component="form"
+					onSubmit={requisitionForm.onSubmit(handleRequisitionSave)}
+					bg="white"
+					justify="space-between"
+					align="center"
+					className="borderRadiusAll"
+				>
+					<Box w="50%" bg="var(--theme-primary-color-0)" fz="sm" c="white">
+						<Text bg="var(--theme-secondary-color-6)" fz="sm" c="white" px="sm" py="les">
+							{t("Comment")}
+						</Text>
+						<Box p="sm">
+							<TextAreaForm
+								form={requisitionForm}
+								label=""
+								value={requisitionForm.values.comment}
+								name="comment"
+								placeholder="Write a comment..."
+								showRightSection={false}
+								style={{ input: { height: "60px" } }}
+							/>
+						</Box>
+					</Box>
+					<Stack gap="xs" px="sm">
+						<DatePickerForm
+							form={requisitionForm}
+							tooltip={t("NameValidationMessage")}
+							placeholder={t("ExpectedDate")}
+							name="expected_date"
+							id="expected_date"
+							nextField="EntityFormSubmit"
+							value={requisitionForm.values.expected_date}
+							required={true}
+						/>
+						<Flex gap="les">
+							<Button
+								onClick={handleResetRequisition}
+								size="md"
+								leftSection={<IconHistory size={20} />}
+								type="button"
+								bg="var(--theme-reset-btn-color)"
+								color="white"
+								w="200px"
+							>
+								{t("Reset")}
+							</Button>
+							<Button
+								onClick={handleRequisitionSave}
+								size="md"
+								leftSection={<IconDeviceFloppy size={20} />}
+								type="submit"
+								bg="var(--theme-primary-color-6)"
+								color="white"
+								w="200px"
+							>
+								{t("Save")}
+							</Button>
+						</Flex>
+					</Stack>
 				</Flex>
 			</Box>
 

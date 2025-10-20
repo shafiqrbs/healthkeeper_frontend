@@ -770,7 +770,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 										label=""
 										value={form.values.advise}
 										name="advise"
-										placeholder="Write a advice..."
+										placeholder="Write an advice..."
 										showRightSection={false}
 										style={{ input: { height: "72px" } }}
 									/>

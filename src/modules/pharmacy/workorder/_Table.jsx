@@ -35,7 +35,7 @@ export default function _Table({ module }) {
 	// for infinity table data scroll, call the hook
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
-		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.REQUISITION.INDEX,
+		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.WORKORDER.INDEX,
 		filterParams: {
 			name: filterData?.name,
 			term: searchKeyword,
@@ -45,7 +45,7 @@ export default function _Table({ module }) {
 	});
 
 	const handleEntityEdit = (id) => {
-		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.UPDATE}/${id}`);
+		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.UPDATE}/${id}`);
 	};
 
 	const handleDelete = (id) => {
@@ -62,7 +62,7 @@ export default function _Table({ module }) {
 	const handleDeleteSuccess = async (id) => {
 		const res = await dispatch(
 			deleteEntityData({
-				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.REQUISITION.DELETE}/${id}`,
+				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.WORKORDER.DELETE}/${id}`,
 				module,
 				id,
 			})
@@ -71,7 +71,7 @@ export default function _Table({ module }) {
 		if (deleteEntityData.fulfilled.match(res)) {
 			dispatch(setRefetchData({ module, refetching: true }));
 			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-			navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX);
+			navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.INDEX);
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
@@ -85,7 +85,7 @@ export default function _Table({ module }) {
 	const handleDataShow = (id) => {
 		dispatch(
 			editEntityData({
-				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.REQUISITION.VIEW}/${id}`,
+				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.WORKORDER.VIEW}/${id}`,
 				module,
 			})
 		);
@@ -93,7 +93,7 @@ export default function _Table({ module }) {
 	};
 
 	const handleCreateFormNavigate = () => {
-		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.CREATE}`);
+		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.CREATE}`);
 	};
 
 	return (

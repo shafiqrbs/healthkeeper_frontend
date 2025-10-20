@@ -10,7 +10,7 @@ import { MODULES_PHARMACY } from "@/constants";
 
 import Table from "./_Table";
 
-const module = MODULES_PHARMACY.REQUISITION;
+const module = MODULES_PHARMACY.WORKORDER;
 
 export default function Index() {
 	const { t } = useTranslation();
@@ -33,7 +33,7 @@ export default function Index() {
 				<>
 					<CoreHeaderNavbar
 						module="core"
-						pageTitle={t("ManageRequisition")}
+						pageTitle={t("ManageWorkorder")}
 						roles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""

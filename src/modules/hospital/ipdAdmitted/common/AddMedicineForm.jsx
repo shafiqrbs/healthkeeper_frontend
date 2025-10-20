@@ -798,7 +798,7 @@ export default function AddMedicineForm({
 										label=""
 										value={form.values.advise}
 										name="advise"
-										placeholder="Write a advice..."
+										placeholder="Write an advice..."
 										showRightSection={false}
 										style={{ input: { height: "72px" } }}
 										onBlur={handleFieldBlur}

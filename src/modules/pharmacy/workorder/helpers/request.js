@@ -1,4 +1,6 @@
 const initialValues = {
+	expiry_start_date: "",
+	expiry_end_date: "",
 	medicine_id: "",
 	quantity: "",
 };
@@ -19,7 +21,7 @@ export const getInitialValues = (t) => {
 	};
 };
 
-export const getRequisitionFormInitialValues = (t) => {
+export const getWorkorderFormInitialValues = (t) => {
 	return {
 		initialValues: {
 			comment: "",

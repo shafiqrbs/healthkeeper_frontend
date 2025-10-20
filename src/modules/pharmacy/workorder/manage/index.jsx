@@ -7,8 +7,7 @@ import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
 import { useOutletContext } from "react-router-dom";
 import { MODULES_PHARMACY } from "@/constants";
-
-import Table from "./_Table";
+import __From from "../form/__Form";
 
 const module = MODULES_PHARMACY.REQUISITION;
 
@@ -38,7 +37,7 @@ export default function Index() {
 						allowZeroPercentage=""
 						currencySymbol=""
 					/>
-					<Box p="8">
+					<Box p="les">
 						<Grid columns={36} gutter={{ base: 8 }}>
 							{!matches && (
 								<Grid.Col span={6}>
@@ -51,7 +50,7 @@ export default function Index() {
 							)}
 							<Grid.Col span={30}>
 								<Box bg="white" p="xs" className="borderRadiusAll">
-									<Table module={module} />
+									<__From module={module} />
 								</Box>
 							</Grid.Col>
 						</Grid>
