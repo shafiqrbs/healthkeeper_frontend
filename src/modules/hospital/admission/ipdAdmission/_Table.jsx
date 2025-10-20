@@ -2,26 +2,18 @@ import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
-import {
-	IconArrowNarrowRight,
-	IconArrowRight,
-	IconChevronUp,
-	IconDotsVertical,
-	IconSelector,
-	IconTrashX,
-} from "@tabler/icons-react";
+import { Box, Button, Flex, FloatingIndicator, Group, Tabs, Text } from "@mantine/core";
+import { IconArrowNarrowRight, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
-import { rem } from "@mantine/core";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import KeywordSearch from "../../common/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import ConfirmModal from ".././confirm/__ConfirmModal";
-import { getAdmissionConfirmFormInitialValues } from ".././helpers/request";
+import ConfirmModal from "../confirm/__ConfirmModal";
+import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
 import { formatDate, getLoggedInHospitalUser, getUserRole } from "@/common/utils";

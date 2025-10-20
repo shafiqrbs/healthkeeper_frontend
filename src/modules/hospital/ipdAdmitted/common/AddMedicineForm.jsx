@@ -48,7 +48,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
 import MedicineListItem from "@hospital-components/MedicineListItem";
 import { DURATION_TYPES } from "@/constants";
-import inputCss from "@/assets/css/InputField.module.css";
+import inputCss from "@assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
@@ -529,11 +529,11 @@ export default function AddMedicineForm({
 							<Grid w="100%" columns={12} gutter="xxxs">
 								<Grid.Col span={6}>
 									<Group grow gap="les">
-										<SelectForm
-											form={medicineForm}
+										<Select
+											classNames={inputCss}
 											id="medicine_dosage_id"
 											name="medicine_dosage_id"
-											dropdownValue={dosage_options?.map((dosage) => ({
+											data={dosage_options?.map((dosage) => ({
 												value: dosage.id?.toString(),
 												label: dosage.name,
 											}))}
@@ -541,20 +541,20 @@ export default function AddMedicineForm({
 											placeholder={t("Dosage")}
 											required
 											tooltip={t("EnterDosage")}
-											withCheckIcon={false}
+											onChange={(v) => handleChange("medicine_dosage_id", v)}
 										/>
-										<SelectForm
-											form={medicineForm}
+										<Select
+											classNames={inputCss}
 											id="medicine_bymeal_id"
 											name="medicine_bymeal_id"
-											dropdownValue={by_meal_options?.map((byMeal) => ({
+											data={by_meal_options?.map((byMeal) => ({
 												value: byMeal.id?.toString(),
 												label: byMeal.name,
 											}))}
 											value={medicineForm.values.medicine_bymeal_id}
 											placeholder={t("By Meal")}
 											tooltip={t("EnterWhenToTakeMedicine")}
-											withCheckIcon={false}
+											onChange={(v) => handleChange("medicine_bymeal_id", v)}
 										/>
 									</Group>
 								</Grid.Col>

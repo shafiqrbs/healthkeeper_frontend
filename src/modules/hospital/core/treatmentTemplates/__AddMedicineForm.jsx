@@ -273,11 +273,11 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 					<Grid w="100%" columns={12} gutter="xxxs">
 						<Grid.Col span={6}>
 							<Group grow gap="les">
-								<SelectForm
-									form={medicineForm}
+								<Select
+									classNames={inputCss}
 									id="medicine_dosage_id"
 									name="medicine_dosage_id"
-									dropdownValue={dosage_options?.map((dosage) => ({
+									data={dosage_options?.map((dosage) => ({
 										value: dosage.id?.toString(),
 										label: dosage.name,
 									}))}
@@ -285,20 +285,20 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 									placeholder={t("Dosage")}
 									required
 									tooltip={t("EnterDosage")}
-									withCheckIcon={false}
+									onChange={(v) => handleChange("medicine_dosage_id", v)}
 								/>
-								<SelectForm
-									form={medicineForm}
+								<Select
+									classNames={inputCss}
 									id="medicine_bymeal_id"
 									name="medicine_bymeal_id"
-									dropdownValue={by_meal_options?.map((byMeal) => ({
+									data={by_meal_options?.map((byMeal) => ({
 										value: byMeal.id?.toString(),
 										label: byMeal.name,
 									}))}
 									value={medicineForm.values.medicine_bymeal_id}
 									placeholder={t("ByMeal")}
 									tooltip={t("EnterWhenToTakeMedicine")}
-									withCheckIcon={false}
+									onChange={(v) => handleChange("medicine_bymeal_id", v)}
 								/>
 							</Group>
 						</Grid.Col>

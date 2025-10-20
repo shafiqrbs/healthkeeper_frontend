@@ -46,8 +46,6 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 	const advice = jsonContent?.advise;
 	const followUpDate = jsonContent?.follow_up_date;
 
-	console.log(medicines);
-
 	return (
 		<GlobalDrawer opened={opened} close={close} title="Prescription Details" size="50%">
 			<Box pos="relative">
