@@ -443,9 +443,17 @@ export default function AddMedicineForm({
 
 	const populateMedicineData = (v) => {
 		const selectedTreatment = treatmentData?.data?.find((item) => item.id?.toString() === v);
-		if (selectedTreatment) {
-			setMedicines(selectedTreatment.treatment_medicine_format);
-			if (update) update(selectedTreatment.treatment_medicine_format);
+		const medicinesFormat = selectedTreatment?.treatment_medicine_format.map((item) => ({
+			...item,
+			dose_details: item.medicine_dosage?.name,
+			dose_details_bn: item.medicine_dosage?.name_bn,
+			by_meal: item.medicine_bymeal?.name,
+			by_meal_bn: item.medicine_bymeal?.name_bn,
+		}));
+
+		if (medicinesFormat) {
+			setMedicines(medicinesFormat);
+			if (update) update(medicinesFormat);
 		}
 	};
 

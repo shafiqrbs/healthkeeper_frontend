@@ -333,15 +333,17 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 														c="var(--theme-tertiary-color-8)"
 														ml="md"
 													>
-														{getValue(dose.dose_details)} {" ------- "}
-														{getValue(dose.by_meal)} {" ------- "}
+														{getValue(dose.dose_details_bn, dose.dose_details)}{" "}
+														{" ------- "}
+														{getValue(dose.by_meal_bn, dose.by_meal)} {" ------- "}
 														{getValue(dose.quantity)} {getValue(medicine.duration)}
 													</Text>
 												))
 											) : (
 												<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
-													{getValue(medicine.dose_details)} {" ------- "}
-													{getValue(medicine.by_meal)} {" ------- "}
+													{getValue(medicine.dose_details_bn, medicine.dose_details)}{" "}
+													{" ------- "}
+													{getValue(medicine.by_meal_bn, medicine.by_meal)} {" ------- "}
 													{getValue(medicine.quantity)} {getValue(medicine.duration)}
 												</Text>
 											)}

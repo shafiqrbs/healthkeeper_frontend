@@ -5,8 +5,7 @@ import { editEntityData } from "@/app/store/core/crudThunk";
 import { setFilterData, setSearchKeyword, setInsertType } from "@/app/store/core/crudSlice";
 import __Update from "./__Update";
 import __Create from "./__Create";
-import {CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
-import {CORE_NAV_LINKS} from "@/constants/mainDashboardLinks";
+import { MASTER_DATA_ROUTES } from "@/constants/routes";
 
 export default function _IndexForm({ module, form, close, mode }) {
 	const { id } = useParams();
@@ -16,7 +15,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 	// =============== selectors ================
 	const insertType = useSelector((state) => state.crud[module].insertType);
 	const vendorFilterData = useSelector((state) => state.crud[module].filterData);
-	console.log(insertType)
+	console.log(insertType);
 	// =============== memoized values ================
 	const isEditMode = mode === "edit";
 	const defaultFilterData = useMemo(
@@ -38,7 +37,6 @@ export default function _IndexForm({ module, form, close, mode }) {
 			})
 		);
 	};
-
 
 	// =============== handle create mode initialization ================
 	const handleCreateMode = () => {

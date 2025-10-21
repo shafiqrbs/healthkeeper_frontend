@@ -56,6 +56,7 @@ import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
 import HistoryPrescription from "./HistoryPrescription";
 import DischargeA4BN from "@components/print-formats/discharge/DischargeA4BN";
 import { appendDosageValueToForm, appendGeneralValuesToForm, appendMealValueToForm } from "@utils/prescription";
+import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 
 const module = MODULES.DISCHARGE;
 
@@ -895,16 +896,11 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 			</GlobalDrawer>
 			{/* prescription preview */}
 			{dischargeId && (
-				<GlobalDrawer
+				<DetailsDrawer
 					opened={openedPrescriptionPreview}
 					close={closePrescriptionPreview}
-					title={t("PrescriptionPreview")}
-					size="50%"
-				>
-					<Box my="sm">
-						<PrescriptionFullBN data={printData} preview />
-					</Box>
-				</GlobalDrawer>
+					prescriptionId={dischargeId}
+				/>
 			)}
 
 			{dischargeId && (

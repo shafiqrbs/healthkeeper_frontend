@@ -35,6 +35,7 @@ export default function _Table({ module, open }) {
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
+	const [viewDrawer, setViewDrawer] = useState(false);
 
 	// for infinity table data scroll, call the hook
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
@@ -48,8 +49,6 @@ export default function _Table({ module, open }) {
 		perPage: PER_PAGE,
 		sortByKey: "name",
 	});
-
-	const [viewDrawer, setViewDrawer] = useState(false);
 
 	const handleEntityEdit = (id) => {
 		dispatch(setInsertType({ insertType: "update", module }));

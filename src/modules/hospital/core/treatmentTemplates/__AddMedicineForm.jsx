@@ -52,6 +52,8 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	});
 	const entityData = entity?.data?.treatment_medicine_format;
 
+	console.log(entityData);
+
 	// Add hotkey for save functionality
 	useHotkeys([
 		[
@@ -198,10 +200,6 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
 			});
 		}
-	};
-
-	const handleRowSubmit = (rowId) => {
-		console.info(rowId);
 	};
 
 	return (

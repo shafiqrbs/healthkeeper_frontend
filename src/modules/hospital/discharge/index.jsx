@@ -15,6 +15,7 @@ import Prescription from "./_Prescription";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 
 const module = MODULES.ADMISSION;
 
@@ -130,16 +131,11 @@ export default function Index() {
 				</Box>
 			)}
 			{id && (
-				<GlobalDrawer
+				<DetailsDrawer
 					opened={openedPrescriptionPreview}
 					close={closePrescriptionPreview}
-					title={t("PrescriptionPreview")}
-					size="50%"
-				>
-					<Box my="sm">
-						<PrescriptionPreview prescriptionId={id} />
-					</Box>
-				</GlobalDrawer>
+					prescriptionId={id}
+				/>
 			)}
 		</>
 	);
