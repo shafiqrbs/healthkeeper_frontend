@@ -9,7 +9,6 @@ import PrescriptionFullBN from "@components/print-formats/prescription/Prescript
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { IconArrowLeft } from "@tabler/icons-react";
-import IPDDetails from "@components/print-formats/ipd/IPDDetails";
 import EmergencyA4EN from "@components/print-formats/emergency/EmergencyA4EN";
 import EmergencyA4BN from "@components/print-formats/emergency/EmergencyA4BN";
 import EmergencyPosEN from "@components/print-formats/emergency/EmergencyPosEN";
@@ -20,6 +19,8 @@ import LabReportA4EN from "@components/print-formats/lab-reports/LabReportA4EN";
 import LabReportA4BN from "@components/print-formats/lab-reports/LabReportA4BN";
 import DischargeA4BN from "@components/print-formats/discharge/DischargeA4BN";
 import DischargeA4EN from "@components/print-formats/discharge/DischargeA4EN";
+import IPDDetailsBN from "@components/print-formats/ipd/IPDDetailsBN";
+import IPDDetailsEN from "@components/print-formats/ipd/IPDDetailsEN";
 
 const STATIC_OPD_ID = 59;
 const STATIC_PRESCRIPTION_ID = 59;
@@ -96,9 +97,14 @@ export default function Details() {
 							<PrescriptionFullBN preview data={prescriptionData?.data} />
 						</LoadingWrapper>
 					)}
-					{name === "IPDDetails" && (
+					{name === "IPDDetailsBN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<IPDDetails preview data={prescriptionData?.data} />
+							<IPDDetailsBN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "IPDDetailsEN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<IPDDetailsEN preview data={prescriptionData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "IPDPrescriptionFullBN" && (

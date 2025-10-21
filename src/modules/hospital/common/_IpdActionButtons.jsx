@@ -3,11 +3,13 @@ import { IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import IPDDetailsDrawer from "./drawer/__IPDDetailsDrawer";
+import IPDDetailsBN from "@components/print-formats/ipd/IPDDetailsBN";
+import { useReactToPrint } from "react-to-print";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -21,6 +23,8 @@ export default function IpdActionButtons({
 	item,
 	children,
 }) {
+	const ipdRef = useRef(null);
+	const [printData, setPrintData] = useState(null);
 	const isOpdRedirect = item?.parent_patient_mode_slug === "opd";
 	const { hospitalConfigData } = useHospitalConfigData();
 	const { t } = useTranslation();
@@ -34,6 +38,10 @@ export default function IpdActionButtons({
 		setConfiguredDueAmount(price);
 		form.setFieldValue("amount", price);
 	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
+
+	const printIPD = useReactToPrint({
+		content: () => ipdRef.current,
+	});
 
 	const enteredAmount = Number(form?.values?.amount ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
@@ -54,16 +62,24 @@ export default function IpdActionButtons({
 	};
 
 	const handleIPDDetails = async () => {
-		await handleSubmit();
+		await handleSubmit(true);
 		if (!form.validate().hasErrors) {
 			openDetails();
+		}
+	};
+
+	const handleIPDPrint = async () => {
+		const res = await handleSubmit(true);
+		if (!form.validate().hasErrors) {
+			setPrintData(res?.data);
+			requestAnimationFrame(printIPD);
 		}
 	};
 
 	useHotkeys([
 		["alt+s", handleSubmit],
 		["alt+r", handleReset],
-		["alt+shift+p", handleIPDDetails],
+		["alt+shift+p", handleIPDPrint],
 		["alt+p", handlePosPrint],
 	]);
 
@@ -119,7 +135,7 @@ export default function IpdActionButtons({
 								</Grid>
 							))}
 						</Grid.Col>
-						<Grid.Col span={6} bg="var(--theme-secondary-color-0)" px="xs" pt={"md"}>
+						<Grid.Col span={6} bg="var(--theme-secondary-color-0)" px="xs" pt="md">
 							<Box>
 								<Flex gap="xss" align="center" justify="space-between">
 									<Text fz="xs">{t("Name")}</Text>
@@ -181,12 +197,12 @@ export default function IpdActionButtons({
 								</Flex>
 								<Flex align="center" justify="space-between">
 									<Text>Receive</Text>
-									<Box w={"100"}>
+									<Box w="100px">
 										<InputNumberForm
 											disabled={isOpdRedirect}
 											id="amount"
 											form={form}
-											tooltip={t("enterAmount")}
+											tooltip={t("EnterAmount")}
 											placeholder={t("Amount")}
 											name="amount"
 										/>
@@ -213,7 +229,7 @@ export default function IpdActionButtons({
 								disabled={isSubmitting}
 							>
 								<Stack gap={0} align="center" justify="center">
-									<Text>{t("reset")}</Text>
+									<Text>{t("Reset")}</Text>
 									<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 										(alt + r)
 									</Text>
@@ -235,6 +251,19 @@ export default function IpdActionButtons({
 							>
 								<Stack gap={0} align="center" justify="center">
 									<Text>{t("Preview")}</Text>
+									<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+										(alt + shift + p)
+									</Text>
+								</Stack>
+							</Button>
+							<Button
+								w="100%"
+								onClick={handleIPDPrint}
+								bg="var(--theme-secondary-color-6)"
+								disabled={isSubmitting}
+							>
+								<Stack gap={0} align="center" justify="center">
+									<Text>{t("Print")}</Text>
 									<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 										(alt + p)
 									</Text>
@@ -264,6 +293,8 @@ export default function IpdActionButtons({
 			{children}
 
 			<IPDDetailsDrawer opened={openedDetails} close={closeDetails} prescriptionId={item?.prescription_id} />
+
+			{printData && <IPDDetailsBN data={printData} ref={ipdRef} />}
 		</>
 	);
 }

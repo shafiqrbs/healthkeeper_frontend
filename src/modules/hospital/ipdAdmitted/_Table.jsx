@@ -1,30 +1,10 @@
-import { useNavigate, useOutletContext, useParams, useLocation } from "react-router-dom";
-import {
-	IconCalendarWeek,
-	IconUser,
-	IconArrowNarrowRight,
-	IconBed,
-	IconArrowRight,
-	IconChevronUp,
-	IconSelector,
-} from "@tabler/icons-react";
-import {
-	Box,
-	Flex,
-	Grid,
-	Text,
-	ScrollArea,
-	ActionIcon,
-	LoadingOverlay,
-	Group,
-	Button,
-	SegmentedControl,
-	Tabs,
-} from "@mantine/core";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { IconArrowNarrowRight, IconChevronUp, IconSelector, IconDotsVertical, IconPrinter } from "@tabler/icons-react";
+import { Box, Flex, Text, ActionIcon, Group, Button, SegmentedControl, Menu, rem } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDate, getUserRole } from "@utils/index";
+import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
@@ -34,27 +14,23 @@ import KeywordSearch from "@hospital-components/KeywordSearch";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
 import DataTableFooter from "@components/tables/DataTableFooter";
+import IPDPrescriptionFullBN from "@components/print-formats/ipd/IPDPrescriptionFullBN";
+import { useState, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import { getDataWithoutStore } from "@/services/apiService";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
 
-const ALLOWED_CONFIRMED_ROLES = ["doctor_opd", "admin_administrator"];
-
-const tabs = [
-	{ label: "Prescription", value: "prescription" },
-	{ label: "Manage", value: "manage" },
-];
-
 export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode }) {
+	const prescriptionRef = useRef(null);
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const { state } = useLocation();
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const { id } = useParams();
 	const height = mainAreaHeight - 100;
-	const userRoles = getUserRole();
+	const [printData, setPrintData] = useState(null);
 
 	const form = useForm({
 		initialValues: {
@@ -77,6 +53,18 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 		sortByKey: "created_at",
 		direction: "desc",
 	});
+
+	const printPrescription = useReactToPrint({
+		content: () => prescriptionRef.current,
+	});
+
+	const handlePrescriptionPrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+		});
+		setPrintData(res.data);
+		requestAnimationFrame(printPrescription);
+	};
 
 	const handleManageOverview = (prescriptionId, id) => {
 		setSelectedPrescriptionId(prescriptionId);
@@ -117,35 +105,12 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 		}
 	};
 
+	const handleBillingInvoice = (id) => {
+		console.log(id);
+	};
+
 	return (
 		<Box pos="relative">
-			{/* ------------------------------------ start here ----------------------------------- */}
-			{/* <Flex justify="space-between" align="center" px="sm">
-				<Text fw={600} fz="sm" py="xs">
-					{t("AdmissionInformation")}
-				</Text>
-				<Flex gap="xs" align="center">
-					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
-						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
-							{tabs.map((tab) => (
-								<Tabs.Tab
-									value={tab.value}
-									ref={setControlRef(tab)}
-									className={filterTabsCss.tab}
-									key={tab.value}
-								>
-									{t(tab.label)}
-								</Tabs.Tab>
-							))}
-							<FloatingIndicator
-								target={processTab ? controlsRefs[processTab] : null}
-								parent={rootRef}
-								className={filterTabsCss.indicator}
-							/>
-						</Tabs.List>
-					</Tabs>
-				</Flex>
-			</Flex> */}
 			<Flex align="center" justify="space-between">
 				<KeywordSearch form={form} module={module} />
 
@@ -242,6 +207,62 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 												{t("Manage")}
 											</Button>
 										)}
+
+										<Menu
+											position="bottom-end"
+											offset={3}
+											withArrow
+											trigger="hover"
+											openDelay={100}
+											closeDelay={400}
+										>
+											<Menu.Target>
+												<ActionIcon
+													className="border-left-radius-none"
+													variant="transparent"
+													color="var(--theme-menu-three-dot)"
+													radius="es"
+													aria-label="Settings"
+												>
+													<IconDotsVertical height={18} width={18} stroke={1.5} />
+												</ActionIcon>
+											</Menu.Target>
+											<Menu.Dropdown>
+												{values?.prescription_id && (
+													<>
+														<Menu.Item
+															leftSection={
+																<IconPrinter
+																	style={{
+																		width: rem(14),
+																		height: rem(14),
+																	}}
+																/>
+															}
+															onClick={() =>
+																handlePrescriptionPrint(values?.prescription_id)
+															}
+														>
+															{t("Prescription")}
+														</Menu.Item>
+													</>
+												)}
+
+												<Menu.Item
+													leftSection={
+														<IconPrinter
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+													onClick={() => handleBillingInvoice(values?.id)}
+												>
+													{t("BillingInvoice")}
+												</Menu.Item>
+											</Menu.Dropdown>
+										</Menu>
 									</Group>
 								</>
 							),
@@ -263,6 +284,8 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 				/>
 			</Box>
 			<DataTableFooter indexData={records} module="ipd" />
+
+			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
 		</Box>
 	);
 }

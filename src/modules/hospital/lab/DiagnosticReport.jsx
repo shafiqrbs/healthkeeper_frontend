@@ -36,6 +36,9 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 	const labReportRef = useRef(null);
 	const [labReportData, setLabReportData] = useState(null);
 	const [fetching, setFetching] = useState(false);
+	const [refetch, setRefetch] = useState(false);
+
+	console.log(diagnosticReport);
 
 	const handleLabReport = (id) => {
 		setLabReportData({ id: id });
@@ -48,21 +51,30 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 
 	useEffect(() => {
 		if (id && reportId) {
-			(async () => {
-				setFetching(true);
-				const res = await getDataWithoutStore({
-					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX}/${id}/report/${reportId}`,
-				});
-				form.reset();
-				setDiagnosticReport(res?.data);
-				setFetching(false);
-			})();
+			fetchLabReport();
 		}
 	}, [id, reportId]);
 
 	useEffect(() => {
+		if (refetch) {
+			fetchLabReport();
+			setRefetch(false);
+		}
+	}, [refetch]);
+
+	useEffect(() => {
 		form.setFieldValue("comment", diagnosticReport.comment ? diagnosticReport.comment : null);
 	}, [diagnosticReport]);
+
+	async function fetchLabReport() {
+		setFetching(true);
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX}/${id}/report/${reportId}`,
+		});
+		form.reset();
+		setDiagnosticReport(res?.data);
+		setFetching(false);
+	}
 
 	//const handleDataTypeChange = () => {};
 	const handleFieldChange = async (rowId, field, value) => {
@@ -88,10 +100,10 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 
 	const handleKeyDown = (e, index) => {
 		if (e.key === "Enter") {
-			e.preventDefault(); // prevent form submit
+			e.preventDefault();
 			const nextInput = inputsRef.current[index + 1];
 			if (nextInput) {
-				nextInput.focus(); // move to next
+				nextInput.focus();
 			}
 		}
 	};
@@ -128,8 +140,10 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetchDiagnosticReport();
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				setRefetch(true);
 			}
 		} catch (error) {
+			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
@@ -199,7 +213,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 							]}
 							loaderSize="xs"
 							loaderColor="grape"
-							height={mainAreaHeight - 316}
+							height={mainAreaHeight - 280}
 							fetching={fetching}
 							sortIcons={{
 								sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
@@ -209,7 +223,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 					</Box>
 					<Stack gap={0} justify="space-between" mt="xs">
 						<form onSubmit={form.onSubmit(handleSubmit)}>
-							<Box p="sm" pl={"md"} pr={"md"} bg="var(--theme-tertiary-color-1)">
+							<Box p="sm" px="md" bg="var(--theme-tertiary-color-1)">
 								<Box w="100%">
 									{diagnosticReport?.process === "Done" ? (
 										<>
@@ -225,7 +239,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 										/>
 									)}
 								</Box>
-								<Box mt={"xs"}>
+								<Box mt="xs">
 									<Grid columns={12}>
 										<Grid.Col span={6} className="animate-ease-out">
 											{diagnosticReport?.process === "Done" && (
@@ -245,7 +259,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 														id="EntityFormSubmit"
 														rightSection={<IconPrinter size="18px" />}
 													>
-														<Flex direction={`column`} gap={0}>
+														<Flex direction="column" gap={0}>
 															<Text>{t("Print")}</Text>
 														</Flex>
 													</Button>
@@ -268,14 +282,9 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 														type="submit"
 														id="handleSubmit"
 													>
-														<Flex direction={`column`} gap={0}>
+														<Flex direction="column" gap={0}>
 															<Text>{t("Save")}</Text>
-															<Flex
-																direction={`column`}
-																align={"center"}
-																fz={"12"}
-																c={"white"}
-															>
+															<Flex direction="column" align="center" fz="12px" c="white">
 																alt+s
 															</Flex>
 														</Flex>
@@ -288,14 +297,9 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 														type="submit"
 														id="handleSubmit"
 													>
-														<Flex direction={`column`} gap={0}>
+														<Flex direction="column" gap={0}>
 															<Text>{t("Confirm")}</Text>
-															<Flex
-																direction={`column`}
-																align={"center"}
-																fz={"12"}
-																c={"white"}
-															>
+															<Flex direction="column" align="center" fz="12px" c="white">
 																alt+s
 															</Flex>
 														</Flex>

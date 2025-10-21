@@ -113,7 +113,7 @@ export default function EntityForm({ form, module }) {
 		{ label: "AB-", value: "AB-" },
 	];
 
-	const handleSubmit = async () => {
+	const handleSubmit = async (skipRedirect = false) => {
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
 
@@ -147,11 +147,15 @@ export default function EntityForm({ form, module }) {
 						true
 					);
 					setRefetchData({ module, refetching: true });
-					navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX, { replace: true });
+					if (!skipRedirect) {
+						navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX, { replace: true });
+					} else {
+						return resultAction.payload?.data || {};
+					}
 				}
 			} catch (error) {
 				console.error("Error submitting admission:", error);
-				showNotificationComponent(t("Something went wrong"), "red", "lightgray", "", true, 700, true);
+				showNotificationComponent(t("SomethingWentWrong"), "red", "lightgray", "", true, 700, true);
 			} finally {
 				setIsSubmitting(false);
 			}
@@ -235,8 +239,8 @@ export default function EntityForm({ form, module }) {
 	return (
 		<Box pos="relative">
 			<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
-			<Box w={'100%'}>
-				<Grid columns={'24'} gutter="les">
+			<Box w="100%">
+				<Grid columns="24" gutter="les">
 					<Grid.Col className="form-stack-vertical" span={8}>
 						<Box>
 							<Box bg="var(--theme-primary-color-0)" p="sm">
@@ -245,7 +249,7 @@ export default function EntityForm({ form, module }) {
 								</Text>
 							</Box>
 							<ScrollArea scrollbars="y" type="never" h={height}>
-								<Stack p={'xs'} gap={'mes'}>
+								<Stack p={"xs"} gap={"mes"}>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Created")}</Text>
@@ -291,10 +295,12 @@ export default function EntityForm({ form, module }) {
 												name="admit_unit_id"
 												id="admit_unit_id"
 												value={form.values.admit_unit_id?.toString()}
-												dropdownValue={hospitalSettingData?.["unit-group"]?.modes.map((mode) => ({
-													label: mode.name,
-													value: mode.id?.toString(),
-												}))}
+												dropdownValue={hospitalSettingData?.["unit-group"]?.modes.map(
+													(mode) => ({
+														label: mode.name,
+														value: mode.id?.toString(),
+													})
+												)}
 											/>
 										</Grid.Col>
 									</Grid>
@@ -380,7 +386,7 @@ export default function EntityForm({ form, module }) {
 								</Text>
 							</Box>
 							<ScrollArea scrollbars="y" type="never" h={height}>
-								<Stack p={'xs'} gap={'mes'}>
+								<Stack p={"xs"} gap={"mes"}>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("SpO2")}</Text>
@@ -514,7 +520,7 @@ export default function EntityForm({ form, module }) {
 										</Grid.Col>
 									</Grid>
 								</Stack>
-								<Stack  p={'xs'} gap={'mes'}>
+								<Stack p={"xs"} gap={"mes"}>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("patientName")}</Text>
@@ -577,9 +583,7 @@ export default function EntityForm({ form, module }) {
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<DateSelectorForm
-												key={
-													form.values.dob ? form.values?.dob : "dob-empty"
-												}
+												key={form.values.dob ? form.values?.dob : "dob-empty"}
 												form={form}
 												placeholder="01-01-2020"
 												tooltip={t("EnterDateOfBirth")}
@@ -669,7 +673,7 @@ export default function EntityForm({ form, module }) {
 								</Text>
 							</Box>
 							<ScrollArea scrollbars="y" type="never" h={height}>
-								<Stack p='xs' gap={'mes'}>
+								<Stack p="xs" gap={"mes"}>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Type")}</Text>
@@ -696,8 +700,8 @@ export default function EntityForm({ form, module }) {
 												{form.values.identity_mode === "NID"
 													? t("NID")
 													: form.values.identity_mode === "BRID"
-														? t("BRID")
-														: t("HID")}
+													? t("BRID")
+													: t("HID")}
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={9}>
