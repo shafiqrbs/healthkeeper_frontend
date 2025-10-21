@@ -143,58 +143,17 @@ export default function Medicine({entity}) {
 										title: t("Name"),
 									},
 									{
+										accessor: "name",
+										title: t("Name"),
+									},
+									{
 										accessor: "quantity",
 										width: "200px",
 										title: t("Quantity"),
-										render: (item) => (
-											entity.process === "Done" ?
-												item.result
-												:
-												<>
-													<TextInput
-														size="xs"
-														fz="xs"
-														value={item?.quantity}
-														ref={(el) => (inputsRef.current[item.id] = el)}
-														onKeyDown={(e) => handleKeyDown(e, item.id)}
-														onBlur={(e) =>
-															handleFieldChange(item.id, "quantity", e.target.value)
-														}
-													/>
-												</>
-										),
 									},
 									{
 										accessor: "uom",
 										title: t("Unit"),
-									},
-									{
-										accessor: "action",
-										title: "",
-										render: (item) => (
-											<Center>
-												<Button.Group>
-												<Button
-													onClick={() => handleRowSubmit(item.id)}
-													variant="filled"
-													fw={400}
-													size="compact-xs"
-													radius="es"
-													className="btnPrimaryBg"
-													leftSection={<IconThumbUp size={16} />}
-												>{t("Accept")}</Button>
-												<Button
-													onClick={() => handleRowSubmit(item.id)}
-													variant="filled"
-													fw={400}
-													size="compact-xs"
-													radius="es"
-													bg={'red'}
-													leftSection={<IconThumbDown size={16} />}
-												>{t("Omit")}</Button>
-													</Button.Group>
-											</Center>
-										),
 									},
 
 								]}

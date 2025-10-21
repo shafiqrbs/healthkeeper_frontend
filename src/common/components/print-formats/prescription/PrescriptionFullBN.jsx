@@ -431,7 +431,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Grid>
 								{medicines?.map((medicine, index) => (
 									<>
-										{medicine.medicine_id && (
+										{medicine.medicine_id && medicine?.opd_quantity > 0 && (
 											<Grid columns={24} m={4} p={4}>
 												<Grid.Col span={20} m={0} p={0}>
 													<Text size="xs" pl={4}>

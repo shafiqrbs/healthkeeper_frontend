@@ -150,6 +150,7 @@ export default function _Table({ module }) {
 						},
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "username", title: t("UserName") },
+						{ accessor: "user_group", title: t("UserGroup") },
 						{ accessor: "email", title: t("Email") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{
