@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
 import _Shortcut from "../common/_Shortcut.jsx";
 import SubDomainSettingForm from "./SubDomainSettingForm.jsx";
-import B2BHeaderNavbar from "../B2BHeaderNavbar";
+import B2BHeaderNavbar from "../B2BHeaderNavbar.jsx";
 
 export default function SettingIndex() {
 	const { id } = useParams();
@@ -13,15 +13,7 @@ export default function SettingIndex() {
 	const progress = getLoadingProgress();
 
 	if (progress !== 100) {
-		return (
-			<Progress
-				color="var(--theme-primary-color-7)"
-				size="sm"
-				striped
-				animated
-				value={progress}
-			/>
-		);
+		return <Progress color="var(--theme-primary-color-7)" size="sm" striped animated value={progress} />;
 	}
 	return (
 		<>

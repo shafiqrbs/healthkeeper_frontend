@@ -17,7 +17,7 @@ import {
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { getIndexEntityData, setDeleteMessage, setFetching } from "../../../../store/core/crudSlice.js";
-import KeywordSearch from "../../filter/KeywordSearch";
+import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import { deleteEntityData } from "../../../../store/core/crudSlice";
 import tableCss from "../../../../assets/css/Table.module.css";
 import { notifications } from "@mantine/notifications";

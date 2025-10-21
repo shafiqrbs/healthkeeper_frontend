@@ -27,7 +27,7 @@ import { isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 
-import Shortcut from "./shortcut/Shortcut.jsx";
+import Shortcut from "./shortcut/Shortcut.js";
 import InputForm from "../../../form-builders/InputForm.jsx";
 import SelectForm from "../../../form-builders/SelectForm.jsx";
 import TextAreaForm from "../../../form-builders/TextAreaForm.jsx";

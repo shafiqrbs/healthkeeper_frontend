@@ -4,8 +4,8 @@ import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
 import _Shortcut from "../common/_Shortcut.jsx";
-import B2BHeaderNavbar from "../B2BHeaderNavbar";
-import B2bUserTable from "./B2bUserTable";
+import B2BHeaderNavbar from "../B2BHeaderNavbar.jsx";
+import B2bUserTable from "./B2bUserTable.jsx";
 
 export default function B2bUserIndex() {
 	const { id } = useParams();
@@ -15,13 +15,7 @@ export default function B2bUserIndex() {
 	return (
 		<>
 			{progress !== 100 && (
-				<Progress
-					color="var(--theme-primary-color-7)"
-					size={"sm"}
-					striped
-					animated
-					value={progress}
-				/>
+				<Progress color="var(--theme-primary-color-7)" size={"sm"} striped animated value={progress} />
 			)}
 			{progress === 100 && (
 				<>

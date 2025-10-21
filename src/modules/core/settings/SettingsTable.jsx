@@ -13,7 +13,7 @@ import {
 	setFormLoading,
 	setInsertType,
 } from "../../../../store/core/crudSlice.js";
-import KeywordSearch from "../../filter/KeywordSearch";
+import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import { modals } from "@mantine/modals";
 import { deleteEntityData, getStatusInlineUpdateData } from "../../../../store/core/crudSlice";
 import { notifications } from "@mantine/notifications";

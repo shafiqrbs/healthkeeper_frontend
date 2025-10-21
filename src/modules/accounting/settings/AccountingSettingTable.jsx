@@ -17,7 +17,7 @@ import KeywordSearch from "../common/KeywordSearch.jsx";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import tableCss from "../../../../assets/css/Table.module.css";
-import AccountingSettingViewModal from "./_ProductionSettingViewModal.jsx";
+import AccountingSettingViewModal from "./_ProductionSettingViewModal.js";
 
 function AccountingSettingTable() {
 	const dispatch = useDispatch();

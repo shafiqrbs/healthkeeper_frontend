@@ -16,8 +16,8 @@ import getConfigData from "../../../global-hook/config-data/getConfigData.js";
 import { useNavigate, useParams } from "react-router-dom";
 import CoreHeaderNavbar from "../CoreHeaderNavbar.jsx";
 import MasterDataEntryTable from "./MasterDataEntryTable.jsx";
-import MasterDataEntryForm from "./MasterDataEntryForm.jsx";
-import MasterDataEntryUpdateForm from "./MasterDataEntryUpdateForm.jsx";
+import MasterDataEntryForm from "./MasterDataEntryForm.js";
+import MasterDataEntryUpdateForm from "./MasterDataEntryUpdateForm.js";
 
 function MasterDataEntryIndex() {
 	const { t, i18n } = useTranslation();

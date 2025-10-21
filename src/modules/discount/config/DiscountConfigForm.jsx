@@ -25,7 +25,7 @@ import { setValidationData, showInstantEntityData, updateEntityData } from "../.
 import SelectForm from "../../../form-builders/SelectForm.jsx";
 import InputForm from "../../../form-builders/InputForm.jsx";
 import TextAreaForm from "../../../form-builders/TextAreaForm.jsx";
-import KeywordSearch from "../../filter/KeywordSearch";
+import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import getDomainConfig from "../../../global-hook/config-data/getDomainConfig.js";
 import { setFetching, storeEntityData } from "../../../../store/core/crudSlice";
 import vendorDataStoreIntoLocalStorage from "../../../global-hook/local-storage/vendorDataStoreIntoLocalStorage";

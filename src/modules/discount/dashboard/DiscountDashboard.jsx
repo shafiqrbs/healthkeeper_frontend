@@ -4,8 +4,8 @@ import { Box, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
 import _Shortcut from "../common/_DiscountSearch.jsx";
-import DiscountHeaderNavbar from "../DiscountHeaderNavbar";
-import _DiscountShortcut from "../common/_DiscountShortcut";
+import DiscountHeaderNavbar from "../DiscountHeaderNavbar.jsx";
+import _DiscountShortcut from "../common/_DiscountShortcut.jsx";
 
 export default function DiscountDashboard() {
 	const { id } = useParams();
@@ -15,13 +15,7 @@ export default function DiscountDashboard() {
 	return (
 		<>
 			{progress !== 100 && (
-				<Progress
-					color="var(--theme-primary-color-7)"
-					size={"sm"}
-					striped
-					animated
-					value={progress}
-				/>
+				<Progress color="var(--theme-primary-color-7)" size={"sm"} striped animated value={progress} />
 			)}
 			{progress === 100 && (
 				<>

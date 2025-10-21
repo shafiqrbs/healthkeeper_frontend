@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-	Box,
-	Button,
-	Grid,
-	Progress,
-	Title,
-	Group,
-	Burger,
-	Menu,
-	rem,
-	ActionIcon,
-} from "@mantine/core";
+import { Box, Button, Grid, Progress, Title, Group, Burger, Menu, rem, ActionIcon } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { getShowEntityData } from "../../../../store/inventory/crudSlice.js";
-import SampleInvoiceItemForm from "./SampleInvoiceItemForm";
-import SampleHeaderNavbar from "./SampleHeaderNavbar";
-import SampleTableView from "./SampleTableView";
+import SampleInvoiceItemForm from "./SampleInvoiceItemForm.jsx";
+import SampleHeaderNavbar from "./SampleHeaderNavbar.jsx";
+import SampleTableView from "./SampleTableView.jsx";
 import PhoneNumber from "../../../form-builders/PhoneNumberInput.jsx";
 import { useForm } from "@mantine/form";
 import { IconInfoCircle } from "@tabler/icons-react";
@@ -97,9 +86,7 @@ function SampleInvoice() {
 											required
 											form={form}
 											value={form.values.mobile}
-											onChange={(value) =>
-												form.setFieldValue("mobile", value)
-											}
+											onChange={(value) => form.setFieldValue("mobile", value)}
 											tooltip={t("EnterMobileNumber")}
 										/>
 									</Grid.Col>

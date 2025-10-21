@@ -25,7 +25,7 @@ import { hasLength, isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { setFetching, setValidationData, storeEntityData } from "../../../../store/accounting/crudSlice.js";
-import Shortcut from "../../shortcut/Shortcut";
+import Shortcut from "../../shortcut/Shortcut.jsx";
 import InputForm from "../../../form-builders/InputForm";
 import SelectForm from "../../../form-builders/SelectForm.jsx";
 import SwitchForm from "../../../form-builders/SwitchForm";

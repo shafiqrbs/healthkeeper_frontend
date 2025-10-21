@@ -13,12 +13,12 @@ import {
 	setFormLoading,
 	setInsertType,
 } from "../../../../store/inventory/crudSlice.js";
-import KeywordSearch from "../../filter/KeywordSearch";
+import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import { modals } from "@mantine/modals";
 import { deleteEntityData } from "../../../../store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import tableCss from "../../../../assets/css/Table.module.css";
-import MasterDataEntryViewModal from "./MasterDataViewModal.jsx";
+import MasterDataEntryViewModal from "./MasterDataViewModal.js";
 
 function MasterDataEntryTable() {
 	const dispatch = useDispatch();

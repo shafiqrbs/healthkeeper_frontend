@@ -7,13 +7,9 @@ import { useHotkeys } from "@mantine/hooks";
 import { useDispatch } from "react-redux";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
-import {
-	setFetching,
-	setValidationData,
-	storeEntityData,
-} from "../../../../store/core/crudSlice.js";
+import { setFetching, setValidationData, storeEntityData } from "../../../../store/core/crudSlice.js";
 
-import Shortcut from "../../shortcut/Shortcut";
+import Shortcut from "../../shortcut/Shortcut.jsx";
 import InputForm from "../../../form-builders/InputForm";
 import SelectForm from "../../../form-builders/SelectForm.jsx";
 import getSettingMotherAccountDropdownData from "../../../global-hook/dropdown/getSettingMotherAccountDropdownData";
@@ -135,9 +131,7 @@ function HeadGroupForm() {
 															className={"btnPrimaryBg"}
 															type="submit"
 															id="EntityFormSubmit"
-															leftSection={
-																<IconDeviceFloppy size={16} />
-															}
+															leftSection={<IconDeviceFloppy size={16} />}
 														>
 															<Flex direction={`column`} gap={0}>
 																<Text fz={14} fw={400}>
@@ -154,12 +148,7 @@ function HeadGroupForm() {
 								<Box pl={`xs`} pr={"xs"} className={"borderRadiusAll"}>
 									<Grid columns={24}>
 										<Grid.Col span={"auto"}>
-											<ScrollArea
-												h={height}
-												scrollbarSize={2}
-												scrollbars="y"
-												type="never"
-											>
+											<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
 												<Box>
 													<Box mt={"8"}>
 														<SelectForm
@@ -192,9 +181,7 @@ function HeadGroupForm() {
 													</Box>
 													<Box mt={"xs"}>
 														<InputForm
-															tooltip={t(
-																"AccountCodeValidateMessage"
-															)}
+															tooltip={t("AccountCodeValidateMessage")}
 															label={t("AccountCode")}
 															placeholder={t("AccountCode")}
 															required={true}

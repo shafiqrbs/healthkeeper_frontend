@@ -16,7 +16,7 @@ import AccountingSettingTable from "./AccountingSettingTable.jsx";
 import AccountingSettingForm from "./AccountingSettingForm.jsx";
 import AccountingSettingUpdateForm from "./AccountingSettingUpdateForm.jsx";
 import getSettingTypeDropdownData from "../../../global-hook/dropdown/getAccointingSettingTypeDropdownData.js";
-import AccountingHeaderNavbar from "../common/AccountingHeaderNavbar";
+import AccountingHeaderNavbar from "../common/AccountingHeaderNavbar.jsx";
 
 function AccountingSettingIndex() {
 	const { t, i18n } = useTranslation();
@@ -27,9 +27,7 @@ function AccountingSettingIndex() {
 
 	const insertType = useSelector((state) => state.accounting.insertType);
 	const settingTypeDropdown = getSettingTypeDropdownData();
-	const configData = localStorage.getItem("config-data")
-		? JSON.parse(localStorage.getItem("config-data"))
-		: [];
+	const configData = localStorage.getItem("config-data") ? JSON.parse(localStorage.getItem("config-data")) : [];
 
 	useEffect(() => {
 		id

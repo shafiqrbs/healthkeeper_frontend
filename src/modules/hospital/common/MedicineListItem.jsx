@@ -1,4 +1,4 @@
-import { showNotificationComponent } from "@/common/components/core-component/showNotificationComponent";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { ActionIcon, Box, Flex, Grid, Input, NumberInput, Select, Stack, Text } from "@mantine/core";
 import { IconCheck, IconMedicineSyrup, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { useState } from "react";
@@ -33,7 +33,7 @@ export default function MedicineListItem({
 			}
 		}
 		setMedicines((prev) =>
-			prev.map((medicine, index) => (index === index - 1 ? { ...medicine, [field]: value } : medicine))
+			prev.map((medicine, idx) => (idx === index - 1 ? { ...medicine, [field]: value } : medicine))
 		);
 	};
 

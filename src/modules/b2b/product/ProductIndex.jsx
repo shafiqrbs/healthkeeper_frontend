@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
 import _Shortcut from "../common/_Shortcut.jsx";
 import ProductTable from "./ProductTable.jsx";
-import B2BHeaderNavbar from "../B2BHeaderNavbar";
+import B2BHeaderNavbar from "../B2BHeaderNavbar.jsx";
 
 export default function ProductIndex() {
 	const { id } = useParams();
@@ -14,13 +14,7 @@ export default function ProductIndex() {
 	return (
 		<>
 			{progress !== 100 && (
-				<Progress
-					color="var(--theme-primary-color-7)"
-					size={"sm"}
-					striped
-					animated
-					value={progress}
-				/>
+				<Progress color="var(--theme-primary-color-7)" size={"sm"} striped animated value={progress} />
 			)}
 			{progress === 100 && (
 				<>

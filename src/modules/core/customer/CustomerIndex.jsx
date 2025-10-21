@@ -16,7 +16,7 @@ import {
 	setFormLoading,
 } from "../../../../store/core/crudSlice.js";
 import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
-import CoreHeaderNavbar from "../CoreHeaderNavbar";
+import CoreHeaderNavbar from "../CoreHeaderNavbar.jsx";
 import getLocationDropdownData from "../../../global-hook/dropdown/getLocationDropdownData.js";
 import getExecutiveDropdownData from "../../../global-hook/dropdown/getExecutiveDropdownData.js";
 import { setDropdownLoad } from "../../../../store/inventory/crudSlice.js";

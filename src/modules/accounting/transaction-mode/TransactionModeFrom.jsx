@@ -24,7 +24,7 @@ import { notifications } from "@mantine/notifications";
 
 import { setFetching, setValidationData, storeEntityDataWithFile } from "../../../../store/accounting/crudSlice.js";
 
-import Shortcut from "../../shortcut/Shortcut";
+import Shortcut from "../../shortcut/Shortcut.jsx";
 import InputForm from "../../../form-builders/InputForm";
 import InputNumberForm from "../../../form-builders/InputNumberForm";
 import SelectForm from "../../../form-builders/SelectForm.jsx";

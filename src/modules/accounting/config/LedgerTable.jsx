@@ -14,7 +14,7 @@ import {
 	showEntityData,
 	deleteEntityData,
 } from "../../../../store/accounting/crudSlice.js";
-import KeywordSearch from "../../filter/KeywordSearch";
+import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import { modals } from "@mantine/modals";
 import tableCss from "../../../../assets/css/Table.module.css";
 function LedgerTable(props) {

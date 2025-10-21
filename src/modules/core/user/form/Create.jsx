@@ -13,7 +13,7 @@ import { modals } from "@mantine/modals";
 import { setInsertType } from "@/app/store/core/crudSlice";
 import { notifications } from "@mantine/notifications";
 import Shortcut from "../../../shortcut/Shortcut.jsx";
-import CustomerGroupDrawer from "../../customer/CustomerGroupDrawer";
+import CustomerGroupDrawer from "../../customer/CustomerGroupDrawer.jsx";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData.js";
 import { editEntityData, storeEntityData } from "@/app/store/core/crudThunk.js";
 import useUserDataStoreIntoLocalStorage from "@/common/hooks/local-storage/useUserDataStoreIntoLocalStorage.js";

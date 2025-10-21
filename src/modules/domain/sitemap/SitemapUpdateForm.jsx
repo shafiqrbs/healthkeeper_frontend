@@ -10,7 +10,7 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { setFetching } from "../../../../store/core/crudSlice.js";
 
-import Shortcut from "../../shortcut/Shortcut";
+import Shortcut from "../../shortcut/Shortcut.jsx";
 import InputForm from "../../../form-builders/InputForm";
 import InputNumberForm from "../../../form-builders/InputNumberForm";
 import SwitchForm from "../../../form-builders/SwitchForm.jsx";

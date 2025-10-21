@@ -1,21 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-	Box,
-	Button,
-	Grid,
-	Progress,
-	Title,
-	Group,
-	Burger,
-	Menu,
-	rem,
-	ActionIcon,
-} from "@mantine/core";
+import { Box, Button, Grid, Progress, Title, Group, Burger, Menu, rem, ActionIcon } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { getShowEntityData } from "../../../../store/inventory/crudSlice.js";
-import SampleInvoiceItemForm from "./SampleInvoiceItemForm";
-import SampleHeaderNavbar from "./SampleHeaderNavbar";
+import SampleInvoiceItemForm from "./SampleInvoiceItemForm.jsx";
+import SampleHeaderNavbar from "./SampleHeaderNavbar.jsx";
 function SampleInvoice() {
 	const { t, i18n } = useTranslation();
 	const dispatch = useDispatch();
@@ -57,13 +46,12 @@ function SampleInvoice() {
 						currancySymbol={configData.currency.symbol}
 					/>
 					<Box p={"8"}>
-						{insertType === "create" &&
-							configData.business_model.slug === "general" && (
-								<SampleInvoiceItemForm
-									allowZeroPercentage={configData.zero_stock}
-									currencySymbol={configData.currency.symbol}
-								/>
-							)}
+						{insertType === "create" && configData.business_model.slug === "general" && (
+							<SampleInvoiceItemForm
+								allowZeroPercentage={configData.zero_stock}
+								currencySymbol={configData.currency.symbol}
+							/>
+						)}
 					</Box>
 				</Box>
 			)}

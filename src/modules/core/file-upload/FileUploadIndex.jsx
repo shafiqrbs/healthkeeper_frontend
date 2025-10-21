@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setFileUploadFilterData, setSearchKeyword } from "../../../../store/core/crudSlice.js";
 import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
-import CoreHeaderNavbar from "../CoreHeaderNavbar";
+import CoreHeaderNavbar from "../CoreHeaderNavbar.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import FileUploadForm from "./FileUploadForm.jsx";
 import FileUploadTable from "./FileUploadTable.jsx";

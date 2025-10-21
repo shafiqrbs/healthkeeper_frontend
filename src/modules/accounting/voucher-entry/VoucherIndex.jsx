@@ -6,7 +6,7 @@ import getConfigData from "../../../global-hook/config-data/getConfigData.js";
 import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoadingProgress.js";
 import VoucherFormIndex from "./VoucherFromIndex.jsx";
 import VoucherTableNew from "./VoucherTableNew.jsx";
-import AccountingHeaderNavbar from "../AccountingHeaderNavbar";
+import AccountingHeaderNavbar from "../AccountingHeaderNavbar.jsx";
 import { useOutletContext } from "react-router-dom";
 import VoucherTableInProgress from "./VoucherTableInProgress.jsx";
 import VoucherTableApprove from "./VoucherTableApprove.jsx";
@@ -73,12 +73,7 @@ function VoucherIndex() {
 											{t("Archive")}
 										</Tabs.Tab>
 										{activeTab !== "VoucherEntry" && activeTab !== "" && (
-											<Tabs.Tab
-												m={2}
-												bg={"red.5"}
-												value="VoucherEntry"
-												ml="auto"
-											>
+											<Tabs.Tab m={2} bg={"red.5"} value="VoucherEntry" ml="auto">
 												{t("VoucherEntry")}
 											</Tabs.Tab>
 										)}

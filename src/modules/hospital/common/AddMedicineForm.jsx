@@ -659,7 +659,7 @@ export default function AddMedicineForm({
 				<Flex px="les" gap="les">
 					{prescriptionData?.data?.patient_referred_id && (
 						<Tooltip label="Referred">
-							<ActionIcon size="lg" bg={"red"} onClick={() => handleReferredViewPrescription()}>
+							<ActionIcon size="lg" bg="red" onClick={() => handleReferredViewPrescription()}>
 								<IconFirstAidKit />
 							</ActionIcon>
 						</Tooltip>

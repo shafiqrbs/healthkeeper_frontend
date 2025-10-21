@@ -49,9 +49,9 @@ export default function _Table({ module }) {
 				url: MASTER_DATA_ROUTES.API_ROUTES.USER.INDEX,
 				params: {
 					term: searchForm.values.keywordSearch,
-					name: userFilterData.name,
-					mobile: userFilterData.mobile,
-					email: userFilterData.email,
+					// name: userFilterData.name,
+					// mobile: userFilterData.mobile,
+					// email: userFilterData.email,
 					page: page,
 					offset: perPage,
 				},

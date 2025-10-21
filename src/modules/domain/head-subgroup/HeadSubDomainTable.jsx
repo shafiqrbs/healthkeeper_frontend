@@ -14,10 +14,10 @@ import {
 	showEntityData,
 	deleteEntityData,
 } from "../../../../store/accounting/crudSlice.js";
-import KeywordSearch from "../../filter/KeywordSearch";
+import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import { modals } from "@mantine/modals";
 import tableCss from "../../../../assets/css/Table.module.css";
-import HeadSubGroupViewDrawer from "../../accounting/head-subgroup/HeadSubGroupViewDrawer";
+import HeadSubGroupViewDrawer from "../../accounting/head-subgroup/HeadSubGroupViewDrawer.jsx";
 
 function HeadSubDomainTable(props) {
 	const dispatch = useDispatch();

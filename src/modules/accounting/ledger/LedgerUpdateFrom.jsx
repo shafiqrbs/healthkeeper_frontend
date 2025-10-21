@@ -32,7 +32,7 @@ import {
 	updateEntityData,
 } from "../../../../store/accounting/crudSlice.js";
 
-import Shortcut from "../../shortcut/Shortcut";
+import Shortcut from "../../shortcut/Shortcut.jsx";
 import InputForm from "../../../form-builders/InputForm";
 import SelectForm from "../../../form-builders/SelectForm";
 import SwitchForm from "../../../form-builders/SwitchForm.jsx";
