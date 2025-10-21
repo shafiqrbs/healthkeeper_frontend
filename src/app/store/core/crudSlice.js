@@ -299,7 +299,7 @@ const initialState = {
 		editData: {},
 		validation: false,
 		validationMessages: [],
-		filterData: { name: "", mobile: "", email: "" },
+		filterData: { name: "", mobile: "", email: "", keywordSearch: "", created: formatDate(new Date()) },
 	},
 	labUser: {
 		isLoading: true,

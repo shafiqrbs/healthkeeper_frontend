@@ -7,21 +7,29 @@ import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
 import { modals } from "@mantine/modals";
-import KeywordSearch from "../../filter/KeywordSearch.jsx";
+// import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import __ViewDrawer from "./__ViewDrawer.jsx";
 import { getIndexEntityData, editEntityData, deleteEntityData } from "@/app/store/core/crudThunk.js";
 import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
+import KeywordSearch from "@hospital-components/KeywordSearch";
+import { useForm } from "@mantine/form";
+import { formatDate } from "@utils/index.js";
 
 export default function _Table({ module }) {
+	const searchForm = useForm({
+		initialValues: {
+			keywordSearch: "",
+			created: formatDate(new Date()),
+		},
+	});
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 98; //TabList height 104
 	const [fetching, setFetching] = useState(true);
 
-	const searchKeyword = useSelector((state) => state.crud[module].searchKeyword);
 	const userFilterData = useSelector((state) => state.crud[module].filterData);
 	const fetchingReload = useSelector((state) => state.crud[module].refetching);
 
@@ -40,7 +48,7 @@ export default function _Table({ module }) {
 			const value = {
 				url: MASTER_DATA_ROUTES.API_ROUTES.USER.INDEX,
 				params: {
-					term: searchKeyword,
+					term: searchForm.values.keywordSearch,
 					name: userFilterData.name,
 					mobile: userFilterData.mobile,
 					email: userFilterData.email,
@@ -65,7 +73,7 @@ export default function _Table({ module }) {
 		};
 
 		fetchData();
-	}, [dispatch, searchKeyword, userFilterData, page, fetchingReload]);
+	}, [searchForm.values?.keywordSearch, userFilterData, page, fetchingReload]);
 
 	const handleEdit = (id) => {
 		dispatch(
@@ -120,8 +128,8 @@ export default function _Table({ module }) {
 
 	return (
 		<>
-			<Box pl="xs" pr={8} pt="6" pb="4" className="boxBackground borderRadiusAll border-bottom-none">
-				<KeywordSearch module={module} />
+			<Box className="boxBackground borderRadiusAll border-bottom-none">
+				<KeywordSearch showDatePicker={false} module={module} form={searchForm} />
 			</Box>
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
