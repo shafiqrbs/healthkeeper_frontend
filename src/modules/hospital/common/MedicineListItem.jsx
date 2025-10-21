@@ -1,6 +1,7 @@
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { ActionIcon, Box, Flex, Grid, Input, NumberInput, Select, Stack, Text } from "@mantine/core";
 import { IconCheck, IconMedicineSyrup, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import { getByMeal, getDosage } from "@utils/prescription";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -37,24 +38,21 @@ export default function MedicineListItem({
 		);
 	};
 
-	const getByMeal = (id) => {
-		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
-	const getDosage = (id) => {
-		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
 	const handleAddInstruction = (instructionIndex) => {
 		setMedicines((prev) => {
 			const medicineIndex = index - 1;
 			const current = prev[medicineIndex];
 
+			const byMeal = getByMeal(by_meal_options, current?.medicine_bymeal_id);
+			const dosage = getDosage(dosage_options, current?.medicine_dosage_id);
+
 			const baseInstruction = {
 				medicine_dosage_id: current?.medicine_dosage_id || "",
 				medicine_bymeal_id: current?.medicine_bymeal_id || "",
-				dose_details: getDosage(current?.medicine_dosage_id) || "",
-				by_meal: getByMeal(current?.medicine_bymeal_id) || "",
+				dose_details: dosage?.name || "",
+				dose_details_bn: dosage?.name_bn || "",
+				by_meal: byMeal?.name || "",
+				by_meal_bn: byMeal?.name_bn || "",
 				quantity: current.quantity || 1,
 				duration: current.duration || "Day",
 			};
@@ -84,6 +82,7 @@ export default function MedicineListItem({
 			const current = prev[medicineIndex];
 			const existingDosages = current.dosages || [];
 			let updatedMedicine = { ...current };
+
 			if (existingDosages.length > 1) {
 				const updatedDosages = existingDosages.filter((_, i) => i !== instructionIndex);
 				updatedMedicine = { ...current, dosages: updatedDosages };
@@ -92,6 +91,7 @@ export default function MedicineListItem({
 				delete rest.dosages;
 				updatedMedicine = rest;
 			}
+
 			const newList = prev.map((m, i) => (i === medicineIndex ? updatedMedicine : m));
 			if (typeof update === "function") update(newList);
 			return newList;
@@ -104,12 +104,17 @@ export default function MedicineListItem({
 			setMedicines((prev) => {
 				const medicineIndex = index - 1;
 				const current = prev[medicineIndex];
+				const byMeal = getByMeal(by_meal_options, current?.medicine_bymeal_id);
+				const dosage = getDosage(dosage_options, current?.medicine_dosage_id);
+
 				const seeded = [
 					{
 						medicine_dosage_id: current?.medicine_dosage_id || "",
 						medicine_bymeal_id: current?.medicine_bymeal_id || "",
-						dose_details: getDosage(current?.medicine_dosage_id) || "",
-						by_meal: getByMeal(current?.medicine_bymeal_id) || "",
+						dose_details: dosage?.name || "",
+						dose_details_bn: dosage?.name_bn || "",
+						by_meal: byMeal?.name || "",
+						by_meal_bn: byMeal?.name_bn || "",
 						quantity: current.quantity || 1,
 						duration: current.duration || "Day",
 					},
@@ -134,11 +139,23 @@ export default function MedicineListItem({
 			const dosages = current.dosages ? [...current.dosages] : [];
 
 			if (field === "medicine_bymeal_id") {
-				const by_meal = getByMeal(value);
-				dosages[insIndex] = { ...dosages[insIndex], [field]: value, by_meal };
+				const byMeal = getByMeal(by_meal_options, value);
+
+				dosages[insIndex] = {
+					...dosages[insIndex],
+					[field]: value,
+					by_meal: byMeal?.name || "",
+					by_meal_bn: byMeal?.name_bn || "",
+				};
 			} else if (field === "medicine_dosage_id") {
-				const dose_details = getDosage(value);
-				dosages[insIndex] = { ...dosages[insIndex], [field]: value, dose_details };
+				const dosage = getDosage(dosage_options, value);
+
+				dosages[insIndex] = {
+					...dosages[insIndex],
+					[field]: value,
+					dose_details: dosage?.name || "",
+					dose_details_bn: dosage?.name_bn || "",
+				};
 			} else {
 				dosages[insIndex] = { ...dosages[insIndex], [field]: value };
 			}
@@ -176,8 +193,11 @@ export default function MedicineListItem({
 								{
 									medicine_dosage_id: medicine?.medicine_dosage_id || "",
 									medicine_bymeal_id: medicine?.medicine_bymeal_id || "",
-									dose_details: getDosage(medicine?.medicine_dosage_id) || "",
-									by_meal: getByMeal(medicine?.medicine_bymeal_id) || "",
+									dose_details: getDosage(dosage_options, medicine?.medicine_dosage_id)?.name || "",
+									dose_details_bn:
+										getDosage(dosage_options, medicine?.medicine_dosage_id)?.name_bn || "",
+									by_meal: getByMeal(by_meal_options, medicine?.medicine_bymeal_id)?.name || "",
+									by_meal_bn: getByMeal(by_meal_options, medicine?.medicine_bymeal_id)?.name_bn || "",
 									quantity: medicine.quantity || 1,
 									duration: medicine.duration || "Day",
 								},

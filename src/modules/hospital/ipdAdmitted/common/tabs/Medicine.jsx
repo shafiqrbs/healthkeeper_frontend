@@ -33,6 +33,13 @@ import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk"
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import {
+	appendDosageValueToForm,
+	appendGeneralValuesToForm,
+	appendMealValueToForm,
+	getByMeal,
+	getDosage,
+} from "@utils/prescription";
 
 const DURATION_OPTIONS = [
 	{ value: "day", label: "Day" },
@@ -53,14 +60,6 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, dosage_
 		setMode("view");
 	};
 
-	const getByMeal = (id) => {
-		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
-	const getDosage = (id) => {
-		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
 	const handleChange = (field, value) => {
 		setMedicines((prev) =>
 			prev.map((med, i) => {
@@ -69,14 +68,16 @@ function MedicineListItem({ index, medicine, setMedicines, handleDelete, dosage_
 
 					// =============== add by_meal field when medicine_bymeal_id changes ================
 					if (field === "medicine_bymeal_id") {
-						const by_meal = getByMeal(value);
-						updatedMedicine.by_meal = by_meal;
+						const by_meal = getByMeal(by_meal_options, value);
+						updatedMedicine.by_meal = by_meal?.name;
+						updatedMedicine.by_meal_bn = by_meal?.name_bn;
 					}
 
 					// =============== add dose_details field when medicine_dosage_id changes ================
 					if (field === "medicine_dosage_id") {
-						const dose_details = getDosage(value);
-						updatedMedicine.dose_details = dose_details;
+						const dose_details = getDosage(dosage_options, value);
+						updatedMedicine.dose_details = dose_details?.name;
+						updatedMedicine.dose_details_bn = dose_details?.name_bn;
 					}
 
 					return updatedMedicine;
@@ -241,15 +242,11 @@ export default function Medicine() {
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
 
 			if (selectedMedicine) {
-				medicineForm.setFieldValue("medicine_name", selectedMedicine.product_name);
-				medicineForm.setFieldValue("generic", selectedMedicine.generic);
-				medicineForm.setFieldValue("generic_id", selectedMedicine.generic_id);
-				medicineForm.setFieldValue("company", selectedMedicine.company);
+				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 
 				// Auto-populate by_meal if available
 				if (selectedMedicine.medicine_bymeal_id) {
-					medicineForm.setFieldValue("medicine_bymeal_id", selectedMedicine.medicine_bymeal_id?.toString());
-					medicineForm.setFieldValue("by_meal", getByMeal(selectedMedicine.medicine_bymeal_id));
+					appendMealValueToForm(medicineForm, by_meal_options, selectedMedicine.medicine_bymeal_id);
 				}
 
 				// Auto-populate duration and count based on duration_day or duration_month
@@ -262,29 +259,18 @@ export default function Medicine() {
 				}
 
 				if (selectedMedicine.medicine_dosage_id) {
-					medicineForm.setFieldValue("medicine_dosage_id", selectedMedicine.medicine_dosage_id?.toString());
-					medicineForm.setFieldValue("dose_details", getDosage(selectedMedicine.medicine_dosage_id));
+					appendDosageValueToForm(medicineForm, dosage_options, selectedMedicine.medicine_dosage_id);
 				}
 			}
 		}
 
 		if (field === "medicine_bymeal_id" && value) {
-			medicineForm.setFieldValue("medicine_bymeal_id", value?.toString());
-			medicineForm.setFieldValue("by_meal", getByMeal(value));
+			appendMealValueToForm(medicineForm, by_meal_options, value);
 		}
 
 		if (field === "medicine_dosage_id" && value) {
-			medicineForm.setFieldValue("medicine_dosage_id", value?.toString());
-			medicineForm.setFieldValue("dose_details", getDosage(value));
+			appendDosageValueToForm(medicineForm, dosage_options, value);
 		}
-	};
-
-	const getByMeal = (id) => {
-		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
-	const getDosage = (id) => {
-		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
 	};
 
 	const handleAdd = (values) => {

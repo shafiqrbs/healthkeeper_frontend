@@ -55,6 +55,7 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
 import HistoryPrescription from "./HistoryPrescription";
 import DischargeA4BN from "@components/print-formats/discharge/DischargeA4BN";
+import { appendDosageValueToForm, appendGeneralValuesToForm, appendMealValueToForm } from "@utils/prescription";
 
 const module = MODULES.DISCHARGE;
 
@@ -243,14 +244,6 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 		],
 	]);
 
-	const getByMeal = (id) => {
-		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
-	const getDosage = (id) => {
-		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
 
@@ -259,17 +252,11 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
 
 			if (selectedMedicine) {
-				medicineForm.setFieldValue("medicine_name", selectedMedicine.product_name);
-				medicineForm.setFieldValue("generic", selectedMedicine.generic);
-				medicineForm.setFieldValue("generic_id", selectedMedicine.generic_id);
-				medicineForm.setFieldValue("company", selectedMedicine.company);
-				medicineForm.setFieldValue("opd_quantity", selectedMedicine?.opd_quantity || 0);
-				medicineForm.setFieldValue("opd_limit", selectedMedicine?.opd_quantity || 0);
+				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 
 				// Auto-populate by_meal if available
 				if (selectedMedicine.medicine_bymeal_id) {
-					medicineForm.setFieldValue("medicine_bymeal_id", selectedMedicine.medicine_bymeal_id?.toString());
-					medicineForm.setFieldValue("by_meal", getByMeal(selectedMedicine.medicine_bymeal_id));
+					appendMealValueToForm(medicineForm, by_meal_options, selectedMedicine.medicine_bymeal_id);
 				}
 
 				// Auto-populate duration and count based on duration_day or duration_month
@@ -283,63 +270,26 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 
 				// Auto-populate dose_details if available (for times field)
 				if (selectedMedicine.medicine_dosage_id) {
-					medicineForm.setFieldValue("medicine_dosage_id", selectedMedicine.medicine_dosage_id?.toString());
-					medicineForm.setFieldValue("dose_details", getDosage(selectedMedicine.medicine_dosage_id));
+					appendDosageValueToForm(medicineForm, dosage_options, selectedMedicine.medicine_dosage_id);
 				}
 			}
 		}
 	};
 
 	const handleAdd = (values) => {
-		if (values.medicine_id) {
-			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() == values.medicine_id);
-
-			if (selectedMedicine) {
-				values.medicine_name = selectedMedicine.product_name || values.medicine_name;
-				values.generic = selectedMedicine.generic || values.generic;
-				values.generic_id = selectedMedicine.generic_id || values.generic_id;
-				values.company = selectedMedicine.company || values.company;
-				values.opd_quantity = selectedMedicine?.opd_quantity || 0;
-
-				if (selectedMedicine.duration_day) {
-					values.quantity = parseInt(selectedMedicine.duration_day) || values.quantity;
-					values.duration = "day";
-				} else if (selectedMedicine.duration_month) {
-					values.quantity = parseInt(selectedMedicine.duration_month) || values.quantity;
-					values.duration = "month";
-				}
-
-				if (selectedMedicine.medicine_dosage_id) {
-					values.medicine_dosage_id = selectedMedicine.medicine_dosage_id?.toString();
-					values.dose_details = getDosage(selectedMedicine.medicine_dosage_id);
-				}
-
-				if (selectedMedicine.medicine_bymeal_id) {
-					values.medicine_bymeal_id = selectedMedicine.medicine_bymeal_id?.toString();
-					values.by_meal = getByMeal(selectedMedicine.medicine_bymeal_id);
-				}
-			}
-			if (editIndex !== null) {
-				const updated = [...medicines];
-				updated[editIndex] = values;
-				setMedicines(updated);
-				setEditIndex(null);
-			} else {
-				setMedicines([...medicines, values]);
-
-				if (selectedMedicine?.medicine_bymeal_id) {
-					values.medicine_bymeal_id = selectedMedicine.medicine_bymeal_id?.toString();
-					values.by_meal = getByMeal(selectedMedicine.medicine_bymeal_id);
-				}
-
-				setMedicines([...medicines, values]);
-				setUpdateKey((prev) => prev + 1);
-
-				medicineForm.reset();
-				setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
-			}
+		if (editIndex !== null) {
+			const updated = [...medicines];
+			updated[editIndex] = values;
+			setMedicines(updated);
 			setEditIndex(null);
+		} else {
+			setMedicines([...medicines, values]);
+			setUpdateKey((prev) => prev + 1);
+
+			medicineForm.reset();
+			setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
 		}
+		setEditIndex(null);
 	};
 
 	const handleDelete = (idx) => {
@@ -399,7 +349,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 			if (updateEntityData.rejected.match(resultAction)) {
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
-				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 700, true);
+				showNotificationComponent(t("PrescriptionSavedSuccessfully"), "green", "lightgray", true, 700, true);
 				setRefetchData({ module, refetching: true });
 				if (redirect) navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
 				return resultAction.payload?.data || {}; // Indicate successful submission

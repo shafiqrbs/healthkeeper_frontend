@@ -55,6 +55,7 @@ import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
 import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { useNavigate } from "react-router-dom";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
+import { appendDosageValueToForm, appendGeneralValuesToForm, appendMealValueToForm } from "@utils/prescription";
 
 export default function AddMedicineForm({
 	module,
@@ -107,14 +108,6 @@ export default function AddMedicineForm({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,
 	});
-
-	const getByMeal = (id) => {
-		return by_meal_options?.find((item) => item.id?.toString() == id)?.name;
-	};
-
-	const getDosage = (id) => {
-		return dosage_options?.find((item) => item.id?.toString() == id)?.name;
-	};
 
 	useEffect(() => {
 		dispatch(
@@ -271,17 +264,11 @@ export default function AddMedicineForm({
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
 
 			if (selectedMedicine) {
-				medicineForm.setFieldValue("medicine_name", selectedMedicine.product_name);
-				medicineForm.setFieldValue("generic", selectedMedicine.generic);
-				medicineForm.setFieldValue("generic_id", selectedMedicine.generic_id);
-				medicineForm.setFieldValue("company", selectedMedicine.company);
-				medicineForm.setFieldValue("opd_quantity", selectedMedicine?.opd_quantity || 0);
-				medicineForm.setFieldValue("opd_limit", selectedMedicine?.opd_quantity || 0);
+				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 
 				// Auto-populate by_meal if available
 				if (selectedMedicine.medicine_bymeal_id) {
-					medicineForm.setFieldValue("medicine_bymeal_id", selectedMedicine.medicine_bymeal_id?.toString());
-					medicineForm.setFieldValue("by_meal", getByMeal(selectedMedicine.medicine_bymeal_id));
+					appendMealValueToForm(medicineForm, by_meal_options, selectedMedicine.medicine_bymeal_id);
 				}
 
 				// Auto-populate duration and count based on duration_day or duration_month
@@ -295,20 +282,17 @@ export default function AddMedicineForm({
 
 				// Auto-populate dose_details if available (for times field)
 				if (selectedMedicine.medicine_dosage_id) {
-					medicineForm.setFieldValue("medicine_dosage_id", selectedMedicine.medicine_dosage_id?.toString());
-					medicineForm.setFieldValue("dose_details", getDosage(selectedMedicine.medicine_dosage_id));
+					appendDosageValueToForm(medicineForm, dosage_options, selectedMedicine.medicine_dosage_id);
 				}
 			}
 		}
 
 		if (field === "medicine_bymeal_id" && value) {
-			medicineForm.setFieldValue("medicine_bymeal_id", value?.toString());
-			medicineForm.setFieldValue("by_meal", getByMeal(value));
+			appendMealValueToForm(medicineForm, by_meal_options, value);
 		}
 
 		if (field === "medicine_dosage_id" && value) {
-			medicineForm.setFieldValue("medicine_dosage_id", value?.toString());
-			medicineForm.setFieldValue("dose_details", getDosage(value));
+			appendDosageValueToForm(medicineForm, dosage_options, value);
 		}
 	};
 
