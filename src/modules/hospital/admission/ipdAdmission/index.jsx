@@ -9,8 +9,6 @@ import Table from "./_Table";
 import EntityForm from "../form/EntityForm";
 import { MODULES } from "@/constants";
 
-const module = MODULES.ADMISSION;
-
 export default function Index() {
 	const { id } = useParams();
 	const form = useForm(getAdmissionFormInitialValues());

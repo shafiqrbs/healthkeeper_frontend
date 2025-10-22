@@ -168,11 +168,11 @@ export const sideNavigationLinks = {
 					path: "/hospital/doctor/emergency",
 					icon: IconEmergencyBed,
 				},
-				{
-					label: t("IPD"),
-					path: "/hospital/doctor/ipd",
-					icon: IconEmergencyBed,
-				},
+				// {
+				// 	label: t("IPD"),
+				// 	path: "/hospital/doctor/ipd",
+				// 	icon: IconEmergencyBed,
+				// },
 			],
 		},
 		{
@@ -448,13 +448,13 @@ export const sideNavigationLinks = {
 			color: "#6f1225",
 			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "admin_hospital"],
 		},
-		{
-			label: t("IPD"),
-			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.IPD,
-			icon: IconDashboard,
-			color: "#6f1225",
-			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "admin_hospital"],
-		},
+		// {
+		// 	label: t("IPD"),
+		// 	path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.IPD,
+		// 	icon: IconDashboard,
+		// 	color: "#6f1225",
+		// 	allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "admin_hospital"],
+		// },
 	],
 	baseSubmenuReport: [
 		{

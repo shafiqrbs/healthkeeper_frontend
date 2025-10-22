@@ -52,7 +52,7 @@ import inputCss from "@assets/css/InputField.module.css";
 import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
-import DischargeA4BN from "@components/print-formats/discharge/DischargeA4BN";
+import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
 import { appendDosageValueToForm, appendGeneralValuesToForm, appendMealValueToForm } from "@utils/prescription";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 
@@ -70,7 +70,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 	const dispatch = useDispatch();
 	const doctorOpdA4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
-	const { doctorOpdId } = useParams();
+	const { id } = useParams();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -97,7 +97,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
 
 	const printDischargeA4 = useReactToPrint({
-		documentTitle: `discharge-${Date.now().toLocaleString()}`,
+		documentTitle: `opd-${Date.now().toLocaleString()}`,
 		content: () => doctorOpdA4Ref.current,
 	});
 
@@ -336,7 +336,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 			};
 
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.DOCTOR_OPD.UPDATE}/${doctorOpdId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.DOCTOR_OPD.UPDATE}/${id}`,
 				data: formValue,
 				module,
 			};
@@ -807,7 +807,9 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 					</Button.Group>
 				</>
 			)}
-			{printData && <DischargeA4BN ref={doctorOpdA4Ref} data={printData} />}
+
+			{printData && <OPDA4BN ref={doctorOpdA4Ref} data={printData} />}
+
 			<GlobalDrawer
 				opened={openedExPrescription}
 				close={closeExPrescription}
@@ -887,14 +889,13 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 				</Stack>
 			</GlobalDrawer>
 			{/* prescription preview */}
-			{doctorOpdId && (
+			{id && (
 				<DetailsDrawer
 					opened={openedPrescriptionPreview}
 					close={closePrescriptionPreview}
-					prescriptionId={doctorOpdId}
+					prescriptionId={id}
 				/>
 			)}
-
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
 		</Box>
 	);

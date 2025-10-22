@@ -31,8 +31,10 @@ const templateData = [
 	{ name: "DischargeA4EN", module: "discharge", id: 20 },
 	{ name: "DetailsInvoiceBN", module: "billing", id: 21 },
 	{ name: "DetailsInvoiceEN", module: "billing", id: 22 },
-	{ name: "DetailsInvoicePosBN", module: "billing", id: 24 },
 	{ name: "DetailsInvoicePosEN", module: "billing", id: 23 },
+	{ name: "DetailsInvoicePosBN", module: "billing", id: 24 },
+	{ name: "AdmissionInvoiceBN", module: "admission", id: 25 },
+	{ name: "AdmissionInvoiceEN", module: "admission", id: 26 },
 ];
 
 export default function _Table({ module }) {

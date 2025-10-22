@@ -26,6 +26,8 @@ import DetailsInvoiceBN from "@components/print-formats/billing/DetailsInvoiceBN
 import DetailsInvoiceEN from "@components/print-formats/billing/DetailsInvoiceEN";
 import DetailsInvoicePosBN from "@components/print-formats/billing/DetailsInvoicePosBN";
 import DetailsInvoicePosEN from "@components/print-formats/billing/DetailsInvoicePosEN";
+import AdmissionInvoiceBN from "@components/print-formats/admission/AdmissionInvoiceBN";
+import AdmissionInvoiceEN from "@components/print-formats/admission/AdmissionInvoiceEN";
 
 const STATIC_OPD_ID = 59;
 const STATIC_PRESCRIPTION_ID = 59;
@@ -166,6 +168,16 @@ export default function Details() {
 					{name === "DetailsInvoicePosEN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
 							<DetailsInvoicePosEN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "AdmissionInvoiceBN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<AdmissionInvoiceBN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "AdmissionInvoiceEN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<AdmissionInvoiceEN preview data={prescriptionData?.data} />
 						</LoadingWrapper>
 					)}
 				</Box>

@@ -534,6 +534,13 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/visit",
 			VIEW: "/hospital/visit/view",
 		},
+		DOCTOR_OPD: {
+			INDEX: "/hospital/doctor/opd",
+			CREATE: "/hospital/doctor/opd",
+			UPDATE: "/hospital/doctor/opd",
+			VIEW: "/hospital/doctor/opd",
+			DELETE: "/hospital/doctor/opd",
+		},
 		DISCHARGE: {
 			INDEX: "/hospital/discharge",
 			CREATE: "/hospital/discharge",

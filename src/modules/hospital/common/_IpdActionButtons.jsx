@@ -8,8 +8,8 @@ import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import IPDDetailsDrawer from "./drawer/__IPDDetailsDrawer";
-import IPDDetailsBN from "@components/print-formats/ipd/IPDDetailsBN";
 import { useReactToPrint } from "react-to-print";
+import AdmissionInvoiceBN from "@components/print-formats/admission/AdmissionInvoiceBN";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -43,7 +43,7 @@ export default function IpdActionButtons({
 		content: () => ipdRef.current,
 	});
 
-	const enteredAmount = Number(form?.values?.amount ?? 0);
+	const enteredAmount = Number(item?.total ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
 	const isReturn = remainingBalance < 0;
 	const displayLabelKey = isReturn ? "Return" : "Due";
@@ -293,8 +293,7 @@ export default function IpdActionButtons({
 			{children}
 
 			<IPDDetailsDrawer opened={openedDetails} close={closeDetails} prescriptionId={item?.prescription_id} />
-
-			{printData && <IPDDetailsBN data={printData} ref={ipdRef} />}
+			{printData && <AdmissionInvoiceBN data={{ ...item, entities }} ref={ipdRef} />}
 		</>
 	);
 }

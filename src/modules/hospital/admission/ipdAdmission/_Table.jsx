@@ -215,31 +215,28 @@ export default function _Table({ module }) {
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (item) => (
-								<>
-									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-											item.process === "confirmed" && (
-												<Button.Group>
-													<Button
-														variant="filled"
-														onClick={() => handleAdmissionOverview(item.id)}
-														color="var(--theme-primary-color-6)"
-														radius="xs"
-														size={"compact-xs"}
-														aria-label="Settings"
-														rightSection={
-															<IconArrowNarrowRight
-																style={{ width: "70%", height: "70%" }}
-																stroke={1.5}
-															/>
-														}
-													>
-														Process
-													</Button>
-												</Button.Group>
-											)}
-									</Group>
-
+								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+										item.process === "confirmed" && (
+											<Button.Group>
+												<Button
+													variant="filled"
+													onClick={() => handleAdmissionOverview(item.id)}
+													color="var(--theme-primary-color-6)"
+													radius="xs"
+													size={"compact-xs"}
+													aria-label="Settings"
+													rightSection={
+														<IconArrowNarrowRight
+															style={{ width: "70%", height: "70%" }}
+															stroke={1.5}
+														/>
+													}
+												>
+													Process
+												</Button>
+											</Button.Group>
+										)}
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -299,7 +296,7 @@ export default function _Table({ module }) {
 											</Menu.Item>
 										</Menu.Dropdown>
 									</Menu>
-								</>
+								</Group>
 							),
 						},
 					]}

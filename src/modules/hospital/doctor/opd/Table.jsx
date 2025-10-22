@@ -173,7 +173,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	};
 
 	const handlePrescription = async (prescription_id) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR_OPD.INDEX}/${prescription_id}`);
 	};
 
 	const handleA4Print = async (id) => {
