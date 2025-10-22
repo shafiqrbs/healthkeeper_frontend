@@ -24,8 +24,8 @@ import IPDDetailsEN from "@components/print-formats/ipd/IPDDetailsEN";
 
 import DetailsInvoiceBN from "@components/print-formats/billing/DetailsInvoiceBN";
 import DetailsInvoiceEN from "@components/print-formats/billing/DetailsInvoiceEN";
-import {getDataWithoutStore} from "@/services/apiService";
-
+import DetailsInvoicePosBN from "@components/print-formats/billing/DetailsInvoicePosBN";
+import DetailsInvoicePosEN from "@components/print-formats/billing/DetailsInvoicePosEN";
 
 const STATIC_OPD_ID = 59;
 const STATIC_PRESCRIPTION_ID = 59;
@@ -46,8 +46,7 @@ export default function Details() {
 	const { data: labReportData, isLoading: isReportLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${REPORT_ID}`,
 	});
-	console.log(labReportData)
-
+	console.log(labReportData);
 
 	return (
 		<>
@@ -157,6 +156,16 @@ export default function Details() {
 					{name === "DetailsInvoiceEN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
 							<DetailsInvoiceEN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "DetailsInvoicePosBN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<DetailsInvoicePosBN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "DetailsInvoicePosEN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<DetailsInvoicePosEN preview data={prescriptionData?.data} />
 						</LoadingWrapper>
 					)}
 				</Box>

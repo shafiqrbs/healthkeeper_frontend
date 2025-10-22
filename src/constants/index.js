@@ -24,6 +24,7 @@ export const MODULES = {
 	LAB_TEST: "labTest",
 	BILLING: "billing",
 	FINAL_BILLING: "finalBilling",
+	DOCTOR: "doctor",
 };
 
 export const MODULES_CORE = {

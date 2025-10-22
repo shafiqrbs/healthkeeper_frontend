@@ -29,7 +29,7 @@ import {
 	IconMedicineSyrup,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { getMedicineFormInitialValues } from "./helpers/request";
+import { getMedicineFormInitialValues } from "./helpers/request.js";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
@@ -52,12 +52,11 @@ import inputCss from "@assets/css/InputField.module.css";
 import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
-import HistoryPrescription from "./HistoryPrescription";
 import DischargeA4BN from "@components/print-formats/discharge/DischargeA4BN";
 import { appendDosageValueToForm, appendGeneralValuesToForm, appendMealValueToForm } from "@utils/prescription";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 
-const module = MODULES.DISCHARGE;
+const module = MODULES.DOCTOR;
 
 export default function Prescription({ setShowHistory, hasRecords, baseHeight }) {
 	const form = useForm({
@@ -69,9 +68,9 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 	const [medicines, setMedicines] = useState([]);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const dischargeA4Ref = useRef(null);
+	const doctorOpdA4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
-	const { dischargeId } = useParams();
+	const { doctorOpdId } = useParams();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -96,11 +95,10 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
-	const [openedHistoryMedicine, { open: openHistoryMedicine, close: closeHistoryMedicine }] = useDisclosure(false);
 
 	const printDischargeA4 = useReactToPrint({
 		documentTitle: `discharge-${Date.now().toLocaleString()}`,
-		content: () => dischargeA4Ref.current,
+		content: () => doctorOpdA4Ref.current,
 	});
 
 	useEffect(() => {
@@ -197,7 +195,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 	// =============== handler for saving emergency prescription ================
 	const handleEmergencyPrescriptionSave = () => {
 		if (tempEmergencyItems.length === 0) {
-			showNotificationComponent(t("Please add at least one emergency item"), "red", "lightgray", true, 700, true);
+			showNotificationComponent(t("PleaseAddAtLeastOneEmergencyItem"), "red", "lightgray", true, 700, true);
 			return;
 		}
 
@@ -232,14 +230,14 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 			"alt+2",
 			() => {
 				handleHoldData();
-				showNotificationComponent(t("Prescription held successfully"), "blue", "lightgray", true, 700, true);
+				showNotificationComponent(t("PrescriptionHeldSuccessfully"), "blue", "lightgray", true, 700, true);
 			},
 		],
 		[
 			"alt+4",
 			() => {
 				printDischargeA4();
-				showNotificationComponent(t("Prescription printed successfully"), "blue", "lightgray", true, 700, true);
+				showNotificationComponent(t("PrescriptionPrintedSuccessfully"), "blue", "lightgray", true, 700, true);
 			},
 		],
 	]);
@@ -338,7 +336,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 			};
 
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.DISCHARGE.UPDATE}/${dischargeId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.DOCTOR_OPD.UPDATE}/${doctorOpdId}`,
 				data: formValue,
 				module,
 			};
@@ -585,11 +583,6 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 					{t("ListOfMedicines")}
 				</Text>
 				<Flex px="les" gap="les">
-					<Tooltip label={t("HistoryMedicine")}>
-						<ActionIcon size="lg" bg="var(--theme-primary-color-6)" onClick={openHistoryMedicine}>
-							<IconHistory size={16} />
-						</ActionIcon>
-					</Tooltip>
 					{hasRecords && (
 						<Tooltip label="History">
 							<Button
@@ -814,7 +807,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 					</Button.Group>
 				</>
 			)}
-			{printData && <DischargeA4BN ref={dischargeA4Ref} data={printData} />}
+			{printData && <DischargeA4BN ref={doctorOpdA4Ref} data={printData} />}
 			<GlobalDrawer
 				opened={openedExPrescription}
 				close={closeExPrescription}
@@ -894,26 +887,13 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 				</Stack>
 			</GlobalDrawer>
 			{/* prescription preview */}
-			{dischargeId && (
+			{doctorOpdId && (
 				<DetailsDrawer
 					opened={openedPrescriptionPreview}
 					close={closePrescriptionPreview}
-					prescriptionId={dischargeId}
+					prescriptionId={doctorOpdId}
 				/>
 			)}
-
-			{dischargeId && (
-				<GlobalDrawer
-					opened={openedHistoryMedicine}
-					close={closeHistoryMedicine}
-					title={t("PreviousPrescription")}
-					size="25%"
-				>
-					<HistoryPrescription setMedicines={setMedicines} closeHistoryMedicine={closeHistoryMedicine} />
-				</GlobalDrawer>
-			)}
-
-			{/* <ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} /> */}
 
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
 		</Box>

@@ -1,21 +1,9 @@
-import { Box, Flex, Grid } from "@mantine/core";
-import Navigation from "@components/layout/Navigation";
+import Prescription from "./_Prescription";
+import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
-import { useOutletContext } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { MODULES } from "@/constants";
-import Table from "./Table";
-
-const module = MODULES.VISIT;
 
 export default function Index() {
-	const { t } = useTranslation();
 	const progress = useGetLoadingProgress();
-	const { mainAreaHeight } = useOutletContext();
 
-	return (
-		<>
-			<Table module={module} height={mainAreaHeight - 156} />
-		</>
-	);
+	return <>{progress !== 100 ? <DefaultSkeleton /> : <Prescription />}</>;
 }

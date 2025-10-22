@@ -25,12 +25,14 @@ const templateData = [
 	{ name: "IPDDetailsEN", module: "ipd", id: 14 },
 	{ name: "IPDPrescriptionFullBN", module: "ipd", id: 15 },
 	{ name: "IPDPrescriptionFullEN", module: "ipd", id: 16 },
-	{ name: "LabReportA4EN", module: "lab-reports", id: 17 },
 	{ name: "LabReportA4BN", module: "lab-reports", id: 18 },
+	{ name: "LabReportA4EN", module: "lab-reports", id: 17 },
 	{ name: "DischargeA4BN", module: "discharge", id: 19 },
 	{ name: "DischargeA4EN", module: "discharge", id: 20 },
 	{ name: "DetailsInvoiceBN", module: "billing", id: 21 },
 	{ name: "DetailsInvoiceEN", module: "billing", id: 22 },
+	{ name: "DetailsInvoicePosBN", module: "billing", id: 24 },
+	{ name: "DetailsInvoicePosEN", module: "billing", id: 23 },
 ];
 
 export default function _Table({ module }) {
