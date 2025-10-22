@@ -18,19 +18,22 @@ import IPDPrescriptionFullBN from "@components/print-formats/ipd/IPDPrescription
 import { useState, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
+import DetailsInvoiceBN from "@components/print-formats/billing/DetailsInvoiceBN";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
 
 export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode }) {
 	const prescriptionRef = useRef(null);
+	const billingInvoiceRef = useRef(null);
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const height = mainAreaHeight - 100;
 	const [printData, setPrintData] = useState(null);
+	const [billingPrintData, setBillingPrintData] = useState(null);
+	const height = mainAreaHeight - 100;
 
 	const form = useForm({
 		initialValues: {
@@ -57,6 +60,18 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 	const printPrescription = useReactToPrint({
 		content: () => prescriptionRef.current,
 	});
+
+	const printBillingInvoice = useReactToPrint({
+		content: () => billingInvoiceRef.current,
+	});
+
+	const handleBillingInvoicePrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+		});
+		setBillingPrintData(res.data);
+		requestAnimationFrame(printBillingInvoice);
+	};
 
 	const handlePrescriptionPrint = async (id) => {
 		const res = await getDataWithoutStore({
@@ -103,10 +118,6 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 			console.error(resultAction);
 			showNotificationComponent(t("SomethingWentWrongPleaseTryAgain"), "red.6", "lightgray");
 		}
-	};
-
-	const handleBillingInvoice = (id) => {
-		console.log(id);
 	};
 
 	return (
@@ -257,7 +268,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 															}}
 														/>
 													}
-													onClick={() => handleBillingInvoice(values?.id)}
+													onClick={() => handleBillingInvoicePrint(values?.id)}
 												>
 													{t("BillingInvoice")}
 												</Menu.Item>
@@ -286,6 +297,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 			<DataTableFooter indexData={records} module="ipd" />
 
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
+			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
 		</Box>
 	);
 }

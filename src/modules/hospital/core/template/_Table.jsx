@@ -29,6 +29,8 @@ const templateData = [
 	{ name: "LabReportA4BN", module: "lab-reports", id: 18 },
 	{ name: "DischargeA4BN", module: "discharge", id: 19 },
 	{ name: "DischargeA4EN", module: "discharge", id: 20 },
+	{ name: "DetailsInvoiceBN", module: "billing", id: 21 },
+	{ name: "DetailsInvoiceEN", module: "billing", id: 22 },
 ];
 
 export default function _Table({ module }) {

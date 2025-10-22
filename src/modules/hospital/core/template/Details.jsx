@@ -21,6 +21,8 @@ import DischargeA4BN from "@components/print-formats/discharge/DischargeA4BN";
 import DischargeA4EN from "@components/print-formats/discharge/DischargeA4EN";
 import IPDDetailsBN from "@components/print-formats/ipd/IPDDetailsBN";
 import IPDDetailsEN from "@components/print-formats/ipd/IPDDetailsEN";
+import DetailsInvoiceBN from "@components/print-formats/billing/DetailsInvoiceBN";
+import DetailsInvoiceEN from "@components/print-formats/billing/DetailsInvoiceEN";
 
 const STATIC_OPD_ID = 59;
 const STATIC_PRESCRIPTION_ID = 59;
@@ -135,6 +137,16 @@ export default function Details() {
 					{name === "DischargeA4EN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
 							<DischargeA4EN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "DetailsInvoiceBN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<DetailsInvoiceBN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "DetailsInvoiceEN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<DetailsInvoiceEN preview data={prescriptionData?.data} />
 						</LoadingWrapper>
 					)}
 				</Box>
