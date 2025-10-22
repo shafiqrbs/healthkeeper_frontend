@@ -21,11 +21,15 @@ import DischargeA4BN from "@components/print-formats/discharge/DischargeA4BN";
 import DischargeA4EN from "@components/print-formats/discharge/DischargeA4EN";
 import IPDDetailsBN from "@components/print-formats/ipd/IPDDetailsBN";
 import IPDDetailsEN from "@components/print-formats/ipd/IPDDetailsEN";
+
 import DetailsInvoiceBN from "@components/print-formats/billing/DetailsInvoiceBN";
 import DetailsInvoiceEN from "@components/print-formats/billing/DetailsInvoiceEN";
+import {getDataWithoutStore} from "@/services/apiService";
+
 
 const STATIC_OPD_ID = 59;
 const STATIC_PRESCRIPTION_ID = 59;
+const REPORT_ID = 274;
 
 export default function Details() {
 	const { name } = useParams();
@@ -38,6 +42,12 @@ export default function Details() {
 	const { data: prescriptionData, isLoading: isPrescriptionLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${STATIC_PRESCRIPTION_ID}`,
 	});
+
+	const { data: labReportData, isLoading: isReportLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${REPORT_ID}`,
+	});
+	console.log(labReportData)
+
 
 	return (
 		<>
@@ -120,13 +130,13 @@ export default function Details() {
 						</LoadingWrapper>
 					)}
 					{name === "LabReportA4EN" && (
-						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<LabReportA4EN preview data={prescriptionData?.data} />
+						<LoadingWrapper isLoading={isReportLoading}>
+							<LabReportA4EN preview data={labReportData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "LabReportA4BN" && (
-						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<LabReportA4BN preview data={prescriptionData?.data} />
+						<LoadingWrapper isLoading={isReportLoading}>
+							<LabReportA4BN preview data={labReportData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "DischargeA4BN" && (

@@ -43,7 +43,7 @@ export default function _Table() {
 					Patient Name
 				</Text>
 			</Flex>
-			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="xxxs">
+			<ScrollArea bg="white" h={mainAreaHeight - 180} scrollbars="y" px="xxxs">
 				{records?.map((item) => (
 					<Grid
 						columns={12}

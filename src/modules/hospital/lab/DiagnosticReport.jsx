@@ -38,10 +38,12 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 	const [fetching, setFetching] = useState(false);
 	const [refetch, setRefetch] = useState(false);
 
-	console.log(diagnosticReport);
-
-	const handleLabReport = (id) => {
-		setLabReportData({ id: id });
+	const handleLabReport = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
+		});
+		console.log(res)
+		setLabReportData(res?.data);
 		requestAnimationFrame(printLabReport);
 	};
 
@@ -213,7 +215,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 							]}
 							loaderSize="xs"
 							loaderColor="grape"
-							height={mainAreaHeight - 280}
+							height={mainAreaHeight - 315}
 							fetching={fetching}
 							sortIcons={{
 								sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
@@ -227,7 +229,9 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 								<Box w="100%">
 									{diagnosticReport?.process === "Done" ? (
 										<>
+											<Box h={'56'}>
 											<strong>Comment:</strong> {diagnosticReport?.comment}
+											</Box>
 										</>
 									) : (
 										<TextAreaForm
@@ -253,14 +257,17 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 												>
 													<Button
 														onClick={() => handleLabReport(diagnosticReport?.id)}
-														size="md"
+														size="xs"
 														color="var(--theme-secondary-color-5)"
 														type="button"
 														id="EntityFormSubmit"
 														rightSection={<IconPrinter size="18px" />}
 													>
 														<Flex direction="column" gap={0}>
-															<Text>{t("Print")}</Text>
+															<Text fz={'xs'}>{t("Print")}</Text>
+															<Flex direction="column" align="center" fz="xxs" c="white">
+																alt+p
+															</Flex>
 														</Flex>
 													</Button>
 												</Flex>
@@ -277,14 +284,14 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 											>
 												{diagnosticReport?.process === "New" && (
 													<Button
-														size="md"
+														size="xs"
 														className="btnPrimaryBg"
 														type="submit"
 														id="handleSubmit"
 													>
 														<Flex direction="column" gap={0}>
-															<Text>{t("Save")}</Text>
-															<Flex direction="column" align="center" fz="12px" c="white">
+															<Text fz="xs">{t("Save")}</Text>
+															<Flex direction="column" align="center" fz="xxs" c="white">
 																alt+s
 															</Flex>
 														</Flex>
@@ -292,14 +299,15 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 												)}
 												{diagnosticReport?.process === "In-progress" && (
 													<Button
-														size="md"
+														size="xs"
+														fz={'xs'}
 														bg="var(--theme-primary-color-6)"
 														type="submit"
 														id="handleSubmit"
 													>
 														<Flex direction="column" gap={0}>
-															<Text>{t("Confirm")}</Text>
-															<Flex direction="column" align="center" fz="12px" c="white">
+															<Text fz="xs" >{t("Confirm")}</Text>
+															<Flex direction="column" align="center" fz="xxs" c="white">
 																alt+s
 															</Flex>
 														</Flex>

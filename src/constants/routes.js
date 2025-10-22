@@ -508,6 +508,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "hospital/lab-investigation",
 			VIEW: "hospital/lab-investigation",
 			DELETE: "hospital/lab-investigation",
+			PRINT: "hospital/lab-investigation/print",
 			INLINE_UPDATE: "hospital/lab-investigation/report/inline-update",
 		},
 		EPHARMA: {

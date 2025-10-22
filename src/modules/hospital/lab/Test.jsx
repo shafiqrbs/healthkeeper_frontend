@@ -3,11 +3,13 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { IconEye, IconPrinter, IconTag } from "@tabler/icons-react";
-import { getUserRole } from "@utils/index";
+import {formatDate, getUserRole} from "@utils/index";
 import { useRef, useState } from "react";
 import Barcode from "react-barcode";
 import { useReactToPrint } from "react-to-print";
 import LabReportA4BN from "@components/print-formats/lab-reports/LabReportA4BN";
+import DashedDivider from "@components/core-component/DashedDivider";
+import CustomDivider from "@components/core-component/CustomDivider";
 
 const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"];
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
@@ -30,7 +32,7 @@ export default function Test({ entity, isLoading }) {
 	const printBarCodeValue = useReactToPrint({
 		content: () => barCodeRef.current,
 	});
-
+	console.log(test?.invoice_transaction)
 	const handleTest = (reportId) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${reportId}`);
 	};
@@ -97,71 +99,80 @@ export default function Test({ entity, isLoading }) {
 				<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 154} pos="relative">
 					<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 					<Stack className="form-stack-vertical" p="xs">
-						{test?.invoice_particular?.map((item, index) => (
-							<Box key={index} className="borderRadiusAll" bg={"white"} p="sm">
-								<Text fz="sm">{item.item_name}</Text>
-								<Text fz="xs">Status:{item?.process}</Text>
-								<Flex align="center" gap="mes" mt="xs">
-									{userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
-										<>
-											{item?.process === "New" &&
-												userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
+						{test?.invoice_transaction?.map((transaction, index) => (
+							<>
+								<Box key={index} className="borderRadiusAll" bg={"white"} p="sm">
+
+							<Box fz={'xs'} fw={'600'}>{t('Date')} : {formatDate(transaction?.created_at)}</Box>
+									<CustomDivider/>
+							{transaction?.items?.map((item, index) => (
+									<Box mt={'xs'}>
+									<Text fz="xs">{item.item_name}</Text>
+									<Text fz="xs">Status:{item?.process}</Text>
+									<Flex align="center" gap="mes" mt="xs">
+										{userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
+											<>
+												{item?.process === "New" &&
+													userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
+														<Button
+															onClick={() => handleTest(item.invoice_particular_id)}
+															size="xs"
+															bg="var(--theme-primary-color-6)"
+															color="white"
+														>
+															{t("Process")}
+														</Button>
+													)}
+												{item?.process === "In-progress" &&
+													userRoles.some((role) => ALLOWED_LAB_DOCTOR_ROLES.includes(role)) && (
+														<Button
+															onClick={() => handleTest(item.invoice_particular_id)}
+															size="compact-xs"
+															bg="var(--theme-primary-color-6)"
+															color="white"
+														>
+															{t("Confirm")}
+														</Button>
+													)}
+												{item?.process === "Done" ? (
+													<>
+														<Button
+															onClick={() => handleTest(item.invoice_particular_id)}
+															size="compact-xs"
+															bg="var(--theme-primary-color-6)"
+															color="white"
+															leftSection={<IconEye color="white" size={16} />}
+														>
+															{t("Show")}
+														</Button>
+														<Button
+															size="compact-xs"
+															bg="var(--theme-secondary-color-6)"
+															onClick={() => handleLabReport(item.invoice_particular_id)}
+															color="white"
+															leftSection={<IconPrinter color="white" size={16} />}
+														>
+															{t("Print")}
+														</Button>
+													</>
+												) : (
 													<Button
-														onClick={() => handleTest(item.invoice_particular_id)}
-														size="xs"
-														bg="var(--theme-primary-color-6)"
-														color="white"
-													>
-														{t("Process")}
-													</Button>
-												)}
-											{item?.process === "In-progress" &&
-												userRoles.some((role) => ALLOWED_LAB_DOCTOR_ROLES.includes(role)) && (
-													<Button
-														onClick={() => handleTest(item.invoice_particular_id)}
-														size="xs"
-														bg="var(--theme-primary-color-6)"
-														color="white"
-													>
-														{t("Confirm")}
-													</Button>
-												)}
-											{item?.process === "Done" ? (
-												<>
-													<Button
-														onClick={() => handleTest(item.invoice_particular_id)}
-														size="xs"
-														bg="var(--theme-primary-color-6)"
-														color="white"
-														leftSection={<IconEye color="white" size={16} />}
-													>
-														{t("Show")}
-													</Button>
-													<Button
-														size="xs"
+														leftSection={<IconTag stroke={1.2} size={12} />}
+														onClick={() => handleBarcodeTag(item.barcode)}
+														size="compact-xs"
 														bg="var(--theme-secondary-color-6)"
-														onClick={() => handleLabReport(item.invoice_particular_id)}
 														color="white"
-														leftSection={<IconPrinter color="white" size={16} />}
 													>
-														{t("Print")}
+														{t("Tag")}
 													</Button>
-												</>
-											) : (
-												<Button
-													leftSection={<IconTag stroke={1.5} size={16} />}
-													onClick={() => handleBarcodeTag(item.barcode)}
-													size="xs"
-													bg="var(--mantine-color-teal-6)"
-													color="white"
-												>
-													{t("Tag")}
-												</Button>
-											)}
-										</>
-									)}
-								</Flex>
-							</Box>
+												)}
+											</>
+										)}
+									</Flex>
+									</Box>
+							))}
+								</Box>
+							</>
 						))}
 					</Stack>
 				</ScrollArea>
@@ -174,7 +185,7 @@ export default function Test({ entity, isLoading }) {
 			{/* ----------- barcode generator ---------- */}
 			<Box display="none">
 				<Box ref={barCodeRef}>
-					<Barcode fontSize="12" width="1" height="40" value={barcodeValue || "BARCODETEST"} />
+					<Barcode fontSize="10" width="1" height="30" value={barcodeValue || "BARCODETEST"} />
 				</Box>
 			</Box>
 
