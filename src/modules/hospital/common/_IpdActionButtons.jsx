@@ -191,7 +191,7 @@ export default function IpdActionButtons({
 									<Text>{t("Fee")}</Text>
 									<Box px="xs" py="les">
 										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
-											৳ {Number(configuredDueAmount || 0).toLocaleString()}
+											৳ {Number(item?.total || 0).toLocaleString()}
 										</Text>
 									</Box>
 								</Flex>

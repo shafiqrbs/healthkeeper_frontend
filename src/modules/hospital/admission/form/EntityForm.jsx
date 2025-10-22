@@ -382,7 +382,7 @@ export default function EntityForm({ form, module }) {
 						<Box>
 							<Box bg="var(--theme-primary-color-0)" p="sm">
 								<Text fw={600} fz="sm" py="es">
-									{t("AdmissionInformation")}
+									{t("AdmissionBasic")}
 								</Text>
 							</Box>
 							<ScrollArea scrollbars="y" type="never" h={height}>
@@ -669,7 +669,7 @@ export default function EntityForm({ form, module }) {
 						<Box>
 							<Box bg="var(--theme-primary-color-0)" p="sm">
 								<Text fw={600} fz="sm" py="es">
-									{t("AdmissionInformation")}
+									{t("PersonalInformation")}
 								</Text>
 							</Box>
 							<ScrollArea scrollbars="y" type="never" h={height}>

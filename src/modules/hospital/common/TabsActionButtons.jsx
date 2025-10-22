@@ -2,7 +2,7 @@ import { Button, Group } from "@mantine/core";
 
 export default function TabsActionButtons({ handleReset, handleSave, isSubmitting = false }) {
 	return (
-		<Group mt="sm" gap="xs" grow>
+		<Group mr={'xs'} gap="xs" grow>
 			<Button radius={0} size="sm" onClick={handleReset} bg="var(--theme-tertiary-color-6)">
 				Reset
 			</Button>

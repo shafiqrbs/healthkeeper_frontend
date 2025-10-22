@@ -444,7 +444,7 @@ export default function Medicine() {
 			</Box>
 			<ScrollArea h={mainAreaHeight - 170}>
 				<Grid columns={24} gutter="sm" p="sm" h={mainAreaHeight - 240}>
-					<Grid.Col span={14}>
+					<Grid.Col span={16}>
 						<Stack h={mainAreaHeight - 200} justify="space-between">
 							<Box bd="1px solid var(--theme-tertiary-color-3)" className="borderRadiusAll" p="sm">
 								{medicines?.length === 0 && (
@@ -483,8 +483,8 @@ export default function Medicine() {
 									/>
 								))}
 							</Box>
-							<Box px="xs">
-								<Box ml="auto" w={300}>
+							<Box py="xs" bg='var(--theme-tertiary-color-1)'>
+								<Box ml="auto" w={300} >
 									<TabsActionButtons
 										handleReset={() => {}}
 										handleSave={handleSubmit}
@@ -494,8 +494,7 @@ export default function Medicine() {
 							</Box>
 						</Stack>
 					</Grid.Col>
-
-					<Grid.Col span={10}>
+					<Grid.Col span={8}>
 						<ScrollArea
 							h={mainAreaHeight - 200}
 							bd="1px solid var(--theme-tertiary-color-3)"

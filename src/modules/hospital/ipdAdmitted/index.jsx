@@ -65,9 +65,9 @@ export default function Index() {
 											// "Advice",
 											// "Instruction",
 											// "OT",
-											"Charge",
-											"Billing",
-											"Final Bill",
+											// "Charge",
+											// "Billing",
+											// "Final Bill",
 											"Discharge",
 										]}
 										hideSearchbar
@@ -97,7 +97,7 @@ export default function Index() {
 											// 	tab: "OT",
 											// 	component: <OT />,
 											// },
-											{
+											/*{
 												tab: "Charge",
 												component: <Charge />,
 											},
@@ -108,7 +108,7 @@ export default function Index() {
 											{
 												tab: "Final Bill",
 												component: <FinalBill />,
-											},
+											},*/
 											{
 												tab: "Discharge",
 												component: <Discharge />,
