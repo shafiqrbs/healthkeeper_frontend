@@ -32,7 +32,6 @@ import inputCss from "@assets/css/InputField.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import IPDAllPrint from "@components/print-formats/ipd/IPDAllPrint";
 import { useReactToPrint } from "react-to-print";
-import {t} from "i18next";
 
 const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator"];
 const module = MODULES.BILLING;
@@ -278,56 +277,17 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 									}
 									p="sm"
 								>
-									<Grid columns={16} gap={0} gutter="xs">
-										<Grid.Col span={4} py={0}>
-											<Text size="xs" fw={600}>
-												Created:
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs">
-												{item?.created}
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs" fw={600}>
-												Mode:
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs">
-												{item?.mode}
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs" fw={600}>
-												Amount:
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs">
-												{Number(item?.total, 2)}
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs" fw={600}>
-												Status:
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs">
-												{item?.process}
-											</Text>
-										</Grid.Col>
-									</Grid>
-									<Flex align="center" gap="sm" mt={'md'}  justify="flex-end">
+									<Text fz="sm">{item.invoice_created}</Text>
+									<Text fz="xs">Status:{item?.process}</Text>
+									<Text fz="xs">Amount:{Number(item?.total, 2)}</Text>
+									<Flex align="center" gap="sm">
 										{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
 											<>
 												{item?.process === "New" &&
 													userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
 														<Button
 															onClick={() => handleTest(item.hms_invoice_transaction_id)}
-															size="compact-xs"
+															size="xs"
 															bg="var(--theme-primary-color-6)"
 															color="white"
 														>
@@ -338,7 +298,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 													<>
 														<Button
 															onClick={() => handleTest(item.hms_invoice_transaction_id)}
-															size="compact-xs"
+															size="xs"
 															bg="var(--theme-primary-color-6)"
 															color="white"
 														>
@@ -346,7 +306,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 														</Button>
 														<Button
 															onClick={() => handleTest(item.hms_invoice_transaction_id)}
-															size="compact-xs"
+															size="xs"
 															bg="var(--theme-secondary-color-6)"
 															color="white"
 														>

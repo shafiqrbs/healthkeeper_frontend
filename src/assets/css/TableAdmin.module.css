@@ -45,6 +45,7 @@
         font-weight: normal;
         color: var(--mantine-color-gray-8);
         border-bottom: 1px solid transparent;
+        padding-left: 0!important;
     }
 }
 

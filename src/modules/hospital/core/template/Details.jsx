@@ -48,7 +48,6 @@ export default function Details() {
 	const { data: labReportData, isLoading: isReportLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${REPORT_ID}`,
 	});
-	console.log(labReportData);
 
 	return (
 		<>

@@ -130,7 +130,7 @@ export default function InvoiceDetails() {
 									title: t("Price"),
 								},
 								{
-									accessor: "sub_total",
+									accessor: "unit",
 									title: t("SubTotal"),
 								},
 							]}
@@ -144,7 +144,6 @@ export default function InvoiceDetails() {
 							}}
 						/>
 					</Box>
-					{invoiceDetails.process !=='Done' && (
 					<Box gap={0} justify="space-between" mt="xs">
 						<form onSubmit={form.onSubmit(handleSubmit)}>
 							<Box bg="white" px="xs" pb="xs">
@@ -257,8 +256,6 @@ export default function InvoiceDetails() {
 							</Box>
 						</form>
 					</Box>
-					)}
-
 				</>
 			) : (
 				<Box bg="white">
