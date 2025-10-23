@@ -359,8 +359,9 @@ function AppRoute() {
 					>
 						<Route index element={<DoctorDashboard />} />
 						<Route path="opd" element={<DoctorOpdIndex />} />
-						<Route path="opd/:id" element={<DoctorOpdIndex />} />
+						<Route path="opd/:prescriptionId" element={<DoctorOpdIndex />} />
 						<Route path="emergency" element={<DoctorDashboard />} />
+						<Route path="emergency/:prescriptionId" element={<DoctorDashboard />} />
 						<Route path="ipd" element={<DoctorDashboard />} />
 						<Route path="requisition" element={<PharmacyRequisitionIndex />} />
 					</Route>

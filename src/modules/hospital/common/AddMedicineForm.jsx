@@ -69,6 +69,8 @@ export default function AddMedicineForm({
 	prescriptionData,
 	hasRecords,
 	tabParticulars,
+	ignoreOpdQuantityLimit = false,
+	redirectUrl = null,
 }) {
 	const [mountPreview, setMountPreview] = useState(false);
 	const navigate = useNavigate();
@@ -387,7 +389,7 @@ export default function AddMedicineForm({
 			} else {
 				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 700, true);
 				setRefetchData({ module, refetching: true });
-				if (redirect) navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+				if (redirect) navigate(redirectUrl || HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {
@@ -548,12 +550,13 @@ export default function AddMedicineForm({
 												label: byMeal.name,
 											}))}
 											value={medicineForm.values?.medicine_bymeal_id}
-											placeholder={t("By Meal")}
+											placeholder={t("ByMeal")}
 											tooltip={t("EnterWhenToTakeMedicine")}
 											onChange={(v) => handleChange("medicine_bymeal_id", v)}
 										/>
 									</Group>
 								</Grid.Col>
+
 								<Grid.Col span={6}>
 									<Group grow gap="les">
 										<InputNumberForm
@@ -731,6 +734,7 @@ export default function AddMedicineForm({
 							update={update}
 							by_meal_options={by_meal_options}
 							dosage_options={dosage_options}
+							ignoreOpdQuantityLimit={ignoreOpdQuantityLimit}
 						/>
 					))}
 				</Stack>

@@ -181,6 +181,8 @@ export default function Index() {
 									setShowHistory={setShowHistory}
 									prescriptionData={prescriptionData}
 									tabParticulars={tabParticulars}
+									ignoreOpdQuantityLimit
+									redirectUrl={HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR_OPD.INDEX}
 								/>
 							</Grid.Col>
 							{hasRecords && (

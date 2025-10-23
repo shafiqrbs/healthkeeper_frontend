@@ -9,7 +9,7 @@ import Prescription from "./_Prescription";
 const module = MODULES.VISIT;
 
 export default function Index() {
-	const { id } = useParams();
+	const { prescriptionId } = useParams();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 
@@ -20,7 +20,7 @@ export default function Index() {
 			) : (
 				<Grid w="100%" columns={24}>
 					<Grid.Col span={24}>
-						{id ? <Prescription /> : <Table module={module} height={mainAreaHeight - 156} />}
+						{prescriptionId ? <Prescription /> : <Table module={module} height={mainAreaHeight - 156} />}
 					</Grid.Col>
 				</Grid>
 			)}

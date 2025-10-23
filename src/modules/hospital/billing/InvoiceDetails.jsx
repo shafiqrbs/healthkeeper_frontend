@@ -145,7 +145,7 @@ export default function InvoiceDetails() {
 							}}
 						/>
 					</Box>
-					{invoiceDetails.process !== "Done" && (
+					{invoiceDetails?.process !== "Done" && (
 						<Box gap={0} justify="space-between" mt="xs">
 							<form onSubmit={form.onSubmit(handleSubmit)}>
 								<Box bg="white" px="xs" pb="xs">
@@ -164,6 +164,7 @@ export default function InvoiceDetails() {
 														tooltip={t("EnterComment")}
 														placeholder={t("EnterComment")}
 														name="comment"
+														disabled={invoiceDetails?.process === "Done"}
 													/>
 												</Box>
 											</Grid.Col>
@@ -224,6 +225,7 @@ export default function InvoiceDetails() {
 															name="amount"
 															id="amount"
 															value={invoiceDetails?.total || 0}
+															disabled={invoiceDetails?.process === "Done"}
 														/>
 													</Grid.Col>
 												</Grid>
@@ -235,6 +237,7 @@ export default function InvoiceDetails() {
 															size="compact-sm"
 															bg="var(--theme-pos-btn-color)"
 															type="button"
+															disabled={invoiceDetails?.process === "Done"}
 														>
 															<Stack gap={0} align="center" justify="center">
 																<Text fz="xs">{t("Print")}</Text>
@@ -245,6 +248,7 @@ export default function InvoiceDetails() {
 															w="100%"
 															size="compact-sm"
 															bg="var(--theme-save-btn-color)"
+															disabled={invoiceDetails?.process === "Done"}
 														>
 															<Stack gap={0} align="center" justify="center">
 																<Text fz="xs">{t("Save")}</Text>

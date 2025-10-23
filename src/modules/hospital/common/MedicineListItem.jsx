@@ -13,6 +13,7 @@ const DURATION_UNIT_OPTIONS = [
 ];
 
 export default function MedicineListItem({
+	ignoreOpdQuantityLimit = false,
 	by_meal_options,
 	dosage_options,
 	index,
@@ -27,7 +28,7 @@ export default function MedicineListItem({
 	const [viewAction, setViewAction] = useState(true);
 
 	const handleChange = (field, value) => {
-		if (field === "opd_quantity") {
+		if (field === "opd_quantity" && !ignoreOpdQuantityLimit) {
 			if (value > medicine.opd_limit) {
 				showNotificationComponent(t("OpdQuantityCannotBeGreaterThanOpdQuantity"), "error");
 				return;
@@ -273,6 +274,7 @@ export default function MedicineListItem({
 													<Input
 														size="xs"
 														label=""
+														type="number"
 														placeholder={t("OutdoorMedicineNumber")}
 														value={medicine.opd_quantity}
 														onChange={(event) =>
