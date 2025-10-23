@@ -966,5 +966,6 @@
 	"SearchByRoomName": "রুম নাম অনুসন্ধান করুন",
 	"PrintedBy": "প্রিন্ট করেছেন",
 	"PrintDateAndTime": "প্রিন্ট তারিখ ও সময়",
-	"RelationWithPatient": "রোগীর সম্পর্ক"
+	"RelationWithPatient": "রোগীর সম্পর্ক",
+	"QuantityCannotBeGreaterThanOpdQuantity": "মেডিসিনের পরিমাণ ওপিডি পরিমাণ অপেক্ষা বেশি হতে পারে না"
 }

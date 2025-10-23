@@ -40,6 +40,7 @@ import {
 	getByMeal,
 	getDosage,
 } from "@utils/prescription";
+import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
 
 const DURATION_OPTIONS = [
 	{ value: "day", label: "Day" },
@@ -199,6 +200,7 @@ export default function Medicine() {
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
 	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
 	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
+	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 
 	useEffect(() => {
 		dispatch(
@@ -431,6 +433,18 @@ export default function Medicine() {
 
 								<Button
 									leftSection={<IconPlus size={16} />}
+									w="100%"
+									size="xs"
+									type="button"
+									variant="outline"
+									color="green"
+									onClick={openDosageForm}
+								>
+									{t("AddDosage")}
+								</Button>
+
+								<Button
+									leftSection={<IconPlus size={16} />}
 									type="submit"
 									variant="filled"
 									bg="var(--theme-primary-color-6)"
@@ -483,8 +497,8 @@ export default function Medicine() {
 									/>
 								))}
 							</Box>
-							<Box py="xs" bg='var(--theme-tertiary-color-1)'>
-								<Box ml="auto" w={300} >
+							<Box py="xs" bg="var(--theme-tertiary-color-1)">
+								<Box ml="auto" w={300}>
 									<TabsActionButtons
 										handleReset={() => {}}
 										handleSave={handleSubmit}
@@ -533,6 +547,7 @@ export default function Medicine() {
 					</Grid.Col>
 				</Grid>
 			</ScrollArea>
+			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
 		</Box>
 	);
 }

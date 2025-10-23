@@ -1539,5 +1539,6 @@
 	"PatientUrl": "Patient URL",
 	"NIDUrl": "NID URL",
 	"ListOfMedicines": "List of Medicines",
-	"RelationWithPatient": "Relation with Patient"
+	"RelationWithPatient": "Relation with Patient",
+	"QuantityCannotBeGreaterThanOpdQuantity": "Quantity cannot be greater than opd quantity"
 }

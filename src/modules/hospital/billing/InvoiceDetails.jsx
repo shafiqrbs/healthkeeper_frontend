@@ -1,6 +1,6 @@
 import { getDataWithoutStore } from "@/services/apiService";
 import { Box, Text, Stack, Grid, Flex, Button } from "@mantine/core";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -12,7 +12,7 @@ import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { modals } from "@mantine/modals";
-import { storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import { updateEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -25,11 +25,9 @@ const module = MODULES_CORE.BILLING;
 export default function InvoiceDetails() {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
-	const inputsRef = useRef([]);
 	const { mainAreaHeight } = useOutletContext();
 	const form = useForm(getFormValues(t));
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
-	const [updatingRows, setUpdatingRows] = useState({});
 	const { id, transactionId } = useParams();
 	const [fetching, setFetching] = useState(false);
 

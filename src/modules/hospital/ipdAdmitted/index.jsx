@@ -19,7 +19,7 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import PrescriptionPreview from "@hospital-components/PrescriptionPreview";
 import { useDisclosure } from "@mantine/hooks";
 import Room from "./common/tabs/Room";
-import { IconPencil, IconPrescription } from "@tabler/icons-react";
+import { IconArrowLeft, IconPencil, IconPrescription } from "@tabler/icons-react";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
 export default function Index() {
@@ -133,6 +133,17 @@ export default function Index() {
 													<IconPrescription size={18} />
 												</ActionIcon>
 											</Flex>
+										}
+										leftSection={
+											<ActionIcon
+												bg="var(--theme-primary-color-6)"
+												h="100%"
+												onClick={() => navigate(-1)}
+												mr="xs"
+												w="38px"
+											>
+												<IconArrowLeft size={18} />
+											</ActionIcon>
 										}
 									/>
 								) : showPrescriptionForm ? (

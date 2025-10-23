@@ -29,11 +29,13 @@ export default function MedicineListItem({
 
 	const handleChange = (field, value) => {
 		if (field === "opd_quantity" && !ignoreOpdQuantityLimit) {
+			console.log(value, medicine, ignoreOpdQuantityLimit);
 			if (value > medicine.opd_limit) {
-				showNotificationComponent(t("OpdQuantityCannotBeGreaterThanOpdQuantity"), "error");
+				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error");
 				return;
 			}
 		}
+
 		setMedicines((prev) =>
 			prev.map((medicine, idx) => (idx === index - 1 ? { ...medicine, [field]: value } : medicine))
 		);

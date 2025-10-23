@@ -52,8 +52,6 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	});
 	const entityData = entity?.data?.treatment_medicine_format;
 
-	console.log(entityData);
-
 	// Add hotkey for save functionality
 	useHotkeys([
 		[
