@@ -44,18 +44,22 @@ export default function DoctorLayout() {
 				/>
 			) : (
 				<>
-					<CoreHeaderNavbar
+					{/* <CoreHeaderNavbar
 						module="core"
 						pageTitle={pageTitle}
 						roles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""
-					/>
+					/> */}
 					<Box p="8">
 						<Grid columns={36} gutter={{ base: 8 }}>
 							{!matches && (
 								<Grid.Col span={6}>
-									<Navigation menu="base" subMenu={"baseDoctorSubmenu"} mainAreaHeight={mainAreaHeight} />
+									<Navigation
+										menu="base"
+										subMenu={"baseDoctorSubmenu"}
+										mainAreaHeight={mainAreaHeight}
+									/>
 								</Grid.Col>
 							)}
 							<Grid.Col span={matches ? 30 : 30}>

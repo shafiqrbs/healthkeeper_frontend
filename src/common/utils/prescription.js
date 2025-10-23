@@ -1,5 +1,5 @@
 export const getByMeal = (by_meal_options, id) => {
-	if (by_meal_options.length === 0) return console.error("By meal options are empty");
+	if (by_meal_options?.length === 0) return console.error("By meal options are empty");
 	if (!id) return console.error("Id is required for getting by meal");
 
 	const selectedByMeal = by_meal_options?.find((item) => item.id?.toString() == id);
@@ -7,7 +7,7 @@ export const getByMeal = (by_meal_options, id) => {
 };
 
 export const getDosage = (dosage_options, id) => {
-	if (dosage_options.length === 0) return console.error("Dosage options are empty");
+	if (dosage_options?.length === 0) return console.error("Dosage options are empty");
 	if (!id) return console.error("Id is required for getting dosage");
 
 	const selectedDosage = dosage_options?.find((item) => item.id?.toString() == id);

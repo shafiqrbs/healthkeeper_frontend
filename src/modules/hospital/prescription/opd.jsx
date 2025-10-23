@@ -8,21 +8,21 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
 import { Box, Button, Flex, Grid, Modal, Stack, LoadingOverlay } from "@mantine/core";
-import PatientReport from "../common/PatientReport";
-import AddMedicineForm from "../common/AddMedicineForm";
+import PatientReport from "@hospital-components/PatientReport";
+import AddMedicineForm from "@hospital-components/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
 import { useDisclosure, useElementSize } from "@mantine/hooks";
 import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
 import { IconArrowRight } from "@tabler/icons-react";
-import Table from "../visit/_Table";
+import Table from "@modules/hospital/visit/_Table";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientReferredAction from "@hospital-components/PatientReferredAction";
-import DetailsDrawer from "../common/drawer/__DetailsDrawer";
+import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
 
