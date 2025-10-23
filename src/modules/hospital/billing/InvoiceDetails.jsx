@@ -47,7 +47,6 @@ export default function InvoiceDetails() {
 		}
 	}, [id, transactionId]);
 
-
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
@@ -80,6 +79,7 @@ export default function InvoiceDetails() {
 				dispatch(setRefetchData({ module, refetching: true }));
 				setInvoiceDetails(resultAction.payload.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				setInvoiceDetails(resultAction.payload.data);
 			}
 		} catch (error) {
 			console.error(error);
@@ -145,7 +145,7 @@ export default function InvoiceDetails() {
 							}}
 						/>
 					</Box>
-					{invoiceDetails.process !=='Done' && (
+					{invoiceDetails.process !== "Done" && (
 						<Box gap={0} justify="space-between" mt="xs">
 							<form onSubmit={form.onSubmit(handleSubmit)}>
 								<Box bg="white" px="xs" pb="xs">
@@ -259,7 +259,6 @@ export default function InvoiceDetails() {
 							</form>
 						</Box>
 					)}
-
 				</>
 			) : (
 				<Box bg="white">
