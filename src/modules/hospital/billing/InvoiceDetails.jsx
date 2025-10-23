@@ -78,6 +78,7 @@ export default function InvoiceDetails() {
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
+				setInvoiceDetails(resultAction.payload.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
@@ -145,118 +146,118 @@ export default function InvoiceDetails() {
 						/>
 					</Box>
 					{invoiceDetails.process !=='Done' && (
-					<Box gap={0} justify="space-between" mt="xs">
-						<form onSubmit={form.onSubmit(handleSubmit)}>
-							<Box bg="white" px="xs" pb="xs">
-								<Box w="100%">
-									<Grid columns={18} gutter="xs">
-										<Grid.Col
-											span={6}
-											className="animate-ease-out"
-											bg="var(--theme-primary-color-0)"
-											px="xs"
-										>
-											<Box mt="md">
-												<TextAreaForm
-													id="comment"
-													form={form}
-													tooltip={t("EnterComment")}
-													placeholder={t("EnterComment")}
-													name="comment"
-												/>
-											</Box>
-										</Grid.Col>
-										<Grid.Col
-											span={6}
-											bg="var(--theme-tertiary-color-1)"
-											className="animate-ease-out"
-										>
-											<Box mt="xs">
+						<Box gap={0} justify="space-between" mt="xs">
+							<form onSubmit={form.onSubmit(handleSubmit)}>
+								<Box bg="white" px="xs" pb="xs">
+									<Box w="100%">
+										<Grid columns={18} gutter="xs">
+											<Grid.Col
+												span={6}
+												className="animate-ease-out"
+												bg="var(--theme-primary-color-0)"
+												px="xs"
+											>
+												<Box mt="md">
+													<TextAreaForm
+														id="comment"
+														form={form}
+														tooltip={t("EnterComment")}
+														placeholder={t("EnterComment")}
+														name="comment"
+													/>
+												</Box>
+											</Grid.Col>
+											<Grid.Col
+												span={6}
+												bg="var(--theme-tertiary-color-1)"
+												className="animate-ease-out"
+											>
+												<Box mt="xs">
+													<Grid align="center" columns={20}>
+														<Grid.Col span={8}>
+															<Flex justify="flex-end" align="center" gap="es">
+																<Text fz="xs">{t("CreatedBy")}</Text>
+															</Flex>
+														</Grid.Col>
+														<Grid.Col span={12}>
+															<Flex align="right" gap="es">
+																<Text fz="xs">
+																	{invoiceDetails?.created_doctor_info?.name}
+																</Text>
+															</Flex>
+														</Grid.Col>
+													</Grid>
+													<Grid align="center" columns={20}>
+														<Grid.Col span={8}>
+															<Flex justify="flex-end" align="center" gap="es">
+																<Text fz="sm">{t("Total")}</Text>
+															</Flex>
+														</Grid.Col>
+														<Grid.Col span={12}>
+															<Flex align="right" gap="es">
+																<Text fz="sm">{invoiceDetails?.total || 0}</Text>
+															</Flex>
+														</Grid.Col>
+													</Grid>
+												</Box>
+											</Grid.Col>
+											<Grid.Col
+												span={6}
+												className="animate-ease-out"
+												bg="var(--theme-secondary-color-0)"
+												px="xs"
+											>
 												<Grid align="center" columns={20}>
-													<Grid.Col span={8}>
+													<Grid.Col span={10}>
 														<Flex justify="flex-end" align="center" gap="es">
-															<Text fz="xs">{t("CreatedBy")}</Text>
-														</Flex>
-													</Grid.Col>
-													<Grid.Col span={12}>
-														<Flex align="right" gap="es">
-															<Text fz="xs">
-																{invoiceDetails?.created_doctor_info?.name}
+															<Text fz="sm" fw={"800"}>
+																{t("Receive")}
 															</Text>
 														</Flex>
 													</Grid.Col>
-												</Grid>
-												<Grid align="center" columns={20}>
-													<Grid.Col span={8}>
-														<Flex justify="flex-end" align="center" gap="es">
-															<Text fz="sm">{t("Total")}</Text>
-														</Flex>
+													<Grid.Col span={10}>
+														<InputNumberForm
+															form={form}
+															label=""
+															tooltip={t("EnterAmount")}
+															placeholder={t("Amount")}
+															name="amount"
+															id="amount"
+															value={invoiceDetails?.total || 0}
+														/>
 													</Grid.Col>
-													<Grid.Col span={12}>
-														<Flex align="right" gap="es">
-															<Text fz="sm">{invoiceDetails?.total || 0}</Text>
-														</Flex>
-													</Grid.Col>
 												</Grid>
-											</Box>
-										</Grid.Col>
-										<Grid.Col
-											span={6}
-											className="animate-ease-out"
-											bg="var(--theme-secondary-color-0)"
-											px="xs"
-										>
-											<Grid align="center" columns={20}>
-												<Grid.Col span={10}>
-													<Flex justify="flex-end" align="center" gap="es">
-														<Text fz="sm" fw={"800"}>
-															{t("Receive")}
-														</Text>
-													</Flex>
-												</Grid.Col>
-												<Grid.Col span={10}>
-													<InputNumberForm
-														form={form}
-														label=""
-														tooltip={t("EnterAmount")}
-														placeholder={t("Amount")}
-														name="amount"
-														id="amount"
-														value={invoiceDetails?.total || 0}
-													/>
-												</Grid.Col>
-											</Grid>
-											<Box mt="xs">
-												<Button.Group>
-													<Button
-														id="EntityFormSubmit"
-														w="100%"
-														size="compact-sm"
-														bg="var(--theme-pos-btn-color)"
-														type="button"
-													>
-														<Stack gap={0} align="center" justify="center">
-															<Text fz="xs">{t("Print")}</Text>
-														</Stack>
-													</Button>
-													<Button
-														type="submit"
-														w="100%"
-														size="compact-sm"
-														bg="var(--theme-save-btn-color)"
-													>
-														<Stack gap={0} align="center" justify="center">
-															<Text fz="xs">{t("Save")}</Text>
-														</Stack>
-													</Button>
-												</Button.Group>
-											</Box>
-										</Grid.Col>
-									</Grid>
+												<Box mt="xs">
+													<Button.Group>
+														<Button
+															id="EntityFormSubmit"
+															w="100%"
+															size="compact-sm"
+															bg="var(--theme-pos-btn-color)"
+															type="button"
+														>
+															<Stack gap={0} align="center" justify="center">
+																<Text fz="xs">{t("Print")}</Text>
+															</Stack>
+														</Button>
+														<Button
+															type="submit"
+															w="100%"
+															size="compact-sm"
+															bg="var(--theme-save-btn-color)"
+														>
+															<Stack gap={0} align="center" justify="center">
+																<Text fz="xs">{t("Save")}</Text>
+															</Stack>
+														</Button>
+													</Button.Group>
+												</Box>
+											</Grid.Col>
+										</Grid>
+									</Box>
 								</Box>
-							</Box>
-						</form>
-					</Box>
+							</form>
+						</Box>
 					)}
 
 				</>

@@ -174,13 +174,33 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 								</Text>
 							),
 						},
+						{
+							accessor: "admission_date",
+							title: t("AdmissionDate"),
+							textAlignment: "right",
+							render: (item) => formatDate(item.admission_date)
+						},
 						{ accessor: "patient_id", title: t("patientId") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
+						{ accessor: "room_name", title: t("Bed/Cabin") },
+						{ accessor: "admission_day", title: t("AdmissionDay") },
+						{ accessor: "consume_day", title: t("ConsumeDay") },
+						{ accessor: "remaining_day", title: t("RemainingDay") },
 						{
 							accessor: "total",
-							title: t("Amount"),
+							title: t("Total"),
 							render: (item) => t(item.total),
+						},
+						{
+							accessor: "amount",
+							title: t("Amount"),
+							render: (item) => t(item.amount),
+						},
+						{
+							accessor: "due",
+							title: t("Due"),
+							render: (item) => t(item.total-item.amount),
 						},
 						{
 							accessor: "action",
