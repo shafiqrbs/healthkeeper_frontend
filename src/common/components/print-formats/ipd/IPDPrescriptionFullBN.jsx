@@ -213,7 +213,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Text>
 
 								<Text ta="center" fw="bold" size="lg" c="#1e40af">
-									{t("Prescription")}
+									{t("IPDPrescription")}
 								</Text>
 							</Grid.Col>
 							<Grid.Col span={4}>
@@ -316,7 +316,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										</Box>
 									))}
 									{medicines.map((medicine, index) => (
-										<Box key={index}>
+										<Flex key={index}>
 											<Text size="xs" fw={600}>
 												{exEmergencies.length + index + 1}.{" "}
 												{getValue(
@@ -343,7 +343,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 													{getValue(medicine.quantity)} {getValue(medicine.duration)}
 												</Text>
 											)}
-										</Box>
+										</Flex>
 									))}
 								</Stack>
 								<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />

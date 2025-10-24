@@ -75,7 +75,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 
 	const handlePrescriptionPrint = async (id) => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
 		});
 		setPrintData(res.data);
 		requestAnimationFrame(printPrescription);
@@ -178,7 +178,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 							accessor: "admission_date",
 							title: t("AdmissionDate"),
 							textAlignment: "right",
-							render: (item) => formatDate(item.admission_date)
+							render: (item) => formatDate(item.admission_date),
 						},
 						{ accessor: "patient_id", title: t("patientId") },
 						{ accessor: "name", title: t("Name") },
@@ -200,7 +200,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 						{
 							accessor: "due",
 							title: t("Due"),
-							render: (item) => t(item.total-item.amount),
+							render: (item) => t(item.total - item.amount),
 						},
 						{
 							accessor: "action",

@@ -122,7 +122,7 @@ export default function _Table({ module }) {
 
 	const handlePrescriptionPrint = async (id) => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
 		});
 		setPrintData(res.data);
 		requestAnimationFrame(printPrescription);

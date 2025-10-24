@@ -21,6 +21,7 @@ import { useDisclosure } from "@mantine/hooks";
 import Room from "./common/tabs/Room";
 import { IconArrowLeft, IconPencil, IconPrescription } from "@tabler/icons-react";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 
 export default function Index() {
 	const navigate = useNavigate();
@@ -174,17 +175,13 @@ export default function Index() {
 					</Flex>
 				</Box>
 			)}
-			{id && (
-				<GlobalDrawer
+			{state?.prescriptionId && (
+				<DetailsDrawer
+					type="ipd"
 					opened={openedPrescriptionPreview}
 					close={closePrescriptionPreview}
-					title={t("PrescriptionPreview")}
-					size="50%"
-				>
-					<Box my="sm">
-						<PrescriptionPreview prescriptionId={id} />
-					</Box>
-				</GlobalDrawer>
+					prescriptionId={state?.prescriptionId}
+				/>
 			)}
 		</>
 	);

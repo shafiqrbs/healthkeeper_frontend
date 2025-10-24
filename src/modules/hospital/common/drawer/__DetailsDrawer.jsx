@@ -21,8 +21,9 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import IPDPrescriptionFullBN from "@components/print-formats/ipd/IPDPrescriptionFullBN";
 
-export default function DetailsDrawer({ opened, close, prescriptionId }) {
+export default function DetailsDrawer({ type = "prescription", opened, close, prescriptionId }) {
 	const prescriptionFullRef = useRef(null);
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
@@ -321,7 +322,12 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 					</Button>
 				</Flex>
 			</Box>
-			{prescriptionData?.data && <PrescriptionFullBN data={prescriptionData?.data} ref={prescriptionFullRef} />}
+			{prescriptionData?.data && type === "prescription" && (
+				<PrescriptionFullBN data={prescriptionData?.data} ref={prescriptionFullRef} />
+			)}
+			{prescriptionData?.data && type === "ipd" && (
+				<IPDPrescriptionFullBN data={prescriptionData?.data} ref={prescriptionFullRef} />
+			)}
 		</GlobalDrawer>
 	);
 }
