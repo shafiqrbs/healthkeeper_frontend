@@ -410,9 +410,11 @@ export default function AddMedicineForm({
 	};
 
 	const handlePrescriptionPreview = async () => {
-		await handlePrescriptionSubmit({ skipLoading: false, redirect: false });
-		setMountPreview(true);
-		requestAnimationFrame(openPrescriptionPreview);
+		const result = await handlePrescriptionSubmit({ skipLoading: false, redirect: false });
+		if (result.status === 200) {
+			setPrintData(result.data);
+			requestAnimationFrame(openPrescriptionPreview);
+		}
 	};
 
 	// const handlePrescriptionPreview = async () => {
@@ -846,31 +848,11 @@ export default function AddMedicineForm({
 							</Stack>
 						</Button>
 
-						<Button w="100%" bg="var(--theme-hold-btn-color)" onClick={handleHoldData}>
-							<Stack gap={0} align="center" justify="center">
-								<Text>{t("Hold")}</Text>
-								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-									(alt + 2)
-								</Text>
-							</Stack>
-						</Button>
-						<Button w="100%" bg="var(--theme-save-btn-color)" onClick={handlePrescriptionPreview}>
+						<Button w="100%" bg="var(--theme-prescription-btn-color)" onClick={handlePrescriptionPreview}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Preview")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 									(alt + 4)
-								</Text>
-							</Stack>
-						</Button>
-						<Button
-							w="100%"
-							bg="var(--theme-prescription-btn-color)"
-							onClick={handlePrescriptionPrintSubmit}
-						>
-							<Stack gap={0} align="center" justify="center">
-								<Text>{t("Prescription")}</Text>
-								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-									(alt + 3)
 								</Text>
 							</Stack>
 						</Button>
@@ -891,7 +873,7 @@ export default function AddMedicineForm({
 					</Button.Group>
 				</>
 			)}
-			{printData && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />}
+			{/* {printData && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />} */}
 			<GlobalDrawer
 				opened={openedExPrescription}
 				close={closeExPrescription}
@@ -972,18 +954,26 @@ export default function AddMedicineForm({
 				</Stack>
 			</GlobalDrawer>
 			{/* prescription preview */}
-			{prescriptionId && mountPreview && (
-				<DetailsDrawer
+			{printData && (
+				// <DetailsDrawer
+				// 	opened={openedPrescriptionPreview}
+				// 	close={}
+				// 	prescriptionId={prescriptionId}
+				// />
+				<GlobalDrawer
 					opened={openedPrescriptionPreview}
 					close={() => {
 						closePrescriptionPreview();
 						requestAnimationFrame(() => setMountPreview(false));
 					}}
-					prescriptionId={prescriptionId}
-				/>
+					title={t("PrescriptionPreview")}
+					size="50%"
+				>
+					<PrescriptionFullBN data={printData} preview />
+				</GlobalDrawer>
 			)}
-			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 
+			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
 		</Box>
 	);

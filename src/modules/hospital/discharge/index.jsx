@@ -6,8 +6,6 @@ import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
 import { Box, Flex, Grid, SegmentedControl, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
-import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import PrescriptionPreview from "@hospital-components/PrescriptionPreview";
 import { useDisclosure } from "@mantine/hooks";
 import { MODULES } from "@/constants";
 import Table from "./_Table";

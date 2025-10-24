@@ -6,15 +6,15 @@ import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import {ERROR_NOTIFICATION_COLOR, MODULES, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
-import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
-import {getIndexEntityData, updateEntityData} from "@/app/store/core/crudThunk";
+import { ERROR_NOTIFICATION_COLOR, MODULES, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import { useDispatch } from "react-redux";
 import SelectForm from "@components/form-builders/SelectForm";
-import {successNotification} from "@components/notification/successNotification";
+import { successNotification } from "@components/notification/successNotification";
 import useVendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage";
-import {setInsertType} from "@/app/store/core/crudSlice";
-import {errorNotification} from "@components/notification/errorNotification";
+import { setInsertType } from "@/app/store/core/crudSlice";
+import { errorNotification } from "@components/notification/errorNotification";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
 const module = MODULES.VISIT;
@@ -22,6 +22,7 @@ const module = MODULES.VISIT;
 export default function PatientUpdateDrawer({ opened, close, type, data }) {
 	const [records, setRecords] = useState([]);
 	const dispatch = useDispatch();
+
 	const form = useForm({
 		initialValues: {
 			name: "",
@@ -83,7 +84,6 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 		}
 	}, [data]);
 
-
 	async function handleSubmit(values) {
 		try {
 			const value = {
@@ -105,17 +105,16 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 					form.setErrors(errorObject);
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
-				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				setTimeout(() => {
 					useVendorDataStoreIntoLocalStorage();
 					form.reset();
 					dispatch(setInsertType({ insertType: "create", module }));
 					close(); // close the drawer
-					setIndexData(null);
 				}, 700);
 			}
 		} catch (error) {
-			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
 

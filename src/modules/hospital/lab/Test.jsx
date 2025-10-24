@@ -1,14 +1,13 @@
-import { Box, Text, ScrollArea, Stack, Button, Flex, ActionIcon, LoadingOverlay } from "@mantine/core";
+import { Box, Text, ScrollArea, Stack, Button, Flex, LoadingOverlay } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { IconEye, IconPrinter, IconTag } from "@tabler/icons-react";
-import {formatDate, getUserRole} from "@utils/index";
+import { formatDate, getUserRole } from "@utils/index";
 import { useRef, useState } from "react";
 import Barcode from "react-barcode";
 import { useReactToPrint } from "react-to-print";
 import LabReportA4BN from "@components/print-formats/lab-reports/LabReportA4BN";
-import DashedDivider from "@components/core-component/DashedDivider";
 import CustomDivider from "@components/core-component/CustomDivider";
 
 const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"];
@@ -32,7 +31,7 @@ export default function Test({ entity, isLoading }) {
 	const printBarCodeValue = useReactToPrint({
 		content: () => barCodeRef.current,
 	});
-	console.log(test?.invoice_transaction)
+	console.log(test?.invoice_transaction);
 	const handleTest = (reportId) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${reportId}`);
 	};
@@ -46,46 +45,6 @@ export default function Test({ entity, isLoading }) {
 		setBarcodeValue(barcode);
 		requestAnimationFrame(() => printBarCodeValue());
 	};
-
-	const handleSubmit = (values) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: { confirm: t("Submit"), cancel: t("Cancel") },
-			confirmProps: { color: "red" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleConfirmModal(values),
-		});
-	};
-
-	async function handleConfirmModal(values) {
-		try {
-			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.UPDATE}/${reportId}`,
-				data: values,
-				module,
-			};
-			const resultAction = await dispatch(updateEntityData(value));
-			if (updateEntityData.rejected.match(resultAction)) {
-				const fieldErrors = resultAction.payload.errors;
-				if (fieldErrors) {
-					const errorObject = {};
-					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
-					});
-					form.setErrors(errorObject);
-				}
-			} else if (updateEntityData.fulfilled.match(resultAction)) {
-				dispatch(setRefetchData({ module, refetching: true }));
-				refetchDiagnosticReport();
-				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setRefetch(true);
-			}
-		} catch (error) {
-			console.error(error);
-			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
-		}
-	}
 
 	return (
 		<Box className="borderRadiusAll" bg="white">
@@ -102,75 +61,90 @@ export default function Test({ entity, isLoading }) {
 						{test?.invoice_transaction?.map((transaction, index) => (
 							<>
 								<Box key={index} className="borderRadiusAll" bg={"white"} p="sm">
-
-							<Box fz={'xs'} fw={'600'}>{t('Date')} : {formatDate(transaction?.created_at)}</Box>
-									<CustomDivider/>
-							{transaction?.items?.map((item, index) => (
-									<Box mt={'xs'}>
-									<Text fz="xs">{item.item_name}</Text>
-									<Text fz="xs">Status:{item?.process}</Text>
-									<Flex align="center" gap="mes" mt="xs">
-										{userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
-											<>
-												{item?.process === "New" &&
-													userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
-														<Button
-															onClick={() => handleTest(item.invoice_particular_id)}
-															size="xs"
-															bg="var(--theme-primary-color-6)"
-															color="white"
-														>
-															{t("Process")}
-														</Button>
-													)}
-												{item?.process === "In-progress" &&
-													userRoles.some((role) => ALLOWED_LAB_DOCTOR_ROLES.includes(role)) && (
-														<Button
-															onClick={() => handleTest(item.invoice_particular_id)}
-															size="compact-xs"
-															bg="var(--theme-primary-color-6)"
-															color="white"
-														>
-															{t("Confirm")}
-														</Button>
-													)}
-												{item?.process === "Done" ? (
-													<>
-														<Button
-															onClick={() => handleTest(item.invoice_particular_id)}
-															size="compact-xs"
-															bg="var(--theme-primary-color-6)"
-															color="white"
-															leftSection={<IconEye color="white" size={16} />}
-														>
-															{t("Show")}
-														</Button>
-														<Button
-															size="compact-xs"
-															bg="var(--theme-secondary-color-6)"
-															onClick={() => handleLabReport(item.invoice_particular_id)}
-															color="white"
-															leftSection={<IconPrinter color="white" size={16} />}
-														>
-															{t("Print")}
-														</Button>
-													</>
-												) : (
-													<Button
-														leftSection={<IconTag stroke={1.2} size={12} />}
-														onClick={() => handleBarcodeTag(item.barcode)}
-														size="compact-xs"
-														bg="var(--theme-secondary-color-6)"
-														color="white"
-													>
-														{t("Tag")}
-													</Button>
-												)}
-											</>
-										)}
-									</Flex>
+									<Box fz={"xs"} fw={"600"}>
+										{t("Date")} : {formatDate(transaction?.created_at)}
 									</Box>
-							))}
+									<CustomDivider />
+									{transaction?.items?.map((item, index) => (
+										<Box mt={"xs"} key={index}>
+											<Text fz="xs">{item.item_name}</Text>
+											<Text fz="xs">Status:{item?.process}</Text>
+											<Flex align="center" gap="mes" mt="xs">
+												{userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
+													<>
+														{item?.process === "New" &&
+															userRoles.some((role) =>
+																ALLOWED_LAB_ROLES.includes(role)
+															) && (
+																<Button
+																	onClick={() =>
+																		handleTest(item.invoice_particular_id)
+																	}
+																	size="compact-xs"
+																	bg="var(--theme-primary-color-6)"
+																	color="white"
+																>
+																	{t("Process")}
+																</Button>
+															)}
+														{item?.process === "In-progress" &&
+															userRoles.some((role) =>
+																ALLOWED_LAB_DOCTOR_ROLES.includes(role)
+															) && (
+																<Button
+																	onClick={() =>
+																		handleTest(item.invoice_particular_id)
+																	}
+																	size="compact-xs"
+																	bg="var(--theme-primary-color-6)"
+																	color="white"
+																>
+																	{t("Confirm")}
+																</Button>
+															)}
+														{item?.process === "Done" ? (
+															<>
+																<Button
+																	onClick={() =>
+																		handleTest(item.invoice_particular_id)
+																	}
+																	size="compact-xs"
+																	bg="var(--theme-primary-color-6)"
+																	color="white"
+																	leftSection={<IconEye color="white" size={16} />}
+																>
+																	{t("Show")}
+																</Button>
+																<Button
+																	size="compact-xs"
+																	bg="var(--theme-secondary-color-6)"
+																	onClick={() =>
+																		handleLabReport(item.invoice_particular_id)
+																	}
+																	color="white"
+																	leftSection={
+																		<IconPrinter color="white" size={16} />
+																	}
+																>
+																	{t("Print")}
+																</Button>
+															</>
+														) : (
+															<Button
+																leftSection={<IconTag stroke={1.2} size={12} />}
+																onClick={() => handleBarcodeTag(item.barcode)}
+																size="compact-xs"
+																bg="var(--theme-secondary-color-6)"
+																color="white"
+															>
+																{t("Tag")}
+															</Button>
+														)}
+													</>
+												)}
+											</Flex>
+										</Box>
+									))}
 								</Box>
 							</>
 						))}

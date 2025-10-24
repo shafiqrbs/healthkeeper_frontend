@@ -1,4 +1,5 @@
 // NOTE: this template will replace this file: src/common/components/print-formats/prescription/PrescriptionFull.jsx
+// !Deprecated and too much confusion it will create if used
 
 import { Box, Text, Grid, Group, Stack, Image, Flex, LoadingOverlay } from "@mantine/core";
 import { forwardRef } from "react";

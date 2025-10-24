@@ -1,0 +1,211 @@
+import InputForm from "@components/form-builders/InputForm";
+import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import { Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { useTranslation } from "react-i18next";
+import { useOutletContext } from "react-router-dom";
+import { useEffect } from "react";
+import InputNumberForm from "@components/form-builders/InputNumberForm";
+import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { updateEntityData } from "@/app/store/core/crudThunk";
+import { useDispatch } from "react-redux";
+import { successNotification } from "@components/notification/successNotification";
+import { setInsertType } from "@/app/store/core/crudSlice";
+import { errorNotification } from "@components/notification/errorNotification";
+
+const module = MODULES.VISIT;
+
+export default function VitalUpdateDrawer({ opened, close, data }) {
+	const dispatch = useDispatch();
+
+	const form = useForm({
+		initialValues: {
+			bp: "",
+			pulse: "",
+			satWithO2: "",
+			satWithoutO2: "",
+			respiration: "",
+			temperature: "",
+		},
+		validate: {
+			bp: (value) => {
+				if (!value) return "BP is required";
+				return null;
+			},
+			pulse: (value) => {
+				if (!value) return "Pulse is required";
+				return null;
+			},
+			satWithO2: (value) => {
+				if (!value) return "Sat With O2 is required";
+				return null;
+			},
+			satWithoutO2: (value) => {
+				if (!value) return "Sat Without O2 is required";
+				return null;
+			},
+			respiration: (value) => {
+				if (!value) return "Respiration is required";
+				return null;
+			},
+		},
+	});
+
+	const { t } = useTranslation();
+	const { mainAreaHeight } = useOutletContext();
+
+	useEffect(() => {
+		form.setFieldValue("bp", data?.bp || "");
+		form.setFieldValue("pulse", data?.pulse || "");
+		form.setFieldValue("satWithO2", data?.satWithO2 || "");
+		form.setFieldValue("satWithoutO2", data?.satWithoutO2 || "");
+		form.setFieldValue("respiration", data?.respiration || "");
+		form.setFieldValue("temperature", data?.temperature || "");
+	}, [data]);
+
+	async function handleSubmit(values) {
+		try {
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.UPDATE}/${data?.id}`,
+				data: values,
+				module,
+			};
+			const resultAction = await dispatch(updateEntityData(value));
+			if (updateEntityData.rejected.match(resultAction)) {
+				const fieldErrors = resultAction.payload.errors;
+
+				// Check if there are field validation errors and dynamically set them
+				if (fieldErrors) {
+					const errorObject = {};
+					Object.keys(fieldErrors).forEach((key) => {
+						errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
+					});
+					// Display the errors using your form's `setErrors` function dynamically
+					form.setErrors(errorObject);
+				}
+			} else if (updateEntityData.fulfilled.match(resultAction)) {
+				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				setTimeout(() => {
+					form.reset();
+					dispatch(setInsertType({ insertType: "create", module }));
+					close(); // close the drawer
+				}, 700);
+			}
+		} catch (error) {
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
+		}
+	}
+
+	return (
+		<GlobalDrawer opened={opened} close={close} title="Vital Update" size="35%">
+			<Box component="form" onSubmit={form.onSubmit(handleSubmit)} pt="lg">
+				<Stack mih={mainAreaHeight - 100} justify="space-between">
+					<Grid align="center" columns={20}>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("BP")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<InputForm
+								form={form}
+								label=""
+								tooltip={t("EnterBP")}
+								placeholder="120/80"
+								name="bp"
+								id="bp"
+								nextField="pulse"
+								value={form.values.bp}
+							/>
+						</Grid.Col>
+
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("Pulse")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<InputNumberForm
+								form={form}
+								label=""
+								placeholder="Pulse"
+								tooltip={t("EnterPulse")}
+								name="pulse"
+								id="pulse"
+								nextField="satWithO2"
+								min={0}
+							/>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("Sat With O2")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<InputNumberForm
+								form={form}
+								label=""
+								placeholder="Sat With O2"
+								tooltip={t("EnterSatWithO2")}
+								name="satWithO2"
+								id="satWithO2"
+								nextField="satWithoutO2"
+								min={0}
+							/>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("Sat Without O2")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<InputNumberForm
+								form={form}
+								label=""
+								placeholder="Sat Without O2"
+								tooltip={t("EnterSatWithoutO2")}
+								name="satWithoutO2"
+								id="satWithoutO2"
+								nextField="respiration"
+								min={0}
+								max={31}
+							/>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("Respiration")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<InputForm
+								form={form}
+								label=""
+								tooltip={t("12-20")}
+								placeholder="EnterRespiration"
+								name="respiration"
+								id="respiration"
+								nextField="temperature"
+								value={form.values.respiration}
+							/>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("Temperature")}</Text>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<InputForm
+								type="number"
+								form={form}
+								label=""
+								tooltip={t("36.5-37.5")}
+								placeholder="EnterTemperature"
+								name="temperature"
+								id="temperature"
+								value={form.values.temperature}
+							/>
+						</Grid.Col>
+					</Grid>
+
+					<Flex gap="xs" justify="flex-end">
+						<Button type="submit" bg="var(--theme-primary-color-6)" color="white">
+							{t("Save")}
+						</Button>
+						<Button type="button" bg="var(--theme-tertiary-color-6)" color="white" onClick={close}>
+							{t("Cancel")}
+						</Button>
+					</Flex>
+				</Stack>
+			</Box>
+		</GlobalDrawer>
+	);
+}

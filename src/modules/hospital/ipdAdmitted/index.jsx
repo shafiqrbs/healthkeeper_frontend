@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
@@ -15,8 +14,6 @@ import Billing from "./common/tabs/Billing";
 import FinalBill from "./common/tabs/FinalBill";
 import Discharge from "./common/tabs/Discharge";
 import AdmissionPrescription from "./common/AdmissionPrescription";
-import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import PrescriptionPreview from "@hospital-components/PrescriptionPreview";
 import { useDisclosure } from "@mantine/hooks";
 import Room from "./common/tabs/Room";
 import { IconArrowLeft, IconPencil, IconPrescription } from "@tabler/icons-react";
@@ -27,7 +24,6 @@ export default function Index() {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 	const [ipdMode, setIpdMode] = useState("prescription");
-	const { t } = useTranslation();
 	const { id } = useParams();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();

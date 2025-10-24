@@ -34,6 +34,7 @@ import EmergencyA4BN from "@components/print-formats/emergency/EmergencyA4BN";
 import EmergencyPosBN from "@components/print-formats/emergency/EmergencyPosBN";
 import Prescription from "@components/print-formats/prescription/PrescriptionFullBN";
 import { useReactToPrint } from "react-to-print";
+import VitalUpdateDrawer from "@hospital-components/drawer/VitalUpdateDrawer";
 
 const PER_PAGE = 200;
 const tabs = [
@@ -42,7 +43,6 @@ const tabs = [
 	{ label: "Prescription", value: "prescription" },
 	{ label: "Non-prescription", value: "non-prescription" },
 ];
-const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
 const ALLOWED_DOCTOR_ROLES = ["doctor_emergency", "admin_administrator"];
 
 const CSV_HEADERS = [
@@ -71,6 +71,7 @@ export default function Table({ module }) {
 	const userRoles = getUserRole();
 	const user = getLoggedInUser();
 	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
+	const [openedVitalUpdate, { open: openVitalUpdate, close: closeVitalUpdate }] = useDisclosure(false);
 	const [singlePatientData, setSinglePatientData] = useState({});
 	// removed unused 'today'
 
@@ -413,6 +414,19 @@ export default function Table({ module }) {
 											</Button>
 										)}
 
+										<Button
+											miw={60}
+											variant="filled"
+											bg="var(--theme-primary-color-6)"
+											c="white"
+											size="compact-xs"
+											onClick={openVitalUpdate}
+											radius="es"
+											fw="400"
+										>
+											{t("Vitals")}
+										</Button>
+
 										{formatDate(new Date()) === formatDate(values?.created_at) && (
 											<ActionIcon
 												variant="transparent"
@@ -555,6 +569,9 @@ export default function Table({ module }) {
 				close={closePatientUpdate}
 				data={singlePatientData}
 			/>
+
+			<VitalUpdateDrawer opened={openedVitalUpdate} close={closeVitalUpdate} />
+
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 
 			<EmergencyA4BN data={printData} ref={a4Ref} />

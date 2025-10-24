@@ -75,9 +75,8 @@ export default function InvoiceDetails() {
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
-				setInvoiceDetails(resultAction.payload.data);
+				setInvoiceDetails(resultAction.payload.data?.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setInvoiceDetails(resultAction.payload.data);
 			}
 		} catch (error) {
 			console.error(error);

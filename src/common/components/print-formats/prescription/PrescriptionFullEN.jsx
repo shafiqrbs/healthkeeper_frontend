@@ -197,33 +197,33 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 				>
 					{/* =============== header section with doctor information in bengali and english ================ */}
 					<Box mb="sm">
-						<Grid gutter="md">
-							<Grid.Col span={4}>
+						<Flex gap="md" justify="center">
+							<Box>
 								<Group ml="md" align="center" h="100%">
 									<Image src={GLogo} alt="logo" width={80} height={80} />
 								</Group>
-							</Grid.Col>
-							<Grid.Col span={4}>
+							</Box>
+							<Box>
 								<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-									{hospitalConfigData?.organization_name || "Hospital"}
+									{hospitalConfigData?.organization_name || ""}
 								</Text>
 								<Text ta="center" size="sm" c="gray" mt="2">
-									{hospitalConfigData?.address || "Uttara"}
+									{hospitalConfigData?.address || ""}
 								</Text>
 								<Text ta="center" size="sm" c="gray" mb="2">
-									{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
+									{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
 								</Text>
 
 								<Text ta="center" fw="bold" size="lg" c="#1e40af">
 									{t("Prescription")}
 								</Text>
-							</Grid.Col>
-							<Grid.Col span={4}>
+							</Box>
+							<Box>
 								<Group mr="md" justify="flex-end" align="center" h="100%">
 									<Image src={TBLogo} alt="logo" width={80} height={80} />
 								</Group>
-							</Grid.Col>
-						</Grid>
+							</Box>
+						</Flex>
 					</Box>
 
 					{/* =============== patient information section ================ */}
@@ -242,7 +242,7 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 							<Grid.Col bd="1px solid #555" span={4} px="xs">
 								<Group gap="xs">
 									<Text size="xs" fw={600}>
-										{t("নাম")}:
+										{t("Name")}:
 									</Text>
 									<Text size="sm">{getValue(patientInfo?.name, "")}</Text>
 								</Group>
@@ -250,7 +250,7 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 							<Grid.Col bd="1px solid #555" span={4} px="xs">
 								<Group gap="xs">
 									<Text size="xs" fw={600}>
-										{t("মোবাইল")}:
+										{t("Mobile")}:
 									</Text>
 									<Text size="xs">{getValue(patientInfo?.mobile || "")}</Text>
 								</Group>
@@ -259,7 +259,7 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 							<Grid.Col bd="1px solid #555" span={4} px="xs">
 								<Group gap="xs">
 									<Text size="xs" fw={600}>
-										{t("বয়স")}:
+										{t("Age")}:
 									</Text>
 									<Text size="xs">
 										{patientInfo?.year || 0} Y {patientInfo?.month || 0} M {patientInfo?.day || 0} D
@@ -269,7 +269,7 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 							<Grid.Col bd="1px solid #555" span={2} px="xs">
 								<Group gap="xs">
 									<Text size="xs" fw={600}>
-										{t("লিঙ্গ")}:
+										{t("Gender")}:
 									</Text>
 									<Text size="xs">
 										{patientInfo?.gender &&
@@ -278,16 +278,18 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 								</Group>
 							</Grid.Col>
 							<Grid.Col bd="1px solid #555" span={2} px="xs">
-								<Group gap="xs">
-									<Text size="xs" fw={600}>
-										{t("জন্ম")}
-									</Text>
-									<Text size="xs">{patientInfo?.dob || ""}</Text>
-								</Group>
+								{patientInfo?.dob && (
+									<Group gap="xs">
+										<Text size="xs" fw={600}>
+											{t("DOB")}:
+										</Text>
+										<Text size="xs">{patientInfo?.dob || ""}</Text>
+									</Group>
+								)}
 							</Grid.Col>
 							<Grid.Col bd="1px solid #555" span={4} px="xs">
 								<Group gap="xs">
-									<strong>তারিখ:</strong> {patientInfo?.created || ""}
+									<strong>{t("Date")}:</strong> {patientInfo?.created || ""}
 								</Group>
 							</Grid.Col>
 						</Grid>
@@ -333,15 +335,17 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 														c="var(--theme-tertiary-color-8)"
 														ml="md"
 													>
-														{getValue(dose.dose_details)} {" ------- "}
-														{getValue(dose.by_meal)} {" ------- "}
+														{getValue(dose.dose_details_bn, dose.dose_details)}{" "}
+														{" ------- "}
+														{getValue(dose.by_meal_bn, dose.by_meal)} {" ------- "}
 														{getValue(dose.quantity)} {getValue(medicine.duration)}
 													</Text>
 												))
 											) : (
 												<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
-													{getValue(medicine.dose_details)} {" ------- "}
-													{getValue(medicine.by_meal)} {" ------- "}
+													{getValue(medicine.dose_details_bn, medicine.dose_details)}{" "}
+													{" ------- "}
+													{getValue(medicine.by_meal_bn, medicine.by_meal)} {" ------- "}
 													{getValue(medicine.quantity)} {getValue(medicine.duration)}
 												</Text>
 											)}
@@ -356,7 +360,7 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 									<>
 										<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
 										<Text size="xs" fw={400}>
-											উল্লেখিত: {getValue(patientInfo?.referred_comment)}
+											Note: {getValue(patientInfo?.referred_comment)}
 										</Text>
 									</>
 								)}
@@ -374,23 +378,51 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 					<Box bd="1px solid #555" style={{ borderRadius: "4px" }}>
 						{/* =============== top section with printed by and signature ================ */}
 						<Grid columns={12} gutter="0">
-							<Grid.Col span={6} pl={"xl"} pt={"md"}>
-								<Text fz={"xl"}>{patientInfo?.doctor_name}</Text>
-								<Text fz={"xs"}>{patientInfo?.designation_name}</Text>
-								<Text fz="xs">Doctor ID {getValue(patientInfo?.employee_id)}</Text>
+							<Grid.Col span={6} pl="xl" pt="sm">
+								<Text fz={"sm"}>{t("PrescribedBy")}</Text>
+								<Text fz={"xs"}>{patientInfo?.doctor_name}</Text>
+								<Text fz={"xs"}>
+									{t("Designation")}: {patientInfo?.designation_name}
+								</Text>
+								<Text fz="xs">
+									{t("DoctorID")}: {getValue(patientInfo?.employee_id)}
+								</Text>
 							</Grid.Col>
 							<Grid.Col span={6}>
-								<Text size="sm" fw={600}>
+								<Text size="sm" fw={600} mb="xs">
 									{renderImagePreview([], patientInfo?.signature_path)}
 								</Text>
 							</Grid.Col>
 						</Grid>
 					</Box>
 					<DashedDivider />
+					<Box mb="sm">
+						<Flex gap="md" justify="center">
+							<Box>
+								<Group ml="md" align="center" h="100%">
+									<Image src={GLogo} alt="logo" width={46} height={46} />
+								</Group>
+							</Box>
+							<Box>
+								<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
+									{hospitalConfigData?.organization_name || ""}
+								</Text>
+								<Text ta="center" size="sm" c="gray" mt="2">
+									{hospitalConfigData?.address || ""}
+									{(hospitalConfigData?.hotline && `, ${hospitalConfigData?.hotline}`) || ""}
+								</Text>
+							</Box>
+							<Box>
+								<Group mr="md" justify="flex-end" align="center" h="100%">
+									<Image src={TBLogo} alt="logo" width={46} height={46} />
+								</Group>
+							</Box>
+						</Flex>
+					</Box>
 					{/* =============== bottom section with patient info and medication table ================ */}
 					<Grid columns={12} gutter="md" mb="lg">
 						<Grid.Col span={4}>
-							<Stack gap="6px">
+							<Stack gap="2px">
 								<Text size="xs" fw={500}>
 									Name: {getValue(patientInfo?.name)}
 								</Text>
@@ -401,7 +433,7 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 									Age: {getValue(patientInfo?.year, "25")} Y. Sex:{patientInfo?.gender}
 								</Text>
 								<Text size="xs" fw={600} c="#1e40af">
-									Doctor By: {getValue(patientInfo?.doctor_name)}
+									Prescribed By: {getValue(patientInfo?.doctor_name)}
 								</Text>
 								<Text size="xs">Doctor ID- {getValue(patientInfo?.employee_id)}</Text>
 								<Text size="xs">Designation: {getValue(patientInfo?.designation_name)}</Text>
@@ -441,7 +473,7 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 												</Grid.Col>
 												<Grid.Col span={4} m={0} p={0}>
 													<Text size="sm" ta="center" fw={500}>
-														{getValue(medicine?.opd_quantity, "")}
+														{getValue(medicine?.opd_quantity, 0)}
 													</Text>
 												</Grid.Col>
 											</Grid>
@@ -449,7 +481,7 @@ const PrescriptionFullEN = forwardRef(({ data, preview = false }, ref) => {
 									</>
 								))}
 							</Box>
-							<Box align={"center"}>
+							<Box mt="sm" align="center">
 								<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.barcode} />
 							</Box>
 						</Grid.Col>

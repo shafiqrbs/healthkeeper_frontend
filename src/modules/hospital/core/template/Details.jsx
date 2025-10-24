@@ -29,8 +29,8 @@ import DetailsInvoicePosEN from "@components/print-formats/billing/DetailsInvoic
 import AdmissionInvoiceBN from "@components/print-formats/admission/AdmissionInvoiceBN";
 import AdmissionInvoiceEN from "@components/print-formats/admission/AdmissionInvoiceEN";
 
-const STATIC_OPD_ID = 59;
-const STATIC_PRESCRIPTION_ID = 59;
+const STATIC_OPD_ID = 1;
+const STATIC_PRESCRIPTION_ID = 1;
 const REPORT_ID = 274;
 
 export default function Details() {
