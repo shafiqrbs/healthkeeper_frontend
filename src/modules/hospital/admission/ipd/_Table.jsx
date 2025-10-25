@@ -197,7 +197,7 @@ export default function _Table({ module }) {
 													bg="var(--theme-primary-color-6)"
 													c="white"
 													size="compact-xs"
-													onClick={() => handleConfirm(values.id)}
+													onClick={() => handleConfirm(values.uid)}
 													radius="es"
 													fw={400}
 													rightSection={<IconArrowRight size={18} />}

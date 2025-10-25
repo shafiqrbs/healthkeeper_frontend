@@ -221,7 +221,7 @@ export default function _Table({ module }) {
 											<Button.Group>
 												<Button
 													variant="filled"
-													onClick={() => handleAdmissionOverview(item.id)}
+													onClick={() => handleAdmissionOverview(item.uid)}
 													color="var(--theme-primary-color-6)"
 													radius="xs"
 													size={"compact-xs"}

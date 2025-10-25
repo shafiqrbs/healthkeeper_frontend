@@ -4,7 +4,7 @@ import Vitals from "@hospital-components/tab-items/Vitals";
 import { IconSofa } from "@tabler/icons-react";
 export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 	const { t } = useTranslation();
-
+	console.log(prescriptionData);
 	return (
 		<Stack gap="xxxs" bg="var(--theme-primary-color-1)" p="xs" pb={"xxxs"} className="borderRadiusAll">
 			<Stack gap={0} ta="left">
@@ -52,7 +52,63 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 			</Stack>
 			<Divider />
 			<Box bg="white">
-				<Vitals form={form} onBlur={onBlur} />
+				<Grid w="100%" columns={24} gutter={'2'} pl={'xs'}>
+					<Grid.Col span={4}>
+						<Text fz="xs">
+							{t("B/P")}
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={6}>
+						<Text fz="xs" pl={'xs'}>
+							{prescriptionData?.data?.bp} {/*mm of HG*/}
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={7} fz="xs" align={"right"}>
+						<Text fz="xs">
+							{t("Pulse")}
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={7} fz="xs" pl={'xs'}>
+						{prescriptionData?.data?.pulse}{/* Beat/Minute*/}
+					</Grid.Col>
+					<Grid.Col span={4}>
+						<Text fz="xs">
+							{t("SatWithO2")}
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={6}>
+						<Text fz="xs" pl={'xs'}>
+							{prescriptionData?.data?.sat_with_O2} %
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={7} fz="xs" align={"right"}>
+						<Text fz="xs">
+							{t("SatWithoutO2")}
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={7} fz="xs" pl={'xs'}>
+						{prescriptionData?.data?.sat_without_O2} %
+					</Grid.Col>
+					<Grid.Col span={4}>
+						<Text fz="xs">
+							{t("Temperature")}
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={6}>
+						<Text fz="xs" pl={'xs'}>
+							{prescriptionData?.data?.temperature} °F
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={7} fz="xs" align={"right"}>
+						<Text fz="xs">
+							{t("Respiration")}
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={7} fz="xs" pl={'xs'}>
+						{prescriptionData?.data?.respiration}{/* Breath/Minute*/}
+					</Grid.Col>
+				</Grid>
+				{/*<Vitals form={form} onBlur={onBlur} />*/}
 			</Box>
 		</Stack>
 	);

@@ -55,16 +55,17 @@ export default function Index() {
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
 	const existingMedicines = initialFormValues?.medicines || [];
-
 	const form = useForm(getPrescriptionFormInitialValues(t, {}));
 
 	useEffect(() => {
 		// Always reset the form when prescription data changes
 		const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
 		form.setValues(updatedFormValues.initialValues);
+		form.setValues({"is_vital":!!prescriptionData?.data?.is_vital});
 		setMedicines(existingMedicines || []);
 		setCustomerId(prescriptionData?.data?.customer_id);
 	}, [prescriptionData]);
+
 
 	const handleOpenViewOverview = () => {
 		openOverview();

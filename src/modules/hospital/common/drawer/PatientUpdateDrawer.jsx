@@ -15,6 +15,9 @@ import { successNotification } from "@components/notification/successNotificatio
 import useVendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage";
 import { setInsertType } from "@/app/store/core/crudSlice";
 import { errorNotification } from "@components/notification/errorNotification";
+import {calculateAge, calculateDetailedAge, formatDOB} from "@utils/index";
+import {showNotificationComponent} from "@components/core-component/showNotificationComponent";
+import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
 const module = MODULES.VISIT;
@@ -72,6 +75,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 
 	useEffect(() => {
 		form.setFieldValue("name", data?.name || "");
+		form.setFieldValue("dob", data?.date_of_birth ? new Date(data.date_of_birth) : null);
 		form.setFieldValue("mobile", data?.mobile || "");
 		form.setFieldValue("nid", data?.nid || "");
 		form.setFieldValue("year", data?.year || "");
@@ -84,11 +88,53 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 		}
 	}, [data]);
 
+	const handleDobChange = () => {
+		const type = form.values.ageType || "year";
+		const formattedDOB = formatDOB(form.values.dob);
+		const formattedAge = calculateAge(formattedDOB, type);
+		form.setFieldValue("age", formattedAge);
+
+		// Calculate detailed age from date of birth
+		if (form.values.dob) {
+			const detailedAge = calculateDetailedAge(formattedDOB);
+			form.setFieldValue("year", detailedAge.years);
+			form.setFieldValue("month", detailedAge.months);
+			form.setFieldValue("day", detailedAge.days);
+		}
+	};
+	useEffect(() => {
+		handleDobChange();
+	}, [JSON.stringify(form.values.dob)]);
+
 	async function handleSubmit(values) {
 		try {
+			const formattedDOB = formatDOB(form.values.dob);
+			const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+			const [day, month, year] = formattedDOB.split("-").map(Number);
+			const dateObj = new Date(year, month - 1, day);
+
+			const today = new Date();
+
+			// strict validation: check if JS normalized it
+			const isValid =
+				dateObj.getFullYear() === year && dateObj.getMonth() === month - 1 && dateObj.getDate() === day;
+
+			// check if future date
+			if (dateObj > today) {
+				showNotificationComponent(t("DateOfBirthCantBeFutureDate"), "red", "lightgray", true, 700, true);
+				setIsSubmitting(false);
+				return {};
+			}
+
+			const dob = isValid ? dateObj.toLocaleDateString("en-CA", options) : "invalid";
+
+			const formValue = {
+				...form.values
+				,dob
+			};
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.UPDATE}/${data?.id}`,
-				data: values,
+				data: formValue,
 				module,
 			};
 			const resultAction = await dispatch(updateEntityData(value));
@@ -185,7 +231,23 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 								value={form.values.name}
 							/>
 						</Grid.Col>
-
+						<Grid.Col span={6}>
+							<Flex align="center" gap="es">
+								<Text fz="sm">{t("DateOfBirth")}</Text>
+							</Flex>
+						</Grid.Col>
+						<Grid.Col span={14}>
+							<DateSelectorForm
+								form={form}
+								placeholder="01-01-2020"
+								tooltip={t("EnterDateOfBirth")}
+								name="dob"
+								id="dob"
+								nextField="year"
+								required
+								disabledFutureDate
+							/>
+						</Grid.Col>
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("Age")}</Text>
 						</Grid.Col>
@@ -278,11 +340,12 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 					</Grid>
 
 					<Flex gap="xs" justify="flex-end">
+
+						<Button type="button" variant={'outline'}  color="var(--theme-tertiary-color-6)" onClick={close}>
+							{t("Cancel")}
+						</Button>
 						<Button type="submit" bg="var(--theme-primary-color-6)" color="white">
 							{t("Save")}
-						</Button>
-						<Button type="button" bg="var(--theme-tertiary-color-6)" color="white" onClick={close}>
-							{t("Cancel")}
 						</Button>
 					</Flex>
 				</Stack>

@@ -81,6 +81,16 @@ export default function EntityForm({ form, module }) {
 	const [openedHSIDDataPreview, { open: openHSIDDataPreview, close: closeHSIDDataPreview }] = useDisclosure(false);
 	const locations = useSelector((state) => state.crud.locations.data);
 
+	const { data: entity, isLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
+	});
+
+	useEffect(() => {
+		if(entity?.data === 'not_found'){
+			navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX, { replace: true });
+		}
+	}, [entity]);
+
 	useEffect(() => {
 		dispatch(getIndexEntityData({ module: "locations", url: HOSPITAL_DATA_ROUTES.API_ROUTES.LOCATIONS.INDEX }));
 	}, []);
@@ -177,9 +187,7 @@ export default function EntityForm({ form, module }) {
 		form.setFieldValue("gender", val);
 	};
 
-	const { data: entity, isLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
-	});
+
 
 	const item = entity?.data;
 	const entities = entity?.data?.invoice_particular;
@@ -469,7 +477,7 @@ export default function EntityForm({ form, module }) {
 										</Grid.Col>
 										<Grid.Col span={5}>
 											<Flex gap="les">
-												<InputNumberForm
+												<InputForm
 													form={form}
 													label=""
 													placeholder={t("Pulse")}
@@ -496,6 +504,42 @@ export default function EntityForm({ form, module }) {
 													id="blood_sugar"
 													nextField="blood_group"
 													value={form.values.blood_sugar}
+												/>
+											</Flex>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("SatWithO2")}</Text>
+										</Grid.Col>
+										<Grid.Col span={5}>
+											<Flex gap="les">
+												<InputNumberForm
+													form={form}
+													label=""
+													placeholder={t("SatWithO2")}
+													tooltip={t("SatWithO2")}
+													name="sat_with_O2"
+													id="sat_with_O2"
+													nextField="sat_without_O2"
+													value={form.values.sat_with_O2}
+												/>
+											</Flex>
+										</Grid.Col>
+										<Grid.Col span={4}>
+											<Text fz="sm">{t("SatWithoutO2")}</Text>
+										</Grid.Col>
+										<Grid.Col span={5}>
+											<Flex gap="les">
+												<InputNumberForm
+													form={form}
+													label=""
+													placeholder={t("SatWithoutO2")}
+													tooltip={t("SatWithoutO2")}
+													name="sat_without_O2"
+													id="sat_without_O2"
+													nextField="blood_group"
+													value={form.values.sat_without_O2}
 													required
 												/>
 											</Flex>
@@ -505,7 +549,7 @@ export default function EntityForm({ form, module }) {
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("bloodGroup")}</Text>
 										</Grid.Col>
-										<Grid.Col span={14}>
+										<Grid.Col span={5}>
 											<SelectForm
 												form={form}
 												name="blood_group"
@@ -517,6 +561,24 @@ export default function EntityForm({ form, module }) {
 												pt={0}
 												placeholder="A+"
 											/>
+										</Grid.Col>
+										<Grid.Col span={4}>
+											<Text fz="sm">{t("Respiration")}</Text>
+										</Grid.Col>
+										<Grid.Col span={5}>
+											<Flex gap="les">
+												<InputForm
+													form={form}
+													label=""
+													placeholder={t("Respiration")}
+													tooltip={t("Respiration")}
+													name="respiration"
+													id="respiration"
+													nextField="name"
+													value={form.values.respiration}
+													required
+												/>
+											</Flex>
 										</Grid.Col>
 									</Grid>
 								</Stack>

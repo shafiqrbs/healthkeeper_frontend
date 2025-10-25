@@ -1,0 +1,376 @@
+import { useState, useRef, useEffect } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { CSVLink } from "react-csv";
+
+import DataTableFooter from "@components/tables/DataTableFooter";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Grid, Group, Menu, Tabs, Text } from "@mantine/core";
+import { IconArrowRight, IconDotsVertical, IconPencil, IconPrinter, IconScript } from "@tabler/icons-react";
+import { DataTable } from "mantine-datatable";
+import { useTranslation } from "react-i18next";
+import { rem } from "@mantine/core";
+import tableCss from "@assets/css/Table.module.css";
+import filterTabsCss from "@assets/css/FilterTabs.module.css";
+
+import KeywordSearch from "../common/KeywordSearch";
+import { hasLength, useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { useDispatch, useSelector } from "react-redux";
+import { showEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { formatDate, getLoggedInUser, getUserRole } from "@utils/index";
+import CompactDrawer from "@components/drawers/CompactDrawer";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
+import { successNotification } from "@components/notification/successNotification";
+import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { errorNotification } from "@components/notification/errorNotification";
+import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import { modals } from "@mantine/modals";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import { getDataWithoutStore } from "@/services/apiService";
+import Prescription from "@components/print-formats/prescription/PrescriptionFullBN";
+import { useReactToPrint } from "react-to-print";
+import VitalUpdateDrawer from "@hospital-components/drawer/VitalUpdateDrawer";
+
+const PER_PAGE = 200;
+const tabs = [
+	{ label: "All", value: "all" },
+	{ label: "Admission", value: "admission" },
+	{ label: "Prescription", value: "prescription" },
+	{ label: "Non-prescription", value: "non-prescription" },
+];
+const ALLOWED_DOCTOR_ROLES = ["doctor_emergency", "admin_administrator"];
+
+const CSV_HEADERS = [
+	{ label: "S/N", key: "sn" },
+	{ label: "Created", key: "created" },
+	{ label: "CreatedBy", key: "created_by" },
+	{ label: "PatientID", key: "patient_id" },
+	{ label: "Name", key: "name" },
+	{ label: "Mobile", key: "mobile" },
+	{ label: "Total", key: "total" },
+];
+
+export default function Table({ module }) {
+	const csvLinkRef = useRef(null);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const { t } = useTranslation();
+	const listData = useSelector((state) => state.crud[module]?.data);
+	const { mainAreaHeight } = useOutletContext();
+	const height = mainAreaHeight - 34;
+	const [selectedId, setSelectedId] = useState(null);
+	const [patientData, setPatientData] = useState(null);
+	const [opened, { open, close }] = useDisclosure(false);
+	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
+	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
+	const [processTab, setProcessTab] = useState("all");
+	const userRoles = getUserRole();
+	const user = getLoggedInUser();
+	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
+	const [openedVitalUpdate, { open: openVitalUpdate, close: closeVitalUpdate }] = useDisclosure(false);
+	const [singlePatientData, setSinglePatientData] = useState({});
+	// removed unused 'today'
+
+	const form = useForm({
+		initialValues: {
+			keywordSearch: "",
+			created: formatDate(new Date()),
+			room_id: "",
+		},
+	});
+
+	const referredForm = useForm({
+		initialValues: {
+			referred_mode: "admission",
+			admission_comment: "",
+		},
+		validate: {
+			admission_comment: hasLength({ min: 1 }),
+		},
+	});
+
+	const [rootRef, setRootRef] = useState(null);
+	const [controlsRefs, setControlsRefs] = useState({});
+	const [printData, setPrintData] = useState({});
+	const [type, setType] = useState(null);
+	const posRef = useRef(null);
+	const a4Ref = useRef(null);
+	const prescriptionRef = useRef(null);
+	const handlePos = useReactToPrint({
+		content: () => posRef.current,
+	});
+	const handleA4 = useReactToPrint({
+		content: () => a4Ref.current,
+	});
+	const handlePrescriptionOption = useReactToPrint({
+		content: () => prescriptionRef.current,
+	});
+
+	const setControlRef = (val) => (node) => {
+		controlsRefs[val] = node;
+		setControlsRefs(controlsRefs);
+	};
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+		filterParams: {
+			term: form.values?.keywordSearch,
+			room_id: form.values?.room_id,
+			is_vital: 1,
+			created: form.values.created,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+	});
+
+	const handleView = () => {
+		open();
+	};
+
+	const handleOpenViewOverview = () => {
+		openOverview();
+	};
+
+	const handlePatientDataClick = (values) => {
+		setPatientData(values);
+		requestAnimationFrame(openVitalUpdate);
+	};
+
+	const handleProcessPrescription = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: "Confirm", cancel: "Cancel" },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleProcessConfirmation(id),
+		});
+	};
+
+	const handleProcessConfirmation = async (id) => {
+		const resultAction = await dispatch(
+			showEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.SEND_TO_PRESCRIPTION}/${id}`,
+				module,
+				id,
+			})
+		).unwrap();
+		const prescription_id = resultAction?.data?.data.id;
+		if (prescription_id) {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
+		} else {
+			console.error(resultAction);
+			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
+		}
+	};
+
+	const handlePrescription = async (prescription_id) => {
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
+	};
+
+	const handleSendToAdmission = (id) => {
+		setSelectedId(id);
+		openAdmission();
+		// navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
+	};
+
+	async function handleConfirmSubmission(values) {
+		try {
+			const value = {
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.REFERRED}/${selectedId}`,
+				data: { ...values },
+				module,
+			};
+			const resultAction = await dispatch(storeEntityData(value));
+			if (storeEntityData.rejected.match(resultAction)) {
+				const fieldErrors = resultAction.payload.errors;
+				if (fieldErrors) {
+					const errorObject = {};
+					Object.keys(fieldErrors).forEach((key) => {
+						errorObject[key] = fieldErrors[key][0];
+					});
+					referredForm.setErrors(errorObject);
+				}
+			} else if (storeEntityData.fulfilled.match(resultAction)) {
+				referredForm.reset();
+				setSelectedId(null);
+				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+			}
+		} catch (error) {
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
+		}
+	}
+
+	const handleAdmission = () => {
+		handleConfirmSubmission(referredForm.values);
+		closeAdmission();
+	};
+
+	const csvData =
+		records?.map((item, index) => ({
+			sn: index + 1,
+			created: formatDate(item?.created_at),
+			created_by: item?.created_by || "N/A",
+			patient_id: item?.patient_id || "",
+			name: item?.name || "",
+			mobile: item?.mobile || "",
+			total: item?.total || "",
+		})) || [];
+
+	const handleCSVDownload = () => {
+		if (csvLinkRef?.current?.link) {
+			csvLinkRef.current.link.click();
+		}
+	};
+
+	const patientUpdate = async (e, id) => {
+		e.stopPropagation();
+
+		const { data } = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${id}`,
+		});
+
+		setSinglePatientData(data);
+
+		setTimeout(() => openPatientUpdate(), 100);
+	};
+
+	useEffect(() => {
+		if (type === "a4") {
+			handleA4();
+		} else if (type === "pos") {
+			handlePos();
+		} else if (type === "prescription") {
+			handlePrescriptionOption();
+		}
+	}, [printData, type]);
+
+	const handleA4Print = async (id) => {
+		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
+		setPrintData(res.data);
+		setType("a4");
+	};
+
+	const handlePosPrint = async (id) => {
+		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
+		setPrintData(res.data);
+		setType("pos");
+	};
+
+	const handlePrescriptionPrint = async (prescription_id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescription_id}`,
+		});
+
+		setPrintData(res.data);
+		setType("prescription");
+	};
+
+	return (
+		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
+			<Flex justify="space-between" align="center" px="sm">
+				<Text fw={600} fz="sm" py="xs">
+					{t("PatientVitals")}
+				</Text>
+			</Flex>
+			<Box px="sm" mb="sm">
+				<KeywordSearch form={form} module={module} handleCSVDownload={handleCSVDownload} />
+			</Box>
+			<Box className="borderRadiusAll border-top-none" px="sm">
+				<DataTable
+					striped
+					pinFirstColumn
+					pinLastColumn
+					stripedColor="var(--theme-tertiary-color-1)"
+					classNames={{
+						root: tableCss.root,
+						table: tableCss.table,
+						header: tableCss.header,
+						footer: tableCss.footer,
+						pagination: tableCss.pagination,
+					}}
+					records={records}
+					columns={[
+						{
+							accessor: "index",
+							title: t("S/N"),
+							textAlignment: "right",
+							render: (_, index) => index + 1,
+						},
+						{
+							accessor: "created_at",
+							title: t("Created"),
+							textAlignment: "right",
+							render: (item) => (
+								<Text fz="xs" onClick={() => handleView(item.id)} className="activate-link text-nowrap">
+									{formatDate(item.created_at)}
+								</Text>
+							),
+						},
+						{
+							accessor: "created_by",
+							title: t("CreatedBy"),
+							render: (item) => item.created_by || "N/A",
+						},
+						{ accessor: "patient_id", title: t("patientId") },
+						{ accessor: "name", title: t("Name") },
+						{ accessor: "mobile", title: t("Mobile") },
+						{ accessor: "bp", title: t("B/P") },
+						{ accessor: "pulse", title: t("Pulse") },
+						{ accessor: "sat_with_O2", title: t("SatWithO2") },
+						{ accessor: "sat_without_O2", title: t("SatWithoutO2") },
+						{ accessor: "respiration", title: t("Respiration") },
+						{ accessor: "temperature", title: t("Temperature") },
+						{
+							accessor: "action",
+							title: t("Action"),
+							textAlign: "right",
+							titleClassName: "title-right",
+							render: (values) => (
+								<Flex justify="flex-end">
+									<Group gap={4} justify="right" wrap="nowrap">
+										{userRoles.some((role) => ALLOWED_DOCTOR_ROLES.includes(role)) && (
+											<Button
+												miw={60}
+												variant="filled"
+												bg="var(--theme-primary-color-6)"
+												c="white"
+												size="compact-xs"
+												onClick={ ()=> handlePatientDataClick(values)}
+												radius="es"
+												fw="400"
+											>
+												{t("Vitals")}
+											</Button>
+										)}
+									</Group>
+								</Flex>
+							),
+						},
+					]}
+					textSelectionDisabled
+					fetching={fetching}
+					loaderSize="xs"
+					loaderColor="grape"
+					height={height - 118}
+					onScrollToBottom={handleScrollToBottom}
+					scrollViewportRef={scrollRef}
+					sortStatus={sortStatus}
+					onSortStatusChange={setSortStatus}
+				/>
+			</Box>
+			<DataTableFooter indexData={listData} module="visit" />
+			{/* Hidden CSV link for exporting current table rows */}
+			<CSVLink
+				data={csvData}
+				headers={CSV_HEADERS}
+				filename={`emergency-${formatDate(new Date())}.csv`}
+				style={{ display: "none" }}
+				ref={csvLinkRef}
+			/>
+			<VitalUpdateDrawer opened={openedVitalUpdate} data={patientData} close={closeVitalUpdate} />
+
+		</Box>
+	);
+}

@@ -44,12 +44,29 @@ export const sideNavigationLinks = {
 			color: "#E91E63", // Pink
 			allowedRoles: ["role_domain", "admin_administrator", "operator_opd", "operator_manager"],
 		},
+
 		{
 			label: t("Emergency"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EMERGENCY.INDEX,
 			icon: IconEmergencyBed,
 			color: "#F44336", // Red
 			allowedRoles: ["role_domain", "admin_administrator", "doctor_emergency", "operator_emergency"],
+			subMenu: [
+				{
+					label: t("Emergency"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EMERGENCY.INDEX,
+					icon: IconEmergencyBed,
+					color: "#F44336", // Red
+					allowedRoles: ["role_domain", "admin_administrator", "doctor_emergency", "operator_emergency"],
+				},
+				{
+					label: t("Vital"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_VITAL.INDEX,
+					icon: IconEmergencyBed,
+					color: "#F44336", // Red
+					allowedRoles: ["role_domain", "admin_administrator", "doctor_emergency", "operator_emergency"],
+				}
+			],
 		},
 		{
 			label: t("Prescription"),

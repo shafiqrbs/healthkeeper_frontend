@@ -21,6 +21,7 @@ import ParticularTypeIndex from "@modules/hospital/core/particular-type";
 import CategoryIndex from "@modules/hospital/core/category";
 import StoreIndex from "@modules/core/store";
 import EmergencyIndex from "@modules/hospital/emergency";
+import VitalIndex from "@modules/hospital/patient-vital";
 import NotFound from "@components/layout/NotFound";
 import CustomerIndex from "@modules/hospital/customer";
 import LabIndex from "@modules/hospital/lab";
@@ -168,6 +169,16 @@ function AppRoute() {
 								roles={["role_domain", "admin_administrator", "doctor_emergency", "operator_emergency"]}
 							>
 								<EmergencyIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="patient-vital"
+						element={
+							<ProtectedRoute
+								roles={["role_domain", "admin_administrator", "doctor_emergency", "operator_emergency"]}
+							>
+								<VitalIndex />
 							</ProtectedRoute>
 						}
 					/>

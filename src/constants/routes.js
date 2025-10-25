@@ -422,6 +422,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			INDEX: "hospital/opd",
 			CREATE: "hospital/opd",
 			UPDATE: "hospital/opd",
+			VITAL_UPDATE: "hospital/opd/vital-update",
 			VIEW: "hospital/opd",
 			DELETE: "hospital/opd",
 			VISITING_ROOM: "hospital/visiting-room",
@@ -475,6 +476,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			INDEX: "hospital/prescription",
 			SEND_TO_PRESCRIPTION: "hospital/send-to-prescription",
 			PATIENT_PRESCRIPTION: "hospital/prescription/patient",
+			PATIENT_VITAL: "hospital/prescription/vital",
 			EDIT: "hospital/prescription",
 			CREATE: "hospital/prescription",
 			UPDATE: "hospital/prescription",
@@ -502,6 +504,10 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "hospital/opd",
 			UPDATE: "hospital/opd",
 			VIEW: "hospital/opd",
+		},
+		PATIENT_VITAL: {
+			INDEX: "hospital/opd",
+			UPDATE: "hospital/opd/vital",
 		},
 		CUSTOMER: {
 			INDEX: "core/customer",
@@ -586,6 +592,10 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "/hospital/emergency/create",
 			UPDATE: "/hospital/emergency",
 			VIEW: "/hospital/emergency/view",
+		},
+		PATIENT_VITAL: {
+			INDEX: "/hospital/patient-vital",
+			CREATE: "/hospital/emergency/create",
 		},
 		CUSTOMER: {
 			INDEX: "/hospital/customer",

@@ -13,7 +13,7 @@ import {
 	Autocomplete,
 	Tooltip,
 	ActionIcon,
-	Textarea,
+	Textarea, Switch,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
@@ -44,7 +44,7 @@ import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
-import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import {editEntityData, getIndexEntityData, showEntityData, updateEntityData} from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
@@ -227,6 +227,15 @@ export default function AddMedicineForm({
 		// close drawer
 		closeExPrescription();
 	};
+	async  function handleVitalChange(event){
+		form.setValues({'is_vital':!!event.currentTarget.checked})
+		const resultAction = await dispatch(
+			editEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_VITAL}/${prescriptionId}`,
+				module: "prescription",
+			})
+		).unwrap();
+	}
 
 	// Add hotkey for save functionality
 	useHotkeys([
@@ -620,30 +629,35 @@ export default function AddMedicineForm({
 							</Grid.Col>
 						</Grid>
 						<Grid w="100%" columns={12} gutter="les" mt="4px">
-							<Grid.Col span={6}>
+							<Grid.Col span={4}>
 								<Button
 									leftSection={<IconPlus size={16} />}
 									w="100%"
 									size="xs"
+									fz="xs"
+									fw={'400'}
 									type="button"
-									variant="outline"
-									color="green"
+									color="var(--theme-primary-color-5)"
 									onClick={openDosageForm}
 								>
-									{t("AddDosage")}
+									{t("Dose")}
 								</Button>
 							</Grid.Col>
-							<Grid.Col span={6}>
+							<Grid.Col span={5}>
 								<Button
 									w="100%"
 									size="xs"
+									fz="xs"
+									fw={'400'}
 									type="button"
-									variant="outline"
-									color="red"
+									color="var(--theme-secondary-color-5)"
 									onClick={openExPrescription}
 								>
 									{t("RxEmergency")}
 								</Button>
+							</Grid.Col>
+							<Grid.Col span={3}>
+								<Switch checked={form.values.is_vital} onChange={handleVitalChange} size="lg" radius="xs" color="red" onLabel="Vital" offLabel="Vital" />
 							</Grid.Col>
 						</Grid>
 					</Grid.Col>

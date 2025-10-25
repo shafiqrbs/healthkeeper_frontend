@@ -162,7 +162,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 			}
 		}
 	};
-
 	const renderImagePreview = (imageArray, fallbackSrc = null) => {
 		if (imageArray.length > 0) {
 			const imageUrl = URL.createObjectURL(imageArray[0]);
@@ -200,7 +199,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 						<Flex gap="md" justify="center">
 							<Box>
 								<Group ml="md" align="center" h="100%">
-									<Image src={GLogo} alt="logo" width={80} height={80} />
+									<Image src={GLogo} alt="logo" width={60} height={60} />
 								</Group>
 							</Box>
 							<Box>
@@ -213,14 +212,10 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Text ta="center" size="sm" c="gray" mb="2">
 									{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
 								</Text>
-
-								<Text ta="center" fw="bold" size="lg" c="#1e40af">
-									{t("Prescription")}
-								</Text>
 							</Box>
 							<Box>
 								<Group mr="md" justify="flex-end" align="center" h="100%">
-									<Image src={TBLogo} alt="logo" width={80} height={80} />
+									<Image src={TBLogo} alt="logo" width={60} height={60} />
 								</Group>
 							</Box>
 						</Flex>
@@ -299,6 +294,50 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 					<Box style={{ position: "relative", minHeight: "350px" }} mb="sm">
 						<Grid columns={12} gutter="md">
 							<Grid.Col span={4}>
+								<Grid w="100%" columns={24} gutter={'2'} >
+									{patientInfo?.bp && (
+									<Grid.Col span={12}>
+										<Text fz="xs">
+											{t("B/P")} {patientInfo?.bp} {/*mm of HG*/}
+										</Text>
+									</Grid.Col>
+									)}
+									{patientInfo?.pulse && (
+									<Grid.Col span={12} fz="xs" align={"right"}>
+										<Text fz="xs">
+											{t("Pulse")} {patientInfo?.pulse}{/* Beat/Minute*/}
+										</Text>
+									</Grid.Col>
+									)}
+									{patientInfo?.sat_with_O2 && (
+									<Grid.Col span={12}>
+										<Text fz="xs">
+											{t("SatWithO2")} {patientInfo?.sat_with_O2} %
+										</Text>
+									</Grid.Col>
+									)}
+									{patientInfo?.sat_without_O2 && (
+									<Grid.Col span={12} fz="xs" align={"right"}>
+										<Text fz="xs">
+											{t("SatWithoutO2")} {patientInfo?.sat_without_O2} %
+										</Text>
+									</Grid.Col>
+									)}
+									{patientInfo?.temperature && (
+									<Grid.Col span={12}>
+										<Text fz="xs">
+											{t("Temperature")} {patientInfo?.temperature} °F
+										</Text>
+									</Grid.Col>
+									)}
+									{patientInfo?.respiration && (
+									<Grid.Col span={12} fz="xs" align={"right"}>
+										<Text fz="xs">
+											{t("Respiration")} {patientInfo?.respiration}{/* Breath/Minute*/}
+										</Text>
+									</Grid.Col>
+									)}
+								</Grid>
 								<Stack gap="0px">
 									{(orderedExamKeys.length > 0
 										? orderedExamKeys
@@ -381,12 +420,12 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 							<Grid.Col span={6} pl="xl" pt="sm">
 								<Text fz={"sm"}>{t("PrescribedBy")}</Text>
 								<Text fz={"xs"}>{patientInfo?.doctor_name}</Text>
-								<Text fz={"xs"}>
+								{/*<Text fz={"xs"}>
 									{t("Designation")}: {patientInfo?.designation_name}
 								</Text>
 								<Text fz="xs">
 									{t("DoctorID")}: {getValue(patientInfo?.employee_id)}
-								</Text>
+								</Text>*/}
 							</Grid.Col>
 							<Grid.Col span={6}>
 								<Text size="sm" fw={600} mb="xs">
@@ -397,26 +436,24 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 					</Box>
 					<DashedDivider />
 					<Box mb="sm">
-						<Flex gap="md" justify="center">
-							<Box>
-								<Group ml="md" align="center" h="100%">
-									<Image src={GLogo} alt="logo" width={46} height={46} />
-								</Group>
+
+						<Flex gap="md" align="center" justify="space-between">
+							<Box mt="sm" align="center">
+								<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.barcode} />
 							</Box>
-							<Box>
-								<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-									{hospitalConfigData?.organization_name || ""}
-								</Text>
-								<Text ta="center" size="sm" c="gray" mt="2">
-									{hospitalConfigData?.address || ""}
-									{(hospitalConfigData?.hotline && `, ${hospitalConfigData?.hotline}`) || ""}
-								</Text>
-							</Box>
-							<Box>
-								<Group mr="md" justify="flex-end" align="center" h="100%">
-									<Image src={TBLogo} alt="logo" width={46} height={46} />
-								</Group>
-							</Box>
+							<Flex>
+								<Image src={GLogo} alt="logo" width={46} height={46} />
+								<Box>
+									<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
+										{hospitalConfigData?.organization_name || ""}
+									</Text>
+									<Text ta="center" size="sm" c="gray" mt="2">
+										{hospitalConfigData?.address || ""}
+										{(hospitalConfigData?.hotline && `, ${hospitalConfigData?.hotline}`) || ""}
+									</Text>
+								</Box>
+								<Image src={TBLogo} alt="logo" width={46} height={46} />
+							</Flex>
 						</Flex>
 					</Box>
 					{/* =============== bottom section with patient info and medication table ================ */}
@@ -435,8 +472,11 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Text size="xs" fw={600} c="#1e40af">
 									Prescribed By: {getValue(patientInfo?.doctor_name)}
 								</Text>
-								<Text size="xs">Doctor ID- {getValue(patientInfo?.employee_id)}</Text>
-								<Text size="xs">Designation: {getValue(patientInfo?.designation_name)}</Text>
+								<Text size="xs" fw={400} >
+									Comment: {getValue(jsonContent?.pharmacyInstruction)}
+								</Text>
+								{/*<Text size="xs">Doctor ID- {getValue(patientInfo?.employee_id)}</Text>
+								<Text size="xs">Designation: {getValue(patientInfo?.designation_name)}</Text>*/}
 							</Stack>
 						</Grid.Col>
 						<Grid.Col span={8}>
@@ -480,9 +520,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										)}
 									</>
 								))}
-							</Box>
-							<Box mt="sm" align="center">
-								<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.barcode} />
 							</Box>
 						</Grid.Col>
 					</Grid>

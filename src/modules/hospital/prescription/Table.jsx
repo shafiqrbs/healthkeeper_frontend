@@ -12,7 +12,7 @@ import {
 	IconSelector,
 	IconX,
 	IconPrinter,
-	IconScript,
+	IconScript, IconPencil,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -39,6 +39,7 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -95,7 +96,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
-
+	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
+	const [singlePatientData, setSinglePatientData] = useState({});
 	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	useEffect(() => {
@@ -235,6 +237,16 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		}
 	};
 
+	const patientUpdate = async (e, id) => {
+		e.stopPropagation();
+
+		const { data } = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${id}`,
+		});
+		setSinglePatientData(data);
+		setTimeout(() => openPatientUpdate(), 100);
+	};
+
 	return (
 		<Box w="100%" bg="white">
 			<Flex justify="space-between" align="center" px="sm">
@@ -335,6 +347,14 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (values) => {
 								return (
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+										{formatDate(new Date()) === formatDate(values?.created_at) && (
+											<ActionIcon
+												variant="transparent"
+												onClick={(e) => patientUpdate(e, values?.id)}
+											>
+												<IconPencil size={18} color="var(--theme-success-color)" />
+											</ActionIcon>
+										)}
 										{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
 											<>
 												{values?.prescription_id &&
@@ -479,6 +499,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			<OPDA4BN data={printData} ref={a4Ref} />
 			<OPDPosBN data={printData} ref={posRef} />
 			<PrescriptionFullBN data={printData} ref={prescriptionRef} />
+			<PatientUpdateDrawer
+				type="opd"
+				opened={openedPatientUpdate}
+				close={closePatientUpdate}
+				data={singlePatientData}
+			/>
 		</Box>
 	);
 }

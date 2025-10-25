@@ -49,7 +49,7 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 									>
 										<Menu
 											shadow="md"
-											offset={0}
+											offset={10}
 											width={200}
 											position="right"
 											trigger="hover"
