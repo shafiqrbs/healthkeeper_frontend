@@ -1,5 +1,5 @@
 {
-	"json_content": {
+	"custom_report": {
 		"technique": "technique",
 		"findings": "findings",
 		"parenchyma": "parenchyma",

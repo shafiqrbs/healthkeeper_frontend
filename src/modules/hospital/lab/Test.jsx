@@ -31,7 +31,6 @@ export default function Test({ entity, isLoading }) {
 	const printBarCodeValue = useReactToPrint({
 		content: () => barCodeRef.current,
 	});
-	console.log(test?.invoice_transaction);
 	const handleTest = (reportId) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${reportId}`);
 	};
@@ -59,94 +58,82 @@ export default function Test({ entity, isLoading }) {
 					<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 					<Stack className="form-stack-vertical" p="xs">
 						{test?.invoice_transaction?.map((transaction, index) => (
-							<>
-								<Box key={index} className="borderRadiusAll" bg={"white"} p="sm">
-									<Box fz={"xs"} fw={"600"}>
-										{t("Date")} : {formatDate(transaction?.created_at)}
-									</Box>
-									<CustomDivider />
-									{transaction?.items?.map((item, index) => (
-										<Box mt={"xs"} key={index}>
-											<Text fz="xs">{item.item_name}</Text>
-											<Text fz="xs">Status:{item?.process}</Text>
-											<Flex align="center" gap="mes" mt="xs">
-												{userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
-													<>
-														{item?.process === "New" &&
-															userRoles.some((role) =>
-																ALLOWED_LAB_ROLES.includes(role)
-															) && (
-																<Button
-																	onClick={() =>
-																		handleTest(item.invoice_particular_id)
-																	}
-																	size="compact-xs"
-																	bg="var(--theme-primary-color-6)"
-																	color="white"
-																>
-																	{t("Process")}
-																</Button>
-															)}
-														{item?.process === "In-progress" &&
-															userRoles.some((role) =>
-																ALLOWED_LAB_DOCTOR_ROLES.includes(role)
-															) && (
-																<Button
-																	onClick={() =>
-																		handleTest(item.invoice_particular_id)
-																	}
-																	size="compact-xs"
-																	bg="var(--theme-primary-color-6)"
-																	color="white"
-																>
-																	{t("Confirm")}
-																</Button>
-															)}
-														{item?.process === "Done" ? (
-															<>
-																<Button
-																	onClick={() =>
-																		handleTest(item.invoice_particular_id)
-																	}
-																	size="compact-xs"
-																	bg="var(--theme-primary-color-6)"
-																	color="white"
-																	leftSection={<IconEye color="white" size={16} />}
-																>
-																	{t("Show")}
-																</Button>
-																<Button
-																	size="compact-xs"
-																	bg="var(--theme-secondary-color-6)"
-																	onClick={() =>
-																		handleLabReport(item.invoice_particular_id)
-																	}
-																	color="white"
-																	leftSection={
-																		<IconPrinter color="white" size={16} />
-																	}
-																>
-																	{t("Print")}
-																</Button>
-															</>
-														) : (
+							<Box key={index} className="borderRadiusAll" bg={"white"} p="sm">
+								<Box fz={"xs"} fw={"600"}>
+									{t("Date")} : {formatDate(transaction?.created_at)}
+								</Box>
+								<CustomDivider />
+								{transaction?.items?.map((item, index) => (
+									<Box mt={"xs"} key={index}>
+										<Text fz="xs">{item.item_name}</Text>
+										<Text fz="xs">Status:{item?.process}</Text>
+										<Flex align="center" gap="mes" mt="xs">
+											{userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
+												<>
+													{item?.process === "New" &&
+														userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
 															<Button
-																leftSection={<IconTag stroke={1.2} size={12} />}
-																onClick={() => handleBarcodeTag(item.barcode)}
+																onClick={() => handleTest(item.invoice_particular_id)}
 																size="compact-xs"
-																bg="var(--theme-secondary-color-6)"
+																bg="var(--theme-primary-color-6)"
 																color="white"
 															>
-																{t("Tag")}
+																{t("Process")}
 															</Button>
 														)}
-													</>
-												)}
-											</Flex>
-										</Box>
-									))}
-								</Box>
-							</>
+													{item?.process === "In-progress" &&
+														userRoles.some((role) =>
+															ALLOWED_LAB_DOCTOR_ROLES.includes(role)
+														) && (
+															<Button
+																onClick={() => handleTest(item.invoice_particular_id)}
+																size="compact-xs"
+																bg="var(--theme-primary-color-6)"
+																color="white"
+															>
+																{t("Confirm")}
+															</Button>
+														)}
+													{item?.process === "Done" ? (
+														<>
+															<Button
+																onClick={() => handleTest(item.invoice_particular_id)}
+																size="compact-xs"
+																bg="var(--theme-primary-color-6)"
+																color="white"
+																leftSection={<IconEye color="white" size={16} />}
+															>
+																{t("Show")}
+															</Button>
+															<Button
+																size="compact-xs"
+																bg="var(--theme-secondary-color-6)"
+																onClick={() =>
+																	handleLabReport(item.invoice_particular_id)
+																}
+																color="white"
+																leftSection={<IconPrinter color="white" size={16} />}
+															>
+																{t("Print")}
+															</Button>
+														</>
+													) : (
+														<Button
+															leftSection={<IconTag stroke={1.2} size={12} />}
+															onClick={() => handleBarcodeTag(item.barcode)}
+															size="compact-xs"
+															bg="var(--theme-secondary-color-6)"
+															color="white"
+														>
+															{t("Tag")}
+														</Button>
+													)}
+												</>
+											)}
+										</Flex>
+									</Box>
+								))}
+							</Box>
 						))}
 					</Stack>
 				</ScrollArea>
