@@ -30,26 +30,28 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 		<Stack gap={0} justify="space-between" mt="xs">
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Box p="sm" px="md" bg="var(--theme-tertiary-color-1)">
-					<Box w="100%">
-						{diagnosticReport?.process === "Done" ? (
-							<>
-								<Box h={"56"}>
-									<strong>Comment:</strong> {diagnosticReport?.comment}
-								</Box>
-							</>
-						) : (
-							<TextAreaForm
-								id="comment"
-								form={form}
-								tooltip={t("EnterComment")}
-								placeholder={t("EnterComment")}
-								name="comment"
-							/>
-						)}
-					</Box>
-					<Box mt="xs">
-						<Grid columns={12}>
-							<Grid.Col span={6} className="animate-ease-out">
+					<Grid columns={12}>
+						<Grid.Col span={10} className="animate-ease-out">
+							<Box w="100%">
+								{diagnosticReport?.process === "Done" ? (
+									<>
+										<Box h={"56"}>
+											<strong>Comment:</strong> {diagnosticReport?.comment}
+										</Box>
+									</>
+								) : (
+									<TextAreaForm
+										id="comment"
+										form={form}
+										tooltip={t("EnterComment")}
+										placeholder={t("EnterComment")}
+										name="comment"
+									/>
+								)}
+							</Box>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<Box mt="xs">
 								{diagnosticReport?.process === "Done" && (
 									<Flex
 										mih={50}
@@ -76,8 +78,6 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										</Button>
 									</Flex>
 								)}
-							</Grid.Col>
-							<Grid.Col span={6} className="animate-ease-out">
 								<Flex mih={50} gap="xs" justify="flex-end" align="center" direction="row" wrap="wrap">
 									{diagnosticReport?.process === "New" && (
 										<Button size="xs" className="btnPrimaryBg" type="submit" id="handleSubmit">
@@ -106,9 +106,9 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										</Button>
 									)}
 								</Flex>
-							</Grid.Col>
-						</Grid>
-					</Box>
+							</Box>
+						</Grid.Col>
+					</Grid>
 				</Box>
 			</form>
 			<LabReportA4BN data={labReportData} ref={labReportRef} />

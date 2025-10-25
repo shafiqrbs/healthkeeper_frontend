@@ -14,6 +14,7 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
+import { formatDateForMySQL } from "@utils/index";
 
 // =============== define checkbox and radio options outside component ===============
 const typeOfPatientOptions = [
@@ -46,30 +47,34 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
+	const custom_report = diagnosticReport?.custom_report || {};
+	const is_completed = diagnosticReport?.process === "Done";
 
 	const form = useForm({
 		initialValues: {
-			date_specimen_collection: diagnosticReport?.custom_report?.date_specimen_collection || null,
-			specimen_identification_number: diagnosticReport?.custom_report?.specimen_identification_number || "",
-			referral_center: diagnosticReport?.custom_report?.referral_center || "",
-			type_patient: diagnosticReport?.custom_report?.type_patient
-				? [diagnosticReport.custom_report.type_patient]
-				: [],
-			specimen: diagnosticReport?.custom_report?.specimen ? [diagnosticReport.custom_report.specimen] : [],
-			preservative: diagnosticReport?.custom_report?.preservative
-				? [diagnosticReport.custom_report.preservative]
-				: [],
-			test_type: diagnosticReport?.custom_report?.test_type || "",
-			date_specimen_received: diagnosticReport?.custom_report?.date_specimen_received || "",
-			gene_xpert_hospital: diagnosticReport?.custom_report?.gene_xpert_hospital || "",
-			reference_laboratory_specimen_id: diagnosticReport?.custom_report?.reference_laboratory_specimen_id || "",
+			date_specimen_collection: custom_report?.date_specimen_collection
+				? new Date(custom_report.date_specimen_collection)
+				: null,
+			specimen_identification_number: custom_report?.specimen_identification_number || "",
+			referral_center: custom_report?.referral_center || "",
+			type_patient: custom_report?.type_patient ? JSON.parse(custom_report.type_patient || "[]") : [],
+			specimen: custom_report?.specimen ? JSON.parse(custom_report.specimen || "[]") : [],
+			preservative: custom_report?.preservative ? JSON.parse(custom_report.preservative || "[]") : [],
+			test_type: custom_report?.test_type || "",
+			date_specimen_received: custom_report?.date_specimen_received
+				? new Date(custom_report.date_specimen_received)
+				: null,
+			gene_xpert_hospital: custom_report?.gene_xpert_hospital || "",
+			reference_laboratory_specimen_id: custom_report?.reference_laboratory_specimen_id || "",
 
-			sars_cov_positive: diagnosticReport?.custom_report?.sars_cov_positive || false,
-			presumptive_pos: diagnosticReport?.custom_report?.presumptive_pos || false,
-			sars_covnegative: diagnosticReport?.custom_report?.sars_covnegative || false,
-			cov_invalid: diagnosticReport?.custom_report?.cov_invalid || false,
+			sars_cov_positive: custom_report?.sars_cov_positive || false,
+			presumptive_pos: custom_report?.presumptive_pos || false,
+			sars_covnegative: custom_report?.sars_covnegative || false,
+			cov_invalid: custom_report?.cov_invalid || false,
 
-			last_covid_test_date: diagnosticReport?.custom_report?.last_covid_test_date || null,
+			last_covid_test_date: custom_report?.last_covid_test_date
+				? new Date(custom_report.last_covid_test_date)
+				: null,
 			comment: diagnosticReport?.comment || "",
 		},
 	});
@@ -90,10 +95,16 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.UPDATE}/${reportId}`,
 				data: {
-					...values,
-					preservative: JSON.stringify(values.preservative),
-					specimen: JSON.stringify(values.specimen),
-					type_patient: JSON.stringify(values.type_patient),
+					json_content: {
+						...values,
+						preservative: JSON.stringify(values.preservative),
+						specimen: JSON.stringify(values.specimen),
+						type_patient: JSON.stringify(values.type_patient),
+
+						date_specimen_collection: formatDateForMySQL(values.date_specimen_collection),
+						date_specimen_received: formatDateForMySQL(values.date_specimen_received),
+						last_covid_test_date: formatDateForMySQL(values.last_covid_test_date),
+					},
 				},
 				module,
 			};
@@ -123,7 +134,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 
 	return (
 		<Box className="border-top-none" px="sm" mt="xs">
-			<ScrollArea h={mainAreaHeight - 316} scrollbarSize={2} scrollbars="y">
+			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
 					{/* =============== date specimen collection =============== */}
 					<Group grow>
@@ -135,6 +146,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 							nextField="specimen_identification_number"
 							form={form}
 							tooltip={t("EnterTheDateOfSpecimenCollection")}
+							readOnly={is_completed}
 						/>
 
 						{/* =============== specimen identification number =============== */}
@@ -146,6 +158,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 							id="specimen_identification_number"
 							nextField="referral_center"
 							form={form}
+							readOnly={is_completed}
 						/>
 
 						{/* =============== referral center =============== */}
@@ -156,6 +169,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 							id="referral_center"
 							nextField="type_patient"
 							form={form}
+							readOnly={is_completed}
 						/>
 					</Group>
 
@@ -167,6 +181,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 						<Checkbox.Group
 							value={form.values.type_patient}
 							onChange={(value) => form.setFieldValue("type_patient", value)}
+							readOnly={is_completed}
 						>
 							<Group>
 								{typeOfPatientOptions.map((option) => (
@@ -184,6 +199,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 						<Checkbox.Group
 							value={form.values.specimen}
 							onChange={(value) => form.setFieldValue("specimen", value)}
+							readOnly={is_completed}
 						>
 							<Group>
 								{specimenOptions.map((option) => (
@@ -201,6 +217,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 						<Checkbox.Group
 							value={form.values.preservative}
 							onChange={(value) => form.setFieldValue("preservative", value)}
+							readOnly={is_completed}
 						>
 							<Group>
 								{preservativeOptions.map((option) => (
@@ -218,6 +235,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 						<Radio.Group
 							value={form.values.test_type}
 							onChange={(value) => form.setFieldValue("test_type", value)}
+							readOnly={is_completed}
 						>
 							<Stack gap="xs">
 								{testTypeOptions.map((option) => (
@@ -236,6 +254,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 							form={form}
 							label="Genexpert Site/Hospital"
 							placeholder="Enter genexpert site/hospital"
+							readOnly={is_completed}
 						/>
 
 						{/* =============== reference laboratory specimen id =============== */}
@@ -246,6 +265,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 							form={form}
 							label="Reference Laboratory Specimen ID"
 							placeholder="Enter reference laboratory specimen ID"
+							readOnly={is_completed}
 						/>
 					</Group>
 
@@ -268,6 +288,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 												form.setFieldValue("sars_cov_positive", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
+											readOnly={is_completed}
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
@@ -277,6 +298,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 												form.setFieldValue("presumptive_pos", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
+											readOnly={is_completed}
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
@@ -286,6 +308,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 												form.setFieldValue("sars_covnegative", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
+											readOnly={is_completed}
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
@@ -295,6 +318,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 												form.setFieldValue("cov_invalid", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
+											readOnly={is_completed}
 										/>
 									</Table.Th>
 								</Table.Tr>
@@ -311,6 +335,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 							nextField="gene_xpert_hospital"
 							form={form}
 							tooltip={t("EnterTheDateOfSpecimenReceivedOrCollected")}
+							readOnly={is_completed}
 						/>
 						<DatePickerForm
 							label="Test Date"
@@ -320,6 +345,7 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 							nextField="comment"
 							form={form}
 							tooltip={t("EnterTheDateOfLastCovidTest")}
+							readOnly={is_completed}
 						/>
 					</Group>
 					{/* =============== text date =============== */}

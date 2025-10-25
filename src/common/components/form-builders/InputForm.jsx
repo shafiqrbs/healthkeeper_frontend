@@ -71,12 +71,24 @@ function InputForm({
 						leftSection={leftSection}
 						rightSection={
 							form.values[name] ? (
-								<Tooltip label={t("Close")} withArrow bg="var(--theme-error-color)" c="white">
+								<Tooltip
+									disabled={readOnly || disabled}
+									label={t("Close")}
+									withArrow
+									bg="var(--theme-error-color)"
+									c="white"
+								>
 									<IconX
 										color="var(--theme-error-color)"
 										size={16}
 										opacity={0.5}
-										onClick={() => form.setFieldValue(name, "")}
+										onClick={() => {
+											if (disabled || readOnly) {
+												return;
+											} else {
+												form.setFieldValue(name, "");
+											}
+										}}
 									/>
 								</Tooltip>
 							) : (

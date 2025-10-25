@@ -24,6 +24,7 @@ function DatePickerForm({
 	miw,
 	disabled = false,
 	onBlur,
+	readOnly = false,
 }) {
 	const { t } = useTranslation();
 
@@ -53,6 +54,7 @@ function DatePickerForm({
 				label={label}
 				placeholder={placeholder}
 				mt={mt}
+				readOnly={readOnly}
 				miw={miw}
 				autoComplete="off"
 				{...form.getInputProps(name)}
