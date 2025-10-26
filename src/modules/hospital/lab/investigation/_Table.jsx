@@ -1,12 +1,5 @@
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import {
-	IconCalendarWeek,
-	IconUser,
-	IconArrowNarrowRight,
-	IconPencil,
-	IconDotsVertical,
-	IconScript, IconPrinter, IconChevronUp, IconSelector, IconArrowRight, IconX,IconBarcode
-} from "@tabler/icons-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { IconPrinter, IconChevronUp, IconSelector, IconArrowRight, IconBarcode } from "@tabler/icons-react";
 import {
 	Box,
 	Flex,
@@ -19,33 +12,28 @@ import {
 	Menu,
 	rem,
 	Tabs,
-	FloatingIndicator
+	FloatingIndicator,
 } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import { MODULES } from "@/constants";
-import {formatDate, getUserRole} from "@utils/index";
+import { formatDate, getUserRole } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import tableCss from "@assets/css/Table.module.css";
-import {DataTable} from "mantine-datatable";
-import {useTranslation} from "react-i18next";
-import {useForm} from "@mantine/form";
-import {getVendorFormInitialValues} from "@modules/hospital/visit/helpers/request";
+import { DataTable } from "mantine-datatable";
+import { useTranslation } from "react-i18next";
+import { useForm } from "@mantine/form";
+import { getVendorFormInitialValues } from "@modules/hospital/visit/helpers/request";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import DataTableFooter from "@components/tables/DataTableFooter";
-import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
-import OverviewDrawer from "@modules/hospital/visit/__OverviewDrawer";
-import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
-import OPDPosBN from "@components/print-formats/opd/OPDPosBN";
-import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
-import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
-import {CSVLink} from "react-csv";
-import {useSelector} from "react-redux";
+import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
+import { CSVLink } from "react-csv";
+import { useSelector } from "react-redux";
 import Barcode from "react-barcode";
-import LabReportA4BN from "@components/print-formats/lab-reports/LabReportA4BN";
-import {useReactToPrint} from "react-to-print";
-import {getDataWithoutStore} from "@/services/apiService";
+import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
+import { useReactToPrint } from "react-to-print";
+import { getDataWithoutStore } from "@/services/apiService";
 
 const module = MODULES.LAB_TEST;
 const PER_PAGE = 500;
@@ -71,8 +59,7 @@ const tabs = [
 	{ label: "Done", value: "Done" },
 ];
 
-export default function _Table({height}) {
-
+export default function _Table({ height }) {
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const navigate = useNavigate();
@@ -156,7 +143,7 @@ export default function _Table({height}) {
 		console.info(id);
 	};
 
-	const handleTest = (invoice,reportId) => {
+	const handleTest = (invoice, reportId) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${invoice}/report/${reportId}`);
 	};
 
@@ -173,7 +160,6 @@ export default function _Table({height}) {
 		setBarcodeValue(barcode);
 		requestAnimationFrame(() => printBarCodeValue());
 	};
-
 
 	return (
 		<Box w="100%" bg="white">
@@ -254,19 +240,44 @@ export default function _Table({height}) {
 							render: (values) => {
 								return (
 									<Flex justify="flex-end" gap="2">
-										{values?.process === 'New' &&(
-										<Button onClick={() => handleBarcodeTag(values?.barcode)} size="compact-xs" fz={'xs'} fw={'400'} leftSection={<IconBarcode size={14} />} fw={'400'} color="var(--theme-warn-color-6)">{t('Tag')}</Button>
+										{values?.process === "New" && (
+											<Button
+												onClick={() => handleBarcodeTag(values?.barcode)}
+												size="compact-xs"
+												fz={"xs"}
+												fw={"400"}
+												leftSection={<IconBarcode size={14} />}
+												fw={"400"}
+												color="var(--theme-warn-color-6)"
+											>
+												{t("Tag")}
+											</Button>
 										)}
-										{values?.process === 'In-progress' &&(
-										 <Button onClick={() => handleTest(values?.invoice_id,values?.id)} size="compact-xs" fz={'xs'} fw={'400'} rightSection={<IconArrowRight size={14} />} color="var(--theme-primary-color-6)">{t('Report')}</Button>
+										{values?.process === "In-progress" && (
+											<Button
+												onClick={() => handleTest(values?.invoice_id, values?.id)}
+												size="compact-xs"
+												fz={"xs"}
+												fw={"400"}
+												rightSection={<IconArrowRight size={14} />}
+												color="var(--theme-primary-color-6)"
+											>
+												{t("Report")}
+											</Button>
 										)}
-										{values?.process === 'Done' &&(
-										 <Button  onClick={() =>
-											 handleLabReport(values?.id)
-										 } size="compact-xs" fz={'xs'} fw={'400'} leftSection={<IconPrinter size={14} />} color="var(--theme-print-btn-color)">{t('Print')}</Button>
+										{values?.process === "Done" && (
+											<Button
+												onClick={() => handleLabReport(values?.id)}
+												size="compact-xs"
+												fz={"xs"}
+												fw={"400"}
+												leftSection={<IconPrinter size={14} />}
+												color="var(--theme-print-btn-color)"
+											>
+												{t("Print")}
+											</Button>
 										)}
 									</Flex>
-
 								);
 							},
 						},
@@ -288,7 +299,6 @@ export default function _Table({height}) {
 			</Box>
 			<DataTableFooter indexData={listData} module="visit" />
 			<OPDA4BN data={printData} ref={a4Ref} />
-
 
 			{/* Hidden CSV link for exporting current table rows */}
 			<CSVLink

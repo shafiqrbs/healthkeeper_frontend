@@ -19,8 +19,8 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
-import IPDPrescriptionFullBN from "@components/print-formats/ipd/IPDPrescriptionFullBN";
-import DetailsInvoiceBN from "@components/print-formats/billing/DetailsInvoiceBN";
+import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
+import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 
 const PER_PAGE = 20;
 
@@ -73,10 +73,10 @@ export default function _Table({ module }) {
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			patient_mode: ['opd','ipd','emergency'],
-		//	created: filterData.created,
+			patient_mode: ["opd", "ipd", "emergency"],
+			//	created: filterData.created,
 			process: processTab,
-		//	term: filterData.keywordSearch,
+			//	term: filterData.keywordSearch,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
