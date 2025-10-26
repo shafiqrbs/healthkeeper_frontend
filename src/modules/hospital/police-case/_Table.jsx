@@ -19,8 +19,9 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
-import IPDPrescriptionFullBN from "@components/print-formats/ipd/IPDPrescriptionFullBN";
-import DetailsInvoiceBN from "@components/print-formats/billing/DetailsInvoiceBN";
+
+import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
+import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 
 const PER_PAGE = 20;
 

@@ -27,6 +27,7 @@ import { getVendorFormInitialValues } from "@modules/hospital/visit/helpers/requ
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import DataTableFooter from "@components/tables/DataTableFooter";
+
 import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
 import { CSVLink } from "react-csv";
 import { useSelector } from "react-redux";
@@ -34,6 +35,14 @@ import Barcode from "react-barcode";
 import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
+
+import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
+import OverviewDrawer from "@modules/hospital/visit/__OverviewDrawer";
+import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
+import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
+import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
+
+
 
 const module = MODULES.LAB_TEST;
 const PER_PAGE = 500;
