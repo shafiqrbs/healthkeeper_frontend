@@ -549,6 +549,7 @@ input[type=radio]:checked+label>img {
 }
 
 .mantine-TextInput-error,
+.mantine-Textarea-error,
 .mantine-DateInput-error {
     display: none !important;
 }

@@ -70,16 +70,15 @@ export default function EntityForm({ form, module }) {
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
 	});
 	const  entity = ipdData?.data;
+
 	const handleSubmit = async (values) => {
 		try {
-			const formValue = { ...values, hms_invoice_id: selectedId };
-
+			console.log(values);
 			const value = {
 				url: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.CREATE,
-				data: formValue,
+				data: values,
 				module,
 			};
-
 			const resultAction = await dispatch(storeEntityData(value));
 			if (storeEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
@@ -100,7 +99,6 @@ export default function EntityForm({ form, module }) {
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	};
-
 	const handleDataTypeChange = (rowId, field, value, submitNow = false) => {
 		const updatedRow = {
 			...submitFormData[rowId],
@@ -115,36 +113,6 @@ export default function EntityForm({ form, module }) {
 		// optional immediate submit (for Select)
 		if (submitNow) {
 			handleRowSubmit(rowId, updatedRow);
-		}
-	};
-
-	const handleRowSubmit = async (rowId) => {
-		const formData = submitFormData[rowId];
-		if (!formData) return false;
-
-		// 🔎 find original row data
-		const originalRow = records.find((r) => r.id === rowId);
-		if (!originalRow) return false;
-
-		// ✅ check if there is any change
-		const isChanged = Object.keys(formData).some(
-			(key) => formData[key] !== originalRow[key]
-		);
-
-		if (!isChanged) {
-			// nothing changed → do not submit
-			return false;
-		}
-
-		const value = {
-			url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
-			data: formData,
-			module,
-		};
-		try {
-			const resultAction = await dispatch(storeEntityData(value));
-		} catch (error) {
-			errorNotification(error.message);
 		}
 	};
 
@@ -404,10 +372,11 @@ export default function EntityForm({ form, module }) {
 												tooltip={t("EnterComment")}
 												placeholder={t("EnterComment")}
 												name="comment"
+												required
 											/>
 										</Grid.Col>
 										<Grid.Col span={6}>
-											<Flex gap="xs" justify="flex-end"  align="flex-end" h={'50'}>
+											<Flex gap="xs" justify="flex-end"  align="flex-end" h={'54'}>
 												<Button type="submit" bg="var(--theme-primary-color-6)" color="white">
 													{t("Confirm")}
 												</Button>
