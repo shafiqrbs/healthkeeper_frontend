@@ -26,6 +26,7 @@ import NotFound from "@components/layout/NotFound";
 import CustomerIndex from "@modules/hospital/customer";
 import LabIndex from "@modules/hospital/lab";
 import FreePatientIndex from "@modules/hospital/free-patient";
+import PoliceCaseIndex from "@modules/hospital/police-case";
 import LabInvestigationIndex from "@modules/hospital/lab/investigation";
 import EpharmaIndex from "@modules/hospital/epharma";
 import LabGroupIndex from "@modules/hospital/lab-group";
@@ -251,12 +252,19 @@ function AppRoute() {
 							}
 						/>
 					</Route>
-
 					<Route
-						path="lab-test"
+						path="police-case"
 						element={
-							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "lab_doctor"]}>
-								<LabIndex />
+							<ProtectedRoute roles={["role_domain", "admin_administrator","doctor_ipd","doctor_emergency","doctor_opd"]}>
+								<PoliceCaseIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="police-case/:id"
+						element={
+							<ProtectedRoute roles={["role_domain", "admin_administrator","doctor_ipd","doctor_emergency","doctor_opd"]}>
+								<PoliceCaseIndex />
 							</ProtectedRoute>
 						}
 					/>
@@ -268,6 +276,23 @@ function AppRoute() {
 							</ProtectedRoute>
 						}
 					/>
+					<Route
+						path="free-patient/:id"
+						element={
+							<ProtectedRoute roles={["role_domain", "admin_administrator","doctor_ipd","doctor_emergency","doctor_opd"]}>
+								<FreePatientIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="lab-test"
+						element={
+							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "lab_doctor"]}>
+								<LabIndex />
+							</ProtectedRoute>
+						}
+					/>
+
 					<Route
 						path="lab-test/report"
 						element={

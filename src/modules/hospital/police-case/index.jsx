@@ -13,7 +13,7 @@ export default function Index() {
 	const form = useForm();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-	const module = MODULES.FREE_PATIENT;
+	const module = MODULES.POLICE_CASE;
 	return (
 		<>
 			{progress !== 100 ? (

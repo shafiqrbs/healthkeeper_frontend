@@ -611,6 +611,12 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "/hospital/free-patient",
 		},
 
+		POLICE_CASE: {
+			INDEX: "/hospital/police-case",
+			UPDATE: "/hospital/police-case",
+			VIEW: "/hospital/police-case",
+		},
+
 		LAB_TEST: {
 			INDEX: "/hospital/lab-test",
 			INDEX_REPORTS: "/hospital/lab-test/report",

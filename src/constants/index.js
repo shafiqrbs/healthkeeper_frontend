@@ -15,6 +15,7 @@ export const MODULES = {
 	ADMISSION: "admission",
 	EMERGENCY: "emergency",
 	FREE_PATIENT: "free_patient",
+	POLICE_CASE: "police_case",
 	PRESCRIPTION: "prescription",
 	CUSTOMER: "customer",
 	DOMAIN: "domain",

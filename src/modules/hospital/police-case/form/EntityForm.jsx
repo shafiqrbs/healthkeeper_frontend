@@ -154,7 +154,7 @@ export default function EntityForm({ form, module }) {
 			<Box w="100%">
 				<Box bg="var(--theme-primary-color-0)" p="sm">
 					<Text fw={600} fz="sm" py="es">
-						{t("PatientFree")}
+						{t("PoliceCase")}
 					</Text>
 				</Box>
 				<form onSubmit={form.onSubmit(handleSubmit)}>

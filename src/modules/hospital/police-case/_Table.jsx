@@ -25,9 +25,8 @@ import DetailsInvoiceBN from "@components/print-formats/billing/DetailsInvoiceBN
 const PER_PAGE = 20;
 
 const tabs = [
-	{ label: "New", value: "New" },
-	{ label: "In-progress", value: "In-progress" },
-	{ label: "Approved", value: "Approved" },
+	{ label: "Confirmed", value: "confirmed" },
+	{ label: "Admitted", value: "admitted" },
 ];
 
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "admin_administrator"];
@@ -118,7 +117,7 @@ export default function _Table({ module }) {
 		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
-					{t("AdmissionInformation")}
+					{t("PoliceCase")}
 				</Text>
 				<Flex gap="xs" align="center">
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
@@ -202,26 +201,27 @@ export default function _Table({ module }) {
 							titleClassName: "title-right",
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && (
-										<Button.Group>
-											<Button
-												variant="filled"
-												onClick={() => handlePatientForm(item.uid)}
-												color="var(--theme-primary-color-6)"
-												radius="xs"
-												size={"compact-xs"}
-												aria-label="Settings"
-												rightSection={
-													<IconArrowNarrowRight
-														style={{ width: "70%", height: "70%" }}
-														stroke={1.5}
-													/>
-												}
-											>
-												Process
-											</Button>
-										</Button.Group>
-									)}
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+										item.process === "confirmed" && (
+											<Button.Group>
+												<Button
+													variant="filled"
+													onClick={() => handlePatientForm(item.uid)}
+													color="var(--theme-primary-color-6)"
+													radius="xs"
+													size={"compact-xs"}
+													aria-label="Settings"
+													rightSection={
+														<IconArrowNarrowRight
+															style={{ width: "70%", height: "70%" }}
+															stroke={1.5}
+														/>
+													}
+												>
+													Process
+												</Button>
+											</Button.Group>
+										)}
 									<Menu
 										position="bottom-end"
 										offset={3}

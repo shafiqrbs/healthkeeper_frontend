@@ -153,6 +153,14 @@ export const sideNavigationLinks = {
 		},
 
 		{
+			label: t("PoliceCase"),
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.POLICE_CASE.INDEX,
+			icon: IconBuildingHospital,
+			color: "#795548", // Brown
+			allowedRoles: ["role_domain", "admin_administrator","doctor_ipd","doctor_emergency","doctor_opd"],
+		},
+
+		{
 			label: t("Lab"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX,
 			icon: IconMicroscopeOff,
