@@ -21,6 +21,14 @@ const initialState = {
 		editData: {},
 		validation: false,
 	},
+	free_patient: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+	},
 	dashboardDailySummary: {
 		isLoading: true,
 		refetching: false,

@@ -149,7 +149,6 @@ export default function Test({ entity, isLoading }) {
 					<Barcode fontSize="10" width="1" height="30" value={barcodeValue || "BARCODETEST"} />
 				</Box>
 			</Box>
-
 			<LabReportA4BN data={labReportData} ref={labReportRef} />
 		</Box>
 	);

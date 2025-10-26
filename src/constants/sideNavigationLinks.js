@@ -142,12 +142,35 @@ export const sideNavigationLinks = {
 			color: "#795548", // Brown
 			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd"],
 		},
+
+
+		{
+			label: t("FreeService"),
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FREE_PATIENT.INDEX,
+			icon: IconBuildingHospital,
+			color: "#795548", // Brown
+			allowedRoles: ["role_domain", "admin_administrator","doctor_ipd","doctor_emergency","doctor_opd"],
+		},
+
 		{
 			label: t("Lab"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX,
 			icon: IconMicroscopeOff,
 			color: "#9E9D24", // Olive
 			allowedRoles: ["doctor_lab", "lab_assistant", "admin_administrator"],
+			subMenu: [
+				{
+					label: t("Lab"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX,
+					icon: IconMicroscopeOff,
+					allowedRoles: ["doctor_lab", "lab_assistant", "admin_administrator"],				},
+				{
+					label: t("TestReports"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX_REPORTS,
+					icon: IconEmergencyBed,
+					allowedRoles: ["doctor_lab", "lab_assistant", "admin_administrator"],
+				}
+			],
 		},
 		{
 			label: t("ePharama"),

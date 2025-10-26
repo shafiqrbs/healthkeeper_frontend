@@ -71,7 +71,6 @@ export default function Table({ module }) {
 	const userRoles = getUserRole();
 	const user = getLoggedInUser();
 	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
-	const [openedVitalUpdate, { open: openVitalUpdate, close: closeVitalUpdate }] = useDisclosure(false);
 	const [singlePatientData, setSinglePatientData] = useState({});
 	// removed unused 'today'
 
@@ -414,18 +413,7 @@ export default function Table({ module }) {
 											</Button>
 										)}
 
-										<Button
-											miw={60}
-											variant="filled"
-											bg="var(--theme-primary-color-6)"
-											c="white"
-											size="compact-xs"
-											onClick={openVitalUpdate}
-											radius="es"
-											fw="400"
-										>
-											{t("Vitals")}
-										</Button>
+
 
 										{formatDate(new Date()) === formatDate(values?.created_at) && (
 											<ActionIcon
@@ -569,11 +557,7 @@ export default function Table({ module }) {
 				close={closePatientUpdate}
 				data={singlePatientData}
 			/>
-
-			<VitalUpdateDrawer opened={openedVitalUpdate} close={closeVitalUpdate} />
-
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
-
 			<EmergencyA4BN data={printData} ref={a4Ref} />
 			<EmergencyPosBN data={printData} ref={posRef} />
 			<Prescription data={printData} ref={prescriptionRef} />

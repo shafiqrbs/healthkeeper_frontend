@@ -517,6 +517,7 @@ export const HOSPITAL_DATA_ROUTES = {
 		},
 		LAB_TEST: {
 			INDEX: "hospital/lab-investigation",
+			INDEX_REPORTS: "hospital/lab-investigation/test-reports",
 			CREATE: "hospital/lab-investigation",
 			UPDATE: "hospital/lab-investigation",
 			VIEW: "hospital/lab-investigation",
@@ -603,8 +604,16 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/customer/edit",
 			VIEW: "/hospital/customer/view",
 		},
+
+		FREE_PATIENT: {
+			INDEX: "/hospital/free-patient",
+			UPDATE: "/hospital/free-patient",
+			VIEW: "/hospital/free-patient",
+		},
+
 		LAB_TEST: {
 			INDEX: "/hospital/lab-test",
+			INDEX_REPORTS: "/hospital/lab-test/report",
 			CREATE: "/hospital/lab-test",
 			UPDATE: "/hospital/lab-test",
 			VIEW: "/hospital/lab-test",

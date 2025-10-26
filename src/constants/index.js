@@ -14,6 +14,7 @@ export const MODULES = {
 	VISIT: "visit",
 	ADMISSION: "admission",
 	EMERGENCY: "emergency",
+	FREE_PATIENT: "free_patient",
 	PRESCRIPTION: "prescription",
 	CUSTOMER: "customer",
 	DOMAIN: "domain",
@@ -29,7 +30,6 @@ export const MODULES = {
 
 export const MODULES_CORE = {
 	OPD_ROOM: "opd_room",
-	BILLING: "billing",
 	INVESTIGATION: "investigation",
 	BED: "bed",
 	ADVICE: "advice",
