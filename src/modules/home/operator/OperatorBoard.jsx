@@ -7,7 +7,7 @@ import { formatDate, getLoggedInUser, getUserRole } from "@/common/utils";
 import DailyOverview from "@modules/home/common/DailyOverview";
 import { useReactToPrint } from "react-to-print";
 import { useEffect, useRef } from "react";
-import Home from "@components/print-formats/operator/Home";
+import Home from "@hospital-components/print-formats/operator/Home";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES_CORE } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
@@ -66,7 +66,7 @@ const quickBrowseCardData = [
 
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
-export default function OperatorBoard({height}) {
+export default function OperatorBoard({ height }) {
 	const roles = getUserRole();
 	const user = getLoggedInUser();
 	const navigate = useNavigate();
@@ -99,7 +99,7 @@ export default function OperatorBoard({height}) {
 	return (
 		<Grid columns={40} h={height} gutter={{ base: "xs" }}>
 			<Grid.Col span={20}>
-				<Card padding="lg" radius="sm" h={height-8}>
+				<Card padding="lg" radius="sm" h={height - 8}>
 					<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
 						<Flex align="center" h="100%" px="lg">
 							<Text pb={0} fz="sm" c="white" fw={500}>
@@ -139,7 +139,7 @@ export default function OperatorBoard({height}) {
 				</Card>
 			</Grid.Col>
 			<Grid.Col span={20}>
-				<Card padding="lg" radius="sm" >
+				<Card padding="lg" radius="sm">
 					<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
 						<Flex align="center" h="100%" px="lg" justify="space-between">
 							<Text pb={0} fz="sm" c="white" fw={500}>

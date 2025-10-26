@@ -40,9 +40,9 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
-import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
-import OPDPosBN from "@components/print-formats/opd/OPDPosBN";
-import PrescriptionFullBN from "@/common/components/print-formats/prescription/PrescriptionFullBN";
+import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
+import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
+import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 
 const tabs = [
 	{ label: "All", value: "all" },

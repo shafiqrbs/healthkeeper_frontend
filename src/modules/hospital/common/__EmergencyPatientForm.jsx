@@ -27,8 +27,8 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import NIDDataPreviewModal from "./NIDDataPreviewModal";
 import { useReactToPrint } from "react-to-print";
-import EmergencyA4BN from "@components/print-formats/emergency/EmergencyA4BN";
-import EmergencyPosBN from "@components/print-formats/emergency/EmergencyPosBN";
+import EmergencyA4BN from "@hospital-components/print-formats/emergency/EmergencyA4BN";
+import EmergencyPosBN from "@hospital-components/print-formats/emergency/EmergencyPosBN";
 import { useForm } from "@mantine/form";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";

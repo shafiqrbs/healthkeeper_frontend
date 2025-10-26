@@ -30,9 +30,9 @@ import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 import inputCss from "@assets/css/InputField.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import IPDAllPrint from "@components/print-formats/ipd/IPDAllPrint";
+import IPDAllPrint from "@hospital-components/print-formats/ipd/IPDAllPrint";
 import { useReactToPrint } from "react-to-print";
-import {t} from "i18next";
+import { t } from "i18next";
 
 const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator"];
 const module = MODULES.BILLING;
@@ -285,9 +285,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={4} py={0}>
-											<Text size="xs">
-												{item?.created}
-											</Text>
+											<Text size="xs">{item?.created}</Text>
 										</Grid.Col>
 										<Grid.Col span={4} py={0}>
 											<Text size="xs" fw={600}>
@@ -295,9 +293,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={4} py={0}>
-											<Text size="xs">
-												{item?.mode}
-											</Text>
+											<Text size="xs">{item?.mode}</Text>
 										</Grid.Col>
 										<Grid.Col span={4} py={0}>
 											<Text size="xs" fw={600}>
@@ -305,9 +301,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={4} py={0}>
-											<Text size="xs">
-												{Number(item?.total, 2)}
-											</Text>
+											<Text size="xs">{Number(item?.total, 2)}</Text>
 										</Grid.Col>
 										<Grid.Col span={4} py={0}>
 											<Text size="xs" fw={600}>
@@ -315,12 +309,10 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={4} py={0}>
-											<Text size="xs">
-												{item?.process}
-											</Text>
+											<Text size="xs">{item?.process}</Text>
 										</Grid.Col>
 									</Grid>
-									<Flex align="center" gap="sm" mt={'md'}  justify="flex-end">
+									<Flex align="center" gap="sm" mt={"md"} justify="flex-end">
 										{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
 											<>
 												{item?.process === "New" &&
@@ -489,7 +481,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 											</Grid>
 											<Box w="100%" bg="white">
 												<Grid columns={18} gutter="xs">
-													<Grid.Col span={18} className="animate-ease-out" px="xs" pb={'xs'}>
+													<Grid.Col span={18} className="animate-ease-out" px="xs" pb={"xs"}>
 														<Flex mt="xs" align="center" gap="xs">
 															<InputNumberForm
 																form={form}

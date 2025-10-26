@@ -33,12 +33,12 @@ import { formatDate } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
-import OPDPosBN from "@components/print-formats/opd/OPDPosBN";
+import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
+import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
+import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 

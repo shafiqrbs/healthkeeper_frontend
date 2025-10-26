@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import ActionButtons from "./_ActionButtons";
 import { useReactToPrint } from "react-to-print";
-import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
-import OPDPosBn from "@/common/components/print-formats/opd/OPDPosBN";
+import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
+import OPDPosBn from "@hospital-components/print-formats/opd/OPDPosBN";
 
 export default function OPDFooter({ form, isSubmitting, handleSubmit, type }) {
 	const [printData, setPrintData] = useState(null);

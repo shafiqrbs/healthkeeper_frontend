@@ -18,10 +18,10 @@ import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
+import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import IPDPrescriptionFullBN from "@components/print-formats/ipd/IPDPrescriptionFullBN";
+import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 
 export default function DetailsDrawer({ type = "prescription", opened, close, prescriptionId }) {
 	const prescriptionFullRef = useRef(null);

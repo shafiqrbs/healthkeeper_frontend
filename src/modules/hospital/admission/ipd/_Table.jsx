@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { Box, Button, Flex, FloatingIndicator, Group, Tabs, Text } from "@mantine/core";
-import { IconArrowRight, IconChevronUp, IconSelector } from "@tabler/icons-react";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
+import {
+	IconArrowRight,
+	IconChevronUp,
+	IconDotsVertical,
+	IconFileText,
+	IconPrinter,
+	IconSelector,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
-import KeywordSearch from "../../common/KeywordSearch";
+import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "../confirm/__ConfirmModal";
@@ -19,6 +26,12 @@ import { useSelector } from "react-redux";
 import { formatDate, getUserRole } from "@/common/utils";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
+import { useReactToPrint } from "react-to-print";
+import { getDataWithoutStore } from "@/services/apiService";
+import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
+import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
+import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
+import IPDDetailsDrawer from "@hospital-components/drawer/__IPDDetailsDrawer";
 
 const PER_PAGE = 20;
 
@@ -31,6 +44,12 @@ const tabs = [
 const ALLOWED_CONFIRMED_ROLES = ["doctor_opd", "admin_administrator"];
 
 export default function _Table({ module }) {
+	const admissionFormRef = useRef(null);
+	const prescriptionRef = useRef(null);
+	const billingInvoiceRef = useRef(null);
+	const [printData, setPrintData] = useState(null);
+	const [billingPrintData, setBillingPrintData] = useState(null);
+	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const { mainAreaHeight } = useOutletContext();
@@ -45,6 +64,18 @@ export default function _Table({ module }) {
 	const [processTab, setProcessTab] = useState("new");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const userRoles = getUserRole();
+
+	const printPrescription = useReactToPrint({
+		content: () => prescriptionRef.current,
+	});
+
+	const printBillingInvoice = useReactToPrint({
+		content: () => billingInvoiceRef.current,
+	});
+
+	const printAdmissionForm = useReactToPrint({
+		content: () => admissionFormRef.current,
+	});
 
 	const form = useForm({
 		initialValues: {
@@ -86,6 +117,30 @@ export default function _Table({ module }) {
 	const handleConfirm = (id) => {
 		setSelectedId(id);
 		openConfirm();
+	};
+
+	const handleBillingInvoicePrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+		});
+		setBillingPrintData(res.data);
+		requestAnimationFrame(printBillingInvoice);
+	};
+
+	const handlePrescriptionPrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
+		});
+		setPrintData(res.data);
+		requestAnimationFrame(printPrescription);
+	};
+
+	const handleAdmissionFormPrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+		});
+		setAdmissionFormPrintData(res.data);
+		requestAnimationFrame(printAdmissionForm);
 	};
 
 	return (
@@ -145,7 +200,6 @@ export default function _Table({ module }) {
 					}}
 					records={records}
 					onRowClick={({ record }) => {
-						if (!record?.prescription_id) return alert("NoPrescriptionGenerated");
 						handleView(record?.prescription_id);
 					}}
 					columns={[
@@ -206,6 +260,82 @@ export default function _Table({ module }) {
 												</Button>
 											)}
 									</Group>
+
+									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+										<Menu
+											position="bottom-end"
+											offset={3}
+											withArrow
+											trigger="hover"
+											openDelay={100}
+											closeDelay={400}
+										>
+											<Menu.Target>
+												<ActionIcon
+													className="border-left-radius-none"
+													variant="transparent"
+													color="var(--theme-menu-three-dot)"
+													radius="es"
+													aria-label="Actions"
+												>
+													<IconDotsVertical height={18} width={18} stroke={1.5} />
+												</ActionIcon>
+											</Menu.Target>
+											<Menu.Dropdown>
+												{values?.prescription_id && (
+													<Menu.Item
+														leftSection={
+															<IconPrinter
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
+														}
+														onClick={(e) => {
+															e.stopPropagation();
+															handlePrescriptionPrint(values?.prescription_id);
+														}}
+													>
+														{t("Prescription")}
+													</Menu.Item>
+												)}
+
+												<Menu.Item
+													leftSection={
+														<IconPrinter
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+													onClick={(e) => {
+														e.stopPropagation();
+														handleBillingInvoicePrint(values?.id);
+													}}
+												>
+													{t("BillingInvoice")}
+												</Menu.Item>
+												<Menu.Item
+													leftSection={
+														<IconFileText
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+													onClick={(e) => {
+														e.stopPropagation();
+														handleAdmissionFormPrint(values?.id);
+													}}
+												>
+													{t("AdmissionForm")}
+												</Menu.Item>
+											</Menu.Dropdown>
+										</Menu>
+									</Group>
 								</>
 							),
 						},
@@ -236,9 +366,15 @@ export default function _Table({ module }) {
 				selectedId={selectedId}
 				module={module}
 			/>
-			{selectedPrescriptionId && (
+			{/* {selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
-			)}
+			)} */}
+
+			<IPDDetailsDrawer opened={opened} close={close} selectedId={selectedId} />
+
+			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
+			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
+			{admissionFormPrintData && <AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />}
 		</Box>
 	);
 }

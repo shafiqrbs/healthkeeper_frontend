@@ -34,7 +34,7 @@ import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
+import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";

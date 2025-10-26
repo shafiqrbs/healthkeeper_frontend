@@ -9,7 +9,7 @@ import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import IPDDetailsDrawer from "./drawer/__IPDDetailsDrawer";
 import { useReactToPrint } from "react-to-print";
-import AdmissionInvoiceBN from "@components/print-formats/admission/AdmissionInvoiceBN";
+import AdmissionInvoiceBN from "@hospital-components/print-formats/admission/AdmissionInvoiceBN";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -25,6 +25,7 @@ export default function IpdActionButtons({
 }) {
 	const ipdRef = useRef(null);
 	const [printData, setPrintData] = useState(null);
+
 	const isOpdRedirect = item?.parent_patient_mode_slug === "opd";
 	const { hospitalConfigData } = useHospitalConfigData();
 	const { t } = useTranslation();

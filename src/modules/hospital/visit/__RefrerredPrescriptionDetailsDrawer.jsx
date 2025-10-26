@@ -2,7 +2,7 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { Box, Grid, Stack, Text, List, Divider, Paper, Title, Group, ScrollArea, Flex, Button } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
+import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 

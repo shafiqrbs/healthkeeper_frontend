@@ -20,13 +20,15 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import IPDDetailsBN from "@components/print-formats/ipd/IPDDetailsBN";
+import IPDDetailsBN from "@hospital-components/print-formats/ipd/IPDDetailsBN";
 
-export default function IPDDetailsDrawer({ opened, close }) {
+export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 	const ipdRef = useRef(null);
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
 	const { id } = useParams();
+
+	const ipdId = id || selectedId;
 
 	const printIPDFull = useReactToPrint({
 		documentTitle: `ipd-${Date.now().toLocaleString()}`,
@@ -34,7 +36,7 @@ export default function IPDDetailsDrawer({ opened, close }) {
 	});
 
 	const { data: ipdData, isLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${ipdId}`,
 	});
 
 	// =============== parse IPD data and handle null cases ================

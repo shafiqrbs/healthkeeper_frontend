@@ -13,7 +13,8 @@ import {
 	Autocomplete,
 	Tooltip,
 	ActionIcon,
-	Textarea, Switch,
+	Textarea,
+	Switch,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
@@ -35,7 +36,7 @@ import TextAreaForm from "@components/form-builders/TextAreaForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
+import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -44,7 +45,7 @@ import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
-import {editEntityData, getIndexEntityData, showEntityData, updateEntityData} from "@/app/store/core/crudThunk";
+import { editEntityData, getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
@@ -55,7 +56,6 @@ import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__Refrerr
 import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "./drawer/CreateDosageDrawer";
-import DetailsDrawer from "./drawer/__DetailsDrawer";
 import { appendDosageValueToForm, appendGeneralValuesToForm, appendMealValueToForm } from "@utils/prescription";
 
 export default function AddMedicineForm({
@@ -72,7 +72,6 @@ export default function AddMedicineForm({
 	ignoreOpdQuantityLimit = false,
 	redirectUrl = null,
 }) {
-	const [mountPreview, setMountPreview] = useState(false);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
@@ -103,6 +102,7 @@ export default function AddMedicineForm({
 	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
+	const [showPrint, setShowPrint] = useState(false);
 
 	const printPrescription2A4 = useReactToPrint({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
@@ -227,9 +227,10 @@ export default function AddMedicineForm({
 		// close drawer
 		closeExPrescription();
 	};
-	async  function handleVitalChange(event){
-		form.setValues({'is_vital':!!event.currentTarget.checked})
-		const resultAction = await dispatch(
+
+	async function handleVitalChange(event) {
+		form.setValues({ is_vital: !!event.currentTarget.checked });
+		await dispatch(
 			editEntityData({
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_VITAL}/${prescriptionId}`,
 				module: "prescription",
@@ -410,14 +411,6 @@ export default function AddMedicineForm({
 		}
 	};
 
-	const handlePrescriptionPrintSubmit = async () => {
-		const result = await handlePrescriptionSubmit({ skipLoading: false, redirect: false });
-
-		if (result.status === 200) {
-			setPrintData(result.data);
-		}
-	};
-
 	const handlePrescriptionPreview = async () => {
 		const result = await handlePrescriptionSubmit({ skipLoading: false, redirect: false });
 		if (result.status === 200) {
@@ -425,14 +418,6 @@ export default function AddMedicineForm({
 			requestAnimationFrame(openPrescriptionPreview);
 		}
 	};
-
-	// const handlePrescriptionPreview = async () => {
-	// 	const result = await handlePrescriptionSubmit(true);
-
-	// 	if (result.status === 200) {
-	// 		setPrintData(result.data);
-	// 	}
-	// };
 
 	const handleHoldData = () => {
 		console.log("Hold your data");
@@ -635,7 +620,7 @@ export default function AddMedicineForm({
 									w="100%"
 									size="xs"
 									fz="xs"
-									fw={'400'}
+									fw={"400"}
 									type="button"
 									color="var(--theme-primary-color-5)"
 									onClick={openDosageForm}
@@ -648,7 +633,7 @@ export default function AddMedicineForm({
 									w="100%"
 									size="xs"
 									fz="xs"
-									fw={'400'}
+									fw={"400"}
 									type="button"
 									color="var(--theme-secondary-color-5)"
 									onClick={openExPrescription}
@@ -657,7 +642,15 @@ export default function AddMedicineForm({
 								</Button>
 							</Grid.Col>
 							<Grid.Col span={3}>
-								<Switch checked={form.values.is_vital} onChange={handleVitalChange} size="lg" radius="xs" color="red" onLabel="Vital" offLabel="Vital" />
+								<Switch
+									checked={form.values.is_vital}
+									onChange={handleVitalChange}
+									size="lg"
+									radius="xs"
+									color="red"
+									onLabel="Vital"
+									offLabel="Vital"
+								/>
 							</Grid.Col>
 						</Grid>
 					</Grid.Col>
@@ -968,24 +961,47 @@ export default function AddMedicineForm({
 				</Stack>
 			</GlobalDrawer>
 			{/* prescription preview */}
-			{printData && (
-				// <DetailsDrawer
-				// 	opened={openedPrescriptionPreview}
-				// 	close={}
-				// 	prescriptionId={prescriptionId}
-				// />
-				<GlobalDrawer
-					opened={openedPrescriptionPreview}
-					close={() => {
-						closePrescriptionPreview();
-						requestAnimationFrame(() => setMountPreview(false));
-					}}
-					title={t("PrescriptionPreview")}
-					size="50%"
-				>
-					<PrescriptionFullBN data={printData} preview />
-				</GlobalDrawer>
-			)}
+			{printData && showPrint && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />}
+			<GlobalDrawer
+				opened={openedPrescriptionPreview}
+				close={() => {
+					closePrescriptionPreview();
+					setShowPrint(false);
+				}}
+				title={t("PrescriptionPreview")}
+				size="50%"
+			>
+				<Box>
+					<ScrollArea h={mainAreaHeight - 120}>
+						<PrescriptionFullBN data={printData} preview />
+					</ScrollArea>
+
+					<Flex justify="flex-end" gap="xs" bottom="0" right="0" p="sm">
+						<Button
+							leftSection={<IconX size={16} />}
+							bg="gray.6"
+							onClick={() => {
+								closePrescriptionPreview();
+								setShowPrint(false);
+							}}
+							w="120px"
+						>
+							{t("Cancel")}
+						</Button>
+						<Button
+							leftSection={<IconDeviceFloppy size={22} />}
+							bg="var(--theme-primary-color-6)"
+							onClick={() => {
+								handlePrescriptionPreview();
+								setShowPrint(true);
+							}}
+							w="120px"
+						>
+							{t("Print")}
+						</Button>
+					</Flex>
+				</Box>
+			</GlobalDrawer>
 
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />

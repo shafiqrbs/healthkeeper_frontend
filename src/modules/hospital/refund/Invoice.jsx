@@ -30,7 +30,7 @@ import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
 import inputCss from "@assets/css/InputField.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import IPDAllPrint from "@components/print-formats/ipd/IPDAllPrint";
+import IPDAllPrint from "@hospital-components/print-formats/ipd/IPDAllPrint";
 import { useReactToPrint } from "react-to-print";
 
 const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator"];
@@ -449,7 +449,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 											</Grid>
 											<Box w="100%" bg="white">
 												<Grid columns={18} gutter="xs">
-													<Grid.Col span={18} className="animate-ease-out" px="xs" pb={'xs'}>
+													<Grid.Col span={18} className="animate-ease-out" px="xs" pb={"xs"}>
 														<Flex mt="xs" align="center" gap="xs">
 															<InputNumberForm
 																form={form}

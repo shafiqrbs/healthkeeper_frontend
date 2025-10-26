@@ -30,9 +30,9 @@ import { modals } from "@mantine/modals";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
-import EmergencyA4BN from "@components/print-formats/emergency/EmergencyA4BN";
-import EmergencyPosBN from "@components/print-formats/emergency/EmergencyPosBN";
-import Prescription from "@components/print-formats/prescription/PrescriptionFullBN";
+import EmergencyA4BN from "@hospital-components/print-formats/emergency/EmergencyA4BN";
+import EmergencyPosBN from "@hospital-components/print-formats/emergency/EmergencyPosBN";
+import Prescription from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useReactToPrint } from "react-to-print";
 import VitalUpdateDrawer from "@hospital-components/drawer/VitalUpdateDrawer";
 

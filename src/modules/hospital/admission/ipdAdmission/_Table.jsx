@@ -3,13 +3,20 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
-import { IconArrowNarrowRight, IconChevronUp, IconDotsVertical, IconPrinter, IconSelector } from "@tabler/icons-react";
+import {
+	IconArrowNarrowRight,
+	IconChevronUp,
+	IconDotsVertical,
+	IconFileText,
+	IconPrinter,
+	IconSelector,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
-import KeywordSearch from "../../common/KeywordSearch";
+import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "../confirm/__ConfirmModal";
@@ -21,8 +28,9 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
-import IPDPrescriptionFullBN from "@components/print-formats/ipd/IPDPrescriptionFullBN";
-import DetailsInvoiceBN from "@components/print-formats/billing/DetailsInvoiceBN";
+import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
+import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
+import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 
 const PER_PAGE = 20;
 
@@ -40,7 +48,6 @@ export default function _Table({ module }) {
 	const height = mainAreaHeight - 158;
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
-	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
 	const filterData = useSelector((state) => state.crud[module].filterData);
@@ -50,9 +57,11 @@ export default function _Table({ module }) {
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const userRoles = getUserRole();
 	const [printData, setPrintData] = useState(null);
+	const admissionFormRef = useRef(null);
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
 	const [billingPrintData, setBillingPrintData] = useState(null);
+	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
 
 	const form = useForm({
 		initialValues: {
@@ -61,10 +70,6 @@ export default function _Table({ module }) {
 			room_id: "",
 		},
 	});
-
-	const handleDetailsAdmission = (id) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD.INDEX}/${id}`, { replace: true });
-	};
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -103,6 +108,10 @@ export default function _Table({ module }) {
 		content: () => billingInvoiceRef.current,
 	});
 
+	const printAdmissionForm = useReactToPrint({
+		content: () => admissionFormRef.current,
+	});
+
 	const handleBillingInvoicePrint = async (id) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
@@ -111,21 +120,20 @@ export default function _Table({ module }) {
 		requestAnimationFrame(printBillingInvoice);
 	};
 
-	const handleOpenViewOverview = () => {
-		openOverview();
-	};
-
-	const handleConfirm = (id) => {
-		setSelectedId(id);
-		openConfirm();
-	};
-
 	const handlePrescriptionPrint = async (id) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
 		});
 		setPrintData(res.data);
 		requestAnimationFrame(printPrescription);
+	};
+
+	const handleAdmissionFormPrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+		});
+		setAdmissionFormPrintData(res.data);
+		requestAnimationFrame(printAdmissionForm);
 	};
 
 	return (
@@ -294,6 +302,22 @@ export default function _Table({ module }) {
 											>
 												{t("BillingInvoice")}
 											</Menu.Item>
+											<Menu.Item
+												leftSection={
+													<IconFileText
+														style={{
+															width: rem(14),
+															height: rem(14),
+														}}
+													/>
+												}
+												onClick={(e) => {
+													e.stopPropagation();
+													handleAdmissionFormPrint(item?.id);
+												}}
+											>
+												{t("AdmissionForm")}
+											</Menu.Item>
 										</Menu.Dropdown>
 									</Menu>
 								</Group>
@@ -331,6 +355,7 @@ export default function _Table({ module }) {
 			)}
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
 			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
+			{admissionFormPrintData && <AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />}
 		</Box>
 	);
 }

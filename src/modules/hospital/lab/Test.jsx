@@ -7,7 +7,7 @@ import { formatDate, getUserRole } from "@utils/index";
 import { useRef, useState } from "react";
 import Barcode from "react-barcode";
 import { useReactToPrint } from "react-to-print";
-import LabReportA4BN from "@components/print-formats/lab-reports/LabReportA4BN";
+import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
 import CustomDivider from "@components/core-component/CustomDivider";
 
 const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"];

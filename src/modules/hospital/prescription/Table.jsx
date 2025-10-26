@@ -12,7 +12,8 @@ import {
 	IconSelector,
 	IconX,
 	IconPrinter,
-	IconScript, IconPencil,
+	IconScript,
+	IconPencil,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -31,12 +32,12 @@ import { formatDate, getLoggedInHospitalUser, getUserRole } from "@/common/utils
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import OPDA4BN from "@components/print-formats/opd/OPDA4BN";
-import OPDPosBN from "@components/print-formats/opd/OPDPosBN";
+import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
+import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import PrescriptionFullBN from "@components/print-formats/prescription/PrescriptionFullBN";
+import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";

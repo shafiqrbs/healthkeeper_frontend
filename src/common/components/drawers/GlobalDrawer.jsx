@@ -25,7 +25,7 @@ export default function GlobalDrawer({
 		>
 			<Drawer.Overlay />
 			<Drawer.Content bg={bg}>
-				<Drawer.Header className={"drawer-sticky-header"}>
+				<Drawer.Header className="drawer-sticky-header">
 					<Drawer.Title>
 						<Flex align="center" gap={8}>
 							<IconArrowLeft size={16} />{" "}

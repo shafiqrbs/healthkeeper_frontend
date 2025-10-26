@@ -1,7 +1,7 @@
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getDataWithoutStore } from "@/services/apiService";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import LabReportA4BN from "@components/print-formats/lab-reports/LabReportA4BN";
+import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
 import { Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
 import { IconPrinter } from "@tabler/icons-react";
 import { useRef, useState } from "react";

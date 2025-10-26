@@ -27,7 +27,7 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { modals } from "@mantine/modals";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { getDataWithoutStore } from "@/services/apiService";
-import Prescription from "@components/print-formats/prescription/PrescriptionFullBN";
+import Prescription from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useReactToPrint } from "react-to-print";
 import VitalUpdateDrawer from "@hospital-components/drawer/VitalUpdateDrawer";
 
@@ -337,7 +337,7 @@ export default function Table({ module }) {
 												bg="var(--theme-primary-color-6)"
 												c="white"
 												size="compact-xs"
-												onClick={ ()=> handlePatientDataClick(values)}
+												onClick={() => handlePatientDataClick(values)}
 												radius="es"
 												fw="400"
 											>
@@ -370,7 +370,6 @@ export default function Table({ module }) {
 				ref={csvLinkRef}
 			/>
 			<VitalUpdateDrawer opened={openedVitalUpdate} data={patientData} close={closeVitalUpdate} />
-
 		</Box>
 	);
 }
