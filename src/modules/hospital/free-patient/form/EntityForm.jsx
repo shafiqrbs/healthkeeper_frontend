@@ -2,7 +2,7 @@ import { Box, Button, Flex, Grid, LoadingOverlay, ScrollArea, Stack, Text, Table
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { storeEntityData } from "@/app/store/core/crudThunk";
+import {storeEntityData, updateEntityData} from "@/app/store/core/crudThunk";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 
 import { useDispatch } from "react-redux";
@@ -28,12 +28,12 @@ export default function EntityForm({ form, module }) {
 		try {
 			console.log(values);
 			const value = {
-				url: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.CREATE,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.PATIENT_WAVER}/${id}`,
 				data: values,
 				module,
 			};
-			const resultAction = await dispatch(storeEntityData(value));
-			if (storeEntityData.rejected.match(resultAction)) {
+			const resultAction = await dispatch(updateEntityData(value));
+			if (updateEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
 				if (fieldErrors) {
 					const errorObject = {};
@@ -42,7 +42,7 @@ export default function EntityForm({ form, module }) {
 					});
 					form.setErrors(errorObject);
 				}
-			} else if (storeEntityData.fulfilled.match(resultAction)) {
+			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				form.reset();
 				close(); // close the drawer
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
@@ -54,16 +54,16 @@ export default function EntityForm({ form, module }) {
 	};
 	const handleDataTypeChange = (rowId, value) => {
 		if (value) {
-			form.setFieldValue("particulars", [...form.values.services, rowId]);
+			form.setFieldValue("particulars", [...form.values.particulars, rowId]);
 		} else {
 			form.setFieldValue(
 				"particulars",
-				form.values.services.filter((id) => id !== rowId)
+				form.values.particulars.filter((id) => id !== rowId)
 			);
 		}
 	};
 
-	console.log(form.values.services);
+	console.log(form.values.particulars);
 
 	return (
 		<Box pos="relative">
@@ -324,7 +324,7 @@ export default function EntityForm({ form, module }) {
 												/>
 											</Grid.Col>
 											<Grid.Col span={6}>
-<<<<<<< HEAD
+
 												<Flex gap="xs" justify="flex-end" align="flex-end" h={"54"}>
 													<Button
 														type="submit"
@@ -339,6 +339,7 @@ export default function EntityForm({ form, module }) {
 														color="white"
 														onClick={close}
 													>
+														{t("Cancel")}
 													</Button>
 												</Flex>
 											</Grid.Col>

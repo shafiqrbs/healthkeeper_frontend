@@ -1,6 +1,6 @@
 const validationInitialValues = {
 	comment: "",
-	services: [],
+	particulars: [],
 };
 
 export const getFormInitialValues = () => {
