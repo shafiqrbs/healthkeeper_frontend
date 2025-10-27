@@ -306,7 +306,7 @@ export default function _Table({ height }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="visit" />
+			<DataTableFooter indexData={listData} module="Reports" />
 			<OPDA4BN data={printData} ref={a4Ref} />
 
 			{/* Hidden CSV link for exporting current table rows */}

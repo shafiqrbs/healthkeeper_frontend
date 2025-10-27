@@ -29,6 +29,7 @@ import FreePatientIndex from "@modules/hospital/free-patient";
 import PoliceCaseIndex from "@modules/hospital/police-case";
 import LabInvestigationIndex from "@modules/hospital/lab/investigation";
 import EpharmaIndex from "@modules/hospital/epharma";
+import EpharmaIssueIndex from "@modules/hospital/epharma/issue";
 import LabGroupIndex from "@modules/hospital/lab-group";
 import RequisitionIndex from "@modules/hospital/requisition";
 import InvestigationIndex from "@modules/hospital/core/investigation";
@@ -333,7 +334,7 @@ function AppRoute() {
 						}
 					/>
 					<Route
-						path="epharma/:id"
+						path="epharma/issue"
 						element={
 							<ProtectedRoute
 								roles={[
@@ -343,7 +344,22 @@ function AppRoute() {
 									"admin_administrator",
 								]}
 							>
-								<EpharmaIndex />
+								<EpharmaIssueIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="epharma/issue/:id"
+						element={
+							<ProtectedRoute
+								roles={[
+									"pharmacy_operator",
+									"pharmacy_pharmacist",
+									"pharmacy_manager",
+									"admin_administrator",
+								]}
+							>
+								<EpharmaIssueIndex />
 							</ProtectedRoute>
 						}
 					/>

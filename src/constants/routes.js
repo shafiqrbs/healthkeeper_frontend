@@ -423,10 +423,13 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "hospital/opd",
 			UPDATE: "hospital/opd",
 			VITAL_UPDATE: "hospital/opd/vital-update",
+			PATIENT_WAVER: "hospital/opd/patient-waver",
+			POLICE_CASE_CREATE: "hospital/opd/police-case",
 			VIEW: "hospital/opd",
 			DELETE: "hospital/opd",
 			VISITING_ROOM: "hospital/visiting-room",
 		},
+
 		DOCTOR_OPD: {
 			INDEX: "hospital/doctor/opd",
 			CREATE: "hospital/doctor/opd",
@@ -638,7 +641,7 @@ export const HOSPITAL_DATA_ROUTES = {
 		},
 		EPHARMA: {
 			INDEX: "/hospital/epharma",
-			CREATE: "/hospital/epharma",
+			ISSUE: "/hospital/epharma/issue",
 			UPDATE: "/hospital/epharma",
 			VIEW: "/hospital/epharma",
 		},

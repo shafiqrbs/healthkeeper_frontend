@@ -61,7 +61,7 @@ export default function _Table({ module }) {
 	});
 
 	const handlePatientForm = (id) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FREE_PATIENT.UPDATE}/${id}`, { replace: true });
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.POLICE_CASE.UPDATE}/${id}`, { replace: true });
 	};
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;

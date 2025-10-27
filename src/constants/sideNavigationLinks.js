@@ -143,7 +143,6 @@ export const sideNavigationLinks = {
 			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd"],
 		},
 
-
 		{
 			label: t("FreeService"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FREE_PATIENT.INDEX,
@@ -180,13 +179,32 @@ export const sideNavigationLinks = {
 				}
 			],
 		},
+
 		{
-			label: t("ePharama"),
+			label: t("ePharma"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.INDEX,
-			icon: IconMedicineSyrup,
-			color: "#009688", // Teal
+			icon: IconEmergencyBed,
+			color: "#F44336", // Red
 			allowedRoles: ["pharmacy_operator", "pharmacy_pharmacist", "pharmacy_manager", "admin_administrator"],
+			subMenu: [
+				{
+					label: t("Issue"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.ISSUE,
+					icon: IconEmergencyBed,
+					color: "#F44336", // Red
+					allowedRoles: ["pharmacy_operator", "pharmacy_pharmacist", "pharmacy_manager", "admin_administrator"],
+				},
+				{
+					label: t("ePharma"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.INDEX,
+					icon: IconEmergencyBed,
+					color: "#F44336", // Red
+					allowedRoles: ["pharmacy_operator", "pharmacy_pharmacist", "pharmacy_manager", "admin_administrator"],
+				}
+
+			],
 		},
+
 		{
 			label: t("Pharmacy"),
 			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.PHARMACY.INDEX,

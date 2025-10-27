@@ -360,7 +360,7 @@ export default function Table({ module }) {
 					onSortStatusChange={setSortStatus}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="visit" />
+			<DataTableFooter indexData={listData} module="Vital" />
 			{/* Hidden CSV link for exporting current table rows */}
 			<CSVLink
 				data={csvData}

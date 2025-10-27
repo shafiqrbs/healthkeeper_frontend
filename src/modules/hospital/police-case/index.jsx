@@ -7,10 +7,11 @@ import { Box, Flex } from "@mantine/core";
 import Table from "./_Table";
 import { MODULES } from "@/constants";
 import EntityForm from "./form/EntityForm";
+import {getFormInitialValues} from "./helpers/request";
 
 export default function Index() {
 	const { id } = useParams();
-	const form = useForm();
+	const form = useForm(getFormInitialValues());
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const module = MODULES.POLICE_CASE;

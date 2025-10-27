@@ -54,10 +54,10 @@ export default function EntityForm({ form, module }) {
 	};
 	const handleDataTypeChange = (rowId, value) => {
 		if (value) {
-			form.setFieldValue("services", [...form.values.services, rowId]);
+			form.setFieldValue("particulars", [...form.values.services, rowId]);
 		} else {
 			form.setFieldValue(
-				"services",
+				"particulars",
 				form.values.services.filter((id) => id !== rowId)
 			);
 		}
@@ -324,6 +324,7 @@ export default function EntityForm({ form, module }) {
 												/>
 											</Grid.Col>
 											<Grid.Col span={6}>
+<<<<<<< HEAD
 												<Flex gap="xs" justify="flex-end" align="flex-end" h={"54"}>
 													<Button
 														type="submit"
@@ -338,7 +339,6 @@ export default function EntityForm({ form, module }) {
 														color="white"
 														onClick={close}
 													>
-														{t("Cancel")}
 													</Button>
 												</Flex>
 											</Grid.Col>

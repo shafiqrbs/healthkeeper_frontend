@@ -1,7 +1,4 @@
 import InputForm from "@components/form-builders/InputForm";
-import InputNumberForm from "@components/form-builders/InputNumberForm";
-import SelectForm from "@components/form-builders/SelectForm";
-
 import {
 	ActionIcon,
 	Box,
@@ -22,64 +19,34 @@ import DoctorsRoomDrawer from "@hospital-components/__DoctorsRoomDrawer";
 import { useDisclosure } from "@mantine/hooks";
 import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
 import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
-import useDataWithoutStore from "@hooks/useDataWithoutStore";
-
-import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import { setRefetchData } from "@/app/store/core/crudSlice";
-import { notifications } from "@mantine/notifications";
 import { useDispatch, useSelector } from "react-redux";
-import {calculateDetailedAge, capitalizeWords, formatDate, formatDOB} from "@utils/index";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { CORE_DROPDOWNS, HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 import useHospitalSettingData from "@hooks/config-data/useHospitalSettingData";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import IpdActionButtons from "@hospital-components/_IpdActionButtons";
-import DateSelectorForm from "@components/form-builders/DateSelectorForm";
-import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
-import TabsWithSearch from "@components/advance-search/TabsWithSearch";
-import Cabin from "@modules/hospital/admission/common/Cabin";
-import Bed from "@modules/hospital/admission/common/Bed";
 import {successNotification} from "@components/notification/successNotification";
 import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
 import {errorNotification} from "@components/notification/errorNotification";
-import {DataTable} from "mantine-datatable";
-import tableCss from "@assets/css/TableAdmin.module.css";
-import ReportSubmission from "@modules/hospital/lab/common/ReportSubmission";
-
-
-
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import {calculateDetailedAge, capitalizeWords, formatDate, formatDOB} from "@utils/index";
 
 export default function EntityForm({ form, module }) {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const [gender, setGender] = useState("male");
-	const [openedDoctorsRoom, { open: openDoctorsRoom, close: closeDoctorsRoom }] = useDisclosure(false);
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const [showUserData, setShowUserData] = useState({});
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight;
-	const [submitFormData, setSubmitFormData] = useState({});
-	const [updatingRows, setUpdatingRows] = useState({});
-
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const { hospitalSettingData } = useHospitalSettingData();
-	const [openedHSIDDataPreview, { open: openHSIDDataPreview, close: closeHSIDDataPreview }] = useDisclosure(false);
-	const locations = useSelector((state) => state.crud.locations.data);
 	const { data: ipdData, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
 	});
 	const  entity = ipdData?.data;
 	const handleSubmit = async (values) => {
 		try {
-			const formValue = { ...values, hms_invoice_id: selectedId };
-
 			const value = {
-				url: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.CREATE,
-				data: formValue,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.POLICE_CASE_CREATE}/${id}`,
+				data: values,
 				module,
 			};
-
 			const resultAction = await dispatch(storeEntityData(value));
 			if (storeEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
@@ -100,54 +67,6 @@ export default function EntityForm({ form, module }) {
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	};
-
-	const handleDataTypeChange = (rowId, field, value, submitNow = false) => {
-		const updatedRow = {
-			...submitFormData[rowId],
-			[field]: value,
-		};
-
-		setSubmitFormData(prev => ({
-			...prev,
-			[rowId]: updatedRow,
-		}));
-
-		// optional immediate submit (for Select)
-		if (submitNow) {
-			handleRowSubmit(rowId, updatedRow);
-		}
-	};
-
-	const handleRowSubmit = async (rowId) => {
-		const formData = submitFormData[rowId];
-		if (!formData) return false;
-
-		// 🔎 find original row data
-		const originalRow = records.find((r) => r.id === rowId);
-		if (!originalRow) return false;
-
-		// ✅ check if there is any change
-		const isChanged = Object.keys(formData).some(
-			(key) => formData[key] !== originalRow[key]
-		);
-
-		if (!isChanged) {
-			// nothing changed → do not submit
-			return false;
-		}
-
-		const value = {
-			url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
-			data: formData,
-			module,
-		};
-		try {
-			const resultAction = await dispatch(storeEntityData(value));
-		} catch (error) {
-			errorNotification(error.message);
-		}
-	};
-
 	return (
 		<Box pos="relative">
 			<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
@@ -357,66 +276,127 @@ export default function EntityForm({ form, module }) {
 							</Grid.Col>
 							<Grid.Col span={14}>
 								<Box className="border-top-none" bg={'white'}>
-									<Box px="sm"  h={height-180}>
-										<Table stickyHeader stickyHeaderOffset={60}>
-											<Table.Thead>
-												<Table.Tr>
-													<Table.Th>Action</Table.Th>
-													<Table.Th>S/N</Table.Th>
-													<Table.Th>Particular</Table.Th>
-													<Table.Th>Price</Table.Th>
-													<Table.Th>Quantity</Table.Th>
-													<Table.Th>SubTotal</Table.Th>
-												</Table.Tr>
-											</Table.Thead>
-											<Table.Tbody>
-												{entity?.invoice_particular?.map((item, index) => (
-													<Table.Tr key={index}>
-														<Table.Td><Checkbox
-															key={item.id}
-															size="sm"
-															checked={submitFormData[item.id]?.is_available ?? false}
-															onChange={(val) =>
-																handleDataTypeChange(
-																	item.id,
-																	"is_available",
-																	val.currentTarget.checked,
-																	true
-																)
-															}
-														/></Table.Td>
-														<Table.Td>{index + 1}.</Table.Td>
-														<Table.Td>{item?.item_name}</Table.Td>
-														<Table.Td>{item?.price}</Table.Td>
-														<Table.Td>{item?.quantity}</Table.Td>
-														<Table.Td>{item?.sub_total}</Table.Td>
-													</Table.Tr>
-												))}
-											</Table.Tbody>
-										</Table>
+									<Box px="sm"  h={height-166}>
+										<Stack p={"xs"} gap={"mes"}>
+											<Grid align="center" columns={20}>
+												<Grid.Col span={4}>
+													<Text fz="sm">{t("CaseNo")}</Text>
+												</Grid.Col>
+												<Grid.Col span={16}>
+													<InputForm
+														form={form}
+														label=""
+														tooltip={t("EnterCaseNo")}
+														placeholder={t("EnterCaseNo")}
+														name="case_no"
+														id="case_no"
+														nextField="thana"
+														value={form.values.name}
+														required
+													/>
+												</Grid.Col>
+											</Grid>
+											<Grid align="center" columns={20}>
+												<Grid.Col span={4}>
+													<Text fz="sm">{t("Thana")}</Text>
+												</Grid.Col>
+												<Grid.Col span={16}>
+													<InputForm
+														form={form}
+														label=""
+														tooltip={t("EnterThanaName")}
+														placeholder={t("EnterThanaName")}
+														name="thana"
+														id="thana"
+														nextField="duty_officer"
+														value={form.values.name}
+														required
+													/>
+												</Grid.Col>
+											</Grid>
+											<Grid align="center" columns={20}>
+												<Grid.Col span={4}>
+													<Text fz="sm">{t("DutyOfficer")}</Text>
+												</Grid.Col>
+												<Grid.Col span={16}>
+													<InputForm
+														form={form}
+														label=""
+														tooltip={t("EnterDutyOfficer")}
+														placeholder={t("EnterDutyOfficer")}
+														name="duty_officer"
+														id="duty_officer"
+														nextField="mobile"
+														value={form.values.name}
+														required
+													/>
+												</Grid.Col>
+											</Grid>
+											<Grid align="center" columns={20}>
+												<Grid.Col span={4}>
+													<Text fz="sm">{t("MobileNo")}</Text>
+												</Grid.Col>
+												<Grid.Col span={16}>
+													<InputForm
+														form={form}
+														label=""
+														tooltip={t("EnterPatientName")}
+														placeholder={t("MobileNo")}
+														name="mobile"
+														id="mobile"
+														nextField="mobile"
+														value={form.values.mobile}
+														required
+													/>
+												</Grid.Col>
+											</Grid>
+											<Grid align="center" columns={20}>
+												<Grid.Col span={4}>
+													<Text fz="sm">{t("CaseDetails")}</Text>
+												</Grid.Col>
+												<Grid.Col span={16}>
+													<TextAreaForm
+														id="case_details"
+														form={form}
+														tooltip={t("EnterCaseDetails")}
+														placeholder={t("EnterCaseDetails")}
+														name="case_details"
+														required
+													/>
+												</Grid.Col>
+											</Grid>
+											<Grid align="center" columns={20}>
+												<Grid.Col span={4}>
+													<Text fz="sm">{t("Comment")}</Text>
+												</Grid.Col>
+												<Grid.Col span={16}>
+													<TextAreaForm
+														id="comment"
+														form={form}
+														tooltip={t("EnterComment")}
+														placeholder={t("EnterComment")}
+														name="comment"
+														required
+													/>
+												</Grid.Col>
+											</Grid>
+										</Stack>
 									</Box>
 									<Box bg="var(--theme-tertiary-color-0)" mt={'xl'} p={'xs'}>
 										<Grid columns={24}>
-										<Grid.Col span={18}>
-											<TextAreaForm
-												id="comment"
-												form={form}
-												tooltip={t("EnterComment")}
-												placeholder={t("EnterComment")}
-												name="comment"
-											/>
-										</Grid.Col>
-										<Grid.Col span={6}>
-											<Flex gap="xs" justify="flex-end"  align="flex-end" h={'50'}>
-												<Button type="submit" bg="var(--theme-primary-color-6)" color="white">
-													{t("Confirm")}
-												</Button>
-												<Button type="button" bg="var(--theme-tertiary-color-6)" color="white" onClick={close}>
-													{t("Cancel")}
-												</Button>
-											</Flex>
-										</Grid.Col>
-									</Grid>
+											<Grid.Col span={18}>
+											</Grid.Col>
+											<Grid.Col span={6}>
+												<Flex gap="xs" justify="flex-end"  align="flex-end" h={'42'}>
+													<Button type="button" color="var(--theme-tertiary-color-6)" variant={'outline'}  onClick={close}>
+														{t("Cancel")}
+													</Button>
+													<Button type="submit" bg="var(--theme-primary-color-6)" color="white">
+														{t("Confirm")}
+													</Button>
+												</Flex>
+											</Grid.Col>
+										</Grid>
 									</Box>
 								</Box>
 							</Grid.Col>

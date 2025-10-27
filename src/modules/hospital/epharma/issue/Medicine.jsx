@@ -1,8 +1,8 @@
 import { getDataWithoutStore } from "@/services/apiService";
 import {Box, Text, ScrollArea, Stack, Grid, TextInput, Flex, Button, Center} from "@mantine/core";
-import { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useOutletContext, useParams } from "react-router-dom";
+import {useNavigate, useOutletContext, useParams} from "react-router-dom";
 import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
@@ -30,41 +30,9 @@ export default function Medicine({entity}) {
 	const form = useForm(getFormValues(t));
 	const [submitFormData, setSubmitFormData] = useState({});
 	const [updatingRows, setUpdatingRows] = useState({});
-	const { id, reportId } = useParams();
+	const { id } = useParams();
+	const navigate = useNavigate();
 	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
-
-	const handleRowSubmit = () => {};
-	const handleFieldChange = async (rowId, field, value) => {
-
-		setSubmitFormData((prev) => ({
-			...prev,
-			[rowId]: { ...prev[rowId], [field]: value },
-		}));
-		setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
-		try {
-			await dispatch(
-				storeEntityData({
-					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INLINE_UPDATE}/${rowId}`,
-					data: { [field]: value },
-					module,
-				})
-			);
-		} catch (error) {
-			errorNotification(error.message);
-		} finally {
-			setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
-		}
-	};
-
-	const handleKeyDown = (e, index) => {
-		if (e.key === "Enter") {
-			e.preventDefault(); // prevent form submit
-			const nextInput = inputsRef.current[index + 1];
-			if (nextInput) {
-				nextInput.focus(); // move to next
-			}
-		}
-	};
 
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
@@ -76,10 +44,11 @@ export default function Medicine({entity}) {
 			onConfirm: () => handleConfirmModal(values),
 		});
 	};
+
 	async function handleConfirmModal(values) {
 		try {
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.UPDATE}/${reportId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.EPHARMA.UPDATE}/${id}`,
 				data: values,
 				module,
 			};
@@ -96,6 +65,8 @@ export default function Medicine({entity}) {
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				successNotification(t("UpdateSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.INDEX}`);
+				window.location.reload();
 			}
 		} catch (error) {
 			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
@@ -117,7 +88,8 @@ export default function Medicine({entity}) {
 			</Box>
 			{entity?.sales_items ? (
 				<>
-					<Box className="border-top-none" px="sm" mt={'xs'}>
+					<Box>
+					<Box  className="border-top-none" px="sm" mt={'xs'}>
 							<DataTable
 								striped
 								highlightOnHover
@@ -159,18 +131,45 @@ export default function Medicine({entity}) {
 								]}
 								loaderSize="xs"
 								loaderColor="grape"
-								height={mainAreaHeight-72}
+								height={mainAreaHeight-184}
 								sortIcons={{
 									sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 									unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 								}}
 							/>
 						</Box>
+						<form onSubmit={form.onSubmit(handleSubmit)}>
+							<Box bg="var(--theme-tertiary-color-0)" mt={'xl'} p={'sm'}>
+							<Grid columns={24}>
+								<Grid.Col span={18}>
+									<TextAreaForm
+										id="comment"
+										form={form}
+										tooltip={t("EnterComment")}
+										placeholder={t("EnterComment")}
+										name="comment"
+										required
+									/>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Flex gap="xs" justify="flex-end"  align="flex-end" h={'54'}>
+										<Button type="submit" onClick={handleSubmit} bg="var(--theme-primary-color-6)" color="white">
+											{t("Confirm")}
+										</Button>
+										<Button type="button" bg="var(--theme-tertiary-color-6)" color="white" onClick={close}>
+											{t("Cancel")}
+										</Button>
+									</Flex>
+								</Grid.Col>
+							</Grid>
+						</Box>
+						</form>
+					</Box>
 				</>
 			) : (
 				<Box bg="white" >
 					<Stack
-						h={mainAreaHeight - 154}
+						h={mainAreaHeight - 62}
 						bg="var(--mantine-color-body)"
 						align="center"
 						justify="center"

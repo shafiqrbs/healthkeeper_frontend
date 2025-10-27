@@ -1,83 +1,41 @@
-const admissionInitialValues = {
-	patient_type: "general",
-	appointment: "",
-	father_name: "",
-	mother_name: "",
-	profession: "",
-	specialization: "",
-	doctorName: "",
-	diseaseProfile: "",
-	guardian_name: "",
-	guardian_mobile: "",
-	name: "",
-	gender: "male",
-	address: "",
-	permanentAddress: "",
-	dob: "",
-	year: "",
-	month: "",
-	day: "",
-	country_id: "19",
-	admit_doctor_id: "",
-	admit_unit_id: "",
-	admit_department_id: "",
+const validationInitialValues = {
+	case_no: "",
+	thana: "",
+	duty_officer: "",
+	mobile: "",
+	case_details: "",
 	comment: "",
-	patient_relation: "",
-	upazilla_id: "",
-	oxygen: "",
-	temperature: "",
-	pulse: "",
-	bp: "",
-	sat_without_O2: "",
-	sat_with_O2: "",
-	respiration: "",
-	weight: "",
-	blood_sugar: "",
-	blood_group: "",
-	amount: "",
-	admit_consultant_id: "",
-	religion_id: "",
 };
 
-export const getAdmissionFormInitialValues = () => {
+export const getFormInitialValues = () => {
 	return {
-		initialValues: admissionInitialValues,
+		initialValues: validationInitialValues,
 		validate: {
-			admit_unit_id: (value) => {
-				if (!value) return "Unit is required";
+			case_no: (value) => {
+				if (!value) return "Case no is required";
 				return null;
 			},
-			admit_department_id: (value) => {
-				if (!value) return "Department is required";
+			thana: (value) => {
+				if (!value) return "Thana is required";
 				return null;
 			},
-			religion_id: (value) => {
-				if (!value) return "Religion is required";
-			 	return null;
-			 	},
-			guardian_name: (value) => {
-				if (!value) return "Guardian name is required";
+			duty_officer: (value) => {
+				if (!value) return "Duty officer is required";
 				return null;
 			},
-			guardian_mobile: (value) => {
-				if (!value) return "Guardian mobile is required";
+			mobile: (value) => {
+				if (!value) return "Duty officer mobile is required";
 				return null;
 			},
-			address: (value) => {
-				if (!value) return "Present address is required";
+			case_details: (value) => {
+				if (!value) return "Case details is required";
 				return null;
 			},
+			comment: (value) => {
+				if (!value) return "Comment is required";
+				return null;
+			},
+
 		},
-	};
-};
-
-const admissionConfirmInitialValues = {
-	room_id: "",
-	patient_mode: "ipd",
-};
-
-export const getAdmissionConfirmFormInitialValues = () => {
-	return {
-		initialValues: admissionConfirmInitialValues,
 	};
 };
