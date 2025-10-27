@@ -26,7 +26,11 @@ export default function EntityForm({ form, module }) {
 
 	const handleSubmit = async (values) => {
 		try {
-			console.log(values);
+			if (values.services?.length === 0) {
+				errorNotification(t("PleaseSelectAtLeastOneService"), ERROR_NOTIFICATION_COLOR);
+				return;
+			}
+
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.PATIENT_WAVER}/${id}`,
 				data: values,
@@ -52,6 +56,7 @@ export default function EntityForm({ form, module }) {
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	};
+
 	const handleDataTypeChange = (rowId, value) => {
 		if (value) {
 			form.setFieldValue("particulars", [...form.values.particulars, rowId]);
