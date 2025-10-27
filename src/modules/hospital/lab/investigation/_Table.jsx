@@ -254,7 +254,6 @@ export default function _Table({ height }) {
 												onClick={() => handleBarcodeTag(values?.barcode)}
 												size="compact-xs"
 												fz={"xs"}
-												fw={"400"}
 												leftSection={<IconBarcode size={14} />}
 												fw={"400"}
 												color="var(--theme-warn-color-6)"
