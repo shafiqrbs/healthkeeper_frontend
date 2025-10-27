@@ -44,6 +44,7 @@ export default function Index() {
 	const dispatch = useDispatch();
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);
+	tabList?.reverse();
 
 	const [fetching, setFetching] = useState(false);
 	const [records, setRecords] = useState([]);

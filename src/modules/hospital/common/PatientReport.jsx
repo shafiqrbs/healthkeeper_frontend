@@ -561,6 +561,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 
 	const generateTabItems = () => {
 		const currentSection = getCurrentSection();
+		currentSection?.reverse?.();
 
 		if (!currentSection) {
 			return (
