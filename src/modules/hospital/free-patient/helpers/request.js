@@ -1,5 +1,6 @@
 const validationInitialValues = {
 	comment: "",
+	services: [],
 };
 
 export const getFormInitialValues = () => {
@@ -10,7 +11,6 @@ export const getFormInitialValues = () => {
 				if (!value) return "Comment is required";
 				return null;
 			},
-
 		},
 	};
 };

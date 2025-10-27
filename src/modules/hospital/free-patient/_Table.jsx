@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
-import KeywordSearch from "../common/KeywordSearch";
+import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -37,14 +37,11 @@ export default function _Table({ module }) {
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
 	const [opened, { open, close }] = useDisclosure(false);
-	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
-	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const navigate = useNavigate();
-	const [selectedId, setSelectedId] = useState(null);
-	const [processTab, setProcessTab] = useState("confirmed");
+	const [processTab, setProcessTab] = useState("New");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const userRoles = getUserRole();
 	const [printData, setPrintData] = useState(null);
@@ -88,10 +85,6 @@ export default function _Table({ module }) {
 		setTimeout(() => open(), 10);
 	};
 
-	const printPrescription = useReactToPrint({
-		content: () => prescriptionRef.current,
-	});
-
 	const printBillingInvoice = useReactToPrint({
 		content: () => billingInvoiceRef.current,
 	});
@@ -103,16 +96,6 @@ export default function _Table({ module }) {
 		setBillingPrintData(res.data);
 		requestAnimationFrame(printBillingInvoice);
 	};
-
-	const handleOpenViewOverview = () => {
-		openOverview();
-	};
-
-	const handleConfirm = (id) => {
-		setSelectedId(id);
-		openConfirm();
-	};
-
 
 	return (
 		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>

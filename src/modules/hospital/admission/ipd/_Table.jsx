@@ -251,7 +251,7 @@ export default function _Table({ module }) {
 													bg="var(--theme-primary-color-6)"
 													c="white"
 													size="compact-xs"
-													onClick={() => handleConfirm(values.uid)}
+													onClick={() => handleConfirm(values.uid || values.id)}
 													radius="es"
 													fw={400}
 													rightSection={<IconArrowRight size={18} />}
@@ -259,9 +259,6 @@ export default function _Table({ module }) {
 													{t("Confirm")}
 												</Button>
 											)}
-									</Group>
-
-									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 										<Menu
 											position="bottom-end"
 											offset={3}
