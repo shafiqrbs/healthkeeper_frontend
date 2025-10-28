@@ -22,7 +22,13 @@ import inputCss from "@assets/css/InputField.module.css";
 import { DURATION_TYPES } from "@/constants";
 import { useTranslation } from "react-i18next";
 
-export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
+export default function PatientReport({
+	showOtherInstruction = true,
+	tabValue,
+	form = null,
+	update,
+	prescriptionData,
+}) {
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 246;
 	const { t } = useTranslation();
@@ -39,7 +45,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const tabParticulars = particularsData?.map((item) => ({
 		...item.particular_type,
-		is_additional_field: item.is_additional_field || 0,
+		is_additional_field: showOtherInstruction ? item.is_additional_field : 0,
 	}));
 
 	const handleDynamicFormChange = ({ id, name, value, parentSlug, isCheckbox = false, duration = null }) => {

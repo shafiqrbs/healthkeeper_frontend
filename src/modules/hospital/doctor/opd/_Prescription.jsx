@@ -6,7 +6,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
-import { Box, Button, Flex, Grid, Modal, Stack, LoadingOverlay } from "@mantine/core";
+import { Box, Button, Flex, Grid, Modal, Stack, LoadingOverlay, Switch } from "@mantine/core";
 import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "@hospital-components/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -28,6 +28,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 const module = MODULES.PRESCRIPTION;
 
 export default function Index() {
+	const [showOtherInstruction, setShowOtherInstruction] = useState(false);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const [showHistory, setShowHistory] = useState(false);
@@ -139,13 +140,22 @@ export default function Index() {
 					<Flex w="100%" gap="sm" pr="xs" ref={ref}>
 						<Grid columns={24} gutter="les">
 							<Grid.Col span={16}>
-								<Stack gap={0} ta="left">
+								<Flex gap="sm" align="center">
 									<BaseTabs
 										tabValue={tabValue}
 										setTabValue={setTabValue}
 										tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
 									/>
-								</Stack>
+									<Switch
+										color="var(--theme-primary-color-6)"
+										size="lg"
+										onLabel="OTHER"
+										offLabel="OTHER"
+										radius="xs"
+										checked={showOtherInstruction}
+										onChange={(event) => setShowOtherInstruction(event.currentTarget.checked)}
+									/>
+								</Flex>
 							</Grid.Col>
 							<Grid.Col span={8}>
 								<Flex mt={"xs"} gap="md" justify="flex-end" align="center" wrap="wrap">
@@ -168,6 +178,7 @@ export default function Index() {
 									form={form}
 									update={handlePrescriptionUpdate}
 									prescriptionData={prescriptionData}
+									showOtherInstruction={showOtherInstruction}
 								/>
 							</Grid.Col>
 							<Grid.Col span={showHistory ? 13 : 17}>
