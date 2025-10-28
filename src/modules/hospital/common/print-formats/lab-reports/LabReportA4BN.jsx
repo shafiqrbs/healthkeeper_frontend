@@ -10,7 +10,6 @@ import Barcode from "react-barcode";
 const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data?.entity || {};
 	const report = data?.invoiceParticular || {};
-	//console.log(patientInfo);
 	const { hospitalConfigData } = useHospitalConfigData();
 
 	const getValue = (value, defaultValue = "") => {
@@ -91,23 +90,22 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 									<Table.Tbody>
 										<Table.Tr>
 											<Table.Td w={"33%"} align={"left"}>
-												<Barcode
-													fontSize="8"
-													width="1"
-													height="32"
-													value={getValue(report?.uid || "")}
-												/>
+												{report?.uid ? (
+													<Barcode fontSize="8" width="1" height="32" value={report.uid} />
+												) : null}
 											</Table.Td>
 											<Table.Td w={"33%"} align={"center"}>
 												<Text fz={"xl"}>{report?.particular?.category?.name}</Text>
 											</Table.Td>
 											<Table.Td w={"33%"} align={"right"}>
-												<Barcode
-													fontSize="8"
-													height="32"
-													width="1"
-													value={getValue(patientInfo?.patient_id || "")}
-												/>
+												{patientInfo?.patient_id ? (
+													<Barcode
+														fontSize="8"
+														height="32"
+														width="1"
+														value={patientInfo.patient_id}
+													/>
+												) : null}
 											</Table.Td>
 										</Table.Tr>
 									</Table.Tbody>

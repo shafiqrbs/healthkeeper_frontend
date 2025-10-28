@@ -17,6 +17,8 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { successNotification } from "@components/notification/successNotification";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "../helpers/request";
+import GeneSputum from "./report-formats/GeneSputum";
+import GenePulmonary from "./report-formats/GenePulmonary";
 
 const module = MODULES.LAB_TEST;
 
@@ -56,16 +58,26 @@ const ReportRenderer = forwardRef(
 								refetchDiagnosticReport={refetchDiagnosticReport}
 							/>
 						);
-					case "gnome":
-						// Add more custom report components here as needed
-						// return <Gnome diagnosticReport={diagnosticReport} />;
-						break;
+					case "gene-sputum":
+						return (
+							<GeneSputum
+								diagnosticReport={diagnosticReport}
+								setDiagnosticReport={setDiagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+							/>
+						);
+					case "gene-pulmonary":
+						return (
+							<GenePulmonary
+								diagnosticReport={diagnosticReport}
+								setDiagnosticReport={setDiagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+							/>
+						);
 					default:
-						// If no matching slug, fall back to default data table
 						return null;
 				}
 			}
-			return null;
 		};
 
 		const handleKeyDown = (e, index) => {
