@@ -23,8 +23,12 @@ const templateData = [
 	{ name: "Discharge", module: "discharge", id: 12 },
 	{ name: "IPDDetailsBN", module: "ipd", id: 13 },
 	{ name: "IPDDetailsEN", module: "ipd", id: 14 },
+	{ name: "AdmissionInvoiceBN", module: "ipd", id: 25 },
+	{ name: "AdmissionInvoiceEN", module: "ipd", id: 26 },
 	{ name: "IPDPrescriptionFullBN", module: "ipd", id: 15 },
 	{ name: "IPDPrescriptionFullEN", module: "ipd", id: 16 },
+	{ name: "AdmissionFormBN", module: "ipd", id: 27 },
+	{ name: "AdmissionFormEN", module: "ipd", id: 28 },
 	{ name: "LabReportA4BN", module: "lab-reports", id: 18 },
 	{ name: "LabReportA4EN", module: "lab-reports", id: 17 },
 	{ name: "DischargeA4BN", module: "discharge", id: 19 },
@@ -33,8 +37,6 @@ const templateData = [
 	{ name: "DetailsInvoiceEN", module: "billing", id: 22 },
 	{ name: "DetailsInvoicePosEN", module: "billing", id: 23 },
 	{ name: "DetailsInvoicePosBN", module: "billing", id: 24 },
-	{ name: "AdmissionInvoiceBN", module: "admission", id: 25 },
-	{ name: "AdmissionInvoiceEN", module: "admission", id: 26 },
 ];
 
 export default function _Table({ module }) {
@@ -57,6 +59,8 @@ export default function _Table({ module }) {
 
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
+					striped
+					highlightOnHover
 					classNames={{
 						root: tableCss.root,
 						table: tableCss.table,
@@ -64,6 +68,9 @@ export default function _Table({ module }) {
 						header: tableCss.header,
 						footer: tableCss.footer,
 						pagination: tableCss.pagination,
+					}}
+					onRowClick={({ record }) => {
+						handleDataShow(record.name);
 					}}
 					records={templateData}
 					columns={[

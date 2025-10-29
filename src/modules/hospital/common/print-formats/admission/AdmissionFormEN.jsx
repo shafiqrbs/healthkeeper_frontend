@@ -60,7 +60,7 @@ const AdmissionFormEN = forwardRef(({ data, preview = false }, ref) => {
 								{t("হটলাইন")} {getValue(hospitalConfigData?.hotline, "")}
 							</Text>
 							<Text fw={600} ta="center" size="md" mb="2">
-								{t("AdmissionForm")}
+								{t("AdmissionFormEN")}
 							</Text>
 						</Grid.Col>
 						<Grid.Col span={4}>

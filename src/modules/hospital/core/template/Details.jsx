@@ -28,6 +28,8 @@ import DetailsInvoicePosBN from "@hospital-components/print-formats/billing/Deta
 import DetailsInvoicePosEN from "@hospital-components/print-formats/billing/DetailsInvoicePosEN";
 import AdmissionInvoiceBN from "@hospital-components/print-formats/admission/AdmissionInvoiceBN";
 import AdmissionInvoiceEN from "@hospital-components/print-formats/admission/AdmissionInvoiceEN";
+import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
+import AdmissionFormEN from "@hospital-components/print-formats/admission/AdmissionFormEN";
 
 const STATIC_OPD_ID = 1;
 const STATIC_PRESCRIPTION_ID = 92;
@@ -129,6 +131,17 @@ export default function Details() {
 							<IPDPrescriptionFullEN preview data={prescriptionData?.data} />
 						</LoadingWrapper>
 					)}
+					{name === "AdmissionFormEN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<AdmissionFormEN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "AdmissionFormBN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<AdmissionFormBN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+
 					{name === "LabReportA4EN" && (
 						<LoadingWrapper isLoading={isReportLoading}>
 							<LabReportA4EN preview data={labReportData?.data} />
