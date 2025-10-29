@@ -27,6 +27,7 @@ import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import DischargeA4BN from "@hospital-components/print-formats/discharge/DischargeA4BN";
+import { modals } from "@mantine/modals";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
@@ -105,8 +106,22 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 
 	const handleManageOverview = (prescriptionId, id) => {
 		setSelectedPrescriptionId(prescriptionId);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}?tabs=true&redirect=prescription`, {
-			state: { prescriptionId: prescriptionId },
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("AreYouSureYouWantCreateAE-FreshPrescription")}</Text>,
+			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () =>
+				navigate(
+					`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${prescriptionId}?tabs=true&redirect=prescription`
+				),
+			// navigate(
+			// 	`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}?tabs=true&redirect=prescription`,
+			// 	{
+			// 		state: { prescriptionId: prescriptionId },
+			// 	}
+			// ),
 		});
 	};
 
@@ -256,7 +271,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 											size="compact-xs"
 											fw={400}
 										>
-											{t("Manage")}
+											{t("E-Fresh")}
 										</Button>
 									)}
 

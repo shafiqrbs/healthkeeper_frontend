@@ -610,7 +610,7 @@ export default function AddMedicineForm({
 										withCheckIcon={false}
 										changeValue={populateMedicineData}
 									/>
-									<InputNumberForm form={form} name="weight" placeholder={t("Weight/KG")} />
+									<InputForm form={form} name="weight" placeholder={t("Weight/KG")} />
 								</Group>
 							</Grid.Col>
 						</Grid>

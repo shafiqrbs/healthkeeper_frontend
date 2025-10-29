@@ -37,7 +37,6 @@ import { useReactToPrint } from "react-to-print";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import { getLoggedInUser } from "@/common/utils";
@@ -47,7 +46,6 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
 import MedicineListItem from "@hospital-components/MedicineListItem";
-import { DURATION_TYPES } from "@/constants";
 import inputCss from "@assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
@@ -56,6 +54,7 @@ import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { useNavigate } from "react-router-dom";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { appendDosageValueToForm, appendGeneralValuesToForm, appendMealValueToForm } from "@utils/prescription";
+import InputForm from "@components/form-builders/InputForm";
 
 export default function AddMedicineForm({
 	module,
@@ -511,7 +510,7 @@ export default function AddMedicineForm({
 								</Grid.Col>
 							</Grid>
 							<Grid w="100%" columns={12} gutter="xxxs">
-								<Grid.Col span={6}>
+								<Grid.Col span={10}>
 									<Group grow gap="les">
 										<Select
 											classNames={inputCss}
@@ -542,29 +541,8 @@ export default function AddMedicineForm({
 										/>
 									</Group>
 								</Grid.Col>
-								<Grid.Col span={6}>
+								<Grid.Col span={2}>
 									<Group grow gap="les">
-										<InputNumberForm
-											form={medicineForm}
-											id="quantity"
-											name="quantity"
-											value={medicineForm.values.quantity}
-											placeholder={t("Quantity")}
-											required
-											tooltip={t("EnterQuantity")}
-										/>
-										<SelectForm
-											form={medicineForm}
-											label=""
-											id="duration"
-											name="duration"
-											dropdownValue={DURATION_TYPES}
-											value={medicineForm.values.duration || "Day"}
-											placeholder={t("Duration")}
-											required
-											tooltip={t("EnterMeditationDuration")}
-											withCheckIcon={false}
-										/>
 										<Button
 											leftSection={<IconPlus size={16} />}
 											type="submit"
@@ -599,6 +577,7 @@ export default function AddMedicineForm({
 										withCheckIcon={false}
 										changeValue={populateMedicineData}
 									/>
+									<InputForm form={form} name="weight" placeholder={t("Weight/KG")} />
 								</Group>
 							</Grid.Col>
 						</Grid>
@@ -625,7 +604,7 @@ export default function AddMedicineForm({
 									color="red"
 									onClick={openExPrescription}
 								>
-									{t("RxEmergency")}
+									{t("Extra")}
 								</Button>
 							</Grid.Col>
 						</Grid>
@@ -719,6 +698,7 @@ export default function AddMedicineForm({
 							update={update}
 							by_meal_options={by_meal_options}
 							dosage_options={dosage_options}
+							type="ipd"
 						/>
 					))}
 				</Stack>

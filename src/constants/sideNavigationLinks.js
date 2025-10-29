@@ -65,7 +65,7 @@ export const sideNavigationLinks = {
 					icon: IconEmergencyBed,
 					color: "#F44336", // Red
 					allowedRoles: ["role_domain", "admin_administrator", "doctor_emergency", "operator_emergency"],
-				}
+				},
 			],
 		},
 		{
@@ -84,7 +84,7 @@ export const sideNavigationLinks = {
 			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
 			subMenu: [
 				{
-					label: t("IPD"),
+					label: t("IPDAdmission"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX,
 					icon: IconBuildingHospital,
 					color: "#3F51B5", // Indigo
@@ -148,7 +148,7 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FREE_PATIENT.INDEX,
 			icon: IconBuildingHospital,
 			color: "#795548", // Brown
-			allowedRoles: ["role_domain", "admin_administrator","doctor_ipd","doctor_emergency","doctor_opd"],
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd", "doctor_emergency", "doctor_opd"],
 		},
 
 		{
@@ -156,7 +156,7 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.POLICE_CASE.INDEX,
 			icon: IconBuildingHospital,
 			color: "#795548", // Brown
-			allowedRoles: ["role_domain", "admin_administrator","doctor_ipd","doctor_emergency","doctor_opd"],
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd", "doctor_emergency", "doctor_opd"],
 		},
 
 		{
@@ -170,13 +170,14 @@ export const sideNavigationLinks = {
 					label: t("Lab"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX,
 					icon: IconMicroscopeOff,
-					allowedRoles: ["doctor_lab", "lab_assistant", "admin_administrator"],				},
+					allowedRoles: ["doctor_lab", "lab_assistant", "admin_administrator"],
+				},
 				{
 					label: t("TestReports"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX_REPORTS,
 					icon: IconEmergencyBed,
 					allowedRoles: ["doctor_lab", "lab_assistant", "admin_administrator"],
-				}
+				},
 			],
 		},
 
@@ -192,16 +193,25 @@ export const sideNavigationLinks = {
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.ISSUE,
 					icon: IconEmergencyBed,
 					color: "#F44336", // Red
-					allowedRoles: ["pharmacy_operator", "pharmacy_pharmacist", "pharmacy_manager", "admin_administrator"],
+					allowedRoles: [
+						"pharmacy_operator",
+						"pharmacy_pharmacist",
+						"pharmacy_manager",
+						"admin_administrator",
+					],
 				},
 				{
 					label: t("ePharma"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.INDEX,
 					icon: IconEmergencyBed,
 					color: "#F44336", // Red
-					allowedRoles: ["pharmacy_operator", "pharmacy_pharmacist", "pharmacy_manager", "admin_administrator"],
-				}
-
+					allowedRoles: [
+						"pharmacy_operator",
+						"pharmacy_pharmacist",
+						"pharmacy_manager",
+						"admin_administrator",
+					],
+				},
 			],
 		},
 
@@ -236,7 +246,6 @@ export const sideNavigationLinks = {
 					path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.EMERGENCY,
 					icon: IconEmergencyBed,
 				},
-
 			],
 		},
 

@@ -21,6 +21,7 @@ export default function MedicineListItem({
 	setMedicines,
 	handleDelete,
 	update,
+	type = "opd",
 }) {
 	const { t } = useTranslation();
 	const [mode] = useState("view");
@@ -29,7 +30,6 @@ export default function MedicineListItem({
 
 	const handleChange = (field, value) => {
 		if (field === "opd_quantity" && !ignoreOpdQuantityLimit) {
-			console.log(value, medicine, ignoreOpdQuantityLimit);
 			if (value > medicine.opd_limit) {
 				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error");
 				return;
@@ -209,7 +209,7 @@ export default function MedicineListItem({
 						const isFirstItem = insIndex === 0;
 						return (
 							<Flex key={insIndex} ml={isFirstItem ? "md" : "44px"} gap="xs" align="center">
-								{isFirstItem && (
+								{isFirstItem && type === "opd" && (
 									<ActionIcon
 										size="xs"
 										variant="outline"
@@ -251,26 +251,34 @@ export default function MedicineListItem({
 												}
 											/>
 										</Grid.Col>
-										<Grid.Col span={3}>
-											<NumberInput
-												size="xs"
-												label=""
-												value={instruction.quantity}
-												placeholder={t("Quantity")}
-												onChange={(v) => handleInstructionFieldChange(insIndex, "quantity", v)}
-											/>
-										</Grid.Col>
-										<Grid.Col span={3}>
-											<Select
-												size="xs"
-												label=""
-												data={DURATION_UNIT_OPTIONS}
-												value={instruction.duration?.toLowerCase()}
-												placeholder={t("Duration")}
-												onChange={(v) => handleInstructionFieldChange(insIndex, "duration", v)}
-											/>
-										</Grid.Col>
-										{isFirstItem && (
+										{type === "opd" && (
+											<>
+												<Grid.Col span={3}>
+													<NumberInput
+														size="xs"
+														label=""
+														value={instruction.quantity}
+														placeholder={t("Quantity")}
+														onChange={(v) =>
+															handleInstructionFieldChange(insIndex, "quantity", v)
+														}
+													/>
+												</Grid.Col>
+												<Grid.Col span={3}>
+													<Select
+														size="xs"
+														label=""
+														data={DURATION_UNIT_OPTIONS}
+														value={instruction.duration?.toLowerCase()}
+														placeholder={t("Duration")}
+														onChange={(v) =>
+															handleInstructionFieldChange(insIndex, "duration", v)
+														}
+													/>
+												</Grid.Col>
+											</>
+										)}
+										{isFirstItem && type === "opd" && (
 											<>
 												<Grid.Col span={2}>
 													<Input
@@ -317,8 +325,10 @@ export default function MedicineListItem({
 											c="var(--theme-tertiary-color-8)"
 										>
 											{instruction?.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
-											---- {instruction.quantity} ---- {instruction.duration}{" "}
+											{type === "opd" &&
+												`---- ${instruction.quantity} ---- ${instruction.duration}`}
 											{isFirstItem &&
+												type === "opd" &&
 												`---- ${medicine.opd_quantity || t("NoOutdoorMedicineNumber")} ---- ${
 													medicine.doctor_comment || t("NoDoctorComment")
 												}`}

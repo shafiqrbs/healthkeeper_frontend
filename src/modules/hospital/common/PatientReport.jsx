@@ -180,12 +180,15 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 						})}
 						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
-								label="Other Instructions"
-								placeholder="Enter other instructions"
+								label={`Other ${section.name}`}
+								placeholder={`Enter Other ${t(section.name)}`}
 								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
+								onBlur={handleFieldBlur}
+								resize="vertical"
+								minRows={5}
 							/>
 						)}
 					</Stack>
@@ -215,16 +218,18 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 								})
 							}
 							onBlur={handleFieldBlur}
+							resize="vertical"
 						/>
 						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
-								label="Other Instructions"
-								placeholder="Enter other instructions"
+								label={`Other ${section.name}`}
+								placeholder={`Enter Other ${t(section.name)}`}
 								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
 								onBlur={handleFieldBlur}
+								resize="vertical"
 							/>
 						)}
 					</Stack>
@@ -268,13 +273,15 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 
 						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
-								label="Other Instructions"
-								placeholder="Enter other instructions"
+								label={`Other ${section.name}`}
+								placeholder={`Enter Other ${t(section.name)}`}
 								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
 								onBlur={handleFieldBlur}
+								resize="vertical"
+								minRows={5}
 							/>
 						)}
 					</Stack>
@@ -348,13 +355,14 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 
 						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
-								label="Other Instructions"
-								placeholder="Enter other instructions"
+								label={`Other ${section.name}`}
+								placeholder={`Enter Other ${t(section.name)}`}
 								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
 								onBlur={handleFieldBlur}
+								resize="vertical"
 							/>
 						)}
 					</Stack>
@@ -383,20 +391,21 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 										})
 									}
 									onBlur={handleFieldBlur}
-									minRows={3}
+									resize="vertical"
 								/>
 							);
 						})}
 
 						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
-								label="Other Instructions"
-								placeholder="Enter other instructions"
+								label={`Other ${section.name}`}
+								placeholder={`Enter Other ${t(section.name)}`}
 								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
 								onBlur={handleFieldBlur}
+								resize="vertical"
 							/>
 						)}
 					</Stack>
@@ -427,8 +436,8 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 						/>
 						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
-								label="Other Instructions"
-								placeholder="Enter other instructions"
+								label={`Other ${section.name}`}
+								placeholder={`Enter Other ${t(section.name)}`}
 								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
@@ -466,8 +475,8 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 
 						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
-								label="Other Instructions"
-								placeholder="Enter other instructions"
+								label={`Other ${section.name}`}
+								placeholder={`Enter Other ${t(section.name)}`}
 								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
@@ -529,13 +538,14 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 
 						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
-								label="Other Instructions"
-								placeholder="Enter other instructions"
+								label={`Other ${section.name}`}
+								placeholder={`Enter Other ${t(section.name)}`}
 								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
 								onBlur={handleFieldBlur}
+								resize="vertical"
 							/>
 						)}
 					</>
@@ -590,20 +600,22 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 											<Text fw={600} size="sm">
 												{section.name}
 											</Text>
-											<Switch
-												color="var(--theme-primary-color-6)"
-												size="lg"
-												onLabel="OTHER"
-												offLabel="OTHER"
-												radius="sm"
-												checked={showOtherInstruction[section.slug] ?? false}
-												onChange={(event) =>
-													setShowOtherInstruction((prev) => ({
-														...prev,
-														[section.slug]: event.currentTarget.checked,
-													}))
-												}
-											/>
+											{section?.is_additional_field === 1 && (
+												<Switch
+													color="teal.6"
+													size="lg"
+													onLabel="OTHER"
+													offLabel="OTHER"
+													radius="sm"
+													checked={showOtherInstruction[section.slug] ?? false}
+													onChange={(event) =>
+														setShowOtherInstruction((prev) => ({
+															...prev,
+															[section.slug]: event.currentTarget.checked,
+														}))
+													}
+												/>
+											)}
 										</Flex>
 									</Box>
 									<Box p="xs">{renderDynamicForm(section)}</Box>
@@ -626,20 +638,22 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 								<Text fw={600} size="lg">
 									{currentSection?.name}
 								</Text>
-								<Switch
-									color="var(--theme-primary-color-6)"
-									size="lg"
-									onLabel="OTHER"
-									offLabel="OTHER"
-									radius="xs"
-									checked={showOtherInstruction[currentSection.slug] ?? false}
-									onChange={(event) =>
-										setShowOtherInstruction((prev) => ({
-											...prev,
-											[currentSection.slug]: event.currentTarget.checked,
-										}))
-									}
-								/>
+								{currentSection?.is_additional_field === 1 && (
+									<Switch
+										color="teal.6"
+										size="lg"
+										onLabel="OTHER"
+										offLabel="OTHER"
+										radius="xs"
+										checked={showOtherInstruction[currentSection.slug] ?? false}
+										onChange={(event) =>
+											setShowOtherInstruction((prev) => ({
+												...prev,
+												[currentSection.slug]: event.currentTarget.checked,
+											}))
+										}
+									/>
+								)}
 							</Flex>
 						</Box>
 						<Box p="xs">{renderDynamicForm(currentSection)}</Box>
