@@ -1,4 +1,4 @@
-import {Box, Text, Grid, Group, Stack, Image, Flex, Table} from "@mantine/core";
+import {Box, Text, Grid, Group, Stack, Image, Flex, ActionIcon,Table} from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import Rx from "@assets/images/rx.png";
@@ -11,6 +11,9 @@ import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
 import Barcode from "react-barcode";
 import customTable from "@assets/css/PrescriptionTable.module.css";
+import {
+	IconPointFilled,IconPhoneCall
+} from "@tabler/icons-react";
 
 const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
@@ -57,7 +60,8 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 			<Stack gap="0px" mt="0">
 				{items.map((item, idx) => (
 					<Text key={idx} size="xs" c="black.5" mt="0">
-						{idx + 1}. {formatItem(item)}
+						<IconPointFilled style={{ width: '10', height: '10' }} stroke={1.5} />
+						{formatItem(item)}
 					</Text>
 				))}
 			</Stack>
@@ -317,51 +321,53 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										wrap="nowrap"
 									>
 										<Box w={'100%'}>
-										<Box style={{ borderBottom: `1px solid #444` }}>Vital</Box>
+										<Box style={{ borderBottom: `1px solid #444` }}>Vitals</Box>
 											<Grid columns={24} gutter={'2'} >
 												{patientInfo?.bp && (
-													<Grid.Col span={12}>
-														<Text style={{ fontSize: '9px'}}>
-															{t("B/P")}: {patientInfo?.bp} mm of HG
+													<Grid.Col span={14}>
+														<Text style={{ fontSize: '11px'}}>
+															{t("B/P")}: {patientInfo?.bp} mmHg
 														</Text>
 													</Grid.Col>
 												)}
 												{patientInfo?.pulse && (
-													<Grid.Col span={12} fz="xs" align={"left"}>
-														<Text style={{ fontSize: '9px'}}>
-															{t("Pulse")}: {patientInfo?.pulse}/Min
+													<Grid.Col span={10} fz="xs" align={"left"}>
+														<Text style={{ fontSize: '11px'}}>
+															{t("Pulse")}: {patientInfo?.pulse}/bpm
 														</Text>
 													</Grid.Col>
 												)}
 											</Grid>
 											<Grid columns={24} gutter={'2'} >
-												{patientInfo?.sat_with_O2 && (
-													<Grid.Col span={12}>
-														<Text style={{ fontSize: '9px'}}>
-															{t("Sat")}: {patientInfo?.sat_with_O2} % (eW02)
-														</Text>
-													</Grid.Col>
-												)}
+
 												{patientInfo?.sat_without_O2 && (
-													<Grid.Col span={12} fz="xs" align={"left"}>
-														<Text style={{ fontSize: '9px'}}>
-															{t("Sat")}: {patientInfo?.sat_without_O2} % (e02)
+													<Grid.Col span={14} fz="xs" align={"left"}>
+														<Text style={{ fontSize: '11px'}}>
+															{t("Sat")}: {patientInfo?.sat_without_O2} % w/o O₂
 														</Text>
 													</Grid.Col>
 												)}
-											</Grid>
-											<Grid columns={24} gutter={'2'} >
 												{patientInfo?.temperature && (
-													<Grid.Col span={12}>
-														<Text style={{ fontSize: '9px'}}>
+													<Grid.Col span={10}>
+														<Text style={{ fontSize: '11px'}}>
 															{t("Temp")}: {patientInfo?.temperature} °F
 														</Text>
 													</Grid.Col>
 												)}
+
+											</Grid>
+											<Grid columns={24} gutter={'2'} >
+												{patientInfo?.sat_with_O2 && (
+													<Grid.Col span={14}>
+														<Text style={{ fontSize: '11px'}}>
+															{t("Sat")}: {patientInfo?.sat_with_O2} % w/ {patientInfo?.sat_liter||0} L O₂
+														</Text>
+													</Grid.Col>
+												)}
 												{patientInfo?.respiration && (
-													<Grid.Col span={12} fz="xs" align={"left"}>
-														<Text style={{ fontSize: '9px'}}>
-															{t("Res")}: {patientInfo?.respiration}/Min
+													<Grid.Col span={10} fz="xs" align={"left"}>
+														<Text style={{ fontSize: '11px'}}>
+															{t("Res R.")}: {patientInfo?.respiration}/min
 														</Text>
 													</Grid.Col>
 												)}
@@ -425,7 +431,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									>
 										<Box>
 											<Text size="sm" fw={500}>
-												উপদেশ: {getValue(jsonContent.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}
+												উপদেশ: {getValue(jsonContent.advise, )}
 											</Text>
 											{patientInfo?.referred_comment && (
 												<>
@@ -436,10 +442,13 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												</>
 											)}
 											{jsonContent?.follow_up_date && (
-												<Text size="sm" c="gray" mt="xs">
-													Follow Up Date: {formatDate(jsonContent?.follow_up_date)}
+												<Text size="sm" mt="xs">
+													* Follow Up Date: {formatDate(jsonContent?.follow_up_date)}
 												</Text>
 											)}
+											<Text size="sm" fz={'xs'} fw={600}>
+												* রিপোর্ট (যদি থাকে ) সংগ্রহ করে দেখা করবেন।
+											</Text>
 										</Box>
 									</Flex>
 
@@ -468,13 +477,13 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									<Flex gap="md" align="center" justify="center">
 										<Flex>
 											<Image src={GLogo} alt="logo" width={46} height={46} />
-											<Box>
+											<Box pl={'xs'} pr={'xs'} >
 												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
 													{hospitalConfigData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
-													{hospitalConfigData?.address || ""}
-													{(hospitalConfigData?.hotline && `, ${hospitalConfigData?.hotline}`) || ""}
+													{hospitalConfigData?.address || ""},
+													<IconPhoneCall style={{ width: '12', height: '12' }} stroke={1.5} /> {(hospitalConfigData?.hotline && ` ${hospitalConfigData?.hotline}`) || ""}
 												</Text>
 											</Box>
 											<Image src={TBLogo} alt="logo" width={46} height={46} />
@@ -500,9 +509,11 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600} c="#1e40af">
 											Prescribed By: {getValue(patientInfo?.doctor_name)}
 										</Text>
+										{jsonContent?.pharmacyInstruction && (
 										<Text size="xs" fw={400} >
 											Comment: {getValue(jsonContent?.pharmacyInstruction)}
 										</Text>
+										)}
 										{/*<Text size="xs">Doctor ID- {getValue(patientInfo?.employee_id)}</Text>
 								<Text size="xs">Designation: {getValue(patientInfo?.designation_name)}</Text>*/}
 									</Stack>

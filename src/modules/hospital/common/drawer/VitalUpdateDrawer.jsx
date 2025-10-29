@@ -24,6 +24,7 @@ export default function VitalUpdateDrawer({ opened, close, data }) {
 			bp: "",
 			pulse: "",
 			sat_with_O2: "",
+			sat_liter: "",
 			sat_without_O2: "",
 			respiration: "",
 			temperature: "",
@@ -59,6 +60,7 @@ export default function VitalUpdateDrawer({ opened, close, data }) {
 		form.setFieldValue("bp", data?.bp || "");
 		form.setFieldValue("pulse", data?.pulse || "");
 		form.setFieldValue("sat_with_O2", data?.sat_with_O2 || "");
+		form.setFieldValue("sat_liter", data?.sat_liter || "");
 		form.setFieldValue("sat_without_O2", data?.sat_without_O2 || "");
 		form.setFieldValue("respiration", data?.respiration || "");
 		form.setFieldValue("temperature", data?.temperature || "");
@@ -106,7 +108,7 @@ export default function VitalUpdateDrawer({ opened, close, data }) {
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("BP")}</Text>
 						</Grid.Col>
-						<Grid.Col span={7}>
+						<Grid.Col span={8}>
 							<InputForm
 								form={form}
 								label=""
@@ -118,14 +120,14 @@ export default function VitalUpdateDrawer({ opened, close, data }) {
 								value={form.values.bp}
 							/>
 						</Grid.Col>
-						<Grid.Col span={7}>
-							mm of HG
+						<Grid.Col span={6}>
+							mm of Hg
 						</Grid.Col>
 
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("Pulse")}</Text>
 						</Grid.Col>
-						<Grid.Col span={7}>
+						<Grid.Col span={8}>
 							<InputForm
 								form={form}
 								label=""
@@ -137,31 +139,14 @@ export default function VitalUpdateDrawer({ opened, close, data }) {
 								min={0}
 							/>
 						</Grid.Col>
-						<Grid.Col span={7}>
+						<Grid.Col span={6}>
 							Beat/Minute
 						</Grid.Col>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("SatWithO2")}</Text>
-						</Grid.Col>
-						<Grid.Col span={7}>
-							<InputNumberForm
-								form={form}
-								label=""
-								placeholder={t("SatWithO2")}
-								tooltip={t("EnterSatWithO2")}
-								name="sat_with_O2"
-								id="sat_with_O2"
-								nextField="sat_without_O2"
-								min={0}
-							/>
-						</Grid.Col>
-						<Grid.Col span={7}>
-							%
-						</Grid.Col>
+
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("SatWithoutO2")}</Text>
 						</Grid.Col>
-						<Grid.Col span={7}>
+						<Grid.Col span={8}>
 							<InputNumberForm
 								form={form}
 								label=""
@@ -169,18 +154,48 @@ export default function VitalUpdateDrawer({ opened, close, data }) {
 								tooltip={t("EnterSatWithoutO2")}
 								name="sat_without_O2"
 								id="sat_without_O2"
-								nextField="respiration"
+								nextField="sat_with_O2"
 								min={0}
 								max={31}
 							/>
 						</Grid.Col>
-						<Grid.Col span={7}>
+						<Grid.Col span={6}>
+							%
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text fz="sm">{t("SatWithO2")}</Text>
+						</Grid.Col>
+						<Grid.Col span={4}>
+							<InputNumberForm
+								form={form}
+								label=""
+								placeholder={t("SatWithO2")}
+								tooltip={t("EnterSatWithO2")}
+								name="sat_with_O2"
+								id="sat_with_O2"
+								nextField="sat_liter"
+								min={0}
+							/>
+						</Grid.Col>
+						<Grid.Col span={4}>
+							<InputNumberForm
+								form={form}
+								label=""
+								placeholder={t("Liter")}
+								tooltip={t("EnterLiter")}
+								name="sat_liter"
+								id="sat_liter"
+								nextField="respiration"
+								min={0}
+							/>
+						</Grid.Col>
+						<Grid.Col span={6}>
 							%
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("Respiration")}</Text>
 						</Grid.Col>
-						<Grid.Col span={7}>
+						<Grid.Col span={8}>
 							<InputForm
 								form={form}
 								label=""
@@ -191,13 +206,13 @@ export default function VitalUpdateDrawer({ opened, close, data }) {
 								nextField="temperature"
 							/>
 						</Grid.Col>
-						<Grid.Col span={7}>
+						<Grid.Col span={6}>
 							Breath/Minute
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("Temperature")}</Text>
 						</Grid.Col>
-						<Grid.Col span={7}>
+						<Grid.Col span={8}>
 							<InputNumberForm
 								form={form}
 								label=""
@@ -207,7 +222,7 @@ export default function VitalUpdateDrawer({ opened, close, data }) {
 								id="temperature"
 							/>
 						</Grid.Col>
-						<Grid.Col span={7}>
+						<Grid.Col span={6}>
 							°F
 						</Grid.Col>
 					</Grid>

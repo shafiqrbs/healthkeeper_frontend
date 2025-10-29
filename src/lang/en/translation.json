@@ -1534,6 +1534,7 @@
 	"HealthShare": "Health Share",
 	"HealthShareUrl": "Health Share URL",
 	"ClientID": "Client ID",
+	"PrescribedBy": "Prescribed By",
 	"HealthShareToken": "Health Share Token",
 	"XAuthToken": "X Auth Token",
 	"PatientUrl": "Patient URL",
