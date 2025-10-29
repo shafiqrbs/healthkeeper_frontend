@@ -1,9 +1,8 @@
-import { Box, Grid, Progress } from "@mantine/core";
+import { Box, Flex, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useMediaQuery, useNetwork, useViewportSize } from "@mantine/hooks";
 
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
-import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
 import { Navigate, Outlet } from "react-router-dom";
 import { getLoggedInUser } from "@/common/utils";
@@ -43,31 +42,18 @@ export default function DoctorLayout() {
 					transitionDuration={200}
 				/>
 			) : (
-				<>
-					{/* <CoreHeaderNavbar
-						module="core"
-						pageTitle={pageTitle}
-						roles={t("Roles")}
-						allowZeroPercentage=""
-						currencySymbol=""
-					/> */}
-					<Box p="8">
-						<Grid columns={36} gutter={{ base: 8 }}>
-							{!matches && (
-								<Grid.Col span={6}>
-									<Navigation
-										menu="base"
-										subMenu={"baseDoctorSubmenu"}
-										mainAreaHeight={mainAreaHeight}
-									/>
-								</Grid.Col>
-							)}
-							<Grid.Col span={matches ? 30 : 30}>
-								<Outlet context={{ isOnline: networkStatus.online, mainAreaHeight, setPageTitle }} />
-							</Grid.Col>
-						</Grid>
-					</Box>
-				</>
+				<Box p="8">
+					<Flex gap="8">
+						{!matches && (
+							<Box>
+								<Navigation menu="base" mainAreaHeight={mainAreaHeight} />
+							</Box>
+						)}
+						<Box w="100%">
+							<Outlet context={{ isOnline: networkStatus.online, mainAreaHeight, setPageTitle }} />
+						</Box>
+					</Flex>
+				</Box>
 			)}
 		</>
 	);
