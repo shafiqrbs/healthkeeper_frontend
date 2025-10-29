@@ -12,6 +12,7 @@ import {
 	Grid,
 	Flex,
 	ActionIcon,
+	Switch,
 } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
@@ -22,13 +23,8 @@ import inputCss from "@assets/css/InputField.module.css";
 import { DURATION_TYPES } from "@/constants";
 import { useTranslation } from "react-i18next";
 
-export default function PatientReport({
-	showOtherInstruction = true,
-	tabValue,
-	form = null,
-	update,
-	prescriptionData,
-}) {
+export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
+	const [showOtherInstruction, setShowOtherInstruction] = useState({});
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 246;
 	const { t } = useTranslation();
@@ -45,7 +41,7 @@ export default function PatientReport({
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const tabParticulars = particularsData?.map((item) => ({
 		...item.particular_type,
-		is_additional_field: showOtherInstruction ? item.is_additional_field : 0,
+		is_additional_field: item.is_additional_field ?? 0,
 	}));
 
 	const handleDynamicFormChange = ({ id, name, value, parentSlug, isCheckbox = false, duration = null }) => {
@@ -182,7 +178,7 @@ export default function PatientReport({
 								/>
 							);
 						})}
-						{is_additional_field === 1 && (
+						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
@@ -220,7 +216,7 @@ export default function PatientReport({
 							}
 							onBlur={handleFieldBlur}
 						/>
-						{is_additional_field === 1 && (
+						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
@@ -270,7 +266,7 @@ export default function PatientReport({
 							);
 						})}
 
-						{is_additional_field === 1 && (
+						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
@@ -350,7 +346,7 @@ export default function PatientReport({
 							);
 						})}
 
-						{is_additional_field === 1 && (
+						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
@@ -392,7 +388,7 @@ export default function PatientReport({
 							);
 						})}
 
-						{is_additional_field === 1 && (
+						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
@@ -429,7 +425,7 @@ export default function PatientReport({
 							}
 							onBlur={handleFieldBlur}
 						/>
-						{is_additional_field === 1 && (
+						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
@@ -468,7 +464,7 @@ export default function PatientReport({
 							);
 						})}
 
-						{is_additional_field === 1 && (
+						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
@@ -531,7 +527,7 @@ export default function PatientReport({
 							))}
 						</Stack>
 
-						{is_additional_field === 1 && (
+						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
 							<Textarea
 								label="Other Instructions"
 								placeholder="Enter other instructions"
@@ -590,9 +586,25 @@ export default function PatientReport({
 							{currentSection.map((section) => (
 								<Box key={section.id}>
 									<Box bg="var(--theme-secondary-color-1)" p="xxxs">
-										<Text fw={600} size="sm">
-											{section.name}
-										</Text>
+										<Flex justify="space-between" align="center">
+											<Text fw={600} size="sm">
+												{section.name}
+											</Text>
+											<Switch
+												color="var(--theme-primary-color-6)"
+												size="lg"
+												onLabel="OTHER"
+												offLabel="OTHER"
+												radius="sm"
+												checked={showOtherInstruction[section.slug] ?? false}
+												onChange={(event) =>
+													setShowOtherInstruction((prev) => ({
+														...prev,
+														[section.slug]: event.currentTarget.checked,
+													}))
+												}
+											/>
+										</Flex>
 									</Box>
 									<Box p="xs">{renderDynamicForm(section)}</Box>
 								</Box>
@@ -610,9 +622,25 @@ export default function PatientReport({
 				<ScrollArea h={mainAreaHeight - 240}>
 					<Box mt="les">
 						<Box bg="var(--theme-secondary-color-1)" p="xxxs">
-							<Text fw={600} size="lg">
-								{currentSection?.name}
-							</Text>
+							<Flex justify="space-between" align="center">
+								<Text fw={600} size="lg">
+									{currentSection?.name}
+								</Text>
+								<Switch
+									color="var(--theme-primary-color-6)"
+									size="lg"
+									onLabel="OTHER"
+									offLabel="OTHER"
+									radius="xs"
+									checked={showOtherInstruction[currentSection.slug] ?? false}
+									onChange={(event) =>
+										setShowOtherInstruction((prev) => ({
+											...prev,
+											[currentSection.slug]: event.currentTarget.checked,
+										}))
+									}
+								/>
+							</Flex>
 						</Box>
 						<Box p="xs">{renderDynamicForm(currentSection)}</Box>
 					</Box>

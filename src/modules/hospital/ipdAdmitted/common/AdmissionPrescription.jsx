@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "../helpers/request";
 import { useForm } from "@mantine/form";
 import { Box, Grid, LoadingOverlay, Stack } from "@mantine/core";
-import PatientReport from "./PatientReport";
+import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "./AddMedicineForm.jsx";
 import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
