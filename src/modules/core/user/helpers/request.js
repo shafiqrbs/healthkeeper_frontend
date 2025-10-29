@@ -99,6 +99,10 @@ export const getUserEditFormData = (entityEditData, t) => {
 
 				return null;
 			},
+			dob: (value) => {
+				if (!value) return t("DOBValidationRequired");
+				return null;
+			},
 			mobile: (value) => {
 				if (!value) return t("MobileValidationRequired");
 				return null;

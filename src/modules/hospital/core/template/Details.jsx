@@ -30,7 +30,7 @@ import AdmissionInvoiceBN from "@hospital-components/print-formats/admission/Adm
 import AdmissionInvoiceEN from "@hospital-components/print-formats/admission/AdmissionInvoiceEN";
 
 const STATIC_OPD_ID = 1;
-const STATIC_PRESCRIPTION_ID = 1;
+const STATIC_PRESCRIPTION_ID = 92;
 const REPORT_ID = 274;
 
 export default function Details() {

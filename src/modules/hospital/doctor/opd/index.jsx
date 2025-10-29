@@ -20,7 +20,7 @@ export default function Index() {
 			) : (
 				<Grid w="100%" columns={24}>
 					<Grid.Col span={24}>
-						{prescriptionId ? <Prescription /> : <Table module={module} height={mainAreaHeight - 156} />}
+						{prescriptionId ? <Prescription /> : <Table module={module} height={mainAreaHeight - 140} />}
 					</Grid.Col>
 				</Grid>
 			)}

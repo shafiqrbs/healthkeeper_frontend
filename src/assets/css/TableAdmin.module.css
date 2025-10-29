@@ -2,7 +2,6 @@
     .mantine-datatable-table[data-striped] tbody tr:nth-of-type(odd) {
         background-color: var(--theme-primary-color-4) !important;
     }
-
     border: 1px solid white !important;
 }
 
@@ -39,6 +38,9 @@
 }
 
 .header {
+    th:first-child{
+        padding-left: 12px!important;
+    }
     th {
         background-color: var(--theme-primary-color-1) !important;
         font-size: 12px;

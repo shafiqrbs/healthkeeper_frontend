@@ -92,9 +92,10 @@ export default function Update({ module }) {
 				address: entityEditData?.address || null,
 				about_me: entityEditData?.about_me || null,
 				gender: entityEditData?.gender || "male",
-				dob: entityEditData?.dob || null,
+				dob: new Date() || null,
 			});
 		}
+		console.log(form.values.dob)
 		setTimeout(() => {
 			setFormLoad(false);
 			setFormDataForUpdate(false);
@@ -291,7 +292,6 @@ export default function Update({ module }) {
 	const handleGenderChange = (val) => {
 		form.setFieldValue("gender", val);
 	};
-
 	const handleSubmit = (values) => {
 		const formattedDOB = dayjs(values.dob).format("YYYY-MM-DD");
 
@@ -368,6 +368,7 @@ export default function Update({ module }) {
 		}
 	};
 
+
 	return (
 		<Box>
 			<form onSubmit={form.onSubmit(handleSubmit)}>
@@ -378,7 +379,7 @@ export default function Update({ module }) {
 							<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
 								<Box bg={"white"}>
 									<Box
-										pl={`xs`}
+										p={`xs`}
 										pr={8}
 										pt={"6"}
 										pb={"6"}
@@ -437,7 +438,7 @@ export default function Update({ module }) {
 														tooltip={t("EmployeeIDValidateMessage")}
 														label={t("EmployeeID")}
 														placeholder={t("EmployeeID")}
-														required={true}
+														required={false}
 														nextField={"name"}
 														form={form}
 														name={"employee_id"}
@@ -789,14 +790,15 @@ export default function Update({ module }) {
 											</Box>
 											<Box mt={"xs"}>
 												<DateSelectorForm
+													key={form.values.dob ? form.values?.dob : "dob-empty"}
 													form={form}
-													label={t("DeteOfBarth")}
+													label={t("DateOfBirth")}
 													placeholder="01-01-2020"
 													tooltip={t("enterDateOfBirth")}
 													name="dob"
 													id="dob"
 													nextField="alternative_email"
-													value={form.values.dob}
+													value={new Date()}
 													required={false}
 													disabledFutureDate
 												/>

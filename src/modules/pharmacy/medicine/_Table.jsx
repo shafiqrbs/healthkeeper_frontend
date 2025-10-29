@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, Select} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, Select, Checkbox} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
     IconTrashX,
@@ -32,7 +32,7 @@ import {
     ERROR_NOTIFICATION_COLOR,
 } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import {errorNotification} from "@components/notification/errorNotification";
@@ -155,6 +155,9 @@ export default function _Table({ module, open }) {
             product_name: "",
             generic: "",
             opd_quantity: "",
+            opd_status: "",
+            ipd_status: "",
+            admin_status: "",
             medicine_dosage_id: "",
             medicine_bymeal_id: "",
         }
@@ -168,6 +171,9 @@ export default function _Table({ module, open }) {
                 product_name: item.product_name || "",
                 generic: item.generic || "",
                 opd_quantity: item.opd_quantity || "",
+                ipd_status: item.ipd_status || "",
+                opd_status: item.opd_status || "",
+                admin_status: item.opd_status || "",
                 medicine_dosage_id: item.medicine_dosage_id || "",
                 medicine_bymeal_id: item.medicine_bymeal_id || "",
             };
@@ -176,6 +182,7 @@ export default function _Table({ module, open }) {
 
         setSubmitFormData(initialFormData);
     }, [records]);
+
 
     const handleDataTypeChange = (rowId, field, value, submitNow = false) => {
         const updatedRow = {
@@ -246,7 +253,7 @@ export default function _Table({ module, open }) {
                             accessor: "company",
                             title: t("Company"),
                             sortable: true,
-                            render: (item) => (
+                            /*render: (item) => (
                                 <TextInput
                                     size="xs"
                                     className={inlineInputCss.inputText}
@@ -257,13 +264,13 @@ export default function _Table({ module, open }) {
                                     }
                                     onBlur={() => handleRowSubmit(item.id)}
                                 />
-                            ),
+                            ),*/
                         },
                         {
                             accessor: "product_name",
                             title: t("MedicineName"),
-                            sortable: false,
-                            render: (item) => (
+                            sortable: true,
+                            /*render: (item) => (
                                 <TextInput
                                     size="xs"
                                     className={inlineInputCss.inputText}
@@ -274,24 +281,12 @@ export default function _Table({ module, open }) {
                                     }
                                     onBlur={() => handleRowSubmit(item.id)}
                                 />
-                            ),
+                            ),*/
                         },
                          {
                             accessor: "generic",
                             title: t("Generic"),
-                             sortable: false,
-                            render: (item) => (
-                                <TextInput
-                                    size="xs"
-                                    className={inlineInputCss.inputText}
-                                    placeholder={t("Name")}
-                                    value={submitFormData[item.id]?.generic || ""}
-                                    onChange={(event) =>
-                                        handleDataTypeChange(item.id, "generic", event.currentTarget.value)
-                                    }
-                                    onBlur={() => handleRowSubmit(item.id)}
-                                />
-                            ),
+                            sortable: true,
                         },
                          {
                             accessor: "dose_details",
@@ -348,6 +343,63 @@ export default function _Table({ module, open }) {
                                 />
                             ),
                         },
+                        {
+                            accessor: "opd_status",
+                            title: t("OutDoor"),
+                            render: (item) => (
+                                <Checkbox
+                                    key={item.id}
+                                    size="sm"
+                                    checked={submitFormData[item.id]?.opd_status ?? false}
+                                    onChange={(val) =>
+                                        handleDataTypeChange(
+                                            item.id,
+                                            "opd_status",
+                                            val.currentTarget.checked,
+                                            true
+                                        )
+                                    }
+                                />
+                            ),
+                        },
+                        {
+                            accessor: "ipd_status",
+                            title: t("InDoor"),
+                            render: (item) => (
+                                <Checkbox
+                                    key={item.id}
+                                    size="sm"
+                                    checked={submitFormData[item.id]?.ipd_status ?? false}
+                                    onChange={(val) =>
+                                        handleDataTypeChange(
+                                            item.id,
+                                            "ipd_status",
+                                            val.currentTarget.checked,
+                                            true
+                                        )
+                                    }
+                                />
+                            ),
+                        },
+                        {
+                            accessor: "admin_status",
+                            title: t("Admin"),
+                            render: (item) => (
+                                <Checkbox
+                                    key={item.id}
+                                    size="sm"
+                                    checked={submitFormData[item.id]?.admin_status ?? false}
+                                    onChange={(val) =>
+                                        handleDataTypeChange(
+                                            item.id,
+                                            "admin_status",
+                                            val.currentTarget.checked,
+                                            true
+                                        )
+                                    }
+                                />
+                            ),
+                        },
 
                         {
                             accessor: "action",
@@ -359,14 +411,14 @@ export default function _Table({ module, open }) {
                                     <Button.Group>
                                         <ActionIcon
                                             size="sm"
-                                            variant="outline"
+                                            variant="transparent"
                                             radius="xs"
                                             onClick={() => handleDelete(values.id)}
                                             color="var(--theme-delete-color)"
                                             fw={400}
                                             aria-label="Settings"
                                         >
-                                            <IconTrashX stroke={1} />
+                                            <IconEdit stroke={1} />
                                         </ActionIcon>
                                     </Button.Group>
                                 </Group>

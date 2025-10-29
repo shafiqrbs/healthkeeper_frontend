@@ -1,6 +1,7 @@
-import { Box, Text, Grid, Group, Stack, Image, Flex } from "@mantine/core";
+import {Box, Text, Grid, Group, Stack, Image, Flex, Table} from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
+import Rx from "@assets/images/rx.png";
 import TBLogo from "@assets/images/tb_logo.png";
 import DashedDivider from "@components/core-component/DashedDivider";
 import CustomDivider from "@components/core-component/CustomDivider";
@@ -9,6 +10,7 @@ import "@/index.css";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
 import Barcode from "react-barcode";
+import customTable from "@assets/css/PrescriptionTable.module.css";
 
 const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
@@ -45,7 +47,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 			<Text size="sm" fw={600}>
 				{label}
 			</Text>
-			<CustomDivider mb="es" borderStyle="dashed" w="90%" />
+			{/*<CustomDivider mb="es" borderStyle="dashed" w="90%" />*/}
 			{children}
 		</Box>
 	);
@@ -185,344 +187,373 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 			<Box>
 				<Box
 					ref={ref}
-					p="md"
+					p="48px"
 					w="210mm"
 					mih="1122px"
 					className="watermark"
 					ff="Arial, sans-serif"
 					lh={1.5}
 					fz={12}
-					bd="1px solid black"
 				>
 					{/* =============== header section with doctor information in bengali and english ================ */}
-					<Box mb="sm">
-						<Flex gap="md" justify="center">
-							<Box>
-								<Group ml="md" align="center" h="100%">
-									<Image src={GLogo} alt="logo" width={60} height={60} />
-								</Group>
-							</Box>
-							<Box>
-								<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-									{hospitalConfigData?.organization_name || ""}
-								</Text>
-								<Text ta="center" size="sm" c="gray" mt="2">
-									{hospitalConfigData?.address || ""}
-								</Text>
-								<Text ta="center" size="sm" c="gray" mb="2">
-									{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
-								</Text>
-							</Box>
-							<Box>
-								<Group mr="md" justify="flex-end" align="center" h="100%">
-									<Image src={TBLogo} alt="logo" width={60} height={60} />
-								</Group>
-							</Box>
-						</Flex>
-					</Box>
-
 					{/* =============== patient information section ================ */}
-					<Box mb="sm">
-						<Grid columns={12} gutter="xs" px={4}>
-							<Grid.Col bd="1px solid #555" span={2} px="xs">
-								<Group gap="xs">
-									<Text size="xs">{getValue(patientInfo?.invoice || "")}</Text>
-								</Group>
-							</Grid.Col>
-							<Grid.Col bd="1px solid #555" span={2} px="xs">
-								<Group gap="xs">
-									<Text size="xs">{getValue(patientInfo?.patient_id || "")}</Text>
-								</Group>
-							</Grid.Col>
-							<Grid.Col bd="1px solid #555" span={4} px="xs">
-								<Group gap="xs">
-									<Text size="xs" fw={600}>
-										{t("Name")}:
-									</Text>
-									<Text size="sm">{getValue(patientInfo?.name, "")}</Text>
-								</Group>
-							</Grid.Col>
-							<Grid.Col bd="1px solid #555" span={4} px="xs">
-								<Group gap="xs">
-									<Text size="xs" fw={600}>
-										{t("Mobile")}:
-									</Text>
-									<Text size="xs">{getValue(patientInfo?.mobile || "")}</Text>
-								</Group>
-							</Grid.Col>
-
-							<Grid.Col bd="1px solid #555" span={4} px="xs">
-								<Group gap="xs">
-									<Text size="xs" fw={600}>
-										{t("Age")}:
-									</Text>
-									<Text size="xs">
-										{patientInfo?.year || 0} Y {patientInfo?.month || 0} M {patientInfo?.day || 0} D
-									</Text>
-								</Group>
-							</Grid.Col>
-							<Grid.Col bd="1px solid #555" span={2} px="xs">
-								<Group gap="xs">
-									<Text size="xs" fw={600}>
-										{t("Gender")}:
-									</Text>
-									<Text size="xs">
-										{patientInfo?.gender &&
-											patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
-									</Text>
-								</Group>
-							</Grid.Col>
-							<Grid.Col bd="1px solid #555" span={2} px="xs">
-								{patientInfo?.dob && (
+					<Table style={{ borderCollapse: 'collapse', width: '100%',border: '1px solid var(--theme-tertiary-color-8)' }} className="customTable">
+						<Table.Tbody>
+							<Table.Tr style={{ border: '1px solid var(--theme-tertiary-color-8)' }}>
+								<Table.Td colSpan={'6'}>
+									<Box mb="sm">
+										<Flex gap="md" justify="center">
+											<Box>
+												<Group ml="md" align="center" h="100%">
+													<Image src={GLogo} alt="logo" width={60} height={60} />
+												</Group>
+											</Box>
+											<Box>
+												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
+													{hospitalConfigData?.organization_name || ""}
+												</Text>
+												<Text ta="center" size="sm" c="gray" mt="2">
+													{hospitalConfigData?.address || ""}
+												</Text>
+												<Text ta="center" size="sm" c="gray" mb="2">
+													{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
+												</Text>
+											</Box>
+											<Box>
+												<Group mr="md" justify="flex-end" align="center" h="100%">
+													<Image src={TBLogo} alt="logo" width={60} height={60} />
+												</Group>
+											</Box>
+										</Flex>
+									</Box>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr style={{ border: '1px solid var(--theme-tertiary-color-8)' }}>
+								<Table.Td style={{ border: '1px solid var(--theme-tertiary-color-8)', paddingLeft: '4px',fontSize:'12px', width:'120px' }} >{getValue(patientInfo?.patient_id || "")}</Table.Td>
+								<Table.Td style={{ border: '1px solid var(--theme-tertiary-color-8)', paddingLeft: '4px',fontSize:'12px' ,width:'120px'  }} >{getValue(patientInfo?.invoice || "")}</Table.Td>
+								<Table.Td colSpan={'2'}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("DOB")}:
+											{t("Name")}:
 										</Text>
-										<Text size="xs">{patientInfo?.dob || ""}</Text>
+										<Text size="sm">{getValue(patientInfo?.name, "")}</Text>
 									</Group>
-								)}
-							</Grid.Col>
-							<Grid.Col bd="1px solid #555" span={4} px="xs">
-								<Group gap="xs">
-									<strong>{t("Date")}:</strong> {patientInfo?.created || ""}
-								</Group>
-							</Grid.Col>
-						</Grid>
-					</Box>
-
-					{/* =============== medical notes and prescription area with rx symbol ================ */}
-					<Box style={{ position: "relative", minHeight: "350px" }} mb="sm">
-						<Grid columns={12} gutter="md">
-							<Grid.Col span={4}>
-								<Grid w="100%" columns={24} gutter={'2'} >
-									{patientInfo?.bp && (
-									<Grid.Col span={12}>
-										<Text fz="xs">
-											{t("B/P")} {patientInfo?.bp} {/*mm of HG*/}
+								</Table.Td>
+								<Table.Td colSpan={'2'}>
+									<Group gap="xs">
+										<Text size="xs" fw={600}>
+											{t("Mobile")}:
 										</Text>
-									</Grid.Col>
-									)}
-									{patientInfo?.pulse && (
-									<Grid.Col span={12} fz="xs" align={"right"}>
-										<Text fz="xs">
-											{t("Pulse")} {patientInfo?.pulse}{/* Beat/Minute*/}
+										<Text size="xs">{getValue(patientInfo?.mobile || "")}</Text>
+									</Group>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr style={{ border: '1px solid var(--theme-tertiary-color-8)' }}>
+								<Table.Td colSpan={2} style={{ border: '1px solid var(--theme-tertiary-color-8)', padding: '4px' }} >
+									<Group gap="xs">
+										<Text size="xs" fw={600}>
+											{t("Age")}:
 										</Text>
-									</Grid.Col>
-									)}
-									{patientInfo?.sat_with_O2 && (
-									<Grid.Col span={12}>
-										<Text fz="xs">
-											{t("SatWithO2")} {patientInfo?.sat_with_O2} %
+										<Text size="xs">
+											{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon {patientInfo?.day || 0} Day
 										</Text>
-									</Grid.Col>
-									)}
-									{patientInfo?.sat_without_O2 && (
-									<Grid.Col span={12} fz="xs" align={"right"}>
-										<Text fz="xs">
-											{t("SatWithoutO2")} {patientInfo?.sat_without_O2} %
+									</Group>
+								</Table.Td>
+								<Table.Td>
+									<Group gap="xs">
+										<Text size="xs" fw={600}>
+											{t("Gender")}:
 										</Text>
-									</Grid.Col>
-									)}
-									{patientInfo?.temperature && (
-									<Grid.Col span={12}>
-										<Text fz="xs">
-											{t("Temperature")} {patientInfo?.temperature} °F
+										<Text size="xs">
+											{patientInfo?.gender &&
+											patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
 										</Text>
-									</Grid.Col>
-									)}
-									{patientInfo?.respiration && (
-									<Grid.Col span={12} fz="xs" align={"right"}>
-										<Text fz="xs">
-											{t("Respiration")} {patientInfo?.respiration}{/* Breath/Minute*/}
-										</Text>
-									</Grid.Col>
-									)}
-								</Grid>
-								<Stack gap="0px">
-									{(orderedExamKeys.length > 0
-										? orderedExamKeys
-										: Object.keys(patientExamination || {})
-									)
-										.filter((key) => hasArrayWithLength(patientExamination?.[key]))
-										.map((key) => (
-											<Box key={key}>{renderExaminationSection(key)}</Box>
-										))}
-								</Stack>
-							</Grid.Col>
-							<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
-								<Stack gap="2" mih={200}>
-									{exEmergencies.map((emergency, index) => (
-										<Box key={index}>
+									</Group>
+								</Table.Td>
+								<Table.Td>
+									{patientInfo?.dob && (
+										<Group gap="xs">
 											<Text size="xs" fw={600}>
-												{index + 1}. {getValue(emergency.value)}
+												{t("DOB")}:
 											</Text>
-										</Box>
-									))}
-									{medicines.map((medicine, index) => (
-										<Box key={index}>
+											<Text size="xs">{patientInfo?.dob || ""}</Text>
+										</Group>
+									)}
+								</Table.Td>
+								<Table.Td>
+									{patientInfo?.weight && (
+										<Group gap="xs">
 											<Text size="xs" fw={600}>
-												{exEmergencies.length + index + 1}.{" "}
-												{getValue(
-													medicine.medicine_id ? medicine.medicine_name : medicine.generic
+												{t("Weight")}:
+											</Text>
+											<Text size="xs">{patientInfo?.weight || ""}</Text>
+										</Group>
+									)}
+								</Table.Td>
+								<Table.Td>
+									<Group gap="xs">
+										<strong>{t("Date")}:</strong> {patientInfo?.created || ""}
+									</Group>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr >
+								<Table.Td colSpan={2} style={{ borderRight: '1px solid var(--theme-tertiary-color-8)', padding: '4px',verticalAlign: 'top',  }} >
+									<Box  style={{ position: "relative", minHeight: "350px" }} >
+										{(orderedExamKeys.length > 0
+												? orderedExamKeys
+												: Object.keys(patientExamination || {})
+										)
+											.filter((key) => hasArrayWithLength(patientExamination?.[key]))
+											.map((key) => (
+												<Box key={key}>{renderExaminationSection(key)}</Box>
+											))}
+									</Box>
+									<Flex
+										mih={50}
+										gap="xs"
+										justify="flex-start"
+										align="flex-end"
+										direction="row"
+										wrap="nowrap"
+									>
+										<Box w={'100%'}>
+										<Box style={{ borderBottom: `1px solid #444` }}>Vital</Box>
+											<Grid columns={24} gutter={'2'} >
+												{patientInfo?.bp && (
+													<Grid.Col span={12}>
+														<Text style={{ fontSize: '9px'}}>
+															{t("B/P")}: {patientInfo?.bp} mm of HG
+														</Text>
+													</Grid.Col>
 												)}
-											</Text>
-											{medicine.dosages && medicine.dosages.length > 0 ? (
-												(medicine.dosages || []).map((dose, dIdx) => (
-													<Text
-														key={dose.id ?? dIdx}
-														size="xs"
-														c="var(--theme-tertiary-color-8)"
-														ml="md"
-													>
-														{getValue(dose.dose_details_bn, dose.dose_details)}{" "}
-														{" ------- "}
-														{getValue(dose.by_meal_bn, dose.by_meal)} {" ------- "}
-														{getValue(dose.quantity)} {getValue(medicine.duration)}
+												{patientInfo?.pulse && (
+													<Grid.Col span={12} fz="xs" align={"left"}>
+														<Text style={{ fontSize: '9px'}}>
+															{t("Pulse")}: {patientInfo?.pulse}/Min
+														</Text>
+													</Grid.Col>
+												)}
+											</Grid>
+											<Grid columns={24} gutter={'2'} >
+												{patientInfo?.sat_with_O2 && (
+													<Grid.Col span={12}>
+														<Text style={{ fontSize: '9px'}}>
+															{t("Sat")}: {patientInfo?.sat_with_O2} % (eW02)
+														</Text>
+													</Grid.Col>
+												)}
+												{patientInfo?.sat_without_O2 && (
+													<Grid.Col span={12} fz="xs" align={"left"}>
+														<Text style={{ fontSize: '9px'}}>
+															{t("Sat")}: {patientInfo?.sat_without_O2} % (e02)
+														</Text>
+													</Grid.Col>
+												)}
+											</Grid>
+											<Grid columns={24} gutter={'2'} >
+												{patientInfo?.temperature && (
+													<Grid.Col span={12}>
+														<Text style={{ fontSize: '9px'}}>
+															{t("Temp")}: {patientInfo?.temperature} °F
+														</Text>
+													</Grid.Col>
+												)}
+												{patientInfo?.respiration && (
+													<Grid.Col span={12} fz="xs" align={"left"}>
+														<Text style={{ fontSize: '9px'}}>
+															{t("Res")}: {patientInfo?.respiration}/Min
+														</Text>
+													</Grid.Col>
+												)}
+											</Grid>
+
+
+										</Box>
+									</Flex>
+
+								</Table.Td>
+								<Table.Td colSpan={4} style={{ verticalAlign: 'top'}}>
+									<Box style={{ position: "relative", minHeight: "350px" }}>
+										<Box w={'36'}><Image src={Rx} alt="logo" width={'32'} height={32} /></Box>
+										<Box gap="2"  >
+											{exEmergencies.map((emergency, index) => (
+												<Box key={index}>
+													<Text size="xs" fw={600}>
+														{index + 1}. {getValue(emergency.value)}
 													</Text>
-												))
-											) : (
-												<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
-													{getValue(medicine.dose_details_bn, medicine.dose_details)}{" "}
-													{" ------- "}
-													{getValue(medicine.by_meal_bn, medicine.by_meal)} {" ------- "}
-													{getValue(medicine.quantity)} {getValue(medicine.duration)}
+												</Box>
+											))}
+											{medicines.map((medicine, index) => (
+												<Box key={index}>
+													<Text size="xs" fw={600}>
+														{exEmergencies.length + index + 1}.{" "}
+														{getValue(
+															medicine.medicine_id ? medicine.medicine_name : medicine.generic
+														)}
+													</Text>
+													{medicine.dosages && medicine.dosages.length > 0 ? (
+														(medicine.dosages || []).map((dose, dIdx) => (
+															<Text
+																key={dose.id ?? dIdx}
+																style={{ fontSize: '9px', color: 'var(--theme-tertiary-color-8)', marginLeft: '8px' }}
+															>
+																{getValue(dose.dose_details_bn, dose.dose_details)}{" "}
+																{" ---- "}
+																{getValue(dose.by_meal_bn, dose.by_meal)} {" ---- "}
+																{getValue(dose.quantity)} {getValue(medicine.duration)}
+															</Text>
+														))
+													) : (
+														<Text style={{ fontSize: '9px', color: 'var(--theme-tertiary-color-8)', marginLeft: '8px' }}>
+															{getValue(medicine.dose_details_bn, medicine.dose_details)}{" "}
+															{" ---- "}
+															{getValue(medicine.by_meal_bn, medicine.by_meal)} {"----"}
+															{getValue(medicine.quantity)} {getValue(medicine.duration)}
+														</Text>
+													)}
+												</Box>
+											))}
+										</Box>
+									</Box>
+									<Flex
+										mih={50}
+										gap="md"
+										justify="flex-start"
+										align="flex-end"
+										direction="row"
+										wrap="nowrap"
+									>
+										<Box>
+											<Text size="sm" fw={500}>
+												উপদেশ: {getValue(jsonContent.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}
+											</Text>
+											{patientInfo?.referred_comment && (
+												<>
+													<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
+													<Text size="xs" fw={400}>
+														Note: {getValue(patientInfo?.referred_comment)}
+													</Text>
+												</>
+											)}
+											{jsonContent?.follow_up_date && (
+												<Text size="sm" c="gray" mt="xs">
+													Follow Up Date: {formatDate(jsonContent?.follow_up_date)}
 												</Text>
 											)}
 										</Box>
-									))}
-								</Stack>
-								<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
-								<Text size="sm" fw={600}>
-									উপদেশ: {getValue(jsonContent.advise, "রিপোর্ট সংগ্রহ করে দেখা করবেন")}
-								</Text>
-								{patientInfo?.referred_comment && (
-									<>
-										<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
-										<Text size="xs" fw={400}>
-											Note: {getValue(patientInfo?.referred_comment)}
-										</Text>
-									</>
-								)}
+									</Flex>
 
-								{jsonContent?.follow_up_date && (
-									<Text size="sm" c="gray" mt="xs">
-										Follow Up Date: {formatDate(jsonContent?.follow_up_date)}
-									</Text>
-								)}
-							</Grid.Col>
-						</Grid>
-					</Box>
-
-					{/* =============== new prescription layout matching the image ================ */}
-					<Box bd="1px solid #555" style={{ borderRadius: "4px" }}>
-						{/* =============== top section with printed by and signature ================ */}
-						<Grid columns={12} gutter="0">
-							<Grid.Col span={6} pl="xl" pt="sm">
-								<Text fz={"sm"}>{t("PrescribedBy")}</Text>
-								<Text fz={"xs"}>{patientInfo?.doctor_name}</Text>
-								{/*<Text fz={"xs"}>
-									{t("Designation")}: {patientInfo?.designation_name}
-								</Text>
-								<Text fz="xs">
-									{t("DoctorID")}: {getValue(patientInfo?.employee_id)}
-								</Text>*/}
-							</Grid.Col>
-							<Grid.Col span={6}>
-								<Text size="sm" fw={600} mb="xs">
-									{renderImagePreview([], patientInfo?.signature_path)}
-								</Text>
-							</Grid.Col>
-						</Grid>
-					</Box>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr>
+								<Table.Td colSpan={2} style={{ borderTop: '1px solid var(--theme-tertiary-color-8)', padding: '4px' }} >
+									<Box align="center">
+										<Barcode fontSize={"12"} width={"1"} height={"24"} value={patientInfo?.patient_id} />
+									</Box>
+								</Table.Td>
+								<Table.Td colSpan={4} style={{ textAlign: 'right',borderTop: '1px solid var(--theme-tertiary-color-8)', padding: '4px' }} >
+									<Box pr={'md'}>
+										<Text fz={"sm"} mt={'md'}>{t("PrescribedBy")}</Text>
+										<Text fz={"xs"}>{patientInfo?.doctor_name}</Text>
+									</Box>
+								</Table.Td>
+							</Table.Tr>
+						</Table.Tbody>
+					</Table>
 					<DashedDivider />
-					<Box mb="sm">
-
-						<Flex gap="md" align="center" justify="space-between">
-							<Box mt="sm" align="center">
-								<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.barcode} />
-							</Box>
-							<Flex>
-								<Image src={GLogo} alt="logo" width={46} height={46} />
-								<Box>
-									<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-										{hospitalConfigData?.organization_name || ""}
-									</Text>
-									<Text ta="center" size="sm" c="gray" mt="2">
-										{hospitalConfigData?.address || ""}
-										{(hospitalConfigData?.hotline && `, ${hospitalConfigData?.hotline}`) || ""}
-									</Text>
-								</Box>
-								<Image src={TBLogo} alt="logo" width={46} height={46} />
-							</Flex>
-						</Flex>
-					</Box>
-					{/* =============== bottom section with patient info and medication table ================ */}
-					<Grid columns={12} gutter="md" mb="lg">
-						<Grid.Col span={4}>
-							<Stack gap="2px">
-								<Text size="xs" fw={500}>
-									Name: {getValue(patientInfo?.name)}
-								</Text>
-								<Text size="xs" fw={500}>
-									Mobile: {getValue(patientInfo?.mobile)}
-								</Text>
-								<Text size="xs">
-									Age: {getValue(patientInfo?.year, "25")} Y. Sex:{patientInfo?.gender}
-								</Text>
-								<Text size="xs" fw={600} c="#1e40af">
-									Prescribed By: {getValue(patientInfo?.doctor_name)}
-								</Text>
-								<Text size="xs" fw={400} >
-									Comment: {getValue(jsonContent?.pharmacyInstruction)}
-								</Text>
-								{/*<Text size="xs">Doctor ID- {getValue(patientInfo?.employee_id)}</Text>
+					<Table style={{ borderCollapse: 'collapse', width: '100%',border: '1px solid var(--theme-tertiary-color-8)' }} className="customTable">
+						<Table.Tbody>
+							<Table.Tr style={{ border: '1px solid var(--theme-tertiary-color-8)' }}>
+								<Table.Td colSpan={'6'}>
+									<Flex gap="md" align="center" justify="center">
+										<Flex>
+											<Image src={GLogo} alt="logo" width={46} height={46} />
+											<Box>
+												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
+													{hospitalConfigData?.organization_name || ""}
+												</Text>
+												<Text ta="center" size="sm" c="gray" mt="2">
+													{hospitalConfigData?.address || ""}
+													{(hospitalConfigData?.hotline && `, ${hospitalConfigData?.hotline}`) || ""}
+												</Text>
+											</Box>
+											<Image src={TBLogo} alt="logo" width={46} height={46} />
+										</Flex>
+									</Flex>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr style={{ border: '1px solid var(--theme-tertiary-color-8)' }}>
+								<Table.Td colSpan={'2'} style={{ borderRight: '1px solid var(--theme-tertiary-color-8)', padding: '4px',verticalAlign: 'top',  }}>
+									<Box align="left">
+										<Barcode fontSize={"10"} width={"1"} height={"24"} value={patientInfo?.barcode} />
+									</Box>
+									<Stack gap="1" ml={'xs'}>
+										<Text size="xs" fw={500}>
+											Name: {getValue(patientInfo?.name)}
+										</Text>
+										<Text size="xs" fw={500}>
+											Mobile: {getValue(patientInfo?.mobile)}
+										</Text>
+										<Text size="xs">
+											Age: {getValue(patientInfo?.year, "25")} Y. Sex:{patientInfo?.gender}
+										</Text>
+										<Text size="xs" fw={600} c="#1e40af">
+											Prescribed By: {getValue(patientInfo?.doctor_name)}
+										</Text>
+										<Text size="xs" fw={400} >
+											Comment: {getValue(jsonContent?.pharmacyInstruction)}
+										</Text>
+										{/*<Text size="xs">Doctor ID- {getValue(patientInfo?.employee_id)}</Text>
 								<Text size="xs">Designation: {getValue(patientInfo?.designation_name)}</Text>*/}
-							</Stack>
-						</Grid.Col>
-						<Grid.Col span={8}>
-							{/* =============== medication table ================ */}
-							<Box style={{ border: "1px solid #333", borderRadius: "4px", overflow: "hidden" }}>
-								<Grid
-									columns={24}
-									p={8}
-									bg="#f8f9fa"
-									style={{
-										borderBottom: "1px solid #333",
-									}}
-								>
-									<Grid.Col span={20} m={0} p={0}>
-										<Text size="xs" pl={4}>
-											Generic Name
-										</Text>
-									</Grid.Col>
-									<Grid.Col span={4} m={0} p={0}>
-										<Text size="sm" ta="center" fw={500}>
-											Quantity
-										</Text>
-									</Grid.Col>
-								</Grid>
-								{medicines?.map((medicine, index) => (
-									<>
-										{medicine.medicine_id && medicine?.opd_quantity > 0 && (
-											<Grid columns={24} m={4} p={4}>
-												<Grid.Col span={20} m={0} p={0}>
-													<Text size="xs" pl={4}>
-														{index + 1}.{" "}
-														{getValue(medicine.medicine_id ? medicine.generic : "")}
-													</Text>
-												</Grid.Col>
-												<Grid.Col span={4} m={0} p={0}>
-													<Text size="sm" ta="center" fw={500}>
-														{getValue(medicine?.opd_quantity, 0)}
-													</Text>
-												</Grid.Col>
-											</Grid>
-										)}
-									</>
-								))}
-							</Box>
-						</Grid.Col>
-					</Grid>
+									</Stack>
+								</Table.Td>
+								<Table.Td colSpan={'4'} style={{ verticalAlign: 'top'}}>
+									<Box mt={'4'} style={{ border: "1px solid var(--theme-tertiary-color-2)",  overflow: "hidden" }}>
+										<Grid
+											columns={24}
+											p={8}
+											bg="#f8f9fa"
+											style={{
+												borderBottom: "1px solid #333",
+											}}
+										>
+											<Grid.Col span={20} m={0} p={0}>
+												<Text size="xs" pl={4}>
+													Generic Name
+												</Text>
+											</Grid.Col>
+											<Grid.Col span={4} m={0} p={0}>
+												<Text size="sm" ta="center" fw={500}>
+													Quantity
+												</Text>
+											</Grid.Col>
+										</Grid>
+										{medicines?.map((medicine, index) => (
+											<>
+												{medicine.medicine_id && medicine?.opd_quantity > 0 && (
+													<Grid columns={24} m={4} p={4}>
+														<Grid.Col span={20} m={0} p={0}>
+															<Text size="xs" pl={4}>
+																{index + 1}.{" "}
+																{getValue(medicine.medicine_id ? medicine.generic : "")}
+															</Text>
+														</Grid.Col>
+														<Grid.Col span={4} m={0} p={0}>
+															<Text size="sm" ta="center" fw={500}>
+																{getValue(medicine?.opd_quantity, 0)}
+															</Text>
+														</Grid.Col>
+													</Grid>
+												)}
+											</>
+										))}
+									</Box>
+								</Table.Td>
+							</Table.Tr>
+						</Table.Tbody>
+					</Table>
+
+					{/* =============== bottom section with patient info and medication table ================ */}
 
 					{/* =============== footer with prescribed by ================ */}
 					<Box ta="center" mt="xs">
