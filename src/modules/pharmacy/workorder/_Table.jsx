@@ -35,7 +35,7 @@ export default function _Table({ module }) {
 	// for infinity table data scroll, call the hook
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
-		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.WORKORDER.INDEX,
+		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.INDEX,
 		filterParams: {
 			name: filterData?.name,
 			term: searchKeyword,
@@ -125,29 +125,26 @@ export default function _Table({ module }) {
 							render: (_item, index) => index + 1,
 						},
 						{
-							accessor: "particular_type_name",
+							accessor: "created",
+							title: t("CreatedDate"),
+							textAlignment: "right",
+							sortable: true,
+						},
+						{
+							accessor: "invoice",
 							title: t("InvoiceID"),
 							textAlignment: "right",
 							sortable: true,
-							render: (item) => item.particular_type_name,
 						},
 						{
-							accessor: "name",
-							title: t("Amount"),
+							accessor: "vendor_name",
+							title: t("VendorName"),
 							sortable: true,
-							render: (values) => <Text fz="sm">{values.name}</Text>,
 						},
 						{
-							accessor: "category",
-							title: t("ExpectedDate"),
+							accessor: "process",
+							title: t("Process"),
 							sortable: false,
-							render: (values) => values.category || "N/A",
-						},
-						{
-							accessor: "category",
-							title: t("OrderedBy"),
-							sortable: false,
-							render: (values) => values.category || "N/A",
 						},
 						{
 							accessor: "action",

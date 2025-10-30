@@ -1,6 +1,6 @@
 const initialValues = {
-	expiry_start_date: "",
-	expiry_end_date: "",
+    expired_date: "",
+    production_date: "",
 	medicine_id: "",
 	quantity: "",
 };
@@ -25,15 +25,15 @@ export const getWorkorderFormInitialValues = (t) => {
 	return {
 		initialValues: {
 			comment: "",
-			expected_date: "",
+			vendor_id: "",
 		},
 		validate: {
 			comment: (value) => {
 				if (!value) return t("CommentValidationRequired");
 				return null;
 			},
-			expected_date: (value) => {
-				if (!value) return t("ExpectedDateValidationRequired");
+            vendor_id: (value) => {
+				if (!value) return t("ChooseVendor");
 				return null;
 			},
 		},

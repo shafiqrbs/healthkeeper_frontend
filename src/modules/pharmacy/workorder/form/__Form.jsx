@@ -1,28 +1,28 @@
-import { Group, Box, ActionIcon, Text, Flex, Button, Grid, Select, Stack } from "@mantine/core";
+import {Group, Box, ActionIcon, Text, Flex, Button, Grid, Select, Stack, rem} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import inputCss from "@assets/css/TextAreaInputField.module.css";
 import {
-	IconChevronUp,
-	IconX,
-	IconSelector,
-	IconEye,
-	IconPlus,
-	IconDeviceFloppy,
-	IconHistory,
+    IconChevronUp,
+    IconX,
+    IconSelector,
+    IconEye,
+    IconPlus,
+    IconDeviceFloppy,
+    IconHistory, IconCheck, IconAlertCircle,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
-import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
+import {CORE_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { getInitialValues, getWorkorderFormInitialValues } from "../helpers/request";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import useMedicineData from "@hooks/useMedicineData";
-import { formatDate, getLoggedInUser } from "@utils/index";
+import {formatDate, formatDateForMySQL, getLoggedInUser} from "@utils/index";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { getDataWithoutStore } from "@/services/apiService";
@@ -30,6 +30,12 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import {CORE_DROPDOWNS} from "@/app/store/core/utilitySlice";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
+import {storeEntityData} from "@/app/store/core/crudThunk.js";
+import useVendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage.js";
+import {setRefetchData} from "@/app/store/core/crudSlice.js";
+import {notifications} from "@mantine/notifications";
+import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants/index.js";
+import {useDispatch} from "react-redux";
 
 export default function __Form() {
 	const { id } = useParams();
@@ -38,12 +44,13 @@ export default function __Form() {
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
 	const { medicineData } = useMedicineData({ term: medicineTerm });
 	const { mainAreaHeight } = useOutletContext();
-	const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 	const height = mainAreaHeight - 78;
 	const [resetKey, setResetKey] = useState(0);
 
 	const form = useForm(getInitialValues(t));
-	const workorderForm = useForm(getWorkorderFormInitialValues(t));
+	const workOrderForm = useForm(getWorkorderFormInitialValues(t));
 	const [openedDrawer, { open: openDrawer, close: closeDrawer }] = useDisclosure(false);
 	const [requisitions, setRequisitions] = useState([]);
 
@@ -65,7 +72,6 @@ export default function __Form() {
 		path: CORE_DROPDOWNS.VENDOR.PATH,
 		utility: CORE_DROPDOWNS.VENDOR.UTILITY,
 	});
-	console.log(vendorDropdown);
 
 
 	async function handleWorkorderAdd(values) {
@@ -93,32 +99,163 @@ export default function __Form() {
 
 	const handleMedicineChange = (value) => {
 		const selectedMedicine = medicineData.find((medicine) => medicine.product_id == value);
-		console.log(selectedMedicine);
 		form.setFieldValue("medicine_id", value);
 		form.setFieldValue("medicine_name", selectedMedicine.product_name);
 		form.setFieldValue("generic", selectedMedicine.generic);
 	};
 
-	const handleWorkorderSave = (values) => {
-		const data = {
-			...values,
-			expected_date: formatDate(values.expected_date),
-			content: records.map((record) => ({
-				...record,
-				expiry_start_date: formatDate(record.expiry_start_date),
-				expiry_end_date: formatDate(record.expiry_end_date),
-			})),
-			created_by_id: getLoggedInUser()?.id,
-		};
-		console.log(data);
-	};
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleWorkOrderSave = (values) => {
+        const validation = workOrderForm.validate();
+        if (validation.hasErrors) return;
+
+        modals.openConfirmModal({
+            title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+            children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+            labels: { confirm: t("Submit"), cancel: t("Cancel") },
+            confirmProps: { color: "red", loading: isSaving },
+            onCancel: () => console.info("Cancelled"),
+            onConfirm: () => saveWorkOrderToDB(values),
+        });
+    };
+
+    async function saveWorkOrderToDB(values) {
+        modals.closeAll();
+        setIsSaving(true);
+        try {
+            const payload = {
+                ...values,
+                items: records.map((r) => ({
+                    ...r,
+                    production_date: formatDateForMySQL(r.production_date),
+                    expired_date: formatDateForMySQL(r.expired_date),
+                })),
+                created_by_id: getLoggedInUser()?.id,
+            };
+
+            const requestData = {
+                url: PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.CREATE,
+                data: payload,
+                module: "vendor",
+            };
+
+            const result = await dispatch(storeEntityData(requestData));
+
+            if (storeEntityData.rejected.match(result)) {
+                const fieldErrors = result.payload?.errors;
+                if (fieldErrors) {
+                    form.setErrors(
+                        Object.fromEntries(
+                            Object.entries(fieldErrors).map(([k, v]) => [k, v[0]])
+                        )
+                    );
+                } else {
+                    notifications.show({
+                        color: ERROR_NOTIFICATION_COLOR,
+                        title: t("ServerError"),
+                        message: result.error?.message || t("UnexpectedError"),
+                    });
+                }
+            } else if (storeEntityData.fulfilled.match(result)) {
+                form.reset();
+                workOrderForm.reset();
+                notifications.show({
+                    color: SUCCESS_NOTIFICATION_COLOR,
+                    title: t("CreateSuccessfully"),
+                    icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
+                    autoClose: 800,
+                    onClose: () => navigate("/pharmacy/core/workorder"),
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            notifications.show({
+                color: ERROR_NOTIFICATION_COLOR,
+                title: t("ErrorOccurred"),
+                message: error.message,
+                icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+                autoClose: 800,
+            });
+        } finally {
+            setIsSaving(false);
+        }
+    }
+
+
+    /*const handleWorkOrderSave = (values) => {
+        modals.openConfirmModal({
+            title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+            children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+            labels: { confirm: t("Submit"), cancel: t("Cancel") },
+            confirmProps: { color: "red" },
+            onCancel: () => console.info("Cancel"),
+            onConfirm: () => handleSaveToDB(values),
+        });
+    };
+
+    async function handleSaveToDB(values) {
+        try {
+            const data = {
+                ...values,
+                items: records.map((record) => ({
+                    ...record,
+                    production_date: formatDateForMySQL(record.production_date),
+                    expired_date: formatDateForMySQL(record.expired_date),
+                })),
+                created_by_id: getLoggedInUser()?.id,
+            };
+
+            const value = {
+                url: PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.CREATE,
+                data: data,
+                module: "vendor",
+            };
+
+            const resultAction = await dispatch(storeEntityData(value));
+            if (storeEntityData.rejected.match(resultAction)) {
+                const fieldErrors = resultAction.payload.errors;
+                if (fieldErrors) {
+                    const errorObject = {};
+                    Object.keys(fieldErrors).forEach((key) => {
+                        errorObject[key] = fieldErrors[key][0];
+                    });
+                    form.setErrors(errorObject);
+                }
+            } else if (storeEntityData.fulfilled.match(resultAction)) {
+                form.reset();
+                workOrderForm.reset()
+                notifications.show({
+                    color: SUCCESS_NOTIFICATION_COLOR,
+                    title: t("CreateSuccessfully"),
+                    icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
+                    loading: false,
+                    autoClose: 1400,
+                    style: { backgroundColor: "lightgray" },
+                });
+                setTimeout(()=>{
+                    navigate("/pharmacy/core/workorder")
+                },800)
+            }
+        } catch (error) {
+            console.error(error);
+            notifications.show({
+                color: ERROR_NOTIFICATION_COLOR,
+                title: error.message,
+                icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+                loading: false,
+                autoClose: 2000,
+                style: { backgroundColor: "lightgray" },
+            });
+        }
+    }*/
 
 	const handleResetRequisition = () => {
 		setRecords([]);
 		setMedicineTerm("");
 		setResetKey(Date.now());
 		form.reset();
-		workorderForm.reset();
+		workOrderForm.reset();
 	};
 
 	const handleViewList = () => {
@@ -140,10 +277,10 @@ export default function __Form() {
 							form={form}
 							tooltip={t("NameValidationMessage")}
 							placeholder={t("ExpiryStartDate")}
-							name="expiry_start_date"
-							id="expiry_start_date"
-							nextField="EntityFormSubmit"
-							value={form.values.expiry_start_date}
+							name="production_date"
+							id="production_date"
+							nextField="expired_date"
+							value={form.values.production_date}
 						/>
 					</Grid.Col>
 					<Grid.Col span={5}>
@@ -151,10 +288,10 @@ export default function __Form() {
 							form={form}
 							tooltip={t("NameValidationMessage")}
 							placeholder={t("ExpiryEndDate")}
-							name="expiry_end_date"
-							id="expiry_end_date"
+							name="expired_date"
+							id="expired_date"
 							nextField="EntityFormSubmit"
-							value={form.values.expiry_end_date}
+							value={form.values.expired_date}
 						/>
 					</Grid.Col>
 					<Grid.Col span={5}>
@@ -244,16 +381,16 @@ export default function __Form() {
 							render: (_item, index) => index + 1,
 						},
 						{
-							accessor: "expiry_start_date",
+							accessor: "production_date",
 							title: t("ExpiryStartDate"),
 							sortable: false,
-							render: (item) => formatDate(item.expiry_start_date),
+							render: (item) => formatDate(item.production_date),
 						},
 						{
-							accessor: "expiry_end_date",
+							accessor: "expired_date",
 							title: t("ExpiryEndDate"),
 							sortable: false,
-							render: (item) => formatDate(item.expiry_end_date),
+							render: (item) => formatDate(item.expired_date),
 						},
 						{
 							accessor: "medicine_name",
@@ -308,7 +445,7 @@ export default function __Form() {
 
 				<Flex
 					component="form"
-					onSubmit={workorderForm.onSubmit(handleWorkorderSave)}
+					onSubmit={workOrderForm.onSubmit(handleWorkOrderSave)}
 					bg="white"
 					justify="space-between"
 					align="center"
@@ -319,28 +456,15 @@ export default function __Form() {
 							<Grid.Col span={6}>
 								<Text fz="sm">{t("ParticularType")} <RequiredAsterisk /></Text>
 							</Grid.Col>
-							<Grid.Col span={14}>
-								<SelectForm
-									form={form}
-									tooltip={t("ParticularTypeValidateMessage")}
-									placeholder={t("ParticularType")}
-									name="particular_type_master_id"
-									id="particular_type_master_id"
-									nextField="category_id"
-									required={true}
-									value={form.values.particular_type_master_id}
-									dropdownValue={vendorDropdown}
-								/>
-							</Grid.Col>
 						</Grid>
 						<Text bg="var(--theme-secondary-color-6)" fz="sm" c="white" px="sm" py="les">
 							{t("Comment")}
 						</Text>
 						<Box p="sm">
 							<TextAreaForm
-								form={workorderForm}
+								form={workOrderForm}
 								label=""
-								value={workorderForm.values.comment}
+								value={workOrderForm.values.comment}
 								name="comment"
 								placeholder="Write a comment..."
 								showRightSection={false}
@@ -349,16 +473,27 @@ export default function __Form() {
 						</Box>
 					</Box>
 					<Stack gap="xs" px="sm">
-						<DatePickerForm
-							form={workorderForm}
+                            <SelectForm
+                                form={workOrderForm}
+                                tooltip={t("ChooseVendor")}
+                                placeholder={t("ChooseVendor")}
+                                name="vendor_id"
+                                id="vendor_id"
+                                nextField="EntityFormSubmit"
+                                required={true}
+                                value={workOrderForm.values.vendor_id}
+                                dropdownValue={vendorDropdown}
+                            />
+						{/*<DatePickerForm
+							form={workOrderForm}
 							tooltip={t("NameValidationMessage")}
 							placeholder={t("ExpectedDate")}
 							name="expected_date"
 							id="expected_date"
 							nextField="EntityFormSubmit"
-							value={workorderForm.values.expected_date}
+							value={workOrderForm.values.expected_date}
 							required={true}
-						/>
+						/>*/}
 						<Flex gap="les">
 							<Button
 								onClick={handleResetRequisition}
@@ -372,7 +507,7 @@ export default function __Form() {
 								{t("Reset")}
 							</Button>
 							<Button
-								onClick={handleWorkorderSave}
+								onClick={handleWorkOrderSave}
 								size="md"
 								leftSection={<IconDeviceFloppy size={20} />}
 								type="submit"

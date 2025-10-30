@@ -349,6 +349,13 @@ export const PHARMACY_DATA_ROUTES = {
 			VIEW: "pharmacy/workorder/manage",
 			DELETE: "pharmacy/workorder",
 		},
+		PURCHASE: {
+            CREATE: "pharmacy/purchase",
+			INDEX: "pharmacy/purchase",
+			// UPDATE: "pharmacy/workorder/manage",
+			// VIEW: "pharmacy/workorder/manage",
+			// DELETE: "pharmacy/workorder",
+		},
 	},
 	NAVIGATION_LINKS: {
 		PHARMACY: {
