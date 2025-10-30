@@ -10,7 +10,6 @@ import {
 	IconChevronUp,
 	IconDotsVertical,
 	IconSelector,
-	IconX,
 	IconTrashX,
 	IconPrinter,
 	IconScript,
@@ -24,7 +23,6 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "@hospital-components/drawer/__IPDDetailsDrawer";
-import OverviewDrawer from "@hospital-components/drawer/__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
@@ -50,7 +48,7 @@ const tabs = [
 
 const PER_PAGE = 200;
 
-export default function Table({ module, height, closeTable, availableClose = false }) {
+export default function Table({ module, height, closeTable }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -58,7 +56,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const listData = useSelector((state) => state.crud[module].data);
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
-	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [processTab, setProcessTab] = useState("all");
 	const form = useForm({
 		initialValues: {
@@ -123,10 +120,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
 		setTimeout(() => open(), 10);
-	};
-
-	const handleOpenViewOverview = () => {
-		openOverview();
 	};
 
 	const handleDelete = (id) => {
@@ -230,7 +223,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		<Box w="100%" bg="white">
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
-					{t("VisitInformation")}
+					{t("DoctorOPDInformation")}
 				</Text>
 				<Flex gap="xs" align="center">
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
@@ -252,30 +245,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							/>
 						</Tabs.List>
 					</Tabs>
-					<Button
-						onClick={handleOpenViewOverview}
-						size="xs"
-						radius="es"
-						rightSection={<IconArrowRight size={16} />}
-						bg="var(--theme-success-color)"
-						c="white"
-					>
-						{t("VisitOverview")}
-					</Button>
-					{availableClose ? (
-						<Flex gap="xs" align="center">
-							<Button
-								onClick={closeTable}
-								variant="outline"
-								size="xs"
-								radius="es"
-								leftSection={<IconX size={16} />}
-								color="var(--theme-delete-color)"
-							>
-								{t("Close")}
-							</Button>
-						</Flex>
-					) : null}
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
@@ -464,7 +433,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			{selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
-			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 
 			<OPDA4BN data={printData} ref={a4Ref} />
 			<OPDPosBN data={printData} ref={posRef} />

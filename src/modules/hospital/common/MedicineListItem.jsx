@@ -27,9 +27,10 @@ export default function MedicineListItem({
 	const [mode] = useState("view");
 	const [editingInstructionIndex, setEditingInstructionIndex] = useState(null);
 	const [viewAction, setViewAction] = useState(true);
+	const isOpdType = type === "opd";
 
 	const handleChange = (field, value) => {
-		if (field === "opd_quantity" && !ignoreOpdQuantityLimit) {
+		if (field === "opd_quantity" && !ignoreOpdQuantityLimit && isOpdType) {
 			if (value > medicine.opd_limit) {
 				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error");
 				return;
@@ -209,7 +210,7 @@ export default function MedicineListItem({
 						const isFirstItem = insIndex === 0;
 						return (
 							<Flex key={insIndex} ml={isFirstItem ? "md" : "44px"} gap="xs" align="center">
-								{isFirstItem && type === "opd" && (
+								{isFirstItem && isOpdType && (
 									<ActionIcon
 										size="xs"
 										variant="outline"
@@ -221,7 +222,7 @@ export default function MedicineListItem({
 								)}
 								{editingInstructionIndex === insIndex ? (
 									<Grid gutter="les" columns={24}>
-										<Grid.Col span={5}>
+										<Grid.Col span={isOpdType ? 5 : 8}>
 											<Select
 												size="xs"
 												label=""
@@ -236,7 +237,7 @@ export default function MedicineListItem({
 												}
 											/>
 										</Grid.Col>
-										<Grid.Col span={5}>
+										<Grid.Col span={isOpdType ? 5 : 8}>
 											<Select
 												label=""
 												size="xs"
@@ -251,7 +252,7 @@ export default function MedicineListItem({
 												}
 											/>
 										</Grid.Col>
-										{type === "opd" && (
+										{isOpdType && (
 											<>
 												<Grid.Col span={3}>
 													<NumberInput
@@ -278,7 +279,7 @@ export default function MedicineListItem({
 												</Grid.Col>
 											</>
 										)}
-										{isFirstItem && type === "opd" && (
+										{isFirstItem && isOpdType && (
 											<>
 												<Grid.Col span={2}>
 													<Input
@@ -325,10 +326,9 @@ export default function MedicineListItem({
 											c="var(--theme-tertiary-color-8)"
 										>
 											{instruction?.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
-											{type === "opd" &&
-												`---- ${instruction.quantity} ---- ${instruction.duration}`}
+											{isOpdType && `---- ${instruction.quantity} ---- ${instruction.duration}`}
 											{isFirstItem &&
-												type === "opd" &&
+												isOpdType &&
 												`---- ${medicine.opd_quantity || t("NoOutdoorMedicineNumber")} ---- ${
 													medicine.doctor_comment || t("NoDoctorComment")
 												}`}

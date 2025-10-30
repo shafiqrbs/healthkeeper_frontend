@@ -26,6 +26,8 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 		);
 	}, [subMenu, userRole]);
 
+	console.log(subLinks);
+
 	return (
 		<Box>
 			<Grid columns={12} gutter={{ base: 8 }}>

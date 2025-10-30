@@ -30,7 +30,7 @@ export default function _Table({ module }) {
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
-	const height = mainAreaHeight - 78;
+	const height = mainAreaHeight - 48;
 
 	// for infinity table data scroll, call the hook
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({

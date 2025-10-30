@@ -42,8 +42,8 @@ export default function DoctorLayout() {
 					transitionDuration={200}
 				/>
 			) : (
-				<Box p="8">
-					<Flex gap="8">
+				<Box p="16px">
+					<Flex gap="8px">
 						{!matches && (
 							<Box>
 								<Navigation menu="base" mainAreaHeight={mainAreaHeight} />

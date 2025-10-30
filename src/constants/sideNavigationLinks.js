@@ -84,7 +84,7 @@ export const sideNavigationLinks = {
 			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
 			subMenu: [
 				{
-					label: t("IPDAdmission"),
+					label: t("Admission"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX,
 					icon: IconBuildingHospital,
 					color: "#3F51B5", // Indigo
@@ -221,6 +221,38 @@ export const sideNavigationLinks = {
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
 			allowedRoles: ["pharmacy_pharmacist", "pharmacy_manager", "pharmacy_operator", "admin_administrator"],
+			subMenu: [
+				{
+					label: t("Pharmacy"),
+					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.PHARMACY.INDEX,
+					icon: IconMedicineSyrup,
+					color: "#009688", // Teal
+				},
+				{
+					label: t("Stock"),
+					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STOCK.INDEX,
+					icon: IconMedicineSyrup,
+					color: "#009688", // Teal
+				},
+				{
+					label: t("Requisition"),
+					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX,
+					icon: IconMedicineSyrup,
+					color: "#009688", // Teal
+				},
+				{
+					label: t("Workorder"),
+					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.INDEX,
+					icon: IconMedicineSyrup,
+					color: "#009688", // Teal
+				},
+				{
+					label: t("Medicine"),
+					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX,
+					icon: IconMedicineSyrup,
+					color: "#009688", // Teal
+				},
+			],
 		},
 		{
 			label: t("Doctor"),
@@ -460,43 +492,6 @@ export const sideNavigationLinks = {
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.SETTING.INDEX,
 			icon: IconDashboard,
 			color: "#4CAF50",
-			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
-		},
-	],
-	basePharmacySubmenu: [
-		{
-			label: t("Pharmacy"),
-			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.PHARMACY.INDEX,
-			icon: IconDashboard,
-			color: "#4CAF50",
-			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
-		},
-		{
-			label: t("Stock"),
-			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STOCK.INDEX,
-			icon: IconDashboard,
-			color: "#6f1225",
-			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
-		},
-		{
-			label: t("Requisition"),
-			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX,
-			icon: IconDashboard,
-			color: "#6f1225",
-			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
-		},
-		{
-			label: t("Workorder"),
-			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.INDEX,
-			icon: IconDashboard,
-			color: "#6f1225",
-			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
-		},
-		{
-			label: t("Medicine"),
-			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX,
-			icon: IconDashboard,
-			color: "#6f1225",
 			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
 		},
 	],

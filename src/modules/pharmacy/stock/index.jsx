@@ -1,4 +1,4 @@
-import {Box, Grid, Group, Progress} from "@mantine/core";
+import { Box, Flex, Grid, Group, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
@@ -11,18 +11,18 @@ import IndexForm from "./form/__IndexForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
-import {MODULES_PHARMACY} from "@/constants";
+import { MODULES_PHARMACY } from "@/constants";
 
 const module = MODULES_PHARMACY.STOCK;
 
 export default function Index({ mode = "create" }) {
-
 	const { t } = useTranslation();
 	const form = useForm(getInitialValues(t));
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
 	const [opened, { open, close }] = useDisclosure(false);
 	const { mainAreaHeight } = useOutletContext();
+
 	return (
 		<>
 			{progress !== 100 ? (
@@ -35,36 +35,23 @@ export default function Index({ mode = "create" }) {
 					transitionDuration={200}
 				/>
 			) : (
-				<>
-					<CoreHeaderNavbar
-						module="core"
-						pageTitle={t("ManageCustomer")}
-						roles={t("Roles")}
-						allowZeroPercentage=""
-						currencySymbol=""
-					/>
-					<Box p="8">
-					<Grid columns={36} gutter={{ base: 8 }}>
+				<Box p="16px" w="100%">
+					<Flex gap="8px">
 						{!matches && (
-							<Grid.Col span={6}>
-								<Navigation menu="base" subMenu={'basePharmacySubmenu'} mainAreaHeight={mainAreaHeight} />
-							</Grid.Col>
+							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
 						)}
-						<Grid.Col span={matches ? 30 : 30}>
-							<Box bg="white" p="xs" className="borderRadiusAll">
-								<_Table module={module} open={open} close={close} />
-							</Box>
-						</Grid.Col>
-					</Grid>
-						<GlobalDrawer
-							opened={opened}
-							close={close}
-							title={mode === "create" ? t("CreateParticular") : t("UpdateParticular")}>
-							<IndexForm module={module} form={form} mode={mode} close={close} />
-						</GlobalDrawer>
-					</Box>
-
-				</>
+						<Box w="100%" bg="white" p="xs" className="borderRadiusAll">
+							<_Table module={module} open={open} close={close} />
+						</Box>
+					</Flex>
+					<GlobalDrawer
+						opened={opened}
+						close={close}
+						title={mode === "create" ? t("CreateParticular") : t("UpdateParticular")}
+					>
+						<IndexForm module={module} form={form} mode={mode} close={close} />
+					</GlobalDrawer>
+				</Box>
 			)}
 		</>
 	);
