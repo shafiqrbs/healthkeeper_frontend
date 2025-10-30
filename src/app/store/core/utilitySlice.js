@@ -4,6 +4,7 @@ import { getGlobalDropdown } from "./utilityThunk";
 export const CORE_DROPDOWNS = {
 	SETTING_TYPE: { UTILITY: "settingType", TYPE: "setting-type", PATH: "core/select/setting-type" },
 	EMPLOYEE: { UTILITY: "employee", TYPE: "employee", PATH: "core/select/user" },
+	VENDOR: { UTILITY: "vendor", TYPE: "vendor", PATH: "core/select/vendor" },
 	EMPLOYEE_GROUP: { UTILITY: "employeeGroup", TYPE: "employee-group", PATH: "core/select/setting" },
 	RELIGION: { UTILITY: "religion", TYPE: "religion", PATH: "core/select/setting" },
 	DESIGNATION: { UTILITY: "designation", TYPE: "designation", PATH: "core/select/setting" },

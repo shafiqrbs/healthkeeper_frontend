@@ -24,8 +24,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		utility: CORE_DROPDOWNS.EMPLOYEE.UTILITY,
 	});
 
-
-
 	const { data: categoryDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.CATEGORY.PATH,
 		utility: CORE_DROPDOWNS.CATEGORY.UTILITY,

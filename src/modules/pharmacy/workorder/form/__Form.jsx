@@ -26,6 +26,10 @@ import { formatDate, getLoggedInUser } from "@utils/index";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { getDataWithoutStore } from "@/services/apiService";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import {CORE_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
+import SelectForm from "@components/form-builders/SelectForm";
 
 export default function __Form() {
 	const { id } = useParams();
@@ -56,6 +60,13 @@ export default function __Form() {
 		});
 		setRequisitions(response?.data?.data);
 	}
+
+	const { data: vendorDropdown } = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.VENDOR.PATH,
+		utility: CORE_DROPDOWNS.VENDOR.UTILITY,
+	});
+	console.log(vendorDropdown);
+
 
 	async function handleWorkorderAdd(values) {
 		setRecords([...records, values]);
@@ -304,6 +315,24 @@ export default function __Form() {
 					className="borderRadiusAll"
 				>
 					<Box w="50%" bg="var(--theme-primary-color-0)" fz="sm" c="white">
+						<Grid align="center" columns={20} mt="xxxs">
+							<Grid.Col span={6}>
+								<Text fz="sm">{t("ParticularType")} <RequiredAsterisk /></Text>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<SelectForm
+									form={form}
+									tooltip={t("ParticularTypeValidateMessage")}
+									placeholder={t("ParticularType")}
+									name="particular_type_master_id"
+									id="particular_type_master_id"
+									nextField="category_id"
+									required={true}
+									value={form.values.particular_type_master_id}
+									dropdownValue={vendorDropdown}
+								/>
+							</Grid.Col>
+						</Grid>
 						<Text bg="var(--theme-secondary-color-6)" fz="sm" c="white" px="sm" py="les">
 							{t("Comment")}
 						</Text>
