@@ -1,4 +1,4 @@
-import {Box, Flex, Grid, Progress} from "@mantine/core";
+import { Box, Flex, Grid, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -38,16 +38,12 @@ export default function Index() {
 						currencySymbol=""
 					/>
 					<Flex p="16px" w="100%" gap="14px">
-							{!matches && (
-								<Navigation
-									menu="base"
-									subMenu={"basePharmacySubmenu"}
-									mainAreaHeight={mainAreaHeight}
-								/>
-							)}
+						{!matches && (
+							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
+						)}
 						<Box bg="white" w="100%" p="xs" className="borderRadiusAll">
-								<__From module={module} />
-							</Box>
+							<__From module={module} />
+						</Box>
 					</Flex>
 				</>
 			)}

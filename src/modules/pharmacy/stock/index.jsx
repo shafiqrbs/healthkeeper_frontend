@@ -1,9 +1,8 @@
-import { Box, Flex, Grid, Group, Progress } from "@mantine/core";
+import { Box, Flex, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
-import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
 import { getInitialValues } from "./helpers/request";
 import { useForm } from "@mantine/form";
@@ -38,7 +37,7 @@ export default function Index({ mode = "create" }) {
 				<Box p="16px" w="100%">
 					<Flex gap="8px">
 						{!matches && (
-							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
+							<Navigation menu="base" subMenu="basePharmacySubmenu" mainAreaHeight={mainAreaHeight} />
 						)}
 						<Box w="100%" bg="white" p="xs" className="borderRadiusAll">
 							<_Table module={module} open={open} close={close} />
