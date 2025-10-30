@@ -1,4 +1,4 @@
-import { Box, Grid, Progress } from "@mantine/core";
+import {Box, Flex, Grid, Progress} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -37,24 +37,18 @@ export default function Index() {
 						allowZeroPercentage=""
 						currencySymbol=""
 					/>
-					<Box p="les">
-						<Grid columns={36} gutter={{ base: 8 }}>
+					<Flex p="16px" w="100%" gap="14px">
 							{!matches && (
-								<Grid.Col span={6}>
-									<Navigation
-										menu="base"
-										subMenu={"basePharmacySubmenu"}
-										mainAreaHeight={mainAreaHeight}
-									/>
-								</Grid.Col>
+								<Navigation
+									menu="base"
+									subMenu={"basePharmacySubmenu"}
+									mainAreaHeight={mainAreaHeight}
+								/>
 							)}
-							<Grid.Col span={30}>
-								<Box bg="white" p="xs" className="borderRadiusAll">
-									<__From module={module} />
-								</Box>
-							</Grid.Col>
-						</Grid>
-					</Box>
+						<Box bg="white" w="100%" p="xs" className="borderRadiusAll">
+								<__From module={module} />
+							</Box>
+					</Flex>
 				</>
 			)}
 		</>
