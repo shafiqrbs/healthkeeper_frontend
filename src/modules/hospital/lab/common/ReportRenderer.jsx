@@ -19,6 +19,9 @@ import { useForm } from "@mantine/form";
 import { getFormValues } from "../helpers/request";
 import GeneSputum from "./report-formats/GeneSputum";
 import GenePulmonary from "./report-formats/GenePulmonary";
+import XRay from "./report-formats/XRay";
+import LPA from "./report-formats/LPA";
+import Ultrasonography from "./report-formats/Ultrasonography";
 
 const module = MODULES.LAB_TEST;
 
@@ -69,6 +72,30 @@ const ReportRenderer = forwardRef(
 					case "gene-pulmonary":
 						return (
 							<GenePulmonary
+								diagnosticReport={diagnosticReport}
+								setDiagnosticReport={setDiagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+							/>
+						);
+					case "x-ray":
+						return (
+							<XRay
+								diagnosticReport={diagnosticReport}
+								setDiagnosticReport={setDiagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+							/>
+						);
+					case "ultrasonography":
+						return (
+							<Ultrasonography
+								diagnosticReport={diagnosticReport}
+								setDiagnosticReport={setDiagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+							/>
+						);
+					case "lpa":
+						return (
+							<LPA
 								diagnosticReport={diagnosticReport}
 								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}

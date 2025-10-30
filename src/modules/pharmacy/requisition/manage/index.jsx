@@ -1,4 +1,4 @@
-import { Box, Grid, Progress,Flex } from "@mantine/core";
+import { Box, Grid, Progress, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -30,7 +30,7 @@ export default function Index() {
 				/>
 			) : (
 				<>
-					 <CoreHeaderNavbar
+					<CoreHeaderNavbar
 						module="core"
 						pageTitle={t("ManageRequisition")}
 						roles={t("Roles")}
