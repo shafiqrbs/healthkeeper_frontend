@@ -182,74 +182,6 @@ export default function __Form() {
         }
     }
 
-
-    /*const handleWorkOrderSave = (values) => {
-        modals.openConfirmModal({
-            title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-            children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-            labels: { confirm: t("Submit"), cancel: t("Cancel") },
-            confirmProps: { color: "red" },
-            onCancel: () => console.info("Cancel"),
-            onConfirm: () => handleSaveToDB(values),
-        });
-    };
-
-    async function handleSaveToDB(values) {
-        try {
-            const data = {
-                ...values,
-                items: records.map((record) => ({
-                    ...record,
-                    production_date: formatDateForMySQL(record.production_date),
-                    expired_date: formatDateForMySQL(record.expired_date),
-                })),
-                created_by_id: getLoggedInUser()?.id,
-            };
-
-            const value = {
-                url: PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.CREATE,
-                data: data,
-                module: "vendor",
-            };
-
-            const resultAction = await dispatch(storeEntityData(value));
-            if (storeEntityData.rejected.match(resultAction)) {
-                const fieldErrors = resultAction.payload.errors;
-                if (fieldErrors) {
-                    const errorObject = {};
-                    Object.keys(fieldErrors).forEach((key) => {
-                        errorObject[key] = fieldErrors[key][0];
-                    });
-                    form.setErrors(errorObject);
-                }
-            } else if (storeEntityData.fulfilled.match(resultAction)) {
-                form.reset();
-                workOrderForm.reset()
-                notifications.show({
-                    color: SUCCESS_NOTIFICATION_COLOR,
-                    title: t("CreateSuccessfully"),
-                    icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-                    loading: false,
-                    autoClose: 1400,
-                    style: { backgroundColor: "lightgray" },
-                });
-                setTimeout(()=>{
-                    navigate("/pharmacy/core/workorder")
-                },800)
-            }
-        } catch (error) {
-            console.error(error);
-            notifications.show({
-                color: ERROR_NOTIFICATION_COLOR,
-                title: error.message,
-                icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-                loading: false,
-                autoClose: 2000,
-                style: { backgroundColor: "lightgray" },
-            });
-        }
-    }*/
-
 	const handleResetRequisition = () => {
 		setRecords([]);
 		setMedicineTerm("");
@@ -522,7 +454,7 @@ export default function __Form() {
 				</Flex>
 			</Box>
 
-			<GlobalDrawer title={t("RequisitionList")} opened={openedDrawer} close={closeDrawer}>
+			{/*<GlobalDrawer title={t("RequisitionList")} opened={openedDrawer} close={closeDrawer}>
 				<Box>
 					{requisitions.map((requisition) => (
 						<Box key={requisition.id}>
@@ -533,7 +465,7 @@ export default function __Form() {
 						</Box>
 					))}
 				</Box>
-			</GlobalDrawer>
+			</GlobalDrawer>*/}
 		</>
 	);
 }
