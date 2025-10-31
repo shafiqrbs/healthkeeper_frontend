@@ -15,13 +15,10 @@ import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
 import { formatDateForMySQL } from "@utils/index";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import InputForm from "@components/form-builders/InputForm";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
 
 const module = MODULES.LAB_TEST;
 
-// =============== sars cov2 results are now handled as individual boolean properties ===============
-export default function Ultrasonography({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
+export default function SarsCov2({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -33,11 +30,9 @@ export default function Ultrasonography({ diagnosticReport, setDiagnosticReport,
 		initialValues: {
 			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
 			lab_no: custom_report?.lab_no || "",
-			id: custom_report?.id || "",
-			name: custom_report?.name || "",
-			type_patient: custom_report?.type_patient || "",
-			findings: custom_report?.findings || "",
-			referral_center: custom_report?.referral_center || "",
+			sars_cov_positive: custom_report?.sars_cov_positive || false,
+			sars_covnegative: custom_report?.sars_covnegative || false,
+			cov_invalid: custom_report?.cov_invalid || false,
 		},
 	});
 
@@ -79,7 +74,7 @@ export default function Ultrasonography({ diagnosticReport, setDiagnosticReport,
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetchDiagnosticReport();
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setDiagnosticReport(resultAction.payload?.data);
+				setDiagnosticReport(resultAction.payload.data?.data);
 				form.reset();
 			}
 		} catch (error) {
@@ -101,7 +96,6 @@ export default function Ultrasonography({ diagnosticReport, setDiagnosticReport,
 							form={form}
 							label="Test Date"
 							placeholder="Select date"
-							readOnly={is_completed}
 						/>
 
 						{/* =============== reference laboratory specimen id =============== */}
@@ -114,50 +108,59 @@ export default function Ultrasonography({ diagnosticReport, setDiagnosticReport,
 							placeholder="Enter Lab No"
 							readOnly={is_completed}
 						/>
-						<InputForm
-							name="type_patient"
-							id="type_patient"
-							nextField="comment"
-							form={form}
-							label="Type of Sample"
-							placeholder="Enter Type of Patient"
-							readOnly={is_completed}
-						/>
-					</Group>
-
-					<Group grow>
-						<InputForm
-							name="name"
-							id="name"
-							nextField="findings"
-							form={form}
-							label="Test Name"
-							placeholder="Enter Test Name"
-							readOnly={is_completed}
-						/>
-						<InputForm
-							name="referral_center"
-							id="referral_center"
-							nextField="findings"
-							form={form}
-							label="Ref by"
-							placeholder="Ref by"
-							readOnly={is_completed}
-						/>
 					</Group>
 
 					{/* =============== results table =============== */}
-					<Box my="xs">
-						<TextAreaForm
-							form={form}
-							name="findings"
-							id="findings"
-							label="Findings"
-							placeholder="Enter Findings"
-							resize="vertical"
-							minRows={6}
-							readOnly={is_completed}
-						/>
+					<Box my="md">
+						<Table withColumnBorders withTableBorder withRowBorders>
+							<Table.Thead>
+								<Table.Tr>
+									<Table.Th ta="center" rowSpan={3}>
+										Result
+									</Table.Th>
+									<Table.Th ta="center" colSpan={4}>
+										Sars CoV-2
+									</Table.Th>
+								</Table.Tr>
+								<Table.Tr>
+									<Table.Th>Positive</Table.Th>
+									<Table.Th>Negative</Table.Th>
+									<Table.Th>INVALID / ERROR / NO RESULT</Table.Th>
+								</Table.Tr>
+								<Table.Tr>
+									<Table.Th ta="center">
+										<Checkbox
+											checked={form.values.sars_cov_positive}
+											onChange={(event) =>
+												form.setFieldValue("sars_cov_positive", event.currentTarget.checked)
+											}
+											styles={{ body: { justifyContent: "center" } }}
+											readOnly={is_completed}
+										/>
+									</Table.Th>
+									<Table.Th ta="center">
+										<Checkbox
+											checked={form.values.sars_covnegative}
+											onChange={(event) =>
+												form.setFieldValue("sars_covnegative", event.currentTarget.checked)
+											}
+											styles={{ body: { justifyContent: "center" } }}
+											readOnly={is_completed}
+										/>
+									</Table.Th>
+									<Table.Th ta="center">
+										<Checkbox
+											checked={form.values.cov_invalid}
+											onChange={(event) =>
+												form.setFieldValue("cov_invalid", event.currentTarget.checked)
+											}
+											styles={{ body: { justifyContent: "center" } }}
+											readOnly={is_completed}
+										/>
+									</Table.Th>
+								</Table.Tr>
+							</Table.Thead>
+						</Table>
 					</Box>
 					{/* =============== text date =============== */}
 				</Stack>

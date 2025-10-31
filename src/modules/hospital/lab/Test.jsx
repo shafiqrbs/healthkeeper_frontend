@@ -32,7 +32,7 @@ export default function Test({ entity, isLoading }) {
 		content: () => barCodeRef.current,
 	});
 	const handleTest = (reportId) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${reportId}`);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${reportId}`, { replace: true });
 	};
 
 	const handleLabReport = (id) => {
@@ -42,7 +42,7 @@ export default function Test({ entity, isLoading }) {
 
 	const handleBarcodeTag = (barcode) => {
 		setBarcodeValue(barcode);
-		requestAnimationFrame(() => printBarCodeValue());
+		requestAnimationFrame(printBarCodeValue);
 	};
 
 	return (

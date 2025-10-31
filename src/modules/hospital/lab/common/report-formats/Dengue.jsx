@@ -16,12 +16,11 @@ import { successNotification } from "@components/notification/successNotificatio
 import { formatDateForMySQL } from "@utils/index";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import InputForm from "@components/form-builders/InputForm";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
 
 const module = MODULES.LAB_TEST;
 
 // =============== sars cov2 results are now handled as individual boolean properties ===============
-export default function Ultrasonography({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
+export default function Dengue({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -31,13 +30,15 @@ export default function Ultrasonography({ diagnosticReport, setDiagnosticReport,
 
 	const form = useForm({
 		initialValues: {
+			name: custom_report?.name || "Dengue Ns1 Ag",
 			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
 			lab_no: custom_report?.lab_no || "",
 			id: custom_report?.id || "",
-			name: custom_report?.name || "",
-			type_patient: custom_report?.type_patient || "",
-			findings: custom_report?.findings || "",
-			referral_center: custom_report?.referral_center || "",
+			rif_resistance_not_detected: custom_report?.rif_resistance_not_detected || 0,
+			rif_resistance_detected: custom_report?.rif_resistance_detected || 0,
+			rif_resistance_indeterminate: custom_report?.rif_resistance_indeterminate || 0,
+			mtb_not_detected: custom_report?.mtb_not_detected || 0,
+			invalid: custom_report?.invalid || 0,
 		},
 	});
 
@@ -79,7 +80,7 @@ export default function Ultrasonography({ diagnosticReport, setDiagnosticReport,
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetchDiagnosticReport();
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setDiagnosticReport(resultAction.payload?.data);
+				setDiagnosticReport(resultAction.payload.data?.data);
 				form.reset();
 			}
 		} catch (error) {
@@ -114,50 +115,72 @@ export default function Ultrasonography({ diagnosticReport, setDiagnosticReport,
 							placeholder="Enter Lab No"
 							readOnly={is_completed}
 						/>
-						<InputForm
-							name="type_patient"
-							id="type_patient"
-							nextField="comment"
-							form={form}
-							label="Type of Sample"
-							placeholder="Enter Type of Patient"
-							readOnly={is_completed}
-						/>
 					</Group>
-
-					<Group grow>
-						<InputForm
-							name="name"
-							id="name"
-							nextField="findings"
-							form={form}
-							label="Test Name"
-							placeholder="Enter Test Name"
-							readOnly={is_completed}
-						/>
-						<InputForm
-							name="referral_center"
-							id="referral_center"
-							nextField="findings"
-							form={form}
-							label="Ref by"
-							placeholder="Ref by"
-							readOnly={is_completed}
-						/>
-					</Group>
+					<InputForm
+						name="name"
+						id="name"
+						form={form}
+						label="Test Name"
+						placeholder="Enter Name"
+						readOnly={is_completed}
+						styles={{ input: { width: "calc(50% - 10px)" } }}
+					/>
 
 					{/* =============== results table =============== */}
-					<Box my="xs">
-						<TextAreaForm
-							form={form}
-							name="findings"
-							id="findings"
-							label="Findings"
-							placeholder="Enter Findings"
-							resize="vertical"
-							minRows={6}
-							readOnly={is_completed}
-						/>
+					<Box my="md">
+						<Table withColumnBorders withTableBorder withRowBorders>
+							<Table.Thead>
+								<Table.Tr>
+									<Table.Th ta="center" rowSpan={2}>
+										Result
+									</Table.Th>
+									<Table.Th>Positive (+Ve)</Table.Th>
+									<Table.Th>Negative (-Ve)</Table.Th>
+									<Table.Th>Invalid / Error / No Result</Table.Th>
+								</Table.Tr>
+								<Table.Tr>
+									<Table.Th ta="center">
+										<Checkbox
+											checked={form.values.rif_resistance_detected}
+											onChange={(event) =>
+												form.setFieldValue(
+													"rif_resistance_detected",
+													event.currentTarget.checked
+												)
+											}
+											styles={{ body: { justifyContent: "center" } }}
+											readOnly={is_completed}
+										/>
+									</Table.Th>
+									<Table.Th ta="center">
+										<Checkbox
+											checked={form.values.rif_resistance_indeterminate}
+											onChange={(event) =>
+												form.setFieldValue(
+													"rif_resistance_indeterminate",
+													event.currentTarget.checked
+												)
+											}
+											styles={{ body: { justifyContent: "center" } }}
+											readOnly={is_completed}
+										/>
+									</Table.Th>
+									<Table.Th ta="center">
+										<Checkbox
+											checked={form.values.rif_resistance_indeterminate}
+											onChange={(event) =>
+												form.setFieldValue(
+													"rif_resistance_indeterminate",
+													event.currentTarget.checked
+												)
+											}
+											styles={{ body: { justifyContent: "center" } }}
+											readOnly={is_completed}
+										/>
+									</Table.Th>
+								</Table.Tr>
+							</Table.Thead>
+						</Table>
 					</Box>
 					{/* =============== text date =============== */}
 				</Stack>

@@ -22,6 +22,9 @@ import GenePulmonary from "./report-formats/GenePulmonary";
 import XRay from "./report-formats/XRay";
 import LPA from "./report-formats/LPA";
 import Ultrasonography from "./report-formats/Ultrasonography";
+import SarsCov2 from "./report-formats/SarsCov2";
+import PulmonaryStatus from "./report-formats/PulmonaryStatus";
+import Dengue from "./report-formats/Dengue";
 
 const module = MODULES.LAB_TEST;
 
@@ -93,9 +96,33 @@ const ReportRenderer = forwardRef(
 								refetchDiagnosticReport={refetchDiagnosticReport}
 							/>
 						);
+					case "sars-cov2":
+						return (
+							<SarsCov2
+								diagnosticReport={diagnosticReport}
+								setDiagnosticReport={setDiagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+							/>
+						);
+					case "gene-extra-sputum":
+						return (
+							<PulmonaryStatus
+								diagnosticReport={diagnosticReport}
+								setDiagnosticReport={setDiagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+							/>
+						);
 					case "lpa":
 						return (
 							<LPA
+								diagnosticReport={diagnosticReport}
+								setDiagnosticReport={setDiagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+							/>
+						);
+					case "dengue":
+						return (
+							<Dengue
 								diagnosticReport={diagnosticReport}
 								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}

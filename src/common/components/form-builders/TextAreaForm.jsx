@@ -24,6 +24,7 @@ function TextAreaForm({
 	showRightSection = true,
 	onBlur,
 	disabled,
+	readOnly = false,
 }) {
 	const { t } = useTranslation();
 	return (
@@ -55,6 +56,7 @@ function TextAreaForm({
 						label={label}
 						placeholder={placeholder}
 						mt={mt}
+						readOnly={readOnly}
 						disabled={disabled}
 						{...form.getInputProps(name && name)}
 						onBlur={onBlur || form.getInputProps(name).onBlur}

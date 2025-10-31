@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, Progress } from "@mantine/core";
+import { Box, Flex, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useMediaQuery } from "@mantine/hooks";
 

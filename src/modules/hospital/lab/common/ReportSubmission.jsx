@@ -34,11 +34,9 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 						<Grid.Col span={10} className="animate-ease-out">
 							<Box w="100%">
 								{diagnosticReport?.process === "Done" ? (
-									<>
-										<Box h={"56"}>
-											<strong>Comment:</strong> {diagnosticReport?.comment}
-										</Box>
-									</>
+									<Box h={"56"}>
+										<strong>Comment:</strong> {diagnosticReport?.comment}
+									</Box>
 								) : (
 									<TextAreaForm
 										id="comment"
