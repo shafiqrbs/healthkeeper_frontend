@@ -70,12 +70,13 @@ export default function __Form() {
 
 	async function fetchSingleRequisitionData() {
 		const response = await getDataWithoutStore({
-			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.REQUISITION.VIEW}/${id}`,
+			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.VIEW}/${id}`,
 			params: {},
 		});
 		setRequisitions(response?.data?.data);
 	}
 
+	console.log(requisitions);
 	const { data: vendorDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.VENDOR.PATH,
 		utility: CORE_DROPDOWNS.VENDOR.UTILITY,

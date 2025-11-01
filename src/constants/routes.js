@@ -349,24 +349,18 @@ export const PHARMACY_DATA_ROUTES = {
 
 		REQUISITION: {
 			INDEX: "pharmacy/requisition",
-			CREATE: "pharmacy/requisition/manage",
-			UPDATE: "pharmacy/requisition/manage",
-			VIEW: "pharmacy/requisition/manage",
+			CREATE: "pharmacy/requisition",
+			UPDATE: "pharmacy/requisition",
+			VIEW: "pharmacy/requisition",
 			DELETE: "pharmacy/requisition",
 		},
-		WORKORDER: {
-			INDEX: "pharmacy/workorder",
-			CREATE: "pharmacy/workorder/manage",
-			UPDATE: "pharmacy/workorder/manage",
-			VIEW: "pharmacy/workorder/manage",
-			DELETE: "pharmacy/workorder",
-		},
+
 		PURCHASE: {
             CREATE: "pharmacy/purchase",
 			INDEX: "pharmacy/purchase",
-			// UPDATE: "pharmacy/workorder/manage",
-			// VIEW: "pharmacy/workorder/manage",
-			// DELETE: "pharmacy/workorder",
+			UPDATE: "pharmacy/purchase",
+			VIEW: "pharmacy/purchase",
+			DELETE: "pharmacy/purchase",
 		},
 	},
 	NAVIGATION_LINKS: {
