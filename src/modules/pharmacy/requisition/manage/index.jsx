@@ -38,18 +38,12 @@ export default function Index() {
 						currencySymbol=""
 					/>
 					<Flex p="16px" w="100%" gap="14px">
-						{/* <Grid columns={36} gutter={{ base: 8 }}> */}
 						{!matches && (
-							// <Grid.Col span={6}>
 							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
-							// </Grid.Col>
 						)}
-						{/* <Grid.Col span={30}> */}
 						<Box bg="white" w="100%" p="xs" className="borderRadiusAll">
 							<__From module={module} />
 						</Box>
-						{/* </Grid.Col> */}
-						{/* </Grid> */}
 					</Flex>
 				</>
 			)}

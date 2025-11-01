@@ -148,6 +148,16 @@ export const coreHeaderLinks = {
 			},
 		],
 	},
+	pharmacy: {
+		topBarLinks: [
+			{ link: "/pharmacy/core/generic", label: "Generic" },
+			{ link: "/pharmacy/core/medicine", label: "Medicine" },
+			{ link: "/pharmacy/stock", label: "Stock" },
+			{ link: "/pharmacy/stock-matrix", label: "Stock Matrix" },
+			{ link: "/pharmacy/workorder", label: "Workorder" },
+			{ link: "/pharmacy/requisition", label: "Indent" },
+		]
+	},
 	procurement: {
 		topBarLinks: [
 			{

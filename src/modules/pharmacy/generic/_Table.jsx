@@ -1,6 +1,6 @@
-import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, Select, Checkbox } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem,CloseButton, Flex, Button, TextInput, Select, Checkbox } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconAlertCircle, IconEdit, IconChevronUp, IconSelector } from "@tabler/icons-react";
+import {IconAlertCircle, IconEdit, IconChevronUp, IconSelector, IconEye, IconTrashX} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -13,11 +13,11 @@ import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES, PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import { deleteEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import {deleteEntityData, editEntityData, storeEntityData} from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { errorNotification } from "@components/notification/errorNotification";
@@ -32,7 +32,7 @@ export default function _Table({ module, open }) {
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const height = mainAreaHeight - 48;
+	const height = mainAreaHeight - 84;
 	const [submitFormData, setSubmitFormData] = useState({});
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
@@ -51,7 +51,7 @@ export default function _Table({ module, open }) {
 	// for infinity table data scroll, call the hook
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
-		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.INDEX,
+		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.GENERIC,
 		filterParams: {
 			name: filterData?.name,
 			term: searchKeyword,
@@ -61,6 +61,11 @@ export default function _Table({ module, open }) {
 	});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
+
+	const handleEntityEdit = (id) => {
+		dispatch(setInsertType({ insertType: "update", module }));
+		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.GENERIC.INDEX}/${id}`);
+	};
 
 	const handleDelete = (id) => {
 		modals.openConfirmModal({
@@ -76,7 +81,7 @@ export default function _Table({ module, open }) {
 	const handleDeleteSuccess = async (id) => {
 		const res = await dispatch(
 			deleteEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.DELETE}/${id}`,
+				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.DELETE}/${id}`,
 				module,
 				id,
 			})
@@ -85,7 +90,7 @@ export default function _Table({ module, open }) {
 		if (deleteEntityData.fulfilled.match(res)) {
 			dispatch(setRefetchData({ module, refetching: true }));
 			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-			navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX);
+			navigate( PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.GENERIC);
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
@@ -99,16 +104,15 @@ export default function _Table({ module, open }) {
 	const handleCreateForm = () => {
 		open();
 		dispatch(setInsertType({ insertType: "create", module }));
-		navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX);
+		// navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.GENERIC);
 	};
 
 	useEffect(() => {
 		if (!records?.length) return;
 		const initialFormData = records.reduce((acc, item) => {
 			acc[item.id] = {
-				company: item.company || "",
+
 				product_name: item.product_name || "",
-				generic: item.generic || "",
 				opd_quantity: item.opd_quantity || "",
 				ipd_status: item.ipd_status || "",
 				opd_status: item.opd_status || "",
@@ -186,26 +190,10 @@ export default function _Table({ module, open }) {
 							sortable: false,
 							render: (_item, index) => index + 1,
 						},
-						{
-							accessor: "company",
-							title: t("Company"),
-							sortable: true,
-							/*render: (item) => (
-                                <TextInput
-                                    size="xs"
-                                    className={inlineInputCss.inputText}
-                                    placeholder={t("CompanyName")}
-                                    value={submitFormData[item.id]?.company || ""}
-                                    onChange={(event) =>
-                                        handleDataTypeChange(item.id, "company", event.currentTarget.value)
-                                    }
-                                    onBlur={() => handleRowSubmit(item.id)}
-                                />
-                            ),*/
-						},
+
 						{
 							accessor: "product_name",
-							title: t("MedicineName"),
+							title: t("GenericName"),
 							sortable: true,
 							/*render: (item) => (
                                 <TextInput
@@ -219,16 +207,6 @@ export default function _Table({ module, open }) {
                                     onBlur={() => handleRowSubmit(item.id)}
                                 />
                             ),*/
-						},
-						{
-							accessor: "generic",
-							title: t("Generic"),
-							sortable: true,
-						},
-						{
-							accessor: "dose_details",
-							title: t("Dose"),
-							sortable: false,
 						},
 						{
 							accessor: "medicine_dosage_id",
@@ -331,17 +309,36 @@ export default function _Table({ module, open }) {
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
 									<Button.Group>
-										<ActionIcon
-											size="sm"
-											variant="transparent"
-											radius="xs"
-											onClick={() => handleDelete(values.id)}
-											color="var(--theme-delete-color)"
+										<Button
+											onClick={() => {
+												handleEntityEdit(values.id);
+												open();
+											}}
+											variant="filled"
+											c="white"
 											fw={400}
-											aria-label="Settings"
+											size="compact-xs"
+											leftSection={<IconEdit size={12} />}
+											className="border-left-radius-none btnPrimaryBg"
 										>
-											<IconEdit stroke={1} />
-										</ActionIcon>
+											{t("Edit")}
+										</Button>
+										<Button
+											onClick={() => handleDataShow(values.id)}
+											variant="filled"
+											c="white"
+											bg="var(--theme-primary-color-6)"
+											size="compact-xs"
+											fw={400}
+											leftSection={<IconEye size={12} />}
+											className="border-left-radius-none"
+										>
+											{t("View")}
+										</Button>
+
+										<CloseButton icon={<IconTrashX size={18} stroke={1.2}/>} radius="es"   onClick={() => handleDelete(values.id)} size={'sm'} c={'red'}
+													  />
+
 									</Button.Group>
 								</Group>
 							),

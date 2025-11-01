@@ -53,6 +53,7 @@ export const MODULES_CORE = {
 export const MODULES_PHARMACY = {
 	MEDICINE: "medicine",
 	STOCK: "stock",
+	GENERIC: "generic",
 	REQUISITION: "requisition",
 	WORKORDER: "workorder",
 	STORE_REQUISTION: "store_requisition",

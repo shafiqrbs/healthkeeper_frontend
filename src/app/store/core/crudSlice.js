@@ -37,6 +37,14 @@ const initialState = {
 		editData: {},
 		validation: false,
 	},
+	generic: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+	},
 	dashboardDailySummary: {
 		isLoading: true,
 		refetching: false,

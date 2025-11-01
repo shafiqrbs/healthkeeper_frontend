@@ -32,6 +32,7 @@ export default function Index() {
 						{!matches && (
 							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
 						)}
+
 						<Box bg="white" p="xs" className="borderRadiusAll" w="100%">
 							<Table module={module} />
 						</Box>

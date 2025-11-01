@@ -20,7 +20,7 @@ export const CORE_DROPDOWNS = {
 	MARKETING_EXECUTIVE: { UTILITY: "marketingExecutive", TYPE: "marketing-executive", PATH: "utility/select/setting" },
 	CATEGORY_NATURE: { UTILITY: "categoryNature", TYPE: "product-type", PATH: "inventory/select/setting" },
 	CATEGORY_GROUP: { UTILITY: "categoryGroup", TYPE: "category-group", PATH: "inventory/select/group-category" },
-	CATEGORY: { UTILITY: "category", TYPE: "category", PATH: "inventory/select/category" },
+	CATEGORY: { UTILITY: "category", TYPE: "category", PATH: "hospital/select/category" },
 };
 
 export const ACCOUNTING_DROPDOWNS = {

@@ -40,6 +40,7 @@ import DoctorOpdIndex from "@modules/hospital/doctor/opd";
 import PharmacyIndex from "@modules/pharmacy/dashboard";
 import PharmacyStockIndex from "@modules/pharmacy/stock";
 import MedicineIndex from "@modules/pharmacy/medicine";
+import GenericIndex from "@modules/pharmacy/generic";
 import PharmacyRequisitionIndex from "@modules/pharmacy/requisition";
 import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/core/doctor";
@@ -92,10 +93,16 @@ function AppRoute() {
 					<Route path="requisition/manage" element={<PharmacyRequisitionManage />} />
 					<Route path="requisition/manage/:id" element={<PharmacyRequisitionManage mode="edit" />} />
 				</Route>
-				<Route path="/pharmacy/core/">
-					<Route path="medicine" element={<MedicineIndex />} />
+				<Route path="/pharmacy/core/" >
+					<Route path="medicine" element={
+						<ProtectedRoute roles={["role_domain", "admin_administrator", "operator_opd", "operator_manager"]}
+						>
+							<MedicineIndex />
+						</ProtectedRoute>
+					} />
+					<Route path="generic" element={<GenericIndex />} />
+					<Route path="generic/:id" element={<GenericIndex mode="edit"  />} />
 					<Route path="stock" element={<PharmacyStockIndex />} />
-
 					<Route path="workorder" element={<PharmacyWorkorderIndex />} />
 					<Route path="workorder/manage" element={<PharmacyWorkorderManage />} />
 					<Route path="workorder/manage/:id" element={<PharmacyWorkorderManage mode="edit" />} />

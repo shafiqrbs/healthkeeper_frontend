@@ -327,6 +327,17 @@ export const MASTER_DATA_ROUTES = {
 
 export const PHARMACY_DATA_ROUTES = {
 	API_ROUTES: {
+
+		STOCK: {
+			INDEX: "pharmacy/stock",
+			GENERIC: "pharmacy/stock/generic",
+			CREATE: "pharmacy/stock",
+			UPDATE: "pharmacy/stock",
+			VIEW: "pharmacy/stock",
+			DELETE: "pharmacy/stock",
+			INLINE_UPDATE: "pharmacy/stock/inline-update",
+		},
+
 		MEDICINE: {
 			INDEX: "pharmacy/medicine",
 			CREATE: "pharmacy/medicine",
@@ -335,6 +346,7 @@ export const PHARMACY_DATA_ROUTES = {
 			DELETE: "pharmacy/medicine",
 			INLINE_UPDATE: "pharmacy/medicine/inline-update",
 		},
+
 		REQUISITION: {
 			INDEX: "pharmacy/requisition",
 			CREATE: "pharmacy/requisition/manage",
@@ -369,8 +381,17 @@ export const PHARMACY_DATA_ROUTES = {
 			DELETE: "/pharmacy/core/medicine",
 		},
 
+		GENERIC: {
+			INDEX: "/pharmacy/core/generic",
+			CREATE: "/pharmacy/core/generic",
+			UPDATE: "/pharmacy/core/generic",
+			VIEW: "/pharmacy/core/generic",
+			DELETE: "/pharmacy/core/generic",
+		},
+
 		STOCK: {
 			INDEX: "/pharmacy/core/stock",
+			GENERIC: "/pharmacy/core/stock/generic",
 			CREATE: "/pharmacy/core/stock",
 			UPDATE: "/pharmacy/core/stock",
 			VIEW: "/pharmacy/core/stock",
