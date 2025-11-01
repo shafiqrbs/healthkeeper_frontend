@@ -111,9 +111,6 @@ export default function AddMedicineForm({
 	const [showPrint, setShowPrint] = useState(false);
 	const [medicineDosageSearchValue, setMedicineDosageSearchValue] = useState("");
 	const [medicineByMealSearchValue, setMedicineByMealSearchValue] = useState("");
-
-	console.log(medicineGenericData);
-
 	const printPrescription2A4 = useReactToPrint({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,

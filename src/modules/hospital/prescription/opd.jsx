@@ -62,9 +62,12 @@ export default function Index() {
 		const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
 		form.setValues(updatedFormValues.initialValues);
 		form.setValues({ is_vital: !!prescriptionData?.data?.is_vital });
+		form.setValues({ weight: prescriptionData?.data?.weight });
 		setMedicines(existingMedicines || []);
 		setCustomerId(prescriptionData?.data?.customer_id);
 	}, [prescriptionData]);
+
+
 
 	const handleOpenViewOverview = () => {
 		openOverview();
@@ -90,7 +93,7 @@ export default function Index() {
 		}
 	}, [customerId]);
 	const hasRecords = records && records.length > 0;
-
+	console.log(form.values.weight);
 	const handlePrescriptionUpdate = async (updatedMedicine) => {
 		try {
 			const createdBy = getLoggedInUser();
@@ -99,6 +102,7 @@ export default function Index() {
 				is_completed: true,
 				medicines: updatedMedicine || medicines,
 				advise: form.values.advise || "",
+				weight: form.values.weight || "",
 				follow_up_date: form.values.follow_up_date || null,
 				prescription_date: new Date()?.toISOString()?.split("T")[0],
 				created_by_id: createdBy?.id,
