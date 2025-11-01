@@ -1,4 +1,4 @@
-import {Box, Text, Grid, Group, Stack, Image, Flex, ActionIcon,Table} from "@mantine/core";
+import { Box, Text, Grid, Group, Stack, Image, Flex, ActionIcon, Table } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import Rx from "@assets/images/rx.png";
@@ -11,9 +11,7 @@ import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
 import Barcode from "react-barcode";
 import customTable from "@assets/css/PrescriptionTable.module.css";
-import {
-	IconPointFilled,IconPhoneCall
-} from "@tabler/icons-react";
+import { IconPointFilled, IconPhoneCall } from "@tabler/icons-react";
 
 const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
@@ -60,7 +58,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 			<Stack gap="0px" mt="0">
 				{items.map((item, idx) => (
 					<Text key={idx} size="xs" c="black.5" mt="0">
-						<IconPointFilled style={{ width: '10', height: '10' }} stroke={1.5} />
+						<IconPointFilled style={{ width: "10", height: "10" }} stroke={1.5} />
 						{formatItem(item)}
 					</Text>
 				))}
@@ -201,10 +199,17 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 				>
 					{/* =============== header section with doctor information in bengali and english ================ */}
 					{/* =============== patient information section ================ */}
-					<Table style={{ borderCollapse: 'collapse', width: '100%',border: '1px solid var(--theme-tertiary-color-8)' }} className="customTable">
+					<Table
+						style={{
+							borderCollapse: "collapse",
+							width: "100%",
+							border: "1px solid var(--theme-tertiary-color-8)",
+						}}
+						className="customTable"
+					>
 						<Table.Tbody>
-							<Table.Tr style={{ border: '1px solid var(--theme-tertiary-color-8)' }}>
-								<Table.Td colSpan={'6'}>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colSpan={"6"}>
 									<Box mb="sm">
 										<Flex gap="md" justify="center">
 											<Box>
@@ -232,10 +237,28 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									</Box>
 								</Table.Td>
 							</Table.Tr>
-							<Table.Tr style={{ border: '1px solid var(--theme-tertiary-color-8)' }}>
-								<Table.Td style={{ border: '1px solid var(--theme-tertiary-color-8)', paddingLeft: '4px',fontSize:'12px', width:'120px' }} >{getValue(patientInfo?.patient_id || "")}</Table.Td>
-								<Table.Td style={{ border: '1px solid var(--theme-tertiary-color-8)', paddingLeft: '4px',fontSize:'12px' ,width:'120px'  }} >{getValue(patientInfo?.invoice || "")}</Table.Td>
-								<Table.Td colSpan={'2'}>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td
+									style={{
+										border: "1px solid var(--theme-tertiary-color-8)",
+										paddingLeft: "4px",
+										fontSize: "12px",
+										width: "120px",
+									}}
+								>
+									{getValue(patientInfo?.patient_id || "")}
+								</Table.Td>
+								<Table.Td
+									style={{
+										border: "1px solid var(--theme-tertiary-color-8)",
+										paddingLeft: "4px",
+										fontSize: "12px",
+										width: "120px",
+									}}
+								>
+									{getValue(patientInfo?.invoice || "")}
+								</Table.Td>
+								<Table.Td colSpan={"2"}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Name")}:
@@ -243,7 +266,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="sm">{getValue(patientInfo?.name, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td colSpan={'2'}>
+								<Table.Td colSpan={"2"}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Mobile")}:
@@ -252,14 +275,18 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									</Group>
 								</Table.Td>
 							</Table.Tr>
-							<Table.Tr style={{ border: '1px solid var(--theme-tertiary-color-8)' }}>
-								<Table.Td colSpan={2} style={{ border: '1px solid var(--theme-tertiary-color-8)', padding: '4px' }} >
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td
+									colSpan={2}
+									style={{ border: "1px solid var(--theme-tertiary-color-8)", padding: "4px" }}
+								>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Age")}:
 										</Text>
 										<Text size="xs">
-											{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon {patientInfo?.day || 0} Day
+											{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
+											{patientInfo?.day || 0} Day
 										</Text>
 									</Group>
 								</Table.Td>
@@ -270,7 +297,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										</Text>
 										<Text size="xs">
 											{patientInfo?.gender &&
-											patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
+												patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
 										</Text>
 									</Group>
 								</Table.Td>
@@ -300,12 +327,19 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									</Group>
 								</Table.Td>
 							</Table.Tr>
-							<Table.Tr >
-								<Table.Td colSpan={2} style={{ borderRight: '1px solid var(--theme-tertiary-color-8)', padding: '4px',verticalAlign: 'top',  }} >
-									<Box  style={{ position: "relative", minHeight: "350px" }} >
+							<Table.Tr>
+								<Table.Td
+									colSpan={2}
+									style={{
+										borderRight: "1px solid var(--theme-tertiary-color-8)",
+										padding: "4px",
+										verticalAlign: "top",
+									}}
+								>
+									<Box style={{ position: "relative", minHeight: "350px" }}>
 										{(orderedExamKeys.length > 0
-												? orderedExamKeys
-												: Object.keys(patientExamination || {})
+											? orderedExamKeys
+											: Object.keys(patientExamination || {})
 										)
 											.filter((key) => hasArrayWithLength(patientExamination?.[key]))
 											.map((key) => (
@@ -320,68 +354,66 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										direction="row"
 										wrap="nowrap"
 									>
-										<Box w={'100%'}>
-										<Box style={{ borderBottom: `1px solid #444` }}>Vitals</Box>
-											<Grid columns={24} gutter={'2'} >
+										<Box w={"100%"}>
+											<Box style={{ borderBottom: `1px solid #444` }}>Vitals</Box>
+											<Grid columns={24} gutter={"2"}>
 												{patientInfo?.bp && (
 													<Grid.Col span={14}>
-														<Text style={{ fontSize: '11px'}}>
+														<Text style={{ fontSize: "11px" }}>
 															{t("B/P")}: {patientInfo?.bp} mmHg
 														</Text>
 													</Grid.Col>
 												)}
 												{patientInfo?.pulse && (
 													<Grid.Col span={10} fz="xs" align={"left"}>
-														<Text style={{ fontSize: '11px'}}>
+														<Text style={{ fontSize: "11px" }}>
 															{t("Pulse")}: {patientInfo?.pulse}/bpm
 														</Text>
 													</Grid.Col>
 												)}
 											</Grid>
-											<Grid columns={24} gutter={'2'} >
-
+											<Grid columns={24} gutter={"2"}>
 												{patientInfo?.sat_without_O2 && (
 													<Grid.Col span={14} fz="xs" align={"left"}>
-														<Text style={{ fontSize: '11px'}}>
+														<Text style={{ fontSize: "11px" }}>
 															{t("Sat")}: {patientInfo?.sat_without_O2} % w/o O₂
 														</Text>
 													</Grid.Col>
 												)}
 												{patientInfo?.temperature && (
 													<Grid.Col span={10}>
-														<Text style={{ fontSize: '11px'}}>
+														<Text style={{ fontSize: "11px" }}>
 															{t("Temp")}: {patientInfo?.temperature} °F
 														</Text>
 													</Grid.Col>
 												)}
-
 											</Grid>
-											<Grid columns={24} gutter={'2'} >
+											<Grid columns={24} gutter={"2"}>
 												{patientInfo?.sat_with_O2 && (
 													<Grid.Col span={14}>
-														<Text style={{ fontSize: '11px'}}>
-															{t("Sat")}: {patientInfo?.sat_with_O2} % w/ {patientInfo?.sat_liter||0} L O₂
+														<Text style={{ fontSize: "11px" }}>
+															{t("Sat")}: {patientInfo?.sat_with_O2} % w/{" "}
+															{patientInfo?.sat_liter || 0} L O₂
 														</Text>
 													</Grid.Col>
 												)}
 												{patientInfo?.respiration && (
 													<Grid.Col span={10} fz="xs" align={"left"}>
-														<Text style={{ fontSize: '11px'}}>
+														<Text style={{ fontSize: "11px" }}>
 															{t("Res R.")}: {patientInfo?.respiration}/min
 														</Text>
 													</Grid.Col>
 												)}
 											</Grid>
-
-
 										</Box>
 									</Flex>
-
 								</Table.Td>
-								<Table.Td colSpan={4} style={{ verticalAlign: 'top'}}>
+								<Table.Td colSpan={4} style={{ verticalAlign: "top" }}>
 									<Box style={{ position: "relative", minHeight: "350px" }}>
-										<Box w={'36'}><Image src={Rx} alt="logo" width={'32'} height={32} /></Box>
-										<Box gap="2"  >
+										<Box w={"36"}>
+											<Image src={Rx} alt="logo" width={"32"} height={32} />
+										</Box>
+										<Box gap="2">
 											{exEmergencies.map((emergency, index) => (
 												<Box key={index}>
 													<Text size="xs" fw={600}>
@@ -394,14 +426,20 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 													<Text size="xs" fw={600}>
 														{exEmergencies.length + index + 1}.{" "}
 														{getValue(
-															medicine.medicine_id ? medicine.medicine_name : medicine.generic
+															medicine.medicine_id
+																? medicine.medicine_name
+																: medicine.generic
 														)}
 													</Text>
 													{medicine.dosages && medicine.dosages.length > 0 ? (
 														(medicine.dosages || []).map((dose, dIdx) => (
 															<Text
 																key={dose.id ?? dIdx}
-																style={{ fontSize: '9px', color: 'var(--theme-tertiary-color-8)', marginLeft: '8px' }}
+																style={{
+																	fontSize: "9px",
+																	color: "var(--theme-tertiary-color-8)",
+																	marginLeft: "8px",
+																}}
 															>
 																{getValue(dose.dose_details_bn, dose.dose_details)}{" "}
 																{" ---- "}
@@ -410,7 +448,13 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 															</Text>
 														))
 													) : (
-														<Text style={{ fontSize: '9px', color: 'var(--theme-tertiary-color-8)', marginLeft: '8px' }}>
+														<Text
+															style={{
+																fontSize: "9px",
+																color: "var(--theme-tertiary-color-8)",
+																marginLeft: "8px",
+															}}
+														>
 															{getValue(medicine.dose_details_bn, medicine.dose_details)}{" "}
 															{" ---- "}
 															{getValue(medicine.by_meal_bn, medicine.by_meal)} {"----"}
@@ -431,7 +475,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									>
 										<Box>
 											<Text size="sm" fw={500}>
-												উপদেশ: {getValue(jsonContent.advise, )}
+												উপদেশ: {getValue(jsonContent.advise)}
 											</Text>
 											{patientInfo?.referred_comment && (
 												<>
@@ -446,23 +490,41 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 													* Follow Up Date: {formatDate(jsonContent?.follow_up_date)}
 												</Text>
 											)}
-											<Text size="sm" fz={'xs'} fw={600}>
+											<Text size="sm" fz={"xs"} fw={600}>
 												* রিপোর্ট (যদি থাকে ) সংগ্রহ করে দেখা করবেন।
 											</Text>
 										</Box>
 									</Flex>
-
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td colSpan={2} style={{ borderTop: '1px solid var(--theme-tertiary-color-8)', padding: '4px' }} >
+								<Table.Td
+									colSpan={2}
+									style={{ borderTop: "1px solid var(--theme-tertiary-color-8)", padding: "4px" }}
+								>
 									<Box align="center">
-										<Barcode fontSize={"12"} width={"1"} height={"24"} value={patientInfo?.patient_id} />
+										{patientInfo?.patient_id && (
+											<Barcode
+												fontSize={"12"}
+												width={"1"}
+												height={"24"}
+												value={patientInfo?.patient_id}
+											/>
+										)}
 									</Box>
 								</Table.Td>
-								<Table.Td colSpan={4} style={{ textAlign: 'right',borderTop: '1px solid var(--theme-tertiary-color-8)', padding: '4px' }} >
-									<Box pr={'md'}>
-										<Text fz={"sm"} mt={'md'}>{t("PrescribedBy")}</Text>
+								<Table.Td
+									colSpan={4}
+									style={{
+										textAlign: "right",
+										borderTop: "1px solid var(--theme-tertiary-color-8)",
+										padding: "4px",
+									}}
+								>
+									<Box pr={"md"}>
+										<Text fz={"sm"} mt={"md"}>
+											{t("PrescribedBy")}
+										</Text>
 										<Text fz={"xs"}>{patientInfo?.doctor_name}</Text>
 									</Box>
 								</Table.Td>
@@ -470,20 +532,33 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 						</Table.Tbody>
 					</Table>
 					<DashedDivider />
-					<Table style={{ borderCollapse: 'collapse', width: '100%',border: '1px solid var(--theme-tertiary-color-8)' }} className="customTable">
+					<Table
+						style={{
+							borderCollapse: "collapse",
+							width: "100%",
+							border: "1px solid var(--theme-tertiary-color-8)",
+						}}
+						className="customTable"
+					>
 						<Table.Tbody>
-							<Table.Tr style={{ border: '1px solid var(--theme-tertiary-color-8)' }}>
-								<Table.Td colSpan={'6'}>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colSpan={"6"}>
 									<Flex gap="md" align="center" justify="center">
 										<Flex>
 											<Image src={GLogo} alt="logo" width={46} height={46} />
-											<Box pl={'xs'} pr={'xs'} >
+											<Box pl={"xs"} pr={"xs"}>
 												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
 													{hospitalConfigData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
 													{hospitalConfigData?.address || ""},
-													<IconPhoneCall style={{ width: '12', height: '12' }} stroke={1.5} /> {(hospitalConfigData?.hotline && ` ${hospitalConfigData?.hotline}`) || ""}
+													<IconPhoneCall
+														style={{ width: "12", height: "12" }}
+														stroke={1.5}
+													/>{" "}
+													{(hospitalConfigData?.hotline &&
+														` ${hospitalConfigData?.hotline}`) ||
+														""}
 												</Text>
 											</Box>
 											<Image src={TBLogo} alt="logo" width={46} height={46} />
@@ -491,12 +566,26 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									</Flex>
 								</Table.Td>
 							</Table.Tr>
-							<Table.Tr style={{ border: '1px solid var(--theme-tertiary-color-8)' }}>
-								<Table.Td colSpan={'2'} style={{ borderRight: '1px solid var(--theme-tertiary-color-8)', padding: '4px',verticalAlign: 'top',  }}>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td
+									colSpan={"2"}
+									style={{
+										borderRight: "1px solid var(--theme-tertiary-color-8)",
+										padding: "4px",
+										verticalAlign: "top",
+									}}
+								>
 									<Box align="left">
-										<Barcode fontSize={"10"} width={"1"} height={"24"} value={patientInfo?.barcode} />
+										{patientInfo?.barcode && (
+											<Barcode
+												fontSize={"10"}
+												width={"1"}
+												height={"24"}
+												value={patientInfo?.barcode}
+											/>
+										)}
 									</Box>
-									<Stack gap="1" ml={'xs'}>
+									<Stack gap="1" ml={"xs"}>
 										<Text size="xs" fw={500}>
 											Name: {getValue(patientInfo?.name)}
 										</Text>
@@ -510,16 +599,22 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											Prescribed By: {getValue(patientInfo?.doctor_name)}
 										</Text>
 										{jsonContent?.pharmacyInstruction && (
-										<Text size="xs" fw={400} >
-											Comment: {getValue(jsonContent?.pharmacyInstruction)}
-										</Text>
+											<Text size="xs" fw={400}>
+												Comment: {getValue(jsonContent?.pharmacyInstruction)}
+											</Text>
 										)}
 										{/*<Text size="xs">Doctor ID- {getValue(patientInfo?.employee_id)}</Text>
 								<Text size="xs">Designation: {getValue(patientInfo?.designation_name)}</Text>*/}
 									</Stack>
 								</Table.Td>
-								<Table.Td colSpan={'4'} style={{ verticalAlign: 'top'}}>
-									<Box mt={'4'} style={{ border: "1px solid var(--theme-tertiary-color-2)",  overflow: "hidden" }}>
+								<Table.Td colSpan={"4"} style={{ verticalAlign: "top" }}>
+									<Box
+										mt={"4"}
+										style={{
+											border: "1px solid var(--theme-tertiary-color-2)",
+											overflow: "hidden",
+										}}
+									>
 										<Grid
 											columns={24}
 											p={8}

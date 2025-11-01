@@ -34,7 +34,7 @@ export function capitalizeWords(text) {
 	if (!text) return "";
 	return text
 		.split(" ")
-		.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
 		.join(" ");
 }
 
@@ -199,3 +199,5 @@ export const waitForDataAndPrint = (ref, printFun, maxAttempts = 50, currentAtte
 		setTimeout(() => waitForDataAndPrint(ref, printFun, maxAttempts, currentAttempt + 1), 200);
 	}
 };
+
+export const isEmpty = (v) => v === "" || v === null || v === undefined;

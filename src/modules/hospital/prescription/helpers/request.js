@@ -1,3 +1,5 @@
+import { isEmpty } from "@utils/index";
+
 export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
 	const parseDate = (dateValue) => {
 		if (!dateValue) return new Date();
@@ -48,7 +50,18 @@ export const getMedicineFormInitialValues = () => {
 		initialValues: medicineInitialValues,
 
 		validate: {
+			medicine_id: (_, values) => {
+				return isEmpty(values?.medicine_id) && isEmpty(values?.generic)
+					? "Medicine or Generic name is required"
+					: null;
+			},
+			generic: (_, values) => {
+				return isEmpty(values?.medicine_id) && isEmpty(values?.generic)
+					? "Medicine or Generic name is required"
+					: null;
+			},
 			medicine_dosage_id: (value) => (value ? null : "Dosage is required"),
+			medicine_bymeal_id: (value) => (value ? null : "By Meal is required"),
 			quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},
 	};

@@ -53,9 +53,19 @@ export const appendGeneralValuesToForm = (form, selectedMedicine) => {
 	if (!selectedMedicine) return console.error("selected medicine should be passed in general values function");
 
 	form.setFieldValue("medicine_name", selectedMedicine.product_name);
-	form.setFieldValue("generic", selectedMedicine.generic);
-	form.setFieldValue("generic_id", selectedMedicine.generic_id);
+	// form.setFieldValue("generic", selectedMedicine.generic);
+	// form.setFieldValue("generic_id", selectedMedicine.generic_id);
 	form.setFieldValue("company", selectedMedicine.company);
 	form.setFieldValue("opd_quantity", selectedMedicine?.opd_quantity || 0);
 	form.setFieldValue("opd_limit", selectedMedicine?.opd_quantity || 0);
+};
+
+export const medicineOptionsFilter = ({ options, search }) => {
+	const splittedSearch = search.toLowerCase().trim().split(" ");
+	return options.filter((option) => {
+		const labelWords = option.label.toLowerCase().trim().split(" ");
+		const genericWords = (option.generic || "").toLowerCase().trim().split(" ");
+		const allWords = [...labelWords, ...genericWords];
+		return splittedSearch.every((searchWord) => allWords.some((word) => word.includes(searchWord)));
+	});
 };

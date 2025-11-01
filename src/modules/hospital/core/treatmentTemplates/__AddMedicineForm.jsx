@@ -24,7 +24,13 @@ import { notifications } from "@mantine/notifications";
 import SelectForm from "@components/form-builders/SelectForm";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
-import { appendDosageValueToForm, appendGeneralValuesToForm, appendMealValueToForm } from "@utils/prescription";
+import {
+	appendDosageValueToForm,
+	appendGeneralValuesToForm,
+	appendMealValueToForm,
+	medicineOptionsFilter,
+} from "@utils/prescription";
+import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 
 export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	const [updateKey, setUpdateKey] = useState(0);
@@ -42,6 +48,8 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
+	const [medicineDosageSearchValue, setMedicineDosageSearchValue] = useState("");
+	const [medicineByMealSearchValue, setMedicineByMealSearchValue] = useState("");
 
 	const {
 		data: entity,
@@ -51,6 +59,20 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 		url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.VIEW}/${id}`,
 	});
 	const entityData = entity?.data?.treatment_medicine_format;
+
+	useEffect(() => {
+		if (medicineTerm.length === 0) {
+			medicineForm.setFieldValue("medicine_id", "");
+		}
+
+		if (medicineDosageSearchValue.length === 0) {
+			medicineForm.setFieldValue("medicine_dosage_id", "");
+		}
+
+		if (medicineByMealSearchValue.length === 0) {
+			medicineForm.setFieldValue("medicine_bymeal_id", "");
+		}
+	}, [medicineDosageSearchValue, medicineByMealSearchValue, medicineTerm]);
 
 	// Add hotkey for save functionality
 	useHotkeys([
@@ -98,6 +120,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 
 		// If medicine field is being changed, auto-populate other fields from medicine data
 		if (field === "medicine_id" && value) {
+			medicineForm.clearFieldError("generic");
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
 
 			if (selectedMedicine) {
@@ -122,6 +145,10 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 					medicineForm.setFieldValue("duration", "month");
 				}
 			}
+		}
+
+		if (field === "generic" && value) {
+			medicineForm.clearFieldError("medicine_id");
 		}
 
 		if (field === "medicine_bymeal_id" && value) {
@@ -170,9 +197,12 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
 				medicineForm.reset();
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				setMedicineDosageSearchValue("");
+				setMedicineByMealSearchValue("");
 				await refetchEntity();
 			}
 		} catch (error) {
+			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
@@ -211,74 +241,98 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 			>
 				<Group align="end" gap="les">
 					<Group grow w="100%" gap="les">
-						<Select
-							clearable
-							searchable
-							onSearchChange={(v) => {
-								setMedicineTerm(v);
-							}}
-							id="medicine_id"
-							name="medicine_id"
-							data={medicineData?.map((item) => ({
-								label: item.product_name,
-								value: item.product_id?.toString(),
-							}))}
-							value={medicineForm.values.medicine_id}
-							onChange={(v) => handleChange("medicine_id", v)}
-							placeholder={t("Medicine")}
-							tooltip="Select medicine"
-							nothingFoundMessage="Type to find medicine..."
-							onBlur={() => setMedicineTerm("")}
-							classNames={inputCss}
-						/>
-						<Autocomplete
-							tooltip={t("EnterGenericName")}
-							id="generic"
-							name="generic"
-							data={medicineGenericData?.map((item, index) => ({
-								label: item.name,
-								value: `${item.name} ${index}`,
-							}))}
-							value={medicineForm.values.generic}
-							onChange={(v) => {
-								handleChange("generic", v);
-								setMedicineGenericTerm(v);
-							}}
-							placeholder={t("GenericName")}
-							onBlur={() => setMedicineGenericTerm("")}
-							classNames={inputCss}
-						/>
+						<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
+							<Select
+								clearable
+								searchable
+								onSearchChange={(v) => {
+									setMedicineTerm(v);
+								}}
+								id="medicine_id"
+								name="medicine_id"
+								data={medicineData?.map((item) => ({
+									label: item.product_name,
+									value: item.product_id?.toString(),
+									generic: item.generic || "",
+								}))}
+								filter={medicineOptionsFilter}
+								value={medicineForm.values.medicine_id}
+								onChange={(v) => handleChange("medicine_id", v)}
+								placeholder={t("Medicine")}
+								tooltip="Select medicine"
+								nothingFoundMessage="Type to find medicine..."
+								classNames={inputCss}
+								error={!!medicineForm.errors.medicine_id}
+							/>
+						</FormValidatorWrapper>
+
+						<FormValidatorWrapper opened={medicineForm.errors.generic}>
+							<Autocomplete
+								tooltip={t("EnterGenericName")}
+								id="generic"
+								name="generic"
+								data={medicineGenericData?.map((item, index) => ({
+									label: item.name,
+									value: `${item.name} ${index}`,
+								}))}
+								value={medicineForm.values.generic}
+								onChange={(v) => {
+									handleChange("generic", v);
+									setMedicineGenericTerm(v);
+								}}
+								placeholder={t("GenericName")}
+								classNames={inputCss}
+								error={!!medicineForm.errors.generic}
+							/>
+						</FormValidatorWrapper>
 					</Group>
 					<Grid w="100%" columns={12} gutter="xxxs">
 						<Grid.Col span={6}>
 							<Group grow gap="les">
-								<Select
-									classNames={inputCss}
-									id="medicine_dosage_id"
-									name="medicine_dosage_id"
-									data={dosage_options?.map((dosage) => ({
-										value: dosage.id?.toString(),
-										label: dosage.name,
-									}))}
-									value={medicineForm.values.medicine_dosage_id}
-									placeholder={t("Dosage")}
-									required
-									tooltip={t("EnterDosage")}
-									onChange={(v) => handleChange("medicine_dosage_id", v)}
-								/>
-								<Select
-									classNames={inputCss}
-									id="medicine_bymeal_id"
-									name="medicine_bymeal_id"
-									data={by_meal_options?.map((byMeal) => ({
-										value: byMeal.id?.toString(),
-										label: byMeal.name,
-									}))}
-									value={medicineForm.values.medicine_bymeal_id}
-									placeholder={t("ByMeal")}
-									tooltip={t("EnterWhenToTakeMedicine")}
-									onChange={(v) => handleChange("medicine_bymeal_id", v)}
-								/>
+								<FormValidatorWrapper
+									position="bottom-end"
+									opened={medicineForm.errors.medicine_dosage_id}
+								>
+									<Select
+										searchable
+										searchValue={medicineDosageSearchValue}
+										onSearchChange={setMedicineDosageSearchValue}
+										classNames={inputCss}
+										id="medicine_dosage_id"
+										name="medicine_dosage_id"
+										data={dosage_options?.map((dosage) => ({
+											value: dosage.id?.toString(),
+											label: dosage.name,
+										}))}
+										value={medicineForm.values.medicine_dosage_id}
+										placeholder={t("Dosage")}
+										tooltip={t("EnterDosage")}
+										onChange={(v) => handleChange("medicine_dosage_id", v)}
+										error={!!medicineForm.errors.medicine_dosage_id}
+									/>
+								</FormValidatorWrapper>
+								<FormValidatorWrapper
+									position="bottom-end"
+									opened={medicineForm.errors.medicine_bymeal_id}
+								>
+									<Select
+										searchable
+										searchValue={medicineByMealSearchValue}
+										onSearchChange={setMedicineByMealSearchValue}
+										classNames={inputCss}
+										id="medicine_bymeal_id"
+										name="medicine_bymeal_id"
+										data={by_meal_options?.map((byMeal) => ({
+											value: byMeal.id?.toString(),
+											label: byMeal.name,
+										}))}
+										value={medicineForm.values.medicine_bymeal_id}
+										placeholder={t("ByMeal")}
+										tooltip={t("EnterWhenToTakeMedicine")}
+										onChange={(v) => handleChange("medicine_bymeal_id", v)}
+										error={!!medicineForm.errors.medicine_bymeal_id}
+									/>
+								</FormValidatorWrapper>
 							</Group>
 						</Grid.Col>
 						<Grid.Col span={6}>

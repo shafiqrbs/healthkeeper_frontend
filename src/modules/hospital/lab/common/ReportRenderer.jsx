@@ -29,7 +29,7 @@ import Dengue from "./report-formats/Dengue";
 const module = MODULES.LAB_TEST;
 
 const ReportRenderer = forwardRef(
-	({ diagnosticReport, setDiagnosticReport, fetching, inputsRef, refetchDiagnosticReport }) => {
+	({ diagnosticReport, setDiagnosticReport, fetching, inputsRef, refetchDiagnosticReport }, ref) => {
 		const { t } = useTranslation();
 		const form = useForm(getFormValues(t));
 		const { reportId } = useParams();

@@ -148,7 +148,14 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
-									<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.invoice} />
+									{patientInfo?.invoice && (
+										<Barcode
+											fontSize={"12"}
+											width={"1"}
+											height={"40"}
+											value={patientInfo?.invoice}
+										/>
+									)}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>

@@ -1,4 +1,5 @@
 import { hasLength } from "@mantine/form";
+import { isEmpty } from "@utils/index";
 
 const initialValues = {
 	particular_type_master_id: 24,
@@ -23,7 +24,7 @@ const initialReportValues = {
 	unit_name: "",
 };
 
-export const getInitialReportValues = (t) => {
+export const getInitialReportValues = () => {
 	return {
 		initialReportValues,
 		validate: {
@@ -53,7 +54,18 @@ export const getMedicineFormInitialValues = () => {
 		initialValues: medicineInitialValues,
 
 		validate: {
+			medicine_id: (_, values) => {
+				return isEmpty(values?.medicine_id) && isEmpty(values?.generic)
+					? "Medicine or Generic name is required"
+					: null;
+			},
+			generic: (_, values) => {
+				return isEmpty(values?.medicine_id) && isEmpty(values?.generic)
+					? "Medicine or Generic name is required"
+					: null;
+			},
 			medicine_dosage_id: (value) => (value ? null : "Dosage is required"),
+			medicine_bymeal_id: (value) => (value ? null : "By Meal is required"),
 			quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},
 	};
