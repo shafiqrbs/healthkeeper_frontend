@@ -14,7 +14,7 @@ import { DataTable } from "mantine-datatable";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
-import {CORE_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
+import {CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
 import React, { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
@@ -36,6 +36,7 @@ import {setRefetchData} from "@/app/store/core/crudSlice.js";
 import {notifications} from "@mantine/notifications";
 import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants/index.js";
 import {useDispatch} from "react-redux";
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
 
 export default function __Form() {
 	const { id } = useParams();
@@ -48,7 +49,7 @@ export default function __Form() {
     const navigate = useNavigate();
 	const height = mainAreaHeight - 78;
 	const [resetKey, setResetKey] = useState(0);
-
+//	const { id } = useParams();
 	const form = useForm(getInitialValues(t));
 	const workOrderForm = useForm(getWorkorderFormInitialValues(t));
 	const [openedDrawer, { open: openDrawer, close: closeDrawer }] = useDisclosure(false);
@@ -59,6 +60,13 @@ export default function __Form() {
 			fetchSingleRequisitionData();
 		}
 	}, [id]);
+
+
+	/*
+		const { data: workorder, isLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
+
+	});*/
 
 	async function fetchSingleRequisitionData() {
 		const response = await getDataWithoutStore({

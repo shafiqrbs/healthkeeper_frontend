@@ -30,18 +30,19 @@ export default function Index() {
 				/>
 			) : (
 				<>
-					<CoreHeaderNavbar
-						module="core"
-						pageTitle={t("ManageRequisition")}
-						roles={t("Roles")}
-						allowZeroPercentage=""
-						currencySymbol=""
-					/>
+
 					<Flex p="16px" w="100%" gap="14px">
 						{!matches && (
 							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
 						)}
 						<Box bg="white" w="100%" p="xs" className="borderRadiusAll">
+							<CoreHeaderNavbar
+								module="core"
+								pageTitle={t("ManageRequisition")}
+								roles={t("Roles")}
+								allowZeroPercentage=""
+								currencySymbol=""
+							/>
 							<__From module={module} />
 						</Box>
 					</Flex>

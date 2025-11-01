@@ -67,6 +67,5 @@ export default function _IndexForm({ module, form, close, mode }) {
 	if (insertType === "create") {
 		return <__Create module={module} form={form} close={close} />;
 	}
-
 	return <__Update module={module} form={form} close={close} />;
 }
