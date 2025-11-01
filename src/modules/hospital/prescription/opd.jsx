@@ -42,8 +42,13 @@ export default function Index() {
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const { prescriptionId } = useParams();
 	const dispatch = useDispatch();
-	const tabParticulars = particularsData?.map((item) => item.particular_type);
-	const tabList = tabParticulars?.map((item) => item.name);
+	const tabParticulars = particularsData?.map((item) => ({
+		particular_type: item.particular_type,
+		ordering: item?.ordering ?? 0,
+	}));
+	const tabList = [...(tabParticulars?.sort((a, b) => a?.ordering - b?.ordering) || [])]?.map(
+		(item) => item?.particular_type?.name
+	);
 
 	const [fetching, setFetching] = useState(false);
 	const [records, setRecords] = useState([]);

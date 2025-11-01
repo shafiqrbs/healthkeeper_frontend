@@ -41,8 +41,8 @@ export const medicineInitialValues = {
 	company: "",
 	dose_details: "",
 	by_meal: "",
-	medicine_dosage_id: "",
-	medicine_bymeal_id: "",
+	// medicine_dosage_id: "",
+	// medicine_bymeal_id: "",
 	times: "",
 	duration: "Day",
 	quantity: 1,
@@ -64,9 +64,9 @@ export const getMedicineFormInitialValues = () => {
 					? "Medicine or Generic name is required"
 					: null;
 			},
-		//	medicine_dosage_id: (value) => (value ? null : "Dosage is required"),
-		//	medicine_bymeal_id: (value) => (value ? null : "By Meal is required"),
-		//	quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
+			// medicine_dosage_id: (value) => (value ? null : "Dosage is required"),
+			// medicine_bymeal_id: (value) => (value ? null : "By Meal is required"),
+			quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},
 	};
 };

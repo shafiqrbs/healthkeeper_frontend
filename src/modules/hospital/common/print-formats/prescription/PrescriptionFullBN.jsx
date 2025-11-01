@@ -17,6 +17,8 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
 	const patientReport = jsonContent?.patient_report || {};
+
+	console.log(patientReport);
 	const order = patientReport?.order || {};
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = jsonContent?.medicines || [];
@@ -40,6 +42,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	};
 
 	const orderedExamKeys = normalizeOrder(order);
+	console.log(orderedExamKeys);
 
 	const hasArrayWithLength = (arr) => Array.isArray(arr) && arr.length > 0;
 

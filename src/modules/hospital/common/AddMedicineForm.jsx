@@ -111,6 +111,7 @@ export default function AddMedicineForm({
 	const [showPrint, setShowPrint] = useState(false);
 	const [medicineDosageSearchValue, setMedicineDosageSearchValue] = useState("");
 	const [medicineByMealSearchValue, setMedicineByMealSearchValue] = useState("");
+
 	const printPrescription2A4 = useReactToPrint({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,
@@ -394,6 +395,8 @@ export default function AddMedicineForm({
 		try {
 			const createdBy = getLoggedInUser();
 
+			console.log(tabParticulars);
+
 			const formValue = {
 				is_completed: true,
 				medicines,
@@ -407,8 +410,8 @@ export default function AddMedicineForm({
 				patient_report: {
 					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,
-					order: tabParticulars.map((item, index) => ({
-						[item.slug]: index,
+					order: tabParticulars.map((item) => ({
+						[item.particular_type.slug]: item.ordering,
 					})),
 				},
 			};
