@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -8,14 +8,16 @@ import { updateEntityData } from "@/app/store/core/crudThunk";
 import { modals } from "@mantine/modals";
 import { Text, rem } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import {ERROR_NOTIFICATION_COLOR, MODULES_PHARMACY, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
+import { ERROR_NOTIFICATION_COLOR, MODULES_PHARMACY, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { IconAlertCircle, IconCheck } from "@tabler/icons-react";
 import { formatDateForMySQL } from "@utils/index";
 import { getWorkorderFormInitialValues } from "../helpers/request";
 import Form from "./__Form";
 
 const module = MODULES_PHARMACY.PURCHASE;
-export default function Update({ form, records = [], setRecords, data }) {
+export default function Update({ form, data }) {
+	const [records, setRecords] = useState([]);
+
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -77,7 +79,7 @@ export default function Update({ form, records = [], setRecords, data }) {
 			const requestData = {
 				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.UPDATE}/${id}`,
 				data: payload,
-				module
+				module,
 			};
 
 			const result = await dispatch(updateEntityData(requestData));

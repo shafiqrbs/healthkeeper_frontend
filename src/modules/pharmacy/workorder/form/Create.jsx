@@ -10,11 +10,18 @@ import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch } from "react-redux";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { notifications } from "@mantine/notifications";
-import {ERROR_NOTIFICATION_COLOR, MODULES_PHARMACY, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
+import { ERROR_NOTIFICATION_COLOR, MODULES_PHARMACY, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { IconAlertCircle, IconCheck } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import { useLocalStorage } from "@mantine/hooks";
 const module = MODULES_PHARMACY.PURCHASE;
-export default function Create({ form, records = [], setRecords }) {
+
+export default function Create({ form }) {
+	const [records, setRecords] = useLocalStorage({
+		key: "workorder-records",
+		defaultValue: [],
+	});
+
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const workOrderForm = useForm(getWorkorderFormInitialValues(t));
@@ -52,7 +59,7 @@ export default function Create({ form, records = [], setRecords }) {
 			const requestData = {
 				url: PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.CREATE,
 				data: payload,
-				module
+				module,
 			};
 
 			const result = await dispatch(storeEntityData(requestData));
@@ -71,6 +78,8 @@ export default function Create({ form, records = [], setRecords }) {
 			} else if (storeEntityData.fulfilled.match(result)) {
 				form.reset();
 				workOrderForm.reset();
+				localStorage.removeItem("workorder-records");
+				setRecords([]);
 				notifications.show({
 					color: SUCCESS_NOTIFICATION_COLOR,
 					title: t("CreateSuccessfully"),

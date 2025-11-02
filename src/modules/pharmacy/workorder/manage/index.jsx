@@ -5,17 +5,40 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
-import { useOutletContext } from "react-router-dom";
-import { MODULES_PHARMACY } from "@/constants";
-import IndexForm from "../form/IndexForm";
-
-
+import { useOutletContext, useParams } from "react-router-dom";
+import Update from "../form/Update";
+import Create from "../form/Create";
+import { getInitialValues } from "../helpers/request";
+import { useForm } from "@mantine/form";
+import { useEffect, useState } from "react";
+import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
+import { getDataWithoutStore } from "@/services/apiService";
 
 export default function Index({ mode }) {
 	const { t } = useTranslation();
+	const form = useForm(getInitialValues(t));
+
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
 	const { mainAreaHeight } = useOutletContext();
+	const [data, setData] = useState({});
+
+	const { id } = useParams();
+
+	useEffect(() => {
+		if (id) {
+			fetchSingleWorkorderData();
+		}
+	}, [id]);
+
+	async function fetchSingleWorkorderData() {
+		const response = await getDataWithoutStore({
+			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.VIEW}/${id}`,
+		});
+		setData(response?.data);
+	}
+
+	const isEditMode = mode === "edit";
 
 	return (
 		<>
@@ -36,13 +59,13 @@ export default function Index({ mode }) {
 						)}
 						<Box bg="white" w="100%" p="xs" className="borderRadiusAll">
 							<CoreHeaderNavbar
-								module="core"
+								module="pharmacy"
 								pageTitle={t("ManageRequisition")}
 								roles={t("Roles")}
 								allowZeroPercentage=""
 								currencySymbol=""
 							/>
-							<IndexForm mode={mode} />
+							{isEditMode ? <Update form={form} data={data} /> : <Create form={form} />}
 						</Box>
 					</Flex>
 				</>

@@ -1,7 +1,7 @@
 const initialValues = {
-    expired_date: "",
-    production_date: "",
-	medicine_id: "",
+	expired_date: "",
+	production_date: "",
+	stock_item_id: "",
 	quantity: "",
 };
 
@@ -9,7 +9,7 @@ export const getInitialValues = (t) => {
 	return {
 		initialValues,
 		validate: {
-			medicine_id: (value) => {
+			stock_item_id: (value) => {
 				if (!value) return t("MedicineValidationRequired");
 				return null;
 			},
@@ -24,15 +24,15 @@ export const getInitialValues = (t) => {
 export const getWorkorderFormInitialValues = (t) => {
 	return {
 		initialValues: {
-			comment: "",
+			remark: "",
 			vendor_id: "",
 		},
 		validate: {
-			comment: (value) => {
+			remark: (value) => {
 				if (!value) return t("CommentValidationRequired");
 				return null;
 			},
-            vendor_id: (value) => {
+			vendor_id: (value) => {
 				if (!value) return t("ChooseVendor");
 				return null;
 			},

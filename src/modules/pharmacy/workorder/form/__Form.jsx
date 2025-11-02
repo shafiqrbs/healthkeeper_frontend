@@ -67,10 +67,9 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 	};
 
 	const handleMedicineChange = (value) => {
-		const selectedMedicine = medicineData.find((medicine) => medicine.stock_id === value);
-		form.setFieldValue("stock_id", value);
-		form.setFieldValue("medicine_name", selectedMedicine.product_name);
-		form.setFieldValue("generic", selectedMedicine.generic);
+		const selectedMedicine = medicineData.find((medicine) => medicine.stock_item_id?.toString() === value);
+		form.setFieldValue("stock_item_id", value);
+		form.setFieldValue("medicine_name", selectedMedicine?.product_name || selectedMedicine?.medicine_name);
 	};
 
 	const handleResetRequisition = () => {
@@ -96,6 +95,40 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 			>
 				<Grid columns={24} gutter={{ base: 8 }}>
 					<Grid.Col span={5}>
+						<Select
+							key={resetKey}
+							searchable
+							onSearchChange={setMedicineTerm}
+							onChange={(value) => handleMedicineChange(value)}
+							tooltip={t("NameValidationMessage")}
+							placeholder={t("Medicine")}
+							name="stock_item_id"
+							id="stock_item_id"
+							nextField="quantity"
+							value={form.values.stock_item_id}
+							required={true}
+							data={medicineData?.map((item) => ({
+								label: item?.medicine_name,
+								value: item?.stock_item_id?.toString(),
+							}))}
+							onBlur={() => setMedicineTerm("")}
+							nothingFoundMessage="Type to find medicine..."
+							classNames={inputCss}
+						/>
+					</Grid.Col>
+					<Grid.Col span={5}>
+						<InputNumberForm
+							form={form}
+							tooltip={t("QuantityValidationMessage")}
+							placeholder={t("Quantity")}
+							name="quantity"
+							id="quantity"
+							nextField="EntityFormSubmit"
+							value={form.values.quantity}
+							required={true}
+						/>
+					</Grid.Col>
+					<Grid.Col span={5}>
 						<DatePickerForm
 							form={form}
 							tooltip={t("NameValidationMessage")}
@@ -115,40 +148,6 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 							id="expired_date"
 							nextField="EntityFormSubmit"
 							value={form.values.expired_date}
-						/>
-					</Grid.Col>
-					<Grid.Col span={5}>
-						<Select
-							key={resetKey}
-							searchable
-							onSearchChange={setMedicineTerm}
-							onChange={(value) => handleMedicineChange(value)}
-							tooltip={t("NameValidationMessage")}
-							placeholder={t("Medicine")}
-							name="stock_id"
-							id="stock_id"
-							nextField="quantity"
-							value={form.values.stock_id}
-							required={true}
-							data={medicineData?.map((item) => ({
-								label: item.product_name,
-								value: item.stock_id?.toString(),
-							}))}
-							onBlur={() => setMedicineTerm("")}
-							nothingFoundMessage="Type to find medicine..."
-							classNames={inputCss}
-						/>
-					</Grid.Col>
-					<Grid.Col span={5}>
-						<InputNumberForm
-							form={form}
-							tooltip={t("QuantityValidationMessage")}
-							placeholder={t("Quantity")}
-							name="quantity"
-							id="quantity"
-							nextField="EntityFormSubmit"
-							value={form.values.quantity}
-							required={true}
 						/>
 					</Grid.Col>
 					<Grid.Col span={4}>
@@ -203,34 +202,51 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 							sortable: false,
 							render: (_item, index) => index + 1,
 						},
-						{
-							accessor: "production_date",
-							title: t("ExpiryStartDate"),
-							sortable: false,
-							render: (item) => formatDate(item.production_date),
-						},
-						{
-							accessor: "expired_date",
-							title: t("ExpiryEndDate"),
-							sortable: false,
-							render: (item) => formatDate(item.expired_date),
-						},
+
 						{
 							accessor: "medicine_name",
 							title: t("MedicineName"),
 							sortable: true,
 						},
 						{
-							accessor: "generic",
-							title: t("GenericName"),
-							sortable: false,
-							render: (item) => item.generic || "N/A",
-						},
-						{
 							accessor: "quantity",
 							title: t("Quantity"),
 							sortable: false,
-							render: (item) => item.quantity,
+							render: (item) => (
+								<InputNumberForm
+									form={form}
+									name="quantity"
+									id="quantity"
+									value={item.quantity}
+									required={true}
+								/>
+							),
+						},
+						{
+							accessor: "production_date",
+							title: t("ExpiryStartDate"),
+							sortable: false,
+							render: (item) => (
+								<DatePickerForm
+									form={form}
+									name="production_date"
+									id="production_date"
+									value={item.production_date}
+								/>
+							),
+						},
+						{
+							accessor: "expired_date",
+							title: t("ExpiryEndDate"),
+							sortable: false,
+							render: (item) => (
+								<DatePickerForm
+									form={form}
+									name="expired_date"
+									id="expired_date"
+									value={item.expired_date}
+								/>
+							),
 						},
 						{
 							accessor: "action",
@@ -283,18 +299,18 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 							</Grid.Col>
 						</Grid>
 						<Text bg="var(--theme-secondary-color-6)" fz="sm" c="white" px="sm" py="les">
-							{t("Comment")}
+							{t("Remark")}
 						</Text>
 						<Box p="sm">
 							<TextAreaForm
 								form={workOrderForm}
 								label=""
-								value={workOrderForm.values.comment}
-								name="comment"
-								placeholder="Write a comment..."
+								value={workOrderForm.values.remark}
+								name="remark"
+								placeholder="Write a remark..."
 								showRightSection={false}
 								style={{ input: { height: "60px" } }}
-								tooltip={t("EnterComment")}
+								tooltip={t("EnterRemark")}
 							/>
 						</Box>
 					</Box>
