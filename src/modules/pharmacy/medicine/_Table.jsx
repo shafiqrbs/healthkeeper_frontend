@@ -1,6 +1,6 @@
-import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, Select, Checkbox } from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, Select, Checkbox, CloseButton} from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconAlertCircle, IconEdit, IconChevronUp, IconSelector } from "@tabler/icons-react";
+import {IconAlertCircle, IconEdit, IconChevronUp, IconSelector, IconEye, IconTrashX} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -17,7 +17,7 @@ import { deleteEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { errorNotification } from "@components/notification/errorNotification";
@@ -32,7 +32,7 @@ export default function _Table({ module, open }) {
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const height = mainAreaHeight - 48;
+	const height = mainAreaHeight - 84;
 	const [submitFormData, setSubmitFormData] = useState({});
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
@@ -226,101 +226,14 @@ export default function _Table({ module, open }) {
 							sortable: true,
 						},
 						{
-							accessor: "dose_details",
-							title: t("Dose"),
-							sortable: false,
+							accessor: "doses_details",
+							title: t("Doses"),
+							sortable: true,
 						},
 						{
-							accessor: "medicine_dosage_id",
-							title: t("MedicineDosage"),
-							render: (item) => (
-								<Select
-									size="xs"
-									className={inlineInputCss.inputText}
-									placeholder={t("SelectDosage")}
-									data={dosageDropdown}
-									value={String(submitFormData[item.id]?.medicine_dosage_id) ?? ""}
-									onChange={(val) => {
-										handleDataTypeChange(item.id, "medicine_dosage_id", val, true);
-									}}
-								/>
-							),
-						},
-						{
-							accessor: "medicine_bymeal_id",
-							title: t("MedicineByMeal"),
-							render: (item) => (
-								<Select
-									size="xs"
-									className={inlineInputCss.inputText}
-									placeholder={t("SelectByMeal")}
-									data={byMealDropdown}
-									value={String(submitFormData[item.id]?.medicine_bymeal_id) ?? ""}
-									onChange={(val) => {
-										handleDataTypeChange(item.id, "medicine_bymeal_id", val, true);
-									}}
-								/>
-							),
-						},
-						{
-							accessor: "opd_quantity",
-							title: t("OPDQty"),
-							width: 80,
-							sortable: false,
-							render: (item) => (
-								<TextInput
-									size="xs"
-									className={inlineInputCss.inputText}
-									placeholder={t("Quantity")}
-									value={submitFormData[item.id]?.opd_quantity || ""}
-									onChange={(event) =>
-										handleDataTypeChange(item.id, "opd_quantity", event.currentTarget.value)
-									}
-									onBlur={() => handleRowSubmit(item.id)}
-								/>
-							),
-						},
-						{
-							accessor: "opd_status",
-							title: t("OutDoor"),
-							render: (item) => (
-								<Checkbox
-									key={item.id}
-									size="sm"
-									checked={submitFormData[item.id]?.opd_status ?? false}
-									onChange={(val) =>
-										handleDataTypeChange(item.id, "opd_status", val.currentTarget.checked, true)
-									}
-								/>
-							),
-						},
-						{
-							accessor: "ipd_status",
-							title: t("InDoor"),
-							render: (item) => (
-								<Checkbox
-									key={item.id}
-									size="sm"
-									checked={submitFormData[item.id]?.ipd_status ?? false}
-									onChange={(val) =>
-										handleDataTypeChange(item.id, "ipd_status", val.currentTarget.checked, true)
-									}
-								/>
-							),
-						},
-						{
-							accessor: "admin_status",
-							title: t("Admin"),
-							render: (item) => (
-								<Checkbox
-									key={item.id}
-									size="sm"
-									checked={submitFormData[item.id]?.admin_status ?? false}
-									onChange={(val) =>
-										handleDataTypeChange(item.id, "admin_status", val.currentTarget.checked, true)
-									}
-								/>
-							),
+							accessor: "by_meal",
+							title: t("Bymeal"),
+							sortable: true,
 						},
 
 						{
@@ -331,17 +244,36 @@ export default function _Table({ module, open }) {
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
 									<Button.Group>
-										<ActionIcon
-											size="sm"
-											variant="transparent"
-											radius="xs"
-											onClick={() => handleDelete(values.id)}
-											color="var(--theme-delete-color)"
+										<Button
+											onClick={() => {
+												handleEntityEdit(values.id);
+												open();
+											}}
+											variant="filled"
+											c="white"
 											fw={400}
-											aria-label="Settings"
+											size="compact-xs"
+											leftSection={<IconEdit size={12} />}
+											className="border-left-radius-none btnPrimaryBg"
 										>
-											<IconEdit stroke={1} />
-										</ActionIcon>
+											{t("Edit")}
+										</Button>
+										<Button
+											onClick={() => handleDataShow(values.id)}
+											variant="filled"
+											c="white"
+											bg="var(--theme-primary-color-6)"
+											size="compact-xs"
+											fw={400}
+											leftSection={<IconEye size={12} />}
+											className="border-left-radius-none"
+										>
+											{t("View")}
+										</Button>
+
+										<CloseButton icon={<IconTrashX size={18} stroke={1.2}/>} radius="es"   onClick={() => handleDelete(values.id)} size={'sm'} c={'red'}
+										/>
+
 									</Button.Group>
 								</Group>
 							),

@@ -11,6 +11,7 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
 import { MODULES_PHARMACY } from "@/constants";
+import CoreHeaderNavbar from "@hospital-components/CoreHeaderNavbar";
 
 const module = MODULES_PHARMACY.STOCK;
 
@@ -39,7 +40,14 @@ export default function Index({ mode = "create" }) {
 						{!matches && (
 							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
 						)}
-						<Box bg="white" p="xs" className="borderRadiusAll">
+						<Box bg="white" p="xs" w={'100%'} className="borderRadiusAll">
+							<CoreHeaderNavbar
+								module="pharmacy"
+								pageTitle={t("ManageGeneric")}
+								roles={t("Roles")}
+								allowZeroPercentage=""
+								currencySymbol=""
+							/>
 							<_Table module={module} open={open} close={close} />
 						</Box>
 					</Flex>

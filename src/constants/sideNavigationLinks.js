@@ -252,6 +252,12 @@ export const sideNavigationLinks = {
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
 				},
+				{
+					label: t("Generic"),
+					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.GENERIC.INDEX,
+					icon: IconMedicineSyrup,
+					color: "#009688", // Teal
+				},
 			],
 		},
 		{
