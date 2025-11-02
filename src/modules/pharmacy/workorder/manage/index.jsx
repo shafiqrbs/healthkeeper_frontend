@@ -7,11 +7,11 @@ import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
 import { useOutletContext } from "react-router-dom";
 import { MODULES_PHARMACY } from "@/constants";
-import __From from "../form/__Form";
+import IndexForm from "../form/IndexForm";
 
 const module = MODULES_PHARMACY.REQUISITION;
 
-export default function Index() {
+export default function Index({ mode }) {
 	const { t } = useTranslation();
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
@@ -30,7 +30,6 @@ export default function Index() {
 				/>
 			) : (
 				<>
-
 					<Flex p="16px" w="100%" gap="14px">
 						{!matches && (
 							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
@@ -43,7 +42,7 @@ export default function Index() {
 								allowZeroPercentage=""
 								currencySymbol=""
 							/>
-							<__From module={module} />
+							<IndexForm mode={mode} />
 						</Box>
 					</Flex>
 				</>
