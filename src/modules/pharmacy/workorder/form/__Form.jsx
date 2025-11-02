@@ -1,4 +1,4 @@
-import { Group, Box, ActionIcon, Text, Flex, Button, Grid, Select, Stack } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, Flex, Button, Grid, Select, Stack, NumberInput } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import inputCss from "@assets/css/TextAreaInputField.module.css";
 import {
@@ -27,6 +27,8 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
+import { DatePicker } from "@mantine/dates";
+import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
 export default function __Form({ form, workOrderForm, records, setRecords, onSave }) {
 	const { t } = useTranslation();
@@ -212,27 +214,22 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 							accessor: "quantity",
 							title: t("Quantity"),
 							sortable: false,
-							render: (item) => (
-								<InputNumberForm
-									form={form}
-									name="quantity"
-									id="quantity"
-									value={item.quantity}
-									required={true}
-								/>
-							),
+							render: (item) => <NumberInput value={item.quantity} onChange={(value) => {}} />,
 						},
 						{
 							accessor: "production_date",
 							title: t("ExpiryStartDate"),
 							sortable: false,
 							render: (item) => (
-								<DatePickerForm
-									form={form}
-									name="production_date"
-									id="production_date"
-									value={item.production_date}
-								/>
+								<Box>
+									<DateSelectorForm
+										form={form}
+										name="production_date_1"
+										id="production_date_1"
+										value={item.production_date}
+										// onChange={(value) => {}}
+									/>
+								</Box>
 							),
 						},
 						{
@@ -240,12 +237,14 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 							title: t("ExpiryEndDate"),
 							sortable: false,
 							render: (item) => (
-								<DatePickerForm
-									form={form}
-									name="expired_date"
-									id="expired_date"
-									value={item.expired_date}
-								/>
+								<>
+									<DateSelectorForm
+										form={form}
+										name="expired_date_2"
+										id="expired_date_2"
+										value={item.expired_date}
+									/>
+								</>
 							),
 						},
 						{
