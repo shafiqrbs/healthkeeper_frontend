@@ -140,6 +140,11 @@ export default function _Table({ module, open }) {
 							render: (_item, index) => index + 1,
 						},
 						{
+							accessor: "category_nature",
+							title: t("CategoryNature"),
+							sortable: true,
+						},
+						{
 							accessor: "name",
 							title: t("Name"),
 							sortable: true,

@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 
-const useMedicineData = ({ term = "" }) => {
+const useMedicineStockData = ({ term = "" }) => {
 	const dispatch = useDispatch();
 	const [medicineData, setMedicineData] = useState([]);
 
 	const fetchData = async ({ search }) => {
 		const resultAction = await dispatch(
 			getIndexEntityData({
-				url: "hospital/select/medicine",
+				url: "hospital/select/stock",
 				module: "medicines",
 				params: { term: search || "" },
 			})

@@ -22,7 +22,7 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { errorNotification } from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import {CORE_DROPDOWNS, PHARMACY_DROPDOWNS} from "@/app/store/core/utilitySlice";
 
 const PER_PAGE = 50;
 
@@ -37,6 +37,12 @@ export default function _Table({ module, open }) {
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
+
+	const { data: categoryDropdown } = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.CATEGORY.PATH,
+		utility: CORE_DROPDOWNS.CATEGORY.UTILITY,
+		params: {'type':'stockable'},
+	});
 
 	const { data: byMealDropdown } = useGlobalDropdownData({
 		path: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
@@ -112,6 +118,7 @@ export default function _Table({ module, open }) {
 		const initialFormData = records.reduce((acc, item) => {
 			acc[item.id] = {
 
+				category_id: item.category_id || "",
 				product_name: item.product_name || "",
 				opd_quantity: item.opd_quantity || "",
 				ipd_status: item.ipd_status || "",
@@ -148,7 +155,7 @@ export default function _Table({ module, open }) {
 		if (!rowData) return;
 
 		const value = {
-			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.INLINE_UPDATE}/${rowId}`,
+			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INLINE_UPDATE}/${rowId}`,
 			data: rowData,
 			module,
 		};
@@ -192,10 +199,27 @@ export default function _Table({ module, open }) {
 						},
 
 						{
+							accessor: "category_id",
+							title: t("Category"),
+							render: (item) => (
+								<Select
+									size="xs"
+									className={inlineInputCss.inputText}
+									placeholder={t("Category")}
+									data={categoryDropdown}
+									value={String(submitFormData[item.id]?.category_id) ?? ""}
+									onChange={(val) => {
+										handleDataTypeChange(item.id, "category_id", val, true);
+									}}
+								/>
+							),
+						},
+
+						{
 							accessor: "product_name",
 							title: t("GenericName"),
 							sortable: true,
-							/*render: (item) => (
+							render: (item) => (
                                 <TextInput
                                     size="xs"
                                     className={inlineInputCss.inputText}
@@ -206,7 +230,7 @@ export default function _Table({ module, open }) {
                                     }
                                     onBlur={() => handleRowSubmit(item.id)}
                                 />
-                            ),*/
+                            ),
 						},
 						{
 							accessor: "medicine_dosage_id",
@@ -228,7 +252,7 @@ export default function _Table({ module, open }) {
 							accessor: "medicine_bymeal_id",
 							title: t("MedicineByMeal"),
 							render: (item) => (
-								<Select
+								<Select/**/
 									size="xs"
 									className={inlineInputCss.inputText}
 									placeholder={t("SelectByMeal")}

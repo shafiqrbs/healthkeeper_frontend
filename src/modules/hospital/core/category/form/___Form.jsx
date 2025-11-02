@@ -20,11 +20,18 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 
+	const { data: natureDropdown } = useGlobalDropdownData({
+		path: CORE_DROPDOWNS.CATEGORY_NATURE.PATH,
+		utility: CORE_DROPDOWNS.CATEGORY_NATURE.UTILITY,
+		params: { "dropdown-type": 'product-type' },
+	});
+
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
 				name: data.name,
+				category_nature_id: data.category_nature_id,
 			});
 			setIndexData(data.id);
 			const timeoutId = setTimeout(() => {
@@ -54,6 +61,26 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
+									<Grid align="center" columns={20} mt="xxxs">
+										<Grid.Col span={6}>
+											<Text fz="sm">
+												{t("CategoryNature")} <RequiredAsterisk />
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("CategoryNatureValidateMessage")}
+												placeholder={t("CategoryNature")}
+												name="category_nature_id"
+												id="category_nature_id"
+												nextField="name"
+												required={true}
+												value={form.values.category_nature_id}
+												dropdownValue={natureDropdown}
+											/>
+										</Grid.Col>
+									</Grid>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
