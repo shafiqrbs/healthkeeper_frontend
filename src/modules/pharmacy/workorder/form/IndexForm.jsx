@@ -17,7 +17,6 @@ export default function IndexForm({ mode }) {
 	const { data } = useDataWithoutStore({
 		url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.VIEW}/${id}`,
 	});
-
 	const isEditMode = mode === "edit";
 
 	return (

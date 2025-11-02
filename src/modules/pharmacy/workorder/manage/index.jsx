@@ -9,7 +9,7 @@ import { useOutletContext } from "react-router-dom";
 import { MODULES_PHARMACY } from "@/constants";
 import IndexForm from "../form/IndexForm";
 
-const module = MODULES_PHARMACY.REQUISITION;
+
 
 export default function Index({ mode }) {
 	const { t } = useTranslation();

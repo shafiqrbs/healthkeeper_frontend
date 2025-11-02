@@ -8,12 +8,13 @@ import { updateEntityData } from "@/app/store/core/crudThunk";
 import { modals } from "@mantine/modals";
 import { Text, rem } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import {ERROR_NOTIFICATION_COLOR, MODULES_PHARMACY, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
 import { IconAlertCircle, IconCheck } from "@tabler/icons-react";
 import { formatDateForMySQL } from "@utils/index";
 import { getWorkorderFormInitialValues } from "../helpers/request";
 import Form from "./__Form";
 
+const module = MODULES_PHARMACY.PURCHASE;
 export default function Update({ form, records = [], setRecords, data }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
@@ -76,7 +77,7 @@ export default function Update({ form, records = [], setRecords, data }) {
 			const requestData = {
 				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.UPDATE}/${id}`,
 				data: payload,
-				module: "stock",
+				module
 			};
 
 			const result = await dispatch(updateEntityData(requestData));

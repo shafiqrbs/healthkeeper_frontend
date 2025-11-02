@@ -10,10 +10,10 @@ import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch } from "react-redux";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { notifications } from "@mantine/notifications";
-import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import {ERROR_NOTIFICATION_COLOR, MODULES_PHARMACY, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
 import { IconAlertCircle, IconCheck } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-
+const module = MODULES_PHARMACY.PURCHASE;
 export default function Create({ form, records = [], setRecords }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -52,7 +52,7 @@ export default function Create({ form, records = [], setRecords }) {
 			const requestData = {
 				url: PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.CREATE,
 				data: payload,
-				module: "vendor",
+				module
 			};
 
 			const result = await dispatch(storeEntityData(requestData));

@@ -67,8 +67,8 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 	};
 
 	const handleMedicineChange = (value) => {
-		const selectedMedicine = medicineData.find((medicine) => medicine.product_id == value);
-		form.setFieldValue("medicine_id", value);
+		const selectedMedicine = medicineData.find((medicine) => medicine.stock_id === value);
+		form.setFieldValue("stock_id", value);
 		form.setFieldValue("medicine_name", selectedMedicine.product_name);
 		form.setFieldValue("generic", selectedMedicine.generic);
 	};
@@ -125,14 +125,14 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 							onChange={(value) => handleMedicineChange(value)}
 							tooltip={t("NameValidationMessage")}
 							placeholder={t("Medicine")}
-							name="medicine_id"
-							id="medicine_id"
+							name="stock_id"
+							id="stock_id"
 							nextField="quantity"
-							value={form.values.medicine_id}
+							value={form.values.stock_id}
 							required={true}
 							data={medicineData?.map((item) => ({
 								label: item.product_name,
-								value: item.product_id?.toString(),
+								value: item.stock_id?.toString(),
 							}))}
 							onBlur={() => setMedicineTerm("")}
 							nothingFoundMessage="Type to find medicine..."
