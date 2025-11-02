@@ -19,7 +19,7 @@ import tableCss from "@assets/css/Table.module.css";
 import { useState } from "react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
-import useMedicineData from "@hooks/useMedicineData";
+import useMedicineData from "@hooks/useMedicineStockData";
 import { formatDate } from "@utils/index";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 // removed unused fetch helper

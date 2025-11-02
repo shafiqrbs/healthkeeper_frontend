@@ -31,4 +31,4 @@ const useMedicineStockData = ({ term = "" }) => {
 	return { medicineData, fetchData };
 };
 
-export default useMedicineData;
+export default useMedicineStockData;
