@@ -106,8 +106,8 @@ export default function Create({ form }) {
 		<Form
 			form={form}
 			workOrderForm={workOrderForm}
-			records={records}
-			setRecords={setRecords}
+			items={records}
+			setItems={setRecords}
 			onSave={handleWorkOrderSave}
 		/>
 	);

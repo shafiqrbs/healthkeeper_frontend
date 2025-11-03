@@ -123,8 +123,8 @@ export default function Update({ form, data }) {
 		<Form
 			form={form}
 			workOrderForm={workOrderForm}
-			records={records}
-			setRecords={setRecords}
+			items={records}
+			setItems={setRecords}
 			onSave={handleWorkOrderUpdate}
 		/>
 	);

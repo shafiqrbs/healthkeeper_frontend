@@ -12,7 +12,7 @@ function CoreHeaderNavbar({ pageTitle, module, pageDescription }) {
 	if (!module) return <Text c="red">CoreHeaderNavbar: No module name is provided</Text>;
 
 	const links = coreHeaderLinks[module].topBarLinks;
-	console.log(module);
+
 	const items = links.map((link, index) => (
 		<NavLink key={index} to={link.link} className={location.pathname === link.link ? classes.active : classes.link}>
 			{t(link.label)}
