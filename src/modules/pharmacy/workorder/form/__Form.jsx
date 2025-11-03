@@ -106,7 +106,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	const handleMedicineChange = (value) => {
 		const selectedMedicine = medicineData.find((medicine) => medicine.stock_item_id?.toString() === value);
 		form.setFieldValue("stock_item_id", value);
-		form.setFieldValue("product_name", selectedMedicine?.product_name);
+		form.setFieldValue("name", selectedMedicine?.name);
 	};
 
 	const handleResetRequisition = () => {
@@ -156,7 +156,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	}, [records]);
 
 	const handleProductSearch = useDebouncedCallback((value) => {
-		setProducts(records?.filter((product) => product?.product_name?.toLowerCase()?.includes(value?.toLowerCase())));
+		setProducts(records?.filter((product) => product?.name?.toLowerCase()?.includes(value?.toLowerCase())));
 	}, 300);
 
 	return (
@@ -189,11 +189,11 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 							records={products}
 							columns={[
 								{
-									accessor: "product_name",
+									accessor: "name",
 									title: t("Product"),
 									render: (data, index) => (
 										<Text fz={11} fw={400}>
-											{index + 1}. {data.product_name}
+											{index + 1}. {data.name}
 										</Text>
 									),
 								},
@@ -470,7 +470,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 							},
 
 							{
-								accessor: "product_name",
+								accessor: "name",
 								title: t("MedicineName"),
 								sortable: true,
 							},

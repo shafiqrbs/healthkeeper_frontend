@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useMediaQuery } from "@mantine/hooks";
 
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
-import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
+import CoreHeaderNavbar from "@hospital-components/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
 import { useOutletContext, useParams } from "react-router-dom";
 import Update from "../form/Update";
