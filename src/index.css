@@ -697,3 +697,8 @@ input[type=radio]:checked+label>img {
     resize: none;
     /* prevent manual resize */
 }
+
+input.date-selector-input {
+    height: 30px !important;
+    font-size: 13px !important;
+}

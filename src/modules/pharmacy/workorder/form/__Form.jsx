@@ -16,19 +16,16 @@ import { modals } from "@mantine/modals";
 import { useDebouncedState } from "@mantine/hooks";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DatePickerForm from "@components/form-builders/DatePicker";
 import useMedicineData from "@hooks/useMedicineStockData";
-import { formatDate } from "@utils/index";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-// removed unused fetch helper
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
-import { DatePicker } from "@mantine/dates";
-import DateSelectorForm from "@components/form-builders/DateSelectorForm";
+import DateSelector from "@components/form-builders/DateSelector";
 
 export default function __Form({ form, workOrderForm, records, setRecords, onSave }) {
 	const { t } = useTranslation();
@@ -38,7 +35,7 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 	const navigate = useNavigate();
 	const height = mainAreaHeight - 78;
 	const [resetKey, setResetKey] = useState(0);
-	//	const { id } = useParams();
+	const [, startTransition] = useTransition();
 
 	const { data: vendorDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.VENDOR.PATH,
@@ -84,6 +81,20 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 
 	const handleViewList = () => {
 		navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.INDEX);
+	};
+
+	const handleRecordFieldChange = (stockItemId, fieldName, fieldValue) => {
+		// =============== update a single record row inline ===============
+		startTransition(() => {
+			setRecords((previousRecords) =>
+				previousRecords.map((recordItem) =>
+					recordItem?.stock_item_id?.toString() === stockItemId?.toString()
+						? { ...recordItem, [fieldName]: fieldValue }
+						: recordItem
+				)
+			);
+		});
+		// =============== end ===============
 	};
 
 	return (
@@ -214,7 +225,16 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 							accessor: "quantity",
 							title: t("Quantity"),
 							sortable: false,
-							render: (item) => <NumberInput value={item.quantity} onChange={(value) => {}} />,
+							render: (item) => (
+								<NumberInput
+									min={1}
+									size="xs"
+									value={item.quantity}
+									onChange={(value) =>
+										handleRecordFieldChange(item.stock_item_id, "quantity", String(value ?? ""))
+									}
+								/>
+							),
 						},
 						{
 							accessor: "production_date",
@@ -222,12 +242,15 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 							sortable: false,
 							render: (item) => (
 								<Box>
-									<DateSelectorForm
-										form={form}
-										name="production_date_1"
-										id="production_date_1"
+									<DateSelector
 										value={item.production_date}
-										// onChange={(value) => {}}
+										onChange={(value) =>
+											handleRecordFieldChange(
+												item.stock_item_id,
+												"production_date",
+												value ? value.toISOString() : ""
+											)
+										}
 									/>
 								</Box>
 							),
@@ -238,11 +261,15 @@ export default function __Form({ form, workOrderForm, records, setRecords, onSav
 							sortable: false,
 							render: (item) => (
 								<>
-									<DateSelectorForm
-										form={form}
-										name="expired_date_2"
-										id="expired_date_2"
+									<DateSelector
 										value={item.expired_date}
+										onChange={(value) =>
+											handleRecordFieldChange(
+												item.stock_item_id,
+												"expired_date",
+												value ? value.toISOString() : ""
+											)
+										}
 									/>
 								</>
 							),
