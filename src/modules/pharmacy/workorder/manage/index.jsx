@@ -60,7 +60,7 @@ export default function Index({ mode }) {
 						<Box bg="white" w="100%" p="xs" className="borderRadiusAll">
 							<CoreHeaderNavbar
 								module="pharmacy"
-								pageTitle={t("ManageRequisition")}
+								pageTitle={t("ManageWorkorder")}
 								roles={t("Roles")}
 								allowZeroPercentage=""
 								currencySymbol=""

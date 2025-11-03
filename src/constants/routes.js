@@ -330,6 +330,7 @@ export const PHARMACY_DATA_ROUTES = {
 
 		STOCK: {
 			INDEX: "pharmacy/stock",
+			INDEX_CATEGORY: "pharmacy/stock/category",
 			GENERIC: "pharmacy/stock/generic",
 			CREATE: "pharmacy/stock",
 			UPDATE: "pharmacy/stock",

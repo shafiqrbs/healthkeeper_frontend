@@ -7,10 +7,13 @@ import { useOutletContext } from "react-router-dom";
 import { MODULES_PHARMACY } from "@/constants";
 
 import Table from "./_Table";
+import CoreHeaderNavbar from "@hospital-components/CoreHeaderNavbar";
+import {useTranslation} from "react-i18next";
 
 const module = MODULES_PHARMACY.WORKORDER;
 
 export default function Index() {
+	const { t } = useTranslation();
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
 	const { mainAreaHeight } = useOutletContext();
@@ -33,6 +36,13 @@ export default function Index() {
 							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
 						)}
 						<Box bg="white" p="xs" className="borderRadiusAll" w="100%">
+							<CoreHeaderNavbar
+								module="pharmacy"
+								pageTitle={t("ManageWorkorder")}
+								roles={t("Roles")}
+								allowZeroPercentage=""
+								currencySymbol=""
+							/>
 							<Table module={module} />
 						</Box>
 					</Flex>
