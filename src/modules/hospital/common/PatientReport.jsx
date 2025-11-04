@@ -23,7 +23,7 @@ import inputCss from "@assets/css/InputField.module.css";
 import { DURATION_TYPES } from "@/constants";
 import { useTranslation } from "react-i18next";
 
-export default function PatientReport({ tabValue, form = null, update, prescriptionData }) {
+export default function PatientReport({ tabValue, form = null, update, prescriptionData, modeName = "Prescription" }) {
 	const [showOtherInstruction, setShowOtherInstruction] = useState({});
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 246;
@@ -38,7 +38,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		}
 	};
 
-	const { particularsData } = useParticularsData({ modeName: "Prescription" });
+	const { particularsData } = useParticularsData({ modeName });
 	const tabParticulars = particularsData?.map((item) => ({
 		...item.particular_type,
 		is_additional_field: item.is_additional_field ?? 0,

@@ -19,6 +19,7 @@ export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
 		instruction: initialFormValues?.instruction || "",
 		exEmergency: initialFormValues?.exEmergency || [],
 		pharmacyInstruction: initialFormValues?.pharmacyInstruction || "",
+		weight: initialFormValues?.weight || "",
 	};
 
 	return {

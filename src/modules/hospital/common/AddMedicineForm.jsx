@@ -395,8 +395,6 @@ export default function AddMedicineForm({
 		try {
 			const createdBy = getLoggedInUser();
 
-			console.log(tabParticulars);
-
 			const formValue = {
 				is_completed: true,
 				medicines,

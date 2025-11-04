@@ -72,8 +72,6 @@ export default function Index() {
 		setCustomerId(prescriptionData?.data?.customer_id);
 	}, [prescriptionData]);
 
-
-
 	const handleOpenViewOverview = () => {
 		openOverview();
 	};
@@ -98,7 +96,7 @@ export default function Index() {
 		}
 	}, [customerId]);
 	const hasRecords = records && records.length > 0;
-	console.log(form.values.weight);
+
 	const handlePrescriptionUpdate = async (updatedMedicine) => {
 		try {
 			const createdBy = getLoggedInUser();

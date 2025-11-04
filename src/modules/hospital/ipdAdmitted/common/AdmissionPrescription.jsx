@@ -26,8 +26,15 @@ export default function AdmissionPrescription() {
 	const { t } = useTranslation();
 	const [tabValue, setTabValue] = useState("All");
 	const { particularsData } = useParticularsData({ modeName: "Admission" });
-	const tabParticulars = particularsData?.map((item) => item.particular_type);
-	const tabList = tabParticulars?.map((item) => item.name);
+
+	const tabParticulars = particularsData?.map((item) => ({
+		particular_type: item.particular_type,
+		ordering: item?.ordering ?? 0,
+	}));
+	const tabList = [...(tabParticulars?.sort((a, b) => a?.ordering - b?.ordering) || [])]?.map(
+		(item) => item?.particular_type?.name
+	);
+
 	const [records, setRecords] = useState([]);
 	const [customerId, setCustomerId] = useState();
 
@@ -67,6 +74,8 @@ export default function AdmissionPrescription() {
 
 	const hasRecords = records && records.length > 0;
 
+	console.log(tabParticulars);
+
 	return (
 		<Box pos="relative">
 			<LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
@@ -81,7 +90,12 @@ export default function AdmissionPrescription() {
 					</Stack>
 				</Grid.Col>
 				<Grid.Col span={7}>
-					<PatientReport tabValue={tabValue} form={form} prescriptionData={prescriptionData} />
+					<PatientReport
+						tabValue={tabValue}
+						form={form}
+						prescriptionData={prescriptionData}
+						modeName="Admission"
+					/>
 				</Grid.Col>
 				<Grid.Col span={showHistory ? 13 : 17}>
 					<AddMedicineForm

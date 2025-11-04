@@ -393,7 +393,7 @@ export default function AddMedicineForm({
 					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,
 					order: tabParticulars.map((item, index) => ({
-						[item.slug]: index,
+						[item.particular_type.slug]: index,
 					})),
 				},
 			};
