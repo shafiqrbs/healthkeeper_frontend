@@ -154,8 +154,8 @@ export const coreHeaderLinks = {
 			{ link: "/pharmacy/core/medicine", label: "Medicine" },
 			{ link: "/pharmacy/stock", label: "Stock" },
 			{ link: "/pharmacy/stock-matrix", label: "Stock Matrix" },
-			{ link: "/pharmacy/workorder", label: "Workorder" },
-			{ link: "/pharmacy/requisition", label: "Indent" },
+			{ link: "/pharmacy/core/workorder", label: "Workorder" },
+			{ link: "/pharmacy/core/requisition", label: "Indent" },
 		]
 	},
 	procurement: {

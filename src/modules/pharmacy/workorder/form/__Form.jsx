@@ -482,9 +482,9 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 									<NumberInput
 										min={1}
 										size="xs"
-										value={item.quantity}
+										value={item?.quantity}
 										onChange={(value) =>
-											handleRecordFieldChange(item.stock_item_id, "quantity", String(value ?? ""))
+											handleRecordFieldChange(item?.stock_item_id, "quantity", String(value ?? ""))
 										}
 									/>
 								),
@@ -497,10 +497,10 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 									<Box>
 										<DateSelector
 											className="date-selector-input"
-											value={item.production_date}
+											value={item?.production_date}
 											onChange={(value) =>
 												handleRecordFieldChange(
-													item.stock_item_id,
+													item?.stock_item_id,
 													"production_date",
 													value ? value.toISOString() : ""
 												)
@@ -516,10 +516,10 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 								render: (item) => (
 									<>
 										<DateSelector
-											value={item.expired_date}
+											value={item?.expired_date}
 											onChange={(value) =>
 												handleRecordFieldChange(
-													item.stock_item_id,
+													item?.stock_item_id,
 													"expired_date",
 													value ? value.toISOString() : ""
 												)

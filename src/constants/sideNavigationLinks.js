@@ -416,12 +416,13 @@ export const sideNavigationLinks = {
 			color: "#6f1225",
 			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
 		},
-		/*{
-			label: t("MarketingExecutive"),
-			path: "/core/marketing-executive",
+		{
+			label: t("StoreUser"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.STORE_USER.INDEX,
 			icon: IconShoppingBag,
 			color: "#F59E0B",
-		},*/
+			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
+		},
 		{
 			label: t("ManageParticular"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX,

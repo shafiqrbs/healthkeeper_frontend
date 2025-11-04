@@ -19,6 +19,7 @@ import CabinIndex from "@modules/hospital/core/cabin";
 import ParticularModeIndex from "@modules/hospital/core/particular-mode";
 import ParticularTypeIndex from "@modules/hospital/core/particular-type";
 import CategoryIndex from "@modules/hospital/core/category";
+import StoreUserIndex from "@modules/hospital/core/store-user";
 import StoreIndex from "@modules/core/store";
 import EmergencyIndex from "@modules/hospital/emergency";
 import VitalIndex from "@modules/hospital/patient-vital";
@@ -488,6 +489,7 @@ function AppRoute() {
 					<Route path="particular-mode" element={<ParticularModeIndex />} />
 					<Route path="particular-type" element={<ParticularTypeIndex />} />x
 					<Route path="category" element={<CategoryIndex />} />
+					<Route path="store-user" element={<StoreUserIndex />} />
 					<Route path="category/:id" element={<CategoryIndex mode={"edit"} />} />
 				</Route>
 

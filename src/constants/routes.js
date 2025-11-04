@@ -84,6 +84,11 @@ export const MASTER_DATA_ROUTES = {
 			DELETE: "/hospital/core/particular/delete",
 		},
 
+		STORE_USER: {
+			INDEX: "hospital/core/store-user",
+			INLINE_UPDATE: "hospital/core/store-user/inline-update",
+		},
+
 		LAB_USER: {
 			INDEX: "hospital/core/particular",
 			CREATE: "hospital/core/particular",
@@ -193,6 +198,10 @@ export const MASTER_DATA_ROUTES = {
 			CREATE: "/core/store",
 			UPDATE: "/core/store",
 			VIEW: "/core/store",
+		},
+
+		STORE_USER: {
+			INDEX: "/hospital/core/store-user",
 		},
 
 		SETTING: {

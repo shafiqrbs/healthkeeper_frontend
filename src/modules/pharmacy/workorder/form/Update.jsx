@@ -40,8 +40,8 @@ export default function Update({ form, data }) {
 			? entity.purchase_items.map((purchaseItem) => ({
 					production_date: purchaseItem?.production_date ? new Date(purchaseItem.production_date) : "",
 					expired_date: purchaseItem?.expired_date ? new Date(purchaseItem.expired_date) : "",
-					medicine_id: purchaseItem?.stock_item_id ? String(purchaseItem.stock_item_id) : "",
-					medicine_name: purchaseItem?.name || "",
+				    stock_item_id: purchaseItem?.stock_item_id ? String(purchaseItem.stock_item_id) : "",
+					name: purchaseItem?.name || "",
 					generic: null,
 					quantity: purchaseItem?.quantity || "",
 			  }))
