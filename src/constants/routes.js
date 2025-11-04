@@ -371,6 +371,8 @@ export const PHARMACY_DATA_ROUTES = {
 			UPDATE: "pharmacy/purchase",
 			VIEW: "pharmacy/purchase",
 			DELETE: "pharmacy/purchase",
+			APPROVE: "pharmacy/purchase/approve",
+			RECEIVE: "pharmacy/purchase/receive",
 		},
 	},
 	NAVIGATION_LINKS: {

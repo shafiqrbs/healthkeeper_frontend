@@ -31,7 +31,8 @@ export default function Update({ form, data }) {
 
 		// bind header/work-order level fields
 		workOrderForm.setValues({
-			comment: entity?.remark || "",
+			grn: entity?.grn || "",
+            remark: entity?.remark || "",
 			vendor_id: entity?.vendor_id ? String(entity.vendor_id) : "",
 		});
 

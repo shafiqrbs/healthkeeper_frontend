@@ -26,6 +26,7 @@ export const getWorkorderFormInitialValues = (t) => {
 		initialValues: {
 			remark: "",
 			vendor_id: "",
+            grn: "",
 		},
 		validate: {
 			remark: (value) => {

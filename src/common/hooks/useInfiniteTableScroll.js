@@ -103,6 +103,7 @@ const useInfiniteTableScroll = ({
 		sortStatus,
 		setSortStatus,
 		handleScrollToBottom,
+        refetchAll
 	};
 };
 
