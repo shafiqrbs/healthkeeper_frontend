@@ -28,6 +28,8 @@ import { getDataWithoutStore } from "@/services/apiService";
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import DischargeA4BN from "@hospital-components/print-formats/discharge/DischargeA4BN";
 import { modals } from "@mantine/modals";
+import { useDisclosure } from "@mantine/hooks";
+import IpdManageDrawer from "@hospital-components/drawer/IpdManageDrawer";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
@@ -45,7 +47,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 	const [billingPrintData, setBillingPrintData] = useState(null);
 	const [dischargePaperPrintData, setDischargePaperPrintData] = useState(null);
 	const height = mainAreaHeight - 100;
-
+	const [openedManageIpd, { open: openManageIpd, close: closeManageIpd }] = useDisclosure(false);
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -113,15 +115,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
 			onConfirm: () =>
-				navigate(
-					`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${prescriptionId}?tabs=true&redirect=prescription`
-				),
-			// navigate(
-			// 	`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${id}?tabs=true&redirect=prescription`,
-			// 	{
-			// 		state: { prescriptionId: prescriptionId },
-			// 	}
-			// ),
+				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.E_FRESH}/${prescriptionId}`),
 		});
 	};
 
@@ -274,7 +268,18 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 											{t("E-Fresh")}
 										</Button>
 									)}
-
+									<Button
+										rightSection={<IconArrowNarrowRight size={18} />}
+										onClick={() => openManageIpd()}
+										variant="filled"
+										color="var(--theme-primary-color-6)"
+										radius="xs"
+										aria-label="Settings"
+										size="compact-xs"
+										fw={400}
+									>
+										{t("Instant")}
+									</Button>
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -362,6 +367,8 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 				/>
 			</Box>
 			<DataTableFooter indexData={records} module="ipd" />
+
+			<IpdManageDrawer opened={openedManageIpd} close={closeManageIpd} />
 
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
 			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}

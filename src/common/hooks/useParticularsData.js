@@ -5,7 +5,9 @@ import { getIndexEntityData } from "@/app/store/core/crudThunk";
 const useParticularsData = ({ modeName }) => {
 	const dispatch = useDispatch();
 	const particularsData = useSelector((state) => state.crud.particularList.data?.data);
-	const dataByMode = particularsData?.entities?.filter((item) => item.mode_name === modeName);
+	const dataByMode = particularsData?.entities?.filter(
+		(item) => item.mode_name?.toLowerCase() === modeName?.toLowerCase()
+	);
 
 	const fetchData = () => {
 		dispatch(

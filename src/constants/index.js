@@ -27,6 +27,7 @@ export const MODULES = {
 	BILLING: "billing",
 	FINAL_BILLING: "finalBilling",
 	DOCTOR: "doctor",
+	E_FRESH: "e-fresh",
 };
 
 export const MODULES_CORE = {

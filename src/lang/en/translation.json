@@ -1551,6 +1551,8 @@
     "ReceivedBy" : "Received By",
     "ReceivedDate" : "Received Date",
     "ManageRequisition" : "Manage Requisition",
+	"NoOutdoorMedicineNumber": "No Outdoor Medicine Number",
+	"NoDoctorComment": "No Doctor Comment",
     "xxxxxxxx" : "xxxxxxxxxxx",
     "xxxxxxxx" : "xxxxxxxxxxx"
 }

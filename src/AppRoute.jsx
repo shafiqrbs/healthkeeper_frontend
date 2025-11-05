@@ -66,6 +66,7 @@ import FinalBillingIndex from "@modules/hospital/final-billing";
 import PharmacyRequisitionManage from "@modules/pharmacy/requisition/manage";
 import PharmacyWorkorderIndex from "@modules/pharmacy/workorder";
 import PharmacyWorkorderManage from "@modules/pharmacy/workorder/manage";
+import EFreshIndex from "@modules/hospital/ipdAdmitted/e-fresh";
 
 function AppRoute() {
 	return (
@@ -94,15 +95,19 @@ function AppRoute() {
 					<Route path="requisition/manage" element={<PharmacyRequisitionManage />} />
 					<Route path="requisition/manage/:id" element={<PharmacyRequisitionManage mode="edit" />} />
 				</Route>
-				<Route path="/pharmacy/core/" >
-					<Route path="medicine" element={
-						<ProtectedRoute roles={["role_domain", "admin_administrator", "operator_opd", "operator_manager"]}
-						>
-							<MedicineIndex />
-						</ProtectedRoute>
-					} />
+				<Route path="/pharmacy/core/">
+					<Route
+						path="medicine"
+						element={
+							<ProtectedRoute
+								roles={["role_domain", "admin_administrator", "operator_opd", "operator_manager"]}
+							>
+								<MedicineIndex />
+							</ProtectedRoute>
+						}
+					/>
 					<Route path="generic" element={<GenericIndex />} />
-					<Route path="generic/:id" element={<GenericIndex mode="edit"  />} />
+					<Route path="generic/:id" element={<GenericIndex mode="edit" />} />
 					<Route path="stock" element={<PharmacyStockIndex />} />
 					<Route path="workorder" element={<PharmacyWorkorderIndex />} />
 					<Route path="workorder/manage" element={<PharmacyWorkorderManage />} />
@@ -173,6 +178,7 @@ function AppRoute() {
 						/>
 						<Route path=":id" element={<IpdAdmittedIndex />} />
 						<Route path="prescription/:id" element={<IpdAdmittedIndex />} />
+						<Route path="e-fresh/:id" element={<EFreshIndex />} />
 					</Route>
 					<Route
 						path="emergency"
@@ -264,7 +270,15 @@ function AppRoute() {
 					<Route
 						path="police-case"
 						element={
-							<ProtectedRoute roles={["role_domain", "admin_administrator","doctor_ipd","doctor_emergency","doctor_opd"]}>
+							<ProtectedRoute
+								roles={[
+									"role_domain",
+									"admin_administrator",
+									"doctor_ipd",
+									"doctor_emergency",
+									"doctor_opd",
+								]}
+							>
 								<PoliceCaseIndex />
 							</ProtectedRoute>
 						}
@@ -272,7 +286,15 @@ function AppRoute() {
 					<Route
 						path="police-case/:id"
 						element={
-							<ProtectedRoute roles={["role_domain", "admin_administrator","doctor_ipd","doctor_emergency","doctor_opd"]}>
+							<ProtectedRoute
+								roles={[
+									"role_domain",
+									"admin_administrator",
+									"doctor_ipd",
+									"doctor_emergency",
+									"doctor_opd",
+								]}
+							>
 								<PoliceCaseIndex />
 							</ProtectedRoute>
 						}
@@ -280,7 +302,15 @@ function AppRoute() {
 					<Route
 						path="free-patient"
 						element={
-							<ProtectedRoute roles={["role_domain", "admin_administrator","doctor_ipd","doctor_emergency","doctor_opd"]}>
+							<ProtectedRoute
+								roles={[
+									"role_domain",
+									"admin_administrator",
+									"doctor_ipd",
+									"doctor_emergency",
+									"doctor_opd",
+								]}
+							>
 								<FreePatientIndex />
 							</ProtectedRoute>
 						}
@@ -288,7 +318,15 @@ function AppRoute() {
 					<Route
 						path="free-patient/:id"
 						element={
-							<ProtectedRoute roles={["role_domain", "admin_administrator","doctor_ipd","doctor_emergency","doctor_opd"]}>
+							<ProtectedRoute
+								roles={[
+									"role_domain",
+									"admin_administrator",
+									"doctor_ipd",
+									"doctor_emergency",
+									"doctor_opd",
+								]}
+							>
 								<FreePatientIndex />
 							</ProtectedRoute>
 						}
