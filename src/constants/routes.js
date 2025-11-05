@@ -374,6 +374,14 @@ export const PHARMACY_DATA_ROUTES = {
 			APPROVE: "pharmacy/purchase/approve",
 			RECEIVE: "pharmacy/purchase/receive",
 		},
+
+		STOCK_TRANSFER: {
+            CREATE: "pharmacy/stock-transfer",
+			INDEX: "pharmacy/stock-transfer",
+			UPDATE: "pharmacy/stock-transfer",
+			VIEW: "pharmacy/stock-transfer",
+			DELETE: "pharmacy/stock-transfer",
+		},
 	},
 	NAVIGATION_LINKS: {
 		PHARMACY: {

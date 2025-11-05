@@ -1,5 +1,5 @@
 const initialValues = {
-	medicine_id: "",
+	stock_item_id: "",
 	quantity: "",
 };
 
@@ -7,7 +7,7 @@ export const getInitialValues = (t) => {
 	return {
 		initialValues,
 		validate: {
-			medicine_id: (value) => {
+			stock_item_id: (value) => {
 				if (!value) return t("MedicineValidationRequired");
 				return null;
 			},
@@ -19,19 +19,19 @@ export const getInitialValues = (t) => {
 	};
 };
 
-export const getRequisitionFormInitialValues = (t) => {
+export const getRequisitionInitialValues = (t) => {
 	return {
 		initialValues: {
-			comment: "",
-			expected_date: "",
+            notes: "",
+            to_warehouse_id: "",
 		},
 		validate: {
-			comment: (value) => {
+            notes: (value) => {
 				if (!value) return t("CommentValidationRequired");
 				return null;
 			},
-			expected_date: (value) => {
-				if (!value) return t("ExpectedDateValidationRequired");
+            to_warehouse_id: (value) => {
+				if (!value) return t("ChooseWarehouse");
 				return null;
 			},
 		},

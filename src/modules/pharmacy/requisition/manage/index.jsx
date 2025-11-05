@@ -1,52 +1,75 @@
-import { Box, Grid, Progress, Flex } from "@mantine/core";
-import { useTranslation } from "react-i18next";
-import { useMediaQuery } from "@mantine/hooks";
+import {Box, Flex, Progress} from "@mantine/core";
+import {useTranslation} from "react-i18next";
+import {useMediaQuery} from "@mantine/hooks";
 
-import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
-import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
+import {useGetLoadingProgress} from "@hooks/loading-progress/useGetLoadingProgress";
+import CoreHeaderNavbar from "@hospital-components/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
-import { useOutletContext } from "react-router-dom";
-import { MODULES_PHARMACY } from "@/constants";
-import __From from "../form/__Form";
+import {useOutletContext, useParams} from "react-router-dom";
+import Update from "../form/Update";
+import Create from "../form/Create";
+import {getInitialValues} from "../helpers/request";
+import {useForm} from "@mantine/form";
+import {useEffect, useState} from "react";
+import {PHARMACY_DATA_ROUTES} from "@/constants/routes";
+import {getDataWithoutStore} from "@/services/apiService";
 
-const module = MODULES_PHARMACY.REQUISITION;
+export default function Index({mode}) {
+    const {t} = useTranslation();
+    const form = useForm(getInitialValues(t));
 
-export default function Index() {
-	const { t } = useTranslation();
-	const progress = useGetLoadingProgress();
-	const matches = useMediaQuery("(max-width: 64em)");
-	const { mainAreaHeight } = useOutletContext();
+    const progress = useGetLoadingProgress();
+    const matches = useMediaQuery("(max-width: 64em)");
+    const {mainAreaHeight} = useOutletContext();
+    const [data, setData] = useState({});
 
-	return (
-		<>
-			{progress !== 100 ? (
-				<Progress
-					color="var(--theme-reset-btn-color)"
-					size="sm"
-					striped
-					animated
-					value={progress}
-					transitionDuration={200}
-				/>
-			) : (
-				<>
-					<CoreHeaderNavbar
-						module="core"
-						pageTitle={t("ManageRequisition")}
-						roles={t("Roles")}
-						allowZeroPercentage=""
-						currencySymbol=""
-					/>
-					<Flex p="16px" w="100%" gap="14px">
-						{!matches && (
-							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
-						)}
-						<Box bg="white" w="100%" p="xs" className="borderRadiusAll">
-							<__From module={module} />
-						</Box>
-					</Flex>
-				</>
-			)}
-		</>
-	);
+    const {id} = useParams();
+
+    useEffect(() => {
+        if (id) {
+            fetchSingleRequisitionData();
+        }
+    }, [id]);
+
+    async function fetchSingleRequisitionData() {
+        const response = await getDataWithoutStore({
+            url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.VIEW}/${id}`,
+        });
+        setData(response?.data);
+    }
+
+    const isEditMode = mode === "edit";
+
+    return (
+        <>
+            {progress !== 100 ? (
+                <Progress
+                    color="var(--theme-reset-btn-color)"
+                    size="sm"
+                    striped
+                    animated
+                    value={progress}
+                    transitionDuration={200}
+                />
+            ) : (
+                <>
+                    <Flex p="16px" w="100%" gap="14px">
+                        {!matches && (
+                            <Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight}/>
+                        )}
+                        <Box bg="white" w="100%" p="xs" className="borderRadiusAll">
+                            <CoreHeaderNavbar
+                                module="pharmacy"
+                                pageTitle={t("ManageRequisition")}
+                                roles={t("Roles")}
+                                allowZeroPercentage=""
+                                currencySymbol=""
+                            />
+                            {isEditMode ? <Update form={form} data={data}/> : <Create form={form}/>}
+                        </Box>
+                    </Flex>
+                </>
+            )}
+        </>
+    );
 }
