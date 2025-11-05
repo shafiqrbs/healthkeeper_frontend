@@ -334,7 +334,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch module={module} form={form} handleCSVDownload={handleCSVDownload} />
+				<KeywordSearch showcategory={true} module={module} form={form} handleCSVDownload={handleCSVDownload} />
 			</Box>
 			<Box className="border-top-none" px="sm">
 				<DataTable

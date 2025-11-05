@@ -51,7 +51,7 @@ export default function _Table({ module, open }) {
 	// for infinity table data scroll, call the hook
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
-		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.INDEX,
+		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INDEX,
 		filterParams: {
 			name: filterData?.name,
 			term: searchKeyword,
@@ -186,166 +186,23 @@ export default function _Table({ module, open }) {
 							sortable: false,
 							render: (_item, index) => index + 1,
 						},
+
 						{
-							accessor: "company",
-							title: t("Company"),
+							accessor: "category_name",
+							title: t("CategoryName"),
 							sortable: true,
-							/*render: (item) => (
-                                <TextInput
-                                    size="xs"
-                                    className={inlineInputCss.inputText}
-                                    placeholder={t("CompanyName")}
-                                    value={submitFormData[item.id]?.company || ""}
-                                    onChange={(event) =>
-                                        handleDataTypeChange(item.id, "company", event.currentTarget.value)
-                                    }
-                                    onBlur={() => handleRowSubmit(item.id)}
-                                />
-                            ),*/
 						},
 						{
 							accessor: "product_name",
 							title: t("MedicineName"),
-							sortable: true,
-							/*render: (item) => (
-                                <TextInput
-                                    size="xs"
-                                    className={inlineInputCss.inputText}
-                                    placeholder={t("product_name")}
-                                    value={submitFormData[item.id]?.product_name || ""}
-                                    onChange={(event) =>
-                                        handleDataTypeChange(item.id, "product_name", event.currentTarget.value)
-                                    }
-                                    onBlur={() => handleRowSubmit(item.id)}
-                                />
-                            ),*/
-						},
-						{
-							accessor: "generic",
-							title: t("Generic"),
-							sortable: true,
-						},
-						{
-							accessor: "dose_details",
-							title: t("Dose"),
-							sortable: false,
-						},
-						{
-							accessor: "medicine_dosage_id",
-							title: t("MedicineDosage"),
-							render: (item) => (
-								<Select
-									size="xs"
-									className={inlineInputCss.inputText}
-									placeholder={t("SelectDosage")}
-									data={dosageDropdown}
-									value={String(submitFormData[item.id]?.medicine_dosage_id) ?? ""}
-									onChange={(val) => {
-										handleDataTypeChange(item.id, "medicine_dosage_id", val, true);
-									}}
-								/>
-							),
-						},
-						{
-							accessor: "medicine_bymeal_id",
-							title: t("MedicineByMeal"),
-							render: (item) => (
-								<Select
-									size="xs"
-									className={inlineInputCss.inputText}
-									placeholder={t("SelectByMeal")}
-									data={byMealDropdown}
-									value={String(submitFormData[item.id]?.medicine_bymeal_id) ?? ""}
-									onChange={(val) => {
-										handleDataTypeChange(item.id, "medicine_bymeal_id", val, true);
-									}}
-								/>
-							),
-						},
-						{
-							accessor: "opd_quantity",
-							title: t("OPDQty"),
-							width: 80,
-							sortable: false,
-							render: (item) => (
-								<TextInput
-									size="xs"
-									className={inlineInputCss.inputText}
-									placeholder={t("Quantity")}
-									value={submitFormData[item.id]?.opd_quantity || ""}
-									onChange={(event) =>
-										handleDataTypeChange(item.id, "opd_quantity", event.currentTarget.value)
-									}
-									onBlur={() => handleRowSubmit(item.id)}
-								/>
-							),
-						},
-						{
-							accessor: "opd_status",
-							title: t("OutDoor"),
-							render: (item) => (
-								<Checkbox
-									key={item.id}
-									size="sm"
-									checked={submitFormData[item.id]?.opd_status ?? false}
-									onChange={(val) =>
-										handleDataTypeChange(item.id, "opd_status", val.currentTarget.checked, true)
-									}
-								/>
-							),
-						},
-						{
-							accessor: "ipd_status",
-							title: t("InDoor"),
-							render: (item) => (
-								<Checkbox
-									key={item.id}
-									size="sm"
-									checked={submitFormData[item.id]?.ipd_status ?? false}
-									onChange={(val) =>
-										handleDataTypeChange(item.id, "ipd_status", val.currentTarget.checked, true)
-									}
-								/>
-							),
-						},
-						{
-							accessor: "admin_status",
-							title: t("Admin"),
-							render: (item) => (
-								<Checkbox
-									key={item.id}
-									size="sm"
-									checked={submitFormData[item.id]?.admin_status ?? false}
-									onChange={(val) =>
-										handleDataTypeChange(item.id, "admin_status", val.currentTarget.checked, true)
-									}
-								/>
-							),
+							sortable: true
 						},
 
 						{
-							accessor: "action",
-							title: "",
-							textAlign: "right",
-							titleClassName: "title-right",
-							render: (values) => (
-								<Group gap={4} justify="right" wrap="nowrap">
-									<Button.Group>
-										<ActionIcon
-											size="sm"
-											variant="transparent"
-											radius="xs"
-											onClick={() => handleDelete(values.id)}
-											color="var(--theme-delete-color)"
-											fw={400}
-											aria-label="Settings"
-										>
-											<IconEdit stroke={1} />
-										</ActionIcon>
-									</Button.Group>
-								</Group>
-							),
-						},
+							accessor: "quantity",
+							title: t("Quantity")
+						}
+
 					]}
 					textSelectionDisabled
 					fetching={fetching}
