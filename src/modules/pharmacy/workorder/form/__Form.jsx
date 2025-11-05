@@ -29,7 +29,7 @@ import { modals } from "@mantine/modals";
 import { useDebouncedCallback, useDebouncedState } from "@mantine/hooks";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import useMedicineData from "@hooks/useMedicineStockData";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import InputForm from "@components/form-builders/InputForm";
@@ -41,7 +41,7 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import genericClass from "@assets/css/Generic.module.css";
 import { MODULES_PHARMACY } from "@/constants";
 
-const module = MODULES_PHARMACY.PURCHASE;
+const module = MODULES_PHARMACY.STOCK;
 
 export default function __Form({ form, workOrderForm, items, setItems, onSave }) {
 	const [products, setProducts] = useState([]);
@@ -51,7 +51,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 78;
 	const itemFromHeight = mainAreaHeight - 196;
-	const [resetKey, setResetKey] = useState(0);
 	const [searchValue, setSearchValue] = useState("");
 	const [draftProducts, setDraftProducts] = useState([]);
 
@@ -74,7 +73,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		setItems([...items, values]);
 		setDraftProducts((previousRecords) => delete previousRecords[values?.stock_item_id]);
 		setMedicineTerm("");
-		setResetKey(Date.now());
 	}
 
 	const handleWorkOrderDelete = (id) => {
@@ -95,7 +93,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	const handleResetWorkOrder = () => {
 		setItems([]);
 		setMedicineTerm("");
-		setResetKey(Date.now());
 		form.reset();
 		workOrderForm.reset();
 	};
@@ -120,15 +117,24 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		}));
 	};
 
+	const memoizedFilterParameters = useMemo(
+		() => ({ category_id: form.values.category_id }),
+		[form.values.category_id]
+	);
+
 	const { records } = useInfiniteTableScroll({
 		module,
 		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INDEX_CATEGORY,
 		sortByKey: "created_at",
-		filterParams: {
-			category_id: form.values.category_id,
-		},
+		filterParams: memoizedFilterParameters,
 		direction: "desc",
 	});
+
+	console.log(form.values.category_id, records);
+	// 1st time undefined, []
+	// 2nd time 368, []
+	// 3rd time 368, (50)[{}...]
+	// 4th time 368, []
 
 	useEffect(() => {
 		setProducts(records);
@@ -232,7 +238,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 													handleDraftProducts(data, String(value ?? ""));
 												}}
 												required={false}
-												nextField={"credit_limit"}
 												name={"quantity"}
 												id={"quantity"}
 											/>
