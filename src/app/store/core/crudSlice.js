@@ -252,6 +252,17 @@ const initialState = {
 		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
 
+	e_fresh: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
+		validationMessages: [],
+	},
+
 	particular_type: {
 		isLoading: true,
 		refetching: true,

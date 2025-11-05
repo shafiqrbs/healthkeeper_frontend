@@ -336,7 +336,6 @@ export const MASTER_DATA_ROUTES = {
 
 export const PHARMACY_DATA_ROUTES = {
 	API_ROUTES: {
-
 		STOCK: {
 			INDEX: "pharmacy/stock",
 			INDEX_CATEGORY: "pharmacy/stock/category",
@@ -366,7 +365,7 @@ export const PHARMACY_DATA_ROUTES = {
 		},
 
 		PURCHASE: {
-            CREATE: "pharmacy/purchase",
+			CREATE: "pharmacy/purchase",
 			INDEX: "pharmacy/purchase",
 			UPDATE: "pharmacy/purchase",
 			VIEW: "pharmacy/purchase",
@@ -624,6 +623,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/ipd-admitted",
 			VIEW: "/hospital/ipd-admitted",
 			IPD_PRESCRIPTION: "/hospital/ipd-admitted/prescription",
+			E_FRESH: "/hospital/ipd-admitted/e-fresh",
 		},
 		EMERGENCY: {
 			INDEX: "/hospital/emergency",
