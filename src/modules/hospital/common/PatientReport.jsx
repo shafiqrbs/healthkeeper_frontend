@@ -562,6 +562,8 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 			return null;
 		}
 
+		console.log(tabParticulars);
+
 		// For "All" tab, return all sections
 		if (tabValue === "All") {
 			return tabParticulars;

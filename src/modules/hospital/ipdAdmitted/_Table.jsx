@@ -255,31 +255,34 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 										</Button>
 									)}
 									{ipdMode === "prescription" && values.prescription_id && (
-										<Button
-											rightSection={<IconArrowNarrowRight size={18} />}
-											onClick={() => handleManageOverview(values.prescription_id, values.id)}
-											variant="filled"
-											color="var(--theme-primary-color-6)"
-											radius="xs"
-											aria-label="Settings"
-											size="compact-xs"
-											fw={400}
-										>
-											{t("E-Fresh")}
-										</Button>
+										<>
+											<Button
+												rightSection={<IconArrowNarrowRight size={18} />}
+												onClick={() => handleManageOverview(values.prescription_id, values.id)}
+												variant="filled"
+												color="var(--theme-primary-color-6)"
+												radius="xs"
+												aria-label="Settings"
+												size="compact-xs"
+												fw={400}
+											>
+												{t("E-Fresh")}
+											</Button>
+											<Button
+												rightSection={<IconArrowNarrowRight size={18} />}
+												onClick={() => openManageIpd()}
+												variant="filled"
+												color="var(--theme-primary-color-6)"
+												radius="xs"
+												aria-label="Settings"
+												size="compact-xs"
+												fw={400}
+											>
+												{t("Instant")}
+											</Button>
+										</>
 									)}
-									<Button
-										rightSection={<IconArrowNarrowRight size={18} />}
-										onClick={() => openManageIpd()}
-										variant="filled"
-										color="var(--theme-primary-color-6)"
-										radius="xs"
-										aria-label="Settings"
-										size="compact-xs"
-										fw={400}
-									>
-										{t("Instant")}
-									</Button>
+
 									<Menu
 										position="bottom-end"
 										offset={3}
