@@ -375,7 +375,7 @@ export const PHARMACY_DATA_ROUTES = {
 		},
 
 		STOCK_TRANSFER: {
-            CREATE: "pharmacy/stock-transfer",
+			CREATE: "pharmacy/stock-transfer",
 			INDEX: "pharmacy/stock-transfer",
 			UPDATE: "pharmacy/stock-transfer",
 			VIEW: "pharmacy/stock-transfer",
@@ -631,7 +631,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/ipd-admitted",
 			VIEW: "/hospital/ipd-admitted",
 			IPD_PRESCRIPTION: "/hospital/ipd-admitted/prescription",
-			E_FRESH: "/hospital/ipd-admitted/e-fresh",
+			MANAGE: "/hospital/ipd-admitted/manage",
 		},
 		EMERGENCY: {
 			INDEX: "/hospital/emergency",

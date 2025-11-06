@@ -111,12 +111,12 @@ export default function Investigation() {
 	};
 
 	return (
-		<Box h={mainAreaHeight - 63} p="xs">
-			<Grid columns={24} gutter="xs" h="100%" styles={{ inner: { height: "100%" } }}>
+		<Box w="100%" h={mainAreaHeight - 63}>
+			<Grid w="100%" columns={24} gutter="xs" h="100%" styles={{ inner: { height: "100%", width: "100%" } }}>
 				<Grid.Col span={9}>
-					<Box className="borderRadiusAll" h="100%">
+					<Box bg="white" className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Investigation" />
-						<Box p="xxxs" h={mainAreaHeight - 200}>
+						<Box p="xxxs" h={mainAreaHeight - 110}>
 							<Autocomplete
 								label=""
 								placeholder={`Pick value or enter Investigation`}
@@ -175,9 +175,9 @@ export default function Investigation() {
 					</Box>
 				</Grid.Col>
 				<Grid.Col span={15}>
-					<Box className="borderRadiusAll" h="100%">
+					<Box className="borderRadiusAll" bg="white" h="100%">
 						<TabSubHeading title="Investigation Details" />
-						<Box p="xs" pos="relative" h={mainAreaHeight - 138}>
+						<Box p="xs" pos="relative" h={mainAreaHeight - 58}>
 							<LoadingOverlay
 								visible={isLoading}
 								zIndex={1000}

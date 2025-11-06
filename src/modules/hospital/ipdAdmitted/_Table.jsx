@@ -114,8 +114,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
-			onConfirm: () =>
-				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.E_FRESH}/${prescriptionId}`),
+			onConfirm: () => navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${prescriptionId}`),
 		});
 	};
 
@@ -266,9 +265,9 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 												size="compact-xs"
 												fw={400}
 											>
-												{t("E-Fresh")}
+												{t("Manage")}
 											</Button>
-											<Button
+											{/* <Button
 												rightSection={<IconArrowNarrowRight size={18} />}
 												onClick={() => openManageIpd()}
 												variant="filled"
@@ -279,7 +278,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 												fw={400}
 											>
 												{t("Instant")}
-											</Button>
+											</Button> */}
 										</>
 									)}
 

@@ -23,10 +23,17 @@ import inputCss from "@assets/css/InputField.module.css";
 import { DURATION_TYPES } from "@/constants";
 import { useTranslation } from "react-i18next";
 
-export default function PatientReport({ tabValue, form = null, update, prescriptionData, modeName = "Prescription" }) {
+export default function PatientReport({
+	extraHeight = 246,
+	tabValue,
+	form = null,
+	update,
+	prescriptionData,
+	modeName = "Prescription",
+}) {
 	const [showOtherInstruction, setShowOtherInstruction] = useState({});
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 246;
+	const height = mainAreaHeight - extraHeight;
 	const { t } = useTranslation();
 
 	const [autocompleteValues, setAutocompleteValues] = useState({});
@@ -562,8 +569,6 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 			return null;
 		}
 
-		console.log(tabParticulars);
-
 		// For "All" tab, return all sections
 		if (tabValue === "All") {
 			return tabParticulars;
@@ -591,7 +596,7 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		// Handle "All" tab - show all sections
 		if (tabValue === "All") {
 			return (
-				<Box>
+				<Box w="100%">
 					<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
 					<ScrollArea h={height + 20}>
 						<Stack gap="sm" my="les">
@@ -631,10 +636,10 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 
 		// Handle specific tab
 		return (
-			<Box>
+			<Box w="100%">
 				<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
 				<ScrollArea h={mainAreaHeight - 240}>
-					<Box mt="les">
+					<Box mt="les" w="100%">
 						<Box bg="var(--theme-secondary-color-1)" p="xxxs">
 							<Flex justify="space-between" align="center">
 								<Text fw={600} size="lg">
@@ -665,5 +670,9 @@ export default function PatientReport({ tabValue, form = null, update, prescript
 		);
 	};
 
-	return <Box bg="white">{generateTabItems()}</Box>;
+	return (
+		<Box w="100%" bg="white">
+			{generateTabItems()}
+		</Box>
+	);
 }

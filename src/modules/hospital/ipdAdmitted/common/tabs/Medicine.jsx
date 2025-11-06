@@ -456,13 +456,13 @@ export default function Medicine() {
 					</Grid>
 				</Group>
 			</Box>
-			<ScrollArea h={mainAreaHeight - 170}>
-				<Grid columns={24} gutter="sm" p="sm" h={mainAreaHeight - 240}>
+			<ScrollArea h={mainAreaHeight - 120}>
+				<Grid columns={24} gutter="sm" p="sm" h={mainAreaHeight - 140}>
 					<Grid.Col span={16}>
 						<Stack h={mainAreaHeight - 200} justify="space-between">
 							<Box bd="1px solid var(--theme-tertiary-color-3)" className="borderRadiusAll" p="sm">
 								{medicines?.length === 0 && (
-									<Stack justify="center" align="center" h={mainAreaHeight - 320}>
+									<Stack justify="center" align="center" h={mainAreaHeight - 250}>
 										<Box>
 											<Text
 												mb="md"
@@ -510,7 +510,7 @@ export default function Medicine() {
 					</Grid.Col>
 					<Grid.Col span={8}>
 						<ScrollArea
-							h={mainAreaHeight - 200}
+							h={mainAreaHeight - 160}
 							bd="1px solid var(--theme-tertiary-color-3)"
 							className="borderRadiusAll"
 							p="sm"

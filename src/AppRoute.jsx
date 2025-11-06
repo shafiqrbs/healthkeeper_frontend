@@ -67,7 +67,7 @@ import FinalBillingIndex from "@modules/hospital/final-billing";
 import PharmacyRequisitionManage from "@modules/pharmacy/requisition/manage";
 import PharmacyWorkorderIndex from "@modules/pharmacy/workorder";
 import PharmacyWorkorderManage from "@modules/pharmacy/workorder/manage";
-import EFreshIndex from "@modules/hospital/ipdAdmitted/e-fresh";
+import IpdManageIndex from "@modules/hospital/ipdAdmitted/manage";
 
 function AppRoute() {
 	return (
@@ -179,7 +179,7 @@ function AppRoute() {
 						/>
 						<Route path=":id" element={<IpdAdmittedIndex />} />
 						<Route path="prescription/:id" element={<IpdAdmittedIndex />} />
-						<Route path="e-fresh/:id" element={<EFreshIndex />} />
+						<Route path="manage/:id" element={<IpdManageIndex />} />
 					</Route>
 					<Route
 						path="emergency"
