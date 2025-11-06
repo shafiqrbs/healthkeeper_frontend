@@ -313,7 +313,7 @@ export const sideNavigationLinks = {
 		},
 		{
 			label: t("Admin"),
-			path: "/hospital/core/particular",
+			path: "/hospital/core/dashboard",
 			icon: IconDashboard,
 			color: "#607D8B", // Blue Grey
 			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
@@ -357,6 +357,14 @@ export const sideNavigationLinks = {
 		},
 	],
 	baseSubmenu: [
+		{
+			label: t("Dashboard"),
+			path: '/hospital/core/dashboard',
+			icon: IconDashboard,
+			color: "#4CAF50",
+			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
+		},
+
 		{
 			label: t("Investigation"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX,

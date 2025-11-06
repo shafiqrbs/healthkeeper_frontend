@@ -34,6 +34,7 @@ import EpharmaIssueIndex from "@modules/hospital/epharma/issue";
 import LabGroupIndex from "@modules/hospital/lab-group";
 import RequisitionIndex from "@modules/hospital/requisition";
 import InvestigationIndex from "@modules/hospital/core/investigation";
+import DashboardCoreIndex from "@modules/hospital/core/dashboard";
 import ParticularMatrixIndex from "@modules/hospital/core/particular-matrix";
 import OpdRoomIndex from "@modules/hospital/core/opd-room";
 import DoctorDashboard from "@modules/hospital/doctor/dashboard";
@@ -500,6 +501,7 @@ function AppRoute() {
 						path="treatment-templates/:treatmentFormat/:id"
 						element={<TreatmentTemplatesIndex mode="edit" />}
 					/>
+					<Route path="dashboard" element={<DashboardCoreIndex />} />
 					<Route path="investigation" element={<InvestigationIndex />} />
 					<Route path="particular-matrix" element={<ParticularMatrixIndex />} />
 					<Route path="investigation/:reportFormat/:id" element={<InvestigationIndex />} />
