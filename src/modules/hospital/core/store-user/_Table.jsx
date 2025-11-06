@@ -36,7 +36,7 @@ export default function _Table({module, open}) {
     const navigate = useNavigate();
     const {mainAreaHeight} = useOutletContext();
 
-    const height = mainAreaHeight - 78;
+    const height = mainAreaHeight - 108;
     const searchKeyword = useSelector((state) => state.crud.searchKeyword);
     const filterData = useSelector((state) => state.crud[module].filterData);
 
@@ -49,7 +49,6 @@ export default function _Table({module, open}) {
         fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.STORE_USER.INDEX,
         filterParams: {
             name: filterData?.name,
-            user_group: "nurse",
             term: searchKeyword,
         },
         perPage: PER_PAGE,

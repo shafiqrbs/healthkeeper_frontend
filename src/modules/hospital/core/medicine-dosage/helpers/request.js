@@ -2,6 +2,7 @@ import { hasLength } from "@mantine/form";
 
 const initialValues = {
 	mode: "",
+	continue_mode: "",
 	name: "",
 	name_bn: "",
 	dosage_form: "",

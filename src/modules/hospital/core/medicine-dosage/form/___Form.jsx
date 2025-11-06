@@ -13,8 +13,8 @@ import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
-const dosages =['Cap',"Tab",'Injc'];
-
+const dosages =['Cap',"Tab",'Injc','Amp I/V','Amp I/m','Cap (use with DPI device)','Creams,Inf,Inj','Nasal Spary','Nebule','Nebulization','Oint,ORS','Puffs','Sublingual Spray'];
+const continueMode =['Stat',"SOS",'Stat & SOS'];
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
@@ -25,6 +25,8 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
+				mode: data.mode,
+				continue_mode: data.continue_mode,
 				name: data.name,
 				name_bn: data.name_bn,
 				dosage_form: data.dosage_form,
@@ -80,6 +82,26 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												name="mode"
 												id="mode"
 												value={form.values.mode}
+												nextField="continue_mode"
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="xxxs">
+										<Grid.Col span={6}>
+											<Text fz="sm">
+												{t("ContinueMode")} <RequiredAsterisk />
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("ModeFormValidateMessage")}
+												placeholder={t("ContinueMode")}
+												required={false}
+												dropdownValue={continueMode}
+												name="continue_mode"
+												id="continue_mode"
+												value={form.values.continue_mode}
 												nextField="dosage_form"
 											/>
 										</Grid.Col>

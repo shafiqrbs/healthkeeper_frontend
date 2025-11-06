@@ -258,6 +258,11 @@ export default function _Table({ module, open }) {
                             title: t("Mode"),
                             sortable: true,
                         },
+                         {
+                            accessor: "continue_mode",
+                            title: t("ContinueMode"),
+                            sortable: true,
+                        },
                         {
                             accessor: "dosage_form",
                             title: t("DosageForm"),
