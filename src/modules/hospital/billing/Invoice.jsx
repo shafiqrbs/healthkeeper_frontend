@@ -32,13 +32,15 @@ import inputCss from "@assets/css/InputField.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import IPDAllPrint from "@hospital-components/print-formats/ipd/IPDAllPrint";
 import { useReactToPrint } from "react-to-print";
-import { t } from "i18next";
+import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 
 const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator"];
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
 
 export default function Invoice({ entity, setRefetchBillingKey }) {
+	const invoicePrintRef = useRef(null);
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const { t } = useTranslation();
 	const form = useForm(getFormValues(t));
 	const dispatch = useDispatch();
@@ -76,6 +78,8 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 		return [];
 	};
 
+	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
+
 	const fetchData = useCallback(
 		(roomType = "cabin") => {
 			if (roomType === "cabin") {
@@ -105,6 +109,11 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 
 	const handleTest = (transactionId) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}/payment/${transactionId}`);
+	};
+
+	const handlePrint = (data) => {
+		setInvoicePrintData(data);
+		requestAnimationFrame(invoicePrint);
 	};
 
 	const handleAutocompleteOptionAdd = (value) => {
@@ -337,7 +346,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 															{t("Show")}
 														</Button>
 														<Button
-															onClick={() => handleTest(item.hms_invoice_transaction_id)}
+															onClick={() => handlePrint(item)}
 															size="compact-xs"
 															bg="var(--theme-secondary-color-6)"
 															color="white"
@@ -518,6 +527,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}
+			<InvoicePosBN data={invoicePrintData} ref={invoicePrintRef} />
 			<IPDAllPrint data={test} ref={ipdAllPrintRef} />
 		</Box>
 	);

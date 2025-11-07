@@ -63,7 +63,6 @@ import DoctorLayout from "@components/layout/DoctorLayout";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import DischargeIndex from "@modules/hospital/discharge";
 import FinalBillingIndex from "@modules/hospital/final-billing";
-import PharmacyRequisitionManage from "@modules/pharmacy/requisition/manage";
 import PharmacyWorkorderIndex from "@modules/pharmacy/workorder";
 import StoreIndentIndex from "@modules/pharmacy/store-indent";
 import PharmacyWorkorderManage from "@modules/pharmacy/workorder/manage";
@@ -71,7 +70,6 @@ import IpdManageIndex from "@modules/hospital/ipdAdmitted/manage";
 import StoreRequisitionIndex from "@modules/store/requisition";
 import StoreRequisitionManage from "@modules/store/requisition/manage";
 import StoreStockIndex from "@modules/store/stock";
-
 
 function AppRoute() {
 	return (
@@ -111,15 +109,15 @@ function AppRoute() {
 					<Route path="stock" element={<PharmacyStockIndex />} />
 					<Route path="workorder" element={<PharmacyWorkorderIndex />} />
 					<Route path="store-indent" element={<StoreIndentIndex />} />
-					<Route path="store-indent/:id" element={<StoreIndentIndex mode={'edit'} />} />
+					<Route path="store-indent/:id" element={<StoreIndentIndex mode={"edit"} />} />
 					<Route path="workorder/manage" element={<PharmacyWorkorderManage />} />
 					<Route path="workorder/manage/:id" element={<PharmacyWorkorderManage mode="edit" />} />
 				</Route>
 				<Route path="/store/">
-				<Route path="requisition" element={<StoreRequisitionIndex/>}/>
-				<Route path="requisition/manage" element={<StoreRequisitionManage/>}/>
-				<Route path="requisition/manage/:id" element={<StoreRequisitionManage mode="edit"/>}/>
-				<Route path="stock" element={<StoreStockIndex/>}/>
+					<Route path="requisition" element={<StoreRequisitionIndex />} />
+					<Route path="requisition/manage" element={<StoreRequisitionManage />} />
+					<Route path="requisition/manage/:id" element={<StoreRequisitionManage mode="edit" />} />
+					<Route path="stock" element={<StoreStockIndex />} />
 				</Route>
 
 				<Route path="/hospital/">
@@ -180,7 +178,15 @@ function AppRoute() {
 						<Route
 							index
 							element={
-								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_ipd_admitted","nurse_basic", "nurse_incharge"]}>
+								<ProtectedRoute
+									roles={[
+										"role_domain",
+										"admin_administrator",
+										"doctor_ipd_admitted",
+										"nurse_basic",
+										"nurse_incharge",
+									]}
+								>
 									<IpdAdmittedIndex />
 								</ProtectedRoute>
 							}

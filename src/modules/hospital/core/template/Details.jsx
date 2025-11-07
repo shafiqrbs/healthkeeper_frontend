@@ -32,6 +32,8 @@ import AdmissionInvoiceBN from "@hospital-components/print-formats/admission/Adm
 import AdmissionInvoiceEN from "@hospital-components/print-formats/admission/AdmissionInvoiceEN";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 import AdmissionFormEN from "@hospital-components/print-formats/admission/AdmissionFormEN";
+import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
+import InvoicePosEN from "@hospital-components/print-formats/billing/InvoicePosEN";
 
 const STATIC_OPD_ID = 1;
 const STATIC_PRESCRIPTION_ID = 92;
@@ -151,6 +153,16 @@ export default function Details() {
 					{name === "InvestigationPosEN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
 							<InvestigationPosEN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "InvoicePosBN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<InvoicePosBN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "InvoicePosEN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<InvoicePosEN preview data={prescriptionData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "LabReportA4EN" && (
