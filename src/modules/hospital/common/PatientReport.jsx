@@ -244,7 +244,7 @@ export default function PatientReport({
 
 			case "input":
 				return (
-					<Stack gap="xxs">
+					<Stack gap="2xs">
 						{particulars?.map((particular, index) => {
 							const value = form.values.dynamicFormData?.[section.slug]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
@@ -296,7 +296,7 @@ export default function PatientReport({
 
 			case "inputwithcheckbox":
 				return (
-					<Stack gap="xxs">
+					<Stack gap="2xs">
 						{particulars?.map((particular, index) => {
 							const value = form.values.dynamicFormData?.[section.slug]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
@@ -513,7 +513,7 @@ export default function PatientReport({
 							onBlur={handleFieldBlur}
 							rightSection={<IconCaretUpDownFilled size={16} />}
 						/>
-						<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
+						<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="2xs">
 							{form.values.dynamicFormData?.[section.slug]?.map((item, idx) => (
 								<Flex
 									key={idx}
@@ -602,7 +602,7 @@ export default function PatientReport({
 						<Stack gap="sm" my="les">
 							{currentSection.map((section) => (
 								<Box key={section.id}>
-									<Box bg="var(--theme-secondary-color-1)" p="xxxs">
+									<Box bg="var(--theme-secondary-color-1)" p="3xs">
 										<Flex justify="space-between" align="center">
 											<Text fw={600} size="sm">
 												{section.name}
@@ -640,7 +640,7 @@ export default function PatientReport({
 				<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
 				<ScrollArea h={mainAreaHeight - 240}>
 					<Box mt="les" w="100%">
-						<Box bg="var(--theme-secondary-color-1)" p="xxxs">
+						<Box bg="var(--theme-secondary-color-1)" p="3xs">
 							<Flex justify="space-between" align="center">
 								<Text fw={600} size="lg">
 									{currentSection?.name}

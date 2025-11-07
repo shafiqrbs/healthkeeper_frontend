@@ -91,7 +91,7 @@ export default function DateSelectorForm({
 		prevMonthButtonDisabled,
 		nextMonthButtonDisabled,
 	}) => (
-		<Flex mt="xxs" justify="center" align="center" gap="xxxs">
+		<Flex mt="2xs" justify="center" align="center" gap="3xs">
 			<Button
 				onClick={decreaseMonth}
 				disabled={prevMonthButtonDisabled}

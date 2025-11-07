@@ -8,7 +8,7 @@ import useDomainHospitalConfigData from "@hooks/config-data/useHospitalConfigDat
 import Barcode from "react-barcode";
 
 const DashedLine = () => (
-	<Text size="xxs" ta="center" ff="monospace">
+	<Text size="2xs" ta="center" ff="monospace">
 		-----------------------------------------------
 	</Text>
 );
@@ -31,7 +31,7 @@ const DetailsInvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 							<Text ta="center" size="xs" fw={700}>
 								{hospitalConfigData?.organization_name || "Hospital"}
 							</Text>
-							<Text ta="center" size="xxs">
+							<Text ta="center" size="2xs">
 								{hospitalConfigData?.address || "Uttara"}
 							</Text>
 							<Text ta="center" size="8px">
@@ -150,7 +150,7 @@ const DetailsInvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
-					<Text size="xxs" ta="center" pb={"xl"}>
+					<Text size="2xs" ta="center" pb={"xl"}>
 						© {new Date().getFullYear()} {hospitalConfigData?.organization_name} {t("সর্বস্বত্ব সংরক্ষিত")}।
 					</Text>
 				</Stack>

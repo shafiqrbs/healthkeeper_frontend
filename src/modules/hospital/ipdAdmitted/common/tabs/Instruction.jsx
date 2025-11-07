@@ -56,7 +56,7 @@ export default function Instruction() {
 				<Grid.Col span={8} h="100%">
 					<Box className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Instruction" />
-						<Box p="xxxs" h={mainAreaHeight - 63 - 70}>
+						<Box p="3xs" h={mainAreaHeight - 63 - 70}>
 							<SelectForm
 								label="Doctor"
 								form={form}
@@ -98,7 +98,7 @@ export default function Instruction() {
 						<TabSubHeading title="Instruction Details" />
 						<Box p="xs">
 							{instructionDetails.map((item) => (
-								<Flex key={item.id} gap="xs" mb="xxxs">
+								<Flex key={item.id} gap="xs" mb="3xs">
 									<Text>{item.id}.</Text>
 									<Box>
 										<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">

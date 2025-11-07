@@ -571,10 +571,10 @@ const LabReportA4EN = forwardRef(({ data, preview = false }, ref) => {
 							<Text size="xs" c="dark" fw={600}>
 								{hospitalConfigData?.organization_name || "Hospital"}
 							</Text>
-							<Text size="xxs" c="gray">
+							<Text size="2xs" c="gray">
 								{hospitalConfigData?.address || "Uttara, Dhaka, Bangladesh"}
 							</Text>
-							<Text size="xxs" c="gray">
+							<Text size="2xs" c="gray">
 								{t("Phone")}: {hospitalConfigData?.hotline || "0987634523"} |{t("Email")}:{" "}
 								{hospitalConfigData?.email || "info@hospital.com"}
 							</Text>

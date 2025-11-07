@@ -118,7 +118,7 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 					<Grid.Col span={9}>
 						<ScrollArea h={mainAreaHeight - 28} bg="white" type="never" className="border-radius">
 							<Box>
-								<Box pl="xxxs" py="xxxs" mb={"xxxs"} bg="var(--theme-primary-color-1)">
+								<Box pl="3xs" py="3xs" mb={"3xs"} bg="var(--theme-primary-color-1)">
 									{t("AdminMenu")}
 								</Box>
 								{subLinks.map((item, index) => (
@@ -133,8 +133,8 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 									>
 										<Text
 											size="xs"
-											py="xxxs"
-											pl="xxxs"
+											py="3xs"
+											pl="3xs"
 											fw={500}
 											c={
 												location.pathname === item.path

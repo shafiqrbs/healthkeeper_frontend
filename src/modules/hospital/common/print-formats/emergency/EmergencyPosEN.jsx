@@ -6,7 +6,7 @@ import { getLoggedInUser } from "@/common/utils";
 import { useTranslation } from "react-i18next";
 
 const DashedLine = () => (
-	<Text size="xxs" ta="center" ff="monospace">
+	<Text size="2xs" ta="center" ff="monospace">
 		-----------------------------------------------
 	</Text>
 );
@@ -25,7 +25,7 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 							<Text ta="center" size="xs" fw={700}>
 								{t("250BeddedTBHospital")}
 							</Text>
-							<Text ta="center" size="xxs">
+							<Text ta="center" size="2xs">
 								{t("Shyamoli, Dhaka-1207")}
 							</Text>
 							<Text ta="center" size="8px">
@@ -156,7 +156,7 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
-					<Text size="xxs" ta="center">
+					<Text size="2xs" ta="center">
 						© {new Date().getFullYear()} {t("PrintedBy")}. {t("250BeddedTBHospital")}{" "}
 						{t("AllRightsReserved")} .
 					</Text>

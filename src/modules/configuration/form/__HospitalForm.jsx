@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {Box, ScrollArea, Button, Text, Flex, Stack, Grid, Title, Select} from "@mantine/core";
+import { Box, ScrollArea, Button, Text, Flex, Stack, Grid, Title, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDispatch } from "react-redux";
 import { modals } from "@mantine/modals";
@@ -22,7 +22,7 @@ import useDomainConfig from "@hooks/config-data/useDomainConfig";
 import { parseDateValue } from "@utils/index";
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
-import {CORE_DROPDOWNS,HOSPITAL_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import { CORE_DROPDOWNS, HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 
 const module = MODULES.HOSPITAL_CONFIG;
@@ -56,14 +56,12 @@ export default function __HospitalForm({ height, id }) {
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.PATH,
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.UTILITY,
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.TYPE },
-
 	});
 
 	const { data: emergencyRoomDropdown } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.PATH,
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.UTILITY,
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.TYPE },
-
 	});
 	useEffect(() => {
 		if (hospital_config) {
@@ -178,7 +176,7 @@ export default function __HospitalForm({ height, id }) {
 					</Box>
 					{/* ======================= some demo components for reusing purposes ======================= */}
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{hospital_config?.admission_fee?.admission_fee_name}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -187,7 +185,7 @@ export default function __HospitalForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{hospital_config?.opd_ticket_fee?.opd_ticket_fee_name}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -196,7 +194,7 @@ export default function __HospitalForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{hospital_config?.emergency_fee?.emergency_fee_name}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -205,7 +203,7 @@ export default function __HospitalForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{hospital_config?.ot_fee?.ot_fee_name}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -214,7 +212,7 @@ export default function __HospitalForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{t("MinimumDaysRoomRent")}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -229,7 +227,7 @@ export default function __HospitalForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{t("EmergencyRoom")}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -247,7 +245,7 @@ export default function __HospitalForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{t("Consultant")}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -269,7 +267,7 @@ export default function __HospitalForm({ height, id }) {
 					</Box>
 					{/* ======================= some demo components for reusing purposes ======================= */}
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{t("OPDStore")}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -287,7 +285,7 @@ export default function __HospitalForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{t("IPDStore")}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -305,7 +303,7 @@ export default function __HospitalForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{t("OTStore")}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -328,7 +326,7 @@ export default function __HospitalForm({ height, id }) {
 					{/* ======================= some demo components for reusing purposes ======================= */}
 
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{t("Message Admission")}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -343,7 +341,7 @@ export default function __HospitalForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{t("Message Visit")}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -358,7 +356,7 @@ export default function __HospitalForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-						<Grid.Col span={12} fz="sm" mt="xxxs">
+						<Grid.Col span={12} fz="sm" mt="3xs">
 							{t("Message Diagnostic")}
 						</Grid.Col>
 						<Grid.Col span={12}>
@@ -373,7 +371,7 @@ export default function __HospitalForm({ height, id }) {
 						</Grid.Col>
 					</Grid>
 					{/*<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-					<Grid.Col span={12} fz="sm" mt="xxxs">
+					<Grid.Col span={12} fz="sm" mt="3xs">
 						{t("MessageAdmission")}
 					</Grid.Col>
 					<Grid.Col span={12}>
@@ -393,7 +391,7 @@ export default function __HospitalForm({ height, id }) {
 				</Grid>
 
 				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-					<Grid.Col span={12} fz="sm" mt="xxxs">
+					<Grid.Col span={12} fz="sm" mt="3xs">
 						{t("Text")}
 					</Grid.Col>
 					<Grid.Col span={12}>
@@ -401,7 +399,7 @@ export default function __HospitalForm({ height, id }) {
 					</Grid.Col>
 				</Grid>
 				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-					<Grid.Col span={12} fz="sm" mt="xxxs">
+					<Grid.Col span={12} fz="sm" mt="3xs">
 						{t("Number")}
 					</Grid.Col>
 					<Grid.Col span={12}>
@@ -417,7 +415,7 @@ export default function __HospitalForm({ height, id }) {
 				</Grid>
 
 				<Grid columns={24} mt="sm" gutter={{ base: 1 }}>
-					<Grid.Col span={12} fz="sm" mt="xxxs">
+					<Grid.Col span={12} fz="sm" mt="3xs">
 						{t("DatePicker")}
 					</Grid.Col>
 					<Grid.Col span={12}>

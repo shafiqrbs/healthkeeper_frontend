@@ -47,7 +47,7 @@ function InventoryHeaderNavbar(props) {
 		<>
 			<header className={classes.header}>
 				<div className={classes.inner}>
-					<Group ml="xxs">
+					<Group ml="2xs">
 						<Text>{pageTitle}</Text>
 					</Group>
 					<Group>
@@ -60,7 +60,7 @@ function InventoryHeaderNavbar(props) {
 							trigger="hover"
 							openDelay={100}
 							closeDelay={400}
-							mr="xxxs"
+							mr="3xs"
 						>
 							<Menu.Target>
 								<ActionIcon

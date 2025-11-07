@@ -12,7 +12,7 @@ export default function CollectionTable({ data, columns, title, stripedColor = "
 				return (
 					<Table.Td align={isLastColumn ? "right" : "left"} key={colIndex}>
 						{isLastColumn ? (
-							<Flex align="center" gap="xxxs" justify="flex-end">
+							<Flex align="center" gap="3xs" justify="flex-end">
 								<IconCoinTaka size={16} color="var(--theme-primary-color-6)" />
 								<Text fz="sm">{item[column.key] || "0"}</Text>
 							</Flex>
@@ -28,7 +28,7 @@ export default function CollectionTable({ data, columns, title, stripedColor = "
 	return (
 		<Box my="lg">
 			{title && (
-				<Box mb="xxxs">
+				<Box mb="3xs">
 					<Text fz="sm" fw={600}>
 						{t(title)}
 					</Text>
@@ -44,7 +44,7 @@ export default function CollectionTable({ data, columns, title, stripedColor = "
 									<Table.Th
 										key={index}
 										tt="capitalize"
-										width='350px'
+										width="350px"
 										ta={isLastColumn ? "right" : "left"}
 										align={isLastColumn ? "right" : "left"}
 									>

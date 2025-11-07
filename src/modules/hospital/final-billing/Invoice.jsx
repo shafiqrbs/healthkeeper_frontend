@@ -358,7 +358,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 											<Grid columns={18} gutter="xs">
 												<Grid.Col span={18} className="animate-ease-out" px="xs">
 													<ScrollArea scrollbars="y" type="never" h="116" mx="xs">
-														<Stack gap={0} bg="white" mt="xxs">
+														<Stack gap={0} bg="white" mt="2xs">
 															{form.values?.investigation?.map((item, idx) => (
 																<Flex
 																	key={idx}

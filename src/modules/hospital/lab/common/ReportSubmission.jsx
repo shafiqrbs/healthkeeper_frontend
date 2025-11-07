@@ -69,7 +69,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										>
 											<Flex direction="column" gap={0}>
 												<Text fz={"xs"}>{t("Print")}</Text>
-												<Flex direction="column" align="center" fz="xxs" c="white">
+												<Flex direction="column" align="center" fz="2xs" c="white">
 													alt+p
 												</Flex>
 											</Flex>
@@ -81,7 +81,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										<Button size="xs" className="btnPrimaryBg" type="submit" id="handleSubmit">
 											<Flex direction="column" gap={0}>
 												<Text fz="xs">{t("Save")}</Text>
-												<Flex direction="column" align="center" fz="xxs" c="white">
+												<Flex direction="column" align="center" fz="2xs" c="white">
 													alt+s
 												</Flex>
 											</Flex>
@@ -97,7 +97,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										>
 											<Flex direction="column" gap={0}>
 												<Text fz="xs">{t("Confirm")}</Text>
-												<Flex direction="column" align="center" fz="xxs" c="white">
+												<Flex direction="column" align="center" fz="2xs" c="white">
 													alt+s
 												</Flex>
 											</Flex>

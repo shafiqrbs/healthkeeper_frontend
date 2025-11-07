@@ -47,7 +47,7 @@ export default function OT() {
 				<Grid.Col span={8} h="100%">
 					<Box className="borderRadiusAll" h="100%">
 						<TabSubHeading title="OT" />
-						<Box p="xxxs" h={mainAreaHeight - 63 - 70}>
+						<Box p="3xs" h={mainAreaHeight - 63 - 70}>
 							<SelectForm
 								label="Name of Surgery"
 								form={form}
@@ -79,7 +79,7 @@ export default function OT() {
 						<TabSubHeading title="OT Details" />
 						<Box p="xs">
 							{otDetails.map((item) => (
-								<Flex key={item.id} gap="xs" mb="xxxs">
+								<Flex key={item.id} gap="xs" mb="3xs">
 									<Text>{item.id}.</Text>
 									<Box>
 										<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
@@ -93,7 +93,7 @@ export default function OT() {
 										</Badge>
 										<Box mt="les">
 											{item.doctors.map((doctor, index) => (
-												<Flex key={index} gap="xs" mb="xxxs">
+												<Flex key={index} gap="xs" mb="3xs">
 													<Text>{index + 1}.</Text>
 													<Box>
 														<Text mt="es" fz="sm">

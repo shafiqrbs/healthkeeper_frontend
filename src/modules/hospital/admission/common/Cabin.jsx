@@ -55,23 +55,15 @@ export default function Cabin({ selectedRoom, handleRoomClick }) {
 
 				return (
 					<Grid.Col key={index} span={columnSpan}>
-						<Text
-							mt="xxxs"
-							ta="center"
-							bg="var(--theme-primary-color-1)"
-							px="xs"
-							py="xxxs"
-							fw={500}
-							fz="sm"
-						>
+						<Text mt="3xs" ta="center" bg="var(--theme-primary-color-1)" px="xs" py="3xs" fw={500} fz="sm">
 							{paymentMode.label}
 						</Text>
 						<ScrollArea
-							pt="xxxs"
+							pt="3xs"
 							h={height}
 							bg="white"
-							pl={index === 0 ? "xxxs" : undefined}
-							pr={isLastColumn ? "xxxs" : undefined}
+							pl={index === 0 ? "3xs" : undefined}
+							pr={isLastColumn ? "3xs" : undefined}
 						>
 							{rooms.map((room, idx) => (
 								<DetailedRoomCard

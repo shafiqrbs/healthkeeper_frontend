@@ -195,7 +195,6 @@ export default function Medicine() {
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
-	const [openedMedicineHistory, { open: openMedicineHistory, close: closeMedicineHistory }] = useDisclosure(false);
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
 	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
@@ -315,7 +314,6 @@ export default function Medicine() {
 				successNotification(t("MedicineAddedSuccessfully"));
 				await refetchMedicineData();
 				setMedicines([]);
-				openMedicineHistory();
 			} else {
 				errorNotification(t("MedicineAddedFailed"));
 			}
@@ -374,7 +372,7 @@ export default function Medicine() {
 							onBlur={() => setMedicineGenericTerm("")}
 						/>
 					</Group>
-					<Grid w="100%" columns={12} gutter="xxxs">
+					<Grid w="100%" columns={12} gutter="3xs">
 						<Grid.Col span={6}>
 							<Group grow gap="les">
 								<Select
@@ -459,10 +457,10 @@ export default function Medicine() {
 			<ScrollArea h={mainAreaHeight - 120}>
 				<Grid columns={24} gutter="sm" p="sm" h={mainAreaHeight - 140}>
 					<Grid.Col span={16}>
-						<Stack h={mainAreaHeight - 200} justify="space-between">
+						<Stack h={mainAreaHeight - 160} justify="space-between">
 							<Box bd="1px solid var(--theme-tertiary-color-3)" className="borderRadiusAll" p="sm">
 								{medicines?.length === 0 && (
-									<Stack justify="center" align="center" h={mainAreaHeight - 250}>
+									<Stack justify="center" align="center" h={mainAreaHeight - 260}>
 										<Box>
 											<Text
 												mb="md"
@@ -521,7 +519,7 @@ export default function Medicine() {
 								</Flex>
 							)}
 							{medicineHistoryData?.data?.map((item, index) => (
-								<Flex key={index} gap="xs" mb="xxxs">
+								<Flex key={index} gap="xs" mb="3xs">
 									<Text>{index + 1}.</Text>
 									<Box w="100%">
 										<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">

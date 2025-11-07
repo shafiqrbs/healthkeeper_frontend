@@ -43,7 +43,7 @@ export default function DetailsDrawer({ opened, close }) {
 									}
 									labelPosition="left"
 								/>
-								<Stack gap="xxxs" mb="es">
+								<Stack gap="3xs" mb="es">
 									<Text fw={500} size="sm">
 										B/P:{" "}
 										<Text span fw={400}>
@@ -161,7 +161,7 @@ export default function DetailsDrawer({ opened, close }) {
 					</Grid.Col>
 				</Grid>
 			</ScrollArea>
-			<Flex justify="flex-end" mt="xs" gap="xxxs">
+			<Flex justify="flex-end" mt="xs" gap="3xs">
 				<Button variant="filled" color="var(--theme-tertiary-color-6)">
 					{t("Share")}
 				</Button>

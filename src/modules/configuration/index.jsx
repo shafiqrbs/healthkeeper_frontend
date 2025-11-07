@@ -8,7 +8,7 @@ import DefaultSkeleton from "@components/skeletons/DefaultSkeleton.jsx";
 import useDomainConfig from "@hooks/config-data/useDomainConfig.js";
 import { MODULES } from "@/constants/index.js";
 import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
-import {useOutletContext} from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 const module = MODULES.DOMAIN;
 
@@ -29,10 +29,10 @@ export default function Index() {
 						allowZeroPercentage=""
 						currencySymbol=""
 					/>
-					<Box p="xxxs">
+					<Box p="3xs">
 						<Grid columns={24} gutter={{ base: 2 }}>
 							<Grid.Col span={1}>
-								<Navigation mainAreaHeight={mainAreaHeight}  module="base" subModule={''} />
+								<Navigation mainAreaHeight={mainAreaHeight} module="base" subModule={""} />
 							</Grid.Col>
 							<Grid.Col span={23}>
 								<Form module={module} />

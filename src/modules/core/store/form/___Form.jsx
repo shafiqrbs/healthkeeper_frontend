@@ -20,7 +20,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 
-
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
@@ -55,7 +54,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("Name")} <RequiredAsterisk />

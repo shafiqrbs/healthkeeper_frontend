@@ -20,7 +20,7 @@ export default function PaymentMethodsCarousel({ selectPaymentMethod, paymentMet
 						className="cursor-pointer"
 					>
 						<Image src={method.icon} alt={method.label} w={30} />
-						<Text fz="xxs">{method.label}</Text>
+						<Text fz="2xs">{method.label}</Text>
 					</Stack>
 				</Carousel.Slide>
 			))}

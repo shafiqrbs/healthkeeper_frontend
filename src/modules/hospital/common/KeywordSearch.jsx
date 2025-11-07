@@ -177,7 +177,7 @@ export default function KeywordSearch({
 					w={250}
 				/>
 			)}
-			<Flex gap="xxxs" align="center">
+			<Flex gap="3xs" align="center">
 				<ActionIcon c="var(--theme-primary-color-6)" bg="white" onClick={() => handleSearch()}>
 					<IconSearch size={16} stroke={1.5} />
 				</ActionIcon>

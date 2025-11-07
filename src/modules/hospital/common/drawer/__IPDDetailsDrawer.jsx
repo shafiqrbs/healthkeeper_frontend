@@ -118,7 +118,7 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 											}
 											labelPosition="left"
 										/>
-										<Stack gap="xxxs" mb="es">
+										<Stack gap="3xs" mb="es">
 											<Text fw={500} size="sm">
 												B/P:{" "}
 												<Text span fw={400}>
@@ -184,7 +184,7 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 											}
 											labelPosition="left"
 										/>
-										<Stack gap="xxxs" mb="es">
+										<Stack gap="3xs" mb="es">
 											<Text fw={500} size="sm">
 												Room:{" "}
 												<Text span fw={400}>
@@ -225,7 +225,7 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 											}
 											labelPosition="left"
 										/>
-										<Stack gap="xxxs" mb="es">
+										<Stack gap="3xs" mb="es">
 											<Text fw={500} size="sm">
 												Admit Consultant:{" "}
 												<Text span fw={400}>
@@ -266,7 +266,7 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 											}
 											labelPosition="left"
 										/>
-										<Stack gap="xxxs" mb="es">
+										<Stack gap="3xs" mb="es">
 											<Text fw={500} size="sm">
 												Process:{" "}
 												<Text span fw={400}>
@@ -346,7 +346,7 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 											}
 											labelPosition="left"
 										/>
-										<Stack gap="xxxs" mb="es">
+										<Stack gap="3xs" mb="es">
 											<Text fw={500} size="sm">
 												Sub Total:{" "}
 												<Text span fw={400}>
@@ -404,7 +404,7 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 											}
 											labelPosition="left"
 										/>
-										<Stack gap="xxxs" mb="es">
+										<Stack gap="3xs" mb="es">
 											<Text fw={500} size="sm">
 												Comment:{" "}
 												<Text span fw={400}>
@@ -458,7 +458,7 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 					</Stack>
 				)}
 				{isIPDDataAvailable && (
-					<Flex justify="flex-end" mt="xs" gap="xxxs">
+					<Flex justify="flex-end" mt="xs" gap="3xs">
 						<Button variant="filled" color="var(--theme-tertiary-color-6)">
 							{t("Share")}
 						</Button>

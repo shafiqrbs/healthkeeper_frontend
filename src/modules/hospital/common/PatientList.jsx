@@ -17,15 +17,15 @@ export default function PatientList() {
 	const { mainAreaHeight } = useOutletContext();
 
 	return (
-		<ScrollArea bg="white" h={mainAreaHeight - 212} scrollbars="y" px="xxxs">
+		<ScrollArea bg="white" h={mainAreaHeight - 212} scrollbars="y" px="3xs">
 			{data.map((item) => (
 				<Grid columns={12} key={item.id} my="xs" bg="var(--theme-tertiary-color-0)" px="xs" gutter="xs">
 					<Grid.Col span={4}>
-						<Flex align="center" gap="xxxs">
+						<Flex align="center" gap="3xs">
 							<IconCalendarWeek size={16} stroke={1.5} />
 							<Text fz="sm">{item.date}</Text>
 						</Flex>
-						<Flex align="center" gap="xxxs">
+						<Flex align="center" gap="3xs">
 							<IconUser size={16} stroke={1.5} />
 							<Text fz="sm">{item.patients}</Text>
 						</Flex>

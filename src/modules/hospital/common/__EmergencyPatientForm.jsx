@@ -198,7 +198,7 @@ export default function EmergencyPatientForm({
 	};
 
 	return (
-		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
+		<Box w="100%" bg="white" py="2xs" style={{ borderRadius: "4px" }}>
 			<Box
 				ref={searchContainerRef}
 				component="form"

@@ -90,7 +90,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("PatientType")} <RequiredAsterisk />
@@ -110,7 +110,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("PatientMode")} <RequiredAsterisk />
@@ -130,7 +130,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("GenderMode")} <RequiredAsterisk />
@@ -150,7 +150,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("PaymentMode")}</Text>
 										</Grid.Col>
@@ -167,7 +167,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("RoomNo")}</Text>
 										</Grid.Col>
@@ -184,7 +184,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("Name")} <RequiredAsterisk />
@@ -202,7 +202,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Price")}</Text>
 										</Grid.Col>

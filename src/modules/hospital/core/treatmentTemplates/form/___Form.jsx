@@ -12,15 +12,13 @@ import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
-
-
 
 	const { data: getTreatmentModes } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_TREATMENT_MODE.PATH,
@@ -35,7 +33,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 			form.setValues({
 				name: data.name,
 				treatment_mode_id: data?.particular_details?.treatment_mode_id,
-
 			});
 			setIndexData(data.id);
 			const timeoutId = setTimeout(() => {
@@ -65,7 +62,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("TreatmentMode")}</Text>
 										</Grid.Col>
@@ -76,14 +73,14 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												placeholder={t("TreatmentTemplateFor")}
 												name="treatment_mode_id"
 												id="treatment_mode_id"
-												searchable='true'
+												searchable="true"
 												nextField="name"
 												value={form.values.treatment_mode_id}
 												dropdownValue={getTreatmentModes}
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("Name")} <RequiredAsterisk />

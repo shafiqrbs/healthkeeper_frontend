@@ -104,9 +104,9 @@ export default function _Overview({ height }) {
 			<Box h={height} pt="md">
 				<Tabs id="overview-tabs" orientation="vertical" defaultValue="opd">
 					<ScrollArea miw={140} h={height} scrollbarSize={8} scrollbars="y" type="never">
-						<Tabs.List mr="sm" p="xxs" bg="var(--theme-tertiary-color-0)" style={{ borderRadius: "es" }}>
+						<Tabs.List mr="sm" p="2xs" bg="var(--theme-tertiary-color-0)" style={{ borderRadius: "es" }}>
 							{tabs.map((tab) => (
-								<Tabs.Tab py="xxxs" key={tab.value} value={tab.value}>
+								<Tabs.Tab py="3xs" key={tab.value} value={tab.value}>
 									<Text mt="es" fz="sm" c="var(--theme-tertiary-color-6)">
 										{t(tab.label)}
 									</Text>
@@ -148,7 +148,7 @@ export default function _Overview({ height }) {
 												onClick={() => navigate(item.route)}
 												className="opd-card"
 												px="sm"
-												py="xxxs"
+												py="3xs"
 												h="100%"
 											>
 												<Flex justify="space-between" align="center">

@@ -72,15 +72,15 @@ const Home = forwardRef((data, ref) => {
 
 				{/* =============== Daily Overview representation ================ */}
 				<ScrollArea mt="sm" h="auto">
-					<Box className="borderRadiusAll" mt="xxxs" px="xs">
-						<Flex justify="space-between" align="center" className="borderBottomDashed" py="xxxs">
+					<Box className="borderRadiusAll" mt="3xs" px="xs">
+						<Flex justify="space-between" align="center" className="borderBottomDashed" py="3xs">
 							<Text>{t("Patient")}</Text>
 							<Flex align="center" gap="xs" w="80px">
 								<IconBed color="var(--theme-primary-color-6)" />
 								<Text fz="sm">{collectionSummaryData?.patient || 0}</Text>
 							</Flex>
 						</Flex>
-						<Flex justify="space-between" align="center" py="xxxs">
+						<Flex justify="space-between" align="center" py="3xs">
 							<Text>{t("Collection")}</Text>
 							<Flex align="center" gap="xs" w="80px">
 								<IconCoinTaka color="var(--theme-primary-color-6)" />
@@ -117,7 +117,7 @@ function PrintingTable({ data, columns, title }) {
 				return (
 					<Table.Td fz="xs" py="es" align={isLastColumn ? "right" : "left"} key={colIndex}>
 						{isLastColumn ? (
-							<Flex align="center" gap="xxxs" justify="flex-end">
+							<Flex align="center" gap="3xs" justify="flex-end">
 								<IconCoinTaka size={16} color="var(--theme-primary-color-6)" />
 								<Text fz="sm">{item[column.key] || "0"}</Text>
 							</Flex>
@@ -133,7 +133,7 @@ function PrintingTable({ data, columns, title }) {
 	return (
 		<Box my="lg">
 			{title && (
-				<Box mb="xxxs">
+				<Box mb="3xs">
 					<Text fz="sm" fw={600}>
 						{t(title)}
 					</Text>
@@ -149,7 +149,7 @@ function PrintingTable({ data, columns, title }) {
 									<Table.Th
 										key={index}
 										tt="capitalize"
-										width={'350px'}
+										width={"350px"}
 										ta={isLastColumn ? "right" : "left"}
 										align={isLastColumn ? "right" : "left"}
 									>

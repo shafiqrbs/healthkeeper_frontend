@@ -41,7 +41,7 @@ export default function _Table() {
 
 	return (
 		<Box>
-			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="xxxs">
+			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="3xs">
 				<Text ta="center" fz="sm" fw={500}>
 					S/N
 				</Text>
@@ -49,7 +49,7 @@ export default function _Table() {
 					Patient Name
 				</Text>
 			</Flex>
-			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="xxxs">
+			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid
@@ -66,7 +66,7 @@ export default function _Table() {
 						gutter="xs"
 					>
 						<Grid.Col span={6}>
-							<Flex align="center" gap="xxxs">
+							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />
 
 								<Text
@@ -77,13 +77,13 @@ export default function _Table() {
 									{formatDate(item?.created_at)}
 								</Text>
 							</Flex>
-							<Flex align="center" gap="xxxs">
+							<Flex align="center" gap="3xs">
 								<IconUser size={16} stroke={1.5} />
 								<Text fz="sm">{item.patient_id}</Text>
 							</Flex>
 						</Grid.Col>
 						<Grid.Col span={6}>
-							<Flex justify="space-between" align="center" gap="xxxs">
+							<Flex justify="space-between" align="center" gap="3xs">
 								<Box>
 									<Text fz="sm">{item.name}</Text>
 									<Text fz="sm">{item.mobile}</Text>

@@ -138,9 +138,9 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 							<Box className="borderRadiusAll" bg="white">
 								<ScrollArea h={height / 3} scrollbarSize={2} scrollbars="y" type="never">
 									<Box p="xs">
-										<Grid columns={15} gutter={{ base: "xxxs" }}>
+										<Grid columns={15} gutter={{ base: "3xs" }}>
 											<Grid.Col span={3}>
-												<Text ta="left" fw={600} fz="sm" mt="xxxs">
+												<Text ta="left" fw={600} fz="sm" mt="3xs">
 													{t("Name")}
 												</Text>
 											</Grid.Col>
@@ -176,9 +176,9 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 										</Grid>
 									</Box>
 									<Box p="xs">
-										<Grid columns={15} gutter={{ base: "xxxs" }}>
+										<Grid columns={15} gutter={{ base: "3xs" }}>
 											<Grid.Col span={3}>
-												<Text ta="left" fw={600} fz="sm" mt="xxxs">
+												<Text ta="left" fw={600} fz="sm" mt="3xs">
 													{t("Mobile")}
 												</Text>
 											</Grid.Col>
@@ -214,9 +214,9 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 										</Grid>
 									</Box>
 									<Box p="xs">
-										<Grid columns={15} gutter={{ base: "xxxs" }}>
+										<Grid columns={15} gutter={{ base: "3xs" }}>
 											<Grid.Col span={3}>
-												<Text ta="left" fw={600} fz="sm" mt="xxxs">
+												<Text ta="left" fw={600} fz="sm" mt="3xs">
 													{t("Company")}
 												</Text>
 											</Grid.Col>

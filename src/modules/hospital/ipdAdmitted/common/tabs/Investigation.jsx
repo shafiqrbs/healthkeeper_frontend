@@ -139,7 +139,7 @@ export default function Investigation() {
 				<Grid.Col span={9}>
 					<Box bg="white" className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Investigation" />
-						<Box p="xxxs" h={mainAreaHeight - 110}>
+						<Box p="3xs" h={mainAreaHeight - 110}>
 							<Autocomplete
 								label=""
 								placeholder={`Pick value or enter Investigation`}
@@ -158,7 +158,7 @@ export default function Investigation() {
 								classNames={inputCss}
 								rightSection={<IconCaretUpDownFilled size={16} />}
 							/>
-							<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
+							<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="2xs">
 								{form.values?.investigation?.map((item, idx) => (
 									<Flex
 										key={idx}
@@ -213,7 +213,7 @@ export default function Investigation() {
 							)}
 							{investigationData?.data?.map((item, index) => (
 								<Fragment key={index}>
-									<Flex py="xs" justify="space-between" gap="xs" mb="xxxs">
+									<Flex py="xs" justify="space-between" gap="xs" mb="3xs">
 										<Flex>
 											<Text>{index + 1}.</Text>
 											<Box w="100%">

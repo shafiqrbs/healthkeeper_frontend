@@ -49,7 +49,7 @@ export default function History() {
 					<Stack
 						justify="space-between"
 						bg="var(--theme-primary-color-0)"
-						p="xxxs"
+						p="3xs"
 						h={mainAreaHeight - 63 - 70}
 					>
 						<Box>
@@ -83,7 +83,7 @@ export default function History() {
 						<TabSubHeading title="History Details" />
 						<Box p="xs">
 							{historyDetails.map((item) => (
-								<Flex key={item.id} gap="xs" mb="xxxs">
+								<Flex key={item.id} gap="xs" mb="3xs">
 									<Text>{item.id}.</Text>
 									<Box>
 										<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">

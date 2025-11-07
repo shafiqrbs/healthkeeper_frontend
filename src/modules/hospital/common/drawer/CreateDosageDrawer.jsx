@@ -102,7 +102,7 @@ export default function CreateDosageDrawer({ opened, close }) {
 							<Stack justify="space-between" className="drawer-form-stack-vertical">
 								<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 									<Stack>
-										<Grid align="center" columns={20} mt="xxxs">
+										<Grid align="center" columns={20} mt="3xs">
 											<Grid.Col span={6}>
 												<Text fz="sm">
 													{t("Mode")} <RequiredAsterisk />
@@ -122,7 +122,7 @@ export default function CreateDosageDrawer({ opened, close }) {
 												/>
 											</Grid.Col>
 										</Grid>
-										<Grid align="center" columns={20} mt="xxxs">
+										<Grid align="center" columns={20} mt="3xs">
 											<Grid.Col span={6}>
 												<Text fz="sm">{t("DosageForm")}</Text>
 											</Grid.Col>
@@ -140,7 +140,7 @@ export default function CreateDosageDrawer({ opened, close }) {
 												/>
 											</Grid.Col>
 										</Grid>
-										<Grid align="center" columns={20} mt="xxxs">
+										<Grid align="center" columns={20} mt="3xs">
 											<Grid.Col span={6}>
 												<Text fz="sm">
 													{t("Name")} <RequiredAsterisk />
@@ -158,7 +158,7 @@ export default function CreateDosageDrawer({ opened, close }) {
 												/>
 											</Grid.Col>
 										</Grid>
-										<Grid align="center" columns={20} mt="xxxs">
+										<Grid align="center" columns={20} mt="3xs">
 											<Grid.Col span={6}>
 												<Text fz="sm">
 													{t("NameBangla")} <RequiredAsterisk />
@@ -176,7 +176,7 @@ export default function CreateDosageDrawer({ opened, close }) {
 												/>
 											</Grid.Col>
 										</Grid>
-										<Grid align="center" columns={20} mt="xxxs">
+										<Grid align="center" columns={20} mt="3xs">
 											<Grid.Col span={6}>
 												<Text fz="sm">{t("Quantity")}</Text>
 											</Grid.Col>
@@ -192,7 +192,7 @@ export default function CreateDosageDrawer({ opened, close }) {
 												/>
 											</Grid.Col>
 										</Grid>
-										<Grid align="center" columns={20} mt="xxxs">
+										<Grid align="center" columns={20} mt="3xs">
 											<Grid.Col span={6}>
 												<Text fz="sm">{t("Instruction")}</Text>
 											</Grid.Col>

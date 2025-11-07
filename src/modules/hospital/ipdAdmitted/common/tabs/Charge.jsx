@@ -63,7 +63,7 @@ export default function Charge() {
 				<Grid.Col span={8} h="100%">
 					<Box className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Charge" />
-						<Stack justify="space-between" p="xxxs" h={mainAreaHeight - 63 - 70}>
+						<Stack justify="space-between" p="3xs" h={mainAreaHeight - 63 - 70}>
 							<Box>
 								<SelectForm
 									label="Cabin/Ward"
@@ -108,7 +108,7 @@ export default function Charge() {
 						<TabSubHeading title="Charge Details" />
 						<Box p="xs">
 							{chargeDetails.map((item) => (
-								<Flex key={item.id} gap="xs" mb="xxxs">
+								<Flex key={item.id} gap="xs" mb="3xs">
 									<Text>{item.id}.</Text>
 									<Box w="100%">
 										<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">

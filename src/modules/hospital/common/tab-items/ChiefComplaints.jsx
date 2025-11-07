@@ -4,11 +4,11 @@ const CHIEF_COMPLAINTS = ["Fever (For 2 days)", "Runny Nose", "Headache"];
 
 export default function ChiefComplaints({ complaints, handleComplaintChange }) {
 	return (
-		<Box bg="var(--theme-primary-color-0)" p="xs" mt="xxxs" mb="xxxs" className="borderRadiusAll">
-			<Text fw={600} fz="sm" mb="xxxs">
+		<Box bg="var(--theme-primary-color-0)" p="xs" mt="3xs" mb="3xs" className="borderRadiusAll">
+			<Text fw={600} fz="sm" mb="3xs">
 				Chief Complaints
 			</Text>
-			<Stack gap="xxxs" bg="white" p="sm" className="borderRadiusSmall">
+			<Stack gap="3xs" bg="white" p="sm" className="borderRadiusSmall">
 				{CHIEF_COMPLAINTS.map((label, idx) => (
 					<Checkbox
 						key={idx}

@@ -220,7 +220,7 @@ export default function PatientForm({
 	};
 
 	return (
-		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
+		<Box w="100%" bg="white" py="2xs" style={{ borderRadius: "4px" }}>
 			<Flex align="center" gap="xs" justify="space-between" px="sm" pb="les">
 				<Box
 					ref={searchContainerRef}

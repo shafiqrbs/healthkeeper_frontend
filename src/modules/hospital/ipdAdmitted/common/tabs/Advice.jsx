@@ -75,7 +75,7 @@ export default function Advice() {
 			<Grid columns={24} gutter="xs" h="100%" styles={{ inner: { height: "100%" } }}>
 				<Grid.Col span={8} h="100%">
 					<TabSubHeading title="Advice" bg="var(--theme-primary-color-0)" />
-					<Box bg="var(--theme-primary-color-0)" p="xxxs" h={mainAreaHeight - 63 - 70}>
+					<Box bg="var(--theme-primary-color-0)" p="3xs" h={mainAreaHeight - 63 - 70}>
 						<TextAreaForm
 							label=""
 							placeholder="Complaining of high fever, sore throat, and body ache since yesterday."
@@ -108,7 +108,7 @@ export default function Advice() {
 								</Flex>
 							)}
 							{adviceData?.data?.map((item, index) => (
-								<Flex key={index} gap="xs" mb="xxxs">
+								<Flex key={index} gap="xs" mb="3xs">
 									<Text>{index + 1}.</Text>
 									<Box w="100%">
 										<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">

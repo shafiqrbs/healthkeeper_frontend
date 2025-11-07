@@ -148,7 +148,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		<Grid columns={24} gutter={{ base: 8 }}>
 			<Grid.Col span={8}>
 				<>
-					<Grid align="center" columns={20} mt="xxxs">
+					<Grid align="center" columns={20} mt="3xs">
 						<Grid.Col span={20}>
 							<SelectForm
 								form={form}
@@ -227,7 +227,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 														fontWeight: 300,
 													},
 												}}
-												size="xxs"
+												size="2xs"
 												w="50"
 												type={"number"}
 												tooltip={""}

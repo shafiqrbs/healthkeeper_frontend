@@ -101,7 +101,7 @@ export default function _Form({ module }) {
 					<Grid columns={9} gutter={{ base: 1 }}>
 						<Grid.Col span={9}>
 							<Box bg={"white"}>
-								<Box mt="xxxs" pt="xxxs">
+								<Box mt="3xs" pt="3xs">
 									<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
 										{NAV_ITEMS.map((item) => (
 											<Box
@@ -117,7 +117,7 @@ export default function _Form({ module }) {
 												onClick={() => setActiveTab(item)}
 												bg={activeTab === item ? "#f8eedf" : "gray.1"}
 											>
-												<Text size="sm" pt="xxxs" pl="xxxs" fw={500} c="black">
+												<Text size="sm" pt="3xs" pl="3xs" fw={500} c="black">
 													{t(item)}
 												</Text>
 											</Box>
@@ -130,9 +130,9 @@ export default function _Form({ module }) {
 				</Card>
 			</Grid.Col>
 			<Grid.Col span={11}>
-				<Box bg="white" p="xs" className="borderRadiusAll" mb="xxxs">
+				<Box bg="white" p="xs" className="borderRadiusAll" mb="3xs">
 					<Box bg="white">
-						<Box pl="xs" pr="xxxs" py="xxxs" mb="xxxs" className="boxBackground borderRadiusAll">
+						<Box pl="xs" pr="3xs" py="3xs" mb="3xs" className="boxBackground borderRadiusAll">
 							<Grid>
 								<Grid.Col span={6}>
 									<Title order={6} pt="es">

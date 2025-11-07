@@ -23,14 +23,14 @@ const theme = createTheme({
 	primaryColor: "indigo",
 	fontFamily: "Open Sans, sans-serif",
 	fontSizes: {
-		xxs: "10px",
-		xxxs: "8px",
+		"2xs": "10px",
+		"3xs": "8px",
 		les: "6px",
 		es: "2px",
 	},
 	spacing: {
-		xxs: "10px",
-		xxxs: "8px",
+		"2xs": "10px",
+		"3xs": "8px",
 		les: "6px",
 		mes: "4px",
 		es: "2px",

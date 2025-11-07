@@ -31,7 +31,7 @@ export default function CompactDrawer({
 			<Drawer.Content bg={bg} h={350} style={{ alignItems: "center" }}>
 				<Drawer.Header className="drawer-sticky-header">
 					<Drawer.Title>
-						<Flex align="center" gap="xxxs">
+						<Flex align="center" gap="3xs">
 							<IconArrowLeft size={16} />
 							<Text mt="es" fz="lg" fw={500}>
 								{title}

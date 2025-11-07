@@ -12,14 +12,27 @@ import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
-const dosages =['Cap',"Tab",'Injc','Amp I/V','Amp I/m','Cap (use with DPI device)','Creams,Inf,Inj','Nasal Spary','Nebule','Nebulization','Oint,ORS','Puffs','Sublingual Spray'];
-const continueMode =['Stat',"SOS",'Stat & SOS'];
+import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+const dosages = [
+	"Cap",
+	"Tab",
+	"Injc",
+	"Amp I/V",
+	"Amp I/m",
+	"Cap (use with DPI device)",
+	"Creams,Inf,Inj",
+	"Nasal Spary",
+	"Nebule",
+	"Nebulization",
+	"Oint,ORS",
+	"Puffs",
+	"Sublingual Spray",
+];
+const continueMode = ["Stat", "SOS", "Stat & SOS"];
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
-
 
 	useEffect(() => {
 		if (data && type === "update") {
@@ -32,7 +45,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				dosage_form: data.dosage_form,
 				quantity: data.quantity,
 				instruction: data.instruction,
-
 			});
 			setIndexData(data.id);
 
@@ -45,7 +57,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		}
 	}, [data, type]);
 
-	const modes =['Dosage','Bymeal']
+	const modes = ["Dosage", "Bymeal"];
 
 	useHotkeys(
 		[
@@ -65,8 +77,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
-
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("Mode")} <RequiredAsterisk />
@@ -86,7 +97,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("ContinueMode")} <RequiredAsterisk />
@@ -106,11 +117,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("DosageForm")}
-											</Text>
+											<Text fz="sm">{t("DosageForm")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -126,7 +135,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("Name")} <RequiredAsterisk />
@@ -144,7 +153,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("NameBangla")} <RequiredAsterisk />
@@ -162,11 +171,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("Quantity")}
-											</Text>
+											<Text fz="sm">{t("Quantity")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
@@ -180,11 +187,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("Instruction")}
-											</Text>
+											<Text fz="sm">{t("Instruction")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm

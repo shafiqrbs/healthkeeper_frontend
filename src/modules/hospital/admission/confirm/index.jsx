@@ -119,7 +119,7 @@ export default function ConfirmIndex() {
 												{t("Invoice")}
 											</Text>
 											<Flex gap="xl">
-												<Flex gap="xs" mb="xxxs" align="center">
+												<Flex gap="xs" mb="3xs" align="center">
 													<Box>
 														<Badge
 															variant="light"
@@ -141,7 +141,7 @@ export default function ConfirmIndex() {
 														</Text>
 													</Box>
 												</Flex>
-												<Flex gap="xs" mb="xxxs" align="center">
+												<Flex gap="xs" mb="3xs" align="center">
 													<Box>
 														<Badge
 															variant="light"

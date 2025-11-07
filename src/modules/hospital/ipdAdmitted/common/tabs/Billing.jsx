@@ -62,7 +62,7 @@ export default function Billing() {
 						<Box p="xs">
 							<ScrollArea h={mainAreaHeight - 520}>
 								{billingDetails.map((item) => (
-									<Flex key={item.id} gap="xs" mb="xxxs">
+									<Flex key={item.id} gap="xs" mb="3xs">
 										<Text>{item.id}.</Text>
 										<Box w="100%">
 											<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
@@ -72,7 +72,7 @@ export default function Billing() {
 												<Text mt="es" fz="sm">
 													Method: {item.method}
 												</Text>
-												<Group gap="xxxs">
+												<Group gap="3xs">
 													<Text variant="light" size="sm">
 														৳ {item.amount}
 													</Text>

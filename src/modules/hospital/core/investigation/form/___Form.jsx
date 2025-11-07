@@ -12,7 +12,7 @@ import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
@@ -20,12 +20,10 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 
-
 	const { data: categoryDropdown } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.CATEGORY.PATH,
 		utility: HOSPITAL_DROPDOWNS.CATEGORY.UTILITY,
 	});
-
 
 	useEffect(() => {
 		if (data && type === "update") {
@@ -44,7 +42,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				test_duration: data.test_duration,
 				report_format: data.report_format,
 				price: data.price,
-
 			});
 			setIndexData(data.id);
 			const timeoutId = setTimeout(() => {
@@ -65,8 +62,8 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		[]
 	);
 	const selectReportFormat = [
-		{ value: '1', label: '1' },
-		{ value: '2', label: '2' }
+		{ value: "1", label: "1" },
+		{ value: "2", label: "2" },
 	];
 
 	return (
@@ -78,7 +75,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Category")}</Text>
 										</Grid.Col>
@@ -89,14 +86,14 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												placeholder={t("Category")}
 												name="category_id"
 												id="category_id"
-												searchable='true'
+												searchable="true"
 												nextField="employee_id"
 												value={form.values.category_id}
 												dropdownValue={categoryDropdown}
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("Name")} <RequiredAsterisk />
@@ -114,11 +111,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("Price")}
-											</Text>
+											<Text fz="sm">{t("Price")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputNumberForm
@@ -132,11 +127,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("Instruction")}
-											</Text>
+											<Text fz="sm">{t("Instruction")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
@@ -150,11 +143,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="xxxs">
+									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("ReportFormat")}
-											</Text>
+											<Text fz="sm">{t("ReportFormat")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -165,7 +156,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												required={false}
 												name="report_format"
 												id="report_format"
-												value={form.values.report_format||1}
+												value={form.values.report_format || 1}
 												nextField=""
 											/>
 										</Grid.Col>

@@ -136,7 +136,7 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 				c="white"
 				bg="var(--theme-primary-color-6)"
 				justify={isOpenPatientInfo ? "" : "center"}
-				mt="xxxs"
+				mt="3xs"
 			>
 				{isOpenPatientInfo && (
 					<Text ta="center" fz="sm" fw={500}>

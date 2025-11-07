@@ -55,7 +55,7 @@ export default function Details() {
 
 	return (
 		<>
-			<Flex align="center" gap="sm" bg="gray.1" p="xxxs" fz="sm">
+			<Flex align="center" gap="sm" bg="gray.1" p="3xs" fz="sm">
 				<ActionIcon color="var(--theme-primary-color-6)" onClick={() => navigate(-1)}>
 					<IconArrowLeft size={16} />
 				</ActionIcon>

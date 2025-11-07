@@ -128,8 +128,8 @@ export default function Index() {
 												: "black"
 										}
 										size="sm"
-										py="xxxs"
-										pl="xxxs"
+										py="3xs"
+										pl="3xs"
 										fw={500}
 									>
 										{t(tabItem)}

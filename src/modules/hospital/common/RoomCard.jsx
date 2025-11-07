@@ -14,15 +14,15 @@ export default function RoomCard({ room, selectedRoom, handleRoomClick, closeRoo
 				closeRoom();
 			}}
 		>
-			<Flex justify="space-between" mb="xxxs">
+			<Flex justify="space-between" mb="3xs">
 				<Text fw={500} c="var(--theme-tertiary-color-6)" fz="sm">
 					Patient
 				</Text>
-				<Flex align="center" gap="xxxs">
+				<Flex align="center" gap="3xs">
 					<IconUsers color="var(--theme-primary-color-6)" size={16} stroke={1.5} />
 					<Text fz="sm">{room?.invoice_count}</Text>
 				</Flex>
-				<Flex align="center" gap="xxxs">
+				<Flex align="center" gap="3xs">
 					<Image radius="xl" src={imgActive} />
 					<Text fz="sm">{room?.invoice_count}</Text>
 				</Flex>
@@ -31,7 +31,7 @@ export default function RoomCard({ room, selectedRoom, handleRoomClick, closeRoo
 				<Text fw={500} c="var(--theme-tertiary-color-6)" fz="sm">
 					Room
 				</Text>
-				<Flex align="center" gap="xxxs">
+				<Flex align="center" gap="3xs">
 					<IconDoor color="var(--theme-primary-color-6)" size={16} stroke={1.5} />
 					<Text fz="sm">{room?.name}</Text>
 				</Flex>

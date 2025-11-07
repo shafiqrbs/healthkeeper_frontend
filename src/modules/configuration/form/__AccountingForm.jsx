@@ -223,7 +223,7 @@ export default function __AccountingForm({ height, module }) {
 					<Box pl="sm">
 						<Box>
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("FinancialStartDate")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -245,7 +245,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("FinancialEndDate")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -274,7 +274,7 @@ export default function __AccountingForm({ height, module }) {
 					<Box pl="sm">
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountCash")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -297,7 +297,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountBank")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -320,7 +320,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountMobile")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -351,7 +351,7 @@ export default function __AccountingForm({ height, module }) {
 					<Box pl="sm">
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("CapitalInvestment")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -374,7 +374,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountUser")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -397,7 +397,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountCustomer")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -420,7 +420,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountVendor")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -450,7 +450,7 @@ export default function __AccountingForm({ height, module }) {
 					<Box pl="sm">
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountOpeningStockLedger")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -474,7 +474,7 @@ export default function __AccountingForm({ height, module }) {
 
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountProductGroup")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -505,7 +505,7 @@ export default function __AccountingForm({ height, module }) {
 					<Box pl="sm">
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("PurchaseAccount")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -529,7 +529,7 @@ export default function __AccountingForm({ height, module }) {
 
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("PurchaseAccountDiscount")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -553,7 +553,7 @@ export default function __AccountingForm({ height, module }) {
 
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountSales")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -576,7 +576,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountSalesDiscount")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -606,7 +606,7 @@ export default function __AccountingForm({ height, module }) {
 					<Box pl="sm">
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountVAT")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -629,7 +629,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountTDS")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -652,7 +652,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountAIT")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -675,7 +675,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt={"xs"}>
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountSD")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -698,7 +698,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt={"xs"}>
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("AccountZakat")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -740,7 +740,7 @@ export default function __AccountingForm({ height, module }) {
 					<Box pl="sm">
 						<Box mt={"xs"}>
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("VoucherStockOpening")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -763,7 +763,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt={"xs"}>
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("VoucherPurchase")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -786,7 +786,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt={"xs"}>
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("VoucherPurchaseReturn")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -809,7 +809,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt={"xs"}>
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("VoucherSales")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -832,7 +832,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("VoucherSalesReturn")}
 								</Grid.Col>
 								<Grid.Col span={12}>
@@ -855,7 +855,7 @@ export default function __AccountingForm({ height, module }) {
 						</Box>
 						<Box mt="xs">
 							<Grid columns={24} gutter={{ base: 1 }}>
-								<Grid.Col span={12} fz="sm" mt="xxxs">
+								<Grid.Col span={12} fz="sm" mt="3xs">
 									{t("VoucherStockReconciliation")}
 								</Grid.Col>
 								<Grid.Col span={12}>

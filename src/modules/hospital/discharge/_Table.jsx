@@ -56,7 +56,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 				overlayProps={{ radius: "sm", blur: 2 }}
 				loaderProps={{ color: "red" }}
 			/>
-			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="xxxs">
+			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="3xs">
 				<Text ta="center" fz="xs" fw={500}>
 					S/N
 				</Text>
@@ -64,7 +64,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 					Patient Name
 				</Text>
 			</Flex>
-			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="xxxs">
+			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
 				{records?.length === 0 && (
 					<Flex justify="center" align="center">
 						<Text fz="xs">{t("NoDataAvailable")}</Text>
@@ -85,7 +85,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 						gutter="xs"
 					>
 						<Grid.Col span={8}>
-							<Flex align="center" gap="xxxs">
+							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />
 								<Text
 									fz="xs"
@@ -95,11 +95,11 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 									{formatDate(item?.created_at)}
 								</Text>
 							</Flex>
-							<Flex align="center" gap="xxxs">
+							<Flex align="center" gap="3xs">
 								<IconUser size={16} stroke={1.5} />
 								<Text fz="xs">{item.patient_id}</Text>
 							</Flex>
-							<Flex align="center" gap="xxxs">
+							<Flex align="center" gap="3xs">
 								<IconBed size={16} stroke={1.5} />
 								<Text fz="xs">{item.visiting_room}</Text>
 							</Flex>

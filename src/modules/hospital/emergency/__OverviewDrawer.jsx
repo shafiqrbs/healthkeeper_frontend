@@ -58,18 +58,18 @@ export default function OverviewDrawer({ opened, close }) {
 	return (
 		<GlobalDrawer opened={opened} close={close} title="Overview" size="30%">
 			<ScrollArea mt="sm" h={mainAreaHeight - 80}>
-				<Box bg="var(--theme-primary-color-0)" py="xxxs" px="xs" style={{ borderRadius: "4px" }}>
+				<Box bg="var(--theme-primary-color-0)" py="3xs" px="xs" style={{ borderRadius: "4px" }}>
 					<Text fz="sm" fw={600}>
 						{t("collectionOverview")}
 					</Text>
 				</Box>
-				<Box className="borderRadiusAll" mt="xxxs" px="xs">
+				<Box className="borderRadiusAll" mt="3xs" px="xs">
 					{collectionOverviewData.map((item, index) => (
 						<Flex
 							justify="space-between"
 							align="center"
 							className={index !== collectionOverviewData.length - 1 ? "borderBottomDashed" : ""}
-							py="xxxs"
+							py="3xs"
 						>
 							<Text>{t(item.label)}</Text>
 							<Flex align="center" gap="xs" w="80px">

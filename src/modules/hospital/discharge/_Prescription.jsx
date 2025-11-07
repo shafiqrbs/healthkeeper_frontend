@@ -414,10 +414,10 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 				bg="var(--theme-primary-color-0)"
 				p="sm"
 			>
-				<Grid w="100%" columns={24} gutter="xxxs">
+				<Grid w="100%" columns={24} gutter="3xs">
 					<Grid.Col span={18}>
 						<Group align="end" gap="les">
-							<Grid w="100%" columns={12} gutter="xxxs">
+							<Grid w="100%" columns={12} gutter="3xs">
 								<Grid.Col span={6}>
 									<Select
 										clearable
@@ -458,7 +458,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 									/>
 								</Grid.Col>
 							</Grid>
-							<Grid w="100%" columns={12} gutter="xxxs">
+							<Grid w="100%" columns={12} gutter="3xs">
 								<Grid.Col span={6}>
 									<Group grow gap="les">
 										<SelectForm
@@ -528,7 +528,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 						</Group>
 					</Grid.Col>
 					<Grid.Col span={6} bg={"white"}>
-						<Grid w="100%" columns={12} gutter="xxxs">
+						<Grid w="100%" columns={12} gutter="3xs">
 							<Grid.Col span={12}>
 								<Group grow gap="les">
 									<SelectForm
@@ -680,7 +680,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 			{/* =================== Advise form =================== */}
 			{form && (
 				<>
-					<Grid columns={12} gutter="xxxs" mt="xxs" p="les">
+					<Grid columns={12} gutter="3xs" mt="2xs" p="les">
 						<Grid.Col span={3}>
 							<Box fz="md" c="white">
 								<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
@@ -840,7 +840,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 						/>
 						{/* =============== temporary items list with editable text inputs ================ */}
 						{tempEmergencyItems?.length > 0 && (
-							<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="xxs">
+							<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="2xs">
 								<Text fw={600} fz="sm" mt="xs" c="var(--theme-primary-color)">
 									{t("PendingItems")} ({tempEmergencyItems?.length})
 								</Text>

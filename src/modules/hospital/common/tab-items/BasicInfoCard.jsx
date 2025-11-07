@@ -5,7 +5,7 @@ import { IconSofa } from "@tabler/icons-react";
 export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 	const { t } = useTranslation();
 	return (
-		<Stack gap="xxxs" bg="var(--theme-primary-color-1)" p="xs" pb={"xxxs"} className="borderRadiusAll">
+		<Stack gap="3xs" bg="var(--theme-primary-color-1)" p="xs" pb={"3xs"} className="borderRadiusAll">
 			<Stack gap={0} ta="left">
 				<Grid w="100%" columns={24}>
 					<Grid.Col span={8} fz="xs">

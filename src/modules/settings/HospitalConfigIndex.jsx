@@ -26,7 +26,7 @@ function HospitalConfigIndex() {
 						allowZeroPercentage=""
 						currencySymbol=""
 					/>
-					<Box p="xxxs">
+					<Box p="3xs">
 						<Grid columns={24} gutter={{ base: 8 }}>
 							<Grid.Col span={24}>
 								<Form />

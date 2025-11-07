@@ -15,8 +15,8 @@ export default function Investigation({
 	handleInvestigationRemove,
 }) {
 	return (
-		<Box bg="var(--theme-primary-color-0)" p="xs" mt="xxxs" className="borderRadiusAll">
-			<Text fw={600} fz="sm" mb="xxxs">
+		<Box bg="var(--theme-primary-color-0)" p="xs" mt="3xs" className="borderRadiusAll">
+			<Text fw={600} fz="sm" mb="3xs">
 				Investigation
 			</Text>
 			<Select
@@ -27,7 +27,7 @@ export default function Investigation({
 				searchable
 				nothingFoundMessage="No test found"
 				size="xs"
-				mb="xxxs"
+				mb="3xs"
 				onKeyDown={(e) => {
 					if (e.key === "Enter" && investigation) handleInvestigationAdd(investigation);
 				}}

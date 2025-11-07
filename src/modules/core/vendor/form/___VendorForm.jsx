@@ -96,7 +96,7 @@ function ___VendorForm({ form, type = "create", data, handleSubmit, setCustomerD
 													name="name"
 													id="name"
 													nextField="mobile"
-													mt="xxxs"
+													mt="3xs"
 												/>
 											</Grid.Col>
 										</Grid>
@@ -119,7 +119,7 @@ function ___VendorForm({ form, type = "create", data, handleSubmit, setCustomerD
 													name="mobile"
 													id="mobile"
 													nextField="email"
-													mt="xxxs"
+													mt="3xs"
 												/>
 											</Grid.Col>
 										</Grid>
@@ -136,7 +136,7 @@ function ___VendorForm({ form, type = "create", data, handleSubmit, setCustomerD
 													name="email"
 													id="email"
 													nextField="customer_id"
-													mt="xxxs"
+													mt="3xs"
 												/>
 											</Grid.Col>
 										</Grid>
@@ -150,7 +150,7 @@ function ___VendorForm({ form, type = "create", data, handleSubmit, setCustomerD
 													nextField="EntityFormSubmit"
 													name="address"
 													form={form}
-													mt="xxxs"
+													mt="3xs"
 													id="address"
 												/>
 											</Grid.Col>

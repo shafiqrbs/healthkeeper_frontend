@@ -438,7 +438,7 @@ function ConfigurationForm({
 										name="country_id"
 										form={form}
 										dropdownValue={countryDropdown}
-										mt="xxxs"
+										mt="3xs"
 										id="country_id"
 										searchable={true}
 										value={countryId}
@@ -457,7 +457,7 @@ function ConfigurationForm({
 										name="currency_id"
 										form={form}
 										dropdownValue={currencyDropdown}
-										mt="xxxs"
+										mt="3xs"
 										id="currency_id"
 										searchable={true}
 										value={currencyId}
@@ -475,7 +475,7 @@ function ConfigurationForm({
 										nextField="sku_warehouse"
 										name="address"
 										form={form}
-										mt="xxxs"
+										mt="3xs"
 										id="address"
 									/>
 								</Box>
@@ -570,7 +570,7 @@ function ConfigurationForm({
 										name="pos_invoice_mode_id"
 										form={form}
 										dropdownValue={posInvoiceModeDropdown}
-										mt="xxxs"
+										mt="3xs"
 										id="pos_invoice_mode_id"
 										searchable={false}
 										value={posInvoiceModeId}
@@ -588,7 +588,7 @@ function ConfigurationForm({
 										nextField="logo"
 										name="invoice_comment"
 										form={form}
-										mt="xxxs"
+										mt="3xs"
 										id="invoice_comment"
 									/>
 								</Box>
@@ -629,7 +629,7 @@ function ConfigurationForm({
 										nextField="body_font_size"
 										name="print_footer_text"
 										form={form}
-										mt="xxxs"
+										mt="3xs"
 										id="print_footer_text"
 									/>
 								</Box>

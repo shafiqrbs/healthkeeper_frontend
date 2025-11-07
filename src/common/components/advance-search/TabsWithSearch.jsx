@@ -54,7 +54,7 @@ export default function TabsWithSearch({
 		<Tabs variant="none" value={tabValue} onChange={setTabValue} className="borderRadiusAll">
 			<ScrollArea scrollbars="x" type="hover" bg="var(--theme-primary-color-0)">
 				{tabList.length > 1 && (
-					<Tabs.List px="sm" py="xxxs" className={tabClass.list} ref={setRootRef}>
+					<Tabs.List px="sm" py="3xs" className={tabClass.list} ref={setRootRef}>
 						<Flex w="100%" justify={expand ? "space-between" : "center"}>
 							{leftSection}
 							{expand ? (

@@ -71,7 +71,7 @@ export default function PatientForm({ form }) {
 	}, []);
 
 	return (
-		<Box w="100%" bg="white" py="xxs" style={{ borderRadius: "4px" }}>
+		<Box w="100%" bg="white" py="2xs" style={{ borderRadius: "4px" }}>
 			<form>
 				<Flex align="center" gap="xs" justify="space-between" px="sm" pb="xs">
 					<Text fw={600} fz="sm">
@@ -401,7 +401,7 @@ export function Form({ form, showTitle = false, heightOffset = 116 }) {
 								<TextAreaForm
 									form={form}
 									label=""
-									mt="xxs"
+									mt="2xs"
 									tooltip={t("EnterComment")}
 									placeholder="Enter comment"
 									name="comment"

@@ -17,7 +17,7 @@ const BLOOD_GROUPS = [
 export default function Vitals({ form, onBlur }) {
 	const { t } = useTranslation();
 	return (
-		<Flex gap="les" mb="xxxs" wrap="wrap">
+		<Flex gap="les" mb="3xs" wrap="wrap">
 			<Group gap="les" grow w="100%" px="les">
 				<InputForm
 					form={form}
