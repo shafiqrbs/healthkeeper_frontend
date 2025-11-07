@@ -1,8 +1,20 @@
 import TabSubHeading from "@hospital-components/TabSubHeading";
-import { ActionIcon, Autocomplete, Badge, Box, Flex, Grid, LoadingOverlay, Stack, Text } from "@mantine/core";
+import {
+	ActionIcon,
+	Autocomplete,
+	Badge,
+	Box,
+	Button,
+	Divider,
+	Flex,
+	Grid,
+	LoadingOverlay,
+	Stack,
+	Text,
+} from "@mantine/core";
 import { useOutletContext, useParams } from "react-router-dom";
-import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
-import { useState } from "react";
+import { IconCaretUpDownFilled, IconPrinter, IconX } from "@tabler/icons-react";
+import { Fragment, useRef, useState } from "react";
 import useParticularsData from "@hooks/useParticularsData";
 import inputCss from "@assets/css/InputField.module.css";
 import TabsActionButtons from "@hospital-components/TabsActionButtons";
@@ -15,12 +27,16 @@ import { successNotification } from "@components/notification/successNotificatio
 import { errorNotification } from "@components/notification/errorNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { useTranslation } from "react-i18next";
+import InvestigationPosBN from "@hospital-components/print-formats/ipd/InvestigationPosBN";
+import { useReactToPrint } from "react-to-print";
 
 export default function Investigation() {
 	const dispatch = useDispatch();
 	const { id } = useParams();
 	const { t } = useTranslation();
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const investigationPosBNRef = useRef(null);
+
 	const form = useForm({
 		initialValues: {
 			investigation: [],
@@ -44,6 +60,8 @@ export default function Investigation() {
 	const investigationParticulars = particularsData?.find((item) => item.particular_type.name === "Investigation");
 
 	const [autocompleteValue, setAutocompleteValue] = useState("");
+	const [investigationPrintData, setInvestigationPrintData] = useState(null);
+	const investigationPrint = useReactToPrint({ content: () => investigationPosBNRef.current });
 
 	const handleAutocompleteOptionAdd = (value) => {
 		const allParticulars = investigationParticulars?.particular_type?.particulars || [];
@@ -108,6 +126,11 @@ export default function Investigation() {
 		} finally {
 			setIsSubmitting(false);
 		}
+	};
+
+	const handleInvestigationPrint = (item) => {
+		setInvestigationPrintData(item);
+		requestAnimationFrame(investigationPrint);
 	};
 
 	return (
@@ -189,51 +212,45 @@ export default function Investigation() {
 								</Flex>
 							)}
 							{investigationData?.data?.map((item, index) => (
-								<Flex key={index} gap="xs" mb="xxxs">
-									<Text>{index + 1}.</Text>
-									<Box w="100%">
-										<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
-											{item.created}
-										</Badge>
-										<Box mt="es" fz="sm">
-											{item?.invoice_particular?.map((particular, idx) => (
-												<Flex key={idx} justify="space-between" align="center">
-													<Text fz="xs">
-														{idx + 1}. {particular.name}
-													</Text>
-													{/* <Group gap="xxxs">
-														<Button
-															variant="light"
-															color="var(--theme-primary-color-5)"
-															size="compact-xs"
-														>
-															Status
-														</Button>
-														<ActionIcon
-															variant="light"
-															color="var(--theme-secondary-color-5)"
-															size="sm"
-														>
-															<IconEye size={16} stroke={1.5} />
-														</ActionIcon>
-														<ActionIcon
-															variant="light"
-															color="var(--theme-error-color)"
-															size="sm"
-														>
-															<IconX size={16} stroke={1.5} />
-														</ActionIcon>
-													</Group> */}
-												</Flex>
-											))}
-										</Box>
-									</Box>
-								</Flex>
+								<Fragment key={index}>
+									<Flex py="xs" justify="space-between" gap="xs" mb="xxxs">
+										<Flex>
+											<Text>{index + 1}.</Text>
+											<Box w="100%">
+												<Badge variant="light" size="md" color="var(--theme-secondary-color-7)">
+													{item.created}
+												</Badge>
+												<Box mt="es" fz="sm">
+													{item?.invoice_particular?.map((particular, idx) => (
+														<Flex key={idx} justify="space-between" align="center">
+															<Text fz="xs">
+																{idx + 1}. {particular.name}
+															</Text>
+														</Flex>
+													))}
+												</Box>
+											</Box>
+										</Flex>
+
+										<Button
+											variant="light"
+											leftSection={<IconPrinter size={16} />}
+											color="var(--theme-secondary-color-5)"
+											size="xs"
+											onClick={() => handleInvestigationPrint(item)}
+										>
+											{t("Print")}
+										</Button>
+									</Flex>
+									<Divider />
+								</Fragment>
 							))}
 						</Box>
 					</Box>
 				</Grid.Col>
 			</Grid>
+
+			<InvestigationPosBN data={investigationPrintData} ref={investigationPosBNRef} />
 		</Box>
 	);
 }

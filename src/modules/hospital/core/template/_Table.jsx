@@ -23,6 +23,8 @@ const templateData = [
 	{ name: "Discharge", module: "discharge", id: 12 },
 	{ name: "IPDDetailsBN", module: "ipd", id: 13 },
 	{ name: "IPDDetailsEN", module: "ipd", id: 14 },
+	{ name: "InvestigationPosBN", module: "ipd", id: 29 },
+	{ name: "InvestigationPosEN", module: "ipd", id: 30 },
 	{ name: "AdmissionInvoiceBN", module: "ipd", id: 25 },
 	{ name: "AdmissionInvoiceEN", module: "ipd", id: 26 },
 	{ name: "IPDPrescriptionFullBN", module: "ipd", id: 15 },

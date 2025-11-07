@@ -21,6 +21,8 @@ import DischargeA4BN from "@hospital-components/print-formats/discharge/Discharg
 import DischargeA4EN from "@hospital-components/print-formats/discharge/DischargeA4EN";
 import IPDDetailsBN from "@hospital-components/print-formats/ipd/IPDDetailsBN";
 import IPDDetailsEN from "@hospital-components/print-formats/ipd/IPDDetailsEN";
+import InvestigationPosBN from "@hospital-components/print-formats/ipd/InvestigationPosBN";
+import InvestigationPosEN from "@hospital-components/print-formats/ipd/InvestigationPosEN";
 
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import DetailsInvoiceEN from "@hospital-components/print-formats/billing/DetailsInvoiceEN";
@@ -141,7 +143,16 @@ export default function Details() {
 							<AdmissionFormBN preview data={prescriptionData?.data} />
 						</LoadingWrapper>
 					)}
-
+					{name === "InvestigationPosBN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<InvestigationPosBN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "InvestigationPosEN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<InvestigationPosEN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
 					{name === "LabReportA4EN" && (
 						<LoadingWrapper isLoading={isReportLoading}>
 							<LabReportA4EN preview data={labReportData?.data} />
