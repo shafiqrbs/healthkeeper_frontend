@@ -335,7 +335,9 @@ export const MASTER_DATA_ROUTES = {
 };
 
 export const PHARMACY_DATA_ROUTES = {
+
 	API_ROUTES: {
+
 		STOCK: {
 			INDEX: "pharmacy/stock",
 			INDEX_CATEGORY: "pharmacy/stock/category",
@@ -380,6 +382,15 @@ export const PHARMACY_DATA_ROUTES = {
 			UPDATE: "pharmacy/stock-transfer",
 			VIEW: "pharmacy/stock-transfer",
 			DELETE: "pharmacy/stock-transfer",
+			APPROVE: "pharmacy/stock-transfer/approve",
+			RECEIVE: "pharmacy/stock-transfer/receive",
+		},
+
+		STORE_INDENT: {
+			INDEX: "pharmacy/stock-transfer",
+			UPDATE: "pharmacy/stock-transfer",
+			VIEW: "pharmacy/stock-transfer",
+			ISSUE: "pharmacy/stock-transfer/issue",
 		},
 	},
 	NAVIGATION_LINKS: {
@@ -411,12 +422,23 @@ export const PHARMACY_DATA_ROUTES = {
 			DELETE: "/pharmacy/core/stock",
 		},
 
+		STORE_STOCK: {
+			INDEX: "/store/stock",
+		},
+
 		REQUISITION: {
-			INDEX: "/pharmacy/requisition",
-			CREATE: "/pharmacy/requisition/manage",
-			UPDATE: "/pharmacy/requisition/manage",
-			VIEW: "/pharmacy/requisition/manage",
-			DELETE: "/pharmacy/requisition",
+			INDEX: "/store/requisition",
+			CREATE: "/store/requisition/manage",
+			UPDATE: "/store/requisition/manage",
+			VIEW: "/store/requisition/manage",
+			DELETE: "/store/requisition",
+		},
+
+		STORE_INDENT: {
+			INDEX: "/pharmacy/core/store-indent",
+			UPDATE: "/pharmacy/core/store-indent",
+			VIEW: "/pharmacy/core/store-indent",
+			ISSUE: "/pharmacy/core/store-indent/issue",
 		},
 
 		WORKORDER: {

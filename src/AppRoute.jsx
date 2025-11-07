@@ -43,7 +43,6 @@ import PharmacyIndex from "@modules/pharmacy/dashboard";
 import PharmacyStockIndex from "@modules/pharmacy/stock";
 import MedicineIndex from "@modules/pharmacy/medicine";
 import GenericIndex from "@modules/pharmacy/generic";
-import PharmacyRequisitionIndex from "@modules/pharmacy/requisition";
 import BillingIndex from "@modules/hospital/billing";
 import DoctorIndex from "@modules/hospital/core/doctor";
 import NurseIndex from "@modules/hospital/core/nurse";
@@ -66,8 +65,13 @@ import DischargeIndex from "@modules/hospital/discharge";
 import FinalBillingIndex from "@modules/hospital/final-billing";
 import PharmacyRequisitionManage from "@modules/pharmacy/requisition/manage";
 import PharmacyWorkorderIndex from "@modules/pharmacy/workorder";
+import StoreIndentIndex from "@modules/pharmacy/store-indent";
 import PharmacyWorkorderManage from "@modules/pharmacy/workorder/manage";
 import IpdManageIndex from "@modules/hospital/ipdAdmitted/manage";
+import StoreRequisitionIndex from "@modules/store/requisition";
+import StoreRequisitionManage from "@modules/store/requisition/manage";
+import StoreStockIndex from "@modules/store/stock";
+
 
 function AppRoute() {
 	return (
@@ -90,12 +94,7 @@ function AppRoute() {
 					<Route path="config/:id" element={<DomainConfigurationIndex />} />
 					<Route path="user" element={<DomainUserIndex />} />
 				</Route>
-				<Route path="/pharmacy">
-					<Route index element={<PharmacyIndex />} />
-					<Route path="requisition" element={<PharmacyRequisitionIndex />} />
-					<Route path="requisition/manage" element={<PharmacyRequisitionManage />} />
-					<Route path="requisition/manage/:id" element={<PharmacyRequisitionManage mode="edit" />} />
-				</Route>
+
 				<Route path="/pharmacy/core/">
 					<Route
 						path="medicine"
@@ -111,9 +110,18 @@ function AppRoute() {
 					<Route path="generic/:id" element={<GenericIndex mode="edit" />} />
 					<Route path="stock" element={<PharmacyStockIndex />} />
 					<Route path="workorder" element={<PharmacyWorkorderIndex />} />
+					<Route path="store-indent" element={<StoreIndentIndex />} />
+					<Route path="store-indent/:id" element={<StoreIndentIndex mode={'edit'} />} />
 					<Route path="workorder/manage" element={<PharmacyWorkorderManage />} />
 					<Route path="workorder/manage/:id" element={<PharmacyWorkorderManage mode="edit" />} />
 				</Route>
+				<Route path="/store/">
+				<Route path="requisition" element={<StoreRequisitionIndex/>}/>
+				<Route path="requisition/manage" element={<StoreRequisitionManage/>}/>
+				<Route path="requisition/manage/:id" element={<StoreRequisitionManage mode="edit"/>}/>
+				<Route path="stock" element={<StoreStockIndex/>}/>
+				</Route>
+
 				<Route path="/hospital/">
 					<Route path="visit">
 						<Route
@@ -172,7 +180,7 @@ function AppRoute() {
 						<Route
 							index
 							element={
-								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_ipd_admitted"]}>
+								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_ipd_admitted","nurse_basic", "nurse_incharge"]}>
 									<IpdAdmittedIndex />
 								</ProtectedRoute>
 							}
@@ -480,7 +488,6 @@ function AppRoute() {
 						<Route path="emergency" element={<DoctorDashboard />} />
 						<Route path="emergency/:prescriptionId" element={<DoctorDashboard />} />
 						<Route path="ipd" element={<DoctorDashboard />} />
-						<Route path="requisition" element={<PharmacyRequisitionIndex />} />
 					</Route>
 				</Route>
 

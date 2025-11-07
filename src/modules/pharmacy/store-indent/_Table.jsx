@@ -25,6 +25,9 @@ import {ERROR_NOTIFICATION_COLOR} from "@/constants/index.js";
 import {deleteNotification} from "@components/notification/deleteNotification";
 import {useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
+import {getLoggedInUser, getUserRole} from "@utils/index";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import {CORE_DROPDOWNS} from "@/app/store/core/utilitySlice";
 
 const PER_PAGE = 50;
 
@@ -38,7 +41,11 @@ export default function _Table({module}) {
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
     const height = mainAreaHeight - 48;
-
+    const user = getLoggedInUser();
+    const userRoles = getUserRole();
+   // console.log(user.id)
+    const ALLOWED_OPD_ROLES = ["nurse_incharge"];
+    const canApprove = userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role));
     // for infinity table data scroll, call the hook
     const {
         scrollRef,
@@ -53,13 +60,14 @@ export default function _Table({module}) {
         filterParams: {
             name: filterData?.name,
             term: searchKeyword,
+          //  ...(userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && { user_id: user.id }),
         },
         perPage: PER_PAGE,
         sortByKey: "name",
     });
 
     const handleEntityEdit = (id) => {
-        navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.UPDATE}/${id}`);
+        navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.UPDATE}/${id}`);
     };
 
     const handleDelete = (id) => {
@@ -73,28 +81,6 @@ export default function _Table({module}) {
         });
     };
 
-    const handleDeleteSuccess = async (id) => {
-        const res = await dispatch(
-            deleteEntityData({
-                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.DELETE}/${id}`,
-                module,
-                id,
-            })
-        );
-
-        if (deleteEntityData.fulfilled.match(res)) {
-            dispatch(setRefetchData({module, refetching: true}));
-            deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-            navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX);
-            dispatch(setInsertType({insertType: "create", module}));
-        } else {
-            notifications.show({
-                color: ERROR_NOTIFICATION_COLOR,
-                title: t("DeleteFailed"),
-                icon: <IconAlertCircle style={{width: rem(18), height: rem(18)}}/>,
-            });
-        }
-    };
 
     const handleDataShow = (id) => {
         dispatch(
@@ -105,17 +91,11 @@ export default function _Table({module}) {
         );
         setViewDrawer(true);
     };
-
-    const handleCreateFormNavigate = () => {
-        navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.CREATE}`);
-    };
-
     return (
         <>
             <Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
                 <Flex align="center" justify="space-between" gap={4}>
                     <KeywordSearch module={module}/>
-                    <CreateButton handleModal={handleCreateFormNavigate} text="AddNew"/>
                 </Flex>
             </Box>
 
@@ -171,7 +151,7 @@ export default function _Table({module}) {
 
                                         {values.process !== 'Approved' && !values.approved_by_id &&
                                             <Button
-                                                onClick={() => handleEntityEdit(values.id)}
+                                                onClick={() => handleEntityEdit(values.uid)}
                                                 variant="filled"
                                                 c="white"
                                                 size="xs"
@@ -183,7 +163,7 @@ export default function _Table({module}) {
                                             </Button>
                                         }
                                         <Button
-                                            onClick={() => handleDataShow(values.id)}
+                                            onClick={() => handleDataShow(values.uid)}
                                             variant="filled"
                                             c="white"
                                             bg="var(--theme-primary-color-6)"
@@ -194,10 +174,9 @@ export default function _Table({module}) {
                                         >
                                             {t("View")}
                                         </Button>
-
                                         {values.process !== 'Approved' && !values.approved_by_id &&
                                             <ActionIcon
-                                                onClick={() => handleDelete(values.id)}
+                                                onClick={() => handleDelete(values.uid)}
                                                 className="action-icon-menu border-left-radius-none"
                                                 variant="light"
                                                 color="var(--theme-delete-color)"
@@ -230,7 +209,7 @@ export default function _Table({module}) {
             </Box>
 
             <DataTableFooter indexData={listData} module={module}/>
-            <ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module}/>
+            <ViewDrawer viewDrawer={viewDrawer} height={height} setViewDrawer={setViewDrawer} module={module}/>
         </>
     );
 }

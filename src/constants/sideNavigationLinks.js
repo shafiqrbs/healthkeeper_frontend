@@ -136,6 +136,35 @@ export const sideNavigationLinks = {
 		},
 
 		{
+			label: t("Nurse"),
+			path: "/",
+			icon: IconBuildingHospital,
+			color: "#9C27B0", // Deep Purple
+			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic", "nurse_incharge"],
+		},
+		{
+			label: t("IPD"),
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX,
+			icon: IconMedicineSyrup,
+			color: "#009688", // Teal
+			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic", "nurse_incharge"],
+		},
+		{
+			label: t("Stock"),
+			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_STOCK.INDEX,
+			icon: IconMedicineSyrup,
+			color: "#3F51B5", // Indigo Blue
+			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic", "nurse_incharge"],
+		},
+		{
+			label: t("Indent"),
+			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX,
+			icon: IconMedicineSyrup,
+			color: "#FF9800", // Amber / Orange
+			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic", "nurse_incharge"],
+		},
+
+		{
 			label: t("Discharge"),
 			path: "/hospital/discharge",
 			icon: IconBuildingHospital,
@@ -386,7 +415,7 @@ export const sideNavigationLinks = {
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.NURSE.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
-			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
+			allowedRoles: ["role_domain","role_domain", "admin_administrator", "admin_hospital"],
 		},
 
 		{

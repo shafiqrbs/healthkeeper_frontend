@@ -49,8 +49,8 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
 	const { medicineData } = useMedicineData({ term: medicineTerm });
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 78;
-	const itemFromHeight = mainAreaHeight - 196;
+	const height = mainAreaHeight-24;
+	const itemFromHeight = mainAreaHeight - 142;
 	const [searchValue, setSearchValue] = useState("");
 	const [draftProducts, setDraftProducts] = useState([]);
 

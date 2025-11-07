@@ -155,7 +155,13 @@ export const coreHeaderLinks = {
 			{ link: "/pharmacy/stock", label: "Stock" },
 			{ link: "/pharmacy/stock-matrix", label: "Stock Matrix" },
 			{ link: "/pharmacy/core/workorder", label: "Workorder" },
-			{ link: "/pharmacy/core/requisition", label: "Indent" },
+			{ link: "/pharmacy/core/store-indent", label: "Indent" },
+		]
+	},
+	store: {
+		topBarLinks: [
+			{ link: "/store/stock", label: "Stock" },
+			{ link: "/store/requisition", label: "Indent" },
 		]
 	},
 	procurement: {
