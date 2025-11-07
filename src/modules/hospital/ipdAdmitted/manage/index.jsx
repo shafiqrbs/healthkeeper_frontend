@@ -14,16 +14,18 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
 import DetailsDrawer from "@/modules/hospital/common/drawer/__IPDDetailsDrawer";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import Navigation from "@components/layout/Navigation";
 import Medicine from "@modules/hospital/ipdAdmitted/common/tabs/Medicine";
 import Investigation from "@modules/hospital/ipdAdmitted/common/tabs/Investigation";
+import { modals } from "@mantine/modals";
 
 const module = MODULES.E_FRESH;
 
 const TAB_ITEMS = ["E-Fresh", "Investigation", "Medicine"];
 
 export default function Index() {
+	const [searchParams, setSearchParams] = useSearchParams();
 	const [records, setRecords] = useState([]);
 	const [customerId, setCustomerId] = useState();
 	const { mainAreaHeight } = useOutletContext();
@@ -79,9 +81,28 @@ export default function Index() {
 		}
 	}, [customerId]);
 
-	const hasRecords = records && records.length > 0;
+	useEffect(() => {
+		const tab = searchParams.get("tab");
+		if (tab) {
+			setBaseTabValue(tab?.toLowerCase());
+		}
+	}, [searchParams]);
 
-	console.log(tabParticulars);
+	const handleTabClick = (tabItem) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => {
+				setBaseTabValue(tabItem?.toLowerCase());
+				setSearchParams({ tab: tabItem?.toLowerCase() });
+			},
+		});
+	};
+
+	const hasRecords = records && records.length > 0;
 
 	return (
 		<Box pos="relative">
@@ -97,11 +118,15 @@ export default function Index() {
 									mx={8}
 									className={`cursor-pointer`}
 									variant="default"
-									onClick={() => setBaseTabValue(tabItem)}
-									bg={baseTabValue === tabItem ? "gray.1" : "#ffffff"}
+									onClick={() => handleTabClick(tabItem)}
+									bg={baseTabValue === tabItem?.toLowerCase() ? "gray.1" : "#ffffff"}
 								>
 									<Text
-										c={baseTabValue === tabItem ? "var(--theme-primary-color-8)" : "black"}
+										c={
+											baseTabValue === tabItem?.toLowerCase()
+												? "var(--theme-primary-color-8)"
+												: "black"
+										}
 										size="sm"
 										py="xxxs"
 										pl="xxxs"
@@ -114,7 +139,7 @@ export default function Index() {
 						</Stack>
 					</Grid.Col>
 					<Grid.Col w="100%" span={showHistory ? 17 : 21}>
-						{baseTabValue === "E-Fresh" && (
+						{baseTabValue === "e-fresh" && (
 							<Stack w="100%" gap={0}>
 								<BaseTabs
 									tabValue={tabValue}
@@ -144,8 +169,8 @@ export default function Index() {
 								</Flex>
 							</Stack>
 						)}
-						{baseTabValue === "Medicine" && <Medicine />}
-						{baseTabValue === "Investigation" && <Investigation />}
+						{baseTabValue === "medicine" && <Medicine />}
+						{baseTabValue === "investigation" && <Investigation />}
 						{!baseTabValue && (
 							<Flex bg="white" align="center" justify="center" w="100%" h="100%">
 								<Text size="sm" c="dimmed">

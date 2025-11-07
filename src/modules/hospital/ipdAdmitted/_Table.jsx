@@ -153,7 +153,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 	return (
 		<Box pos="relative">
 			<Flex align="center" justify="space-between">
-				<KeywordSearch form={form} module={module} />
+				<KeywordSearch showOpdRoom showUnits form={form} module={module} />
 
 				<SegmentedControl
 					w={220}

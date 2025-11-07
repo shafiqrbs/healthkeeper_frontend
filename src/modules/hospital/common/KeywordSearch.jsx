@@ -12,6 +12,7 @@ import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES_CORE } from "@/constants";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
+const units = ["Unit 1", "Unit 2", "Unit 3"];
 
 export default function KeywordSearch({
 	form,
@@ -24,6 +25,7 @@ export default function KeywordSearch({
 	showAdvancedFilter = true,
 	showReset = true,
 	showOpdRoom = false,
+	showUnits = false,
 	className = "keyword-search-box",
 	handleCSVDownload = () => {},
 }) {
@@ -161,6 +163,17 @@ export default function KeywordSearch({
 					data={records.map((item) => ({ label: item.name, value: item.id?.toString() }))}
 					value={form.values.room_id}
 					onChange={(value) => handleRoomChange(value)}
+					w={250}
+				/>
+			)}
+			{showUnits && (
+				<Select
+					clearable
+					placeholder="Unit"
+					loading={fetching}
+					data={units.map((item) => ({ label: item, value: item }))}
+					value={form.values.unit_id}
+					onChange={(value) => form.setFieldValue("unit_id", value)}
 					w={250}
 				/>
 			)}
