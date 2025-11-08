@@ -2,33 +2,37 @@
     .mantine-datatable-table[data-striped] tbody tr:nth-of-type(odd) {
         background-color: var(--theme-primary-color-4) !important;
     }
-    border: 1px solid white !important;
+
+    border: 1px solid var(--mantine-color-white) !important;
 }
 
 .table {
     tr {
-        font-size: 12px!important;
-        background-color: white;
-        margin: 0!important;
-        padding-left: 8px!important;
+        font-size: 12px !important;
+        background-color: var(--mantine-color-white);
+        margin: 0 !important;
+        padding-left: 8px !important;
+
         &:hover {
             cursor: pointer;
         }
-            td {
-                font-size: 12px!important;
-                margin: 2px!important;
-                padding: 2px!important;
-                border-bottom:1px solid #f0f1f9!important;
-            }
-            td:first-child {
-                padding-left: 12px!important;
-            }
+
+        td {
+            font-size: 12px !important;
+            margin: 2px !important;
+            padding: 2px !important;
+            border-bottom: 1px solid #f0f1f9 !important;
+        }
+
+        td:first-child {
+            padding-left: 12px !important;
+        }
     }
 
     &[data-striped] {
         tr:nth-of-type(odd) {
             background-color: var(--mantine-datatable-striped-color);
-            border:none!important;
+            border: none !important;
         }
     }
 
@@ -38,26 +42,27 @@
 }
 
 .header {
-    th:first-child{
-        padding-left: 12px!important;
+    th:first-child {
+        padding-left: 12px !important;
     }
+
     th {
         background-color: var(--theme-primary-color-1) !important;
         font-size: 12px;
         font-weight: normal;
         color: var(--mantine-color-gray-8);
         border-bottom: 1px solid transparent;
-        padding-left: 0!important;
+        padding-left: 0 !important;
     }
 }
 
 .body {
     td {
 
-        margin: 0!important;
-        padding: 0!important;
+        margin: 0 !important;
+        padding: 0 !important;
         font-weight: normal;
-        border:none!important;
+        border: none !important;
     }
 }
 
@@ -67,19 +72,19 @@
 
     th,
     td {
-        border:none!important;
+        border: none !important;
     }
 }
 
 .pagination {
     background: transparent;
-    border:none!important;
+    border: none !important;
 
     button {
         background: transparent;
 
         &[data-active='true'] {
-            color: white;
+            color: var(--mantine-color-white);
             border: transparent;
             background-color: rgba(208, 191, 191, 0.17);
         }
