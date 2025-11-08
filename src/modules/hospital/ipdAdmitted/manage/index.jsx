@@ -30,7 +30,6 @@ const TAB_ITEMS = ["E-Fresh", "Investigation", "Medicine", "Vitals Chart", "Insu
 export default function Index() {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [records, setRecords] = useState([]);
-	const [customerId, setCustomerId] = useState();
 	const { mainAreaHeight } = useOutletContext();
 	const { id } = useParams();
 	const [opened, { close }] = useDisclosure(false);
@@ -50,12 +49,16 @@ export default function Index() {
 		(item) => item?.particular_type?.name
 	);
 
-	const { data: prescriptionData, isLoading } = useDataWithoutStore({
+	const {
+		data: prescriptionData,
+		isLoading,
+		refetch,
+	} = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
 	});
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
-	const existingMedicines = initialFormValues?.medicines || [];
+	const existingMedicines = prescriptionData?.data?.prescription_medicine || [];
 
 	const form = useForm(getPrescriptionFormInitialValues(t, {}));
 
@@ -64,25 +67,8 @@ export default function Index() {
 		const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
 		form.setValues(updatedFormValues.initialValues);
 		setMedicines(existingMedicines || []);
-		setCustomerId(prescriptionData?.data?.customer_id);
+		setRecords(prescriptionData?.data?.prescription_medicine_history || []);
 	}, [prescriptionData]);
-
-	const fetchData = async () => {
-		try {
-			const result = await getDataWithoutStore({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}/${id}`,
-			});
-			setRecords(result?.data || []);
-		} catch (err) {
-			console.error("Unexpected error:", err);
-		}
-	};
-
-	useEffect(() => {
-		if (customerId) {
-			fetchData();
-		}
-	}, [customerId]);
 
 	useEffect(() => {
 		const tab = searchParams.get("tab");
@@ -100,11 +86,12 @@ export default function Index() {
 				confirmProps: { color: "red" },
 				onCancel: () => console.info("Cancel"),
 				onConfirm: async () => {
-					const res = await getDataWithoutStore({
+					await getDataWithoutStore({
 						url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.EFRESH_ORDER}/${id}`,
 					});
+					refetch();
 					setBaseTabValue(tabItem?.toLowerCase());
-					setSearchParams({tab: tabItem?.toLowerCase()});
+					setSearchParams({ tab: tabItem?.toLowerCase() });
 				},
 			});
 		} else {
@@ -132,17 +119,18 @@ export default function Index() {
 									{t("PatientInformation")}
 								</Box>
 								<Box p="xs" bg="var(--theme-primary-color-0)">
-									<Text fz="xs">{records[0]?.patient_id}</Text>
-									<Text fz="xs">{records[0]?.health_id || ""}</Text>
+									<Text fz="xs">{prescriptionData?.data?.patient_id}</Text>
+									<Text fz="xs">{prescriptionData?.data?.health_id || ""}</Text>
 									<Text fz="sm" fw={600}>
-										{records[0]?.name}
+										{prescriptionData?.data?.name}
 									</Text>
-									<Text fz="xs">{records[0]?.gender}</Text>
+									<Text fz="xs">{prescriptionData?.data?.gender}</Text>
 									<Text fz="xs">
-										{records[0]?.day}d {records[0]?.month}m {records[0]?.year}y
+										{prescriptionData?.data?.year || 0}y {prescriptionData?.data?.month || 0}m{" "}
+										{prescriptionData?.data?.day || 0}d{" "}
 									</Text>
 									<Text fz="xs">
-										{t("Created")} {formatDate(records[0]?.created_at)}
+										{t("Created")} {formatDate(prescriptionData?.data?.created_at)}
 									</Text>
 								</Box>
 							</Box>
@@ -195,7 +183,7 @@ export default function Index() {
 									<AddMedicineForm
 										module={module}
 										form={form}
-										medicines={medicines}
+										medicines={medicines || []}
 										hasRecords={hasRecords}
 										setMedicines={setMedicines}
 										setShowHistory={setShowHistory}

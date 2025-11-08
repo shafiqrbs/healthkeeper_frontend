@@ -32,7 +32,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
@@ -73,7 +73,6 @@ export default function AddMedicineForm({
 	hasRecords,
 	tabParticulars,
 }) {
-	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
@@ -100,7 +99,6 @@ export default function AddMedicineForm({
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
-	const ipdId = searchParams.get("ipd");
 	const [mountPreviewDrawer, setMountPreviewDrawer] = useState(false);
 	const [medicineDosageSearchValue, setMedicineDosageSearchValue] = useState("");
 	const [medicineByMealSearchValue, setMedicineByMealSearchValue] = useState("");

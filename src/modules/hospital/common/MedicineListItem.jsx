@@ -1,5 +1,5 @@
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import { ActionIcon, Box, Flex, Grid, Input, NumberInput, Select, Stack, Text } from "@mantine/core";
+import { ActionIcon, Box, Flex, Grid, Input, NumberInput, Select, Stack, Switch, Text } from "@mantine/core";
 import { IconCheck, IconMedicineSyrup, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { getByMeal, getDosage } from "@utils/prescription";
 import { useState } from "react";
@@ -32,7 +32,7 @@ export default function MedicineListItem({
 	const handleChange = (field, value) => {
 		if (field === "opd_quantity" && !ignoreOpdQuantityLimit && isOpdType) {
 			if (value > medicine.opd_limit) {
-				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error");
+				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error", "", "", "", 3000);
 				return;
 			}
 		}
@@ -179,15 +179,34 @@ export default function MedicineListItem({
 						{medicine.medicine_name || medicine.generic}
 					</Text>
 				</Flex>
-				<Flex gap="les" justify="flex-end">
-					<ActionIcon
-						variant="outline"
-						color="var(--theme-error-color)"
-						onClick={() => handleDelete(index - 1)}
-					>
-						<IconTrash size={18} stroke={1.5} />
-					</ActionIcon>
-				</Flex>
+				{type === "ipd" && medicine.id ? (
+					<Switch
+						size="md"
+						onLabel="ON"
+						color="teal"
+						offLabel="OFF"
+						checked={medicine.is_active}
+						onChange={(e) => handleChange("is_active", e.currentTarget.checked)}
+						radius="sm"
+						thumbIcon={
+							medicine.is_active ? (
+								<IconCheck size={12} color="var(--mantine-color-teal-6)" stroke={3} />
+							) : (
+								<IconX size={12} color="var(--mantine-color-red-6)" stroke={3} />
+							)
+						}
+					/>
+				) : (
+					<Flex gap="les" justify="flex-end">
+						<ActionIcon
+							variant="outline"
+							color="var(--theme-error-color)"
+							onClick={() => handleDelete(index - 1)}
+						>
+							<IconTrash size={18} stroke={1.5} />
+						</ActionIcon>
+					</Flex>
+				)}
 			</Flex>
 			{mode === "view" ? (
 				<Stack gap="es">
@@ -208,6 +227,8 @@ export default function MedicineListItem({
 						  ]
 					).map((instruction, insIndex) => {
 						const isFirstItem = insIndex === 0;
+						const isMedicine = !!medicine.medicine_id;
+
 						return (
 							<Flex key={insIndex} ml={isFirstItem ? "md" : "44px"} gap="xs" align="center">
 								{isFirstItem && isOpdType && (
@@ -279,7 +300,7 @@ export default function MedicineListItem({
 												</Grid.Col>
 											</>
 										)}
-										{isFirstItem && isOpdType && (
+										{isFirstItem && isOpdType && isMedicine && (
 											<>
 												<Grid.Col span={2}>
 													<Input
@@ -328,6 +349,7 @@ export default function MedicineListItem({
 											{instruction?.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
 											{isOpdType && `---- ${instruction.quantity} ---- ${instruction.duration}`}
 											{isFirstItem &&
+												isMedicine &&
 												isOpdType &&
 												`---- ${medicine.opd_quantity || t("NoOutdoorMedicineNumber")} ---- ${
 													medicine.doctor_comment || t("NoDoctorComment")
