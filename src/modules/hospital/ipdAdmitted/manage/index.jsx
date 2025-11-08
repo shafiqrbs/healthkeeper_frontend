@@ -142,13 +142,17 @@ export default function Index() {
 										className={`cursor-pointer`}
 										variant="default"
 										onClick={() => handleTabClick(tabItem)}
-										bg={baseTabValue === tabItem?.toLowerCase() ? "gray.1" : "#ffffff"}
+										bg={
+											baseTabValue === tabItem?.toLowerCase()
+												? "var(--mantine-color-gray-1)"
+												: "var(--mantine-color-white)"
+										}
 									>
 										<Text
 											c={
 												baseTabValue === tabItem?.toLowerCase()
 													? "var(--theme-primary-color-8)"
-													: "black"
+													: "var(--mantine-color-black)"
 											}
 											size="sm"
 											py="3xs"
