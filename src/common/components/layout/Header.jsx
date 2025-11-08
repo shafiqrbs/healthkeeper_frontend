@@ -171,7 +171,7 @@ const SearchButton = ({ t, onClick, matches2 }) => (
 		justify="space-between"
 		style={{ border: "1px solid #49362366" }}
 		color={"black"}
-		bg={"white"}
+		bg="var(--mantine-color-white)"
 		onClick={onClick}
 		className="no-focus-outline"
 	/>

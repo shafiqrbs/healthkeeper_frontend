@@ -268,19 +268,19 @@ function VoucherFormIndex(props) {
 				<Box>
 					<Grid columns={24} gutter={{ base: 6 }}>
 						<Grid.Col span={2.5}>
-							<Box bg={"white"}>
+							<Box bg="var(--mantine-color-white)">
 								<VoucherDetailSection />
 							</Box>
 						</Grid.Col>
 						<Grid.Col span={6.5}>
 							<Box>
-								<Box bg={"white"}>
+								<Box bg="var(--mantine-color-white)">
 									<VoucherFormSection />
 								</Box>
 							</Box>
 						</Grid.Col>
 						<Grid.Col span={14}>
-							<Box p={"xs"} className={"borderRadiusAll"} bg={"white"}>
+							<Box p={"xs"} className={"borderRadiusAll"} bg="var(--mantine-color-white)">
 								<Box className="borderRadiusAll">
 									<DataTable
 										classNames={{
@@ -373,10 +373,10 @@ function VoucherFormIndex(props) {
 								</Box>
 							</Box>
 							<Box mt={4}>
-								<Box p={"xs"} className="borderRadiusAll" bg={"white"}>
+								<Box p={"xs"} className="borderRadiusAll" bg="var(--mantine-color-white)">
 									<Grid columns={12} gutter={{ base: 6 }}>
 										<Grid.Col span={6}>
-											<Box className="borderRadiusAll" p={"xs"} bg={"white"}>
+											<Box className="borderRadiusAll" p={"xs"} bg="var(--mantine-color-white)">
 												<Box>
 													<InputNumberForm
 														tooltip={t("VoucherRefNo")}
@@ -422,7 +422,7 @@ function VoucherFormIndex(props) {
 											</Box>
 										</Grid.Col>
 										<Grid.Col span={6}>
-											<Box className="borderRadiusAll" pl={"xs"} pr={"xs"} h={154} bg={"white"}>
+											<Box className="borderRadiusAll" pl={"xs"} pr={"xs"} h={154} bg="var(--mantine-color-white)">
 												<Box mt={"md"}>
 													<TextAreaForm
 														autosize={true}
@@ -442,7 +442,7 @@ function VoucherFormIndex(props) {
 											</Box>
 										</Grid.Col>
 									</Grid>
-									<Box mt={"4"} bg={"white"}>
+									<Box mt={"4"} bg="var(--mantine-color-white)">
 										<Box
 											mt={4}
 											pl={`xs`}
@@ -480,7 +480,7 @@ function VoucherFormIndex(props) {
 							</Box>
 						</Grid.Col>
 						<Grid.Col span={1}>
-							<Box className={"borderRadiusAll"} pt={"16"} bg={"white"}>
+							<Box className={"borderRadiusAll"} pt={"16"} bg="var(--mantine-color-white)">
 								<ShortcutVoucher
 									form={form}
 									FormSubmit={"EntityFormSubmit"}

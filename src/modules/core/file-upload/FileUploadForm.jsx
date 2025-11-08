@@ -131,8 +131,8 @@ function FileUploadForm() {
 			>
 				<Grid columns={9} gutter={{ base: 8 }}>
 					<Grid.Col span={8}>
-						<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
-							<Box bg={"white"}>
+						<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
+							<Box bg="var(--mantine-color-white)">
 								<Box
 									pl={`xs`}
 									pr={8}
@@ -218,7 +218,7 @@ function FileUploadForm() {
 						</Box>
 					</Grid.Col>
 					<Grid.Col span={1}>
-						<Box bg={"white"} className={"borderRadiusAll"} pt={"16"}>
+						<Box bg="var(--mantine-color-white)" className={"borderRadiusAll"} pt={"16"}>
 							<Shortcut form={form} FormSubmit={"EntityFormSubmit"} Name={"name"} inputType="select" />
 						</Box>
 					</Grid.Col>

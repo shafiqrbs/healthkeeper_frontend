@@ -601,7 +601,7 @@ export default function AddMedicineForm({
 							</Grid>
 						</Group>
 					</Grid.Col>
-					<Grid.Col span={6} bg={"white"}>
+					<Grid.Col span={6} bg="var(--mantine-color-white)">
 						<Grid w="100%" columns={12} gutter="3xs">
 							<Grid.Col span={12}>
 								<Group grow gap="les">

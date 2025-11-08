@@ -95,7 +95,7 @@ function CustomerIndex() {
 								<Navigation module={"customer"} />
 							</Grid.Col>
 							<Grid.Col span={14}>
-								<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+								<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
 									<CustomerTable />
 								</Box>
 							</Grid.Col>

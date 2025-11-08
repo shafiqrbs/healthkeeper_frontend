@@ -399,6 +399,7 @@ export default function AddMedicineForm({
 				is_completed: true,
 				medicines,
 				advise: form.values.advise || "",
+				weight: form.values.weight || "",
 				follow_up_date: form.values.follow_up_date || null,
 				prescription_date: new Date().toISOString().split("T")[0],
 				created_by_id: createdBy?.id,
@@ -647,7 +648,7 @@ export default function AddMedicineForm({
 							</Grid>
 						</Group>
 					</Grid.Col>
-					<Grid.Col span={6} bg={"white"}>
+					<Grid.Col span={6} bg="var(--mantine-color-white)">
 						<Grid w="100%" columns={12} gutter="3xs">
 							<Grid.Col span={12}>
 								<Group grow gap="les">

@@ -278,7 +278,7 @@ export default function EntityForm({ form, module }) {
 								</ScrollArea>
 							</Grid.Col>
 							<Grid.Col span={14}>
-								<Box className="border-top-none" bg={"white"}>
+								<Box className="border-top-none" bg="var(--mantine-color-white)">
 									<Box px="sm" h={height - 180}>
 										<Table stickyHeader stickyHeaderOffset={60}>
 											<Table.Thead>

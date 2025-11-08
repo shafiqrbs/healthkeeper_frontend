@@ -10,7 +10,6 @@ import DomainUserIndex from "@modules/domain/master-user/DomainUserIndex";
 import HospitalConfigIndex from "@modules/settings/HospitalConfigIndex";
 import PrescriptionIndex from "@modules/hospital/prescription";
 import PrescriptionOpd from "@modules/hospital/prescription/opd";
-import PrescriptionIpd from "@modules/hospital/prescription/ipd";
 import VisitIndex from "@modules/hospital/visit";
 import ParticularIndex from "@modules/hospital/core/particular";
 import BedIndex from "@modules/hospital/core/bed";
@@ -50,7 +49,7 @@ import LabUserIndex from "@modules/hospital/core/lab-user";
 import DosageIndex from "@modules/hospital/core/medicine-dosage";
 import ListIndex from "@modules/hospital/visit/list";
 import ConfigurationIndex from "@modules/configuration";
-import IpdIndex from "@modules/hospital/admission/ipd";
+import IpdIndex from "@modules/hospital/admission/ipdConfirm";
 import IpdAdmissionIndex from "@modules/hospital/admission/ipdAdmission";
 import IpdAdmittedIndex from "@modules/hospital/ipdAdmitted";
 import UserIndex from "@modules/core/user";
@@ -254,14 +253,7 @@ function AppRoute() {
 								</ProtectedRoute>
 							}
 						/> */}
-						<Route
-							path="edit/:id"
-							element={
-								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_prescription"]}>
-									<PrescriptionIpd />
-								</ProtectedRoute>
-							}
-						/>
+
 					</Route>
 
 					<Route path="customer">

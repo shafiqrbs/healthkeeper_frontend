@@ -123,7 +123,7 @@ import {
     ]);
     return (
       <>
-        <Box p={"xs"} className={"borderRadiusAll"} bg={"white"}>
+        <Box p={"xs"} className={"borderRadiusAll"} bg="var(--mantine-color-white)">
           <Box className="borderRadiusAll" h={height - 6}>
             {dataLimit ? (
               <Box>
@@ -226,7 +226,7 @@ import {
             )}
           </Box>
           <Box mt={4}>
-            <Box bg={"white"}>
+            <Box bg="var(--mantine-color-white)">
               <Box
                 pl={`xs`}
                 pr={8}

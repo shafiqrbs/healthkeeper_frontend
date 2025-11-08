@@ -100,7 +100,7 @@ export default function _Form({ module }) {
 					</Grid>
 					<Grid columns={9} gutter={{ base: 1 }}>
 						<Grid.Col span={9}>
-							<Box bg={"white"}>
+							<Box bg="var(--mantine-color-white)">
 								<Box mt="3xs" pt="3xs">
 									<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
 										{NAV_ITEMS.map((item) => (

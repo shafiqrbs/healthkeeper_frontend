@@ -42,8 +42,8 @@ function FilterModel({ filterModel, setFilterModel, module }) {
 						</ActionIcon>
 					</Group>
 
-					<Box ml={2} mr={2} mt={0} p={"xs"} className="borderRadiusAll" bg={"white"}>
-						<Box bg={"white"} p={"xs"} className={"borderRadiusAll"} h={height - 37}>
+					<Box ml={2} mr={2} mt={0} p={"xs"} className="borderRadiusAll" bg="var(--mantine-color-white)">
+						<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"} h={height - 37}>
 							{module === "customer" && <CustomerFilterForm module={module} />}
 							{module === "warehouse" && <WarehouseFilterForm module={module} />}
 							{module === "category-group" && <CategoryGroupFilterForm module={module} />}

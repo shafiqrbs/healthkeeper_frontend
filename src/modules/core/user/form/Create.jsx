@@ -159,8 +159,8 @@ export default function Create({ module }) {
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Grid columns={8} gutter={{ base: 8 }}>
 					<Grid.Col span={8}>
-						<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
-							<Box bg={"white"}>
+						<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
+							<Box bg="var(--mantine-color-white)">
 								<Box
 									pl={`xs`}
 									pr={8}

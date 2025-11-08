@@ -124,8 +124,8 @@ function SettingDrawer(props) {
 								<IconX style={{ width: "80%", height: "80%" }} stroke={1.5} />
 							</ActionIcon>
 						</Flex>
-						<Box bg={"white"} className={"borderRadiusAll"} mb={"8"} mt={2}>
-							<Box bg={"white"}>
+						<Box bg="var(--mantine-color-white)" className={"borderRadiusAll"} mb={"8"} mt={2}>
+							<Box bg="var(--mantine-color-white)">
 								<Box
 									pl={`xs`}
 									pr={8}

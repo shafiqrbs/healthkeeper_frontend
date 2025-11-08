@@ -55,13 +55,13 @@ function VoucherTableNew() {
 
 	return (
 		<>
-			<Box className={"borderRadiusAllVoucherNew"} bg={"white"}>
+			<Box className={"borderRadiusAllVoucherNew"} bg="var(--mantine-color-white)">
 				<Box bg="var(--mantine-color-white)" className="borderRadiusAll" m={"xs"}>
-					<Box className="boxBackground" pl={`xs`} pb={"sm"} pr={8} pt={"xs"} bg={"white"}>
+					<Box className="boxBackground" pl={`xs`} pb={"sm"} pr={8} pt={"xs"} bg="var(--mantine-color-white)">
 						<VoucherSearch module={"voucher"} />
 					</Box>
 				</Box>
-				<Box className={"borderRadiusAllVoucher"} p={"xs"} bg={"white"}>
+				<Box className={"borderRadiusAllVoucher"} p={"xs"} bg="var(--mantine-color-white)">
 					<Box className="borderRadiusAll">
 						<DataTable
 							classNames={{

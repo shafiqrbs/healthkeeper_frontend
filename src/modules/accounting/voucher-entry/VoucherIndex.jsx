@@ -100,7 +100,7 @@ function VoucherIndex() {
 										</Box>
 									</Tabs.Panel>
 									<Tabs.Panel value="VoucherEntry">
-										<Box bg={"white"}>
+										<Box bg="var(--mantine-color-white)">
 											<VoucherFormIndex />
 										</Box>
 									</Tabs.Panel>

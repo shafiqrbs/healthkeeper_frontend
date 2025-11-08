@@ -72,7 +72,7 @@ function MarketingExecutiveIndex() {
 										<Navigation module={"marketing-executive"} />
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+										<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
 											<MarketingExecutiveTable />
 										</Box>
 									</Grid.Col>

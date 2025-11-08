@@ -236,7 +236,7 @@ export default function BranchManagementForm() {
 					scrollbarSize={10}
 					scrollbars="y"
 					type="hover"
-					bg={"white"}
+					bg="var(--mantine-color-white)"
 					className="borderRadiusAll"
 					pl="xs"
 					pr="xs"
@@ -514,7 +514,7 @@ export default function BranchManagementForm() {
 			</Grid.Col>
 
 			<Grid.Col span={1}>
-				<Box bg={"white"} className={"borderRadiusAll"} pt={"16"}>
+				<Box bg="var(--mantine-color-white)" className={"borderRadiusAll"} pt={"16"}>
 					<Shortcut FormSubmit={"EntityFormSubmit"} Name={"name"} inputType="select" />
 				</Box>
 			</Grid.Col>

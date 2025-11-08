@@ -30,7 +30,7 @@ export default function DomainUserIndex() {
 								<_Navigation id={id} module={"b2b_dashboard"} />
 							</Grid.Col>
 							<Grid.Col span={23}>
-								<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+								<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
 									<DomainUserTable id={id} />
 								</Box>
 							</Grid.Col>

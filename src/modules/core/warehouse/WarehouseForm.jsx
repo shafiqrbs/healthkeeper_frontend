@@ -113,7 +113,7 @@ function WarehouseForm({ adjustment }) {
 				<Box mb={0}>
 					<Grid columns={9} gutter={{ base: 6 }}>
 						<Grid.Col span={8}>
-							<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+							<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
 								<Box
 									pl={`xs`}
 									pr={8}
@@ -226,7 +226,7 @@ function WarehouseForm({ adjustment }) {
 							</Box>
 						</Grid.Col>
 						<Grid.Col span={1}>
-							<Box bg={"white"} className={"borderRadiusAll"} pt={"16"}>
+							<Box bg="var(--mantine-color-white)" className={"borderRadiusAll"} pt={"16"}>
 								<_ShortcutMasterData
 									adjustment={adjustment}
 									form={form}

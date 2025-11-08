@@ -64,7 +64,7 @@ function AccountingSettingIndex() {
 							<Box p={"8"}>
 								<Grid columns={24} gutter={{ base: 8 }}>
 									<Grid.Col span={15}>
-										<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+										<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
 											<AccountingSettingTable />
 										</Box>
 									</Grid.Col>

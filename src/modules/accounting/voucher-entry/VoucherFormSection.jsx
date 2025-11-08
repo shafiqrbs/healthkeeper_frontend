@@ -136,7 +136,7 @@ export default function VoucherFormSection(props) {
                             </Grid.Col>
                         </Grid>
                     </Box>
-                    <Box bg={"white"}>
+                    <Box bg="var(--mantine-color-white)">
                         <Box pl={"xs"} pr={"xs"} className={"borderRadiusAll"}>
                             <Grid columns={24}>
                                 <Grid.Col span={"auto"}>

@@ -82,7 +82,7 @@ function LedgerIndex() {
 									<Navigation module={"ledger"} />
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+									<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
 										<LedgerTable />
 									</Box>
 								</Grid.Col>

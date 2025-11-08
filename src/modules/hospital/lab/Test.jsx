@@ -58,7 +58,7 @@ export default function Test({ entity, isLoading }) {
 					<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 					<Stack className="form-stack-vertical" p="xs">
 						{test?.invoice_transaction?.map((transaction, index) => (
-							<Box key={index} className="borderRadiusAll" bg={"white"} p="sm">
+							<Box key={index} className="borderRadiusAll" bg="var(--mantine-color-white)" p="sm">
 								<Box fz={"xs"} fw={"600"}>
 									{t("Date")} : {formatDate(transaction?.created_at)}
 								</Box>

@@ -123,7 +123,7 @@ export default function __InventoryTable(props) {
   ]);
   return (
     <>
-      <Box p={"xs"} className={"borderRadiusAll"} bg={"white"}>
+      <Box p={"xs"} className={"borderRadiusAll"} bg="var(--mantine-color-white)">
         <Box className="borderRadiusAll" h={height - 7}>
           {dataLimit ? (
             <Box>
@@ -224,7 +224,7 @@ export default function __InventoryTable(props) {
           )}
         </Box>
         <Box mt={4}>
-          <Box bg={"white"}>
+          <Box bg="var(--mantine-color-white)">
             <Box
               pl={`xs`}
               pr={8}

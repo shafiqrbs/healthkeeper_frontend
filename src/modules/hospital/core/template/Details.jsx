@@ -34,9 +34,12 @@ import AdmissionFormBN from "@hospital-components/print-formats/admission/Admiss
 import AdmissionFormEN from "@hospital-components/print-formats/admission/AdmissionFormEN";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 import InvoicePosEN from "@hospital-components/print-formats/billing/InvoicePosEN";
+import IPDInvoicePosEN from "@hospital-components/print-formats/ipd/IPDInvoicePosEN";
+import IPDInvoicePosBN from "@hospital-components/print-formats/ipd/IPDInvoicePosBN";
 
-const STATIC_OPD_ID = 1;
-const STATIC_PRESCRIPTION_ID = 92;
+
+const STATIC_OPD_ID = '613345863040';
+const STATIC_PRESCRIPTION_ID = '613345863040';
 const REPORT_ID = 274;
 
 export default function Details() {
@@ -45,6 +48,10 @@ export default function Details() {
 	const navigate = useNavigate();
 	const { data: OPDData, isLoading: isOPDLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${STATIC_OPD_ID}`,
+	});
+
+	const { data: IPDData, isLoading: isIPDLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${STATIC_OPD_ID}`,
 	});
 
 	const { data: prescriptionData, isLoading: isPrescriptionLoading } = useDataWithoutStore({
@@ -143,6 +150,21 @@ export default function Details() {
 					{name === "AdmissionFormBN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
 							<AdmissionFormBN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "AdmissionFormBN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<AdmissionFormBN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "IPDInvoicePosEN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<IPDInvoicePosEN preview data={IPDData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "IPDInvoicePosBN" && (
+						<LoadingWrapper isLoading={isPrescriptionLoading}>
+							<IPDInvoicePosBN preview data={IPDData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "InvestigationPosBN" && (

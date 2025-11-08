@@ -40,12 +40,8 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 		}
 		return [];
 	};
-
 	const orderedExamKeys = normalizeOrder(order);
-	console.log(orderedExamKeys);
-
 	const hasArrayWithLength = (arr) => Array.isArray(arr) && arr.length > 0;
-
 	const SectionWrapper = ({ label, children }) => (
 		<Box>
 			<Text size="sm" fw={600}>
@@ -294,8 +290,8 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									</Group>
 								</Table.Td>
 								<Table.Td>
-									<Group gap="xs">
-										<Text size="xs" fw={600}>
+									<Group gap="4xs">
+										<Text size="xs">
 											{t("Gender")}:
 										</Text>
 										<Text size="xs">
@@ -304,29 +300,31 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td>
+								<Table.Td px={'0'}>
 									{patientInfo?.dob && (
-										<Group gap="xs">
-											<Text size="xs" fw={600}>
+										<Group gap="4xs">
+											<Text size="xs">
 												{t("DOB")}:
 											</Text>
 											<Text size="xs">{patientInfo?.dob || ""}</Text>
 										</Group>
 									)}
 								</Table.Td>
-								<Table.Td>
+								<Table.Td px={'0'}>
 									{patientInfo?.weight && (
-										<Group gap="xs">
-											<Text size="xs" fw={600}>
+										<Group gap="4xs">
+											<Text size="xs">
 												{t("Weight")}:
 											</Text>
 											<Text size="xs">{patientInfo?.weight || ""}</Text>
 										</Group>
 									)}
 								</Table.Td>
-								<Table.Td>
-									<Group gap="xs">
-										<strong>{t("Date")}:</strong> {patientInfo?.created || ""}
+								<Table.Td px={'0'}>
+									<Group gap="4xs">
+										<Text size="xs">
+											{t("Weight")}:
+										</Text> <Text size="xs">{patientInfo?.created || ""}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>

@@ -69,7 +69,7 @@ function DomainIndex() {
 								<_Navigation id={id} module={"b2b_dashboard"} />
 							</Grid.Col>
 							<Grid.Col span={15}>
-								<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+								<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
 									<DomainTable configData={configData} />
 								</Box>
 							</Grid.Col>

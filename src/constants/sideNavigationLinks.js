@@ -147,21 +147,21 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
-			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic", "nurse_incharge"],
+			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic", "admin_nurse", "nurse_incharge"],
 		},
 		{
 			label: t("Stock"),
 			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_STOCK.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#3F51B5", // Indigo Blue
-			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic", "nurse_incharge"],
+			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic", "admin_nurse", "nurse_incharge"],
 		},
 		{
 			label: t("Indent"),
 			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#FF9800", // Amber / Orange
-			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic", "nurse_incharge"],
+			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic","admin_nurse", "nurse_incharge"],
 		},
 
 		{
@@ -265,7 +265,7 @@ export const sideNavigationLinks = {
 				},
 				{
 					label: t("Requisition"),
-					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX,
+					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX,
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
 				},

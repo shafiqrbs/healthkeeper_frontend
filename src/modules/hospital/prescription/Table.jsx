@@ -228,7 +228,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				id,
 			})
 		).unwrap();
-		const prescription_id = resultAction?.data?.data.id;
+		const prescription_id = resultAction?.data?.data.uid;
 		if (prescription_id) {
 			if (closeTable) closeTable();
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
@@ -366,7 +366,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 														c="white"
 														fw={400}
 														size="compact-xs"
-														onClick={() => handlePrescription(values.prescription_id)}
+														onClick={() => handlePrescription(values.prescription_uid)}
 														radius="es"
 														rightSection={<IconArrowRight size={12} />}
 														className="border-right-radius-none"

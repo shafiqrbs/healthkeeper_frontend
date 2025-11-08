@@ -203,8 +203,8 @@ function _SettingsForm(props) {
 		<Box>
 			<form onSubmit={form.onSubmit(handleFormSubmit)}>
 				{module === "sales" && (
-					<Box bg={"white"} p={"xs"} className={"borderRadiusAll"} mb={"8"}>
-						<Box bg={"white"}>
+					<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"} mb={"8"}>
+						<Box bg="var(--mantine-color-white)">
 							<Box
 								pl={`xs`}
 								pr={8}
@@ -383,8 +383,8 @@ function _SettingsForm(props) {
 					</Box>
 				)}
 				{module === "purchase" && (
-					<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
-						<Box bg={"white"}>
+					<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
+						<Box bg="var(--mantine-color-white)">
 							<Box
 								pl={`xs`}
 								pr={8}
@@ -494,8 +494,8 @@ function _SettingsForm(props) {
 					</Box>
 				)}
 				{module === "stock-management" && (
-					<Box bg={"white"} p={"xs"} className={"borderRadiusAll"} mb={"8"}>
-						<Box bg={"white"}>
+					<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"} mb={"8"}>
+						<Box bg="var(--mantine-color-white)">
 							<Box
 								pl={`xs`}
 								pr={8}

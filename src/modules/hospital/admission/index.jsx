@@ -5,7 +5,7 @@ import { useOutletContext } from "react-router-dom";
 
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import { MODULES } from "@/constants";
-import _Table from "@modules/hospital/admission/ipd/_Table";
+import _Table from "@modules/hospital/admission/ipdConfirm/_Table";
 
 const module = MODULES.ADMISSION;
 

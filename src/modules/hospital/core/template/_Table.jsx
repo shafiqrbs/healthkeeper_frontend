@@ -21,6 +21,8 @@ const templateData = [
 	{ name: "PrescriptionFullBN", module: "prescription", id: crypto.randomUUID() },
 	{ name: "LabTest", module: "lab-test", id: crypto.randomUUID() },
 	{ name: "Discharge", module: "discharge", id: crypto.randomUUID() },
+	{ name: "IPDInvoicePosEN", module: "ipd", id: crypto.randomUUID() },
+	{ name: "IPDInvoicePosBN", module: "ipd", id: crypto.randomUUID() },
 	{ name: "IPDDetailsBN", module: "ipd", id: crypto.randomUUID() },
 	{ name: "IPDDetailsEN", module: "ipd", id: crypto.randomUUID() },
 	{ name: "InvestigationPosBN", module: "ipd", id: crypto.randomUUID() },

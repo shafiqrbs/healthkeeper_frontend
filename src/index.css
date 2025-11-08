@@ -719,4 +719,5 @@ input.date-selector-input {
 :root[data-mantine-color-scheme='dark'] {
     --mantine-color-white: #242424;
     --mantine-color-gray-2: #242424;
+    --theme-primary-color-0: var(--mantine-color-white);
 }

@@ -59,7 +59,7 @@ function TransactionModeIndex() {
 							<Grid columns={24} gutter={{ base: 8 }}>
 								<Navigation module={"transaction-mode"} />
 								<Grid.Col span={14}>
-									<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+									<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
 										<TransactionModeTable />
 									</Box>
 								</Grid.Col>

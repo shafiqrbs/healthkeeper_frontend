@@ -376,8 +376,8 @@ export default function Update({ module }) {
 					<Grid columns={24} gutter={{ base: 8 }}>
 						{/* User Information */}
 						<Grid.Col span={7}>
-							<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
-								<Box bg={"white"}>
+							<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
+								<Box bg="var(--mantine-color-white)">
 									<Box
 										p={`xs`}
 										pr={8}
@@ -548,8 +548,8 @@ export default function Update({ module }) {
 
 						{/* Access Control */}
 						<Grid.Col span={9}>
-							<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
-								<Box bg={"white"}>
+							<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
+								<Box bg="var(--mantine-color-white)">
 									<Box
 										pl={`xs`}
 										pr={8}
@@ -606,7 +606,7 @@ export default function Update({ module }) {
 										</Box>
 										<Grid columns={24} gutter={0}>
 											<Grid.Col span={11}>
-												<Box mt={"xs"} className={"borderRadiusAll"} bg={"white"}>
+												<Box mt={"xs"} className={"borderRadiusAll"} bg="var(--mantine-color-white)">
 													<ScrollArea
 														h={height - 98}
 														scrollbarSize={2}
@@ -662,7 +662,7 @@ export default function Update({ module }) {
 												</Flex>
 											</Grid.Col>
 											<Grid.Col span={11}>
-												<Box mt={"xs"} className={"borderRadiusAll"} bg={"white"}>
+												<Box mt={"xs"} className={"borderRadiusAll"} bg="var(--mantine-color-white)">
 													<ScrollArea
 														h={height - 98}
 														scrollbarSize={2}
@@ -717,8 +717,8 @@ export default function Update({ module }) {
 
 						{/* Additional Information */}
 						<Grid.Col span={7}>
-							<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
-								<Box bg={"white"}>
+							<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
+								<Box bg="var(--mantine-color-white)">
 									<Box
 										pl={`xs`}
 										pr={8}
@@ -987,7 +987,7 @@ export default function Update({ module }) {
 
 						{/* Shortcuts */}
 						<Grid.Col span={1}>
-							<Box bg={"white"} className={"borderRadiusAll"} pt={"16"}>
+							<Box bg="var(--mantine-color-white)" className={"borderRadiusAll"} pt={"16"}>
 								<Shortcut
 									handleFormReset={handleFormReset}
 									entityEditData={entityEditData}

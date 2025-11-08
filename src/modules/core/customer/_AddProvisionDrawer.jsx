@@ -84,8 +84,8 @@ function _AddProvisionDrawer(props) {
 								<Box mb={0}>
 									<Grid columns={9} gutter={{ base: 6 }}>
 										<Grid.Col span={9}>
-											<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
-												<Box bg={"white"}>
+											<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
+												<Box bg="var(--mantine-color-white)">
 													<Box
 														pl={`xs`}
 														pr={8}

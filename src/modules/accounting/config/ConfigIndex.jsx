@@ -104,7 +104,7 @@ function AccountingConfig() {
 									<Navigation module={"settings"} />
 								</Grid.Col>
 								<Grid.Col span={14}>
-									<Box bg={"white"} p={"xs"} className={"borderRadiusAll"}>
+									<Box bg="var(--mantine-color-white)" p={"xs"} className={"borderRadiusAll"}>
 										<Card shadow="md" radius="md" className={classes.card} padding="lg">
 											<Grid>
 												<Grid.Col span={12}>
