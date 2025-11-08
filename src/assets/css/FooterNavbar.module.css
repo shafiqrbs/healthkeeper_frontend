@@ -1,11 +1,11 @@
 .footer {
     height: rem(42px);
-  /*  margin-bottom: rem(120px);*/
-   /* background-color: var(--mantine-color-body);*/
-    background-color: #f9fbf1;
+    /*  margin-bottom: rem(120px);*/
+    /* background-color: var(--mantine-color-body);*/
+    background-color: var(--mantine-color-gray-1);
     padding-left: var(--mantine-spacing-md);
     padding-right: var(--mantine-spacing-md);
-    padding-top: 0!important;
+    padding-top: 0 !important;
 }
 
 .inner {
@@ -25,10 +25,9 @@
     font-size: var(--mantine-font-size-sm);
     font-weight: 500;
 
-@mixin hover {
-    background-color:#ffffff;
-    color: var(--mantine-color-red-5);
-    text-decoration: underline;
+    @mixin hover {
+        background-color: #ffffff;
+        color: var(--mantine-color-red-5);
+        text-decoration: underline;
+    }
 }
-}
-
