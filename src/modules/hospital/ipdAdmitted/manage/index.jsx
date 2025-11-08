@@ -49,7 +49,7 @@ export default function Index() {
 	);
 
 	const { data: prescriptionData, isLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
 	});
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
