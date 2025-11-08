@@ -169,16 +169,6 @@ export default function _Table({ module }) {
 							/>
 						</Tabs.List>
 					</Tabs>
-					<Button
-						onClick={handleOpenViewOverview}
-						size="xs"
-						radius="es"
-						rightSection={<IconArrowRight size={16} />}
-						bg="var(--theme-success-color)"
-						c="white"
-					>
-						{t("VisitOverview")}
-					</Button>
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">

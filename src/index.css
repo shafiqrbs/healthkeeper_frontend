@@ -715,3 +715,8 @@ input.date-selector-input {
     border: 1px solid var(--theme-tertiary-color-6);
     outline: none;
 }
+
+:root[data-mantine-color-scheme='dark'] {
+    --mantine-color-white: #242424;
+    --mantine-color-gray-2: #242424;
+}

@@ -20,10 +20,12 @@ import Medicine from "@modules/hospital/ipdAdmitted/common/tabs/Medicine";
 import Investigation from "@modules/hospital/ipdAdmitted/common/tabs/Investigation";
 import { modals } from "@mantine/modals";
 import { formatDate } from "@utils/index";
+import VitalsChart from "../common/tabs/VitalsChart";
+import InsulinChart from "../common/tabs/InsulinChart";
 
 const module = MODULES.E_FRESH;
 
-const TAB_ITEMS = ["E-Fresh", "Investigation", "Medicine"];
+const TAB_ITEMS = ["E-Fresh", "Investigation", "Medicine", "Vitals Chart", "Insulin Chart"];
 
 export default function Index() {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -121,7 +123,7 @@ export default function Index() {
 							<Box mb="xs" bg="var(--theme-primary-color-1)">
 								<Box
 									bg="var(--theme-primary-color-1)"
-									style={{ borderBottom: "1px solid white" }}
+									style={{ borderBottom: "1px solid var(--mantine-color-white)" }}
 									p="xs"
 								>
 									{t("PatientInformation")}
@@ -202,6 +204,8 @@ export default function Index() {
 						)}
 						{baseTabValue === "medicine" && <Medicine />}
 						{baseTabValue === "investigation" && <Investigation />}
+						{baseTabValue === "vitals chart" && <VitalsChart />}
+						{baseTabValue === "insulin chart" && <InsulinChart />}
 						{!baseTabValue && (
 							<Flex bg="var(--mantine-color-white)" align="center" justify="center" w="100%" h="100%">
 								<Text size="sm" c="dimmed">

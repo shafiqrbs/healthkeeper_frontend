@@ -42,7 +42,6 @@ import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
-import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
 import MedicineListItem from "@hospital-components/MedicineListItem";
@@ -399,7 +398,7 @@ export default function AddMedicineForm({
 			};
 
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${id}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${prescriptionData?.data?.prescription_uid}`,
 				data: formValue,
 				module,
 			};
@@ -411,17 +410,15 @@ export default function AddMedicineForm({
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
 				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 700, true);
-				setRefetchData({ module, refetching: true });
-				// Reset forms and data
 				// form.reset();
-				if (redirect) {
-					navigate(
-						`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${ipdId}?tabs=true&redirect=prescription`,
-						{
-							state: { prescriptionId: id },
-						}
-					);
-				}
+				// if (redirect) {
+				// 	navigate(
+				// 		`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${ipdId}?tabs=true&redirect=prescription`,
+				// 		{
+				// 			state: { prescriptionId: id },
+				// 		}
+				// 	);
+				// }
 
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
