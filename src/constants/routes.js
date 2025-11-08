@@ -563,6 +563,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "hospital/ipd",
 			TRANSACTION: "hospital/ipd/transaction",
 			PROCESS: "hospital/ipd/data-process",
+			EFRESH_ORDER: "hospital/ipd/efresh-order",
 		},
 
 		EMERGENCY: {

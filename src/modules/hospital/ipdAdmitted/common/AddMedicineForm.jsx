@@ -371,7 +371,6 @@ export default function AddMedicineForm({
 			onConfirm: () => handlePrescriptionSubmit(),
 		});
 	};
-
 	const handlePrescriptionSubmit = async (skipLoading, redirect = true) => {
 		!skipLoading && setIsSubmitting(true);
 
@@ -410,16 +409,9 @@ export default function AddMedicineForm({
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
 				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 700, true);
-				// form.reset();
-				// if (redirect) {
-				// 	navigate(
-				// 		`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}/${ipdId}?tabs=true&redirect=prescription`,
-				// 		{
-				// 			state: { prescriptionId: id },
-				// 		}
-				// 	);
-				// }
-
+				if (redirect) {
+					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}`);
+				}
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {

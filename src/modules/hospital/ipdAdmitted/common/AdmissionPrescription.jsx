@@ -74,7 +74,7 @@ export default function AdmissionPrescription() {
 
 	const hasRecords = records && records.length > 0;
 
-	console.log(tabParticulars);
+
 
 	return (
 		<Box pos="relative">

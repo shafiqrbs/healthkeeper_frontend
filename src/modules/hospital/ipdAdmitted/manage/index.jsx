@@ -91,7 +91,7 @@ export default function Index() {
 		}
 	}, [searchParams]);
 
-	const handleTabClick = (tabItem) => {
+	const handleTabClick = async (tabItem) => {
 		if (tabItem === "E-Fresh") {
 			modals.openConfirmModal({
 				title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
@@ -99,9 +99,12 @@ export default function Index() {
 				labels: { confirm: t("Confirm"), cancel: t("Cancel") },
 				confirmProps: { color: "red" },
 				onCancel: () => console.info("Cancel"),
-				onConfirm: () => {
+				onConfirm: async () => {
+					const res = await getDataWithoutStore({
+						url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.EFRESH_ORDER}/${id}`,
+					});
 					setBaseTabValue(tabItem?.toLowerCase());
-					setSearchParams({ tab: tabItem?.toLowerCase() });
+					setSearchParams({tab: tabItem?.toLowerCase()});
 				},
 			});
 		} else {
