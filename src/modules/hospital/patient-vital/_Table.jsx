@@ -268,7 +268,7 @@ export default function Table({ module }) {
 	};
 
 	return (
-		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
+		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
 					{t("PatientVitals")}

@@ -16,7 +16,7 @@ export default function PatientPrescriptionHistoryList({ historyList }) {
 	};
 
 	return (
-		<ScrollArea pos="relative" h={mainAreaHeight - 68} bg="white" className="borderRadiusAll">
+		<ScrollArea pos="relative" h={mainAreaHeight - 68} bg="var(--mantine-color-white)" className="borderRadiusAll">
 			<Stack p="xs" gap="xs">
 				{historyList.map((item) => (
 					<Paper

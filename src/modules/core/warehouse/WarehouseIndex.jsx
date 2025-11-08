@@ -49,14 +49,7 @@ function WarehouseIndex() {
 	return (
 		<>
 			{progress < 100 && (
-				<Progress
-					color="red"
-					size="sm"
-					striped
-					animated
-					value={progress}
-					transitionDuration={200}
-				/>
+				<Progress color="red" size="sm" striped animated value={progress} transitionDuration={200} />
 			)}
 
 			{progress === 100 && configData && (
@@ -68,16 +61,12 @@ function WarehouseIndex() {
 								<Navigation module={"warehouse"} />
 							</Grid.Col>
 							<Grid.Col span={14}>
-								<Box bg="white" p="xs" className="borderRadiusAll">
+								<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
 									<WarehouseTable />
 								</Box>
 							</Grid.Col>
 							<Grid.Col span={9}>
-								{insertType === "create" ? (
-									<WarehouseForm />
-								) : (
-									<WarehouseUpdateForm />
-								)}
+								{insertType === "create" ? <WarehouseForm /> : <WarehouseUpdateForm />}
 							</Grid.Col>
 						</Grid>
 					</Box>

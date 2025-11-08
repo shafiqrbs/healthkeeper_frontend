@@ -96,7 +96,7 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 					<Button variant="filled" size="xs" bg="var(--theme-secondary-color-6)" aria-label="report" miw={76}>
 						{t("report")}
 					</Button>
-					<ActionIcon variant="transparent" bg="white" aria-label="close">
+					<ActionIcon variant="transparent" bg="var(--mantine-color-white)" aria-label="close">
 						<IconPrinter size={16} stroke={1.5} color="var(--theme-secondary-color-6)" />
 					</ActionIcon>
 				</>
@@ -107,7 +107,7 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 					<Button variant="filled" size="xs" bg="var(--theme-warn-color-6)" aria-label="confirm" miw={76}>
 						{t("reVisit")}
 					</Button>
-					<ActionIcon variant="transparent" bg="white" aria-label="close">
+					<ActionIcon variant="transparent" bg="var(--mantine-color-white)" aria-label="close">
 						<IconX size={16} stroke={1.5} color="var(--theme-error-color)" />
 					</ActionIcon>
 				</>
@@ -118,7 +118,11 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 					<Button variant="filled" size="xs" bg="var(--theme-primary-color-6)" aria-label="confirm" miw={76}>
 						{t("confirm")}
 					</Button>
-					<ActionIcon onClick={() => handleEditClick(patient.id)} variant="solid" bg="white">
+					<ActionIcon
+						onClick={() => handleEditClick(patient.id)}
+						variant="solid"
+						bg="var(--mantine-color-white)"
+					>
 						<IconX size={16} stroke={1.5} color="var(--theme-error-color)" />
 					</ActionIcon>
 				</>
@@ -200,7 +204,7 @@ export default function PatientListWithActions({ isOpenPatientInfo = true, setPa
 												<ActionIcon
 													onClick={() => handleEditClick(patient.id)}
 													variant="solid"
-													bg="white"
+													bg="var(--mantine-color-white)"
 												>
 													<IconPencil
 														size={16}

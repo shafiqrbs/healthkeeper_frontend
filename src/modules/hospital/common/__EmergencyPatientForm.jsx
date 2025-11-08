@@ -198,7 +198,7 @@ export default function EmergencyPatientForm({
 	};
 
 	return (
-		<Box w="100%" bg="white" py="2xs" style={{ borderRadius: "4px" }}>
+		<Box w="100%" bg="var(--mantine-color-white)" py="2xs" style={{ borderRadius: "4px" }}>
 			<Box
 				ref={searchContainerRef}
 				component="form"
@@ -718,7 +718,7 @@ export function Form({
 						</Grid.Col>
 					</Grid>
 					<Stack gap={0} justify="space-between">
-						<Box p="sm" bg="white">
+						<Box p="sm" bg="var(--mantine-color-white)">
 							<Grid columns={24}>
 								<Grid.Col span={8} bg="var(--theme-secondary-color-0)" px="xs">
 									<Box>

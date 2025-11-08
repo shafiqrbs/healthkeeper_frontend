@@ -39,7 +39,7 @@ export default function BillingActions() {
 					/>
 				</Flex>
 				<Flex gap="xs" align="center">
-					<Box bg="white" px="xs" py="les" className="borderRadiusAll">
+					<Box bg="var(--mantine-color-white)" px="xs" py="les" className="borderRadiusAll">
 						<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
 							{t("Due")} ৳ {(20000).toLocaleString()}
 						</Text>

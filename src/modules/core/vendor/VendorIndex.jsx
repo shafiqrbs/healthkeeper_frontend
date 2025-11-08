@@ -45,7 +45,7 @@ function VendorIndex({ mode = "create" }) {
 							)}
 
 							<Grid.Col span={matches ? 36 : 34}>
-								<Box bg="white" p="xs" className="borderRadiusAll">
+								<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
 									<VendorTable open={open} close={close} />
 								</Box>
 							</Grid.Col>
@@ -60,7 +60,7 @@ function VendorIndex({ mode = "create" }) {
 
 							{/* {!matches && (
 								<Grid.Col span={2}>
-									<Box bg="white" className="borderRadiusAll" pt="sm">
+									<Box bg="var(--mantine-color-white)" className="borderRadiusAll" pt="sm">
 										<Shortcut
 											form={form} // have to reset the form in shortcut
 											FormSubmit="EntityFormSubmit"

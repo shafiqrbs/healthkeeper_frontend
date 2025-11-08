@@ -17,7 +17,7 @@ export default function PatientList() {
 	const { mainAreaHeight } = useOutletContext();
 
 	return (
-		<ScrollArea bg="white" h={mainAreaHeight - 212} scrollbars="y" px="3xs">
+		<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 212} scrollbars="y" px="3xs">
 			{data.map((item) => (
 				<Grid columns={12} key={item.id} my="xs" bg="var(--theme-tertiary-color-0)" px="xs" gutter="xs">
 					<Grid.Col span={4}>

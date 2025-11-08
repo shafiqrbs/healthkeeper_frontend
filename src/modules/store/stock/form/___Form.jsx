@@ -12,7 +12,7 @@ import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS,CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
@@ -43,7 +43,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				category_id: data.category_id,
 				employee_id: data.employee_id,
 				instruction: data.instruction,
-
 			});
 			setIndexData(data.id);
 
@@ -69,14 +68,16 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		<form onSubmit={form.onSubmit(handleSubmit)}>
 			<Grid columns={12} gutter={{ base: 8 }}>
 				<Grid.Col span={12}>
-					<Box bg="white" pos="relative" h={height}>
+					<Box bg="var(--mantine-color-white)" pos="relative" h={height}>
 						<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 1 }} />
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("ParticularType")} <RequiredAsterisk /></Text>
+											<Text fz="sm">
+												{t("ParticularType")} <RequiredAsterisk />
+											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -146,9 +147,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("Instruction")}
-											</Text>
+											<Text fz="sm">{t("Instruction")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm

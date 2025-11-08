@@ -115,7 +115,7 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 					>
 						<ActionIcon
 							c="var(--theme-success-color)"
-							bg="white"
+							bg="var(--mantine-color-white)"
 							onClick={() =>
 								advanceSearchFormOpened
 									? setAdvanceSearchFormOpened(false)
@@ -135,7 +135,7 @@ export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField,
 									{t("AdvanceSearch")}
 								</Text>
 							</Box>
-							<Box className="borderRadiusAll" bg="white">
+							<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 								<ScrollArea h={height / 3} scrollbarSize={2} scrollbars="y" type="never">
 									<Box p="xs">
 										<Grid columns={15} gutter={{ base: "3xs" }}>

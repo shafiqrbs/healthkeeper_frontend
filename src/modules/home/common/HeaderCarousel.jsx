@@ -47,7 +47,7 @@ function Slide({ slide }) {
 
 	return (
 		<Flex
-			bg="white"
+			bg="var(--mantine-color-white)"
 			direction="column"
 			align="center"
 			justify="center"

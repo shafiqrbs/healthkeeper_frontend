@@ -64,7 +64,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 					Patient Name
 				</Text>
 			</Flex>
-			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
+			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
 				{records?.length === 0 && (
 					<Flex justify="center" align="center">
 						<Text fz="xs">{t("NoDataAvailable")}</Text>

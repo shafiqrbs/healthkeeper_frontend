@@ -22,7 +22,7 @@ const InvestigationPosEN = forwardRef(({ data, preview = false }, ref) => {
 
 	return (
 		<Box display={preview ? "block" : "none"}>
-			<Box ref={ref} w="80mm" p={8} bg="white" mx="auto">
+			<Box ref={ref} w="80mm" p={8} bg="var(--mantine-color-white)" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="space-between" align="center" gap={8}>

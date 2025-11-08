@@ -5,7 +5,7 @@ import scrollbar from "@assets/css/Scrollbar.module.css";
 export default function DomainDetailsSection({ domainConfig, height }) {
 	const { t } = useTranslation();
 	return (
-		<Box bg="white" p="xs" pb="xs" className="borderRadiusAll">
+		<Box bg="var(--mantine-color-white)" p="xs" pb="xs" className="borderRadiusAll">
 			<Box h={48} pl="xs" pr={8} pt="xs" mb="6" className="boxBackground borderRadiusAll">
 				<Title order={6} pt="4">
 					{t("DomainDetails")}
@@ -62,7 +62,7 @@ export default function DomainDetailsSection({ domainConfig, height }) {
 
 						{domainConfig?.inventory_config?.config_product && (
 							<>
-								<Box className={'inner-title-box'}>
+								<Box className={"inner-title-box"}>
 									<Title order={6} pt="4">
 										{t("ProductConfiguration")}
 									</Title>

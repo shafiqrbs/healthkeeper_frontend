@@ -56,7 +56,7 @@ function VoucherTableNew() {
 	return (
 		<>
 			<Box className={"borderRadiusAllVoucherNew"} bg={"white"}>
-				<Box bg="white" className="borderRadiusAll" m={"xs"}>
+				<Box bg="var(--mantine-color-white)" className="borderRadiusAll" m={"xs"}>
 					<Box className="boxBackground" pl={`xs`} pb={"sm"} pr={8} pt={"xs"} bg={"white"}>
 						<VoucherSearch module={"voucher"} />
 					</Box>

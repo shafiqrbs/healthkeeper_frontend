@@ -73,10 +73,10 @@ export default function _Table({ module }) {
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			patient_mode: ['opd','ipd','emergency'],
-		//	created: filterData.created,
+			patient_mode: ["opd", "ipd", "emergency"],
+			//	created: filterData.created,
 			process: processTab,
-		//	term: filterData.keywordSearch,
+			//	term: filterData.keywordSearch,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -113,9 +113,8 @@ export default function _Table({ module }) {
 		openConfirm();
 	};
 
-
 	return (
-		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
+		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
 					{t("PoliceCase")}

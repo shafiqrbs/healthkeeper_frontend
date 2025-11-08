@@ -220,7 +220,7 @@ export default function PatientForm({
 	};
 
 	return (
-		<Box w="100%" bg="white" py="2xs" style={{ borderRadius: "4px" }}>
+		<Box w="100%" bg="var(--mantine-color-white)" py="2xs" style={{ borderRadius: "4px" }}>
 			<Flex align="center" gap="xs" justify="space-between" px="sm" pb="les">
 				<Box
 					ref={searchContainerRef}
@@ -942,7 +942,7 @@ export function Form({
 				bg="var(--theme-primary-color-0)"
 				keepMounted
 			>
-				<ScrollArea h={mainAreaHeight - 70} scrollbars="y" mt="xs" p="xs" bg="white">
+				<ScrollArea h={mainAreaHeight - 70} scrollbars="y" mt="xs" p="xs" bg="var(--mantine-color-white)">
 					{filteredAndSortedRecords?.map((item, index) => (
 						<RoomCard
 							key={index}

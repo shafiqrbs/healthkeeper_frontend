@@ -61,7 +61,7 @@ export default function Cabin({ selectedRoom, handleRoomClick }) {
 						<ScrollArea
 							pt="3xs"
 							h={height}
-							bg="white"
+							bg="var(--mantine-color-white)"
 							pl={index === 0 ? "3xs" : undefined}
 							pr={isLastColumn ? "3xs" : undefined}
 						>

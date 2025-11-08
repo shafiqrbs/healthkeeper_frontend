@@ -1,28 +1,28 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import {Box, Text, ScrollArea, Stack, Grid, TextInput, Flex, Button, Center} from "@mantine/core";
-import React, { useEffect, useState,useRef } from "react";
+import { Box, Text, ScrollArea, Stack, Grid, TextInput, Flex, Button, Center } from "@mantine/core";
+import React, { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import {useNavigate, useOutletContext, useParams} from "react-router-dom";
-import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import {IconChevronUp, IconSelector, IconPrinter, IconThumbUp,IconThumbDown} from "@tabler/icons-react";
+import { IconChevronUp, IconSelector, IconPrinter, IconThumbUp, IconThumbDown } from "@tabler/icons-react";
 import { formatDate } from "@/common/utils";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import {useForm} from "@mantine/form";
-import {getFormValues} from "@modules/hospital/lab/helpers/request";
+import { useForm } from "@mantine/form";
+import { getFormValues } from "@modules/hospital/lab/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import {modals} from "@mantine/modals";
-import {storeEntityData, updateEntityData} from "@/app/store/core/crudThunk";
-import {setRefetchData} from "@/app/store/core/crudSlice";
-import {successNotification} from "@components/notification/successNotification";
-import {ERROR_NOTIFICATION_COLOR, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
-import {errorNotification} from "@components/notification/errorNotification";
-import {useDispatch} from "react-redux";
-import {useHotkeys} from "@mantine/hooks";
+import { modals } from "@mantine/modals";
+import { storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import { setRefetchData } from "@/app/store/core/crudSlice";
+import { successNotification } from "@components/notification/successNotification";
+import { ERROR_NOTIFICATION_COLOR, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { errorNotification } from "@components/notification/errorNotification";
+import { useDispatch } from "react-redux";
+import { useHotkeys } from "@mantine/hooks";
 
 const module = MODULES_CORE.LAB_USER;
-export default function Medicine({entity}) {
+export default function Medicine({ entity }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const inputsRef = useRef([]);
@@ -64,23 +64,18 @@ export default function Medicine({entity}) {
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
-				successNotification(t("UpdateSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.INDEX}`);
 				window.location.reload();
 			}
 		} catch (error) {
-			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
-	useHotkeys(
-		[
-			["alt+s", () => document.getElementById("EntityFormSubmit").click()],
-		],
-		[]
-	);
+	useHotkeys([["alt+s", () => document.getElementById("EntityFormSubmit").click()]], []);
 
 	return (
-		<Box className="borderRadiusAll" bg="white">
+		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
 				<Text fw={600} fz="sm" py="es">
 					{t("Medicines")}
@@ -89,7 +84,7 @@ export default function Medicine({entity}) {
 			{entity?.sales_items ? (
 				<>
 					<Box>
-					<Box  className="border-top-none" px="sm" mt={'xs'}>
+						<Box className="border-top-none" px="sm" mt={"xs"}>
 							<DataTable
 								striped
 								highlightOnHover
@@ -127,11 +122,10 @@ export default function Medicine({entity}) {
 										accessor: "uom",
 										title: t("Unit"),
 									},
-
 								]}
 								loaderSize="xs"
 								loaderColor="grape"
-								height={mainAreaHeight-184}
+								height={mainAreaHeight - 184}
 								sortIcons={{
 									sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 									unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
@@ -139,35 +133,45 @@ export default function Medicine({entity}) {
 							/>
 						</Box>
 						<form onSubmit={form.onSubmit(handleSubmit)}>
-							<Box bg="var(--theme-tertiary-color-0)" mt={'xl'} p={'sm'}>
-							<Grid columns={24}>
-								<Grid.Col span={18}>
-									<TextAreaForm
-										id="comment"
-										form={form}
-										tooltip={t("EnterComment")}
-										placeholder={t("EnterComment")}
-										name="comment"
-										required
-									/>
-								</Grid.Col>
-								<Grid.Col span={6}>
-									<Flex gap="xs" justify="flex-end"  align="flex-end" h={'54'}>
-										<Button type="submit" onClick={handleSubmit} bg="var(--theme-primary-color-6)" color="white">
-											{t("Confirm")}
-										</Button>
-										<Button type="button" bg="var(--theme-tertiary-color-6)" color="white" onClick={close}>
-											{t("Cancel")}
-										</Button>
-									</Flex>
-								</Grid.Col>
-							</Grid>
-						</Box>
+							<Box bg="var(--theme-tertiary-color-0)" mt={"xl"} p={"sm"}>
+								<Grid columns={24}>
+									<Grid.Col span={18}>
+										<TextAreaForm
+											id="comment"
+											form={form}
+											tooltip={t("EnterComment")}
+											placeholder={t("EnterComment")}
+											name="comment"
+											required
+										/>
+									</Grid.Col>
+									<Grid.Col span={6}>
+										<Flex gap="xs" justify="flex-end" align="flex-end" h={"54"}>
+											<Button
+												type="submit"
+												onClick={handleSubmit}
+												bg="var(--theme-primary-color-6)"
+												color="white"
+											>
+												{t("Confirm")}
+											</Button>
+											<Button
+												type="button"
+												bg="var(--theme-tertiary-color-6)"
+												color="white"
+												onClick={close}
+											>
+												{t("Cancel")}
+											</Button>
+										</Flex>
+									</Grid.Col>
+								</Grid>
+							</Box>
 						</form>
 					</Box>
 				</>
 			) : (
-				<Box bg="white" >
+				<Box bg="var(--mantine-color-white)">
 					<Stack
 						h={mainAreaHeight - 62}
 						bg="var(--mantine-color-body)"
@@ -175,7 +179,7 @@ export default function Medicine({entity}) {
 						justify="center"
 						gap="md"
 					>
-						{t('NoTestSelected')}
+						{t("NoTestSelected")}
 					</Stack>
 				</Box>
 			)}

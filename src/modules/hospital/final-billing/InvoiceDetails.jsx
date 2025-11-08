@@ -118,7 +118,7 @@ export default function InvoiceDetails() {
 	useHotkeys([["alt+s", () => document.getElementById("EntityFormSubmit").click()]], []);
 
 	return (
-		<Box className="borderRadiusAll" bg="white">
+		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
 				<Text fw={600} fz="sm" py="es">
 					{t("InvoiceDetails")}
@@ -176,7 +176,7 @@ export default function InvoiceDetails() {
 					</Box>
 					<Box gap={0} justify="space-between" mt="xs">
 						<form onSubmit={form.onSubmit(handleSubmit)}>
-							<Box bg="white" px="xs" pb="xs">
+							<Box bg="var(--mantine-color-white)" px="xs" pb="xs">
 								<Box w="100%">
 									<Grid columns={18} gutter="xs">
 										<Grid.Col
@@ -288,7 +288,7 @@ export default function InvoiceDetails() {
 					</Box>
 				</>
 			) : (
-				<Box bg="white">
+				<Box bg="var(--mantine-color-white)">
 					<Stack
 						h={mainAreaHeight - 62}
 						bg="var(--mantine-color-body)"

@@ -33,7 +33,7 @@ export default function Investigation({
 				}}
 				onBlur={() => handleInvestigationAdd(investigation)}
 			/>
-			<Stack gap={0} bg="white" px="sm" className="borderRadiusAll">
+			<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll">
 				{investigationList.map((item, idx) => (
 					<Flex
 						key={idx}

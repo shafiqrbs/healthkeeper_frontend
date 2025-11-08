@@ -231,7 +231,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	};
 
 	return (
-		<Box className="borderRadiusAll" bg="white">
+		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box
 				onSubmit={medicineForm.onSubmit(handleAdd)}
 				key={updateKey}

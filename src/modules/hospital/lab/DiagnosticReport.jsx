@@ -42,7 +42,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 	useHotkeys([["alt+s", () => document.getElementById("EntityFormSubmit").click()]], []);
 
 	return (
-		<Box className="borderRadiusAll" bg="white">
+		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
 				<Text fw={600} fz="sm" py="es">
 					{t("DiagnosticReportPrepared")}: {diagnosticReport?.name}
@@ -57,7 +57,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 					inputsRef={inputsRef}
 				/>
 			) : (
-				<Box bg="white">
+				<Box bg="var(--mantine-color-white)">
 					<Stack
 						h={mainAreaHeight - 154}
 						bg="var(--mantine-color-body)"

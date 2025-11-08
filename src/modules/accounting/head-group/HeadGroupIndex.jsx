@@ -7,10 +7,10 @@ import { useNavigate, useParams } from "react-router-dom";
 // Redux actions
 import { setSearchKeyword } from "../../../../store/core/crudSlice";
 import {
-    editEntityData,
-    setEntityNewData,
-    setFormLoading,
-    setInsertType
+	editEntityData,
+	setEntityNewData,
+	setFormLoading,
+	setInsertType,
 } from "../../../../store/accounting/crudSlice";
 
 // Components
@@ -24,68 +24,57 @@ import { getLoadingProgress } from "../../../global-hook/loading-progress/getLoa
 import Navigation from "../common/Navigation.jsx";
 
 function HeadGroupIndex() {
-    const { t } = useTranslation();
-    const dispatch = useDispatch();
-    const insertType = useSelector((state) => state.crudSlice.insertType);
-    const progress = getLoadingProgress();
-    const { id } = useParams();
-    const navigate = useNavigate();
+	const { t } = useTranslation();
+	const dispatch = useDispatch();
+	const insertType = useSelector((state) => state.crudSlice.insertType);
+	const progress = getLoadingProgress();
+	const { id } = useParams();
+	const navigate = useNavigate();
 
-    useEffect(() => {
-        if (id) {
-            dispatch(setInsertType("update"));
-            dispatch(editEntityData(`accounting/account-head/${id}`));
-            dispatch(setFormLoading(true));
-        } else {
-            dispatch(setSearchKeyword(""));
-            dispatch(setEntityNewData([]));
-            navigate("/accounting/head-group");
-        }
-    }, [id, dispatch, navigate]);
+	useEffect(() => {
+		if (id) {
+			dispatch(setInsertType("update"));
+			dispatch(editEntityData(`accounting/account-head/${id}`));
+			dispatch(setFormLoading(true));
+		} else {
+			dispatch(setSearchKeyword(""));
+			dispatch(setEntityNewData([]));
+			navigate("/accounting/head-group");
+		}
+	}, [id, dispatch, navigate]);
 
-    return (
-        <>
-            {progress !== 100 && (
-                <Progress
-                    color="red"
-                    size="sm"
-                    striped
-                    animated
-                    value={progress}
-                    transitionDuration={200}
-                />
-            )}
-            {progress === 100 && (
-                <Box>
-                    <AccountingHeaderNavbar
-                        pageTitle={t("ManageAccountHeadGroup")}
-                        roles={t("Roles")}
-                        allowZeroPercentage=""
-                        currencySymbol=""
-                    />
-                    <Box p="8">
-                        <Grid columns={24} gutter={{ base: 8 }}>
-                            <Grid.Col span={1}>
-                                <Navigation module={""} />
-                                </Grid.Col>
-                            <Grid.Col span={14}>
-                                <Box bg="white" p="xs" className="borderRadiusAll">
-                                    <HeadGroupTable />
-                                </Box>
-                            </Grid.Col>
-                            <Grid.Col span={9}>
-                                {insertType === "update" ? (
-                                    <HeadGroupUpdateForm />
-                                ) : (
-                                    <HeadGroupForm />
-                                )}
-                            </Grid.Col>
-                        </Grid>
-                    </Box>
-                </Box>
-            )}
-        </>
-    );
+	return (
+		<>
+			{progress !== 100 && (
+				<Progress color="red" size="sm" striped animated value={progress} transitionDuration={200} />
+			)}
+			{progress === 100 && (
+				<Box>
+					<AccountingHeaderNavbar
+						pageTitle={t("ManageAccountHeadGroup")}
+						roles={t("Roles")}
+						allowZeroPercentage=""
+						currencySymbol=""
+					/>
+					<Box p="8">
+						<Grid columns={24} gutter={{ base: 8 }}>
+							<Grid.Col span={1}>
+								<Navigation module={""} />
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
+									<HeadGroupTable />
+								</Box>
+							</Grid.Col>
+							<Grid.Col span={9}>
+								{insertType === "update" ? <HeadGroupUpdateForm /> : <HeadGroupForm />}
+							</Grid.Col>
+						</Grid>
+					</Box>
+				</Box>
+			)}
+		</>
+	);
 }
 
 export default HeadGroupIndex;

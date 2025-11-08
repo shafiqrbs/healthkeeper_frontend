@@ -32,7 +32,7 @@ export default function GrandTotalOverview() {
 					justify="center"
 					gap="xs"
 					bd="1px solid var(--theme-secondary-color-3)"
-					bg="white"
+					bg="var(--mantine-color-white)"
 					style={{ cursor: "pointer", borderRadius: "50%" }}
 				>
 					<IconArrowRight size={14} color="var(--theme-secondary-color-8)" />

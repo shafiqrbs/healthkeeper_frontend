@@ -94,8 +94,8 @@ const InputWithSwitch = ({ inputProps, switchProps, configData, mt = "md", mb = 
 );
 
 const FormSection = ({ title, children, height }) => (
-	<Box bg="white" p="xs" className="borderRadiusAll">
-		<Box bg="white">
+	<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
+		<Box bg="var(--mantine-color-white)">
 			<SectionHeader title={title} isTopBar />
 			<Box px="xs" className="borderRadiusAll">
 				<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="never">
@@ -751,8 +751,8 @@ function ConfigurationForm({
 						</Grid.Col>
 
 						<Grid.Col span={8}>
-							<Box bg="white" className="borderRadiusAll">
-								<Box bg="white">
+							<Box bg="var(--mantine-color-white)" className="borderRadiusAll">
+								<Box bg="var(--mantine-color-white)">
 									<Box
 										m="xs"
 										className="config-form-header-box boxBackground borderRadiusAll"
@@ -854,7 +854,7 @@ function ConfigurationForm({
 						</Grid.Col>
 
 						<Grid.Col span={1}>
-							<Box bg="white" className="borderRadiusAll" pt="md">
+							<Box bg="var(--mantine-color-white)" className="borderRadiusAll" pt="md">
 								<Shortcut form={form} FormSubmit="EntityFormSubmit" Name="name" inputType="select" />
 							</Box>
 						</Grid.Col>

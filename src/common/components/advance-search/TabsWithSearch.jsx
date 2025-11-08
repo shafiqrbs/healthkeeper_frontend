@@ -97,7 +97,7 @@ export default function TabsWithSearch({
 
 			{tabPanels.map((tab) => (
 				<Tabs.Panel key={tab.tab} value={tab.tab}>
-					<Box py={hideSearchbar || tabList.length === 1 ? "0" : "xs"} bg="white">
+					<Box py={hideSearchbar || tabList.length === 1 ? "0" : "xs"} bg="var(--mantine-color-white)">
 						{!hideSearchbar && (
 							<Flex gap="les" p="xs" bg={searchbarContainerBg}>
 								{showDatePicker && (

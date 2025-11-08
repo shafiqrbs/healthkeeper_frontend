@@ -137,7 +137,7 @@ export default function Investigation() {
 		<Box w="100%" h={mainAreaHeight - 63}>
 			<Grid w="100%" columns={24} gutter="xs" h="100%" styles={{ inner: { height: "100%", width: "100%" } }}>
 				<Grid.Col span={9}>
-					<Box bg="white" className="borderRadiusAll" h="100%">
+					<Box bg="var(--mantine-color-white)" className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Investigation" />
 						<Box p="3xs" h={mainAreaHeight - 110}>
 							<Autocomplete
@@ -158,7 +158,7 @@ export default function Investigation() {
 								classNames={inputCss}
 								rightSection={<IconCaretUpDownFilled size={16} />}
 							/>
-							<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="2xs">
+							<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll" mt="2xs">
 								{form.values?.investigation?.map((item, idx) => (
 									<Flex
 										key={idx}
@@ -198,7 +198,7 @@ export default function Investigation() {
 					</Box>
 				</Grid.Col>
 				<Grid.Col span={15}>
-					<Box className="borderRadiusAll" bg="white" h="100%">
+					<Box className="borderRadiusAll" bg="var(--mantine-color-white)" h="100%">
 						<TabSubHeading title="Investigation Details" />
 						<Box p="xs" pos="relative" h={mainAreaHeight - 58}>
 							<LoadingOverlay

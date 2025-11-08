@@ -8,7 +8,13 @@ export default function PatientInformation({ isOpenPatientInfo, setIsOpenPatient
 
 	return (
 		<Box>
-			<Flex justify={isOpenPatientInfo ? "space-between" : "center"} align="center" bg="white" py="3xs" px="xs">
+			<Flex
+				justify={isOpenPatientInfo ? "space-between" : "center"}
+				align="center"
+				bg="var(--mantine-color-white)"
+				py="3xs"
+				px="xs"
+			>
 				{isOpenPatientInfo ? (
 					<>
 						<Text className="text-nowrap">{t("patientInformation")}</Text>

@@ -282,7 +282,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	};
 
 	return (
-		<Box w="100%" bg="white">
+		<Box w="100%" bg="var(--mantine-color-white)">
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
 					{t("VisitInformation")}

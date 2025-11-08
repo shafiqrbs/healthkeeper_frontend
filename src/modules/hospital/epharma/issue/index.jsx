@@ -96,7 +96,7 @@ export default function Index() {
 									<Box
 										component="form"
 										onSubmit={form.onSubmit(handleSearch)}
-										bg="white"
+										bg="var(--mantine-color-white)"
 										style={{ position: "relative" }}
 									>
 										<Input

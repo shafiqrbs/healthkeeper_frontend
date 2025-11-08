@@ -93,7 +93,7 @@ export default function CreateDosageDrawer({ opened, close }) {
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Grid columns={12} gutter={{ base: 8 }}>
 					<Grid.Col span={12}>
-						<Box bg="white" pos="relative" h={height}>
+						<Box bg="var(--mantine-color-white)" pos="relative" h={height}>
 							<LoadingOverlay
 								visible={isLoading}
 								zIndex={1000}

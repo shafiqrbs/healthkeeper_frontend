@@ -42,8 +42,6 @@ import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 
-
-
 const module = MODULES.LAB_TEST;
 const PER_PAGE = 500;
 
@@ -171,7 +169,7 @@ export default function _Table({ height }) {
 	};
 
 	return (
-		<Box w="100%" bg="white">
+		<Box w="100%" bg="var(--mantine-color-white)">
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
 					{t("PatientTestReports")}

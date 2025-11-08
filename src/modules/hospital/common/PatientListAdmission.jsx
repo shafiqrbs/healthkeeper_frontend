@@ -46,7 +46,7 @@ export default function PatientListAdmission() {
 					Patient Name
 				</Text>
 			</Flex>
-			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
+			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
 				{records?.map((item) => (
 					<Grid
 						columns={12}

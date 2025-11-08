@@ -252,7 +252,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 	};
 
 	return (
-		<Box className="borderRadiusAll" bg="white">
+		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between">
 				<Text fw={600} fz="sm" py="es" px="xs">
 					{t("InvoiceTransaction")}
@@ -329,7 +329,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 										<Tabs.Tab value="investigation">{t("Investigation")}</Tabs.Tab>
 										<Tabs.Tab value="bed-cabin">{t("Bed/Cabin")}</Tabs.Tab>
 									</Tabs.List>
-									<Tabs.Panel value="investigation" bg="white">
+									<Tabs.Panel value="investigation" bg="var(--mantine-color-white)">
 										<Grid align="center" columns={20} mt="xs" mx="xs">
 											<Grid.Col span={20}>
 												<Autocomplete
@@ -354,11 +354,11 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 												/>
 											</Grid.Col>
 										</Grid>
-										<Box w="100%" bg="white">
+										<Box w="100%" bg="var(--mantine-color-white)">
 											<Grid columns={18} gutter="xs">
 												<Grid.Col span={18} className="animate-ease-out" px="xs">
 													<ScrollArea scrollbars="y" type="never" h="116" mx="xs">
-														<Stack gap={0} bg="white" mt="2xs">
+														<Stack gap={0} bg="var(--mantine-color-white)" mt="2xs">
 															{form.values?.investigation?.map((item, idx) => (
 																<Flex
 																	key={idx}
@@ -414,7 +414,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 											</Grid>
 										</Box>
 									</Tabs.Panel>
-									<Tabs.Panel value="bed-cabin" bg="white">
+									<Tabs.Panel value="bed-cabin" bg="var(--mantine-color-white)">
 										<Stack justify="space-between" h={mainAreaHeight - 570}>
 											<Grid mt="xs" mx="xs" gutter="xs" align="center" columns={20}>
 												<Grid.Col span={20}>
@@ -447,7 +447,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 													/>
 												</Grid.Col>
 											</Grid>
-											<Box w="100%" bg="white">
+											<Box w="100%" bg="var(--mantine-color-white)">
 												<Grid columns={18} gutter="xs">
 													<Grid.Col span={18} className="animate-ease-out" px="xs">
 														<Flex mt="xs" align="center" gap="xs">

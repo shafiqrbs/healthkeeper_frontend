@@ -63,7 +63,7 @@ export default function Index() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid columns={24} gutter="xs" w="100%" h="100%" styles={{ inner: { height: "100%" } }}>
 							<Grid.Col span={6}>
-								<Box bg="white" p="xs" h="100%">
+								<Box bg="var(--mantine-color-white)" p="xs" h="100%">
 									<Text fw={600} mb="sm" fz="sm">
 										{t("PatientInformation")}
 									</Text>
@@ -86,18 +86,24 @@ export default function Index() {
 								</Box>
 							</Grid.Col>
 							<Grid.Col span={8}>
-								<Box bg="white" className="borderRadiusAll" h="100%">
+								<Box bg="var(--mantine-color-white)" className="borderRadiusAll" h="100%">
 									<TabSubHeading title="Final Bill" />
 									<BillingTable data={billing} />
 								</Box>
 							</Grid.Col>
 							<Grid.Col span={10}>
-								<Stack bg="white" justify="space-between" className="borderRadiusAll" h="100%" w="100%">
+								<Stack
+									bg="var(--mantine-color-white)"
+									justify="space-between"
+									className="borderRadiusAll"
+									h="100%"
+									w="100%"
+								>
 									<Box>
 										<TabSubHeading title="Final Bill Details" />
 										<BillingSummary data={billingSummary} />
 									</Box>
-									<Box p="xs" bg="white">
+									<Box p="xs" bg="var(--mantine-color-white)">
 										<Box>
 											<BillingActions />
 										</Box>

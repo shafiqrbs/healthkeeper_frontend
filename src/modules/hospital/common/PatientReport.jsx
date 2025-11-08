@@ -513,7 +513,7 @@ export default function PatientReport({
 							onBlur={handleFieldBlur}
 							rightSection={<IconCaretUpDownFilled size={16} />}
 						/>
-						<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="2xs">
+						<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll" mt="2xs">
 							{form.values.dynamicFormData?.[section.slug]?.map((item, idx) => (
 								<Flex
 									key={idx}
@@ -583,7 +583,7 @@ export default function PatientReport({
 
 		if (!currentSection) {
 			return (
-				<Box bg="white" p="les">
+				<Box bg="var(--mantine-color-white)" p="les">
 					<ScrollArea h={height}>
 						<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
 						<Box p="md">
@@ -671,7 +671,7 @@ export default function PatientReport({
 	};
 
 	return (
-		<Box w="100%" bg="white">
+		<Box w="100%" bg="var(--mantine-color-white)">
 			{generateTabItems()}
 		</Box>
 	);

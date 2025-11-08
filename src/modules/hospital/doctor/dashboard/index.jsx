@@ -1,4 +1,4 @@
-import {Box, Grid, Group, Progress} from "@mantine/core";
+import { Box, Grid, Group, Progress } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
@@ -11,14 +11,12 @@ import IndexForm from "./form/__IndexForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
-import {MODULES_PHARMACY} from "@/constants";
-import {useEffect} from "react";
+import { MODULES_PHARMACY } from "@/constants";
+import { useEffect } from "react";
 
 const module = MODULES_PHARMACY.STOCK;
 
-
 export default function Index({ mode = "create" }) {
-
 	const { t } = useTranslation();
 	const form = useForm(getInitialValues(t));
 	const progress = useGetLoadingProgress();
@@ -31,7 +29,7 @@ export default function Index({ mode = "create" }) {
 	}, [t, setPageTitle]);
 	return (
 		<>
-			<Box bg="white" p="xs" className="borderRadiusAll">
+			<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
 				Doctor Dashboard
 			</Box>
 		</>

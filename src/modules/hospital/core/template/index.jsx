@@ -17,7 +17,7 @@ export default function Index({ mode }) {
 	}, [t, setPageTitle]);
 
 	return (
-		<Box bg="white" p="xs" className="borderRadiusAll">
+		<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
 			{mode === "details" ? <Details /> : <_Table module={module} />}
 		</Box>
 	);

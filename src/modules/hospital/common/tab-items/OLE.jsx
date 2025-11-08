@@ -10,7 +10,7 @@ export default function OLE({ ole, handleOleChange }) {
 			<Text fw={600} fz="sm" mb="3xs">
 				{t("ole")}
 			</Text>
-			<Stack gap="3xs" bg="white" p="sm" className="borderRadiusSmall">
+			<Stack gap="3xs" bg="var(--mantine-color-white)" p="sm" className="borderRadiusSmall">
 				{OLE_OPTIONS.map((label, idx) => (
 					<Checkbox
 						key={idx}

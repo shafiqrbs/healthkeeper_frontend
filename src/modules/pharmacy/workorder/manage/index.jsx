@@ -57,7 +57,7 @@ export default function Index({ mode }) {
 						{!matches && (
 							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
 						)}
-						<Box bg="white" w="100%" p="xs" className="borderRadiusAll">
+						<Box bg="var(--mantine-color-white)" w="100%" p="xs" className="borderRadiusAll">
 							<CoreHeaderNavbar
 								module="pharmacy"
 								pageTitle={t("ManageWorkorder")}

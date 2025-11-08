@@ -178,19 +178,27 @@ export default function KeywordSearch({
 				/>
 			)}
 			<Flex gap="3xs" align="center">
-				<ActionIcon c="var(--theme-primary-color-6)" bg="white" onClick={() => handleSearch()}>
+				<ActionIcon
+					c="var(--theme-primary-color-6)"
+					bg="var(--mantine-color-white)"
+					onClick={() => handleSearch()}
+				>
 					<IconSearch size={16} stroke={1.5} />
 				</ActionIcon>
 
 				{showReset && (
-					<ActionIcon c="var(--theme-tertiary-color-8)" bg="white" onClick={handleReset}>
+					<ActionIcon c="var(--theme-tertiary-color-8)" bg="var(--mantine-color-white)" onClick={handleReset}>
 						<IconRestore size={16} stroke={1.5} />
 					</ActionIcon>
 				)}
 
 				{showAdvancedFilter && <AdvancedFilter />}
 
-				<ActionIcon c="var(--theme-success-color-3)" bg="white" onClick={handleCSVDownload}>
+				<ActionIcon
+					c="var(--theme-success-color-3)"
+					bg="var(--mantine-color-white)"
+					onClick={handleCSVDownload}
+				>
 					<IconFileTypeXls size={16} stroke={1.5} />
 				</ActionIcon>
 			</Flex>

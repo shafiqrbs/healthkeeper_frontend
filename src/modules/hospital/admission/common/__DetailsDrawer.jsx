@@ -216,7 +216,7 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 							</Grid.Col>
 							{/* =============== right column with medicine, advice, follow up =============== */}
 							<Grid.Col span={8} h="100%">
-								<Paper withBorder p="lg" radius="sm" h="100%" bg="white">
+								<Paper withBorder p="lg" radius="sm" h="100%" bg="var(--mantine-color-white)">
 									<Stack gap="lg" h="100%">
 										<Box>
 											<Group align="center" mb="xs">

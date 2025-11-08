@@ -1,11 +1,5 @@
 import React from "react";
-import {
-	IconDashboard,
-	IconIcons,
-	IconCategory,
-	IconShoppingBag,
-	IconShoppingCart,
-} from "@tabler/icons-react";
+import { IconDashboard, IconIcons, IconCategory, IconShoppingBag, IconShoppingCart } from "@tabler/icons-react";
 import { Button, Flex, Text, Tooltip, ScrollArea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -17,7 +11,7 @@ export default function Navigation({ module, id }) {
 	const navigate = useNavigate();
 	return (
 		<>
-			<ScrollArea h={height - 8} bg="white" type="never" className="border-radius">
+			<ScrollArea h={height - 8} bg="var(--mantine-color-white)" type="never" className="border-radius">
 				<Flex direction={`column`} align={"center"} gap={"16"}>
 					<Flex direction={`column`} align={"center"} mt={"xs"} pt={5}>
 						<Tooltip

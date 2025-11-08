@@ -143,7 +143,7 @@ const Reports = () => {
 			<Box>
 				<Grid columns={48} gutter={{ base: 6 }}>
 					<Grid.Col span={4}>
-						<Box bg="white">
+						<Box bg="var(--mantine-color-white)">
 							<Box pb="xs" pl="xs" pr="xs" className="borderRadiusAll">
 								<Box
 									pl="xs"
@@ -178,7 +178,7 @@ const Reports = () => {
 					</Grid.Col>
 
 					<Grid.Col span={14}>
-						<Box bg="white">
+						<Box bg="var(--mantine-color-white)">
 							<_ReportBox
 								setDataLimit={setDataLimit}
 								inventoryReport={activeReport === REPORT_TYPES.INVENTORY}

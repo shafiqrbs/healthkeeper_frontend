@@ -174,7 +174,7 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 
 							{/* =============== Column 2: Room & Doctor Information =============== */}
 							<Grid.Col span={4} h="100%">
-								<Paper withBorder p="lg" radius="sm" bg="white" h="100%">
+								<Paper withBorder p="lg" radius="sm" bg="var(--mantine-color-white)" h="100%">
 									<Stack gap="md">
 										<Divider
 											label={

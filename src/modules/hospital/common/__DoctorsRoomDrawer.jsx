@@ -47,7 +47,7 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 		>
 			<Grid columns={12} gutter="xs">
 				<Grid.Col span={6}>
-					<Box bg="white" className="borderRadiusAll" mt="xs">
+					<Box bg="var(--mantine-color-white)" className="borderRadiusAll" mt="xs">
 						<Text bg="var(--theme-primary-color-6" className="borderRadiusTop" c="white" p="sm" fz="sm">
 							{t("SelectRoom")}
 						</Text>
@@ -64,7 +64,7 @@ export default function DoctorsRoomDrawer({ form, opened, close }) {
 					</Box>
 				</Grid.Col>
 				<Grid.Col span={6}>
-					<Box bg="white" className="borderRadiusAll" mt="xs">
+					<Box bg="var(--mantine-color-white)" className="borderRadiusAll" mt="xs">
 						<Text bg="var(--theme-secondary-color-9" className="borderRadiusTop" c="white" p="sm" fz="sm">
 							{t("SelectDoctor")}
 						</Text>

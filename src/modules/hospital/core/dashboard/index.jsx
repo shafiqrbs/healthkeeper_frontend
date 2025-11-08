@@ -2,7 +2,6 @@ import { Box } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure } from "@mantine/hooks";
 
-
 import { useForm } from "@mantine/form";
 
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
@@ -24,7 +23,7 @@ export default function Index({ mode = "create" }) {
 	}, [t, setPageTitle]);
 
 	return (
-		<Box bg="white" p="xs" className="borderRadiusAll">
+		<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
 			<_Table module={module} open={open} close={close} />
 		</Box>
 	);

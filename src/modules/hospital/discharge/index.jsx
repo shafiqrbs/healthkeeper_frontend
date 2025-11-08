@@ -64,7 +64,13 @@ export default function Index() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={24} gutter="xs">
 							<Grid.Col span={6} pos="relative" className="animate-ease-out">
-								<Flex align="center" justify="space-between" px="sm" py="xs" bg="white">
+								<Flex
+									align="center"
+									justify="space-between"
+									px="sm"
+									py="xs"
+									bg="var(--mantine-color-white)"
+								>
 									<Text fw={600} fz="sm">
 										{t("PatientInformation")}
 									</Text>
@@ -112,7 +118,7 @@ export default function Index() {
 										align="center"
 										p="sm"
 										px="md"
-										bg="white"
+										bg="var(--mantine-color-white)"
 										h={mainAreaHeight - 12}
 									>
 										<Text>No patient selected, please select a patient</Text>

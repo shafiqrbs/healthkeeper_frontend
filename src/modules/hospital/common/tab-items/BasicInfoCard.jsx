@@ -51,7 +51,7 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 				</Grid>
 			</Stack>
 			<Divider />
-			<Box bg="white">
+			<Box bg="var(--mantine-color-white)">
 				<Grid w="100%" columns={24} gutter={"2"} pl={"xs"}>
 					<Grid.Col span={4}>
 						<Text fz="xs">{t("B/P")}</Text>

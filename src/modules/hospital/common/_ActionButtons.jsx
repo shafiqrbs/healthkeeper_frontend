@@ -69,7 +69,7 @@ export default function ActionButtons({
 	return (
 		<>
 			<Stack gap={0} justify="space-between" mt="xs">
-				<Box p="sm" pl={"md"} pr={"md"} bg="white">
+				<Box p="sm" pl={"md"} pr={"md"} bg="var(--mantine-color-white)">
 					<Grid columns={24}>
 						<Grid.Col span={8} bg="var(--theme-primary-color-0)" px="xs">
 							<Flex gap="xss" align="center" justify="space-between">

@@ -406,7 +406,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 	};
 
 	return (
-		<Box className="borderRadiusAll" bg="white" pos="relative">
+		<Box className="borderRadiusAll" bg="var(--mantine-color-white)" pos="relative">
 			<Box
 				onSubmit={medicineForm.onSubmit(handleAdd)}
 				key={updateKey}
@@ -606,7 +606,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 			</Flex>
 			<ScrollArea
 				h={baseHeight ? baseHeight : form.values.comment ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
-				bg="white"
+				bg="var(--mantine-color-white)"
 			>
 				<Stack gap="2px" p="sm">
 					{medicines?.length === 0 && form.values.exEmergency?.length === 0 && (
@@ -840,7 +840,7 @@ export default function Prescription({ setShowHistory, hasRecords, baseHeight })
 						/>
 						{/* =============== temporary items list with editable text inputs ================ */}
 						{tempEmergencyItems?.length > 0 && (
-							<Stack gap={0} bg="white" px="sm" className="borderRadiusAll" mt="2xs">
+							<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll" mt="2xs">
 								<Text fw={600} fz="sm" mt="xs" c="var(--theme-primary-color)">
 									{t("PendingItems")} ({tempEmergencyItems?.length})
 								</Text>

@@ -165,7 +165,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 				position="right"
 				size="30%"
 				keepMounted={false}
-				bg="white"
+				bg="var(--mantine-color-white)"
 				title={t("Referred")}
 				form={referredForm}
 				save={handleReferredSubmit}
@@ -223,7 +223,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 				position="right"
 				size="30%"
 				keepMounted={false}
-				bg="white"
+				bg="var(--mantine-color-white)"
 				title={t("Admission")}
 				form={admissionReferredForm}
 				save={handleAdmissionReferredSubmit}
@@ -261,7 +261,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 				position="right"
 				size="30%"
 				keepMounted={false}
-				bg="white"
+				bg="var(--mantine-color-white)"
 				title={t("RoomReferred")}
 			>
 				<Grid align="center" columns={20}>

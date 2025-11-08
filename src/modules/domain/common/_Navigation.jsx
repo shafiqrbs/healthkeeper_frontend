@@ -10,7 +10,7 @@ export default function _Navigation(props) {
 	const navigate = useNavigate();
 	return (
 		<>
-			<ScrollArea h={height} bg="white" type="never" className="border-radius">
+			<ScrollArea h={height} bg="var(--mantine-color-white)" type="never" className="border-radius">
 				<Flex direction={`column`} align={"center"} gap={"16"}>
 					<Flex direction={`column`} align={"center"} mt={"xs"} pt={5}>
 						<Tooltip

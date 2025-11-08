@@ -27,7 +27,7 @@ export default function Index({ mode = "create" }) {
 	}, [t, setPageTitle]);
 
 	return (
-		<Box bg="white" p="xs" className="borderRadiusAll">
+		<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
 			{reportFormat === "report-format" ? (
 				<_ReportFormatTable module={module} open={open} close={close} />
 			) : (

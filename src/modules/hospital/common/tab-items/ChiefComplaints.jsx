@@ -8,7 +8,7 @@ export default function ChiefComplaints({ complaints, handleComplaintChange }) {
 			<Text fw={600} fz="sm" mb="3xs">
 				Chief Complaints
 			</Text>
-			<Stack gap="3xs" bg="white" p="sm" className="borderRadiusSmall">
+			<Stack gap="3xs" bg="var(--mantine-color-white)" p="sm" className="borderRadiusSmall">
 				{CHIEF_COMPLAINTS.map((label, idx) => (
 					<Checkbox
 						key={idx}

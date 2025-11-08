@@ -40,7 +40,7 @@ export default function Index({ mode = "create" }) {
 						{!matches && (
 							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
 						)}
-						<Box bg="white" p="xs" w={'100%'} className="borderRadiusAll">
+						<Box bg="var(--mantine-color-white)" p="xs" w={"100%"} className="borderRadiusAll">
 							<CoreHeaderNavbar
 								module="pharmacy"
 								pageTitle={t("ManageGeneric")}

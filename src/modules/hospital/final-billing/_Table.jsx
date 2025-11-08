@@ -49,7 +49,7 @@ export default function _Table() {
 					Patient Name
 				</Text>
 			</Flex>
-			<ScrollArea bg="white" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
+			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid

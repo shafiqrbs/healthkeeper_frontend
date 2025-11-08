@@ -141,7 +141,7 @@ export default function Index() {
 									</Text>
 								</Box>
 							</Box>
-							<Stack bg="white" h="100%" py="xs" gap={0}>
+							<Stack bg="var(--mantine-color-white)" h="100%" py="xs" gap={0}>
 								{TAB_ITEMS.map((tabItem, index) => (
 									<Box
 										key={index}
@@ -203,7 +203,7 @@ export default function Index() {
 						{baseTabValue === "medicine" && <Medicine />}
 						{baseTabValue === "investigation" && <Investigation />}
 						{!baseTabValue && (
-							<Flex bg="white" align="center" justify="center" w="100%" h="100%">
+							<Flex bg="var(--mantine-color-white)" align="center" justify="center" w="100%" h="100%">
 								<Text size="sm" c="dimmed">
 									No item selected
 								</Text>

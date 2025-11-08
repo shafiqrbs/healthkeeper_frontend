@@ -71,7 +71,7 @@ export default function PatientForm({ form }) {
 	}, []);
 
 	return (
-		<Box w="100%" bg="white" py="2xs" style={{ borderRadius: "4px" }}>
+		<Box w="100%" bg="var(--mantine-color-white)" py="2xs" style={{ borderRadius: "4px" }}>
 			<form>
 				<Flex align="center" gap="xs" justify="space-between" px="sm" pb="xs">
 					<Text fw={600} fz="sm">

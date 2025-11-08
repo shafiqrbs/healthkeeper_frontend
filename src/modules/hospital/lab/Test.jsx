@@ -46,7 +46,7 @@ export default function Test({ entity, isLoading }) {
 	};
 
 	return (
-		<Box className="borderRadiusAll" bg="white">
+		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
 				<Text fw={600} fz="sm" py="es">
 					{t("Test")}

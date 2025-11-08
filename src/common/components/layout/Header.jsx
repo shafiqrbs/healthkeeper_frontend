@@ -291,7 +291,7 @@ const HeaderActions = ({
 	handleLanguageChange,
 }) => {
 	const { t } = useTranslation();
-	const { colorScheme, setColorScheme } = useMantineColorScheme({});
+	const { colorScheme, setColorScheme } = useMantineColorScheme({ keepTransitions: true });
 	const storageKey = "mantine-color-scheme";
 
 	function getNextScheme(currentScheme) {

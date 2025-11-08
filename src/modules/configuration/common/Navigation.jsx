@@ -34,7 +34,7 @@ export default function Navigation({ module }) {
 					? height - 63
 					: height
 			}
-			bg="white"
+			bg="var(--mantine-color-white)"
 			type="never"
 			className="border-radius"
 		>

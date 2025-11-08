@@ -152,7 +152,7 @@ export default function Index() {
 										align="center"
 										p="sm"
 										px="md"
-										bg="white"
+										bg="var(--mantine-color-white)"
 										h={mainAreaHeight - 12}
 									>
 										<Text>No patient selected, please select a patient</Text>

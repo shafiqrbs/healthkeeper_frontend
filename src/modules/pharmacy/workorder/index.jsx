@@ -8,7 +8,7 @@ import { MODULES_PHARMACY } from "@/constants";
 
 import Table from "./_Table";
 import CoreHeaderNavbar from "@hospital-components/CoreHeaderNavbar";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const module = MODULES_PHARMACY.WORKORDER;
 
@@ -35,7 +35,7 @@ export default function Index() {
 						{!matches && (
 							<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
 						)}
-						<Box bg="white" p="xs" className="borderRadiusAll" w="100%">
+						<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll" w="100%">
 							<CoreHeaderNavbar
 								module="pharmacy"
 								pageTitle={t("ManageWorkorder")}

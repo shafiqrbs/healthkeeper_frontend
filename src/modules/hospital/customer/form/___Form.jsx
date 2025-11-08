@@ -77,7 +77,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		<form onSubmit={form.onSubmit(handleSubmit)}>
 			<Grid columns={12} gutter={{ base: 8 }}>
 				<Grid.Col span={12}>
-					<Box bg="white" pos="relative" h={height}>
+					<Box bg="var(--mantine-color-white)" pos="relative" h={height}>
 						<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 1 }} />
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">

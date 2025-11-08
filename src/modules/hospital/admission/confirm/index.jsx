@@ -88,7 +88,7 @@ export default function ConfirmIndex() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={25}>
 							<Grid.Col span={isOpenPatientInfo ? 8 : 2} pos="relative" className="animate-ease-out">
-								<Box px="sm" py="md" bg="white">
+								<Box px="sm" py="md" bg="var(--mantine-color-white)">
 									<Text fw={600} fz="sm">
 										{t("PatientInformation")}
 									</Text>
@@ -114,7 +114,7 @@ export default function ConfirmIndex() {
 										<EntityForm form={form} />
 									</Grid.Col>
 									<Grid.Col span={25}>
-										<Box p="xs" bg="white">
+										<Box p="xs" bg="var(--mantine-color-white)">
 											<Text fw={600} mb="sm">
 												{t("Invoice")}
 											</Text>

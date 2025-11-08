@@ -40,7 +40,7 @@ export default function Index({ mode = "create" }) {
 						{!matches && (
 							<Navigation menu="base" subMenu="basePharmacySubmenu" mainAreaHeight={mainAreaHeight} />
 						)}
-						<Box w="100%" bg="white" p="xs" className="borderRadiusAll">
+						<Box w="100%" bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
 							<CoreHeaderNavbar
 								module="store"
 								pageTitle={t("ManageIndent")}

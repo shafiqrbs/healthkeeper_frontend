@@ -3,7 +3,7 @@ import { Box, Divider, Flex, Text } from "@mantine/core";
 export default function BillingSummary({ data }) {
 	return (
 		<Box p="xs" bg="var(--theme-primary-color-0)">
-			<Box bg="white" p="xs">
+			<Box bg="var(--mantine-color-white)" p="xs">
 				<Flex justify="space-between">
 					<Text>Total Amount: </Text>
 					<Text>৳ {data.totalAmount}</Text>

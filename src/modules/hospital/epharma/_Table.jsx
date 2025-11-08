@@ -146,7 +146,7 @@ export default function _Table({ height }) {
 	};
 
 	return (
-		<Box w="100%" bg="white">
+		<Box w="100%" bg="var(--mantine-color-white)">
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
 					{t("PatientMedicineIssue")}

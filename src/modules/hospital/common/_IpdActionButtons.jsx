@@ -87,7 +87,7 @@ export default function IpdActionButtons({
 	return (
 		<>
 			<Stack gap={0} justify="space-between" mt="xs">
-				<Box py="sm" px="md" bg="white">
+				<Box py="sm" px="md" bg="var(--mantine-color-white)">
 					<Grid columns={24}>
 						<Grid.Col span={12} bg="var(--theme-tertiary-color-0)" px="xs">
 							<Grid columns={24} my="xs" bg={"var(--theme-primary-color-1)"} px="xs" gutter="xs">

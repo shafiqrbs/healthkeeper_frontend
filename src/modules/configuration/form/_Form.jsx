@@ -130,8 +130,8 @@ export default function _Form({ module }) {
 				</Card>
 			</Grid.Col>
 			<Grid.Col span={11}>
-				<Box bg="white" p="xs" className="borderRadiusAll" mb="3xs">
-					<Box bg="white">
+				<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll" mb="3xs">
+					<Box bg="var(--mantine-color-white)">
 						<Box pl="xs" pr="3xs" py="3xs" mb="3xs" className="boxBackground borderRadiusAll">
 							<Grid>
 								<Grid.Col span={6}>
@@ -188,7 +188,7 @@ export default function _Form({ module }) {
 				<_DomainDetailsSection height={height} domainConfig={domainConfig} />
 			</Grid.Col>
 			<Grid.Col span={1}>
-				<Box bg="white" className="borderRadiusAll" pt="md">
+				<Box bg="var(--mantine-color-white)" className="borderRadiusAll" pt="md">
 					<Shortcut FormSubmit={submitButtonId()} Name="name" inputType="select" />
 				</Box>
 			</Grid.Col>

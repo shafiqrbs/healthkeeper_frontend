@@ -271,7 +271,7 @@ export default function Table({ module }) {
 	};
 
 	return (
-		<Box w="100%" bg="white" style={{ borderRadius: "4px" }}>
+		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
 					{t("EmergencyInformation")}
@@ -413,8 +413,6 @@ export default function Table({ module }) {
 											</Button>
 										)}
 
-
-
 										{formatDate(new Date()) === formatDate(values?.created_at) && (
 											<ActionIcon
 												variant="transparent"
@@ -517,7 +515,7 @@ export default function Table({ module }) {
 				position="right"
 				size="30%"
 				keepMounted={false}
-				bg="white"
+				bg="var(--mantine-color-white)"
 				title={t("Admission")}
 				form={referredForm}
 			>
