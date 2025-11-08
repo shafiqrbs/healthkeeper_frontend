@@ -710,7 +710,16 @@ input.date-selector-input {
     padding: 4px 8px;
     width: 100%;
 }
+
 .date-selector-input:focus {
     border: 1px solid var(--theme-tertiary-color-6);
     outline: none;
+}
+
+@media (prefers-color-scheme: dark) {
+
+    body,
+    main {
+        background-color: black !important;
+    }
 }

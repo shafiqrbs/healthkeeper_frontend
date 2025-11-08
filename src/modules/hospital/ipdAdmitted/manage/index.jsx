@@ -19,6 +19,7 @@ import Navigation from "@components/layout/Navigation";
 import Medicine from "@modules/hospital/ipdAdmitted/common/tabs/Medicine";
 import Investigation from "@modules/hospital/ipdAdmitted/common/tabs/Investigation";
 import { modals } from "@mantine/modals";
+import { formatDate } from "@utils/index";
 
 const module = MODULES.E_FRESH;
 
@@ -89,17 +90,22 @@ export default function Index() {
 	}, [searchParams]);
 
 	const handleTabClick = (tabItem) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
-			confirmProps: { color: "red" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => {
-				setBaseTabValue(tabItem?.toLowerCase());
-				setSearchParams({ tab: tabItem?.toLowerCase() });
-			},
-		});
+		if (tabItem === "E-Fresh") {
+			modals.openConfirmModal({
+				title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+				children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+				labels: { confirm: t("Confirm"), cancel: t("Cancel") },
+				confirmProps: { color: "red" },
+				onCancel: () => console.info("Cancel"),
+				onConfirm: () => {
+					setBaseTabValue(tabItem?.toLowerCase());
+					setSearchParams({ tab: tabItem?.toLowerCase() });
+				},
+			});
+		} else {
+			setBaseTabValue(tabItem?.toLowerCase());
+			setSearchParams({ tab: tabItem?.toLowerCase() });
+		}
 	};
 
 	const hasRecords = records && records.length > 0;
@@ -111,32 +117,57 @@ export default function Index() {
 				<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 				<Grid w="100%" columns={24} gutter="xs">
 					<Grid.Col span={3}>
-						<Stack py="xs" bg="white" h={mainAreaHeight - 16} gap={0}>
-							{TAB_ITEMS.map((tabItem, index) => (
+						<Box style={{ overflow: "hidden" }} h={mainAreaHeight - 14}>
+							<Box mb="xs" bg="var(--theme-primary-color-1)">
 								<Box
-									key={index}
-									mx={8}
-									className={`cursor-pointer`}
-									variant="default"
-									onClick={() => handleTabClick(tabItem)}
-									bg={baseTabValue === tabItem?.toLowerCase() ? "gray.1" : "#ffffff"}
+									bg="var(--theme-primary-color-1)"
+									style={{ borderBottom: "1px solid white" }}
+									p="xs"
 								>
-									<Text
-										c={
-											baseTabValue === tabItem?.toLowerCase()
-												? "var(--theme-primary-color-8)"
-												: "black"
-										}
-										size="sm"
-										py="3xs"
-										pl="3xs"
-										fw={500}
-									>
-										{t(tabItem)}
+									{t("PatientInformation")}
+								</Box>
+								<Box p="xs" bg="var(--theme-primary-color-0)">
+									<Text fz="xs">{records[0]?.patient_id}</Text>
+									<Text fz="xs">{records[0]?.health_id || ""}</Text>
+									<Text fz="sm" fw={600}>
+										{records[0]?.name}
+									</Text>
+									<Text fz="xs">{records[0]?.gender}</Text>
+									<Text fz="xs">
+										{records[0]?.day}d {records[0]?.month}m {records[0]?.year}y
+									</Text>
+									<Text fz="xs">
+										{t("Created")} {formatDate(records[0]?.created_at)}
 									</Text>
 								</Box>
-							))}
-						</Stack>
+							</Box>
+							<Stack bg="white" h="100%" py="xs" gap={0}>
+								{TAB_ITEMS.map((tabItem, index) => (
+									<Box
+										key={index}
+										mx={8}
+										className={`cursor-pointer`}
+										variant="default"
+										onClick={() => handleTabClick(tabItem)}
+										bg={baseTabValue === tabItem?.toLowerCase() ? "gray.1" : "#ffffff"}
+									>
+										<Text
+											c={
+												baseTabValue === tabItem?.toLowerCase()
+													? "var(--theme-primary-color-8)"
+													: "black"
+											}
+											size="sm"
+											py="3xs"
+											pl="3xs"
+											fw={500}
+										>
+											{t(tabItem)}
+										</Text>
+									</Box>
+								))}
+							</Stack>
+						</Box>
 					</Grid.Col>
 					<Grid.Col w="100%" span={showHistory ? 17 : 21}>
 						{baseTabValue === "e-fresh" && (

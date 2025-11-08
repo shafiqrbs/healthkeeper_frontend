@@ -21,6 +21,7 @@ import {
 	Tooltip,
 	UnstyledButton,
 	rem,
+	useMantineColorScheme,
 } from "@mantine/core";
 
 import { setInventoryShowDataEmpty } from "@/app/store/core/crudSlice.js";
@@ -36,8 +37,11 @@ import {
 	IconArrowRight,
 	IconBackspace,
 	IconChevronDown,
+	IconDeviceDesktop,
 	IconLogout,
+	IconMoon,
 	IconSearch,
+	IconSun,
 	IconWifi,
 	IconWifiOff,
 	IconWindowMaximize,
@@ -282,45 +286,95 @@ const HeaderActions = ({
 	fullscreen,
 	toggle,
 	loginUser,
-	t,
 	onLogout,
 	languageSelected,
 	handleLanguageChange,
-}) => (
-	<Flex gap="sm" justify="flex-end" direction="row" wrap="wrap" mih={42} align={"right"} px={"xs"} pr={"24"}>
-		<LanguagePicker languageSelected={languageSelected} onLanguageChange={handleLanguageChange} />
-		<Tooltip label={fullscreen ? t("NormalScreen") : t("Fullscreen")} bg={"#635031"} withArrow>
-			<ActionIcon className="mt-6 header-action-icon" onClick={toggle} variant="subtle">
-				{fullscreen ? <IconWindowMinimize size={18} /> : <IconWindowMaximize size={18} />}
-			</ActionIcon>
-		</Tooltip>
-		<Tooltip
-			label={
-				<>
-					<Stack spacing={0} gap={0}>
-						<Text align="center">
-							{loginUser?.name} ( {loginUser?.username} )
-						</Text>
-						<Text align="center">{t("LogoutAltL")}</Text>
-					</Stack>
-				</>
+}) => {
+	const { t } = useTranslation();
+	const { colorScheme, setColorScheme } = useMantineColorScheme({});
+	const storageKey = "mantine-color-scheme";
+
+	function getNextScheme(currentScheme) {
+		if (currentScheme === "auto") return "light";
+		if (currentScheme === "light") return "dark";
+		return "auto";
+	}
+
+	function getSchemeIcon(currentScheme) {
+		if (currentScheme === "auto") return <IconDeviceDesktop size={18} />;
+		if (currentScheme === "light") return <IconSun size={18} />;
+		return <IconMoon size={18} />;
+	}
+
+	function getSchemeLabel(currentScheme) {
+		if (currentScheme === "auto") return "System";
+		if (currentScheme === "light") return "Light";
+		return "Dark";
+	}
+
+	function handleToggleColorScheme() {
+		const nextScheme = getNextScheme(colorScheme);
+		setColorScheme(nextScheme);
+		try {
+			localStorage.setItem(storageKey, nextScheme);
+		} catch (error) {
+			// =============== ignoring localStorage access error, safe to skip ===============
+		}
+	}
+
+	useEffect(() => {
+		try {
+			const savedScheme = localStorage.getItem(storageKey);
+			if (savedScheme === "auto" || savedScheme === "light" || savedScheme === "dark") {
+				setColorScheme(savedScheme);
 			}
-			bg={"#635031"}
-			withArrow
-			position={"left"}
-			multiline
-		>
-			<ActionIcon onClick={onLogout} variant="subtle" className="mt-6 header-action-icon">
-				<IconLogout size={18} />
-			</ActionIcon>
-		</Tooltip>
-		<Tooltip label={isOnline ? t("Online") : t("Offline")} bg={isOnline ? "green.5" : "red.5"} withArrow>
-			<ActionIcon className="mt-6 header-action-icon" variant="filled" radius="xl">
-				{isOnline ? <IconWifi size={20} /> : <IconWifiOff size={20} />}
-			</ActionIcon>
-		</Tooltip>
-	</Flex>
-);
+		} catch (error) {
+			// =============== ignoring localStorage access error, safe to skip ===============
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	return (
+		<Flex gap="sm" justify="flex-end" direction="row" wrap="wrap" mih={42} align={"right"} px={"xs"} pr={"24"}>
+			<LanguagePicker languageSelected={languageSelected} onLanguageChange={handleLanguageChange} />
+			<Tooltip label={`Theme: ${getSchemeLabel(colorScheme)}`} bg={"#635031"} withArrow>
+				<ActionIcon className="mt-6 header-action-icon" onClick={handleToggleColorScheme} variant="subtle">
+					{getSchemeIcon(colorScheme)}
+				</ActionIcon>
+			</Tooltip>
+			<Tooltip label={fullscreen ? t("NormalScreen") : t("Fullscreen")} bg={"#635031"} withArrow>
+				<ActionIcon className="mt-6 header-action-icon" onClick={toggle} variant="subtle">
+					{fullscreen ? <IconWindowMinimize size={18} /> : <IconWindowMaximize size={18} />}
+				</ActionIcon>
+			</Tooltip>
+			<Tooltip
+				label={
+					<>
+						<Stack spacing={0} gap={0}>
+							<Text align="center">
+								{loginUser?.name} ( {loginUser?.username} )
+							</Text>
+							<Text align="center">{t("LogoutAltL")}</Text>
+						</Stack>
+					</>
+				}
+				bg={"#635031"}
+				withArrow
+				position={"left"}
+				multiline
+			>
+				<ActionIcon onClick={onLogout} variant="subtle" className="mt-6 header-action-icon">
+					<IconLogout size={18} />
+				</ActionIcon>
+			</Tooltip>
+			<Tooltip label={isOnline ? t("Online") : t("Offline")} bg={isOnline ? "green.5" : "red.5"} withArrow>
+				<ActionIcon className="mt-6 header-action-icon" variant="filled" radius="xl">
+					{isOnline ? <IconWifi size={20} /> : <IconWifiOff size={20} />}
+				</ActionIcon>
+			</Tooltip>
+		</Flex>
+	);
+};
 
 export default function Header({ isOnline, configData, mainAreaHeight }) {
 	const userRole = getUserRole();
@@ -498,7 +552,6 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 							fullscreen={fullscreen}
 							toggle={toggle}
 							loginUser={loginUser}
-							t={t}
 							onLogout={handleLogout}
 							languageSelected={languageSelected}
 							handleLanguageChange={handleLanguageChange}
