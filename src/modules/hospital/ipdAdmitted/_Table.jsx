@@ -257,7 +257,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 										<>
 											<Button
 												rightSection={<IconArrowNarrowRight size={18} />}
-												onClick={() => handleManageOverview(values.prescription_id, values.id)}
+												onClick={() => handleManageOverview(values.uid, values.id)}
 												variant="filled"
 												color="var(--theme-primary-color-6)"
 												radius="xs"
