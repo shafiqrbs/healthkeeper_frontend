@@ -3,12 +3,20 @@ import { ActionIcon, Box, Button, Flex, Group, NumberInput, Paper, Text, TextInp
 import { useForm } from "@mantine/form";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
-import { DatePicker } from "@mantine/dates";
 import DateSelector from "@components/form-builders/DateSelector";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { storeEntityData } from "@/app/store/core/crudThunk";
+import { useDispatch } from "react-redux";
+import { successNotification } from "@components/notification/successNotification";
+import { errorNotification } from "@components/notification/errorNotification";
+import { useTranslation } from "react-i18next";
 
 export default function InsulinChart() {
+	const { t } = useTranslation();
+	const dispatch = useDispatch();
+	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 68;
 	// =============== local state for table records and transition helpers ===============
@@ -35,18 +43,36 @@ export default function InsulinChart() {
 		validate: {},
 	});
 
+	const handleSubmitInsulin = async (data) => {
+		const response = await dispatch(
+			storeEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PATIENT_CHART}/${id}`,
+				data: {
+					insulin_chart_json: data,
+				},
+			})
+		);
+		if (storeEntityData.fulfilled.match(response)) {
+			successNotification(t("InsulinChartAddedSuccessfully"));
+			form.reset();
+		} else {
+			errorNotification(t("InsulinChartAddedFailed"));
+		}
+	};
+
 	const handleAddVitalRecord = (values) => {
 		startTransition(() => {
-			setVitalRecordList((previous) => [
-				...previous,
+			const vitalRecords = [
+				...vitalRecordList,
 				{
-					id: Date.now(),
+					id: crypto.randomUUID(),
 					createdAt: new Date().toISOString(),
 					...values,
 				},
-			]);
+			];
+			setVitalRecordList(vitalRecords);
+			handleSubmitInsulin(vitalRecords);
 		});
-		form.reset();
 	};
 
 	const handleDeleteVitalRecord = (id) => {
