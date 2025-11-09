@@ -18,7 +18,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
 	const patientReport = jsonContent?.patient_report || {};
 
-	console.log(patientReport);
+//	console.log(patientReport);
 	const order = patientReport?.order || {};
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = jsonContent?.medicines || [];

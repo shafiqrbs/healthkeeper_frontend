@@ -149,12 +149,12 @@ export default function Details() {
 					)}
 					{name === "AdmissionFormBN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<AdmissionFormBN preview data={prescriptionData?.data} />
+							<AdmissionFormBN preview data={IPDData?.data} />
 						</LoadingWrapper>
 					)}
-					{name === "AdmissionFormBN" && (
+					{name === "AdmissionFormEN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<AdmissionFormBN preview data={prescriptionData?.data} />
+							<AdmissionFormBN preview data={IPDData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "IPDInvoicePosEN" && (

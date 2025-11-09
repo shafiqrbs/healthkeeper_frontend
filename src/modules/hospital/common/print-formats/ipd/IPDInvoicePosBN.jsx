@@ -55,10 +55,10 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("ইউনিট নং")}:</strong> {patientInfo?.created || ""}
+									<strong>{t("ইউনিট নং")}:</strong> {patientInfo?.admit_unit_name || ""}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>{t("বিভাগ")}:</strong> {patientInfo?.patient_id || ""}
+									<strong>{t("বিভাগ")}:</strong> {patientInfo?.admit_department_name || ""}
 								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>

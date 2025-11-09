@@ -25,10 +25,7 @@ export const formatDOB = (dob) => {
 	}
 };
 
-export function capitalize(text) {
-	if (!text) return "";
-	return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-}
+
 
 export function capitalizeWords(text) {
 	if (!text) return "";
@@ -181,6 +178,12 @@ export const parseDateValue = (dateString) => {
 		console.error("Error parsing date:", error);
 		return "";
 	}
+};
+
+
+export const capitalize = (text) => {
+	if (!text) return "";
+	return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 };
 
 export const waitForDataAndPrint = (ref, printFun, maxAttempts = 50, currentAttempt = 0) => {
