@@ -3,10 +3,19 @@ import { ActionIcon, Box, Button, Flex, Group, NumberInput, Paper, Text, TextInp
 import { useForm } from "@mantine/form";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { IconPercentage, IconPlus, IconTrash } from "@tabler/icons-react";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { storeEntityData } from "@/app/store/core/crudThunk";
+import { useDispatch } from "react-redux";
+import { successNotification } from "@components/notification/successNotification";
+import { errorNotification } from "@components/notification/errorNotification";
+import { useTranslation } from "react-i18next";
 
 export default function VitalsChart() {
+	const { id } = useParams();
+	const { t } = useTranslation();
+	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 68;
 	// =============== local state for table records and transition helpers ===============
@@ -29,18 +38,40 @@ export default function VitalsChart() {
 		validate: {},
 	});
 
+	const handleVitalSubmit = async (data) => {
+		const response = await dispatch(
+			storeEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PATIENT_CHART}/${id}`,
+				data: {
+					vital_chart_json: data,
+				},
+			})
+		);
+		if (storeEntityData.fulfilled.match(response)) {
+			successNotification(t("VitalChartAddedSuccessfully"));
+			form.reset();
+		} else {
+			errorNotification(t("VitalChartAddedFailed"));
+		}
+	};
+
 	const handleAddVitalRecord = (values) => {
 		startTransition(() => {
-			setVitalRecordList((previous) => [
-				...previous,
+			const vitalRecords = [
+				...vitalRecordList,
 				{
-					id: Date.now(),
-					recordedAt: new Date().toISOString(),
+					id: crypto.randomUUID(),
+					createdAt: new Date().toISOString(),
 					...values,
 				},
-			]);
+			];
+			setVitalRecordList(vitalRecords);
+			handleVitalSubmit(vitalRecords);
 		});
-		form.reset();
+	};
+
+	const handleDeleteVitalRecord = (id) => {
+		setVitalRecordList((previous) => previous.filter((record) => record.id !== id));
 	};
 
 	const columns = useMemo(

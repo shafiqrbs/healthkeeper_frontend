@@ -249,7 +249,7 @@ export const sideNavigationLinks = {
 			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.PHARMACY.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
-			allowedRoles: ["pharmacy_pharmacist", "pharmacy_manager", "pharmacy_operator", "admin_administrator"],
+			allowedRoles: ["pharmacy_pharmacist","pharmacy_approve", "pharmacy_manager", "pharmacy_operator", "pharmacy_operator", "admin_administrator"],
 			subMenu: [
 				{
 					label: t("Pharmacy"),

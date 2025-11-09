@@ -335,9 +335,7 @@ export const MASTER_DATA_ROUTES = {
 };
 
 export const PHARMACY_DATA_ROUTES = {
-
 	API_ROUTES: {
-
 		STOCK: {
 			INDEX: "pharmacy/stock",
 			STOCK_MATRIX: "pharmacy/stock-item/matrix",
@@ -566,6 +564,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			TRANSACTION: "hospital/ipd/transaction",
 			PROCESS: "hospital/ipd/data-process",
 			EFRESH_ORDER: "hospital/ipd/efresh-order",
+			PATIENT_CHART: "hospital/ipd/patient-chart",
 		},
 
 		EMERGENCY: {

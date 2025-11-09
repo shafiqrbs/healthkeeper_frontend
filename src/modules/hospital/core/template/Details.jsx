@@ -134,7 +134,7 @@ export default function Details() {
 					)}
 					{name === "IPDPrescriptionFullBN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<IPDPrescriptionFullBN preview data={prescriptionData?.data} />
+							<IPDPrescriptionFullBN preview data={IPDData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "IPDPrescriptionFullEN" && (

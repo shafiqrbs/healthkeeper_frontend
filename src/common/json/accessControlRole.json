@@ -23,7 +23,8 @@
     "actions": [
       { "id": "pharmacy_operator", "label": "Operator" },
       { "id": "pharmacy_pharmacist", "label": "Pharmacist" },
-      { "id": "pharmacy_manager", "label": "Manager" }
+      { "id": "pharmacy_manager", "label": "Manager" },
+      { "id": "pharmacy_approve", "label": "Approve Doctor" }
     ]
   },
   {

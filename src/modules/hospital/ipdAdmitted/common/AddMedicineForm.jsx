@@ -962,6 +962,7 @@ export default function AddMedicineForm({
 			{/* prescription preview */}
 			{id && mountPreviewDrawer && (
 				<DetailsDrawer
+					type="ipd"
 					opened={openedPrescriptionPreview}
 					close={() => {
 						setMountPreviewDrawer(false);

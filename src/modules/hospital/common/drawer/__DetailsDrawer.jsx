@@ -34,7 +34,10 @@ export default function DetailsDrawer({ type = "prescription", opened, close, pr
 	});
 
 	const { data: prescriptionData, isLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
+		url:
+			type === "prescription"
+				? `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`
+				: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${prescriptionId}`,
 	});
 
 	// =============== parse prescription data and handle null cases ================
