@@ -4,7 +4,7 @@ import { useForm } from "@mantine/form";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import { useOutletContext } from "react-router-dom";
-import { IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconPercentage, IconPlus, IconTrash } from "@tabler/icons-react";
 
 export default function VitalsChart() {
 	const { mainAreaHeight } = useOutletContext();
@@ -45,11 +45,11 @@ export default function VitalsChart() {
 
 	const columns = useMemo(
 		() => [
-			{
-				accessor: "recordedAt",
-				title: "Created",
-				render: ({ recordedAt }) => new Date(recordedAt).toLocaleString(),
-			},
+			// {
+			// 	accessor: "recordedAt",
+			// 	title: "Created",
+			// 	render: ({ recordedAt }) => new Date(recordedAt).toLocaleString(),
+			// },
 			{ accessor: "bloodPressure", title: "BP (mm of Hg)" },
 			{ accessor: "pulseRate", title: "Pulse (Beat/Minute)" },
 			{ accessor: "saturationWithoutOxygen", title: "SatWithoutO2 (%)" },
@@ -85,7 +85,7 @@ export default function VitalsChart() {
 				</Text>
 			</Group>
 
-			<Box component="form" onSubmit={form.onSubmit(handleAddVitalRecord)}>
+			<Box component="form" onSubmit={form.onSubmit(handleAddVitalRecord)} mb="-sm">
 				<Flex flex="1" gap="xs">
 					<TextInput
 						key={form.key("bloodPressure")}
@@ -100,17 +100,17 @@ export default function VitalsChart() {
 						placeholder="EnterSatWithoutO2"
 						min={0}
 						max={100}
-						suffix="%"
 						clampBehavior="strict"
+						rightSection={<IconPercentage size={16} />}
 						{...form.getInputProps("saturationWithoutOxygen")}
 					/>
 
 					<NumberInput
 						key={form.key("saturationWithOxygen")}
-						placeholder="SatWith"
+						placeholder="SatWithO2"
 						min={0}
 						max={100}
-						suffix="%"
+						rightSection={<IconPercentage size={16} />}
 						clampBehavior="strict"
 						{...form.getInputProps("saturationWithOxygen")}
 					/>

@@ -21,7 +21,7 @@
             font-size: 12px !important;
             margin: 2px !important;
             padding: 2px !important;
-            border-bottom: 1px solid #f0f1f9 !important;
+            border-bottom: 1px solid var(--mantine-color-gray-3) !important;
         }
 
         td:first-child {

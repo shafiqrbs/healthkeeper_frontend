@@ -1,3 +1,173 @@
+import { useDeferredValue, useMemo, useTransition, useState } from "react";
+import { ActionIcon, Box, Button, Flex, Group, NumberInput, Paper, Text, TextInput, Title } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { DataTable } from "mantine-datatable";
+import tableCss from "@assets/css/TableAdmin.module.css";
+import { useOutletContext } from "react-router-dom";
+import { IconPlus, IconTrash } from "@tabler/icons-react";
+import { DatePicker } from "@mantine/dates";
+import DateSelector from "@components/form-builders/DateSelector";
+
 export default function InsulinChart() {
-	return <div>InsulinChart</div>;
+	const { mainAreaHeight } = useOutletContext();
+	const height = mainAreaHeight - 68;
+	// =============== local state for table records and transition helpers ===============
+	const [vitalRecordList, setVitalRecordList] = useState([]);
+	const [isPending, startTransition] = useTransition();
+	const deferredVitalRecordList = useDeferredValue(vitalRecordList);
+
+	// =============== form for insulin chart inputs ===============
+	const form = useForm({
+		initialValues: {
+			date: "",
+			fbs: undefined,
+			insulinMorning: undefined, // before breakfast
+			twoHAFB: undefined, // 2 hours after breakfast
+			bl: undefined, // before lunch
+			insulinNoon: undefined, // at lunch
+			twoHAL: undefined, // 2 hours after lunch
+			bd: undefined, // before dinner
+			insulinNight: undefined, // at dinner
+			twoHAD: undefined, // 2 hours after dinner
+			sign: "",
+		},
+		validateInputOnBlur: true,
+		validate: {},
+	});
+
+	const handleAddVitalRecord = (values) => {
+		startTransition(() => {
+			setVitalRecordList((previous) => [
+				...previous,
+				{
+					id: Date.now(),
+					createdAt: new Date().toISOString(),
+					...values,
+				},
+			]);
+		});
+		form.reset();
+	};
+
+	const handleDeleteVitalRecord = (id) => {
+		setVitalRecordList((previous) => previous.filter((record) => record.id !== id));
+	};
+
+	const columns = useMemo(
+		() => [
+			{
+				accessor: "date",
+				title: "Date",
+				render: ({ date }) => (date ? new Date(date).toLocaleDateString() : ""),
+			},
+			{
+				accessor: "fbs",
+				title: "FBS",
+			},
+			{
+				accessor: "insulinMorning",
+				title: "Insulin (B/F)",
+			},
+			{ accessor: "twoHAFB", title: "2HAFB" },
+			{ accessor: "bl", title: "BL" },
+			{ accessor: "insulinNoon", title: "Insulin (L)" },
+			{ accessor: "twoHAL", title: "2HAL" },
+			{ accessor: "bd", title: "BD" },
+			{ accessor: "insulinNight", title: "Insulin (D)" },
+			{ accessor: "twoHAD", title: "2HAD" },
+			{ accessor: "sign", title: "Sign." },
+			{
+				accessor: "actions",
+				title: "Actions",
+				render: ({ id }) => (
+					<ActionIcon variant="transparent" color="red" size="xs" onClick={() => handleDeleteVitalRecord(id)}>
+						<IconTrash />
+					</ActionIcon>
+				),
+			},
+		],
+		[]
+	);
+
+	return (
+		<Paper p="md" radius="md" withBorder>
+			<Group justify="space-between" mb="sm">
+				<Title order={4}>Insulin Chart</Title>
+				<Text c="dimmed" size="sm">
+					{isPending ? "saving..." : ""}
+				</Text>
+			</Group>
+
+			<Box component="form" onSubmit={form.onSubmit(handleAddVitalRecord)} mb="-sm">
+				<Flex flex="1" gap="xs">
+					<Box>
+						<DateSelector
+							size="sm"
+							value={form.values.date}
+							onChange={(value) => form.setFieldValue("date", value)}
+							placeholder="Date"
+						/>
+					</Box>
+
+					<NumberInput key={form.key("fbs")} placeholder="FBS" {...form.getInputProps("fbs")} />
+
+					<NumberInput
+						key={form.key("insulinMorning")}
+						placeholder="Insulin (B/F)"
+						{...form.getInputProps("insulinMorning")}
+					/>
+
+					<NumberInput key={form.key("twoHAFB")} placeholder="2HAFB" {...form.getInputProps("twoHAFB")} />
+
+					<NumberInput key={form.key("bl")} placeholder="BL" {...form.getInputProps("bl")} />
+
+					<NumberInput
+						key={form.key("insulinNoon")}
+						placeholder="Insulin (L)"
+						{...form.getInputProps("insulinNoon")}
+					/>
+
+					<NumberInput key={form.key("twoHAL")} placeholder="2HAL" {...form.getInputProps("twoHAL")} />
+
+					<NumberInput key={form.key("bd")} placeholder="BD" {...form.getInputProps("bd")} />
+
+					<NumberInput
+						key={form.key("insulinNight")}
+						placeholder="Insulin (D)"
+						{...form.getInputProps("insulinNight")}
+					/>
+
+					<NumberInput key={form.key("twoHAD")} placeholder="2HAD" {...form.getInputProps("twoHAD")} />
+
+					<TextInput key={form.key("sign")} placeholder="Sign" {...form.getInputProps("sign")} />
+
+					<Button w={140} type="submit" variant="filled" leftSection={<IconPlus size={16} />}>
+						Add
+					</Button>
+				</Flex>
+			</Box>
+
+			<DataTable
+				striped
+				highlightOnHover
+				classNames={{
+					root: tableCss.root,
+					table: tableCss.table,
+					body: tableCss.body,
+					header: tableCss.header,
+					footer: tableCss.footer,
+					pagination: tableCss.pagination,
+				}}
+				mt="md"
+				minHeight={160}
+				withBorder
+				records={deferredVitalRecordList}
+				columns={columns}
+				loaderSize="xs"
+				loaderColor="grape"
+				height={height - 72}
+				noRecordsText="no insulin records added"
+			/>
+		</Paper>
+	);
 }
