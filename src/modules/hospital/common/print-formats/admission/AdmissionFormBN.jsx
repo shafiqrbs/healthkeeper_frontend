@@ -250,39 +250,46 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Td>
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Table.Td colSpan={3} style={{ textAlign: "center", padding: 0 }}>
+							<Table.Td colSpan={4} style={{ textAlign: "center", padding: 0 }}>
 								<Text size="md" fw={600} >
 									{t("AdmissionForm & Disease Details")} - {patientInfo?.parent_patient_mode_name}
 								</Text>
 							</Table.Td>
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-						<Table.Td>
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("PatientID")}:
-								</Text>
-								<Text size="sm">{getValue(patientInfo?.patient_id || "")}</Text>
-							</Group>
-						</Table.Td>
-						<Table.Td>
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("AdmissionID")}:
-								</Text>
-								<Text size="sm">{getValue(patientInfo?.invoice || "")}</Text>
-							</Group>
-						</Table.Td>
-						<Table.Td>
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("PatientType")}:
-								</Text>
-								<Text size="sm">{getValue(patientInfo?.payment_mode_name, "")}</Text>
-							</Group>
-						</Table.Td>
-					</Table.Tr>
-
+							<Table.Td>
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("PatientID")}:
+									</Text>
+									<Text size="sm">{getValue(patientInfo?.patient_id || "")}</Text>
+								</Group>
+							</Table.Td>
+							<Table.Td>
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("AdmissionID")}:
+									</Text>
+									<Text size="sm">{getValue(patientInfo?.invoice || "")}</Text>
+								</Group>
+							</Table.Td>
+							<Table.Td>
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("Date")}:
+									</Text>
+									<Text size="sm">{getValue(patientInfo?.admission_date || "")}</Text>
+								</Group>
+							</Table.Td>
+							<Table.Td>
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("PatientType")}:
+									</Text>
+									<Text size="sm">{getValue(patientInfo?.payment_mode_name, "")}</Text>
+								</Group>
+							</Table.Td>
+						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Td >
 								<Group gap="xs">
@@ -311,8 +318,6 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 									</Text>
 								</Group>
 							</Table.Td>
-						</Table.Tr>
-						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Td >
 								<Group gap="xs">
 									<Text size="xs" fw={600}>
@@ -321,28 +326,102 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="sm">{getValue(patientInfo?.religion_name, "")}</Text>
 								</Group>
 							</Table.Td>
+						</Table.Tr>
+						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Td >
 								<Group gap="xs">
 									<Text size="xs" fw={600}>
-										{t("Mobile")}:
+										{t("F/M/H")}:
 									</Text>
-									<Text size="xs">{getValue(patientInfo?.mobile, "")}</Text>
+									<Text size="sm">{getValue(patientInfo?.father_name, "")}</Text>
+								</Group>
+							</Table.Td>
+							<Table.Td >
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("GuardianName")}:
+									</Text>
+									<Text size="xs">{getValue(patientInfo?.guardian_name, "")}</Text>
+								</Group>
+							</Table.Td>
+							<Table.Td colspan={2}>
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("GuardianMobile")}:
+									</Text>
+									<Text size="xs">{getValue(patientInfo?.mobile, "")}
+										{patientInfo?.guardian_mobile && (
+											<> / {getValue(patientInfo?.guardian_mobile, "")}</>
+										)}</Text>
+								</Group>
+							</Table.Td>
+
+						</Table.Tr>
+						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+							<Table.Td colspan={2}>
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("PresentAddress")}:
+									</Text>
+									<Text size="sm">{getValue(patientInfo?.address, "")}</Text>
+								</Group>
+							</Table.Td>
+							<Table.Td colspan={2}>
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("PermanentAddress")}:
+									</Text>
+									<Text size="xs">{getValue(patientInfo?.permanent_address, "")}</Text>
+								</Group>
+							</Table.Td>
+						</Table.Tr>
+						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+							<Table.Td colspan={2}>
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("Bed/Cabin")}:
+									</Text>
+									<Text size="sm">{getValue(patientInfo?.room_name, "")}</Text>
+								</Group>
+							</Table.Td>
+							<Table.Td >
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("Unit")}:
+									</Text>
+									<Text size="xs">{getValue(patientInfo?.admit_unit_name, "")}</Text>
 								</Group>
 							</Table.Td>
 							<Table.Td>
 								<Group gap="xs">
 									<Text size="xs" fw={600}>
-										{t("NID")}:
+										{t("Department")}:
 									</Text>
-									<Text size="xs">{getValue(patientInfo?.nid, "")}</Text>
+									<Text size="xs">{getValue(patientInfo?.admit_department_name, "")}</Text>
+								</Group>
+							</Table.Td>
+						</Table.Tr>
+						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+							<Table.Td colspan={2}>
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("ConsultantDoctor")}:
+									</Text>
+									<Text size="sm">{getValue(patientInfo?.admit_consultant_name, "")}</Text>
+								</Group>
+							</Table.Td>
+							<Table.Td colspan={2}>
+								<Group gap="xs">
+									<Text size="xs" fw={600}>
+										{t("UnitDoctor")}:
+									</Text>
+									<Text size="xs">{getValue(patientInfo?.admit_doctor_name, "")}</Text>
 								</Group>
 							</Table.Td>
 						</Table.Tr>
 
 
-
-
-						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+						{/*<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Td
 								colSpan={2}
 								style={{ border: "1px solid var(--theme-tertiary-color-8)", padding: "4px" }}
@@ -396,8 +475,8 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 								</Group>
 							</Table.Td>
 						</Table.Tr>
-
-						<Table.Tr>
+*/}
+						{/*<Table.Tr>
 							<Table.Td
 								colSpan={2}
 								style={{
@@ -566,9 +645,9 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 									</Box>
 								</Flex>
 							</Table.Td>
-						</Table.Tr>
+						</Table.Tr>*/}
 
-						<Table.Tr>
+						{/*<Table.Tr>
 							<Table.Td
 								colSpan={2}
 								style={{ borderTop: "1px solid var(--theme-tertiary-color-8)", padding: "4px" }}
@@ -599,7 +678,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text fz={"xs"}>{patientInfo?.doctor_name}</Text>
 								</Box>
 							</Table.Td>
-						</Table.Tr>
+						</Table.Tr>*/}
 					</Table.Tbody>
 				</Table>
 				<Box bd="1px solid #555" style={{ borderRadius: "4px" }}>
