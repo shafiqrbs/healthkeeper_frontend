@@ -34,17 +34,27 @@ export default function _Table({ module }) {
             sortByKey: "name",
         });
 
-    // 🧩 Generate warehouse columns dynamically
+    // 🧩 Generate warehouse columns dynamically (match by name)
     const warehouseColumns = Array.isArray(listData?.data?.warehouses)
         ? listData.data.warehouses.map((wh) => ({
-            accessor: `warehouse_${wh.id}`,
+            accessor: `warehouse_${wh.name}`, // use name as accessor
             title: wh.name,
             textAlign: "right",
             sortable: true,
-            render: (item) => item.warehouses?.[wh.id]?.quantity ?? 0,
+            render: (item) => {
+                if (!item.warehouses) return 0;
+
+                // Match by name
+                const warehouseEntry = Object.values(item.warehouses).find(
+                    (w) => w.name === wh.name
+                );
+
+                return warehouseEntry ? Number(warehouseEntry.quantity) || 0 : 0;
+            },
             cellsStyle: () => ({ background: "#fff3cd" }),
         }))
         : [];
+
 
     return (
         <>
@@ -86,10 +96,6 @@ export default function _Table({ module }) {
                             sortable: true,
                         },
                         ...warehouseColumns,
-                        {
-                            accessor: "quantity",
-                            title: t("Quantity"),
-                        },
                     ]}
                     textSelectionDisabled
                     fetching={fetching}

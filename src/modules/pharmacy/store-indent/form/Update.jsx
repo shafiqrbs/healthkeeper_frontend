@@ -41,11 +41,13 @@ export default function Update({form, data}) {
                 stock_item_id: stockTransferItem?.stock_item_id ? String(stockTransferItem.stock_item_id) : "",
                 name: stockTransferItem?.name || "",
                 quantity: stockTransferItem?.quantity || "",
+                purchase_items: stockTransferItem?.purchase_items || "",
             }))
             : [];
-
         setRecords(mappedRecords);
     }, [data]);
+
+    console.log(records)
 
     const handleRequisitionUpdate = (values) => {
         const validation = requisitionForm.validate();

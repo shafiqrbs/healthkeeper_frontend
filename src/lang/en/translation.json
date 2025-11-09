@@ -1553,6 +1553,9 @@
     "ManageRequisition" : "Manage Requisition",
 	"NoOutdoorMedicineNumber": "No Outdoor Medicine Number",
 	"NoDoctorComment": "No Doctor Comment",
+    "ManageIndent" : "Manage Indent",
+    "IndentNo" : "Indent No",
+    "Indent" : "Indent",
     "xxxxxxxx" : "xxxxxxxxxxx",
     "xxxxxxxx" : "xxxxxxxxxxx"
 }

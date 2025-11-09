@@ -9,7 +9,7 @@ import {
     NumberInput,
     Tooltip,
     TextInput,
-    Input,
+    Input, Select,
 } from "@mantine/core";
 import {useTranslation} from "react-i18next";
 import {
@@ -176,9 +176,26 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                 sortable: false,
                             },
                             {
-                                accessor: "quantity",
-                                title: t("ItemBatch"),
-                                sortable: false,
+                                accessor: "purchase_item_id",
+                                title: t("PurchaseItem"),
+                                render: (item) => {
+                                    const purchaseItemValue = String(item.purchase_item_id || "");
+                                    // console.log(item)
+                                    // Map purchase_items to select options
+                                    const selectData = (item.purchase_items || []).map((pItem) => ({
+                                        label: `Expire: ${pItem.expired_date} (stock #${pItem.remain_quantity})`,
+                                        value: String(pItem.id),
+                                    }));
+
+                                    return (
+                                        <Select
+                                            size="xs"
+                                            placeholder="Select"
+                                            value={purchaseItemValue}
+                                            data={selectData}
+                                        />
+                                    );
+                                },
                             },
                             {
                                 accessor: "quantity",

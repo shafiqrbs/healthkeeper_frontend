@@ -72,7 +72,7 @@ export default function Update({form, data}) {
             };
 
             const requestData = {
-                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.UPDATE}/${id}`,
+                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.UPDATE}/${data.id}`,
                 data: payload,
                 module,
             };

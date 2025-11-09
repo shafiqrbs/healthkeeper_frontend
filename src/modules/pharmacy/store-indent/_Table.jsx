@@ -56,11 +56,10 @@ export default function _Table({module}) {
         handleScrollToBottom,
     } = useInfiniteTableScroll({
         module,
-        fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.INDEX,
+        fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.INDEX_CENTRAL,
         filterParams: {
             name: filterData?.name,
             term: searchKeyword,
-          //  ...(userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && { user_id: user.id }),
         },
         perPage: PER_PAGE,
         sortByKey: "name",
@@ -149,7 +148,7 @@ export default function _Table({module}) {
                                 <Group gap={4} justify="right" wrap="nowrap">
                                     <Button.Group>
 
-                                        {values.process !== 'Approved' && !values.approved_by_id &&
+                                        {values.process !== 'Received' && !values.received_by_id &&
                                             <Button
                                                 onClick={() => handleEntityEdit(values.uid)}
                                                 variant="filled"
@@ -174,7 +173,7 @@ export default function _Table({module}) {
                                         >
                                             {t("View")}
                                         </Button>
-                                        {values.process !== 'Approved' && !values.approved_by_id &&
+                                        {/*{values.process !== 'Approved' && !values.approved_by_id &&
                                             <ActionIcon
                                                 onClick={() => handleDelete(values.uid)}
                                                 className="action-icon-menu border-left-radius-none"
@@ -186,7 +185,7 @@ export default function _Table({module}) {
                                             >
                                                 <IconTrashX height={18} width={18} stroke={1.5}/>
                                             </ActionIcon>
-                                        }
+                                        }*/}
                                     </Button.Group>
                                 </Group>
                             ),

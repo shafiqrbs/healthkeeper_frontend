@@ -54,6 +54,7 @@ export default function _Table({module}) {
         sortStatus,
         setSortStatus,
         handleScrollToBottom,
+        refetchAll
     } = useInfiniteTableScroll({
         module,
         fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.INDEX,
@@ -243,7 +244,7 @@ export default function _Table({module}) {
             </Box>
 
             <DataTableFooter indexData={listData} module={module}/>
-            <ViewDrawer viewDrawer={viewDrawer} height={height} setViewDrawer={setViewDrawer} module={module}/>
+            <ViewDrawer viewDrawer={viewDrawer} height={height} setViewDrawer={setViewDrawer} module={module} refetchAll={refetchAll}/>
         </>
     );
 }
