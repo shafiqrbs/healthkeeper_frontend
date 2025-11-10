@@ -319,7 +319,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 																}}
 															/>
 														}
-														onClick={() => handlePrescriptionPrint(values?.prescription_id)}
+														onClick={() => handlePrescriptionPrint(values?.uid)}
 													>
 														{t("Prescription")}
 													</Menu.Item>

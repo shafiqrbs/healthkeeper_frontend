@@ -124,50 +124,52 @@ export default function InsulinChart() {
 				</Text>
 			</Group>
 
-			<Box component="form" onSubmit={form.onSubmit(handleAddVitalRecord)} mb="-sm">
+			<Box bg="var(--theme-secondary-color-0)" p={'xs'} component="form" onSubmit={form.onSubmit(handleAddVitalRecord)} mb="-sm">
+
 				<Flex flex="1" gap="xs">
 					<Box>
 						<DateSelector
-							size="sm"
+							size="xs"
 							value={form.values.date}
 							onChange={(value) => form.setFieldValue("date", value)}
 							placeholder="Date"
 						/>
 					</Box>
 
-					<NumberInput key={form.key("fbs")} placeholder="FBS" {...form.getInputProps("fbs")} />
+					<TextInput
+						size="xs"
+						key={form.key("fbs")}
+						placeholder="FBS" {...form.getInputProps("fbs")} />
 
-					<NumberInput
+					<TextInput
+						size="xs"
 						key={form.key("insulinMorning")}
 						placeholder="Insulin (B/F)"
 						{...form.getInputProps("insulinMorning")}
 					/>
 
-					<NumberInput key={form.key("twoHAFB")} placeholder="2HAFB" {...form.getInputProps("twoHAFB")} />
+					<TextInput size="xs" key={form.key("twoHAFB")} placeholder="2HAFB" {...form.getInputProps("twoHAFB")} />
 
-					<NumberInput key={form.key("bl")} placeholder="BL" {...form.getInputProps("bl")} />
+					<TextInput size="xs" key={form.key("bl")} placeholder="BL" {...form.getInputProps("bl")} />
 
-					<NumberInput
+					<TextInput size="xs"
 						key={form.key("insulinNoon")}
 						placeholder="Insulin (L)"
 						{...form.getInputProps("insulinNoon")}
 					/>
 
-					<NumberInput key={form.key("twoHAL")} placeholder="2HAL" {...form.getInputProps("twoHAL")} />
-
-					<NumberInput key={form.key("bd")} placeholder="BD" {...form.getInputProps("bd")} />
-
-					<NumberInput
+					<TextInput size="xs" key={form.key("twoHAL")} placeholder="2HAL" {...form.getInputProps("twoHAL")} />
+					<TextInput size="xs" key={form.key("bd")} placeholder="BD" {...form.getInputProps("bd")} />
+					<TextInput
+						size="xs"
 						key={form.key("insulinNight")}
 						placeholder="Insulin (D)"
 						{...form.getInputProps("insulinNight")}
 					/>
 
-					<NumberInput key={form.key("twoHAD")} placeholder="2HAD" {...form.getInputProps("twoHAD")} />
-
-					<TextInput key={form.key("sign")} placeholder="Sign" {...form.getInputProps("sign")} />
-
-					<Button w={140} type="submit" variant="filled" leftSection={<IconPlus size={16} />}>
+					<TextInput size="xs" key={form.key("twoHAD")} placeholder="2HAD" {...form.getInputProps("twoHAD")} />
+					<TextInput size="xs" key={form.key("sign")} placeholder="Sign" {...form.getInputProps("sign")} />
+					<Button size="xs" w={140} type="submit" variant="filled" leftSection={<IconPlus size={16} />}>
 						Add
 					</Button>
 				</Flex>

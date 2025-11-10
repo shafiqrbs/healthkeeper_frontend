@@ -1,7 +1,9 @@
 import { useDeferredValue, useMemo, useTransition, useState } from "react";
 import { ActionIcon, Box, Button, Flex, Group, NumberInput, Paper, Text, TextInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { TimeInput } from '@mantine/dates';
 import { DataTable } from "mantine-datatable";
+
 import tableCss from "@assets/css/TableAdmin.module.css";
 import { useOutletContext, useParams } from "react-router-dom";
 import { IconPercentage, IconPlus, IconTrash } from "@tabler/icons-react";
@@ -11,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
 import { useTranslation } from "react-i18next";
+import DateSelector from "@components/form-builders/DateSelector";
 
 export default function VitalsChart() {
 	const { id } = useParams();
@@ -116,17 +119,42 @@ export default function VitalsChart() {
 				</Text>
 			</Group>
 
-			<Box component="form" onSubmit={form.onSubmit(handleAddVitalRecord)} mb="-sm">
+			<Box bg="var(--theme-secondary-color-0)" p={'xs'} component="form" onSubmit={form.onSubmit(handleAddVitalRecord)} mb="-sm">
 				<Flex flex="1" gap="xs">
+					<Box>
+						<DateSelector
+							size="sm"
+							value={form.values.date}
+							onChange={(value) => form.setFieldValue("date", value)}
+							placeholder="Date"
+						/>
+					</Box>
+					<Box>
+						<TimeInput
+							size="xs"
+							format="12h"
+							value={form.values.time}
+							onChange={(value) => form.setFieldValue("time", value)}
+							placeholder="Time"
+						/>
+					</Box>
 					<TextInput
+						pattern="[0-9/]*"
+						size="xs"
 						key={form.key("bloodPressure")}
 						placeholder="120/80"
 						{...form.getInputProps("bloodPressure")}
 					/>
 
-					<NumberInput key={form.key("pulseRate")} placeholder="Pulse" {...form.getInputProps("pulseRate")} />
+					<TextInput
+						pattern="[0-9/]*"
+						size="xs"
+						key={form.key("pulseRate")}
+						placeholder="Pulse" {...form.getInputProps("pulseRate")}
+					/>
 
-					<NumberInput
+					<TextInput
+						size="xs"
 						key={form.key("saturationWithoutOxygen")}
 						placeholder="EnterSatWithoutO2"
 						min={0}
@@ -136,7 +164,8 @@ export default function VitalsChart() {
 						{...form.getInputProps("saturationWithoutOxygen")}
 					/>
 
-					<NumberInput
+					<TextInput
+						size="xs"
 						key={form.key("saturationWithOxygen")}
 						placeholder="SatWithO2"
 						min={0}
@@ -145,26 +174,31 @@ export default function VitalsChart() {
 						clampBehavior="strict"
 						{...form.getInputProps("saturationWithOxygen")}
 					/>
-					<NumberInput
+					<TextInput
+						size="xs"
 						key={form.key("oxygenFlowRateLiters")}
 						placeholder="Liter"
 						min={0}
 						max={60}
 						step={0.5}
 						clampBehavior="strict"
+						rightSection={<IconPercentage size={16} />}
 						{...form.getInputProps("oxygenFlowRateLiters")}
 					/>
 
-					<NumberInput
+					<TextInput
+						size="xs"
 						key={form.key("respirationRate")}
 						placeholder="EnterRespiration"
 						min={0}
 						max={80}
 						clampBehavior="strict"
+						rightSection={<IconPercentage size={16} />}
 						{...form.getInputProps("respirationRate")}
 					/>
 
-					<NumberInput
+					<TextInput
+						size="xs"
 						key={form.key("temperatureFahrenheit")}
 						placeholder="EnterTemperature"
 						min={0}
@@ -172,10 +206,11 @@ export default function VitalsChart() {
 						decimalScale={1}
 						step={0.1}
 						clampBehavior="strict"
+						rightSection={<IconPercentage size={16} />}
 						{...form.getInputProps("temperatureFahrenheit")}
 					/>
 
-					<Button w={140} type="submit" variant="filled" leftSection={<IconPlus size={16} />}>
+					<Button size="xs" w={140} type="submit" variant="filled" leftSection={<IconPlus size={16} />}>
 						Add
 					</Button>
 				</Flex>
