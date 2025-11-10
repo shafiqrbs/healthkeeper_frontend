@@ -197,6 +197,10 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 					table { border-collapse: collapse !important; }
 					table, table th, table td { border: 1px solid #807e7e !important; }
 				}`}
+				{`@media  {
+					table { border-collapse: collapse !important;border: 1px solid #807e7e !important; }
+					table, table th, table td {  padding-top:0!important; padding-bottom:0!important; margin-top:0!important; margin-bottom:0!important; }
+				}`}
 			</style>
 			<Stack
 				ref={ref}
@@ -208,9 +212,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 				fz={12}
 				align="stretch"
 				justify="space-between"
-				style={{
-					border: "1px solid var(--theme-tertiary-color-8)",
-				}}
+
 			>
 				<Box>
 					<Table
@@ -251,13 +253,13 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={3} style={{ textAlign: "center", padding: 0 }}>
+								<Table.Td colSpan={3}>
 									<Text size="md" fw={600} >
 										{t("Prescription - Indoor")}
 									</Text>
 								</Table.Td>
 							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)"}}>
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
@@ -283,8 +285,8 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									</Group>
 								</Table.Td>
 							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td >
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" , padding: 0 ,margin: 0  }}>
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Name")}:
@@ -292,7 +294,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="sm">{getValue(patientInfo?.name, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td >
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Gender")}:
@@ -447,7 +449,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										verticalAlign: "top",
 									}}
 								>
-									<Box style={{ position: "relative", minHeight: "750px" }}>
+									<Box style={{ position: "relative", minHeight: "550px" }}>
 										{(orderedExamKeys.length > 0
 												? orderedExamKeys
 												: Object.keys(patientExamination || {})
@@ -520,7 +522,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									</Flex>
 								</Table.Td>
 								<Table.Td colSpan={2} style={{ verticalAlign: "top" }}>
-									<Box style={{ position: "relative", minHeight: "750px" }}>
+									<Box style={{ position: "relative", minHeight: "550px" }}>
 										<Box w={"36"}>
 											<Image src={Rx} alt="logo" width={"32"} height={32} />
 										</Box>
