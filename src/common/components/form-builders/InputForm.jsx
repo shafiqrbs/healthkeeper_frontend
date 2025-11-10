@@ -5,6 +5,7 @@ import { getHotkeyHandler } from "@mantine/hooks";
 import inputCss from "@assets/css/InputField.module.css";
 
 function InputForm({
+	size = "sm",
 	readOnly = false,
 	pt,
 	label = "",
@@ -49,7 +50,7 @@ function InputForm({
 						onChange={handleChange || form.getInputProps(name).onChange}
 						styles={styles}
 						classNames={inputCss}
-						size="sm"
+						size={size}
 						label={label}
 						placeholder={placeholder}
 						mt={mt}

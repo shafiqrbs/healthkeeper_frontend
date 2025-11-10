@@ -213,7 +213,7 @@ export default function DateSelectorForm({
 						])}
 						style={{
 							width: "100%",
-							padding: size === "sm" ? "8px 12px" : "12px 16px",
+							padding: size === "xs" ? "4px 10px" : size === "sm" ? "8px 12px" : "12px 16px",
 							paddingLeft: leftSection ? "40px" : "12px",
 							paddingRight: (form.values[name] && closeIcon) || rightSection ? "40px" : "12px",
 							border:
