@@ -380,6 +380,7 @@ export const PHARMACY_DATA_ROUTES = {
 			INDEX: "pharmacy/stock-transfer",
 			INDEX_CENTRAL: "pharmacy/stock-transfer/central-index",
 			UPDATE: "pharmacy/stock-transfer",
+			INLINE_UPDATE: "pharmacy/stock-transfer/inline-update",
 			VIEW: "pharmacy/stock-transfer",
 			DELETE: "pharmacy/stock-transfer",
 			APPROVE: "pharmacy/stock-transfer/approve",

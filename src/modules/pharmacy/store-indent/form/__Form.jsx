@@ -1,144 +1,230 @@
 import {
-    Group,
     Box,
-    ActionIcon,
-    Text,
     Flex,
     Button,
     Grid,
     NumberInput,
-    Tooltip,
-    TextInput,
-    Input, Select,
+    Select,
+    rem, Text,
 } from "@mantine/core";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
     IconChevronUp,
-    IconX,
     IconSelector,
     IconDeviceFloppy,
     IconHistory,
-    IconRefresh,
-    IconSearch,
-    IconInfoCircle,
-    IconShoppingBag,
+    IconAlertCircle,
 } from "@tabler/icons-react";
-import {DataTable} from "mantine-datatable";
-import {useOutletContext} from "react-router-dom";
-import {modals} from "@mantine/modals";
-import {useDebouncedCallback, useDebouncedState} from "@mantine/hooks";
-import {PHARMACY_DATA_ROUTES} from "@/constants/routes";
-import tableCss from "@assets/css/Table.module.css";
-import {useEffect, useState, useMemo} from "react";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
+import { DataTable } from "mantine-datatable";
+import {useNavigate, useOutletContext, useParams} from "react-router-dom";
+import { useEffect, useState } from "react";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import {CORE_DROPDOWNS} from "@/app/store/core/utilitySlice";
-import SelectForm from "@components/form-builders/SelectForm";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import genericClass from "@assets/css/Generic.module.css";
-import {MODULES_PHARMACY} from "@/constants";
+import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import {
+    ERROR_NOTIFICATION_COLOR,
+    MODULES_PHARMACY,
+} from "@/constants";
+import { notifications } from "@mantine/notifications";
+import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
+import tableCss from "@assets/css/Table.module.css";
+import {modals} from "@mantine/modals";
+import {showEntityData} from "@/app/store/core/crudThunk.js";
+import {successNotification} from "@components/notification/successNotification.jsx";
+import {errorNotification} from "@components/notification/errorNotification.jsx";
+import {useDispatch} from "react-redux";
 
 const module = MODULES_PHARMACY.REQUISITION;
 
-export default function __Form({form, requisitionForm, items, setItems, onSave}) {
-    const [products, setProducts] = useState([]);
-    const {t} = useTranslation();
-    const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
-    const {mainAreaHeight} = useOutletContext();
-    const height = mainAreaHeight-10;
-    const itemFromHeight = mainAreaHeight - 142;
-    const [searchValue, setSearchValue] = useState("");
-    const [draftProducts, setDraftProducts] = useState([]);
+export default function __Form({
+                                   form,
+                                   requisitionForm,
+                                   items,
+                                   setItems,
+                                   onSave,
+                               }) {
+    const { t } = useTranslation();
+    const { mainAreaHeight } = useOutletContext();
+    const height = mainAreaHeight - 10;
+    const { id } = useParams();
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
-    const createdBy = JSON.parse(localStorage.getItem("user"));
-    const {data: warehouseDropdown} = useGlobalDropdownData({
-        path: CORE_DROPDOWNS.USER_WAREHOUSE.PATH,
-        utility: CORE_DROPDOWNS.USER_WAREHOUSE.UTILITY,
-        params: {id: createdBy?.id}
-    });
+    const allItemsHavePurchaseItem = items.length > 0 && items.every(
+        (item) => item.purchase_item_id && item.purchase_item_id !== ""
+    );
 
-    const {data: categoryDropdown} = useGlobalDropdownData({
+    const { data: categoryDropdown } = useGlobalDropdownData({
         path: CORE_DROPDOWNS.CATEGORY.PATH,
         utility: CORE_DROPDOWNS.CATEGORY.UTILITY,
-        params: {type: "stockable"},
+        params: { type: "stockable" },
     });
 
     useEffect(() => {
         form.setFieldValue("category_id", categoryDropdown[3]?.value?.toString());
     }, [categoryDropdown]);
 
-    async function handleRequisitionAdd(values) {
-        setItems([...items, values]);
-        setDraftProducts((previousRecords) => delete previousRecords[values?.stock_item_id]);
-        setMedicineTerm("");
+    const handleResetIndent = () => {
+        setItems([]);
+        form.reset();
+        requisitionForm.reset();
+    };
+
+    const handleRecordFieldChange = (id, stockItemId, fieldName, fieldValue) => {
+        setItems((previousRecords) =>
+            previousRecords.map((recordItem) =>
+                recordItem?.stock_item_id?.toString() === stockItemId?.toString()
+                    ? { ...recordItem, [fieldName]: fieldValue }
+                    : recordItem
+            )
+        );
+    };
+
+    // ---- Validation before save/issue ----
+    const validateQuantities = () => {
+        for (const item of items) {
+            const selected = (item.purchase_items || []).find(
+                (p) => String(p.id) === String(item.purchase_item_id)
+            );
+
+            if (selected && Number(item.quantity) > Number(selected.remain_quantity)) {
+                notifications.show({
+                    color: ERROR_NOTIFICATION_COLOR,
+                    title: t("ValidationError"),
+                    message: `${item.name}: Issue quantity (${item.quantity}) exceeds remaining quantity (${selected.remain_quantity})`,
+                    icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+                });
+                return false;
+            }
+        }
+        return true;
+    };
+
+    const handleSubmit = (action) => {
+        if (!validateQuantities()) return;
+        requisitionForm.setFieldValue("action", action);
+        requisitionForm.onSubmit(onSave)();
+    };
+
+    // ---- Components ----
+    function PurchaseItemSelect({ item }) {
+        const [purchaseItemValue, setPurchaseItemValue] = useState(
+            String(item.purchase_item_id || "")
+        );
+
+        const selectData = (item.purchase_items || []).map((pItem) => ({
+            label: `Expire: ${pItem.expired_date} (stock #${pItem.remain_quantity})`,
+            value: String(pItem.id),
+            remain_quantity: pItem.remain_quantity,
+        }));
+
+        return (
+            <Select
+                size="xs"
+                placeholder="Select"
+                value={purchaseItemValue}
+                data={selectData}
+                onChange={(value) => {
+                    const selected = selectData.find((p) => p.value === value);
+                    const remain_quantity = selected ? selected.remain_quantity : 0;
+                    const quantity = Number(item.quantity) || 0;
+
+                    if (quantity <= remain_quantity) {
+                        setPurchaseItemValue(String(value ?? ""));
+                        handleRecordFieldChange(item?.id, item?.stock_item_id, "purchase_item_id", String(value ?? ""));
+                    } else {
+                        notifications.show({
+                            color: ERROR_NOTIFICATION_COLOR,
+                            title: t("ValidationError"),
+                            message: "Quantity must be less than or equal to remaining quantity",
+                            icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+                        });
+                    }
+                }}
+            />
+        );
     }
 
-    const handleRequisitionDelete = (id) => {
+    function QuantityChange({ item }) {
+        const selectData = (item.purchase_items || []).map((pItem) => ({
+            label: `Expire: ${pItem.expired_date} (stock #${pItem.remain_quantity})`,
+            value: String(pItem.id),
+            remain_quantity: pItem.remain_quantity,
+        }));
+
+        return (
+            <NumberInput
+                min={1}
+                size="xs"
+                value={item?.quantity}
+                onBlur={(event) => {
+                    const inputValue = Number(event.currentTarget.value) || 0;
+
+                    if (!item.purchase_item_id) {
+                        notifications.show({
+                            color: ERROR_NOTIFICATION_COLOR,
+                            title: t("ValidationError"),
+                            message: "Please select a purchase batch item first",
+                            icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+                        });
+                        return;
+                    }
+
+                    const selected = selectData.find(
+                        (p) => p.value === String(item.purchase_item_id)
+                    );
+                    const remain_quantity = selected ? selected.remain_quantity : 0;
+
+                    if (inputValue <= remain_quantity) {
+                        handleRecordFieldChange(
+                            item?.id,
+                            item?.stock_item_id,
+                            "quantity",
+                            String(inputValue)
+                        );
+                    } else {
+                        notifications.show({
+                            color: ERROR_NOTIFICATION_COLOR,
+                            title: t("ValidationError"),
+                            message: "Quantity must be less than or equal to remaining quantity",
+                            icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+                        });
+                    }
+                }}
+            />
+        );
+    }
+
+    const handleIndentApproved = () => {
         modals.openConfirmModal({
             title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
             children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
             labels: {confirm: "Confirm", cancel: "Cancel"},
             confirmProps: {color: "var(--theme-delete-color)"},
             onCancel: () => console.info("Cancel"),
-            onConfirm: () => handleRequisitionDeleteSuccess(id),
+            onConfirm: () => handleConfirmApproved(id),
         });
-    };
+    }
 
-    const handleRequisitionDeleteSuccess = async (id) => {
-        setItems(items.filter((_, index) => index !== id));
-    };
-
-    const handleResetRequisition = () => {
-        setItems([]);
-        setMedicineTerm("");
-        form.reset();
-        requisitionForm.reset();
-    };
-
-    const productQuantities = () => {
-    };
-
-    const handleRecordFieldChange = (stockItemId, fieldName, fieldValue) => {
-        setItems((previousRecords) =>
-            previousRecords.map((recordItem) =>
-                recordItem?.stock_item_id?.toString() === stockItemId?.toString()
-                    ? {...recordItem, [fieldName]: fieldValue}
-                    : recordItem
-            )
-        );
-        // =============== end ===============
-    };
-
-    const handleDraftProducts = (data, quantity) => {
-        setDraftProducts((previousRecords) => ({
-            ...previousRecords,
-            [data?.stock_item_id]: {...data, quantity: quantity},
-        }));
-    };
-
-    const memoizedFilterParameters = useMemo(
-        () => ({category_id: form.values.category_id}),
-        [form.values.category_id]
-    );
-
-    const {records} = useInfiniteTableScroll({
-        module,
-        fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INDEX_CATEGORY,
-        sortByKey: "created_at",
-        filterParams: memoizedFilterParameters,
-        direction: "desc",
-    });
-
-    useEffect(() => {
-        setProducts(records);
-    }, [records]);
-
-    const handleProductSearch = useDebouncedCallback((value) => {
-        setProducts(records?.filter((product) => product?.name?.toLowerCase()?.includes(value?.toLowerCase())));
-    }, 300);
+    const handleConfirmApproved = async (id) => {
+        try {
+            const value = {
+                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.RECEIVE}/${id}`,
+                module,
+            };
+            const resultAction = await dispatch(showEntityData(value));
+            if (showEntityData.fulfilled.match(resultAction)) {
+                if (resultAction.payload.data.status === 200) {
+                    successNotification(resultAction.payload.data.message)
+                    navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX)
+                }
+            }
+        } catch (error) {
+            errorNotification("Error updating indent config:" + error.message);
+        }
+    }
 
     return (
-        <Grid columns={24} gutter={{base: 8}}>
+        <Grid columns={24} gutter={{ base: 8 }}>
             <Grid.Col span={24}>
                 <Box className="borderRadiusAll border-top-none">
                     <DataTable
@@ -156,81 +242,46 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                 accessor: "index",
                                 title: t("S/N"),
                                 textAlignment: "right",
-                                sortable: false,
                                 render: (_item, index) => index + 1,
                             },
-
                             {
                                 accessor: "name",
                                 title: t("MedicineName"),
-                                sortable: true,
                             },
                             {
-                                accessor: "quantity",
+                                accessor: "stock_quantity",
                                 title: t("CurrentStock"),
-                                sortable: false,
+                                render: (item) => item.stock_quantity,
                             },
                             {
-                                accessor: "quantity",
+                                accessor: "request_quantity",
                                 title: t("Quantity"),
-                                sortable: false,
+                                render: (item) => item.request_quantity,
                             },
                             {
                                 accessor: "purchase_item_id",
                                 title: t("PurchaseItem"),
-                                render: (item) => {
-                                    const purchaseItemValue = String(item.purchase_item_id || "");
-                                    // console.log(item)
-                                    // Map purchase_items to select options
-                                    const selectData = (item.purchase_items || []).map((pItem) => ({
-                                        label: `Expire: ${pItem.expired_date} (stock #${pItem.remain_quantity})`,
-                                        value: String(pItem.id),
-                                    }));
-
-                                    return (
-                                        <Select
-                                            size="xs"
-                                            placeholder="Select"
-                                            value={purchaseItemValue}
-                                            data={selectData}
-                                        />
-                                    );
-                                },
+                                render: (item) => <PurchaseItemSelect item={item} />,
                             },
                             {
                                 accessor: "quantity",
                                 title: t("IssueQuantity"),
-                                sortable: false,
-                                render: (item) => (
-                                    <NumberInput
-                                        min={1}
-                                        size="xs"
-                                        value={item?.quantity}
-                                        onChange={(value) =>
-                                            handleRecordFieldChange(
-                                                item?.stock_item_id,
-                                                "quantity",
-                                                String(value ?? "")
-                                            )
-                                        }
-                                    />
-                                ),
-                            }
-
+                                render: (item) => <QuantityChange item={item} />,
+                            },
                         ]}
                         textSelectionDisabled
                         loaderSize="xs"
                         loaderColor="grape"
                         height={height - 90}
                         sortIcons={{
-                            sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14}/>,
-                            unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14}/>,
+                            sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+                            unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
                         }}
                     />
+
                     <Box
                         w={"100%"}
                         component="form"
-                        onSubmit={requisitionForm.onSubmit(onSave)}
                         bg="var(--theme-tertiary-color-0)"
                         justify="flex-end"
                         align="right"
@@ -238,11 +289,11 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                         pb={"xs"}
                     >
                         <Box align="right">
-                            <Flex gap="les"  justify="flex-end" pr={'xs'}>
+                            <Flex gap="les" justify="flex-end" pr={"xs"}>
                                 <Button
-                                    onClick={handleResetRequisition}
+                                    onClick={handleResetIndent}
                                     size="xs"
-                                    leftSection={<IconHistory size={20}/>}
+                                    leftSection={<IconHistory size={20} />}
                                     type="button"
                                     bg="var(--theme-reset-btn-color)"
                                     color="white"
@@ -250,28 +301,36 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                 >
                                     {t("Reset")}
                                 </Button>
+
                                 <Button
-                                    onClick={onSave}
+                                    onClick={() => handleSubmit("submit")}
                                     size="xs"
-                                    leftSection={<IconDeviceFloppy size={20}/>}
-                                    type="submit"
+                                    leftSection={<IconDeviceFloppy size={20} />}
+                                    type="button"
                                     bg="var(--theme-primary-color-6)"
                                     color="white"
                                     w="200px"
                                 >
                                     {t("Save")}
                                 </Button>
+
                                 <Button
-                                    onClick={onSave}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleIndentApproved();
+                                    }}
                                     size="xs"
-                                    leftSection={<IconDeviceFloppy size={20}/>}
-                                    type="submit"
+                                    leftSection={<IconDeviceFloppy size={20} />}
+                                    type="button"
                                     bg="var(--theme-secondary-color-6)"
                                     color="white"
                                     w="200px"
+                                    disabled={!allItemsHavePurchaseItem}
+                                    title={!allItemsHavePurchaseItem ? t("Please select all Purchase Items first") : ""}
                                 >
                                     {t("Issue")}
                                 </Button>
+
                             </Flex>
                         </Box>
                     </Box>
@@ -280,3 +339,4 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
         </Grid>
     );
 }
+
