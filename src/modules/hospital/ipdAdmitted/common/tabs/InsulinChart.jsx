@@ -1,11 +1,13 @@
-import { useDeferredValue, useMemo, useTransition, useState } from "react";
-import { ActionIcon, Box, Button, Flex, Group, NumberInput, Paper, Text, TextInput, Title } from "@mantine/core";
+import { useDeferredValue, useMemo, useTransition, useState, useEffect } from "react";
+import { ActionIcon, Box, Button, Flex, Group, Paper, Text, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import { useOutletContext, useParams } from "react-router-dom";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
-import DateSelector from "@components/form-builders/DateSelector";
+import DateSelectorForm from "@components/form-builders/DateSelectorForm";
+import InputForm from "@components/form-builders/InputForm";
+import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { useDispatch } from "react-redux";
@@ -13,7 +15,7 @@ import { successNotification } from "@components/notification/successNotificatio
 import { errorNotification } from "@components/notification/errorNotification";
 import { useTranslation } from "react-i18next";
 
-export default function InsulinChart() {
+export default function InsulinChart({ data, refetch }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { id } = useParams();
@@ -23,38 +25,112 @@ export default function InsulinChart() {
 	const [vitalRecordList, setVitalRecordList] = useState([]);
 	const [isPending, startTransition] = useTransition();
 	const deferredVitalRecordList = useDeferredValue(vitalRecordList);
+	const [resetKey, setResetKey] = useState(0);
+
+	// =============== load existing insulin records from api data ===============
+	useEffect(() => {
+		if (data) {
+			setVitalRecordList(JSON.parse(data?.insulin_chart_json || "[]"));
+		}
+	}, [data]);
 
 	// =============== form for insulin chart inputs ===============
 	const form = useForm({
 		initialValues: {
 			date: "",
-			fbs: undefined,
-			insulinMorning: undefined, // before breakfast
-			twoHAFB: undefined, // 2 hours after breakfast
-			bl: undefined, // before lunch
-			insulinNoon: undefined, // at lunch
-			twoHAL: undefined, // 2 hours after lunch
-			bd: undefined, // before dinner
-			insulinNight: undefined, // at dinner
-			twoHAD: undefined, // 2 hours after dinner
+			fbs: null,
+			insulinMorning: null, // before breakfast
+			twoHAFB: null, // 2 hours after breakfast
+			bl: null, // before lunch
+			insulinNoon: null, // at lunch
+			twoHAL: null, // 2 hours after lunch
+			bd: null, // before dinner
+			insulinNight: null, // at dinner
+			twoHAD: null, // 2 hours after dinner
 			sign: "",
 		},
-		validateInputOnBlur: true,
-		validate: {},
+		validate: {
+			fbs: (value) => {
+				if (!value) {
+					return t("FBSIsRequired");
+				}
+				return null;
+			},
+			insulinMorning: (value) => {
+				if (!value) {
+					return t("InsulinMorningIsRequired");
+				}
+				return null;
+			},
+			twoHAFB: (value) => {
+				if (!value) {
+					return t("2HAFBIsRequired");
+				}
+				return null;
+			},
+			bl: (value) => {
+				if (!value) {
+					return t("BLIsRequired");
+				}
+				return null;
+			},
+			insulinNoon: (value) => {
+				if (!value) {
+					return t("InsulinNoonIsRequired");
+				}
+				return null;
+			},
+			twoHAL: (value) => {
+				if (!value) {
+					return t("2HALIsRequired");
+				}
+				return null;
+			},
+			bd: (value) => {
+				if (!value) {
+					return t("BDIsRequired");
+				}
+				return null;
+			},
+			insulinNight: (value) => {
+				if (!value) {
+					return t("InsulinNightIsRequired");
+				}
+				return null;
+			},
+			twoHAD: (value) => {
+				if (!value) {
+					return t("2HADIsRequired");
+				}
+				return null;
+			},
+			sign: (value) => {
+				if (!value) {
+					return t("SignIsRequired");
+				}
+				return null;
+			},
+		},
 	});
 
-	const handleSubmitInsulin = async (data) => {
+	const handleSubmitInsulin = async (values) => {
 		const response = await dispatch(
 			storeEntityData({
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PATIENT_CHART}/${id}`,
 				data: {
-					insulin_chart_json: data,
+					insulin_chart_json: values,
+					vital_chart_json: JSON.parse(data?.vital_chart_json || "[]"),
 				},
+				module: "e_fresh",
 			})
 		);
 		if (storeEntityData.fulfilled.match(response)) {
 			successNotification(t("InsulinChartAddedSuccessfully"));
 			form.reset();
+			setResetKey((prev) => prev + 1);
+			if (typeof refetch === "function") {
+				refetch();
+			}
 		} else {
 			errorNotification(t("InsulinChartAddedFailed"));
 		}
@@ -124,52 +200,153 @@ export default function InsulinChart() {
 				</Text>
 			</Group>
 
-			<Box bg="var(--theme-secondary-color-0)" p={'xs'} component="form" onSubmit={form.onSubmit(handleAddVitalRecord)} mb="-sm">
-
-				<Flex flex="1" gap="xs">
+			<Box
+				bg="var(--theme-secondary-color-0)"
+				p="xs"
+				component="form"
+				onSubmit={form.onSubmit(handleAddVitalRecord)}
+				mb="-sm"
+			>
+				<Flex flex="1" gap="xs" key={resetKey}>
 					<Box>
-						<DateSelector
+						<DateSelectorForm
+							id="insulin-date"
+							tooltip={t("EnterDate")}
 							size="xs"
-							value={form.values.date}
-							onChange={(value) => form.setFieldValue("date", value)}
+							form={form}
+							name="date"
 							placeholder="Date"
+							nextField="fbs"
 						/>
 					</Box>
 
-					<TextInput
+					<InputNumberForm
+						id="fbs"
 						size="xs"
 						key={form.key("fbs")}
-						placeholder="FBS" {...form.getInputProps("fbs")} />
+						tooltip={t("EnterFBS")}
+						placeholder="FBS"
+						name="fbs"
+						form={form}
+						min={0}
+						nextField="insulinMorning"
+					/>
 
-					<TextInput
+					<InputNumberForm
+						id="insulinMorning"
 						size="xs"
 						key={form.key("insulinMorning")}
+						tooltip={t("EnterInsulinMorning")}
 						placeholder="Insulin (B/F)"
-						{...form.getInputProps("insulinMorning")}
+						name="insulinMorning"
+						form={form}
+						min={0}
+						nextField="twoHAFB"
 					/>
 
-					<TextInput size="xs" key={form.key("twoHAFB")} placeholder="2HAFB" {...form.getInputProps("twoHAFB")} />
+					<InputNumberForm
+						id="twoHAFB"
+						size="xs"
+						key={form.key("twoHAFB")}
+						tooltip={t("Enter2HAFB")}
+						placeholder="2HAFB"
+						name="twoHAFB"
+						form={form}
+						min={0}
+						nextField="bl"
+					/>
 
-					<TextInput size="xs" key={form.key("bl")} placeholder="BL" {...form.getInputProps("bl")} />
+					<InputNumberForm
+						id="bl"
+						size="xs"
+						key={form.key("bl")}
+						tooltip={t("EnterBL")}
+						placeholder="BL"
+						name="bl"
+						form={form}
+						min={0}
+						nextField="insulinNoon"
+					/>
 
-					<TextInput size="xs"
+					<InputNumberForm
+						id="insulinNoon"
+						size="xs"
 						key={form.key("insulinNoon")}
+						tooltip={t("EnterInsulinNoon")}
 						placeholder="Insulin (L)"
-						{...form.getInputProps("insulinNoon")}
+						name="insulinNoon"
+						form={form}
+						min={0}
+						nextField="twoHAL"
 					/>
 
-					<TextInput size="xs" key={form.key("twoHAL")} placeholder="2HAL" {...form.getInputProps("twoHAL")} />
-					<TextInput size="xs" key={form.key("bd")} placeholder="BD" {...form.getInputProps("bd")} />
-					<TextInput
+					<InputNumberForm
+						id="twoHAL"
+						size="xs"
+						key={form.key("twoHAL")}
+						tooltip={t("Enter2HAL")}
+						placeholder="2HAL"
+						name="twoHAL"
+						form={form}
+						min={0}
+						nextField="bd"
+					/>
+
+					<InputNumberForm
+						id="bd"
+						size="xs"
+						key={form.key("bd")}
+						tooltip={t("EnterBD")}
+						placeholder="BD"
+						name="bd"
+						form={form}
+						min={0}
+						nextField="insulinNight"
+					/>
+
+					<InputNumberForm
+						id="insulinNight"
 						size="xs"
 						key={form.key("insulinNight")}
+						tooltip={t("EnterInsulinNight")}
 						placeholder="Insulin (D)"
-						{...form.getInputProps("insulinNight")}
+						name="insulinNight"
+						form={form}
+						min={0}
+						nextField="twoHAD"
 					/>
 
-					<TextInput size="xs" key={form.key("twoHAD")} placeholder="2HAD" {...form.getInputProps("twoHAD")} />
-					<TextInput size="xs" key={form.key("sign")} placeholder="Sign" {...form.getInputProps("sign")} />
-					<Button size="xs" w={140} type="submit" variant="filled" leftSection={<IconPlus size={16} />}>
+					<InputNumberForm
+						id="twoHAD"
+						size="xs"
+						key={form.key("twoHAD")}
+						tooltip={t("Enter2HAD")}
+						placeholder="2HAD"
+						name="twoHAD"
+						form={form}
+						min={0}
+						nextField="sign"
+					/>
+
+					<InputForm
+						id="sign"
+						size="xs"
+						key={form.key("sign")}
+						tooltip={t("EnterSign")}
+						placeholder="Sign"
+						name="sign"
+						form={form}
+						nextField="EntityFormSubmit"
+					/>
+
+					<Button
+						id="EntityFormSubmit"
+						size="xs"
+						w={140}
+						type="submit"
+						variant="filled"
+						leftSection={<IconPlus size={16} />}
+					>
 						Add
 					</Button>
 				</Flex>

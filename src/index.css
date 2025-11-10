@@ -670,6 +670,11 @@ input[type=radio]:checked+label>img {
     border-color: var(--mantine-color-gray-3);
 }
 
+.react-datepicker__input-container :is(#vital-date, #insulin-date) {
+    height: 30px !important;
+    font-size: 12px;
+}
+
 .inner-title-box {
     margin-left: -16px;
     /* assuming md = 16px */

@@ -25,7 +25,12 @@ export default function useDataWithoutStore({ url, params, headers }) {
 	};
 
 	useEffect(() => {
-		fetchData();
+		const parsedUrl = url?.split("/");
+		if (parsedUrl?.some((item) => item === "undefined")) {
+			console.warn("URL is not valid:", url);
+		} else {
+			fetchData();
+		}
 	}, [url, JSON.stringify(params), JSON.stringify(headers)]);
 
 	return { isLoading, error, data, refetch };

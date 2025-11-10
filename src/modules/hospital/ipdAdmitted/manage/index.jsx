@@ -22,10 +22,20 @@ import { modals } from "@mantine/modals";
 import { formatDate } from "@utils/index";
 import VitalsChart from "../common/tabs/VitalsChart";
 import InsulinChart from "../common/tabs/InsulinChart";
+import Dashboard from "../common/tabs/Dashboard";
+import PrintSection from "../common/tabs/PrintSection";
 
 const module = MODULES.E_FRESH;
 
-const TAB_ITEMS = ["E-Fresh", "Investigation", "Medicine", "Vitals Chart", "Insulin Chart"];
+const TAB_ITEMS = [
+	"Dashboard",
+	"E-Fresh",
+	"Investigation",
+	"Medicine",
+	"Vitals Chart",
+	"Insulin Chart",
+	"Print Section",
+];
 
 export default function Index() {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -37,7 +47,7 @@ export default function Index() {
 	const [medicines, setMedicines] = useState([]);
 	const { t } = useTranslation();
 	const [tabValue, setTabValue] = useState("All");
-	const [baseTabValue, setBaseTabValue] = useState("");
+	const [baseTabValue, setBaseTabValue] = useState("dashboard");
 	const { particularsData } = useParticularsData({ modeName: "E-Fresh Order" });
 
 	const tabParticulars = particularsData?.map((item) => ({
@@ -197,10 +207,16 @@ export default function Index() {
 								</Flex>
 							</Stack>
 						)}
+						{baseTabValue === "dashboard" && <Dashboard />}
 						{baseTabValue === "medicine" && <Medicine />}
 						{baseTabValue === "investigation" && <Investigation />}
-						{baseTabValue === "vitals chart" && <VitalsChart />}
-						{baseTabValue === "insulin chart" && <InsulinChart />}
+						{baseTabValue === "vitals chart" && (
+							<VitalsChart refetch={refetch} data={prescriptionData?.data} />
+						)}
+						{baseTabValue === "insulin chart" && (
+							<InsulinChart refetch={refetch} data={prescriptionData?.data} />
+						)}
+						{baseTabValue === "print section" && <PrintSection />}
 						{!baseTabValue && (
 							<Flex bg="var(--mantine-color-white)" align="center" justify="center" w="100%" h="100%">
 								<Text size="sm" c="dimmed">
