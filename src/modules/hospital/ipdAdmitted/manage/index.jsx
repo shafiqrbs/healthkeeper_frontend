@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "../helpers/request";
 import { useForm } from "@mantine/form";
-import { Box, Flex, Grid, LoadingOverlay, Stack, Text } from "@mantine/core";
+import { Box, Flex, Grid, LoadingOverlay, ScrollArea, Stack, Text } from "@mantine/core";
 import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -23,18 +23,28 @@ import { formatDate } from "@utils/index";
 import VitalsChart from "../common/tabs/VitalsChart";
 import InsulinChart from "../common/tabs/InsulinChart";
 import Dashboard from "../common/tabs/Dashboard";
-import PrintSection from "../common/tabs/PrintSection";
+import PrintIPDPrescription from "../common/tabs/PrintIPDPrescription";
+import PrintAdmissionForm from "../common/tabs/PrintAdmissionForm";
+import PrintBillingInvoice from "../common/tabs/PrintBillingInvoice";
+import PrintInvestigation from "../common/tabs/PrintInvestigation";
+import PrintBillingPOS from "../common/tabs/PrintBillingPOS";
+import PrintAdmissionBill from "../common/tabs/PrintAdmissionBill";
+import PrintPrescriptionIndoor from "../common/tabs/PrintPrescriptionIndoor";
+import PrintFreshOrder from "../common/tabs/PrintFreshOrder";
+import Discharge from "../common/tabs/Discharge";
 
 const module = MODULES.E_FRESH;
 
-const TAB_ITEMS = [
-	"Dashboard",
-	"E-Fresh",
+const TAB_ITEMS = ["Dashboard", "E-Fresh", "Investigation", "Medicine", "Vitals Chart", "Insulin Chart", "Discharge"];
+const PRINT_SECTION_ITEMS = [
+	"IPD Prescription",
+	"Admission Form",
+	"Billing Invoice",
 	"Investigation",
-	"Medicine",
-	"Vitals Chart",
-	"Insulin Chart",
-	"Print Section",
+	"Billing POS",
+	"Admission Bill",
+	"Prescription Indoor",
+	"Fresh Order",
 ];
 
 export default function Index() {
@@ -104,6 +114,10 @@ export default function Index() {
 					setSearchParams({ tab: tabItem?.toLowerCase() });
 				},
 			});
+		} else if (PRINT_SECTION_ITEMS.includes(tabItem)) {
+			// =============== for print items, use item name as tab key ================
+			setBaseTabValue(tabItem?.toLowerCase());
+			setSearchParams({ tab: tabItem?.toLowerCase() });
 		} else {
 			setBaseTabValue(tabItem?.toLowerCase());
 			setSearchParams({ tab: tabItem?.toLowerCase() });
@@ -144,36 +158,73 @@ export default function Index() {
 									</Text>
 								</Box>
 							</Box>
-							<Stack bg="var(--mantine-color-white)" h="100%" py="xs" gap={0}>
-								{TAB_ITEMS.map((tabItem, index) => (
-									<Box
-										key={index}
-										mx={8}
-										className={`cursor-pointer`}
-										variant="default"
-										onClick={() => handleTabClick(tabItem)}
-										bg={
-											baseTabValue === tabItem?.toLowerCase()
-												? "var(--mantine-color-gray-1)"
-												: "var(--mantine-color-white)"
-										}
-									>
-										<Text
-											c={
+							<ScrollArea h={mainAreaHeight - 180} scrollbars="y">
+								<Stack bg="var(--mantine-color-white)" h="100%" py="xs" gap={0}>
+									{TAB_ITEMS.map((tabItem, index) => (
+										<Box
+											key={index}
+											mx={8}
+											className={`cursor-pointer`}
+											variant="default"
+											onClick={() => handleTabClick(tabItem)}
+											bg={
 												baseTabValue === tabItem?.toLowerCase()
-													? "var(--theme-primary-color-8)"
-													: "var(--mantine-color-black)"
+													? "var(--mantine-color-gray-1)"
+													: "var(--mantine-color-white)"
 											}
-											size="sm"
-											py="3xs"
-											pl="3xs"
-											fw={500}
 										>
-											{t(tabItem)}
+											<Text
+												c={
+													baseTabValue === tabItem?.toLowerCase()
+														? "var(--theme-primary-color-8)"
+														: "var(--mantine-color-black)"
+												}
+												size="sm"
+												py="3xs"
+												pl="3xs"
+												fw={500}
+											>
+												{t(tabItem)}
+											</Text>
+										</Box>
+									))}
+
+									<Box bg="var(--mantine-color-gray-0)" my="3xs" py="sm" px="md">
+										<Text size="sm" fw={600}>
+											{t("PrintSection")}
 										</Text>
 									</Box>
-								))}
-							</Stack>
+
+									{PRINT_SECTION_ITEMS.map((tabItem, index) => (
+										<Box
+											key={index}
+											mx={8}
+											className={`cursor-pointer`}
+											variant="default"
+											onClick={() => handleTabClick(tabItem)}
+											bg={
+												baseTabValue === tabItem?.toLowerCase()
+													? "var(--mantine-color-gray-1)"
+													: "var(--mantine-color-white)"
+											}
+										>
+											<Text
+												c={
+													baseTabValue === tabItem?.toLowerCase()
+														? "var(--theme-primary-color-8)"
+														: "var(--mantine-color-black)"
+												}
+												size="sm"
+												py="3xs"
+												pl="3xs"
+												fw={500}
+											>
+												{t(tabItem)}
+											</Text>
+										</Box>
+									))}
+								</Stack>
+							</ScrollArea>
 						</Box>
 					</Grid.Col>
 					<Grid.Col w="100%" span={showHistory ? 17 : 21}>
@@ -216,7 +267,18 @@ export default function Index() {
 						{baseTabValue === "insulin chart" && (
 							<InsulinChart refetch={refetch} data={prescriptionData?.data} />
 						)}
-						{baseTabValue === "print section" && <PrintSection />}
+						{baseTabValue === "discharge" && <Discharge />}
+						{baseTabValue === "ipd prescription" && <PrintIPDPrescription />}
+						{baseTabValue === "admission form" && <PrintAdmissionForm />}
+						{baseTabValue === "billing invoice" && <PrintBillingInvoice />}
+						{baseTabValue === "investigation" && <PrintInvestigation />}
+						{baseTabValue === "billing pos" && <PrintBillingPOS />}
+						{baseTabValue === "admission bill" && <PrintAdmissionBill />}
+						{baseTabValue === "prescription indoor" && <PrintPrescriptionIndoor />}
+						{baseTabValue === "fresh order" && <PrintFreshOrder />}
+
+						{/* /here */}
+
 						{!baseTabValue && (
 							<Flex bg="var(--mantine-color-white)" align="center" justify="center" w="100%" h="100%">
 								<Text size="sm" c="dimmed">
