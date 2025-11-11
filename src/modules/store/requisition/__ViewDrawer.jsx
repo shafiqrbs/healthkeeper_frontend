@@ -6,7 +6,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {DataTable} from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
-import {getLoggedInUser, getUserRole} from "@utils/index";
+import {getUserRole} from "@utils/index";
 import {modals} from "@mantine/modals";
 import {PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import {showEntityData} from "@/app/store/core/crudThunk";
@@ -17,7 +17,6 @@ export default function __ViewDrawer({viewDrawer, setViewDrawer, module,height,r
     const {t} = useTranslation();
     const entityObject = useSelector((state) => state.crud[module].editData);
     const dispatch = useDispatch()
-    const user = getLoggedInUser();
     const userRoles = getUserRole();
     // console.log(user.id)
     const ALLOWED_OPD_ROLES = ["nurse_incharge","admin_nurse"];
@@ -129,6 +128,12 @@ export default function __ViewDrawer({viewDrawer, setViewDrawer, module,height,r
                                 {
                                     accessor: "name",
                                     title: t("MedicineName"),
+                                    textAlignment: "right",
+                                    sortable: false,
+                                },
+                                {
+                                    accessor: "request_quantity",
+                                    title: t("RequestQuantity"),
                                     textAlignment: "right",
                                     sortable: false,
                                 },

@@ -19,7 +19,7 @@ const module = MODULES_PHARMACY.REQUISITION;
 
 export default function Create({form}) {
     const [records, setRecords] = useLocalStorage({
-        key: "requisition-records",
+        key: "indent-records",
         defaultValue: [],
     });
 
@@ -77,7 +77,7 @@ export default function Create({form}) {
             } else if (storeEntityData.fulfilled.match(result)) {
                 form.reset();
                 requisitionForm.reset();
-                localStorage.removeItem("requisition-records");
+                localStorage.removeItem("indent-records");
                 setRecords([]);
                 notifications.show({
                     color: SUCCESS_NOTIFICATION_COLOR,

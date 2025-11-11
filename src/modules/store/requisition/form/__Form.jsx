@@ -37,6 +37,7 @@ import SelectForm from "@components/form-builders/SelectForm";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import genericClass from "@assets/css/Generic.module.css";
 import {MODULES_PHARMACY} from "@/constants";
+import {notifications} from "@mantine/notifications";
 
 const module = MODULES_PHARMACY.REQUISITION;
 
@@ -249,12 +250,43 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                                         borderBottomRightRadius: "var(--mantine-radius-sm)",
                                                     },
                                                 }}
-                                                onClick={() => handleRequisitionAdd(draftProducts[data?.stock_item_id])}
+                                                onClick={() => {
+                                                    const product = draftProducts[data?.stock_item_id];
+                                                    if (!product) return;
+
+                                                    setItems((prevItems) => {
+                                                        const existingIndex = prevItems.findIndex(
+                                                            (item) => item.stock_item_id == product.stock_item_id
+                                                        );
+
+                                                        if (existingIndex >= 0) {
+                                                            // Update quantity
+                                                            const updatedItems = [...prevItems];
+                                                            updatedItems[existingIndex] = {
+                                                                ...updatedItems[existingIndex],
+                                                                quantity: Number(product.quantity || 0),
+                                                            };
+                                                            return updatedItems;
+                                                        } else {
+                                                            // Add new
+                                                            return [...prevItems, product];
+                                                        }
+                                                    });
+
+                                                    // Clear input
+                                                    setDraftProducts((prev) => {
+                                                        const updated = { ...prev };
+                                                        delete updated[product.stock_item_id];
+                                                        return updated;
+                                                    });
+                                                }}
+
                                             >
-                                                <Flex direction={`column`} gap={0}>
-                                                    <IconShoppingBag size={12}/>
+                                                <Flex direction="column" gap={0}>
+                                                    <IconShoppingBag size={12} />
                                                 </Flex>
                                             </Button>
+
                                         </Group>
                                     ),
                                 },
@@ -328,74 +360,33 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                 <Box pr={"xs"}>
                                     <Button
                                         onClick={() => {
-                                            const tempProducts = localStorage.getItem("temp-sales-products");
-                                            const storedProducts = tempProducts ? JSON.parse(tempProducts) : [];
-                                            const currentWarehouseId = form.values.to_warehouse_id
-                                                ? Number(form.values.to_warehouse_id)
-                                                : null;
-
-                                            let updatedProductQuantities = {...productQuantities};
-                                            let updatedProducts = [...storedProducts];
+                                            let updatedItems = [...items];
                                             let addedCount = 0;
 
-                                            products.forEach((product) => {
-                                                const quantityStr = productQuantities[product.id];
-                                                const quantityToAdd = Number(quantityStr);
+                                            Object.values(draftProducts).forEach((product) => {
+                                                const quantity = Number(product.quantity || 0);
+                                                if (quantity <= 0) return;
 
-                                                if (quantityStr && !isNaN(quantityToAdd) && quantityToAdd > 0) {
-                                                    const existingIndex = updatedProducts.findIndex(
-                                                        (item) => item.product_id === product.id
-                                                    );
+                                                const existingIndex = updatedItems.findIndex(
+                                                    (item) => item.stock_item_id == product.stock_item_id
+                                                );
 
-                                                    if (existingIndex >= 0) {
-                                                        // ✅ Update quantity & subtotal
-                                                        const existingProduct = updatedProducts[existingIndex];
-                                                        const newQuantity = existingProduct.quantity + quantityToAdd;
-                                                        const newSubTotal = newQuantity * Number(product.sales_price);
-
-                                                        updatedProducts[existingIndex] = {
-                                                            ...existingProduct,
-                                                            quantity: newQuantity,
-                                                            sub_total: newSubTotal,
-                                                        };
-                                                    } else {
-                                                        // ✅ Add new
-                                                        const newProduct = {
-                                                            product_id: product.id,
-                                                            display_name: product.display_name,
-                                                            sales_price: product.sales_price,
-                                                            price: product.sales_price,
-                                                            percent: "",
-                                                            stock: product.quantity,
-                                                            quantity: quantityToAdd,
-                                                            unit_name: product.unit_name,
-                                                            purchase_price: product.purchase_price,
-                                                            sub_total: quantityToAdd * Number(product.sales_price),
-                                                            unit_id: product.unit_id,
-                                                            to_warehouse_id: currentWarehouseId,
-                                                            warehouse_name: currentWarehouseId
-                                                                ? warehouseDropdownData.find(
-                                                                (w) => w.value === currentWarehouseId
-                                                            )?.label || null
-                                                                : null,
-                                                            bonus_quantity: 0,
-                                                        };
-                                                        updatedProducts.push(newProduct);
-                                                    }
-
-                                                    // ✅ Clear input field for this product
-                                                    updatedProductQuantities[product.id] = "";
-                                                    addedCount++;
+                                                if (existingIndex >= 0) {
+                                                    // Update quantity
+                                                    updatedItems[existingIndex] = {
+                                                        ...updatedItems[existingIndex],
+                                                        quantity: quantity,
+                                                    };
+                                                } else {
+                                                    // Add new
+                                                    updatedItems.push(product);
                                                 }
+                                                addedCount++;
                                             });
 
                                             if (addedCount > 0) {
-                                                localStorage.setItem(
-                                                    "temp-sales-products",
-                                                    JSON.stringify(updatedProducts)
-                                                );
-                                                setProductQuantities(updatedProductQuantities);
-                                                setLoadCardProducts(true);
+                                                setItems(updatedItems);
+                                                setDraftProducts({});
                                             } else {
                                                 notifications.show({
                                                     color: "red",
@@ -406,20 +397,22 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                                 });
                                             }
                                         }}
+
                                         size="sm"
                                         className={genericClass.invoiceAdd}
-                                        type="submit"
+                                        type="button"
                                         mt={0}
-                                        mr={"xs"}
-                                        w={"100%"}
-                                        leftSection={<IconDeviceFloppy size={16}/>}
+                                        mr="xs"
+                                        w="100%"
+                                        leftSection={<IconDeviceFloppy size={16} />}
                                     >
-                                        <Flex direction={`column`} gap={0}>
+                                        <Flex direction="column" gap={0}>
                                             <Text fz={12} fw={400}>
                                                 {t("AddAll")}
                                             </Text>
                                         </Flex>
                                     </Button>
+
                                 </Box>
                             </Grid.Col>
                         </Grid>

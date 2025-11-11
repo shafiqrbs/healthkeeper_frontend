@@ -1,12 +1,10 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button} from "@mantine/core";
+import {Group, Box, Text, Flex, Button} from "@mantine/core";
 import {useTranslation} from "react-i18next";
 import {
-    IconTrashX,
-    IconAlertCircle,
     IconEdit,
     IconEye,
     IconChevronUp,
-    IconSelector,
+    IconSelector, IconDeviceFloppy,
 } from "@tabler/icons-react";
 import {DataTable} from "mantine-datatable";
 import {useDispatch, useSelector} from "react-redux";
@@ -14,20 +12,15 @@ import {useNavigate, useOutletContext} from "react-router-dom";
 import {modals} from "@mantine/modals";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
-import {notifications} from "@mantine/notifications";
-import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import {PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import {deleteEntityData, editEntityData} from "@/app/store/core/crudThunk";
-import {setInsertType, setRefetchData} from "@/app/store/core/crudSlice.js";
-import {ERROR_NOTIFICATION_COLOR} from "@/constants/index.js";
-import {deleteNotification} from "@components/notification/deleteNotification";
+import {editEntityData, showEntityData} from "@/app/store/core/crudThunk";
 import {useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import {getLoggedInUser, getUserRole} from "@utils/index";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import {CORE_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import {getUserRole} from "@utils/index";
+import {errorNotification} from "@components/notification/errorNotification.jsx";
+import {successNotification} from "@components/notification/successNotification.jsx";
 
 const PER_PAGE = 50;
 
@@ -41,11 +34,11 @@ export default function _Table({module}) {
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
     const height = mainAreaHeight - 48;
-    const user = getLoggedInUser();
+
     const userRoles = getUserRole();
-   // console.log(user.id)
-    const ALLOWED_OPD_ROLES = ["nurse_incharge"];
+    const ALLOWED_OPD_ROLES = ["pharmacy_approve","admin_administrator"];
     const canApprove = userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role));
+
     // for infinity table data scroll, call the hook
     const {
         scrollRef,
@@ -54,6 +47,7 @@ export default function _Table({module}) {
         sortStatus,
         setSortStatus,
         handleScrollToBottom,
+        refetchAll
     } = useInfiniteTableScroll({
         module,
         fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.INDEX_CENTRAL,
@@ -69,17 +63,6 @@ export default function _Table({module}) {
         navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.UPDATE}/${id}`);
     };
 
-    const handleDelete = (id) => {
-        modals.openConfirmModal({
-            title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
-            children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
-            labels: {confirm: "Confirm", cancel: "Cancel"},
-            confirmProps: {color: "var(--theme-delete-color)"},
-            onCancel: () => console.info("Cancel"),
-            onConfirm: () => handleDeleteSuccess(id),
-        });
-    };
-
 
     const handleDataShow = (id) => {
         dispatch(
@@ -90,6 +73,37 @@ export default function _Table({module}) {
         );
         setViewDrawer(true);
     };
+
+    const handleIndentReceived = (id) => {
+        modals.openConfirmModal({
+            title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+            children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+            labels: {confirm: "Confirm", cancel: "Cancel"},
+            confirmProps: {color: "var(--theme-delete-color)"},
+            onCancel: () => console.info("Cancel"),
+            onConfirm: () => handleConfirmReceived(id),
+        });
+    }
+
+    const handleConfirmReceived = async (id) => {
+        try {
+            const value = {
+                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.RECEIVE}/${id}`,
+                module,
+            };
+            const resultAction = await dispatch(showEntityData(value));
+            if (showEntityData.fulfilled.match(resultAction)) {
+                if (resultAction.payload.data.status === 200) {
+                    successNotification(resultAction.payload.data.message)
+                    refetchAll()
+                }
+            }
+        } catch (error) {
+            errorNotification("Error updating indent config:" + error.message);
+        }
+    }
+    
+    
     return (
         <>
             <Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
@@ -147,6 +161,23 @@ export default function _Table({module}) {
                             render: (values) => (
                                 <Group gap={4} justify="right" wrap="nowrap">
                                     <Button.Group>
+                                        {values.process === 'Approved' && values.approved_by_id && canApprove &&
+                                            <Button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleIndentReceived(values.id);
+                                                }}
+                                                variant="filled"
+                                                c="white"
+                                                bg="var(--theme-warn-color-6)"
+                                                size="xs"
+                                                radius="es"
+                                                leftSection={<IconDeviceFloppy size={16}/>}
+                                                className="border-left-radius-none"
+                                            >
+                                                {t("Issue")}
+                                            </Button>
+                                        }
 
                                         {values.process !== 'Received' && !values.received_by_id &&
                                             <Button
@@ -173,19 +204,6 @@ export default function _Table({module}) {
                                         >
                                             {t("View")}
                                         </Button>
-                                        {/*{values.process !== 'Approved' && !values.approved_by_id &&
-                                            <ActionIcon
-                                                onClick={() => handleDelete(values.uid)}
-                                                className="action-icon-menu border-left-radius-none"
-                                                variant="light"
-                                                color="var(--theme-delete-color)"
-                                                radius="es"
-                                                ps="les"
-                                                aria-label="Settings"
-                                            >
-                                                <IconTrashX height={18} width={18} stroke={1.5}/>
-                                            </ActionIcon>
-                                        }*/}
                                     </Button.Group>
                                 </Group>
                             ),
@@ -208,7 +226,7 @@ export default function _Table({module}) {
             </Box>
 
             <DataTableFooter indexData={listData} module={module}/>
-            <ViewDrawer viewDrawer={viewDrawer} height={height} setViewDrawer={setViewDrawer} module={module}/>
+            <ViewDrawer viewDrawer={viewDrawer} height={height} setViewDrawer={setViewDrawer} module={module} refetchAll={refetchAll}/>
         </>
     );
 }

@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { modals } from "@mantine/modals";
-import { Text, rem } from "@mantine/core";
+import { rem } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import {
     ERROR_NOTIFICATION_COLOR,
@@ -61,9 +61,17 @@ export default function Update({ form, data }) {
         const validation = requisitionForm.validate();
         if (validation.hasErrors) return;
 
-        const action = values.action || "submit";
-
-        modals.openConfirmModal({
+        // const action = values.action || "submit";
+        notifications.show({
+            color: SUCCESS_NOTIFICATION_COLOR,
+            title: t("UpdateSuccessfully"),
+            icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
+            autoClose: 800,
+            onClose: () =>
+                navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX),
+        });
+        navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX)
+        /*modals.openConfirmModal({
             title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
             children: (
                 <Text size="sm">
@@ -75,7 +83,7 @@ export default function Update({ form, data }) {
             labels: { confirm: t("Submit"), cancel: t("Cancel") },
             confirmProps: { color: "red" },
             onConfirm: () => saveRequisitionUpdate(values),
-        });
+        });*/
     };
 
     async function saveRequisitionUpdate(values) {

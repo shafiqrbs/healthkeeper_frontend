@@ -29,6 +29,7 @@ export default function Index({ mode }) {
 		if (id) {
 			fetchSingleRequisitionData();
 		}
+        localStorage.removeItem('indent-records')
 	}, [id]);
 
 	async function fetchSingleRequisitionData() {

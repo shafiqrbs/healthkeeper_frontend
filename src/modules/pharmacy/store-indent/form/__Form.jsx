@@ -5,7 +5,7 @@ import {
     Grid,
     NumberInput,
     Select,
-    rem, Text,
+    rem
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
@@ -16,7 +16,7 @@ import {
     IconAlertCircle,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
-import {useNavigate, useOutletContext, useParams} from "react-router-dom";
+import {useOutletContext} from "react-router-dom";
 import { useEffect, useState } from "react";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
@@ -27,10 +27,7 @@ import {
 import { notifications } from "@mantine/notifications";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import {modals} from "@mantine/modals";
-import {showEntityData} from "@/app/store/core/crudThunk.js";
-import {successNotification} from "@components/notification/successNotification.jsx";
-import {errorNotification} from "@components/notification/errorNotification.jsx";
+import {updateEntityData} from "@/app/store/core/crudThunk.js";
 import {useDispatch} from "react-redux";
 
 const module = MODULES_PHARMACY.REQUISITION;
@@ -45,13 +42,7 @@ export default function __Form({
     const { t } = useTranslation();
     const { mainAreaHeight } = useOutletContext();
     const height = mainAreaHeight - 10;
-    const { id } = useParams();
     const dispatch = useDispatch()
-    const navigate = useNavigate()
-
-    const allItemsHavePurchaseItem = items.length > 0 && items.every(
-        (item) => item.purchase_item_id && item.purchase_item_id !== ""
-    );
 
     const { data: categoryDropdown } = useGlobalDropdownData({
         path: CORE_DROPDOWNS.CATEGORY.PATH,
@@ -69,14 +60,26 @@ export default function __Form({
         requisitionForm.reset();
     };
 
-    const handleRecordFieldChange = (id, stockItemId, fieldName, fieldValue) => {
-        setItems((previousRecords) =>
+    const handleRecordFieldChange = async (id, stockItemId, fieldName, fieldValue) => {
+        /*setItems((previousRecords) =>
             previousRecords.map((recordItem) =>
                 recordItem?.stock_item_id?.toString() === stockItemId?.toString()
                     ? { ...recordItem, [fieldName]: fieldValue }
                     : recordItem
             )
-        );
+        );*/
+        const requestData = {
+            url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.INLINE_UPDATE}/${id}`,
+            data: {
+                transfer_item_id: id,
+                field_name: fieldName,
+                field_value: fieldValue,
+                stock_item_id: stockItemId
+            },
+            module,
+        };
+
+        await dispatch(updateEntityData(requestData));
     };
 
     // ---- Validation before save/issue ----
@@ -93,15 +96,15 @@ export default function __Form({
                     message: `${item.name}: Issue quantity (${item.quantity}) exceeds remaining quantity (${selected.remain_quantity})`,
                     icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
                 });
-                return false;
+                return true;
             }
         }
         return true;
     };
 
     const handleSubmit = (action) => {
-        if (!validateQuantities()) return;
-        requisitionForm.setFieldValue("action", action);
+        // if (!validateQuantities()) return;
+        // requisitionForm.setFieldValue("action", action);
         requisitionForm.onSubmit(onSave)();
     };
 
@@ -159,7 +162,7 @@ export default function __Form({
                 onBlur={(event) => {
                     const inputValue = Number(event.currentTarget.value) || 0;
 
-                    if (!item.purchase_item_id) {
+                    /*if (!item.purchase_item_id) {
                         notifications.show({
                             color: ERROR_NOTIFICATION_COLOR,
                             title: t("ValidationError"),
@@ -167,7 +170,7 @@ export default function __Form({
                             icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
                         });
                         return;
-                    }
+                    }*/
 
                     const selected = selectData.find(
                         (p) => p.value === String(item.purchase_item_id)
@@ -188,40 +191,20 @@ export default function __Form({
                             message: "Quantity must be less than or equal to remaining quantity",
                             icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
                         });
+
+                        handleRecordFieldChange(
+                            item?.id,
+                            item?.stock_item_id,
+                            "quantity",
+                            String(inputValue)
+                        );
                     }
                 }}
             />
         );
     }
 
-    const handleIndentApproved = () => {
-        modals.openConfirmModal({
-            title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
-            children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
-            labels: {confirm: "Confirm", cancel: "Cancel"},
-            confirmProps: {color: "var(--theme-delete-color)"},
-            onCancel: () => console.info("Cancel"),
-            onConfirm: () => handleConfirmApproved(id),
-        });
-    }
 
-    const handleConfirmApproved = async (id) => {
-        try {
-            const value = {
-                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.RECEIVE}/${id}`,
-                module,
-            };
-            const resultAction = await dispatch(showEntityData(value));
-            if (showEntityData.fulfilled.match(resultAction)) {
-                if (resultAction.payload.data.status === 200) {
-                    successNotification(resultAction.payload.data.message)
-                    navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX)
-                }
-            }
-        } catch (error) {
-            errorNotification("Error updating indent config:" + error.message);
-        }
-    }
 
     return (
         <Grid columns={24} gutter={{ base: 8 }}>
@@ -248,11 +231,11 @@ export default function __Form({
                                 accessor: "name",
                                 title: t("MedicineName"),
                             },
-                            {
+                            /*{
                                 accessor: "stock_quantity",
                                 title: t("CurrentStock"),
                                 render: (item) => item.stock_quantity,
-                            },
+                            },*/
                             {
                                 accessor: "request_quantity",
                                 title: t("Quantity"),
@@ -312,23 +295,6 @@ export default function __Form({
                                     w="200px"
                                 >
                                     {t("Save")}
-                                </Button>
-
-                                <Button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        handleIndentApproved();
-                                    }}
-                                    size="xs"
-                                    leftSection={<IconDeviceFloppy size={20} />}
-                                    type="button"
-                                    bg="var(--theme-secondary-color-6)"
-                                    color="white"
-                                    w="200px"
-                                    disabled={!allItemsHavePurchaseItem}
-                                    title={!allItemsHavePurchaseItem ? t("Please select all Purchase Items first") : ""}
-                                >
-                                    {t("Issue")}
                                 </Button>
 
                             </Flex>

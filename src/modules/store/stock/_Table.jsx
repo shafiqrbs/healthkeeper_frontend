@@ -8,7 +8,7 @@ import KeywordSearch from "@modules/filter/KeywordSearch";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
+import UseInfiniteTableScrollWithExtraData from "@hooks/useInfiniteTableScrollWithStockItemMatrix.js";
 
 const PER_PAGE = 50;
 
@@ -22,8 +22,15 @@ export default function _Table({ module }) {
     const listData = useSelector((state) => state.crud[module].data);
 
     // Infinite scroll logic
-    const { scrollRef, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-        useInfiniteTableScroll({
+    const {
+        scrollRef,
+        records,
+        fetching,
+        sortStatus,
+        setSortStatus,
+        handleScrollToBottom,
+    } = UseInfiniteTableScrollWithExtraData(
+        {
             module,
             fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.STOCK_MATRIX,
             filterParams: {
@@ -32,11 +39,12 @@ export default function _Table({ module }) {
             },
             perPage: PER_PAGE,
             sortByKey: "name",
-        });
+        }
+    );
 
     // 🧩 Generate warehouse columns dynamically (match by name)
-    const warehouseColumns = Array.isArray(listData?.data?.warehouses)
-        ? listData.data.warehouses.map((wh) => ({
+    const warehouseColumns = Array.isArray(listData?.warehouses)
+        ? listData.warehouses.map((wh) => ({
             accessor: `warehouse_${wh.name}`, // use name as accessor
             title: wh.name,
             textAlign: "right",
@@ -76,7 +84,7 @@ export default function _Table({ module }) {
                         footer: tableCss.footer,
                         pagination: tableCss.pagination,
                     }}
-                    records={listData?.data?.data || []}
+                    records={records}
                     columns={[
                         {
                             accessor: "index",

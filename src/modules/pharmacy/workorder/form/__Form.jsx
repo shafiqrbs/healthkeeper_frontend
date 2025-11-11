@@ -130,12 +130,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		direction: "desc",
 	});
 
-	console.log(form.values.category_id, records);
-	// 1st time undefined, []
-	// 2nd time 368, []
-	// 3rd time 368, (50)[{}...]
-	// 4th time 368, []
-
 	useEffect(() => {
 		setProducts(records);
 	}, [records]);
