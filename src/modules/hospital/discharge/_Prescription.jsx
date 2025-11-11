@@ -59,7 +59,7 @@ import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 
 const module = MODULES.DISCHARGE;
 
-export default function Prescription({ setShowHistory, hasRecords, baseHeight }) {
+export default function Prescription({ setShowHistory = () => {}, hasRecords = false, baseHeight = 0 }) {
 	const form = useForm({
 		initialValues: {
 			exEmergency: [],
