@@ -75,10 +75,10 @@ export default function Index() {
 							<Grid.Col span={18} className="animate-ease-out">
 								<Grid columns={18} gutter="2">
 									<Grid.Col span={6} className="animate-ease-out">
-										<Invoice transactions={transactions} entity={entity} setRefetchBillingKey={setRefetchBillingKey} />
+										<Invoice transactions={transactions}  setRefetchBillingKey={setRefetchBillingKey} />
 									</Grid.Col>
 									<Grid.Col span={12}>
-										<InvoiceDetails investigations={investigations} />
+										<InvoiceDetails entity={entity} />
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>

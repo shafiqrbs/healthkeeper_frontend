@@ -24,7 +24,7 @@ import inputCss from "@assets/css/InputField.module.css";
 
 const module = MODULES_CORE.BILLING;
 
-export default function InvoiceDetails({investigations}) {
+export default function InvoiceDetails({entity}) {
 	const cabinListData = useSelector((state) => state.crud.cabin?.data?.data);
 	const { particularsData } = useParticularsData({ modeName: "Admission" });
 	const investigationParticulars = particularsData?.find((item) => item.particular_type.name === "Investigation");
@@ -38,7 +38,7 @@ export default function InvoiceDetails({investigations}) {
 	const { id, transactionId } = useParams();
 	const [fetching, setFetching] = useState(false);
 	const [selectedRecords, setSelectedRecords] = useState([]);
-
+	const investigations = entity?.invoice_particular||[]
 //	console.log(investigationParticulars);
 
 	useEffect(() => {
