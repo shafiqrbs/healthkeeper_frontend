@@ -38,14 +38,13 @@ const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospita
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
 
-export default function Invoice({ entity, setRefetchBillingKey }) {
+export default function Invoice({ transactions,setRefetchBillingKey }) {
 	const invoicePrintRef = useRef(null);
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const { t } = useTranslation();
 	const form = useForm(getFormValues(t));
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
-	const test = entity;
 	const { id, transactionId: selectedTransactionId } = useParams();
 	const navigate = useNavigate();
 	const userRoles = getUserRole();
@@ -56,6 +55,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 	const bedListData = useSelector((state) => state.crud.bed?.data?.data);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const ipdAllPrintRef = useRef(null);
+
 
 	const printIPDAll = useReactToPrint({ content: () => ipdAllPrintRef.current });
 
@@ -272,11 +272,11 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 					{t("AllPrint")}
 				</Button>
 			</Flex>
-			{id ? (
+			{id && transactions.length ? (
 				<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 62}>
 					<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 					<Stack className="form-stack-vertical" p="xs" pos="relative">
-						{test?.invoice_transaction?.map((item, index) => (
+						{transactions?.map((item, index) => (
 							<Box
 								key={index}
 								className="borderRadiusAll"
@@ -368,7 +368,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 				</Stack>
 			)}
 			<InvoicePosBN data={invoicePrintData} ref={invoicePrintRef} />
-			<IPDAllPrint data={test} ref={ipdAllPrintRef} />
+			{/*<IPDAllPrint data={test} ref={ipdAllPrintRef} />*/}
 		</Box>
 	);
 }

@@ -36,6 +36,9 @@ export default function Index() {
 	}, [id, refetchBillingKey]);
 
 	const entity = diagnosticReport || {};
+	const  investigations = entity?.invoice_particular||[];
+	const  transactions = entity?.invoice_transaction||[];
+
 
 	return (
 		<>
@@ -72,10 +75,10 @@ export default function Index() {
 							<Grid.Col span={18} className="animate-ease-out">
 								<Grid columns={18} gutter="2">
 									<Grid.Col span={6} className="animate-ease-out">
-										<Invoice entity={entity} setRefetchBillingKey={setRefetchBillingKey} />
+										<Invoice transactions={transactions} entity={entity} setRefetchBillingKey={setRefetchBillingKey} />
 									</Grid.Col>
 									<Grid.Col span={12}>
-										<InvoiceDetails />
+										<InvoiceDetails investigations={investigations} />
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>

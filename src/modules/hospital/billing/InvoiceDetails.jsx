@@ -24,7 +24,7 @@ import inputCss from "@assets/css/InputField.module.css";
 
 const module = MODULES_CORE.BILLING;
 
-export default function InvoiceDetails() {
+export default function InvoiceDetails({investigations}) {
 	const cabinListData = useSelector((state) => state.crud.cabin?.data?.data);
 	const { particularsData } = useParticularsData({ modeName: "Admission" });
 	const investigationParticulars = particularsData?.find((item) => item.particular_type.name === "Investigation");
@@ -39,22 +39,22 @@ export default function InvoiceDetails() {
 	const [fetching, setFetching] = useState(false);
 	const [selectedRecords, setSelectedRecords] = useState([]);
 
-	console.log(investigationParticulars);
+//	console.log(investigationParticulars);
 
 	useEffect(() => {
-		if (id && transactionId) {
+		if (id) {
 			setFetching(true);
 			(async () => {
 				const res = await getDataWithoutStore({
-					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INDEX}/${id}/payment/${transactionId}`,
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INDEX}/${id}`,
 				});
 				form.reset();
 				setInvoiceDetails(res?.data);
 				setFetching(false);
 			})();
 		}
-	}, [id, transactionId]);
-
+	}, [id]);
+	console.log(investigations);
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
@@ -121,7 +121,7 @@ export default function InvoiceDetails() {
 					{t("InvoiceDetails")}
 				</Text>
 			</Box>
-			{transactionId ? (
+
 				<>
 					<Tabs id="invoice-details-tabs" defaultValue="investigation">
 						<Tabs.List>
@@ -169,7 +169,7 @@ export default function InvoiceDetails() {
 										footer: tableCss.footer,
 										pagination: tableCss.pagination,
 									}}
-									records={invoiceDetails?.items || []}
+									records={investigations || []}
 									columns={[
 										{
 											accessor: "index",
@@ -399,7 +399,7 @@ export default function InvoiceDetails() {
 						</Box>
 					)}
 				</>
-			) : (
+
 				<Box bg="var(--mantine-color-white)">
 					<Stack
 						h={mainAreaHeight - 62}
