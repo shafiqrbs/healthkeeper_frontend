@@ -1,12 +1,12 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import { Box, Text, Stack, Grid, Flex, Button } from "@mantine/core";
+import { Box, Text, Stack, Grid, Flex, Button, Select, Tabs, Autocomplete } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { IconChevronUp, IconSelector } from "@tabler/icons-react";
+import { IconCaretUpDownFilled, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -17,12 +17,19 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHotkeys } from "@mantine/hooks";
+import useParticularsData from "@hooks/useParticularsData";
+import inputCss from "@assets/css/InputField.module.css";
 
 const module = MODULES_CORE.BILLING;
 
 export default function InvoiceDetails() {
+	const cabinListData = useSelector((state) => state.crud.cabin?.data?.data);
+	const { particularsData } = useParticularsData({ modeName: "Admission" });
+	const investigationParticulars = particularsData?.find((item) => item.particular_type.name === "Investigation");
+	const [autocompleteValue, setAutocompleteValue] = useState("");
+	const bedListData = useSelector((state) => state.crud.bed?.data?.data);
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
@@ -30,6 +37,9 @@ export default function InvoiceDetails() {
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
 	const { id, transactionId } = useParams();
 	const [fetching, setFetching] = useState(false);
+	const [selectedRecords, setSelectedRecords] = useState([]);
+
+	console.log(investigationParticulars);
 
 	useEffect(() => {
 		if (id && transactionId) {
@@ -54,6 +64,25 @@ export default function InvoiceDetails() {
 			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handleConfirmModal(values),
 		});
+	};
+
+	const getRoomData = () => {
+		if (form.values.roomType === "cabin") {
+			return (
+				cabinListData?.map((cabin) => ({
+					value: cabin.id?.toString(),
+					label: cabin.display_name || cabin.cabin_name,
+				})) || []
+			);
+		} else if (form.values.roomType === "bed") {
+			return (
+				bedListData?.map((bed) => ({
+					value: bed.id?.toString(),
+					label: bed.display_name || bed.bed_name,
+				})) || []
+			);
+		}
+		return [];
 	};
 
 	async function handleConfirmModal(values) {
@@ -86,7 +115,7 @@ export default function InvoiceDetails() {
 	useHotkeys([["alt+s", () => document.getElementById("EntityFormSubmit").click()]], []);
 
 	return (
-		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
+		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
 				<Text fw={600} fz="sm" py="es">
 					{t("InvoiceDetails")}
@@ -94,54 +123,163 @@ export default function InvoiceDetails() {
 			</Box>
 			{transactionId ? (
 				<>
-					<Box className="border-top-none" px="sm" mt={"xs"}>
-						<DataTable
-							striped
-							highlightOnHover
-							pinFirstColumn
-							stripedColor="var(--theme-tertiary-color-1)"
-							classNames={{
-								root: tableCss.root,
-								table: tableCss.table,
-								header: tableCss.header,
-								footer: tableCss.footer,
-								pagination: tableCss.pagination,
-							}}
-							records={invoiceDetails?.items || []}
-							columns={[
-								{
-									accessor: "index",
-									title: t("S/N"),
-									textAlignment: "right",
-									render: (_, index) => index + 1,
-								},
-								{
-									accessor: "name",
-									title: t("Name"),
-								},
-								{
-									accessor: "quantity",
-									title: t("Quantity"),
-								},
-								{
-									accessor: "price",
-									title: t("Price"),
-								},
-								{
-									accessor: "sub_total",
-									title: t("SubTotal"),
-								},
-							]}
-							fetching={fetching}
-							loaderSize="xs"
-							loaderColor="grape"
-							height={mainAreaHeight - 162}
-							sortIcons={{
-								sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-								unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
-							}}
-						/>
-					</Box>
+					<Tabs id="invoice-details-tabs" defaultValue="investigation">
+						<Tabs.List>
+							<Tabs.Tab value="investigation">{t("Investigation")}</Tabs.Tab>
+							<Tabs.Tab value="bed-cabin">{t("Bed/Cabin")}</Tabs.Tab>
+						</Tabs.List>
+						<Tabs.Panel value="investigation" bg="var(--mantine-color-white)">
+							<Grid align="center" columns={20} mt="xs" mx="xs">
+								<Grid.Col span={20}>
+									<Autocomplete
+										label=""
+										placeholder={`Pick value or enter Investigation`}
+										data={investigationParticulars?.particular_type?.particulars?.map(
+											(particular) => ({
+												value: particular.name,
+												label: particular.name,
+											})
+										)}
+										value={autocompleteValue}
+										onChange={setAutocompleteValue}
+										onOptionSubmit={(value) => {
+											// handleAutocompleteOptionAdd(value);
+											setTimeout(() => {
+												setAutocompleteValue("");
+											}, 0);
+										}}
+										classNames={inputCss}
+										rightSection={<IconCaretUpDownFilled size={16} />}
+									/>
+								</Grid.Col>
+							</Grid>
+							<Box className="border-top-none" px="sm" mt="xs">
+								<DataTable
+									striped
+									highlightOnHover
+									pinFirstColumn
+									stripedColor="var(--theme-tertiary-color-1)"
+									selectedRecords={selectedRecords}
+									onSelectedRecordsChange={setSelectedRecords}
+									selectionColumnStyle={{ minWidth: 80 }}
+									classNames={{
+										root: tableCss.root,
+										table: tableCss.table,
+										header: tableCss.header,
+										footer: tableCss.footer,
+										pagination: tableCss.pagination,
+									}}
+									records={invoiceDetails?.items || []}
+									columns={[
+										{
+											accessor: "index",
+											title: t("S/N"),
+											textAlignment: "right",
+											render: (_, index) => index + 1,
+										},
+										{
+											accessor: "name",
+											title: t("Name"),
+										},
+										{
+											accessor: "price",
+											title: t("Price"),
+										},
+									]}
+									fetching={fetching}
+									loaderSize="xs"
+									loaderColor="grape"
+									height={mainAreaHeight - 206}
+									sortIcons={{
+										sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+										unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+									}}
+								/>
+							</Box>
+						</Tabs.Panel>
+						<Tabs.Panel value="bed-cabin" bg="var(--mantine-color-white)">
+							<Flex mx="sm" mt="xs" align="center" gap="xs" justify="space-between">
+								<Flex gap="sm">
+									<Text>{invoiceDetails?.room_info?.room_type || "General"}</Text>
+									<Text>{invoiceDetails?.room_info?.room_name || "Paying Non A/C - 329"}</Text>
+								</Flex>
+								<Flex gap="sm">
+									<InputNumberForm
+										form={form}
+										label=""
+										tooltip={t("EnterBillingDays")}
+										placeholder="days"
+										name="days"
+										id="days"
+										size="xs"
+									/>
+									<Button
+										size="xs"
+										bg="var(--theme-save-btn-color)"
+										// onClick={handleRoomSubmit}
+									>
+										<Stack gap={0} align="center" justify="center">
+											<Text fz="xs">{t("Add")}</Text>
+										</Stack>
+									</Button>
+								</Flex>
+							</Flex>
+							<Box className="border-top-none" px="sm" mt="xs">
+								<DataTable
+									striped
+									highlightOnHover
+									pinFirstColumn
+									stripedColor="var(--theme-tertiary-color-1)"
+									classNames={{
+										root: tableCss.root,
+										table: tableCss.table,
+										header: tableCss.header,
+										footer: tableCss.footer,
+										pagination: tableCss.pagination,
+									}}
+									records={invoiceDetails?.items || []}
+									columns={[
+										{
+											accessor: "index",
+											title: t("S/N"),
+											textAlignment: "right",
+											render: (_, index) => index + 1,
+										},
+										{
+											accessor: "name",
+											title: t("Name"),
+										},
+										{
+											accessor: "type",
+											title: t("Type"),
+											render: (record) => record.particular_type?.name || "N/A",
+										},
+										{
+											accessor: "days",
+											title: t("Days"),
+										},
+										{
+											accessor: "price",
+											title: t("Price"),
+										},
+										{
+											accessor: "subtotal",
+											title: t("Subtotal"),
+										},
+									]}
+									fetching={fetching}
+									loaderSize="xs"
+									loaderColor="grape"
+									height={mainAreaHeight - 200}
+									sortIcons={{
+										sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+										unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+									}}
+								/>
+							</Box>
+						</Tabs.Panel>
+					</Tabs>
+
 					{invoiceDetails?.process !== "Done" && (
 						<Box gap={0} justify="space-between" mt="xs">
 							<form onSubmit={form.onSubmit(handleSubmit)}>

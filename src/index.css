@@ -733,6 +733,14 @@ input.date-selector-input {
     outline: none;
 }
 
+#invoice-details-tabs {
+    .mantine-Tabs-list {
+        position: absolute;
+        top: 13px;
+        right: 10px;
+    }
+}
+
 :root[data-mantine-color-scheme='dark'] {
     --mantine-color-white: #242424;
     --mantine-color-gray-0: #1a1a1a;

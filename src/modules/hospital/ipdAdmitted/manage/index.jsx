@@ -35,7 +35,17 @@ import Discharge from "../common/tabs/Discharge";
 
 const module = MODULES.E_FRESH;
 
-const TAB_ITEMS = ["Dashboard", "E-Fresh", "Investigation", "Medicine", "Vitals Chart", "Insulin Chart", "Discharge"];
+const TAB_ITEMS = [
+	"Dashboard",
+	"E-Fresh",
+	"Investigation",
+	"Medicine",
+	"Vitals Chart",
+	"Insulin Chart",
+	"Final Bill",
+	"Room Transfer",
+	"Discharge",
+];
 const PRINT_SECTION_ITEMS = [
 	"IPD Prescription",
 	"Admission Form",

@@ -161,6 +161,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 			onConfirm: () => handleConfirmModal(values),
 		});
 	};
+
 	async function handleConfirmModal(values) {
 		try {
 			const value = {
@@ -265,263 +266,102 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between">
 				<Text fw={600} fz="sm" py="es" px="xs">
-					{t("InvoiceTransaction")}
+					{t("InvoiceHistory")}
 				</Text>
 				<Button onClick={printIPDAll} bg="var(--theme-secondary-color-6)" color="white" size="compact-xs">
 					{t("AllPrint")}
 				</Button>
 			</Flex>
 			{id ? (
-				<>
-					<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 320}>
-						<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
-						<Stack className="form-stack-vertical" p="xs" pos="relative">
-							{test?.invoice_transaction?.map((item, index) => (
-								<Box
-									key={index}
-									className="borderRadiusAll"
-									bg={
-										selectedTransactionId == item.hms_invoice_transaction_id
-											? "var(--theme-primary-color-1)"
-											: "white"
-									}
-									p="sm"
-								>
-									<Grid columns={16} gap={0} gutter="xs">
-										<Grid.Col span={4} py={0}>
-											<Text size="xs" fw={600}>
-												Created:
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs">{item?.created}</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs" fw={600}>
-												Mode:
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs">{item?.mode}</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs" fw={600}>
-												Amount:
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs">{Number(item?.total, 2)}</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs" fw={600}>
-												Status:
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={4} py={0}>
-											<Text size="xs">{item?.process}</Text>
-										</Grid.Col>
-									</Grid>
-									<Flex align="center" gap="sm" mt={"md"} justify="flex-end">
-										{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
-											<>
-												{item?.process === "New" &&
-													userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
-														<Button
-															onClick={() => handleTest(item.hms_invoice_transaction_id)}
-															size="compact-xs"
-															bg="var(--theme-primary-color-6)"
-															color="white"
-														>
-															{t("Process")}
-														</Button>
-													)}
-												{item?.process === "Done" && (
-													<>
-														<Button
-															onClick={() => handleTest(item.hms_invoice_transaction_id)}
-															size="compact-xs"
-															bg="var(--theme-primary-color-6)"
-															color="white"
-														>
-															{t("Show")}
-														</Button>
-														<Button
-															onClick={() => handlePrint(item)}
-															size="compact-xs"
-															bg="var(--theme-secondary-color-6)"
-															color="white"
-														>
-															{t("Print")}
-														</Button>
-													</>
+				<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 62}>
+					<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+					<Stack className="form-stack-vertical" p="xs" pos="relative">
+						{test?.invoice_transaction?.map((item, index) => (
+							<Box
+								key={index}
+								className="borderRadiusAll"
+								bg={
+									selectedTransactionId == item.hms_invoice_transaction_id
+										? "var(--theme-primary-color-1)"
+										: "white"
+								}
+								p="sm"
+							>
+								<Grid columns={16} gap={0} gutter="xs">
+									<Grid.Col span={4} py={0}>
+										<Text size="xs" fw={600}>
+											Created:
+										</Text>
+									</Grid.Col>
+									<Grid.Col span={4} py={0}>
+										<Text size="xs">{item?.created}</Text>
+									</Grid.Col>
+									<Grid.Col span={4} py={0}>
+										<Text size="xs" fw={600}>
+											Mode:
+										</Text>
+									</Grid.Col>
+									<Grid.Col span={4} py={0}>
+										<Text size="xs">{item?.mode}</Text>
+									</Grid.Col>
+									<Grid.Col span={4} py={0}>
+										<Text size="xs" fw={600}>
+											Amount:
+										</Text>
+									</Grid.Col>
+									<Grid.Col span={4} py={0}>
+										<Text size="xs">{Number(item?.total, 2)}</Text>
+									</Grid.Col>
+									<Grid.Col span={4} py={0}>
+										<Text size="xs" fw={600}>
+											Status:
+										</Text>
+									</Grid.Col>
+									<Grid.Col span={4} py={0}>
+										<Text size="xs">{item?.process}</Text>
+									</Grid.Col>
+								</Grid>
+								<Flex align="center" gap="sm" mt={"md"} justify="flex-end">
+									{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
+										<>
+											{item?.process === "New" &&
+												userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
+													<Button
+														onClick={() => handleTest(item.hms_invoice_transaction_id)}
+														size="compact-xs"
+														bg="var(--theme-primary-color-6)"
+														color="white"
+													>
+														{t("Process")}
+													</Button>
 												)}
-											</>
-										)}
-									</Flex>
-								</Box>
-							))}
-						</Stack>
-					</ScrollArea>
-					<Box gap={0} justify="space-between" mt="xs">
-						<form onSubmit={form.onSubmit(handleSubmit)}>
-							<Box bg="var(--theme-primary-color-0)" pl={"xs"} pr={"xs"} pb={"xs"}>
-								<Tabs defaultValue="investigation">
-									<Tabs.List>
-										<Tabs.Tab value="investigation">{t("Investigation")}</Tabs.Tab>
-										<Tabs.Tab value="bed-cabin">{t("Bed/Cabin")}</Tabs.Tab>
-									</Tabs.List>
-									<Tabs.Panel value="investigation" bg="var(--mantine-color-white)">
-										<Grid align="center" columns={20} mt="xs" mx="xs">
-											<Grid.Col span={20}>
-												<Autocomplete
-													label=""
-													placeholder={`Pick value or enter Investigation`}
-													data={investigationParticulars?.particular_type?.particulars?.map(
-														(particular) => ({
-															value: particular.name,
-															label: particular.name,
-														})
-													)}
-													value={autocompleteValue}
-													onChange={setAutocompleteValue}
-													onOptionSubmit={(value) => {
-														handleAutocompleteOptionAdd(value);
-														setTimeout(() => {
-															setAutocompleteValue("");
-														}, 0);
-													}}
-													classNames={inputCss}
-													rightSection={<IconCaretUpDownFilled size={16} />}
-												/>
-											</Grid.Col>
-										</Grid>
-										<Box w="100%" bg="var(--mantine-color-white)">
-											<Grid columns={18} gutter="xs">
-												<Grid.Col span={18} className="animate-ease-out" px="xs">
-													<ScrollArea scrollbars="y" type="never" h="118" mx="xs">
-														<Stack gap={0} bg="var(--mantine-color-white)" mt="2xs">
-															{form.values?.investigation?.map((item, idx) => (
-																<Flex
-																	key={idx}
-																	align="center"
-																	justify="space-between"
-																	py="es"
-																>
-																	<Text fz="xs">
-																		{idx + 1}. {item.name}
-																	</Text>
-																	<ActionIcon
-																		color="red"
-																		size="xs"
-																		variant="subtle"
-																		onClick={() =>
-																			handleAutocompleteOptionRemove(idx)
-																		}
-																	>
-																		<IconX size={16} />
-																	</ActionIcon>
-																</Flex>
-															))}
-														</Stack>
-													</ScrollArea>
-													<Box mt="xs">
-														<Button.Group>
-															<Button
-																id="EntityFormSubmit"
-																w="100%"
-																size="compact-sm"
-																bg="var(--theme-pos-btn-color)"
-																type="button"
-																disabled={isSubmitting}
-															>
-																<Stack gap={0} align="center" justify="center">
-																	<Text fz="xs">{t("Print")}</Text>
-																</Stack>
-															</Button>
-															<Button
-																w="100%"
-																size="compact-sm"
-																bg="var(--theme-save-btn-color)"
-																loading={isSubmitting}
-																onClick={handleInvestigationSubmit}
-															>
-																<Stack gap={0} align="center" justify="center">
-																	<Text fz="xs">{t("Save")}</Text>
-																</Stack>
-															</Button>
-														</Button.Group>
-													</Box>
-												</Grid.Col>
-											</Grid>
-										</Box>
-									</Tabs.Panel>
-									<Tabs.Panel value="bed-cabin" bg="var(--mantine-color-white)">
-										<Stack justify="space-between" h={mainAreaHeight - 600}>
-											<Grid mt="xs" mx="xs" gutter="xs" align="center" columns={20}>
-												<Grid.Col span={20}>
-													<Select
-														label=""
-														name="roomType"
-														id="roomType"
-														nextField="room"
-														placeholder={t("Bed/Cabin")}
-														value={form.values.roomType}
-														data={[
-															{ value: "cabin", label: t("Cabin") },
-															{ value: "bed", label: t("Bed") },
-														]}
-														onChange={(value) => {
-															form.setFieldValue("roomType", value);
-															form.setFieldValue("room", ""); // Clear room selection when roomType changes
-															fetchData(value); // Fetch appropriate data
-														}}
-														mb="xs"
-													/>
-													<Select
-														name="room"
-														label=""
-														placeholder="Pick value"
-														value={form.values.room}
-														data={getRoomData()}
-														onChange={(value) => form.setFieldValue("room", value)}
-														disabled={!form.values.roomType}
-													/>
-												</Grid.Col>
-											</Grid>
-											<Box w="100%" bg="var(--mantine-color-white)">
-												<Grid columns={18} gutter="xs">
-													<Grid.Col span={18} className="animate-ease-out" px="xs" pb={"xs"}>
-														<Flex mt="xs" align="center" gap="xs">
-															<InputNumberForm
-																form={form}
-																label=""
-																tooltip={t("EnterBillingQuantity")}
-																placeholder="quantity"
-																name="quantity"
-																id="quantity"
-																size="xs"
-															/>
-															<Button
-																w="100%"
-																size="compact-sm"
-																bg="var(--theme-save-btn-color)"
-																onClick={handleRoomSubmit}
-															>
-																<Stack gap={0} align="center" justify="center">
-																	<Text fz="xs">{t("Save")}</Text>
-																</Stack>
-															</Button>
-														</Flex>
-													</Grid.Col>
-												</Grid>
-											</Box>
-										</Stack>
-									</Tabs.Panel>
-								</Tabs>
+											{item?.process === "Done" && (
+												<>
+													<Button
+														onClick={() => handleTest(item.hms_invoice_transaction_id)}
+														size="compact-xs"
+														bg="var(--theme-primary-color-6)"
+														color="white"
+													>
+														{t("Show")}
+													</Button>
+													<Button
+														onClick={() => handlePrint(item)}
+														size="compact-xs"
+														bg="var(--theme-secondary-color-6)"
+														color="white"
+													>
+														{t("Print")}
+													</Button>
+												</>
+											)}
+										</>
+									)}
+								</Flex>
 							</Box>
-						</form>
-					</Box>
-				</>
+						))}
+					</Stack>
+				</ScrollArea>
 			) : (
 				<Stack h={mainAreaHeight - 62} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
 					<Box>{t("NoPatientSelected")}</Box>

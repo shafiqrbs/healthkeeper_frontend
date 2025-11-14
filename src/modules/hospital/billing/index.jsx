@@ -35,33 +35,7 @@ export default function Index() {
 		}
 	}, [id, refetchBillingKey]);
 
-	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
-
 	const entity = diagnosticReport || {};
-	const col1 = [
-		{ label: "Patient ID", value: safe(entity.patient_id) },
-		{ label: "Health ID", value: safe(entity.health_id) },
-		{ label: "Prescription ID", value: safe(entity.invoice) },
-	];
-
-	const col2 = [
-		{ label: "Name", value: safe(entity.name) },
-		{ label: "Mobile", value: safe(entity.mobile) },
-		{ label: "Gender", value: safe(entity.gender) },
-	];
-
-	const col3 = [
-		{ label: "Prescription Created", value: safe(entity.prescription_created) },
-		{ label: "Prescription ID", value: safe(entity.prescription_doctor_id) },
-		{ label: "Prescription Doctor", value: safe(entity.prescription_doctor_name) },
-	];
-
-	const col4 = [
-		{ label: "Process", value: safe(entity.process) },
-		{ label: "Created By", value: safe(entity.created_by_name ?? entity.created_by_user_name) },
-	];
-
-	const columns = [col1, col2, col3, col4];
 
 	return (
 		<>
