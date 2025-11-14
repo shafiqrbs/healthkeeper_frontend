@@ -6,13 +6,11 @@ import Navigation from "@components/layout/Navigation";
 import { Box, Flex } from "@mantine/core";
 import Table from "./_Table";
 import { MODULES } from "@/constants";
-import EntityForm from "./form/EntityForm";
-import {getFormInitialValues} from "./helpers/request";
+
 
 export default function Index() {
 	const { id } = useParams();
 	const { mode } = useParams();
-	const form = useForm(getFormInitialValues());
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const module = MODULES.FREE_PATIENT;
@@ -24,13 +22,7 @@ export default function Index() {
 				<Box p="md">
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-						{id ? (
-							<Box w="100%">
-								<EntityForm module={module} form={form} />
-							</Box>
-						) : (
-							<Table module={module} form={form} />
-						)}
+						<Table module={module} />
 					</Flex>
 				</Box>
 			)}

@@ -589,7 +589,7 @@ export function Form({
 										tooltip={t("EnterYears")}
 										name="year"
 										id="year"
-										nextField="mobile"
+										nextField="month"
 										min={0}
 										max={150}
 										readOnly={form.values.dob}
@@ -602,7 +602,7 @@ export function Form({
 										tooltip={t("EnterMonths")}
 										name="month"
 										id="month"
-										nextField="year"
+										nextField="day"
 										min={0}
 										max={11}
 										readOnly={form.values.dob}
@@ -614,7 +614,7 @@ export function Form({
 										tooltip={t("EnterDays")}
 										name="day"
 										id="day"
-										nextField="month"
+										nextField="mobile"
 										min={0}
 										max={31}
 										readOnly={form.values.dob}
@@ -657,7 +657,7 @@ export function Form({
 									placeholder="+880 1717171717"
 									name="mobile"
 									id="mobile"
-									nextField="dob"
+									nextField="upazilla_id"
 									value={form.values.mobile}
 								/>
 							</Grid.Col>

@@ -55,7 +55,7 @@ export default function _Table() {
 					<Grid
 						columns={12}
 						key={item.id}
-						onClick={() => handleAdmissionOverview(item.id)}
+						onClick={() => handleAdmissionOverview(item.uid)}
 						my="xs"
 						bg={
 							Number(selectedPatientId) === item?.id
@@ -91,7 +91,7 @@ export default function _Table() {
 								<Button.Group>
 									<ActionIcon
 										variant="filled"
-										onClick={() => handleAdmissionOverview(item.id)}
+										onClick={() => handleAdmissionOverview(item.uid)}
 										color="var(--theme-primary-color-6)"
 										radius="xs"
 										aria-label="Settings"

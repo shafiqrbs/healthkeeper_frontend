@@ -281,7 +281,7 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={records} module="visit" />
+			<DataTableFooter indexData={records} module="waiver" />
 			{selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}

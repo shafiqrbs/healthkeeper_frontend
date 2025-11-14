@@ -67,7 +67,7 @@ export default function _Table({ module }) {
 
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.INVOICE,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.INDEX,
 		filterParams: {
 			name: filterData?.name,
 			mode: processTab,
@@ -281,7 +281,7 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={records} module="visit" />
+			<DataTableFooter indexData={records} module="waiver" />
 			{selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}

@@ -3,12 +3,14 @@
   {
     "Group": "Doctor",
     "actions": [
-      { "id": "doctor_opd", "label": "OPD Prescription" },
-      { "id": "doctor_emergency", "label": "Emergency Prescription" },
-      { "id": "doctor_ipd", "label": "IPD" },
-      { "id": "doctor_ipd_confirm", "label": "IPD In-charge" },
-      { "id": "doctor_lab", "label": "Lab" },
-      { "id": "lab_assistant", "label": "Lab Assistant" }
+      { "id": "doctor_opd", "label": "OPD Doctor" },
+      { "id": "doctor_emergency", "label": "Emergency Doctor" },
+      { "id": "doctor_ipd", "label": "IPD Doctor" },
+      { "id": "doctor_ipd_confirm", "label": "In-charge Doctor" },
+      { "id": "doctor_lab", "label": "Lab Doctor" },
+      { "id": "doctor_approve_opd", "label": "OPD Approve Doctor" },
+      { "id": "doctor_approve_ipd", "label": "IPD Approve Doctor" }
+
     ]
   },
   {
@@ -24,7 +26,7 @@
       { "id": "pharmacy_operator", "label": "Operator" },
       { "id": "pharmacy_pharmacist", "label": "Pharmacist" },
       { "id": "pharmacy_manager", "label": "Manager" },
-      { "id": "pharmacy_approve", "label": "Approve Doctor" }
+      { "id": "pharmacy_doctor", "label": "Approve Doctor" }
     ]
   },
   {
@@ -33,13 +35,17 @@
       { "id": "operator_opd", "label": "OPD Operator" },
       { "id": "operator_emergency", "label": "Emergency" },
       { "id": "ipd_admission", "label": "IPD Admission" },
+      { "id": "lab_operator", "label": "Lab Operator" },
+      { "id": "lab_assistant", "label": "Lab Assistant" },
       { "id": "operator_manager", "label": "Operator Manager" }
     ]
   },
   {
     "Group": "Billing",
     "actions": [
-      { "id": "billing_cash", "label": "Operator" },
+      { "id": "billing_opd", "label": "OPD Bill" },
+      { "id": "billing_ipd", "label": "IPD Bill" },
+      { "id": "billing_admission", "label": "Admission Bill" },
       { "id": "billing_manager", "label": "Manager" }
     ]
   },

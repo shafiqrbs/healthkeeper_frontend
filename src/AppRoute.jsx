@@ -26,6 +26,8 @@ import NotFound from "@components/layout/NotFound";
 import CustomerIndex from "@modules/hospital/customer";
 import LabIndex from "@modules/hospital/lab";
 import FreePatientIndex from "@modules/hospital/free-patient";
+import PatientWaiverIndex from "@modules/hospital/patient-waiver";
+import PatientWaiverListIndex from "@modules/hospital/patient-waiver/waiver-list";
 import PoliceCaseIndex from "@modules/hospital/police-case";
 import LabInvestigationIndex from "@modules/hospital/lab/investigation";
 import EpharmaIndex from "@modules/hospital/epharma";
@@ -319,6 +321,38 @@ function AppRoute() {
 								]}
 							>
 								<FreePatientIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="patient-waiver"
+						element={
+							<ProtectedRoute
+								roles={[
+									"role_domain",
+									"admin_administrator",
+									"doctor_ipd",
+									"doctor_emergency",
+									"doctor_opd",
+								]}
+							>
+								<PatientWaiverIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="patient-waiver/list"
+						element={
+							<ProtectedRoute
+								roles={[
+									"role_domain",
+									"admin_administrator",
+									"doctor_ipd",
+									"doctor_emergency",
+									"doctor_opd",
+								]}
+							>
+								<PatientWaiverListIndex />
 							</ProtectedRoute>
 						}
 					/>

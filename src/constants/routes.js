@@ -487,7 +487,6 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "hospital/opd",
 			UPDATE: "hospital/opd",
 			VITAL_UPDATE: "hospital/opd/vital-update",
-			PATIENT_WAVER: "hospital/opd/patient-waver",
 			POLICE_CASE_CREATE: "hospital/opd/police-case",
 			VIEW: "hospital/opd",
 			DELETE: "hospital/opd",
@@ -531,6 +530,18 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "hospital/billing",
 			DELETE: "hospital/billing",
 		},
+
+		PATIENT_WAIVER: {
+			INDEX: "hospital/patient-waiver",
+			INVOICE: "hospital/patient-waiver/invoice",
+			CREATE: "hospital/patient-waiver",
+			UPDATE: "hospital/patient-waiver",
+			VIEW: "hospital/patient-waiver",
+			PROCESS: "hospital/patient-waiver/process",
+			APPROVE: "hospital/patient-waiver/aprove",
+			DELETE: "hospital/patient-waiver",
+		},
+
 		FINAL_BILLING: {
 			INDEX: "hospital/final-billing",
 			CREATE: "hospital/final-billing",
@@ -549,6 +560,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "hospital/prescription",
 			VIEW: "hospital/prescription/view",
 		},
+
 		ADMISSION: {
 			INDEX: "hospital/admission",
 			EDIT: "hospital/admission",
@@ -679,6 +691,13 @@ export const HOSPITAL_DATA_ROUTES = {
 			INDEX: "/hospital/free-patient",
 			UPDATE: "/hospital/free-patient",
 			VIEW: "/hospital/free-patient",
+		},
+
+		PATIENT_WAIVER: {
+			INDEX: "/hospital/patient-waiver",
+			UPDATE: "/hospital/patient-waiver",
+			PROCESS: "/hospital/patient-waiver",
+			VIEW: "/hospital/patient-waiver",
 		},
 
 		POLICE_CASE: {

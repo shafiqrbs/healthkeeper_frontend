@@ -176,6 +176,10 @@ export default function _Table({module, open}) {
                 title: t("Name"),
             },
             {
+                accessor: "username",
+                title: t("UserName"),
+            },
+            {
                 accessor: "warehouses",
                 title: t("Warehouse"),
                 width: "220px",
