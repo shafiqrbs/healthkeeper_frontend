@@ -65,8 +65,8 @@ export default function Index() {
 										fullWidth
 										color="var(--theme-primary-color-6)"
 										value={type}
-										id="type"
-										name="type"
+										id="patient_mode"
+										name="patient_mode"
 										onChange={(val) => setType(val)}
 										data={[
 											{ label: t("OPD"), value: "opd" },
@@ -83,7 +83,7 @@ export default function Index() {
 											tab: "list",
 											component: (
 												<Table
-													type={type}
+													patient_mode={type}
 													selectedId={id}
 													isOpenPatientInfo={isOpenPatientInfo}
 													setIsOpenPatientInfo={setIsOpenPatientInfo}

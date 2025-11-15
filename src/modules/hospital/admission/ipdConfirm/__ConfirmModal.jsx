@@ -12,67 +12,6 @@ import TextAreaForm from "@components/form-builders/TextAreaForm";
 import SelectForm from "@components/form-builders/SelectForm";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 
-const DEPARTMENT = [
-	{
-		id: 1,
-		label: "Female Word",
-		value: "female",
-	},
-	{
-		id: 2,
-		label: "Male Ward",
-		value: "male",
-	},
-];
-
-const UNITS = [
-	{
-		label: "RMU-1",
-		value: "RMU-1",
-	},
-	{
-		label: "RMU-2",
-		value: "RMU-2",
-	},
-	{
-		label: "RMU-3",
-		value: "RMU-3",
-	},
-];
-
-const CONSULTANTS = [
-	{
-		label: "Dr. Shafiqul Islam",
-		value: "Dr. Shafiqul Islam",
-	},
-	{
-		label: "Dr. Shihab Islam",
-		value: "Dr. Shihab Islam",
-	},
-];
-
-const DOCTORS = [
-	{
-		label: "Dr. Shafiqul Islam",
-		value: "Dr. Shafiqul Islam",
-	},
-	{
-		label: "Dr. Shihab Islam",
-		value: "Dr. Shihab Islam",
-	},
-];
-
-const DESIGNATION = [
-	{
-		label: "Cardiologist",
-		value: "cardiologist",
-	},
-	{
-		label: "Neurologist",
-		value: "neurologist",
-	},
-];
-
 export default function ConfirmModal({ opened, close, form }) {
 	const navigate = useNavigate();
 	const { mainAreaHeight } = useOutletContext();

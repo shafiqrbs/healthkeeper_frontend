@@ -33,23 +33,22 @@ export default function IpdActionButtons({
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
 	const [openedDetails, { open: openDetails, close: closeDetails }] = useDisclosure(false);
 
-	useEffect(() => {
-		let price = Number(hospitalConfigData?.hospital_config?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
-		price = isOpdRedirect ? 0 : price;
-		setConfiguredDueAmount(price);
-		form.setFieldValue("amount", price);
-	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
-
-	const printIPD = useReactToPrint({
-		content: () => ipdRef.current,
-	});
-
 	const enteredAmount = Number(item?.total ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
 	const isReturn = remainingBalance < 0;
 	const displayLabelKey = isReturn ? "Return" : "Due";
 	const displayAmount = Math.abs(remainingBalance);
 
+	useEffect(() => {
+		let price = Number(hospitalConfigData?.hospital_config?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
+		price = isOpdRedirect ? 0 : enteredAmount;
+		setConfiguredDueAmount(enteredAmount);
+		form.setFieldValue("amount", enteredAmount);
+	}, [form.values.patient_payment_mode_id, hospitalConfigData, type]);
+
+	const printIPD = useReactToPrint({
+		content: () => ipdRef.current,
+	});
 	const selectPaymentMethod = (method) => {
 		form.setFieldValue("paymentMethod", method.value);
 		setPaymentMethod(method);

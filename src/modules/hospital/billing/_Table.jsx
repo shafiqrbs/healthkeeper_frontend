@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
 
-export default function _Table({ type }) {
+export default function _Table({ patient_mode }) {
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
@@ -32,7 +32,7 @@ export default function _Table({ type }) {
 		filterParams: {
 			created: filterData.created,
 			term: filterData.keywordSearch,
-			type,
+			patient_mode,
 		},
 	});
 

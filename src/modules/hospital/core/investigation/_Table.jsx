@@ -172,10 +172,13 @@ export default function _Table({ module, open }) {
 	const form = useForm({
 		initialValues: {
 			price: 0,
+			diagnostic_department_id: '',
+			diagnostic_room_id: '',
 		}
 	});
 
 	useEffect(() => {
+
 		if (!records?.length) return;
 		const initialFormData = records.reduce((acc, item) => {
 			acc[item.id] = {
@@ -185,9 +188,7 @@ export default function _Table({ module, open }) {
 				report_format: item?.report_format ?? false,
 				diagnostic_department_id: item.diagnostic_department_id?.toString() ?? "",
 				diagnostic_room_id: item.diagnostic_room_id?.toString() ?? "",
-
 			};
-
 			return acc;
 		}, {});
 
@@ -213,6 +214,7 @@ export default function _Table({ module, open }) {
 	};
 
 	const handleRowSubmit = async (rowId) => {
+
 		const formData = submitFormData[rowId];
 		if (!formData) return false;
 
@@ -235,6 +237,7 @@ export default function _Table({ module, open }) {
 			data: formData,
 			module,
 		};
+		console.log(value)
 		try {
 			const resultAction = await dispatch(storeEntityData(value));
 		} catch (error) {
