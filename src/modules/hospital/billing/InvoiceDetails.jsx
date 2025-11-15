@@ -26,6 +26,13 @@ import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 const module = MODULES_CORE.BILLING;
 
 export default function InvoiceDetails({ entity }) {
+	const [invoiceDetails, setInvoiceDetails] = useState([]);
+	const { id } = useParams();
+	const [fetching, setFetching] = useState(false);
+	const [selectedRecords, setSelectedRecords] = useState([]);
+	const [investigationRecords, setInvestigationRecords] = useState([]);
+	const [roomItems, setRoomItems] = useState([]);
+	const [selectKey, setSelectKey] = useState(0);
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
@@ -70,13 +77,6 @@ export default function InvoiceDetails({ entity }) {
 			},
 		},
 	});
-	const [invoiceDetails, setInvoiceDetails] = useState([]);
-	const { id } = useParams();
-	const [fetching, setFetching] = useState(false);
-	const [selectedRecords, setSelectedRecords] = useState([]);
-	const [investigationRecords, setInvestigationRecords] = useState([]);
-	const [roomItems, setRoomItems] = useState([]);
-	const [selectKey, setSelectKey] = useState(0);
 
 	const { data: investigationOptions } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.INVESTIGATION.PATH,
@@ -99,6 +99,7 @@ export default function InvoiceDetails({ entity }) {
 				setFetching(false);
 			})();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id]);
 
 	// =============== initialize local investigations from entity to allow local editing ================
@@ -149,6 +150,8 @@ export default function InvoiceDetails({ entity }) {
 
 		const extendedValues = {
 			...values,
+			total:
+				payloadSource === "investigation" ? investigationSubtotal : payloadSource === "room" ? roomSubtotal : 0,
 			json_content: jsonContent,
 		};
 
