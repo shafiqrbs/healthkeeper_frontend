@@ -1,16 +1,21 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, NumberInput, Checkbox, Select} from "@mantine/core";
-import { useTranslation } from "react-i18next";
 import {
-	IconTrashX,
-	IconAlertCircle,
-	IconEdit,
-	IconEye,
-	IconChevronUp,
-	IconSelector,
-} from "@tabler/icons-react";
+	Group,
+	Box,
+	ActionIcon,
+	Text,
+	rem,
+	Flex,
+	Button,
+	TextInput,
+	NumberInput,
+	Checkbox,
+	Select,
+} from "@mantine/core";
+import { useTranslation } from "react-i18next";
+import { IconTrashX, IconAlertCircle, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
@@ -21,26 +26,16 @@ import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
-import {
-	deleteEntityData,
-	editEntityData, storeEntityData, updateEntityData,
-} from "@/app/store/core/crudThunk";
-import {
-	setInsertType,
-	setRefetchData,
-} from "@/app/store/core/crudSlice.js";
-import {
-	ERROR_NOTIFICATION_COLOR,
-} from "@/constants/index.js";
+import { deleteEntityData, editEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
+import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import React, {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import {successNotification} from "@components/notification/successNotification";
-import {SUCCESS_NOTIFICATION_COLOR} from "@/constants/index";
-import {errorNotification} from "@components/notification/errorNotification";
-import {useForm} from "@mantine/form";
+import { errorNotification } from "@components/notification/errorNotification";
+import { useForm } from "@mantine/form";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import {HOSPITAL_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 
 const PER_PAGE = 50;
 
@@ -50,7 +45,6 @@ export default function _Table({ module, open }) {
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const { id } = useParams();
 	const height = mainAreaHeight - 78;
 	const [submitFormData, setSubmitFormData] = useState({});
 	const [updatingRows, setUpdatingRows] = useState({});
@@ -59,19 +53,12 @@ export default function _Table({ module, open }) {
 	const listData = useSelector((state) => state.crud[module].data);
 
 	// for infinity table data scroll, call the hook
-	const {
-		scrollRef,
-		records,
-		fetching,
-		sortStatus,
-		setSortStatus,
-		handleScrollToBottom,
-	} = useInfiniteTableScroll({
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			particular_type: 'investigation',
+			particular_type: "investigation",
 			term: searchKeyword,
 		},
 		perPage: PER_PAGE,
@@ -90,12 +77,6 @@ export default function _Table({ module, open }) {
 		);
 		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX}/${id}`);
 	};
-
-	const { data: getInvestigationGroups } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_INVESTIGATION_GROUP.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_INVESTIGATION_GROUP.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_INVESTIGATION_GROUP.UTILITY,
-	});
 
 	const { data: roomDropdown } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_ROOM.PATH,
@@ -169,16 +150,7 @@ export default function _Table({ module, open }) {
 		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.INDEX);
 	};
 
-	const form = useForm({
-		initialValues: {
-			price: 0,
-			diagnostic_department_id: '',
-			diagnostic_room_id: '',
-		}
-	});
-
 	useEffect(() => {
-
 		if (!records?.length) return;
 		const initialFormData = records.reduce((acc, item) => {
 			acc[item.id] = {
@@ -195,14 +167,13 @@ export default function _Table({ module, open }) {
 		setSubmitFormData(initialFormData);
 	}, [records]);
 
-
 	const handleDataTypeChange = (rowId, field, value, submitNow = false) => {
 		const updatedRow = {
 			...submitFormData[rowId],
 			[field]: value,
 		};
 
-		setSubmitFormData(prev => ({
+		setSubmitFormData((prev) => ({
 			...prev,
 			[rowId]: updatedRow,
 		}));
@@ -214,7 +185,6 @@ export default function _Table({ module, open }) {
 	};
 
 	const handleRowSubmit = async (rowId) => {
-
 		const formData = submitFormData[rowId];
 		if (!formData) return false;
 
@@ -223,9 +193,7 @@ export default function _Table({ module, open }) {
 		if (!originalRow) return false;
 
 		// ✅ check if there is any change
-		const isChanged = Object.keys(formData).some(
-			(key) => formData[key] !== originalRow[key]
-		);
+		const isChanged = Object.keys(formData).some((key) => formData[key] !== originalRow[key]);
 
 		if (!isChanged) {
 			// nothing changed → do not submit
@@ -237,10 +205,12 @@ export default function _Table({ module, open }) {
 			data: formData,
 			module,
 		};
-		console.log(value)
+
 		try {
 			const resultAction = await dispatch(storeEntityData(value));
+			console.log(resultAction);
 		} catch (error) {
+			console.error(error);
 			errorNotification(error.message);
 		}
 	};
@@ -304,11 +274,7 @@ export default function _Table({ module, open }) {
 							title: t("DisplayName"),
 							sortable: true,
 							render: (values) => (
-								<Text
-									className="activate-link"
-									fz="xs"
-									onClick={() => handleDataShow(values.id)}
-								>
+								<Text className="activate-link" fz="xs" onClick={() => handleDataShow(values.id)}>
 									{values.display_name}
 								</Text>
 							),
@@ -324,8 +290,9 @@ export default function _Table({ module, open }) {
 									data={departmentDropdown}
 									value={submitFormData[item.id]?.diagnostic_department_id ?? ""}
 									onChange={(val) => {
-										handleDataTypeChange(item.id, "diagnostic_department_id", val,true);
+										handleDataTypeChange(item.id, "diagnostic_department_id", val, true);
 									}}
+									onBlur={() => handleRowSubmit(item.id)}
 									rightSection={updatingRows[item.id]}
 								/>
 							),
@@ -341,8 +308,9 @@ export default function _Table({ module, open }) {
 									data={roomDropdown}
 									value={submitFormData[item.id]?.diagnostic_room_id ?? ""}
 									onChange={(val) => {
-										handleDataTypeChange(item.id, "diagnostic_room_id", val,true);
+										handleDataTypeChange(item.id, "diagnostic_room_id", val, true);
 									}}
+									onBlur={() => handleRowSubmit(item.id)}
 									rightSection={updatingRows[item.id]}
 								/>
 							),
@@ -372,12 +340,7 @@ export default function _Table({ module, open }) {
 									size="sm"
 									checked={submitFormData[item.id]?.is_available ?? false}
 									onChange={(val) =>
-										handleDataTypeChange(
-											item.id,
-											"is_available",
-											val.currentTarget.checked,
-											true
-										)
+										handleDataTypeChange(item.id, "is_available", val.currentTarget.checked, true)
 									}
 								/>
 							),
@@ -391,12 +354,7 @@ export default function _Table({ module, open }) {
 									size="sm"
 									checked={submitFormData[item.id]?.report_format ?? false}
 									onChange={(val) =>
-										handleDataTypeChange(
-											item.id,
-											"report_format",
-											val.currentTarget.checked,
-											true
-										)
+										handleDataTypeChange(item.id, "report_format", val.currentTarget.checked, true)
 									}
 								/>
 							),
@@ -409,58 +367,58 @@ export default function _Table({ module, open }) {
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
-							<Button.Group>
-								<Button
-									onClick={() => {
-										handleEntityEdit(values.id);
-										open();
-									}}
-									variant="filled"
-									c="white"
-									fw={400}
-									size="compact-xs"
-									radius="es"
-									leftSection={<IconEdit size={12} />}
-									className="border-right-radius-none btnPrimaryBg"
-								>
-									{t("Edit")}
-								</Button>
-								<Button
-									onClick={() => handleDataShow(values.id)}
-									variant="filled"
-									c="white"
-									bg="var(--theme-primary-color-6)"
-									size="compact-xs"
-									radius="es"
-									fw={400}
-									leftSection={<IconEye size={12} />}
-									className="border-left-radius-none"
-								>
-									{t("View")}
-								</Button>
-								<Button
-									onClick={() => handleReportFormatTable(values.id)}
-									variant="filled"
-									c="white"
-									bg="var(--theme-warn-color-5)"
-									fw={400}
-									size="compact-xs"
-									radius="es"
-								>
-									{t("Format")}
-								</Button>
-								<ActionIcon
-									size="xs"
-									onClick={() => handleDelete(values.id)}
-									variant="light"
-									color="var(--theme-delete-color)"
-									radius="es"
-									aria-label="Settings"
-								>
-									<IconTrashX stroke={1.5} />
-								</ActionIcon>
-							</Button.Group>
-						</Group>
+									<Button.Group>
+										<Button
+											onClick={() => {
+												handleEntityEdit(values.id);
+												open();
+											}}
+											variant="filled"
+											c="white"
+											fw={400}
+											size="compact-xs"
+											radius="es"
+											leftSection={<IconEdit size={12} />}
+											className="border-right-radius-none btnPrimaryBg"
+										>
+											{t("Edit")}
+										</Button>
+										<Button
+											onClick={() => handleDataShow(values.id)}
+											variant="filled"
+											c="white"
+											bg="var(--theme-primary-color-6)"
+											size="compact-xs"
+											radius="es"
+											fw={400}
+											leftSection={<IconEye size={12} />}
+											className="border-left-radius-none"
+										>
+											{t("View")}
+										</Button>
+										<Button
+											onClick={() => handleReportFormatTable(values.id)}
+											variant="filled"
+											c="white"
+											bg="var(--theme-warn-color-5)"
+											fw={400}
+											size="compact-xs"
+											radius="es"
+										>
+											{t("Format")}
+										</Button>
+										<ActionIcon
+											size="xs"
+											onClick={() => handleDelete(values.id)}
+											variant="light"
+											color="var(--theme-delete-color)"
+											radius="es"
+											aria-label="Settings"
+										>
+											<IconTrashX stroke={1.5} />
+										</ActionIcon>
+									</Button.Group>
+								</Group>
 							),
 						},
 					]}
@@ -474,15 +432,8 @@ export default function _Table({ module, open }) {
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
-						sorted: (
-							<IconChevronUp
-								color="var(--theme-tertiary-color-7)"
-								size={14}
-							/>
-						),
-						unsorted: (
-							<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
-						),
+						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 					}}
 				/>
 			</Box>
@@ -492,4 +443,3 @@ export default function _Table({ module, open }) {
 		</>
 	);
 }
-

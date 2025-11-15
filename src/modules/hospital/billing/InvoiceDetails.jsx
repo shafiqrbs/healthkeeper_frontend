@@ -106,7 +106,8 @@ export default function InvoiceDetails({ entity }) {
 		const initialInvestigations = Array.isArray(entity?.invoice_particular) ? entity.invoice_particular : [];
 		setInvestigationRecords(
 			initialInvestigations.map((item) => ({
-				id: item.id ?? item.value ?? `${item.name ?? ""}-${item.price ?? 0}`,
+				id: item?.id,
+				particular_id: item?.particular_id,
 				name: item.name ?? item.label ?? "",
 				quantity: item.quantity ?? 1,
 				price: item.price ?? 0,
