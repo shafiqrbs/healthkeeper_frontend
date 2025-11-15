@@ -1,36 +1,20 @@
 import { hasLength } from "@mantine/form";
 
 const initialValues = {
+	particular_module_id: "",
 	name: "",
-	mobile: "",
-	email: "",
-	customer_id: "",
-	address: "",
-	customer_group_id: "",
-	reference_id: "",
-	credit_limit: "",
-	alternative_mobile: "",
-	location_id: "",
-	marketing_id: "",
-	discount_percent: "",
+	short_code: "",
 };
 
 export const getInitialValues = (t) => {
 	return {
 		initialValues,
-
 		validate: {
+			particular_module_id: (value) => {
+				if (!value) return t("ParticularModeValidationRequired");
+				return null;
+			},
 			name: hasLength({ min: 2, max: 20 }),
-			mobile: (value) => {
-				if (!value) return t("MobileValidationRequired");
-				return null;
-			},
-			email: (value) => {
-				if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-					return true;
-				}
-				return null;
-			},
 		},
 	};
 };

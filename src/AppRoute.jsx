@@ -566,6 +566,7 @@ function AppRoute() {
 					<Route path="cabin" element={<CabinIndex />} />
 					<Route path="cabin/:id" element={<CabinIndex mode={"edit"} />} />
 					<Route path="particular-mode" element={<ParticularModeIndex />} />
+					<Route path="particular-mode/:id" element={<ParticularModeIndex mode={"edit"} />} />
 					<Route path="particular-type" element={<ParticularTypeIndex />} />x
 					<Route path="category" element={<CategoryIndex />} />
 					<Route path="store-user" element={<StoreUserIndex />} />

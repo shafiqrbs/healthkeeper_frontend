@@ -160,10 +160,10 @@ export const MASTER_DATA_ROUTES = {
 
 		PARTICULAR_MODE: {
 			INDEX: "hospital/core/particular-mode",
-			CREATE: "hospital/core/particular-mode/create",
-			UPDATE: "hospital/core/particular-mode/update",
-			VIEW: "hospital/core/particular-mode/view",
-			DELETE: "hospital/core/particular-mode/delete",
+			CREATE: "hospital/core/particular-mode",
+			UPDATE: "hospital/core/particular-mode",
+			VIEW: "hospital/core/particular-mode",
+			DELETE: "hospital/core/particular-mode",
 		},
 
 		CATEGORY: {

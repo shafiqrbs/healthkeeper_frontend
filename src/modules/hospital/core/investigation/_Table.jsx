@@ -97,6 +97,18 @@ export default function _Table({ module, open }) {
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_INVESTIGATION_GROUP.UTILITY,
 	});
 
+	const { data: roomDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_ROOM.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_ROOM.UTILITY,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_ROOM.TYPE },
+	});
+
+	const { data: departmentDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_DEPARTMENT.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_DEPARTMENT.UTILITY,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_DEPARTMENT.TYPE },
+	});
+
 	const handleDelete = (id) => {
 		modals.openConfirmModal({
 			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
@@ -171,7 +183,9 @@ export default function _Table({ module, open }) {
 				price: item.price?.toString() || 0,
 				is_available: item?.is_available ?? false,
 				report_format: item?.report_format ?? false,
-				investigation_group_id: item.investigation_group_id?.toString() ?? "",
+				diagnostic_department_id: item.diagnostic_department_id?.toString() ?? "",
+				diagnostic_room_id: item.diagnostic_room_id?.toString() ?? "",
+
 			};
 
 			return acc;
@@ -297,17 +311,34 @@ export default function _Table({ module, open }) {
 							),
 						},
 						{
-							accessor: "investigation_group_id",
-							title: t("UnitName"),
+							accessor: "diagnostic_department_id",
+							title: t("Department"),
 							render: (item) => (
 								<Select
 									size="xs"
 									className={inlineInputCss.inputText}
-									placeholder={t("investigationGroupName")}
-									data={getInvestigationGroups}
-									value={submitFormData[item.id]?.investigation_group_id ?? ""}
+									placeholder={t("Department")}
+									data={departmentDropdown}
+									value={submitFormData[item.id]?.diagnostic_department_id ?? ""}
 									onChange={(val) => {
-										handleDataTypeChange(item.id, "investigation_group_id", val,true);
+										handleDataTypeChange(item.id, "diagnostic_department_id", val,true);
+									}}
+									rightSection={updatingRows[item.id]}
+								/>
+							),
+						},
+						{
+							accessor: "diagnostic_room_id",
+							title: t("Room"),
+							render: (item) => (
+								<Select
+									size="xs"
+									className={inlineInputCss.inputText}
+									placeholder={t("Room")}
+									data={roomDropdown}
+									value={submitFormData[item.id]?.diagnostic_room_id ?? ""}
+									onChange={(val) => {
+										handleDataTypeChange(item.id, "diagnostic_room_id", val,true);
 									}}
 									rightSection={updatingRows[item.id]}
 								/>

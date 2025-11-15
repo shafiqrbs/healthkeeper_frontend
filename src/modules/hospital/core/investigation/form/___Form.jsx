@@ -25,12 +25,26 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		utility: HOSPITAL_DROPDOWNS.CATEGORY.UTILITY,
 	});
 
+	const { data: roomDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_ROOM.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_ROOM.UTILITY,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_ROOM.TYPE },
+	});
+
+	const { data: departmentDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_DEPARTMENT.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_DEPARTMENT.UTILITY,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_DEPARTMENT.TYPE },
+	});
+
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
 				name: data.name,
 				category_id: data.category_id,
+				diagnostic_department_id: data.diagnostic_department_id,
+				diagnostic_room_id: data.diagnostic_room_id,
 				instruction: data.instruction,
 				sepcimen: data.sepcimen,
 				report_machine: data.report_machine,
@@ -77,7 +91,25 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 								<Stack>
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("Category")}</Text>
+											<Text fz="sm">{t("Department")}<RequiredAsterisk /></Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("CategoryValidateMessage")}
+												placeholder={t("Department")}
+												name="diagnostic_department_id"
+												id="diagnostic_department_id"
+												searchable="true"
+												nextField="category_id"
+												value={form.values.diagnostic_department_id}
+												dropdownValue={departmentDropdown}
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("Category")}<RequiredAsterisk /></Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -87,12 +119,13 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												name="category_id"
 												id="category_id"
 												searchable="true"
-												nextField="employee_id"
+												nextField="name"
 												value={form.values.category_id}
 												dropdownValue={categoryDropdown}
 											/>
 										</Grid.Col>
 									</Grid>
+
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
@@ -107,7 +140,25 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												required={false}
 												name="name"
 												id="name"
+												nextField="diagnostic_room_id"
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("Room")}<RequiredAsterisk /></Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("RoomValidateMessage")}
+												placeholder={t("Room")}
+												name="diagnostic_room_id"
+												id="diagnostic_room_id"
+												searchable="true"
 												nextField="price"
+												value={form.values.diagnostic_room_id}
+												dropdownValue={roomDropdown}
 											/>
 										</Grid.Col>
 									</Grid>
@@ -139,6 +190,22 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												required={false}
 												name="instruction"
 												id="instruction"
+												nextField=""
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("Sepcimen")}</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputForm
+												form={form}
+												tooltip={t("SepcimenValidateMessage")}
+												placeholder={t("Sepcimen")}
+												required={false}
+												name="sepcimen"
+												id="sepcimen"
 												nextField=""
 											/>
 										</Grid.Col>

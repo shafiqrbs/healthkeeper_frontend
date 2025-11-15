@@ -5,7 +5,7 @@ import { editEntityData } from "@/app/store/core/crudThunk";
 import { setFilterData, setSearchKeyword, setInsertType } from "@/app/store/core/crudSlice";
 import __Update from "./__Update";
 import __Create from "./__Create";
-import {CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES} from "@/constants/routes";
+import {CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
 import {CORE_NAV_LINKS} from "@/constants/mainDashboardLinks";
 
 export default function _IndexForm({ module, form, close, mode }) {
@@ -15,25 +15,25 @@ export default function _IndexForm({ module, form, close, mode }) {
 
 	// =============== selectors ================
 	const insertType = useSelector((state) => state.crud[module].insertType);
-	const vendorFilterData = useSelector((state) => state.crud[module].filterData);
 
 	// =============== memoized values ================
 	const isEditMode = mode === "edit";
 	const defaultFilterData = useMemo(
 		() => ({
+			particular_module_id: "",
 			name: "",
-			mobile: "",
-			company: "",
+			short_code: "",
 		}),
 		[]
 	);
+	console.log(insertType)
 
 	// =============== handle edit mode initialization ================
 	const handleEditMode = () => {
 		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PARTICULAR.UPDATE}/${id}`,
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MODE.VIEW}/${id}`,
 				module,
 			})
 		);
@@ -45,14 +45,10 @@ export default function _IndexForm({ module, form, close, mode }) {
 		dispatch(setSearchKeyword(""));
 		dispatch(
 			setFilterData({
-				module,
-				data: {
-					...vendorFilterData,
-					...defaultFilterData,
-				},
+				module
 			})
 		);
-		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR, { replace: true });
+		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR_MODE, { replace: true });
 	};
 
 	// =============== effect to handle mode switching ================
@@ -68,6 +64,5 @@ export default function _IndexForm({ module, form, close, mode }) {
 	if (insertType === "create") {
 		return <__Create module={module} form={form} close={close} />;
 	}
-
 	return <__Update module={module} form={form} close={close} />;
 }

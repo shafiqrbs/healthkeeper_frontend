@@ -9,8 +9,10 @@ import { IconCheck, IconAlertCircle } from "@tabler/icons-react";
 import { rem, Text } from "@mantine/core";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants";
 import useCustomerDataStoreIntoLocalStorage from "@hooks/local-storage/useCustomerDataStoreIntoLocalStorage";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import {MASTER_DATA_ROUTES} from "@/constants/routes";
 import Form from "./___Form";
+import {successNotification} from "@components/notification/successNotification";
+import {errorNotification} from "@components/notification/errorNotification";
 
 export default function __Create({ module, form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -28,15 +30,16 @@ export default function __Create({ module, form, close }) {
 			onConfirm: () => handleConfirmModal(values),
 		});
 	};
+
+
 	async function handleConfirmModal(values) {
 		try {
 			setIsLoading(true);
 			const value = {
-				url: HOSPITAL_DATA_ROUTES.API_ROUTES.CUSTOMER.CREATE,
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MODE.CREATE,
 				data: values,
 				module,
 			};
-
 			const resultAction = await dispatch(storeEntityData(value));
 			if (storeEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
@@ -48,30 +51,14 @@ export default function __Create({ module, form, close }) {
 					form.setErrors(errorObject);
 				}
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
-				useCustomerDataStoreIntoLocalStorage();
 				form.reset();
 				close(); // close the drawer
 				setIndexData(null);
 				dispatch(setRefetchData({ module, refetching: true }));
-				notifications.show({
-					color: SUCCESS_NOTIFICATION_COLOR,
-					title: t("CreateSuccessfully"),
-					icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-					loading: false,
-					autoClose: 1400,
-					style: { backgroundColor: "lightgray" },
-				});
+				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
-			console.error(error);
-			notifications.show({
-				color: ERROR_NOTIFICATION_COLOR,
-				title: error.message,
-				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-				loading: false,
-				autoClose: 2000,
-				style: { backgroundColor: "lightgray" },
-			});
+			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
 		} finally {
 			setIsLoading(false);
 		}

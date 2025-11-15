@@ -40,6 +40,7 @@ export const PHARMACY_DROPDOWNS = {
 export const HOSPITAL_DROPDOWNS = {
 	BY_MEAL: { UTILITY: "byMeal", PATH: "hospital/select/bymeal" },
 	DOSAGE: { UTILITY: "dosage", PATH: "hospital/select/dosage" },
+	PARTICULAR_MODULE: { UTILITY: "module", PATH: "hospital/select/module" },
 	PARTICULAR_TYPE: { UTILITY: "particularType", PATH: "hospital/select/particular-type" },
 	PARTICULAR_MASTER_TYPE: { UTILITY: "particularMasterType", PATH: "hospital/select/particular-master-type" },
 
@@ -61,6 +62,21 @@ export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_CONSULTANT: { UTILITY: "particularConsultant", TYPE: "consultant", PATH: "hospital/select/particular" },
 
 	PARTICULAR_MODE: { UTILITY: "particularOperationMode", TYPE: "operation", PATH: "hospital/select/mode" },
+
+
+	PARTICULAR_MODE_DIAGNOSTIC_ROOM: {
+		UTILITY: "particularDepartmentMode",
+		TYPE: "diagnostic-room",
+		PATH: "hospital/select/mode"
+	},
+	PARTICULAR_MODE_DIAGNOSTIC_DEPARTMENT: {
+		UTILITY: "particularRoomMode",
+		TYPE: "diagnostic-department",
+		PATH: "hospital/select/mode"
+	},
+
+
+
 	PARTICULAR_PRINT_MODE: { UTILITY: "particularLabReportModes", TYPE: "print", PATH: "hospital/select/mode" },
 	PARTICULAR_REPORT_MODE: {
 		UTILITY: "particularLabReportModes",

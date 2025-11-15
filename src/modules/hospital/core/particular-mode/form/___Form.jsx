@@ -15,25 +15,25 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
+
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 
 	const { data: particularTypeDropdown } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.PATH,
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_TYPE.UTILITY,
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODULE.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODULE.UTILITY,
 	});
-
+	console.log(data);
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
-				particular_type: data.particular_type,
-				name: data.name,
-				short_name: data.short_name,
+				particular_module_id: data?.particular_module_id,
+				name: data?.name,
+				short_code: data?.short_code,
 			});
 			setIndexData(data.id);
-
 			const timeoutId = setTimeout(() => {
 				setIsLoading(false);
 			}, 500);
@@ -68,12 +68,12 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 										<Grid.Col span={14}>
 											<SelectForm
 												form={form}
-												tooltip={t("CustomerGroupValidateMessage")}
-												placeholder={t("CustomerGroup")}
-												name="particular_type_id"
-												id="particular_type_id"
+												tooltip={t("ParticularModeValidateMessage")}
+												placeholder={t("ParticularMode")}
+												name="particular_module_id"
+												id="particular_module_id"
 												nextField="name"
-												value={form.values.particular_type_id}
+												value={form.values.particular_module_id}
 												dropdownValue={particularTypeDropdown}
 											/>
 										</Grid.Col>
@@ -81,36 +81,37 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("UserName")} <RequiredAsterisk />
+												{t("Name")} <RequiredAsterisk />
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
 												form={form}
-												tooltip={t("VendorNameValidateMessage")}
-												placeholder={t("UserName")}
+												tooltip={t("NameValidateMessage")}
+												placeholder={t("Name")}
 												required={true}
 												name="name"
 												id="name"
-												nextField="mobile"
+												value={form.values.name}
+												nextField="short_code"
 											/>
 										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("UserName")} <RequiredAsterisk />
+												{t("ShortCode")}
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
 												form={form}
-												tooltip={t("VendorNameValidateMessage")}
-												placeholder={t("UserName")}
+												tooltip={t("ShortNameValidateMessage")}
+												placeholder={t("ShortCode")}
 												required={true}
-												name="name"
-												id="name"
-												nextField="mobile"
+												name="short_code"
+												id="short_code"
+												value={form.values.short_code}
 											/>
 										</Grid.Col>
 									</Grid>

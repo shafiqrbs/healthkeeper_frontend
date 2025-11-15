@@ -15,7 +15,6 @@ export default function _IndexForm({ module, form, close, mode }) {
 
 	// =============== selectors ================
 	const insertType = useSelector((state) => state.crud[module].insertType);
-	const vendorFilterData = useSelector((state) => state.crud[module].filterData);
 
 	// =============== memoized values ================
 	const isEditMode = mode === "edit";
@@ -46,14 +45,10 @@ export default function _IndexForm({ module, form, close, mode }) {
 		dispatch(setSearchKeyword(""));
 		dispatch(
 			setFilterData({
-				module,
-				data: {
-					...vendorFilterData,
-					...defaultFilterData,
-				},
+				module
 			})
 		);
-		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED, { replace: true });
+		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION, { replace: true });
 	};
 
 	// =============== effect to handle mode switching ================
