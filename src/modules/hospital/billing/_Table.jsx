@@ -59,7 +59,7 @@ export default function _Table({ patient_mode }) {
 						onClick={() => handleAdmissionOverview(item.uid)}
 						my="xs"
 						bg={
-							Number(selectedPatientId) === item?.id
+							String(selectedPatientId) === String(item?.uid)
 								? "var(--theme-primary-color-0)"
 								: "var(--theme-tertiary-color-0)"
 						}

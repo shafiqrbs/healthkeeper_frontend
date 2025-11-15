@@ -1,12 +1,12 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select } from "@mantine/core";
+import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { IconCaretUpDownFilled, IconChevronUp, IconSelector } from "@tabler/icons-react";
+import { IconCaretUpDownFilled, IconChevronUp, IconSelector, IconX } from "@tabler/icons-react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -71,7 +71,7 @@ export default function InvoiceDetails({ entity }) {
 		},
 	});
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
-	const { id, transactionId } = useParams();
+	const { id } = useParams();
 	const [fetching, setFetching] = useState(false);
 	const [selectedRecords, setSelectedRecords] = useState([]);
 	const [investigationRecords, setInvestigationRecords] = useState([]);
@@ -99,7 +99,6 @@ export default function InvoiceDetails({ entity }) {
 				setFetching(false);
 			})();
 		}
-		// =============== investigationForm and roomForm are stable references from useForm, safe to include ================
 	}, [id]);
 
 	// =============== initialize local investigations from entity to allow local editing ================
@@ -111,6 +110,7 @@ export default function InvoiceDetails({ entity }) {
 				name: item.name ?? item.label ?? "",
 				quantity: item.quantity ?? 1,
 				price: item.price ?? 0,
+				is_new: false,
 			}))
 		);
 	}, [entity]);
@@ -121,22 +121,50 @@ export default function InvoiceDetails({ entity }) {
 		setRoomItems(initialItems);
 	}, [invoiceDetails]);
 
-	// =============== create submit handler bound to a specific form ================
-	const createSubmitHandler = (targetForm) => (values) => {
+	// =============== create submit handler bound to a specific form and payload source ================
+	const createSubmitHandler = (targetForm, payloadSource) => (values) => {
+		let jsonContent = [];
+
+		if (payloadSource === "investigation") {
+			const allInvestigationRecords = investigationRecords || [];
+			const currentSelectedRecords = selectedRecords || [];
+
+			jsonContent = allInvestigationRecords.map((record) => {
+				const isSelected = currentSelectedRecords.some(
+					(selectedRecord) => String(selectedRecord.id) === String(record.id)
+				);
+				return {
+					...record,
+					is_selected: isSelected,
+				};
+			});
+		} else if (payloadSource === "room") {
+			const allRoomItems = roomItems || [];
+			jsonContent = allRoomItems.map((item) => ({
+				...item,
+				is_selected: true,
+			}));
+		}
+
+		const extendedValues = {
+			...values,
+			json_content: jsonContent,
+		};
+
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleConfirmModal(values, targetForm),
+			onConfirm: () => handleConfirmModal(extendedValues, targetForm),
 		});
 	};
 
 	async function handleConfirmModal(values, targetForm) {
 		try {
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.UPDATE}/${transactionId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.UPDATE}/${id}`,
 				data: values,
 				module,
 			};
@@ -160,12 +188,30 @@ export default function InvoiceDetails({ entity }) {
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
+
+	const handleSelectedRecordsChange = (nextSelectedRecords) => {
+		const mandatoryRecords = investigationRecords?.filter((record) => record.is_new) || [];
+
+		const optionalSelectedRecords = nextSelectedRecords?.filter((record) => !record.is_new) || [];
+
+		const mergedSelectedRecords = [
+			...mandatoryRecords,
+			...optionalSelectedRecords.filter(
+				(optionalRecord) =>
+					!mandatoryRecords.some(
+						(mandatoryRecord) => String(mandatoryRecord.id) === String(optionalRecord.id)
+					)
+			),
+		];
+
+		setSelectedRecords(mergedSelectedRecords);
+	};
+
 	useHotkeys(
 		[
 			[
 				"alt+s",
 				() => {
-					// =============== try to click visible submit button for active tab form ================
 					const submitButton =
 						document.getElementById("EntityFormSubmitInvestigation") ||
 						document.getElementById("EntityFormSubmitRoom");
@@ -228,19 +274,53 @@ export default function InvoiceDetails({ entity }) {
 				name: selectedOption.label,
 				quantity: 1,
 				price: selectedOption.price ?? 0,
+				is_new: true,
 			};
 			return [...previousRecords, newRecord];
 		});
+
+		// =============== always keep newly added investigations selected ================
+		setSelectedRecords((previousSelectedRecords) => {
+			const isAlreadySelected = previousSelectedRecords.some(
+				(record) => String(record.id ?? record.value) === String(selectedOption.value)
+			);
+
+			if (isAlreadySelected) {
+				return previousSelectedRecords;
+			}
+
+			const latestRecord = {
+				id: selectedOption.value,
+				name: selectedOption.label,
+				quantity: 1,
+				price: selectedOption.price ?? 0,
+				is_new: true,
+			};
+
+			return [...previousSelectedRecords, latestRecord];
+		});
 	};
 
-	// =============== compute totals from local state ================
+	// =============== remove only newly added investigations from local state ================
+	const handleRemoveInvestigation = (investigationIdToRemove) => {
+		setInvestigationRecords((previousRecords) =>
+			previousRecords.filter((record) => String(record.id) !== String(investigationIdToRemove))
+		);
+
+		setSelectedRecords((previousSelectedRecords) =>
+			previousSelectedRecords.filter((record) => String(record.id) !== String(investigationIdToRemove))
+		);
+	};
+
+	// =============== compute totals from local state (only selected investigations) ================
 	const investigationSubtotal = useMemo(() => {
-		return (investigationRecords || []).reduce((accumulator, record) => {
+		const recordsToSum = (selectedRecords || []).length ? selectedRecords : [];
+		return recordsToSum.reduce((accumulator, record) => {
 			const quantity = Number(record?.quantity ?? 0);
 			const price = Number(record?.price ?? 0);
 			return accumulator + quantity * price;
 		}, 0);
-	}, [investigationRecords]);
+	}, [selectedRecords]);
 
 	const roomSubtotal = useMemo(() => {
 		return (roomItems || []).reduce((accumulator, item) => {
@@ -248,8 +328,6 @@ export default function InvoiceDetails({ entity }) {
 			return accumulator + subtotal;
 		}, 0);
 	}, [roomItems]);
-
-	// =============== grand total previously used for shared form; now totals are per-tab ================
 
 	return (
 		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -294,7 +372,11 @@ export default function InvoiceDetails({ entity }) {
 								pinFirstColumn
 								stripedColor="var(--theme-tertiary-color-1)"
 								selectedRecords={selectedRecords}
-								onSelectedRecordsChange={setSelectedRecords}
+								onSelectedRecordsChange={handleSelectedRecordsChange}
+								getRecordId={(record) => record.id}
+								selectionCheckboxProps={(record) => ({
+									disabled: record.is_new,
+								})}
 								selectionColumnStyle={{ minWidth: 80 }}
 								classNames={{
 									root: tableCss.root,
@@ -327,7 +409,23 @@ export default function InvoiceDetails({ entity }) {
 									{
 										accessor: "subtotal",
 										title: t("SubTotal"),
-										render: (record) => record?.price * record?.quantity ?? 0,
+										render: (record) => record?.price * record?.quantity || 0,
+									},
+									{
+										accessor: "actions",
+										title: t("Action"),
+										textAlignment: "center",
+										render: (record) =>
+											record.is_new ? (
+												<ActionIcon
+													color="red"
+													variant="subtle"
+													onClick={() => handleRemoveInvestigation(record.id)}
+												>
+													{/* =============== user can remove only newly added investigations ================ */}
+													<IconX size={16} />
+												</ActionIcon>
+											) : null,
 									},
 								]}
 								fetching={fetching}
@@ -350,7 +448,11 @@ export default function InvoiceDetails({ entity }) {
 								pb="xs"
 								bg="var(--mantine-color-white)"
 							>
-								<form onSubmit={investigationForm.onSubmit(createSubmitHandler(investigationForm))}>
+								<form
+									onSubmit={investigationForm.onSubmit(
+										createSubmitHandler(investigationForm, "investigation")
+									)}
+								>
 									<Box w="100%">
 										<Grid columns={18} gutter="xs">
 											<Grid.Col
@@ -566,7 +668,7 @@ export default function InvoiceDetails({ entity }) {
 									pb="xs"
 									bg="var(--mantine-color-white)"
 								>
-									<form onSubmit={roomForm.onSubmit(createSubmitHandler(roomForm))}>
+									<form onSubmit={roomForm.onSubmit(createSubmitHandler(roomForm, "room"))}>
 										<Box w="100%">
 											<Grid columns={18} gutter="xs">
 												<Grid.Col
