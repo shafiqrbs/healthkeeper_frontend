@@ -14,7 +14,7 @@ const getDataFromLocalStorage = (utility) => {
 	}
 };
 
-const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
+const useGlobalDropdownData = ({ path, utility, params = {}, type = null, identifierName = null }) => {
 	const dispatch = useDispatch();
 	const [dropdownData, setDropdownData] = useState([]);
 
@@ -107,6 +107,14 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null }) => {
 					return {
 						label: `${item.name} - ${item.label}`,
 						value: String(item.id),
+					};
+				}
+
+				if (identifierName === "investigation") {
+					return {
+						label: item.name,
+						value: String(item.id),
+						price: item.price ?? 0,
 					};
 				}
 

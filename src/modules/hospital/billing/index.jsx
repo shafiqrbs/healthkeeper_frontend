@@ -4,7 +4,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Flex, Grid, Text } from "@mantine/core";
+import { Box, Flex, Grid, SegmentedControl, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import Table from "./_Table";
 import Invoice from "./Invoice";
@@ -23,6 +23,7 @@ export default function Index() {
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const [diagnosticReport, setDiagnosticReport] = useState([]);
 	const [refetchBillingKey, setRefetchBillingKey] = useState(0);
+	const [type, setType] = useState("opd");
 
 	useEffect(() => {
 		if (id) {
@@ -36,9 +37,8 @@ export default function Index() {
 	}, [id, refetchBillingKey]);
 
 	const entity = diagnosticReport || {};
-	const  investigations = entity?.invoice_particular||[];
-	const  transactions = entity?.invoice_transaction||[];
-
+	const investigations = entity?.invoice_particular || [];
+	const transactions = entity?.invoice_transaction || [];
 
 	return (
 		<>
@@ -50,11 +50,31 @@ export default function Index() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" gutter="2" columns={24}>
 							<Grid.Col span={6} pos="relative" className="animate-ease-out">
-								<Box px="sm" py="md" bg="var(--mantine-color-white)">
+								<Flex
+									align="center"
+									justify="space-between"
+									px="sm"
+									py="md"
+									bg="var(--mantine-color-white)"
+								>
 									<Text fw={600} fz="sm">
 										{t("PatientInformation")}
 									</Text>
-								</Box>
+									<SegmentedControl
+										size="xs"
+										fullWidth
+										color="var(--theme-primary-color-6)"
+										value={type}
+										id="type"
+										name="type"
+										onChange={(val) => setType(val)}
+										data={[
+											{ label: t("OPD"), value: "opd" },
+											{ label: t("Emergency"), value: "emergency" },
+											{ label: t("IPD"), value: "ipd" },
+										]}
+									/>
+								</Flex>
 								<TabsWithSearch
 									tabList={["list"]}
 									module={module}
@@ -63,6 +83,7 @@ export default function Index() {
 											tab: "list",
 											component: (
 												<Table
+													type={type}
 													selectedId={id}
 													isOpenPatientInfo={isOpenPatientInfo}
 													setIsOpenPatientInfo={setIsOpenPatientInfo}
@@ -75,7 +96,10 @@ export default function Index() {
 							<Grid.Col span={18} className="animate-ease-out">
 								<Grid columns={18} gutter="2">
 									<Grid.Col span={6} className="animate-ease-out">
-										<Invoice transactions={transactions}  setRefetchBillingKey={setRefetchBillingKey} />
+										<Invoice
+											transactions={transactions}
+											setRefetchBillingKey={setRefetchBillingKey}
+										/>
 									</Grid.Col>
 									<Grid.Col span={12}>
 										<InvoiceDetails entity={entity} />

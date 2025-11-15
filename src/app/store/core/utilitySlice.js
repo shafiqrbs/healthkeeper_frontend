@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { getGlobalDropdown } from "./utilityThunk";
 
 export const CORE_DROPDOWNS = {
+	INVESTIGATION: { UTILITY: "investigation", TYPE: "investigation", PATH: "hospital/select/investigation" },
 	SETTING_TYPE: { UTILITY: "settingType", TYPE: "setting-type", PATH: "core/select/setting-type" },
 	EMPLOYEE: { UTILITY: "employee", TYPE: "employee", PATH: "core/select/user" },
 	VENDOR: { UTILITY: "vendor", TYPE: "vendor", PATH: "core/select/vendor" },
@@ -25,11 +26,9 @@ export const CORE_DROPDOWNS = {
 };
 
 export const ACCOUNTING_DROPDOWNS = {
-
 	ACCOUNT: { UTILITY: "account", TYPE: "sub-head", PATH: "accounting/select/head" },
 	ACCOUNT_LEDGER: { UTILITY: "accountLedger", TYPE: "ledger", PATH: "accounting/select/head" },
 	VOUCHER: { UTILITY: "voucher", TYPE: "voucher", PATH: "accounting/select/voucher" },
-
 };
 
 export const PHARMACY_DROPDOWNS = {
@@ -38,9 +37,7 @@ export const PHARMACY_DROPDOWNS = {
 	GENERIC: { UTILITY: "generic", PATH: "medicine/select/generic" },
 };
 
-
 export const HOSPITAL_DROPDOWNS = {
-
 	BY_MEAL: { UTILITY: "byMeal", PATH: "hospital/select/bymeal" },
 	DOSAGE: { UTILITY: "dosage", PATH: "hospital/select/dosage" },
 	PARTICULAR_TYPE: { UTILITY: "particularType", PATH: "hospital/select/particular-type" },
@@ -49,12 +46,16 @@ export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_ROOM: { UTILITY: "particularRoom", TYPE: "room", PATH: "hospital/select/particular" },
 
 	PARTICULAR_OPD_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/allopdroom" },
-	PARTICULAR_OPD_REFERRED_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/opdreferredroom" },
+	PARTICULAR_OPD_REFERRED_ROOM: {
+		UTILITY: "particularOpdRoom",
+		TYPE: "opd-room",
+		PATH: "hospital/select/opdreferredroom",
+	},
 
 	PARTICULAR_DOCTOR: {
 		UTILITY: "particularDoctor",
 		TYPE: "doctor",
-		PATH: "hospital/select/particular"
+		PATH: "hospital/select/particular",
 	},
 
 	PARTICULAR_CONSULTANT: { UTILITY: "particularConsultant", TYPE: "consultant", PATH: "hospital/select/particular" },
@@ -91,7 +92,11 @@ export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_GENDER_MODE: { UTILITY: "particularGenderModes", TYPE: "gender-mode", PATH: "hospital/select/mode" },
 	PARTICULAR_PAYMENT_MODE: { UTILITY: "particularPaymentModes", TYPE: "paying-mode", PATH: "hospital/select/mode" },
 	PARTICULAR_UNIT_MODE: { UTILITY: "particularPaymentModes", TYPE: "unit-group", PATH: "hospital/select/mode" },
-	PARTICULAR_INVESTIGATION_GROUP: { UTILITY: "particularPaymentModes", TYPE: "investigation-group", PATH: "hospital/select/mode" },
+	PARTICULAR_INVESTIGATION_GROUP: {
+		UTILITY: "particularPaymentModes",
+		TYPE: "investigation-group",
+		PATH: "hospital/select/mode",
+	},
 	PARTICULAR_CABIN_MODE: { UTILITY: "particularCabinModes", TYPE: "cabin-mode", PATH: "hospital/select/mode" },
 	CATEGORY: { UTILITY: "category", TYPE: "category", PATH: "hospital/select/category" },
 };
