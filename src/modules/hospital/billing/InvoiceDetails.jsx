@@ -333,6 +333,21 @@ export default function InvoiceDetails({ entity }) {
 		}, 0);
 	}, [roomItems]);
 
+	// =============== compute receive/due/return for investigation and room ================
+	const investigationAmountValue = Number(investigationForm.values.amount || 0);
+	const investigationDifference = investigationAmountValue - investigationSubtotal;
+	const isInvestigationDue = investigationDifference < 0;
+	const isInvestigationReturn = investigationDifference > 0;
+	const investigationDueAmount = isInvestigationDue ? Math.abs(investigationDifference) : 0;
+	const investigationReturnAmount = isInvestigationReturn ? investigationDifference : 0;
+
+	const roomAmountValue = Number(roomForm.values.amount || 0);
+	const roomDifference = roomAmountValue - roomSubtotal;
+	const isRoomDue = roomDifference < 0;
+	const isRoomReturn = roomDifference > 0;
+	const roomDueAmount = isRoomDue ? Math.abs(roomDifference) : 0;
+	const roomReturnAmount = isRoomReturn ? roomDifference : 0;
+
 	return (
 		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
@@ -491,7 +506,7 @@ export default function InvoiceDetails({ entity }) {
 														<Grid.Col span={12}>
 															<Flex align="right" gap="es">
 																<Text fz="xs">
-																	{invoiceDetails?.created_doctor_info?.name}
+																	{invoiceDetails?.created_doctor_info?.name || "N/A"}
 																</Text>
 															</Flex>
 														</Grid.Col>
@@ -516,15 +531,13 @@ export default function InvoiceDetails({ entity }) {
 												bg="var(--theme-secondary-color-0)"
 												px="xs"
 											>
-												<Grid align="center" columns={20}>
-													<Grid.Col span={10}>
-														<Flex justify="flex-end" align="center" gap="es">
-															<Text fz="sm" fw={"800"}>
-																{t("Receive")}
-															</Text>
-														</Flex>
+												<Grid align="center" gutter="3xs" columns={20}>
+													<Grid.Col span={5}>
+														<Text fz="sm" fw="800">
+															{t("Receive")}
+														</Text>
 													</Grid.Col>
-													<Grid.Col span={10}>
+													<Grid.Col span={8}>
 														<InputNumberForm
 															form={investigationForm}
 															label=""
@@ -534,6 +547,18 @@ export default function InvoiceDetails({ entity }) {
 															id="investigation-amount"
 															disabled={invoiceDetails?.process === "Done"}
 														/>
+													</Grid.Col>
+													<Grid.Col span={7}>
+														{isInvestigationDue && (
+															<Text fz="sm" c="red">
+																{t("Due")}: {investigationDueAmount}
+															</Text>
+														)}
+														{!isInvestigationDue && isInvestigationReturn && (
+															<Text fz="sm" c="green">
+																{t("Return")}: {investigationReturnAmount}
+															</Text>
+														)}
 													</Grid.Col>
 												</Grid>
 												<Box mt="xs">
@@ -555,7 +580,9 @@ export default function InvoiceDetails({ entity }) {
 															w="100%"
 															size="compact-sm"
 															bg="var(--theme-save-btn-color)"
-															disabled={invoiceDetails?.process === "Done"}
+															disabled={
+																invoiceDetails?.process === "Done" || isInvestigationDue
+															}
 														>
 															<Stack gap={0} align="center" justify="center">
 																<Text fz="xs">{t("Save")}</Text>
@@ -750,6 +777,16 @@ export default function InvoiceDetails({ entity }) {
 																id="room-amount"
 																disabled={invoiceDetails?.process === "Done"}
 															/>
+															{isRoomDue && (
+																<Text fz="xs" c="red">
+																	{t("Due")}: {roomDueAmount}
+																</Text>
+															)}
+															{!isRoomDue && isRoomReturn && (
+																<Text fz="xs" c="green">
+																	{t("Return")}: {roomReturnAmount}
+																</Text>
+															)}
 														</Grid.Col>
 													</Grid>
 													<Box mt="xs">
@@ -771,7 +808,9 @@ export default function InvoiceDetails({ entity }) {
 																w="100%"
 																size="compact-sm"
 																bg="var(--theme-save-btn-color)"
-																disabled={invoiceDetails?.process === "Done"}
+																disabled={
+																	invoiceDetails?.process === "Done" || isRoomDue
+																}
 															>
 																<Stack gap={0} align="center" justify="center">
 																	<Text fz="xs">{t("Save")}</Text>
