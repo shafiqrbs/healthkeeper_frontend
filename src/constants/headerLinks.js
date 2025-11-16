@@ -152,7 +152,7 @@ export const coreHeaderLinks = {
 		topBarLinks: [
 			{ link: "/pharmacy/core/generic", label: "Generic" },
 			{ link: "/pharmacy/core/medicine", label: "Medicine" },
-			{ link: "/pharmacy/stock", label: "Stock" },
+			{ link: "/pharmacy/core/stock", label: "Stock" },
 			{ link: "/pharmacy/stock-matrix", label: "Stock Matrix" },
 			{ link: "/pharmacy/core/workorder", label: "Workorder" },
 			{ link: "/pharmacy/core/store-indent", label: "Indent" },

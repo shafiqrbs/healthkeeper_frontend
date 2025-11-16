@@ -16,7 +16,7 @@ export default function __ViewDrawer({viewDrawer, setViewDrawer, module}) {
     };
 
     return (
-        <Drawer.Root opened={viewDrawer} position="right" onClose={closeDrawer} offset={16}>
+        <Drawer.Root opened={viewDrawer} size="xl" position="right" onClose={closeDrawer} offset={16}>
             <Drawer.Overlay/>
             <Drawer.Content>
                 <Drawer.Header className={"drawer-sticky-header"}>

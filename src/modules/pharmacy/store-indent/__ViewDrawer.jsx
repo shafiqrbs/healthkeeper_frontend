@@ -19,7 +19,7 @@ export default function __ViewDrawer({viewDrawer, height, setViewDrawer, module,
     const dispatch = useDispatch();
 
     const userRoles = getUserRole();
-    const ALLOWED_OPD_ROLES = ["pharmacy_approve","admin_administrator"];
+    const ALLOWED_OPD_ROLES = ["pharmacy_pharmacist","pharmacy_doctor","admin_administrator"];
     const canApprove = userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role));
 
     const closeDrawer = () => {

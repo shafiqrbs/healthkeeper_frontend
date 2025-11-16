@@ -45,6 +45,8 @@ import PharmacyStockIndex from "@modules/pharmacy/stock";
 import MedicineIndex from "@modules/pharmacy/medicine";
 import GenericIndex from "@modules/pharmacy/generic";
 import BillingIndex from "@modules/hospital/billing";
+import BillingAdmissionIndex from "@modules/hospital/billing/admission";
+import BillingRefundIndex from "@modules/hospital/billing/refund";
 import DoctorIndex from "@modules/hospital/core/doctor";
 import NurseIndex from "@modules/hospital/core/nurse";
 import LabUserIndex from "@modules/hospital/core/lab-user";
@@ -485,7 +487,67 @@ function AppRoute() {
 							</ProtectedRoute>
 						}
 					/>
+					<Route
+						path="billing/admission"
+						element={
+							<ProtectedRoute
+								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+							>
+								<BillingAdmissionIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="billing/admission/:id"
+						element={
+							<ProtectedRoute
+								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+							>
+								<BillingAdmissionIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="billing/admission/:id/payment/:transactionId"
+						element={
+							<ProtectedRoute
+								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+							>
+								<BillingAdmissionIndex />
+							</ProtectedRoute>
+						}
+					/>
 
+					<Route
+						path="billing/refund"
+						element={
+							<ProtectedRoute
+								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+							>
+								<BillingRefundIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="billing/refund/:id"
+						element={
+							<ProtectedRoute
+								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+							>
+								<BillingRefundIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="billing/refund/:id/payment/:transactionId"
+						element={
+							<ProtectedRoute
+								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+							>
+								<BillingRefundIndex />
+							</ProtectedRoute>
+						}
+					/>
 					<Route
 						path="final-billing"
 						element={

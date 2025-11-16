@@ -167,7 +167,7 @@ export default function __ViewDrawer({viewDrawer, setViewDrawer, module,height,r
                             )}
                         </Flex>
                     </Drawer.Title>
-                </Drawer.Header>s
+                </Drawer.Header>
             </Drawer.Content>
         </Drawer.Root>
     );

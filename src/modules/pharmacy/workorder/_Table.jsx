@@ -28,6 +28,7 @@ import {useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import {successNotification} from "@components/notification/successNotification.jsx";
 import {errorNotification} from "@components/notification/errorNotification.jsx";
+import {getUserRole} from "@utils/index";
 
 const PER_PAGE = 50;
 
@@ -41,6 +42,9 @@ export default function _Table({module}) {
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
     const height = mainAreaHeight - 48;
+    const userRoles = getUserRole();
+    const ALLOWED_PHARMACIST_ROLES = ["pharmacy_doctor","pharmacy_pharmacist","admin_administrator"];
+    const canApprove = userRoles.some((role) => ALLOWED_PHARMACIST_ROLES.includes(role));
 
     // for infinity table data scroll, call the hook
     const {
@@ -237,7 +241,7 @@ export default function _Table({module}) {
                                 <Group gap={4} justify="right" wrap="nowrap">
                                     <Button.Group>
                                         {
-                                            values.process === 'Created' && !values.approved_by_id &&
+                                            values.process === 'Created' && !values.approved_by_id && canApprove &&
                                             <Button
                                                 onClick={() => handleWorkOrderApproved(values.id)}
                                                 variant="filled"
@@ -254,7 +258,7 @@ export default function _Table({module}) {
                                         }
 
                                         {
-                                            values.process === 'Approved' && values.approved_by_id &&
+                                            values.process === 'Approved' && values.approved_by_id && canApprove &&
                                             <Button
                                                 onClick={() => handleWorkOrderReceived(values.id)}
                                                 variant="filled"

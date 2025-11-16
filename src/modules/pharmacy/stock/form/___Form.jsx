@@ -73,7 +73,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
-									<Grid align="center" columns={20} mt="3xs">
+									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("ParticularType")} <RequiredAsterisk />
@@ -93,7 +93,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
+									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Category")}</Text>
 										</Grid.Col>
@@ -110,7 +110,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
+									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("AssignEmployee")}</Text>
 										</Grid.Col>
@@ -127,7 +127,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
+									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("Name")} <RequiredAsterisk />
@@ -145,7 +145,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
+									<Grid align="center" columns={20} mt="xxxs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Instruction")}</Text>
 										</Grid.Col>

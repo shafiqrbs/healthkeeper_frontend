@@ -60,7 +60,7 @@ export default function Index({ mode }) {
 						)}
 						<Box bg="var(--mantine-color-white)" w="100%" p="xs" className="borderRadiusAll">
 							<CoreHeaderNavbar
-								module="pharmacy"
+								module="store"
 								pageTitle={t("ManageRequisition")}
 								roles={t("Roles")}
 								allowZeroPercentage=""

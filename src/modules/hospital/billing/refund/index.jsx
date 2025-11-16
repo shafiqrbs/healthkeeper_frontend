@@ -4,7 +4,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Flex, Grid, SegmentedControl, Text } from "@mantine/core";
+import { Box, Flex, Grid, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import Table from "./_Table";
 import Invoice from "./Invoice";
@@ -23,7 +23,6 @@ export default function Index() {
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const [diagnosticReport, setDiagnosticReport] = useState([]);
 	const [refetchBillingKey, setRefetchBillingKey] = useState(0);
-	const [type, setType] = useState("opd");
 
 	useEffect(() => {
 		if (id) {
@@ -36,9 +35,33 @@ export default function Index() {
 		}
 	}, [id, refetchBillingKey]);
 
+	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
+
 	const entity = diagnosticReport || {};
-	const investigations = entity?.invoice_particular || [];
-	const transactions = entity?.invoice_transaction || [];
+	const col1 = [
+		{ label: "Patient ID", value: safe(entity.patient_id) },
+		{ label: "Health ID", value: safe(entity.health_id) },
+		{ label: "Prescription ID", value: safe(entity.invoice) },
+	];
+
+	const col2 = [
+		{ label: "Name", value: safe(entity.name) },
+		{ label: "Mobile", value: safe(entity.mobile) },
+		{ label: "Gender", value: safe(entity.gender) },
+	];
+
+	const col3 = [
+		{ label: "Prescription Created", value: safe(entity.prescription_created) },
+		{ label: "Prescription ID", value: safe(entity.prescription_doctor_id) },
+		{ label: "Prescription Doctor", value: safe(entity.prescription_doctor_name) },
+	];
+
+	const col4 = [
+		{ label: "Process", value: safe(entity.process) },
+		{ label: "Created By", value: safe(entity.created_by_name ?? entity.created_by_user_name) },
+	];
+
+	const columns = [col1, col2, col3, col4];
 
 	return (
 		<>
@@ -50,31 +73,11 @@ export default function Index() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" gutter="2" columns={24}>
 							<Grid.Col span={6} pos="relative" className="animate-ease-out">
-								<Flex
-									align="center"
-									justify="space-between"
-									px="sm"
-									py="md"
-									bg="var(--mantine-color-white)"
-								>
+								<Box px="sm" py="md" bg="var(--mantine-color-white)">
 									<Text fw={600} fz="sm">
-										{t("BillingInformation")}
+										{t("PatientInformation")}
 									</Text>
-									<SegmentedControl
-										size="xs"
-										fullWidth
-										color="var(--theme-primary-color-6)"
-										value={type}
-										id="patient_mode"
-										name="patient_mode"
-										onChange={(val) => setType(val)}
-										data={[
-											{ label: t("OPD"), value: "opd" },
-											{ label: t("Emergency"), value: "emergency" },
-											{ label: t("IPD"), value: "ipd" },
-										]}
-									/>
-								</Flex>
+								</Box>
 								<TabsWithSearch
 									tabList={["list"]}
 									module={module}
@@ -83,7 +86,6 @@ export default function Index() {
 											tab: "list",
 											component: (
 												<Table
-													patient_mode={type}
 													selectedId={id}
 													isOpenPatientInfo={isOpenPatientInfo}
 													setIsOpenPatientInfo={setIsOpenPatientInfo}
@@ -96,13 +98,10 @@ export default function Index() {
 							<Grid.Col span={18} className="animate-ease-out">
 								<Grid columns={18} gutter="2">
 									<Grid.Col span={6} className="animate-ease-out">
-										<Invoice
-											transactions={transactions}
-											setRefetchBillingKey={setRefetchBillingKey}
-										/>
+										<Invoice entity={entity} setRefetchBillingKey={setRefetchBillingKey} />
 									</Grid.Col>
 									<Grid.Col span={12}>
-										<InvoiceDetails entity={entity} />
+										<InvoiceDetails />
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>

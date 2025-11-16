@@ -461,7 +461,7 @@ export default function InvoiceDetails({ entity }) {
 								}}
 							/>
 						</Box>
-						{invoiceDetails?.process == "done" && (
+						{invoiceDetails?.process !== "Done" && (
 							// =============== investigation-specific form: comment, display total, receive, submit ================
 							<Box
 								gap={0}

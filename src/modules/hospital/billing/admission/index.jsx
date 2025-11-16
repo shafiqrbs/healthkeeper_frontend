@@ -58,22 +58,9 @@ export default function Index() {
 									bg="var(--mantine-color-white)"
 								>
 									<Text fw={600} fz="sm">
-										{t("BillingInformation")}
+										{t("AdmissionBillingInformation")}
 									</Text>
-									<SegmentedControl
-										size="xs"
-										fullWidth
-										color="var(--theme-primary-color-6)"
-										value={type}
-										id="patient_mode"
-										name="patient_mode"
-										onChange={(val) => setType(val)}
-										data={[
-											{ label: t("OPD"), value: "opd" },
-											{ label: t("Emergency"), value: "emergency" },
-											{ label: t("IPD"), value: "ipd" },
-										]}
-									/>
+
 								</Flex>
 								<TabsWithSearch
 									tabList={["list"]}

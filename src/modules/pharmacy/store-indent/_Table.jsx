@@ -34,11 +34,6 @@ export default function _Table({module}) {
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
     const height = mainAreaHeight - 48;
-
-    const userRoles = getUserRole();
-    const ALLOWED_OPD_ROLES = ["pharmacy_approve","admin_administrator"];
-    const canApprove = userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role));
-
     // for infinity table data scroll, call the hook
     const {
         scrollRef,
@@ -161,24 +156,6 @@ export default function _Table({module}) {
                             render: (values) => (
                                 <Group gap={4} justify="right" wrap="nowrap">
                                     <Button.Group>
-                                        {values.process === 'Approved' && values.approved_by_id && canApprove &&
-                                            <Button
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    handleIndentReceived(values.id);
-                                                }}
-                                                variant="filled"
-                                                c="white"
-                                                bg="var(--theme-warn-color-6)"
-                                                size="xs"
-                                                radius="es"
-                                                leftSection={<IconDeviceFloppy size={16}/>}
-                                                className="border-left-radius-none"
-                                            >
-                                                {t("Issue")}
-                                            </Button>
-                                        }
-
                                         {values.process !== 'Received' && !values.received_by_id &&
                                             <Button
                                                 onClick={() => handleEntityEdit(values.uid)}
