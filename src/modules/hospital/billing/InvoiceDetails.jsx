@@ -454,7 +454,7 @@ export default function InvoiceDetails({ entity }) {
 								fetching={fetching}
 								loaderSize="xs"
 								loaderColor="grape"
-								height={mainAreaHeight - 206}
+								height={mainAreaHeight - 196}
 								sortIcons={{
 									sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 									unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,

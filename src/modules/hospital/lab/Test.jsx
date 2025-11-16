@@ -9,6 +9,7 @@ import Barcode from "react-barcode";
 import { useReactToPrint } from "react-to-print";
 import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
 import CustomDivider from "@components/core-component/CustomDivider";
+import {getDataWithoutStore} from "@/services/apiService";
 
 const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"];
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
@@ -40,10 +41,15 @@ export default function Test({ entity, isLoading }) {
 		requestAnimationFrame(printLabReport);
 	};
 
-	const handleBarcodeTag = (barcode) => {
+	async function handleBarcodeTag(barcode,reportId) {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.TAG_PRINT}/${reportId}`,
+		});
 		setBarcodeValue(barcode);
 		requestAnimationFrame(printBarCodeValue);
-	};
+	}
+
+
 
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -88,13 +94,13 @@ export default function Test({ entity, isLoading }) {
 															<Button
 																onClick={() => handleTest(item.invoice_particular_id)}
 																size="compact-xs"
-																bg="var(--theme-primary-color-6)"
+																bg="var(--theme-warn-color-6)"
 																color="white"
 															>
 																{t("Confirm")}
 															</Button>
 														)}
-													{item?.process === "Done" ? (
+													{item?.process === "Done" && (
 														<>
 															<Button
 																onClick={() => handleTest(item.invoice_particular_id)}
@@ -109,7 +115,7 @@ export default function Test({ entity, isLoading }) {
 																size="compact-xs"
 																bg="var(--theme-secondary-color-6)"
 																onClick={() =>
-																	handleLabReport(item.invoice_particular_id)
+																	handleLabReport(item?.invoice_particular_id)
 																}
 																color="white"
 																leftSection={<IconPrinter color="white" size={16} />}
@@ -117,10 +123,10 @@ export default function Test({ entity, isLoading }) {
 																{t("Print")}
 															</Button>
 														</>
-													) : (
+													) }{item?.process == "New" && (
 														<Button
 															leftSection={<IconTag stroke={1.2} size={12} />}
-															onClick={() => handleBarcodeTag(item.barcode)}
+															onClick={() => handleBarcodeTag(item?.barcode,item?.invoice_particular_id)}
 															size="compact-xs"
 															bg="var(--theme-secondary-color-6)"
 															color="white"

@@ -48,7 +48,7 @@ export default function _Table() {
 					<Grid
 						columns={12}
 						key={item.id}
-						onClick={() => handleAdmissionOverview(item.id)}
+						onClick={() => handleAdmissionOverview(item.uid)}
 						my="xs"
 						bg={
 							Number(selectedPatientId) === item?.id
@@ -64,7 +64,7 @@ export default function _Table() {
 
 								<Text
 									fz="sm"
-									onClick={() => handleView(item?.id)}
+									onClick={() => handleView(item?.uid)}
 									className="activate-link text-nowrap"
 								>
 									{formatDate(item?.created_at)}
@@ -84,7 +84,7 @@ export default function _Table() {
 								<Button.Group>
 									<ActionIcon
 										variant="filled"
-										onClick={() => handleAdmissionOverview(item.id)}
+										onClick={() => handleAdmissionOverview(item.uid)}
 										color="var(--theme-primary-color-6)"
 										radius="xs"
 										aria-label="Settings"

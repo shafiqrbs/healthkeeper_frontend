@@ -73,7 +73,7 @@ export default function Index() {
 									bg="var(--mantine-color-white)"
 								>
 									<Text fw={600} fz="sm">
-										{t("PatientInformation")}
+										{t("ManageDiagnostic")}
 									</Text>
 									<SegmentedControl
 										size="sm"

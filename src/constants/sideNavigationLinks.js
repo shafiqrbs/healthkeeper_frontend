@@ -178,15 +178,9 @@ export const sideNavigationLinks = {
 			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd"],
 		},
 
+
 		{
-			label: t("FreeService"),
-			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FREE_PATIENT.INDEX,
-			icon: IconBuildingHospital,
-			color: "#795548", // Brown
-			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd", "doctor_emergency", "doctor_opd"],
-		},
-		{
-			label: t("PatientWaiver"),
+			label: t("Waiver"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_WAIVER.INVOICE,
 			icon: IconMicroscopeOff,
 			color: "#9E9D24", // Olive
@@ -200,7 +194,7 @@ export const sideNavigationLinks = {
 				},
 				{
 					label: t("WaiverList"),
-					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_WAIVER.INDEX,
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_WAIVER.LIST,
 					icon: IconEmergencyBed,
 					allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd", "doctor_emergency", "doctor_opd"],
 				},

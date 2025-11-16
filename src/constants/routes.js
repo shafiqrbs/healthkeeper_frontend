@@ -604,6 +604,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "hospital/lab-investigation",
 			DELETE: "hospital/lab-investigation",
 			PRINT: "hospital/lab-investigation/print",
+			TAG_PRINT: "hospital/lab-investigation/sample-confirm",
 			INLINE_UPDATE: "hospital/lab-investigation/report/inline-update",
 		},
 		EPHARMA: {
@@ -695,6 +696,7 @@ export const HOSPITAL_DATA_ROUTES = {
 
 		PATIENT_WAIVER: {
 			INDEX: "/hospital/patient-waiver",
+			LIST: "/hospital/patient-waiver/list",
 			UPDATE: "/hospital/patient-waiver",
 			PROCESS: "/hospital/patient-waiver",
 			VIEW: "/hospital/patient-waiver",

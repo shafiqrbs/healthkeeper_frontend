@@ -273,7 +273,7 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 				</Button>
 			</Flex>
 			{id && transactions.length ? (
-				<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 62}>
+				<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 52}>
 					<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 					<Stack className="form-stack-vertical" p="xs" pos="relative">
 						{transactions?.map((item, index) => (
@@ -363,7 +363,7 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 					</Stack>
 				</ScrollArea>
 			) : (
-				<Stack h={mainAreaHeight - 62} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
+				<Stack h={mainAreaHeight - 52} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}
