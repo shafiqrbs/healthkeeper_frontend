@@ -46,12 +46,13 @@ export default function InvoiceDetails({ entity }) {
 		},
 		validate: {
 			amount: (value) => {
+				const hasValue = value !== "" && value !== null && value !== undefined;
 				const numericValue = Number(value);
-				if (!value || value === "" || isNaN(numericValue)) {
+				if (!hasValue) {
 					return t("EnterAmount") || "Amount is required";
 				}
-				if (numericValue <= 0) {
-					return t("AmountMustBeGreaterThanZero") || "Amount must be greater than 0";
+				if (Number.isNaN(numericValue)) {
+					return t("AmountMustBeNumber") || "Amount must be a number";
 				}
 				return null;
 			},
@@ -66,12 +67,13 @@ export default function InvoiceDetails({ entity }) {
 		},
 		validate: {
 			amount: (value) => {
+				const hasValue = value !== "" && value !== null && value !== undefined;
 				const numericValue = Number(value);
-				if (!value || value === "" || isNaN(numericValue)) {
+				if (!hasValue) {
 					return t("EnterAmount") || "Amount is required";
 				}
-				if (numericValue <= 0) {
-					return t("AmountMustBeGreaterThanZero") || "Amount must be greater than 0";
+				if (Number.isNaN(numericValue)) {
+					return t("AmountMustBeNumber") || "Amount must be a number";
 				}
 				return null;
 			},
@@ -336,17 +338,19 @@ export default function InvoiceDetails({ entity }) {
 	// =============== compute receive/due/return for investigation and room ================
 	const investigationAmountValue = Number(investigationForm.values.amount || 0);
 	const investigationDifference = investigationAmountValue - investigationSubtotal;
-	const isInvestigationDue = investigationDifference < 0;
-	const isInvestigationReturn = investigationDifference > 0;
+	const isInvestigationEqualZero = investigationSubtotal === 0 && investigationAmountValue === 0;
+	const isInvestigationDue = investigationDifference < 0 && !isInvestigationEqualZero;
+	const isInvestigationReturn = investigationDifference > 0 || isInvestigationEqualZero;
 	const investigationDueAmount = isInvestigationDue ? Math.abs(investigationDifference) : 0;
-	const investigationReturnAmount = isInvestigationReturn ? investigationDifference : 0;
+	const investigationReturnAmount = isInvestigationReturn ? Math.abs(investigationDifference) : 0;
 
 	const roomAmountValue = Number(roomForm.values.amount || 0);
 	const roomDifference = roomAmountValue - roomSubtotal;
-	const isRoomDue = roomDifference < 0;
-	const isRoomReturn = roomDifference > 0;
+	const isRoomEqualZero = roomSubtotal === 0 && roomAmountValue === 0;
+	const isRoomDue = roomDifference < 0 && !isRoomEqualZero;
+	const isRoomReturn = roomDifference > 0 || isRoomEqualZero;
 	const roomDueAmount = isRoomDue ? Math.abs(roomDifference) : 0;
-	const roomReturnAmount = isRoomReturn ? roomDifference : 0;
+	const roomReturnAmount = isRoomReturn ? Math.abs(roomDifference) : 0;
 
 	return (
 		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
