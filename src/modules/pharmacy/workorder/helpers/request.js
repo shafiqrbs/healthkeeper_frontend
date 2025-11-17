@@ -29,10 +29,6 @@ export const getWorkorderFormInitialValues = (t) => {
             grn: "",
 		},
 		validate: {
-			remark: (value) => {
-				if (!value) return t("CommentValidationRequired");
-				return null;
-			},
 			vendor_id: (value) => {
 				if (!value) return t("ChooseVendor");
 				return null;

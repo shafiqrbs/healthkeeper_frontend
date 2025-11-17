@@ -1,39 +1,35 @@
 const initialValues = {
-	stock_item_id: "",
-	quantity: "",
+    stock_item_id: "",
+    quantity: "",
 };
 
 export const getInitialValues = (t) => {
-	return {
-		initialValues,
-		validate: {
-			stock_item_id: (value) => {
-				if (!value) return t("MedicineValidationRequired");
-				return null;
-			},
-			quantity: (value) => {
-				if (!value) return t("QuantityValidationRequired");
-				return null;
-			},
-		},
-	};
+    return {
+        initialValues,
+        validate: {
+            stock_item_id: (value) => {
+                if (!value) return t("MedicineValidationRequired");
+                return null;
+            },
+            quantity: (value) => {
+                if (!value) return t("QuantityValidationRequired");
+                return null;
+            },
+        },
+    };
 };
 
 export const getRequisitionInitialValues = (t) => {
-	return {
-		initialValues: {
+    return {
+        initialValues: {
             notes: "",
             to_warehouse_id: "",
-		},
-		validate: {
-            notes: (value) => {
-				if (!value) return t("CommentValidationRequired");
-				return null;
-			},
+        },
+        validate: {
             to_warehouse_id: (value) => {
-				if (!value) return t("ChooseWarehouse");
-				return null;
-			},
-		},
-	};
+                if (!value) return t("ChooseWarehouse");
+                return null;
+            },
+        },
+    };
 };

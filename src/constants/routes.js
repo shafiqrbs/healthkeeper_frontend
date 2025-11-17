@@ -340,6 +340,7 @@ export const PHARMACY_DATA_ROUTES = {
 			INDEX: "pharmacy/stock",
 			STOCK_MATRIX: "pharmacy/stock-item/matrix",
 			INDEX_CATEGORY: "pharmacy/stock/category",
+			INDEX_CATEGORY_SCROLLING: "pharmacy/stock/category/scrolling",
 			GENERIC: "pharmacy/stock/generic",
 			CREATE: "pharmacy/stock",
 			UPDATE: "pharmacy/stock",

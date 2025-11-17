@@ -26,10 +26,7 @@ export const getRequisitionInitialValues = (t) => {
             to_warehouse_id: "",
 		},
 		validate: {
-            notes: (value) => {
-				if (!value) return t("CommentValidationRequired");
-				return null;
-			},
+
             to_warehouse_id: (value) => {
 				if (!value) return t("ChooseWarehouse");
 				return null;

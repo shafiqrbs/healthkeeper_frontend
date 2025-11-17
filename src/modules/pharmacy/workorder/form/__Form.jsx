@@ -24,7 +24,7 @@ import {
 	IconShoppingBag,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import { useDebouncedCallback, useDebouncedState } from "@mantine/hooks";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
@@ -40,6 +40,8 @@ import DateSelector from "@components/form-builders/DateSelector";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import genericClass from "@assets/css/Generic.module.css";
 import { MODULES_PHARMACY } from "@/constants";
+import DataTableFooter from "@components/tables/DataTableFooter.jsx";
+import {useSelector} from "react-redux";
 
 const module = MODULES_PHARMACY.STOCK;
 
@@ -50,9 +52,10 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	const { medicineData } = useMedicineData({ term: medicineTerm });
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight-24;
-	const itemFromHeight = mainAreaHeight - 142;
+	const itemFromHeight = mainAreaHeight - 180;
 	const [searchValue, setSearchValue] = useState("");
 	const [draftProducts, setDraftProducts] = useState([]);
+    const listData = useSelector((state) => state.crud[module].data);
 
 	const { data: vendorDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.VENDOR.PATH,
@@ -68,14 +71,41 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	useEffect(() => {
 		form.setFieldValue("category_id", categoryDropdown[3]?.value?.toString());
 	}, [categoryDropdown]);
+    async function handleWorkOrderAdd(values) {
+        if (!values || !values.stock_item_id) return;
 
-	async function handleWorkOrderAdd(values) {
-		setItems([...items, values]);
-		setDraftProducts((previousRecords) => delete previousRecords[values?.stock_item_id]);
-		setMedicineTerm("");
-	}
+        setItems((prevItems) => {
+            const existingIndex = prevItems.findIndex(
+                (item) => item.stock_item_id == values.stock_item_id
+            );
 
-	const handleWorkOrderDelete = (id) => {
+            if (existingIndex >= 0) {
+                // If exists, update quantity
+                const updatedItems = [...prevItems];
+                const oldQty = Number(updatedItems[existingIndex].quantity || 0);
+                const newQty = Number(values.quantity || 0);
+                updatedItems[existingIndex] = {
+                    ...updatedItems[existingIndex],
+                    quantity: newQty,
+                };
+                return updatedItems;
+            } else {
+                //If not exists, add new
+                return [...prevItems, values];
+            }
+        });
+
+        // Clear input & draft
+        setDraftProducts((prev) => {
+            const copy = { ...prev };
+            delete copy[values.stock_item_id];
+            return copy;
+        });
+        setMedicineTerm("");
+    }
+
+
+    const handleWorkOrderDelete = (id) => {
 		modals.openConfirmModal({
 			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
@@ -96,8 +126,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		form.reset();
 		workOrderForm.reset();
 	};
-
-	const productQuantities = () => {};
 
 	const handleRecordFieldChange = (stockItemId, fieldName, fieldValue) => {
 		setItems((previousRecords) =>
@@ -122,13 +150,13 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		[form.values.category_id]
 	);
 
-	const { records } = useInfiniteTableScroll({
-		module,
-		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INDEX_CATEGORY,
-		sortByKey: "created_at",
-		filterParams: memoizedFilterParameters,
-		direction: "desc",
-	});
+    const {records,scrollRef,handleScrollToBottom} = useInfiniteTableScroll({
+        module,
+        fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INDEX_CATEGORY_SCROLLING,
+        sortByKey: "created_at",
+        filterParams: memoizedFilterParameters,
+        direction: "desc",
+    });
 
 	useEffect(() => {
 		setProducts(records);
@@ -263,8 +291,11 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 							loaderSize="xs"
 							loaderColor="grape"
 							height={itemFromHeight}
+                            onScrollToBottom={handleScrollToBottom}
+                            scrollViewportRef={scrollRef}
 						/>
-					</Box>
+                        <DataTableFooter indexData={listData} module={module} />
+                    </Box>
 					<Box mt="2" className="" pl={"xs"} pt={"4"} pb={"6"}>
 						<Grid
 							className={genericClass.genericBackground}
@@ -327,85 +358,47 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 							<Grid.Col span={4}>
 								<Box pr={"xs"}>
 									<Button
-										onClick={() => {
-											const tempProducts = localStorage.getItem("temp-sales-products");
-											const storedProducts = tempProducts ? JSON.parse(tempProducts) : [];
-											const currentWarehouseId = form.values.warehouse_id
-												? Number(form.values.warehouse_id)
-												: null;
+                                        onClick={() => {
+                                            const newItems = [...items]; // existing items
+                                            let addedCount = 0;
 
-											let updatedProductQuantities = { ...productQuantities };
-											let updatedProducts = [...storedProducts];
-											let addedCount = 0;
+                                            Object.values(draftProducts).forEach((product) => {
+                                                const qty = Number(product.quantity || 0);
+                                                if (qty <= 0) return; // skip if quantity <= 0
 
-											products.forEach((product) => {
-												const quantityStr = productQuantities[product.id];
-												const quantityToAdd = Number(quantityStr);
+                                                const existingIndex = newItems.findIndex(
+                                                    (item) => item.stock_item_id == product.stock_item_id
+                                                );
 
-												if (quantityStr && !isNaN(quantityToAdd) && quantityToAdd > 0) {
-													const existingIndex = updatedProducts.findIndex(
-														(item) => item.product_id === product.id
-													);
+                                                if (existingIndex >= 0) {
+                                                    // Update quantity if exists
+                                                    newItems[existingIndex] = {
+                                                        ...newItems[existingIndex],
+                                                        quantity: qty,
+                                                    };
+                                                } else {
+                                                    // Add new item
+                                                    newItems.push(product);
+                                                }
 
-													if (existingIndex >= 0) {
-														// ✅ Update quantity & subtotal
-														const existingProduct = updatedProducts[existingIndex];
-														const newQuantity = existingProduct.quantity + quantityToAdd;
-														const newSubTotal = newQuantity * Number(product.sales_price);
+                                                addedCount++;
+                                            });
 
-														updatedProducts[existingIndex] = {
-															...existingProduct,
-															quantity: newQuantity,
-															sub_total: newSubTotal,
-														};
-													} else {
-														// ✅ Add new
-														const newProduct = {
-															product_id: product.id,
-															display_name: product.display_name,
-															sales_price: product.sales_price,
-															price: product.sales_price,
-															percent: "",
-															stock: product.quantity,
-															quantity: quantityToAdd,
-															unit_name: product.unit_name,
-															purchase_price: product.purchase_price,
-															sub_total: quantityToAdd * Number(product.sales_price),
-															unit_id: product.unit_id,
-															warehouse_id: currentWarehouseId,
-															warehouse_name: currentWarehouseId
-																? warehouseDropdownData.find(
-																		(w) => w.value === currentWarehouseId
-																  )?.label || null
-																: null,
-															bonus_quantity: 0,
-														};
-														updatedProducts.push(newProduct);
-													}
-
-													// ✅ Clear input field for this product
-													updatedProductQuantities[product.id] = "";
-													addedCount++;
-												}
-											});
-
-											if (addedCount > 0) {
-												localStorage.setItem(
-													"temp-sales-products",
-													JSON.stringify(updatedProducts)
-												);
-												setProductQuantities(updatedProductQuantities);
-												setLoadCardProducts(true);
-											} else {
-												notifications.show({
-													color: "red",
-													title: t("InvalidQuantity"),
-													message: t("PleaseEnterValidQuantity"),
-													autoClose: 1500,
-													withCloseButton: true,
-												});
-											}
-										}}
+                                            if (addedCount > 0) {
+                                                setItems(newItems);
+                                                // Clear draftProducts
+                                                setDraftProducts({});
+                                                setMedicineTerm("");
+                                            } else {
+                                                notifications.show({
+                                                    color: "red",
+                                                    title: t("InvalidQuantity"),
+                                                    message: t("PleaseEnterValidQuantity"),
+                                                    autoClose: 1500,
+                                                    withCloseButton: true,
+                                                });
+                                            }
+                                        }}
 										size="sm"
 										className={genericClass.invoiceAdd}
 										type="submit"

@@ -1,30 +1,27 @@
-import { useEffect, useState } from "react";
-import { useForm } from "@mantine/form";
-import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
-import { updateEntityData } from "@/app/store/core/crudThunk";
-import { modals } from "@mantine/modals";
-import { rem } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
+import {useEffect, useState} from "react";
+import {useForm} from "@mantine/form";
+import {useTranslation} from "react-i18next";
+import {useDispatch} from "react-redux";
+import {useNavigate, useParams} from "react-router-dom";
+import {PHARMACY_DATA_ROUTES} from "@/constants/routes";
+import {modals} from "@mantine/modals";
+import {rem, Text} from "@mantine/core";
+import {notifications} from "@mantine/notifications";
 import {
-    ERROR_NOTIFICATION_COLOR,
     MODULES_PHARMACY,
     SUCCESS_NOTIFICATION_COLOR,
 } from "@/constants";
-import { IconAlertCircle, IconCheck } from "@tabler/icons-react";
-import { getRequisitionInitialValues } from "../helpers/request";
+import {IconCheck} from "@tabler/icons-react";
+import {getRequisitionInitialValues} from "../helpers/request";
 import Form from "./__Form";
 
 const module = MODULES_PHARMACY.REQUISITION;
 
-export default function Update({ form, data }) {
+export default function Update({form, data}) {
     const [records, setRecords] = useState([]);
-    const { t } = useTranslation();
-    const { id } = useParams();
+    const {t} = useTranslation();
+    const {id} = useParams();
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const requisitionForm = useForm(getRequisitionInitialValues(t));
 
     useEffect(() => {
@@ -61,85 +58,23 @@ export default function Update({ form, data }) {
         const validation = requisitionForm.validate();
         if (validation.hasErrors) return;
 
-        // const action = values.action || "submit";
-        notifications.show({
-            color: SUCCESS_NOTIFICATION_COLOR,
-            title: t("UpdateSuccessfully"),
-            icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-            autoClose: 800,
-            onClose: () =>
-                navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX),
-        });
-        navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX)
-        /*modals.openConfirmModal({
+        modals.openConfirmModal({
             title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
-            children: (
-                <Text size="sm">
-                    {action === "approve"
-                        ? t("ConfirmApprovalMessage")
-                        : t("FormConfirmationMessage")}
-                </Text>
-            ),
-            labels: { confirm: t("Submit"), cancel: t("Cancel") },
-            confirmProps: { color: "red" },
+            children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+            labels: {confirm: t("Submit"), cancel: t("Cancel")},
+            confirmProps: {color: "red"},
             onConfirm: () => saveRequisitionUpdate(values),
-        });*/
+        });
     };
 
     async function saveRequisitionUpdate(values) {
-        modals.closeAll();
-        try {
-            const payload = {
-                ...values,
-                items: records.map((recordItem) => ({
-                    ...recordItem,
-                })),
-            };
-
-            const requestData = {
-                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.UPDATE}/${data.id}`,
-                data: payload,
-                module,
-            };
-
-            const result = await dispatch(updateEntityData(requestData));
-
-            if (updateEntityData.rejected.match(result)) {
-                const fieldErrors = result.payload?.errors;
-                if (fieldErrors) {
-                    form.setErrors(
-                        Object.fromEntries(
-                            Object.entries(fieldErrors).map(([key, value]) => [key, value[0]])
-                        )
-                    );
-                } else {
-                    notifications.show({
-                        color: ERROR_NOTIFICATION_COLOR,
-                        title: t("ServerError"),
-                        message: result.error?.message || t("UnexpectedError"),
-                        icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-                    });
-                }
-            } else if (updateEntityData.fulfilled.match(result)) {
-                notifications.show({
-                    color: SUCCESS_NOTIFICATION_COLOR,
-                    title: t("UpdateSuccessfully"),
-                    icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-                    autoClose: 800,
-                    onClose: () =>
-                        navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX),
-                });
-            }
-        } catch (error) {
-            console.error(error);
-            notifications.show({
-                color: ERROR_NOTIFICATION_COLOR,
-                title: t("ErrorOccurred"),
-                message: error.message,
-                icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-                autoClose: 800,
-            });
-        }
+        notifications.show({
+            color: SUCCESS_NOTIFICATION_COLOR,
+            title: t("UpdateSuccessfully"),
+            icon: <IconCheck style={{width: rem(18), height: rem(18)}}/>,
+            autoClose: 800,
+            onClose: () => navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX),
+        });
     }
 
     return (

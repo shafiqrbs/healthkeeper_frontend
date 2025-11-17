@@ -85,7 +85,7 @@ export default function Create({form}) {
                     icon: <IconCheck style={{width: rem(18), height: rem(18)}}/>,
                     autoClose: 800,
                     onClose: () =>
-                    navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX}`),
+                        navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX}`),
                 });
             }
         } catch (error) {

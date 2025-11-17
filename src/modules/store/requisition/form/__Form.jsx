@@ -38,6 +38,8 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import genericClass from "@assets/css/Generic.module.css";
 import {MODULES_PHARMACY} from "@/constants";
 import {notifications} from "@mantine/notifications";
+import DataTableFooter from "@components/tables/DataTableFooter.jsx";
+import {useSelector} from "react-redux";
 
 const module = MODULES_PHARMACY.REQUISITION;
 
@@ -47,7 +49,7 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
     const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
     const {mainAreaHeight} = useOutletContext();
     const height = mainAreaHeight-10;
-    const itemFromHeight = mainAreaHeight - 142;
+    const itemFromHeight = mainAreaHeight - 170;
     const [searchValue, setSearchValue] = useState("");
     const [draftProducts, setDraftProducts] = useState([]);
 
@@ -64,15 +66,12 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
         params: {type: "stockable"},
     });
 
+    const listData = useSelector((state) => state.crud[module].data);
+
+
     useEffect(() => {
         form.setFieldValue("category_id", categoryDropdown[3]?.value?.toString());
     }, [categoryDropdown]);
-
-    async function handleRequisitionAdd(values) {
-        setItems([...items, values]);
-        setDraftProducts((previousRecords) => delete previousRecords[values?.stock_item_id]);
-        setMedicineTerm("");
-    }
 
     const handleRequisitionDelete = (id) => {
         modals.openConfirmModal({
@@ -122,9 +121,9 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
         [form.values.category_id]
     );
 
-    const {records} = useInfiniteTableScroll({
+    const {records,scrollRef,handleScrollToBottom} = useInfiniteTableScroll({
         module,
-        fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INDEX_CATEGORY,
+        fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INDEX_CATEGORY_SCROLLING,
         sortByKey: "created_at",
         filterParams: memoizedFilterParameters,
         direction: "desc",
@@ -295,7 +294,10 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                             loaderSize="xs"
                             loaderColor="grape"
                             height={itemFromHeight}
+                            onScrollToBottom={handleScrollToBottom}
+                            scrollViewportRef={scrollRef}
                         />
+                        <DataTableFooter indexData={listData} module={module} />
                     </Box>
                     <Box mt="2" className="" pl={"xs"} pt={"4"} pb={"6"}>
                         <Grid

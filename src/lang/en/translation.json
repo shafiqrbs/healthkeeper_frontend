@@ -1556,5 +1556,9 @@
 	"ManageIndent": "Manage Indent",
 	"IndentNo": "Indent No",
 	"Indent": "Indent",
-	"PrintSection": "Print Section"
+	"PrintSection": "Print Section",
+    "ValidationError": "Validation Error",
+    "BatchItem": "Batch Item",
+    "XXXXX": "XXXX",
+    "XXXXX": "XXXX"
 }

@@ -16,33 +16,24 @@ import {
     IconAlertCircle,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
-import {useOutletContext} from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
-import {
-    ERROR_NOTIFICATION_COLOR,
-    MODULES_PHARMACY,
-} from "@/constants";
+import { ERROR_NOTIFICATION_COLOR, MODULES_PHARMACY } from "@/constants";
 import { notifications } from "@mantine/notifications";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import {updateEntityData} from "@/app/store/core/crudThunk.js";
-import {useDispatch} from "react-redux";
+import { updateEntityData } from "@/app/store/core/crudThunk.js";
+import { useDispatch } from "react-redux";
 
 const module = MODULES_PHARMACY.REQUISITION;
 
-export default function __Form({
-                                   form,
-                                   requisitionForm,
-                                   items,
-                                   setItems,
-                                   onSave,
-                               }) {
+export default function __Form({ form, requisitionForm, items, setItems, onSave }) {
     const { t } = useTranslation();
     const { mainAreaHeight } = useOutletContext();
     const height = mainAreaHeight - 10;
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     const { data: categoryDropdown } = useGlobalDropdownData({
         path: CORE_DROPDOWNS.CATEGORY.PATH,
@@ -61,13 +52,6 @@ export default function __Form({
     };
 
     const handleRecordFieldChange = async (id, stockItemId, fieldName, fieldValue) => {
-        /*setItems((previousRecords) =>
-            previousRecords.map((recordItem) =>
-                recordItem?.stock_item_id?.toString() === stockItemId?.toString()
-                    ? { ...recordItem, [fieldName]: fieldValue }
-                    : recordItem
-            )
-        );*/
         const requestData = {
             url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.INLINE_UPDATE}/${id}`,
             data: {
@@ -82,34 +66,11 @@ export default function __Form({
         await dispatch(updateEntityData(requestData));
     };
 
-    // ---- Validation before save/issue ----
-    const validateQuantities = () => {
-        for (const item of items) {
-            const selected = (item.purchase_items || []).find(
-                (p) => String(p.id) === String(item.purchase_item_id)
-            );
-
-            if (selected && Number(item.quantity) > Number(selected.remain_quantity)) {
-                notifications.show({
-                    color: ERROR_NOTIFICATION_COLOR,
-                    title: t("ValidationError"),
-                    message: `${item.name}: Issue quantity (${item.quantity}) exceeds remaining quantity (${selected.remain_quantity})`,
-                    icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-                });
-                return true;
-            }
-        }
-        return true;
+    const handleSubmit = () => {
+        requisitionForm.onSubmit(onSave);
     };
 
-    const handleSubmit = (action) => {
-        // if (!validateQuantities()) return;
-        // requisitionForm.setFieldValue("action", action);
-        requisitionForm.onSubmit(onSave)();
-    };
-
-    // ---- Components ----
-    function PurchaseItemSelect({ item }) {
+    function PurchaseItemSelect({ item, setItems, handleRecordFieldChange, t }) {
         const [purchaseItemValue, setPurchaseItemValue] = useState(
             String(item.purchase_item_id || "")
         );
@@ -129,82 +90,110 @@ export default function __Form({
                 onChange={(value) => {
                     const selected = selectData.find((p) => p.value === value);
                     const remain_quantity = selected ? selected.remain_quantity : 0;
-                    const quantity = Number(item.quantity) || 0;
+                    const reqQty = Number(item.quantity || 0);
 
-                    if (quantity <= remain_quantity) {
-                        setPurchaseItemValue(String(value ?? ""));
-                        handleRecordFieldChange(item?.id, item?.stock_item_id, "purchase_item_id", String(value ?? ""));
-                    } else {
+                    const newIssueQty = remain_quantity >= reqQty ? reqQty : 0;
+
+                    // frontend update
+                    setItems(prev =>
+                        prev.map(r =>
+                            r.id === item.id
+                                ? { ...r, quantity: newIssueQty, purchase_item_id: value }
+                                : r
+                        )
+                    );
+
+                    // backend update
+                    handleRecordFieldChange(item.id, item.stock_item_id, "purchase_item_id", value);
+                    handleRecordFieldChange(item.id, item.stock_item_id, "quantity", newIssueQty);
+
+                    // notification if stock < requested
+                    if (remain_quantity < reqQty) {
                         notifications.show({
                             color: ERROR_NOTIFICATION_COLOR,
                             title: t("ValidationError"),
-                            message: "Quantity must be less than or equal to remaining quantity",
+                            message: `Batch stock (${remain_quantity}) is less than request quantity (${reqQty}). Quantity set to 0.`,
                             icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
                         });
                     }
+
+                    setPurchaseItemValue(value);
                 }}
             />
         );
     }
 
-    function QuantityChange({ item }) {
-        const selectData = (item.purchase_items || []).map((pItem) => ({
-            label: `Expire: ${pItem.expired_date} (stock #${pItem.remain_quantity})`,
-            value: String(pItem.id),
-            remain_quantity: pItem.remain_quantity,
-        }));
+    function QuantityChange({ item, setItems, handleRecordFieldChange, t }) {
+        const [lastValidQuantity, setLastValidQuantity] = useState(item.quantity ?? 0);
+        const [localQty, setLocalQty] = useState(item.quantity ?? 0);
+
+        useEffect(() => {
+            setLocalQty(item.quantity ?? 0);
+            setLastValidQuantity(item.quantity ?? 0);
+        }, [item.quantity, item.id]);
+
+        const getSelectedRemain = () => {
+            const selected = (item.purchase_items || []).find(
+                (p) => String(p.id) === String(item.purchase_item_id)
+            );
+            return selected ? Number(selected.remain_quantity || 0) : 0;
+        };
+
+        const revertToLastValid = () => {
+            setLocalQty(lastValidQuantity);
+            setItems(prev =>
+                prev.map(r =>
+                    r.id === item.id ? { ...r, quantity: lastValidQuantity } : r
+                )
+            );
+        };
 
         return (
             <NumberInput
-                min={1}
+                min={0}
                 size="xs"
-                value={item?.quantity}
-                onBlur={(event) => {
-                    const inputValue = Number(event.currentTarget.value) || 0;
+                value={localQty}
+                onChange={(value) => setLocalQty(value ?? 0)}
+                onBlur={() => {
+                    const newQty = Number(localQty || 0);
 
-                    /*if (!item.purchase_item_id) {
+                    if (!item.purchase_item_id) {
                         notifications.show({
                             color: ERROR_NOTIFICATION_COLOR,
-                            title: t("ValidationError"),
-                            message: "Please select a purchase batch item first",
-                            icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+                            title: t?.("ValidationError"),
+                            message: t?.("Please select a purchase item batch first"),
                         });
+                        revertToLastValid();
                         return;
-                    }*/
+                    }
 
-                    const selected = selectData.find(
-                        (p) => p.value === String(item.purchase_item_id)
-                    );
-                    const remain_quantity = selected ? selected.remain_quantity : 0;
+                    const remainQty = getSelectedRemain();
 
-                    if (inputValue <= remain_quantity) {
-                        handleRecordFieldChange(
-                            item?.id,
-                            item?.stock_item_id,
-                            "quantity",
-                            String(inputValue)
-                        );
-                    } else {
+                    if (newQty > remainQty) {
                         notifications.show({
                             color: ERROR_NOTIFICATION_COLOR,
-                            title: t("ValidationError"),
-                            message: "Quantity must be less than or equal to remaining quantity",
-                            icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+                            title: t?.("ValidationError") ?? "Validation Error",
+                            message: t?.("Quantity cannot be greater than available stock", {
+                                remain: remainQty,
+                            }) ?? `Quantity cannot be greater than available stock (${remainQty})`,
                         });
-
-                        handleRecordFieldChange(
-                            item?.id,
-                            item?.stock_item_id,
-                            "quantity",
-                            String(inputValue)
-                        );
+                        revertToLastValid();
+                        return;
                     }
+
+                    // valid → update + backend call
+                    setLastValidQuantity(newQty);
+                    setItems(prev =>
+                        prev.map(r =>
+                            r.id === item.id ? { ...r, quantity: newQty } : r
+                        )
+                    );
+
+                    handleRecordFieldChange(item.id, item.stock_item_id, "quantity", String(newQty));
                 }}
             />
         );
     }
-
-
 
     return (
         <Grid columns={24} gutter={{ base: 8 }}>
@@ -231,11 +220,6 @@ export default function __Form({
                                 accessor: "name",
                                 title: t("MedicineName"),
                             },
-                            /*{
-                                accessor: "stock_quantity",
-                                title: t("CurrentStock"),
-                                render: (item) => item.stock_quantity,
-                            },*/
                             {
                                 accessor: "request_quantity",
                                 title: t("Quantity"),
@@ -243,13 +227,27 @@ export default function __Form({
                             },
                             {
                                 accessor: "purchase_item_id",
-                                title: t("PurchaseItem"),
-                                render: (item) => <PurchaseItemSelect item={item} />,
+                                title: t("BatchItem"),
+                                render: (item) => (
+                                    <PurchaseItemSelect
+                                        item={item}
+                                        setItems={setItems}
+                                        handleRecordFieldChange={handleRecordFieldChange}
+                                        t={t}
+                                    />
+                                ),
                             },
                             {
                                 accessor: "quantity",
                                 title: t("IssueQuantity"),
-                                render: (item) => <QuantityChange item={item} />,
+                                render: (item) => (
+                                    <QuantityChange
+                                        item={item}
+                                        setItems={setItems}
+                                        handleRecordFieldChange={handleRecordFieldChange}
+                                        t={t}
+                                    />
+                                ),
                             },
                         ]}
                         textSelectionDisabled
@@ -286,7 +284,7 @@ export default function __Form({
                                 </Button>
 
                                 <Button
-                                    onClick={() => handleSubmit("submit")}
+                                    onClick={() => requisitionForm.onSubmit(onSave)()}
                                     size="xs"
                                     leftSection={<IconDeviceFloppy size={20} />}
                                     type="button"
@@ -296,7 +294,6 @@ export default function __Form({
                                 >
                                     {t("Save")}
                                 </Button>
-
                             </Flex>
                         </Box>
                     </Box>
