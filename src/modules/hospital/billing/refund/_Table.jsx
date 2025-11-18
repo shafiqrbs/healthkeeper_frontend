@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
 
-export default function _Table() {
+export default function _Table({ patient_mode }) {
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
@@ -20,18 +20,19 @@ export default function _Table() {
 
 	const handleAdmissionOverview = (id) => {
 		setSelectedPatientId(id);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}`);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND.VIEW}/${id}`);
 	};
 
 	const { records, fetching } = useInfiniteTableScroll({
 		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INDEX,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND.INDEX,
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
 		direction: "desc",
 		filterParams: {
 			created: filterData.created,
 			term: filterData.keywordSearch,
+			patient_mode,
 		},
 	});
 
@@ -55,10 +56,10 @@ export default function _Table() {
 					<Grid
 						columns={12}
 						key={item.id}
-						onClick={() => handleAdmissionOverview(item.id)}
+						onClick={() => handleAdmissionOverview(item.uid)}
 						my="xs"
 						bg={
-							Number(selectedPatientId) === item?.id
+							String(selectedPatientId) === String(item?.uid)
 								? "var(--theme-primary-color-0)"
 								: "var(--theme-tertiary-color-0)"
 						}
@@ -91,7 +92,7 @@ export default function _Table() {
 								<Button.Group>
 									<ActionIcon
 										variant="filled"
-										onClick={() => handleAdmissionOverview(item.id)}
+										onClick={() => handleAdmissionOverview(item.uid)}
 										color="var(--theme-primary-color-6)"
 										radius="xs"
 										aria-label="Settings"

@@ -10,6 +10,7 @@ import { useReactToPrint } from "react-to-print";
 import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
 import CustomDivider from "@components/core-component/CustomDivider";
 import {getDataWithoutStore} from "@/services/apiService";
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
 
 const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"];
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
@@ -25,10 +26,12 @@ export default function Test({ entity, isLoading }) {
 	const [barcodeValue, setBarcodeValue] = useState("");
 	const labReportRef = useRef(null);
 	const [labReportData, setLabReportData] = useState(null);
+	const [customReportName, setCustomeReportName] = useState(null);
 
 	const printLabReport = useReactToPrint({
 		content: () => labReportRef.current,
 	});
+
 	const printBarCodeValue = useReactToPrint({
 		content: () => barCodeRef.current,
 	});
@@ -36,8 +39,12 @@ export default function Test({ entity, isLoading }) {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${reportId}`, { replace: true });
 	};
 
-	const handleLabReport = (id) => {
-		setLabReportData({ id });
+	const handleLabReport = async(id,reportSlug) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
+		});
+		setCustomeReportName(reportSlug);
+		setLabReportData(res?.data);
 		requestAnimationFrame(printLabReport);
 	};
 
@@ -45,7 +52,7 @@ export default function Test({ entity, isLoading }) {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.TAG_PRINT}/${reportId}`,
 		});
-		setBarcodeValue(barcode);
+		setBarcodeValue(reportId);
 		requestAnimationFrame(printBarCodeValue);
 	}
 
@@ -60,7 +67,7 @@ export default function Test({ entity, isLoading }) {
 			</Box>
 
 			{id ? (
-				<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 154} pos="relative">
+				<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 148} pos="relative">
 					<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 					<Stack className="form-stack-vertical" p="xs">
 						{test?.invoice_transaction?.map((transaction, index) => (
@@ -115,7 +122,7 @@ export default function Test({ entity, isLoading }) {
 																size="compact-xs"
 																bg="var(--theme-secondary-color-6)"
 																onClick={() =>
-																	handleLabReport(item?.invoice_particular_id)
+																	handleLabReport(item?.invoice_particular_id,'covid-19')
 																}
 																color="white"
 																leftSection={<IconPrinter color="white" size={16} />}
@@ -151,11 +158,15 @@ export default function Test({ entity, isLoading }) {
 
 			{/* ----------- barcode generator ---------- */}
 			<Box display="none">
-				<Box ref={barCodeRef}>
+				<Box ref={barCodeRef} mx='auto'>
 					<Barcode fontSize="10" width="1" height="30" value={barcodeValue || "BARCODETEST"} />
 				</Box>
 			</Box>
-			<LabReportA4BN data={labReportData} ref={labReportRef} />
+			{ customReportName === 'covid-19' ?
+				<LabReportA4BN data={labReportData}  ref={labReportRef} /> : customReportName === 'gene-sputum'
+					? <LabReportA4BN data={labReportData}  ref={labReportRef} /> : <LabReportA4BN data={labReportData}  ref={labReportRef} />
+			}
+
 		</Box>
 	);
 }

@@ -11,11 +11,9 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data?.entity || {};
 	const report = data?.invoiceParticular || {};
 	const { hospitalConfigData } = useHospitalConfigData();
-
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-
 	const renderImagePreview = (imageArray, fallbackSrc = null) => {
 		if (imageArray.length > 0) {
 			const imageUrl = URL.createObjectURL(imageArray[0]);
@@ -52,7 +50,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 					<Box mb="sm">
 						<Grid gutter="md">
 							<Grid.Col span={4}>
-								<Group ml="md" align="center" h="100%">
+								<Group ml="md" justify="flex-end" align="right" h="100%">
 									<Image src={GLogo} alt="logo" width={80} height={80} />
 								</Group>
 							</Grid.Col>
@@ -68,7 +66,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 								</Text>
 							</Grid.Col>
 							<Grid.Col span={4}>
-								<Group mr="md" justify="flex-end" align="center" h="100%">
+								<Group mr="md" justify="flex-start" align="center" h="100%">
 									<Image src={TBLogo} alt="logo" width={80} height={80} />
 								</Group>
 							</Grid.Col>
@@ -95,7 +93,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 												) : null}
 											</Table.Td>
 											<Table.Td w={"33%"} align={"center"}>
-												<Text fz={"xl"}>{report?.particular?.category?.name}</Text>
+												<Text fz={"xl"}>{report?.particular?.category?.name} Report</Text>
 											</Table.Td>
 											<Table.Td w={"33%"} align={"right"}>
 												{patientInfo?.patient_id ? (
@@ -155,7 +153,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 														<Text size="xs">{t("Collected")}</Text>
 													</Grid.Col>
 													<Grid.Col span={12} py={0}>
-														<Text size="xs">{getValue(patientInfo?.patient_id || "")}</Text>
+														<Text size="xs">{getValue(report?.collection_date || "")}</Text>
 													</Grid.Col>
 													<Grid.Col span={6} py={0}>
 														<Text size="xs">{t("Sample")}</Text>
@@ -172,7 +170,35 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 												</Grid>
 											</Table.Td>
 										</Table.Tr>
+										<Table.Tr>
+											<Table.Td>
+												<Grid columns={18} gap={0} gutter="xs">
+													<Grid.Col span={6} py={0}>
+														<Text size="xs">{t("Specimen")}</Text>
+													</Grid.Col>
+													<Grid.Col span={12} py={0}>
+														<Text size="xs">{getValue(report?.particular?.specimen || "")}</Text>
+													</Grid.Col>
+
+												</Grid>
+											</Table.Td>
+											<Table.Td>
+												<Grid columns={18} gutter="sm">
+													<Grid.Col span={6} py={0}>
+														<Text size="xs">{t("Collected Date")}</Text>
+													</Grid.Col>
+													<Grid.Col span={12} py={0}>
+														<Text size="xs">{getValue(report?.collection_date || "")}</Text>
+													</Grid.Col>
+
+												</Grid>
+											</Table.Td>
+										</Table.Tr>
+										<Table.Tr>
+										<Table.Td colSpan={'2'}><strong>Report Name:</strong> {report?.name}</Table.Td>
+										</Table.Tr>
 									</Table.Tbody>
+
 								</Table>
 							</Box>
 							<Box bd="1px solid var(--theme-tertiary-color-8)" mt={"md"}>

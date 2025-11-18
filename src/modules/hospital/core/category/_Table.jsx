@@ -39,6 +39,7 @@ export default function _Table({ module, open }) {
 		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.CATEGORY.INDEX,
 		filterParams: {
 			type: "category",
+			//category_nature: "service",
 			name: filterData?.name,
 			term: searchKeyword,
 		},

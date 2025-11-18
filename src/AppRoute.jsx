@@ -488,7 +488,7 @@ function AppRoute() {
 						}
 					/>
 					<Route
-						path="billing/admission"
+						path="billing-admission"
 						element={
 							<ProtectedRoute
 								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
@@ -498,7 +498,7 @@ function AppRoute() {
 						}
 					/>
 					<Route
-						path="billing/admission/:id"
+						path="billing-admission/:id"
 						element={
 							<ProtectedRoute
 								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
@@ -508,7 +508,7 @@ function AppRoute() {
 						}
 					/>
 					<Route
-						path="billing/admission/:id/payment/:transactionId"
+						path="billing-admission/:id/payment/:transactionId"
 						element={
 							<ProtectedRoute
 								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
@@ -519,7 +519,7 @@ function AppRoute() {
 					/>
 
 					<Route
-						path="billing/refund"
+						path="refund"
 						element={
 							<ProtectedRoute
 								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
@@ -529,7 +529,7 @@ function AppRoute() {
 						}
 					/>
 					<Route
-						path="billing/refund/:id"
+						path="refund/:id"
 						element={
 							<ProtectedRoute
 								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
@@ -539,7 +539,7 @@ function AppRoute() {
 						}
 					/>
 					<Route
-						path="billing/refund/:id/payment/:transactionId"
+						path="refund/:id/payment/:transactionId"
 						element={
 							<ProtectedRoute
 								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}

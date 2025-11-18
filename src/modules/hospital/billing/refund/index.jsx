@@ -4,7 +4,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Flex, Grid, Text } from "@mantine/core";
+import { Box, Flex, Grid, SegmentedControl, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import Table from "./_Table";
 import Invoice from "./Invoice";
@@ -13,7 +13,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 
-const module = MODULES.BILLING;
+const module = MODULES.REFUND;
 
 export default function Index() {
 	const { t } = useTranslation();
@@ -23,46 +23,20 @@ export default function Index() {
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const [diagnosticReport, setDiagnosticReport] = useState([]);
 	const [refetchBillingKey, setRefetchBillingKey] = useState(0);
+	const [type, setType] = useState("opd");
 
 	useEffect(() => {
 		if (id) {
 			(async () => {
 				const res = await getDataWithoutStore({
-					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INDEX}/${id}`,
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND.INDEX}/${id}`,
 				});
 				setDiagnosticReport(res?.data);
 			})();
 		}
 	}, [id, refetchBillingKey]);
 
-	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
-
 	const entity = diagnosticReport || {};
-	const col1 = [
-		{ label: "Patient ID", value: safe(entity.patient_id) },
-		{ label: "Health ID", value: safe(entity.health_id) },
-		{ label: "Prescription ID", value: safe(entity.invoice) },
-	];
-
-	const col2 = [
-		{ label: "Name", value: safe(entity.name) },
-		{ label: "Mobile", value: safe(entity.mobile) },
-		{ label: "Gender", value: safe(entity.gender) },
-	];
-
-	const col3 = [
-		{ label: "Prescription Created", value: safe(entity.prescription_created) },
-		{ label: "Prescription ID", value: safe(entity.prescription_doctor_id) },
-		{ label: "Prescription Doctor", value: safe(entity.prescription_doctor_name) },
-	];
-
-	const col4 = [
-		{ label: "Process", value: safe(entity.process) },
-		{ label: "Created By", value: safe(entity.created_by_name ?? entity.created_by_user_name) },
-	];
-
-	const columns = [col1, col2, col3, col4];
-
 	return (
 		<>
 			{progress !== 100 ? (
@@ -73,11 +47,31 @@ export default function Index() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" gutter="2" columns={24}>
 							<Grid.Col span={6} pos="relative" className="animate-ease-out">
-								<Box px="sm" py="md" bg="var(--mantine-color-white)">
+								<Flex
+									align="center"
+									justify="space-between"
+									px="sm"
+									py="md"
+									bg="var(--mantine-color-white)"
+								>
 									<Text fw={600} fz="sm">
-										{t("PatientInformation")}
+										{t("BillingInformation")}
 									</Text>
-								</Box>
+									<SegmentedControl
+										size="xs"
+										fullWidth
+										color="var(--theme-primary-color-6)"
+										value={type}
+										id="patient_mode"
+										name="patient_mode"
+										onChange={(val) => setType(val)}
+										data={[
+											{ label: t("OPD"), value: "opd" },
+											{ label: t("Emergency"), value: "emergency" },
+											{ label: t("IPD"), value: "ipd" },
+										]}
+									/>
+								</Flex>
 								<TabsWithSearch
 									tabList={["list"]}
 									module={module}
@@ -86,6 +80,7 @@ export default function Index() {
 											tab: "list",
 											component: (
 												<Table
+													patient_mode={type}
 													selectedId={id}
 													isOpenPatientInfo={isOpenPatientInfo}
 													setIsOpenPatientInfo={setIsOpenPatientInfo}
@@ -98,10 +93,12 @@ export default function Index() {
 							<Grid.Col span={18} className="animate-ease-out">
 								<Grid columns={18} gutter="2">
 									<Grid.Col span={6} className="animate-ease-out">
-										<Invoice entity={entity} setRefetchBillingKey={setRefetchBillingKey} />
+										<Invoice
+											entity={entity}
+										/>
 									</Grid.Col>
 									<Grid.Col span={12}>
-										<InvoiceDetails />
+										<InvoiceDetails entity={entity} />
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>

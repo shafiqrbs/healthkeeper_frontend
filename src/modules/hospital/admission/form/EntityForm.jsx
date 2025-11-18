@@ -129,13 +129,12 @@ export default function EntityForm({ form, module }) {
 
 			try {
 				const createdBy = JSON.parse(localStorage.getItem("user"));
-
 				const formValue = {
 					...form.values,
 					dob: formatDate(form.values.dob),
 					created_by_id: createdBy?.id,
+					days: form?.values?.days,
 				};
-
 				const data = {
 					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.UPDATE}/${id}`,
 					data: formValue,
@@ -157,6 +156,7 @@ export default function EntityForm({ form, module }) {
 						true
 					);
 					setRefetchData({ module, refetching: true });
+					console.log(skipRedirect)
 					if (!skipRedirect) {
 						navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX, { replace: true });
 					} else {

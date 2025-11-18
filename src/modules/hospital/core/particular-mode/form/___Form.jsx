@@ -24,7 +24,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODULE.PATH,
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODULE.UTILITY,
 	});
-	console.log(data);
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);

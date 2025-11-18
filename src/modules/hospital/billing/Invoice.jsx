@@ -27,7 +27,7 @@ import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@
 import { errorNotification } from "@components/notification/errorNotification";
 import { useDispatch, useSelector } from "react-redux";
 import useParticularsData from "@hooks/useParticularsData";
-import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
+import {IconArrowNarrowRight, IconCalendarWeek, IconCaretUpDownFilled, IconUser, IconX,IconBuildingHospital} from "@tabler/icons-react";
 import inputCss from "@assets/css/InputField.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import IPDAllPrint from "@hospital-components/print-formats/ipd/IPDAllPrint";
@@ -38,7 +38,7 @@ const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospita
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
 
-export default function Invoice({ transactions,setRefetchBillingKey }) {
+export default function Invoice({ entity,setRefetchBillingKey }) {
 	const invoicePrintRef = useRef(null);
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const { t } = useTranslation();
@@ -56,7 +56,9 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const ipdAllPrintRef = useRef(null);
 
-
+	const item = entity;
+	const transactions = entity?.invoice_transaction ||[];
+	console.log(item);
 	const printIPDAll = useReactToPrint({ content: () => ipdAllPrintRef.current });
 
 	const getRoomData = () => {
@@ -273,7 +275,59 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 				</Button>
 			</Flex>
 			{id && transactions.length ? (
-				<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 52}>
+				<>
+					<Grid
+						columns={12}
+						key={item.id}
+						onClick={() => handleAdmissionOverview(item.uid)}
+						my="xs"
+						bg={"var(--theme-secondary-color-2)"}
+						px="xs"
+						gutter="xs"
+					>
+						<Grid.Col span={6}>
+							<Flex align="center" gap="3xs">
+								<IconCalendarWeek size={16} stroke={1.5} />
+								<Text
+									fz="sm"
+									onClick={() => handleView(item?.id)}
+									className="activate-link text-nowrap"
+								>
+									{formatDate(item?.created_at)}
+								</Text>
+							</Flex>
+							<Flex align="center" gap="3xs">
+								<IconUser size={16} stroke={1.5} />
+								<Text fz="sm">{item.patient_id}</Text>
+							</Flex>
+							<Flex align="center" gap="3xs">
+								<IconBuildingHospital size={16} stroke={1.5} />
+								<Text fz="sm">{item.mode_name}</Text>
+							</Flex>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Flex justify="space-between" align="center" gap="3xs">
+								<Box>
+									<Text fz="sm">{item.name}</Text>
+									<Text fz="sm">{item.mobile}</Text>
+									<Text fz="sm">{item.payment_mode_name}</Text>
+								</Box>
+								<Button.Group>
+									<ActionIcon
+										variant="filled"
+										onClick={() => handleAdmissionOverview(item.uid)}
+										color="var(--theme-primary-color-6)"
+										radius="xs"
+										aria-label="Settings"
+									>
+										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
+									</ActionIcon>
+								</Button.Group>
+							</Flex>
+
+						</Grid.Col>
+					</Grid>
+					<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 138}>
 					<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 					<Stack className="form-stack-vertical" p="xs" pos="relative">
 						{transactions?.map((item, index) => (
@@ -362,6 +416,7 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 						))}
 					</Stack>
 				</ScrollArea>
+				</>
 			) : (
 				<Stack h={mainAreaHeight - 52} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
 					<Box>{t("NoPatientSelected")}</Box>

@@ -46,7 +46,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				diagnostic_department_id: data.diagnostic_department_id,
 				diagnostic_room_id: data.diagnostic_room_id,
 				instruction: data.instruction,
-				sepcimen: data.sepcimen,
+				specimen: data.specimen,
 				report_machine: data.report_machine,
 				investigation_room: data.investigation_room,
 				is_report_content: data.is_report_content,
@@ -196,16 +196,16 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("Sepcimen")}</Text>
+											<Text fz="sm">{t("specimen")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
 												form={form}
-												tooltip={t("SepcimenValidateMessage")}
-												placeholder={t("Sepcimen")}
+												tooltip={t("specimenValidateMessage")}
+												placeholder={t("specimen")}
 												required={false}
-												name="sepcimen"
-												id="sepcimen"
+												name="specimen"
+												id="specimen"
 												nextField=""
 											/>
 										</Grid.Col>

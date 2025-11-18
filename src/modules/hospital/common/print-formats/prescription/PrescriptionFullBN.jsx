@@ -209,7 +209,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 						<Table.Tbody>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colSpan={"6"}>
-									<Box mb="sm">
+									<Box>
 										<Flex gap="md" justify="center">
 											<Box>
 												<Group ml="md" align="center" h="100%">
@@ -323,7 +323,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td px={'0'}>
 									<Group gap="4xs">
 										<Text size="xs">
-											{t("Weight")}:
+											{t("Date")}:
 										</Text> <Text size="xs">{patientInfo?.created || ""}</Text>
 									</Group>
 								</Table.Td>

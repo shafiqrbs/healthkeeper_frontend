@@ -49,6 +49,7 @@ export const MODULES_CORE = {
 	PARTICULAR_MATRIX: "particular_matrix",
 	DASHBOARD_DAILY_SUMMARY: "dashboardDailySummary",
 	BILLING: "billing",
+	REFUND: "refund",
 };
 
 export const MODULES_PHARMACY = {

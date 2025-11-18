@@ -122,13 +122,13 @@ export const sideNavigationLinks = {
 				},
 				{
 					label: t("AdmissionBilling"),
-					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION_BILLING.INDEX,
 					icon: IconDashboard,
 					allowedRoles: ["operator_opd", "operator_manager", "operator_emergency"],
 				},
 				{
 					label: t("Refund"),
-					path: "/hospital/refund",
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND.INDEX,
 					icon: IconBuildingHospital,
 					allowedRoles: ["operator_opd", "operator_manager"],
 				},

@@ -2,7 +2,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useOutletContext, useParams } from "react-router-dom";
+import {useNavigate, useOutletContext, useParams} from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
@@ -34,6 +34,7 @@ export default function InvoiceDetails({ entity }) {
 	const [roomItems, setRoomItems] = useState([]);
 	const [selectKey, setSelectKey] = useState(0);
 	const [autocompleteValue, setAutocompleteValue] = useState("");
+	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
@@ -188,6 +189,7 @@ export default function InvoiceDetails({ entity }) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				setInvoiceDetails(resultAction.payload.data?.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				navigate(0);
 			}
 		} catch (error) {
 			console.error(error);
@@ -545,6 +547,7 @@ export default function InvoiceDetails({ entity }) {
 														<InputNumberForm
 															form={investigationForm}
 															label=""
+															size={'xs'}
 															tooltip={t("EnterAmount")}
 															placeholder={t("Amount")}
 															name="amount"
@@ -559,7 +562,7 @@ export default function InvoiceDetails({ entity }) {
 															</Text>
 														)}
 														{!isInvestigationDue && isInvestigationReturn && (
-															<Text fz="sm" c="green">
+															<Text fz="sm" c="red">
 																{t("Return")}: {investigationReturnAmount}
 															</Text>
 														)}

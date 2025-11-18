@@ -40,7 +40,7 @@ import IPDInvoicePosBN from "@hospital-components/print-formats/ipd/IPDInvoicePo
 
 const STATIC_OPD_ID = '613345863040';
 const STATIC_PRESCRIPTION_ID = '613345863040';
-const REPORT_ID = 274;
+const REPORT_ID = '558754359236';
 
 export default function Details() {
 	const { name } = useParams();

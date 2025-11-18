@@ -6,6 +6,7 @@ const initialValues = {
 	diagnostic_department_id: "",
 	diagnostic_room_id: "",
 	name: "",
+	specimen: "",
 	price: "",
 };
 

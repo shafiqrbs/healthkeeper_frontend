@@ -7,11 +7,13 @@ import { IconPrinter } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useReactToPrint } from "react-to-print";
+import {useParams} from "react-router";
 
 export default function ReportSubmission({ form, handleSubmit, diagnosticReport }) {
 	const labReportRef = useRef(null);
 	const { t } = useTranslation();
 	const [labReportData, setLabReportData] = useState(null);
+	const {reportId} = useParams()
 
 	const printLabReport = useReactToPrint({
 		content: () => labReportRef.current,
@@ -21,7 +23,6 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
 		});
-		console.log(res);
 		setLabReportData(res?.data);
 		requestAnimationFrame(printLabReport);
 	};
@@ -29,7 +30,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 	return (
 		<Stack gap={0} justify="space-between" mt="xs">
 			<form onSubmit={form.onSubmit(handleSubmit)}>
-				<Box p="sm" px="md" bg="var(--theme-tertiary-color-1)">
+				<Box px="md" bg="var(--theme-tertiary-color-2)">
 					<Grid columns={12}>
 						<Grid.Col span={10} className="animate-ease-out">
 							<Box w="100%">
@@ -49,10 +50,10 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 							</Box>
 						</Grid.Col>
 						<Grid.Col span={2}>
-							<Box mt="xs">
+							<Box>
 								{diagnosticReport?.process === "Done" && (
 									<Flex
-										mih={50}
+										mt={'les'}
 										gap="xs"
 										justify="flex-start"
 										align="center"
@@ -60,8 +61,8 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										wrap="wrap"
 									>
 										<Button
-											onClick={() => handleLabReport(diagnosticReport?.id)}
-											size="xs"
+											onClick={() => handleLabReport(reportId)}
+											size="md"
 											color="var(--theme-secondary-color-5)"
 											type="button"
 											id="EntityFormSubmit"
@@ -76,11 +77,12 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										</Button>
 									</Flex>
 								)}
-								<Flex mih={50} gap="xs" justify="flex-end" align="center" direction="row" wrap="wrap">
+								<Flex mt={'les'} justify="center" align="flex-start"
+									   direction="row" wrap="wrap">
 									{diagnosticReport?.process === "New" && (
-										<Button size="xs" className="btnPrimaryBg" type="submit" id="handleSubmit">
+										<Button size="md" className="btnPrimaryBg" type="submit" id="handleSubmit">
 											<Flex direction="column" gap={0}>
-												<Text fz="xs">{t("Save")}</Text>
+												<Text fz="md">{t("Save")}</Text>
 												<Flex direction="column" align="center" fz="2xs" c="white">
 													alt+s
 												</Flex>
@@ -89,7 +91,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 									)}
 									{diagnosticReport?.process === "In-progress" && (
 										<Button
-											size="xs"
+											size="md"
 											fz={"xs"}
 											bg="var(--theme-primary-color-6)"
 											type="submit"

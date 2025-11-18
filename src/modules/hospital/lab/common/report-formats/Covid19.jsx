@@ -133,8 +133,9 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 	}
 
 	return (
+		<>
 		<Box className="border-top-none" px="sm" mt="xs">
-			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
+			<ScrollArea h={mainAreaHeight - 232} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
 					{/* =============== date specimen collection =============== */}
 					<Group grow>
@@ -351,7 +352,9 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 					{/* =============== text date =============== */}
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+
 		</Box>
+	    <ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+		</>
 	);
 }

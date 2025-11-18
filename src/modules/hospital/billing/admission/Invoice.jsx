@@ -324,17 +324,7 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 								<Flex align="center" gap="sm" mt={"md"} justify="flex-end">
 									{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
 										<>
-											{item?.process === "New" &&
-												userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
-													<Button
-														onClick={() => handleTest(item.hms_invoice_transaction_id)}
-														size="compact-xs"
-														bg="var(--theme-primary-color-6)"
-														color="white"
-													>
-														{t("Process")}
-													</Button>
-												)}
+
 											{item?.process === "Done" && (
 												<>
 													<Button

@@ -194,6 +194,7 @@ const ReportRenderer = forwardRef(
 		}
 
 		return (
+			<>
 			<Box className="border-top-none" px="sm" mt={"xs"}>
 				<DataTable
 					striped
@@ -222,21 +223,19 @@ const ReportRenderer = forwardRef(
 						{
 							accessor: "result",
 							title: t("Result"),
-							render: (item) =>
+							render: (item, rowIndex) =>
 								diagnosticReport.process === "Done" ? (
 									item.result
 								) : (
 									<TextInput
 										size="xs"
 										fz="xs"
-										value={item?.result}
-										ref={(el) => {
-											if (inputsRef?.current) {
-												inputsRef.current[item.id] = el;
-											}
-										}}
-										onKeyDown={(e) => handleKeyDown(e, item.id)}
-										onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}
+										value={item.result}
+										ref={(el) => (inputsRef.current[rowIndex] = el)}
+										onKeyDown={(e) => handleKeyDown(e, rowIndex)}
+										onBlur={(e) =>
+											handleFieldChange(item.id, "result", e.target.value)
+										}
 									/>
 								),
 						},
@@ -251,21 +250,21 @@ const ReportRenderer = forwardRef(
 					]}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={mainAreaHeight - 315}
+					height={mainAreaHeight - 232}
 					fetching={fetching}
 					sortIcons={{
 						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 					}}
 				/>
-
-				<ReportSubmission
-					diagnosticReport={diagnosticReport}
-					setDiagnosticReport={setDiagnosticReport}
-					form={form}
-					handleSubmit={handleSubmit}
-				/>
 			</Box>
+			<ReportSubmission
+				diagnosticReport={diagnosticReport}
+				setDiagnosticReport={setDiagnosticReport}
+				form={form}
+				handleSubmit={handleSubmit}
+			/>
+			</>
 		);
 	}
 );

@@ -29,15 +29,21 @@ export default function IpdActionButtons({
 	const isOpdRedirect = item?.parent_patient_mode_slug === "opd";
 	const { hospitalConfigData } = useHospitalConfigData();
 	const { t } = useTranslation();
+	const [quantity, setQuantity] = useState(3);
 	const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
 	const [openedDetails, { open: openDetails, close: closeDetails }] = useDisclosure(false);
 
-	const enteredAmount = Number(item?.total ?? 0);
+	const subTotal = (quantity * entities?.[0].price)
+	const enteredAmount = Number(subTotal + entities?.[1].price ?? 0);
 	const remainingBalance = configuredDueAmount - enteredAmount;
 	const isReturn = remainingBalance < 0;
-	const displayLabelKey = isReturn ? "Return" : "Due";
+	const displayLabelKey = "Due";
 	const displayAmount = Math.abs(remainingBalance);
+	useEffect(() => {
+		form.setFieldValue("days", quantity);
+	},[quantity])
+	console.log(subTotal)
 
 	useEffect(() => {
 		let price = Number(hospitalConfigData?.hospital_config?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
@@ -119,7 +125,7 @@ export default function IpdActionButtons({
 									</Grid.Col>
 									<Grid.Col span={4}>
 										{index === 0 ? (
-											<NumberInput mt="-sm" size="xs" fz="xs" py="xs" value={entity?.quantity} />
+											<NumberInput onChange={setQuantity} mt="-sm" size="xs" fz="xs" py="xs" value={quantity} />
 										) : (
 											<Text fz="xs">{entity?.quantity}</Text>
 										)}
@@ -129,11 +135,61 @@ export default function IpdActionButtons({
 									</Grid.Col>
 									<Grid.Col span={4}>
 										<Flex justify="space-between" align="center">
-											<Text fz="xs">{entity?.sub_total}</Text>
+											{index === 0 ? (
+												<Text fz="xs">{subTotal}</Text>
+											) : (
+												<Text fz="xs">{entity?.sub_total}</Text>
+											)}
 										</Flex>
 									</Grid.Col>
+
 								</Grid>
 							))}
+
+						</Grid.Col>
+						<Grid.Col span={6} bg="var(--theme-primary-color-0)" px="xs">
+							<Stack gap="0" className="method-carousel">
+								<Box bg="var(--theme-secondary-color-0)" p="xs">
+									<Text fw={600} fz="sm" >
+										{t("BillSummary")}
+									</Text>
+								</Box>
+								{hospitalConfigData?.is_multi_payment ? (
+									<PaymentMethodsCarousel
+										selectPaymentMethod={selectPaymentMethod}
+										paymentMethod={paymentMethod}
+									/>
+								) : null}
+								<Flex gap="xss" align="center" justify="space-between">
+									<Text>{t("TotalAmount")}</Text>
+									<Box px="xs" py="les">
+										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
+											৳ {Number(enteredAmount || 0).toLocaleString()}
+										</Text>
+									</Box>
+								</Flex>
+								{/*<Flex align="center" justify="space-between">
+									<Text>Receive</Text>
+									<Box w="100px">
+										<InputNumberForm
+											disabled={isOpdRedirect}
+											id="amount"
+											form={form}
+											tooltip={t("EnterAmount")}
+											placeholder={t("Amount")}
+											name="amount"
+										/>
+									</Box>
+								</Flex>*/}
+								<Flex align="center" justify="space-between">
+									<Text>{t(displayLabelKey)}</Text>
+									<Box px="xs" py="les">
+										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
+											৳ {Number(enteredAmount || 0).toLocaleString()}
+										</Text>
+									</Box>
+								</Flex>
+							</Stack>
 						</Grid.Col>
 						<Grid.Col span={6} bg="var(--theme-secondary-color-0)" px="xs" pt="md">
 							<Box>
@@ -179,45 +235,7 @@ export default function IpdActionButtons({
 								</Flex>
 							</Box>
 						</Grid.Col>
-						<Grid.Col span={6} bg="var(--theme-primary-color-0)" px="xs">
-							<Stack gap="0" className="method-carousel">
-								{hospitalConfigData?.is_multi_payment ? (
-									<PaymentMethodsCarousel
-										selectPaymentMethod={selectPaymentMethod}
-										paymentMethod={paymentMethod}
-									/>
-								) : null}
-								<Flex gap="xss" align="center" justify="space-between">
-									<Text>{t("Fee")}</Text>
-									<Box px="xs" py="les">
-										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
-											৳ {Number(item?.total || 0).toLocaleString()}
-										</Text>
-									</Box>
-								</Flex>
-								<Flex align="center" justify="space-between">
-									<Text>Receive</Text>
-									<Box w="100px">
-										<InputNumberForm
-											disabled={isOpdRedirect}
-											id="amount"
-											form={form}
-											tooltip={t("EnterAmount")}
-											placeholder={t("Amount")}
-											name="amount"
-										/>
-									</Box>
-								</Flex>
-								<Flex align="center" justify="space-between">
-									<Text>{t(displayLabelKey)}</Text>
-									<Box px="xs" py="les">
-										<Text fz="sm" fw={600} style={{ textWrap: "nowrap" }}>
-											৳ {Number(displayAmount || 0).toLocaleString()}
-										</Text>
-									</Box>
-								</Flex>
-							</Stack>
-						</Grid.Col>
+
 					</Grid>
 					<Box mt={"md"}>
 						<Button.Group>
@@ -273,7 +291,7 @@ export default function IpdActionButtons({
 								id="EntityFormSubmit"
 								w="100%"
 								bg="var(--theme-save-btn-color)"
-								onClick={handleSubmit}
+								onClick={()=>handleSubmit()}
 								loading={isSubmitting}
 								disabled={isSubmitting}
 							>

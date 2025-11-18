@@ -20,7 +20,7 @@ export default function _Table({ patient_mode }) {
 
 	const handleAdmissionOverview = (id) => {
 		setSelectedPatientId(id);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}`);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION_BILLING.VIEW}/${id}`);
 	};
 
 	const { records, fetching } = useInfiniteTableScroll({
@@ -32,7 +32,7 @@ export default function _Table({ patient_mode }) {
 		filterParams: {
 			created: filterData.created,
 			term: filterData.keywordSearch,
-			patient_mode:'confirmed',
+			admission_billing:'billing',
 		},
 	});
 
@@ -50,7 +50,7 @@ export default function _Table({ patient_mode }) {
 					Patient Name
 				</Text>
 			</Flex>
-			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
+			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 152} scrollbars="y" px="3xs">
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid

@@ -532,6 +532,15 @@ export const HOSPITAL_DATA_ROUTES = {
 			DELETE: "hospital/billing",
 		},
 
+		REFUND: {
+			INDEX: "hospital/refund",
+			CREATE: "hospital/refund",
+			UPDATE: "hospital/refund",
+			VIEW: "hospital/refund",
+			DELETE: "hospital/refund",
+			PAYMENT: "hospital/refund",
+		},
+
 		PATIENT_WAIVER: {
 			INDEX: "hospital/patient-waiver",
 			INVOICE: "hospital/patient-waiver/invoice",
@@ -721,6 +730,18 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "/hospital/billing",
 			UPDATE: "/hospital/billing",
 			VIEW: "/hospital/billing",
+		},
+		ADMISSION_BILLING: {
+			INDEX: "/hospital/billing-admission",
+			CREATE: "/hospital/billing-admission",
+			UPDATE: "/hospital/billing-admission",
+			VIEW: "/hospital/billing-admission",
+		},
+		REFUND: {
+			INDEX: "/hospital/refund",
+			CREATE: "/hospital/refund",
+			UPDATE: "/hospital/refund",
+			VIEW: "/hospital/refund",
 		},
 		FINAL_BILLING: {
 			INDEX: "/hospital/final-billing",
