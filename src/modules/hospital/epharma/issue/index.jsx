@@ -68,7 +68,7 @@ export default function Index() {
 
 	const handleSearch = (values) => {
 		const barcode = values.barcode;
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.INDEX}/${barcode}`);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.ISSUE}/${barcode}`);
 	};
 
 	return (

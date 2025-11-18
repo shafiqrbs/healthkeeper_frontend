@@ -68,6 +68,28 @@ export const storeEntityData = createAsyncThunk("store", async (value, { rejectW
 	}
 });
 
+export const inlineUpdateEntityData = createAsyncThunk("inline-update", async (value, { rejectWithValue }) => {
+	try {
+		const response = await createData({ url: value.url, data: value.data, params: value.params });
+		if (response.status !== 200) {
+			return rejectWithValue({
+				message: response.message,
+				errors: response.errors,
+				module: value.module,
+			});
+		}
+
+		return { ...response, module: value.module };
+	} catch (error) {
+		console.error("error", error.message);
+		return rejectWithValue({
+			message: error.message || "Failed to store data",
+			errors: error.response?.data?.errors || {},
+			module: value.module,
+		});
+	}
+});
+
 export const editEntityData = createAsyncThunk("edit", async (value, { rejectWithValue }) => {
 	try {
 		const response = await editData(value);
