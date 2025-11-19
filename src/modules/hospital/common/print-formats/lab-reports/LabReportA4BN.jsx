@@ -217,8 +217,6 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 									style={{ margin: 0, padding: 0,borderCollapse: "collapse",
 										width: "100%",
 										border: "1px solid var(--theme-tertiary-color-8)"}}
-
-
 								   >
 									<Table.Thead>
 										<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>

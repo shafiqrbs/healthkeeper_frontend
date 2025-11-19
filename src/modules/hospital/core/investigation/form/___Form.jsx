@@ -23,6 +23,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { data: categoryDropdown } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.CATEGORY.PATH,
 		utility: HOSPITAL_DROPDOWNS.CATEGORY.UTILITY,
+		params: { "type": 'service' },
 	});
 
 	const { data: roomDropdown } = useGlobalDropdownData({
