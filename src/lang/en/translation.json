@@ -1559,6 +1559,7 @@
 	"PrintSection": "Print Section",
     "ValidationError": "Validation Error",
     "BatchItem": "Batch Item",
-    "XXXXX": "XXXX",
+    "TestResult": "Test Result",
+    "IDNO": "ID No",
     "XXXXX": "XXXX"
 }

@@ -109,9 +109,16 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 									</Table.Tbody>
 								</Table>
 							</Box>
-							<Box bd="1px solid var(--theme-tertiary-color-8)">
-								<Table>
+							<Box >
+								<Table style={{
+									borderCollapse: "collapse",
+									width: "100%",
+									border: "1px solid var(--theme-tertiary-color-8)",
+								}}>
 									<Table.Tbody>
+										<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+											<Table.Td colSpan={'2'}><strong>Report Name:</strong> {report?.name}</Table.Td>
+										</Table.Tr>
 										<Table.Tr>
 											<Table.Td>
 												<Grid columns={18} gap={0} gutter="xs">
@@ -144,28 +151,33 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 											<Table.Td>
 												<Grid columns={18} gutter="sm">
 													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Created")}</Text>
+														<Text size="xs">{t("Received on")}</Text>
 													</Grid.Col>
 													<Grid.Col span={12} py={0}>
-														<Text size="xs">{getValue(report?.uid || "")}</Text>
+														<Text size="xs">{getValue(report?.created_at || "")}</Text>
 													</Grid.Col>
 													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Collected")}</Text>
+														<Text size="xs">{t("Collected on")}</Text>
 													</Grid.Col>
 													<Grid.Col span={12} py={0}>
 														<Text size="xs">{getValue(report?.collection_date || "")}</Text>
 													</Grid.Col>
 													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Sample")}</Text>
+														<Text size="xs">{t("Age")}</Text>
 													</Grid.Col>
 													<Grid.Col span={12} py={0}>
-														<Text size="xs">{getValue(patientInfo?.name || "")}</Text>
+														<Text size="xs">{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
+															{patientInfo?.day || 0} Day</Text>
 													</Grid.Col>
 													<Grid.Col span={6} py={0}>
 														<Text size="xs">{t("Ref By.")}</Text>
 													</Grid.Col>
 													<Grid.Col span={12} py={0}>
-														<Text size="xs">{getValue(patientInfo?.mobile || "")}</Text>
+														{patientInfo?.patient_mode_slug === "ipd" ? (
+															<Text size="xs">{getValue(patientInfo?.admit_doctor_name || "")}</Text>
+														) : (
+															<Text size="xs">{getValue(patientInfo?.prescription_doctor_name || "")}</Text>
+														)}
 													</Grid.Col>
 												</Grid>
 											</Table.Td>
@@ -194,35 +206,33 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 												</Grid>
 											</Table.Td>
 										</Table.Tr>
-										<Table.Tr>
-										<Table.Td colSpan={'2'}><strong>Report Name:</strong> {report?.name}</Table.Td>
-										</Table.Tr>
+
 									</Table.Tbody>
 
 								</Table>
 							</Box>
-							<Box bd="1px solid var(--theme-tertiary-color-8)" mt={"md"}>
+							<Box  mt={"md"}>
 								<Table
-									withColumnBorders
-									verticalSpacing={0}
-									horizontalSpacing={0}
-									striped={false}
-									highlightOnHover={false}
-									style={{ margin: 0, padding: 0 }}
-								>
+									className="customTable"
+									style={{ margin: 0, padding: 0,borderCollapse: "collapse",
+										width: "100%",
+										border: "1px solid var(--theme-tertiary-color-8)"}}
+
+
+								   >
 									<Table.Thead>
-										<Table.Tr>
+										<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 											<Table.Th w={"30%"} pl={4}>
 												{t("Parameter")}
 											</Table.Th>
 											<Table.Th w={"20%"} pl={4}>
-												{t("Result")}
+												{t("TestResult")}
 											</Table.Th>
 											<Table.Th w={"20%"} pl={4}>
 												{t("Unit")}
 											</Table.Th>
 											<Table.Th w={"30%"} pl={4}>
-												{t("Reference")}
+												{t("ReferenceValue")}
 											</Table.Th>
 										</Table.Tr>
 									</Table.Thead>
@@ -251,6 +261,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 												</Table.Td>
 											</Table.Tr>
 										))}
+
 									</Table.Tbody>
 								</Table>
 							</Box>
@@ -258,7 +269,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 					</Box>
 
 					{/* =============== Additional Information Section ================ */}
-					<Box mb="md">
+					<Box p="md" mb="md">
 						<Text fw="bold" size="xs" mb="xs" c="#1e40af">
 							{t("Comment")}
 						</Text>
@@ -267,13 +278,13 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 						</Box>
 					</Box>
 					{/* =============== Doctor Information and Signature ================ */}
-					<Divider mb="md" />
-					<Box mb="md">
+
+					<Box p="md" mb="md">
 						<Grid columns={12} gutter="xs">
 							<Grid.Col span={4}>
 								<Box>
 									<Box h={60} ta="center" bd="1px dashed #ccc" style={{ borderRadius: "4px" }}>
-										{renderImagePreview([], patientInfo?.signature_path)}
+										{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
 									</Box>
 									<Text fw="bold" size="xs" mb="sm" c="#1e40af" ta="center">
 										{report?.assign_labuser_name}
@@ -284,7 +295,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 							<Grid.Col span={4}>
 								<Box>
 									<Box h={60} ta="center" bd="1px dashed #ccc" style={{ borderRadius: "4px" }}>
-										{renderImagePreview([], patientInfo?.signature_path)}
+										{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
 									</Box>
 									<Text fw="bold" size="xs" mb="sm" c="#1e40af" ta="center">
 										{report?.assign_doctor_name}
