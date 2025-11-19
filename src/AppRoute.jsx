@@ -101,13 +101,19 @@ function AppRoute() {
 						path="medicine"
 						element={
 							<ProtectedRoute
-								roles={["role_domain", "admin_administrator", "operator_opd", "operator_manager"]}
+								roles={["role_domain", "admin_administrator", "pharmacy_operator", "pharmacy_pharmacist","pharmacy_manager", "pharmacy_doctor"]}
 							>
 								<MedicineIndex />
 							</ProtectedRoute>
 						}
 					/>
-					<Route path="generic" element={<GenericIndex />} />
+					<Route path="generic" element={
+						<ProtectedRoute
+							roles={["role_domain", "admin_administrator", "pharmacy_operator", "pharmacy_pharmacist","pharmacy_manager", "pharmacy_doctor"]}
+						>
+						<GenericIndex />
+						</ProtectedRoute>
+						} />
 					<Route path="generic/:id" element={<GenericIndex mode="edit" />} />
 					<Route path="stock" element={<PharmacyStockIndex />} />
 					<Route path="workorder" element={<PharmacyWorkorderIndex />} />
@@ -115,6 +121,7 @@ function AppRoute() {
 					<Route path="store-indent/:id" element={<StoreIndentIndex mode={"edit"} />} />
 					<Route path="workorder/manage" element={<PharmacyWorkorderManage />} />
 					<Route path="workorder/manage/:id" element={<PharmacyWorkorderManage mode="edit" />} />
+
 				</Route>
 				<Route path="/store/">
 					<Route path="requisition" element={<StoreRequisitionIndex />} />

@@ -2,7 +2,7 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import { Box, Flex } from "@mantine/core";
 import Navigation from "@/common/components/layout/Navigation";
 import HomeSkeleton from "@components/skeletons/HomeSkeleton";
-import { getUserRole } from "@utils/index";
+import {getLoggedInUser, getUserRole} from "@utils/index";
 import OperatorBoard from "@/modules/home/operator/OperatorBoard";
 import AdminBoard from "./operator/AdminBoard";
 
@@ -11,7 +11,9 @@ const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_em
 
 export default function Index({ height }) {
 	const progress = useGetLoadingProgress();
+	const user = getLoggedInUser();
 	const userRoles = getUserRole();
+	console.log(user)
 
 	return (
 		<>

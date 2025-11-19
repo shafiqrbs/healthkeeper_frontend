@@ -1,19 +1,95 @@
-import {Grid, Box, Drawer, Text, Flex} from "@mantine/core";
+import {Grid, Box, Drawer, Text, Flex, Button} from "@mantine/core";
 import {useTranslation} from "react-i18next";
 import {
-    IconArrowLeft,
+    IconArrowLeft, IconDeviceFloppy,
 } from "@tabler/icons-react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {DataTable} from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
+import {modals} from "@mantine/modals";
+import {PHARMACY_DATA_ROUTES} from "@/constants/routes";
+import {showEntityData} from "@/app/store/core/crudThunk";
+import {successNotification} from "@components/notification/successNotification";
+import {errorNotification} from "@components/notification/errorNotification";
+import {getUserRole} from "@utils/index";
 
-export default function __ViewDrawer({viewDrawer, setViewDrawer, module}) {
+export default function __ViewDrawer({viewDrawer, setViewDrawer,height, module,refetchAll}) {
     const {t} = useTranslation();
-    const height = 500; //TabList height 104
+    const dispatch = useDispatch()
     const entityObject = useSelector((state) => state.crud[module].editData);
+    const userRoles = getUserRole();
+    const ALLOWED_PHARMACIST_ROLES = ["pharmacy_doctor","admin_administrator"];
+    const canApprove = userRoles.some((role) => ALLOWED_PHARMACIST_ROLES.includes(role));
+    console.log(userRoles);
     const closeDrawer = () => {
         setViewDrawer(false);
     };
+
+    const handleWorkOrderApproved = (id) => {
+        modals.openConfirmModal({
+            title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+            children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+            labels: {confirm: "Confirm", cancel: "Cancel"},
+            confirmProps: {color: "var(--theme-delete-color)"},
+            onCancel: () => console.info("Cancel"),
+            onConfirm: () => handleConfirmApproved(id),
+        });
+    }
+
+    const handleConfirmApproved = async (id) => {
+        try {
+            const value = {
+                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.APPROVE}/${id}`,
+                module,
+            };
+
+            const resultAction = await dispatch(showEntityData(value));
+            if (showEntityData.fulfilled.match(resultAction)) {
+                if (resultAction.payload.data.status === 200) {
+                    successNotification(resultAction.payload.data.message);
+                }
+                closeDrawer();
+            }
+
+        } catch (error) {
+            errorNotification("Error updating purchase config:" + error.message);
+        } finally {
+            refetchAll()
+        }
+    }
+
+    const handleWorkOrderReceived = (id) => {
+        modals.openConfirmModal({
+            title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+            children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+            labels: {confirm: "Confirm", cancel: "Cancel"},
+            confirmProps: {color: "var(--theme-delete-color)"},
+            onCancel: () => console.info("Cancel"),
+            onConfirm: () => handleConfirmReceived(id),
+        });
+    }
+
+    const handleConfirmReceived = async (id) => {
+        try {
+            const value = {
+                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.RECEIVE}/${id}`,
+                module,
+            };
+
+            const resultAction = await dispatch(showEntityData(value));
+            if (showEntityData.fulfilled.match(resultAction)) {
+                if (resultAction.payload.data.status === 200) {
+                    successNotification(resultAction.payload.data.message);
+                }
+            }
+            closeDrawer();
+
+        } catch (error) {
+            errorNotification("Error updating purchase config:" + error.message);
+        } finally {
+            refetchAll()
+        }
+    }
 
     return (
         <Drawer.Root opened={viewDrawer} size="xl" position="right" onClose={closeDrawer} offset={16}>
@@ -30,29 +106,18 @@ export default function __ViewDrawer({viewDrawer, setViewDrawer, module}) {
                     </Drawer.Title>
                     <Drawer.CloseButton/>
                 </Drawer.Header>
-                <Box mb={0} h={height}>
-                    <Box p={"md"} className="borderRadiusAll" h={height}>
+                <Box w={'100%'} mb={0}>
+                    <Box p={"md"}>
                         <Box>
                             <Grid columns={24}>
-                                <Grid.Col span={"8"} className="drawer-form-input-label">
-                                    {t("Invoice")}
+                                <Grid.Col span={"4"} className="drawer-form-input-label">
+                                    {t("Created")}
                                 </Grid.Col>
                                 <Grid.Col span={"1"}>:</Grid.Col>
                                 <Grid.Col span={"auto"}>
-                                    {entityObject && entityObject.invoice && entityObject.invoice}
+                                    {entityObject && entityObject.created && entityObject.created }
                                 </Grid.Col>
-                            </Grid>
-                            <Grid columns={24}>
-                                <Grid.Col span={"8"} className="drawer-form-input-label">
-                                    {t("Vendor")}
-                                </Grid.Col>
-                                <Grid.Col span={"1"}>:</Grid.Col>
-                                <Grid.Col span={"auto"}>
-                                    {entityObject && entityObject.vendor_name && entityObject.vendor_name}
-                                </Grid.Col>
-                            </Grid>
-                            <Grid columns={24}>
-                                <Grid.Col span={"8"} className="drawer-form-input-label">
+                                <Grid.Col span={"4"} className="drawer-form-input-label">
                                     {t("Process")}
                                 </Grid.Col>
                                 <Grid.Col span={"1"}>:</Grid.Col>
@@ -61,47 +126,47 @@ export default function __ViewDrawer({viewDrawer, setViewDrawer, module}) {
                                 </Grid.Col>
                             </Grid>
                             <Grid columns={24}>
-                                <Grid.Col span={"8"} className="drawer-form-input-label">
-                                    {t("Grn")}
+                                <Grid.Col span={"4"} className="drawer-form-input-label">
+                                    {t("GRN")}
                                 </Grid.Col>
                                 <Grid.Col span={"1"}>:</Grid.Col>
                                 <Grid.Col span={"auto"}>
                                     {entityObject && entityObject.grn && entityObject.grn}
                                 </Grid.Col>
-                            </Grid>
-
-                            <Grid columns={24}>
-                                <Grid.Col span={"8"} className="drawer-form-input-label">
-                                    {t("CreatedBy")}
+                                <Grid.Col span={"4"} className="drawer-form-input-label">
+                                    {t("Vendor")}
                                 </Grid.Col>
                                 <Grid.Col span={"1"}>:</Grid.Col>
                                 <Grid.Col span={"auto"}>
-                                    {entityObject && entityObject.cb_username && entityObject.cb_username}
+                                    {entityObject && entityObject.vendor_name && entityObject.vendor_name}
                                 </Grid.Col>
                             </Grid>
 
                             <Grid columns={24}>
-                                <Grid.Col span={"8"} className="drawer-form-input-label">
-                                    {t("ApprovedBy")}
+                                <Grid.Col span={"4"} className="drawer-form-input-label">
+                                    {t("Created By")}
+                                </Grid.Col>
+                                <Grid.Col span={"1"}>:</Grid.Col>
+                                <Grid.Col span={"auto"}>
+                                    {entityObject && entityObject.cb_username && entityObject.cb_username }
+                                </Grid.Col>
+                                <Grid.Col span={"4"} className="drawer-form-input-label">
+                                    {t("Approved By")}
                                 </Grid.Col>
                                 <Grid.Col span={"1"}>:</Grid.Col>
                                 <Grid.Col span={"auto"}>
                                     {entityObject && entityObject.ab_username && entityObject.ab_username}
                                 </Grid.Col>
                             </Grid>
-
                             <Grid columns={24}>
-                                <Grid.Col span={"8"} className="drawer-form-input-label">
+                                <Grid.Col span={"4"} className="drawer-form-input-label">
                                     {t("ReceivedBy")}
                                 </Grid.Col>
                                 <Grid.Col span={"1"}>:</Grid.Col>
                                 <Grid.Col span={"auto"}>
                                     {entityObject && entityObject.re_username && entityObject.re_username}
                                 </Grid.Col>
-                            </Grid>
-
-                            <Grid columns={24}>
-                                <Grid.Col span={"8"} className="drawer-form-input-label">
+                                <Grid.Col span={"4"} className="drawer-form-input-label">
                                     {t("ReceivedDate")}
                                 </Grid.Col>
                                 <Grid.Col span={"1"}>:</Grid.Col>
@@ -109,55 +174,94 @@ export default function __ViewDrawer({viewDrawer, setViewDrawer, module}) {
                                     {entityObject && entityObject.received_date && entityObject.received_date}
                                 </Grid.Col>
                             </Grid>
+                        </Box>
+                        <Box>
+                            <DataTable
+                                classNames={{
+                                    root: tableCss.root,
+                                    table: tableCss.table,
+                                    body: tableCss.body,
+                                    header: tableCss.header,
+                                    footer: tableCss.footer,
+                                    pagination: tableCss.pagination,
+                                }}
+                                records={entityObject?.purchase_items || []}
+                                columns={[
+                                    {
+                                        accessor: "index",
+                                        title: t("S/N"),
+                                        textAlignment: "right",
+                                        sortable: false,
+                                        render: (_item, index) => index + 1,
+                                    },
+                                    {
+                                        accessor: "name",
+                                        title: t("MedicineName"),
+                                        textAlignment: "right",
+                                        sortable: false,
+                                    },
+                                    {
+                                        accessor: "quantity",
+                                        title: t("Quantity"),
+                                        textAlignment: "right",
+                                        sortable: false,
+                                    },
+                                    {
+                                        accessor: "production_date",
+                                        title: t("ExpiryStartDate"),
+                                        sortable: false,
+                                    },
+                                    {
+                                        accessor: "expired_date",
+                                        title: t("ExpiryEndDate"),
+                                        sortable: false,
+                                    },
 
-                            <Grid columns={24}>
-                                <DataTable
-                                    classNames={{
-                                        root: tableCss.root,
-                                        table: tableCss.table,
-                                        body: tableCss.body,
-                                        header: tableCss.header,
-                                        footer: tableCss.footer,
-                                        pagination: tableCss.pagination,
-                                    }}
-                                    records={entityObject?.purchase_items || []}
-                                    columns={[
-                                        {
-                                            accessor: "index",
-                                            title: t("S/N"),
-                                            textAlignment: "right",
-                                            sortable: false,
-                                            render: (_item, index) => index + 1,
-                                        },
-                                        {
-                                            accessor: "name",
-                                            title: t("MedicineName"),
-                                            textAlignment: "right",
-                                            sortable: false,
-                                        },
-                                        {
-                                            accessor: "quantity",
-                                            title: t("Quantity"),
-                                            textAlignment: "right",
-                                            sortable: false,
-                                        },
-                                        {
-                                            accessor: "production_date",
-                                            title: t("ExpiryStartDate"),
-                                            sortable: false,
-                                        },
-                                        {
-                                            accessor: "expired_date",
-                                            title: t("ExpiryEndDate"),
-                                            sortable: false,
-                                        },
-                                    ]}
-                                    textSelectionDisabled
-                                />
-                            </Grid>
+                                ]}
+                                height={height - 208}
+                                textSelectionDisabled
+                            />
                         </Box>
                     </Box>
                 </Box>
+                <Drawer.Header className={"drawer-sticky-header"}>
+                    <Drawer.Title>
+                        <Flex align="right" gap={8}>
+                            {entityObject.process === 'Created' &&  canApprove &&
+                            <Button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleWorkOrderApproved(entityObject.id);
+                                }}
+                                variant="filled"
+                                c="white"
+                                bg="var(--theme-warn-color-6)"
+                                size="xs"
+                                radius="es"
+                                leftSection={<IconDeviceFloppy size={16}/>}
+                            >
+                                {t("Approved")}
+                            </Button>
+                            }
+                            {entityObject.process === 'Approved' && entityObject.approved_by_id && canApprove &&
+                            <Button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleWorkOrderReceived(entityObject.id);
+                                }}
+                                variant="filled"
+                                c="white"
+                                bg="var(--theme-warn-color-6)"
+                                size="xs"
+                                radius="es"
+                                leftSection={<IconDeviceFloppy size={16}/>}
+                            >
+                                {t("Issue")}
+                            </Button>
+                            }
+                        </Flex>
+                    </Drawer.Title>
+                </Drawer.Header>
             </Drawer.Content>
         </Drawer.Root>
     );

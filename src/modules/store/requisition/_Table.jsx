@@ -189,7 +189,7 @@ export default function _Table({module}) {
                                                 onClick={() => handleEntityEdit(values.uid)}
                                                 variant="filled"
                                                 c="white"
-                                                size="xs"
+                                                size="compact-xs"
                                                 radius="es"
                                                 leftSection={<IconEdit size={16}/>}
                                                 className="border-right-radius-none btnPrimaryBg"
@@ -201,16 +201,17 @@ export default function _Table({module}) {
                                             onClick={() => handleDataShow(values.uid)}
                                             variant="filled"
                                             c="white"
+                                            size="compact-xs"
                                             bg="var(--theme-primary-color-6)"
-                                            size="xs"
                                             radius="es"
                                             leftSection={<IconEye size={16}/>}
-                                            className="border-left-radius-none"
+                                            className="border-left-radius-none border-right-radius-none"
                                         >
                                             {t("View")}
                                         </Button>
                                         {values.process !== 'Approved' && !values.approved_by_id &&
                                             <ActionIcon
+                                                size={'sm'}
                                                 onClick={() => handleDelete(values.uid)}
                                                 className="action-icon-menu border-left-radius-none"
                                                 variant="light"

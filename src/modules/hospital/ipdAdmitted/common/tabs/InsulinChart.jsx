@@ -50,13 +50,13 @@ export default function InsulinChart({ data, refetch }) {
 			sign: "",
 		},
 		validate: {
-			fbs: (value) => {
+			date: (value) => {
 				if (!value) {
-					return t("FBSIsRequired");
+					return t("Enter Date");
 				}
 				return null;
 			},
-			insulinMorning: (value) => {
+			/*insulinMorning: (value) => {
 				if (!value) {
 					return t("InsulinMorningIsRequired");
 				}
@@ -109,7 +109,7 @@ export default function InsulinChart({ data, refetch }) {
 					return t("SignIsRequired");
 				}
 				return null;
-			},
+			},*/
 		},
 	});
 

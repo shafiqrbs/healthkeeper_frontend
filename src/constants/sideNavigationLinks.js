@@ -270,43 +270,83 @@ export const sideNavigationLinks = {
 			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.PHARMACY.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
-			allowedRoles: ["pharmacy_pharmacist","pharmacy_approve", "pharmacy_manager", "pharmacy_operator", "pharmacy_operator", "admin_administrator"],
+			allowedRoles: ["pharmacy_pharmacist","pharmacy_doctor","pharmacy_approve", "pharmacy_manager", "pharmacy_operator", "pharmacy_operator", "admin_administrator"],
 			subMenu: [
 				{
-					label: t("Pharmacy"),
-					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.PHARMACY.INDEX,
+					label: t("Dashboard"),
+					path: "/",
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
+					allowedRoles: [
+						"pharmacy_operator",
+						"pharmacy_pharmacist",
+						"pharmacy_manager",
+						"pharmacy_doctor",
+						"admin_administrator",
+					],
 				},
 				{
 					label: t("Stock"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STOCK.INDEX,
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
+					allowedRoles: [
+						"pharmacy_operator",
+						"pharmacy_pharmacist",
+						"pharmacy_manager",
+						"pharmacy_doctor",
+						"admin_administrator",
+					],
 				},
 				{
 					label: t("Requisition"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX,
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
+					allowedRoles: [
+						"pharmacy_operator",
+						"pharmacy_pharmacist",
+						"pharmacy_manager",
+						"pharmacy_doctor",
+						"admin_administrator",
+					],
 				},
 				{
 					label: t("Workorder"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.INDEX,
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
+					allowedRoles: [
+						"pharmacy_operator",
+						"pharmacy_pharmacist",
+						"pharmacy_manager",
+						"pharmacy_doctor",
+						"admin_administrator",
+					],
 				},
 				{
 					label: t("Medicine"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX,
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
+					allowedRoles: [
+						"pharmacy_operator",
+						"pharmacy_pharmacist",
+						"pharmacy_manager",
+						"admin_administrator",
+					],
 				},
 				{
 					label: t("Generic"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.GENERIC.INDEX,
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
+					allowedRoles: [
+						"pharmacy_operator",
+						"pharmacy_pharmacist",
+						"pharmacy_manager",
+						"admin_administrator",
+					],
 				},
 			],
 		},

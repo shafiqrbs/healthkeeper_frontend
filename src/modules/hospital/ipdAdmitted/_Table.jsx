@@ -115,14 +115,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 
 	const handleManageOverview = (prescriptionId, id) => {
 		setSelectedPrescriptionId(prescriptionId);
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("AreYouSureYouWantCreateAE-FreshPrescription")}</Text>,
-			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
-			confirmProps: { color: "red" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${prescriptionId}`),
-		});
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${prescriptionId}`)
 	};
 
 	const handleChangeIpdMode = () => {

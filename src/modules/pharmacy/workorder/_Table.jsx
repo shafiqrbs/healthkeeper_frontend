@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, CloseButton} from "@mantine/core";
 import {useTranslation} from "react-i18next";
 import {
     IconTrashX,
@@ -24,7 +24,7 @@ import {deleteEntityData, editEntityData, showEntityData} from "@/app/store/core
 import {setInsertType, setRefetchData} from "@/app/store/core/crudSlice.js";
 import {ERROR_NOTIFICATION_COLOR} from "@/constants/index.js";
 import {deleteNotification} from "@components/notification/deleteNotification";
-import {useState} from "react";
+import React, {useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import {successNotification} from "@components/notification/successNotification.jsx";
 import {errorNotification} from "@components/notification/errorNotification.jsx";
@@ -45,7 +45,7 @@ export default function _Table({module}) {
     const userRoles = getUserRole();
     const ALLOWED_PHARMACIST_ROLES = ["pharmacy_doctor","pharmacy_pharmacist","admin_administrator"];
     const canApprove = userRoles.some((role) => ALLOWED_PHARMACIST_ROLES.includes(role));
-
+    console.log(userRoles);
     // for infinity table data scroll, call the hook
     const {
         scrollRef,
@@ -240,7 +240,7 @@ export default function _Table({module}) {
                             render: (values) => (
                                 <Group gap={4} justify="right" wrap="nowrap">
                                     <Button.Group>
-                                        {
+                                       {/* {
                                             values.process === 'Created' && !values.approved_by_id && canApprove &&
                                             <Button
                                                 onClick={() => handleWorkOrderApproved(values.id)}
@@ -272,18 +272,23 @@ export default function _Table({module}) {
                                             >
                                                 {t("Received")}
                                             </Button>
-                                        }
+                                        }*/}
                                         {values.process !== 'Received' && !values.received_by_id &&
+
                                             <Button
-                                                onClick={() => handleEntityEdit(values.id)}
-                                                variant="filled"
-                                                c="white"
-                                                size="xs"
-                                                radius="es"
-                                                leftSection={<IconEdit size={16}/>}
-                                                className="border-right-radius-none btnPrimaryBg"
+                                            onClick={() => {
+                                            handleEntityEdit(values.id);
+                                            open();
+                                        }}
+                                            variant="filled"
+                                            c="white"
+                                            fw={400}
+                                            size="compact-xs"
+                                            radius="es"
+                                            leftSection={<IconEdit size={12} />}
+                                            className="border-left-radius-none btnPrimaryBg"
                                             >
-                                                {t("Edit")}
+                                            {t("Edit")}
                                             </Button>
                                         }
                                         <Button
@@ -291,25 +296,23 @@ export default function _Table({module}) {
                                             variant="filled"
                                             c="white"
                                             bg="var(--theme-primary-color-6)"
-                                            size="xs"
+                                            size="compact-xs"
                                             radius="es"
-                                            leftSection={<IconEye size={16}/>}
-                                            className="border-left-radius-none"
+                                            fw={400}
+                                            leftSection={<IconEye size={12} />}
+                                            className="border-left-radius-none border-right-radius-none"
                                         >
                                             {t("View")}
                                         </Button>
 
                                         {values.process !== 'Received' && !values.received_by_id &&
                                             <ActionIcon
+                                                size={'sm'}
                                                 onClick={() => handleDelete(values.id)}
-                                                className="action-icon-menu border-left-radius-none"
                                                 variant="light"
                                                 color="var(--theme-delete-color)"
-                                                radius="es"
-                                                ps="les"
-                                                aria-label="Settings"
-                                            >
-                                                <IconTrashX height={18} width={18} stroke={1.5}/>
+                                                radius="es">
+                                            <IconTrashX stroke={1.5} />
                                             </ActionIcon>
                                         }
                                     </Button.Group>
@@ -334,7 +337,7 @@ export default function _Table({module}) {
             </Box>
 
             <DataTableFooter indexData={listData} module={module}/>
-            <ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module}/>
+            <ViewDrawer viewDrawer={viewDrawer} height={mainAreaHeight} refetchAll={refetchAll} setViewDrawer={setViewDrawer} module={module}/>
         </>
     );
 }

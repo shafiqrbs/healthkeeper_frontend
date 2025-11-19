@@ -161,10 +161,10 @@ export default function _Table({module}) {
                                                 onClick={() => handleEntityEdit(values.uid)}
                                                 variant="filled"
                                                 c="white"
-                                                size="xs"
+                                                size="compact-xs"
                                                 radius="es"
                                                 leftSection={<IconEdit size={16}/>}
-                                                className="border-right-radius-none btnPrimaryBg"
+                                                className="border-left-radius-none btnPrimaryBg"
                                             >
                                                 {t("Edit")}
                                             </Button>
@@ -174,10 +174,10 @@ export default function _Table({module}) {
                                             variant="filled"
                                             c="white"
                                             bg="var(--theme-primary-color-6)"
-                                            size="xs"
+                                            size="compact-xs"
                                             radius="es"
                                             leftSection={<IconEye size={16}/>}
-                                            className="border-left-radius-none"
+                                            className="border-left-radius-none border-right-radius-none "
                                         >
                                             {t("View")}
                                         </Button>

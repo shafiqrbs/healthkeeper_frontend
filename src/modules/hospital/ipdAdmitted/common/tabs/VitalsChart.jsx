@@ -40,6 +40,7 @@ export default function VitalsChart({ data, refetch }) {
 	// =============== form for inline vital inputs ===============
 	const form = useForm({
 		initialValues: {
+			date: "",
 			time: "",
 			bloodPressure: "",
 			pulseRate: null,
@@ -50,7 +51,21 @@ export default function VitalsChart({ data, refetch }) {
 			temperatureFahrenheit: null,
 		},
 		validate: {
-			bloodPressure: (value) => {
+
+			date: (value) => {
+				if (!value) {
+					return t("Enter Date");
+				}
+				return null;
+			},
+			time: (value) => {
+				if (!value) {
+					return t("Enter Time");
+				}
+				return null;
+			},
+
+			/*bloodPressure: (value) => {
 				if (!value) {
 					return "Blood pressure is required";
 				}
@@ -91,7 +106,7 @@ export default function VitalsChart({ data, refetch }) {
 					return "Temperature is required";
 				}
 				return null;
-			},
+			},*/
 		},
 	});
 
@@ -137,11 +152,12 @@ export default function VitalsChart({ data, refetch }) {
 
 	const columns = useMemo(
 		() => [
-			// {
-			// 	accessor: "recordedAt",
-			// 	title: "Created",
-			// 	render: ({ recordedAt }) => new Date(recordedAt).toLocaleString(),
-			// },
+			 {
+			 	accessor: "createdAt",
+			 	title: "Created",
+			 	render: ({ createdAt }) => new Date(createdAt).toLocaleString(),
+			 },
+			{ accessor: "time", title: "Time" },
 			{ accessor: "bloodPressure", title: "BP (mm of Hg)" },
 			{ accessor: "pulseRate", title: "Pulse (Beat/Minute)" },
 			{ accessor: "saturationWithoutOxygen", title: "SatWithoutO2 (%)" },
