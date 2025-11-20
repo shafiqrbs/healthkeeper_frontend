@@ -43,6 +43,8 @@ const templateData = [
 	{ name: "DetailsInvoicePosBN", module: "billing", id: crypto.randomUUID() },
 	{ name: "InvoicePosBN", module: "billing", id: crypto.randomUUID() },
 	{ name: "InvoicePosEN", module: "billing", id: crypto.randomUUID() },
+	{ name: "FreeServiceFormBN", module: "billing", id: crypto.randomUUID() },
+	{ name: "FreeServiceFormEN", module: "billing", id: crypto.randomUUID() },
 ];
 
 export default function _Table({ module }) {

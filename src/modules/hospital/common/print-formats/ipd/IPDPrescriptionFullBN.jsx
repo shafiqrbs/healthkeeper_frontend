@@ -1,15 +1,15 @@
-import {Box, Text, Grid, Group, Image, Table, Flex, Stack} from "@mantine/core";
+import { Box, Text, Grid, Group, Image, Table, Flex, Stack } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import {formatDate, getLoggedInUser} from "@/common/utils";
+import { formatDate, getLoggedInUser } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import Rx from "@assets/images/rx.png";
 import Barcode from "react-barcode";
-import {IconPointFilled} from "@tabler/icons-react";
-import {capitalizeWords} from "@utils/index";
+import { IconPointFilled } from "@tabler/icons-react";
+import { capitalizeWords } from "@utils/index";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
@@ -20,17 +20,15 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const admissionData = data || {};
 	const patientInfo = data || {};
 
-
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
 	const patientReport = jsonContent?.patient_report || {};
-
 
 	const order = patientReport?.order || {};
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = patientInfo?.prescription_medicine || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useHospitalConfigData();
-	console.log(medicines)
+	console.log(medicines);
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
@@ -189,7 +187,6 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 		return null;
 	};
 
-
 	return (
 		<Box display={preview ? "block" : "none"}>
 			<style>
@@ -212,16 +209,15 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 				fz={12}
 				align="stretch"
 				justify="space-between"
-
 			>
 				<Box>
 					<Table
 						style={{
 							borderCollapse: "collapse",
 							width: "100%",
-
 						}}
-						className="customTable">
+						className="customTable"
+					>
 						<Table.Tbody>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colSpan={"3"}>
@@ -254,12 +250,12 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colSpan={3}>
-									<Text size="md" fw={600} >
+									<Text size="md" fw={600}>
 										{t("Prescription - Indoor")}
 									</Text>
 								</Table.Td>
 							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)"}}>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
@@ -285,7 +281,9 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									</Group>
 								</Table.Td>
 							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" , padding: 0 ,margin: 0  }}>
+							<Table.Tr
+								style={{ border: "1px solid var(--theme-tertiary-color-8)", padding: 0, margin: 0 }}
+							>
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
@@ -323,7 +321,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs">{getValue(patientInfo?.father_name, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td >
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Religion")}:
@@ -331,7 +329,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="sm">{getValue(patientInfo?.religion_name, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td >
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Weight")}:
@@ -341,8 +339,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-
-								<Table.Td >
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("DOB")}:
@@ -350,7 +347,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs">{getValue(patientInfo?.dob, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td >
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("NID/Birth")}:
@@ -358,7 +355,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs">{getValue(patientInfo?.nid, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td >
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Add. Date")}:
@@ -368,7 +365,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td >
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("GuardianName")}:
@@ -376,7 +373,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs">{getValue(patientInfo?.guardian_name, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td >
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Relation")}:
@@ -389,16 +386,17 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Mobile")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.mobile, "")}
+										<Text size="xs">
+											{getValue(patientInfo?.mobile, "")}
 											{patientInfo?.guardian_mobile && (
 												<> / {getValue(patientInfo?.guardian_mobile, "")}</>
-											)}</Text>
+											)}
+										</Text>
 									</Group>
 								</Table.Td>
-
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td >
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Bed/Cabin")}:
@@ -406,7 +404,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="sm">{getValue(patientInfo?.room_name, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td >
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Unit")}:
@@ -432,7 +430,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="sm">{getValue(patientInfo?.admit_consultant_name, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td >
+								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("UnitDoctor")}:
@@ -451,8 +449,8 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								>
 									<Box style={{ position: "relative", minHeight: "550px" }}>
 										{(orderedExamKeys.length > 0
-												? orderedExamKeys
-												: Object.keys(patientExamination || {})
+											? orderedExamKeys
+											: Object.keys(patientExamination || {})
 										)
 											.filter((key) => hasArrayWithLength(patientExamination?.[key]))
 											.map((key) => (
@@ -527,22 +525,22 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											<Image src={Rx} alt="logo" width={"32"} height={32} />
 										</Box>
 										<Box gap="2">
-											{exEmergencies.map((emergency) => (
-												<Box>
+											{exEmergencies.map((emergency, index) => (
+												<Box key={index}>
 													<Text size="xs" fw={600}>
 														* {getValue(emergency.value)}
 													</Text>
 												</Box>
 											))}
 											{medicines
-												?.filter(medicine => medicine?.is_active == 1)
+												?.filter((medicine) => medicine?.is_active == 1)
 												?.sort((a, b) => {
 													const nameA = (a.medicine_name || a.generic || "").toLowerCase();
 													const nameB = (b.medicine_name || b.generic || "").toLowerCase();
 													return nameA.localeCompare(nameB);
 												})
 												?.map((medicine, index) => (
-													<Flex align={'left'} key={index}>
+													<Flex align={"left"} key={index}>
 														<Text size="xs" fw={600}>
 															{index + 1}.{" "}
 															{getValue(
@@ -558,39 +556,41 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 																marginLeft: "8px",
 															}}
 														>
-															{"--"}{getValue(medicine.dose_details)}{" "}
+															{"--"}
+															{getValue(medicine.dose_details)}{" "}
 															{getValue(medicine.by_meal)}
 														</Text>
-
 													</Flex>
-
-											))}
+												))}
 										</Box>
 									</Box>
 									{jsonContent.advise && (
-									<Flex
-										mih={50}
-										gap="md"
-										justify="flex-start"
-										align="flex-end"
-										direction="row"
-										wrap="nowrap"
-									>
-										<Box>
-											<Text size="sm" fw={500}>
-												উপদেশ: {getValue(jsonContent.advise)}
-											</Text>
-											{patientInfo?.referred_comment && (
-												<>
-													<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
-													<Text size="xs" fw={400}>
-														Note: {getValue(patientInfo?.referred_comment)}
-													</Text>
-												</>
-											)}
-
-										</Box>
-									</Flex>
+										<Flex
+											mih={50}
+											gap="md"
+											justify="flex-start"
+											align="flex-end"
+											direction="row"
+											wrap="nowrap"
+										>
+											<Box>
+												<Text size="sm" fw={500}>
+													উপদেশ: {getValue(jsonContent.advise)}
+												</Text>
+												{patientInfo?.referred_comment && (
+													<>
+														<Box
+															mt="4"
+															mb={"4"}
+															style={{ borderBottom: `1px solid #444` }}
+														/>
+														<Text size="xs" fw={400}>
+															Note: {getValue(patientInfo?.referred_comment)}
+														</Text>
+													</>
+												)}
+											</Box>
+										</Flex>
 									)}
 								</Table.Td>
 							</Table.Tr>
@@ -603,37 +603,38 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 							borderCollapse: "collapse",
 							width: "100%",
 						}}
-						className="customTable">
+						className="customTable"
+					>
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td>
 									<Grid columns={12} gutter="0">
-										<Grid.Col span={6}  align="left">
+										<Grid.Col span={6} align="left">
 											<Text fz="xl">AdmittedBy</Text>
 											<Text fz="xs">{admissionData?.created_by_name || "N/A"}</Text>
 											<Text fz="xs">{admissionData?.designation_name || "N/A"}</Text>
 										</Grid.Col>
-										<Grid.Col span={6} align={'right'}>
+										<Grid.Col span={6} align={"right"}>
 											<Text size="sm" fw={600} mb="xs">
-												<Text>{t("Signature")}-----------------------------------------------</Text>
-												<Text mt={'md'}>Name-----------------------------------------------</Text>
-												<Text mt={'md'}>Designation-----------------------------------------------</Text>
+												<Text>
+													{t("Signature")}-----------------------------------------------
+												</Text>
+												<Text mt={"md"}>
+													Name-----------------------------------------------
+												</Text>
+												<Text mt={"md"}>
+													Designation-----------------------------------------------
+												</Text>
 											</Text>
 										</Grid.Col>
 									</Grid>
 								</Table.Td>
 							</Table.Tr>
-
 						</Table.Tbody>
 					</Table>
 					<Text size="xs" c="gray" mt="xs">
 						{patientInfo?.patient_id && (
-							<Barcode
-								fontSize={"12"}
-								width={"1"}
-								height={"24"}
-								value={patientInfo?.patient_id}
-							/>
+							<Barcode fontSize={"12"} width={"1"} height={"24"} value={patientInfo?.patient_id} />
 						)}
 					</Text>
 					<Text size="xs" c="gray">

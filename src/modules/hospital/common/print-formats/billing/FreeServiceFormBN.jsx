@@ -1,11 +1,12 @@
-import { Box, Text, Grid, Group, Image, Table } from "@mantine/core";
+import { Box, Text, Grid, Group, Image, Table, Stack, Flex } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import { getLoggedInUser } from "@/common/utils";
+import { capitalizeWords, getLoggedInUser } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
+import Barcode from "react-barcode";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
@@ -27,277 +28,348 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 					table { border-collapse: collapse !important; }
 					table, table th, table td { border: 1px solid #807e7e !important; }
 				}`}
+				{`@media  {
+					table { border-collapse: collapse !important;border: 1px solid #807e7e !important; }
+					table, table th, table td {  padding-top:0!important; padding-bottom:0!important; margin-top:0!important; margin-bottom:0!important; }
+				}`}
 			</style>
-			<Box
+			<Stack
 				ref={ref}
-				p="md"
-				w={PAPER_WIDTH}
-				h={PAPER_HEIGHT}
-				style={{ overflow: "hidden" }}
+				w="210mm"
+				mih="1122px"
 				className="watermark"
 				ff="Arial, sans-serif"
 				lh={1.5}
 				fz={12}
-				bd="1px solid black"
+				align="stretch"
+				p="xs"
+				justify="space-between"
+				gap="xl"
+				bd="1px solid var(--theme-tertiary-color-8)"
 			>
-				{/* =============== header section with doctor information in bengali and english ================ */}
-				<Box mb="xs">
-					<Grid gutter="md">
-						<Grid.Col span={4}>
-							<Group ml="md" align="center" h="100%" py="xs">
-								<Image src={GLogo} alt="logo" width={80} height={80} />
-							</Group>
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-								{getValue(hospitalConfigData?.organization_name, "")}
-							</Text>
-							<Text ta="center" size="xs" c="gray" mt="2">
-								{getValue(hospitalConfigData?.address, "")}
-							</Text>
-							<Text ta="center" size="xs" c="gray" mb="2">
-								{t("হটলাইন")} {getValue(hospitalConfigData?.hotline, "")}
-							</Text>
-							<Text fw={600} ta="center" size="md" mb="2">
-								{t("BillDetails")}
-							</Text>
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<Group mr="md" justify="flex-end" align="center" h="100%" py="xs">
-								<Image src={TBLogo} alt="logo" width={80} height={80} />
-							</Group>
-						</Grid.Col>
-					</Grid>
+				<Box>
+					<Box>
+						<Table
+							style={{
+								borderCollapse: "collapse",
+								width: "100%",
+							}}
+							className="customTable"
+						>
+							<Table.Tbody>
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Table.Td colSpan={"3"}>
+										<Box mb="sm">
+											<Flex gap="md" justify="center">
+												<Box>
+													<Group ml="md" align="center" h="100%">
+														<Image src={GLogo} alt="logo" width={60} height={60} />
+													</Group>
+												</Box>
+												<Box>
+													<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
+														{hospitalConfigData?.organization_name || ""}
+													</Text>
+													<Text ta="center" size="sm" c="gray" mt="2">
+														{hospitalConfigData?.address || ""}
+													</Text>
+													<Text ta="center" size="sm" c="gray" mb="2">
+														{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
+													</Text>
+												</Box>
+												<Box>
+													<Group mr="md" justify="flex-end" align="center" h="100%">
+														<Image src={TBLogo} alt="logo" width={60} height={60} />
+													</Group>
+												</Box>
+											</Flex>
+										</Box>
+									</Table.Td>
+								</Table.Tr>
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Table.Td colSpan={3}>
+										<Text size="md" fw={600}>
+											{t("Free Service Form")}
+										</Text>
+									</Table.Td>
+								</Table.Tr>
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("PatientID")}:
+											</Text>
+											<Text size="sm">{getValue(patientInfo?.patient_id || "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("AdmissionID")}:
+											</Text>
+											<Text size="sm">{getValue(patientInfo?.invoice || "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("PatientType")}:
+											</Text>
+											<Text size="sm">{getValue(patientInfo?.payment_mode_name, "")}</Text>
+										</Group>
+									</Table.Td>
+								</Table.Tr>
+								<Table.Tr
+									style={{ border: "1px solid var(--theme-tertiary-color-8)", padding: 0, margin: 0 }}
+								>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("Name")}:
+											</Text>
+											<Text size="sm">{getValue(patientInfo?.name, "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("Gender")}:
+											</Text>
+											<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("Age")}:
+											</Text>
+											<Text size="xs">
+												{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
+												{patientInfo?.day || 0} Day
+											</Text>
+										</Group>
+									</Table.Td>
+								</Table.Tr>
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("F/M/H")}:
+											</Text>
+											<Text size="xs">{getValue(patientInfo?.father_name, "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("Religion")}:
+											</Text>
+											<Text size="sm">{getValue(patientInfo?.religion_name, "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("Weight")}:
+											</Text>
+											<Text size="sm">{getValue(patientInfo?.weight, "")}</Text>
+										</Group>
+									</Table.Td>
+								</Table.Tr>
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("DOB")}:
+											</Text>
+											<Text size="xs">{getValue(patientInfo?.dob, "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("NID/Birth")}:
+											</Text>
+											<Text size="xs">{getValue(patientInfo?.nid, "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("Add. Date")}:
+											</Text>
+											<Text size="sm">{getValue(patientInfo?.admission_date, "")}</Text>
+										</Group>
+									</Table.Td>
+								</Table.Tr>
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("GuardianName")}:
+											</Text>
+											<Text size="xs">{getValue(patientInfo?.guardian_name, "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("Relation")}:
+											</Text>
+											<Text size="xs">{getValue(patientInfo?.patient_relation, "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td colspan={2}>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("Mobile")}:
+											</Text>
+											<Text size="xs">
+												{getValue(patientInfo?.mobile, "")}
+												{patientInfo?.guardian_mobile && (
+													<> / {getValue(patientInfo?.guardian_mobile, "")}</>
+												)}
+											</Text>
+										</Group>
+									</Table.Td>
+								</Table.Tr>
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("Bed/Cabin")}:
+											</Text>
+											<Text size="sm">{getValue(patientInfo?.room_name, "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("Unit")}:
+											</Text>
+											<Text size="xs">{getValue(patientInfo?.admit_unit_name, "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("Department")}:
+											</Text>
+											<Text size="xs">{getValue(patientInfo?.admit_department_name, "")}</Text>
+										</Group>
+									</Table.Td>
+								</Table.Tr>
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Table.Td colspan={2}>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("ConsultantDoctor")}:
+											</Text>
+											<Text size="sm">{getValue(patientInfo?.admit_consultant_name, "")}</Text>
+										</Group>
+									</Table.Td>
+									<Table.Td>
+										<Group gap="xs">
+											<Text size="xs" fw={600}>
+												{t("UnitDoctor")}:
+											</Text>
+											<Text size="xs">{getValue(patientInfo?.admit_doctor_name, "")}</Text>
+										</Group>
+									</Table.Td>
+								</Table.Tr>
+							</Table.Tbody>
+						</Table>
+					</Box>
+					<Box pos="relative" mt="xl">
+						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
+							<Table.Thead>
+								<Table.Tr>
+									<Table.Th>{t("Particular")}</Table.Th>
+									<Table.Th>{t("Quantity")}</Table.Th>
+									<Table.Th>{t("Price")}</Table.Th>
+									<Table.Th>{t("Total")}</Table.Th>
+								</Table.Tr>
+							</Table.Thead>
+							<Table.Tbody>
+								{patientInfo?.invoice_particular?.map((item, index) => (
+									<Table.Tr key={index}>
+										<Table.Td>{item.item_name || t("Fee")}</Table.Td>
+										<Table.Td>{item.quantity}</Table.Td>
+										<Table.Td>{item.price}</Table.Td>
+										<Table.Td>{item.sub_total}</Table.Td>
+									</Table.Tr>
+								))}
+							</Table.Tbody>
+						</Table>
+					</Box>
+					<Box pos="relative" mt="xl">
+						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
+							<Table.Thead>
+								<Table.Tr>
+									<Table.Th>{t("Description")}</Table.Th>
+									<Table.Th>{t("Amount")}</Table.Th>
+								</Table.Tr>
+							</Table.Thead>
+							<Table.Tbody>
+								<Table.Tr>
+									<Table.Td fw={600}>{t("Receive")}</Table.Td>
+									<Table.Td fw={600}>৳ {getValue(patientInfo?.total, "0")}</Table.Td>
+								</Table.Tr>
+								<Table.Tr>
+									<Table.Td fw={600}>{t("Return")}</Table.Td>
+									<Table.Td fw={600}>৳ {getValue(patientInfo?.return_amount, "0")}</Table.Td>
+								</Table.Tr>
+								<Table.Tr>
+									<Table.Td fw={600}>{t("Balance")}</Table.Td>
+									<Table.Td fw={600}>৳ {getValue(patientInfo?.balance, "0")}</Table.Td>
+								</Table.Tr>
+							</Table.Tbody>
+						</Table>
+					</Box>
 				</Box>
 
-				{/* =============== patient information section ================ */}
-				<Box mb="xs">
-					<Grid columns={12} gutter="xs" px={4}>
-						<Grid.Col bd="1px solid #555" span={6} px="xs">
-							<Group gap="xs">
-								<Text size="md" fw={600}>
-									{t("প্রকার")} {getValue(patientInfo?.mode_name, "")}
-								</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={6} px="xs">
-							<Group gap="xs">
-								<Text size="md" fw={600}>
-									{t("বহির্বিভাগ কক্ষ")}
-								</Text>
-								<Text size="md">{getValue(patientInfo?.room_name, "")}</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs">
-								<Text size="xs">{getValue(patientInfo?.invoice, "")}</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs">
-								<Text size="xs">{getValue(patientInfo?.patient_id, "")}</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("HID")}
-								</Text>
-								<Text size="xs">{getValue(patientInfo?.health_id, "")}</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs" />
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={6} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("নাম")}
-								</Text>
-								<Text size="xs">{getValue(patientInfo?.name, "")}</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("মোবাইল")}
-								</Text>
-								<Text size="xs">{getValue(patientInfo?.mobile, "")}</Text>
-							</Group>
-						</Grid.Col>
-
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("লিঙ্গ")}
-								</Text>
-								<Text size="xs">
-									{patientInfo?.gender &&
-										patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
-								</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs">
-								<Text size="xs">
-									{t("তারিখ")}: {getValue(patientInfo?.created)}
-								</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("বয়স")}
-								</Text>
-								<Text size="xs">
-									{getValue(patientInfo?.year, 0)} Y, {getValue(patientInfo?.month, 0)} M,{" "}
-									{getValue(patientInfo?.day, 0)} D
-								</Text>
-							</Group>
-						</Grid.Col>
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("জন্ম তারিখ")}
-								</Text>
-								<Text size="xs">{getValue(patientInfo?.dob, "")}</Text>
-							</Group>
-						</Grid.Col>
-
-						<Grid.Col bd="1px solid #555" span={3} px="xs">
-							<Group gap="xs">
-								<Text size="xs" fw={600}>
-									{t("ফি পরিমাণ")}
-								</Text>
-								<Text size="xs">{getValue(patientInfo?.total, 0)}</Text>
-							</Group>
-						</Grid.Col>
-					</Grid>
-				</Box>
-
-				{/* =============== medical notes and prescription area with rx symbol ================ */}
-				<Box pos="relative" my="lg">
-					<Table withTableBorder withColumnBorders>
-						<Table.Thead>
-							<Table.Tr>
-								<Table.Th>{t("বিবরণ")}</Table.Th>
-								<Table.Th>{t("মূল্য")}</Table.Th>
-							</Table.Tr>
-						</Table.Thead>
-						<Table.Tbody>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("ভর্তি ফি")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.admission_fee, "0")}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("ভর্তির তারিখ ও সময়")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.admission_date_time, "")}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("ছাড়ের তারিখ")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.discharge_date, "")}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("মোট পরিশোধযোগ্য")}</Table.Td>
-								<Table.Td fw={600}>{getValue(patientInfo?.total_payable, "0")}</Table.Td>
-							</Table.Tr>
-						</Table.Tbody>
-					</Table>
-				</Box>
-
-				<Box pos="relative" mb="lg">
-					<Table withTableBorder withColumnBorders>
-						<Table.Thead>
-							<Table.Tr>
-								<Table.Th>{t("সেবার নাম")}</Table.Th>
-								<Table.Th>{t("মূল্য")}</Table.Th>
-							</Table.Tr>
-						</Table.Thead>
-						<Table.Tbody>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("চিনির মাত্রা")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.sugar_level, "")}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("সিটি স্ক্যান")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.ct_scan, "")}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("ডিসচার্জ")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.somon_discharge, "")}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("এমটি টেস্ট")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.mt_test, "")}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("মোট")}</Table.Td>
-								<Table.Td fw={600}>{getValue(patientInfo?.total, "0")}</Table.Td>
-							</Table.Tr>
-						</Table.Tbody>
-					</Table>
-				</Box>
-
-				<Box pos="relative" mb="lg">
-					<Table withTableBorder withColumnBorders>
-						<Table.Thead>
-							<Table.Tr>
-								<Table.Th>{t("জমার তারিখ")}</Table.Th>
-								<Table.Th>{t("সর্বমোট জমা")}</Table.Th>
-								<Table.Th>{t("কেবিন ভাড়া")}</Table.Th>
-								<Table.Th>{t("সর্বমোট")}</Table.Th>
-								<Table.Th>{t("ফেরত পাবে")}</Table.Th>
-								<Table.Th>{t("ফেরত পরিমাণ")}</Table.Th>
-								<Table.Th>{t("ডিস্কাউন্ট পাবে")}</Table.Th>
-								<Table.Th>{t("ডিস্কাউন্ট পরিমাণ")}</Table.Th>
-							</Table.Tr>
-						</Table.Thead>
-						<Table.Tbody>
-							<Table.Tr>
-								<Table.Td>{getValue(patientInfo?.deposit_date, "১২-১২-২০২০")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.total_deposit, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.cabin_rent, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.grand_total, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.refund_amount, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.refund_premium, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.discount_amount, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.discount_premium, "0")}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td fw={600} ta="center">
-									{t("চূড়ান্ত ব্যালেন্স")}
-								</Table.Td>
-								<Table.Td>{getValue(patientInfo?.total_deposit, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.cabin_rent, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.grand_total, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.refund_amount, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.refund_premium, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.discount_amount, "0")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.discount_premium, "0")}</Table.Td>
-							</Table.Tr>
-						</Table.Tbody>
-					</Table>
-				</Box>
-
-				<Box bd="1px solid #555" style={{ borderRadius: "4px" }}>
-					{/* =============== top section with printed by and signature ================ */}
-					<Grid columns={12} gutter="0">
-						<Grid.Col span={6} pl="xl">
-							<Text fz="xl">{patientInfo?.doctor_name || "N/A"}</Text>
-							<Text fz="xs">{patientInfo?.designation_name || "N/A"}</Text>
-							<Text fz="xs">Doctor ID: {getValue(patientInfo?.employee_id)}</Text>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Text size="sm" fw={600} mb="xs">
-								<Text>{t("Signature")}</Text>
-								{/* {renderImagePreview([], patientInfo?.signature_path)} */}
-							</Text>
-						</Grid.Col>
-					</Grid>
-				</Box>
-
+				{/* =============== payment summary table ================ */}
 				<Box ta="center">
+					<Table
+						style={{
+							borderCollapse: "collapse",
+							width: "100%",
+						}}
+						className="customTable"
+					>
+						<Table.Tbody>
+							<Table.Tr>
+								<Table.Td>
+									<Grid columns={12} gutter="0">
+										<Grid.Col span={6} align="left">
+											<Text fz="xl">{t("AdmittedBy")}</Text>
+											<Text fz="xs">{patientInfo?.created_by_name || "N/A"}</Text>
+											<Text fz="xs">{patientInfo?.designation_name || "N/A"}</Text>
+										</Grid.Col>
+										<Grid.Col span={6} align={"right"}>
+											<Text size="sm" fw={600} mb="xs">
+												<Text>
+													{t("Signature")}-----------------------------------------------
+												</Text>
+												<Text mt={"md"}>
+													Name-----------------------------------------------
+												</Text>
+												<Text mt={"md"}>
+													Designation-----------------------------------------------
+												</Text>
+											</Text>
+										</Grid.Col>
+									</Grid>
+								</Table.Td>
+							</Table.Tr>
+						</Table.Tbody>
+					</Table>
 					<Text size="xs" c="gray" mt="xs">
+						{patientInfo?.patient_id && (
+							<Barcode fontSize={"12"} width={"1"} height={"24"} value={patientInfo?.patient_id} />
+						)}
+					</Text>
+					<Text size="xs" c="gray">
 						<strong>{t("প্রিন্ট")}: </strong>
 						{user?.name}
 					</Text>
@@ -305,7 +377,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 						{t("প্রিন্টের সময়")}: {new Date().toLocaleString()}
 					</Text>
 				</Box>
-			</Box>
+			</Stack>
 		</Box>
 	);
 });
