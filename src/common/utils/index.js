@@ -180,6 +180,25 @@ export const formatDateForMySQL = (date) => {
 	}
 };
 
+export const formatUnixToAmPm = (unix) => {
+	if (!unix) return "";
+
+	const d = new Date(unix * 1000); // convert seconds → milliseconds
+
+	const day = String(d.getDate()).padStart(2, "0");
+	const month = String(d.getMonth() + 1).padStart(2, "0");
+	const year = d.getFullYear();
+
+	let hours = d.getHours();
+	const minutes = String(d.getMinutes()).padStart(2, "0");
+
+	const ampm = hours >= 12 ? "PM" : "AM";
+	hours = hours % 12 || 12;
+	hours = String(hours).padStart(2, "0");
+
+	return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
+};
+
 export const parseDateValue = (dateString) => {
 	if (!dateString) return "";
 

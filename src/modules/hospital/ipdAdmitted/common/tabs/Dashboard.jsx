@@ -306,9 +306,8 @@ export default function Dashboard() {
 							<Box>
 
 								<Divider
-									mt="xs"
 									label={
-										<Text size="md" c="var(--theme-tertiary-color-7)" fw={500}>
+										<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
 											Medicine History
 										</Text>
 									}
@@ -338,7 +337,7 @@ export default function Dashboard() {
 								<Divider
 									mt="xs"
 									label={
-										<Text size="md" c="var(--theme-tertiary-color-7)" fw={500}>
+										<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
 											Investigations
 										</Text>
 									}

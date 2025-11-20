@@ -31,7 +31,7 @@ import InvestigationPosBN from "@hospital-components/print-formats/ipd/Investiga
 import { useReactToPrint } from "react-to-print";
 import {formatDateTimeAmPm, formatUnixToAmPm} from "@utils/index";
 
-export default function Investigation() {
+export default function IssueMedicine() {
 	const dispatch = useDispatch();
 	const { id } = useParams();
 	const { t } = useTranslation();

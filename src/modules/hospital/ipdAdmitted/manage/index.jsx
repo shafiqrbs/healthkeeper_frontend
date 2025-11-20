@@ -32,12 +32,14 @@ import PrintAdmissionBill from "../common/tabs/PrintAdmissionBill";
 import PrintPrescriptionIndoor from "../common/tabs/PrintPrescriptionIndoor";
 import PrintFreshOrder from "../common/tabs/PrintFreshOrder";
 import Discharge from "../common/tabs/Discharge";
+import IssueMedicine from "@modules/hospital/ipdAdmitted/common/tabs/IssueMedicine";
 
 const module = MODULES.E_FRESH;
 
 const TAB_ITEMS = [
 	"Dashboard",
 	"E-Fresh",
+	"Issue Medicine",
 	"Investigation",
 	"Medicine",
 	"Vitals Chart",
@@ -269,7 +271,8 @@ export default function Index() {
 							</Stack>
 						)}
 						{baseTabValue === "dashboard" && <Dashboard />}
-						{baseTabValue === "medicine" && <Medicine />}
+						{baseTabValue === "issue-medicine" && <IssueMedicine />}
+						{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}
 						{baseTabValue === "investigation" && <Investigation />}
 						{baseTabValue === "vitals chart" && (
 							<VitalsChart refetch={refetch} data={prescriptionData?.data} />
@@ -281,7 +284,7 @@ export default function Index() {
 						{baseTabValue === "ipd prescription" && <PrintIPDPrescription />}
 						{baseTabValue === "admission form" && <PrintAdmissionForm />}
 						{baseTabValue === "billing invoice" && <PrintBillingInvoice />}
-						{baseTabValue === "investigation" && <PrintInvestigation />}
+						{baseTabValue === "investigation-print" && <PrintInvestigation />}
 						{baseTabValue === "billing pos" && <PrintBillingPOS />}
 						{baseTabValue === "admission bill" && <PrintAdmissionBill />}
 						{baseTabValue === "prescription indoor" && <PrintPrescriptionIndoor />}
