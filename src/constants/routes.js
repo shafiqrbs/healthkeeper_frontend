@@ -553,10 +553,8 @@ export const HOSPITAL_DATA_ROUTES = {
 		},
 
 		FINAL_BILLING: {
-			INDEX: "hospital/final-billing",
-			CREATE: "hospital/final-billing",
-			UPDATE: "hospital/final-billing",
-			VIEW: "hospital/final-billing",
+			INDEX: "hospital/billing/final-bill",
+			VIEW: "hospital/billing",
 			DELETE: "hospital/final-billing",
 		},
 
@@ -588,6 +586,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			PROCESS: "hospital/ipd/data-process",
 			EFRESH_ORDER: "hospital/ipd/efresh-order",
 			PATIENT_CHART: "hospital/ipd/patient-chart",
+			RELEASE: "hospital/ipd/release",
 		},
 
 		EMERGENCY: {

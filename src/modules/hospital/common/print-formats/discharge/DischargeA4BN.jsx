@@ -102,8 +102,8 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					<Text fz="sm">• Ciprofloxacin 500 mg BD --- After food --- 20</Text>
 					<Text fz="sm">• Azithromycin 500 mg BD --- After food --- 10</Text>
 
-					{data.medicines?.map((medicine) => (
-						<Text key={medicine.medicine_id} fz="sm" mt="sm" fw={600}>
+					{data?.medicines?.map((medicine) => (
+						<Text key={medicine?.medicine_id} fz="sm" mt="sm" fw={600}>
 							{medicine?.medicine_name}
 						</Text>
 					))}

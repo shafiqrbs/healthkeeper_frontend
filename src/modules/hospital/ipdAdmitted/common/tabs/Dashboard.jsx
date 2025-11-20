@@ -1,11 +1,16 @@
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import {HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import {ActionIcon, Box, Divider, Grid, Group, List, Paper, Stack, Text, Title} from "@mantine/core";
+import {ActionIcon, Box, Divider, Grid, Group, List, Paper, Stack, Text, Title,Button} from "@mantine/core";
 import {useEffect, useMemo, useRef, useState} from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import {IconTrash} from "@tabler/icons-react";
+import {modals} from "@mantine/modals";
+import {showEntityData} from "@/app/store/core/crudThunk";
+import {successNotification} from "@components/notification/successNotification";
+import {errorNotification} from "@components/notification/errorNotification";
+import {getDataWithoutStore} from "@/services/apiService";
 
 export default function Dashboard() {
 	const ipdRef = useRef(null);
@@ -30,7 +35,28 @@ export default function Dashboard() {
 	const invoiceParticulars = ipd?.invoice_particular || [];
 	const prescriptionMedicine = ipd?.prescription_medicine || [];
 
-	console.log(ipd?.vital_chart_json)
+	const handleReleaseMode = (mode) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Submit"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleConfirmApproved(mode),
+		});
+	};
+
+	async function handleBarcodeTag(barcode,reportId) {
+
+		setBarcodeValue(reportId);
+		requestAnimationFrame(printBarCodeValue);
+	}
+
+	const handleConfirmApproved = async (mode) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.RELEASE}/${id}/${mode}`,
+		});
+	}
 
 /*	useEffect(() => {
 		if (data) {
@@ -180,6 +206,18 @@ export default function Dashboard() {
 				{/* =============== Column 2: Room & Doctor Information =============== */}
 				<Grid.Col span={4} h="100%">
 					<Paper withBorder p="lg" radius="sm" bg="var(--mantine-color-white)" h="100%">
+
+						<Stack gap="md" mb={'md'}>
+							<Group justify="center">
+								<Button  onClick={() => handleReleaseMode('discharge')} > For Discharge </Button>
+
+								<Button variant="default" onClick={() => handleReleaseMode('death')} >For Death</Button>
+
+								<Button variant="light" onClick={() => handleReleaseMode('referred')} >For Referred
+								</Button>
+							</Group>
+						</Stack>
+
 						<Stack gap="md">
 							<Divider
 								label={

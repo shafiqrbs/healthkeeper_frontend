@@ -58,7 +58,6 @@ export default function Invoice({ entity,setRefetchBillingKey }) {
 
 	const item = entity;
 	const transactions = entity?.invoice_transaction ||[];
-	console.log(item);
 	const printIPDAll = useReactToPrint({ content: () => ipdAllPrintRef.current });
 
 	const getRoomData = () => {

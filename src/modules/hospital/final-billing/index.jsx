@@ -4,7 +4,7 @@ import BillingTable from "@hospital-components/BillingTable";
 import { useOutletContext, useParams } from "react-router-dom";
 import BillingSummary from "@hospital-components/BillingSummary";
 import BillingActions from "@hospital-components/BillingActions";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import { MODULES } from "@/constants";
 import Navigation from "@components/layout/Navigation";
@@ -12,6 +12,8 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import { useTranslation } from "react-i18next";
 import Table from "./_Table";
+import {getDataWithoutStore} from "@/services/apiService";
+import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
 
 const billing = {
 	cabinCharge: 1000,
@@ -42,6 +44,8 @@ export default function Index() {
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
+	const [refetchBillingKey, setRefetchBillingKey] = useState(0);
+	const [diagnosticReport, setDiagnosticReport] = useState([]);
 	const { t } = useTranslation();
 
 	const rows = finalBillDetails.map((item, index) => (
@@ -53,6 +57,18 @@ export default function Index() {
 		</Table.Tr>
 	));
 
+	useEffect(() => {
+		if (id) {
+			(async () => {
+				const res = await getDataWithoutStore({
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${id}/final-bill`,
+				});
+				setDiagnosticReport(res?.data);
+			})();
+		}
+	}, [id, refetchBillingKey]);
+	const entity = diagnosticReport || {};
+	console.log(entity)
 	return (
 		<>
 			{progress !== 100 ? (
@@ -65,7 +81,7 @@ export default function Index() {
 							<Grid.Col span={6}>
 								<Box bg="var(--mantine-color-white)" p="xs" h="100%">
 									<Text fw={600} mb="sm" fz="sm">
-										{t("PatientInformation")}
+										{t("FinalBilling")}
 									</Text>
 									<TabsWithSearch
 										tabList={["list"]}
@@ -88,7 +104,7 @@ export default function Index() {
 							<Grid.Col span={8}>
 								<Box bg="var(--mantine-color-white)" className="borderRadiusAll" h="100%">
 									<TabSubHeading title="Final Bill" />
-									<BillingTable data={billing} />
+									<BillingTable entity={entity} data={billing} />
 								</Box>
 							</Grid.Col>
 							<Grid.Col span={10}>
@@ -101,11 +117,11 @@ export default function Index() {
 								>
 									<Box>
 										<TabSubHeading title="Final Bill Details" />
-										<BillingSummary data={billingSummary} />
+										<BillingSummary entity={entity} data={billingSummary} />
 									</Box>
 									<Box p="xs" bg="var(--mantine-color-white)">
 										<Box>
-											<BillingActions />
+											<BillingActions entity={entity} />
 										</Box>
 									</Box>
 								</Stack>

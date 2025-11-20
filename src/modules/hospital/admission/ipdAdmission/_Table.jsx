@@ -36,6 +36,7 @@ const PER_PAGE = 20;
 
 const tabs = [
 	{ label: "Confirmed", value: "confirmed" },
+	{ label: "Billing", value: "billing" },
 	{ label: "Admitted", value: "admitted" },
 ];
 

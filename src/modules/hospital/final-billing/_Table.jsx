@@ -55,10 +55,10 @@ export default function _Table() {
 					<Grid
 						columns={12}
 						key={item.id}
-						onClick={() => handleAdmissionOverview(item.id)}
+						onClick={() => handleAdmissionOverview(item.uid)}
 						my="xs"
 						bg={
-							Number(selectedPatientId) === item?.id
+							Number(selectedPatientId) === item?.uid
 								? "var(--theme-primary-color-0)"
 								: "var(--theme-tertiary-color-0)"
 						}

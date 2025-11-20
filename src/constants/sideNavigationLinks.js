@@ -181,14 +181,14 @@ export const sideNavigationLinks = {
 
 		{
 			label: t("Waiver"),
-			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_WAIVER.INVOICE,
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_WAIVER,
 			icon: IconMicroscopeOff,
 			color: "#9E9D24", // Olive
 			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd", "doctor_emergency", "doctor_opd"],
 			subMenu: [
 				{
 					label: t("PatientWaiver"),
-					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_WAIVER.INVOICE,
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_WAIVER.INDEX,
 					icon: IconMicroscopeOff,
 					allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd", "doctor_emergency", "doctor_opd"],
 				},
