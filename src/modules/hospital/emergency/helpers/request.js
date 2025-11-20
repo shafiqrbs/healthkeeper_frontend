@@ -20,7 +20,6 @@ const initialValues = {
 	year: "",
 	age: "",
 	identity: "",
-	card_no: "",
 	upazilla_id: "",
 	address: "",
 	specialization: "",

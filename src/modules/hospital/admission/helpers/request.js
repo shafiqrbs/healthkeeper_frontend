@@ -15,6 +15,7 @@ const admissionInitialValues = {
 	permanentAddress: "",
 	dob: "",
 	year: "",
+	card_no: "",
 	month: "",
 	day: "",
 	country_id: "19",

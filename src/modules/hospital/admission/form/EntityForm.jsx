@@ -583,6 +583,7 @@ export default function EntityForm({ form, module }) {
 									</Grid>
 								</Stack>
 								<Stack p={"xs"} gap={"mes"}>
+
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("patientName")}</Text>
@@ -720,6 +721,23 @@ export default function EntityForm({ form, module }) {
 												nextField="name"
 												value={form.values.religion_id}
 												dropdownValue={religionDropdown}
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("CardNo")}</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputForm
+												form={form}
+												label=""
+												tooltip={t("EnterCardNo")}
+												placeholder={t("EnterCardNo")}
+												name="card_no"
+												id="card_no"
+												value={form.values.card_no}
+												required
 											/>
 										</Grid.Col>
 									</Grid>
