@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import AdmissionFormEN from "@hospital-components/print-formats/admission/AdmissionFormEN";
+import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 
 export default function PrintAdmissionForm() {
 	const { mainAreaHeight } = useOutletContext();
@@ -21,7 +21,7 @@ export default function PrintAdmissionForm() {
 		<Box pos="relative" bg="var(--mantine-color-white)" className="borderRadiusAll">
 			<LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
 			<ScrollArea h={mainAreaHeight - 80} scrollbars="y" p="sm">
-				<AdmissionFormEN data={ipdData} ref={printRef} preview />
+				<AdmissionFormBN data={ipdData} ref={printRef} preview />
 			</ScrollArea>
 			<Box bg="var(--mantine-color-white)" p="sm" className="shadow-2">
 				<Button onClick={handlePrint} bg="var(--theme-secondary-color-6)" color="white" size="sm">
