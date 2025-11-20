@@ -366,7 +366,7 @@ function AppRoute() {
 						}
 					/>
 					<Route
-						path="free-patient/:id"
+						path="patient-waiver/:id"
 						element={
 							<ProtectedRoute
 								roles={[
@@ -377,7 +377,7 @@ function AppRoute() {
 									"doctor_opd",
 								]}
 							>
-								<FreePatientIndex />
+								<PatientWaiverIndex />
 							</ProtectedRoute>
 						}
 					/>

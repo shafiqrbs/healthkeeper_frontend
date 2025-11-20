@@ -31,13 +31,18 @@ export default function EntityForm({ form, module }) {
 				return;
 			}
 
+			const formValue = {
+				...form.values,
+				hms_invoice_id: id,
+			};
+
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.PATIENT_WAVER}/${id}`,
-				data: values,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.CREATE}`,
+				data: formValue,
 				module,
 			};
-			const resultAction = await dispatch(updateEntityData(value));
-			if (updateEntityData.rejected.match(resultAction)) {
+			const resultAction = await dispatch(storeEntityData(value));
+			if (storeEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
 				if (fieldErrors) {
 					const errorObject = {};
@@ -46,7 +51,7 @@ export default function EntityForm({ form, module }) {
 					});
 					form.setErrors(errorObject);
 				}
-			} else if (updateEntityData.fulfilled.match(resultAction)) {
+			} else if (storeEntityData.fulfilled.match(resultAction)) {
 				form.reset();
 				close(); // close the drawer
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);

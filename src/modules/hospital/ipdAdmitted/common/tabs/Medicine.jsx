@@ -226,7 +226,7 @@ export default function Medicine(data) {
 															className={inlineInputCss.inputNumber}
 															placeholder={t("Quantity")}
 															value={submitFormData[item.id]?.daily_quantity || ""}
-															onChange={(val) => handleDataTypeChange(item.id, "quantity", val)}
+															onChange={(val) => handleDataTypeChange(item.id, "daily_quantity", val)}
 															onBlur={() => handleRowSubmit(item.id)}
 														/>
 													</Text>
