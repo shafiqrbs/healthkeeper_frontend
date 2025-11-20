@@ -31,6 +31,8 @@ import { modals } from "@mantine/modals";
 import { useDisclosure } from "@mantine/hooks";
 import IpdManageDrawer from "@hospital-components/drawer/IpdManageDrawer";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
+import ViewDrawer from "@modules/pharmacy/store-indent/__ViewDrawer.jsx";
+import __IssueMedicineDrawer from "@modules/hospital/ipdAdmitted/__IssueMedicineDrawer.jsx";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
@@ -117,6 +119,15 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 		setSelectedPrescriptionId(prescriptionId);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${prescriptionId}`)
 	};
+
+    const [issueMedicineDrawer,setIssueMedicineDrawer] = useState(false)
+    const [issueMedicinePrescriptionUUId,setIssueMedicinePrescriptionUUId] = useState(null)
+    const [issueMedicinePrescriptionId,setIssueMedicinePrescriptionId] = useState(null)
+    const handleIssueMedicine = (prescriptionId, id) => {
+        setIssueMedicinePrescriptionUUId(prescriptionId)
+        setIssueMedicinePrescriptionId(id)
+        setIssueMedicineDrawer(true)
+    };
 
 	const handleChangeIpdMode = () => {
 		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX);
@@ -266,6 +277,19 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 											>
 												{t("Manage")}
 											</Button>
+
+                                            <Button
+                                                rightSection={<IconArrowNarrowRight size={18} />}
+                                                onClick={() => handleIssueMedicine(values.uid, values.id)}
+                                                variant="filled"
+                                                color="var(--theme-red-color-6)"
+                                                radius="xs"
+                                                aria-label="Settings"
+                                                size="compact-xs"
+                                                fw={400}
+                                            >
+                                                {t("Issue Medicine")}
+                                            </Button>
 											{/* <Button
 												rightSection={<IconArrowNarrowRight size={18} />}
 												onClick={() => openManageIpd()}
@@ -389,6 +413,17 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
 			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
 			{dischargePaperPrintData && <DischargeA4BN data={dischargePaperPrintData} ref={dischargePaperRef} />}
-		</Box>
+
+            <__IssueMedicineDrawer
+                issueMedicineDrawer={issueMedicineDrawer}
+                setIssueMedicineDrawer={setIssueMedicineDrawer}
+                issueMedicinePrescriptionId={issueMedicinePrescriptionId}
+                setIssueMedicinePrescriptionId={setIssueMedicinePrescriptionId}
+                issueMedicinePrescriptionUUId={issueMedicinePrescriptionUUId}
+                setIssueMedicinePrescriptionUUId={setIssueMedicinePrescriptionUUId}
+                module={module}
+            />
+
+        </Box>
 	);
 }
