@@ -16,7 +16,6 @@ import { getDataWithoutStore } from "@/services/apiService";
 import DetailsDrawer from "@/modules/hospital/common/drawer/__IPDDetailsDrawer";
 import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import Navigation from "@components/layout/Navigation";
-import Medicine from "@modules/hospital/ipdAdmitted/common/tabs/Medicine";
 import Investigation from "@modules/hospital/ipdAdmitted/common/tabs/Investigation";
 import { modals } from "@mantine/modals";
 import { formatDate } from "@utils/index";
@@ -25,7 +24,7 @@ import InsulinChart from "../common/tabs/InsulinChart";
 import Dashboard from "../common/tabs/Dashboard";
 import PrintPrescriptionIndoor from "../common/tabs/PrintPrescriptionIndoor";
 import Discharge from "../common/tabs/Discharge";
-
+import RoomTransfer from "../common/tabs/RoomTransfer.jsx";
 
 const module = MODULES.E_FRESH;
 
@@ -38,9 +37,7 @@ const TAB_ITEMS = [
 	"Room Transfer",
 	"Discharge",
 ];
-const PRINT_SECTION_ITEMS = [
-	"E-Fresh Print",
-];
+const PRINT_SECTION_ITEMS = ["E-Fresh Print"];
 
 export default function Index() {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -153,8 +150,8 @@ export default function Index() {
 									</Text>
 								</Box>
 							</Box>
-							<ScrollArea h={mainAreaHeight - 180} scrollbars="y">
-								<Stack bg="var(--mantine-color-white)" h="100%" py="xs" gap={0}>
+							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
+								<Stack h="100%" py="xs" gap={0}>
 									{TAB_ITEMS.map((tabItem, index) => (
 										<Box
 											key={index}
@@ -253,6 +250,7 @@ export default function Index() {
 								</Flex>
 							</Stack>
 						)}
+						{baseTabValue === "room transfer" && <RoomTransfer data={prescriptionData?.data} />}
 						{baseTabValue === "dashboard" && <Dashboard />}
 						{/*{baseTabValue === "issue-medicine" && <IssueMedicine />}*/}
 						{/*{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}*/}

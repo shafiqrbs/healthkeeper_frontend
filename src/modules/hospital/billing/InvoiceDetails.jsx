@@ -2,7 +2,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {useNavigate, useOutletContext, useParams} from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
@@ -73,7 +73,7 @@ export default function InvoiceDetails({ entity }) {
 				if (!hasValue) {
 					return t("EnterAmount") || "Amount is required";
 				}
-				if (Number.isNaN(numericValue)) {
+				if (isNaN(numericValue)) {
 					return t("AmountMustBeNumber") || "Amount must be a number";
 				}
 				return null;
@@ -463,146 +463,136 @@ export default function InvoiceDetails({ entity }) {
 								}}
 							/>
 						</Box>
-						{invoiceDetails?.process == "done" && (
-							// =============== investigation-specific form: comment, display total, receive, submit ================
-							<Box
-								gap={0}
-								justify="space-between"
-								mt="xs"
-								px="xs"
-								pb="xs"
-								bg="var(--mantine-color-white)"
+						<Box gap={0} justify="space-between" mt="xs" px="xs" pb="xs" bg="var(--mantine-color-white)">
+							<form
+								onSubmit={investigationForm.onSubmit(
+									createSubmitHandler(investigationForm, "investigation")
+								)}
 							>
-								<form
-									onSubmit={investigationForm.onSubmit(
-										createSubmitHandler(investigationForm, "investigation")
-									)}
-								>
-									<Box w="100%">
-										<Grid columns={18} gutter="xs">
-											<Grid.Col
-												span={6}
-												className="animate-ease-out"
-												bg="var(--theme-primary-color-0)"
-												px="xs"
-											>
-												<Box mt="md">
-													<TextAreaForm
-														id="investigation-comment"
-														form={investigationForm}
-														tooltip={t("EnterComment")}
-														placeholder={t("EnterComment")}
-														name="comment"
-														disabled={invoiceDetails?.process === "Done"}
-													/>
-												</Box>
-											</Grid.Col>
-											<Grid.Col
-												span={6}
-												bg="var(--theme-tertiary-color-1)"
-												className="animate-ease-out"
-											>
-												<Box mt="xs">
-													<Grid align="center" columns={20}>
-														<Grid.Col span={8}>
-															<Flex justify="flex-end" align="center" gap="es">
-																<Text fz="xs">{t("CreatedBy")}</Text>
-															</Flex>
-														</Grid.Col>
-														<Grid.Col span={12}>
-															<Flex align="right" gap="es">
-																<Text fz="xs">
-																	{invoiceDetails?.created_doctor_info?.name || "N/A"}
-																</Text>
-															</Flex>
-														</Grid.Col>
-													</Grid>
-													<Grid align="center" columns={20}>
-														<Grid.Col span={8}>
-															<Flex justify="flex-end" align="center" gap="es">
-																<Text fz="sm">{t("Total")}</Text>
-															</Flex>
-														</Grid.Col>
-														<Grid.Col span={12}>
-															<Flex align="right" gap="es">
-																<Text fz="sm">{investigationSubtotal || 0}</Text>
-															</Flex>
-														</Grid.Col>
-													</Grid>
-												</Box>
-											</Grid.Col>
-											<Grid.Col
-												span={6}
-												className="animate-ease-out"
-												bg="var(--theme-secondary-color-0)"
-												px="xs"
-											>
-												<Grid align="center" gutter="3xs" columns={20}>
-													<Grid.Col span={5}>
-														<Text fz="sm" fw="800">
-															{t("Receive")}
-														</Text>
-													</Grid.Col>
+								<Box w="100%">
+									<Grid columns={18} gutter="xs">
+										<Grid.Col
+											span={6}
+											className="animate-ease-out"
+											bg="var(--theme-primary-color-0)"
+											px="xs"
+										>
+											<Box mt="md">
+												<TextAreaForm
+													id="investigation-comment"
+													form={investigationForm}
+													tooltip={t("EnterComment")}
+													placeholder={t("EnterComment")}
+													name="comment"
+													disabled={invoiceDetails?.process === "Done"}
+												/>
+											</Box>
+										</Grid.Col>
+										<Grid.Col
+											span={6}
+											bg="var(--theme-tertiary-color-1)"
+											className="animate-ease-out"
+										>
+											<Box mt="xs">
+												<Grid align="center" columns={20}>
 													<Grid.Col span={8}>
-														<InputNumberForm
-															form={investigationForm}
-															label=""
-															size={'xs'}
-															tooltip={t("EnterAmount")}
-															placeholder={t("Amount")}
-															name="amount"
-															id="investigation-amount"
-															disabled={invoiceDetails?.process === "Done"}
-														/>
+														<Flex justify="flex-end" align="center" gap="es">
+															<Text fz="xs">{t("CreatedBy")}</Text>
+														</Flex>
 													</Grid.Col>
-													<Grid.Col span={7}>
-														{isInvestigationDue && (
-															<Text fz="sm" c="red">
-																{t("Due")}: {investigationDueAmount}
+													<Grid.Col span={12}>
+														<Flex align="right" gap="es">
+															<Text fz="xs">
+																{invoiceDetails?.created_doctor_info?.name || "N/A"}
 															</Text>
-														)}
-														{!isInvestigationDue && isInvestigationReturn && (
-															<Text fz="sm" c="red">
-																{t("Return")}: {investigationReturnAmount}
-															</Text>
-														)}
+														</Flex>
 													</Grid.Col>
 												</Grid>
-												<Box mt="xs">
-													<Button.Group>
-														<Button
-															id="EntityFormSubmitInvestigation"
-															w="100%"
-															size="compact-sm"
-															bg="var(--theme-pos-btn-color)"
-															type="button"
-															disabled={invoiceDetails?.process === "Done"}
-														>
-															<Stack gap={0} align="center" justify="center">
-																<Text fz="xs">{t("Print")}</Text>
-															</Stack>
-														</Button>
-														<Button
-															type="submit"
-															w="100%"
-															size="compact-sm"
-															bg="var(--theme-save-btn-color)"
-															disabled={
-																invoiceDetails?.process === "Done" || isInvestigationDue
-															}
-														>
-															<Stack gap={0} align="center" justify="center">
-																<Text fz="xs">{t("Save")}</Text>
-															</Stack>
-														</Button>
-													</Button.Group>
-												</Box>
-											</Grid.Col>
-										</Grid>
-									</Box>
-								</form>
-							</Box>
-						)}
+												<Grid align="center" columns={20}>
+													<Grid.Col span={8}>
+														<Flex justify="flex-end" align="center" gap="es">
+															<Text fz="sm">{t("Total")}</Text>
+														</Flex>
+													</Grid.Col>
+													<Grid.Col span={12}>
+														<Flex align="right" gap="es">
+															<Text fz="sm">{investigationSubtotal || 0}</Text>
+														</Flex>
+													</Grid.Col>
+												</Grid>
+											</Box>
+										</Grid.Col>
+										<Grid.Col
+											span={6}
+											className="animate-ease-out"
+											bg="var(--theme-secondary-color-0)"
+											px="xs"
+										>
+											<Grid align="center" gutter="3xs" columns={20}>
+												<Grid.Col span={5}>
+													<Text fz="sm" fw="800">
+														{t("Receive")}
+													</Text>
+												</Grid.Col>
+												<Grid.Col span={8}>
+													<InputNumberForm
+														form={investigationForm}
+														label=""
+														size={"xs"}
+														tooltip={t("EnterAmount")}
+														placeholder={t("Amount")}
+														name="amount"
+														id="investigation-amount"
+														disabled={invoiceDetails?.process === "Done"}
+													/>
+												</Grid.Col>
+												<Grid.Col span={7}>
+													{isInvestigationDue && (
+														<Text fz="sm" c="red">
+															{t("Due")}: {investigationDueAmount}
+														</Text>
+													)}
+													{!isInvestigationDue && isInvestigationReturn && (
+														<Text fz="sm" c="red">
+															{t("Return")}: {investigationReturnAmount}
+														</Text>
+													)}
+												</Grid.Col>
+											</Grid>
+											<Box mt="xs">
+												<Button.Group>
+													<Button
+														id="EntityFormSubmitInvestigation"
+														w="100%"
+														size="compact-sm"
+														bg="var(--theme-pos-btn-color)"
+														type="button"
+														disabled={invoiceDetails?.process === "Done"}
+													>
+														<Stack gap={0} align="center" justify="center">
+															<Text fz="xs">{t("Print")}</Text>
+														</Stack>
+													</Button>
+													<Button
+														type="submit"
+														w="100%"
+														size="compact-sm"
+														bg="var(--theme-save-btn-color)"
+														disabled={
+															invoiceDetails?.process === "Done" || isInvestigationDue
+														}
+													>
+														<Stack gap={0} align="center" justify="center">
+															<Text fz="xs">{t("Save")}</Text>
+														</Stack>
+													</Button>
+												</Button.Group>
+											</Box>
+										</Grid.Col>
+									</Grid>
+								</Box>
+							</form>
+						</Box>
 					</Tabs.Panel>
 					{entity.mode_slug === "ipd" && (
 						<Tabs.Panel value="bed-cabin" bg="var(--mantine-color-white)">

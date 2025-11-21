@@ -1,37 +1,49 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getDataWithoutStore } from "@/services/apiService";
 
-export default function useDataWithoutStore({ url, params, headers }) {
+export default function useDataWithoutStore({ url, params = {}, headers = {} }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [data, setData] = useState(null);
 
-	const fetchData = async () => {
+	// memoize params & headers (no re-renders → no re-fetch spam)
+	const stableParams = useMemo(() => params, [JSON.stringify(params)]);
+	const stableHeaders = useMemo(() => headers, [JSON.stringify(headers)]);
+
+	// prevent duplicate fetch calls (even in Strict Mode)
+	const hasFetchedRef = useRef(false);
+
+	const fetchData = useCallback(async () => {
+		if (hasFetchedRef.current) return; // prevent duplicate strict-mode calls
+		hasFetchedRef.current = true;
+
 		setIsLoading(true);
 		setError(null);
-		setData(null);
+
 		try {
-			const response = await getDataWithoutStore({ url, params }, headers);
+			const response = await getDataWithoutStore({ url, params: stableParams }, stableHeaders);
 			setData(response);
-		} catch (error) {
-			setError(error);
+		} catch (err) {
+			console.error(err);
+			setError(err);
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}, [url, stableParams, stableHeaders]);
 
-	const refetch = async () => {
-		await fetchData();
-	};
-
+	// fetch once when URL becomes valid
 	useEffect(() => {
-		const parsedUrl = url?.split("/");
-		if (parsedUrl?.some((item) => item === "undefined" || item === "null")) {
-			console.warn("Skipped api call, reason: URL is not valid:", url);
-		} else {
-			fetchData();
-		}
-	}, [url, JSON.stringify(params), JSON.stringify(headers)]);
+		if (!url || url.includes("undefined") || url.includes("null")) return;
+
+		hasFetchedRef.current = false; // reset for each new URL
+		fetchData();
+	}, [url, stableParams, stableHeaders, fetchData]);
+
+	// manual refetch (always allowed)
+	const refetch = useCallback(async () => {
+		hasFetchedRef.current = true; // avoid double run in strict mode
+		await fetchData();
+	}, [fetchData]);
 
 	return { isLoading, error, data, refetch };
 }

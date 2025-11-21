@@ -1,22 +1,8 @@
-import {
-	Box,
-	Text,
-	ScrollArea,
-	Stack,
-	Button,
-	Flex,
-	Grid,
-	Tabs,
-	ActionIcon,
-	Select,
-	Autocomplete,
-	LoadingOverlay,
-} from "@mantine/core";
+import { Box, Text, ScrollArea, Stack, Button, Flex, Grid, ActionIcon, LoadingOverlay } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { formatDate, getUserRole } from "@utils/index";
-import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
 import { modals } from "@mantine/modals";
@@ -27,10 +13,8 @@ import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@
 import { errorNotification } from "@components/notification/errorNotification";
 import { useDispatch, useSelector } from "react-redux";
 import useParticularsData from "@hooks/useParticularsData";
-import {IconArrowNarrowRight, IconCalendarWeek, IconCaretUpDownFilled, IconUser, IconX,IconBuildingHospital} from "@tabler/icons-react";
-import inputCss from "@assets/css/InputField.module.css";
+import { IconArrowNarrowRight, IconCalendarWeek, IconUser, IconBuildingHospital } from "@tabler/icons-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import IPDAllPrint from "@hospital-components/print-formats/ipd/IPDAllPrint";
 import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 
@@ -38,7 +22,7 @@ const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospita
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
 
-export default function Invoice({ entity,setRefetchBillingKey }) {
+export default function Invoice({ entity, setRefetchBillingKey }) {
 	const invoicePrintRef = useRef(null);
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const { t } = useTranslation();
@@ -48,7 +32,6 @@ export default function Invoice({ entity,setRefetchBillingKey }) {
 	const { id, transactionId: selectedTransactionId } = useParams();
 	const navigate = useNavigate();
 	const userRoles = getUserRole();
-	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const { particularsData } = useParticularsData({ modeName: "Admission" });
 	const investigationParticulars = particularsData?.find((item) => item.particular_type.name === "Investigation");
 	const cabinListData = useSelector((state) => state.crud.cabin?.data?.data);
@@ -57,7 +40,7 @@ export default function Invoice({ entity,setRefetchBillingKey }) {
 	const ipdAllPrintRef = useRef(null);
 
 	const item = entity;
-	const transactions = entity?.invoice_transaction ||[];
+	const transactions = entity?.invoice_transaction || [];
 	const printIPDAll = useReactToPrint({ content: () => ipdAllPrintRef.current });
 
 	const getRoomData = () => {
@@ -323,98 +306,97 @@ export default function Invoice({ entity,setRefetchBillingKey }) {
 									</ActionIcon>
 								</Button.Group>
 							</Flex>
-
 						</Grid.Col>
 					</Grid>
 					<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 138}>
-					<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
-					<Stack className="form-stack-vertical" p="xs" pos="relative">
-						{transactions?.map((item, index) => (
-							<Box
-								key={index}
-								className="borderRadiusAll"
-								bg={
-									selectedTransactionId == item.hms_invoice_transaction_id
-										? "var(--theme-primary-color-1)"
-										: "white"
-								}
-								p="sm"
-							>
-								<Grid columns={16} gap={0} gutter="xs">
-									<Grid.Col span={4} py={0}>
-										<Text size="xs" fw={600}>
-											Created:
-										</Text>
-									</Grid.Col>
-									<Grid.Col span={4} py={0}>
-										<Text size="xs">{item?.created}</Text>
-									</Grid.Col>
-									<Grid.Col span={4} py={0}>
-										<Text size="xs" fw={600}>
-											Mode:
-										</Text>
-									</Grid.Col>
-									<Grid.Col span={4} py={0}>
-										<Text size="xs">{item?.mode}</Text>
-									</Grid.Col>
-									<Grid.Col span={4} py={0}>
-										<Text size="xs" fw={600}>
-											Amount:
-										</Text>
-									</Grid.Col>
-									<Grid.Col span={4} py={0}>
-										<Text size="xs">{Number(item?.total, 2)}</Text>
-									</Grid.Col>
-									<Grid.Col span={4} py={0}>
-										<Text size="xs" fw={600}>
-											Status:
-										</Text>
-									</Grid.Col>
-									<Grid.Col span={4} py={0}>
-										<Text size="xs">{item?.process}</Text>
-									</Grid.Col>
-								</Grid>
-								<Flex align="center" gap="sm" mt={"md"} justify="flex-end">
-									{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
-										<>
-											{item?.process === "New" &&
-												userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
-													<Button
-														onClick={() => handleTest(item.hms_invoice_transaction_id)}
-														size="compact-xs"
-														bg="var(--theme-primary-color-6)"
-														color="white"
-													>
-														{t("Process")}
-													</Button>
+						<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+						<Stack className="form-stack-vertical" p="xs" pos="relative">
+							{transactions?.map((item, index) => (
+								<Box
+									key={index}
+									className="borderRadiusAll"
+									bg={
+										selectedTransactionId == item.hms_invoice_transaction_id
+											? "var(--theme-primary-color-1)"
+											: "white"
+									}
+									p="sm"
+								>
+									<Grid columns={16} gap={0} gutter="xs">
+										<Grid.Col span={4} py={0}>
+											<Text size="xs" fw={600}>
+												Created:
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={4} py={0}>
+											<Text size="xs">{item?.created}</Text>
+										</Grid.Col>
+										<Grid.Col span={4} py={0}>
+											<Text size="xs" fw={600}>
+												Mode:
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={4} py={0}>
+											<Text size="xs">{item?.mode}</Text>
+										</Grid.Col>
+										<Grid.Col span={4} py={0}>
+											<Text size="xs" fw={600}>
+												Amount:
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={4} py={0}>
+											<Text size="xs">{Number(item?.total, 2)}</Text>
+										</Grid.Col>
+										<Grid.Col span={4} py={0}>
+											<Text size="xs" fw={600}>
+												Status:
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={4} py={0}>
+											<Text size="xs">{item?.process}</Text>
+										</Grid.Col>
+									</Grid>
+									<Flex align="center" gap="sm" mt={"md"} justify="flex-end">
+										{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
+											<>
+												{item?.process === "New" &&
+													userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
+														<Button
+															onClick={() => handleTest(item.hms_invoice_transaction_id)}
+															size="compact-xs"
+															bg="var(--theme-primary-color-6)"
+															color="white"
+														>
+															{t("Process")}
+														</Button>
+													)}
+												{item?.process === "Done" && (
+													<>
+														<Button
+															onClick={() => handleTest(item.hms_invoice_transaction_id)}
+															size="compact-xs"
+															bg="var(--theme-primary-color-6)"
+															color="white"
+														>
+															{t("Show")}
+														</Button>
+														<Button
+															onClick={() => handlePrint(item)}
+															size="compact-xs"
+															bg="var(--theme-secondary-color-6)"
+															color="white"
+														>
+															{t("Print")}
+														</Button>
+													</>
 												)}
-											{item?.process === "Done" && (
-												<>
-													<Button
-														onClick={() => handleTest(item.hms_invoice_transaction_id)}
-														size="compact-xs"
-														bg="var(--theme-primary-color-6)"
-														color="white"
-													>
-														{t("Show")}
-													</Button>
-													<Button
-														onClick={() => handlePrint(item)}
-														size="compact-xs"
-														bg="var(--theme-secondary-color-6)"
-														color="white"
-													>
-														{t("Print")}
-													</Button>
-												</>
-											)}
-										</>
-									)}
-								</Flex>
-							</Box>
-						))}
-					</Stack>
-				</ScrollArea>
+											</>
+										)}
+									</Flex>
+								</Box>
+							))}
+						</Stack>
+					</ScrollArea>
 				</>
 			) : (
 				<Stack h={mainAreaHeight - 52} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
