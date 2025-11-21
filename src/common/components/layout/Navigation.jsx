@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { Button, Flex, Text, Tooltip, ScrollArea, Grid, Box, Menu } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -89,13 +89,18 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 													}}
 												>
 													{item.subMenu.map((subItem, index) => (
-														<Menu.Item
-															key={index}
-															onClick={() => navigate(subItem.path)}
-															leftSection={<subItem.icon size={14} />}
-														>
-															{t(subItem.label)}
-														</Menu.Item>
+														<Fragment key={index}>
+															{subItem.allowedRoles.some((role) =>
+																userRole.includes(role)
+															) && (
+																<Menu.Item
+																	onClick={() => navigate(subItem.path)}
+																	leftSection={<subItem.icon size={14} />}
+																>
+																	{t(subItem.label)}
+																</Menu.Item>
+															)}
+														</Fragment>
 													))}
 												</Menu.Dropdown>
 											)}
