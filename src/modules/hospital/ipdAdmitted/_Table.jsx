@@ -99,13 +99,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 		requestAnimationFrame(printDischargePaper);
 	};
 
-	const handleBillingInvoicePrint = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
-		});
-		setBillingPrintData(res.data);
-		requestAnimationFrame(printBillingInvoice);
-	};
+
 
 	const handlePrescriptionPrint = async (id) => {
 		const res = await getDataWithoutStore({
@@ -135,7 +129,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 
 	const handleAdmissionFormPrint = async (id) => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${id}`,
 		});
 		setAdmissionFormPrintData(res.data);
 		requestAnimationFrame(printAdmissionForm);
@@ -278,6 +272,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 												{t("Manage")}
 											</Button>
 
+
                                             <Button
                                                 rightSection={<IconArrowNarrowRight size={18} />}
                                                 onClick={() => handleIssueMedicine(values.uid, values.id)}
@@ -290,6 +285,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
                                             >
                                                 {t("Issue Medicine")}
                                             </Button>
+
 											{/* <Button
 												rightSection={<IconArrowNarrowRight size={18} />}
 												onClick={() => openManageIpd()}
@@ -355,20 +351,6 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 												onClick={() => handleAdmissionFormPrint(values?.id)}
 											>
 												{t("AdmissionForm")}
-											</Menu.Item>
-
-											<Menu.Item
-												leftSection={
-													<IconPrinter
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-												onClick={() => handleBillingInvoicePrint(values?.id)}
-											>
-												{t("BillingInvoice")}
 											</Menu.Item>
 
 											<Menu.Item

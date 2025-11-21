@@ -192,7 +192,7 @@ function AppRoute() {
 									roles={[
 										"role_domain",
 										"admin_administrator",
-										"doctor_ipd_admitted",
+										"doctor_ipd",
 										"nurse_basic",
 										"nurse_incharge",
 									]}
