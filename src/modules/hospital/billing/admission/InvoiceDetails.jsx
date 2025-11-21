@@ -1,12 +1,12 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon } from "@mantine/core";
+import { Box, Text, Stack, Grid, Flex, Button, ActionIcon } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { IconCaretUpDownFilled, IconChevronUp, IconSelector, IconX } from "@tabler/icons-react";
+import { IconChevronUp, IconSelector, IconX } from "@tabler/icons-react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -19,24 +19,23 @@ import { ERROR_NOTIFICATION_COLOR, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } fr
 import { errorNotification } from "@components/notification/errorNotification";
 import { useDispatch } from "react-redux";
 import { useHotkeys } from "@mantine/hooks";
-import inputCss from "@assets/css/InputField.module.css";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 
 const module = MODULES_CORE.BILLING;
 
 export default function InvoiceDetails({ entity }) {
+	const navigate = useNavigate();
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
 	const { id } = useParams();
 	const [fetching, setFetching] = useState(false);
 	const [selectedRecords, setSelectedRecords] = useState([]);
 	const [investigationRecords, setInvestigationRecords] = useState([]);
 	const [roomItems, setRoomItems] = useState([]);
-	const [selectKey, setSelectKey] = useState(0);
-	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
+
 	// =============== separate forms for investigation and room submissions ================
 	const investigationForm = useForm({
 		...getFormValues(t),
@@ -114,7 +113,7 @@ export default function InvoiceDetails({ entity }) {
 				name: item.name ?? item.label ?? "",
 				quantity: item.quantity ?? 1,
 				price: item.price ?? 0,
-				is_new: true,
+				is_new: item.process === "New",
 			}))
 		);
 	}, [entity]);
@@ -187,6 +186,7 @@ export default function InvoiceDetails({ entity }) {
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				setInvoiceDetails(resultAction.payload.data?.data);
+				navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION_BILLING.INDEX, { replace: true });
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
@@ -195,23 +195,23 @@ export default function InvoiceDetails({ entity }) {
 		}
 	}
 
-	const handleSelectedRecordsChange = (nextSelectedRecords) => {
-		const mandatoryRecords = investigationRecords?.filter((record) => record.is_new) || [];
+	// const handleSelectedRecordsChange = (nextSelectedRecords) => {
+	// 	const mandatoryRecords = investigationRecords?.filter((record) => record.is_new) || [];
 
-		const optionalSelectedRecords = nextSelectedRecords?.filter((record) => !record.is_new) || [];
+	// 	const optionalSelectedRecords = nextSelectedRecords?.filter((record) => !record.is_new) || [];
 
-		const mergedSelectedRecords = [
-			...mandatoryRecords,
-			...optionalSelectedRecords.filter(
-				(optionalRecord) =>
-					!mandatoryRecords.some(
-						(mandatoryRecord) => String(mandatoryRecord.id) === String(optionalRecord.id)
-					)
-			),
-		];
+	// 	const mergedSelectedRecords = [
+	// 		...mandatoryRecords,
+	// 		...optionalSelectedRecords.filter(
+	// 			(optionalRecord) =>
+	// 				!mandatoryRecords.some(
+	// 					(mandatoryRecord) => String(mandatoryRecord.id) === String(optionalRecord.id)
+	// 				)
+	// 		),
+	// 	];
 
-		setSelectedRecords(mergedSelectedRecords);
-	};
+	// 	setSelectedRecords(mergedSelectedRecords);
+	// };
 
 	useHotkeys(
 		[
@@ -279,11 +279,11 @@ export default function InvoiceDetails({ entity }) {
 						pinFirstColumn
 						stripedColor="var(--theme-tertiary-color-1)"
 						selectedRecords={selectedRecords}
-						onSelectedRecordsChange={handleSelectedRecordsChange}
+						onSelectedRecordsChange={setSelectedRecords}
 						getRecordId={(record) => record.id}
-						selectionCheckboxProps={(record) => ({
-							disabled: record.iis_s_new,
-						})}
+						// selectionCheckboxProps={(record) => ({
+						// 	disabled: record.is_new,
+						// })}
 						selectionColumnStyle={{ minWidth: 80 }}
 						classNames={{
 							root: tableCss.root,
@@ -318,22 +318,22 @@ export default function InvoiceDetails({ entity }) {
 								title: t("SubTotal"),
 								render: (record) => record?.price * record?.quantity || 0,
 							},
-							{
-								accessor: "actions",
-								title: t("Action"),
-								textAlignment: "center",
-								render: (record) =>
-									record.is_new ? (
-										<ActionIcon
-											color="red"
-											variant="subtle"
-											onClick={() => handleRemoveInvestigation(record.id)}
-										>
-											{/* =============== user can remove only newly added investigations ================ */}
-											<IconX size={16} />
-										</ActionIcon>
-									) : null,
-							},
+							// {
+							// 	accessor: "actions",
+							// 	title: t("Action"),
+							// 	textAlignment: "center",
+							// 	render: (record) =>
+							// 		record.is_new ? (
+							// 			<ActionIcon
+							// 				color="red"
+							// 				variant="subtle"
+							// 				onClick={() => handleRemoveInvestigation(record.id)}
+							// 			>
+							// 				{/* =============== user can remove only newly added investigations ================ */}
+							// 				<IconX size={16} />
+							// 			</ActionIcon>
+							// 		) : null,
+							// },
 						]}
 						fetching={fetching}
 						loaderSize="xs"
@@ -347,14 +347,7 @@ export default function InvoiceDetails({ entity }) {
 				</Box>
 				{invoiceDetails?.process !== "Done" && (
 					// =============== investigation-specific form: comment, display total, receive, submit ================
-					<Box
-						gap={0}
-						justify="space-between"
-						mt="xs"
-						px="xs"
-						pb="xs"
-						bg="var(--mantine-color-white)"
-					>
+					<Box gap={0} justify="space-between" mt="xs" px="xs" pb="xs" bg="var(--mantine-color-white)">
 						<form
 							onSubmit={investigationForm.onSubmit(
 								createSubmitHandler(investigationForm, "investigation")
@@ -379,11 +372,7 @@ export default function InvoiceDetails({ entity }) {
 											/>
 										</Box>
 									</Grid.Col>
-									<Grid.Col
-										span={6}
-										bg="var(--theme-tertiary-color-1)"
-										className="animate-ease-out"
-									>
+									<Grid.Col span={6} bg="var(--theme-tertiary-color-1)" className="animate-ease-out">
 										<Box mt="xs">
 											<Grid align="center" columns={20}>
 												<Grid.Col span={8}>
@@ -468,9 +457,7 @@ export default function InvoiceDetails({ entity }) {
 													w="100%"
 													size="compact-sm"
 													bg="var(--theme-save-btn-color)"
-													disabled={
-														invoiceDetails?.process === "Done" || isInvestigationDue
-													}
+													disabled={invoiceDetails?.process === "Done" || isInvestigationDue}
 												>
 													<Stack gap={0} align="center" justify="center">
 														<Text fz="xs">{t("Save")}</Text>

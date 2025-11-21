@@ -4,7 +4,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import Navigation from "@components/layout/Navigation";
-import { Box, Flex, Grid, SegmentedControl, Text } from "@mantine/core";
+import { Box, Flex, Grid, Text } from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import Table from "./_Table";
 import Invoice from "./Invoice";
@@ -60,7 +60,6 @@ export default function Index() {
 									<Text fw={600} fz="sm">
 										{t("AdmissionBillingInformation")}
 									</Text>
-
 								</Flex>
 								<TabsWithSearch
 									tabList={["list"]}
