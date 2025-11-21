@@ -20,7 +20,7 @@ export default function EntityForm({ form, module }) {
 	const height = mainAreaHeight;
 
 	const { data: ipdData, isLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.VIEW}/${id}`,
 	});
 	const entity = ipdData?.data;
 
@@ -324,40 +324,42 @@ export default function EntityForm({ form, module }) {
 											</Table.Tbody>
 										</Table>
 									</Box>
-									<Box bg="var(--theme-tertiary-color-0)" mt={"xl"} p={"xs"}>
-										<Grid columns={24}>
-											<Grid.Col span={18}>
-												<TextAreaForm
-													id="comment"
-													form={form}
-													tooltip={t("EnterComment")}
-													placeholder={t("EnterComment")}
-													name="comment"
-													required
-												/>
-											</Grid.Col>
-											<Grid.Col span={6}>
+									{entity?.invoice_particular?.length > 0 && (
+										<Box bg="var(--theme-tertiary-color-0)" mt={"xl"} p={"xs"}>
+											<Grid columns={24}>
+												<Grid.Col span={18}>
+													<TextAreaForm
+														id="comment"
+														form={form}
+														tooltip={t("EnterComment")}
+														placeholder={t("EnterComment")}
+														name="comment"
+														required
+													/>
+												</Grid.Col>
+												<Grid.Col span={6}>
 
-												<Flex gap="xs" justify="flex-end" align="flex-end" h={"54"}>
-													<Button
-														type="submit"
-														bg="var(--theme-primary-color-6)"
-														color="white"
-													>
-														{t("Confirm")}
-													</Button>
-													<Button
-														type="button"
-														bg="var(--theme-tertiary-color-6)"
-														color="white"
-														onClick={close}
-													>
-														{t("Cancel")}
-													</Button>
-												</Flex>
-											</Grid.Col>
-										</Grid>
-									</Box>
+													<Flex gap="xs" justify="flex-end" align="flex-end" h={"54"}>
+														<Button
+															type="submit"
+															bg="var(--theme-primary-color-6)"
+															color="white"
+														>
+															{t("Confirm")}
+														</Button>
+														<Button
+															type="button"
+															bg="var(--theme-tertiary-color-6)"
+															color="white"
+															onClick={close}
+														>
+															{t("Cancel")}
+														</Button>
+													</Flex>
+												</Grid.Col>
+											</Grid>
+										</Box>
+									)}
 								</Box>
 							</Grid.Col>
 						</Grid>

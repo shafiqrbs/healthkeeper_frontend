@@ -60,12 +60,7 @@ export default function _Table({ height }) {
 	const labReportRef = useRef(null);
 	const [labReportData, setLabReportData] = useState(null);
 
-	const printLabReport = useReactToPrint({
-		content: () => labReportRef.current,
-	});
-	const printBarCodeValue = useReactToPrint({
-		content: () => barCodeRef.current,
-	});
+
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.EPHARMA.INDEX,
@@ -78,10 +73,7 @@ export default function _Table({ height }) {
 		sortByKey: "created_at",
 		direction: "desc",
 	});
-	const handleAdmissionOverview = (id) => {
-		setSelectedPatientId(id);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}`);
-	};
+
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
@@ -108,41 +100,15 @@ export default function _Table({ height }) {
 	};
 
 	const [printData, setPrintData] = useState({});
-	const [type, setType] = useState(null);
-
-	const posRef = useRef(null);
 	const a4Ref = useRef(null);
-	const userRoles = getUserRole();
 
-	useEffect(() => {
-		if (type === "a4") {
-			handleA4();
-		} else if (type === "pos") {
-			handlePos();
-		} else if (type === "prescription") {
-			handlePrescriptionOption();
-		}
-	}, [printData, type]);
-	const handleView = (id) => {
-		console.info(id);
-	};
-
-	const handleTest = (invoice, reportId) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${invoice}/report/${reportId}`);
-	};
-
-	const handleLabReport = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
+	const handlePrint = async (id) => {
+		/*const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.EPHARMA.INDEX}/${id}`,
 		});
 		console.log(res);
 		setLabReportData(res?.data);
-		requestAnimationFrame(printLabReport);
-	};
-
-	const handleBarcodeTag = (barcode) => {
-		setBarcodeValue(barcode);
-		requestAnimationFrame(() => printBarCodeValue());
+		requestAnimationFrame(printLabReport);*/
 	};
 
 	return (
@@ -208,33 +174,9 @@ export default function _Table({ height }) {
 							render: (values) => {
 								return (
 									<Flex justify="flex-end" gap="2">
-										{values?.process === "New" && (
-											<Button
-												onClick={() => handleBarcodeTag(values?.barcode)}
-												size="compact-xs"
-												fz={"xs"}
-												fw={"400"}
-												leftSection={<IconBarcode size={14} />}
-												color="var(--theme-warn-color-6)"
-											>
-												{t("Tag")}
-											</Button>
-										)}
-										{values?.process === "In-progress" && (
-											<Button
-												onClick={() => handleTest(values?.invoice_id, values?.id)}
-												size="compact-xs"
-												fz={"xs"}
-												fw={"400"}
-												rightSection={<IconArrowRight size={14} />}
-												color="var(--theme-primary-color-6)"
-											>
-												{t("Report")}
-											</Button>
-										)}
 										{values?.process === "Done" && (
 											<Button
-												onClick={() => handleLabReport(values?.id)}
+												onClick={() => handlePrint(values?.uid)}
 												size="compact-xs"
 												fz={"xs"}
 												fw={"400"}

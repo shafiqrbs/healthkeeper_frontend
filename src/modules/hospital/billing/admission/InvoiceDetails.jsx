@@ -186,6 +186,7 @@ export default function InvoiceDetails({ entity }) {
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				setInvoiceDetails(resultAction.payload.data?.data);
+				setInvestigationRecords([]);
 				navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION_BILLING.INDEX, { replace: true });
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
@@ -345,7 +346,7 @@ export default function InvoiceDetails({ entity }) {
 						}}
 					/>
 				</Box>
-				{invoiceDetails?.process !== "Done" && (
+				{investigationRecords?.length > 0 && (
 					// =============== investigation-specific form: comment, display total, receive, submit ================
 					<Box gap={0} justify="space-between" mt="xs" px="xs" pb="xs" bg="var(--mantine-color-white)">
 						<form

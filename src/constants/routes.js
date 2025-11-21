@@ -546,7 +546,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			INVOICE: "hospital/patient-waiver/invoice",
 			CREATE: "hospital/patient-waiver",
 			UPDATE: "hospital/patient-waiver",
-			VIEW: "hospital/patient-waiver",
+			VIEW: "hospital/patient-waiver/details",
 			PROCESS: "hospital/patient-waiver/process",
 			APPROVE: "hospital/patient-waiver/approve",
 			PRINT: "hospital/patient-waiver/print",

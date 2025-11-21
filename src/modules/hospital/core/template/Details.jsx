@@ -39,7 +39,7 @@ import IPDInvoicePosBN from "@hospital-components/print-formats/ipd/IPDInvoicePo
 import FreeServiceFormBN from "@hospital-components/print-formats/billing/FreeServiceFormBN";
 import FreeServiceFormEN from "@hospital-components/print-formats/billing/FreeServiceFormEN";
 
-const STATIC_OPD_ID = "520108448725";
+const STATIC_OPD_ID = "125760093407";
 const STATIC_PRESCRIPTION_ID = "613345863040";
 const REPORT_ID = "520108448725";
 

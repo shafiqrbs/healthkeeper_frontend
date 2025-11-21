@@ -3,7 +3,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { Box, Button, Flex, FloatingIndicator, Group, Tabs, Text } from "@mantine/core";
-import { IconArrowNarrowRight, IconChevronUp, IconSelector } from "@tabler/icons-react";
+import { IconArrowNarrowRight, IconChevronUp, IconSelector,IconPrinter } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -104,7 +104,7 @@ export default function _Table({ module }) {
 
 	const handleWaiverPrint = async (id) => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.PRINT}/${id}`,
 		});
 		setBillingPrintData(res.data);
 		requestAnimationFrame(printBillingInvoice);
@@ -203,10 +203,9 @@ export default function _Table({ module }) {
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "gender", title: t("Gender") },
-						{ accessor: "admit_consultant_name", title: t("Consultant") },
-						{ accessor: "admit_unit_name", title: t("Unit") },
-						{ accessor: "admit_department_name", title: t("Department") },
-						{ accessor: "admit_doctor_name", title: t("Doctor") },
+						{ accessor: "created_by_name", title: t("Created By") },
+						{ accessor: "checked_by_name", title: t("Checked By") },
+						{ accessor: "approved_by_name", title: t("Approved By") },
 						{ accessor: "visiting_room", title: t("Cabin/Bed") },
 						{
 							accessor: "total",
@@ -222,7 +221,7 @@ export default function _Table({ module }) {
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && (
 										<Button.Group>
-											<Button
+											{/*<Button
 												variant="filled"
 												onClick={() => handlePatientForm(item.uid)}
 												color="var(--theme-primary-color-6)"
@@ -237,7 +236,8 @@ export default function _Table({ module }) {
 												}
 											>
 												Process
-											</Button>
+											</Button>*/}
+											{!item.checked_by_name  && (
 											<Button
 												variant="filled"
 												onClick={() => {
@@ -255,17 +255,39 @@ export default function _Table({ module }) {
 													/>
 												}
 											>
-												Approve
+												Checked
 											</Button>
+											)}
+											{item.checked_by_name  && !item.approved_by_name  && (
+												<Button
+													variant="filled"
+													onClick={() => {
+														setSelectedWaiverListId(item.uid);
+														requestAnimationFrame(openApprove);
+													}}
+													color="var(--theme-primary-color-6)"
+													radius="xs"
+													size={"compact-xs"}
+													aria-label="Settings"
+													rightSection={
+														<IconArrowNarrowRight
+															style={{ width: "70%", height: "70%" }}
+															stroke={1.5}
+														/>
+													}
+												>
+													Approve
+												</Button>
+											)}
 											<Button
 												variant="filled"
-												onClick={() => handleWaiverPrint(item.invoice_uid)}
-												color="var(--theme-primary-color-6)"
+												onClick={() => handleWaiverPrint(item.uid)}
+												color="var(--theme-secondary-color-6)"
 												radius="xs"
 												size={"compact-xs"}
 												aria-label="Settings"
-												rightSection={
-													<IconArrowNarrowRight
+												leftSection={
+													<IconPrinter
 														style={{ width: "70%", height: "70%" }}
 														stroke={1.5}
 													/>

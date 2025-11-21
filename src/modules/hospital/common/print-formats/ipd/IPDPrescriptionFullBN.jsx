@@ -598,52 +598,22 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 					</Table>
 				</Box>
 				<Box ta="center">
-					<Table
-						style={{
-							borderCollapse: "collapse",
-							width: "100%",
-						}}
-						className="customTable"
-					>
-						<Table.Tbody>
-							<Table.Tr>
-								<Table.Td>
-									<Grid columns={12} gutter="0">
-										<Grid.Col span={6} align="left">
-											<Text fz="xl">AdmittedBy</Text>
-											<Text fz="xs">{admissionData?.created_by_name || "N/A"}</Text>
-											<Text fz="xs">{admissionData?.designation_name || "N/A"}</Text>
-										</Grid.Col>
-										<Grid.Col span={6} align={"right"}>
-											<Text size="sm" fw={600} mb="xs">
-												<Text>
-													{t("Signature")}-----------------------------------------------
-												</Text>
-												<Text mt={"md"}>
-													Name-----------------------------------------------
-												</Text>
-												<Text mt={"md"}>
-													Designation-----------------------------------------------
-												</Text>
-											</Text>
-										</Grid.Col>
-									</Grid>
-								</Table.Td>
-							</Table.Tr>
-						</Table.Tbody>
-					</Table>
-					<Text size="xs" c="gray" mt="xs">
-						{patientInfo?.patient_id && (
-							<Barcode fontSize={"12"} width={"1"} height={"24"} value={patientInfo?.patient_id} />
-						)}
-					</Text>
-					<Text size="xs" c="gray">
-						<strong>{t("প্রিন্ট")}: </strong>
-						{user?.name}
-					</Text>
-					<Text fz={8}>
-						{t("প্রিন্টের সময়")}: {new Date().toLocaleString()}
-					</Text>
+					<Grid columns={12} gutter="0">
+						<Grid.Col span={6} align="left">
+							<Text fz="xl">AdmittedBy</Text>
+							<Text fz="xs">{admissionData?.created_by_name || "N/A"}</Text>
+							<Text fz="xs">{admissionData?.designation_name || "N/A"}</Text>
+						</Grid.Col>
+						<Grid.Col span={6} align={"right"}>
+							<Text size="sm" fw={600} mb="xs">
+								<Text mt={"md"}><br/></Text>
+								<Text mt={"md"}><br/></Text>
+								<Text>
+									{t("Signature")}-----------------------------------------------
+								</Text>
+							</Text>
+						</Grid.Col>
+					</Grid>
 				</Box>
 			</Stack>
 		</Box>

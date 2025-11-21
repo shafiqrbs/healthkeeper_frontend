@@ -7,6 +7,8 @@ import { capitalizeWords, getLoggedInUser } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import Barcode from "react-barcode";
+import {IconPhoneCall} from "@tabler/icons-react";
+import DashedDivider from "@components/core-component/DashedDivider";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
@@ -20,6 +22,8 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
+
+	console.log(patientInfo);
 
 	return (
 		<Box display={preview ? "block" : "none"}>
@@ -319,7 +323,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 				</Box>
 
 				{/* =============== payment summary table ================ */}
-				<Box ta="center">
+				<Box ta="left">
 					<Table
 						style={{
 							borderCollapse: "collapse",
@@ -332,21 +336,19 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>
 									<Grid columns={12} gutter="0">
 										<Grid.Col span={6} align="left">
-											<Text fz="xl">{t("AdmittedBy")}</Text>
-											<Text fz="xs">{patientInfo?.created_by_name || "N/A"}</Text>
-											<Text fz="xs">{patientInfo?.designation_name || "N/A"}</Text>
+											<Text fz="xl">{t("আবেদনকারী")}</Text>
+											<Text fz="xs">নাম: {patientInfo?.guardian_name|| "N/A"}</Text>
+											<Text fz="xs">মোবাইল: {patientInfo?.guardian_mobile || "N/A"}</Text>
+											<Text fz="xs">রোগীর সাথে সম্পর্ক: {patientInfo?.patient_relation || "N/A"}</Text>
 										</Grid.Col>
 										<Grid.Col span={6} align={"right"}>
 											<Text size="sm" fw={600} mb="xs">
+												<Text mt={"md"}><br/></Text>
+												<Text mt={"md"}><br/></Text>
 												<Text>
 													{t("Signature")}-----------------------------------------------
 												</Text>
-												<Text mt={"md"}>
-													Name-----------------------------------------------
-												</Text>
-												<Text mt={"md"}>
-													Designation-----------------------------------------------
-												</Text>
+
 											</Text>
 										</Grid.Col>
 									</Grid>
@@ -354,18 +356,51 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
-					<Text size="xs" c="gray" mt="xs">
-						{patientInfo?.patient_id && (
-							<Barcode fontSize={"12"} width={"1"} height={"24"} value={patientInfo?.patient_id} />
-						)}
-					</Text>
-					<Text size="xs" c="gray">
-						<strong>{t("প্রিন্ট")}: </strong>
-						{user?.name}
-					</Text>
-					<Text fz={8}>
-						{t("প্রিন্টের সময়")}: {new Date().toLocaleString()}
-					</Text>
+					<DashedDivider />
+					<Box pos="relative" mt="xl">
+						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
+							<Table.Thead>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colSpan={"6"}>
+									<Flex gap="md" align="center" justify="center">
+										<Flex>
+											<Image src={GLogo} alt="logo" width={46} height={46} />
+											<Box pl={"xs"} pr={"xs"}>
+												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
+													{hospitalConfigData?.organization_name || ""}
+												</Text>
+												<Text ta="center" size="sm" c="gray" mt="2">
+													{hospitalConfigData?.address || ""},
+													<IconPhoneCall
+														style={{ width: "12", height: "12" }}
+														stroke={1.5}
+													/>{" "}
+													{(hospitalConfigData?.hotline &&
+														` ${hospitalConfigData?.hotline}`) ||
+													""}
+												</Text>
+											</Box>
+											<Image src={TBLogo} alt="logo" width={46} height={46} />
+										</Flex>
+									</Flex>
+								</Table.Td>
+							</Table.Tr>
+							</Table.Thead>
+							<Table.Tbody>
+								<Table.Tr>
+									<Table.Th>{t("Particular")}</Table.Th>
+									<Table.Th>{t("Room No")}</Table.Th>
+								</Table.Tr>
+								{patientInfo?.invoice_particular?.map((item, index) => (
+									<Table.Tr key={index}>
+										<Table.Td>{item?.item_name || t("Fee")}</Table.Td>
+										<Table.Td>{item?.diagnostic_room_name}</Table.Td>
+									</Table.Tr>
+								))}
+							</Table.Tbody>
+						</Table>
+					</Box>
+
 				</Box>
 			</Stack>
 		</Box>

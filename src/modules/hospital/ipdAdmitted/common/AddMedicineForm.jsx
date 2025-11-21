@@ -535,7 +535,7 @@ export default function AddMedicineForm({
 								</Grid.Col>
 							</Grid>
 							<Grid w="100%" columns={12} gutter="3xs">
-								<Grid.Col span={10}>
+								<Grid.Col span={6}>
 									<Group grow gap="les">
 										<FormValidatorWrapper
 											position="bottom-end"
@@ -560,6 +560,12 @@ export default function AddMedicineForm({
 												error={!!medicineForm.errors.medicine_dosage_id}
 											/>
 										</FormValidatorWrapper>
+
+									</Group>
+								</Grid.Col>
+								<Grid.Col span={4}>
+									<Group grow gap="les">
+
 										<FormValidatorWrapper
 											position="bottom-end"
 											opened={medicineForm.errors.medicine_bymeal_id}
@@ -586,7 +592,7 @@ export default function AddMedicineForm({
 									</Group>
 								</Grid.Col>
 								<Grid.Col span={2}>
-									<Group grow gap="les">
+									<Group grow gap="les" mt={'2'}>
 										<Button
 											leftSection={<IconPlus size={16} />}
 											type="submit"
