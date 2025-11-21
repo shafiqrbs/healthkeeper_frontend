@@ -22,12 +22,14 @@ import { useHotkeys } from "@mantine/hooks";
 import inputCss from "@assets/css/InputField.module.css";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import {useNavigate} from "react-router";
 
 const module = MODULES_CORE.BILLING;
 
 export default function InvoiceDetails({ entity }) {
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
 	const { id,transactionId } = useParams();
+	const  navigate = useNavigate()
 	const [fetching, setFetching] = useState(false);
 	const [selectedRecords, setSelectedRecords] = useState([]);
 	const [investigationRecords, setInvestigationRecords] = useState([]);
@@ -88,7 +90,7 @@ export default function InvoiceDetails({ entity }) {
 	});
 
 	useEffect(() => {
-		if (id) {
+		if (transactionId) {
 			setFetching(true);
 			(async () => {
 				const res = await getDataWithoutStore({
@@ -103,7 +105,7 @@ export default function InvoiceDetails({ entity }) {
 			})();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id]);
+	}, [transactionId]);
 
 	// =============== initialize local investigations from entity to allow local editing ================
 	useEffect(() => {
@@ -181,6 +183,8 @@ export default function InvoiceDetails({ entity }) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				setInvoiceDetails(resultAction.payload.data?.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				setInvestigationRecords([]);
+				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND.INDEX}/${id}`);
 			}
 		} catch (error) {
 			console.error(error);
@@ -246,7 +250,9 @@ export default function InvoiceDetails({ entity }) {
 	const isInvestigationReturn = investigationDifference > 0 || isInvestigationEqualZero;
 	const investigationDueAmount = isInvestigationDue ? Math.abs(investigationDifference) : 0;
 	const investigationReturnAmount = isInvestigationReturn ? Math.abs(investigationDifference) : 0;
-
+	useEffect(() => {
+		investigationForm.setValues({'amount':investigationSubtotal})
+	}, [investigationSubtotal]);
 
 	return (
 		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -344,6 +350,7 @@ export default function InvoiceDetails({ entity }) {
 								createSubmitHandler(investigationForm, "investigation")
 							)}
 						>
+							{investigationRecords?.length > 0 && (
 							<Box w="100%">
 								<Grid columns={18} gutter="xs">
 									<Grid.Col
@@ -405,7 +412,7 @@ export default function InvoiceDetails({ entity }) {
 										<Grid align="center" gutter="3xs" columns={20}>
 											<Grid.Col span={5}>
 												<Text fz="xs" fw="800">
-													{t("Receive")}
+													{t("Payment")}
 												</Text>
 											</Grid.Col>
 											<Grid.Col span={8}>
@@ -417,6 +424,7 @@ export default function InvoiceDetails({ entity }) {
 													placeholder={t("Amount")}
 													name="amount"
 													id="investigation-amount"
+													readOnly
 
 												/>
 											</Grid.Col>
@@ -462,6 +470,7 @@ export default function InvoiceDetails({ entity }) {
 									</Grid.Col>
 								</Grid>
 							</Box>
+							)}
 						</form>
 					</Box>
 				)}

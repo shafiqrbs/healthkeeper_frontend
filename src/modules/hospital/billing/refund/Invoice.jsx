@@ -34,7 +34,7 @@ import IPDAllPrint from "@hospital-components/print-formats/ipd/IPDAllPrint";
 import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 
-const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator"];
+const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator", "operator_opd", "operator_manager"];
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
 

@@ -384,7 +384,7 @@ function AppRoute() {
 					<Route
 						path="lab-test"
 						element={
-							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "lab_doctor"]}>
+							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "doctor_lab","lab_doctor", "lab_assistant","lab_operator"]}>
 								<LabIndex />
 							</ProtectedRoute>
 						}
@@ -393,7 +393,7 @@ function AppRoute() {
 					<Route
 						path="lab-test/report"
 						element={
-							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "doctor_lab"]}>
+							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "doctor_lab","lab_assistant","lab_operator"]}>
 								<LabInvestigationIndex />
 							</ProtectedRoute>
 						}
@@ -401,7 +401,7 @@ function AppRoute() {
 					<Route
 						path="lab-test/:id"
 						element={
-							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "doctor_lab"]}>
+							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "doctor_lab","lab_assistant","lab_operator"]}>
 								<LabIndex />
 							</ProtectedRoute>
 						}
@@ -409,7 +409,7 @@ function AppRoute() {
 					<Route
 						path="lab-test/:id/report/:reportId"
 						element={
-							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "doctor_lab"]}>
+							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "doctor_lab","lab_assistant","lab_operator"]}>
 								<LabIndex />
 							</ProtectedRoute>
 						}
@@ -468,7 +468,7 @@ function AppRoute() {
 						path="billing"
 						element={
 							<ProtectedRoute
-								roles={["admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={["admin_administrator", "admin_hospital","billing_manager","operator_opd", "operator_manager"]}
 							>
 								<BillingIndex />
 							</ProtectedRoute>

@@ -79,7 +79,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 								)}
 								<Flex mt={'les'} justify="center" align="flex-start"
 									   direction="row" wrap="wrap">
-									{diagnosticReport?.process === "New" && (
+									{diagnosticReport?.process === "Tagged" && (
 										<Button size="md" className="btnPrimaryBg" type="submit" id="handleSubmit">
 											<Flex direction="column" gap={0}>
 												<Text fz="md">{t("Save")}</Text>

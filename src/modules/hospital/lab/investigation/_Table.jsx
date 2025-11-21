@@ -23,7 +23,6 @@ import tableCss from "@assets/css/Table.module.css";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
-import { getVendorFormInitialValues } from "@modules/hospital/visit/helpers/request";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import DataTableFooter from "@components/tables/DataTableFooter";
@@ -36,11 +35,6 @@ import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabRep
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 
-import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
-import OverviewDrawer from "@modules/hospital/visit/__OverviewDrawer";
-import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
-import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
-import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 
 const module = MODULES.LAB_TEST;
 const PER_PAGE = 500;
@@ -61,6 +55,7 @@ const CSV_HEADERS = [
 const tabs = [
 	{ label: "All", value: "all" },
 	{ label: "New", value: "New" },
+	{ label: "Tagged", value: "Tagged" },
 	{ label: "In-progress", value: "In-progress" },
 	{ label: "Confirm", value: "Confirm" },
 	{ label: "Done", value: "Done" },
@@ -81,7 +76,7 @@ export default function _Table({ height }) {
 	const [barcodeValue, setBarcodeValue] = useState("");
 	const labReportRef = useRef(null);
 	const [labReportData, setLabReportData] = useState(null);
-
+	const [customReportName, setCustomeReportName] = useState(null);
 	const printLabReport = useReactToPrint({
 		content: () => labReportRef.current,
 	});
@@ -154,19 +149,23 @@ export default function _Table({ height }) {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${invoice}/report/${reportId}`);
 	};
 
-	const handleLabReport = async (id) => {
+	const handleLabReport = async (id,reportSlug) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
 		});
-		console.log(res);
+		setCustomeReportName(reportSlug);
 		setLabReportData(res?.data);
 		requestAnimationFrame(printLabReport);
 	};
 
-	const handleBarcodeTag = (barcode) => {
-		setBarcodeValue(barcode);
-		requestAnimationFrame(() => printBarCodeValue());
-	};
+
+	async function handleBarcodeTag(barcode,reportId) {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.TAG_PRINT}/${reportId}`,
+		});
+		setBarcodeValue(reportId);
+		requestAnimationFrame(printBarCodeValue);
+	}
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
@@ -249,7 +248,7 @@ export default function _Table({ height }) {
 									<Flex justify="flex-end" gap="2">
 										{values?.process === "New" && (
 											<Button
-												onClick={() => handleBarcodeTag(values?.barcode)}
+												onClick={() => handleBarcodeTag(values?.barcode,values?.uid)}
 												size="compact-xs"
 												fz={"xs"}
 												leftSection={<IconBarcode size={14} />}
@@ -259,9 +258,9 @@ export default function _Table({ height }) {
 												{t("Tag")}
 											</Button>
 										)}
-										{values?.process === "In-progress" && (
+										{(values?.process === "In-progress" || values?.process === "Tagged") && (
 											<Button
-												onClick={() => handleTest(values?.invoice_id, values?.id)}
+												onClick={() => handleTest(values?.invoice_uid, values?.uid)}
 												size="compact-xs"
 												fz={"xs"}
 												fw={"400"}
@@ -273,7 +272,7 @@ export default function _Table({ height }) {
 										)}
 										{values?.process === "Done" && (
 											<Button
-												onClick={() => handleLabReport(values?.id)}
+												onClick={() => handleLabReport(values?.uid)}
 												size="compact-xs"
 												fz={"xs"}
 												fw={"400"}

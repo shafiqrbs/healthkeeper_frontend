@@ -83,7 +83,7 @@ export default function Test({ entity, isLoading }) {
 										<Flex align="center" gap="mes" mt="xs">
 											{userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
 												<>
-													{item?.process === "New" &&
+													{item?.process === "Tagged" &&
 														userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
 															<Button
 																onClick={() => handleTest(item.invoice_particular_id)}

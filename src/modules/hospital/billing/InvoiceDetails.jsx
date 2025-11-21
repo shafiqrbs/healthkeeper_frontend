@@ -798,18 +798,18 @@ export default function InvoiceDetails({ entity }) {
 													</Grid>
 													<Box mt="xs">
 														<Button.Group>
-															<Button
+															{/*<Button
 																id="EntityFormSubmitRoom"
 																w="100%"
 																size="compact-sm"
 																bg="var(--theme-pos-btn-color)"
 																type="button"
-																disabled={invoiceDetails?.process === "Done"}
+																disabled
 															>
 																<Stack gap={0} align="center" justify="center">
 																	<Text fz="xs">{t("Print")}</Text>
 																</Stack>
-															</Button>
+															</Button>*/}
 															<Button
 																type="submit"
 																w="100%"
