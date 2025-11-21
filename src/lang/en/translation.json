@@ -1557,9 +1557,13 @@
 	"IndentNo": "Indent No",
 	"Indent": "Indent",
 	"PrintSection": "Print Section",
-    "DayQuantity": "Day Quantity",
-    "BatchItem": "Batch Item",
-    "TestResult": "Test Result",
-    "IDNO": "ID No",
-    "XXXXX": "XXXX"
+	"DayQuantity": "Day Quantity",
+	"BatchItem": "Batch Item",
+	"TestResult": "Test Result",
+	"IDNO": "ID No",
+	"XXXXX": "XXXX",
+	"AdmissionForm&DiseaseDetails": "Admission Form",
+	"AdmissionID": "Admission ID",
+	"ConsultantDoctor": "Consultant Doctor",
+	"UnitDoctor": "Unit Doctor"
 }

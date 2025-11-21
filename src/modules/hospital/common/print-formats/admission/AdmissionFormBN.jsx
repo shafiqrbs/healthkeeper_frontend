@@ -89,7 +89,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colSpan={3} style={{ textAlign: "center", padding: 0 }}>
 									<Text size="md" fw={600}>
-										{t("AdmissionForm & Disease Details")} - {patientInfo?.parent_patient_mode_name}
+										{t("AdmissionForm&DiseaseDetails")} - {patientInfo?.parent_patient_mode_name}
 									</Text>
 								</Table.Td>
 							</Table.Tr>
@@ -278,99 +278,73 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
-				</Box>
-				<Box pos="relative" mt="xs">
-					<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
-						<Table.Thead>
-							<Table.Tr>
-								<Table.Th>{t("Particular")}</Table.Th>
-								<Table.Th>{t("Quantity")}</Table.Th>
-								<Table.Th>{t("Price")}</Table.Th>
-								<Table.Th>{t("Total")}</Table.Th>
-							</Table.Tr>
-						</Table.Thead>
-						<Table.Tbody>
-							{admissionData?.invoice_particular?.map((item, index) => (
-								<Table.Tr key={index}>
-									<Table.Td>{item.item_name || t("Fee")}</Table.Td>
-									<Table.Td>{item.quantity}</Table.Td>
-									<Table.Td>{item.price}</Table.Td>
-									<Table.Td>{item.sub_total}</Table.Td>
+					<Box pos="relative" mt="lg">
+						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
+							<Table.Thead>
+								<Table.Tr>
+									<Table.Th>{t("Particular")}</Table.Th>
+									<Table.Th ta="center">{t("Quantity")}</Table.Th>
+									<Table.Th ta="center">{t("Price")}</Table.Th>
+									<Table.Th>{t("Total")}</Table.Th>
 								</Table.Tr>
-							))}
-						</Table.Tbody>
-					</Table>
+							</Table.Thead>
+							<Table.Tbody>
+								{admissionData?.invoice_particular?.map((item, index) => (
+									<Table.Tr key={index}>
+										<Table.Td>{item.item_name || t("Fee")}</Table.Td>
+										<Table.Td width={80} align="center">
+											{item.quantity}
+										</Table.Td>
+										<Table.Td width={80} align="center">
+											{item.price}
+										</Table.Td>
+										<Table.Td fw={600} width={110}>
+											৳ {item.sub_total}
+										</Table.Td>
+									</Table.Tr>
+								))}
+							</Table.Tbody>
+						</Table>
+					</Box>
+					<Box pos="relative" mt="lg">
+						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
+							<Table.Thead>
+								<Table.Tr>
+									<Table.Th>{t("Description")}</Table.Th>
+									<Table.Th>{t("Amount")}</Table.Th>
+								</Table.Tr>
+							</Table.Thead>
+							<Table.Tbody>
+								<Table.Tr>
+									<Table.Td fw={600}>{t("Payable")}</Table.Td>
+									<Table.Td width={110} fw={600}>
+										৳ {getValue(admissionData?.total, "0")}
+									</Table.Td>
+								</Table.Tr>
+								<Table.Tr>
+									<Table.Td fw={600}>{t("Paid")}</Table.Td>
+									<Table.Td fw={600}>৳ {getValue(admissionData?.amount, "0")}</Table.Td>
+								</Table.Tr>
+								<Table.Tr>
+									<Table.Td fw={600}>{t("Balance")}</Table.Td>
+									<Table.Td fw={600}>
+										৳ {Number(admissionData?.total ?? 0) - Number(admissionData?.amount ?? 0)}
+									</Table.Td>
+								</Table.Tr>
+							</Table.Tbody>
+						</Table>
+					</Box>
 				</Box>
-
 				{/* =============== payment summary table ================ */}
-				<Box pos="relative" mt="xs">
-					<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
-						<Table.Thead>
-							<Table.Tr>
-								<Table.Th>{t("Description")}</Table.Th>
-								<Table.Th>{t("Amount")}</Table.Th>
-							</Table.Tr>
-						</Table.Thead>
-						<Table.Tbody>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("Receive")}</Table.Td>
-								<Table.Td fw={600}>৳ {getValue(admissionData?.total, "0")}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("Return")}</Table.Td>
-								<Table.Td fw={600}>৳ {getValue(admissionData?.return_amount, "0")}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td fw={600}>{t("Balance")}</Table.Td>
-								<Table.Td fw={600}>৳ {getValue(admissionData?.balance, "0")}</Table.Td>
-							</Table.Tr>
-						</Table.Tbody>
-					</Table>
-				</Box>
+
 				<Box ta="center">
-					<Table
-						style={{
-							borderCollapse: "collapse",
-							width: "100%",
-						}}
-						className="customTable"
-					>
-						<Table.Tbody>
-							<Table.Tr>
-								<Table.Td>
-									<Grid columns={12} gutter="0">
-										<Grid.Col span={6} align="left">
-											<Text fz="xl" mt={"80"}>
-												AdmittedBy
-											</Text>
-											<Text fz="xs">{admissionData?.created_by_name || "N/A"}</Text>
-											<Text fz="xs">{admissionData?.designation_name || "N/A"}</Text>
-										</Grid.Col>
-										<Grid.Col span={6} align={"right"}>
-											<Text size="sm" fw={600} mb="xs">
-												<Text mt={"60"}>
-													{t("Signature")}-----------------------------------------------
-												</Text>
-												<Text mt={"md"}>
-													Name-----------------------------------------------
-												</Text>
-												<Text mt={"md"}>
-													Designation-----------------------------------------------
-												</Text>
-											</Text>
-										</Grid.Col>
-									</Grid>
-								</Table.Td>
-							</Table.Tr>
-						</Table.Tbody>
-					</Table>
 					<Text size="xs" c="gray" mt="xs">
 						{patientInfo?.patient_id && (
 							<Barcode fontSize={"12"} width={"1"} height={"24"} value={patientInfo?.patient_id} />
 						)}
 					</Text>
 					<Text size="xs" c="gray" mt="xs">
-						<strong>{t("প্রিন্ট")}: </strong>
+						<strong>{t("CreatedBy")}: </strong>
 						{user?.name}
 					</Text>
 					<Text fz={8}>

@@ -27,7 +27,7 @@ export default function useDataWithoutStore({ url, params, headers }) {
 	useEffect(() => {
 		const parsedUrl = url?.split("/");
 		if (parsedUrl?.some((item) => item === "undefined" || item === "null")) {
-			console.warn("URL is not valid:", url);
+			console.warn("Skipped api call, reason: URL is not valid:", url);
 		} else {
 			fetchData();
 		}

@@ -65,6 +65,17 @@ const USER_NID_DATA = {
 	},
 };
 
+const BLOOD_GROUPS = [
+	{ label: "A+", value: "A+" },
+	{ label: "A-", value: "A-" },
+	{ label: "B+", value: "B+" },
+	{ label: "B-", value: "B-" },
+	{ label: "O+", value: "O+" },
+	{ label: "O-", value: "O-" },
+	{ label: "AB+", value: "AB+" },
+	{ label: "AB-", value: "AB-" },
+];
+
 export default function EntityForm({ form, module }) {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -86,7 +97,7 @@ export default function EntityForm({ form, module }) {
 	});
 
 	useEffect(() => {
-		if(entity?.data === 'not_found'){
+		if (entity?.data === "not_found") {
 			navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX, { replace: true });
 		}
 	}, [entity]);
@@ -112,18 +123,9 @@ export default function EntityForm({ form, module }) {
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.UTILITY,
 	});
 
-	const BLOOD_GROUPS = [
-		{ label: "A+", value: "A+" },
-		{ label: "A-", value: "A-" },
-		{ label: "B+", value: "B+" },
-		{ label: "B-", value: "B-" },
-		{ label: "O+", value: "O+" },
-		{ label: "O-", value: "O-" },
-		{ label: "AB+", value: "AB+" },
-		{ label: "AB-", value: "AB-" },
-	];
-
 	const handleSubmit = async (skipRedirect = false) => {
+		console.log(skipRedirect);
+
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
 
@@ -156,7 +158,7 @@ export default function EntityForm({ form, module }) {
 						true
 					);
 					setRefetchData({ module, refetching: true });
-					console.log(skipRedirect)
+					console.log(skipRedirect);
 					if (!skipRedirect) {
 						navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX, { replace: true });
 					} else {
@@ -186,8 +188,6 @@ export default function EntityForm({ form, module }) {
 		setGender(val);
 		form.setFieldValue("gender", val);
 	};
-
-
 
 	const item = entity?.data;
 	const entities = entity?.data?.invoice_particular;
@@ -583,7 +583,6 @@ export default function EntityForm({ form, module }) {
 									</Grid>
 								</Stack>
 								<Stack p={"xs"} gap={"mes"}>
-
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("patientName")}</Text>
