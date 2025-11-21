@@ -15,14 +15,14 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 	const links = useMemo(() => {
 		const menuLinks = sideNavigationLinks[menu] || [];
 		return menuLinks.filter(
-			(link) => link.allowedRoles && link.allowedRoles.some((role) => userRole.includes(role))
+			(link) => link.allowedRoles && link.allowedRoles?.some((role) => userRole.includes(role))
 		);
 	}, [menu, userRole]);
 
 	const subLinks = useMemo(() => {
 		const subMenuLinks = sideNavigationLinks[subMenu] || [];
 		return subMenuLinks.filter(
-			(link) => link.allowedRoles && link.allowedRoles.some((role) => userRole.includes(role))
+			(link) => link.allowedRoles && link.allowedRoles?.some((role) => userRole.includes(role))
 		);
 	}, [subMenu, userRole]);
 
@@ -90,7 +90,7 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 												>
 													{item.subMenu.map((subItem, index) => (
 														<Fragment key={index}>
-															{subItem.allowedRoles.some((role) =>
+															{subItem.allowedRoles?.some((role) =>
 																userRole.includes(role)
 															) && (
 																<Menu.Item
