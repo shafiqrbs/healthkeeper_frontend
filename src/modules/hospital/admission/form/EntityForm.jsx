@@ -93,7 +93,7 @@ export default function EntityForm({ form, module }) {
 	const locations = useSelector((state) => state.crud.locations.data);
 
 	const { data: entity, isLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${id}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${id}`,
 	});
 
 	useEffect(() => {

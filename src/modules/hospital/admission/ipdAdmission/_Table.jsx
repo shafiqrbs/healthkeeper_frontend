@@ -115,7 +115,7 @@ export default function _Table({ module }) {
 
 	const handleBillingInvoicePrint = async (id) => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${id}`,
 		});
 		setBillingPrintData(res.data);
 		requestAnimationFrame(printBillingInvoice);
@@ -123,7 +123,7 @@ export default function _Table({ module }) {
 
 	const handlePrescriptionPrint = async (id) => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.ADMISSION_VIEW}/${id}`,
 		});
 		setPrintData(res.data);
 		requestAnimationFrame(printPrescription);
@@ -131,7 +131,7 @@ export default function _Table({ module }) {
 
 	const handleAdmissionFormPrint = async (id) => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${id}`,
 		});
 		setAdmissionFormPrintData(res.data);
 		requestAnimationFrame(printAdmissionForm);
@@ -212,7 +212,7 @@ export default function _Table({ module }) {
 						{ accessor: "admit_unit_name", title: t("Unit") },
 						{ accessor: "admit_department_name", title: t("Department") },
 						{ accessor: "admit_doctor_name", title: t("Doctor") },
-						{ accessor: "visiting_room", title: t("Cabin/Bed") },
+						{ accessor: "room_name", title: t("Cabin/Bed") },
 						{
 							accessor: "total",
 							title: t("Amount"),

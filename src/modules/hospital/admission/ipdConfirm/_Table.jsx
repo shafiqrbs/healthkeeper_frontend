@@ -218,7 +218,7 @@ export default function _Table({ module }) {
 									{ accessor: "admit_unit_name", title: t("Unit") },
 									{ accessor: "admit_department_name", title: t("Department") },
 									{ accessor: "admit_doctor_name", title: t("Doctor") },
-									{ accessor: "visiting_room", title: t("Cabin/Bed") },
+									{ accessor: "display_room", title: t("Cabin/Bed") },
 							  ]
 							: []),
 						{

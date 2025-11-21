@@ -56,6 +56,10 @@ export const getAdmissionFormInitialValues = () => {
 				if (!value) return "Religion is required";
 			 	return null;
 			 	},
+			card_no: (value) => {
+				if (!value) return "Card no is required";
+			 	return null;
+			 	},
 			guardian_name: (value) => {
 				if (!value) return "Guardian name is required";
 				return null;

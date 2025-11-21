@@ -468,7 +468,7 @@ function AppRoute() {
 						path="billing"
 						element={
 							<ProtectedRoute
-								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={["admin_administrator", "admin_hospital", "billing_manager"]}
 							>
 								<BillingIndex />
 							</ProtectedRoute>
@@ -478,7 +478,7 @@ function AppRoute() {
 						path="billing/:id"
 						element={
 							<ProtectedRoute
-								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={["admin_administrator", "admin_hospital", "billing_manager","operator_opd", "operator_manager"]}
 							>
 								<BillingIndex />
 							</ProtectedRoute>
@@ -488,7 +488,7 @@ function AppRoute() {
 						path="billing/:id/payment/:transactionId"
 						element={
 							<ProtectedRoute
-								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={["admin_administrator", "admin_hospital", "billing_manager","operator_opd", "operator_manager"]}
 							>
 								<BillingIndex />
 							</ProtectedRoute>
@@ -498,7 +498,7 @@ function AppRoute() {
 						path="billing-admission"
 						element={
 							<ProtectedRoute
-								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={[ "admin_administrator", "admin_hospital", "billing_manager","operator_opd", "operator_manager", "operator_emergency"]}
 							>
 								<BillingAdmissionIndex />
 							</ProtectedRoute>
@@ -508,7 +508,7 @@ function AppRoute() {
 						path="billing-admission/:id"
 						element={
 							<ProtectedRoute
-								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={["admin_administrator", "admin_hospital", "billing_manager","operator_opd", "operator_manager", "operator_emergency"]}
 							>
 								<BillingAdmissionIndex />
 							</ProtectedRoute>
@@ -518,7 +518,7 @@ function AppRoute() {
 						path="billing-admission/:id/payment/:transactionId"
 						element={
 							<ProtectedRoute
-								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={["admin_administrator", "admin_hospital", "billing_manager","operator_opd", "operator_manager", "operator_emergency"]}
 							>
 								<BillingAdmissionIndex />
 							</ProtectedRoute>
@@ -529,7 +529,7 @@ function AppRoute() {
 						path="refund"
 						element={
 							<ProtectedRoute
-								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={[ "admin_administrator", "admin_hospital", "billing_manager","operator_opd", "operator_manager", "operator_emergency"]}
 							>
 								<BillingRefundIndex />
 							</ProtectedRoute>
@@ -539,7 +539,7 @@ function AppRoute() {
 						path="refund/:id"
 						element={
 							<ProtectedRoute
-								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={[ "admin_administrator", "admin_hospital", "billing_manager","operator_opd", "operator_manager", "operator_emergency"]}
 							>
 								<BillingRefundIndex />
 							</ProtectedRoute>
@@ -549,7 +549,7 @@ function AppRoute() {
 						path="refund/:id/payment/:transactionId"
 						element={
 							<ProtectedRoute
-								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={["admin_administrator", "admin_hospital", "billing_manager","operator_opd", "operator_manager", "operator_emergency"]}
 							>
 								<BillingRefundIndex />
 							</ProtectedRoute>
@@ -559,7 +559,7 @@ function AppRoute() {
 						path="final-billing"
 						element={
 							<ProtectedRoute
-								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={["admin_administrator", "admin_hospital", "billing_manager","operator_opd", "operator_manager", "operator_emergency"]}
 							>
 								<FinalBillingIndex />
 							</ProtectedRoute>
@@ -569,7 +569,7 @@ function AppRoute() {
 						path="final-billing/:id"
 						element={
 							<ProtectedRoute
-								roles={["billing_cash", "admin_administrator", "admin_hospital", "billing_manager"]}
+								roles={["admin_administrator", "admin_hospital", "billing_manager","operator_opd", "operator_manager", "operator_emergency"]}
 							>
 								<FinalBillingIndex />
 							</ProtectedRoute>

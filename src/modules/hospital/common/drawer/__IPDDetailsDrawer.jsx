@@ -186,15 +186,9 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 										/>
 										<Stack gap="3xs" mb="es">
 											<Text fw={500} size="sm">
-												Room:{" "}
+												Room/Cabin:{" "}
 												<Text span fw={400}>
 													{ipd?.room_name || "-"}
-												</Text>
-											</Text>
-											<Text fw={500} size="sm">
-												Cabin No:{" "}
-												<Text span fw={400}>
-													{ipd?.cabin_no || "-"}
 												</Text>
 											</Text>
 											<Text fw={500} size="sm">
