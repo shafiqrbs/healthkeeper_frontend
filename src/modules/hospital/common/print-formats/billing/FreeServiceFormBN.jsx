@@ -304,8 +304,6 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Tr>
 									<Table.Th>{t("Particular")}</Table.Th>
 									<Table.Th>{t("Quantity")}</Table.Th>
-									<Table.Th>{t("Price")}</Table.Th>
-									<Table.Th>{t("Total")}</Table.Th>
 								</Table.Tr>
 							</Table.Thead>
 							<Table.Tbody>
@@ -313,34 +311,8 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 									<Table.Tr key={index}>
 										<Table.Td>{item.item_name || t("Fee")}</Table.Td>
 										<Table.Td>{item.quantity}</Table.Td>
-										<Table.Td>{item.price}</Table.Td>
-										<Table.Td>{item.sub_total}</Table.Td>
 									</Table.Tr>
 								))}
-							</Table.Tbody>
-						</Table>
-					</Box>
-					<Box pos="relative" mt="xl">
-						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
-							<Table.Thead>
-								<Table.Tr>
-									<Table.Th>{t("Description")}</Table.Th>
-									<Table.Th>{t("Amount")}</Table.Th>
-								</Table.Tr>
-							</Table.Thead>
-							<Table.Tbody>
-								<Table.Tr>
-									<Table.Td fw={600}>{t("Receive")}</Table.Td>
-									<Table.Td fw={600}>৳ {getValue(patientInfo?.total, "0")}</Table.Td>
-								</Table.Tr>
-								<Table.Tr>
-									<Table.Td fw={600}>{t("Return")}</Table.Td>
-									<Table.Td fw={600}>৳ {getValue(patientInfo?.return_amount, "0")}</Table.Td>
-								</Table.Tr>
-								<Table.Tr>
-									<Table.Td fw={600}>{t("Balance")}</Table.Td>
-									<Table.Td fw={600}>৳ {getValue(patientInfo?.balance, "0")}</Table.Td>
-								</Table.Tr>
 							</Table.Tbody>
 						</Table>
 					</Box>

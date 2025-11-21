@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
-import { IconArrowNarrowRight, IconChevronUp, IconDotsVertical, IconPrinter, IconSelector } from "@tabler/icons-react";
+import { Box, Button, Flex, FloatingIndicator, Group, Tabs, Text } from "@mantine/core";
+import { IconArrowNarrowRight, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -21,7 +21,8 @@ import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
-import {modals} from "@mantine/modals";
+import { modals } from "@mantine/modals";
+import FreeServiceFormBN from "@hospital-components/print-formats/billing/FreeServiceFormBN";
 
 const PER_PAGE = 20;
 
@@ -31,7 +32,16 @@ const tabs = [
 	{ label: "IPD Room/Bed", value: "ipd_room" },
 ];
 
-const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "doctor_emergency", "doctor_ipd", "admin_doctor", "doctor_approve_opd", "doctor_approve_ipd", "doctor_ipd_confirm", "admin_administrator"];
+const ALLOWED_CONFIRMED_ROLES = [
+	"doctor_ipd",
+	"doctor_emergency",
+	"doctor_ipd",
+	"admin_doctor",
+	"doctor_approve_opd",
+	"doctor_approve_ipd",
+	"doctor_ipd_confirm",
+	"admin_administrator",
+];
 
 export default function _Table({ module }) {
 	const { t } = useTranslation();
@@ -100,18 +110,18 @@ export default function _Table({ module }) {
 		modals.openConfirmModal({
 			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
-			labels: {confirm: "Confirm", cancel: "Cancel"},
-			confirmProps: {color: "var(--theme-delete-color)"},
+			labels: { confirm: "Confirm", cancel: "Cancel" },
+			confirmProps: { color: "var(--theme-delete-color)" },
 			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handleConfirmApproved(id),
 		});
-	}
+	};
 
 	const handleConfirmApproved = async (id) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.APPROVE}/${id}`,
 		});
-	}
+	};
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
@@ -277,7 +287,7 @@ export default function _Table({ module }) {
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
-			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
+			{billingPrintData && <FreeServiceFormBN data={billingPrintData} ref={billingInvoiceRef} />}
 		</Box>
 	);
 }
