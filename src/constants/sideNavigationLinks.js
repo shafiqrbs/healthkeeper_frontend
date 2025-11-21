@@ -81,14 +81,21 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
 			icon: IconBuildingHospital,
 			color: "#9C27B0", // Purple
-			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "doctor_ipd_confirm","ipd_admission","operator_emergency"],
+			allowedRoles: [
+				"role_domain",
+				"admin_administrator",
+				"admin_doctor",
+				"doctor_ipd_confirm",
+				"ipd_admission",
+				"operator_emergency",
+			],
 			subMenu: [
 				{
 					label: t("Admission"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX,
 					icon: IconBuildingHospital,
 					color: "#3F51B5", // Indigo
-					allowedRoles: ["role_domain", "admin_administrator","ipd_admission","operator_emergency"],
+					allowedRoles: ["role_domain", "admin_administrator", "ipd_admission", "operator_emergency"],
 				},
 				{
 					label: t("IPDConfirm"),
@@ -112,31 +119,38 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
 			icon: IconBuildingHospital,
 			color: "#9C27B0", // Purple
-			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "operator_opd", "operator_emergency", "operator_manager"],
+			allowedRoles: [
+				"role_domain",
+				"admin_administrator",
+				"admin_doctor",
+				"operator_opd",
+				"operator_emergency",
+				"operator_manager",
+			],
 			subMenu: [
 				{
 					label: t("OPD/IPDBilling"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
 					icon: IconDashboard,
-					allowedRoles: ["operator_opd", "operator_manager"],
+					allowedRoles: ["operator_opd", "operator_manager", "admin_administrator"],
 				},
 				{
 					label: t("AdmissionBilling"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION_BILLING.INDEX,
 					icon: IconDashboard,
-					allowedRoles: ["operator_opd", "operator_manager", "operator_emergency"],
+					allowedRoles: ["operator_opd", "operator_manager", "operator_emergency", "admin_administrator"],
 				},
 				{
 					label: t("Refund"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND.INDEX,
 					icon: IconBuildingHospital,
-					allowedRoles: ["operator_opd", "operator_manager"],
+					allowedRoles: ["operator_opd", "operator_manager", "admin_administrator"],
 				},
 				{
 					label: t("FinalBilling"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FINAL_BILLING.INDEX,
 					icon: IconBuildingHospital,
-					allowedRoles: ["operator_opd", "operator_manager"],
+					allowedRoles: ["operator_opd", "operator_manager", "admin_administrator"],
 				},
 			],
 		},
@@ -153,21 +167,35 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
-			allowedRoles: ["role_domain", "nurse_basic", "admin_nurse", "nurse_incharge"],
+			allowedRoles: ["role_domain", "nurse_basic", "admin_nurse", "nurse_incharge", "admin_administrator"],
 		},
 		{
 			label: t("Stock"),
 			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_STOCK.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#3F51B5", // Indigo Blue
-			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic", "admin_nurse", "nurse_incharge"],
+			allowedRoles: [
+				"role_domain",
+				"admin_administrator",
+				"admin_doctor",
+				"nurse_basic",
+				"admin_nurse",
+				"nurse_incharge",
+			],
 		},
 		{
 			label: t("Indent"),
 			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#FF9800", // Amber / Orange
-			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic","admin_nurse", "nurse_incharge"],
+			allowedRoles: [
+				"role_domain",
+				"admin_administrator",
+				"admin_doctor",
+				"nurse_basic",
+				"admin_nurse",
+				"nurse_incharge",
+			],
 		},
 
 		{
@@ -177,7 +205,6 @@ export const sideNavigationLinks = {
 			color: "#795548", // Brown
 			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd"],
 		},
-
 
 		{
 			label: t("Waiver"),
@@ -190,13 +217,25 @@ export const sideNavigationLinks = {
 					label: t("PatientWaiver"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_WAIVER.INDEX,
 					icon: IconMicroscopeOff,
-					allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd", "doctor_emergency", "doctor_opd"],
+					allowedRoles: [
+						"role_domain",
+						"admin_administrator",
+						"doctor_ipd",
+						"doctor_emergency",
+						"doctor_opd",
+					],
 				},
 				{
 					label: t("WaiverList"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_WAIVER.LIST,
 					icon: IconEmergencyBed,
-					allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd", "doctor_emergency", "doctor_opd"],
+					allowedRoles: [
+						"role_domain",
+						"admin_administrator",
+						"doctor_ipd",
+						"doctor_emergency",
+						"doctor_opd",
+					],
 				},
 			],
 		},
@@ -270,7 +309,15 @@ export const sideNavigationLinks = {
 			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.PHARMACY.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
-			allowedRoles: ["pharmacy_pharmacist","pharmacy_doctor","pharmacy_approve", "pharmacy_manager", "pharmacy_operator", "pharmacy_operator", "admin_administrator"],
+			allowedRoles: [
+				"pharmacy_pharmacist",
+				"pharmacy_doctor",
+				"pharmacy_approve",
+				"pharmacy_manager",
+				"pharmacy_operator",
+				"pharmacy_operator",
+				"admin_administrator",
+			],
 			subMenu: [
 				{
 					label: t("Dashboard"),
@@ -449,7 +496,7 @@ export const sideNavigationLinks = {
 	baseSubmenu: [
 		{
 			label: t("Dashboard"),
-			path: '/hospital/core/dashboard',
+			path: "/hospital/core/dashboard",
 			icon: IconDashboard,
 			color: "#4CAF50",
 			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
@@ -476,7 +523,7 @@ export const sideNavigationLinks = {
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.NURSE.INDEX,
 			icon: IconDashboard,
 			color: "#6f1225",
-			allowedRoles: ["role_domain","role_domain", "admin_administrator", "admin_hospital"],
+			allowedRoles: ["role_domain", "role_domain", "admin_administrator", "admin_hospital"],
 		},
 
 		{
