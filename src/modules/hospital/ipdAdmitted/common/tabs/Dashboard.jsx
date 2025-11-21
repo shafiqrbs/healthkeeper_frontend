@@ -1,16 +1,17 @@
-import {HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import {ActionIcon, Box, Divider, Grid, Group, List, Paper, Stack, Text, Title,Button} from "@mantine/core";
-import {useEffect, useMemo, useRef, useState} from "react";
+import { ActionIcon, Box, Divider, Grid, Group, List, Paper, Stack, Text, Title, Button } from "@mantine/core";
+import { LineChart } from "@mantine/charts";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import {IconTrash} from "@tabler/icons-react";
-import {modals} from "@mantine/modals";
-import {showEntityData} from "@/app/store/core/crudThunk";
-import {successNotification} from "@components/notification/successNotification";
-import {errorNotification} from "@components/notification/errorNotification";
-import {getDataWithoutStore} from "@/services/apiService";
+import { IconTrash } from "@tabler/icons-react";
+import { modals } from "@mantine/modals";
+import { showEntityData } from "@/app/store/core/crudThunk";
+import { successNotification } from "@components/notification/successNotification";
+import { errorNotification } from "@components/notification/errorNotification";
+import { getDataWithoutStore } from "@/services/apiService";
 
 export default function Dashboard() {
 	const ipdRef = useRef(null);
@@ -20,6 +21,11 @@ export default function Dashboard() {
 	const [vitalRecordList, setVitalRecordList] = useState([]);
 	const [insulinRecordList, setInsulinRecordList] = useState([]);
 	const ipdId = id;
+
+	const getNumericValue = (value) => {
+		const numericValue = Number(value);
+		return Number.isFinite(numericValue) ? numericValue : null;
+	};
 
 	const printIPDFull = useReactToPrint({
 		documentTitle: `ipd-${Date.now().toLocaleString()}`,
@@ -46,8 +52,7 @@ export default function Dashboard() {
 		});
 	};
 
-	async function handleBarcodeTag(barcode,reportId) {
-
+	async function handleBarcodeTag(barcode, reportId) {
 		setBarcodeValue(reportId);
 		requestAnimationFrame(printBarCodeValue);
 	}
@@ -56,22 +61,82 @@ export default function Dashboard() {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.RELEASE}/${id}/${mode}`,
 		});
-	}
+	};
 
-/*	useEffect(() => {
-		if (data) {
+	useEffect(() => {
+		if (ipd) {
 			setVitalRecordList(JSON.parse(ipd?.vital_chart_json || "[]"));
 		}
 	}, [ipd]);
 
-
 	useEffect(() => {
-		if (insulin) {
+		if (ipd) {
 			setInsulinRecordList(JSON.parse(ipd?.insulin_chart_json || "[]"));
 		}
-	}, [ipd]);*/
+	}, [ipd]);
 
-//	console.log(vitalRecordList)
+	const vitalChartData = useMemo(() => {
+		if (!Array.isArray(vitalRecordList)) {
+			return [];
+		}
+
+		return vitalRecordList
+			.map((record) => {
+				const chartLabelSource = record?.date || record?.createdAt || null;
+				const chartLabel = chartLabelSource
+					? new Date(chartLabelSource).toLocaleString()
+					: record?.time || "Unknown";
+
+				const mappedRecord = {
+					chartLabel,
+					pulseRate: getNumericValue(record?.pulseRate),
+					bloodPressure: getNumericValue(record?.bloodPressure),
+					respirationRate: getNumericValue(record?.respirationRate),
+					temperatureFahrenheit: getNumericValue(record?.temperatureFahrenheit),
+					saturationWithOxygen: getNumericValue(record?.saturationWithOxygen),
+					saturationWithoutOxygen: getNumericValue(record?.saturationWithoutOxygen),
+				};
+
+				const hasPlottableValue = Object.entries(mappedRecord).some(
+					([key, value]) => key !== "chartLabel" && value !== null
+				);
+
+				return hasPlottableValue ? mappedRecord : null;
+			})
+			.filter(Boolean);
+	}, [vitalRecordList]);
+
+	const insulinChartData = useMemo(() => {
+		if (!Array.isArray(insulinRecordList)) {
+			return [];
+		}
+
+		return insulinRecordList
+			.map((record) => {
+				const chartLabelSource = record?.date || record?.createdAt || null;
+				const chartLabel = chartLabelSource ? new Date(chartLabelSource).toLocaleDateString() : "Unknown";
+
+				const mappedRecord = {
+					chartLabel,
+					fbs: getNumericValue(record?.fbs),
+					twoHAFB: getNumericValue(record?.twoHAFB),
+					twoHAL: getNumericValue(record?.twoHAL),
+					twoHAD: getNumericValue(record?.twoHAD),
+					bd: getNumericValue(record?.bd),
+					bl: getNumericValue(record?.bl),
+					insulinMorning: getNumericValue(record?.insulinMorning),
+					insulinNoon: getNumericValue(record?.insulinNoon),
+					insulinNight: getNumericValue(record?.insulinNight),
+				};
+
+				const hasPlottableValue = Object.entries(mappedRecord).some(
+					([key, value]) => key !== "chartLabel" && value !== null
+				);
+
+				return hasPlottableValue ? mappedRecord : null;
+			})
+			.filter(Boolean);
+	}, [insulinRecordList]);
 
 	const columns = useMemo(
 		() => [
@@ -127,7 +192,7 @@ export default function Dashboard() {
 							<Text mt="les" size="sm" c="var(--theme-tertiary-color-7)">
 								Health ID: {ipd?.health_id || "-"}
 							</Text>
-							<Group  mb="es">
+							<Group mb="es">
 								<Text size="sm" c="var(--theme-tertiary-color-7)">
 									Age: {ipd?.day ? `${ipd.day} days` : ipd?.year ? `${ipd.year} years` : "-"}
 								</Text>
@@ -198,7 +263,6 @@ export default function Dashboard() {
 									{ipd?.nid || "-"}
 								</Text>
 							</Text>
-
 						</Stack>
 					</Paper>
 				</Grid.Col>
@@ -206,14 +270,16 @@ export default function Dashboard() {
 				{/* =============== Column 2: Room & Doctor Information =============== */}
 				<Grid.Col span={4} h="100%">
 					<Paper withBorder p="lg" radius="sm" bg="var(--mantine-color-white)" h="100%">
-
-						<Stack gap="md" mb={'md'}>
+						<Stack gap="md" mb={"md"}>
 							<Group justify="center">
-								<Button  onClick={() => handleReleaseMode('discharge')} > For Discharge </Button>
+								<Button onClick={() => handleReleaseMode("discharge")}> For Discharge </Button>
 
-								<Button variant="default" onClick={() => handleReleaseMode('death')} >For Death</Button>
+								<Button variant="default" onClick={() => handleReleaseMode("death")}>
+									For Death
+								</Button>
 
-								<Button variant="light" onClick={() => handleReleaseMode('referred')} >For Referred
+								<Button variant="light" onClick={() => handleReleaseMode("referred")}>
+									For Referred
 								</Button>
 							</Group>
 						</Stack>
@@ -227,7 +293,7 @@ export default function Dashboard() {
 								}
 								labelPosition="left"
 							/>
-							<Stack gap="3xs" mb="es" bg="var(--theme-secondary-color-1)" p={'xs'} >
+							<Stack gap="3xs" mb="es" bg="var(--theme-secondary-color-1)" p={"xs"}>
 								<Text fw={500} size="sm">
 									Room/Cabin:{" "}
 									<Text span fw={400}>
@@ -249,16 +315,13 @@ export default function Dashboard() {
 
 								<Text fw={500} size="sm">
 									Remaining:{" "}
-									<Text span size={'xl'} fw={400}>
-										{
-											ipd?.admission_day != null &&
-											ipd?.consume_day != null && (
-												ipd.admission_day < ipd.consume_day
-													? `(${Math.abs(ipd.admission_day - ipd.consume_day)})`
-													: Math.abs(ipd.admission_day - ipd.consume_day)
-											)
-										}
-										 Days
+									<Text span size={"xl"} fw={400}>
+										{ipd?.admission_day != null &&
+											ipd?.consume_day != null &&
+											(ipd.admission_day < ipd.consume_day
+												? `(${Math.abs(ipd.admission_day - ipd.consume_day)})`
+												: Math.abs(ipd.admission_day - ipd.consume_day))}
+										Days
 									</Text>
 								</Text>
 							</Stack>
@@ -271,7 +334,6 @@ export default function Dashboard() {
 								labelPosition="left"
 							/>
 							<Stack gap="3xs" mb="es">
-
 								<Text fw={500} size="sm">
 									Mode:{" "}
 									<Text span fw={400}>
@@ -332,7 +394,6 @@ export default function Dashboard() {
 									</Text>
 								</Text>
 							</Stack>
-
 						</Stack>
 					</Paper>
 				</Grid.Col>
@@ -342,7 +403,6 @@ export default function Dashboard() {
 					<Paper withBorder p="lg" radius="sm" bg="white" h="100%">
 						<Stack gap="lg" h="100%">
 							<Box>
-
 								<Divider
 									label={
 										<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
@@ -355,13 +415,13 @@ export default function Dashboard() {
 									prescriptionMedicine.map((item, index) => (
 										<Grid columns={12} key={index}>
 											<Grid.Col span={9}>
-												<Text>{index + 1}. {item.medicine_name}</Text>
-												<Text size="xs" >{item.dose_details}</Text>
+												<Text>
+													{index + 1}. {item.medicine_name}
+												</Text>
+												<Text size="xs">{item.dose_details}</Text>
 											</Grid.Col>
 											<Grid.Col span={3}>
-												<Text size="xs" >
-												{item.is_active ? 'Active':'Omit'}
-												</Text>
+												<Text size="xs">{item.is_active ? "Active" : "Omit"}</Text>
 											</Grid.Col>
 										</Grid>
 									))
@@ -383,15 +443,15 @@ export default function Dashboard() {
 								/>
 								{invoiceParticulars.length > 0 ? (
 									invoiceParticulars.map((item, index) => (
-											<Grid columns={12} key={index}>
-												<Grid.Col span={9}>
-													{index + 1}. {item.item_name}
-												</Grid.Col>
-												<Grid.Col span={3}>
-													<Text size="xs" > {item.process}</Text>
-												</Grid.Col>
-											</Grid>
-										))
+										<Grid columns={12} key={index}>
+											<Grid.Col span={9}>
+												{index + 1}. {item.item_name}
+											</Grid.Col>
+											<Grid.Col span={3}>
+												<Text size="xs"> {item.process}</Text>
+											</Grid.Col>
+										</Grid>
+									))
 								) : (
 									<Text size="sm" c="var(--theme-tertiary-color-7)" fs="italic">
 										No invoice particulars found
@@ -442,6 +502,68 @@ export default function Dashboard() {
 								}
 								labelPosition="left"
 							/>*/}
+						</Stack>
+					</Paper>
+				</Grid.Col>
+
+				<Grid.Col span={6}>
+					<Paper withBorder p="lg" radius="sm" bg="var(--mantine-color-white)">
+						<Stack gap="sm">
+							<Text fw={600} size="lg">
+								Vital Trend
+							</Text>
+							{vitalChartData.length > 0 ? (
+								<LineChart
+									h={320}
+									data={vitalChartData}
+									dataKey="chartLabel"
+									withLegend
+									series={[
+										{ name: "Pulse Rate", color: "blue.6", dataKey: "pulseRate" },
+										{ name: "Respiration Rate", color: "green.6", dataKey: "respirationRate" },
+										{ name: "Temperature (°F)", color: "red.6", dataKey: "temperatureFahrenheit" },
+										{ name: "Sat With O₂", color: "orange.6", dataKey: "saturationWithOxygen" },
+										{ name: "Sat Without O₂", color: "teal.6", dataKey: "saturationWithoutOxygen" },
+									]}
+								/>
+							) : (
+								<Text size="sm" c="var(--theme-tertiary-color-7)">
+									No vital records available
+								</Text>
+							)}
+						</Stack>
+					</Paper>
+				</Grid.Col>
+
+				<Grid.Col span={6}>
+					<Paper withBorder p="lg" radius="sm" bg="var(--mantine-color-white)">
+						<Stack gap="sm">
+							<Text fw={600} size="lg">
+								Insulin Trend
+							</Text>
+							{insulinChartData.length > 0 ? (
+								<LineChart
+									h={320}
+									data={insulinChartData}
+									dataKey="chartLabel"
+									withLegend
+									series={[
+										{ name: "FBS", color: "blue.6", dataKey: "fbs" },
+										{ name: "2H After Breakfast", color: "green.6", dataKey: "twoHAFB" },
+										{ name: "2H After Lunch", color: "orange.6", dataKey: "twoHAL" },
+										{ name: "2H After Dinner", color: "grape.6", dataKey: "twoHAD" },
+										{ name: "Before Dinner", color: "red.6", dataKey: "bd" },
+										{ name: "Before Lunch", color: "teal.6", dataKey: "bl" },
+										{ name: "Insulin Morning", color: "cyan.6", dataKey: "insulinMorning" },
+										{ name: "Insulin Noon", color: "indigo.6", dataKey: "insulinNoon" },
+										{ name: "Insulin Night", color: "violet.6", dataKey: "insulinNight" },
+									]}
+								/>
+							) : (
+								<Text size="sm" c="var(--theme-tertiary-color-7)">
+									No insulin records available
+								</Text>
+							)}
 						</Stack>
 					</Paper>
 				</Grid.Col>

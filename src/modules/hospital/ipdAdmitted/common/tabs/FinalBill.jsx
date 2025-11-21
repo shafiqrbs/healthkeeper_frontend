@@ -1,7 +1,7 @@
 import { Box, Grid, ScrollArea, Table } from "@mantine/core";
 import TabSubHeading from "@hospital-components/TabSubHeading";
 import BillingTable from "@hospital-components/BillingTable";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import BillingSummary from "@hospital-components/BillingSummary";
 import BillingActions from "@hospital-components/BillingActions";
 
@@ -29,6 +29,8 @@ const finalBillDetails = [
 
 export default function FinalBill() {
 	const { mainAreaHeight } = useOutletContext();
+	const { id } = useParams();
+	console.log("id", id);
 
 	const rows = finalBillDetails.map((item, index) => (
 		<Table.Tr key={index}>
@@ -45,7 +47,7 @@ export default function FinalBill() {
 				<Grid.Col span={8}>
 					<Box className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Final Bill" />
-						<BillingTable data={billing} />
+						{id && <BillingTable data={billing} />}
 					</Box>
 				</Grid.Col>
 				<Grid.Col span={16}>
@@ -53,17 +55,19 @@ export default function FinalBill() {
 						<TabSubHeading title="Final Bill Details" />
 						<Box p="xs">
 							<ScrollArea h={mainAreaHeight - 520}>
-								<Table>
-									<Table.Thead bg="var(--theme-primary-color-0)">
-										<Table.Tr>
-											<Table.Th>Particular</Table.Th>
-											<Table.Th>Unit Price</Table.Th>
-											<Table.Th>Quantity</Table.Th>
-											<Table.Th>Subtotal</Table.Th>
-										</Table.Tr>
-									</Table.Thead>
-									<Table.Tbody>{rows}</Table.Tbody>
-								</Table>
+								{id && (
+									<Table>
+										<Table.Thead bg="var(--theme-primary-color-0)">
+											<Table.Tr>
+												<Table.Th>Particular</Table.Th>
+												<Table.Th>Unit Price</Table.Th>
+												<Table.Th>Quantity</Table.Th>
+												<Table.Th>Subtotal</Table.Th>
+											</Table.Tr>
+										</Table.Thead>
+										<Table.Tbody>{rows}</Table.Tbody>
+									</Table>
+								)}
 							</ScrollArea>
 							<Box>
 								<BillingSummary data={billingSummary} />

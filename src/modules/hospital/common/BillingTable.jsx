@@ -1,7 +1,6 @@
-import {Box, Flex, Grid, Stack, Text} from "@mantine/core";
+import { Box, Flex, Grid, Stack, Text } from "@mantine/core";
 
-export default function BillingTable({entity, data }) {
-
+export default function BillingTable({ entity, data }) {
 	const transactions = entity?.invoice_transaction;
 	console.log(transactions);
 	return (
@@ -13,26 +12,22 @@ export default function BillingTable({entity, data }) {
 					<Text>Amount</Text>
 				</Flex>
 				{transactions?.length > 0 &&
-				transactions.map((item, index) => (
-					<Flex key={index} justify="space-between" py="les" px="3xs">
-						<Text>
-							{index + 1}. {item.created}
-						</Text>
+					transactions.map((item, index) => (
+						<Flex key={index} justify="space-between" py="les" px="3xs">
+							<Text>
+								{index + 1}. {item.created}
+							</Text>
 
-						<Text ta="left">
-						{item.mode} Charge
-						</Text>
+							<Text ta="left">{item.mode} Charge</Text>
 
-						<Text>
-							<Box component="span" c="var(--theme-primary-color-7)">
-								৳
-							</Box>{" "}
-							{item.sub_total}
-						</Text>
-					</Flex>
-				))
-				}
-
+							<Text>
+								<Box component="span" c="var(--theme-primary-color-7)">
+									৳
+								</Box>{" "}
+								{item.sub_total}
+							</Text>
+						</Flex>
+					))}
 			</Box>
 			<Box p="xs">
 				<Flex justify="space-between" bg="var(--theme-primary-color-0)" py="les" px="3xs">

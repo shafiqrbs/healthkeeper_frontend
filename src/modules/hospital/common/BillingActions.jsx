@@ -1,5 +1,5 @@
-import { ActionIcon, Box, Button, Checkbox, Flex, Text } from "@mantine/core";
-import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
+import { ActionIcon, Box, Button, Flex, Text } from "@mantine/core";
+// import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
 import { useForm } from "@mantine/form";
 import { useTranslation } from "react-i18next";
@@ -15,9 +15,9 @@ export default function BillingActions() {
 		},
 	});
 
-	const selectPaymentMethod = (method) => {
-		form.setFieldValue("paymentMethod", method);
-	};
+	// const selectPaymentMethod = (method) => {
+	// 	form.setFieldValue("paymentMethod", method);
+	// };
 
 	const handlePrescriptionPosPrint = () => {
 		console.log("handlePrescriptionPosPrint");
@@ -25,18 +25,18 @@ export default function BillingActions() {
 
 	return (
 		<Box p="xs" mt="xs" bg="var(--theme-tertiary-color-0)">
-			<PaymentMethodsCarousel
+			{/* <PaymentMethodsCarousel
 				selectPaymentMethod={selectPaymentMethod}
 				paymentMethod={form.values.paymentMethod}
-			/>
+			/> */}
 			<Flex justify="space-between" align="center">
 				<Flex fz="sm" align="center" gap="xs">
-					SMS Alert{" "}
+					{/* SMS Alert{" "}
 					<Checkbox
 						checked={form.values.smsAlert}
 						onChange={(event) => form.setFieldValue("smsAlert", event.currentTarget.checked)}
 						color="var(--theme-success-color)"
-					/>
+					/> */}
 				</Flex>
 				<Flex gap="xs" align="center">
 					<Box bg="var(--mantine-color-white)" px="xs" py="les" className="borderRadiusAll">
