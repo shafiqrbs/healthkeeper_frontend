@@ -23,40 +23,23 @@ import { formatDate } from "@utils/index";
 import VitalsChart from "../common/tabs/VitalsChart";
 import InsulinChart from "../common/tabs/InsulinChart";
 import Dashboard from "../common/tabs/Dashboard";
-import PrintIPDPrescription from "../common/tabs/PrintIPDPrescription";
-import PrintAdmissionForm from "../common/tabs/PrintAdmissionForm";
-import PrintBillingInvoice from "../common/tabs/PrintBillingInvoice";
-import PrintInvestigation from "../common/tabs/PrintInvestigation";
-import PrintBillingPOS from "../common/tabs/PrintBillingPOS";
-import PrintAdmissionBill from "../common/tabs/PrintAdmissionBill";
 import PrintPrescriptionIndoor from "../common/tabs/PrintPrescriptionIndoor";
-import PrintFreshOrder from "../common/tabs/PrintFreshOrder";
 import Discharge from "../common/tabs/Discharge";
-import IssueMedicine from "@modules/hospital/ipdAdmitted/common/tabs/IssueMedicine";
+
 
 const module = MODULES.E_FRESH;
 
 const TAB_ITEMS = [
 	"Dashboard",
 	"E-Fresh",
-	"Issue Medicine",
 	"Investigation",
-	"Medicine",
 	"Vitals Chart",
 	"Insulin Chart",
-	"Final Bill",
 	"Room Transfer",
 	"Discharge",
 ];
 const PRINT_SECTION_ITEMS = [
-	"IPD Prescription",
-	"Admission Form",
-	"Billing Invoice",
-	"Investigation",
-	"Billing POS",
-	"Admission Bill",
-	"Prescription Indoor",
-	"Fresh Order",
+	"E-Fresh Print",
 ];
 
 export default function Index() {
@@ -271,8 +254,8 @@ export default function Index() {
 							</Stack>
 						)}
 						{baseTabValue === "dashboard" && <Dashboard />}
-						{baseTabValue === "issue-medicine" && <IssueMedicine />}
-						{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}
+						{/*{baseTabValue === "issue-medicine" && <IssueMedicine />}*/}
+						{/*{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}*/}
 						{baseTabValue === "investigation" && <Investigation />}
 						{baseTabValue === "vitals chart" && (
 							<VitalsChart refetch={refetch} data={prescriptionData?.data} />
@@ -281,14 +264,8 @@ export default function Index() {
 							<InsulinChart refetch={refetch} data={prescriptionData?.data} />
 						)}
 						{baseTabValue === "discharge" && <Discharge />}
-						{baseTabValue === "ipd prescription" && <PrintIPDPrescription />}
-						{baseTabValue === "admission form" && <PrintAdmissionForm />}
-						{baseTabValue === "billing invoice" && <PrintBillingInvoice />}
-						{baseTabValue === "investigation-print" && <PrintInvestigation />}
-						{baseTabValue === "billing pos" && <PrintBillingPOS />}
-						{baseTabValue === "admission bill" && <PrintAdmissionBill />}
-						{baseTabValue === "prescription indoor" && <PrintPrescriptionIndoor />}
-						{baseTabValue === "fresh order" && <PrintFreshOrder />}
+						{baseTabValue === "e-fresh print" && <PrintPrescriptionIndoor />}
+						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
 						{/* /here */}
 

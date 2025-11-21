@@ -11,7 +11,7 @@ import { Box, Flex, Text, ActionIcon, Group, Button, SegmentedControl, Menu, rem
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDate } from "@utils/index";
+import {formatDate, getUserRole} from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
@@ -36,6 +36,11 @@ import __IssueMedicineDrawer from "@modules/hospital/ipdAdmitted/__IssueMedicine
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
+
+
+const userRoles = getUserRole();
+const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator",'nurse_basic','nurse_incharge',"admin_nurse"];
+
 
 export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode }) {
 	const dischargePaperRef = useRef(null);
@@ -219,7 +224,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "room_name", title: t("Bed/Cabin") },
 						{ accessor: "admission_day", title: t("AdmissionDay") },
-						{ accessor: "consume_day", title: t("ConsumeDay") },
+						{ accessor: "consume_day", title: t("PaymentDay") },
 						{ accessor: "remaining_day", title: t("RemainingDay") },
 						{
 							accessor: "total",
@@ -272,19 +277,23 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 												{t("Manage")}
 											</Button>
 
-
-                                            <Button
-                                                rightSection={<IconArrowNarrowRight size={18} />}
-                                                onClick={() => handleIssueMedicine(values.uid, values.id)}
-                                                variant="filled"
-                                                color="var(--theme-red-color-6)"
-                                                radius="xs"
-                                                aria-label="Settings"
-                                                size="compact-xs"
-                                                fw={400}
-                                            >
-                                                {t("Issue Medicine")}
-                                            </Button>
+											{ ALLOWED_NURSE_ROLES?.some((role) =>
+												userRoles.includes(role)
+											) && (
+												<Button
+													rightSection={<IconArrowNarrowRight size={18}/>}
+													onClick={() => handleIssueMedicine(values.uid, values.id)}
+													variant="filled"
+													color="var(--theme-red-color-6)"
+													radius="xs"
+													aria-label="Settings"
+													size="compact-xs"
+													fw={400}
+												>
+													{t("Issue Medicine")}
+												</Button>
+											)
+											}
 
 											{/* <Button
 												rightSection={<IconArrowNarrowRight size={18} />}
