@@ -25,15 +25,16 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 		<Box display={preview ? "block" : "none"}>
 			<style>
 				{`@media print {
-					table { border-collapse: collapse !important; }
-					table, table th, table td { border: 1px solid #807e7e !important; }
+					#free-service table { border-collapse: collapse !important; }
+					#free-service table, #free-service table th, #free-service table td { border: 1px solid #807e7e !important; }
 				}`}
 				{`@media  {
-					table { border-collapse: collapse !important;border: 1px solid #807e7e !important; }
-					table, table th, table td {  padding-top:0!important; padding-bottom:0!important; margin-top:0!important; margin-bottom:0!important; }
+					#free-service table { border-collapse: collapse !important;border: 1px solid #807e7e !important; }
+					#free-service table, #free-service table th, #free-service table td {  padding-top:0!important; padding-bottom:0!important; margin-top:0!important; margin-bottom:0!important; }
 				}`}
 			</style>
 			<Stack
+				id="free-service"
 				ref={ref}
 				w="210mm"
 				mih="1122px"
@@ -88,9 +89,26 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Tr>
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td colSpan={3}>
-										<Text size="md" fw={600}>
-											{t("Free Service Form")}
+										<Text ta="center" py="mes" size="md" fw={600}>
+											{t("ইউজার ফি মওকুফের জন্য আবেদন ফর্ম")}
 										</Text>
+									</Table.Td>
+								</Table.Tr>
+								<Table.Tr>
+									<Table.Td colSpan={3}>
+										<Box px="mes" pt="2xs" pb="sm">
+											<Text>{t("বরাবর")}</Text>
+											<Text>{t("উপ-পরিচালক")}</Text>
+											<Text>{t("২৫০ শয্যা বিশিষ্ট টিবি হাসপাতাল")}</Text>
+											<Text>{t("শ্যামলী, ঢাকা।")}</Text>
+
+											<Text my="sm">{t("বিষয়ঃ ইউজার ফি মওকুফের জন্য আবেদন।")}</Text>
+											<Text>
+												{t(
+													"জনাব, উপরোক্ত বিষয়ের আলোকে আমি/ আমার রোগী/ গরিব ও দুস্থ/ মুক্তযোদ্ধা/ একাডেমিক/ সরকারি কর্মকর্তা কর্মচারী/ সরকারি কর্মকর্তা ও কর্মচারীর পোষ্য (প্রযোজ্যক্ষেত্রে), যাহার বিবরণ নিম্নরূপঃ"
+												)}
+											</Text>
+										</Box>
 									</Table.Td>
 								</Table.Tr>
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
