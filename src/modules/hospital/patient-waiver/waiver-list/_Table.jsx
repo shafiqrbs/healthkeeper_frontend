@@ -20,9 +20,11 @@ import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
-import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import { modals } from "@mantine/modals";
 import FreeServiceFormBN from "@hospital-components/print-formats/billing/FreeServiceFormBN";
+import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import { successNotification } from "@components/notification/successNotification";
+import { SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 
 const PER_PAGE = 20;
 
@@ -59,6 +61,8 @@ export default function _Table({ module }) {
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
 	const [billingPrintData, setBillingPrintData] = useState(null);
+	const [approveOpen, { open: openApprove, close: closeApprove }] = useDisclosure(false);
+	const [selectedWaiverListId, setSelectedWaiverListId] = useState(null);
 
 	const form = useForm({
 		initialValues: {
@@ -117,10 +121,15 @@ export default function _Table({ module }) {
 		});
 	};
 
-	const handleConfirmApproved = async (id) => {
+	const handleConfirmApproved = async () => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.APPROVE}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.APPROVE}/${selectedWaiverListId}`,
 		});
+		if (res.success) {
+			closeApprove();
+			successNotification(t("ApprovedSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+			setSelectedWaiverListId(null);
+		}
 	};
 
 	return (
@@ -231,7 +240,10 @@ export default function _Table({ module }) {
 											</Button>
 											<Button
 												variant="filled"
-												onClick={() => handleIndentApproved(item.uid)}
+												onClick={() => {
+													setSelectedWaiverListId(item.uid);
+													requestAnimationFrame(openApprove);
+												}}
 												color="var(--theme-primary-color-6)"
 												radius="xs"
 												size={"compact-xs"}
@@ -288,6 +300,12 @@ export default function _Table({ module }) {
 			)}
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
 			{billingPrintData && <FreeServiceFormBN data={billingPrintData} ref={billingInvoiceRef} />}
+
+			<GlobalDrawer opened={approveOpen} close={closeApprove} title={t("Approve")}>
+				<Box></Box>
+
+				<Button onClick={handleConfirmApproved}>Approve</Button>
+			</GlobalDrawer>
 		</Box>
 	);
 }
