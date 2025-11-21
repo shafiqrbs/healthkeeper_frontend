@@ -12,7 +12,7 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import {HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import { useSelector } from "react-redux";
 import { formatDate, getUserRole } from "@/common/utils";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
@@ -21,6 +21,10 @@ import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
+import {modals} from "@mantine/modals";
+import {showEntityData} from "@/app/store/core/crudThunk";
+import {successNotification} from "@components/notification/successNotification";
+import {errorNotification} from "@components/notification/errorNotification";
 
 const PER_PAGE = 20;
 
@@ -89,7 +93,7 @@ export default function _Table({ module }) {
 
 	const handleBillingInvoicePrint = async (id) => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.PRINT}/${id}`,
 		});
 		setBillingPrintData(res.data);
 		requestAnimationFrame(printBillingInvoice);
@@ -202,6 +206,7 @@ export default function _Table({ module }) {
 												Process
 											</Button>
 										</Button.Group>
+
 									)}
 									<Menu
 										position="bottom-end"

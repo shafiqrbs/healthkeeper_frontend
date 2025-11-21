@@ -21,6 +21,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
+import {modals} from "@mantine/modals";
 
 const PER_PAGE = 20;
 
@@ -87,13 +88,30 @@ export default function _Table({ module }) {
 		content: () => billingInvoiceRef.current,
 	});
 
-	const handleBillingInvoicePrint = async (id) => {
+	const handleWaiverPrint = async (id) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
 		});
 		setBillingPrintData(res.data);
 		requestAnimationFrame(printBillingInvoice);
 	};
+
+	const handleIndentApproved = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+			labels: {confirm: "Confirm", cancel: "Cancel"},
+			confirmProps: {color: "var(--theme-delete-color)"},
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleConfirmApproved(id),
+		});
+	}
+
+	const handleConfirmApproved = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.APPROVE}/${id}`,
+		});
+	}
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
@@ -201,67 +219,40 @@ export default function _Table({ module }) {
 											>
 												Process
 											</Button>
-										</Button.Group>
-									)}
-									<Menu
-										position="bottom-end"
-										offset={3}
-										withArrow
-										trigger="hover"
-										openDelay={100}
-										closeDelay={400}
-									>
-										<Menu.Target>
-											<ActionIcon
-												className="border-left-radius-none"
-												variant="transparent"
-												color="var(--theme-menu-three-dot)"
-												radius="es"
+											<Button
+												variant="filled"
+												onClick={() => handleIndentApproved(item.uid)}
+												color="var(--theme-primary-color-6)"
+												radius="xs"
+												size={"compact-xs"}
 												aria-label="Settings"
-											>
-												<IconDotsVertical height={18} width={18} stroke={1.5} />
-											</ActionIcon>
-										</Menu.Target>
-										<Menu.Dropdown>
-											{item?.prescription_id && (
-												<>
-													<Menu.Item
-														leftSection={
-															<IconPrinter
-																style={{
-																	width: rem(14),
-																	height: rem(14),
-																}}
-															/>
-														}
-														onClick={(e) => {
-															e.stopPropagation();
-															handlePrescriptionPrint(item?.prescription_id);
-														}}
-													>
-														{t("Prescription")}
-													</Menu.Item>
-												</>
-											)}
-
-											<Menu.Item
-												leftSection={
-													<IconPrinter
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
+												rightSection={
+													<IconArrowNarrowRight
+														style={{ width: "70%", height: "70%" }}
+														stroke={1.5}
 													/>
 												}
-												onClick={(e) => {
-													e.stopPropagation();
-													handleBillingInvoicePrint(item?.id);
-												}}
 											>
-												{t("BillingInvoice")}
-											</Menu.Item>
-										</Menu.Dropdown>
-									</Menu>
+												Approve
+											</Button>
+											<Button
+												variant="filled"
+												onClick={() => handleWaiverPrint(item.invoice_uid)}
+												color="var(--theme-primary-color-6)"
+												radius="xs"
+												size={"compact-xs"}
+												aria-label="Settings"
+												rightSection={
+													<IconArrowNarrowRight
+														style={{ width: "70%", height: "70%" }}
+														stroke={1.5}
+													/>
+												}
+											>
+												Print
+											</Button>
+										</Button.Group>
+									)}
 								</Group>
 							),
 						},

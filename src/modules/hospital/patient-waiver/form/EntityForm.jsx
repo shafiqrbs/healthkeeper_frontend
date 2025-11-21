@@ -34,6 +34,7 @@ export default function EntityForm({ form, module }) {
 			const formValue = {
 				...form.values,
 				hms_invoice_id: id,
+				mode: 'investigation',
 			};
 
 			const value = {
@@ -300,9 +301,11 @@ export default function EntityForm({ form, module }) {
 												{entity?.invoice_particular?.map((item, index) => (
 													<Table.Tr key={index}>
 														<Table.Td>
+
 															<Checkbox
 																key={item.id}
 																size="sm"
+																defaultChecked={item.is_waiver}
 																onChange={(val) =>
 																	handleDataTypeChange(
 																		item.id,
