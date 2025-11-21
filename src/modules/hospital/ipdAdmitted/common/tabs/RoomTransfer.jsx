@@ -261,7 +261,7 @@ function RoomTransfer({ data }) {
 				<Grid.Col span={12}>
 					<TabSubHeading bg="var(--theme-primary-color-0)" title={t("RoomToBeTransferred")} />
 					<Box className="borderRadiusAll" p="lg" mt="xs" h={mainAreaHeight - 72}>
-						<Stack justify="space-between" h={mainAreaHeight - 90}>
+						<Stack justify="space-between" h={mainAreaHeight - 110}>
 							<Grid mt="xs" mx="xs" gutter="xs" align="center" columns={20}>
 								<Grid.Col span={20}>
 									<Select
@@ -314,7 +314,7 @@ function RoomTransfer({ data }) {
 												variant="outline"
 											>
 												<Stack gap={0} align="center" justify="center">
-													<Text fz="xs">{t("Cancel")}</Text>
+													<Text fz="xs">{t("Reset")}</Text>
 												</Stack>
 											</Button>
 											<Button
