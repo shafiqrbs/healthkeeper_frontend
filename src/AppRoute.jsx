@@ -177,7 +177,7 @@ function AppRoute() {
 						<Route
 							index
 							element={
-								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_ipd_admission"]}>
+								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_ipd_admission", "operator_emergency"]}>
 									<IpdAdmissionIndex />
 								</ProtectedRoute>
 							}

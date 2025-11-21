@@ -41,7 +41,7 @@ const tabs = [
 	{ label: "Admitted", value: "admitted" },
 ];
 
-const ALLOWED_CONFIRMED_ROLES = ["doctor_opd", "admin_administrator"];
+const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm", "admin_administrator"];
 
 export default function _Table({ module }) {
 	const admissionFormRef = useRef(null);

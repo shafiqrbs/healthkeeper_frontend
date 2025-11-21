@@ -81,14 +81,14 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
 			icon: IconBuildingHospital,
 			color: "#9C27B0", // Purple
-			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
+			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "doctor_ipd_confirm","ipd_admission","operator_emergency"],
 			subMenu: [
 				{
 					label: t("Admission"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX,
 					icon: IconBuildingHospital,
 					color: "#3F51B5", // Indigo
-					allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd", "ipd_admission"],
+					allowedRoles: ["role_domain", "admin_administrator","ipd_admission","operator_emergency"],
 				},
 				{
 					label: t("IPDConfirm"),
