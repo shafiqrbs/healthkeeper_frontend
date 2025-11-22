@@ -17,6 +17,7 @@ import { IconArrowNarrowRight, IconCalendarWeek, IconUser, IconBuildingHospital 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
+import {getDataWithoutStore} from "@/services/apiService";
 
 const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator","operator_opd"];
 const module = MODULES.BILLING;
@@ -95,10 +96,16 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}/payment/${transactionId}`);
 	};
 
-	const handlePrint = (data) => {
-		setInvoicePrintData(data);
+
+
+	const handlePrint = async (data) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.VIEW}/${data}/print`,
+		});
+		setInvoicePrintData(res.data);
 		requestAnimationFrame(invoicePrint);
 	};
+
 
 	const handleAutocompleteOptionAdd = (value) => {
 		const allParticulars = investigationParticulars?.particular_type?.particulars || [];
@@ -381,7 +388,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 															{t("Show")}
 														</Button>
 														<Button
-															onClick={() => handlePrint(item)}
+															onClick={() => handlePrint(item.hms_invoice_transaction_id)}
 															size="compact-xs"
 															bg="var(--theme-secondary-color-6)"
 															color="white"

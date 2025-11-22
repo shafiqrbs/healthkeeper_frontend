@@ -38,8 +38,10 @@ import IPDInvoicePosEN from "@hospital-components/print-formats/ipd/IPDInvoicePo
 import IPDInvoicePosBN from "@hospital-components/print-formats/ipd/IPDInvoicePosBN";
 import FreeServiceFormBN from "@hospital-components/print-formats/billing/FreeServiceFormBN";
 import FreeServiceFormEN from "@hospital-components/print-formats/billing/FreeServiceFormEN";
+import {getDataWithoutStore} from "@/services/apiService";
 
 const STATIC_OPD_ID = "125760093407";
+const STATIC_BILLING_ID = 82;
 const STATIC_PRESCRIPTION_ID = "613345863040";
 const REPORT_ID = "520108448725";
 
@@ -63,6 +65,12 @@ export default function Details() {
 	const { data: labReportData, isLoading: isReportLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${REPORT_ID}`,
 	});
+
+	const { data: billingData, isLoading: isBillingLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.VIEW}/${STATIC_BILLING_ID}/print`,
+	});
+
+
 
 	return (
 		<>
@@ -180,8 +188,8 @@ export default function Details() {
 						</LoadingWrapper>
 					)}
 					{name === "InvoicePosBN" && (
-						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<InvoicePosBN preview data={prescriptionData?.data} />
+						<LoadingWrapper isLoading={isBillingLoading}>
+							<InvoicePosBN preview data={billingData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "InvoicePosEN" && (

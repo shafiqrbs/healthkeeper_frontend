@@ -6,6 +6,7 @@ import { getLoggedInUser } from "@/common/utils";
 import { useTranslation } from "react-i18next";
 import useDomainHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import Barcode from "react-barcode";
+import {t} from "i18next";
 
 const DashedLine = () => (
 	<Text size="2xs" ta="center" ff="monospace">
@@ -19,6 +20,8 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 	const { hospitalConfigData } = useDomainHospitalConfigData();
 
 	const patientInfo = data || {};
+
+	console.log(patientInfo)
 
 	return (
 		<Box display={preview ? "block" : "none"}>
@@ -47,7 +50,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 						{t("ইনভয়েস")} - {patientInfo?.payment_mode_name || "Cash"}
 					</Text>
 					<Text size="xs" fw={700} ta="center">
-						<strong>{t("বিলের বিবরণ")}:</strong> {patientInfo?.room_name || ""}
+						<strong>{t("বিলের বিবরণ")}:</strong>
 					</Text>
 					<DashedLine />
 
@@ -84,34 +87,22 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 					<Table fz="10px" verticalSpacing={1} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr>
-								<Table.Td>
-									<strong>{t("ভর্তি ফি")}:</strong>
-								</Table.Td>
-								<Table.Td align="right">৳ {patientInfo?.admission_fee || 0}</Table.Td>
+								<Table.Th>{t("Particular")}</Table.Th>
+								<Table.Th>{t("Room")}</Table.Th>
+								<Table.Th align="right">{t("Amount")}</Table.Th>
 							</Table.Tr>
+							{patientInfo?.items?.map((item, index) => (
+								<Table.Tr key={index}>
+									<Table.Td>{item?.item_name || t("Fee")}</Table.Td>
+									<Table.Td>{item?.diagnostic_room_name}</Table.Td>
+									<Table.Td align="right">{item?.sub_total}</Table.Td>
+								</Table.Tr>
+							))}
 							<Table.Tr>
-								<Table.Td>
-									<strong>{t("কেবিন ভাড়া")}:</strong>
-								</Table.Td>
-								<Table.Td align="right">৳ {patientInfo?.cabin_rent || 0}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td>
+								<Table.Td colspan={2}>
 									<strong>{t("সর্বমোট জমা")}:</strong>
 								</Table.Td>
-								<Table.Td align="right">৳ {patientInfo?.total_deposit || 0}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td>
-									<strong>{t("ডিস্কাউন্ট")}:</strong>
-								</Table.Td>
-								<Table.Td align="right">৳ {patientInfo?.discount_amount || 0}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td>
-									<strong>{t("ফেরত")}:</strong>
-								</Table.Td>
-								<Table.Td align="right">৳ {patientInfo?.refund_amount || 0}</Table.Td>
+								<Table.Td align="right">৳ {patientInfo?.total || 0}</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>

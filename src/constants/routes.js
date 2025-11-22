@@ -529,6 +529,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "hospital/billing",
 			UPDATE: "hospital/billing",
 			VIEW: "hospital/billing",
+			PRINT: "hospital/billing/print",
 			DELETE: "hospital/billing",
 		},
 
