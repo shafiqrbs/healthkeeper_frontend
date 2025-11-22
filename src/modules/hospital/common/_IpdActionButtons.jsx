@@ -35,7 +35,7 @@ export default function IpdActionButtons({
 	const [openedDetails, { open: openDetails, close: closeDetails }] = useDisclosure(false);
 
 	const subTotal = (quantity * entities?.[0]?.price)
-	const enteredAmount = Number(subTotal + entities?.[1]?.price ?? 0);
+	const enteredAmount = Number(subTotal + entities?.[1]?.price);
 	const remainingBalance = configuredDueAmount - enteredAmount;
 	const isReturn = remainingBalance < 0;
 	const displayLabelKey = "Due";
