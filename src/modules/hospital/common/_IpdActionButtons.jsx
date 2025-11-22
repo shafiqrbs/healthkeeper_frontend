@@ -46,7 +46,7 @@ export default function IpdActionButtons({
 	console.log(subTotal)
 
 	useEffect(() => {
-		let price = Number(hospitalConfigData?.hospital_config?.[`${type}_fee`]?.[`${type}_fee_price`] ?? 0);
+		let price = Number(hospitalConfigData?.hospital_config?.[`${type}_fee`]?.[`${type}_fee_price`]);
 		price = isOpdRedirect ? 0 : enteredAmount;
 		setConfiguredDueAmount(enteredAmount);
 		form.setFieldValue("amount", enteredAmount);
