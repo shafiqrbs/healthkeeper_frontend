@@ -177,7 +177,6 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 						© {new Date().getFullYear()} © {hospitalConfigData?.organization_name}{" "}
 						{t("সর্বস্বত্ব সংরক্ষিত")}।
 					</Text>
-					<DashedLine />
 					<br/><br/><br/>
 				</Stack>
 			</Box>
