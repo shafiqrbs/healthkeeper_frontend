@@ -173,7 +173,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
-					<Text size="2xs" ta="center" pb={"60"}>
+					<Text size="2xs" ta="center" pb={"100"} h={'100'}>
 						© {new Date().getFullYear()} © {hospitalConfigData?.organization_name}{" "}
 						{t("সর্বস্বত্ব সংরক্ষিত")}।
 					</Text>
