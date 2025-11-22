@@ -7,13 +7,13 @@ import { Box, Flex } from "@mantine/core";
 import Table from "./_Table";
 import { MODULES } from "@/constants";
 
+const module = MODULES.FREE_PATIENT;
 
 export default function Index() {
 	const { id } = useParams();
 	const { mode } = useParams();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-	const module = MODULES.FREE_PATIENT;
 	return (
 		<>
 			{progress !== 100 ? (

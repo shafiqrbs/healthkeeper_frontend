@@ -34,7 +34,7 @@ export default function IpdActionButtons({
 	const [configuredDueAmount, setConfiguredDueAmount] = useState(0);
 	const [openedDetails, { open: openDetails, close: closeDetails }] = useDisclosure(false);
 
-	const subTotal = (quantity * entities?.[0]?.price)
+	const subTotal = quantity * entities?.[0]?.price;
 	const enteredAmount = Number(subTotal + entities?.[1]?.price);
 	const remainingBalance = configuredDueAmount - enteredAmount;
 	const isReturn = remainingBalance < 0;
@@ -42,8 +42,8 @@ export default function IpdActionButtons({
 	const displayAmount = Math.abs(remainingBalance);
 	useEffect(() => {
 		form.setFieldValue("days", quantity);
-	},[quantity])
-	console.log(subTotal)
+	}, [quantity]);
+	console.log(subTotal);
 
 	useEffect(() => {
 		let price = Number(hospitalConfigData?.hospital_config?.[`${type}_fee`]?.[`${type}_fee_price`]);
@@ -125,7 +125,14 @@ export default function IpdActionButtons({
 									</Grid.Col>
 									<Grid.Col span={4}>
 										{index === 0 ? (
-											<NumberInput onChange={setQuantity} mt="-sm" size="xs" fz="xs" py="xs" value={quantity} />
+											<NumberInput
+												onChange={setQuantity}
+												mt="-sm"
+												size="xs"
+												fz="xs"
+												py="xs"
+												value={quantity}
+											/>
 										) : (
 											<Text fz="xs">{entity?.quantity}</Text>
 										)}
@@ -142,15 +149,13 @@ export default function IpdActionButtons({
 											)}
 										</Flex>
 									</Grid.Col>
-
 								</Grid>
 							))}
-
 						</Grid.Col>
 						<Grid.Col span={6} bg="var(--theme-primary-color-0)" px="xs">
 							<Stack gap="0" className="method-carousel">
 								<Box bg="var(--theme-secondary-color-0)" p="xs">
-									<Text fw={600} fz="sm" >
+									<Text fw={600} fz="sm">
 										{t("BillSummary")}
 									</Text>
 								</Box>
@@ -235,7 +240,6 @@ export default function IpdActionButtons({
 								</Flex>
 							</Box>
 						</Grid.Col>
-
 					</Grid>
 					<Box mt={"md"}>
 						<Button.Group>
@@ -291,7 +295,7 @@ export default function IpdActionButtons({
 								id="EntityFormSubmit"
 								w="100%"
 								bg="var(--theme-save-btn-color)"
-								onClick={()=>handleSubmit()}
+								onClick={() => handleSubmit()}
 								loading={isSubmitting}
 								disabled={isSubmitting}
 							>

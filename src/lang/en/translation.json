@@ -1589,5 +1589,7 @@
 	"AdmissionTransactions": "Admission transactions",
 	"CreatedOn": "Created on",
 	"NoPendingRoomTransfer": "No pending room transfer",
-	"RoomToBeTransferred": "Room to be transferred"
+	"RoomToBeTransferred": "Room to be transferred",
+	"ApproveThisWaiver": "Approve This Waiver",
+	"Qty": "Quantity"
 }
