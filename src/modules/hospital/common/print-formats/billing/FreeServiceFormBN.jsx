@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Group, Image, Table, Stack, Flex } from "@mantine/core";
+import { Box, Text, Grid, Group, Image, Table, Stack, Flex, SimpleGrid } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -7,7 +7,7 @@ import { capitalizeWords, getLoggedInUser } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import Barcode from "react-barcode";
-import {IconPhoneCall} from "@tabler/icons-react";
+import { IconPhoneCall } from "@tabler/icons-react";
 import DashedDivider from "@components/core-component/DashedDivider";
 
 const PAPER_HEIGHT = 1122;
@@ -337,18 +337,23 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 									<Grid columns={12} gutter="0">
 										<Grid.Col span={6} align="left">
 											<Text fz="xl">{t("আবেদনকারী")}</Text>
-											<Text fz="xs">নাম: {patientInfo?.guardian_name|| "N/A"}</Text>
+											<Text fz="xs">নাম: {patientInfo?.guardian_name || "N/A"}</Text>
 											<Text fz="xs">মোবাইল: {patientInfo?.guardian_mobile || "N/A"}</Text>
-											<Text fz="xs">রোগীর সাথে সম্পর্ক: {patientInfo?.patient_relation || "N/A"}</Text>
+											<Text fz="xs">
+												রোগীর সাথে সম্পর্ক: {patientInfo?.patient_relation || "N/A"}
+											</Text>
 										</Grid.Col>
 										<Grid.Col span={6} align={"right"}>
 											<Text size="sm" fw={600} mb="xs">
-												<Text mt={"md"}><br/></Text>
-												<Text mt={"md"}><br/></Text>
+												<Text mt={"md"}>
+													<br />
+												</Text>
+												<Text mt={"md"}>
+													<br />
+												</Text>
 												<Text>
 													{t("Signature")}-----------------------------------------------
 												</Text>
-
 											</Text>
 										</Grid.Col>
 									</Grid>
@@ -356,35 +361,84 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
+					<SimpleGrid cols={3} spacing="xl" mt="lg">
+						{/* Checked By */}
+						<Box>
+							<Box
+								style={{
+									borderBottom: "2px dashed #999",
+									height: 40,
+								}}
+							/>
+							<Text ta="center" size="sm" mt={4} fw={500}>
+								{patientInfo?.checked_by_name || "—"}
+							</Text>
+							<Text ta="center" size="xs" c="dimmed">
+								Checked By
+							</Text>
+						</Box>
+
+						{/* Approved By */}
+						<Box>
+							<Box
+								style={{
+									borderBottom: "2px dashed #999",
+									height: 40,
+								}}
+							/>
+							<Text ta="center" size="sm" mt={4} fw={500}>
+								{patientInfo?.approved_by_name || "—"}
+							</Text>
+							<Text ta="center" size="xs" c="dimmed">
+								Approved By
+							</Text>
+						</Box>
+
+						{/* Created By */}
+						<Box>
+							<Box
+								style={{
+									borderBottom: "2px dashed #999",
+									height: 40,
+								}}
+							/>
+							<Text ta="center" size="sm" mt={4} fw={500}>
+								{patientInfo?.created_by_name || "—"}
+							</Text>
+							<Text ta="center" size="xs" c="dimmed">
+								Created By
+							</Text>
+						</Box>
+					</SimpleGrid>
 					<DashedDivider />
 					<Box pos="relative" mt="xl">
 						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
 							<Table.Thead>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={"6"}>
-									<Flex gap="md" align="center" justify="center">
-										<Flex>
-											<Image src={GLogo} alt="logo" width={46} height={46} />
-											<Box pl={"xs"} pr={"xs"}>
-												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-													{hospitalConfigData?.organization_name || ""}
-												</Text>
-												<Text ta="center" size="sm" c="gray" mt="2">
-													{hospitalConfigData?.address || ""},
-													<IconPhoneCall
-														style={{ width: "12", height: "12" }}
-														stroke={1.5}
-													/>{" "}
-													{(hospitalConfigData?.hotline &&
-														` ${hospitalConfigData?.hotline}`) ||
-													""}
-												</Text>
-											</Box>
-											<Image src={TBLogo} alt="logo" width={46} height={46} />
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Table.Td colSpan={"6"}>
+										<Flex gap="md" align="center" justify="center">
+											<Flex>
+												<Image src={GLogo} alt="logo" width={46} height={46} />
+												<Box pl={"xs"} pr={"xs"}>
+													<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
+														{hospitalConfigData?.organization_name || ""}
+													</Text>
+													<Text ta="center" size="sm" c="gray" mt="2">
+														{hospitalConfigData?.address || ""},
+														<IconPhoneCall
+															style={{ width: "12", height: "12" }}
+															stroke={1.5}
+														/>{" "}
+														{(hospitalConfigData?.hotline &&
+															` ${hospitalConfigData?.hotline}`) ||
+															""}
+													</Text>
+												</Box>
+												<Image src={TBLogo} alt="logo" width={46} height={46} />
+											</Flex>
 										</Flex>
-									</Flex>
-								</Table.Td>
-							</Table.Tr>
+									</Table.Td>
+								</Table.Tr>
 							</Table.Thead>
 							<Table.Tbody>
 								<Table.Tr>
@@ -400,7 +454,6 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tbody>
 						</Table>
 					</Box>
-
 				</Box>
 			</Stack>
 		</Box>

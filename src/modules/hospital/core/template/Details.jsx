@@ -38,12 +38,13 @@ import IPDInvoicePosEN from "@hospital-components/print-formats/ipd/IPDInvoicePo
 import IPDInvoicePosBN from "@hospital-components/print-formats/ipd/IPDInvoicePosBN";
 import FreeServiceFormBN from "@hospital-components/print-formats/billing/FreeServiceFormBN";
 import FreeServiceFormEN from "@hospital-components/print-formats/billing/FreeServiceFormEN";
-import {getDataWithoutStore} from "@/services/apiService";
+import { getDataWithoutStore } from "@/services/apiService";
 
 const STATIC_OPD_ID = "125760093407";
 const STATIC_BILLING_ID = 82;
 const STATIC_PRESCRIPTION_ID = "613345863040";
 const REPORT_ID = "520108448725";
+const FREE_SERVICE_ID = "786934884211";
 
 export default function Details() {
 	const { name } = useParams();
@@ -70,7 +71,9 @@ export default function Details() {
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.VIEW}/${STATIC_BILLING_ID}/print`,
 	});
 
-
+	const { data: freeServiceData, isLoading: isFreeServiceLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.PRINT}/${FREE_SERVICE_ID}`,
+	});
 
 	return (
 		<>
@@ -248,13 +251,13 @@ export default function Details() {
 						</LoadingWrapper>
 					)}
 					{name === "FreeServiceFormBN" && (
-						<LoadingWrapper isLoading={isOPDLoading}>
-							<FreeServiceFormBN preview data={OPDData?.data} />
+						<LoadingWrapper isLoading={isFreeServiceLoading}>
+							<FreeServiceFormBN preview data={freeServiceData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "FreeServiceFormEN" && (
-						<LoadingWrapper isLoading={isOPDLoading}>
-							<FreeServiceFormEN preview data={OPDData?.data} />
+						<LoadingWrapper isLoading={isFreeServiceLoading}>
+							<FreeServiceFormEN preview data={freeServiceData?.data} />
 						</LoadingWrapper>
 					)}
 				</Box>
