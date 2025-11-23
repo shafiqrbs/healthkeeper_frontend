@@ -11,8 +11,8 @@ import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constant
 import useCustomerDataStoreIntoLocalStorage from "@hooks/local-storage/useCustomerDataStoreIntoLocalStorage";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import Form from "./___Form";
-import {successNotification} from "@components/notification/successNotification";
-import {errorNotification} from "@components/notification/errorNotification";
+import { successNotification } from "@components/notification/successNotification";
+import { errorNotification } from "@components/notification/errorNotification";
 
 export default function __Create({ module, form, close }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -54,10 +54,10 @@ export default function __Create({ module, form, close }) {
 				close(); // close the drawer
 				setIndexData(null);
 				dispatch(setRefetchData({ module, refetching: true }));
-				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
+				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
-			errorNotification(error.message,ERROR_NOTIFICATION_COLOR);
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		} finally {
 			setIsLoading(false);
 		}

@@ -265,8 +265,6 @@ export default function Index() {
 						{baseTabValue === "e-fresh print" && <PrintPrescriptionIndoor />}
 						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
-						{/* /here */}
-
 						{!baseTabValue && (
 							<Flex bg="var(--mantine-color-white)" align="center" justify="center" w="100%" h="100%">
 								<Text size="sm" c="dimmed">

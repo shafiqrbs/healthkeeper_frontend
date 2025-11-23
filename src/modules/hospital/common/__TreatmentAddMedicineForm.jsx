@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Group, Grid, Select, Autocomplete, rem, ActionIcon } from "@mantine/core";
+import { Box, Button, Group, Select, Autocomplete, rem, ActionIcon } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconAlertCircle, IconPlus, IconTrashX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { getMedicineFormInitialValues } from "./helpers/request";
+import { getMedicineFormInitialValues } from "../core/treatmentTemplates/helpers/request";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useDebouncedState, useHotkeys } from "@mantine/hooks";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -24,15 +24,10 @@ import { notifications } from "@mantine/notifications";
 import SelectForm from "@components/form-builders/SelectForm";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
-import {
-	// appendDosageValueToForm,
-	appendGeneralValuesToForm,
-	// appendMealValueToForm,
-	medicineOptionsFilter,
-} from "@utils/prescription";
+import { appendGeneralValuesToForm, medicineOptionsFilter } from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 
-export default function AddMedicineForm({ medicines, module, setMedicines }) {
+export default function TreatmentAddMedicineForm({ medicines, module, setMedicines }) {
 	const [updateKey, setUpdateKey] = useState(0);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -42,21 +37,17 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
-	const { id } = useParams();
+	const { treatmentId } = useParams();
 	const dispatch = useDispatch();
-	// const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
-	// const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
-	// const [medicineDosageSearchValue, setMedicineDosageSearchValue] = useState("");
-	// const [medicineByMealSearchValue, setMedicineByMealSearchValue] = useState("");
 
 	const {
 		data: entity,
 		refetch: refetchEntity,
 		isLoading: isLoadingEntity,
 	} = useDataWithoutStore({
-		url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.VIEW}/${id}`,
+		url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.VIEW}/${treatmentId}`,
 	});
 	const entityData = entity?.data?.treatment_medicine_format;
 
@@ -64,14 +55,6 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 		if (medicineTerm.length === 0) {
 			medicineForm.setFieldValue("medicine_id", "");
 		}
-
-		// if (medicineDosageSearchValue.length === 0) {
-		// 	medicineForm.setFieldValue("medicine_dosage_id", "");
-		// }
-
-		// if (medicineByMealSearchValue.length === 0) {
-		// 	medicineForm.setFieldValue("medicine_bymeal_id", "");
-		// }
 	}, [medicineTerm]);
 
 	// Add hotkey for save functionality
@@ -126,16 +109,6 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 				medicineForm.setFieldValue("stock_id", selectedMedicine?.stock_id?.toString());
-
-				// // Auto-populate by_meal if available
-				// if (selectedMedicine.medicine_bymeal_id) {
-				// 	appendMealValueToForm(medicineForm, by_meal_options, selectedMedicine.medicine_bymeal_id);
-				// }
-				// // Auto-populate dose_details if available (for times field)
-				// if (selectedMedicine.medicine_dosage_id) {
-				// 	appendDosageValueToForm(medicineForm, dosage_options, selectedMedicine.medicine_dosage_id);
-				// }
-
 				// Auto-populate duration and count based on duration_day or duration_month
 				if (selectedMedicine.duration_day) {
 					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_day) || 1);
@@ -150,14 +123,6 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 		if (field === "generic" && value) {
 			medicineForm.clearFieldError("medicine_id");
 		}
-
-		// if (field === "medicine_bymeal_id" && value) {
-		// 	appendMealValueToForm(medicineForm, by_meal_options, value);
-		// }
-
-		// if (field === "medicine_dosage_id" && value) {
-		// 	appendDosageValueToForm(medicineForm, dosage_options, value);
-		// }
 	};
 
 	const handleAdd = (values) => {
@@ -180,7 +145,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 		try {
 			const value = {
 				url: `${MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_MEDICINE_FORMAT.CREATE}`,
-				data: { ...values, treatment_template_id: id },
+				data: { ...values, treatment_template_id: treatmentId },
 				module,
 			};
 
@@ -197,8 +162,6 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
 				medicineForm.reset();
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				// setMedicineDosageSearchValue("");
-				// setMedicineByMealSearchValue("");
 				await refetchEntity();
 			}
 		} catch (error) {
@@ -218,7 +181,6 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 
 		if (deleteEntityData.fulfilled.match(res)) {
 			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-			// navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.TREATMENT_MEDICINE}/${report}`);
 			await refetchEntity();
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
@@ -346,17 +308,17 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 							render: (item) => item?.medicine_dosage?.name,
 						},
 
-						{
-							accessor: "medicine_dosage",
-							title: t("DosageBn"),
-							render: (item) => item?.medicine_dosage?.name_bn,
-						},
+						// {
+						// 	accessor: "medicine_dosage",
+						// 	title: t("DosageBn"),
+						// 	render: (item) => item?.medicine_dosage?.name_bn,
+						// },
 
-						{
-							accessor: "medicine_dosage",
-							title: t("DosageQuantity"),
-							render: (item) => item?.medicine_dosage?.quantity,
-						},
+						// {
+						// 	accessor: "medicine_dosage",
+						// 	title: t("DosageQuantity"),
+						// 	render: (item) => item?.medicine_dosage?.quantity,
+						// },
 
 						{
 							accessor: "medicine_bymeal",
@@ -364,11 +326,11 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 							render: (item) => item?.medicine_bymeal?.name,
 						},
 
-						{
-							accessor: "medicine_bymeal",
-							title: t("ByMealBn"),
-							render: (item) => item?.medicine_bymeal?.name_bn,
-						},
+						// {
+						// 	accessor: "medicine_bymeal",
+						// 	title: t("ByMealBn"),
+						// 	render: (item) => item?.medicine_bymeal?.name_bn,
+						// },
 
 						{
 							accessor: "quantity",
@@ -388,7 +350,7 @@ export default function AddMedicineForm({ medicines, module, setMedicines }) {
 									<ActionIcon
 										size="compact-xs"
 										color="var(--theme-delete-color)"
-										onClick={() => handleDeleteSuccess(id, item.id)}
+										onClick={() => handleDeleteSuccess(treatmentId, item.id)}
 									>
 										<IconTrashX height={16} width={16} stroke={1.5} />
 									</ActionIcon>

@@ -29,6 +29,7 @@ import {
 	IconTrash,
 	IconCaretUpDownFilled,
 	IconMedicineSyrup,
+	IconBookmark,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
@@ -63,6 +64,7 @@ import {
 	medicineOptionsFilter,
 } from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
+import BookmarkDrawer from "./BookmarkDrawer";
 
 export default function AddMedicineForm({
 	module,
@@ -101,6 +103,7 @@ export default function AddMedicineForm({
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
 	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
 		useDisclosure(false);
+	const [openedBookmark, { open: openBookmark, close: closeBookmark }] = useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
@@ -719,6 +722,11 @@ export default function AddMedicineForm({
 					{t("ListOfMedicines")}
 				</Text>
 				<Flex px="les" gap="les">
+					<Tooltip label={t("CreateBookmark")}>
+						<ActionIcon size="lg" bg="var(--theme-primary-color-6)" onClick={openBookmark}>
+							<IconBookmark size={22} />
+						</ActionIcon>
+					</Tooltip>
 					{prescriptionData?.data?.patient_referred_id && (
 						<Tooltip label="Referred">
 							<ActionIcon size="lg" bg="red" onClick={() => handleReferredViewPrescription()}>
@@ -947,22 +955,28 @@ export default function AddMedicineForm({
 			>
 				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
 					<Box>
-						<Autocomplete
-							label="Enter Patient ID"
-							placeholder={t("EmergencyPrescription")}
-							data={emergencyData?.data?.map((p) => ({ value: p.name, label: p.name })) || []}
-							value={autocompleteValue}
-							onChange={setAutocompleteValue}
-							onOptionSubmit={(value) => {
-								handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
-								setTimeout(() => {
-									setAutocompleteValue("");
-								}, 0);
-							}}
-							classNames={inputCss}
-							onBlur={handleFieldBlur}
-							rightSection={<IconCaretUpDownFilled size={16} />}
-						/>
+						<Flex gap="sm" w="100%" align="center">
+							<Autocomplete
+								label="Enter Patient ID"
+								placeholder={t("EmergencyPrescription")}
+								data={emergencyData?.data?.map((p) => ({ value: p.name, label: p.name })) || []}
+								value={autocompleteValue}
+								onChange={setAutocompleteValue}
+								onOptionSubmit={(value) => {
+									handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
+									setTimeout(() => {
+										setAutocompleteValue("");
+									}, 0);
+								}}
+								w="100%"
+								classNames={inputCss}
+								onBlur={handleFieldBlur}
+								rightSection={<IconCaretUpDownFilled size={16} />}
+							/>
+							<ActionIcon mt="24px" size="lg">
+								<IconPlus size={16} />
+							</ActionIcon>
+						</Flex>
 						{/* =============== temporary items list with editable text inputs ================ */}
 						{tempEmergencyItems?.length > 0 && (
 							<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll" mt="2xs">
@@ -1063,6 +1077,8 @@ export default function AddMedicineForm({
 
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
+
+			<BookmarkDrawer opened={openedBookmark} close={closeBookmark} />
 		</Box>
 	);
 }

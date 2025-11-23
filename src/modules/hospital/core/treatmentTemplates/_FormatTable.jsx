@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box } from "@mantine/core";
 import { useOutletContext } from "react-router-dom";
-import AddMedicineForm from "./__AddMedicineForm";
+import TreatmentAddMedicineForm from "@hospital-components/__TreatmentAddMedicineForm";
 
 export default function _FormatTable({ module }) {
 	const [medicines, setMedicines] = useState([]);
@@ -10,7 +10,7 @@ export default function _FormatTable({ module }) {
 
 	return (
 		<Box className="border-top-none">
-			<AddMedicineForm
+			<TreatmentAddMedicineForm
 				medicines={medicines}
 				module={module}
 				setMedicines={setMedicines}
