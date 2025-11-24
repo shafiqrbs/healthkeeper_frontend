@@ -111,7 +111,11 @@ export default function _Table({ module, open }) {
     const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
         module,
         fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.GENERIC,
-        filterParams: filterParams.current,
+        filterParams: {
+            name: filterData?.name,
+            particular_type: "investigation",
+            term: searchKeyword,
+        },
         perPage: PER_PAGE,
         sortByKey: "name",
     });
@@ -169,7 +173,6 @@ export default function _Table({ module, open }) {
     // Handle inline update - completely isolated from render cycle
     const handleInlineUpdate = useCallback(async (rowId, field, value) => {
         const data = { [field]: value };
-
         try {
             await dispatch(inlineUpdateEntityData({
                 url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INLINE_UPDATE}/${rowId}`,
@@ -223,7 +226,7 @@ export default function _Table({ module, open }) {
             accessor: "product_name",
             title: t("GenericName"),
             sortable: true,
-            render: (item) => (
+           /* render: (item) => (
                 <InlineTextInput
                     key={`name-${item.id}`}
                     itemId={item.id}
@@ -232,7 +235,7 @@ export default function _Table({ module, open }) {
                     initialValue={item.product_name}
                     onSubmit={handleTextBlur}
                 />
-            ),
+            ),*/
         },
         {
             accessor: "medicine_dosage_id",

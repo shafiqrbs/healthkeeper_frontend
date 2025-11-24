@@ -663,7 +663,7 @@ export default function AddMedicineForm({
 					</Grid.Col>
 					<Grid.Col span={6} bg="var(--mantine-color-white)">
 						<Grid w="100%" columns={12} gutter="3xs">
-							<Grid.Col span={12}>
+							<Grid.Col span={10}>
 								<Group grow gap="les">
 									<SelectForm
 										form={medicineForm}
@@ -680,21 +680,25 @@ export default function AddMedicineForm({
 										withCheckIcon={false}
 										changeValue={populateMedicineData}
 									/>
-									<Tooltip label={t("CreateBookmark")}>
-										<Button
-											leftSection={<IconBookmark size={16} />}
-											variant="filled"
-											bg="var(--theme-primary-color-6)"
-											onClick={openBookmark}
-										>
-											{t("Bookmark")}
-										</Button>
-									</Tooltip>
+
 								</Group>
+							</Grid.Col>
+							<Grid.Col span={2}>
+								<Tooltip label={t("CreateBookmark")}>
+									<ActionIcon
+										fw={"400"}
+										type="button"
+										size="lg"
+										color="var(--theme-primary-color-5)"
+										onClick={openBookmark}
+									>
+										<IconBookmark size={16} />
+									</ActionIcon>
+								</Tooltip>
 							</Grid.Col>
 						</Grid>
 						<Grid w="100%" columns={12} gutter="les" mt="4px">
-							<Grid.Col span={6}>
+							<Grid.Col span={10}>
 								<Button
 									leftSection={<IconPlus size={16} />}
 									w="100%"
@@ -706,16 +710,16 @@ export default function AddMedicineForm({
 									{t("Dose")}
 								</Button>
 							</Grid.Col>
-							<Grid.Col span={6}>
-								<Button
-									w="100%"
+							<Grid.Col span={2}>
+								<ActionIcon
 									fw={"400"}
 									type="button"
+									size="lg"
 									color="var(--theme-secondary-color-5)"
 									onClick={openExPrescription}
 								>
-									{t("RxEmergency")}
-								</Button>
+									{t("Rx")}
+								</ActionIcon>
 							</Grid.Col>
 						</Grid>
 					</Grid.Col>

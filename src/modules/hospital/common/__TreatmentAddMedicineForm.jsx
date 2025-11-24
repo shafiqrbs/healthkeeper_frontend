@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Group, Select, Autocomplete, rem, ActionIcon } from "@mantine/core";
+import {Box, Button, Group, Select, Autocomplete, rem, ActionIcon, Grid} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconAlertCircle, IconPlus, IconTrashX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
@@ -197,82 +197,93 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 				key={updateKey}
 				component="form"
 				bg="var(--theme-primary-color-0)"
-				p="sm"
+				p="xs"
 			>
 				<Group grow preventGrowOverflow={false} w="100%" gap="les">
-					<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
-						<Select
-							clearable
-							searchable
-							onSearchChange={(v) => {
-								setMedicineTerm(v);
-							}}
-							id="medicine_id"
-							name="medicine_id"
-							data={medicineData?.map((item) => ({
-								label: item.product_name,
-								value: item.product_id?.toString(),
-								generic: item.generic || "",
-							}))}
-							filter={medicineOptionsFilter}
-							value={medicineForm.values.medicine_id}
-							onChange={(v) => handleChange("medicine_id", v)}
-							placeholder={t("Medicine")}
-							tooltip="Select medicine"
-							nothingFoundMessage="Type to find medicine..."
-							classNames={inputCss}
-							error={!!medicineForm.errors.medicine_id}
-						/>
-					</FormValidatorWrapper>
-
-					<FormValidatorWrapper opened={medicineForm.errors.generic}>
-						<Autocomplete
-							tooltip={t("EnterGenericName")}
-							id="generic"
-							name="generic"
-							data={medicineGenericData?.map((item, index) => ({
-								label: item.name,
-								value: `${item.name} ${index}`,
-							}))}
-							value={medicineForm.values.generic}
-							onChange={(v) => {
-								handleChange("generic", v);
-								setMedicineGenericTerm(v);
-							}}
-							placeholder={t("GenericName")}
-							classNames={inputCss}
-							error={!!medicineForm.errors.generic}
-						/>
-					</FormValidatorWrapper>
-					<InputNumberForm
-						form={medicineForm}
-						id="quantity"
-						name="quantity"
-						value={medicineForm.values.quantity}
-						placeholder={t("Quantity")}
-						required
-						tooltip={t("EnterQuantity")}
-					/>
-					<SelectForm
-						form={medicineForm}
-						label=""
-						id="duration"
-						name="duration"
-						dropdownValue={DURATION_TYPES}
-						value={medicineForm.values.duration}
-						placeholder={t("Duration")}
-						required
-						tooltip={t("EnterMeditationDuration")}
-						withCheckIcon={false}
-					/>
-					<Button
-						leftSection={<IconPlus size={16} />}
-						type="submit"
-						variant="filled"
-						bg="var(--theme-secondary-color-6)"
-					>
-						{t("Add")}
-					</Button>
+					<Grid columns={24} gutter="3xs" mt="2xs" p="les">
+						<Grid.Col span={8}>
+							<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
+								<Select
+									clearable
+									searchable
+									onSearchChange={(v) => {
+										setMedicineTerm(v);
+									}}
+									id="medicine_id"
+									name="medicine_id"
+									data={medicineData?.map((item) => ({
+										label: item.product_name,
+										value: item.product_id?.toString(),
+										generic: item.generic || "",
+									}))}
+									filter={medicineOptionsFilter}
+									value={medicineForm.values.medicine_id}
+									onChange={(v) => handleChange("medicine_id", v)}
+									placeholder={t("Medicine")}
+									tooltip="Select medicine"
+									nothingFoundMessage="Type to find medicine..."
+									classNames={inputCss}
+									error={!!medicineForm.errors.medicine_id}
+								/>
+							</FormValidatorWrapper>
+						</Grid.Col>
+						<Grid.Col span={8}>
+							<FormValidatorWrapper opened={medicineForm.errors.generic}>
+								<Autocomplete
+									tooltip={t("EnterGenericName")}
+									id="generic"
+									name="generic"
+									data={medicineGenericData?.map((item, index) => ({
+										label: item.name,
+										value: `${item.name} ${index}`,
+									}))}
+									value={medicineForm.values.generic}
+									onChange={(v) => {
+										handleChange("generic", v);
+										setMedicineGenericTerm(v);
+									}}
+									placeholder={t("GenericName")}
+									classNames={inputCss}
+									error={!!medicineForm.errors.generic}
+								/>
+							</FormValidatorWrapper>
+						</Grid.Col>
+						<Grid.Col span={3}>
+							<InputNumberForm
+								form={medicineForm}
+								id="quantity"
+								name="quantity"
+								value={medicineForm.values.quantity}
+								placeholder={t("Quantity")}
+								required
+								tooltip={t("EnterQuantity")}
+							/>
+						</Grid.Col>
+						<Grid.Col span={3}>
+							<SelectForm
+								form={medicineForm}
+								label=""
+								id="duration"
+								name="duration"
+								dropdownValue={DURATION_TYPES}
+								value={medicineForm.values.duration}
+								placeholder={t("Duration")}
+								required
+								tooltip={t("EnterMeditationDuration")}
+								withCheckIcon={false}
+							/>
+						</Grid.Col>
+						<Grid.Col span={2}>
+							<Button
+								leftSection={<IconPlus size={16} />}
+								type="submit"
+								variant="filled"
+								bg="var(--theme-secondary-color-6)"
+							>
+								{t("Add")}
+							</Button>
+						</Grid.Col>
+					</Grid>
 				</Group>
 			</Box>
 			<Box>
@@ -306,17 +317,17 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 							render: (item) => item?.medicine_dosage?.name,
 						},
 
-						// {
-						// 	accessor: "medicine_dosage",
-						// 	title: t("DosageBn"),
-						// 	render: (item) => item?.medicine_dosage?.name_bn,
-						// },
+						 {
+						 	accessor: "medicine_dosage",
+						 	title: t("DosageBn"),
+						 	render: (item) => item?.medicine_dosage?.name_bn,
+						 },
 
-						// {
-						// 	accessor: "medicine_dosage",
-						// 	title: t("DosageQuantity"),
-						// 	render: (item) => item?.medicine_dosage?.quantity,
-						// },
+						 {
+						 	accessor: "medicine_dosage",
+						 	title: t("DosageQty"),
+						 	render: (item) => item?.medicine_dosage?.quantity,
+						 },
 
 						{
 							accessor: "medicine_bymeal",
@@ -324,20 +335,10 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 							render: (item) => item?.medicine_bymeal?.name,
 						},
 
-						// {
-						// 	accessor: "medicine_bymeal",
-						// 	title: t("ByMealBn"),
-						// 	render: (item) => item?.medicine_bymeal?.name_bn,
-						// },
-
-						{
-							accessor: "quantity",
-							title: t("Quantity"),
-						},
 						{
 							accessor: "duration",
 							title: t("Duration"),
-							render: (item) => item?.duration,
+							render: (item) => item?.quantity + item?.duration,
 						},
 						{
 							accessor: "action",
@@ -346,7 +347,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 							render: (item) => (
 								<Group justify="center">
 									<ActionIcon
-										size="compact-xs"
+										variant="transparent" size="lg"
 										color="var(--theme-delete-color)"
 										onClick={() => handleDeleteSuccess(treatmentId, item.id)}
 									>

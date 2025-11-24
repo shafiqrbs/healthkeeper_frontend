@@ -102,9 +102,9 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}/payment/${transactionId}`);
 	};
 
-	const handlePrint = async (data) => {
+	const handlePrint = async (id) => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.VIEW}/${data}/print`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.PRINT}/${id}`,
 		});
 		setInvoicePrintData(res.data);
 		requestAnimationFrame(invoicePrint);

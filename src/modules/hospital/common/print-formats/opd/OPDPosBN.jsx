@@ -56,10 +56,9 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 					<Table fz="10px" verticalSpacing={2} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr>
-								<Table.Td>
+								<Table.Td colspan={2}>
 									<strong>তারিখ:</strong> {patientInfo?.created || ""}
 								</Table.Td>
-								<Table.Td align="right"></Table.Td>
 							</Table.Tr>
 							{patientInfo?.health_id && (
 								<Table.Tr>
@@ -75,7 +74,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td align="right">{patientInfo?.patient_id || ""}</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td colSpan={2}></Table.Td>
+								<Table.Td colSpan={2}><br/></Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2}>
@@ -177,6 +176,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 						© {new Date().getFullYear()} © {hospitalConfigData?.organization_name}{" "}
 						{t("সর্বস্বত্ব সংরক্ষিত")}।
 					</Text>
+					<br/>
 					<DashedLine />
 					<br/><br/>
 				</Stack>

@@ -69,6 +69,25 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 				</Grid>
 			</Stack>
 			<Divider />
+			<Flex gap="lg" justify="space-between">
+
+				<InputForm
+					styles={{ root: { width: "180px" } }}
+					form={form}
+					name="weight"
+					placeholder={t("Weight/KG")}
+					rightSection={<IconWeight size={16} />}
+				/>
+				<Switch
+					checked={form.values.is_vital}
+					onChange={handleVitalChange}
+					size="lg"
+					radius="xs"
+					color="red"
+					onLabel="Vital"
+					offLabel="Vital"
+				/>
+			</Flex>
 			<Box bg="var(--mantine-color-white)">
 				<Grid w="100%" columns={24} gutter={"2"} pl={"xs"}>
 					<Grid.Col span={4}>
@@ -118,24 +137,7 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 				</Grid>
 				{/*<Vitals form={form} onBlur={onBlur} />*/}
 			</Box>
-			<Flex gap="lg" justify="space-between">
-				<Switch
-					checked={form.values.is_vital}
-					onChange={handleVitalChange}
-					size="lg"
-					radius="xs"
-					color="red"
-					onLabel="Vital"
-					offLabel="Vital"
-				/>
-				<InputForm
-					styles={{ root: { width: "140px" } }}
-					form={form}
-					name="weight"
-					placeholder={t("Weight/KG")}
-					rightSection={<IconWeight size={16} />}
-				/>
-			</Flex>
+
 		</Stack>
 	);
 }

@@ -33,6 +33,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import IPDAllPrint from "@hospital-components/print-formats/ipd/IPDAllPrint";
 import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
+import {getDataWithoutStore} from "@/services/apiService";
 
 const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator"];
 const module = MODULES.BILLING;
@@ -111,8 +112,11 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}/payment/${transactionId}`);
 	};
 
-	const handlePrint = (data) => {
-		setInvoicePrintData(data);
+	const handlePrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.PRINT}/${id}`,
+		});
+		setInvoicePrintData(res.data);
 		requestAnimationFrame(invoicePrint);
 	};
 

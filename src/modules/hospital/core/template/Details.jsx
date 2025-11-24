@@ -68,7 +68,7 @@ export default function Details() {
 	});
 
 	const { data: billingData, isLoading: isBillingLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.VIEW}/${STATIC_BILLING_ID}/print`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.PRINT}/${STATIC_BILLING_ID}`,
 	});
 
 	const { data: freeServiceData, isLoading: isFreeServiceLoading } = useDataWithoutStore({
