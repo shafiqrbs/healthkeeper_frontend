@@ -1593,5 +1593,7 @@
 	"ApproveThisWaiver": "Approve This Waiver",
 	"Qty": "Quantity",
 	"TemplateNameIsRequired": "Template name is required",
-	"AddTemplateName": "Add Template Name"
+	"AddTemplateName": "Add Template Name",
+	"MedicinePlaceholder": "Select Medicine (alt+s)",
+	"GenericNamePlaceholder": "Generic Name (alt+n)"
 }

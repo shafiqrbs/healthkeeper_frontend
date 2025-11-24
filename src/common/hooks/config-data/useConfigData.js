@@ -3,7 +3,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { setItemData } from "@/app/store/core/crudSlice";
 
-const localConfigData = JSON.parse(localStorage.getItem("config-data") || "{}");
+let localConfigData = {};
+if (!["undefined", "null", "{}", ""].includes(localStorage.getItem("config-data"))) {
+	localConfigData = JSON.parse(localStorage.getItem("config-data"));
+} else {
+	localConfigData = {
+		id: null,
+		name: "",
+		description: "",
+		created_at: null,
+		updated_at: null,
+	};
+}
 
 const useConfigData = () => {
 	const dispatch = useDispatch();

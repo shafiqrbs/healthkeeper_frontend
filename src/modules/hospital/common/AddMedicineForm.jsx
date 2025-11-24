@@ -64,7 +64,6 @@ import {
 } from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import BookmarkDrawer from "./BookmarkDrawer";
-import finalPropsSelectorFactory from "react-redux/es/connect/selectorFactory";
 
 export default function AddMedicineForm({
 	module,
@@ -80,6 +79,8 @@ export default function AddMedicineForm({
 	ignoreOpdQuantityLimit = false,
 	redirectUrl = null,
 }) {
+	const medicineIdRef = useRef(null);
+	const genericRef = useRef(null);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
@@ -291,6 +292,18 @@ export default function AddMedicineForm({
 				showNotificationComponent(t("Prescription printed successfully"), "blue", "lightgray", true, 700, true);
 			},
 		],
+		[
+			"alt+s",
+			() => {
+				medicineIdRef.current?.focus();
+			},
+		],
+		[
+			"alt+n",
+			() => {
+				genericRef.current?.focus();
+			},
+		],
 	]);
 
 	const handleChange = (field, value) => {
@@ -389,11 +402,6 @@ export default function AddMedicineForm({
 	};
 
 	const handlePrescriptionSubmit = async ({ skipLoading = false, redirect = false }) => {
-		if (!medicines || medicines.length === 0) {
-			showNotificationComponent(t("Please add at least one medicine"), "red", "lightgray", true, "", 2000, true);
-			return {};
-		}
-
 		!skipLoading && setIsSubmitting(true);
 
 		try {
@@ -517,6 +525,7 @@ export default function AddMedicineForm({
 								<Grid.Col span={6}>
 									<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 										<Select
+											ref={medicineIdRef}
 											clearable
 											searchable
 											onSearchChange={setMedicineTerm}
@@ -530,7 +539,7 @@ export default function AddMedicineForm({
 											filter={medicineOptionsFilter}
 											value={medicineForm.values.medicine_id}
 											onChange={(v) => handleChange("medicine_id", v)}
-											placeholder={t("Medicine")}
+											placeholder={t("MedicinePlaceholder")}
 											tooltip="Select medicine"
 											nothingFoundMessage="Type to find medicine..."
 											// onBlur={() => setMedicineTerm("")}
@@ -542,6 +551,7 @@ export default function AddMedicineForm({
 								<Grid.Col span={6}>
 									<FormValidatorWrapper opened={medicineForm.errors.generic}>
 										<Autocomplete
+											ref={genericRef}
 											tooltip={t("EnterGenericName")}
 											id="generic"
 											name="generic"
@@ -556,7 +566,7 @@ export default function AddMedicineForm({
 												handleChange("generic", v);
 												setMedicineGenericTerm(v);
 											}}
-											placeholder={t("GenericName")}
+											placeholder={t("GenericNamePlaceholder")}
 											// onBlur={() => setMedicineGenericTerm("")}
 											classNames={inputCss}
 											error={!!medicineForm.errors.generic}
