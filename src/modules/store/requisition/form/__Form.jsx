@@ -53,13 +53,6 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
     const [searchValue, setSearchValue] = useState("");
     const [draftProducts, setDraftProducts] = useState([]);
 
-    const createdBy = JSON.parse(localStorage.getItem("user"));
-    const {data: warehouseDropdown} = useGlobalDropdownData({
-        path: CORE_DROPDOWNS.USER_WAREHOUSE.PATH,
-        utility: CORE_DROPDOWNS.USER_WAREHOUSE.UTILITY,
-        params: {id: createdBy?.id}
-    });
-
     const {data: categoryDropdown} = useGlobalDropdownData({
         path: CORE_DROPDOWNS.CATEGORY.PATH,
         utility: CORE_DROPDOWNS.CATEGORY.UTILITY,
@@ -95,9 +88,6 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
         requisitionForm.reset();
     };
 
-    const productQuantities = () => {
-    };
-
     const handleRecordFieldChange = (stockItemId, fieldName, fieldValue) => {
         setItems((previousRecords) =>
             previousRecords.map((recordItem) =>
@@ -106,7 +96,6 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                     : recordItem
             )
         );
-        // =============== end ===============
     };
 
     const handleDraftProducts = (data, quantity) => {
@@ -531,24 +520,6 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                             <Grid.Col span={8}>
                                 <Box gap="1" bg="var(--theme-tertiary-color-0)" px="sm">
                                     <Box>
-                                        <Grid align="center" gatter={"2"} columns={20} mt="0">
-                                            <Grid.Col span={6}>
-                                                <Text fz="sm">{t("Warehouse")}</Text>
-                                            </Grid.Col>
-                                            <Grid.Col span={14}>
-                                                <SelectForm
-                                                    form={requisitionForm}
-                                                    tooltip={t("ChooseWarehouse")}
-                                                    placeholder={t("ChooseWarehouse")}
-                                                    name="to_warehouse_id"
-                                                    id="to_warehouse_id"
-                                                    nextField="grn"
-                                                    required={true}
-                                                    value={requisitionForm.values.to_warehouse_id}
-                                                    dropdownValue={warehouseDropdown}
-                                                />
-                                            </Grid.Col>
-                                        </Grid>
 
                                         <Flex gap="les" mt={"xs"}>
                                             <Button

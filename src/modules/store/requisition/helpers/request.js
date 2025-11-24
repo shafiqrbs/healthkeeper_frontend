@@ -19,18 +19,13 @@ export const getInitialValues = (t) => {
 	};
 };
 
-export const getRequisitionInitialValues = (t) => {
+export const getRequisitionInitialValues = () => {
 	return {
 		initialValues: {
             notes: "",
-            to_warehouse_id: "",
 		},
 		validate: {
 
-            to_warehouse_id: (value) => {
-				if (!value) return t("ChooseWarehouse");
-				return null;
-			},
 		},
 	};
 };
