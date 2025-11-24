@@ -14,9 +14,6 @@ const Layout = () => {
 	const user = getLoggedInUser();
 	const networkStatus = useNetwork();
 	const { height } = useViewportSize();
-	// const { height } = useState(window.innerHeight);
-	// const height = useBrowserHeight();
-	// const scale = useMantineScale();
 	const location = useLocation();
 	const paramPath = location.pathname;
 	const { configData } = useConfigData();

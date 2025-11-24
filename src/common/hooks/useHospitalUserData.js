@@ -9,18 +9,15 @@ export default function useHospitalUserData() {
 	const user = getLoggedInUser();
 	const existHospitalUser = getLoggedInHospitalUser();
 	const url = `${CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.USER_INFO}/${user.id}`;
-	console.log(url);
 
 	const fetchData = async () => {
 		setError(null);
 		setData(null);
 		try {
 			if (existHospitalUser?.id) {
-				console.log("SKIPPED FETCH, USING LOCAL DATA");
 				setData(existHospitalUser);
 			} else {
 				const response = await getDataWithoutStore({ url });
-				console.log(response);
 				setData(response);
 				localStorage.setItem("hospital-user", JSON.stringify(response.data));
 			}
@@ -35,7 +32,6 @@ export default function useHospitalUserData() {
 
 	useEffect(() => {
 		if (!user?.id) return;
-		console.log("Yest it ran");
 		fetchData();
 	}, [user?.id]);
 

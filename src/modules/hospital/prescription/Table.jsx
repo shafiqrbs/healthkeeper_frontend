@@ -122,7 +122,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		filterParams: {
 			name: filterData?.name,
 			patient_mode: ["opd", "emergency"],
-			term: filterData.keywordSearch,
+			term: form.values.keywordSearch,
 			room_id: opdRoomId,
 			prescription_mode: processTab,
 			created: form.values.created,
