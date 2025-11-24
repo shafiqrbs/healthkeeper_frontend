@@ -684,7 +684,7 @@ export default function AddMedicineForm({
 								</Group>
 							</Grid.Col>
 							<Grid.Col span={2}>
-								<Tooltip label={t("CreateBookmark")}>
+								<Tooltip label={t("CreateTreatmentTemplate")}>
 									<ActionIcon
 										fw={"400"}
 										type="button"
