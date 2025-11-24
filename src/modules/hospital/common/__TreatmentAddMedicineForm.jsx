@@ -14,7 +14,6 @@ import { DURATION_TYPES, ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } 
 import inputCss from "@/assets/css/InputField.module.css";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import { deleteEntityData, getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
-import { setInsertType } from "@/app/store/core/crudSlice";
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
 import { useDispatch, useSelector } from "react-redux";
@@ -182,7 +181,6 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		if (deleteEntityData.fulfilled.match(res)) {
 			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
 			await refetchEntity();
-			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
 				color: ERROR_NOTIFICATION_COLOR,

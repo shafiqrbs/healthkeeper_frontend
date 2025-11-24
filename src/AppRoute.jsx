@@ -276,6 +276,23 @@ function AppRoute() {
 								</ProtectedRoute>
 							}
 						/>
+						<Route
+							path=":prescriptionId"
+							element={
+								<ProtectedRoute
+									roles={[
+										"role_domain",
+										"doctor_ipd",
+										"admin_administrator",
+										"doctor_opd",
+										"doctor_emergency",
+										"admin_doctor",
+									]}
+								>
+									<PrescriptionOpd />
+								</ProtectedRoute>
+							}
+						/>
 
 						{/* <Route
 							path=":prescriptionId"

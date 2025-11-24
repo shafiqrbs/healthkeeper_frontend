@@ -598,7 +598,7 @@ export default function PatientReport({
 			return (
 				<Box w="100%">
 					<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
-					<ScrollArea h={height + 20}>
+					<ScrollArea h={height - 20}>
 						<Stack gap="sm" my="les">
 							{currentSection.map((section) => (
 								<Box key={section.id}>

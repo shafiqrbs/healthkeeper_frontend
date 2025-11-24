@@ -1,9 +1,27 @@
-import { Box, Divider, Flex, Grid, Stack, Text, ThemeIcon } from "@mantine/core";
+import { Box, Divider, Flex, Grid, Stack, Switch, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import Vitals from "@hospital-components/tab-items/Vitals";
-import { IconSofa } from "@tabler/icons-react";
+import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { editEntityData } from "@/app/store/core/crudThunk";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import InputForm from "@components/form-builders/InputForm";
+import { IconWeight } from "@tabler/icons-react";
+
 export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
+	const dispatch = useDispatch();
 	const { t } = useTranslation();
+	const { prescriptionId } = useParams();
+
+	async function handleVitalChange(event) {
+		form.setValues({ is_vital: !!event.currentTarget.checked });
+		await dispatch(
+			editEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_VITAL}/${prescriptionId}`,
+				module: "prescription",
+			})
+		).unwrap();
+	}
+
 	return (
 		<Stack gap="3xs" bg="var(--theme-primary-color-1)" p="xs" pb={"3xs"} className="borderRadiusAll">
 			<Stack gap={0} ta="left">
@@ -100,6 +118,24 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 				</Grid>
 				{/*<Vitals form={form} onBlur={onBlur} />*/}
 			</Box>
+			<Flex gap="lg" justify="space-between">
+				<Switch
+					checked={form.values.is_vital}
+					onChange={handleVitalChange}
+					size="lg"
+					radius="xs"
+					color="red"
+					onLabel="Vital"
+					offLabel="Vital"
+				/>
+				<InputForm
+					styles={{ root: { width: "140px" } }}
+					form={form}
+					name="weight"
+					placeholder={t("Weight/KG")}
+					rightSection={<IconWeight size={16} />}
+				/>
+			</Flex>
 		</Stack>
 	);
 }

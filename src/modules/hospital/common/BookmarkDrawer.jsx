@@ -45,6 +45,15 @@ export default function BookmarkDrawer({ opened, close }) {
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_TREATMENT_MODE.UTILITY,
 	});
 
+	useEffect(() => {
+		if (getTreatmentModes?.length > 0) {
+			form.setFieldValue(
+				"treatment_mode_id",
+				getTreatmentModes.find((mode) => mode.slug === "opd-treatment")?.value
+			);
+		}
+	}, [getTreatmentModes]);
+
 	// =============== refetch data when refetching state changes ================
 	useEffect(() => {
 		dispatch(
@@ -95,31 +104,22 @@ export default function BookmarkDrawer({ opened, close }) {
 							<Flex
 								gap="les"
 								align="center"
+								w="100%"
 								component="form"
 								onSubmit={form.onSubmit(addTreatmentTemplate)}
 							>
-								<SelectForm
-									form={form}
-									tooltip={t("TreatmentTemplateForValidateMessage")}
-									placeholder={t("TreatmentTemplateFor")}
-									name="treatment_mode_id"
-									id="treatment_mode_id"
-									searchable="true"
-									nextField="name"
-									value={form.values.treatment_mode_id}
-									dropdownValue={getTreatmentModes}
-								/>
 								<InputForm
 									form={form}
-									placeholder="Add"
+									placeholder="AddTemplateName"
 									rightSectionPointerEvents="all"
 									nextField="EntityFormSubmit"
 									id="name"
 									name="name"
+									styles={{ root: { width: "100%" } }}
 									value={form.values.name}
 									onChange={(e) => form.setFieldValue("name", e.target.value)}
 								/>
-								<ActionIcon type="submit" id="EntityFormSubmit">
+								<ActionIcon size="lg" type="submit" id="EntityFormSubmit">
 									<IconPlus size={16} />
 								</ActionIcon>
 							</Flex>

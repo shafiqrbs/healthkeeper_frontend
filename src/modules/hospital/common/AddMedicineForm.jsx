@@ -14,7 +14,6 @@ import {
 	Tooltip,
 	ActionIcon,
 	Textarea,
-	Switch,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
@@ -46,7 +45,7 @@ import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
-import { editEntityData, getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
@@ -65,6 +64,7 @@ import {
 } from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import BookmarkDrawer from "./BookmarkDrawer";
+import finalPropsSelectorFactory from "react-redux/es/connect/selectorFactory";
 
 export default function AddMedicineForm({
 	module,
@@ -208,13 +208,24 @@ export default function AddMedicineForm({
 	};
 
 	// =============== handler for adding autocomplete option to temporary list ================
-	const handleAutocompleteOptionAdd = (value, data, type) => {
-		const selectedItem = data?.find((item) => item.name === value);
-		if (selectedItem) {
+	const handleAutocompleteOptionAdd = (value, data, type, custom = false) => {
+		if (!custom) {
+			const selectedItem = data?.find((item) => item.name === value);
+			if (selectedItem) {
+				const newItem = {
+					id: selectedItem.id || Date.now(),
+					name: selectedItem.name,
+					value: selectedItem.name,
+					type: type,
+					isEditable: true,
+				};
+				setTempEmergencyItems((prev) => [...prev, newItem]);
+			}
+		} else {
 			const newItem = {
-				id: selectedItem.id || Date.now(),
-				name: selectedItem.name,
-				value: selectedItem.name,
+				id: Date.now(),
+				name: value,
+				value: value,
 				type: type,
 				isEditable: true,
 			};
@@ -252,16 +263,6 @@ export default function AddMedicineForm({
 		// close drawer
 		closeExPrescription();
 	};
-
-	async function handleVitalChange(event) {
-		form.setValues({ is_vital: !!event.currentTarget.checked });
-		await dispatch(
-			editEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_VITAL}/${prescriptionId}`,
-				module: "prescription",
-			})
-		).unwrap();
-	}
 
 	// Add hotkey for save functionality
 	useHotkeys([
@@ -642,7 +643,6 @@ export default function AddMedicineForm({
 											type="submit"
 											variant="filled"
 											bg="var(--theme-secondary-color-6)"
-											size="compact-md"
 										>
 											{t("Add")}
 										</Button>
@@ -670,17 +670,24 @@ export default function AddMedicineForm({
 										withCheckIcon={false}
 										changeValue={populateMedicineData}
 									/>
-									<InputForm form={form} name="weight" placeholder={t("Weight/KG")} />
+									<Tooltip label={t("CreateBookmark")}>
+										<Button
+											leftSection={<IconBookmark size={16} />}
+											variant="filled"
+											bg="var(--theme-primary-color-6)"
+											onClick={openBookmark}
+										>
+											{t("Bookmark")}
+										</Button>
+									</Tooltip>
 								</Group>
 							</Grid.Col>
 						</Grid>
 						<Grid w="100%" columns={12} gutter="les" mt="4px">
-							<Grid.Col span={4}>
+							<Grid.Col span={6}>
 								<Button
 									leftSection={<IconPlus size={16} />}
 									w="100%"
-									size="xs"
-									fz="xs"
 									fw={"400"}
 									type="button"
 									color="var(--theme-primary-color-5)"
@@ -689,11 +696,9 @@ export default function AddMedicineForm({
 									{t("Dose")}
 								</Button>
 							</Grid.Col>
-							<Grid.Col span={5}>
+							<Grid.Col span={6}>
 								<Button
 									w="100%"
-									size="xs"
-									fz="xs"
 									fw={"400"}
 									type="button"
 									color="var(--theme-secondary-color-5)"
@@ -701,17 +706,6 @@ export default function AddMedicineForm({
 								>
 									{t("RxEmergency")}
 								</Button>
-							</Grid.Col>
-							<Grid.Col span={3}>
-								<Switch
-									checked={form.values.is_vital}
-									onChange={handleVitalChange}
-									size="lg"
-									radius="xs"
-									color="red"
-									onLabel="Vital"
-									offLabel="Vital"
-								/>
 							</Grid.Col>
 						</Grid>
 					</Grid.Col>
@@ -722,11 +716,6 @@ export default function AddMedicineForm({
 					{t("ListOfMedicines")}
 				</Text>
 				<Flex px="les" gap="les">
-					<Tooltip label={t("CreateBookmark")}>
-						<ActionIcon size="lg" bg="var(--theme-primary-color-6)" onClick={openBookmark}>
-							<IconBookmark size={22} />
-						</ActionIcon>
-					</Tooltip>
 					{prescriptionData?.data?.patient_referred_id && (
 						<Tooltip label="Referred">
 							<ActionIcon size="lg" bg="red" onClick={() => handleReferredViewPrescription()}>
@@ -973,7 +962,21 @@ export default function AddMedicineForm({
 								onBlur={handleFieldBlur}
 								rightSection={<IconCaretUpDownFilled size={16} />}
 							/>
-							<ActionIcon mt="24px" size="lg">
+							<ActionIcon
+								onClick={() => {
+									handleAutocompleteOptionAdd(
+										autocompleteValue,
+										emergencyData?.data,
+										"exEmergency",
+										true
+									);
+									setTimeout(() => {
+										setAutocompleteValue("");
+									}, 0);
+								}}
+								mt="24px"
+								size="lg"
+							>
 								<IconPlus size={16} />
 							</ActionIcon>
 						</Flex>

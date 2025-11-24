@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getDataWithoutStore } from "@/services/apiService";
 
 export default function useDataWithoutStore({ url, params = {}, headers = {} }) {
@@ -10,13 +10,7 @@ export default function useDataWithoutStore({ url, params = {}, headers = {} }) 
 	const stableParams = useMemo(() => params, [JSON.stringify(params)]);
 	const stableHeaders = useMemo(() => headers, [JSON.stringify(headers)]);
 
-	// prevent duplicate fetch calls (even in Strict Mode)
-	const hasFetchedRef = useRef(false);
-
 	const fetchData = useCallback(async () => {
-		if (hasFetchedRef.current) return; // prevent duplicate strict-mode calls
-		hasFetchedRef.current = true;
-
 		setIsLoading(true);
 		setError(null);
 
@@ -35,13 +29,11 @@ export default function useDataWithoutStore({ url, params = {}, headers = {} }) 
 	useEffect(() => {
 		if (!url || url.includes("undefined") || url.includes("null")) return;
 
-		hasFetchedRef.current = false; // reset for each new URL
 		fetchData();
 	}, [url, stableParams, stableHeaders, fetchData]);
 
 	// manual refetch (always allowed)
 	const refetch = useCallback(async () => {
-		hasFetchedRef.current = true; // avoid double run in strict mode
 		await fetchData();
 	}, [fetchData]);
 
