@@ -223,6 +223,8 @@ export default function AddMedicineForm({
 				setTempEmergencyItems((prev) => [...prev, newItem]);
 			}
 		} else {
+			if (!value?.trim())
+				return showNotificationComponent(t("Please enter a valid value"), "red", "lightgray", true, 700, true);
 			const newItem = {
 				id: Date.now(),
 				name: value,
@@ -279,29 +281,16 @@ export default function AddMedicineForm({
 			},
 		],
 		[
-			"alt+2",
-			() => {
-				handleHoldData();
-				showNotificationComponent(t("Prescription held successfully"), "blue", "lightgray", true, 700, true);
-			},
-		],
-		[
 			"alt+4",
 			() => {
 				printPrescription2A4();
-				showNotificationComponent(t("Prescription printed successfully"), "blue", "lightgray", true, 700, true);
-			},
-		],
-		[
-			"alt+s",
-			() => {
-				medicineIdRef.current?.focus();
+				showNotificationComponent(t("PrescriptionPrintedSuccessfully"), "blue", "lightgray", true, 700, true);
 			},
 		],
 		[
 			"alt+n",
 			() => {
-				genericRef.current?.focus();
+				medicineIdRef.current?.focus();
 			},
 		],
 	]);
@@ -509,6 +498,8 @@ export default function AddMedicineForm({
 		setTimeout(() => open(), 10);
 	};
 
+	console.log(medicineForm.values.medicine_dosage_id?.length);
+
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box
@@ -649,6 +640,10 @@ export default function AddMedicineForm({
 											withCheckIcon={false}
 										/>
 										<Button
+											disabled={
+												(!medicineForm.values?.medicine_id && !medicineForm.values?.generic) ||
+												!medicineForm.values?.medicine_dosage_id
+											}
 											leftSection={<IconPlus size={16} />}
 											type="submit"
 											variant="filled"
@@ -680,7 +675,6 @@ export default function AddMedicineForm({
 										withCheckIcon={false}
 										changeValue={populateMedicineData}
 									/>
-
 								</Group>
 							</Grid.Col>
 							<Grid.Col span={2}>
@@ -960,7 +954,7 @@ export default function AddMedicineForm({
 					<Box>
 						<Flex gap="sm" w="100%" align="center">
 							<Autocomplete
-								label="Enter Patient ID"
+								label="Enter Ex Emergency"
 								placeholder={t("EmergencyPrescription")}
 								data={emergencyData?.data?.map((p) => ({ value: p.name, label: p.name })) || []}
 								value={autocompleteValue}
@@ -998,7 +992,7 @@ export default function AddMedicineForm({
 						{tempEmergencyItems?.length > 0 && (
 							<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll" mt="2xs">
 								<Text fw={600} fz="sm" mt="xs" c="var(--theme-primary-color)">
-									{t("PendingItems")} ({tempEmergencyItems?.length})
+									{t("Particulars")} ({tempEmergencyItems?.length})
 								</Text>
 								{tempEmergencyItems?.map((item, idx) => (
 									<Flex

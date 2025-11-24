@@ -69,13 +69,12 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 				</Grid>
 			</Stack>
 			<Divider />
-			<Flex gap="lg" justify="space-between" bg={'white'}>
-
+			<Flex gap="lg" justify="space-between" bg={"white"}>
 				<InputForm
 					styles={{ root: { width: "180px" } }}
 					form={form}
 					name="weight"
-					size={'xs'}
+					size={"xs"}
 					placeholder={t("Weight/KG")}
 					rightSection={<IconWeight size={16} />}
 				/>
@@ -89,56 +88,56 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 					offLabel="Vital"
 				/>
 			</Flex>
-			<Box bg="var(--mantine-color-white)">
-				<Grid w="100%" columns={24} gutter={"2"} pl={"xs"}>
-					<Grid.Col span={4}>
-						<Text fz="xs">{t("B/P")}</Text>
-					</Grid.Col>
-					<Grid.Col span={6}>
-						<Text fz="xs" pl={"xs"}>
-							{prescriptionData?.data?.bp} {/*mm of HG*/}
-						</Text>
-					</Grid.Col>
-					<Grid.Col span={7} fz="xs" align={"right"}>
-						<Text fz="xs">{t("Pulse")}</Text>
-					</Grid.Col>
-					<Grid.Col span={7} fz="xs" pl={"xs"}>
-						{prescriptionData?.data?.pulse}
-						{/* Beat/Minute*/}
-					</Grid.Col>
-					<Grid.Col span={4}>
-						<Text fz="xs">{t("SatWithO2")}</Text>
-					</Grid.Col>
-					<Grid.Col span={6}>
-						<Text fz="xs" pl={"xs"}>
-							{prescriptionData?.data?.sat_with_O2} %
-						</Text>
-					</Grid.Col>
-					<Grid.Col span={7} fz="xs" align={"right"}>
-						<Text fz="xs">{t("SatWithoutO2")}</Text>
-					</Grid.Col>
-					<Grid.Col span={7} fz="xs" pl={"xs"}>
-						{prescriptionData?.data?.sat_without_O2} %
-					</Grid.Col>
-					<Grid.Col span={4}>
-						<Text fz="xs">{t("Temperature")}</Text>
-					</Grid.Col>
-					<Grid.Col span={6}>
-						<Text fz="xs" pl={"xs"}>
-							{prescriptionData?.data?.temperature} °F
-						</Text>
-					</Grid.Col>
-					<Grid.Col span={7} fz="xs" align={"right"}>
-						<Text fz="xs">{t("Respiration")}</Text>
-					</Grid.Col>
-					<Grid.Col span={7} fz="xs" pl={"xs"}>
-						{prescriptionData?.data?.respiration}
-						{/* Breath/Minute*/}
-					</Grid.Col>
-				</Grid>
-				{/*<Vitals form={form} onBlur={onBlur} />*/}
-			</Box>
-
+			{form.values.is_vital && (
+				<Box bg="var(--mantine-color-white)">
+					<Grid w="100%" columns={24} gutter={"2"} pl={"xs"}>
+						<Grid.Col span={4}>
+							<Text fz="xs">{t("B/P")}</Text>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text fz="xs" pl={"xs"}>
+								{prescriptionData?.data?.bp} {/*mm of HG*/}
+							</Text>
+						</Grid.Col>
+						<Grid.Col span={7} fz="xs" align={"right"}>
+							<Text fz="xs">{t("Pulse")}</Text>
+						</Grid.Col>
+						<Grid.Col span={7} fz="xs" pl={"xs"}>
+							{prescriptionData?.data?.pulse}
+							{/* Beat/Minute*/}
+						</Grid.Col>
+						<Grid.Col span={4}>
+							<Text fz="xs">{t("SatWithO2")}</Text>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text fz="xs" pl={"xs"}>
+								{prescriptionData?.data?.sat_with_O2} %
+							</Text>
+						</Grid.Col>
+						<Grid.Col span={7} fz="xs" align={"right"}>
+							<Text fz="xs">{t("SatWithoutO2")}</Text>
+						</Grid.Col>
+						<Grid.Col span={7} fz="xs" pl={"xs"}>
+							{prescriptionData?.data?.sat_without_O2} %
+						</Grid.Col>
+						<Grid.Col span={4}>
+							<Text fz="xs">{t("Temperature")}</Text>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Text fz="xs" pl={"xs"}>
+								{prescriptionData?.data?.temperature} °F
+							</Text>
+						</Grid.Col>
+						<Grid.Col span={7} fz="xs" align={"right"}>
+							<Text fz="xs">{t("Respiration")}</Text>
+						</Grid.Col>
+						<Grid.Col span={7} fz="xs" pl={"xs"}>
+							{prescriptionData?.data?.respiration}
+							{/* Breath/Minute*/}
+						</Grid.Col>
+					</Grid>
+				</Box>
+			)}
 		</Stack>
 	);
 }

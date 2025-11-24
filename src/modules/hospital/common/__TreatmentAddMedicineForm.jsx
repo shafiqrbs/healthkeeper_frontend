@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {Box, Button, Group, Select, Autocomplete, rem, ActionIcon, Grid} from "@mantine/core";
+import { Box, Button, Group, Select, Autocomplete, rem, ActionIcon, Grid } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconAlertCircle, IconPlus, IconTrashX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
@@ -184,7 +184,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		} else {
 			notifications.show({
 				color: ERROR_NOTIFICATION_COLOR,
-				title: t("Delete Failed"),
+				title: t("DeleteFailed"),
 				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
 			});
 		}
@@ -317,17 +317,17 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 							render: (item) => item?.medicine_dosage?.name,
 						},
 
-						 {
-						 	accessor: "medicine_dosage",
-						 	title: t("DosageBn"),
-						 	render: (item) => item?.medicine_dosage?.name_bn,
-						 },
+						{
+							accessor: "medicine_dosage",
+							title: t("DosageBn"),
+							render: (item) => item?.medicine_dosage?.name_bn,
+						},
 
-						 {
-						 	accessor: "medicine_dosage",
-						 	title: t("DosageQty"),
-						 	render: (item) => item?.medicine_dosage?.quantity,
-						 },
+						{
+							accessor: "medicine_dosage",
+							title: t("DosageQty"),
+							render: (item) => item?.medicine_dosage?.quantity,
+						},
 
 						{
 							accessor: "medicine_bymeal",
@@ -347,7 +347,8 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 							render: (item) => (
 								<Group justify="center">
 									<ActionIcon
-										variant="transparent" size="lg"
+										variant="transparent"
+										size="lg"
 										color="var(--theme-delete-color)"
 										onClick={() => handleDeleteSuccess(treatmentId, item.id)}
 									>

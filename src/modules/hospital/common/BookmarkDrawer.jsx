@@ -91,19 +91,18 @@ export default function BookmarkDrawer({ opened, close }) {
 			errorNotification(resultAction.payload.message, ERROR_NOTIFICATION_COLOR);
 		}
 		if (storeEntityData.fulfilled.match(resultAction)) {
-			form.reset();
+			form.setFieldValue("name", "");
 			dispatch(setRefetchData({ module, refetching: true }));
 			successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 		}
 	};
 
 	const handleTabClick = (tabItem) => {
-		// console.log(tabItem);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescriptionId}/${tabItem.id}`);
 	};
 
 	return (
-		<GlobalDrawer size="100%" opened={opened} close={close} title="Bookmark Medicine">
+		<GlobalDrawer size="100%" opened={opened} close={close} title="Treatment template for medicine">
 			<Grid columns={12} gutter="xs">
 				<Grid.Col span={3}>
 					<ScrollArea bg="var(--theme-tertiary-color-0)" mt="sm" h={mainAreaHeight - 80} scrollbars="y">

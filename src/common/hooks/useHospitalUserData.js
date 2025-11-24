@@ -31,8 +31,9 @@ export default function useHospitalUserData() {
 	};
 
 	useEffect(() => {
+		if (!user?.id) return;
 		fetchData();
-	}, []);
+	}, [user?.id]);
 
 	return { error, userInfo: data, refetch };
 }

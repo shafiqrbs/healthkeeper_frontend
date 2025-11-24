@@ -28,7 +28,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
-import { formatDate, getLoggedInHospitalUser, getUserRole } from "@/common/utils";
+import {capitalizeWords, formatDateTimeAmPm,formatDate, getLoggedInHospitalUser, getUserRole} from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -122,7 +122,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		filterParams: {
 			name: filterData?.name,
 			patient_mode: ["opd", "emergency"],
-			term: filterData.keywordSearch,
+			term: form.values.keywordSearch,
 			room_id: opdRoomId,
 			prescription_mode: processTab,
 			created: form.values.created,
@@ -314,48 +314,14 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					}}
 					columns={[
 						{
-							accessor: "index",
-							title: t("S/N"),
-							textAlignment: "center",
-							render: (_, index) => index + 1,
-						},
-						{
-							accessor: "created_at",
-							title: t("Created"),
-							textAlignment: "right",
-							sortable: true,
-							render: (item) => <Text fz="xs">{formatDate(item?.created_at)}</Text>,
-						},
-						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
-						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
-						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
-						{ accessor: "health_id", title: t("HealthID") },
-						{ accessor: "name", sortable: true, title: t("Name") },
-						{ accessor: "mobile", title: t("Mobile") },
-						{ accessor: "gender", sortable: true, title: t("Gender") },
-						{ accessor: "patient_payment_mode_name", sortable: true, title: t("Patient") },
-						{ accessor: "total", title: t("Total") },
-						{
-							accessor: "created_by",
-							title: t("CreatedBy"),
-							render: (item) => item?.created_by || "N/A",
-						},
-						{
 							accessor: "action",
-							title: t("Action"),
+							title:'',
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => {
 								return (
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{formatDate(new Date()) === formatDate(values?.created_at) && (
-											<ActionIcon
-												variant="transparent"
-												onClick={(e) => patientUpdate(e, values?.id)}
-											>
-												<IconPencil size={18} color="var(--theme-success-color)" />
-											</ActionIcon>
-										)}
+
 										{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
 											<>
 												{values?.prescription_id &&
@@ -403,6 +369,59 @@ export default function Table({ module, height, closeTable, availableClose = fal
 													</Button>
 												) : null}
 											</>
+										)}
+									</Group>
+								);
+							},
+						},
+						{
+							accessor: "index",
+							title: t("S/N"),
+							textAlignment: "center",
+							render: (_, index) => index + 1,
+						},
+						{
+							accessor: "created_at",
+							title: t("Created"),
+							textAlignment: "right",
+							sortable: true,
+							render: (item) => <Text fz="xs">{formatDateTimeAmPm(item?.created_at)}</Text>,
+						},
+						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
+						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
+						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
+						{ accessor: "health_id", title: t("HealthID") },
+						{ accessor: "name", sortable: true, title: t("Name") },
+						{ accessor: "mobile", title: t("Mobile") },
+						{ accessor: "gender", sortable: true, title: t("Gender") },
+						{ accessor: "patient_payment_mode_name", sortable: true, title: t("Patient") },
+						{ accessor: "total", title: t("Total") },
+						{
+							accessor: "doctor_name",
+							title: t("Doctor"),
+							render: (item) => item?.doctor_name,
+						},
+						{
+							accessor: "referred_mode",
+							title: t("RefMode"),
+							render: (item) => capitalizeWords(item?.referred_mode),
+						},
+						{
+							accessor: "action",
+							title: t("#"),
+							textAlign: "right",
+							titleClassName: "title-right",
+							render: (values) => {
+								return (
+									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+										{formatDate(new Date()) === formatDate(values?.created_at) && (
+											<ActionIcon
+												variant="transparent"
+												onClick={(e) => patientUpdate(e, values?.id)}
+											>
+												<IconPencil size={18} color="var(--theme-success-color)" />
+
+											</ActionIcon>
 										)}
 
 										<Menu
