@@ -91,7 +91,7 @@ export default function BookmarkDrawer({ opened, close }) {
 			errorNotification(resultAction.payload.message, ERROR_NOTIFICATION_COLOR);
 		}
 		if (storeEntityData.fulfilled.match(resultAction)) {
-			form.reset();
+			form.setFieldValue("name", "");
 			dispatch(setRefetchData({ module, refetching: true }));
 			successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 		}

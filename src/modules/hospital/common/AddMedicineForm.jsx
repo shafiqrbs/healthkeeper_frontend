@@ -293,13 +293,13 @@ export default function AddMedicineForm({
 			},
 		],
 		[
-			"alt+s",
+			"alt+n",
 			() => {
 				medicineIdRef.current?.focus();
 			},
 		],
 		[
-			"alt+n",
+			"alt+g",
 			() => {
 				genericRef.current?.focus();
 			},
@@ -680,7 +680,6 @@ export default function AddMedicineForm({
 										withCheckIcon={false}
 										changeValue={populateMedicineData}
 									/>
-
 								</Group>
 							</Grid.Col>
 							<Grid.Col span={2}>
