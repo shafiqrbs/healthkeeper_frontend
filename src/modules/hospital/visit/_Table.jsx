@@ -85,9 +85,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			room_id: "",
 		},
 	});
-
-	console.log(form.values);
-
 	const handlePos = useReactToPrint({
 		content: () => posRef.current,
 	});

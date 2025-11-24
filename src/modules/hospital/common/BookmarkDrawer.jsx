@@ -102,7 +102,7 @@ export default function BookmarkDrawer({ opened, close }) {
 	};
 
 	return (
-		<GlobalDrawer size="100%" opened={opened} close={close} title="Bookmark Medicine">
+		<GlobalDrawer size="100%" opened={opened} close={close} title="Treatment template for medicine">
 			<Grid columns={12} gutter="xs">
 				<Grid.Col span={3}>
 					<ScrollArea bg="var(--theme-tertiary-color-0)" mt="sm" h={mainAreaHeight - 80} scrollbars="y">
