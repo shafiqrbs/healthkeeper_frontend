@@ -6,9 +6,11 @@ import Footer from "./Footer";
 import useConfigData from "@hooks/config-data/useConfigData";
 import { getLoggedInUser } from "@/common/utils";
 import HomeIndex from "@/modules/home";
+import useHospitalUserData from "@hooks/useHospitalUserData";
 // import { useBrowserHeight } from "@hooks/userBrowserHeight";
 
 const Layout = () => {
+	useHospitalUserData();
 	const user = getLoggedInUser();
 	const networkStatus = useNetwork();
 	const { height } = useViewportSize();

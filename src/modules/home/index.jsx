@@ -2,7 +2,7 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import { Box, Flex } from "@mantine/core";
 import Navigation from "@/common/components/layout/Navigation";
 import HomeSkeleton from "@components/skeletons/HomeSkeleton";
-import {getLoggedInUser, getUserRole} from "@utils/index";
+import { getUserRole } from "@utils/index";
 import OperatorBoard from "@/modules/home/operator/OperatorBoard";
 import AdminBoard from "./operator/AdminBoard";
 
@@ -11,9 +11,7 @@ const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_em
 
 export default function Index({ height }) {
 	const progress = useGetLoadingProgress();
-	const user = getLoggedInUser();
 	const userRoles = getUserRole();
-	console.log(user)
 
 	return (
 		<>
@@ -25,8 +23,12 @@ export default function Index({ height }) {
 						<Navigation module="home" mainAreaHeight={height} />
 						{/* ================= carousel part ================== */}
 						<Box w="100%" mainAreaHeight={height}>
-							{userRoles.some((role) => ALLOWED_OPERATOR_ROLES.includes(role)) && <OperatorBoard height={height} />}
-							{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && <AdminBoard height={height} />}
+							{userRoles.some((role) => ALLOWED_OPERATOR_ROLES.includes(role)) && (
+								<OperatorBoard height={height} />
+							)}
+							{userRoles.some((role) => ALLOWED_ADMIN_ROLES.includes(role)) && (
+								<AdminBoard height={height} />
+							)}
 						</Box>
 					</Flex>
 				</Box>

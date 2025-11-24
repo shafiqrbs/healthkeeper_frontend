@@ -279,29 +279,16 @@ export default function AddMedicineForm({
 			},
 		],
 		[
-			"alt+2",
-			() => {
-				handleHoldData();
-				showNotificationComponent(t("Prescription held successfully"), "blue", "lightgray", true, 700, true);
-			},
-		],
-		[
 			"alt+4",
 			() => {
 				printPrescription2A4();
-				showNotificationComponent(t("Prescription printed successfully"), "blue", "lightgray", true, 700, true);
+				showNotificationComponent(t("PrescriptionPrintedSuccessfully"), "blue", "lightgray", true, 700, true);
 			},
 		],
 		[
 			"alt+n",
 			() => {
 				medicineIdRef.current?.focus();
-			},
-		],
-		[
-			"alt+g",
-			() => {
-				genericRef.current?.focus();
 			},
 		],
 	]);

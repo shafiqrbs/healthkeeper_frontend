@@ -98,7 +98,6 @@ export default function BookmarkDrawer({ opened, close }) {
 	};
 
 	const handleTabClick = (tabItem) => {
-		// console.log(tabItem);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescriptionId}/${tabItem.id}`);
 	};
 
