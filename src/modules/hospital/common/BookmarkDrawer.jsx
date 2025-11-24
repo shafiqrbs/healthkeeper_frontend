@@ -13,7 +13,6 @@ import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constant
 import { errorNotification } from "@components/notification/errorNotification";
 import { MODULES_CORE } from "@/constants";
 import { setRefetchData } from "@/app/store/core/crudSlice";
-import SelectForm from "@components/form-builders/SelectForm";
 import InputForm from "@components/form-builders/InputForm";
 import { useForm } from "@mantine/form";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
@@ -36,6 +35,14 @@ export default function BookmarkDrawer({ opened, close }) {
 			particular_type_master_id: 24,
 			treatment_mode_id: "",
 			name: "",
+		},
+		validate: {
+			name: (value) => {
+				if (value?.trim()?.length === 0) {
+					return t("NameIsRequired");
+				}
+				return null;
+			},
 		},
 	});
 
@@ -110,11 +117,12 @@ export default function BookmarkDrawer({ opened, close }) {
 							>
 								<InputForm
 									form={form}
-									placeholder="AddTemplateName"
+									placeholder={t("AddTemplateName")}
 									rightSectionPointerEvents="all"
 									nextField="EntityFormSubmit"
 									id="name"
 									name="name"
+									tooltip={t("TemplateNameIsRequired")}
 									styles={{ root: { width: "100%" } }}
 									value={form.values.name}
 									onChange={(e) => form.setFieldValue("name", e.target.value)}
@@ -156,9 +164,21 @@ export default function BookmarkDrawer({ opened, close }) {
 					</ScrollArea>
 				</Grid.Col>
 				<Grid.Col span={9}>
-					<Box mt="sm">
-						<TreatmentAddMedicineForm medicines={medicines} module={module} setMedicines={setMedicines} />
-					</Box>
+					{treatmentId ? (
+						<Box mt="sm">
+							<TreatmentAddMedicineForm
+								medicines={medicines}
+								module={module}
+								setMedicines={setMedicines}
+							/>
+						</Box>
+					) : (
+						<Flex h="100%" w="100%" ta="center" align="center" justify="center" mt="sm">
+							<Text fz="sm" c="var(--theme-secondary-color)">
+								{t("NoTreatmentSelected")}
+							</Text>
+						</Flex>
+					)}
 				</Grid.Col>
 			</Grid>
 		</GlobalDrawer>

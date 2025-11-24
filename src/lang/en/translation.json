@@ -1591,5 +1591,7 @@
 	"NoPendingRoomTransfer": "No pending room transfer",
 	"RoomToBeTransferred": "Room to be transferred",
 	"ApproveThisWaiver": "Approve This Waiver",
-	"Qty": "Quantity"
+	"Qty": "Quantity",
+	"TemplateNameIsRequired": "Template name is required",
+	"AddTemplateName": "Add Template Name"
 }
