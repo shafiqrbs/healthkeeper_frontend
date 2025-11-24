@@ -69,12 +69,13 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 				</Grid>
 			</Stack>
 			<Divider />
-			<Flex gap="lg" justify="space-between">
+			<Flex gap="lg" justify="space-between" bg={'white'}>
 
 				<InputForm
 					styles={{ root: { width: "180px" } }}
 					form={form}
 					name="weight"
+					size={'xs'}
 					placeholder={t("Weight/KG")}
 					rightSection={<IconWeight size={16} />}
 				/>

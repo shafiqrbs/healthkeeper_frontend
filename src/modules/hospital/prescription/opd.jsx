@@ -147,15 +147,14 @@ export default function Index() {
 					<Flex w="100%" gap="sm" ref={ref}>
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid columns={24} gutter="les">
-							<Grid.Col span={16}>
+							<Grid.Col span={17}>
 								<BaseTabs
-									tabWidth="145px"
 									tabValue={tabValue}
 									setTabValue={setTabValue}
 									tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
 								/>
 							</Grid.Col>
-							<Grid.Col span={8}>
+							<Grid.Col span={7}>
 								<Flex mt={"xs"} gap="md" justify="flex-end" align="center" wrap="wrap">
 									<PatientReferredAction form={form} invoiceId={prescriptionData?.data?.invoice_id} />
 									<Button
