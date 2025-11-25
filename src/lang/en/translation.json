@@ -1595,5 +1595,6 @@
 	"TemplateNameIsRequired": "Template name is required",
 	"AddTemplateName": "Add Template Name",
 	"MedicinePlaceholder": "Select Medicine (alt+n)",
-	"GenericNamePlaceholder": "Generic Name"
+	"GenericNamePlaceholder": "Generic Name",
+	"EmergencyPrescription": "Emergency Prescription"
 }

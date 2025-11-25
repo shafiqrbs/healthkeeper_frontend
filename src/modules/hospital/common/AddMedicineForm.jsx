@@ -944,6 +944,7 @@ export default function AddMedicineForm({
 				</>
 			)}
 			{/* {printData && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />} */}
+
 			<GlobalDrawer
 				opened={openedExPrescription}
 				close={closeExPrescription}

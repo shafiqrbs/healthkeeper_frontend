@@ -27,6 +27,7 @@ import {
 	IconTrash,
 	IconCaretUpDownFilled,
 	IconMedicineSyrup,
+	IconBookmark,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "./helpers/request";
@@ -56,6 +57,7 @@ import HistoryPrescription from "./HistoryPrescription";
 import DischargeA4BN from "@hospital-components/print-formats/discharge/DischargeA4BN";
 import { appendDosageValueToForm, appendGeneralValuesToForm, appendMealValueToForm } from "@utils/prescription";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
+import BookmarkDrawer from "@hospital-components/BookmarkDrawer";
 
 const module = MODULES.DISCHARGE;
 
@@ -81,6 +83,7 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
+	const [openedBookmark, { open: openBookmark, close: closeBookmark }] = useDisclosure(false);
 	const [printData, setPrintData] = useState(null);
 	const adviceData = useSelector((state) => state.crud.advice.data);
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
@@ -131,7 +134,7 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
 				params: {
 					particular_type: "treatment-template",
-					treatment_mode: "opd-treatment",
+					treatment_mode: "ipd-treatment",
 				},
 				module: "treatment",
 			})
@@ -170,13 +173,26 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 	}, [printData]);
 
 	// =============== handler for adding autocomplete option to temporary list ================
-	const handleAutocompleteOptionAdd = (value, data, type) => {
-		const selectedItem = data?.find((item) => item.name === value);
-		if (selectedItem) {
+	const handleAutocompleteOptionAdd = (value, data, type, custom = false) => {
+		if (!custom) {
+			const selectedItem = data?.find((item) => item.name === value);
+			if (selectedItem) {
+				const newItem = {
+					id: selectedItem.id || Date.now(),
+					name: selectedItem.name,
+					value: selectedItem.name,
+					type: type,
+					isEditable: true,
+				};
+				setTempEmergencyItems((prev) => [...prev, newItem]);
+			}
+		} else {
+			if (!value?.trim())
+				return showNotificationComponent(t("Please enter a valid value"), "red", "lightgray", true, 700, true);
 			const newItem = {
-				id: selectedItem.id || Date.now(),
-				name: selectedItem.name,
-				value: selectedItem.name,
+				id: Date.now(),
+				name: value,
+				value: value,
 				type: type,
 				isEditable: true,
 			};
@@ -518,7 +534,6 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 											type="submit"
 											variant="filled"
 											bg="var(--theme-secondary-color-6)"
-											size="compact-md"
 										>
 											{t("Add")}
 										</Button>
@@ -528,7 +543,7 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 						</Group>
 					</Grid.Col>
 					<Grid.Col span={6} bg="var(--mantine-color-white)">
-						<Grid w="100%" columns={12} gutter="3xs">
+						{/* <Grid w="100%" columns={12} gutter="3xs">
 							<Grid.Col span={12}>
 								<Group grow gap="les">
 									<SelectForm
@@ -549,8 +564,41 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 									/>
 								</Group>
 							</Grid.Col>
+						</Grid> */}
+
+						<Grid w="100%" columns={12} gutter="les">
+							<Grid.Col span={10}>
+								<SelectForm
+									form={medicineForm}
+									label=""
+									id="treatments"
+									name="treatments"
+									dropdownValue={treatmentData?.data?.map((item) => ({
+										label: item.name,
+										value: item.id?.toString(),
+									}))}
+									value={medicineForm.values.treatments}
+									placeholder={t("TreatmentTemplate")}
+									tooltip={t("TreatmentTemplate")}
+									withCheckIcon={false}
+									changeValue={populateMedicineData}
+								/>
+							</Grid.Col>
+							<Grid.Col span={2}>
+								<Tooltip label={t("CreateTreatmentTemplate")}>
+									<ActionIcon
+										fw={"400"}
+										type="button"
+										size="lg"
+										color="var(--theme-primary-color-5)"
+										onClick={openBookmark}
+									>
+										<IconBookmark size={16} />
+									</ActionIcon>
+								</Tooltip>
+							</Grid.Col>
 						</Grid>
-						<Grid w="100%" columns={12} gutter="les" mt="4px">
+						{/* <Grid w="100%" columns={12} gutter="les" mt="4px">
 							<Grid.Col span={6}>
 								<Button
 									leftSection={<IconPlus size={16} />}
@@ -575,6 +623,31 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 								>
 									{t("RxEmergency")}
 								</Button>
+							</Grid.Col>
+						</Grid> */}
+						<Grid w="100%" columns={12} gutter="les" mt="4px">
+							<Grid.Col span={10}>
+								<Button
+									leftSection={<IconPlus size={16} />}
+									w="100%"
+									fw={"400"}
+									type="button"
+									color="var(--theme-primary-color-5)"
+									onClick={openDosageForm}
+								>
+									{t("Dose")}
+								</Button>
+							</Grid.Col>
+							<Grid.Col span={2}>
+								<ActionIcon
+									fw={"400"}
+									type="button"
+									size="lg"
+									color="var(--theme-secondary-color-5)"
+									onClick={openExPrescription}
+								>
+									{t("Rx")}
+								</ActionIcon>
 							</Grid.Col>
 						</Grid>
 					</Grid.Col>
@@ -815,6 +888,7 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 				</>
 			)}
 			{printData && <DischargeA4BN ref={dischargeA4Ref} data={printData} />}
+
 			<GlobalDrawer
 				opened={openedExPrescription}
 				close={closeExPrescription}
@@ -823,26 +897,46 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 			>
 				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
 					<Box>
-						<Autocomplete
-							label="Enter Patient ID"
-							placeholder={t("EmergencyPrescription")}
-							data={emergencyData?.data?.map((p) => ({ value: p.name, label: p.name })) || []}
-							value={autocompleteValue}
-							onChange={setAutocompleteValue}
-							onOptionSubmit={(value) => {
-								handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
-								setTimeout(() => {
-									setAutocompleteValue("");
-								}, 0);
-							}}
-							classNames={inputCss}
-							rightSection={<IconCaretUpDownFilled size={16} />}
-						/>
+						<Flex gap="sm" w="100%" align="center">
+							<Autocomplete
+								label="Enter Ex Emergency"
+								placeholder={t("EmergencyPrescription")}
+								data={emergencyData?.data?.map((p) => ({ value: p.name, label: p.name })) || []}
+								value={autocompleteValue}
+								onChange={setAutocompleteValue}
+								onOptionSubmit={(value) => {
+									handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
+									setTimeout(() => {
+										setAutocompleteValue("");
+									}, 0);
+								}}
+								w="100%"
+								classNames={inputCss}
+								rightSection={<IconCaretUpDownFilled size={16} />}
+							/>
+							<ActionIcon
+								onClick={() => {
+									handleAutocompleteOptionAdd(
+										autocompleteValue,
+										emergencyData?.data,
+										"exEmergency",
+										true
+									);
+									setTimeout(() => {
+										setAutocompleteValue("");
+									}, 0);
+								}}
+								mt="24px"
+								size="lg"
+							>
+								<IconPlus size={16} />
+							</ActionIcon>
+						</Flex>
 						{/* =============== temporary items list with editable text inputs ================ */}
 						{tempEmergencyItems?.length > 0 && (
 							<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll" mt="2xs">
 								<Text fw={600} fz="sm" mt="xs" c="var(--theme-primary-color)">
-									{t("PendingItems")} ({tempEmergencyItems?.length})
+									{t("Particulars")} ({tempEmergencyItems?.length})
 								</Text>
 								{tempEmergencyItems?.map((item, idx) => (
 									<Flex
@@ -893,6 +987,7 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 					</Flex>
 				</Stack>
 			</GlobalDrawer>
+
 			{/* prescription preview */}
 			{dischargeId && (
 				<DetailsDrawer
@@ -916,6 +1011,8 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 			{/* <ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} /> */}
 
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
+
+			<BookmarkDrawer opened={openedBookmark} close={closeBookmark} type="ipd-treatment" />
 		</Box>
 	);
 }

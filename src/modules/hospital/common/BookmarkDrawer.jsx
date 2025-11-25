@@ -20,7 +20,7 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 
 const module = MODULES_CORE.TREATMENT_TEMPLATES;
 
-export default function BookmarkDrawer({ opened, close }) {
+export default function BookmarkDrawer({ opened, close, type = "opd-treatment" }) {
 	const { prescriptionId, treatmentId } = useParams();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
@@ -54,10 +54,7 @@ export default function BookmarkDrawer({ opened, close }) {
 
 	useEffect(() => {
 		if (getTreatmentModes?.length > 0) {
-			form.setFieldValue(
-				"treatment_mode_id",
-				getTreatmentModes.find((mode) => mode.slug === "opd-treatment")?.value
-			);
+			form.setFieldValue("treatment_mode_id", getTreatmentModes.find((mode) => mode.slug === type)?.value);
 		}
 	}, [getTreatmentModes]);
 
@@ -68,7 +65,7 @@ export default function BookmarkDrawer({ opened, close }) {
 				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX_USER,
 				params: {
 					particular_type: "treatment-template",
-					treatment_mode: "opd-treatment",
+					treatment_mode: type,
 				},
 				module: "treatment",
 			})
