@@ -221,11 +221,6 @@ export default function __Form({ form, requisitionForm, items, setItems, onSave 
                                 title: t("MedicineName"),
                             },
                             {
-                                accessor: "request_quantity",
-                                title: t("Quantity"),
-                                render: (item) => item.request_quantity,
-                            },
-                            {
                                 accessor: "purchase_item_id",
                                 title: t("BatchItem"),
                                 render: (item) => (
@@ -248,6 +243,11 @@ export default function __Form({ form, requisitionForm, items, setItems, onSave 
                                         t={t}
                                     />
                                 ),
+                            },
+                            {
+                                accessor: "request_quantity",
+                                title: t("RequestQuantity"),
+                                render: (item) => item.request_quantity,
                             },
                         ]}
                         textSelectionDisabled

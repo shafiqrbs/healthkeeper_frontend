@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, CloseButton} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button} from "@mantine/core";
 import {useTranslation} from "react-i18next";
 import {
     IconTrashX,
@@ -6,8 +6,7 @@ import {
     IconEdit,
     IconEye,
     IconChevronUp,
-    IconSelector,
-    IconDirectionSignFilled
+    IconSelector
 } from "@tabler/icons-react";
 import {DataTable} from "mantine-datatable";
 import {useDispatch, useSelector} from "react-redux";
@@ -24,11 +23,11 @@ import {deleteEntityData, editEntityData, showEntityData} from "@/app/store/core
 import {setInsertType, setRefetchData} from "@/app/store/core/crudSlice.js";
 import {ERROR_NOTIFICATION_COLOR} from "@/constants/index.js";
 import {deleteNotification} from "@components/notification/deleteNotification";
-import React, {useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import {successNotification} from "@components/notification/successNotification.jsx";
 import {errorNotification} from "@components/notification/errorNotification.jsx";
 import {getUserRole} from "@utils/index";
+import {useState} from "react";
 
 const PER_PAGE = 50;
 
@@ -45,7 +44,6 @@ export default function _Table({module}) {
     const userRoles = getUserRole();
     const ALLOWED_PHARMACIST_ROLES = ["pharmacy_doctor","pharmacy_pharmacist","admin_administrator"];
     const canApprove = userRoles.some((role) => ALLOWED_PHARMACIST_ROLES.includes(role));
-    console.log(userRoles);
     // for infinity table data scroll, call the hook
     const {
         scrollRef,
@@ -70,69 +68,6 @@ export default function _Table({module}) {
         navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.UPDATE}/${id}`);
     };
 
-    const handleWorkOrderApproved = (id) => {
-        modals.openConfirmModal({
-            title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
-            children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
-            labels: {confirm: "Confirm", cancel: "Cancel"},
-            confirmProps: {color: "var(--theme-delete-color)"},
-            onCancel: () => console.info("Cancel"),
-            onConfirm: () => handleConfirmApproved(id),
-        });
-    }
-
-    const handleConfirmApproved = async (id) => {
-        try {
-            const value = {
-                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.APPROVE}/${id}`,
-                module,
-            };
-
-            const resultAction = await dispatch(showEntityData(value));
-            if (showEntityData.fulfilled.match(resultAction)) {
-                if (resultAction.payload.data.status === 200) {
-                    successNotification(resultAction.payload.data.message);
-                }
-            }
-
-        } catch (error) {
-            errorNotification("Error updating purchase config:" + error.message);
-        } finally {
-            refetchAll()
-        }
-    }
-
-    const handleWorkOrderReceived = (id) => {
-        modals.openConfirmModal({
-            title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
-            children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
-            labels: {confirm: "Confirm", cancel: "Cancel"},
-            confirmProps: {color: "var(--theme-delete-color)"},
-            onCancel: () => console.info("Cancel"),
-            onConfirm: () => handleConfirmReceived(id),
-        });
-    }
-
-    const handleConfirmReceived = async (id) => {
-        try {
-            const value = {
-                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.RECEIVE}/${id}`,
-                module,
-            };
-
-            const resultAction = await dispatch(showEntityData(value));
-            if (showEntityData.fulfilled.match(resultAction)) {
-                if (resultAction.payload.data.status === 200) {
-                    successNotification(resultAction.payload.data.message);
-                }
-            }
-
-        } catch (error) {
-            errorNotification("Error updating purchase config:" + error.message);
-        } finally {
-            refetchAll()
-        }
-    }
 
     const handleDelete = (id) => {
         modals.openConfirmModal({
@@ -240,45 +175,10 @@ export default function _Table({module}) {
                             render: (values) => (
                                 <Group gap={4} justify="right" wrap="nowrap">
                                     <Button.Group>
-                                       {/* {
-                                            values.process === 'Created' && !values.approved_by_id && canApprove &&
-                                            <Button
-                                                onClick={() => handleWorkOrderApproved(values.id)}
-                                                variant="filled"
-                                                c="white"
-                                                size="xs"
-                                                radius="es"
-                                                leftSection={<IconDirectionSignFilled size={16}/>}
-                                                className="border-right-radius-none"
-                                                bg="var(--theme-primary-color-6)"
-
-                                            >
-                                                {t("Approved")}
-                                            </Button>
-                                        }
-
-                                        {
-                                            values.process === 'Approved' && values.approved_by_id && canApprove &&
-                                            <Button
-                                                onClick={() => handleWorkOrderReceived(values.id)}
-                                                variant="filled"
-                                                c="white"
-                                                size="xs"
-                                                radius="es"
-                                                leftSection={<IconDirectionSignFilled size={16}/>}
-                                                className="border-right-radius-none"
-                                                bg="var(--theme-primary-color-6)"
-
-                                            >
-                                                {t("Received")}
-                                            </Button>
-                                        }*/}
                                         {values.process !== 'Received' && !values.received_by_id &&
-
                                             <Button
                                             onClick={() => {
                                             handleEntityEdit(values.id);
-                                            open();
                                         }}
                                             variant="filled"
                                             c="white"

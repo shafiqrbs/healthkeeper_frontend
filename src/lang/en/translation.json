@@ -1596,5 +1596,6 @@
 	"AddTemplateName": "Add Template Name",
 	"MedicinePlaceholder": "Select Medicine (alt+n)",
 	"GenericNamePlaceholder": "Generic Name",
-	"EmergencyPrescription": "Emergency Prescription"
+	"EmergencyPrescription": "Emergency Prescription",
+    "PleaseFillAllDates" : "All expire field is required."
 }

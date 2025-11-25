@@ -42,6 +42,7 @@ import genericClass from "@assets/css/Generic.module.css";
 import { MODULES_PHARMACY } from "@/constants";
 import DataTableFooter from "@components/tables/DataTableFooter.jsx";
 import {useSelector} from "react-redux";
+import {notifications} from "@mantine/notifications";
 
 const module = MODULES_PHARMACY.STOCK;
 
@@ -166,7 +167,16 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		setProducts(records?.filter((product) => product?.name?.toLowerCase()?.includes(value?.toLowerCase())));
 	}, 300);
 
-	return (
+    const isAllDatesValid = useMemo(() => {
+        if (!items || items.length === 0) return false;
+
+        return items.every(
+            (item) => item.production_date && item.expired_date
+        );
+    }, [items]);
+
+
+    return (
 		<Grid columns={24} gutter={{ base: 8 }}>
 			<Grid.Col span={8}>
 				<>
@@ -615,7 +625,22 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 											>
 												{t("Reset")}
 											</Button>
-											<Button
+                                            <Tooltip label={t("PleaseFillAllDates")} disabled={isAllDatesValid}>
+                                                <Button
+                                                    onClick={onSave}
+                                                    size="xs"
+                                                    leftSection={<IconDeviceFloppy size={20} />}
+                                                    type="submit"
+                                                    bg="var(--theme-primary-color-6)"
+                                                    color="white"
+                                                    w="200px"
+                                                    disabled={!isAllDatesValid}
+                                                >
+                                                    {t("Save")}
+                                                </Button>
+                                            </Tooltip>
+
+                                            {/*<Button
 												onClick={onSave}
 												size="xs"
 												leftSection={<IconDeviceFloppy size={20} />}
@@ -625,7 +650,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 												w="200px"
 											>
 												{t("Save")}
-											</Button>
+											</Button>*/}
 										</Flex>
 									</Box>
 								</Box>

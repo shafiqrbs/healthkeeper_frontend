@@ -20,7 +20,6 @@ export default function __ViewDrawer({viewDrawer, setViewDrawer,height, module,r
     const userRoles = getUserRole();
     const ALLOWED_PHARMACIST_ROLES = ["pharmacy_doctor","admin_administrator"];
     const canApprove = userRoles.some((role) => ALLOWED_PHARMACIST_ROLES.includes(role));
-    console.log(userRoles);
     const closeDrawer = () => {
         setViewDrawer(false);
     };
@@ -256,7 +255,7 @@ export default function __ViewDrawer({viewDrawer, setViewDrawer,height, module,r
                                 radius="es"
                                 leftSection={<IconDeviceFloppy size={16}/>}
                             >
-                                {t("Issue")}
+                                {t("Receive")}
                             </Button>
                             }
                         </Flex>

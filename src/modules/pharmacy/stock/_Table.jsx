@@ -1,3 +1,4 @@
+
 import { Box, Flex } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconChevronUp, IconSelector } from "@tabler/icons-react";
@@ -5,75 +6,70 @@ import { DataTable } from "mantine-datatable";
 import { useSelector } from "react-redux";
 import { useOutletContext } from "react-router-dom";
 import KeywordSearch from "@modules/filter/KeywordSearch";
-import DataTableFooter from "@components/tables/DataTableFooter";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import UseInfiniteTableScrollWithExtraData from "@hooks/useInfiniteTableScrollWithStockItemMatrix.js";
+import usePaginatedTableWithStockItemMatrix from "@hooks/usePaginatedTableWithStockItemMatrix.js";
 
 const PER_PAGE = 50;
 
 export default function _Table({ module }) {
     const { t } = useTranslation();
     const { mainAreaHeight } = useOutletContext();
-    const height = mainAreaHeight - 48;
+    const height = mainAreaHeight - 100;
 
     const searchKeyword = useSelector((state) => state.crud.searchKeyword);
-    const filterData = useSelector((state) => state.crud[module].filterData);
-    const listData = useSelector((state) => state.crud[module].data);
+    const filterData = useSelector((state) => state.crud[module]?.filterData);
+    const listData = useSelector((state) => state.crud[module]?.data);
 
-    // Infinite scroll logic
     const {
-        scrollRef,
+        page,
         records,
+        total,
         fetching,
         sortStatus,
         setSortStatus,
-        handleScrollToBottom,
-    } = UseInfiniteTableScrollWithExtraData(
-        {
-            module,
-            fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.STOCK_MATRIX,
-            filterParams: {
-                name: filterData?.name,
-                term: searchKeyword,
-            },
-            perPage: PER_PAGE,
-            sortByKey: "name",
-        }
-    );
+        handlePageChange,
+        perPage,
+    } = usePaginatedTableWithStockItemMatrix({
+        module,
+        fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.STOCK_MATRIX,
+        filterParams: {
+            name: filterData?.name,
+            term: searchKeyword,
+        },
+        perPage: PER_PAGE,
+        sortByKey: "name",
+        direction: "asc",
+    });
 
-    // 🧩 Generate warehouse columns dynamically (match by name)
+    // Generate warehouse columns dynamically
     const warehouseColumns = Array.isArray(listData?.warehouses)
         ? listData.warehouses.map((wh) => ({
-            accessor: `warehouse_${wh.name}`, // use name as accessor
+            accessor: `warehouse_${wh.name}`,
             title: wh.name,
             textAlign: "right",
-            sortable: true,
+            sortable: false,
             render: (item) => {
                 if (!item.warehouses) return 0;
-
-                // Match by name
                 const warehouseEntry = Object.values(item.warehouses).find(
                     (w) => w.name === wh.name
                 );
-
                 return warehouseEntry ? Number(warehouseEntry.quantity) || 0 : 0;
             },
             cellsStyle: () => ({ background: "#fff3cd" }),
         }))
         : [];
 
-
     return (
         <>
-            {/* 🔍 Search bar */}
+            {/* Search bar */}
             <Box p="xs" className="boxBackground borderRadiusAll border-bottom-none">
                 <Flex align="center" justify="space-between" gap={4}>
                     <KeywordSearch module={module} />
                 </Flex>
             </Box>
 
-            {/* 🧾 Main DataTable */}
+            {/* Main DataTable */}
             <Box className="borderRadiusAll border-top-none">
                 <DataTable
                     classNames={{
@@ -84,6 +80,7 @@ export default function _Table({ module }) {
                         footer: tableCss.footer,
                         pagination: tableCss.pagination,
                     }}
+                    height={height}
                     records={records}
                     columns={[
                         {
@@ -91,7 +88,7 @@ export default function _Table({ module }) {
                             title: t("S/N"),
                             textAlignment: "right",
                             sortable: false,
-                            render: (_item, index) => index + 1,
+                            render: (_item, index) => (page - 1) * perPage + index + 1,
                         },
                         {
                             accessor: "category_name",
@@ -105,24 +102,29 @@ export default function _Table({ module }) {
                         },
                         ...warehouseColumns,
                     ]}
-                    textSelectionDisabled
                     fetching={fetching}
+                    textSelectionDisabled
+                    page={page}
+                    totalRecords={total}
+                    recordsPerPage={perPage}
+                    onPageChange={handlePageChange}
+                    sortStatus={sortStatus}
+                    onSortStatusChange={(status) =>
+                        setSortStatus({
+                            columnAccessor: status.columnAccessor,
+                            direction: status.direction,
+                        })
+                    }
                     loaderSize="xs"
                     loaderColor="grape"
-                    height={height - 100}
-                    onScrollToBottom={handleScrollToBottom}
-                    scrollViewportRef={scrollRef}
-                    sortStatus={sortStatus}
-                    onSortStatusChange={setSortStatus}
+                    scrollAreaProps={{ type: "never" }}
                     sortIcons={{
                         sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
                         unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
                     }}
                 />
             </Box>
-
-            {/* 📊 Footer Summary */}
-            <DataTableFooter indexData={listData} module={module} />
         </>
     );
 }
+
