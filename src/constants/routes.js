@@ -2,6 +2,7 @@ export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
 		TREATMENT_TEMPLATES: {
 			INDEX: "hospital/core/treatment",
+			INDEX_USER: "hospital/core/treatment-user",
 			CREATE: "hospital/core/particular",
 			UPDATE: "hospital/core/particular",
 			VIEW: "hospital/core/treatment",

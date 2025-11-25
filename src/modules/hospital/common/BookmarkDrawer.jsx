@@ -65,7 +65,7 @@ export default function BookmarkDrawer({ opened, close }) {
 	useEffect(() => {
 		dispatch(
 			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
+				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX_USER,
 				params: {
 					particular_type: "treatment-template",
 					treatment_mode: "opd-treatment",
