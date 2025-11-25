@@ -6,7 +6,7 @@ import {
 	getStatusInlineUpdateData,
 	showEntityData,
 	storeEntityData,
-    inlineUpdateEntityData,
+	inlineUpdateEntityData,
 	updateEntityData,
 	updateEntityDataWithFile,
 } from "./crudThunk";
@@ -204,6 +204,16 @@ const initialState = {
 	},
 
 	treatment: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
+	},
+
+	user_treatment: {
 		isLoading: true,
 		refetching: false,
 		error: null,
@@ -699,15 +709,15 @@ const crudSlice = createSlice({
 			}
 		});
 
-        builder.addCase(storeEntityData.fulfilled, (state, action) => {
-            const { module, data } = action.payload;
-            if (action.payload.data.message === "success") {
-                state[module].refetching = true;
-            } else {
-                state[module].validationMessages = data.data;
-                state[module].validation = true;
-            }
-        });
+		builder.addCase(storeEntityData.fulfilled, (state, action) => {
+			const { module, data } = action.payload;
+			if (action.payload.data.message === "success") {
+				state[module].refetching = true;
+			} else {
+				state[module].validationMessages = data.data;
+				state[module].validation = true;
+			}
+		});
 
 		builder.addCase(storeEntityData.rejected, (state, action) => {
 			const { module, errors } = action.payload;

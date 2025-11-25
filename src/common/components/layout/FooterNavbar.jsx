@@ -1,23 +1,47 @@
-import { Group, Flex } from "@mantine/core";
+import { Group, Flex, Button } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import classes from "@assets/css/FooterNavbar.module.css";
 import { useNavigate } from "react-router-dom";
 import useConfigData from "@hooks/config-data/useConfigData";
 import { useHotkeys } from "@mantine/hooks";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { useState, useEffect } from "react";
 
 function FooterNavbar() {
 	const { configData } = useConfigData();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
+	// LOCAL ZOOM STATE
+	const [zoom, setZoom] = useState(1);
+
+	// APPLY REAL ZOOM (correct way)
+	// useEffect(() => {
+	// 	const root = window.parent.document.body;
+	// 	if (root) {
+	// 		root.style.zoom = zoom;
+	// 	}
+	// }, [zoom]);
+
+	// const increaseZoom = () => setZoom((z) => Math.min(z + 0.1, 2));
+	// const decreaseZoom = () => setZoom((z) => Math.max(z - 0.1, 0.5));
+	// const resetZoom = () => setZoom(1);
+
+	// HOTKEYS
 	useHotkeys([
 		["alt+/", () => navigate("/")],
 		["alt+t", () => navigate("/sitemap")],
 		["alt+g", () => navigate(`/settings/hospital-config/${configData?.domain?.id}`)],
 		["alt+c", () => navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.CUSTOMER.INDEX)],
+
+		// ZOOM SHORTCUTS
+		// ["ctrl+=", increaseZoom],
+		// ["ctrl++", increaseZoom],
+		// ["ctrl+-", decreaseZoom],
+		// ["ctrl+0", resetZoom],
 	]);
 
+	// NAV LINKS
 	const links = [
 		{ link: "/sitemap", label: `${t("Sitemap")} (alt+t)` },
 		{ link: `/configuration`, label: `${t("Configuration")} (alt+g)` },
@@ -38,41 +62,50 @@ function FooterNavbar() {
 		</a>
 	));
 
-	const leftLinks = [{ link: "/", label: `${t("Home")} (alt+/)` }];
-
-	const leftItems = leftLinks.map((link) => (
+	const leftItems = [
 		<a
-			key={link.label}
-			href={link.link}
+			key="home"
+			href="/"
 			className={classes.link}
-			onClick={(event) => {
-				event.preventDefault();
-				navigate(link.link);
+			onClick={(e) => {
+				e.preventDefault();
+				navigate("/");
 			}}
 		>
-			{link.label}
-		</a>
-	));
+			{`${t("Home")} (alt+/)`}
+		</a>,
+	];
 
 	return (
-		<>
-			<footer className={classes.footer}>
-				<div className={classes.inner}>
-					<Group gap={5} className={classes.links} visibleFrom="sm">
-						<Flex gap="md" mih={42} justify="flex-start" align="center" direction="row" wrap="wrap">
-							{leftItems}
-						</Flex>
+		<footer className={classes.footer}>
+			<div className={classes.inner}>
+				{/* LEFT SIDE */}
+				<Group gap={5} className={classes.links} visibleFrom="sm">
+					<Flex gap="md">{leftItems}</Flex>
+				</Group>
+
+				{/* RIGHT SIDE */}
+				<Group>
+					<Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
+						<Flex gap="md">{items}</Flex>
 					</Group>
-					<Group>
-						<Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
-							<Flex gap="md" mih={42} justify="flex-start" align="center" direction="row" wrap="wrap">
-								{items}
-							</Flex>
-						</Group>
-					</Group>
-				</div>
-			</footer>
-		</>
+
+					{/* ZOOM BUTTONS */}
+					{/* <Group>
+						<Button size="xs" variant="light" onClick={decreaseZoom}>
+							-
+						</Button>
+						<Button size="xs" variant="light" onClick={resetZoom}>
+							{Math.round(zoom * 100)}%
+						</Button>
+						<Button size="xs" variant="light" onClick={increaseZoom}>
+							+
+						</Button>
+					</Group> */}
+				</Group>
+			</div>
+		</footer>
 	);
 }
+
 export default FooterNavbar;

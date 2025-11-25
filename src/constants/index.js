@@ -36,6 +36,7 @@ export const MODULES_CORE = {
 	BED: "bed",
 	ADVICE: "advice",
 	TREATMENT_TEMPLATES: "treatment",
+	USER_TREATMENT: "user_treatment",
 	CABIN: "cabin",
 	DOCTOR: "doctor",
 	NURSE: "nurse",

@@ -45,12 +45,12 @@ import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
-import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
 import MedicineListItem from "./MedicineListItem";
-import { DURATION_TYPES } from "@/constants";
+import { DURATION_TYPES, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import inputCss from "@assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import InputForm from "@components/form-builders/InputForm";
@@ -112,6 +112,7 @@ export default function AddMedicineForm({
 	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
+	const emergencyRefetching = useSelector((state) => state.crud.exemergency.refetching);
 	const [showPrint, setShowPrint] = useState(false);
 	const [medicineDosageSearchValue, setMedicineDosageSearchValue] = useState("");
 	const [medicineByMealSearchValue, setMedicineByMealSearchValue] = useState("");
@@ -135,17 +136,6 @@ export default function AddMedicineForm({
 		);
 		dispatch(
 			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
-				params: {
-					particular_type: "rx-emergency",
-					page: 1,
-					offset: 500,
-				},
-				module: "exemergency",
-			})
-		);
-		dispatch(
-			getIndexEntityData({
 				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
 				params: {
 					particular_type: "treatment-template",
@@ -155,6 +145,20 @@ export default function AddMedicineForm({
 			})
 		);
 	}, []);
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+				params: {
+					particular_type: "rx-emergency",
+					page: 1,
+					offset: 500,
+				},
+				module: "exemergency",
+			})
+		);
+	}, [emergencyRefetching]);
 
 	useEffect(() => {
 		if (medicineTerm.length === 0) {
@@ -209,7 +213,7 @@ export default function AddMedicineForm({
 	};
 
 	// =============== handler for adding autocomplete option to temporary list ================
-	const handleAutocompleteOptionAdd = (value, data, type, custom = false) => {
+	const handleAutocompleteOptionAdd = async (value, data, type, custom = false) => {
 		if (!custom) {
 			const selectedItem = data?.find((item) => item.name === value);
 			if (selectedItem) {
@@ -226,13 +230,28 @@ export default function AddMedicineForm({
 			if (!value?.trim())
 				return showNotificationComponent(t("Please enter a valid value"), "red", "lightgray", true, 700, true);
 			const newItem = {
-				id: Date.now(),
+				// id: Date.now(),
 				name: value,
-				value: value,
-				type: type,
-				isEditable: true,
+				value,
+				type,
+				// isEditable: true,
 			};
-			setTempEmergencyItems((prev) => [...prev, newItem]);
+			const resultAction = await dispatch(
+				storeEntityData({
+					url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.CREATE,
+					data: { name: value, particular_type: "rx-emergency", particular_type_master_id: 25 },
+					module: "exemergency",
+				})
+			);
+			dispatch(setRefetchData({ module: "exemergency", refetching: true }));
+
+			if (storeEntityData.rejected.match(resultAction)) {
+				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+			} else {
+				showNotificationComponent(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				dispatch(setRefetchData({ module: "exemergency", refetching: true }));
+				setTempEmergencyItems((prev) => [...prev, newItem]);
+			}
 		}
 	};
 
@@ -265,6 +284,7 @@ export default function AddMedicineForm({
 
 		// close drawer
 		closeExPrescription();
+		showNotificationComponent(t("Extra Emergency added to the prescription"), SUCCESS_NOTIFICATION_COLOR);
 	};
 
 	// Add hotkey for save functionality
@@ -497,8 +517,6 @@ export default function AddMedicineForm({
 	const handleReferredViewPrescription = () => {
 		setTimeout(() => open(), 10);
 	};
-
-	console.log(medicineForm.values.medicine_dosage_id?.length);
 
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
