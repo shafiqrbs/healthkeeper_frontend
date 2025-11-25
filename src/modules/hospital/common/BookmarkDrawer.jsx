@@ -18,14 +18,14 @@ import { useForm } from "@mantine/form";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 
-const module = MODULES_CORE.TREATMENT_TEMPLATES;
+const module = MODULES_CORE.USER_TREATMENT;
 
 export default function BookmarkDrawer({ opened, close, type = "opd-treatment" }) {
 	const { prescriptionId, treatmentId } = useParams();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
-	const treatmentData = useSelector((state) => state.crud.treatment.data);
+	const treatmentData = useSelector((state) => state.crud[module]?.data);
 	const refetching = useSelector((state) => state.crud[module]?.refetching);
 	const [medicines, setMedicines] = useState([]);
 	const navigate = useNavigate();
@@ -67,10 +67,10 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment" }
 					particular_type: "treatment-template",
 					treatment_mode: type,
 				},
-				module: "treatment",
+				module,
 			})
 		);
-	}, [refetching, dispatch]);
+	}, [refetching]);
 
 	const addTreatmentTemplate = async (values) => {
 		if (form.values.name?.length === 0) {
