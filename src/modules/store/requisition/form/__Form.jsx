@@ -29,7 +29,7 @@ import {modals} from "@mantine/modals";
 import {useDebouncedCallback, useDebouncedState} from "@mantine/hooks";
 import {PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import {useEffect, useState, useMemo} from "react";
+import {useEffect, useState, useMemo, useRef} from "react";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import {CORE_DROPDOWNS} from "@/app/store/core/utilitySlice";
@@ -52,7 +52,8 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
     const itemFromHeight = mainAreaHeight - 170;
     const [searchValue, setSearchValue] = useState("");
     const [draftProducts, setDraftProducts] = useState([]);
-
+    const inputsRef = useRef([]);
+    const inputsNumberRef = useRef([]);
     const {data: categoryDropdown} = useGlobalDropdownData({
         path: CORE_DROPDOWNS.CATEGORY.PATH,
         utility: CORE_DROPDOWNS.CATEGORY.UTILITY,
@@ -126,6 +127,30 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
         setProducts(records?.filter((product) => product?.name?.toLowerCase()?.includes(value?.toLowerCase())));
     }, 300);
 
+    const handleKeyDown = (e, index) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (inputsRef?.current) {
+                const nextInput = inputsRef.current[index + 1];
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            }
+        }
+    };
+
+    const handleKeyDownTable = (e, index) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (inputsNumberRef?.current) {
+                const nextInput = inputsNumberRef.current[index + 1];
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            }
+        }
+    };
+
     return (
         <Grid columns={24} gutter={{base: 8}}>
             <Grid.Col span={8}>
@@ -184,7 +209,7 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                         </Group>
                                     ),
                                     textAlign: "right",
-                                    render: (data) => (
+                                    render: (data,rowIndex) => (
                                         <Group
                                             wrap="nowrap"
                                             w="100%"
@@ -210,6 +235,8 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                                         fontWeight: 300,
                                                     },
                                                 }}
+                                                ref={(el) => (inputsRef.current[rowIndex] = el)}
+                                                onKeyDown={(e) => handleKeyDown(e, rowIndex)}
                                                 size="xxs"
                                                 w="50"
                                                 type={"number"}
@@ -440,7 +467,7 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                 accessor: "quantity",
                                 title: t("Quantity"),
                                 sortable: false,
-                                render: (item) => (
+                                render: (item,rowTableIndex) => (
                                     <NumberInput
                                         min={1}
                                         size="xs"

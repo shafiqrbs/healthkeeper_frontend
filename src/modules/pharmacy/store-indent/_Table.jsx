@@ -1,4 +1,4 @@
-import {Group, Box, Text, Flex, Button} from "@mantine/core";
+import {Group, Box, Text, Flex, Button, Badge} from "@mantine/core";
 import {useTranslation} from "react-i18next";
 import {
     IconEdit,
@@ -97,6 +97,7 @@ export default function _Table({module}) {
             errorNotification("Error updating indent config:" + error.message);
         }
     }
+    const processColorMap = {Created: 'Red','Received':'green',Approved:'blue'};
     
     
     return (
@@ -139,14 +140,31 @@ export default function _Table({module}) {
                             sortable: true,
                         },
                         {
+                            accessor: "invoice",
+                            title: t("IndentNo"),
+                            textAlignment: "right",
+                            sortable: true,
+                        },
+                        {
                             accessor: "to_warehouse",
                             title: t("Warehouse"),
                             sortable: true,
                         },
                         {
-                            accessor: "process",
-                            title: t("Process"),
-                            sortable: false,
+                            accessor: "created_by",
+                            title: t("IndentBy"),
+                            sortable: true,
+                        },
+                        { accessor: 'process',textAlign: 'center', title: t('Process') ,
+                            render: (item) => {
+                                const color = processColorMap[item.process] || ''; // fallback for unknown status
+                                return (
+                                    <Badge size="xs" radius="sm" color={color}>
+                                        {item.process}
+                                    </Badge>
+                                );
+                            },
+                            cellsClassName: tableCss.statusBackground
                         },
                         {
                             accessor: "action",

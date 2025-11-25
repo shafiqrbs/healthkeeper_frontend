@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button,Badge} from "@mantine/core";
 import {useTranslation} from "react-i18next";
 import {
     IconTrashX,
@@ -6,7 +6,7 @@ import {
     IconEdit,
     IconEye,
     IconChevronUp,
-    IconSelector,
+    IconSelector, IconPrinter,
 } from "@tabler/icons-react";
 import {DataTable} from "mantine-datatable";
 import {useDispatch, useSelector} from "react-redux";
@@ -115,9 +115,20 @@ export default function _Table({module}) {
         setViewDrawer(true);
     };
 
+    const handleDataPrint = (id) => {
+        dispatch(
+            editEntityData({
+                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.VIEW}/${id}`,
+                module,
+            })
+        );
+       // setViewDrawer(true);
+    };
+
     const handleCreateFormNavigate = () => {
         navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.CREATE}`);
     };
+    const processColorMap = {Created: 'Red','Received':'green',Approved:'blue'};
 
     return (
         <>
@@ -171,9 +182,30 @@ export default function _Table({module}) {
                             sortable: true,
                         },
                         {
+                            accessor: "created_by",
+                            title: t("Created"),
+                            sortable: true,
+                        },
+                        {
+                            accessor: "approved_by",
+                            title: t("Approved"),
+                            sortable: true,
+                        },
+                        {
                             accessor: "process",
                             title: t("Process"),
                             sortable: false,
+                        },
+                        { accessor: 'process',textAlign: 'center', title: t('Process') ,
+                            render: (item) => {
+                                const color = processColorMap[item.process] || ''; // fallback for unknown status
+                                return (
+                                    <Badge size="xs" radius="sm" color={color}>
+                                        {item.process}
+                                    </Badge>
+                                );
+                            },
+                            cellsClassName: tableCss.statusBackground
                         },
                         {
                             accessor: "action",
@@ -210,14 +242,26 @@ export default function _Table({module}) {
                                             {t("View")}
                                         </Button>
                                         {values.process !== 'Approved' && !values.approved_by_id &&
+                                        <Button
+                                            onClick={() => handleDataPrint(values.uid)}
+                                            variant="filled"
+                                            c="white"
+                                            size="compact-xs"
+                                            radius="es"
+                                            leftSection={<IconPrinter size={16}/>}
+                                            className="border-right-radius-none"
+                                        >
+                                            {t("Print")}
+                                        </Button>
+                                        }
+                                        {values.process !== 'Approved' && !values.approved_by_id &&
                                             <ActionIcon
-                                                size={'sm'}
+                                                size={'ms'}
                                                 onClick={() => handleDelete(values.uid)}
-                                                className="action-icon-menu border-left-radius-none"
-                                                variant="light"
+                                              
+                                                variant="transparent"
                                                 color="var(--theme-delete-color)"
                                                 radius="es"
-                                                ps="les"
                                                 aria-label="Settings"
                                             >
                                                 <IconTrashX height={18} width={18} stroke={1.5}/>

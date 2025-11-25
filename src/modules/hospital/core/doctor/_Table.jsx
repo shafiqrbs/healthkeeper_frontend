@@ -8,7 +8,7 @@ import {
     Button,
     TextInput,
     Select,
-    Checkbox,
+    Checkbox, MultiSelect,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
@@ -174,6 +174,7 @@ export default function _Table({ module, open }) {
                         name: item.name ?? "",
                         unit_id: item.unit_id?.toString() ?? "",
                         opd_room_id: item.opd_room_id?.toString() ?? "",
+                        opd_room_ids: item.opd_room_ids?.toString() ?? "",
                         opd_referred: item?.opd_referred ?? false,
                         ordering: item.ordering ?? idx + 1,
                     };
@@ -363,7 +364,7 @@ export default function _Table({ module, open }) {
                                             accessor: "opd_room_id",
                                             title: t("OPDRoom"),
                                             render: (item) => (
-                                                <Select
+                                                /*<Select
                                                     size="xs"
                                                     className={inlineInputCss.inputText}
                                                     placeholder={t("SelectOpdRoom")}
@@ -373,6 +374,14 @@ export default function _Table({ module, open }) {
                                                         handleFieldChange(item.id, "opd_room_id", val)
                                                     }
                                                     rightSection={updatingRows[item.id]}
+                                                />*/
+                                                <MultiSelect
+                                                    placeholder="Pick value"
+                                                    data={getOpdRooms}
+                                                    clearable
+                                                    onChange={(val) =>
+                                                        handleFieldChange(item.id, "opd_room_ids", val)
+                                                    }
                                                 />
                                             ),
                                         },
