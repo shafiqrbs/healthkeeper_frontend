@@ -100,6 +100,7 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
 	const [openedHistoryMedicine, { open: openHistoryMedicine, close: closeHistoryMedicine }] = useDisclosure(false);
+	const emergencyRefetching = useSelector((state) => state.crud.exemergency.refetching);
 
 	const printDischargeA4 = useReactToPrint({
 		documentTitle: `discharge-${Date.now().toLocaleString()}`,
@@ -118,17 +119,16 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 				module: "advice",
 			})
 		);
-		dispatch(
-			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
-				params: {
-					particular_type: "rx-emergency",
-					page: 1,
-					offset: 500,
-				},
-				module: "exemergency",
-			})
-		);
+
+		useEffect(() => {
+			dispatch(
+				getIndexEntityData({
+					url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX_RXEMERGENCY,
+					module: "exemergency",
+				})
+			);
+		}, [emergencyRefetching]);
+
 		dispatch(
 			getIndexEntityData({
 				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,

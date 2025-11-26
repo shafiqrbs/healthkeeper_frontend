@@ -29,7 +29,7 @@ import { modals } from "@mantine/modals";
 import { useDebouncedCallback, useDebouncedState } from "@mantine/hooks";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import { useEffect, useState, useMemo } from "react";
+import {useEffect, useState, useMemo, useRef} from "react";
 import useMedicineData from "@hooks/useMedicineStockData";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import InputForm from "@components/form-builders/InputForm";
@@ -57,6 +57,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	const [searchValue, setSearchValue] = useState("");
 	const [draftProducts, setDraftProducts] = useState([]);
     const listData = useSelector((state) => state.crud[module].data);
+	const inputsRef = useRef([]);
 
 	const { data: vendorDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.VENDOR.PATH,
@@ -175,6 +176,29 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
         );
     }, [items]);
 
+	const handleKeyDown = (e, index) => {
+		if (e.key === "Enter") {
+			e.preventDefault();
+			if (inputsRef?.current) {
+				const nextInput = inputsRef.current[index + 1];
+				if (nextInput) {
+					nextInput.focus();
+				}
+			}
+		}
+	};
+
+	const handleKeyDownTable = (e, index) => {
+		if (e.key === "Enter") {
+			e.preventDefault();
+			if (inputsNumberRef?.current) {
+				const nextInput = inputsNumberRef.current[index + 1];
+				if (nextInput) {
+					nextInput.focus();
+				}
+			}
+		}
+	};
 
     return (
 		<Grid columns={24} gutter={{ base: 8 }}>
@@ -233,7 +257,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 										</Group>
 									),
 									textAlign: "right",
-									render: (data) => (
+									render: (data,rowIndex) => (
 										<Group
 											wrap="nowrap"
 											w="100%"
@@ -259,6 +283,8 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 														fontWeight: 300,
 													},
 												}}
+												ref={(el) => (inputsRef.current[rowIndex] = el)}
+												onKeyDown={(e) => handleKeyDown(e, rowIndex)}
 												size="2xs"
 												w="50"
 												type={"number"}

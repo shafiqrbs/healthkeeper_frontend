@@ -146,12 +146,7 @@ export default function AddMedicineForm({
 	useEffect(() => {
 		dispatch(
 			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
-				params: {
-					particular_type: "rx-emergency",
-					page: 1,
-					offset: 500,
-				},
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX_RXEMERGENCY,
 				module: "exemergency",
 			})
 		);

@@ -100,6 +100,7 @@ export const MASTER_DATA_ROUTES = {
 
 		PARTICULAR: {
 			INDEX: "hospital/core/particular",
+			INDEX_RXEMERGENCY: "hospital/core/particular/rxemergency",
 			CREATE: "hospital/core/particular",
 			UPDATE: "hospital/core/particular",
 			VIEW: "hospital/core/particular",
