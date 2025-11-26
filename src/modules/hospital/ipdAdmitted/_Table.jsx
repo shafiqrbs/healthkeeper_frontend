@@ -11,7 +11,7 @@ import { Box, Flex, Text, ActionIcon, Group, Button, SegmentedControl, Menu, rem
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
-import {formatDate, getUserRole} from "@utils/index";
+import { formatDate, getUserRole } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
@@ -27,19 +27,16 @@ import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import DischargeA4BN from "@hospital-components/print-formats/discharge/DischargeA4BN";
-import { modals } from "@mantine/modals";
 import { useDisclosure } from "@mantine/hooks";
 import IpdManageDrawer from "@hospital-components/drawer/IpdManageDrawer";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
-import ViewDrawer from "@modules/pharmacy/store-indent/__ViewDrawer.jsx";
 import __IssueMedicineDrawer from "@modules/hospital/ipdAdmitted/__IssueMedicineDrawer.jsx";
 
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
 
-
 const userRoles = getUserRole();
-const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator",'nurse_basic','nurse_incharge',"admin_nurse"];
+const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse"];
 
 export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode }) {
 	const dischargePaperRef = useRef(null);
@@ -103,8 +100,6 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 		requestAnimationFrame(printDischargePaper);
 	};
 
-
-
 	const handlePrescriptionPrint = async (id) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
@@ -115,17 +110,17 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 
 	const handleManageOverview = (prescriptionId, id) => {
 		setSelectedPrescriptionId(prescriptionId);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${prescriptionId}`)
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${prescriptionId}`);
 	};
 
-    const [issueMedicineDrawer,setIssueMedicineDrawer] = useState(false)
-    const [issueMedicinePrescriptionUUId,setIssueMedicinePrescriptionUUId] = useState(null)
-    const [issueMedicinePrescriptionId,setIssueMedicinePrescriptionId] = useState(null)
-    const handleIssueMedicine = (prescriptionId, id) => {
-        setIssueMedicinePrescriptionUUId(prescriptionId)
-        setIssueMedicinePrescriptionId(id)
-        setIssueMedicineDrawer(true)
-    };
+	const [issueMedicineDrawer, setIssueMedicineDrawer] = useState(false);
+	const [issueMedicinePrescriptionUUId, setIssueMedicinePrescriptionUUId] = useState(null);
+	const [issueMedicinePrescriptionId, setIssueMedicinePrescriptionId] = useState(null);
+	const handleIssueMedicine = (prescriptionId, id) => {
+		setIssueMedicinePrescriptionUUId(prescriptionId);
+		setIssueMedicinePrescriptionId(id);
+		setIssueMedicineDrawer(true);
+	};
 
 	const handleChangeIpdMode = () => {
 		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX);
@@ -276,11 +271,9 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 												{t("Manage")}
 											</Button>
 
-											{ ALLOWED_NURSE_ROLES?.some((role) =>
-												userRoles.includes(role)
-											) && (
+											{ALLOWED_NURSE_ROLES?.some((role) => userRoles.includes(role)) && (
 												<Button
-													rightSection={<IconArrowNarrowRight size={18}/>}
+													rightSection={<IconArrowNarrowRight size={18} />}
 													onClick={() => handleIssueMedicine(values.uid, values.id)}
 													variant="filled"
 													color="var(--theme-red-color-6)"
@@ -291,8 +284,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 												>
 													{t("Issue")}
 												</Button>
-											)
-											}
+											)}
 
 											{/* <Button
 												rightSection={<IconArrowNarrowRight size={18} />}
@@ -404,16 +396,15 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
 			{dischargePaperPrintData && <DischargeA4BN data={dischargePaperPrintData} ref={dischargePaperRef} />}
 
-            <__IssueMedicineDrawer
-                issueMedicineDrawer={issueMedicineDrawer}
-                setIssueMedicineDrawer={setIssueMedicineDrawer}
-                issueMedicinePrescriptionId={issueMedicinePrescriptionId}
-                setIssueMedicinePrescriptionId={setIssueMedicinePrescriptionId}
-                issueMedicinePrescriptionUUId={issueMedicinePrescriptionUUId}
-                setIssueMedicinePrescriptionUUId={setIssueMedicinePrescriptionUUId}
-                module={module}
-            />
-
-        </Box>
+			<__IssueMedicineDrawer
+				issueMedicineDrawer={issueMedicineDrawer}
+				setIssueMedicineDrawer={setIssueMedicineDrawer}
+				issueMedicinePrescriptionId={issueMedicinePrescriptionId}
+				setIssueMedicinePrescriptionId={setIssueMedicinePrescriptionId}
+				issueMedicinePrescriptionUUId={issueMedicinePrescriptionUUId}
+				setIssueMedicinePrescriptionUUId={setIssueMedicinePrescriptionUUId}
+				module={module}
+			/>
+		</Box>
 	);
 }

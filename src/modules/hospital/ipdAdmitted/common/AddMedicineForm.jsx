@@ -28,6 +28,7 @@ import {
 	IconTrash,
 	IconCaretUpDownFilled,
 	IconMedicineSyrup,
+	IconBookmark,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../helpers/request";
@@ -41,7 +42,7 @@ import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
-import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
 import MedicineListItem from "@hospital-components/MedicineListItem";
@@ -60,6 +61,9 @@ import {
 } from "@utils/prescription";
 import InputForm from "@components/form-builders/InputForm";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
+import BookmarkDrawer from "@hospital-components/BookmarkDrawer";
+import { setRefetchData } from "@/app/store/core/crudSlice";
+import { SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 
 export default function AddMedicineForm({
 	module,
@@ -88,6 +92,7 @@ export default function AddMedicineForm({
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const [printData, setPrintData] = useState(null);
+	const [openedBookmark, { open: openBookmark, close: closeBookmark }] = useDisclosure(false);
 	const adviceData = useSelector((state) => state.crud.advice.data);
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
@@ -105,6 +110,7 @@ export default function AddMedicineForm({
 
 	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
+	const emergencyRefetching = useSelector((state) => state.crud.exemergency.refetching);
 	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 
@@ -127,17 +133,6 @@ export default function AddMedicineForm({
 		);
 		dispatch(
 			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
-				params: {
-					particular_type: "rx-emergency",
-					page: 1,
-					offset: 500,
-				},
-				module: "exemergency",
-			})
-		);
-		dispatch(
-			getIndexEntityData({
 				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
 				params: {
 					particular_type: "treatment-template",
@@ -147,6 +142,20 @@ export default function AddMedicineForm({
 			})
 		);
 	}, []);
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+				params: {
+					particular_type: "rx-emergency",
+					page: 1,
+					offset: 500,
+				},
+				module: "exemergency",
+			})
+		);
+	}, [emergencyRefetching]);
 
 	useEffect(() => {
 		if (medicineTerm.length === 0) {
@@ -200,17 +209,45 @@ export default function AddMedicineForm({
 		}
 	};
 	// =============== handler for adding autocomplete option to temporary list ================
-	const handleAutocompleteOptionAdd = (value, data, type) => {
-		const selectedItem = data?.find((item) => item.name === value);
-		if (selectedItem) {
+	const handleAutocompleteOptionAdd = async (value, data, type, custom = false) => {
+		if (!custom) {
+			const selectedItem = data?.find((item) => item.name === value);
+			if (selectedItem) {
+				const newItem = {
+					id: selectedItem.id || Date.now(),
+					name: selectedItem.name,
+					value: selectedItem.name,
+					type: type,
+					isEditable: true,
+				};
+				setTempEmergencyItems((prev) => [...prev, newItem]);
+			}
+		} else {
+			if (!value?.trim())
+				return showNotificationComponent(t("Please enter a valid value"), "red", "lightgray", true, 700, true);
 			const newItem = {
-				id: selectedItem.id || Date.now(),
-				name: selectedItem.name,
-				value: selectedItem.name,
-				type: type,
-				isEditable: true,
+				// id: Date.now(),
+				name: value,
+				value,
+				type,
+				// isEditable: true,
 			};
-			setTempEmergencyItems((prev) => [...prev, newItem]);
+			const resultAction = await dispatch(
+				storeEntityData({
+					url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.CREATE,
+					data: { name: value, particular_type: "rx-emergency", particular_type_master_id: 25 },
+					module: "exemergency",
+				})
+			);
+			dispatch(setRefetchData({ module: "exemergency", refetching: true }));
+
+			if (storeEntityData.rejected.match(resultAction)) {
+				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+			} else {
+				showNotificationComponent(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				dispatch(setRefetchData({ module: "exemergency", refetching: true }));
+				setTempEmergencyItems((prev) => [...prev, newItem]);
+			}
 		}
 	};
 
@@ -527,6 +564,12 @@ export default function AddMedicineForm({
 												handleChange("generic", v);
 												setMedicineGenericTerm(v);
 											}}
+											onOptionSubmit={(value) => {
+												handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
+												setTimeout(() => {
+													setAutocompleteValue("");
+												}, 0);
+											}}
 											placeholder={t("GenericName")}
 											classNames={inputCss}
 											error={!!medicineForm.errors.generic}
@@ -560,12 +603,10 @@ export default function AddMedicineForm({
 												error={!!medicineForm.errors.medicine_dosage_id}
 											/>
 										</FormValidatorWrapper>
-
 									</Group>
 								</Grid.Col>
 								<Grid.Col span={4}>
 									<Group grow gap="les">
-
 										<FormValidatorWrapper
 											position="bottom-end"
 											opened={medicineForm.errors.medicine_bymeal_id}
@@ -592,7 +633,7 @@ export default function AddMedicineForm({
 									</Group>
 								</Grid.Col>
 								<Grid.Col span={2}>
-									<Group grow gap="les" mt={'2'}>
+									<Group grow gap="les" mt={"2"}>
 										<Button
 											leftSection={<IconPlus size={16} />}
 											type="submit"
@@ -609,7 +650,7 @@ export default function AddMedicineForm({
 					</Grid.Col>
 					<Grid.Col span={6} bg="var(--mantine-color-white)">
 						<Grid w="100%" columns={12} gutter="3xs">
-							<Grid.Col span={12}>
+							<Grid.Col span={10}>
 								<Group grow gap="les">
 									<SelectForm
 										form={medicineForm}
@@ -622,40 +663,49 @@ export default function AddMedicineForm({
 										}))}
 										value={medicineForm.values.treatments}
 										placeholder={t("TreatmentTemplate")}
-										required
 										tooltip={t("TreatmentTemplate")}
 										withCheckIcon={false}
 										changeValue={populateMedicineData}
 									/>
-									<InputForm form={form} name="weight" placeholder={t("Weight/KG")} />
 								</Group>
 							</Grid.Col>
+							<Grid.Col span={2}>
+								<Tooltip label={t("CreateTreatmentTemplate")}>
+									<ActionIcon
+										fw={"400"}
+										type="button"
+										size="lg"
+										color="var(--theme-primary-color-5)"
+										onClick={openBookmark}
+									>
+										<IconBookmark size={16} />
+									</ActionIcon>
+								</Tooltip>
+							</Grid.Col>
 						</Grid>
-						<Grid w="100%" columns={12} gutter="3xs">
-							<Grid.Col span={6}>
+						<Grid w="100%" columns={12} gutter="les" mt="4px">
+							<Grid.Col span={10}>
 								<Button
 									leftSection={<IconPlus size={16} />}
 									w="100%"
-									size="xs"
+									fw={"400"}
 									type="button"
-									variant="outline"
-									color="green"
+									color="var(--theme-primary-color-5)"
 									onClick={openDosageForm}
 								>
-									{t("Dosage")}
+									{t("Dose")}
 								</Button>
 							</Grid.Col>
-							<Grid.Col span={6}>
-								<Button
-									w="100%"
-									size="xs"
+							<Grid.Col span={2}>
+								<ActionIcon
+									fw={"400"}
 									type="button"
-									variant="outline"
-									color="red"
+									size="lg"
+									color="var(--theme-secondary-color-5)"
 									onClick={openExPrescription}
 								>
-									{t("Extra")}
-								</Button>
+									{t("Rx")}
+								</ActionIcon>
 							</Grid.Col>
 						</Grid>
 					</Grid.Col>
@@ -886,6 +936,7 @@ export default function AddMedicineForm({
 					{/* <PrescriptionFull ref={prescriptionPrintRef} data={printPreviewPrescriptionData} /> */}
 				</>
 			)}
+
 			<GlobalDrawer
 				opened={openedExPrescription}
 				close={closeExPrescription}
@@ -894,27 +945,47 @@ export default function AddMedicineForm({
 			>
 				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
 					<Box>
-						<Autocomplete
-							label="Enter Patient ID"
-							placeholder={t("EmergencyPrescription")}
-							data={emergencyData?.data?.map((p) => ({ value: p.name, label: p.name })) || []}
-							value={autocompleteValue}
-							onChange={setAutocompleteValue}
-							onOptionSubmit={(value) => {
-								handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
-								setTimeout(() => {
-									setAutocompleteValue("");
-								}, 0);
-							}}
-							classNames={inputCss}
-							onBlur={handleFieldBlur}
-							rightSection={<IconCaretUpDownFilled size={16} />}
-						/>
+						<Flex gap="sm" w="100%" align="center">
+							<Autocomplete
+								label="Enter Ex Emergency"
+								placeholder={t("EmergencyPrescription")}
+								data={emergencyData?.data?.map((p) => ({ value: p.name, label: p.name })) || []}
+								value={autocompleteValue}
+								onChange={setAutocompleteValue}
+								onOptionSubmit={(value) => {
+									handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
+									setTimeout(() => {
+										setAutocompleteValue("");
+									}, 0);
+								}}
+								w="100%"
+								classNames={inputCss}
+								onBlur={handleFieldBlur}
+								rightSection={<IconCaretUpDownFilled size={16} />}
+							/>
+							<ActionIcon
+								onClick={() => {
+									handleAutocompleteOptionAdd(
+										autocompleteValue,
+										emergencyData?.data,
+										"exEmergency",
+										true
+									);
+									setTimeout(() => {
+										setAutocompleteValue("");
+									}, 0);
+								}}
+								mt="24px"
+								size="lg"
+							>
+								<IconPlus size={16} />
+							</ActionIcon>
+						</Flex>
 						{/* =============== temporary items list with editable text inputs ================ */}
 						{tempEmergencyItems?.length > 0 && (
 							<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll" mt="2xs">
 								<Text fw={600} fz="sm" mt="xs" c="var(--theme-primary-color)">
-									{t("PendingItems")} ({tempEmergencyItems?.length})
+									{t("Particulars")} ({tempEmergencyItems?.length})
 								</Text>
 								{tempEmergencyItems?.map((item, idx) => (
 									<Flex
@@ -965,6 +1036,7 @@ export default function AddMedicineForm({
 					</Flex>
 				</Stack>
 			</GlobalDrawer>
+
 			{/* prescription preview */}
 			{id && mountPreviewDrawer && (
 				<DetailsDrawer
@@ -980,6 +1052,7 @@ export default function AddMedicineForm({
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
+			<BookmarkDrawer opened={openedBookmark} close={closeBookmark} type="ipd-treatment" />
 		</Box>
 	);
 }
