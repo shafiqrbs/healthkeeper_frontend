@@ -6,9 +6,10 @@ import "@/index.css";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
 import Barcode from "react-barcode";
-import {capitalizeWords, formatDate, formatDateTimeAmPm} from "@utils/index";
+import { capitalizeWords, formatDate, formatDateTimeAmPm } from "@utils/index";
 
 const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
+	console.log(data);
 	const patientInfo = data?.entity || {};
 	const report = data?.invoiceParticular || {};
 	const { hospitalConfigData } = useHospitalConfigData();
@@ -110,196 +111,240 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 									</Table.Tbody>
 								</Table>
 							</Box>
-							<Box >
-								<Table
-									withColumnBorders
-									verticalSpacing={6}
-									horizontalSpacing={6}
-									striped={false}
-									highlightOnHover={false}
-									style={{
-									borderCollapse: "collapse",
-									width: "100%",
-									border: "1px solid var(--theme-tertiary-color-8)",
-								}}>
-									<Table.Tbody>
-										<Table.Tr>
-											<Table.Td>
-												<Grid columns={18} gap={0} gutter="xs">
-													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Lab ID")}</Text>
-													</Grid.Col>
-													<Grid.Col span={12} py={0}>
-														<Text size="xs">{getValue(report?.uid || "")}</Text>
-													</Grid.Col>
-													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("PatientId")}</Text>
-													</Grid.Col>
-													<Grid.Col span={12} py={0}>
-														<Text size="xs">{getValue(patientInfo?.patient_id || "")}</Text>
-													</Grid.Col>
-													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Name")}</Text>
-													</Grid.Col>
-													<Grid.Col span={12} py={0}>
-														<Text size="xs">{getValue(patientInfo?.name || "")}</Text>
-													</Grid.Col>
-													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Mobile")}</Text>
-													</Grid.Col>
-													<Grid.Col span={12} py={0}>
-														<Text size="xs">{getValue(patientInfo?.mobile || "")}</Text>
-													</Grid.Col>
-												</Grid>
-											</Table.Td>
-											<Table.Td>
-												<Grid columns={18} gutter="sm">
-													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Received on")}</Text>
-													</Grid.Col>
-													<Grid.Col span={12} py={0}>
-														<Text size="xs">{getValue(formatDateTimeAmPm(report?.created_at) || "")}</Text>
-													</Grid.Col>
-													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Collected on")}</Text>
-													</Grid.Col>
-													<Grid.Col span={12} py={0}>
-														<Text size="xs">{getValue(formatDateTimeAmPm(report?.collection_date) || "")}</Text>
-													</Grid.Col>
-													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Age")}</Text>
-													</Grid.Col>
-													<Grid.Col span={12} py={0}>
-														<Text size="xs">{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
-															{patientInfo?.day || 0} Day</Text>
-													</Grid.Col>
-													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Gender")}</Text>
-													</Grid.Col>
-													<Grid.Col span={12} py={0}>
-														{getValue(capitalizeWords(patientInfo?.gender) || "")}
-													</Grid.Col>
-												</Grid>
-											</Table.Td>
-										</Table.Tr>
-										<Table.Tr>
-											<Table.Td>
-												<Grid columns={18} gap={0} gutter="xs">
-													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Specimen")}</Text>
-													</Grid.Col>
-													<Grid.Col span={12} py={0}>
-														<Text size="xs">{getValue(report?.particular?.specimen || "")}</Text>
-													</Grid.Col>
-
-												</Grid>
-											</Table.Td>
-											<Table.Td>
-												<Grid columns={18} gutter="sm">
-													<Grid.Col span={6} py={0}>
-														<Text size="xs">{t("Ref By.")}</Text>
-													</Grid.Col>
-													<Grid.Col span={12} py={0}>
-														{patientInfo?.patient_mode_slug === "ipd" ? (
-															<Text size="xs">{patientInfo?.patient_mode_name} - {getValue(patientInfo?.admit_doctor_name || "")}</Text>
-														) : (
-															<Text size="xs">{patientInfo?.patient_mode_name} - {getValue(patientInfo?.prescription_doctor_name || "")}</Text>
-														)}
-													</Grid.Col>
-
-												</Grid>
-											</Table.Td>
-										</Table.Tr>
-										<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-											<Table.Td colSpan={'2'}><strong>Report Name:</strong> {report?.name}</Table.Td>
-										</Table.Tr>
-									</Table.Tbody>
-
-								</Table>
-							</Box>
-							<Box  mt={"md"}>
-								<Table
-									withColumnBorders
-									verticalSpacing={0}
-									horizontalSpacing={0}
-									striped={false}
-									highlightOnHover={false}
-									style={{ margin: 0, padding: 0,borderCollapse: "collapse",
-										width: "100%",
-										border: "1px solid var(--theme-tertiary-color-8)"}}
-								   >
-									<Table.Thead>
-										<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-											<Table.Th w={"30%"} pl={4}>
-												{t("Parameter")}
-											</Table.Th>
-											<Table.Th w={"20%"} pl={4}>
-												{t("TestResult")}
-											</Table.Th>
-											<Table.Th w={"20%"} pl={4}>
-												{t("Unit")}
-											</Table.Th>
-											<Table.Th w={"30%"} pl={4}>
-												{t("ReferenceValue")}
-											</Table.Th>
-										</Table.Tr>
-									</Table.Thead>
-									<Table.Tbody>
-										{report?.reports?.map((item, index) => (
-											<Table.Tr key={index}>
-												<Table.Td>
-													<Text fz={"xs"} pl={4}>
-														{item.name}
-													</Text>
-												</Table.Td>
-												<Table.Td>
-													<Text fz={"xs"} pl={4}>
-														{item.result}
-													</Text>
-												</Table.Td>
-												<Table.Td>
-													<Text fz={"xs"} pl={4}>
-														{item.unit}
-													</Text>
-												</Table.Td>
-												<Table.Td>
-													<Text fz={"xs"} pl={4}>
-														{item.reference_value}
-													</Text>
-												</Table.Td>
-											</Table.Tr>
-										))}
-
-									</Table.Tbody>
-								</Table>
-							</Box>
+							{data?.particular?.category?.name === "ultrasonography" ? (
+								<>
+									<Box>
+										<Text>Ultrasonography Report</Text>
+									</Box>
+								</>
+							) : (
+								<>
+									<Box>
+										<Table
+											withColumnBorders
+											verticalSpacing={6}
+											horizontalSpacing={6}
+											striped={false}
+											highlightOnHover={false}
+											style={{
+												borderCollapse: "collapse",
+												width: "100%",
+												border: "1px solid var(--theme-tertiary-color-8)",
+											}}
+										>
+											<Table.Tbody>
+												<Table.Tr>
+													<Table.Td>
+														<Grid columns={18} gap={0} gutter="xs">
+															<Grid.Col span={6} py={0}>
+																<Text size="xs">{t("Lab ID")}</Text>
+															</Grid.Col>
+															<Grid.Col span={12} py={0}>
+																<Text size="xs">{getValue(report?.uid || "")}</Text>
+															</Grid.Col>
+															<Grid.Col span={6} py={0}>
+																<Text size="xs">{t("PatientId")}</Text>
+															</Grid.Col>
+															<Grid.Col span={12} py={0}>
+																<Text size="xs">
+																	{getValue(patientInfo?.patient_id || "")}
+																</Text>
+															</Grid.Col>
+															<Grid.Col span={6} py={0}>
+																<Text size="xs">{t("Name")}</Text>
+															</Grid.Col>
+															<Grid.Col span={12} py={0}>
+																<Text size="xs">
+																	{getValue(patientInfo?.name || "")}
+																</Text>
+															</Grid.Col>
+															<Grid.Col span={6} py={0}>
+																<Text size="xs">{t("Mobile")}</Text>
+															</Grid.Col>
+															<Grid.Col span={12} py={0}>
+																<Text size="xs">
+																	{getValue(patientInfo?.mobile || "")}
+																</Text>
+															</Grid.Col>
+														</Grid>
+													</Table.Td>
+													<Table.Td>
+														<Grid columns={18} gutter="sm">
+															<Grid.Col span={6} py={0}>
+																<Text size="xs">{t("Received on")}</Text>
+															</Grid.Col>
+															<Grid.Col span={12} py={0}>
+																<Text size="xs">
+																	{getValue(
+																		formatDateTimeAmPm(report?.created_at) || ""
+																	)}
+																</Text>
+															</Grid.Col>
+															<Grid.Col span={6} py={0}>
+																<Text size="xs">{t("Collected on")}</Text>
+															</Grid.Col>
+															<Grid.Col span={12} py={0}>
+																<Text size="xs">
+																	{getValue(
+																		formatDateTimeAmPm(report?.collection_date) ||
+																			""
+																	)}
+																</Text>
+															</Grid.Col>
+															<Grid.Col span={6} py={0}>
+																<Text size="xs">{t("Age")}</Text>
+															</Grid.Col>
+															<Grid.Col span={12} py={0}>
+																<Text size="xs">
+																	{patientInfo?.year || 0} Years{" "}
+																	{patientInfo?.month || 0} Mon{" "}
+																	{patientInfo?.day || 0} Day
+																</Text>
+															</Grid.Col>
+															<Grid.Col span={6} py={0}>
+																<Text size="xs">{t("Gender")}</Text>
+															</Grid.Col>
+															<Grid.Col span={12} py={0}>
+																{getValue(capitalizeWords(patientInfo?.gender) || "")}
+															</Grid.Col>
+														</Grid>
+													</Table.Td>
+												</Table.Tr>
+												<Table.Tr>
+													<Table.Td>
+														<Grid columns={18} gap={0} gutter="xs">
+															<Grid.Col span={6} py={0}>
+																<Text size="xs">{t("Specimen")}</Text>
+															</Grid.Col>
+															<Grid.Col span={12} py={0}>
+																<Text size="xs">
+																	{getValue(report?.particular?.specimen || "")}
+																</Text>
+															</Grid.Col>
+														</Grid>
+													</Table.Td>
+													<Table.Td>
+														<Grid columns={18} gutter="sm">
+															<Grid.Col span={6} py={0}>
+																<Text size="xs">{t("Ref By.")}</Text>
+															</Grid.Col>
+															<Grid.Col span={12} py={0}>
+																{patientInfo?.patient_mode_slug === "ipd" ? (
+																	<Text size="xs">
+																		{patientInfo?.patient_mode_name} -{" "}
+																		{getValue(patientInfo?.admit_doctor_name || "")}
+																	</Text>
+																) : (
+																	<Text size="xs">
+																		{patientInfo?.patient_mode_name} -{" "}
+																		{getValue(
+																			patientInfo?.prescription_doctor_name || ""
+																		)}
+																	</Text>
+																)}
+															</Grid.Col>
+														</Grid>
+													</Table.Td>
+												</Table.Tr>
+												<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+													<Table.Td colSpan={"2"}>
+														<strong>Report Name:</strong> {report?.name}
+													</Table.Td>
+												</Table.Tr>
+											</Table.Tbody>
+										</Table>
+									</Box>
+									<Box mt={"md"}>
+										<Table
+											withColumnBorders
+											verticalSpacing={0}
+											horizontalSpacing={0}
+											striped={false}
+											highlightOnHover={false}
+											style={{
+												margin: 0,
+												padding: 0,
+												borderCollapse: "collapse",
+												width: "100%",
+												border: "1px solid var(--theme-tertiary-color-8)",
+											}}
+										>
+											<Table.Thead>
+												<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+													<Table.Th w={"30%"} pl={4}>
+														{t("Parameter")}
+													</Table.Th>
+													<Table.Th w={"20%"} pl={4}>
+														{t("TestResult")}
+													</Table.Th>
+													<Table.Th w={"20%"} pl={4}>
+														{t("Unit")}
+													</Table.Th>
+													<Table.Th w={"30%"} pl={4}>
+														{t("ReferenceValue")}
+													</Table.Th>
+												</Table.Tr>
+											</Table.Thead>
+											<Table.Tbody>
+												{report?.reports?.map((item, index) => (
+													<Table.Tr key={index}>
+														<Table.Td>
+															<Text fz={"xs"} pl={4}>
+																{item.name}
+															</Text>
+														</Table.Td>
+														<Table.Td>
+															<Text fz={"xs"} pl={4}>
+																{item.result}
+															</Text>
+														</Table.Td>
+														<Table.Td>
+															<Text fz={"xs"} pl={4}>
+																{item.unit}
+															</Text>
+														</Table.Td>
+														<Table.Td>
+															<Text fz={"xs"} pl={4}>
+																{item.reference_value}
+															</Text>
+														</Table.Td>
+													</Table.Tr>
+												))}
+											</Table.Tbody>
+										</Table>
+									</Box>
+									<Box>
+										<Text>Other Report</Text>
+									</Box>
+								</>
+							)}
 						</Box>
 					</Box>
 
 					{/* =============== Additional Information Section ================ */}
 					{report?.comment && (
-					<Box p="md" pt={0} >
-						<Text fw="bold" size="xs" mb="xs" >
-							{t("Comment")}
-						</Text>
-						<Box p="xs" bd="1px solid #ddd">
-							<Text size="xs">{report?.comment || ""}</Text>
+						<Box p="md" pt={0}>
+							<Text fw="bold" size="xs" mb="xs">
+								{t("Comment")}
+							</Text>
+							<Box p="xs" bd="1px solid #ddd">
+								<Text size="xs">{report?.comment || ""}</Text>
+							</Box>
 						</Box>
-					</Box>
 					)}
 					{/* =============== Doctor Information and Signature ================ */}
 
-					<Box p="md" pt={0} pb={0} >
+					<Box p="md" pt={0} pb={0}>
 						<Grid columns={12} gutter="xs">
 							<Grid.Col span={4}>
 								<Box>
 									<Box h={40} ta="center">
 										{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
 									</Box>
-									<Text fw="bold" size="xs" mb="sm"  ta="center">
+									<Text fw="bold" size="xs" mb="sm" ta="center">
 										{report?.assign_labuser_name}
 									</Text>
-									<Text fw="bold"  ta="center">
+									<Text fw="bold" ta="center">
 										Medical Technologist(Lab)
 									</Text>
 								</Box>
@@ -310,10 +355,10 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 									<Box h={40} ta="center">
 										{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
 									</Box>
-									<Text fw="bold" size="xs" mb="sm"  ta="center">
+									<Text fw="bold" size="xs" mb="sm" ta="center">
 										{report?.assign_doctor_name}
 									</Text>
-									<Text fw="bold"  mb="sm"  ta="center">
+									<Text fw="bold" mb="sm" ta="center">
 										Clinical Pathologist
 									</Text>
 								</Box>

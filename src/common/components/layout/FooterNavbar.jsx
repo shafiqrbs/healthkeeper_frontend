@@ -92,13 +92,17 @@ function FooterNavbar() {
 
 					{/* ZOOM BUTTONS */}
 					{/* <Group>
-						<Button size="xs" variant="light" onClick={decreaseZoom}>
+						<Button
+							size="xs"
+							variant="light"
+							onClick={() => (window.parent.document.body.style.zoom = 0.5)}
+						>
 							-
 						</Button>
-						<Button size="xs" variant="light" onClick={resetZoom}>
+						<Button size="xs" variant="light" onClick={(window.parent.document.body.style.zoom = 1)}>
 							{Math.round(zoom * 100)}%
 						</Button>
-						<Button size="xs" variant="light" onClick={increaseZoom}>
+						<Button size="xs" variant="light" onClick={(window.parent.document.body.style.zoom = 1.5)}>
 							+
 						</Button>
 					</Group> */}

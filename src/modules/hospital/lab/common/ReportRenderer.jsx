@@ -25,6 +25,8 @@ import Ultrasonography from "./report-formats/Ultrasonography";
 import SarsCov2 from "./report-formats/SarsCov2";
 import PulmonaryStatus from "./report-formats/PulmonaryStatus";
 import Dengue from "./report-formats/Dengue";
+import CTScan from "./report-formats/CTScan";
+import Serology from "./report-formats/Serology";
 
 const module = MODULES.LAB_TEST;
 
@@ -54,6 +56,7 @@ const ReportRenderer = forwardRef(
 		const renderCustomReport = () => {
 			if (diagnosticReport?.custom_report !== null && diagnosticReport?.custom_report !== undefined) {
 				const slug = diagnosticReport?.particular?.slug;
+				console.log("slug: ", slug);
 
 				switch (slug) {
 					case "covid-19":
@@ -128,6 +131,24 @@ const ReportRenderer = forwardRef(
 								refetchDiagnosticReport={refetchDiagnosticReport}
 							/>
 						);
+					case "ct-scan":
+						// case "hrct-chest":
+						return (
+							<CTScan
+								diagnosticReport={diagnosticReport}
+								setDiagnosticReport={setDiagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+							/>
+						);
+					// case "hrct-chest":
+					case "serology":
+						return (
+							<Serology
+								diagnosticReport={diagnosticReport}
+								setDiagnosticReport={setDiagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+							/>
+						);
 					default:
 						return null;
 				}
@@ -195,75 +216,73 @@ const ReportRenderer = forwardRef(
 
 		return (
 			<>
-			<Box className="border-top-none" px="sm" mt={"xs"}>
-				<DataTable
-					striped
-					highlightOnHover
-					pinFirstColumn
-					stripedColor="var(--theme-tertiary-color-1)"
-					classNames={{
-						root: tableCss.root,
-						table: tableCss.table,
-						header: tableCss.header,
-						footer: tableCss.footer,
-						pagination: tableCss.pagination,
-					}}
-					records={diagnosticReport?.reports || []}
-					columns={[
-						{
-							accessor: "index",
-							title: t("S/N"),
-							textAlignment: "right",
-							render: (_, index) => index + 1,
-						},
-						{
-							accessor: "name",
-							title: t("Name"),
-						},
-						{
-							accessor: "result",
-							title: t("Result"),
-							render: (item, rowIndex) =>
-								diagnosticReport.process === "Done" ? (
-									item.result
-								) : (
-									<TextInput
-										size="xs"
-										fz="xs"
-										value={item.result}
-										ref={(el) => (inputsRef.current[rowIndex] = el)}
-										onKeyDown={(e) => handleKeyDown(e, rowIndex)}
-										onBlur={(e) =>
-											handleFieldChange(item.id, "result", e.target.value)
-										}
-									/>
-								),
-						},
-						{
-							accessor: "unit",
-							title: t("Unit"),
-						},
-						{
-							accessor: "reference_value",
-							title: t("ReferenceValue"),
-						},
-					]}
-					loaderSize="xs"
-					loaderColor="grape"
-					height={mainAreaHeight - 232}
-					fetching={fetching}
-					sortIcons={{
-						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
-					}}
+				<Box className="border-top-none" px="sm" mt={"xs"}>
+					<DataTable
+						striped
+						highlightOnHover
+						pinFirstColumn
+						stripedColor="var(--theme-tertiary-color-1)"
+						classNames={{
+							root: tableCss.root,
+							table: tableCss.table,
+							header: tableCss.header,
+							footer: tableCss.footer,
+							pagination: tableCss.pagination,
+						}}
+						records={diagnosticReport?.reports || []}
+						columns={[
+							{
+								accessor: "index",
+								title: t("S/N"),
+								textAlignment: "right",
+								render: (_, index) => index + 1,
+							},
+							{
+								accessor: "name",
+								title: t("Name"),
+							},
+							{
+								accessor: "result",
+								title: t("Result"),
+								render: (item, rowIndex) =>
+									diagnosticReport.process === "Done" ? (
+										item.result
+									) : (
+										<TextInput
+											size="xs"
+											fz="xs"
+											value={item.result}
+											ref={(el) => (inputsRef.current[rowIndex] = el)}
+											onKeyDown={(e) => handleKeyDown(e, rowIndex)}
+											onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}
+										/>
+									),
+							},
+							{
+								accessor: "unit",
+								title: t("Unit"),
+							},
+							{
+								accessor: "reference_value",
+								title: t("ReferenceValue"),
+							},
+						]}
+						loaderSize="xs"
+						loaderColor="grape"
+						height={mainAreaHeight - 232}
+						fetching={fetching}
+						sortIcons={{
+							sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+							unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+						}}
+					/>
+				</Box>
+				<ReportSubmission
+					diagnosticReport={diagnosticReport}
+					setDiagnosticReport={setDiagnosticReport}
+					form={form}
+					handleSubmit={handleSubmit}
 				/>
-			</Box>
-			<ReportSubmission
-				diagnosticReport={diagnosticReport}
-				setDiagnosticReport={setDiagnosticReport}
-				form={form}
-				handleSubmit={handleSubmit}
-			/>
 			</>
 		);
 	}

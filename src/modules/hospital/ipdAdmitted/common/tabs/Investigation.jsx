@@ -9,6 +9,7 @@ import {
 	Flex,
 	Grid,
 	LoadingOverlay,
+	ScrollArea,
 	Stack,
 	Text,
 } from "@mantine/core";
@@ -29,7 +30,7 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { useTranslation } from "react-i18next";
 import InvestigationPosBN from "@hospital-components/print-formats/ipd/InvestigationPosBN";
 import { useReactToPrint } from "react-to-print";
-import {formatDateTimeAmPm, formatUnixToAmPm} from "@utils/index";
+import { formatDateTimeAmPm, formatUnixToAmPm } from "@utils/index";
 
 export default function Investigation() {
 	const dispatch = useDispatch();
@@ -201,7 +202,7 @@ export default function Investigation() {
 				<Grid.Col span={15}>
 					<Box className="borderRadiusAll" bg="var(--mantine-color-white)" h="100%">
 						<TabSubHeading title="Investigation Details" />
-						<Box p="xs" pos="relative" h={mainAreaHeight - 58}>
+						<ScrollArea p="xs" pos="relative" h={mainAreaHeight - 58}>
 							<LoadingOverlay
 								visible={isLoading}
 								zIndex={1000}
@@ -217,10 +218,16 @@ export default function Investigation() {
 									<Flex py="xs" justify="space-between" gap="xs" mb="3xs">
 										<Flex w="90%">
 											<Box w="100%">
-												<Badge variant="light" p='md' size="md" color="var(--theme-secondary-color-8)">
-													{/*{index + 1}. */}{formatUnixToAmPm(item.created)}
+												<Badge
+													variant="light"
+													p="md"
+													size="md"
+													color="var(--theme-secondary-color-8)"
+												>
+													{/*{index + 1}. */}
+													{formatUnixToAmPm(item.created)}
 												</Badge>
-												<Box mt="md" fz="sm" w={'100%'} >
+												<Box mt="md" fz="sm" w={"100%"}>
 													{item?.items?.map((particular, idx) => (
 														<Flex key={idx} justify="space-between" align="center">
 															<Text fz="xs">
@@ -229,12 +236,16 @@ export default function Investigation() {
 
 															<Text fz="xs" ta="right">
 																{particular.process === "New" && (
-																<Badge variant="light"  size="xs" color="red">
-																	{particular.process}
-																</Badge>
+																	<Badge variant="light" size="xs" color="red">
+																		{particular.process}
+																	</Badge>
 																)}
 																{particular.process === "Done" && (
-																	<Badge variant="light" size="xs" color="var(--theme-primary-color-8)">
+																	<Badge
+																		variant="light"
+																		size="xs"
+																		color="var(--theme-primary-color-8)"
+																	>
 																		{particular.process}
 																	</Badge>
 																)}
@@ -257,7 +268,7 @@ export default function Investigation() {
 									<Divider />
 								</Fragment>
 							))}
-						</Box>
+						</ScrollArea>
 					</Box>
 				</Grid.Col>
 			</Grid>

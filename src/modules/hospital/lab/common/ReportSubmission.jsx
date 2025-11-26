@@ -7,13 +7,13 @@ import { IconPrinter } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useReactToPrint } from "react-to-print";
-import {useParams} from "react-router";
+import { useParams } from "react-router";
 
 export default function ReportSubmission({ form, handleSubmit, diagnosticReport }) {
 	const labReportRef = useRef(null);
 	const { t } = useTranslation();
 	const [labReportData, setLabReportData] = useState(null);
-	const {reportId} = useParams()
+	const { reportId } = useParams();
 
 	const printLabReport = useReactToPrint({
 		content: () => labReportRef.current,
@@ -23,6 +23,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
 		});
+		console.log(res.data);
 		setLabReportData(res?.data);
 		requestAnimationFrame(printLabReport);
 	};
@@ -53,7 +54,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 							<Box>
 								{diagnosticReport?.process === "Done" && (
 									<Flex
-										mt={'les'}
+										mt={"les"}
 										gap="xs"
 										justify="flex-start"
 										align="center"
@@ -77,8 +78,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										</Button>
 									</Flex>
 								)}
-								<Flex mt={'les'} justify="center" align="flex-start"
-									   direction="row" wrap="wrap">
+								<Flex mt={"les"} justify="center" align="flex-start" direction="row" wrap="wrap">
 									{diagnosticReport?.process === "Tagged" && (
 										<Button size="md" className="btnPrimaryBg" type="submit" id="handleSubmit">
 											<Flex direction="column" gap={0}>
