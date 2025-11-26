@@ -30,12 +30,13 @@ export default function _ReportFormatTable({ module }) {
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const height = mainAreaHeight - 48;
+	const height = mainAreaHeight - 132;
 	const [records, setRecords] = useState([]);
+	const [resetKey, setResetKey] = useState([]);
 	const [fetching] = useState(false);
 	const [submitFormData, setSubmitFormData] = useState({});
 
-	const { data: entity } = useDataWithoutStore({ url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.VIEW}/${id}` });
+	const { data: entity,refetch } = useDataWithoutStore({ url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.VIEW}/${id}` });
 	const entityData = entity?.data?.investigation_report_format;
 
 	const parents =
@@ -60,8 +61,7 @@ export default function _ReportFormatTable({ module }) {
 		if (deleteEntityData.fulfilled.match(res)) {
 			dispatch(setRefetchData({ module, refetching: true }));
 			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-			navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.INVESTIGATION.REPORT_FORMAT}/${report}`);
-			dispatch(setInsertType({ insertType: "create", module }));
+			refetch();
 		} else {
 			notifications.show({
 				color: ERROR_NOTIFICATION_COLOR,
@@ -102,8 +102,9 @@ export default function _ReportFormatTable({ module }) {
 				}
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
 				form.reset();
-				close(); // close the drawer
+				setResetKey(prev => prev+1);
 				dispatch(setRefetchData({ module, refetching: true }));
+				refetch();
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
@@ -170,11 +171,102 @@ export default function _ReportFormatTable({ module }) {
 
 	return (
 		<>
+			<Box bg="var(--theme-secondary-color-0)" pl={'xs'}>
+				<form key={resetKey} onSubmit={form.onSubmit(handleSubmit)}>
+					<Grid w="100%" columns={24}>
+						<Grid.Col span={4} pb={0}>
+							<SelectForm
+								form={form}
+								label={t("ParentName")}
+								tooltip={t("ParentName")}
+								placeholder={t("ParentName")}
+								name="parent_id"
+								id="parent_id"
+								nextField="name"
+								dropdownValue={parents}
+								value={form.values.parent_id} // fixed: use correct field
+								required={false}
+							/>
+						</Grid.Col>
+						<Grid.Col span={4} pb={0}>
+							<InputForm
+								form={form}
+								label={t("Name")}
+								tooltip={t("NameValidationMessage")}
+								placeholder={t("ParameterName")}
+								name="name"
+								id="name"
+								nextField="sample_value"
+								value={form.values.name}
+								required={true}
+							/>
+						</Grid.Col>
+						<Grid.Col span={4} pb={0}>
+							<InputForm
+								form={form}
+								label={t("SampleValue")}
+								tooltip={t("SampleValue")}
+								placeholder={t("SampleValue")}
+								name="sample_value"
+								id="sample_value"
+								nextField="unit"
+								value={form.values.sample_value}
+							/>
+						</Grid.Col>
+						<Grid.Col span={4} pb={0}>
+							<InputForm
+								form={form}
+								label={t("UnitName")}
+								tooltip={t("UnitName")}
+								placeholder={t("UnitName")}
+								name="unit"
+								id="unit"
+								nextField="reference_value"
+								value={form.values.unit_name}
+							/>
+						</Grid.Col>
+						<Grid.Col span={6} pb={0}>
+							<TextAreaForm
+								form={form}
+								label={t("ReferenceValue")}
+								tooltip={t("ReferenceValue")}
+								placeholder={t("ReferenceValue")}
+								name="reference_value"
+								id="reference_value"
+								nextField="EntityFormSubmit"
+								value={form.values.reference_value}
+							/>
+						</Grid.Col>
+						<Grid.Col span={2} pb={0} mt={'xl'}>
+							<Button
+								size="xs"
+								bg="var(--theme-primary-color-6)"
+								type="submit"
+								id="EntityFormSubmit"
+								leftSection={<IconDeviceFloppy size={16} />}
+							>
+								<Flex direction={`column`} gap={0}>
+									<Text fz={14} fw={400}>
+										{t("Save")}
+									</Text>
+								</Flex>
+							</Button>
+						</Grid.Col>
+					</Grid>
+				</form>
+			</Box>
 			<Box className=" border-top-none">
 				<Grid w="100%" columns={24}>
-					<Grid.Col span={16}>
+					<Grid.Col span={24}>
 						<DataTable
-
+							classNames={{
+								root: tableCss.root,
+								table: tableCss.table,
+								body: tableCss.body,
+								header: tableCss.header,
+								footer: tableCss.footer,
+								pagination: tableCss.pagination,
+							}}
 							records={entityData}
 							columns={[
 								{
@@ -182,30 +274,6 @@ export default function _ReportFormatTable({ module }) {
 									title: t("S/N"),
 									textAlignment: "right",
 									render: (item) => entityData?.indexOf(item) + 1,
-								},
-								{
-									accessor: "name",
-									title: t("Name"),
-									render: (item) => (
-										<TextInput
-											placeholder={t("Name")}
-											value={submitFormData[item.id]?.name || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "name", val.target.value)}
-											onBlur={() => handleRowSubmit(item.id)}
-										/>
-									),
-								},
-								{
-									accessor: "unit",
-									title: t("UnitName"),
-									render: (item) => (
-										<TextInput
-											placeholder={t("UnitName")}
-											value={submitFormData[item.id]?.unit || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "unit", val.target.value)}
-											onBlur={() => handleRowSubmit(item.id)}
-										/>
-									),
 								},
 								{
 									accessor: "parent_id",
@@ -223,6 +291,20 @@ export default function _ReportFormatTable({ module }) {
 									),
 								},
 								{
+									accessor: "name",
+									title: t("Name"),
+									render: (item) => (
+										<TextInput
+											placeholder={t("Name")}
+											value={submitFormData[item.id]?.name || ""}
+											onChange={(val) => handleDataTypeChange(item.id, "name", val.target.value)}
+											onBlur={() => handleRowSubmit(item.id)}
+										/>
+									),
+								},
+
+
+								{
 									accessor: "sample_value",
 									title: t("SampleValue"),
 									render: (item) => (
@@ -232,6 +314,18 @@ export default function _ReportFormatTable({ module }) {
 											onChange={(val) =>
 												handleDataTypeChange(item.id, "sample_value", val.target.value)
 											}
+											onBlur={() => handleRowSubmit(item.id)}
+										/>
+									),
+								},
+								{
+									accessor: "unit",
+									title: t("UnitName"),
+									render: (item) => (
+										<TextInput
+											placeholder={t("UnitName")}
+											value={submitFormData[item.id]?.unit || ""}
+											onChange={(val) => handleDataTypeChange(item.id, "unit", val.target.value)}
 											onBlur={() => handleRowSubmit(item.id)}
 										/>
 									),
@@ -281,102 +375,6 @@ export default function _ReportFormatTable({ module }) {
 							loaderColor="grape"
 							height={height}
 						/>
-					</Grid.Col>
-					<Grid.Col span={8}>
-						<form onSubmit={form.onSubmit(handleSubmit)}>
-							<Box pt={"4"} ml={"4"} pb={"4"} pr={"12"} bg="var(--theme-primary-color-1)">
-								<Stack right align="flex-end">
-									<Button
-										size="xs"
-										bg="var(--theme-primary-color-6)"
-										type="submit"
-										id="EntityFormSubmit"
-										leftSection={<IconDeviceFloppy size={16} />}
-									>
-										<Flex direction={`column`} gap={0}>
-											<Text fz={14} fw={400}>
-												{t("CreateAndSave")}
-											</Text>
-										</Flex>
-									</Button>
-								</Stack>
-							</Box>
-							<Stack mih={height} className="form-stack-vertical">
-								<Grid align="center">
-									<Grid.Col span={12} pb={0}>
-										<SelectForm
-											form={form}
-											label={t("ParentName")}
-											tooltip={t("ParentName")}
-											placeholder={t("ParentName")}
-											name="parent_id"
-											id="parent_id"
-											nextField="name"
-											dropdownValue={parents}
-											value={form.values.parent_id} // fixed: use correct field
-											required={false}
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center">
-									<Grid.Col span={12} pb={0}>
-										<InputForm
-											form={form}
-											label={t("Name")}
-											tooltip={t("NameValidationMessage")}
-											placeholder={t("ParameterName")}
-											name="name"
-											id="name"
-											nextField="sample_value"
-											value={form.values.name}
-											required={true}
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center">
-									<Grid.Col span={12} pb={0}>
-										<InputForm
-											form={form}
-											label={t("SampleValue")}
-											tooltip={t("SampleValue")}
-											placeholder={t("SampleValue")}
-											name="sample_value"
-											id="sample_value"
-											nextField="unit_name"
-											value={form.values.sample_value}
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center">
-									<Grid.Col span={12} pb={0}>
-										<InputForm
-											form={form}
-											label={t("UnitName")}
-											tooltip={t("UnitName")}
-											placeholder={t("UnitName")}
-											name="unit"
-											id="unit"
-											nextField="reference_value"
-											value={form.values.unit_name}
-										/>
-									</Grid.Col>
-								</Grid>
-								<Grid align="center">
-									<Grid.Col span={12} pb={0}>
-										<TextAreaForm
-											form={form}
-											label={t("ReferenceValue")}
-											tooltip={t("ReferenceValue")}
-											placeholder={t("ReferenceValue")}
-											name="reference_value"
-											id="reference_value"
-											nextField=""
-											value={form.values.reference_value}
-										/>
-									</Grid.Col>
-								</Grid>
-							</Stack>
-						</form>
 					</Grid.Col>
 				</Grid>
 			</Box>

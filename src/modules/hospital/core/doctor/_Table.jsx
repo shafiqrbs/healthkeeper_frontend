@@ -67,6 +67,8 @@ export default function _Table({ module, open }) {
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
 
+
+
     // infinite table scroll
     const {
         scrollRef,
@@ -256,7 +258,23 @@ export default function _Table({ module, open }) {
     };
 
     useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
+    const [opdRoomState, setOpdRoomState] = useState({});
+    useEffect(() => {
+        const initial = {};
+        records.forEach(r => {
+            initial[r.id] = r.opd_room_ids ?? [];   // backend gives array
+        });
+        setOpdRoomState(initial);
+    }, [records]);
+    const updateOpdRooms = (id, value) => {
+        setOpdRoomState(prev => ({
+            ...prev,
+            [id]: value,
+        }));
 
+        // Update backend
+        handleFieldChange(id, "opd_room_ids", value);
+    };
     return (
         <>
             <Box p="xs" className="boxBackground borderRadiusAll border-bottom-none">
@@ -364,24 +382,12 @@ export default function _Table({ module, open }) {
                                             accessor: "opd_room_id",
                                             title: t("OPDRoom"),
                                             render: (item) => (
-                                                /*<Select
-                                                    size="xs"
-                                                    className={inlineInputCss.inputText}
-                                                    placeholder={t("SelectOpdRoom")}
-                                                    data={getOpdRooms}
-                                                    value={submitFormData[item.id]?.opd_room_id ?? ""}
-                                                    onChange={(val) =>
-                                                        handleFieldChange(item.id, "opd_room_id", val)
-                                                    }
-                                                    rightSection={updatingRows[item.id]}
-                                                />*/
                                                 <MultiSelect
-                                                    placeholder="Pick value"
+                                                    placeholder="Select OPD Room"
                                                     data={getOpdRooms}
                                                     clearable
-                                                    onChange={(val) =>
-                                                        handleFieldChange(item.id, "opd_room_ids", val)
-                                                    }
+                                                    value={opdRoomState[item.id] || []}
+                                                    onChange={(val) => updateOpdRooms(item.id, val)}
                                                 />
                                             ),
                                         },

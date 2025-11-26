@@ -41,7 +41,7 @@ export default function DateSelector({
 	const [selectedDate, setSelectedDate] = useState(value ? new Date(value) : null);
 
 	// =============== years and months for custom header ================
-	const years = range(1940, getYear(new Date()) + 1, 1);
+	const years = range(1940, getYear(new Date()) + 5, 1);
 	const months = [
 		"January",
 		"February",

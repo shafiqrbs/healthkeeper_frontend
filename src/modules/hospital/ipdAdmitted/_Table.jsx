@@ -41,7 +41,6 @@ const PER_PAGE = 500;
 const userRoles = getUserRole();
 const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator",'nurse_basic','nurse_incharge',"admin_nurse"];
 
-
 export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode }) {
 	const dischargePaperRef = useRef(null);
 	const admissionFormRef = useRef(null);
@@ -290,7 +289,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 													size="compact-xs"
 													fw={400}
 												>
-													{t("Issue Medicine")}
+													{t("Issue")}
 												</Button>
 											)
 											}

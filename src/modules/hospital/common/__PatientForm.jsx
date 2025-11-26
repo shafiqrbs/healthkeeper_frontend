@@ -589,7 +589,7 @@ export function Form({
 										tooltip={t("EnterYears")}
 										name="year"
 										id="year"
-										nextField="month"
+										nextField="mobile"
 										min={0}
 										max={150}
 										readOnly={form.values.dob}

@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, CloseButton, Badge} from "@mantine/core";
 import {useTranslation} from "react-i18next";
 import {
     IconTrashX,
@@ -117,6 +117,8 @@ export default function _Table({module}) {
         navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.CREATE}`);
     };
 
+    const processColorMap = {Created: 'Red','Received':'green',Approved:'blue'};
+
     return (
         <>
             <Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
@@ -163,9 +165,20 @@ export default function _Table({module}) {
                             sortable: true,
                         },
                         {
-                            accessor: "process",
-                            title: t("Process"),
-                            sortable: false,
+                            accessor: "cbName",
+                            title: t("CreatedBy"),
+                            sortable: true,
+                        },
+                        { accessor: 'process',textAlign: 'center', title: t('Process') ,
+                            render: (item) => {
+                                const color = processColorMap[item.process] || ''; // fallback for unknown status
+                                return (
+                                    <Badge size="xs" radius="sm" color={color}>
+                                        {item.process}
+                                    </Badge>
+                                );
+                            },
+                            cellsClassName: tableCss.statusBackground
                         },
                         {
                             accessor: "action",
@@ -177,9 +190,7 @@ export default function _Table({module}) {
                                     <Button.Group>
                                         {values.process !== 'Received' && !values.received_by_id &&
                                             <Button
-                                            onClick={() => {
-                                            handleEntityEdit(values.id);
-                                        }}
+                                            onClick={() => { handleEntityEdit(values.id); }}
                                             variant="filled"
                                             c="white"
                                             fw={400}

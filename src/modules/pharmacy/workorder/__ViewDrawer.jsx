@@ -255,7 +255,7 @@ export default function __ViewDrawer({viewDrawer, setViewDrawer,height, module,r
                                 radius="es"
                                 leftSection={<IconDeviceFloppy size={16}/>}
                             >
-                                {t("Receive")}
+                                {t("Received")}
                             </Button>
                             }
                         </Flex>
