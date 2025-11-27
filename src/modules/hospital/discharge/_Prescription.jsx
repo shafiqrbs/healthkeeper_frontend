@@ -120,14 +120,12 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 			})
 		);
 
-		useEffect(() => {
-			dispatch(
-				getIndexEntityData({
-					url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX_RXEMERGENCY,
-					module: "exemergency",
-				})
-			);
-		}, [emergencyRefetching]);
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX_RXEMERGENCY,
+				module: "exemergency",
+			})
+		);
 
 		dispatch(
 			getIndexEntityData({
@@ -366,7 +364,7 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
 				showNotificationComponent(t("PrescriptionSavedSuccessfully"), "green", "lightgray", true, 700, true);
-				setRefetchData({ module, refetching: true });
+				dispatch(setRefetchData({ module, refetching: true }));
 				if (redirect) navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
