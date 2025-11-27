@@ -68,19 +68,15 @@ export default function Dashboard() {
 	}, [ipd]);
 
 	const vitalChartData = useMemo(() => {
-		if (!Array.isArray(vitalRecordList)) {
-			return [];
-		}
+		if (!Array.isArray(vitalRecordList)) return [];
 
 		return vitalRecordList
-			.map((record) => {
-				const chartLabelSource = record?.date || record?.createdAt || null;
-				const chartLabel = chartLabelSource
-					? new Date(chartLabelSource).toLocaleString()
-					: record?.time || "Unknown";
+			.map((record, index) => {
+				const date = record?.date ?? record?.createdAt ?? null;
 
-				const mappedRecord = {
-					chartLabel,
+				return {
+					timestamp: date ? new Date(date).getTime() : Date.now() + index,
+					chartLabel: date ? new Date(date).toLocaleString() : "Unknown",
 					pulseRate: getNumericValue(record?.pulseRate),
 					bloodPressure: getNumericValue(record?.bloodPressure),
 					respirationRate: getNumericValue(record?.respirationRate),
@@ -88,14 +84,9 @@ export default function Dashboard() {
 					saturationWithOxygen: getNumericValue(record?.saturationWithOxygen),
 					saturationWithoutOxygen: getNumericValue(record?.saturationWithoutOxygen),
 				};
-
-				const hasPlottableValue = Object.entries(mappedRecord).some(
-					([key, value]) => key !== "chartLabel" && value !== null
-				);
-
-				return hasPlottableValue ? mappedRecord : null;
 			})
-			.filter(Boolean);
+			.filter((item) => Object.values(item).some((v) => v !== null))
+			.sort((a, b) => a.timestamp - b.timestamp);
 	}, [vitalRecordList]);
 
 	const insulinChartData = useMemo(() => {
@@ -129,6 +120,8 @@ export default function Dashboard() {
 			})
 			.filter(Boolean);
 	}, [insulinRecordList]);
+
+	console.log(vitalChartData, insulinChartData);
 
 	const columns = useMemo(
 		() => [
@@ -513,10 +506,18 @@ export default function Dashboard() {
 								<LineChart
 									h={320}
 									data={vitalChartData}
-									dataKey="chartLabel"
+									dataKey="timestamp"
 									withLegend
+									xScale={{ type: "linear" }}
+									xAxisProps={{
+										tickFormatter: (value) => {
+											const dataPoint = vitalChartData.find((d) => d.timestamp === value);
+											return dataPoint?.chartLabel || new Date(value).toLocaleString();
+										},
+									}}
 									series={[
 										{ name: "Pulse Rate", color: "blue.6", dataKey: "pulseRate" },
+										{ name: "Blood Pressure", color: "violet.6", dataKey: "bloodPressure" },
 										{ name: "Respiration Rate", color: "green.6", dataKey: "respirationRate" },
 										{ name: "Temperature (°F)", color: "red.6", dataKey: "temperatureFahrenheit" },
 										{ name: "Sat With O₂", color: "orange.6", dataKey: "saturationWithOxygen" },
