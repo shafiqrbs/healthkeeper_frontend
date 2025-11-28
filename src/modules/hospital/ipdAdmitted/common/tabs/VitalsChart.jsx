@@ -51,7 +51,6 @@ export default function VitalsChart({ data, refetch }) {
 			temperatureFahrenheit: null,
 		},
 		validate: {
-
 			date: (value) => {
 				if (!value) {
 					return t("Enter Date");
@@ -152,11 +151,11 @@ export default function VitalsChart({ data, refetch }) {
 
 	const columns = useMemo(
 		() => [
-			 {
-			 	accessor: "createdAt",
-			 	title: "Created",
-			 	render: ({ createdAt }) => new Date(createdAt).toLocaleString(),
-			 },
+			{
+				accessor: "createdAt",
+				title: "Created",
+				render: ({ createdAt }) => new Date(createdAt).toLocaleString(),
+			},
 			{ accessor: "time", title: "Time" },
 			{ accessor: "bloodPressure", title: "BP (mm of Hg)" },
 			{ accessor: "pulseRate", title: "Pulse (Beat/Minute)" },

@@ -157,13 +157,17 @@ export default function Dashboard() {
 		[]
 	);
 
+	const filteredChartData = vitalChartData.map((v) => ({
+		...v,
+	}));
+
 	// =============== check if IPD data is available ================
 	return (
 		<Box>
 			<Grid columns={12} h="100%" w="100%">
 				{/* =============== Column 1: Patient Information =============== */}
 				<Grid.Col span={4}>
-					<ScrollArea h={mainAreaHeight - 350}>
+					<ScrollArea h={mainAreaHeight - 430}>
 						<Paper withBorder p="lg" radius="sm" bg="var(--theme-tertiary-color-0)" h="100%">
 							<Stack gap="3xs">
 								<Title order={4} fw={700} mb="es">
@@ -268,7 +272,7 @@ export default function Dashboard() {
 								For Referred
 							</Button>
 						</Group>
-						<ScrollArea h={mainAreaHeight - 420}>
+						<ScrollArea h={mainAreaHeight - 500}>
 							<Paper p="lg" pt={0} radius="sm" bg="var(--mantine-color-white)" h="100%">
 								<Stack gap="md">
 									<Divider
@@ -388,7 +392,7 @@ export default function Dashboard() {
 
 				{/* =============== Column 3: Financial & Medical Information =============== */}
 				<Grid.Col span={4} h="100%">
-					<ScrollArea h={mainAreaHeight - 350}>
+					<ScrollArea h={mainAreaHeight - 430}>
 						<Paper withBorder p="lg" radius="sm" bg="white" h="100%">
 							<Stack gap="lg" h="100%">
 								<Box>
@@ -505,23 +509,16 @@ export default function Dashboard() {
 							{vitalChartData.length > 0 ? (
 								<LineChart
 									h={320}
-									data={vitalChartData}
-									dataKey="timestamp"
+									data={filteredChartData}
+									dataKey="chartLabel" // X axis = chartLabel string
 									withLegend
-									xScale={{ type: "linear" }}
-									xAxisProps={{
-										tickFormatter: (value) => {
-											const dataPoint = vitalChartData.find((d) => d.timestamp === value);
-											return dataPoint?.chartLabel || new Date(value).toLocaleString();
-										},
-									}}
 									series={[
-										{ name: "Pulse Rate", color: "blue.6", dataKey: "pulseRate" },
-										{ name: "Blood Pressure", color: "violet.6", dataKey: "bloodPressure" },
-										{ name: "Respiration Rate", color: "green.6", dataKey: "respirationRate" },
-										{ name: "Temperature (°F)", color: "red.6", dataKey: "temperatureFahrenheit" },
-										{ name: "Sat With O₂", color: "orange.6", dataKey: "saturationWithOxygen" },
-										{ name: "Sat Without O₂", color: "teal.6", dataKey: "saturationWithoutOxygen" },
+										{ name: "pulseRate", label: "Pulse Rate", color: "blue.6" },
+										{ name: "bloodPressure", label: "Blood Pressure", color: "violet.6" },
+										{ name: "respirationRate", label: "Respiration Rate", color: "green.6" },
+										{ name: "temperatureFahrenheit", label: "Temperature (°F)", color: "red.6" },
+										{ name: "saturationWithOxygen", label: "Sat With O₂", color: "orange.6" },
+										{ name: "saturationWithoutOxygen", label: "Sat Without O₂", color: "teal.6" },
 									]}
 								/>
 							) : (
@@ -546,15 +543,15 @@ export default function Dashboard() {
 									dataKey="chartLabel"
 									withLegend
 									series={[
-										{ name: "FBS", color: "blue.6", dataKey: "fbs" },
-										{ name: "2H After Breakfast", color: "green.6", dataKey: "twoHAFB" },
-										{ name: "2H After Lunch", color: "orange.6", dataKey: "twoHAL" },
-										{ name: "2H After Dinner", color: "grape.6", dataKey: "twoHAD" },
-										{ name: "Before Dinner", color: "red.6", dataKey: "bd" },
-										{ name: "Before Lunch", color: "teal.6", dataKey: "bl" },
-										{ name: "Insulin Morning", color: "cyan.6", dataKey: "insulinMorning" },
-										{ name: "Insulin Noon", color: "indigo.6", dataKey: "insulinNoon" },
-										{ name: "Insulin Night", color: "violet.6", dataKey: "insulinNight" },
+										{ name: "fbs", label: "FBS", color: "blue.6" },
+										{ name: "twoHAFB", label: "2H After Breakfast", color: "green.6" },
+										{ name: "twoHAL", label: "2H After Lunch", color: "orange.6" },
+										{ name: "twoHAD", label: "2H After Dinner", color: "grape.6" },
+										{ name: "bd", label: "Before Dinner", color: "red.6" },
+										{ name: "bl", label: "Before Lunch", color: "teal.6" },
+										{ name: "insulinMorning", label: "Insulin Morning", color: "cyan.6" },
+										{ name: "insulinNoon", label: "Insulin Noon", color: "indigo.6" },
+										{ name: "insulinNight", label: "Insulin Night", color: "violet.6" },
 									]}
 								/>
 							) : (
