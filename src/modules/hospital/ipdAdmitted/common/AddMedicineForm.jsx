@@ -59,7 +59,6 @@ import {
 	appendMealValueToForm,
 	medicineOptionsFilter,
 } from "@utils/prescription";
-import InputForm from "@components/form-builders/InputForm";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import BookmarkDrawer from "@hospital-components/BookmarkDrawer";
 import { setRefetchData } from "@/app/store/core/crudSlice";
@@ -632,17 +631,16 @@ export default function AddMedicineForm({
 									</Group>
 								</Grid.Col>
 								<Grid.Col span={2}>
-									<Group grow gap="les" mt={"2"}>
-										<Button
-											leftSection={<IconPlus size={16} />}
-											type="submit"
-											variant="filled"
-											bg="var(--theme-secondary-color-6)"
-											size="compact-md"
-										>
-											{t("Add")}
-										</Button>
-									</Group>
+									<Button
+										leftSection={<IconPlus size={16} />}
+										type="submit"
+										variant="filled"
+										bg="var(--theme-secondary-color-6)"
+										w="100%"
+										disabled={!medicineForm.values.medicine_id && !medicineForm.values.generic}
+									>
+										{t("Add")}
+									</Button>
 								</Grid.Col>
 							</Grid>
 						</Group>
@@ -1051,7 +1049,12 @@ export default function AddMedicineForm({
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
-			<BookmarkDrawer opened={openedBookmark} close={closeBookmark} type="ipd-treatment" />
+			<BookmarkDrawer
+				opened={openedBookmark}
+				close={closeBookmark}
+				type="ipd-treatment"
+				section="ipdPrescription"
+			/>
 		</Box>
 	);
 }

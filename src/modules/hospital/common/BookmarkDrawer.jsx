@@ -6,7 +6,7 @@ import { IconPlus } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import TreatmentAddMedicineForm from "@hospital-components/__TreatmentAddMedicineForm";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -21,8 +21,10 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 const module = MODULES_CORE.USER_TREATMENT;
 const treatmentModule = MODULES_CORE.TREATMENT_TEMPLATES;
 
-export default function BookmarkDrawer({ opened, close, type = "opd-treatment", isDischarged = false }) {
+export default function BookmarkDrawer({ opened, close, type = "opd-treatment", section = "discharge" }) {
 	const { prescriptionId, treatmentId, id, dischargeId } = useParams();
+	const [searchParams] = useSearchParams();
+	const ipdId = searchParams.get("ipd");
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -99,10 +101,14 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 	const handleTabClick = (tabItem) => {
 		if (type === "opd-treatment") {
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescriptionId}/${tabItem.id}`);
-		} else if (type === "ipd-treatment" && !isDischarged) {
-			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}/${tabItem.id}?tab=e-fresh`);
-		} else {
+		} else if (type === "ipd-treatment" && section === "discharge") {
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DISCHARGE.INDEX}/${dischargeId}/${tabItem.id}`);
+		} else if (type === "ipd-treatment" && section === "ipdPrescription") {
+			navigate(
+				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${id}/${tabItem.id}?ipd=${ipdId}`
+			);
+		} else {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}/${tabItem.id}?tab=e-fresh`);
 		}
 	};
 

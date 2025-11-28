@@ -40,7 +40,7 @@ import ParticularMatrixIndex from "@modules/hospital/core/particular-matrix";
 import OpdRoomIndex from "@modules/hospital/core/opd-room";
 import DoctorDashboard from "@modules/hospital/doctor/dashboard";
 import DoctorOpdIndex from "@modules/hospital/doctor/opd";
-import PharmacyIndex from "@modules/pharmacy/dashboard";
+// import PharmacyIndex from "@modules/pharmacy/dashboard";
 import PharmacyStockIndex from "@modules/pharmacy/stock";
 import MedicineIndex from "@modules/pharmacy/medicine";
 import GenericIndex from "@modules/pharmacy/generic";
@@ -232,10 +232,11 @@ function AppRoute() {
 								</ProtectedRoute>
 							}
 						/>
-						<Route path=":id" element={<IpdAdmittedIndex />} />
+						<Route path="prescription/:id/:treatmentId" element={<IpdAdmittedIndex />} />
 						<Route path="prescription/:id" element={<IpdAdmittedIndex />} />
-						<Route path="manage/:id" element={<IpdManageIndex />} />
 						<Route path="manage/:id/:treatmentId" element={<IpdManageIndex />} />
+						<Route path="manage/:id" element={<IpdManageIndex />} />
+						<Route path=":id" element={<IpdAdmittedIndex />} />
 					</Route>
 					<Route
 						path="emergency"
