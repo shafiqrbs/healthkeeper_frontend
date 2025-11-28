@@ -175,7 +175,6 @@ export default function _Table({ module, open }) {
                     newData[item.id] = {
                         name: item.name ?? "",
                         unit_id: item.unit_id?.toString() ?? "",
-                        opd_room_id: item.opd_room_id?.toString() ?? "",
                         opd_room_ids: item.opd_room_ids?.toString() ?? "",
                         opd_referred: item?.opd_referred ?? false,
                         ordering: item.ordering ?? idx + 1,
@@ -185,7 +184,7 @@ export default function _Table({ module, open }) {
             return newData;
         });
     }, [records]);
-
+    console.log(records)
     const handleFieldChange = async (rowId, field, value) => {
         setSubmitFormData((prev) => ({
             ...prev,

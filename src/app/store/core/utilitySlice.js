@@ -47,6 +47,9 @@ export const HOSPITAL_DROPDOWNS = {
 	PARTICULAR_ROOM: { UTILITY: "particularRoom", TYPE: "room", PATH: "hospital/select/particular" },
 
 	PARTICULAR_OPD_ROOM: { UTILITY: "particularOpdRoom", TYPE: "opd-room", PATH: "hospital/select/allopdroom" },
+
+	PARTICULAR_LAB_ROOM: { UTILITY: "particularLabRoom", TYPE: "lab-room", PATH: "hospital/select/particular" },
+
 	PARTICULAR_OPD_REFERRED_ROOM: {
 		UTILITY: "particularOpdRoom",
 		TYPE: "opd-room",
@@ -69,6 +72,8 @@ export const HOSPITAL_DROPDOWNS = {
 		TYPE: "diagnostic-room",
 		PATH: "hospital/select/mode"
 	},
+
+
 	PARTICULAR_MODE_DIAGNOSTIC_DEPARTMENT: {
 		UTILITY: "particularRoomMode",
 		TYPE: "diagnostic-department",

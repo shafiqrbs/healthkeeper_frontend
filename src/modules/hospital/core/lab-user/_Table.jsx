@@ -1,4 +1,16 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, NumberInput, TextInput, Select} from "@mantine/core";
+import {
+    Group,
+    Box,
+    ActionIcon,
+    Text,
+    rem,
+    Flex,
+    Button,
+    NumberInput,
+    TextInput,
+    Select,
+    MultiSelect
+} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
     IconTrashX,
@@ -54,7 +66,7 @@ export default function _Table({ module, open }) {
     const searchKeyword = useSelector((state) => state.crud.searchKeyword);
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
-
+    const [updatingRows, setUpdatingRows] = useState({});
     // for infinity table data scroll, call the hook
     const {
         scrollRef,
@@ -96,10 +108,10 @@ export default function _Table({ module, open }) {
     });
 
 
-    const { data: getOpdRooms } = useGlobalDropdownData({
-        path: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.PATH,
-        params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.TYPE },
-        utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_ROOM.UTILITY,
+    const { data: getDiagnosticRooms } = useGlobalDropdownData({
+        path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_ROOM.PATH,
+        params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_ROOM.TYPE },
+        utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_ROOM.UTILITY,
     });
 
 
@@ -156,26 +168,43 @@ export default function _Table({ module, open }) {
     const form = useForm({
         initialValues: {
             name: "",
-            unit_id: "",
-            opd_room_id: "",
+            diagnostic_room_ids: "",
         }
     });
 
 
-    useEffect(() => {
+   /* useEffect(() => {
         if (!records?.length) return;
         const initialFormData = records.reduce((acc, item) => {
             acc[item.id] = {
                 name: item.name || "",
-                unit_id: item.unit_id || "",
-                opd_room_id: item.opd_room_id || "",
+                diagnostic_room_ids: item.diagnostic_room_ids?.toString() ?? "",
             };
             return acc;
         }, {});
 
         setSubmitFormData(initialFormData);
-    }, [records]);
+    }, [records]);*/
 
+    // Initialize form state once per row
+
+    useEffect(() => {
+        if (!records?.length) return;
+
+        setSubmitFormData((prev) => {
+            const newData = { ...prev };
+            records.forEach((item, idx) => {
+                if (!newData[item.id]) {
+                    newData[item.id] = {
+                        name: item.name ?? "",
+                        diagnostic_room_ids: item.diagnostic_room_ids?.toString() ?? "",
+                    };
+                }
+            });
+            return newData;
+        });
+    }, [records]);
+    console.log(records)
     const handleDataTypeChange = (rowId, field, value) => {
         setSubmitFormData(prev => ({
             ...prev,
@@ -214,6 +243,48 @@ export default function _Table({ module, open }) {
         } catch (error) {
             errorNotification(error.message);
         }
+    };
+
+    const [opdRoomState, setOpdRoomState] = useState({});
+
+    const handleFieldChange = async (rowId, field, value) => {
+        setSubmitFormData((prev) => ({
+            ...prev,
+            [rowId]: { ...prev[rowId], [field]: value },
+        }));
+
+        setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
+
+        try {
+            await dispatch(
+                storeEntityData({
+                    url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
+                    data: { [field]: value },
+                    module,
+                })
+            );
+        } catch (error) {
+            errorNotification(error.message);
+        } finally {
+            setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
+        }
+    };
+
+    useEffect(() => {
+        const initial = {};
+        records.forEach(r => {
+            initial[r.id] = r.diagnostic_room_ids ?? [];   // backend gives array
+        });
+        setOpdRoomState(initial);
+    }, [records]);
+    const updateOpdRooms = (id, value) => {
+        setOpdRoomState(prev => ({
+            ...prev,
+            [id]: value,
+        }));
+
+        // Update backend
+        handleFieldChange(id, "diagnostic_room_ids", value);
     };
 
     useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
@@ -263,41 +334,18 @@ export default function _Table({ module, open }) {
                             ),
                         },
                         {
-                            accessor: "unit_id",
-                            title: t("UnitName"),
+                            accessor: "diagnostic_room_ids",
+                            title: t("DiagnosticRoom"),
                             render: (item) => (
-                                <Select
-                                    size="xs"
-                                    className={inlineInputCss.inputText}
-                                    placeholder={t("SelectUnitName")}
-                                    data={getParticularPaymentModes}
-                                    value={submitFormData[item.id]?.unit_id || ""}
-                                    onChange={(val) => {
-                                        handleDataTypeChange(item.id, "unit_id", val);
-                                        handleRowSubmit(item.id);
-                                    }}
+                                <MultiSelect
+                                    placeholder="SelectDiagnosticRoom"
+                                    data={getDiagnosticRooms}
+                                    clearable
+                                    value={opdRoomState[item.id] || []}
+                                    onChange={(val) => updateOpdRooms(item.id, val)}
                                 />
                             ),
                         },
-                        {
-                            accessor: "opd_room_id",
-                            title: t("OPDRoom"),
-                            render: (item) => (
-                                <Select
-                                    size="xs"
-                                    className={inlineInputCss.inputText}
-                                    placeholder={t("SelectOPDRoom")}
-                                    data={getOpdRooms}
-                                    value={submitFormData[item.id]?.opd_room_id || ""}
-                                    onChange={(val) => {
-                                        handleDataTypeChange(item.id, "opd_room_id", val);
-                                        handleRowSubmit(item.id);
-                                    }}
-                                />
-                            ),
-                        },
-
-
                         {
                             accessor: "action",
                             title: "",
