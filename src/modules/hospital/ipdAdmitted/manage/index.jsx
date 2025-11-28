@@ -113,8 +113,8 @@ export default function Index() {
 		}
 	}, [searchParams]);
 
-	const handleTabClick = async (tabItem) => {
-		if (tabItem === "E-Fresh") {
+	const handleTabClick = async (value) => {
+		if (value === "e-fresh") {
 			modals.openConfirmModal({
 				title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 				children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
@@ -126,17 +126,17 @@ export default function Index() {
 						url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.EFRESH_ORDER}/${id}`,
 					});
 					refetch();
-					setBaseTabValue(tabItem?.toLowerCase());
-					setSearchParams({ tab: tabItem?.toLowerCase() });
+					setBaseTabValue(value?.toLowerCase());
+					setSearchParams({ tab: value?.toLowerCase() });
 				},
 			});
-		} else if (PRINT_SECTION_ITEMS.includes(tabItem)) {
+		} else if (PRINT_SECTION_ITEMS.includes(value)) {
 			// =============== for print items, use item name as tab key ================
-			setBaseTabValue(tabItem?.toLowerCase());
-			setSearchParams({ tab: tabItem?.toLowerCase() });
+			setBaseTabValue(value?.toLowerCase());
+			setSearchParams({ tab: value?.toLowerCase() });
 		} else {
-			setBaseTabValue(tabItem?.toLowerCase());
-			setSearchParams({ tab: tabItem?.toLowerCase() });
+			setBaseTabValue(value?.toLowerCase());
+			setSearchParams({ tab: value?.toLowerCase() });
 		}
 	};
 
@@ -278,19 +278,19 @@ export default function Index() {
 								</Flex>
 							</Stack>
 						)}
-						{baseTabValue === "room transfer" && <RoomTransfer data={prescriptionData?.data} />}
+						{baseTabValue === "room-transfer" && <RoomTransfer data={prescriptionData?.data} />}
 						{baseTabValue === "dashboard" && <Dashboard />}
 						{/*{baseTabValue === "issue-medicine" && <IssueMedicine />}*/}
 						{/*{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}*/}
 						{baseTabValue === "investigation" && <Investigation />}
-						{baseTabValue === "vitals chart" && (
+						{baseTabValue === "vitals-chart" && (
 							<VitalsChart refetch={refetch} data={prescriptionData?.data} />
 						)}
-						{baseTabValue === "insulin chart" && (
+						{baseTabValue === "insulin-chart" && (
 							<InsulinChart refetch={refetch} data={prescriptionData?.data} />
 						)}
 						{baseTabValue === "discharge" && <Discharge />}
-						{baseTabValue === "e-fresh print" && <PrintPrescriptionIndoor />}
+						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
 						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
 						{!baseTabValue && (
