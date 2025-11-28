@@ -111,6 +111,7 @@ export default function AddMedicineForm({
 	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
 	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
+	const treatmentRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
 	const emergencyRefetching = useSelector((state) => state.crud.exemergency.refetching);
 	const [showPrint, setShowPrint] = useState(false);
@@ -154,6 +155,19 @@ export default function AddMedicineForm({
 			})
 		);
 	}, [emergencyRefetching]);
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
+				params: {
+					particular_type: "treatment-template",
+					treatment_mode: "opd-treatment",
+				},
+				module: "treatment",
+			})
+		);
+	}, [treatmentRefetching]);
 
 	useEffect(() => {
 		if (medicineTerm.length === 0) {

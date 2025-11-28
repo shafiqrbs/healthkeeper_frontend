@@ -18,7 +18,7 @@ import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import Navigation from "@components/layout/Navigation";
 import Investigation from "@modules/hospital/ipdAdmitted/common/tabs/Investigation";
 import { modals } from "@mantine/modals";
-import { formatDate } from "@utils/index";
+import { formatDate, getUserRole } from "@utils/index";
 import VitalsChart from "../common/tabs/VitalsChart";
 import InsulinChart from "../common/tabs/InsulinChart";
 import Dashboard from "../common/tabs/Dashboard";
@@ -29,21 +29,45 @@ import RoomTransfer from "../common/tabs/RoomTransfer.jsx";
 const module = MODULES.E_FRESH;
 
 const TAB_ITEMS = [
-	"Dashboard",
-	"E-Fresh",
-	"Investigation",
-	"Vitals Chart",
-	"Insulin Chart",
-	"Room Transfer",
-	"Discharge",
+	{ label: "Dashboard", value: "dashboard", allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"] },
+	{ label: "E-Fresh", value: "e-fresh", allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"] },
+	{
+		label: "Investigation",
+		value: "investigation",
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+	},
+	{
+		label: "Vitals Chart",
+		value: "vitals-chart",
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+	},
+	{
+		label: "Insulin Chart",
+		value: "insulin-chart",
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+	},
+	{
+		label: "Room Transfer",
+		value: "room-transfer",
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+	},
+	{ label: "Discharge", value: "discharge", allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"] },
 ];
-const PRINT_SECTION_ITEMS = ["E-Fresh Print"];
+
+const PRINT_SECTION_ITEMS = [
+	{
+		label: "E-Fresh Print",
+		value: "e-fresh-print",
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+	},
+];
 
 export default function Index() {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [records, setRecords] = useState([]);
 	const { mainAreaHeight } = useOutletContext();
 	const { id } = useParams();
+	const userRole = getUserRole();
 	const [opened, { close }] = useDisclosure(false);
 	const [showHistory, setShowHistory] = useState(false);
 	const [medicines, setMedicines] = useState([]);
@@ -152,22 +176,24 @@ export default function Index() {
 							</Box>
 							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
 								<Stack h="100%" py="xs" gap={0}>
-									{TAB_ITEMS.map((tabItem, index) => (
+									{TAB_ITEMS.filter((tabItem) =>
+										userRole.some((role) => tabItem.allowedGroups.includes(role))
+									).map((tabItem, index) => (
 										<Box
 											key={index}
 											mx={8}
 											className={`cursor-pointer`}
 											variant="default"
-											onClick={() => handleTabClick(tabItem)}
+											onClick={() => handleTabClick(tabItem.value)}
 											bg={
-												baseTabValue === tabItem?.toLowerCase()
+												baseTabValue === tabItem.value
 													? "var(--mantine-color-gray-1)"
 													: "var(--mantine-color-white)"
 											}
 										>
 											<Text
 												c={
-													baseTabValue === tabItem?.toLowerCase()
+													baseTabValue === tabItem.value
 														? "var(--theme-primary-color-8)"
 														: "var(--mantine-color-black)"
 												}
@@ -176,7 +202,7 @@ export default function Index() {
 												pl="3xs"
 												fw={500}
 											>
-												{t(tabItem)}
+												{t(tabItem.label)}
 											</Text>
 										</Box>
 									))}
@@ -187,22 +213,24 @@ export default function Index() {
 										</Text>
 									</Box>
 
-									{PRINT_SECTION_ITEMS.map((tabItem, index) => (
+									{PRINT_SECTION_ITEMS.filter((tabItem) =>
+										userRole.some((role) => tabItem.allowedGroups.includes(role))
+									).map((tabItem, index) => (
 										<Box
 											key={index}
 											mx={8}
 											className={`cursor-pointer`}
 											variant="default"
-											onClick={() => handleTabClick(tabItem)}
+											onClick={() => handleTabClick(tabItem.value)}
 											bg={
-												baseTabValue === tabItem?.toLowerCase()
+												baseTabValue === tabItem.value
 													? "var(--mantine-color-gray-1)"
 													: "var(--mantine-color-white)"
 											}
 										>
 											<Text
 												c={
-													baseTabValue === tabItem?.toLowerCase()
+													baseTabValue === tabItem.value
 														? "var(--theme-primary-color-8)"
 														: "var(--mantine-color-black)"
 												}
@@ -211,7 +239,7 @@ export default function Index() {
 												pl="3xs"
 												fw={500}
 											>
-												{t(tabItem)}
+												{t(tabItem.label)}
 											</Text>
 										</Box>
 									))}

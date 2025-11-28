@@ -1,7 +1,7 @@
 import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import { ActionIcon, Box, Flex, Grid, ScrollArea, Text } from "@mantine/core";
+import { ActionIcon, Box, Flex, Grid, LoadingOverlay, ScrollArea, Text } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,6 +19,7 @@ import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 
 const module = MODULES_CORE.USER_TREATMENT;
+const treatmentModule = MODULES_CORE.TREATMENT_TEMPLATES;
 
 export default function BookmarkDrawer({ opened, close, type = "opd-treatment", isDischarged = false }) {
 	const { prescriptionId, treatmentId, id, dischargeId } = useParams();
@@ -90,6 +91,7 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 		if (storeEntityData.fulfilled.match(resultAction)) {
 			form.setFieldValue("name", "");
 			dispatch(setRefetchData({ module, refetching: true }));
+			dispatch(setRefetchData({ module: treatmentModule, refetching: true }));
 			successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 		}
 	};
@@ -124,6 +126,7 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 									nextField="EntityFormSubmit"
 									id="name"
 									name="name"
+									disabled={refetching}
 									tooltip={t("TemplateNameIsRequired")}
 									styles={{ root: { width: "100%" } }}
 									value={form.values.name}
@@ -133,7 +136,8 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 									<IconPlus size={16} />
 								</ActionIcon>
 							</Flex>
-							<Box mt="sm">
+							<Box mt="sm" pos="relative">
+								<LoadingOverlay visible={refetching} overlayProps={{ radius: "sm", blur: 2 }} />
 								{treatmentData?.data?.map((tabItem, index) => (
 									<Box
 										px="xs"

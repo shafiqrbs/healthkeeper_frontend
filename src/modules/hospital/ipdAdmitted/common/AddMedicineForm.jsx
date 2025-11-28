@@ -111,6 +111,7 @@ export default function AddMedicineForm({
 	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
 	const emergencyRefetching = useSelector((state) => state.crud.exemergency.refetching);
+	const treatmentRefetching = useSelector((state) => state.crud.treatment.refetching);
 	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 
@@ -131,16 +132,6 @@ export default function AddMedicineForm({
 				module: "advice",
 			})
 		);
-		dispatch(
-			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
-				params: {
-					particular_type: "treatment-template",
-					treatment_mode: "ipd-treatment",
-				},
-				module: "treatment",
-			})
-		);
 	}, []);
 
 	useEffect(() => {
@@ -151,6 +142,19 @@ export default function AddMedicineForm({
 			})
 		);
 	}, [emergencyRefetching]);
+
+	useEffect(() => {
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
+				params: {
+					particular_type: "treatment-template",
+					treatment_mode: "ipd-treatment",
+				},
+				module: "treatment",
+			})
+		);
+	}, [treatmentRefetching]);
 
 	useEffect(() => {
 		if (medicineTerm.length === 0) {
