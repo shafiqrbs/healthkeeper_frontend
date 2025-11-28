@@ -121,53 +121,13 @@ export default function Dashboard() {
 			.filter(Boolean);
 	}, [insulinRecordList]);
 
-	console.log(vitalChartData, insulinChartData);
-
-	const columns = useMemo(
-		() => [
-			{
-				accessor: "createdAt",
-				title: "Created",
-				render: ({ createdAt }) => new Date(createdAt).toLocaleString(),
-			},
-			{ accessor: "time", title: "Time" },
-			{ accessor: "bloodPressure", title: "BP (mm of Hg)" },
-			{ accessor: "pulseRate", title: "Pulse (Beat/Minute)" },
-			{ accessor: "saturationWithoutOxygen", title: "SatWithoutO2 (%)" },
-			{
-				accessor: "saturationWithOxygen",
-				title: "SatWithO2 (%)",
-			},
-			{
-				accessor: "oxygenFlowRateLiters",
-				title: "O2 Flow (L/min)",
-			},
-			{ accessor: "respirationRate", title: "Respiration (Breath/Minute)" },
-			{ accessor: "temperatureFahrenheit", title: "Temperature (°F)" },
-			{
-				accessor: "actions",
-				title: "Actions",
-				render: ({ id }) => (
-					<ActionIcon variant="transparent" color="red" size="xs" onClick={() => handleDeleteVitalRecord(id)}>
-						<IconTrash />
-					</ActionIcon>
-				),
-			},
-		],
-		[]
-	);
-
-	const filteredChartData = vitalChartData.map((v) => ({
-		...v,
-	}));
-
 	// =============== check if IPD data is available ================
 	return (
 		<Box>
 			<Grid columns={12} h="100%" w="100%">
 				{/* =============== Column 1: Patient Information =============== */}
 				<Grid.Col span={4}>
-					<ScrollArea h={mainAreaHeight - 430}>
+					<ScrollArea h={mainAreaHeight - 390}>
 						<Paper withBorder p="lg" radius="sm" bg="var(--theme-tertiary-color-0)" h="100%">
 							<Stack gap="3xs">
 								<Title order={4} fw={700} mb="es">
@@ -272,7 +232,7 @@ export default function Dashboard() {
 								For Referred
 							</Button>
 						</Group>
-						<ScrollArea h={mainAreaHeight - 500}>
+						<ScrollArea h={mainAreaHeight - 460}>
 							<Paper p="lg" pt={0} radius="sm" bg="var(--mantine-color-white)" h="100%">
 								<Stack gap="md">
 									<Divider
@@ -392,7 +352,7 @@ export default function Dashboard() {
 
 				{/* =============== Column 3: Financial & Medical Information =============== */}
 				<Grid.Col span={4} h="100%">
-					<ScrollArea h={mainAreaHeight - 430}>
+					<ScrollArea h={mainAreaHeight - 390}>
 						<Paper withBorder p="lg" radius="sm" bg="white" h="100%">
 							<Stack gap="lg" h="100%">
 								<Box>
@@ -501,15 +461,24 @@ export default function Dashboard() {
 				</Grid.Col>
 
 				<Grid.Col span={6}>
-					<Paper withBorder p="lg" radius="sm" bg="var(--mantine-color-white)">
+					<Paper withBorder p="lg" h={mainAreaHeight - 350} radius="sm" bg="var(--mantine-color-white)">
 						<Stack gap="sm">
 							<Text fw={600} size="lg">
 								Vital Trend
 							</Text>
 							{vitalChartData.length > 0 ? (
 								<LineChart
-									h={320}
-									data={filteredChartData}
+									h={280}
+									styles={{
+										legendItemName: { fontSize: "12px" },
+										legendItemColor: {
+											height: "10px",
+											minHeight: "10px",
+											width: "10px",
+											minWidth: "10px",
+										},
+									}}
+									data={vitalChartData}
 									dataKey="chartLabel" // X axis = chartLabel string
 									withLegend
 									series={[
@@ -531,17 +500,26 @@ export default function Dashboard() {
 				</Grid.Col>
 
 				<Grid.Col span={6}>
-					<Paper withBorder p="lg" radius="sm" bg="var(--mantine-color-white)" h="100%">
+					<Paper withBorder p="lg" radius="sm" bg="var(--mantine-color-white)" h={mainAreaHeight - 350}>
 						<Stack gap="sm">
 							<Text fw={600} size="lg">
 								Insulin Trend
 							</Text>
 							{insulinChartData.length > 0 ? (
 								<LineChart
-									h={320}
+									h={280}
 									data={insulinChartData}
 									dataKey="chartLabel"
 									withLegend
+									styles={{
+										legendItemName: { fontSize: "12px" },
+										legendItemColor: {
+											height: "10px",
+											minHeight: "10px",
+											width: "10px",
+											minWidth: "10px",
+										},
+									}}
 									series={[
 										{ name: "fbs", label: "FBS", color: "blue.6" },
 										{ name: "twoHAFB", label: "2H After Breakfast", color: "green.6" },
@@ -555,9 +533,11 @@ export default function Dashboard() {
 									]}
 								/>
 							) : (
-								<Text size="sm" c="var(--theme-tertiary-color-7)">
-									No insulin records available
-								</Text>
+								<Box h="100%">
+									<Text size="sm" c="var(--theme-tertiary-color-7)">
+										No insulin records available
+									</Text>
+								</Box>
 							)}
 						</Stack>
 					</Paper>
