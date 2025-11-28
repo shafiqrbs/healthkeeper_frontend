@@ -20,8 +20,8 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 
 const module = MODULES_CORE.USER_TREATMENT;
 
-export default function BookmarkDrawer({ opened, close, type = "opd-treatment" }) {
-	const { prescriptionId, treatmentId } = useParams();
+export default function BookmarkDrawer({ opened, close, type = "opd-treatment", isDischarged = false }) {
+	const { prescriptionId, treatmentId, id, dischargeId } = useParams();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -95,7 +95,13 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment" }
 	};
 
 	const handleTabClick = (tabItem) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescriptionId}/${tabItem.id}`);
+		if (type === "opd-treatment") {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescriptionId}/${tabItem.id}`);
+		} else if (type === "ipd-treatment" && !isDischarged) {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}/${tabItem.id}?tab=e-fresh`);
+		} else {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DISCHARGE.INDEX}/${dischargeId}/${tabItem.id}`);
+		}
 	};
 
 	return (

@@ -1010,7 +1010,7 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
 
-			<BookmarkDrawer opened={openedBookmark} close={closeBookmark} type="ipd-treatment" />
+			<BookmarkDrawer opened={openedBookmark} isDischarged close={closeBookmark} type="ipd-treatment" />
 		</Box>
 	);
 }
