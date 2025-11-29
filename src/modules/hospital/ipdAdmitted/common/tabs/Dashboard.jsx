@@ -66,6 +66,14 @@ export default function Dashboard() {
 		}
 	}, [ipd]);
 
+	const admissionDay = ipd?.admission_day;
+	const consumeDay = ipd?.consume_day;
+	let dayDiff = null;
+	if (admissionDay != null && consumeDay != null) {
+		const diff = Math.abs(admissionDay - consumeDay);
+		dayDiff = admissionDay > consumeDay ? `(${diff})` : diff;
+	}
+
 	const vitalChartData = useMemo(() => {
 		if (!Array.isArray(vitalRecordList)) return [];
 
@@ -242,37 +250,48 @@ export default function Dashboard() {
 										}
 										labelPosition="left"
 									/>
-									<Stack gap="3xs" mb="es" bg="var(--theme-secondary-color-1)" p={"xs"}>
-										<Text fw={500} size="sm">
-											Room/Cabin:{" "}
-											<Text span fw={400}>
-												{ipd?.room_name || "-"}
-											</Text>
-										</Text>
-										<Text fw={500} size="sm">
-											Admission:{" "}
-											<Text span fw={400}>
-												{ipd?.admission_day || "-"} Days
-											</Text>
-										</Text>
-										<Text fw={500} size="sm">
-											Consume:{" "}
-											<Text span fw={400}>
-												{ipd?.consume_day || "-"} Days
-											</Text>
-										</Text>
-
-										<Text fw={500} size="sm">
-											Remaining:{" "}
-											<Text span size={"xl"} fw={400}>
-												{ipd?.admission_day != null &&
-													ipd?.consume_day != null &&
-													(ipd.admission_day < ipd.consume_day
-														? `(${Math.abs(ipd.admission_day - ipd.consume_day)})`
-														: Math.abs(ipd.admission_day - ipd.consume_day))}
-												Days
-											</Text>
-										</Text>
+									<Stack gap="3xs" mb="es" p={"xs"}>
+										<Grid columns={12}  pl={'xs'}>
+											<Grid.Col span={4}>
+												<Text>Room/Cabin</Text>
+											</Grid.Col>
+											<Grid.Col span={8}>
+												<Text>{ipd?.room_name || "-"}</Text>
+											</Grid.Col>
+										</Grid>
+										<Grid columns={12}  pl={'xs'}>
+											<Grid.Col span={4}>
+												<Text>Admission</Text>
+											</Grid.Col>
+											<Grid.Col span={2}>
+												<Text>{admissionDay}</Text>
+											</Grid.Col>
+											<Grid.Col span={2}>
+												<Text>Days</Text>
+											</Grid.Col>
+										</Grid>
+										<Grid columns={12}  pl={'xs'}>
+											<Grid.Col span={4}>
+												<Text>Consume</Text>
+											</Grid.Col>
+											<Grid.Col span={2}>
+												<Text>{consumeDay}</Text>
+											</Grid.Col>
+											<Grid.Col span={2}>
+												<Text>Days</Text>
+											</Grid.Col>
+										</Grid>
+										<Grid columns={12} pl={'xs'} bg={admissionDay > consumeDay ? "red" : "green"} >
+											<Grid.Col span={4}>
+												<Text>Remaining</Text>
+											</Grid.Col>
+											<Grid.Col span={2}>
+												<Text>{dayDiff}</Text>
+											</Grid.Col>
+											<Grid.Col span={2}>
+												<Text>Days</Text>
+											</Grid.Col>
+										</Grid>
 									</Stack>
 									<Divider
 										label={
@@ -302,7 +321,7 @@ export default function Dashboard() {
 											</Text>
 										</Text>
 									</Stack>
-									<Divider
+									{/*<Divider
 										mt="xs"
 										label={
 											<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
@@ -342,7 +361,7 @@ export default function Dashboard() {
 												{ipd?.prescription_doctor_name || "-"}
 											</Text>
 										</Text>
-									</Stack>
+									</Stack>*/}
 								</Stack>
 							</Paper>
 						</ScrollArea>
