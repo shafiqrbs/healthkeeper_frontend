@@ -2,12 +2,11 @@ import { Box, Flex, Grid, Stack, Text } from "@mantine/core";
 
 export default function BillingTable({ entity, data }) {
 	const transactions = entity?.invoice_transaction;
-	console.log(transactions);
 	return (
 		<Stack justify="space-between" h="calc(100% - 50px)" gap="0">
 			<Box p="les">
 				<Flex justify="space-between" bg="var(--theme-primary-color-0)" py="les" px="3xs" mb="3xs">
-					<Text>Charge</Text>
+					<Text>Created</Text>
 					<Text>Particular</Text>
 					<Text>Amount</Text>
 				</Flex>
@@ -36,7 +35,7 @@ export default function BillingTable({ entity, data }) {
 						<Box component="span" c="var(--theme-primary-color-7)">
 							৳
 						</Box>{" "}
-						{data.totalCharge}
+						{entity?.total}
 					</Text>
 				</Flex>
 			</Box>

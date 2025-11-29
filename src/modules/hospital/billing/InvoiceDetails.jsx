@@ -1,5 +1,5 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon } from "@mantine/core";
+import {Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon, Group} from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
@@ -44,20 +44,7 @@ export default function InvoiceDetails({ entity }) {
 		initialValues: {
 			...getFormValues(t).initialValues,
 			amount: "",
-		},
-		validate: {
-			amount: (value) => {
-				const hasValue = value !== "" && value !== null && value !== undefined;
-				const numericValue = Number(value);
-				if (!hasValue) {
-					return t("EnterAmount") || "Amount is required";
-				}
-				if (Number.isNaN(numericValue)) {
-					return t("AmountMustBeNumber") || "Amount must be a number";
-				}
-				return null;
-			},
-		},
+		}
 	});
 	const roomForm = useForm({
 		...getFormValues(t),
@@ -65,20 +52,7 @@ export default function InvoiceDetails({ entity }) {
 			...getFormValues(t).initialValues,
 			amount: "",
 			days: "",
-		},
-		validate: {
-			amount: (value) => {
-				const hasValue = value !== "" && value !== null && value !== undefined;
-				const numericValue = Number(value);
-				if (!hasValue) {
-					return t("EnterAmount") || "Amount is required";
-				}
-				if (isNaN(numericValue)) {
-					return t("AmountMustBeNumber") || "Amount must be a number";
-				}
-				return null;
-			},
-		},
+		}
 	});
 
 	const { data: investigationOptions } = useGlobalDropdownData({
@@ -141,6 +115,7 @@ export default function InvoiceDetails({ entity }) {
 				return {
 					...record,
 					is_selected: isSelected,
+					mode: 'investigation',
 				};
 			});
 		} else if (payloadSource === "room") {
@@ -155,7 +130,9 @@ export default function InvoiceDetails({ entity }) {
 			...values,
 			total:
 				payloadSource === "investigation" ? investigationSubtotal : payloadSource === "room" ? roomSubtotal : 0,
+			mode:payloadSource,
 			json_content: jsonContent,
+
 		};
 
 		modals.openConfirmModal({
@@ -374,7 +351,7 @@ export default function InvoiceDetails({ entity }) {
 									key={selectKey}
 									searchable
 									label=""
-									placeholder={`Pick value or enter Investigation`}
+									placeholder={`Enter Investigation`}
 									data={investigationOptions}
 									value={autocompleteValue}
 									onChange={setAutocompleteValue}
@@ -535,51 +512,19 @@ export default function InvoiceDetails({ entity }) {
 													</Text>
 												</Grid.Col>
 												<Grid.Col span={8}>
-													<InputNumberForm
-														form={investigationForm}
-														label=""
-														size={"xs"}
-														tooltip={t("EnterAmount")}
-														placeholder={t("Amount")}
-														name="amount"
-														id="investigation-amount"
-														disabled={invoiceDetails?.process === "Done"}
-													/>
-												</Grid.Col>
-												<Grid.Col span={7}>
-													{isInvestigationDue && (
-														<Text fz="sm" c="red">
-															{t("Due")}: {investigationDueAmount}
-														</Text>
-													)}
-													{!isInvestigationDue && isInvestigationReturn && (
-														<Text fz="sm" c="red">
-															{t("Return")}: {investigationReturnAmount}
-														</Text>
-													)}
+													{investigationSubtotal || 0}
 												</Grid.Col>
 											</Grid>
 											<Box mt="xs">
 												<Button.Group>
-													<Button
-														id="EntityFormSubmitInvestigation"
-														w="100%"
-														size="compact-sm"
-														bg="var(--theme-pos-btn-color)"
-														type="button"
-														disabled={invoiceDetails?.process === "Done"}
-													>
-														<Stack gap={0} align="center" justify="center">
-															<Text fz="xs">{t("Print")}</Text>
-														</Stack>
-													</Button>
+
 													<Button
 														type="submit"
 														w="100%"
 														size="compact-sm"
-														bg="var(--theme-save-btn-color)"
+														bg="var(--theme-primary-color-6)"
 														disabled={
-															invoiceDetails?.process === "Done" || isInvestigationDue
+															invoiceDetails?.process === "Done" || investigationSubtotal <= 0
 														}
 													>
 														<Stack gap={0} align="center" justify="center">
@@ -596,33 +541,71 @@ export default function InvoiceDetails({ entity }) {
 					</Tabs.Panel>
 					{entity.mode_slug === "ipd" && (
 						<Tabs.Panel value="bed-cabin" bg="var(--mantine-color-white)">
-							<Flex mx="sm" mt="xs" align="center" gap="xs" justify="space-between">
-								<Flex gap="sm">
-									<Text>{invoiceDetails?.payment_mode_name},</Text>
-									<Text>{invoiceDetails?.room_name},</Text>
-									<Text>{invoiceDetails?.room_price}Tk.,</Text>
-									<Text>Consumed: {invoiceDetails?.consume_day || 0},</Text>
-									<Text>Remaining: {invoiceDetails?.remaining_day || 0},</Text>
-									<Text>Total: {invoiceDetails?.amount || 0}Tk.</Text>
-								</Flex>
-								<Flex gap="2xs">
-									<InputNumberForm
-										form={roomForm}
-										label=""
-										tooltip={t("EnterBillingDays")}
-										placeholder="days"
-										name="days"
-										id="days"
-										size="xs"
-										w="70px"
-									/>
-									<Button size="xs" bg="var(--theme-save-btn-color)" onClick={handleRoomAdd}>
-										<Stack gap={0} align="center" justify="center">
-											<Text fz="xs">{t("Add")}</Text>
-										</Stack>
-									</Button>
-								</Flex>
-							</Flex>
+							<Box mx="sm" mt="xs">
+								<Grid columns={24} gutter="xs">
+									<Grid.Col span='4'>
+										<Box >Patient Mode</Box>
+									</Grid.Col>
+									<Grid.Col span='6'>
+										<Box >{invoiceDetails?.payment_mode_name}</Box>
+									</Grid.Col>
+									<Grid.Col span='4'>
+										<Box >Room/Bed</Box>
+									</Grid.Col>
+									<Grid.Col span='10'>
+										<Box >{invoiceDetails?.room_name}</Box>
+									</Grid.Col>
+								</Grid>
+								<Grid columns={24} gutter="xs">
+									<Grid.Col span='4'>
+										<Box >Admission</Box>
+									</Grid.Col>
+									<Grid.Col span='6'>
+										<Box >{invoiceDetails?.admission_day}</Box>
+									</Grid.Col>
+									<Grid.Col span='4'>
+										<Box >Consumed</Box>
+									</Grid.Col>
+									<Grid.Col span='10'>
+										<Box >{invoiceDetails?.consume_day}</Box>
+									</Grid.Col>
+								</Grid>
+								<Grid columns={24} gutter="xs">
+									<Grid.Col span='4'>
+										<Box >Price</Box>
+									</Grid.Col>
+									<Grid.Col span='6'>
+										<Box >{invoiceDetails?.room_price}</Box>
+									</Grid.Col>
+									<Grid.Col span='4'>
+										<Box >Remaining</Box>
+									</Grid.Col>
+									<Grid.Col span='4'>
+										<Box >{invoiceDetails?.remaining_day}</Box>
+									</Grid.Col>
+									<Grid.Col span='6'>
+										<Box >
+											<Group>
+											<InputNumberForm
+												form={roomForm}
+												label=""
+												tooltip={t("EnterBillingDays")}
+												placeholder="days"
+												name="days"
+												id="days"
+												size="xs"
+												w="80"
+											/>
+											<Button size="xs" bg="var(--theme-save-btn-color)" onClick={handleRoomAdd}>
+												<Stack gap={0} align="center" justify="center">
+													<Text fz="xs">{t("Add")}</Text>
+												</Stack>
+											</Button>
+											</Group>
+										</Box>
+									</Grid.Col>
+								</Grid>
+							</Box>
 							<Box className="border-top-none" px="sm" mt="xs">
 								<DataTable
 									striped
@@ -679,7 +662,7 @@ export default function InvoiceDetails({ entity }) {
 									fetching={fetching}
 									loaderSize="xs"
 									loaderColor="grape"
-									height={mainAreaHeight - 200}
+									height={mainAreaHeight - 268}
 									sortIcons={{
 										sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 										unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
@@ -765,25 +748,9 @@ export default function InvoiceDetails({ entity }) {
 															</Flex>
 														</Grid.Col>
 														<Grid.Col span={10}>
-															<InputNumberForm
-																form={roomForm}
-																label=""
-																tooltip={t("EnterAmount")}
-																placeholder={t("Amount")}
-																name="amount"
-																id="room-amount"
-																disabled={invoiceDetails?.process === "Done"}
-															/>
-															{isRoomDue && (
-																<Text fz="xs" c="red">
-																	{t("Due")}: {roomDueAmount}
-																</Text>
-															)}
-															{!isRoomDue && isRoomReturn && (
-																<Text fz="xs" c="green">
-																	{t("Return")}: {roomReturnAmount}
-																</Text>
-															)}
+															<Flex align="right" gap="es">
+																<Text fz="sm">{roomSubtotal || 0}</Text>
+															</Flex>
 														</Grid.Col>
 													</Grid>
 													<Box mt="xs">
@@ -804,13 +771,13 @@ export default function InvoiceDetails({ entity }) {
 																type="submit"
 																w="100%"
 																size="compact-sm"
-																bg="var(--theme-save-btn-color)"
+																bg="var(--theme-primary-color-6)"
 																disabled={
-																	invoiceDetails?.process === "Done" || isRoomDue
+																	invoiceDetails?.process === "Done" || roomSubtotal <= 0
 																}
 															>
 																<Stack gap={0} align="center" justify="center">
-																	<Text fz="xs">{t("Save")}</Text>
+																	<Text  fz="xs">{t("Save")}</Text>
 																</Stack>
 															</Button>
 														</Button.Group>

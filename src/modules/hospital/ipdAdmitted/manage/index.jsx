@@ -39,19 +39,23 @@ const TAB_ITEMS = [
 	{
 		label: "Vitals Chart",
 		value: "vitals-chart",
-		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+		allowedGroups: [ "admin_administrator", "nurse_incharge"],
 	},
 	{
 		label: "Insulin Chart",
 		value: "insulin-chart",
-		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+		allowedGroups: ["admin_administrator", "nurse_incharge"],
 	},
 	{
 		label: "Room Transfer",
 		value: "room-transfer",
-		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+		allowedGroups: ["admin_administrator", "nurse_incharge"],
 	},
-	{ label: "Discharge", value: "discharge", allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"] },
+	{
+		label: "Discharge",
+		value: "discharge",
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"]
+	},
 ];
 
 const PRINT_SECTION_ITEMS = [

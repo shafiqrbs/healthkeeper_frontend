@@ -68,7 +68,6 @@ export default function Index() {
 		}
 	}, [id, refetchBillingKey]);
 	const entity = diagnosticReport || {};
-	console.log(entity);
 	return (
 		<>
 			{progress !== 100 ? (
