@@ -17,6 +17,7 @@ import InputForm from "@components/form-builders/InputForm";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import inputCss from "@assets/css/InputField.module.css";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
+import { getUUID } from "@utils/index";
 
 export default function VitalsChart({ data, refetch }) {
 	const [resetKey, setResetKey] = useState(0);
@@ -135,7 +136,7 @@ export default function VitalsChart({ data, refetch }) {
 			const vitalRecords = [
 				...vitalRecordList,
 				{
-					id: crypto.randomUUID(),
+					id: getUUID(),
 					createdAt: new Date().toISOString(),
 					...values,
 				},

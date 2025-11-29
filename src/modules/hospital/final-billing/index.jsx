@@ -127,7 +127,7 @@ export default function Index() {
 										<>
 											<Box>
 												<TabSubHeading title="Final Bill Details" />
-												<BillingSummary entity={entity} data={billingSummary} />
+												<BillingSummary entity={entity} />
 											</Box>
 											<Box p="xs" bg="var(--mantine-color-white)">
 												<Box>

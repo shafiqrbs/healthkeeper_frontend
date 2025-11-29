@@ -274,6 +274,7 @@ export default function Index() {
 										setShowHistory={setShowHistory}
 										prescriptionData={prescriptionData}
 										tabParticulars={tabParticulars}
+										section="e-fresh"
 									/>
 								</Flex>
 							</Stack>

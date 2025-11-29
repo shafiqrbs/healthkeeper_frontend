@@ -75,6 +75,7 @@ export default function AddMedicineForm({
 	prescriptionData,
 	hasRecords,
 	tabParticulars,
+	section = "ipdPrescription",
 }) {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -1049,12 +1050,7 @@ export default function AddMedicineForm({
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
-			<BookmarkDrawer
-				opened={openedBookmark}
-				close={closeBookmark}
-				type="ipd-treatment"
-				section="ipdPrescription"
-			/>
+			<BookmarkDrawer opened={openedBookmark} close={closeBookmark} type="ipd-treatment" section={section} />
 		</Box>
 	);
 }

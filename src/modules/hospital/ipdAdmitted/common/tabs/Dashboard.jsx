@@ -1,12 +1,11 @@
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { ActionIcon, Box, Divider, Grid, Group, Paper, Stack, Text, Title, Button, ScrollArea } from "@mantine/core";
+import { Box, Divider, Grid, Group, Paper, Stack, Text, Title, Button, ScrollArea } from "@mantine/core";
 import { LineChart } from "@mantine/charts";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import { IconTrash } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { getDataWithoutStore } from "@/services/apiService";
 

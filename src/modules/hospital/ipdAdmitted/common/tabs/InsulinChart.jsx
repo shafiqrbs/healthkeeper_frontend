@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
 import { useTranslation } from "react-i18next";
+import { getUUID } from "@utils/index";
 
 export default function InsulinChart({ data, refetch }) {
 	const { t } = useTranslation();
@@ -141,7 +142,7 @@ export default function InsulinChart({ data, refetch }) {
 			const vitalRecords = [
 				...vitalRecordList,
 				{
-					id: crypto.randomUUID(),
+					id: getUUID(),
 					createdAt: new Date().toISOString(),
 					...values,
 				},
