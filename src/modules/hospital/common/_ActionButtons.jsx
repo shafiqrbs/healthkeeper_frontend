@@ -59,12 +59,15 @@ export default function ActionButtons({
 		console.log(res);
 	};
 
-	useHotkeys([
-		["alt+s", handleFinalSubmission],
-		["alt+r", handleReset],
-		["alt+shift+p", handleA4Print],
-		["alt+p", handlePosPrint],
-	]);
+	useHotkeys(
+		[
+			["alt+s", handleFinalSubmission],
+			["alt+r", handleReset],
+			["alt+shift+p", handleA4Print],
+			["alt+p", handlePosPrint],
+		],
+		["TEXTAREA"]
+	);
 
 	return (
 		<>
