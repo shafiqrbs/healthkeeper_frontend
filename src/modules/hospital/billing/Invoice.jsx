@@ -1,4 +1,4 @@
-import { Box, Text, ScrollArea, Stack, Button, Flex, Grid, ActionIcon, LoadingOverlay } from "@mantine/core";
+import { Box, Text, ScrollArea, Stack, Button, Flex, Grid, ActionIcon, LoadingOverlay, Table } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
@@ -18,6 +18,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 import { getDataWithoutStore } from "@/services/apiService";
+import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import { useDisclosure } from "@mantine/hooks";
 
 const ALLOWED_BILLING_ROLES = [
 	"billing_manager",
@@ -45,6 +47,8 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 	const bedListData = useSelector((state) => state.crud.bed?.data?.data);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const ipdAllPrintRef = useRef(null);
+	const [invoiceDetailsOpened, { open: openInvoiceDetails, close: closeInvoiceDetails }] = useDisclosure(false);
+	const [selectedInvoice, setSelectedInvoice] = useState({});
 
 	const item = entity;
 	const transactions = entity?.invoice_transaction || [];
@@ -100,6 +104,14 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 
 	const handleTest = (transactionId) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}/payment/${transactionId}`);
+	};
+
+	const handleDetailsView = async (transaction) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.PRINT}/${transaction.hms_invoice_transaction_id}`,
+		});
+		setSelectedInvoice(res.data);
+		requestAnimationFrame(openInvoiceDetails);
 	};
 
 	const handlePrint = async (id) => {
@@ -256,6 +268,8 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 		}
 	};
 
+	console.log(selectedInvoice);
+
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between">
@@ -383,7 +397,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 												{item?.process === "Done" && (
 													<>
 														<Button
-															onClick={() => handleTest(item.hms_invoice_transaction_id)}
+															onClick={() => handleDetailsView(item)}
 															size="compact-xs"
 															bg="var(--theme-primary-color-6)"
 															color="white"
@@ -415,6 +429,35 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 			)}
 			<InvoicePosBN data={invoicePrintData} ref={invoicePrintRef} />
 			{/*<IPDAllPrint data={test} ref={ipdAllPrintRef} />*/}
+
+			<GlobalDrawer opened={invoiceDetailsOpened} close={closeInvoiceDetails} title={t("InvoiceDetails")}>
+				<ScrollArea>
+					<Table mt="sm" striped highlightOnHover withTableBorder withColumnBorders>
+						<Table.Thead>
+							<Table.Tr>
+								<Table.Th>{t("ItemName")}</Table.Th>
+								<Table.Th>{t("Quantity")}</Table.Th>
+								<Table.Th>{t("Price")}</Table.Th>
+								<Table.Th>{t("SubTotal")}</Table.Th>
+								<Table.Th>{t("Process")}</Table.Th>
+								<Table.Th>{t("DiagnosticRoom")}</Table.Th>
+							</Table.Tr>
+						</Table.Thead>
+						<Table.Tbody>
+							{selectedInvoice?.items?.map((item, index) => (
+								<Table.Tr key={index}>
+									<Table.Td>{item.item_name}</Table.Td>
+									<Table.Td>{item.quantity}</Table.Td>
+									<Table.Td>{item.price}</Table.Td>
+									<Table.Td>{item.sub_total}</Table.Td>
+									<Table.Td>{item.process}</Table.Td>
+									<Table.Td>{item.diagnostic_room_name || "-"}</Table.Td>
+								</Table.Tr>
+							))}
+						</Table.Tbody>
+					</Table>
+				</ScrollArea>
+			</GlobalDrawer>
 		</Box>
 	);
 }
