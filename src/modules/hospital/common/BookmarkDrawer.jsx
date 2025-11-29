@@ -25,6 +25,7 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 	const { prescriptionId, treatmentId, id, dischargeId } = useParams();
 	const [searchParams] = useSearchParams();
 	const ipdId = searchParams.get("ipd");
+	const activeTab = searchParams.get("tab");
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -102,6 +103,12 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 		if (type === "opd-treatment") {
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescriptionId}/${tabItem.id}`);
 		} else if (type === "ipd-treatment" && section === "discharge") {
+			if (activeTab === "discharge") {
+				return navigate(
+					`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}/${tabItem.id}?tab=discharge`
+				);
+			}
+
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DISCHARGE.INDEX}/${dischargeId}/${tabItem.id}`);
 		} else if (type === "ipd-treatment" && section === "ipdPrescription") {
 			navigate(
