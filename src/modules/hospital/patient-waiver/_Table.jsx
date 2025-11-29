@@ -34,7 +34,7 @@ const tabs = [
 	{ label: "IPD Room/Bed", value: "ipd_room" },
 ];
 
-const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "doctor_emergency", "doctor_ipd", "admin_doctor", "doctor_approve_opd", "doctor_approve_ipd", "doctor_ipd_confirm", "admin_administrator"];
+const ALLOWED_CONFIRMED_ROLES = ["doctor_opd", "doctor_emergency", "doctor_ipd", "admin_doctor", "doctor_approve_opd", "doctor_approve_ipd", "doctor_ipd_confirm", "admin_administrator"];
 
 export default function _Table({ module }) {
 	const { t } = useTranslation();
@@ -52,7 +52,7 @@ export default function _Table({ module }) {
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
 	const [billingPrintData, setBillingPrintData] = useState(null);
-
+	console.log(userRoles);
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",

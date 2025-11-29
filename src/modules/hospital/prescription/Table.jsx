@@ -67,7 +67,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const hospitalConfig = getLoggedInHospitalUser();
 	const userRoles = getUserRole();
 	const userId = hospitalConfig?.employee_id;
+	console.log(hospitalConfig?.particular_details);
 	const opdRoomId = hospitalConfig?.particular_details?.room_id;
+	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -123,7 +125,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			name: filterData?.name,
 			patient_mode: ["opd", "emergency"],
 			term: form.values.keywordSearch,
-			room_id: opdRoomId,
+			room_ids: opdRoomIds,
 			prescription_mode: processTab,
 			created: form.values.created,
 		},

@@ -408,6 +408,9 @@ function AppRoute() {
 									"doctor_ipd",
 									"doctor_emergency",
 									"doctor_opd",
+									"doctor_approve_opd",
+									"doctor_approve_ipd",
+									"doctor_ipd_confirm"
 								]}
 							>
 								<PatientWaiverListIndex />

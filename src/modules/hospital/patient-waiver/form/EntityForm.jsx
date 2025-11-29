@@ -1,6 +1,6 @@
 import { Box, Button, Flex, Grid, LoadingOverlay, ScrollArea, Stack, Text, Table, Checkbox } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useOutletContext, useParams } from "react-router-dom";
+import {useNavigate, useOutletContext, useParams} from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import {storeEntityData, updateEntityData} from "@/app/store/core/crudThunk";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
@@ -16,6 +16,7 @@ export default function EntityForm({ form, module }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { id } = useParams();
+	const navigate = useNavigate();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight;
 
@@ -54,8 +55,8 @@ export default function EntityForm({ form, module }) {
 				}
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
 				form.reset();
-				close(); // close the drawer
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_WAIVER.LIST}`);
 			}
 		} catch (error) {
 			console.error(error);

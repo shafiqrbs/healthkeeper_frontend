@@ -165,19 +165,18 @@ export default function PatientForm({
 				setIsSearching(false);
 			} else if (searchForm.values.type === "HID") {
 				const patients = await getPatientSearchByHID(searchForm.values.term);
-				console.log(patients);
 
 				// setPatientSearchResults(patients?.data || []);
 				// setShowPatientDropdown(true);
 			} else if (searchForm.values.type === "NID") {
 				const patients = await getPatientSearchByNID(searchForm.values.term);
-				console.log(patients);
+
 
 				// setPatientSearchResults(patients?.data || []);
 				// setShowPatientDropdown(true);
 			} else if (searchForm.values.type === "BRID") {
 				const patients = await getPatientSearchByBRN(searchForm.values.term);
-				console.log(patients);
+
 
 				// setPatientSearchResults(patients?.data || []);
 				// setShowPatientDropdown(true);

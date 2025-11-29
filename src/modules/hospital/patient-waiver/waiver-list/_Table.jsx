@@ -33,13 +33,25 @@ const tabs = [
 	{ label: "IPD Room/Bed", value: "ipd_room" },
 ];
 
-const ALLOWED_CONFIRMED_ROLES = [
+const ALLOWED_PRINT_ROLES = [
+	"doctor_opd",
 	"doctor_ipd",
 	"doctor_emergency",
 	"admin_doctor",
 	"doctor_approve_opd",
 	"doctor_approve_ipd",
 	"doctor_ipd_confirm",
+	"admin_administrator",
+];
+
+const ALLOWED_CONFIRMED_ROLES = [
+	"doctor_ipd_confirm",
+	"admin_administrator",
+];
+
+const ALLOWED_APPROVED_ROLES = [
+	"doctor_approve_opd",
+	"doctor_approve_ipd",
 	"admin_administrator",
 ];
 
@@ -249,46 +261,51 @@ export default function _Table({ module }) {
 							textAlign: "right",
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right">
-									{userRoles.some((r) => ALLOWED_CONFIRMED_ROLES.includes(r)) && (
-										<Button.Group>
-											{!item.checked_by_name && (
-												<Button
-													variant="filled"
-													onClick={() => handleOpenApproveModal(item)}
-													color="var(--theme-primary-color-6)"
-													radius="xs"
-													size="compact-xs"
-													rightSection={<IconArrowNarrowRight stroke={1.5} />}
-												>
-													Checked
-												</Button>
-											)}
+									<Button.Group>
 
-											{item.checked_by_name && !item.approved_by_name && (
-												<Button
-													variant="filled"
-													onClick={() => handleOpenApproveModal(item)}
-													color="var(--theme-primary-color-6)"
-													radius="xs"
-													size="compact-xs"
-													rightSection={<IconArrowNarrowRight stroke={1.5} />}
-												>
-													Approve
-												</Button>
-											)}
+										{userRoles.some((r) => ALLOWED_CONFIRMED_ROLES.includes(r)) &&
+										!item.checked_by_name && (
+											<Button
+												variant="filled"
+												onClick={() => handleOpenApproveModal(item)}
+												color="var(--theme-primary-color-6)"
+												radius="xs"
+												size="compact-xs"
+												rightSection={<IconArrowNarrowRight stroke={1.5} />}
+											>
+												Checked
+											</Button>
+										)}
 
+										{userRoles.some((r) => ALLOWED_APPROVED_ROLES.includes(r)) &&
+										item.checked_by_name &&
+										!item.approved_by_name && (
+											<Button
+												variant="filled"
+												onClick={() => handleOpenApproveModal(item)}
+												color="var(--theme-primary-color-6)"
+												radius="xs"
+												size="compact-xs"
+												rightSection={<IconArrowNarrowRight stroke={1.5} />}
+											>
+												Approve
+											</Button>
+										)}
+
+										{userRoles.some((r) => ALLOWED_PRINT_ROLES.includes(r)) && (
 											<Button
 												variant="filled"
 												onClick={() => handleWaiverPrint(item.uid)}
 												color="var(--theme-secondary-color-6)"
 												radius="xs"
 												size="compact-xs"
-												leftSection={<IconPrinter stroke={1.5} />}
+												leftSection={<IconPrinter stroke={1.2} />}
 											>
 												Print
 											</Button>
-										</Button.Group>
-									)}
+										)}
+
+									</Button.Group>
 								</Group>
 							),
 						},
