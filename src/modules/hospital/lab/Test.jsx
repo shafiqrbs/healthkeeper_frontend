@@ -18,7 +18,7 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const test = entity;
-	const { id } = useParams();
+	const { id, reportId } = useParams();
 	const navigate = useNavigate();
 	const userRoles = getUserRole();
 	const barCodeRef = useRef(null);
@@ -34,9 +34,9 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 	const printBarCodeValue = useReactToPrint({
 		content: () => barCodeRef.current,
 	});
-	const handleTest = (reportId) => {
+	const handleTest = (report_id) => {
 		refetchDiagnosticReport();
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${reportId}`, { replace: true });
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${report_id}`, { replace: true });
 	};
 
 	const handleLabReport = async (id, reportSlug) => {
@@ -48,11 +48,11 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 		requestAnimationFrame(printLabReport);
 	};
 
-	async function handleBarcodeTag(barcode, reportId) {
+	async function handleBarcodeTag(barcode, report_id) {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.TAG_PRINT}/${reportId}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.TAG_PRINT}/${report_id}`,
 		});
-		setBarcodeValue(reportId);
+		setBarcodeValue(report_id);
 		refetchDiagnosticReport();
 		requestAnimationFrame(printBarCodeValue);
 	}
@@ -70,13 +70,21 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 					<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 					<Stack className="form-stack-vertical" p="xs">
 						{test?.invoice_transaction?.map((transaction, index) => (
-							<Box key={index} className="borderRadiusAll" bg="var(--mantine-color-white)" p="sm">
-								<Box fz={"xs"} fw={"600"}>
+							<Box key={index} className="borderRadiusAll" bg="var(--mantine-color-white)">
+								<Box fz={"xs"} fw={"600"} p="sm">
 									{t("Date")} : {formatDate(transaction?.created_at)}
 								</Box>
 								<CustomDivider />
 								{transaction?.items?.map((item, index) => (
-									<Box mt={"xs"} key={index}>
+									<Box
+										p={"xs"}
+										key={index}
+										bg={
+											reportId == item.invoice_particular_id
+												? "var(--theme-primary-color-1)"
+												: "var(--mantine-color-white)"
+										}
+									>
 										<Text fz="xs">{item.item_name}</Text>
 										<Text fz="xs">Status:{item?.process}</Text>
 										<Flex align="center" gap="mes" mt="xs">

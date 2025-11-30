@@ -1600,5 +1600,6 @@
 	"GenericNamePlaceholder": "Generic Name",
 	"EmergencyPrescription": "Emergency Prescription",
 	"PleaseFillAllDates": "All expire field is required.",
-	"NoDataFound": "No data found"
+	"NoDataFound": "No data found",
+	"DiagnosticReportPrepared": "Diagnostic Report Prepare"
 }

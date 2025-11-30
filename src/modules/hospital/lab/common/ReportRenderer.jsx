@@ -31,7 +31,7 @@ import Serology from "./report-formats/Serology";
 const module = MODULES.LAB_TEST;
 
 const ReportRenderer = forwardRef(
-	({ diagnosticReport, setDiagnosticReport, fetching, inputsRef, refetchDiagnosticReport }) => {
+	({ diagnosticReport, setDiagnosticReport, fetching, inputsRef, refetchDiagnosticReport, setRefetch }) => {
 		const { t } = useTranslation();
 		const form = useForm(getFormValues(t));
 		const { reportId } = useParams();
@@ -52,8 +52,6 @@ const ReportRenderer = forwardRef(
 				errorNotification(error.message);
 			}
 		};
-
-		console.log(diagnosticReport.process);
 
 		const renderCustomReport = () => {
 			if (diagnosticReport?.custom_report !== null && diagnosticReport?.custom_report !== undefined) {
@@ -206,7 +204,12 @@ const ReportRenderer = forwardRef(
 					dispatch(setRefetchData({ module, refetching: true }));
 					refetchDiagnosticReport();
 					successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-					setDiagnosticReport((prev) => ({ ...prev, process: resultAction?.payload.data?.data.process }));
+					// setDiagnosticReport((prev) => ({
+					// 	...prev,
+					// 	process: resultAction?.payload.data?.data.process,
+					// 	comment: resultAction?.payload.data?.data.comment,
+					// }));
+					setRefetch(true);
 					form.reset();
 				}
 			} catch (error) {
@@ -245,8 +248,7 @@ const ReportRenderer = forwardRef(
 								accessor: "result",
 								title: t("Result"),
 								render: (item, rowIndex) =>
-									diagnosticReport.process === "Done" ||
-									diagnosticReport.process === "In-progress" ? (
+									diagnosticReport.process === "Done" ? (
 										item.result
 									) : (
 										<TextInput

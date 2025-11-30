@@ -55,6 +55,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 					setDiagnosticReport={setDiagnosticReport}
 					fetching={fetching}
 					inputsRef={inputsRef}
+					setRefetch={setRefetch}
 				/>
 			) : (
 				<Box bg="var(--mantine-color-white)">

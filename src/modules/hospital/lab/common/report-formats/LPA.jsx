@@ -48,7 +48,7 @@ export default function LPA({ diagnosticReport, setDiagnosticReport, refetchDiag
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
-	const is_completed = diagnosticReport?.process === "Done" || diagnosticReport?.process === "In-progress";
+	const is_completed = diagnosticReport?.process === "Done";
 
 	const form = useForm({
 		initialValues: {
