@@ -44,6 +44,12 @@ export const getVendorFormInitialValues = (t) => {
 
 		validate: {
 			name: hasLength({ min: 2, max: 20 }),
+			mobile: (value) => {
+				if (!value) return null; // allow empty
+
+				const isValid = /^01[0-9]{9}$/.test(value);
+				return isValid ? null : "Invalid mobile number";
+			},
 			day: (_, values) => {
 				const isEmpty = (v) => v === "" || v === null || v === undefined;
 				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)

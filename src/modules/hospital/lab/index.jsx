@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
@@ -115,7 +115,11 @@ export default function Index() {
 								</Box>
 								<Grid columns={18}>
 									<Grid.Col span={4} className="animate-ease-out">
-										<Test entity={entity} isLoading={isDiagnosticReportLoading} />
+										<Test
+											entity={entity}
+											isLoading={isDiagnosticReportLoading}
+											refetchDiagnosticReport={refetchDiagnosticReport}
+										/>
 									</Grid.Col>
 									<Grid.Col span={14}>
 										<DiagnosticReport refetchDiagnosticReport={refetchDiagnosticReport} />
