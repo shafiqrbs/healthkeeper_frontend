@@ -6,7 +6,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
-import { Box, Button, Flex, Grid, Modal, Stack, LoadingOverlay, Switch } from "@mantine/core";
+import { Box, Button, Flex, Grid, Modal, LoadingOverlay, Switch } from "@mantine/core";
 import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "@hospital-components/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";

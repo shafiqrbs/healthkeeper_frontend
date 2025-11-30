@@ -38,6 +38,7 @@ import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
+import SegmentedControlForm from "@components/form-builders/SegmentedControlForm";
 
 // =============== sample user data for emergency patient ================
 const USER_NID_DATA = {
@@ -461,8 +462,8 @@ export function Form({
 											<InputNumberForm
 												form={form}
 												label=""
-												tooltip={t("EnterPatientMobile")}
-												placeholder="+880 1717171717"
+												tooltip={t("EnterValidPatientMobile")}
+												placeholder="+01717171717"
 												name="mobile"
 												id="mobile"
 												nextField="year"
@@ -695,7 +696,24 @@ export function Form({
 										</Grid.Col>
 									</Grid>
 
-									<Grid columns={20}>
+									<Grid columns={20} mt="xs">
+										<Grid.Col span={20} pt="es">
+											<SegmentedControlForm
+												fullWidth
+												color="var(--theme-primary-color-6)"
+												value={form.values.patient_payment_mode_id}
+												id="patient_payment_mode_id"
+												name="patient_payment_mode_id"
+												onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
+												data={[
+													{ label: t("General"), value: "30" },
+													{ label: t("FreedomFighter"), value: "31" },
+													{ label: t("Disabled"), value: "43" },
+													{ label: t("GovtService"), value: "32" },
+													{ label: t("MDR"), value: "46" },
+												]}
+											/>
+										</Grid.Col>
 										<Grid.Col span={6}></Grid.Col>
 										<Grid.Col span={14}>
 											{form.values.patient_payment_mode_id !== "30" && (
@@ -703,7 +721,7 @@ export function Form({
 													form={form}
 													pt={0}
 													label=""
-													tooltip={t("EnterFreeIdentificationId")}
+													tooltip={t("enterFreeIdentificationId")}
 													placeholder="Enter Free ID"
 													name="free_identification_id"
 													id="free_identification_id"
