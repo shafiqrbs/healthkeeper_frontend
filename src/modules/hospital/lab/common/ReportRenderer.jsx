@@ -214,9 +214,6 @@ const ReportRenderer = forwardRef(
 				errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 			}
 		}
-
-		console.log(diagnosticReport);
-
 		return (
 			<>
 				<Box className="border-top-none" px="sm" mt={"xs"}>

@@ -43,9 +43,9 @@ export default function Index() {
 	];
 
 	const col3 = [
-		{ label: "Prescription Created", value: safe(entity.prescription_created) },
-		{ label: "Prescription ID", value: safe(entity.prescription_doctor_id) },
-		{ label: "Prescription Doctor", value: safe(entity.prescription_doctor_name) },
+		{ label: "Pres. Created", value: safe(entity.prescription_created) },
+		{ label: "Pres. ID", value: safe(entity.prescription_doctor_id) },
+		{ label: "Doctor", value: safe(entity.prescription_doctor_name) },
 	];
 
 	const col4 = [

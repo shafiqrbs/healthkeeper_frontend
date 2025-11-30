@@ -1592,6 +1592,8 @@
 	"RoomToBeTransferred": "Room to be transferred",
 	"ApproveThisWaiver": "Approve This Waiver",
 	"Qty": "Quantity",
+	"ManageDiagnostic": "Manage Diagnostic",
+	"DiagnosticReportPrepared": "Diagnostic Report Prepared",
 	"TemplateNameIsRequired": "Template name is required",
 	"AddTemplateName": "Add Template Name",
 	"MedicinePlaceholder": "Select Medicine (alt+n)",
