@@ -176,6 +176,7 @@ export const sideNavigationLinks = {
 				"nurse_basic",
 				"admin_nurse",
 				"nurse_incharge",
+				"pharmacy_operator",
 			],
 		},
 		{
@@ -190,6 +191,9 @@ export const sideNavigationLinks = {
 				"nurse_basic",
 				"admin_nurse",
 				"nurse_incharge",
+				"pharmacy_manager",
+				"pharmacy_doctor",
+				"pharmacy_operator",
 			],
 		},
 
@@ -313,8 +317,6 @@ export const sideNavigationLinks = {
 				"pharmacy_doctor",
 				"pharmacy_approve",
 				"pharmacy_manager",
-				"pharmacy_operator",
-				"pharmacy_operator",
 				"admin_administrator",
 			],
 			subMenu: [
@@ -324,7 +326,6 @@ export const sideNavigationLinks = {
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
 					allowedRoles: [
-						"pharmacy_operator",
 						"pharmacy_pharmacist",
 						"pharmacy_manager",
 						"pharmacy_doctor",
@@ -337,7 +338,6 @@ export const sideNavigationLinks = {
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
 					allowedRoles: [
-						"pharmacy_operator",
 						"pharmacy_pharmacist",
 						"pharmacy_manager",
 						"pharmacy_doctor",
@@ -350,7 +350,6 @@ export const sideNavigationLinks = {
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
 					allowedRoles: [
-						"pharmacy_operator",
 						"pharmacy_pharmacist",
 						"pharmacy_manager",
 						"pharmacy_doctor",
