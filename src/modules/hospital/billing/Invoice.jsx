@@ -430,7 +430,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 			<InvoicePosBN data={invoicePrintData} ref={invoicePrintRef} />
 			{/*<IPDAllPrint data={test} ref={ipdAllPrintRef} />*/}
 
-			<GlobalDrawer opened={invoiceDetailsOpened} close={closeInvoiceDetails} title={t("InvoiceDetails")}>
+			<GlobalDrawer size="xl" opened={invoiceDetailsOpened} close={closeInvoiceDetails} title={t("InvoiceDetails")}>
 				<ScrollArea>
 					<Table mt="sm" striped highlightOnHover withTableBorder withColumnBorders>
 						<Table.Thead>

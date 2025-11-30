@@ -675,7 +675,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 													<Grid columns={24} m={4} p={4}>
 														<Grid.Col span={20} m={0} p={0}>
 															<Text size="xs" pl={4}>
-																{index + 1}.{" "}
+																<IconPointFilled style={{ width: "10", height: "10" }} stroke={1.5} />
 																{getValue(medicine.medicine_id ? medicine.generic : "")}
 															</Text>
 														</Grid.Col>

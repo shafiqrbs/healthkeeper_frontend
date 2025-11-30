@@ -517,15 +517,11 @@ export default function InvoiceDetails({ entity }) {
 											</Grid>
 											<Box mt="xs">
 												<Button.Group>
-
 													<Button
 														type="submit"
 														w="100%"
 														size="compact-sm"
 														bg="var(--theme-primary-color-6)"
-														disabled={
-															invoiceDetails?.process === "Done" || investigationSubtotal <= 0
-														}
 													>
 														<Stack gap={0} align="center" justify="center">
 															<Text fz="xs">{t("Save")}</Text>
