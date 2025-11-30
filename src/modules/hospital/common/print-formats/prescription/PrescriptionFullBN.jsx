@@ -426,10 +426,11 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												align="center"
 												direction="row"
 												wrap="wrap"
+												style={{
+													fontSize: "13px",
+												}}
 												>
-												<Text w={'8'}>
-												<Image src={Bullet}  width='8px' height="8px" />
-												</Text>
+													<IconPointFilled style={{ width: "10", height: "10" }} stroke={1.5} />
 												{getValue(emergency.value)}
 												</Flex>
 											))}
@@ -442,10 +443,12 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 														align="center"
 														direction="row"
 														wrap="wrap"
+														fw={'600'}
+														style={{
+															fontSize: "12px",
+														}}
 													>
-														<Text w={'8'}>
-															<Image src={Bullet}  width='8px' height="8px" />
-														</Text>
+													     <IconPointFilled style={{ width: "10", height: "10" }} stroke={1.5} />
 														{getValue(
 															medicine.medicine_id
 																? medicine.medicine_name
@@ -457,7 +460,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 															<Text
 																key={dose.id ?? dIdx}
 																style={{
-																	fontSize: "13px",
+																	fontSize: "11px",
 																	color: "var(--theme-tertiary-color-8)",
 																	marginLeft: "32px",
 																}}
@@ -471,7 +474,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 													) : (
 														<Text
 															style={{
-																fontSize: "13px",
+																fontSize: "11px",
 																color: "var(--theme-tertiary-color-8)",
 																marginLeft: "32px",
 															}}
@@ -496,7 +499,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 													<Text size="xs" fw={400}>
 														{capitalize(getValue(patientInfo?.referred_mode))} To : {getValue(patientInfo?.referred_hospital)}
 													</Text>
-												) : patientInfo?.referred_mode === "referred" ? (
+												) : patientInfo?.referred_mode === "room" ? (
 													<Text size="xs" fw={400}>
 														{capitalize(getValue(patientInfo?.referred_mode))} To : {getValue(patientInfo?.referred_room)}
 													</Text>
