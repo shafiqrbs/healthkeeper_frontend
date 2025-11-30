@@ -92,7 +92,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
                 };
                 return updatedItems;
             } else {
-                //If not exists, add new
                 return [...prevItems, values];
             }
         });
@@ -137,7 +136,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 					: recordItem
 			)
 		);
-		// =============== end ===============
 	};
 
 	const handleDraftProducts = (data, quantity) => {
@@ -147,10 +145,13 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		}));
 	};
 
-	const memoizedFilterParameters = useMemo(
-		() => ({ category_id: form.values.category_id }),
-		[form.values.category_id]
-	);
+    const memoizedFilterParameters = useMemo(
+        () => ({
+            category_id: form.values.category_id,
+            term: searchValue,
+        }),
+        [form.values.category_id, searchValue]
+    );
 
     const {records,scrollRef,handleScrollToBottom} = useInfiniteTableScroll({
         module,
@@ -164,9 +165,10 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		setProducts(records);
 	}, [records]);
 
-	const handleProductSearch = useDebouncedCallback((value) => {
-		setProducts(records?.filter((product) => product?.name?.toLowerCase()?.includes(value?.toLowerCase())));
-	}, 300);
+    const handleProductSearch = useDebouncedCallback((value) => {
+        setSearchValue(value);
+    }, 300);
+
 
     const isAllDatesValid = useMemo(() => {
         if (!items || items.length === 0) return false;

@@ -107,8 +107,11 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
     };
 
     const memoizedFilterParameters = useMemo(
-        () => ({category_id: form.values.category_id}),
-        [form.values.category_id]
+        () => ({
+            category_id: form.values.category_id,
+            term: searchValue,
+        }),
+        [form.values.category_id, searchValue]
     );
 
     const {records,scrollRef,handleScrollToBottom} = useInfiniteTableScroll({
@@ -124,7 +127,7 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
     }, [records]);
 
     const handleProductSearch = useDebouncedCallback((value) => {
-        setProducts(records?.filter((product) => product?.name?.toLowerCase()?.includes(value?.toLowerCase())));
+        setSearchValue(value);
     }, 300);
 
     const handleKeyDown = (e, index) => {
