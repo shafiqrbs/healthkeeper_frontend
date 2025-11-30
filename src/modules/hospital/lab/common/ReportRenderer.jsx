@@ -31,7 +31,7 @@ import Serology from "./report-formats/Serology";
 const module = MODULES.LAB_TEST;
 
 const ReportRenderer = forwardRef(
-	({ diagnosticReport, setDiagnosticReport, fetching, inputsRef, refetchDiagnosticReport }, ref) => {
+	({ diagnosticReport, setDiagnosticReport, fetching, inputsRef, refetchDiagnosticReport }) => {
 		const { t } = useTranslation();
 		const form = useForm(getFormValues(t));
 		const { reportId } = useParams();
@@ -53,10 +53,11 @@ const ReportRenderer = forwardRef(
 			}
 		};
 
+		console.log(diagnosticReport.process);
+
 		const renderCustomReport = () => {
 			if (diagnosticReport?.custom_report !== null && diagnosticReport?.custom_report !== undefined) {
 				const slug = diagnosticReport?.particular?.slug;
-				console.log("slug: ", slug);
 
 				switch (slug) {
 					case "covid-19":
@@ -205,7 +206,7 @@ const ReportRenderer = forwardRef(
 					dispatch(setRefetchData({ module, refetching: true }));
 					refetchDiagnosticReport();
 					successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-					setDiagnosticReport(resultAction.payload.data?.data);
+					setDiagnosticReport((prev) => ({ ...prev, process: resultAction?.payload.data?.data.process }));
 					form.reset();
 				}
 			} catch (error) {
@@ -213,6 +214,8 @@ const ReportRenderer = forwardRef(
 				errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 			}
 		}
+
+		console.log(diagnosticReport);
 
 		return (
 			<>
@@ -245,7 +248,8 @@ const ReportRenderer = forwardRef(
 								accessor: "result",
 								title: t("Result"),
 								render: (item, rowIndex) =>
-									diagnosticReport.process === "Done" ? (
+									diagnosticReport.process === "Done" ||
+									diagnosticReport.process === "In-progress" ? (
 										item.result
 									) : (
 										<TextInput

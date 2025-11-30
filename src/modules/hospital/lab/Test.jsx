@@ -9,13 +9,12 @@ import Barcode from "react-barcode";
 import { useReactToPrint } from "react-to-print";
 import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
 import CustomDivider from "@components/core-component/CustomDivider";
-import {getDataWithoutStore} from "@/services/apiService";
-import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import { getDataWithoutStore } from "@/services/apiService";
 
 const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"];
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
 
-export default function Test({ entity, isLoading }) {
+export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const test = entity;
@@ -36,10 +35,11 @@ export default function Test({ entity, isLoading }) {
 		content: () => barCodeRef.current,
 	});
 	const handleTest = (reportId) => {
+		refetchDiagnosticReport();
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${reportId}`, { replace: true });
 	};
 
-	const handleLabReport = async(id,reportSlug) => {
+	const handleLabReport = async (id, reportSlug) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
 		});
@@ -48,15 +48,14 @@ export default function Test({ entity, isLoading }) {
 		requestAnimationFrame(printLabReport);
 	};
 
-	async function handleBarcodeTag(barcode,reportId) {
+	async function handleBarcodeTag(barcode, reportId) {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.TAG_PRINT}/${reportId}`,
 		});
 		setBarcodeValue(reportId);
+		refetchDiagnosticReport();
 		requestAnimationFrame(printBarCodeValue);
 	}
-
-
 
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -122,7 +121,10 @@ export default function Test({ entity, isLoading }) {
 																size="compact-xs"
 																bg="var(--theme-secondary-color-6)"
 																onClick={() =>
-																	handleLabReport(item?.invoice_particular_id,'covid-19')
+																	handleLabReport(
+																		item?.invoice_particular_id,
+																		"covid-19"
+																	)
 																}
 																color="white"
 																leftSection={<IconPrinter color="white" size={16} />}
@@ -130,10 +132,16 @@ export default function Test({ entity, isLoading }) {
 																{t("Print")}
 															</Button>
 														</>
-													) }{item?.process == "New" && (
+													)}
+													{item?.process == "New" && (
 														<Button
 															leftSection={<IconTag stroke={1.2} size={12} />}
-															onClick={() => handleBarcodeTag(item?.barcode,item?.invoice_particular_id)}
+															onClick={() =>
+																handleBarcodeTag(
+																	item?.barcode,
+																	item?.invoice_particular_id
+																)
+															}
 															size="compact-xs"
 															bg="var(--theme-secondary-color-6)"
 															color="white"
@@ -158,15 +166,17 @@ export default function Test({ entity, isLoading }) {
 
 			{/* ----------- barcode generator ---------- */}
 			<Box display="none">
-				<Box ref={barCodeRef} mx='auto'>
+				<Box ref={barCodeRef} mx="auto">
 					<Barcode fontSize="10" width="1" height="30" value={barcodeValue || "BARCODETEST"} />
 				</Box>
 			</Box>
-			{ customReportName === 'covid-19' ?
-				<LabReportA4BN data={labReportData}  ref={labReportRef} /> : customReportName === 'gene-sputum'
-					? <LabReportA4BN data={labReportData}  ref={labReportRef} /> : <LabReportA4BN data={labReportData}  ref={labReportRef} />
-			}
-
+			{customReportName === "covid-19" ? (
+				<LabReportA4BN data={labReportData} ref={labReportRef} />
+			) : customReportName === "gene-sputum" ? (
+				<LabReportA4BN data={labReportData} ref={labReportRef} />
+			) : (
+				<LabReportA4BN data={labReportData} ref={labReportRef} />
+			)}
 		</Box>
 	);
 }

@@ -24,7 +24,7 @@ export default function CTScan({ diagnosticReport, setDiagnosticReport, refetchD
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
-	const is_completed = diagnosticReport?.process === "Done";
+	const is_completed = diagnosticReport?.process === "Done" || diagnosticReport?.process === "In-progress";
 
 	const form = useForm({
 		initialValues: {
