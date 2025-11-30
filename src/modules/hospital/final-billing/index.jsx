@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, ScrollArea, Stack, Text } from "@mantine/core";
+import { Box, Flex, Grid, Stack, Text } from "@mantine/core";
 import TabSubHeading from "@hospital-components/TabSubHeading";
 import BillingTable from "@hospital-components/BillingTable";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -23,20 +23,6 @@ const billing = {
 	totalCharge: 10000,
 };
 
-const billingSummary = {
-	totalAmount: 10000,
-	discount: 10000,
-	grandTotal: 0,
-	receivedAmount: 0,
-	receivable: 3220,
-};
-
-const finalBillDetails = [
-	{ particular: "Cabin - 1", unitPrice: 1000, qty: 5, subtotal: "৳ 10000" },
-	{ particular: "ICU - 202", unitPrice: 5000, qty: 5, subtotal: "৳ 10000" },
-	{ particular: "CBC", unitPrice: 400, qty: 5, subtotal: "৳ 1200" },
-];
-
 const module = MODULES.FINAL_BILLING;
 
 export default function Index() {
@@ -47,15 +33,6 @@ export default function Index() {
 	const [refetchBillingKey, setRefetchBillingKey] = useState(0);
 	const [diagnosticReport, setDiagnosticReport] = useState([]);
 	const { t } = useTranslation();
-
-	const rows = finalBillDetails.map((item, index) => (
-		<Table.Tr key={index}>
-			<Table.Td>{item.particular}</Table.Td>
-			<Table.Td>৳ {item.unitPrice}</Table.Td>
-			<Table.Td>{item.qty}</Table.Td>
-			<Table.Td>{item.subtotal}</Table.Td>
-		</Table.Tr>
-	));
 
 	useEffect(() => {
 		if (id) {
