@@ -2,10 +2,11 @@ import { Box, Text, Grid, Group, Stack, Image, Flex, ActionIcon, Table } from "@
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import Rx from "@assets/images/rx.png";
+import Bullet from "@assets/images/bullet.png";
 import TBLogo from "@assets/images/tb_logo.png";
 import DashedDivider from "@components/core-component/DashedDivider";
 import CustomDivider from "@components/core-component/CustomDivider";
-import { formatDate } from "@/common/utils";
+import {capitalize, formatDate} from "@/common/utils";
 import "@/index.css";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
@@ -92,7 +93,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 					<SectionWrapper label="C/C:">
 						{renderNumberedList(
 							dataArray,
-							(item) => `${item.name}: ${item.value} ${item.duration || "Day"}/s`
+							(item) => `${item.name}: ${item.value} ${item.duration || "Days"}`
 						)}
 						{renderOtherInstructions(key)}
 					</SectionWrapper>
@@ -314,9 +315,9 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									{patientInfo?.weight && (
 										<Group gap="4xs">
 											<Text size="xs">
-												{t("Weight")}:
+												{t("Wt.")}:
 											</Text>
-											<Text size="xs">{patientInfo?.weight || ""}</Text>
+											<Text size="xs">{patientInfo?.weight || ""} KG</Text>
 										</Group>
 									)}
 								</Table.Td>
@@ -347,14 +348,15 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												<Box key={key}>{renderExaminationSection(key)}</Box>
 											))}
 									</Box>
-									<Flex
-										mih={50}
-										gap="xs"
-										justify="flex-start"
-										align="flex-end"
-										direction="row"
-										wrap="nowrap"
-									>
+									{patientInfo?.is_vital == 1 && (
+										<Flex
+											mih={50}
+											gap="xs"
+											justify="flex-start"
+											align="flex-end"
+											direction="row"
+											wrap="nowrap"
+										>
 										<Box w={"100%"}>
 											<Box style={{ borderBottom: `1px solid #444` }}>Vitals</Box>
 											<Grid columns={24} gutter={"2"}>
@@ -408,6 +410,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											</Grid>
 										</Box>
 									</Flex>
+									)}
 								</Table.Td>
 								<Table.Td colSpan={4} style={{ verticalAlign: "top" }}>
 									<Box style={{ position: "relative", minHeight: "350px" }}>
@@ -416,30 +419,47 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										</Box>
 										<Box gap="2">
 											{exEmergencies.map((emergency, index) => (
-												<Box key={index}>
-													<Text size="xs" fw={600}>
-														{index + 1}. {getValue(emergency.value)}
-													</Text>
-												</Box>
+
+												<Flex
+												gap="2"
+												justify="flex-start"
+												align="center"
+												direction="row"
+												wrap="wrap"
+												>
+												<Text w={'8'}>
+												<Image src={Bullet}  width='8px' height="8px" />
+												</Text>
+												{getValue(emergency.value)}
+												</Flex>
 											))}
 											{medicines.map((medicine, index) => (
 												<Box key={index}>
-													<Text size="xs" fw={600}>
-														{exEmergencies.length + index + 1}.{" "}
+
+													<Flex
+														gap="2"
+														justify="flex-start"
+														align="center"
+														direction="row"
+														wrap="wrap"
+													>
+														<Text w={'8'}>
+															<Image src={Bullet}  width='8px' height="8px" />
+														</Text>
 														{getValue(
 															medicine.medicine_id
 																? medicine.medicine_name
 																: medicine.generic
 														)}
-													</Text>
+													</Flex>
 													{medicine.dosages && medicine.dosages.length > 0 ? (
 														(medicine.dosages || []).map((dose, dIdx) => (
 															<Text
 																key={dose.id ?? dIdx}
 																style={{
-																	fontSize: "9px",
+																	fontSize: "13px",
 																	color: "var(--theme-tertiary-color-8)",
-																	marginLeft: "8px",
+																	marginLeft: "32px",
 																}}
 															>
 																{getValue(dose.dose_details_bn, dose.dose_details)}{" "}
@@ -451,9 +471,9 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 													) : (
 														<Text
 															style={{
-																fontSize: "9px",
+																fontSize: "13px",
 																color: "var(--theme-tertiary-color-8)",
-																marginLeft: "8px",
+																marginLeft: "32px",
 															}}
 														>
 															{getValue(medicine.dose_details_bn, medicine.dose_details)}{" "}
@@ -465,6 +485,25 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												</Box>
 											))}
 										</Box>
+										{patientInfo?.referred_comment && (
+											<>
+												<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
+												<Text size="xs" fw={400}>
+													Cause of Ref: {getValue(patientInfo?.referred_comment)}
+												</Text>
+												{patientInfo?.referred_mode === "referred" &&
+												patientInfo?.referred_hospital ? (
+													<Text size="xs" fw={400}>
+														{capitalize(getValue(patientInfo?.referred_mode))} To : {getValue(patientInfo?.referred_hospital)}
+													</Text>
+												) : patientInfo?.referred_mode === "referred" ? (
+													<Text size="xs" fw={400}>
+														{capitalize(getValue(patientInfo?.referred_mode))} To : {getValue(patientInfo?.referred_room)}
+													</Text>
+												) : null}
+
+											</>
+										)}
 									</Box>
 									<Flex
 										mih={50}
@@ -478,14 +517,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="sm" fw={500}>
 												উপদেশ: {getValue(jsonContent.advise)}
 											</Text>
-											{patientInfo?.referred_comment && (
-												<>
-													<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
-													<Text size="xs" fw={400}>
-														Note: {getValue(patientInfo?.referred_comment)}
-													</Text>
-												</>
-											)}
 											{jsonContent?.follow_up_date && (
 												<Text size="sm" mt="xs">
 													* Follow Up Date: {formatDate(jsonContent?.follow_up_date)}

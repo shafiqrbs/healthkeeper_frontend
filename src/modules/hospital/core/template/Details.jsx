@@ -42,7 +42,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 
 const STATIC_OPD_ID = "125760093407";
 const STATIC_BILLING_ID = 82;
-const STATIC_PRESCRIPTION_ID = "613345863040";
+const STATIC_PRESCRIPTION_ID = "6";
 const REPORT_ID = "520108448725";
 const FREE_SERVICE_ID = "786934884211";
 
