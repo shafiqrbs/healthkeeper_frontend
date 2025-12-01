@@ -342,10 +342,12 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                         }}
                                     >
                                         <TextInput
+                                            value={searchValue}
                                             leftSection={<IconSearch size={16} opacity={0.5}/>}
                                             size="sm"
                                             placeholder={t("ChooseProduct")}
                                             onChange={(e) => {
+                                                setSearchValue(e.target.value);
                                                 handleProductSearch(e.target.value);
                                             }}
                                             id={"SearchKeyword"}
@@ -358,6 +360,7 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                                             opacity={0.5}
                                                             onClick={() => {
                                                                 setSearchValue("");
+                                                                handleProductSearch("");
                                                             }}
                                                         />
                                                     </Tooltip>
@@ -374,6 +377,7 @@ export default function __Form({form, requisitionForm, items, setItems, onSave})
                                                 )
                                             }
                                         />
+
                                     </Tooltip>
                                 </Box>
                             </Grid.Col>

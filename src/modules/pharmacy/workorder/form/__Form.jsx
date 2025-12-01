@@ -357,39 +357,42 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 											duration: 1000,
 										}}
 									>
-										<TextInput
-											leftSection={<IconSearch size={16} opacity={0.5} />}
-											size="sm"
-											placeholder={t("ChooseProduct")}
-											onChange={(e) => {
-												handleProductSearch(e.target.value);
-											}}
-											id={"SearchKeyword"}
-											rightSection={
-												searchValue ? (
-													<Tooltip label={t("Close")} withArrow bg={`red.5`}>
-														<IconX
-															color="var( --theme-remove-color)"
-															size={16}
-															opacity={0.5}
-															onClick={() => {
-																setSearchValue("");
-															}}
-														/>
-													</Tooltip>
-												) : (
-													<Tooltip
-														label={t("FieldIsRequired")}
-														withArrow
-														position={"bottom"}
-														c={"red"}
-														bg={`red.1`}
-													>
-														<IconInfoCircle size={16} opacity={0.5} />
-													</Tooltip>
-												)
-											}
-										/>
+                                        <TextInput
+                                            value={searchValue}
+                                            leftSection={<IconSearch size={16} opacity={0.5}/>}
+                                            size="sm"
+                                            placeholder={t("ChooseProduct")}
+                                            onChange={(e) => {
+                                                setSearchValue(e.target.value);
+                                                handleProductSearch(e.target.value);
+                                            }}
+                                            id={"SearchKeyword"}
+                                            rightSection={
+                                                searchValue ? (
+                                                    <Tooltip label={t("Close")} withArrow bg={`red.5`}>
+                                                        <IconX
+                                                            color="var( --theme-remove-color)"
+                                                            size={16}
+                                                            opacity={0.5}
+                                                            onClick={() => {
+                                                                setSearchValue("");
+                                                                handleProductSearch("");
+                                                            }}
+                                                        />
+                                                    </Tooltip>
+                                                ) : (
+                                                    <Tooltip
+                                                        label={t("FieldIsRequired")}
+                                                        withArrow
+                                                        position={"bottom"}
+                                                        c={"red"}
+                                                        bg={`red.1`}
+                                                    >
+                                                        <IconInfoCircle size={16} opacity={0.5}/>
+                                                    </Tooltip>
+                                                )
+                                            }
+                                        />
 									</Tooltip>
 								</Box>
 							</Grid.Col>
@@ -667,18 +670,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
                                                     {t("Save")}
                                                 </Button>
                                             </Tooltip>
-
-                                            {/*<Button
-												onClick={onSave}
-												size="xs"
-												leftSection={<IconDeviceFloppy size={20} />}
-												type="submit"
-												bg="var(--theme-primary-color-6)"
-												color="white"
-												w="200px"
-											>
-												{t("Save")}
-											</Button>*/}
 										</Flex>
 									</Box>
 								</Box>
