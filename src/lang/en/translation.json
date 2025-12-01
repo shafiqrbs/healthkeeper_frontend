@@ -1600,6 +1600,7 @@
 	"EmergencyPrescription": "Emergency Prescription",
 	"PleaseFillAllDates": "All expire field is required.",
 	"NoDataFound": "No data found",
-	"Qty": "Quantity"
-
+	"Qty": "Quantity",
+	"TreatmentTemplate": "Treatment Template",
+	"PrescriptionPreview": "Prescription Preview"
 }

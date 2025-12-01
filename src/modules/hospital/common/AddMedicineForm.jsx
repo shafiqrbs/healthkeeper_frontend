@@ -353,6 +353,22 @@ export default function AddMedicineForm({
 					appendDosageValueToForm(medicineForm, dosage_options, selectedMedicine.medicine_dosage_id);
 				}
 			}
+			// console.log(medicineForm.values.medicine_id, medicineForm.values.medicine_dosage_id);
+			// if (medicineForm.values.medicine_id && medicineForm.values.medicine_dosage_id) {
+			// 	console.log("Medicine and dosage are filled");
+			// 	handleAdd({
+			// 		medicine_id: medicineForm.values.medicine_id,
+			// 		medicine_dosage_id: medicineForm.values.medicine_dosage_id,
+			// 		medicine_bymeal_id: medicineForm.values.medicine_bymeal_id,
+			// 		quantity: medicineForm.values.quantity,
+			// 		duration: medicineForm.values.duration,
+			// 		by_meal: medicineForm.values.by_meal,
+			// 	});
+			// 	medicineForm.reset();
+			// 	setMedicineDosageSearchValue("");
+			// 	setMedicineByMealSearchValue("");
+			// 	setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
+			// }
 		}
 
 		if (field === "generic" && value) {
