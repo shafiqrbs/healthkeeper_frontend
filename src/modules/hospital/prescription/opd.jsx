@@ -15,7 +15,7 @@ import useParticularsData from "@hooks/useParticularsData";
 import { useDisclosure, useElementSize } from "@mantine/hooks";
 import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
 import { IconArrowRight } from "@tabler/icons-react";
-import Table from "@modules/hospital/visit/_Table";
+import Table from "./Table";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { updateEntityData } from "@/app/store/core/crudThunk";
@@ -163,7 +163,7 @@ export default function Index() {
 										bg="var(--theme-success-color)"
 										c="white"
 									>
-										{t("Visits")}
+										{t("Prescriptions")}
 									</Button>
 								</Flex>
 							</Grid.Col>

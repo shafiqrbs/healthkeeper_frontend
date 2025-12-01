@@ -28,7 +28,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
-import {capitalizeWords, formatDateTimeAmPm,formatDate, getLoggedInHospitalUser, getUserRole} from "@/common/utils";
+import { capitalizeWords, formatDateTimeAmPm, formatDate, getLoggedInHospitalUser, getUserRole } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -188,6 +188,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const handlePrescription = async (prescription_id) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
+		if (closeTable) closeTable();
 	};
 
 	const handleA4Print = async (id) => {
@@ -317,13 +318,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					columns={[
 						{
 							accessor: "action",
-							title:'',
+							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => {
 								return (
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-
 										{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
 											<>
 												{values?.prescription_id &&
@@ -422,7 +422,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												onClick={(e) => patientUpdate(e, values?.id)}
 											>
 												<IconPencil size={18} color="var(--theme-success-color)" />
-
 											</ActionIcon>
 										)}
 
