@@ -43,7 +43,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 const STATIC_OPD_ID = "125760093407";
 const STATIC_BILLING_ID = 82;
 const STATIC_PRESCRIPTION_ID = "6";
-const REPORT_ID = "962174909659";
+const REPORT_ID = "709766736602";
 const FREE_SERVICE_ID = "786934884211";
 
 export default function Details() {

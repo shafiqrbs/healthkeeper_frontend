@@ -49,7 +49,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 					fz={12}
 				>
 					<Stack
-						height="297mm"
+						h="287mm"
 						bg="var(--mantine-color-body)"
 						align="stretch"
 						justify="space-between"
@@ -613,9 +613,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 								</Grid.Col>
 							</Grid>
 						</Box>
+
 					</Stack>
-
-
 
 					{/* =============== Footer Information ================ */}
 				</Box>
