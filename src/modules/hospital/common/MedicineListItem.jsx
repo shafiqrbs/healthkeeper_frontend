@@ -348,12 +348,12 @@ export default function MedicineListItem({
 										>
 											{instruction?.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
 											{isOpdType && `---- ${instruction.quantity} ---- ${instruction.duration}`}
-											{isFirstItem &&
-												isMedicine &&
-												isOpdType &&
-												`---- ${medicine.opd_quantity || t("NoOutdoorMedicineNumber")} ---- ${
-													medicine.doctor_comment || t("NoDoctorComment")
-												}`}
+											{isFirstItem && isMedicine && isOpdType && (
+												<>
+													{medicine.opd_quantity && `---- ${medicine.opd_quantity}`}
+													{medicine.doctor_comment && `---- ${medicine.doctor_comment}`}
+												</>
+											)}
 										</Box>
 
 										<Flex align="center" display={viewAction ? "flex" : "none"}>
