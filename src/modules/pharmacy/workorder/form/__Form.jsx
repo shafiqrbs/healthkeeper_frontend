@@ -155,7 +155,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 
     const {records,scrollRef,handleScrollToBottom} = useInfiniteTableScroll({
         module,
-        fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INDEX_CATEGORY_SCROLLING,
+        fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INDEX_CATEGORY_SCROLLING_WORKORDER,
         sortByKey: "created_at",
         filterParams: memoizedFilterParameters,
         direction: "desc",
@@ -183,18 +183,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 			e.preventDefault();
 			if (inputsRef?.current) {
 				const nextInput = inputsRef.current[index + 1];
-				if (nextInput) {
-					nextInput.focus();
-				}
-			}
-		}
-	};
-
-	const handleKeyDownTable = (e, index) => {
-		if (e.key === "Enter") {
-			e.preventDefault();
-			if (inputsNumberRef?.current) {
-				const nextInput = inputsNumberRef.current[index + 1];
 				if (nextInput) {
 					nextInput.focus();
 				}
