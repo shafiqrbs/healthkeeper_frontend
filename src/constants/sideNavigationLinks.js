@@ -429,25 +429,25 @@ export const sideNavigationLinks = {
 			path: "/hospital/reports",
 			icon: IconMedicineSyrup,
 			color: "#673AB7", // Deep Purple
-			allowedRoles: ["role_domain", "admin_administrator"],
+			allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
 			subMenu: [
 				{
-					label: t("ReportsSubmenu1"),
+					label: t("Summary"),
 					path: "/hospital/reports/overview1",
 					icon: IconDashboard,
-					allowedRoles: ["role_domain", "admin_administrator"],
+					allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
 				},
 				{
-					label: t("ReportsSubmenu2"),
+					label: t("Collection"),
 					path: "/hospital/reports/patients2",
 					icon: IconMedicineSyrup,
-					allowedRoles: ["role_domain", "admin_administrator"],
+					allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
 				},
 				{
-					label: t("ReportsSubmenu3"),
+					label: t("Ticket"),
 					path: "/hospital/reports/patients3",
 					icon: IconSettings,
-					allowedRoles: ["role_domain", "admin_administrator"],
+					allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
 				},
 			],
 		},

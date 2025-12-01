@@ -1591,7 +1591,6 @@
 	"NoPendingRoomTransfer": "No pending room transfer",
 	"RoomToBeTransferred": "Room to be transferred",
 	"ApproveThisWaiver": "Approve This Waiver",
-	"Qty": "Quantity",
 	"ManageDiagnostic": "Manage Diagnostic",
 	"DiagnosticReportPrepared": "Diagnostic Report Prepared",
 	"TemplateNameIsRequired": "Template name is required",
@@ -1601,5 +1600,6 @@
 	"EmergencyPrescription": "Emergency Prescription",
 	"PleaseFillAllDates": "All expire field is required.",
 	"NoDataFound": "No data found",
-	"DiagnosticReportPrepared": "Diagnostic Report Prepare"
+	"Qty": "Quantity"
+
 }
