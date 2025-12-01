@@ -30,7 +30,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
-import { formatDate, getLoggedInUser, getUserRole } from "@/common/utils";
+import { formatDate, getLoggedInHospitalUser, getLoggedInUser, getUserRole } from "@/common/utils";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
@@ -72,11 +72,13 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const { t } = useTranslation();
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const listData = useSelector((state) => state.crud[module].data);
+	const hospitalConfig = getLoggedInHospitalUser();
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
 	const [singlePatientData, setSinglePatientData] = useState({});
+	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
 
 	const form = useForm({
 		initialValues: {

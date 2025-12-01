@@ -8,6 +8,8 @@ const initialValues = {
 	dosage_form: "",
 	quantity: "",
 	instruction: "",
+	duration: "",
+	duration_mode: "",
 };
 
 export const getInitialValues = (t) => {

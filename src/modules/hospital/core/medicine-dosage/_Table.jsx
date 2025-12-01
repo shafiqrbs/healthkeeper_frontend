@@ -152,6 +152,7 @@ export default function _Table({ module, open }) {
                     newData[item.id] = {
                         name: item.name ?? "",
                         quantity: item?.quantity ?? 0,
+                        duration: item?.duration ?? 0,
                     };
                 }
             });
@@ -271,55 +272,26 @@ export default function _Table({ module, open }) {
                         {
                             accessor: "name",
                             title: t("Name"),
-                            sortable: true,
-                            render: (item) => (
-                                <TextInput
-                                    size="xs"
-                                    className={inlineInputCss.inputText}
-                                    placeholder={t("Name")}
-                                    value={submitFormData[item.id]?.name || ""}
-                                    onChange={(event) =>
-                                        handleDataTypeChange(item.id, "name", event.currentTarget.value)
-                                    }
-                                    onBlur={() => handleRowSubmit(item.id)}
-                                />
-                            ),
+                            sortable: false,
                         },
-                         {
+                        {
                             accessor: "name_bn",
                             title: t("NameBn"),
-                            sortable: true,
-                            render: (item) => (
-                                <TextInput
-                                    size="xs"
-                                    className={inlineInputCss.inputText}
-                                    placeholder={t("Name")}
-                                    value={submitFormData[item.id]?.name || ""}
-                                    onChange={(event) =>
-                                        handleDataTypeChange(item.id, "name", event.currentTarget.value)
-                                    }
-                                    onBlur={() => handleRowSubmit(item.id)}
-                                />
-                            ),
+                            sortable: false,
                         },
                         {
                             accessor: "quantity",
                             title: t("Quantity"),
-                            sortable: true,
-                            render: (item) => (
-                                <NumberInput
-                                    size="xs"
-                                    className={inlineInputCss.inputText}
-                                    placeholder={t("Quantity")}
-                                    value={submitFormData[item.id]?.quantity || 0}
-                                    onChange={(event) =>
-                                        handleDataTypeChange(item.id, "quantity", event.currentTarget.value)
-                                    }
-                                    onBlur={() => handleRowSubmit(item.id)}
-                                />
-                            ),
                         },
-
+                        {
+                            accessor: "duration",
+                            title: t("Duration"),
+                        },
+                        {
+                            accessor: "duration_mode",
+                            title: t("DurationMode"),
+                            sortable: true,
+                        },
                         {
                             accessor: "action",
                             title: "",
@@ -371,7 +343,6 @@ export default function _Table({ module, open }) {
                             ),
                         },
                     ]}
-                    textSelectionDisabled
                     fetching={fetching}
                     loaderSize="xs"
                     loaderColor="grape"

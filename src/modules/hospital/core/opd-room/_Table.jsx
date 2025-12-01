@@ -153,6 +153,8 @@ export default function _Table({ module, open }) {
                     newData[item.id] = {
                         name: item.name ?? "",
                         opd_referred: item?.opd_referred ?? false,
+                        status: item?.status ?? false,
+                        is_opd: item?.is_opd ?? false,
                     };
                 }
             });
@@ -283,6 +285,42 @@ export default function _Table({ module, open }) {
                                         handleFieldChange(
                                             item.id,
                                             "opd_referred",
+                                            val.currentTarget.checked
+                                        )
+                                    }
+                                />
+                            ),
+                        },
+                        {
+                            accessor: "is_opd",
+                            title: t("OPDActive"),
+                            render: (item) => (
+                                <Checkbox
+                                    key={item.id}
+                                    size="sm"
+                                    checked={submitFormData[item.id]?.is_opd ?? false}
+                                    onChange={(val) =>
+                                        handleFieldChange(
+                                            item.id,
+                                            "is_opd",
+                                            val.currentTarget.checked
+                                        )
+                                    }
+                                />
+                            ),
+                        },
+                        {
+                            accessor: "status",
+                            title: t("Status"),
+                            render: (item) => (
+                                <Checkbox
+                                    key={item.id}
+                                    size="sm"
+                                    checked={submitFormData[item.id]?.status ?? false}
+                                    onChange={(val) =>
+                                        handleFieldChange(
+                                            item.id,
+                                            "status",
                                             val.currentTarget.checked
                                         )
                                     }

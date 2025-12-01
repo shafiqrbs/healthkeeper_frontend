@@ -55,7 +55,7 @@ export default function OpdRoomModal({ closeOpdRoom, height }) {
 				if (!newData[item.id]) {
 					newData[item.id] = {
 						name: item.name ?? "",
-						status: item?.status ?? false,
+						is_opd: item?.is_opd ?? false,
 					};
 				}
 			});
@@ -136,15 +136,19 @@ export default function OpdRoomModal({ closeOpdRoom, height }) {
 							render: (item) => (item.opd_referred === 1 ? "Yes" : "No"),
 						},
 						{
-							accessor: "status",
-							title: t("Status"),
+							accessor: "is_opd",
+							title: t("OPDActive"),
 							render: (item) => (
+								<>
+									{item.opd_referred !==1 &&(
 								<Checkbox
 									key={item.id}
 									size="sm"
-									checked={submitFormData[item.id]?.status ?? false}
-									onChange={(val) => handleFieldChange(item.id, "status", val.currentTarget.checked)}
+									checked={submitFormData[item.id]?.is_opd ?? false}
+									onChange={(val) => handleFieldChange(item.id, "is_opd", val.currentTarget.checked)}
 								/>
+									)}
+								</>
 							),
 						},
 					]}

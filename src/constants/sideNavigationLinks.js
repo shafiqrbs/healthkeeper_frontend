@@ -82,7 +82,15 @@ export const sideNavigationLinks = {
 			icon: IconBuildingHospital,
 			color: "#9C27B0", // Purple
 
-			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "doctor_ipd_confirm","ipd_admission","operator_emergency","doctor_ipd"],
+			allowedRoles: [
+				"role_domain",
+				"admin_administrator",
+				"admin_doctor",
+				"doctor_ipd_confirm",
+				"ipd_admission",
+				"operator_emergency",
+				"doctor_ipd",
+			],
 
 			subMenu: [
 				{
@@ -210,7 +218,16 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_WAIVER,
 			icon: IconMicroscopeOff,
 			color: "#9E9D24", // Olive
-			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd", "doctor_emergency", "doctor_opd", "doctor_approve_opd", "doctor_approve_ipd", "doctor_ipd_confirm"],
+			allowedRoles: [
+				"role_domain",
+				"admin_administrator",
+				"doctor_ipd",
+				"doctor_emergency",
+				"doctor_opd",
+				"doctor_approve_opd",
+				"doctor_approve_ipd",
+				"doctor_ipd_confirm",
+			],
 			subMenu: [
 				{
 					label: t("PatientWaiver"),
@@ -222,7 +239,7 @@ export const sideNavigationLinks = {
 						"doctor_ipd",
 						"doctor_emergency",
 						"doctor_opd",
-						"doctor_ipd_confirm"
+						"doctor_ipd_confirm",
 					],
 				},
 				{
@@ -237,7 +254,7 @@ export const sideNavigationLinks = {
 						"doctor_opd",
 						"doctor_approve_opd",
 						"doctor_approve_ipd",
-						"doctor_ipd_confirm"
+						"doctor_ipd_confirm",
 					],
 				},
 			],
@@ -325,36 +342,21 @@ export const sideNavigationLinks = {
 					path: "/",
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
-					allowedRoles: [
-						"pharmacy_pharmacist",
-						"pharmacy_manager",
-						"pharmacy_doctor",
-						"admin_administrator",
-					],
+					allowedRoles: ["pharmacy_pharmacist", "pharmacy_manager", "pharmacy_doctor", "admin_administrator"],
 				},
 				{
 					label: t("Stock"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STOCK.INDEX,
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
-					allowedRoles: [
-						"pharmacy_pharmacist",
-						"pharmacy_manager",
-						"pharmacy_doctor",
-						"admin_administrator",
-					],
+					allowedRoles: ["pharmacy_pharmacist", "pharmacy_manager", "pharmacy_doctor", "admin_administrator"],
 				},
 				{
 					label: t("Requisition"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_INDENT.INDEX,
 					icon: IconMedicineSyrup,
 					color: "#009688", // Teal
-					allowedRoles: [
-						"pharmacy_pharmacist",
-						"pharmacy_manager",
-						"pharmacy_doctor",
-						"admin_administrator",
-					],
+					allowedRoles: ["pharmacy_pharmacist", "pharmacy_manager", "pharmacy_doctor", "admin_administrator"],
 				},
 				{
 					label: t("Workorder"),
@@ -429,27 +431,33 @@ export const sideNavigationLinks = {
 			path: "/hospital/reports",
 			icon: IconMedicineSyrup,
 			color: "#673AB7", // Deep Purple
-			allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
-			subMenu: [
-				{
-					label: t("Summary"),
-					path: "/hospital/reports/overview1",
-					icon: IconDashboard,
-					allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
-				},
-				{
-					label: t("Collection"),
-					path: "/hospital/reports/patients2",
-					icon: IconMedicineSyrup,
-					allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
-				},
-				{
-					label: t("Ticket"),
-					path: "/hospital/reports/patients3",
-					icon: IconSettings,
-					allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
-				},
+			allowedRoles: [
+				"role_domain",
+				"admin_administrator",
+				"operator_manager",
+				"operator_emergency",
+				"operator_opd",
 			],
+			// subMenu: [
+			// 	{
+			// 		label: t("Summary"),
+			// 		path: "/hospital/reports/overview1",
+			// 		icon: IconDashboard,
+			// 		allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
+			// 	},
+			// 	{
+			// 		label: t("Collection"),
+			// 		path: "/hospital/reports/patients2",
+			// 		icon: IconMedicineSyrup,
+			// 		allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
+			// 	},
+			// 	{
+			// 		label: t("Ticket"),
+			// 		path: "/hospital/reports/patients3",
+			// 		icon: IconSettings,
+			// 		allowedRoles: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
+			// 	},
+			// ],
 		},
 		{
 			label: t("Admin"),
