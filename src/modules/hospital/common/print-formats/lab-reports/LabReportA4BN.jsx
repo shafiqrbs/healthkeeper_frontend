@@ -57,7 +57,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 					>
 						<Box>
 							{/* =============== Lab Report Header ================ */}
-							<Box mb="sm">
+							<Box mb="sm" >
 								<Grid gutter="md">
 									<Grid.Col span={4}>
 										<Group ml="md" justify="flex-end" align="right" h="100%">
