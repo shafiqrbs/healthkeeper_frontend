@@ -350,7 +350,7 @@ export default function MedicineListItem({
 											{isOpdType && `---- ${instruction.quantity} ---- ${instruction.duration}`}
 											{isFirstItem && isMedicine && isOpdType && (
 												<>
-													{medicine.opd_quantity && `---- ${medicine.opd_quantity}`}
+													{medicine.opd_quantity ?? `---- ${medicine.opd_quantity}`}
 													{medicine.doctor_comment && `---- ${medicine.doctor_comment}`}
 												</>
 											)}
