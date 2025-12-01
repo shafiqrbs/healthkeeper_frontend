@@ -31,7 +31,7 @@ export default function MedicineListItem({
 
 	const handleChange = (field, value) => {
 		if (field === "opd_quantity" && !ignoreOpdQuantityLimit && isOpdType) {
-			if (value > medicine.opd_limit) {
+			if (value > medicine.opd_limit * 2) {
 				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error", "", "", "", 3000);
 				return;
 			}

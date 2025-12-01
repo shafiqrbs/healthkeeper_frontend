@@ -2,9 +2,6 @@ import { Box } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure } from "@mantine/hooks";
 
-import { useForm } from "@mantine/form";
-
-import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { useOutletContext } from "react-router-dom";
 import _Table from "./_Table";
 import { MODULES_CORE } from "@/constants";

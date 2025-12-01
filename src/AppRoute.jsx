@@ -73,6 +73,7 @@ import IpdManageIndex from "@modules/hospital/ipdAdmitted/manage";
 import StoreRequisitionIndex from "@modules/store/requisition";
 import StoreRequisitionManage from "@modules/store/requisition/manage";
 import StoreStockIndex from "@modules/store/stock";
+import ReportsIndex from "@modules/hospital/reports";
 
 function AppRoute() {
 	return (
@@ -410,7 +411,7 @@ function AppRoute() {
 									"doctor_opd",
 									"doctor_approve_opd",
 									"doctor_approve_ipd",
-									"doctor_ipd_confirm"
+									"doctor_ipd_confirm",
 								]}
 							>
 								<PatientWaiverListIndex />
@@ -499,6 +500,7 @@ function AppRoute() {
 							</ProtectedRoute>
 						}
 					/>
+					<Route path="reports" element={<ReportsIndex />} />
 					<Route
 						path="epharma"
 						element={
