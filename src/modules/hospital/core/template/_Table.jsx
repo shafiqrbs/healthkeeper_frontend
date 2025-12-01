@@ -46,6 +46,8 @@ const templateData = [
 	{ name: "InvoicePosEN", module: "billing", id: getUUID() },
 	{ name: "FreeServiceFormBN", module: "billing", id: getUUID() },
 	{ name: "FreeServiceFormEN", module: "billing", id: getUUID() },
+	{ name: "Workorder", module: "wrkorder", id: getUUID() },
+	{ name: "Indent", module: "indent", id: getUUID() },
 ];
 
 export default function _Table({ module }) {

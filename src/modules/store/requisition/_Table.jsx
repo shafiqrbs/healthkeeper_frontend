@@ -17,17 +17,22 @@ import ViewDrawer from "./__ViewDrawer";
 import {notifications} from "@mantine/notifications";
 import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {PHARMACY_DATA_ROUTES} from "@/constants/routes";
+import {HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
 import {deleteEntityData, editEntityData} from "@/app/store/core/crudThunk";
 import {setInsertType, setRefetchData} from "@/app/store/core/crudSlice.js";
 import {ERROR_NOTIFICATION_COLOR} from "@/constants/index.js";
 import {deleteNotification} from "@components/notification/deleteNotification";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import {getLoggedInUser, getUserRole} from "@utils/index";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import {CORE_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import {getDataWithoutStore} from "@/services/apiService";
+import {useReactToPrint} from "react-to-print";
+import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
+import Workorder from "@hospital-components/print-formats/workorder/Workorder";
+import Indent from "@hospital-components/print-formats/indent/Indent";
 
 const PER_PAGE = 50;
 
@@ -43,6 +48,8 @@ export default function _Table({module}) {
     const height = mainAreaHeight - 48;
     const user = getLoggedInUser();
     const userRoles = getUserRole();
+    const [invoicePrintData, setInvoicePrintData] = useState(null);
+    const invoicePrintRef = useRef(null);
    // console.log(user.id)
     const ALLOWED_OPD_ROLES = ["nurse_incharge"];
     const canApprove = userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role));
@@ -115,14 +122,14 @@ export default function _Table({module}) {
         setViewDrawer(true);
     };
 
-    const handleDataPrint = (id) => {
-        dispatch(
-            editEntityData({
-                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.VIEW}/${id}`,
-                module,
-            })
-        );
-       // setViewDrawer(true);
+
+    const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
+    const handleDataPrint = async (id) => {
+        const res = await getDataWithoutStore({
+            url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.VIEW}/${id}`,
+        });
+        setInvoicePrintData(res.data);
+        requestAnimationFrame(invoicePrint);
     };
 
     const handleCreateFormNavigate = () => {
@@ -241,7 +248,7 @@ export default function _Table({module}) {
                                         >
                                             {t("View")}
                                         </Button>
-                                        {values.process !== 'Approved' && !values.approved_by_id &&
+                                        {(values.process === 'Approved' || values.process === 'Received') && values.approved_by_id &&
                                         <Button
                                             onClick={() => handleDataPrint(values.uid)}
                                             variant="filled"
@@ -254,11 +261,12 @@ export default function _Table({module}) {
                                             {t("Print")}
                                         </Button>
                                         }
+
                                         {values.process !== 'Approved' && !values.approved_by_id &&
                                             <ActionIcon
                                                 size={'ms'}
                                                 onClick={() => handleDelete(values.uid)}
-                                              
+
                                                 variant="transparent"
                                                 color="var(--theme-delete-color)"
                                                 radius="es"
@@ -267,6 +275,7 @@ export default function _Table({module}) {
                                                 <IconTrashX height={18} width={18} stroke={1.5}/>
                                             </ActionIcon>
                                         }
+
                                     </Button.Group>
                                 </Group>
                             ),
@@ -287,7 +296,7 @@ export default function _Table({module}) {
                     }}
                 />
             </Box>
-
+            <Indent data={invoicePrintData} ref={invoicePrintRef} />
             <DataTableFooter indexData={listData} module={module}/>
             <ViewDrawer viewDrawer={viewDrawer} height={height} setViewDrawer={setViewDrawer} module={module} refetchAll={refetchAll}/>
         </>

@@ -7,7 +7,7 @@ import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import PrescriptionFullEN from "@hospital-components/print-formats/prescription/PrescriptionFullEN";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import {HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import { IconArrowLeft } from "@tabler/icons-react";
 import EmergencyA4EN from "@hospital-components/print-formats/emergency/EmergencyA4EN";
 import EmergencyA4BN from "@hospital-components/print-formats/emergency/EmergencyA4BN";
@@ -39,12 +39,16 @@ import IPDInvoicePosBN from "@hospital-components/print-formats/ipd/IPDInvoicePo
 import FreeServiceFormBN from "@hospital-components/print-formats/billing/FreeServiceFormBN";
 import FreeServiceFormEN from "@hospital-components/print-formats/billing/FreeServiceFormEN";
 import { getDataWithoutStore } from "@/services/apiService";
+import Workorder from "@hospital-components/print-formats/workorder/Workorder";
+import Indent from "@hospital-components/print-formats/indent/Indent";
 
 const STATIC_OPD_ID = "125760093407";
-const STATIC_BILLING_ID = 82;
+const STATIC_BILLING_ID = 10;
 const STATIC_PRESCRIPTION_ID = "6";
 const REPORT_ID = "709766736602";
 const FREE_SERVICE_ID = "786934884211";
+const PURCHASE_ID = "8";
+const INDENT_ID = "858945689606";
 
 export default function Details() {
 	const { name } = useParams();
@@ -73,6 +77,14 @@ export default function Details() {
 
 	const { data: freeServiceData, isLoading: isFreeServiceLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.PRINT}/${FREE_SERVICE_ID}`,
+	});
+
+	const { data: workorderData, isLoading: isWorkorderDataLoading } = useDataWithoutStore({
+		url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.VIEW}/${PURCHASE_ID}`,
+	});
+
+	const { data: indentData, isLoading: isIndentDataLoading } = useDataWithoutStore({
+		url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.VIEW}/${INDENT_ID}`,
 	});
 
 	return (
@@ -258,6 +270,16 @@ export default function Details() {
 					{name === "FreeServiceFormEN" && (
 						<LoadingWrapper isLoading={isFreeServiceLoading}>
 							<FreeServiceFormEN preview data={freeServiceData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "Workorder" && (
+						<LoadingWrapper isLoading={isWorkorderDataLoading}>
+							<Workorder preview data={workorderData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "Indent" && (
+						<LoadingWrapper isLoading={isIndentDataLoading}>
+							<Indent preview data={indentData?.data} />
 						</LoadingWrapper>
 					)}
 				</Box>

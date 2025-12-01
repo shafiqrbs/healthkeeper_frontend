@@ -83,8 +83,9 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("বয়স")}</strong> {patientInfo?.year || 0} {t("বছর")}{" "}
-									{patientInfo?.month || 0} {t("মাস")} {patientInfo?.day || 0} {t("দিন")}
+									<strong>{t("বয়স")}</strong> {patientInfo?.year ? `${patientInfo.year} ${t("বছর")} ` : ""}
+									{patientInfo?.month ? `${patientInfo.month} ${t("মাস")} ` : ""}
+									{patientInfo?.day ? `${patientInfo.day} ${t("দিন")}` : ""}
 								</Table.Td>
 								<Table.Td miw={100} align="right">
 									{patientInfo?.dob && (

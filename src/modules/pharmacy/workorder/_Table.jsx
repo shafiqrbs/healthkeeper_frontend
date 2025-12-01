@@ -6,7 +6,7 @@ import {
     IconEdit,
     IconEye,
     IconChevronUp,
-    IconSelector
+    IconSelector, IconPrinter
 } from "@tabler/icons-react";
 import {DataTable} from "mantine-datatable";
 import {useDispatch, useSelector} from "react-redux";
@@ -27,7 +27,11 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import {successNotification} from "@components/notification/successNotification.jsx";
 import {errorNotification} from "@components/notification/errorNotification.jsx";
 import {getUserRole} from "@utils/index";
-import {useState} from "react";
+import {useRef, useState} from "react";
+import Indent from "@hospital-components/print-formats/indent/Indent";
+import Workorder from "@hospital-components/print-formats/workorder/Workorder";
+import {useReactToPrint} from "react-to-print";
+import {getDataWithoutStore} from "@/services/apiService";
 
 const PER_PAGE = 50;
 
@@ -41,6 +45,8 @@ export default function _Table({module}) {
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
     const height = mainAreaHeight - 48;
+    const [invoicePrintData, setInvoicePrintData] = useState(null);
+    const invoicePrintRef = useRef(null);
     const userRoles = getUserRole();
     const ALLOWED_PHARMACIST_ROLES = ["pharmacy_doctor","pharmacy_pharmacist","admin_administrator"];
     const canApprove = userRoles.some((role) => ALLOWED_PHARMACIST_ROLES.includes(role));
@@ -113,9 +119,19 @@ export default function _Table({module}) {
         setViewDrawer(true);
     };
 
+    const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
+    const handleDataPrint = async (id) => {
+        const res = await getDataWithoutStore({
+            url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.VIEW}/${id}`,
+        });
+        setInvoicePrintData(res.data);
+        requestAnimationFrame(invoicePrint);
+    };
+
     const handleCreateFormNavigate = () => {
         navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.CREATE}`);
     };
+
 
     const processColorMap = {Created: 'Red','Received':'green',Approved:'blue'};
 
@@ -215,6 +231,19 @@ export default function _Table({module}) {
                                         >
                                             {t("View")}
                                         </Button>
+                                        {(values.process === 'Approved' || values.process === 'Received') && values.approved_by_id &&
+                                        <Button
+                                            onClick={() => handleDataPrint(values.id)}
+                                            variant="filled"
+                                            c="white"
+                                            size="compact-xs"
+                                            radius="es"
+                                            leftSection={<IconPrinter size={16}/>}
+                                            className="border-right-radius-none"
+                                        >
+                                            {t("Print")}
+                                        </Button>
+                                        }
 
                                         {values.process !== 'Received' && !values.received_by_id &&
                                             <ActionIcon
@@ -248,6 +277,7 @@ export default function _Table({module}) {
             </Box>
 
             <DataTableFooter indexData={listData} module={module}/>
+            <Workorder data={invoicePrintData} ref={invoicePrintRef} />
             <ViewDrawer viewDrawer={viewDrawer} height={mainAreaHeight} refetchAll={refetchAll} setViewDrawer={setViewDrawer} module={module}/>
         </>
     );
