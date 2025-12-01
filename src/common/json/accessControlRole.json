@@ -6,7 +6,7 @@
       { "id": "doctor_opd", "label": "OPD Doctor" },
       { "id": "doctor_emergency", "label": "Emergency Doctor" },
       { "id": "doctor_ipd", "label": "IPD Doctor" },
-      { "id": "doctor_ipd_confirm", "label": "In-charge Doctor" },
+      { "id": "doctor_ipd_confirm", "label": "RS/RP Doctor" },
       { "id": "doctor_lab", "label": "Lab Doctor" },
       { "id": "doctor_approve_opd", "label": "OPD Approve Doctor" },
       { "id": "doctor_approve_ipd", "label": "IPD Approve Doctor" }

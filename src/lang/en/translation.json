@@ -1602,5 +1602,10 @@
 	"NoDataFound": "No data found",
 	"Qty": "Quantity",
 	"TreatmentTemplate": "Treatment Template",
-	"PrescriptionPreview": "Prescription Preview"
+	"PrescriptionPreview": "Prescription Preview",
+	"ManageOPDRoom": "Manage OPD Room",
+	"OPDActive": "OPD Active",
+	"OPDReferredRoom": "OPD Referred Room",
+	"Copy": "Copy"
+
 }
