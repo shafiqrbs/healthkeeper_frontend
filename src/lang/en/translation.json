@@ -1606,6 +1606,11 @@
 	"ManageOPDRoom": "Manage OPD Room",
 	"OPDActive": "OPD Active",
 	"OPDReferredRoom": "OPD Referred Room",
+	"DurationMode": "Duration Mode",
+	"ContinueMode": "Continue Mode",
+	"DosageForm": "Dosage Form",
+	"NameBn": "Name Bangla",
+	"NameBangla": "Name Bangla",
 	"Copy": "Copy"
 
 }
