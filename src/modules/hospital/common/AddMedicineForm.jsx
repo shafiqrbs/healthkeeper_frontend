@@ -331,17 +331,16 @@ export default function AddMedicineForm({
 		if (field === "medicine_id" && value) {
 			medicineForm.clearFieldError("generic");
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
-
+			console.log(selectedMedicine);
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 
-				// Auto-populate duration and count based on duration_day or duration_month
-				if (selectedMedicine.duration_day) {
-					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_day) || 1);
-					medicineForm.setFieldValue("duration", "day");
-				} else if (selectedMedicine.duration_month) {
-					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_month) || 1);
-					medicineForm.setFieldValue("duration", "month");
+				if (selectedMedicine.duration) {
+					medicineForm.setFieldValue("quantity", selectedMedicine.duration);
+				}
+
+				if (selectedMedicine.duration_mode) {
+					medicineForm.setFieldValue("duration", selectedMedicine.duration_mode);
 				}
 
 				// Auto-populate by_meal if available
@@ -353,22 +352,23 @@ export default function AddMedicineForm({
 					appendDosageValueToForm(medicineForm, dosage_options, selectedMedicine.medicine_dosage_id);
 				}
 			}
-			// console.log(medicineForm.values.medicine_id, medicineForm.values.medicine_dosage_id);
-			// if (medicineForm.values.medicine_id && medicineForm.values.medicine_dosage_id) {
-			// 	console.log("Medicine and dosage are filled");
-			// 	handleAdd({
-			// 		medicine_id: medicineForm.values.medicine_id,
-			// 		medicine_dosage_id: medicineForm.values.medicine_dosage_id,
-			// 		medicine_bymeal_id: medicineForm.values.medicine_bymeal_id,
-			// 		quantity: medicineForm.values.quantity,
-			// 		duration: medicineForm.values.duration,
-			// 		by_meal: medicineForm.values.by_meal,
-			// 	});
-			// 	medicineForm.reset();
-			// 	setMedicineDosageSearchValue("");
-			// 	setMedicineByMealSearchValue("");
-			// 	setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
-			// }
+
+			if (field === "medicine_id" && selectedMedicine.generic && selectedMedicine.medicine_dosage_id) {
+				handleAdd({
+					medicine_id: value,
+					medicine_name: selectedMedicine.product_name,
+					generic: selectedMedicine.generic,
+					medicine_dosage_id: selectedMedicine.medicine_dosage_id,
+					medicine_bymeal_id: selectedMedicine.medicine_bymeal_id,
+					quantity: selectedMedicine.duration,
+					duration: selectedMedicine.duration_mode,
+					by_meal: medicineForm.values.by_meal,
+				});
+				medicineForm.reset();
+				setMedicineDosageSearchValue("");
+				setMedicineByMealSearchValue("");
+				setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
+			}
 		}
 
 		if (field === "generic" && value) {
@@ -493,10 +493,6 @@ export default function AddMedicineForm({
 			setPrintData(result.data);
 			requestAnimationFrame(openPrescriptionPreview);
 		}
-	};
-
-	const handleHoldData = () => {
-		console.log("Hold your data");
 	};
 
 	const handleAdviseTemplate = (content) => {
@@ -668,8 +664,8 @@ export default function AddMedicineForm({
 											id="quantity"
 											name="quantity"
 											value={medicineForm.values.quantity}
-											placeholder={t("Quantity")}
-											tooltip={t("EnterQuantity")}
+											placeholder={t("Duration")}
+											tooltip={t("EnterDuration")}
 										/>
 										<SelectForm
 											form={medicineForm}

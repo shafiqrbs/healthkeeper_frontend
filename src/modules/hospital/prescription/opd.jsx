@@ -37,7 +37,7 @@ export default function Index() {
 	const { ref } = useElementSize();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-	const [tabValue, setTabValue] = useState("All");
+	const [tabValue, setTabValue] = useState("Chief Complaints");
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const { prescriptionId } = useParams();

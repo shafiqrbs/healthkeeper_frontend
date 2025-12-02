@@ -51,14 +51,26 @@ export default function PatientReport({
 		is_additional_field: item.is_additional_field ?? 0,
 	}));
 
-	const handleDynamicFormChange = ({ id, name, value, parentSlug, isCheckbox = false, duration = null }) => {
+	const handleDynamicFormChange = ({
+		id,
+		name,
+		value,
+		parentSlug,
+		isCheckbox = false,
+		duration = null,
+		isActive = null,
+	}) => {
 		const existingList = Array.isArray(form.values.dynamicFormData[parentSlug])
 			? form.values.dynamicFormData[parentSlug]
 			: [];
 
 		const existingIndex = existingList.findIndex((item) => item.id === id && item.name === name);
 
+		// =============== include isActive in the item if provided ================
 		const updatedItem = { id, name, value, duration };
+		if (isActive !== null) {
+			updatedItem.isActive = isActive;
+		}
 		const updatedList =
 			existingIndex > -1
 				? [...existingList.slice(0, existingIndex), updatedItem, ...existingList.slice(existingIndex + 1)]
@@ -308,6 +320,30 @@ export default function PatientReport({
 									</Grid.Col>
 									<Grid.Col span={8}>
 										<Flex align="center" gap="les" justify="space-between">
+											<Checkbox
+												size="sm"
+												checked={
+													form.values.dynamicFormData?.[section.slug]?.find(
+														(item) =>
+															item.id === particular.id && item.name === particular.name
+													)?.isActive || false
+												}
+												onChange={(event) =>
+													handleDynamicFormChange({
+														id: particular.id,
+														name: particular.name,
+														value:
+															form.values.dynamicFormData?.[section.slug]?.find(
+																(item) =>
+																	item.id === particular.id &&
+																	item.name === particular.name
+															)?.value || "",
+														parentSlug: section.slug,
+														isCheckbox: true,
+														isActive: event.currentTarget.checked,
+													})
+												}
+											/>
 											<TextInput
 												size="xs"
 												w={"70%"}
