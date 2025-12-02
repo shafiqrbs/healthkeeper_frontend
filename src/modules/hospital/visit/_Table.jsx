@@ -1,13 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
 import {
-	IconAlertCircle,
 	IconArrowRight,
-	IconCheck,
 	IconChevronUp,
 	IconDotsVertical,
 	IconSelector,
@@ -23,20 +20,14 @@ import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import KeywordSearch from "../common/KeywordSearch";
-import { useDisclosure, useHotkeys } from "@mantine/hooks";
+import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "../common/drawer/__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteEntityData, showEntityData } from "@/app/store/core/crudThunk";
-import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
-import { formatDate, getLoggedInHospitalUser, getLoggedInUser, getUserRole } from "@/common/utils";
-import { modals } from "@mantine/modals";
-import { notifications } from "@mantine/notifications";
-import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { useSelector } from "react-redux";
+import { formatDate, getLoggedInUser, getUserRole } from "@/common/utils";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
-import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
@@ -67,18 +58,14 @@ const CSV_HEADERS = [
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const csvLinkRef = useRef(null);
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const listData = useSelector((state) => state.crud[module].data);
-	const hospitalConfig = getLoggedInHospitalUser();
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
 	const [singlePatientData, setSinglePatientData] = useState({});
-	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
 
 	const form = useForm({
 		initialValues: {
@@ -154,53 +141,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		openOverview();
 	};
 
-	const handleDelete = (id) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: {
-				confirm: "Confirm",
-				cancel: "Cancel",
-			},
-			confirmProps: { color: "var(--theme-delete-color)" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleDeleteSuccess(id),
-		});
-	};
-
-	const handleDeleteSuccess = async (id) => {
-		const resultAction = await dispatch(
-			deleteEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.VISIT.DELETE}/${id}`,
-				module,
-				id,
-			})
-		);
-		if (deleteEntityData.fulfilled.match(resultAction)) {
-			dispatch(setRefetchData({ module, refetching: true }));
-			notifications.show({
-				color: SUCCESS_NOTIFICATION_COLOR,
-				title: t("DeleteSuccessfully"),
-				icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-				loading: false,
-				autoClose: 700,
-				style: { backgroundColor: "lightgray" },
-			});
-			navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX);
-			dispatch(setInsertType({ insertType: "create", module }));
-		} else {
-			notifications.show({
-				color: ERROR_NOTIFICATION_COLOR,
-				title: t("DeleteFailed"),
-				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-			});
-		}
-	};
-
-	const handlePrescription = async (prescription_id) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
-	};
-
 	const handleA4Print = async (id) => {
 		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
 		setPrintData(res.data);
@@ -220,35 +160,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 		setPrintData(res.data);
 		setType("prescription");
-	};
-
-	const handleProcessPrescription = (id) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: { confirm: "Confirm", cancel: "Cancel" },
-			confirmProps: { color: "red" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleProcessConfirmation(id),
-		});
-	};
-
-	const handleProcessConfirmation = async (id) => {
-		const resultAction = await dispatch(
-			showEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.SEND_TO_PRESCRIPTION}/${id}`,
-				module,
-				id,
-			})
-		).unwrap();
-		const prescription_id = resultAction?.data?.data.id;
-		if (prescription_id) {
-			if (closeTable) closeTable();
-			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
-		} else {
-			console.error(resultAction);
-			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
-		}
 	};
 
 	const csvData =

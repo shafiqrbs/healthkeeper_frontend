@@ -251,7 +251,7 @@ export default function Dashboard() {
 										labelPosition="left"
 									/>
 									<Stack gap="3xs" mb="es" p={"xs"}>
-										<Grid columns={12}  pl={'xs'}>
+										<Grid columns={12} pl={"xs"}>
 											<Grid.Col span={4}>
 												<Text>Room/Cabin</Text>
 											</Grid.Col>
@@ -259,7 +259,7 @@ export default function Dashboard() {
 												<Text>{ipd?.room_name || "-"}</Text>
 											</Grid.Col>
 										</Grid>
-										<Grid columns={12}  pl={'xs'}>
+										<Grid columns={12} pl={"xs"}>
 											<Grid.Col span={4}>
 												<Text>Admission</Text>
 											</Grid.Col>
@@ -270,7 +270,7 @@ export default function Dashboard() {
 												<Text>Days</Text>
 											</Grid.Col>
 										</Grid>
-										<Grid columns={12}  pl={'xs'}>
+										<Grid columns={12} pl={"xs"}>
 											<Grid.Col span={4}>
 												<Text>Consume</Text>
 											</Grid.Col>
@@ -281,7 +281,7 @@ export default function Dashboard() {
 												<Text>Days</Text>
 											</Grid.Col>
 										</Grid>
-										<Grid columns={12} pl={'xs'} bg={admissionDay > consumeDay ? "red" : "green"} >
+										<Grid columns={12} pl={"xs"} bg={admissionDay > consumeDay ? "red" : "green"}>
 											<Grid.Col span={4}>
 												<Text>Remaining</Text>
 											</Grid.Col>

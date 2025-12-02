@@ -1,5 +1,6 @@
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getDataWithoutStore } from "@/services/apiService";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export default function DashboardDailySummary() {
@@ -9,7 +10,7 @@ export default function DashboardDailySummary() {
 	useEffect(() => {
 		(async () => {
 			const res = await getDataWithoutStore({
-				url: "hospital/reports/dashboard-daily-summary",
+				url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_DAILY_SUMMARY,
 			});
 			console.log(res);
 		})();
