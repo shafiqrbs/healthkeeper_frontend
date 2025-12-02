@@ -7,6 +7,7 @@ import useConfigData from "@hooks/config-data/useConfigData";
 import { getLoggedInUser } from "@/common/utils";
 import HomeIndex from "@/modules/home";
 import useHospitalUserData from "@hooks/useHospitalUserData";
+import {useAuthStore} from "@/store/useAuthStore.js";
 // import { useBrowserHeight } from "@hooks/userBrowserHeight";
 
 const Layout = () => {
@@ -17,8 +18,15 @@ const Layout = () => {
 	const location = useLocation();
 	const paramPath = location.pathname;
 	const { configData } = useConfigData();
+    // const hospitalConfig = useAuthStore(state => state.hospitalConfig);
+    // console.log(hospitalConfig);
 
-	// check authentication
+    const hospitalConfig = useAuthStore((state) => state);
+    console.log(hospitalConfig); // decrypted automatically
+
+
+
+    // check authentication
 	if (!user?.id) {
 		console.info("Not logged in, redirecting to login page.");
 		return <Navigate replace to="/login" />;

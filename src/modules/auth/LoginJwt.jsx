@@ -26,8 +26,11 @@ import axios from "axios";
 import commonDataStoreIntoLocalStorage from "@hooks/local-storage/useCommonDataStoreIntoLocalStorage.js";
 import { API_BASE_URL, API_KEY } from "@/constants";
 import { getLoggedInUser } from "@/common/utils";
+import {jwtDecode} from "jwt-decode";
+import {useAuthStore} from "@/store/useAuthStore.js";
 
-export default function Login() {
+
+export default function LoginJwt() {
 	const user = getLoggedInUser();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -49,11 +52,12 @@ export default function Login() {
 		return <Navigate replace to="/" />;
 	}
 
-	function login(data) {
+    axios.defaults.withCredentials = true;
+    function login1(data) {
 		setSpinner(true);
 		axios({
 			method: "POST",
-			url: `${API_BASE_URL}/user-login`,
+			url: `${API_BASE_URL}/login`,
 			headers: {
 				Accept: `application/json`,
 				"Content-Type": `application/json`,
@@ -64,8 +68,14 @@ export default function Login() {
 		})
 			.then((res) => {
 				if (res.data.status === 200) {
-					localStorage.setItem("user", JSON.stringify(res.data.data));
-					commonDataStoreIntoLocalStorage(res.data.data.id).then(() => {
+                    // localStorage.setItem('access-token', JSON.stringify(res.data.data.token));
+                    const decoded = jwtDecode(res.data.data.token);
+                    useAuthStore.getState().setUserData(decoded);
+
+                    // console.log(decoded)
+					localStorage.setItem("user", JSON.stringify(decoded)); // remove when full implement
+
+					commonDataStoreIntoLocalStorage(decoded?.id).then(() => {
 						setErrorMessage("");
 						setSpinner(false);
 						return navigate("/");
@@ -81,7 +91,47 @@ export default function Login() {
 			});
 	}
 
-	useHotkeys(
+    const setUserData = useAuthStore((state) => state.setUserData);
+
+    function login(data) {
+        setSpinner(true);
+        axios({
+            method: "POST",
+            url: `${API_BASE_URL}/login`,
+            headers: {
+                Accept: `application/json`,
+                "Content-Type": `application/json`,
+                "Access-Control-Allow-Origin": "*",
+                "X-Api-Key": API_KEY,
+            },
+            data: data,
+        })
+            .then((res) => {
+                if (res.data.status === 200) {
+                    const decoded = jwtDecode(res.data.data.token);
+                    setUserData(decoded); // This will encrypt and store in Zustand
+
+                    // Remove direct localStorage usage
+                    localStorage.setItem("user", JSON.stringify(decoded)); // REMOVE THIS LINE
+
+                    commonDataStoreIntoLocalStorage(decoded?.id).then(() => {
+                        setErrorMessage("");
+                        setSpinner(false);
+                        return navigate("/");
+                    });
+                } else {
+                    setErrorMessage(res.data.message);
+                    setSpinner(false);
+                }
+            })
+            .catch(function (error) {
+                setSpinner(false);
+                console.error(error);
+            });
+    }
+
+
+    useHotkeys(
 		[
 			[
 				"alt+n",

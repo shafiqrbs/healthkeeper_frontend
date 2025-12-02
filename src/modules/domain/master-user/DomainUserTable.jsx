@@ -12,7 +12,6 @@ import { IconArrowRight } from "@tabler/icons-react";
 import { getIndexEntityData, showEntityData } from "@/app/store/core/crudThunk.js";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import commonDataStoreIntoLocalStorage from "@hooks/local-storage/useCommonDataStoreIntoLocalStorage.js";
-import orderProcessDropdownLocalDataStore from "@hooks/local-storage/useOrderProcessDropdownLocalDataStore.js";
 
 export default function DomainUserTable() {
 	const dispatch = useDispatch();
@@ -51,7 +50,6 @@ export default function DomainUserTable() {
 						if (resultAction.payload.data.status === 200) {
 							localStorage.setItem("user", JSON.stringify(resultAction.payload.data.data));
 							commonDataStoreIntoLocalStorage(resultAction.payload.data.data.id);
-							orderProcessDropdownLocalDataStore(resultAction.payload.data.data.id);
 							navigate("/");
 						}
 					}
