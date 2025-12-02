@@ -158,6 +158,7 @@ export default function _Table({ module, open }) {
 				price: item.price?.toString() || 0,
 				is_available: item?.is_available ?? false,
 				report_format: item?.report_format ?? false,
+				is_custom_report: item?.is_custom_report ?? false,
 				diagnostic_department_id: item.diagnostic_department_id?.toString() ?? "",
 				diagnostic_room_id: item.diagnostic_room_id?.toString() ?? "",
 			};
@@ -300,6 +301,7 @@ export default function _Table({ module, open }) {
 						{
 							accessor: "diagnostic_room_id",
 							title: t("Room"),
+							sortable: true,
 							render: (item) => (
 								<Select
 									size="xs"
@@ -319,7 +321,7 @@ export default function _Table({ module, open }) {
 						{
 							accessor: "price",
 							title: t("Price"),
-							sortable: false,
+							sortable: true,
 							render: (item) => (
 								<NumberInput
 									size="xs"
@@ -334,6 +336,7 @@ export default function _Table({ module, open }) {
 						{
 							accessor: "is_available",
 							title: t("Available"),
+							sortable: true,
 							render: (item) => (
 								<Checkbox
 									key={item.id}
@@ -348,6 +351,7 @@ export default function _Table({ module, open }) {
 						{
 							accessor: "report_format",
 							title: t("Report"),
+							sortable: true,
 							render: (item) => (
 								<Checkbox
 									key={item.id}
@@ -355,6 +359,21 @@ export default function _Table({ module, open }) {
 									checked={submitFormData[item.id]?.report_format ?? false}
 									onChange={(val) =>
 										handleDataTypeChange(item.id, "report_format", val.currentTarget.checked, true)
+									}
+								/>
+							),
+						},
+						{
+							accessor: "is_custom_report",
+							title: t("CustomReport"),
+							sortable: true,
+							render: (item) => (
+								<Checkbox
+									key={item.id}
+									size="sm"
+									checked={submitFormData[item.id]?.is_custom_report ?? false}
+									onChange={(val) =>
+										handleDataTypeChange(item.id, "is_custom_report", val.currentTarget.checked, true)
 									}
 								/>
 							),

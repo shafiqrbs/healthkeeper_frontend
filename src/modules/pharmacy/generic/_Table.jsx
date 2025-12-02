@@ -126,7 +126,7 @@ export default function _Table({ module, open }) {
             term: searchKeyword,
         },
         perPage: PER_PAGE,
-        sortByKey: "name",
+        sortByKey: "product_name",
     });
 
     const [viewDrawer, setViewDrawer] = React.useState(false);
@@ -219,6 +219,7 @@ export default function _Table({ module, open }) {
         {
             accessor: "category_id",
             title: t("Category"),
+            sortable: true,
             render: (item) => (
                 <InlineSelect
                     key={`cat-${item.id}`}
@@ -249,6 +250,7 @@ export default function _Table({ module, open }) {
         {
             accessor: "medicine_dosage_id",
             title: t("MedicineDosage"),
+            sortable: true,
             render: (item) => (
                 <InlineSelect
                     key={`dosage-${item.id}`}
@@ -264,6 +266,7 @@ export default function _Table({ module, open }) {
         {
             accessor: "medicine_bymeal_id",
             title: t("MedicineByMeal"),
+            sortable: false,
             render: (item) => (
                 <InlineSelect
                     key={`meal-${item.id}`}
@@ -279,8 +282,8 @@ export default function _Table({ module, open }) {
         {
             accessor: "opd_quantity",
             title: t("OPDQty"),
+            sortable: true,
             width: 80,
-            sortable: false,
             render: (item) => (
                 <InlineTextInput
                     key={`qty-${item.id}`}
@@ -296,7 +299,7 @@ export default function _Table({ module, open }) {
             accessor: "duration",
             title: t("Duration"),
             width: 80,
-            sortable: false,
+            sortable: true,
             render: (item) => (
                 <InlineTextInput
                     key={`duration-${item.id}`}
@@ -311,6 +314,7 @@ export default function _Table({ module, open }) {
         {
             accessor: "duration_mode",
             title: t("DurationMode"),
+            sortable: true,
             render: (item) => (
                 <InlineSelect
                     key={`duration_mode-${item.id}`}
@@ -326,6 +330,7 @@ export default function _Table({ module, open }) {
         {
             accessor: "opd_status",
             title: t("OutDoor"),
+            sortable: true,
             render: (item) => (
                 <InlineCheckbox
                     key={`opd-${item.id}`}
@@ -339,6 +344,7 @@ export default function _Table({ module, open }) {
         {
             accessor: "ipd_status",
             title: t("InDoor"),
+            sortable: true,
             render: (item) => (
                 <InlineCheckbox
                     key={`ipd-${item.id}`}
@@ -352,6 +358,7 @@ export default function _Table({ module, open }) {
         {
             accessor: "admin_status",
             title: t("Admin"),
+            sortable: true,
             render: (item) => (
                 <InlineCheckbox
                     key={`admin-${item.id}`}
