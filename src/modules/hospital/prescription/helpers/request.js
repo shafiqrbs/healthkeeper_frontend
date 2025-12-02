@@ -5,9 +5,9 @@ export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
 		if (dateValue instanceof Date) return dateValue;
 		if (typeof dateValue === "string") {
 			const parsed = new Date(dateValue);
-			return isNaN(parsed.getTime()) ? '' : parsed;
+			return isNaN(parsed.getTime()) ? "" : parsed;
 		}
-		return '';
+		return "";
 	};
 
 	const formattedInitialFormValues = {
@@ -40,7 +40,7 @@ export const medicineInitialValues = {
 	medicine_bymeal_id: "",
 	times: "",
 	duration: "Day",
-	quantity: 1,
+	quantity: "",
 	opd_quantity: 0,
 };
 

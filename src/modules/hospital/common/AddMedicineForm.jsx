@@ -673,9 +673,9 @@ export default function AddMedicineForm({
 											id="duration"
 											name="duration"
 											dropdownValue={DURATION_TYPES}
-											value={medicineForm.values.duration || "Day"}
-											placeholder={t("Duration")}
-											tooltip={t("EnterMeditationDuration")}
+											value={medicineForm.values.duration}
+											placeholder={t("DurationMode")}
+											tooltip={t("EnterMeditationDurationMode")}
 											withCheckIcon={false}
 										/>
 										<Button
