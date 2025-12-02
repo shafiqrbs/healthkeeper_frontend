@@ -82,7 +82,7 @@ const ReportRenderer = forwardRef(
 								refetchDiagnosticReport={refetchDiagnosticReport}
 							/>
 						);
-					case "x-ray":
+					case "x-ray-pa":
 						return (
 							<XRay
 								diagnosticReport={diagnosticReport}
