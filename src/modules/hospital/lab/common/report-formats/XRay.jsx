@@ -1,4 +1,4 @@
-import {Box, Stack, Table, Group, Text, ScrollArea, Grid} from "@mantine/core";
+import { Box, Stack, Table, Group, Text, ScrollArea, Grid } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Checkbox, Radio } from "@mantine/core";
 import ReportSubmission from "../ReportSubmission";
@@ -19,7 +19,7 @@ import { formatDateForMySQL } from "@utils/index";
 const module = MODULES.LAB_TEST;
 
 // =============== sars cov2 results are now handled as individual boolean properties ===============
-export default function XRay({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
+export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -55,8 +55,9 @@ export default function XRay({ diagnosticReport, setDiagnosticReport, refetchDia
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.UPDATE}/${reportId}`,
 				data: {
 					json_content: {
-						...values
+						...values,
 					},
+					comment: values.comment,
 				},
 				module,
 			};
@@ -74,9 +75,10 @@ export default function XRay({ diagnosticReport, setDiagnosticReport, refetchDia
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetchDiagnosticReport();
+				if (refetchLabReport && typeof refetchLabReport === "function") {
+					refetchLabReport();
+				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setDiagnosticReport(resultAction.payload.data?.data);
-				form.reset();
 			}
 		} catch (error) {
 			console.error(error);
@@ -92,84 +94,95 @@ export default function XRay({ diagnosticReport, setDiagnosticReport, refetchDia
 
 					<Grid>
 						<Grid.Col span={3}>Trachea</Grid.Col>
-						<Grid.Col span={9}><InputForm
-							label=""
-							placeholder="Enter Trachea"
-							name="trachea"
-							id="trachea"
-							nextField="diaphragm"
-							form={form}
-							readOnly={is_completed}
-						/></Grid.Col>
-
+						<Grid.Col span={9}>
+							<InputForm
+								label=""
+								placeholder="Enter Trachea"
+								name="trachea"
+								id="trachea"
+								nextField="diaphragm"
+								form={form}
+								readOnly={is_completed}
+							/>
+						</Grid.Col>
 					</Grid>
 					<Grid>
 						<Grid.Col span={3}>Diaphragm</Grid.Col>
-						<Grid.Col span={9}><InputForm
-							label=""
-							placeholder="Enter Diaphragm"
-							name="diaphragm"
-							id="diaphragm"
-							nextField="referral_center"
-							form={form}
-							readOnly={is_completed}
-						/></Grid.Col>
-
+						<Grid.Col span={9}>
+							<InputForm
+								label=""
+								placeholder="Enter Diaphragm"
+								name="diaphragm"
+								id="diaphragm"
+								nextField="referral_center"
+								form={form}
+								readOnly={is_completed}
+							/>
+						</Grid.Col>
 					</Grid>
 					<Grid>
 						<Grid.Col span={3}>Lungs</Grid.Col>
-						<Grid.Col span={9}><InputForm
-							label=""
-							placeholder="Enter Diaphragm"
-							name="lungs"
-							id="lungs"
-							nextField="heart"
-							form={form}
-							readOnly={is_completed}
-						/>
+						<Grid.Col span={9}>
+							<InputForm
+								label=""
+								placeholder="Enter Diaphragm"
+								name="lungs"
+								id="lungs"
+								nextField="heart"
+								form={form}
+								readOnly={is_completed}
+							/>
 						</Grid.Col>
 					</Grid>
 					<Grid>
 						<Grid.Col span={3}>heart</Grid.Col>
-						<Grid.Col span={9}><InputForm
-							label=""
-							placeholder="Enter Diaphragm"
-							name="heart"
-							id="heart"
-							nextField="bony_thorax"
-							form={form}
-							readOnly={is_completed}
-						/></Grid.Col>
-
+						<Grid.Col span={9}>
+							<InputForm
+								label=""
+								placeholder="Enter Diaphragm"
+								name="heart"
+								id="heart"
+								nextField="bony_thorax"
+								form={form}
+								readOnly={is_completed}
+							/>
+						</Grid.Col>
 					</Grid>
 					<Grid>
 						<Grid.Col span={3}>Bony Thorax</Grid.Col>
-						<Grid.Col span={9}><InputForm
-							label=""
-							placeholder="Enter Diaphragm"
-							name="bony_thorax"
-							id="bony_thorax"
-							nextField="impression"
-							form={form}
-							readOnly={is_completed}
-						/></Grid.Col>
-
+						<Grid.Col span={9}>
+							<InputForm
+								label=""
+								placeholder="Enter Diaphragm"
+								name="bony_thorax"
+								id="bony_thorax"
+								nextField="impression"
+								form={form}
+								readOnly={is_completed}
+							/>
+						</Grid.Col>
 					</Grid>
 					<Grid>
 						<Grid.Col span={3}>Impression</Grid.Col>
-						<Grid.Col span={9}><InputForm
-							label=""
-							placeholder="Enter Diaphragm"
-							name="impression"
-							id="impression"
-							nextField="impression"
-							form={form}
-							readOnly={is_completed}
-						/></Grid.Col>
+						<Grid.Col span={9}>
+							<InputForm
+								label=""
+								placeholder="Enter Diaphragm"
+								name="impression"
+								id="impression"
+								nextField="impression"
+								form={form}
+								readOnly={is_completed}
+							/>
+						</Grid.Col>
 					</Grid>
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission
+				diagnosticReport={diagnosticReport}
+				form={form}
+				handleSubmit={handleSubmit}
+			/>
 		</Box>
 	);
 }

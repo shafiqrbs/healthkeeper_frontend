@@ -20,7 +20,11 @@ import InputForm from "@components/form-builders/InputForm";
 const module = MODULES.LAB_TEST;
 
 // =============== sars cov2 results are now handled as individual boolean properties ===============
-export default function GenePulmonary({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
+export default function GenePulmonary({
+	diagnosticReport,
+	refetchDiagnosticReport,
+	refetchLabReport,
+}) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -39,6 +43,7 @@ export default function GenePulmonary({ diagnosticReport, setDiagnosticReport, r
 			rif_resistance_indeterminate: custom_report?.rif_resistance_indeterminate || 0,
 			mtb_not_detected: custom_report?.mtb_not_detected || 0,
 			invalid: custom_report?.invalid || 0,
+			comment: diagnosticReport?.comment || "",
 		},
 	});
 
@@ -62,6 +67,7 @@ export default function GenePulmonary({ diagnosticReport, setDiagnosticReport, r
 						...values,
 						test_date: formatDateForMySQL(values.test_date),
 					},
+					comment: values.comment,
 				},
 				module,
 			};
@@ -79,9 +85,10 @@ export default function GenePulmonary({ diagnosticReport, setDiagnosticReport, r
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetchDiagnosticReport();
+				if (refetchLabReport && typeof refetchLabReport === "function") {
+					refetchLabReport();
+				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setDiagnosticReport(resultAction.payload.data?.data);
-				form.reset();
 			}
 		} catch (error) {
 			console.error(error);
@@ -133,7 +140,9 @@ export default function GenePulmonary({ diagnosticReport, setDiagnosticReport, r
 									<Table.Th>ID</Table.Th>
 									<Table.Th>T-MTB Detected, Rif Resistance not Detected</Table.Th>
 									<Table.Th>RR-MTB Detected, Rif Resistance Detected</Table.Th>
-									<Table.Th>TI-MTB Detected, Rif Resistance Indeterminate</Table.Th>
+									<Table.Th>
+										TI-MTB Detected, Rif Resistance Indeterminate
+									</Table.Th>
 									<Table.Th>T-MTB Not Detected</Table.Th>
 									<Table.Th>INVALID/ERROR/NO RESULT</Table.Th>
 								</Table.Tr>
@@ -193,7 +202,10 @@ export default function GenePulmonary({ diagnosticReport, setDiagnosticReport, r
 										<Checkbox
 											checked={form.values.mtb_not_detected}
 											onChange={(event) =>
-												form.setFieldValue("mtb_not_detected", event.currentTarget.checked)
+												form.setFieldValue(
+													"mtb_not_detected",
+													event.currentTarget.checked
+												)
 											}
 											styles={{ body: { justifyContent: "center" } }}
 											readOnly={is_completed}
@@ -203,7 +215,10 @@ export default function GenePulmonary({ diagnosticReport, setDiagnosticReport, r
 										<Checkbox
 											checked={form.values.invalid}
 											onChange={(event) =>
-												form.setFieldValue("invalid", event.currentTarget.checked)
+												form.setFieldValue(
+													"invalid",
+													event.currentTarget.checked
+												)
 											}
 											styles={{ body: { justifyContent: "center" } }}
 											readOnly={is_completed}
@@ -216,7 +231,11 @@ export default function GenePulmonary({ diagnosticReport, setDiagnosticReport, r
 					{/* =============== text date =============== */}
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission
+				diagnosticReport={diagnosticReport}
+				form={form}
+				handleSubmit={handleSubmit}
+			/>
 		</Box>
 	);
 }

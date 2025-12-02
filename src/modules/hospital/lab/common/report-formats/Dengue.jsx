@@ -20,7 +20,7 @@ import InputForm from "@components/form-builders/InputForm";
 const module = MODULES.LAB_TEST;
 
 // =============== sars cov2 results are now handled as individual boolean properties ===============
-export default function Dengue({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
+export default function Dengue({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -39,6 +39,7 @@ export default function Dengue({ diagnosticReport, setDiagnosticReport, refetchD
 			rif_resistance_indeterminate: custom_report?.rif_resistance_indeterminate || 0,
 			mtb_not_detected: custom_report?.mtb_not_detected || 0,
 			invalid: custom_report?.invalid || 0,
+			comment: diagnosticReport?.comment || "",
 		},
 	});
 
@@ -62,6 +63,7 @@ export default function Dengue({ diagnosticReport, setDiagnosticReport, refetchD
 						...values,
 						test_date: formatDateForMySQL(values.test_date),
 					},
+					comment: values.comment,
 				},
 				module,
 			};
@@ -79,9 +81,10 @@ export default function Dengue({ diagnosticReport, setDiagnosticReport, refetchD
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetchDiagnosticReport();
+				if (refetchLabReport && typeof refetchLabReport === "function") {
+					refetchLabReport();
+				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setDiagnosticReport(resultAction.payload.data?.data);
-				form.reset();
 			}
 		} catch (error) {
 			console.error(error);
@@ -185,7 +188,11 @@ export default function Dengue({ diagnosticReport, setDiagnosticReport, refetchD
 					{/* =============== text date =============== */}
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission
+				diagnosticReport={diagnosticReport}
+				form={form}
+				handleSubmit={handleSubmit}
+			/>
 		</Box>
 	);
 }

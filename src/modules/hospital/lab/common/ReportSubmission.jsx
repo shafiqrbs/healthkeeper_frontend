@@ -23,7 +23,6 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
 		});
-		console.log(res.data);
 		setLabReportData(res?.data);
 		requestAnimationFrame(printLabReport);
 	};
@@ -71,19 +70,40 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										>
 											<Flex direction="column" gap={0}>
 												<Text fz={"xs"}>{t("Print")}</Text>
-												<Flex direction="column" align="center" fz="2xs" c="white">
+												<Flex
+													direction="column"
+													align="center"
+													fz="2xs"
+													c="white"
+												>
 													alt+p
 												</Flex>
 											</Flex>
 										</Button>
 									</Flex>
 								)}
-								<Flex mt={"les"} justify="center" align="flex-start" direction="row" wrap="wrap">
+								<Flex
+									mt={"les"}
+									justify="center"
+									align="flex-start"
+									direction="row"
+									wrap="wrap"
+								>
 									{diagnosticReport?.process === "Tagged" && (
-										<Button size="md" className="btnPrimaryBg" type="submit" id="handleSubmit">
+										<Button
+											size="md"
+											className="btnPrimaryBg"
+											type="submit"
+											id="handleSubmit"
+										>
 											<Flex direction="column" gap={0}>
 												<Text fz="md">{t("Save")}</Text>
-												<Flex direction="column" align="center" fz="2xs" c="white">
+												<Flex
+													direction="column"
+													align="center"
+													fz="2xs"
+													c="white"
+												>
 													alt+s
 												</Flex>
 											</Flex>
@@ -99,7 +119,12 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										>
 											<Flex direction="column" gap={0}>
 												<Text fz="xs">{t("Confirm")}</Text>
-												<Flex direction="column" align="center" fz="2xs" c="white">
+												<Flex
+													direction="column"
+													align="center"
+													fz="2xs"
+													c="white"
+												>
 													alt+s
 												</Flex>
 											</Flex>

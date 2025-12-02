@@ -18,7 +18,7 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 
 const module = MODULES.LAB_TEST;
 
-export default function SarsCov2({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
+export default function SarsCov2({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -56,6 +56,7 @@ export default function SarsCov2({ diagnosticReport, setDiagnosticReport, refetc
 						...values,
 						test_date: formatDateForMySQL(values.test_date),
 					},
+					comment: values.comment,
 				},
 				module,
 			};
@@ -73,9 +74,10 @@ export default function SarsCov2({ diagnosticReport, setDiagnosticReport, refetc
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetchDiagnosticReport();
+				if (refetchLabReport && typeof refetchLabReport === "function") {
+					refetchLabReport();
+				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setDiagnosticReport(resultAction.payload.data?.data);
-				form.reset();
 			}
 		} catch (error) {
 			console.error(error);
@@ -132,7 +134,10 @@ export default function SarsCov2({ diagnosticReport, setDiagnosticReport, refetc
 										<Checkbox
 											checked={form.values.sars_cov_positive}
 											onChange={(event) =>
-												form.setFieldValue("sars_cov_positive", event.currentTarget.checked)
+												form.setFieldValue(
+													"sars_cov_positive",
+													event.currentTarget.checked
+												)
 											}
 											styles={{ body: { justifyContent: "center" } }}
 											readOnly={is_completed}
@@ -142,7 +147,10 @@ export default function SarsCov2({ diagnosticReport, setDiagnosticReport, refetc
 										<Checkbox
 											checked={form.values.sars_covnegative}
 											onChange={(event) =>
-												form.setFieldValue("sars_covnegative", event.currentTarget.checked)
+												form.setFieldValue(
+													"sars_covnegative",
+													event.currentTarget.checked
+												)
 											}
 											styles={{ body: { justifyContent: "center" } }}
 											readOnly={is_completed}
@@ -152,7 +160,10 @@ export default function SarsCov2({ diagnosticReport, setDiagnosticReport, refetc
 										<Checkbox
 											checked={form.values.cov_invalid}
 											onChange={(event) =>
-												form.setFieldValue("cov_invalid", event.currentTarget.checked)
+												form.setFieldValue(
+													"cov_invalid",
+													event.currentTarget.checked
+												)
 											}
 											styles={{ body: { justifyContent: "center" } }}
 											readOnly={is_completed}
@@ -165,7 +176,11 @@ export default function SarsCov2({ diagnosticReport, setDiagnosticReport, refetc
 					{/* =============== text date =============== */}
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission
+				diagnosticReport={diagnosticReport}
+				form={form}
+				handleSubmit={handleSubmit}
+			/>
 		</Box>
 	);
 }

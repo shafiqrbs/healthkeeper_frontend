@@ -31,7 +31,7 @@ import Serology from "./report-formats/Serology";
 const module = MODULES.LAB_TEST;
 
 const ReportRenderer = forwardRef(
-	({ diagnosticReport, setDiagnosticReport, fetching, inputsRef, refetchDiagnosticReport, setRefetch }) => {
+	({ diagnosticReport, fetching, inputsRef, refetchDiagnosticReport, refetchLabReport }) => {
 		const { t } = useTranslation();
 		const form = useForm(getFormValues(t));
 		const { reportId } = useParams();
@@ -53,8 +53,13 @@ const ReportRenderer = forwardRef(
 			}
 		};
 
+		console.log(diagnosticReport);
+
 		const renderCustomReport = () => {
-			if (diagnosticReport?.custom_report !== null && diagnosticReport?.custom_report !== undefined) {
+			if (
+				diagnosticReport?.custom_report !== null &&
+				diagnosticReport?.custom_report !== undefined
+			) {
 				const slug = diagnosticReport?.particular?.slug;
 
 				switch (slug) {
@@ -62,72 +67,72 @@ const ReportRenderer = forwardRef(
 						return (
 							<Covid19
 								diagnosticReport={diagnosticReport}
-								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
 							/>
 						);
 					case "gene-sputum":
 						return (
 							<GeneSputum
 								diagnosticReport={diagnosticReport}
-								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
 							/>
 						);
 					case "gene-pulmonary":
 						return (
 							<GenePulmonary
 								diagnosticReport={diagnosticReport}
-								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
 							/>
 						);
 					case "x-ray-pa":
 						return (
 							<XRay
 								diagnosticReport={diagnosticReport}
-								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
 							/>
 						);
 					case "ultrasonography":
 						return (
 							<Ultrasonography
 								diagnosticReport={diagnosticReport}
-								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
 							/>
 						);
 					case "sars-cov2":
 						return (
 							<SarsCov2
 								diagnosticReport={diagnosticReport}
-								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
 							/>
 						);
 					case "gene-extra-sputum":
 						return (
 							<PulmonaryStatus
 								diagnosticReport={diagnosticReport}
-								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
 							/>
 						);
 					case "lpa":
 						return (
 							<LPA
 								diagnosticReport={diagnosticReport}
-								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
 							/>
 						);
 					case "dengue":
 						return (
 							<Dengue
 								diagnosticReport={diagnosticReport}
-								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
 							/>
 						);
 					case "ct-scan":
@@ -135,8 +140,8 @@ const ReportRenderer = forwardRef(
 						return (
 							<CTScan
 								diagnosticReport={diagnosticReport}
-								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
 							/>
 						);
 					// case "hrct-chest":
@@ -144,8 +149,8 @@ const ReportRenderer = forwardRef(
 						return (
 							<Serology
 								diagnosticReport={diagnosticReport}
-								setDiagnosticReport={setDiagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
 							/>
 						);
 					default:
@@ -183,6 +188,7 @@ const ReportRenderer = forwardRef(
 			});
 		};
 
+		// this handler for the default reports only
 		async function handleConfirmModal(values) {
 			try {
 				const value = {
@@ -204,19 +210,18 @@ const ReportRenderer = forwardRef(
 					dispatch(setRefetchData({ module, refetching: true }));
 					refetchDiagnosticReport();
 					successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-					// setDiagnosticReport((prev) => ({
-					// 	...prev,
-					// 	process: resultAction?.payload.data?.data.process,
-					// 	comment: resultAction?.payload.data?.data.comment,
-					// }));
-					setRefetch(true);
-					form.reset();
+
+					if (refetchLabReport && typeof refetchLabReport === "function") {
+						refetchLabReport();
+					}
 				}
 			} catch (error) {
 				console.error(error);
 				errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 			}
 		}
+
+		// default reports table and submission form
 		return (
 			<>
 				<Box className="border-top-none" px="sm" mt={"xs"}>
@@ -257,7 +262,9 @@ const ReportRenderer = forwardRef(
 											value={item.result}
 											ref={(el) => (inputsRef.current[rowIndex] = el)}
 											onKeyDown={(e) => handleKeyDown(e, rowIndex)}
-											onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}
+											onBlur={(e) =>
+												handleFieldChange(item.id, "result", e.target.value)
+											}
 										/>
 									),
 							},
@@ -275,14 +282,17 @@ const ReportRenderer = forwardRef(
 						height={mainAreaHeight - 232}
 						fetching={fetching}
 						sortIcons={{
-							sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-							unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+							sorted: (
+								<IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />
+							),
+							unsorted: (
+								<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
+							),
 						}}
 					/>
 				</Box>
 				<ReportSubmission
 					diagnosticReport={diagnosticReport}
-					setDiagnosticReport={setDiagnosticReport}
 					form={form}
 					handleSubmit={handleSubmit}
 				/>

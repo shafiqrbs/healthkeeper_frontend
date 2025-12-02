@@ -21,15 +21,16 @@ export default function Index() {
 	const [processTab, setProcessTab] = useState("Current");
 
 	const {
-		data: diagnosticReport,
-		isLoading: isDiagnosticReportLoading,
-		refetch: refetchDiagnosticReport,
+		data: reportInformation,
+		isLoading: isReportLoading,
+		refetch: refetchReport,
 	} = useGetDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX}/${id}`,
 	});
 
-	const entity = diagnosticReport?.data || {};
-	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
+	const entity = reportInformation?.data || {};
+	const safe = (value) =>
+		value === null || value === undefined || value === "" ? "-" : String(value);
 	const col1 = [
 		{ label: "Patient ID", value: safe(entity.patient_id) },
 		{ label: "Health ID", value: safe(entity.health_id) },
@@ -106,7 +107,10 @@ export default function Index() {
 											<Grid.Col key={colIdx} span={6}>
 												<Stack gap={2}>
 													{rows.map((row, idx) => (
-														<Text key={idx} fz="sm">{`${row.label}: ${row.value}`}</Text>
+														<Text
+															key={idx}
+															fz="sm"
+														>{`${row.label}: ${row.value}`}</Text>
 													))}
 												</Stack>
 											</Grid.Col>
@@ -117,12 +121,12 @@ export default function Index() {
 									<Grid.Col span={4} className="animate-ease-out">
 										<Test
 											entity={entity}
-											isLoading={isDiagnosticReportLoading}
-											refetchDiagnosticReport={refetchDiagnosticReport}
+											isLoading={isReportLoading}
+											refetchDiagnosticReport={refetchReport}
 										/>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<DiagnosticReport refetchDiagnosticReport={refetchDiagnosticReport} />
+										<DiagnosticReport refetchDiagnosticReport={refetchReport} />
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>

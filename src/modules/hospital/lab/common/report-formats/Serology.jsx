@@ -25,7 +25,7 @@ const dengueResultOptions = [
 	{ value: "negative", label: "Negative (-Ve)" },
 ];
 
-export default function Serology({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
+export default function Serology({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -41,6 +41,7 @@ export default function Serology({ diagnosticReport, setDiagnosticReport, refetc
 			test_name: custom_report?.test_name || "Dengue NSI Ag",
 			patient_age: custom_report?.patient_age ? new Date(custom_report.patient_age) : null,
 			dengue_result: custom_report?.dengue_result || "",
+			comment: diagnosticReport?.comment || "",
 		},
 	});
 
@@ -65,6 +66,7 @@ export default function Serology({ diagnosticReport, setDiagnosticReport, refetc
 						test_date: formatDateForMySQL(values.test_date),
 						patient_age: formatDateForMySQL(values.patient_age),
 					},
+					comment: values.comment,
 				},
 				module,
 			};
@@ -82,9 +84,10 @@ export default function Serology({ diagnosticReport, setDiagnosticReport, refetc
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetchDiagnosticReport();
+				if (refetchLabReport && typeof refetchLabReport === "function") {
+					refetchLabReport();
+				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setDiagnosticReport(resultAction.payload.data?.data);
-				form.reset();
 			}
 		} catch (error) {
 			console.error(error);
@@ -171,7 +174,11 @@ export default function Serology({ diagnosticReport, setDiagnosticReport, refetc
 					</Group>
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission
+				diagnosticReport={diagnosticReport}
+				form={form}
+				handleSubmit={handleSubmit}
+			/>
 		</Box>
 	);
 }

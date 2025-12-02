@@ -1,6 +1,6 @@
 import { getDataWithoutStore } from "@/services/apiService";
 import { Box, Text, Stack } from "@mantine/core";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -15,29 +15,22 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 
 	const { id, reportId } = useParams();
 	const [fetching, setFetching] = useState(false);
-	const [refetch, setRefetch] = useState(false);
+
+	const fetchLabReport = useCallback(async () => {
+		setFetching(true);
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX}/${id}/report/${reportId}`,
+		});
+		console.log(res?.data);
+		setDiagnosticReport(res?.data);
+		setFetching(false);
+	}, [id, reportId]);
 
 	useEffect(() => {
 		if (id && reportId) {
 			fetchLabReport();
 		}
-	}, [id, reportId]);
-
-	useEffect(() => {
-		if (refetch) {
-			fetchLabReport();
-			setRefetch(false);
-		}
-	}, [refetch]);
-
-	async function fetchLabReport() {
-		setFetching(true);
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX}/${id}/report/${reportId}`,
-		});
-		setDiagnosticReport(res?.data);
-		setFetching(false);
-	}
+	}, [id, reportId, fetchLabReport]);
 
 	useHotkeys([["alt+s", () => document.getElementById("EntityFormSubmit").click()]], []);
 
@@ -52,10 +45,9 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 				<ReportRenderer
 					refetchDiagnosticReport={refetchDiagnosticReport}
 					diagnosticReport={diagnosticReport}
-					setDiagnosticReport={setDiagnosticReport}
 					fetching={fetching}
 					inputsRef={inputsRef}
-					setRefetch={setRefetch}
+					refetchLabReport={fetchLabReport}
 				/>
 			) : (
 				<Box bg="var(--mantine-color-white)">

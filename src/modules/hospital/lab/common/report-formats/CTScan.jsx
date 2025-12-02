@@ -18,7 +18,7 @@ import { formatDateForMySQL } from "@utils/index";
 
 const module = MODULES.LAB_TEST;
 
-export default function CTScan({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
+export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -62,6 +62,7 @@ export default function CTScan({ diagnosticReport, setDiagnosticReport, refetchD
 						test_date: formatDateForMySQL(values.test_date),
 						patient_age: formatDateForMySQL(values.patient_age),
 					},
+					comment: values.comment,
 				},
 				module,
 			};
@@ -79,9 +80,10 @@ export default function CTScan({ diagnosticReport, setDiagnosticReport, refetchD
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetchDiagnosticReport();
+				if (refetchLabReport && typeof refetchLabReport === "function") {
+					refetchLabReport();
+				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setDiagnosticReport(resultAction.payload.data?.data);
-				form.reset();
 			}
 		} catch (error) {
 			console.error(error);
@@ -213,7 +215,11 @@ export default function CTScan({ diagnosticReport, setDiagnosticReport, refetchD
 					</Stack>
 				</ScrollArea>
 			</Box>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission
+				diagnosticReport={diagnosticReport}
+				form={form}
+				handleSubmit={handleSubmit}
+			/>
 		</>
 	);
 }

@@ -21,7 +21,11 @@ import TextAreaForm from "@components/form-builders/TextAreaForm";
 const module = MODULES.LAB_TEST;
 
 // =============== sars cov2 results are now handled as individual boolean properties ===============
-export default function Ultrasonography({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
+export default function Ultrasonography({
+	diagnosticReport,
+	refetchDiagnosticReport,
+	refetchLabReport,
+}) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -38,6 +42,7 @@ export default function Ultrasonography({ diagnosticReport, setDiagnosticReport,
 			type_patient: custom_report?.type_patient || "",
 			findings: custom_report?.findings || "",
 			referral_center: custom_report?.referral_center || "",
+			comment: diagnosticReport?.comment || "",
 		},
 	});
 
@@ -61,6 +66,7 @@ export default function Ultrasonography({ diagnosticReport, setDiagnosticReport,
 						...values,
 						test_date: formatDateForMySQL(values.test_date),
 					},
+					comment: values.comment,
 				},
 				module,
 			};
@@ -78,9 +84,10 @@ export default function Ultrasonography({ diagnosticReport, setDiagnosticReport,
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetchDiagnosticReport();
+				if (refetchLabReport && typeof refetchLabReport === "function") {
+					refetchLabReport();
+				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setDiagnosticReport(resultAction.payload?.data);
-				form.reset();
 			}
 		} catch (error) {
 			console.error(error);
@@ -162,7 +169,11 @@ export default function Ultrasonography({ diagnosticReport, setDiagnosticReport,
 					{/* =============== text date =============== */}
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission
+				diagnosticReport={diagnosticReport}
+				form={form}
+				handleSubmit={handleSubmit}
+			/>
 		</Box>
 	);
 }

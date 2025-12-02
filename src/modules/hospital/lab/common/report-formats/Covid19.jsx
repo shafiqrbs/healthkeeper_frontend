@@ -42,7 +42,7 @@ const testTypeOptions = [
 const module = MODULES.LAB_TEST;
 
 // =============== sars cov2 results are now handled as individual boolean properties ===============
-export default function Covid19({ diagnosticReport, setDiagnosticReport, refetchDiagnosticReport }) {
+export default function Covid19({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -57,9 +57,13 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 				: null,
 			specimen_identification_number: custom_report?.specimen_identification_number || "",
 			referral_center: custom_report?.referral_center || "",
-			type_patient: custom_report?.type_patient ? JSON.parse(custom_report.type_patient || "[]") : [],
+			type_patient: custom_report?.type_patient
+				? JSON.parse(custom_report.type_patient || "[]")
+				: [],
 			specimen: custom_report?.specimen ? JSON.parse(custom_report.specimen || "[]") : [],
-			preservative: custom_report?.preservative ? JSON.parse(custom_report.preservative || "[]") : [],
+			preservative: custom_report?.preservative
+				? JSON.parse(custom_report.preservative || "[]")
+				: [],
 			test_type: custom_report?.test_type || "",
 			date_specimen_received: custom_report?.date_specimen_received
 				? new Date(custom_report.date_specimen_received)
@@ -101,10 +105,13 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 						specimen: JSON.stringify(values.specimen),
 						type_patient: JSON.stringify(values.type_patient),
 
-						date_specimen_collection: formatDateForMySQL(values.date_specimen_collection),
+						date_specimen_collection: formatDateForMySQL(
+							values.date_specimen_collection
+						),
 						date_specimen_received: formatDateForMySQL(values.date_specimen_received),
 						last_covid_test_date: formatDateForMySQL(values.last_covid_test_date),
 					},
+					comment: values.comment,
 				},
 				module,
 			};
@@ -122,9 +129,10 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetchDiagnosticReport();
+				if (refetchLabReport && typeof refetchLabReport === "function") {
+					refetchLabReport();
+				}
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				setDiagnosticReport(resultAction.payload.data?.data);
-				form.reset();
 			}
 		} catch (error) {
 			console.error(error);
@@ -186,7 +194,11 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 							>
 								<Group>
 									{typeOfPatientOptions.map((option) => (
-										<Checkbox key={option.value} value={option.value} label={option.label} />
+										<Checkbox
+											key={option.value}
+											value={option.value}
+											label={option.label}
+										/>
 									))}
 								</Group>
 							</Checkbox.Group>
@@ -204,7 +216,11 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 							>
 								<Group>
 									{specimenOptions.map((option) => (
-										<Checkbox key={option.value} value={option.value} label={option.label} />
+										<Checkbox
+											key={option.value}
+											value={option.value}
+											label={option.label}
+										/>
 									))}
 								</Group>
 							</Checkbox.Group>
@@ -222,7 +238,11 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 							>
 								<Group>
 									{preservativeOptions.map((option) => (
-										<Checkbox key={option.value} value={option.value} label={option.label} />
+										<Checkbox
+											key={option.value}
+											value={option.value}
+											label={option.label}
+										/>
 									))}
 								</Group>
 							</Checkbox.Group>
@@ -240,7 +260,11 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 							>
 								<Stack gap="xs">
 									{testTypeOptions.map((option) => (
-										<Radio key={option.value} value={option.value} label={option.label} />
+										<Radio
+											key={option.value}
+											value={option.value}
+											label={option.label}
+										/>
 									))}
 								</Stack>
 							</Radio.Group>
@@ -286,7 +310,10 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 											<Checkbox
 												checked={form.values.sars_cov_positive}
 												onChange={(event) =>
-													form.setFieldValue("sars_cov_positive", event.currentTarget.checked)
+													form.setFieldValue(
+														"sars_cov_positive",
+														event.currentTarget.checked
+													)
 												}
 												styles={{ body: { justifyContent: "center" } }}
 												disabled={is_completed}
@@ -296,7 +323,10 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 											<Checkbox
 												checked={form.values.presumptive_pos}
 												onChange={(event) =>
-													form.setFieldValue("presumptive_pos", event.currentTarget.checked)
+													form.setFieldValue(
+														"presumptive_pos",
+														event.currentTarget.checked
+													)
 												}
 												styles={{ body: { justifyContent: "center" } }}
 												disabled={is_completed}
@@ -306,7 +336,10 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 											<Checkbox
 												checked={form.values.sars_covnegative}
 												onChange={(event) =>
-													form.setFieldValue("sars_covnegative", event.currentTarget.checked)
+													form.setFieldValue(
+														"sars_covnegative",
+														event.currentTarget.checked
+													)
 												}
 												styles={{ body: { justifyContent: "center" } }}
 												disabled={is_completed}
@@ -316,7 +349,10 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 											<Checkbox
 												checked={form.values.cov_invalid}
 												onChange={(event) =>
-													form.setFieldValue("cov_invalid", event.currentTarget.checked)
+													form.setFieldValue(
+														"cov_invalid",
+														event.currentTarget.checked
+													)
 												}
 												styles={{ body: { justifyContent: "center" } }}
 												disabled={is_completed}
@@ -353,7 +389,11 @@ export default function Covid19({ diagnosticReport, setDiagnosticReport, refetch
 					</Stack>
 				</ScrollArea>
 			</Box>
-			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
+			<ReportSubmission
+				diagnosticReport={diagnosticReport}
+				form={form}
+				handleSubmit={handleSubmit}
+			/>
 		</>
 	);
 }
