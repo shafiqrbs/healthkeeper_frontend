@@ -60,7 +60,6 @@ export const getMedicineFormInitialValues = () => {
 					: null;
 			},
 			medicine_dosage_id: (value) => (value ? null : "Dosage is required"),
-			quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},
 	};
 };
