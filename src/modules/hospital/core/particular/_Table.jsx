@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, NumberInput,TextInput} from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, NumberInput, TextInput, Checkbox} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
     IconTrashX,
@@ -32,7 +32,7 @@ import {
     ERROR_NOTIFICATION_COLOR,
 } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import {useForm} from "@mantine/form";
@@ -52,7 +52,7 @@ export default function _Table({ module, open }) {
     const searchKeyword = useSelector((state) => state.crud.searchKeyword);
     const filterData = useSelector((state) => state.crud[module].filterData);
     const listData = useSelector((state) => state.crud[module].data);
-
+    const [updatingRows, setUpdatingRows] = useState({});
     // for infinity table data scroll, call the hook
     const {
         scrollRef,
@@ -148,12 +148,37 @@ export default function _Table({ module, open }) {
 
             acc[item.id] = {
                 name: item.name || "",
+                status: item?.status ?? false,
+                ordering: item?.ordering ?? 1,
             };
             return acc;
         }, {});
 
         setSubmitFormData(initialFormData);
     }, [records]);
+
+    const handleFieldChange = async (rowId, field, value) => {
+        setSubmitFormData((prev) => ({
+            ...prev,
+            [rowId]: { ...prev[rowId], [field]: value },
+        }));
+
+        setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
+
+        try {
+            await dispatch(
+                storeEntityData({
+                    url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
+                    data: { [field]: value },
+                    module,
+                })
+            );
+        } catch (error) {
+            errorNotification(error.message);
+        } finally {
+            setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
+        }
+    };
 
     const handleDataTypeChange = (rowId, field, value) => {
         setSubmitFormData(prev => ({
@@ -256,6 +281,41 @@ export default function _Table({ module, open }) {
                             render: (values) => values.category || "N/A",
                         },
                         {
+                            accessor: "ordering",
+                            title: t("Ordering"),
+                            sortable: true,
+                            render: (item) => (
+                                <TextInput
+                                    size="xs"
+                                    className={inlineInputCss.inputText}
+                                    placeholder={t("ordering")}
+                                    value={submitFormData[item.id]?.ordering || ""}
+                                    onChange={(event) =>
+                                        handleDataTypeChange(item.id, "ordering", event.currentTarget.value)
+                                    }
+                                    onBlur={() => handleRowSubmit(item.id)}
+                                />
+                            ),
+                        },
+                        {
+                            accessor: "status",
+                            title: t("Status"),
+                            render: (item) => (
+                                <Checkbox
+                                    key={item.id}
+                                    size="sm"
+                                    checked={submitFormData[item.id]?.status ?? false}
+                                    onChange={(val) =>
+                                        handleFieldChange(
+                                            item.id,
+                                            "status",
+                                            val.currentTarget.checked
+                                        )
+                                    }
+                                />
+                            ),
+                        },
+                        {
                             accessor: "action",
                             title: "",
                             textAlign: "right",
@@ -306,7 +366,6 @@ export default function _Table({ module, open }) {
                             ),
                         },
                     ]}
-                    textSelectionDisabled
                     fetching={fetching}
                     loaderSize="xs"
                     loaderColor="grape"

@@ -23,6 +23,15 @@ import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { errorNotification } from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS, PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
+const durationModes = [
+    "Day",
+    "Days",
+    "Month",
+    "Months",
+    "Year",
+    "Years",
+    "Continue",
+];
 
 const PER_PAGE = 50;
 
@@ -280,6 +289,37 @@ export default function _Table({ module, open }) {
                     placeholder="Quantity"
                     initialValue={item.opd_quantity}
                     onSubmit={handleTextBlur}
+                />
+            ),
+        },
+        {
+            accessor: "duration",
+            title: t("Duration"),
+            width: 80,
+            sortable: false,
+            render: (item) => (
+                <InlineTextInput
+                    key={`duration-${item.id}`}
+                    itemId={item.id}
+                    field="duration"
+                    placeholder="Duration"
+                    initialValue={item.duration}
+                    onSubmit={handleTextBlur}
+                />
+            ),
+        },
+        {
+            accessor: "duration_mode",
+            title: t("DurationMode"),
+            render: (item) => (
+                <InlineSelect
+                    key={`duration_mode-${item.id}`}
+                    itemId={item.id}
+                    field="duration_mode"
+                    placeholder="DurationMode"
+                    data={durationModes}
+                    initialValue={item.duration_mode}
+                    onChange={handleSelectChange}
                 />
             ),
         },

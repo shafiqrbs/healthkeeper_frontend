@@ -6,6 +6,7 @@ import { useState } from "react";
 import { MODULES } from "@/constants";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import {useForm} from "@mantine/form";
 
 const module = MODULES.LAB_TEST;
 const PER_PAGE = 500;
@@ -14,6 +15,7 @@ export default function _Table() {
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
+	const form = useForm();
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
 
 	const handleAdmissionOverview = (id) => {
@@ -24,6 +26,10 @@ export default function _Table() {
 	const { records } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX,
+		filterParams: {
+			term: form.values.keywordSearch,
+			created: form.values.created,
+		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
 		direction: "desc",
