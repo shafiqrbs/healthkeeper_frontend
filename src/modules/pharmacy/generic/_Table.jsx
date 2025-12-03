@@ -122,7 +122,6 @@ export default function _Table({ module, open }) {
         fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.GENERIC,
         filterParams: {
             name: filterData?.name,
-            particular_type: "investigation",
             term: searchKeyword,
         },
         perPage: PER_PAGE,
