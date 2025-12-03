@@ -24,7 +24,6 @@ import { errorNotification } from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS, PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 const durationModes = [
-    "",
     "Day",
     "Days",
     "Month",
@@ -319,6 +318,7 @@ export default function _Table({ module, open }) {
                 <InlineSelect
                     key={`duration_mode-${item.id}`}
                     itemId={item.id}
+                    clearable
                     field="duration_mode"
                     placeholder="DurationMode"
                     data={durationModes}
