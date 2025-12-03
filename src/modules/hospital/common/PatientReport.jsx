@@ -416,16 +416,16 @@ export default function PatientReport({
 												w={"30%"}
 												label=""
 												size="xs"
-												placeholder={t("Day")}
+												placeholder={t("Span")}
 												data={DURATION_TYPES}
 												classNames={inputCss}
-												value={duration || "Day"}
+												value={duration || ""}
 												onChange={(option) => {
 													handleDynamicFormChange({
 														id: particular.id,
 														name: particular.name,
 														value: value || "",
-														duration: option || "Day",
+														duration: option || "",
 														isActive: existingItem?.isActive,
 														parentSlug: section.slug,
 													});
@@ -791,7 +791,7 @@ export default function PatientReport({
 					prescriptionData={prescriptionData}
 					onBlur={handleFieldBlur}
 				/>
-				<ScrollArea h={mainAreaHeight - 240}>
+				<ScrollArea h={form.values.is_vital ? height - 20 : height + 54}>
 					<Box mt="les" w="100%">
 						<Box bg="var(--theme-secondary-color-1)" p="3xs">
 							<Flex justify="space-between" align="center">
