@@ -11,7 +11,8 @@ import Test from "./Test";
 import DiagnosticReport from "./DiagnosticReport";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useGetDataWithoutStore from "@/common/hooks/useDataWithoutStore";
-
+import {MODULES} from "@/constants";
+const module = MODULES.LAB_TEST;
 export default function Index() {
 	const { t } = useTranslation();
 	const progress = useGetLoadingProgress();
@@ -86,6 +87,7 @@ export default function Index() {
 								</Flex>
 								<TabsWithSearch
 									tabList={["list"]}
+									module={module}
 									tabPanels={[
 										{
 											tab: "list",

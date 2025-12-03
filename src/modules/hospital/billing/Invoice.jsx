@@ -280,8 +280,8 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 					{t("AllPrint")}
 				</Button>
 			</Flex>
-			{id && transactions.length ? (
-				<>
+
+					{id && (
 					<Grid
 						columns={12}
 						key={item.id}
@@ -332,6 +332,9 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 							</Flex>
 						</Grid.Col>
 					</Grid>
+					)}
+					{id && transactions.length ? (
+					<>
 					<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 138}>
 						<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 						<Stack className="form-stack-vertical" p="xs" pos="relative">
@@ -421,7 +424,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 							))}
 						</Stack>
 					</ScrollArea>
-				</>
+					</>
 			) : (
 				<Stack h={mainAreaHeight - 52} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
 					<Box>{t("NoPatientSelected")}</Box>
