@@ -437,7 +437,6 @@ export default function _Table({ module, open }) {
                     }}
                     records={records}
                     columns={columns}
-                    textSelectionDisabled
                     fetching={fetching}
                     loaderSize="xs"
                     loaderColor="grape"
