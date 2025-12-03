@@ -131,7 +131,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
-		direction: "desc",
 	});
 
 	const handleView = (id) => {

@@ -158,13 +158,18 @@ export default function _Table({ height }) {
 		requestAnimationFrame(printLabReport);
 	};
 
+	const [valid, setValid] = useState({});
 
 	async function handleBarcodeTag(barcode,reportId) {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.TAG_PRINT}/${reportId}`,
 		});
-		setBarcodeValue(reportId);
-		requestAnimationFrame(printBarCodeValue);
+		if (res.data === "valid"){
+			window.location.reload();
+		}
+
+/*		setBarcodeValue(reportId);
+		requestAnimationFrame(printBarCodeValue);*/
 	}
 
 	return (

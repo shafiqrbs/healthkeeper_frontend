@@ -7,6 +7,7 @@ import { MODULES } from "@/constants";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import {useForm} from "@mantine/form";
+import {useSelector} from "react-redux";
 
 const module = MODULES.LAB_TEST;
 const PER_PAGE = 500;
@@ -17,22 +18,23 @@ export default function _Table() {
 	const navigate = useNavigate();
 	const form = useForm();
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
+	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	const handleAdmissionOverview = (id) => {
 		setSelectedPatientId(id);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}`);
 	};
 
-	const { records } = useInfiniteTableScroll({
+	const { records,fetching } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX,
-		filterParams: {
-			term: form.values.keywordSearch,
-			created: form.values.created,
-		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
 		direction: "desc",
+		filterParams: {
+			created: filterData.created,
+			term: filterData.keywordSearch,
+		},
 	});
 
 	const handleView = (id) => {

@@ -69,7 +69,7 @@ export default function Medicine({ entity }) {
             } else if (updateEntityData.fulfilled.match(resultAction)) {
                 dispatch(setRefetchData({ module, refetching: true }));
                 successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-                navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.INDEX);
+                navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.ISSUE);
             }
         } catch (error) {
             errorNotification(error.message, ERROR_NOTIFICATION_COLOR);

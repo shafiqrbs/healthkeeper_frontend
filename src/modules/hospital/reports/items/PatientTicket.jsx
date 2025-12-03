@@ -97,10 +97,9 @@ export default function PatientTicket() {
 			name: item?.name ?? "",
 			mobile: item?.mobile ?? "",
 			patient_payment_mode_name: item?.patient_payment_mode_name ?? "",
-			total: item?.total ?? "",
-			created_by: item?.created_by ?? "N/A",
+			total: item?.amount ?? "",
+			created_by: item?.created_by ?? "",
 		})) || [];
-
 	const handleCSVDownload = () => {
 		if (csvLinkRef?.current?.link) {
 			csvLinkRef.current.link.click();
@@ -173,7 +172,17 @@ export default function PatientTicket() {
 						{ accessor: "name", sortable: true, title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "patient_payment_mode_name", sortable: true, title: t("Patient") },
-						{ accessor: "total", title: t("Total") },
+						{
+							accessor: 'amount',
+							title: t("Total"),
+							width: 120,
+							textAlign: 'right',
+							align: 'right',
+							render: ({ amount }) => amount,
+							footer: `SUM: ${records.reduce(
+								(total, r) => total + Number(r.amount || 0),0
+							)}`,
+						},
 						{
 							accessor: "created_by",
 							title: t("CreatedBy"),

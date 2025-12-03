@@ -14,14 +14,7 @@ import { formatDate } from "@/common/utils";
 
 const initialState = {
 	// --------------- core modules starts -------------------
-	labTest: {
-		isLoading: true,
-		refetching: false,
-		error: null,
-		data: {},
-		editData: {},
-		validation: false,
-	},
+
 	free_patient: {
 		isLoading: true,
 		refetching: false,
@@ -55,6 +48,16 @@ const initialState = {
 		validation: false,
 	},
 	particular: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
+	},
+
+	labTest: {
 		isLoading: true,
 		refetching: true,
 		error: null,
