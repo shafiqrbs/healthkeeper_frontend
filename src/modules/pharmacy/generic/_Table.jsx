@@ -24,6 +24,7 @@ import { errorNotification } from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS, PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 const durationModes = [
+    "",
     "Day",
     "Days",
     "Month",
