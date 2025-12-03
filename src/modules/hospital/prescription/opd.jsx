@@ -149,17 +149,30 @@ export default function Index() {
 								<BaseTabs
 									tabValue={tabValue}
 									setTabValue={setTabValue}
-									tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
+									tabList={[
+										"All",
+										...(tabList?.length > 0 ? tabList : ["No data"]),
+									]}
 								/>
 							</Grid.Col>
 							<Grid.Col span={7}>
-								<Flex mt={"xs"} gap="md" justify="flex-end" align="center" wrap="wrap">
-									<PatientReferredAction form={form} invoiceId={prescriptionData?.data?.invoice_id} />
+								<Flex
+									mt={"xs"}
+									gap="xs"
+									justify="flex-end"
+									align="center"
+									wrap="wrap"
+								>
+									<PatientReferredAction
+										form={form}
+										invoiceId={prescriptionData?.data?.invoice_id}
+									/>
 									<Button
 										onClick={handleOpenViewOverview}
-										size="xs"
+										size="compact-xs"
 										radius="es"
-										rightSection={<IconArrowRight size={16} />}
+										py="sm"
+										h={36}
 										bg="var(--theme-success-color)"
 										c="white"
 									>
@@ -197,12 +210,27 @@ export default function Index() {
 					</Flex>
 				</Box>
 			)}
-			<Modal opened={openedOverview} onClose={closeOverview} size="100%" centered withCloseButton={false}>
-				<Table module={module} closeTable={closeOverview} height={mainAreaHeight - 220} availableClose />
+			<Modal
+				opened={openedOverview}
+				onClose={closeOverview}
+				size="100%"
+				centered
+				withCloseButton={false}
+			>
+				<Table
+					module={module}
+					closeTable={closeOverview}
+					height={mainAreaHeight - 220}
+					availableClose
+				/>
 			</Modal>
 
 			{selectedPrescriptionId && (
-				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+				<DetailsDrawer
+					opened={opened}
+					close={close}
+					prescriptionId={selectedPrescriptionId}
+				/>
 			)}
 		</>
 	);

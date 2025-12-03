@@ -1,6 +1,24 @@
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import { ActionIcon, Box, Flex, Grid, Input, NumberInput, Select, Stack, Switch, Text } from "@mantine/core";
-import { IconCheck, IconMedicineSyrup, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import {
+	ActionIcon,
+	Box,
+	Flex,
+	Grid,
+	Input,
+	NumberInput,
+	Select,
+	Stack,
+	Switch,
+	Text,
+} from "@mantine/core";
+import {
+	IconCheck,
+	IconMedicineSyrup,
+	IconPencil,
+	IconPlus,
+	IconTrash,
+	IconX,
+} from "@tabler/icons-react";
 import { getByMeal, getDosage } from "@utils/prescription";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -35,13 +53,22 @@ export default function MedicineListItem({
 	const handleChange = (field, value) => {
 		if (field === "opd_quantity" && !ignoreOpdQuantityLimit && isOpdType) {
 			if (value > medicine.opd_limit) {
-				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error", "", "", "", 3000);
+				showNotificationComponent(
+					t("QuantityCannotBeGreaterThanOpdQuantity"),
+					"error",
+					"",
+					"",
+					"",
+					3000
+				);
 				return;
 			}
 		}
 
 		setMedicines((prev) =>
-			prev.map((medicine, idx) => (idx === index - 1 ? { ...medicine, [field]: value } : medicine))
+			prev.map((medicine, idx) =>
+				idx === index - 1 ? { ...medicine, [field]: value } : medicine
+			)
 		);
 	};
 
@@ -60,11 +87,12 @@ export default function MedicineListItem({
 				dose_details_bn: dosage?.name_bn || "",
 				by_meal: byMeal?.name || "",
 				by_meal_bn: byMeal?.name_bn || "",
-				quantity: current.quantity || 1,
-				duration: current.duration || "Day",
+				quantity: current.quantity || "",
+				duration: current.duration || "",
 			};
 
-			const existingDosages = current.dosages && current.dosages.length > 0 ? current.dosages : [baseInstruction];
+			const existingDosages =
+				current.dosages && current.dosages.length > 0 ? current.dosages : [baseInstruction];
 
 			const toDuplicate =
 				typeof instructionIndex === "number" &&
@@ -76,7 +104,9 @@ export default function MedicineListItem({
 			const updatedDosages = [...existingDosages, { ...toDuplicate }];
 			const updatedMedicine = { ...current, dosages: updatedDosages };
 
-			const newList = prev.map((medicine, index) => (index === medicineIndex ? updatedMedicine : medicine));
+			const newList = prev.map((medicine, index) =>
+				index === medicineIndex ? updatedMedicine : medicine
+			);
 
 			if (typeof update === "function") update(newList);
 			return newList;
@@ -122,11 +152,13 @@ export default function MedicineListItem({
 						dose_details_bn: dosage?.name_bn || "",
 						by_meal: byMeal?.name || "",
 						by_meal_bn: byMeal?.name_bn || "",
-						quantity: current.quantity || 1,
-						duration: current.duration || "Day",
+						quantity: current.quantity || "",
+						duration: current.duration || "",
 					},
 				];
-				const updated = prev.map((m, i) => (i === medicineIndex ? { ...current, dosages: seeded } : m));
+				const updated = prev.map((m, i) =>
+					i === medicineIndex ? { ...current, dosages: seeded } : m
+				);
 				if (typeof update === "function") update(updated);
 				return updated;
 			});
@@ -168,7 +200,9 @@ export default function MedicineListItem({
 			}
 
 			const updatedMedicine = { ...current, dosages };
-			const newList = prev.map((medicine, index) => (index === medicineIndex ? updatedMedicine : medicine));
+			const newList = prev.map((medicine, index) =>
+				index === medicineIndex ? updatedMedicine : medicine
+			);
 			return newList;
 		});
 	};
@@ -193,7 +227,11 @@ export default function MedicineListItem({
 						radius="sm"
 						thumbIcon={
 							medicine.is_active ? (
-								<IconCheck size={12} color="var(--mantine-color-teal-6)" stroke={3} />
+								<IconCheck
+									size={12}
+									color="var(--mantine-color-teal-6)"
+									stroke={3}
+								/>
 							) : (
 								<IconX size={12} color="var(--mantine-color-red-6)" stroke={3} />
 							)
@@ -219,13 +257,20 @@ export default function MedicineListItem({
 								{
 									medicine_dosage_id: medicine?.medicine_dosage_id || "",
 									medicine_bymeal_id: medicine?.medicine_bymeal_id || "",
-									dose_details: getDosage(dosage_options, medicine?.medicine_dosage_id)?.name || "",
+									dose_details:
+										getDosage(dosage_options, medicine?.medicine_dosage_id)
+											?.name || "",
 									dose_details_bn:
-										getDosage(dosage_options, medicine?.medicine_dosage_id)?.name_bn || "",
-									by_meal: getByMeal(by_meal_options, medicine?.medicine_bymeal_id)?.name || "",
-									by_meal_bn: getByMeal(by_meal_options, medicine?.medicine_bymeal_id)?.name_bn || "",
-									quantity: medicine.quantity || 1,
-									duration: medicine.duration || "Day",
+										getDosage(dosage_options, medicine?.medicine_dosage_id)
+											?.name_bn || "",
+									by_meal:
+										getByMeal(by_meal_options, medicine?.medicine_bymeal_id)
+											?.name || "",
+									by_meal_bn:
+										getByMeal(by_meal_options, medicine?.medicine_bymeal_id)
+											?.name_bn || "",
+									quantity: medicine.quantity || "",
+									duration: medicine.duration || "",
 								},
 						  ]
 					).map((instruction, insIndex) => {
@@ -233,7 +278,12 @@ export default function MedicineListItem({
 						const isMedicine = !!medicine.medicine_id;
 
 						return (
-							<Flex key={insIndex} ml={isFirstItem ? "md" : "44px"} gap="xs" align="center">
+							<Flex
+								key={insIndex}
+								ml={isFirstItem ? "md" : "44px"}
+								gap="xs"
+								align="center"
+							>
 								{isFirstItem && isOpdType && (
 									<ActionIcon
 										size="xs"
@@ -257,7 +307,11 @@ export default function MedicineListItem({
 												value={instruction?.medicine_dosage_id?.toString()}
 												placeholder={t("Dosage")}
 												onChange={(v) =>
-													handleInstructionFieldChange(insIndex, "medicine_dosage_id", v)
+													handleInstructionFieldChange(
+														insIndex,
+														"medicine_dosage_id",
+														v
+													)
 												}
 											/>
 										</Grid.Col>
@@ -272,7 +326,11 @@ export default function MedicineListItem({
 												value={instruction.medicine_bymeal_id?.toString()}
 												placeholder={t("Timing")}
 												onChange={(v) =>
-													handleInstructionFieldChange(insIndex, "medicine_bymeal_id", v)
+													handleInstructionFieldChange(
+														insIndex,
+														"medicine_bymeal_id",
+														v
+													)
 												}
 											/>
 										</Grid.Col>
@@ -285,7 +343,11 @@ export default function MedicineListItem({
 														value={instruction.quantity}
 														placeholder={t("Quantity")}
 														onChange={(v) =>
-															handleInstructionFieldChange(insIndex, "quantity", v)
+															handleInstructionFieldChange(
+																insIndex,
+																"quantity",
+																v
+															)
 														}
 													/>
 												</Grid.Col>
@@ -297,7 +359,11 @@ export default function MedicineListItem({
 														value={instruction.duration?.toLowerCase()}
 														placeholder={t("Duration")}
 														onChange={(v) =>
-															handleInstructionFieldChange(insIndex, "duration", v)
+															handleInstructionFieldChange(
+																insIndex,
+																"duration",
+																v
+															)
 														}
 													/>
 												</Grid.Col>
@@ -313,7 +379,10 @@ export default function MedicineListItem({
 														placeholder={t("OutdoorMedicineNumber")}
 														value={medicine.opd_quantity}
 														onChange={(event) =>
-															handleChange("opd_quantity", event.target.value)
+															handleChange(
+																"opd_quantity",
+																event.target.value
+															)
 														}
 													/>
 												</Grid.Col>
@@ -324,7 +393,10 @@ export default function MedicineListItem({
 														placeholder={t("DoctorComment")}
 														value={medicine.doctor_comment}
 														onChange={(event) =>
-															handleChange("doctor_comment", event.target.value)
+															handleChange(
+																"doctor_comment",
+																event.target.value
+															)
 														}
 													/>
 												</Grid.Col>
@@ -349,12 +421,17 @@ export default function MedicineListItem({
 											fz="xs"
 											c="var(--theme-tertiary-color-8)"
 										>
-											{instruction?.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
-											{isOpdType && `---- ${instruction.quantity} ---- ${instruction.duration}`}
+											{instruction?.dose_details || instruction.dosage} ----{" "}
+											{instruction.by_meal}{" "}
+											{isOpdType &&
+												`---- ${instruction.quantity} ---- ${instruction.duration}`}
 											{isFirstItem && isMedicine && isOpdType && (
 												<>
-													{medicine.opd_quantity ? `---- ${medicine.opd_quantity}` : ``}
-													{medicine.doctor_comment && `---- ${medicine.doctor_comment}`}
+													{medicine.opd_quantity
+														? `---- ${medicine.opd_quantity}`
+														: ``}
+													{medicine.doctor_comment &&
+														`---- ${medicine.doctor_comment}`}
 												</>
 											)}
 										</Box>
@@ -372,7 +449,9 @@ export default function MedicineListItem({
 												<ActionIcon
 													variant="transparent"
 													color="var(--theme-error-color)"
-													onClick={() => handleDeleteInstruction(insIndex)}
+													onClick={() =>
+														handleDeleteInstruction(insIndex)
+													}
 												>
 													<IconX size={18} stroke={1.5} />
 												</ActionIcon>

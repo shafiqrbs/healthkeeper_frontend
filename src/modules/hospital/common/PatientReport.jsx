@@ -64,7 +64,9 @@ export default function PatientReport({
 			? form.values.dynamicFormData[parentSlug]
 			: [];
 
-		const existingIndex = existingList.findIndex((item) => item.id === id && item.name === name);
+		const existingIndex = existingList.findIndex(
+			(item) => item.id === id && item.name === name
+		);
 
 		// =============== include isActive in the item if provided ================
 		const updatedItem = { id, name, value, duration };
@@ -73,7 +75,11 @@ export default function PatientReport({
 		}
 		const updatedList =
 			existingIndex > -1
-				? [...existingList.slice(0, existingIndex), updatedItem, ...existingList.slice(existingIndex + 1)]
+				? [
+						...existingList.slice(0, existingIndex),
+						updatedItem,
+						...existingList.slice(existingIndex + 1),
+				  ]
 				: [...existingList, updatedItem];
 
 		const newDynamicFormData = {
@@ -97,7 +103,9 @@ export default function PatientReport({
 		// if it's an object, we can add the property directly
 		const newDynamicFormData = {
 			...form.values.dynamicFormData,
-			[parentSlug]: Array.isArray(currentData) ? currentData : { ...currentData, other_instructions: value },
+			[parentSlug]: Array.isArray(currentData)
+				? currentData
+				: { ...currentData, other_instructions: value },
 			[`${parentSlug}_other_instructions`]: value,
 		};
 
@@ -149,7 +157,9 @@ export default function PatientReport({
 	};
 
 	const handleAutocompleteOptionRemove = (idx, sectionSlug) => {
-		const updatedList = form.values.dynamicFormData[sectionSlug].filter((_, index) => index !== idx);
+		const updatedList = form.values.dynamicFormData[sectionSlug].filter(
+			(_, index) => index !== idx
+		);
 		const newDynamicFormData = {
 			...form.values.dynamicFormData,
 			[sectionSlug]: updatedList,
@@ -201,9 +211,16 @@ export default function PatientReport({
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={
+									form.values.dynamicFormData?.[
+										`${section.slug}_other_instructions`
+									] || ""
+								}
 								onChange={(event) =>
-									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+									handleOtherInstructionsChange(
+										section.slug,
+										event.currentTarget.value
+									)
 								}
 								onBlur={handleFieldBlur}
 								resize="vertical"
@@ -243,9 +260,16 @@ export default function PatientReport({
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={
+									form.values.dynamicFormData?.[
+										`${section.slug}_other_instructions`
+									] || ""
+								}
 								onChange={(event) =>
-									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+									handleOtherInstructionsChange(
+										section.slug,
+										event.currentTarget.value
+									)
 								}
 								onBlur={handleFieldBlur}
 								resize="vertical"
@@ -270,7 +294,9 @@ export default function PatientReport({
 										<TextInput
 											id={`${id}-${index}`}
 											name={`${id}-${index}`}
-											onKeyDown={(event) => handleNextFieldKeyDown(event, `${id}-${index + 1}`)}
+											onKeyDown={(event) =>
+												handleNextFieldKeyDown(event, `${id}-${index + 1}`)
+											}
 											label=""
 											classNames={inputCss}
 											placeholder={`Enter ${particular.name}`}
@@ -294,9 +320,16 @@ export default function PatientReport({
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={
+									form.values.dynamicFormData?.[
+										`${section.slug}_other_instructions`
+									] || ""
+								}
 								onChange={(event) =>
-									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+									handleOtherInstructionsChange(
+										section.slug,
+										event.currentTarget.value
+									)
 								}
 								onBlur={handleFieldBlur}
 								resize="vertical"
@@ -316,16 +349,23 @@ export default function PatientReport({
 							return (
 								<Grid key={`${id}-${index}`}>
 									<Grid.Col span={4} fz={"xs"}>
-										{particular.name}
-									</Grid.Col>
-									<Grid.Col span={8}>
-										<Flex align="center" gap="les" justify="space-between">
+										<Flex align="center" h="100%" gap="xs">
 											<Checkbox
+												label={particular.name}
+												styles={{
+													label: {
+														fontSize: "12px",
+														paddingInlineStart: "8px",
+													},
+												}}
 												size="sm"
 												checked={
-													form.values.dynamicFormData?.[section.slug]?.find(
+													form.values.dynamicFormData?.[
+														section.slug
+													]?.find(
 														(item) =>
-															item.id === particular.id && item.name === particular.name
+															item.id === particular.id &&
+															item.name === particular.name
 													)?.isActive || false
 												}
 												onChange={(event) =>
@@ -333,7 +373,9 @@ export default function PatientReport({
 														id: particular.id,
 														name: particular.name,
 														value:
-															form.values.dynamicFormData?.[section.slug]?.find(
+															form.values.dynamicFormData?.[
+																section.slug
+															]?.find(
 																(item) =>
 																	item.id === particular.id &&
 																	item.name === particular.name
@@ -344,14 +386,22 @@ export default function PatientReport({
 													})
 												}
 											/>
+											{/* <Text fz="xs">{particular.name}</Text> */}
+										</Flex>
+									</Grid.Col>
+									<Grid.Col span={8}>
+										<Flex align="center" gap="les" justify="flex-end">
 											<TextInput
 												size="xs"
-												w={"70%"}
+												w={"60%"}
 												label=""
 												id={`${id}-${index}`}
 												name={`${id}-${index}`}
 												onKeyDown={(event) =>
-													handleNextFieldKeyDown(event, `${id}-${index + 1}`)
+													handleNextFieldKeyDown(
+														event,
+														`${id}-${index + 1}`
+													)
 												}
 												classNames={inputCss}
 												placeholder={`Enter ${particular.name}`}
@@ -374,9 +424,12 @@ export default function PatientReport({
 												data={DURATION_TYPES}
 												classNames={inputCss}
 												value={
-													form.values.dynamicFormData?.[section.slug]?.find(
+													form.values.dynamicFormData?.[
+														section.slug
+													]?.find(
 														(item) =>
-															item.id === particular.id && item.name === particular.name
+															item.id === particular.id &&
+															item.name === particular.name
 													)?.duration || "Day"
 												}
 												onChange={(option) => {
@@ -400,9 +453,16 @@ export default function PatientReport({
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={
+									form.values.dynamicFormData?.[
+										`${section.slug}_other_instructions`
+									] || ""
+								}
 								onChange={(event) =>
-									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+									handleOtherInstructionsChange(
+										section.slug,
+										event.currentTarget.value
+									)
 								}
 								onBlur={handleFieldBlur}
 								resize="vertical"
@@ -422,7 +482,11 @@ export default function PatientReport({
 								<Textarea
 									size="xs"
 									key={`${id}-${index}`}
-									label={particulars.length === 1 ? "" : particular.name?.toUpperCase()}
+									label={
+										particulars.length === 1
+											? ""
+											: particular.name?.toUpperCase()
+									}
 									placeholder={`Enter ${particular.name}`}
 									value={value || ""}
 									onChange={(event) =>
@@ -443,9 +507,16 @@ export default function PatientReport({
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={
+									form.values.dynamicFormData?.[
+										`${section.slug}_other_instructions`
+									] || ""
+								}
 								onChange={(event) =>
-									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+									handleOtherInstructionsChange(
+										section.slug,
+										event.currentTarget.value
+									)
 								}
 								onBlur={handleFieldBlur}
 								resize="vertical"
@@ -481,9 +552,16 @@ export default function PatientReport({
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={
+									form.values.dynamicFormData?.[
+										`${section.slug}_other_instructions`
+									] || ""
+								}
 								onChange={(event) =>
-									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+									handleOtherInstructionsChange(
+										section.slug,
+										event.currentTarget.value
+									)
 								}
 								onBlur={handleFieldBlur}
 							/>
@@ -507,7 +585,9 @@ export default function PatientReport({
 										handleDynamicFormChange({
 											id: particular.id,
 											name: particular.name,
-											value: event.currentTarget.checked ? particular.name : "",
+											value: event.currentTarget.checked
+												? particular.name
+												: "",
 											parentSlug: section.slug,
 										})
 									}
@@ -520,9 +600,16 @@ export default function PatientReport({
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={
+									form.values.dynamicFormData?.[
+										`${section.slug}_other_instructions`
+									] || ""
+								}
 								onChange={(event) =>
-									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+									handleOtherInstructionsChange(
+										section.slug,
+										event.currentTarget.value
+									)
 								}
 								onBlur={handleFieldBlur}
 							/>
@@ -538,18 +625,32 @@ export default function PatientReport({
 							placeholder={`Pick value or enter ${name}`}
 							data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
 							value={autocompleteValues[section.slug] || ""}
-							onChange={(value) => setAutocompleteValues((prev) => ({ ...prev, [section.slug]: value }))}
+							onChange={(value) =>
+								setAutocompleteValues((prev) => ({
+									...prev,
+									[section.slug]: value,
+								}))
+							}
 							onOptionSubmit={(value) => {
 								handleAutocompleteOptionAdd(value, particulars, section.slug);
 								setTimeout(() => {
-									setAutocompleteValues((prev) => ({ ...prev, [section.slug]: "" }));
+									setAutocompleteValues((prev) => ({
+										...prev,
+										[section.slug]: "",
+									}));
 								}, 0);
 							}}
 							classNames={inputCss}
 							onBlur={handleFieldBlur}
 							rightSection={<IconCaretUpDownFilled size={16} />}
 						/>
-						<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll" mt="2xs">
+						<Stack
+							gap={0}
+							bg="var(--mantine-color-white)"
+							px="sm"
+							className="borderRadiusAll"
+							mt="2xs"
+						>
 							{form.values.dynamicFormData?.[section.slug]?.map((item, idx) => (
 								<Flex
 									key={idx}
@@ -559,7 +660,8 @@ export default function PatientReport({
 									py="xs"
 									style={{
 										borderBottom:
-											idx !== form.values.dynamicFormData?.[section.slug]?.length - 1
+											idx !==
+											form.values.dynamicFormData?.[section.slug]?.length - 1
 												? "1px solid var(--theme-tertiary-color-4)"
 												: "none",
 									}}
@@ -571,7 +673,9 @@ export default function PatientReport({
 										color="red"
 										size="xs"
 										variant="subtle"
-										onClick={() => handleAutocompleteOptionRemove(idx, section.slug)}
+										onClick={() =>
+											handleAutocompleteOptionRemove(idx, section.slug)
+										}
 									>
 										<IconX size={16} />
 									</ActionIcon>
@@ -583,9 +687,16 @@ export default function PatientReport({
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={
+									form.values.dynamicFormData?.[
+										`${section.slug}_other_instructions`
+									] || ""
+								}
 								onChange={(event) =>
-									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+									handleOtherInstructionsChange(
+										section.slug,
+										event.currentTarget.value
+									)
 								}
 								onBlur={handleFieldBlur}
 								resize="vertical"
@@ -611,7 +722,9 @@ export default function PatientReport({
 		}
 
 		// For specific tabs, find matching section
-		return tabParticulars.find((section) => section.name.toLowerCase() === tabValue.toLowerCase());
+		return tabParticulars.find(
+			(section) => section.name.toLowerCase() === tabValue.toLowerCase()
+		);
 	};
 
 	const generateTabItems = () => {
@@ -621,7 +734,11 @@ export default function PatientReport({
 			return (
 				<Box bg="var(--mantine-color-white)" p="les">
 					<ScrollArea h={height}>
-						<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
+						<BasicInfoCard
+							form={form}
+							prescriptionData={prescriptionData}
+							onBlur={handleFieldBlur}
+						/>
 						<Box p="md">
 							<Text c="dimmed">No data available for {tabValue}</Text>
 						</Box>
@@ -633,7 +750,11 @@ export default function PatientReport({
 		if (tabValue === "All") {
 			return (
 				<Box w="100%">
-					<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
+					<BasicInfoCard
+						form={form}
+						prescriptionData={prescriptionData}
+						onBlur={handleFieldBlur}
+					/>
 					<ScrollArea h={form.values.is_vital ? height - 20 : height + 54}>
 						<Stack gap="sm" my="les">
 							{currentSection.map((section) => (
@@ -650,11 +771,14 @@ export default function PatientReport({
 													onLabel="OTHER"
 													offLabel="OTHER"
 													radius="sm"
-													checked={showOtherInstruction[section.slug] ?? false}
+													checked={
+														showOtherInstruction[section.slug] ?? false
+													}
 													onChange={(event) =>
 														setShowOtherInstruction((prev) => ({
 															...prev,
-															[section.slug]: event.currentTarget.checked,
+															[section.slug]:
+																event.currentTarget.checked,
 														}))
 													}
 												/>
@@ -673,7 +797,11 @@ export default function PatientReport({
 		// Handle specific tab
 		return (
 			<Box w="100%">
-				<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
+				<BasicInfoCard
+					form={form}
+					prescriptionData={prescriptionData}
+					onBlur={handleFieldBlur}
+				/>
 				<ScrollArea h={mainAreaHeight - 240}>
 					<Box mt="les" w="100%">
 						<Box bg="var(--theme-secondary-color-1)" p="3xs">
