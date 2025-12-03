@@ -60,6 +60,7 @@ import {
 	appendDosageValueToForm,
 	appendGeneralValuesToForm,
 	appendMealValueToForm,
+	generateMedicinePayload,
 	medicineOptionsFilter,
 } from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
@@ -117,6 +118,7 @@ export default function AddMedicineForm({
 	const [showPrint, setShowPrint] = useState(false);
 	const [medicineDosageSearchValue, setMedicineDosageSearchValue] = useState("");
 	const [medicineByMealSearchValue, setMedicineByMealSearchValue] = useState("");
+	const [durationModeKey, setDurationModeKey] = useState(0);
 
 	const printPrescription2A4 = useReactToPrint({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
@@ -354,20 +356,14 @@ export default function AddMedicineForm({
 			}
 
 			if (field === "medicine_id" && selectedMedicine.generic && selectedMedicine.medicine_dosage_id) {
-				handleAdd({
-					medicine_id: value,
-					medicine_name: selectedMedicine.product_name,
-					generic: selectedMedicine.generic,
-					medicine_dosage_id: selectedMedicine.medicine_dosage_id,
-					medicine_bymeal_id: selectedMedicine.medicine_bymeal_id,
-					quantity: selectedMedicine.duration,
-					duration: selectedMedicine.duration_mode,
-					by_meal: medicineForm.values.by_meal,
-				});
+				handleAdd(generateMedicinePayload(medicineForm, selectedMedicine, { dosage_options, by_meal_options }));
 				medicineForm.reset();
 				setMedicineDosageSearchValue("");
 				setMedicineByMealSearchValue("");
-				setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
+				setMedicineTerm("");
+				setMedicineGenericTerm("");
+				setDurationModeKey((prev) => prev + 100);
+				requestAnimationFrame(() => document.getElementById("medicine_id").focus());
 			}
 		}
 
@@ -399,7 +395,8 @@ export default function AddMedicineForm({
 			medicineForm.reset();
 			setMedicineDosageSearchValue("");
 			setMedicineByMealSearchValue("");
-			setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
+			setDurationModeKey((prev) => prev + 100);
+			requestAnimationFrame(() => document.getElementById("medicine_id").focus());
 		}
 		setEditIndex(null);
 	};
@@ -668,6 +665,7 @@ export default function AddMedicineForm({
 											tooltip={t("EnterDuration")}
 										/>
 										<SelectForm
+											key={durationModeKey}
 											form={medicineForm}
 											label=""
 											id="duration"

@@ -7,9 +7,12 @@ import { useTranslation } from "react-i18next";
 
 const DURATION_UNIT_OPTIONS = [
 	{ value: "day", label: "Day" },
-	{ value: "week", label: "Week" },
+	{ value: "days", label: "Days" },
 	{ value: "month", label: "Month" },
+	{ value: "months", label: "Months" },
 	{ value: "year", label: "Year" },
+	{ value: "years", label: "Years" },
+	{ value: "continue", label: "Continue" },
 ];
 
 export default function MedicineListItem({
@@ -31,7 +34,7 @@ export default function MedicineListItem({
 
 	const handleChange = (field, value) => {
 		if (field === "opd_quantity" && !ignoreOpdQuantityLimit && isOpdType) {
-			if (value > medicine.opd_limit * 2) {
+			if (value > medicine.opd_limit) {
 				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error", "", "", "", 3000);
 				return;
 			}
@@ -350,7 +353,7 @@ export default function MedicineListItem({
 											{isOpdType && `---- ${instruction.quantity} ---- ${instruction.duration}`}
 											{isFirstItem && isMedicine && isOpdType && (
 												<>
-													{medicine.opd_quantity ? `---- ${medicine.opd_quantity * 2}` : ``}
+													{medicine.opd_quantity ? `---- ${medicine.opd_quantity}` : ``}
 													{medicine.doctor_comment && `---- ${medicine.doctor_comment}`}
 												</>
 											)}

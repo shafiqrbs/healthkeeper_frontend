@@ -20,6 +20,10 @@ const useMedicineGenericData = ({ term = "" }) => {
 		}
 	};
 
+	const unsetData = () => {
+		setMedicineGenericData([]);
+	};
+
 	useEffect(() => {
 		if (term) {
 			fetchData({ search: term });
@@ -28,7 +32,7 @@ const useMedicineGenericData = ({ term = "" }) => {
 		}
 	}, [term]);
 
-	return { medicineGenericData, fetchData };
+	return { medicineGenericData, fetchData, unsetData };
 };
 
 export default useMedicineGenericData;

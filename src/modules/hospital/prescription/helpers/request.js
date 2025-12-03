@@ -39,7 +39,7 @@ export const medicineInitialValues = {
 	medicine_dosage_id: "",
 	medicine_bymeal_id: "",
 	times: "",
-	duration: "Day",
+	duration: "",
 	quantity: "",
 	opd_quantity: 0,
 };
