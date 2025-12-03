@@ -68,8 +68,15 @@ export default function PatientReport({
 			(item) => item.id === id && item.name === name
 		);
 
+		// =============== preserve existing duration if not provided ================
+		const existingItem = existingIndex > -1 ? existingList[existingIndex] : null;
+		const preservedDuration = duration !== null ? duration : existingItem?.duration || null;
+
 		// =============== include isActive in the item if provided ================
-		const updatedItem = { id, name, value, duration };
+		const updatedItem = { id, name, value };
+		if (preservedDuration !== null) {
+			updatedItem.duration = preservedDuration;
+		}
 		if (isActive !== null) {
 			updatedItem.isActive = isActive;
 		}
@@ -343,9 +350,11 @@ export default function PatientReport({
 				return (
 					<Stack gap="2xs">
 						{particulars?.map((particular, index) => {
-							const value = form.values.dynamicFormData?.[section.slug]?.find(
+							const existingItem = form.values.dynamicFormData?.[section.slug]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
-							)?.value;
+							);
+							const value = existingItem?.value;
+							const duration = existingItem?.duration;
 							return (
 								<Grid key={`${id}-${index}`}>
 									<Grid.Col span={4} fz={"xs"}>
@@ -359,27 +368,13 @@ export default function PatientReport({
 													},
 												}}
 												size="sm"
-												checked={
-													form.values.dynamicFormData?.[
-														section.slug
-													]?.find(
-														(item) =>
-															item.id === particular.id &&
-															item.name === particular.name
-													)?.isActive || false
-												}
+												checked={existingItem?.isActive || false}
 												onChange={(event) =>
 													handleDynamicFormChange({
 														id: particular.id,
 														name: particular.name,
-														value:
-															form.values.dynamicFormData?.[
-																section.slug
-															]?.find(
-																(item) =>
-																	item.id === particular.id &&
-																	item.name === particular.name
-															)?.value || "",
+														value: value || "",
+														duration: duration,
 														parentSlug: section.slug,
 														isCheckbox: true,
 														isActive: event.currentTarget.checked,
@@ -411,6 +406,7 @@ export default function PatientReport({
 														id: particular.id,
 														name: particular.name,
 														value: event.currentTarget.value,
+														duration: duration,
 														parentSlug: section.slug,
 													})
 												}
@@ -423,21 +419,14 @@ export default function PatientReport({
 												placeholder={t("Day")}
 												data={DURATION_TYPES}
 												classNames={inputCss}
-												value={
-													form.values.dynamicFormData?.[
-														section.slug
-													]?.find(
-														(item) =>
-															item.id === particular.id &&
-															item.name === particular.name
-													)?.duration || "Day"
-												}
+												value={duration || "Day"}
 												onChange={(option) => {
 													handleDynamicFormChange({
 														id: particular.id,
 														name: particular.name,
-														value: value,
+														value: value || "",
 														duration: option || "Day",
+														isActive: existingItem?.isActive,
 														parentSlug: section.slug,
 													});
 												}}

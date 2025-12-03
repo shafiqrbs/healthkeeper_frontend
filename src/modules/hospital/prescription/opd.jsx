@@ -14,7 +14,6 @@ import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
 import { useDisclosure, useElementSize } from "@mantine/hooks";
 import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
-import { IconArrowRight } from "@tabler/icons-react";
 import Table from "./Table";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
