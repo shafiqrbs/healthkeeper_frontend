@@ -44,6 +44,7 @@
 		"i18next-http-backend": "^2.4.2",
 		"jwt-decode": "^4.0.0",
 		"lodash": "^4.17.21",
+		"lodash.set": "^4.3.2",
 		"mantine-datatable": "^7.5.0",
 		"mantine-react-table": "^2.0.0-alpha.17",
 		"react": "^18.2.0",

@@ -1,25 +1,24 @@
 import CryptoJS from 'crypto-js';
 
-const SECRET_KEY = "123456";
+const SECRET_KEY = import.meta.env.VITE_STORAGE_SECRET_KEY;
 
 export const encryptData = (data) => {
     try {
-        const stringData = JSON.stringify(data);
-        return CryptoJS.AES.encrypt(stringData, SECRET_KEY).toString();
-    } catch (error) {
-        console.error("Encryption error:", error);
+        return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
+    } catch (err) {
+        console.error("Encrypt error", err);
         return null;
     }
 };
 
-export const decryptData = (encryptedData) => {
+export const decryptData = (encrypted) => {
     try {
-        if (!encryptedData) return null;
-        const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
+        const bytes = CryptoJS.AES.decrypt(encrypted, SECRET_KEY);
         const decrypted = bytes.toString(CryptoJS.enc.Utf8);
         return JSON.parse(decrypted);
-    } catch (error) {
-        console.error("Decryption error:", error);
+    } catch (err) {
+        console.error("Decrypt error", err);
         return null;
     }
 };
+

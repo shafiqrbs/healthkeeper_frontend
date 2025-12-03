@@ -1,11 +1,12 @@
-// src/store/useAuthStore.js
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import _set from "lodash.set";
 import { encryptData, decryptData } from "../utils/crypto";
 
 export const useAuthStore = create(
     persist(
         (set) => ({
+            token: null,
             user: null,
             warehouse: null,
             hospitalConfig: null,
@@ -13,7 +14,8 @@ export const useAuthStore = create(
 
             setUserData: (data) =>
                 set({
-                    user: data,
+                    token: data.token,
+                    user: data.decoded,
                     warehouse: data.user_warehouse,
                     hospitalConfig: data.hospital_config,
                     roles: {
@@ -21,9 +23,25 @@ export const useAuthStore = create(
                         android_control_role: data.android_control_role,
                     },
                 }),
+            // Generic updater for top-level fields
+            updateState: (key, value) =>
+                set((state) => ({
+                    [key]: typeof state[key] === "object" && state[key] !== null
+                        ? { ...state[key], ...value }
+                        : value,
+                })),
+
+            // Nested updater helper
+            updateNestedState: (path, value) => {
+                const state = useAuthStore.getState();
+                const newState = { ...state };
+                _set(newState, path, value);
+                useAuthStore.setState(newState);
+            },
 
             clearUser: () =>
                 set({
+                    token: null,
                     user: null,
                     warehouse: null,
                     hospitalConfig: null,

@@ -20,7 +20,7 @@ import { getHotkeyHandler, useHotkeys } from "@mantine/hooks";
 import { IconInfoCircle, IconLogin, IconArrowLeft } from "@tabler/icons-react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { Navigate, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import commonDataStoreIntoLocalStorage from "@hooks/local-storage/useCommonDataStoreIntoLocalStorage.js";
@@ -53,51 +53,12 @@ export default function LoginJwt() {
 	}
 
     axios.defaults.withCredentials = true;
-    function login1(data) {
-		setSpinner(true);
-		axios({
-			method: "POST",
-			url: `${API_BASE_URL}/login`,
-			headers: {
-				Accept: `application/json`,
-				"Content-Type": `application/json`,
-				"Access-Control-Allow-Origin": "*",
-				"X-Api-Key": API_KEY,
-			},
-			data: data,
-		})
-			.then((res) => {
-				if (res.data.status === 200) {
-                    // localStorage.setItem('access-token', JSON.stringify(res.data.data.token));
-                    const decoded = jwtDecode(res.data.data.token);
-                    useAuthStore.getState().setUserData(decoded);
-
-                    // console.log(decoded)
-					localStorage.setItem("user", JSON.stringify(decoded)); // remove when full implement
-
-					commonDataStoreIntoLocalStorage(decoded?.id).then(() => {
-						setErrorMessage("");
-						setSpinner(false);
-						return navigate("/");
-					});
-				} else {
-					setErrorMessage(res.data.message);
-					setSpinner(false);
-				}
-			})
-			.catch(function (error) {
-				setSpinner(false);
-				console.error(error);
-			});
-	}
-
-    const setUserData = useAuthStore((state) => state.setUserData);
 
     function login(data) {
         setSpinner(true);
         axios({
             method: "POST",
-            url: `${API_BASE_URL}/login`,
+            url: `${API_BASE_URL}/login-tb`,
             headers: {
                 Accept: `application/json`,
                 "Content-Type": `application/json`,
@@ -108,11 +69,17 @@ export default function LoginJwt() {
         })
             .then((res) => {
                 if (res.data.status === 200) {
-                    const decoded = jwtDecode(res.data.data.token);
-                    setUserData(decoded); // This will encrypt and store in Zustand
+                    const token = res.data.data.token;
+                    const decoded = jwtDecode(token);
 
-                    // Remove direct localStorage usage
-                    localStorage.setItem("user", JSON.stringify(decoded)); // REMOVE THIS LINE
+                    useAuthStore.getState().setUserData({
+                        token: token,
+                        decoded: decoded,
+                        user_warehouse: res.data.data.user_warehouse,
+                        hospital_config: res.data.data.hospital_config
+                    });
+
+                    localStorage.setItem("user", JSON.stringify(decoded)); // remove when full implement
 
                     commonDataStoreIntoLocalStorage(decoded?.id).then(() => {
                         setErrorMessage("");

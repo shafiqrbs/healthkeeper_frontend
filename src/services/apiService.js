@@ -1,6 +1,8 @@
 import { getLoggedInUser } from "@/common/utils";
 import { API_BASE_URL, API_KEY } from "@/constants";
 import axios from "axios";
+import {useAuthStore} from "@/store/useAuthStore.js";
+const token = useAuthStore.getState().token;
 
 const getCommonHeaders = () => {
 	const user = getLoggedInUser();
@@ -10,7 +12,8 @@ const getCommonHeaders = () => {
 		"Access-Control-Allow-Origin": "*",
 		"X-Api-Key": API_KEY,
 		"X-Api-User": user.id,
-	};
+        Authorization: `Bearer ${token}`,
+    };
 };
 const getFileHeaders = () => {
 	const user = getLoggedInUser();
@@ -20,7 +23,8 @@ const getFileHeaders = () => {
 		"Access-Control-Allow-Origin": "*",
 		"X-Api-Key": API_KEY,
 		"X-Api-User": user.id,
-	};
+        Authorization: `Bearer ${token}`,
+    };
 };
 
 export const getDataWithoutStore = async (value, headers = {}) => {
