@@ -81,7 +81,7 @@ export const DATA_TYPES = [
 	"InputWithCheckbox",
 ];
 
-export const DURATION_TYPES = ["Day", "Days", "Month", "Months", "Year", "Years", "Continue"];
+export const DURATION_TYPES = ["Day", "Month", "Year", "Continue"];
 
 //==================== Module Name ===========
 

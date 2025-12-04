@@ -23,6 +23,8 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useHospitalConfigData();
 
+	console.log(medicines);
+
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
