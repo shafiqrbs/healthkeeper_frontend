@@ -28,14 +28,7 @@ const dosages = [
 	"Puffs",
 	"Sublingual Spray",
 ];
-const durationModes = [
-	"Day",
-	"Days",
-	"Month",
-	"Months",
-	"Year",
-	"Years",
-];
+
 const continueMode = ["Stat", "SOS", "Stat & SOS"];
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
@@ -53,8 +46,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				dosage_form: data.dosage_form,
 				quantity: data.quantity,
 				instruction: data.instruction,
-				duration: data.duration,
-				duration_mode: data.duration_mode,
+
 			});
 			setIndexData(data.id);
 
@@ -193,44 +185,11 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												required={false}
 												name="quantity"
 												id="quantity"
-												nextField="duration"
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("Duration")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputForm
-												form={form}
-												tooltip={t("DurationValidateMessage")}
-												placeholder={t("Duration")}
-												required={false}
-												name="duration"
-												id="duration"
-												nextField="duration_mode"
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("DosageForm")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("DurationModeValidateMessage")}
-												placeholder={t("DurationMode")}
-												required={false}
-												dropdownValue={durationModes}
-												name="duration_mode"
-												id="duration_mode"
-												value={form.values.duration_mode}
 												nextField="instruction"
 											/>
 										</Grid.Col>
 									</Grid>
+
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Instruction")}</Text>

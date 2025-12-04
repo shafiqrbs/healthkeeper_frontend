@@ -25,9 +25,10 @@ export default function DailyOverview({ height }) {
 	const userBasedCollectionData = records.data?.userBase || [];
 	const paymentCollectionData = records.data?.paymentMode || [];
 	const doctorCollectionData = records.data?.doctorMode || [];
+	const serviceData = records.data?.services || [];
 
 	return (
-		<ScrollArea h={height - 72} mt="sm">
+		<ScrollArea h={height - 72} m="sm">
 			<Box className="borderRadiusAll" mt="3xs" px="xs">
 				<Flex justify="space-between" align="center" className="borderBottomDashed" py="3xs">
 					<Text>{t("Patient")}</Text>
@@ -45,10 +46,11 @@ export default function DailyOverview({ height }) {
 				</Flex>
 			</Box>
 			<CollectionTable data={patientModeCollectionData} columns={collectionColumns} title="UserCollection" />
-			<CollectionTable data={roomBaseCollectionData} columns={collectionColumns} title="RoomCollection" />
+			{/*<CollectionTable data={roomBaseCollectionData} columns={collectionColumns} title="RoomCollection" />*/}
 			<CollectionTable data={userBasedCollectionData} columns={collectionColumns} title="UserCollection" />
-			<CollectionTable data={paymentCollectionData} columns={collectionColumns} title="PaymentModeCollection" />
-			<CollectionTable data={doctorCollectionData} columns={collectionColumns} title="DoctorModeCollection" />
+			<CollectionTable data={serviceData} columns={collectionColumns} title="ServiceBaseCollection" />
+			{/*<CollectionTable data={paymentCollectionData} columns={collectionColumns} title="PaymentModeCollection" />*/}
+			{/*<CollectionTable data={doctorCollectionData} columns={collectionColumns} title="DoctorModeCollection" />*/}
 		</ScrollArea>
 	);
 }

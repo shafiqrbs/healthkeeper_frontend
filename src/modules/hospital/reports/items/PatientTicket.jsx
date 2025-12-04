@@ -17,11 +17,13 @@ import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { MODULES } from "@/constants";
 import { useOutletContext } from "react-router-dom";
+import ReportFilterSearch from "@hospital-components/ReportFilterSearch";
 
 const tabs = [
 	{ label: "All", value: "all" },
-	{ label: "Prescription", value: "prescription" },
-	{ label: "Non-prescription", value: "non-prescription" },
+	{ label: "OPD", value: "opd" },
+	{ label: "Emergency", value: "emergency" },
+	{ label: "IPD", value: "ipd" },
 ];
 
 const PER_PAGE = 200;
@@ -72,19 +74,15 @@ export default function PatientTicket() {
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.PATIENT_TICKET,
 		filterParams: {
-			patient_mode: "opd",
-			term: form.values.keywordSearch,
-			room_id: form.values.room_id,
-			prescription_mode: processTab,
-			created: form.values.created,
+			patient_mode: processTab,
+			start_date: form.values.start_date,
+			end_date: form.values.end_date,
 			created_by_id:
 				userRoles.includes("operator_manager") || userRoles.includes("admin_administrator")
 					? undefined
 					: user?.id,
 		},
 		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
 	});
 
 	const csvData =
@@ -110,7 +108,7 @@ export default function PatientTicket() {
 		<Box w="100%" bg="var(--mantine-color-white)">
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
-					{t("VisitInformation")}
+					{t("PatientTickets")}
 				</Text>
 				<Flex gap="xs" align="center">
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
@@ -135,7 +133,7 @@ export default function PatientTicket() {
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch module={module} form={form} handleCSVDownload={handleCSVDownload} />
+				<ReportFilterSearch module={module} form={form} handleCSVDownload={handleCSVDownload} />
 			</Box>
 			<Box className="border-top-none" px="sm">
 				<DataTable
@@ -156,22 +154,22 @@ export default function PatientTicket() {
 						{
 							accessor: "index",
 							title: t("S/N"),
-							textAlignment: "right",
+							ta: "right",
 							render: (_, index) => index + 1,
+							footer: `Total: ${records.length}`,
 						},
 						{
 							accessor: "created_at",
 							title: t("Created"),
 							textAlignment: "right",
-							sortable: true,
-							render: (item) => <Text fz="xs">{formatDate(item?.created_at)}</Text>,
+							render: (item) => formatDate(item?.created_at),
 						},
-						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
-						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
-						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
-						{ accessor: "name", sortable: true, title: t("Name") },
+						{ accessor: "visiting_room",title: t("RoomNo") },
+						{ accessor: "invoice", title: t("InvoiceID") },
+						{ accessor: "patient_id", title: t("PatientID") },
+						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
-						{ accessor: "patient_payment_mode_name", sortable: true, title: t("Patient") },
+						{ accessor: "patient_payment_mode_name", title: t("Patient") },
 						{
 							accessor: 'amount',
 							title: t("Total"),

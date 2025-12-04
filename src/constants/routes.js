@@ -630,6 +630,10 @@ export const HOSPITAL_DATA_ROUTES = {
 			DELETE: "hospital/epharma",
 			INLINE_UPDATE: "hospital/lab-investigation/report/inline-update",
 		},
+		REPORT_MASTERDATA: {
+			REPORT_USERS: "hospital/reports/master-data-users",
+			DASHBOARD_DAILY_SUMMARY: "hospital/reports/dashboard-daily-summary",
+		},
 		REPORT: {
 			PATIENT_TICKET: "hospital/reports/patient-ticket",
 			DASHBOARD_DAILY_SUMMARY: "hospital/reports/dashboard-daily-summary",

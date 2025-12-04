@@ -284,15 +284,6 @@ export default function _Table({ module, open }) {
                             title: t("Quantity"),
                         },
                         {
-                            accessor: "duration",
-                            title: t("Duration"),
-                        },
-                        {
-                            accessor: "duration_mode",
-                            title: t("DurationMode"),
-                            sortable: true,
-                        },
-                        {
                             accessor: "action",
                             title: "",
                             textAlign: "right",

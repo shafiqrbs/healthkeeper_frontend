@@ -15,16 +15,13 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
 	const patientReport = jsonContent?.patient_report || {};
-
 	//	console.log(patientReport);
 	const order = patientReport?.order || {};
 	const patientExamination = patientReport?.patient_examination || {};
+	//const medicines = patientInfo?.prescription_medicine || [];
 	const medicines = jsonContent?.medicines || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useHospitalConfigData();
-
-	console.log(medicines);
-
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
@@ -525,8 +522,8 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 																		dose.by_meal
 																	)}{" "}
 																	{" ---- "}
-																	{getValue(dose.quantity)}{" "}
-																	{getValue(medicine.duration)}
+																	{medicine?.quantity > 0 && getValue(medicine.quantity)}{" "}
+																	{medicine?.duration > 0 && getValue(medicine.duration)}
 																</Text>
 															)
 														)
@@ -548,8 +545,8 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 																medicine.by_meal
 															)}{" "}
 															{"----"}
-															{getValue(medicine.quantity)}{" "}
-															{getValue(medicine.duration)}
+															{medicine?.quantity > 0 && getValue(medicine.quantity)}{" "}
+															{medicine?.duration > 0 && getValue(medicine.duration)}
 														</Text>
 													)}
 												</Box>

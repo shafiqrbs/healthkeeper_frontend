@@ -20,10 +20,11 @@ import {
 import { errorNotification } from "@components/notification/errorNotification";
 import { useDispatch } from "react-redux";
 import { useHotkeys } from "@mantine/hooks";
+import {useEffect, useRef} from "react";
 
 const module = MODULES_CORE.LAB_USER;
 
-export default function Medicine({ entity }) {
+export default function Medicine({ entity,setEntity,barcodeForm,setResetKey }) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { mainAreaHeight } = useOutletContext();
@@ -31,22 +32,14 @@ export default function Medicine({ entity }) {
     const { id } = useParams();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        document.getElementById("barcode").focus();
+    }, []);
+
+
     const handleSubmit = (values) => {
-        modals.openConfirmModal({
-            title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
-            children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
-            labels: { confirm: t("Submit"), cancel: t("Cancel") },
-            confirmProps: { color: "red" },
-
-            onCancel: () => console.info("Cancel"),
-
-            onConfirm: () => {
-                modals.closeAll();
-                handleConfirmModal(values);
-            },
-        });
+        handleConfirmModal(values);
     };
-
     async function handleConfirmModal(values) {
         try {
             const value = {
@@ -54,9 +47,7 @@ export default function Medicine({ entity }) {
                 data: values,
                 module,
             };
-
             const resultAction = await dispatch(updateEntityData(value));
-
             if (updateEntityData.rejected.match(resultAction)) {
                 const fieldErrors = resultAction.payload.errors;
                 if (fieldErrors) {
@@ -67,8 +58,11 @@ export default function Medicine({ entity }) {
                     form.setErrors(errorObject);
                 }
             } else if (updateEntityData.fulfilled.match(resultAction)) {
+                barcodeForm.reset();
+                setResetKey(prev => prev+1);
                 dispatch(setRefetchData({ module, refetching: true }));
                 successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+                setEntity([]);
                 navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.ISSUE);
             }
         } catch (error) {

@@ -17,10 +17,11 @@ export default function Index() {
 	const progress = useGetLoadingProgress();
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
-	const [diagnosticReport, setDiagnosticReport] = useState([]);
+	const [entity, setEntity] = useState([]);
 	const navigate = useNavigate();
 	const [fetching, setFetching] = useState(false);
-
+	const [resetKey, setResetKey] = useState(0);
+	console.log(resetKey)
 	useEffect(() => {
 		if (id) {
 			(async () => {
@@ -28,39 +29,37 @@ export default function Index() {
 				const res = await getDataWithoutStore({
 					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.EPHARMA.INDEX}/${id}`,
 				});
-				setDiagnosticReport(res?.data);
+				setEntity(res?.data);
 				setFetching(false);
 			})();
-
 			form.setFieldValue("barcode", id);
 		}
 	}, [id]);
 
 	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
-	const entity = diagnosticReport || {};
-	const sales = diagnosticReport?.sales || {};
+	const sales = entity?.sales || {};
 
 	const col1 = [
-		{ label: "Patient ID", value: safe(entity.patient_id) },
-		{ label: "Health ID", value: safe(entity.health_id) },
-		{ label: "Prescription ID", value: safe(entity.invoice) },
+		{ label: "Patient ID", value: safe(entity?.patient_id) },
+		{ label: "Health ID", value: safe(entity?.health_id) },
+		{ label: "Prescription ID", value: safe(entity?.invoice) },
 	];
 
 	const col2 = [
-		{ label: "Name", value: safe(entity.name) },
-		{ label: "Mobile", value: safe(entity.mobile) },
-		{ label: "Gender", value: safe(entity.gender) },
+		{ label: "Name", value: safe(entity?.name) },
+		{ label: "Mobile", value: safe(entity?.mobile) },
+		{ label: "Gender", value: safe(entity?.gender) },
 	];
 
 	const col3 = [
-		{ label: "Prescription Created", value: safe(entity.prescription_created) },
-		{ label: "Prescription ID", value: safe(entity.prescription_doctor_id) },
-		{ label: "Prescription Doctor", value: safe(entity.prescription_doctor_name) },
+		{ label: "Prescription Created", value: safe(entity?.prescription_created) },
+		{ label: "Prescription ID", value: safe(entity?.prescription_doctor_id) },
+		{ label: "Prescription Doctor", value: safe(entity?.prescription_doctor_name) },
 	];
 
 	const col4 = [
-		{ label: "Process", value: safe(entity.process) },
-		{ label: "Created By", value: safe(entity.created_by_name ?? entity.created_by_user_name) },
+		{ label: "Process", value: safe(entity?.process) },
+		{ label: "Created By", value: safe(entity?.created_by_name ?? entity?.created_by_user_name) },
 	];
 
 	const columns = [col1, col2, col3, col4];
@@ -101,6 +100,7 @@ export default function Index() {
 									>
 										<Input
 											label=""
+											key={resetKey}
 											tooltip={t("PatientBarcodeScan")}
 											placeholder={t("PatientBarcodeScan")}
 											name="barcode"
@@ -143,7 +143,7 @@ export default function Index() {
 								</Box>
 							</Grid.Col>
 							<Grid.Col span={18} className="animate-ease-out">
-								<Medicine entity={sales} />
+								<Medicine setResetKey={setResetKey} barcodeForm={form} setEntity={setEntity} entity={sales} />
 							</Grid.Col>
 						</Grid>
 					</Flex>
