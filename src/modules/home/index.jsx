@@ -5,6 +5,7 @@ import HomeSkeleton from "@components/skeletons/HomeSkeleton";
 import { getUserRole } from "@utils/index";
 import OperatorBoard from "@/modules/home/operator/OperatorBoard";
 import AdminBoard from "./operator/AdminBoard";
+import {useAuthStore} from "@/store/useAuthStore.js";
 
 const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
 const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_emergency"];
@@ -12,6 +13,9 @@ const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_em
 export default function Index({ height }) {
 	const progress = useGetLoadingProgress();
 	const userRoles = getUserRole();
+
+    // const config_jwt = useAuthStore(state => state);
+    // console.log(config_jwt.hospitalConfig)
 
 	return (
 		<>

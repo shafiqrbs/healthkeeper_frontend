@@ -74,11 +74,13 @@ import StoreRequisitionIndex from "@modules/store/requisition";
 import StoreRequisitionManage from "@modules/store/requisition/manage";
 import StoreStockIndex from "@modules/store/stock";
 import ReportsIndex from "@modules/hospital/reports";
+import LoginJwt from "@modules/auth/LoginJwt.jsx";
 
 function AppRoute() {
 	return (
 		<Routes>
-			<Route path="/login" element={<Login />} />
+			{/*<Route path="/login" element={<Login />} />*/}
+			<Route path="/login" element={<LoginJwt />} />
 			<Route path="/" element={<Layout />}>
 				<Route path="core/">
 					<Route path="user" element={<UserIndex />} />

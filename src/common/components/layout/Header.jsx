@@ -52,6 +52,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { getLoggedInUser, getUserRole } from "@/common/utils";
+import {useAuthStore} from "@/store/useAuthStore.js";
 
 const languages = [
 	{ label: "EN", value: "en", flag: flagGB },
@@ -516,11 +517,13 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 		i18n.changeLanguage(item.value);
 	}
 
-	function handleLogout() {
-		dispatch(setInventoryShowDataEmpty());
-		localStorage.clear();
-		navigate("/login");
-	}
+
+    const clearUser = useAuthStore((state) => state.clearUser);
+    function handleLogout() {
+        clearUser();
+        localStorage.clear();
+        navigate("/login");
+    }
 
 	return (
 		<>

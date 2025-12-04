@@ -33,6 +33,7 @@
 		"@tiptap/starter-kit": "^2.1.16",
 		"axios": "^1.6.7",
 		"clsx": "^2.1.0",
+		"crypto-js": "^4.2.0",
 		"date-fns": "^4.1.0",
 		"dayjs": "^1.11.10",
 		"embla-carousel": "^7.1.0",
@@ -41,7 +42,9 @@
 		"i18next": "^23.8.2",
 		"i18next-browser-languagedetector": "^7.2.0",
 		"i18next-http-backend": "^2.4.2",
+		"jwt-decode": "^4.0.0",
 		"lodash": "^4.17.21",
+		"lodash.set": "^4.3.2",
 		"mantine-datatable": "^7.5.0",
 		"mantine-react-table": "^2.0.0-alpha.17",
 		"react": "^18.2.0",
@@ -59,7 +62,8 @@
 		"react-to-print": "^2.15.1",
 		"recharts": "^2.15.2",
 		"redux-persist": "^6.0.0",
-		"redux-thunk": "^3.1.0"
+		"redux-thunk": "^3.1.0",
+		"zustand": "^5.0.9"
 	},
 	"devDependencies": {
 		"@types/react": "^18.2.43",
