@@ -24,14 +24,17 @@ export default function Index() {
 	const [diagnosticReport, setDiagnosticReport] = useState([]);
 	const [refetchBillingKey, setRefetchBillingKey] = useState(0);
 	const [type, setType] = useState("opd");
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		if (id) {
 			(async () => {
+				setLoading(true);
 				const res = await getDataWithoutStore({
 					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INDEX}/${id}`,
 				});
 				setDiagnosticReport(res?.data);
+				setLoading(false);
 			})();
 		}
 	}, [id, refetchBillingKey]);
@@ -96,7 +99,7 @@ export default function Index() {
 										<Invoice entity={entity} />
 									</Grid.Col>
 									<Grid.Col span={12}>
-										<InvoiceDetails entity={entity} />
+										<InvoiceDetails setRefetchBillingKey={setRefetchBillingKey} entity={entity} />
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>

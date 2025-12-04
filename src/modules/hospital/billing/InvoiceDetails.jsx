@@ -1,5 +1,5 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import {Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon, Group} from "@mantine/core";
+import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon, Group } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
@@ -25,7 +25,7 @@ import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 
 const module = MODULES_CORE.BILLING;
 
-export default function InvoiceDetails({ entity }) {
+export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
 	const { id } = useParams();
 	const [fetching, setFetching] = useState(false);
@@ -44,7 +44,7 @@ export default function InvoiceDetails({ entity }) {
 		initialValues: {
 			...getFormValues(t).initialValues,
 			amount: "",
-		}
+		},
 	});
 	const roomForm = useForm({
 		...getFormValues(t),
@@ -52,7 +52,7 @@ export default function InvoiceDetails({ entity }) {
 			...getFormValues(t).initialValues,
 			amount: "",
 			days: "",
-		}
+		},
 	});
 
 	const { data: investigationOptions } = useGlobalDropdownData({
@@ -115,7 +115,7 @@ export default function InvoiceDetails({ entity }) {
 				return {
 					...record,
 					is_selected: isSelected,
-					mode: 'investigation',
+					mode: "investigation",
 				};
 			});
 		} else if (payloadSource === "room") {
@@ -130,9 +130,8 @@ export default function InvoiceDetails({ entity }) {
 			...values,
 			total:
 				payloadSource === "investigation" ? investigationSubtotal : payloadSource === "room" ? roomSubtotal : 0,
-			mode:payloadSource,
+			mode: payloadSource,
 			json_content: jsonContent,
-
 		};
 
 		modals.openConfirmModal({
@@ -166,7 +165,10 @@ export default function InvoiceDetails({ entity }) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				setInvoiceDetails(resultAction.payload.data?.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				navigate(0);
+				setInvestigationRecords([]);
+				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX}/${id}`, { replace: true });
+				setRefetchBillingKey((prev) => prev + 1);
+				setSelectedRecords([]);
 			}
 		} catch (error) {
 			console.error(error);
@@ -333,281 +335,66 @@ export default function InvoiceDetails({ entity }) {
 
 	return (
 		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
-			<Box bg="var(--theme-primary-color-0)" p="sm">
-				<Text fw={600} fz="sm" py="es">
-					{t("InvoiceDetails")}
-				</Text>
-			</Box>
-			<>
-				<Tabs id="invoice-details-tabs" defaultValue="investigation">
-					<Tabs.List>
-						<Tabs.Tab value="investigation">{t("Investigation")}</Tabs.Tab>
-						{entity.mode_slug === "ipd" && <Tabs.Tab value="bed-cabin">{t("Bed/Cabin")}</Tabs.Tab>}
-					</Tabs.List>
-					<Tabs.Panel value="investigation" bg="var(--mantine-color-white)">
-						<Grid align="center" columns={20} mt="xs" mx="xs">
-							<Grid.Col span={20}>
-								<Select
-									key={selectKey}
-									searchable
-									label=""
-									placeholder={`Enter Investigation`}
-									data={investigationOptions}
-									value={autocompleteValue}
-									onChange={setAutocompleteValue}
-									onOptionSubmit={(value) => {
-										handleInvestigationAdd(value);
-										setTimeout(() => {
-											setSelectKey(selectKey + 1);
-											setAutocompleteValue("");
-										}, 0);
-									}}
-									classNames={inputCss}
-									rightSection={<IconCaretUpDownFilled size={16} />}
-								/>
-							</Grid.Col>
-						</Grid>
-						<Box className="border-top-none" px="sm" mt="xs">
-							<DataTable
-								striped
-								highlightOnHover
-								pinFirstColumn
-								stripedColor="var(--theme-tertiary-color-1)"
-								selectedRecords={selectedRecords}
-								onSelectedRecordsChange={handleSelectedRecordsChange}
-								getRecordId={(record) => record.id}
-								selectionCheckboxProps={(record) => ({
-									disabled: record.is_new,
-								})}
-								selectionColumnStyle={{ minWidth: 80 }}
-								classNames={{
-									root: tableCss.root,
-									table: tableCss.table,
-									header: tableCss.header,
-									footer: tableCss.footer,
-									pagination: tableCss.pagination,
-								}}
-								records={investigationRecords || []}
-								columns={[
-									{
-										accessor: "index",
-										title: t("S/N"),
-										textAlignment: "right",
-										render: (_, index) => index + 1,
-									},
-									{
-										accessor: "name",
-										title: t("Name"),
-									},
-									{
-										accessor: "quantity",
-										title: t("Quantity"),
-										render: (record) => record?.quantity || 1,
-									},
-									{
-										accessor: "price",
-										title: t("Price"),
-									},
-									{
-										accessor: "subtotal",
-										title: t("SubTotal"),
-										render: (record) => record?.price * record?.quantity || 0,
-									},
-									{
-										accessor: "actions",
-										title: t("Action"),
-										textAlignment: "center",
-										render: (record) =>
-											record.is_new ? (
-												<ActionIcon
-													color="red"
-													variant="subtle"
-													onClick={() => handleRemoveInvestigation(record.id)}
-												>
-													{/* =============== user can remove only newly added investigations ================ */}
-													<IconX size={16} />
-												</ActionIcon>
-											) : null,
-									},
-								]}
-								fetching={fetching}
-								loaderSize="xs"
-								loaderColor="grape"
-								height={mainAreaHeight - 196}
-								sortIcons={{
-									sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-									unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
-								}}
-							/>
-						</Box>
-						<Box gap={0} justify="space-between" mt="xs" px="xs" pb="xs" bg="var(--mantine-color-white)">
-							<form
-								onSubmit={investigationForm.onSubmit(
-									createSubmitHandler(investigationForm, "investigation")
-								)}
-							>
-								<Box w="100%">
-									<Grid columns={18} gutter="xs">
-										<Grid.Col
-											span={6}
-											className="animate-ease-out"
-											bg="var(--theme-primary-color-0)"
-											px="xs"
-										>
-											<Box mt="md">
-												<TextAreaForm
-													id="investigation-comment"
-													form={investigationForm}
-													tooltip={t("EnterComment")}
-													placeholder={t("EnterComment")}
-													name="comment"
-													disabled={invoiceDetails?.process === "Done"}
-												/>
-											</Box>
-										</Grid.Col>
-										<Grid.Col
-											span={6}
-											bg="var(--theme-tertiary-color-1)"
-											className="animate-ease-out"
-										>
-											<Box mt="xs">
-												<Grid align="center" columns={20}>
-													<Grid.Col span={8}>
-														<Flex justify="flex-end" align="center" gap="es">
-															<Text fz="xs">{t("CreatedBy")}</Text>
-														</Flex>
-													</Grid.Col>
-													<Grid.Col span={12}>
-														<Flex align="right" gap="es">
-															<Text fz="xs">
-																{invoiceDetails?.created_doctor_info?.name || "N/A"}
-															</Text>
-														</Flex>
-													</Grid.Col>
-												</Grid>
-												<Grid align="center" columns={20}>
-													<Grid.Col span={8}>
-														<Flex justify="flex-end" align="center" gap="es">
-															<Text fz="sm">{t("Total")}</Text>
-														</Flex>
-													</Grid.Col>
-													<Grid.Col span={12}>
-														<Flex align="right" gap="es">
-															<Text fz="sm">{investigationSubtotal || 0}</Text>
-														</Flex>
-													</Grid.Col>
-												</Grid>
-											</Box>
-										</Grid.Col>
-										<Grid.Col
-											span={6}
-											className="animate-ease-out"
-											bg="var(--theme-secondary-color-0)"
-											px="xs"
-										>
-											<Grid align="center" gutter="3xs" columns={20}>
-												<Grid.Col span={5}>
-													<Text fz="sm" fw="800">
-														{t("Receive")}
-													</Text>
-												</Grid.Col>
-												<Grid.Col span={8}>
-													{investigationSubtotal || 0}
-												</Grid.Col>
-											</Grid>
-											<Box mt="xs">
-												<Button.Group>
-													<Button
-														type="submit"
-														w="100%"
-														size="compact-sm"
-														bg="var(--theme-primary-color-6)"
-													>
-														<Stack gap={0} align="center" justify="center">
-															<Text fz="xs">{t("Save")}</Text>
-														</Stack>
-													</Button>
-												</Button.Group>
-											</Box>
-										</Grid.Col>
-									</Grid>
-								</Box>
-							</form>
-						</Box>
-					</Tabs.Panel>
-					{entity.mode_slug === "ipd" && (
-						<Tabs.Panel value="bed-cabin" bg="var(--mantine-color-white)">
-							<Box mx="sm" mt="xs">
-								<Grid columns={24} gutter="xs">
-									<Grid.Col span='4'>
-										<Box >Patient Mode</Box>
-									</Grid.Col>
-									<Grid.Col span='6'>
-										<Box >{invoiceDetails?.payment_mode_name}</Box>
-									</Grid.Col>
-									<Grid.Col span='4'>
-										<Box >Room/Bed</Box>
-									</Grid.Col>
-									<Grid.Col span='10'>
-										<Box >{invoiceDetails?.room_name}</Box>
-									</Grid.Col>
-								</Grid>
-								<Grid columns={24} gutter="xs">
-									<Grid.Col span='4'>
-										<Box >Admission</Box>
-									</Grid.Col>
-									<Grid.Col span='6'>
-										<Box >{invoiceDetails?.admission_day}</Box>
-									</Grid.Col>
-									<Grid.Col span='4'>
-										<Box >Consumed</Box>
-									</Grid.Col>
-									<Grid.Col span='10'>
-										<Box >{invoiceDetails?.consume_day}</Box>
-									</Grid.Col>
-								</Grid>
-								<Grid columns={24} gutter="xs">
-									<Grid.Col span='4'>
-										<Box >Price</Box>
-									</Grid.Col>
-									<Grid.Col span='6'>
-										<Box >{invoiceDetails?.room_price}</Box>
-									</Grid.Col>
-									<Grid.Col span='4'>
-										<Box >Remaining</Box>
-									</Grid.Col>
-									<Grid.Col span='4'>
-										<Box >{invoiceDetails?.remaining_day}</Box>
-									</Grid.Col>
-									<Grid.Col span='6'>
-										<Box >
-											<Group>
-											<InputNumberForm
-												form={roomForm}
-												label=""
-												tooltip={t("EnterBillingDays")}
-												placeholder="days"
-												name="days"
-												id="days"
-												size="xs"
-												w="80"
-											/>
-											<Button size="xs" bg="var(--theme-save-btn-color)" onClick={handleRoomAdd}>
-												<Stack gap={0} align="center" justify="center">
-													<Text fz="xs">{t("Add")}</Text>
-												</Stack>
-											</Button>
-											</Group>
-										</Box>
-									</Grid.Col>
-								</Grid>
-							</Box>
+			{!id ? (
+				<Box bg="var(--mantine-color-white)">
+					<Stack
+						h={mainAreaHeight - 12}
+						bg="var(--mantine-color-body)"
+						align="center"
+						justify="center"
+						gap="md"
+					>
+						{t("NoTestSelected")}
+					</Stack>
+				</Box>
+			) : (
+				<>
+					<Box bg="var(--theme-primary-color-0)" p="sm">
+						<Text fw={600} fz="sm" py="es">
+							{t("InvoiceDetails")}
+						</Text>
+					</Box>
+					<Tabs id="invoice-details-tabs" defaultValue="investigation">
+						<Tabs.List>
+							<Tabs.Tab value="investigation">{t("Investigation")}</Tabs.Tab>
+							{entity.mode_slug === "ipd" && <Tabs.Tab value="bed-cabin">{t("Bed/Cabin")}</Tabs.Tab>}
+						</Tabs.List>
+						<Tabs.Panel value="investigation" bg="var(--mantine-color-white)">
+							<Grid align="center" columns={20} mt="xs" mx="xs">
+								<Grid.Col span={20}>
+									<Select
+										key={selectKey}
+										searchable
+										label=""
+										placeholder={`Enter Investigation`}
+										data={investigationOptions}
+										value={autocompleteValue}
+										onChange={setAutocompleteValue}
+										onOptionSubmit={(value) => {
+											handleInvestigationAdd(value);
+											setTimeout(() => {
+												setSelectKey(selectKey + 1);
+												setAutocompleteValue("");
+											}, 0);
+										}}
+										classNames={inputCss}
+										rightSection={<IconCaretUpDownFilled size={16} />}
+									/>
+								</Grid.Col>
+							</Grid>
 							<Box className="border-top-none" px="sm" mt="xs">
 								<DataTable
 									striped
 									highlightOnHover
 									pinFirstColumn
 									stripedColor="var(--theme-tertiary-color-1)"
+									selectedRecords={selectedRecords}
+									onSelectedRecordsChange={handleSelectedRecordsChange}
+									getRecordId={(record) => record.id}
+									selectionCheckboxProps={(record) => ({
+										disabled: record.is_new,
+									})}
+									selectionColumnStyle={{ minWidth: 80 }}
 									classNames={{
 										root: tableCss.root,
 										table: tableCss.table,
@@ -615,7 +402,7 @@ export default function InvoiceDetails({ entity }) {
 										footer: tableCss.footer,
 										pagination: tableCss.pagination,
 									}}
-									records={roomItems || []}
+									records={investigationRecords || []}
 									columns={[
 										{
 											accessor: "index",
@@ -628,23 +415,9 @@ export default function InvoiceDetails({ entity }) {
 											title: t("Name"),
 										},
 										{
-											accessor: "type",
-											title: t("Type"),
-											render: (record) => record.particular_type?.name || "N/A",
-										},
-										{
-											accessor: "consume_day",
-											title: t("ConsumedDay"),
-											render: (record) => record.consume_day ?? 0,
-										},
-										{
-											accessor: "remaining_day",
-											title: t("RemainingDay"),
-											render: (record) => record.remaining_day ?? 0,
-										},
-										{
-											accessor: "days",
-											title: t("Days"),
+											accessor: "quantity",
+											title: t("Quantity"),
+											render: (record) => record?.quantity || 1,
 										},
 										{
 											accessor: "price",
@@ -652,106 +425,357 @@ export default function InvoiceDetails({ entity }) {
 										},
 										{
 											accessor: "subtotal",
-											title: t("Subtotal"),
+											title: t("SubTotal"),
+											render: (record) => record?.price * record?.quantity || 0,
+										},
+										{
+											accessor: "actions",
+											title: t("Action"),
+											textAlignment: "center",
+											render: (record) =>
+												record.is_new ? (
+													<ActionIcon
+														color="red"
+														variant="subtle"
+														onClick={() => handleRemoveInvestigation(record.id)}
+													>
+														{/* =============== user can remove only newly added investigations ================ */}
+														<IconX size={16} />
+													</ActionIcon>
+												) : null,
 										},
 									]}
 									fetching={fetching}
 									loaderSize="xs"
 									loaderColor="grape"
-									height={mainAreaHeight - 268}
+									height={mainAreaHeight - 196}
 									sortIcons={{
 										sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 										unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 									}}
 								/>
 							</Box>
-							{invoiceDetails?.process !== "Done" && (
-								// =============== room-specific form: comment, display total, receive, submit ================
-								<Box
-									gap={0}
-									justify="space-between"
-									mt="xs"
-									px="xs"
-									pb="xs"
-									bg="var(--mantine-color-white)"
+							<Box
+								gap={0}
+								justify="space-between"
+								mt="xs"
+								px="xs"
+								pb="xs"
+								bg="var(--mantine-color-white)"
+							>
+								<form
+									onSubmit={investigationForm.onSubmit(
+										createSubmitHandler(investigationForm, "investigation")
+									)}
 								>
-									<form onSubmit={roomForm.onSubmit(createSubmitHandler(roomForm, "room"))}>
-										<Box w="100%">
-											<Grid columns={18} gutter="xs">
-												<Grid.Col
-													span={6}
-													className="animate-ease-out"
-													bg="var(--theme-primary-color-0)"
-													px="xs"
-												>
-													<Box mt="md">
-														<TextAreaForm
-															id="room-comment"
-															form={roomForm}
-															tooltip={t("EnterComment")}
-															placeholder={t("EnterComment")}
-															name="comment"
-															disabled={invoiceDetails?.process === "Done"}
-														/>
-													</Box>
-												</Grid.Col>
-												<Grid.Col
-													span={6}
-													bg="var(--theme-tertiary-color-1)"
-													className="animate-ease-out"
-												>
-													<Box mt="xs">
+									<Box w="100%">
+										<Grid columns={18} gutter="xs">
+											<Grid.Col
+												span={6}
+												className="animate-ease-out"
+												bg="var(--theme-primary-color-0)"
+												px="xs"
+											>
+												<Box mt="md">
+													<TextAreaForm
+														id="investigation-comment"
+														form={investigationForm}
+														tooltip={t("EnterComment")}
+														placeholder={t("EnterComment")}
+														name="comment"
+														disabled={invoiceDetails?.process === "Done"}
+													/>
+												</Box>
+											</Grid.Col>
+											<Grid.Col
+												span={6}
+												bg="var(--theme-tertiary-color-1)"
+												className="animate-ease-out"
+											>
+												<Box mt="xs">
+													<Grid align="center" columns={20}>
+														<Grid.Col span={8}>
+															<Flex justify="flex-end" align="center" gap="es">
+																<Text fz="xs">{t("CreatedBy")}</Text>
+															</Flex>
+														</Grid.Col>
+														<Grid.Col span={12}>
+															<Flex align="right" gap="es">
+																<Text fz="xs">
+																	{invoiceDetails?.created_doctor_info?.name || "N/A"}
+																</Text>
+															</Flex>
+														</Grid.Col>
+													</Grid>
+													<Grid align="center" columns={20}>
+														<Grid.Col span={8}>
+															<Flex justify="flex-end" align="center" gap="es">
+																<Text fz="sm">{t("Total")}</Text>
+															</Flex>
+														</Grid.Col>
+														<Grid.Col span={12}>
+															<Flex align="right" gap="es">
+																<Text fz="sm">{investigationSubtotal || 0}</Text>
+															</Flex>
+														</Grid.Col>
+													</Grid>
+												</Box>
+											</Grid.Col>
+											<Grid.Col
+												span={6}
+												className="animate-ease-out"
+												bg="var(--theme-secondary-color-0)"
+												px="xs"
+											>
+												<Grid align="center" gutter="3xs" columns={20}>
+													<Grid.Col span={5}>
+														<Text fz="sm" fw="800">
+															{t("Receive")}
+														</Text>
+													</Grid.Col>
+													<Grid.Col span={8}>{investigationSubtotal || 0}</Grid.Col>
+												</Grid>
+												<Box mt="xs">
+													<Button.Group>
+														<Button
+															type="submit"
+															w="100%"
+															size="compact-sm"
+															bg="var(--theme-primary-color-6)"
+														>
+															<Stack gap={0} align="center" justify="center">
+																<Text fz="xs">{t("Save")}</Text>
+															</Stack>
+														</Button>
+													</Button.Group>
+												</Box>
+											</Grid.Col>
+										</Grid>
+									</Box>
+								</form>
+							</Box>
+						</Tabs.Panel>
+						{entity.mode_slug === "ipd" && (
+							<Tabs.Panel value="bed-cabin" bg="var(--mantine-color-white)">
+								<Box mx="sm" mt="xs">
+									<Grid columns={24} gutter="xs">
+										<Grid.Col span="4">
+											<Box>Patient Mode</Box>
+										</Grid.Col>
+										<Grid.Col span="6">
+											<Box>{invoiceDetails?.payment_mode_name}</Box>
+										</Grid.Col>
+										<Grid.Col span="4">
+											<Box>Room/Bed</Box>
+										</Grid.Col>
+										<Grid.Col span="10">
+											<Box>{invoiceDetails?.room_name}</Box>
+										</Grid.Col>
+									</Grid>
+									<Grid columns={24} gutter="xs">
+										<Grid.Col span="4">
+											<Box>Admission</Box>
+										</Grid.Col>
+										<Grid.Col span="6">
+											<Box>{invoiceDetails?.admission_day}</Box>
+										</Grid.Col>
+										<Grid.Col span="4">
+											<Box>Consumed</Box>
+										</Grid.Col>
+										<Grid.Col span="10">
+											<Box>{invoiceDetails?.consume_day}</Box>
+										</Grid.Col>
+									</Grid>
+									<Grid columns={24} gutter="xs">
+										<Grid.Col span="4">
+											<Box>Price</Box>
+										</Grid.Col>
+										<Grid.Col span="6">
+											<Box>{invoiceDetails?.room_price}</Box>
+										</Grid.Col>
+										<Grid.Col span="4">
+											<Box>Remaining</Box>
+										</Grid.Col>
+										<Grid.Col span="4">
+											<Box>{invoiceDetails?.remaining_day}</Box>
+										</Grid.Col>
+										<Grid.Col span="6">
+											<Box>
+												<Group>
+													<InputNumberForm
+														form={roomForm}
+														label=""
+														tooltip={t("EnterBillingDays")}
+														placeholder="days"
+														name="days"
+														id="days"
+														size="xs"
+														w="80"
+													/>
+													<Button
+														size="xs"
+														bg="var(--theme-save-btn-color)"
+														onClick={handleRoomAdd}
+													>
+														<Stack gap={0} align="center" justify="center">
+															<Text fz="xs">{t("Add")}</Text>
+														</Stack>
+													</Button>
+												</Group>
+											</Box>
+										</Grid.Col>
+									</Grid>
+								</Box>
+								<Box className="border-top-none" px="sm" mt="xs">
+									<DataTable
+										striped
+										highlightOnHover
+										pinFirstColumn
+										stripedColor="var(--theme-tertiary-color-1)"
+										classNames={{
+											root: tableCss.root,
+											table: tableCss.table,
+											header: tableCss.header,
+											footer: tableCss.footer,
+											pagination: tableCss.pagination,
+										}}
+										records={roomItems || []}
+										columns={[
+											{
+												accessor: "index",
+												title: t("S/N"),
+												textAlignment: "right",
+												render: (_, index) => index + 1,
+											},
+											{
+												accessor: "name",
+												title: t("Name"),
+											},
+											{
+												accessor: "type",
+												title: t("Type"),
+												render: (record) => record.particular_type?.name || "N/A",
+											},
+											{
+												accessor: "consume_day",
+												title: t("ConsumedDay"),
+												render: (record) => record.consume_day ?? 0,
+											},
+											{
+												accessor: "remaining_day",
+												title: t("RemainingDay"),
+												render: (record) => record.remaining_day ?? 0,
+											},
+											{
+												accessor: "days",
+												title: t("Days"),
+											},
+											{
+												accessor: "price",
+												title: t("Price"),
+											},
+											{
+												accessor: "subtotal",
+												title: t("Subtotal"),
+											},
+										]}
+										fetching={fetching}
+										loaderSize="xs"
+										loaderColor="grape"
+										height={mainAreaHeight - 268}
+										sortIcons={{
+											sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+											unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+										}}
+									/>
+								</Box>
+								{invoiceDetails?.process !== "Done" && (
+									// =============== room-specific form: comment, display total, receive, submit ================
+									<Box
+										gap={0}
+										justify="space-between"
+										mt="xs"
+										px="xs"
+										pb="xs"
+										bg="var(--mantine-color-white)"
+									>
+										<form onSubmit={roomForm.onSubmit(createSubmitHandler(roomForm, "room"))}>
+											<Box w="100%">
+												<Grid columns={18} gutter="xs">
+													<Grid.Col
+														span={6}
+														className="animate-ease-out"
+														bg="var(--theme-primary-color-0)"
+														px="xs"
+													>
+														<Box mt="md">
+															<TextAreaForm
+																id="room-comment"
+																form={roomForm}
+																tooltip={t("EnterComment")}
+																placeholder={t("EnterComment")}
+																name="comment"
+																disabled={invoiceDetails?.process === "Done"}
+															/>
+														</Box>
+													</Grid.Col>
+													<Grid.Col
+														span={6}
+														bg="var(--theme-tertiary-color-1)"
+														className="animate-ease-out"
+													>
+														<Box mt="xs">
+															<Grid align="center" columns={20}>
+																<Grid.Col span={8}>
+																	<Flex justify="flex-end" align="center" gap="es">
+																		<Text fz="xs">{t("CreatedBy")}</Text>
+																	</Flex>
+																</Grid.Col>
+																<Grid.Col span={12}>
+																	<Flex align="right" gap="es">
+																		<Text fz="xs">
+																			{invoiceDetails?.created_doctor_info?.name}
+																		</Text>
+																	</Flex>
+																</Grid.Col>
+															</Grid>
+															<Grid align="center" columns={20}>
+																<Grid.Col span={8}>
+																	<Flex justify="flex-end" align="center" gap="es">
+																		<Text fz="sm">{t("Total")}</Text>
+																	</Flex>
+																</Grid.Col>
+																<Grid.Col span={12}>
+																	<Flex align="right" gap="es">
+																		<Text fz="sm">{roomSubtotal || 0}</Text>
+																	</Flex>
+																</Grid.Col>
+															</Grid>
+														</Box>
+													</Grid.Col>
+													<Grid.Col
+														span={6}
+														className="animate-ease-out"
+														bg="var(--theme-secondary-color-0)"
+														px="xs"
+													>
 														<Grid align="center" columns={20}>
-															<Grid.Col span={8}>
+															<Grid.Col span={10}>
 																<Flex justify="flex-end" align="center" gap="es">
-																	<Text fz="xs">{t("CreatedBy")}</Text>
-																</Flex>
-															</Grid.Col>
-															<Grid.Col span={12}>
-																<Flex align="right" gap="es">
-																	<Text fz="xs">
-																		{invoiceDetails?.created_doctor_info?.name}
+																	<Text fz="sm" fw={"800"}>
+																		{t("Receive")}
 																	</Text>
 																</Flex>
 															</Grid.Col>
-														</Grid>
-														<Grid align="center" columns={20}>
-															<Grid.Col span={8}>
-																<Flex justify="flex-end" align="center" gap="es">
-																	<Text fz="sm">{t("Total")}</Text>
-																</Flex>
-															</Grid.Col>
-															<Grid.Col span={12}>
+															<Grid.Col span={10}>
 																<Flex align="right" gap="es">
 																	<Text fz="sm">{roomSubtotal || 0}</Text>
 																</Flex>
 															</Grid.Col>
 														</Grid>
-													</Box>
-												</Grid.Col>
-												<Grid.Col
-													span={6}
-													className="animate-ease-out"
-													bg="var(--theme-secondary-color-0)"
-													px="xs"
-												>
-													<Grid align="center" columns={20}>
-														<Grid.Col span={10}>
-															<Flex justify="flex-end" align="center" gap="es">
-																<Text fz="sm" fw={"800"}>
-																	{t("Receive")}
-																</Text>
-															</Flex>
-														</Grid.Col>
-														<Grid.Col span={10}>
-															<Flex align="right" gap="es">
-																<Text fz="sm">{roomSubtotal || 0}</Text>
-															</Flex>
-														</Grid.Col>
-													</Grid>
-													<Box mt="xs">
-														<Button.Group>
-															{/*<Button
+														<Box mt="xs">
+															<Button.Group>
+																{/*<Button
 																id="EntityFormSubmitRoom"
 																w="100%"
 																size="compact-sm"
@@ -763,38 +787,45 @@ export default function InvoiceDetails({ entity }) {
 																	<Text fz="xs">{t("Print")}</Text>
 																</Stack>
 															</Button>*/}
-															<Button
-																type="submit"
-																w="100%"
-																size="compact-sm"
-																bg="var(--theme-primary-color-6)"
-																disabled={
-																	invoiceDetails?.process === "Done" || roomSubtotal <= 0
-																}
-															>
-																<Stack gap={0} align="center" justify="center">
-																	<Text  fz="xs">{t("Save")}</Text>
-																</Stack>
-															</Button>
-														</Button.Group>
-													</Box>
-												</Grid.Col>
-											</Grid>
-										</Box>
-									</form>
-								</Box>
-							)}
-						</Tabs.Panel>
-					)}
-				</Tabs>
+																<Button
+																	type="submit"
+																	w="100%"
+																	size="compact-sm"
+																	bg="var(--theme-primary-color-6)"
+																	disabled={
+																		invoiceDetails?.process === "Done" ||
+																		roomSubtotal <= 0
+																	}
+																>
+																	<Stack gap={0} align="center" justify="center">
+																		<Text fz="xs">{t("Save")}</Text>
+																	</Stack>
+																</Button>
+															</Button.Group>
+														</Box>
+													</Grid.Col>
+												</Grid>
+											</Box>
+										</form>
+									</Box>
+								)}
+							</Tabs.Panel>
+						)}
+					</Tabs>
 
-				{/* =============== removed shared bottom form; forms moved into their respective tabs =============== */}
-			</>
-			<Box bg="var(--mantine-color-white)">
-				<Stack h={mainAreaHeight - 62} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
-					{t("NoTestSelected")}
-				</Stack>
-			</Box>
+					<Box bg="var(--mantine-color-white)">
+						<Stack
+							h={mainAreaHeight - 62}
+							bg="var(--mantine-color-body)"
+							align="center"
+							justify="center"
+							gap="md"
+						>
+							{t("NoTestSelected")}
+						</Stack>
+					</Box>
+				</>
+			)}
 		</Box>
 	);
 }
