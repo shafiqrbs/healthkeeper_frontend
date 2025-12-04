@@ -3,6 +3,7 @@ import { hasLength } from "@mantine/form";
 const initialValues = {
 	particular_module_id: "",
 	name: "",
+	name_bn: "",
 	short_code: "",
 };
 

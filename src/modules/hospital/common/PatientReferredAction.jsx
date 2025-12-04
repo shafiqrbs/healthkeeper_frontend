@@ -12,15 +12,25 @@ import InputAutoComplete from "@components/form-builders/InputAutoComplete";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { errorNotification } from "@/common/components/notification/errorNotification";
-import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import {DURATION_TYPES, ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
 import { successNotification } from "@/common/components/notification/successNotification";
 import { useDispatch } from "react-redux";
+
+const referredModes = [
+	{ value: 'room', label: 'Room' },
+	{ value: 'admission', label: 'Admission' },
+	{ value: 'hospital', label: 'Hospital' },
+];
+
+
 
 export default function PatientReferredAction({ module = "emergency", invoiceId, form }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const roomReferredForm = useForm({
 		initialValues: {
+			referred_mode: "room",
+			hospital: "",
 			opd_room_id: "",
 			comment: "",
 		},
@@ -28,27 +38,6 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 			comment: hasLength({ min: 1 }),
 		},
 	});
-	const admissionReferredForm = useForm({
-		initialValues: {
-			comment: "",
-		},
-		validate: {
-			comment: hasLength({ min: 1 }),
-		},
-	});
-	const referredForm = useForm({
-		initialValues: {
-			referred_id: null,
-			referred_name: "",
-			hospital: "",
-			comment: "",
-		},
-		validate: {
-			comment: hasLength({ min: 1 }),
-		},
-	});
-	const [openedReferred, { open: openReferred, close: closeReferred }] = useDisclosure(false);
-	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
 	const [openedRoomReferred, { open: openRoomReferred, close: closeRoomReferred }] = useDisclosure(false);
 
 	const { data: referredRoomsOptions } = useGlobalDropdownData({
@@ -84,20 +73,8 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 	};
 
 	const handleRoomReferredSubmit = (values) => {
-		handleConfirmSubmission({ ...values, referred_mode: "room" });
+		handleConfirmSubmission({ ...values});
 		closeRoomReferred();
-		form.setFieldValue("comment", values.comment);
-	};
-
-	const handleAdmissionReferredSubmit = (values) => {
-		handleConfirmSubmission({ ...values, referred_mode: "admission" });
-		closeAdmission();
-		form.setFieldValue("comment", values.comment);
-	};
-
-	const handleReferredSubmit = (values) => {
-		handleConfirmSubmission({ ...values, referred_mode: "referred" });
-		closeReferred();
 		form.setFieldValue("comment", values.comment);
 	};
 
@@ -137,38 +114,22 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 					bg="var(--theme-warn-color-6)"
 					onClick={openRoomReferred}
 				>
-					{t("RoomReferred")}
-				</Button>
-				<Button
-					px="xs"
-					variant="filled"
-					color="var(--theme-primary-color-6)"
-					bg="var(--theme-primary-color-5)"
-					onClick={openAdmission}
-				>
-					{t("Admission")}
-				</Button>
-				<Button
-					px="xs"
-					variant="filled"
-					color="var(--theme-delete-color)"
-					bg="var(--theme-delete-color)"
-					onClick={openReferred}
-				>
 					{t("Referred")}
 				</Button>
+
 			</Button.Group>
-			{/* ----------- referred drawer section --------- */}
+			{/* --------- room referred drawer section ---------- */}
 			<CompactDrawer
-				opened={openedReferred}
-				close={closeReferred}
+				save={handleRoomReferredSubmit}
+				form={roomReferredForm}
+				opened={openedRoomReferred}
+				close={closeRoomReferred}
 				position="right"
-				size="30%"
+				size="50%"
+				h="50%"
 				keepMounted={false}
 				bg="var(--mantine-color-white)"
-				title={t("Referred")}
-				form={referredForm}
-				save={handleReferredSubmit}
+				title={t("ReferredTo")}
 			>
 				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
@@ -178,93 +139,41 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 						</Text>
 					</Grid.Col>
 					<Grid.Col span={13}>
+						<SelectForm
+							form={roomReferredForm}
+							label=""
+							id="referred_mode"
+							name="referred_mode"
+							dropdownValue={referredModes}
+							value={roomReferredForm.values.referred_mode}
+							defaultValue="Room"
+							placeholder={t("ReferredTo")}
+							tooltip={t("EnterMeditationDurationMode")}
+							withCheckIcon={false}
+						/>
+					</Grid.Col>
+					<Grid.Col span={7}>
+						<Text fz="sm">
+							{t("Hospital")}
+							<RequiredAsterisk />
+						</Text>
+					</Grid.Col>
+					<Grid.Col span={13}>
 						<InputAutoComplete
 							tooltip={t("HospitalValidateMessage")}
 							label=""
 							data={hospitalsOption}
-							value={referredForm.values.referredTo}
+							value={roomReferredForm.values.referredTo}
 							changeValue={handleHospitalChange}
 							placeholder={t("ReferredTo")}
 							required
 							nextField="referred_name"
-							form={referredForm}
+							form={roomReferredForm}
 							name="hospital"
 							mt={0}
 							id="hospital"
 						/>
 					</Grid.Col>
-					<Grid.Col span={7}>
-						<Text fz="sm">
-							{t("Comment")}
-							<RequiredAsterisk />
-						</Text>
-					</Grid.Col>
-					<Grid.Col span={13}>
-						<TextAreaForm
-							tooltip={t("Comment")}
-							label=""
-							placeholder={t("DummyMessage")}
-							nextField="name"
-							form={referredForm}
-							name="comment"
-							mt={0}
-							id="comment"
-							required
-							showRightSection={false}
-							style={{ input: { height: 100 } }}
-						/>
-					</Grid.Col>
-				</Grid>
-			</CompactDrawer>
-			{/* --------- admission drawer section ---------- */}
-			<CompactDrawer
-				opened={openedAdmission}
-				close={closeAdmission}
-				position="right"
-				size="30%"
-				keepMounted={false}
-				bg="var(--mantine-color-white)"
-				title={t("Admission")}
-				form={admissionReferredForm}
-				save={handleAdmissionReferredSubmit}
-			>
-				<Grid align="center" columns={20}>
-					<Grid.Col span={7}>
-						<Text fz="sm">
-							{t("Comment")}
-							<RequiredAsterisk />
-						</Text>
-					</Grid.Col>
-					<Grid.Col span={13}>
-						<TextAreaForm
-							tooltip={t("Comment")}
-							label=""
-							placeholder={t("DummyMessage")}
-							nextField="name"
-							form={admissionReferredForm}
-							name="comment"
-							mt={0}
-							id="comment"
-							showRightSection={false}
-							required
-							style={{ input: { height: 100 } }}
-						/>
-					</Grid.Col>
-				</Grid>
-			</CompactDrawer>
-			{/* --------- room referred drawer section ---------- */}
-			<CompactDrawer
-				save={handleRoomReferredSubmit}
-				form={roomReferredForm}
-				opened={openedRoomReferred}
-				close={closeRoomReferred}
-				position="right"
-				size="30%"
-				keepMounted={false}
-				bg="var(--mantine-color-white)"
-				title={t("RoomReferred")}
-			>
-				<Grid align="center" columns={20}>
 					<Grid.Col span={7}>
 						<Text fz="sm">
 							{t("Room")}

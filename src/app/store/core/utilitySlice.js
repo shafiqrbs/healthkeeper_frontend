@@ -66,6 +66,11 @@ export const HOSPITAL_DROPDOWNS = {
 
 	PARTICULAR_MODE: { UTILITY: "particularOperationMode", TYPE: "operation", PATH: "hospital/select/mode" },
 
+	PARTICULAR_MODE_MEDICINE_DURATION: {
+		UTILITY: "particularDepartmentMode",
+		TYPE: "medicine-duration-mode",
+		PATH: "hospital/select/mode"
+	},
 
 	PARTICULAR_MODE_DIAGNOSTIC_ROOM: {
 		UTILITY: "particularDepartmentMode",

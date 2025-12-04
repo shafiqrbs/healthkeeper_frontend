@@ -193,6 +193,17 @@ export default function _Table({ module, open, close }) {
 									{values.name}
 								</Text>
 							),
+						},{
+							accessor: "name_bn",
+							title: t("NameBangla"),
+							sortable: true,
+
+						},
+						{
+							accessor: "short_code",
+							title: t("ShortName"),
+							sortable: true,
+
 						},
 						{
 							accessor: "action",

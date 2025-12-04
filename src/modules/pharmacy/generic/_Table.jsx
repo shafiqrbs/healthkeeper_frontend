@@ -22,13 +22,8 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { errorNotification } from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { CORE_DROPDOWNS, PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
-const durationModes = [
-    "Day",
-    "Month",
-    "Year",
-    "Continue",
-];
+import {CORE_DROPDOWNS, HOSPITAL_DROPDOWNS, PHARMACY_DROPDOWNS} from "@/app/store/core/utilitySlice";
+
 
 const PER_PAGE = 50;
 
@@ -98,6 +93,8 @@ export default function _Table({ module, open }) {
         term: searchKeyword,
     }), [filterData?.name, searchKeyword]);
 
+
+
     const { data: categoryDropdown } = useGlobalDropdownData({
         path: CORE_DROPDOWNS.CATEGORY.PATH,
         utility: CORE_DROPDOWNS.CATEGORY.UTILITY,
@@ -112,6 +109,12 @@ export default function _Table({ module, open }) {
     const { data: dosageDropdown } = useGlobalDropdownData({
         path: PHARMACY_DROPDOWNS.DOSAGE.PATH,
         utility: PHARMACY_DROPDOWNS.DOSAGE.UTILITY,
+    });
+
+    const { data: durationModeDropdown } = useGlobalDropdownData({
+        path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.PATH,
+        utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.UTILITY,
+        params: { 'dropdown-type': "medicine-duration-mode" },
     });
 
     const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
@@ -308,18 +311,18 @@ export default function _Table({ module, open }) {
             ),
         },
         {
-            accessor: "duration_mode",
+            accessor: "duration_mode_id",
             title: t("DurationMode"),
             sortable: true,
             render: (item) => (
                 <InlineSelect
-                    key={`duration_mode-${item.id}`}
+                    key={`duration_mode_id-${item.id}`}
                     itemId={item.id}
                     clearable
-                    field="duration_mode"
+                    field="duration_mode_id"
                     placeholder="DurationMode"
-                    data={durationModes}
-                    initialValue={item.duration_mode}
+                    data={durationModeDropdown}
+                    initialValue={item.duration_mode_id}
                     onChange={handleSelectChange}
                 />
             ),

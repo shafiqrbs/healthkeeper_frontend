@@ -20,6 +20,12 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 
+	const { data: durationModeDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.UTILITY,
+		params: { 'dropdown-type': "medicine-duration-mode" },
+	});
+
 	const { data: byMealDropdown } = useGlobalDropdownData({
 		path: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
 		utility: PHARMACY_DROPDOWNS.BY_MEAL.UTILITY,
@@ -43,7 +49,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				particular_type_master_id: data.particular_type_master_id,
 				name: data.name,
 				category_id: data.category_id,
-				employee_id: data.employee_id,
+				duration_mode_id: data.duration_mode_id,
 				instruction: data.instruction,
 			});
 			setIndexData(data.id);
@@ -134,7 +140,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 										<Grid.Col span={14}>
 											<SelectForm
 												form={form}
-												tooltip={t("AssignEmployeeValidateMessage")}
+												tooltip={t("BymealValidateMessage")}
 												placeholder={t("By-meal")}
 												name="medicine_bymeal_id"
 												id="medicine_bymeal_id"
@@ -157,6 +163,34 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												name="formulation"
 												id="formulation"
 												nextField=""
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("Duration")}</Text>
+										</Grid.Col>
+										<Grid.Col span={7}>
+											<InputForm
+												form={form}
+												tooltip={t("DurationValidateMessage")}
+												placeholder={t("Duration")}
+												required={false}
+												name="duration"
+												id="duration"
+												nextField="duration_mode_id"
+											/>
+										</Grid.Col>
+										<Grid.Col span={7}>
+											<SelectForm
+												form={form}
+												tooltip={t("DurationModeValidateMessage")}
+												placeholder={t("DurationMode")}
+												name="duration_mode_id"
+												id="duration_mode_id"
+												nextField="opd_quantity"
+												value={form.values.duration_mode_id}
+												dropdownValue={durationModeDropdown}
 											/>
 										</Grid.Col>
 									</Grid>

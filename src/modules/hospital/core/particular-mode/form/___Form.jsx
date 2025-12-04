@@ -30,6 +30,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 			form.setValues({
 				particular_module_id: data?.particular_module_id,
 				name: data?.name,
+				name_bn: data?.name_bn,
 				short_code: data?.short_code,
 			});
 			setIndexData(data.id);
@@ -92,6 +93,25 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												name="name"
 												id="name"
 												value={form.values.name}
+												nextField="name_bn"
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6}>
+											<Text fz="sm">
+												{t("NameBangla")}
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputForm
+												form={form}
+												tooltip={t("NameValidateMessage")}
+												placeholder={t("NameBangla")}
+												required={true}
+												name="name_bn"
+												id="name_bn"
+												value={form.values.name_bn}
 												nextField="short_code"
 											/>
 										</Grid.Col>

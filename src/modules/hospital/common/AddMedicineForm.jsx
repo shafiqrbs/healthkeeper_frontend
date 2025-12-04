@@ -42,7 +42,7 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import {HOSPITAL_DROPDOWNS, PHARMACY_DROPDOWNS} from "@/app/store/core/utilitySlice";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
@@ -65,6 +65,7 @@ import {
 } from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import BookmarkDrawer from "./BookmarkDrawer";
+import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 
 export default function AddMedicineForm({
 	module,
@@ -123,6 +124,12 @@ export default function AddMedicineForm({
 	const printPrescription2A4 = useReactToPrint({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,
+	});
+
+	const { data: durationModeDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.UTILITY,
+		params: { 'dropdown-type': "medicine-duration-mode" },
 	});
 
 	useEffect(() => {
