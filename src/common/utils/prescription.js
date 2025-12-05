@@ -50,10 +50,10 @@ export const appendDosageValueToForm = (form, dosage_options, id) => {
  */
 export const appendGeneralValuesToForm = (form, selectedMedicine) => {
 	if (!form) return console.error("form should be passed in general values function");
-	if (!selectedMedicine)
-		return console.error("selected medicine should be passed in general values function");
+	if (!selectedMedicine) return console.error("selected medicine should be passed in general values function");
 
 	form.setFieldValue("medicine_name", selectedMedicine.product_name);
+	form.setFieldValue("duration_mode_bn", selectedMedicine.duration_mode_bn);
 	form.setFieldValue("generic", selectedMedicine.generic);
 	form.setFieldValue("generic_id", selectedMedicine.generic_id);
 	form.setFieldValue("company", selectedMedicine.company);
@@ -82,9 +82,7 @@ export const appendGeneralValuesToForm = (form, selectedMedicine) => {
 export const generateMedicinePayload = (form, selectedMedicine, options = {}) => {
 	if (!form) return console.error("form should be passed in generateMedicinePayload function");
 	if (!selectedMedicine)
-		return console.error(
-			"selectedMedicine should be passed in generateMedicinePayload function"
-		);
+		return console.error("selectedMedicine should be passed in generateMedicinePayload function");
 
 	// =============== get dosage details if dosage_options are provided ================
 	const { dosage_options, by_meal_options } = options;
@@ -108,16 +106,15 @@ export const generateMedicinePayload = (form, selectedMedicine, options = {}) =>
 		company: selectedMedicine.company || form.values.company,
 		opd_quantity: selectedMedicine?.opd_quantity || form.values.opd_quantity || 0,
 		opd_limit: (selectedMedicine?.opd_quantity || form.values.opd_limit || 0) * 2,
-		medicine_dosage_id:
-			form.values.medicine_dosage_id || selectedMedicine.medicine_dosage_id?.toString() || "",
+		medicine_dosage_id: form.values.medicine_dosage_id || selectedMedicine.medicine_dosage_id?.toString() || "",
 		dose_details: form.values.dose_details || dosage?.name || "",
 		dose_details_bn: form.values.dose_details_bn || dosage?.name_bn || "",
-		medicine_bymeal_id:
-			form.values.medicine_bymeal_id || selectedMedicine.medicine_bymeal_id?.toString() || "",
+		medicine_bymeal_id: form.values.medicine_bymeal_id || selectedMedicine.medicine_bymeal_id?.toString() || "",
 		by_meal: form.values.by_meal || byMeal?.name || "",
 		by_meal_bn: form.values.by_meal_bn || byMeal?.name_bn || "",
 		quantity: form.values.quantity || selectedMedicine.duration || "",
 		duration: form.values.duration || selectedMedicine.duration_mode || "",
+		duration_mode_bn: form.values.duration_mode_bn || selectedMedicine.duration_mode_bn || "",
 	};
 
 	return payload;
@@ -129,8 +126,6 @@ export const medicineOptionsFilter = ({ options, search }) => {
 		const labelWords = option.label.toLowerCase().trim().split(" ");
 		const genericWords = (option.generic || "").toLowerCase().trim().split(" ");
 		const allWords = [...labelWords, ...genericWords];
-		return splittedSearch.every((searchWord) =>
-			allWords.some((word) => word.includes(searchWord))
-		);
+		return splittedSearch.every((searchWord) => allWords.some((word) => word.includes(searchWord)));
 	});
 };

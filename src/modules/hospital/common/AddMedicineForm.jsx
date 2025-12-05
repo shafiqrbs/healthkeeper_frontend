@@ -42,7 +42,7 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import {HOSPITAL_DROPDOWNS, PHARMACY_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import { HOSPITAL_DROPDOWNS, PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getLoggedInUser } from "@/common/utils";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
@@ -129,7 +129,7 @@ export default function AddMedicineForm({
 	const { data: durationModeDropdown } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.PATH,
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.UTILITY,
-		params: { 'dropdown-type': "medicine-duration-mode" },
+		params: { "dropdown-type": "medicine-duration-mode" },
 	});
 
 	useEffect(() => {
@@ -677,7 +677,7 @@ export default function AddMedicineForm({
 											label=""
 											id="duration"
 											name="duration"
-											dropdownValue={DURATION_TYPES}
+											dropdownValue={durationModeDropdown}
 											value={medicineForm.values.duration}
 											placeholder={t("DurationMode")}
 											tooltip={t("EnterMeditationDurationMode")}
@@ -851,6 +851,7 @@ export default function AddMedicineForm({
 							by_meal_options={by_meal_options}
 							dosage_options={dosage_options}
 							ignoreOpdQuantityLimit={ignoreOpdQuantityLimit}
+							durationModeDropdown={durationModeDropdown}
 						/>
 					))}
 				</Stack>

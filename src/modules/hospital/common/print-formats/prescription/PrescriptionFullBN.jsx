@@ -26,6 +26,8 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 		return value || defaultValue;
 	};
 
+	console.log(medicines);
+
 	// Normalize order into an array of keys sorted by their index
 	const normalizeOrder = (inputOrder) => {
 		if (Array.isArray(inputOrder)) {
@@ -33,9 +35,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 			return entries.sort((a, b) => a[1] - b[1]).map(([key]) => key);
 		}
 		if (inputOrder && typeof inputOrder === "object") {
-			return Object.keys(inputOrder).sort(
-				(a, b) => (inputOrder?.[a] ?? 0) - (inputOrder?.[b] ?? 0)
-			);
+			return Object.keys(inputOrder).sort((a, b) => (inputOrder?.[a] ?? 0) - (inputOrder?.[b] ?? 0));
 		}
 		return [];
 	};
@@ -176,13 +176,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 			const imageUrl = URL.createObjectURL(imageArray[0]);
 			return (
 				<Flex h={80} justify={"center"} align={"center"} mt={"xs"}>
-					<Image
-						h={80}
-						w={80}
-						fit="cover"
-						src={imageUrl}
-						onLoad={() => URL.revokeObjectURL(imageUrl)}
-					/>
+					<Image h={80} w={80} fit="cover" src={imageUrl} onLoad={() => URL.revokeObjectURL(imageUrl)} />
 				</Flex>
 			);
 		} else if (fallbackSrc) {
@@ -225,45 +219,23 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Flex gap="md" justify="center">
 											<Box>
 												<Group ml="md" align="center" h="100%">
-													<Image
-														src={GLogo}
-														alt="logo"
-														width={60}
-														height={60}
-													/>
+													<Image src={GLogo} alt="logo" width={60} height={60} />
 												</Group>
 											</Box>
 											<Box>
-												<Text
-													ta="center"
-													fw="bold"
-													size="lg"
-													c="#1e40af"
-													mt="2"
-												>
+												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
 													{hospitalConfigData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
 													{hospitalConfigData?.address || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mb="2">
-													{t("হটলাইন")}{" "}
-													{hospitalConfigData?.hotline || ""}
+													{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
 												</Text>
 											</Box>
 											<Box>
-												<Group
-													mr="md"
-													justify="flex-end"
-													align="center"
-													h="100%"
-												>
-													<Image
-														src={TBLogo}
-														alt="logo"
-														width={60}
-														height={60}
-													/>
+												<Group mr="md" justify="flex-end" align="center" h="100%">
+													<Image src={TBLogo} alt="logo" width={60} height={60} />
 												</Group>
 											</Box>
 										</Flex>
@@ -321,8 +293,8 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											{t("Age")}:
 										</Text>
 										<Text size="xs">
-											{patientInfo?.year || 0} Years {patientInfo?.month || 0}{" "}
-											Mon {patientInfo?.day || 0} Day
+											{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
+											{patientInfo?.day || 0} Day
 										</Text>
 									</Group>
 								</Table.Td>
@@ -331,8 +303,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs">{t("Gender")}:</Text>
 										<Text size="xs">
 											{patientInfo?.gender &&
-												patientInfo.gender[0].toUpperCase() +
-													patientInfo.gender.slice(1)}
+												patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
 										</Text>
 									</Group>
 								</Table.Td>
@@ -373,9 +344,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											? orderedExamKeys
 											: Object.keys(patientExamination || {})
 										)
-											.filter((key) =>
-												hasArrayWithLength(patientExamination?.[key])
-											)
+											.filter((key) => hasArrayWithLength(patientExamination?.[key]))
 											.map((key) => (
 												<Box key={key}>{renderExaminationSection(key)}</Box>
 											))}
@@ -390,9 +359,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											wrap="nowrap"
 										>
 											<Box w={"100%"}>
-												<Box style={{ borderBottom: `1px solid #444` }}>
-													Vitals
-												</Box>
+												<Box style={{ borderBottom: `1px solid #444` }}>Vitals</Box>
 												<Grid columns={24} gutter={"2"}>
 													{patientInfo?.bp && (
 														<Grid.Col span={14}>
@@ -414,17 +381,14 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 													{patientInfo?.sat_without_O2 && (
 														<Grid.Col span={14} fz="xs" align={"left"}>
 															<Text style={{ fontSize: "11px" }}>
-																{t("Sat")}:{" "}
-																{patientInfo?.sat_without_O2} % w/o
-																O₂
+																{t("Sat")}: {patientInfo?.sat_without_O2} % w/o O₂
 															</Text>
 														</Grid.Col>
 													)}
 													{patientInfo?.temperature && (
 														<Grid.Col span={10}>
 															<Text style={{ fontSize: "11px" }}>
-																{t("Temp")}:{" "}
-																{patientInfo?.temperature} °F
+																{t("Temp")}: {patientInfo?.temperature} °F
 															</Text>
 														</Grid.Col>
 													)}
@@ -433,8 +397,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 													{patientInfo?.sat_with_O2 && (
 														<Grid.Col span={14}>
 															<Text style={{ fontSize: "11px" }}>
-																{t("Sat")}:{" "}
-																{patientInfo?.sat_with_O2} % w/{" "}
+																{t("Sat")}: {patientInfo?.sat_with_O2} % w/{" "}
 																{patientInfo?.sat_liter || 0} L O₂
 															</Text>
 														</Grid.Col>
@@ -442,8 +405,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 													{patientInfo?.respiration && (
 														<Grid.Col span={10} fz="xs" align={"left"}>
 															<Text style={{ fontSize: "11px" }}>
-																{t("Res R.")}:{" "}
-																{patientInfo?.respiration}/min
+																{t("Res R.")}: {patientInfo?.respiration}/min
 															</Text>
 														</Grid.Col>
 													)}
@@ -500,33 +462,25 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 																: medicine.generic
 														)}
 													</Flex>
-													{medicine.dosages &&
-													medicine.dosages.length > 0 ? (
-														(medicine.dosages || []).map(
-															(dose, dIdx) => (
-																<Text
-																	key={dose.id ?? dIdx}
-																	style={{
-																		fontSize: "11px",
-																		color: "var(--theme-tertiary-color-8)",
-																		marginLeft: "32px",
-																	}}
-																>
-																	{getValue(
-																		dose.dose_details_bn,
-																		dose.dose_details
-																	)}{" "}
-																	{" ---- "}
-																	{getValue(
-																		dose.by_meal_bn,
-																		dose.by_meal
-																	)}{" "}
-																	{" ---- "}
-																	{medicine?.quantity > 0 && getValue(medicine.quantity)}{" "}
-																	{medicine?.duration > 0 && getValue(medicine.duration)}
-																</Text>
-															)
-														)
+													{medicine.dosages && medicine.dosages.length > 0 ? (
+														(medicine.dosages || []).map((dose, dIdx) => (
+															<Text
+																key={dIdx}
+																style={{
+																	fontSize: "11px",
+																	color: "var(--theme-tertiary-color-8)",
+																	marginLeft: "32px",
+																}}
+															>
+																{console.log(dose, dIdx)}
+																{getValue(dose.dose_details_bn, dose.dose_details)}{" "}
+																{" ---- "}
+																{getValue(dose.by_meal_bn, dose.by_meal)} {" ---- "}
+																{dose?.quantity > 0 && getValue(dose.quantity)}{" "}
+																{dose.duration &&
+																	getValue(dose.duration_mode_bn, dose.duration)}
+															</Text>
+														))
 													) : (
 														<Text
 															style={{
@@ -535,18 +489,12 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 																marginLeft: "32px",
 															}}
 														>
-															{getValue(
-																medicine.dose_details_bn,
-																medicine.dose_details
-															)}{" "}
+															{getValue(medicine.dose_details_bn, medicine.dose_details)}{" "}
 															{" ---- "}
-															{getValue(
-																medicine.by_meal_bn,
-																medicine.by_meal
-															)}{" "}
-															{"----"}
+															{getValue(medicine.by_meal_bn, medicine.by_meal)} {"----"}
 															{medicine?.quantity > 0 && getValue(medicine.quantity)}{" "}
-															{medicine?.duration > 0 && getValue(medicine.duration)}
+															{medicine?.duration &&
+																getValue(medicine.duration_mode_bn, medicine.duration)}
 														</Text>
 													)}
 												</Box>
@@ -554,30 +502,20 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										</Box>
 										{patientInfo?.referred_comment && (
 											<>
-												<Box
-													mt="4"
-													mb={"4"}
-													style={{ borderBottom: `1px solid #444` }}
-												/>
+												<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
 												<Text size="xs" fw={400}>
-													Cause of Ref:{" "}
-													{getValue(patientInfo?.referred_comment)}
+													Cause of Ref: {getValue(patientInfo?.referred_comment)}
 												</Text>
 												{patientInfo?.referred_mode === "referred" &&
 												patientInfo?.referred_hospital ? (
 													<Text size="xs" fw={400}>
-														{capitalize(
-															getValue(patientInfo?.referred_mode)
-														)}{" "}
-														To :{" "}
+														{capitalize(getValue(patientInfo?.referred_mode))} To :{" "}
 														{getValue(patientInfo?.referred_hospital)}
 													</Text>
 												) : patientInfo?.referred_mode === "room" ? (
 													<Text size="xs" fw={400}>
-														{capitalize(
-															getValue(patientInfo?.referred_mode)
-														)}{" "}
-														To : {getValue(patientInfo?.referred_room)}
+														{capitalize(getValue(patientInfo?.referred_mode))} To :{" "}
+														{getValue(patientInfo?.referred_room)}
 													</Text>
 												) : null}
 											</>
@@ -597,8 +535,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											</Text>
 											{jsonContent?.follow_up_date && (
 												<Text size="sm" mt="xs">
-													* Follow Up Date:{" "}
-													{formatDate(jsonContent?.follow_up_date)}
+													* Follow Up Date: {formatDate(jsonContent?.follow_up_date)}
 												</Text>
 											)}
 											<Text size="sm" fz={"xs"} fw={600}>
@@ -661,13 +598,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Flex>
 											<Image src={GLogo} alt="logo" width={46} height={46} />
 											<Box pl={"xs"} pr={"xs"}>
-												<Text
-													ta="center"
-													fw="bold"
-													size="lg"
-													c="#1e40af"
-													mt="2"
-												>
+												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
 													{hospitalConfigData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
@@ -721,8 +652,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										</Text>
 										{jsonContent?.pharmacyInstruction && (
 											<Text size="xs" fw={400}>
-												Comment:{" "}
-												{getValue(jsonContent?.pharmacyInstruction)}
+												Comment: {getValue(jsonContent?.pharmacyInstruction)}
 											</Text>
 										)}
 										{/*<Text size="xs">Doctor ID- {getValue(patientInfo?.employee_id)}</Text>
@@ -758,39 +688,27 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										</Grid>
 										{medicines?.map((medicine, index) => (
 											<>
-												{medicine.medicine_id &&
-													medicine?.opd_quantity > 0 && (
-														<Grid columns={24} m={4} p={4}>
-															<Grid.Col span={20} m={0} p={0}>
-																<Text size="xs" pl={4}>
-																	<IconPointFilled
-																		style={{
-																			width: "10",
-																			height: "10",
-																		}}
-																		stroke={1.5}
-																	/>
-																	{getValue(
-																		medicine.medicine_id
-																			? medicine.generic
-																			: ""
-																	)}
-																</Text>
-															</Grid.Col>
-															<Grid.Col span={4} m={0} p={0}>
-																<Text
-																	size="sm"
-																	ta="center"
-																	fw={500}
-																>
-																	{getValue(
-																		medicine?.opd_quantity,
-																		0
-																	)}
-																</Text>
-															</Grid.Col>
-														</Grid>
-													)}
+												{medicine.medicine_id && medicine?.opd_quantity > 0 && (
+													<Grid columns={24} m={4} p={4}>
+														<Grid.Col span={20} m={0} p={0}>
+															<Text size="xs" pl={4}>
+																<IconPointFilled
+																	style={{
+																		width: "10",
+																		height: "10",
+																	}}
+																	stroke={1.5}
+																/>
+																{getValue(medicine.medicine_id ? medicine.generic : "")}
+															</Text>
+														</Grid.Col>
+														<Grid.Col span={4} m={0} p={0}>
+															<Text size="sm" ta="center" fw={500}>
+																{getValue(medicine?.opd_quantity, 0)}
+															</Text>
+														</Grid.Col>
+													</Grid>
+												)}
 											</>
 										))}
 									</Box>
