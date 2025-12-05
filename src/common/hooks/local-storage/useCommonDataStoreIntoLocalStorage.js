@@ -5,12 +5,6 @@ import {encryptData} from "@/utils/crypto.js";
 
 const useCommonDataStoreIntoLocalStorage = async (user_id) => {
 	const apiEndpoints = [
-		{ url: "inventory/config", key: "config-data" },
-		{ url: "inventory/stock-item", key: "core-products" },
-		{ url: "core/customer/local-storage", key: "core-customers" },
-		{ url: "core/vendor/local-storage", key: "core-vendors" },
-		{ url: "core/user/local-storage", key: "core-users" },
-		{ url: "accounting/transaction-mode/local-storage", key: "accounting-transaction-mode" },
 		{ url: "hospital/select/mode?dropdown-type=operation", key: "particularMode" },
 		{ url: "hospital/config", key: "hospital-config" },
 	];
