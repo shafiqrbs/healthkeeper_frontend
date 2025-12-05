@@ -28,7 +28,7 @@ export default function CompactDrawer({
 			radius={4}
 		>
 			<Drawer.Overlay />
-			<Drawer.Content bg={bg} h={350} style={{ alignItems: "center" }}>
+			<Drawer.Content bg={bg} h={450} style={{ alignItems: "center" }}>
 				<Drawer.Header className="drawer-sticky-header">
 					<Drawer.Title>
 						<Flex align="center" gap="3xs">
@@ -40,7 +40,7 @@ export default function CompactDrawer({
 					</Drawer.Title>
 					<Drawer.CloseButton />
 				</Drawer.Header>
-				<Drawer.Body mt="lg" pb="xs" h={260}>
+				<Drawer.Body mt="lg" pb="xs" h={360}>
 					<form onSubmit={form.onSubmit(save)} style={{ height: "100%" }}>
 						<Stack justify="space-between" h="100%">
 							{children}

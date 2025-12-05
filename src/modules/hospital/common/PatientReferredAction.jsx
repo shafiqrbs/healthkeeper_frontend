@@ -12,17 +12,15 @@ import InputAutoComplete from "@components/form-builders/InputAutoComplete";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { errorNotification } from "@/common/components/notification/errorNotification";
-import {DURATION_TYPES, ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
+import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { successNotification } from "@/common/components/notification/successNotification";
 import { useDispatch } from "react-redux";
 
 const referredModes = [
-	{ value: 'room', label: 'Room' },
-	{ value: 'admission', label: 'Admission' },
-	{ value: 'hospital', label: 'Hospital' },
+	{ value: "room", label: "Room" },
+	{ value: "admission", label: "Admission" },
+	{ value: "hospital", label: "Hospital" },
 ];
-
-
 
 export default function PatientReferredAction({ module = "emergency", invoiceId, form }) {
 	const dispatch = useDispatch();
@@ -40,16 +38,17 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 	});
 	const [openedRoomReferred, { open: openRoomReferred, close: closeRoomReferred }] = useDisclosure(false);
 
+	const referredModeValue = roomReferredForm.values.referred_mode;
+	const isRoomModeSelected = referredModeValue === "room";
+	const isAdmissionModeSelected = referredModeValue === "admission";
+	const isHospitalModeSelected = referredModeValue === "hospital";
+	const isHospitalFieldDisabled = isRoomModeSelected || isAdmissionModeSelected;
+	const isRoomFieldDisabled = isAdmissionModeSelected || isHospitalModeSelected;
+
 	const { data: referredRoomsOptions } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.PATH,
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.TYPE },
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.UTILITY,
-	});
-
-	const { data: doctorsOption } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_DOCTOR.UTILITY,
 	});
 
 	const { data: hospitalsOption } = useGlobalDropdownData({
@@ -58,22 +57,14 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 		utility: HOSPITAL_DROPDOWNS.HOSPITAL.UTILITY,
 	});
 
-	// =============== handle doctor selection change ================
-	const handleDoctorChange = (selectedName) => {
-		const selectedDoctor = doctorsOption?.find((doctor) => doctor.label === selectedName) || null;
-
-		referredForm.setFieldValue("referred_id", selectedDoctor?.value);
-		referredForm.setFieldValue("referred_name", selectedDoctor?.label || selectedName);
-	};
-
 	const handleHospitalChange = (selectedName) => {
 		const selectedHospital = hospitalsOption?.find((hospital) => hospital.label === selectedName) || null;
 
-		referredForm.setFieldValue("hospital", selectedHospital?.value || selectedName);
+		roomReferredForm.setFieldValue("hospital", selectedHospital?.value || selectedName);
 	};
 
 	const handleRoomReferredSubmit = (values) => {
-		handleConfirmSubmission({ ...values});
+		handleConfirmSubmission({ ...values });
 		closeRoomReferred();
 		form.setFieldValue("comment", values.comment);
 	};
@@ -93,10 +84,10 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 					Object.keys(fieldErrors).forEach((key) => {
 						errorObject[key] = fieldErrors[key][0];
 					});
-					referredForm.setErrors(errorObject);
+					roomReferredForm.setErrors(errorObject);
 				}
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
-				referredForm.reset();
+				roomReferredForm.reset();
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
@@ -116,7 +107,6 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 				>
 					{t("Referred")}
 				</Button>
-
 			</Button.Group>
 			{/* --------- room referred drawer section ---------- */}
 			<CompactDrawer
@@ -126,7 +116,6 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 				close={closeRoomReferred}
 				position="right"
 				size="50%"
-				h="50%"
 				keepMounted={false}
 				bg="var(--mantine-color-white)"
 				title={t("ReferredTo")}
@@ -172,6 +161,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 							name="hospital"
 							mt={0}
 							id="hospital"
+							disabled={isHospitalFieldDisabled}
 						/>
 					</Grid.Col>
 					<Grid.Col span={7}>
@@ -184,7 +174,9 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 						<SelectForm
 							dropdownValue={referredRoomsOptions}
 							value={roomReferredForm.values.opd_room_id}
-							changeValue={(v) => roomReferredForm.setFieldValue("opd_room_id", v)}
+							changeValue={(selectedRoomId) =>
+								roomReferredForm.setFieldValue("opd_room_id", selectedRoomId)
+							}
 							tooltip={t("RoomValidateMessage")}
 							label=""
 							placeholder={t("Room")}
@@ -194,6 +186,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 							name="opd_room_id"
 							mt={0}
 							id="room_no"
+							disabled={isRoomFieldDisabled}
 						/>
 					</Grid.Col>{" "}
 					<Grid.Col span={7}>
