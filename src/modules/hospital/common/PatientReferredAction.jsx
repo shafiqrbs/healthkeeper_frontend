@@ -40,10 +40,11 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 
 	const referredModeValue = roomReferredForm.values.referred_mode;
 	const isRoomModeSelected = referredModeValue === "room";
-	const isAdmissionModeSelected = referredModeValue === "admission";
 	const isHospitalModeSelected = referredModeValue === "hospital";
-	const isHospitalFieldDisabled = isRoomModeSelected || isAdmissionModeSelected;
-	const isRoomFieldDisabled = isAdmissionModeSelected || isHospitalModeSelected;
+	// =============== show hospital field only when hospital mode is selected ================
+	const shouldShowHospitalField = isHospitalModeSelected;
+	// =============== show room field only when room mode is selected ================
+	const shouldShowRoomField = isRoomModeSelected;
 
 	const { data: referredRoomsOptions } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.PATH,
@@ -141,54 +142,60 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 							withCheckIcon={false}
 						/>
 					</Grid.Col>
-					<Grid.Col span={7}>
-						<Text fz="sm">
-							{t("Hospital")}
-							<RequiredAsterisk />
-						</Text>
-					</Grid.Col>
-					<Grid.Col span={13}>
-						<InputAutoComplete
-							tooltip={t("HospitalValidateMessage")}
-							label=""
-							data={hospitalsOption}
-							value={roomReferredForm.values.referredTo}
-							changeValue={handleHospitalChange}
-							placeholder={t("ReferredTo")}
-							required
-							nextField="referred_name"
-							form={roomReferredForm}
-							name="hospital"
-							mt={0}
-							id="hospital"
-							disabled={isHospitalFieldDisabled}
-						/>
-					</Grid.Col>
-					<Grid.Col span={7}>
-						<Text fz="sm">
-							{t("Room")}
-							<RequiredAsterisk />
-						</Text>
-					</Grid.Col>
-					<Grid.Col span={13}>
-						<SelectForm
-							dropdownValue={referredRoomsOptions}
-							value={roomReferredForm.values.opd_room_id}
-							changeValue={(selectedRoomId) =>
-								roomReferredForm.setFieldValue("opd_room_id", selectedRoomId)
-							}
-							tooltip={t("RoomValidateMessage")}
-							label=""
-							placeholder={t("Room")}
-							required
-							nextField="comment"
-							form={roomReferredForm}
-							name="opd_room_id"
-							mt={0}
-							id="room_no"
-							disabled={isRoomFieldDisabled}
-						/>
-					</Grid.Col>{" "}
+					{shouldShowHospitalField && (
+						<>
+							<Grid.Col span={7}>
+								<Text fz="sm">
+									{t("Hospital")}
+									<RequiredAsterisk />
+								</Text>
+							</Grid.Col>
+							<Grid.Col span={13}>
+								<InputAutoComplete
+									tooltip={t("HospitalValidateMessage")}
+									label=""
+									data={hospitalsOption}
+									value={roomReferredForm.values.referredTo}
+									changeValue={handleHospitalChange}
+									placeholder={t("ReferredTo")}
+									required
+									nextField="referred_name"
+									form={roomReferredForm}
+									name="hospital"
+									mt={0}
+									id="hospital"
+								/>
+							</Grid.Col>
+						</>
+					)}
+					{shouldShowRoomField && (
+						<>
+							<Grid.Col span={7}>
+								<Text fz="sm">
+									{t("Room")}
+									<RequiredAsterisk />
+								</Text>
+							</Grid.Col>
+							<Grid.Col span={13}>
+								<SelectForm
+									dropdownValue={referredRoomsOptions}
+									value={roomReferredForm.values.opd_room_id}
+									changeValue={(selectedRoomId) =>
+										roomReferredForm.setFieldValue("opd_room_id", selectedRoomId)
+									}
+									tooltip={t("RoomValidateMessage")}
+									label=""
+									placeholder={t("Room")}
+									required
+									nextField="comment"
+									form={roomReferredForm}
+									name="opd_room_id"
+									mt={0}
+									id="room_no"
+								/>
+							</Grid.Col>
+						</>
+					)}
 					<Grid.Col span={7}>
 						<Text fz="sm">
 							{t("Comment")}
