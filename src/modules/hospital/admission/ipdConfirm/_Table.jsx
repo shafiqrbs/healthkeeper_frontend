@@ -92,7 +92,7 @@ export default function _Table({ module }) {
 
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
 		filterParams: {
 			name: filterData?.name,
 			referred_mode: "admission",

@@ -576,6 +576,7 @@ export const HOSPITAL_DATA_ROUTES = {
 
 		ADMISSION: {
 			INDEX: "hospital/admission",
+			INDEX_CONFIRM: "hospital/ipd/admission/confirm",
 			EDIT: "hospital/admission",
 			CREATE: "hospital/admission",
 			UPDATE: "hospital/admission",

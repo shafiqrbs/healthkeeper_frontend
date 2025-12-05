@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import DashboardDailySummary from "./items/DashboardDailySummary";
 import PatientTicket from "./items/PatientTicket";
 import { useTranslation } from "react-i18next";
+import InvoiceSummary from "@modules/hospital/reports/items/InvoiceSummary";
 
 export default function DetailsRenderer() {
 	const { t } = useTranslation();

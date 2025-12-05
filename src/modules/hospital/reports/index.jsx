@@ -18,6 +18,7 @@ const REPORT_TABS = [
 		value: "patient-ticket",
 		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
 	},
+
 ];
 
 export default function ReportsIndex() {

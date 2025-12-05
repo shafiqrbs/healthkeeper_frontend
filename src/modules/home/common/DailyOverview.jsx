@@ -17,7 +17,6 @@ const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 export default function DailyOverview({ height }) {
 	const { t } = useTranslation();
 	const records = useSelector((state) => state.crud[module].data);
-
 	const collectionSummaryData = records.data?.summary[0] || {};
 	const patientModeCollectionData = records.data?.patientMode || [];
 	const roomBaseCollectionData = records.data?.roomBase || [];

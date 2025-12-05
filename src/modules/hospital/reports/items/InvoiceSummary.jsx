@@ -47,7 +47,7 @@ const CSV_HEADERS = [
 
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
-export default function DashboardDailySummary() {
+export default function InvoiceSummary() {
 	const { mainAreaHeight } = useOutletContext();
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();

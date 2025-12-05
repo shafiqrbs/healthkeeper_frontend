@@ -25,7 +25,7 @@ const Layout = () => {
 /*=============================================================================*/
     /*ALL REFERENCE FOR ACCESS DATA*/
     const authStorage = useAuthStore(state => state);
-    console.log(authStorage)
+  //  console.log(authStorage)
     // const user_jwt = useAuthStore(state => state.user);
     // const token_jwt = useAuthStore(state => state.token);
     // const config_jwt = useAuthStore(state => state.hospitalConfig);
