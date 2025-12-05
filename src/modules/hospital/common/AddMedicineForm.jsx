@@ -477,7 +477,6 @@ export default function AddMedicineForm({
 				module,
 			};
 
-			// return console.log(formValue);
 			const resultAction = await dispatch(updateEntityData(value));
 
 			if (updateEntityData.rejected.match(resultAction)) {

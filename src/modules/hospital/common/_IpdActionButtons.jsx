@@ -2,7 +2,6 @@ import { Box, Button, Flex, Grid, NumberInput, Stack, Text } from "@mantine/core
 import { IconRestore } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { PAYMENT_METHODS } from "@/constants/paymentMethods";
-import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useEffect, useRef, useState } from "react";
 import PaymentMethodsCarousel from "./PaymentMethodsCarousel";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
@@ -132,6 +131,7 @@ export default function IpdActionButtons({
 												fz="xs"
 												py="xs"
 												value={quantity}
+												readOnly
 											/>
 										) : (
 											<Text fz="xs">{entity?.quantity}</Text>

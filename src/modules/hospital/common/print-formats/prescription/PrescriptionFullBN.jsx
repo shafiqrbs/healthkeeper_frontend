@@ -26,8 +26,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 		return value || defaultValue;
 	};
 
-	console.log(medicines);
-
 	// Normalize order into an array of keys sorted by their index
 	const normalizeOrder = (inputOrder) => {
 		if (Array.isArray(inputOrder)) {

@@ -49,8 +49,6 @@ export default function MedicineListItem({
 		});
 	};
 
-	console.log(durationModeDropdown);
-
 	const handleAddInstruction = (instructionIndex) => {
 		setMedicines((prev) => {
 			const medicineIndex = index - 1;
