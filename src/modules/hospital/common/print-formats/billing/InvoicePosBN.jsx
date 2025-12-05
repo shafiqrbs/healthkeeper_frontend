@@ -18,7 +18,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 	const user = getLoggedInUser();
 	const { t } = useTranslation();
 	const { hospitalConfigData } = useDomainHospitalConfigData();
-
+	const  configData   = hospitalConfigData?.config;
 	const patientInfo = data || {};
 
 	return (
@@ -30,13 +30,13 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 						<Image src={GovtLogo} alt="Govt Logo" width={30} height={30} fit="contain" />
 						<Stack gap={0} ta="left">
 							<Text ta="center" size="xs" fw={700}>
-								{hospitalConfigData?.organization_name || "Hospital"}
+								{configData?.organization_name || "Hospital"}
 							</Text>
 							<Text ta="center" size="2xs">
-								{hospitalConfigData?.address || "Uttara"}
+								{configData?.address || "Uttara"}
 							</Text>
 							<Text ta="center" size="8px">
-								{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
+								{t("হটলাইন")} {configData?.hotline || "0987634523"}
 							</Text>
 						</Stack>
 						<Image src={TbImage} alt="TB Hospital" width={30} height={30} fit="contain" />
@@ -189,7 +189,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 						</Table.Tbody>
 					</Table>
 					<Text size="2xs" ta="center" pb="xl">
-						© {new Date().getFullYear()} {hospitalConfigData?.organization_name} {t("সর্বস্বত্ব সংরক্ষিত")}।
+						© {new Date().getFullYear()} {configData?.organization_name} {t("সর্বস্বত্ব সংরক্ষিত")}।
 					</Text>
 				</Stack>
 			</Box>

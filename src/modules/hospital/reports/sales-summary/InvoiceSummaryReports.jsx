@@ -13,7 +13,6 @@ const InvoiceSummaryReports = forwardRef((data, ref) => {
 	const { hospitalConfigData } = useDoaminHospitalConfigData();
 	const  configData   = hospitalConfigData?.config;
 	const records = data || {};
-	console.log(configData);
 	const collectionSummaryData = records.data?.summary[0] || [];
 	const invoiceModeData = records?.data?.invoiceMode || [];
 	const patientModeCollectionData = records?.data?.patientMode || [];

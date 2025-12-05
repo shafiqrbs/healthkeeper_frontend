@@ -22,6 +22,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const medicines = jsonContent?.medicines || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useHospitalConfigData();
+	const  configData   = hospitalConfigData?.config;
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
@@ -222,13 +223,13 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											</Box>
 											<Box>
 												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-													{hospitalConfigData?.organization_name || ""}
+													{configData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
-													{hospitalConfigData?.address || ""}
+													{configData?.address || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mb="2">
-													{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
+													{t("হটলাইন")} {configData?.hotline || ""}
 												</Text>
 											</Box>
 											<Box>
@@ -597,16 +598,16 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											<Image src={GLogo} alt="logo" width={46} height={46} />
 											<Box pl={"xs"} pr={"xs"}>
 												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-													{hospitalConfigData?.organization_name || ""}
+													{configData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
-													{hospitalConfigData?.address || ""},
+													{configData?.address || ""},
 													<IconPhoneCall
 														style={{ width: "12", height: "12" }}
 														stroke={1.5}
 													/>{" "}
-													{(hospitalConfigData?.hotline &&
-														` ${hospitalConfigData?.hotline}`) ||
+													{(configData?.hotline &&
+														` ${configData?.hotline}`) ||
 														""}
 												</Text>
 											</Box>
