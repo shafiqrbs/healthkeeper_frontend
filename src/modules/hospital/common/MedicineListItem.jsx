@@ -1,7 +1,7 @@
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { ActionIcon, Box, Flex, Grid, Input, NumberInput, Select, Stack, Switch, Text } from "@mantine/core";
 import { IconCheck, IconMedicineSyrup, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
-import { getByMeal, getDosage } from "@utils/prescription";
+import { getByMeal, getDosage, getDurationMode } from "@utils/prescription";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -31,9 +31,22 @@ export default function MedicineListItem({
 			}
 		}
 
-		setMedicines((prev) =>
-			prev.map((medicine, idx) => (idx === index - 1 ? { ...medicine, [field]: value } : medicine))
-		);
+		setMedicines((prev) => {
+			let newList;
+			if (field === "duration") {
+				// =============== get duration mode using the new value (label) to update duration_mode_bn ================
+				const durationMode = getDurationMode(durationModeDropdown, value);
+				newList = prev.map((medicine, idx) =>
+					idx === index - 1
+						? { ...medicine, [field]: value, duration_mode_bn: durationMode?.name_bn || "" }
+						: medicine
+				);
+			} else {
+				newList = prev.map((medicine, idx) => (idx === index - 1 ? { ...medicine, [field]: value } : medicine));
+			}
+			if (typeof update === "function") update(newList);
+			return newList;
+		});
 	};
 
 	console.log(durationModeDropdown);
@@ -45,6 +58,7 @@ export default function MedicineListItem({
 
 			const byMeal = getByMeal(by_meal_options, current?.medicine_bymeal_id);
 			const dosage = getDosage(dosage_options, current?.medicine_dosage_id);
+			const durationMode = getDurationMode(durationModeDropdown, current?.duration);
 
 			const baseInstruction = {
 				medicine_dosage_id: current?.medicine_dosage_id || "",
@@ -55,7 +69,7 @@ export default function MedicineListItem({
 				by_meal_bn: byMeal?.name_bn || "",
 				quantity: current.quantity || "",
 				duration: current.duration || "",
-				duration_mode_bn: current.duration_mode_bn || "",
+				duration_mode_bn: durationMode?.name_bn || "",
 			};
 
 			const existingDosages = current.dosages && current.dosages.length > 0 ? current.dosages : [baseInstruction];
@@ -107,7 +121,7 @@ export default function MedicineListItem({
 				const current = prev[medicineIndex];
 				const byMeal = getByMeal(by_meal_options, current?.medicine_bymeal_id);
 				const dosage = getDosage(dosage_options, current?.medicine_dosage_id);
-
+				const durationMode = getDurationMode(durationModeDropdown, current?.duration);
 				const seeded = [
 					{
 						medicine_dosage_id: current?.medicine_dosage_id || "",
@@ -118,7 +132,7 @@ export default function MedicineListItem({
 						by_meal_bn: byMeal?.name_bn || "",
 						quantity: current.quantity || "",
 						duration: current.duration || "",
-						duration_mode_bn: current.duration_mode_bn || "",
+						duration_mode_bn: durationMode?.name_bn || "",
 					},
 				];
 				const updated = prev.map((m, i) => (i === medicineIndex ? { ...current, dosages: seeded } : m));
@@ -158,12 +172,22 @@ export default function MedicineListItem({
 					dose_details: dosage?.name || "",
 					dose_details_bn: dosage?.name_bn || "",
 				};
+			} else if (field === "duration") {
+				// =============== get duration mode using the new value (label) instead of current medicine duration ================
+				const durationMode = getDurationMode(durationModeDropdown, value);
+				dosages[insIndex] = {
+					...dosages[insIndex],
+					[field]: value,
+					duration: value,
+					duration_mode_bn: durationMode?.name_bn || "",
+				};
 			} else {
 				dosages[insIndex] = { ...dosages[insIndex], [field]: value };
 			}
 
 			const updatedMedicine = { ...current, dosages };
 			const newList = prev.map((medicine, index) => (index === medicineIndex ? updatedMedicine : medicine));
+			if (typeof update === "function") update(newList);
 			return newList;
 		});
 	};
@@ -221,7 +245,7 @@ export default function MedicineListItem({
 									by_meal_bn: getByMeal(by_meal_options, medicine?.medicine_bymeal_id)?.name_bn || "",
 									quantity: medicine.quantity || "",
 									duration: medicine.duration || "",
-									duration_mode_bn: medicine.duration_mode_bn || "",
+									duration_mode_bn: medicine?.duration_mode_bn || "",
 								},
 						  ]
 					).map((instruction, insIndex) => {
@@ -290,10 +314,10 @@ export default function MedicineListItem({
 														size="xs"
 														label=""
 														data={durationModeDropdown?.map((item) => ({
-															value: item.label?.toLowerCase(),
+															value: item.label,
 															label: item.label,
 														}))}
-														value={instruction.duration?.toLowerCase()}
+														value={instruction.duration}
 														placeholder={t("Duration")}
 														onChange={(v, option) =>
 															handleInstructionFieldChange(
@@ -433,7 +457,7 @@ export default function MedicineListItem({
 							size="xs"
 							label=""
 							data={durationModeDropdown?.map((item) => ({
-								value: item.label?.toLowerCase(),
+								value: item.label,
 								label: item.label,
 							}))}
 							value={medicine.duration}

@@ -14,6 +14,14 @@ export const getDosage = (dosage_options, id) => {
 	return selectedDosage;
 };
 
+export const getDurationMode = (duration_mode_options, label) => {
+	if (duration_mode_options?.length === 0) return console.error("Duration mode options are empty");
+	if (!label) return console.error("Label is required for getting duration mode");
+
+	const selectedDurationMode = duration_mode_options?.find((item) => item.label == label);
+	return selectedDurationMode;
+};
+
 export const appendMealValueToForm = (form, by_meal_options, id) => {
 	if (!form) return console.error("form should be passed in by-meal function");
 	const byMeal = getByMeal(by_meal_options, id);
@@ -30,6 +38,14 @@ export const appendDosageValueToForm = (form, dosage_options, id) => {
 	form.setFieldValue("medicine_dosage_id", id?.toString());
 	form.setFieldValue("dose_details", dosage?.name);
 	form.setFieldValue("dose_details_bn", dosage?.name_bn);
+};
+
+export const appendDurationModeValueToForm = (form, duration_mode_options, label) => {
+	if (!form) return console.error("form should be passed in duration mode function");
+	const durationMode = getDurationMode(duration_mode_options, label);
+
+	form.setFieldValue("duration", label);
+	form.setFieldValue("duration_mode_bn", durationMode?.name_bn);
 };
 
 /**
@@ -53,7 +69,10 @@ export const appendGeneralValuesToForm = (form, selectedMedicine) => {
 	if (!selectedMedicine) return console.error("selected medicine should be passed in general values function");
 
 	form.setFieldValue("medicine_name", selectedMedicine.product_name);
-	form.setFieldValue("duration_mode_bn", selectedMedicine.duration_mode_bn);
+	// =============== only set duration_mode_bn if medicine has it, to avoid overwriting value set from duration dropdown ================
+	if (selectedMedicine.duration_mode_bn) {
+		form.setFieldValue("duration_mode_bn", selectedMedicine.duration_mode_bn);
+	}
 	form.setFieldValue("generic", selectedMedicine.generic);
 	form.setFieldValue("generic_id", selectedMedicine.generic_id);
 	form.setFieldValue("company", selectedMedicine.company);

@@ -442,7 +442,6 @@ export default function AddMedicineForm({
 			if (updateEntityData.rejected.match(resultAction)) {
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
-				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 700, true);
 				if (redirect) {
 					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}`);
 				}

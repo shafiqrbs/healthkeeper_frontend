@@ -50,7 +50,7 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
 import MedicineListItem from "./MedicineListItem";
-import { DURATION_TYPES, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import inputCss from "@assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import InputForm from "@components/form-builders/InputForm";
@@ -58,6 +58,7 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "./drawer/CreateDosageDrawer";
 import {
 	appendDosageValueToForm,
+	appendDurationModeValueToForm,
 	appendGeneralValuesToForm,
 	appendMealValueToForm,
 	generateMedicinePayload,
@@ -130,6 +131,7 @@ export default function AddMedicineForm({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.PATH,
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.UTILITY,
 		params: { "dropdown-type": "medicine-duration-mode" },
+		identifierName: "medicine-duration-mode",
 	});
 
 	useEffect(() => {
@@ -349,7 +351,7 @@ export default function AddMedicineForm({
 				}
 
 				if (selectedMedicine.duration_mode) {
-					medicineForm.setFieldValue("duration", selectedMedicine.duration_mode);
+					appendDurationModeValueToForm(medicineForm, durationModeDropdown, selectedMedicine.duration_mode);
 				}
 
 				// Auto-populate by_meal if available
@@ -384,6 +386,10 @@ export default function AddMedicineForm({
 
 		if (field === "medicine_dosage_id" && value) {
 			appendDosageValueToForm(medicineForm, dosage_options, value);
+		}
+
+		if (field === "duration" && value) {
+			appendDurationModeValueToForm(medicineForm, durationModeDropdown, value);
 		}
 	};
 
@@ -477,7 +483,6 @@ export default function AddMedicineForm({
 			if (updateEntityData.rejected.match(resultAction)) {
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
-				showNotificationComponent(t("Prescription saved successfully"), "green", "lightgray", true, 700, true);
 				setRefetchData({ module, refetching: true });
 				if (redirect) navigate(redirectUrl || HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
 				return resultAction.payload?.data || {}; // Indicate successful submission
@@ -671,18 +676,29 @@ export default function AddMedicineForm({
 											placeholder={t("Duration")}
 											tooltip={t("EnterDuration")}
 										/>
-										<SelectForm
-											key={durationModeKey}
-											form={medicineForm}
-											label=""
-											id="duration"
-											name="duration"
-											dropdownValue={durationModeDropdown}
-											value={medicineForm.values.duration}
-											placeholder={t("DurationMode")}
-											tooltip={t("EnterMeditationDurationMode")}
-											withCheckIcon={false}
-										/>
+
+										<FormValidatorWrapper
+											position="bottom-end"
+											opened={medicineForm.errors.duration}
+										>
+											<Select
+												key={durationModeKey}
+												clearable
+												classNames={inputCss}
+												id="duration"
+												name="duration"
+												data={durationModeDropdown.map((item) => ({
+													value: item.label,
+													label: item.label,
+												}))}
+												value={medicineForm.values?.duration}
+												placeholder={t("DurationMode")}
+												tooltip={t("EnterMeditationDurationMode")}
+												onChange={(v) => handleChange("duration", v)}
+												error={!!medicineForm.errors.duration}
+												withCheckIcon={false}
+											/>
+										</FormValidatorWrapper>
 										<Button
 											disabled={
 												(!medicineForm.values?.medicine_id && !medicineForm.values?.generic) ||

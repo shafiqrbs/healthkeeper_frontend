@@ -118,6 +118,14 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null, identi
 					};
 				}
 
+				if (identifierName === "medicine-duration-mode") {
+					return {
+						label: item.name,
+						value: String(item.id),
+						name_bn: item.name_bn,
+					};
+				}
+
 				return { label, value, slug };
 			});
 			setDropdownData(transformedData);
