@@ -138,16 +138,6 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 					{t("PatientTickets")}
 				</Text>
 			</Flex>
-<<<<<<< HEAD
-			<Box px="sm" mb="sm">
-				<ReportFilterSearch
-					module={module}
-					form={form}
-					handleCSVDownload={handleCSVDownload}
-				/>
-			</Box>
-=======
->>>>>>> 1e0115e (Update report for OPD User)
 			<Box className="border-top-none" px="sm">
 				<Grid columns={40} gutter={{ base: "xs" }}>
 					<Grid.Col span={40}>
