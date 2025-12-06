@@ -77,7 +77,7 @@ export default function AddMedicineForm({
 	tabParticulars,
 	section = "ipdPrescription",
 }) {
-	const { getLoggedInUser } = useAppLocalStore();
+	const { user } = useAppLocalStore();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
@@ -471,7 +471,7 @@ export default function AddMedicineForm({
 		!skipLoading && setIsSubmitting(true);
 
 		try {
-			const createdBy = getLoggedInUser();
+			const createdBy = user;
 
 			const formValue = {
 				is_completed: true,

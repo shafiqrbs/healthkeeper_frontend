@@ -4,7 +4,7 @@ import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
 import { formatDate } from "@/common/utils";
-import useAppLocalStore from "@hooks/useAppLocalStore";
+import useAppLocalStore from "@/common/hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import Rx from "@assets/images/rx.png";
@@ -16,8 +16,7 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
-	const { getLoggedInUser } = useAppLocalStore();
-	const user = getLoggedInUser();
+	const { user } = useAppLocalStore();
 
 	const admissionData = data || {};
 	const patientInfo = data || {};

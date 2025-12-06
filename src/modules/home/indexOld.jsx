@@ -18,10 +18,9 @@ const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
 const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_emergency"];
 
 export default function IndexOld({ height }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const progress = useGetLoadingProgress();
 	const { userInfo } = useHospitalUserData();
-	const userRoles = getLoggedInRoles();
 	const userId = userInfo?.employee_id;
 	return (
 		<>

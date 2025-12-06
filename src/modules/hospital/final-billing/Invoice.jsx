@@ -44,7 +44,7 @@ const module = MODULES.BILLING;
 const PER_PAGE = 500;
 
 export default function Invoice({ entity, setRefetchBillingKey }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const form = useForm(getFormValues(t));
 	const dispatch = useDispatch();
@@ -52,7 +52,6 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 	const test = entity;
 	const { id, transactionId: selectedTransactionId } = useParams();
 	const navigate = useNavigate();
-	const userRoles = getLoggedInRoles();
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const { particularsData } = useParticularsData({ modeName: "Admission" });
 	const investigationParticulars = particularsData?.find(

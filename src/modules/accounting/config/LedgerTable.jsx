@@ -43,7 +43,14 @@ function LedgerTable(props) {
 
 	return (
 		<>
-			<Box pl={`xs`} pb={"xs"} pr={8} pt={"xs"} mb={"xs"} className={"boxBackground borderRadiusAll"}>
+			<Box
+				pl={`xs`}
+				pb={"xs"}
+				pr={8}
+				pt={"xs"}
+				mb={"xs"}
+				className={"boxBackground borderRadiusAll"}
+			>
 				<KeywordSearch module={"customer"} />
 			</Box>
 			<Box className={"borderRadiusAll"}>
@@ -67,7 +74,6 @@ function LedgerTable(props) {
 						{ accessor: "parent_name", title: t("ParentHead") },
 						{ accessor: "code", title: t("AccountCode") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -88,7 +94,11 @@ function LedgerTable(props) {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+												<IconDotsVertical
+													height={"18"}
+													width={"18"}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
@@ -96,7 +106,11 @@ function LedgerTable(props) {
 												// href={`/inventory/sales/edit/${data.id}`}
 												onClick={() => {
 													dispatch(setInsertType("update"));
-													dispatch(editEntityData("accounting/transaction-mode/" + data.id));
+													dispatch(
+														editEntityData(
+															"accounting/transaction-mode/" + data.id
+														)
+													);
 													dispatch(setFormLoading(true));
 												}}
 											>
@@ -126,22 +140,38 @@ function LedgerTable(props) {
 												c={"red.6"}
 												onClick={() => {
 													modals.openConfirmModal({
-														title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-														children: (
-															<Text size="sm"> {t("FormConfirmationMessage")}</Text>
+														title: (
+															<Text size="md">
+																{" "}
+																{t("FormConfirmationTitle")}
+															</Text>
 														),
-														labels: { confirm: "Confirm", cancel: "Cancel" },
+														children: (
+															<Text size="sm">
+																{" "}
+																{t("FormConfirmationMessage")}
+															</Text>
+														),
+														labels: {
+															confirm: "Confirm",
+															cancel: "Cancel",
+														},
 														onCancel: () => console.info("Cancel"),
 														onConfirm: () => {
 															dispatch(
-																deleteEntityData("accounting/account-head/" + data.id)
+																deleteEntityData(
+																	"accounting/account-head/" +
+																		data.id
+																)
 															);
 															dispatch(setFetching(true));
 														},
 													});
 												}}
 												rightSection={
-													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+													<IconTrashX
+														style={{ width: rem(14), height: rem(14) }}
+													/>
 												}
 											>
 												{t("Delete")}

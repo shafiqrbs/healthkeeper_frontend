@@ -1,6 +1,13 @@
 import { Group, Box, ActionIcon, Text, rem, Flex, Button } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconTrashX, IconAlertCircle, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
+import {
+	IconTrashX,
+	IconAlertCircle,
+	IconEdit,
+	IconEye,
+	IconChevronUp,
+	IconSelector,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -34,16 +41,17 @@ export default function _Table({ module, open }) {
 	const listData = useSelector((state) => state.crud[module].data);
 
 	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.STORE.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			term: searchKeyword,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "name",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.STORE.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				term: searchKeyword,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "name",
+		});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -143,13 +151,16 @@ export default function _Table({ module, open }) {
 							title: t("Name"),
 							sortable: true,
 							render: (values) => (
-								<Text className="activate-link" fz="xs" onClick={() => handleDataShow(values.id)}>
+								<Text
+									className="activate-link"
+									fz="xs"
+									onClick={() => handleDataShow(values.id)}
+								>
 									{values.name}
 								</Text>
 							),
 						},
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",

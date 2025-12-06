@@ -1,5 +1,18 @@
 import { useEffect, useState, useCallback } from "react";
-import {Group, Box, ActionIcon, Text, Flex, Button, Grid, Stack, Select, TextInput, rem, Textarea} from "@mantine/core";
+import {
+	Group,
+	Box,
+	ActionIcon,
+	Text,
+	Flex,
+	Button,
+	Grid,
+	Stack,
+	Select,
+	TextInput,
+	rem,
+	Textarea,
+} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconTrashX, IconDeviceFloppy, IconAlertCircle } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
@@ -9,7 +22,12 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import { deleteEntityData, editEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import {
+	deleteEntityData,
+	editEntityData,
+	storeEntityData,
+	updateEntityData,
+} from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import InputForm from "@components/form-builders/InputForm";
@@ -36,7 +54,9 @@ export default function _ReportFormatTable({ module }) {
 	const [fetching] = useState(false);
 	const [submitFormData, setSubmitFormData] = useState({});
 
-	const { data: entity,refetch } = useDataWithoutStore({ url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.VIEW}/${id}` });
+	const { data: entity, refetch } = useDataWithoutStore({
+		url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.VIEW}/${id}`,
+	});
 	const entityData = entity?.data?.investigation_report_format;
 
 	const parents =
@@ -102,7 +122,7 @@ export default function _ReportFormatTable({ module }) {
 				}
 			} else if (storeEntityData.fulfilled.match(resultAction)) {
 				form.reset();
-				setResetKey(prev => prev+1);
+				setResetKey((prev) => prev + 1);
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetch();
 				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
@@ -171,7 +191,7 @@ export default function _ReportFormatTable({ module }) {
 
 	return (
 		<>
-			<Box bg="var(--theme-secondary-color-0)" pl={'xs'}>
+			<Box bg="var(--theme-secondary-color-0)" pl={"xs"}>
 				<form key={resetKey} onSubmit={form.onSubmit(handleSubmit)}>
 					<Grid w="100%" columns={24}>
 						<Grid.Col span={4} pb={0}>
@@ -237,7 +257,7 @@ export default function _ReportFormatTable({ module }) {
 								value={form.values.reference_value}
 							/>
 						</Grid.Col>
-						<Grid.Col span={2} pb={0} mt={'xl'}>
+						<Grid.Col span={2} pb={0} mt={"xl"}>
 							<Button
 								size="xs"
 								bg="var(--theme-primary-color-6)"
@@ -297,12 +317,17 @@ export default function _ReportFormatTable({ module }) {
 										<TextInput
 											placeholder={t("Name")}
 											value={submitFormData[item.id]?.name || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "name", val.target.value)}
+											onChange={(val) =>
+												handleDataTypeChange(
+													item.id,
+													"name",
+													val.target.value
+												)
+											}
 											onBlur={() => handleRowSubmit(item.id)}
 										/>
 									),
 								},
-
 
 								{
 									accessor: "sample_value",
@@ -312,7 +337,11 @@ export default function _ReportFormatTable({ module }) {
 											placeholder={t("SampleValue")}
 											value={submitFormData[item.id]?.sample_value || ""}
 											onChange={(val) =>
-												handleDataTypeChange(item.id, "sample_value", val.target.value)
+												handleDataTypeChange(
+													item.id,
+													"sample_value",
+													val.target.value
+												)
 											}
 											onBlur={() => handleRowSubmit(item.id)}
 										/>
@@ -325,7 +354,13 @@ export default function _ReportFormatTable({ module }) {
 										<TextInput
 											placeholder={t("UnitName")}
 											value={submitFormData[item.id]?.unit || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "unit", val.target.value)}
+											onChange={(val) =>
+												handleDataTypeChange(
+													item.id,
+													"unit",
+													val.target.value
+												)
+											}
 											onBlur={() => handleRowSubmit(item.id)}
 										/>
 									),
@@ -338,18 +373,20 @@ export default function _ReportFormatTable({ module }) {
 											placeholder={t("ReferenceValue")}
 											value={submitFormData[item.id]?.reference_value || ""}
 											onChange={(val) =>
-												handleDataTypeChange(item.id, "reference_value", val.target.value)
+												handleDataTypeChange(
+													item.id,
+													"reference_value",
+													val.target.value
+												)
 											}
 											onBlur={() => handleRowSubmit(item.id)}
 											classNames={{
 												input: "custom-textarea",
 											}}
-
 										/>
 									),
 								},
 								{
-									accessor: "action",
 									title: "",
 									width: "100px",
 									render: (item) => (
@@ -358,7 +395,11 @@ export default function _ReportFormatTable({ module }) {
 												color="var(--theme-secondary-color-6)"
 												onClick={() => handleRowSubmit(item.id)}
 											>
-												<IconDeviceFloppy height={18} width={18} stroke={1.5} />
+												<IconDeviceFloppy
+													height={18}
+													width={18}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 											<ActionIcon
 												color="var(--theme-delete-color)"

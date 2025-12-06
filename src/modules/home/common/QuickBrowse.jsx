@@ -1,12 +1,9 @@
 import { Box, Button, Card, Divider, Flex, Grid, Stack, Text } from "@mantine/core";
 import {
 	IconBed,
-	IconBuildingHospital,
-	IconChecklist,
 	IconClipboardText,
 	IconMailForward,
 	IconMicroscope,
-	IconPackageExport,
 	IconStethoscope,
 	IconTestPipe,
 	IconTestPipe2,
@@ -113,13 +110,12 @@ const quickBrowseCardData = [
 ];
 
 export default function QuickBrowse() {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const userRole = getLoggedInRoles();
 
 	const filteredQuickBrowseButtonData = quickBrowseButtonData.filter((item) =>
-		item.allowedRoles.some((role) => userRole.includes(role))
+		item.allowedRoles.some((role) => userRoles.includes(role))
 	);
 
 	return (

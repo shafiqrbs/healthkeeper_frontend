@@ -15,8 +15,7 @@ import { decryptData } from "@utils/crypto.js";
 
 const Layout = () => {
 	useHospitalUserData();
-	const { getLoggedInUser } = useAppLocalStore();
-	const user = getLoggedInUser();
+	const { user } = useAppLocalStore();
 	const networkStatus = useNetwork();
 	const { height } = useViewportSize();
 	const location = useLocation();
@@ -25,8 +24,6 @@ const Layout = () => {
 
 	/*=============================================================================*/
 	/*ALL REFERENCE FOR ACCESS DATA*/
-	const authStorage = useAuthStore((state) => state);
-	console.log(authStorage);
 	//  console.log(authStorage)
 	// const user_jwt = useAuthStore(state => state.user);
 	// const token_jwt = useAuthStore(state => state.token);

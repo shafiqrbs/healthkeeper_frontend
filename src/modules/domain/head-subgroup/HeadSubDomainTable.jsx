@@ -48,7 +48,13 @@ function HeadSubDomainTable(props) {
 
 	return (
 		<>
-			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
+			<Box
+				pl={`xs`}
+				pr={8}
+				pt={"6"}
+				pb={"4"}
+				className={"boxBackground borderRadiusAll border-bottom-none"}
+			>
 				<KeywordSearch module={"account-head"} />
 			</Box>
 			<Box className={"borderRadiusAll border-top-none"}>
@@ -73,7 +79,6 @@ function HeadSubDomainTable(props) {
 						{ accessor: "code", title: t("AccountCode") },
 						{ accessor: "amount", title: t("Amount") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -96,7 +101,11 @@ function HeadSubDomainTable(props) {
 														radius="xl"
 														aria-label="Settings"
 													>
-														<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+														<IconDotsVertical
+															height={"18"}
+															width={"18"}
+															stroke={1.5}
+														/>
 													</ActionIcon>
 												</Menu.Target>
 												<Menu.Dropdown>
@@ -104,10 +113,14 @@ function HeadSubDomainTable(props) {
 														onClick={() => {
 															dispatch(setInsertType("update"));
 															dispatch(
-																editEntityData(`accounting/account-head/${data.id}`)
+																editEntityData(
+																	`accounting/account-head/${data.id}`
+																)
 															);
 															dispatch(setFormLoading(true));
-															navigate(`/accounting/head-subgroup/${data.id}`);
+															navigate(
+																`/accounting/head-subgroup/${data.id}`
+															);
 														}}
 													>
 														{t("Edit")}
@@ -115,9 +128,12 @@ function HeadSubDomainTable(props) {
 													<Menu.Item
 														onClick={() => {
 															// setHeadGroupDrawer(true)
-															navigate(`/accounting/ledger/view/${data.id}`, {
-																state: { headSubGroup: true },
-															});
+															navigate(
+																`/accounting/ledger/view/${data.id}`,
+																{
+																	state: { headSubGroup: true },
+																}
+															);
 															// dispatch(showEntityData('core/customer/' + data.id))
 														}}
 														target="_blank"
@@ -137,21 +153,31 @@ function HeadSubDomainTable(props) {
 														onClick={() => {
 															modals.openConfirmModal({
 																title: (
-																	<Text size="md"> {t("FormConfirmationTitle")}</Text>
+																	<Text size="md">
+																		{" "}
+																		{t("FormConfirmationTitle")}
+																	</Text>
 																),
 																children: (
 																	<Text size="sm">
 																		{" "}
-																		{t("FormConfirmationMessage")}
+																		{t(
+																			"FormConfirmationMessage"
+																		)}
 																	</Text>
 																),
-																labels: { confirm: "Confirm", cancel: "Cancel" },
+																labels: {
+																	confirm: "Confirm",
+																	cancel: "Cancel",
+																},
 																confirmProps: { color: "red.6" },
-																onCancel: () => console.info("Cancel"),
+																onCancel: () =>
+																	console.info("Cancel"),
 																onConfirm: () => {
 																	dispatch(
 																		deleteEntityData(
-																			"accounting/account-head/" + data.id
+																			"accounting/account-head/" +
+																				data.id
 																		)
 																	);
 																	dispatch(setFetching(true));
@@ -159,7 +185,12 @@ function HeadSubDomainTable(props) {
 															});
 														}}
 														rightSection={
-															<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+															<IconTrashX
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
 														}
 													>
 														{t("Delete")}
@@ -187,7 +218,10 @@ function HeadSubDomainTable(props) {
 				/>
 			</Box>
 			{headGroupDrawer && (
-				<HeadSubGroupViewDrawer headGroupDrawer={headGroupDrawer} setHeadGroupDrawer={setHeadGroupDrawer} />
+				<HeadSubGroupViewDrawer
+					headGroupDrawer={headGroupDrawer}
+					setHeadGroupDrawer={setHeadGroupDrawer}
+				/>
 			)}
 		</>
 	);

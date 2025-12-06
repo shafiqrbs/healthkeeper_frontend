@@ -1,4 +1,4 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, NumberInput} from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem, Flex, Button, NumberInput } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
@@ -20,21 +20,13 @@ import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import {
-	deleteEntityData,
-	editEntityData, storeEntityData,
-} from "@/app/store/core/crudThunk";
-import {
-	setInsertType,
-	setRefetchData,
-} from "@/app/store/core/crudSlice.js";
-import {
-	ERROR_NOTIFICATION_COLOR,
-} from "@/constants/index.js";
+import { deleteEntityData, editEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
+import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import {errorNotification} from "@components/notification/errorNotification";
+import { errorNotification } from "@components/notification/errorNotification";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 
 const PER_PAGE = 50;
@@ -54,24 +46,18 @@ export default function _Table({ module, open }) {
 	const listData = useSelector((state) => state.crud[module].data);
 
 	// for infinity table data scroll, call the hook
-	const {
-		scrollRef,
-		records,
-		fetching,
-		sortStatus,
-		setSortStatus,
-		handleScrollToBottom,
-	} = useInfiniteTableScroll({
-		module,
-		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.BED.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			particular_type: 'bed',
-			term: searchKeyword,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "name",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.BED.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				particular_type: "bed",
+				term: searchKeyword,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "name",
+		});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -154,7 +140,7 @@ export default function _Table({ module, open }) {
 			[field]: value,
 		};
 
-		setSubmitFormData(prev => ({
+		setSubmitFormData((prev) => ({
 			...prev,
 			[rowId]: updatedRow,
 		}));
@@ -174,9 +160,7 @@ export default function _Table({ module, open }) {
 		if (!originalRow) return false;
 
 		// ✅ check if there is any change
-		const isChanged = Object.keys(formData).some(
-			(key) => formData[key] !== originalRow[key]
-		);
+		const isChanged = Object.keys(formData).some((key) => formData[key] !== originalRow[key]);
 
 		if (!isChanged) {
 			// nothing changed → do not submit
@@ -251,7 +235,6 @@ export default function _Table({ module, open }) {
 							title: t("Room No"),
 							textAlignment: "right",
 							sortable: true,
-
 						},
 						{
 							accessor: "name",
@@ -299,7 +282,6 @@ export default function _Table({ module, open }) {
 						},
 
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",
@@ -359,15 +341,8 @@ export default function _Table({ module, open }) {
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
-						sorted: (
-							<IconChevronUp
-								color="var(--theme-tertiary-color-7)"
-								size={14}
-							/>
-						),
-						unsorted: (
-							<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
-						),
+						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 					}}
 				/>
 			</Box>
@@ -377,4 +352,3 @@ export default function _Table({ module, open }) {
 		</>
 	);
 }
-

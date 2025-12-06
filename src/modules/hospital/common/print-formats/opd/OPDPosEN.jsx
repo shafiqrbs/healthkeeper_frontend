@@ -12,8 +12,7 @@ const DashedLine = () => (
 );
 
 const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
-	const { getLoggedInUser } = useAppLocalStore();
-	const user = getLoggedInUser();
+	const { user } = useAppLocalStore();
 	const { t } = useTranslation();
 	return (
 		<Box display={preview ? "block" : "none"}>

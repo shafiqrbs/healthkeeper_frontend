@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
 	rem,
@@ -70,10 +69,9 @@ function NavigationItem({ icon: Icon, href, label, color = "teal.6" }) {
 }
 
 function MainDashboard({ height }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { configData } = useConfigData();
-	const userRole = getLoggedInRoles();
 
 	height = height - 105;
 	const navigate = useNavigate();
@@ -142,8 +140,8 @@ function MainDashboard({ height }) {
 						</Grid>
 					</Card>
 
-					{(userRole?.includes("role_accounting") ||
-						userRole?.includes("role_domain")) && (
+					{(userRoles?.includes("role_accounting") ||
+						userRoles?.includes("role_domain")) && (
 						<Card shadow="md" radius="md" className={classes.card} padding="lg">
 							<Grid gutter={{ base: 2 }}>
 								<Grid.Col span={2}>
@@ -162,7 +160,7 @@ function MainDashboard({ height }) {
 						</Card>
 					)}
 					{["role_procurement", "role_domain"].some((value) =>
-						userRole?.includes(value)
+						userRoles?.includes(value)
 					) && (
 						<Card shadow="md" radius="md" className={classes.card} padding="lg">
 							<Grid gutter={{ base: 2 }}>
@@ -182,7 +180,7 @@ function MainDashboard({ height }) {
 						</Card>
 					)}
 					{["role_inventory", "role_domain"].some((value) =>
-						userRole?.includes(value)
+						userRoles?.includes(value)
 					) && (
 						<Card shadow="md" radius="md" className={classes.card} padding="lg">
 							<Grid gutter={{ base: 2 }}>
@@ -206,7 +204,7 @@ function MainDashboard({ height }) {
 					<SimpleGrid cols={{ base: 1, md: 4 }} spacing="xs">
 						{configData?.domain?.modules?.includes("sales-purchase") &&
 							["role_sales_purchase", "role_domain"].some((value) =>
-								userRole?.includes(value)
+								userRoles?.includes(value)
 							) && (
 								<Card shadow="md" radius="md" className={classes.card} padding="lg">
 									<Grid gutter={{ base: 2 }}>
@@ -231,7 +229,7 @@ function MainDashboard({ height }) {
 												label={"Sales"}
 											/>
 											{["role_sales", "role_domain"].some((value) =>
-												userRole?.includes(value)
+												userRoles?.includes(value)
 											) && (
 												<NavigationItem
 													icon={IconShoppingBagSearch}
@@ -240,7 +238,7 @@ function MainDashboard({ height }) {
 												/>
 											)}
 											{["role_purchase", "role_domain"].some((value) =>
-												userRole?.includes(value)
+												userRoles?.includes(value)
 											) && (
 												<NavigationItem
 													icon={IconShoppingBagPlus}
@@ -263,7 +261,7 @@ function MainDashboard({ height }) {
 
 						{configData?.domain?.modules?.includes("accounting") &&
 							["role_accounting", "role_domain"].some((value) =>
-								userRole?.includes(value)
+								userRoles?.includes(value)
 							) && (
 								<Card shadow="md" radius="md" className={classes.card} padding="lg">
 									<Grid gutter={{ base: 2 }}>
@@ -283,7 +281,7 @@ function MainDashboard({ height }) {
 									<Box fz="sm" c="dimmed" mt="sm">
 										<List spacing="ms" size="sm" center>
 											{["role_accounting"].some((value) =>
-												userRole?.includes(value)
+												userRoles?.includes(value)
 											) && (
 												<NavigationItem
 													color="blue.6"
@@ -307,7 +305,7 @@ function MainDashboard({ height }) {
 							)}
 						{configData?.domain?.modules?.includes("procurement") &&
 							["role_procurement", "role_domain"].some((value) =>
-								userRole?.includes(value)
+								userRoles?.includes(value)
 							) && (
 								<Card shadow="md" radius="md" className={classes.card} padding="lg">
 									<Grid gutter={{ base: 2 }}>
@@ -350,7 +348,7 @@ function MainDashboard({ height }) {
 							)}
 						{configData?.domain?.modules?.includes("inventory") &&
 							["role_inventory", "role_domain"].some((value) =>
-								userRole.includes(value)
+								userRoles.includes(value)
 							) && (
 								<Card shadow="md" radius="md" className={classes.card} padding="lg">
 									<Grid gutter={{ base: 2 }}>
@@ -370,7 +368,7 @@ function MainDashboard({ height }) {
 									<Box fz="sm" c="dimmed" mt="sm">
 										<List spacing="ms" size="sm" center>
 											{["role_inventory_stock"].some((value) =>
-												userRole.includes(value)
+												userRoles.includes(value)
 											) && (
 												<NavigationItem
 													color="yellow.6"
@@ -395,7 +393,7 @@ function MainDashboard({ height }) {
 							)}
 						{configData?.domain?.modules?.includes("domain") &&
 							["role_domain", "role_core_admin"].some((value) =>
-								userRole.includes(value)
+								userRoles.includes(value)
 							) && (
 								<Card shadow="md" radius="md" className={classes.card} padding="lg">
 									<Grid gutter={{ base: 2 }}>
@@ -429,7 +427,7 @@ function MainDashboard({ height }) {
 							)}
 						{configData?.domain?.modules?.includes("core") &&
 							["role_core", "role_domain"]?.some((value) =>
-								userRole.includes(value)
+								userRoles.includes(value)
 							) && (
 								<Card shadow="md" radius="md" className={classes.card} padding="lg">
 									<Grid gutter={{ base: 2 }}>
@@ -482,7 +480,7 @@ function MainDashboard({ height }) {
 							)}
 						{configData?.domain?.modules?.includes("production") &&
 							["role_production", "role_domain"].some((value) =>
-								userRole.includes(value)
+								userRoles.includes(value)
 							) && (
 								<Card shadow="md" radius="md" className={classes.card} padding="lg">
 									<Grid gutter={{ base: 2 }}>

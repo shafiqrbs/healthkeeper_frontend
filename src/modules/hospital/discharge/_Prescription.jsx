@@ -70,13 +70,13 @@ export default function Prescription({
 	hasRecords = false,
 	baseHeight = 0,
 }) {
-	const { getLoggedInUser } = useAppLocalStore();
+	const { user } = useAppLocalStore();
 	const form = useForm({
 		initialValues: {
 			exEmergency: [],
 		},
 	});
-	const createdBy = getLoggedInUser();
+	const createdBy = user;
 	const [medicines, setMedicines] = useState([]);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();

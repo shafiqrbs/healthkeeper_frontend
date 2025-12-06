@@ -3,11 +3,11 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 const HOOK_NAME = "useAppLocalStore";
 
-// Keep track of which missing paths we already warned about (to avoid spam)
+// Prevent duplicate warnings
 const missingPathWarnings = new Set();
 
 /**
- * Logs a warning in development mode when a path is missing.
+ * Logs a warning in dev mode when a path is missing.
  * @param {string} path
  */
 function warnMissingPath(path) {
@@ -17,14 +17,11 @@ function warnMissingPath(path) {
 	if (missingPathWarnings.has(key)) return;
 	missingPathWarnings.add(key);
 
-	// eslint-disable-next-line no-console
 	console.warn(`[${HOOK_NAME}] Missing key at path: "${path}"`);
 }
 
 /**
- * Safely retrieves a nested property using a dot-notation path.
- * Warns in dev mode when keys are missing.
- *
+ * Safely retrieves a nested property using dot notation.
  * @param {Object} root
  * @param {string} path
  * @param {*} fallback
@@ -35,13 +32,12 @@ function safeGet(root, path, fallback) {
 		return fallback;
 	}
 
-	const segments = path.split(".");
 	let current = root;
 
-	for (const segment of segments) {
+	for (const segment of path.split(".")) {
 		if (
 			current == null ||
-			(typeof current !== "object" && typeof current !== "function") ||
+			typeof current !== "object" ||
 			!Object.prototype.hasOwnProperty.call(current, segment)
 		) {
 			warnMissingPath(path);
@@ -53,157 +49,207 @@ function safeGet(root, path, fallback) {
 	return current === undefined ? fallback : current;
 }
 
+/* --------------------------------------------------------------------------
+   TYPE DEFINITIONS (FOR AUTOCOMPLETE)
+-------------------------------------------------------------------------- */
+
 /**
- * Custom hook that provides safe accessors for all stored auth + hospital config data.
- * Returns memoized getter functions for better performance.
+ * @typedef {Object} ParticularModules
+ * @property {Object|null} bedMode
+ * @property {Object|null} bloodGroup
+ * @property {Object|null} cabinMode
+ * @property {Object|null} department
+ * @property {Object|null} diagnosticDepartment
+ * @property {Object|null} diagnosticRoom
+ * @property {Object|null} gender
+ * @property {Object|null} investigationGroup
+ * @property {Object|null} labReportMode
+ * @property {Object|null} medicineDuration
+ * @property {Object|null} medicineGroup
+ * @property {Object|null} operation
+ * @property {Object|null} patientDiseases
+ * @property {Object|null} patientMode
+ * @property {Object|null} patientType
+ * @property {Object|null} payingMode
+ * @property {Object|null} prescriptionTemplate
+ * @property {Object|null} print
+ * @property {Object|null} treatmentMode
+ * @property {Object|null} unitGroup
+ */
+
+/**
+ * @typedef {Object} AppLocalStore
+ *
+ * @property {Object|null} user Logged-in user object
+ * @property {string|null} token JWT token
+ * @property {Object|null} warehouse Warehouse data
+ * @property {Array<string>} userRoles Parsed userRoles list
+ *
+ * @property {Object|null} hospitalConfig Full hospital config
+ * @property {Object|null} coreConfig Main hospital info section
+ *
+ * @property {Array<Object>} departments
+ * @property {Array<Object>} religions
+ * @property {Array<Object>} advices
+ * @property {Array<Object>} designations
+ * @property {Array<Object>} particularModes
+ * @property {Array<Object>} meals
+ * @property {Array<Object>} dosages
+ *
+ * @property {Object} modules Raw particularModules object
+ * @property {ParticularModules} module Flattened module structure
+ *
+ * @property {Object|null} particularMatrix
+ */
+
+/* --------------------------------------------------------------------------
+   MAIN HOOK
+-------------------------------------------------------------------------- */
+
+/**
+ * Provides a memoized object containing all auth + hospital config data.
+ * @returns {AppLocalStore}
  */
 export default function useAppLocalStore() {
 	const authStorage = useAuthStore((state) => state);
 
-	/** CORE LOGIC wrapped in memoization */
-	const api = useMemo(() => {
-		/**
-		 * Gets the logged-in user object.
-		 * @returns {Object|null} User object or null if not available.
-		 */
-		const getLoggedInUser = () => authStorage?.user ?? null;
+	const store = useMemo(() => {
+		/* ---------------- Basic Fields ---------------- */
 
-		/**
-		 * Gets the hospital configuration root object.
-		 * @returns {Object|null} Hospital config or null.
-		 */
-		const getLoggedInHospitalUser = () => safeGet(authStorage, "hospitalConfig", null);
+		const user = authStorage?.user ?? {};
+		const token = authStorage?.token ?? null;
+		const warehouse = authStorage?.warehouse ?? null;
 
-		/**
-		 * Gets warehouse info for the logged-in user.
-		 * @returns {Object|null} Warehouse object or null.
-		 */
-		const getLoggedInWarehouse = () => authStorage?.warehouse ?? null;
+		/* ---------------- Roles ---------------- */
 
-		/**
-		 * Gets user roles as an array.
-		 * Handles parsed and stringified arrays.
-		 * @returns {Array<string>} Array of roles (empty if missing).
-		 */
-		const getLoggedInRoles = () => {
-			const user = getLoggedInUser();
-			const raw = user?.access_control_role;
+		let userRoles = [];
+		const rawRoles = user?.access_control_role;
 
-			if (!raw) return [];
-			if (Array.isArray(raw)) return raw;
-
-			if (typeof raw === "string") {
-				try {
-					if (raw.trim() === "") return [];
-					return JSON.parse(raw);
-				} catch (err) {
-					console.error("Error parsing access_control_role:", err);
-					return [];
-				}
+		if (Array.isArray(rawRoles)) userRoles = rawRoles;
+		else if (typeof rawRoles === "string") {
+			try {
+				if (rawRoles.trim() !== "") userRoles = JSON.parse(rawRoles);
+			} catch {
+				console.error("Error parsing access_control_role");
 			}
+		}
 
-			return [];
-		};
+		/* ---------------- Build Final Store Object ---------------- */
 
-		/**
-		 * Gets JWT token.
-		 * @returns {string|null} Token or null.
-		 */
-		const getLoggedInToken = () => authStorage?.token ?? null;
-
-		/** List getters (always return arrays, never null) */
-		const getDepartments = () => safeGet(authStorage, "hospitalConfig.departments", []);
-		const getReligions = () => safeGet(authStorage, "hospitalConfig.religions", []);
-		const getAdvices = () => safeGet(authStorage, "hospitalConfig.advices", []);
-		const getDesignations = () => safeGet(authStorage, "hospitalConfig.designations", []);
-		const getParticularModes = () => safeGet(authStorage, "hospitalConfig.particularModes", []);
-		const getByMeals = () => safeGet(authStorage, "hospitalConfig.byMeals", []);
-		const getDosages = () => safeGet(authStorage, "hospitalConfig.dosages", []);
-
-		/** Returns full particularModules object */
-		const getParticularModules = () =>
-			safeGet(authStorage, "hospitalConfig.particularModules", {});
-
-		/** Helper */
-		const getParticularModule = (key) =>
-			safeGet(authStorage, `hospitalConfig.particularModules.${key}`, null);
-
-		/** Module getters */
-		const getBedModeModule = () => getParticularModule("bed-mode");
-		const getBloodGroupModule = () => getParticularModule("blood-group");
-		const getCabinModeModule = () => getParticularModule("cabin-mode");
-		const getDepartmentModule = () => getParticularModule("department");
-		const getDiagnosticDepartmentModule = () => getParticularModule("diagnostic-department");
-		const getDiagnosticRoomModule = () => getParticularModule("diagnostic-room");
-		const getGenderModeModule = () => getParticularModule("gender-mode");
-		const getInvestigationGroupModule = () => getParticularModule("investigation-group");
-		const getLabReportModeModule = () => getParticularModule("lab-report-mode");
-		const getMedicineDurationModeModule = () => getParticularModule("medicine-duration-mode");
-		const getMedicineGroupModule = () => getParticularModule("medicine-group");
-		const getOperationModule = () => getParticularModule("operation");
-		const getPatientDiseasesModeModule = () => getParticularModule("patient-diseases-mode");
-		const getPatientModeModule = () => getParticularModule("patient-mode");
-		const getPatientTypeModule = () => getParticularModule("patient-type");
-		const getPayingModeModule = () => getParticularModule("paying-mode");
-		const getPrescriptionTemplateModule = () => getParticularModule("prescription-template");
-		const getPrintModule = () => getParticularModule("print");
-		const getTreatmentModeModule = () => getParticularModule("treatment-mode");
-		const getUnitGroupModule = () => getParticularModule("unit-group");
-
-		/**
-		 * Gets the particular matrix (organized modules)
-		 * @returns {Object|null}
-		 */
-		const getParticularMatrix = () =>
-			safeGet(authStorage, "hospitalConfig.particularMatrix", null);
-
-		/**
-		 * Gets core hospital info (id, name, address, settings).
-		 * @returns {Object|null}
-		 */
-		const getHospitalConfig = () => safeGet(authStorage, "hospitalConfig.config", null);
-
-		/** MEMOIZED API RETURN */
 		return {
-			getLoggedInUser,
-			getLoggedInHospitalUser,
-			getLoggedInWarehouse,
-			getLoggedInRoles,
-			getLoggedInToken,
+			user,
+			token,
+			warehouse,
+			userRoles,
 
-			getDepartments,
-			getReligions,
-			getAdvices,
-			getDesignations,
-			getParticularModes,
-			getParticularModules,
-			getParticularMatrix,
-			getByMeals,
-			getDosages,
-			getHospitalConfig,
+			/** Root configs */
+			hospitalConfig: safeGet(authStorage, "hospitalConfig", null),
+			coreConfig: safeGet(authStorage, "hospitalConfig.config", null),
 
-			getBedModeModule,
-			getBloodGroupModule,
-			getCabinModeModule,
-			getDepartmentModule,
-			getDiagnosticDepartmentModule,
-			getDiagnosticRoomModule,
-			getGenderModeModule,
-			getInvestigationGroupModule,
-			getLabReportModeModule,
-			getMedicineDurationModeModule,
-			getMedicineGroupModule,
-			getOperationModule,
-			getPatientDiseasesModeModule,
-			getPatientModeModule,
-			getPatientTypeModule,
-			getPayingModeModule,
-			getPrescriptionTemplateModule,
-			getPrintModule,
-			getTreatmentModeModule,
-			getUnitGroupModule,
+			/** Lists */
+			departments: safeGet(authStorage, "hospitalConfig.departments", []),
+			religions: safeGet(authStorage, "hospitalConfig.religions", []),
+			advices: safeGet(authStorage, "hospitalConfig.advices", []),
+			designations: safeGet(authStorage, "hospitalConfig.designations", []),
+			particularModes: safeGet(authStorage, "hospitalConfig.particularModes", []),
+			meals: safeGet(authStorage, "hospitalConfig.byMeals", []),
+			dosages: safeGet(authStorage, "hospitalConfig.dosages", []),
+
+			/** Raw modules */
+			modules: safeGet(authStorage, "hospitalConfig.particularModules", {}),
+
+			/** Flattened structured module list (editor-friendly) */
+			module: {
+				bedMode: safeGet(authStorage, "hospitalConfig.particularModules.bed-mode", null),
+				bloodGroup: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.blood-group",
+					null
+				),
+				cabinMode: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.cabin-mode",
+					null
+				),
+				department: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.department",
+					null
+				),
+				diagnosticDepartment: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.diagnostic-department",
+					null
+				),
+				diagnosticRoom: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.diagnostic-room",
+					null
+				),
+				gender: safeGet(authStorage, "hospitalConfig.particularModules.gender-mode", null),
+				investigationGroup: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.investigation-group",
+					null
+				),
+				labReportMode: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.lab-report-mode",
+					null
+				),
+				medicineDuration: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.medicine-duration-mode",
+					null
+				),
+				medicineGroup: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.medicine-group",
+					null
+				),
+				operation: safeGet(authStorage, "hospitalConfig.particularModules.operation", null),
+				patientDiseases: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.patient-diseases-mode",
+					null
+				),
+				patientMode: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.patient-mode",
+					null
+				),
+				patientType: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.patient-type",
+					null
+				),
+				payingMode: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.paying-mode",
+					null
+				),
+				prescriptionTemplate: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.prescription-template",
+					null
+				),
+				print: safeGet(authStorage, "hospitalConfig.particularModules.print", null),
+				treatmentMode: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.treatment-mode",
+					null
+				),
+				unitGroup: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.unit-group",
+					null
+				),
+			},
+
+			/** Matrix */
+			particularMatrix: safeGet(authStorage, "hospitalConfig.particularMatrix", null),
 		};
-	}, [authStorage]); // recompute only when Zustand store changes
+	}, [authStorage]);
 
-	return api;
+	return store;
 }

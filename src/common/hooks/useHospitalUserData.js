@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { getDataWithoutStore } from "@/services/apiService";
 import { getLoggedInHospitalUser } from "@utils/index";
-import useAppLocalStore from "@hooks/useAppLocalStore";
+import useAppLocalStore from "@/common/hooks/useAppLocalStore";
 import { CONFIGURATION_ROUTES } from "@/constants/routes";
 
 export default function useHospitalUserData() {
-	const { getLoggedInUser } = useAppLocalStore();
+	const { user } = useAppLocalStore();
 	const [error, setError] = useState(null);
 	const [data, setData] = useState(null);
-	const user = getLoggedInUser();
 	const existHospitalUser = getLoggedInHospitalUser();
-	const url = `${CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.USER_INFO}/${user.id}`;
+	const url = `${CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.USER_INFO}/${user?.id}`;
 
 	const fetchData = async () => {
 		setError(null);

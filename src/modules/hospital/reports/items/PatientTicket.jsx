@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
-import KeywordSearch from "@hospital-components/KeywordSearch";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
@@ -45,7 +44,7 @@ const CSV_HEADERS = [
 const module = MODULES.VISIT;
 
 export default function PatientTicket() {
-	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
+	const { user, userRoles } = useAppLocalStore();
 	const { mainAreaHeight } = useOutletContext();
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
@@ -63,14 +62,10 @@ export default function PatientTicket() {
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
 
-	const userRoles = getLoggedInRoles();
-
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
-
-	const user = getLoggedInUser();
 
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
 		useInfiniteTableScroll({

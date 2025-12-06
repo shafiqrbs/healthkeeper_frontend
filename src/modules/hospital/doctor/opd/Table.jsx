@@ -2,7 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
+import {
+	ActionIcon,
+	Box,
+	Button,
+	Flex,
+	FloatingIndicator,
+	Group,
+	Menu,
+	Tabs,
+	Text,
+} from "@mantine/core";
 import {
 	IconAlertCircle,
 	IconArrowRight,
@@ -102,20 +112,21 @@ export default function Table({ module, height, closeTable }) {
 		setControlsRefs(controlsRefs);
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			patient_mode: "opd",
-			term: filterData.keywordSearch,
-			room_id: filterData.room_id,
-			prescription_mode: processTab,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				patient_mode: "opd",
+				term: filterData.keywordSearch,
+				room_id: filterData.room_id,
+				prescription_mode: processTab,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+		});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
@@ -170,13 +181,17 @@ export default function Table({ module, height, closeTable }) {
 	};
 
 	const handleA4Print = async (id) => {
-		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}`,
+		});
 		setPrintData(res.data);
 		setType("a4");
 	};
 
 	const handlePosPrint = async (id) => {
-		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}`,
+		});
 		setPrintData(res.data);
 		setType("pos");
 	};
@@ -212,10 +227,16 @@ export default function Table({ module, height, closeTable }) {
 		const prescription_id = resultAction?.data?.data.id;
 		if (prescription_id) {
 			closeTable();
-			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
+			navigate(
+				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`
+			);
 		} else {
 			console.error(resultAction);
-			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
+			showNotificationComponent(
+				t("Something Went wrong , please try again"),
+				"red.6",
+				"lightgray"
+			);
 		}
 	};
 
@@ -289,7 +310,11 @@ export default function Table({ module, height, closeTable }) {
 						{ accessor: "name", sortable: true, title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "gender", sortable: true, title: t("Gender") },
-						{ accessor: "patient_payment_mode_name", sortable: true, title: t("Patient") },
+						{
+							accessor: "patient_payment_mode_name",
+							sortable: true,
+							title: t("Patient"),
+						},
 						{ accessor: "total", title: t("Total") },
 						{
 							accessor: "created_by",
@@ -297,12 +322,16 @@ export default function Table({ module, height, closeTable }) {
 							render: (item) => item?.created_by || "N/A",
 						},
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
-								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+								<Group
+									onClick={(e) => e.stopPropagation()}
+									gap={4}
+									justify="right"
+									wrap="nowrap"
+								>
 									{values?.prescription_id ? (
 										<Button
 											miw={124}
@@ -310,7 +339,9 @@ export default function Table({ module, height, closeTable }) {
 											bg="var(--theme-success-color)"
 											c="white"
 											size="compact-xs"
-											onClick={() => handlePrescription(values.prescription_id)}
+											onClick={() =>
+												handlePrescription(values.prescription_id)
+											}
 											radius="es"
 											rightSection={<IconArrowRight size={18} />}
 											className="border-right-radius-none"
@@ -347,7 +378,11 @@ export default function Table({ module, height, closeTable }) {
 												radius="es"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={18} width={18} stroke={1.5} />
+												<IconDotsVertical
+													height={18}
+													width={18}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
@@ -388,7 +423,11 @@ export default function Table({ module, height, closeTable }) {
 																}}
 															/>
 														}
-														onClick={() => handlePrescriptionPrint(values?.prescription_id)}
+														onClick={() =>
+															handlePrescriptionPrint(
+																values?.prescription_id
+															)
+														}
 													>
 														{t("Prescription")}
 													</Menu.Item>
@@ -431,7 +470,11 @@ export default function Table({ module, height, closeTable }) {
 			</Box>
 			<DataTableFooter indexData={listData} module="visit" />
 			{selectedPrescriptionId && (
-				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+				<DetailsDrawer
+					opened={opened}
+					close={close}
+					prescriptionId={selectedPrescriptionId}
+				/>
 			)}
 
 			<OPDA4BN data={printData} ref={a4Ref} />

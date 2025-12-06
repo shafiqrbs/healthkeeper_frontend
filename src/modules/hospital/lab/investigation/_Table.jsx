@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
 	IconPrinter,
 	IconChevronUp,
@@ -6,22 +6,9 @@ import {
 	IconArrowRight,
 	IconBarcode,
 } from "@tabler/icons-react";
-import {
-	Box,
-	Flex,
-	Grid,
-	Text,
-	ScrollArea,
-	Button,
-	ActionIcon,
-	Group,
-	Menu,
-	rem,
-	Tabs,
-	FloatingIndicator,
-} from "@mantine/core";
+import { Box, Flex, Text, Button, Tabs, FloatingIndicator } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { MODULES } from "@/constants";
 import { formatDate } from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
@@ -68,12 +55,10 @@ const tabs = [
 ];
 
 export default function _Table({ height }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
-	const { id } = useParams();
 	const navigate = useNavigate();
 	const csvLinkRef = useRef(null);
-	const [selectedPatientId, setSelectedPatientId] = useState(id);
 	const [processTab, setProcessTab] = useState("all");
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
@@ -87,9 +72,7 @@ export default function _Table({ height }) {
 	const printLabReport = useReactToPrint({
 		content: () => labReportRef.current,
 	});
-	const printBarCodeValue = useReactToPrint({
-		content: () => barCodeRef.current,
-	});
+
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
 		useInfiniteTableScroll({
 			module,
@@ -103,10 +86,6 @@ export default function _Table({ height }) {
 			sortByKey: "created_at",
 			direction: "desc",
 		});
-	const handleAdmissionOverview = (id) => {
-		setSelectedPatientId(id);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}`);
-	};
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -134,21 +113,9 @@ export default function _Table({ height }) {
 	};
 
 	const [printData, setPrintData] = useState({});
-	const [type, setType] = useState(null);
 
-	const posRef = useRef(null);
 	const a4Ref = useRef(null);
-	const userRoles = getLoggedInRoles();
 
-	useEffect(() => {
-		if (type === "a4") {
-			handleA4();
-		} else if (type === "pos") {
-			handlePos();
-		} else if (type === "prescription") {
-			handlePrescriptionOption();
-		}
-	}, [printData, type]);
 	const handleView = (id) => {
 		console.info(id);
 	};
@@ -167,8 +134,6 @@ export default function _Table({ height }) {
 		setLabReportData(res?.data);
 		requestAnimationFrame(printLabReport);
 	};
-
-	const [valid, setValid] = useState({});
 
 	async function handleBarcodeTag(barcode, reportId) {
 		const res = await getDataWithoutStore({
@@ -254,7 +219,6 @@ export default function _Table({ height }) {
 						{ accessor: "mobile", sortable: true, title: t("Mobile") },
 						{ accessor: "process", sortable: true, title: t("Process") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",

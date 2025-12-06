@@ -51,21 +51,17 @@ const tabs = [
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "admin_administrator"];
 
 export default function _Table({ module }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
 	const [opened, { open, close }] = useDisclosure(false);
-	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
-	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const navigate = useNavigate();
-	const [selectedId, setSelectedId] = useState(null);
 	const [processTab, setProcessTab] = useState("confirmed");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const userRoles = getLoggedInRoles();
 	const [printData, setPrintData] = useState(null);
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
@@ -110,10 +106,6 @@ export default function _Table({ module }) {
 		setTimeout(() => open(), 10);
 	};
 
-	const printPrescription = useReactToPrint({
-		content: () => prescriptionRef.current,
-	});
-
 	const printBillingInvoice = useReactToPrint({
 		content: () => billingInvoiceRef.current,
 	});
@@ -124,15 +116,6 @@ export default function _Table({ module }) {
 		});
 		setBillingPrintData(res.data);
 		requestAnimationFrame(printBillingInvoice);
-	};
-
-	const handleOpenViewOverview = () => {
-		openOverview();
-	};
-
-	const handleConfirm = (id) => {
-		setSelectedId(id);
-		openConfirm();
 	};
 
 	return (
@@ -221,7 +204,6 @@ export default function _Table({ module }) {
 							render: (item) => t(item.total),
 						},
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",
@@ -292,9 +274,6 @@ export default function _Table({ module }) {
 														}
 														onClick={(e) => {
 															e.stopPropagation();
-															handlePrescriptionPrint(
-																item?.prescription_id
-															);
 														}}
 													>
 														{t("Prescription")}

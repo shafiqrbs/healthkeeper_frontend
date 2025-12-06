@@ -75,7 +75,13 @@ function WarehouseTable() {
 
 	return (
 		<>
-			<Box pl="xs" pr={8} pt="6" pb="4" className="boxBackground borderRadiusAll border-bottom-none">
+			<Box
+				pl="xs"
+				pr={8}
+				pt="6"
+				pb="4"
+				className="boxBackground borderRadiusAll border-bottom-none"
+			>
 				<KeywordSearch module="warehouse" />
 			</Box>
 
@@ -103,7 +109,6 @@ function WarehouseTable() {
 						{ accessor: "email", title: t("Email") },
 						{ accessor: "address", title: t("Address") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlignment: "right",
 							render: (data) => (
@@ -124,14 +129,20 @@ function WarehouseTable() {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height="18" width="18" stroke={1.5} />
+												<IconDotsVertical
+													height="18"
+													width="18"
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
 											<Menu.Item
 												onClick={() => {
 													dispatch(setInsertType("update"));
-													dispatch(editEntityData(`core/warehouse/${data.id}`));
+													dispatch(
+														editEntityData(`core/warehouse/${data.id}`)
+													);
 													dispatch(setFormLoading(true));
 													navigate(`/core/warehouse/${data.id}`);
 												}}
@@ -151,10 +162,15 @@ function WarehouseTable() {
 													} else {
 														notifications.show({
 															color: "red",
-															title: t("Something Went wrong, please try again"),
+															title: t(
+																"Something Went wrong, please try again"
+															),
 															icon: (
 																<IconAlertCircle
-																	style={{ width: rem(18), height: rem(18) }}
+																	style={{
+																		width: rem(18),
+																		height: rem(18),
+																	}}
 																/>
 															),
 															loading: false,
@@ -174,21 +190,40 @@ function WarehouseTable() {
 												c="red.6"
 												onClick={() => {
 													modals.openConfirmModal({
-														title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
-														children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
-														labels: { confirm: "Confirm", cancel: "Cancel" },
+														title: (
+															<Text size="md">
+																{t("FormConfirmationTitle")}
+															</Text>
+														),
+														children: (
+															<Text size="sm">
+																{t("FormConfirmationMessage")}
+															</Text>
+														),
+														labels: {
+															confirm: "Confirm",
+															cancel: "Cancel",
+														},
 														confirmProps: { color: "red.6" },
 														onConfirm: async () => {
 															try {
 																const resultAction = await dispatch(
-																	deleteEntityData(`core/warehouse/${data.id}`)
+																	deleteEntityData(
+																		`core/warehouse/${data.id}`
+																	)
 																);
 
-																if (deleteEntityData.fulfilled.match(resultAction)) {
+																if (
+																	deleteEntityData.fulfilled.match(
+																		resultAction
+																	)
+																) {
 																	// setIndexData(resultAction.payload);
 																	notifications.show({
 																		color: "red",
-																		title: t("DeleteSuccessfully"),
+																		title: t(
+																			"DeleteSuccessfully"
+																		),
 																		icon: (
 																			<IconCheck
 																				style={{
@@ -199,7 +234,10 @@ function WarehouseTable() {
 																		),
 																		loading: false,
 																		autoClose: 700,
-																		style: { backgroundColor: "lightgray" },
+																		style: {
+																			backgroundColor:
+																				"lightgray",
+																		},
 																	});
 																} else {
 																	console.error(
@@ -208,7 +246,10 @@ function WarehouseTable() {
 																	);
 																}
 															} catch (error) {
-																console.error("Unexpected error:", error);
+																console.error(
+																	"Unexpected error:",
+																	error
+																);
 															} finally {
 																setFetchingState(false);
 															}
@@ -216,7 +257,9 @@ function WarehouseTable() {
 													});
 												}}
 												rightSection={
-													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+													<IconTrashX
+														style={{ width: rem(14), height: rem(14) }}
+													/>
 												}
 											>
 												{t("Delete")}

@@ -13,12 +13,11 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 
 export default function Navigation({ module }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 30;
 	const navigate = useNavigate();
-	const userRole = getLoggedInRoles();
 
 	return (
 		<ScrollArea
@@ -356,7 +355,7 @@ export default function Navigation({ module }) {
 						</Text>
 					</Flex>
 				</Flex>
-				{userRole && userRole.length > 0 && userRole.includes("role_domain") && (
+				{userRoles && userRoles.length > 0 && userRoles.includes("role_domain") && (
 					<Flex direction={`column`} align={"center"}>
 						<Tooltip
 							label={t("Configuration")}

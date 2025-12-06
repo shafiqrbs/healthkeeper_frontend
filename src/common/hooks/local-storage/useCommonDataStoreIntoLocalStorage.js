@@ -1,7 +1,6 @@
 import { API_BASE_URL, API_KEY } from "@/constants";
 import axios from "axios";
 import { useAuthStore } from "@/store/useAuthStore.js";
-import { encryptData } from "@utils/crypto.js";
 
 const useCommonDataStoreIntoLocalStorage = async (user_id) => {
 	const apiEndpoints = [
@@ -28,12 +27,6 @@ const useCommonDataStoreIntoLocalStorage = async (user_id) => {
 				if (response.data?.data) {
 					localStorage.setItem(key, JSON.stringify(response.data.data));
 				}
-
-				// FOR JWT
-				/*if (response.data?.data) {
-                    const encryptedData = encryptData(response.data.data);
-                    localStorage.setItem(key, encryptedData);
-                }*/
 			} catch (error) {
 				console.error(error);
 			}

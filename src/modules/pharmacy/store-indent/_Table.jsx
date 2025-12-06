@@ -168,7 +168,6 @@ export default function _Table({ module }) {
 							cellsClassName: tableCss.statusBackground,
 						},
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",

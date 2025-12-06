@@ -55,8 +55,7 @@ const ALLOWED_NURSE_ROLES = [
 ];
 
 export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode }) {
-	const { getLoggedInRoles } = useAppLocalStore();
-	const userRoles = getLoggedInRoles();
+	const { userRoles } = useAppLocalStore();
 	const dischargePaperRef = useRef(null);
 	const admissionFormRef = useRef(null);
 	const prescriptionRef = useRef(null);
@@ -255,7 +254,6 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 							render: (item) => t(item.total - item.amount),
 						},
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",

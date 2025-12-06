@@ -10,12 +10,11 @@ import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useState } from "react";
 
 export default function AdminLayout() {
-	const { getLoggedInUser } = useAppLocalStore();
+	const { user } = useAppLocalStore();
 	const { t } = useTranslation();
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
 
-	const user = getLoggedInUser();
 	const networkStatus = useNetwork();
 	const { height } = useViewportSize();
 

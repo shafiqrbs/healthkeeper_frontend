@@ -82,7 +82,7 @@ export default function AddMedicineForm({
 	ignoreOpdQuantityLimit = false,
 	redirectUrl = null,
 }) {
-	const { getLoggedInUser } = useAppLocalStore();
+	const { user } = useAppLocalStore();
 	const medicineIdRef = useRef(null);
 	const genericRef = useRef(null);
 	const navigate = useNavigate();
@@ -514,7 +514,7 @@ export default function AddMedicineForm({
 		!skipLoading && setIsSubmitting(true);
 
 		try {
-			const createdBy = getLoggedInUser();
+			const createdBy = user;
 
 			const formValue = {
 				is_completed: true,

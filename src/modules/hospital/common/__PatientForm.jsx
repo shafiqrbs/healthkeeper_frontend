@@ -28,7 +28,7 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
 import { calculateAge, calculateDetailedAge, formatDOB } from "@/common/utils";
-import useAppLocalStore from "@hooks/useAppLocalStore";
+import useAppLocalStore from "@/common/hooks/useAppLocalStore";
 import Table from "../visit/_Table";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
@@ -114,7 +114,6 @@ export default function PatientForm({
 	filteredAndSortedRecords,
 	selectedRoom,
 }) {
-	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
 	const searchForm = useForm({
 		initialValues: {
 			type: "PID",
@@ -324,7 +323,7 @@ export function Form({
 	visible,
 	setVisible,
 }) {
-	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
+	const { user, userRoles } = useAppLocalStore();
 	const [resetKey, setResetKey] = useState(0);
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] =
 		useDisclosure(false);
@@ -338,7 +337,6 @@ export function Form({
 	const [userNidData] = useState(USER_NID_DATA);
 	const [showUserData, setShowUserData] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const userRoles = getLoggedInRoles();
 	const locations = useSelector((state) => state.crud.locations.data);
 
 	useEffect(() => {
@@ -454,7 +452,7 @@ export function Form({
 			}
 
 			try {
-				const createdBy = getLoggedInUser();
+				const createdBy = user;
 				const formattedDOB = formatDOB(form.values.dob);
 				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
 				const [day, month, year] = formattedDOB.split("-").map(Number);

@@ -20,7 +20,7 @@ import { getHotkeyHandler, useHotkeys } from "@mantine/hooks";
 import { IconInfoCircle, IconLogin, IconArrowLeft } from "@tabler/icons-react";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { Navigate, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import commonDataStoreIntoLocalStorage from "@hooks/local-storage/useCommonDataStoreIntoLocalStorage.js";
@@ -28,8 +28,7 @@ import { API_BASE_URL, API_KEY } from "@/constants";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 
 export default function Login() {
-	const { getLoggedInUser } = useAppLocalStore();
-	const user = getLoggedInUser();
+	const { user } = useAppLocalStore();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
@@ -44,6 +43,18 @@ export default function Login() {
 			password: isNotEmpty(),
 		},
 	});
+
+	useHotkeys(
+		[
+			[
+				"alt+n",
+				() => {
+					document.getElementById("Username").focus();
+				},
+			],
+		],
+		[]
+	);
 
 	if (user?.id) {
 		console.info("Already logged in, redirecting from login page.");
@@ -61,7 +72,7 @@ export default function Login() {
 				"Access-Control-Allow-Origin": "*",
 				"X-Api-Key": API_KEY,
 			},
-			data: data,
+			data,
 		})
 			.then((res) => {
 				if (res.data.status === 200) {
@@ -81,18 +92,6 @@ export default function Login() {
 				console.error(error);
 			});
 	}
-
-	useHotkeys(
-		[
-			[
-				"alt+n",
-				() => {
-					document.getElementById("Username").focus();
-				},
-			],
-		],
-		[]
-	);
 
 	return (
 		<div className={classes.wrapper}>

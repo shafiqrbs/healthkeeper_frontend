@@ -40,7 +40,7 @@ const ALLOWED_BILLING_ROLES = [
 const PER_PAGE = 500;
 
 export default function Invoice({ entity }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const invoicePrintRef = useRef(null);
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const { t } = useTranslation();
@@ -48,7 +48,6 @@ export default function Invoice({ entity }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { id, transactionId: selectedTransactionId } = useParams();
 	const navigate = useNavigate();
-	const userRoles = getLoggedInRoles();
 	const ipdAllPrintRef = useRef(null);
 	const [invoiceDetailsOpened, { open: openInvoiceDetails, close: closeInvoiceDetails }] =
 		useDisclosure(false);

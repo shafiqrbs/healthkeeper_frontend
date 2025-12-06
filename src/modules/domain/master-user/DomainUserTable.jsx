@@ -33,8 +33,8 @@ export default function DomainUserTable() {
 				title: t("Confirm Login"),
 				children: (
 					<Text size="sm">
-						Are you sure you want to login as <strong>{userInfo.username}</strong>? This will log you out of
-						your current session.
+						Are you sure you want to login as <strong>{userInfo.username}</strong>? This
+						will log you out of your current session.
 					</Text>
 				),
 				labels: { confirm: t("Confirm"), cancel: t("Cancel") },
@@ -42,13 +42,18 @@ export default function DomainUserTable() {
 				onCancel: () => console.log("Login cancelled"),
 				onConfirm: async () => {
 					const resultAction = await dispatch(
-						showEntityData("domain/b2b/impersonate/" + userInfo.domain_id + "/" + userInfo.id)
+						showEntityData(
+							"domain/b2b/impersonate/" + userInfo.domain_id + "/" + userInfo.id
+						)
 					);
 					if (showEntityData.rejected.match(resultAction)) {
 						console.log("Error" + resultAction);
 					} else if (showEntityData.fulfilled.match(resultAction)) {
 						if (resultAction.payload.data.status === 200) {
-							localStorage.setItem("user", JSON.stringify(resultAction.payload.data.data));
+							localStorage.setItem(
+								"user",
+								JSON.stringify(resultAction.payload.data.data)
+							);
 							commonDataStoreIntoLocalStorage(resultAction.payload.data.data.id);
 							navigate("/");
 						}
@@ -123,7 +128,9 @@ export default function DomainUserTable() {
 							title: t("S/N"),
 							textAlignment: "right",
 							render: (item) => {
-								const index = (indexData?.data || []).findIndex((i) => i.id === item.id);
+								const index = (indexData?.data || []).findIndex(
+									(i) => i.id === item.id
+								);
 								return index + 1 + (page - 1) * perPage;
 							},
 						},
@@ -133,7 +140,6 @@ export default function DomainUserTable() {
 						{ accessor: "username", title: t("UserName") },
 						{ accessor: "email", title: t("Email") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (

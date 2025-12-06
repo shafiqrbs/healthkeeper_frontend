@@ -175,7 +175,6 @@ export default function _Table({ height }) {
 							),
 						},
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",

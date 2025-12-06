@@ -94,7 +94,13 @@ function CustomerTable() {
 	// console.log(indexData)
 	return (
 		<>
-			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
+			<Box
+				pl={`xs`}
+				pr={8}
+				pt={"6"}
+				pb={"4"}
+				className={"boxBackground borderRadiusAll border-bottom-none"}
+			>
 				<KeywordSearch module={"customer"} />
 			</Box>
 			<Box className={"borderRadiusAll border-top-none"}>
@@ -121,7 +127,6 @@ function CustomerTable() {
 						{ accessor: "credit_limit", title: t("CreditLimit") },
 						{ accessor: "discount_percent", title: t("Discount") + " %" },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -142,7 +147,11 @@ function CustomerTable() {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={"16"} width={"16"} stroke={1.5} />
+												<IconDotsVertical
+													height={"16"}
+													width={"16"}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
@@ -159,7 +168,9 @@ function CustomerTable() {
 											<Menu.Item
 												onClick={() => {
 													dispatch(setInsertType("update"));
-													dispatch(editEntityData("core/customer/" + data.id));
+													dispatch(
+														editEntityData("core/customer/" + data.id)
+													);
 													dispatch(setFormLoading(true));
 													navigate(`/core/customer/${data.id}`);
 												}}
@@ -181,10 +192,15 @@ function CustomerTable() {
 													} else {
 														notifications.show({
 															color: "red",
-															title: t("Something Went wrong , please try again"),
+															title: t(
+																"Something Went wrong , please try again"
+															),
 															icon: (
 																<IconAlertCircle
-																	style={{ width: rem(18), height: rem(18) }}
+																	style={{
+																		width: rem(18),
+																		height: rem(18),
+																	}}
 																/>
 															),
 															loading: false,
@@ -209,20 +225,37 @@ function CustomerTable() {
 												c={"red.6"}
 												onClick={() => {
 													modals.openConfirmModal({
-														title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+														title: (
+															<Text size="md">
+																{" "}
+																{t("FormConfirmationTitle")}
+															</Text>
+														),
 														children: (
-															<Text size="sm"> {t("FormConfirmationMessage")}</Text>
+															<Text size="sm">
+																{" "}
+																{t("FormConfirmationMessage")}
+															</Text>
 														),
 														confirmProps: { color: "red.6" },
-														labels: { confirm: "Confirm", cancel: "Cancel" },
+														labels: {
+															confirm: "Confirm",
+															cancel: "Cancel",
+														},
 														onCancel: () => console.info("Cancel"),
 														onConfirm: () => {
-															dispatch(deleteEntityData("core/customer/" + data.id));
+															dispatch(
+																deleteEntityData(
+																	"core/customer/" + data.id
+																)
+															);
 														},
 													});
 												}}
 												rightSection={
-													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+													<IconTrashX
+														style={{ width: rem(14), height: rem(14) }}
+													/>
 												}
 											>
 												{t("Delete")}

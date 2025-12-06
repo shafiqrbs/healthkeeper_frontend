@@ -48,7 +48,13 @@ function TransactionModeTable(props) {
 
 	return (
 		<>
-			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
+			<Box
+				pl={`xs`}
+				pr={8}
+				pt={"6"}
+				pb={"4"}
+				className={"boxBackground borderRadiusAll border-bottom-none"}
+			>
 				<KeywordSearch module={"customer"} />
 			</Box>
 			<Box className={"borderRadiusAll border-top-none"}>
@@ -83,14 +89,17 @@ function TransactionModeTable(props) {
 								<Image
 									radius="md"
 									w="70%"
-									src={isOnline ? item.path : "/images/transaction-mode-offline.jpg"}
+									src={
+										isOnline
+											? item.path
+											: "/images/transaction-mode-offline.jpg"
+									}
 									alt={item.method_name}
 								/>
 							),
 						},
 
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -111,16 +120,26 @@ function TransactionModeTable(props) {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+												<IconDotsVertical
+													height={"18"}
+													width={"18"}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
 											<Menu.Item
 												onClick={() => {
 													dispatch(setInsertType("update"));
-													dispatch(editEntityData("accounting/transaction-mode/" + data.id));
+													dispatch(
+														editEntityData(
+															"accounting/transaction-mode/" + data.id
+														)
+													);
 													dispatch(setFormLoading(true));
-													navigate(`/accounting/transaction-mode/${data.id}`);
+													navigate(
+														`/accounting/transaction-mode/${data.id}`
+													);
 												}}
 											>
 												{t("Edit")}

@@ -76,12 +76,11 @@ const PRINT_SECTION_ITEMS = [
 ];
 
 export default function Index() {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [records, setRecords] = useState([]);
 	const { mainAreaHeight } = useOutletContext();
 	const { id } = useParams();
-	const userRole = getLoggedInRoles();
 	const [opened, { close }] = useDisclosure(false);
 	const [showHistory, setShowHistory] = useState(false);
 	const [medicines, setMedicines] = useState([]);
@@ -197,7 +196,7 @@ export default function Index() {
 							>
 								<Stack h="100%" py="xs" gap={0}>
 									{TAB_ITEMS.filter((tabItem) =>
-										userRole.some((role) =>
+										userRoles.some((role) =>
 											tabItem.allowedGroups.includes(role)
 										)
 									).map((tabItem, index) => (
@@ -236,7 +235,7 @@ export default function Index() {
 									</Box>
 
 									{PRINT_SECTION_ITEMS.filter((tabItem) =>
-										userRole.some((role) =>
+										userRoles.some((role) =>
 											tabItem.allowedGroups.includes(role)
 										)
 									).map((tabItem, index) => (

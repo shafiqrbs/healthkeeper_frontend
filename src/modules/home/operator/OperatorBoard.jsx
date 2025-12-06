@@ -68,17 +68,14 @@ const quickBrowseCardData = [
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
 export default function OperatorBoard({ height }) {
-	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
-	const roles = getLoggedInRoles();
-	const user = getLoggedInUser();
+	const { user, userRoles } = useAppLocalStore();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const userRole = getLoggedInRoles();
 	const summaryReportsRef = useRef(null);
 	const dispatch = useDispatch();
 	const records = useSelector((state) => state.crud[module].data);
 	const filteredQuickBrowseCardData = quickBrowseCardData.filter((item) =>
-		item.allowedRoles.some((role) => userRole.includes(role))
+		item.allowedRoles.some((role) => userRoles.includes(role))
 	);
 
 	const handleHomeOverviewPrint = useReactToPrint({
@@ -92,7 +89,7 @@ export default function OperatorBoard({ height }) {
 				url: CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.OPD_DASHBOARD,
 				params: {
 					created: formatDate(new Date()),
-					created_by_id: roles.includes("operator_manager") ? undefined : user?.id,
+					created_by_id: userRoles.includes("operator_manager") ? undefined : user?.id,
 				},
 			})
 		);

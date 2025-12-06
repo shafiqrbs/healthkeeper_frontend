@@ -15,8 +15,7 @@ const DashedLine = () => (
 );
 
 const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
-	const { getLoggedInUser } = useAppLocalStore();
-	const user = getLoggedInUser();
+	const { user } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { hospitalConfigData } = useDomainHospitalConfigData();
 

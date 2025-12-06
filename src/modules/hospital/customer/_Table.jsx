@@ -16,7 +16,11 @@ import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
 import { useHotkeys, useMounted } from "@mantine/hooks";
-import { deleteEntityData, getIndexEntityData, editEntityData } from "@/app/store/core/crudThunk.js";
+import {
+	deleteEntityData,
+	getIndexEntityData,
+	editEntityData,
+} from "@/app/store/core/crudThunk.js";
 import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/crudSlice.js";
 import tableCss from "@assets/css/Table.module.css";
 import ViewDrawer from "./__ViewDrawer.jsx";
@@ -259,7 +263,11 @@ export default function _Table({ module, open, close }) {
 							title: t("Name"),
 							sortable: true,
 							render: (values) => (
-								<Text className="activate-link" fz="sm" onClick={() => handleDataShow(values.id)}>
+								<Text
+									className="activate-link"
+									fz="sm"
+									onClick={() => handleDataShow(values.id)}
+								>
 									{values.name}
 								</Text>
 							),
@@ -284,7 +292,6 @@ export default function _Table({ module, open, close }) {
 							render: (values) => values.discount_percent,
 						},
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",
@@ -351,7 +358,11 @@ export default function _Table({ module, open, close }) {
 				/>
 			</Box>
 			<DataTableFooter indexData={listData} module={module} />
-			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={customerObject} />
+			<ViewDrawer
+				viewDrawer={viewDrawer}
+				setViewDrawer={setViewDrawer}
+				entityObject={customerObject}
+			/>
 		</>
 	);
 }
