@@ -76,7 +76,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const [opened, { open, close }] = useDisclosure(false);
 	const hospitalConfig = getLoggedInHospitalUser();
 	const userId = hospitalConfig?.employee_id;
-	console.log(hospitalConfig?.particular_details);
 	const opdRoomId = hospitalConfig?.particular_details?.room_id;
 	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
 	const form = useForm({

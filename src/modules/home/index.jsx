@@ -5,17 +5,25 @@ import HomeSkeleton from "@components/skeletons/HomeSkeleton";
 import useAppLocalStore from "@/common/hooks/useAppLocalStore";
 import OperatorBoard from "@/modules/home/operator/OperatorBoard";
 import AdminBoard from "./operator/AdminBoard";
+import PrescriptionTable from "@modules/hospital/prescription/PrescriptionTable";
+import {MODULES} from "@/constants";
+import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
+import {useNavigate} from "react-router-dom";
 
 const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
 const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_emergency"];
-
+const ALLOWED_OPD_DOCTOR_ROLES = ["doctor_opd"];
+const module = MODULES.VISIT;
 export default function Index({ height }) {
 	const { userRoles } = useAppLocalStore();
 	const progress = useGetLoadingProgress();
-
+	const navigate = useNavigate();
 	// const config_jwt = useAuthStore(state => state);
 	// console.log(config_jwt.hospitalConfig)
-
+	if (userRoles.some(role => ALLOWED_OPD_DOCTOR_ROLES.includes(role))) {
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+		return null;
+	}
 	return (
 		<>
 			{progress !== 100 ? (
