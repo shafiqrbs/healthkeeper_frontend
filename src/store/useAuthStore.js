@@ -8,6 +8,7 @@ export const useAuthStore = create(
 		(set) => ({
 			token: null,
 			user: null,
+            tokenExp: null,
 			warehouse: null,
 			hospitalConfig: null,
 			roles: null,
@@ -16,7 +17,8 @@ export const useAuthStore = create(
 				set({
 					token: data.token,
 					user: data.decoded,
-					warehouse: data.user_warehouse,
+                    tokenExp: data.decoded.exp,    // store token expiry
+                    warehouse: data.user_warehouse,
 					hospitalConfig: data.hospital_config,
 					roles: {
 						access_control_role: data.access_control_role,
@@ -44,6 +46,7 @@ export const useAuthStore = create(
 				set({
 					token: null,
 					user: null,
+                    tokenExp: null,
 					warehouse: null,
 					hospitalConfig: null,
 					roles: null,
