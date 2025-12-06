@@ -61,12 +61,13 @@ const CSV_HEADERS = [
 
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
-export default function DashboardDailySummary() {
-	const { mainAreaHeight } = useOutletContext();
+export default function DashboardDailySummary({height:mainAreaHeight}) {
+
+//	const { mainAreaHeight } = useOutletContext();
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state.crud[module].data);
-	const height = mainAreaHeight - 156;
+	const  height = mainAreaHeight-98;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -137,6 +138,7 @@ export default function DashboardDailySummary() {
 					{t("PatientTickets")}
 				</Text>
 			</Flex>
+<<<<<<< HEAD
 			<Box px="sm" mb="sm">
 				<ReportFilterSearch
 					module={module}
@@ -144,6 +146,8 @@ export default function DashboardDailySummary() {
 					handleCSVDownload={handleCSVDownload}
 				/>
 			</Box>
+=======
+>>>>>>> 1e0115e (Update report for OPD User)
 			<Box className="border-top-none" px="sm">
 				<Grid columns={40} gutter={{ base: "xs" }}>
 					<Grid.Col span={40}>

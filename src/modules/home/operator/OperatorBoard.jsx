@@ -13,6 +13,7 @@ import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES_CORE } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import SummaryReports from "@modules/hospital/reports/sales-summary/SummaryReports";
+import DashboardDailySummary from "@modules/hospital/reports/items/DashboardDailySummary";
 
 const quickBrowseCardData = [
 	{
@@ -149,37 +150,7 @@ export default function OperatorBoard({ height }) {
 				</Card>
 			</Grid.Col>
 			<Grid.Col span={20}>
-				<Card padding="lg" radius="sm">
-					<Card.Section
-						h={32}
-						withBorder
-						component="div"
-						bg="var(--theme-primary-color-7)"
-					>
-						<Flex align="center" h="100%" px="lg" justify="space-between">
-							<Text pb={0} fz="sm" c="white" fw={500}>
-								{t("CollectionOverview")}
-							</Text>
-							<ActionIcon
-								variant="default"
-								c={"green.8"}
-								size="md"
-								aria-label="Filter"
-							>
-								<IconFileTypePdf
-									style={{ width: rem(16) }}
-									stroke={1.2}
-									onClick={handleHomeOverviewPrint}
-								/>
-							</ActionIcon>
-						</Flex>
-					</Card.Section>
-					<DailyOverview height={height} />
-					{/* print component for home overview */}
-					{records?.data && (
-						<SummaryReports ref={summaryReportsRef} data={records?.data || []} />
-					)}
-				</Card>
+				<DashboardDailySummary height={height} />
 			</Grid.Col>
 		</Grid>
 	);

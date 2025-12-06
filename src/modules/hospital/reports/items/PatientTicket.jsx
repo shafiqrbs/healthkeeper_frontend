@@ -191,7 +191,6 @@ export default function PatientTicket() {
 							render: (item) => item?.created_by || "N/A",
 						},
 					]}
-					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
