@@ -11,7 +11,6 @@ import {capitalizeWords} from "@utils/index";
 
 const InvoiceSummaryReports = forwardRef((data, ref) => {
 	const { hospitalConfigData } = useDoaminHospitalConfigData();
-	const  configData   = hospitalConfigData?.config;
 	const records = data || {};
 	const collectionSummaryData = records.data?.summary[0] || [];
 	const invoiceModeData = records?.data?.invoiceMode || [];
@@ -76,13 +75,13 @@ const InvoiceSummaryReports = forwardRef((data, ref) => {
 										</Box>
 										<Box>
 											<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-												{configData?.organization_name || ""}
+												{hospitalConfigData?.organization_name || ""}
 											</Text>
 											<Text ta="center" size="sm" c="gray" mt="2">
-												{configData?.address || ""}
+												{hospitalConfigData?.address || ""}
 											</Text>
 											<Text ta="center" size="sm" c="gray" mb="2">
-												{t("হটলাইন")} {configData?.hotline || ""}
+												{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
 											</Text>
 											<Text ta="center" fw="bold" size="lg" c="#1e40af">
 												{t("DailySummaryReports")}
