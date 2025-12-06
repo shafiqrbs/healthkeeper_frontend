@@ -42,15 +42,16 @@ export default function Index() {
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const { prescriptionId } = useParams();
 	const dispatch = useDispatch();
+
 	const tabParticulars = particularsData?.map((item) => ({
 		particular_type: item.particular_type,
 		ordering: item?.ordering ?? 0,
 	}));
+
 	const tabList = [...(tabParticulars?.sort((a, b) => a?.ordering - b?.ordering) || [])]?.map(
 		(item) => item?.particular_type?.name
 	);
 
-	const [fetching, setFetching] = useState(false);
 	const [records, setRecords] = useState([]);
 	const [customerId, setCustomerId] = useState();
 
@@ -77,7 +78,6 @@ export default function Index() {
 	};
 
 	const fetchData = async () => {
-		setFetching(true);
 		try {
 			const result = await getDataWithoutStore({
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_PRESCRIPTION}/${customerId}/${prescriptionId}`,
@@ -85,8 +85,6 @@ export default function Index() {
 			setRecords(result?.data || []);
 		} catch (err) {
 			console.error("Unexpected error:", err);
-		} finally {
-			setFetching(false);
 		}
 	};
 
@@ -149,24 +147,12 @@ export default function Index() {
 								<BaseTabs
 									tabValue={tabValue}
 									setTabValue={setTabValue}
-									tabList={[
-										"All",
-										...(tabList?.length > 0 ? tabList : ["No data"]),
-									]}
+									tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
 								/>
 							</Grid.Col>
 							<Grid.Col span={7}>
-								<Flex
-									mt={"xs"}
-									gap="xs"
-									justify="flex-end"
-									align="center"
-									wrap="wrap"
-								>
-									<PatientReferredAction
-										form={form}
-										invoiceId={prescriptionData?.data?.invoice_id}
-									/>
+								<Flex mt={"xs"} gap="xs" justify="flex-end" align="center" wrap="wrap">
+									<PatientReferredAction form={form} invoiceId={prescriptionData?.data?.invoice_id} />
 									<Button
 										onClick={handleOpenViewOverview}
 										size="compact-xs"
@@ -210,27 +196,12 @@ export default function Index() {
 					</Flex>
 				</Box>
 			)}
-			<Modal
-				opened={openedOverview}
-				onClose={closeOverview}
-				size="100%"
-				centered
-				withCloseButton={false}
-			>
-				<Table
-					module={module}
-					closeTable={closeOverview}
-					height={mainAreaHeight - 220}
-					availableClose
-				/>
+			<Modal opened={openedOverview} onClose={closeOverview} size="100%" centered withCloseButton={false}>
+				<Table module={module} closeTable={closeOverview} height={mainAreaHeight - 220} availableClose />
 			</Modal>
 
 			{selectedPrescriptionId && (
-				<DetailsDrawer
-					opened={opened}
-					close={close}
-					prescriptionId={selectedPrescriptionId}
-				/>
+				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
 		</>
 	);

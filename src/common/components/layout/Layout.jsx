@@ -13,7 +13,7 @@ import { decryptData } from "@utils/crypto.js";
 // import { useBrowserHeight } from "@hooks/userBrowserHeight";
 
 const Layout = () => {
-
+	const store = useAppLocalStore();
 	useHospitalUserData();
 	const { user } = useAppLocalStore();
 	const networkStatus = useNetwork();
@@ -21,11 +21,12 @@ const Layout = () => {
 	const location = useLocation();
 	const paramPath = location.pathname;
 
+	console.log(store);
 
 	/*=============================================================================*/
 	/*ALL REFERENCE FOR ACCESS DATA*/
 	//  console.log(authStorage)
-	 const user_jwt = useAuthStore(state => state.user);
+	const user_jwt = useAuthStore((state) => state.user);
 	// const token_jwt = useAuthStore(state => state.token);
 	// const config_jwt = useAuthStore(state => state.hospitalConfig);
 	// const warehouse_jwt = useAuthStore(state => state.warehouse);
@@ -87,7 +88,7 @@ const Layout = () => {
 	return (
 		<AppShell padding="0">
 			<AppShell.Header height={headerHeight} bg="gray.0">
-				<Header isOnline={networkStatus.online}  />
+				<Header isOnline={networkStatus.online} />
 			</AppShell.Header>
 			<AppShell.Main>
 				{paramPath !== "/" ? (

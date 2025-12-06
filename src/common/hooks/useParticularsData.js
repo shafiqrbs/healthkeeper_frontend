@@ -1,30 +1,12 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getIndexEntityData } from "@/app/store/core/crudThunk";
+import useAppLocalStore from "./useAppLocalStore";
 
 const useParticularsData = ({ modeName }) => {
-	const dispatch = useDispatch();
-	const particularsData = useSelector((state) => state.crud.particularList.data?.data);
-	const dataByMode = particularsData?.entities?.filter(
+	const { particularMatrix } = useAppLocalStore();
+	const dataByMode = particularMatrix?.entities?.filter(
 		(item) => item.mode_name?.toLowerCase() === modeName?.toLowerCase()
 	);
 
-	const fetchData = () => {
-		dispatch(
-			getIndexEntityData({
-				url: "hospital/setting/matrix",
-				module: "particularList",
-			})
-		);
-	};
-
-	useEffect(() => {
-		if (!particularsData?.entities?.length) {
-			fetchData();
-		}
-	}, [dispatch]);
-
-	return { particularsData: dataByMode, fetchData };
+	return { particularsData: dataByMode };
 };
 
 export default useParticularsData;

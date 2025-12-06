@@ -2,17 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {
-	ActionIcon,
-	Box,
-	Button,
-	Flex,
-	FloatingIndicator,
-	Group,
-	Menu,
-	Tabs,
-	Text,
-} from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
 import {
 	IconArrowRight,
 	IconChevronUp,
@@ -35,12 +25,7 @@ import DetailsDrawer from "../common/drawer/__DetailsDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { showEntityData } from "@/app/store/core/crudThunk";
-import {
-	capitalizeWords,
-	formatDateTimeAmPm,
-	formatDate,
-	getLoggedInHospitalUser,
-} from "@/common/utils";
+import { capitalizeWords, formatDateTimeAmPm, formatDate, getLoggedInHospitalUser } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { modals } from "@mantine/modals";
 import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
@@ -76,6 +61,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const [opened, { open, close }] = useDisclosure(false);
 	const hospitalConfig = getLoggedInHospitalUser();
 	const userId = hospitalConfig?.employee_id;
+
 	const opdRoomId = hospitalConfig?.particular_details?.room_id;
 	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
 	const form = useForm({
@@ -107,8 +93,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
-	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] =
-		useDisclosure(false);
+	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
 	const [singlePatientData, setSinglePatientData] = useState({});
 	const filterData = useSelector((state) => state.crud[module].filterData);
 
@@ -127,21 +112,20 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setControlsRefs(controlsRefs);
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				patient_mode: ["opd", "emergency"],
-				term: form.values.keywordSearch,
-				room_ids: opdRoomIds,
-				prescription_mode: processTab,
-				created: form.values.created,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "created_at",
-		});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			patient_mode: ["opd", "emergency"],
+			term: form.values.keywordSearch,
+			room_ids: opdRoomIds,
+			prescription_mode: processTab,
+			created: form.values.created,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+	});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
@@ -200,16 +184,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		const prescription_id = resultAction?.data?.data.uid;
 		if (prescription_id) {
 			if (closeTable) closeTable();
-			navigate(
-				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`
-			);
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 		} else {
 			console.error(resultAction);
-			showNotificationComponent(
-				t("Something Went wrong , please try again"),
-				"red.6",
-				"lightgray"
-			);
+			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
 		}
 	};
 
@@ -294,15 +272,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							titleClassName: "title-right",
 							render: (values) => {
 								return (
-									<Group
-										onClick={(e) => e.stopPropagation()}
-										gap={4}
-										justify="right"
-										wrap="nowrap"
-									>
-										{userRoles.some((role) =>
-											ALLOWED_OPD_ROLES.includes(role)
-										) && (
+									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+										{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
 											<>
 												{values?.prescription_id &&
 												userId == values?.prescription_created_by_id ? (
@@ -312,47 +283,35 @@ export default function Table({ module, height, closeTable, availableClose = fal
 														c="white"
 														fw={400}
 														size="compact-xs"
-														onClick={() =>
-															handlePrescription(
-																values.prescription_uid
-															)
-														}
+														onClick={() => handlePrescription(values.prescription_uid)}
 														radius="es"
 														rightSection={<IconArrowRight size={12} />}
 														className="border-right-radius-none"
 													>
 														{t("Prescription")}
 													</Button>
-												) : values?.prescription_id &&
-												  values.referred_mode == "room" ? (
+												) : values?.prescription_id && values.referred_mode == "room" ? (
 													<Button
 														variant="filled"
 														bg="var(--theme-success-color)"
 														c="white"
 														fw={400}
 														size="compact-xs"
-														onClick={() =>
-															handlePrescription(
-																values.prescription_id
-															)
-														}
+														onClick={() => handlePrescription(values.prescription_id)}
 														radius="es"
 														rightSection={<IconArrowRight size={12} />}
 														className="border-right-radius-none"
 													>
 														{t("Prescription")}
 													</Button>
-												) : !values?.prescription_id ||
-												  values.referred_mode == "room" ? (
+												) : !values?.prescription_id || values.referred_mode == "room" ? (
 													<Button
 														fw={400}
 														variant="filled"
 														bg="var(--theme-primary-color-6)"
 														c="white"
 														size="compact-xs"
-														onClick={() =>
-															handleProcessPrescription(values.id)
-														}
+														onClick={() => handleProcessPrescription(values.id)}
 														radius="es"
 														rightSection={<IconArrowRight size={12} />}
 														className="border-right-radius-none"
@@ -377,9 +336,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							title: t("Created"),
 							textAlignment: "right",
 							sortable: true,
-							render: (item) => (
-								<Text fz="xs">{formatDateTimeAmPm(item?.created_at)}</Text>
-							),
+							render: (item) => <Text fz="xs">{formatDateTimeAmPm(item?.created_at)}</Text>,
 						},
 						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
 						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
@@ -405,27 +362,18 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (item) => capitalizeWords(item?.referred_mode),
 						},
 						{
-							title: t("#"),
+							title: t(""),
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => {
 								return (
-									<Group
-										onClick={(e) => e.stopPropagation()}
-										gap={4}
-										justify="right"
-										wrap="nowrap"
-									>
-										{formatDate(new Date()) ===
-											formatDate(values?.created_at) && (
+									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+										{formatDate(new Date()) === formatDate(values?.created_at) && (
 											<ActionIcon
 												variant="transparent"
 												onClick={(e) => patientUpdate(e, values?.id)}
 											>
-												<IconPencil
-													size={18}
-													color="var(--theme-success-color)"
-												/>
+												<IconPencil size={18} color="var(--theme-success-color)" />
 											</ActionIcon>
 										)}
 
@@ -445,11 +393,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 													radius="es"
 													aria-label="Settings"
 												>
-													<IconDotsVertical
-														height={18}
-														width={18}
-														stroke={1.5}
-													/>
+													<IconDotsVertical height={18} width={18} stroke={1.5} />
 												</ActionIcon>
 											</Menu.Target>
 											<Menu.Dropdown>
@@ -491,9 +435,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 																/>
 															}
 															onClick={() =>
-																handlePrescriptionPrint(
-																	values?.prescription_id
-																)
+																handlePrescriptionPrint(values?.prescription_id)
 															}
 														>
 															{t("Prescription")}
@@ -524,11 +466,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			</Box>
 			<DataTableFooter indexData={listData} module="visit" />
 			{selectedPrescriptionId && (
-				<DetailsDrawer
-					opened={opened}
-					close={close}
-					prescriptionId={selectedPrescriptionId}
-				/>
+				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
 
 			<OPDA4BN data={printData} ref={a4Ref} />

@@ -15,6 +15,7 @@ import { errorNotification } from "@/common/components/notification/errorNotific
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { successNotification } from "@/common/components/notification/successNotification";
 import { useDispatch } from "react-redux";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 const referredModes = [
 	{ value: "room", label: "Room" },
@@ -23,6 +24,8 @@ const referredModes = [
 ];
 
 export default function PatientReferredAction({ module = "emergency", invoiceId, form }) {
+	const { features } = useAppLocalStore();
+
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const roomReferredForm = useForm({
