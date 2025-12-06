@@ -12,7 +12,8 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
-import { formatDate, getLoggedInUser, getUserRole } from "@/common/utils";
+import { formatDate } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { MODULES } from "@/constants";
@@ -44,6 +45,7 @@ const CSV_HEADERS = [
 const module = MODULES.VISIT;
 
 export default function PatientTicket() {
+	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
 	const { mainAreaHeight } = useOutletContext();
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
@@ -61,7 +63,7 @@ export default function PatientTicket() {
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
 
-	const userRoles = getUserRole();
+	const userRoles = getLoggedInRoles();
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -70,20 +72,22 @@ export default function PatientTicket() {
 
 	const user = getLoggedInUser();
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.PATIENT_TICKET,
-		filterParams: {
-			patient_mode: processTab,
-			start_date: form.values.start_date,
-			end_date: form.values.end_date,
-			created_by_id:
-				userRoles.includes("operator_manager") || userRoles.includes("admin_administrator")
-					? undefined
-					: user?.id,
-		},
-		perPage: PER_PAGE,
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.PATIENT_TICKET,
+			filterParams: {
+				patient_mode: processTab,
+				start_date: form.values.start_date,
+				end_date: form.values.end_date,
+				created_by_id:
+					userRoles.includes("operator_manager") ||
+					userRoles.includes("admin_administrator")
+						? undefined
+						: user?.id,
+			},
+			perPage: PER_PAGE,
+		});
 
 	const csvData =
 		records?.map((item, index) => ({
@@ -133,7 +137,11 @@ export default function PatientTicket() {
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<ReportFilterSearch module={module} form={form} handleCSVDownload={handleCSVDownload} />
+				<ReportFilterSearch
+					module={module}
+					form={form}
+					handleCSVDownload={handleCSVDownload}
+				/>
 			</Box>
 			<Box className="border-top-none" px="sm">
 				<DataTable
@@ -164,21 +172,22 @@ export default function PatientTicket() {
 							textAlignment: "right",
 							render: (item) => formatDate(item?.created_at),
 						},
-						{ accessor: "visiting_room",title: t("RoomNo") },
+						{ accessor: "visiting_room", title: t("RoomNo") },
 						{ accessor: "invoice", title: t("InvoiceID") },
 						{ accessor: "patient_id", title: t("PatientID") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "patient_payment_mode_name", title: t("Patient") },
 						{
-							accessor: 'amount',
+							accessor: "amount",
 							title: t("Total"),
 							width: 120,
-							textAlign: 'right',
-							align: 'right',
+							textAlign: "right",
+							align: "right",
 							render: ({ amount }) => amount,
 							footer: `SUM: ${records.reduce(
-								(total, r) => total + Number(r.amount || 0),0
+								(total, r) => total + Number(r.amount || 0),
+								0
 							)}`,
 						},
 						{

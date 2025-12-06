@@ -7,11 +7,22 @@ import {
 	IconPrinter,
 	IconFileText,
 } from "@tabler/icons-react";
-import { Box, Flex, Text, ActionIcon, Group, Button, SegmentedControl, Menu, rem } from "@mantine/core";
+import {
+	Box,
+	Flex,
+	Text,
+	ActionIcon,
+	Group,
+	Button,
+	SegmentedControl,
+	Menu,
+	rem,
+} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDate, getUserRole } from "@utils/index";
+import { formatDate } from "@utils/index";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
@@ -35,10 +46,17 @@ import __IssueMedicineDrawer from "@modules/hospital/ipdAdmitted/__IssueMedicine
 const module = MODULES.ADMISSION;
 const PER_PAGE = 500;
 
-const userRoles = getUserRole();
-const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse"];
+const ALLOWED_NURSE_ROLES = [
+	"role_domain",
+	"admin_administrator",
+	"nurse_basic",
+	"nurse_incharge",
+	"admin_nurse",
+];
 
 export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode }) {
+	const { getLoggedInRoles } = useAppLocalStore();
+	const userRoles = getLoggedInRoles();
 	const dischargePaperRef = useRef(null);
 	const admissionFormRef = useRef(null);
 	const prescriptionRef = useRef(null);
@@ -61,20 +79,21 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 		},
 	});
 
-	const { records, fetching, sortStatus, setSortStatus, handleScrollToBottom, scrollRef } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			patient_mode: "ipd",
-			term: filterData.keywordSearch,
-			prescription_mode: ipdMode,
-			created: filterData.created,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
+	const { records, fetching, sortStatus, setSortStatus, handleScrollToBottom, scrollRef } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				patient_mode: "ipd",
+				term: filterData.keywordSearch,
+				prescription_mode: ipdMode,
+				created: filterData.created,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+		});
 
 	const printPrescription = useReactToPrint({
 		content: () => prescriptionRef.current,
@@ -241,11 +260,18 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
-								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+								<Group
+									onClick={(e) => e.stopPropagation()}
+									gap={4}
+									justify="right"
+									wrap="nowrap"
+								>
 									{ipdMode === "non-prescription" && (
 										<Button
 											rightSection={<IconArrowNarrowRight size={18} />}
-											onClick={() => handleProcessConfirmation(values.id, values.uid)}
+											onClick={() =>
+												handleProcessConfirmation(values.id, values.uid)
+											}
 											variant="filled"
 											color="var(--theme-primary-color-6)"
 											radius="xs"
@@ -260,7 +286,9 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 										<>
 											<Button
 												rightSection={<IconArrowNarrowRight size={18} />}
-												onClick={() => handleManageOverview(values.uid, values.id)}
+												onClick={() =>
+													handleManageOverview(values.uid, values.id)
+												}
 												variant="filled"
 												color="var(--theme-primary-color-6)"
 												radius="xs"
@@ -271,10 +299,16 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 												{t("Manage")}
 											</Button>
 
-											{ALLOWED_NURSE_ROLES?.some((role) => userRoles.includes(role)) && (
+											{ALLOWED_NURSE_ROLES?.some((role) =>
+												userRoles.includes(role)
+											) && (
 												<Button
-													rightSection={<IconArrowNarrowRight size={18} />}
-													onClick={() => handleIssueMedicine(values.uid, values.id)}
+													rightSection={
+														<IconArrowNarrowRight size={18} />
+													}
+													onClick={() =>
+														handleIssueMedicine(values.uid, values.id)
+													}
 													variant="filled"
 													color="var(--theme-red-color-6)"
 													radius="xs"
@@ -317,7 +351,11 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 												radius="es"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={18} width={18} stroke={1.5} />
+												<IconDotsVertical
+													height={18}
+													width={18}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
@@ -332,7 +370,9 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 																}}
 															/>
 														}
-														onClick={() => handlePrescriptionPrint(values?.uid)}
+														onClick={() =>
+															handlePrescriptionPrint(values?.uid)
+														}
 													>
 														{t("Prescription")}
 													</Menu.Item>
@@ -362,7 +402,9 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 														}}
 													/>
 												}
-												onClick={() => handleDischargePaperPrint(values?.id)}
+												onClick={() =>
+													handleDischargePaperPrint(values?.id)
+												}
 											>
 												{t("DischargePaper")}
 											</Menu.Item>
@@ -391,10 +433,16 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 
 			<IpdManageDrawer opened={openedManageIpd} close={closeManageIpd} />
 
-			{admissionFormPrintData && <AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />}
+			{admissionFormPrintData && (
+				<AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />
+			)}
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
-			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
-			{dischargePaperPrintData && <DischargeA4BN data={dischargePaperPrintData} ref={dischargePaperRef} />}
+			{billingPrintData && (
+				<DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />
+			)}
+			{dischargePaperPrintData && (
+				<DischargeA4BN data={dischargePaperPrintData} ref={dischargePaperRef} />
+			)}
 
 			<__IssueMedicineDrawer
 				issueMedicineDrawer={issueMedicineDrawer}

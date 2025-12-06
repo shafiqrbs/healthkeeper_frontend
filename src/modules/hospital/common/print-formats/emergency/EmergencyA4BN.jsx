@@ -4,7 +4,7 @@ import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
 import DashedDivider from "@components/core-component/DashedDivider";
-import { getLoggedInUser } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
@@ -12,6 +12,7 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 const EmergencyA4BN = forwardRef(({ data, preview = false }, ref) => {
+	const { getLoggedInUser } = useAppLocalStore();
 	const user = getLoggedInUser();
 
 	const patientInfo = data || {};
@@ -127,7 +128,8 @@ const EmergencyA4BN = forwardRef(({ data, preview = false }, ref) => {
 								</Text>
 								<Text size="xs">
 									{patientInfo?.gender &&
-										patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
+										patientInfo.gender[0].toUpperCase() +
+											patientInfo.gender.slice(1)}
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -144,7 +146,8 @@ const EmergencyA4BN = forwardRef(({ data, preview = false }, ref) => {
 									{t("বয়স")}
 								</Text>
 								<Text size="xs">
-									{getValue(patientInfo?.year, 0)} Y, {getValue(patientInfo?.month, 0)} M,{" "}
+									{getValue(patientInfo?.year, 0)} Y,{" "}
+									{getValue(patientInfo?.month, 0)} M,{" "}
 									{getValue(patientInfo?.day, 0)} D
 								</Text>
 							</Group>
@@ -173,7 +176,10 @@ const EmergencyA4BN = forwardRef(({ data, preview = false }, ref) => {
 				<Box style={{ position: "relative", minHeight: "350px" }} mb="lg">
 					<Grid columns={12} gutter="md">
 						<Grid.Col span={4}></Grid.Col>
-						<Grid.Col span={8} style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}>
+						<Grid.Col
+							span={8}
+							style={{ borderLeft: "2px solid #555", paddingLeft: "20px" }}
+						>
 							<Stack gap="xs" h={PAPER_HEIGHT - 330} justify="space-between">
 								<Box>
 									<Text fz="xl" fw="bold" pl="sm">
@@ -184,9 +190,15 @@ const EmergencyA4BN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs" fw={600} mb="xs">
 												{index + 1}. {getValue(medicine.medicineName)}
 											</Text>
-											<Text size="xs" c="var(--theme-tertiary-color-8)" ml="md">
-												{getValue(medicine.dosage)} {getValue(medicine.by_meal)}{" "}
-												{getValue(medicine.duration)} {getValue(medicine.count)}
+											<Text
+												size="xs"
+												c="var(--theme-tertiary-color-8)"
+												ml="md"
+											>
+												{getValue(medicine.dosage)}{" "}
+												{getValue(medicine.by_meal)}{" "}
+												{getValue(medicine.duration)}{" "}
+												{getValue(medicine.count)}
 											</Text>
 										</Box>
 									))}
@@ -197,7 +209,8 @@ const EmergencyA4BN = forwardRef(({ data, preview = false }, ref) => {
 									<Grid columns={12} gutter="md">
 										<Grid.Col span={6}>
 											<Text mt="md" size="sm" fw={600}>
-												{t("ডাক্তারের নাম")}: .................................
+												{t("ডাক্তারের নাম")}:
+												.................................
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={6}>

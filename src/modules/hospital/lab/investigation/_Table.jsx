@@ -1,5 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { IconPrinter, IconChevronUp, IconSelector, IconArrowRight, IconBarcode } from "@tabler/icons-react";
+import {
+	IconPrinter,
+	IconChevronUp,
+	IconSelector,
+	IconArrowRight,
+	IconBarcode,
+} from "@tabler/icons-react";
 import {
 	Box,
 	Flex,
@@ -17,7 +23,8 @@ import {
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useEffect, useRef, useState } from "react";
 import { MODULES } from "@/constants";
-import { formatDate, getUserRole } from "@utils/index";
+import { formatDate } from "@utils/index";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import tableCss from "@assets/css/Table.module.css";
 import { DataTable } from "mantine-datatable";
@@ -34,7 +41,6 @@ import Barcode from "react-barcode";
 import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
-
 
 const module = MODULES.LAB_TEST;
 const PER_PAGE = 500;
@@ -62,6 +68,7 @@ const tabs = [
 ];
 
 export default function _Table({ height }) {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const navigate = useNavigate();
@@ -83,18 +90,19 @@ export default function _Table({ height }) {
 	const printBarCodeValue = useReactToPrint({
 		content: () => barCodeRef.current,
 	});
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX_REPORTS,
-		filterParams: {
-			term: form.values.keywordSearch,
-			created: form.values.created,
-			process: processTab,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX_REPORTS,
+			filterParams: {
+				term: form.values.keywordSearch,
+				created: form.values.created,
+				process: processTab,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+		});
 	const handleAdmissionOverview = (id) => {
 		setSelectedPatientId(id);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}`);
@@ -130,7 +138,7 @@ export default function _Table({ height }) {
 
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
-	const userRoles = getUserRole();
+	const userRoles = getLoggedInRoles();
 
 	useEffect(() => {
 		if (type === "a4") {
@@ -146,10 +154,12 @@ export default function _Table({ height }) {
 	};
 
 	const handleTest = (invoice, reportId) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${invoice}/report/${reportId}`);
+		navigate(
+			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${invoice}/report/${reportId}`
+		);
 	};
 
-	const handleLabReport = async (id,reportSlug) => {
+	const handleLabReport = async (id, reportSlug) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
 		});
@@ -160,15 +170,15 @@ export default function _Table({ height }) {
 
 	const [valid, setValid] = useState({});
 
-	async function handleBarcodeTag(barcode,reportId) {
+	async function handleBarcodeTag(barcode, reportId) {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.TAG_PRINT}/${reportId}`,
 		});
-		if (res.data === "valid"){
+		if (res.data === "valid") {
 			window.location.reload();
 		}
 
-/*		setBarcodeValue(reportId);
+		/*		setBarcodeValue(reportId);
 		requestAnimationFrame(printBarCodeValue);*/
 	}
 
@@ -253,7 +263,9 @@ export default function _Table({ height }) {
 									<Flex justify="flex-end" gap="2">
 										{values?.process === "New" && (
 											<Button
-												onClick={() => handleBarcodeTag(values?.barcode,values?.uid)}
+												onClick={() =>
+													handleBarcodeTag(values?.barcode, values?.uid)
+												}
 												size="compact-xs"
 												fz={"xs"}
 												leftSection={<IconBarcode size={14} />}
@@ -263,9 +275,12 @@ export default function _Table({ height }) {
 												{t("Tag")}
 											</Button>
 										)}
-										{(values?.process === "In-progress" || values?.process === "Tagged") && (
+										{(values?.process === "In-progress" ||
+											values?.process === "Tagged") && (
 											<Button
-												onClick={() => handleTest(values?.invoice_uid, values?.uid)}
+												onClick={() =>
+													handleTest(values?.invoice_uid, values?.uid)
+												}
 												size="compact-xs"
 												fz={"xs"}
 												fw={"400"}
@@ -320,7 +335,12 @@ export default function _Table({ height }) {
 			/>
 			<Box display="none">
 				<Box ref={barCodeRef}>
-					<Barcode fontSize="10" width="1" height="30" value={barcodeValue || "BARCODETEST"} />
+					<Barcode
+						fontSize="10"
+						width="1"
+						height="30"
+						value={barcodeValue || "BARCODETEST"}
+					/>
 				</Box>
 			</Box>
 			<LabReportA4BN data={labReportData} ref={labReportRef} />

@@ -5,10 +5,11 @@ import { useMediaQuery, useNetwork, useViewportSize } from "@mantine/hooks";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import Navigation from "@components/layout/Navigation";
 import { Navigate, Outlet } from "react-router-dom";
-import { getLoggedInUser } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useState } from "react";
 
 export default function DoctorLayout() {
+	const { getLoggedInUser } = useAppLocalStore();
 	const { t } = useTranslation();
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
@@ -50,7 +51,13 @@ export default function DoctorLayout() {
 							</Box>
 						)}
 						<Box w="100%">
-							<Outlet context={{ isOnline: networkStatus.online, mainAreaHeight, setPageTitle }} />
+							<Outlet
+								context={{
+									isOnline: networkStatus.online,
+									mainAreaHeight,
+									setPageTitle,
+								}}
+							/>
 						</Box>
 					</Flex>
 				</Box>

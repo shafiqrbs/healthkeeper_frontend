@@ -4,7 +4,7 @@ import { AppShell } from "@mantine/core";
 import Header from "./Header";
 import Footer from "./Footer";
 import useConfigData from "@hooks/config-data/useConfigData";
-import { getLoggedInUser } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import HomeIndex from "@/modules/home";
 import useHospitalUserData from "@hooks/useHospitalUserData";
 import { useAuthStore } from "@/store/useAuthStore.js";
@@ -15,6 +15,7 @@ import { decryptData } from "@utils/crypto.js";
 
 const Layout = () => {
 	useHospitalUserData();
+	const { getLoggedInUser } = useAppLocalStore();
 	const user = getLoggedInUser();
 	const networkStatus = useNetwork();
 	const { height } = useViewportSize();
@@ -25,6 +26,7 @@ const Layout = () => {
 	/*=============================================================================*/
 	/*ALL REFERENCE FOR ACCESS DATA*/
 	const authStorage = useAuthStore((state) => state);
+	console.log(authStorage);
 	//  console.log(authStorage)
 	// const user_jwt = useAuthStore(state => state.user);
 	// const token_jwt = useAuthStore(state => state.token);

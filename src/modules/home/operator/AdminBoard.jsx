@@ -15,7 +15,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { getUserRole } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import OperatorOverview from "@modules/home/operator/OperatorOverview";
 import DailyOverview from "@modules/home/common/DailyOverview";
 
@@ -117,9 +117,10 @@ const quickBrowseCardData = [
 ];
 
 export default function AdminBoard() {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const userRole = getUserRole();
+	const userRole = getLoggedInRoles();
 
 	const filteredQuickBrowseButtonData = quickBrowseButtonData.filter((item) =>
 		item.allowedRoles.some((role) => userRole.includes(role))
@@ -133,7 +134,12 @@ export default function AdminBoard() {
 		<Grid columns={40} gutter={{ base: "md" }}>
 			<Grid.Col span={20}>
 				<Card padding="lg" radius="sm" h="100%">
-					<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
+					<Card.Section
+						h={32}
+						withBorder
+						component="div"
+						bg="var(--theme-primary-color-7)"
+					>
 						<Flex align="center" h="100%" px="lg">
 							<Text pb={0} fz="sm" c="white" fw={500}>
 								{t("quickBrowse")}
@@ -150,7 +156,13 @@ export default function AdminBoard() {
 									py="sm"
 									style={{ cursor: "pointer", borderRadius: "4%" }}
 								>
-									<Stack direction="column" align="center" h="100%" px="lg" gap="les">
+									<Stack
+										direction="column"
+										align="center"
+										h="100%"
+										px="lg"
+										gap="les"
+									>
 										<Flex
 											w={32}
 											h={32}
@@ -173,7 +185,12 @@ export default function AdminBoard() {
 			</Grid.Col>
 			<Grid.Col span={20}>
 				<Card padding="lg" radius="sm" h="100%">
-					<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
+					<Card.Section
+						h={32}
+						withBorder
+						component="div"
+						bg="var(--theme-primary-color-7)"
+					>
 						<Flex align="center" h="100%" px="lg">
 							<Text pb={0} fz="sm" c="white" fw={500}>
 								{t("CollectionOverview")}

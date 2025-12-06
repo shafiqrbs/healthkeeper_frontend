@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { IconEye, IconPrinter, IconTag } from "@tabler/icons-react";
-import { formatDate, getUserRole } from "@utils/index";
+import { formatDate } from "@utils/index";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useRef, useState } from "react";
 import Barcode from "react-barcode";
 import { useReactToPrint } from "react-to-print";
@@ -15,12 +16,13 @@ const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"]
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
 
 export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const test = entity;
 	const { id, reportId } = useParams();
 	const navigate = useNavigate();
-	const userRoles = getUserRole();
+	const userRoles = getLoggedInRoles();
 	const barCodeRef = useRef(null);
 	const [barcodeValue, setBarcodeValue] = useState("");
 	const labReportRef = useRef(null);
@@ -36,7 +38,10 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 	});
 	const handleTest = (report_id) => {
 		refetchDiagnosticReport();
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${report_id}`, { replace: true });
+		navigate(
+			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${report_id}`,
+			{ replace: true }
+		);
 	};
 
 	const handleLabReport = async (id, reportSlug) => {
@@ -67,10 +72,18 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 
 			{id ? (
 				<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 148} pos="relative">
-					<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+					<LoadingOverlay
+						visible={isLoading}
+						zIndex={1000}
+						overlayProps={{ radius: "sm", blur: 2 }}
+					/>
 					<Stack className="form-stack-vertical" p="xs">
 						{test?.invoice_transaction?.map((transaction, index) => (
-							<Box key={index} className="borderRadiusAll" bg="var(--mantine-color-white)">
+							<Box
+								key={index}
+								className="borderRadiusAll"
+								bg="var(--mantine-color-white)"
+							>
 								<Box fz={"xs"} fw={"600"} p="sm">
 									{t("Date")} : {formatDate(transaction?.created_at)}
 								</Box>
@@ -88,12 +101,20 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 										<Text fz="xs">{item.item_name}</Text>
 										<Text fz="xs">Status:{item?.process}</Text>
 										<Flex align="center" gap="mes" mt="xs">
-											{userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
+											{userRoles.some((role) =>
+												ALLOWED_LAB_ROLES.includes(role)
+											) && (
 												<>
 													{item?.process === "Tagged" &&
-														userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) && (
+														userRoles.some((role) =>
+															ALLOWED_LAB_ROLES.includes(role)
+														) && (
 															<Button
-																onClick={() => handleTest(item.invoice_particular_id)}
+																onClick={() =>
+																	handleTest(
+																		item.invoice_particular_id
+																	)
+																}
 																size="compact-xs"
 																bg="var(--theme-primary-color-6)"
 																color="white"
@@ -106,7 +127,11 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 															ALLOWED_LAB_DOCTOR_ROLES.includes(role)
 														) && (
 															<Button
-																onClick={() => handleTest(item.invoice_particular_id)}
+																onClick={() =>
+																	handleTest(
+																		item.invoice_particular_id
+																	)
+																}
 																size="compact-xs"
 																bg="var(--theme-warn-color-6)"
 																color="white"
@@ -117,11 +142,20 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 													{item?.process === "Done" && (
 														<>
 															<Button
-																onClick={() => handleTest(item.invoice_particular_id)}
+																onClick={() =>
+																	handleTest(
+																		item.invoice_particular_id
+																	)
+																}
 																size="compact-xs"
 																bg="var(--theme-primary-color-6)"
 																color="white"
-																leftSection={<IconEye color="white" size={16} />}
+																leftSection={
+																	<IconEye
+																		color="white"
+																		size={16}
+																	/>
+																}
 															>
 																{t("Show")}
 															</Button>
@@ -135,7 +169,12 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 																	)
 																}
 																color="white"
-																leftSection={<IconPrinter color="white" size={16} />}
+																leftSection={
+																	<IconPrinter
+																		color="white"
+																		size={16}
+																	/>
+																}
 															>
 																{t("Print")}
 															</Button>
@@ -143,7 +182,9 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 													)}
 													{item?.process == "New" && (
 														<Button
-															leftSection={<IconTag stroke={1.2} size={12} />}
+															leftSection={
+																<IconTag stroke={1.2} size={12} />
+															}
 															onClick={() =>
 																handleBarcodeTag(
 																	item?.barcode,
@@ -167,7 +208,13 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 					</Stack>
 				</ScrollArea>
 			) : (
-				<Stack h={mainAreaHeight - 154} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
+				<Stack
+					h={mainAreaHeight - 154}
+					bg="var(--mantine-color-body)"
+					align="center"
+					justify="center"
+					gap="md"
+				>
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}
@@ -175,7 +222,12 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 			{/* ----------- barcode generator ---------- */}
 			<Box display="none">
 				<Box ref={barCodeRef} mx="auto">
-					<Barcode fontSize="10" width="1" height="30" value={barcodeValue || "BARCODETEST"} />
+					<Barcode
+						fontSize="10"
+						width="1"
+						height="30"
+						value={barcodeValue || "BARCODETEST"}
+					/>
 				</Box>
 			</Box>
 			{customReportName === "covid-19" ? (

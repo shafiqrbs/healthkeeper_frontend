@@ -4,7 +4,7 @@ import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
 import DashedDivider from "@components/core-component/DashedDivider";
-import { getLoggedInUser } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
@@ -12,6 +12,7 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 const DischargeA4EN = forwardRef(({ data, preview = false }, ref) => {
+	const { getLoggedInUser } = useAppLocalStore();
 	const user = getLoggedInUser();
 
 	const patientInfo = data || {};
@@ -82,19 +83,21 @@ const DischargeA4EN = forwardRef(({ data, preview = false }, ref) => {
 						Sir/Madam,
 					</Text>
 					<Text fz="sm" mt={"xs"}>
-						I, Dr. ______________________________________, hereby state that the patient Mr./Ms.
-						______________________________________, age ______ years, gender __________, address
-						________________________________________, was admitted to our hospital on ____ / ____ / ______.
+						I, Dr. ______________________________________, hereby state that the patient
+						Mr./Ms. ______________________________________, age ______ years, gender
+						__________, address ________________________________________, was admitted
+						to our hospital on ____ / ____ / ______.
 					</Text>
 					<Text fz="sm" mt={"xs"}>
-						The patient was admitted due to ____________________________ (primary diagnosis/complaint).
-						Following admission, the necessary investigations and treatment were provided. The patient has
-						shown gradual improvement and is currently stable and in a satisfactory condition.
+						The patient was admitted due to ____________________________ (primary
+						diagnosis/complaint). Following admission, the necessary investigations and
+						treatment were provided. The patient has shown gradual improvement and is
+						currently stable and in a satisfactory condition.
 					</Text>
 					<Text fz="sm" mt={"xs"}>
-						During the course of treatment, the patient received ____________________________ (summary of
-						treatment). The current clinical status is stable, and the patient is deemed fit for discharge
-						to home.
+						During the course of treatment, the patient received
+						____________________________ (summary of treatment). The current clinical
+						status is stable, and the patient is deemed fit for discharge to home.
 					</Text>
 					<Text fz="sm" mt={"xs"}>
 						Therefore, the patient is being discharged today, on ____ / ____ / ______.
@@ -112,8 +115,8 @@ const DischargeA4EN = forwardRef(({ data, preview = false }, ref) => {
 					<Text fz="sm">• ____________________________________________</Text>
 					<Text fz="sm">• ____________________________________________</Text>
 					<Text fz="sm" mt={"xs"}>
-						The patient has been advised to attend follow‑up on ____ / ____ / ______, or earlier if
-						necessary.
+						The patient has been advised to attend follow‑up on ____ / ____ / ______, or
+						earlier if necessary.
 					</Text>
 					<Text fz="sm" mt={"xs"}>
 						Kindly arrange to record the above in the hospital records accordingly.

@@ -6,10 +6,11 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import CoreHeaderNavbar from "@modules/core/CoreHeaderNavbar";
 import Navigation from "@components/layout/Navigation";
 import { Navigate, Outlet } from "react-router-dom";
-import { getLoggedInUser } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useState } from "react";
 
 export default function AdminLayout() {
+	const { getLoggedInUser } = useAppLocalStore();
 	const { t } = useTranslation();
 	const progress = useGetLoadingProgress();
 	const matches = useMediaQuery("(max-width: 64em)");
@@ -55,11 +56,21 @@ export default function AdminLayout() {
 						<Grid columns={36} gutter={{ base: 8 }}>
 							{!matches && (
 								<Grid.Col span={6}>
-									<Navigation menu="base" subMenu={"baseSubmenu"} mainAreaHeight={mainAreaHeight} />
+									<Navigation
+										menu="base"
+										subMenu={"baseSubmenu"}
+										mainAreaHeight={mainAreaHeight}
+									/>
 								</Grid.Col>
 							)}
 							<Grid.Col span={matches ? 30 : 30}>
-								<Outlet context={{ isOnline: networkStatus.online, mainAreaHeight, setPageTitle }} />
+								<Outlet
+									context={{
+										isOnline: networkStatus.online,
+										mainAreaHeight,
+										setPageTitle,
+									}}
+								/>
 							</Grid.Col>
 						</Grid>
 					</Box>

@@ -3,7 +3,8 @@ import { IconFileTypePdf, IconMicroscope, IconStethoscope, IconWallet } from "@t
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { CONFIGURATION_ROUTES, HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { formatDate, getLoggedInUser, getUserRole } from "@/common/utils";
+import { formatDate } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import DailyOverview from "@modules/home/common/DailyOverview";
 import { useReactToPrint } from "react-to-print";
 import { useEffect, useRef } from "react";
@@ -67,11 +68,12 @@ const quickBrowseCardData = [
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
 export default function OperatorBoard({ height }) {
-	const roles = getUserRole();
+	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
+	const roles = getLoggedInRoles();
 	const user = getLoggedInUser();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const userRole = getUserRole();
+	const userRole = getLoggedInRoles();
 	const summaryReportsRef = useRef(null);
 	const dispatch = useDispatch();
 	const records = useSelector((state) => state.crud[module].data);
@@ -100,7 +102,12 @@ export default function OperatorBoard({ height }) {
 		<Grid columns={40} h={height} gutter={{ base: "xs" }}>
 			<Grid.Col span={20}>
 				<Card padding="lg" radius="sm" h={height - 8}>
-					<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
+					<Card.Section
+						h={32}
+						withBorder
+						component="div"
+						bg="var(--theme-primary-color-7)"
+					>
 						<Flex align="center" h="100%" px="lg">
 							<Text pb={0} fz="sm" c="white" fw={500}>
 								{t("QuickBrowse")}
@@ -117,7 +124,13 @@ export default function OperatorBoard({ height }) {
 									py="sm"
 									style={{ cursor: "pointer", borderRadius: "4%" }}
 								>
-									<Stack direction="column" align="center" h="100%" px="lg" gap="les">
+									<Stack
+										direction="column"
+										align="center"
+										h="100%"
+										px="lg"
+										gap="les"
+									>
 										<Flex
 											w={32}
 											h={32}
@@ -140,12 +153,22 @@ export default function OperatorBoard({ height }) {
 			</Grid.Col>
 			<Grid.Col span={20}>
 				<Card padding="lg" radius="sm">
-					<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
+					<Card.Section
+						h={32}
+						withBorder
+						component="div"
+						bg="var(--theme-primary-color-7)"
+					>
 						<Flex align="center" h="100%" px="lg" justify="space-between">
 							<Text pb={0} fz="sm" c="white" fw={500}>
 								{t("CollectionOverview")}
 							</Text>
-							<ActionIcon variant="default" c={"green.8"} size="md" aria-label="Filter">
+							<ActionIcon
+								variant="default"
+								c={"green.8"}
+								size="md"
+								aria-label="Filter"
+							>
 								<IconFileTypePdf
 									style={{ width: rem(16) }}
 									stroke={1.2}
@@ -156,7 +179,9 @@ export default function OperatorBoard({ height }) {
 					</Card.Section>
 					<DailyOverview height={height} />
 					{/* print component for home overview */}
-					{records?.data && <SummaryReports ref={summaryReportsRef} data={records?.data || []} />}
+					{records?.data && (
+						<SummaryReports ref={summaryReportsRef} data={records?.data || []} />
+					)}
 				</Card>
 			</Grid.Col>
 		</Grid>

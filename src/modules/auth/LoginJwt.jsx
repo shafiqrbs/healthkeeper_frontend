@@ -25,12 +25,12 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import commonDataStoreIntoLocalStorage from "@hooks/local-storage/useCommonDataStoreIntoLocalStorage.js";
 import { API_BASE_URL, API_KEY } from "@/constants";
-import { getLoggedInUser } from "@/common/utils";
-import {jwtDecode} from "jwt-decode";
-import {useAuthStore} from "@/store/useAuthStore.js";
-
+import useAppLocalStore from "@hooks/useAppLocalStore";
+import { jwtDecode } from "jwt-decode";
+import { useAuthStore } from "@/store/useAuthStore.js";
 
 export default function LoginJwt() {
+	const { getLoggedInUser } = useAppLocalStore();
 	const user = getLoggedInUser();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -47,58 +47,7 @@ export default function LoginJwt() {
 		},
 	});
 
-	if (user?.id) {
-		console.info("Already logged in, redirecting from login page.");
-		return <Navigate replace to="/" />;
-	}
-
-    axios.defaults.withCredentials = true;
-
-    function login(data) {
-        setSpinner(true);
-        axios({
-            method: "POST",
-            url: `${API_BASE_URL}/login-tb`,
-            headers: {
-                Accept: `application/json`,
-                "Content-Type": `application/json`,
-                "Access-Control-Allow-Origin": "*",
-                "X-Api-Key": API_KEY,
-            },
-            data: data,
-        })
-            .then((res) => {
-                if (res.data.status === 200) {
-                    const token = res.data.data.token;
-                    const decoded = jwtDecode(token);
-
-                    useAuthStore.getState().setUserData({
-                        token: token,
-                        decoded: decoded,
-                        user_warehouse: res.data.data.user_warehouse,
-                        hospital_config: res.data.data.hospital_config
-                    });
-
-                    localStorage.setItem("user", JSON.stringify(decoded)); // remove when full implement
-
-                    commonDataStoreIntoLocalStorage(decoded?.id).then(() => {
-                        setErrorMessage("");
-                        setSpinner(false);
-                        return navigate("/");
-                    });
-                } else {
-                    setErrorMessage(res.data.message);
-                    setSpinner(false);
-                }
-            })
-            .catch(function (error) {
-                setSpinner(false);
-                console.error(error);
-            });
-    }
-
-
-    useHotkeys(
+	useHotkeys(
 		[
 			[
 				"alt+n",
@@ -109,6 +58,56 @@ export default function LoginJwt() {
 		],
 		[]
 	);
+
+	if (user?.id) {
+		console.info("Already logged in, redirecting from login page.");
+		return <Navigate replace to="/" />;
+	}
+
+	axios.defaults.withCredentials = true;
+
+	function login(data) {
+		setSpinner(true);
+		axios({
+			method: "POST",
+			url: `${API_BASE_URL}/login-tb`,
+			headers: {
+				Accept: `application/json`,
+				"Content-Type": `application/json`,
+				"Access-Control-Allow-Origin": "*",
+				"X-Api-Key": API_KEY,
+			},
+			data: data,
+		})
+			.then((res) => {
+				if (res.data.status === 200) {
+					const token = res.data.data.token;
+					const decoded = jwtDecode(token);
+
+					useAuthStore.getState().setUserData({
+						token: token,
+						decoded: decoded,
+						user_warehouse: res.data.data.user_warehouse,
+						hospital_config: res.data.data.hospital_config,
+					});
+
+					localStorage.setItem("user", JSON.stringify(decoded)); // remove when full implement
+
+					commonDataStoreIntoLocalStorage(decoded?.id).then(() => {
+						setErrorMessage("");
+						setSpinner(false);
+						return navigate("/");
+					});
+				} else {
+					setErrorMessage(res.data.message);
+					setSpinner(false);
+				}
+			})
+			.catch(function (error) {
+				setSpinner(false);
+				console.error(error);
+			});
+	}
 
 	return (
 		<div className={classes.wrapper}>
@@ -188,7 +187,10 @@ export default function LoginJwt() {
 					<Group justify="space-between" mt="lg" className={LoginPage.controls}>
 						<Anchor c="dimmed" size="sm" className={LoginPage.control}>
 							<Center inline>
-								<IconArrowLeft style={{ width: rem(12), height: rem(12) }} stroke={1.5} />
+								<IconArrowLeft
+									style={{ width: rem(12), height: rem(12) }}
+									stroke={1.5}
+								/>
 								<Box ml={5}>Back to the sign-up page</Box>
 							</Center>
 						</Anchor>

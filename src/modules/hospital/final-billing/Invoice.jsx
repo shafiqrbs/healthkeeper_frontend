@@ -15,7 +15,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
-import { formatDate, getUserRole } from "@utils/index";
+import { formatDate } from "@utils/index";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -33,11 +34,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import IPDAllPrint from "@hospital-components/print-formats/ipd/IPDAllPrint";
 import { useReactToPrint } from "react-to-print";
 
-const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator"];
+const ALLOWED_BILLING_ROLES = [
+	"billing_manager",
+	"billing_cash",
+	"admin_hospital",
+	"admin_administrator",
+];
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
 
 export default function Invoice({ entity, setRefetchBillingKey }) {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const form = useForm(getFormValues(t));
 	const dispatch = useDispatch();
@@ -45,10 +52,12 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 	const test = entity;
 	const { id, transactionId: selectedTransactionId } = useParams();
 	const navigate = useNavigate();
-	const userRoles = getUserRole();
+	const userRoles = getLoggedInRoles();
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const { particularsData } = useParticularsData({ modeName: "Admission" });
-	const investigationParticulars = particularsData?.find((item) => item.particular_type.name === "Investigation");
+	const investigationParticulars = particularsData?.find(
+		(item) => item.particular_type.name === "Investigation"
+	);
 	const cabinListData = useSelector((state) => state.crud.cabin?.data?.data);
 	const bedListData = useSelector((state) => state.crud.bed?.data?.data);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -103,7 +112,9 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 	}, [fetchData]);
 
 	const handleTest = (transactionId) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}/payment/${transactionId}`);
+		navigate(
+			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}/payment/${transactionId}`
+		);
 	};
 
 	const handleAutocompleteOptionAdd = (value) => {
@@ -112,7 +123,9 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 
 		if (sectionParticulars) {
 			// =============== get current investigation list or initialize empty array ================
-			const currentList = Array.isArray(form.values.investigation) ? form.values.investigation : [];
+			const currentList = Array.isArray(form.values.investigation)
+				? form.values.investigation
+				: [];
 
 			// =============== check if this value already exists ================
 			const existingIndex = currentList.findIndex(
@@ -136,7 +149,9 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 
 	const handleAutocompleteOptionRemove = (idx) => {
 		// =============== get current investigation list and remove item at index ================
-		const currentList = Array.isArray(form.values.investigation) ? form.values.investigation : [];
+		const currentList = Array.isArray(form.values.investigation)
+			? form.values.investigation
+			: [];
 		const updatedList = currentList.filter((_, index) => index !== idx);
 		form.setFieldValue("investigation", updatedList);
 	};
@@ -257,14 +272,23 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 				<Text fw={600} fz="sm" py="es" px="xs">
 					{t("InvoiceTransaction")}
 				</Text>
-				<Button onClick={printIPDAll} bg="var(--theme-secondary-color-6)" color="white" size="xs">
+				<Button
+					onClick={printIPDAll}
+					bg="var(--theme-secondary-color-6)"
+					color="white"
+					size="xs"
+				>
 					{t("AllPrint")}
 				</Button>
 			</Flex>
 			{id ? (
 				<>
 					<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 320}>
-						<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+						<LoadingOverlay
+							visible={isSubmitting}
+							zIndex={1000}
+							overlayProps={{ radius: "sm", blur: 2 }}
+						/>
 						<Stack className="form-stack-vertical" p="xs" pos="relative">
 							{test?.invoice_transaction?.map((item, index) => (
 								<Box
@@ -281,12 +305,20 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 									<Text fz="xs">Status:{item?.process}</Text>
 									<Text fz="xs">Amount:{Number(item?.total, 2)}</Text>
 									<Flex align="center" gap="sm">
-										{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
+										{userRoles.some((role) =>
+											ALLOWED_BILLING_ROLES.includes(role)
+										) && (
 											<>
 												{item?.process === "New" &&
-													userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
+													userRoles.some((role) =>
+														ALLOWED_BILLING_ROLES.includes(role)
+													) && (
 														<Button
-															onClick={() => handleTest(item.hms_invoice_transaction_id)}
+															onClick={() =>
+																handleTest(
+																	item.hms_invoice_transaction_id
+																)
+															}
 															size="xs"
 															bg="var(--theme-primary-color-6)"
 															color="white"
@@ -297,7 +329,11 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 												{item?.process === "Done" && (
 													<>
 														<Button
-															onClick={() => handleTest(item.hms_invoice_transaction_id)}
+															onClick={() =>
+																handleTest(
+																	item.hms_invoice_transaction_id
+																)
+															}
 															size="xs"
 															bg="var(--theme-primary-color-6)"
 															color="white"
@@ -305,7 +341,11 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 															{t("Show")}
 														</Button>
 														<Button
-															onClick={() => handleTest(item.hms_invoice_transaction_id)}
+															onClick={() =>
+																handleTest(
+																	item.hms_invoice_transaction_id
+																)
+															}
 															size="xs"
 															bg="var(--theme-secondary-color-6)"
 															color="white"
@@ -326,10 +366,15 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 							<Box bg="var(--theme-primary-color-0)" pl={"xs"} pr={"xs"} pb={"xs"}>
 								<Tabs defaultValue="investigation">
 									<Tabs.List>
-										<Tabs.Tab value="investigation">{t("Investigation")}</Tabs.Tab>
+										<Tabs.Tab value="investigation">
+											{t("Investigation")}
+										</Tabs.Tab>
 										<Tabs.Tab value="bed-cabin">{t("Bed/Cabin")}</Tabs.Tab>
 									</Tabs.List>
-									<Tabs.Panel value="investigation" bg="var(--mantine-color-white)">
+									<Tabs.Panel
+										value="investigation"
+										bg="var(--mantine-color-white)"
+									>
 										<Grid align="center" columns={20} mt="xs" mx="xs">
 											<Grid.Col span={20}>
 												<Autocomplete
@@ -350,37 +395,56 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 														}, 0);
 													}}
 													classNames={inputCss}
-													rightSection={<IconCaretUpDownFilled size={16} />}
+													rightSection={
+														<IconCaretUpDownFilled size={16} />
+													}
 												/>
 											</Grid.Col>
 										</Grid>
 										<Box w="100%" bg="var(--mantine-color-white)">
 											<Grid columns={18} gutter="xs">
-												<Grid.Col span={18} className="animate-ease-out" px="xs">
-													<ScrollArea scrollbars="y" type="never" h="116" mx="xs">
-														<Stack gap={0} bg="var(--mantine-color-white)" mt="2xs">
-															{form.values?.investigation?.map((item, idx) => (
-																<Flex
-																	key={idx}
-																	align="center"
-																	justify="space-between"
-																	py="es"
-																>
-																	<Text fz="xs">
-																		{idx + 1}. {item.name}
-																	</Text>
-																	<ActionIcon
-																		color="red"
-																		size="xs"
-																		variant="subtle"
-																		onClick={() =>
-																			handleAutocompleteOptionRemove(idx)
-																		}
+												<Grid.Col
+													span={18}
+													className="animate-ease-out"
+													px="xs"
+												>
+													<ScrollArea
+														scrollbars="y"
+														type="never"
+														h="116"
+														mx="xs"
+													>
+														<Stack
+															gap={0}
+															bg="var(--mantine-color-white)"
+															mt="2xs"
+														>
+															{form.values?.investigation?.map(
+																(item, idx) => (
+																	<Flex
+																		key={idx}
+																		align="center"
+																		justify="space-between"
+																		py="es"
 																	>
-																		<IconX size={16} />
-																	</ActionIcon>
-																</Flex>
-															))}
+																		<Text fz="xs">
+																			{idx + 1}. {item.name}
+																		</Text>
+																		<ActionIcon
+																			color="red"
+																			size="xs"
+																			variant="subtle"
+																			onClick={() =>
+																				handleAutocompleteOptionRemove(
+																					idx
+																				)
+																			}
+																		>
+																			<IconX size={16} />
+																		</ActionIcon>
+																	</Flex>
+																)
+															)}
 														</Stack>
 													</ScrollArea>
 													<Box mt="xs">
@@ -393,8 +457,14 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 																type="button"
 																disabled={isSubmitting}
 															>
-																<Stack gap={0} align="center" justify="center">
-																	<Text fz="xs">{t("Print")}</Text>
+																<Stack
+																	gap={0}
+																	align="center"
+																	justify="center"
+																>
+																	<Text fz="xs">
+																		{t("Print")}
+																	</Text>
 																</Stack>
 															</Button>
 															<Button
@@ -404,7 +474,11 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 																loading={isSubmitting}
 																onClick={handleInvestigationSubmit}
 															>
-																<Stack gap={0} align="center" justify="center">
+																<Stack
+																	gap={0}
+																	align="center"
+																	justify="center"
+																>
 																	<Text fz="xs">{t("Save")}</Text>
 																</Stack>
 															</Button>
@@ -416,7 +490,13 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 									</Tabs.Panel>
 									<Tabs.Panel value="bed-cabin" bg="var(--mantine-color-white)">
 										<Stack justify="space-between" h={mainAreaHeight - 570}>
-											<Grid mt="xs" mx="xs" gutter="xs" align="center" columns={20}>
+											<Grid
+												mt="xs"
+												mx="xs"
+												gutter="xs"
+												align="center"
+												columns={20}
+											>
 												<Grid.Col span={20}>
 													<Select
 														label=""
@@ -442,14 +522,20 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 														placeholder="Pick value"
 														value={form.values.room}
 														data={getRoomData()}
-														onChange={(value) => form.setFieldValue("room", value)}
+														onChange={(value) =>
+															form.setFieldValue("room", value)
+														}
 														disabled={!form.values.roomType}
 													/>
 												</Grid.Col>
 											</Grid>
 											<Box w="100%" bg="var(--mantine-color-white)">
 												<Grid columns={18} gutter="xs">
-													<Grid.Col span={18} className="animate-ease-out" px="xs">
+													<Grid.Col
+														span={18}
+														className="animate-ease-out"
+														px="xs"
+													>
 														<Flex mt="xs" align="center" gap="xs">
 															<InputNumberForm
 																form={form}
@@ -467,7 +553,11 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 																bg="var(--theme-save-btn-color)"
 																onClick={handleRoomSubmit}
 															>
-																<Stack gap={0} align="center" justify="center">
+																<Stack
+																	gap={0}
+																	align="center"
+																	justify="center"
+																>
 																	<Text fz="xs">{t("Save")}</Text>
 																</Stack>
 															</Button>
@@ -483,7 +573,13 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 					</Box>
 				</>
 			) : (
-				<Stack h={mainAreaHeight - 62} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
+				<Stack
+					h={mainAreaHeight - 62}
+					bg="var(--mantine-color-body)"
+					align="center"
+					justify="center"
+					gap="md"
+				>
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}

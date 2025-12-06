@@ -18,7 +18,8 @@ import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import Navigation from "@components/layout/Navigation";
 import Investigation from "@modules/hospital/ipdAdmitted/common/tabs/Investigation";
 import { modals } from "@mantine/modals";
-import { formatDate, getUserRole } from "@utils/index";
+import { formatDate } from "@utils/index";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import VitalsChart from "../common/tabs/VitalsChart";
 import InsulinChart from "../common/tabs/InsulinChart";
 import Dashboard from "../common/tabs/Dashboard";
@@ -29,8 +30,16 @@ import RoomTransfer from "../common/tabs/RoomTransfer.jsx";
 const module = MODULES.E_FRESH;
 
 const TAB_ITEMS = [
-	{ label: "Dashboard", value: "dashboard", allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"] },
-	{ label: "E-Fresh", value: "e-fresh", allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"] },
+	{
+		label: "Dashboard",
+		value: "dashboard",
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+	},
+	{
+		label: "E-Fresh",
+		value: "e-fresh",
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+	},
 	{
 		label: "Investigation",
 		value: "investigation",
@@ -39,7 +48,7 @@ const TAB_ITEMS = [
 	{
 		label: "Vitals Chart",
 		value: "vitals-chart",
-		allowedGroups: [ "admin_administrator", "nurse_incharge"],
+		allowedGroups: ["admin_administrator", "nurse_incharge"],
 	},
 	{
 		label: "Insulin Chart",
@@ -54,7 +63,7 @@ const TAB_ITEMS = [
 	{
 		label: "Discharge",
 		value: "discharge",
-		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"]
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
 	},
 ];
 
@@ -67,11 +76,12 @@ const PRINT_SECTION_ITEMS = [
 ];
 
 export default function Index() {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [records, setRecords] = useState([]);
 	const { mainAreaHeight } = useOutletContext();
 	const { id } = useParams();
-	const userRole = getUserRole();
+	const userRole = getLoggedInRoles();
 	const [opened, { close }] = useDisclosure(false);
 	const [showHistory, setShowHistory] = useState(false);
 	const [medicines, setMedicines] = useState([]);
@@ -170,18 +180,26 @@ export default function Index() {
 									</Text>
 									<Text fz="xs">{prescriptionData?.data?.gender}</Text>
 									<Text fz="xs">
-										{prescriptionData?.data?.year || 0}y {prescriptionData?.data?.month || 0}m{" "}
+										{prescriptionData?.data?.year || 0}y{" "}
+										{prescriptionData?.data?.month || 0}m{" "}
 										{prescriptionData?.data?.day || 0}d{" "}
 									</Text>
 									<Text fz="xs">
-										{t("Created")} {formatDate(prescriptionData?.data?.created_at)}
+										{t("Created")}{" "}
+										{formatDate(prescriptionData?.data?.created_at)}
 									</Text>
 								</Box>
 							</Box>
-							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
+							<ScrollArea
+								bg="var(--mantine-color-white)"
+								h={mainAreaHeight - 80}
+								scrollbars="y"
+							>
 								<Stack h="100%" py="xs" gap={0}>
 									{TAB_ITEMS.filter((tabItem) =>
-										userRole.some((role) => tabItem.allowedGroups.includes(role))
+										userRole.some((role) =>
+											tabItem.allowedGroups.includes(role)
+										)
 									).map((tabItem, index) => (
 										<Box
 											key={index}
@@ -218,7 +236,9 @@ export default function Index() {
 									</Box>
 
 									{PRINT_SECTION_ITEMS.filter((tabItem) =>
-										userRole.some((role) => tabItem.allowedGroups.includes(role))
+										userRole.some((role) =>
+											tabItem.allowedGroups.includes(role)
+										)
 									).map((tabItem, index) => (
 										<Box
 											key={index}
@@ -257,7 +277,10 @@ export default function Index() {
 								<BaseTabs
 									tabValue={tabValue}
 									setTabValue={setTabValue}
-									tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
+									tabList={[
+										"All",
+										...(tabList?.length > 0 ? tabList : ["No data"]),
+									]}
 								/>
 								<Flex gap="xs" w="100%">
 									<Box w="40%">
@@ -283,7 +306,9 @@ export default function Index() {
 								</Flex>
 							</Stack>
 						)}
-						{baseTabValue === "room-transfer" && <RoomTransfer data={prescriptionData?.data} />}
+						{baseTabValue === "room-transfer" && (
+							<RoomTransfer data={prescriptionData?.data} />
+						)}
 						{baseTabValue === "dashboard" && <Dashboard />}
 						{/*{baseTabValue === "issue-medicine" && <IssueMedicine />}*/}
 						{/*{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}*/}
@@ -299,7 +324,13 @@ export default function Index() {
 						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
 						{!baseTabValue && (
-							<Flex bg="var(--mantine-color-white)" align="center" justify="center" w="100%" h="100%">
+							<Flex
+								bg="var(--mantine-color-white)"
+								align="center"
+								justify="center"
+								w="100%"
+								h="100%"
+							>
 								<Text size="sm" c="dimmed">
 									No item selected
 								</Text>

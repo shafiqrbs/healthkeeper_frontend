@@ -15,7 +15,7 @@ import { useDisclosure, useElementSize } from "@mantine/hooks";
 import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
 import { IconArrowRight } from "@tabler/icons-react";
 import Table from "@modules/hospital/visit/_Table";
-import { getLoggedInUser } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
@@ -28,6 +28,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 const module = MODULES.PRESCRIPTION;
 
 export default function Index() {
+	const { getLoggedInUser } = useAppLocalStore();
 	const [showOtherInstruction, setShowOtherInstruction] = useState(false);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
@@ -144,7 +145,10 @@ export default function Index() {
 									<BaseTabs
 										tabValue={tabValue}
 										setTabValue={setTabValue}
-										tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
+										tabList={[
+											"All",
+											...(tabList?.length > 0 ? tabList : ["No data"]),
+										]}
 									/>
 									<Switch
 										color="var(--theme-primary-color-6)"
@@ -153,13 +157,24 @@ export default function Index() {
 										offLabel="OTHER"
 										radius="xs"
 										checked={showOtherInstruction}
-										onChange={(event) => setShowOtherInstruction(event.currentTarget.checked)}
+										onChange={(event) =>
+											setShowOtherInstruction(event.currentTarget.checked)
+										}
 									/>
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={8}>
-								<Flex mt={"xs"} gap="md" justify="flex-end" align="center" wrap="wrap">
-									<PatientReferredAction form={form} invoiceId={prescriptionData?.data?.invoice_id} />
+								<Flex
+									mt={"xs"}
+									gap="md"
+									justify="flex-end"
+									align="center"
+									wrap="wrap"
+								>
+									<PatientReferredAction
+										form={form}
+										invoiceId={prescriptionData?.data?.invoice_id}
+									/>
 									<Button
 										onClick={handleOpenViewOverview}
 										size="xs"
@@ -193,7 +208,9 @@ export default function Index() {
 									prescriptionData={prescriptionData}
 									tabParticulars={tabParticulars}
 									ignoreOpdQuantityLimit
-									redirectUrl={HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR_OPD.INDEX}
+									redirectUrl={
+										HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR_OPD.INDEX
+									}
 								/>
 							</Grid.Col>
 							{hasRecords && (
@@ -205,12 +222,27 @@ export default function Index() {
 					</Flex>
 				</Box>
 			)}
-			<Modal opened={openedOverview} onClose={closeOverview} size="100%" centered withCloseButton={false}>
-				<Table module={module} closeTable={closeOverview} height={mainAreaHeight - 220} availableClose />
+			<Modal
+				opened={openedOverview}
+				onClose={closeOverview}
+				size="100%"
+				centered
+				withCloseButton={false}
+			>
+				<Table
+					module={module}
+					closeTable={closeOverview}
+					height={mainAreaHeight - 220}
+					availableClose
+				/>
 			</Modal>
 
 			{selectedPrescriptionId && (
-				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+				<DetailsDrawer
+					opened={opened}
+					close={close}
+					prescriptionId={selectedPrescriptionId}
+				/>
 			)}
 		</>
 	);

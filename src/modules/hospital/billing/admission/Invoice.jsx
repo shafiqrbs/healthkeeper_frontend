@@ -15,7 +15,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
-import { formatDate, getUserRole } from "@utils/index";
+import { formatDate } from "@utils/index";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -33,13 +34,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import IPDAllPrint from "@hospital-components/print-formats/ipd/IPDAllPrint";
 import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
-import {getDataWithoutStore} from "@/services/apiService";
+import { getDataWithoutStore } from "@/services/apiService";
 
-const ALLOWED_BILLING_ROLES = ["billing_manager", "billing_cash", "admin_hospital", "admin_administrator"];
+const ALLOWED_BILLING_ROLES = [
+	"billing_manager",
+	"billing_cash",
+	"admin_hospital",
+	"admin_administrator",
+];
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
 
-export default function Invoice({ transactions,setRefetchBillingKey }) {
+export default function Invoice({ transactions, setRefetchBillingKey }) {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const invoicePrintRef = useRef(null);
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const { t } = useTranslation();
@@ -48,15 +55,16 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { id, transactionId: selectedTransactionId } = useParams();
 	const navigate = useNavigate();
-	const userRoles = getUserRole();
+	const userRoles = getLoggedInRoles();
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const { particularsData } = useParticularsData({ modeName: "Admission" });
-	const investigationParticulars = particularsData?.find((item) => item.particular_type.name === "Investigation");
+	const investigationParticulars = particularsData?.find(
+		(item) => item.particular_type.name === "Investigation"
+	);
 	const cabinListData = useSelector((state) => state.crud.cabin?.data?.data);
 	const bedListData = useSelector((state) => state.crud.bed?.data?.data);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const ipdAllPrintRef = useRef(null);
-
 
 	const printIPDAll = useReactToPrint({ content: () => ipdAllPrintRef.current });
 
@@ -109,7 +117,9 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 	}, [fetchData]);
 
 	const handleTest = (transactionId) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}/payment/${transactionId}`);
+		navigate(
+			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}/payment/${transactionId}`
+		);
 	};
 
 	const handlePrint = async (id) => {
@@ -126,7 +136,9 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 
 		if (sectionParticulars) {
 			// =============== get current investigation list or initialize empty array ================
-			const currentList = Array.isArray(form.values.investigation) ? form.values.investigation : [];
+			const currentList = Array.isArray(form.values.investigation)
+				? form.values.investigation
+				: [];
 
 			// =============== check if this value already exists ================
 			const existingIndex = currentList.findIndex(
@@ -150,7 +162,9 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 
 	const handleAutocompleteOptionRemove = (idx) => {
 		// =============== get current investigation list and remove item at index ================
-		const currentList = Array.isArray(form.values.investigation) ? form.values.investigation : [];
+		const currentList = Array.isArray(form.values.investigation)
+			? form.values.investigation
+			: [];
 		const updatedList = currentList.filter((_, index) => index !== idx);
 		form.setFieldValue("investigation", updatedList);
 	};
@@ -272,13 +286,22 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 				<Text fw={600} fz="sm" py="es" px="xs">
 					{t("InvoiceHistory")}
 				</Text>
-				<Button onClick={printIPDAll} bg="var(--theme-secondary-color-6)" color="white" size="compact-xs">
+				<Button
+					onClick={printIPDAll}
+					bg="var(--theme-secondary-color-6)"
+					color="white"
+					size="compact-xs"
+				>
 					{t("AllPrint")}
 				</Button>
 			</Flex>
 			{id && transactions.length ? (
 				<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 52}>
-					<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+					<LoadingOverlay
+						visible={isSubmitting}
+						zIndex={1000}
+						overlayProps={{ radius: "sm", blur: 2 }}
+					/>
 					<Stack className="form-stack-vertical" p="xs" pos="relative">
 						{transactions?.map((item, index) => (
 							<Box
@@ -326,13 +349,18 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 									</Grid.Col>
 								</Grid>
 								<Flex align="center" gap="sm" mt={"md"} justify="flex-end">
-									{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
+									{userRoles.some((role) =>
+										ALLOWED_BILLING_ROLES.includes(role)
+									) && (
 										<>
-
 											{item?.process === "Done" && (
 												<>
 													<Button
-														onClick={() => handleTest(item.hms_invoice_transaction_id)}
+														onClick={() =>
+															handleTest(
+																item.hms_invoice_transaction_id
+															)
+														}
 														size="compact-xs"
 														bg="var(--theme-primary-color-6)"
 														color="white"
@@ -357,7 +385,13 @@ export default function Invoice({ transactions,setRefetchBillingKey }) {
 					</Stack>
 				</ScrollArea>
 			) : (
-				<Stack h={mainAreaHeight - 52} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
+				<Stack
+					h={mainAreaHeight - 52}
+					bg="var(--mantine-color-body)"
+					align="center"
+					justify="center"
+					gap="md"
+				>
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}

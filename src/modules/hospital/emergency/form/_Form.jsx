@@ -8,12 +8,14 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch } from "react-redux";
-import { formatDOB, getLoggedInUser } from "@/common/utils";
+import { formatDOB } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
 const LOCAL_STORAGE_KEY = "emergencyPatientFormData";
 
 export default function _Form({ module }) {
+	const { getLoggedInUser } = useAppLocalStore();
 	const dispatch = useDispatch();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
@@ -27,7 +29,14 @@ export default function _Form({ module }) {
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
 			if (!form.values.amount && form.values.patient_payment_mode_id == "30") {
-				showNotificationComponent(t("AmountsRequired"), "red", "lightgray", true, 700, true);
+				showNotificationComponent(
+					t("AmountsRequired"),
+					"red",
+					"lightgray",
+					true,
+					700,
+					true
+				);
 				setIsSubmitting(false);
 				return {};
 			}
@@ -42,11 +51,20 @@ export default function _Form({ module }) {
 
 				// strict validation: check if JS normalized it
 				const isValid =
-					dateObj.getFullYear() === year && dateObj.getMonth() === month - 1 && dateObj.getDate() === day;
+					dateObj.getFullYear() === year &&
+					dateObj.getMonth() === month - 1 &&
+					dateObj.getDate() === day;
 
 				// check if future date
 				if (dateObj > today) {
-					showNotificationComponent(t("DateOfBirthCantBeFutureDate"), "red", "lightgray", true, 700, true);
+					showNotificationComponent(
+						t("DateOfBirthCantBeFutureDate"),
+						"red",
+						"lightgray",
+						true,
+						700,
+						true
+					);
 					setIsSubmitting(false);
 					return {};
 				}
@@ -56,7 +74,10 @@ export default function _Form({ module }) {
 					created_by_id: createdBy?.id,
 					room_id: hospitalConfigData?.emergency_room_id,
 					dob: isValid ? dateObj.toLocaleDateString("en-CA", options) : "invalid",
-					appointment: new Date(form.values.appointment).toLocaleDateString("en-CA", options),
+					appointment: new Date(form.values.appointment).toLocaleDateString(
+						"en-CA",
+						options
+					),
 				};
 
 				const data = {
@@ -68,10 +89,24 @@ export default function _Form({ module }) {
 				const resultAction = await dispatch(storeEntityData(data));
 
 				if (storeEntityData.rejected.match(resultAction)) {
-					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+					showNotificationComponent(
+						resultAction.payload.message,
+						"red",
+						"lightgray",
+						true,
+						700,
+						true
+					);
 					return {};
 				} else {
-					showNotificationComponent(t("Emergency saved successfully"), "green", "lightgray", true, 700, true);
+					showNotificationComponent(
+						t("Emergency saved successfully"),
+						"green",
+						"lightgray",
+						true,
+						700,
+						true
+					);
 					setRefetchData({ module, refetching: true });
 					form.reset();
 					localStorage.removeItem(LOCAL_STORAGE_KEY);
@@ -81,7 +116,14 @@ export default function _Form({ module }) {
 				}
 			} catch (error) {
 				console.error("Error submitting emergency:", error);
-				showNotificationComponent(t("SomethingWentWrong"), "red", "lightgray", true, 700, true);
+				showNotificationComponent(
+					t("SomethingWentWrong"),
+					"red",
+					"lightgray",
+					true,
+					700,
+					true
+				);
 				return {};
 			} finally {
 				setIsSubmitting(false);
@@ -89,7 +131,14 @@ export default function _Form({ module }) {
 		} else {
 			if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
 				console.error(form.errors);
-				showNotificationComponent(t("PleaseFillAllFieldsToSubmit"), "red", "lightgray", true, 700, true);
+				showNotificationComponent(
+					t("PleaseFillAllFieldsToSubmit"),
+					"red",
+					"lightgray",
+					true,
+					700,
+					true
+				);
 			}
 			return {};
 		}

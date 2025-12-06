@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import { getLoggedInUser } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
@@ -11,6 +11,7 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 const DetailsInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
+	const { getLoggedInUser } = useAppLocalStore();
 	const user = getLoggedInUser();
 
 	const patientInfo = data || {};
@@ -133,7 +134,8 @@ const DetailsInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 								</Text>
 								<Text size="xs">
 									{patientInfo?.gender &&
-										patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
+										patientInfo.gender[0].toUpperCase() +
+											patientInfo.gender.slice(1)}
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -150,7 +152,8 @@ const DetailsInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									{t("বয়স")}
 								</Text>
 								<Text size="xs">
-									{getValue(patientInfo?.year, 0)} Y, {getValue(patientInfo?.month, 0)} M,{" "}
+									{getValue(patientInfo?.year, 0)} Y,{" "}
+									{getValue(patientInfo?.month, 0)} M,{" "}
 									{getValue(patientInfo?.day, 0)} D
 								</Text>
 							</Group>
@@ -191,7 +194,9 @@ const DetailsInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td fw={600}>{t("ভর্তির তারিখ ও সময়")}</Table.Td>
-								<Table.Td>{getValue(patientInfo?.admission_date_time, "")}</Table.Td>
+								<Table.Td>
+									{getValue(patientInfo?.admission_date_time, "")}
+								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td fw={600}>{t("ছাড়ের তারিখ")}</Table.Td>
@@ -199,7 +204,9 @@ const DetailsInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td fw={600}>{t("মোট পরিশোধযোগ্য")}</Table.Td>
-								<Table.Td fw={600}>{getValue(patientInfo?.total_payable, "0")}</Table.Td>
+								<Table.Td fw={600}>
+									{getValue(patientInfo?.total_payable, "0")}
+								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
@@ -254,7 +261,9 @@ const DetailsInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 						</Table.Thead>
 						<Table.Tbody>
 							<Table.Tr>
-								<Table.Td>{getValue(patientInfo?.deposit_date, "১২-১২-২০২০")}</Table.Td>
+								<Table.Td>
+									{getValue(patientInfo?.deposit_date, "১২-১২-২০২০")}
+								</Table.Td>
 								<Table.Td>{getValue(patientInfo?.total_deposit, "0")}</Table.Td>
 								<Table.Td>{getValue(patientInfo?.cabin_rent, "0")}</Table.Td>
 								<Table.Td>{getValue(patientInfo?.grand_total, "0")}</Table.Td>

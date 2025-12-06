@@ -51,8 +51,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getLoggedInUser, getUserRole } from "@/common/utils";
-import {useAuthStore} from "@/store/useAuthStore.js";
+import useAppLocalStore from "@hooks/useAppLocalStore";
+import { useAuthStore } from "@/store/useAuthStore.js";
 
 const languages = [
 	{ label: "EN", value: "en", flag: flagGB },
@@ -233,7 +233,12 @@ const SearchInput = ({ value, onChange, onKeyDown, onClear }) => {
 
 // Action Item Component
 const ActionItem = ({ action, isSelected, onClick }) => (
-	<Link id={`item-${action.index}`} className={"link"} to={getActionPath(action)} onClick={onClick}>
+	<Link
+		id={`item-${action.index}`}
+		className={"link"}
+		to={getActionPath(action)}
+		onClick={onClick}
+	>
 		<Group
 			wrap="nowrap"
 			align="center"
@@ -336,16 +341,40 @@ const HeaderActions = ({
 	}, []);
 
 	return (
-		<Flex gap="sm" justify="flex-end" direction="row" wrap="wrap" mih={42} align={"right"} px={"xs"} pr={"24"}>
-			<LanguagePicker languageSelected={languageSelected} onLanguageChange={handleLanguageChange} />
+		<Flex
+			gap="sm"
+			justify="flex-end"
+			direction="row"
+			wrap="wrap"
+			mih={42}
+			align={"right"}
+			px={"xs"}
+			pr={"24"}
+		>
+			<LanguagePicker
+				languageSelected={languageSelected}
+				onLanguageChange={handleLanguageChange}
+			/>
 			<Tooltip label={`Theme: ${getSchemeLabel(colorScheme)}`} bg={"#635031"} withArrow>
-				<ActionIcon className="mt-6 header-action-icon" onClick={handleToggleColorScheme} variant="subtle">
+				<ActionIcon
+					className="mt-6 header-action-icon"
+					onClick={handleToggleColorScheme}
+					variant="subtle"
+				>
 					{getSchemeIcon(colorScheme)}
 				</ActionIcon>
 			</Tooltip>
-			<Tooltip label={fullscreen ? t("NormalScreen") : t("Fullscreen")} bg={"#635031"} withArrow>
+			<Tooltip
+				label={fullscreen ? t("NormalScreen") : t("Fullscreen")}
+				bg={"#635031"}
+				withArrow
+			>
 				<ActionIcon className="mt-6 header-action-icon" onClick={toggle} variant="subtle">
-					{fullscreen ? <IconWindowMinimize size={18} /> : <IconWindowMaximize size={18} />}
+					{fullscreen ? (
+						<IconWindowMinimize size={18} />
+					) : (
+						<IconWindowMaximize size={18} />
+					)}
 				</ActionIcon>
 			</Tooltip>
 			<Tooltip
@@ -368,7 +397,11 @@ const HeaderActions = ({
 					<IconLogout size={18} />
 				</ActionIcon>
 			</Tooltip>
-			<Tooltip label={isOnline ? t("Online") : t("Offline")} bg={isOnline ? "green.5" : "red.5"} withArrow>
+			<Tooltip
+				label={isOnline ? t("Online") : t("Offline")}
+				bg={isOnline ? "green.5" : "red.5"}
+				withArrow
+			>
 				<ActionIcon className="mt-6 header-action-icon" variant="filled" radius="xl">
 					{isOnline ? <IconWifi size={20} /> : <IconWifiOff size={20} />}
 				</ActionIcon>
@@ -378,14 +411,17 @@ const HeaderActions = ({
 };
 
 export default function Header({ isOnline, configData, mainAreaHeight }) {
-	const userRole = getUserRole();
+	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
+	const userRole = getLoggedInRoles();
 	const [opened, { close }] = useDisclosure(false);
 	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const height = mainAreaHeight - 140;
 	const { toggle, fullscreen } = useFullscreen();
-	const [languageSelected, setLanguageSelected] = useState(languages.find((item) => item.value === i18n.language));
+	const [languageSelected, setLanguageSelected] = useState(
+		languages.find((item) => item.value === i18n.language)
+	);
 	const loginUser = getLoggedInUser();
 	const [shortcutModalOpen, setShortcutModalOpen] = useState(false);
 	const [value, setValue] = useState("");
@@ -406,7 +442,9 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 
 	useEffect(() => {
 		if (selectedIndex >= 0 && filteredItems.length > 0) {
-			const selectedElement = document.getElementById(`item-${filteredItems[selectedIndex].index}`);
+			const selectedElement = document.getElementById(
+				`item-${filteredItems[selectedIndex].index}`
+			);
 			if (selectedElement) {
 				selectedElement.scrollIntoView({
 					behavior: "smooth",
@@ -492,7 +530,9 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 			setSelectedIndex((prevIndex) => (prevIndex + 1) % filteredItems.length);
 		} else if (event.key === "ArrowUp") {
 			event.preventDefault();
-			setSelectedIndex((prevIndex) => (prevIndex <= 0 ? filteredItems.length - 1 : prevIndex - 1));
+			setSelectedIndex((prevIndex) =>
+				prevIndex <= 0 ? filteredItems.length - 1 : prevIndex - 1
+			);
 		} else if (event.key === "Enter" && selectedIndex >= 0) {
 			handleActionSelect(filteredItems[selectedIndex]);
 		}
@@ -517,13 +557,12 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 		i18n.changeLanguage(item.value);
 	}
 
-
-    const clearUser = useAuthStore((state) => state.clearUser);
-    function handleLogout() {
-        clearUser();
-        localStorage.clear();
-        navigate("/login");
-    }
+	const clearUser = useAuthStore((state) => state.clearUser);
+	function handleLogout() {
+		clearUser();
+		localStorage.clear();
+		navigate("/login");
+	}
 
 	return (
 		<>
@@ -531,7 +570,9 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 				<Modal.Overlay />
 				<Modal.Content p={"xs"}>
 					<Modal.Header ml={"xs"}>
-						<Modal.Title>{configData?.domain?.company_name || configData?.domain?.name || ""}</Modal.Title>
+						<Modal.Title>
+							{configData?.domain?.company_name || configData?.domain?.name || ""}
+						</Modal.Title>
 						<Modal.CloseButton />
 					</Modal.Header>
 					<Modal.Body>
@@ -546,7 +587,11 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 					</Grid.Col>
 					<Grid.Col span={matches2 ? 6 : matches ? 10 : 12}>
 						<Group align="center" gap={"md"} wrap="nowrap" mih={42}>
-							<SearchButton matches2={matches2} t={t} onClick={() => setShortcutModalOpen(true)} />
+							<SearchButton
+								matches2={matches2}
+								t={t}
+								onClick={() => setShortcutModalOpen(true)}
+							/>
 						</Group>
 					</Grid.Col>
 					<Grid.Col span={matches2 ? 12 : matches ? 8 : 6}>
@@ -599,7 +644,9 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 						<Stack spacing="xs">
 							{filteredItems
 								.reduce((groups, item) => {
-									const existingGroup = groups.find((g) => g.group === item.group);
+									const existingGroup = groups.find(
+										(g) => g.group === item.group
+									);
 									if (existingGroup) {
 										existingGroup.items.push(item);
 									} else {
@@ -625,7 +672,10 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 												<ActionItem
 													key={itemIndex}
 													action={action}
-													isSelected={filteredItems.indexOf(action) === selectedIndex}
+													isSelected={
+														filteredItems.indexOf(action) ===
+														selectedIndex
+													}
 													onClick={() => {
 														setShortcutModalOpen(false);
 														setValue("");

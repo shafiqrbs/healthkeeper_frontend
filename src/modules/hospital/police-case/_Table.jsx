@@ -2,8 +2,25 @@ import { useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
-import { IconArrowNarrowRight, IconChevronUp, IconDotsVertical, IconPrinter, IconSelector } from "@tabler/icons-react";
+import {
+	ActionIcon,
+	Box,
+	Button,
+	Flex,
+	FloatingIndicator,
+	Group,
+	Menu,
+	rem,
+	Tabs,
+	Text,
+} from "@mantine/core";
+import {
+	IconArrowNarrowRight,
+	IconChevronUp,
+	IconDotsVertical,
+	IconPrinter,
+	IconSelector,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -14,7 +31,8 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
-import { formatDate, getUserRole } from "@/common/utils";
+import { formatDate } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { getDataWithoutStore } from "@/services/apiService";
@@ -33,6 +51,7 @@ const tabs = [
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "admin_administrator"];
 
 export default function _Table({ module }) {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
@@ -46,7 +65,7 @@ export default function _Table({ module }) {
 	const [selectedId, setSelectedId] = useState(null);
 	const [processTab, setProcessTab] = useState("confirmed");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const userRoles = getUserRole();
+	const userRoles = getLoggedInRoles();
 	const [printData, setPrintData] = useState(null);
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
@@ -61,27 +80,30 @@ export default function _Table({ module }) {
 	});
 
 	const handlePatientForm = (id) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.POLICE_CASE.UPDATE}/${id}`, { replace: true });
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.POLICE_CASE.UPDATE}/${id}`, {
+			replace: true,
+		});
 	};
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			patient_mode: ["opd", "ipd", "emergency"],
-			//	created: filterData.created,
-			process: processTab,
-			//	term: filterData.keywordSearch,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				patient_mode: ["opd", "ipd", "emergency"],
+				//	created: filterData.created,
+				process: processTab,
+				//	term: filterData.keywordSearch,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+		});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
@@ -175,7 +197,11 @@ export default function _Table({ module }) {
 							title: t("Created"),
 							textAlignment: "right",
 							render: (item) => (
-								<Text fz="xs" onClick={() => handleView(item.id)} className="activate-link">
+								<Text
+									fz="xs"
+									onClick={() => handleView(item.id)}
+									className="activate-link"
+								>
 									{formatDate(item.created_at)}
 								</Text>
 							),
@@ -200,8 +226,15 @@ export default function _Table({ module }) {
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (item) => (
-								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+								<Group
+									onClick={(e) => e.stopPropagation()}
+									gap={4}
+									justify="right"
+									wrap="nowrap"
+								>
+									{userRoles.some((role) =>
+										ALLOWED_CONFIRMED_ROLES.includes(role)
+									) &&
 										item.process === "confirmed" && (
 											<Button.Group>
 												<Button
@@ -238,7 +271,11 @@ export default function _Table({ module }) {
 												radius="es"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={18} width={18} stroke={1.5} />
+												<IconDotsVertical
+													height={18}
+													width={18}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
@@ -255,7 +292,9 @@ export default function _Table({ module }) {
 														}
 														onClick={(e) => {
 															e.stopPropagation();
-															handlePrescriptionPrint(item?.prescription_id);
+															handlePrescriptionPrint(
+																item?.prescription_id
+															);
 														}}
 													>
 														{t("Prescription")}
@@ -302,10 +341,16 @@ export default function _Table({ module }) {
 			</Box>
 			<DataTableFooter indexData={records} module="visit" />
 			{selectedPrescriptionId && (
-				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+				<DetailsDrawer
+					opened={opened}
+					close={close}
+					prescriptionId={selectedPrescriptionId}
+				/>
 			)}
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
-			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
+			{billingPrintData && (
+				<DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />
+			)}
 		</Box>
 	);
 }

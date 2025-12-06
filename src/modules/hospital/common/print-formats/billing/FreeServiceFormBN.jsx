@@ -3,7 +3,8 @@ import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import { capitalizeWords, getLoggedInUser } from "@/common/utils";
+import { capitalizeWords } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import Barcode from "react-barcode";
@@ -14,6 +15,7 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
+	const { getLoggedInUser } = useAppLocalStore();
 	const user = getLoggedInUser();
 
 	const patientInfo = data || {};
@@ -62,36 +64,63 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 							className="customTable"
 						>
 							<Table.Tbody>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Tr
+									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+								>
 									<Table.Td colSpan={"3"}>
 										<Box mb="sm">
 											<Flex gap="md" justify="center">
 												<Box>
 													<Group ml="md" align="center" h="100%">
-														<Image src={GLogo} alt="logo" width={60} height={60} />
+														<Image
+															src={GLogo}
+															alt="logo"
+															width={60}
+															height={60}
+														/>
 													</Group>
 												</Box>
 												<Box>
-													<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-														{hospitalConfigData?.organization_name || ""}
+													<Text
+														ta="center"
+														fw="bold"
+														size="lg"
+														c="#1e40af"
+														mt="2"
+													>
+														{hospitalConfigData?.organization_name ||
+															""}
 													</Text>
 													<Text ta="center" size="sm" c="gray" mt="2">
 														{hospitalConfigData?.address || ""}
 													</Text>
 													<Text ta="center" size="sm" c="gray" mb="2">
-														{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
+														{t("হটলাইন")}{" "}
+														{hospitalConfigData?.hotline || ""}
 													</Text>
 												</Box>
 												<Box>
-													<Group mr="md" justify="flex-end" align="center" h="100%">
-														<Image src={TBLogo} alt="logo" width={60} height={60} />
+													<Group
+														mr="md"
+														justify="flex-end"
+														align="center"
+														h="100%"
+													>
+														<Image
+															src={TBLogo}
+															alt="logo"
+															width={60}
+															height={60}
+														/>
 													</Group>
 												</Box>
 											</Flex>
 										</Box>
 									</Table.Td>
 								</Table.Tr>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Tr
+									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+								>
 									<Table.Td colSpan={3}>
 										<Text ta="center" py="mes" size="md" fw={600}>
 											{t("ইউজার ফি মওকুফের জন্য আবেদন ফর্ম")}
@@ -106,7 +135,9 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text>{t("২৫০ শয্যা বিশিষ্ট টিবি হাসপাতাল")}</Text>
 											<Text>{t("শ্যামলী, ঢাকা।")}</Text>
 
-											<Text my="sm">{t("বিষয়ঃ ইউজার ফি মওকুফের জন্য আবেদন।")}</Text>
+											<Text my="sm">
+												{t("বিষয়ঃ ইউজার ফি মওকুফের জন্য আবেদন।")}
+											</Text>
 											<Text>
 												{t(
 													"জনাব, উপরোক্ত বিষয়ের আলোকে আমি/ আমার রোগী/ গরিব ও দুস্থ/ মুক্তযোদ্ধা/ একাডেমিক/ সরকারি কর্মকর্তা কর্মচারী/ সরকারি কর্মকর্তা ও কর্মচারীর পোষ্য (প্রযোজ্যক্ষেত্রে), যাহার বিবরণ নিম্নরূপঃ"
@@ -115,13 +146,17 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 										</Box>
 									</Table.Td>
 								</Table.Tr>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Tr
+									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+								>
 									<Table.Td>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("PatientID")}:
 											</Text>
-											<Text size="sm">{getValue(patientInfo?.patient_id || "")}</Text>
+											<Text size="sm">
+												{getValue(patientInfo?.patient_id || "")}
+											</Text>
 										</Group>
 									</Table.Td>
 									<Table.Td>
@@ -129,7 +164,9 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs" fw={600}>
 												{t("AdmissionID")}:
 											</Text>
-											<Text size="sm">{getValue(patientInfo?.invoice || "")}</Text>
+											<Text size="sm">
+												{getValue(patientInfo?.invoice || "")}
+											</Text>
 										</Group>
 									</Table.Td>
 									<Table.Td>
@@ -137,12 +174,18 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs" fw={600}>
 												{t("PatientType")}:
 											</Text>
-											<Text size="sm">{getValue(patientInfo?.payment_mode_name, "")}</Text>
+											<Text size="sm">
+												{getValue(patientInfo?.payment_mode_name, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 								</Table.Tr>
 								<Table.Tr
-									style={{ border: "1px solid var(--theme-tertiary-color-8)", padding: 0, margin: 0 }}
+									style={{
+										border: "1px solid var(--theme-tertiary-color-8)",
+										padding: 0,
+										margin: 0,
+									}}
 								>
 									<Table.Td>
 										<Group gap="xs">
@@ -157,7 +200,9 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs" fw={600}>
 												{t("Gender")}:
 											</Text>
-											<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
+											<Text size="xs">
+												{capitalizeWords(patientInfo?.gender || "")}
+											</Text>
 										</Group>
 									</Table.Td>
 									<Table.Td>
@@ -166,19 +211,24 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 												{t("Age")}:
 											</Text>
 											<Text size="xs">
-												{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
+												{patientInfo?.year || 0} Years{" "}
+												{patientInfo?.month || 0} Mon{" "}
 												{patientInfo?.day || 0} Day
 											</Text>
 										</Group>
 									</Table.Td>
 								</Table.Tr>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Tr
+									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+								>
 									<Table.Td>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("F/M/H")}:
 											</Text>
-											<Text size="xs">{getValue(patientInfo?.father_name, "")}</Text>
+											<Text size="xs">
+												{getValue(patientInfo?.father_name, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 									<Table.Td>
@@ -186,7 +236,9 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs" fw={600}>
 												{t("Religion")}:
 											</Text>
-											<Text size="sm">{getValue(patientInfo?.religion_name, "")}</Text>
+											<Text size="sm">
+												{getValue(patientInfo?.religion_name, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 									<Table.Td>
@@ -194,11 +246,15 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs" fw={600}>
 												{t("Weight")}:
 											</Text>
-											<Text size="sm">{getValue(patientInfo?.weight, "")}</Text>
+											<Text size="sm">
+												{getValue(patientInfo?.weight, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 								</Table.Tr>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Tr
+									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+								>
 									<Table.Td>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
@@ -220,17 +276,23 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs" fw={600}>
 												{t("Add. Date")}:
 											</Text>
-											<Text size="sm">{getValue(patientInfo?.admission_date, "")}</Text>
+											<Text size="sm">
+												{getValue(patientInfo?.admission_date, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 								</Table.Tr>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Tr
+									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+								>
 									<Table.Td>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("GuardianName")}:
 											</Text>
-											<Text size="xs">{getValue(patientInfo?.guardian_name, "")}</Text>
+											<Text size="xs">
+												{getValue(patientInfo?.guardian_name, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 									<Table.Td>
@@ -238,7 +300,9 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs" fw={600}>
 												{t("Relation")}:
 											</Text>
-											<Text size="xs">{getValue(patientInfo?.patient_relation, "")}</Text>
+											<Text size="xs">
+												{getValue(patientInfo?.patient_relation, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 									<Table.Td colspan={2}>
@@ -249,19 +313,27 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs">
 												{getValue(patientInfo?.mobile, "")}
 												{patientInfo?.guardian_mobile && (
-													<> / {getValue(patientInfo?.guardian_mobile, "")}</>
+													<>
+														{" "}
+														/{" "}
+														{getValue(patientInfo?.guardian_mobile, "")}
+													</>
 												)}
 											</Text>
 										</Group>
 									</Table.Td>
 								</Table.Tr>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Tr
+									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+								>
 									<Table.Td>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("Bed/Cabin")}:
 											</Text>
-											<Text size="sm">{getValue(patientInfo?.room_name, "")}</Text>
+											<Text size="sm">
+												{getValue(patientInfo?.room_name, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 									<Table.Td>
@@ -269,7 +341,9 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs" fw={600}>
 												{t("Unit")}:
 											</Text>
-											<Text size="xs">{getValue(patientInfo?.admit_unit_name, "")}</Text>
+											<Text size="xs">
+												{getValue(patientInfo?.admit_unit_name, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 									<Table.Td>
@@ -277,17 +351,23 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs" fw={600}>
 												{t("Department")}:
 											</Text>
-											<Text size="xs">{getValue(patientInfo?.admit_department_name, "")}</Text>
+											<Text size="xs">
+												{getValue(patientInfo?.admit_department_name, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 								</Table.Tr>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Tr
+									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+								>
 									<Table.Td colspan={2}>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("ConsultantDoctor")}:
 											</Text>
-											<Text size="sm">{getValue(patientInfo?.admit_consultant_name, "")}</Text>
+											<Text size="sm">
+												{getValue(patientInfo?.admit_consultant_name, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 									<Table.Td>
@@ -295,7 +375,9 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs" fw={600}>
 												{t("UnitDoctor")}:
 											</Text>
-											<Text size="xs">{getValue(patientInfo?.admit_doctor_name, "")}</Text>
+											<Text size="xs">
+												{getValue(patientInfo?.admit_doctor_name, "")}
+											</Text>
 										</Group>
 									</Table.Td>
 								</Table.Tr>
@@ -303,7 +385,11 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 						</Table>
 					</Box>
 					<Box pos="relative" mt="xl">
-						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
+						<Table
+							withTableBorder
+							withColumnBorders
+							borderColor="var(--theme-tertiary-color-8)"
+						>
 							<Table.Thead>
 								<Table.Tr>
 									<Table.Th>{t("Particular")}</Table.Th>
@@ -337,10 +423,15 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 									<Grid columns={12} gutter="0">
 										<Grid.Col span={6} align="left">
 											<Text fz="xl">{t("আবেদনকারী")}</Text>
-											<Text fz="xs">নাম: {patientInfo?.guardian_name || "N/A"}</Text>
-											<Text fz="xs">মোবাইল: {patientInfo?.guardian_mobile || "N/A"}</Text>
 											<Text fz="xs">
-												রোগীর সাথে সম্পর্ক: {patientInfo?.patient_relation || "N/A"}
+												নাম: {patientInfo?.guardian_name || "N/A"}
+											</Text>
+											<Text fz="xs">
+												মোবাইল: {patientInfo?.guardian_mobile || "N/A"}
+											</Text>
+											<Text fz="xs">
+												রোগীর সাথে সম্পর্ক:{" "}
+												{patientInfo?.patient_relation || "N/A"}
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={6} align={"right"}>
@@ -352,7 +443,8 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 													<br />
 												</Text>
 												<Text>
-													{t("Signature")}-----------------------------------------------
+													{t("Signature")}
+													-----------------------------------------------
 												</Text>
 											</Text>
 										</Grid.Col>
@@ -412,16 +504,34 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 					</SimpleGrid>
 					<DashedDivider />
 					<Box pos="relative" mt="xl">
-						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
+						<Table
+							withTableBorder
+							withColumnBorders
+							borderColor="var(--theme-tertiary-color-8)"
+						>
 							<Table.Thead>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Tr
+									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+								>
 									<Table.Td colSpan={"6"}>
 										<Flex gap="md" align="center" justify="center">
 											<Flex>
-												<Image src={GLogo} alt="logo" width={46} height={46} />
+												<Image
+													src={GLogo}
+													alt="logo"
+													width={46}
+													height={46}
+												/>
 												<Box pl={"xs"} pr={"xs"}>
-													<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-														{hospitalConfigData?.organization_name || ""}
+													<Text
+														ta="center"
+														fw="bold"
+														size="lg"
+														c="#1e40af"
+														mt="2"
+													>
+														{hospitalConfigData?.organization_name ||
+															""}
 													</Text>
 													<Text ta="center" size="sm" c="gray" mt="2">
 														{hospitalConfigData?.address || ""},
@@ -434,7 +544,12 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 															""}
 													</Text>
 												</Box>
-												<Image src={TBLogo} alt="logo" width={46} height={46} />
+												<Image
+													src={TBLogo}
+													alt="logo"
+													width={46}
+													height={46}
+												/>
 											</Flex>
 										</Flex>
 									</Table.Td>

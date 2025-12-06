@@ -25,9 +25,10 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import commonDataStoreIntoLocalStorage from "@hooks/local-storage/useCommonDataStoreIntoLocalStorage.js";
 import { API_BASE_URL, API_KEY } from "@/constants";
-import { getLoggedInUser } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 export default function Login() {
+	const { getLoggedInUser } = useAppLocalStore();
 	const user = getLoggedInUser();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -171,7 +172,10 @@ export default function Login() {
 					<Group justify="space-between" mt="lg" className={LoginPage.controls}>
 						<Anchor c="dimmed" size="sm" className={LoginPage.control}>
 							<Center inline>
-								<IconArrowLeft style={{ width: rem(12), height: rem(12) }} stroke={1.5} />
+								<IconArrowLeft
+									style={{ width: rem(12), height: rem(12) }}
+									stroke={1.5}
+								/>
 								<Box ml={5}>Back to the sign-up page</Box>
 							</Center>
 						</Anchor>

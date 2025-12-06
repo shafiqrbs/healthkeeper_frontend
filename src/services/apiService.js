@@ -1,30 +1,30 @@
-import { getLoggedInUser } from "@/common/utils";
 import { API_BASE_URL, API_KEY } from "@/constants";
 import axios from "axios";
-import {useAuthStore} from "@/store/useAuthStore.js";
-const token = useAuthStore.getState().token;
+import { useAuthStore } from "@/store/useAuthStore.js";
 
 const getCommonHeaders = () => {
-	const user = getLoggedInUser();
+	const { token, user } = useAuthStore.getState();
+
 	return {
 		Accept: "application/json",
 		"Content-Type": `application/json`,
 		"Access-Control-Allow-Origin": "*",
 		"X-Api-Key": API_KEY,
 		"X-Api-User": user.id,
-        Authorization: `Bearer ${token}`,
-    };
+		Authorization: `Bearer ${token}`,
+	};
 };
+
 const getFileHeaders = () => {
-	const user = getLoggedInUser();
+	const { token, user } = useAuthStore.getState();
 	return {
 		Accept: "application/json",
 		"Content-Type": `multipart/form-data`,
 		"Access-Control-Allow-Origin": "*",
 		"X-Api-Key": API_KEY,
 		"X-Api-User": user.id,
-        Authorization: `Bearer ${token}`,
-    };
+		Authorization: `Bearer ${token}`,
+	};
 };
 
 export const getDataWithoutStore = async (value, headers = {}) => {

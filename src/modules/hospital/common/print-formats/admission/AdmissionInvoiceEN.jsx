@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import { getLoggedInUser } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
@@ -11,6 +11,7 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 const AdmissionInvoiceEN = forwardRef(({ data, preview = false }, ref) => {
+	const { getLoggedInUser } = useAppLocalStore();
 	const user = getLoggedInUser();
 
 	const admissionData = data || {};
@@ -134,7 +135,8 @@ const AdmissionInvoiceEN = forwardRef(({ data, preview = false }, ref) => {
 								</Text>
 								<Text size="xs">
 									{admissionData?.gender &&
-										admissionData.gender[0].toUpperCase() + admissionData.gender.slice(1)}
+										admissionData.gender[0].toUpperCase() +
+											admissionData.gender.slice(1)}
 								</Text>
 							</Group>
 						</Grid.Col>
@@ -151,7 +153,8 @@ const AdmissionInvoiceEN = forwardRef(({ data, preview = false }, ref) => {
 									{t("বয়স")}
 								</Text>
 								<Text size="xs">
-									{getValue(admissionData?.year, 0)} Y, {getValue(admissionData?.month, 0)} M,{" "}
+									{getValue(admissionData?.year, 0)} Y,{" "}
+									{getValue(admissionData?.month, 0)} M,{" "}
 									{getValue(admissionData?.day, 0)} D
 								</Text>
 							</Group>
@@ -212,15 +215,21 @@ const AdmissionInvoiceEN = forwardRef(({ data, preview = false }, ref) => {
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td fw={600}>{t("Receive")}</Table.Td>
-								<Table.Td fw={600}>৳ {getValue(admissionData?.total, "0")}</Table.Td>
+								<Table.Td fw={600}>
+									৳ {getValue(admissionData?.total, "0")}
+								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td fw={600}>{t("Return")}</Table.Td>
-								<Table.Td fw={600}>৳ {getValue(admissionData?.return_amount, "0")}</Table.Td>
+								<Table.Td fw={600}>
+									৳ {getValue(admissionData?.return_amount, "0")}
+								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td fw={600}>{t("Balance")}</Table.Td>
-								<Table.Td fw={600}>৳ {getValue(admissionData?.balance, "0")}</Table.Td>
+								<Table.Td fw={600}>
+									৳ {getValue(admissionData?.balance, "0")}
+								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>

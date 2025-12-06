@@ -33,7 +33,7 @@ import { useTranslation } from "react-i18next";
 import classes from "@assets/css/FeaturesCards.module.css";
 import useConfigData from "@hooks/config-data/useConfigData.js";
 import pos from "@assets/images/pos/pos.png";
-import { getUserRole } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import {
 	ACCOUNTING_NAV_LINKS,
 	CORE_NAV_LINKS,
@@ -70,9 +70,10 @@ function NavigationItem({ icon: Icon, href, label, color = "teal.6" }) {
 }
 
 function MainDashboard({ height }) {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { configData } = useConfigData();
-	const userRole = getUserRole();
+	const userRole = getLoggedInRoles();
 
 	height = height - 105;
 	const navigate = useNavigate();

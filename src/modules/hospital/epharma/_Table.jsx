@@ -1,10 +1,16 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { IconPrinter, IconChevronUp, IconSelector, IconArrowRight, IconBarcode } from "@tabler/icons-react";
+import {
+	IconPrinter,
+	IconChevronUp,
+	IconSelector,
+	IconArrowRight,
+	IconBarcode,
+} from "@tabler/icons-react";
 import { Box, Flex, Text, Button } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useEffect, useRef, useState } from "react";
 import { MODULES } from "@/constants";
-import { formatDate, getUserRole } from "@utils/index";
+import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import tableCss from "@assets/css/Table.module.css";
 import { DataTable } from "mantine-datatable";
@@ -60,19 +66,19 @@ export default function _Table({ height }) {
 	const labReportRef = useRef(null);
 	const [labReportData, setLabReportData] = useState(null);
 
-
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.EPHARMA.INDEX,
-		filterParams: {
-			term: form.values.keywordSearch,
-			created: form.values.created,
-			process: processTab,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.EPHARMA.INDEX,
+			filterParams: {
+				term: form.values.keywordSearch,
+				created: form.values.created,
+				process: processTab,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+		});
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -164,7 +170,9 @@ export default function _Table({ height }) {
 							title: t("DeliveredDate"),
 							textAlignment: "right",
 							sortable: true,
-							render: (item) => <Text fz="xs">{formatDate(item?.delivered_date)}</Text>,
+							render: (item) => (
+								<Text fz="xs">{formatDate(item?.delivered_date)}</Text>
+							),
 						},
 						{
 							accessor: "action",
@@ -219,7 +227,12 @@ export default function _Table({ height }) {
 			/>
 			<Box display="none">
 				<Box ref={barCodeRef}>
-					<Barcode fontSize="10" width="1" height="30" value={barcodeValue || "BARCODETEST"} />
+					<Barcode
+						fontSize="10"
+						width="1"
+						height="30"
+						value={barcodeValue || "BARCODETEST"}
+					/>
 				</Box>
 			</Box>
 			<LabReportA4BN data={labReportData} ref={labReportRef} />

@@ -4,10 +4,11 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import { sideNavigationLinks } from "@/constants/sideNavigationLinks";
 import classes from "@assets/css/Navigation.module.css";
-import { getUserRole } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight }) {
-	const userRole = getUserRole();
+	const { getLoggedInRoles } = useAppLocalStore();
+	const userRole = getLoggedInRoles();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -15,14 +16,16 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 	const links = useMemo(() => {
 		const menuLinks = sideNavigationLinks[menu] || [];
 		return menuLinks.filter(
-			(link) => link.allowedRoles && link.allowedRoles?.some((role) => userRole.includes(role))
+			(link) =>
+				link.allowedRoles && link.allowedRoles?.some((role) => userRole.includes(role))
 		);
 	}, [menu, userRole]);
 
 	const subLinks = useMemo(() => {
 		const subMenuLinks = sideNavigationLinks[subMenu] || [];
 		return subMenuLinks.filter(
-			(link) => link.allowedRoles && link.allowedRoles?.some((role) => userRole.includes(role))
+			(link) =>
+				link.allowedRoles && link.allowedRoles?.some((role) => userRole.includes(role))
 		);
 	}, [subMenu, userRole]);
 
@@ -74,7 +77,9 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 														item.subMenu ? null : navigate(item.path);
 													}}
 													onAuxClick={() => {
-														item.subMenu ? null : window.open(item.path, "_blank");
+														item.subMenu
+															? null
+															: window.open(item.path, "_blank");
 													}}
 												>
 													<Flex align="center">
@@ -85,7 +90,9 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 											{item.subMenu && (
 												<Menu.Dropdown
 													styles={{
-														dropdown: { border: "1px solid var(--theme-primary-color-1)" },
+														dropdown: {
+															border: "1px solid var(--theme-primary-color-1)",
+														},
 													}}
 												>
 													{item.subMenu.map((subItem, index) => (
@@ -94,8 +101,12 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 																userRole.includes(role)
 															) && (
 																<Menu.Item
-																	onClick={() => navigate(subItem.path)}
-																	leftSection={<subItem.icon size={14} />}
+																	onClick={() =>
+																		navigate(subItem.path)
+																	}
+																	leftSection={
+																		<subItem.icon size={14} />
+																	}
 																>
 																	{t(subItem.label)}
 																</Menu.Item>
@@ -141,7 +152,9 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 									<Box
 										key={index}
 										className={`cursor-pointer ${classes["pressable-card"]}  ${
-											location.pathname === item.path ? classes["active-link"] : ""
+											location.pathname === item.path
+												? classes["active-link"]
+												: ""
 										}`}
 										variant="default"
 										onClick={() => navigate(item.path)}

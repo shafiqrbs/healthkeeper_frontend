@@ -2,7 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
+import {
+	ActionIcon,
+	Box,
+	Button,
+	Flex,
+	FloatingIndicator,
+	Group,
+	Menu,
+	Tabs,
+	Text,
+} from "@mantine/core";
 import {
 	IconArrowRight,
 	IconChevronUp,
@@ -25,7 +35,8 @@ import DetailsDrawer from "../common/drawer/__DetailsDrawer";
 import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
-import { formatDate, getLoggedInUser, getUserRole } from "@/common/utils";
+import { formatDate } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useForm } from "@mantine/form";
@@ -64,7 +75,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
+	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] =
+		useDisclosure(false);
+	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
 	const [singlePatientData, setSinglePatientData] = useState({});
 
 	const form = useForm({
@@ -94,7 +107,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
-	const userRoles = getUserRole();
+	const userRoles = getLoggedInRoles();
 
 	useEffect(() => {
 		if (type === "a4") {
@@ -113,24 +126,26 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const user = getLoggedInUser();
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-		filterParams: {
-			patient_mode: "opd",
-			term: form.values.keywordSearch,
-			room_id: form.values.room_id,
-			prescription_mode: processTab,
-			created: form.values.created,
-			created_by_id:
-				userRoles.includes("operator_manager") || userRoles.includes("admin_administrator")
-					? undefined
-					: user?.id,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+			filterParams: {
+				patient_mode: "opd",
+				term: form.values.keywordSearch,
+				room_id: form.values.room_id,
+				prescription_mode: processTab,
+				created: form.values.created,
+				created_by_id:
+					userRoles.includes("operator_manager") ||
+					userRoles.includes("admin_administrator")
+						? undefined
+						: user?.id,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+		});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
@@ -142,13 +157,17 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	};
 
 	const handleA4Print = async (id) => {
-		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}`,
+		});
 		setPrintData(res.data);
 		setType("a4");
 	};
 
 	const handlePosPrint = async (id) => {
-		const res = await getDataWithoutStore({ url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}` });
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}`,
+		});
 		setPrintData(res.data);
 		setType("pos");
 	};
@@ -286,7 +305,11 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
 						{ accessor: "name", sortable: true, title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
-						{ accessor: "patient_payment_mode_name", sortable: true, title: t("Patient") },
+						{
+							accessor: "patient_payment_mode_name",
+							sortable: true,
+							title: t("Patient"),
+						},
 						{ accessor: "total", title: t("Total") },
 						{
 							accessor: "created_by",
@@ -301,12 +324,16 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (values) => {
 								return (
 									<Flex justify="flex-end">
-										{formatDate(new Date()) === formatDate(values?.created_at) && (
+										{formatDate(new Date()) ===
+											formatDate(values?.created_at) && (
 											<ActionIcon
 												variant="transparent"
 												onClick={(e) => patientUpdate(e, values?.id)}
 											>
-												<IconPencil size={18} color="var(--theme-success-color)" />
+												<IconPencil
+													size={18}
+													color="var(--theme-success-color)"
+												/>
 											</ActionIcon>
 										)}
 										<Group
@@ -331,7 +358,11 @@ export default function Table({ module, height, closeTable, availableClose = fal
 														radius="es"
 														aria-label="Settings"
 													>
-														<IconDotsVertical height={18} width={18} stroke={1.5} />
+														<IconDotsVertical
+															height={18}
+															width={18}
+															stroke={1.5}
+														/>
 													</ActionIcon>
 												</Menu.Target>
 												<Menu.Dropdown>
@@ -373,7 +404,9 @@ export default function Table({ module, height, closeTable, availableClose = fal
 																	/>
 																}
 																onClick={() =>
-																	handlePrescriptionPrint(values?.prescription_id)
+																	handlePrescriptionPrint(
+																		values?.prescription_id
+																	)
 																}
 															>
 																{t("Prescription")}
@@ -405,7 +438,11 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			</Box>
 			<DataTableFooter indexData={listData} module="visit" />
 			{selectedPrescriptionId && (
-				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+				<DetailsDrawer
+					opened={opened}
+					close={close}
+					prescriptionId={selectedPrescriptionId}
+				/>
 			)}
 
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />

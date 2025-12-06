@@ -16,13 +16,19 @@ import {
 } from "@mantine/core";
 import { useEffect, useState, useRef } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import { IconSearch, IconAlertCircle, IconChevronRight, IconAdjustmentsCog } from "@tabler/icons-react";
+import {
+	IconSearch,
+	IconAlertCircle,
+	IconChevronRight,
+	IconAdjustmentsCog,
+} from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import DoctorsRoomDrawer from "./__DoctorsRoomDrawer";
 import { useDisclosure, useIsFirstRender } from "@mantine/hooks";
-import { calculateAge, calculateDetailedAge, formatDOB, getLoggedInUser, getUserRole } from "@/common/utils";
+import { calculateAge, calculateDetailedAge, formatDOB } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import Table from "../visit/_Table";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
@@ -40,7 +46,11 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import RoomCard from "./RoomCard";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
-import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } from "@/services/patientSearchService";
+import {
+	getPatientSearchByBRN,
+	getPatientSearchByHID,
+	getPatientSearchByNID,
+} from "@/services/patientSearchService";
 import { MODULES_CORE } from "@/constants";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 
@@ -104,6 +114,7 @@ export default function PatientForm({
 	filteredAndSortedRecords,
 	selectedRoom,
 }) {
+	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
 	const searchForm = useForm({
 		initialValues: {
 			type: "PID",
@@ -171,12 +182,10 @@ export default function PatientForm({
 			} else if (searchForm.values.type === "NID") {
 				const patients = await getPatientSearchByNID(searchForm.values.term);
 
-
 				// setPatientSearchResults(patients?.data || []);
 				// setShowPatientDropdown(true);
 			} else if (searchForm.values.type === "BRID") {
 				const patients = await getPatientSearchByBRN(searchForm.values.term);
-
 
 				// setPatientSearchResults(patients?.data || []);
 				// setShowPatientDropdown(true);
@@ -247,7 +256,9 @@ export default function PatientForm({
 									setPatientSearchResults([]);
 								}}
 								name="type"
-								styles={{ input: { paddingInlineStart: "30px", paddingInlineEnd: "10px" } }}
+								styles={{
+									input: { paddingInlineStart: "30px", paddingInlineEnd: "10px" },
+								}}
 								placeholder="Select"
 								data={["PID", "PresID", "HID", "NID", "BRID"]}
 								value={searchForm.values.type}
@@ -267,7 +278,10 @@ export default function PatientForm({
 
 					{/* Patient Search Dropdown */}
 					{showPatientDropdown && (
-						<PatientSearchResult results={patientSearchResults} handlePatientSelect={handlePatientSelect} />
+						<PatientSearchResult
+							results={patientSearchResults}
+							handlePatientSelect={handlePatientSelect}
+						/>
 					)}
 				</Box>
 			</Flex>
@@ -288,7 +302,12 @@ export default function PatientForm({
 				setSelectedRoom={setSelectedRoom}
 			/>
 			<Modal opened={opened} onClose={close} size="100%" centered withCloseButton={false}>
-				<Table module={module} closeTable={close} height={mainAreaHeight - 220} availableClose />
+				<Table
+					module={module}
+					closeTable={close}
+					height={mainAreaHeight - 220}
+					availableClose
+				/>
 			</Modal>
 		</Box>
 	);
@@ -305,8 +324,10 @@ export function Form({
 	visible,
 	setVisible,
 }) {
+	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
 	const [resetKey, setResetKey] = useState(0);
-	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
+	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] =
+		useDisclosure(false);
 	const [openedRoomError, { open: openRoomError, close: closeRoomError }] = useDisclosure(false);
 	const [openedRoom, { open: openRoom, close: closeRoom }] = useDisclosure(false);
 	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
@@ -317,11 +338,16 @@ export function Form({
 	const [userNidData] = useState(USER_NID_DATA);
 	const [showUserData, setShowUserData] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const userRoles = getUserRole();
+	const userRoles = getLoggedInRoles();
 	const locations = useSelector((state) => state.crud.locations.data);
 
 	useEffect(() => {
-		dispatch(getIndexEntityData({ module: "locations", url: HOSPITAL_DATA_ROUTES.API_ROUTES.LOCATIONS.INDEX }));
+		dispatch(
+			getIndexEntityData({
+				module: "locations",
+				url: HOSPITAL_DATA_ROUTES.API_ROUTES.LOCATIONS.INDEX,
+			})
+		);
 	}, []);
 
 	const handleDobChange = () => {
@@ -392,7 +418,8 @@ export function Form({
 		setTimeout(() => {
 			form.setFieldValue(
 				"guardian_name",
-				userNidData.citizenData.fatherName_English || userNidData.citizenData.motherName_English
+				userNidData.citizenData.fatherName_English ||
+					userNidData.citizenData.motherName_English
 			);
 			form.setFieldValue("district", userNidData.citizenData.presentHouseholdNo.district);
 			form.setFieldValue(
@@ -437,11 +464,20 @@ export function Form({
 
 				// strict validation: check if JS normalized it
 				const isValid =
-					dateObj.getFullYear() === year && dateObj.getMonth() === month - 1 && dateObj.getDate() === day;
+					dateObj.getFullYear() === year &&
+					dateObj.getMonth() === month - 1 &&
+					dateObj.getDate() === day;
 
 				// check if future date
 				if (dateObj > today) {
-					showNotificationComponent(t("DateOfBirthCantBeFutureDate"), "red", "lightgray", true, 700, true);
+					showNotificationComponent(
+						t("DateOfBirthCantBeFutureDate"),
+						"red",
+						"lightgray",
+						true,
+						700,
+						true
+					);
 					setIsSubmitting(false);
 					return {};
 				}
@@ -452,7 +488,10 @@ export function Form({
 					...form.values,
 					created_by_id: createdBy?.id,
 					dob,
-					appointment: new Date(form.values.appointment).toLocaleDateString("en-CA", options),
+					appointment: new Date(form.values.appointment).toLocaleDateString(
+						"en-CA",
+						options
+					),
 				};
 
 				const data = {
@@ -464,10 +503,26 @@ export function Form({
 				const resultAction = await dispatch(storeEntityData(data));
 
 				if (storeEntityData.rejected.match(resultAction)) {
-					showNotificationComponent(resultAction.payload.message, "red", "lightgray", "", true, 700, true);
+					showNotificationComponent(
+						resultAction.payload.message,
+						"red",
+						"lightgray",
+						"",
+						true,
+						700,
+						true
+					);
 					return {};
 				} else {
-					showNotificationComponent(t("VisitSavedSuccessfully"), "green", "lightgray", "", true, 700, true);
+					showNotificationComponent(
+						t("VisitSavedSuccessfully"),
+						"green",
+						"lightgray",
+						"",
+						true,
+						700,
+						true
+					);
 					setShowUserData(false);
 					form.reset();
 					setResetKey((prev) => prev + 1);
@@ -477,7 +532,14 @@ export function Form({
 				}
 			} catch (error) {
 				console.error("Error submitting visit:", error);
-				showNotificationComponent(t("SomethingWentWrong"), "red", "lightgray", true, 700, true);
+				showNotificationComponent(
+					t("SomethingWentWrong"),
+					"red",
+					"lightgray",
+					true,
+					700,
+					true
+				);
 				return {};
 			} finally {
 				setIsSubmitting(false);
@@ -485,7 +547,14 @@ export function Form({
 		} else {
 			if (Object.keys(form.errors)?.length > 0 && form.isDirty()) {
 				console.error(form.errors);
-				showNotificationComponent(t("PleaseFillAllFieldsToSubmit"), "red", "lightgray", true, 700, true);
+				showNotificationComponent(
+					t("PleaseFillAllFieldsToSubmit"),
+					"red",
+					"lightgray",
+					true,
+					700,
+					true
+				);
 			}
 			return {};
 		}
@@ -493,7 +562,11 @@ export function Form({
 
 	return (
 		<Box pos="relative">
-			<LoadingOverlay visible={visible} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+			<LoadingOverlay
+				visible={visible}
+				zIndex={1000}
+				overlayProps={{ radius: "sm", blur: 2 }}
+			/>
 
 			{showTitle && (
 				<Flex bg="var(--theme-primary-color-0)" align="center" gap="xs" p="sm">
@@ -509,7 +582,9 @@ export function Form({
 							<Text fz="sm">{t("OPDRoom")}</Text>
 							<Flex align="center" gap="xs" className="cursor-pointer">
 								<Group>
-									{userRoles.some((role) => ALLOWED_MANAGER_ROLES.includes(role)) && (
+									{userRoles.some((role) =>
+										ALLOWED_MANAGER_ROLES.includes(role)
+									) && (
 										<Button
 											variant="light"
 											onClick={openOpdRoom}
@@ -559,7 +634,11 @@ export function Form({
 							</Grid.Col>
 							<Grid.Col span={14}>
 								<DateSelectorForm
-									key={form.values.dob ? new Date(form.values.dob).toISOString() : "dob-empty"}
+									key={
+										form.values.dob
+											? new Date(form.values.dob).toISOString()
+											: "dob-empty"
+									}
 									form={form}
 									placeholder="01-01-2020"
 									tooltip={t("EnterDateOfBirth")}
@@ -678,7 +757,9 @@ export function Form({
 									nextField="identity"
 									value={form.values.upazilla_id}
 									dropdownValue={locations?.data?.map((location) => ({
-										label: `${location.district || "District"} - ${location.name}`,
+										label: `${location.district || "District"} - ${
+											location.name
+										}`,
 										value: location.id?.toString(),
 									}))}
 									searchable
@@ -728,7 +809,10 @@ export function Form({
 									value={form.values.identity}
 									handleChange={handleContentChange}
 									rightSection={
-										<ActionIcon onClick={handleNIDSearch} bg="var(--theme-secondary-color-6)">
+										<ActionIcon
+											onClick={handleNIDSearch}
+											bg="var(--theme-secondary-color-6)"
+										>
 											<IconSearch size={"16"} />
 										</ActionIcon>
 									}
@@ -816,7 +900,9 @@ export function Form({
 									value={form.values.patient_payment_mode_id}
 									id="patient_payment_mode_id"
 									name="patient_payment_mode_id"
-									onChange={(val) => form.setFieldValue("patient_payment_mode_id", val)}
+									onChange={(val) =>
+										form.setFieldValue("patient_payment_mode_id", val)
+									}
 									data={[
 										{ label: t("General"), value: "30" },
 										{ label: t("FreedomFighter"), value: "31" },
@@ -847,7 +933,12 @@ export function Form({
 				</ScrollArea>
 			</Box>
 			{type === "opd_ticket" ? (
-				<OPDFooter form={form} isSubmitting={isSubmitting} handleSubmit={handleSubmit} type="opd_ticket" />
+				<OPDFooter
+					form={form}
+					isSubmitting={isSubmitting}
+					handleSubmit={handleSubmit}
+					type="opd_ticket"
+				/>
 			) : (
 				<PrescriptionFooter
 					form={form}
@@ -856,7 +947,11 @@ export function Form({
 					type="prescription"
 				/>
 			)}
-			<NIDDataPreviewModal opened={openedNIDDataPreview} close={closeNIDDataPreview} userNidData={userNidData} />
+			<NIDDataPreviewModal
+				opened={openedNIDDataPreview}
+				close={closeNIDDataPreview}
+				userNidData={userNidData}
+			/>
 
 			{/* ============== required room selection =============== */}
 			<Modal
@@ -886,7 +981,10 @@ export function Form({
 						gap="sm"
 						p="md"
 						bg="var(--mantine-color-red-0)"
-						style={{ borderRadius: "8px", border: "1px solid var(--mantine-color-red-2)" }}
+						style={{
+							borderRadius: "8px",
+							border: "1px solid var(--mantine-color-red-2)",
+						}}
 					>
 						<IconAlertCircle size={24} color="var(--theme-error-color)" />
 						<Box>
@@ -894,7 +992,9 @@ export function Form({
 								{t("Please select a room")}
 							</Text>
 							<Text c="dimmed" fz="sm" mt={4}>
-								{t("A room must be selected to continue with the patient registration")}
+								{t(
+									"A room must be selected to continue with the patient registration"
+								)}
 							</Text>
 						</Box>
 					</Flex>
@@ -903,7 +1003,10 @@ export function Form({
 					<Box
 						p="md"
 						bg="var(--mantine-color-blue-0)"
-						style={{ borderRadius: "8px", border: "1px solid var(--mantine-color-blue-2)" }}
+						style={{
+							borderRadius: "8px",
+							border: "1px solid var(--mantine-color-blue-2)",
+						}}
 					>
 						<Text fw={600} c="var(--mantine-color-blue-7)" fz="sm" mb="xs">
 							{t("Why is this required?")}
@@ -941,7 +1044,13 @@ export function Form({
 				bg="var(--theme-primary-color-0)"
 				keepMounted
 			>
-				<ScrollArea h={mainAreaHeight - 70} scrollbars="y" mt="xs" p="xs" bg="var(--mantine-color-white)">
+				<ScrollArea
+					h={mainAreaHeight - 70}
+					scrollbars="y"
+					mt="xs"
+					p="xs"
+					bg="var(--mantine-color-white)"
+				>
 					{filteredAndSortedRecords?.map((item, index) => (
 						<RoomCard
 							key={index}
@@ -953,8 +1062,18 @@ export function Form({
 					))}
 				</ScrollArea>
 			</GlobalDrawer>
-			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered withCloseButton={false}>
-				<OpdRoomModal closeOpdRoom={closeOpdRoom} closeTable={close} height={mainAreaHeight - 220} />
+			<Modal
+				opened={openedOpdRoom}
+				onClose={closeOpdRoom}
+				size="100%"
+				centered
+				withCloseButton={false}
+			>
+				<OpdRoomModal
+					closeOpdRoom={closeOpdRoom}
+					closeTable={close}
+					height={mainAreaHeight - 220}
+				/>
 			</Modal>
 		</Box>
 	);

@@ -10,14 +10,15 @@ import {
 import { Button, Flex, Text, Tooltip, ScrollArea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { getUserRole } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 export default function Navigation({ module }) {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 30;
 	const navigate = useNavigate();
-	const userRole = getUserRole();
+	const userRole = getLoggedInRoles();
 
 	return (
 		<ScrollArea

@@ -15,7 +15,7 @@ import useParticularsData from "@hooks/useParticularsData";
 import { useDisclosure, useElementSize } from "@mantine/hooks";
 import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
 import Table from "./Table";
-import { getLoggedInUser } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
@@ -28,6 +28,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 const module = MODULES.PRESCRIPTION;
 
 export default function Index() {
+	const { getLoggedInUser } = useAppLocalStore();
 	const [opened, { open, close }] = useDisclosure(false);
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const [showHistory, setShowHistory] = useState(false);

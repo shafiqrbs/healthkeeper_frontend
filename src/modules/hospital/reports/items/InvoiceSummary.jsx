@@ -1,9 +1,27 @@
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {ActionIcon, Box, Card, Flex, FloatingIndicator, Grid, rem, ScrollArea, Table, Tabs, Text} from "@mantine/core";
-import {IconBed, IconChevronUp, IconCoinTaka, IconFileTypePdf, IconSelector} from "@tabler/icons-react";
+import {
+	ActionIcon,
+	Box,
+	Card,
+	Flex,
+	FloatingIndicator,
+	Grid,
+	rem,
+	ScrollArea,
+	Table,
+	Tabs,
+	Text,
+} from "@mantine/core";
+import {
+	IconBed,
+	IconChevronUp,
+	IconCoinTaka,
+	IconFileTypePdf,
+	IconSelector,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -12,21 +30,19 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
-import {capitalizeWords, formatDate, getLoggedInUser, getUserRole} from "@/common/utils";
+import { capitalizeWords, formatDate } from "@/common/utils";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import {MODULES, MODULES_CORE} from "@/constants";
+import { MODULES, MODULES_CORE } from "@/constants";
 import { useOutletContext } from "react-router-dom";
 import ReportFilterSearch from "@hospital-components/ReportFilterSearch";
-import {getDataWithoutStore} from "@/services/apiService";
-import {useReactToPrint} from "react-to-print";
+import { getDataWithoutStore } from "@/services/apiService";
+import { useReactToPrint } from "react-to-print";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import DailyOverview from "@modules/home/common/DailyOverview";
 import SummaryReports from "@modules/hospital/reports/sales-summary/SummaryReports";
 import InvoiceSummaryReports from "@modules/hospital/reports/sales-summary/InvoiceSummaryReports";
-import {t} from "i18next";
-
-
+import { t } from "i18next";
 
 const PER_PAGE = 200;
 
@@ -43,8 +59,6 @@ const CSV_HEADERS = [
 	{ label: "CreatedBy", key: "created_by" },
 ];
 
-
-
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
 export default function InvoiceSummary() {
@@ -52,7 +66,7 @@ export default function InvoiceSummary() {
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state.crud[module].data);
-	const  height = mainAreaHeight-156;
+	const height = mainAreaHeight - 156;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -81,25 +95,40 @@ export default function InvoiceSummary() {
 		content: () => summaryReportsRef.current,
 	});
 	const handleCSVDownload = () => {
-		handleHomeOverviewPrint()
+		handleHomeOverviewPrint();
 	};
 
-	const totalModeCount = patientModeCollectionData?.reduce((sum, item) => sum + (item.patient ?? 0), 0);
-	const totalModeAmount = patientModeCollectionData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
+	const totalModeCount = patientModeCollectionData?.reduce(
+		(sum, item) => sum + (item.patient ?? 0),
+		0
+	);
+	const totalModeAmount = patientModeCollectionData?.reduce(
+		(sum, item) => sum + (item.total ?? 0),
+		0
+	);
 
-	const totalInvoiceModeAmount = invoiceModeData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
+	const totalInvoiceModeAmount = invoiceModeData?.reduce(
+		(sum, item) => sum + (item.total ?? 0),
+		0
+	);
 
-	const totalUserCount = userCollectionData?.reduce((sum, item) => sum + (item.total_count ?? 0), 0);
+	const totalUserCount = userCollectionData?.reduce(
+		(sum, item) => sum + (item.total_count ?? 0),
+		0
+	);
 	const totalUserAmount = userCollectionData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
-
 
 	const totalServieCount = serviceData?.reduce((sum, item) => sum + (item.total_count ?? 0), 0);
 	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
-	const totalServieGroupCount = serviceGroups?.reduce((sum, item) => sum + (item.total_count ?? 0), 0);
-	const totalServiceGroupAmount = serviceGroups?.reduce((sum, item) => sum + (item.total ?? 0), 0);
-
-
+	const totalServieGroupCount = serviceGroups?.reduce(
+		(sum, item) => sum + (item.total_count ?? 0),
+		0
+	);
+	const totalServiceGroupAmount = serviceGroups?.reduce(
+		(sum, item) => sum + (item.total ?? 0),
+		0
+	);
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
@@ -109,32 +138,49 @@ export default function InvoiceSummary() {
 				</Text>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<ReportFilterSearch module={module} form={form} handleCSVDownload={handleCSVDownload} />
+				<ReportFilterSearch
+					module={module}
+					form={form}
+					handleCSVDownload={handleCSVDownload}
+				/>
 			</Box>
 			<Box className="border-top-none" px="sm">
 				<Grid columns={40} gutter={{ base: "xs" }}>
 					<Grid.Col span={40}>
 						<Card padding="lg" radius="sm">
-							<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
+							<Card.Section
+								h={32}
+								withBorder
+								component="div"
+								bg="var(--theme-primary-color-7)"
+							>
 								<Flex align="center" h="100%" px="lg" justify="space-between">
 									<Text pb={0} fz="sm" c="white" fw={500}>
 										{t("CollectionOverview")}
 									</Text>
-									<ActionIcon onClick={handleCSVDownload} variant="default" c={"green.8"} size="md" aria-label="Filter">
-										<IconFileTypePdf
-											style={{ width: rem(16) }}
-											stroke={1.2}
-										/>
+									<ActionIcon
+										onClick={handleCSVDownload}
+										variant="default"
+										c={"green.8"}
+										size="md"
+										aria-label="Filter"
+									>
+										<IconFileTypePdf style={{ width: rem(16) }} stroke={1.2} />
 									</ActionIcon>
 								</Flex>
 							</Card.Section>
 						</Card>
 					</Grid.Col>
 				</Grid>
-				<Box ref={summaryReportsRef} >
+				<Box ref={summaryReportsRef}>
 					<ScrollArea mt="sm" h={height}>
 						<Box className="borderRadiusAll" mt="3xs" px="xs">
-							<Flex justify="space-between" align="center" className="borderBottomDashed" py="3xs">
+							<Flex
+								justify="space-between"
+								align="center"
+								className="borderBottomDashed"
+								py="3xs"
+							>
 								<Text>{t("Patient")}</Text>
 								<Flex align="center" gap="xs" w="80px">
 									<IconBed color="var(--theme-primary-color-6)" />
@@ -151,7 +197,12 @@ export default function InvoiceSummary() {
 						</Box>
 						<Box className="borderRadiusAll">
 							<Card padding="lg" radius="sm">
-								<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
+								<Card.Section
+									h={32}
+									withBorder
+									component="div"
+									bg="var(--theme-primary-color-7)"
+								>
 									<Flex align="center" h="100%" px="lg" justify="space-between">
 										<Text pb={0} fz="sm" c="white" fw={500}>
 											{t("TicketBaseCollections")}
@@ -162,21 +213,20 @@ export default function InvoiceSummary() {
 							<Table>
 								<Table.Thead>
 									<Table.Tr py="xs" bg="var(--theme-secondary-color-0)">
-										<Table.Td width={'70%'}>Patient Mode</Table.Td>
-										<Table.Td width={'15%'}>Number of Patient</Table.Td>
-										<Table.Td width={'15%'}> Amount</Table.Td>
+										<Table.Td width={"70%"}>Patient Mode</Table.Td>
+										<Table.Td width={"15%"}>Number of Patient</Table.Td>
+										<Table.Td width={"15%"}> Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
-									{patientModeCollectionData && (
+									{patientModeCollectionData &&
 										patientModeCollectionData?.map((item, index) => (
 											<Table.Tr key={item.id || index} py="xs">
 												<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
 												<Table.Td>{item?.patient}</Table.Td>
 												<Table.Td>{item?.total}</Table.Td>
 											</Table.Tr>
-										))
-									)}
+										))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
 										<Table.Td>{totalModeCount}</Table.Td>
@@ -187,7 +237,12 @@ export default function InvoiceSummary() {
 						</Box>
 						<Box className="borderRadiusAll">
 							<Card padding="lg" radius="sm">
-								<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
+								<Card.Section
+									h={32}
+									withBorder
+									component="div"
+									bg="var(--theme-primary-color-7)"
+								>
 									<Flex align="center" h="100%" px="lg" justify="space-between">
 										<Text pb={0} fz="sm" c="white" fw={500}>
 											{t("InvoiceModeCollections")}
@@ -198,19 +253,18 @@ export default function InvoiceSummary() {
 							<Table>
 								<Table.Thead>
 									<Table.Tr py="xs" bg="var(--theme-secondary-color-0)">
-										<Table.Td width={'85%'}>Invoice Mode</Table.Td>
-										<Table.Td width={'15%'}> Amount</Table.Td>
+										<Table.Td width={"85%"}>Invoice Mode</Table.Td>
+										<Table.Td width={"15%"}> Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
-									{invoiceModeData && (
+									{invoiceModeData &&
 										invoiceModeData?.map((item, index) => (
 											<Table.Tr key={item.id || index} py="xs">
 												<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
 												<Table.Td>{item?.total}</Table.Td>
 											</Table.Tr>
-										))
-									)}
+										))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
 										<Table.Td>{totalInvoiceModeAmount}</Table.Td>
@@ -220,7 +274,12 @@ export default function InvoiceSummary() {
 						</Box>
 						<Box className="borderRadiusAll">
 							<Card padding="lg" radius="sm">
-								<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
+								<Card.Section
+									h={32}
+									withBorder
+									component="div"
+									bg="var(--theme-primary-color-7)"
+								>
 									<Flex align="center" h="100%" px="lg" justify="space-between">
 										<Text pb={0} fz="sm" c="white" fw={500}>
 											{t("UserBaseCollections")}
@@ -231,19 +290,18 @@ export default function InvoiceSummary() {
 							<Table>
 								<Table.Thead bg="var(--theme-secondary-color-0)">
 									<Table.Tr py="xs">
-										<Table.Td width={'85%'}>Particular</Table.Td>
+										<Table.Td width={"85%"}>Particular</Table.Td>
 										<Table.Td>Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
-									{userCollectionData && (
+									{userCollectionData &&
 										userCollectionData?.map((item, index) => (
 											<Table.Tr key={item.id || index} py="xs">
 												<Table.Td>{item?.name}</Table.Td>
 												<Table.Td>{item?.total}</Table.Td>
 											</Table.Tr>
-										))
-									)}
+										))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
 										<Table.Td>{totalUserAmount}</Table.Td>
@@ -253,7 +311,12 @@ export default function InvoiceSummary() {
 						</Box>
 						<Box className="borderRadiusAll">
 							<Card padding="lg" radius="sm">
-								<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
+								<Card.Section
+									h={32}
+									withBorder
+									component="div"
+									bg="var(--theme-primary-color-7)"
+								>
 									<Flex align="center" h="100%" px="lg" justify="space-between">
 										<Text pb={0} fz="sm" c="white" fw={500}>
 											{t("ServiceBaseCollections")}
@@ -264,21 +327,20 @@ export default function InvoiceSummary() {
 							<Table>
 								<Table.Thead bg="var(--theme-secondary-color-0)">
 									<Table.Tr py="xs">
-										<Table.Td width={'70%'}>Particular</Table.Td>
-										<Table.Td width={'15%'}>Number of service</Table.Td>
+										<Table.Td width={"70%"}>Particular</Table.Td>
+										<Table.Td width={"15%"}>Number of service</Table.Td>
 										<Table.Td>Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
-									{serviceData && (
+									{serviceData &&
 										serviceData?.map((item, index) => (
 											<Table.Tr key={item.id || index} py="xs">
 												<Table.Td>{item?.name}</Table.Td>
 												<Table.Td>{item?.total_count}</Table.Td>
 												<Table.Td>{item?.total}</Table.Td>
 											</Table.Tr>
-										))
-									)}
+										))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
 										<Table.Td>{totalServieCount}</Table.Td>
@@ -289,7 +351,12 @@ export default function InvoiceSummary() {
 						</Box>
 						<Box className="borderRadiusAll">
 							<Card padding="lg" radius="sm">
-								<Card.Section h={32} withBorder component="div" bg="var(--theme-primary-color-7)">
+								<Card.Section
+									h={32}
+									withBorder
+									component="div"
+									bg="var(--theme-primary-color-7)"
+								>
 									<Flex align="center" h="100%" px="lg" justify="space-between">
 										<Text pb={0} fz="sm" c="white" fw={500}>
 											{t("ServiceGroupBaseCollections")}
@@ -300,19 +367,18 @@ export default function InvoiceSummary() {
 							<Table>
 								<Table.Thead bg="var(--theme-secondary-color-0)">
 									<Table.Tr py="xs">
-										<Table.Td width={'85%'}>Particular</Table.Td>
+										<Table.Td width={"85%"}>Particular</Table.Td>
 										<Table.Td>Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
-									{serviceGroups && (
+									{serviceGroups &&
 										serviceGroups?.map((item, index) => (
 											<Table.Tr key={item.id || index} py="xs">
 												<Table.Td>{item?.name}</Table.Td>
 												<Table.Td>{item?.total}</Table.Td>
 											</Table.Tr>
-										))
-									)}
+										))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
 										<Table.Td>{totalServiceGroupAmount}</Table.Td>
@@ -322,9 +388,10 @@ export default function InvoiceSummary() {
 						</Box>
 					</ScrollArea>
 				</Box>
-
 			</Box>
-			{records?.data && <InvoiceSummaryReports ref={summaryReportsRef} data={records?.data || []} />}
+			{records?.data && (
+				<InvoiceSummaryReports ref={summaryReportsRef} data={records?.data || []} />
+			)}
 		</Box>
 	);
 }

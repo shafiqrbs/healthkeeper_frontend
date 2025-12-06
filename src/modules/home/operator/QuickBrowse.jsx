@@ -15,7 +15,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { getUserRole } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 const quickBrowseButtonData = [
 	{
@@ -113,9 +113,10 @@ const quickBrowseCardData = [
 ];
 
 export default function QuickBrowse() {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const userRole = getUserRole();
+	const userRole = getLoggedInRoles();
 
 	const filteredQuickBrowseButtonData = quickBrowseButtonData.filter((item) =>
 		item.allowedRoles.some((role) => userRole.includes(role))
@@ -135,7 +136,12 @@ export default function QuickBrowse() {
 				{filteredQuickBrowseButtonData.map((item) => (
 					<Grid.Col span={3} key={item.label}>
 						<Link to={item.route} style={{ textDecoration: "none" }}>
-							<Button leftSection={<item.icon size={16} />} color="white" bg={item.color} fullWidth>
+							<Button
+								leftSection={<item.icon size={16} />}
+								color="white"
+								bg={item.color}
+								fullWidth
+							>
 								{t(item.label)}
 							</Button>
 						</Link>

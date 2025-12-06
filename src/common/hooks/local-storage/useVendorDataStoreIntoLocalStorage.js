@@ -1,10 +1,10 @@
-import { getLoggedInUser } from "@/common/utils";
 import { API_BASE_URL, API_KEY } from "@/constants";
 import axios from "axios";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const useVendorDataStoreIntoLocalStorage = async () => {
 	try {
-		const user = getLoggedInUser();
+		const user = useAuthStore.getState().user;
 
 		const response = await axios.get(`${API_BASE_URL}/core/vendor/local-storage`, {
 			headers: {

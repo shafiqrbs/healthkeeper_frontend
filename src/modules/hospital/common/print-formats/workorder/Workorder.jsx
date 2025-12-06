@@ -1,9 +1,9 @@
-import {Box, Text, Grid, Group, Image, Table, Flex} from "@mantine/core";
+import { Box, Text, Grid, Group, Image, Table, Flex } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import { getLoggedInUser } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
@@ -11,6 +11,7 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 const Workorder = forwardRef(({ data, preview = false }, ref) => {
+	const { getLoggedInUser } = useAppLocalStore();
 	const user = getLoggedInUser();
 
 	const patientInfo = data || {};
@@ -58,23 +59,45 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 										<Flex gap="md" justify="center">
 											<Box>
 												<Group ml="md" align="center" h="100%">
-													<Image src={GLogo} alt="logo" width={60} height={60} />
+													<Image
+														src={GLogo}
+														alt="logo"
+														width={60}
+														height={60}
+													/>
 												</Group>
 											</Box>
 											<Box>
-												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
+												<Text
+													ta="center"
+													fw="bold"
+													size="lg"
+													c="#1e40af"
+													mt="2"
+												>
 													{hospitalConfigData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
 													{hospitalConfigData?.address || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mb="2">
-													{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
+													{t("হটলাইন")}{" "}
+													{hospitalConfigData?.hotline || ""}
 												</Text>
 											</Box>
 											<Box>
-												<Group mr="md" justify="flex-end" align="center" h="100%">
-													<Image src={TBLogo} alt="logo" width={60} height={60} />
+												<Group
+													mr="md"
+													justify="flex-end"
+													align="center"
+													h="100%"
+												>
+													<Image
+														src={TBLogo}
+														alt="logo"
+														width={60}
+														height={60}
+													/>
 												</Group>
 											</Box>
 										</Flex>
@@ -82,31 +105,61 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colspan={6} style={{ textAlign: "center",fontSize:"20px", fontWeight:'blod' }}>WORK ORDER</Table.Td>
+								<Table.Td
+									colspan={6}
+									style={{
+										textAlign: "center",
+										fontSize: "20px",
+										fontWeight: "blod",
+									}}
+								>
+									WORK ORDER
+								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td>{t("Created")}</Table.Td>
-								<Table.Td> {patientInfo && patientInfo.created && patientInfo.created}</Table.Td>
+								<Table.Td>
+									{" "}
+									{patientInfo && patientInfo.created && patientInfo.created}
+								</Table.Td>
 								<Table.Td>{t("Invoice")}</Table.Td>
-								<Table.Td>{patientInfo && patientInfo.invoice && patientInfo.invoice}</Table.Td>
-								<Table.Td>  {t("Process")}</Table.Td>
-								<Table.Td> {patientInfo && patientInfo.process && patientInfo.process}</Table.Td>
+								<Table.Td>
+									{patientInfo && patientInfo.invoice && patientInfo.invoice}
+								</Table.Td>
+								<Table.Td> {t("Process")}</Table.Td>
+								<Table.Td>
+									{" "}
+									{patientInfo && patientInfo.process && patientInfo.process}
+								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td>{t("Vendor")}</Table.Td>
-								<Table.Td> {patientInfo && patientInfo.vendor_name && patientInfo.vendor_name}</Table.Td>
+								<Table.Td>
+									{" "}
+									{patientInfo &&
+										patientInfo.vendor_name &&
+										patientInfo.vendor_name}
+								</Table.Td>
 								<Table.Td>{t("CreatedBy")}</Table.Td>
-								<Table.Td> {patientInfo && patientInfo.cb_name && patientInfo.cb_name}</Table.Td>
+								<Table.Td>
+									{" "}
+									{patientInfo && patientInfo.cb_name && patientInfo.cb_name}
+								</Table.Td>
 								<Table.Td>{t("ApprovedBy")}</Table.Td>
-								<Table.Td>{patientInfo && patientInfo.ab_name && patientInfo.ab_name}</Table.Td>
+								<Table.Td>
+									{patientInfo && patientInfo.ab_name && patientInfo.ab_name}
+								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
-					<Table style={{
-						borderCollapse: "collapse",
-						width: "100%",
-						border: "1px solid var(--theme-tertiary-color-8)",
-					}} className="customTable">
+					<Table
+						style={{
+							borderCollapse: "collapse",
+							width: "100%",
+							border: "1px solid var(--theme-tertiary-color-8)",
+						}}
+						className="customTable"
+					>
 						<Table.Thead>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th>{t("S/N")}</Table.Th>
@@ -118,8 +171,10 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 						</Table.Thead>
 						<Table.Tbody>
 							{patientInfo?.purchase_items?.map((item, index) => (
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Table.Td>{index+1}.</Table.Td>
+								<Table.Tr
+									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+								>
+									<Table.Td>{index + 1}.</Table.Td>
 									<Table.Td>{getValue(item?.name)}</Table.Td>
 									<Table.Td>{getValue(item?.quantity, "0")}</Table.Td>
 									<Table.Td>{getValue(item?.production_date)}</Table.Td>

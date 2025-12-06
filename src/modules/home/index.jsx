@@ -2,20 +2,21 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import { Box, Flex } from "@mantine/core";
 import Navigation from "@/common/components/layout/Navigation";
 import HomeSkeleton from "@components/skeletons/HomeSkeleton";
-import { getUserRole } from "@utils/index";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import OperatorBoard from "@/modules/home/operator/OperatorBoard";
 import AdminBoard from "./operator/AdminBoard";
-import {useAuthStore} from "@/store/useAuthStore.js";
+import { useAuthStore } from "@/store/useAuthStore.js";
 
 const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
 const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_emergency"];
 
 export default function Index({ height }) {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const progress = useGetLoadingProgress();
-	const userRoles = getUserRole();
+	const userRoles = getLoggedInRoles();
 
-    // const config_jwt = useAuthStore(state => state);
-    // console.log(config_jwt.hospitalConfig)
+	// const config_jwt = useAuthStore(state => state);
+	// console.log(config_jwt.hospitalConfig)
 
 	return (
 		<>

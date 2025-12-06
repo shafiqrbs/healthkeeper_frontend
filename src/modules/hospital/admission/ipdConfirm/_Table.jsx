@@ -2,7 +2,18 @@ import { useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
+import {
+	ActionIcon,
+	Box,
+	Button,
+	Flex,
+	FloatingIndicator,
+	Group,
+	Menu,
+	rem,
+	Tabs,
+	Text,
+} from "@mantine/core";
 import {
 	IconArrowRight,
 	IconChevronUp,
@@ -23,7 +34,8 @@ import ConfirmModal from "../confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
-import { formatDate, getUserRole } from "@/common/utils";
+import { formatDate } from "@/common/utils";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { useReactToPrint } from "react-to-print";
@@ -44,6 +56,7 @@ const tabs = [
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm", "admin_administrator"];
 
 export default function _Table({ module }) {
+	const { getLoggedInRoles } = useAppLocalStore();
 	const admissionFormRef = useRef(null);
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
@@ -63,7 +76,7 @@ export default function _Table({ module }) {
 	const [selectedId, setSelectedId] = useState(null);
 	const [processTab, setProcessTab] = useState("new");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const userRoles = getUserRole();
+	const userRoles = getLoggedInRoles();
 
 	const printPrescription = useReactToPrint({
 		content: () => prescriptionRef.current,
@@ -90,20 +103,21 @@ export default function _Table({ module }) {
 		setControlsRefs(controlsRefs);
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
-		filterParams: {
-			name: filterData?.name,
-			referred_mode: "admission",
-			ipd_mode: processTab,
-			created: form.values.created,
-			term: filterData.keywordSearch,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
+			filterParams: {
+				name: filterData?.name,
+				referred_mode: "admission",
+				ipd_mode: processTab,
+				created: form.values.created,
+				term: filterData.keywordSearch,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+		});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
@@ -204,7 +218,11 @@ export default function _Table({ module }) {
 							title: t("Created"),
 							textAlignment: "right",
 							render: (item) => (
-								<Text fz="xs" onClick={() => handleView(item.id)} className="activate-link">
+								<Text
+									fz="xs"
+									onClick={() => handleView(item.id)}
+									className="activate-link"
+								>
 									{formatDate(item.created_at)}
 								</Text>
 							),
@@ -233,15 +251,24 @@ export default function _Table({ module }) {
 							titleClassName: "title-right",
 							render: (values) => (
 								<>
-									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+									<Group
+										onClick={(e) => e.stopPropagation()}
+										gap={4}
+										justify="right"
+										wrap="nowrap"
+									>
+										{userRoles.some((role) =>
+											ALLOWED_CONFIRMED_ROLES.includes(role)
+										) &&
 											values.process == "ipd" && (
 												<Button
 													variant="filled"
 													bg="var(--theme-primary-color-6)"
 													c="white"
 													size="compact-xs"
-													onClick={() => handleConfirm(values.uid || values.id)}
+													onClick={() =>
+														handleConfirm(values.uid || values.id)
+													}
 													radius="es"
 													fw={400}
 													rightSection={<IconArrowRight size={18} />}
@@ -265,7 +292,11 @@ export default function _Table({ module }) {
 													radius="es"
 													aria-label="Actions"
 												>
-													<IconDotsVertical height={18} width={18} stroke={1.5} />
+													<IconDotsVertical
+														height={18}
+														width={18}
+														stroke={1.5}
+													/>
 												</ActionIcon>
 											</Menu.Target>
 											<Menu.Dropdown>
@@ -281,7 +312,9 @@ export default function _Table({ module }) {
 														}
 														onClick={(e) => {
 															e.stopPropagation();
-															handlePrescriptionPrint(values?.prescription_id);
+															handlePrescriptionPrint(
+																values?.prescription_id
+															);
 														}}
 													>
 														{t("Prescription")}
@@ -360,8 +393,12 @@ export default function _Table({ module }) {
 			<IPDDetailsDrawer opened={opened} close={close} selectedId={selectedId} />
 
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
-			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
-			{admissionFormPrintData && <AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />}
+			{billingPrintData && (
+				<DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />
+			)}
+			{admissionFormPrintData && (
+				<AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />
+			)}
 		</Box>
 	);
 }

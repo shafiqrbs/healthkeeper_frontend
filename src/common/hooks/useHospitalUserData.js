@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { getDataWithoutStore } from "@/services/apiService";
-import { getLoggedInHospitalUser, getLoggedInUser } from "@utils/index";
+import { getLoggedInHospitalUser } from "@utils/index";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 import { CONFIGURATION_ROUTES } from "@/constants/routes";
 
 export default function useHospitalUserData() {
+	const { getLoggedInUser } = useAppLocalStore();
 	const [error, setError] = useState(null);
 	const [data, setData] = useState(null);
 	const user = getLoggedInUser();
