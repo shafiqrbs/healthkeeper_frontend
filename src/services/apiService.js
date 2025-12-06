@@ -10,7 +10,7 @@ const getCommonHeaders = () => {
 		"Content-Type": `application/json`,
 		"Access-Control-Allow-Origin": "*",
 		"X-Api-Key": API_KEY,
-		"X-Api-User": user.id,
+		"X-Api-User": user?.id,
 		Authorization: `Bearer ${token}`,
 	};
 };
@@ -22,7 +22,7 @@ const getFileHeaders = () => {
 		"Content-Type": `multipart/form-data`,
 		"Access-Control-Allow-Origin": "*",
 		"X-Api-Key": API_KEY,
-		"X-Api-User": user.id,
+		"X-Api-User": user?.id,
 		Authorization: `Bearer ${token}`,
 	};
 };
