@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
-import { jwtDecode } from "jwt-decode";
+import {useNavigate} from "react-router-dom";
 
 export default function useAutoLogout() {
+    const navigate = useNavigate()
     const { tokenExp, clearUser } = useAuthStore();
 
     useEffect(() => {
@@ -14,7 +15,7 @@ export default function useAutoLogout() {
             // Token already expired
             clearUser();
             localStorage.clear();
-            window.location.href = "/login";
+            navigate("/login")
             return;
         }
 
@@ -24,7 +25,8 @@ export default function useAutoLogout() {
         const timer = setTimeout(() => {
             clearUser();
             localStorage.clear();
-            window.location.href = "/login";
+            navigate("/login")
+
         }, msRemaining);
 
         return () => clearTimeout(timer);
