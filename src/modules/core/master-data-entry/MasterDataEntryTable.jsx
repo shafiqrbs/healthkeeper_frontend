@@ -32,7 +32,9 @@ function MasterDataEntryTable() {
 	const searchKeyword = useSelector((state) => state.crudSlice.searchKeyword);
 	const indexData = useSelector((state) => state.inventoryCrudSlice.indexEntityData);
 	const entityDataDelete = useSelector((state) => state.inventoryCrudSlice.entityDataDelete);
-	const productCategoryFilterData = useSelector((state) => state.inventoryCrudSlice.productCategoryFilterData);
+	const productCategoryFilterData = useSelector(
+		(state) => state.inventoryCrudSlice.productCategoryFilterData
+	);
 
 	const [categoryViewModal, setCategoryViewModal] = useState(false);
 
@@ -71,7 +73,13 @@ function MasterDataEntryTable() {
 
 	return (
 		<>
-			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
+			<Box
+				pl={`xs`}
+				pr={8}
+				pt={"6"}
+				pb={"4"}
+				className={"boxBackground borderRadiusAll border-bottom-none"}
+			>
 				<KeywordSearch module={"category"} />
 			</Box>
 			<Box className={"borderRadiusAll border-top-none"}>
@@ -94,7 +102,6 @@ function MasterDataEntryTable() {
 						{ accessor: "name", title: t("SettingType") },
 						{ accessor: "parent_name", title: t("SettingName") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -115,14 +122,22 @@ function MasterDataEntryTable() {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+												<IconDotsVertical
+													height={"18"}
+													width={"18"}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
 											<Menu.Item
 												onClick={() => {
 													dispatch(setInsertType("update"));
-													dispatch(editEntityData("core/customer-settings/" + data.id));
+													dispatch(
+														editEntityData(
+															"core/customer-settings/" + data.id
+														)
+													);
 													dispatch(setFormLoading(true));
 													navigate(`/core/customer-settings/${data.id}`);
 												}}
@@ -151,22 +166,38 @@ function MasterDataEntryTable() {
 												c={"red.6"}
 												onClick={() => {
 													modals.openConfirmModal({
-														title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-														children: (
-															<Text size="sm"> {t("FormConfirmationMessage")}</Text>
+														title: (
+															<Text size="md">
+																{" "}
+																{t("FormConfirmationTitle")}
+															</Text>
 														),
-														labels: { confirm: "Confirm", cancel: "Cancel" },
+														children: (
+															<Text size="sm">
+																{" "}
+																{t("FormConfirmationMessage")}
+															</Text>
+														),
+														labels: {
+															confirm: "Confirm",
+															cancel: "Cancel",
+														},
 														confirmProps: { color: "red.6" },
 														onCancel: () => console.info("Cancel"),
 														onConfirm: () => {
 															dispatch(
-																deleteEntityData("inventory/category-group/" + data.id)
+																deleteEntityData(
+																	"inventory/category-group/" +
+																		data.id
+																)
 															);
 														},
 													});
 												}}
 												rightSection={
-													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+													<IconTrashX
+														style={{ width: rem(14), height: rem(14) }}
+													/>
 												}
 											>
 												{t("Delete")}

@@ -103,17 +103,25 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		// If medicine field is being changed, auto-populate other fields from medicine data
 		if (field === "medicine_id" && value) {
 			medicineForm.clearFieldError("generic");
-			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
+			const selectedMedicine = medicineData?.find(
+				(item) => item.product_id?.toString() === value
+			);
 
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 				medicineForm.setFieldValue("stock_id", selectedMedicine?.stock_id?.toString());
 				// Auto-populate duration and count based on duration_day or duration_month
 				if (selectedMedicine.duration_day) {
-					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_day) || 1);
+					medicineForm.setFieldValue(
+						"quantity",
+						parseInt(selectedMedicine.duration_day) || 1
+					);
 					medicineForm.setFieldValue("duration", "day");
 				} else if (selectedMedicine.duration_month) {
-					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_month) || 1);
+					medicineForm.setFieldValue(
+						"quantity",
+						parseInt(selectedMedicine.duration_month) || 1
+					);
 					medicineForm.setFieldValue("duration", "month");
 				}
 			}
@@ -341,7 +349,6 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 							render: (item) => item?.quantity + item?.duration,
 						},
 						{
-							accessor: "action",
 							title: "",
 							width: "100px",
 							render: (item) => (

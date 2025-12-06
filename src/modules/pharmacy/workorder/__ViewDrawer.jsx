@@ -12,11 +12,10 @@ import { errorNotification } from "@components/notification/errorNotification";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 
 export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module, refetchAll }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const entityObject = useSelector((state) => state.crud[module].editData);
-	const userRoles = getLoggedInRoles();
 	const ALLOWED_PHARMACIST_ROLES = ["pharmacy_doctor", "admin_administrator"];
 	const canApprove = userRoles.some((role) => ALLOWED_PHARMACIST_ROLES.includes(role));
 	const closeDrawer = () => {

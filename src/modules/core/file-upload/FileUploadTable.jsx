@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Group, Box, ActionIcon, Menu, rem, Button, LoadingOverlay, Flex, Switch, Chip, Text } from "@mantine/core";
+import {
+	Group,
+	Box,
+	ActionIcon,
+	Menu,
+	rem,
+	Button,
+	LoadingOverlay,
+	Flex,
+	Switch,
+	Chip,
+	Text,
+} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconArrowRight,
@@ -16,7 +28,11 @@ import {
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import { getIndexEntityData, setDeleteMessage, setFetching } from "../../../../store/core/crudSlice.js";
+import {
+	getIndexEntityData,
+	setDeleteMessage,
+	setFetching,
+} from "../../../../store/core/crudSlice.js";
 import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import { deleteEntityData } from "../../../../store/core/crudSlice";
 import tableCss from "../../../../assets/css/Table.module.css";
@@ -131,20 +147,46 @@ function FileUploadTable() {
 	const uploadFileDeleteHandle = async (id) => {
 		const resultAction = await dispatch(deleteEntityData("core/file-upload/" + id));
 		if (resultAction.payload.data.status === 200) {
-			showNotificationComponent(t("DeleteSuccessfully"), "red", "lightgray", "", true, 1000, true);
+			showNotificationComponent(
+				t("DeleteSuccessfully"),
+				"red",
+				"lightgray",
+				"",
+				true,
+				1000,
+				true
+			);
 		} else {
-			showNotificationComponent("Something went wrong", "red", "lightgray", "", true, 1000, true);
+			showNotificationComponent(
+				"Something went wrong",
+				"red",
+				"lightgray",
+				"",
+				true,
+				1000,
+				true
+			);
 		}
 		setFetching(true);
 	};
 
 	return (
 		<>
-			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
+			<Box
+				pl={`xs`}
+				pr={8}
+				pt={"6"}
+				pb={"4"}
+				className={"boxBackground borderRadiusAll border-bottom-none"}
+			>
 				<KeywordSearch module={"file-upload"} />
 			</Box>
 
-			<LoadingOverlay visible={loading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+			<LoadingOverlay
+				visible={loading}
+				zIndex={1000}
+				overlayProps={{ radius: "sm", blur: 2 }}
+			/>
 
 			<Box className={"borderRadiusAll border-top-none"}>
 				<DataTable
@@ -170,7 +212,11 @@ function FileUploadTable() {
 							accessor: "is_process",
 							title: t("Status"),
 							render: (item) => (
-								<Chip defaultChecked color={item.is_process === 1 ? "green" : "red"} variant="light">
+								<Chip
+									defaultChecked
+									color={item.is_process === 1 ? "green" : "red"}
+									variant="light"
+								>
 									{item.is_process === 1 ? "Completed" : "Created"}
 								</Chip>
 							),
@@ -188,7 +234,6 @@ function FileUploadTable() {
 						},
 
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -209,7 +254,11 @@ function FileUploadTable() {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+												<IconDotsVertical
+													height={"18"}
+													width={"18"}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
@@ -222,7 +271,12 @@ function FileUploadTable() {
 													bg={"#d7e8cd"}
 													c={"black"}
 													rightSection={
-														<IconLoader style={{ width: rem(14), height: rem(14) }} />
+														<IconLoader
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
 													}
 													onClick={(e) => {
 														processUploadFile(data.id);
@@ -240,11 +294,22 @@ function FileUploadTable() {
 												c={"red.6"}
 												onClick={() => {
 													modals.openConfirmModal({
-														title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-														children: (
-															<Text size="sm"> {t("FormConfirmationMessage")}</Text>
+														title: (
+															<Text size="md">
+																{" "}
+																{t("FormConfirmationTitle")}
+															</Text>
 														),
-														labels: { confirm: "Confirm", cancel: "Cancel" },
+														children: (
+															<Text size="sm">
+																{" "}
+																{t("FormConfirmationMessage")}
+															</Text>
+														),
+														labels: {
+															confirm: "Confirm",
+															cancel: "Cancel",
+														},
 														confirmProps: { color: "red.6" },
 														onCancel: () => console.info("Cancel"),
 														onConfirm: () => {
@@ -253,7 +318,9 @@ function FileUploadTable() {
 													});
 												}}
 												rightSection={
-													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+													<IconTrashX
+														style={{ width: rem(14), height: rem(14) }}
+													/>
 												}
 											>
 												{t("Delete")}

@@ -1,61 +1,27 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {
-	ActionIcon,
-	Box,
-	Button,
-	Flex,
-	FloatingIndicator,
-	Grid,
-	Group,
-	Menu,
-	Tabs,
-	Text,
-} from "@mantine/core";
-import {
-	IconArrowRight,
-	IconDotsVertical,
-	IconPencil,
-	IconPrinter,
-	IconScript,
-} from "@tabler/icons-react";
+import { Box, Button, Flex, Group, Text } from "@mantine/core";
+
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
-import { rem } from "@mantine/core";
 import tableCss from "@assets/css/Table.module.css";
-import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import KeywordSearch from "../common/KeywordSearch";
-import { hasLength, useForm } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
-import { useDispatch, useSelector } from "react-redux";
-import { showEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { useSelector } from "react-redux";
 import { formatDate } from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import CompactDrawer from "@components/drawers/CompactDrawer";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { successNotification } from "@components/notification/successNotification";
-import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import { errorNotification } from "@components/notification/errorNotification";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import { modals } from "@mantine/modals";
-import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import { getDataWithoutStore } from "@/services/apiService";
-import Prescription from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useReactToPrint } from "react-to-print";
 import VitalUpdateDrawer from "@hospital-components/drawer/VitalUpdateDrawer";
 
 const PER_PAGE = 200;
-const tabs = [
-	{ label: "All", value: "all" },
-	{ label: "Admission", value: "admission" },
-	{ label: "Prescription", value: "prescription" },
-	{ label: "Non-prescription", value: "non-prescription" },
-];
+
 const ALLOWED_DOCTOR_ROLES = ["doctor_emergency", "admin_administrator"];
 
 const CSV_HEADERS = [
@@ -70,26 +36,16 @@ const CSV_HEADERS = [
 
 export default function Table({ module }) {
 	const csvLinkRef = useRef(null);
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state.crud[module]?.data);
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 34;
-	const [selectedId, setSelectedId] = useState(null);
 	const [patientData, setPatientData] = useState(null);
 	const [opened, { open, close }] = useDisclosure(false);
-	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
-	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
-	const [processTab, setProcessTab] = useState("all");
-	const userRoles = getLoggedInRoles();
-	const user = getLoggedInUser();
-	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] =
-		useDisclosure(false);
+	const { user, userRoles } = useAppLocalStore();
+	useDisclosure(false);
 	const [openedVitalUpdate, { open: openVitalUpdate, close: closeVitalUpdate }] =
 		useDisclosure(false);
-	const [singlePatientData, setSinglePatientData] = useState({});
 	// removed unused 'today'
 
 	const form = useForm({
@@ -100,18 +56,6 @@ export default function Table({ module }) {
 		},
 	});
 
-	const referredForm = useForm({
-		initialValues: {
-			referred_mode: "admission",
-			admission_comment: "",
-		},
-		validate: {
-			admission_comment: hasLength({ min: 1 }),
-		},
-	});
-
-	const [rootRef, setRootRef] = useState(null);
-	const [controlsRefs, setControlsRefs] = useState({});
 	const [printData, setPrintData] = useState({});
 	const [type, setType] = useState(null);
 	const posRef = useRef(null);
@@ -127,10 +71,6 @@ export default function Table({ module }) {
 		content: () => prescriptionRef.current,
 	});
 
-	const setControlRef = (val) => (node) => {
-		controlsRefs[val] = node;
-		setControlsRefs(controlsRefs);
-	};
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
 		useInfiniteTableScroll({
 			module,
@@ -150,89 +90,9 @@ export default function Table({ module }) {
 		open();
 	};
 
-	const handleOpenViewOverview = () => {
-		openOverview();
-	};
-
 	const handlePatientDataClick = (values) => {
 		setPatientData(values);
 		requestAnimationFrame(openVitalUpdate);
-	};
-
-	const handleProcessPrescription = (id) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: { confirm: "Confirm", cancel: "Cancel" },
-			confirmProps: { color: "red" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleProcessConfirmation(id),
-		});
-	};
-
-	const handleProcessConfirmation = async (id) => {
-		const resultAction = await dispatch(
-			showEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.SEND_TO_PRESCRIPTION}/${id}`,
-				module,
-				id,
-			})
-		).unwrap();
-		const prescription_id = resultAction?.data?.data.id;
-		if (prescription_id) {
-			navigate(
-				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`
-			);
-		} else {
-			console.error(resultAction);
-			showNotificationComponent(
-				t("Something Went wrong , please try again"),
-				"red.6",
-				"lightgray"
-			);
-		}
-	};
-
-	const handlePrescription = async (prescription_id) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
-	};
-
-	const handleSendToAdmission = (id) => {
-		setSelectedId(id);
-		openAdmission();
-		// navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX);
-	};
-
-	async function handleConfirmSubmission(values) {
-		try {
-			const value = {
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.REFERRED}/${selectedId}`,
-				data: { ...values },
-				module,
-			};
-			const resultAction = await dispatch(storeEntityData(value));
-			if (storeEntityData.rejected.match(resultAction)) {
-				const fieldErrors = resultAction.payload.errors;
-				if (fieldErrors) {
-					const errorObject = {};
-					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
-					});
-					referredForm.setErrors(errorObject);
-				}
-			} else if (storeEntityData.fulfilled.match(resultAction)) {
-				referredForm.reset();
-				setSelectedId(null);
-				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-			}
-		} catch (error) {
-			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
-		}
-	}
-
-	const handleAdmission = () => {
-		handleConfirmSubmission(referredForm.values);
-		closeAdmission();
 	};
 
 	const csvData =
@@ -252,18 +112,6 @@ export default function Table({ module }) {
 		}
 	};
 
-	const patientUpdate = async (e, id) => {
-		e.stopPropagation();
-
-		const { data } = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${id}`,
-		});
-
-		setSinglePatientData(data);
-
-		setTimeout(() => openPatientUpdate(), 100);
-	};
-
 	useEffect(() => {
 		if (type === "a4") {
 			handleA4();
@@ -273,31 +121,6 @@ export default function Table({ module }) {
 			handlePrescriptionOption();
 		}
 	}, [printData, type]);
-
-	const handleA4Print = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}`,
-		});
-		setPrintData(res.data);
-		setType("a4");
-	};
-
-	const handlePosPrint = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}`,
-		});
-		setPrintData(res.data);
-		setType("pos");
-	};
-
-	const handlePrescriptionPrint = async (prescription_id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescription_id}`,
-		});
-
-		setPrintData(res.data);
-		setType("prescription");
-	};
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
@@ -359,7 +182,6 @@ export default function Table({ module }) {
 						{ accessor: "respiration", title: t("Respiration") },
 						{ accessor: "temperature", title: t("Temperature") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",

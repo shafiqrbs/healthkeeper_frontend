@@ -31,7 +31,9 @@ function MarketingExecutiveTable() {
 
 	const searchKeyword = useSelector((state) => state.crudSlice.searchKeyword);
 	const entityDataDelete = useSelector((state) => state.inventoryCrudSlice.entityDataDelete);
-	const productCategoryFilterData = useSelector((state) => state.inventoryCrudSlice.productCategoryFilterData);
+	const productCategoryFilterData = useSelector(
+		(state) => state.inventoryCrudSlice.productCategoryFilterData
+	);
 
 	const [executiveViewModal, setExecutiveViewModal] = useState(false);
 
@@ -89,7 +91,13 @@ function MarketingExecutiveTable() {
 
 	return (
 		<>
-			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
+			<Box
+				pl={`xs`}
+				pr={8}
+				pt={"6"}
+				pb={"4"}
+				className={"boxBackground borderRadiusAll border-bottom-none"}
+			>
 				<KeywordSearch module={"category"} />
 			</Box>
 			<Box className={"borderRadiusAll border-top-none"}>
@@ -114,7 +122,6 @@ function MarketingExecutiveTable() {
 						{ accessor: "email", title: t("Email") },
 						{ accessor: "designation", title: t("Designation") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -135,16 +142,26 @@ function MarketingExecutiveTable() {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+												<IconDotsVertical
+													height={"18"}
+													width={"18"}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
 											<Menu.Item
 												onClick={() => {
 													dispatch(setInsertType("update"));
-													dispatch(editEntityData("core/marketing-executive/" + data.id));
+													dispatch(
+														editEntityData(
+															"core/marketing-executive/" + data.id
+														)
+													);
 													dispatch(setFormLoading(true));
-													navigate(`/core/marketing-executive/${data.id}`);
+													navigate(
+														`/core/marketing-executive/${data.id}`
+													);
 												}}
 											>
 												{t("Edit")}
@@ -171,22 +188,38 @@ function MarketingExecutiveTable() {
 												c={"red.6"}
 												onClick={() => {
 													modals.openConfirmModal({
-														title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-														children: (
-															<Text size="sm"> {t("FormConfirmationMessage")}</Text>
+														title: (
+															<Text size="md">
+																{" "}
+																{t("FormConfirmationTitle")}
+															</Text>
 														),
-														labels: { confirm: "Confirm", cancel: "Cancel" },
+														children: (
+															<Text size="sm">
+																{" "}
+																{t("FormConfirmationMessage")}
+															</Text>
+														),
+														labels: {
+															confirm: "Confirm",
+															cancel: "Cancel",
+														},
 														confirmProps: { color: "red.6" },
 														onCancel: () => console.info("Cancel"),
 														onConfirm: () => {
 															dispatch(
-																deleteEntityData("inventory/category-group/" + data.id)
+																deleteEntityData(
+																	"inventory/category-group/" +
+																		data.id
+																)
 															);
 														},
 													});
 												}}
 												rightSection={
-													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+													<IconTrashX
+														style={{ width: rem(14), height: rem(14) }}
+													/>
 												}
 											>
 												{t("Delete")}

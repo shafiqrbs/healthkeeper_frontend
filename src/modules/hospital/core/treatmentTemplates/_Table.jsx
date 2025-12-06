@@ -1,6 +1,12 @@
 import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconTrashX, IconAlertCircle, IconEdit, IconChevronUp, IconSelector } from "@tabler/icons-react";
+import {
+	IconTrashX,
+	IconAlertCircle,
+	IconEdit,
+	IconChevronUp,
+	IconSelector,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -38,17 +44,18 @@ export default function _Table({ module, open }) {
 	const [viewDrawer, setViewDrawer] = useState(false);
 
 	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			particular_type: "treatment-template",
-			term: searchKeyword,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "name",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				particular_type: "treatment-template",
+				term: searchKeyword,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "name",
+		});
 
 	const handleEntityEdit = (id) => {
 		dispatch(setInsertType({ insertType: "update", module }));
@@ -112,7 +119,9 @@ export default function _Table({ module, open }) {
 				module,
 			})
 		);
-		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.TREATMENT_MEDICINE}/${id}`);
+		navigate(
+			`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.TREATMENT_MEDICINE}/${id}`
+		);
 	};
 
 	const handleCreateForm = () => {
@@ -222,14 +231,17 @@ export default function _Table({ module, open }) {
 									placeholder={t("Name")}
 									value={submitFormData[item.id]?.name || ""}
 									onChange={(event) =>
-										handleDataTypeChange(item.id, "name", event.currentTarget.value)
+										handleDataTypeChange(
+											item.id,
+											"name",
+											event.currentTarget.value
+										)
 									}
 									onBlur={() => handleRowSubmit(item.id)}
 								/>
 							),
 						},
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",

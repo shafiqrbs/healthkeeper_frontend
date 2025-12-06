@@ -12,7 +12,14 @@ import {
 	Select,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconTrashX, IconAlertCircle, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
+import {
+	IconTrashX,
+	IconAlertCircle,
+	IconEdit,
+	IconEye,
+	IconChevronUp,
+	IconSelector,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -53,17 +60,18 @@ export default function _Table({ module, open }) {
 	const listData = useSelector((state) => state.crud[module].data);
 
 	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			particular_type: "investigation",
-			term: searchKeyword,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "name",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				particular_type: "investigation",
+				term: searchKeyword,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "name",
+		});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -264,7 +272,11 @@ export default function _Table({ module, open }) {
 									placeholder={t("Name")}
 									value={submitFormData[item.id]?.name || ""}
 									onChange={(event) =>
-										handleDataTypeChange(item.id, "name", event.currentTarget.value)
+										handleDataTypeChange(
+											item.id,
+											"name",
+											event.currentTarget.value
+										)
 									}
 									onBlur={() => handleRowSubmit(item.id)}
 								/>
@@ -275,7 +287,11 @@ export default function _Table({ module, open }) {
 							title: t("DisplayName"),
 							sortable: true,
 							render: (values) => (
-								<Text className="activate-link" fz="xs" onClick={() => handleDataShow(values.id)}>
+								<Text
+									className="activate-link"
+									fz="xs"
+									onClick={() => handleDataShow(values.id)}
+								>
 									{values.display_name}
 								</Text>
 							),
@@ -291,7 +307,12 @@ export default function _Table({ module, open }) {
 									data={departmentDropdown}
 									value={submitFormData[item.id]?.diagnostic_department_id ?? ""}
 									onChange={(val) => {
-										handleDataTypeChange(item.id, "diagnostic_department_id", val, true);
+										handleDataTypeChange(
+											item.id,
+											"diagnostic_department_id",
+											val,
+											true
+										);
 									}}
 									onBlur={() => handleRowSubmit(item.id)}
 									rightSection={updatingRows[item.id]}
@@ -310,7 +331,12 @@ export default function _Table({ module, open }) {
 									data={roomDropdown}
 									value={submitFormData[item.id]?.diagnostic_room_id ?? ""}
 									onChange={(val) => {
-										handleDataTypeChange(item.id, "diagnostic_room_id", val, true);
+										handleDataTypeChange(
+											item.id,
+											"diagnostic_room_id",
+											val,
+											true
+										);
 									}}
 									onBlur={() => handleRowSubmit(item.id)}
 									rightSection={updatingRows[item.id]}
@@ -343,7 +369,12 @@ export default function _Table({ module, open }) {
 									size="sm"
 									checked={submitFormData[item.id]?.is_available ?? false}
 									onChange={(val) =>
-										handleDataTypeChange(item.id, "is_available", val.currentTarget.checked, true)
+										handleDataTypeChange(
+											item.id,
+											"is_available",
+											val.currentTarget.checked,
+											true
+										)
 									}
 								/>
 							),
@@ -358,7 +389,12 @@ export default function _Table({ module, open }) {
 									size="sm"
 									checked={submitFormData[item.id]?.report_format ?? false}
 									onChange={(val) =>
-										handleDataTypeChange(item.id, "report_format", val.currentTarget.checked, true)
+										handleDataTypeChange(
+											item.id,
+											"report_format",
+											val.currentTarget.checked,
+											true
+										)
 									}
 								/>
 							),
@@ -373,14 +409,18 @@ export default function _Table({ module, open }) {
 									size="sm"
 									checked={submitFormData[item.id]?.is_custom_report ?? false}
 									onChange={(val) =>
-										handleDataTypeChange(item.id, "is_custom_report", val.currentTarget.checked, true)
+										handleDataTypeChange(
+											item.id,
+											"is_custom_report",
+											val.currentTarget.checked,
+											true
+										)
 									}
 								/>
 							),
 						},
 
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",

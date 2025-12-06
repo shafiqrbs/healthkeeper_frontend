@@ -37,7 +37,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 const PER_PAGE = 50;
 
 export default function _Table({ module }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
@@ -49,13 +49,7 @@ export default function _Table({ module }) {
 	const height = mainAreaHeight - 48;
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const invoicePrintRef = useRef(null);
-	const userRoles = getLoggedInRoles();
-	const ALLOWED_PHARMACIST_ROLES = [
-		"pharmacy_doctor",
-		"pharmacy_pharmacist",
-		"admin_administrator",
-	];
-	const canApprove = userRoles.some((role) => ALLOWED_PHARMACIST_ROLES.includes(role));
+
 	// for infinity table data scroll, call the hook
 	const {
 		scrollRef,
@@ -204,7 +198,6 @@ export default function _Table({ module }) {
 							cellsClassName: tableCss.statusBackground,
 						},
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",

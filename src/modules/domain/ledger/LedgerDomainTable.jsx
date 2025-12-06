@@ -49,7 +49,13 @@ function LedgerDomainTable(props) {
 
 	return (
 		<>
-			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
+			<Box
+				pl={`xs`}
+				pr={8}
+				pt={"6"}
+				pb={"4"}
+				className={"boxBackground borderRadiusAll border-bottom-none"}
+			>
 				<KeywordSearch module={"customer"} />
 			</Box>
 			<Box className={"borderRadiusAll border-top-none"}>
@@ -74,7 +80,6 @@ function LedgerDomainTable(props) {
 						{ accessor: "code", title: t("AccountCode") },
 						{ accessor: "amount", title: t("Amount") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -97,7 +102,11 @@ function LedgerDomainTable(props) {
 														radius="xl"
 														aria-label="Settings"
 													>
-														<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+														<IconDotsVertical
+															height={"18"}
+															width={"18"}
+															stroke={1.5}
+														/>
 													</ActionIcon>
 												</Menu.Target>
 												<Menu.Dropdown>
@@ -106,10 +115,15 @@ function LedgerDomainTable(props) {
 														onClick={() => {
 															dispatch(setInsertType("update"));
 															dispatch(
-																editEntityData("accounting/account-head/" + data.id)
+																editEntityData(
+																	"accounting/account-head/" +
+																		data.id
+																)
 															);
 															dispatch(setFormLoading(true));
-															navigate(`/accounting/ledger/${data.id}`);
+															navigate(
+																`/accounting/ledger/${data.id}`
+															);
 														}}
 													>
 														{t("Edit")}
@@ -119,7 +133,9 @@ function LedgerDomainTable(props) {
 														onClick={() => {
 															// console.info('ok')
 															// setLedgerViewDrawer(true)
-															navigate(`/accounting/ledger/view/${data.id}`);
+															navigate(
+																`/accounting/ledger/view/${data.id}`
+															);
 															// setCustomerViewModel(true)
 															// dispatch(showEntityData('core/customer/' + data.id))
 														}}
@@ -140,21 +156,31 @@ function LedgerDomainTable(props) {
 														onClick={() => {
 															modals.openConfirmModal({
 																title: (
-																	<Text size="md"> {t("FormConfirmationTitle")}</Text>
+																	<Text size="md">
+																		{" "}
+																		{t("FormConfirmationTitle")}
+																	</Text>
 																),
 																children: (
 																	<Text size="sm">
 																		{" "}
-																		{t("FormConfirmationMessage")}
+																		{t(
+																			"FormConfirmationMessage"
+																		)}
 																	</Text>
 																),
-																labels: { confirm: "Confirm", cancel: "Cancel" },
-																onCancel: () => console.info("Cancel"),
+																labels: {
+																	confirm: "Confirm",
+																	cancel: "Cancel",
+																},
+																onCancel: () =>
+																	console.info("Cancel"),
 																confirmProps: { color: "red.6" },
 																onConfirm: () => {
 																	dispatch(
 																		deleteEntityData(
-																			"accounting/account-head/" + data.id
+																			"accounting/account-head/" +
+																				data.id
 																		)
 																	);
 																	dispatch(setFetching(true));
@@ -162,7 +188,12 @@ function LedgerDomainTable(props) {
 															});
 														}}
 														rightSection={
-															<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+															<IconTrashX
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
 														}
 													>
 														{t("Delete")}
@@ -190,7 +221,10 @@ function LedgerDomainTable(props) {
 				/>
 			</Box>
 			{ledgerViewDrawer && (
-				<LedgerDomainViewDrawer ledgerViewDrawer={ledgerViewDrawer} setLedgerViewDrawer={setLedgerViewDrawer} />
+				<LedgerDomainViewDrawer
+					ledgerViewDrawer={ledgerViewDrawer}
+					setLedgerViewDrawer={setLedgerViewDrawer}
+				/>
 			)}
 		</>
 	);

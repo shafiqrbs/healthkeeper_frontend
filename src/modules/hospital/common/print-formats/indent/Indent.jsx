@@ -11,8 +11,7 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 const Indent = forwardRef(({ data, preview = false }, ref) => {
-	const { getLoggedInUser } = useAppLocalStore();
-	const user = getLoggedInUser();
+	const { user } = useAppLocalStore();
 
 	const patientInfo = data || {};
 	const { hospitalConfigData } = useHospitalConfigData();

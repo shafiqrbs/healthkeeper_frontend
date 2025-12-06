@@ -18,7 +18,7 @@ import ViewDrawer from "./__ViewDrawer";
 import { notifications } from "@mantine/notifications";
 import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES } from "@/constants/routes";
+import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
 import { deleteEntityData, editEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
@@ -27,18 +27,14 @@ import { deleteNotification } from "@components/notification/deleteNotification"
 import { useRef, useState } from "react";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
-import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
-import Workorder from "@hospital-components/print-formats/workorder/Workorder";
 import Indent from "@hospital-components/print-formats/indent/Indent";
 
 const PER_PAGE = 50;
 
 export default function _Table({ module }) {
-	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
+	const { user, userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
@@ -48,8 +44,6 @@ export default function _Table({ module }) {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
 	const height = mainAreaHeight - 48;
-	const user = getLoggedInUser();
-	const userRoles = getLoggedInRoles();
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const invoicePrintRef = useRef(null);
 	// console.log(user.id)
@@ -219,7 +213,6 @@ export default function _Table({ module }) {
 							cellsClassName: tableCss.statusBackground,
 						},
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",

@@ -99,8 +99,6 @@ const InvoiceSummaryReports = forwardRef((data, ref) => {
 					</Table.Tbody>
 					</Table>
 				</Box>
-
-
 				{/* =============== Daily Overview representation ================ */}
 				<Box className="borderRadiusAll" mt="3xs" px="xs">
 					<Flex justify="space-between" align="center" className="borderBottomDashed" py="3xs">

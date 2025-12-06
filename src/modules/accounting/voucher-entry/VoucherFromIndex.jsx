@@ -17,14 +17,25 @@ import {
 	NumberInput,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconCalendar, IconCheck, IconDotsVertical, IconTrashX, IconDeviceFloppy, IconPlus } from "@tabler/icons-react";
+import {
+	IconCalendar,
+	IconCheck,
+	IconDotsVertical,
+	IconTrashX,
+	IconDeviceFloppy,
+	IconPlus,
+} from "@tabler/icons-react";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { hasLength, isNotEmpty, useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { DataTable, useDataTableColumns } from "mantine-datatable";
-import { setFetching, setValidationData, storeEntityDataWithFile } from "../../../../store/accounting/crudSlice.js";
+import {
+	setFetching,
+	setValidationData,
+	storeEntityDataWithFile,
+} from "../../../../store/accounting/crudSlice.js";
 import tableCss from "../../../../assets/css/Table.module.css";
 
 import ShortcutVoucher from "../../shortcut/ShortcutVoucher.jsx";
@@ -217,7 +228,9 @@ function VoucherFormIndex(props) {
 	);
 
 	const handleInputChange = (index, field, value) => {
-		const updatedRecords = records.map((record, i) => (i === index ? { ...record, [field]: value } : record));
+		const updatedRecords = records.map((record, i) =>
+			i === index ? { ...record, [field]: value } : record
+		);
 		setRecords(updatedRecords);
 	};
 
@@ -280,7 +293,11 @@ function VoucherFormIndex(props) {
 							</Box>
 						</Grid.Col>
 						<Grid.Col span={14}>
-							<Box p={"xs"} className={"borderRadiusAll"} bg="var(--mantine-color-white)">
+							<Box
+								p={"xs"}
+								className={"borderRadiusAll"}
+								bg="var(--mantine-color-white)"
+							>
 								<Box className="borderRadiusAll">
 									<DataTable
 										classNames={{
@@ -298,7 +315,11 @@ function VoucherFormIndex(props) {
 												width: 70,
 												render: (record) => (
 													<ActionIcon color="red.5" size={"sm"}>
-														<IconPlus height={18} width={18} stroke={1.5} />
+														<IconPlus
+															height={18}
+															width={18}
+															stroke={1.5}
+														/>
 													</ActionIcon>
 												),
 											},
@@ -322,7 +343,11 @@ function VoucherFormIndex(props) {
 														ta={"right"}
 														value={record.debit}
 														onChange={(e) =>
-															handleInputChange(index, "debit", e.target.value)
+															handleInputChange(
+																index,
+																"debit",
+																e.target.value
+															)
 														}
 													/>
 												),
@@ -337,18 +362,25 @@ function VoucherFormIndex(props) {
 														hideControls
 														value={record.credit}
 														onChange={(e) =>
-															handleInputChange(index, "credit", e.target.value)
+															handleInputChange(
+																index,
+																"credit",
+																e.target.value
+															)
 														}
 													/>
 												),
 											},
 											{
-												accessor: "action",
 												title: t("Action"),
 												textAlign: "right",
 												render: (record) => (
 													<Group gap={8} justify="right" wrap="nowrap">
-														<ActionIcon size={"sm"} variant="transparent" color="red.5">
+														<ActionIcon
+															size={"sm"}
+															variant="transparent"
+															color="red.5"
+														>
 															<IconTrashX size="xs" stroke={1.5} />
 														</ActionIcon>
 													</Group>
@@ -373,10 +405,18 @@ function VoucherFormIndex(props) {
 								</Box>
 							</Box>
 							<Box mt={4}>
-								<Box p={"xs"} className="borderRadiusAll" bg="var(--mantine-color-white)">
+								<Box
+									p={"xs"}
+									className="borderRadiusAll"
+									bg="var(--mantine-color-white)"
+								>
 									<Grid columns={12} gutter={{ base: 6 }}>
 										<Grid.Col span={6}>
-											<Box className="borderRadiusAll" p={"xs"} bg="var(--mantine-color-white)">
+											<Box
+												className="borderRadiusAll"
+												p={"xs"}
+												bg="var(--mantine-color-white)"
+											>
 												<Box>
 													<InputNumberForm
 														tooltip={t("VoucherRefNo")}
@@ -392,7 +432,9 @@ function VoucherFormIndex(props) {
 												</Box>
 												<Box mt={"xs"}>
 													<DateInput
-														rightSection={<IconCalendar size={16} opacity={0.5} />}
+														rightSection={
+															<IconCalendar size={16} opacity={0.5} />
+														}
 														clearable
 														onChange={setValue}
 														value={value}
@@ -422,7 +464,13 @@ function VoucherFormIndex(props) {
 											</Box>
 										</Grid.Col>
 										<Grid.Col span={6}>
-											<Box className="borderRadiusAll" pl={"xs"} pr={"xs"} h={154} bg="var(--mantine-color-white)">
+											<Box
+												className="borderRadiusAll"
+												pl={"xs"}
+												pr={"xs"}
+												h={154}
+												bg="var(--mantine-color-white)"
+											>
 												<Box mt={"md"}>
 													<TextAreaForm
 														autosize={true}
@@ -462,7 +510,9 @@ function VoucherFormIndex(props) {
 																color={"green.8"}
 																type="submit"
 																id="EntityFormSubmits"
-																leftSection={<IconDeviceFloppy size={16} />}
+																leftSection={
+																	<IconDeviceFloppy size={16} />
+																}
 															>
 																<Flex direction={"column"} gap={0}>
 																	<Text fz={14} fw={400}>
@@ -480,7 +530,11 @@ function VoucherFormIndex(props) {
 							</Box>
 						</Grid.Col>
 						<Grid.Col span={1}>
-							<Box className={"borderRadiusAll"} pt={"16"} bg="var(--mantine-color-white)">
+							<Box
+								className={"borderRadiusAll"}
+								pt={"16"}
+								bg="var(--mantine-color-white)"
+							>
 								<ShortcutVoucher
 									form={form}
 									FormSubmit={"EntityFormSubmit"}

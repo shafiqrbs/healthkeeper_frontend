@@ -123,7 +123,6 @@ function HeadGroupTable() {
 			{ accessor: "code", title: t("AccountCode") },
 			{ accessor: "amount", title: t("Amount") },
 			{
-				accessor: "action",
 				title: t("Action"),
 				textAlign: "right",
 				render: (data) => (
@@ -137,13 +136,26 @@ function HeadGroupTable() {
 							closeDelay={400}
 						>
 							<Menu.Target>
-								<ActionIcon size="sm" variant="outline" color="red" radius="xl" aria-label="Settings">
+								<ActionIcon
+									size="sm"
+									variant="outline"
+									color="red"
+									radius="xl"
+									aria-label="Settings"
+								>
 									<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
 								</ActionIcon>
 							</Menu.Target>
 							<Menu.Dropdown>
-								<Menu.Item onClick={() => handleEdit(data.id)}>{t("Edit")}</Menu.Item>
-								<Menu.Item onClick={() => handleShow(data.id)} target="_blank" component="a" w={"200"}>
+								<Menu.Item onClick={() => handleEdit(data.id)}>
+									{t("Edit")}
+								</Menu.Item>
+								<Menu.Item
+									onClick={() => handleShow(data.id)}
+									target="_blank"
+									component="a"
+									w={"200"}
+								>
 									{t("Show")}
 								</Menu.Item>
 								<Menu.Item
@@ -154,7 +166,9 @@ function HeadGroupTable() {
 									bg={"red.1"}
 									c={"red.6"}
 									onClick={() => handleDelete(data.id)}
-									rightSection={<IconTrashX style={{ width: rem(14), height: rem(14) }} />}
+									rightSection={
+										<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+									}
 								>
 									{t("Delete")}
 								</Menu.Item>
@@ -169,7 +183,13 @@ function HeadGroupTable() {
 
 	return (
 		<>
-			<Box pl="xs" pr={8} pt="6" pb="4" className="boxBackground borderRadiusAll border-bottom-none">
+			<Box
+				pl="xs"
+				pr={8}
+				pt="6"
+				pb="4"
+				className="boxBackground borderRadiusAll border-bottom-none"
+			>
 				<KeywordSearch module="account-head" />
 			</Box>
 
@@ -209,7 +229,10 @@ function HeadGroupTable() {
 			</Box>
 
 			{headGroupDrawer && (
-				<HeadGroupViewDrawer headGroupDrawer={headGroupDrawer} setHeadGroupDrawer={setHeadGroupDrawer} />
+				<HeadGroupViewDrawer
+					headGroupDrawer={headGroupDrawer}
+					setHeadGroupDrawer={setHeadGroupDrawer}
+				/>
 			)}
 		</>
 	);

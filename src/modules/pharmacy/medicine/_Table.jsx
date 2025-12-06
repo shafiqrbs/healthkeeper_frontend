@@ -1,6 +1,25 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, Select, Checkbox, CloseButton} from "@mantine/core";
+import {
+	Group,
+	Box,
+	ActionIcon,
+	Text,
+	rem,
+	Flex,
+	Button,
+	TextInput,
+	Select,
+	Checkbox,
+	CloseButton,
+} from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {IconAlertCircle, IconEdit, IconChevronUp, IconSelector, IconEye, IconTrashX} from "@tabler/icons-react";
+import {
+	IconAlertCircle,
+	IconEdit,
+	IconChevronUp,
+	IconSelector,
+	IconEye,
+	IconTrashX,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -49,16 +68,17 @@ export default function _Table({ module, open }) {
 	});
 
 	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			term: searchKeyword,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "name",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				term: searchKeyword,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "name",
+		});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -237,7 +257,6 @@ export default function _Table({ module, open }) {
 						},
 
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",
@@ -271,9 +290,13 @@ export default function _Table({ module, open }) {
 											{t("View")}
 										</Button>
 
-										<CloseButton icon={<IconTrashX size={18} stroke={1.2}/>} radius="es"   onClick={() => handleDelete(values.id)} size={'sm'} c={'red'}
+										<CloseButton
+											icon={<IconTrashX size={18} stroke={1.2} />}
+											radius="es"
+											onClick={() => handleDelete(values.id)}
+											size={"sm"}
+											c={"red"}
 										/>
-
 									</Button.Group>
 								</Group>
 							),

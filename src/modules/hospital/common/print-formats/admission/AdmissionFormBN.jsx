@@ -16,8 +16,7 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
-	const { getLoggedInUser } = useAppLocalStore();
-	const user = getLoggedInUser();
+	const { user } = useAppLocalStore();
 
 	const admissionData = data || {};
 	const patientInfo = data || {};

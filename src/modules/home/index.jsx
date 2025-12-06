@@ -2,22 +2,27 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import { Box, Flex } from "@mantine/core";
 import Navigation from "@/common/components/layout/Navigation";
 import HomeSkeleton from "@components/skeletons/HomeSkeleton";
-import useAppLocalStore from "@hooks/useAppLocalStore";
+import useAppLocalStore from "@/common/hooks/useAppLocalStore";
 import OperatorBoard from "@/modules/home/operator/OperatorBoard";
 import AdminBoard from "./operator/AdminBoard";
-import { useAuthStore } from "@/store/useAuthStore.js";
+import {MODULES} from "@/constants";
+import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
+import {useNavigate} from "react-router-dom";
 
 const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
 const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_emergency"];
-
+const ALLOWED_OPD_DOCTOR_ROLES = ["doctor_opd"];
+const module = MODULES.VISIT;
 export default function Index({ height }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const progress = useGetLoadingProgress();
-	const userRoles = getLoggedInRoles();
-
+	const navigate = useNavigate();
 	// const config_jwt = useAuthStore(state => state);
 	// console.log(config_jwt.hospitalConfig)
-
+	if (userRoles.some(role => ALLOWED_OPD_DOCTOR_ROLES.includes(role))) {
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+		return null;
+	}
 	return (
 		<>
 			{progress !== 100 ? (

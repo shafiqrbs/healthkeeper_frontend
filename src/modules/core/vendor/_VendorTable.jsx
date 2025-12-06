@@ -8,7 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
 import { useHotkeys, useMounted } from "@mantine/hooks";
-import { deleteEntityData, getIndexEntityData, editEntityData } from "@/app/store/core/crudThunk.js";
+import {
+	deleteEntityData,
+	getIndexEntityData,
+	editEntityData,
+} from "@/app/store/core/crudThunk.js";
 import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/crudSlice.js";
 import tableCss from "@assets/css/Table.module.css";
 import VendorViewDrawer from "./__VendorViewDrawer.jsx";
@@ -190,7 +194,10 @@ function _VendorTable({ open }) {
 			setVendorObject(foundVendors);
 			setViewDrawer(true);
 		} else {
-			showNotificationComponent(t("Something Went wrong , please try again"), ERROR_NOTIFICATION_COLOR);
+			showNotificationComponent(
+				t("Something Went wrong , please try again"),
+				ERROR_NOTIFICATION_COLOR
+			);
 		}
 	};
 
@@ -234,7 +241,11 @@ function _VendorTable({ open }) {
 							title: t("Name"),
 							sortable: true,
 							render: (values) => (
-								<Text className="activate-link" fz="sm" onClick={() => handleDataShow(values.id)}>
+								<Text
+									className="activate-link"
+									fz="sm"
+									onClick={() => handleDataShow(values.id)}
+								>
 									{values.name}
 								</Text>
 							),
@@ -250,14 +261,17 @@ function _VendorTable({ open }) {
 									variant="filled"
 									c="white"
 									size="compact-xs"
-									bg={values.status === 1 ? "var(--theme-success-color)" : "var(--theme-error-color)"}
+									bg={
+										values.status === 1
+											? "var(--theme-success-color)"
+											: "var(--theme-error-color)"
+									}
 								>
 									{values.status === 1 ? "Active" : "Inactive"}
 								</Button>
 							),
 						},
 						{
-							accessor: "action",
 							title: t(""),
 							textAlign: "right",
 							titleClassName: "title-right",
@@ -324,7 +338,11 @@ function _VendorTable({ open }) {
 				/>
 			</Box>
 			<DataTableFooter indexData={vendorListData} module="vendors" />
-			<VendorViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} vendorObject={vendorObject} />
+			<VendorViewDrawer
+				viewDrawer={viewDrawer}
+				setViewDrawer={setViewDrawer}
+				vendorObject={vendorObject}
+			/>
 		</>
 	);
 }

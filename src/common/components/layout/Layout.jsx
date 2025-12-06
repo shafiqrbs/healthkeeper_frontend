@@ -3,7 +3,6 @@ import { useNetwork, useViewportSize } from "@mantine/hooks";
 import { AppShell } from "@mantine/core";
 import Header from "./Header";
 import Footer from "./Footer";
-import useConfigData from "@hooks/config-data/useConfigData";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import HomeIndex from "@/modules/home";
 import useHospitalUserData from "@hooks/useHospitalUserData";
@@ -14,21 +13,19 @@ import { decryptData } from "@utils/crypto.js";
 // import { useBrowserHeight } from "@hooks/userBrowserHeight";
 
 const Layout = () => {
+
 	useHospitalUserData();
-	const { getLoggedInUser } = useAppLocalStore();
-	const user = getLoggedInUser();
+	const { user } = useAppLocalStore();
 	const networkStatus = useNetwork();
 	const { height } = useViewportSize();
 	const location = useLocation();
 	const paramPath = location.pathname;
-	const { configData } = useConfigData();
+
 
 	/*=============================================================================*/
 	/*ALL REFERENCE FOR ACCESS DATA*/
-	const authStorage = useAuthStore((state) => state);
-	console.log(authStorage);
 	//  console.log(authStorage)
-	// const user_jwt = useAuthStore(state => state.user);
+	 const user_jwt = useAuthStore(state => state.user);
 	// const token_jwt = useAuthStore(state => state.token);
 	// const config_jwt = useAuthStore(state => state.hospitalConfig);
 	// const warehouse_jwt = useAuthStore(state => state.warehouse);
@@ -90,7 +87,7 @@ const Layout = () => {
 	return (
 		<AppShell padding="0">
 			<AppShell.Header height={headerHeight} bg="gray.0">
-				<Header isOnline={networkStatus.online} configData={configData} />
+				<Header isOnline={networkStatus.online}  />
 			</AppShell.Header>
 			<AppShell.Main>
 				{paramPath !== "/" ? (

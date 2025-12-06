@@ -23,7 +23,9 @@ function DomainTable({ module }) {
 	const [page, setPage] = useState(1);
 
 	const { configData, fetchData } = useConfigData();
-	const [superadmin, setSuperadmin] = useState(configData?.domain?.modules?.includes(["superadmin"]) || false);
+	const [superadmin, setSuperadmin] = useState(
+		configData?.domain?.modules?.includes(["superadmin"]) || false
+	);
 
 	const fetching = useSelector((state) => state.crud[module].fetching);
 	const searchKeyword = useSelector((state) => state.crud[module].searchKeyword);
@@ -68,7 +70,14 @@ function DomainTable({ module }) {
 			if (showEntityData.fulfilled.match(resultAction)) {
 				if (resultAction.payload.data.status === 200) {
 					// Show success notification
-					showNotificationComponent(t("ResetSuccessfully"), "teal", null, false, 1000, true);
+					showNotificationComponent(
+						t("ResetSuccessfully"),
+						"teal",
+						null,
+						false,
+						1000,
+						true
+					);
 					fetchData();
 				}
 			}
@@ -88,7 +97,14 @@ function DomainTable({ module }) {
 			if (showEntityData.fulfilled.match(resultAction)) {
 				if (resultAction.payload.data.status === 200) {
 					// Show success notification
-					showNotificationComponent(t("DeleteSuccessfully"), "teal", null, false, 1000, true);
+					showNotificationComponent(
+						t("DeleteSuccessfully"),
+						"teal",
+						null,
+						false,
+						1000,
+						true
+					);
 					fetchData();
 				}
 			}
@@ -105,7 +121,13 @@ function DomainTable({ module }) {
 
 	return (
 		<>
-			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
+			<Box
+				pl={`xs`}
+				pr={8}
+				pt={"6"}
+				pb={"4"}
+				className={"boxBackground borderRadiusAll border-bottom-none"}
+			>
 				<KeywordSearch module={"customer"} />
 			</Box>
 			<Box className={"borderRadiusAll border-top-none"}>
@@ -132,7 +154,6 @@ function DomainTable({ module }) {
 						{ accessor: "license_no", title: t("LicenseNo") },
 						{ accessor: "unique_code", title: t("ActiveNo") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -153,21 +174,32 @@ function DomainTable({ module }) {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+												<IconDotsVertical
+													height={"18"}
+													width={"18"}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
 											<Menu.Item
 												onClick={() => {
 													dispatch(setInsertType("update"));
-													dispatch(editEntityData("domain/global/" + data.id));
+													dispatch(
+														editEntityData("domain/global/" + data.id)
+													);
 													navigate(`/domain/edit/${data.id}`);
 												}}
 											>
 												{t("Edit")}
 											</Menu.Item>
 
-											<Menu.Item onClick={() => {}} target="_blank" component="a" w={"200"}>
+											<Menu.Item
+												onClick={() => {}}
+												target="_blank"
+												component="a"
+												w={"200"}
+											>
 												{t("Show")}
 											</Menu.Item>
 											<Menu.Item
@@ -190,11 +222,22 @@ function DomainTable({ module }) {
 													c={"red.6"}
 													onClick={() => {
 														modals.openConfirmModal({
-															title: <Text size="md"> {t("ReserThisDomain")}</Text>,
-															children: (
-																<Text size="sm"> {t("FormConfirmationMessage")}</Text>
+															title: (
+																<Text size="md">
+																	{" "}
+																	{t("ReserThisDomain")}
+																</Text>
 															),
-															labels: { confirm: "Confirm", cancel: "Cancel" },
+															children: (
+																<Text size="sm">
+																	{" "}
+																	{t("FormConfirmationMessage")}
+																</Text>
+															),
+															labels: {
+																confirm: "Confirm",
+																cancel: "Cancel",
+															},
 															onCancel: () => console.info("Cancel"),
 															onConfirm: () => {
 																handleConfirmDomainReset(data.id);
@@ -202,7 +245,12 @@ function DomainTable({ module }) {
 														});
 													}}
 													rightSection={
-														<IconRestore style={{ width: rem(14), height: rem(14) }} />
+														<IconRestore
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
 													}
 												>
 													{t("Reset")}
@@ -219,11 +267,22 @@ function DomainTable({ module }) {
 													c={"red.6"}
 													onClick={() => {
 														modals.openConfirmModal({
-															title: <Text size="md"> {t("DeleteThisDomain")}</Text>,
-															children: (
-																<Text size="sm"> {t("FormConfirmationMessage")}</Text>
+															title: (
+																<Text size="md">
+																	{" "}
+																	{t("DeleteThisDomain")}
+																</Text>
 															),
-															labels: { confirm: "Confirm", cancel: "Cancel" },
+															children: (
+																<Text size="sm">
+																	{" "}
+																	{t("FormConfirmationMessage")}
+																</Text>
+															),
+															labels: {
+																confirm: "Confirm",
+																cancel: "Cancel",
+															},
 															onCancel: () => console.info("Cancel"),
 															onConfirm: () => {
 																handleConfirmDomainDelete(data.id);
@@ -231,7 +290,12 @@ function DomainTable({ module }) {
 														});
 													}}
 													rightSection={
-														<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+														<IconTrashX
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
 													}
 												>
 													{t("Delete")}

@@ -23,7 +23,7 @@ import { useLocalStorage } from "@mantine/hooks";
 const module = MODULES_PHARMACY.PURCHASE;
 
 export default function Create({ form }) {
-	const { getLoggedInUser } = useAppLocalStore();
+	const { user } = useAppLocalStore();
 	const [records, setRecords] = useLocalStorage({
 		key: "workorder-records",
 		defaultValue: [],
@@ -60,7 +60,7 @@ export default function Create({ form }) {
 					production_date: formatDateForMySQL(r.production_date),
 					expired_date: formatDateForMySQL(r.expired_date),
 				})),
-				created_by_id: getLoggedInUser()?.id,
+				created_by_id: user?.id,
 			};
 
 			const requestData = {

@@ -60,7 +60,7 @@ const ALLOWED_CONFIRMED_ROLES = [
 ];
 
 export default function _Table({ module }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
@@ -71,7 +71,6 @@ export default function _Table({ module }) {
 	const navigate = useNavigate();
 	const [processTab, setProcessTab] = useState("opd_investigation");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const userRoles = getLoggedInRoles();
 	const [printData, setPrintData] = useState(null);
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
@@ -212,7 +211,6 @@ export default function _Table({ module }) {
 							render: (item) => t(item.total),
 						},
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",

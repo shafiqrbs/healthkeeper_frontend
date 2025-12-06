@@ -25,13 +25,12 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import commonDataStoreIntoLocalStorage from "@hooks/local-storage/useCommonDataStoreIntoLocalStorage.js";
 import { API_BASE_URL, API_KEY } from "@/constants";
-import useAppLocalStore from "@hooks/useAppLocalStore";
+import useAppLocalStore from "@/common/hooks/useAppLocalStore";
 import { jwtDecode } from "jwt-decode";
 import { useAuthStore } from "@/store/useAuthStore.js";
 
 export default function LoginJwt() {
-	const { getLoggedInUser } = useAppLocalStore();
-	const user = getLoggedInUser();
+	const { user } = useAppLocalStore();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 

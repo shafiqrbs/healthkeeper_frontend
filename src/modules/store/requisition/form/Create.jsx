@@ -22,7 +22,7 @@ import { useLocalStorage } from "@mantine/hooks";
 const module = MODULES_PHARMACY.REQUISITION;
 
 export default function Create({ form }) {
-	const { getLoggedInUser } = useAppLocalStore();
+	const { user } = useAppLocalStore();
 	const [records, setRecords] = useLocalStorage({
 		key: "indent-records",
 		defaultValue: [],
@@ -57,7 +57,7 @@ export default function Create({ form }) {
 				items: records.map((r) => ({
 					...r,
 				})),
-				created_by_id: getLoggedInUser()?.id,
+				created_by_id: user?.id,
 			};
 
 			const requestData = {

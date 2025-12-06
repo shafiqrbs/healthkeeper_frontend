@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useOutletContext, Link, useNavigate } from "react-router-dom";
-import { Group, Box, Grid, ActionIcon, Text, Switch, Flex, Menu, rem, useMantineTheme } from "@mantine/core";
+import {
+	Group,
+	Box,
+	Grid,
+	ActionIcon,
+	Text,
+	Switch,
+	Flex,
+	Menu,
+	rem,
+	useMantineTheme,
+} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconTrashX, IconDotsVertical } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
@@ -51,7 +62,13 @@ function SitemapTable(props) {
 	const data = [
 		{ id: 1, module_name: "sales", name: "test", url: "test.com", icon: "IconAbacusOff" },
 		{ id: 2, module_name: "purchase", name: "test", url: "test.com", icon: "IconABOff" },
-		{ id: 3, module_name: "accounting", name: "test", url: "test.com", icon: "IconAdjustmentsDown" },
+		{
+			id: 3,
+			module_name: "accounting",
+			name: "test",
+			url: "test.com",
+			icon: "IconAdjustmentsDown",
+		},
 	];
 
 	useEffect(() => {
@@ -72,7 +89,13 @@ function SitemapTable(props) {
 
 	return (
 		<>
-			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
+			<Box
+				pl={`xs`}
+				pr={8}
+				pt={"6"}
+				pb={"4"}
+				className={"boxBackground borderRadiusAll border-bottom-none"}
+			>
 				<KeywordSearch module={"sitemap"} />
 			</Box>
 			<Box className={"borderRadiusAll border-top-none"}>
@@ -141,7 +164,6 @@ function SitemapTable(props) {
 							),
 						},
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -162,7 +184,11 @@ function SitemapTable(props) {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+												<IconDotsVertical
+													height={"18"}
+													width={"18"}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
@@ -207,11 +233,22 @@ function SitemapTable(props) {
 												c={"red.6"}
 												onClick={() => {
 													modals.openConfirmModal({
-														title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-														children: (
-															<Text size="sm"> {t("FormConfirmationMessage")}</Text>
+														title: (
+															<Text size="md">
+																{" "}
+																{t("FormConfirmationTitle")}
+															</Text>
 														),
-														labels: { confirm: "Confirm", cancel: "Cancel" },
+														children: (
+															<Text size="sm">
+																{" "}
+																{t("FormConfirmationMessage")}
+															</Text>
+														),
+														labels: {
+															confirm: "Confirm",
+															cancel: "Cancel",
+														},
 														onCancel: () => console.info("Cancel"),
 														onConfirm: () => {
 															// dispatch(deleteEntityData('domain/sitemap/' + data.id))
@@ -220,7 +257,9 @@ function SitemapTable(props) {
 													});
 												}}
 												rightSection={
-													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+													<IconTrashX
+														style={{ width: rem(14), height: rem(14) }}
+													/>
 												}
 											>
 												{t("Delete")}

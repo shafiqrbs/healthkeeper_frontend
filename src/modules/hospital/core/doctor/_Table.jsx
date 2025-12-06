@@ -1,4 +1,15 @@
-import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, Select, MultiSelect } from "@mantine/core";
+import {
+	Group,
+	Box,
+	ActionIcon,
+	Text,
+	rem,
+	Flex,
+	Button,
+	TextInput,
+	Select,
+	MultiSelect,
+} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
@@ -53,18 +64,19 @@ export default function _Table({ module, open }) {
 	const listData = useSelector((state) => state.crud[module].data);
 
 	// infinite table scroll
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.DOCTOR.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			particular_type: "doctor",
-			user_group: "doctor",
-			term: searchKeyword,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "name",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.DOCTOR.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				particular_type: "doctor",
+				user_group: "doctor",
+				term: searchKeyword,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "name",
+		});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -280,7 +292,11 @@ export default function _Table({ module, open }) {
 											title: "",
 											width: 40,
 											render: (item, index) => (
-												<Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+												<Draggable
+													key={item.id}
+													draggableId={item.id.toString()}
+													index={index}
+												>
 													{(provided) => (
 														<div
 															ref={provided.innerRef}
@@ -341,7 +357,9 @@ export default function _Table({ module, open }) {
 													placeholder={t("SelectUnitName")}
 													data={getParticularUnits}
 													value={submitFormData[item.id]?.unit_id ?? ""}
-													onChange={(val) => handleFieldChange(item.id, "unit_id", val)}
+													onChange={(val) =>
+														handleFieldChange(item.id, "unit_id", val)
+													}
 													rightSection={updatingRows[item.id]}
 												/>
 											),
@@ -361,7 +379,6 @@ export default function _Table({ module, open }) {
 										},
 
 										{
-											accessor: "action",
 											title: "",
 											render: (values) => (
 												<Group gap={4} justify="right" wrap="nowrap">
@@ -382,7 +399,9 @@ export default function _Table({ module, open }) {
 															{t("Edit")}
 														</Button>
 														<Button
-															onClick={() => handleDataShow(values.id)}
+															onClick={() =>
+																handleDataShow(values.id)
+															}
 															variant="filled"
 															c="white"
 															bg="var(--theme-primary-color-6)"
@@ -418,8 +437,18 @@ export default function _Table({ module, open }) {
 									sortStatus={sortStatus}
 									onSortStatusChange={setSortStatus}
 									sortIcons={{
-										sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-										unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+										sorted: (
+											<IconChevronUp
+												color="var(--theme-tertiary-color-7)"
+												size={14}
+											/>
+										),
+										unsorted: (
+											<IconSelector
+												color="var(--theme-tertiary-color-7)"
+												size={14}
+											/>
+										),
 									}}
 								/>
 								{provided.placeholder}

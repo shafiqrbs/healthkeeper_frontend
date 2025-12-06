@@ -29,7 +29,7 @@ import { modals } from "@mantine/modals";
 import { useDebouncedCallback, useDebouncedState } from "@mantine/hooks";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import {useEffect, useState, useMemo, useRef} from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import useMedicineData from "@hooks/useMedicineStockData";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import InputForm from "@components/form-builders/InputForm";
@@ -41,8 +41,8 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import genericClass from "@assets/css/Generic.module.css";
 import { MODULES_PHARMACY } from "@/constants";
 import DataTableFooter from "@components/tables/DataTableFooter.jsx";
-import {useSelector} from "react-redux";
-import {notifications} from "@mantine/notifications";
+import { useSelector } from "react-redux";
+import { notifications } from "@mantine/notifications";
 
 const module = MODULES_PHARMACY.STOCK;
 
@@ -52,11 +52,11 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
 	const { medicineData } = useMedicineData({ term: medicineTerm });
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight-24;
+	const height = mainAreaHeight - 24;
 	const itemFromHeight = mainAreaHeight - 180;
 	const [searchValue, setSearchValue] = useState("");
 	const [draftProducts, setDraftProducts] = useState([]);
-    const listData = useSelector((state) => state.crud[module].data);
+	const listData = useSelector((state) => state.crud[module].data);
 	const inputsRef = useRef([]);
 
 	const { data: vendorDropdown } = useGlobalDropdownData({
@@ -73,40 +73,39 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	useEffect(() => {
 		form.setFieldValue("category_id", categoryDropdown[3]?.value?.toString());
 	}, [categoryDropdown]);
-    async function handleWorkOrderAdd(values) {
-        if (!values || !values.stock_item_id) return;
+	async function handleWorkOrderAdd(values) {
+		if (!values || !values.stock_item_id) return;
 
-        setItems((prevItems) => {
-            const existingIndex = prevItems.findIndex(
-                (item) => item.stock_item_id == values.stock_item_id
-            );
+		setItems((prevItems) => {
+			const existingIndex = prevItems.findIndex(
+				(item) => item.stock_item_id == values.stock_item_id
+			);
 
-            if (existingIndex >= 0) {
-                // If exists, update quantity
-                const updatedItems = [...prevItems];
-                const oldQty = Number(updatedItems[existingIndex].quantity || 0);
-                const newQty = Number(values.quantity || 0);
-                updatedItems[existingIndex] = {
-                    ...updatedItems[existingIndex],
-                    quantity: newQty,
-                };
-                return updatedItems;
-            } else {
-                return [...prevItems, values];
-            }
-        });
+			if (existingIndex >= 0) {
+				// If exists, update quantity
+				const updatedItems = [...prevItems];
+				const oldQty = Number(updatedItems[existingIndex].quantity || 0);
+				const newQty = Number(values.quantity || 0);
+				updatedItems[existingIndex] = {
+					...updatedItems[existingIndex],
+					quantity: newQty,
+				};
+				return updatedItems;
+			} else {
+				return [...prevItems, values];
+			}
+		});
 
-        // Clear input & draft
-        setDraftProducts((prev) => {
-            const copy = { ...prev };
-            delete copy[values.stock_item_id];
-            return copy;
-        });
-        setMedicineTerm("");
-    }
+		// Clear input & draft
+		setDraftProducts((prev) => {
+			const copy = { ...prev };
+			delete copy[values.stock_item_id];
+			return copy;
+		});
+		setMedicineTerm("");
+	}
 
-
-    const handleWorkOrderDelete = (id) => {
+	const handleWorkOrderDelete = (id) => {
 		modals.openConfirmModal({
 			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
@@ -145,38 +144,35 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		}));
 	};
 
-    const memoizedFilterParameters = useMemo(
-        () => ({
-            category_id: form.values.category_id,
-            term: searchValue,
-        }),
-        [form.values.category_id, searchValue]
-    );
+	const memoizedFilterParameters = useMemo(
+		() => ({
+			category_id: form.values.category_id,
+			term: searchValue,
+		}),
+		[form.values.category_id, searchValue]
+	);
 
-    const {records,scrollRef,handleScrollToBottom} = useInfiniteTableScroll({
-        module,
-        fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INDEX_CATEGORY_SCROLLING_WORKORDER,
-        sortByKey: "created_at",
-        filterParams: memoizedFilterParameters,
-        direction: "desc",
-    });
+	const { records, scrollRef, handleScrollToBottom } = useInfiniteTableScroll({
+		module,
+		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.INDEX_CATEGORY_SCROLLING_WORKORDER,
+		sortByKey: "created_at",
+		filterParams: memoizedFilterParameters,
+		direction: "desc",
+	});
 
 	useEffect(() => {
 		setProducts(records);
 	}, [records]);
 
-    const handleProductSearch = useDebouncedCallback((value) => {
-        setSearchValue(value);
-    }, 300);
+	const handleProductSearch = useDebouncedCallback((value) => {
+		setSearchValue(value);
+	}, 300);
 
+	const isAllDatesValid = useMemo(() => {
+		if (!items || items.length === 0) return false;
 
-    const isAllDatesValid = useMemo(() => {
-        if (!items || items.length === 0) return false;
-
-        return items.every(
-            (item) => item.production_date && item.expired_date
-        );
-    }, [items]);
+		return items.every((item) => item.production_date && item.expired_date);
+	}, [items]);
 
 	const handleKeyDown = (e, index) => {
 		if (e.key === "Enter") {
@@ -190,7 +186,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		}
 	};
 
-    return (
+	return (
 		<Grid columns={24} gutter={{ base: 8 }}>
 			<Grid.Col span={8}>
 				<>
@@ -232,7 +228,13 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 									accessor: "quantity",
 									width: 200,
 									title: (
-										<Group justify={"flex-end"} spacing="xs" noWrap pl={"sm"} ml={"sm"}>
+										<Group
+											justify={"flex-end"}
+											spacing="xs"
+											noWrap
+											pl={"sm"}
+											ml={"sm"}
+										>
 											<Box pl={"4"}>{t("")}</Box>
 											<ActionIcon
 												mr={"sm"}
@@ -242,12 +244,15 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 												size="xs"
 												onClick={() => {}}
 											>
-												<IconRefresh style={{ width: "100%", height: "100%" }} stroke={1.5} />
+												<IconRefresh
+													style={{ width: "100%", height: "100%" }}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Group>
 									),
 									textAlign: "right",
-									render: (data,rowIndex) => (
+									render: (data, rowIndex) => (
 										<Group
 											wrap="nowrap"
 											w="100%"
@@ -265,8 +270,10 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 														textAlign: "center",
 														borderRadius: 0,
 														borderColor: "#905923",
-														borderTopLeftRadius: "var(--mantine-radius-sm)",
-														borderBottomLeftRadius: "var(--mantine-radius-sm)",
+														borderTopLeftRadius:
+															"var(--mantine-radius-sm)",
+														borderBottomLeftRadius:
+															"var(--mantine-radius-sm)",
 													},
 													placeholder: {
 														fontSize: "var(--mantine-font-size-xs)",
@@ -299,11 +306,17 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 													root: {
 														height: "26px",
 														borderRadius: 0,
-														borderTopRightRadius: "var(--mantine-radius-sm)",
-														borderBottomRightRadius: "var(--mantine-radius-sm)",
+														borderTopRightRadius:
+															"var(--mantine-radius-sm)",
+														borderBottomRightRadius:
+															"var(--mantine-radius-sm)",
 													},
 												}}
-												onClick={() => handleWorkOrderAdd(draftProducts[data?.stock_item_id])}
+												onClick={() =>
+													handleWorkOrderAdd(
+														draftProducts[data?.stock_item_id]
+													)
+												}
 											>
 												<Flex direction={`column`} gap={0}>
 													<IconShoppingBag size={12} />
@@ -317,11 +330,11 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 							loaderSize="xs"
 							loaderColor="grape"
 							height={itemFromHeight}
-                            onScrollToBottom={handleScrollToBottom}
-                            scrollViewportRef={scrollRef}
+							onScrollToBottom={handleScrollToBottom}
+							scrollViewportRef={scrollRef}
 						/>
-                        <DataTableFooter indexData={listData} module={module} />
-                    </Box>
+						<DataTableFooter indexData={listData} module={module} />
+					</Box>
 					<Box mt="2" className="" pl={"xs"} pt={"4"} pb={"6"}>
 						<Grid
 							className={genericClass.genericBackground}
@@ -345,89 +358,94 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 											duration: 1000,
 										}}
 									>
-                                        <TextInput
-                                            value={searchValue}
-                                            leftSection={<IconSearch size={16} opacity={0.5}/>}
-                                            size="sm"
-                                            placeholder={t("ChooseProduct")}
-                                            onChange={(e) => {
-                                                setSearchValue(e.target.value);
-                                                handleProductSearch(e.target.value);
-                                            }}
-                                            id={"SearchKeyword"}
-                                            rightSection={
-                                                searchValue ? (
-                                                    <Tooltip label={t("Close")} withArrow bg={`red.5`}>
-                                                        <IconX
-                                                            color="var( --theme-remove-color)"
-                                                            size={16}
-                                                            opacity={0.5}
-                                                            onClick={() => {
-                                                                setSearchValue("");
-                                                                handleProductSearch("");
-                                                            }}
-                                                        />
-                                                    </Tooltip>
-                                                ) : (
-                                                    <Tooltip
-                                                        label={t("FieldIsRequired")}
-                                                        withArrow
-                                                        position={"bottom"}
-                                                        c={"red"}
-                                                        bg={`red.1`}
-                                                    >
-                                                        <IconInfoCircle size={16} opacity={0.5}/>
-                                                    </Tooltip>
-                                                )
-                                            }
-                                        />
+										<TextInput
+											value={searchValue}
+											leftSection={<IconSearch size={16} opacity={0.5} />}
+											size="sm"
+											placeholder={t("ChooseProduct")}
+											onChange={(e) => {
+												setSearchValue(e.target.value);
+												handleProductSearch(e.target.value);
+											}}
+											id={"SearchKeyword"}
+											rightSection={
+												searchValue ? (
+													<Tooltip
+														label={t("Close")}
+														withArrow
+														bg={`red.5`}
+													>
+														<IconX
+															color="var( --theme-remove-color)"
+															size={16}
+															opacity={0.5}
+															onClick={() => {
+																setSearchValue("");
+																handleProductSearch("");
+															}}
+														/>
+													</Tooltip>
+												) : (
+													<Tooltip
+														label={t("FieldIsRequired")}
+														withArrow
+														position={"bottom"}
+														c={"red"}
+														bg={`red.1`}
+													>
+														<IconInfoCircle size={16} opacity={0.5} />
+													</Tooltip>
+												)
+											}
+										/>
 									</Tooltip>
 								</Box>
 							</Grid.Col>
 							<Grid.Col span={4}>
 								<Box pr={"xs"}>
 									<Button
-                                        onClick={() => {
-                                            const newItems = [...items]; // existing items
-                                            let addedCount = 0;
+										onClick={() => {
+											const newItems = [...items]; // existing items
+											let addedCount = 0;
 
-                                            Object.values(draftProducts).forEach((product) => {
-                                                const qty = Number(product.quantity || 0);
-                                                if (qty <= 0) return; // skip if quantity <= 0
+											Object.values(draftProducts).forEach((product) => {
+												const qty = Number(product.quantity || 0);
+												if (qty <= 0) return; // skip if quantity <= 0
 
-                                                const existingIndex = newItems.findIndex(
-                                                    (item) => item.stock_item_id == product.stock_item_id
-                                                );
+												const existingIndex = newItems.findIndex(
+													(item) =>
+														item.stock_item_id == product.stock_item_id
+												);
 
-                                                if (existingIndex >= 0) {
-                                                    // Update quantity if exists
-                                                    newItems[existingIndex] = {
-                                                        ...newItems[existingIndex],
-                                                        quantity: qty,
-                                                    };
-                                                } else {
-                                                    // Add new item
-                                                    newItems.push(product);
-                                                }
+												if (existingIndex >= 0) {
+													// Update quantity if exists
+													newItems[existingIndex] = {
+														...newItems[existingIndex],
+														quantity: qty,
+													};
+												} else {
+													// Add new item
+													newItems.push(product);
+												}
 
-                                                addedCount++;
-                                            });
+												addedCount++;
+											});
 
-                                            if (addedCount > 0) {
-                                                setItems(newItems);
-                                                // Clear draftProducts
-                                                setDraftProducts({});
-                                                setMedicineTerm("");
-                                            } else {
-                                                notifications.show({
-                                                    color: "red",
-                                                    title: t("InvalidQuantity"),
-                                                    message: t("PleaseEnterValidQuantity"),
-                                                    autoClose: 1500,
-                                                    withCloseButton: true,
-                                                });
-                                            }
-                                        }}
+											if (addedCount > 0) {
+												setItems(newItems);
+												// Clear draftProducts
+												setDraftProducts({});
+												setMedicineTerm("");
+											} else {
+												notifications.show({
+													color: "red",
+													title: t("InvalidQuantity"),
+													message: t("PleaseEnterValidQuantity"),
+													autoClose: 1500,
+													withCloseButton: true,
+												});
+											}
+										}}
 										size="sm"
 										className={genericClass.invoiceAdd}
 										type="submit"
@@ -533,7 +551,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 								),
 							},
 							{
-								accessor: "action",
 								title: "",
 								textAlign: "right",
 								titleClassName: "title-right",
@@ -561,8 +578,12 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 						loaderColor="grape"
 						height={height - 160}
 						sortIcons={{
-							sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-							unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+							sorted: (
+								<IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />
+							),
+							unsorted: (
+								<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
+							),
 						}}
 					/>
 					<Box
@@ -577,7 +598,13 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 						<Grid align="center" gatter={"2"} columns={20} mt="0">
 							<Grid.Col span={12}>
 								<Box bg="var(--theme-primary-color-0)" fz="sm" c="white">
-									<Text bg="var(--theme-secondary-color-6)" fz="sm" c="white" px="sm" py="les">
+									<Text
+										bg="var(--theme-secondary-color-6)"
+										fz="sm"
+										c="white"
+										px="sm"
+										py="les"
+									>
 										{t("Remark")}
 									</Text>
 									<Box p="sm">
@@ -644,20 +671,23 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 											>
 												{t("Reset")}
 											</Button>
-                                            <Tooltip label={t("PleaseFillAllDates")} disabled={isAllDatesValid}>
-                                                <Button
-                                                    onClick={onSave}
-                                                    size="xs"
-                                                    leftSection={<IconDeviceFloppy size={20} />}
-                                                    type="submit"
-                                                    bg="var(--theme-primary-color-6)"
-                                                    color="white"
-                                                    w="200px"
-                                                    disabled={!isAllDatesValid}
-                                                >
-                                                    {t("Save")}
-                                                </Button>
-                                            </Tooltip>
+											<Tooltip
+												label={t("PleaseFillAllDates")}
+												disabled={isAllDatesValid}
+											>
+												<Button
+													onClick={onSave}
+													size="xs"
+													leftSection={<IconDeviceFloppy size={20} />}
+													type="submit"
+													bg="var(--theme-primary-color-6)"
+													color="white"
+													w="200px"
+													disabled={!isAllDatesValid}
+												>
+													{t("Save")}
+												</Button>
+											</Tooltip>
 										</Flex>
 									</Box>
 								</Box>

@@ -39,7 +39,7 @@ export default function Index({ mode = "create" }) {
 					<CoreHeaderNavbar
 						module="core"
 						pageTitle={t("ManageCustomer")}
-						roles={t("Roles")}
+						userRoles={t("Roles")}
 						allowZeroPercentage=""
 						currencySymbol=""
 					/>
@@ -55,7 +55,11 @@ export default function Index({ mode = "create" }) {
 								</Grid.Col>
 							)}
 							<Grid.Col span={matches ? 30 : 30}>
-								<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
+								<Box
+									bg="var(--mantine-color-white)"
+									p="xs"
+									className="borderRadiusAll"
+								>
 									<_Table module={module} open={open} close={close} />
 								</Box>
 							</Grid.Col>

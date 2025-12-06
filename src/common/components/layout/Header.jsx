@@ -24,7 +24,6 @@ import {
 	useMantineColorScheme,
 } from "@mantine/core";
 
-import { setInventoryShowDataEmpty } from "@/app/store/core/crudSlice.js";
 import SpotLightSearchModal from "@modules/modals/SpotLightSearchModal";
 import LanguagePickerStyle from "@assets/css/LanguagePicker.module.css";
 import flagBD from "@assets/images/flags/bd.svg";
@@ -49,7 +48,6 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useAuthStore } from "@/store/useAuthStore.js";
@@ -411,18 +409,15 @@ const HeaderActions = ({
 };
 
 export default function Header({ isOnline, configData, mainAreaHeight }) {
-	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
-	const userRole = getLoggedInRoles();
+	const { user, userRoles } = useAppLocalStore();
 	const [opened, { close }] = useDisclosure(false);
 	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
 	const height = mainAreaHeight - 140;
 	const { toggle, fullscreen } = useFullscreen();
 	const [languageSelected, setLanguageSelected] = useState(
 		languages.find((item) => item.value === i18n.language)
 	);
-	const loginUser = getLoggedInUser();
 	const [shortcutModalOpen, setShortcutModalOpen] = useState(false);
 	const [value, setValue] = useState("");
 	const [filteredItems, setFilteredItems] = useState([]);
@@ -473,28 +468,28 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 	}
 
 	function hasAccessToGroup(group) {
-		if (userRole.includes("role_domain")) return true;
+		if (userRoles.includes("role_domain")) return true;
 
 		switch (group) {
 			case "Production":
 			case "প্রোডাকশন":
-				return userRole.includes("role_production");
+				return userRoles.includes("role_production");
 			case "Core":
 			case "কেন্দ্র":
-				return userRole.includes("role_core");
+				return userRoles.includes("role_core");
 			case "Inventory":
 			case "ইনভেন্টরি":
-				return userRole.includes("role_inventory");
+				return userRoles.includes("role_inventory");
 			case "Domain":
 			case "ডোমেইন":
-				return userRole.includes("role_domain");
+				return userRoles.includes("role_domain");
 			case "Accounting":
 			case "একাউন্টিং":
-				return userRole.includes("role_accounting");
+				return userRoles.includes("role_accounting");
 			case "Procurement":
-				return userRole.includes("role_procurement");
+				return userRoles.includes("role_procurement");
 			case "Sales & Purchase":
-				return userRole.includes("role_sales_purchase");
+				return userRoles.includes("role_sales_purchase");
 			default:
 				return false;
 		}
@@ -587,11 +582,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 					</Grid.Col>
 					<Grid.Col span={matches2 ? 6 : matches ? 10 : 12}>
 						<Group align="center" gap={"md"} wrap="nowrap" mih={42}>
-							<SearchButton
-								matches2={matches2}
-								t={t}
-								onClick={() => setShortcutModalOpen(true)}
-							/>
+							<Text c={'white'}>২৫০ শয্যা বিশিষ্ট টিবি হাসপাতাল</Text>
 						</Group>
 					</Grid.Col>
 					<Grid.Col span={matches2 ? 12 : matches ? 8 : 6}>
@@ -599,7 +590,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 							isOnline={isOnline}
 							fullscreen={fullscreen}
 							toggle={toggle}
-							loginUser={loginUser}
+							loginUser={user}
 							onLogout={handleLogout}
 							languageSelected={languageSelected}
 							handleLanguageChange={handleLanguageChange}

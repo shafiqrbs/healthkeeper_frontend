@@ -16,7 +16,11 @@ import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
 import { useHotkeys, useMounted } from "@mantine/hooks";
-import { deleteEntityData, getIndexEntityData, editEntityData } from "@/app/store/core/crudThunk.js";
+import {
+	deleteEntityData,
+	getIndexEntityData,
+	editEntityData,
+} from "@/app/store/core/crudThunk.js";
 import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/crudSlice.js";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import ViewDrawer from "./__ViewDrawer.jsx";
@@ -52,18 +56,17 @@ export default function _Table({ module, open, close }) {
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
 
-
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl:  MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MODE.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			term: searchKeyword,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "name",
-	});
-
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MODE.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				term: searchKeyword,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "name",
+		});
 
 	const handleEntityEdit = (id) => {
 		dispatch(setInsertType({ insertType: "update", module }));
@@ -145,8 +148,8 @@ export default function _Table({ module, open, close }) {
 	};
 
 	const handleCreateForm = () => {
-		 open();
-		 dispatch(setInsertType({ insertType: "create", module }));
+		open();
+		dispatch(setInsertType({ insertType: "create", module }));
 		navigate(CORE_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR);
 	};
 
@@ -189,24 +192,26 @@ export default function _Table({ module, open, close }) {
 							title: t("Name"),
 							sortable: true,
 							render: (values) => (
-								<Text className="activate-link" fz="xs" onClick={() => handleDataShow(values.id)}>
+								<Text
+									className="activate-link"
+									fz="xs"
+									onClick={() => handleDataShow(values.id)}
+								>
 									{values.name}
 								</Text>
 							),
-						},{
+						},
+						{
 							accessor: "name_bn",
 							title: t("NameBangla"),
 							sortable: true,
-
 						},
 						{
 							accessor: "short_code",
 							title: t("ShortName"),
 							sortable: true,
-
 						},
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",
@@ -260,7 +265,11 @@ export default function _Table({ module, open, close }) {
 				/>
 			</Box>
 			<DataTableFooter indexData={listData} module={module} />
-			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={customerObject} />
+			<ViewDrawer
+				viewDrawer={viewDrawer}
+				setViewDrawer={setViewDrawer}
+				entityObject={customerObject}
+			/>
 		</>
 	);
 }

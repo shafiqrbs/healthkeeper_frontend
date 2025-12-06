@@ -29,7 +29,7 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES } from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
@@ -39,10 +39,6 @@ import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
-import { modals } from "@mantine/modals";
-import { showEntityData } from "@/app/store/core/crudThunk";
-import { successNotification } from "@components/notification/successNotification";
-import { errorNotification } from "@components/notification/errorNotification";
 
 const PER_PAGE = 20;
 
@@ -64,7 +60,7 @@ const ALLOWED_CONFIRMED_ROLES = [
 ];
 
 export default function _Table({ module }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
@@ -75,7 +71,6 @@ export default function _Table({ module }) {
 	const navigate = useNavigate();
 	const [processTab, setProcessTab] = useState("opd_investigation");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const userRoles = getLoggedInRoles();
 	const [printData, setPrintData] = useState(null);
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
@@ -216,7 +211,6 @@ export default function _Table({ module }) {
 							render: (item) => t(item.total),
 						},
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",
@@ -286,9 +280,6 @@ export default function _Table({ module }) {
 														}
 														onClick={(e) => {
 															e.stopPropagation();
-															handlePrescriptionPrint(
-																item?.prescription_id
-															);
 														}}
 													>
 														{t("Prescription")}

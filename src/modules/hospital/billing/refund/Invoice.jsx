@@ -6,39 +6,21 @@ import {
 	Button,
 	Flex,
 	Grid,
-	Tabs,
 	ActionIcon,
-	Select,
-	Autocomplete,
 	LoadingOverlay,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { formatDate } from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import InputNumberForm from "@components/form-builders/InputNumberForm";
-import { useForm } from "@mantine/form";
-import { getFormValues } from "@modules/hospital/lab/helpers/request";
-import { modals } from "@mantine/modals";
-import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
-import { setRefetchData } from "@/app/store/core/crudSlice";
-import { successNotification } from "@components/notification/successNotification";
-import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import { errorNotification } from "@components/notification/errorNotification";
-import { useDispatch, useSelector } from "react-redux";
-import useParticularsData from "@hooks/useParticularsData";
 import {
 	IconArrowNarrowRight,
 	IconCalendarWeek,
-	IconCaretUpDownFilled,
 	IconUser,
-	IconX,
 	IconBuildingHospital,
 } from "@tabler/icons-react";
-import inputCss from "@assets/css/InputField.module.css";
-import { useCallback, useEffect, useRef, useState } from "react";
-import IPDAllPrint from "@hospital-components/print-formats/ipd/IPDAllPrint";
+import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 
@@ -50,52 +32,22 @@ const ALLOWED_BILLING_ROLES = [
 	"operator_opd",
 	"operator_manager",
 ];
-const module = MODULES.BILLING;
-const PER_PAGE = 500;
 
-export default function Invoice({ entity, setRefetchBillingKey }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+export default function Invoice({ entity }) {
+	const { userRoles } = useAppLocalStore();
 	const invoicePrintRef = useRef(null);
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const { t } = useTranslation();
-	const form = useForm(getFormValues(t));
-	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const { id, transactionId: selectedTransactionId } = useParams();
 	const navigate = useNavigate();
-	const userRoles = getLoggedInRoles();
-	const [autocompleteValue, setAutocompleteValue] = useState("");
-	const { particularsData } = useParticularsData({ modeName: "Admission" });
-	const investigationParticulars = particularsData?.find(
-		(item) => item.particular_type.name === "Investigation"
-	);
-	const cabinListData = useSelector((state) => state.crud.cabin?.data?.data);
-	const bedListData = useSelector((state) => state.crud.bed?.data?.data);
+
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const ipdAllPrintRef = useRef(null);
 
 	const item = entity;
 	const transactions = entity?.invoice_transaction || [];
 	const printIPDAll = useReactToPrint({ content: () => ipdAllPrintRef.current });
-
-	const getRoomData = () => {
-		if (form.values.roomType === "cabin") {
-			return (
-				cabinListData?.map((cabin) => ({
-					value: cabin.id?.toString(),
-					label: cabin.display_name || cabin.cabin_name,
-				})) || []
-			);
-		} else if (form.values.roomType === "bed") {
-			return (
-				bedListData?.map((bed) => ({
-					value: bed.id?.toString(),
-					label: bed.display_name || bed.bed_name,
-				})) || []
-			);
-		}
-		return [];
-	};
 
 	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 
@@ -108,156 +60,6 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 	const handlePrint = (data) => {
 		setInvoicePrintData(data);
 		requestAnimationFrame(invoicePrint);
-	};
-
-	const handleAutocompleteOptionAdd = (value) => {
-		const allParticulars = investigationParticulars?.particular_type?.particulars || [];
-		const sectionParticulars = allParticulars.find((p) => p.name === value);
-
-		if (sectionParticulars) {
-			// =============== get current investigation list or initialize empty array ================
-			const currentList = Array.isArray(form.values.investigation)
-				? form.values.investigation
-				: [];
-
-			// =============== check if this value already exists ================
-			const existingIndex = currentList.findIndex(
-				(item) => item.id === sectionParticulars.id && item.name === sectionParticulars.name
-			);
-
-			if (existingIndex === -1) {
-				// =============== add new item to the list ================
-				const newItem = {
-					id: sectionParticulars.id,
-					name: sectionParticulars.name,
-					value: sectionParticulars.name,
-				};
-
-				const updatedList = [...currentList, newItem];
-				form.setFieldValue("investigation", updatedList);
-				return;
-			}
-		}
-	};
-
-	const handleAutocompleteOptionRemove = (idx) => {
-		// =============== get current investigation list and remove item at index ================
-		const currentList = Array.isArray(form.values.investigation)
-			? form.values.investigation
-			: [];
-		const updatedList = currentList.filter((_, index) => index !== idx);
-		form.setFieldValue("investigation", updatedList);
-	};
-
-	const handleSubmit = (values) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: { confirm: t("Submit"), cancel: t("Cancel") },
-			confirmProps: { color: "red" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleConfirmModal(values),
-		});
-	};
-
-	async function handleConfirmModal(values) {
-		try {
-			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.UPDATE}/${id}`,
-				data: values,
-				module,
-			};
-			const resultAction = await dispatch(updateEntityData(value));
-			if (updateEntityData.rejected.match(resultAction)) {
-				const fieldErrors = resultAction.payload.errors;
-				if (fieldErrors) {
-					const errorObject = {};
-					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
-					});
-					form.setErrors(errorObject);
-				}
-			} else if (updateEntityData.fulfilled.match(resultAction)) {
-				dispatch(setRefetchData({ module, refetching: true }));
-				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-			}
-		} catch (error) {
-			console.error(error);
-			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
-		}
-	}
-
-	const handleInvestigationSubmit = async () => {
-		setIsSubmitting(true);
-		try {
-			const formValue = {
-				json_content: form.values?.investigation,
-				ipd_module: "investigation",
-			};
-
-			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PROCESS}/${id}`,
-				data: formValue,
-				module: "admission",
-			};
-
-			const resultAction = await dispatch(storeEntityData(value)).unwrap();
-
-			if (resultAction.status === 200) {
-				successNotification(t("InvestigationAddedSuccessfully"));
-				// await refetchInvestigationData();
-				setRefetchBillingKey(Date.now());
-				form.reset();
-			} else {
-				errorNotification(t("InvestigationAddedFailed"));
-			}
-		} catch (err) {
-			console.error(err);
-		} finally {
-			setIsSubmitting(false);
-		}
-	};
-
-	const handleRoomSubmit = async () => {
-		try {
-			setIsSubmitting(true);
-			if (!form.values?.room || !form.values?.quantity) {
-				errorNotification(t("PleaseFillAllFieldsToSubmit"), ERROR_NOTIFICATION_COLOR);
-				setIsSubmitting(false);
-				return;
-			}
-			const formValue = {
-				json_content: [
-					{
-						id: form.values?.room,
-						quantity: form.values?.quantity,
-						start_date: formatDate(new Date()),
-					},
-				],
-				ipd_module: "room",
-			};
-
-			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PROCESS}/${id}`,
-				data: formValue,
-				module: "admission",
-			};
-
-			const resultAction = await dispatch(storeEntityData(value)).unwrap();
-
-			if (resultAction.status === 200) {
-				successNotification(t("RoomAddedSuccessfully"));
-				// await refetchInvestigationData();
-				setRefetchBillingKey(Date.now());
-				form.reset();
-			} else {
-				errorNotification(t("RoomAddedFailed"));
-			}
-		} catch (err) {
-			console.error(err);
-		} finally {
-			setIsSubmitting(false);
-		}
 	};
 
 	return (
@@ -280,7 +82,6 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 					<Grid
 						columns={12}
 						key={item.id}
-						onClick={() => handleAdmissionOverview(item.uid)}
 						my="xs"
 						bg={"var(--theme-secondary-color-2)"}
 						px="xs"
@@ -289,11 +90,7 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />
-								<Text
-									fz="sm"
-									onClick={() => handleView(item?.id)}
-									className="activate-link text-nowrap"
-								>
+								<Text fz="sm" className="activate-link text-nowrap">
 									{formatDate(item?.created_at)}
 								</Text>
 							</Flex>
@@ -316,7 +113,6 @@ export default function Invoice({ entity, setRefetchBillingKey }) {
 								<Button.Group>
 									<ActionIcon
 										variant="filled"
-										onClick={() => handleAdmissionOverview(item.uid)}
 										color="var(--theme-primary-color-6)"
 										radius="xs"
 										aria-label="Settings"

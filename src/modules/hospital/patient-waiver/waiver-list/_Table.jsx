@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import {
@@ -80,9 +80,8 @@ export default function _Table({ module }) {
 	const controlsRefs = useRef({});
 
 	// Auth & Redux
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const { filterData } = useSelector((state) => state.crud[module]);
-	const userRoles = getLoggedInRoles();
 
 	// Table & Modal states
 	const [processTab, setProcessTab] = useState("opd_investigation");
@@ -267,7 +266,6 @@ export default function _Table({ module }) {
 							render: (item) => t(item.total),
 						},
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (item) => (

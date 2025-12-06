@@ -15,7 +15,7 @@ import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 const LOCAL_STORAGE_KEY = "emergencyPatientFormData";
 
 export default function _Form({ module }) {
-	const { getLoggedInUser } = useAppLocalStore();
+	const { user } = useAppLocalStore();
 	const dispatch = useDispatch();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
@@ -41,7 +41,7 @@ export default function _Form({ module }) {
 				return {};
 			}
 			try {
-				const createdBy = getLoggedInUser();
+				const createdBy = user;
 				const options = { year: "numeric", month: "2-digit", day: "2-digit" };
 				const formattedDOB = formatDOB(form.values.dob);
 				const [day, month, year] = formattedDOB.split("-").map(Number);

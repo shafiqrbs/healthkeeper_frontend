@@ -13,6 +13,7 @@ import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES_CORE } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
 import SummaryReports from "@modules/hospital/reports/sales-summary/SummaryReports";
+import DashboardDailySummary from "@modules/hospital/reports/items/DashboardDailySummary";
 
 const quickBrowseCardData = [
 	{
@@ -68,17 +69,14 @@ const quickBrowseCardData = [
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
 export default function OperatorBoard({ height }) {
-	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
-	const roles = getLoggedInRoles();
-	const user = getLoggedInUser();
+	const { user, userRoles } = useAppLocalStore();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const userRole = getLoggedInRoles();
 	const summaryReportsRef = useRef(null);
 	const dispatch = useDispatch();
 	const records = useSelector((state) => state.crud[module].data);
 	const filteredQuickBrowseCardData = quickBrowseCardData.filter((item) =>
-		item.allowedRoles.some((role) => userRole.includes(role))
+		item.allowedRoles.some((role) => userRoles.includes(role))
 	);
 
 	const handleHomeOverviewPrint = useReactToPrint({
@@ -92,7 +90,7 @@ export default function OperatorBoard({ height }) {
 				url: CONFIGURATION_ROUTES.API_ROUTES.HOSPITAL_CONFIG.OPD_DASHBOARD,
 				params: {
 					created: formatDate(new Date()),
-					created_by_id: roles.includes("operator_manager") ? undefined : user?.id,
+					created_by_id: userRoles.includes("operator_manager") ? undefined : user?.id,
 				},
 			})
 		);
@@ -152,37 +150,7 @@ export default function OperatorBoard({ height }) {
 				</Card>
 			</Grid.Col>
 			<Grid.Col span={20}>
-				<Card padding="lg" radius="sm">
-					<Card.Section
-						h={32}
-						withBorder
-						component="div"
-						bg="var(--theme-primary-color-7)"
-					>
-						<Flex align="center" h="100%" px="lg" justify="space-between">
-							<Text pb={0} fz="sm" c="white" fw={500}>
-								{t("CollectionOverview")}
-							</Text>
-							<ActionIcon
-								variant="default"
-								c={"green.8"}
-								size="md"
-								aria-label="Filter"
-							>
-								<IconFileTypePdf
-									style={{ width: rem(16) }}
-									stroke={1.2}
-									onClick={handleHomeOverviewPrint}
-								/>
-							</ActionIcon>
-						</Flex>
-					</Card.Section>
-					<DailyOverview height={height} />
-					{/* print component for home overview */}
-					{records?.data && (
-						<SummaryReports ref={summaryReportsRef} data={records?.data || []} />
-					)}
-				</Card>
+				<DashboardDailySummary height={height} />
 			</Grid.Col>
 		</Grid>
 	);

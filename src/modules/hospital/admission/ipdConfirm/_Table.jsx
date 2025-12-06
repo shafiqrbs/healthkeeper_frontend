@@ -56,7 +56,7 @@ const tabs = [
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm", "admin_administrator"];
 
 export default function _Table({ module }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const admissionFormRef = useRef(null);
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
@@ -76,7 +76,6 @@ export default function _Table({ module }) {
 	const [selectedId, setSelectedId] = useState(null);
 	const [processTab, setProcessTab] = useState("new");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const userRoles = getLoggedInRoles();
 
 	const printPrescription = useReactToPrint({
 		content: () => prescriptionRef.current,
@@ -245,7 +244,6 @@ export default function _Table({ module }) {
 							render: (item) => t(item.total),
 						},
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",

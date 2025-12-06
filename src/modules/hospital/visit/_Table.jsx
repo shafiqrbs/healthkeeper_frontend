@@ -77,7 +77,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] =
 		useDisclosure(false);
-	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
+	const { user, userRoles } = useAppLocalStore();
 	const [singlePatientData, setSinglePatientData] = useState({});
 
 	const form = useForm({
@@ -107,7 +107,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
-	const userRoles = getLoggedInRoles();
 
 	useEffect(() => {
 		if (type === "a4") {
@@ -123,8 +122,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
-
-	const user = getLoggedInUser();
 
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
 		useInfiniteTableScroll({
@@ -317,7 +314,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (item) => item?.created_by || "N/A",
 						},
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",

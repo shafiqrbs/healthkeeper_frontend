@@ -66,7 +66,7 @@ const PER_PAGE = 200;
 const ALLOWED_OPD_ROLES = ["doctor_opd", "admin_administrator"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -75,9 +75,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const hospitalConfig = getLoggedInHospitalUser();
-	const userRoles = getLoggedInRoles();
 	const userId = hospitalConfig?.employee_id;
-	console.log(hospitalConfig?.particular_details);
 	const opdRoomId = hospitalConfig?.particular_details?.room_id;
 	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
 	const form = useForm({
@@ -291,7 +289,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					}}
 					columns={[
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							titleClassName: "title-right",
@@ -408,7 +405,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (item) => capitalizeWords(item?.referred_mode),
 						},
 						{
-							accessor: "action",
 							title: t("#"),
 							textAlign: "right",
 							titleClassName: "title-right",

@@ -101,7 +101,6 @@ export default function _Table({ module }) {
 							render: (values) => values.module,
 						},
 						{
-							accessor: "action",
 							title: "",
 							textAlign: "right",
 							render: (values) => (

@@ -85,10 +85,8 @@ export default function Table({ module }) {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
-	const { getLoggedInUser, getLoggedInRoles } = useAppLocalStore();
+	const { user, userRoles } = useAppLocalStore();
 	const [processTab, setProcessTab] = useState("all");
-	const userRoles = getLoggedInRoles();
-	const user = getLoggedInUser();
 	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] =
 		useDisclosure(false);
 	const [singlePatientData, setSinglePatientData] = useState({});
@@ -388,7 +386,6 @@ export default function Table({ module }) {
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "total", title: t("Total") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",

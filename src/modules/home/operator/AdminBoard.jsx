@@ -117,17 +117,16 @@ const quickBrowseCardData = [
 ];
 
 export default function AdminBoard() {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const userRole = getLoggedInRoles();
 
 	const filteredQuickBrowseButtonData = quickBrowseButtonData.filter((item) =>
-		item.allowedRoles.some((role) => userRole.includes(role))
+		item.allowedRoles.some((role) => userRoles.includes(role))
 	);
 
 	const filteredQuickBrowseCardData = quickBrowseCardData.filter((item) =>
-		item.allowedRoles.some((role) => userRole.includes(role))
+		item.allowedRoles.some((role) => userRoles.includes(role))
 	);
 
 	return (

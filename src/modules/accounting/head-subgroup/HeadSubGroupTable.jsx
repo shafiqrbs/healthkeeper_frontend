@@ -47,7 +47,13 @@ function HeadSubGroupTable(props) {
 
 	return (
 		<>
-			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
+			<Box
+				pl={`xs`}
+				pr={8}
+				pt={"6"}
+				pb={"4"}
+				className={"boxBackground borderRadiusAll border-bottom-none"}
+			>
 				<KeywordSearch module={"account-head"} />
 			</Box>
 			<Box className={"borderRadiusAll border-top-none"}>
@@ -72,7 +78,6 @@ function HeadSubGroupTable(props) {
 						{ accessor: "code", title: t("AccountCode") },
 						{ accessor: "amount", title: t("Amount") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -93,16 +98,26 @@ function HeadSubGroupTable(props) {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+												<IconDotsVertical
+													height={"18"}
+													width={"18"}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
 											<Menu.Item
 												onClick={() => {
 													dispatch(setInsertType("update"));
-													dispatch(editEntityData(`accounting/account-head/${data.id}`));
+													dispatch(
+														editEntityData(
+															`accounting/account-head/${data.id}`
+														)
+													);
 													dispatch(setFormLoading(true));
-													navigate(`/accounting/head-subgroup/${data.id}`);
+													navigate(
+														`/accounting/head-subgroup/${data.id}`
+													);
 												}}
 											>
 												{t("Edit")}
@@ -128,23 +143,39 @@ function HeadSubGroupTable(props) {
 												c={"red.6"}
 												onClick={() => {
 													modals.openConfirmModal({
-														title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-														children: (
-															<Text size="sm"> {t("FormConfirmationMessage")}</Text>
+														title: (
+															<Text size="md">
+																{" "}
+																{t("FormConfirmationTitle")}
+															</Text>
 														),
-														labels: { confirm: "Confirm", cancel: "Cancel" },
+														children: (
+															<Text size="sm">
+																{" "}
+																{t("FormConfirmationMessage")}
+															</Text>
+														),
+														labels: {
+															confirm: "Confirm",
+															cancel: "Cancel",
+														},
 														confirmProps: { color: "red.6" },
 														onCancel: () => console.info("Cancel"),
 														onConfirm: () => {
 															dispatch(
-																deleteEntityData("accounting/account-head/" + data.id)
+																deleteEntityData(
+																	"accounting/account-head/" +
+																		data.id
+																)
 															);
 															dispatch(setFetching(true));
 														},
 													});
 												}}
 												rightSection={
-													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+													<IconTrashX
+														style={{ width: rem(14), height: rem(14) }}
+													/>
 												}
 											>
 												{t("Delete")}
@@ -170,7 +201,10 @@ function HeadSubGroupTable(props) {
 				/>
 			</Box>
 			{headGroupDrawer && (
-				<HeadSubGroupViewDrawer headGroupDrawer={headGroupDrawer} setHeadGroupDrawer={setHeadGroupDrawer} />
+				<HeadSubGroupViewDrawer
+					headGroupDrawer={headGroupDrawer}
+					setHeadGroupDrawer={setHeadGroupDrawer}
+				/>
 			)}
 		</>
 	);

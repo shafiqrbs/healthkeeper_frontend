@@ -28,7 +28,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 const module = MODULES.PRESCRIPTION;
 
 export default function Index() {
-	const { getLoggedInUser } = useAppLocalStore();
+	const { user } = useAppLocalStore();
 	const [opened, { open, close }] = useDisclosure(false);
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const [showHistory, setShowHistory] = useState(false);
@@ -99,7 +99,7 @@ export default function Index() {
 
 	const handlePrescriptionUpdate = async (updatedMedicine) => {
 		try {
-			const createdBy = getLoggedInUser();
+			const createdBy = user;
 			const formValue = {
 				is_completed: true,
 				medicines: updatedMedicine || medicines,

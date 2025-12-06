@@ -7,8 +7,7 @@ import classes from "@assets/css/Navigation.module.css";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 
 export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight }) {
-	const { getLoggedInRoles } = useAppLocalStore();
-	const userRole = getLoggedInRoles();
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -17,17 +16,17 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 		const menuLinks = sideNavigationLinks[menu] || [];
 		return menuLinks.filter(
 			(link) =>
-				link.allowedRoles && link.allowedRoles?.some((role) => userRole.includes(role))
+				link.allowedRoles && link.allowedRoles?.some((role) => userRoles.includes(role))
 		);
-	}, [menu, userRole]);
+	}, [menu, userRoles]);
 
 	const subLinks = useMemo(() => {
 		const subMenuLinks = sideNavigationLinks[subMenu] || [];
 		return subMenuLinks.filter(
 			(link) =>
-				link.allowedRoles && link.allowedRoles?.some((role) => userRole.includes(role))
+				link.allowedRoles && link.allowedRoles?.some((role) => userRoles.includes(role))
 		);
-	}, [subMenu, userRole]);
+	}, [subMenu, userRoles]);
 
 	return (
 		<Box>
@@ -98,7 +97,7 @@ export default function Navigation({ menu = "base", subMenu = "", mainAreaHeight
 													{item.subMenu.map((subItem, index) => (
 														<Fragment key={index}>
 															{subItem.allowedRoles?.some((role) =>
-																userRole.includes(role)
+																userRoles.includes(role)
 															) && (
 																<Menu.Item
 																	onClick={() =>

@@ -16,13 +16,12 @@ const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"]
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
 
 export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
-	const { getLoggedInRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const test = entity;
 	const { id, reportId } = useParams();
 	const navigate = useNavigate();
-	const userRoles = getLoggedInRoles();
 	const barCodeRef = useRef(null);
 	const [barcodeValue, setBarcodeValue] = useState("");
 	const labReportRef = useRef(null);
@@ -54,7 +53,7 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 	};
 
 	async function handleBarcodeTag(barcode, report_id) {
-		const res = await getDataWithoutStore({
+		await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.TAG_PRINT}/${report_id}`,
 		});
 		setBarcodeValue(report_id);

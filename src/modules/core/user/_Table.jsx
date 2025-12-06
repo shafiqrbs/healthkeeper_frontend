@@ -10,7 +10,11 @@ import { modals } from "@mantine/modals";
 // import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import __ViewDrawer from "./__ViewDrawer.jsx";
-import { getIndexEntityData, editEntityData, deleteEntityData } from "@/app/store/core/crudThunk.js";
+import {
+	getIndexEntityData,
+	editEntityData,
+	deleteEntityData,
+} from "@/app/store/core/crudThunk.js";
 import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent.jsx";
 import KeywordSearch from "@hospital-components/KeywordSearch";
@@ -97,7 +101,11 @@ export default function _Table({ module }) {
 			setUserObject(foundUsers);
 			setViewDrawer(true);
 		} else {
-			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
+			showNotificationComponent(
+				t("Something Went wrong , please try again"),
+				"red.6",
+				"lightgray"
+			);
 		}
 	};
 
@@ -154,7 +162,6 @@ export default function _Table({ module }) {
 						{ accessor: "email", title: t("Email") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -175,7 +182,11 @@ export default function _Table({ module }) {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+												<IconDotsVertical
+													height={"18"}
+													width={"18"}
+													stroke={1.5}
+												/>
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
@@ -205,7 +216,9 @@ export default function _Table({ module }) {
 												c="red.6"
 												onClick={() => handleDelete(data.id)}
 												rightSection={
-													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+													<IconTrashX
+														style={{ width: rem(14), height: rem(14) }}
+													/>
 												}
 											>
 												{t("Delete")}
@@ -231,7 +244,11 @@ export default function _Table({ module }) {
 				/>
 			</Box>
 			{viewDrawer && (
-				<__ViewDrawer userObject={userObject} viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} />
+				<__ViewDrawer
+					userObject={userObject}
+					viewDrawer={viewDrawer}
+					setViewDrawer={setViewDrawer}
+				/>
 			)}
 		</>
 	);

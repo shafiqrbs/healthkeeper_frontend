@@ -51,7 +51,14 @@ function LedgerDetails(props) {
 
 	return (
 		<>
-			<Box pl={`xs`} pb={"xs"} pr={8} pt={"xs"} mb={"xs"} className={"boxBackground borderRadiusAll"}>
+			<Box
+				pl={`xs`}
+				pb={"xs"}
+				pr={8}
+				pt={"xs"}
+				mb={"xs"}
+				className={"boxBackground borderRadiusAll"}
+			>
 				<KeywordSearch module={"customer"} />
 			</Box>
 			<Box className={"borderRadiusAll"}>
@@ -76,7 +83,6 @@ function LedgerDetails(props) {
 						{ accessor: "method_name", title: t("ShortName") },
 						{ accessor: "authorized_name", title: t("AccountCode") },
 						{
-							accessor: "action",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
@@ -99,7 +105,11 @@ function LedgerDetails(props) {
 										color="blue"
 										onClick={() => {
 											dispatch(setInsertType("update"));
-											dispatch(editEntityData("accounting/transaction-mode/" + data.id));
+											dispatch(
+												editEntityData(
+													"accounting/transaction-mode/" + data.id
+												)
+											);
 											dispatch(setFormLoading(true));
 										}}
 									>
@@ -111,12 +121,24 @@ function LedgerDetails(props) {
 										color="red"
 										onClick={() => {
 											modals.openConfirmModal({
-												title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-												children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+												title: (
+													<Text size="md">
+														{" "}
+														{t("FormConfirmationTitle")}
+													</Text>
+												),
+												children: (
+													<Text size="sm">
+														{" "}
+														{t("FormConfirmationMessage")}
+													</Text>
+												),
 												labels: { confirm: "Confirm", cancel: "Cancel" },
 												onCancel: () => console.info("Cancel"),
 												onConfirm: () => {
-													dispatch(deleteEntityData("core/customer/" + data.id));
+													dispatch(
+														deleteEntityData("core/customer/" + data.id)
+													);
 													dispatch(setFetching(true));
 												},
 											});

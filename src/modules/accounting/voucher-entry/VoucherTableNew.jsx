@@ -57,7 +57,14 @@ function VoucherTableNew() {
 		<>
 			<Box className={"borderRadiusAllVoucherNew"} bg="var(--mantine-color-white)">
 				<Box bg="var(--mantine-color-white)" className="borderRadiusAll" m={"xs"}>
-					<Box className="boxBackground" pl={`xs`} pb={"sm"} pr={8} pt={"xs"} bg="var(--mantine-color-white)">
+					<Box
+						className="boxBackground"
+						pl={`xs`}
+						pb={"sm"}
+						pr={8}
+						pt={"xs"}
+						bg="var(--mantine-color-white)"
+					>
 						<VoucherSearch module={"voucher"} />
 					</Box>
 				</Box>
@@ -86,7 +93,6 @@ function VoucherTableNew() {
 								{ accessor: "status", title: t("Status") },
 								{ accessor: "approved_by", title: t("ApprovedBy") },
 								{
-									accessor: "action",
 									title: t("Action"),
 									textAlign: "right",
 									render: (data) => (
@@ -107,14 +113,20 @@ function VoucherTableNew() {
 														radius="xl"
 														aria-label="Settings"
 													>
-														<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
+														<IconDotsVertical
+															height={"18"}
+															width={"18"}
+															stroke={1.5}
+														/>
 													</ActionIcon>
 												</Menu.Target>
 												<Menu.Dropdown>
 													<Menu.Item w={"200"} href="/inventory/config">
 														{t("Edit")}
 													</Menu.Item>
-													<Menu.Item href="/inventory/config">{t("Show")}</Menu.Item>
+													<Menu.Item href="/inventory/config">
+														{t("Show")}
+													</Menu.Item>
 													<Menu.Item
 														href={``}
 														target="_blank"
@@ -124,7 +136,12 @@ function VoucherTableNew() {
 														bg={"red.1"}
 														c={"red.6"}
 														rightSection={
-															<IconTrashX style={{ width: rem(14), height: rem(14) }} />
+															<IconTrashX
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
 														}
 													>
 														{t("Delete")}
@@ -152,7 +169,10 @@ function VoucherTableNew() {
 				</Box>
 			</Box>
 			{customerViewModel && (
-				<CustomerViewModel customerViewModel={customerViewModel} setCustomerViewModel={setCustomerViewModel} />
+				<CustomerViewModel
+					customerViewModel={customerViewModel}
+					setCustomerViewModel={setCustomerViewModel}
+				/>
 			)}
 		</>
 	);
