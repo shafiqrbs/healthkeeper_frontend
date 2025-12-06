@@ -25,6 +25,26 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_TYPE.TYPE },
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_TYPE.UTILITY,
 	});
+	handleSubmit, setIndexData, isLoading, setIsLoading }) {
+	const { t } = useTranslation();
+	const { mainAreaHeight } = useOutletContext();
+	const height = mainAreaHeight - 180; //TabList height 104
+
+	const { data: getParticularPatientTypes } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_TYPE.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_TYPE.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PATIENT_TYPE.UTILITY,
+	});
+
+	const { data: getParticularPaymentModes } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.UTILITY,
+	});
+
+	const { data: getParticularCabinModes } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_CABIN_MODE.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_CABIN_MODE.TYPE },
 
 	const { data: getParticularPaymentModes } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_PAYMENT_MODE.PATH,

@@ -14,7 +14,6 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data?.entity || {};
 	const report = data?.invoiceParticular || {};
 	const { hospitalConfigData } = useHospitalConfigData();
-	const  configData   = hospitalConfigData?.config;
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
@@ -67,13 +66,13 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 									</Grid.Col>
 									<Grid.Col span={4}>
 										<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-											{configData?.organization_name || "Hospital"}
+											{hospitalConfigData?.organization_name || "Hospital"}
 										</Text>
 										<Text ta="center" size="sm" c="gray" mt="2">
-											{configData?.address || "Uttara"}
+											{hospitalConfigData?.address || "Uttara"}
 										</Text>
 										<Text ta="center" size="sm" c="gray" mb="2">
-											{t("হটলাইন")} {configData?.hotline || "0987634523"}
+											{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
 										</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>

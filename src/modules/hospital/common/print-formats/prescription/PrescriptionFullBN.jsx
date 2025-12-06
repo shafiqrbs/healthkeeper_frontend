@@ -22,7 +22,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const medicines = jsonContent?.medicines || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useHospitalConfigData();
-	const  configData   = hospitalConfigData?.config;
+	console.log(hospitalConfigData);
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
@@ -223,13 +223,13 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											</Box>
 											<Box>
 												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-													{configData?.organization_name || ""}
+													{hospitalConfigData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
-													{configData?.address || ""}
+													{hospitalConfigData?.address || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mb="2">
-													{t("হটলাইন")} {configData?.hotline || ""}
+													{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
 												</Text>
 											</Box>
 											<Box>
@@ -598,16 +598,16 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											<Image src={GLogo} alt="logo" width={46} height={46} />
 											<Box pl={"xs"} pr={"xs"}>
 												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-													{configData?.organization_name || ""}
+													{hospitalConfigData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
-													{configData?.address || ""},
+													{hospitalConfigData?.address || ""},
 													<IconPhoneCall
 														style={{ width: "12", height: "12" }}
 														stroke={1.5}
 													/>{" "}
-													{(configData?.hotline &&
-														` ${configData?.hotline}`) ||
+													{(hospitalConfigData?.hotline &&
+														` ${hospitalConfigData?.hotline}`) ||
 														""}
 												</Text>
 											</Box>
