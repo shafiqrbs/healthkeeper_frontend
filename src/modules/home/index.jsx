@@ -5,7 +5,6 @@ import HomeSkeleton from "@components/skeletons/HomeSkeleton";
 import useAppLocalStore from "@/common/hooks/useAppLocalStore";
 import OperatorBoard from "@/modules/home/operator/OperatorBoard";
 import AdminBoard from "./operator/AdminBoard";
-import PrescriptionTable from "@modules/hospital/prescription/PrescriptionTable";
 import {MODULES} from "@/constants";
 import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
 import {useNavigate} from "react-router-dom";
