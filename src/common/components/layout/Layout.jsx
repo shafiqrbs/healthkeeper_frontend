@@ -7,10 +7,10 @@ import useConfigData from "@hooks/config-data/useConfigData";
 import { getLoggedInUser } from "@/common/utils";
 import HomeIndex from "@/modules/home";
 import useHospitalUserData from "@hooks/useHospitalUserData";
-import {useAuthStore} from "@/store/useAuthStore.js";
-import {jwtDecode} from "jwt-decode";
-import {useEffect} from "react";
-import {decryptData} from "@/utils/crypto.js";
+import { useAuthStore } from "@/store/useAuthStore.js";
+import { jwtDecode } from "jwt-decode";
+import { useEffect } from "react";
+import { decryptData } from "@utils/crypto.js";
 // import { useBrowserHeight } from "@hooks/userBrowserHeight";
 
 const Layout = () => {
@@ -22,22 +22,22 @@ const Layout = () => {
 	const paramPath = location.pathname;
 	const { configData } = useConfigData();
 
-/*=============================================================================*/
-    /*ALL REFERENCE FOR ACCESS DATA*/
-    const authStorage = useAuthStore(state => state);
-  //  console.log(authStorage)
-    // const user_jwt = useAuthStore(state => state.user);
-    // const token_jwt = useAuthStore(state => state.token);
-    // const config_jwt = useAuthStore(state => state.hospitalConfig);
-    // const warehouse_jwt = useAuthStore(state => state.warehouse);
-    // console.log(user_jwt,token_jwt,config_jwt,warehouse_jwt)
+	/*=============================================================================*/
+	/*ALL REFERENCE FOR ACCESS DATA*/
+	const authStorage = useAuthStore((state) => state);
+	//  console.log(authStorage)
+	// const user_jwt = useAuthStore(state => state.user);
+	// const token_jwt = useAuthStore(state => state.token);
+	// const config_jwt = useAuthStore(state => state.hospitalConfig);
+	// const warehouse_jwt = useAuthStore(state => state.warehouse);
+	// console.log(user_jwt,token_jwt,config_jwt,warehouse_jwt)
 
-    // to access user role
-    // console.log(user_jwt.access_control_role,user_jwt.android_control_role)
+	// to access user role
+	// console.log(user_jwt.access_control_role,user_jwt.android_control_role)
 
-    // update existing data
-    // Update Zustand store with new data
-    /*useEffect(() => {
+	// update existing data
+	// Update Zustand store with new data
+	/*useEffect(() => {
         // Top-level field update
         const updateState = useAuthStore.getState().updateState;
         const updateNestedState = useAuthStore.getState().updateNestedState;
@@ -53,32 +53,29 @@ const Layout = () => {
     }, []);
     console.log(config_jwt)*/
 
+	// access core product
+	// const coreProducts = decryptData(localStorage.getItem("core-products"));
+	// console.log(coreProducts)
 
-    // access core product
-    // const coreProducts = decryptData(localStorage.getItem("core-products"));
-    // console.log(coreProducts)
+	// access accounting-transaction-mode
+	// const transactionMode = decryptData(localStorage.getItem("accounting-transaction-mode"));
+	// console.log(transactionMode)
 
-    // access accounting-transaction-mode
-    // const transactionMode = decryptData(localStorage.getItem("accounting-transaction-mode"));
-    // console.log(transactionMode)
+	// access config-data
+	// const configDataJwt = decryptData(localStorage.getItem("config-data"));
+	// console.log(configDataJwt)
 
-    // access config-data
-    // const configDataJwt = decryptData(localStorage.getItem("config-data"));
-    // console.log(configDataJwt)
+	// access core-customers
+	// const coreCustomers = decryptData(localStorage.getItem("core-customers"));
+	// console.log(coreCustomers)
 
-    // access core-customers
-    // const coreCustomers = decryptData(localStorage.getItem("core-customers"));
-    // console.log(coreCustomers)
+	// access core-users
+	// const coreUsers = decryptData(localStorage.getItem("core-users"));
+	// console.log(coreUsers)
 
-    // access core-users
-    // const coreUsers = decryptData(localStorage.getItem("core-users"));
-    // console.log(coreUsers)
+	/*=============================================================================*/
 
-    /*=============================================================================*/
-
-
-
-    // check authentication
+	// check authentication
 	if (!user?.id) {
 		console.info("Not logged in, redirecting to login page.");
 		return <Navigate replace to="/login" />;
