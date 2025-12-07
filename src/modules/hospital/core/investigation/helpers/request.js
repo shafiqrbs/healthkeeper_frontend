@@ -26,18 +26,9 @@ export const getInitialValues = (t) => {
 				if (!value) return t("NameValidationRequired");
 				return null;
 			},
-			name: hasLength({ min: 1}),
+			name: hasLength({ min: 1 }),
 		},
 	};
-};
-
-const initialInsertValues = {
-	particular_id:"",
-	parent_id: "",
-	name: "",
-	sample_value: "",
-	reference_value: "",
-	unit_name: "",
 };
 
 const initialReportValues = {
@@ -48,13 +39,11 @@ const initialReportValues = {
 	unit_name: "",
 };
 
-export const getInitialReportValues = (t) => {
+export const getInitialReportValues = () => {
 	return {
 		initialReportValues,
 		validate: {
-			name: hasLength({ min: 1}),
+			name: hasLength({ min: 1 }),
 		},
 	};
 };
-
-

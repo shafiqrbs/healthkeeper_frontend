@@ -33,11 +33,7 @@ export default function Index({ mode = "create" }) {
 			) : (
 				<_Table module={module} open={open} close={close} />
 			)}
-			<GlobalDrawer
-				opened={opened}
-				close={close}
-				title={mode === "create" ? t("CreateInvestigation") : t("UpdateInvestigation")}
-			>
+			<GlobalDrawer opened={opened} close={close} title={mode === "create" ? t("CreateInvestigation") : t("UpdateInvestigation")}>
 				<IndexForm module={module} form={form} mode={mode} close={close} />
 			</GlobalDrawer>
 		</Box>

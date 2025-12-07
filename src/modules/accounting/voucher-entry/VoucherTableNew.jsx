@@ -15,14 +15,7 @@ import {
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import {
-	editEntityData,
-	getIndexEntityData,
-	setFetching,
-	setFormLoading,
-	setInsertType,
-	showEntityData,
-} from "../../../../store/core/crudSlice.js";
+import { editEntityData, getIndexEntityData, setFetching, setFormLoading, setInsertType, showEntityData } from "../../../../store/core/crudSlice.js";
 import KeywordSearch from "../../filter/KeywordSearch.jsx";
 import { modals } from "@mantine/modals";
 import { deleteEntityData } from "../../../../store/core/crudSlice";
@@ -57,14 +50,7 @@ function VoucherTableNew() {
 		<>
 			<Box className={"borderRadiusAllVoucherNew"} bg="var(--mantine-color-white)">
 				<Box bg="var(--mantine-color-white)" className="borderRadiusAll" m={"xs"}>
-					<Box
-						className="boxBackground"
-						pl={`xs`}
-						pb={"sm"}
-						pr={8}
-						pt={"xs"}
-						bg="var(--mantine-color-white)"
-					>
+					<Box className="boxBackground" pl={`xs`} pb={"sm"} pr={8} pt={"xs"} bg="var(--mantine-color-white)">
 						<VoucherSearch module={"voucher"} />
 					</Box>
 				</Box>
@@ -93,40 +79,22 @@ function VoucherTableNew() {
 								{ accessor: "status", title: t("Status") },
 								{ accessor: "approved_by", title: t("ApprovedBy") },
 								{
+									accessor: "",
 									title: t("Action"),
 									textAlign: "right",
 									render: (data) => (
 										<Group gap={4} justify="right" wrap="nowrap">
-											<Menu
-												position="bottom-end"
-												offset={3}
-												withArrow
-												trigger="hover"
-												openDelay={100}
-												closeDelay={400}
-											>
+											<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
 												<Menu.Target>
-													<ActionIcon
-														size="sm"
-														variant="outline"
-														color="red"
-														radius="xl"
-														aria-label="Settings"
-													>
-														<IconDotsVertical
-															height={"18"}
-															width={"18"}
-															stroke={1.5}
-														/>
+													<ActionIcon size="sm" variant="outline" color="red" radius="xl" aria-label="Settings">
+														<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
 													</ActionIcon>
 												</Menu.Target>
 												<Menu.Dropdown>
 													<Menu.Item w={"200"} href="/inventory/config">
 														{t("Edit")}
 													</Menu.Item>
-													<Menu.Item href="/inventory/config">
-														{t("Show")}
-													</Menu.Item>
+													<Menu.Item href="/inventory/config">{t("Show")}</Menu.Item>
 													<Menu.Item
 														href={``}
 														target="_blank"
@@ -168,12 +136,7 @@ function VoucherTableNew() {
 					</Box>
 				</Box>
 			</Box>
-			{customerViewModel && (
-				<CustomerViewModel
-					customerViewModel={customerViewModel}
-					setCustomerViewModel={setCustomerViewModel}
-				/>
-			)}
+			{customerViewModel && <CustomerViewModel customerViewModel={customerViewModel} setCustomerViewModel={setCustomerViewModel} />}
 		</>
 	);
 }

@@ -1,16 +1,4 @@
-import {
-	Group,
-	Box,
-	ActionIcon,
-	Text,
-	Flex,
-	Button,
-	Grid,
-	NumberInput,
-	Tooltip,
-	TextInput,
-	Input,
-} from "@mantine/core";
+import { Group, Box, ActionIcon, Text, Flex, Button, Grid, NumberInput, Tooltip, TextInput, Input } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconChevronUp,
@@ -77,9 +65,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		if (!values || !values.stock_item_id) return;
 
 		setItems((prevItems) => {
-			const existingIndex = prevItems.findIndex(
-				(item) => item.stock_item_id == values.stock_item_id
-			);
+			const existingIndex = prevItems.findIndex((item) => item.stock_item_id == values.stock_item_id);
 
 			if (existingIndex >= 0) {
 				// If exists, update quantity
@@ -130,9 +116,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	const handleRecordFieldChange = (stockItemId, fieldName, fieldValue) => {
 		setItems((previousRecords) =>
 			previousRecords.map((recordItem) =>
-				recordItem?.stock_item_id?.toString() === stockItemId?.toString()
-					? { ...recordItem, [fieldName]: fieldValue }
-					: recordItem
+				recordItem?.stock_item_id?.toString() === stockItemId?.toString() ? { ...recordItem, [fieldName]: fieldValue } : recordItem
 			)
 		);
 	};
@@ -228,39 +212,16 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 									accessor: "quantity",
 									width: 200,
 									title: (
-										<Group
-											justify={"flex-end"}
-											spacing="xs"
-											noWrap
-											pl={"sm"}
-											ml={"sm"}
-										>
+										<Group justify={"flex-end"} spacing="xs" noWrap pl={"sm"} ml={"sm"}>
 											<Box pl={"4"}>{t("")}</Box>
-											<ActionIcon
-												mr={"sm"}
-												radius="xl"
-												variant="transparent"
-												color="grey"
-												size="xs"
-												onClick={() => {}}
-											>
-												<IconRefresh
-													style={{ width: "100%", height: "100%" }}
-													stroke={1.5}
-												/>
+											<ActionIcon mr={"sm"} radius="xl" variant="transparent" color="grey" size="xs" onClick={() => {}}>
+												<IconRefresh style={{ width: "100%", height: "100%" }} stroke={1.5} />
 											</ActionIcon>
 										</Group>
 									),
 									textAlign: "right",
 									render: (data, rowIndex) => (
-										<Group
-											wrap="nowrap"
-											w="100%"
-											gap={0}
-											justify="flex-end"
-											align="center"
-											mx="auto"
-										>
+										<Group wrap="nowrap" w="100%" gap={0} justify="flex-end" align="center" mx="auto">
 											<Input
 												styles={{
 													input: {
@@ -270,10 +231,8 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 														textAlign: "center",
 														borderRadius: 0,
 														borderColor: "#905923",
-														borderTopLeftRadius:
-															"var(--mantine-radius-sm)",
-														borderBottomLeftRadius:
-															"var(--mantine-radius-sm)",
+														borderTopLeftRadius: "var(--mantine-radius-sm)",
+														borderBottomLeftRadius: "var(--mantine-radius-sm)",
 													},
 													placeholder: {
 														fontSize: "var(--mantine-font-size-xs)",
@@ -306,17 +265,11 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 													root: {
 														height: "26px",
 														borderRadius: 0,
-														borderTopRightRadius:
-															"var(--mantine-radius-sm)",
-														borderBottomRightRadius:
-															"var(--mantine-radius-sm)",
+														borderTopRightRadius: "var(--mantine-radius-sm)",
+														borderBottomRightRadius: "var(--mantine-radius-sm)",
 													},
 												}}
-												onClick={() =>
-													handleWorkOrderAdd(
-														draftProducts[data?.stock_item_id]
-													)
-												}
+												onClick={() => handleWorkOrderAdd(draftProducts[data?.stock_item_id])}
 											>
 												<Flex direction={`column`} gap={0}>
 													<IconShoppingBag size={12} />
@@ -336,12 +289,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 						<DataTableFooter indexData={listData} module={module} />
 					</Box>
 					<Box mt="2" className="" pl={"xs"} pt={"4"} pb={"6"}>
-						<Grid
-							className={genericClass.genericBackground}
-							columns={12}
-							justify="space-between"
-							align="center"
-						>
+						<Grid className={genericClass.genericBackground} columns={12} justify="space-between" align="center">
 							<Grid.Col span={8}>
 								<Box>
 									<Tooltip
@@ -370,11 +318,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 											id={"SearchKeyword"}
 											rightSection={
 												searchValue ? (
-													<Tooltip
-														label={t("Close")}
-														withArrow
-														bg={`red.5`}
-													>
+													<Tooltip label={t("Close")} withArrow bg={`red.5`}>
 														<IconX
 															color="var( --theme-remove-color)"
 															size={16}
@@ -386,13 +330,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 														/>
 													</Tooltip>
 												) : (
-													<Tooltip
-														label={t("FieldIsRequired")}
-														withArrow
-														position={"bottom"}
-														c={"red"}
-														bg={`red.1`}
-													>
+													<Tooltip label={t("FieldIsRequired")} withArrow position={"bottom"} c={"red"} bg={`red.1`}>
 														<IconInfoCircle size={16} opacity={0.5} />
 													</Tooltip>
 												)
@@ -412,10 +350,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 												const qty = Number(product.quantity || 0);
 												if (qty <= 0) return; // skip if quantity <= 0
 
-												const existingIndex = newItems.findIndex(
-													(item) =>
-														item.stock_item_id == product.stock_item_id
-												);
+												const existingIndex = newItems.findIndex((item) => item.stock_item_id == product.stock_item_id);
 
 												if (existingIndex >= 0) {
 													// Update quantity if exists
@@ -501,13 +436,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 										min={1}
 										size="xs"
 										value={item?.quantity}
-										onChange={(value) =>
-											handleRecordFieldChange(
-												item?.stock_item_id,
-												"quantity",
-												String(value ?? "")
-											)
-										}
+										onChange={(value) => handleRecordFieldChange(item?.stock_item_id, "quantity", String(value ?? ""))}
 									/>
 								),
 							},
@@ -521,11 +450,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 											className="date-selector-input"
 											value={item?.production_date}
 											onChange={(value) =>
-												handleRecordFieldChange(
-													item?.stock_item_id,
-													"production_date",
-													value ? value.toISOString() : ""
-												)
+												handleRecordFieldChange(item?.stock_item_id, "production_date", value ? value.toISOString() : "")
 											}
 										/>
 									</Box>
@@ -540,17 +465,14 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 										<DateSelector
 											value={item?.expired_date}
 											onChange={(value) =>
-												handleRecordFieldChange(
-													item?.stock_item_id,
-													"expired_date",
-													value ? value.toISOString() : ""
-												)
+												handleRecordFieldChange(item?.stock_item_id, "expired_date", value ? value.toISOString() : "")
 											}
 										/>
 									</>
 								),
 							},
 							{
+								accessor: "",
 								title: "",
 								textAlign: "right",
 								titleClassName: "title-right",
@@ -578,12 +500,8 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 						loaderColor="grape"
 						height={height - 160}
 						sortIcons={{
-							sorted: (
-								<IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />
-							),
-							unsorted: (
-								<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
-							),
+							sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+							unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 						}}
 					/>
 					<Box
@@ -598,13 +516,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 						<Grid align="center" gatter={"2"} columns={20} mt="0">
 							<Grid.Col span={12}>
 								<Box bg="var(--theme-primary-color-0)" fz="sm" c="white">
-									<Text
-										bg="var(--theme-secondary-color-6)"
-										fz="sm"
-										c="white"
-										px="sm"
-										py="les"
-									>
+									<Text bg="var(--theme-secondary-color-6)" fz="sm" c="white" px="sm" py="les">
 										{t("Remark")}
 									</Text>
 									<Box p="sm">
@@ -671,10 +583,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 											>
 												{t("Reset")}
 											</Button>
-											<Tooltip
-												label={t("PleaseFillAllDates")}
-												disabled={isAllDatesValid}
-											>
+											<Tooltip label={t("PleaseFillAllDates")} disabled={isAllDatesValid}>
 												<Button
 													onClick={onSave}
 													size="xs"

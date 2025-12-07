@@ -37,14 +37,7 @@ function VoucherTableInProgress() {
 		<>
 			<Box className={" borderRadiusAllVoucherNew"} bg={"white"}>
 				<Box bg="white" className="borderRadiusAll" m={"xs"}>
-					<Box
-						className="boxBackground"
-						pl={`xs`}
-						pb={"sm"}
-						pr={8}
-						pt={"xs"}
-						bg={"white"}
-					>
+					<Box className="boxBackground" pl={`xs`} pb={"sm"} pr={8} pt={"xs"} bg={"white"}>
 						<VoucherSearch module={"customer"} />
 					</Box>
 				</Box>
@@ -73,40 +66,22 @@ function VoucherTableInProgress() {
 								{ accessor: "status", title: t("Status") },
 								{ accessor: "approved_by", title: t("ApprovedBy") },
 								{
+									accessor: "",
 									title: t("Action"),
 									textAlign: "right",
 									render: (data) => (
 										<Group gap={4} justify="right" wrap="nowrap">
-											<Menu
-												position="bottom-end"
-												offset={3}
-												withArrow
-												trigger="hover"
-												openDelay={100}
-												closeDelay={400}
-											>
+											<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
 												<Menu.Target>
-													<ActionIcon
-														size="sm"
-														variant="outline"
-														color="red"
-														radius="xl"
-														aria-label="Settings"
-													>
-														<IconDotsVertical
-															height={"18"}
-															width={"18"}
-															stroke={1.5}
-														/>
+													<ActionIcon size="sm" variant="outline" color="red" radius="xl" aria-label="Settings">
+														<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
 													</ActionIcon>
 												</Menu.Target>
 												<Menu.Dropdown>
 													<Menu.Item w={"200"} href="/inventory/config">
 														{t("Edit")}
 													</Menu.Item>
-													<Menu.Item href="/inventory/config">
-														{t("Show")}
-													</Menu.Item>
+													<Menu.Item href="/inventory/config">{t("Show")}</Menu.Item>
 													<Menu.Item
 														href={``}
 														target="_blank"
@@ -167,12 +142,7 @@ function VoucherTableInProgress() {
 					</Box>
 				</Box>
 			</Box>
-			{customerViewModel && (
-				<CustomerViewModel
-					customerViewModel={customerViewModel}
-					setCustomerViewModel={setCustomerViewModel}
-				/>
-			)}
+			{customerViewModel && <CustomerViewModel customerViewModel={customerViewModel} setCustomerViewModel={setCustomerViewModel} />}
 		</>
 	);
 }

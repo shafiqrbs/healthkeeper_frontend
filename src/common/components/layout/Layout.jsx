@@ -21,8 +21,6 @@ const Layout = () => {
 	const location = useLocation();
 	const paramPath = location.pathname;
 
-	console.log(store);
-
 	/*=============================================================================*/
 	/*ALL REFERENCE FOR ACCESS DATA*/
 	//  console.log(authStorage)

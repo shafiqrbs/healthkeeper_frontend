@@ -120,13 +120,7 @@ export default function __AccountingTable(props) {
 				<Box className="borderRadiusAll" h={height - 6}>
 					{dataLimit ? (
 						<Box>
-							<Flex
-								direction={"row"}
-								gap={"xs"}
-								align={"center"}
-								justify={"center"}
-								h={height - 36}
-							>
+							<Flex direction={"row"} gap={"xs"} align={"center"} justify={"center"} h={height - 36}>
 								{!saveCreateLoading && isOnline && (
 									<>
 										<Button
@@ -202,6 +196,7 @@ export default function __AccountingTable(props) {
 									resizable: true,
 								},
 								{
+									accessor: "",
 									title: t("Action"),
 									textAlign: "right",
 								},
@@ -219,13 +214,7 @@ export default function __AccountingTable(props) {
 				</Box>
 				<Box mt={4}>
 					<Box bg="var(--mantine-color-white)">
-						<Box
-							pl={`xs`}
-							pr={8}
-							pt={"11"}
-							pb={"xs"}
-							className={"boxBackground borderRadiusAll"}
-						>
+						<Box pl={`xs`} pr={8} pt={"11"} pb={"xs"} className={"boxBackground borderRadiusAll"}>
 							<Flex h={28} direction={"row"} gap={"xs"} justify="flex-end">
 								{!saveCreateLoading && isOnline && enableTable && (
 									<>

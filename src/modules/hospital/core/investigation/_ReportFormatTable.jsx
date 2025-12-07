@@ -1,33 +1,15 @@
-import { useEffect, useState, useCallback } from "react";
-import {
-	Group,
-	Box,
-	ActionIcon,
-	Text,
-	Flex,
-	Button,
-	Grid,
-	Stack,
-	Select,
-	TextInput,
-	rem,
-	Textarea,
-} from "@mantine/core";
+import { useEffect, useState, useMemo } from "react";
+import { Group, Box, ActionIcon, Text, Flex, Button, Grid, Select, TextInput, rem, Textarea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconTrashX, IconDeviceFloppy, IconAlertCircle } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, useOutletContext } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useParams, useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import {
-	deleteEntityData,
-	editEntityData,
-	storeEntityData,
-	updateEntityData,
-} from "@/app/store/core/crudThunk";
+import { deleteEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import InputForm from "@components/form-builders/InputForm";
@@ -39,17 +21,14 @@ import SelectForm from "@components/form-builders/SelectForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { SUCCESS_NOTIFICATION_COLOR } from "@/constants/index";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import { setInsertType } from "@/app/store/core/crudSlice";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 
 export default function _ReportFormatTable({ module }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
-	const navigate = useNavigate();
 	const { id } = useParams();
 	const height = mainAreaHeight - 132;
-	const [records, setRecords] = useState([]);
 	const [resetKey, setResetKey] = useState([]);
 	const [fetching] = useState(false);
 	const [submitFormData, setSubmitFormData] = useState({});
@@ -57,7 +36,9 @@ export default function _ReportFormatTable({ module }) {
 	const { data: entity, refetch } = useDataWithoutStore({
 		url: `${MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.VIEW}/${id}`,
 	});
-	const entityData = entity?.data?.investigation_report_format;
+	const entityData = useMemo(() => entity?.data?.investigation_report_format || [], [entity]);
+
+	console.log(entityData, "entityData");
 
 	const parents =
 		entityData
@@ -66,6 +47,8 @@ export default function _ReportFormatTable({ module }) {
 				label: p?.name || "", // handle null/undefined name
 			}))
 			.filter((p) => p.value && p.label) || []; // filter out empty entries
+
+	console.log(parents, "parents");
 
 	const form = useForm(getInitialReportValues(t));
 
@@ -137,7 +120,7 @@ export default function _ReportFormatTable({ module }) {
 		const initialFormData = entityData.reduce((acc, item) => {
 			acc[item.id] = {
 				name: item.name || "",
-				parent_id: item.parent_id ? item.parent_id.toString() : "", // force string
+				parent_id: item.parent_id ? item.parent_id?.toString() : "", // force string
 				unit: item.unit || "",
 				reference_value: item.reference_value || "",
 				sample_value: item.sample_value || "",
@@ -152,7 +135,7 @@ export default function _ReportFormatTable({ module }) {
 		setSubmitFormData((prev) => ({
 			...prev,
 			[rowId]: {
-				...prev[rowId],
+				...(prev[rowId] || {}),
 				[field]: value,
 			},
 		}));
@@ -317,13 +300,7 @@ export default function _ReportFormatTable({ module }) {
 										<TextInput
 											placeholder={t("Name")}
 											value={submitFormData[item.id]?.name || ""}
-											onChange={(val) =>
-												handleDataTypeChange(
-													item.id,
-													"name",
-													val.target.value
-												)
-											}
+											onChange={(val) => handleDataTypeChange(item.id, "name", val.target.value)}
 											onBlur={() => handleRowSubmit(item.id)}
 										/>
 									),
@@ -336,13 +313,7 @@ export default function _ReportFormatTable({ module }) {
 										<TextInput
 											placeholder={t("SampleValue")}
 											value={submitFormData[item.id]?.sample_value || ""}
-											onChange={(val) =>
-												handleDataTypeChange(
-													item.id,
-													"sample_value",
-													val.target.value
-												)
-											}
+											onChange={(val) => handleDataTypeChange(item.id, "sample_value", val.target.value)}
 											onBlur={() => handleRowSubmit(item.id)}
 										/>
 									),
@@ -354,13 +325,7 @@ export default function _ReportFormatTable({ module }) {
 										<TextInput
 											placeholder={t("UnitName")}
 											value={submitFormData[item.id]?.unit || ""}
-											onChange={(val) =>
-												handleDataTypeChange(
-													item.id,
-													"unit",
-													val.target.value
-												)
-											}
+											onChange={(val) => handleDataTypeChange(item.id, "unit", val.target.value)}
 											onBlur={() => handleRowSubmit(item.id)}
 										/>
 									),
@@ -372,13 +337,7 @@ export default function _ReportFormatTable({ module }) {
 										<Textarea
 											placeholder={t("ReferenceValue")}
 											value={submitFormData[item.id]?.reference_value || ""}
-											onChange={(val) =>
-												handleDataTypeChange(
-													item.id,
-													"reference_value",
-													val.target.value
-												)
-											}
+											onChange={(val) => handleDataTypeChange(item.id, "reference_value", val.target.value)}
 											onBlur={() => handleRowSubmit(item.id)}
 											classNames={{
 												input: "custom-textarea",
@@ -387,27 +346,20 @@ export default function _ReportFormatTable({ module }) {
 									),
 								},
 								{
+									accessor: "",
 									title: "",
 									width: "100px",
 									render: (item) => (
-										<Group justify="center">
-											<ActionIcon
-												color="var(--theme-secondary-color-6)"
-												onClick={() => handleRowSubmit(item.id)}
-											>
-												<IconDeviceFloppy
-													height={18}
-													width={18}
-													stroke={1.5}
-												/>
-											</ActionIcon>
-											<ActionIcon
-												color="var(--theme-delete-color)"
-												onClick={() => handleDeleteSuccess(id, item.id)}
-											>
-												<IconTrashX height={18} width={18} stroke={1.5} />
-											</ActionIcon>
-										</Group>
+										<Box>
+											<Group>
+												<ActionIcon color="var(--theme-secondary-color-6)" onClick={() => handleRowSubmit(item?.id)}>
+													<IconDeviceFloppy height={18} width={18} stroke={1.5} />
+												</ActionIcon>
+												<ActionIcon color="var(--theme-delete-color)" onClick={() => handleDeleteSuccess(id, item?.id)}>
+													<IconTrashX height={18} width={18} stroke={1.5} />
+												</ActionIcon>
+											</Group>
+										</Box>
 									),
 								},
 							]}
