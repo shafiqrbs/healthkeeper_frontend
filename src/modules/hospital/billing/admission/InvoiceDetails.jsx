@@ -43,7 +43,7 @@ export default function InvoiceDetails({ entity }) {
 			...getFormValues(t).initialValues,
 			amount: "",
 		},
-		validate: {
+		/*validate: {
 			amount: (value) => {
 				const hasValue = value !== "" && value !== null && value !== undefined;
 				const numericValue = Number(value);
@@ -55,7 +55,7 @@ export default function InvoiceDetails({ entity }) {
 				}
 				return null;
 			},
-		},
+		},*/
 	});
 	const roomForm = useForm({
 		...getFormValues(t),
@@ -63,20 +63,8 @@ export default function InvoiceDetails({ entity }) {
 			...getFormValues(t).initialValues,
 			amount: "",
 			days: "",
-		},
-		validate: {
-			amount: (value) => {
-				const hasValue = value !== "" && value !== null && value !== undefined;
-				const numericValue = Number(value);
-				if (!hasValue) {
-					return t("EnterAmount") || "Amount is required";
-				}
-				if (Number.isNaN(numericValue)) {
-					return t("AmountMustBeNumber") || "Amount must be a number";
-				}
-				return null;
-			},
-		},
+		}
+
 	});
 
 	const { data: investigationOptions } = useGlobalDropdownData({
@@ -410,13 +398,14 @@ export default function InvoiceDetails({ entity }) {
 										px="xs"
 									>
 										<Grid align="center" gutter="3xs" columns={20}>
-											<Grid.Col span={5}>
+											<Grid.Col span={8}>
 												<Text fz="sm" fw="800">
 													{t("Receive")}
 												</Text>
 											</Grid.Col>
 											<Grid.Col span={8}>
-												<InputNumberForm
+												{investigationSubtotal || 0}
+												{/*<InputNumberForm
 													form={investigationForm}
 													label=""
 													tooltip={t("EnterAmount")}
@@ -424,9 +413,9 @@ export default function InvoiceDetails({ entity }) {
 													name="amount"
 													id="investigation-amount"
 													disabled={invoiceDetails?.process === "Done"}
-												/>
+												/>*/}
 											</Grid.Col>
-											<Grid.Col span={7}>
+											{/*<Grid.Col span={7}>
 												{isInvestigationDue && (
 													<Text fz="sm" c="red">
 														{t("Due")}: {investigationDueAmount}
@@ -437,28 +426,15 @@ export default function InvoiceDetails({ entity }) {
 														{t("Return")}: {investigationReturnAmount}
 													</Text>
 												)}
-											</Grid.Col>
+											</Grid.Col>*/}
 										</Grid>
 										<Box mt="xs">
 											<Button.Group>
-												<Button
-													id="EntityFormSubmitInvestigation"
-													w="100%"
-													size="compact-sm"
-													bg="var(--theme-pos-btn-color)"
-													type="button"
-													disabled={invoiceDetails?.process === "Done"}
-												>
-													<Stack gap={0} align="center" justify="center">
-														<Text fz="xs">{t("Print")}</Text>
-													</Stack>
-												</Button>
 												<Button
 													type="submit"
 													w="100%"
 													size="compact-sm"
 													bg="var(--theme-save-btn-color)"
-													disabled={invoiceDetails?.process === "Done" || isInvestigationDue}
 												>
 													<Stack gap={0} align="center" justify="center">
 														<Text fz="xs">{t("Save")}</Text>

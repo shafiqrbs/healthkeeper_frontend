@@ -108,7 +108,7 @@ export default function Invoice({ entity }) {
 		requestAnimationFrame(invoicePrint);
 	};
 
-	console.log(selectedInvoice);
+	//console.log(selectedInvoice);
 
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -298,7 +298,7 @@ export default function Invoice({ entity }) {
 			{/*<IPDAllPrint data={test} ref={ipdAllPrintRef} />*/}
 
 			<GlobalDrawer
-				size="xl"
+				size="75%"
 				opened={invoiceDetailsOpened}
 				close={closeInvoiceDetails}
 				title={t("InvoiceDetails")}
@@ -307,17 +307,19 @@ export default function Invoice({ entity }) {
 					<Table mt="sm" striped highlightOnHover withTableBorder withColumnBorders>
 						<Table.Thead>
 							<Table.Tr>
+								<Table.Th>{t("S/N")}</Table.Th>
 								<Table.Th>{t("ItemName")}</Table.Th>
 								<Table.Th>{t("Quantity")}</Table.Th>
 								<Table.Th>{t("Price")}</Table.Th>
 								<Table.Th>{t("SubTotal")}</Table.Th>
 								<Table.Th>{t("Process")}</Table.Th>
-								<Table.Th>{t("DiagnosticRoom")}</Table.Th>
+								<Table.Th>{t("Room")}</Table.Th>
 							</Table.Tr>
 						</Table.Thead>
 						<Table.Tbody>
 							{selectedInvoice?.items?.map((item, index) => (
 								<Table.Tr key={index}>
+									<Table.Td>{index+1}</Table.Td>
 									<Table.Td>{item.item_name}</Table.Td>
 									<Table.Td>{item.quantity}</Table.Td>
 									<Table.Td>{item.price}</Table.Td>

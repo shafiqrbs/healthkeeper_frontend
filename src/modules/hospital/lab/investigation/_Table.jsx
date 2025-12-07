@@ -271,7 +271,6 @@ export default function _Table({ height }) {
 							},
 						},
 					]}
-					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"

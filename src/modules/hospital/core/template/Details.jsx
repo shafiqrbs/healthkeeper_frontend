@@ -44,7 +44,7 @@ import Indent from "@hospital-components/print-formats/indent/Indent";
 
 const STATIC_OPD_ID = "125760093407";
 const STATIC_BILLING_ID = 10;
-const STATIC_PRESCRIPTION_ID = "031668645164";
+const STATIC_PRESCRIPTION_ID = "361001991021";
 const REPORT_ID = "709766736602";
 const FREE_SERVICE_ID = "786934884211";
 const PURCHASE_ID = "8";
@@ -87,7 +87,7 @@ export default function Details() {
 		url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.VIEW}/${INDENT_ID}`,
 	});
 
-//	console.log(prescriptionData?.data)
+	console.log(prescriptionData?.data)
 
 	return (
 		<>

@@ -71,31 +71,6 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		],
 	]);
 
-	useEffect(() => {
-		dispatch(
-			getIndexEntityData({
-				url: PHARMACY_DROPDOWNS.DOSAGE.PATH,
-				module: "dosage",
-				params: {
-					page: 1,
-					offset: 500,
-				},
-			})
-		);
-	}, [refetching]);
-
-	useEffect(() => {
-		dispatch(
-			getIndexEntityData({
-				url: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
-				module: "byMeal",
-				params: {
-					page: 1,
-					offset: 500,
-				},
-			})
-		);
-	}, [bymealRefetching]);
 
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
@@ -320,19 +295,19 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 							title: t("GenericName"),
 						},
 						{
-							accessor: "medicine_dosage",
+							accessor: "medicine_dosage_name",
 							title: t("Dosage"),
 							render: (item) => item?.medicine_dosage?.name,
 						},
 
 						{
-							accessor: "medicine_dosage",
+							accessor: "medicine_dosage_name_bn",
 							title: t("DosageBn"),
 							render: (item) => item?.medicine_dosage?.name_bn,
 						},
 
 						{
-							accessor: "medicine_dosage",
+							accessor: "medicine_dosage_quantity",
 							title: t("DosageQty"),
 							render: (item) => item?.medicine_dosage?.quantity,
 						},
@@ -349,6 +324,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 							render: (item) => item?.quantity + item?.duration,
 						},
 						{
+							accessor: "",
 							title: "",
 							width: "100px",
 							render: (item) => (

@@ -56,9 +56,9 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 		await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.TAG_PRINT}/${report_id}`,
 		});
-		setBarcodeValue(report_id);
+	//	setBarcodeValue(report_id);
 		refetchDiagnosticReport();
-		requestAnimationFrame(printBarCodeValue);
+	//	requestAnimationFrame(printBarCodeValue);
 	}
 
 	return (

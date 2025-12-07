@@ -302,7 +302,6 @@ export default function _Table({ module, open }) {
 							),
 						},
 					]}
-					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"

@@ -14,6 +14,7 @@ const ALLOWED_BILLING_ROLES = [
 	"billing_manager",
 	"billing_cash",
 	"admin_hospital",
+	"operator_emergency",
 	"admin_administrator",
 ];
 const PER_PAGE = 500;
@@ -164,7 +165,7 @@ export default function Invoice({ transactions }) {
 														{t("Show")}
 													</Button>
 													<Button
-														onClick={() => handlePrint(item)}
+														onClick={() => handlePrint(item.hms_invoice_transaction_id)}
 														size="compact-xs"
 														bg="var(--theme-secondary-color-6)"
 														color="white"

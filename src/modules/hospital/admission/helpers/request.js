@@ -25,6 +25,7 @@ const admissionInitialValues = {
 	comment: "",
 	patient_relation: "",
 	upazilla_id: "",
+	identity: "",
 	oxygen: "",
 	temperature: "",
 	pulse: "",
@@ -54,6 +55,10 @@ export const getAdmissionFormInitialValues = () => {
 			},
 			religion_id: (value) => {
 				if (!value) return "Religion is required";
+				return null;
+			},
+			identity: (value) => {
+				if (!value) return "NID/BIR no is required";
 				return null;
 			},
 			card_no: (value) => {
