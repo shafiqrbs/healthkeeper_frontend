@@ -2,7 +2,7 @@ export const getByMeal = (by_meal_options, id) => {
 	if (by_meal_options?.length === 0) return console.error("By meal options are empty");
 	if (!id) return;
 
-	const selectedByMeal = by_meal_options?.find((item) => item.id?.toString() == id);
+	const selectedByMeal = by_meal_options?.find((item) => item.id?.toString() === id?.toString());
 	return selectedByMeal;
 };
 
@@ -10,7 +10,7 @@ export const getDosage = (dosage_options, id) => {
 	if (dosage_options?.length === 0) return console.error("Dosage options are empty");
 	if (!id) return console.error("Id is required for getting dosage");
 
-	const selectedDosage = dosage_options?.find((item) => item.id?.toString() == id);
+	const selectedDosage = dosage_options?.find((item) => item.id?.toString() === id?.toString());
 	return selectedDosage;
 };
 
@@ -105,6 +105,7 @@ export const generateMedicinePayload = (form, selectedMedicine, options = {}) =>
 
 	// =============== get dosage details if dosage_options are provided ================
 	const { dosage_options, by_meal_options } = options;
+
 	let dosage = null;
 	let byMeal = null;
 

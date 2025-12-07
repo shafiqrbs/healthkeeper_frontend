@@ -576,16 +576,20 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 				</Modal.Content>
 			</Modal.Root>
 			<Box bg="var(--theme-primary-color-6)" pos="relative">
-				<Grid columns={24} align="center" gutter={{ base: 2 }}>
-					<Grid.Col span={6}>
-						<Logo configData={configData} navigate={navigate} />
+				<Grid columns={24} align="left" gutter={{ base: 2 }}>
+					<Grid.Col span={12}>
+						<Flex
+							gap="md"
+							justify="flex-start"
+							align="center"
+							direction="row"
+							wrap="wrap"
+						>
+							<Box><Logo configData={configData} navigate={navigate} /></Box>
+							<Box><Text c={'white'}>২৫০ শয্যা বিশিষ্ট টিবি হাসপাতাল</Text></Box>
+						</Flex>
 					</Grid.Col>
-					<Grid.Col span={matches2 ? 6 : matches ? 10 : 12}>
-						<Group align="center" gap={"md"} wrap="nowrap" mih={42}>
-							<Text c={'white'}>২৫০ শয্যা বিশিষ্ট টিবি হাসপাতাল</Text>
-						</Group>
-					</Grid.Col>
-					<Grid.Col span={matches2 ? 12 : matches ? 8 : 6}>
+					<Grid.Col span={12}>
 						<HeaderActions
 							isOnline={isOnline}
 							fullscreen={fullscreen}
