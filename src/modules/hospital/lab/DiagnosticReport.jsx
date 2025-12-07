@@ -6,8 +6,12 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useHotkeys } from "@mantine/hooks";
 import ReportRenderer from "./common/ReportRenderer";
+import useAppLocalStore from "@hooks/useAppLocalStore";
+
+const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
 
 export default function DiagnosticReport({ refetchDiagnosticReport }) {
+	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const inputsRef = useRef([]);
 	const { mainAreaHeight } = useOutletContext();
@@ -34,6 +38,8 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 
 	useHotkeys([["alt+s", () => document.getElementById("EntityFormSubmit").click()]], []);
 
+	console.log(reportId, userRoles);
+
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box bg="var(--theme-primary-color-0)" p="sm">
@@ -41,7 +47,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 					{t("DiagnosticReportPrepared")}: {diagnosticReport?.name}
 				</Text>
 			</Box>
-			{reportId ? (
+			{reportId && userRoles.some((role) => ALLOWED_LAB_DOCTOR_ROLES.includes(role)) ? (
 				<ReportRenderer
 					refetchDiagnosticReport={refetchDiagnosticReport}
 					diagnosticReport={diagnosticReport}
@@ -58,7 +64,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 						justify="center"
 						gap="md"
 					>
-						{t("NoTestSelected")}
+						{t("NotAvailableForView")}
 					</Stack>
 				</Box>
 			)}
