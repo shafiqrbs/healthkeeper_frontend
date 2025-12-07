@@ -12,6 +12,7 @@ import {
 	IconPrinter,
 	IconScript,
 	IconPencil,
+	IconRefresh,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -201,6 +202,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setTimeout(() => openPatientUpdate(), 100);
 	};
 
+	const handlePageReload = (e) => {
+		window.location.reload();
+	};
+
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
 			<Flex justify="space-between" align="center" px="sm">
@@ -227,7 +232,18 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							/>
 						</Tabs.List>
 					</Tabs>
-
+					<Flex gap="xs" align="center">
+						<Button
+							onClick={handlePageReload}
+							variant="outline"
+							size="xs"
+							radius="es"
+							leftSection={<IconRefresh size={16} />}
+							color="var(--theme-delete-color)"
+						>
+							{t("Refresh")}
+						</Button>
+					</Flex>
 					{availableClose ? (
 						<Flex gap="xs" align="center">
 							<Button
