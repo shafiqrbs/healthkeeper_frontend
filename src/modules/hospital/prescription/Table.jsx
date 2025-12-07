@@ -131,7 +131,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		});
 
 	// auto-refetch every 15 seconds
-	useAutoRefetch(refetchAll, 15000, true);
+	useAutoRefetch(refetchAll, 15000, false);
 
 	const handlePageReload = () => {
 		refetchAll();
