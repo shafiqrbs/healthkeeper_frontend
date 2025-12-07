@@ -12,6 +12,7 @@ import {useNavigate} from "react-router-dom";
 const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
 const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_emergency"];
 const ALLOWED_OPD_DOCTOR_ROLES = ["doctor_opd"];
+const ALLOWED_LAB_ROLES = ["lab_operator","lab_assistant","doctor_lab"];
 const module = MODULES.VISIT;
 export default function Index({ height }) {
 	const { userRoles } = useAppLocalStore();
@@ -21,6 +22,10 @@ export default function Index({ height }) {
 	// console.log(config_jwt.hospitalConfig)
 	if (userRoles.some(role => ALLOWED_OPD_DOCTOR_ROLES.includes(role))) {
 		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+		return null;
+	}
+	if (userRoles.some(role => ALLOWED_LAB_ROLES.includes(role))) {
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX);
 		return null;
 	}
 	return (

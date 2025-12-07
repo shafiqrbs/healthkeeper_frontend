@@ -131,7 +131,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		});
 
 	// auto-refetch every 15 seconds
-	useAutoRefetch(refetchAll, 15000, false);
+
+	useAutoRefetch(refetchAll, 30000, true);
 
 	const handlePageReload = () => {
 		refetchAll();
@@ -284,7 +285,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					}}
 					records={records}
 					onRowClick={({ record }) => {
-						handleView(record?.prescription_id);
+						//handleView(record?.prescription_id);
+						handlePrescription(record.prescription_uid);
 					}}
 					columns={[
 						{
