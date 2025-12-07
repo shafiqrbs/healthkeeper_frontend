@@ -42,7 +42,7 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import { HOSPITAL_DROPDOWNS, PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
@@ -82,7 +82,7 @@ export default function AddMedicineForm({
 	ignoreOpdQuantityLimit = false,
 	redirectUrl = null,
 }) {
-	const { user, features, advices } = useAppLocalStore();
+	const { user, meals, dosages, advices } = useAppLocalStore();
 
 	const medicineIdRef = useRef(null);
 	const genericRef = useRef(null);
@@ -101,7 +101,6 @@ export default function AddMedicineForm({
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const [printData, setPrintData] = useState(null);
-	const adviceData = useSelector((state) => state.crud.advice.data);
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [opened, { open, close }] = useDisclosure(false);
@@ -113,11 +112,7 @@ export default function AddMedicineForm({
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
-	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
-	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
-	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
-	const treatmentRefetching = useSelector((state) => state.crud.byMeal?.refetching);
-	const refetching = useSelector((state) => state.crud.dosage?.refetching);
+	const treatmentRefetching = useSelector((state) => state.crud.treatment?.refetching);
 	const emergencyRefetching = useSelector((state) => state.crud.exemergency.refetching);
 	const [showPrint, setShowPrint] = useState(false);
 	const [medicineDosageSearchValue, setMedicineDosageSearchValue] = useState("");
@@ -136,22 +131,11 @@ export default function AddMedicineForm({
 		identifierName: "medicine-duration-mode",
 	});
 
-	console.log();
-	console.log(adviceData, treatmentData, emergencyData);
-	console.log(dosage_options, by_meal_options);
+	console.log(meals, dosages);
+
+	console.log(advices);
 
 	useEffect(() => {
-		dispatch(
-			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
-				params: {
-					particular_type: "advice",
-					page: 1,
-					offset: 500,
-				},
-				module: "advice",
-			})
-		);
 		dispatch(
 			getIndexEntityData({
 				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
@@ -199,32 +183,6 @@ export default function AddMedicineForm({
 			medicineForm.setFieldValue("medicine_bymeal_id", "");
 		}
 	}, [medicineDosageSearchValue, medicineByMealSearchValue, medicineTerm]);
-
-	useEffect(() => {
-		dispatch(
-			getIndexEntityData({
-				url: PHARMACY_DROPDOWNS.DOSAGE.PATH,
-				module: "dosage",
-				params: {
-					page: 1,
-					offset: 500,
-				},
-			})
-		);
-	}, [refetching]);
-
-	useEffect(() => {
-		dispatch(
-			getIndexEntityData({
-				url: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
-				module: "byMeal",
-				params: {
-					page: 1,
-					offset: 500,
-				},
-			})
-		);
-	}, [bymealRefetching]);
 
 	useEffect(() => {
 		if (!printData) return;
@@ -366,19 +324,19 @@ export default function AddMedicineForm({
 
 				// Auto-populate by_meal if available
 				if (selectedMedicine.medicine_bymeal_id) {
-					appendMealValueToForm(medicineForm, by_meal_options, selectedMedicine.medicine_bymeal_id);
+					appendMealValueToForm(medicineForm, meals, selectedMedicine.medicine_bymeal_id);
 				}
 				// Auto-populate dose_details if available (for times field)
 				if (selectedMedicine.medicine_dosage_id) {
-					appendDosageValueToForm(medicineForm, dosage_options, selectedMedicine.medicine_dosage_id);
+					appendDosageValueToForm(medicineForm, dosages, selectedMedicine.medicine_dosage_id);
 				}
 			}
 
 			if (field === "medicine_id" && selectedMedicine.generic && selectedMedicine.medicine_dosage_id) {
 				handleAdd(
 					generateMedicinePayload(medicineForm, selectedMedicine, {
-						dosage_options,
-						by_meal_options,
+						dosages,
+						meals,
 					})
 				);
 				medicineForm.reset();
@@ -396,11 +354,11 @@ export default function AddMedicineForm({
 		}
 
 		if (field === "medicine_bymeal_id" && value) {
-			appendMealValueToForm(medicineForm, by_meal_options, value);
+			appendMealValueToForm(medicineForm, meals, value);
 		}
 
 		if (field === "medicine_dosage_id" && value) {
-			appendDosageValueToForm(medicineForm, dosage_options, value);
+			appendDosageValueToForm(medicineForm, dosages, value);
 		}
 
 		if (field === "duration" && value) {
@@ -642,7 +600,7 @@ export default function AddMedicineForm({
 												classNames={inputCss}
 												id="medicine_dosage_id"
 												name="medicine_dosage_id"
-												data={dosage_options?.map((dosage) => ({
+												data={dosages?.map((dosage) => ({
 													value: dosage.id?.toString(),
 													label: dosage.name,
 												}))}
@@ -666,7 +624,7 @@ export default function AddMedicineForm({
 												classNames={inputCss}
 												id="medicine_bymeal_id"
 												name="medicine_bymeal_id"
-												data={by_meal_options?.map((byMeal) => ({
+												data={meals?.map((byMeal) => ({
 													value: byMeal.id?.toString(),
 													label: byMeal.name,
 												}))}
@@ -878,8 +836,8 @@ export default function AddMedicineForm({
 							setMedicines={setMedicines}
 							handleDelete={handleDelete}
 							update={update}
-							by_meal_options={by_meal_options}
-							dosage_options={dosage_options}
+							by_meal_options={meals}
+							dosage_options={dosages}
 							ignoreOpdQuantityLimit={ignoreOpdQuantityLimit}
 							durationModeDropdown={durationModeDropdown}
 						/>
@@ -905,7 +863,7 @@ export default function AddMedicineForm({
 									{t("AdviseTemplate")}
 								</Text>
 								<ScrollArea h={96} p="les" className="borderRadiusAll">
-									{adviceData?.data?.map((advise) => (
+									{advices?.map((advise) => (
 										<Flex
 											align="center"
 											gap="les"

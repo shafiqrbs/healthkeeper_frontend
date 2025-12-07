@@ -108,6 +108,7 @@ function safeGet(root, path, fallback) {
  */
 export default function useAppLocalStore() {
 	const authStorage = useAuthStore((state) => state);
+	console.log(authStorage);
 
 	const store = useMemo(() => {
 		/* ---------------- Basic Fields ---------------- */
@@ -150,6 +151,7 @@ export default function useAppLocalStore() {
 			particularModes: safeGet(authStorage, "hospitalConfig.particularModes", []),
 			meals: safeGet(authStorage, "hospitalConfig.byMeals", []),
 			dosages: safeGet(authStorage, "hospitalConfig.dosages", []),
+			opdReferredRooms: safeGet(authStorage, "hospitalConfig.opdReferredRooms", []),
 
 			/** Raw modules */
 			modules: safeGet(authStorage, "hospitalConfig.particularModules", {}),

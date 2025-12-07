@@ -24,7 +24,7 @@ const referredModes = [
 ];
 
 export default function PatientReferredAction({ module = "emergency", invoiceId, form }) {
-	const { features } = useAppLocalStore();
+	const { opdReferredRooms } = useAppLocalStore();
 
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -48,12 +48,6 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 	const shouldShowHospitalField = isHospitalModeSelected;
 	// =============== show room field only when room mode is selected ================
 	const shouldShowRoomField = isRoomModeSelected;
-
-	const { data: referredRoomsOptions } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_OPD_REFERRED_ROOM.UTILITY,
-	});
 
 	const { data: hospitalsOption } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.HOSPITAL.PATH,
@@ -181,7 +175,10 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 							</Grid.Col>
 							<Grid.Col span={13}>
 								<SelectForm
-									dropdownValue={referredRoomsOptions}
+									dropdownValue={opdReferredRooms.map((room) => ({
+										label: room.name,
+										value: room.id?.toString(),
+									}))}
 									value={roomReferredForm.values.opd_room_id}
 									changeValue={(selectedRoomId) =>
 										roomReferredForm.setFieldValue("opd_room_id", selectedRoomId)
