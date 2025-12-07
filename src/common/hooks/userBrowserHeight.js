@@ -1,4 +1,4 @@
-import { useMantineScale } from "@/hooks/useMantineScale";
+import { useMantineScale } from "@hooks/useMantineScale";
 import { useEffect, useState } from "react";
 
 export function useBrowserHeight() {

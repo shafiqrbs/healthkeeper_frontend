@@ -38,6 +38,7 @@ import PrescriptionFullBN from "@hospital-components/print-formats/prescription/
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
+import { useAutoRefetch } from "@hooks/useAutoRefetch";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -113,20 +114,28 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setControlsRefs(controlsRefs);
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			patient_mode: ["opd", "emergency"],
-			term: form.values.keywordSearch,
-			room_ids: opdRoomIds,
-			prescription_mode: processTab,
-			created: form.values.created,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-	});
+	const { refetchAll, scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				patient_mode: ["opd", "emergency"],
+				term: form.values.keywordSearch,
+				room_ids: opdRoomIds,
+				prescription_mode: processTab,
+				created: form.values.created,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+		});
+
+	// auto-refetch every 15 seconds
+	useAutoRefetch(refetchAll, 15000, true);
+
+	const handlePageReload = () => {
+		refetchAll();
+	};
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
@@ -200,10 +209,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		});
 		setSinglePatientData(data);
 		setTimeout(() => openPatientUpdate(), 100);
-	};
-
-	const handlePageReload = (e) => {
-		window.location.reload();
 	};
 
 	return (
