@@ -4,6 +4,7 @@ import DashboardDailySummary from "./items/DashboardDailySummary";
 import PatientTicket from "./items/PatientTicket";
 import { useTranslation } from "react-i18next";
 import InvoiceSummary from "@modules/hospital/reports/items/InvoiceSummary";
+import StockItemHistory from "@modules/hospital/reports/items/StockItemHistory.jsx";
 
 export default function DetailsRenderer() {
 	const { t } = useTranslation();
@@ -18,6 +19,8 @@ export default function DetailsRenderer() {
 				<InvoiceSummary />
 			) : tab === "patient-ticket" ? (
 				<PatientTicket />
+			) : tab === "stock-item-history" ? (
+				<StockItemHistory />
 			) : null}
 		</Box>
 	);

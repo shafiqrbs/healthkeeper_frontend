@@ -18,6 +18,11 @@ const REPORT_TABS = [
 		value: "patient-ticket",
 		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
 	},
+	{
+		label: "Stock item history",
+		value: "stock-item-history",
+		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
+	},
 
 ];
 

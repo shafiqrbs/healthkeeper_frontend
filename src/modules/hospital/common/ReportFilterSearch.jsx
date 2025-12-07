@@ -7,9 +7,10 @@ import { useState, useCallback, useEffect } from "react";
 import { DateInput } from "@mantine/dates";
 import { formatDate } from "@/common/utils";
 import { useDebouncedCallback } from "@mantine/hooks";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import {HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES_CORE } from "@/constants";
+import {useAuthStore} from "@/store/useAuthStore.js";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
 const units = ["Unit 1", "Unit 2", "Unit 3"];
@@ -28,20 +29,49 @@ export default function ReportFilterSearch({
 	showUnits = false,
 	className = "keyword-search-box",
 	handleCSVDownload = () => {},
-}) {
+                                               showStockItems = false,
+                                               showWarehouse = false,
+                                           }) {
 	const dispatch = useDispatch();
 	const [fetching, setFetching] = useState(false);
 	const [records, setRecords] = useState([]);
+	const [stockItems, setStockItems] = useState([]);
+	const [warehouse, setWarehouse] = useState([]);
 	const [keywordSearch, setKeywordSearch] = useState(form.values.keywordSearch || "");
 	const [date, setDate] = useState(null);
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 	const rooms = useSelector((state) => state.crud[roomModule].data);
+    const userWarehouse = useAuthStore(state => state.warehouse);
 
-	// =============== debounce keyword to control api calls via form state ================
+    // =============== debounce keyword to control api calls via form state ================
 	const debouncedSetKeywordInForm = useDebouncedCallback((value) => {
 		form.setFieldValue("keywordSearch", value);
 	}, 500);
+
+
+	const fetchStockItemData = async () => {
+		setFetching(true);
+		const value = {
+			url: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.MEDICINE_STOCK_DROPDOWN,
+			module: roomModule,
+		};
+		try {
+			const result = await dispatch(getIndexEntityData(value)).unwrap();
+			const itemData = result?.data?.data || [];
+            setStockItems(itemData);
+		} catch (err) {
+			console.error("Unexpected error:", err);
+		} finally {
+			setFetching(false);
+		}
+	};
+
+    useEffect(() => {
+        fetchStockItemData()
+        setWarehouse(userWarehouse)
+    }, []);
+
 
 
 	const fetchUserData = async () => {
@@ -101,12 +131,14 @@ export default function ReportFilterSearch({
 			keywordSearch,
 			created: date ? formatDate(date) : "",
 			room_id: form.values.room_id,
+            stock_item_id: form.values.stock_item_id,
+            warehouse_id: form.values.warehouse_id,
 		};
 		console.log(form)
 		form.setFieldValue("start_date", startDate ? formatDate(startDate) : "");
 		form.setFieldValue("end_date", endDate ? formatDate(endDate) : "");
 		if (onSearch) {
-			onSearch(data);
+			onSearch(data);production
 		}
 	};
 
@@ -143,6 +175,16 @@ export default function ReportFilterSearch({
 		handleSearch({ keywordSearch, created: date, room_id: value });
 	};
 
+	const handleStockItemChange = (value) => {
+		form.setFieldValue("stock_item_id", value);
+		handleSearch({ keywordSearch, created: date, stock_item_id: value });
+	};
+
+	const handleWarehouseChange = (value) => {
+		form.setFieldValue("warehouse_id", value);
+		handleSearch({ keywordSearch, created: date, warehouse_id: value });
+	};
+
 	return (
 		<Flex  justify="flex-end"
 			   align="center"
@@ -176,6 +218,30 @@ export default function ReportFilterSearch({
 					data={records.map((item) => ({ label: item.name, value: item.id?.toString() }))}
 					value={form.values.room_id}
 					onChange={(value) => handleRoomChange(value)}
+					w={250}
+				/>
+			)}
+
+            {showWarehouse && (
+                <Select
+                    clearable
+                    placeholder="Warehouse"
+                    loading={fetching}
+                    data={warehouse.map((item) => ({ label: item?.warehouse_name, value: item?.id?.toString() }))}
+                    value={form.values.warehouse_id}
+                    onChange={(value) => handleWarehouseChange(value)}
+                    w={250}
+                />
+            )}
+
+			{showStockItems && (
+				<Select
+					clearable
+					placeholder="Items"
+					loading={fetching}
+					data={stockItems.map((item) => ({ label: item.name, value: item.id?.toString() }))}
+					value={form.values.stock_item_id}
+					onChange={(value) => handleStockItemChange(value)}
 					w={250}
 				/>
 			)}
