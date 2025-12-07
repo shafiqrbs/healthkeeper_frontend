@@ -17,11 +17,13 @@ import InputForm from "@components/form-builders/InputForm";
 import { useForm } from "@mantine/form";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 const module = MODULES_CORE.USER_TREATMENT;
 const treatmentModule = MODULES_CORE.TREATMENT_TEMPLATES;
 
 export default function BookmarkDrawer({ opened, close, type = "opd-treatment", section = "discharge" }) {
+	const { features } = useAppLocalStore();
 	const { prescriptionId, treatmentId, id, dischargeId } = useParams();
 	const [searchParams] = useSearchParams();
 	const ipdId = searchParams.get("ipd");
@@ -50,17 +52,17 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 		},
 	});
 
-	const { data: getTreatmentModes } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_TREATMENT_MODE.PATH,
-		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_TREATMENT_MODE.TYPE },
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_TREATMENT_MODE.UTILITY,
-	});
+	const getTreatmentModes = features?.treatmentModes?.modes?.map((mode) => ({
+		value: mode.id?.toString(),
+		label: mode.name,
+		slug: mode.slug,
+	}));
 
 	useEffect(() => {
 		if (getTreatmentModes?.length > 0) {
 			form.setFieldValue("treatment_mode_id", getTreatmentModes.find((mode) => mode.slug === type)?.value);
 		}
-	}, [getTreatmentModes]);
+	}, [features.treatmentModes]);
 
 	// =============== refetch data when refetching state changes ================
 	useEffect(() => {
@@ -104,16 +106,12 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescriptionId}/${tabItem.id}`);
 		} else if (type === "ipd-treatment" && section === "discharge") {
 			if (activeTab === "discharge") {
-				return navigate(
-					`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}/${tabItem.id}?tab=discharge`
-				);
+				return navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}/${tabItem.id}?tab=discharge`);
 			}
 
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DISCHARGE.INDEX}/${dischargeId}/${tabItem.id}`);
 		} else if (type === "ipd-treatment" && section === "ipdPrescription") {
-			navigate(
-				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${id}/${tabItem.id}?ipd=${ipdId}`
-			);
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${id}/${tabItem.id}?ipd=${ipdId}`);
 		} else {
 			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}/${tabItem.id}?tab=e-fresh`);
 		}
@@ -125,13 +123,7 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 				<Grid.Col span={3}>
 					<ScrollArea bg="var(--theme-tertiary-color-0)" mt="sm" h={mainAreaHeight - 80} scrollbars="y">
 						<Box px="sm" py="sm">
-							<Flex
-								gap="les"
-								align="center"
-								w="100%"
-								component="form"
-								onSubmit={form.onSubmit(addTreatmentTemplate)}
-							>
+							<Flex gap="les" align="center" w="100%" component="form" onSubmit={form.onSubmit(addTreatmentTemplate)}>
 								<InputForm
 									form={form}
 									placeholder={t("AddTemplateName")}
@@ -158,11 +150,7 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 										className={`cursor-pointer`}
 										variant="default"
 										onClick={() => handleTabClick(tabItem)}
-										bg={
-											treatmentId === tabItem?.id?.toString()
-												? "var(--mantine-color-gray-1)"
-												: "var(--mantine-color-white)"
-										}
+										bg={treatmentId === tabItem?.id?.toString() ? "var(--mantine-color-gray-1)" : "var(--mantine-color-white)"}
 									>
 										<Text
 											c={
@@ -185,11 +173,7 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 				<Grid.Col span={9}>
 					{treatmentId ? (
 						<Box mt="sm">
-							<TreatmentAddMedicineForm
-								medicines={medicines}
-								module={module}
-								setMedicines={setMedicines}
-							/>
+							<TreatmentAddMedicineForm medicines={medicines} module={module} setMedicines={setMedicines} />
 						</Box>
 					) : (
 						<Flex h="100%" w="100%" ta="center" align="center" justify="center" mt="sm">

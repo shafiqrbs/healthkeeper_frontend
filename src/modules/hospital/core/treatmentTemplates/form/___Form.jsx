@@ -5,17 +5,22 @@ import { useTranslation } from "react-i18next";
 import { useHotkeys } from "@mantine/hooks";
 
 import InputForm from "@components/form-builders/InputForm";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
-import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 
 import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
-import InputNumberForm from "@components/form-builders/InputNumberForm";
+import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
+	const { features } = useAppLocalStore();
+	const treatmentModes = features?.treatmentModes?.modes?.map((mode) => ({
+		value: mode.id?.toString(),
+		label: mode.name,
+		slug: mode.slug,
+	}));
+	console.log("🚀 ~ ___Form ~ treatmentModes:", treatmentModes);
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104

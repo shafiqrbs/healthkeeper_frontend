@@ -42,7 +42,6 @@ import { showNotificationComponent } from "@components/core-component/showNotifi
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
@@ -66,7 +65,6 @@ import {
 } from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import BookmarkDrawer from "./BookmarkDrawer";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 
 export default function AddMedicineForm({
 	module,
@@ -82,7 +80,7 @@ export default function AddMedicineForm({
 	ignoreOpdQuantityLimit = false,
 	redirectUrl = null,
 }) {
-	const { user, meals, dosages, advices } = useAppLocalStore();
+	const { user, meals, dosages, advices, features } = useAppLocalStore();
 
 	const medicineIdRef = useRef(null);
 	const genericRef = useRef(null);
@@ -104,10 +102,14 @@ export default function AddMedicineForm({
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [opened, { open, close }] = useDisclosure(false);
-	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
-	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
-	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
+	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] =
 		useDisclosure(false);
+	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] =
+		useDisclosure(false);
+	const [
+		openedPrescriptionPreview,
+		{ open: openPrescriptionPreview, close: closePrescriptionPreview },
+	] = useDisclosure(false);
 	const [openedBookmark, { open: openBookmark, close: closeBookmark }] = useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
@@ -124,16 +126,13 @@ export default function AddMedicineForm({
 		content: () => prescription2A4Ref.current,
 	});
 
-	const { data: durationModeDropdown } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.PATH,
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.UTILITY,
-		params: { "dropdown-type": "medicine-duration-mode" },
-		identifierName: "medicine-duration-mode",
-	});
-
-	console.log(meals, dosages);
-
-	console.log(advices);
+	const durationModeDropdown = features?.medicineDuration?.modes
+		? features?.medicineDuration?.modes.map((mode) => ({
+				value: mode.id?.toString(),
+				label: mode.name,
+				name_bn: mode.name_bn,
+		  }))
+		: [];
 
 	useEffect(() => {
 		dispatch(
@@ -212,7 +211,14 @@ export default function AddMedicineForm({
 			}
 		} else {
 			if (!value?.trim())
-				return showNotificationComponent(t("Please enter a valid value"), "red", "lightgray", true, 700, true);
+				return showNotificationComponent(
+					t("Please enter a valid value"),
+					"red",
+					"lightgray",
+					true,
+					700,
+					true
+				);
 			const newItem = {
 				// id: Date.now(),
 				name: value,
@@ -234,7 +240,14 @@ export default function AddMedicineForm({
 			dispatch(setRefetchData({ module: "exemergency", refetching: true }));
 
 			if (storeEntityData.rejected.match(resultAction)) {
-				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+				showNotificationComponent(
+					resultAction.payload.message,
+					"red",
+					"lightgray",
+					true,
+					700,
+					true
+				);
 			} else {
 				showNotificationComponent(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				dispatch(setRefetchData({ module: "exemergency", refetching: true }));
@@ -245,7 +258,9 @@ export default function AddMedicineForm({
 
 	// =============== handler for updating temporary item value ================
 	const handleTempItemChange = (index, newValue) => {
-		setTempEmergencyItems((prev) => prev.map((item, idx) => (idx === index ? { ...item, value: newValue } : item)));
+		setTempEmergencyItems((prev) =>
+			prev.map((item, idx) => (idx === index ? { ...item, value: newValue } : item))
+		);
 	};
 
 	// =============== handler for removing temporary item ================
@@ -256,7 +271,14 @@ export default function AddMedicineForm({
 	// =============== handler for saving emergency prescription ================
 	const handleEmergencyPrescriptionSave = () => {
 		if (tempEmergencyItems.length === 0) {
-			showNotificationComponent(t("Please add at least one emergency item"), "red", "lightgray", true, 700, true);
+			showNotificationComponent(
+				t("Please add at least one emergency item"),
+				"red",
+				"lightgray",
+				true,
+				700,
+				true
+			);
 			return;
 		}
 
@@ -272,7 +294,10 @@ export default function AddMedicineForm({
 
 		// close drawer
 		closeExPrescription();
-		showNotificationComponent(t("Extra Emergency added to the prescription"), SUCCESS_NOTIFICATION_COLOR);
+		showNotificationComponent(
+			t("Extra Emergency added to the prescription"),
+			SUCCESS_NOTIFICATION_COLOR
+		);
 	};
 
 	// Add hotkey for save functionality
@@ -292,7 +317,14 @@ export default function AddMedicineForm({
 			"alt+4",
 			() => {
 				printPrescription2A4();
-				showNotificationComponent(t("PrescriptionPrintedSuccessfully"), "blue", "lightgray", true, 700, true);
+				showNotificationComponent(
+					t("PrescriptionPrintedSuccessfully"),
+					"blue",
+					"lightgray",
+					true,
+					700,
+					true
+				);
 			},
 		],
 		[
@@ -309,7 +341,9 @@ export default function AddMedicineForm({
 		// If medicine field is being changed, auto-populate other fields from medicine data
 		if (field === "medicine_id" && value) {
 			medicineForm.clearFieldError("generic");
-			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
+			const selectedMedicine = medicineData?.find(
+				(item) => item.product_id?.toString() === value
+			);
 			console.log(selectedMedicine);
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
@@ -319,7 +353,11 @@ export default function AddMedicineForm({
 				}
 
 				if (selectedMedicine.duration_mode) {
-					appendDurationModeValueToForm(medicineForm, durationModeDropdown, selectedMedicine.duration_mode);
+					appendDurationModeValueToForm(
+						medicineForm,
+						durationModeDropdown,
+						selectedMedicine.duration_mode
+					);
 				}
 
 				// Auto-populate by_meal if available
@@ -328,11 +366,19 @@ export default function AddMedicineForm({
 				}
 				// Auto-populate dose_details if available (for times field)
 				if (selectedMedicine.medicine_dosage_id) {
-					appendDosageValueToForm(medicineForm, dosages, selectedMedicine.medicine_dosage_id);
+					appendDosageValueToForm(
+						medicineForm,
+						dosages,
+						selectedMedicine.medicine_dosage_id
+					);
 				}
 			}
 
-			if (field === "medicine_id" && selectedMedicine.generic && selectedMedicine.medicine_dosage_id) {
+			if (
+				field === "medicine_id" &&
+				selectedMedicine.generic &&
+				selectedMedicine.medicine_dosage_id
+			) {
 				handleAdd(
 					generateMedicinePayload(medicineForm, selectedMedicine, {
 						dosages,
@@ -453,15 +499,32 @@ export default function AddMedicineForm({
 			const resultAction = await dispatch(updateEntityData(value));
 
 			if (updateEntityData.rejected.match(resultAction)) {
-				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+				showNotificationComponent(
+					resultAction.payload.message,
+					"red",
+					"lightgray",
+					true,
+					700,
+					true
+				);
 			} else {
 				setRefetchData({ module, refetching: true });
-				if (redirect) navigate(redirectUrl || HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+				if (redirect)
+					navigate(
+						redirectUrl || HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX
+					);
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {
 			console.error("Error submitting prescription:", error);
-			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
+			showNotificationComponent(
+				t("Something went wrong"),
+				"red",
+				"lightgray",
+				true,
+				700,
+				true
+			);
 			return {}; // Indicate failed submission
 		} finally {
 			!skipLoading && setIsSubmitting(false);
@@ -478,14 +541,28 @@ export default function AddMedicineForm({
 
 	const handleAdviseTemplate = (content) => {
 		if (!content) {
-			showNotificationComponent(t("AdviseContentNotAvailable"), "red", "lightgray", true, 700, true);
+			showNotificationComponent(
+				t("AdviseContentNotAvailable"),
+				"red",
+				"lightgray",
+				true,
+				700,
+				true
+			);
 			return;
 		}
 
 		const existingAdvise = form.values.advise;
 
 		if (existingAdvise?.includes(content)) {
-			showNotificationComponent(t("AdviseAlreadyExists"), "red", "lightgray", true, 700, true);
+			showNotificationComponent(
+				t("AdviseAlreadyExists"),
+				"red",
+				"lightgray",
+				true,
+				700,
+				true
+			);
 			return;
 		}
 
@@ -607,7 +684,9 @@ export default function AddMedicineForm({
 												value={medicineForm.values?.medicine_dosage_id}
 												placeholder={t("Dosage")}
 												tooltip={t("EnterDosage")}
-												onChange={(v) => handleChange("medicine_dosage_id", v)}
+												onChange={(v) =>
+													handleChange("medicine_dosage_id", v)
+												}
 												error={!!medicineForm.errors.medicine_dosage_id}
 											/>
 										</FormValidatorWrapper>
@@ -631,7 +710,9 @@ export default function AddMedicineForm({
 												value={medicineForm.values?.medicine_bymeal_id}
 												placeholder={t("ByMeal")}
 												tooltip={t("EnterWhenToTakeMedicine")}
-												onChange={(v) => handleChange("medicine_bymeal_id", v)}
+												onChange={(v) =>
+													handleChange("medicine_bymeal_id", v)
+												}
 												error={!!medicineForm.errors.medicine_bymeal_id}
 											/>
 										</FormValidatorWrapper>
@@ -673,7 +754,8 @@ export default function AddMedicineForm({
 										</FormValidatorWrapper>
 										<Button
 											disabled={
-												(!medicineForm.values?.medicine_id && !medicineForm.values?.generic) ||
+												(!medicineForm.values?.medicine_id &&
+													!medicineForm.values?.generic) ||
 												!medicineForm.values?.medicine_dosage_id
 											}
 											leftSection={<IconPlus size={16} />}
@@ -751,14 +833,25 @@ export default function AddMedicineForm({
 					</Grid.Col>
 				</Grid>
 			</Box>
-			<Flex bg="var(--theme-primary-color-0)" mb="les" justify="space-between" align="center" py="les" mt="xs">
+			<Flex
+				bg="var(--theme-primary-color-0)"
+				mb="les"
+				justify="space-between"
+				align="center"
+				py="les"
+				mt="xs"
+			>
 				<Text fw={500} px="sm">
 					{t("ListOfMedicines")}
 				</Text>
 				<Flex px="les" gap="les">
 					{prescriptionData?.data?.patient_referred_id && (
 						<Tooltip label="Referred">
-							<ActionIcon size="lg" bg="red" onClick={() => handleReferredViewPrescription()}>
+							<ActionIcon
+								size="lg"
+								bg="red"
+								onClick={() => handleReferredViewPrescription()}
+							>
 								<IconFirstAidKit />
 							</ActionIcon>
 						</Tooltip>
@@ -778,7 +871,13 @@ export default function AddMedicineForm({
 				</Flex>
 			</Flex>
 			<ScrollArea
-				h={baseHeight ? baseHeight : form.values.comment ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
+				h={
+					baseHeight
+						? baseHeight
+						: form.values.comment
+						? mainAreaHeight - 420 - 50
+						: mainAreaHeight - 420
+				}
 				bg="var(--mantine-color-white)"
 			>
 				<Stack gap="2px" p="sm">
@@ -791,7 +890,12 @@ export default function AddMedicineForm({
 							direction="column"
 							wrap="wrap"
 						>
-							<Text w="100%" fz="sm" align={"center"} c="var(--theme-secondary-color)">
+							<Text
+								w="100%"
+								fz="sm"
+								align={"center"}
+								c="var(--theme-secondary-color)"
+							>
 								{t("NoMedicineAddedYet")}
 							</Text>
 							<Button
@@ -846,7 +950,12 @@ export default function AddMedicineForm({
 			</ScrollArea>
 
 			{form.values.comment && (
-				<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between" align="center">
+				<Flex
+					bg="var(--theme-primary-color-0)"
+					p="sm"
+					justify="space-between"
+					align="center"
+				>
 					<Text w="100%">
 						<strong>{t("Referred")}:</strong> {form.values.comment}
 					</Text>
@@ -859,7 +968,13 @@ export default function AddMedicineForm({
 					<Grid columns={12} gutter="3xs" mt="2xs" p="les">
 						<Grid.Col span={3}>
 							<Box fz="md" c="white">
-								<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
+								<Text
+									bg="var(--theme-save-btn-color)"
+									fz="md"
+									c="white"
+									px="sm"
+									py="les"
+								>
 									{t("AdviseTemplate")}
 								</Text>
 								<ScrollArea h={96} p="les" className="borderRadiusAll">
@@ -876,7 +991,10 @@ export default function AddMedicineForm({
 											mb="2"
 											className="cursor-pointer"
 										>
-											<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
+											<IconReportMedical
+												color="var(--theme-secondary-color-6)"
+												size={13}
+											/>{" "}
 											<Text mt="es" fz={13}>
 												{advise?.name}
 											</Text>
@@ -887,7 +1005,13 @@ export default function AddMedicineForm({
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
-								<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
+								<Text
+									bg="var(--theme-secondary-color-6)"
+									fz="md"
+									c="white"
+									px="sm"
+									py="les"
+								>
 									{t("Advise")}
 								</Text>
 								<Box p="sm">
@@ -906,7 +1030,13 @@ export default function AddMedicineForm({
 						</Grid.Col>
 						<Grid.Col span={3}>
 							<Box bg="var(--theme-primary-color-0)" h="100%">
-								<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="les">
+								<Text
+									bg="var(--theme-primary-color-6)"
+									fz="md"
+									c="white"
+									px="sm"
+									py="les"
+								>
 									{t("FollowUpDate")}
 								</Text>
 								<Box p="sm">
@@ -951,7 +1081,11 @@ export default function AddMedicineForm({
 							</Stack>
 						</Button>
 
-						<Button w="100%" bg="var(--theme-prescription-btn-color)" onClick={handlePrescriptionPreview}>
+						<Button
+							w="100%"
+							bg="var(--theme-prescription-btn-color)"
+							onClick={handlePrescriptionPreview}
+						>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Preview")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -999,7 +1133,11 @@ export default function AddMedicineForm({
 								value={autocompleteValue}
 								onChange={setAutocompleteValue}
 								onOptionSubmit={(value) => {
-									handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
+									handleAutocompleteOptionAdd(
+										value,
+										emergencyData?.data,
+										"exEmergency"
+									);
 									setTimeout(() => {
 										setAutocompleteValue("");
 									}, 0);
@@ -1029,7 +1167,13 @@ export default function AddMedicineForm({
 						</Flex>
 						{/* =============== temporary items list with editable text inputs ================ */}
 						{tempEmergencyItems?.length > 0 && (
-							<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll" mt="2xs">
+							<Stack
+								gap={0}
+								bg="var(--mantine-color-white)"
+								px="sm"
+								className="borderRadiusAll"
+								mt="2xs"
+							>
 								<Text fw={600} fz="sm" mt="xs" c="var(--theme-primary-color)">
 									{t("Particulars")} ({tempEmergencyItems?.length})
 								</Text>
@@ -1049,7 +1193,9 @@ export default function AddMedicineForm({
 									>
 										<Textarea
 											value={item.value}
-											onChange={(event) => handleTempItemChange(idx, event.currentTarget.value)}
+											onChange={(event) =>
+												handleTempItemChange(idx, event.currentTarget.value)
+											}
 											placeholder="Edit value..."
 											w="90%"
 											styles={{ input: { height: "80px" } }}
@@ -1068,7 +1214,12 @@ export default function AddMedicineForm({
 						)}
 					</Box>
 					<Flex justify="flex-end" gap="xs">
-						<Button leftSection={<IconX size={16} />} bg="gray.6" onClick={closeExPrescription} w="120px">
+						<Button
+							leftSection={<IconX size={16} />}
+							bg="gray.6"
+							onClick={closeExPrescription}
+							w="120px"
+						>
 							{t("Cancel")}
 						</Button>
 						<Button
@@ -1083,7 +1234,9 @@ export default function AddMedicineForm({
 				</Stack>
 			</GlobalDrawer>
 			{/* prescription preview */}
-			{printData && showPrint && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />}
+			{printData && showPrint && (
+				<PrescriptionFullBN ref={prescription2A4Ref} data={printData} />
+			)}
 			<GlobalDrawer
 				opened={openedPrescriptionPreview}
 				close={() => {
@@ -1125,7 +1278,11 @@ export default function AddMedicineForm({
 				</Box>
 			</GlobalDrawer>
 
-			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
+			<ReferredPrescriptionDetailsDrawer
+				opened={opened}
+				close={close}
+				prescriptionData={prescriptionData}
+			/>
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
 
 			<BookmarkDrawer opened={openedBookmark} close={closeBookmark} />
