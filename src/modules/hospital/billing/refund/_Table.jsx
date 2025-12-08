@@ -3,12 +3,12 @@ import { IconCalendarWeek, IconUser, IconArrowNarrowRight } from "@tabler/icons-
 import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
-import { MODULES } from "@/constants";
+import { MODULES_CORE } from "@/constants";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useSelector } from "react-redux";
 
-const module = MODULES.BILLING;
+const module = MODULES_CORE.REFUND;
 const PER_PAGE = 500;
 
 export default function _Table({ patient_mode }) {

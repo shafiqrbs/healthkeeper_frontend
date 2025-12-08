@@ -136,6 +136,15 @@ const initialState = {
 		validation: false,
 		filterData: { created: formatDate(new Date()), keywordSearch: "" },
 	},
+	refund: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { created: formatDate(new Date()), keywordSearch: "" },
+	},
 	finalBilling: {
 		isLoading: true,
 		refetching: false,

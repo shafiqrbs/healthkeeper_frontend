@@ -11,9 +11,9 @@ import Invoice from "./Invoice";
 import InvoiceDetails from "./InvoiceDetails";
 import { getDataWithoutStore } from "@/services/apiService";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { MODULES } from "@/constants";
+import { MODULES_CORE } from "@/constants";
 
-const module = MODULES.REFUND;
+const module = MODULES_CORE.REFUND;
 
 export default function Index() {
 	const { t } = useTranslation();
@@ -93,9 +93,7 @@ export default function Index() {
 							<Grid.Col span={18} className="animate-ease-out">
 								<Grid columns={18} gutter="2">
 									<Grid.Col span={6} className="animate-ease-out">
-										<Invoice
-											entity={entity}
-										/>
+										<Invoice entity={entity} />
 									</Grid.Col>
 									<Grid.Col span={12}>
 										<InvoiceDetails entity={entity} />
