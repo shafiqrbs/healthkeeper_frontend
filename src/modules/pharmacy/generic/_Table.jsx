@@ -1,24 +1,6 @@
-import {
-	Group,
-	Box,
-	Text,
-	rem,
-	CloseButton,
-	Flex,
-	Button,
-	TextInput,
-	Select,
-	Checkbox,
-} from "@mantine/core";
+import { Group, Box, Text, rem, CloseButton, Flex, Button, TextInput, Select, Checkbox } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconAlertCircle,
-	IconEdit,
-	IconChevronUp,
-	IconSelector,
-	IconEye,
-	IconTrashX,
-} from "@tabler/icons-react";
+import { IconAlertCircle, IconEdit, IconChevronUp, IconSelector, IconEye, IconTrashX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -31,11 +13,7 @@ import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import {
-	deleteEntityData,
-	inlineUpdateEntityData,
-	storeEntityData,
-} from "@/app/store/core/crudThunk";
+import { deleteEntityData, inlineUpdateEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
@@ -44,11 +22,7 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { errorNotification } from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import {
-	CORE_DROPDOWNS,
-	HOSPITAL_DROPDOWNS,
-	PHARMACY_DROPDOWNS,
-} from "@/app/store/core/utilitySlice";
+import { CORE_DROPDOWNS, HOSPITAL_DROPDOWNS, PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 
 const PER_PAGE = 50;
 
@@ -75,6 +49,8 @@ const InlineTextInput = memo(({ itemId, field, placeholder, onSubmit, initialVal
 	);
 });
 
+InlineTextInput.displayName = "InlineTextInput";
+
 const InlineSelect = memo(({ itemId, field, placeholder, data, initialValue, onChange }) => {
 	const { t } = useTranslation();
 
@@ -90,15 +66,13 @@ const InlineSelect = memo(({ itemId, field, placeholder, data, initialValue, onC
 	);
 });
 
+InlineSelect.displayName = "InlineSelect";
+
 const InlineCheckbox = memo(({ itemId, field, initialValue, onChange }) => {
-	return (
-		<Checkbox
-			size="sm"
-			defaultChecked={initialValue ?? false}
-			onChange={(e) => onChange(itemId, field, e.currentTarget.checked)}
-		/>
-	);
+	return <Checkbox size="sm" defaultChecked={initialValue ?? false} onChange={(e) => onChange(itemId, field, e.currentTarget.checked)} />;
 });
+
+InlineCheckbox.displayName = "InlineCheckbox";
 
 export default function _Table({ module, open }) {
 	const { t } = useTranslation();
@@ -111,15 +85,6 @@ export default function _Table({ module, open }) {
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
-
-	// Memoize filterParams - only recreate when values actually change
-	const filterParams = React.useMemo(
-		() => ({
-			name: filterData?.name,
-			term: searchKeyword,
-		}),
-		[filterData?.name, searchKeyword]
-	);
 
 	const { data: categoryDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.CATEGORY.PATH,
@@ -141,19 +106,19 @@ export default function _Table({ module, open }) {
 		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.PATH,
 		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_MEDICINE_DURATION.UTILITY,
 		params: { "dropdown-type": "medicine-duration-mode" },
+		identifierName: "medicine-duration-mode",
 	});
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.GENERIC,
-			filterParams: {
-				name: filterData?.name,
-				term: searchKeyword,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "product_name",
-		});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+		module,
+		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.GENERIC,
+		filterParams: {
+			name: filterData?.name,
+			term: searchKeyword,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "product_name",
+	});
 
 	const [viewDrawer, setViewDrawer] = React.useState(false);
 
@@ -456,15 +421,7 @@ export default function _Table({ module, open }) {
 				),
 			},
 		],
-		[
-			categoryDropdown,
-			byMealDropdown,
-			dosageDropdown,
-			handleSelectChange,
-			handleTextBlur,
-			handleCheckboxChange,
-			t,
-		]
+		[categoryDropdown, byMealDropdown, dosageDropdown, handleSelectChange, handleTextBlur, handleCheckboxChange, t]
 	);
 
 	return (

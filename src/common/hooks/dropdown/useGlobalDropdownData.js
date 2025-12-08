@@ -59,7 +59,9 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null, identi
 	});
 
 	useEffect(() => {
-		if (!storeData?.length && !storeData?.data?.length) {
+		// =============== check if data exists - handle both array and object with data property ================
+		const dataArray = Array.isArray(storeData) ? storeData : storeData?.data || [];
+		if (!dataArray || dataArray.length === 0) {
 			// =============== check localStorage first ================
 			const localStorageData = getDataFromLocalStorage(utility);
 
@@ -79,8 +81,11 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null, identi
 	}, [dispatch, path, utility, type, JSON.stringify(params)]);
 
 	useEffect(() => {
-		if (storeData && storeData.data?.length > 0) {
-			const transformedData = storeData.data?.map((item) => {
+		// =============== handle different data structures - check if storeData is array or object with data property ================
+		const dataArray = Array.isArray(storeData) ? storeData : storeData?.data || [];
+
+		if (dataArray && dataArray.length > 0) {
+			const transformedData = dataArray.map((item) => {
 				// =============== handle different data structures ================
 				const label = item.display_name || item.name || item.label || item.title || "";
 				const value = String(item.id || item.value || item.name);
@@ -129,8 +134,11 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null, identi
 				return { label, value, slug };
 			});
 			setDropdownData(transformedData);
+		} else {
+			// =============== reset dropdown data if no data available ================
+			setDropdownData([]);
 		}
-	}, [storeData]);
+	}, [storeData, identifierName]);
 
 	return { data: dropdownData, refetch: () => dispatch(getGlobalDropdown(value)) };
 };
