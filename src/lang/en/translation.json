@@ -1476,6 +1476,8 @@
 	"ListofMedicines": "List of Medicines",
 	"AdviseTemplate": "Advise Template",
 	"Advise": "Advise",
+	"AdviseAlreadyExists": "This advise already exists",
+	"GenericAlreadyExists": "This generic medicine already exists",
 	"ByMeal": "By Meal",
 	"TreatmentMedicine": "Treatment Medicine",
 	"Reffered": "Reffered",

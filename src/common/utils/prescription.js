@@ -149,3 +149,24 @@ export const medicineOptionsFilter = ({ options, search }) => {
 		return splittedSearch.every((searchWord) => allWords.some((word) => word.includes(searchWord)));
 	});
 };
+
+/**
+ * Checks if a generic_id already exists in the medicines array.
+ *
+ * @param {array} medicines - Array of existing medicine objects.
+ * @param {number|string} genericId - The generic_id to check for duplicates.
+ *
+ * @returns {boolean} True if generic_id already exists, false otherwise.
+ */
+export const isGenericIdDuplicate = (medicines, genericId) => {
+	console.log("medicines", medicines);
+	console.log("genericId", genericId);
+	if (!medicines || medicines.length === 0) return false;
+	if (!genericId) return false;
+
+	return medicines.some((medicine) => {
+		const existingGenericId = medicine.generic_id?.toString();
+		const newGenericId = genericId?.toString();
+		return existingGenericId && newGenericId && existingGenericId === newGenericId;
+	});
+};

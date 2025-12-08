@@ -62,6 +62,7 @@ import {
 	appendMealValueToForm,
 	generateMedicinePayload,
 	medicineOptionsFilter,
+	isGenericIdDuplicate,
 } from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import BookmarkDrawer from "./BookmarkDrawer";
@@ -298,6 +299,17 @@ export default function AddMedicineForm({
 		],
 	]);
 
+	const handleResetToInitialState = () => {
+		medicineForm.reset();
+		setMedicineDosageSearchValue("");
+		setMedicineByMealSearchValue("");
+		setMedicineTerm("");
+		setMedicineGenericTerm("");
+		setDurationModeKey((prev) => prev + 100);
+		showNotificationComponent(t("GenericAlreadyExists"), "red", "lightgray", true, 700, true);
+		requestAnimationFrame(() => document.getElementById("medicine_id").focus());
+	};
+
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
 
@@ -328,12 +340,18 @@ export default function AddMedicineForm({
 			}
 
 			if (field === "medicine_id" && selectedMedicine.generic && selectedMedicine.medicine_dosage_id) {
-				handleAdd(
-					generateMedicinePayload(medicineForm, selectedMedicine, {
-						dosage_options: dosages,
-						by_meal_options: meals,
-					})
-				);
+				const medicinePayload = generateMedicinePayload(medicineForm, selectedMedicine, {
+					dosage_options: dosages,
+					by_meal_options: meals,
+				});
+
+				// =============== check if generic_id already exists in medicines array ================
+				if (isGenericIdDuplicate(medicines, medicinePayload.generic_id)) {
+					handleResetToInitialState();
+					return;
+				}
+
+				handleAdd(medicinePayload);
 				medicineForm.reset();
 				setMedicineDosageSearchValue("");
 				setMedicineByMealSearchValue("");
@@ -363,11 +381,24 @@ export default function AddMedicineForm({
 
 	const handleAdd = (values) => {
 		if (editIndex !== null) {
+			// =============== when editing, check if generic_id exists in other medicines (excluding current one) ================
+			const otherMedicines = medicines.filter((_, index) => index !== editIndex);
+			if (isGenericIdDuplicate(otherMedicines, values.generic_id)) {
+				handleResetToInitialState();
+				return;
+			}
+
 			const updated = [...medicines];
 			updated[editIndex] = values;
 			setMedicines(updated);
 			setEditIndex(null);
 		} else {
+			// =============== check if generic_id already exists in medicines array ================
+			if (isGenericIdDuplicate(medicines, values.generic_id)) {
+				handleResetToInitialState();
+				return;
+			}
+
 			setMedicines([...medicines, values]);
 			setUpdateKey((prev) => prev + 1);
 
