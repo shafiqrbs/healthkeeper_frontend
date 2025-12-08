@@ -551,6 +551,7 @@ export function Form({
 								<InputForm
 									form={form}
 									label=""
+									autoComplete="on"
 									tooltip={t("enterPatientName")}
 									placeholder="Md. Abdul"
 									name="name"
