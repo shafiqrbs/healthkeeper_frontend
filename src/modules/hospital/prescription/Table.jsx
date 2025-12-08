@@ -285,8 +285,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					}}
 					records={records}
 					onRowClick={({ record }) => {
-						//handleView(record?.prescription_id);
-						handlePrescription(record.prescription_uid);
+						handleView(record?.prescription_id);
 					}}
 					columns={[
 						{

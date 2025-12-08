@@ -437,6 +437,8 @@ export const sideNavigationLinks = {
 				"operator_manager",
 				"operator_emergency",
 				"operator_opd",
+				"pharmacy_manager",
+				"pharmacy_pharmacist",
 			],
 			// subMenu: [
 			// 	{

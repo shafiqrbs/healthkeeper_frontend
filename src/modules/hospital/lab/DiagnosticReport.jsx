@@ -8,6 +8,7 @@ import { useHotkeys } from "@mantine/hooks";
 import ReportRenderer from "./common/ReportRenderer";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 
+const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant"];
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
 
 export default function DiagnosticReport({ refetchDiagnosticReport }) {
@@ -47,7 +48,7 @@ export default function DiagnosticReport({ refetchDiagnosticReport }) {
 					{t("DiagnosticReportPrepared")}: {diagnosticReport?.name}
 				</Text>
 			</Box>
-			{reportId && userRoles.some((role) => ALLOWED_LAB_DOCTOR_ROLES.includes(role)) ? (
+			{reportId && userRoles.some((role) => ALLOWED_LAB_ROLES.includes(role)) ? (
 				<ReportRenderer
 					refetchDiagnosticReport={refetchDiagnosticReport}
 					diagnosticReport={diagnosticReport}

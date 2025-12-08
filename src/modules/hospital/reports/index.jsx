@@ -21,7 +21,7 @@ const REPORT_TABS = [
 	{
 		label: "Stock item history",
 		value: "stock-item-history",
-		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
+		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist"],
 	},
 
 ];

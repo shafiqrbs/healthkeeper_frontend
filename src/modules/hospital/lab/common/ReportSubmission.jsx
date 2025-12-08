@@ -8,12 +8,14 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useReactToPrint } from "react-to-print";
 import { useParams } from "react-router";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 export default function ReportSubmission({ form, handleSubmit, diagnosticReport }) {
 	const labReportRef = useRef(null);
 	const { t } = useTranslation();
 	const [labReportData, setLabReportData] = useState(null);
 	const { reportId } = useParams();
+	const { userRoles } = useAppLocalStore();
 
 	const printLabReport = useReactToPrint({
 		content: () => labReportRef.current,
@@ -26,7 +28,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 		setLabReportData(res?.data);
 		requestAnimationFrame(printLabReport);
 	};
-
+	const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab"];
 	return (
 		<Stack gap={0} justify="space-between" mt="xs">
 			<form onSubmit={form.onSubmit(handleSubmit)}>
@@ -109,7 +111,10 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 											</Flex>
 										</Button>
 									)}
-									{diagnosticReport?.process === "In-progress" && (
+									{diagnosticReport?.process === "In-progress" &&
+									userRoles.some((role) =>
+										ALLOWED_LAB_DOCTOR_ROLES.includes(role)
+									) && (
 										<Button
 											size="md"
 											fz={"xs"}
