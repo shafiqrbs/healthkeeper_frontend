@@ -29,6 +29,13 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 		requestAnimationFrame(printLabReport);
 	};
 	const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab"];
+	const ALLOWED_LAB_USER_ROLES = ["lab_assistant"];
+	const isViewOnly = (diagnosticReport.process === "Done" || (
+		diagnosticReport.process === "In-progress" && userRoles.some((role) =>
+			ALLOWED_LAB_USER_ROLES.includes(role)
+		)));
+
+
 	return (
 		<Stack gap={0} justify="space-between" mt="xs">
 			<form onSubmit={form.onSubmit(handleSubmit)}>
@@ -36,7 +43,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 					<Grid columns={12}>
 						<Grid.Col span={10} className="animate-ease-out">
 							<Box w="100%">
-								{diagnosticReport?.process === "Done" ? (
+								{isViewOnly ? (
 									<Box h={"56"}>
 										<strong>Comment:</strong> {diagnosticReport?.comment}
 									</Box>

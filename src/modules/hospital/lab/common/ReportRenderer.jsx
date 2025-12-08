@@ -27,6 +27,7 @@ import PulmonaryStatus from "./report-formats/PulmonaryStatus";
 import Dengue from "./report-formats/Dengue";
 import CTScan from "./report-formats/CTScan";
 import Serology from "./report-formats/Serology";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 const module = MODULES.LAB_TEST;
 
@@ -37,7 +38,8 @@ const ReportRenderer = forwardRef(
 		const { reportId } = useParams();
 		const dispatch = useDispatch();
 		const { mainAreaHeight } = useOutletContext();
-
+		const { userRoles } = useAppLocalStore();
+		const ALLOWED_LAB_USER_ROLES = ["lab_assistant"];
 		const handleFieldChange = async (rowId, field, value) => {
 			try {
 				await dispatch(
@@ -221,6 +223,12 @@ const ReportRenderer = forwardRef(
 			}
 		}
 
+
+		const isViewOnly = (diagnosticReport.process === "Done" || (
+			diagnosticReport.process === "In-progress" && userRoles.some((role) =>
+			ALLOWED_LAB_USER_ROLES.includes(role)
+		)));
+
 		// default reports table and submission form
 		return (
 			<>
@@ -253,7 +261,7 @@ const ReportRenderer = forwardRef(
 								accessor: "result",
 								title: t("Result"),
 								render: (item, rowIndex) =>
-									diagnosticReport.process === "Done" ? (
+									isViewOnly ? (
 										item.result
 									) : (
 										<TextInput

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useSearchParams } from "react-router-dom";
 import classes from "@assets/css/Navigation.module.css";
 import DetailsRenderer from "./DetailsRenderer";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 const REPORT_TABS = [
 	{
@@ -34,6 +35,10 @@ export default function ReportsIndex() {
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 
+	const { userRoles } = useAppLocalStore();
+	const ALLOWED_LAB_USER_ROLES = ["lab_assistant"];
+	console.log(userRoles);
+
 	const handleNavigation = (value) => {
 		navigate(`/hospital/reports?tab=${value}`);
 	};
@@ -48,7 +53,12 @@ export default function ReportsIndex() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={24}>
 							<Grid.Col mt={9} span={4} bg="white">
-								{REPORT_TABS.map((item, index) => (
+								{REPORT_TABS.filter((tabItem) =>
+									userRoles.some((role) =>
+										tabItem.allowedGroups.includes(role)
+									)
+								).map((item, index) => (
+
 									<Box
 										key={index}
 										className={`cursor-pointer ${classes["pressable-card"]}  ${
