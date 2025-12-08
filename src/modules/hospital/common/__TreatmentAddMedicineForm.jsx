@@ -231,7 +231,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 								/>
 							</FormValidatorWrapper>
 						</Grid.Col>
-						<Grid.Col span={3}>
+						{/*<Grid.Col span={3}>
 							<InputNumberForm
 								form={medicineForm}
 								id="quantity"
@@ -255,7 +255,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 								tooltip={t("EnterMeditationDuration")}
 								withCheckIcon={false}
 							/>
-						</Grid.Col>
+						</Grid.Col>*/}
 						<Grid.Col span={2}>
 							<Button
 								leftSection={<IconPlus size={16} />}

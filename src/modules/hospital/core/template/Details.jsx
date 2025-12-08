@@ -87,7 +87,7 @@ export default function Details() {
 		url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.VIEW}/${INDENT_ID}`,
 	});
 
-	console.log(prescriptionData?.data)
+	//console.log(prescriptionData?.data)
 
 	return (
 		<>

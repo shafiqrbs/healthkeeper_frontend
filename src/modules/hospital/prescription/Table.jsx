@@ -298,7 +298,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 										{userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && (
 											<>
 												{values?.prescription_id &&
-												userId == values?.prescription_created_by_id ? (
+												userId === values?.prescription_created_by_id ? (
 													<Button
 														variant="filled"
 														bg="var(--theme-success-color)"
@@ -312,7 +312,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 													>
 														{t("Prescription")}
 													</Button>
-												) : values?.prescription_id && values.referred_mode == "room" ? (
+												) : values?.prescription_id && values.referred_mode === "room" ? (
 													<Button
 														variant="filled"
 														bg="var(--theme-success-color)"
@@ -326,7 +326,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 													>
 														{t("Prescription")}
 													</Button>
-												) : !values?.prescription_id || values.referred_mode == "room" ? (
+												) : !values?.prescription_id || values.referred_mode === "room" ? (
 													<Button
 														fw={400}
 														variant="filled"
