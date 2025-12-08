@@ -314,6 +314,7 @@ export default function _Table({ module }) {
 											),
 										},
 										{
+											accessor: "",
 											title: "",
 											render: (item) => (
 												<Center>

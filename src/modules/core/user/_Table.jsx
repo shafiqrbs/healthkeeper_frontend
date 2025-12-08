@@ -162,6 +162,7 @@ export default function _Table({ module }) {
 						{ accessor: "email", title: t("Email") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{
+							accessor:"",
 							title: t("Action"),
 							textAlign: "right",
 							render: (data) => (
