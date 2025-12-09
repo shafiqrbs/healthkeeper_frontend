@@ -200,6 +200,11 @@ export default function PatientForm({
 		form.setFieldValue("name", patient?.data?.name);
 		form.setFieldValue("mobile", patient?.data?.mobile);
 		form.setFieldValue("dob", patient?.data?.dob ? new Date(patient.data.dob) : null);
+		form.setFieldValue("year", patient?.data?.year);
+		form.setFieldValue("month", patient?.data?.month);
+		form.setFieldValue("day", patient?.data?.day);
+		form.setFieldValue("gender", patient?.data?.gender);
+		form.setFieldValue("upazilla_id", patient?.data?.upazilla_id?.toString());
 		form.setFieldValue("address", patient?.data?.address);
 		form.setFieldValue("customer_id", selectedPatient?.customer_id || "");
 		// Close the dropdown
@@ -225,7 +230,7 @@ export default function PatientForm({
 					component="form"
 					onSubmit={searchForm.onSubmit(handlePatientInfoSearch)}
 					w="100%"
-					style={{ position: "relative" }}
+					pos="relative"
 				>
 					<TextInput
 						w="100%"

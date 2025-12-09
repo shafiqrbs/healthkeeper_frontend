@@ -470,7 +470,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 																	marginLeft: "32px",
 																}}
 															>
-																{console.log(dose, dIdx)}
 																{getValue(dose.dose_details_bn, dose.dose_details)}{" "}
 																{" ---- "}
 																{getValue(dose.by_meal_bn, dose.by_meal)} {" ---- "}
