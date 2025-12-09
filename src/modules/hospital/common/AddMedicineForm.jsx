@@ -241,6 +241,7 @@ export default function AddMedicineForm({
 
 	// =============== handler for updating temporary item value ================
 	const handleTempItemChange = (index, newValue) => {
+		console.log(newValue);
 		setTempEmergencyItems((prev) => prev.map((item, idx) => (idx === index ? { ...item, value: newValue } : item)));
 	};
 

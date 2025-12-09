@@ -23,10 +23,17 @@ import { notifications } from "@mantine/notifications";
 import SelectForm from "@components/form-builders/SelectForm";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
-import { appendGeneralValuesToForm, medicineOptionsFilter } from "@utils/prescription";
+import {
+	appendDurationModeValueToForm,
+	appendGeneralValuesToForm,
+	isGenericIdDuplicate,
+	medicineOptionsFilter,
+} from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 export default function TreatmentAddMedicineForm({ medicines, module, setMedicines }) {
+	const { features } = useAppLocalStore();
 	const [updateKey, setUpdateKey] = useState(0);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -71,6 +78,13 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		],
 	]);
 
+	const durationModeDropdown = features?.medicineDuration?.modes
+		? features?.medicineDuration?.modes.map((mode) => ({
+				value: mode.id?.toString(),
+				label: mode.name,
+				name_bn: mode.name_bn,
+		  }))
+		: [];
 
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
@@ -78,26 +92,19 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		// If medicine field is being changed, auto-populate other fields from medicine data
 		if (field === "medicine_id" && value) {
 			medicineForm.clearFieldError("generic");
-			const selectedMedicine = medicineData?.find(
-				(item) => item.product_id?.toString() === value
-			);
+			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
 
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 				medicineForm.setFieldValue("stock_id", selectedMedicine?.stock_id?.toString());
 				// Auto-populate duration and count based on duration_day or duration_month
-				if (selectedMedicine.duration_day) {
-					medicineForm.setFieldValue(
-						"quantity",
-						parseInt(selectedMedicine.duration_day) || 1
-					);
-					medicineForm.setFieldValue("duration", "day");
-				} else if (selectedMedicine.duration_month) {
-					medicineForm.setFieldValue(
-						"quantity",
-						parseInt(selectedMedicine.duration_month) || 1
-					);
-					medicineForm.setFieldValue("duration", "month");
+
+				if (selectedMedicine.duration) {
+					medicineForm.setFieldValue("quantity", selectedMedicine.duration);
+				}
+
+				if (selectedMedicine.duration_mode) {
+					appendDurationModeValueToForm(medicineForm, durationModeDropdown, selectedMedicine.duration_mode);
 				}
 			}
 		}
@@ -108,6 +115,16 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 	};
 
 	const handleAdd = (values) => {
+		// =============== check if generic_id already exists in medicines array ================
+		if (isGenericIdDuplicate(medicines, values.generic_id)) {
+			notifications.show({
+				color: ERROR_NOTIFICATION_COLOR,
+				title: t("GenericAlreadyExists"),
+				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+			});
+			return;
+		}
+
 		handleConfirmModal(values);
 
 		if (editIndex !== null) {
@@ -184,7 +201,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 			>
 				<Group grow preventGrowOverflow={false} w="100%" gap="les">
 					<Grid columns={24} gutter="3xs" mt="2xs" p="les">
-						<Grid.Col span={8}>
+						<Grid.Col span={11}>
 							<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 								<Select
 									clearable
@@ -210,7 +227,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 								/>
 							</FormValidatorWrapper>
 						</Grid.Col>
-						<Grid.Col span={8}>
+						<Grid.Col span={11}>
 							<FormValidatorWrapper opened={medicineForm.errors.generic}>
 								<Autocomplete
 									tooltip={t("EnterGenericName")}
@@ -258,6 +275,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 						</Grid.Col>*/}
 						<Grid.Col span={2}>
 							<Button
+								w="100%"
 								leftSection={<IconPlus size={16} />}
 								type="submit"
 								variant="filled"
@@ -321,7 +339,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 						{
 							accessor: "duration",
 							title: t("Duration"),
-							render: (item) => item?.quantity + item?.duration,
+							render: (item) => `${item?.quantity} ${item?.duration}`,
 						},
 						{
 							accessor: "",
