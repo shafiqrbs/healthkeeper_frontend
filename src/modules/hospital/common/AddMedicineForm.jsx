@@ -134,19 +134,6 @@ export default function AddMedicineForm({
 	useEffect(() => {
 		dispatch(
 			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.TREATMENT_TEMPLATES.INDEX,
-				params: {
-					particular_type: "treatment-template",
-					treatment_mode: "opd-treatment",
-				},
-				module: "treatment",
-			})
-		);
-	}, []);
-
-	useEffect(() => {
-		dispatch(
-			getIndexEntityData({
 				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX_RXEMERGENCY,
 				module: "exemergency",
 			})
@@ -521,12 +508,21 @@ export default function AddMedicineForm({
 
 	const populateMedicineData = (v) => {
 		const selectedTreatment = treatmentData?.data?.find((item) => item.id?.toString() === v);
+		console.log(selectedTreatment);
 		const medicinesFormat = selectedTreatment?.treatment_medicine_format.map((item) => ({
 			...item,
 			dose_details: item.medicine_dosage?.name,
 			dose_details_bn: item.medicine_dosage?.name_bn,
 			by_meal: item.medicine_bymeal?.name,
 			by_meal_bn: item.medicine_bymeal?.name_bn,
+			duration_mode_bn: item.duration_mode?.name_bn,
+			duration: item.duration_mode?.name || item.duration,
+			quantity: item.quantity,
+			medicine_bymeal_id: item.medicine_bymeal?.id?.toString(),
+			medicine_dosage_id: item.medicine_dosage?.id?.toString(),
+			medicine_duration_id: item.medicine_duration?.id?.toString(),
+			opd_quantity: item.opd_quantity,
+			opd_limit: item.opd_limit,
 		}));
 
 		if (medicinesFormat) {
