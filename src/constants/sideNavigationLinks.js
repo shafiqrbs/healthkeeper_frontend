@@ -150,6 +150,12 @@ export const sideNavigationLinks = {
 					allowedRoles: ["operator_opd", "operator_manager", "admin_administrator"],
 				},
 				{
+					label: t("RefundHistory"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.INDEX,
+					icon: IconBuildingHospital,
+					allowedRoles: ["operator_opd", "operator_manager", "admin_administrator"],
+				},
+				{
 					label: t("FinalBilling"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FINAL_BILLING.INDEX,
 					icon: IconBuildingHospital,

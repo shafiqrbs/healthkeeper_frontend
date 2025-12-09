@@ -41,6 +41,7 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import { useAutoRefetch } from "@hooks/useAutoRefetch";
 import OpdRoomModal from "@hospital-components/OpdRoomModal";
+import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -135,9 +136,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		});
 
 	// auto-refetch every 15 seconds
-
-	useAutoRefetch(refetchAll, 30000, true);
-
+	useAutoRefetch(refetchAll, 180000, true);
 	const handlePageReload = () => {
 		refetchAll();
 	};
@@ -514,7 +513,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			/>
 
 			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered withCloseButton={false}>
-				<OpdRoomModal closeOpdRoom={closeOpdRoom} closeTable={close} height={mainAreaHeight - 220} />
+				<OpdRoomStatusModal closeOpdRoom={closeOpdRoom} closeTable={close} height={mainAreaHeight - 220} />
 			</Modal>
 		</Box>
 	);

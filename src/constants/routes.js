@@ -497,6 +497,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "hospital/opd",
 			DELETE: "hospital/opd",
 			VISITING_ROOM: "hospital/visiting-room",
+			DOCTOR_ROOM: "hospital/doctor-room",
 		},
 
 		DOCTOR_OPD: {
