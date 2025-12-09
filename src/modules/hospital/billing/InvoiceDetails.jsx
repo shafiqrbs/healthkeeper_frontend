@@ -30,8 +30,8 @@ const module = MODULES_CORE.BILLING;
 export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 	const invoicePrintRef = useRef(null);
-	const [invoicePrintData, setInvoicePrintData] = useState({});
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
+	const [pendingPrint, setPendingPrint] = useState(false);
 	const { id } = useParams();
 	const [fetching, setFetching] = useState(false);
 	const [selectedRecords, setSelectedRecords] = useState([]);
@@ -105,6 +105,17 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 		setRoomItems(initialItems);
 	}, [invoiceDetails]);
 
+	// =============== trigger print only after invoice details are updated to avoid stale data ================
+	useEffect(() => {
+		if (pendingPrint && invoiceDetails) {
+			requestAnimationFrame(() => {
+				invoicePrint();
+				setPendingPrint(false);
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [invoiceDetails, pendingPrint]);
+
 	// =============== create submit handler bound to a specific form and payload source ================
 	const createSubmitHandler = (targetForm, payloadSource) => (values) => {
 		let jsonContent = [];
@@ -167,7 +178,6 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 					targetForm?.setErrors(errorObject);
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
-				setInvoicePrintData(resultAction.payload?.data?.data);
 				dispatch(setRefetchData({ module, refetching: true }));
 				setInvoiceDetails(resultAction.payload.data?.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
@@ -175,7 +185,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX}/${id}`, { replace: true });
 				setRefetchBillingKey((prev) => prev + 1);
 				setSelectedRecords([]);
-				requestAnimationFrame(() => invoicePrint());
+				setPendingPrint(true);
 			}
 		} catch (error) {
 			console.error(error);
@@ -545,6 +555,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 												<Box mt="xs">
 													<Button.Group>
 														<Button
+															disabled={invoiceDetails.length === 0}
 															type="submit"
 															w="100%"
 															size="compact-sm"
@@ -834,7 +845,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 				</>
 			)}
 
-			<InvoicePosBN data={invoicePrintData} ref={invoicePrintRef} />
+			<InvoicePosBN data={invoiceDetails} ref={invoicePrintRef} />
 		</Box>
 	);
 }
