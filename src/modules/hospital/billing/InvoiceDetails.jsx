@@ -1,6 +1,6 @@
 import { getDataWithoutStore } from "@/services/apiService";
 import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon, Group } from "@mantine/core";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -22,10 +22,15 @@ import { useHotkeys } from "@mantine/hooks";
 import inputCss from "@assets/css/InputField.module.css";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
+import { useReactToPrint } from "react-to-print";
 
 const module = MODULES_CORE.BILLING;
 
 export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
+	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
+	const invoicePrintRef = useRef(null);
+	const [invoicePrintData, setInvoicePrintData] = useState({});
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
 	const { id } = useParams();
 	const [fetching, setFetching] = useState(false);
@@ -162,6 +167,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 					targetForm?.setErrors(errorObject);
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
+				setInvoicePrintData(resultAction.payload?.data?.data);
 				dispatch(setRefetchData({ module, refetching: true }));
 				setInvoiceDetails(resultAction.payload.data?.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
@@ -169,6 +175,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX}/${id}`, { replace: true });
 				setRefetchBillingKey((prev) => prev + 1);
 				setSelectedRecords([]);
+				requestAnimationFrame(() => invoicePrint());
 			}
 		} catch (error) {
 			console.error(error);
@@ -544,7 +551,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 															bg="var(--theme-primary-color-6)"
 														>
 															<Stack gap={0} align="center" justify="center">
-																<Text fz="xs">{t("Save")}</Text>
+																<Text fz="xs">{t("Print")}</Text>
 															</Stack>
 														</Button>
 													</Button.Group>
@@ -826,6 +833,8 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 					</Box>
 				</>
 			)}
+
+			<InvoicePosBN data={invoicePrintData} ref={invoicePrintRef} />
 		</Box>
 	);
 }

@@ -15,6 +15,7 @@ const DashedLine = () => (
 );
 
 const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
+	console.log(data);
 	const { user } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { hospitalConfigData } = useDomainHospitalConfigData();
@@ -27,13 +28,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="space-between" align="center" gap={8}>
-						<Image
-							src={GovtLogo}
-							alt="Govt Logo"
-							width={30}
-							height={30}
-							fit="contain"
-						/>
+						<Image src={GovtLogo} alt="Govt Logo" width={30} height={30} fit="contain" />
 						<Stack gap={0} ta="left">
 							<Text ta="center" size="xs" fw={700}>
 								{hospitalConfigData?.organization_name || "Hospital"}
@@ -45,13 +40,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 								{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
 							</Text>
 						</Stack>
-						<Image
-							src={TbImage}
-							alt="TB Hospital"
-							width={30}
-							height={30}
-							fit="contain"
-						/>
+						<Image src={TbImage} alt="TB Hospital" width={30} height={30} fit="contain" />
 					</Group>
 					<DashedLine />
 
@@ -110,8 +99,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>
 									<strong>{t("লিঙ্গ")}:</strong>{" "}
 									{patientInfo?.gender &&
-										patientInfo.gender[0].toUpperCase() +
-											patientInfo.gender.slice(1)}
+										patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
 								</Table.Td>
 								<Table.Td align="right">
 									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || ""}
@@ -121,24 +109,20 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 							<Table.Tr>
 								<Table.Td colSpan={2}>
 									<strong>{t("ঠিকানা")}</strong>{" "}
-									{[patientInfo?.upazila, patientInfo?.district]
-										.filter(Boolean)
-										.join(", ")}
+									{[patientInfo?.upazila, patientInfo?.district].filter(Boolean).join(", ")}
 								</Table.Td>
 							</Table.Tr>
 							{patientInfo?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>
-										<strong>{t("অভিভাবকের নাম")}:</strong>{" "}
-										{patientInfo?.guardian_name || ""}
+										<strong>{t("অভিভাবকের নাম")}:</strong> {patientInfo?.guardian_name || ""}
 									</Table.Td>
 								</Table.Tr>
 							)}
 							{patientInfo?.guardian_mobile && patientInfo?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>
-										<strong>{t("অভিভাবকের মোবাইল")}:</strong>{" "}
-										{patientInfo?.guardian_mobile || ""}
+										<strong>{t("অভিভাবকের মোবাইল")}:</strong> {patientInfo?.guardian_mobile || ""}
 									</Table.Td>
 								</Table.Tr>
 							)}
@@ -151,22 +135,13 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 					{/* =============== financial summary =============== */}
 					<Table fz="10px" verticalSpacing={1} withRowBorders={false}>
 						<Table.Tbody>
-							<Table.Tr
-								style={{ borderTop: "1px solid var(--theme-tertiary-color-8)" }}
-							>
+							<Table.Tr style={{ borderTop: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th>{t("Particular")}</Table.Th>
-								<Table.Th style={{ textAlign: "right", width: "60px" }}>
-									{t("Room")}
-								</Table.Th>
-								<Table.Th style={{ textAlign: "right", width: "70px" }}>
-									{t("Amount")}
-								</Table.Th>
+								<Table.Th style={{ textAlign: "right", width: "60px" }}>{t("Room")}</Table.Th>
+								<Table.Th style={{ textAlign: "right", width: "70px" }}>{t("Amount")}</Table.Th>
 							</Table.Tr>
 							{patientInfo?.items?.map((item, index) => (
-								<Table.Tr
-									key={index}
-									style={{ borderTop: "1px solid var(--theme-tertiary-color-8)" }}
-								>
+								<Table.Tr key={index} style={{ borderTop: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td>
 										{index + 1}. {item?.item_name}
 									</Table.Td>
@@ -196,18 +171,12 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
-									<Barcode
-										fontSize={"12"}
-										width={"1"}
-										height={"40"}
-										value={patientInfo?.invoice}
-									/>
+									<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.invoice} />
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("CreatedBy")}:</strong>{" "}
-									{patientInfo?.created_by_name || ""}
+									<strong>{t("CreatedBy")}:</strong> {patientInfo?.created_by_name || ""}
 								</Table.Td>
 								<Table.Td align="right">
 									<strong>{t("PrintedBy")}:</strong> {user?.name}
@@ -215,15 +184,13 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
-									<strong>{t("প্রিন্টের সময়")}:</strong>{" "}
-									{new Date().toLocaleString()}
+									<strong>{t("প্রিন্টের সময়")}:</strong> {new Date().toLocaleString()}
 								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
 					<Text size="2xs" ta="center" pb="xl">
-						© {new Date().getFullYear()} {hospitalConfigData?.organization_name}{" "}
-						{t("সর্বস্বত্ব সংরক্ষিত")}।
+						© {new Date().getFullYear()} {hospitalConfigData?.organization_name} {t("সর্বস্বত্ব সংরক্ষিত")}।
 					</Text>
 				</Stack>
 			</Box>

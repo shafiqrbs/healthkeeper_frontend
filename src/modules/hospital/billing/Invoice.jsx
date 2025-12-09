@@ -1,15 +1,4 @@
-import {
-	Box,
-	Text,
-	ScrollArea,
-	Stack,
-	Button,
-	Flex,
-	Grid,
-	ActionIcon,
-	LoadingOverlay,
-	Table,
-} from "@mantine/core";
+import { Box, Text, ScrollArea, Stack, Button, Flex, Grid, ActionIcon, LoadingOverlay, Table } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
@@ -17,12 +6,7 @@ import { formatDate } from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { useDispatch } from "react-redux";
-import {
-	IconArrowNarrowRight,
-	IconCalendarWeek,
-	IconUser,
-	IconBuildingHospital,
-} from "@tabler/icons-react";
+import { IconArrowNarrowRight, IconCalendarWeek, IconUser, IconBuildingHospital } from "@tabler/icons-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
@@ -49,8 +33,7 @@ export default function Invoice({ entity }) {
 	const { id, transactionId: selectedTransactionId } = useParams();
 	const navigate = useNavigate();
 	const ipdAllPrintRef = useRef(null);
-	const [invoiceDetailsOpened, { open: openInvoiceDetails, close: closeInvoiceDetails }] =
-		useDisclosure(false);
+	const [invoiceDetailsOpened, { open: openInvoiceDetails, close: closeInvoiceDetails }] = useDisclosure(false);
 	const [selectedInvoice, setSelectedInvoice] = useState({});
 
 	const item = entity;
@@ -87,9 +70,7 @@ export default function Invoice({ entity }) {
 	}, [fetchData]);
 
 	const handleTest = (transactionId) => {
-		navigate(
-			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}/payment/${transactionId}`
-		);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}/payment/${transactionId}`);
 	};
 
 	const handleDetailsView = async (transaction) => {
@@ -116,25 +97,13 @@ export default function Invoice({ entity }) {
 				<Text fw={600} fz="sm" py="es" px="xs">
 					{t("InvoiceHistory")}
 				</Text>
-				<Button
-					onClick={printIPDAll}
-					bg="var(--theme-secondary-color-6)"
-					color="white"
-					size="compact-xs"
-				>
+				<Button onClick={printIPDAll} bg="var(--theme-secondary-color-6)" color="white" size="compact-xs">
 					{t("AllPrint")}
 				</Button>
 			</Flex>
 
 			{id && (
-				<Grid
-					columns={12}
-					key={item.id}
-					my="xs"
-					bg={"var(--theme-secondary-color-2)"}
-					px="xs"
-					gutter="xs"
-				>
+				<Grid columns={12} key={item.id} my="xs" bg={"var(--theme-secondary-color-2)"} px="xs" gutter="xs">
 					<Grid.Col span={6}>
 						<Flex align="center" gap="3xs">
 							<IconCalendarWeek size={16} stroke={1.5} />
@@ -165,10 +134,7 @@ export default function Invoice({ entity }) {
 									radius="xs"
 									aria-label="Settings"
 								>
-									<IconArrowNarrowRight
-										style={{ width: "70%", height: "70%" }}
-										stroke={1.5}
-									/>
+									<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
 								</ActionIcon>
 							</Button.Group>
 						</Flex>
@@ -178,11 +144,7 @@ export default function Invoice({ entity }) {
 			{id && transactions.length ? (
 				<>
 					<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 138}>
-						<LoadingOverlay
-							visible={false}
-							zIndex={1000}
-							overlayProps={{ radius: "sm", blur: 2 }}
-						/>
+						<LoadingOverlay visible={false} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 						<Stack className="form-stack-vertical" p="xs" pos="relative">
 							{transactions?.map((item, index) => (
 								<Box
@@ -230,20 +192,12 @@ export default function Invoice({ entity }) {
 										</Grid.Col>
 									</Grid>
 									<Flex align="center" gap="sm" mt={"md"} justify="flex-end">
-										{userRoles.some((role) =>
-											ALLOWED_BILLING_ROLES.includes(role)
-										) && (
+										{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
 											<>
 												{item?.process === "New" &&
-													userRoles.some((role) =>
-														ALLOWED_BILLING_ROLES.includes(role)
-													) && (
+													userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
 														<Button
-															onClick={() =>
-																handleTest(
-																	item.hms_invoice_transaction_id
-																)
-															}
+															onClick={() => handleTest(item.hms_invoice_transaction_id)}
 															size="compact-xs"
 															bg="var(--theme-primary-color-6)"
 															color="white"
@@ -261,7 +215,7 @@ export default function Invoice({ entity }) {
 														>
 															{t("Show")}
 														</Button>
-														<Button
+														{/* <Button
 															onClick={() =>
 																handlePrint(
 																	item.hms_invoice_transaction_id
@@ -272,7 +226,7 @@ export default function Invoice({ entity }) {
 															color="white"
 														>
 															{t("Print")}
-														</Button>
+														</Button> */}
 													</>
 												)}
 											</>
@@ -284,13 +238,7 @@ export default function Invoice({ entity }) {
 					</ScrollArea>
 				</>
 			) : (
-				<Stack
-					h={mainAreaHeight - 52}
-					bg="var(--mantine-color-body)"
-					align="center"
-					justify="center"
-					gap="md"
-				>
+				<Stack h={mainAreaHeight - 52} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}
@@ -319,7 +267,7 @@ export default function Invoice({ entity }) {
 						<Table.Tbody>
 							{selectedInvoice?.items?.map((item, index) => (
 								<Table.Tr key={index}>
-									<Table.Td>{index+1}</Table.Td>
+									<Table.Td>{index + 1}</Table.Td>
 									<Table.Td>{item.item_name}</Table.Td>
 									<Table.Td>{item.quantity}</Table.Td>
 									<Table.Td>{item.price}</Table.Td>
