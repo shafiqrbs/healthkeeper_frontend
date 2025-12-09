@@ -46,19 +46,7 @@ export default function InvoiceDetails({ entity }) {
 			...getFormValues(t).initialValues,
 			amount: "",
 		},
-		validate: {
-			amount: (value) => {
-				const hasValue = value !== "" && value !== null && value !== undefined;
-				const numericValue = Number(value);
-				if (!hasValue) {
-					return t("EnterAmount") || "Amount is required";
-				}
-				if (Number.isNaN(numericValue)) {
-					return t("AmountMustBeNumber") || "Amount must be a number";
-				}
-				return null;
-			},
-		},
+
 	});
 	const roomForm = useForm({
 		...getFormValues(t),
@@ -66,19 +54,6 @@ export default function InvoiceDetails({ entity }) {
 			...getFormValues(t).initialValues,
 			amount: "",
 			days: "",
-		},
-		validate: {
-			amount: (value) => {
-				const hasValue = value !== "" && value !== null && value !== undefined;
-				const numericValue = Number(value);
-				if (!hasValue) {
-					return t("EnterAmount") || "Amount is required";
-				}
-				if (Number.isNaN(numericValue)) {
-					return t("AmountMustBeNumber") || "Amount must be a number";
-				}
-				return null;
-			},
 		},
 	});
 
@@ -416,44 +391,12 @@ export default function InvoiceDetails({ entity }) {
 												</Text>
 											</Grid.Col>
 											<Grid.Col span={8}>
-												<InputNumberForm
-													form={investigationForm}
-													label=""
-													size={'xs'}
-													tooltip={t("EnterAmount")}
-													placeholder={t("Amount")}
-													name="amount"
-													id="investigation-amount"
-													readOnly
+												{investigationSubtotal}
+											</Grid.Col>
 
-												/>
-											</Grid.Col>
-											<Grid.Col span={7}>
-												{isInvestigationDue && (
-													<Text fz="xs" c="red">
-														{t("Due")}: {investigationDueAmount}
-													</Text>
-												)}
-												{!isInvestigationDue && isInvestigationReturn && (
-													<Text fz="xs" c="red">
-														{t("Return")}: {investigationReturnAmount}
-													</Text>
-												)}
-											</Grid.Col>
 										</Grid>
 										<Box mt="xs">
 											<Button.Group>
-												<Button
-													id="EntityFormSubmitInvestigation"
-													w="100%"
-													size="compact-sm"
-													bg="var(--theme-pos-btn-color)"
-													type="button"
-												>
-													<Stack gap={0} align="center" justify="center">
-														<Text fz="xs">{t("Print")}</Text>
-													</Stack>
-												</Button>
 												<Button
 													type="submit"
 													w="100%"

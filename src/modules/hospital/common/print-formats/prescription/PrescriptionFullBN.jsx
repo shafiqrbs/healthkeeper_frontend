@@ -497,12 +497,9 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												</Box>
 											))}
 										</Box>
-										{patientInfo?.referred_comment && (
+										{patientInfo?.referred_mode && (
 											<>
 												<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
-												<Text size="xs" fw={400}>
-													Cause of Ref: {getValue(patientInfo?.referred_comment)}
-												</Text>
 												{patientInfo?.referred_mode === "referred" &&
 												patientInfo?.referred_hospital ? (
 													<Text size="xs" fw={400}>
@@ -515,6 +512,9 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 														{getValue(patientInfo?.referred_room)}
 													</Text>
 												) : null}
+												<Text size="xs" fw={400}>
+													Cause of Ref: {getValue(patientInfo?.referred_comment)}
+												</Text>
 											</>
 										)}
 									</Box>

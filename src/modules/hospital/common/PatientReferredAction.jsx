@@ -34,10 +34,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 			hospital: "",
 			opd_room_id: "",
 			comment: "",
-		},
-		validate: {
-			comment: hasLength({ min: 1 }),
-		},
+		}
 	});
 	const [openedRoomReferred, { open: openRoomReferred, close: closeRoomReferred }] = useDisclosure(false);
 
