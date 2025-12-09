@@ -547,6 +547,15 @@ export const HOSPITAL_DATA_ROUTES = {
 			PAYMENT: "hospital/refund",
 		},
 
+		REFUND_HISTORY: {
+			INDEX: "hospital/refund-history",
+			CREATE: "hospital/refund-history",
+			UPDATE: "hospital/refund-history",
+			VIEW: "hospital/refund-history",
+			DELETE: "hospital/refund-history",
+			APPROVE: "hospital/refund-history/approve",
+		},
+
 		PATIENT_WAIVER: {
 			INDEX: "hospital/patient-waiver",
 			INVOICE: "hospital/patient-waiver/invoice",
@@ -759,6 +768,12 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/refund",
 			VIEW: "/hospital/refund",
 		},
+
+		REFUND_HISTORY: {
+			INDEX: "/hospital/refund-history",
+			VIEW: "/hospital/refund-history",
+		},
+
 		FINAL_BILLING: {
 			INDEX: "/hospital/final-billing",
 			CREATE: "/hospital/final-billing",

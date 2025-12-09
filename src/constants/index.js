@@ -51,6 +51,7 @@ export const MODULES_CORE = {
 	DASHBOARD_DAILY_SUMMARY: "dashboardDailySummary",
 	BILLING: "billing",
 	REFUND: "refund",
+	REFUND_HISTORY: "refund_history",
 };
 
 export const MODULES_PHARMACY = {

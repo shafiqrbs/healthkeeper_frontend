@@ -47,6 +47,7 @@ import GenericIndex from "@modules/pharmacy/generic";
 import BillingIndex from "@modules/hospital/billing";
 import BillingAdmissionIndex from "@modules/hospital/billing/admission";
 import BillingRefundIndex from "@modules/hospital/billing/refund";
+import BillingRefundHistoryIndex from "@modules/hospital/billing/refundHistory";
 import DoctorIndex from "@modules/hospital/core/doctor";
 import NurseIndex from "@modules/hospital/core/nurse";
 import LabUserIndex from "@modules/hospital/core/lab-user";
@@ -652,7 +653,40 @@ function AppRoute() {
 							</ProtectedRoute>
 						}
 					/>
-
+					<Route
+						path="refund-history"
+						element={
+							<ProtectedRoute
+								roles={[
+									"admin_administrator",
+									"admin_hospital",
+									"billing_manager",
+									"operator_opd",
+									"operator_manager",
+									"operator_emergency",
+								]}
+							>
+								<BillingRefundHistoryIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="refund-history/:id"
+						element={
+							<ProtectedRoute
+								roles={[
+									"admin_administrator",
+									"admin_hospital",
+									"billing_manager",
+									"operator_opd",
+									"operator_manager",
+									"operator_emergency",
+								]}
+							>
+								<BillingRefundHistoryIndex />
+							</ProtectedRoute>
+						}
+					/>
 					<Route
 						path="refund"
 						element={

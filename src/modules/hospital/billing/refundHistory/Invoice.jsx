@@ -23,6 +23,8 @@ import {
 import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
+import {modals} from "@mantine/modals";
+import {getDataWithoutStore} from "@/services/apiService";
 
 const ALLOWED_BILLING_ROLES = [
 	"billing_manager",
@@ -33,7 +35,7 @@ const ALLOWED_BILLING_ROLES = [
 	"operator_manager",
 ];
 
-export default function Invoice({ entity }) {
+export default function Invoice({ setRefetchBillingKey,entity }) {
 	const { userRoles } = useAppLocalStore();
 	const invoicePrintRef = useRef(null);
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
@@ -46,7 +48,7 @@ export default function Invoice({ entity }) {
 	const ipdAllPrintRef = useRef(null);
 
 	const item = entity;
-	const transactions = entity?.invoice_transaction || [];
+	const transactions = entity?.invoice_transaction_refund || [];
 	const printIPDAll = useReactToPrint({ content: () => ipdAllPrintRef.current });
 
 	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
@@ -57,25 +59,42 @@ export default function Invoice({ entity }) {
 		);
 	};
 
-	const handlePrint = (data) => {
-		setInvoicePrintData(data);
+	const handleApprove = async (id) => {
+
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Submit"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleApproveConfirm(id),
+		});
+	}
+
+	const handleApproveConfirm = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.APPROVE}/${id}`,
+		});
+		setRefetchBillingKey(((prev) => prev +1));
+	};
+
+	const handlePrint = async (id) => {
+
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.PRINT}/${id}`,
+		});
+		setInvoicePrintData(res.data);
 		requestAnimationFrame(invoicePrint);
 	};
+
+
 
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between">
 				<Text fw={600} fz="sm" py="es" px="xs">
-					{t("InvoiceHistory")}
+					{t("RefundHistory")}
 				</Text>
-				<Button
-					onClick={printIPDAll}
-					bg="var(--theme-secondary-color-6)"
-					color="white"
-					size="compact-xs"
-				>
-					{t("AllPrint")}
-				</Button>
 			</Flex>
 			{id && transactions.length ? (
 				<>
@@ -183,26 +202,45 @@ export default function Invoice({ entity }) {
 											ALLOWED_BILLING_ROLES.includes(role)
 										) && (
 											<>
-												{item?.process === "Done" &&
-													userRoles.some((role) =>
-														ALLOWED_BILLING_ROLES.includes(role)
-													) && (
-														<>
-															<Button
-																onClick={() =>
-																	handleTest(
-																		item.hms_invoice_transaction_id
-																	)
-																}
-																size="xs"
-																bg="var(--theme-delete-color)"
-																color="white"
-															>
-																{t("Refund")}
-															</Button>
+											{item?.process === "In-progress" &&(
+													<Button
+														onClick={() =>
+															handleApprove(
+																item.id
+															)
+														}
+														size="xs"
+														bg="var(--theme-primary-color-6)"
+														color="white"
+													>
+														{t("Confirm")}
+													</Button>
+												)}
+												<Button
+													onClick={() =>
+														handleApprove(
+															item.hms_invoice_transaction_id
+														)
+													}
+													size="xs"
+													bg="var(--theme-delete-color)"
+													color="white"
+												>
+													{t("Print")}
+												</Button>
 
-														</>
-													)}
+												<Button
+													onClick={() =>
+														handleTest(
+															item.hms_invoice_transaction_id
+														)
+													}
+													size="xs"
+													bg="var(--theme-secondary-color-6)"
+													color="white"
+												>
+													{t("View")}
+												</Button>
 											</>
 										)}
 									</Flex>
