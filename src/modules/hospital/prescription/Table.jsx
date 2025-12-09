@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Modal, Tabs, Text } from "@mantine/core";
 import {
 	IconArrowRight,
 	IconChevronUp,
@@ -13,6 +13,7 @@ import {
 	IconScript,
 	IconPencil,
 	IconRefresh,
+	IconAdjustmentsCog,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -39,6 +40,7 @@ import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import { useAutoRefetch } from "@hooks/useAutoRefetch";
+import OpdRoomModal from "@hospital-components/OpdRoomModal";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -53,6 +55,8 @@ const PER_PAGE = 200;
 const ALLOWED_OPD_ROLES = ["doctor_opd", "admin_administrator"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
+	const { mainAreaHeight } = useOutletContext();
+	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
 	const { userRoles } = useAppLocalStore();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -248,6 +252,14 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							color="var(--theme-delete-color)"
 						>
 							{t("Refresh")}
+						</Button>
+						<Button
+							variant="light"
+							onClick={openOpdRoom}
+							size={"xs"}
+							leftSection={<IconAdjustmentsCog size="16px" />}
+						>
+							Room Overview
 						</Button>
 					</Flex>
 					{availableClose ? (
@@ -500,6 +512,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				close={closePatientUpdate}
 				data={singlePatientData}
 			/>
+
+			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered withCloseButton={false}>
+				<OpdRoomModal closeOpdRoom={closeOpdRoom} closeTable={close} height={mainAreaHeight - 220} />
+			</Modal>
 		</Box>
 	);
 }
