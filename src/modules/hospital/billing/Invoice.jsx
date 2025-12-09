@@ -198,7 +198,7 @@ export default function Invoice({ entity }) {
 													userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
 														<Button
 															onClick={() => handleTest(item.hms_invoice_transaction_id)}
-															size="compact-xs"
+															size="xs"
 															bg="var(--theme-primary-color-6)"
 															color="white"
 														>
@@ -209,24 +209,24 @@ export default function Invoice({ entity }) {
 													<>
 														<Button
 															onClick={() => handleDetailsView(item)}
-															size="compact-xs"
+															size="xs"
 															bg="var(--theme-primary-color-6)"
 															color="white"
 														>
 															{t("Show")}
 														</Button>
-														{/* <Button
+														 <Button
 															onClick={() =>
 																handlePrint(
 																	item.hms_invoice_transaction_id
 																)
 															}
-															size="compact-xs"
+															size="xs"
 															bg="var(--theme-secondary-color-6)"
 															color="white"
 														>
 															{t("Print")}
-														</Button> */}
+														</Button>
 													</>
 												)}
 											</>

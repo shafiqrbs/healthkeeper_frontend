@@ -1,4 +1,4 @@
-import { Box, Text, Stack, Group, Image, Table } from "@mantine/core";
+import { Box, Text, Stack, Group, Image, Table ,Divider} from "@mantine/core";
 import { forwardRef } from "react";
 import TbImage from "@assets/images/tb_logo.png";
 import GovtLogo from "@assets/images/government_seal_of_bangladesh.svg";
@@ -22,7 +22,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 	return (
 		<Box display={preview ? "block" : "none"}>
-			<Box ref={ref} w="80mm" p={8} bg="var(--mantine-color-white)" mx="auto">
+			<Box ref={ref} w="100mm" p={8} bg="var(--mantine-color-white)" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="space-between" align="center" gap={8}>
@@ -68,22 +68,22 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 					<Table fz="10px" verticalSpacing={2} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr>
-								<Table.Td colspan={2}>
+								<Table.Td colspan={2} fz={'xs'}>
 									<strong>তারিখ:</strong> {patientInfo?.created || ""}
 								</Table.Td>
 							</Table.Tr>
 							{patientInfo?.health_id && (
 								<Table.Tr>
-									<Table.Td colspan={2} align="center">
+									<Table.Td colspan={2} align="center" fz={'xs'}>
 										<strong>HID:</strong> {patientInfo?.health_id || ""}
 									</Table.Td>
 								</Table.Tr>
 							)}
 							<Table.Tr>
-								<Table.Td>
+								<Table.Td fz={'xs'}>
 									<strong>{patientInfo?.invoice || ""}</strong>
 								</Table.Td>
-								<Table.Td align="right">{patientInfo?.patient_id || ""}</Table.Td>
+								<Table.Td align="right" fz={'xs'}>{patientInfo?.patient_id || ""}</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2}>
@@ -91,18 +91,18 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td colSpan={2}>
+								<Table.Td colSpan={2} fz={'xs'}>
 									<strong>{t("নাম")}:</strong> {patientInfo?.name || ""}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td>
+								<Table.Td fz={'xs'}>
 									<strong>{t("বয়স")}</strong>{" "}
 									{patientInfo?.year ? `${patientInfo.year} ${t("বছর")} ` : ""}
 									{patientInfo?.month ? `${patientInfo.month} ${t("মাস")} ` : ""}
 									{patientInfo?.day ? `${patientInfo.day} ${t("দিন")}` : ""}
 								</Table.Td>
-								<Table.Td miw={100} align="right">
+								<Table.Td miw={100} align="right" fz={'xs'}>
 									{patientInfo?.dob && (
 										<>
 											<strong>{t("জন্ম")}</strong> {patientInfo?.dob}
@@ -111,19 +111,25 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td>
+								<Table.Td fz={'xs'}>
 									<strong>{t("লিঙ্গ")}:</strong>{" "}
 									{patientInfo?.gender &&
 										patientInfo.gender[0].toUpperCase() +
 											patientInfo.gender.slice(1)}
 								</Table.Td>
-								<Table.Td align="right">
+								<Table.Td align="right" fz={'xs'}>
 									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || ""}
 								</Table.Td>
 							</Table.Tr>
 
 							<Table.Tr>
-								<Table.Td colSpan={2}>
+								<Table.Td colSpan={2} fz={'xs'}>
+									<strong>{t("ঠিকানা")}</strong>{" "}
+									{patientInfo?.address}
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr>
+								<Table.Td colSpan={2} fz={'xs'}>
 									<strong>{t("ঠিকানা")}</strong>{" "}
 									{[patientInfo?.upazila, patientInfo?.district]
 										.filter(Boolean)
@@ -132,7 +138,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							{patientInfo?.guardian_name && (
 								<Table.Tr>
-									<Table.Td colSpan={2}>
+									<Table.Td colSpan={2} address>
 										<strong>{t("অভিভাবকের নাম")}:</strong>{" "}
 										{patientInfo?.guardian_name || ""}
 									</Table.Td>
@@ -140,7 +146,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 							)}
 							{patientInfo?.guardian_mobile && patientInfo?.guardian_name && (
 								<Table.Tr>
-									<Table.Td colSpan={2}>
+									<Table.Td colSpan={2} address>
 										<strong>{t("অভিভাবকের মোবাইল")}:</strong>{" "}
 										{patientInfo?.guardian_mobile || ""}
 									</Table.Td>
@@ -151,7 +157,6 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
-
 					<DashedLine />
 					<Group justify="space-between" px={12}>
 						<Text size="xs" fw={600}>
@@ -161,7 +166,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 							৳ {patientInfo?.total || 0}
 						</Text>
 					</Group>
-					<DashedLine />
+					<Divider label="Patient Information" labelPosition="center" />
 
 					{/* =============== footer section =============== */}
 					<Table withRowBorders={false} fz={10}>
@@ -199,9 +204,6 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 						© {new Date().getFullYear()} © {hospitalConfigData?.organization_name}{" "}
 						{t("সর্বস্বত্ব সংরক্ষিত")}।
 					</Text>
-					<br />
-					<DashedLine />
-					<br />
 					<br />
 				</Stack>
 			</Box>
