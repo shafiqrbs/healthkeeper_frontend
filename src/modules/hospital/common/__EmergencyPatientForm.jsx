@@ -183,6 +183,11 @@ export default function EmergencyPatientForm({
 		form.setFieldValue("mobile", patient?.data?.mobile);
 		form.setFieldValue("dob", patient?.data?.dob ? new Date(patient.data.dob) : null);
 		form.setFieldValue("customer_id", patient?.data?.id);
+		form.setFieldValue("year", patient?.data?.year);
+		form.setFieldValue("month", patient?.data?.month);
+		form.setFieldValue("day", patient?.data?.day);
+		form.setFieldValue("gender", patient?.data?.gender);
+		form.setFieldValue("upazilla_id", patient?.data?.upazilla_id?.toString());
 		// Close the dropdown
 		setShowPatientDropdown(false);
 		setPatientSearchResults([]);
@@ -417,6 +422,10 @@ export function Form({
 		}, 1000);
 	};
 
+	const dob = form.values?.dob;
+	const date = new Date(dob);
+	const isInvalid = !dob || isNaN(date.getTime());
+
 	return (
 		<>
 			<Box pos="relative">
@@ -499,9 +508,7 @@ export function Form({
 										<Grid.Col span={14}>
 											<DateSelectorForm
 												key={
-													form.values.dob
-														? new Date(form.values.dob).toISOString()
-														: "dob-empty"
+													isInvalid ? "dob-empty" : new Date(form.values?.dob)?.toISOString()
 												}
 												form={form}
 												placeholder="01-01-2020"
