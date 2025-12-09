@@ -142,7 +142,7 @@ export default function ActionButtons({
 								(alt + h)
 							</Text>
 						</Stack>
-					</Button> */}
+					</Button>
 					<Button
 						w="100%"
 						onClick={handleA4Print}
@@ -156,7 +156,7 @@ export default function ActionButtons({
 							</Text>
 						</Stack>
 					</Button>
-					{/* <Button
+					<Button
 						onClick={handleA4Print}
 						w="100%"
 						bg="var(--theme-print-btn-color)"

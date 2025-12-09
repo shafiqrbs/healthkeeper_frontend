@@ -44,6 +44,7 @@ import PatientSearchResult from "./PatientSearchResult";
 import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } from "@/services/patientSearchService";
 import { MODULES_CORE } from "@/constants";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -567,7 +568,7 @@ export function Form({
 								/>
 							</Grid.Col>
 						</Grid>
-						<Grid align="center" columns={20}>
+						{/*<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Flex align="center" gap="es">
 									<Text fz="sm">{t("DateOfBirth")}</Text>
@@ -587,7 +588,7 @@ export function Form({
 									disabledFutureDate
 								/>
 							</Grid.Col>
-						</Grid>
+						</Grid>*/}
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Flex>
@@ -672,6 +673,25 @@ export function Form({
 									placeholder="+880 1717171717"
 									name="mobile"
 									id="mobile"
+									nextField="address"
+									value={form.values.mobile}
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Flex align="center" gap="es">
+									<Text fz="sm">{t("Address")}</Text>
+								</Flex>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<TextAreaForm
+									form={form}
+									label=""
+									tooltip={t("EnterPatientMobile")}
+									placeholder="Address"
+									name="address"
+									id="address"
 									nextField="upazilla_id"
 									value={form.values.mobile}
 								/>
@@ -701,7 +721,7 @@ export function Form({
 								/>
 							</Grid.Col>
 						</Grid>
-						<Grid align="center" columns={20}>
+						{/*<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Text fz="sm">{t("Type")}</Text>
 							</Grid.Col>
@@ -751,7 +771,7 @@ export function Form({
 									required
 								/>
 							</Grid.Col>
-						</Grid>
+						</Grid>*/}
 						{showUserData && (
 							<Grid align="center" columns={20}>
 								<Grid.Col span={6}>

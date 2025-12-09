@@ -75,7 +75,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 
 	useEffect(() => {
 		form.setFieldValue("name", data?.name || "");
-		form.setFieldValue("dob", data?.date_of_birth ? new Date(data.date_of_birth) : null);
+	//	form.setFieldValue("dob", data?.date_of_birth ? new Date(data.date_of_birth) : null);
 		form.setFieldValue("mobile", data?.mobile || "");
 		form.setFieldValue("nid", data?.nid || "");
 		form.setFieldValue("year", data?.year || "");
@@ -88,7 +88,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 		}
 	}, [data]);
 
-	const handleDobChange = () => {
+	/*const handleDobChange = () => {
 		const type = form.values.ageType || "year";
 		const formattedDOB = formatDOB(form.values.dob);
 		const formattedAge = calculateAge(formattedDOB, type);
@@ -104,7 +104,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 	};
 	useEffect(() => {
 		handleDobChange();
-	}, [JSON.stringify(form.values.dob)]);
+	}, [JSON.stringify(form.values.dob)]);*/
 
 	async function handleSubmit(values) {
 		try {
@@ -126,11 +126,10 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 				return {};
 			}
 
-			const dob = isValid ? dateObj.toLocaleDateString("en-CA", options) : "invalid";
+		//	const dob = isValid ? dateObj.toLocaleDateString("en-CA", options) : "invalid";
 
 			const formValue = {
 				...form.values
-				,dob
 			};
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.UPDATE}/${data?.id}`,
@@ -231,7 +230,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 								value={form.values.name}
 							/>
 						</Grid.Col>
-						<Grid.Col span={6}>
+						{/*<Grid.Col span={6}>
 							<Flex align="center" gap="es">
 								<Text fz="sm">{t("DateOfBirth")}</Text>
 							</Flex>
@@ -247,7 +246,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 								required
 								disabledFutureDate
 							/>
-						</Grid.Col>
+						</Grid.Col>*/}
 						<Grid.Col span={6}>
 							<Text fz="sm">{t("Age")}</Text>
 						</Grid.Col>
