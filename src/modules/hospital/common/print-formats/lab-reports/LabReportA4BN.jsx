@@ -8,10 +8,11 @@ import { t } from "i18next";
 import Barcode from "react-barcode";
 import { capitalizeWords, formatDate, formatDateTimeAmPm } from "@utils/index";
 import DefaultCustomReport from "@hospital-components/print-formats/lab-reports/custom/DefaultCustomReport";
+import SystemLabReport from "@hospital-components/print-formats/lab-reports/custom/SystemLabReport";
+import XrayReport from "@hospital-components/print-formats/lab-reports/custom/XrayReport";
 
 const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const reportData = JSON.parse(data?.invoiceParticular?.json_report || "{}");
-	console.log(reportData);
 	const patientInfo = data?.entity || {};
 	const report = data?.invoiceParticular || {};
 	const { hospitalConfigData } = useHospitalConfigData();
@@ -86,7 +87,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 
 							{/* =============== Patient Information Section ================ */}
 							<Box mb="md">
-								<Box p="md" style={{ borderRadius: "6px" }}>
+								<Box p="md">
 									<Box bd="1px solid var(--theme-tertiary-color-8)">
 										<Table
 											withColumnBorders
@@ -120,7 +121,6 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 											</Table.Tbody>
 										</Table>
 									</Box>
-
 									<Box>
 										<Table
 											withColumnBorders
@@ -244,7 +244,6 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 											</Table.Tbody>
 										</Table>
 									</Box>
-
 									{data?.invoiceParticular?.particular?.slug === "covid-19" ? (
 										<Box mt={"md"}>
 											{/* =============== covid-19 report data table ================ */}
@@ -498,8 +497,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										<Box>Gene Pulmonary Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "ultrasonography" ? (
 										<Box>Ultrasonography Report</Box>
-									) : data?.invoiceParticular?.particular?.slug === "x-ray" ? (
-										<Box>X-Ray Report</Box>
+									) : (data?.invoiceParticular?.particular?.slug === "x-ray" || data?.invoiceParticular?.particular?.slug === "cxr-chest") ? (
+										<XrayReport report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.slug === "sars-cov2" ? (
 										<Box>SARS-CoV-2 Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "gene-extra-sputum" ? (
@@ -509,117 +508,14 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 									) : data?.invoiceParticular?.particular?.is_custom_report === 1 ? (
 										<DefaultCustomReport report={report} reportData={reportData} />
 									) : (
-										<Box mt={"md"}>
-											<Table
-												withColumnBorders
-												verticalSpacing={0}
-												horizontalSpacing={0}
-												striped={false}
-												highlightOnHover={false}
-												style={{
-													margin: 0,
-													padding: 0,
-													borderCollapse: "collapse",
-													width: "100%",
-													border: "1px solid var(--theme-tertiary-color-8)",
-												}}
-											>
-												<Table.Thead>
-													<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-														<Table.Th w={"30%"} pl={4}>
-															{t("Parameter")}
-														</Table.Th>
-														<Table.Th w={"20%"} pl={4}>
-															{t("TestResult")}
-														</Table.Th>
-														<Table.Th w={"20%"} pl={4}>
-															{t("Unit")}
-														</Table.Th>
-														<Table.Th w={"30%"} pl={4}>
-															{t("ReferenceValue")}
-														</Table.Th>
-													</Table.Tr>
-												</Table.Thead>
-												<Table.Tbody>
-													{report?.reports?.map((item, index) => (
-														<Table.Tr key={index}>
-															<Table.Td>
-																<Text fz={"xs"} pl={4}>
-																	{item.name}
-																</Text>
-															</Table.Td>
-															<Table.Td>
-																<Text fz={"xs"} pl={4}>
-																	{item.result}
-																</Text>
-															</Table.Td>
-															<Table.Td>
-																<Text fz={"xs"} pl={4}>
-																	{item.unit}
-																</Text>
-															</Table.Td>
-															<Table.Td>
-																<Text fz={"xs"} pl={4}>
-																	{item.reference_value}
-																</Text>
-															</Table.Td>
-														</Table.Tr>
-													))}
-												</Table.Tbody>
-											</Table>
-										</Box>
+										<SystemLabReport report={report} reportData={reportData}/>
 									)}
 								</Box>
 							</Box>
 
-							{/* =============== Additional Information Section ================ */}
-							{report?.comment && (
-								<Box p="md" pt={0}>
-									<Text fw="bold" size="xs" mb="xs">
-										{t("Comment")}
-									</Text>
-									<Box p="xs" bd="1px solid #ddd">
-										<Text size="xs">{report?.comment || ""}</Text>
-									</Box>
-								</Box>
-							)}
 							{/* =============== Doctor Information and Signature ================ */}
 						</Box>
-						<Box p="md" pt={0} pb={0}>
-							<Grid columns={12} gutter="xs">
-								<Grid.Col span={4}>
-									<Box>
-										<Box h={40} ta="center">
-											{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
-										</Box>
-										<Text fw="bold" size="xs" mb="sm" ta="center">
-											{report?.assign_labuser_name}
-										</Text>
-										<Text fw="bold" ta="center">
-											Medical Technologist(Lab)
-										</Text>
-									</Box>
-								</Grid.Col>
-								<Grid.Col span={4}></Grid.Col>
-								<Grid.Col span={4}>
-									<Box>
-										<Box h={40} ta="center">
-											{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
-										</Box>
-										<Text fw="bold" size="xs" mb="sm" ta="center">
-											{report?.assign_doctor_name}
-										</Text>
-										<Text fw="bold" mb="sm" ta="center">
-											Clinical Pathologist
-										</Text>
-									</Box>
-								</Grid.Col>
-							</Grid>
-						</Box>
-
 					</Stack>
-
-					{/* =============== Footer Information ================ */}
 				</Box>
 			</Box>
 		</Box>

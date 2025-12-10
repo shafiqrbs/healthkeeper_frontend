@@ -39,20 +39,17 @@ export default function HtmlReportEditor({
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
 	const is_completed = diagnosticReport?.process === "Done";
-
 	const content = custom_report?.findings;
-
 	const editor = useEditor({
 		extensions: [StarterKit, Highlight],
 		content,
 		shouldRerenderOnTransaction: true,
 	});
-
 	useEffect(() => {
-		if (editor && content) {
+		if (editor) {
 			editor.commands.setContent(content);
 		}
-	}, [content, editor]);
+	}, [content, editor,reportId]);
 
 	const form = useForm({
 		initialValues: {
@@ -121,19 +118,16 @@ export default function HtmlReportEditor({
 
 	return (
 		<Box className="border-top-none" px="sm" mt="xs">
-			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
+			<ScrollArea  scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
 					<Box my="xs">
-						<RichTextEditor editor={editor} variant="subtle" h={300}>
+						<RichTextEditor editor={editor} variant="subtle" h={mainAreaHeight-260}>
 							<RichTextEditor.Toolbar sticky stickyOffset="var(--docs-header-height)">
 								<RichTextEditor.ControlsGroup>
 									<RichTextEditor.Bold />
 									<RichTextEditor.Italic />
-									<RichTextEditor.Underline />
 									<RichTextEditor.Strikethrough />
 									<RichTextEditor.ClearFormatting />
-									<RichTextEditor.Highlight />
-									<RichTextEditor.Code />
 								</RichTextEditor.ControlsGroup>
 							</RichTextEditor.Toolbar>
 							<RichTextEditor.Content />

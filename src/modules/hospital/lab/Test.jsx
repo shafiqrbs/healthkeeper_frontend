@@ -15,7 +15,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"];
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
 
-export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
+export default function Test({ entity, isLoading, refetchDiagnosticReport ,setRefreshKey}) {
 	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
@@ -35,12 +35,15 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport }) {
 	const printBarCodeValue = useReactToPrint({
 		content: () => barCodeRef.current,
 	});
+
 	const handleTest = (report_id) => {
 		refetchDiagnosticReport();
 		navigate(
 			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${report_id}`,
 			{ replace: true }
 		);
+		setTimeout(()=> {setRefreshKey(((prev) => prev +1))},0)
+
 	};
 
 	const handleLabReport = async (id, reportSlug) => {

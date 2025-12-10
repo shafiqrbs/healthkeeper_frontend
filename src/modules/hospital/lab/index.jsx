@@ -20,6 +20,9 @@ export default function Index() {
 	const { mainAreaHeight } = useOutletContext();
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const [processTab, setProcessTab] = useState("Current");
+	const [refreshKey, setRefreshKey] = useState(0);
+
+
 
 	const {
 		data: reportInformation,
@@ -123,12 +126,13 @@ export default function Index() {
 									<Grid.Col span={4} className="animate-ease-out">
 										<Test
 											entity={entity}
+											setRefreshKey={setRefreshKey}
 											isLoading={isReportLoading}
 											refetchDiagnosticReport={refetchReport}
 										/>
 									</Grid.Col>
 									<Grid.Col span={14}>
-										<DiagnosticReport refetchDiagnosticReport={refetchReport} />
+										<DiagnosticReport refreshKey={refreshKey} refetchDiagnosticReport={refetchReport} />
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>

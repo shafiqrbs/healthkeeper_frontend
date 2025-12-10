@@ -3,7 +3,7 @@ import React, { forwardRef } from "react";
 import "@/index.css";
 import { t } from "i18next";
 import {useOutletContext} from "react-router-dom";
-const DefaultCustomReport = forwardRef(({reportData,report}) => {
+const XrayReport = forwardRef(({reportData,report}) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
@@ -11,21 +11,33 @@ const DefaultCustomReport = forwardRef(({reportData,report}) => {
 	console.log(mainAreaHeight)
 	return (
 		<Box>
-			<Box mb="md" p={'xl'} mt={'100'} fz={'md'} h={650}>
-				<div dangerouslySetInnerHTML={{__html:getValue(reportData?.findings)}}/>
-				{report?.comment && (
-					<Box p="md" pt={0}>
-						<Text fw="bold" size="xs" mb="xs">
-							{t("Comment")}
-						</Text>
-						<Box p="xs" bd="1px solid #ddd">
-							<Text size="xs">{report?.comment || ""}</Text>
-						</Box>
-					</Box>
-				)}
+			<Box mb="md" p={'xl'}  fz={'md'} h={650}>
+				<Grid>
+					<Grid.Col span={3} fw={700}>Trachea</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.trachea)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={3} fw={700}>Diaphragm</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.diaphragm)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={3} fw={700}>Lungs</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.lungs)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={3} fw={700}>Heart</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.heart)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={3} fw={700}>Bony Thorax</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.bony_thorax)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={3} fw={700}>Impression</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.impression)}}/></Grid.Col>
+				</Grid>
 			</Box>
 			{/* =============== Additional Information Section ================ */}
-
 			<Box p="md" pt={0} pb={0}>
 				<Grid columns={12} gutter="xs">
 					<Grid.Col span={4}>
@@ -61,5 +73,5 @@ const DefaultCustomReport = forwardRef(({reportData,report}) => {
 		</Box>
 	);
 });
-DefaultCustomReport.displayName = "DefaultCustomReport";
-export default DefaultCustomReport;
+XrayReport.displayName = "XrayReport";
+export default XrayReport;

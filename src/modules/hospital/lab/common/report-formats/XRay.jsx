@@ -15,6 +15,7 @@ import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@
 import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
 import { formatDateForMySQL } from "@utils/index";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
 
 const module = MODULES.LAB_TEST;
 
@@ -95,7 +96,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 					<Grid>
 						<Grid.Col span={3}>Trachea</Grid.Col>
 						<Grid.Col span={9}>
-							<InputForm
+							<TextAreaForm
 								label=""
 								placeholder="Enter Trachea"
 								name="trachea"
@@ -109,7 +110,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 					<Grid>
 						<Grid.Col span={3}>Diaphragm</Grid.Col>
 						<Grid.Col span={9}>
-							<InputForm
+							<TextAreaForm
 								label=""
 								placeholder="Enter Diaphragm"
 								name="diaphragm"
@@ -123,7 +124,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 					<Grid>
 						<Grid.Col span={3}>Lungs</Grid.Col>
 						<Grid.Col span={9}>
-							<InputForm
+							<TextAreaForm
 								label=""
 								placeholder="Enter Diaphragm"
 								name="lungs"
@@ -137,7 +138,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 					<Grid>
 						<Grid.Col span={3}>heart</Grid.Col>
 						<Grid.Col span={9}>
-							<InputForm
+							<TextAreaForm
 								label=""
 								placeholder="Enter Diaphragm"
 								name="heart"
@@ -151,7 +152,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 					<Grid>
 						<Grid.Col span={3}>Bony Thorax</Grid.Col>
 						<Grid.Col span={9}>
-							<InputForm
+							<TextAreaForm
 								label=""
 								placeholder="Enter Diaphragm"
 								name="bony_thorax"
@@ -165,7 +166,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 					<Grid>
 						<Grid.Col span={3}>Impression</Grid.Col>
 						<Grid.Col span={9}>
-							<InputForm
+							<TextAreaForm
 								label=""
 								placeholder="Enter Diaphragm"
 								name="impression"

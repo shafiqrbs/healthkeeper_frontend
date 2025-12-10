@@ -33,7 +33,7 @@ import HtmlReportEditor from "@modules/hospital/lab/common/report-formats/HtmlRe
 const module = MODULES.LAB_TEST;
 
 const ReportRenderer = forwardRef(
-	({ diagnosticReport, fetching, inputsRef, refetchDiagnosticReport, refetchLabReport }) => {
+	({ diagnosticReport, fetching, inputsRef, refetchDiagnosticReport, refetchLabReport ,refreshKey}) => {
 		const { t } = useTranslation();
 		const form = useForm(getFormValues(t));
 		const { reportId } = useParams();
@@ -59,10 +59,8 @@ const ReportRenderer = forwardRef(
 
 		const renderCustomReport = () => {
 			if (
-				diagnosticReport?.particular?.is_custom_report !== null &&
-				diagnosticReport?.particular?.is_custom_report !== undefined
+				diagnosticReport?.particular?.is_custom_report === 1
 			) {
-
 				const slug = diagnosticReport?.particular?.slug;
 				switch (slug) {
 					case "covid-19":
@@ -90,6 +88,14 @@ const ReportRenderer = forwardRef(
 							/>
 						);
 					case "x-ray-pa":
+						return (
+							<XRay
+								diagnosticReport={diagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
+							/>
+						);
+					case "cxr-chest":
 						return (
 							<XRay
 								diagnosticReport={diagnosticReport}
@@ -158,6 +164,7 @@ const ReportRenderer = forwardRef(
 					default:
 						return (
 							<HtmlReportEditor
+								key={refreshKey}
 								diagnosticReport={diagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
 								refetchLabReport={refetchLabReport}
@@ -235,7 +242,6 @@ const ReportRenderer = forwardRef(
 			diagnosticReport.process === "In-progress" && userRoles.some((role) =>
 			ALLOWED_LAB_USER_ROLES.includes(role)
 		)));
-
 		// default reports table and submission form
 		return (
 			<>

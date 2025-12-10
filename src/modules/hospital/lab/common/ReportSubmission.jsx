@@ -142,25 +142,6 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 											</Flex>
 										</Button>
 									)}
-									<Button
-										size="md"
-										fz={"xs"}
-										bg="var(--theme-primary-color-6)"
-										type="submit"
-										id="handleSubmit"
-									>
-										<Flex direction="column" gap={0}>
-											<Text fz="xs">{t("Confirm")}</Text>
-											<Flex
-												direction="column"
-												align="center"
-												fz="2xs"
-												c="white"
-											>
-												alt+s
-											</Flex>
-										</Flex>
-									</Button>
 								</Flex>
 							</Box>
 						</Grid.Col>

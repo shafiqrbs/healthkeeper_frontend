@@ -57,6 +57,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				additional_field: data.additional_field,
 				test_duration: data.test_duration,
 				report_format: data.report_format,
+				is_available: data.is_available,
+				is_custom_report: data.is_custom_report,
+				is_report_format: data.is_report_format,
 				price: data.price,
 			});
 			setIndexData(data.id);
@@ -81,6 +84,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		{ value: "1", label: "1" },
 		{ value: "2", label: "2" },
 	];
+	console.log(data?.is_custom_report);
 
 	return (
 		<form onSubmit={form.onSubmit(handleSubmit)}>
@@ -220,7 +224,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											<Switch
 												name="is_available"
 												id="is_available"
-												checked={form?.value?.is_available}
+												checked={form?.values?.is_available}
 												onChange={(event) => form.setFieldValue("is_available", event.currentTarget.checked)}
 											/>
 										</Grid.Col>
@@ -233,7 +237,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											<Switch
 												name="is_report_format"
 												id="is_report_format"
-												checked={form?.value?.is_report_format}
+												checked={form?.values?.is_report_format}
 												onChange={(event) => form.setFieldValue("is_report_format", event.currentTarget.checked)}
 											/>
 										</Grid.Col>
@@ -246,7 +250,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											<Switch
 												name="is_custom_report"
 												id="is_custom_report"
-												checked={form?.value?.is_custom_report}
+												checked={form?.values?.is_custom_report}
 												onChange={(event) => form.setFieldValue("is_custom_report", event.currentTarget.checked)}
 											/>
 										</Grid.Col>
