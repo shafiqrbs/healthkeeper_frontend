@@ -14,6 +14,7 @@ import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
+import InputCheckboxForm from "@components/form-builders/InputCheckboxForm";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
@@ -207,6 +208,60 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												required={false}
 												name="specimen"
 												id="specimen"
+												nextField=""
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("Is Custom Report")}</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputCheckboxForm
+												form={form}
+												tooltip={t("PriceValidateMessage")}
+												placeholder={t("CustomReportFormat")}
+												dropdownValue={selectReportFormat}
+												required={false}
+												name="is_custom_report"
+												id="is_custom_report"
+												value={form.values.is_custom_report || 1}
+												nextField=""
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("Available")}</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputCheckboxForm
+												form={form}
+												tooltip={t("PriceValidateMessage")}
+												placeholder={t("Available")}
+												dropdownValue={selectReportFormat}
+												required={false}
+												name="is_available"
+												id="is_available"
+												value={form.values.is_available || 1}
+												nextField=""
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("ReportFormat")}</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputCheckboxForm
+												form={form}
+												tooltip={t("PriceValidateMessage")}
+												placeholder={t("ReportFormat")}
+												dropdownValue={selectReportFormat}
+												required={false}
+												name="report_format"
+												id="report_format"
+												value={form.values.report_format || 1}
 												nextField=""
 											/>
 										</Grid.Col>

@@ -7,6 +7,9 @@ const initialValues = {
 	diagnostic_room_id: "",
 	name: "",
 	specimen: "",
+	is_available: "",
+	report_format: "",
+	is_custom_report: "",
 	price: "",
 };
 
