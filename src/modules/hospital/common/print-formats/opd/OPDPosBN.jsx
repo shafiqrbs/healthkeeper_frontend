@@ -9,7 +9,7 @@ import Barcode from "react-barcode";
 
 const DashedLine = () => (
 	<Text size="2xs" ta="center" ff="monospace">
-		-----------------------------------------------
+		-----------------------------------------------------------------------
 	</Text>
 );
 
@@ -22,7 +22,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 	return (
 		<Box display={preview ? "block" : "none"}>
-			<Box ref={ref} w="100mm" p={8} bg="var(--mantine-color-white)" mx="auto">
+			<Box ref={ref} w="120mm" p={8} bg="var(--mantine-color-white)" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="space-between" align="center" gap={8}>
@@ -65,7 +65,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 					{/* =============== patient information section =============== */}
 
-					<Table fz="10px" verticalSpacing={2} withRowBorders={false}>
+					<Table verticalSpacing={2} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td colspan={2} fz={'xs'}>

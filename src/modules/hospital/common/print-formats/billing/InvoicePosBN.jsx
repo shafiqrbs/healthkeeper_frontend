@@ -10,7 +10,7 @@ import { t } from "i18next";
 
 const DashedLine = () => (
 	<Text size="2xs" ta="center" ff="monospace">
-		-----------------------------------------------
+		-----------------------------------------------------------------------------------
 	</Text>
 );
 
@@ -24,7 +24,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 
 	return (
 		<Box display={preview ? "block" : "none"}>
-			<Box ref={ref} w="120mm" p={8} bg="var(--mantine-color-white)" mx="auto">
+			<Box ref={ref} w="140mm" p={8} bg="var(--mantine-color-white)" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="space-between" align="center" gap={8}>
@@ -54,7 +54,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 					<DashedLine />
 
 					{/* =============== essential patient info =============== */}
-					<Table fz="10px" verticalSpacing={2} withRowBorders={false}>
+					<Table  verticalSpacing={2} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td colspan={2}>
@@ -133,7 +133,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 					</Table>
 
 					{/* =============== financial summary =============== */}
-					<Table fz="10px" verticalSpacing={1} withRowBorders={false}>
+					<Table verticalSpacing={1} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr style={{ borderTop: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th>{t("Particular")}</Table.Th>

@@ -16,7 +16,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 	const { t } = useTranslation();
 	return (
 		<Box display={preview ? "block" : "none"}>
-			<Box ref={ref} w="80mm" p={8} bg="var(--mantine-color-white)" mx="auto">
+			<Box ref={ref} w="180mm" p={8} bg="var(--mantine-color-white)" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="center" align="center" gap={8}>
