@@ -41,11 +41,13 @@ import FreeServiceFormEN from "@hospital-components/print-formats/billing/FreeSe
 import { getDataWithoutStore } from "@/services/apiService";
 import Workorder from "@hospital-components/print-formats/workorder/Workorder";
 import Indent from "@hospital-components/print-formats/indent/Indent";
+import RefundPosBN from "@hospital-components/print-formats/refund/RefundPosBN";
 
 const STATIC_OPD_ID = "125760093407";
 const STATIC_BILLING_ID = 10;
 const STATIC_PRESCRIPTION_ID = "361001991021";
 const REPORT_ID = "709766736602";
+const REFUND_ID = "1";
 const FREE_SERVICE_ID = "786934884211";
 const PURCHASE_ID = "8";
 const INDENT_ID = "858945689606";
@@ -73,6 +75,10 @@ export default function Details() {
 
 	const { data: billingData, isLoading: isBillingLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.PRINT}/${STATIC_BILLING_ID}`,
+	});
+
+	const { data: refundData, isLoading: isRefundLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.PRINT}/${REFUND_ID}`,
 	});
 
 	const { data: freeServiceData, isLoading: isFreeServiceLoading } = useDataWithoutStore({
@@ -212,6 +218,11 @@ export default function Details() {
 					{name === "InvoicePosEN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
 							<InvoicePosEN preview data={prescriptionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "RefundPosEN" && (
+						<LoadingWrapper isLoading={isRefundLoading}>
+							<RefundPosBN preview data={refundData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "LabReportA4EN" && (

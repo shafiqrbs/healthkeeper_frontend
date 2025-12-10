@@ -44,6 +44,7 @@ const templateData = [
 	{ name: "DetailsInvoicePosBN", module: "billing", id: getUUID() },
 	{ name: "InvoicePosBN", module: "billing", id: getUUID() },
 	{ name: "InvoicePosEN", module: "billing", id: getUUID() },
+	{ name: "RefundPosEN", module: "refund", id: getUUID() },
 	{ name: "FreeServiceFormBN", module: "billing", id: getUUID() },
 	{ name: "FreeServiceFormEN", module: "billing", id: getUUID() },
 	{ name: "Workorder", module: "wrkorder", id: getUUID() },

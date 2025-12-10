@@ -25,6 +25,7 @@ import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 import {modals} from "@mantine/modals";
 import {getDataWithoutStore} from "@/services/apiService";
+import RefundPosBN from "@hospital-components/print-formats/refund/RefundPosBN";
 
 const ALLOWED_BILLING_ROLES = [
 	"billing_manager",
@@ -218,8 +219,8 @@ export default function Invoice({ setRefetchBillingKey,entity }) {
 												)}
 												<Button
 													onClick={() =>
-														handleApprove(
-															item.hms_invoice_transaction_id
+														handlePrint(
+															item.id
 														)
 													}
 													size="xs"
@@ -260,7 +261,7 @@ export default function Invoice({ setRefetchBillingKey,entity }) {
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}
-			<InvoicePosBN data={invoicePrintData} ref={invoicePrintRef} />
+			<RefundPosBN data={invoicePrintData} ref={invoicePrintRef} />
 			{/*<IPDAllPrint data={test} ref={ipdAllPrintRef} />*/}
 		</Box>
 	);
