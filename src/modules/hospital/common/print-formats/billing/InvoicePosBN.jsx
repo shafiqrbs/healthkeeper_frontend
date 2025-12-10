@@ -15,7 +15,6 @@ const DashedLine = () => (
 );
 
 const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
-	console.log(data);
 	const { user } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { hospitalConfigData } = useDomainHospitalConfigData();
@@ -54,7 +53,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 					<DashedLine />
 
 					{/* =============== essential patient info =============== */}
-					<Table  verticalSpacing={2} withRowBorders={false}>
+					<Table verticalSpacing={2} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td colspan={2}>

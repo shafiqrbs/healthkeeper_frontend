@@ -24,6 +24,7 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 import { useReactToPrint } from "react-to-print";
+import usePrintAfterUpdate from "@hooks/usePrintAfterUpdate";
 
 const module = MODULES_CORE.BILLING;
 
@@ -31,7 +32,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 	const invoicePrintRef = useRef(null);
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
-	const [pendingPrint, setPendingPrint] = useState(false);
+	const { setPendingPrint } = usePrintAfterUpdate(invoicePrint, invoiceDetails);
 	const { id } = useParams();
 	const [fetching, setFetching] = useState(false);
 	const [selectedRecords, setSelectedRecords] = useState([]);
@@ -69,6 +70,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 
 	useEffect(() => {
 		if (id) {
+			setSelectedRecords([]);
 			setFetching(true);
 			(async () => {
 				const res = await getDataWithoutStore({
@@ -104,17 +106,6 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 		const initialItems = Array.isArray(invoiceDetails?.items) ? invoiceDetails.items : [];
 		setRoomItems(initialItems);
 	}, [invoiceDetails]);
-
-	// =============== trigger print only after invoice details are updated to avoid stale data ================
-	useEffect(() => {
-		if (pendingPrint && invoiceDetails) {
-			requestAnimationFrame(() => {
-				invoicePrint();
-				setPendingPrint(false);
-			});
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [invoiceDetails, pendingPrint]);
 
 	// =============== create submit handler bound to a specific form and payload source ================
 	const createSubmitHandler = (targetForm, payloadSource) => (values) => {
