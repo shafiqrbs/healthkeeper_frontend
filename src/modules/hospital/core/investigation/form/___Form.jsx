@@ -21,10 +21,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
 	const [checked, setChecked] = useState(false);
-	const [isAvailable, setIsAvailable] = useState(false);
-	const [reportFormat, setReportFormat] = useState(false);
-	const [isCustomReport, setIsCustomReport] = useState(false);
-	console.log(isAvailable);
 	const { data: categoryDropdown } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.CATEGORY.PATH,
 		utility: HOSPITAL_DROPDOWNS.CATEGORY.UTILITY,
@@ -218,20 +214,9 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("Is Custom Report")}</Text>
+											<Text fz="sm">{t("Available")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
-											<InputCheckboxForm
-												form={form}
-												tooltip={t("PriceValidateMessage")}
-												placeholder={t("CustomReportFormat")}
-												dropdownValue={selectReportFormat}
-												required={false}
-												name="is_custom_report"
-												id="is_custom_report"
-												value={form.values.is_custom_report || 1}
-												nextField=""
-											/>
 											<Switch
 												name="is_available"
 												id="is_available"
@@ -242,24 +227,32 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("Available")}</Text>
+											<Text fz="sm">{t("ReportFormat")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
-
+											<Switch
+												name="is_report_format"
+												id="is_report_format"
+												checked={form?.value?.is_report_format}
+												onChange={(event) => form.setFieldValue("is_report_format", event.currentTarget.checked)}
+											/>
 										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("ReportFormat")}</Text>
+											<Text fz="sm">{t("Is Custom Report")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
-
 											<Switch
-												checked={checked}
-												onChange={(event) => setChecked(event.currentTarget.checked)}
+												name="is_custom_report"
+												id="is_custom_report"
+												checked={form?.value?.is_custom_report}
+												onChange={(event) => form.setFieldValue("is_custom_report", event.currentTarget.checked)}
 											/>
 										</Grid.Col>
 									</Grid>
+
+
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("ReportFormat")}</Text>

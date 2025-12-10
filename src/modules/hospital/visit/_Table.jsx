@@ -9,7 +9,7 @@ import {
 	Flex,
 	FloatingIndicator,
 	Group,
-	Menu,
+	Menu, Modal,
 	Tabs,
 	Text,
 } from "@mantine/core";
@@ -21,7 +21,7 @@ import {
 	IconX,
 	IconPrinter,
 	IconScript,
-	IconPencil,
+	IconPencil, IconAdjustmentsCog,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -45,6 +45,7 @@ import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer
 import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
 import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
+import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -68,6 +69,7 @@ const CSV_HEADERS = [
 ];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
+	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
@@ -236,7 +238,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							/>
 						</Tabs.List>
 					</Tabs>
-					<Button
+					{/*<Button
 						onClick={handleOpenViewOverview}
 						size="xs"
 						radius="es"
@@ -245,6 +247,14 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						c="white"
 					>
 						{t("VisitOverview")}
+					</Button>*/}
+					<Button
+						variant="light"
+						onClick={openOpdRoom}
+						size={"xs"}
+						leftSection={<IconAdjustmentsCog size="16px" />}
+					>
+						Room Overview
 					</Button>
 					{availableClose ? (
 						<Flex gap="xs" align="center">
@@ -462,6 +472,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				style={{ display: "none" }}
 				ref={csvLinkRef}
 			/>
+			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered withCloseButton={false}>
+				<OpdRoomStatusModal closeOpdRoom={closeOpdRoom} closeTable={close} height={height - 220} />
+			</Modal>
 		</Box>
+
 	);
 }

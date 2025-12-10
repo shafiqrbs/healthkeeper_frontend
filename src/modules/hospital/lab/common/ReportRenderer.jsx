@@ -28,6 +28,7 @@ import Dengue from "./report-formats/Dengue";
 import CTScan from "./report-formats/CTScan";
 import Serology from "./report-formats/Serology";
 import useAppLocalStore from "@hooks/useAppLocalStore";
+import HtmlReportEditor from "@modules/hospital/lab/common/report-formats/HtmlReportEditor";
 
 const module = MODULES.LAB_TEST;
 
@@ -55,15 +56,14 @@ const ReportRenderer = forwardRef(
 			}
 		};
 
-		console.log(diagnosticReport);
 
 		const renderCustomReport = () => {
 			if (
-				diagnosticReport?.custom_report !== null &&
-				diagnosticReport?.custom_report !== undefined
+				diagnosticReport?.particular?.is_custom_report !== null &&
+				diagnosticReport?.particular?.is_custom_report !== undefined
 			) {
-				const slug = diagnosticReport?.particular?.slug;
 
+				const slug = diagnosticReport?.particular?.slug;
 				switch (slug) {
 					case "covid-19":
 						return (
@@ -156,7 +156,14 @@ const ReportRenderer = forwardRef(
 							/>
 						);
 					default:
-						return null;
+						return (
+							<HtmlReportEditor
+								diagnosticReport={diagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
+							/>
+						);
+
 				}
 			}
 		};

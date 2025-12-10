@@ -7,6 +7,7 @@ import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { t } from "i18next";
 import Barcode from "react-barcode";
 import { capitalizeWords, formatDate, formatDateTimeAmPm } from "@utils/index";
+import DefaultCustomReport from "@hospital-components/print-formats/lab-reports/custom/DefaultCustomReport";
 
 const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const reportData = JSON.parse(data?.invoiceParticular?.json_report || "{}");
@@ -505,6 +506,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										<Box>Gene Extra Sputum Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "lpa" ? (
 										<Box>LPA Report</Box>
+									) : data?.invoiceParticular?.particular?.is_custom_report === 1 ? (
+										<DefaultCustomReport report={report} reportData={reportData} />
 									) : (
 										<Box mt={"md"}>
 											<Table

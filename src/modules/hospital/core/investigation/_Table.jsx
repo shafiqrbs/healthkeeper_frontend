@@ -363,61 +363,22 @@ export default function _Table({ module, open }) {
 							accessor: "is_available",
 							title: t("Available"),
 							sortable: true,
-							render: (item) => (
-								<Checkbox
-									key={item.id}
-									size="sm"
-									checked={submitFormData[item.id]?.is_available ?? false}
-									onChange={(val) =>
-										handleDataTypeChange(
-											item.id,
-											"is_available",
-											val.currentTarget.checked,
-											true
-										)
-									}
-								/>
-							),
+							render: (item) => item.is_available ? "Yes" : "No",
 						},
+
 						{
-							accessor: "report_format",
+							accessor: "is_report_format",
 							title: t("Report"),
 							sortable: true,
-							render: (item) => (
-								<Checkbox
-									key={item.id}
-									size="sm"
-									checked={submitFormData[item.id]?.report_format ?? false}
-									onChange={(val) =>
-										handleDataTypeChange(
-											item.id,
-											"report_format",
-											val.currentTarget.checked,
-											true
-										)
-									}
-								/>
-							),
+							render: (item) => item.is_report_format ? "Yes" : "No",
+
 						},
+
 						{
 							accessor: "is_custom_report",
 							title: t("CustomReport"),
 							sortable: true,
-							render: (item) => (
-								<Checkbox
-									key={item.id}
-									size="sm"
-									checked={submitFormData[item.id]?.is_custom_report ?? false}
-									onChange={(val) =>
-										handleDataTypeChange(
-											item.id,
-											"is_custom_report",
-											val.currentTarget.checked,
-											true
-										)
-									}
-								/>
-							),
+							render: (item) => item.is_custom_report ? "Yes" : "No",
 						},
 
 						{
