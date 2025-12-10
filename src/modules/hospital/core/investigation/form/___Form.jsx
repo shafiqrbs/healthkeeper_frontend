@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 import { useOutletContext } from "react-router-dom";
-import { Grid, Box, ScrollArea, LoadingOverlay, Stack, Text } from "@mantine/core";
+import {Grid, Box, ScrollArea, LoadingOverlay, Stack, Text, Switch} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useHotkeys } from "@mantine/hooks";
 
@@ -20,7 +20,11 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
-
+	const [checked, setChecked] = useState(false);
+	const [isAvailable, setIsAvailable] = useState(false);
+	const [reportFormat, setReportFormat] = useState(false);
+	const [isCustomReport, setIsCustomReport] = useState(false);
+	console.log(isAvailable);
 	const { data: categoryDropdown } = useGlobalDropdownData({
 		path: HOSPITAL_DROPDOWNS.CATEGORY.PATH,
 		utility: HOSPITAL_DROPDOWNS.CATEGORY.UTILITY,
@@ -228,6 +232,12 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												value={form.values.is_custom_report || 1}
 												nextField=""
 											/>
+											<Switch
+												name="is_available"
+												id="is_available"
+												checked={form?.value?.is_available}
+												onChange={(event) => form.setFieldValue("is_available", event.currentTarget.checked)}
+											/>
 										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
@@ -235,17 +245,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											<Text fz="sm">{t("Available")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
-											<InputCheckboxForm
-												form={form}
-												tooltip={t("PriceValidateMessage")}
-												placeholder={t("Available")}
-												dropdownValue={selectReportFormat}
-												required={false}
-												name="is_available"
-												id="is_available"
-												value={form.values.is_available || 1}
-												nextField=""
-											/>
+
 										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
@@ -253,16 +253,10 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											<Text fz="sm">{t("ReportFormat")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
-											<InputCheckboxForm
-												form={form}
-												tooltip={t("PriceValidateMessage")}
-												placeholder={t("ReportFormat")}
-												dropdownValue={selectReportFormat}
-												required={false}
-												name="report_format"
-												id="report_format"
-												value={form.values.report_format || 1}
-												nextField=""
+
+											<Switch
+												checked={checked}
+												onChange={(event) => setChecked(event.currentTarget.checked)}
 											/>
 										</Grid.Col>
 									</Grid>
