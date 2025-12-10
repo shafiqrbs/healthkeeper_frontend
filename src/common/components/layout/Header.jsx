@@ -30,17 +30,19 @@ import flagBD from "@assets/images/flags/bd.svg";
 import flagGB from "@assets/images/flags/gb.svg";
 import logo_default from "@assets/images/tb_logo.png";
 import shortcutDropdownData from "@hooks/shortcut-dropdown/useShortcutDropdownData";
-import { useDisclosure, useFullscreen, useHotkeys, useMediaQuery } from "@mantine/hooks";
+import { useDisclosure, useFullscreen, useHotkeys } from "@mantine/hooks";
 import "@mantine/spotlight/styles.css";
 import {
 	IconArrowRight,
 	IconBackspace,
 	IconChevronDown,
 	IconDeviceDesktop,
+	IconLock,
 	IconLogout,
 	IconMoon,
 	IconSearch,
 	IconSun,
+	IconUserHexagon,
 	IconWifi,
 	IconWifiOff,
 	IconWindowMaximize,
@@ -48,9 +50,10 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useAuthStore } from "@/store/useAuthStore.js";
+import ChangePassword from "@modules/auth/ChangePassword";
 
 const languages = [
 	{ label: "EN", value: "en", flag: flagGB },
@@ -231,12 +234,7 @@ const SearchInput = ({ value, onChange, onKeyDown, onClear }) => {
 
 // Action Item Component
 const ActionItem = ({ action, isSelected, onClick }) => (
-	<Link
-		id={`item-${action.index}`}
-		className={"link"}
-		to={getActionPath(action)}
-		onClick={onClick}
-	>
+	<Link id={`item-${action.index}`} className={"link"} to={getActionPath(action)} onClick={onClick}>
 		<Group
 			wrap="nowrap"
 			align="center"
@@ -286,6 +284,7 @@ const LanguagePicker = ({ languageSelected, onLanguageChange }) => {
 
 // Header Actions Component
 const HeaderActions = ({
+	height,
 	isOnline,
 	fullscreen,
 	toggle,
@@ -297,6 +296,7 @@ const HeaderActions = ({
 	const { t } = useTranslation();
 	const { colorScheme, setColorScheme } = useMantineColorScheme({ keepTransitions: true });
 	const storageKey = "mantine-color-scheme";
+	const [resetPasswordOpened, { open: openResetPassword, close: closeResetPassword }] = useDisclosure(false);
 
 	function getNextScheme(currentScheme) {
 		if (currentScheme === "auto") return "light";
@@ -339,72 +339,72 @@ const HeaderActions = ({
 	}, []);
 
 	return (
-		<Flex
-			gap="sm"
-			justify="flex-end"
-			direction="row"
-			wrap="wrap"
-			mih={42}
-			align={"right"}
-			px={"xs"}
-			pr={"24"}
+		<>
+			<Flex gap="sm" justify="flex-end" direction="row" wrap="wrap" mih={42} align={"right"} px={"xs"} pr={"24"}>
+				<LanguagePicker languageSelected={languageSelected} onLanguageChange={handleLanguageChange} />
+				<Tooltip label={`Theme: ${getSchemeLabel(colorScheme)}`} bg={"#635031"} withArrow>
+					<ActionIcon className="mt-6 header-action-icon" onClick={handleToggleColorScheme} variant="subtle">
+						{getSchemeIcon(colorScheme)}
+					</ActionIcon>
+				</Tooltip>
+				<Tooltip label={fullscreen ? t("NormalScreen") : t("Fullscreen")} bg={"#635031"} withArrow>
+					<ActionIcon className="mt-6 header-action-icon" onClick={toggle} variant="subtle">
+						{fullscreen ? <IconWindowMinimize size={18} /> : <IconWindowMaximize size={18} />}
+					</ActionIcon>
+				</Tooltip>
+				<Menu shadow="md" width={200}>
+					<Menu.Target>
+						<ActionIcon variant="subtle" mt={"6"} color={"white"}>
+							<IconUserHexagon size={24} />
+						</ActionIcon>
+					</Menu.Target>
+
+					<Menu.Dropdown>
+						<Menu.Label>
+							{loginUser?.name} ({loginUser?.username})
+						</Menu.Label>
+						<Divider color="#f0f0f0" mb="les" />
+						<Menu.Item leftSection={<IconLock size={16} />} onClick={openResetPassword}>
+							<Text size="sm">{t("Reset Password")}</Text>
+						</Menu.Item>
+						<Menu.Item leftSection={<IconLogout size={16} />} onClick={() => onLogout()}>
+							<Text size="sm">{t("Logout")}</Text>
+						</Menu.Item>
+					</Menu.Dropdown>
+				</Menu>
+				{/* <Tooltip
+			label={
+				<>
+					<Stack spacing={0} gap={0}>
+						<Text align="center">
+							{loginUser?.name} ( {loginUser?.username} )
+						</Text>
+						<Text align="center">{t("LogoutAltL")}</Text>
+					</Stack>
+				</>
+			}
+			bg={"#635031"}
+			withArrow
+			position={"left"}
+			multiline
 		>
-			<LanguagePicker
-				languageSelected={languageSelected}
-				onLanguageChange={handleLanguageChange}
+			<ActionIcon onClick={onLogout} variant="subtle" className="mt-6 header-action-icon">
+				<IconLogout size={18} />
+			</ActionIcon>
+		</Tooltip> */}
+				<Tooltip label={isOnline ? t("Online") : t("Offline")} bg={isOnline ? "green.5" : "red.5"} withArrow>
+					<ActionIcon className="mt-6 header-action-icon" variant="filled" radius="xl">
+						{isOnline ? <IconWifi size={20} /> : <IconWifiOff size={20} />}
+					</ActionIcon>
+				</Tooltip>
+			</Flex>
+
+			<ChangePassword
+				height={height}
+				resetPasswordOpened={resetPasswordOpened}
+				closeResetPassword={closeResetPassword}
 			/>
-			<Tooltip label={`Theme: ${getSchemeLabel(colorScheme)}`} bg={"#635031"} withArrow>
-				<ActionIcon
-					className="mt-6 header-action-icon"
-					onClick={handleToggleColorScheme}
-					variant="subtle"
-				>
-					{getSchemeIcon(colorScheme)}
-				</ActionIcon>
-			</Tooltip>
-			<Tooltip
-				label={fullscreen ? t("NormalScreen") : t("Fullscreen")}
-				bg={"#635031"}
-				withArrow
-			>
-				<ActionIcon className="mt-6 header-action-icon" onClick={toggle} variant="subtle">
-					{fullscreen ? (
-						<IconWindowMinimize size={18} />
-					) : (
-						<IconWindowMaximize size={18} />
-					)}
-				</ActionIcon>
-			</Tooltip>
-			<Tooltip
-				label={
-					<>
-						<Stack spacing={0} gap={0}>
-							<Text align="center">
-								{loginUser?.name} ( {loginUser?.username} )
-							</Text>
-							<Text align="center">{t("LogoutAltL")}</Text>
-						</Stack>
-					</>
-				}
-				bg={"#635031"}
-				withArrow
-				position={"left"}
-				multiline
-			>
-				<ActionIcon onClick={onLogout} variant="subtle" className="mt-6 header-action-icon">
-					<IconLogout size={18} />
-				</ActionIcon>
-			</Tooltip>
-			<Tooltip
-				label={isOnline ? t("Online") : t("Offline")}
-				bg={isOnline ? "green.5" : "red.5"}
-				withArrow
-			>
-				<ActionIcon className="mt-6 header-action-icon" variant="filled" radius="xl">
-					{isOnline ? <IconWifi size={20} /> : <IconWifiOff size={20} />}
-				</ActionIcon>
-			</Tooltip>
-		</Flex>
+		</>
 	);
 };
 
@@ -415,15 +415,11 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 	const navigate = useNavigate();
 	const height = mainAreaHeight - 140;
 	const { toggle, fullscreen } = useFullscreen();
-	const [languageSelected, setLanguageSelected] = useState(
-		languages.find((item) => item.value === i18n.language)
-	);
+	const [languageSelected, setLanguageSelected] = useState(languages.find((item) => item.value === i18n.language));
 	const [shortcutModalOpen, setShortcutModalOpen] = useState(false);
 	const [value, setValue] = useState("");
 	const [filteredItems, setFilteredItems] = useState([]);
 	const [selectedIndex, setSelectedIndex] = useState(-1);
-	const matches = useMediaQuery("(max-width: 1070px)");
-	const matches2 = useMediaQuery("(max-width: 768px)");
 
 	useHotkeys(
 		[
@@ -437,9 +433,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 
 	useEffect(() => {
 		if (selectedIndex >= 0 && filteredItems.length > 0) {
-			const selectedElement = document.getElementById(
-				`item-${filteredItems[selectedIndex].index}`
-			);
+			const selectedElement = document.getElementById(`item-${filteredItems[selectedIndex].index}`);
 			if (selectedElement) {
 				selectedElement.scrollIntoView({
 					behavior: "smooth",
@@ -525,9 +519,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 			setSelectedIndex((prevIndex) => (prevIndex + 1) % filteredItems.length);
 		} else if (event.key === "ArrowUp") {
 			event.preventDefault();
-			setSelectedIndex((prevIndex) =>
-				prevIndex <= 0 ? filteredItems.length - 1 : prevIndex - 1
-			);
+			setSelectedIndex((prevIndex) => (prevIndex <= 0 ? filteredItems.length - 1 : prevIndex - 1));
 		} else if (event.key === "Enter" && selectedIndex >= 0) {
 			handleActionSelect(filteredItems[selectedIndex]);
 		}
@@ -565,9 +557,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 				<Modal.Overlay />
 				<Modal.Content p={"xs"}>
 					<Modal.Header ml={"xs"}>
-						<Modal.Title>
-							{configData?.domain?.company_name || configData?.domain?.name || ""}
-						</Modal.Title>
+						<Modal.Title>{configData?.domain?.company_name || configData?.domain?.name || ""}</Modal.Title>
 						<Modal.CloseButton />
 					</Modal.Header>
 					<Modal.Body>
@@ -578,19 +568,18 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 			<Box bg="var(--theme-primary-color-6)" pos="relative">
 				<Grid columns={24} align="left" gutter={{ base: 2 }}>
 					<Grid.Col span={12}>
-						<Flex
-							gap="md"
-							justify="flex-start"
-							align="center"
-							direction="row"
-							wrap="wrap"
-						>
-							<Box><Logo configData={configData} navigate={navigate} /></Box>
-							<Box><Text c={'white'}>২৫০ শয্যা বিশিষ্ট টিবি হাসপাতাল</Text></Box>
+						<Flex gap="md" justify="flex-start" align="center" direction="row" wrap="wrap">
+							<Box>
+								<Logo configData={configData} navigate={navigate} />
+							</Box>
+							<Box>
+								<Text c={"white"}>২৫০ শয্যা বিশিষ্ট টিবি হাসপাতাল</Text>
+							</Box>
 						</Flex>
 					</Grid.Col>
 					<Grid.Col span={12}>
 						<HeaderActions
+							height={height}
 							isOnline={isOnline}
 							fullscreen={fullscreen}
 							toggle={toggle}
@@ -639,9 +628,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 						<Stack spacing="xs">
 							{filteredItems
 								.reduce((groups, item) => {
-									const existingGroup = groups.find(
-										(g) => g.group === item.group
-									);
+									const existingGroup = groups.find((g) => g.group === item.group);
 									if (existingGroup) {
 										existingGroup.items.push(item);
 									} else {
@@ -667,10 +654,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 												<ActionItem
 													key={itemIndex}
 													action={action}
-													isSelected={
-														filteredItems.indexOf(action) ===
-														selectedIndex
-													}
+													isSelected={filteredItems.indexOf(action) === selectedIndex}
 													onClick={() => {
 														setShortcutModalOpen(false);
 														setValue("");

@@ -632,6 +632,8 @@ export default function PatientReport({
 	const generateTabItems = () => {
 		const currentSection = getCurrentSection();
 
+		console.log(currentSection);
+
 		if (!currentSection) {
 			return (
 				<Box bg="var(--mantine-color-white)" p="les">

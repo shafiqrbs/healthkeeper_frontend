@@ -491,7 +491,10 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 														tooltip={t("EnterComment")}
 														placeholder={t("EnterComment")}
 														name="comment"
-														disabled={invoiceDetails?.process === "Done"}
+														disabled={
+															invoiceDetails?.process === "Done" ||
+															selectedRecords.length === 0
+														}
 													/>
 												</Box>
 											</Grid.Col>
@@ -546,7 +549,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 												<Box mt="xs">
 													<Button.Group>
 														<Button
-															disabled={invoiceDetails.length === 0}
+															disabled={selectedRecords.length === 0}
 															type="submit"
 															w="100%"
 															size="compact-sm"
