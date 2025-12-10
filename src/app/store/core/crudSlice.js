@@ -14,6 +14,14 @@ import { formatDate } from "@/common/utils";
 
 const initialState = {
 	// --------------- core modules starts -------------------
+	auth: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+	},
 
 	free_patient: {
 		isLoading: true,

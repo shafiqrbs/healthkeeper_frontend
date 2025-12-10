@@ -61,10 +61,7 @@ const languages = [
 ];
 
 const getActionPath = (action) => {
-	if (
-		(action.group === "Domain" && action.id === "dashboard") ||
-		(action.group === "ডোমেইন" && action.id === "dashboard")
-	) {
+	if ((action.group === "Domain" && action.id === "dashboard") || (action.group === "ডোমেইন" && action.id === "dashboard")) {
 		return `b2b/${action.id}`;
 	}
 	if (action.group === "Production" || action.group === "প্রোডাকশন") {
@@ -235,14 +232,7 @@ const SearchInput = ({ value, onChange, onKeyDown, onClear }) => {
 // Action Item Component
 const ActionItem = ({ action, isSelected, onClick }) => (
 	<Link id={`item-${action.index}`} className={"link"} to={getActionPath(action)} onClick={onClick}>
-		<Group
-			wrap="nowrap"
-			align="center"
-			justify="left"
-			pt={"4"}
-			pb={"4"}
-			className={isSelected ? "highlightedItem" : ""}
-		>
+		<Group wrap="nowrap" align="center" justify="left" pt={"4"} pb={"4"} className={isSelected ? "highlightedItem" : ""}>
 			<ThemeIcon size={18} color={"#242424"} variant="transparent">
 				<IconArrowRight />
 			</ThemeIcon>
@@ -283,16 +273,7 @@ const LanguagePicker = ({ languageSelected, onLanguageChange }) => {
 };
 
 // Header Actions Component
-const HeaderActions = ({
-	height,
-	isOnline,
-	fullscreen,
-	toggle,
-	loginUser,
-	onLogout,
-	languageSelected,
-	handleLanguageChange,
-}) => {
+const HeaderActions = ({ height, isOnline, fullscreen, toggle, loginUser, onLogout, languageSelected, handleLanguageChange }) => {
 	const { t } = useTranslation();
 	const { colorScheme, setColorScheme } = useMantineColorScheme({ keepTransitions: true });
 	const storageKey = "mantine-color-scheme";
@@ -354,8 +335,8 @@ const HeaderActions = ({
 				</Tooltip>
 				<Menu shadow="md" width={200}>
 					<Menu.Target>
-						<ActionIcon variant="subtle" mt={"6"} color={"white"}>
-							<IconUserHexagon size={24} />
+						<ActionIcon className="mt-6 header-action-icon" variant="subtle">
+							<IconUserHexagon size={18} />
 						</ActionIcon>
 					</Menu.Target>
 
@@ -399,11 +380,7 @@ const HeaderActions = ({
 				</Tooltip>
 			</Flex>
 
-			<ChangePassword
-				height={height}
-				resetPasswordOpened={resetPasswordOpened}
-				closeResetPassword={closeResetPassword}
-			/>
+			<ChangePassword height={height} resetPasswordOpened={resetPasswordOpened} closeResetPassword={closeResetPassword} />
 		</>
 	);
 };
@@ -492,9 +469,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 	function filterList(searchValue) {
 		const updatedList = getActions().reduce((acc, group) => {
 			if (hasAccessToGroup(group.group)) {
-				const filteredActions = group.actions.filter((action) =>
-					action.label.toLowerCase().includes(searchValue.toLowerCase())
-				);
+				const filteredActions = group.actions.filter((action) => action.label.toLowerCase().includes(searchValue.toLowerCase()));
 				return [...acc, ...filteredActions];
 			}
 			return acc;
@@ -612,12 +587,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 				}}
 				title={
 					<Box>
-						<SearchInput
-							value={value}
-							onChange={handleSearchChange}
-							onKeyDown={handleKeyDown}
-							onClear={clearSearch}
-						/>
+						<SearchInput value={value} onChange={handleSearchChange} onKeyDown={handleKeyDown} onClear={clearSearch} />
 					</Box>
 				}
 				transitionProps={{ transition: "fade", duration: 200 }}
@@ -644,12 +614,7 @@ export default function Header({ isOnline, configData, mainAreaHeight }) {
 										<Text size="sm" fw="bold" c="#828282" pb={"xs"}>
 											{groupData.group}
 										</Text>
-										<Stack
-											bg="var(--mantine-color-body)"
-											justify="flex-start"
-											align="stretch"
-											gap="2"
-										>
+										<Stack bg="var(--mantine-color-body)" justify="flex-start" align="stretch" gap="2">
 											{groupData.items.map((action, itemIndex) => (
 												<ActionItem
 													key={itemIndex}
