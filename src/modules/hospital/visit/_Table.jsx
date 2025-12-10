@@ -295,17 +295,11 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
 						{ accessor: "name", sortable: true, title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
-						{
+						/*{
 							accessor: "patient_payment_mode_name",
 							sortable: true,
 							title: t("Patient"),
-						},
-						{ accessor: "total", title: t("Total") },
-						{
-							accessor: "created_by",
-							title: t("CreatedBy"),
-							render: (item) => item?.created_by || "N/A",
-						},
+						},*/
 						{
 							title: t("Action"),
 							textAlign: "right",

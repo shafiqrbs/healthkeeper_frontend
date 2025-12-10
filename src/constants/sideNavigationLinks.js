@@ -77,10 +77,18 @@ export const sideNavigationLinks = {
 		},
 
 		{
+			label: t("Pres.Board"),
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX_BOARD,
+			icon: IconBuildingHospital,
+			color: "#e92214", // Purple
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_opd"],
+		},
+
+		{
 			label: t("IPD"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
 			icon: IconBuildingHospital,
-			color: "#9C27B0", // Purple
+			color: "#2ac119", // Purple
 
 			allowedRoles: [
 				"role_domain",
