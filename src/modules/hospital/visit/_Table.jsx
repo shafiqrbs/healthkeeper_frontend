@@ -2,17 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {
-	ActionIcon,
-	Box,
-	Button,
-	Flex,
-	FloatingIndicator,
-	Group,
-	Menu, Modal,
-	Tabs,
-	Text,
-} from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Modal, Tabs, Text } from "@mantine/core";
 import {
 	IconArrowRight,
 	IconChevronUp,
@@ -21,7 +11,8 @@ import {
 	IconX,
 	IconPrinter,
 	IconScript,
-	IconPencil, IconAdjustmentsCog,
+	IconPencil,
+	IconAdjustmentsCog,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -68,7 +59,7 @@ const CSV_HEADERS = [
 	{ label: "CreatedBy", key: "created_by" },
 ];
 
-export default function Table({ module, height, closeTable, availableClose = false }) {
+export default function Table({ module, height, closeTable, availableClose = false, baseForm }) {
 	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
@@ -77,8 +68,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
-	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] =
-		useDisclosure(false);
+	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
 	const { user, userRoles } = useAppLocalStore();
 	const [singlePatientData, setSinglePatientData] = useState({});
 
@@ -86,9 +76,14 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		initialValues: {
 			keywordSearch: "",
 			created: formatDate(new Date()),
-			room_id: "",
+			room_id: baseForm.values.room_id,
 		},
 	});
+
+	useEffect(() => {
+		form.setFieldValue("room_id", baseForm.values?.room_id);
+	}, [baseForm.values.room_id]);
+
 	const handlePos = useReactToPrint({
 		content: () => posRef.current,
 	});
@@ -125,26 +120,24 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setControlsRefs(controlsRefs);
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-			filterParams: {
-				patient_mode: "opd",
-				term: form.values.keywordSearch,
-				room_id: form.values.room_id,
-				prescription_mode: processTab,
-				created: form.values.created,
-				created_by_id:
-					userRoles.includes("operator_manager") ||
-					userRoles.includes("admin_administrator")
-						? undefined
-						: user?.id,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "created_at",
-			direction: "desc",
-		});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+		filterParams: {
+			patient_mode: "opd",
+			term: form.values.keywordSearch,
+			room_id: form.values.room_id,
+			prescription_mode: processTab,
+			created: form.values.created,
+			created_by_id:
+				userRoles.includes("operator_manager") || userRoles.includes("admin_administrator")
+					? undefined
+					: user?.id,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+	});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
@@ -238,16 +231,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							/>
 						</Tabs.List>
 					</Tabs>
-					{/*<Button
-						onClick={handleOpenViewOverview}
-						size="xs"
-						radius="es"
-						rightSection={<IconArrowRight size={16} />}
-						bg="var(--theme-success-color)"
-						c="white"
-					>
-						{t("VisitOverview")}
-					</Button>*/}
 					<Button
 						variant="light"
 						onClick={openOpdRoom}
@@ -330,16 +313,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (values) => {
 								return (
 									<Flex justify="flex-end">
-										{formatDate(new Date()) ===
-											formatDate(values?.created_at) && (
+										{formatDate(new Date()) === formatDate(values?.created_at) && (
 											<ActionIcon
 												variant="transparent"
 												onClick={(e) => patientUpdate(e, values?.id)}
 											>
-												<IconPencil
-													size={18}
-													color="var(--theme-success-color)"
-												/>
+												<IconPencil size={18} color="var(--theme-success-color)" />
 											</ActionIcon>
 										)}
 										<Group
@@ -364,11 +343,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 														radius="es"
 														aria-label="Settings"
 													>
-														<IconDotsVertical
-															height={18}
-															width={18}
-															stroke={1.5}
-														/>
+														<IconDotsVertical height={18} width={18} stroke={1.5} />
 													</ActionIcon>
 												</Menu.Target>
 												<Menu.Dropdown>
@@ -410,9 +385,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 																	/>
 																}
 																onClick={() =>
-																	handlePrescriptionPrint(
-																		values?.prescription_id
-																	)
+																	handlePrescriptionPrint(values?.prescription_id)
 																}
 															>
 																{t("Prescription")}
@@ -444,11 +417,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			</Box>
 			<DataTableFooter indexData={listData} module="visit" />
 			{selectedPrescriptionId && (
-				<DetailsDrawer
-					opened={opened}
-					close={close}
-					prescriptionId={selectedPrescriptionId}
-				/>
+				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
 
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
@@ -476,6 +445,5 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				<OpdRoomStatusModal closeOpdRoom={closeOpdRoom} closeTable={close} height={height - 220} />
 			</Modal>
 		</Box>
-
 	);
 }

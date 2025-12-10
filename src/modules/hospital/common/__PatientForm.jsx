@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState, useRef } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import { IconSearch, IconAlertCircle, IconChevronRight, IconAdjustmentsCog } from "@tabler/icons-react";
+import { IconSearch, IconAlertCircle, IconChevronRight, IconAdjustmentsCog, IconDoor } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -97,15 +97,7 @@ const USER_NID_DATA = {
 
 const roomModule = MODULES_CORE.OPD_ROOM;
 
-export default function PatientForm({
-	form,
-	module,
-	type = "opd_ticket",
-	setSelectedRoom,
-	handleRoomClick,
-	filteredAndSortedRecords,
-	selectedRoom,
-}) {
+export default function PatientForm({ form, module, type = "opd_ticket" }) {
 	const searchForm = useForm({
 		initialValues: {
 			type: "PID",
@@ -282,9 +274,9 @@ export default function PatientForm({
 				form={form}
 				module={module}
 				type={type}
-				handleRoomClick={handleRoomClick}
-				filteredAndSortedRecords={filteredAndSortedRecords}
-				selectedRoom={selectedRoom}
+				// handleRoomClick={handleRoomClick}
+				// filteredAndSortedRecords={filteredAndSortedRecords}
+				// selectedRoom={selectedRoom}
 				visible={visible}
 				setVisible={setVisible}
 			/>
@@ -292,7 +284,7 @@ export default function PatientForm({
 				form={form}
 				opened={openedDoctorsRoom}
 				close={closeDoctorsRoom}
-				setSelectedRoom={setSelectedRoom}
+				// setSelectedRoom={setSelectedRoom}
 			/>
 			<Modal opened={opened} onClose={close} size="100%" centered withCloseButton={false}>
 				<Table module={module} closeTable={close} height={mainAreaHeight - 220} availableClose />
@@ -306,9 +298,9 @@ export function Form({
 	showTitle = false,
 	module,
 	type = "opd_ticket",
-	handleRoomClick,
-	filteredAndSortedRecords,
-	selectedRoom,
+	// handleRoomClick,
+	// filteredAndSortedRecords,
+	// selectedRoom,
 	visible,
 	setVisible,
 }) {
@@ -536,12 +528,12 @@ export function Form({
 										</Button>
 									)}
 									<Button
+										onClick={(event) => event.preventDefault()}
 										size={"xs"}
-										onClick={openRoom}
 										color="var('--theme-primary-color-2')"
-										rightSection={<IconChevronRight size="16px" />}
+										leftSection={<IconDoor size="16px" />}
 									>
-										{selectedRoom?.name}
+										{form.values?.room_name}
 									</Button>
 								</Group>
 							</Flex>
@@ -975,7 +967,7 @@ export function Form({
 				</Stack>
 			</Modal>
 
-			<GlobalDrawer
+			{/* <GlobalDrawer
 				opened={openedRoom}
 				close={closeRoom}
 				title="Select a Room"
@@ -994,7 +986,7 @@ export function Form({
 						/>
 					))}
 				</ScrollArea>
-			</GlobalDrawer>
+			</GlobalDrawer> */}
 			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered withCloseButton={false}>
 				<OpdRoomModal closeOpdRoom={closeOpdRoom} closeTable={close} height={mainAreaHeight - 220} />
 			</Modal>

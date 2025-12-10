@@ -1,4 +1,4 @@
-import {Box, Flex, Grid, ScrollArea} from "@mantine/core";
+import { Box, Flex, Grid, ScrollArea } from "@mantine/core";
 import Navigation from "@components/layout/Navigation";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import { useOutletContext } from "react-router-dom";
@@ -7,14 +7,14 @@ import { useForm } from "@mantine/form";
 import { getVendorFormInitialValues } from "./helpers/request";
 import { useTranslation } from "react-i18next";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
-import {MODULES, MODULES_CORE} from "@/constants";
+import { MODULES, MODULES_CORE } from "@/constants";
 import _Table from "./_Table";
 import OpdRoomModal from "@hospital-components/OpdRoomModal";
 import RoomCard from "@hospital-components/RoomCard";
-import {useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
-import {getIndexEntityData} from "@/app/store/core/crudThunk";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { getIndexEntityData } from "@/app/store/core/crudThunk";
 // import {useMantineScale} from "@/hooks/useMantineScale";
 
 const module = MODULES.VISIT;
@@ -35,7 +35,6 @@ export default function Index() {
 	const dispatch = useDispatch();
 	const rooms = useSelector((state) => state.crud[roomModule].data);
 	const refetching = useSelector((state) => state.crud[roomModule].refetching);
-
 
 	// Dynamically scale table height and spacing
 	// const scaledTableHeight = mainAreaHeight * scale;
@@ -89,8 +88,8 @@ export default function Index() {
 	const handleRoomClick = (room) => {
 		setSelectedRoom(room);
 		form.setFieldValue("room_id", room.id);
+		form.setFieldValue("room_name", room.name);
 	};
-	console.log(filteredAndSortedRecords)
 
 	return (
 		<>
@@ -105,19 +104,25 @@ export default function Index() {
 								<Form form={form} module={module} />
 							</Grid.Col>
 							<Grid.Col span={4}>
-								<ScrollArea h={mainAreaHeight - 70} scrollbars="y" mt="xs" p="xs" bg="var(--mantine-color-white)">
+								<ScrollArea
+									h={mainAreaHeight - 10}
+									scrollbars="y"
+									p="xs"
+									bg="var(--mantine-color-white)"
+								>
 									{filteredAndSortedRecords?.map((item, index) => (
 										<RoomCard
 											key={index}
 											room={item}
 											selectedRoom={selectedRoom}
 											handleRoomClick={handleRoomClick}
+											closeRoom={() => {}}
 										/>
 									))}
 								</ScrollArea>
 							</Grid.Col>
 							<Grid.Col span={12}>
-								<_Table module={module} height={scaledTableHeight} />
+								<_Table module={module} height={scaledTableHeight} baseForm={form} />
 							</Grid.Col>
 						</Grid>
 					</Flex>
