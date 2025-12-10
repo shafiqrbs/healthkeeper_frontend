@@ -48,8 +48,11 @@ export default function PatientReport({
 	const { particularsData } = useParticularsData({ modeName });
 	const tabParticulars = particularsData?.map((item) => ({
 		...item.particular_type,
-		is_additional_field: item.is_additional_field ?? 0,
+	//	is_additional_field: item.is_additional_field ?? 1,
+		is_additional_field: 1,
 	}));
+
+	console.log(tabParticulars)
 
 	const handleDynamicFormChange = ({
 		id,
