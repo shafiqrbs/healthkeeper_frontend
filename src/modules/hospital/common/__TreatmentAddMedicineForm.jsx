@@ -9,11 +9,10 @@ import { useDebouncedState, useHotkeys } from "@mantine/hooks";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { DURATION_TYPES, ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
-import { deleteEntityData, getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { deleteEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,29 +23,39 @@ import SelectForm from "@components/form-builders/SelectForm";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/Table.module.css";
 import {
+	appendDosageValueToForm,
 	appendDurationModeValueToForm,
 	appendGeneralValuesToForm,
+	appendMealValueToForm,
 	isGenericIdDuplicate,
 	medicineOptionsFilter,
 } from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import useAppLocalStore from "@hooks/useAppLocalStore";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 
 export default function TreatmentAddMedicineForm({ medicines, module, setMedicines }) {
-	const { features } = useAppLocalStore();
+	const {
+		features,
+		meals,
+		dosages,
+		medicines: medicineData,
+		localMedicines: medicineGenericData,
+	} = useAppLocalStore();
 	const [updateKey, setUpdateKey] = useState(0);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
 	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
-	const { medicineData } = useMedicineData({ term: medicineTerm });
-	const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
+	// const { medicineData } = useMedicineData({ term: medicineTerm });
+	// const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
 	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const { treatmentId } = useParams();
 	const dispatch = useDispatch();
-	const refetching = useSelector((state) => state.crud.dosage?.refetching);
-	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
+	const [medicineByMealSearchValue, setMedicineByMealSearchValue] = useState("");
+	const [medicineDosageSearchValue, setMedicineDosageSearchValue] = useState("");
+	const [durationModeKey, setDurationModeKey] = useState(0);
 
 	const {
 		data: entity,
@@ -63,6 +72,14 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		}
 	}, [medicineTerm]);
 
+	const durationModeDropdown = features?.medicineDuration?.modes
+		? features?.medicineDuration?.modes.map((mode) => ({
+				value: mode.id?.toString(),
+				label: mode.name,
+				name_bn: mode.name_bn,
+		  }))
+		: [];
+
 	// Add hotkey for save functionality
 	useHotkeys([
 		[
@@ -78,22 +95,16 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		],
 	]);
 
-	const durationModeDropdown = features?.medicineDuration?.modes
-		? features?.medicineDuration?.modes.map((mode) => ({
-				value: mode.id?.toString(),
-				label: mode.name,
-				name_bn: mode.name_bn,
-		  }))
-		: [];
-
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
 
 		// If medicine field is being changed, auto-populate other fields from medicine data
-		if (field === "medicine_id" && value) {
-			medicineForm.clearFieldError("generic");
-			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
-
+		if ((field === "medicine_id" || field === "generic") && value) {
+			const selectedMedicine =
+				field === "medicine_id"
+					? medicineData?.find((item) => item.product_id?.toString() === value)
+					: medicineGenericData?.find((item) => item.generic === value);
+			console.log("selectedMedicine", selectedMedicine);
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 				medicineForm.setFieldValue("stock_id", selectedMedicine?.stock_id?.toString());
@@ -106,22 +117,26 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 				if (selectedMedicine.duration_mode) {
 					appendDurationModeValueToForm(medicineForm, durationModeDropdown, selectedMedicine.duration_mode);
 				}
+
+				if (selectedMedicine.medicine_bymeal_id) {
+					appendMealValueToForm(medicineForm, meals, selectedMedicine.medicine_bymeal_id);
+				}
+
+				if (selectedMedicine.medicine_dosage_id) {
+					appendDosageValueToForm(medicineForm, dosages, selectedMedicine.medicine_dosage_id);
+				}
 			}
 		}
 
-		if (field === "generic" && value) {
-			medicineForm.clearFieldError("medicine_id");
+		if (value && (field === "medicine_id" || field === "generic")) {
+			medicineForm.clearFieldError(field === "medicine_id" ? "generic" : "medicine_id");
 		}
 	};
 
 	const handleAdd = (values) => {
 		// =============== check if generic_id already exists in medicines array ================
 		if (isGenericIdDuplicate(medicines, values.generic_id)) {
-			notifications.show({
-				color: ERROR_NOTIFICATION_COLOR,
-				title: t("GenericAlreadyExists"),
-				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
-			});
+			handleResetToInitialState();
 			return;
 		}
 
@@ -190,6 +205,17 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		}
 	};
 
+	const handleResetToInitialState = () => {
+		medicineForm.reset();
+		setMedicineDosageSearchValue("");
+		setMedicineByMealSearchValue("");
+		setMedicineTerm("");
+		setMedicineGenericTerm("");
+		setDurationModeKey((prev) => prev + 100);
+		showNotificationComponent(t("GenericAlreadyExists"), "red", "lightgray", true, 700, true);
+		requestAnimationFrame(() => document.getElementById("medicine_id").focus());
+	};
+
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box
@@ -201,7 +227,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 			>
 				<Group grow preventGrowOverflow={false} w="100%" gap="les">
 					<Grid columns={24} gutter="3xs" mt="2xs" p="les">
-						<Grid.Col span={11}>
+						<Grid.Col span={12}>
 							<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 								<Select
 									clearable
@@ -227,14 +253,14 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 								/>
 							</FormValidatorWrapper>
 						</Grid.Col>
-						<Grid.Col span={11}>
+						<Grid.Col span={12}>
 							<FormValidatorWrapper opened={medicineForm.errors.generic}>
 								<Autocomplete
-									tooltip={t("EnterGenericName")}
+									tooltip={t("EnterSelfMedicine")}
 									id="generic"
 									name="generic"
 									data={medicineGenericData?.map((item, index) => ({
-										label: item.name,
+										label: item.name || item.product_name || item.generic,
 										value: `${item.name} ${index}`,
 									}))}
 									value={medicineForm.values.generic}
@@ -242,13 +268,64 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 										handleChange("generic", v);
 										setMedicineGenericTerm(v);
 									}}
-									placeholder={t("GenericName")}
+									placeholder={t("SelfMedicine")}
 									classNames={inputCss}
 									error={!!medicineForm.errors.generic}
 								/>
 							</FormValidatorWrapper>
 						</Grid.Col>
-						{/*<Grid.Col span={3}>
+						<Grid.Col span={12}>
+							<Group grow gap="les">
+								<FormValidatorWrapper
+									position="bottom-end"
+									opened={medicineForm.errors.medicine_dosage_id}
+								>
+									<Select
+										searchable
+										clearable
+										searchValue={medicineDosageSearchValue}
+										onSearchChange={setMedicineDosageSearchValue}
+										classNames={inputCss}
+										id="medicine_dosage_id"
+										name="medicine_dosage_id"
+										data={dosages?.map((dosage) => ({
+											value: dosage.id?.toString(),
+											label: dosage.name,
+										}))}
+										value={medicineForm.values?.medicine_dosage_id}
+										placeholder={t("Dosage")}
+										tooltip={t("EnterDosage")}
+										onChange={(v) => handleChange("medicine_dosage_id", v)}
+										error={!!medicineForm.errors.medicine_dosage_id}
+									/>
+								</FormValidatorWrapper>
+
+								<FormValidatorWrapper
+									position="bottom-end"
+									opened={medicineForm.errors.medicine_bymeal_id}
+								>
+									<Select
+										searchable
+										clearable
+										searchValue={medicineByMealSearchValue}
+										onSearchChange={setMedicineByMealSearchValue}
+										classNames={inputCss}
+										id="medicine_bymeal_id"
+										name="medicine_bymeal_id"
+										data={meals?.map((byMeal) => ({
+											value: byMeal.id?.toString(),
+											label: byMeal.name,
+										}))}
+										value={medicineForm.values?.medicine_bymeal_id}
+										placeholder={t("ByMeal")}
+										tooltip={t("EnterWhenToTakeMedicine")}
+										onChange={(v) => handleChange("medicine_bymeal_id", v)}
+										error={!!medicineForm.errors.medicine_bymeal_id}
+									/>
+								</FormValidatorWrapper>
+							</Group>
+						</Grid.Col>
+						<Grid.Col span={4}>
 							<InputNumberForm
 								form={medicineForm}
 								id="quantity"
@@ -259,21 +336,28 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 								tooltip={t("EnterQuantity")}
 							/>
 						</Grid.Col>
-						<Grid.Col span={3}>
-							<SelectForm
-								form={medicineForm}
-								label=""
-								id="duration"
-								name="duration"
-								dropdownValue={DURATION_TYPES}
-								value={medicineForm.values.duration}
-								placeholder={t("Duration")}
-								required
-								tooltip={t("EnterMeditationDuration")}
-								withCheckIcon={false}
-							/>
-						</Grid.Col>*/}
-						<Grid.Col span={2}>
+						<Grid.Col span={4}>
+							<FormValidatorWrapper position="bottom-end" opened={medicineForm.errors.duration}>
+								<Select
+									key={durationModeKey}
+									clearable
+									classNames={inputCss}
+									id="duration"
+									name="duration"
+									data={durationModeDropdown.map((item) => ({
+										value: item.label,
+										label: item.label,
+									}))}
+									value={medicineForm.values?.duration}
+									placeholder={t("DurationMode")}
+									tooltip={t("EnterMeditationDurationMode")}
+									onChange={(v) => handleChange("duration", v)}
+									error={!!medicineForm.errors.duration}
+									withCheckIcon={false}
+								/>
+							</FormValidatorWrapper>
+						</Grid.Col>
+						<Grid.Col span={4}>
 							<Button
 								w="100%"
 								leftSection={<IconPlus size={16} />}

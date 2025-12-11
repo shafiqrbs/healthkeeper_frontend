@@ -35,6 +35,8 @@ export const appendDosageValueToForm = (form, dosage_options, id) => {
 	if (!form) return console.error("form should be passed in dosage function");
 	const dosage = getDosage(dosage_options, id);
 
+	console.log("Dosage: ", dosage, dosage_options, id);
+
 	form.setFieldValue("medicine_dosage_id", id?.toString());
 	form.setFieldValue("dose_details", dosage?.name);
 	form.setFieldValue("dose_details_bn", dosage?.name_bn);
@@ -43,6 +45,8 @@ export const appendDosageValueToForm = (form, dosage_options, id) => {
 export const appendDurationModeValueToForm = (form, duration_mode_options, label) => {
 	if (!form) return console.error("form should be passed in duration mode function");
 	const durationMode = getDurationMode(duration_mode_options, label);
+
+	console.log("Duration Mode: ", durationMode, duration_mode_options, label);
 
 	form.setFieldValue("duration", label);
 	form.setFieldValue("duration_mode_bn", durationMode?.name_bn);
