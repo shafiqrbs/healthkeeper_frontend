@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Box, Button, Group, Select, Autocomplete, rem, ActionIcon, Grid } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconAlertCircle, IconPlus, IconTrashX } from "@tabler/icons-react";
@@ -9,7 +9,7 @@ import { useDebouncedState, useHotkeys } from "@mantine/hooks";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import { DURATION_TYPES, ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import inputCss from "@/assets/css/InputField.module.css";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import { deleteEntityData, storeEntityData } from "@/app/store/core/crudThunk";
@@ -42,6 +42,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		medicines: medicineData,
 		localMedicines: medicineGenericData,
 	} = useAppLocalStore();
+	console.log(medicineGenericData);
 	const [updateKey, setUpdateKey] = useState(0);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -56,7 +57,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 	const [medicineByMealSearchValue, setMedicineByMealSearchValue] = useState("");
 	const [medicineDosageSearchValue, setMedicineDosageSearchValue] = useState("");
 	const [durationModeKey, setDurationModeKey] = useState(0);
-
+	const genericRef = useRef(null);
 	const {
 		data: entity,
 		refetch: refetchEntity,
@@ -256,13 +257,17 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 						<Grid.Col span={12}>
 							<FormValidatorWrapper opened={medicineForm.errors.generic}>
 								<Autocomplete
+									ref={genericRef}
 									tooltip={t("EnterSelfMedicine")}
 									id="generic"
 									name="generic"
 									data={medicineGenericData?.map((item, index) => ({
 										label: item.name || item.product_name || item.generic,
 										value: `${item.name} ${index}`,
+										generic: item?.generic || "",
 									}))}
+									limit={20}
+									filter={medicineOptionsFilter}
 									value={medicineForm.values.generic}
 									onChange={(v) => {
 										handleChange("generic", v);

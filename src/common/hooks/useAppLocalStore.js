@@ -113,7 +113,6 @@ function safeGet(root, path, fallback) {
  */
 export default function useAppLocalStore() {
 	const authStorage = useAuthStore((state) => state);
-	// console.log(authStorage);
 
 	const store = useMemo(() => {
 		/* ---------------- Basic Fields ---------------- */
