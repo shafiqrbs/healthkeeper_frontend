@@ -266,6 +266,7 @@ export default function MedicineListItem({
 									<Grid gutter="les" columns={24}>
 										<Grid.Col span={isOpdType ? 5 : 8}>
 											<Select
+												searchable
 												size="xs"
 												label=""
 												data={dosage_options?.map((dosage) => ({
@@ -281,6 +282,7 @@ export default function MedicineListItem({
 										</Grid.Col>
 										<Grid.Col span={isOpdType ? 5 : 8}>
 											<Select
+												searchable
 												label=""
 												size="xs"
 												data={by_meal_options?.map((byMeal) => ({

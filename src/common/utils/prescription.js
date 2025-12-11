@@ -73,7 +73,7 @@ export const appendGeneralValuesToForm = (form, selectedMedicine) => {
 	if (selectedMedicine.duration_mode_bn) {
 		form.setFieldValue("duration_mode_bn", selectedMedicine.duration_mode_bn);
 	}
-	form.setFieldValue("generic", selectedMedicine.generic);
+	// form.setFieldValue("generic", selectedMedicine.generic);
 	form.setFieldValue("generic_id", selectedMedicine.generic_id);
 	form.setFieldValue("company", selectedMedicine.company);
 	form.setFieldValue("opd_quantity", selectedMedicine?.opd_quantity || 0);
@@ -142,12 +142,27 @@ export const generateMedicinePayload = (form, selectedMedicine, options = {}) =>
 
 export const medicineOptionsFilter = ({ options, search }) => {
 	const splittedSearch = search.toLowerCase().trim().split(" ");
-	return options.filter((option) => {
-		const labelWords = option.label.toLowerCase().trim().split(" ");
-		const genericWords = (option.generic || "").toLowerCase().trim().split(" ");
+
+	let count = 0;
+	const result = [];
+
+	for (const option of options) {
+		const labelWords = option?.label?.toLowerCase()?.trim()?.split(" ") || [];
+		const genericWords = (option?.generic || "").toLowerCase()?.trim()?.split(" ") || [];
 		const allWords = [...labelWords, ...genericWords];
-		return splittedSearch.every((searchWord) => allWords.some((word) => word.includes(searchWord)));
-	});
+
+		const isMatch = splittedSearch.every((searchWord) => allWords.some((word) => word.includes(searchWord)));
+
+		if (isMatch) {
+			result.push(option);
+			count++;
+
+			// stop early—return only the first 20
+			if (count === 20) break;
+		}
+	}
+
+	return result;
 };
 
 /**
@@ -159,8 +174,6 @@ export const medicineOptionsFilter = ({ options, search }) => {
  * @returns {boolean} True if generic_id already exists, false otherwise.
  */
 export const isGenericIdDuplicate = (medicines, genericId) => {
-	console.log("medicines", medicines);
-	console.log("genericId", genericId);
 	if (!medicines || medicines.length === 0) return false;
 	if (!genericId) return false;
 

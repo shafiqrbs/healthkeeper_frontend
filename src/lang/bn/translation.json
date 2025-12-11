@@ -970,5 +970,6 @@
 	"PrintDateAndTime": "প্রিন্ট তারিখ ও সময়",
 	"RelationWithPatient": "রোগীর সম্পর্ক",
 	"QuantityCannotBeGreaterThanOpdQuantity": "মেডিসিনের পরিমাণ ওপিডি পরিমাণ অপেক্ষা বেশি হতে পারে না",
-	"AreYouSureYouWantCreateAE-FreshPrescription": "আপনি কি নিশ্চিত যে আপনি একটি নতুন ই-ফ্রেশ প্রেসক্রিপশন তৈরি করতে চান?"
+	"AreYouSureYouWantCreateAE-FreshPrescription": "আপনি কি নিশ্চিত যে আপনি একটি নতুন ই-ফ্রেশ প্রেসক্রিপশন তৈরি করতে চান?",
+	"EnterSelfMedicine": "নিজস্ব মেডিসিন লিখুন"
 }

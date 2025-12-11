@@ -1616,5 +1616,7 @@
 	"ManageParticularMode": "Manage Particular Mode",
 	"ParticularMode": "Particular Mode",
 	"StockItemHistory": "Stock Item History",
-	"Copy": "Copy"
+	"Copy": "Copy",
+	"EnterSelfMedicine": "Enter Self-Medicine",
+	"SelfMedicine": "Self-Medicine"
 }

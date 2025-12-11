@@ -81,8 +81,17 @@ export default function AddMedicineForm({
 	ignoreOpdQuantityLimit = false,
 	redirectUrl = null,
 }) {
-	const { user, meals, dosages, advices, features } = useAppLocalStore();
+	const {
+		user,
+		meals,
+		dosages,
+		advices,
+		features,
+		medicines: medicineData,
+		localMedicines: medicineGenericData,
+	} = useAppLocalStore();
 
+	const [medicineIdDropdownOpened, setMedicineIdDropdownOpened] = useState(false);
 	const medicineIdRef = useRef(null);
 	const genericRef = useRef(null);
 	const navigate = useNavigate();
@@ -94,8 +103,8 @@ export default function AddMedicineForm({
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
 	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
-	const { medicineData } = useMedicineData({ term: medicineTerm });
-	const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
+	// const { medicineData } = useMedicineData({ term: medicineTerm });
+	// const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
 	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
@@ -302,9 +311,11 @@ export default function AddMedicineForm({
 		medicineForm.setFieldValue(field, value);
 
 		// If medicine field is being changed, auto-populate other fields from medicine data
-		if (field === "medicine_id" && value) {
-			medicineForm.clearFieldError("generic");
-			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
+		if ((field === "medicine_id" && value) || (field === "generic" && value)) {
+			const selectedMedicine =
+				field === "medicine_id"
+					? medicineData?.find((item) => item.product_id?.toString() === value)
+					: medicineGenericData?.find((item) => item.generic === value);
 			console.log(selectedMedicine);
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
@@ -350,8 +361,8 @@ export default function AddMedicineForm({
 			}
 		}
 
-		if (field === "generic" && value) {
-			medicineForm.clearFieldError("medicine_id");
+		if (value && (field === "medicine_id" || field === "generic")) {
+			medicineForm.clearFieldError(field === "medicine_id" ? "generic" : "medicine_id");
 		}
 
 		if (field === "medicine_bymeal_id" && value) {
@@ -543,6 +554,12 @@ export default function AddMedicineForm({
 		setTimeout(() => open(), 10);
 	};
 
+	const handleMedicineSearch = (value) => {
+		setMedicineTerm(value);
+
+		setMedicineIdDropdownOpened(value.length > 0);
+	};
+
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box
@@ -559,10 +576,11 @@ export default function AddMedicineForm({
 								<Grid.Col span={6}>
 									<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 										<Select
+											dropdownOpened={medicineIdDropdownOpened}
 											ref={medicineIdRef}
 											clearable
 											searchable
-											onSearchChange={setMedicineTerm}
+											onSearchChange={handleMedicineSearch}
 											id="medicine_id"
 											name="medicine_id"
 											data={medicineData?.map((item) => ({
@@ -570,13 +588,15 @@ export default function AddMedicineForm({
 												value: item.product_id?.toString(),
 												generic: item.generic || "",
 											}))}
+											onBlur={() => setMedicineIdDropdownOpened(false)}
+											onDropdownClose={() => setMedicineIdDropdownOpened(false)}
+											limit={20}
 											filter={medicineOptionsFilter}
 											value={medicineForm.values.medicine_id}
 											onChange={(v) => handleChange("medicine_id", v)}
 											placeholder={t("MedicinePlaceholder")}
 											tooltip="Select medicine"
 											nothingFoundMessage="Type to find medicine..."
-											// onBlur={() => setMedicineTerm("")}
 											classNames={inputCss}
 											error={!!medicineForm.errors.medicine_id}
 										/>
@@ -586,21 +606,22 @@ export default function AddMedicineForm({
 									<FormValidatorWrapper opened={medicineForm.errors.generic}>
 										<Autocomplete
 											ref={genericRef}
-											tooltip={t("EnterGenericName")}
+											tooltip={t("EnterSelfMedicine")}
 											id="generic"
 											name="generic"
 											data={medicineGenericData?.map((item, index) => ({
-												label: item?.name || item?.product_name,
+												label: item?.name || item?.product_name || item?.generic,
 												value: `${item.name} ${index}`,
 												generic: item?.generic || "",
 											}))}
+											limit={20}
 											filter={medicineOptionsFilter}
 											value={medicineForm.values.generic}
 											onChange={(v) => {
 												handleChange("generic", v);
 												setMedicineGenericTerm(v);
 											}}
-											placeholder={t("GenericNamePlaceholder")}
+											placeholder={t("SelfMedicine")}
 											// onBlur={() => setMedicineGenericTerm("")}
 											classNames={inputCss}
 											error={!!medicineForm.errors.generic}
