@@ -45,6 +45,7 @@ export const medicineInitialValues = {
 	// medicine_bymeal_id: "",
 	times: "",
 	duration: "",
+	duration_mode_id: "",
 	quantity: "",
 	opd_quantity: "",
 };
@@ -64,7 +65,7 @@ export const getMedicineFormInitialValues = () => {
 					? "Medicine or Generic name is required"
 					: null;
 			},
-			// medicine_dosage_id: (value) => (value ? null : "Dosage is required"),
+			medicine_dosage_id: (value) => (value ? null : "Dosage is required"),
 			// medicine_bymeal_id: (value) => (value ? null : "By Meal is required"),
 			// quantity: (value) => (value > 0 ? null : "Amount must be greater than 0"),
 		},
