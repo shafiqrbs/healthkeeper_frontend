@@ -11,7 +11,7 @@ const DefaultCustomReport = forwardRef(({reportData,report}) => {
 	console.log(mainAreaHeight)
 	return (
 		<Box>
-			<Box mb="md" p={'xl'} mt={'100'} fz={'md'} h={650}>
+			<Box mb="md" p={'xl'} pt={'md'} fz={'md'} h={750}>
 				<div dangerouslySetInnerHTML={{__html:getValue(reportData?.findings)}}/>
 				{report?.comment && (
 					<Box p="md" pt={0}>
