@@ -42,7 +42,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		medicines: medicineData,
 		localMedicines: medicineGenericData,
 	} = useAppLocalStore();
-	console.log(medicineGenericData);
+
 	const [updateKey, setUpdateKey] = useState(0);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -90,8 +90,6 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 				medicineForm.reset();
 
 				setEditIndex(null);
-				// Clear PatientReport data when resetting
-				medicineForm.reset();
 			},
 		],
 	]);
@@ -103,8 +101,8 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		if ((field === "medicine_id" || field === "generic") && value) {
 			const selectedMedicine =
 				field === "medicine_id"
-					? medicineData?.find((item) => item.product_id?.toString() === value)
-					: medicineGenericData?.find((item) => item.generic === value);
+					? medicineData?.find((item) => item.product_id?.toString() === value?.toString())
+					: medicineGenericData?.find((item) => item.generic === value?.toString());
 			console.log("selectedMedicine", selectedMedicine);
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
@@ -143,14 +141,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 
 		handleConfirmModal(values);
 
-		if (editIndex !== null) {
-			const updated = [...medicines];
-			updated[editIndex] = values;
-			setMedicines(updated);
-			setEditIndex(null);
-		} else {
-			setMedicines([...medicines, values]);
-		}
+		setMedicines([...medicines, values]);
 
 		setUpdateKey((prev) => prev + 1);
 		medicineForm.reset();
