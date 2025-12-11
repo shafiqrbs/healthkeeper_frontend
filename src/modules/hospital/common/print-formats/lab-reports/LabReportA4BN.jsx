@@ -99,15 +99,15 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										>
 											<Table.Tbody>
 												<Table.Tr>
-													<Table.Td w={"33%"} align={"left"}>
+													<Table.Td w={"25%"} align={"left"}>
 														{report?.uid ? (
 															<Barcode fontSize="8" width="1" height="32" value={report.uid} />
 														) : null}
 													</Table.Td>
-													<Table.Td w={"33%"} align={"center"}>
-														<Text fz={"xl"}>{report?.particular?.category?.name} Report</Text>
+													<Table.Td w={"50%"} align={"center"}>
+														<Text fz={"xl"}>{report?.particular?.category?.name}</Text>
 													</Table.Td>
-													<Table.Td w={"33%"} align={"right"}>
+													<Table.Td w={"25%"} align={"right"}>
 														{patientInfo?.patient_id ? (
 															<Barcode
 																fontSize="8"
