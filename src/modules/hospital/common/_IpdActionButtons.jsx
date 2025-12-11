@@ -39,9 +39,11 @@ export default function IpdActionButtons({
 	const isReturn = remainingBalance < 0;
 	const displayLabelKey = "Due";
 	const displayAmount = Math.abs(remainingBalance);
+
 	useEffect(() => {
 		form.setFieldValue("days", quantity);
 	}, [quantity]);
+
 	console.log(subTotal);
 
 	useEffect(() => {
@@ -257,14 +259,14 @@ export default function IpdActionButtons({
 									</Text>
 								</Stack>
 							</Button>
-							<Button w="100%" bg="var(--theme-hold-btn-color)" disabled={isSubmitting}>
+							{/* <Button w="100%" bg="var(--theme-hold-btn-color)" disabled={isSubmitting}>
 								<Stack gap={0} align="center" justify="center">
 									<Text>{t("Hold")}</Text>
 									<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 										(alt + h)
 									</Text>
 								</Stack>
-							</Button>
+							</Button> */}
 							<Button
 								w="100%"
 								onClick={handleIPDDetails}
@@ -278,7 +280,7 @@ export default function IpdActionButtons({
 									</Text>
 								</Stack>
 							</Button>
-							<Button
+							{/* <Button
 								w="100%"
 								onClick={handleIPDPrint}
 								bg="var(--theme-secondary-color-6)"
@@ -290,7 +292,7 @@ export default function IpdActionButtons({
 										(alt + p)
 									</Text>
 								</Stack>
-							</Button>
+							</Button> */}
 							<Button
 								id="EntityFormSubmit"
 								w="100%"
