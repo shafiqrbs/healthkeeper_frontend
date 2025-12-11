@@ -25,23 +25,9 @@ const DefaultCustomReport = forwardRef(({reportData,report}) => {
 				)}
 			</Box>
 			{/* =============== Additional Information Section ================ */}
-
 			<Box p="md" pt={0} pb={0}>
 				<Grid columns={12} gutter="xs">
-					<Grid.Col span={4}>
-						<Box>
-							<Box h={40} ta="center">
-								{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
-							</Box>
-							<Text fw="bold" size="xs" mb="sm" ta="center">
-								{report?.assign_labuser_name}
-							</Text>
-							<Text fw="bold" ta="center">
-								Medical Technologist(Lab)
-							</Text>
-						</Box>
-					</Grid.Col>
-					<Grid.Col span={4}></Grid.Col>
+					<Grid.Col span={8}/>
 					<Grid.Col span={4}>
 						<Box>
 							<Box h={40} ta="center">
@@ -49,9 +35,6 @@ const DefaultCustomReport = forwardRef(({reportData,report}) => {
 							</Box>
 							<Text fw="bold" size="xs" mb="sm" ta="center">
 								{report?.assign_doctor_name}
-							</Text>
-							<Text fw="bold" mb="sm" ta="center">
-								Clinical Pathologist
 							</Text>
 						</Box>
 					</Grid.Col>
