@@ -1,12 +1,12 @@
 import { getDataWithoutStore } from "@/services/apiService";
 import { Box, Text, Stack, Grid, Flex, Button, ActionIcon } from "@mantine/core";
-import { useEffect, useMemo, useState } from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { IconChevronUp, IconSelector, IconX } from "@tabler/icons-react";
+import {IconChevronUp, IconPrinter, IconSelector, IconX} from "@tabler/icons-react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -21,10 +21,14 @@ import { useDispatch } from "react-redux";
 import { useHotkeys } from "@mantine/hooks";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import {useReactToPrint} from "react-to-print";
+import usePrintAfterUpdate from "@hooks/usePrintAfterUpdate";
+import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
+import AdmissionInvoiceBN from "@hospital-components/print-formats/admission/AdmissionInvoiceBN";
 
 const module = MODULES_CORE.BILLING;
 
-export default function InvoiceDetails({ entity }) {
+export default function InvoiceDetails({ entity,setRefetchBillingKey }) {
 	const navigate = useNavigate();
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
 	const { id } = useParams();
@@ -35,6 +39,9 @@ export default function InvoiceDetails({ entity }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
+	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
+	const invoicePrintRef = useRef(null);
+	const { setPendingPrint } = usePrintAfterUpdate(invoicePrint, invoiceDetails);
 
 	// =============== separate forms for investigation and room submissions ================
 	const investigationForm = useForm({
@@ -43,19 +50,6 @@ export default function InvoiceDetails({ entity }) {
 			...getFormValues(t).initialValues,
 			amount: "",
 		},
-		/*validate: {
-			amount: (value) => {
-				const hasValue = value !== "" && value !== null && value !== undefined;
-				const numericValue = Number(value);
-				if (!hasValue) {
-					return t("EnterAmount") || "Amount is required";
-				}
-				if (Number.isNaN(numericValue)) {
-					return t("AmountMustBeNumber") || "Amount must be a number";
-				}
-				return null;
-			},
-		},*/
 	});
 	const roomForm = useForm({
 		...getFormValues(t),
@@ -116,20 +110,7 @@ export default function InvoiceDetails({ entity }) {
 	const createSubmitHandler = (targetForm, payloadSource) => (values) => {
 		let jsonContent = [];
 
-		if (payloadSource === "investigation") {
-			const allInvestigationRecords = investigationRecords || [];
-			const currentSelectedRecords = selectedRecords || [];
-
-			jsonContent = allInvestigationRecords.map((record) => {
-				const isSelected = currentSelectedRecords.some(
-					(selectedRecord) => String(selectedRecord.id) === String(record.id)
-				);
-				return {
-					...record,
-					is_selected: isSelected,
-				};
-			});
-		} else if (payloadSource === "room") {
+		if (payloadSource === "room") {
 			const allRoomItems = roomItems || [];
 			jsonContent = allRoomItems.map((item) => ({
 				...item,
@@ -177,30 +158,15 @@ export default function InvoiceDetails({ entity }) {
 				setInvestigationRecords([]);
 				navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION_BILLING.INDEX, { replace: true });
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				setRefetchBillingKey((prev) => prev + 1);
+				setSelectedRecords([]);
+				setPendingPrint(true);
 			}
 		} catch (error) {
 			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
-
-	// const handleSelectedRecordsChange = (nextSelectedRecords) => {
-	// 	const mandatoryRecords = investigationRecords?.filter((record) => record.is_new) || [];
-
-	// 	const optionalSelectedRecords = nextSelectedRecords?.filter((record) => !record.is_new) || [];
-
-	// 	const mergedSelectedRecords = [
-	// 		...mandatoryRecords,
-	// 		...optionalSelectedRecords.filter(
-	// 			(optionalRecord) =>
-	// 				!mandatoryRecords.some(
-	// 					(mandatoryRecord) => String(mandatoryRecord.id) === String(optionalRecord.id)
-	// 				)
-	// 		),
-	// 	];
-
-	// 	setSelectedRecords(mergedSelectedRecords);
-	// };
 
 	useHotkeys(
 		[
@@ -252,6 +218,12 @@ export default function InvoiceDetails({ entity }) {
 	const isRoomReturn = roomDifference > 0 || isRoomEqualZero;
 	const roomDueAmount = isRoomDue ? Math.abs(roomDifference) : 0;
 	const roomReturnAmount = isRoomReturn ? Math.abs(roomDifference) : 0;
+
+	useHotkeys(
+		[
+			["alt+p", createSubmitHandler],
+		],
+	);
 
 	return (
 		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -345,7 +317,7 @@ export default function InvoiceDetails({ entity }) {
 							<Box w="100%">
 								<Grid columns={18} gutter="xs">
 									<Grid.Col
-										span={6}
+										span={12}
 										className="animate-ease-out"
 										bg="var(--theme-primary-color-0)"
 										px="xs"
@@ -359,36 +331,6 @@ export default function InvoiceDetails({ entity }) {
 												name="comment"
 												disabled={invoiceDetails?.process === "Done"}
 											/>
-										</Box>
-									</Grid.Col>
-									<Grid.Col span={6} bg="var(--theme-tertiary-color-1)" className="animate-ease-out">
-										<Box mt="xs">
-											<Grid align="center" columns={20}>
-												<Grid.Col span={8}>
-													<Flex justify="flex-end" align="center" gap="es">
-														<Text fz="xs">{t("CreatedBy")}</Text>
-													</Flex>
-												</Grid.Col>
-												<Grid.Col span={12}>
-													<Flex align="right" gap="es">
-														<Text fz="xs">
-															{invoiceDetails?.created_doctor_info?.name || "N/A"}
-														</Text>
-													</Flex>
-												</Grid.Col>
-											</Grid>
-											<Grid align="center" columns={20}>
-												<Grid.Col span={8}>
-													<Flex justify="flex-end" align="center" gap="es">
-														<Text fz="sm">{t("Total")}</Text>
-													</Flex>
-												</Grid.Col>
-												<Grid.Col span={12}>
-													<Flex align="right" gap="es">
-														<Text fz="sm">{investigationSubtotal || 0}</Text>
-													</Flex>
-												</Grid.Col>
-											</Grid>
 										</Box>
 									</Grid.Col>
 									<Grid.Col
@@ -405,39 +347,27 @@ export default function InvoiceDetails({ entity }) {
 											</Grid.Col>
 											<Grid.Col span={8}>
 												{investigationSubtotal || 0}
-												{/*<InputNumberForm
-													form={investigationForm}
-													label=""
-													tooltip={t("EnterAmount")}
-													placeholder={t("Amount")}
-													name="amount"
-													id="investigation-amount"
-													disabled={invoiceDetails?.process === "Done"}
-												/>*/}
 											</Grid.Col>
-											{/*<Grid.Col span={7}>
-												{isInvestigationDue && (
-													<Text fz="sm" c="red">
-														{t("Due")}: {investigationDueAmount}
-													</Text>
-												)}
-												{!isInvestigationDue && isInvestigationReturn && (
-													<Text fz="sm" c="green">
-														{t("Return")}: {investigationReturnAmount}
-													</Text>
-												)}
-											</Grid.Col>*/}
 										</Grid>
 										<Box mt="xs">
 											<Button.Group>
 												<Button
 													type="submit"
 													w="100%"
-													size="compact-sm"
-													bg="var(--theme-save-btn-color)"
+													size="sm"
+													bg="var(--theme-primary-color-6)"
+													leftSection={
+														<IconPrinter
+															style={{ width: "70%", height: "70%" }}
+															stroke={1.5}
+														/>
+													}
 												>
 													<Stack gap={0} align="center" justify="center">
-														<Text fz="xs">{t("Save")}</Text>
+														<Text fz="md">{t("Print")}</Text>
+														<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+															(alt + p)
+														</Text>
 													</Stack>
 												</Button>
 											</Button.Group>
@@ -456,6 +386,7 @@ export default function InvoiceDetails({ entity }) {
 					{t("NoTestSelected")}
 				</Stack>
 			</Box>
+			<AdmissionInvoiceBN data={invoiceDetails} ref={invoicePrintRef} />
 		</Box>
 	);
 }

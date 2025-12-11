@@ -162,7 +162,7 @@ export const medicineOptionsFilter = ({ options, search }) => {
 			count++;
 
 			// stop early—return only the first 20
-			if (count === 20) break;
+			if (count === 100) break;
 		}
 	}
 

@@ -51,6 +51,7 @@ const REFUND_ID = "1";
 const FREE_SERVICE_ID = "786934884211";
 const PURCHASE_ID = "8";
 const INDENT_ID = "858945689606";
+const ADMISSION_ID = "697";
 
 export default function Details() {
 	const { name } = useParams();
@@ -91,6 +92,10 @@ export default function Details() {
 
 	const { data: indentData, isLoading: isIndentDataLoading } = useDataWithoutStore({
 		url: `${PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.VIEW}/${INDENT_ID}`,
+	});
+
+	const { data: admissionData, isLoading: isAdmissionDataLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${ADMISSION_ID}`,
 	});
 
 	//console.log(prescriptionData?.data)
@@ -181,8 +186,13 @@ export default function Details() {
 						</LoadingWrapper>
 					)}
 					{name === "AdmissionFormBN" && (
-						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<AdmissionFormBN preview data={IPDData?.data} />
+						<LoadingWrapper isLoading={isAdmissionDataLoading}>
+							<AdmissionFormBN preview data={admissionData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "AdmissionInvoiceBN" && (
+						<LoadingWrapper isLoading={isAdmissionDataLoading}>
+							<AdmissionInvoiceBN preview data={admissionData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "AdmissionFormEN" && (
@@ -265,16 +275,7 @@ export default function Details() {
 							<DetailsInvoicePosEN preview data={prescriptionData?.data} />
 						</LoadingWrapper>
 					)}
-					{name === "AdmissionInvoiceBN" && (
-						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<AdmissionInvoiceBN preview data={prescriptionData?.data} />
-						</LoadingWrapper>
-					)}
-					{name === "AdmissionInvoiceEN" && (
-						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<AdmissionInvoiceEN preview data={prescriptionData?.data} />
-						</LoadingWrapper>
-					)}
+
 					{name === "FreeServiceFormBN" && (
 						<LoadingWrapper isLoading={isFreeServiceLoading}>
 							<FreeServiceFormBN preview data={freeServiceData?.data} />

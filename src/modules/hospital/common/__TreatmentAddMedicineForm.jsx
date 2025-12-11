@@ -109,13 +109,17 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 				medicineForm.setFieldValue("stock_id", selectedMedicine?.stock_id?.toString());
 				// Auto-populate duration and count based on duration_day or duration_month
 
-				if (selectedMedicine.duration) {
-					medicineForm.setFieldValue("quantity", selectedMedicine.duration);
-				}
+				// if (selectedMedicine.quantity) {
+				// 	medicineForm.setFieldValue("quantity", selectedMedicine.quantity);
+				// }
 
-				if (selectedMedicine.duration_mode) {
-					appendDurationModeValueToForm(medicineForm, durationModeDropdown, selectedMedicine.duration_mode);
-				}
+				// if (selectedMedicine.duration_mode_id) {
+				// 	appendDurationModeValueToForm(
+				// 		medicineForm,
+				// 		durationModeDropdown,
+				// 		selectedMedicine.duration_mode_id
+				// 	);
+				// }
 
 				if (selectedMedicine.medicine_bymeal_id) {
 					appendMealValueToForm(medicineForm, meals, selectedMedicine.medicine_bymeal_id);
@@ -222,6 +226,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 						<Grid.Col span={12}>
 							<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 								<Select
+									disabled={medicineForm.values.generic}
 									clearable
 									searchable
 									onSearchChange={(v) => {
@@ -249,6 +254,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 							<FormValidatorWrapper opened={medicineForm.errors.generic}>
 								<Autocomplete
 									ref={genericRef}
+									disabled={medicineForm.values.medicine_id}
 									tooltip={t("EnterSelfMedicine")}
 									id="generic"
 									name="generic"
@@ -321,7 +327,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 								</FormValidatorWrapper>
 							</Group>
 						</Grid.Col>
-						<Grid.Col span={4}>
+						<Grid.Col span={3}>
 							<InputNumberForm
 								form={medicineForm}
 								id="quantity"
@@ -332,28 +338,39 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 								tooltip={t("EnterQuantity")}
 							/>
 						</Grid.Col>
-						<Grid.Col span={4}>
-							<FormValidatorWrapper position="bottom-end" opened={medicineForm.errors.duration}>
+						<Grid.Col span={3}>
+							<InputNumberForm
+								form={medicineForm}
+								id="duration"
+								name="duration"
+								value={medicineForm.values.duration}
+								placeholder={t("Duration")}
+								required
+								tooltip={t("EnterQuantity")}
+							/>
+						</Grid.Col>
+						<Grid.Col span={3}>
+							<FormValidatorWrapper position="bottom-end" opened={medicineForm.errors.duration_mode_id}>
 								<Select
 									key={durationModeKey}
 									clearable
 									classNames={inputCss}
-									id="duration"
-									name="duration"
+									id="duration_mode_id"
+									name="duration_mode_id"
 									data={durationModeDropdown.map((item) => ({
-										value: item.label,
+										value: item.value,
 										label: item.label,
 									}))}
-									value={medicineForm.values?.duration}
+									value={medicineForm.values?.duration_mode_id}
 									placeholder={t("DurationMode")}
 									tooltip={t("EnterMeditationDurationMode")}
-									onChange={(v) => handleChange("duration", v)}
+									onChange={(v) => handleChange("duration_mode_id", v)}
 									error={!!medicineForm.errors.duration}
 									withCheckIcon={false}
 								/>
 							</FormValidatorWrapper>
 						</Grid.Col>
-						<Grid.Col span={4}>
+						<Grid.Col span={3}>
 							<Button
 								w="100%"
 								leftSection={<IconPlus size={16} />}
@@ -405,9 +422,9 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 						},
 
 						{
-							accessor: "medicine_dosage_quantity",
+							accessor: "quantity",
 							title: t("DosageQty"),
-							render: (item) => item?.medicine_dosage?.quantity,
+							render: (item) => item?.quantity,
 						},
 
 						{
@@ -419,7 +436,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 						{
 							accessor: "duration",
 							title: t("Duration"),
-							render: (item) => `${item?.quantity} ${item?.duration}`,
+							render: (item) => `${item?.duration} ${item?.duration_mode?.name}`,
 						},
 						{
 							accessor: "",
