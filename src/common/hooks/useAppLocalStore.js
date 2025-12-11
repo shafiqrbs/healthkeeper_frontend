@@ -156,7 +156,8 @@ export default function useAppLocalStore() {
 			dosages: safeGet(authStorage, "hospitalConfig.dosages", []),
 			opdReferredRooms: safeGet(authStorage, "hospitalConfig.opdReferredRooms", []),
 			patients: safeGet(authStorage, "hospitalConfig.patients", []),
-
+			medicines: safeGet(authStorage, "hospitalConfig.medicines", []),
+			localMedicines: safeGet(authStorage, "hospitalConfig.localMedicines", []),
 			/** Raw modules */
 			modules: safeGet(authStorage, "hospitalConfig.particularModules", {}),
 

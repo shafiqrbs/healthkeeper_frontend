@@ -61,11 +61,6 @@ export const getAdmissionFormInitialValues = () => {
 				if (!value) return "NID/BIR no is required";
 				return null;
 			},
-			card_no: (value) => {
-				if (!value) return "Card no is required";
-				if (isNaN(value)) return "Card no must be a number";
-				return null;
-			},
 			guardian_name: (value) => {
 				if (!value) return "Guardian name is required";
 				return null;

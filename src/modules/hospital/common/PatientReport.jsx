@@ -703,7 +703,7 @@ export default function PatientReport({
 								</Text>
 								{currentSection?.is_additional_field === 1 && (
 									<Switch
-										color="teal.6"
+										color="red.6"
 										size="lg"
 										onLabel="OTHER"
 										offLabel="OTHER"
