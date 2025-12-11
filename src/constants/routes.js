@@ -338,6 +338,10 @@ export const MASTER_DATA_ROUTES = {
 
 export const PHARMACY_DATA_ROUTES = {
 	API_ROUTES: {
+		REPORT: {
+			MEDICINE_ISSUE_REPORT: "pharmacy/medicine-issue-report",
+			STOCK_SUMMERY_REPORT: "pharmacy/medicine-summery-report",
+		},
 		STOCK: {
 			MEDICINE_STOCK_DROPDOWN: "medicine/select/stock",
 			PHARMACY_STOCK_HISTORY: "pharmacy/stock-item/history",

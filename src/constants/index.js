@@ -28,6 +28,10 @@ export const MODULES = {
 	FINAL_BILLING: "finalBilling",
 	DOCTOR: "doctor",
 	E_FRESH: "e_fresh",
+	REPORT: {
+		MEDICINE_ISSUE: "medicineIssue",
+		STOCK_SUMMERY: "stockSummery",
+	},
 };
 
 export const MODULES_CORE = {

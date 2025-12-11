@@ -5,6 +5,8 @@ import PatientTicket from "./items/PatientTicket";
 import { useTranslation } from "react-i18next";
 import InvoiceSummary from "@modules/hospital/reports/items/InvoiceSummary";
 import StockItemHistory from "@modules/hospital/reports/items/StockItemHistory.jsx";
+import MedicineIssue from "@modules/hospital/reports/items/MedicineIssue.jsx";
+import StockSummery from "@modules/hospital/reports/items/StockSummery.jsx";
 
 export default function DetailsRenderer() {
 	const { t } = useTranslation();
@@ -21,6 +23,10 @@ export default function DetailsRenderer() {
 				<PatientTicket />
 			) : tab === "stock-item-history" ? (
 				<StockItemHistory />
+			) : tab === "medicine-issue" ? (
+				<MedicineIssue />
+			) : tab === "stock-summery" ? (
+				<StockSummery />
 			) : null}
 		</Box>
 	);

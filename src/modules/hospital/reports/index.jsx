@@ -24,6 +24,16 @@ const REPORT_TABS = [
 		value: "stock-item-history",
 		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist"],
 	},
+	{
+		label: "Medicine Issue",
+		value: "medicine-issue",
+		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator"],
+	},
+	{
+		label: "Stock Summary",
+		value: "stock-summery",
+		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator"],
+	},
 
 ];
 

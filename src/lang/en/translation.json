@@ -1618,5 +1618,12 @@
 	"StockItemHistory": "Stock Item History",
 	"Copy": "Copy",
 	"EnterSelfMedicine": "Enter Self-Medicine",
-	"SelfMedicine": "Self-Medicine"
+	"SelfMedicine": "Self-Medicine",
+	"MedicineIssue" : "Medicine Issue",
+	"StockSummery" : "Stock summery",
+	"StockIn" : "Stock In",
+	"StockOut" : "Stock Out",
+	"ClosingQuantity" : "Closing Quantity",
+	"xxxxxxxx" : "xxxxxxxxxxx",
+	"xxxxxxxx" : "xxxxxxxxxxx"
 }
