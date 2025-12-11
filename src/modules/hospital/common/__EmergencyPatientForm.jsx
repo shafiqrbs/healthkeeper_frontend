@@ -39,6 +39,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 import SegmentedControlForm from "@components/form-builders/SegmentedControlForm";
+import TextAreaForm from "@components/form-builders/TextAreaForm";
 
 // =============== sample user data for emergency patient ================
 const USER_NID_DATA = {
@@ -181,7 +182,8 @@ export default function EmergencyPatientForm({
 		// Fill the form with selected patient data
 		form.setFieldValue("name", patient?.data?.name);
 		form.setFieldValue("mobile", patient?.data?.mobile);
-		form.setFieldValue("dob", patient?.data?.dob ? new Date(patient.data.dob) : null);
+	//	form.setFieldValue("dob", patient?.data?.dob ? new Date(patient.data.dob) : null);
+		form.setFieldValue("address", patient?.data?.address);
 		form.setFieldValue("customer_id", patient?.data?.id);
 		form.setFieldValue("year", patient?.data?.year);
 		form.setFieldValue("month", patient?.data?.month);
@@ -501,7 +503,7 @@ export function Form({
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20}>
+									{/*<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("DateOfBirth")}</Text>
 										</Grid.Col>
@@ -521,7 +523,7 @@ export function Form({
 												disabledFutureDate
 											/>
 										</Grid.Col>
-									</Grid>
+									</Grid>*/}
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Flex>
@@ -562,12 +564,31 @@ export function Form({
 													tooltip={t("EnterPatientDays")}
 													name="day"
 													id="day"
-													nextField="upazilla_id"
+													nextField="address"
 													min={0}
 													max={31}
 													readOnly={form.values.dob}
 												/>
 											</Flex>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={6}>
+											<Flex align="center" gap="es">
+												<Text fz="sm">{t("Address")}</Text>
+											</Flex>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<TextAreaForm
+												form={form}
+												label=""
+												tooltip={t("EnterPatientMobile")}
+												placeholder="Address"
+												name="address"
+												id="address"
+												nextField="upazilla_id"
+												value={form.values.address}
+											/>
 										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20}>
@@ -595,7 +616,8 @@ export function Form({
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20}>
+
+									{/*<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Type")}</Text>
 										</Grid.Col>
@@ -647,7 +669,7 @@ export function Form({
 												required
 											/>
 										</Grid.Col>
-									</Grid>
+									</Grid>*/}
 									{showUserData && (
 										<Grid align="center" columns={20}>
 											<Grid.Col span={6}>
@@ -666,7 +688,7 @@ export function Form({
 										</Grid>
 									)}
 
-									<Grid align="center" columns={20}>
+							{/*		<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("GuardianName")}</Text>
 										</Grid.Col>
@@ -701,7 +723,7 @@ export function Form({
 												required
 											/>
 										</Grid.Col>
-									</Grid>
+									</Grid>*/}
 
 									<Grid columns={20} mt="xs">
 										<Grid.Col span={20} pt="es">

@@ -292,7 +292,7 @@ export default function EntityForm({ form, module }) {
 
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("UnitName")}</Text>
+											<Text fz="sm">{t("UnitName")}<RequiredAsterisk /></Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -314,7 +314,7 @@ export default function EntityForm({ form, module }) {
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("Department")}</Text>
+											<Text fz="sm">{t("Department")}<RequiredAsterisk /></Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -357,6 +357,23 @@ export default function EntityForm({ form, module }) {
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
+											<Text fz="sm">{t("CardNo")}<RequiredAsterisk /></Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputForm
+												form={form}
+												label=""
+												tooltip={t("EnterCardNo")}
+												placeholder={t("EnterCardNo")}
+												name="card_no"
+												id="card_no"
+												value={form.values.card_no}
+												required
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={6}>
 											<Text fz="sm">{t("Comment")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
@@ -394,194 +411,7 @@ export default function EntityForm({ form, module }) {
 								</Text>
 							</Box>
 							<ScrollArea scrollbars="y" type="never" h={height}>
-								<Stack p={"xs"} gap={"mes"}>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("SpO2")}</Text>
-										</Grid.Col>
-										<Grid.Col span={5}>
-											<Flex gap="les">
-												<InputNumberForm
-													form={form}
-													label=""
-													placeholder={t("SpO2")}
-													tooltip={t("EnterPatientSpO2")}
-													name="oxygen"
-													id="oxygen"
-													nextField="temperature"
-													value={form.values.oxygen}
-													required
-												/>
-											</Flex>
-										</Grid.Col>
-										<Grid.Col span={4}>
-											<Text fz="sm">{t("Temperature")}</Text>
-										</Grid.Col>
-										<Grid.Col span={5}>
-											<Flex gap="les">
-												<InputNumberForm
-													form={form}
-													label=""
-													placeholder={t("Temperature")}
-													tooltip={t("EnterPatientTemperature")}
-													name="temperature"
-													id="temperature"
-													nextField="weight"
-													value={form.values.temperature}
-													required
-												/>
-											</Flex>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("Weight")}</Text>
-										</Grid.Col>
-										<Grid.Col span={5}>
-											<Flex gap="les">
-												<InputNumberForm
-													form={form}
-													label=""
-													placeholder="60"
-													tooltip={t("EnterPatientWeight")}
-													name="weight"
-													id="weight"
-													nextField="bp"
-													value={form.values.weight}
-													required
-												/>
-											</Flex>
-										</Grid.Col>
-										<Grid.Col span={4}>
-											<Text fz="sm">{t("Blood/Presure")}</Text>
-										</Grid.Col>
-										<Grid.Col span={5}>
-											<Flex gap="les">
-												<InputForm
-													form={form}
-													label=""
-													placeholder="120/80"
-													tooltip={t("EnterPatientBp")}
-													name="bp"
-													id="bp"
-													nextField="pulse"
-													value={form.values.bp}
-													required
-												/>
-											</Flex>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("Pulse")}</Text>
-										</Grid.Col>
-										<Grid.Col span={5}>
-											<Flex gap="les">
-												<InputForm
-													form={form}
-													label=""
-													placeholder={t("Pulse")}
-													tooltip={t("EnterPatientPulse")}
-													name="pulse"
-													id="pulse"
-													nextField="blood_sugar"
-													value={form.values.pulse}
-													required
-												/>
-											</Flex>
-										</Grid.Col>
-										<Grid.Col span={4}>
-											<Text fz="sm">{t("Blood/Sugar")}</Text>
-										</Grid.Col>
-										<Grid.Col span={5}>
-											<Flex gap="les">
-												<InputForm
-													form={form}
-													label=""
-													placeholder={t("BloodSugar")}
-													tooltip={t("BloodSugar")}
-													name="blood_sugar"
-													id="blood_sugar"
-													nextField="blood_group"
-													value={form.values.blood_sugar}
-												/>
-											</Flex>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("SatWithO2")}</Text>
-										</Grid.Col>
-										<Grid.Col span={5}>
-											<Flex gap="les">
-												<InputNumberForm
-													form={form}
-													label=""
-													placeholder={t("SatWithO2")}
-													tooltip={t("SatWithO2")}
-													name="sat_with_O2"
-													id="sat_with_O2"
-													nextField="sat_without_O2"
-													value={form.values.sat_with_O2}
-												/>
-											</Flex>
-										</Grid.Col>
-										<Grid.Col span={4}>
-											<Text fz="sm">{t("SatWithoutO2")}</Text>
-										</Grid.Col>
-										<Grid.Col span={5}>
-											<Flex gap="les">
-												<InputNumberForm
-													form={form}
-													label=""
-													placeholder={t("SatWithoutO2")}
-													tooltip={t("SatWithoutO2")}
-													name="sat_without_O2"
-													id="sat_without_O2"
-													nextField="blood_group"
-													value={form.values.sat_without_O2}
-													required
-												/>
-											</Flex>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("bloodGroup")}</Text>
-										</Grid.Col>
-										<Grid.Col span={5}>
-											<SelectForm
-												form={form}
-												name="blood_group"
-												id="blood_group"
-												dropdownValue={BLOOD_GROUPS}
-												value={form.values?.blood_group}
-												mt={0}
-												size="sm"
-												pt={0}
-												placeholder="A+"
-											/>
-										</Grid.Col>
-										<Grid.Col span={4}>
-											<Text fz="sm">{t("Respiration")}</Text>
-										</Grid.Col>
-										<Grid.Col span={5}>
-											<Flex gap="les">
-												<InputForm
-													form={form}
-													label=""
-													placeholder={t("Respiration")}
-													tooltip={t("Respiration")}
-													name="respiration"
-													id="respiration"
-													nextField="name"
-													value={form.values.respiration}
-													required
-												/>
-											</Flex>
-										</Grid.Col>
-									</Grid>
-								</Stack>
+
 								<Stack p={"xs"} gap={"mes"}>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
@@ -705,56 +535,6 @@ export default function EntityForm({ form, module }) {
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("Religion")}
-												<RequiredAsterisk />
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("SelectReligionValidateMessage")}
-												placeholder={t("SelectReligion")}
-												name="religion_id"
-												id="religion_id"
-												nextField="name"
-												value={form.values.religion_id}
-												dropdownValue={religionDropdown}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("CardNo")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputForm
-												form={form}
-												label=""
-												tooltip={t("EnterCardNo")}
-												placeholder={t("EnterCardNo")}
-												name="card_no"
-												id="card_no"
-												value={form.values.card_no}
-												required
-											/>
-										</Grid.Col>
-									</Grid>
-								</Stack>
-							</ScrollArea>
-						</Box>
-					</Grid.Col>
-					<Grid.Col className="form-stack-vertical" span={8}>
-						<Box>
-							<Box bg="var(--theme-primary-color-0)" p="sm">
-								<Text fw={600} fz="sm" py="es">
-									{t("PersonalInformation")}
-								</Text>
-							</Box>
-							<ScrollArea scrollbars="y" type="never" h={height}>
-								<Stack p="xs" gap={"mes"}>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
 											<Text fz="sm">{t("Type")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
@@ -779,8 +559,8 @@ export default function EntityForm({ form, module }) {
 												{form.values.identity_mode === "NID"
 													? t("NID")
 													: form.values.identity_mode === "BRID"
-													? t("BRID")
-													: t("HID")}
+														? t("BRID")
+														: t("HID")}
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={9}>
@@ -821,40 +601,25 @@ export default function EntityForm({ form, module }) {
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("FatherName")}</Text>
+											<Text fz="sm">
+												{t("Religion")}
+												<RequiredAsterisk />
+											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
-											<InputForm
+											<SelectForm
 												form={form}
-												label=""
-												tooltip={t("EnterFatherName")}
-												placeholder={t("EnterFatherName")}
-												name="father_name"
-												id="father_name"
-												nextField="father_name"
-												value={form.values.father_name}
-												required
+												tooltip={t("SelectReligionValidateMessage")}
+												placeholder={t("SelectReligion")}
+												name="religion_id"
+												id="religion_id"
+												nextField="name"
+												value={form.values.religion_id}
+												dropdownValue={religionDropdown}
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("MotherName")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputForm
-												form={form}
-												label=""
-												tooltip={t("EnterMotherName")}
-												placeholder={t("EnterMotherName")}
-												name="mother_name"
-												id="mother_name"
-												nextField="identity"
-												value={form.values.mother_name}
-												required
-											/>
-										</Grid.Col>
-									</Grid>
+
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">
@@ -897,7 +662,291 @@ export default function EntityForm({ form, module }) {
 											/>
 										</Grid.Col>
 									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={6}>
+											<Flex align="center" gap="es">
+												<Text fz="sm">{t("Upazilla")}</Text>
+											</Flex>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("EnterPatientUpazilla")}
+												placeholder="Upazilla - District"
+												name="upazilla_id"
+												id="upazilla_id"
+												nextField="identity"
+												value={form.values.upazilla_id}
+												required
+												dropdownValue={locations?.data?.map((location) => ({
+													label: `${location.district || "District"} - ${location.name}`,
+													value: location.id?.toString(),
+												}))}
+												searchable
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={6}>
+											<Text fz="sm">
+												{t("PresentAddress")}
+												<RequiredAsterisk />
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<TextAreaForm
+												form={form}
+												label=""
+												tooltip={t("EnterPresentAddress")}
+												placeholder="12 street, 123456"
+												name="address"
+												id="address"
+												nextField="permanent_address"
+												value={form.values.address}
+												required
+											/>
+										</Grid.Col>
+									</Grid>
 
+
+
+								</Stack>
+							</ScrollArea>
+						</Box>
+					</Grid.Col>
+					<Grid.Col className="form-stack-vertical" span={8}>
+						<Box>
+							<Box bg="var(--theme-primary-color-0)" p="sm">
+								<Text fw={600} fz="sm" py="es">
+									{t("PersonalInformation")}
+								</Text>
+							</Box>
+							<ScrollArea scrollbars="y" type="never" h={height}>
+								<Stack p="xs" gap={"mes"}>
+									<Stack p={"xs"} gap={"mes"}>
+										<Grid align="center" columns={20}>
+											<Grid.Col span={6}>
+												<Text fz="sm">{t("SpO2")}</Text>
+											</Grid.Col>
+											<Grid.Col span={5}>
+												<Flex gap="les">
+													<InputNumberForm
+														form={form}
+														label=""
+														placeholder={t("SpO2")}
+														tooltip={t("EnterPatientSpO2")}
+														name="oxygen"
+														id="oxygen"
+														nextField="temperature"
+														value={form.values.oxygen}
+														required
+													/>
+												</Flex>
+											</Grid.Col>
+											<Grid.Col span={4}>
+												<Text fz="sm">{t("Temperature")}</Text>
+											</Grid.Col>
+											<Grid.Col span={5}>
+												<Flex gap="les">
+													<InputNumberForm
+														form={form}
+														label=""
+														placeholder={t("Temperature")}
+														tooltip={t("EnterPatientTemperature")}
+														name="temperature"
+														id="temperature"
+														nextField="weight"
+														value={form.values.temperature}
+														required
+													/>
+												</Flex>
+											</Grid.Col>
+										</Grid>
+										<Grid align="center" columns={20}>
+											<Grid.Col span={6}>
+												<Text fz="sm">{t("Weight")}</Text>
+											</Grid.Col>
+											<Grid.Col span={5}>
+												<Flex gap="les">
+													<InputNumberForm
+														form={form}
+														label=""
+														placeholder="60"
+														tooltip={t("EnterPatientWeight")}
+														name="weight"
+														id="weight"
+														nextField="bp"
+														value={form.values.weight}
+														required
+													/>
+												</Flex>
+											</Grid.Col>
+											<Grid.Col span={4}>
+												<Text fz="sm">{t("Blood/Presure")}</Text>
+											</Grid.Col>
+											<Grid.Col span={5}>
+												<Flex gap="les">
+													<InputForm
+														form={form}
+														label=""
+														placeholder="120/80"
+														tooltip={t("EnterPatientBp")}
+														name="bp"
+														id="bp"
+														nextField="pulse"
+														value={form.values.bp}
+														required
+													/>
+												</Flex>
+											</Grid.Col>
+										</Grid>
+										<Grid align="center" columns={20}>
+											<Grid.Col span={6}>
+												<Text fz="sm">{t("Pulse")}</Text>
+											</Grid.Col>
+											<Grid.Col span={5}>
+												<Flex gap="les">
+													<InputForm
+														form={form}
+														label=""
+														placeholder={t("Pulse")}
+														tooltip={t("EnterPatientPulse")}
+														name="pulse"
+														id="pulse"
+														nextField="blood_sugar"
+														value={form.values.pulse}
+														required
+													/>
+												</Flex>
+											</Grid.Col>
+											<Grid.Col span={4}>
+												<Text fz="sm">{t("Blood/Sugar")}</Text>
+											</Grid.Col>
+											<Grid.Col span={5}>
+												<Flex gap="les">
+													<InputForm
+														form={form}
+														label=""
+														placeholder={t("BloodSugar")}
+														tooltip={t("BloodSugar")}
+														name="blood_sugar"
+														id="blood_sugar"
+														nextField="blood_group"
+														value={form.values.blood_sugar}
+													/>
+												</Flex>
+											</Grid.Col>
+										</Grid>
+										<Grid align="center" columns={20}>
+											<Grid.Col span={6}>
+												<Text fz="sm">{t("SatWithO2")}</Text>
+											</Grid.Col>
+											<Grid.Col span={5}>
+												<Flex gap="les">
+													<InputNumberForm
+														form={form}
+														label=""
+														placeholder={t("SatWithO2")}
+														tooltip={t("SatWithO2")}
+														name="sat_with_O2"
+														id="sat_with_O2"
+														nextField="sat_without_O2"
+														value={form.values.sat_with_O2}
+													/>
+												</Flex>
+											</Grid.Col>
+											<Grid.Col span={4}>
+												<Text fz="sm">{t("SatWithoutO2")}</Text>
+											</Grid.Col>
+											<Grid.Col span={5}>
+												<Flex gap="les">
+													<InputNumberForm
+														form={form}
+														label=""
+														placeholder={t("SatWithoutO2")}
+														tooltip={t("SatWithoutO2")}
+														name="sat_without_O2"
+														id="sat_without_O2"
+														nextField="blood_group"
+														value={form.values.sat_without_O2}
+														required
+													/>
+												</Flex>
+											</Grid.Col>
+										</Grid>
+										<Grid align="center" columns={20}>
+											<Grid.Col span={6}>
+												<Text fz="sm">{t("bloodGroup")}</Text>
+											</Grid.Col>
+											<Grid.Col span={5}>
+												<SelectForm
+													form={form}
+													name="blood_group"
+													id="blood_group"
+													dropdownValue={BLOOD_GROUPS}
+													value={form.values?.blood_group}
+													mt={0}
+													size="sm"
+													pt={0}
+													placeholder="A+"
+												/>
+											</Grid.Col>
+											<Grid.Col span={4}>
+												<Text fz="sm">{t("Respiration")}</Text>
+											</Grid.Col>
+											<Grid.Col span={5}>
+												<Flex gap="les">
+													<InputForm
+														form={form}
+														label=""
+														placeholder={t("Respiration")}
+														tooltip={t("Respiration")}
+														name="respiration"
+														id="respiration"
+														nextField="name"
+														value={form.values.respiration}
+														required
+													/>
+												</Flex>
+											</Grid.Col>
+										</Grid>
+									</Stack>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("FatherName")}</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputForm
+												form={form}
+												label=""
+												tooltip={t("EnterFatherName")}
+												placeholder={t("EnterFatherName")}
+												name="father_name"
+												id="father_name"
+												nextField="father_name"
+												value={form.values.father_name}
+												required
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("MotherName")}</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputForm
+												form={form}
+												label=""
+												tooltip={t("EnterMotherName")}
+												placeholder={t("EnterMotherName")}
+												name="mother_name"
+												id="mother_name"
+												nextField="identity"
+												value={form.values.mother_name}
+												required
+											/>
+										</Grid.Col>
+									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("RelationWithPatient")}</Text>
@@ -937,56 +986,10 @@ export default function EntityForm({ form, module }) {
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Flex align="center" gap="es">
-												<Text fz="sm">{t("Upazilla")}</Text>
-											</Flex>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("EnterPatientUpazilla")}
-												placeholder="Upazilla - District"
-												name="upazilla_id"
-												id="upazilla_id"
-												nextField="identity"
-												value={form.values.upazilla_id}
-												required
-												dropdownValue={locations?.data?.map((location) => ({
-													label: `${location.district || "District"} - ${location.name}`,
-													value: location.id?.toString(),
-												}))}
-												searchable
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">
-												{t("PresentAddress")}
-												<RequiredAsterisk />
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputForm
-												form={form}
-												label=""
-												tooltip={t("EnterPresentAddress")}
-												placeholder="12 street, 123456"
-												name="address"
-												id="address"
-												nextField="permanent_address"
-												value={form.values.address}
-												required
-											/>
-										</Grid.Col>
-									</Grid>
-
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
 											<Text fz="sm">{t("PermanentAddress")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
-											<InputForm
+											<TextAreaForm
 												form={form}
 												label=""
 												tooltip={t("EnterPermanentAddress")}

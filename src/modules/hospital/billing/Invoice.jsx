@@ -127,16 +127,9 @@ export default function Invoice({ entity }) {
 								<Text fz="sm">{item.mobile}</Text>
 								<Text fz="sm">{item.payment_mode_name}</Text>
 							</Box>
-							<Button.Group>
-								<ActionIcon
-									variant="filled"
-									color="var(--theme-primary-color-6)"
-									radius="xs"
-									aria-label="Settings"
-								>
-									<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
-								</ActionIcon>
-							</Button.Group>
+						</Flex>
+						<Flex align="center" gap="3xs">
+							<Text fz="sm">Year: {item.year}</Text>
 						</Flex>
 					</Grid.Col>
 				</Grid>

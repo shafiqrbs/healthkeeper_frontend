@@ -79,6 +79,13 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		},
 	});
 
+	const isWithinThreeDays = (date) => {
+		const created = new Date(date);
+		const today = new Date();
+		const diff = (today - created) / (1000 * 60 * 60 * 24); // difference in days
+		return diff <= 3; // allow 3 days
+	};
+
 	const handlePos = useReactToPrint({
 		content: () => posRef.current,
 	});

@@ -56,7 +56,7 @@ export default function _Table({ module, open }) {
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
-
+	const [updatingRows, setUpdatingRows] = useState({});
 	const { data: byMealDropdown } = useGlobalDropdownData({
 		path: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
 		utility: PHARMACY_DROPDOWNS.BY_MEAL.UTILITY,
@@ -133,6 +133,7 @@ export default function _Table({ module, open }) {
 				ipd_status: item.ipd_status || "",
 				opd_status: item.opd_status || "",
 				admin_status: item.opd_status || "",
+				status: item.status || "",
 				medicine_dosage_id: item.medicine_dosage_id || "",
 				medicine_bymeal_id: item.medicine_bymeal_id || "",
 			};
@@ -173,6 +174,29 @@ export default function _Table({ module, open }) {
 			await dispatch(storeEntityData(value));
 		} catch (error) {
 			errorNotification(error.message);
+		}
+	};
+
+	const handleFieldChange = async (rowId, field, value) => {
+		setSubmitFormData((prev) => ({
+			...prev,
+			[rowId]: { ...prev[rowId], [field]: value },
+		}));
+
+		setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
+
+		try {
+			await dispatch(
+				storeEntityData({
+					url: `${PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.INLINE_UPDATE}/${rowId}`,
+					data: { [field]: value },
+					module,
+				})
+			);
+		} catch (error) {
+			errorNotification(error.message);
+		} finally {
+			setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
 		}
 	};
 
@@ -254,6 +278,24 @@ export default function _Table({ module, open }) {
 							accessor: "by_meal",
 							title: t("Bymeal"),
 							sortable: true,
+						},
+						{
+							accessor: "status",
+							title: t("Status"),
+							render: (item) => (
+								<Checkbox
+									key={item.id}
+									size="sm"
+									checked={submitFormData[item.id]?.status ?? false}
+									onChange={(val) =>
+										handleFieldChange(
+											item.id,
+											"status",
+											val.currentTarget.checked
+										)
+									}
+								/>
+							),
 						},
 
 						{
