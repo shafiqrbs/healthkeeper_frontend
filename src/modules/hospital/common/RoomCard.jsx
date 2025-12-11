@@ -8,7 +8,7 @@ export default function RoomCard({ room, selectedRoom, handleRoomClick, closeRoo
 			p="xs"
 			bg="var(--theme-tertiary-color-0)"
 			mb="les"
-			className={`borderRadiusAll cursor-pointer ${selectedRoom === room ? "active-box" : ""}`}
+			className={`borderRadiusAll cursor-pointer ${selectedRoom?.id === room?.id ? "active-box" : ""}`}
 			onClick={() => {
 				handleRoomClick(room);
 				closeRoom();

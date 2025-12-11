@@ -162,7 +162,11 @@ export default function useAppLocalStore() {
 				bloodGroup: safeGet(authStorage, "hospitalConfig.particularModules.blood-group", null),
 				cabinMode: safeGet(authStorage, "hospitalConfig.particularModules.cabin-mode", null),
 				department: safeGet(authStorage, "hospitalConfig.particularModules.department", null),
-				diagnosticDepartment: safeGet(authStorage, "hospitalConfig.particularModules.diagnostic-department", null),
+				diagnosticDepartment: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.diagnostic-department",
+					null
+				),
 				diagnosticRoom: safeGet(authStorage, "hospitalConfig.particularModules.diagnostic-room", null),
 				gender: safeGet(authStorage, "hospitalConfig.particularModules.gender-mode", null),
 				investigationGroup: safeGet(authStorage, "hospitalConfig.particularModules.investigation-group", null),
@@ -174,7 +178,11 @@ export default function useAppLocalStore() {
 				patientMode: safeGet(authStorage, "hospitalConfig.particularModules.patient-mode", null),
 				patientType: safeGet(authStorage, "hospitalConfig.particularModules.patient-type", null),
 				payingMode: safeGet(authStorage, "hospitalConfig.particularModules.paying-mode", null),
-				prescriptionTemplate: safeGet(authStorage, "hospitalConfig.particularModules.prescription-template", null),
+				prescriptionTemplate: safeGet(
+					authStorage,
+					"hospitalConfig.particularModules.prescription-template",
+					null
+				),
 				print: safeGet(authStorage, "hospitalConfig.particularModules.print", null),
 				treatmentModes: safeGet(authStorage, "hospitalConfig.particularModules.treatment-mode", null),
 				unitGroup: safeGet(authStorage, "hospitalConfig.particularModules.unit-group", null),

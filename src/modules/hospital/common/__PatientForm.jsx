@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState, useRef } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
-import { IconSearch, IconAlertCircle, IconChevronRight, IconAdjustmentsCog, IconDoor } from "@tabler/icons-react";
+import { IconSearch, IconAlertCircle, IconAdjustmentsCog, IconDoor } from "@tabler/icons-react";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -37,13 +37,10 @@ import OPDFooter from "./OPDFooter";
 import PrescriptionFooter from "./PrescriptionFooter";
 import OpdRoomModal from "@hospital-components/OpdRoomModal";
 import { useForm } from "@mantine/form";
-import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import RoomCard from "./RoomCard";
 import { getDataWithoutStore } from "@/services/apiService";
 import PatientSearchResult from "./PatientSearchResult";
 import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } from "@/services/patientSearchService";
 import { MODULES_CORE } from "@/constants";
-import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
@@ -293,22 +290,11 @@ export default function PatientForm({ form, module, type = "opd_ticket" }) {
 	);
 }
 
-export function Form({
-	form,
-	showTitle = false,
-	module,
-	type = "opd_ticket",
-	// handleRoomClick,
-	// filteredAndSortedRecords,
-	// selectedRoom,
-	visible,
-	setVisible,
-}) {
+export function Form({ form, showTitle = false, module, type = "opd_ticket", visible, setVisible }) {
 	const { user, userRoles } = useAppLocalStore();
 	const [resetKey, setResetKey] = useState(0);
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 	const [openedRoomError, { open: openRoomError, close: closeRoomError }] = useDisclosure(false);
-	const [openedRoom, { open: openRoom, close: closeRoom }] = useDisclosure(false);
 	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();

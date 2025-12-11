@@ -28,7 +28,7 @@ export default function Index() {
 	const [searchQuery, setSearchQuery] = useState("");
 	// const scale = useMantineScale();
 
-	const [selectedRoom, setSelectedRoom] = useState(1);
+	const [selectedRoom, setSelectedRoom] = useState(0);
 	const [records, setRecords] = useState([]);
 	const [fetching, setFetching] = useState([]);
 
@@ -66,6 +66,7 @@ export default function Index() {
 			setRecords(roomData);
 			setSelectedRoom(selectedRoom);
 			form.setFieldValue("room_id", selectedRoom?.id);
+			form.setFieldValue("room_name", selectedRoom?.name);
 		} catch (err) {
 			console.error("Unexpected error:", err);
 		} finally {
@@ -80,6 +81,7 @@ export default function Index() {
 			const selectedRoom = rooms.data?.ipdRooms?.find((item) => item.id === selectedId);
 			setSelectedRoom(selectedRoom);
 			form.setFieldValue("room_id", selectedRoom?.id);
+			form.setFieldValue("room_name", selectedRoom?.name);
 		} else {
 			fetchData();
 		}
