@@ -12,7 +12,7 @@ import {
 	Center,
 	rem,
 	Box,
-	Loader,
+	Loader, Image,
 } from "@mantine/core";
 import LoginPage from "@assets/css/LoginPage.module.css";
 import classes from "@assets/css/AuthenticationImage.module.css";
@@ -28,6 +28,7 @@ import { API_BASE_URL, API_KEY } from "@/constants";
 import useAppLocalStore from "@/common/hooks/useAppLocalStore";
 import { jwtDecode } from "jwt-decode";
 import { useAuthStore } from "@/store/useAuthStore.js";
+import TBLogo from "@assets/images/tb_logo.png";
 
 export default function LoginJwt() {
 	const { user } = useAppLocalStore();
@@ -112,8 +113,13 @@ export default function LoginJwt() {
 		<div className={classes.wrapper}>
 			<Box component="form" onSubmit={form.onSubmit((values) => login(values))}>
 				<Paper className={classes.form} radius={0} p={30}>
+					<Box>
+						<Group mr="md" justify="center" align="center" h="100%">
+							<Image src={TBLogo} alt="logo" width={120} height={120} />
+						</Group>
+					</Box>
 					<Title order={2} className={classes.title} ta="center" mt="md" mb={80}>
-						{t("WelcomeBackToPOSH")}
+						{t("WelcomeToLogin")}
 					</Title>
 					{errorMessage && (
 						<Alert
@@ -184,15 +190,7 @@ export default function LoginJwt() {
 					</Tooltip>
 					<Checkbox label="Keep me logged in" mt="xl" size="md" />
 					<Group justify="space-between" mt="lg" className={LoginPage.controls}>
-						<Anchor c="dimmed" size="sm" className={LoginPage.control}>
-							<Center inline>
-								<IconArrowLeft
-									style={{ width: rem(12), height: rem(12) }}
-									stroke={1.5}
-								/>
-								<Box ml={5}>Back to the sign-up page</Box>
-							</Center>
-						</Anchor>
+
 						<Button
 							fullWidth={true}
 							mt="xl"

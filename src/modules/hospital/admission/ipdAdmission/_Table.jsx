@@ -47,8 +47,7 @@ import AdmissionFormBN from "@hospital-components/print-formats/admission/Admiss
 const PER_PAGE = 20;
 
 const tabs = [
-	{ label: "Confirmed", value: "confirmed" },
-	{ label: "Billing", value: "billing" },
+	{ label: "Admission", value: "admission" },
 	{ label: "Admitted", value: "admitted" },
 ];
 
@@ -67,7 +66,7 @@ export default function _Table({ module }) {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const navigate = useNavigate();
 	const [selectedId, setSelectedId] = useState(null);
-	const [processTab, setProcessTab] = useState("confirmed");
+	const [processTab, setProcessTab] = useState("admission");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const [printData, setPrintData] = useState(null);
 	const admissionFormRef = useRef(null);
@@ -101,7 +100,7 @@ export default function _Table({ module }) {
 				name: filterData?.name,
 				patient_mode: "ipd",
 				created: filterData.created,
-				process: processTab,
+				ipd_mode: processTab,
 				term: filterData.keywordSearch,
 			},
 			perPage: PER_PAGE,
@@ -236,6 +235,11 @@ export default function _Table({ module }) {
 							render: (item) => t(item.total),
 						},
 						{
+							accessor: "process",
+							title: t("Process"),
+							render: (item) => t(item.process),
+						},
+						{
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",
@@ -271,6 +275,30 @@ export default function _Table({ module }) {
 												</Button>
 											</Button.Group>
 										)}
+									{userRoles.some((role) =>
+										ALLOWED_CONFIRMED_ROLES.includes(role)
+									) &&
+									item.process === "billing" && (
+										<Button.Group>
+											<Button
+												variant="filled"
+												onClick={() =>
+													handleAdmissionFormPrint(item.id)
+												}
+												color="var(--theme-secondary-color-6)"
+												radius="xs"
+												size={"compact-xs"}
+												aria-label="Settings"
+												leftSection={
+													<IconPrinter
+														style={{ width: "70%", height: "70%" }}
+														stroke={1.5}
+													/>
+												}
+											>Print
+											</Button>
+										</Button.Group>
+									)}
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -295,29 +323,6 @@ export default function _Table({ module }) {
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
-											{item?.prescription_id && (
-												<>
-													<Menu.Item
-														leftSection={
-															<IconPrinter
-																style={{
-																	width: rem(14),
-																	height: rem(14),
-																}}
-															/>
-														}
-														onClick={(e) => {
-															e.stopPropagation();
-															handlePrescriptionPrint(
-																item?.prescription_id
-															);
-														}}
-													>
-														{t("Prescription")}
-													</Menu.Item>
-												</>
-											)}
-
 											<Menu.Item
 												leftSection={
 													<IconPrinter
@@ -332,7 +337,7 @@ export default function _Table({ module }) {
 													handleBillingInvoicePrint(item?.id);
 												}}
 											>
-												{t("BillingInvoice")}
+												{t("AdmissionInvoice")}
 											</Menu.Item>
 											<Menu.Item
 												leftSection={

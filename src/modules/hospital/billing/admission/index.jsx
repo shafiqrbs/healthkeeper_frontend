@@ -88,7 +88,7 @@ export default function Index() {
 										/>
 									</Grid.Col>
 									<Grid.Col span={12}>
-										<InvoiceDetails entity={entity} />
+										<InvoiceDetails setRefetchBillingKey={setRefetchBillingKey} entity={entity} />
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>

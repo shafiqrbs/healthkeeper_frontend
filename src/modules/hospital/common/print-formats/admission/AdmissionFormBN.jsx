@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import { formatDate } from "@/common/utils";
+import {formatDate, formatDateTimeAmPm} from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
@@ -20,17 +20,10 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 
 	const admissionData = data || {};
 	const patientInfo = data || {};
-	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
-	const patientReport = jsonContent?.patient_report || {};
-	const order = patientReport?.order || {};
-	const patientExamination = patientReport?.patient_examination || {};
-	const medicines = jsonContent?.medicines || [];
-	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useHospitalConfigData();
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-
 	return (
 		<Box display={preview ? "block" : "none"}>
 			<Stack
@@ -233,7 +226,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 											{t("Add. Date")}:
 										</Text>
 										<Text size="sm">
-											{getValue(patientInfo?.admission_date, "")}
+											{getValue(formatDateTimeAmPm(patientInfo?.admission_date), "")}
 										</Text>
 									</Group>
 								</Table.Td>
@@ -270,6 +263,41 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 											{patientInfo?.guardian_mobile && (
 												<> / {getValue(patientInfo?.guardian_mobile, "")}</>
 											)}
+										</Text>
+									</Group>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colspan={3}>
+									<Group gap="xs">
+										<Text size="xs" fw={600}>
+											{t("PresentAddress")}:
+										</Text>
+										<Text size="sm">
+											{getValue(patientInfo?.address, "")}
+										</Text>
+									</Group>
+								</Table.Td>
+
+							</Table.Tr>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colspan={3}>
+									<Group gap="xs">
+										<Text size="xs" fw={600}>
+											{t("PermanentAddress")}:
+										</Text>
+										<Text size="sm">
+											{getValue(patientInfo?.permanent_address, "")}
+										</Text>
+									</Group>
+								</Table.Td>
+
+							</Table.Tr>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colspan={3}>
+									<Group gap="xs">
+										<Text size="md" fw={600}>
+											{t("AdmissionInformation")}:
 										</Text>
 									</Group>
 								</Table.Td>
@@ -402,6 +430,23 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 				{/* =============== payment summary table ================ */}
 
 				<Box ta="center">
+					<Box pos="relative" mt="lg">
+						<Table>
+							<Table.Tr>
+								<Table.Td >
+									{t("AdmittedBy")}<br/>
+									<br/>
+									{getValue(patientInfo?.admitted_by_name, "")}
+								</Table.Td>
+								<Table.Td>{t("Signature")}
+									<br/>
+								<br/>--------------------
+									<br/>
+									<br/>---------------------
+								</Table.Td>
+							</Table.Tr>
+						</Table>
+					</Box>
 					<Text size="xs" c="gray" mt="xs">
 						{patientInfo?.patient_id && (
 							<Barcode
