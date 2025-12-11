@@ -42,6 +42,7 @@ import PatientSearchResult from "./PatientSearchResult";
 import { getPatientSearchByBRN, getPatientSearchByHID, getPatientSearchByNID } from "@/services/patientSearchService";
 import { MODULES_CORE } from "@/constants";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
+import InputAutoComplete from "@components/form-builders/InputAutoComplete";
 
 const LOCAL_STORAGE_KEY = "patientFormData";
 
@@ -291,7 +292,7 @@ export default function PatientForm({ form, module, type = "opd_ticket" }) {
 }
 
 export function Form({ form, showTitle = false, module, type = "opd_ticket", visible, setVisible }) {
-	const { user, userRoles } = useAppLocalStore();
+	const { user, userRoles, patients } = useAppLocalStore();
 	const [resetKey, setResetKey] = useState(0);
 	const [openedNIDDataPreview, { open: openNIDDataPreview, close: closeNIDDataPreview }] = useDisclosure(false);
 	const [openedRoomError, { open: openRoomError, close: closeRoomError }] = useDisclosure(false);
@@ -485,6 +486,8 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 		}
 	};
 
+	console.log(patients);
+
 	return (
 		<Box pos="relative">
 			<LoadingOverlay visible={visible} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
@@ -532,17 +535,21 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={14}>
-								<InputForm
+								<InputAutoComplete
 									form={form}
+									data={patients?.map((patient) => ({
+										label: patient?.name || "",
+										value: patient?.name || "",
+									}))}
+									limit={20}
 									label=""
 									autoComplete="on"
 									tooltip={t("enterPatientName")}
 									placeholder="Md. Abdul"
 									name="name"
 									id="patientName"
-									nextField="year"
+									unsetKeyDown
 									value={form.values.name}
-									// required
 								/>
 							</Grid.Col>
 						</Grid>

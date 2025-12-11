@@ -5,6 +5,8 @@ import { getHotkeyHandler } from "@mantine/hooks";
 import inputCss from "@assets/css/InputField.module.css";
 
 function InputAutoComplete({
+	unsetKeyDown = false,
+	limit = 10,
 	readOnly = false,
 	label = "",
 	placeholder = "",
@@ -50,20 +52,24 @@ function InputAutoComplete({
 						mt={mt}
 						readOnly={readOnly}
 						disabled={disabled}
-						limit={10}
+						limit={limit}
 						data={data}
 						{...form.getInputProps(name)}
 						onChange={changeValue || form.getInputProps(name).onChange}
-						onKeyDown={getHotkeyHandler([
-							[
-								"Enter",
-								() => {
-									nextField && nextField === "EntityFormSubmit"
-										? document.getElementById(nextField).click()
-										: document.getElementById(nextField).focus();
-								},
-							],
-						])}
+						onKeyDown={
+							unsetKeyDown
+								? undefined
+								: getHotkeyHandler([
+										[
+											"Enter",
+											() => {
+												nextField && nextField === "EntityFormSubmit"
+													? document.getElementById(nextField).click()
+													: document.getElementById(nextField).focus();
+											},
+										],
+								  ])
+						}
 						leftSection={leftSection}
 						rightSection={
 							form.values[name] ? (

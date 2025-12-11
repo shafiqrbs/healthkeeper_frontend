@@ -71,6 +71,7 @@ function safeGet(root, path, fallback) {
  * @property {Object|null} print
  * @property {Object|null} treatmentModes
  * @property {Object|null} unitGroup
+ *
  */
 
 /**
@@ -91,6 +92,8 @@ function safeGet(root, path, fallback) {
  * @property {Array<Object>} particularModes
  * @property {Array<Object>} meals
  * @property {Array<Object>} dosages
+ * @property {Array<Object>} opdReferredRooms
+ * @property {Array<Object>} patients
  *
  * @property {Object} modules Raw particularModules object
  * @property {ParticularModules} features Flattened features structure {bedMode, bloodGroup etc}
@@ -108,6 +111,7 @@ function safeGet(root, path, fallback) {
  */
 export default function useAppLocalStore() {
 	const authStorage = useAuthStore((state) => state);
+	console.log(authStorage);
 
 	const store = useMemo(() => {
 		/* ---------------- Basic Fields ---------------- */
