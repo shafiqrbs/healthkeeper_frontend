@@ -91,7 +91,7 @@ export default function AddMedicineForm({
 		localMedicines: medicineGenericData,
 	} = useAppLocalStore();
 
-	const [medicineIdDropdownOpened, setMedicineIdDropdownOpened] = useState(false);
+	const [medicineIdDropdownOpened, setMedicineIdDropdownOpened] = useState(true);
 	const medicineIdRef = useRef(null);
 	const genericRef = useRef(null);
 	const navigate = useNavigate();
@@ -576,8 +576,8 @@ export default function AddMedicineForm({
 								<Grid.Col span={6}>
 									<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 										<Select
-											dropdownOpened={medicineIdDropdownOpened}
 											ref={medicineIdRef}
+											disabled={medicineForm.values.generic}
 											clearable
 											searchable
 											onSearchChange={handleMedicineSearch}
@@ -605,6 +605,7 @@ export default function AddMedicineForm({
 								<Grid.Col span={6}>
 									<FormValidatorWrapper opened={medicineForm.errors.generic}>
 										<Autocomplete
+											disabled={medicineForm.values.medicine_id}
 											ref={genericRef}
 											tooltip={t("EnterSelfMedicine")}
 											id="generic"

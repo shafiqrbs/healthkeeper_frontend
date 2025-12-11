@@ -1,6 +1,14 @@
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { ActionIcon, Box, Flex, Grid, Input, NumberInput, Select, Stack, Switch, Text } from "@mantine/core";
-import { IconCheck, IconMedicineSyrup, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import {
+	IconCheck,
+	IconDeviceFloppy,
+	IconMedicineSyrup,
+	IconPencil,
+	IconPlus,
+	IconTrash,
+	IconX,
+} from "@tabler/icons-react";
 import { getByMeal, getDosage, getDurationMode } from "@utils/prescription";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -359,11 +367,11 @@ export default function MedicineListItem({
 										)}
 										<Grid.Col span={1}>
 											<ActionIcon
-												variant="outline"
-												color="var(--theme-primary-color-6)"
+												variant="filled"
+												color="var(--theme-secondary-color-6)"
 												onClick={closeInstructionEdit}
 											>
-												<IconCheck size={16} />
+												<IconDeviceFloppy size={16} />
 											</ActionIcon>
 										</Grid.Col>
 									</Grid>
@@ -388,8 +396,8 @@ export default function MedicineListItem({
 
 										<Flex align="center" display={viewAction ? "flex" : "none"}>
 											<ActionIcon
-												variant="transparent"
-												color="var(--theme-secondary-color-6)"
+												variant="filled"
+												color="var(--theme-primary-color-6)"
 												onClick={() => openInstructionEdit(insIndex)}
 												ml="md"
 											>
@@ -397,7 +405,8 @@ export default function MedicineListItem({
 											</ActionIcon>
 											{!isFirstItem && (
 												<ActionIcon
-													variant="transparent"
+													ml="es"
+													variant="outline"
 													color="var(--theme-error-color)"
 													onClick={() => handleDeleteInstruction(insIndex)}
 												>
