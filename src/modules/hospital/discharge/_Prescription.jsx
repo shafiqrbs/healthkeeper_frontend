@@ -59,18 +59,23 @@ import {
 	appendDosageValueToForm,
 	appendGeneralValuesToForm,
 	appendMealValueToForm,
+	medicineOptionsFilter,
 } from "@utils/prescription";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import BookmarkDrawer from "@hospital-components/BookmarkDrawer";
 
 const module = MODULES.DISCHARGE;
 
-export default function Prescription({
-	setShowHistory = () => {},
-	hasRecords = false,
-	baseHeight = 0,
-}) {
-	const { user } = useAppLocalStore();
+export default function Prescription({ setShowHistory = () => {}, hasRecords = false, baseHeight = 0 }) {
+	const {
+		features: { medicineDuration },
+		advices: adviceData,
+		user,
+		dosages: dosage_options,
+		meals: by_meal_options,
+		medicines: medicineData,
+		localMedicines: medicineGenericData,
+	} = useAppLocalStore();
 	const form = useForm({
 		initialValues: {
 			exEmergency: [],
@@ -87,33 +92,27 @@ export default function Prescription({
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
 	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
-	const { medicineData } = useMedicineData({ term: medicineTerm });
-	const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
+	// const { medicineData } = useMedicineData({ term: medicineTerm });
+	// const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
 	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const [openedBookmark, { open: openBookmark, close: closeBookmark }] = useDisclosure(false);
 	const [printData, setPrintData] = useState(null);
-	const adviceData = useSelector((state) => state.crud.advice.data);
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
-	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] =
+	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
+	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
 		useDisclosure(false);
-	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] =
-		useDisclosure(false);
-	const [
-		openedPrescriptionPreview,
-		{ open: openPrescriptionPreview, close: closePrescriptionPreview },
-	] = useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
-	const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
-	const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
+	// const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
+	// const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
 	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
 	const refetching = useSelector((state) => state.crud.dosage?.refetching);
-	const [openedHistoryMedicine, { open: openHistoryMedicine, close: closeHistoryMedicine }] =
-		useDisclosure(false);
+	const [openedHistoryMedicine, { open: openHistoryMedicine, close: closeHistoryMedicine }] = useDisclosure(false);
 	const emergencyRefetching = useSelector((state) => state.crud.exemergency.refetching);
 
 	const printDischargeA4 = useReactToPrint({
@@ -122,18 +121,6 @@ export default function Prescription({
 	});
 
 	useEffect(() => {
-		dispatch(
-			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
-				params: {
-					particular_type: "advice",
-					page: 1,
-					offset: 500,
-				},
-				module: "advice",
-			})
-		);
-
 		dispatch(
 			getIndexEntityData({
 				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX_RXEMERGENCY,
@@ -154,35 +141,17 @@ export default function Prescription({
 	}, []);
 
 	useEffect(() => {
-		dispatch(
-			getIndexEntityData({
-				url: PHARMACY_DROPDOWNS.DOSAGE.PATH,
-				module: "dosage",
-				params: {
-					page: 1,
-					offset: 500,
-				},
-			})
-		);
-	}, [refetching]);
-
-	useEffect(() => {
-		dispatch(
-			getIndexEntityData({
-				url: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
-				module: "byMeal",
-				params: {
-					page: 1,
-					offset: 500,
-				},
-			})
-		);
-	}, [bymealRefetching]);
-
-	useEffect(() => {
 		if (!printData) return;
 		printDischargeA4();
 	}, [printData]);
+
+	const durationModeDropdown = medicineDuration?.modes
+		? medicineDuration?.modes.map((mode) => ({
+				value: mode.id?.toString(),
+				label: mode.name,
+				name_bn: mode.name_bn,
+		  }))
+		: [];
 
 	// =============== handler for adding autocomplete option to temporary list ================
 	const handleAutocompleteOptionAdd = (value, data, type, custom = false) => {
@@ -200,14 +169,7 @@ export default function Prescription({
 			}
 		} else {
 			if (!value?.trim())
-				return showNotificationComponent(
-					t("Please enter a valid value"),
-					"red",
-					"lightgray",
-					true,
-					700,
-					true
-				);
+				return showNotificationComponent(t("Please enter a valid value"), "red", "lightgray", true, 700, true);
 			const newItem = {
 				id: Date.now(),
 				name: value,
@@ -221,9 +183,7 @@ export default function Prescription({
 
 	// =============== handler for updating temporary item value ================
 	const handleTempItemChange = (index, newValue) => {
-		setTempEmergencyItems((prev) =>
-			prev.map((item, idx) => (idx === index ? { ...item, value: newValue } : item))
-		);
+		setTempEmergencyItems((prev) => prev.map((item, idx) => (idx === index ? { ...item, value: newValue } : item)));
 	};
 
 	// =============== handler for removing temporary item ================
@@ -234,14 +194,7 @@ export default function Prescription({
 	// =============== handler for saving emergency prescription ================
 	const handleEmergencyPrescriptionSave = () => {
 		if (tempEmergencyItems.length === 0) {
-			showNotificationComponent(
-				t("Please add at least one emergency item"),
-				"red",
-				"lightgray",
-				true,
-				700,
-				true
-			);
+			showNotificationComponent(t("Please add at least one emergency item"), "red", "lightgray", true, 700, true);
 			return;
 		}
 
@@ -276,28 +229,14 @@ export default function Prescription({
 			"alt+2",
 			() => {
 				handleHoldData();
-				showNotificationComponent(
-					t("Prescription held successfully"),
-					"blue",
-					"lightgray",
-					true,
-					700,
-					true
-				);
+				showNotificationComponent(t("Prescription held successfully"), "blue", "lightgray", true, 700, true);
 			},
 		],
 		[
 			"alt+4",
 			() => {
 				printDischargeA4();
-				showNotificationComponent(
-					t("Prescription printed successfully"),
-					"blue",
-					"lightgray",
-					true,
-					700,
-					true
-				);
+				showNotificationComponent(t("Prescription printed successfully"), "blue", "lightgray", true, 700, true);
 			},
 		],
 	]);
@@ -306,47 +245,42 @@ export default function Prescription({
 		medicineForm.setFieldValue(field, value);
 
 		// If medicine field is being changed, auto-populate other fields from medicine data
-		if (field === "medicine_id" && value) {
-			const selectedMedicine = medicineData?.find(
-				(item) => item.product_id?.toString() === value
-			);
+		if ((field === "medicine_id" || field === "generic") && value) {
+			const selectedMedicine =
+				field === "medicine_id"
+					? medicineData?.find((item) => item.product_id?.toString() === value)
+					: medicineGenericData?.find((item) => item.generic === value);
 
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 
 				// Auto-populate by_meal if available
 				if (selectedMedicine.medicine_bymeal_id) {
-					appendMealValueToForm(
-						medicineForm,
-						by_meal_options,
-						selectedMedicine.medicine_bymeal_id
-					);
+					appendMealValueToForm(medicineForm, by_meal_options, selectedMedicine.medicine_bymeal_id);
 				}
 
 				// Auto-populate duration and count based on duration_day or duration_month
 				if (selectedMedicine.duration_day) {
-					medicineForm.setFieldValue(
-						"quantity",
-						parseInt(selectedMedicine.duration_day) || 1
-					);
+					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_day) || 1);
 					medicineForm.setFieldValue("duration", "day");
 				} else if (selectedMedicine.duration_month) {
-					medicineForm.setFieldValue(
-						"quantity",
-						parseInt(selectedMedicine.duration_month) || 1
-					);
+					medicineForm.setFieldValue("quantity", parseInt(selectedMedicine.duration_month) || 1);
 					medicineForm.setFieldValue("duration", "month");
 				}
 
 				// Auto-populate dose_details if available (for times field)
 				if (selectedMedicine.medicine_dosage_id) {
-					appendDosageValueToForm(
-						medicineForm,
-						dosage_options,
-						selectedMedicine.medicine_dosage_id
-					);
+					appendDosageValueToForm(medicineForm, dosage_options, selectedMedicine.medicine_dosage_id);
 				}
 			}
+		}
+
+		if (field === "generic" && value) {
+			medicineForm.clearFieldError("medicine_id");
+		}
+
+		if (field === "medicine_id" && value) {
+			medicineForm.clearFieldError("generic");
 		}
 	};
 
@@ -421,23 +355,9 @@ export default function Prescription({
 			const resultAction = await dispatch(updateEntityData(value));
 
 			if (updateEntityData.rejected.match(resultAction)) {
-				showNotificationComponent(
-					resultAction.payload.message,
-					"red",
-					"lightgray",
-					true,
-					700,
-					true
-				);
+				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
-				showNotificationComponent(
-					t("PrescriptionSavedSuccessfully"),
-					"green",
-					"lightgray",
-					true,
-					700,
-					true
-				);
+				showNotificationComponent(t("PrescriptionSavedSuccessfully"), "green", "lightgray", true, 700, true);
 				dispatch(setRefetchData({ module, refetching: true }));
 				if (redirect) navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
 				return resultAction.payload?.data || {}; // Indicate successful submission
@@ -465,28 +385,14 @@ export default function Prescription({
 
 	const handleAdviseTemplate = (content) => {
 		if (!content) {
-			showNotificationComponent(
-				t("AdviseContentNotAvailable"),
-				"red",
-				"lightgray",
-				true,
-				700,
-				true
-			);
+			showNotificationComponent(t("AdviseContentNotAvailable"), "red", "lightgray", true, 700, true);
 			return;
 		}
 
 		const existingAdvise = form.values.advise;
 
 		if (existingAdvise?.includes(content)) {
-			showNotificationComponent(
-				t("AdviseAlreadyExists"),
-				"red",
-				"lightgray",
-				true,
-				700,
-				true
-			);
+			showNotificationComponent(t("AdviseAlreadyExists"), "red", "lightgray", true, 700, true);
 			return;
 		}
 
@@ -522,8 +428,11 @@ export default function Prescription({
 							<Grid w="100%" columns={12} gutter="3xs">
 								<Grid.Col span={6}>
 									<Select
+										disabled={medicineForm.values.generic}
+										limit={20}
 										clearable
 										searchable
+										filter={medicineOptionsFilter}
 										onSearchChange={setMedicineTerm}
 										id="medicine_id"
 										name="medicine_id"
@@ -542,7 +451,11 @@ export default function Prescription({
 								</Grid.Col>
 								<Grid.Col span={6}>
 									<Autocomplete
-										tooltip={t("EnterGenericName")}
+										clearable
+										disabled={medicineForm.values.medicine_id}
+										limit={20}
+										filter={medicineOptionsFilter}
+										tooltip={t("EnterSelfMedicine")}
 										id="generic"
 										name="generic"
 										data={medicineGenericData?.map((item, index) => ({
@@ -554,7 +467,7 @@ export default function Prescription({
 											handleChange("generic", v);
 											setMedicineGenericTerm(v);
 										}}
-										placeholder={t("GenericName")}
+										placeholder={t("SelfMedicine")}
 										onBlur={() => setMedicineGenericTerm("")}
 										classNames={inputCss}
 									/>
@@ -608,8 +521,8 @@ export default function Prescription({
 											label=""
 											id="duration"
 											name="duration"
-											dropdownValue={DURATION_TYPES}
-											value={medicineForm.values.duration || "Day"}
+											dropdownValue={durationModeDropdown}
+											value={medicineForm.values.duration}
 											placeholder={t("Duration")}
 											required
 											tooltip={t("EnterMeditationDuration")}
@@ -739,24 +652,13 @@ export default function Prescription({
 					</Grid.Col>
 				</Grid>
 			</Box>
-			<Flex
-				bg="var(--theme-primary-color-0)"
-				mb="les"
-				justify="space-between"
-				align="center"
-				py="les"
-				mt="xs"
-			>
+			<Flex bg="var(--theme-primary-color-0)" mb="les" justify="space-between" align="center" py="les" mt="xs">
 				<Text fw={500} px="sm">
 					{t("ListOfMedicines")}
 				</Text>
 				<Flex px="les" gap="les">
 					<Tooltip label={t("HistoryMedicine")}>
-						<ActionIcon
-							size="lg"
-							bg="var(--theme-primary-color-6)"
-							onClick={openHistoryMedicine}
-						>
+						<ActionIcon size="lg" bg="var(--theme-primary-color-6)" onClick={openHistoryMedicine}>
 							<IconHistory size={16} />
 						</ActionIcon>
 					</Tooltip>
@@ -775,13 +677,7 @@ export default function Prescription({
 				</Flex>
 			</Flex>
 			<ScrollArea
-				h={
-					baseHeight
-						? baseHeight
-						: form.values.comment
-						? mainAreaHeight - 420 - 50
-						: mainAreaHeight - 420
-				}
+				h={baseHeight ? baseHeight : form.values.comment ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
 				bg="var(--mantine-color-white)"
 			>
 				<Stack gap="2px" p="sm">
@@ -794,12 +690,7 @@ export default function Prescription({
 							direction="column"
 							wrap="wrap"
 						>
-							<Text
-								w="100%"
-								fz="sm"
-								align={"center"}
-								c="var(--theme-secondary-color)"
-							>
+							<Text w="100%" fz="sm" align={"center"} c="var(--theme-secondary-color)">
 								{t("NoMedicineAddedYet")}
 							</Text>
 							<Button
@@ -851,12 +742,7 @@ export default function Prescription({
 			</ScrollArea>
 
 			{form.values.comment && (
-				<Flex
-					bg="var(--theme-primary-color-0)"
-					p="sm"
-					justify="space-between"
-					align="center"
-				>
+				<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between" align="center">
 					<Text w="100%">
 						<strong>{t("Referred")}:</strong> {form.values.comment}
 					</Text>
@@ -869,17 +755,11 @@ export default function Prescription({
 					<Grid columns={12} gutter="3xs" mt="2xs" p="les">
 						<Grid.Col span={3}>
 							<Box fz="md" c="white">
-								<Text
-									bg="var(--theme-save-btn-color)"
-									fz="md"
-									c="white"
-									px="sm"
-									py="les"
-								>
+								<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
 									{t("AdviseTemplate")}
 								</Text>
 								<ScrollArea h={96} p="les" className="borderRadiusAll">
-									{adviceData?.data?.map((advise) => (
+									{adviceData?.map((advise) => (
 										<Flex
 											align="center"
 											gap="les"
@@ -892,10 +772,7 @@ export default function Prescription({
 											mb="2"
 											className="cursor-pointer"
 										>
-											<IconReportMedical
-												color="var(--theme-secondary-color-6)"
-												size={13}
-											/>{" "}
+											<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
 											<Text mt="es" fz={13}>
 												{advise?.name}
 											</Text>
@@ -906,13 +783,7 @@ export default function Prescription({
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
-								<Text
-									bg="var(--theme-secondary-color-6)"
-									fz="md"
-									c="white"
-									px="sm"
-									py="les"
-								>
+								<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
 									{t("Advise")}
 								</Text>
 								<Box p="sm">
@@ -930,13 +801,7 @@ export default function Prescription({
 						</Grid.Col>
 						<Grid.Col span={3}>
 							<Box bg="var(--theme-primary-color-0)" h="100%">
-								<Text
-									bg="var(--theme-primary-color-6)"
-									fz="md"
-									c="white"
-									px="sm"
-									py="les"
-								>
+								<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="les">
 									{t("FollowUpDate")}
 								</Text>
 								<Box p="sm">
@@ -988,11 +853,7 @@ export default function Prescription({
 								</Text>
 							</Stack>
 						</Button>
-						<Button
-							w="100%"
-							bg="var(--theme-save-btn-color)"
-							onClick={openPrescriptionPreview}
-						>
+						<Button w="100%" bg="var(--theme-save-btn-color)" onClick={openPrescriptionPreview}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Preview")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -1000,11 +861,7 @@ export default function Prescription({
 								</Text>
 							</Stack>
 						</Button>
-						<Button
-							w="100%"
-							bg="var(--theme-secondary-color-6)"
-							onClick={handleDischargePrintSubmit}
-						>
+						<Button w="100%" bg="var(--theme-secondary-color-6)" onClick={handleDischargePrintSubmit}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Print")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -1052,11 +909,7 @@ export default function Prescription({
 								value={autocompleteValue}
 								onChange={setAutocompleteValue}
 								onOptionSubmit={(value) => {
-									handleAutocompleteOptionAdd(
-										value,
-										emergencyData?.data,
-										"exEmergency"
-									);
+									handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
 									setTimeout(() => {
 										setAutocompleteValue("");
 									}, 0);
@@ -1085,13 +938,7 @@ export default function Prescription({
 						</Flex>
 						{/* =============== temporary items list with editable text inputs ================ */}
 						{tempEmergencyItems?.length > 0 && (
-							<Stack
-								gap={0}
-								bg="var(--mantine-color-white)"
-								px="sm"
-								className="borderRadiusAll"
-								mt="2xs"
-							>
+							<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll" mt="2xs">
 								<Text fw={600} fz="sm" mt="xs" c="var(--theme-primary-color)">
 									{t("Particulars")} ({tempEmergencyItems?.length})
 								</Text>
@@ -1111,9 +958,7 @@ export default function Prescription({
 									>
 										<Textarea
 											value={item.value}
-											onChange={(event) =>
-												handleTempItemChange(idx, event.currentTarget.value)
-											}
+											onChange={(event) => handleTempItemChange(idx, event.currentTarget.value)}
 											placeholder="Edit value..."
 											w="90%"
 											styles={{ input: { height: "80px" } }}
@@ -1132,12 +977,7 @@ export default function Prescription({
 						)}
 					</Box>
 					<Flex justify="flex-end" gap="xs">
-						<Button
-							leftSection={<IconX size={16} />}
-							bg="gray.6"
-							onClick={closeExPrescription}
-							w="120px"
-						>
+						<Button leftSection={<IconX size={16} />} bg="gray.6" onClick={closeExPrescription} w="120px">
 							{t("Cancel")}
 						</Button>
 						<Button
@@ -1168,10 +1008,7 @@ export default function Prescription({
 					title={t("PreviousPrescription")}
 					size="25%"
 				>
-					<HistoryPrescription
-						setMedicines={setMedicines}
-						closeHistoryMedicine={closeHistoryMedicine}
-					/>
+					<HistoryPrescription setMedicines={setMedicines} closeHistoryMedicine={closeHistoryMedicine} />
 				</GlobalDrawer>
 			)}
 
@@ -1179,12 +1016,7 @@ export default function Prescription({
 
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
 
-			<BookmarkDrawer
-				opened={openedBookmark}
-				isDischarged
-				close={closeBookmark}
-				type="ipd-treatment"
-			/>
+			<BookmarkDrawer opened={openedBookmark} isDischarged close={closeBookmark} type="ipd-treatment" />
 		</Box>
 	);
 }
