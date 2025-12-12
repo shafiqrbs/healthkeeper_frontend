@@ -85,7 +85,7 @@ export default function AddMedicineForm({
 		dosages: dosage_options,
 		meals: by_meal_options,
 	} = useAppLocalStore();
-	console.log(medicineGenericData);
+
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
@@ -282,12 +282,20 @@ export default function AddMedicineForm({
 		],
 	]);
 
+	console.log("Medicine-Data", medicineData);
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
 
+		console.log("Value: ", field, value);
+
 		// If medicine field is being changed, auto-populate other fields from medicine data
 		if ((field === "medicine_id" || field === "generic") && value) {
-			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
+			const selectedMedicine =
+				field === "medicine_id"
+					? medicineData?.find((item) => item.product_id?.toString() === value?.toString())
+					: medicineGenericData?.find((item) => item.name === value);
+
+			console.log("Selected-Medicine", selectedMedicine);
 
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
@@ -505,8 +513,8 @@ export default function AddMedicineForm({
 									<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 										<Select
 											disabled={medicineForm.values.generic}
-											clearable
 											searchable
+											limit={20}
 											filter={medicineOptionsFilter}
 											onSearchChange={setMedicineTerm}
 											id="medicine_id"
@@ -518,7 +526,7 @@ export default function AddMedicineForm({
 											}))}
 											value={medicineForm.values.medicine_id}
 											onChange={(v) => handleChange("medicine_id", v)}
-											placeholder={t("Medicine")}
+											placeholder={t("MedicinePlaceholder")}
 											tooltip="Select medicine"
 											nothingFoundMessage="Type to find medicine..."
 											classNames={inputCss}

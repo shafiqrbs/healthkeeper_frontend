@@ -526,7 +526,7 @@ export default function AddMedicineForm({
 
 	const populateMedicineData = (v) => {
 		const selectedTreatment = treatmentData?.data?.find((item) => item.id?.toString() === v);
-		console.log(selectedTreatment);
+
 		const medicinesFormat = selectedTreatment?.treatment_medicine_format.map((item) => ({
 			...item,
 			dose_details: item.medicine_dosage?.name,
@@ -585,8 +585,8 @@ export default function AddMedicineForm({
 										<Select
 											ref={medicineIdRef}
 											disabled={medicineForm.values.generic}
-											clearable
 											searchable
+											filter={medicineOptionsFilter}
 											onSearchChange={handleMedicineSearch}
 											id="medicine_id"
 											name="medicine_id"
@@ -598,7 +598,6 @@ export default function AddMedicineForm({
 											onBlur={() => setMedicineIdDropdownOpened(false)}
 											onDropdownClose={() => setMedicineIdDropdownOpened(false)}
 											limit={20}
-											filter={medicineOptionsFilter}
 											value={medicineForm.values.medicine_id}
 											onChange={(v) => handleChange("medicine_id", v)}
 											placeholder={t("MedicinePlaceholder")}
