@@ -4,7 +4,7 @@
 
 /* Input.module.css */
 .input {
-    border: 1px solid var(--mantine-color-blue-8) !important;
+    border: 2px solid var(--theme-tertiary-color-8) !important;
     min-height: auto !important;
 }
 
@@ -16,11 +16,9 @@
 }
 
 .input {
-    border: 1px solid red;
     transition: none;
-
     &:focus-within {
-        border: 1px solid var(--mantine-color-green-8) !important;
-        border-color: var(--mantine-color-green-8) !important;
+        border: 2px solid var(--theme-tertiary-color-6) !important;
+        border-color: var(--theme-tertiary-color-6) !important;
     }
 }
