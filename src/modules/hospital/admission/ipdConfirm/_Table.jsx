@@ -2,18 +2,7 @@ import { useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {
-	ActionIcon,
-	Box,
-	Button,
-	Flex,
-	FloatingIndicator,
-	Group,
-	Menu,
-	rem,
-	Tabs,
-	Text,
-} from "@mantine/core";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
 import {
 	IconArrowRight,
 	IconChevronUp,
@@ -102,21 +91,20 @@ export default function _Table({ module }) {
 		setControlsRefs(controlsRefs);
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
-			filterParams: {
-				name: filterData?.name,
-				referred_mode: "admission",
-				ipd_mode: processTab,
-				created: form.values.created,
-				term: filterData.keywordSearch,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "created_at",
-			direction: "desc",
-		});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
+		filterParams: {
+			name: filterData?.name,
+			referred_mode: "admission",
+			ipd_mode: processTab,
+			created: form.values.created,
+			term: filterData.keywordSearch,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+	});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
@@ -217,11 +205,7 @@ export default function _Table({ module }) {
 							title: t("Created"),
 							textAlignment: "right",
 							render: (item) => (
-								<Text
-									fz="xs"
-									onClick={() => handleView(item.id)}
-									className="activate-link"
-								>
+								<Text fz="xs" onClick={() => handleView(item.id)} className="activate-link">
 									{formatDate(item.created_at)}
 								</Text>
 							),
@@ -249,24 +233,15 @@ export default function _Table({ module }) {
 							titleClassName: "title-right",
 							render: (values) => (
 								<>
-									<Group
-										onClick={(e) => e.stopPropagation()}
-										gap={4}
-										justify="right"
-										wrap="nowrap"
-									>
-										{userRoles.some((role) =>
-											ALLOWED_CONFIRMED_ROLES.includes(role)
-										) &&
-											values.process == "ipd" && (
+									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+											values.process?.toLowerCase() === "ipd" && (
 												<Button
 													variant="filled"
 													bg="var(--theme-primary-color-6)"
 													c="white"
 													size="compact-xs"
-													onClick={() =>
-														handleConfirm(values.uid || values.id)
-													}
+													onClick={() => handleConfirm(values.uid || values.id)}
 													radius="es"
 													fw={400}
 													rightSection={<IconArrowRight size={18} />}
@@ -290,11 +265,7 @@ export default function _Table({ module }) {
 													radius="es"
 													aria-label="Actions"
 												>
-													<IconDotsVertical
-														height={18}
-														width={18}
-														stroke={1.5}
-													/>
+													<IconDotsVertical height={18} width={18} stroke={1.5} />
 												</ActionIcon>
 											</Menu.Target>
 											<Menu.Dropdown>
@@ -310,9 +281,7 @@ export default function _Table({ module }) {
 														}
 														onClick={(e) => {
 															e.stopPropagation();
-															handlePrescriptionPrint(
-																values?.prescription_id
-															);
+															handlePrescriptionPrint(values?.prescription_id);
 														}}
 													>
 														{t("Prescription")}
@@ -391,12 +360,8 @@ export default function _Table({ module }) {
 			<IPDDetailsDrawer opened={opened} close={close} selectedId={selectedId} />
 
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
-			{billingPrintData && (
-				<DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />
-			)}
-			{admissionFormPrintData && (
-				<AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />
-			)}
+			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
+			{admissionFormPrintData && <AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />}
 		</Box>
 	);
 }

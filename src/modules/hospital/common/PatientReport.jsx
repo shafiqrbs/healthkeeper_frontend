@@ -17,7 +17,7 @@ import {
 import { useOutletContext } from "react-router-dom";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
-import {IconCaretUpDownFilled, IconMoonStars, IconSun, IconX} from "@tabler/icons-react";
+import { IconCaretUpDownFilled, IconEyeClosed, IconEyeEdit, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import inputCss from "@assets/css/InputField.module.css";
 import { DURATION_TYPES } from "@/constants";
@@ -48,11 +48,11 @@ export default function PatientReport({
 	const { particularsData } = useParticularsData({ modeName });
 	const tabParticulars = particularsData?.map((item) => ({
 		...item.particular_type,
-	//	is_additional_field: item.is_additional_field ?? 1,
+		//	is_additional_field: item.is_additional_field ?? 1,
 		is_additional_field: 1,
 	}));
 
-	console.log(tabParticulars)
+	console.log(tabParticulars);
 
 	const handleDynamicFormChange = ({
 		id,
@@ -664,26 +664,27 @@ export default function PatientReport({
 												{section.name}
 											</Text>
 											{section?.is_additional_field === 1 && (
-
 												<Switch
-												color="red.6"
-												size="lg"
-												radius="xs"
-												styles={{
-												track: {
-													backgroundColor:
-														(showOtherInstruction[currentSection.slug] ?? false) ? "green" : "red",
-												},
-											}}
-												onLabel={<IconSun size={16} stroke={2.5}  />}
-												offLabel={<IconMoonStars size={16} stroke={2.5}  />}
-												checked={showOtherInstruction[currentSection.slug] ?? false}
-												onChange={(event) =>
-												setShowOtherInstruction((prev) => ({
-													...prev,
-													[currentSection.slug]: event.currentTarget.checked,
-												}))
-											}
+													color="red.6"
+													size="lg"
+													radius="xs"
+													styles={{
+														track: {
+															backgroundColor:
+																showOtherInstruction[currentSection.slug] ?? false
+																	? "green"
+																	: "red",
+														},
+													}}
+													onLabel={<IconEyeEdit size={16} stroke={2.5} />}
+													offLabel={<IconEyeClosed size={16} stroke={2.5} />}
+													checked={showOtherInstruction[currentSection.slug] ?? false}
+													onChange={(event) =>
+														setShowOtherInstruction((prev) => ({
+															...prev,
+															[currentSection.slug]: event.currentTarget.checked,
+														}))
+													}
 												/>
 											)}
 										</Flex>
@@ -716,11 +717,13 @@ export default function PatientReport({
 										styles={{
 											track: {
 												backgroundColor:
-													(showOtherInstruction[currentSection.slug] ?? false) ? "green" : "red",
+													showOtherInstruction[currentSection.slug] ?? false
+														? "green"
+														: "red",
 											},
 										}}
-										onLabel={<IconSun size={16} stroke={2.5}  />}
-										offLabel={<IconMoonStars size={16} stroke={2.5}  />}
+										onLabel={<IconEyeEdit size={16} stroke={2.5} />}
+										offLabel={<IconEyeClosed size={16} stroke={2.5} />}
 										checked={showOtherInstruction[currentSection.slug] ?? false}
 										onChange={(event) =>
 											setShowOtherInstruction((prev) => ({

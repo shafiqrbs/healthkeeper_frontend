@@ -66,6 +66,7 @@ import {
 } from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import BookmarkDrawer from "./BookmarkDrawer";
+import { notifications, showNotification } from "@mantine/notifications";
 
 export default function AddMedicineForm({
 	module,
@@ -357,6 +358,12 @@ export default function AddMedicineForm({
 				setMedicineTerm("");
 				setMedicineGenericTerm("");
 				setDurationModeKey((prev) => prev + 100);
+				notifications.show({
+					title: `Automatically Added`,
+					message: `Medicine added successfully`,
+					color: "green",
+					position: "top-center",
+				});
 				requestAnimationFrame(() => document.getElementById("medicine_id").focus());
 			}
 		}
@@ -955,7 +962,6 @@ export default function AddMedicineForm({
 									{t("Follow Up")}
 								</Text>
 								<Box p="sm">
-
 									<InputForm
 										form={form}
 										label=""
