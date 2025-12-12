@@ -17,7 +17,7 @@ import {
 import { useOutletContext } from "react-router-dom";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
-import { IconCaretUpDownFilled, IconX } from "@tabler/icons-react";
+import {IconCaretUpDownFilled, IconMoonStars, IconSun, IconX} from "@tabler/icons-react";
 import { useState } from "react";
 import inputCss from "@assets/css/InputField.module.css";
 import { DURATION_TYPES } from "@/constants";
@@ -664,19 +664,26 @@ export default function PatientReport({
 												{section.name}
 											</Text>
 											{section?.is_additional_field === 1 && (
+
 												<Switch
-													color="teal.6"
-													size="lg"
-													onLabel="OTHER"
-													offLabel="OTHER"
-													radius="sm"
-													checked={showOtherInstruction[section.slug] ?? false}
-													onChange={(event) =>
-														setShowOtherInstruction((prev) => ({
-															...prev,
-															[section.slug]: event.currentTarget.checked,
-														}))
-													}
+												color="red.6"
+												size="lg"
+												radius="xs"
+												styles={{
+												track: {
+													backgroundColor:
+														(showOtherInstruction[currentSection.slug] ?? false) ? "green" : "red",
+												},
+											}}
+												onLabel={<IconSun size={16} stroke={2.5}  />}
+												offLabel={<IconMoonStars size={16} stroke={2.5}  />}
+												checked={showOtherInstruction[currentSection.slug] ?? false}
+												onChange={(event) =>
+												setShowOtherInstruction((prev) => ({
+													...prev,
+													[currentSection.slug]: event.currentTarget.checked,
+												}))
+											}
 												/>
 											)}
 										</Flex>
@@ -705,9 +712,15 @@ export default function PatientReport({
 									<Switch
 										color="red.6"
 										size="lg"
-										onLabel="OTHER"
-										offLabel="OTHER"
 										radius="xs"
+										styles={{
+											track: {
+												backgroundColor:
+													(showOtherInstruction[currentSection.slug] ?? false) ? "green" : "red",
+											},
+										}}
+										onLabel={<IconSun size={16} stroke={2.5}  />}
+										offLabel={<IconMoonStars size={16} stroke={2.5}  />}
 										checked={showOtherInstruction[currentSection.slug] ?? false}
 										onChange={(event) =>
 											setShowOtherInstruction((prev) => ({

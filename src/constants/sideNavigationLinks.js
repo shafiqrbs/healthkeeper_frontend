@@ -487,7 +487,7 @@ export const sideNavigationLinks = {
 			path: "/configuration",
 			icon: IconSettings,
 			color: "#FF5722", // Deep Orange
-			allowedRoles: ["role_domain", "admin_administrator"],
+			allowedRoles: ["super_administrator"],
 		},
 	],
 	baseSubmenuIpd: [

@@ -347,7 +347,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												<Box key={key}>{renderExaminationSection(key)}</Box>
 											))}
 									</Box>
-									{patientInfo?.is_vital == 1 && (
+									{patientInfo?.is_vital === 1 && (
 										<Flex
 											mih={50}
 											gap="xs"
@@ -417,6 +417,27 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Box w={"36"}>
 											<Image src={Rx} alt="logo" width={"32"} height={32} />
 										</Box>
+										{patientInfo?.referred_mode && patientInfo.prescribe_doctor_id === patientInfo.referred_by_id && (
+											<>
+												<Box mt="4" mb={"md"} style={{ borderBottom: `1px solid #444` }} >
+													{patientInfo?.referred_mode === "referred" &&
+													patientInfo?.referred_hospital ? (
+														<Text size="xs" fw={700}>
+															{capitalize(getValue(patientInfo?.referred_mode))} To :{" "}
+															{getValue(patientInfo?.referred_hospital)}
+														</Text>
+													) : patientInfo?.referred_mode === "room" ? (
+														<Text size="xs" fw={700}>
+															{capitalize(getValue(patientInfo?.referred_mode))} To :{" "}
+															{getValue(patientInfo?.referred_room)}
+														</Text>
+													) : null}
+													<Text size="xs" fw={400}>
+														Cause of Ref: {getValue(patientInfo?.referred_comment)}
+													</Text>
+												</Box>
+											</>
+										)}
 										<Box gap="2">
 											{exEmergencies.map((emergency, index) => (
 												<Flex
@@ -497,26 +518,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												</Box>
 											))}
 										</Box>
-										{patientInfo?.referred_mode && (
-											<>
-												<Box mt="4" mb={"4"} style={{ borderBottom: `1px solid #444` }} />
-												{patientInfo?.referred_mode === "referred" &&
-												patientInfo?.referred_hospital ? (
-													<Text size="xs" fw={400}>
-														{capitalize(getValue(patientInfo?.referred_mode))} To :{" "}
-														{getValue(patientInfo?.referred_hospital)}
-													</Text>
-												) : patientInfo?.referred_mode === "room" ? (
-													<Text size="xs" fw={400}>
-														{capitalize(getValue(patientInfo?.referred_mode))} To :{" "}
-														{getValue(patientInfo?.referred_room)}
-													</Text>
-												) : null}
-												<Text size="xs" fw={400}>
-													Cause of Ref: {getValue(patientInfo?.referred_comment)}
-												</Text>
-											</>
-										)}
+
 									</Box>
 									<Flex
 										mih={50}
@@ -532,7 +534,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											</Text>
 											{jsonContent?.follow_up_date && (
 												<Text size="sm" mt="xs">
-													* Follow Up Date: {formatDate(jsonContent?.follow_up_date)}
+													* Follow Up: {jsonContent?.follow_up_date}
 												</Text>
 											)}
 											<Text size="sm" fz={"xs"} fw={600}>

@@ -955,14 +955,15 @@ export default function AddMedicineForm({
 									{t("FollowUpDate")}
 								</Text>
 								<Box p="sm">
-									<DatePickerForm
+
+									<InputForm
 										form={form}
 										label=""
-										tooltip="Enter follow up date"
+										id="follow_up_date"
+										tooltip="Follow up instruction"
 										name="follow_up_date"
 										value={form.values.follow_up_date}
-										placeholder="Follow up date"
-										onBlur={handleFieldBlur}
+										placeholder="PharmacyInstruction"
 									/>
 								</Box>
 								<Box pl="sm" pr="sm">
