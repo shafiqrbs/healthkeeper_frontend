@@ -33,7 +33,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useLocation, useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
@@ -91,6 +91,8 @@ export default function AddMedicineForm({
 	const prescription2A4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
 	const { id } = useParams();
+	const [searchParams] = useSearchParams();
+	const ipdId = searchParams.get("ipd");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -874,14 +876,14 @@ export default function AddMedicineForm({
 							</Stack>
 						</Button>
 
-						<Button w="100%" bg="var(--theme-hold-btn-color)" onClick={handleHoldData}>
+						{/* <Button w="100%" bg="var(--theme-hold-btn-color)" onClick={handleHoldData}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Hold")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 									(alt + 2)
 								</Text>
 							</Stack>
-						</Button>
+						</Button> */}
 						<Button w="100%" bg="var(--theme-error-color)" onClick={handlePrescriptionOverview}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Preview")}</Text>
@@ -1037,6 +1039,7 @@ export default function AddMedicineForm({
 						setMountPreviewDrawer(false);
 						requestAnimationFrame(closePrescriptionPreview);
 					}}
+					ipdId={ipdId}
 					prescriptionId={id}
 				/>
 			)}

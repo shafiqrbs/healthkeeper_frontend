@@ -23,7 +23,7 @@ import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 
-export default function DetailsDrawer({ type = "prescription", opened, close, prescriptionId }) {
+export default function DetailsDrawer({ type = "prescription", opened, close, prescriptionId, ipdId }) {
 	const prescriptionFullRef = useRef(null);
 	const { mainAreaHeight } = useOutletContext();
 	const { t } = useTranslation();
@@ -37,7 +37,7 @@ export default function DetailsDrawer({ type = "prescription", opened, close, pr
 		url:
 			type === "prescription"
 				? `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`
-				: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${prescriptionId}`,
+				: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${ipdId}`,
 	});
 
 	// =============== parse prescription data and handle null cases ================
