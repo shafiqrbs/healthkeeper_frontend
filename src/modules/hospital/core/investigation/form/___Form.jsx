@@ -39,6 +39,12 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_MODE_DIAGNOSTIC_DEPARTMENT.TYPE },
 	});
 
+	const { data: financialServiceDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_FINANCIAL_SERVICE.PATH,
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MODE_FINANCIAL_SERVICE.UTILITY,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_MODE_FINANCIAL_SERVICE.TYPE },
+	});
+
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
@@ -47,6 +53,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				category_id: data.category_id,
 				diagnostic_department_id: data.diagnostic_department_id,
 				diagnostic_room_id: data.diagnostic_room_id,
+				financial_service_id: data.financial_service_id,
 				instruction: data.instruction,
 				specimen: data.specimen,
 				report_machine: data.report_machine,
@@ -165,6 +172,24 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												nextField="price"
 												value={form.values.diagnostic_room_id}
 												dropdownValue={roomDropdown}
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("FinancialService")}<RequiredAsterisk /></Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("FinancialServiceValidateMessage")}
+												placeholder={t("FinancialService")}
+												name="financial_service_id"
+												id="financial_service_id"
+												searchable="true"
+												nextField="price"
+												value={form.values.financial_service_id}
+												dropdownValue={financialServiceDropdown}
 											/>
 										</Grid.Col>
 									</Grid>

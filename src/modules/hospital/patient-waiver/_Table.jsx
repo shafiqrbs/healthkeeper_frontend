@@ -75,7 +75,6 @@ export default function _Table({ module }) {
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
 	const [billingPrintData, setBillingPrintData] = useState(null);
-	console.log(userRoles);
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -94,14 +93,15 @@ export default function _Table({ module }) {
 		setControlsRefs(controlsRefs);
 	};
 
+
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
 		useInfiniteTableScroll({
 			module,
 			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.INVOICE,
 			filterParams: {
-				name: filterData?.name,
 				mode: processTab,
-				//	term: filterData.keywordSearch,
+				created: form.values.created,
+				term: form.values.keywordSearch,
 			},
 			perPage: PER_PAGE,
 			sortByKey: "created_at",
@@ -171,10 +171,6 @@ export default function _Table({ module }) {
 						pagination: tableCss.pagination,
 					}}
 					records={records}
-					onRowClick={({ record }) => {
-						if (!record?.prescription_id) return alert("NoPrescriptionGenerated");
-						handleView(record?.prescription_id);
-					}}
 					columns={[
 						{
 							accessor: "index",
@@ -309,7 +305,6 @@ export default function _Table({ module }) {
 							),
 						},
 					]}
-					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"

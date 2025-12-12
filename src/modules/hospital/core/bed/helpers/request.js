@@ -5,6 +5,7 @@ const initialValues = {
 	patient_type_id: "",
 	patient_mode_id: "",
 	gender_mode_id: "",
+	financial_service_id: "",
 	payment_mode_id: "",
 	room_id: "",
 	name: "",
@@ -16,6 +17,12 @@ export const getInitialValues = (t) => {
 		initialValues,
 		validate: {
 			name: hasLength({ min: 1}),
+
+			financial_service_id: (value) => {
+				if (!value) return t("FinancialServiceValidationRequired");
+				return null;
+			},
+
 			patient_type_id: (value) => {
 				if (!value) return t("PatientTypeValidationRequired");
 				return null;

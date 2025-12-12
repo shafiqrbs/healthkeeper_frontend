@@ -85,6 +85,11 @@ export const HOSPITAL_DROPDOWNS = {
 		PATH: "hospital/select/mode"
 	},
 
+	PARTICULAR_MODE_FINANCIAL_SERVICE: {
+		UTILITY: "financialService",
+		TYPE: "financial-service",
+		PATH: "hospital/select/mode"
+	},
 
 
 	PARTICULAR_PRINT_MODE: { UTILITY: "particularLabReportModes", TYPE: "print", PATH: "hospital/select/mode" },

@@ -4,6 +4,7 @@ const initialValues = {
 	particular_type_master_id: 9,
 	category_id: "",
 	diagnostic_department_id: "",
+	financial_service_id: "",
 	diagnostic_room_id: "",
 	name: "",
 	specimen: "",

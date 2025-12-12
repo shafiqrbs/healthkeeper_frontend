@@ -427,7 +427,7 @@ export default function RefrerredPrescriptionDetailsDrawer({ opened, close, pres
 				)}
 				{isPrescriptionDataAvailable && (
 					<Flex justify="flex-end" mt="xs" gap="3xs">
-						<Button variant="filled" color="var(--theme-tertiary-color-6)">
+						<Button variant="filled" color="var(--theme-tertiary-color-6)" onClick={close}>
 							{t("Share")}
 						</Button>
 						<Button variant="filled" color="var(--theme-print-color)" onClick={printPrescriptionFull}>
