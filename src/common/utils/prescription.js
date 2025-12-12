@@ -35,8 +35,6 @@ export const appendDosageValueToForm = (form, dosage_options, id) => {
 	if (!form) return console.error("form should be passed in dosage function");
 	const dosage = getDosage(dosage_options, id);
 
-	console.log("Dosage: ", dosage, dosage_options, id);
-
 	form.setFieldValue("medicine_dosage_id", id?.toString());
 	form.setFieldValue("dose_details", dosage?.name);
 	form.setFieldValue("dose_details_bn", dosage?.name_bn);

@@ -14,12 +14,14 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
 import DetailsDrawer from "@/modules/hospital/common/drawer/__IPDDetailsDrawer";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 const module = MODULES.ADMISSION;
 
 export default function AdmissionPrescription() {
 	const { id } = useParams();
+	const [searchParams] = useSearchParams();
+	const ipdId = searchParams.get("ipd");
 	const [opened, { close }] = useDisclosure(false);
 	const [showHistory, setShowHistory] = useState(false);
 	const [medicines, setMedicines] = useState([]);
@@ -74,8 +76,6 @@ export default function AdmissionPrescription() {
 
 	const hasRecords = records && records.length > 0;
 
-
-
 	return (
 		<Box pos="relative">
 			<LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
@@ -115,7 +115,7 @@ export default function AdmissionPrescription() {
 					</Grid.Col>
 				)}
 			</Grid>
-			{id && <DetailsDrawer opened={opened} close={close} prescriptionId={id} />}
+			{id && <DetailsDrawer opened={opened} close={close} ipdId={ipdId} prescriptionId={id} />}
 		</Box>
 	);
 }

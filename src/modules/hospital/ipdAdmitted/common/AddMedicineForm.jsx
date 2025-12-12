@@ -86,6 +86,8 @@ export default function AddMedicineForm({
 		meals: by_meal_options,
 	} = useAppLocalStore();
 
+	const medicineIdRef = useRef(null);
+	const genericRef = useRef(null);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
@@ -152,15 +154,15 @@ export default function AddMedicineForm({
 
 	useEffect(() => {
 		if (medicineTerm.length === 0) {
-			medicineForm.setFieldValue("medicine_id", "");
+			medicineForm.setFieldValue("medicine_id", null);
 		}
 
 		if (medicineDosageSearchValue.length === 0) {
-			medicineForm.setFieldValue("medicine_dosage_id", "");
+			medicineForm.setFieldValue("medicine_dosage_id", null);
 		}
 
 		if (medicineByMealSearchValue.length === 0) {
-			medicineForm.setFieldValue("medicine_bymeal_id", "");
+			medicineForm.setFieldValue("medicine_bymeal_id", null);
 		}
 	}, [medicineDosageSearchValue, medicineByMealSearchValue, medicineTerm]);
 
@@ -282,7 +284,6 @@ export default function AddMedicineForm({
 		],
 	]);
 
-	console.log("Medicine-Data", medicineData);
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
 
@@ -321,12 +322,8 @@ export default function AddMedicineForm({
 			}
 		}
 
-		if (field === "generic" && value) {
-			medicineForm.clearFieldError("medicine_id");
-		}
-
-		if (field === "medicine_id" && value) {
-			medicineForm.clearFieldError("generic");
+		if (value && (field === "medicine_id" || field === "generic")) {
+			medicineForm.clearFieldError(field === "medicine_id" ? "generic" : "medicine_id");
 		}
 
 		if (field === "medicine_bymeal_id" && value) {
@@ -496,6 +493,10 @@ export default function AddMedicineForm({
 		}
 	};
 
+	const handleMedicineSearch = (value) => {
+		setMedicineTerm(value);
+	};
+
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box
@@ -512,11 +513,12 @@ export default function AddMedicineForm({
 								<Grid.Col span={6}>
 									<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 										<Select
+											ref={medicineIdRef}
 											disabled={medicineForm.values.generic}
 											searchable
 											limit={20}
 											filter={medicineOptionsFilter}
-											onSearchChange={setMedicineTerm}
+											onSearchChange={handleMedicineSearch}
 											id="medicine_id"
 											name="medicine_id"
 											data={medicineData?.map((item) => ({
@@ -1047,7 +1049,7 @@ export default function AddMedicineForm({
 						setMountPreviewDrawer(false);
 						requestAnimationFrame(closePrescriptionPreview);
 					}}
-					ipdId={ipdId}
+					ipdId={ipdId || id}
 					prescriptionId={id}
 				/>
 			)}
