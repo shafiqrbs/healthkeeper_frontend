@@ -224,6 +224,8 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 						style={{
 							borderCollapse: "collapse",
 							width: "100%",
+							height:"1122px"
+
 						}}
 						className="customTable"
 					>
@@ -524,72 +526,6 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												<Box key={key}>{renderExaminationSection(key)}</Box>
 											))}
 									</Box>
-									<Flex
-										mih={50}
-										gap="xs"
-										justify="flex-start"
-										align="flex-end"
-										direction="row"
-										wrap="nowrap"
-									>
-										<Box w={"100%"}>
-											<Box style={{ borderBottom: `1px solid #444` }}>
-												Vitals
-											</Box>
-											<Grid columns={24} gutter={"2"}>
-												{patientInfo?.bp && (
-													<Grid.Col span={14}>
-														<Text style={{ fontSize: "11px" }}>
-															{t("B/P")}: {patientInfo?.bp} mmHg
-														</Text>
-													</Grid.Col>
-												)}
-												{patientInfo?.pulse && (
-													<Grid.Col span={10} fz="xs" align={"left"}>
-														<Text style={{ fontSize: "11px" }}>
-															{t("Pulse")}: {patientInfo?.pulse}/bpm
-														</Text>
-													</Grid.Col>
-												)}
-											</Grid>
-											<Grid columns={24} gutter={"2"}>
-												{patientInfo?.sat_without_O2 && (
-													<Grid.Col span={14} fz="xs" align={"left"}>
-														<Text style={{ fontSize: "11px" }}>
-															{t("Sat")}:{" "}
-															{patientInfo?.sat_without_O2} % w/o O₂
-														</Text>
-													</Grid.Col>
-												)}
-												{patientInfo?.temperature && (
-													<Grid.Col span={10}>
-														<Text style={{ fontSize: "11px" }}>
-															{t("Temp")}: {patientInfo?.temperature}{" "}
-															°F
-														</Text>
-													</Grid.Col>
-												)}
-											</Grid>
-											<Grid columns={24} gutter={"2"}>
-												{patientInfo?.sat_with_O2 && (
-													<Grid.Col span={14}>
-														<Text style={{ fontSize: "11px" }}>
-															{t("Sat")}: {patientInfo?.sat_with_O2} %
-															w/ {patientInfo?.sat_liter || 0} L O₂
-														</Text>
-													</Grid.Col>
-												)}
-												{patientInfo?.respiration && (
-													<Grid.Col span={10} fz="xs" align={"left"}>
-														<Text style={{ fontSize: "11px" }}>
-															{t("Res R.")}:{" "}
-															{patientInfo?.respiration}/min
-														</Text>
-													</Grid.Col>
-												)}
-											</Grid>
-										</Box>
-									</Flex>
 								</Table.Td>
 								<Table.Td colSpan={2} style={{ verticalAlign: "top" }}>
 									<Box style={{ position: "relative", minHeight: "550px" }}>
@@ -657,53 +593,42 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												<Text size="sm" fw={500}>
 													উপদেশ: {getValue(jsonContent.advise)}
 												</Text>
-												{patientInfo?.referred_comment && (
-													<>
-														<Box
-															mt="4"
-															mb={"4"}
-															style={{
-																borderBottom: `1px solid #444`,
-															}}
-														/>
-														<Text size="xs" fw={400}>
-															Note:{" "}
-															{getValue(
-																patientInfo?.referred_comment
-															)}
-														</Text>
-													</>
-												)}
 											</Box>
 										</Flex>
 									)}
 								</Table.Td>
 							</Table.Tr>
+							<Table.Tr>
+								<Table.Td colspan={3}>
+									<Box ta="center">
+										<Grid columns={12} gutter="0">
+											<Grid.Col span={6} align="left">
+												<br/>
+												<br/>
+												<br/>
+												<Text fz="xl">AdmittedBy</Text>
+											</Grid.Col>
+											<Grid.Col span={6} align={"right"}>
+												<Text size="sm" fw={600} mb="xs">
+													<Text mt={"md"}>
+														<br />
+													</Text>
+													<Text mt={"md"}>
+														<br />
+													</Text>
+													<Text>
+														{t("Signature")}-----------------------------------------------
+													</Text>
+												</Text>
+											</Grid.Col>
+										</Grid>
+									</Box>
+								</Table.Td>
+							</Table.Tr>
 						</Table.Tbody>
 					</Table>
 				</Box>
-				<Box ta="center">
-					<Grid columns={12} gutter="0">
-						<Grid.Col span={6} align="left">
-							<Text fz="xl">AdmittedBy</Text>
-							<Text fz="xs">{admissionData?.created_by_name || "N/A"}</Text>
-							<Text fz="xs">{admissionData?.designation_name || "N/A"}</Text>
-						</Grid.Col>
-						<Grid.Col span={6} align={"right"}>
-							<Text size="sm" fw={600} mb="xs">
-								<Text mt={"md"}>
-									<br />
-								</Text>
-								<Text mt={"md"}>
-									<br />
-								</Text>
-								<Text>
-									{t("Signature")}-----------------------------------------------
-								</Text>
-							</Text>
-						</Grid.Col>
-					</Grid>
-				</Box>
+
 			</Stack>
 		</Box>
 	);
