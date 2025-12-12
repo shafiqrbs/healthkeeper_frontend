@@ -952,7 +952,7 @@ export default function AddMedicineForm({
 						<Grid.Col span={3}>
 							<Box bg="var(--theme-primary-color-0)" h="100%">
 								<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="les">
-									{t("FollowUpDate")}
+									{t("Follow Up")}
 								</Text>
 								<Box p="sm">
 
@@ -963,7 +963,7 @@ export default function AddMedicineForm({
 										tooltip="Follow up instruction"
 										name="follow_up_date"
 										value={form.values.follow_up_date}
-										placeholder="PharmacyInstruction"
+										placeholder="Follow up instruction"
 									/>
 								</Box>
 								<Box pl="sm" pr="sm">

@@ -420,7 +420,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										{patientInfo?.referred_mode && patientInfo.prescribe_doctor_id === patientInfo.referred_by_id && (
 											<>
 												<Box mt="4" mb={"md"} style={{ borderBottom: `1px solid #444` }} >
-													{patientInfo?.referred_mode === "referred" &&
+													{patientInfo?.referred_mode === "hospital" &&
 													patientInfo?.referred_hospital ? (
 														<Text size="xs" fw={700}>
 															{capitalize(getValue(patientInfo?.referred_mode))} To :{" "}
@@ -518,7 +518,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												</Box>
 											))}
 										</Box>
-
 									</Box>
 									<Flex
 										mih={50}
@@ -541,6 +540,14 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												* রিপোর্ট (যদি থাকে ) সংগ্রহ করে দেখা করবেন।
 											</Text>
 										</Box>
+										{patientInfo?.referred_mode === "admission" && (
+											<Box>
+												<Text size="sm" fw={500}>
+													Room/Bed No........
+												</Text>
+
+											</Box>
+										 )}
 									</Flex>
 								</Table.Td>
 							</Table.Tr>

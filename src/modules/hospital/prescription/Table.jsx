@@ -49,7 +49,7 @@ const tabs = [
 	{ label: "Non-prescription", value: "non-prescription" },
 	{ label: "Room Referred", value: "room" },
 	{ label: "Admission", value: "admission" },
-	{ label: "Referred", value: "referred" },
+	{ label: "Referred", value: "hospital" },
 ];
 
 const PER_PAGE = 200;
