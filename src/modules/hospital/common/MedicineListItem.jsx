@@ -49,6 +49,28 @@ export default function MedicineListItem({
 						? { ...medicine, [field]: value, duration_mode_bn: durationMode?.name_bn || "" }
 						: medicine
 				);
+			} else if (field === "order" && type === "ipd") {
+				// =============== update order field and sort medicines by order ================
+				const orderValue = value === "" || value === null ? null : Number(value);
+				// =============== find medicine by comparing unique fields instead of index ================
+				const updatedList = prev.map((med) => {
+					// =============== match medicine by id, medicine_id, or generic name ================
+					const isMatch =
+						(medicine.id && med.id === medicine.id) ||
+						(medicine.medicine_id &&
+							med.medicine_id === medicine.medicine_id &&
+							med.generic === medicine.generic) ||
+						(!medicine.medicine_id &&
+							med.generic === medicine.generic &&
+							med.medicine_dosage_id === medicine.medicine_dosage_id);
+					return isMatch ? { ...med, [field]: orderValue } : med;
+				});
+				// =============== sort medicines by order (null values go to end) ================
+				newList = [...updatedList].sort((a, b) => {
+					const orderA = a.order ?? 999999;
+					const orderB = b.order ?? 999999;
+					return orderA - orderB;
+				});
 			} else {
 				newList = prev.map((medicine, idx) => (idx === index - 1 ? { ...medicine, [field]: value } : medicine));
 			}
@@ -203,6 +225,17 @@ export default function MedicineListItem({
 			<Flex justify="space-between" align="center" gap="0">
 				<Flex align="center" gap="es">
 					<IconMedicineSyrup stroke={1.5} size={20} />
+					{type === "ipd" && (
+						<NumberInput
+							size="xs"
+							w={60}
+							mx="sm"
+							min={1}
+							value={medicine.order ?? ""}
+							placeholder="Order"
+							onChange={(value) => handleChange("order", value)}
+						/>
+					)}
 					<Text fz="14px" className="cursor-pointer capitalize">
 						{medicine.medicine_name || medicine.generic}
 					</Text>

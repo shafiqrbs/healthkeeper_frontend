@@ -284,8 +284,7 @@ export default function AddMedicineForm({
 		medicineForm.setFieldValue(field, value);
 
 		// If medicine field is being changed, auto-populate other fields from medicine data
-		if (field === "medicine_id" && value) {
-			medicineForm.clearFieldError("generic");
+		if ((field === "medicine_id" || field === "generic") && value) {
 			const selectedMedicine = medicineData?.find((item) => item.product_id?.toString() === value);
 
 			if (selectedMedicine) {
@@ -316,6 +315,10 @@ export default function AddMedicineForm({
 			medicineForm.clearFieldError("medicine_id");
 		}
 
+		if (field === "medicine_id" && value) {
+			medicineForm.clearFieldError("generic");
+		}
+
 		if (field === "medicine_bymeal_id" && value) {
 			appendMealValueToForm(medicineForm, by_meal_options, value);
 		}
@@ -332,10 +335,15 @@ export default function AddMedicineForm({
 			setMedicines(updated);
 			setEditIndex(null);
 		} else {
-			setMedicines([...medicines, values]);
+			// =============== assign default order value based on max existing order or medicines length ================
+			const maxOrder =
+				medicines.length > 0 ? Math.max(...medicines.map((med) => med.order ?? 0), medicines.length) : 0;
+			const newMedicine = { ...values, order: maxOrder + 1 };
+			const updatedMedicines = [...medicines, newMedicine];
+			setMedicines(updatedMedicines);
 			setUpdateKey((prev) => prev + 1);
 
-			if (update) update([...medicines, values]);
+			if (update) update(updatedMedicines);
 
 			medicineForm.reset();
 			setMedicineDosageSearchValue("");
@@ -375,6 +383,7 @@ export default function AddMedicineForm({
 			onConfirm: () => handlePrescriptionSubmit(),
 		});
 	};
+
 	const handlePrescriptionSubmit = async (skipLoading, redirect = true) => {
 		!skipLoading && setIsSubmitting(true);
 
@@ -493,6 +502,7 @@ export default function AddMedicineForm({
 								<Grid.Col span={6}>
 									<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 										<Select
+											disabled={medicineForm.values.generic}
 											clearable
 											searchable
 											filter={medicineOptionsFilter}
@@ -517,7 +527,8 @@ export default function AddMedicineForm({
 								<Grid.Col span={6}>
 									<FormValidatorWrapper opened={medicineForm.errors.generic}>
 										<Autocomplete
-											tooltip={t("EnterGenericName")}
+											disabled={medicineForm.values.medicine_id}
+											tooltip={t("EnterSelfMedicine")}
 											id="generic"
 											name="generic"
 											clearable
@@ -538,7 +549,7 @@ export default function AddMedicineForm({
 													setAutocompleteValue("");
 												}, 0);
 											}}
-											placeholder={t("GenericName")}
+											placeholder={t("SelfMedicine")}
 											classNames={inputCss}
 											error={!!medicineForm.errors.generic}
 										/>
@@ -754,20 +765,28 @@ export default function AddMedicineForm({
 						</>
 					)}
 
-					{medicines?.map((medicine, index) => (
-						<MedicineListItem
-							key={index}
-							index={index + 1}
-							medicines={medicines}
-							medicine={medicine}
-							setMedicines={setMedicines}
-							handleDelete={handleDelete}
-							update={update}
-							by_meal_options={by_meal_options}
-							dosage_options={dosage_options}
-							type="ipd"
-						/>
-					))}
+					{medicines
+						?.slice()
+						.sort((a, b) => {
+							// =============== sort medicines by order (null values go to end) ================
+							const orderA = a.order ?? 999999;
+							const orderB = b.order ?? 999999;
+							return orderA - orderB;
+						})
+						.map((medicine, index) => (
+							<MedicineListItem
+								key={index}
+								index={index + 1}
+								medicines={medicines}
+								medicine={medicine}
+								setMedicines={setMedicines}
+								handleDelete={handleDelete}
+								update={update}
+								by_meal_options={by_meal_options}
+								dosage_options={dosage_options}
+								type="ipd"
+							/>
+						))}
 				</Stack>
 			</ScrollArea>
 
