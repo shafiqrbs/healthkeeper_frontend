@@ -235,7 +235,7 @@ export default function _Table({ module }) {
 								<>
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-											values.process?.toLowerCase() === "ipd" && (
+										(values.process?.toLowerCase() === "ipd" && values?.referred_mode === 'admission') || (values.process?.toLowerCase() === "closed" && values?.referred_mode === 'admission') && (
 												<Button
 													variant="filled"
 													bg="var(--theme-primary-color-6)"

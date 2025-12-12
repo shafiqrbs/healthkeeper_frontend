@@ -12,7 +12,9 @@ import {useNavigate} from "react-router-dom";
 const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
 const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_emergency"];
 const ALLOWED_OPD_DOCTOR_ROLES = ["doctor_opd"];
+const ALLOWED_IPD_DOCTOR_ROLES = ["doctor_ipd"];
 const ALLOWED_LAB_ROLES = ["lab_operator","lab_assistant","doctor_lab"];
+const ALLOWED_EMERGENCY_ROLES = ["doctor_emergency","operator_emergency"];
 const module = MODULES.VISIT;
 export default function Index({ height }) {
 	const { userRoles } = useAppLocalStore();
@@ -26,6 +28,14 @@ export default function Index({ height }) {
 	}
 	if (userRoles.some(role => ALLOWED_LAB_ROLES.includes(role))) {
 		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX);
+		return null;
+	}
+	if (userRoles.some(role => ALLOWED_EMERGENCY_ROLES.includes(role))) {
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EMERGENCY.INDEX);
+		return null;
+	}
+	if (userRoles.some(role => ALLOWED_IPD_DOCTOR_ROLES.includes(role))) {
+		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX);
 		return null;
 	}
 	return (

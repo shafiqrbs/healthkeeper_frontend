@@ -624,8 +624,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td
-									colSpan={"2"}
+								<Table.Td w={'40%'}
 									style={{
 										borderRight: "1px solid var(--theme-tertiary-color-8)",
 										padding: "4px",
@@ -665,7 +664,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Text size="xs">Designation: {getValue(patientInfo?.designation_name)}</Text>*/}
 									</Stack>
 								</Table.Td>
-								<Table.Td colSpan={"4"} style={{ verticalAlign: "top" }}>
+								<Table.Td w={'60%'} style={{ verticalAlign: "top" }}>
 									<Box
 										mt={"4"}
 										style={{

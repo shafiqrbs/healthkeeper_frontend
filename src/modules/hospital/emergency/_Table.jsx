@@ -36,7 +36,7 @@ import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { showEntityData, storeEntityData } from "@/app/store/core/crudThunk";
-import { formatDate } from "@utils/index";
+import {formatDate, getLoggedInHospitalUser} from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import CompactDrawer from "@components/drawers/CompactDrawer";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -91,7 +91,8 @@ export default function Table({ module }) {
 		useDisclosure(false);
 	const [singlePatientData, setSinglePatientData] = useState({});
 	// removed unused 'today'
-
+	const hospitalConfig = getLoggedInHospitalUser();
+	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -139,13 +140,9 @@ export default function Table({ module }) {
 				patient_mode: "emergency",
 				term: form.values?.keywordSearch,
 				room_id: form.values?.room_id,
+				room_ids: opdRoomIds,
 				prescription_mode: processTab,
 				created: form.values.created,
-				created_by_id:
-					userRoles.includes("operator_manager") ||
-					userRoles.includes("admin_administrator")
-						? undefined
-						: user?.id,
 			},
 			perPage: PER_PAGE,
 			sortByKey: "created_at",
