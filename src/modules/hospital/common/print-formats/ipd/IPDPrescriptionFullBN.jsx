@@ -282,10 +282,12 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={3}>
-									<Text size="md" fw={600}>
-										{t("Prescription - Indoor")}
-									</Text>
+								<Table.Td colSpan={3} valign="middle">
+									<Center>
+										<Text size="md" fw={600}>
+											{t("Prescription - Indoor")}
+										</Text>
+									</Center>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
