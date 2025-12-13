@@ -2,7 +2,7 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getDataWithoutStore } from "@/services/apiService";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
-import { Box, Button, Flex, Grid, Stack, Text } from "@mantine/core";
+import {Box, Button, Flex, Grid, Group, Stack, Text} from "@mantine/core";
 import { IconPrinter } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -41,7 +41,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Box px="md" bg="var(--theme-tertiary-color-2)">
 					<Grid columns={12}>
-						<Grid.Col span={10} className="animate-ease-out">
+						<Grid.Col span={8} className="animate-ease-out">
 							<Box w="100%">
 								{isViewOnly ? (
 									<Box h={"56"}>
@@ -58,17 +58,11 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 								)}
 							</Box>
 						</Grid.Col>
-						<Grid.Col span={2}>
+						<Grid.Col span={4}>
 							<Box>
+								<Group justify="center">
 								{diagnosticReport?.process === "Done" && (
-									<Flex
-										mt={"les"}
-										gap="xs"
-										justify="flex-start"
-										align="center"
-										direction="row"
-										wrap="wrap"
-									>
+
 										<Button
 											onClick={() => handleLabReport(reportId)}
 											size="md"
@@ -89,60 +83,52 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 												</Flex>
 											</Flex>
 										</Button>
-									</Flex>
 								)}
-								<Flex
-									mt={"les"}
-									justify="center"
-									align="flex-start"
-									direction="row"
-									wrap="wrap"
+								{diagnosticReport?.process === "Tagged" && (
+								<Button
+									size="md"
+									className="btnPrimaryBg"
+									type="submit"
+									id="handleSubmit"
 								>
-									{diagnosticReport?.process === "Tagged" && (
-										<Button
-											size="md"
-											className="btnPrimaryBg"
-											type="submit"
-											id="handleSubmit"
+									<Flex direction="column" gap={0}>
+										<Text fz="md">{t("Save")}</Text>
+										<Flex
+											direction="column"
+											align="center"
+											fz="2xs"
+											c="white"
 										>
-											<Flex direction="column" gap={0}>
-												<Text fz="md">{t("Save")}</Text>
-												<Flex
-													direction="column"
-													align="center"
-													fz="2xs"
-													c="white"
-												>
-													alt+s
-												</Flex>
+											alt+s
+										</Flex>
+									</Flex>
+								</Button>
+								)}
+								{(diagnosticReport?.process === "In-progress" || diagnosticReport?.process === "Done") &&
+								userRoles.some((role) =>
+									ALLOWED_LAB_DOCTOR_ROLES.includes(role)
+								) && (
+									<Button
+										size="md"
+										fz={"xs"}
+										bg="var(--theme-primary-color-6)"
+										type="submit"
+										id="handleSubmit"
+									>
+										<Flex direction="column" gap={0}>
+											<Text fz="xs">{t("Confirm")}</Text>
+											<Flex
+												direction="column"
+												align="center"
+												fz="2xs"
+												c="white"
+											>
+												alt+s
 											</Flex>
-										</Button>
-									)}
-									{diagnosticReport?.process === "In-progress" &&
-									userRoles.some((role) =>
-										ALLOWED_LAB_DOCTOR_ROLES.includes(role)
-									) && (
-										<Button
-											size="md"
-											fz={"xs"}
-											bg="var(--theme-primary-color-6)"
-											type="submit"
-											id="handleSubmit"
-										>
-											<Flex direction="column" gap={0}>
-												<Text fz="xs">{t("Confirm")}</Text>
-												<Flex
-													direction="column"
-													align="center"
-													fz="2xs"
-													c="white"
-												>
-													alt+s
-												</Flex>
-											</Flex>
-										</Button>
-									)}
-								</Flex>
+										</Flex>
+									</Button>
+								)}
+								</Group>
 							</Box>
 						</Grid.Col>
 					</Grid>

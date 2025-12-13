@@ -10,6 +10,7 @@ import { capitalizeWords, formatDate, formatDateTimeAmPm } from "@utils/index";
 import DefaultCustomReport from "@hospital-components/print-formats/lab-reports/custom/DefaultCustomReport";
 import SystemLabReport from "@hospital-components/print-formats/lab-reports/custom/SystemLabReport";
 import XrayReport from "@hospital-components/print-formats/lab-reports/custom/XrayReport";
+import CTScanReport from "@hospital-components/print-formats/lab-reports/custom/CTScanReport";
 
 const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const reportData = JSON.parse(data?.invoiceParticular?.json_report || "{}");
@@ -505,6 +506,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										<Box>Gene Extra Sputum Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "lpa" ? (
 										<Box>LPA Report</Box>
+									) : data?.invoiceParticular?.particular?.slug === "ct-scan" ? (
+										<CTScanReport report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.is_custom_report === 1 ? (
 										<DefaultCustomReport report={report} reportData={reportData} />
 									) : (

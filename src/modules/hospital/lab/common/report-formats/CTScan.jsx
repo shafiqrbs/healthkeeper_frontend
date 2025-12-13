@@ -1,4 +1,4 @@
-import { Box, Stack, Group, Text, ScrollArea } from "@mantine/core";
+import {Box, Stack, Group, Text, ScrollArea, Grid} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import ReportSubmission from "../ReportSubmission";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -28,13 +28,17 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 
 	const form = useForm({
 		initialValues: {
-			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
-			lab_no: custom_report?.lab_no || "",
-			ref_by: custom_report?.ref_by || "",
-			test_name: custom_report?.test_name || "",
-			patient_age: custom_report?.patient_age ? new Date(custom_report.patient_age) : null,
 			technique: custom_report?.technique || "",
-			findings: custom_report?.findings || "",
+			parenchyma: custom_report?.parenchyma || "",
+			mediastinum_vessels: custom_report?.mediastinum_vessels || "",
+			mediastinum_lymph_nodes: custom_report?.mediastinum_lymph_nodes || "",
+			mediastinum_oesophagus: custom_report?.mediastinum_oesophagus || "",
+			mediastinum_thymus: custom_report?.mediastinum_thymus || "",
+			mediastinum_trachea: custom_report?.mediastinum_trachea || "",
+			heart: custom_report?.heart || "",
+			pleura: custom_report?.pleura || "",
+			bones: custom_report?.bones || "",
+			findings: custom_report?.parenchyma || "",
 			after_iv_contrast: custom_report?.after_iv_contrast || "",
 			impression: custom_report?.impression || "",
 			comment: diagnosticReport?.comment || "",
@@ -97,121 +101,170 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 				<ScrollArea h={mainAreaHeight - 232} scrollbarSize={2} scrollbars="y">
 					<Stack gap="md">
 						{/* =============== test date and lab no =============== */}
-						<Group grow>
-							<DatePickerForm
-								label="Test Date"
-								placeholder="Select date"
-								name="test_date"
-								id="test_date"
-								nextField="lab_no"
-								form={form}
-								tooltip={t("EnterTheTestDate")}
-								readOnly={is_completed}
-							/>
+						<Grid>
+							<Grid.Col span={3}>Technique</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="technique"
+									id="technique"
+									placeholder="5 mm non-contrast and contrast CT scan of chest were obtaiend"
+									minRows={3}
+									
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid>
+							<Grid.Col span={12}>Findings</Grid.Col>
+						</Grid>
+						<Grid>
+							<Grid.Col span={3}>Parenchyma</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="parenchyma"
+									id="parenchyma"
+									placeholder="No local or diffuse sen in lunge parenchyma Parenchyma"
+									
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid>
+							<Grid.Col span={12}>Mediastinum</Grid.Col>
+						</Grid>
+						<Grid>
+							<Grid.Col span={1}/>
+							<Grid.Col span={2} fz={'xs'}>a. Vessels</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="mediastinum_vessels"
+									id="mediastinum_vessels"
+									placeholder="Appear normal"
+									
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid>
+							<Grid.Col span={1}/>
+							<Grid.Col span={2} fz={'xs'}>b. Trachea-</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="mediastinum_trachea"
+									id="mediastinum_trachea"
+									placeholder="Central position"
+									
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid>
+							<Grid.Col span={1}/>
+							<Grid.Col span={2} fz={'xs'}>c. Oesophagus-</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="mediastinum_oesophagus"
+									id="mediastinum_oesophagus"
+									placeholder="Appear normal"
+									
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid>
+							<Grid.Col span={1}/>
+							<Grid.Col span={2} fz={'xs'}>d. Thymus-</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="mediastinum_thymus"
+									id="mediastinum_thymus"
+									placeholder="Not enlarged"
+									
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid>
+							<Grid.Col span={1}/>
+							<Grid.Col span={2} fz={'xs'}>d. Lymph Nodes-</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="mediastinum_lymph_nodes"
+									id="mediastinum_lymph_nodes"
+									placeholder="Not enlarged"
+									
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid>
+							<Grid.Col span={3}>Heart</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="heart"
+									id="heart"
+									placeholder="Normal in ID"
+									minRows={3}
+									
+								/>
+							</Grid.Col>
+						</Grid>
 
-							{/* =============== lab no =============== */}
-							<InputForm
-								label="Lab No"
-								placeholder="Enter lab number"
-								name="lab_no"
-								id="lab_no"
-								nextField="ref_by"
-								form={form}
-								readOnly={is_completed}
-							/>
-						</Group>
+						<Grid>
+							<Grid.Col span={3}>Pleura</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="pleura"
+									id="pleura"
+									placeholder="Appear normal"
+									minRows={3}
+									
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid>
+							<Grid.Col span={3}>Bones</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="bones"
+									id="bones"
+									placeholder="Appear normal"
+									minRows={3}
+									
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid>
+							<Grid.Col span={3}>After I/V Contrast</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="after_iv_contrast"
+									id="after_iv_contrast"
+									placeholder="No abnormal contrast uptake is seen"
+									minRows={3}
+									
+								/>
+							</Grid.Col>
+						</Grid>
 
-						{/* =============== ref by and test name =============== */}
-						<Group grow>
-							<InputForm
-								label="Ref By"
-								placeholder="Enter referring doctor"
-								name="ref_by"
-								id="ref_by"
-								nextField="test_name"
-								form={form}
-								readOnly={is_completed}
-							/>
 
-							{/* =============== test name =============== */}
-							<InputForm
-								label="Test Name"
-								placeholder="Enter test name (e.g., CT: Brain)"
-								name="test_name"
-								id="test_name"
-								nextField="patient_age"
-								form={form}
-								readOnly={is_completed}
-							/>
-						</Group>
-
-						{/* =============== patient age and after i/v contrast =============== */}
-						<Group grow>
-							{/* =============== patient age =============== */}
-							<DatePickerForm
-								label="Patient Age"
-								placeholder="Select date"
-								name="patient_age"
-								id="patient_age"
-								nextField="after_iv_contrast"
-								form={form}
-								tooltip={t("EnterPatientAge")}
-								readOnly={is_completed}
-							/>
-
-							{/* =============== after i/v contrast =============== */}
-							<InputForm
-								label="After I/V Contrast"
-								placeholder="Enter contrast information (e.g., Not given)"
-								name="after_iv_contrast"
-								id="after_iv_contrast"
-								nextField="technique"
-								form={form}
-								readOnly={is_completed}
-							/>
-						</Group>
-
-						{/* =============== technique textarea =============== */}
-						<Box>
-							<TextAreaForm
-								form={form}
-								name="technique"
-								id="technique"
-								label="Technique"
-								placeholder="Enter technique description"
-								resize="vertical"
-								minRows={3}
-								readOnly={is_completed}
-							/>
-						</Box>
-
-						{/* =============== findings textarea =============== */}
-						<Box>
-							<TextAreaForm
-								form={form}
-								name="findings"
-								id="findings"
-								label="Findings"
-								placeholder="Enter findings (each finding on a new line)"
-								resize="vertical"
-								minRows={6}
-								readOnly={is_completed}
-							/>
-						</Box>
-
-						{/* =============== impression textarea =============== */}
-						<Box>
-							<TextAreaForm
-								form={form}
-								name="impression"
-								id="impression"
-								label="Impression"
-								placeholder="Enter impression"
-								resize="vertical"
-								minRows={3}
-								readOnly={is_completed}
-							/>
-						</Box>
+						<Grid>
+							<Grid.Col span={3}>Impression</Grid.Col>
+							<Grid.Col span={9}>
+								<InputForm
+									form={form}
+									name="impression"
+									id="impression"
+									placeholder="Normal CT scan of chest"
+									minRows={3}
+									
+								/>
+							</Grid.Col>
+						</Grid>
 					</Stack>
 				</ScrollArea>
 			</Box>

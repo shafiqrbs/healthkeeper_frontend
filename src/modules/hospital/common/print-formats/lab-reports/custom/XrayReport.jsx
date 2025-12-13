@@ -11,7 +11,7 @@ const XrayReport = forwardRef(({reportData,report}) => {
 	console.log(mainAreaHeight)
 	return (
 		<Box>
-			<Box mb="md" p={'xl'}  fz={'md'} h={650}>
+			<Box mb="md" p={'xl'}  fz={'md'} h={600}>
 				<Grid>
 					<Grid.Col span={3} fw={700}>Trachea</Grid.Col>
 					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.trachea)}}/></Grid.Col>

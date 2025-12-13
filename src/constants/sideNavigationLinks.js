@@ -158,22 +158,44 @@ export const sideNavigationLinks = {
 					allowedRoles: ["operator_opd", "operator_manager", "operator_emergency", "admin_administrator"],
 				},
 				{
+					label: t("FinalBilling"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FINAL_BILLING.INDEX,
+					icon: IconBuildingHospital,
+					allowedRoles: ["operator_opd", "operator_manager", "admin_administrator"],
+				},
+			],
+		},
+		{
+			label: t("Refund"),
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
+			icon: IconBuildingHospital,
+			color: "#9C27B0", // Purple
+			allowedRoles: [
+				"role_domain",
+				"admin_administrator",
+				"admin_doctor",
+				"operator_opd",
+				"operator_emergency",
+				"operator_manager",
+			],
+			subMenu: [
+				{
 					label: t("Refund"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND.INDEX,
 					icon: IconBuildingHospital,
 					allowedRoles: ["operator_opd", "operator_manager", "admin_administrator"],
 				},
 				{
-					label: t("RefundHistory"),
+					label: t("OPDHistory"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.INDEX,
 					icon: IconBuildingHospital,
 					allowedRoles: ["operator_opd", "operator_manager", "admin_administrator"],
 				},
 				{
-					label: t("FinalBilling"),
-					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FINAL_BILLING.INDEX,
+					label: t("IPDHistory"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.INDEX,
 					icon: IconBuildingHospital,
-					allowedRoles: ["operator_opd", "operator_manager", "admin_administrator"],
+					allowedRoles: ["operator_opd", "operator_emergency", "operator_manager", "admin_administrator"],
 				},
 			],
 		},

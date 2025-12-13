@@ -1,0 +1,114 @@
+import {Box, Text, Grid, Stack} from "@mantine/core";
+import React, { forwardRef } from "react";
+import "@/index.css";
+import { t } from "i18next";
+import {useOutletContext} from "react-router-dom";
+import InputForm from "@components/form-builders/InputForm";
+const CTScanReport = forwardRef(({reportData,report}) => {
+	const getValue = (value, defaultValue = "") => {
+		return value || defaultValue;
+	};
+	const { mainAreaHeight } = useOutletContext();
+	return (
+		<Box>
+			<Box mb="md" p={'xl'} pt={'xs'}  fz={'md'} h={600}>
+				<Grid>
+					<Grid.Col span={3}>Technique</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.technique)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={12} fw={'600'}>Findings</Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={3}>Parenchyma</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.parenchyma)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={12} fw={'600'}>Mediastinum</Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={1}/>
+					<Grid.Col span={2} fz={'xs'}>a. Vessels</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.mediastinum_vessels)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={1}/>
+					<Grid.Col span={2} fz={'xs'}>b. Trachea-</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.mediastinum_trachea)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={1}/>
+					<Grid.Col span={2} fz={'xs'}>c. Oesophagus-</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.mediastinum_oesophagus)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={1}/>
+					<Grid.Col span={2} fz={'xs'}>d. Thymus-</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.mediastinum_thymus)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={1}/>
+					<Grid.Col span={2} fz={'xs'}>d. Lymph Nodes-</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.mediastinum_lymph_nodes)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={3}>Heart</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.heart)}}/></Grid.Col>
+				</Grid>
+
+				<Grid>
+					<Grid.Col span={3}>Pleura</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.pleura)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={3}>Bones</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.bones)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={3}>After I/V Contrast</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.after_iv_contrast)}}/></Grid.Col>
+				</Grid>
+				<Grid>
+					<Grid.Col span={3}>Impression</Grid.Col>
+					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.impression)}}/></Grid.Col>
+
+				</Grid>
+			</Box>
+			{/* =============== Additional Information Section ================ */}
+			<Box p="md" pt={0} pb={0}>
+				<Grid columns={12} gutter="xs">
+					<Grid.Col span={4}>
+						<Box>
+							<Box h={40} ta="center">
+								{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
+							</Box>
+							<Text fw="bold" size="xs" mb="sm" ta="center">
+								{report?.assign_labuser_name}
+							</Text>
+							<Text fw="bold" ta="center">
+								Medical Technologist(Lab)
+							</Text>
+						</Box>
+					</Grid.Col>
+					<Grid.Col span={4}/>
+					<Grid.Col span={4}>
+						<Box>
+							<Box h={40} ta="center">
+								{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
+							</Box>
+							<Text fw="bold" size="xs" mb="sm" ta="center">
+								{report?.assign_doctor_name}
+							</Text>
+							<Text fw="bold" mb="sm" ta="center">
+								Clinical Pathologist
+							</Text>
+						</Box>
+					</Grid.Col>
+				</Grid>
+			</Box>
+			{/* =============== Doctor Information and Signature ================ */}
+		</Box>
+	);
+});
+CTScanReport.displayName = "CTScanReport";
+export default CTScanReport;

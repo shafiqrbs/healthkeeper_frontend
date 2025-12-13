@@ -103,7 +103,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								id="trachea"
 								nextField="diaphragm"
 								form={form}
-								readOnly={is_completed}
+								
 							/>
 						</Grid.Col>
 					</Grid>
@@ -117,7 +117,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								id="diaphragm"
 								nextField="referral_center"
 								form={form}
-								readOnly={is_completed}
+								
 							/>
 						</Grid.Col>
 					</Grid>
@@ -131,7 +131,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								id="lungs"
 								nextField="heart"
 								form={form}
-								readOnly={is_completed}
+								
 							/>
 						</Grid.Col>
 					</Grid>
@@ -145,7 +145,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								id="heart"
 								nextField="bony_thorax"
 								form={form}
-								readOnly={is_completed}
+								
 							/>
 						</Grid.Col>
 					</Grid>
@@ -159,7 +159,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								id="bony_thorax"
 								nextField="impression"
 								form={form}
-								readOnly={is_completed}
+								
 							/>
 						</Grid.Col>
 					</Grid>
@@ -173,7 +173,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								id="impression"
 								nextField="impression"
 								form={form}
-								readOnly={is_completed}
+								
 							/>
 						</Grid.Col>
 					</Grid>

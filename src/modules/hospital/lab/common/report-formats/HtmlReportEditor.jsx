@@ -17,13 +17,17 @@ import { formatDateForMySQL } from "@utils/index";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
+import {RichTextEditor} from "@mantine/tiptap";
+import TextAlign from '@tiptap/extension-text-align';
+import StarterKit from '@tiptap/starter-kit';
+import Superscript from '@tiptap/extension-superscript';
+import SubScript from '@tiptap/extension-subscript';
 
 import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
-import {RichTextEditor} from "@mantine/tiptap";
-import {StarterKit} from "@tiptap/starter-kit";
 import {useEditor} from "@tiptap/react";
 import {useEffect} from "react";
+
 
 const module = MODULES.LAB_TEST;
 
@@ -41,7 +45,8 @@ export default function HtmlReportEditor({
 	const is_completed = diagnosticReport?.process === "Done";
 	const content = custom_report?.findings;
 	const editor = useEditor({
-		extensions: [StarterKit, Highlight],
+		extensions: [StarterKit, Highlight, Superscript,
+			SubScript,TextAlign.configure({ types: ['heading', 'paragraph'] })],
 		content,
 		shouldRerenderOnTransaction: true,
 	});
@@ -53,13 +58,7 @@ export default function HtmlReportEditor({
 
 	const form = useForm({
 		initialValues: {
-			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
-			lab_no: custom_report?.lab_no || "",
-			id: custom_report?.id || "",
-			name: custom_report?.name || "",
-			type_patient: custom_report?.type_patient || "",
 			findings: custom_report?.findings || "",
-			referral_center: custom_report?.referral_center || "",
 			comment: diagnosticReport?.comment || "",
 		},
 	});
@@ -129,6 +128,25 @@ export default function HtmlReportEditor({
 									<RichTextEditor.Strikethrough />
 									<RichTextEditor.ClearFormatting />
 								</RichTextEditor.ControlsGroup>
+								<RichTextEditor.ControlsGroup>
+									<RichTextEditor.H1 />
+									<RichTextEditor.H2 />
+									<RichTextEditor.H3 />
+									<RichTextEditor.H4 />
+								</RichTextEditor.ControlsGroup>
+								<RichTextEditor.ControlsGroup>
+									<RichTextEditor.Blockquote />
+									<RichTextEditor.Hr />
+									<RichTextEditor.BulletList />
+									<RichTextEditor.OrderedList />
+								</RichTextEditor.ControlsGroup>
+								<RichTextEditor.ControlsGroup>
+									<RichTextEditor.AlignLeft />
+									<RichTextEditor.AlignCenter />
+									<RichTextEditor.AlignJustify />
+									<RichTextEditor.AlignRight />
+								</RichTextEditor.ControlsGroup>
+
 							</RichTextEditor.Toolbar>
 							<RichTextEditor.Content />
 						</RichTextEditor>
