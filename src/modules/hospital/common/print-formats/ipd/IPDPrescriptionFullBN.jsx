@@ -481,11 +481,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											))}
 											{medicines
 												?.filter((medicine) => medicine?.is_active == 1)
-												?.sort((a, b) => {
-													const nameA = (a.medicine_name || a.generic || "").toLowerCase();
-													const nameB = (b.medicine_name || b.generic || "").toLowerCase();
-													return nameA.localeCompare(nameB);
-												})
+												?.sort((a, b) => a.order ?? 0 - b.order ?? 0)
 												?.map((medicine, index) => (
 													<Flex align={"left"} key={index}>
 														<Text size="xs" fw={600}>
