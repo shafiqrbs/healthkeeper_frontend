@@ -228,11 +228,11 @@ export default function MedicineListItem({
 					{type === "ipd" && (
 						<NumberInput
 							size="xs"
-							w={60}
+							w={40}
 							mx="sm"
+							hideControls
 							min={1}
 							value={medicine.order ?? ""}
-							placeholder="Order"
 							onChange={(value) => handleChange("order", value)}
 						/>
 					)}
@@ -292,7 +292,14 @@ export default function MedicineListItem({
 						const isMedicine = !!medicine.medicine_id;
 
 						return (
-							<Flex key={insIndex} ml={isFirstItem ? "md" : "44px"} gap="xs" align="center">
+							<Flex
+								key={insIndex}
+								mt={editingInstructionIndex === insIndex ? "les" : ""}
+								mb={editingInstructionIndex === insIndex ? "xs" : ""}
+								ml={isFirstItem ? "md" : "44px"}
+								gap="xs"
+								align="center"
+							>
 								{isFirstItem && isOpdType && (
 									<ActionIcon
 										size="xs"

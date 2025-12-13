@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Group, Image, Table, Flex, Stack } from "@mantine/core";
+import { Box, Text, Grid, Group, Image, Table, Flex, Stack, Center } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -41,9 +41,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 			return entries.sort((a, b) => a[1] - b[1]).map(([key]) => key);
 		}
 		if (inputOrder && typeof inputOrder === "object") {
-			return Object.keys(inputOrder).sort(
-				(a, b) => (inputOrder?.[a] ?? 0) - (inputOrder?.[b] ?? 0)
-			);
+			return Object.keys(inputOrder).sort((a, b) => (inputOrder?.[a] ?? 0) - (inputOrder?.[b] ?? 0));
 		}
 		return [];
 	};
@@ -177,13 +175,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 			const imageUrl = URL.createObjectURL(imageArray[0]);
 			return (
 				<Flex h={80} justify={"center"} align={"center"} mt={"xs"}>
-					<Image
-						h={80}
-						w={80}
-						fit="cover"
-						src={imageUrl}
-						onLoad={() => URL.revokeObjectURL(imageUrl)}
-					/>
+					<Image h={80} w={80} fit="cover" src={imageUrl} onLoad={() => URL.revokeObjectURL(imageUrl)} />
 				</Flex>
 			);
 		} else if (fallbackSrc) {
@@ -224,8 +216,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 						style={{
 							borderCollapse: "collapse",
 							width: "100%",
-							height:"1122px"
-
+							height: "1122px",
 						}}
 						className="customTable"
 					>
@@ -236,45 +227,23 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Flex gap="md" justify="center">
 											<Box>
 												<Group ml="md" align="center" h="100%">
-													<Image
-														src={GLogo}
-														alt="logo"
-														width={60}
-														height={60}
-													/>
+													<Image src={GLogo} alt="logo" width={60} height={60} />
 												</Group>
 											</Box>
 											<Box>
-												<Text
-													ta="center"
-													fw="bold"
-													size="lg"
-													c="#1e40af"
-													mt="2"
-												>
+												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
 													{hospitalConfigData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
 													{hospitalConfigData?.address || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mb="2">
-													{t("হটলাইন")}{" "}
-													{hospitalConfigData?.hotline || ""}
+													{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
 												</Text>
 											</Box>
 											<Box>
-												<Group
-													mr="md"
-													justify="flex-end"
-													align="center"
-													h="100%"
-												>
-													<Image
-														src={TBLogo}
-														alt="logo"
-														width={60}
-														height={60}
-													/>
+												<Group mr="md" justify="flex-end" align="center" h="100%">
+													<Image src={TBLogo} alt="logo" width={60} height={60} />
 												</Group>
 											</Box>
 										</Flex>
@@ -296,9 +265,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("PatientID")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.patient_id || "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.patient_id || "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -306,9 +273,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("AdmissionID")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.invoice || "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.invoice || "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -316,9 +281,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("PatientType")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.payment_mode_name, "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.payment_mode_name, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
@@ -342,9 +305,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Gender")}:
 										</Text>
-										<Text size="xs">
-											{capitalizeWords(patientInfo?.gender || "")}
-										</Text>
+										<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -353,8 +314,8 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											{t("Age")}:
 										</Text>
 										<Text size="xs">
-											{patientInfo?.year || 0} Years {patientInfo?.month || 0}{" "}
-											Mon {patientInfo?.day || 0} Day
+											{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
+											{patientInfo?.day || 0} Day
 										</Text>
 									</Group>
 								</Table.Td>
@@ -365,9 +326,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("F/M/H")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.father_name, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.father_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -375,9 +334,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Religion")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.religion_name, "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.religion_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -411,9 +368,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Add. Date")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.admission_date, "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.admission_date, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
@@ -423,9 +378,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("GuardianName")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.guardian_name, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.guardian_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -433,9 +386,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Relation")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.patient_relation, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.patient_relation, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td colspan={2}>
@@ -458,9 +409,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Bed/Cabin")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.room_name, "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.room_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -468,9 +417,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Unit")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.admit_unit_name, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.admit_unit_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -478,9 +425,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Department")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.admit_department_name, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.admit_department_name, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
@@ -490,9 +435,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("ConsultantDoctor")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.admit_consultant_name, "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.admit_consultant_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -500,15 +443,11 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("UnitDoctor")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.admit_doctor_name, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.admit_doctor_name, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
-							<Table.Tr
-								style={{ borderBottom: "1px solid var(--theme-tertiary-color-8)" }}
-							>
+							<Table.Tr style={{ borderBottom: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td
 									style={{
 										borderRight: "1px solid var(--theme-tertiary-color-8)",
@@ -521,9 +460,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											? orderedExamKeys
 											: Object.keys(patientExamination || {})
 										)
-											.filter((key) =>
-												hasArrayWithLength(patientExamination?.[key])
-											)
+											.filter((key) => hasArrayWithLength(patientExamination?.[key]))
 											.map((key) => (
 												<Box key={key}>{renderExaminationSection(key)}</Box>
 											))}
@@ -545,16 +482,8 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											{medicines
 												?.filter((medicine) => medicine?.is_active == 1)
 												?.sort((a, b) => {
-													const nameA = (
-														a.medicine_name ||
-														a.generic ||
-														""
-													).toLowerCase();
-													const nameB = (
-														b.medicine_name ||
-														b.generic ||
-														""
-													).toLowerCase();
+													const nameA = (a.medicine_name || a.generic || "").toLowerCase();
+													const nameB = (b.medicine_name || b.generic || "").toLowerCase();
 													return nameA.localeCompare(nameB);
 												})
 												?.map((medicine, index) => (
@@ -605,9 +534,9 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									<Box ta="center">
 										<Grid columns={12} gutter="0">
 											<Grid.Col span={6} align="left">
-												<br/>
-												<br/>
-												<br/>
+												<br />
+												<br />
+												<br />
 												<Text fz="xl">AdmittedBy</Text>
 											</Grid.Col>
 											<Grid.Col span={6} align={"right"}>
@@ -630,7 +559,6 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 						</Table.Tbody>
 					</Table>
 				</Box>
-
 			</Stack>
 		</Box>
 	);
