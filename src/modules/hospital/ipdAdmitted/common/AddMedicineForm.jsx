@@ -153,10 +153,6 @@ export default function AddMedicineForm({
 	}, [treatmentRefetching]);
 
 	useEffect(() => {
-		if (medicineTerm.length === 0) {
-			medicineForm.setFieldValue("medicine_id", null);
-		}
-
 		if (medicineDosageSearchValue.length === 0) {
 			medicineForm.setFieldValue("medicine_dosage_id", null);
 		}
@@ -164,7 +160,7 @@ export default function AddMedicineForm({
 		if (medicineByMealSearchValue.length === 0) {
 			medicineForm.setFieldValue("medicine_bymeal_id", null);
 		}
-	}, [medicineDosageSearchValue, medicineByMealSearchValue, medicineTerm]);
+	}, [medicineDosageSearchValue, medicineByMealSearchValue]);
 
 	useEffect(() => {
 		if (!printData) return;
@@ -513,6 +509,7 @@ export default function AddMedicineForm({
 								<Grid.Col span={6}>
 									<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 										<Select
+											clearable
 											ref={medicineIdRef}
 											disabled={medicineForm.values.generic}
 											searchable
