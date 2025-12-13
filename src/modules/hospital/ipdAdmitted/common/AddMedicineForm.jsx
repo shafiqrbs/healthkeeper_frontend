@@ -33,7 +33,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { useLocation, useOutletContext, useParams, useSearchParams } from "react-router-dom";
+import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
@@ -63,6 +63,7 @@ import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper
 import BookmarkDrawer from "@hospital-components/BookmarkDrawer";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 
 export default function AddMedicineForm({
 	module,
@@ -129,6 +130,11 @@ export default function AddMedicineForm({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,
 	});
+
+	// const printPrescriptionFull = useReactToPrint({
+	// 	documentTitle: `prescription-${Date.now().toLocaleString()}`,
+	// 	content: () => prescriptionFullRef.current,
+	// });
 
 	useEffect(() => {
 		dispatch(
@@ -482,6 +488,7 @@ export default function AddMedicineForm({
 		const result = await handlePrescriptionSubmit(true, false);
 
 		if (result.status === 200) {
+			setMedicines(result.data?.prescription_medicine || []);
 			setMountPreviewDrawer(true);
 			requestAnimationFrame(() => openPrescriptionPreview());
 		} else {
@@ -491,6 +498,18 @@ export default function AddMedicineForm({
 
 	const handleMedicineSearch = (value) => {
 		setMedicineTerm(value);
+	};
+
+	const handlePrintPrescription2A4 = async () => {
+		const result = await handlePrescriptionSubmit(true, false);
+
+		if (result.status === 200) {
+			setPrintData(result.data);
+
+			requestAnimationFrame(() => printPrescription2A4());
+		} else {
+			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
+		}
 	};
 
 	return (
@@ -899,18 +918,19 @@ export default function AddMedicineForm({
 								</Text>
 							</Stack>
 						</Button>
-						{/* <Button
+						<Button
 							w="100%"
-							bg="var(--theme-prescription-btn-color)"
-							onClick={handlePrescriptionPrintSubmit}
+							bg="var(--theme-secondary-color-6)"
+							// onClick={handlePrescriptionPrintSubmit}
+							onClick={handlePrintPrescription2A4}
 						>
 							<Stack gap={0} align="center" justify="center">
-								<Text>{t("Prescription")}</Text>
+								<Text>{t("Print")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 									(alt + 3)
 								</Text>
 							</Stack>
-						</Button> */}
+						</Button>
 						<Button
 							w="100%"
 							bg="var(--theme-save-btn-color)"
@@ -926,7 +946,7 @@ export default function AddMedicineForm({
 							</Stack>
 						</Button>
 					</Button.Group>
-					{printData && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />}
+					{printData && <IPDPrescriptionFullBN ref={prescription2A4Ref} data={printData} />}
 					{/* ----------- prescription preview ------------  */}
 					{/* <PrescriptionFull ref={prescriptionPrintRef} data={printPreviewPrescriptionData} /> */}
 				</>

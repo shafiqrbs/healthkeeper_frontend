@@ -52,8 +52,6 @@ export default function PatientReport({
 		is_additional_field: 1,
 	}));
 
-	console.log(tabParticulars);
-
 	const handleDynamicFormChange = ({
 		id,
 		name,
@@ -634,8 +632,6 @@ export default function PatientReport({
 
 	const generateTabItems = () => {
 		const currentSection = getCurrentSection();
-
-		console.log(currentSection);
 
 		if (!currentSection) {
 			return (

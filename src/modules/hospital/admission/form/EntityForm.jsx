@@ -25,6 +25,7 @@ import TextAreaForm from "@components/form-builders/TextAreaForm";
 import IpdActionButtons from "@hospital-components/_IpdActionButtons";
 import DateSelectorForm from "@components/form-builders/DateSelectorForm";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 const USER_NID_DATA = {
 	verifyToken: "a9a98eac-68c4-4dd1-9cb9-8127a5b44833",
@@ -77,6 +78,7 @@ const BLOOD_GROUPS = [
 ];
 
 export default function EntityForm({ form, module }) {
+	const { user } = useAppLocalStore();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [gender, setGender] = useState("male");
@@ -124,13 +126,11 @@ export default function EntityForm({ form, module }) {
 	});
 
 	const handleSubmit = async (skipRedirect = false) => {
-		console.log(skipRedirect);
-
 		if (!form.validate().hasErrors) {
 			setIsSubmitting(true);
 
 			try {
-				const createdBy = JSON.parse(localStorage.getItem("user"));
+				const createdBy = user;
 				const formValue = {
 					...form.values,
 					dob: formatDate(form.values.dob),
@@ -158,7 +158,6 @@ export default function EntityForm({ form, module }) {
 						true
 					);
 					setRefetchData({ module, refetching: true });
-					console.log(skipRedirect);
 					if (!skipRedirect) {
 						navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX, { replace: true });
 					} else {
@@ -292,7 +291,10 @@ export default function EntityForm({ form, module }) {
 
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("UnitName")}<RequiredAsterisk /></Text>
+											<Text fz="sm">
+												{t("UnitName")}
+												<RequiredAsterisk />
+											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -314,7 +316,10 @@ export default function EntityForm({ form, module }) {
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("Department")}<RequiredAsterisk /></Text>
+											<Text fz="sm">
+												{t("Department")}
+												<RequiredAsterisk />
+											</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -411,7 +416,6 @@ export default function EntityForm({ form, module }) {
 								</Text>
 							</Box>
 							<ScrollArea scrollbars="y" type="never" h={height}>
-
 								<Stack p={"xs"} gap={"mes"}>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
@@ -559,8 +563,8 @@ export default function EntityForm({ form, module }) {
 												{form.values.identity_mode === "NID"
 													? t("NID")
 													: form.values.identity_mode === "BRID"
-														? t("BRID")
-														: t("HID")}
+													? t("BRID")
+													: t("HID")}
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={9}>
@@ -707,9 +711,6 @@ export default function EntityForm({ form, module }) {
 											/>
 										</Grid.Col>
 									</Grid>
-
-
-
 								</Stack>
 							</ScrollArea>
 						</Box>

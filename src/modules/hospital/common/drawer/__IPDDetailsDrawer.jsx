@@ -18,9 +18,9 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
-import IPDDetailsBN from "@hospital-components/print-formats/ipd/IPDDetailsBN";
+import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 
 export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 	const ipdRef = useRef(null);
@@ -35,7 +35,11 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 		content: () => ipdRef.current,
 	});
 
-	const { data: ipdData, isLoading } = useDataWithoutStore({
+	const {
+		data: ipdData,
+		isLoading,
+		refetch,
+	} = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${ipdId}`,
 	});
 
@@ -46,6 +50,12 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 
 	// =============== check if IPD data is available ================
 	const isIPDDataAvailable = !!ipd;
+
+	useEffect(() => {
+		if (opened) {
+			refetch();
+		}
+	}, [opened]);
 
 	return (
 		<GlobalDrawer opened={opened} close={close} title="IPD Details" size="100%">
@@ -453,16 +463,16 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 				)}
 				{isIPDDataAvailable && (
 					<Flex justify="flex-end" mt="xs" gap="3xs">
-						<Button variant="filled" color="var(--theme-tertiary-color-6)">
+						{/* <Button variant="filled" color="var(--theme-tertiary-color-6)">
 							{t("Share")}
-						</Button>
+						</Button> */}
 						<Button variant="filled" color="var(--theme-print-color)" onClick={printIPDFull}>
 							{t("Print")}
 						</Button>
 					</Flex>
 				)}
 			</Box>
-			{ipdData?.data && <IPDDetailsBN data={ipdData?.data} ref={ipdRef} />}
+			{ipdData?.data && <AdmissionFormBN data={ipdData?.data} ref={ipdRef} />}
 		</GlobalDrawer>
 	);
 }
