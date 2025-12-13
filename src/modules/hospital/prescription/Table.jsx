@@ -58,7 +58,7 @@ const ALLOWED_OPD_ROLES = ["doctor_opd", "admin_administrator"];
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const { mainAreaHeight } = useOutletContext();
 	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
-	const { userRoles } = useAppLocalStore();
+	const { userRoles, user } = useAppLocalStore();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -67,7 +67,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const hospitalConfig = getLoggedInHospitalUser();
-	const userId = hospitalConfig?.employee_id;
+	const userId = hospitalConfig?.employee_id || user?.id;
 
 	const opdRoomId = hospitalConfig?.particular_details?.room_id;
 	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;

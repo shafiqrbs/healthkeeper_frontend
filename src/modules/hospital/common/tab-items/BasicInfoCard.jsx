@@ -1,22 +1,25 @@
 import { Box, Divider, Flex, Grid, Stack, Switch, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { editEntityData } from "@/app/store/core/crudThunk";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import InputForm from "@components/form-builders/InputForm";
 import { IconWeight } from "@tabler/icons-react";
+import { useEffect } from "react";
 
-export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
+export default function BasicInfoCard({ form, prescriptionData }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const { prescriptionId } = useParams();
+
+	useEffect(() => {
+		form.setFieldValue("is_vital", !!prescriptionData?.data?.is_vital);
+	}, [prescriptionData]);
 
 	async function handleVitalChange(event) {
 		form.setValues({ is_vital: !!event.currentTarget.checked });
 		await dispatch(
 			editEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_VITAL}/${prescriptionId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_VITAL}/${prescriptionData?.data?.id}`,
 				module: "prescription",
 			})
 		).unwrap();
