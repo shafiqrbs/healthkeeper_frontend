@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getDataWithoutStore } from "@/services/apiService";
 
-export default function useDataWithoutStore({ url, params = {}, headers = {} }) {
+export default function useDataWithoutStore({ url, params = {}, headers = {}, ignore = false }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [data, setData] = useState(null);
@@ -27,10 +27,10 @@ export default function useDataWithoutStore({ url, params = {}, headers = {} }) 
 
 	// fetch once when URL becomes valid
 	useEffect(() => {
-		if (!url || url.includes("undefined") || url.includes("null")) return;
+		if (!url || url.includes("undefined") || url.includes("null") || ignore) return;
 
 		fetchData();
-	}, [url, stableParams, stableHeaders, fetchData]);
+	}, [url, stableParams, stableHeaders, fetchData, ignore]);
 
 	// manual refetch (always allowed)
 	const refetch = useCallback(async () => {

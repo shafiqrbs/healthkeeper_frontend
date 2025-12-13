@@ -18,7 +18,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 
@@ -35,12 +35,9 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 		content: () => ipdRef.current,
 	});
 
-	const {
-		data: ipdData,
-		isLoading,
-		refetch,
-	} = useDataWithoutStore({
+	const { data: ipdData, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${ipdId}`,
+		ignore: !opened,
 	});
 
 	// =============== parse IPD data and handle null cases ================
@@ -50,12 +47,6 @@ export default function IPDDetailsDrawer({ opened, close, selectedId }) {
 
 	// =============== check if IPD data is available ================
 	const isIPDDataAvailable = !!ipd;
-
-	useEffect(() => {
-		if (opened) {
-			refetch();
-		}
-	}, [opened]);
 
 	return (
 		<GlobalDrawer opened={opened} close={close} title="IPD Details" size="100%">
