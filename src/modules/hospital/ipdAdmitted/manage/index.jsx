@@ -26,6 +26,7 @@ import Dashboard from "../common/tabs/Dashboard";
 import PrintPrescriptionIndoor from "../common/tabs/PrintPrescriptionIndoor";
 import Discharge from "../common/tabs/Discharge";
 import RoomTransfer from "../common/tabs/RoomTransfer.jsx";
+import DeathCertificate from "../common/tabs/DeathCertificate";
 
 const module = MODULES.E_FRESH;
 
@@ -65,6 +66,11 @@ const TAB_ITEMS = [
 		value: "discharge",
 		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
 	},
+	{
+		label: "DeathCertificate",
+		value: "death-certificate",
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+	},
 ];
 
 const PRINT_SECTION_ITEMS = [
@@ -99,15 +105,15 @@ export default function Index() {
 	);
 
 	const {
-		data: prescriptionData,
+		data: ipdData,
 		isLoading,
 		refetch,
 	} = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
 	});
 
-	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
-	const existingMedicines = prescriptionData?.data?.prescription_medicine || [];
+	const initialFormValues = JSON.parse(ipdData?.data?.json_content || "{}");
+	const existingMedicines = ipdData?.data?.prescription_medicine || [];
 
 	const form = useForm(getPrescriptionFormInitialValues(t, {}));
 
@@ -116,8 +122,8 @@ export default function Index() {
 		const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
 		form.setValues(updatedFormValues.initialValues);
 		setMedicines(existingMedicines || []);
-		setRecords(prescriptionData?.data?.prescription_medicine_history || []);
-	}, [prescriptionData]);
+		setRecords(ipdData?.data?.prescription_medicine_history || []);
+	}, [ipdData]);
 
 	useEffect(() => {
 		const tab = searchParams.get("tab");
@@ -172,33 +178,25 @@ export default function Index() {
 									{t("PatientInformation")}
 								</Box>
 								<Box p="xs" bg="var(--theme-primary-color-0)">
-									<Text fz="xs">{prescriptionData?.data?.patient_id}</Text>
-									<Text fz="xs">{prescriptionData?.data?.health_id || ""}</Text>
+									<Text fz="xs">{ipdData?.data?.patient_id}</Text>
+									<Text fz="xs">{ipdData?.data?.health_id || ""}</Text>
 									<Text fz="sm" fw={600}>
-										{prescriptionData?.data?.name}
+										{ipdData?.data?.name}
 									</Text>
-									<Text fz="xs">{prescriptionData?.data?.gender}</Text>
+									<Text fz="xs">{ipdData?.data?.gender}</Text>
 									<Text fz="xs">
-										{prescriptionData?.data?.year || 0}y{" "}
-										{prescriptionData?.data?.month || 0}m{" "}
-										{prescriptionData?.data?.day || 0}d{" "}
+										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m{" "}
+										{ipdData?.data?.day || 0}d{" "}
 									</Text>
 									<Text fz="xs">
-										{t("Created")}{" "}
-										{formatDate(prescriptionData?.data?.created_at)}
+										{t("Created")} {formatDate(ipdData?.data?.created_at)}
 									</Text>
 								</Box>
 							</Box>
-							<ScrollArea
-								bg="var(--mantine-color-white)"
-								h={mainAreaHeight - 80}
-								scrollbars="y"
-							>
+							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
 								<Stack h="100%" py="xs" gap={0}>
 									{TAB_ITEMS.filter((tabItem) =>
-										userRoles.some((role) =>
-											tabItem.allowedGroups.includes(role)
-										)
+										userRoles.some((role) => tabItem.allowedGroups.includes(role))
 									).map((tabItem, index) => (
 										<Box
 											key={index}
@@ -235,9 +233,7 @@ export default function Index() {
 									</Box>
 
 									{PRINT_SECTION_ITEMS.filter((tabItem) =>
-										userRoles.some((role) =>
-											tabItem.allowedGroups.includes(role)
-										)
+										userRoles.some((role) => tabItem.allowedGroups.includes(role))
 									).map((tabItem, index) => (
 										<Box
 											key={index}
@@ -276,10 +272,7 @@ export default function Index() {
 								<BaseTabs
 									tabValue={tabValue}
 									setTabValue={setTabValue}
-									tabList={[
-										"All",
-										...(tabList?.length > 0 ? tabList : ["No data"]),
-									]}
+									tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
 								/>
 								<Flex gap="xs" w="100%">
 									<Box w="40%">
@@ -287,7 +280,7 @@ export default function Index() {
 											extraHeight={246}
 											tabValue={tabValue}
 											form={form}
-											prescriptionData={prescriptionData}
+											prescriptionData={ipdData}
 											modeName="E-Fresh Order"
 										/>
 									</Box>
@@ -298,38 +291,27 @@ export default function Index() {
 										hasRecords={hasRecords}
 										setMedicines={setMedicines}
 										setShowHistory={setShowHistory}
-										prescriptionData={prescriptionData}
+										prescriptionData={ipdData}
 										tabParticulars={tabParticulars}
 										section="e-fresh"
 									/>
 								</Flex>
 							</Stack>
 						)}
-						{baseTabValue === "room-transfer" && (
-							<RoomTransfer data={prescriptionData?.data} />
-						)}
+						{baseTabValue === "room-transfer" && <RoomTransfer data={ipdData?.data} />}
 						{baseTabValue === "dashboard" && <Dashboard />}
 						{/*{baseTabValue === "issue-medicine" && <IssueMedicine />}*/}
 						{/*{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}*/}
 						{baseTabValue === "investigation" && <Investigation />}
-						{baseTabValue === "vitals-chart" && (
-							<VitalsChart refetch={refetch} data={prescriptionData?.data} />
-						)}
-						{baseTabValue === "insulin-chart" && (
-							<InsulinChart refetch={refetch} data={prescriptionData?.data} />
-						)}
+						{baseTabValue === "vitals-chart" && <VitalsChart refetch={refetch} data={ipdData?.data} />}
+						{baseTabValue === "insulin-chart" && <InsulinChart refetch={refetch} data={ipdData?.data} />}
 						{baseTabValue === "discharge" && <Discharge />}
+						{baseTabValue === "death-certificate" && <DeathCertificate data={ipdData} />}
 						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
 						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
 						{!baseTabValue && (
-							<Flex
-								bg="var(--mantine-color-white)"
-								align="center"
-								justify="center"
-								w="100%"
-								h="100%"
-							>
+							<Flex bg="var(--mantine-color-white)" align="center" justify="center" w="100%" h="100%">
 								<Text size="sm" c="dimmed">
 									No item selected
 								</Text>
