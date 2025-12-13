@@ -140,10 +140,16 @@ export const sideNavigationLinks = {
 			],
 			subMenu: [
 				{
-					label: t("OPD/IPDBilling"),
+					label: t("OPDBilling"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
 					icon: IconDashboard,
 					allowedRoles: ["operator_opd", "operator_manager", "admin_administrator"],
+				},
+				{
+					label: t("IPDBilling"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_BILLING.INDEX,
+					icon: IconDashboard,
+					allowedRoles: ["operator_opd", "operator_emergency","operator_manager", "admin_administrator"],
 				},
 				{
 					label: t("AdmissionBilling"),

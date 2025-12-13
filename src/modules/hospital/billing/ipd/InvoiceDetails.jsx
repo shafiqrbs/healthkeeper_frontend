@@ -173,7 +173,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 				setInvoiceDetails(resultAction.payload.data?.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				setInvestigationRecords([]);
-				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX}/${id}`, { replace: true });
+				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_BILLING.INDEX}/${id}`, { replace: true });
 				setRefetchBillingKey((prev) => prev + 1);
 				setSelectedRecords([]);
 				setPendingPrint(true);
@@ -484,7 +484,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 									<Box w="100%">
 										<Grid columns={18} gutter="xs">
 											<Grid.Col
-												span={12}
+												span={6}
 												className="animate-ease-out"
 												bg="var(--theme-primary-color-0)"
 												px="xs"
@@ -503,7 +503,40 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 													/>
 												</Box>
 											</Grid.Col>
-
+											<Grid.Col
+												span={6}
+												bg="var(--theme-tertiary-color-1)"
+												className="animate-ease-out"
+											>
+												<Box mt="xs">
+													<Grid align="center" columns={20}>
+														<Grid.Col span={8}>
+															<Flex justify="flex-end" align="center" gap="es">
+																<Text fz="xs">{t("CreatedBy")}</Text>
+															</Flex>
+														</Grid.Col>
+														<Grid.Col span={12}>
+															<Flex align="right" gap="es">
+																<Text fz="xs">
+																	{invoiceDetails?.created_doctor_info?.name || "N/A"}
+																</Text>
+															</Flex>
+														</Grid.Col>
+													</Grid>
+													<Grid align="center" columns={20}>
+														<Grid.Col span={8}>
+															<Flex justify="flex-end" align="center" gap="es">
+																<Text fz="sm">{t("Total")}</Text>
+															</Flex>
+														</Grid.Col>
+														<Grid.Col span={12}>
+															<Flex align="right" gap="es">
+																<Text fz="sm">{investigationSubtotal || 0}</Text>
+															</Flex>
+														</Grid.Col>
+													</Grid>
+												</Box>
+											</Grid.Col>
 											<Grid.Col
 												span={6}
 												className="animate-ease-out"

@@ -763,6 +763,12 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/billing",
 			VIEW: "/hospital/billing",
 		},
+		IPD_BILLING: {
+			INDEX: "/hospital/billing-ipd",
+			CREATE: "/hospital/billing-ipd",
+			UPDATE: "/hospital/billing-ipd",
+			VIEW: "/hospital/billing-ipd",
+		},
 		ADMISSION_BILLING: {
 			INDEX: "/hospital/billing-admission",
 			CREATE: "/hospital/billing-admission",

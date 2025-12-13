@@ -23,7 +23,7 @@ export default function Index() {
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const [diagnosticReport, setDiagnosticReport] = useState([]);
 	const [refetchBillingKey, setRefetchBillingKey] = useState(0);
-	const [type, setType] = useState("opd");
+	const [type, setType] = useState("ipd");
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
@@ -58,7 +58,7 @@ export default function Index() {
 									bg="var(--mantine-color-white)"
 								>
 									<Text fw={600} fz="sm">
-										{t("OPDBillingInformation")}
+										{t("IPDBillingInformation")}
 									</Text>
 								</Flex>
 								<TabsWithSearch

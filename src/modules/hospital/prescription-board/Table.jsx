@@ -174,19 +174,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setPrintData(res.data);
 		setType("prescription");
 	};
-
-	const handleProcessPrescription = (id) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: { confirm: "Confirm", cancel: "Cancel" },
-			confirmProps: { color: "red" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleProcessConfirmation(id),
-		});
-	};
-
-	const handleProcessConfirmation = async (id) => {
+	const handleProcessPrescription = async (id) => {
 		const resultAction = await dispatch(
 			showEntityData({
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.SEND_TO_PRESCRIPTION}/${id}`,

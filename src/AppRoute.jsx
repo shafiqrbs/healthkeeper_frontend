@@ -47,6 +47,7 @@ import MedicineIndex from "@modules/pharmacy/medicine";
 import GenericIndex from "@modules/pharmacy/generic";
 import BillingIndex from "@modules/hospital/billing";
 import BillingAdmissionIndex from "@modules/hospital/billing/admission";
+import BillingIpdIndex from "@modules/hospital/billing/ipd";
 import BillingRefundIndex from "@modules/hospital/billing/refund";
 import BillingRefundHistoryIndex from "@modules/hospital/billing/refundHistory";
 import DoctorIndex from "@modules/hospital/core/doctor";
@@ -601,6 +602,55 @@ function AppRoute() {
 								]}
 							>
 								<BillingIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="billing-ipd"
+						element={
+							<ProtectedRoute
+								roles={[
+									"admin_administrator",
+									"admin_hospital",
+									"billing_manager",
+									"operator_opd",
+									"operator_manager",
+								]}
+							>
+								<BillingIpdIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="billing-ipd/:id"
+						element={
+							<ProtectedRoute
+								roles={[
+									"admin_administrator",
+									"admin_hospital",
+									"billing_manager",
+									"operator_opd",
+									"operator_emergency",
+									"operator_manager",
+								]}
+							>
+								<BillingIpdIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="billing-ipd/:id/payment/:transactionId"
+						element={
+							<ProtectedRoute
+								roles={[
+									"admin_administrator",
+									"admin_hospital",
+									"billing_manager",
+									"operator_opd",
+									"operator_manager",
+								]}
+							>
+								<BillingIpdIndex />
 							</ProtectedRoute>
 						}
 					/>
