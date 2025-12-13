@@ -1,7 +1,20 @@
 import { useOutletContext } from "react-router-dom";
 
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import { Box, Button, Flex, Grid, ScrollArea, Stack, Text } from "@mantine/core";
+import {
+	Box,
+	Button,
+	Divider,
+	Flex,
+	Grid,
+	ScrollArea,
+	Stack,
+	Text,
+	Tabs,
+	Textarea,
+	Select,
+	NumberInput,
+} from "@mantine/core";
 import TabsWithSearch from "@components/advance-search/TabsWithSearch";
 import { useState } from "react";
 import Cabin from "../common/Cabin";
@@ -15,6 +28,7 @@ import { errorNotification } from "@components/notification/errorNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { useDispatch } from "react-redux";
 import { capitalizeWords } from "@/common/utils";
+import { useForm } from "@mantine/form";
 
 export default function ConfirmModal({ opened, close, form, selectedId, module }) {
 	const dispatch = useDispatch();
@@ -22,14 +36,88 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 	const height = mainAreaHeight - 140;
 	const [selectedRoom, setSelectedRoom] = useState(null);
 	const { t } = useTranslation();
+	const [actionType, setActionType] = useState(null);
+	const [actionFormData, setActionFormData] = useState(null);
 
 	const { data: ipdData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${selectedId}`,
 	});
 
+	const actionForm = useForm({
+		initialValues: {
+			accommodationType: "",
+			roomNumber: "",
+			comment: "",
+			reason: "",
+			dayChange: null,
+		},
+	});
+
+	// =============== use action form data for requested information ================
+	const getAccommodationTypeLabel = (type) => {
+		if (!type) return "";
+		const typeMap = {
+			room: t("Room"),
+			cabin: t("Cabin"),
+			freeCabin: t("FreeCabin"),
+			freeBed: t("FreeBed"),
+		};
+		return typeMap[type] || type;
+	};
+
+	const requestedChangeData = {
+		accommodationType: actionFormData?.accommodationType || "",
+		accommodationTypeLabel: getAccommodationTypeLabel(actionFormData?.accommodationType),
+		roomNumber: actionFormData?.roomNumber || "",
+		comment: actionFormData?.comment || "",
+	};
+
+	const requestedCancelData = {
+		reason: actionFormData?.reason || "",
+	};
+
+	const requestedDayChangeData = {
+		dayChange: actionFormData?.dayChange || "",
+	};
+
+	// =============== determine default tab based on action type ================
+	const defaultTab = actionFormData?.actionType || "change";
+
 	const handleRoomClick = (room) => {
 		form.setFieldValue("room_id", room?.id?.toString());
 		setSelectedRoom(room);
+	};
+
+	const handleActionSubmit = (values) => {
+		// =============== store action form data for confirmation modal ================
+		const actionData = {
+			actionType: actionType,
+			...values,
+		};
+		setActionFormData(actionData);
+
+		if (actionType === "change") {
+			console.log("Change action:", {
+				accommodationType: values.accommodationType,
+				roomNumber: values.roomNumber,
+				comment: values.comment,
+			});
+			// TODO: implement change action API call
+		} else if (actionType === "cancel") {
+			console.log("Cancel action:", {
+				reason: values.reason,
+			});
+			// TODO: implement cancel action API call
+		} else if (actionType === "dayChange") {
+			console.log("Day change action:", {
+				dayChange: values.dayChange,
+			});
+			// TODO: implement day change action API call
+		}
+		// reset form and close drawer after submission
+		actionForm.reset();
+		setActionType(null);
+		// closeActions();
 	};
 
 	const handleSubmit = async (values) => {
@@ -64,10 +152,10 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 	};
 
 	return (
-		<GlobalDrawer opened={opened} close={close} title={t("ConfirmAdmission")} size="60%">
+		<GlobalDrawer opened={opened} close={close} title={t("ConfirmAdmission")} size="90%">
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Box py="sm">
-					<Grid columns={24}>
+					<Grid columns={34}>
 						<Grid.Col span={10}>
 							<ScrollArea h={height}>
 								<Stack mih={height} className="form-stack-vertical">
@@ -295,8 +383,139 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 								]}
 							/>
 						</Grid.Col>
+						<Grid.Col span={10}>
+							<Tabs defaultValue={defaultTab}>
+								<Tabs.List>
+									<Tabs.Tab value="change">{t("Change")}</Tabs.Tab>
+									<Tabs.Tab value="cancel">{t("Cancel")}</Tabs.Tab>
+									<Tabs.Tab value="dayChange">{t("DayChange")}</Tabs.Tab>
+								</Tabs.List>
+								<Divider />
+								<Tabs.Panel value="change">
+									<Stack gap="md" mt="xs">
+										{/* =============== requested information section =============== */}
+										<Box p="xs" bg="var(--theme-primary-color-0)" style={{ borderRadius: "4px" }}>
+											<Text fz="md" fw={600} mb="xs">
+												{t("RequestedInformation")}:
+											</Text>
+											<Stack gap="xs">
+												<Text fz="sm">
+													<strong>{t("RequestedAccommodationType")}</strong>:{" "}
+													{requestedChangeData.accommodationTypeLabel || "Free Cabin"}
+												</Text>
+												<Text fz="sm">
+													<strong>{t("RequestedRoom")}</strong>:{" "}
+													{requestedChangeData.roomNumber || "101"}
+												</Text>
+												<Text fz="sm">
+													<strong>{t("Comment")}</strong>:{" "}
+													{requestedChangeData.comment || "placeholder comment"}
+												</Text>
+											</Stack>
+										</Box>
+										<Divider />
 
-						<Grid.Col span={24}>
+										<Box>
+											<Select
+												label={t("AccommodationType")}
+												placeholder={t("SelectAccommodationType")}
+												data={[
+													{ value: "room", label: t("Room") },
+													{ value: "cabin", label: t("Cabin") },
+													{ value: "freeCabin", label: t("FreeCabin") },
+													{ value: "freeBed", label: t("FreeBed") },
+												]}
+												{...actionForm.getInputProps("accommodationType")}
+												searchable
+											/>
+											<Select
+												label={t("RoomNumber")}
+												placeholder={t("SelectRoomNumber")}
+												data={[
+													{ value: "101", label: "101" },
+													{ value: "102", label: "102" },
+													{ value: "103", label: "103" },
+													{ value: "104", label: "104" },
+													{ value: "105", label: "105" },
+												]}
+												{...actionForm.getInputProps("roomNumber")}
+												searchable
+												disabled={!actionForm.values.accommodationType}
+											/>
+											<Textarea
+												label={t("Comment")}
+												placeholder={t("EnterComment")}
+												{...actionForm.getInputProps("comment")}
+												minRows={3}
+											/>
+										</Box>
+										<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>
+											{t("Approve")}
+										</Button>
+										{/* =============== form content section =============== */}
+									</Stack>
+								</Tabs.Panel>
+
+								<Tabs.Panel value="cancel">
+									<Stack gap="md" mt="xs">
+										{/* =============== requested information section =============== */}
+
+										<Box p="xs" bg="var(--theme-primary-color-0)" style={{ borderRadius: "4px" }}>
+											<Text fz="sm" fw={600} mb="xs">
+												{t("RequestedInformation")}:
+											</Text>
+											<Stack gap="xs">
+												<Text fz="sm">
+													<strong>{t("Reason")}</strong>:{" "}
+													{requestedCancelData.reason || "placeholder reason"}
+												</Text>
+											</Stack>
+										</Box>
+										<Divider />
+										<Textarea
+											label={t("Reason")}
+											placeholder={t("EnterReason")}
+											{...actionForm.getInputProps("reason")}
+											minRows={3}
+											required
+										/>
+										<Button onClick={() => actionForm.onSubmit(handleSubmit)()}>
+											{t("Approve")}
+										</Button>
+									</Stack>
+								</Tabs.Panel>
+
+								<Tabs.Panel value="dayChange">
+									<Stack gap="md" mt="xs">
+										{/* =============== requested information section =============== */}
+										<Box p="xs" bg="var(--theme-primary-color-0)" style={{ borderRadius: "4px" }}>
+											<Text fz="sm" fw={600} mb="xs">
+												{t("RequestedInformation")}:
+											</Text>
+											<Stack gap="xs">
+												<Text fz="sm">
+													<strong>{t("RequestedDayChange")}</strong>:{" "}
+													{requestedDayChangeData.dayChange || "10"} {t("Days")}
+												</Text>
+											</Stack>
+										</Box>
+										<Divider />
+										<NumberInput
+											label={t("DayChange")}
+											placeholder={t("EnterDayChange")}
+											{...actionForm.getInputProps("dayChange")}
+											min={1}
+											required
+										/>
+										<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>
+											{t("Approve")}
+										</Button>
+									</Stack>
+								</Tabs.Panel>
+							</Tabs>
+						</Grid.Col>
+
+						<Grid.Col span={34}>
 							<Flex gap="xs" justify="flex-end">
 								<Button type="button" bg="var(--theme-secondary-color-6)" color="white">
 									{t("Print")}

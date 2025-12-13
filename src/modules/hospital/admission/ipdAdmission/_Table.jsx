@@ -2,7 +2,23 @@ import { useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
+import {
+	ActionIcon,
+	Box,
+	Button,
+	Divider,
+	Flex,
+	FloatingIndicator,
+	Group,
+	Menu,
+	NumberInput,
+	rem,
+	Select,
+	Stack,
+	Tabs,
+	Text,
+	Textarea,
+} from "@mantine/core";
 import {
 	IconArrowNarrowRight,
 	IconChevronUp,
@@ -10,6 +26,7 @@ import {
 	IconFileText,
 	IconPrinter,
 	IconSelector,
+	IconSettings,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -32,6 +49,7 @@ import { useReactToPrint } from "react-to-print";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
+import GlobalDrawer from "@components/drawers/GlobalDrawer";
 
 const PER_PAGE = 20;
 
@@ -48,7 +66,7 @@ export default function _Table({ module }) {
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
-	const [opened, { open, close }] = useDisclosure(false);
+	const [openedActions, { open: openActions, close: closeActions }] = useDisclosure(false);
 	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
@@ -63,6 +81,19 @@ export default function _Table({ module }) {
 	const billingInvoiceRef = useRef(null);
 	const [billingPrintData, setBillingPrintData] = useState(null);
 	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
+	const [actionType, setActionType] = useState(null);
+	const [actionFormData, setActionFormData] = useState(null);
+
+	// =============== form for action drawer fields ================
+	const actionForm = useForm({
+		initialValues: {
+			accommodationType: "",
+			roomNumber: "",
+			comment: "",
+			reason: "",
+			dayChange: null,
+		},
+	});
 
 	const form = useForm({
 		initialValues: {
@@ -135,6 +166,46 @@ export default function _Table({ module }) {
 		});
 		setAdmissionFormPrintData(res.data);
 		requestAnimationFrame(printAdmissionForm);
+	};
+
+	// =============== handle action form submit conditionally ================
+	const handleActionSubmit = (values) => {
+		// =============== store action form data for confirmation modal ================
+		const actionData = {
+			actionType: actionType,
+			...values,
+		};
+		setActionFormData(actionData);
+
+		if (actionType === "change") {
+			console.log("Change action:", {
+				accommodationType: values.accommodationType,
+				roomNumber: values.roomNumber,
+				comment: values.comment,
+			});
+			// TODO: implement change action API call
+		} else if (actionType === "cancel") {
+			console.log("Cancel action:", {
+				reason: values.reason,
+			});
+			// TODO: implement cancel action API call
+		} else if (actionType === "dayChange") {
+			console.log("Day change action:", {
+				dayChange: values.dayChange,
+			});
+			// TODO: implement day change action API call
+		}
+		// reset form and close drawer after submission
+		actionForm.reset();
+		setActionType(null);
+		closeActions();
+	};
+
+	// =============== handle drawer close with form reset ================
+	const handleCloseActions = () => {
+		actionForm.reset();
+		setActionType(null);
+		closeActions();
 	};
 
 	return (
@@ -229,6 +300,19 @@ export default function _Table({ module }) {
 							titleClassName: "title-right",
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+									<Button
+										variant="filled"
+										onClick={openActions}
+										color="teal.6"
+										radius="xs"
+										size={"compact-xs"}
+										aria-label="Settings"
+										leftSection={
+											<IconSettings style={{ width: "70%", height: "70%" }} stroke={1.5} />
+										}
+									>
+										{t("Actions")}
+									</Button>
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
 										item.process?.toLowerCase() === "confirmed" && (
 											<Button.Group>
@@ -350,13 +434,107 @@ export default function _Table({ module }) {
 				close={() => {
 					closeConfirm();
 					setSelectedId(null);
+					setActionFormData(null);
 				}}
 				form={confirmForm}
 				selectedId={selectedId}
 				module={module}
+				actionFormData={actionFormData}
 			/>
+
+			<GlobalDrawer opened={openedActions} close={handleCloseActions} title={t("Actions")} size="25%">
+				<Box mt="sm">
+					<Stack gap="md">
+						<Select
+							label={t("ActionType")}
+							placeholder={t("SelectActionType")}
+							data={[
+								{ value: "change", label: t("Change") },
+								{ value: "cancel", label: t("Cancel") },
+								{ value: "dayChange", label: t("DayChange") },
+							]}
+							value={actionType}
+							onChange={(value) => {
+								setActionType(value);
+								actionForm.reset();
+							}}
+							clearable
+							searchable={false}
+						/>
+
+						<Divider />
+
+						{actionType === "change" && (
+							<Stack h={mainAreaHeight - 166} justify="space-between">
+								<Box>
+									<Select
+										label={t("AccommodationType")}
+										placeholder={t("SelectAccommodationType")}
+										data={[
+											{ value: "room", label: t("Room") },
+											{ value: "cabin", label: t("Cabin") },
+											{ value: "freeCabin", label: t("FreeCabin") },
+											{ value: "freeBed", label: t("FreeBed") },
+										]}
+										{...actionForm.getInputProps("accommodationType")}
+										searchable
+									/>
+									<Select
+										label={t("RoomNumber")}
+										placeholder={t("SelectRoomNumber")}
+										data={[
+											{ value: "101", label: "101" },
+											{ value: "102", label: "102" },
+											{ value: "103", label: "103" },
+											{ value: "104", label: "104" },
+											{ value: "105", label: "105" },
+										]}
+										{...actionForm.getInputProps("roomNumber")}
+										searchable
+										disabled={!actionForm.values.accommodationType}
+									/>
+									<Textarea
+										label={t("Comment")}
+										placeholder={t("EnterComment")}
+										{...actionForm.getInputProps("comment")}
+										minRows={3}
+									/>
+								</Box>
+								<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
+							</Stack>
+						)}
+
+						{actionType === "cancel" && (
+							<Stack h={mainAreaHeight - 166} justify="space-between">
+								<Textarea
+									label={t("Reason")}
+									placeholder={t("EnterReason")}
+									{...actionForm.getInputProps("reason")}
+									minRows={3}
+									required
+								/>
+								<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
+							</Stack>
+						)}
+
+						{actionType === "dayChange" && (
+							<Stack h={mainAreaHeight - 166} justify="space-between">
+								<NumberInput
+									label={t("DayChange")}
+									placeholder={t("EnterDayChange")}
+									{...actionForm.getInputProps("dayChange")}
+									min={1}
+									required
+								/>
+								<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
+							</Stack>
+						)}
+					</Stack>
+				</Box>
+			</GlobalDrawer>
+
 			{selectedPrescriptionId && (
-				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+				<DetailsDrawer opened={openedActions} close={closeActions} prescriptionId={selectedPrescriptionId} />
 			)}
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
 			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
