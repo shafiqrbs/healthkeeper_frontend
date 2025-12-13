@@ -32,30 +32,19 @@ export default function MedicineListItem({
 	const [viewAction, setViewAction] = useState(true);
 	const isOpdType = type === "opd";
 
-	const handleChange = useDebouncedCallback((field, value) => {
-		if (field === "opd_quantity" && !ignoreOpdQuantityLimit && isOpdType) {
-			if (value > medicine.opd_limit) {
-				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error", "", "", "", 3000);
-				return;
-			}
-		}
-
+	const updateMedicineField = (field, value) => {
 		setMedicines((prev) => {
 			let newList;
+
 			if (field === "duration") {
-				// =============== get duration mode using the new value (label) to update duration_mode_bn ================
 				const durationMode = getDurationMode(durationModeDropdown, value);
-				newList = prev.map((medicine, idx) =>
-					idx === index - 1
-						? { ...medicine, [field]: value, duration_mode_bn: durationMode?.name_bn || "" }
-						: medicine
+				newList = prev.map((med, idx) =>
+					idx === index - 1 ? { ...med, [field]: value, duration_mode_bn: durationMode?.name_bn || "" } : med
 				);
 			} else if (field === "order" && type === "ipd") {
-				// =============== update order field and sort medicines by order ================
 				const orderValue = value === "" || value === null ? null : Number(value);
-				// =============== find medicine by comparing unique fields instead of index ================
+
 				const updatedList = prev.map((med) => {
-					// =============== match medicine by id, medicine_id, or generic name ================
 					const isMatch =
 						(medicine.id && med.id === medicine.id) ||
 						(medicine.medicine_id &&
@@ -64,20 +53,37 @@ export default function MedicineListItem({
 						(!medicine.medicine_id &&
 							med.generic === medicine.generic &&
 							med.medicine_dosage_id === medicine.medicine_dosage_id);
-					return isMatch ? { ...med, [field]: orderValue } : med;
+
+					return isMatch ? { ...med, order: orderValue } : med;
 				});
-				// =============== sort medicines by order (null values go to end) ================
+
 				newList = [...updatedList].sort((a, b) => {
 					const orderA = a.order ?? 999999;
 					const orderB = b.order ?? 999999;
 					return orderA - orderB;
 				});
 			} else {
-				newList = prev.map((medicine, idx) => (idx === index - 1 ? { ...medicine, [field]: value } : medicine));
+				newList = prev.map((med, idx) => (idx === index - 1 ? { ...med, [field]: value } : med));
 			}
+
 			if (typeof update === "function") update(newList);
 			return newList;
 		});
+	};
+
+	const handleImmediateChange = (field, value) => {
+		if (field === "opd_quantity" && !ignoreOpdQuantityLimit && isOpdType) {
+			if (value > medicine.opd_limit) {
+				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error", "", "", "", 3000);
+				return;
+			}
+		}
+
+		updateMedicineField(field, value);
+	};
+
+	const handleOrderChange = useDebouncedCallback((field, value) => {
+		updateMedicineField(field, value);
 	}, 1000);
 
 	const handleAddInstruction = (instructionIndex) => {
@@ -234,7 +240,7 @@ export default function MedicineListItem({
 							hideControls
 							min={1}
 							value={medicine.order ?? ""}
-							onChange={(value) => handleChange("order", value)}
+							onChange={(value) => handleOrderChange("order", value)}
 						/>
 					)}
 					<Text fz="14px" className="cursor-pointer capitalize">
@@ -248,7 +254,7 @@ export default function MedicineListItem({
 						color="teal"
 						offLabel="OFF"
 						checked={medicine.is_active}
-						onChange={(e) => handleChange("is_active", e.currentTarget.checked)}
+						onChange={(e) => handleImmediateChange("is_active", e.currentTarget.checked)}
 						radius="sm"
 						thumbIcon={
 							medicine.is_active ? (
@@ -389,7 +395,7 @@ export default function MedicineListItem({
 														placeholder={t("OutdoorMedicineNumber")}
 														value={medicine.opd_quantity}
 														onChange={(event) =>
-															handleChange("opd_quantity", event.target.value)
+															handleImmediateChange("opd_quantity", event.target.value)
 														}
 													/>
 												</Grid.Col>
@@ -400,7 +406,7 @@ export default function MedicineListItem({
 														placeholder={t("DoctorComment")}
 														value={medicine.doctor_comment}
 														onChange={(event) =>
-															handleChange("doctor_comment", event.target.value)
+															handleImmediateChange("doctor_comment", event.target.value)
 														}
 													/>
 												</Grid.Col>
@@ -474,7 +480,7 @@ export default function MedicineListItem({
 							value={medicine?.medicine_dosage_id?.toString()}
 							placeholder={t("Dosage")}
 							disabled={mode === "view"}
-							onChange={(v) => handleChange("medicine_dosage_id", v)}
+							onChange={(v) => handleImmediateChange("medicine_dosage_id", v)}
 						/>
 					</Grid.Col>
 					<Grid.Col span={7}>
@@ -488,7 +494,7 @@ export default function MedicineListItem({
 							value={medicine.medicine_bymeal_id?.toString()}
 							placeholder={t("Timing")}
 							disabled={mode === "view"}
-							onChange={(v) => handleChange("medicine_bymeal_id", v)}
+							onChange={(v) => handleImmediateChange("medicine_bymeal_id", v)}
 						/>
 					</Grid.Col>
 					<Grid.Col span={3}>
@@ -498,7 +504,7 @@ export default function MedicineListItem({
 							value={medicine.quantity}
 							placeholder={t("Quantity")}
 							disabled={mode === "view"}
-							onChange={(v) => handleChange("quantity", v)}
+							onChange={(v) => handleImmediateChange("quantity", v)}
 						/>
 					</Grid.Col>
 					<Grid.Col span={3}>
@@ -513,7 +519,7 @@ export default function MedicineListItem({
 							value={medicine.duration}
 							placeholder={t("Duration")}
 							disabled={mode === "view"}
-							onChange={(v) => handleChange("duration", v)}
+							onChange={(v) => handleImmediateChange("duration", v)}
 						/>
 					</Grid.Col>
 				</Grid>
