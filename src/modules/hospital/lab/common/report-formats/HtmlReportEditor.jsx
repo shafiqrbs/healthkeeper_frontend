@@ -146,7 +146,6 @@ export default function HtmlReportEditor({
 									<RichTextEditor.AlignJustify />
 									<RichTextEditor.AlignRight />
 								</RichTextEditor.ControlsGroup>
-
 							</RichTextEditor.Toolbar>
 							<RichTextEditor.Content />
 						</RichTextEditor>
