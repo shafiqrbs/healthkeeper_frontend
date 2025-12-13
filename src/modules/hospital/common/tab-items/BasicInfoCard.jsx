@@ -8,6 +8,7 @@ import { IconWeight } from "@tabler/icons-react";
 import { useEffect } from "react";
 
 export default function BasicInfoCard({ form, prescriptionData }) {
+	console.log(prescriptionData);
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 
@@ -19,7 +20,9 @@ export default function BasicInfoCard({ form, prescriptionData }) {
 		form.setValues({ is_vital: !!event.currentTarget.checked });
 		await dispatch(
 			editEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_VITAL}/${prescriptionData?.data?.id}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_VITAL}/${
+					prescriptionData?.data?.prescription_id || prescriptionData?.data?.id
+				}`,
 				module: "prescription",
 			})
 		).unwrap();

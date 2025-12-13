@@ -431,7 +431,9 @@ export default function AddMedicineForm({
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
 				if (redirect) {
-					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX}`);
+					navigate(
+						`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${ipdId || id}?tab=dashboard`
+					);
 				}
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
