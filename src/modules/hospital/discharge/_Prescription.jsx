@@ -38,9 +38,6 @@ import { useReactToPrint } from "react-to-print";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import useMedicineData from "@hooks/useMedicineData";
-import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
@@ -48,9 +45,8 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
 import MedicineListItem from "@hospital-components/MedicineListItem";
-import { DURATION_TYPES, MODULES } from "@/constants";
+import { MODULES } from "@/constants";
 import inputCss from "@assets/css/InputField.module.css";
-import InputForm from "@components/form-builders/InputForm";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
 import HistoryPrescription from "./HistoryPrescription";
@@ -63,11 +59,20 @@ import {
 } from "@utils/prescription";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import BookmarkDrawer from "@hospital-components/BookmarkDrawer";
+import useDataWithoutStore from "@hooks/useDataWithoutStore";
 
 const module = MODULES.DISCHARGE;
 
-export default function Prescription({ setShowHistory = () => {}, hasRecords = false, baseHeight = 0 }) {
+export default function Prescription({
+	medicines,
+	setMedicines,
+	setShowHistory = () => {},
+	hasRecords = false,
+	baseHeight = 0,
+	prescriptionId,
+}) {
 	const {
+		diseasesProfile,
 		features: { medicineDuration },
 		advices: adviceData,
 		user,
@@ -79,15 +84,15 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 	const form = useForm({
 		initialValues: {
 			exEmergency: [],
+			disease: "",
 		},
 	});
+	const { id } = useParams();
 	const createdBy = user;
-	const [medicines, setMedicines] = useState([]);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const dischargeA4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
-	const { dischargeId } = useParams();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
@@ -110,10 +115,19 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
 	// const dosage_options = useSelector((state) => state.crud.dosage?.data?.data);
 	// const by_meal_options = useSelector((state) => state.crud.byMeal?.data?.data);
-	const bymealRefetching = useSelector((state) => state.crud.byMeal?.refetching);
-	const refetching = useSelector((state) => state.crud.dosage?.refetching);
 	const [openedHistoryMedicine, { open: openHistoryMedicine, close: closeHistoryMedicine }] = useDisclosure(false);
-	const emergencyRefetching = useSelector((state) => state.crud.exemergency.refetching);
+	const { data: prescriptionData } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
+	});
+
+	useEffect(() => {
+		if (prescriptionData?.data) {
+			const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
+			form.setValues({
+				disease: initialFormValues?.disease || "",
+			});
+		}
+	}, [prescriptionData]);
 
 	const printDischargeA4 = useReactToPrint({
 		documentTitle: `discharge-${Date.now().toLocaleString()}`,
@@ -152,6 +166,13 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 				name_bn: mode.name_bn,
 		  }))
 		: [];
+
+	console.log(
+		diseasesProfile?.map((disease) => ({
+			value: disease.name,
+			label: disease.name,
+		}))
+	);
 
 	// =============== handler for adding autocomplete option to temporary list ================
 	const handleAutocompleteOptionAdd = (value, data, type, custom = false) => {
@@ -334,6 +355,7 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 
 		try {
 			const formValue = {
+				is_discharged: true,
 				is_completed: true,
 				medicines,
 				advise: form.values.advise || "",
@@ -342,11 +364,11 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 				created_by_id: createdBy?.id,
 				exEmergency: form.values.exEmergency || [],
 				instruction: form.values.instruction || "",
-				pharmacyInstruction: form.values.pharmacyInstruction || "",
+				disease: form.values.disease || "",
 			};
 
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.DISCHARGE.UPDATE}/${dischargeId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${prescriptionId}`,
 				data: formValue,
 				module,
 			};
@@ -359,7 +381,8 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 			} else {
 				showNotificationComponent(t("PrescriptionSavedSuccessfully"), "green", "lightgray", true, 700, true);
 				dispatch(setRefetchData({ module, refetching: true }));
-				if (redirect) navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
+				if (redirect)
+					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=dashboard`);
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {
@@ -802,10 +825,11 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 						<Grid.Col span={3}>
 							<Box bg="var(--theme-primary-color-0)" h="100%">
 								<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="les">
-									{t("FollowUpDate")}
+									{t("DiseaseProfile")}
 								</Text>
 								<Box p="sm">
 									<DatePickerForm
+										defaultValue={null}
 										form={form}
 										label=""
 										tooltip="Enter follow up date"
@@ -815,14 +839,18 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 									/>
 								</Box>
 								<Box pl="sm" pr="sm">
-									<InputForm
+									<SelectForm
+										dropdownValue={diseasesProfile?.map((disease) => ({
+											value: disease.name,
+											label: disease.name,
+										}))}
 										form={form}
 										label=""
-										id="pharmacyInstruction"
-										tooltip="Pharmacy Instruction"
-										name="pharmacyInstruction"
-										value={form.values.pharmacyInstruction}
-										placeholder="PharmacyInstruction"
+										id="disease"
+										tooltip={t("Disease")}
+										name="disease"
+										value={form.values.disease}
+										placeholder={t("Disease")}
 									/>
 								</Box>
 							</Box>
@@ -845,14 +873,14 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 							</Stack>
 						</Button>
 
-						<Button w="100%" bg="var(--theme-hold-btn-color)" onClick={handleHoldData}>
+						{/* <Button w="100%" bg="var(--theme-hold-btn-color)" onClick={handleHoldData}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Hold")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 									(alt + 2)
 								</Text>
 							</Stack>
-						</Button>
+						</Button> */}
 						<Button w="100%" bg="var(--theme-save-btn-color)" onClick={openPrescriptionPreview}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Preview")}</Text>
@@ -993,15 +1021,15 @@ export default function Prescription({ setShowHistory = () => {}, hasRecords = f
 			</GlobalDrawer>
 
 			{/* prescription preview */}
-			{dischargeId && (
+			{prescriptionId && (
 				<DetailsDrawer
 					opened={openedPrescriptionPreview}
 					close={closePrescriptionPreview}
-					prescriptionId={dischargeId}
+					prescriptionId={prescriptionId}
 				/>
 			)}
 
-			{dischargeId && (
+			{prescriptionId && (
 				<GlobalDrawer
 					opened={openedHistoryMedicine}
 					close={closeHistoryMedicine}

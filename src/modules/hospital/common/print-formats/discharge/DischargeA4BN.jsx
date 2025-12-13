@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Group, Image, Divider } from "@mantine/core";
+import { Box, Text, Grid, Group, Image } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -13,6 +13,7 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
+	console.log(data);
 	const { user } = useAppLocalStore();
 
 	const { hospitalConfigData } = useHospitalConfigData();
@@ -21,8 +22,16 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 		return value || defaultValue;
 	};
 
+	const prescription_data = JSON.parse(data?.json_content || "{}");
+
 	return (
 		<Box display={preview ? "block" : "none"}>
+			<style>
+				{`@media print {
+					table { border-collapse: collapse !important; }
+					table, table th, table td { border: 1px solid #807e7e !important; }
+				}`}
+			</style>
 			<Box
 				ref={ref}
 				p="md"
@@ -61,7 +70,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 						</Grid.Col>
 					</Grid>
 				</Box>
-				<Divider />
+				<hr />
 
 				<Box mt="sm" fz="sm">
 					<Text fz="sm" fw={700}>
@@ -71,8 +80,8 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 						বরাবর,
 					</Text>
 					<Text fz="sm">পরিচালক</Text>
-					<Text fz="sm">_____________________________ হাসপাতাল</Text>
-					<Text fz="sm">_____________________________ (ঠিকানা)</Text>
+					<Text fz="sm">{hospitalConfigData?.organization_name}</Text>
+					<Text fz="sm">{hospitalConfigData?.address}</Text>
 					<Text fz="sm" mt={"sm"} fw={700}>
 						বিষয়: রোগী ছাড়পত্রের আবেদন।
 					</Text>
@@ -80,55 +89,60 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 						মহোদয়/মহোদয়া,
 					</Text>
 					<Text fz="sm" mt={"xs"}>
-						আমি, ডা. ______________________________________, এই মর্মে জানাচ্ছি যে রোগী
-						জনাব/জনাবা ______________________________________, বয়স ______ বছর, লিঙ্গ
-						__________, ঠিকানা ________________________________________, আমাদের
-						হাসপাতালে ____ / ____ / ______ তারিখে ভর্তি হন।
+						আমি, ডা. <strong>{data?.doctor_name}</strong>, এই মর্মে জানাচ্ছি যে রোগী জনাব/জনাবা{" "}
+						<strong> {data.name}</strong>, বয়স{" "}
+						<strong>
+							{data.year ?? 0} বছর {data.month ?? 0} মাস {data.day ?? 0} দিন
+						</strong>
+						, লিঙ্গ
+						<strong> {data?.gender}</strong>, ঠিকানা <strong>{data?.address}</strong>, আমাদের হাসপাতালে{" "}
+						<strong>{data?.created}</strong> তারিখে ভর্তি হন।
 					</Text>
 					<Text fz="sm" mt={"xs"}>
-						রোগীকে ____________________________ (প্রাথমিক রোগ/অভিযোগ) কারণে ভর্তি করা
-						হয়। ভর্তি-পরবর্তী সময়ে প্রয়োজনীয় পরীক্ষা-নিরীক্ষা ও চিকিৎসা প্রদান করা
-						হয়েছে। রোগীর অবস্থা ধীরে ধীরে উন্নতি লাভ করে এবং বর্তমানে তিনি স্থিতিশীল ও
-						সন্তোষজনক অবস্থায় রয়েছেন।
+						রোগীকে <strong>{prescription_data?.disease ?? ""}</strong> (প্রাথমিক রোগ/অভিযোগ) কারণে ভর্তি করা
+						হয়। ভর্তি-পরবর্তী সময়ে প্রয়োজনীয় পরীক্ষা-নিরীক্ষা ও চিকিৎসা প্রদান করা হয়েছে। রোগীর অবস্থা ধীরে
+						ধীরে উন্নতি লাভ করে এবং বর্তমানে তিনি স্থিতিশীল ও সন্তোষজনক অবস্থায় রয়েছেন।
 					</Text>
 					<Text fz="sm" mt={"xs"}>
-						চিকিৎসাকালীন সময়ে রোগীকে ____________________________ (চিকিৎসার সারসংক্ষেপ)
-						প্রদান করা হয়েছে। বর্তমান শারীরিক অবস্থা স্থিতিশীল এবং রোগীকে বাসায় ফেরার
-						উপযোগী বিবেচিত হয়েছে।
+						চিকিৎসাকালীন সময়ে রোগীকে চিকিৎসা প্রদান করা হয়েছে। বর্তমান শারীরিক অবস্থা স্থিতিশীল এবং রোগীকে
+						বাসায় ফেরার উপযোগী বিবেচিত হয়েছে।
 					</Text>
 					<Text fz="sm" mt={"xs"}>
-						অতএব, রোগীকে আজ ____ / ____ / ______ তারিখে হাসপাতাল থেকে ছাড়পত্র প্রদান করা
-						হলো।
+						অতএব, রোগীকে আজ <strong>{new Date().toLocaleDateString()}</strong> তারিখে হাসপাতাল থেকে ছাড়পত্র
+						প্রদান করা হলো।
 					</Text>
 					<Text fz="sm" mt={"sm"} fw={600}>
 						প্রেসক্রাইবড ওষুধসমূহ:
 					</Text>
-					<Text fz="sm">• Apzalen 2 BP - 1+1+1 --- Gurgle after water --- 50</Text>
-					<Text fz="sm">• Ciprofloxacin 500 mg BD --- After food --- 20</Text>
-					<Text fz="sm">• Azithromycin 500 mg BD --- After food --- 10</Text>
-
-					{data?.medicines?.map((medicine) => (
-						<Text key={medicine?.medicine_id} fz="sm" mt="sm" fw={600}>
-							{medicine?.medicine_name}
+					{prescription_data?.medicines?.map((medicine, index) => (
+						<Text key={medicine?.medicine_id} fz="xs" mt="es">
+							{index + 1}. {medicine?.generic} {medicine?.dosage} {medicine?.by_meal} {medicine?.duration}{" "}
+							{medicine?.count}
 						</Text>
 					))}
 					<Text fz="sm" mt={"sm"} fw={600}>
 						অতিরিক্ত পরামর্শ ও নির্দেশনা:
 					</Text>
-					<Text fz="sm">{data?.advice}</Text>
-					<Text fz="sm" mt="xs">
-						রোগীকে {formatDate(data?.follow_up_date)} তারিখে (বা প্রয়োজনবোধে তার আগে)
-						ফলো‑আপের জন্য উপস্থিত হতে পরামর্শ দেওয়া হলো।
-					</Text>
+					<Text fz="sm">{prescription_data?.advise}</Text>
+					<br />
+					{data.follow_up_date && (
+						<Text fz="sm" mt="xs">
+							রোগীকে <strong>{formatDate(data?.follow_up_date)}</strong> তারিখে (বা প্রয়োজনবোধে তার আগে)
+							ফলো‑আপের জন্য উপস্থিত হতে পরামর্শ দেওয়া হলো।
+						</Text>
+					)}
 					<Text fz="sm" mt={"xs"}>
-						উপরোক্ত তথ্যসমূহ যথাযথভাবে হাসপাতালের নথিতে সংরক্ষণ করার জন্য অনুরোধ করা
-						হলো।
+						উপরোক্ত তথ্যসমূহ যথাযথভাবে হাসপাতালের নথিতে সংরক্ষণ করার জন্য অনুরোধ করা হলো।
 					</Text>
 					<Text fz="sm" mt={"sm"}>
 						বিনীত,
 					</Text>
-					<Text fz="sm">ডা. ______________________________________</Text>
-					<Text fz="sm">পদবি: ___________________________________</Text>
+					<Text fz="sm">
+						ডা. <strong>{data?.doctor_name}</strong>
+					</Text>
+					<Text fz="sm">
+						পদবি: <strong>{data?.designation_name}</strong>
+					</Text>
 					<Text fz="sm">বিভাগ: __________________________________</Text>
 					<Text fz="sm">সিল ও স্বাক্ষর: ____________________________</Text>
 				</Box>

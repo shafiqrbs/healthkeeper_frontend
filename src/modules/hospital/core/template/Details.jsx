@@ -7,7 +7,7 @@ import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import PrescriptionFullEN from "@hospital-components/print-formats/prescription/PrescriptionFullEN";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import {HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import { IconArrowLeft } from "@tabler/icons-react";
 import EmergencyA4EN from "@hospital-components/print-formats/emergency/EmergencyA4EN";
 import EmergencyA4BN from "@hospital-components/print-formats/emergency/EmergencyA4BN";

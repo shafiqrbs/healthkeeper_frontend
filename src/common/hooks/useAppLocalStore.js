@@ -54,6 +54,7 @@ function safeGet(root, path, fallback) {
  * @property {Object|null} bedMode
  * @property {Object|null} bloodGroup
  * @property {Object|null} cabinMode
+ * @property {Object|null} diseasesProfile
  * @property {Object|null} department
  * @property {Object|null} diagnosticDepartment
  * @property {Object|null} diagnosticRoom
@@ -151,6 +152,7 @@ export default function useAppLocalStore() {
 			departments: safeGet(authStorage, "hospitalConfig.departments", []),
 			religions: safeGet(authStorage, "hospitalConfig.religions", []),
 			advices: safeGet(authStorage, "hospitalConfig.advices", []),
+			diseasesProfile: safeGet(authStorage, "hospitalConfig.diseasesProfile", []),
 			designations: safeGet(authStorage, "hospitalConfig.designations", []),
 			particularModes: safeGet(authStorage, "hospitalConfig.particularModes", []),
 			meals: safeGet(authStorage, "hospitalConfig.byMeals", []),

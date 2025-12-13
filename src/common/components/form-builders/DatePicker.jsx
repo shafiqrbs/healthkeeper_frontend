@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import inputCss from "@assets/css/InputField.module.css";
 
 function DatePickerForm({
+	defaultValue = new Date(),
 	label,
 	placeholder,
 	required,
@@ -45,7 +46,7 @@ function DatePickerForm({
 			<DateInput
 				id={id}
 				clearable
-				defaultValue={new Date()}
+				defaultValue={defaultValue}
 				size={size}
 				classNames={inputCss}
 				disabled={disabled}
