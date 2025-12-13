@@ -1,5 +1,6 @@
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { ActionIcon, Box, Flex, Grid, Input, NumberInput, Select, Stack, Switch, Text } from "@mantine/core";
+import { useDebouncedCallback } from "@mantine/hooks";
 import {
 	IconCheck,
 	IconDeviceFloppy,
@@ -31,7 +32,7 @@ export default function MedicineListItem({
 	const [viewAction, setViewAction] = useState(true);
 	const isOpdType = type === "opd";
 
-	const handleChange = (field, value) => {
+	const handleChange = useDebouncedCallback((field, value) => {
 		if (field === "opd_quantity" && !ignoreOpdQuantityLimit && isOpdType) {
 			if (value > medicine.opd_limit) {
 				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error", "", "", "", 3000);
@@ -77,7 +78,7 @@ export default function MedicineListItem({
 			if (typeof update === "function") update(newList);
 			return newList;
 		});
-	};
+	}, 1000);
 
 	const handleAddInstruction = (instructionIndex) => {
 		setMedicines((prev) => {
@@ -228,7 +229,7 @@ export default function MedicineListItem({
 					{type === "ipd" && (
 						<NumberInput
 							size="xs"
-							w={40}
+							w={50}
 							mx="sm"
 							hideControls
 							min={1}
