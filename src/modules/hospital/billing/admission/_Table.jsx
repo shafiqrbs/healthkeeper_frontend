@@ -66,6 +66,7 @@ export default function _Table({ patient_mode }) {
 						px="xs"
 						gutter="xs"
 					>
+						<Grid.Col span={12}><Text fz="sm" fw={'600'}>{item.name}</Text></Grid.Col>
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />
@@ -80,14 +81,15 @@ export default function _Table({ patient_mode }) {
 							</Flex>
 							<Flex align="center" gap="3xs">
 								<IconUser size={16} stroke={1.5} />
-								<Text fz="sm">{item.patient_id}</Text>
+								<Text fz="sm">{item.mobile}</Text>
+
 							</Flex>
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Flex justify="space-between" align="center" gap="3xs">
 								<Box>
-									<Text fz="sm">{item.name}</Text>
-									<Text fz="sm">{item.mobile}</Text>
+									<Text fz="sm">{item.patient_id}</Text>
+									<Text fz="sm">{item.invoice}</Text>
 								</Box>
 								<Button.Group>
 									<ActionIcon

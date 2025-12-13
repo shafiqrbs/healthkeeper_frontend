@@ -6,7 +6,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { IconCaretUpDownFilled, IconChevronUp, IconSelector, IconX } from "@tabler/icons-react";
+import {IconCaretUpDownFilled, IconChevronUp, IconPrinter, IconSelector, IconX} from "@tabler/icons-react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -159,7 +159,7 @@ export default function InvoiceDetails({ entity }) {
 				setInvoiceDetails(resultAction.payload.data?.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				setInvestigationRecords([]);
-				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND.INDEX}/${id}`);
+				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.INDEX}`);
 			}
 		} catch (error) {
 			console.error(error);
@@ -228,6 +228,12 @@ export default function InvoiceDetails({ entity }) {
 	useEffect(() => {
 		investigationForm.setValues({'amount':investigationSubtotal})
 	}, [investigationSubtotal]);
+
+	useHotkeys(
+		[
+			["alt+p", createSubmitHandler],
+		],
+	);
 
 	return (
 		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -329,7 +335,7 @@ export default function InvoiceDetails({ entity }) {
 							<Box w="100%">
 								<Grid columns={18} gutter="xs">
 									<Grid.Col
-										span={6}
+										span={12}
 										className="animate-ease-out"
 										bg="var(--theme-primary-color-0)"
 										px="xs"
@@ -344,40 +350,7 @@ export default function InvoiceDetails({ entity }) {
 											/>
 										</Box>
 									</Grid.Col>
-									<Grid.Col
-										span={6}
-										bg="var(--theme-tertiary-color-1)"
-										className="animate-ease-out"
-									>
-										<Box mt="xs">
-											<Grid align="center" columns={20}>
-												<Grid.Col span={8}>
-													<Flex justify="flex-end" align="center" gap="es">
-														<Text fz="xs">{t("CreatedBy")}</Text>
-													</Flex>
-												</Grid.Col>
-												<Grid.Col span={12}>
-													<Flex align="right" gap="es">
-														<Text fz="xs">
-															{invoiceDetails?.created_doctor_info?.name || "N/A"}
-														</Text>
-													</Flex>
-												</Grid.Col>
-											</Grid>
-											<Grid align="center" columns={20}>
-												<Grid.Col span={8}>
-													<Flex justify="flex-end" align="center" gap="es">
-														<Text fz="sm">{t("Total")}</Text>
-													</Flex>
-												</Grid.Col>
-												<Grid.Col span={12}>
-													<Flex align="right" gap="es">
-														<Text fz="sm">{investigationSubtotal || 0}</Text>
-													</Flex>
-												</Grid.Col>
-											</Grid>
-										</Box>
-									</Grid.Col>
+
 									<Grid.Col
 										span={6}
 										className="animate-ease-out"
@@ -398,14 +371,23 @@ export default function InvoiceDetails({ entity }) {
 										<Box mt="xs">
 											<Button.Group>
 												<Button
+													disabled={selectedRecords.length === 0}
 													type="submit"
 													w="100%"
-													size="compact-sm"
-													bg="var(--theme-save-btn-color)"
-
+													size="sm"
+													bg="var(--theme-primary-color-6)"
+													leftSection={
+														<IconPrinter
+															style={{ width: "70%", height: "70%" }}
+															stroke={1.5}
+														/>
+													}
 												>
 													<Stack gap={0} align="center" justify="center">
-														<Text fz="xs">{t("Save")}</Text>
+														<Text fz="md">{t("Print")}</Text>
+														<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+															(alt + p)
+														</Text>
 													</Stack>
 												</Button>
 											</Button.Group>

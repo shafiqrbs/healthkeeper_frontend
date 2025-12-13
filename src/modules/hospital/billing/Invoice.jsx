@@ -97,13 +97,11 @@ export default function Invoice({ entity }) {
 				<Text fw={600} fz="sm" py="es" px="xs">
 					{t("InvoiceHistory")}
 				</Text>
-				<Button onClick={printIPDAll} bg="var(--theme-secondary-color-6)" color="white" size="compact-xs">
-					{t("AllPrint")}
-				</Button>
 			</Flex>
 
 			{id && (
 				<Grid columns={12} key={item.id} my="xs" bg={"var(--theme-secondary-color-2)"} px="xs" gutter="xs">
+					<Grid.Col span={12}><Text fz="sm">{item.name}</Text></Grid.Col>
 					<Grid.Col span={6}>
 						<Flex align="center" gap="3xs">
 							<IconCalendarWeek size={16} stroke={1.5} />
@@ -123,7 +121,6 @@ export default function Invoice({ entity }) {
 					<Grid.Col span={6}>
 						<Flex justify="space-between" align="center" gap="3xs">
 							<Box>
-								<Text fz="sm">{item.name}</Text>
 								<Text fz="sm">{item.mobile}</Text>
 								<Text fz="sm">{item.payment_mode_name}</Text>
 							</Box>

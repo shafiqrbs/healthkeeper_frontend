@@ -28,7 +28,7 @@ export default function TabsWithSearch({
 	const [rootRef, setRootRef] = useState(null);
 	const [tabValue, setTabValue] = useState(tabList[0]);
 	const [controlsRefs, setControlsRefs] = useState({});
-	const [date, setDate] = useState(new Date());
+	const [date, setDate] = useState();
 	const [search, setSearch] = useDebouncedState("", 300);
 
 	useEffect(() => {

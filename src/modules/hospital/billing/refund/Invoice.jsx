@@ -79,14 +79,8 @@ export default function Invoice({ entity }) {
 			</Flex>
 			{id && transactions.length ? (
 				<>
-					<Grid
-						columns={12}
-						key={item.id}
-						my="xs"
-						bg={"var(--theme-secondary-color-2)"}
-						px="xs"
-						gutter="xs"
-					>
+					<Grid columns={12} key={item.id} my="xs" bg={"var(--theme-secondary-color-2)"} px="xs" gutter="xs">
+						<Grid.Col span={12}><Text fz="sm">{item.name}</Text></Grid.Col>
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />
@@ -106,23 +100,12 @@ export default function Invoice({ entity }) {
 						<Grid.Col span={6}>
 							<Flex justify="space-between" align="center" gap="3xs">
 								<Box>
-									<Text fz="sm">{item.name}</Text>
 									<Text fz="sm">{item.mobile}</Text>
 									<Text fz="sm">{item.payment_mode_name}</Text>
 								</Box>
-								<Button.Group>
-									<ActionIcon
-										variant="filled"
-										color="var(--theme-primary-color-6)"
-										radius="xs"
-										aria-label="Settings"
-									>
-										<IconArrowNarrowRight
-											style={{ width: "70%", height: "70%" }}
-											stroke={1.5}
-										/>
-									</ActionIcon>
-								</Button.Group>
+							</Flex>
+							<Flex align="center" gap="3xs">
+								<Text fz="sm">Year: {item.year}</Text>
 							</Flex>
 						</Grid.Col>
 					</Grid>

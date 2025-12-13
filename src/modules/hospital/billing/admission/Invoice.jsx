@@ -83,14 +83,6 @@ export default function Invoice({ transactions }) {
 				<Text fw={600} fz="sm" py="es" px="xs">
 					{t("InvoiceHistory")}
 				</Text>
-				<Button
-					onClick={printIPDAll}
-					bg="var(--theme-secondary-color-6)"
-					color="white"
-					size="compact-xs"
-				>
-					{t("AllPrint")}
-				</Button>
 			</Flex>
 			{id && transactions.length ? (
 				<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 52}>
