@@ -95,7 +95,6 @@ export default function Update({ module }) {
 				dob: new Date() || null,
 			});
 		}
-		console.log(form.values.dob)
 		setTimeout(() => {
 			setFormLoad(false);
 			setFormDataForUpdate(false);
@@ -368,7 +367,6 @@ export default function Update({ module }) {
 		}
 	};
 
-
 	return (
 		<Box>
 			<form onSubmit={form.onSubmit(handleSubmit)}>
@@ -606,7 +604,11 @@ export default function Update({ module }) {
 										</Box>
 										<Grid columns={24} gutter={0}>
 											<Grid.Col span={11}>
-												<Box mt={"xs"} className={"borderRadiusAll"} bg="var(--mantine-color-white)">
+												<Box
+													mt={"xs"}
+													className={"borderRadiusAll"}
+													bg="var(--mantine-color-white)"
+												>
 													<ScrollArea
 														h={height - 98}
 														scrollbarSize={2}
@@ -662,7 +664,11 @@ export default function Update({ module }) {
 												</Flex>
 											</Grid.Col>
 											<Grid.Col span={11}>
-												<Box mt={"xs"} className={"borderRadiusAll"} bg="var(--mantine-color-white)">
+												<Box
+													mt={"xs"}
+													className={"borderRadiusAll"}
+													bg="var(--mantine-color-white)"
+												>
 													<ScrollArea
 														h={height - 98}
 														scrollbarSize={2}

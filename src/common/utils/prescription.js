@@ -44,8 +44,6 @@ export const appendDurationModeValueToForm = (form, duration_mode_options, label
 	if (!form) return console.error("form should be passed in duration mode function");
 	const durationMode = getDurationMode(duration_mode_options, label);
 
-	console.log("Duration Mode: ", durationMode, duration_mode_options, label);
-
 	form.setFieldValue("duration", label);
 	form.setFieldValue("duration_mode_bn", durationMode?.name_bn);
 };

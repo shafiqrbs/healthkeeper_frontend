@@ -38,8 +38,6 @@ export default function _ReportFormatTable({ module }) {
 	});
 	const entityData = useMemo(() => entity?.data?.investigation_report_format || [], [entity]);
 
-	console.log(entityData, "entityData");
-
 	const parents =
 		entityData
 			?.map((p) => ({
@@ -313,7 +311,9 @@ export default function _ReportFormatTable({ module }) {
 										<TextInput
 											placeholder={t("SampleValue")}
 											value={submitFormData[item.id]?.sample_value || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "sample_value", val.target.value)}
+											onChange={(val) =>
+												handleDataTypeChange(item.id, "sample_value", val.target.value)
+											}
 											onBlur={() => handleRowSubmit(item.id)}
 										/>
 									),
@@ -337,7 +337,9 @@ export default function _ReportFormatTable({ module }) {
 										<Textarea
 											placeholder={t("ReferenceValue")}
 											value={submitFormData[item.id]?.reference_value || ""}
-											onChange={(val) => handleDataTypeChange(item.id, "reference_value", val.target.value)}
+											onChange={(val) =>
+												handleDataTypeChange(item.id, "reference_value", val.target.value)
+											}
 											onBlur={() => handleRowSubmit(item.id)}
 											classNames={{
 												input: "custom-textarea",
@@ -352,10 +354,16 @@ export default function _ReportFormatTable({ module }) {
 									render: (item) => (
 										<Box>
 											<Group>
-												<ActionIcon color="var(--theme-secondary-color-6)" onClick={() => handleRowSubmit(item?.id)}>
+												<ActionIcon
+													color="var(--theme-secondary-color-6)"
+													onClick={() => handleRowSubmit(item?.id)}
+												>
 													<IconDeviceFloppy height={18} width={18} stroke={1.5} />
 												</ActionIcon>
-												<ActionIcon color="var(--theme-delete-color)" onClick={() => handleDeleteSuccess(id, item?.id)}>
+												<ActionIcon
+													color="var(--theme-delete-color)"
+													onClick={() => handleDeleteSuccess(id, item?.id)}
+												>
 													<IconTrashX height={18} width={18} stroke={1.5} />
 												</ActionIcon>
 											</Group>

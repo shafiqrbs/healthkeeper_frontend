@@ -486,8 +486,6 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 		}
 	};
 
-	console.log(patients);
-
 	return (
 		<Box pos="relative">
 			<LoadingOverlay visible={visible} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
