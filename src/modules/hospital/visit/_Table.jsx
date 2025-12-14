@@ -126,7 +126,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		filterParams: {
 			patient_mode: "opd",
 			term: form.values.keywordSearch,
-			room_id: form.values.room_id,
+			// room_id: form.values.room_id,
 			prescription_mode: processTab,
 			created: form.values.created,
 			created_by_id:
@@ -394,7 +394,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							},
 						},
 					]}
-					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"

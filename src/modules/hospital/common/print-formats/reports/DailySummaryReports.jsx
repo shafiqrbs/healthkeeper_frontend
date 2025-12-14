@@ -19,7 +19,6 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 	const { user } = useAppLocalStore();
 	const { hospitalConfigData } = useHospitalConfigData();
 	const collectionSummaryData = records?.summary[0] || [];
-	console.log(records)
 	const invoiceFilter = records?.filter || [];
 	const invoiceModeData = records?.invoiceMode || [];
 	const patientModeCollectionData = records?.patientMode || [];
@@ -38,8 +37,7 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 
 
 	const totalServiceCount = serviceData?.reduce(
-		(sum, item) => sum + parseInt(item.total_count, 10),
-		0
+		(sum, item) => sum + parseInt(item.total_count, 10),0
 	);
 	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
