@@ -115,18 +115,14 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 	);
 
 	const totalUserCount = userCollectionData?.reduce(
-		(sum, item) => sum + (item.total_count ?? 0),
-		0
-	);
+		(sum, item) => sum + parseInt(item.total_count, 10),0);
 	const totalUserAmount = userCollectionData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
-	const totalServieCount = serviceData?.reduce((sum, item) => sum + (item.total_count ?? 0), 0);
+	const totalServiceCount = serviceData?.reduce((sum, item) => sum + parseInt(item.total_count, 10),0);
 	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
 	const totalServieGroupCount = serviceGroups?.reduce(
-		(sum, item) => sum + (item.total_count ?? 0),
-		0
-	);
+		(sum, item) => sum + parseInt(item.total_count, 10),0);
 	const totalServiceGroupAmount = serviceGroups?.reduce(
 		(sum, item) => sum + (item.total ?? 0),
 		0
@@ -323,7 +319,7 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 								<Table.Thead bg="var(--theme-secondary-color-0)">
 									<Table.Tr py="xs">
 										<Table.Td width={"70%"}>Particular</Table.Td>
-										<Table.Td width={"15%"}>Number of service</Table.Td>
+										<Table.Td width={"15%"}>Number of Service</Table.Td>
 										<Table.Td>Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
@@ -338,7 +334,7 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 										))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
-										<Table.Td>{totalServieCount}</Table.Td>
+										<Table.Td>{totalServiceCount}</Table.Td>
 										<Table.Td>{totalServiceAmount}</Table.Td>
 									</Table.Tr>
 								</Table.Tbody>

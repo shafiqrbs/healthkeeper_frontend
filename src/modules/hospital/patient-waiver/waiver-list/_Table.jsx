@@ -1,24 +1,9 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {
-	Box,
-	Button,
-	Flex,
-	FloatingIndicator,
-	Group,
-	Stack,
-	Table,
-	Tabs,
-	Text,
-} from "@mantine/core";
-import {
-	IconArrowNarrowRight,
-	IconChevronUp,
-	IconSelector,
-	IconPrinter,
-} from "@tabler/icons-react";
+import { Box, Button, Flex, FloatingIndicator, Group, Stack, Table, Tabs, Text, Checkbox } from "@mantine/core";
+import { IconArrowNarrowRight, IconChevronUp, IconSelector, IconPrinter } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -65,6 +50,7 @@ const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm", "admin_administrator"];
 const ALLOWED_APPROVED_ROLES = ["doctor_approve_opd", "doctor_approve_ipd", "admin_administrator"];
 
 export default function _Table({ module }) {
+	const [selectedRecords, setSelectedRecords] = useState([]);
 	const dispatch = useDispatch();
 	// Mantine + React Hooks
 	const { t } = useTranslation();
@@ -154,18 +140,17 @@ export default function _Table({ module }) {
 	};
 
 	// Infinite scroll table loading
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				mode: processTab,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "created_at",
-			direction: "desc",
-		});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			mode: processTab,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+	});
 
 	// Drawer opening for prescription view
 	const handleView = (id) => {
@@ -182,6 +167,25 @@ export default function _Table({ module }) {
 		setBillingPrintData(res.data);
 		requestAnimationFrame(printBillingInvoice);
 	};
+
+	const handleSelectRecord = (event, uid) => {
+		if (event.currentTarget.checked) {
+			setSelectedRecords([...selectedRecords, uid]);
+		} else {
+			setSelectedRecords(selectedRecords.filter((id) => id !== uid));
+		}
+	};
+
+	useEffect(() => {
+		if (!waiverData?.invoice_particular) return;
+
+		setSelectedRecords(
+			waiverData.invoice_particular.reduce((acc, { is_waiver, id }) => {
+				if (is_waiver) acc.push(id);
+				return acc;
+			}, [])
+		);
+	}, [waiverData?.invoice_particular]);
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
@@ -271,9 +275,7 @@ export default function _Table({ module }) {
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right">
 									<Button.Group>
-										{userRoles.some((r) =>
-											ALLOWED_CONFIRMED_ROLES.includes(r)
-										) &&
+										{userRoles.some((r) => ALLOWED_CONFIRMED_ROLES.includes(r)) &&
 											!item.checked_by_name && (
 												<Button
 													variant="filled"
@@ -281,17 +283,13 @@ export default function _Table({ module }) {
 													color="var(--theme-primary-color-6)"
 													radius="xs"
 													size="compact-xs"
-													rightSection={
-														<IconArrowNarrowRight stroke={1.5} />
-													}
+													rightSection={<IconArrowNarrowRight stroke={1.5} />}
 												>
 													Checked
 												</Button>
 											)}
 
-										{userRoles.some((r) =>
-											ALLOWED_APPROVED_ROLES.includes(r)
-										) &&
+										{userRoles.some((r) => ALLOWED_APPROVED_ROLES.includes(r)) &&
 											item.checked_by_name &&
 											!item.approved_by_name && (
 												<Button
@@ -300,9 +298,7 @@ export default function _Table({ module }) {
 													color="var(--theme-primary-color-6)"
 													radius="xs"
 													size="compact-xs"
-													rightSection={
-														<IconArrowNarrowRight stroke={1.5} />
-													}
+													rightSection={<IconArrowNarrowRight stroke={1.5} />}
 												>
 													Approve
 												</Button>
@@ -344,16 +340,10 @@ export default function _Table({ module }) {
 			<DataTableFooter indexData={records} module="waiver" />
 
 			{selectedPrescriptionId && (
-				<DetailsDrawer
-					opened={opened}
-					close={close}
-					prescriptionId={selectedPrescriptionId}
-				/>
+				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
 
-			{billingPrintData && (
-				<FreeServiceFormBN data={billingPrintData} ref={billingInvoiceRef} />
-			)}
+			{billingPrintData && <FreeServiceFormBN data={billingPrintData} ref={billingInvoiceRef} />}
 
 			<GlobalDrawer opened={approveOpen} close={handleCloseApproveModal} title={t("Approve")}>
 				<Box>
@@ -364,11 +354,7 @@ export default function _Table({ module }) {
 							</Text>
 
 							{waiverData && (
-								<Box
-									mb="md"
-									p="sm"
-									style={{ border: "1px solid #eee", borderRadius: 6 }}
-								>
+								<Box mb="md" p="sm" style={{ border: "1px solid #eee", borderRadius: 6 }}>
 									<Text size="sm">
 										<strong>{t("Name")}:</strong> {waiverData?.name || "N/A"}
 									</Text>
@@ -401,6 +387,7 @@ export default function _Table({ module }) {
 								>
 									<Table.Thead>
 										<Table.Tr>
+											<Table.Th></Table.Th>
 											<Table.Th>#</Table.Th>
 											<Table.Th>{t("Item")}</Table.Th>
 											<Table.Th>{t("Qty")}</Table.Th>
@@ -412,6 +399,12 @@ export default function _Table({ module }) {
 									<Table.Tbody>
 										{waiverData?.invoice_particular?.map((p, idx) => (
 											<Table.Tr key={idx}>
+												<Table.Td>
+													<Checkbox
+														onChange={(event) => handleSelectRecord(event, p.id)}
+														checked={selectedRecords.includes(p.id)}
+													/>
+												</Table.Td>
 												<Table.Td>{idx + 1}</Table.Td>
 												<Table.Td>{p.item_name || "N/A"}</Table.Td>
 												<Table.Td>{p.quantity ?? 0}</Table.Td>
