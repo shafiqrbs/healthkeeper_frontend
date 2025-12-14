@@ -63,7 +63,7 @@ export default function StockSummery() {
 			sn: index + 1,
 			warehouse_name: item?.warehouse_name ?? "",
 			name: item?.name ?? "",
-			opening_quantity: item?.opening_quantity ?? "",
+			opening_quantity: item?.opening_quantity ?? 0,
 			total_in_quantity: item?.total_in_quantity ?? "",
 			total_out_quantity: item?.total_out_quantity ?? "",
 			closing_quantity: item?.closing_quantity ?? "",
@@ -115,10 +115,30 @@ export default function StockSummery() {
 						},
 						{ accessor: "warehouse_name", title: t("Warehouse") },
 						{ accessor: "name", title: t("Item Name") },
-						{ accessor: "opening_quantity", title: t("OpeningQuantity") },
-						{ accessor: "total_in_quantity", title: t("StockIn") },
-						{ accessor: "total_out_quantity", title: t("StockOut") },
-						{ accessor: "closing_quantity", title: t("ClosingQuantity") },
+						{
+							accessor: "opening_quantity",
+							title: t("OpeningQuantity"),
+							textAlign: "right",
+							render: ({ opening_quantity }) => opening_quantity ?? 0
+						},
+						{
+							accessor: "total_in_quantity",
+							title: t("StockIn"),
+							textAlign: "right",
+							render: ({ total_in_quantity }) => total_in_quantity ?? 0
+						},
+						{
+							accessor: "total_out_quantity",
+							title: t("StockOut"),
+							textAlign: "right",
+							render: ({ total_out_quantity }) => total_out_quantity ?? 0
+						},
+						{
+							accessor: "closing_quantity",
+							title: t("ClosingQuantity"),
+							textAlign: "right",
+							render: ({ closing_quantity }) => closing_quantity ?? 0
+						},
 					]}
 					fetching={fetching}
 					loaderSize="xs"
