@@ -29,11 +29,13 @@ import CTScan from "./report-formats/CTScan";
 import Serology from "./report-formats/Serology";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import HtmlReportEditor from "@modules/hospital/lab/common/report-formats/HtmlReportEditor";
+import AFBCulture from "./report-formats/AFBCulture";
+import SputumAFB from "./report-formats/SputumAFB";
 
 const module = MODULES.LAB_TEST;
 
 const ReportRenderer = forwardRef(
-	({ diagnosticReport, fetching, inputsRef, refetchDiagnosticReport, refetchLabReport ,refreshKey}) => {
+	({ diagnosticReport, fetching, inputsRef, refetchDiagnosticReport, refetchLabReport, refreshKey }) => {
 		const { t } = useTranslation();
 		const form = useForm(getFormValues(t));
 		const { reportId } = useParams();
@@ -56,11 +58,8 @@ const ReportRenderer = forwardRef(
 			}
 		};
 
-
 		const renderCustomReport = () => {
-			if (
-				diagnosticReport?.particular?.is_custom_report === 1
-			) {
+			if (diagnosticReport?.particular?.is_custom_report === 1) {
 				const slug = diagnosticReport?.particular?.slug;
 				switch (slug) {
 					case "covid-19":
@@ -161,6 +160,22 @@ const ReportRenderer = forwardRef(
 								refetchLabReport={refetchLabReport}
 							/>
 						);
+					case "afb-culture":
+						return (
+							<AFBCulture
+								diagnosticReport={diagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
+							/>
+						);
+					case "sputum-afb":
+						return (
+							<SputumAFB
+								diagnosticReport={diagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
+							/>
+						);
 					default:
 						return (
 							<HtmlReportEditor
@@ -170,7 +185,6 @@ const ReportRenderer = forwardRef(
 								refetchLabReport={refetchLabReport}
 							/>
 						);
-
 				}
 			}
 		};
@@ -237,11 +251,10 @@ const ReportRenderer = forwardRef(
 			}
 		}
 
-
-		const isViewOnly = (diagnosticReport.process === "Done" || (
-			diagnosticReport.process === "In-progress" && userRoles.some((role) =>
-			ALLOWED_LAB_USER_ROLES.includes(role)
-		)));
+		const isViewOnly =
+			diagnosticReport.process === "Done" ||
+			(diagnosticReport.process === "In-progress" &&
+				userRoles.some((role) => ALLOWED_LAB_USER_ROLES.includes(role)));
 		// default reports table and submission form
 		return (
 			<>
@@ -283,9 +296,7 @@ const ReportRenderer = forwardRef(
 											value={item.result}
 											ref={(el) => (inputsRef.current[rowIndex] = el)}
 											onKeyDown={(e) => handleKeyDown(e, rowIndex)}
-											onBlur={(e) =>
-												handleFieldChange(item.id, "result", e.target.value)
-											}
+											onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}
 										/>
 									),
 							},
@@ -303,20 +314,12 @@ const ReportRenderer = forwardRef(
 						height={mainAreaHeight - 232}
 						fetching={fetching}
 						sortIcons={{
-							sorted: (
-								<IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />
-							),
-							unsorted: (
-								<IconSelector color="var(--theme-tertiary-color-7)" size={14} />
-							),
+							sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+							unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 						}}
 					/>
 				</Box>
-				<ReportSubmission
-					diagnosticReport={diagnosticReport}
-					form={form}
-					handleSubmit={handleSubmit}
-				/>
+				<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
 			</>
 		);
 	}
