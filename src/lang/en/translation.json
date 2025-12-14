@@ -1652,5 +1652,7 @@
 	"EnterDayChange": "Enter Day Change",
 	"Approve": "Approve",
 	"Reject": "Reject",
-	"DayChange": "Day Change"
+	"FinancialServiceCollections" : "Financial Service Collections",
+	"ServiceCollections" : "Service Collections",
+	"xxxxxxxx" : "xxxxxxxxxxx"
 }

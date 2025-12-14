@@ -51,6 +51,7 @@ const templateData = [
 	{ name: "Indent", module: "indent", id: getUUID() },
 	{ name: "DeathCertificateBN", module: "ipd", id: getUUID() },
 	{ name: "DeathCertificateEN", module: "ipd", id: getUUID() },
+	{ name: "SummaryReports", module: "reports", id: getUUID() },
 ];
 
 export default function _Table({ module }) {

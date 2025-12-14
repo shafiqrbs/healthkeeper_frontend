@@ -43,6 +43,7 @@ import DailyOverview from "@modules/home/common/DailyOverview";
 import SummaryReports from "@modules/hospital/reports/sales-summary/SummaryReports";
 import InvoiceSummaryReports from "@modules/hospital/reports/sales-summary/InvoiceSummaryReports";
 import { t } from "i18next";
+import DailySummaryReports from "@hospital-components/print-formats/reports/DailySummaryReports";
 
 const PER_PAGE = 200;
 
@@ -386,11 +387,255 @@ export default function InvoiceSummary() {
 								</Table.Tbody>
 							</Table>
 						</Box>
-					</ScrollArea>
+					</ScrollArea><Box className="border-top-none" px="sm">
+					<Grid columns={40} gutter={{ base: "xs" }}>
+						<Grid.Col span={40}>
+							<Card padding="lg" radius="sm">
+								<Card.Section
+									h={32}
+									withBorder
+									component="div"
+									bg="var(--theme-primary-color-7)"
+								>
+									<Flex align="center" h="100%" px="lg" justify="space-between">
+										<Text pb={0} fz="sm" c="white" fw={500}>
+											{t("CollectionOverview")}
+										</Text>
+										<ActionIcon
+											onClick={handleCSVDownload}
+											variant="default"
+											c={"green.8"}
+											size="md"
+											aria-label="Filter"
+										>
+											<IconFileTypePdf style={{ width: rem(16) }} stroke={1.2} />
+										</ActionIcon>
+									</Flex>
+								</Card.Section>
+							</Card>
+						</Grid.Col>
+					</Grid>
+					<Box ref={summaryReportsRef}>
+						<ScrollArea mt="sm" h={height}>
+							<Box className="borderRadiusAll" mt="3xs" px="xs">
+								<Flex
+									justify="space-between"
+									align="center"
+									className="borderBottomDashed"
+									py="3xs"
+								>
+									<Text>{t("Patient")}</Text>
+									<Flex align="center" gap="xs" w="80px">
+										<IconBed color="var(--theme-primary-color-6)" />
+										<Text fz="sm">{collectionSummaryData?.patient || 0}</Text>
+									</Flex>
+								</Flex>
+								<Flex justify="space-between" align="center" py="3xs">
+									<Text>{t("Collection")}</Text>
+									<Flex align="center" gap="xs" w="80px">
+										<IconCoinTaka color="var(--theme-primary-color-6)" />
+										<Text fz="sm">{collectionSummaryData?.total || 0}</Text>
+									</Flex>
+								</Flex>
+							</Box>
+							<Box className="borderRadiusAll">
+								<Card padding="lg" radius="sm">
+									<Card.Section
+										h={32}
+										withBorder
+										component="div"
+										bg="var(--theme-primary-color-7)"
+									>
+										<Flex align="center" h="100%" px="lg" justify="space-between">
+											<Text pb={0} fz="sm" c="white" fw={500}>
+												{t("TicketBaseCollections")}
+											</Text>
+										</Flex>
+									</Card.Section>
+								</Card>
+								<Table>
+									<Table.Thead>
+										<Table.Tr py="xs" bg="var(--theme-secondary-color-0)">
+											<Table.Td width={"70%"}>Patient Mode</Table.Td>
+											<Table.Td width={"15%"}>Number of Patient</Table.Td>
+											<Table.Td width={"15%"}> Amount</Table.Td>
+										</Table.Tr>
+									</Table.Thead>
+									<Table.Tbody>
+										{patientModeCollectionData &&
+										patientModeCollectionData?.map((item, index) => (
+											<Table.Tr key={item.id || index} py="xs">
+												<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+												<Table.Td>{item?.patient}</Table.Td>
+												<Table.Td>{item?.total}</Table.Td>
+											</Table.Tr>
+										))}
+										<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
+											<Table.Td>Total</Table.Td>
+											<Table.Td>{totalModeCount}</Table.Td>
+											<Table.Td>{totalModeAmount}</Table.Td>
+										</Table.Tr>
+									</Table.Tbody>
+								</Table>
+							</Box>
+							<Box className="borderRadiusAll">
+								<Card padding="lg" radius="sm">
+									<Card.Section
+										h={32}
+										withBorder
+										component="div"
+										bg="var(--theme-primary-color-7)"
+									>
+										<Flex align="center" h="100%" px="lg" justify="space-between">
+											<Text pb={0} fz="sm" c="white" fw={500}>
+												{t("InvoiceModeCollections")}
+											</Text>
+										</Flex>
+									</Card.Section>
+								</Card>
+								<Table>
+									<Table.Thead>
+										<Table.Tr py="xs" bg="var(--theme-secondary-color-0)">
+											<Table.Td width={"85%"}>Invoice Mode</Table.Td>
+											<Table.Td width={"15%"}> Amount</Table.Td>
+										</Table.Tr>
+									</Table.Thead>
+									<Table.Tbody>
+										{invoiceModeData &&
+										invoiceModeData?.map((item, index) => (
+											<Table.Tr key={item.id || index} py="xs">
+												<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+												<Table.Td>{item?.total}</Table.Td>
+											</Table.Tr>
+										))}
+										<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
+											<Table.Td>Total</Table.Td>
+											<Table.Td>{totalInvoiceModeAmount}</Table.Td>
+										</Table.Tr>
+									</Table.Tbody>
+								</Table>
+							</Box>
+							<Box className="borderRadiusAll">
+								<Card padding="lg" radius="sm">
+									<Card.Section
+										h={32}
+										withBorder
+										component="div"
+										bg="var(--theme-primary-color-7)"
+									>
+										<Flex align="center" h="100%" px="lg" justify="space-between">
+											<Text pb={0} fz="sm" c="white" fw={500}>
+												{t("UserBaseCollections")}
+											</Text>
+										</Flex>
+									</Card.Section>
+								</Card>
+								<Table>
+									<Table.Thead bg="var(--theme-secondary-color-0)">
+										<Table.Tr py="xs">
+											<Table.Td width={"85%"}>Particular</Table.Td>
+											<Table.Td>Amount</Table.Td>
+										</Table.Tr>
+									</Table.Thead>
+									<Table.Tbody>
+										{userCollectionData &&
+										userCollectionData?.map((item, index) => (
+											<Table.Tr key={item.id || index} py="xs">
+												<Table.Td>{item?.name}</Table.Td>
+												<Table.Td>{item?.total}</Table.Td>
+											</Table.Tr>
+										))}
+										<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
+											<Table.Td>Total</Table.Td>
+											<Table.Td>{totalUserAmount}</Table.Td>
+										</Table.Tr>
+									</Table.Tbody>
+								</Table>
+							</Box>
+							<Box className="borderRadiusAll">
+								<Card padding="lg" radius="sm">
+									<Card.Section
+										h={32}
+										withBorder
+										component="div"
+										bg="var(--theme-primary-color-7)"
+									>
+										<Flex align="center" h="100%" px="lg" justify="space-between">
+											<Text pb={0} fz="sm" c="white" fw={500}>
+												{t("ServiceBaseCollections")}
+											</Text>
+										</Flex>
+									</Card.Section>
+								</Card>
+								<Table>
+									<Table.Thead bg="var(--theme-secondary-color-0)">
+										<Table.Tr py="xs">
+											<Table.Td width={"70%"}>Particular</Table.Td>
+											<Table.Td width={"15%"}>Number of service</Table.Td>
+											<Table.Td>Amount</Table.Td>
+										</Table.Tr>
+									</Table.Thead>
+									<Table.Tbody>
+										{serviceData &&
+										serviceData?.map((item, index) => (
+											<Table.Tr key={item.id || index} py="xs">
+												<Table.Td>{item?.name}</Table.Td>
+												<Table.Td>{item?.total_count}</Table.Td>
+												<Table.Td>{item?.total}</Table.Td>
+											</Table.Tr>
+										))}
+										<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
+											<Table.Td>Total</Table.Td>
+											<Table.Td>{totalServieCount}</Table.Td>
+											<Table.Td>{totalServiceAmount}</Table.Td>
+										</Table.Tr>
+									</Table.Tbody>
+								</Table>
+							</Box>
+							<Box className="borderRadiusAll">
+								<Card padding="lg" radius="sm">
+									<Card.Section
+										h={32}
+										withBorder
+										component="div"
+										bg="var(--theme-primary-color-7)"
+									>
+										<Flex align="center" h="100%" px="lg" justify="space-between">
+											<Text pb={0} fz="sm" c="white" fw={500}>
+												{t("ServiceGroupBaseCollections")}
+											</Text>
+										</Flex>
+									</Card.Section>
+								</Card>
+								<Table>
+									<Table.Thead bg="var(--theme-secondary-color-0)">
+										<Table.Tr py="xs">
+											<Table.Td width={"85%"}>Particular</Table.Td>
+											<Table.Td>Amount</Table.Td>
+										</Table.Tr>
+									</Table.Thead>
+									<Table.Tbody>
+										{serviceGroups &&
+										serviceGroups?.map((item, index) => (
+											<Table.Tr key={item.id || index} py="xs">
+												<Table.Td>{item?.name}</Table.Td>
+												<Table.Td>{item?.total}</Table.Td>
+											</Table.Tr>
+										))}
+										<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
+											<Table.Td>Total</Table.Td>
+											<Table.Td>{totalServiceGroupAmount}</Table.Td>
+										</Table.Tr>
+									</Table.Tbody>
+								</Table>
+							</Box>
+						</ScrollArea>
+					</Box>
+				</Box>
 				</Box>
 			</Box>
 			{records?.data && (
-				<InvoiceSummaryReports ref={summaryReportsRef} data={records?.data || []} />
+				<DailySummaryReports ref={summaryReportsRef}  records={records?.data || []} />
 			)}
 		</Box>
 	);

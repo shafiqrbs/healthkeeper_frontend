@@ -43,6 +43,8 @@ import DailyOverview from "@modules/home/common/DailyOverview";
 import SummaryReports from "@modules/hospital/reports/sales-summary/SummaryReports";
 import InvoiceSummaryReports from "@modules/hospital/reports/sales-summary/InvoiceSummaryReports";
 import { t } from "i18next";
+import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
+import DailySummaryReports from "@hospital-components/print-formats/reports/DailySummaryReports";
 
 const PER_PAGE = 200;
 
@@ -83,6 +85,8 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 			end_date: form.values.end_date,
 		},
 	});
+
+
 
 	const collectionSummaryData = records?.data?.summary[0] || {};
 	const invoiceModeData = records?.data?.invoiceMode || [];
@@ -386,6 +390,8 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 			{records?.data && (
 				<InvoiceSummaryReports ref={summaryReportsRef} data={records?.data || []} />
 			)}
+
+
 		</Box>
 	);
 }

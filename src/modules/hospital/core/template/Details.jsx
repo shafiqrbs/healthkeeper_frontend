@@ -44,6 +44,8 @@ import Indent from "@hospital-components/print-formats/indent/Indent";
 import RefundPosBN from "@hospital-components/print-formats/refund/RefundPosBN";
 import DeathCertificateBN from "@hospital-components/print-formats/death-certificate/DeathCertificateBN";
 import DeathCertificateEN from "@hospital-components/print-formats/death-certificate/DeathCertificateEN";
+import InvoiceSummaryReports from "@modules/hospital/reports/sales-summary/InvoiceSummaryReports";
+import DailySummaryReports from "@hospital-components/print-formats/reports/DailySummaryReports";
 
 const STATIC_OPD_ID = "843042855688";
 const STATIC_BILLING_ID = 385;
@@ -98,6 +100,14 @@ export default function Details() {
 
 	const { data: admissionData, isLoading: isAdmissionDataLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${ADMISSION_ID}`,
+	});
+
+	const { data: summaryData, isLoading:isSummaryDataLoading } = useDataWithoutStore({
+		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_DAILY_SUMMARY,
+		params: {
+			start_date:'01-12-2025',
+			end_date: '11-12-2025',
+		},
 	});
 
 	//console.log(prescriptionData?.data)
@@ -306,6 +316,11 @@ export default function Details() {
 					{name === "DeathCertificateEN" && (
 						<LoadingWrapper isLoading={isIPDLoading}>
 							<DeathCertificateEN preview data={IPDData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "SummaryReports" && (
+						<LoadingWrapper isLoading={isSummaryDataLoading}>
+							<DailySummaryReports preview records={summaryData?.data} />
 						</LoadingWrapper>
 					)}
 				</Box>

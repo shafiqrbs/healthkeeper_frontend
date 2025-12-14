@@ -29,7 +29,6 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const medicines = patientInfo?.prescription_medicine || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useHospitalConfigData();
-	console.log(medicines);
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
