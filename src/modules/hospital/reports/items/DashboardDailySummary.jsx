@@ -85,9 +85,6 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 			end_date: form.values.end_date,
 		},
 	});
-
-
-
 	const collectionSummaryData = records?.data?.summary[0] || {};
 	const invoiceModeData = records?.data?.invoiceMode || [];
 	const patientModeCollectionData = records?.data?.patientMode || [];
@@ -390,7 +387,6 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 			{records?.data && (
 				<InvoiceSummaryReports ref={summaryReportsRef} data={records?.data || []} />
 			)}
-
 
 		</Box>
 	);

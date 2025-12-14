@@ -20,6 +20,7 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 	const { hospitalConfigData } = useHospitalConfigData();
 	const collectionSummaryData = records?.summary[0] || [];
 	console.log(records)
+	const invoiceFilter = records?.filter || [];
 	const invoiceModeData = records?.invoiceMode || [];
 	const patientModeCollectionData = records?.patientMode || [];
 	const userCollectionData = records?.userBase || [];
@@ -83,7 +84,7 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 					>
 						<Table.Tbody>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={"3"}>
+								<Table.Td colSpan={2}>
 									<Box mb="sm">
 										<Flex gap="md" justify="center">
 											<Box>
@@ -112,31 +113,89 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={3} >
+								<Table.Td colSpan={2} >
+									<Center>
+										<Text size="md" fw={600}>Daily Summary Reports: {invoiceFilter?.start_date} To {invoiceFilter?.end_date}</Text>
+									</Center>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td>
 									<Center>
 										<Text size="md" fw={600}>
 											{t("TicketBaseCollections")}
 										</Text>
 									</Center>
 								</Table.Td>
+								<Table.Td>
+									<Center>
+										<Text size="md" fw={600}>{t("FinancialServiceCollections")}</Text>
+									</Center>
+								</Table.Td>
 							</Table.Tr>
-							{patientModeCollectionData && (
-								patientModeCollectionData?.map((item, index) => (
-									<Table.Tr key={item.id || index} style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
-										<Table.Td>{item?.patient}</Table.Td>
-										<Table.Td>{item?.total}</Table.Td>
-									</Table.Tr>
-								))
-							)}
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td>Total</Table.Td>
-								<Table.Td>{totalModeCount}</Table.Td>
-								<Table.Td>{totalModeAmount}</Table.Td>
+								<Table.Td valign="top" width={"50%"}>
+									<Table style={{
+										borderCollapse: "collapse",
+										width: "100%",
+									}}>
+										<Table.Thead bg="var(--theme-secondary-color-0)">
+											<Table.Tr py="xs" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Table.Td width={'88%'}>Particular</Table.Td>
+												<Table.Td>Patient</Table.Td>
+												<Table.Td>Amount</Table.Td>
+											</Table.Tr>
+										</Table.Thead>
+										<Table.Tbody>
+											{patientModeCollectionData && (
+												patientModeCollectionData?.map((item, index) => (
+													<Table.Tr key={item.id || index} style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+														<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+														<Table.Td>{item?.patient}</Table.Td>
+														<Table.Td>{item?.total}</Table.Td>
+													</Table.Tr>
+												))
+											)}
+											<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Table.Td>Total</Table.Td>
+												<Table.Td>{totalModeCount}</Table.Td>
+												<Table.Td>{totalModeAmount}</Table.Td>
+											</Table.Tr>
+										</Table.Tbody>
+									</Table>
+								</Table.Td>
+								<Table.Td valign="top" width={"50%"}>
+									<Table style={{
+										borderCollapse: "collapse",
+										width: "100%",
+									}}>
+										<Table.Thead bg="var(--theme-secondary-color-0)">
+											<Table.Tr py="xs" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Table.Td width={'88%'}>Particular</Table.Td>
+												<Table.Td>Amount</Table.Td>
+											</Table.Tr>
+										</Table.Thead>
+										<Table.Tbody>
+											{financialServices && (
+												financialServices?.map((item, index) => (
+													<Table.Tr key={item.id || index} py="xs" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+														<Table.Td>{item?.name}</Table.Td>
+														<Table.Td>{item?.total}</Table.Td>
+													</Table.Tr>
+												))
+											)}
+											<Table.Tr bg="var(--theme-primary-color-1)" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Table.Td>Total</Table.Td>
+												<Table.Td>{totalFinancialServiceAmount}</Table.Td>
+											</Table.Tr>
+										</Table.Tbody>
+									</Table>
+								</Table.Td>
 							</Table.Tr>
 
+
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={3} >
+								<Table.Td colspan={2}>
 									<Center>
 										<Text size="md" fw={600}>
 											{t("ServiceCollections")}
@@ -145,7 +204,7 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={3} valign="top">
+								<Table.Td valign="top" colspan={2}>
 									<Table>
 										<Table.Thead bg="var(--theme-secondary-color-0)">
 											<Table.Tr py="xs">
@@ -173,44 +232,7 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 									</Table>
 								</Table.Td>
 							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={3} >
-									<Center>
-										<Text size="md" fw={600}>
-											{t("FinancialServiceCollections")}
-										</Text>
-									</Center>
-								</Table.Td>
-							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={3} valign="top">
-									<Table style={{
-										borderCollapse: "collapse",
-										width: "100%",
-									}}>
-										<Table.Thead bg="var(--theme-secondary-color-0)">
-											<Table.Tr py="xs">
-												<Table.Td width={'88%'}>Particular</Table.Td>
-												<Table.Td>Amount</Table.Td>
-											</Table.Tr>
-										</Table.Thead>
-										<Table.Tbody>
-											{financialServices && (
-												financialServices?.map((item, index) => (
-													<Table.Tr key={item.id || index} py="xs">
-														<Table.Td>{item?.name}</Table.Td>
-														<Table.Td>{item?.total}</Table.Td>
-													</Table.Tr>
-												))
-											)}
-											<Table.Tr bg="var(--theme-primary-color-1)">
-												<Table.Td>Total</Table.Td>
-												<Table.Td>{totalFinancialServiceAmount}</Table.Td>
-											</Table.Tr>
-										</Table.Tbody>
-									</Table>
-								</Table.Td>
-							</Table.Tr>
+
 						</Table.Tbody>
 					</Table>
 				</Box>
