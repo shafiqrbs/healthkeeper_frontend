@@ -310,9 +310,9 @@ export default function DetailsDrawer({ opened, close, prescriptionId }) {
 				)}
 				{isPrescriptionDataAvailable && (
 					<Flex justify="flex-end" mt="xs" gap="3xs">
-						<Button variant="filled" color="var(--theme-tertiary-color-6)">
+						{/* <Button variant="filled" color="var(--theme-tertiary-color-6)">
 							{t("Share")}
-						</Button>
+						</Button> */}
 						<Button variant="filled" color="var(--theme-print-color)" onClick={printPrescriptionFull}>
 							{t("Print")}
 						</Button>

@@ -110,6 +110,7 @@ export default function AddMedicineForm({
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const [printData, setPrintData] = useState(null);
+	const [printData2A4, setPrintData2A4] = useState(null);
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [opened, { open, close }] = useDisclosure(false);
@@ -505,6 +506,14 @@ export default function AddMedicineForm({
 		if (result.status === 200) {
 			setPrintData(result.data);
 			requestAnimationFrame(openPrescriptionPreview);
+		}
+	};
+
+	const handlePrescriptionPrint2A4 = async () => {
+		const result = await handlePrescriptionSubmit({ skipLoading: false, redirect: false });
+		if (result.status === 200) {
+			setPrintData2A4(result.data);
+			requestAnimationFrame(printPrescription2A4);
 		}
 	};
 
@@ -1010,6 +1019,14 @@ export default function AddMedicineForm({
 								</Text>
 							</Stack>
 						</Button>
+						<Button w="100%" bg="var(--theme-secondary-color-6)" onClick={handlePrescriptionPrint2A4}>
+							<Stack gap={0} align="center" justify="center">
+								<Text>{t("Print")}</Text>
+								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+									(alt + p)
+								</Text>
+							</Stack>
+						</Button>
 						<Button
 							w="100%"
 							bg="var(--theme-save-btn-color)"
@@ -1027,7 +1044,7 @@ export default function AddMedicineForm({
 					</Button.Group>
 				</>
 			)}
-			{/* {printData && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />} */}
+			{printData2A4 && <PrescriptionFullBN ref={prescription2A4Ref} data={printData2A4} />}
 
 			<GlobalDrawer
 				opened={openedExPrescription}

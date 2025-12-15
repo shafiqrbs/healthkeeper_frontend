@@ -162,9 +162,9 @@ export default function DetailsDrawer({ opened, close }) {
 				</Grid>
 			</ScrollArea>
 			<Flex justify="flex-end" mt="xs" gap="3xs">
-				<Button variant="filled" color="var(--theme-tertiary-color-6)">
+				{/* <Button variant="filled" color="var(--theme-tertiary-color-6)">
 					{t("Share")}
-				</Button>
+				</Button> */}
 				<Button variant="filled" color="var(--theme-print-color)">
 					{t("Print")}
 				</Button>

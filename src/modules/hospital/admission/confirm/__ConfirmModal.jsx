@@ -425,6 +425,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 													{ value: "freeCabin", label: t("FreeCabin") },
 													{ value: "freeBed", label: t("FreeBed") },
 												]}
+												name="accommodationType"
 												{...actionForm.getInputProps("accommodationType")}
 												searchable
 											/>
@@ -438,6 +439,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 													{ value: "104", label: "104" },
 													{ value: "105", label: "105" },
 												]}
+												name="roomNumber"
 												{...actionForm.getInputProps("roomNumber")}
 												searchable
 												disabled={!actionForm.values.accommodationType}
@@ -445,6 +447,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 											<Textarea
 												label={t("Comment")}
 												placeholder={t("EnterComment")}
+												name="comment"
 												{...actionForm.getInputProps("comment")}
 												minRows={3}
 											/>
@@ -475,6 +478,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 										<Textarea
 											label={t("Reason")}
 											placeholder={t("EnterReason")}
+											name="reason"
 											{...actionForm.getInputProps("reason")}
 											minRows={3}
 											required
@@ -503,6 +507,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 										<NumberInput
 											label={t("DayChange")}
 											placeholder={t("EnterDayChange")}
+											name="dayChange"
 											{...actionForm.getInputProps("dayChange")}
 											min={1}
 											required
