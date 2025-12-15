@@ -68,10 +68,15 @@ export default function _Table() {
 						px="xs"
 						gutter="xs"
 					>
+						<Grid.Col span={12}>
+							<Flex align="center" gap="3xs">
+								<IconUser size={16} stroke={1.5} />
+								<Text fz="sm">{item.name}</Text>
+							</Flex>
+						</Grid.Col>
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />
-
 								<Text
 									fz="sm"
 									onClick={() => handleView(item?.uid)}
@@ -88,8 +93,8 @@ export default function _Table() {
 						<Grid.Col span={6}>
 							<Flex justify="space-between" align="center" gap="3xs">
 								<Box>
-									<Text fz="sm">{item.name}</Text>
 									<Text fz="sm">{item.mobile}</Text>
+									<Text fz="sm">{item.invoice}</Text>
 								</Box>
 								<Button.Group>
 									<ActionIcon
