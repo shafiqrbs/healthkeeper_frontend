@@ -125,6 +125,9 @@ export default function _Table({ module }) {
 	const handleConfirmApproved = async () => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.APPROVE}/${selectedWaiverList.uid}`,
+			params: {
+				ids: JSON.stringify(selectedRecords || []),
+			},
 		});
 
 		if (res.status == 200) {
@@ -197,12 +200,7 @@ export default function _Table({ module }) {
 				<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 					<Tabs.List ref={rootRef} className={filterTabsCss.list}>
 						{tabs.map((tab) => (
-							<Tabs.Tab
-								key={tab.value}
-								value={tab.value}
-								ref={setControlRef(tab.value)}
-								className={filterTabsCss.tab}
-							>
+							<Tabs.Tab key={tab.value} value={tab.value} ref={setControlRef(tab.value)} className={filterTabsCss.tab}>
 								{t(tab.label)}
 							</Tabs.Tab>
 						))}
@@ -275,19 +273,18 @@ export default function _Table({ module }) {
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right">
 									<Button.Group>
-										{userRoles.some((r) => ALLOWED_CONFIRMED_ROLES.includes(r)) &&
-											!item.checked_by_name && (
-												<Button
-													variant="filled"
-													onClick={() => handleOpenApproveModal(item)}
-													color="var(--theme-primary-color-6)"
-													radius="xs"
-													size="compact-xs"
-													rightSection={<IconArrowNarrowRight stroke={1.5} />}
-												>
-													Checked
-												</Button>
-											)}
+										{userRoles.some((r) => ALLOWED_CONFIRMED_ROLES.includes(r)) && !item.checked_by_name && (
+											<Button
+												variant="filled"
+												onClick={() => handleOpenApproveModal(item)}
+												color="var(--theme-primary-color-6)"
+												radius="xs"
+												size="compact-xs"
+												rightSection={<IconArrowNarrowRight stroke={1.5} />}
+											>
+												Checked
+											</Button>
+										)}
 
 										{userRoles.some((r) => ALLOWED_APPROVED_ROLES.includes(r)) &&
 											item.checked_by_name &&
@@ -339,9 +336,7 @@ export default function _Table({ module }) {
 
 			<DataTableFooter indexData={records} module="waiver" />
 
-			{selectedPrescriptionId && (
-				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
-			)}
+			{selectedPrescriptionId && <DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />}
 
 			{billingPrintData && <FreeServiceFormBN data={billingPrintData} ref={billingInvoiceRef} />}
 
@@ -359,7 +354,7 @@ export default function _Table({ module }) {
 										<strong>{t("Name")}:</strong> {waiverData?.name || "N/A"}
 									</Text>
 									<Text size="sm">
-										<strong>{t("Patient ID")}:</strong> {waiverData?.patient_id}
+										<strong>{t("PatientID")}:</strong> {waiverData?.patient_id}
 									</Text>
 									<Text size="sm">
 										<strong>{t("Mobile")}:</strong> {waiverData?.mobile}
@@ -377,14 +372,7 @@ export default function _Table({ module }) {
 							)}
 
 							{waiverData?.invoice_particular?.length > 0 ? (
-								<Table
-									striped
-									highlightOnHover
-									withTableBorder
-									withColumnBorders
-									verticalSpacing="xs"
-									fontSize="sm"
-								>
+								<Table striped highlightOnHover withTableBorder withColumnBorders verticalSpacing="xs" fontSize="sm">
 									<Table.Thead>
 										<Table.Tr>
 											<Table.Th></Table.Th>
