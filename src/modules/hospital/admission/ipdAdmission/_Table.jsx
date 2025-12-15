@@ -1,24 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {
-	ActionIcon,
-	Box,
-	Button,
-	Divider,
-	Flex,
-	FloatingIndicator,
-	Group,
-	Menu,
-	NumberInput,
-	rem,
-	Select,
-	Stack,
-	Tabs,
-	Text,
-	Textarea,
-} from "@mantine/core";
+import { ActionIcon, Box, Button, Divider, Flex, FloatingIndicator, Group, Menu, rem, Select, Stack, Tabs, Text, Textarea } from "@mantine/core";
 import { IconArrowNarrowRight, IconChevronUp, IconDotsVertical, IconFileText, IconPrinter, IconSelector, IconSettings } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -31,7 +15,7 @@ import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "../confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
@@ -42,9 +26,6 @@ import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPre
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import { getRoomOptions } from "@utils/ipd";
-import { getIndexEntityData } from "@/app/store/core/crudThunk";
-import { MASTER_DATA_ROUTES } from "@/constants/routes";
 
 const PER_PAGE = 20;
 
@@ -78,19 +59,13 @@ export default function _Table({ module }) {
 	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
 	const [actionType, setActionType] = useState(null);
 	const [actionFormData, setActionFormData] = useState(null);
-	const cabinData = useSelector((state) => state.crud.cabin?.data?.data);
-	const bedData = useSelector((state) => state.crud.bed?.data?.data);
-	const [updateKey, setUpdateKey] = useState(0);
-	const dispatch = useDispatch();
 
 	// =============== form for action drawer fields ================
 	const actionForm = useForm({
 		initialValues: {
 			accommodationType: "",
-			roomNumber: "",
 			comment: "",
 			reason: "",
-			dayChange: null,
 			dayChangeComment: "",
 		},
 	});
@@ -102,32 +77,6 @@ export default function _Table({ module }) {
 			room_id: "",
 		},
 	});
-
-	const fetchData = useCallback(() => {
-		dispatch(
-			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.ROOM_CABIN,
-				module: "cabin",
-				params: { particular_type: "cabin", page: 1, offset: PER_PAGE },
-			})
-		);
-		dispatch(
-			getIndexEntityData({
-				url: MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.ROOM_CABIN,
-				module: "bed",
-				params: { particular_type: "bed", page: 1, offset: PER_PAGE },
-			})
-		);
-	}, [dispatch]);
-
-	useEffect(() => {
-		fetchData();
-	}, [fetchData]);
-
-	useEffect(() => {
-		actionForm.setFieldValue("roomNumber", "");
-		setUpdateKey((prev) => prev + 1);
-	}, [actionForm.values.accommodationType]);
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -206,7 +155,6 @@ export default function _Table({ module }) {
 		if (actionType === "change") {
 			console.log("Change action:", {
 				accommodationType: values.accommodationType,
-				roomNumber: values.roomNumber,
 				comment: values.comment,
 			});
 			// TODO: implement change action API call
@@ -217,7 +165,7 @@ export default function _Table({ module }) {
 			// TODO: implement cancel action API call
 		} else if (actionType === "dayChange") {
 			console.log("Day change action:", {
-				dayChange: values.dayChange,
+				dayChangeComment: values.dayChangeComment,
 			});
 			// TODO: implement day change action API call
 		}
@@ -469,28 +417,6 @@ export default function _Table({ module }) {
 							{actionType === "change" && (
 								<Stack h={mainAreaHeight - 166} justify="space-between">
 									<Box>
-										<Select
-											label={t("AccommodationType")}
-											placeholder={t("SelectAccommodationType")}
-											data={[
-												{ value: "", label: t("Select") },
-												{ value: "bed", label: t("Bed") },
-												{ value: "cabin", label: t("Cabin") },
-												{ value: "freeBed", label: t("FreeBed") },
-												{ value: "freeCabin", label: t("FreeCabin") },
-											]}
-											{...actionForm.getInputProps("accommodationType")}
-										/>
-										<Select
-											key={updateKey}
-											label={t("Bed/CabinNumber")}
-											placeholder={t("Select")}
-											data={getRoomOptions(actionForm, cabinData, bedData, t)}
-											name="roomNumber"
-											{...actionForm.getInputProps("roomNumber")}
-											searchable
-											disabled={!actionForm.values.accommodationType}
-										/>
 										<Textarea
 											label={t("Comment")}
 											placeholder={t("EnterComment")}
@@ -519,13 +445,6 @@ export default function _Table({ module }) {
 							{actionType === "dayChange" && (
 								<Stack h={mainAreaHeight - 166} justify="space-between">
 									<Box>
-										<NumberInput
-											label={t("DayChange")}
-											placeholder={t("EnterDayChange")}
-											{...actionForm.getInputProps("dayChange")}
-											min={1}
-											required
-										/>
 										<Textarea
 											label={t("DayChangeComment")}
 											placeholder={t("EnterDayChangeComment")}
