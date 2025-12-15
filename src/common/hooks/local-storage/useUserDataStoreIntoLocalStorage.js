@@ -1,11 +1,12 @@
 import axios from "axios";
+import {API_GATEWAY_URL} from "../../../config.js";
 
 const useUserDataStoreIntoLocalStorage = async () => {
 	try {
 		const user = localStorage.getItem("user");
 		const userId = user ? JSON.parse(user).id : null;
 
-		const response = await axios.get(`${import.meta.env.VITE_API_GATEWAY_URL}/core/user/local-storage`, {
+		const response = await axios.get(`${API_GATEWAY_URL}/core/user/local-storage`, {
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",

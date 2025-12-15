@@ -44,6 +44,7 @@ import getConfigData from "../../../global-hook/config-data/getConfigData.js";
 import productsDataStoreIntoLocalStorage from "../../../global-hook/local-storage/productsDataStoreIntoLocalStorage.js";
 import { showNotificationComponent } from "../../../core-component/showNotificationComponent.jsx";
 import { modals } from "@mantine/modals";
+import {API_GATEWAY_URL} from "@/config.js";
 
 function FileUploadTable() {
 	const dispatch = useDispatch();
@@ -100,7 +101,7 @@ function FileUploadTable() {
 		setLoading(true);
 		axios({
 			method: "get",
-			url: `${import.meta.env.VITE_API_GATEWAY_URL + "core/file-upload/process"}`,
+			url: `${API_GATEWAY_URL + "core/file-upload/process"}`,
 			headers: {
 				Accept: `application/json`,
 				"Content-Type": `application/json`,

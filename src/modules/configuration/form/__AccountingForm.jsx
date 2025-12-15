@@ -18,6 +18,7 @@ import { ACCOUNTING_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { getAccountingFormInitialValues } from "../helpers/request";
 import { formatDateForMySQL, parseDateValue } from "@/common/utils";
 import { DOMAIN_DATA_ROUTES } from "@/constants/routes";
+import { API_GATEWAY_URL } from '../../../config.js';
 
 export default function __AccountingForm({ height, module }) {
 	const { t } = useTranslation();
@@ -182,7 +183,7 @@ export default function __AccountingForm({ height, module }) {
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
 			onConfirm: async () => {
-				const response = await axios.get(`${import.meta.env.VITE_API_GATEWAY_URL}${url}`, {
+				const response = await axios.get(`${API_GATEWAY_URL}${url}`, {
 					headers: {
 						Accept: "application/json",
 						"Content-Type": "application/json",

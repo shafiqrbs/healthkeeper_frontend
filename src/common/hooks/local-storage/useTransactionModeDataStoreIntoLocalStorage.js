@@ -1,4 +1,5 @@
 import axios from "axios";
+import {API_GATEWAY_URL} from "../../../config.js";
 
 const useTransactionModeDataStoreIntoLocalStorage = async (user_id) => {
 	const apiBackendRoutes = ["accounting/transaction-mode/local-storage"];
@@ -8,7 +9,7 @@ const useTransactionModeDataStoreIntoLocalStorage = async (user_id) => {
 		try {
 			const response = await axios({
 				method: "get",
-				url: `${import.meta.env.VITE_API_GATEWAY_URL + apiBackendRoutes[i]}`,
+				url: `${API_GATEWAY_URL + apiBackendRoutes[i]}`,
 				headers: {
 					Accept: `application/json`,
 					"Content-Type": `application/json`,

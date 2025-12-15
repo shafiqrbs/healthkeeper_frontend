@@ -10,6 +10,7 @@ import { modals } from "@mantine/modals";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import axios from "axios";
 import productsDataStoreIntoLocalStorage from "../global-hook/local-storage/productsDataStoreIntoLocalStorage.js";
+import { API_GATEWAY_URL } from 'src/config.js';
 
 function FileUploadModel(props) {
 	const { t, i18n } = useTranslation();
@@ -29,7 +30,7 @@ function FileUploadModel(props) {
 	const processUploadFile = (id) => {
 		axios({
 			method: "get",
-			url: `${import.meta.env.VITE_API_GATEWAY_URL + "core/file-upload/process"}`,
+			url: `${API_GATEWAY_URL + "core/file-upload/process"}`,
 			headers: {
 				Accept: `application/json`,
 				"Content-Type": `application/json`,

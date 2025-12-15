@@ -35,6 +35,7 @@ import { setFetching, storeEntityDataWithFile } from "../../../../store/accounti
 import { notifications } from "@mantine/notifications";
 import axios from "axios";
 import Navigation from "../common/Navigation.jsx";
+import {API_GATEWAY_URL} from "@/config.js";
 
 function AccountingConfig() {
 	const { t, i18n } = useTranslation();
@@ -56,7 +57,7 @@ function AccountingConfig() {
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
 			onConfirm: async () => {
-				const response = await axios.get(`${import.meta.env.VITE_API_GATEWAY_URL}${url}`, {
+				const response = await axios.get(`${API_GATEWAY_URL}${url}`, {
 					headers: {
 						Accept: "application/json",
 						"Content-Type": "application/json",

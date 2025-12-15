@@ -15,6 +15,7 @@ import { modals } from "@mantine/modals";
 import axios from "axios";
 import { notifications } from "@mantine/notifications";
 import HealthShareForm from "./__HealthShareForm.jsx";
+import { API_GATEWAY_URL } from '../../../config.js';
 
 const NAV_ITEMS = ["Domain", "Accounting", "Hospital", "Inventory", "Product", "HealthShare"];
 
@@ -65,7 +66,7 @@ export default function _Form({ module }) {
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
 			onConfirm: async () => {
-				const response = await axios.get(`${import.meta.env.VITE_API_GATEWAY_URL}${url}`, {
+				const response = await axios.get(`${API_GATEWAY_URL}${url}`, {
 					headers: {
 						Accept: "application/json",
 						"Content-Type": "application/json",

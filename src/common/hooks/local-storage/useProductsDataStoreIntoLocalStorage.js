@@ -1,4 +1,6 @@
 import axios from "axios";
+import {API_GATEWAY_URL} from "../../../config.js";
+
 
 const useProductsDataStoreIntoLocalStorage = async () => {
 	try {
@@ -6,7 +8,7 @@ const useProductsDataStoreIntoLocalStorage = async () => {
 		const userId = user ? JSON.parse(user).id : null;
 
 		const response = await axios.get(
-			`${import.meta.env.VITE_API_GATEWAY_URL}inventory/stock-item`,
+			`${API_GATEWAY_URL}inventory/stock-item`,
 			{
 				headers: {
 					Accept: "application/json",
