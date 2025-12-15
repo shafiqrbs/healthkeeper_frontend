@@ -87,3 +87,16 @@ export const getAdmissionConfirmFormInitialValues = () => {
 		initialValues: admissionConfirmInitialValues,
 	};
 };
+
+export const getAdmissionManageFormInitialValues = () => {
+	return {
+		initialValues: {
+			accommodationType: "",
+			roomNumber: "",
+			comment: "",
+			reason: "",
+			dayChange: null,
+			actionType: "",
+		},
+	};
+};

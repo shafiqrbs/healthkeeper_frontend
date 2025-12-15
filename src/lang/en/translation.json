@@ -1652,7 +1652,13 @@
 	"EnterDayChange": "Enter Day Change",
 	"Approve": "Approve",
 	"Reject": "Reject",
-	"FinancialServiceCollections" : "Financial Service Collections",
-	"ServiceCollections" : "Service Collections",
-	"xxxxxxxx" : "xxxxxxxxxxx"
+	"FinancialServiceCollections": "Financial Service Collections",
+	"ServiceCollections": "Service Collections",
+	"SelectRequestFor": "Select Request For",
+	"RequestFor": "Request For",
+	"xxxxxxxx": "xxxxxxxxxxx",
+	"Bed": "Bed",
+	"Cabin": "Cabin",
+	"FreeBed": "Free Bed",
+	"FreeCabin": "Free Cabin"
 }

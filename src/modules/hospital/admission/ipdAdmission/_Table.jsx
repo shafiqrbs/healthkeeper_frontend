@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
@@ -19,15 +19,7 @@ import {
 	Text,
 	Textarea,
 } from "@mantine/core";
-import {
-	IconArrowNarrowRight,
-	IconChevronUp,
-	IconDotsVertical,
-	IconFileText,
-	IconPrinter,
-	IconSelector,
-	IconSettings,
-} from "@tabler/icons-react";
+import { IconArrowNarrowRight, IconChevronUp, IconDotsVertical, IconFileText, IconPrinter, IconSelector, IconSettings } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -39,7 +31,7 @@ import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "../confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
@@ -50,6 +42,9 @@ import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPre
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import { getRoomOptions } from "@utils/ipd";
+import { getIndexEntityData } from "@/app/store/core/crudThunk";
+import { MASTER_DATA_ROUTES } from "@/constants/routes";
 
 const PER_PAGE = 20;
 
@@ -83,6 +78,10 @@ export default function _Table({ module }) {
 	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
 	const [actionType, setActionType] = useState(null);
 	const [actionFormData, setActionFormData] = useState(null);
+	const cabinData = useSelector((state) => state.crud.cabin?.data?.data);
+	const bedData = useSelector((state) => state.crud.bed?.data?.data);
+	const [updateKey, setUpdateKey] = useState(0);
+	const dispatch = useDispatch();
 
 	// =============== form for action drawer fields ================
 	const actionForm = useForm({
@@ -92,6 +91,7 @@ export default function _Table({ module }) {
 			comment: "",
 			reason: "",
 			dayChange: null,
+			dayChangeComment: "",
 		},
 	});
 
@@ -102,6 +102,32 @@ export default function _Table({ module }) {
 			room_id: "",
 		},
 	});
+
+	const fetchData = useCallback(() => {
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.ROOM_CABIN,
+				module: "cabin",
+				params: { particular_type: "cabin", page: 1, offset: PER_PAGE },
+			})
+		);
+		dispatch(
+			getIndexEntityData({
+				url: MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.ROOM_CABIN,
+				module: "bed",
+				params: { particular_type: "bed", page: 1, offset: PER_PAGE },
+			})
+		);
+	}, [dispatch]);
+
+	useEffect(() => {
+		fetchData();
+	}, [fetchData]);
+
+	useEffect(() => {
+		actionForm.setFieldValue("roomNumber", "");
+		setUpdateKey((prev) => prev + 1);
+	}, [actionForm.values.accommodationType]);
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -218,12 +244,7 @@ export default function _Table({ module }) {
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab
-									value={tab.value}
-									ref={setControlRef(tab)}
-									className={filterTabsCss.tab}
-									key={tab.value}
-								>
+								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
 									{t(tab.label)}
 								</Tabs.Tab>
 							))}
@@ -255,7 +276,7 @@ export default function _Table({ module }) {
 					}}
 					records={records}
 					onRowClick={({ record }) => {
-						if (!record?.prescription_id) return alert("NoPrescriptionGenerated");
+						if (!record?.prescription_id) return "";
 						handleView(record?.prescription_id);
 					}}
 					columns={[
@@ -307,9 +328,7 @@ export default function _Table({ module }) {
 										radius="xs"
 										size={"compact-xs"}
 										aria-label="Settings"
-										leftSection={
-											<IconSettings style={{ width: "70%", height: "70%" }} stroke={1.5} />
-										}
+										leftSection={<IconSettings style={{ width: "70%", height: "70%" }} stroke={1.5} />}
 									>
 										{t("Actions")}
 									</Button>
@@ -323,46 +342,28 @@ export default function _Table({ module }) {
 													radius="xs"
 													size={"compact-xs"}
 													aria-label="Settings"
-													rightSection={
-														<IconArrowNarrowRight
-															style={{ width: "70%", height: "70%" }}
-															stroke={1.5}
-														/>
-													}
+													rightSection={<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />}
 												>
 													Process
 												</Button>
 											</Button.Group>
 										)}
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-										item.process === "billing" && (
-											<Button.Group>
-												<Button
-													variant="filled"
-													onClick={() => handleAdmissionFormPrint(item.id)}
-													color="var(--theme-secondary-color-6)"
-													radius="xs"
-													size={"compact-xs"}
-													aria-label="Settings"
-													leftSection={
-														<IconPrinter
-															style={{ width: "70%", height: "70%" }}
-															stroke={1.5}
-														/>
-													}
-												>
-													Print
-												</Button>
-											</Button.Group>
-										)}
-									<Menu
-										position="bottom-end"
-										offset={3}
-										withArrow
-										trigger="hover"
-										openDelay={100}
-										closeDelay={400}
-									>
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && item.process === "billing" && (
+										<Button.Group>
+											<Button
+												variant="filled"
+												onClick={() => handleAdmissionFormPrint(item.id)}
+												color="var(--theme-secondary-color-6)"
+												radius="xs"
+												size={"compact-xs"}
+												aria-label="Settings"
+												leftSection={<IconPrinter style={{ width: "70%", height: "70%" }} stroke={1.5} />}
+											>
+												Print
+											</Button>
+										</Button.Group>
+									)}
+									<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
 										<Menu.Target>
 											<ActionIcon
 												className="border-left-radius-none"
@@ -444,98 +445,103 @@ export default function _Table({ module }) {
 
 			<GlobalDrawer opened={openedActions} close={handleCloseActions} title={t("Actions")} size="25%">
 				<Box mt="sm">
-					<Stack gap="md">
-						<Select
-							label={t("ActionType")}
-							placeholder={t("SelectActionType")}
-							data={[
-								{ value: "change", label: t("Change") },
-								{ value: "cancel", label: t("Cancel") },
-								{ value: "dayChange", label: t("DayChange") },
-							]}
-							value={actionType}
-							onChange={(value) => {
-								setActionType(value);
-								actionForm.reset();
-							}}
-							clearable
-							searchable={false}
-						/>
+					<Box component="form" onSubmit={actionForm.onSubmit(handleActionSubmit)} noValidate>
+						<Stack gap="md">
+							<Select
+								label={t("RequestFor")}
+								placeholder={t("SelectRequestFor")}
+								data={[
+									{ value: "change", label: t("Change") },
+									{ value: "cancel", label: t("Cancel") },
+									{ value: "dayChange", label: t("DayChange") },
+								]}
+								value={actionType}
+								onChange={(value) => {
+									setActionType(value);
+									actionForm.reset();
+								}}
+								clearable
+								searchable={false}
+							/>
 
-						<Divider />
+							<Divider />
 
-						{actionType === "change" && (
-							<Stack h={mainAreaHeight - 166} justify="space-between">
-								<Box>
-									<Select
-										label={t("AccommodationType")}
-										placeholder={t("SelectAccommodationType")}
-										data={[
-											{ value: "room", label: t("Room") },
-											{ value: "cabin", label: t("Cabin") },
-											{ value: "freeCabin", label: t("FreeCabin") },
-											{ value: "freeBed", label: t("FreeBed") },
-										]}
-										{...actionForm.getInputProps("accommodationType")}
-										searchable
-									/>
-									<Select
-										label={t("RoomNumber")}
-										placeholder={t("SelectRoomNumber")}
-										data={[
-											{ value: "101", label: "101" },
-											{ value: "102", label: "102" },
-											{ value: "103", label: "103" },
-											{ value: "104", label: "104" },
-											{ value: "105", label: "105" },
-										]}
-										{...actionForm.getInputProps("roomNumber")}
-										searchable
-										disabled={!actionForm.values.accommodationType}
-									/>
+							{actionType === "change" && (
+								<Stack h={mainAreaHeight - 166} justify="space-between">
+									<Box>
+										<Select
+											label={t("AccommodationType")}
+											placeholder={t("SelectAccommodationType")}
+											data={[
+												{ value: "", label: t("Select") },
+												{ value: "bed", label: t("Bed") },
+												{ value: "cabin", label: t("Cabin") },
+												{ value: "freeBed", label: t("FreeBed") },
+												{ value: "freeCabin", label: t("FreeCabin") },
+											]}
+											{...actionForm.getInputProps("accommodationType")}
+										/>
+										<Select
+											key={updateKey}
+											label={t("Bed/CabinNumber")}
+											placeholder={t("Select")}
+											data={getRoomOptions(actionForm, cabinData, bedData, t)}
+											name="roomNumber"
+											{...actionForm.getInputProps("roomNumber")}
+											searchable
+											disabled={!actionForm.values.accommodationType}
+										/>
+										<Textarea
+											label={t("Comment")}
+											placeholder={t("EnterComment")}
+											name="comment"
+											{...actionForm.getInputProps("comment")}
+											minRows={3}
+										/>
+									</Box>
+									<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
+								</Stack>
+							)}
+
+							{actionType === "cancel" && (
+								<Stack h={mainAreaHeight - 166} justify="space-between">
 									<Textarea
-										label={t("Comment")}
-										placeholder={t("EnterComment")}
-										{...actionForm.getInputProps("comment")}
+										label={t("Reason")}
+										placeholder={t("EnterReason")}
+										{...actionForm.getInputProps("reason")}
 										minRows={3}
+										required
 									/>
-								</Box>
-								<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
-							</Stack>
-						)}
+									<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
+								</Stack>
+							)}
 
-						{actionType === "cancel" && (
-							<Stack h={mainAreaHeight - 166} justify="space-between">
-								<Textarea
-									label={t("Reason")}
-									placeholder={t("EnterReason")}
-									{...actionForm.getInputProps("reason")}
-									minRows={3}
-									required
-								/>
-								<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
-							</Stack>
-						)}
-
-						{actionType === "dayChange" && (
-							<Stack h={mainAreaHeight - 166} justify="space-between">
-								<NumberInput
-									label={t("DayChange")}
-									placeholder={t("EnterDayChange")}
-									{...actionForm.getInputProps("dayChange")}
-									min={1}
-									required
-								/>
-								<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
-							</Stack>
-						)}
-					</Stack>
+							{actionType === "dayChange" && (
+								<Stack h={mainAreaHeight - 166} justify="space-between">
+									<Box>
+										<NumberInput
+											label={t("DayChange")}
+											placeholder={t("EnterDayChange")}
+											{...actionForm.getInputProps("dayChange")}
+											min={1}
+											required
+										/>
+										<Textarea
+											label={t("DayChangeComment")}
+											placeholder={t("EnterDayChangeComment")}
+											{...actionForm.getInputProps("dayChangeComment")}
+											minRows={3}
+										/>
+									</Box>
+									<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
+								</Stack>
+							)}
+						</Stack>
+					</Box>
 				</Box>
 			</GlobalDrawer>
 
-			{selectedPrescriptionId && (
-				<DetailsDrawer opened={openedActions} close={closeActions} prescriptionId={selectedPrescriptionId} />
-			)}
+			{selectedPrescriptionId && <DetailsDrawer opened={openedActions} close={closeActions} prescriptionId={selectedPrescriptionId} />}
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
 			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
 			{admissionFormPrintData && <AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />}

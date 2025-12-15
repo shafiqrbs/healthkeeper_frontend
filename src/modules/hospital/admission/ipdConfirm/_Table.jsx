@@ -3,14 +3,7 @@ import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
-import {
-	IconArrowRight,
-	IconChevronUp,
-	IconDotsVertical,
-	IconFileText,
-	IconPrinter,
-	IconSelector,
-} from "@tabler/icons-react";
+import { IconAdjustments, IconArrowRight, IconChevronUp, IconDotsVertical, IconFileText, IconPrinter, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -20,7 +13,7 @@ import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "../confirm/__ConfirmModal";
-import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
+import { getAdmissionConfirmFormInitialValues, getAdmissionManageFormInitialValues } from "../helpers/request";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
@@ -33,6 +26,7 @@ import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPre
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 import IPDDetailsDrawer from "@hospital-components/drawer/__IPDDetailsDrawer";
+import ManageModal from "../confirm/ManageModal";
 
 const PER_PAGE = 20;
 
@@ -54,10 +48,12 @@ export default function _Table({ module }) {
 	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
+	const manageForm = useForm(getAdmissionManageFormInitialValues());
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
+	const [openedManage, { open: openManage, close: closeManage }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
@@ -120,6 +116,11 @@ export default function _Table({ module }) {
 		openConfirm();
 	};
 
+	const handleManage = (id) => {
+		setSelectedId(id);
+		requestAnimationFrame(openManage);
+	};
+
 	const handleBillingInvoicePrint = async (id) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
@@ -154,12 +155,7 @@ export default function _Table({ module }) {
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab
-									value={tab.value}
-									ref={setControlRef(tab)}
-									className={filterTabsCss.tab}
-									key={tab.value}
-								>
+								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
 									{t(tab.label)}
 								</Tabs.Tab>
 							))}
@@ -232,62 +228,50 @@ export default function _Table({ module }) {
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (values) => (
-								<>
-									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-										(values.process?.toLowerCase() === "ipd" && values?.referred_mode === 'admission') || (values.process?.toLowerCase() === "closed" && values?.referred_mode === 'admission') && (
-												<Button
-													variant="filled"
-													bg="var(--theme-primary-color-6)"
-													c="white"
-													size="compact-xs"
-													onClick={() => handleConfirm(values.uid || values.id)}
-													radius="es"
-													fw={400}
-													rightSection={<IconArrowRight size={18} />}
-												>
-													{t("Confirm")}
-												</Button>
-											)}
-										<Menu
-											position="bottom-end"
-											offset={3}
-											withArrow
-											trigger="hover"
-											openDelay={100}
-											closeDelay={400}
-										>
-											<Menu.Target>
-												<ActionIcon
-													className="border-left-radius-none"
-													variant="transparent"
-													color="var(--theme-menu-three-dot)"
-													radius="es"
-													aria-label="Actions"
-												>
-													<IconDotsVertical height={18} width={18} stroke={1.5} />
-												</ActionIcon>
-											</Menu.Target>
-											<Menu.Dropdown>
-												{values?.prescription_id && (
-													<Menu.Item
-														leftSection={
-															<IconPrinter
-																style={{
-																	width: rem(14),
-																	height: rem(14),
-																}}
-															/>
-														}
-														onClick={(e) => {
-															e.stopPropagation();
-															handlePrescriptionPrint(values?.prescription_id);
-														}}
-													>
-														{t("Prescription")}
-													</Menu.Item>
-												)}
-
+								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+									{(userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+										values.process?.toLowerCase() === "ipd" &&
+										values?.referred_mode === "admission") ||
+										(values.process?.toLowerCase() === "closed" && values?.referred_mode === "admission" && (
+											<Button
+												variant="filled"
+												bg="var(--theme-primary-color-6)"
+												c="white"
+												size="compact-xs"
+												onClick={() => handleConfirm(values.uid || values.id)}
+												radius="es"
+												fw={400}
+												rightSection={<IconArrowRight size={18} />}
+											>
+												{t("Confirm")}
+											</Button>
+										))}
+									<Button
+										variant="filled"
+										bg="teal.8"
+										c="var(--mantine-color-white)"
+										size="compact-xs"
+										onClick={() => handleManage(values.uid || values.id)}
+										radius="es"
+										fw={400}
+										rightSection={<IconAdjustments size={18} />}
+									>
+										{t("Manage")}
+									</Button>
+									<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
+										<Menu.Target>
+											<ActionIcon
+												className="border-left-radius-none"
+												variant="transparent"
+												color="var(--theme-menu-three-dot)"
+												radius="es"
+												aria-label="Actions"
+											>
+												<IconDotsVertical height={18} width={18} stroke={1.5} />
+											</ActionIcon>
+										</Menu.Target>
+										<Menu.Dropdown>
+											{values?.prescription_id && (
 												<Menu.Item
 													leftSection={
 														<IconPrinter
@@ -299,31 +283,48 @@ export default function _Table({ module }) {
 													}
 													onClick={(e) => {
 														e.stopPropagation();
-														handleBillingInvoicePrint(values?.id);
+														handlePrescriptionPrint(values?.prescription_id);
 													}}
 												>
-													{t("BillingInvoice")}
+													{t("Prescription")}
 												</Menu.Item>
-												<Menu.Item
-													leftSection={
-														<IconFileText
-															style={{
-																width: rem(14),
-																height: rem(14),
-															}}
-														/>
-													}
-													onClick={(e) => {
-														e.stopPropagation();
-														handleAdmissionFormPrint(values?.id);
-													}}
-												>
-													{t("AdmissionForm")}
-												</Menu.Item>
-											</Menu.Dropdown>
-										</Menu>
-									</Group>
-								</>
+											)}
+
+											<Menu.Item
+												leftSection={
+													<IconPrinter
+														style={{
+															width: rem(14),
+															height: rem(14),
+														}}
+													/>
+												}
+												onClick={(e) => {
+													e.stopPropagation();
+													handleBillingInvoicePrint(values?.id);
+												}}
+											>
+												{t("BillingInvoice")}
+											</Menu.Item>
+											<Menu.Item
+												leftSection={
+													<IconFileText
+														style={{
+															width: rem(14),
+															height: rem(14),
+														}}
+													/>
+												}
+												onClick={(e) => {
+													e.stopPropagation();
+													handleAdmissionFormPrint(values?.id);
+												}}
+											>
+												{t("AdmissionForm")}
+											</Menu.Item>
+										</Menu.Dropdown>
+									</Menu>
+								</Group>
 							),
 						},
 					]}
@@ -353,6 +354,7 @@ export default function _Table({ module }) {
 				selectedId={selectedId}
 				module={module}
 			/>
+			<ManageModal opened={openedManage} close={closeManage} form={manageForm} selectedId={selectedId} module={module} />
 			{/* {selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)} */}
