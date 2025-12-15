@@ -126,7 +126,7 @@ export default function _Table({ module }) {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.APPROVE}/${selectedWaiverList.uid}`,
 			params: {
-				ids: JSON.stringify(selectedRecords || []),
+				ids: selectedRecords || [],
 			},
 		});
 
@@ -147,8 +147,9 @@ export default function _Table({ module }) {
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.INDEX,
 		filterParams: {
-			name: filterData?.name,
 			mode: processTab,
+			created: form.values.created,
+			term: form.values.keywordSearch,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -280,8 +281,7 @@ export default function _Table({ module }) {
 												color="var(--theme-primary-color-6)"
 												radius="xs"
 												size="compact-xs"
-												rightSection={<IconArrowNarrowRight stroke={1.5} />}
-											>
+												rightSection={<IconArrowNarrowRight stroke={1.5} />}>
 												Checked
 											</Button>
 										)}
@@ -375,7 +375,7 @@ export default function _Table({ module }) {
 								<Table striped highlightOnHover withTableBorder withColumnBorders verticalSpacing="xs" fontSize="sm">
 									<Table.Thead>
 										<Table.Tr>
-											<Table.Th></Table.Th>
+											<Table.Th/>
 											<Table.Th>#</Table.Th>
 											<Table.Th>{t("Item")}</Table.Th>
 											<Table.Th>{t("Qty")}</Table.Th>

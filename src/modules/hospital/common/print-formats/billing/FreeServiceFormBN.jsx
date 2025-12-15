@@ -51,7 +51,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 				gap="xl"
 			>
 				<Box>
-					<Box>
+					<Box pl={'xl'} pr={'xl'}>
 						<Table
 							style={{
 								borderCollapse: "collapse",
@@ -126,9 +126,6 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 									</Table.Td>
 									<Table.Td>
 										<Group gap="xs">
-											<Text size="xs" fw={600}>
-												{t("AdmissionID")}:
-											</Text>
 											<Text size="sm">{getValue(patientInfo?.invoice || "")}</Text>
 										</Group>
 									</Table.Td>
@@ -163,7 +160,6 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 										</Group>
 									</Table.Td>
 								</Table.Tr>
-
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td>
 										<Group gap="xs">
@@ -189,15 +185,21 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Tr>
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td colSpan={3}>
-										<Box ml={"xs"} fz={"md"}>
-											<span fz={"xl"}>List of Test Name:</span>
-											{patientInfo?.invoice_particular?.map((item, index) => (
-												<span key={index}>
+										<Grid columns={12} gutter="0" mt={"md"}>
+											<Grid.Col span={12} align="left">
+												<Text fz="md" fw={'600'}>List of Tests:</Text>
+											</Grid.Col>
+										</Grid>
+										<Grid columns={12} gutter="0" mb={"md"}>
+											<Grid.Col span={12} align={"left"}>
+												{patientInfo?.invoice_particular?.map((item, index) => (
+													<span key={index}>
 													{index + 1}. {item.item_name || t("Fee")}
-													{index !== patientInfo.invoice_particular.length - 1 && ", "}
+														{index !== patientInfo.invoice_particular.length - 1 && ", "}
 												</span>
-											))}
-										</Box>
+												))}
+											</Grid.Col>
+										</Grid>
 									</Table.Td>
 								</Table.Tr>
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
@@ -287,7 +289,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 
 				{/* =============== payment summary table ================ */}
 				<Box ta="left">
-					<Box pos="relative" mt="xl" mb={"md"}>
+					<Box pos="relative" pl={'xl'} pr={'xl'} mt="xl" mb={"md"}>
 						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
 							<Table.Thead>
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
@@ -328,9 +330,6 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 									</Table.Td>
 									<Table.Td>
 										<Group gap="xs">
-											<Text size="xs" fw={600}>
-												{t("AdmissionID")}:
-											</Text>
 											<Text size="sm">{getValue(patientInfo?.invoice || "")}</Text>
 										</Group>
 									</Table.Td>
