@@ -21,6 +21,7 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 	const collectionSummaryData = records?.summary[0] || [];
 	const invoiceFilter = records?.filter || [];
 	const invoiceModeData = records?.invoiceMode || [];
+	const patientServiceModeData = records?.patientServiceMode || [];
 	const patientModeCollectionData = records?.patientMode || [];
 	const userCollectionData = records?.userBase || [];
 	const serviceGroups = records?.serviceGroups || [];
@@ -31,6 +32,8 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 	const totalModeAmount = patientModeCollectionData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
 	const totalInvoiceModeAmount = invoiceModeData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
+	const totalPatientServiceAmount = patientServiceModeData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
+	const totalPatientServiceCount = patientServiceModeData?.reduce((sum, item) => sum + parseInt(item.patient, 10),0);
 
 	const totalUserCount = userCollectionData?.reduce((sum, item) => sum + (item.total_count ?? 0), 0);
 	const totalUserAmount = userCollectionData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
@@ -76,10 +79,7 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 						style={{
 							borderCollapse: "collapse",
 							width: "100%",
-							height: "1122px",
-						}}
-
-					>
+						}}>
 						<Table.Tbody>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colSpan={2}>
@@ -161,6 +161,34 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 											</Table.Tr>
 										</Table.Tbody>
 									</Table>
+									<Table style={{
+										borderCollapse: "collapse",
+										width: "100%",
+									}}>
+										<Table.Thead bg="var(--theme-secondary-color-0)">
+											<Table.Tr py="xs" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Table.Td width={'88%'}>Particular</Table.Td>
+												<Table.Td>Patient</Table.Td>
+												<Table.Td>Amount</Table.Td>
+											</Table.Tr>
+										</Table.Thead>
+										<Table.Tbody>
+											{patientServiceModeData && (
+												patientServiceModeData?.map((item, index) => (
+													<Table.Tr key={item.id || index} style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+														<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+														<Table.Td>{item?.patient}</Table.Td>
+														<Table.Td>{item?.total}</Table.Td>
+													</Table.Tr>
+												))
+											)}
+											<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Table.Td>Total</Table.Td>
+												<Table.Td>{totalPatientServiceCount}</Table.Td>
+												<Table.Td>{totalPatientServiceAmount}</Table.Td>
+											</Table.Tr>
+										</Table.Tbody>
+									</Table>
 								</Table.Td>
 								<Table.Td valign="top" width={"50%"}>
 									<Table style={{
@@ -190,8 +218,6 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 									</Table>
 								</Table.Td>
 							</Table.Tr>
-
-
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colspan={2}>
 									<Center>
@@ -230,7 +256,6 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 									</Table>
 								</Table.Td>
 							</Table.Tr>
-
 						</Table.Tbody>
 					</Table>
 				</Box>

@@ -91,7 +91,7 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 	const userCollectionData = records?.data?.userBase || [];
 	const serviceGroups = records?.data?.serviceGroups || [];
 	const serviceData = records?.data?.services || [];
-
+	const patientServiceModeData = records?.patientServiceMode || [];
 	const summaryReportsRef = useRef(null);
 	const handleHomeOverviewPrint = useReactToPrint({
 		content: () => summaryReportsRef.current,
@@ -113,6 +113,10 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 		(sum, item) => sum + (item.total ?? 0),
 		0
 	);
+
+	const totalPatientServiceAmount = patientServiceModeData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
+	const totalPatientServiceCount = patientServiceModeData?.reduce((sum, item) => sum + parseInt(item.patient, 10),0);
+
 
 	const totalUserCount = userCollectionData?.reduce(
 		(sum, item) => sum + parseInt(item.total_count, 10),0);
@@ -205,23 +209,64 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 								<Table.Thead>
 									<Table.Tr py="xs" bg="var(--theme-secondary-color-0)">
 										<Table.Td width={"70%"}>Patient Mode</Table.Td>
-										<Table.Td width={"15%"}>Number of Patient</Table.Td>
+										<Table.Td width={"15%"}>Patient</Table.Td>
 										<Table.Td width={"15%"}> Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
 									{patientModeCollectionData &&
-										patientModeCollectionData?.map((item, index) => (
-											<Table.Tr key={item.id || index} py="xs">
-												<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
-												<Table.Td>{item?.patient}</Table.Td>
-												<Table.Td>{item?.total}</Table.Td>
-											</Table.Tr>
-										))}
+									patientModeCollectionData?.map((item, index) => (
+										<Table.Tr key={item.id || index} py="xs">
+											<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+											<Table.Td>{item?.patient}</Table.Td>
+											<Table.Td>{item?.total}</Table.Td>
+										</Table.Tr>
+									))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
 										<Table.Td>{totalModeCount}</Table.Td>
 										<Table.Td>{totalModeAmount}</Table.Td>
+									</Table.Tr>
+								</Table.Tbody>
+							</Table>
+						</Box>
+						<Box className="borderRadiusAll">
+							<Card padding="lg" radius="sm">
+								<Card.Section
+									h={32}
+									withBorder
+									component="div"
+									bg="var(--theme-primary-color-7)"
+								>
+									<Flex align="center" h="100%" px="lg" justify="space-between">
+										<Text pb={0} fz="sm" c="white" fw={500}>
+											{t("PaymentServiceBaseCollections")}
+										</Text>
+									</Flex>
+								</Card.Section>
+							</Card>
+							<Table>
+								<Table.Thead bg="var(--theme-secondary-color-0)">
+									<Table.Tr py="xs">
+										<Table.Td width={'70%'}>Particular</Table.Td>
+										<Table.Td>Patient</Table.Td>
+										<Table.Td>Amount</Table.Td>
+									</Table.Tr>
+								</Table.Thead>
+								<Table.Tbody>
+									{patientServiceModeData && (
+										patientServiceModeData?.map((item, index) => (
+											<Table.Tr key={item.id || index}>
+												<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+												<Table.Td>{item?.patient}</Table.Td>
+												<Table.Td>{item?.total}</Table.Td>
+											</Table.Tr>
+										))
+									)}
+									<Table.Tr>
+										<Table.Td>Total</Table.Td>
+										<Table.Td>{totalPatientServiceCount}</Table.Td>
+										<Table.Td>{totalPatientServiceAmount}</Table.Td>
 									</Table.Tr>
 								</Table.Tbody>
 							</Table>
@@ -244,18 +289,18 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 							<Table>
 								<Table.Thead>
 									<Table.Tr py="xs" bg="var(--theme-secondary-color-0)">
-										<Table.Td width={"85%"}>Invoice Mode</Table.Td>
-										<Table.Td width={"15%"}> Amount</Table.Td>
+										<Table.Td width={"70%"}>Invoice Mode</Table.Td>
+										<Table.Td > Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
 									{invoiceModeData &&
-										invoiceModeData?.map((item, index) => (
-											<Table.Tr key={item.id || index} py="xs">
-												<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
-												<Table.Td>{item?.total}</Table.Td>
-											</Table.Tr>
-										))}
+									invoiceModeData?.map((item, index) => (
+										<Table.Tr key={item.id || index} py="xs">
+											<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+											<Table.Td>{item?.total}</Table.Td>
+										</Table.Tr>
+									))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
 										<Table.Td>{totalInvoiceModeAmount}</Table.Td>
@@ -281,18 +326,18 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 							<Table>
 								<Table.Thead bg="var(--theme-secondary-color-0)">
 									<Table.Tr py="xs">
-										<Table.Td width={"85%"}>Particular</Table.Td>
+										<Table.Td width={"70%"}>Particular</Table.Td>
 										<Table.Td>Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
 									{userCollectionData &&
-										userCollectionData?.map((item, index) => (
-											<Table.Tr key={item.id || index} py="xs">
-												<Table.Td>{item?.name}</Table.Td>
-												<Table.Td>{item?.total}</Table.Td>
-											</Table.Tr>
-										))}
+									userCollectionData?.map((item, index) => (
+										<Table.Tr key={item.id || index} py="xs">
+											<Table.Td>{item?.name}</Table.Td>
+											<Table.Td>{item?.total}</Table.Td>
+										</Table.Tr>
+									))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
 										<Table.Td>{totalUserAmount}</Table.Td>
@@ -300,83 +345,8 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 								</Table.Tbody>
 							</Table>
 						</Box>
-						<Box className="borderRadiusAll">
-							<Card padding="lg" radius="sm">
-								<Card.Section
-									h={32}
-									withBorder
-									component="div"
-									bg="var(--theme-primary-color-7)"
-								>
-									<Flex align="center" h="100%" px="lg" justify="space-between">
-										<Text pb={0} fz="sm" c="white" fw={500}>
-											{t("ServiceBaseCollections")}
-										</Text>
-									</Flex>
-								</Card.Section>
-							</Card>
-							<Table>
-								<Table.Thead bg="var(--theme-secondary-color-0)">
-									<Table.Tr py="xs">
-										<Table.Td width={"70%"}>Particular</Table.Td>
-										<Table.Td width={"15%"}>Number of Service</Table.Td>
-										<Table.Td>Amount</Table.Td>
-									</Table.Tr>
-								</Table.Thead>
-								<Table.Tbody>
-									{serviceData &&
-										serviceData?.map((item, index) => (
-											<Table.Tr key={item.id || index} py="xs">
-												<Table.Td>{item?.name}</Table.Td>
-												<Table.Td>{item?.total_count}</Table.Td>
-												<Table.Td>{item?.total}</Table.Td>
-											</Table.Tr>
-										))}
-									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
-										<Table.Td>Total</Table.Td>
-										<Table.Td>{totalServiceCount}</Table.Td>
-										<Table.Td>{totalServiceAmount}</Table.Td>
-									</Table.Tr>
-								</Table.Tbody>
-							</Table>
-						</Box>
-						<Box className="borderRadiusAll">
-							<Card padding="lg" radius="sm">
-								<Card.Section
-									h={32}
-									withBorder
-									component="div"
-									bg="var(--theme-primary-color-7)"
-								>
-									<Flex align="center" h="100%" px="lg" justify="space-between">
-										<Text pb={0} fz="sm" c="white" fw={500}>
-											{t("ServiceGroupBaseCollections")}
-										</Text>
-									</Flex>
-								</Card.Section>
-							</Card>
-							<Table>
-								<Table.Thead bg="var(--theme-secondary-color-0)">
-									<Table.Tr py="xs">
-										<Table.Td width={"85%"}>Particular</Table.Td>
-										<Table.Td>Amount</Table.Td>
-									</Table.Tr>
-								</Table.Thead>
-								<Table.Tbody>
-									{serviceGroups &&
-										serviceGroups?.map((item, index) => (
-											<Table.Tr key={item.id || index} py="xs">
-												<Table.Td>{item?.name}</Table.Td>
-												<Table.Td>{item?.total}</Table.Td>
-											</Table.Tr>
-										))}
-									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
-										<Table.Td>Total</Table.Td>
-										<Table.Td>{totalServiceGroupAmount}</Table.Td>
-									</Table.Tr>
-								</Table.Tbody>
-							</Table>
-						</Box>
+
+
 					</ScrollArea>
 				</Box>
 			</Box>

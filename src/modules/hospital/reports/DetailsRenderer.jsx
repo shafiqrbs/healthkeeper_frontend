@@ -16,7 +16,7 @@ export default function DetailsRenderer() {
 	return (
 		<Box>
 			{!tab ? (
-				<DashboardDailySummary height={mainAreaHeight} />
+				<InvoiceSummary height={mainAreaHeight} />
 			) : tab === "dashboard-daily-summary" ? (
 				<InvoiceSummary />
 			) : tab === "patient-ticket" ? (
