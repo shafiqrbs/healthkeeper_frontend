@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Grid, Box, ScrollArea, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useHotkeys } from "@mantine/hooks";
+import {useDebouncedState, useHotkeys} from "@mantine/hooks";
 
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -18,31 +18,19 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
-
+	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
 	const { data: employeeDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.EMPLOYEE.PATH,
 		utility: CORE_DROPDOWNS.EMPLOYEE.UTILITY,
-	});
-
-	const { data: categoryDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.CATEGORY.PATH,
-		utility: CORE_DROPDOWNS.CATEGORY.UTILITY,
-	});
-
-	const { data: particularTypeDropdown } = useGlobalDropdownData({
-		path: HOSPITAL_DROPDOWNS.PARTICULAR_MASTER_TYPE.PATH,
-		utility: HOSPITAL_DROPDOWNS.PARTICULAR_MASTER_TYPE.UTILITY,
 	});
 
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
 			form.setValues({
-				particular_type_master_id: data.particular_type_master_id,
+				medicine_stock_id: data.medicine_stock_id,
 				name: data.name,
-				category_id: data.category_id,
-				employee_id: data.employee_id,
-				instruction: data.instruction,
+				company: data.company,
 			});
 			setIndexData(data.id);
 
@@ -76,60 +64,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("ParticularType")} <RequiredAsterisk />
-											</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("ParticularTypeValidateMessage")}
-												placeholder={t("ParticularType")}
-												name="particular_type_master_id"
-												id="particular_type_master_id"
-												nextField="category_id"
-												required={true}
-												value={form.values.particular_type_master_id}
-												dropdownValue={particularTypeDropdown}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("Category")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("CategoryValidateMessage")}
-												placeholder={t("Category")}
-												name="category_id"
-												id="category_id"
-												nextField="employee_id"
-												value={form.values.category_id}
-												dropdownValue={categoryDropdown}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("AssignEmployee")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("AssignEmployeeValidateMessage")}
-												placeholder={t("AssignEmployee")}
-												name="employee_id"
-												id="employee_id"
-												nextField="name"
-												value={form.values.employee_id}
-												dropdownValue={employeeDropdown}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
-										<Grid.Col span={6}>
-											<Text fz="sm">
 												{t("Name")} <RequiredAsterisk />
 											</Text>
 										</Grid.Col>
@@ -142,22 +76,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												name="name"
 												id="name"
 												nextField="instruction"
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("Instruction")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputForm
-												form={form}
-												tooltip={t("PriceValidateMessage")}
-												placeholder={t("Instruction")}
-												required={false}
-												name="instruction"
-												id="instruction"
-												nextField=""
 											/>
 										</Grid.Col>
 									</Grid>

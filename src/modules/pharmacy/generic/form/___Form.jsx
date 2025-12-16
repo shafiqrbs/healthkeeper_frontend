@@ -49,6 +49,8 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				particular_type_master_id: data.particular_type_master_id,
 				name: data.name,
 				category_id: data.category_id,
+				medicine_dosage_id: data.medicine_dosage_id,
+				medicine_bymeal_id: data.medicine_bymeal_id,
 				duration_mode_id: data.duration_mode_id,
 				instruction: data.instruction,
 			});

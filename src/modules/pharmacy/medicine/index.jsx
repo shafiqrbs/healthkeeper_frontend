@@ -22,7 +22,6 @@ export default function Index({ mode = "create" }) {
 	const matches = useMediaQuery("(max-width: 64em)");
 	const [opened, { open, close }] = useDisclosure(false);
 	const { mainAreaHeight } = useOutletContext();
-
 	return (
 		<>
 			{progress !== 100 ? (

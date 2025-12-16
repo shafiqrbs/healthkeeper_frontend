@@ -27,7 +27,7 @@ import { modals } from "@mantine/modals";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
 import { notifications } from "@mantine/notifications";
-import { useOs, useHotkeys } from "@mantine/hooks";
+import {useOs, useHotkeys, useDebouncedState} from "@mantine/hooks";
 import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES, PHARMACY_DATA_ROUTES } from "@/constants/routes";
@@ -42,6 +42,10 @@ import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { errorNotification } from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import {useForm} from "@mantine/form";
+import {getMedicineFormInitialValues} from "@modules/hospital/prescription/helpers/request";
+import useMedicineGenericData from "@hooks/useMedicineGenericData";
+import useMedicineData from "@hooks/useMedicineData";
 
 const PER_PAGE = 50;
 
@@ -57,15 +61,10 @@ export default function _Table({ module, open }) {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
 	const [updatingRows, setUpdatingRows] = useState({});
-	const { data: byMealDropdown } = useGlobalDropdownData({
-		path: PHARMACY_DROPDOWNS.BY_MEAL.PATH,
-		utility: PHARMACY_DROPDOWNS.BY_MEAL.UTILITY,
-	});
-
-	const { data: dosageDropdown } = useGlobalDropdownData({
-		path: PHARMACY_DROPDOWNS.DOSAGE.PATH,
-		utility: PHARMACY_DROPDOWNS.DOSAGE.UTILITY,
-	});
+	const [medicineIdDropdownOpened, setMedicineIdDropdownOpened] = useState(true);
+	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
+	const medicineForm = useForm(getMedicineFormInitialValues());
+	const { medicineData } = useMedicineData({ term: medicineTerm });
 
 	// for infinity table data scroll, call the hook
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
@@ -96,7 +95,7 @@ export default function _Table({ module, open }) {
 	const handleDeleteSuccess = async (id) => {
 		const res = await dispatch(
 			deleteEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.DELETE}/${id}`,
+				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.DELETE}/${id}`,
 				module,
 				id,
 			})
@@ -122,6 +121,11 @@ export default function _Table({ module, open }) {
 		navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX);
 	};
 
+	const handleEntityEdit = (id) => {
+		dispatch(setInsertType({ insertType: "update", module }));
+		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX}/${id}`);
+	};
+
 	useEffect(() => {
 		if (!records?.length) return;
 		const initialFormData = records.reduce((acc, item) => {
@@ -129,13 +133,6 @@ export default function _Table({ module, open }) {
 				company: item.company || "",
 				product_name: item.product_name || "",
 				generic: item.generic || "",
-				opd_quantity: item.opd_quantity || "",
-				ipd_status: item.ipd_status || "",
-				opd_status: item.opd_status || "",
-				admin_status: item.opd_status || "",
-				status: item.status || "",
-				medicine_dosage_id: item.medicine_dosage_id || "",
-				medicine_bymeal_id: item.medicine_bymeal_id || "",
 			};
 			return acc;
 		}, {});
@@ -182,7 +179,6 @@ export default function _Table({ module, open }) {
 			...prev,
 			[rowId]: { ...prev[rowId], [field]: value },
 		}));
-
 		setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
 
 		try {

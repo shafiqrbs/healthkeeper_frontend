@@ -358,6 +358,7 @@ export const PHARMACY_DATA_ROUTES = {
 			INLINE_UPDATE: "pharmacy/stock/inline-update",
 		},
 
+
 		MEDICINE: {
 			INDEX: "pharmacy/medicine",
 			CREATE: "pharmacy/medicine",

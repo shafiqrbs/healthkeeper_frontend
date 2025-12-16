@@ -71,6 +71,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 
 	const opdRoomId = hospitalConfig?.particular_details?.room_id;
 	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
+
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",

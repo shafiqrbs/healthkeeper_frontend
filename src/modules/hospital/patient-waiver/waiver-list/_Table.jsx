@@ -383,7 +383,6 @@ export default function _Table({ module }) {
 											<Table.Th>{t("Total")}</Table.Th>
 										</Table.Tr>
 									</Table.Thead>
-
 									<Table.Tbody>
 										{waiverData?.invoice_particular?.map((p, idx) => (
 											<Table.Tr key={idx}>

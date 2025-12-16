@@ -6,6 +6,9 @@ const initialValues = {
 	opd_quantity:"",
 	medicine_dosage_id:"",
 	medicine_bymeal_id:"",
+	duration:"",
+	formulation:"",
+	duration_mode_id:"",
 };
 
 export const getInitialValues = (t) => {

@@ -353,33 +353,12 @@ const HeaderActions = ({ height, isOnline, fullscreen, toggle, loginUser, onLogo
 						</Menu.Item>
 					</Menu.Dropdown>
 				</Menu>
-				{/* <Tooltip
-			label={
-				<>
-					<Stack spacing={0} gap={0}>
-						<Text align="center">
-							{loginUser?.name} ( {loginUser?.username} )
-						</Text>
-						<Text align="center">{t("LogoutAltL")}</Text>
-					</Stack>
-				</>
-			}
-			bg={"#635031"}
-			withArrow
-			position={"left"}
-			multiline
-		>
-			<ActionIcon onClick={onLogout} variant="subtle" className="mt-6 header-action-icon">
-				<IconLogout size={18} />
-			</ActionIcon>
-		</Tooltip> */}
 				<Tooltip label={isOnline ? t("Online") : t("Offline")} bg={isOnline ? "green.5" : "red.5"} withArrow>
 					<ActionIcon className="mt-6 header-action-icon" variant="filled" radius="xl">
 						{isOnline ? <IconWifi size={20} /> : <IconWifiOff size={20} />}
 					</ActionIcon>
 				</Tooltip>
 			</Flex>
-
 			<ChangePassword height={height} resetPasswordOpened={resetPasswordOpened} closeResetPassword={closeResetPassword} />
 		</>
 	);

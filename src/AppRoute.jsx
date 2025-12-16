@@ -120,6 +120,7 @@ function AppRoute() {
 							</ProtectedRoute>
 						}
 					/>
+					<Route path="medicine/:id" element={<MedicineIndex mode="edit" />} />
 					<Route
 						path="generic"
 						element={

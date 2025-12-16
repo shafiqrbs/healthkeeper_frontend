@@ -2,11 +2,8 @@ import { hasLength } from "@mantine/form";
 
 const initialValues = {
 	company: "",
-	product_name: "",
-	generic:"",
-	opd_quantity:"",
-	medicine_dosage_id:"",
-	medicine_bymeal_id:"",
+	name: "",
+	medicine_stock_id:"",
 };
 
 export const getInitialValues = (t) => {

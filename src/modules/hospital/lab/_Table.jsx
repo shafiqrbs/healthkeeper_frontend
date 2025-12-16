@@ -4,14 +4,15 @@ import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon } from "@mantine/
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 import { MODULES } from "@/constants";
-import { formatDate } from "@utils/index";
+import {formatDate, getLoggedInHospitalUser} from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import {useForm} from "@mantine/form";
 import {useSelector} from "react-redux";
 import {useAutoRefetch} from "@hooks/useAutoRefetch";
+import CustomDivider from "@components/core-component/CustomDivider";
 
 const module = MODULES.LAB_TEST;
-const PER_PAGE = 500;
+const PER_PAGE = 50;
 
 export default function _Table() {
 	const { id } = useParams();
@@ -20,12 +21,12 @@ export default function _Table() {
 	const form = useForm();
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
 	const filterData = useSelector((state) => state.crud[module].filterData);
-
+	const hospitalConfig = getLoggedInHospitalUser();
+	const opdRoomIds = hospitalConfig?.particular_details?.diagnostic_room_ids;
 	const handleAdmissionOverview = (id) => {
 		setSelectedPatientId(id);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}`);
 	};
-
 	const {refetchAll, records,fetching } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX,
@@ -35,6 +36,7 @@ export default function _Table() {
 		filterParams: {
 			created: filterData.created,
 			term: filterData.keywordSearch,
+			room_ids: opdRoomIds,
 		},
 	});
 
@@ -74,6 +76,7 @@ export default function _Table() {
 								<Text fz="sm">{item.name}</Text>
 							</Flex>
 						</Grid.Col>
+						<CustomDivider />
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />

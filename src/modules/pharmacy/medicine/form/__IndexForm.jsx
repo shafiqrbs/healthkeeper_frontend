@@ -5,7 +5,7 @@ import { editEntityData } from "@/app/store/core/crudThunk";
 import { setFilterData, setSearchKeyword, setInsertType } from "@/app/store/core/crudSlice";
 import __Update from "./__Update";
 import __Create from "./__Create";
-import { CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import {CORE_DATA_ROUTES, HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import { CORE_NAV_LINKS } from "@/constants/mainDashboardLinks";
 
 export default function _IndexForm({ module, form, close, mode }) {
@@ -33,7 +33,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 		dispatch(setInsertType({ insertType: "update", module }));
 		dispatch(
 			editEntityData({
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.VIEW}/${id}`,
+				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.VIEW}/${id}`,
 				module,
 			})
 		);
@@ -52,7 +52,7 @@ export default function _IndexForm({ module, form, close, mode }) {
 				},
 			})
 		);
-		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR, { replace: true });
+		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE, { replace: true });
 	};
 
 	// =============== effect to handle mode switching ================
