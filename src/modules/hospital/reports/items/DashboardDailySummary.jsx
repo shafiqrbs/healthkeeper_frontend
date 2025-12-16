@@ -290,7 +290,7 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 								<Table.Thead>
 									<Table.Tr py="xs" bg="var(--theme-secondary-color-0)">
 										<Table.Td width={"70%"}>Invoice Mode</Table.Td>
-										<Table.Td > Amount</Table.Td>
+										<Table.Td> Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
