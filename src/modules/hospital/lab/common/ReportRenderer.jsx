@@ -60,7 +60,7 @@ const ReportRenderer = forwardRef(
 
 		const renderCustomReport = () => {
 			if (diagnosticReport?.particular?.is_custom_report === 1) {
-				const slug = diagnosticReport?.particular?.slug;
+				const slug = diagnosticReport?.particular?.slug?.trim();
 				switch (slug) {
 					case "covid-19":
 						return (

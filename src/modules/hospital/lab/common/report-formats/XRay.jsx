@@ -29,13 +29,13 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 	const is_completed = diagnosticReport?.process === "Done";
 	const form = useForm({
 		initialValues: {
-			trachea: custom_report?.trachea || "",
-			diaphragm: custom_report?.diaphragm || "",
-			lungs: custom_report?.lungs || "",
-			heart: custom_report?.heart || "",
-			bony_thorax: custom_report?.bony_thorax || "",
+			trachea: custom_report?.trachea || "Central in position",
+			diaphragm: custom_report?.diaphragm || "Normal is position and contour",
+			lungs: custom_report?.lungs || "Clear",
+			heart: custom_report?.heart || "Normal is position and size",
+			bony_thorax: custom_report?.bony_thorax || "Appear normal",
 			impression: custom_report?.impression || "",
-			comment: diagnosticReport?.comment || "",
+			comment: diagnosticReport?.comment || "Normal findings",
 		},
 	});
 

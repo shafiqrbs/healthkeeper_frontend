@@ -72,10 +72,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 											{hospitalConfigData?.organization_name || "Hospital"}
 										</Text>
 										<Text ta="center" size="sm" c="gray" mt="2">
-											{hospitalConfigData?.address || "Uttara"}
-										</Text>
-										<Text ta="center" size="sm" c="gray" mb="2">
-											{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
+											{hospitalConfigData?.address}
 										</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>
@@ -190,8 +187,9 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 															</Grid.Col>
 															<Grid.Col span={12} py={0}>
 																<Text size="xs">
-																	{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
-																	{patientInfo?.day || 0} Day
+																	{patientInfo?.year > 0 && `${patientInfo.year} Years `}
+																	{patientInfo?.month > 0 && `${patientInfo.month} Mon `}
+																	{patientInfo?.day > 0 && `${patientInfo.day} Day`}
 																</Text>
 															</Grid.Col>
 															<Grid.Col span={6} py={0}>
