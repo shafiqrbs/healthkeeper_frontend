@@ -61,7 +61,7 @@ const CTScanReport = forwardRef(({reportData,report}) => {
 					<Grid.Col span={8}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.pleura)}}/></Grid.Col>
 				</Grid>
 				<Grid>
-					<Grid.Col span={3}>Bones</Grid.Col>
+					<Grid.Col span={4}>Bones</Grid.Col>
 					<Grid.Col span={8}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.bones)}}/></Grid.Col>
 				</Grid>
 				<Grid>
