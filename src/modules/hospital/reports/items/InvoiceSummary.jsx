@@ -440,7 +440,6 @@ export default function InvoiceSummary() {
 						</Box>
 
 					</ScrollArea>
-					
 				</Box>
 			</Box>
 			{records?.data && (

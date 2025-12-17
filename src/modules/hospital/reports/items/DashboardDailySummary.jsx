@@ -91,7 +91,7 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 	const userCollectionData = records?.data?.userBase || [];
 	const serviceGroups = records?.data?.serviceGroups || [];
 	const serviceData = records?.data?.services || [];
-	const patientServiceModeData = records?.patientServiceMode || [];
+	const patientServiceModeData = records?.data?.patientServiceMode || [];
 	const summaryReportsRef = useRef(null);
 	const handleHomeOverviewPrint = useReactToPrint({
 		content: () => summaryReportsRef.current,
