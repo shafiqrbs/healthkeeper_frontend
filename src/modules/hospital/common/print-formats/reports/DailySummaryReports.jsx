@@ -139,9 +139,9 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 									}}>
 										<Table.Thead bg="var(--theme-secondary-color-0)">
 											<Table.Tr py="xs" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-												<Table.Td width={'88%'}>Particular</Table.Td>
-												<Table.Td>Patient</Table.Td>
-												<Table.Td>Amount</Table.Td>
+												<Table.Th width={'88%'}>Particular</Table.Th>
+												<Table.Th>Patient</Table.Th>
+												<Table.Th>Amount</Table.Th>
 											</Table.Tr>
 										</Table.Thead>
 										<Table.Tbody>
@@ -154,10 +154,10 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 													</Table.Tr>
 												))
 											)}
-											<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-												<Table.Td>Total</Table.Td>
-												<Table.Td>{totalModeCount}</Table.Td>
-												<Table.Td>{totalModeAmount}</Table.Td>
+											<Table.Tr bg="var(--theme-primary-color-1)"  style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Table.Th>Total</Table.Th>
+												<Table.Th>{totalModeCount}</Table.Th>
+												<Table.Th>{totalModeAmount}</Table.Th>
 											</Table.Tr>
 										</Table.Tbody>
 									</Table>
@@ -167,9 +167,9 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 									}}>
 										<Table.Thead bg="var(--theme-secondary-color-0)">
 											<Table.Tr py="xs" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-												<Table.Td width={'88%'}>Particular</Table.Td>
-												<Table.Td>Patient</Table.Td>
-												<Table.Td>Amount</Table.Td>
+												<Table.Th width={'88%'}>Particular</Table.Th>
+												<Table.Th>Patient</Table.Th>
+												<Table.Th>Amount</Table.Th>
 											</Table.Tr>
 										</Table.Thead>
 										<Table.Tbody>
@@ -182,10 +182,10 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 													</Table.Tr>
 												))
 											)}
-											<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-												<Table.Td>Total</Table.Td>
-												<Table.Td>{totalPatientServiceCount}</Table.Td>
-												<Table.Td>{totalPatientServiceAmount}</Table.Td>
+											<Table.Tr bg="var(--theme-primary-color-1)"  style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+												<Table.Th>Total</Table.Th>
+												<Table.Th>{totalPatientServiceCount}</Table.Th>
+												<Table.Th>{totalPatientServiceAmount}</Table.Th>
 											</Table.Tr>
 										</Table.Tbody>
 									</Table>
@@ -197,8 +197,8 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 									}}>
 										<Table.Thead bg="var(--theme-secondary-color-0)">
 											<Table.Tr py="xs" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-												<Table.Td width={'88%'}>Particular</Table.Td>
-												<Table.Td>Amount</Table.Td>
+												<Table.Th width={'88%'}>Particular</Table.Th>
+												<Table.Th>Amount</Table.Th>
 											</Table.Tr>
 										</Table.Thead>
 										<Table.Tbody>
@@ -211,11 +211,46 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 												))
 											)}
 											<Table.Tr bg="var(--theme-primary-color-1)" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-												<Table.Td>Total</Table.Td>
-												<Table.Td>{totalFinancialServiceAmount}</Table.Td>
+												<Table.Th>Total</Table.Th>
+												<Table.Th>{totalFinancialServiceAmount}</Table.Th>
 											</Table.Tr>
 										</Table.Tbody>
 									</Table>
+								</Table.Td>
+							</Table.Tr>
+
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colspan={2}>
+									<Center>
+										<Text size="md" fw={600}>
+											{t("InvoiceModeCollections")}
+										</Text>
+									</Center>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colspan={2}>
+							<Table>
+								<Table.Thead>
+									<Table.Tr py="xs" bg="var(--theme-secondary-color-0)">
+										<Table.Th width={"85%"}>Invoice Mode</Table.Th>
+										<Table.Th width={"15%"}> Amount</Table.Th>
+									</Table.Tr>
+								</Table.Thead>
+								<Table.Tbody>
+									{invoiceModeData &&
+									invoiceModeData?.map((item, index) => (
+										<Table.Tr key={item.id || index} py="xs">
+											<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+											<Table.Td>{item?.total}</Table.Td>
+										</Table.Tr>
+									))}
+									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
+										<Table.Th>Total</Table.Th>
+										<Table.Th>{totalInvoiceModeAmount}</Table.Th>
+									</Table.Tr>
+								</Table.Tbody>
+							</Table>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
@@ -232,9 +267,9 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 									<Table>
 										<Table.Thead bg="var(--theme-secondary-color-0)">
 											<Table.Tr py="xs">
-												<Table.Td width={'60%'}>Particular</Table.Td>
-												<Table.Td width={'20%'}>Number of service</Table.Td>
-												<Table.Td>Amount</Table.Td>
+												<Table.Th width={'60%'}>Particular</Table.Th>
+												<Table.Th width={'20%'}>Number of service</Table.Th>
+												<Table.Th>Amount</Table.Th>
 											</Table.Tr>
 										</Table.Thead>
 										<Table.Tbody>
@@ -248,9 +283,9 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 												))
 											)}
 											<Table.Tr bg="var(--theme-primary-color-1)">
-												<Table.Td>Total</Table.Td>
-												<Table.Td>{totalServiceCount}</Table.Td>
-												<Table.Td>{totalServiceAmount}</Table.Td>
+												<Table.Th>Total</Table.Th>
+												<Table.Th>{totalServiceCount}</Table.Th>
+												<Table.Th>{totalServiceAmount}</Table.Th>
 											</Table.Tr>
 										</Table.Tbody>
 									</Table>

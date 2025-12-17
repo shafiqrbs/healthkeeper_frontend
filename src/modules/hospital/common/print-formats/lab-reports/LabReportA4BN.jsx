@@ -237,7 +237,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 												</Table.Tr>
 												<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 													<Table.Td colSpan={"2"}>
-														<strong>Report Name:</strong> {report?.name}
+														<strong>Name of Examination: </strong> {report?.name}
 													</Table.Td>
 												</Table.Tr>
 											</Table.Tbody>
