@@ -87,35 +87,35 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 										</Grid.Col>
 									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
-										<Grid columns={6} mt="3xs">
+										<Grid.Col span={6} mt="3xs">
 											Generic Medicine
-										</Grid>
-										<Grid align="center" columns={14} mt="3xs">
+										</Grid.Col>
+										<Grid.Col align="center" span={14} mt="3xs">
 											<Select
 												searchable
 												onSearchChange={setMedicineGenericTerm}
+												searchValue={medicineGenericTerm}
 												tooltip={t("EnterGenericMedicine")}
 												id="generic"
 												name="medicine_stock_id"
 												data={medicineGenericData?.map((item, index) => ({
 													label: item?.name || item?.product_name || item?.generic,
-													value: item.medicine_stock_id?.toString() || index.toString(),
+													value: item.generic_id?.toString() || index.toString(),
 													generic: item?.generic || "",
 												}))}
-												limit={20}
 												filter={medicineOptionsFilter}
-												value={form.values.medicine_stock_id}
+												value={form.values.medicine_stock_id?.toString()}
 												onChange={(v, option) => {
 													form.setFieldValue("generic", option.generic);
 													form.setFieldValue("medicine_stock_id", v);
-													setMedicineGenericTerm(v);
+													setMedicineGenericTerm(option.generic);
 												}}
+												onBlur={() => setMedicineGenericTerm(medicineGenericTerm)}
 												placeholder={t("GenericMedicine")}
-												// onBlur={() => setMedicineGenericTerm("")}
 												classNames={inputCss}
 												error={!!form.errors.medicine_stock_id}
 											/>
-										</Grid>
+										</Grid.Col>
 									</Grid>
 								</Stack>
 							</ScrollArea>
