@@ -13,7 +13,7 @@ const CTScanReport = forwardRef(({reportData,report}) => {
 		<Box>
 			<Box mb="md" p={'xl'} pt={'xs'}  fz={'md'} h={600}>
 				<Grid>
-					<Grid.Col span={3}>Technique</Grid.Col>
+					<Grid.Col span={3} fw={'600'}>Technique</Grid.Col>
 					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.technique)}}/></Grid.Col>
 				</Grid>
 				<Grid>
@@ -28,27 +28,27 @@ const CTScanReport = forwardRef(({reportData,report}) => {
 				</Grid>
 				<Grid>
 					<Grid.Col span={1}/>
-					<Grid.Col span={2} fz={'xs'}>a. Vessels</Grid.Col>
+					<Grid.Col span={2} >a. Vessels</Grid.Col>
 					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.mediastinum_vessels)}}/></Grid.Col>
 				</Grid>
 				<Grid>
 					<Grid.Col span={1}/>
-					<Grid.Col span={2} fz={'xs'}>b. Trachea-</Grid.Col>
+					<Grid.Col span={2} >b. Trachea-</Grid.Col>
 					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.mediastinum_trachea)}}/></Grid.Col>
 				</Grid>
 				<Grid>
 					<Grid.Col span={1}/>
-					<Grid.Col span={2} fz={'xs'}>c. Oesophagus-</Grid.Col>
+					<Grid.Col span={2} >c. Oesophagus-</Grid.Col>
 					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.mediastinum_oesophagus)}}/></Grid.Col>
 				</Grid>
 				<Grid>
 					<Grid.Col span={1}/>
-					<Grid.Col span={2} fz={'xs'}>d. Thymus-</Grid.Col>
+					<Grid.Col span={2} >d. Thymus-</Grid.Col>
 					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.mediastinum_thymus)}}/></Grid.Col>
 				</Grid>
 				<Grid>
 					<Grid.Col span={1}/>
-					<Grid.Col span={2} fz={'xs'}>d. Lymph Nodes-</Grid.Col>
+					<Grid.Col span={2} >d. Lymph Nodes-</Grid.Col>
 					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.mediastinum_lymph_nodes)}}/></Grid.Col>
 				</Grid>
 				<Grid>
@@ -69,7 +69,7 @@ const CTScanReport = forwardRef(({reportData,report}) => {
 					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.after_iv_contrast)}}/></Grid.Col>
 				</Grid>
 				<Grid>
-					<Grid.Col span={3}>Impression</Grid.Col>
+					<Grid.Col span={3}  fw={'600'}>Impression</Grid.Col>
 					<Grid.Col span={9}><div dangerouslySetInnerHTML={{__html:getValue(reportData?.impression)}}/></Grid.Col>
 
 				</Grid>
