@@ -44,12 +44,11 @@ export const getVendorFormInitialValues = (t) => {
 
 		validate: {
 			name: hasLength({ min: 2}),
-			/*mobile: (value) => {
-				if (!value) return null; // allow empty
-
+			mobile: (value) => {
+				const isEmpty = (v) => v === "" || v === null || v === undefined;
 				const isValid = /^01[0-9]{9}$/.test(value);
 				return isValid ? null : "Invalid mobile number";
-			},*/
+			},
 			day: (_, values) => {
 				const isEmpty = (v) => v === "" || v === null || v === undefined;
 				return isEmpty(values?.day) && isEmpty(values?.month) && isEmpty(values?.year)
@@ -70,7 +69,7 @@ export const getVendorFormInitialValues = (t) => {
 			},
 			//upazilla_id: hasLength({ min: 2, max: 20 }),
 			amount: (value, values) => {
-				if (!Number(value) && values.patient_payment_mode_id == "30") return t("AmountIsRequired");
+				if (!Number(value) && values.patient_payment_mode_id === "30") return t("AmountIsRequired");
 				return null;
 			},
 		},

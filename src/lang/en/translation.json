@@ -1663,9 +1663,13 @@
 	"UserBaseCollections": "User Base Collections",
 	"FinancialServiceGroupBaseCollections": "Financial Service Group Base Collections",
 	"ServiceBaseCollections": "Service Base Collections",
-	"xxxxxxxx": "xxxxxxxxxxx",
 	"Bed": "Bed",
 	"Cabin": "Cabin",
 	"FreeBed": "Free Bed",
-	"FreeCabin": "Free Cabin"
+	"FreeCabin": "Free Cabin",
+	"DayChange": "Day Change",
+	"DayChangeComment": "Day Change Comment",
+	"AccommodationType": "Day Change Comment",
+	"Bed/CabinNumber": "Bed/Cabin",
+	"xxxxxxxx": "xxxxxxxxxxx"
 }

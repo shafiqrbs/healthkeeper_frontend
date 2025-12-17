@@ -416,7 +416,7 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 				return {};
 			}
 
-			if (!form.values.amount && form.values.patient_payment_mode_id == "30") {
+			if (!form.values.amount && form.values.patient_payment_mode_id === "30") {
 				setIsSubmitting(false);
 				return {};
 			}
@@ -645,7 +645,7 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Flex align="center" gap="es">
-									<Text fz="sm">{t("Mobile")}</Text>
+									<Text fz="sm">{t("Mobile")}<RequiredAsterisk /></Text>
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={14}>
@@ -656,6 +656,7 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 									placeholder="+880 1717171717"
 									name="mobile"
 									id="mobile"
+									required
 									nextField="address"
 									value={form.values.mobile}
 								/>
