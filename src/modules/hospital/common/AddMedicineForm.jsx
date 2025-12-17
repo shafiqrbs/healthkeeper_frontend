@@ -105,7 +105,8 @@ export default function AddMedicineForm({
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
 	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
 	// const { medicineData } = useMedicineData({ term: medicineTerm });
-	// const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
+	// const { medicineGenericData: genericData } = useMedicineGenericData({ term: "a" });
+	// console.log(genericData);
 	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
@@ -472,7 +473,7 @@ export default function AddMedicineForm({
 					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,
 					order: tabParticulars.map((item) => ({
-						[item.particular_type.slug]: item.ordering,
+						[item?.particular_type?.slug]: item?.ordering,
 					})),
 				},
 			};

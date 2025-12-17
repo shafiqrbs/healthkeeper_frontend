@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Grid, Box, ScrollArea, LoadingOverlay, Stack, Text } from "@mantine/core";
+import { Grid, Box, ScrollArea, LoadingOverlay, Stack, Text, Select } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {useDebouncedState, useHotkeys} from "@mantine/hooks";
+import { useDebouncedState, useHotkeys } from "@mantine/hooks";
 
 import InputForm from "@components/form-builders/InputForm";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -13,12 +13,17 @@ import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import useMedicineGenericData from "@hooks/useMedicineGenericData";
+import inputCss from "@assets/css/InputField.module.css";
+import { medicineOptionsFilter } from "@utils/prescription";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
-	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
+	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
+	const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
+
 	const { data: employeeDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.EMPLOYEE.PATH,
 		utility: CORE_DROPDOWNS.EMPLOYEE.UTILITY,
@@ -52,6 +57,8 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		[]
 	);
 
+	console.log(medicineGenericData);
+
 	return (
 		<form onSubmit={form.onSubmit(handleSubmit)}>
 			<Grid columns={12} gutter={{ base: 8 }}>
@@ -78,6 +85,37 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												nextField="instruction"
 											/>
 										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid columns={6} mt="3xs">
+											Generic Medicine
+										</Grid>
+										<Grid align="center" columns={14} mt="3xs">
+											<Select
+												searchable
+												onSearchChange={setMedicineGenericTerm}
+												tooltip={t("EnterGenericMedicine")}
+												id="generic"
+												name="medicine_stock_id"
+												data={medicineGenericData?.map((item, index) => ({
+													label: item?.name || item?.product_name || item?.generic,
+													value: item.medicine_stock_id?.toString() || index.toString(),
+													generic: item?.generic || "",
+												}))}
+												limit={20}
+												filter={medicineOptionsFilter}
+												value={form.values.medicine_stock_id}
+												onChange={(v, option) => {
+													form.setFieldValue("generic", option.generic);
+													form.setFieldValue("medicine_stock_id", v);
+													setMedicineGenericTerm(v);
+												}}
+												placeholder={t("GenericMedicine")}
+												// onBlur={() => setMedicineGenericTerm("")}
+												classNames={inputCss}
+												error={!!form.errors.medicine_stock_id}
+											/>
+										</Grid>
 									</Grid>
 								</Stack>
 							</ScrollArea>
