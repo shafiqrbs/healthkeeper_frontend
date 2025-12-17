@@ -184,8 +184,8 @@ export default function _Table({ module }) {
 		if (!waiverData?.invoice_particular) return;
 
 		setSelectedRecords(
-			waiverData.invoice_particular.reduce((acc, { is_waiver, id }) => {
-				if (is_waiver) acc.push(id);
+			waiverData.invoice_particular.reduce((acc, { is_waiver_approve, id }) => {
+				if (is_waiver_approve) acc.push(id);
 				return acc;
 			}, [])
 		);
@@ -201,7 +201,12 @@ export default function _Table({ module }) {
 				<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 					<Tabs.List ref={rootRef} className={filterTabsCss.list}>
 						{tabs.map((tab) => (
-							<Tabs.Tab key={tab.value} value={tab.value} ref={setControlRef(tab.value)} className={filterTabsCss.tab}>
+							<Tabs.Tab
+								key={tab.value}
+								value={tab.value}
+								ref={setControlRef(tab.value)}
+								className={filterTabsCss.tab}
+							>
 								{t(tab.label)}
 							</Tabs.Tab>
 						))}
@@ -274,17 +279,19 @@ export default function _Table({ module }) {
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right">
 									<Button.Group>
-										{userRoles.some((r) => ALLOWED_CONFIRMED_ROLES.includes(r)) && !item.checked_by_name && (
-											<Button
-												variant="filled"
-												onClick={() => handleOpenApproveModal(item)}
-												color="var(--theme-primary-color-6)"
-												radius="xs"
-												size="compact-xs"
-												rightSection={<IconArrowNarrowRight stroke={1.5} />}>
-												Checked
-											</Button>
-										)}
+										{userRoles.some((r) => ALLOWED_CONFIRMED_ROLES.includes(r)) &&
+											!item.checked_by_name && (
+												<Button
+													variant="filled"
+													onClick={() => handleOpenApproveModal(item)}
+													color="var(--theme-primary-color-6)"
+													radius="xs"
+													size="compact-xs"
+													rightSection={<IconArrowNarrowRight stroke={1.5} />}
+												>
+													Checked
+												</Button>
+											)}
 
 										{userRoles.some((r) => ALLOWED_APPROVED_ROLES.includes(r)) &&
 											item.checked_by_name &&
@@ -336,7 +343,9 @@ export default function _Table({ module }) {
 
 			<DataTableFooter indexData={records} module="waiver" />
 
-			{selectedPrescriptionId && <DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />}
+			{selectedPrescriptionId && (
+				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
+			)}
 
 			{billingPrintData && <FreeServiceFormBN data={billingPrintData} ref={billingInvoiceRef} />}
 
@@ -372,10 +381,17 @@ export default function _Table({ module }) {
 							)}
 
 							{waiverData?.invoice_particular?.length > 0 ? (
-								<Table striped highlightOnHover withTableBorder withColumnBorders verticalSpacing="xs" fontSize="sm">
+								<Table
+									striped
+									highlightOnHover
+									withTableBorder
+									withColumnBorders
+									verticalSpacing="xs"
+									fontSize="sm"
+								>
 									<Table.Thead>
 										<Table.Tr>
-											<Table.Th/>
+											<Table.Th />
 											<Table.Th>#</Table.Th>
 											<Table.Th>{t("Item")}</Table.Th>
 											<Table.Th>{t("Qty")}</Table.Th>

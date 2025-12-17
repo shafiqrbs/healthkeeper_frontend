@@ -51,7 +51,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 				gap="xl"
 			>
 				<Box>
-					<Box pl={'xl'} pr={'xl'}>
+					<Box pl={"xl"} pr={"xl"}>
 						<Table
 							style={{
 								borderCollapse: "collapse",
@@ -187,17 +187,22 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 									<Table.Td colSpan={3}>
 										<Grid columns={12} gutter="0" mt={"md"}>
 											<Grid.Col span={12} align="left">
-												<Text fz="md" fw={'600'}>List of Tests:</Text>
+												<Text fz="md" fw={"600"}>
+													List of Tests:
+												</Text>
 											</Grid.Col>
 										</Grid>
 										<Grid columns={12} gutter="0" mb={"md"}>
 											<Grid.Col span={12} align={"left"}>
-												{patientInfo?.invoice_particular?.map((item, index) => (
-													<span key={index}>
-													{index + 1}. {item.item_name || t("Fee")}
-														{index !== patientInfo.invoice_particular.length - 1 && ", "}
-												</span>
-												))}
+												{patientInfo?.invoice_particular
+													.filter((item) => !!item.is_waiver_approve)
+													?.map((item, index) => (
+														<span key={index}>
+															{index + 1}. {item.item_name || t("Fee")}
+															{index !== patientInfo.invoice_particular.length - 1 &&
+																", "}
+														</span>
+													))}
 											</Grid.Col>
 										</Grid>
 									</Table.Td>
@@ -289,7 +294,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 
 				{/* =============== payment summary table ================ */}
 				<Box ta="left">
-					<Box pos="relative" pl={'xl'} pr={'xl'} mt="xl" mb={"md"}>
+					<Box pos="relative" pl={"xl"} pr={"xl"} mt="xl" mb={"md"}>
 						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
 							<Table.Thead>
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
@@ -375,12 +380,14 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 									<Table.Th>{t("Particular")}</Table.Th>
 									<Table.Th>{t("Room No")}</Table.Th>
 								</Table.Tr>
-								{patientInfo?.invoice_particular?.map((item, index) => (
-									<Table.Tr key={index}>
-										<Table.Td>{item?.item_name || t("Fee")}</Table.Td>
-										<Table.Td>{item?.diagnostic_room_name}</Table.Td>
-									</Table.Tr>
-								))}
+								{patientInfo?.invoice_particular
+									.filter((item) => !!item.is_waiver_approve)
+									?.map((item, index) => (
+										<Table.Tr key={index}>
+											<Table.Td>{item?.item_name || t("Fee")}</Table.Td>
+											<Table.Td>{item?.diagnostic_room_name}</Table.Td>
+										</Table.Tr>
+									))}
 							</Table.Tbody>
 						</Table>
 					</Box>
