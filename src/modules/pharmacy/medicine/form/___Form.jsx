@@ -53,8 +53,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		[]
 	);
 
-	
-
 	return (
 		<form onSubmit={form.onSubmit(handleSubmit)}>
 			<Grid columns={12} gutter={{ base: 8 }}>
@@ -76,10 +74,11 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												tooltip={t("EnterGenericMedicine")}
 												id="generic"
 												name="medicine_stock_id"
-												data={medicineData?.map((item, index) => ({
-													label: item?.product_name || item?.product_name || item?.product_name,
-													value: item.product_id?.toString() || index.toString(),
-													generic: item?.generic || "",
+												data={medicineData?.map((item) => ({
+													label:
+														item?.product_name || item?.product_name || item?.product_name,
+													value: item.id?.toString(),
+													generic: item?.product_name || "",
 												}))}
 												filter={medicineOptionsFilter}
 												value={form.values.medicine_stock_id?.toString()}
@@ -113,7 +112,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-
 								</Stack>
 							</ScrollArea>
 							<DrawerStickyFooter type={type} />

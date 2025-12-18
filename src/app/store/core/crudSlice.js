@@ -14,6 +14,15 @@ import { formatDate } from "@/common/utils";
 
 const initialState = {
 	// --------------- core modules starts -------------------
+	medicineGeneric: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		data: {},
+		editData: {},
+		validation: false,
+		filterData: { term: "" },
+	},
 	auth: {
 		isLoading: true,
 		refetching: false,

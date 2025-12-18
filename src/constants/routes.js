@@ -344,6 +344,7 @@ export const PHARMACY_DATA_ROUTES = {
 		},
 		STOCK: {
 			MEDICINE_STOCK_DROPDOWN: "medicine/select/stock",
+			GENERIC_STOCK_DROPDOWN: "hospital/select/medicine-stock",
 			PHARMACY_STOCK_HISTORY: "pharmacy/stock-item/history",
 			INDEX: "pharmacy/stock",
 			STOCK_MATRIX: "pharmacy/stock-item/matrix",
@@ -357,7 +358,6 @@ export const PHARMACY_DATA_ROUTES = {
 			DELETE: "pharmacy/stock",
 			INLINE_UPDATE: "pharmacy/stock/inline-update",
 		},
-
 
 		MEDICINE: {
 			INDEX: "pharmacy/medicine",

@@ -9,7 +9,7 @@ const useMedicineStockData = ({ term = "" }) => {
 	const fetchData = async ({ search }) => {
 		const resultAction = await dispatch(
 			getIndexEntityData({
-				url: "medicine/select/stock",
+				url: "hospital/select/medicine-stock",
 				module: "medicines",
 				params: { term: search || "" },
 			})
