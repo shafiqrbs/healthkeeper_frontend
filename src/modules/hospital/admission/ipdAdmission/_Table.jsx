@@ -149,18 +149,18 @@ export default function _Table({ module }) {
 		requestAnimationFrame(printAdmissionForm);
 	};
 
-	const handleActionSubmit = (values) => {
+	const handleActionSubmit = (id,values) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleConfirmModal(values),
+			onConfirm: () => handleConfirmModal(id,values),
 		});
 	};
 
-	async function handleConfirmModal(values) {
+	async function handleConfirmModal(id,values) {
 		setIsLoading(true);
 		try {
 			const actionData = {
@@ -173,6 +173,7 @@ export default function _Table({ module }) {
 				data: actionData,
 				module,
 			};
+			console.log(payload)
 			const resultAction = await dispatch(updateEntityData(payload));
 
 			// ❌ Validation error

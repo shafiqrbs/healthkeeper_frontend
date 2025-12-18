@@ -246,8 +246,8 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 										</Table.Tr>
 									))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
-										<Table.Th>Total</Table.Th>
-										<Table.Th>{totalInvoiceModeAmount}</Table.Th>
+										<Table.Th fz={'md'} fw={'800'}>Total</Table.Th>
+										<Table.Th fz={'md'} fw={'800'}>{totalInvoiceModeAmount}</Table.Th>
 									</Table.Tr>
 								</Table.Tbody>
 							</Table>
