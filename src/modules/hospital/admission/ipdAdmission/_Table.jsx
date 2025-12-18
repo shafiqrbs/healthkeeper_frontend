@@ -491,8 +491,8 @@ export default function _Table({ module }) {
 								label={t("RequestFor")}
 								placeholder={t("SelectRequestFor")}
 								data={[
-									{ value: "change", label: t("Room/Cabin Change") },
-									{ value: "day_change", label: t("Day Change") },
+									{ value: "change", label: t("Change Room/Cabin") },
+									{ value: "change_day", label: t("Change Day") },
 									{ value: "cancel", label: t("Cancel") },
 								]}
 								value={actionType}

@@ -34,6 +34,7 @@ const tabs = [
 	{ label: "New", value: "new" },
 	{ label: "Confirmed", value: "confirmed" },
 	{ label: "Admitted", value: "admitted" },
+	{ label: "Revised", value: "revised" },
 ];
 
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm", "admin_administrator"];
@@ -246,18 +247,22 @@ export default function _Table({ module }) {
 												{t("Confirm")}
 											</Button>
 										))}
-									<Button
-										variant="filled"
-										bg="teal.8"
-										c="var(--mantine-color-white)"
-										size="compact-xs"
-										onClick={() => handleManage(values.uid || values.id)}
-										radius="es"
-										fw={400}
-										rightSection={<IconAdjustments size={18} />}
-									>
-										{t("Manage")}
-									</Button>
+									{((values.process?.toLowerCase() === "revised") || (values?.process.toLowerCase() === "confirmed")) && (
+
+										<Button
+											variant="filled"
+											bg="teal.8"
+											c="var(--mantine-color-white)"
+											size="compact-xs"
+											onClick={() => handleManage(values.uid || values.id)}
+											radius="es"
+											fw={400}
+											rightSection={<IconAdjustments size={18} />}
+										>
+											{t("Manage")}
+											</Button>
+									)}
+
 									<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
 										<Menu.Target>
 											<ActionIcon

@@ -20,8 +20,7 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 140;
 	const { t } = useTranslation();
-	const [actionType, setActionType] = useState("change");
-	const [activeTab, setActiveTab] = useState("change");
+
 	const [actionFormData, setActionFormData] = useState(null);
 	const cabinData = useSelector((state) => state.crud.cabin?.data?.data);
 	const bedData = useSelector((state) => state.crud.bed?.data?.data);
@@ -29,6 +28,9 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 	const { data: ipdData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${selectedId}`,
 	});
+
+	const [actionType, setActionType] = useState("change");
+	const [activeTab, setActiveTab] = useState('change');
 
 	const fetchData = useCallback(() => {
 		dispatch(
@@ -85,7 +87,7 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 	};
 
 	// =============== determine default tab based on action type ================
-	const defaultTab = actionFormData?.actionType || "change";
+	const defaultTab = ipdData?.data?.change_mode || "change";
 
 	useEffect(() => {
 		setActiveTab(defaultTab);
@@ -129,6 +131,8 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 		setActionType(null);
 		// closeActions();
 	};
+
+	console.log(ipdData);
 
 	return (
 		<GlobalDrawer opened={opened} close={close} title={t("ManageAdmission")} size="60%">
@@ -331,8 +335,8 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 						<Tabs value={activeTab} onChange={handleTabChange} defaultValue={defaultTab}>
 							<Tabs.List>
 								<Tabs.Tab value="change">{t("Change")}</Tabs.Tab>
+								<Tabs.Tab value="change_day">{t("DayChange")}</Tabs.Tab>
 								<Tabs.Tab value="cancel">{t("Cancel")}</Tabs.Tab>
-								<Tabs.Tab value="dayChange">{t("DayChange")}</Tabs.Tab>
 							</Tabs.List>
 							<Divider />
 							<Tabs.Panel value="change">
@@ -344,19 +348,12 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 										</Text>
 										<Stack gap="xs">
 											<Text fz="sm">
-												<strong>{t("RequestedAccommodationType")}</strong>:{" "}
-												{requestedChangeData.accommodationTypeLabel || "No Request"}
-											</Text>
-											<Text fz="sm">
-												<strong>{t("RequestedRoom")}</strong>: {requestedChangeData.roomNumber || "No Requested Room"}
-											</Text>
-											<Text fz="sm">
-												<strong>{t("Comment")}</strong>: {requestedChangeData.comment || "No Requested Comment"}
+												<strong>{t("Comment")}</strong>:{" "}
+												{ipdData?.data?.change_comment}
 											</Text>
 										</Stack>
 									</Box>
 									<Divider />
-
 									<Box>
 										<Select
 											label={t("AccommodationType")}
@@ -404,7 +401,7 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 										</Text>
 										<Stack gap="xs">
 											<Text fz="sm">
-												<strong>{t("Reason")}</strong>: {requestedCancelData.reason || "No Requested Reason"}
+												<strong>{t("Reason")}</strong>: {ipdData?.data?.change_comment}
 											</Text>
 										</Stack>
 									</Box>
@@ -421,7 +418,7 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 								</Stack>
 							</Tabs.Panel>
 
-							<Tabs.Panel value="dayChange">
+							<Tabs.Panel value="change_day">
 								<Stack gap="md" mt="xs">
 									{/* =============== requested information section =============== */}
 									<Box p="xs" bg="var(--theme-primary-color-0)" style={{ borderRadius: "4px" }}>
@@ -431,7 +428,7 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 										<Stack gap="xs">
 											<Text fz="sm">
 												<strong>{t("RequestedDayChange")}</strong>:{" "}
-												{requestedDayChangeData.dayChange || "No Requested Day Change"}
+												{ipdData?.data?.change_comment}
 											</Text>
 										</Stack>
 									</Box>
