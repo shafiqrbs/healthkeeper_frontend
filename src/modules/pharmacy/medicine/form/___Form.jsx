@@ -70,7 +70,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											<Select
 												searchable
 												onSearchChange={setMedicineTerm}
-												searchValue={medicineTerm}
+												// searchValue={medicineTerm}
 												tooltip={t("EnterGenericMedicine")}
 												id="generic"
 												name="medicine_stock_id"
