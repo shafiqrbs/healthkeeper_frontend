@@ -60,7 +60,7 @@ const ReportRenderer = forwardRef(
 
 		const renderCustomReport = () => {
 			if (diagnosticReport?.particular?.is_custom_report === 1) {
-				const slug = diagnosticReport?.particular?.slug?.trim();
+				const slug = diagnosticReport?.particular?.slug;
 				switch (slug) {
 					case "covid-19":
 						return (
@@ -119,6 +119,14 @@ const ReportRenderer = forwardRef(
 							/>
 						);
 					case "gene-extra-sputum":
+						return (
+							<PulmonaryStatus
+								diagnosticReport={diagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
+							/>
+						);
+					case "gene-extra-pulmonary":
 						return (
 							<PulmonaryStatus
 								diagnosticReport={diagnosticReport}

@@ -1,4 +1,4 @@
-import { Box, Stack, Table, Group, Text, ScrollArea } from "@mantine/core";
+import { Box, Stack, Table, Group, Text, ScrollArea,Radio,List } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Checkbox } from "@mantine/core";
 import ReportSubmission from "../ReportSubmission";
@@ -15,6 +15,7 @@ import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
 import { formatDateForMySQL } from "@utils/index";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
+import {useEffect, useState} from "react";
 
 const module = MODULES.LAB_TEST;
 
@@ -30,7 +31,7 @@ export default function PulmonaryStatus({
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
 	const is_completed = diagnosticReport?.process === "Done";
-
+	const [apiData, setApiData] = useState('invalid');
 	const form = useForm({
 		initialValues: {
 			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
@@ -41,6 +42,7 @@ export default function PulmonaryStatus({
 			rif_resistance_indeterminate: custom_report?.rif_resistance_indeterminate || 0,
 			mtb_not_detected: custom_report?.mtb_not_detected || 0,
 			invalid: custom_report?.invalid || 0,
+			rif_result: "not_detected", // ✅ default selected
 		},
 	});
 
@@ -93,126 +95,93 @@ export default function PulmonaryStatus({
 		}
 	}
 
+	const rifOptions = [
+		{ value: "not_detected", label: "T-MTB Detected, Rif Resistance not Detected" },
+		{ value: "detected", label: "RR-MTB Detected, Rif Resistance Detected" },
+		{ value: "indeterminate", label: "Indeterminate" },
+		{ value: "mtb_not_detected", label: "MTB Not Detected" },
+		{ value: "invalid", label: "Invalid" },
+	];
+
+	useEffect(() => {
+		if (custom_report?.rif_result) {
+			form.setFieldValue("rif_result", custom_report.rif_result);
+		}
+	}, [apiData]);
+
 	return (
 		<Box className="border-top-none" px="sm" mt="xs">
 			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
-					<Group grow>
-						{/* =============== genexpert site/hospital =============== */}
-						<DatePickerForm
-							name="test_date"
-							id="test_date"
-							nextField="comment"
-							form={form}
-							label="Test Date"
-							placeholder="Select date"
-						/>
-
-						{/* =============== reference laboratory specimen id =============== */}
-						<InputNumberForm
-							name="lab_no"
-							id="lab_no"
-							nextField="id"
-							form={form}
-							label="Lab No"
-							placeholder="Enter Lab No"
-							readOnly={is_completed}
-						/>
-					</Group>
+					<Radio.Group
+						value={form.values.rif_result}
+						onChange={(value) => form.setFieldValue("rif_result", value)}
+						readOnly={is_completed}
+					>
+						<Stack gap="xs">
+							{rifOptions.map((item) => (
+								<Radio
+									key={item.value}
+									value={item.value}
+									label={item.label}
+								/>
+							))}
+						</Stack>
+					</Radio.Group>
 
 					{/* =============== results table =============== */}
 					<Box my="md">
 						<Table withColumnBorders withTableBorder withRowBorders>
 							<Table.Thead>
 								<Table.Tr>
-									<Table.Th>ID</Table.Th>
-									<Table.Th>T-MTB Detected, Rif Resistance not Detected</Table.Th>
-									<Table.Th>RR-MTB Detected, Rif Resistance Detected</Table.Th>
-									<Table.Th>
-										TI-MTB Detected, Rif Resistance Indeterminate
-									</Table.Th>
-									<Table.Th>T-MTB Not Detected</Table.Th>
-									<Table.Th>INVALID/ERROR/NO RESULT</Table.Th>
+									<Table.Td colSpan={5} p={0}>
+										<Radio.Group
+											value={form.values?.rif_result}
+											onChange={(value) => form.setFieldValue("rif_result", value)}
+											readOnly={is_completed}
+											style={{ width: "100%" }}
+										>
+											<Table withColumnBorders w="100%">
+												<Table.Tr>
+													<Table.Th>
+														<Radio
+															value="not_detected"
+															label="T-MTB Detected, Rif Resistance not Detected"
+														/>
+													</Table.Th>
+													<Table.Th>
+														<Radio
+															value="detected"
+															label="RR-MTB Detected, Rif Resistance Detected"
+														/>
+													</Table.Th>
+
+													<Table.Th>
+														<Radio
+															value="indeterminate"
+															label="TI-MTB Detected, Rif Resistance Indeterminate"
+														/>
+													</Table.Th>
+
+													<Table.Th>
+														<Radio
+															value="mtb_not_detected"
+															label="T-MTB Not Detected"
+														/>
+													</Table.Th>
+
+													<Table.Th>
+														<Radio
+															value="invalid"
+															label="INVALID/ERROR/NO RESULT"
+														/>
+													</Table.Th>
+												</Table.Tr>
+											</Table>
+										</Radio.Group>
+									</Table.Td>
 								</Table.Tr>
-								<Table.Tr>
-									<Table.Th ta="center">
-										<InputNumberForm
-											w={120}
-											name="id"
-											id="id"
-											nextField="rif_resistance_not_detected"
-											form={form}
-											label=""
-											placeholder="Enter ID"
-											readOnly={is_completed}
-										/>
-									</Table.Th>
-									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.rif_resistance_not_detected}
-											onChange={(event) =>
-												form.setFieldValue(
-													"rif_resistance_not_detected",
-													event.currentTarget.checked
-												)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
-										/>
-									</Table.Th>
-									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.rif_resistance_detected}
-											onChange={(event) =>
-												form.setFieldValue(
-													"rif_resistance_detected",
-													event.currentTarget.checked
-												)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
-										/>
-									</Table.Th>
-									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.rif_resistance_indeterminate}
-											onChange={(event) =>
-												form.setFieldValue(
-													"rif_resistance_indeterminate",
-													event.currentTarget.checked
-												)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
-										/>
-									</Table.Th>
-									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.mtb_not_detected}
-											onChange={(event) =>
-												form.setFieldValue(
-													"mtb_not_detected",
-													event.currentTarget.checked
-												)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
-										/>
-									</Table.Th>
-									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.invalid}
-											onChange={(event) =>
-												form.setFieldValue(
-													"invalid",
-													event.currentTarget.checked
-												)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
-										/>
-									</Table.Th>
-								</Table.Tr>
+
 							</Table.Thead>
 						</Table>
 					</Box>

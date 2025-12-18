@@ -13,21 +13,17 @@ import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
 import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
-import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import inputCss from "@assets/css/InputField.module.css";
 import { medicineOptionsFilter } from "@utils/prescription";
+import useMedicineStockData from "@hooks/useMedicineStockData";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
-	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
-	const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
-
-	const { data: employeeDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.EMPLOYEE.PATH,
-		utility: CORE_DROPDOWNS.EMPLOYEE.UTILITY,
-	});
+	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
+	const { medicineData } = useMedicineStockData({ term: medicineTerm });
+	console.log(medicineData);
 
 	useEffect(() => {
 		if (data && type === "update") {
@@ -57,7 +53,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		[]
 	);
 
-	console.log(medicineGenericData);
+	
 
 	return (
 		<form onSubmit={form.onSubmit(handleSubmit)}>
@@ -68,6 +64,37 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 						<Stack justify="space-between" className="drawer-form-stack-vertical">
 							<ScrollArea h={height} scrollbarSize={2} scrollbars="y" type="hover">
 								<Stack>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6} mt="3xs">
+											Generic Medicine
+										</Grid.Col>
+										<Grid.Col align="center" span={14} mt="3xs">
+											<Select
+												searchable
+												onSearchChange={setMedicineTerm}
+												searchValue={medicineTerm}
+												tooltip={t("EnterGenericMedicine")}
+												id="generic"
+												name="medicine_stock_id"
+												data={medicineData?.map((item, index) => ({
+													label: item?.product_name || item?.product_name || item?.product_name,
+													value: item.product_id?.toString() || index.toString(),
+													generic: item?.generic || "",
+												}))}
+												filter={medicineOptionsFilter}
+												value={form.values.medicine_stock_id?.toString()}
+												onChange={(v, option) => {
+													form.setFieldValue("generic", option.generic);
+													form.setFieldValue("medicine_stock_id", v);
+													setMedicineTerm(option.generic);
+												}}
+												onBlur={() => setMedicineTerm(medicineTerm)}
+												placeholder={t("GenericMedicine")}
+												classNames={inputCss}
+												error={!!form.errors.medicine_stock_id}
+											/>
+										</Grid.Col>
+									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">
@@ -86,37 +113,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
-										<Grid.Col span={6} mt="3xs">
-											Generic Medicine
-										</Grid.Col>
-										<Grid.Col align="center" span={14} mt="3xs">
-											<Select
-												searchable
-												onSearchChange={setMedicineGenericTerm}
-												searchValue={medicineGenericTerm}
-												tooltip={t("EnterGenericMedicine")}
-												id="generic"
-												name="medicine_stock_id"
-												data={medicineGenericData?.map((item, index) => ({
-													label: item?.name || item?.product_name || item?.generic,
-													value: item.generic_id?.toString() || index.toString(),
-													generic: item?.generic || "",
-												}))}
-												filter={medicineOptionsFilter}
-												value={form.values.medicine_stock_id?.toString()}
-												onChange={(v, option) => {
-													form.setFieldValue("generic", option.generic);
-													form.setFieldValue("medicine_stock_id", v);
-													setMedicineGenericTerm(option.generic);
-												}}
-												onBlur={() => setMedicineGenericTerm(medicineGenericTerm)}
-												placeholder={t("GenericMedicine")}
-												classNames={inputCss}
-												error={!!form.errors.medicine_stock_id}
-											/>
-										</Grid.Col>
-									</Grid>
+
 								</Stack>
 							</ScrollArea>
 							<DrawerStickyFooter type={type} />

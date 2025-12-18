@@ -136,7 +136,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 						<Table.Tbody>
 							<Table.Tr style={{ borderTop: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th>{t("Particular")}</Table.Th>
-								<Table.Th style={{ textAlign: "right", width: "60px" }}>{t("Room")}</Table.Th>
+								<Table.Th style={{ textAlign: "right", width: "80px" }}>{t("Room")}</Table.Th>
 								<Table.Th style={{ textAlign: "right", width: "70px" }}>{t("Amount")}</Table.Th>
 							</Table.Tr>
 							{patientInfo?.items?.map((item, index) => (
