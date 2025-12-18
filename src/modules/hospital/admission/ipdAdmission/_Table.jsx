@@ -14,7 +14,7 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "../confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
-import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
@@ -26,6 +26,13 @@ import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPre
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import {updateEntityData} from "@/app/store/core/crudThunk";
+import {successNotification} from "@components/notification/successNotification";
+import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
+import useVendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage";
+import {setInsertType} from "@/app/store/core/crudSlice";
+import {modals} from "@mantine/modals";
+import {errorNotification} from "@components/notification/errorNotification";
 
 const PER_PAGE = 20;
 
@@ -57,16 +64,15 @@ export default function _Table({ module }) {
 	const billingInvoiceRef = useRef(null);
 	const [billingPrintData, setBillingPrintData] = useState(null);
 	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
-	const [actionType, setActionType] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [actionType, setActionType] = useState('change');
 	const [actionFormData, setActionFormData] = useState(null);
 
 	// =============== form for action drawer fields ================
 	const actionForm = useForm({
 		initialValues: {
-			accommodationType: "",
+			change_mode: "",
 			comment: "",
-			reason: "",
-			dayChangeComment: "",
 		},
 	});
 
@@ -93,7 +99,7 @@ export default function _Table({ module }) {
 		filterParams: {
 			name: filterData?.name,
 			patient_mode: "ipd",
-			created: form.values.created,
+			//created: form.values.created,
 			ipd_mode: processTab,
 			term: form.values.keywordSearch,
 		},
@@ -143,15 +149,100 @@ export default function _Table({ module }) {
 		requestAnimationFrame(printAdmissionForm);
 	};
 
-	// =============== handle action form submit conditionally ================
 	const handleActionSubmit = (values) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Submit"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleConfirmModal(values),
+		});
+	};
+
+	async function handleConfirmModal(values) {
+		setIsLoading(true);
+		try {
+			const actionData = {
+				change_mode: actionType ?? "change",
+				...values,
+			};
+
+			const payload = {
+				url: `${MASTER_DATA_ROUTES.API_ROUTES.IPD.CHANGE}/${id}`,
+				data: actionData,
+				module,
+			};
+			const resultAction = await dispatch(updateEntityData(payload));
+
+			// ❌ Validation error
+			if (updateEntityData.rejected.match(resultAction)) {
+				const fieldErrors = resultAction.payload?.errors;
+
+				if (fieldErrors) {
+					const errorObject = Object.keys(fieldErrors).reduce((acc, key) => {
+						acc[key] = fieldErrors[key][0];
+						return acc;
+					}, {});
+					form.setErrors(errorObject);
+				}
+				return;
+			}
+			// ✅ Success
+			if (updateEntityData.fulfilled.match(resultAction)) {
+				successNotification(
+					t("UpdateSuccessfully"),
+					SUCCESS_NOTIFICATION_COLOR
+				);
+			}
+		} catch (error) {
+			errorNotification(
+				error?.message || t("SomethingWentWrong"),
+				ERROR_NOTIFICATION_COLOR
+			);
+		} finally {
+			setIsLoading(false);
+		}
+	}
+
+
+	// =============== handle action form submit conditionally ================
+	const handleConfirmModalx = (values) => {
 		// =============== store action form data for confirmation modal ================
 		const actionData = {
-			actionType: actionType,
+			change_mode: actionType,
 			...values,
 		};
-		setActionFormData(actionData);
 
+		const value = {
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.UPDATE}/${data?.id}`,
+			data: formValue,
+			module,
+		};
+		const resultAction =  dispatch(updateEntityData(value));
+		if (updateEntityData.rejected.match(resultAction)) {
+			const fieldErrors = resultAction.payload.errors;
+
+			// Check if there are field validation errors and dynamically set them
+			if (fieldErrors) {
+				const errorObject = {};
+				Object.keys(fieldErrors).forEach((key) => {
+					errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
+				});
+				// Display the errors using your form's `setErrors` function dynamically
+				form.setErrors(errorObject);
+			}
+		} else if (updateEntityData.fulfilled.match(resultAction)) {
+			successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+			setTimeout(() => {
+				useVendorDataStoreIntoLocalStorage();
+				form.reset();
+				dispatch(setInsertType({ insertType: "create", module }));
+				close(); // close the drawer
+			}, 700);
+		}
+
+		setActionFormData(actionData);
 		if (actionType === "change") {
 			console.log("Change action:", {
 				accommodationType: values.accommodationType,
@@ -163,7 +254,7 @@ export default function _Table({ module }) {
 				reason: values.reason,
 			});
 			// TODO: implement cancel action API call
-		} else if (actionType === "dayChange") {
+		} else if (actionType === "day_change") {
 			console.log("Day change action:", {
 				dayChangeComment: values.dayChangeComment,
 			});
@@ -171,14 +262,14 @@ export default function _Table({ module }) {
 		}
 		// reset form and close drawer after submission
 		actionForm.reset();
-		setActionType(null);
+		setActionType('change');
 		closeActions();
 	};
 
 	// =============== handle drawer close with form reset ================
 	const handleCloseActions = () => {
 		actionForm.reset();
-		setActionType(null);
+		setActionType('change');
 		closeActions();
 	};
 
@@ -399,62 +490,30 @@ export default function _Table({ module }) {
 								label={t("RequestFor")}
 								placeholder={t("SelectRequestFor")}
 								data={[
-									{ value: "change", label: t("Change") },
+									{ value: "change", label: t("Room/Cabin Change") },
+									{ value: "day_change", label: t("Day Change") },
 									{ value: "cancel", label: t("Cancel") },
-									{ value: "dayChange", label: t("DayChange") },
 								]}
 								value={actionType}
 								onChange={(value) => {
 									setActionType(value);
 									actionForm.reset();
 								}}
-								clearable
-								searchable={false}
 							/>
 
 							<Divider />
-
-							{actionType === "change" && (
-								<Stack h={mainAreaHeight - 166} justify="space-between">
-									<Box>
-										<Textarea
-											label={t("Comment")}
-											placeholder={t("EnterComment")}
-											name="comment"
-											{...actionForm.getInputProps("comment")}
-											minRows={3}
-										/>
-									</Box>
-									<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
-								</Stack>
-							)}
-
-							{actionType === "cancel" && (
-								<Stack h={mainAreaHeight - 166} justify="space-between">
+							<Stack h={mainAreaHeight - 166} justify="space-between">
+								<Box>
 									<Textarea
-										label={t("Reason")}
-										placeholder={t("EnterReason")}
-										{...actionForm.getInputProps("reason")}
+										label={t("Comment")}
+										placeholder={t("EnterComment")}
+										name="comment"
+										{...actionForm.getInputProps("comment")}
 										minRows={3}
-										required
 									/>
-									<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
-								</Stack>
-							)}
-
-							{actionType === "dayChange" && (
-								<Stack h={mainAreaHeight - 166} justify="space-between">
-									<Box>
-										<Textarea
-											label={t("DayChangeComment")}
-											placeholder={t("EnterDayChangeComment")}
-											{...actionForm.getInputProps("dayChangeComment")}
-											minRows={3}
-										/>
-									</Box>
-									<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
-								</Stack>
-							)}
+								</Box>
+								<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
+							</Stack>
 						</Stack>
 					</Box>
 				</Box>
