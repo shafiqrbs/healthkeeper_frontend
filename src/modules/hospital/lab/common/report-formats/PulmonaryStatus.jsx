@@ -1,4 +1,4 @@
-import { Box, Stack, Table, Group, Text, ScrollArea,Radio,List } from "@mantine/core";
+import { Box, Stack, Table, Group, Text, ScrollArea, Radio, List } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Checkbox } from "@mantine/core";
 import ReportSubmission from "../ReportSubmission";
@@ -15,23 +15,18 @@ import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
 import { formatDateForMySQL } from "@utils/index";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import {useEffect, useState} from "react";
+import { useEffect } from "react";
 
 const module = MODULES.LAB_TEST;
 
 // =============== sars cov2 results are now handled as individual boolean properties ===============
-export default function PulmonaryStatus({
-	diagnosticReport,
-	refetchDiagnosticReport,
-	refetchLabReport,
-}) {
+export default function PulmonaryStatus({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
 	const is_completed = diagnosticReport?.process === "Done";
-	const [apiData, setApiData] = useState('invalid');
 	const form = useForm({
 		initialValues: {
 			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
@@ -42,7 +37,8 @@ export default function PulmonaryStatus({
 			rif_resistance_indeterminate: custom_report?.rif_resistance_indeterminate || 0,
 			mtb_not_detected: custom_report?.mtb_not_detected || 0,
 			invalid: custom_report?.invalid || 0,
-			rif_result: "not_detected", // ✅ default selected
+			rif_result: "not_detected", // ✅ default selected for list radios
+			rif_table_result: "not_detected", // ✅ default selected for table radios
 		},
 	});
 
@@ -107,7 +103,10 @@ export default function PulmonaryStatus({
 		if (custom_report?.rif_result) {
 			form.setFieldValue("rif_result", custom_report.rif_result);
 		}
-	}, [apiData]);
+		if (custom_report?.rif_table_result) {
+			form.setFieldValue("rif_table_result", custom_report.rif_table_result);
+		}
+	}, [custom_report]);
 
 	return (
 		<Box className="border-top-none" px="sm" mt="xs">
@@ -120,11 +119,7 @@ export default function PulmonaryStatus({
 					>
 						<Stack gap="xs">
 							{rifOptions.map((item) => (
-								<Radio
-									key={item.value}
-									value={item.value}
-									label={item.label}
-								/>
+								<Radio key={item.value} value={item.value} label={item.label} />
 							))}
 						</Stack>
 					</Radio.Group>
@@ -136,8 +131,8 @@ export default function PulmonaryStatus({
 								<Table.Tr>
 									<Table.Td colSpan={5} p={0}>
 										<Radio.Group
-											value={form.values?.rif_result}
-											onChange={(value) => form.setFieldValue("rif_result", value)}
+											value={form.values?.rif_table_result}
+											onChange={(value) => form.setFieldValue("rif_table_result", value)}
 											readOnly={is_completed}
 											style={{ width: "100%" }}
 										>
@@ -164,35 +159,24 @@ export default function PulmonaryStatus({
 													</Table.Th>
 
 													<Table.Th>
-														<Radio
-															value="mtb_not_detected"
-															label="T-MTB Not Detected"
-														/>
+														<Radio value="mtb_not_detected" label="T-MTB Not Detected" />
 													</Table.Th>
 
 													<Table.Th>
-														<Radio
-															value="invalid"
-															label="INVALID/ERROR/NO RESULT"
-														/>
+														<Radio value="invalid" label="INVALID/ERROR/NO RESULT" />
 													</Table.Th>
 												</Table.Tr>
 											</Table>
 										</Radio.Group>
 									</Table.Td>
 								</Table.Tr>
-
 							</Table.Thead>
 						</Table>
 					</Box>
 					{/* =============== text date =============== */}
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission
-				diagnosticReport={diagnosticReport}
-				form={form}
-				handleSubmit={handleSubmit}
-			/>
+			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
 		</Box>
 	);
 }
