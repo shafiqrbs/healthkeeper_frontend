@@ -8,13 +8,17 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { capitalizeWords } from "@/common/utils";
 import { useDispatch, useSelector } from "react-redux";
-import { getIndexEntityData } from "@/app/store/core/crudThunk";
+import {getIndexEntityData, updateEntityData} from "@/app/store/core/crudThunk";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getRoomOptions } from "@utils/ipd";
+import {modals} from "@mantine/modals";
+import {successNotification} from "@components/notification/successNotification";
+import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
+import {errorNotification} from "@components/notification/errorNotification";
 
 const PER_PAGE = 200;
 
-export default function ManageModal({ opened, close, form, selectedId }) {
+export default function ManageModal({ opened, close, form, selectedId,module }) {
 	const dispatch = useDispatch();
 	const [updateKey, setUpdateKey] = useState(0);
 	const { mainAreaHeight } = useOutletContext();
@@ -24,6 +28,7 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 	const [actionFormData, setActionFormData] = useState(null);
 	const cabinData = useSelector((state) => state.crud.cabin?.data?.data);
 	const bedData = useSelector((state) => state.crud.bed?.data?.data);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const { data: ipdData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.VIEW}/${selectedId}`,
@@ -65,12 +70,6 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 		return typeMap[type] || type;
 	};
 
-	const requestedChangeData = {
-		accommodationType: actionFormData?.accommodationType || "",
-		accommodationTypeLabel: getAccommodationTypeLabel(actionFormData?.accommodationType),
-		roomNumber: actionFormData?.roomNumber || "",
-		comment: actionFormData?.comment || "",
-	};
 
 	// =============== reset selected room when accommodation type changes ================
 	useEffect(() => {
@@ -78,13 +77,6 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 		setUpdateKey((prev) => prev + 1);
 	}, [form.values.accommodationType]);
 
-	const requestedCancelData = {
-		reason: actionFormData?.reason || "",
-	};
-
-	const requestedDayChangeData = {
-		dayChange: actionFormData?.dayChange || "",
-	};
 
 	// =============== determine default tab based on action type ================
 	const defaultTab = ipdData?.data?.change_mode || "change";
@@ -99,40 +91,65 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 		setActionType(tabValue);
 	};
 
-	const handleActionSubmit = (values) => {
-		// =============== store action form data for confirmation modal ================
-		const actionData = {
-			actionType: actionType,
-			...values,
-		};
-		setActionFormData(actionData);
-
-		if (actionType === "change") {
-			console.log("Change action:", {
-				accommodationType: values.accommodationType,
-				roomNumber: values.roomNumber,
-				comment: values.comment,
-			});
-			// TODO: implement change action API call
-		} else if (actionType === "cancel") {
-			console.log("Cancel action:", {
-				reason: values.reason,
-			});
-			// TODO: implement cancel action API call
-		} else if (actionType === "dayChange") {
-			console.log("Day change action:", {
-				dayChange: values.dayChange,
-				dayChangeComment: values.dayChangeComment,
-			});
-			// TODO: implement day change action API call
-		}
-		// reset form and close drawer after submission
-		form.reset();
-		setActionType(null);
-		// closeActions();
+	const handleActionSubmit = () => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Submit"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleConfirmModal(),
+		});
 	};
 
-	console.log(ipdData);
+	async function handleConfirmModal() {
+		setIsLoading(true);
+		try {
+			const actionData = {
+				change_mode: actionType ?? "change",
+				comment : form.values.comment,
+				change_day: form.values.dayChange,
+				room_id: form.values.roomNumber,
+			};
+
+			const payload = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.REVISED}/${selectedId}`,
+				data: actionData,
+				module,
+			};
+			const resultAction = await dispatch(updateEntityData(payload));
+
+			// ❌ Validation error
+			if (updateEntityData.rejected.match(resultAction)) {
+				const fieldErrors = resultAction.payload?.errors;
+
+				if (fieldErrors) {
+					const errorObject = Object.keys(fieldErrors).reduce((acc, key) => {
+						acc[key] = fieldErrors[key][0];
+						return acc;
+					}, {});
+					form.setErrors(errorObject);
+				}
+				return;
+			}
+			// ✅ Success
+			if (updateEntityData.fulfilled.match(resultAction)) {
+				successNotification(
+					t("UpdateSuccessfully"),
+					SUCCESS_NOTIFICATION_COLOR
+				);
+				form.reset();
+			}
+		} catch (error) {
+			errorNotification(
+				error?.message || t("SomethingWentWrong"),
+				ERROR_NOTIFICATION_COLOR
+			);
+		} finally {
+			close()
+			setIsLoading(false);
+		}
+	}
 
 	return (
 		<GlobalDrawer opened={opened} close={close} title={t("ManageAdmission")} size="60%">
@@ -331,127 +348,132 @@ export default function ManageModal({ opened, close, form, selectedId }) {
 							</Stack>
 						</ScrollArea>
 					</Grid.Col>
-					<Grid.Col span={12}>
-						<Tabs value={activeTab} onChange={handleTabChange} defaultValue={defaultTab}>
-							<Tabs.List>
-								<Tabs.Tab value="change">{t("Change")}</Tabs.Tab>
-								<Tabs.Tab value="change_day">{t("DayChange")}</Tabs.Tab>
-								<Tabs.Tab value="cancel">{t("Cancel")}</Tabs.Tab>
-							</Tabs.List>
-							<Divider />
-							<Tabs.Panel value="change">
-								<Stack gap="md" mt="xs">
-									{/* =============== requested information section =============== */}
-									<Box p="xs" bg="var(--theme-primary-color-0)" style={{ borderRadius: "4px" }}>
-										<Text fz="md" fw={600} mb="xs">
-											{t("RequestedInformation")}:
-										</Text>
-										<Stack gap="xs">
-											<Text fz="sm">
-												<strong>{t("Comment")}</strong>:{" "}
-												{ipdData?.data?.change_comment}
+					<Grid.Col span={12} >
+						<Box>
+							<Tabs value={activeTab} onChange={handleTabChange} defaultValue={defaultTab}>
+								<Tabs.List>
+									<Tabs.Tab value="change">{t("Change")}</Tabs.Tab>
+									<Tabs.Tab value="change_day">{t("ChangeDay")}</Tabs.Tab>
+									<Tabs.Tab value="cancel">{t("Cancel")}</Tabs.Tab>
+								</Tabs.List>
+								<Divider />
+								<Tabs.Panel value="change">
+									<Stack gap="md" mt="xs">
+										{/* =============== requested information section =============== */}
+										<Box p="xs" bg="var(--theme-primary-color-0)" style={{ borderRadius: "4px" }}>
+											<Text fz="md" fw={600} mb="xs">
+												{t("RequestedInformation")}:
 											</Text>
-										</Stack>
-									</Box>
-									<Divider />
-									<Box>
-										<Select
-											label={t("AccommodationType")}
-											placeholder={t("SelectAccommodationType")}
-											data={[
-												{ value: "", label: t("Select") },
-												{ value: "bed", label: t("Bed") },
-												{ value: "cabin", label: t("Cabin") },
-												{ value: "freeBed", label: t("FreeBed") },
-												{ value: "freeCabin", label: t("FreeCabin") },
-											]}
-											name="accommodationType"
-											{...form.getInputProps("accommodationType")}
-										/>
-										<Select
-											key={updateKey}
-											label={t("Bed/CabinNumber")}
-											placeholder={t("Select")}
-											data={getRoomOptions(form, cabinData, bedData, t)}
-											name="roomNumber"
-											{...form.getInputProps("roomNumber")}
-											searchable
-											disabled={!form.values.accommodationType}
-										/>
-										<Textarea
-											label={t("Comment")}
-											placeholder={t("EnterComment")}
-											name="comment"
-											{...form.getInputProps("comment")}
-											minRows={3}
-										/>
-									</Box>
-									<Button type="submit">{t("Approve")}</Button>
-									{/* =============== form content section =============== */}
-								</Stack>
-							</Tabs.Panel>
+											<Stack gap="xs">
+												<Text fz="sm">
+													<strong>{t("Comment")}</strong>:{" "}
+													{ipdData?.data?.change_comment}
+												</Text>
+											</Stack>
+										</Box>
+										<Divider />
+										<Box>
+											<Select
+												label={t("BedCabinType")}
+												placeholder={t("SelectAccommodationType")}
+												data={[
+													{ value: "", label: t("Select") },
+													{ value: "bed", label: t("Bed") },
+													{ value: "cabin", label: t("Cabin") },
+													{ value: "freeBed", label: t("FreeBed") },
+													{ value: "freeCabin", label: t("FreeCabin") },
+												]}
+												name="accommodationType"
+												{...form.getInputProps("accommodationType")}
+											/>
+										</Box>
+										<Box>
 
-							<Tabs.Panel value="cancel">
-								<Stack gap="md" mt="xs">
-									{/* =============== requested information section =============== */}
+											<Select
+												key={updateKey}
+												label={t("Bed/CabinNumber")}
+												placeholder={t("Select")}
+												data={getRoomOptions(form, cabinData, bedData, t)}
+												name="roomNumber"
+												{...form.getInputProps("roomNumber")}
+												searchable
+												disabled={!form.values.accommodationType}
+											/>
+										</Box>
+										<Box>
+											<NumberInput
+												label={t("DayChange")}
+												placeholder={t("EnterDayChange")}
+												name="dayChange"
+												{...form.getInputProps("dayChange")}
+												min={1}
+												max={10}
+												required={activeTab === "dayChange"}
+											/>
+										</Box>
+										{/* =============== form content section =============== */}
+									</Stack>
+								</Tabs.Panel>
 
-									<Box p="xs" bg="var(--theme-primary-color-0)" style={{ borderRadius: "4px" }}>
-										<Text fz="sm" fw={600} mb="xs">
-											{t("RequestedInformation")}:
-										</Text>
-										<Stack gap="xs">
-											<Text fz="sm">
-												<strong>{t("Reason")}</strong>: {ipdData?.data?.change_comment}
+								<Tabs.Panel value="cancel">
+									<Stack gap="md" mt="xs">
+										{/* =============== requested information section =============== */}
+										<Box p="xs" bg="var(--theme-primary-color-0)" style={{ borderRadius: "4px" }}>
+											<Text fz="sm" fw={600} mb="xs">
+												{t("RequestedInformation")}:
 											</Text>
-										</Stack>
-									</Box>
-									<Divider />
-									<Textarea
-										label={t("Reason")}
-										placeholder={t("EnterReason")}
-										name="reason"
-										{...form.getInputProps("reason")}
-										minRows={3}
-										required={activeTab === "cancel"}
-									/>
-									<Button type="submit">{t("Approve")}</Button>
-								</Stack>
-							</Tabs.Panel>
+											<Stack gap="xs">
+												<Text fz="sm">
+													<strong>{t("Reason")}</strong>: {ipdData?.data?.change_comment}
+												</Text>
+											</Stack>
+										</Box>
+										<Divider />
+									</Stack>
+								</Tabs.Panel>
 
-							<Tabs.Panel value="change_day">
-								<Stack gap="md" mt="xs">
-									{/* =============== requested information section =============== */}
-									<Box p="xs" bg="var(--theme-primary-color-0)" style={{ borderRadius: "4px" }}>
-										<Text fz="sm" fw={600} mb="xs">
-											{t("RequestedInformation")}:
-										</Text>
-										<Stack gap="xs">
-											<Text fz="sm">
-												<strong>{t("RequestedDayChange")}</strong>:{" "}
-												{ipdData?.data?.change_comment}
+								<Tabs.Panel value="change_day">
+									<Stack gap="md" mt="xs">
+										{/* =============== requested information section =============== */}
+										<Box p="xs" bg="var(--theme-primary-color-0)" style={{ borderRadius: "4px" }}>
+											<Text fz="sm" fw={600} mb="xs">
+												{t("RequestedInformation")}:
 											</Text>
-										</Stack>
-									</Box>
-									<Divider />
-									<NumberInput
-										label={t("DayChange")}
-										placeholder={t("EnterDayChange")}
-										name="dayChange"
-										{...form.getInputProps("dayChange")}
-										min={1}
-										required={activeTab === "dayChange"}
-									/>
-									<Textarea
-										label={t("DayChangeComment")}
-										placeholder={t("EnterComment")}
-										name="dayChangeComment"
-										{...form.getInputProps("dayChangeComment")}
-										minRows={3}
-									/>
-									<Button type="submit">{t("Approve")}</Button>
-								</Stack>
-							</Tabs.Panel>
-						</Tabs>
+											<Stack gap="xs">
+												<Text fz="sm">
+													<strong>{t("RequestedDayChange")}</strong>:{" "}
+													{ipdData?.data?.change_comment}
+												</Text>
+											</Stack>
+										</Box>
+
+										<Divider />
+										<NumberInput
+											label={t("DayChange")}
+											placeholder={t("EnterDayChange")}
+											name="dayChange"
+											{...form.getInputProps("dayChange")}
+											min={1}
+											max={10}
+											required={activeTab === "dayChange"}
+										/>
+										<Divider />
+									</Stack>
+								</Tabs.Panel>
+							</Tabs>
+						</Box>
+						<Box>
+							<Stack gap="md" mt="xs">
+							<Textarea
+								label={t("Comment")}
+								placeholder={t("EnterComment")}
+								name="comment"
+								{...form.getInputProps("comment")}
+								minRows={3}
+							/>
+							<Button type="submit">{t("Approve")}</Button>
+							</Stack>
+						</Box>
 					</Grid.Col>
 				</Grid>
 			</Box>

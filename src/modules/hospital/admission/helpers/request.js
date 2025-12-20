@@ -97,6 +97,6 @@ export const getAdmissionManageFormInitialValues = () => {
 			reason: "",
 			dayChange: null,
 			actionType: "",
-		},
+		}
 	};
 };

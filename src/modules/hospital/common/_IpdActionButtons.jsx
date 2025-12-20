@@ -34,7 +34,9 @@ export default function IpdActionButtons({
 	const [openedDetails, { open: openDetails, close: closeDetails }] = useDisclosure(false);
 
 	const subTotal = quantity * entities?.[0]?.price;
-	const enteredAmount = Number(subTotal + entities?.[1]?.price);
+
+	const enteredAmount = entities?.reduce((sum, item) => sum + (item.sub_total ?? 0), 0);
+
 	const remainingBalance = configuredDueAmount - enteredAmount;
 	const isReturn = remainingBalance < 0;
 	const displayLabelKey = "Due";
@@ -123,30 +125,14 @@ export default function IpdActionButtons({
 										<Text fz="xs">{entity?.item_name}</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>
-										{index === 0 ? (
-											<NumberInput
-												onChange={setQuantity}
-												mt="-sm"
-												size="xs"
-												fz="xs"
-												py="xs"
-												value={quantity}
-												readOnly
-											/>
-										) : (
-											<Text fz="xs">{entity?.quantity}</Text>
-										)}
+										<Text fz="xs">{entity?.quantity}</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>
 										<Text fz="xs">{entity?.price}</Text>
 									</Grid.Col>
 									<Grid.Col span={4}>
 										<Flex justify="space-between" align="center">
-											{index === 0 ? (
-												<Text fz="xs">{subTotal}</Text>
-											) : (
-												<Text fz="xs">{entity?.sub_total}</Text>
-											)}
+											<Text fz="xs">{entity?.sub_total}</Text>
 										</Flex>
 									</Grid.Col>
 								</Grid>
@@ -173,19 +159,6 @@ export default function IpdActionButtons({
 										</Text>
 									</Box>
 								</Flex>
-								{/*<Flex align="center" justify="space-between">
-									<Text>Receive</Text>
-									<Box w="100px">
-										<InputNumberForm
-											disabled={isOpdRedirect}
-											id="amount"
-											form={form}
-											tooltip={t("EnterAmount")}
-											placeholder={t("Amount")}
-											name="amount"
-										/>
-									</Box>
-								</Flex>*/}
 								<Flex align="center" justify="space-between">
 									<Text>{t(displayLabelKey)}</Text>
 									<Box px="xs" py="les">

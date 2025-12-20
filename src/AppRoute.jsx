@@ -50,6 +50,7 @@ import BillingAdmissionIndex from "@modules/hospital/billing/admission";
 import BillingIpdIndex from "@modules/hospital/billing/ipd";
 import BillingRefundIndex from "@modules/hospital/billing/refund";
 import BillingRefundHistoryIndex from "@modules/hospital/billing/refundHistory";
+import BillingRefundIpdHistoryIndex from "@modules/hospital/billing/refundIpd";
 import DoctorIndex from "@modules/hospital/core/doctor";
 import NurseIndex from "@modules/hospital/core/nurse";
 import LabUserIndex from "@modules/hospital/core/lab-user";
@@ -615,6 +616,7 @@ function AppRoute() {
 									"admin_hospital",
 									"billing_manager",
 									"operator_opd",
+									"operator_emergency",
 									"operator_manager",
 								]}
 							>
@@ -737,6 +739,40 @@ function AppRoute() {
 								]}
 							>
 								<BillingRefundHistoryIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="refund-ipd-history"
+						element={
+							<ProtectedRoute
+								roles={[
+									"admin_administrator",
+									"admin_hospital",
+									"billing_manager",
+									"operator_opd",
+									"operator_manager",
+									"operator_emergency",
+								]}
+							>
+								<BillingRefundIpdHistoryIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="refund-ipd-history/:id"
+						element={
+							<ProtectedRoute
+								roles={[
+									"admin_administrator",
+									"admin_hospital",
+									"billing_manager",
+									"operator_opd",
+									"operator_manager",
+									"operator_emergency",
+								]}
+							>
+								<BillingRefundIpdHistoryIndex />
 							</ProtectedRoute>
 						}
 					/>

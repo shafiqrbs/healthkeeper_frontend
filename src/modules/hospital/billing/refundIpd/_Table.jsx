@@ -1,48 +1,44 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import {IconCalendarWeek, IconUser, IconArrowNarrowRight, IconInfoCircle} from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon } from "@mantine/core";
+import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
-import { MODULES } from "@/constants";
-import {formatDate, getLoggedInHospitalUser} from "@utils/index";
+import { MODULES_CORE } from "@/constants";
+import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import {useForm} from "@mantine/form";
-import {useSelector} from "react-redux";
-import {useAutoRefetch} from "@hooks/useAutoRefetch";
+import { useSelector } from "react-redux";
 import CustomDivider from "@components/core-component/CustomDivider";
 
-const module = MODULES.LAB_TEST;
-const PER_PAGE = 50;
+const module = MODULES_CORE.REFUND_HISTORY;
+const PER_PAGE = 500;
 
-export default function _Table() {
+export default function _Table({ patient_mode }) {
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const form = useForm();
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const hospitalConfig = getLoggedInHospitalUser();
-	const opdRoomIds = hospitalConfig?.particular_details?.diagnostic_room_ids;
+
 	const handleAdmissionOverview = (id) => {
 		setSelectedPatientId(id);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}`);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.IPD_VIEW}/${id}`);
 	};
-	const {refetchAll, records,fetching } = useInfiniteTableScroll({
+
+	const { records, fetching } = useInfiniteTableScroll({
 		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.INDEX,
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
 		direction: "desc",
 		filterParams: {
 			created: filterData.created,
 			term: filterData.keywordSearch,
-			room_ids: opdRoomIds,
+			patient_mode,
 		},
 	});
 
-	useAutoRefetch(refetchAll, 75000, true);
-	const handlePageReload = () => {
-		refetchAll();
+	const handleView = (id) => {
+		console.info(id);
 	};
 
 	return (
@@ -55,7 +51,8 @@ export default function _Table() {
 					Patient Name
 				</Text>
 			</Flex>
-			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 174} scrollbars="y" px="3xs">
+			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 100} scrollbars="y" px="3xs">
+				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid
 						columns={12}
@@ -63,7 +60,7 @@ export default function _Table() {
 						onClick={() => handleAdmissionOverview(item.uid)}
 						my="xs"
 						bg={
-							Number(selectedPatientId) === item?.id
+							String(selectedPatientId) === String(item?.uid)
 								? "var(--theme-primary-color-0)"
 								: "var(--theme-tertiary-color-0)"
 						}
@@ -82,7 +79,7 @@ export default function _Table() {
 								<IconCalendarWeek size={16} stroke={1.5} />
 								<Text
 									fz="sm"
-									onClick={() => handleView(item?.uid)}
+									onClick={() => handleView(item?.id)}
 									className="activate-link text-nowrap"
 								>
 									{formatDate(item?.created_at)}
@@ -112,25 +109,6 @@ export default function _Table() {
 								</Button.Group>
 							</Flex>
 						</Grid.Col>
-						{/* <Grid.Col span={4}>
-							<Flex justify="space-between" align="center">
-								<Box>
-									<Text fz="sm">{item.patient_payment_mode_name}</Text>
-									<Text fz="sm">{item.visiting_room}</Text>
-								</Box>
-								<Button.Group>
-									<ActionIcon
-										variant="filled"
-										onClick={() => handleAdmissionOverview(item.id)}
-										color="var(--theme-primary-color-6)"
-										radius="xs"
-										aria-label="Settings"
-									>
-										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
-									</ActionIcon>
-								</Button.Group>
-							</Flex>
-						</Grid.Col> */}
 					</Grid>
 				))}
 			</ScrollArea>

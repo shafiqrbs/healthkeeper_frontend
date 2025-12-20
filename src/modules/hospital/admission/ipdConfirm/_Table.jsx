@@ -35,6 +35,7 @@ const tabs = [
 	{ label: "Confirmed", value: "confirmed" },
 	{ label: "Admitted", value: "admitted" },
 	{ label: "Revised", value: "revised" },
+	{ label: "Canceled", value: "canceled" },
 ];
 
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm", "admin_administrator"];
@@ -58,6 +59,7 @@ export default function _Table({ module }) {
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
+	const listData = useSelector((state) => state.crud[module]?.data);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const [selectedId, setSelectedId] = useState(null);
 	const [processTab, setProcessTab] = useState("new");
@@ -216,14 +218,16 @@ export default function _Table({ module }) {
 									{ accessor: "admit_unit_name", title: t("Unit") },
 									{ accessor: "admit_department_name", title: t("Department") },
 									{ accessor: "admit_doctor_name", title: t("Doctor") },
-									{ accessor: "display_room", title: t("Cabin/Bed") },
+
 							  ]
 							: []),
+						{ accessor: "display_room", title: t("Cabin/Bed") },
 						{
 							accessor: "total",
 							title: t("Amount"),
 							render: (item) => t(item.total),
 						},
+						{ accessor: "process", title: t("Process") },
 						{
 							title: t("Action"),
 							textAlign: "right",
@@ -333,7 +337,6 @@ export default function _Table({ module }) {
 							),
 						},
 					]}
-					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
@@ -348,7 +351,7 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={records} module="visit" />
+			<DataTableFooter indexData={listData} module="ipd" />
 			<ConfirmModal
 				opened={openedConfirm}
 				close={() => {
@@ -359,7 +362,7 @@ export default function _Table({ module }) {
 				selectedId={selectedId}
 				module={module}
 			/>
-			<ManageModal opened={openedManage} close={closeManage} form={manageForm} selectedId={selectedId} module={module} />
+			<ManageModal opened={openedManage} module={module} close={closeManage} form={manageForm} selectedId={selectedId} module={module} />
 			{/* {selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)} */}

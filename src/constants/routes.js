@@ -607,6 +607,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "hospital/ipd",
 			VIEW: "hospital/ipd",
 			ADMISSION_VIEW: "hospital/ipd/view",
+			REVISED: "hospital/ipd/revised",
 			CHANGE: "hospital/ipd/change",
 			TRANSACTION: "hospital/ipd/transaction",
 			PROCESS: "hospital/ipd/data-process",
@@ -787,6 +788,8 @@ export const HOSPITAL_DATA_ROUTES = {
 		REFUND_HISTORY: {
 			INDEX: "/hospital/refund-history",
 			VIEW: "/hospital/refund-history",
+			IPD: "/hospital/refund-ipd-history",
+			IPD_VIEW: "/hospital/refund-ipd-history",
 		},
 
 		FINAL_BILLING: {

@@ -15,7 +15,7 @@ import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "../confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
 import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
@@ -39,12 +39,14 @@ const PER_PAGE = 20;
 const tabs = [
 	{ label: "Admission", value: "admission" },
 	{ label: "Admitted", value: "admitted" },
+	{ label: "Revised", value: "revised" },
 ];
 
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "admin_administrator"];
 
 export default function _Table({ module }) {
 	const { userRoles } = useAppLocalStore();
+	const dispatch = useDispatch()
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const { mainAreaHeight } = useOutletContext();
@@ -54,6 +56,7 @@ export default function _Table({ module }) {
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
 	const filterData = useSelector((state) => state.crud[module].filterData);
+	const listData = useSelector((state) => state.crud[module]?.data);
 	const navigate = useNavigate();
 	const [selectedId, setSelectedId] = useState(null);
 	const [processTab, setProcessTab] = useState("admission");
@@ -67,6 +70,8 @@ export default function _Table({ module }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [actionType, setActionType] = useState('change');
 	const [actionFormData, setActionFormData] = useState(null);
+	const [drawerPatientId, setDrawerPatientId] = useState(null);
+
 
 	// =============== form for action drawer fields ================
 	const actionForm = useForm({
@@ -149,31 +154,31 @@ export default function _Table({ module }) {
 		requestAnimationFrame(printAdmissionForm);
 	};
 
-	const handleActionSubmit = (id,values) => {
+	const handleActionSubmit = () => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleConfirmModal(id,values),
+			onConfirm: () => handleConfirmModal(),
 		});
 	};
 
-	async function handleConfirmModal(id,values) {
+	async function handleConfirmModal() {
 		setIsLoading(true);
 		try {
 			const actionData = {
 				change_mode: actionType ?? "change",
-				...values,
+				comment : actionForm.values.comment
 			};
 
 			const payload = {
-				url: `${MASTER_DATA_ROUTES.API_ROUTES.IPD.CHANGE}/${id}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.CHANGE}/${drawerPatientId}`,
 				data: actionData,
 				module,
 			};
-			console.log(payload)
+
 			const resultAction = await dispatch(updateEntityData(payload));
 
 			// ❌ Validation error
@@ -202,6 +207,8 @@ export default function _Table({ module }) {
 				ERROR_NOTIFICATION_COLOR
 			);
 		} finally {
+			setDrawerPatientId(null)
+			closeActions()
 			setIsLoading(false);
 		}
 	}
@@ -363,7 +370,10 @@ export default function _Table({ module }) {
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									<Button
 										variant="filled"
-										onClick={openActions}
+										onClick={() => {
+											openActions()
+											setDrawerPatientId(item.uid)
+										}}
 										color="teal.6"
 										radius="xs"
 										size={"compact-xs"}
@@ -454,7 +464,6 @@ export default function _Table({ module }) {
 							),
 						},
 					]}
-					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
@@ -469,7 +478,7 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={records} module="visit" />
+			<DataTableFooter indexData={listData} module="ipd" />
 			<ConfirmModal
 				opened={openedConfirm}
 				close={() => {
@@ -513,7 +522,7 @@ export default function _Table({ module }) {
 										minRows={3}
 									/>
 								</Box>
-								<Button onClick={() => actionForm.onSubmit(handleActionSubmit)()}>{t("Submit")}</Button>
+								<Button type="submit">{t("Submit")}</Button>
 							</Stack>
 						</Stack>
 					</Box>

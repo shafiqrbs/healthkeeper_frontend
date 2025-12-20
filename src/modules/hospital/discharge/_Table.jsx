@@ -11,7 +11,7 @@ import { showEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 
 const module = MODULES.DISCHARGE;
-const PER_PAGE = 500;
+const PER_PAGE = 50;
 
 export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 	const { t } = useTranslation();
@@ -22,13 +22,12 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 
 	const { records, fetching } = useInfiniteTableScroll({
 		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
 		filterParams: {
 			// name: filterData?.name,
-			// patient_mode: "ipd",
-			// term: filterData.keywordSearch,
-			prescription_mode: "prescription",
-			// created: filterData.created,
+			patient_mode: "ipd",
+			process: "paid",
+			release_mode: "release",
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -42,7 +41,10 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 
 	const handleProcessConfirmation = async (id) => {
 		if (id) {
-			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DISCHARGE.INDEX}/${id}`);
+			navigate(
+				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=discharge`,
+				{ replace: true }
+			);
 		} else {
 			showNotificationComponent(t("NoDataAvailable"), "red.6", "lightgray");
 		}
@@ -74,10 +76,10 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 					<Grid
 						columns={18}
 						key={item.id}
-						onClick={() => handleProcessConfirmation(item.prescription_id)}
+						onClick={() => handleProcessConfirmation(item.uid)}
 						my="xs"
 						bg={
-							typeof dischargeId !== "undefined" && dischargeId == item?.prescription_id
+							typeof dischargeId !== "undefined" && dischargeId === item?.prescription_id
 								? "var(--theme-primary-color-0)"
 								: "var(--theme-tertiary-color-0)"
 						}

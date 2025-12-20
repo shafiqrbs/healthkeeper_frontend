@@ -86,7 +86,7 @@ export const sideNavigationLinks = {
 
 		{
 			label: t("IPD"),
-			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX,
 			icon: IconBuildingHospital,
 			color: "#2ac119", // Purple
 
@@ -161,7 +161,7 @@ export const sideNavigationLinks = {
 					label: t("FinalBilling"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FINAL_BILLING.INDEX,
 					icon: IconBuildingHospital,
-					allowedRoles: ["operator_opd", "operator_manager", "admin_administrator"],
+					allowedRoles: ["operator_opd", "operator_manager", "operator_emergency", "admin_administrator"],
 				},
 			],
 		},
@@ -193,7 +193,7 @@ export const sideNavigationLinks = {
 				},
 				{
 					label: t("IPDHistory"),
-					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.INDEX,
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.IPD,
 					icon: IconBuildingHospital,
 					allowedRoles: ["operator_opd", "operator_emergency", "operator_manager", "admin_administrator"],
 				},

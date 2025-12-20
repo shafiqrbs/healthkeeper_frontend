@@ -46,10 +46,9 @@ const RefundPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 					{/* =============== prescription title =============== */}
 					<Text size="sm" fw={700} ta="center">
-						{t("Refund Invoice")}
+						{t("Refund Invoice")} : {patientInfo?.mode_name || ""}
 					</Text>
 					<DashedLine />
-
 					{/* =============== essential patient info =============== */}
 					<Table verticalSpacing={2} withRowBorders={false}>
 						<Table.Tbody>
@@ -134,7 +133,8 @@ const RefundPosBN = forwardRef(({ data, preview = false }, ref) => {
 						<Table.Tbody>
 							<Table.Tr style={{ borderTop: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th>{t("Particular")}</Table.Th>
-								<Table.Th style={{ textAlign: "right", width: "60px" }}>{t("Room")}</Table.Th>
+								<Table.Th style={{ textAlign: "right", width: "70px" }}>{t("Price")}</Table.Th>
+								<Table.Th style={{ textAlign: "right", width: "60px" }}>{t("QTY")}</Table.Th>
 								<Table.Th style={{ textAlign: "right", width: "70px" }}>{t("Amount")}</Table.Th>
 							</Table.Tr>
 							{patientInfo?.items?.map((item, index) => (
@@ -143,7 +143,10 @@ const RefundPosBN = forwardRef(({ data, preview = false }, ref) => {
 										{index + 1}. {item?.item_name}
 									</Table.Td>
 									<Table.Td style={{ textAlign: "right", width: "60px" }}>
-										{item?.diagnostic_room_name}
+										{item?.price}
+									</Table.Td>
+									<Table.Td style={{ textAlign: "right", width: "60px" }}>
+										{item?.quantity}
 									</Table.Td>
 									<Table.Td style={{ textAlign: "right", width: "70px" }}>
 										৳ {item?.sub_total}

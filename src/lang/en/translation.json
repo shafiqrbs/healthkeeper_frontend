@@ -1668,8 +1668,8 @@
 	"FreeBed": "Free Bed",
 	"FreeCabin": "Free Cabin",
 	"DayChange": "Day Change",
-	"DayChangeComment": "Day Change Comment",
-	"AccommodationType": "Day Change Comment",
+	"ChangeDay": "Change Day",
+	"BedCabinType": "Bed/Cabin Type",
 	"Bed/CabinNumber": "Bed/Cabin",
 	"xxxxxxxx": "xxxxxxxxxxx"
 }
