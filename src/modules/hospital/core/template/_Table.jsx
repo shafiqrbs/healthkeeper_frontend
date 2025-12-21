@@ -52,6 +52,9 @@ const templateData = [
 	{ name: "DeathCertificateBN", module: "ipd", id: getUUID() },
 	{ name: "DeathCertificateEN", module: "ipd", id: getUUID() },
 	{ name: "SummaryReports", module: "reports", id: getUUID() },
+	{ name: "FreeServiceForm2BN", module: "billing", id: getUUID() },
+	{ name: "FreeServiceForm3BN", module: "billing", id: getUUID() },
+	// { name: "FreeServiceForm2EN", module: "billing", id: getUUID() },
 ];
 
 export default function _Table({ module }) {

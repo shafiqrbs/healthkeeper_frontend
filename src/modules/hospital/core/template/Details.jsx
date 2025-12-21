@@ -46,6 +46,8 @@ import DeathCertificateBN from "@hospital-components/print-formats/death-certifi
 import DeathCertificateEN from "@hospital-components/print-formats/death-certificate/DeathCertificateEN";
 import InvoiceSummaryReports from "@modules/hospital/reports/sales-summary/InvoiceSummaryReports";
 import DailySummaryReports from "@hospital-components/print-formats/reports/DailySummaryReports";
+import FreeServiceForm2BN from "@hospital-components/print-formats/billing/FreeServiceForm2BN";
+import FreeServiceForm3BN from "@hospital-components/print-formats/billing/FreeServiceForm3BN";
 
 const STATIC_OPD_ID = "843042855688";
 const STATIC_BILLING_ID = 385;
@@ -102,11 +104,11 @@ export default function Details() {
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${ADMISSION_ID}`,
 	});
 
-	const { data: summaryData, isLoading:isSummaryDataLoading } = useDataWithoutStore({
+	const { data: summaryData, isLoading: isSummaryDataLoading } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_DAILY_SUMMARY,
 		params: {
-			start_date:'01-12-2025',
-			end_date: '11-12-2025',
+			start_date: "01-12-2025",
+			end_date: "11-12-2025",
 		},
 	});
 
@@ -321,6 +323,16 @@ export default function Details() {
 					{name === "SummaryReports" && (
 						<LoadingWrapper isLoading={isSummaryDataLoading}>
 							<DailySummaryReports preview records={summaryData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "FreeServiceForm2BN" && (
+						<LoadingWrapper isLoading={isFreeServiceLoading}>
+							<FreeServiceForm2BN preview data={freeServiceData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "FreeServiceForm3BN" && (
+						<LoadingWrapper isLoading={isFreeServiceLoading}>
+							<FreeServiceForm3BN preview data={freeServiceData?.data} />
 						</LoadingWrapper>
 					)}
 				</Box>
