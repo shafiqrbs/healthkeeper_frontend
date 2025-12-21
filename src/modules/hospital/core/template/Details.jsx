@@ -52,10 +52,10 @@ const STATIC_BILLING_ID = 385;
 const STATIC_PRESCRIPTION_ID = "361001991021";
 const REPORT_ID = "098397134876";
 const REFUND_ID = "1";
-const FREE_SERVICE_ID = "845228696900";
+const FREE_SERVICE_ID = "567165419550";
 const PURCHASE_ID = "8";
 const INDENT_ID = "858945689606";
-const ADMISSION_ID = "697";
+const ADMISSION_ID = "1874";
 
 export default function Details() {
 	const { name } = useParams();

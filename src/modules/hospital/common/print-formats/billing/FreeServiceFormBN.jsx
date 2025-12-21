@@ -23,6 +23,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
+	console.log(patientInfo);
 
 	return (
 		<Box display={preview ? "block" : "none"}>
@@ -195,7 +196,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Grid columns={12} gutter="0" mb={"md"}>
 											<Grid.Col span={12} align={"left"}>
 												{patientInfo?.invoice_particular
-													.filter((item) => !!item.is_waiver_approve)
+													?.filter((item) => !!item.is_waiver_approve)
 													?.map((item, index) => (
 														<span key={index}>
 															{index + 1}. {item.item_name || t("Fee")}
@@ -238,55 +239,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 										</Grid>
 									</Table.Td>
 								</Table.Tr>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Table.Td colSpan={3}>
-										<SimpleGrid cols={3} spacing="xl" mt="xl">
-											{/* Checked By */}
-											<Box>
-												<Box
-													style={{
-														borderBottom: "2px dashed #999",
-														height: 40,
-													}}
-												/>
-												<Text ta="center" size="sm" mt={4} fw={500}></Text>
-												<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
-													Approved By
-												</Text>
-											</Box>
 
-											{/* Approved By */}
-											<Box>
-												<Box
-													style={{
-														borderBottom: "2px dashed #999",
-														height: 40,
-													}}
-												/>
-												<Text ta="center" size="sm" mt={4} fw={500}></Text>
-												<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
-													RP/RS By
-												</Text>
-											</Box>
-
-											{/* Created By */}
-											<Box>
-												<Box
-													style={{
-														borderBottom: "2px dashed #999",
-														height: 40,
-													}}
-												/>
-												<Text ta="center" size="sm" mt={4} fw={500}>
-													{/*{patientInfo?.created_by_name || "—"}*/}
-												</Text>
-												<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
-													Medicated of
-												</Text>
-											</Box>
-										</SimpleGrid>
-									</Table.Td>
-								</Table.Tr>
 							</Table.Tbody>
 						</Table>
 					</Box>
@@ -294,7 +247,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 
 				{/* =============== payment summary table ================ */}
 				<Box ta="left">
-					<Box pos="relative" pl={"xl"} pr={"xl"} mt="xl" mb={"md"}>
+					<Box pos="relative" pl={"xl"} pr={"xl"} mb={"md"}>
 						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
 							<Table.Thead>
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
@@ -319,6 +272,13 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 												</Box>
 												<Image src={TBLogo} alt="logo" width={46} height={46} />
 											</Flex>
+										</Flex>
+									</Table.Td>
+								</Table.Tr>
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Table.Td colSpan={"6"}>
+										<Flex gap="md" align="center" justify="center" fw={'600'}>
+											Use for waiver Test List
 										</Flex>
 									</Table.Td>
 								</Table.Tr>
@@ -381,14 +341,66 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 									<Table.Th>{t("Room No")}</Table.Th>
 								</Table.Tr>
 								{patientInfo?.invoice_particular
-									.filter((item) => !!item.is_waiver_approve)
+									?.filter((item) => !!item.is_waiver_approve)
 									?.map((item, index) => (
 										<Table.Tr key={index}>
 											<Table.Td>{item?.item_name || t("Fee")}</Table.Td>
 											<Table.Td>{item?.diagnostic_room_name}</Table.Td>
 										</Table.Tr>
 									))}
+
 							</Table.Tbody>
+						</Table>
+						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
+						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+							<Table.Td colSpan={3}>
+								<SimpleGrid cols={3} spacing="xl" mt="xl">
+									{/* Checked By */}
+									<Box>
+										<Box
+											style={{
+												borderBottom: "2px dashed #999",
+												height: 40,
+											}}
+										/>
+										<Text ta="center" size="sm" mt={4} fw={500}></Text>
+										<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
+											Approved By
+										</Text>
+									</Box>
+
+									{/* Approved By */}
+									<Box>
+										<Box
+											style={{
+												borderBottom: "2px dashed #999",
+												height: 40,
+											}}
+										/>
+										<Text ta="center" size="sm" mt={4} fw={500}></Text>
+										<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
+											RP/RS By
+										</Text>
+									</Box>
+
+									{/* Created By */}
+									<Box>
+										<Box
+											style={{
+												borderBottom: "2px dashed #999",
+												height: 40,
+											}}
+										/>
+										<Text ta="center" size="sm" mt={4} fw={500}>
+											{/*{patientInfo?.created_by_name || "—"}*/}
+										</Text>
+										<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
+											Medicated of
+										</Text>
+									</Box>
+								</SimpleGrid>
+							</Table.Td>
+						</Table.Tr>
 						</Table>
 					</Box>
 				</Box>

@@ -158,7 +158,6 @@ const DailyCollectionServiceReports = forwardRef(({ records, preview = false }, 
 										{col}
 									</Table.Th>
 								))}
-
 								<Table.Th ta="right" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>Total</Table.Th>
 							</Table.Tr>
 						</Table.Thead>
