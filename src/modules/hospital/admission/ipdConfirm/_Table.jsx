@@ -362,7 +362,7 @@ export default function _Table({ module }) {
 				selectedId={selectedId}
 				module={module}
 			/>
-			<ManageModal opened={openedManage} module={module} close={closeManage} form={manageForm} selectedId={selectedId} module={module} />
+			<ManageModal opened={openedManage}  close={closeManage} form={manageForm} selectedId={selectedId} module={module} />
 			{/* {selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)} */}
