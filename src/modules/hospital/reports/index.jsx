@@ -20,6 +20,11 @@ const REPORT_TABS = [
 		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
 	},
 	{
+		label: "Daily Collection Service",
+		value: "daily-collection-service",
+		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd"],
+	},
+	{
 		label: "Stock item history",
 		value: "stock-item-history",
 		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist"],

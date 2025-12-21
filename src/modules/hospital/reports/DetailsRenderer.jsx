@@ -7,6 +7,7 @@ import InvoiceSummary from "@modules/hospital/reports/items/InvoiceSummary";
 import StockItemHistory from "@modules/hospital/reports/items/StockItemHistory.jsx";
 import MedicineIssue from "@modules/hospital/reports/items/MedicineIssue.jsx";
 import StockSummery from "@modules/hospital/reports/items/StockSummery.jsx";
+import DailyCollectionService from "@modules/hospital/reports/items/DailyCollectionService";
 
 export default function DetailsRenderer() {
 	const { t } = useTranslation();
@@ -21,8 +22,8 @@ export default function DetailsRenderer() {
 				<InvoiceSummary />
 			) : tab === "patient-ticket" ? (
 				<PatientTicket />
-			) : tab === "stock-item-history" ? (
-				<StockItemHistory />
+			) : tab === "daily-collection-service" ? (
+				<DailyCollectionService height={mainAreaHeight} />
 			) : tab === "medicine-issue" ? (
 				<MedicineIssue />
 			) : tab === "stock-summery" ? (

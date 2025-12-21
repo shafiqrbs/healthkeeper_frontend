@@ -658,6 +658,7 @@ export const HOSPITAL_DATA_ROUTES = {
 		REPORT: {
 			PATIENT_TICKET: "hospital/reports/patient-ticket",
 			DASHBOARD_DAILY_SUMMARY: "hospital/reports/dashboard-daily-summary",
+			DAILY_COLLECTIION_SERVICE: "hospital/reports/daily-collection-service-report",
 		},
 	},
 	NAVIGATION_LINKS: {

@@ -117,7 +117,6 @@ export default function InvoiceSummary() {
 
 	const totalPatientServiceAmount = patientServiceModeData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 	const totalPatientServiceCount = patientServiceModeData?.reduce((sum, item) => sum + parseInt(item.patient, 0),0);
-	console.log(totalPatientServiceCount);
 	const totalFinancialServiceCount = financialServices?.reduce((sum, item) => sum + (item.total_count ?? 0), 0);
 	const totalFinancialServiceAmount = financialServices?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
