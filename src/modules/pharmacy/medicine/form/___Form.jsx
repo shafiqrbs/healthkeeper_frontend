@@ -2,28 +2,27 @@ import { useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Grid, Box, ScrollArea, LoadingOverlay, Stack, Text, Select } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { useDebouncedState, useHotkeys } from "@mantine/hooks";
+import { useHotkeys } from "@mantine/hooks";
 
 import InputForm from "@components/form-builders/InputForm";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
-import PhoneNumber from "@components/form-builders/PhoneNumberInput";
 
 import DrawerStickyFooter from "@components/drawers/DrawerStickyFooter";
 import RequiredAsterisk from "@components/form-builders/RequiredAsterisk";
-import SelectForm from "@components/form-builders/SelectForm";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { HOSPITAL_DROPDOWNS, CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
+import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 import inputCss from "@assets/css/InputField.module.css";
 import { medicineOptionsFilter } from "@utils/prescription";
-import useMedicineStockData from "@hooks/useMedicineStockData";
 
 export default function ___Form({ form, type = "create", data, handleSubmit, setIndexData, isLoading, setIsLoading }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 180; //TabList height 104
-	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
-	const { medicineData } = useMedicineStockData({ term: medicineTerm });
-	console.log(medicineData);
+
+	const { data: medicineGenericDropdown } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.MEDICINE_GENERIC.PATH,
+		utility: HOSPITAL_DROPDOWNS.MEDICINE_GENERIC.UTILITY,
+		identifierName: "medicine-generic",
+	});
 
 	useEffect(() => {
 		if (data && type === "update") {
@@ -69,25 +68,15 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 										<Grid.Col align="center" span={14} mt="3xs">
 											<Select
 												searchable
-												onSearchChange={setMedicineTerm}
-												// searchValue={medicineTerm}
 												tooltip={t("EnterGenericMedicine")}
 												id="generic"
 												name="medicine_stock_id"
-												data={medicineData?.map((item) => ({
-													label:
-														item?.product_name || item?.product_name || item?.product_name,
-													value: item.id?.toString(),
-													generic: item?.product_name || "",
-												}))}
+												data={medicineGenericDropdown}
 												filter={medicineOptionsFilter}
 												value={form.values.medicine_stock_id?.toString()}
-												onChange={(v, option) => {
-													form.setFieldValue("generic", option.generic);
+												onChange={(v) => {
 													form.setFieldValue("medicine_stock_id", v);
-													setMedicineTerm(option.generic);
 												}}
-												onBlur={() => setMedicineTerm(medicineTerm)}
 												placeholder={t("GenericMedicine")}
 												classNames={inputCss}
 												error={!!form.errors.medicine_stock_id}

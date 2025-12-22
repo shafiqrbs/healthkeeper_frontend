@@ -100,8 +100,7 @@ export const appendGeneralValuesToForm = (form, selectedMedicine) => {
  */
 export const generateMedicinePayload = (form, selectedMedicine, options = {}) => {
 	if (!form) return console.error("form should be passed in generateMedicinePayload function");
-	if (!selectedMedicine)
-		return console.error("selectedMedicine should be passed in generateMedicinePayload function");
+	if (!selectedMedicine) return console.error("selectedMedicine should be passed in generateMedicinePayload function");
 
 	// =============== get dosage details if dosage_options are provided ================
 	const { dosage_options, by_meal_options } = options;
@@ -140,7 +139,9 @@ export const generateMedicinePayload = (form, selectedMedicine, options = {}) =>
 	return payload;
 };
 
-export const medicineOptionsFilter = ({ options, search }) => {
+export const medicineOptionsFilter = ({ options, search, limit = 150 }) => {
+	if (!options || options.length === 0) return [];
+
 	const splittedSearch = search.toLowerCase().trim().split(" ");
 
 	let count = 0;
@@ -158,7 +159,7 @@ export const medicineOptionsFilter = ({ options, search }) => {
 			count++;
 
 			// stop early—return only the first 20
-			if (count === 100) break;
+			if (count === limit) break;
 		}
 	}
 

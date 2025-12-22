@@ -131,6 +131,14 @@ const useGlobalDropdownData = ({ path, utility, params = {}, type = null, identi
 					};
 				}
 
+				if (identifierName === "medicine-generic") {
+					return {
+						label: item.product_name,
+						value: String(item.id),
+						generic: item.product_name,
+					};
+				}
+
 				return { label, value, slug };
 			});
 			setDropdownData(transformedData);
