@@ -368,13 +368,15 @@ export default function _Table({ module }) {
 							titleClassName: "title-right",
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+									(item.process?.toLowerCase() === "ipd" || item.process?.toLowerCase() === "billing") && (
 									<Button
 										variant="filled"
 										onClick={() => {
 											openActions()
 											setDrawerPatientId(item.uid)
 										}}
-										color="teal.6"
+										color="red.6"
 										radius="xs"
 										size={"compact-xs"}
 										aria-label="Settings"
@@ -382,6 +384,7 @@ export default function _Table({ module }) {
 									>
 										{t("Actions")}
 									</Button>
+									)}
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
 										item.process?.toLowerCase() === "confirmed" && (
 											<Button.Group>
@@ -398,7 +401,7 @@ export default function _Table({ module }) {
 												</Button>
 											</Button.Group>
 										)}
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && item.process === "billing" && (
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && (
 										<Button.Group>
 											<Button
 												variant="filled"
@@ -408,12 +411,27 @@ export default function _Table({ module }) {
 												size={"compact-xs"}
 												aria-label="Settings"
 												leftSection={<IconPrinter style={{ width: "70%", height: "70%" }} stroke={1.5} />}
-											>
-												Print
+											>Admission Form
 											</Button>
 										</Button.Group>
 									)}
-									<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && item.process?.toLowerCase() === "confirmed" && (
+										<Button.Group>
+											<Button
+												variant="filled"
+												onClick={() => handleAdmissionFormPrint(item.id)}
+												color="var(--theme-warning-color)"
+												radius="xs"
+												size={"compact-xs"}
+												aria-label="Settings"
+												leftSection={<IconPrinter style={{ width: "70%", height: "70%" }} stroke={1.5} />}
+											>
+												Invoice
+											</Button>
+										</Button.Group>
+									)}
+
+									{/*<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
 										<Menu.Target>
 											<ActionIcon
 												className="border-left-radius-none"
@@ -459,7 +477,7 @@ export default function _Table({ module }) {
 												{t("AdmissionForm")}
 											</Menu.Item>
 										</Menu.Dropdown>
-									</Menu>
+									</Menu>*/}
 								</Group>
 							),
 						},

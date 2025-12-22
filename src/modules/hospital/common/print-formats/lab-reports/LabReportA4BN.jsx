@@ -11,6 +11,8 @@ import DefaultCustomReport from "@hospital-components/print-formats/lab-reports/
 import SystemLabReport from "@hospital-components/print-formats/lab-reports/custom/SystemLabReport";
 import XrayReport from "@hospital-components/print-formats/lab-reports/custom/XrayReport";
 import CTScanReport from "@hospital-components/print-formats/lab-reports/custom/CTScanReport";
+import GeneXperExtraPulmonaryReport
+	from "@hospital-components/print-formats/lab-reports/custom/GeneXperExtraPulmonaryReport";
 
 const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const reportData = JSON.parse(data?.invoiceParticular?.json_report || "{}");
@@ -502,6 +504,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										<Box>SARS-CoV-2 Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "gene-extra-sputum" ? (
 										<Box>Gene Extra Sputum Report</Box>
+									) : data?.invoiceParticular?.particular?.slug === "gene-extra-pulmonary" ? (
+										<GeneXperExtraPulmonaryReport report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.slug === "lpa" ? (
 										<Box>LPA Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "ct-scan" ? (

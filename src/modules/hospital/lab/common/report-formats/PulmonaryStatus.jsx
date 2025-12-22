@@ -29,19 +29,9 @@ export default function PulmonaryStatus({ diagnosticReport, refetchDiagnosticRep
 	const is_completed = diagnosticReport?.process === "Done";
 	const form = useForm({
 		initialValues: {
-			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
-			lab_no: custom_report?.lab_no || "",
-			id: custom_report?.id || "",
-			rif_resistance_not_detected: custom_report?.rif_resistance_not_detected || 0,
-			rif_resistance_detected: custom_report?.rif_resistance_detected || 0,
-			rif_resistance_indeterminate: custom_report?.rif_resistance_indeterminate || 0,
-			mtb_not_detected: custom_report?.mtb_not_detected || 0,
-			invalid: custom_report?.invalid || 0,
-			rif_result: "not_detected", // ✅ default selected for list radios
-			rif_table_result: "not_detected", // ✅ default selected for table radios
+			gene_xpert_value: custom_report?.gene_xpert_value || 0,
 		},
 	});
-
 	const handleSubmit = (values) => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
@@ -112,17 +102,16 @@ export default function PulmonaryStatus({ diagnosticReport, refetchDiagnosticRep
 		<Box className="border-top-none" px="sm" mt="xs">
 			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
-					<Radio.Group
+					{/*<Radio.Group
 						value={form.values.rif_result}
 						onChange={(value) => form.setFieldValue("rif_result", value)}
-						readOnly={is_completed}
 					>
 						<Stack gap="xs">
 							{rifOptions.map((item) => (
 								<Radio key={item.value} value={item.value} label={item.label} />
 							))}
 						</Stack>
-					</Radio.Group>
+					</Radio.Group>*/}
 
 					{/* =============== results table =============== */}
 					<Box my="md">
@@ -131,9 +120,8 @@ export default function PulmonaryStatus({ diagnosticReport, refetchDiagnosticRep
 								<Table.Tr>
 									<Table.Td colSpan={5} p={0}>
 										<Radio.Group
-											value={form.values?.rif_table_result}
-											onChange={(value) => form.setFieldValue("rif_table_result", value)}
-											readOnly={is_completed}
+											value={form.values?.gene_xpert_value}
+											onChange={(value) => form.setFieldValue("gene_xpert_value", value)}
 											style={{ width: "100%" }}
 										>
 											<Table withColumnBorders w="100%">

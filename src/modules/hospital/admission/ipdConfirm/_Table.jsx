@@ -234,10 +234,9 @@ export default function _Table({ module }) {
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{(userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-										values.process?.toLowerCase() === "ipd" &&
-										values?.referred_mode === "admission") ||
-										(values.process?.toLowerCase() === "closed" && values?.referred_mode === "admission" && (
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+									((values.process?.toLowerCase() === "ipd" && values?.referred_mode === "admission") ||
+										(values.process?.toLowerCase() === "closed" && values?.referred_mode === "admission")) && (
 											<Button
 												variant="filled"
 												bg="var(--theme-primary-color-6)"
@@ -250,7 +249,7 @@ export default function _Table({ module }) {
 											>
 												{t("Confirm")}
 											</Button>
-										))}
+										)}
 									{((values.process?.toLowerCase() === "revised") || (values?.process.toLowerCase() === "confirmed")) && (
 
 										<Button

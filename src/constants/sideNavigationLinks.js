@@ -93,7 +93,6 @@ export const sideNavigationLinks = {
 			allowedRoles: [
 				"role_domain",
 				"admin_administrator",
-				"admin_doctor",
 				"doctor_ipd_confirm",
 				"ipd_admission",
 				"operator_emergency",
@@ -133,7 +132,6 @@ export const sideNavigationLinks = {
 			allowedRoles: [
 				"role_domain",
 				"admin_administrator",
-				"admin_doctor",
 				"operator_opd",
 				"operator_emergency",
 				"operator_manager",
@@ -173,7 +171,6 @@ export const sideNavigationLinks = {
 			allowedRoles: [
 				"role_domain",
 				"admin_administrator",
-				"admin_doctor",
 				"operator_opd",
 				"operator_emergency",
 				"operator_manager",
@@ -205,7 +202,7 @@ export const sideNavigationLinks = {
 			path: "/",
 			icon: IconBuildingHospital,
 			color: "#9C27B0", // Deep Purple
-			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor", "nurse_basic", "nurse_incharge"],
+			allowedRoles: ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge"],
 		},
 		{
 			label: t("IPD"),
@@ -222,7 +219,6 @@ export const sideNavigationLinks = {
 			allowedRoles: [
 				"role_domain",
 				"admin_administrator",
-				"admin_doctor",
 				"nurse_basic",
 				"admin_nurse",
 				"nurse_incharge",
@@ -237,7 +233,6 @@ export const sideNavigationLinks = {
 			allowedRoles: [
 				"role_domain",
 				"admin_administrator",
-				"admin_doctor",
 				"nurse_basic",
 				"admin_nurse",
 				"nurse_incharge",
@@ -446,13 +441,13 @@ export const sideNavigationLinks = {
 			color: "#9C27B0", // Purple
 			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
 			subMenu: [
-				{
+				/*{
 					label: t("Dashboard"),
 					path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.DASHBOARD,
 					icon: IconBuildingHospital,
 					color: "#9C27B0", // Purple
 					allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
-				},
+				},*/
 				{
 					label: t("OPD"),
 					path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.OPD,
