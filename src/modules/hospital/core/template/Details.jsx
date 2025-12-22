@@ -38,7 +38,6 @@ import IPDInvoicePosEN from "@hospital-components/print-formats/ipd/IPDInvoicePo
 import IPDInvoicePosBN from "@hospital-components/print-formats/ipd/IPDInvoicePosBN";
 import FreeServiceFormBN from "@hospital-components/print-formats/billing/FreeServiceFormBN";
 import FreeServiceFormEN from "@hospital-components/print-formats/billing/FreeServiceFormEN";
-import { getDataWithoutStore } from "@/services/apiService";
 import Workorder from "@hospital-components/print-formats/workorder/Workorder";
 import Indent from "@hospital-components/print-formats/indent/Indent";
 import RefundPosBN from "@hospital-components/print-formats/refund/RefundPosBN";
@@ -46,15 +45,15 @@ import DeathCertificateBN from "@hospital-components/print-formats/death-certifi
 import DeathCertificateEN from "@hospital-components/print-formats/death-certificate/DeathCertificateEN";
 import InvoiceSummaryReports from "@modules/hospital/reports/sales-summary/InvoiceSummaryReports";
 import DailySummaryReports from "@hospital-components/print-formats/reports/DailySummaryReports";
-import FreeServiceForm2BN from "@hospital-components/print-formats/billing/FreeServiceForm2BN";
-import FreeServiceForm3BN from "@hospital-components/print-formats/billing/FreeServiceForm3BN";
+import FreeServiceFormBedBN from "@hospital-components/print-formats/billing/FreeServiceFormBedBN";
+import FreeServiceFormInvestigationBN from "@hospital-components/print-formats/billing/FreeServiceFormInvestigationBN";
 
 const STATIC_OPD_ID = "843042855688";
 const STATIC_BILLING_ID = 385;
 const STATIC_PRESCRIPTION_ID = "361001991021";
 const REPORT_ID = "098397134876";
 const REFUND_ID = "1";
-const FREE_SERVICE_ID = "567165419550";
+const FREE_SERVICE_ID = "342955236078";
 const PURCHASE_ID = "8";
 const INDENT_ID = "858945689606";
 const ADMISSION_ID = "1874";
@@ -325,14 +324,14 @@ export default function Details() {
 							<DailySummaryReports preview records={summaryData?.data} />
 						</LoadingWrapper>
 					)}
-					{name === "FreeServiceForm2BN" && (
+					{name === "FreeServiceFormBedBN" && (
 						<LoadingWrapper isLoading={isFreeServiceLoading}>
-							<FreeServiceForm2BN preview data={freeServiceData?.data} />
+							<FreeServiceFormBedBN preview data={freeServiceData?.data} />
 						</LoadingWrapper>
 					)}
-					{name === "FreeServiceForm3BN" && (
+					{name === "FreeServiceFormInvestigationBN" && (
 						<LoadingWrapper isLoading={isFreeServiceLoading}>
-							<FreeServiceForm3BN preview data={freeServiceData?.data} />
+							<FreeServiceFormInvestigationBN preview data={freeServiceData?.data} />
 						</LoadingWrapper>
 					)}
 				</Box>

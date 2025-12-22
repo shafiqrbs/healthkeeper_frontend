@@ -3,11 +3,11 @@ import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import { capitalizeWords } from "@/common/utils";
+import { capitalizeWords, formatDateTimeAmPm } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
-const FreeServiceForm2BN = forwardRef(({ data, preview = false }, ref) => {
+const FreeServiceFormBedBN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const { hospitalConfigData } = useHospitalConfigData();
 
@@ -98,13 +98,41 @@ const FreeServiceForm2BN = forwardRef(({ data, preview = false }, ref) => {
 
 											<Text my="sm" fz={"xs"}>
 												{t(
-													"বিষয়ঃ বিছানা ভাড়া বাবদ (অতিরিক্ত) ............ টাকা ফেরত পাওয়ার জন্য আবেদন ফর্ম"
+													"বিষয়ঃ বিছানা ভাড়া বাবদ (অতিরিক্ত) টাকা ফেরত পাওয়ার জন্য আবেদন ফর্ম"
 												)}
 											</Text>
 											<Text fz={"xs"}>{t("জনাব")}</Text>
 											<Text fz={"xs"}>
 												{t(
-													"যথাযথ সম্মান প্রদর্শন পূর্বক বিনীত নিবেদন এই যে, আমি........................, বয়স............বছর, হাসপাতাল আইডি/রেজিস্ট্রেশন নং..................... আমি গত ........................ তারিখ হইতে ..................... তারিখ পর্যন্ত অত্র হাসপাতাল ওয়ার্ড নং............ এর বিছানা নং.............../ কেবিন নং............ এ ভর্তি ছিলাম এবং অদ্য .................. তারিখ আমায় হাসপাতাল থেকে ছুটি প্রদান করা হয়। এমতাবস্থায় আমি বিছানাভাড়া (রিফান্ড বিল মোতাবেক) বাবদ ............... টাকা অতিরিক্ত প্রদান করায় ফেরত পেতে ইচ্ছুক।"
+													`যথাযথ সম্মান প্রদর্শন পূর্বক বিনীত নিবেদন এই যে, আমি ${
+														patientInfo?.name || ""
+													}, বয়স ${patientInfo?.year ? `${patientInfo?.year} বছর` : ""} ${
+														patientInfo?.month ? `${patientInfo?.month} মাস` : ""
+													} ${
+														patientInfo?.day ? `${patientInfo?.day} দিন` : ""
+													}, হাসপাতাল আইডি/রেজিস্ট্রেশন নং ${getValue(
+														patientInfo?.patient_id || ""
+													)} আমি গত ${formatDateTimeAmPm(
+														patientInfo?.admission_date
+													)} তারিখ হইতে ${formatDateTimeAmPm(
+														new Date()
+													)} তারিখ পর্যন্ত অত্র হাসপাতাল বিভাগ ${getValue(
+														patientInfo?.admit_department_name,
+														""
+													)}, ওয়ার্ড নং ${getValue(
+														patientInfo?.admit_unit_name,
+														""
+													)} এর বিছানা নং ${getValue(
+														patientInfo?.room_name,
+														""
+													)}/ কেবিন নং ${getValue(
+														patientInfo?.room_name,
+														""
+													)} এ ভর্তি ছিলাম এবং অদ্য ${formatDateTimeAmPm(
+														new Date()
+													)} তারিখ আমায় হাসপাতাল থেকে ছুটি প্রদান করা হয়। এমতাবস্থায় আমি বিছানাভাড়া (রিফান্ড বিল মোতাবেক) বাবদ ${
+														patientInfo?.amount
+													} টাকা অতিরিক্ত প্রদান করায় ফেরত পেতে ইচ্ছুক।`
 												)}
 											</Text>
 											<Text fz={"xs"} mt="sm">
@@ -338,6 +366,6 @@ const FreeServiceForm2BN = forwardRef(({ data, preview = false }, ref) => {
 	);
 });
 
-FreeServiceForm2BN.displayName = "FreeServiceForm2BN";
+FreeServiceFormBedBN.displayName = "FreeServiceFormBedBN";
 
-export default FreeServiceForm2BN;
+export default FreeServiceFormBedBN;

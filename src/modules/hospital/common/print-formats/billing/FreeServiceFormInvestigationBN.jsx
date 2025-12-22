@@ -7,7 +7,7 @@ import { capitalizeWords } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
-const FreeServiceForm3BN = forwardRef(({ data, preview = false }, ref) => {
+const FreeServiceFormInvestigationBN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const { hospitalConfigData } = useHospitalConfigData();
 
@@ -282,6 +282,6 @@ const FreeServiceForm3BN = forwardRef(({ data, preview = false }, ref) => {
 	);
 });
 
-FreeServiceForm3BN.displayName = "FreeServiceForm3BN";
+FreeServiceFormInvestigationBN.displayName = "FreeServiceFormInvestigationBN";
 
-export default FreeServiceForm3BN;
+export default FreeServiceFormInvestigationBN;
