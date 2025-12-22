@@ -1,12 +1,12 @@
 import { getDataWithoutStore } from "@/services/apiService";
 import { Box, Text, Stack, Grid, Flex, Button, ActionIcon } from "@mantine/core";
-import {useEffect, useMemo, useRef, useState} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import {IconChevronUp, IconPrinter, IconSelector, IconX} from "@tabler/icons-react";
+import { IconChevronUp, IconPrinter, IconSelector, IconX } from "@tabler/icons-react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -21,14 +21,14 @@ import { useDispatch } from "react-redux";
 import { useHotkeys } from "@mantine/hooks";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
-import {useReactToPrint} from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 import usePrintAfterUpdate from "@hooks/usePrintAfterUpdate";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 import AdmissionInvoiceBN from "@hospital-components/print-formats/admission/AdmissionInvoiceBN";
 
 const module = MODULES_CORE.BILLING;
 
-export default function InvoiceDetails({ entity,setRefetchBillingKey }) {
+export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 	const navigate = useNavigate();
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
 	const { id } = useParams();
@@ -57,8 +57,7 @@ export default function InvoiceDetails({ entity,setRefetchBillingKey }) {
 			...getFormValues(t).initialValues,
 			amount: "",
 			days: "",
-		}
-
+		},
 	});
 
 	const { data: investigationOptions } = useGlobalDropdownData({
@@ -99,6 +98,30 @@ export default function InvoiceDetails({ entity,setRefetchBillingKey }) {
 			}))
 		);
 	}, [entity]);
+
+	// =============== auto-select all records when investigation records are available ================
+	useEffect(() => {
+		if (investigationRecords?.length > 0) {
+			setSelectedRecords([...investigationRecords]);
+		} else {
+			setSelectedRecords([]);
+		}
+	}, [investigationRecords]);
+
+	// =============== prevent unchecking records by only allowing additions to selection ================
+	const handleSelectedRecordsChange = (newSelectedRecords) => {
+		// =============== only allow adding records, prevent removing existing selections ================
+		const currentSelectedIds = new Set(selectedRecords.map((record) => record.id));
+		const newSelectedIds = new Set(newSelectedRecords.map((record) => record.id));
+
+		// =============== if trying to remove records, keep the current selection ================
+		if (newSelectedIds.size < currentSelectedIds.size) {
+			return; // =============== prevent unchecking by ignoring the change ================
+		}
+
+		// =============== allow adding new records ================
+		setSelectedRecords(newSelectedRecords);
+	};
 
 	// =============== initialize local room items from fetched invoice details to allow local editing ================
 	useEffect(() => {
@@ -203,27 +226,7 @@ export default function InvoiceDetails({ entity,setRefetchBillingKey }) {
 	}, [roomItems]);
 
 	// =============== compute receive/due/return for investigation and room ================
-	const investigationAmountValue = Number(investigationForm.values.amount || 0);
-	const investigationDifference = investigationAmountValue - investigationSubtotal;
-	const isInvestigationEqualZero = investigationSubtotal === 0 && investigationAmountValue === 0;
-	const isInvestigationDue = investigationDifference < 0 && !isInvestigationEqualZero;
-	const isInvestigationReturn = investigationDifference > 0 || isInvestigationEqualZero;
-	const investigationDueAmount = isInvestigationDue ? Math.abs(investigationDifference) : 0;
-	const investigationReturnAmount = isInvestigationReturn ? Math.abs(investigationDifference) : 0;
-
-	const roomAmountValue = Number(roomForm.values.amount || 0);
-	const roomDifference = roomAmountValue - roomSubtotal;
-	const isRoomEqualZero = roomSubtotal === 0 && roomAmountValue === 0;
-	const isRoomDue = roomDifference < 0 && !isRoomEqualZero;
-	const isRoomReturn = roomDifference > 0 || isRoomEqualZero;
-	const roomDueAmount = isRoomDue ? Math.abs(roomDifference) : 0;
-	const roomReturnAmount = isRoomReturn ? Math.abs(roomDifference) : 0;
-
-	useHotkeys(
-		[
-			["alt+p", createSubmitHandler],
-		],
-	);
+	useHotkeys([["alt+p", createSubmitHandler]]);
 
 	return (
 		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -232,155 +235,146 @@ export default function InvoiceDetails({ entity,setRefetchBillingKey }) {
 					{t("InvoiceDetails")}
 				</Text>
 			</Box>
-			<>
-				<Box className="border-top-none" px="sm" mt="xs">
-					<DataTable
-						striped
-						highlightOnHover
-						pinFirstColumn
-						stripedColor="var(--theme-tertiary-color-1)"
-						selectedRecords={selectedRecords}
-						onSelectedRecordsChange={setSelectedRecords}
-						getRecordId={(record) => record.id}
-						// selectionCheckboxProps={(record) => ({
-						// 	disabled: record.is_new,
-						// })}
-						selectionColumnStyle={{ minWidth: 80 }}
-						classNames={{
-							root: tableCss.root,
-							table: tableCss.table,
-							header: tableCss.header,
-							footer: tableCss.footer,
-							pagination: tableCss.pagination,
-						}}
-						records={investigationRecords || []}
-						columns={[
-							{
-								accessor: "index",
-								title: t("S/N"),
-								textAlignment: "right",
-								render: (_, index) => index + 1,
-							},
-							{
-								accessor: "name",
-								title: t("Name"),
-							},
-							{
-								accessor: "quantity",
-								title: t("Quantity"),
-								render: (record) => record?.quantity || 1,
-							},
-							{
-								accessor: "price",
-								title: t("Price"),
-							},
-							{
-								accessor: "subtotal",
-								title: t("SubTotal"),
-								render: (record) => record?.price * record?.quantity || 0,
-							},
-							// {
-							// 	accessor: "actions",
-							// 	title: t("Action"),
-							// 	textAlignment: "center",
-							// 	render: (record) =>
-							// 		record.is_new ? (
-							// 			<ActionIcon
-							// 				color="red"
-							// 				variant="subtle"
-							// 				onClick={() => handleRemoveInvestigation(record.id)}
-							// 			>
-							// 				{/* =============== user can remove only newly added investigations ================ */}
-							// 				<IconX size={16} />
-							// 			</ActionIcon>
-							// 		) : null,
-							// },
-						]}
-						fetching={fetching}
-						loaderSize="xs"
-						loaderColor="grape"
-						height={mainAreaHeight - 152}
-						sortIcons={{
-							sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-							unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
-						}}
-					/>
+			<Box className="border-top-none" px="sm" mt="xs">
+				<DataTable
+					striped
+					highlightOnHover
+					pinFirstColumn
+					stripedColor="var(--theme-tertiary-color-1)"
+					selectedRecords={selectedRecords}
+					onSelectedRecordsChange={handleSelectedRecordsChange}
+					getRecordId={(record) => record.id}
+					selectionCheckboxProps={() => ({
+						disabled: true, // =============== disable all checkboxes to prevent unchecking ================
+					})}
+					selectionColumnStyle={{ minWidth: 80 }}
+					classNames={{
+						root: tableCss.root,
+						table: tableCss.table,
+						header: tableCss.header,
+						footer: tableCss.footer,
+						pagination: tableCss.pagination,
+					}}
+					records={investigationRecords || []}
+					columns={[
+						{
+							accessor: "index",
+							title: t("S/N"),
+							textAlignment: "right",
+							render: (_, index) => index + 1,
+						},
+						{
+							accessor: "name",
+							title: t("Name"),
+						},
+						{
+							accessor: "quantity",
+							title: t("Quantity"),
+							render: (record) => record?.quantity || 1,
+						},
+						{
+							accessor: "price",
+							title: t("Price"),
+						},
+						{
+							accessor: "subtotal",
+							title: t("SubTotal"),
+							render: (record) => record?.price * record?.quantity || 0,
+						},
+						// {
+						// 	accessor: "actions",
+						// 	title: t("Action"),
+						// 	textAlignment: "center",
+						// 	render: (record) =>
+						// 		record.is_new ? (
+						// 			<ActionIcon
+						// 				color="red"
+						// 				variant="subtle"
+						// 				onClick={() => handleRemoveInvestigation(record.id)}
+						// 			>
+						// 				{/* =============== user can remove only newly added investigations ================ */}
+						// 				<IconX size={16} />
+						// 			</ActionIcon>
+						// 		) : null,
+						// },
+					]}
+					fetching={fetching}
+					loaderSize="xs"
+					loaderColor="grape"
+					height={mainAreaHeight - 152}
+					sortIcons={{
+						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+					}}
+				/>
+			</Box>
+			{investigationRecords?.length > 0 && (
+				// =============== investigation-specific form: comment, display total, receive, submit ================
+				<Box gap={0} justify="space-between" mt="xs" px="xs" pb="xs" bg="var(--mantine-color-white)">
+					<form
+						onSubmit={investigationForm.onSubmit(createSubmitHandler(investigationForm, "investigation"))}
+					>
+						<Box w="100%">
+							<Grid columns={18} gutter="xs">
+								<Grid.Col
+									span={12}
+									className="animate-ease-out"
+									bg="var(--theme-primary-color-0)"
+									px="xs"
+								>
+									<Box mt="md">
+										<TextAreaForm
+											id="investigation-comment"
+											form={investigationForm}
+											tooltip={t("EnterComment")}
+											placeholder={t("EnterComment")}
+											name="comment"
+											disabled={invoiceDetails?.process === "Done"}
+										/>
+									</Box>
+								</Grid.Col>
+								<Grid.Col
+									span={6}
+									className="animate-ease-out"
+									bg="var(--theme-secondary-color-0)"
+									px="xs"
+								>
+									<Grid align="center" gutter="3xs" columns={20}>
+										<Grid.Col span={8}>
+											<Text fz="sm" fw="800">
+												{t("Receive")}
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={8}>{investigationSubtotal || 0}</Grid.Col>
+									</Grid>
+									<Box mt="xs">
+										<Button.Group>
+											<Button
+												type="submit"
+												w="100%"
+												size="sm"
+												bg="var(--theme-primary-color-6)"
+												leftSection={
+													<IconPrinter style={{ width: "70%", height: "70%" }} stroke={1.5} />
+												}
+											>
+												<Stack gap={0} align="center" justify="center">
+													<Text fz="md">{t("Print")}</Text>
+													<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+														(alt + p)
+													</Text>
+												</Stack>
+											</Button>
+										</Button.Group>
+									</Box>
+								</Grid.Col>
+							</Grid>
+						</Box>
+					</form>
 				</Box>
-				{investigationRecords?.length > 0 && (
-					// =============== investigation-specific form: comment, display total, receive, submit ================
-					<Box gap={0} justify="space-between" mt="xs" px="xs" pb="xs" bg="var(--mantine-color-white)">
-						<form
-							onSubmit={investigationForm.onSubmit(
-								createSubmitHandler(investigationForm, "investigation")
-							)}
-						>
-							<Box w="100%">
-								<Grid columns={18} gutter="xs">
-									<Grid.Col
-										span={12}
-										className="animate-ease-out"
-										bg="var(--theme-primary-color-0)"
-										px="xs"
-									>
-										<Box mt="md">
-											<TextAreaForm
-												id="investigation-comment"
-												form={investigationForm}
-												tooltip={t("EnterComment")}
-												placeholder={t("EnterComment")}
-												name="comment"
-												disabled={invoiceDetails?.process === "Done"}
-											/>
-										</Box>
-									</Grid.Col>
-									<Grid.Col
-										span={6}
-										className="animate-ease-out"
-										bg="var(--theme-secondary-color-0)"
-										px="xs"
-									>
-										<Grid align="center" gutter="3xs" columns={20}>
-											<Grid.Col span={8}>
-												<Text fz="sm" fw="800">
-													{t("Receive")}
-												</Text>
-											</Grid.Col>
-											<Grid.Col span={8}>
-												{investigationSubtotal || 0}
-											</Grid.Col>
-										</Grid>
-										<Box mt="xs">
-											<Button.Group>
-												<Button
-													type="submit"
-													w="100%"
-													size="sm"
-													bg="var(--theme-primary-color-6)"
-													leftSection={
-														<IconPrinter
-															style={{ width: "70%", height: "70%" }}
-															stroke={1.5}
-														/>
-													}
-												>
-													<Stack gap={0} align="center" justify="center">
-														<Text fz="md">{t("Print")}</Text>
-														<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-															(alt + p)
-														</Text>
-													</Stack>
-												</Button>
-											</Button.Group>
-										</Box>
-									</Grid.Col>
-								</Grid>
-							</Box>
-						</form>
-					</Box>
-				)}
+			)}
 
-				{/* =============== removed shared bottom form; forms moved into their respective tabs =============== */}
-			</>
+			{/* =============== removed shared bottom form; forms moved into their respective tabs =============== */}
 			<Box bg="var(--mantine-color-white)">
 				<Stack h={mainAreaHeight - 62} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
 					{t("NoTestSelected")}
