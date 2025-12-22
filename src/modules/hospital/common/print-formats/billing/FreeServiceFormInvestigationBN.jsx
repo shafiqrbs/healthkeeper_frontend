@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import { capitalizeWords } from "@/common/utils";
+import { capitalizeWords, formatDateTimeAmPm } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 
@@ -104,7 +104,21 @@ const FreeServiceFormInvestigationBN = forwardRef(({ data, preview = false }, re
 											<Text fz={"xs"}>{t("জনাব")}</Text>
 											<Text fz={"xs"}>
 												{t(
-													"যথাযথ সম্মান প্রদর্শন পূর্বক বিনীত নিবেদন এই যে, আমি........................, বয়স............বছর, হাসপাতাল আইডি/রেজিস্ট্রেশন নং..................... আমি অদ্য ........................ তারিখে হাসপাতালের বহিবি ভাগের রোগী হিসাবে পরীক্ষা-নিরীক্ষা বাবদ বিল কাউন্টারে ......... টাকা জমা দেওয়া হয় এবং এর মধ্যে ...... টাকা (অনিবার্য কারণে পরীক্ষা-নিরীক্ষা না হওয়ায়) উক্ত টাকা অতিরিক্ত হওয়ায় তা ফেরত পেতে ইচ্ছুক।"
+													`যথাযথ সম্মান প্রদর্শন পূর্বক বিনীত নিবেদন এই যে, আমি ${patientInfo?.name || ""}, বয়স ${
+														patientInfo?.year ? `${patientInfo?.year} বছর` : ""
+													} ${
+														patientInfo?.month ? `${patientInfo?.month} মাস` : ""
+													}, হাসপাতাল আইডি/রেজিস্ট্রেশন নং ${getValue(
+														patientInfo?.patient_id || ""
+													)} আমি অদ্য ${formatDateTimeAmPm(
+														patientInfo?.created_at
+													)} তারিখে হাসপাতালের বহিবি ভাগের রোগী হিসাবে পরীক্ষা-নিরীক্ষা বাবদ বিল কাউন্টারে ${getValue(
+														patientInfo?.total,
+														"0"
+													)} টাকা জমা দেওয়া হয় এবং এর মধ্যে ${getValue(
+														patientInfo?.amount,
+														"0"
+													)} টাকা (অনিবার্য কারণে পরীক্ষা-নিরীক্ষা না হওয়ায়) উক্ত টাকা অতিরিক্ত হওয়ায় তা ফেরত পেতে ইচ্ছুক।`
 												)}
 											</Text>
 											<Text fz={"xs"} mt="sm">
@@ -177,9 +191,7 @@ const FreeServiceFormInvestigationBN = forwardRef(({ data, preview = false }, re
 											</Text>
 											<Text size="xs">
 												{getValue(patientInfo?.mobile, "")}
-												{patientInfo?.guardian_mobile && (
-													<> / {getValue(patientInfo?.guardian_mobile, "")}</>
-												)}
+												{patientInfo?.guardian_mobile && <> / {getValue(patientInfo?.guardian_mobile, "")}</>}
 											</Text>
 										</Group>
 									</Table.Td>
@@ -221,53 +233,61 @@ const FreeServiceFormInvestigationBN = forwardRef(({ data, preview = false }, re
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td colSpan={3}>
 										<Box px="mes" pt="sm" pb="sm">
-											<Table
-												style={{
-													borderCollapse: "collapse",
-													width: "100%",
-												}}
-												className="customTable"
-											>
+											<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
 												<Table.Thead>
+													<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+														<Table.Td colspan={3}>
+															<Group gap="xs">
+																<Text size="md" fw={600}>
+																	{t("PaymentDetails")}:
+																</Text>
+															</Group>
+														</Table.Td>
+													</Table.Tr>
 													<Table.Tr>
-														<Table.Th>Investigation Name</Table.Th>
-														<Table.Th>Amount</Table.Th>
-														<Table.Th>Paid Amount</Table.Th>
+														<Table.Th>{t("Particular")}</Table.Th>
+														<Table.Th ta="center">{t("Quantity")}</Table.Th>
+														<Table.Th ta="center">{t("Price")}</Table.Th>
+														<Table.Th>{t("Total")}</Table.Th>
 													</Table.Tr>
 												</Table.Thead>
 												<Table.Tbody>
-													{patientInfo?.invoice_particular?.length > 0 ? (
-														patientInfo.invoice_particular.map((item, index) => (
-															<Table.Tr key={index}>
-																<Table.Td>
-																	<Text size="xs">
-																		{getValue(item?.item_name, "")}
-																	</Text>
-																</Table.Td>
-																<Table.Td>
-																	<Text size="xs">
-																		{getValue(item?.sub_total || item?.amount, "0")}
-																	</Text>
-																</Table.Td>
-																<Table.Td>
-																	<Text size="xs">
-																		{getValue(
-																			item?.paid_amount || item?.amount_paid,
-																			"0"
-																		)}
-																	</Text>
-																</Table.Td>
-															</Table.Tr>
-														))
-													) : (
-														<Table.Tr>
-															<Table.Td colSpan={3}>
-																<Text size="xs" ta="center">
-																	No investigations found
-																</Text>
+													{patientInfo?.invoice_particular?.map((item, index) => (
+														<Table.Tr key={index}>
+															<Table.Td>{item.item_name}</Table.Td>
+															<Table.Td width={80} align="center">
+																{item.quantity}
+															</Table.Td>
+															<Table.Td width={80} align="center">
+																{item.price}
+															</Table.Td>
+															<Table.Td fw={600} width={110}>
+																৳ {item.sub_total}
 															</Table.Td>
 														</Table.Tr>
-													)}
+													))}
+													<Table.Tr>
+														<Table.Td colspan={3} fw={600}>
+															{t("Payable")}
+														</Table.Td>
+														<Table.Td width={110} fw={600}>
+															৳ {getValue(patientInfo?.total, "0")}
+														</Table.Td>
+													</Table.Tr>
+													<Table.Tr>
+														<Table.Td colspan={3} fw={600}>
+															{t("Paid")}
+														</Table.Td>
+														<Table.Td fw={600}>৳ {getValue(patientInfo?.amount, "0")}</Table.Td>
+													</Table.Tr>
+													<Table.Tr>
+														<Table.Td colspan={3} fw={600}>
+															{t("Balance")}
+														</Table.Td>
+														<Table.Td fw={600}>
+															৳ {Number(patientInfo?.total ?? 0) - Number(patientInfo?.amount ?? 0)}
+														</Table.Td>
+													</Table.Tr>
 												</Table.Tbody>
 											</Table>
 										</Box>

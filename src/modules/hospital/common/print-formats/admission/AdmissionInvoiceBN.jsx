@@ -1,4 +1,4 @@
-import {Box, Text, Grid, Group, Image, Table, Flex} from "@mantine/core";
+import { Box, Text, Grid, Group, Image, Table, Flex } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -6,7 +6,7 @@ import "@/index.css";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-import {capitalizeWords, formatDateTimeAmPm} from "@utils/index";
+import { capitalizeWords, formatDateTimeAmPm } from "@utils/index";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
@@ -58,45 +58,23 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Flex gap="md" justify="center">
 										<Box>
 											<Group ml="md" align="center" h="100%">
-												<Image
-													src={GLogo}
-													alt="logo"
-													width={60}
-													height={60}
-												/>
+												<Image src={GLogo} alt="logo" width={60} height={60} />
 											</Group>
 										</Box>
 										<Box>
-											<Text
-												ta="center"
-												fw="bold"
-												size="lg"
-												c="#1e40af"
-												mt="2"
-											>
+											<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
 												{hospitalConfigData?.organization_name || ""}
 											</Text>
 											<Text ta="center" size="sm" c="gray" mt="2">
 												{hospitalConfigData?.address || ""}
 											</Text>
 											<Text ta="center" size="sm" c="gray" mb="2">
-												{t("হটলাইন")}{" "}
-												{hospitalConfigData?.hotline || ""}
+												{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
 											</Text>
 										</Box>
 										<Box>
-											<Group
-												mr="md"
-												justify="flex-end"
-												align="center"
-												h="100%"
-											>
-												<Image
-													src={TBLogo}
-													alt="logo"
-													width={60}
-													height={60}
-												/>
+											<Group mr="md" justify="flex-end" align="center" h="100%">
+												<Image src={TBLogo} alt="logo" width={60} height={60} />
 											</Group>
 										</Box>
 									</Flex>
@@ -106,8 +84,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Td colSpan={3} style={{ textAlign: "center", padding: 0 }}>
 								<Text size="md" fw={600}>
-									{t("AdmissionInvoiceForPatient")} -{" "}
-									{patientInfo?.parent_patient_mode_name}
+									{t("AdmissionInvoiceForPatient")} - {patientInfo?.parent_patient_mode_name}
 								</Text>
 							</Table.Td>
 						</Table.Tr>
@@ -117,9 +94,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("PatientID")}:
 									</Text>
-									<Text size="sm">
-										{getValue(patientInfo?.patient_id || "")}
-									</Text>
+									<Text size="sm">{getValue(patientInfo?.patient_id || "")}</Text>
 								</Group>
 							</Table.Td>
 							<Table.Td>
@@ -127,9 +102,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("AdmissionID")}:
 									</Text>
-									<Text size="sm">
-										{getValue(patientInfo?.invoice || "")}
-									</Text>
+									<Text size="sm">{getValue(patientInfo?.invoice || "")}</Text>
 								</Group>
 							</Table.Td>
 							<Table.Td>
@@ -137,9 +110,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("PatientType")}:
 									</Text>
-									<Text size="sm">
-										{getValue(patientInfo?.payment_mode_name, "")}
-									</Text>
+									<Text size="sm">{getValue(patientInfo?.payment_mode_name, "")}</Text>
 								</Group>
 							</Table.Td>
 						</Table.Tr>
@@ -157,9 +128,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("Gender")}:
 									</Text>
-									<Text size="xs">
-										{capitalizeWords(patientInfo?.gender || "")}
-									</Text>
+									<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
 								</Group>
 							</Table.Td>
 							<Table.Td>
@@ -168,8 +137,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 										{t("Age")}:
 									</Text>
 									<Text size="xs">
-										{patientInfo?.year || 0} Years {patientInfo?.month || 0}{" "}
-										Mon {patientInfo?.day || 0} Day
+										{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon {patientInfo?.day || 0} Day
 									</Text>
 								</Group>
 							</Table.Td>
@@ -180,9 +148,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("F/M/H")}:
 									</Text>
-									<Text size="xs">
-										{getValue(patientInfo?.father_name, "")}
-									</Text>
+									<Text size="xs">{getValue(patientInfo?.father_name, "")}</Text>
 								</Group>
 							</Table.Td>
 							<Table.Td>
@@ -190,9 +156,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("Religion")}:
 									</Text>
-									<Text size="sm">
-										{getValue(patientInfo?.religion_name, "")}
-									</Text>
+									<Text size="sm">{getValue(patientInfo?.religion_name, "")}</Text>
 								</Group>
 							</Table.Td>
 							<Table.Td>
@@ -226,9 +190,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("Add. Date")}:
 									</Text>
-									<Text size="sm">
-										{getValue(formatDateTimeAmPm(patientInfo?.admission_date), "")}
-									</Text>
+									<Text size="sm">{getValue(formatDateTimeAmPm(patientInfo?.admission_date), "")}</Text>
 								</Group>
 							</Table.Td>
 						</Table.Tr>
@@ -239,9 +201,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("GuardianName")}:
 									</Text>
-									<Text size="xs">
-										{getValue(patientInfo?.guardian_name, "")}
-									</Text>
+									<Text size="xs">{getValue(patientInfo?.guardian_name, "")}</Text>
 								</Group>
 							</Table.Td>
 							<Table.Td>
@@ -249,9 +209,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("Relation")}:
 									</Text>
-									<Text size="xs">
-										{getValue(patientInfo?.patient_relation, "")}
-									</Text>
+									<Text size="xs">{getValue(patientInfo?.patient_relation, "")}</Text>
 								</Group>
 							</Table.Td>
 							<Table.Td colspan={2}>
@@ -261,9 +219,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									</Text>
 									<Text size="xs">
 										{getValue(patientInfo?.mobile, "")}
-										{patientInfo?.guardian_mobile && (
-											<> / {getValue(patientInfo?.guardian_mobile, "")}</>
-										)}
+										{patientInfo?.guardian_mobile && <> / {getValue(patientInfo?.guardian_mobile, "")}</>}
 									</Text>
 								</Group>
 							</Table.Td>
@@ -274,12 +230,9 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("PresentAddress")}:
 									</Text>
-									<Text size="sm">
-										{getValue(patientInfo?.address, "")}
-									</Text>
+									<Text size="sm">{getValue(patientInfo?.address, "")}</Text>
 								</Group>
 							</Table.Td>
-
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Td colspan={3}>
@@ -287,12 +240,9 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("PermanentAddress")}:
 									</Text>
-									<Text size="sm">
-										{getValue(patientInfo?.permanent_address, "")}
-									</Text>
+									<Text size="sm">{getValue(patientInfo?.permanent_address, "")}</Text>
 								</Group>
 							</Table.Td>
-
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Td colspan={3}>
@@ -309,9 +259,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("Bed/Cabin")}:
 									</Text>
-									<Text size="sm">
-										{getValue(patientInfo?.room_name, "")}
-									</Text>
+									<Text size="sm">{getValue(patientInfo?.room_name, "")}</Text>
 								</Group>
 							</Table.Td>
 							<Table.Td>
@@ -319,9 +267,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("Unit")}:
 									</Text>
-									<Text size="xs">
-										{getValue(patientInfo?.admit_unit_name, "")}
-									</Text>
+									<Text size="xs">{getValue(patientInfo?.admit_unit_name, "")}</Text>
 								</Group>
 							</Table.Td>
 							<Table.Td>
@@ -329,9 +275,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("Department")}:
 									</Text>
-									<Text size="xs">
-										{getValue(patientInfo?.admit_department_name, "")}
-									</Text>
+									<Text size="xs">{getValue(patientInfo?.admit_department_name, "")}</Text>
 								</Group>
 							</Table.Td>
 						</Table.Tr>
@@ -341,9 +285,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("ConsultantDoctor")}:
 									</Text>
-									<Text size="sm">
-										{getValue(patientInfo?.admit_consultant_name, "")}
-									</Text>
+									<Text size="sm">{getValue(patientInfo?.admit_consultant_name, "")}</Text>
 								</Group>
 							</Table.Td>
 							<Table.Td>
@@ -351,76 +293,69 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("UnitDoctor")}:
 									</Text>
-									<Text size="xs">
-										{getValue(patientInfo?.admit_doctor_name, "")}
-									</Text>
+									<Text size="xs">{getValue(patientInfo?.admit_doctor_name, "")}</Text>
 								</Group>
 							</Table.Td>
 						</Table.Tr>
-
 					</Table.Tbody>
 				</Table>
 				<Box pos="relative" mt="lg">
-						<Table
-							withTableBorder
-							withColumnBorders
-							borderColor="var(--theme-tertiary-color-8)"
-						>
-							<Table.Thead>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Table.Td colspan={3}>
-										<Group gap="xs">
-											<Text size="md" fw={600}>
-												{t("PaymentDetails")}:
-											</Text>
-										</Group>
+					<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
+						<Table.Thead>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colspan={3}>
+									<Group gap="xs">
+										<Text size="md" fw={600}>
+											{t("PaymentDetails")}:
+										</Text>
+									</Group>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr>
+								<Table.Th>{t("Particular")}</Table.Th>
+								<Table.Th ta="center">{t("Quantity")}</Table.Th>
+								<Table.Th ta="center">{t("Price")}</Table.Th>
+								<Table.Th>{t("Total")}</Table.Th>
+							</Table.Tr>
+						</Table.Thead>
+						<Table.Tbody>
+							{patientInfo?.invoice_particular?.map((item, index) => (
+								<Table.Tr key={index}>
+									<Table.Td>{item.item_name}</Table.Td>
+									<Table.Td width={80} align="center">
+										{item.quantity}
+									</Table.Td>
+									<Table.Td width={80} align="center">
+										{item.price}
+									</Table.Td>
+									<Table.Td fw={600} width={110}>
+										৳ {item.sub_total}
 									</Table.Td>
 								</Table.Tr>
-								<Table.Tr>
-									<Table.Th>{t("Particular")}</Table.Th>
-									<Table.Th ta="center">{t("Quantity")}</Table.Th>
-									<Table.Th ta="center">{t("Price")}</Table.Th>
-									<Table.Th>{t("Total")}</Table.Th>
-								</Table.Tr>
-							</Table.Thead>
-							<Table.Tbody>
-								{patientInfo?.invoice_particular?.map((item, index) => (
-									<Table.Tr key={index}>
-										<Table.Td>{item.item_name}</Table.Td>
-										<Table.Td width={80} align="center">
-											{item.quantity}
-										</Table.Td>
-										<Table.Td width={80} align="center">
-											{item.price}
-										</Table.Td>
-										<Table.Td fw={600} width={110}>
-											৳ {item.sub_total}
-										</Table.Td>
-									</Table.Tr>
-								))}
-								<Table.Tr>
-									<Table.Td colspan={3} fw={600}>{t("Payable")}</Table.Td>
-									<Table.Td width={110} fw={600}>
-										৳ {getValue(patientInfo?.total, "0")}
-									</Table.Td>
-								</Table.Tr>
-								<Table.Tr>
-									<Table.Td colspan={3} fw={600}>{t("Paid")}</Table.Td>
-									<Table.Td fw={600}>
-										৳ {getValue(patientInfo?.amount, "0")}
-									</Table.Td>
-								</Table.Tr>
-								<Table.Tr>
-									<Table.Td colspan={3} fw={600}>{t("Balance")}</Table.Td>
-									<Table.Td fw={600}>
-										৳{" "}
-										{Number(patientInfo?.total ?? 0) -
-										Number(patientInfo?.amount ?? 0)}
-									</Table.Td>
-								</Table.Tr>
-							</Table.Tbody>
-						</Table>
-					</Box>
+							))}
+							<Table.Tr>
+								<Table.Td colspan={3} fw={600}>
+									{t("Payable")}
+								</Table.Td>
+								<Table.Td width={110} fw={600}>
+									৳ {getValue(patientInfo?.total, "0")}
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr>
+								<Table.Td colspan={3} fw={600}>
+									{t("Paid")}
+								</Table.Td>
+								<Table.Td fw={600}>৳ {getValue(patientInfo?.amount, "0")}</Table.Td>
+							</Table.Tr>
+							<Table.Tr>
+								<Table.Td colspan={3} fw={600}>
+									{t("Balance")}
+								</Table.Td>
+								<Table.Td fw={600}>৳ {Number(patientInfo?.total ?? 0) - Number(patientInfo?.amount ?? 0)}</Table.Td>
+							</Table.Tr>
+						</Table.Tbody>
+					</Table>
+				</Box>
 
 				<Box ta="center">
 					<Text size="xs" c="gray" mt="xs">
