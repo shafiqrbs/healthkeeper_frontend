@@ -101,7 +101,7 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 	};
 
 	const totalModeCount = patientModeCollectionData?.reduce(
-		(sum, item) => sum + (item.patient ?? 0),
+		(sum, item) => sum + (item.total_count ?? 0),
 		0
 	);
 	const totalModeAmount = patientModeCollectionData?.reduce(
@@ -170,20 +170,8 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 				<Box ref={summaryReportsRef}>
 					<ScrollArea mt="sm" h={height}>
 						<Box className="borderRadiusAll" mt="3xs" px="xs">
-							<Flex
-								justify="space-between"
-								align="center"
-								className="borderBottomDashed"
-								py="3xs"
-							>
-								<Text>{t("Patient")}</Text>
-								<Flex align="center" gap="xs" w="80px">
-									<IconBed color="var(--theme-primary-color-6)" />
-									<Text fz="sm">{collectionSummaryData?.patient || 0}</Text>
-								</Flex>
-							</Flex>
 							<Flex justify="space-between" align="center" py="3xs">
-								<Text>{t("Collection")}</Text>
+								<Text>{t("Grand Collection Amount")}</Text>
 								<Flex align="center" gap="xs" w="80px">
 									<IconCoinTaka color="var(--theme-primary-color-6)" />
 									<Text fz="sm">{collectionSummaryData?.total || 0}</Text>
@@ -218,7 +206,7 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 									patientModeCollectionData?.map((item, index) => (
 										<Table.Tr key={item.id || index} py="xs">
 											<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
-											<Table.Td>{item?.patient}</Table.Td>
+											<Table.Td>{item?.total_count}</Table.Td>
 											<Table.Td>{item?.total}</Table.Td>
 										</Table.Tr>
 									))}

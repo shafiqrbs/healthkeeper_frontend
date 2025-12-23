@@ -14,6 +14,11 @@ import {useAuthStore} from "@/store/useAuthStore.js";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
 const units = ["Unit 1", "Unit 2", "Unit 3"];
+const invoiceModes = [
+	{ id: "all", name: "All" },
+	{ id: "opd", name: "OPD" },
+	{ id: "emergency", name: "Emergency" },
+];
 
 export default function ReportFilterSearch({
 	form,
@@ -29,9 +34,9 @@ export default function ReportFilterSearch({
 	showUnits = false,
 	className = "keyword-search-box",
 	handleCSVDownload = () => {},
-                                               showStockItems = false,
-                                               showWarehouse = false,
-                                           }) {
+    showStockItems = false,
+    showWarehouse = false})
+	{
 	const dispatch = useDispatch();
 	const [fetching, setFetching] = useState(false);
 	const [records, setRecords] = useState([]);
@@ -134,7 +139,6 @@ export default function ReportFilterSearch({
             stock_item_id: form.values.stock_item_id,
             warehouse_id: form.values.warehouse_id,
 		};
-		console.log(form)
 		form.setFieldValue("start_date", startDate ? formatDate(startDate) : "");
 		form.setFieldValue("end_date", endDate ? formatDate(endDate) : "");
 		if (onSearch) {
@@ -256,6 +260,17 @@ export default function ReportFilterSearch({
 					w={250}
 				/>
 			)}
+			<Select
+				clearable
+				placeholder="InvoiceMode"
+				loading={fetching}
+				data={invoiceModes.map((item) => ({
+					label: item.name,
+					value: item.id,
+				}))}
+				value={form.values?.invoice_mode}
+				onChange={(value) => form.setFieldValue("invoice_mode", value)}
+			/>
 			<Flex gap="3xs" align="center">
 				<ActionIcon
 					c="var(--theme-primary-color-6)"

@@ -79,6 +79,7 @@ export default function InvoiceSummary() {
 	const { data: records, isLoading } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_DAILY_SUMMARY,
 		params: {
+			invoice_mode: form.values.invoice_mode,
 			start_date: form.values.start_date,
 			end_date: form.values.end_date,
 		},
@@ -87,6 +88,7 @@ export default function InvoiceSummary() {
 	const collectionSummaryData = records?.data?.summary[0] || {};
 	const invoiceModeData = records?.data?.invoiceMode || [];
 	const patientModeCollectionData = records?.data?.patientMode || [];
+	console.log(patientModeCollectionData)
 	const userCollectionData = records?.data?.userBase || [];
 	const serviceGroups = records?.data?.serviceGroups || [];
 	const serviceData = records?.data?.services || [];
@@ -102,7 +104,7 @@ export default function InvoiceSummary() {
 	};
 
 	const totalModeCount = patientModeCollectionData?.reduce(
-		(sum, item) => sum + (item.patient ?? 0),
+		(sum, item) => sum + (item.total_count ?? 0),
 		0
 	);
 	const totalModeAmount = patientModeCollectionData?.reduce(
@@ -180,20 +182,8 @@ export default function InvoiceSummary() {
 				<Box ref={summaryReportsRef}>
 					<ScrollArea mt="sm" h={height}>
 						<Box className="borderRadiusAll" mt="3xs" px="xs">
-							<Flex
-								justify="space-between"
-								align="center"
-								className="borderBottomDashed"
-								py="3xs"
-							>
-								<Text>{t("Patient")}</Text>
-								<Flex align="center" gap="xs" w="80px">
-									<IconBed color="var(--theme-primary-color-6)" />
-									<Text fz="sm">{collectionSummaryData?.patient || 0}</Text>
-								</Flex>
-							</Flex>
 							<Flex justify="space-between" align="center" py="3xs">
-								<Text>{t("Collection")}</Text>
+								<Text>{t("Grand Collection Amount")}</Text>
 								<Flex align="center" gap="xs" w="80px">
 									<IconCoinTaka color="var(--theme-primary-color-6)" />
 									<Text fz="sm">{collectionSummaryData?.total || 0}</Text>
@@ -269,7 +259,7 @@ export default function InvoiceSummary() {
 										patientModeCollectionData?.map((item, index) => (
 											<Table.Tr key={item.id || index} py="xs">
 												<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
-												<Table.Td>{item?.patient}</Table.Td>
+												<Table.Td>{item?.total_count}</Table.Td>
 												<Table.Td>{item?.total}</Table.Td>
 											</Table.Tr>
 										))}
