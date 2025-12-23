@@ -26,6 +26,7 @@ import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosB
 import {modals} from "@mantine/modals";
 import {getDataWithoutStore} from "@/services/apiService";
 import RefundPosBN from "@hospital-components/print-formats/refund/RefundPosBN";
+import RefundFromBedBn from "@hospital-components/print-formats/refund/RefundFormBedBN";
 
 const ALLOWED_BILLING_ROLES = [
 	"billing_manager",
@@ -262,7 +263,7 @@ export default function Invoice({ setRefetchBillingKey,entity }) {
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}
-			<RefundPosBN data={invoicePrintData} ref={invoicePrintRef} />
+			<RefundFromBedBn data={invoicePrintData} ref={invoicePrintRef} />
 			{/*<IPDAllPrint data={test} ref={ipdAllPrintRef} />*/}
 		</Box>
 	);

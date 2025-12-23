@@ -7,6 +7,7 @@ import { MODULES } from "@/constants";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useSelector } from "react-redux";
+import CustomDivider from "@components/core-component/CustomDivider";
 
 const module = MODULES.BILLING;
 const PER_PAGE = 500;
@@ -67,6 +68,7 @@ export default function _Table({ patient_mode }) {
 						gutter="xs"
 					>
 						<Grid.Col span={12}><Text fz="sm" fw={'600'}>{item.name}</Text></Grid.Col>
+						<CustomDivider />
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />

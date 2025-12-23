@@ -22,7 +22,7 @@ export default function Index() {
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
 	const [diagnosticReport, setDiagnosticReport] = useState([]);
 	const [refetchBillingKey, setRefetchBillingKey] = useState(0);
-	const [type, setType] = useState("opd");
+	const [type, setType] = useState("investigation");
 
 	useEffect(() => {
 		if (id) {
