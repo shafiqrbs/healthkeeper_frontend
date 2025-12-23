@@ -142,6 +142,116 @@ export default function Index() {
 		}
 	}, [searchParams]);
 
+	// =============== filter tabs based on release_mode and process status ================
+	const releaseMode = ipdData?.data?.release_mode;
+	const isPaid = ipdData?.data?.process?.toLowerCase() === "paid";
+
+	// =============== redirect to dashboard if current tab is not accessible ================
+	useEffect(() => {
+		if (!ipdData?.data || !baseTabValue) return;
+
+		const restrictedTabs = ["room-transfer", "discharge", "death-certificate"];
+		const restrictedPrintTabs = ["discharge-print", "death-certificate-print"];
+		const currentReleaseMode = ipdData?.data?.release_mode;
+		const currentIsPaid = ipdData?.data?.process?.toLowerCase() === "paid";
+
+		// =============== check if it's a restricted tab ================
+		if (restrictedTabs.includes(baseTabValue)) {
+			// =============== if release_mode is set and process is paid, check if tab matches ================
+			if (currentReleaseMode && currentIsPaid) {
+				const isAccessible =
+					(currentReleaseMode === "referred" && baseTabValue === "room-transfer") ||
+					(currentReleaseMode === "discharge" && baseTabValue === "discharge") ||
+					(currentReleaseMode === "death" && baseTabValue === "death-certificate");
+
+				if (!isAccessible) {
+					setBaseTabValue("dashboard");
+					setSearchParams({ tab: "dashboard" });
+				}
+				return;
+			}
+
+			// =============== if release_mode is set but process is not paid, restrict all three tabs ================
+			if (currentReleaseMode && !currentIsPaid) {
+				setBaseTabValue("dashboard");
+				setSearchParams({ tab: "dashboard" });
+				return;
+			}
+		}
+
+		// =============== check if it's a restricted print tab ================
+		if (restrictedPrintTabs.includes(baseTabValue)) {
+			// =============== if release_mode is set and process is paid, check if print tab matches ================
+			if (currentReleaseMode && currentIsPaid) {
+				const isAccessible =
+					(currentReleaseMode === "discharge" && baseTabValue === "discharge-print") ||
+					(currentReleaseMode === "death" && baseTabValue === "death-certificate-print");
+
+				if (!isAccessible) {
+					setBaseTabValue("dashboard");
+					setSearchParams({ tab: "dashboard" });
+				}
+				return;
+			}
+
+			// =============== if release_mode is set but process is not paid, restrict print tabs ================
+			if (currentReleaseMode && !currentIsPaid) {
+				setBaseTabValue("dashboard");
+				setSearchParams({ tab: "dashboard" });
+				return;
+			}
+
+			// =============== if no release_mode, print tabs are accessible ================
+		}
+
+		// =============== if tab is not restricted, it's always accessible ================
+	}, [ipdData?.data, baseTabValue, setSearchParams]);
+
+	const getFilteredTabs = (tabs) => {
+		// =============== if release_mode is set and process is paid, show only the corresponding tab ================
+		if (releaseMode && isPaid) {
+			if (releaseMode === "referred") {
+				return tabs.filter((tab) => tab.value === "room-transfer");
+			}
+			if (releaseMode === "discharge") {
+				return tabs.filter((tab) => tab.value === "discharge");
+			}
+			if (releaseMode === "death") {
+				return tabs.filter((tab) => tab.value === "death-certificate");
+			}
+		}
+		// =============== if release_mode is set but process is not paid, hide room-transfer, discharge, and death-certificate ================
+		if (releaseMode && !isPaid) {
+			return tabs.filter(
+				(tab) => tab.value !== "room-transfer" && tab.value !== "discharge" && tab.value !== "death-certificate"
+			);
+		}
+		// =============== if no release_mode, show all tabs ================
+		return tabs;
+	};
+
+	const getFilteredPrintItems = (printItems) => {
+		// =============== if release_mode is set and process is paid, show only the corresponding print item ================
+		if (releaseMode && isPaid) {
+			if (releaseMode === "discharge") {
+				return printItems.filter((item) => item.value === "discharge-print");
+			}
+			if (releaseMode === "death") {
+				return printItems.filter((item) => item.value === "death-certificate-print");
+			}
+			// =============== if release_mode is referred, hide discharge-print and death-certificate-print ================
+			if (releaseMode === "referred") {
+				return printItems.filter((item) => item.value !== "discharge-print" && item.value !== "death-certificate-print");
+			}
+		}
+		// =============== if release_mode is set but process is not paid, hide discharge-print and death-certificate-print ================
+		if (releaseMode && !isPaid) {
+			return printItems.filter((item) => item.value !== "discharge-print" && item.value !== "death-certificate-print");
+		}
+		// =============== if no release_mode, show all print items ================
+		return printItems;
+	};
+
 	const handleTabClick = async (value) => {
 		if (value === "e-fresh") {
 			modals.openConfirmModal({
@@ -195,8 +305,7 @@ export default function Index() {
 									</Text>
 									<Text fz="xs">{ipdData?.data?.gender}</Text>
 									<Text fz="xs">
-										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m{" "}
-										{ipdData?.data?.day || 0}d{" "}
+										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m {ipdData?.data?.day || 0}d{" "}
 									</Text>
 									<Text fz="xs">
 										{t("Created")} {formatDate(ipdData?.data?.created_at)}
@@ -205,8 +314,10 @@ export default function Index() {
 							</Box>
 							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
 								<Stack h="100%" py="xs" gap={0}>
-									{TAB_ITEMS.filter((tabItem) =>
-										userRoles.some((role) => tabItem.allowedGroups.includes(role))
+									{getFilteredTabs(
+										TAB_ITEMS.filter((tabItem) =>
+											userRoles.some((role) => tabItem.allowedGroups.includes(role))
+										)
 									).map((tabItem, index) => (
 										<Box
 											key={index}
@@ -242,8 +353,10 @@ export default function Index() {
 										</Text>
 									</Box>
 
-									{PRINT_SECTION_ITEMS.filter((tabItem) =>
-										userRoles.some((role) => tabItem.allowedGroups.includes(role))
+									{getFilteredPrintItems(
+										PRINT_SECTION_ITEMS.filter((tabItem) =>
+											userRoles.some((role) => tabItem.allowedGroups.includes(role))
+										)
 									).map((tabItem, index) => (
 										<Box
 											key={index}

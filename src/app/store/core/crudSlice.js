@@ -170,7 +170,7 @@ const initialState = {
 		data: {},
 		editData: {},
 		validation: false,
-		filterData: { created: formatDate(new Date()), keywordSearch: "" },
+		filterData: { created: "", keywordSearch: "" },
 	},
 	finalBilling: {
 		isLoading: true,
@@ -384,7 +384,13 @@ const initialState = {
 		editData: {},
 		validation: false,
 		validationMessages: [],
-		filterData: { name: "", mobile: "", email: "", keywordSearch: "", created: formatDate(new Date()) },
+		filterData: {
+			name: "",
+			mobile: "",
+			email: "",
+			keywordSearch: "",
+			created: formatDate(new Date()),
+		},
 	},
 	labUser: {
 		isLoading: true,

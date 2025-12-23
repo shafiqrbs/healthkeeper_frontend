@@ -55,7 +55,6 @@ export default function Index() {
 									<Text fw={600} fz="sm">
 										{t("RefundHistoryInformation")}
 									</Text>
-
 								</Flex>
 								<TabsWithSearch
 									tabList={["list"]}
@@ -78,9 +77,11 @@ export default function Index() {
 							<Grid.Col span={18} className="animate-ease-out">
 								<Grid columns={18} gutter="2">
 									<Grid.Col span={18} className="animate-ease-out">
-										<Invoice setRefetchBillingKey={setRefetchBillingKey} entity={entity} />
+										<Invoice
+											setRefetchBillingKey={setRefetchBillingKey}
+											entity={entity}
+										/>
 									</Grid.Col>
-
 								</Grid>
 							</Grid.Col>
 						</Grid>

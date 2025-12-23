@@ -1,6 +1,17 @@
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { Box, Divider, Grid, Group, Paper, Stack, Text, Title, Button, ScrollArea } from "@mantine/core";
+import {
+	Box,
+	Divider,
+	Grid,
+	Group,
+	Paper,
+	Stack,
+	Text,
+	Title,
+	Button,
+	ScrollArea,
+} from "@mantine/core";
 import { LineChart } from "@mantine/charts";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -104,7 +115,9 @@ export default function Dashboard() {
 		return insulinRecordList
 			.map((record) => {
 				const chartLabelSource = record?.date || record?.createdAt || null;
-				const chartLabel = chartLabelSource ? new Date(chartLabelSource).toLocaleDateString() : "Unknown";
+				const chartLabel = chartLabelSource
+					? new Date(chartLabelSource).toLocaleDateString()
+					: "Unknown";
 
 				const mappedRecord = {
 					chartLabel,
@@ -135,7 +148,13 @@ export default function Dashboard() {
 				{/* =============== Column 1: Patient Information =============== */}
 				<Grid.Col span={4}>
 					<ScrollArea>
-						<Paper h={mainAreaHeight - 10} withBorder p="lg" radius="sm" bg="var(--theme-tertiary-color-0)">
+						<Paper
+							h={mainAreaHeight - 10}
+							withBorder
+							p="lg"
+							radius="sm"
+							bg="var(--theme-tertiary-color-0)"
+						>
 							<Stack gap="3xs">
 								<Title order={4} fw={700} mb="es">
 									{ipd?.name || "-"}
@@ -151,11 +170,19 @@ export default function Dashboard() {
 								</Text>
 								<Group mb="es">
 									<Text size="sm" c="var(--theme-tertiary-color-7)">
-										Age: {ipd?.day ? `${ipd.day} days` : ipd?.year ? `${ipd.year} years` : "-"}
+										Age:{" "}
+										{ipd?.day
+											? `${ipd.day} days`
+											: ipd?.year
+											? `${ipd.year} years`
+											: "-"}
 									</Text>
 									<Text size="sm" c="var(--theme-tertiary-color-7)">
 										| Gender:{" "}
-										{ipd?.gender ? ipd.gender.charAt(0).toUpperCase() + ipd.gender.slice(1) : "-"}
+										{ipd?.gender
+											? ipd.gender.charAt(0).toUpperCase() +
+											  ipd.gender.slice(1)
+											: "-"}
 									</Text>
 								</Group>
 								<Text size="sm" c="var(--theme-tertiary-color-7)">
@@ -165,7 +192,8 @@ export default function Dashboard() {
 									Religion: {ipd?.religion_name || "-"}
 								</Text>
 								<Text size="sm" c="var(--theme-tertiary-color-7)">
-									Guardian: {ipd?.guardian_name || "-"} ({ipd?.guardian_mobile || "-"})
+									Guardian: {ipd?.guardian_name || "-"} (
+									{ipd?.guardian_mobile || "-"})
 								</Text>
 								<Text size="sm" c="var(--theme-tertiary-color-7)">
 									Date: {ipd?.created || "-"}
@@ -228,23 +256,59 @@ export default function Dashboard() {
 				{/* =============== Column 2: Room & Doctor Information =============== */}
 				<Grid.Col span={4} h="100%">
 					<Box bg="var(--mantine-color-white)" className="borderRadiusAll">
-						<Group justify="center" py="md">
-							<Button onClick={() => handleReleaseMode("discharge")}> For Discharge </Button>
+						{ipd?.release_mode && ipd?.process?.toLowerCase() !== "paid" ? (
+							<Paper
+								m="md"
+								p="md"
+								withBorder
+								radius="sm"
+								bg="var(--theme-warn-color-1)"
+								style={{ borderColor: "var(--theme-warn-color-4)" }}
+							>
+								<Text fw={600} size="md" c="var(--theme-warn-color-7)">
+									{ipd.release_mode.charAt(0).toUpperCase() +
+										ipd.release_mode.slice(1)}
+									: waiting for the bill to be processed
+								</Text>
+							</Paper>
+						) : (
+							<Group justify="center" py="md">
+								<Button onClick={() => handleReleaseMode("discharge")}>
+									{" "}
+									For Discharge{" "}
+								</Button>
 
-							<Button variant="default" onClick={() => handleReleaseMode("death")}>
-								For Death
-							</Button>
+								<Button
+									variant="default"
+									onClick={() => handleReleaseMode("death")}
+								>
+									For Death
+								</Button>
 
-							<Button variant="light" onClick={() => handleReleaseMode("referred")}>
-								For Referred
-							</Button>
-						</Group>
+								<Button
+									variant="light"
+									onClick={() => handleReleaseMode("referred")}
+								>
+									For Referred
+								</Button>
+							</Group>
+						)}
 						<ScrollArea h={mainAreaHeight - 86}>
-							<Paper p="lg" pt={0} radius="sm" bg="var(--mantine-color-white)" h="100%">
+							<Paper
+								p="lg"
+								pt={0}
+								radius="sm"
+								bg="var(--mantine-color-white)"
+								h="100%"
+							>
 								<Stack gap="md">
 									<Divider
 										label={
-											<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
+											<Text
+												size="xs"
+												c="var(--theme-tertiary-color-7)"
+												fw={500}
+											>
 												Room/Cabin Status
 											</Text>
 										}
@@ -281,7 +345,11 @@ export default function Dashboard() {
 												<Text>Days</Text>
 											</Grid.Col>
 										</Grid>
-										<Grid columns={12} pl={"xs"} bg={admissionDay > consumeDay ? "red" : "green"}>
+										<Grid
+											columns={12}
+											pl={"xs"}
+											bg={admissionDay > consumeDay ? "red" : "green"}
+										>
 											<Grid.Col span={4}>
 												<Text>Remaining</Text>
 											</Grid.Col>
@@ -295,7 +363,11 @@ export default function Dashboard() {
 									</Stack>
 									<Divider
 										label={
-											<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
+											<Text
+												size="xs"
+												c="var(--theme-tertiary-color-7)"
+												fw={500}
+											>
 												Room/Cabin Information
 											</Text>
 										}
@@ -376,7 +448,11 @@ export default function Dashboard() {
 								<Box>
 									<Divider
 										label={
-											<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
+											<Text
+												size="xs"
+												c="var(--theme-tertiary-color-7)"
+												fw={500}
+											>
 												Medicine History
 											</Text>
 										}
@@ -392,12 +468,18 @@ export default function Dashboard() {
 													<Text size="xs">{item.dose_details}</Text>
 												</Grid.Col>
 												<Grid.Col span={3}>
-													<Text size="xs">{item.is_active ? "Active" : "Omit"}</Text>
+													<Text size="xs">
+														{item.is_active ? "Active" : "Omit"}
+													</Text>
 												</Grid.Col>
 											</Grid>
 										))
 									) : (
-										<Text size="sm" c="var(--theme-tertiary-color-7)" fs="italic">
+										<Text
+											size="sm"
+											c="var(--theme-tertiary-color-7)"
+											fs="italic"
+										>
 											No Medicine Found
 										</Text>
 									)}
@@ -406,7 +488,11 @@ export default function Dashboard() {
 									<Divider
 										mt="xs"
 										label={
-											<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
+											<Text
+												size="xs"
+												c="var(--theme-tertiary-color-7)"
+												fw={500}
+											>
 												Investigations
 											</Text>
 										}
@@ -424,7 +510,11 @@ export default function Dashboard() {
 											</Grid>
 										))
 									) : (
-										<Text size="sm" c="var(--theme-tertiary-color-7)" fs="italic">
+										<Text
+											size="sm"
+											c="var(--theme-tertiary-color-7)"
+											fs="italic"
+										>
 											No invoice particulars found
 										</Text>
 									)}
