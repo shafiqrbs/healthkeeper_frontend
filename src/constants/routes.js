@@ -551,6 +551,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "hospital/refund",
 			DELETE: "hospital/refund",
 			PAYMENT: "hospital/refund",
+			PRINT: "hospital/refund/print",
 		},
 
 		REFUND_HISTORY: {

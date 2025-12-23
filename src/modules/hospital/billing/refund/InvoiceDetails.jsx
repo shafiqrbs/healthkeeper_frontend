@@ -6,8 +6,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import {IconCaretUpDownFilled, IconChevronUp, IconPrinter, IconSelector, IconX} from "@tabler/icons-react";
-import InputNumberForm from "@components/form-builders/InputNumberForm";
+import { IconChevronUp, IconPrinter, IconSelector, IconX } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -19,17 +18,16 @@ import { ERROR_NOTIFICATION_COLOR, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } fr
 import { errorNotification } from "@components/notification/errorNotification";
 import { useDispatch } from "react-redux";
 import { useHotkeys } from "@mantine/hooks";
-import inputCss from "@assets/css/InputField.module.css";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
-import {useNavigate} from "react-router";
+import { useNavigate } from "react-router";
 
 const module = MODULES_CORE.BILLING;
 
 export default function InvoiceDetails({ entity }) {
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
-	const { id,transactionId } = useParams();
-	const  navigate = useNavigate()
+	const { id, transactionId } = useParams();
+	const navigate = useNavigate();
 	const [fetching, setFetching] = useState(false);
 	const [selectedRecords, setSelectedRecords] = useState([]);
 	const [investigationRecords, setInvestigationRecords] = useState([]);
@@ -46,7 +44,6 @@ export default function InvoiceDetails({ entity }) {
 			...getFormValues(t).initialValues,
 			amount: "",
 		},
-
 	});
 	const roomForm = useForm({
 		...getFormValues(t),
@@ -97,14 +94,10 @@ export default function InvoiceDetails({ entity }) {
 		);
 	}, [entity]);
 
-
-	const extendedValues = {
-
-	};
+	const extendedValues = {};
 
 	// =============== create submit handler bound to a specific form and payload source ================
 	const createSubmitHandler = (targetForm, payloadSource) => (values) => {
-
 		let jsonContent = [];
 		const allInvestigationRecords = investigationRecords || [];
 		const currentSelectedRecords = selectedRecords || [];
@@ -121,7 +114,7 @@ export default function InvoiceDetails({ entity }) {
 
 		const extendedValues = {
 			...values,
-			total:investigationSubtotal,
+			total: investigationSubtotal,
 			json_content: jsonContent,
 			mode: payloadSource,
 			transaction_id: transactionId,
@@ -137,11 +130,10 @@ export default function InvoiceDetails({ entity }) {
 	};
 
 	async function handleConfirmModal(values) {
-
 		try {
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND.UPDATE}/${id}`,
-				data:values,
+				data: values,
 				module,
 			};
 			const resultAction = await dispatch(updateEntityData(value));
@@ -226,14 +218,10 @@ export default function InvoiceDetails({ entity }) {
 	const investigationDueAmount = isInvestigationDue ? Math.abs(investigationDifference) : 0;
 	const investigationReturnAmount = isInvestigationReturn ? Math.abs(investigationDifference) : 0;
 	useEffect(() => {
-		investigationForm.setValues({'amount':investigationSubtotal})
+		investigationForm.setValues({ amount: investigationSubtotal });
 	}, [investigationSubtotal]);
 
-	useHotkeys(
-		[
-			["alt+p", createSubmitHandler],
-		],
-	);
+	useHotkeys([["alt+p", createSubmitHandler]]);
 
 	return (
 		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -318,83 +306,73 @@ export default function InvoiceDetails({ entity }) {
 				</Box>
 				{invoiceDetails?.process == "Done" && (
 					// =============== investigation-specific form: comment, display total, receive, submit ================
-					<Box
-						gap={0}
-						justify="space-between"
-						mt="xs"
-						px="xs"
-						pb="xs"
-						bg="var(--mantine-color-white)"
-					>
+					<Box gap={0} justify="space-between" mt="xs" px="xs" pb="xs" bg="var(--mantine-color-white)">
 						<form
 							onSubmit={investigationForm.onSubmit(
 								createSubmitHandler(investigationForm, "investigation")
 							)}
 						>
 							{investigationRecords?.length > 0 && (
-							<Box w="100%">
-								<Grid columns={18} gutter="xs">
-									<Grid.Col
-										span={12}
-										className="animate-ease-out"
-										bg="var(--theme-primary-color-0)"
-										px="xs"
-									>
-										<Box mt="md">
-											<TextAreaForm
-												id="investigation-comment"
-												form={investigationForm}
-												tooltip={t("EnterComment")}
-												placeholder={t("EnterComment")}
-												name="comment"
-											/>
-										</Box>
-									</Grid.Col>
+								<Box w="100%">
+									<Grid columns={18} gutter="xs">
+										<Grid.Col
+											span={12}
+											className="animate-ease-out"
+											bg="var(--theme-primary-color-0)"
+											px="xs"
+										>
+											<Box mt="md">
+												<TextAreaForm
+													id="investigation-comment"
+													form={investigationForm}
+													tooltip={t("EnterComment")}
+													placeholder={t("EnterComment")}
+													name="comment"
+												/>
+											</Box>
+										</Grid.Col>
 
-									<Grid.Col
-										span={6}
-										className="animate-ease-out"
-										bg="var(--theme-secondary-color-0)"
-										px="xs"
-									>
-										<Grid align="center" gutter="3xs" columns={20}>
-											<Grid.Col span={5}>
-												<Text fz="xs" fw="800">
-													{t("Payment")}
-												</Text>
-											</Grid.Col>
-											<Grid.Col span={8}>
-												{investigationSubtotal}
-											</Grid.Col>
-
-										</Grid>
-										<Box mt="xs">
-											<Button.Group>
-												<Button
-													disabled={selectedRecords.length === 0}
-													type="submit"
-													w="100%"
-													size="sm"
-													bg="var(--theme-primary-color-6)"
-													leftSection={
-														<IconPrinter
-															style={{ width: "70%", height: "70%" }}
-															stroke={1.5}
-														/>
-													}
-												>
-													<Stack gap={0} align="center" justify="center">
-														<Text fz="md">{t("Print")}</Text>
-														<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
-															(alt + p)
-														</Text>
-													</Stack>
-												</Button>
-											</Button.Group>
-										</Box>
-									</Grid.Col>
-								</Grid>
-							</Box>
+										<Grid.Col
+											span={6}
+											className="animate-ease-out"
+											bg="var(--theme-secondary-color-0)"
+											px="xs"
+										>
+											<Grid align="center" gutter="3xs" columns={20}>
+												<Grid.Col span={5}>
+													<Text fz="xs" fw="800">
+														{t("Payment")}
+													</Text>
+												</Grid.Col>
+												<Grid.Col span={8}>{investigationSubtotal}</Grid.Col>
+											</Grid>
+											<Box mt="xs">
+												<Button.Group>
+													<Button
+														disabled={selectedRecords.length === 0}
+														type="submit"
+														w="100%"
+														size="sm"
+														bg="var(--theme-primary-color-6)"
+														leftSection={
+															<IconPrinter
+																style={{ width: "70%", height: "70%" }}
+																stroke={1.5}
+															/>
+														}
+													>
+														<Stack gap={0} align="center" justify="center">
+															<Text fz="md">{t("Print")}</Text>
+															<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+																(alt + p)
+															</Text>
+														</Stack>
+													</Button>
+												</Button.Group>
+											</Box>
+										</Grid.Col>
+									</Grid>
+								</Box>
 							)}
 						</form>
 					</Box>

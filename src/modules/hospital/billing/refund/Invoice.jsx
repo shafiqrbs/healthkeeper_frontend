@@ -1,28 +1,15 @@
-import {
-	Box,
-	Text,
-	ScrollArea,
-	Stack,
-	Button,
-	Flex,
-	Grid,
-	ActionIcon,
-	LoadingOverlay,
-} from "@mantine/core";
+import { Box, Text, ScrollArea, Stack, Button, Flex, Grid, LoadingOverlay } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { formatDate } from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import {
-	IconArrowNarrowRight,
-	IconCalendarWeek,
-	IconUser,
-	IconBuildingHospital,
-} from "@tabler/icons-react";
+import { IconCalendarWeek, IconUser, IconBuildingHospital, IconPrinter } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
+import { getDataWithoutStore } from "@/services/apiService";
+// import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
+// import FreeServiceFormInvestigationBN from "@hospital-components/print-formats/billing/FreeServiceFormInvestigationBN";
 
 const ALLOWED_BILLING_ROLES = [
 	"billing_manager",
@@ -52,13 +39,15 @@ export default function Invoice({ entity }) {
 	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 
 	const handleTest = (transactionId) => {
-		navigate(
-			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND.VIEW}/${id}/payment/${transactionId}`
-		);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND.VIEW}/${id}/payment/${transactionId}`);
 	};
 
-	const handlePrint = (data) => {
-		setInvoicePrintData(data);
+	const handlePrint = async (hms_invoice_id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND.PRINT}/${hms_invoice_id}`,
+		});
+
+		setInvoicePrintData(res.data);
 		requestAnimationFrame(invoicePrint);
 	};
 
@@ -68,19 +57,16 @@ export default function Invoice({ entity }) {
 				<Text fw={600} fz="sm" py="es" px="xs">
 					{t("InvoiceHistory")}
 				</Text>
-				<Button
-					onClick={printIPDAll}
-					bg="var(--theme-secondary-color-6)"
-					color="white"
-					size="compact-xs"
-				>
+				<Button onClick={printIPDAll} bg="var(--theme-secondary-color-6)" color="white" size="compact-xs">
 					{t("AllPrint")}
 				</Button>
 			</Flex>
 			{id && transactions.length ? (
 				<>
 					<Grid columns={12} key={item.id} my="xs" bg={"var(--theme-secondary-color-2)"} px="xs" gutter="xs">
-						<Grid.Col span={12}><Text fz="sm">{item.name}</Text></Grid.Col>
+						<Grid.Col span={12}>
+							<Text fz="sm">{item.name}</Text>
+						</Grid.Col>
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />
@@ -110,11 +96,7 @@ export default function Invoice({ entity }) {
 						</Grid.Col>
 					</Grid>
 					<ScrollArea scrollbars="y" type="never" h={mainAreaHeight - 138}>
-						<LoadingOverlay
-							visible={isSubmitting}
-							zIndex={1000}
-							overlayProps={{ radius: "sm", blur: 2 }}
-						/>
+						<LoadingOverlay visible={isSubmitting} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 						<Stack className="form-stack-vertical" p="xs" pos="relative">
 							{transactions?.map((item, index) => (
 								<Box
@@ -162,20 +144,23 @@ export default function Invoice({ entity }) {
 										</Grid.Col>
 									</Grid>
 									<Flex align="center" gap="sm" mt={"md"} justify="flex-end">
-										{userRoles.some((role) =>
-											ALLOWED_BILLING_ROLES.includes(role)
-										) && (
+										{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
 											<>
-												{item?.process === "Done" &&
-													userRoles.some((role) =>
-														ALLOWED_BILLING_ROLES.includes(role)
-													) && (
+												{item?.process?.toLowerCase() === "done" &&
+													userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
 														<>
 															<Button
+																onClick={() => handlePrint(item.hms_invoice_id)}
+																size="xs"
+																bg="var(--theme-secondary-color-6)"
+																color="white"
+																leftSection={<IconPrinter size={16} stroke={1.5} />}
+															>
+																{t("Print")}
+															</Button>
+															<Button
 																onClick={() =>
-																	handleTest(
-																		item.hms_invoice_transaction_id
-																	)
+																	handleTest(item.hms_invoice_transaction_id)
 																}
 																size="xs"
 																bg="var(--theme-delete-color)"
@@ -183,7 +168,6 @@ export default function Invoice({ entity }) {
 															>
 																{t("Refund")}
 															</Button>
-
 														</>
 													)}
 											</>
@@ -195,18 +179,13 @@ export default function Invoice({ entity }) {
 					</ScrollArea>
 				</>
 			) : (
-				<Stack
-					h={mainAreaHeight - 52}
-					bg="var(--mantine-color-body)"
-					align="center"
-					justify="center"
-					gap="md"
-				>
+				<Stack h={mainAreaHeight - 52} bg="var(--mantine-color-body)" align="center" justify="center" gap="md">
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}
-			<InvoicePosBN data={invoicePrintData} ref={invoicePrintRef} />
+			{/* <InvoicePosBN data={invoicePrintData} ref={invoicePrintRef} /> */}
 			{/*<IPDAllPrint data={test} ref={ipdAllPrintRef} />*/}
+			{/* <FreeServiceFormInvestigationBN data={invoicePrintData} ref={invoicePrintRef} /> */}
 		</Box>
 	);
 }
