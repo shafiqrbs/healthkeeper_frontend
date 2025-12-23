@@ -7,8 +7,7 @@ import InputForm from "@components/form-builders/InputForm";
 import { IconWeight } from "@tabler/icons-react";
 import { useEffect } from "react";
 
-export default function BasicInfoCard({ form, prescriptionData }) {
-	console.log(prescriptionData);
+export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 
@@ -82,6 +81,7 @@ export default function BasicInfoCard({ form, prescriptionData }) {
 					name="weight"
 					size={"xs"}
 					placeholder={t("Weight/KG")}
+					onBlur={onBlur}
 					rightSection={<IconWeight size={16} />}
 				/>
 				<Switch

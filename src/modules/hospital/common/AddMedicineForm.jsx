@@ -33,15 +33,12 @@ import {
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "../prescription/helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import DatePickerForm from "@components/form-builders/DatePicker";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
-import useMedicineData from "@hooks/useMedicineData";
-import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
@@ -66,7 +63,7 @@ import {
 } from "@utils/prescription";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import BookmarkDrawer from "./BookmarkDrawer";
-import { notifications, showNotification } from "@mantine/notifications";
+import { notifications } from "@mantine/notifications";
 
 export default function AddMedicineForm({
 	module,
@@ -81,6 +78,7 @@ export default function AddMedicineForm({
 	tabParticulars,
 	ignoreOpdQuantityLimit = false,
 	redirectUrl = null,
+	updatedResponse = {},
 }) {
 	const {
 		user,
@@ -92,7 +90,6 @@ export default function AddMedicineForm({
 		localMedicines: medicineGenericData,
 	} = useAppLocalStore();
 
-	const [medicineIdDropdownOpened, setMedicineIdDropdownOpened] = useState(true);
 	const medicineIdRef = useRef(null);
 	const genericRef = useRef(null);
 	const navigate = useNavigate();
@@ -103,7 +100,6 @@ export default function AddMedicineForm({
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
-	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
 	// const { medicineData } = useMedicineData({ term: medicineTerm });
 	// const { medicineGenericData: genericData } = useMedicineGenericData({ term: "a" });
 	// console.log(genericData);
@@ -304,7 +300,6 @@ export default function AddMedicineForm({
 		setMedicineDosageSearchValue("");
 		setMedicineByMealSearchValue("");
 		setMedicineTerm("");
-		setMedicineGenericTerm("");
 		setDurationModeKey((prev) => prev + 100);
 		showNotificationComponent(t("GenericAlreadyExists"), "red", "lightgray", true, 700, true);
 		requestAnimationFrame(() => document.getElementById("medicine_id").focus());
@@ -358,7 +353,6 @@ export default function AddMedicineForm({
 				setMedicineDosageSearchValue("");
 				setMedicineByMealSearchValue("");
 				setMedicineTerm("");
-				setMedicineGenericTerm("");
 				setDurationModeKey((prev) => prev + 100);
 				notifications.show({
 					title: `Automatically Added`,
@@ -511,11 +505,49 @@ export default function AddMedicineForm({
 	};
 
 	const handlePrescriptionPrint2A4 = async () => {
-		const result = await handlePrescriptionSubmit({ skipLoading: false, redirect: false });
-		if (result.status === 200) {
-			setPrintData2A4(result.data);
-			requestAnimationFrame(printPrescription2A4);
+		// =============== parse json_content and fix the order structure ================
+		let transformedData = { ...updatedResponse };
+
+		try {
+			const jsonContent =
+				typeof transformedData.json_content === "string"
+					? JSON.parse(transformedData.json_content)
+					: transformedData.json_content || {};
+
+			// =============== ensure patient_report exists ================
+			if (!jsonContent.patient_report) {
+				jsonContent.patient_report = {};
+			}
+
+			// =============== fix the order structure using tabParticulars ================
+			if (tabParticulars && tabParticulars.length > 0) {
+				// =============== reconstruct order array with correct keys ================
+				jsonContent.patient_report.order = tabParticulars
+					.sort((a, b) => (a?.ordering ?? 0) - (b?.ordering ?? 0))
+					.map((item, index) => {
+						const slug = item?.particular_type?.slug || item?.slug;
+						if (slug) {
+							return { [slug]: index + 1 };
+						}
+						return null;
+					})
+					.filter(Boolean);
+			}
+
+			// =============== ensure patient_examination exists ================
+			if (!jsonContent.patient_report.patient_examination) {
+				jsonContent.patient_report.patient_examination = form.values.dynamicFormData || {};
+			}
+
+			// =============== stringify back and set ================
+			transformedData.json_content = JSON.stringify(jsonContent);
+			setPrintData2A4(transformedData);
+		} catch (error) {
+			console.error("Error transforming updatedResponse:", error);
+			// =============== fallback: use updatedResponse as is ================
+			setPrintData2A4(updatedResponse);
 		}
+		requestAnimationFrame(printPrescription2A4);
 	};
 
 	const handleAdviseTemplate = (content) => {
@@ -573,8 +605,6 @@ export default function AddMedicineForm({
 
 	const handleMedicineSearch = (value) => {
 		setMedicineTerm(value);
-
-		setMedicineIdDropdownOpened(value.length > 0);
 	};
 
 	return (
@@ -605,8 +635,6 @@ export default function AddMedicineForm({
 												value: item.product_id?.toString(),
 												generic: item.generic || "",
 											}))}
-											onBlur={() => setMedicineIdDropdownOpened(false)}
-											onDropdownClose={() => setMedicineIdDropdownOpened(false)}
 											limit={20}
 											value={medicineForm.values.medicine_id}
 											onChange={(v) => handleChange("medicine_id", v)}
@@ -636,7 +664,6 @@ export default function AddMedicineForm({
 											value={medicineForm.values.generic}
 											onChange={(v) => {
 												handleChange("generic", v);
-												setMedicineGenericTerm(v);
 											}}
 											placeholder={t("SelfMedicine")}
 											// onBlur={() => setMedicineGenericTerm("")}
@@ -977,6 +1004,7 @@ export default function AddMedicineForm({
 										id="follow_up_date"
 										tooltip="Follow up instruction"
 										name="follow_up_date"
+										onBlur={handleFieldBlur}
 										value={form.values.follow_up_date}
 										placeholder="Follow up instruction"
 									/>
@@ -988,6 +1016,7 @@ export default function AddMedicineForm({
 										id="pharmacyInstruction"
 										tooltip="Pharmacy Instruction"
 										name="pharmacyInstruction"
+										onBlur={handleFieldBlur}
 										value={form.values.pharmacyInstruction}
 										placeholder="PharmacyInstruction"
 									/>

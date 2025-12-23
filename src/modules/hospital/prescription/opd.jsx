@@ -18,12 +18,12 @@ import Table from "./Table";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { updateEntityData } from "@/app/store/core/crudThunk";
-import { successNotification } from "@components/notification/successNotification";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientReferredAction from "@hospital-components/PatientReferredAction";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
+import { errorNotification } from "@components/notification/errorNotification";
 
 const module = MODULES.PRESCRIPTION;
 
@@ -42,6 +42,7 @@ export default function Index() {
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const { prescriptionId } = useParams();
 	const dispatch = useDispatch();
+	const [updatedResponse, setUpdatedResponse] = useState({});
 
 	const tabParticulars = particularsData?.map((item) => ({
 		particular_type: item.particular_type,
@@ -95,7 +96,7 @@ export default function Index() {
 	}, [customerId]);
 	const hasRecords = records && records.length > 0;
 
-	const handlePrescriptionUpdate = async (updatedMedicine) => {
+	const handlePrescriptionUpdate = async (updatedMedicine, updatedDynamicFormData = null) => {
 		try {
 			const createdBy = user;
 			const formValue = {
@@ -110,7 +111,7 @@ export default function Index() {
 				instruction: form.values.instruction || "",
 				patient_report: {
 					basic_info: form.values.basic_info || {},
-					patient_examination: form.values.dynamicFormData,
+					patient_examination: updatedDynamicFormData || form.values.dynamicFormData,
 					order: tabParticulars.map((item, index) => ({
 						[item.slug]: index,
 					})),
@@ -126,7 +127,9 @@ export default function Index() {
 			const resultAction = await dispatch(updateEntityData(value));
 
 			if (updateEntityData.rejected.match(resultAction)) {
-				successNotification(resultAction.payload.message, ERROR_NOTIFICATION_COLOR);
+				errorNotification(resultAction.payload.message, ERROR_NOTIFICATION_COLOR);
+			} else {
+				setUpdatedResponse(resultAction.payload?.data?.data);
 			}
 		} catch (error) {
 			console.error(error);
@@ -185,6 +188,7 @@ export default function Index() {
 									setShowHistory={setShowHistory}
 									prescriptionData={prescriptionData}
 									tabParticulars={tabParticulars}
+									updatedResponse={updatedResponse}
 								/>
 							</Grid.Col>
 							{hasRecords && (

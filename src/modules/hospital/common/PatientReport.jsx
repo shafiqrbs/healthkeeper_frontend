@@ -91,9 +91,10 @@ export default function PatientReport({
 
 		form.setFieldValue("dynamicFormData", newDynamicFormData);
 
-		// For checkboxes, trigger instant update
-		if (isCheckbox && update && form && form.values) {
-			update();
+		// =============== for checkboxes, trigger instant update with the updated data directly ================
+		if (isCheckbox && update && form) {
+			// =============== pass the updated dynamicFormData directly to avoid stale data issues ================
+			update(undefined, newDynamicFormData);
 		}
 	};
 

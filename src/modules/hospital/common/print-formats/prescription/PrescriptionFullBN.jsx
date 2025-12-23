@@ -15,9 +15,9 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
 	const patientReport = jsonContent?.patient_report || {};
-	//	console.log(patientReport);
 	const order = patientReport?.order || {};
 	const patientExamination = patientReport?.patient_examination || {};
+	// console.log(patientExamination);
 	//const medicines = patientInfo?.prescription_medicine || [];
 	const medicines = jsonContent?.medicines || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
@@ -417,27 +417,28 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Box w={"36"}>
 											<Image src={Rx} alt="logo" width={"32"} height={32} />
 										</Box>
-										{patientInfo?.referred_mode && patientInfo.prescribe_doctor_id === patientInfo.referred_by_id && (
-											<>
-												<Box mt="4" mb={"md"} style={{ borderBottom: `1px solid #444` }} >
-													{patientInfo?.referred_mode === "hospital" &&
-													patientInfo?.referred_hospital ? (
-														<Text size="xs" fw={700}>
-															{capitalize(getValue(patientInfo?.referred_mode))} To :{" "}
-															{getValue(patientInfo?.referred_hospital)}
+										{patientInfo?.referred_mode &&
+											patientInfo.prescribe_doctor_id === patientInfo.referred_by_id && (
+												<>
+													<Box mt="4" mb={"md"} style={{ borderBottom: `1px solid #444` }}>
+														{patientInfo?.referred_mode === "hospital" &&
+														patientInfo?.referred_hospital ? (
+															<Text size="xs" fw={700}>
+																{capitalize(getValue(patientInfo?.referred_mode))} To :{" "}
+																{getValue(patientInfo?.referred_hospital)}
+															</Text>
+														) : patientInfo?.referred_mode === "room" ? (
+															<Text size="xs" fw={700}>
+																{capitalize(getValue(patientInfo?.referred_mode))} To :{" "}
+																{getValue(patientInfo?.referred_room)}
+															</Text>
+														) : null}
+														<Text size="xs" fw={400}>
+															Cause of Ref: {getValue(patientInfo?.referred_comment)}
 														</Text>
-													) : patientInfo?.referred_mode === "room" ? (
-														<Text size="xs" fw={700}>
-															{capitalize(getValue(patientInfo?.referred_mode))} To :{" "}
-															{getValue(patientInfo?.referred_room)}
-														</Text>
-													) : null}
-													<Text size="xs" fw={400}>
-														Cause of Ref: {getValue(patientInfo?.referred_comment)}
-													</Text>
-												</Box>
-											</>
-										)}
+													</Box>
+												</>
+											)}
 										<Box gap="2">
 											{exEmergencies.map((emergency, index) => (
 												<Flex
@@ -545,9 +546,8 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												<Text size="sm" fw={500}>
 													Room/Bed No........
 												</Text>
-
 											</Box>
-										 )}
+										)}
 									</Flex>
 								</Table.Td>
 							</Table.Tr>
@@ -624,7 +624,8 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td w={'40%'}
+								<Table.Td
+									w={"40%"}
 									style={{
 										borderRight: "1px solid var(--theme-tertiary-color-8)",
 										padding: "4px",
@@ -664,7 +665,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Text size="xs">Designation: {getValue(patientInfo?.designation_name)}</Text>*/}
 									</Stack>
 								</Table.Td>
-								<Table.Td w={'60%'} style={{ verticalAlign: "top" }}>
+								<Table.Td w={"60%"} style={{ verticalAlign: "top" }}>
 									<Box
 										mt={"4"}
 										style={{
