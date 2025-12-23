@@ -271,6 +271,21 @@ export default function Dashboard() {
 									: waiting for the bill to be processed
 								</Text>
 							</Paper>
+						) : ipd?.release_mode && ipd?.process?.toLowerCase() === "paid" ? (
+							<Paper
+								m="md"
+								p="md"
+								withBorder
+								radius="sm"
+								bg="var(--theme-secondary-color-1)"
+								style={{ borderColor: "var(--theme-secondary-color-4)" }}
+							>
+								<Text fw={600} size="md" c="var(--theme-warn-color-7)">
+									{ipd.release_mode.charAt(0).toUpperCase() +
+										ipd.release_mode.slice(1)}
+									: Bill processed successfully
+								</Text>
+							</Paper>
 						) : (
 							<Group justify="center" py="md">
 								<Button onClick={() => handleReleaseMode("discharge")}>
