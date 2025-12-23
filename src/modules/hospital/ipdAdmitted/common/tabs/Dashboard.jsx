@@ -134,8 +134,8 @@ export default function Dashboard() {
 			<Grid columns={12} h="100%" w="100%">
 				{/* =============== Column 1: Patient Information =============== */}
 				<Grid.Col span={4}>
-					<ScrollArea h={mainAreaHeight - 390}>
-						<Paper withBorder p="lg" radius="sm" bg="var(--theme-tertiary-color-0)" h="100%">
+					<ScrollArea>
+						<Paper h={mainAreaHeight - 10} withBorder p="lg" radius="sm" bg="var(--theme-tertiary-color-0)">
 							<Stack gap="3xs">
 								<Title order={4} fw={700} mb="es">
 									{ipd?.name || "-"}
@@ -239,7 +239,7 @@ export default function Dashboard() {
 								For Referred
 							</Button>
 						</Group>
-						<ScrollArea h={mainAreaHeight - 460}>
+						<ScrollArea h={mainAreaHeight - 86}>
 							<Paper p="lg" pt={0} radius="sm" bg="var(--mantine-color-white)" h="100%">
 								<Stack gap="md">
 									<Divider
@@ -370,8 +370,8 @@ export default function Dashboard() {
 
 				{/* =============== Column 3: Financial & Medical Information =============== */}
 				<Grid.Col span={4} h="100%">
-					<ScrollArea h={mainAreaHeight - 390}>
-						<Paper withBorder p="lg" radius="sm" bg="white" h="100%">
+					<ScrollArea h={mainAreaHeight}>
+						<Paper h={mainAreaHeight - 16} withBorder p="lg" radius="sm" bg="white">
 							<Stack gap="lg" h="100%">
 								<Box>
 									<Divider
@@ -478,7 +478,7 @@ export default function Dashboard() {
 					</ScrollArea>
 				</Grid.Col>
 
-				<Grid.Col span={6}>
+				{/* <Grid.Col span={6}>
 					<Paper withBorder p="lg" h={mainAreaHeight - 350} radius="sm" bg="var(--mantine-color-white)">
 						<Stack gap="sm">
 							<Text fw={600} size="lg">
@@ -559,7 +559,7 @@ export default function Dashboard() {
 							)}
 						</Stack>
 					</Paper>
-				</Grid.Col>
+				</Grid.Col> */}
 			</Grid>
 		</Box>
 	);
