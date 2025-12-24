@@ -26,11 +26,12 @@ export default function MedicineListItem({
 	type = "opd",
 	durationModeDropdown,
 }) {
+	console.log("durationModeDropdown", durationModeDropdown);
 	const { t } = useTranslation();
 	const [mode] = useState("view");
 	const [editingInstructionIndex, setEditingInstructionIndex] = useState(null);
 	const [viewAction, setViewAction] = useState(true);
-	const isOpdType = type === "opd";
+	const hasExtendedFeature = type === "opd" || type === "discharge";
 
 	const updateMedicineField = (field, value) => {
 		setMedicines((prev) => {
@@ -41,7 +42,7 @@ export default function MedicineListItem({
 				newList = prev.map((med, idx) =>
 					idx === index - 1 ? { ...med, [field]: value, duration_mode_bn: durationMode?.name_bn || "" } : med
 				);
-			} else if (field === "order" && type === "ipd") {
+			} else if (field === "order" && (type === "ipd" || type === "discharge")) {
 				const orderValue = value === "" || value === null ? null : Number(value);
 
 				const updatedList = prev.map((med) => {
@@ -72,7 +73,7 @@ export default function MedicineListItem({
 	};
 
 	const handleImmediateChange = (field, value) => {
-		if (field === "opd_quantity" && !ignoreOpdQuantityLimit && isOpdType) {
+		if (field === "opd_quantity" && !ignoreOpdQuantityLimit && hasExtendedFeature) {
 			if (value > medicine.opd_limit) {
 				showNotificationComponent(t("QuantityCannotBeGreaterThanOpdQuantity"), "error", "", "", "", 3000);
 				return;
@@ -232,7 +233,7 @@ export default function MedicineListItem({
 			<Flex justify="space-between" align="center" gap="0">
 				<Flex align="center" gap="es">
 					<IconMedicineSyrup stroke={1.5} size={20} />
-					{type === "ipd" && (
+					{(type === "ipd" || type === "discharge") && (
 						<NumberInput
 							size="xs"
 							w={50}
@@ -307,7 +308,7 @@ export default function MedicineListItem({
 								gap="xs"
 								align="center"
 							>
-								{isFirstItem && isOpdType && (
+								{isFirstItem && hasExtendedFeature && (
 									<ActionIcon
 										size="xs"
 										variant="outline"
@@ -319,7 +320,7 @@ export default function MedicineListItem({
 								)}
 								{editingInstructionIndex === insIndex ? (
 									<Grid gutter="les" columns={24}>
-										<Grid.Col span={isOpdType ? 5 : 8}>
+										<Grid.Col span={hasExtendedFeature ? 5 : 8}>
 											<Select
 												searchable
 												size="xs"
@@ -335,7 +336,7 @@ export default function MedicineListItem({
 												}
 											/>
 										</Grid.Col>
-										<Grid.Col span={isOpdType ? 5 : 8}>
+										<Grid.Col span={hasExtendedFeature ? 5 : 8}>
 											<Select
 												searchable
 												label=""
@@ -351,7 +352,7 @@ export default function MedicineListItem({
 												}
 											/>
 										</Grid.Col>
-										{isOpdType && (
+										{hasExtendedFeature && (
 											<>
 												<Grid.Col span={3}>
 													<NumberInput
@@ -385,7 +386,7 @@ export default function MedicineListItem({
 												</Grid.Col>
 											</>
 										)}
-										{isFirstItem && isOpdType && isMedicine && (
+										{isFirstItem && hasExtendedFeature && isMedicine && (
 											<>
 												<Grid.Col span={2}>
 													<Input
@@ -432,8 +433,9 @@ export default function MedicineListItem({
 											c="var(--theme-tertiary-color-8)"
 										>
 											{instruction?.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
-											{isOpdType && `---- ${instruction.quantity} ---- ${instruction.duration}`}
-											{isFirstItem && isMedicine && isOpdType && (
+											{hasExtendedFeature &&
+												`---- ${instruction.quantity} ---- ${instruction.duration}`}
+											{isFirstItem && isMedicine && hasExtendedFeature && (
 												<>
 													{medicine.opd_quantity ? `---- ${medicine.opd_quantity}` : ``}
 													{medicine.doctor_comment && `---- ${medicine.doctor_comment}`}

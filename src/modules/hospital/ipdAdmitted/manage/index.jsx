@@ -150,7 +150,7 @@ export default function Index() {
 	useEffect(() => {
 		if (!ipdData?.data || !baseTabValue) return;
 
-		const restrictedTabs = ["room-transfer", "discharge", "death-certificate"];
+		const restrictedTabs = ["room-transfer", "death-certificate"];
 		const restrictedPrintTabs = ["discharge-print", "death-certificate-print"];
 		const currentReleaseMode = ipdData?.data?.release_mode;
 		const currentIsPaid = ipdData?.data?.process?.toLowerCase() === "paid";
@@ -161,7 +161,7 @@ export default function Index() {
 			if (currentReleaseMode && currentIsPaid) {
 				const isAccessible =
 					(currentReleaseMode === "referred" && baseTabValue === "room-transfer") ||
-					(currentReleaseMode === "discharge" && baseTabValue === "discharge") ||
+					// (currentReleaseMode === "discharge" && baseTabValue === "discharge") ||
 					(currentReleaseMode === "death" && baseTabValue === "death-certificate");
 
 				if (!isAccessible) {
@@ -184,8 +184,8 @@ export default function Index() {
 			// =============== if release_mode is set and process is paid, check if print tab matches ================
 			if (currentReleaseMode && currentIsPaid) {
 				const isAccessible =
-					(currentReleaseMode === "discharge" && baseTabValue === "discharge-print") ||
-					(currentReleaseMode === "death" && baseTabValue === "death-certificate-print");
+					// (currentReleaseMode === "discharge" && baseTabValue === "discharge-print") ||
+					currentReleaseMode === "death" && baseTabValue === "death-certificate-print";
 
 				if (!isAccessible) {
 					setBaseTabValue("dashboard");
@@ -213,18 +213,16 @@ export default function Index() {
 			if (releaseMode === "referred") {
 				return tabs.filter((tab) => tab.value === "room-transfer");
 			}
-			if (releaseMode === "discharge") {
-				return tabs.filter((tab) => tab.value === "discharge");
-			}
+			// if (releaseMode === "discharge") {
+			// 	return tabs.filter((tab) => tab.value === "discharge");
+			// }
 			if (releaseMode === "death") {
 				return tabs.filter((tab) => tab.value === "death-certificate");
 			}
 		}
 		// =============== if release_mode is set but process is not paid, hide room-transfer, discharge, and death-certificate ================
 		if (releaseMode && !isPaid) {
-			return tabs.filter(
-				(tab) => tab.value !== "room-transfer" && tab.value !== "discharge" && tab.value !== "death-certificate"
-			);
+			return tabs.filter((tab) => tab.value !== "room-transfer" && tab.value !== "death-certificate");
 		}
 		// =============== if no release_mode, show all tabs ================
 		return tabs;
@@ -241,12 +239,16 @@ export default function Index() {
 			}
 			// =============== if release_mode is referred, hide discharge-print and death-certificate-print ================
 			if (releaseMode === "referred") {
-				return printItems.filter((item) => item.value !== "discharge-print" && item.value !== "death-certificate-print");
+				return printItems.filter(
+					(item) => item.value !== "discharge-print" && item.value !== "death-certificate-print"
+				);
 			}
 		}
 		// =============== if release_mode is set but process is not paid, hide discharge-print and death-certificate-print ================
 		if (releaseMode && !isPaid) {
-			return printItems.filter((item) => item.value !== "discharge-print" && item.value !== "death-certificate-print");
+			return printItems.filter(
+				(item) => item.value !== "discharge-print" && item.value !== "death-certificate-print"
+			);
 		}
 		// =============== if no release_mode, show all print items ================
 		return printItems;
@@ -305,7 +307,8 @@ export default function Index() {
 									</Text>
 									<Text fz="xs">{ipdData?.data?.gender}</Text>
 									<Text fz="xs">
-										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m {ipdData?.data?.day || 0}d{" "}
+										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m{" "}
+										{ipdData?.data?.day || 0}d{" "}
 									</Text>
 									<Text fz="xs">
 										{t("Created")} {formatDate(ipdData?.data?.created_at)}

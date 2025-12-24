@@ -759,6 +759,8 @@ export default function Prescription({
 							handleDelete={handleDelete}
 							by_meal_options={by_meal_options}
 							dosage_options={dosage_options}
+							durationModeDropdown={durationModeDropdown}
+							type="discharge"
 						/>
 					))}
 				</Stack>
