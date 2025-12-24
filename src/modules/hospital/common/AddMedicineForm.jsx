@@ -100,9 +100,6 @@ export default function AddMedicineForm({
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
 	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
-	// const { medicineData } = useMedicineData({ term: medicineTerm });
-	// const { medicineGenericData: genericData } = useMedicineGenericData({ term: "a" });
-	// console.log(genericData);
 	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
@@ -505,48 +502,49 @@ export default function AddMedicineForm({
 	};
 
 	const handlePrescriptionPrint2A4 = async () => {
-		// =============== parse json_content and fix the order structure ================
-		let transformedData = { ...updatedResponse };
+		if (updatedResponse) {
+			let transformedData = { ...updatedResponse };
 
-		try {
-			const jsonContent =
-				typeof transformedData.json_content === "string"
-					? JSON.parse(transformedData.json_content)
-					: transformedData.json_content || {};
+			try {
+				const jsonContent =
+					typeof transformedData.json_content === "string"
+						? JSON.parse(transformedData.json_content)
+						: transformedData.json_content || {};
 
-			// =============== ensure patient_report exists ================
-			if (!jsonContent.patient_report) {
-				jsonContent.patient_report = {};
+				if (!jsonContent.patient_report) {
+					jsonContent.patient_report = {};
+				}
+
+				if (tabParticulars && tabParticulars.length > 0) {
+					jsonContent.patient_report.order = tabParticulars
+						.sort((a, b) => (a?.ordering ?? 0) - (b?.ordering ?? 0))
+						.map((item, index) => {
+							const slug = item?.particular_type?.slug || item?.slug;
+							if (slug) {
+								return { [slug]: index + 1 };
+							}
+							return null;
+						})
+						.filter(Boolean);
+				}
+
+				if (!jsonContent.patient_report.patient_examination) {
+					jsonContent.patient_report.patient_examination = form.values.dynamicFormData || {};
+				}
+
+				transformedData.json_content = JSON.stringify(jsonContent);
+				setPrintData2A4(transformedData);
+			} catch (error) {
+				console.error("Error transforming updatedResponse:", error);
+				setPrintData2A4(updatedResponse);
 			}
-
-			// =============== fix the order structure using tabParticulars ================
-			if (tabParticulars && tabParticulars.length > 0) {
-				// =============== reconstruct order array with correct keys ================
-				jsonContent.patient_report.order = tabParticulars
-					.sort((a, b) => (a?.ordering ?? 0) - (b?.ordering ?? 0))
-					.map((item, index) => {
-						const slug = item?.particular_type?.slug || item?.slug;
-						if (slug) {
-							return { [slug]: index + 1 };
-						}
-						return null;
-					})
-					.filter(Boolean);
+		} else {
+			const result = await handlePrescriptionSubmit({ skipLoading: false, redirect: false });
+			if (result.status === 200) {
+				setPrintData2A4(result.data);
 			}
-
-			// =============== ensure patient_examination exists ================
-			if (!jsonContent.patient_report.patient_examination) {
-				jsonContent.patient_report.patient_examination = form.values.dynamicFormData || {};
-			}
-
-			// =============== stringify back and set ================
-			transformedData.json_content = JSON.stringify(jsonContent);
-			setPrintData2A4(transformedData);
-		} catch (error) {
-			console.error("Error transforming updatedResponse:", error);
-			// =============== fallback: use updatedResponse as is ================
-			setPrintData2A4(updatedResponse);
 		}
+
 		requestAnimationFrame(printPrescription2A4);
 	};
 
