@@ -116,8 +116,10 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					</Text>
 					{prescription_data?.medicines?.map((medicine, index) => (
 						<Text key={medicine?.medicine_id} fz="xs" mt="es">
-							{index + 1}. {medicine?.generic} {medicine?.dosage} {medicine?.by_meal} {medicine?.duration}{" "}
-							{medicine?.count}
+							{console.log(medicine)}
+							{index + 1}. {medicine?.generic || medicine?.medicine_name} --- {medicine?.dose_details} ---{" "}
+							{medicine?.by_meal || medicine?.dosages[0]?.by_meal} ---
+							{medicine?.quantity} --- {medicine?.opd_quantity} --- {medicine?.dosages[0]?.duration}
 						</Text>
 					))}
 					<Text fz="sm" mt={"sm"} fw={600}>

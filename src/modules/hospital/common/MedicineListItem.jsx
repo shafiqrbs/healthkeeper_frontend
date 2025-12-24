@@ -26,7 +26,6 @@ export default function MedicineListItem({
 	type = "opd",
 	durationModeDropdown,
 }) {
-	console.log("durationModeDropdown", durationModeDropdown);
 	const { t } = useTranslation();
 	const [mode] = useState("view");
 	const [editingInstructionIndex, setEditingInstructionIndex] = useState(null);
