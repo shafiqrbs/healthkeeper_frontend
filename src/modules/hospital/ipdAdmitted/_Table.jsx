@@ -44,7 +44,7 @@ import AdmissionFormBN from "@hospital-components/print-formats/admission/Admiss
 import __IssueMedicineDrawer from "@modules/hospital/ipdAdmitted/__IssueMedicineDrawer.jsx";
 
 const module = MODULES.ADMISSION;
-const PER_PAGE = 500;
+const PER_PAGE = 100;
 
 const ALLOWED_NURSE_ROLES = [
 	"role_domain",
@@ -74,7 +74,8 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: formatDate(new Date()),
+		//	created: formatDate(new Date()),
+			created: '',
 		},
 	});
 
@@ -251,6 +252,10 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 							accessor: "due",
 							title: t("Due"),
 							render: (item) => t(item.total - item.amount),
+						},
+						{
+							accessor: "process",
+							title: t("Process"),
 						},
 						{
 							title: t("Action"),
