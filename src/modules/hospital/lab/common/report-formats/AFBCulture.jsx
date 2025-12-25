@@ -1,4 +1,4 @@
-import { Box, Stack, Table, Group, Text, ScrollArea, Grid } from "@mantine/core";
+import { Box, Stack, Table, Text, ScrollArea, Grid } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Checkbox } from "@mantine/core";
 import ReportSubmission from "../ReportSubmission";
@@ -26,20 +26,22 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
-	const is_completed = diagnosticReport?.process === "Done";
+	const is_completed = diagnosticReport?.process?.toLowerCase() === "done";
 
 	const form = useForm({
 		initialValues: {
-			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
+			afb_diagnosis: custom_report?.afb_diagnosis || "",
 			lab_no: custom_report?.lab_no || "",
 			id: custom_report?.id || "",
-			contaminated: custom_report?.contaminated || 0,
-			negative: custom_report?.negative || 0,
-			atypical_mycobacteria_species: custom_report?.atypical_mycobacteria_species || 0,
-			less_than_20_colonies_actual_count: custom_report?.less_than_20_colonies_actual_count || 0,
-			more_than_20_colonies_1_to_100: custom_report?.more_than_20_colonies_1_to_100 || 0,
-			more_than_20_colonies_100_to_200: custom_report?.more_than_20_colonies_100_to_200 || 0,
-			more_than_20_colonies_200_and_above: custom_report?.more_than_20_colonies_200_and_above || 0,
+			contaminated: custom_report?.contaminated || "",
+			negative: custom_report?.negative || "",
+			positive: custom_report?.positive || "",
+			atypical_mycobacteria_species: custom_report?.atypical_mycobacteria_species || "",
+			follow_up_month: custom_report?.follow_up_month || "",
+			colonies_1: custom_report?.colonies_1 || 0,
+			colonies_2: custom_report?.colonies_2 || 0,
+			colonies_3: custom_report?.colonies_3 || 0,
+			colonies_4: custom_report?.colonies_4 || 0,
 		},
 	});
 
@@ -96,16 +98,29 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 		<Box className="border-top-none" px="sm" mt="xs">
 			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
-					<InputForm
-						name="diagnosis"
-						id="diagnosis"
-						nextField="test_name"
-						form={form}
-						label="Diagnosis"
-						placeholder="Enter Diagnosis"
-						readOnly={is_completed}
-					/>
-					<Box>
+					<Grid columns={12}>
+						<Grid.Col span={6}>
+							<InputForm
+								name="afb_diagnosis"
+								id="afb_diagnosis"
+								nextField="test_name"
+								form={form}
+								label="Diagnosis"
+								placeholder="Enter Diagnosis"
+							/>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<DatePickerForm
+								name="follow_up_month"
+								id="follow_up_month"
+								nextField="test_name"
+								form={form}
+								label="Follow Up Month"
+								placeholder="Select Follow Up Month"
+							/>
+						</Grid.Col>
+					</Grid>
+					{/* <Box>
 						<Text>Other test results (if any):</Text>
 						<Grid columns={14}>
 							<Grid.Col span={6}>Microscopy</Grid.Col>
@@ -157,7 +172,7 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 								/>
 							</Grid.Col>
 						</Grid>
-					</Box>
+					</Box> */}
 
 					{/* =============== results table =============== */}
 					<Box my="md">
@@ -190,96 +205,85 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 											form={form}
 											label=""
 											placeholder="Enter ID"
-											readOnly={is_completed}
+											readOnly
+										/>
+									</Table.Th>
+									<Table.Th ta="center">
+										<InputForm
+											w={120}
+											name="contaminated"
+											id="contaminated"
+											nextField="negative"
+											form={form}
+											label=""
+											placeholder="Yes/No"
+										/>
+									</Table.Th>
+									<Table.Th ta="center">
+										<InputForm
+											w={120}
+											name="negative"
+											id="negative"
+											nextField="positive"
+											form={form}
+											label=""
+											placeholder="Yes/No"
+										/>
+									</Table.Th>
+									<Table.Th ta="center">
+										<InputForm
+											w={120}
+											name="positive"
+											id="positive"
+											nextField="atypical_mycobacteria_species"
+											form={form}
+											label=""
+											placeholder="Yes/No"
+										/>
+									</Table.Th>
+									<Table.Th ta="center">
+										<InputForm
+											w={120}
+											name="atypical_mycobacteria_species"
+											form={form}
+											label=""
+											placeholder="Describe"
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.rif_resistance_not_detected}
+											checked={form.values.colonies_1}
 											onChange={(event) =>
-												form.setFieldValue("contaminated", event.currentTarget.checked)
+												form.setFieldValue("colonies_1", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.rif_resistance_detected}
+											checked={form.values.colonies_2}
 											onChange={(event) =>
-												form.setFieldValue("negative", event.currentTarget.checked)
+												form.setFieldValue("colonies_2", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.rif_resistance_indeterminate}
+											checked={form.values.colonies_3}
 											onChange={(event) =>
-												form.setFieldValue(
-													"rif_resistance_indeterminate",
-													event.currentTarget.checked
-												)
+												form.setFieldValue("colonies_3", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.mtb_not_detected}
+											checked={form.values.colonies_4}
 											onChange={(event) =>
-												form.setFieldValue("mtb_not_detected", event.currentTarget.checked)
+												form.setFieldValue("colonies_4", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
-										/>
-									</Table.Th>
-									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.invalid}
-											onChange={(event) =>
-												form.setFieldValue("invalid", event.currentTarget.checked)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
-										/>
-									</Table.Th>
-									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.atypical_mycobacteria_species}
-											onChange={(event) =>
-												form.setFieldValue(
-													"atypical_mycobacteria_species",
-													event.currentTarget.checked
-												)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
-										/>
-									</Table.Th>
-									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.more_than_20_colonies_1_to_100}
-											onChange={(event) =>
-												form.setFieldValue("invalid", event.currentTarget.checked)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
-										/>
-									</Table.Th>
-									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.less_than_20_colonies_actual_count}
-											onChange={(event) =>
-												form.setFieldValue(
-													"less_than_20_colonies_actual_count",
-													event.currentTarget.checked
-												)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
 										/>
 									</Table.Th>
 								</Table.Tr>
