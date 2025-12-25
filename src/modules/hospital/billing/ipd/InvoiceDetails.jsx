@@ -1,12 +1,12 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon, Group } from "@mantine/core";
+import { Box, Text, Stack, Grid, Flex, Button, Tabs, Group } from "@mantine/core";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import {IconCaretUpDownFilled, IconChevronUp, IconPrinter, IconSelector, IconX} from "@tabler/icons-react";
+import { IconChevronUp, IconPrinter, IconSelector } from "@tabler/icons-react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -19,7 +19,6 @@ import { ERROR_NOTIFICATION_COLOR, MODULES_CORE, SUCCESS_NOTIFICATION_COLOR } fr
 import { errorNotification } from "@components/notification/errorNotification";
 import { useDispatch } from "react-redux";
 import { useHotkeys } from "@mantine/hooks";
-import inputCss from "@assets/css/InputField.module.css";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
@@ -38,8 +37,6 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 	const [selectedRecords, setSelectedRecords] = useState([]);
 	const [investigationRecords, setInvestigationRecords] = useState([]);
 	const [roomItems, setRoomItems] = useState([]);
-	const [selectKey, setSelectKey] = useState(0);
-	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
@@ -340,11 +337,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 	const isRoomReturn = roomDifference > 0 || isRoomEqualZero;
 	const roomDueAmount = isRoomDue ? Math.abs(roomDifference) : 0;
 	const roomReturnAmount = isRoomReturn ? Math.abs(roomDifference) : 0;
-	useHotkeys(
-		[
-			["alt+p", createSubmitHandler],
-		],
-	);
+	useHotkeys([["alt+p", createSubmitHandler]]);
 
 	return (
 		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -604,7 +597,11 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 															>
 																<Stack gap={0} align="center" justify="center">
 																	<Text fz="md">{t("Print")}</Text>
-																	<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+																	<Text
+																		mt="-les"
+																		fz="xs"
+																		c="var(--theme-secondary-color)"
+																	>
 																		(alt + p)
 																	</Text>
 																</Stack>

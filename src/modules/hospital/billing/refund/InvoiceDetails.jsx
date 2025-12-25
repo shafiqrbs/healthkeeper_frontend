@@ -1,5 +1,5 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon } from "@mantine/core";
+import { Box, Text, Stack, Grid, Button, ActionIcon } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -32,8 +32,6 @@ export default function InvoiceDetails({ entity }) {
 	const [selectedRecords, setSelectedRecords] = useState([]);
 	const [investigationRecords, setInvestigationRecords] = useState([]);
 	const [roomItems, setRoomItems] = useState([]);
-	const [selectKey, setSelectKey] = useState(0);
-	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
@@ -54,20 +52,15 @@ export default function InvoiceDetails({ entity }) {
 		},
 	});
 
-	const { data: investigationOptions } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.INVESTIGATION.PATH,
-		params: { "dropdown-type": CORE_DROPDOWNS.INVESTIGATION.TYPE },
-		utility: CORE_DROPDOWNS.INVESTIGATION.UTILITY,
-		identifierName: "investigation",
-	});
-
 	useEffect(() => {
 		if (transactionId) {
+			setSelectedRecords([]);
 			setFetching(true);
 			(async () => {
 				const res = await getDataWithoutStore({
 					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND.PAYMENT}/${id}/payment/${transactionId}`,
 				});
+				console.log(res?.data);
 				// =============== reset both forms after fetching invoice details ================
 				investigationForm.reset();
 				roomForm.reset();
@@ -93,8 +86,6 @@ export default function InvoiceDetails({ entity }) {
 			}))
 		);
 	}, [entity]);
-
-	const extendedValues = {};
 
 	// =============== create submit handler bound to a specific form and payload source ================
 	const createSubmitHandler = (targetForm, payloadSource) => (values) => {
@@ -144,7 +135,7 @@ export default function InvoiceDetails({ entity }) {
 					Object.keys(fieldErrors).forEach((key) => {
 						errorObject[key] = fieldErrors[key][0];
 					});
-					targetForm?.setErrors(errorObject);
+					// targetForm?.setErrors(errorObject);
 				}
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				dispatch(setRefetchData({ module, refetching: true }));
@@ -201,6 +192,8 @@ export default function InvoiceDetails({ entity }) {
 			return accumulator + quantity * price;
 		}, 0);
 	}, [selectedRecords]);
+
+	console.log(selectedRecords);
 
 	const roomSubtotal = useMemo(() => {
 		return (roomItems || []).reduce((accumulator, item) => {
@@ -277,22 +270,22 @@ export default function InvoiceDetails({ entity }) {
 								title: t("SubTotal"),
 								render: (record) => record?.price * record?.quantity || 0,
 							},
-							{
-								accessor: "actions",
-								title: t("Action"),
-								textAlignment: "center",
-								render: (record) =>
-									record.is_new ? (
-										<ActionIcon
-											color="red"
-											variant="subtle"
-											onClick={() => handleRemoveInvestigation(record.id)}
-										>
-											{/* =============== user can remove only newly added investigations ================ */}
-											<IconX size={16} />
-										</ActionIcon>
-									) : null,
-							},
+							// {
+							// 	accessor: "actions",
+							// 	title: t("Action"),
+							// 	textAlignment: "center",
+							// 	render: (record) =>
+							// 		record.is_new ? (
+							// 			<ActionIcon
+							// 				color="red"
+							// 				variant="subtle"
+							// 				onClick={() => handleRemoveInvestigation(record.id)}
+							// 			>
+							// 				{/* =============== user can remove only newly added investigations ================ */}
+							// 				<IconX size={16} />
+							// 			</ActionIcon>
+							// 		) : null,
+							// },
 						]}
 						fetching={fetching}
 						loaderSize="xs"
