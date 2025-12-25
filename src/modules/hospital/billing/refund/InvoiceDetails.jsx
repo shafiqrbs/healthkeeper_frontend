@@ -31,14 +31,17 @@ export default function InvoiceDetails({ entity }) {
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
 	const { id, transactionId } = useParams();
 	const navigate = useNavigate();
-	const invoicePrintRef = useRef(null);
+
 	const [fetching, setFetching] = useState(false);
 	const [selectedRecords, setSelectedRecords] = useState([]);
-	const [invoicePrintData, setInvoicePrintData] = useState(null);
-	const [investigationRecords, setInvestigationRecords] = useState([]);
+
+
 	const [roomItems, setRoomItems] = useState([]);
 	const [selectKey, setSelectKey] = useState(0);
 	const [autocompleteValue, setAutocompleteValue] = useState("");
+	const invoicePrintRef = useRef(null);
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
+	const [investigationRecords, setInvestigationRecords] = useState([]);
 	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 
 	const { t } = useTranslation();

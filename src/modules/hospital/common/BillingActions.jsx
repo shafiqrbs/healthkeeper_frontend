@@ -8,10 +8,19 @@ import { IconArrowsSplit2 } from "@tabler/icons-react";
 import {getDataWithoutStore} from "@/services/apiService";
 import {HOSPITAL_DATA_ROUTES} from "@/constants/routes";
 import {useParams} from "react-router-dom";
+import {useEffect, useRef, useState} from "react";
+import {useReactToPrint} from "react-to-print";
+import RefundFormInvestigationBN from "@hospital-components/print-formats/refund/RefundFormInvestigationBN";
+import RefundFromBedBn from "@hospital-components/print-formats/refund/RefundFormBedBN";
+import IPDInvoicePosBn from "@hospital-components/print-formats/ipd/IPDInvoicePosBN";
 
 export default function BillingActions({entity}) {
 	const { t } = useTranslation();
 	const { id } = useParams();
+	const invoicePrintRef = useRef(null);
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
+	const [investigationRecords, setInvestigationRecords] = useState([]);
+	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 	const form = useForm({
 		initialValues: {
 			paymentMethod: PAYMENT_METHODS[0],
@@ -24,26 +33,23 @@ export default function BillingActions({entity}) {
 
 	const  handlePrescriptionPosSubmit = async () => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${id}/final-bill`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${id}/final-bill-process`,
 		});
+		setInvoicePrintData(res);
 	};
 
-	const receive = entity?.remaining_day*entity?.room_price
+	useEffect(() => {
+		if(invoicePrintData){
+			invoicePrint();
+		}
+	}, [invoicePrintData]);
+
+	const receive = entity?.remaining_day * entity?.room_price
 
 	return (
 		<Box p="xs" mt="xs" bg="var(--theme-tertiary-color-0)">
-			{/* <PaymentMethodsCarousel
-				selectPaymentMethod={selectPaymentMethod}
-				paymentMethod={form.values.paymentMethod}
-			/> */}
 			<Flex justify="space-between" align="center">
 				<Flex fz="sm" align="center" gap="xs">
-					{/* SMS Alert{" "}
-					<Checkbox
-						checked={form.values.smsAlert}
-						onChange={(event) => form.setFieldValue("smsAlert", event.currentTarget.checked)}
-						color="var(--theme-success-color)"
-					/> */}
 				</Flex>
 				<Flex gap="xs" align="center">
 					<Box bg="var(--mantine-color-white)" px="xs" py="les" className="borderRadiusAll">
@@ -51,18 +57,14 @@ export default function BillingActions({entity}) {
 							{t("Amount")} ৳ {receive}
 						</Text>
 					</Box>
-					{/*
-					<ActionIcon color="var(--theme-success-color)">
-						<IconArrowsSplit2 size={16} />
-					</ActionIcon>
-					*/}
 				</Flex>
 			</Flex>
 			<Button.Group mt="xs">
-				<Button w="100%" bg="var(--theme-save-btn-color)" type="button" onClick={handlePrescriptionPosSubmit}>
-					{t("Save")}
+				<Button disabled={invoicePrintData?.data.process === 'refund' || invoicePrintData?.data.process === 'paid'} w="100%" bg="var(--theme-save-btn-color)" type="button" onClick={handlePrescriptionPosSubmit}>
+					{ receive > 0 ? 'RECEIVE' : 'REFUND' }
 				</Button>
 			</Button.Group>
+			{ receive > 0 ? <IPDInvoicePosBn data={invoicePrintData?.data} ref={invoicePrintRef} /> : <RefundFromBedBn data={invoicePrintData?.data} ref={invoicePrintRef} /> }
 		</Box>
 	);
 }

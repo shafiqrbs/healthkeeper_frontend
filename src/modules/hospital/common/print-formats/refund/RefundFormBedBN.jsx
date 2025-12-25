@@ -11,7 +11,7 @@ import {formatDate} from "@utils/index";
 const RefundFromBedBn = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const { hospitalConfigData } = useHospitalConfigData();
-
+	console.log(patientInfo);
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};

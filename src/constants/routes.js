@@ -579,6 +579,7 @@ export const HOSPITAL_DATA_ROUTES = {
 		FINAL_BILLING: {
 			INDEX: "hospital/billing/final-bill",
 			VIEW: "hospital/billing",
+			PROCESS: "hospital/billing/final-bill-process",
 			DELETE: "hospital/final-billing",
 		},
 
