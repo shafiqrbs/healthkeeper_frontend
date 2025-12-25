@@ -49,7 +49,7 @@ import FreeServiceFormBedBN from "@hospital-components/print-formats/billing/Fre
 import FreeServiceFormInvestigationBN from "@hospital-components/print-formats/billing/FreeServiceFormInvestigationBN";
 
 const STATIC_OPD_ID = "843042855688";
-const STATIC_BILLING_ID = 385;
+const STATIC_BILLING_ID = 2335;
 const STATIC_PRESCRIPTION_ID = "361001991021";
 const REPORT_ID = "098397134876";
 const REFUND_ID = "1";
@@ -220,7 +220,7 @@ export default function Details() {
 					)}
 					{name === "IPDInvoicePosBN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<IPDInvoicePosBN preview data={IPDData?.data} />
+							<IPDInvoicePosBN preview data={billingData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "InvestigationPosBN" && (

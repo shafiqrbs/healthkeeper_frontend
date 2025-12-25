@@ -98,6 +98,8 @@ export default function EntityForm({ form, module }) {
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${id}`,
 	});
 
+
+
 	useEffect(() => {
 		if (entity?.data === "not_found") {
 			navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX, { replace: true });
@@ -285,7 +287,7 @@ export default function EntityForm({ form, module }) {
 									<Flex className="form-action-header full-bleed">
 										<Text fz="sm">{t("Cabin/Bed")}</Text>
 										<Flex align="center" gap="xs">
-											<Text fz="sm">{entities?.[0]?.item_name}</Text>
+											<Text fz="sm">{entity?.data?.room_name}</Text>
 										</Flex>
 									</Flex>
 
@@ -301,7 +303,7 @@ export default function EntityForm({ form, module }) {
 												form={form}
 												label=""
 												tooltip={t("EnterUnitName")}
-												placeholder="R1234"
+												placeholder="UnitName"
 												name="admit_unit_id"
 												id="admit_unit_id"
 												value={form.values.admit_unit_id?.toString()}
@@ -326,7 +328,7 @@ export default function EntityForm({ form, module }) {
 												form={form}
 												label=""
 												tooltip={t("EnterDepartmentName")}
-												placeholder="Medicine"
+												placeholder="Department"
 												name="admit_department_id"
 												id="admit_department_id"
 												value={form.values.admit_department_id?.toString()}
@@ -362,7 +364,7 @@ export default function EntityForm({ form, module }) {
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("CardNo")}</Text>
+											<Text fz="sm">{t("CardNo")}<RequiredAsterisk /></Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
@@ -571,7 +573,7 @@ export default function EntityForm({ form, module }) {
 											<InputNumberForm
 												form={form}
 												label=""
-												placeholder="1234567890"
+												placeholder="Nid/Birth ID"
 												tooltip={t("EnterPatientIdentity")}
 												name="identity"
 												id="identity"
@@ -702,7 +704,7 @@ export default function EntityForm({ form, module }) {
 												form={form}
 												label=""
 												tooltip={t("EnterPresentAddress")}
-												placeholder="12 street, 123456"
+												placeholder="Enter present address"
 												name="address"
 												id="address"
 												nextField="permanent_address"

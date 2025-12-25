@@ -20,7 +20,7 @@ import {
 	IconUser,
 	IconBuildingHospital,
 } from "@tabler/icons-react";
-import { useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 import {modals} from "@mantine/modals";
@@ -40,8 +40,7 @@ const ALLOWED_BILLING_ROLES = [
 
 export default function Invoice({ setRefetchBillingKey,entity }) {
 	const { userRoles } = useAppLocalStore();
-	const invoicePrintRef = useRef(null);
-	const [invoicePrintData, setInvoicePrintData] = useState(null);
+
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const { id, transactionId: selectedTransactionId } = useParams();
@@ -49,12 +48,14 @@ export default function Invoice({ setRefetchBillingKey,entity }) {
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const ipdAllPrintRef = useRef(null);
-
+	const invoicePrintRef = useRef(null);
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
+	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 	const item = entity;
 	const transactions = entity?.invoice_transaction_refund || [];
 	const printIPDAll = useReactToPrint({ content: () => ipdAllPrintRef.current });
 
-	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
+
 
 	const handleTest = (transactionId) => {
 		navigate(
@@ -81,14 +82,18 @@ export default function Invoice({ setRefetchBillingKey,entity }) {
 		setRefetchBillingKey(((prev) => prev +1));
 	};
 
-	const handlePrint = async (id) => {
 
+	const handlePrint = async (id) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.PRINT}/${id}`,
 		});
-		setInvoicePrintData(res.data);
-		requestAnimationFrame(invoicePrint);
+		setInvoicePrintData(res?.data);
 	};
+	useEffect(() => {
+		if(invoicePrintData){
+			invoicePrint();
+		}
+	}, [invoicePrintData]);
 
 
 

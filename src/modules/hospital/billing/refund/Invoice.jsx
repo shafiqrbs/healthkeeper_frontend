@@ -22,8 +22,6 @@ const ALLOWED_BILLING_ROLES = [
 
 export default function Invoice({ entity }) {
 	const { userRoles } = useAppLocalStore();
-	const invoicePrintRef = useRef(null);
-	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const { id, transactionId: selectedTransactionId } = useParams();
@@ -36,21 +34,9 @@ export default function Invoice({ entity }) {
 	const transactions = entity?.invoice_transaction || [];
 	const printIPDAll = useReactToPrint({ content: () => ipdAllPrintRef.current });
 
-	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
-
 	const handleTest = (transactionId) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND.VIEW}/${id}/payment/${transactionId}`);
 	};
-
-	const handlePrint = async (hms_invoice_id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND.PRINT}/${hms_invoice_id}`,
-		});
-
-		setInvoicePrintData(res.data);
-		requestAnimationFrame(invoicePrint);
-	};
-
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between">
@@ -149,15 +135,6 @@ export default function Invoice({ entity }) {
 												{item?.process?.toLowerCase() === "done" &&
 													userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
 														<>
-															<Button
-																onClick={() => handlePrint(item.hms_invoice_id)}
-																size="xs"
-																bg="var(--theme-secondary-color-6)"
-																color="white"
-																leftSection={<IconPrinter size={16} stroke={1.5} />}
-															>
-																{t("Print")}
-															</Button>
 															<Button
 																onClick={() =>
 																	handleTest(item.hms_invoice_transaction_id)

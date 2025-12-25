@@ -109,7 +109,7 @@ export default function _Table({ module }) {
 			term: form.values.keywordSearch,
 		},
 		perPage: PER_PAGE,
-		sortByKey: "created_at",
+		sortByKey: "updated_at",
 		direction: "desc",
 	});
 
@@ -369,7 +369,7 @@ export default function _Table({ module }) {
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-									(item.process?.toLowerCase() === "ipd" || item.process?.toLowerCase() === "billing") && (
+									(item.process?.toLowerCase() === "confirmed" || item.process?.toLowerCase() === "billing") && (
 									<Button
 										variant="filled"
 										onClick={() => {
@@ -380,7 +380,6 @@ export default function _Table({ module }) {
 										radius="xs"
 										size={"compact-xs"}
 										aria-label="Settings"
-										leftSection={<IconSettings style={{ width: "70%", height: "70%" }} stroke={1.5} />}
 									>
 										{t("Actions")}
 									</Button>
@@ -395,13 +394,12 @@ export default function _Table({ module }) {
 													radius="xs"
 													size={"compact-xs"}
 													aria-label="Settings"
-													rightSection={<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />}
 												>
 													Process
 												</Button>
 											</Button.Group>
 										)}
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && (
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&  item.process?.toLowerCase() === "billing" && (
 										<Button.Group>
 											<Button
 												variant="filled"
@@ -410,12 +408,11 @@ export default function _Table({ module }) {
 												radius="xs"
 												size={"compact-xs"}
 												aria-label="Settings"
-												leftSection={<IconPrinter style={{ width: "70%", height: "70%" }} stroke={1.5} />}
-											>Admission Form
+											>Print
 											</Button>
 										</Button.Group>
 									)}
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && item.process?.toLowerCase() === "confirmed" && (
+									{/*{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && item.process?.toLowerCase() === "admitted" && (
 										<Button.Group>
 											<Button
 												variant="filled"
@@ -430,7 +427,7 @@ export default function _Table({ module }) {
 											</Button>
 										</Button.Group>
 									)}
-
+									*/}
 									{/*<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
 										<Menu.Target>
 											<ActionIcon

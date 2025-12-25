@@ -7,9 +7,10 @@ import { MODULES } from "@/constants";
 import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useSelector } from "react-redux";
+import CustomDivider from "@components/core-component/CustomDivider";
 
 const module = MODULES.BILLING;
-const PER_PAGE = 500;
+const PER_PAGE = 50;
 
 export default function _Table() {
 	const { id } = useParams();
@@ -27,7 +28,7 @@ export default function _Table() {
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INDEX,
 		perPage: PER_PAGE,
-		sortByKey: "created_at",
+		sortByKey: "updated_at",
 		direction: "desc",
 		filterParams: {
 			created: filterData.created,
@@ -43,9 +44,6 @@ export default function _Table() {
 	return (
 		<Box>
 			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="3xs">
-				<Text ta="center" fz="sm" fw={500}>
-					S/N
-				</Text>
 				<Text ta="center" fz="sm" fw={500}>
 					Patient Name
 				</Text>
@@ -67,6 +65,7 @@ export default function _Table() {
 						gutter="xs"
 					>
 						<Grid.Col span={12}><Text fz="sm" fw={'600'}>{item.name}</Text></Grid.Col>
+						<CustomDivider />
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />

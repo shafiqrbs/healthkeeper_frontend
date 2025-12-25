@@ -28,7 +28,7 @@ export default function _Table({ patient_mode }) {
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INDEX,
 		perPage: PER_PAGE,
-		sortByKey: "created_at",
+		sortByKey: "updated_at",
 		direction: "desc",
 		filterParams: {
 			created: filterData.created,

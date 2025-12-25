@@ -1,6 +1,7 @@
 import { getDataWithoutStore } from "@/services/apiService";
-import { Box, Text, Stack, Grid, Button, ActionIcon } from "@mantine/core";
-import { useEffect, useMemo, useState } from "react";
+
+import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon } from "@mantine/core";
+import {useEffect, useMemo, useRef, useState} from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -21,6 +22,8 @@ import { useHotkeys } from "@mantine/hooks";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { useNavigate } from "react-router";
+import {useReactToPrint} from "react-to-print";
+import RefundFormInvestigationBN from "@hospital-components/print-formats/refund/RefundFormInvestigationBN";
 
 const module = MODULES_CORE.BILLING;
 
@@ -28,10 +31,16 @@ export default function InvoiceDetails({ entity }) {
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
 	const { id, transactionId } = useParams();
 	const navigate = useNavigate();
+	const invoicePrintRef = useRef(null);
 	const [fetching, setFetching] = useState(false);
 	const [selectedRecords, setSelectedRecords] = useState([]);
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const [investigationRecords, setInvestigationRecords] = useState([]);
 	const [roomItems, setRoomItems] = useState([]);
+	const [selectKey, setSelectKey] = useState(0);
+	const [autocompleteValue, setAutocompleteValue] = useState("");
+	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
+
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
@@ -142,13 +151,20 @@ export default function InvoiceDetails({ entity }) {
 				setInvoiceDetails(resultAction.payload.data?.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				setInvestigationRecords([]);
-				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.INDEX}`);
+				setInvoicePrintData(resultAction.payload.data?.data);
+				// navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.INDEX}`);
 			}
 		} catch (error) {
 			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
+
+	useEffect(() => {
+		if(invoicePrintData){
+			invoicePrint();
+		}
+	}, [invoicePrintData]);
 
 	const handleSelectedRecordsChange = (nextSelectedRecords) => {
 		const mandatoryRecords = investigationRecords?.filter((record) => record.is_new) || [];
@@ -378,6 +394,8 @@ export default function InvoiceDetails({ entity }) {
 					{t("NoTestSelected")}
 				</Stack>
 			</Box>
+			<RefundFormInvestigationBN data={invoicePrintData} ref={invoicePrintRef} />
 		</Box>
+
 	);
 }

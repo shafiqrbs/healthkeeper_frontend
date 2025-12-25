@@ -24,19 +24,24 @@ import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 import { useReactToPrint } from "react-to-print";
 import usePrintAfterUpdate from "@hooks/usePrintAfterUpdate";
+import IPDInvoicePosBn from "@hospital-components/print-formats/ipd/IPDInvoicePosBN";
 
 const module = MODULES_CORE.BILLING;
 
 export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
-	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
-	const invoicePrintRef = useRef(null);
+
 	const [invoiceDetails, setInvoiceDetails] = useState([]);
-	const { setPendingPrint } = usePrintAfterUpdate(invoicePrint, invoiceDetails);
 	const { id } = useParams();
 	const [fetching, setFetching] = useState(false);
 	const [selectedRecords, setSelectedRecords] = useState([]);
 	const [investigationRecords, setInvestigationRecords] = useState([]);
 	const [roomItems, setRoomItems] = useState([]);
+	const [selectKey, setSelectKey] = useState(0);
+	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
+	const [autocompleteValue, setAutocompleteValue] = useState("");
+	const invoicePrintRef = useRef(null);
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
+	const { setPendingPrint } = usePrintAfterUpdate(invoicePrint, invoiceDetails);
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
@@ -170,7 +175,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 				setInvoiceDetails(resultAction.payload.data?.data);
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				setInvestigationRecords([]);
-				navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_BILLING.INDEX}/${id}`, { replace: true });
+				// navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_BILLING.INDEX}/${id}`, { replace: true });
 				setRefetchBillingKey((prev) => prev + 1);
 				setSelectedRecords([]);
 				setPendingPrint(true);
@@ -631,7 +636,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 				</>
 			)}
 
-			<InvoicePosBN data={invoiceDetails} ref={invoicePrintRef} />
+			<IPDInvoicePosBn data={invoiceDetails} ref={invoicePrintRef} />
 		</Box>
 	);
 }

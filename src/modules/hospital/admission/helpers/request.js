@@ -45,6 +45,14 @@ export const getAdmissionFormInitialValues = () => {
 	return {
 		initialValues: admissionInitialValues,
 		validate: {
+			mobile: (value) => {
+				if (!value) return "Mobile no is required";
+				return null;
+			},
+			card_no: (value) => {
+				if (!value) return "ID card no is required";
+				return null;
+			},
 			admit_unit_id: (value) => {
 				if (!value) return "Unit is required";
 				return null;

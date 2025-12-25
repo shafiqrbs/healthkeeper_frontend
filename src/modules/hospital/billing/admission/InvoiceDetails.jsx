@@ -25,6 +25,7 @@ import { useReactToPrint } from "react-to-print";
 import usePrintAfterUpdate from "@hooks/usePrintAfterUpdate";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 import AdmissionInvoiceBN from "@hospital-components/print-formats/admission/AdmissionInvoiceBN";
+import IPDInvoicePosBn from "@hospital-components/print-formats/ipd/IPDInvoicePosBN";
 
 const module = MODULES_CORE.BILLING;
 
@@ -39,9 +40,9 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
-	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 	const invoicePrintRef = useRef(null);
-	const { setPendingPrint } = usePrintAfterUpdate(invoicePrint, invoiceDetails);
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
+	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 
 	// =============== separate forms for investigation and room submissions ================
 	const investigationForm = useForm({
@@ -179,17 +180,29 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 				dispatch(setRefetchData({ module, refetching: true }));
 				setInvoiceDetails(resultAction.payload.data?.data);
 				setInvestigationRecords([]);
-				navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION_BILLING.INDEX, { replace: true });
+				// navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION_BILLING.INDEX, { replace: true });
 				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				setInvoicePrintData(resultAction.payload.data?.data);
 				setRefetchBillingKey((prev) => prev + 1);
 				setSelectedRecords([]);
-				setPendingPrint(true);
 			}
 		} catch (error) {
 			console.error(error);
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
 		}
 	}
+
+	const handlePrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.PRINT}/${id}`,
+		});
+		setInvoicePrintData(res?.data);
+	};
+	useEffect(() => {
+		if(invoicePrintData){
+			invoicePrint();
+		}
+	}, [invoicePrintData]);
 
 	useHotkeys(
 		[
@@ -380,7 +393,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 					{t("NoTestSelected")}
 				</Stack>
 			</Box>
-			<AdmissionInvoiceBN data={invoiceDetails} ref={invoicePrintRef} />
+			<IPDInvoicePosBn data={invoiceDetails} ref={invoicePrintRef} />
 		</Box>
 	);
 }

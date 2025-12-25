@@ -6,14 +6,15 @@ import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useTranslation } from "react-i18next";
 import useDomainHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import Barcode from "react-barcode";
+import {capitalizeWords} from "@utils/index";
 
 const DashedLine = () => (
 	<Text size="2xs" ta="center" ff="monospace">
-		-----------------------------------------------
+		-----------------------------------------------------------------------------------
 	</Text>
 );
 
-const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
+const IPDInvoicePosBn = forwardRef(({ data, preview = false }, ref) => {
 	const { user } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { hospitalConfigData } = useDomainHospitalConfigData();
@@ -23,10 +24,10 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 	console.log(patientInfo);
 	return (
 		<Box display={preview ? "block" : "none"}>
-			<Box ref={ref} w="80mm" p={8} bg="var(--mantine-color-white)" mx="auto">
+			<Box ref={ref} w="140mm" p={8} bg="var(--mantine-color-white)" mx="auto" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
-					<Group justify="space-between" align="center" gap={8}>
+					<Group justify="center" align="center" gap={8}>
 						<Image
 							src={GovtLogo}
 							alt="Govt Logo"
@@ -63,7 +64,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 						<strong>{t("বেড /কেবিন নং")}:</strong> {patientInfo?.room_name || ""}
 					</Text>
 					<DashedLine />
-					<Table fz="10px" verticalSpacing={1} withRowBorders={false}>
+					<Table verticalSpacing={1} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td>
@@ -79,14 +80,14 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 					</Table>
 					<DashedLine />
 					{/* =============== essential patient info =============== */}
-					<Table fz="10px" verticalSpacing={1} withRowBorders={false}>
+					<Table verticalSpacing={1} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td>
 									<strong>{t("তারিখ")}:</strong> {patientInfo?.created || ""}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>{t("ID")}:</strong> {patientInfo?.patient_id || ""}
+									{patientInfo?.patient_id || ""}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
@@ -99,59 +100,45 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || ""}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>{t("লিঙ্গ")}:</strong> {patientInfo?.gender || ""}
+									<strong>{t("লিঙ্গ")}:</strong> {capitalizeWords(patientInfo?.gender) || ""}
 								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
-					<DashedLine />
-					<Table fz="10px" verticalSpacing={1} withRowBorders={false}>
+					<Table verticalSpacing={1} withRowBorders={false} mt={'xl'}>
 						<Table.Tbody>
-							<Table.Tr>
-								<Table.Td>
-									<strong>{t("বিবরণ")}</strong>
-								</Table.Td>
-								<Table.Td align="center">
-									<strong>{t("পরিমান")}</strong>
-								</Table.Td>
-								<Table.Td align="right">
-									<strong>{t("টাকা")}</strong>
-								</Table.Td>
+							<Table.Tr style={{ borderTop: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Th>{t("Particular")}</Table.Th>
+								<Table.Th style={{ textAlign: "center", width: "80px" }}>{t("Days")}</Table.Th>
+								<Table.Th style={{ textAlign: "right", width: "70px" }}>{t("Amount")}</Table.Th>
 							</Table.Tr>
-							{entities?.map((entity, index) => (
-								<Table.Tr>
+							{patientInfo?.items?.map((item, index) => (
+								<Table.Tr key={index} style={{ borderTop: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td>
-										{index + 1}. {entity?.item_name}
+										{index + 1}. {item?.item_name}
 									</Table.Td>
-									<Table.Td align="center">{entity?.quantity}</Table.Td>
-									<Table.Td align="right">{entity?.sub_total}</Table.Td>
+									<Table.Td style={{ textAlign: "center", width: "60px" }}>
+										{item?.quantity}
+									</Table.Td>
+									<Table.Td style={{ textAlign: "right", width: "70px" }}>
+										৳ {item?.sub_total}
+									</Table.Td>
 								</Table.Tr>
 							))}
 						</Table.Tbody>
 					</Table>
-
 					<DashedLine />
-
-					{/* =============== financial summary =============== */}
-					<Table fz="10px" verticalSpacing={1} withRowBorders={false}>
-						<Table.Tbody>
-							<Table.Tr>
-								<Table.Td>
-									<strong>{t("মোট পরিশোধযোগ্য")}</strong>
-								</Table.Td>
-								<Table.Td align="right">
-									<strong>
-										৳ {patientInfo?.total_payable || patientInfo?.total || 0}
-									</strong>
-								</Table.Td>
-							</Table.Tr>
-						</Table.Tbody>
-					</Table>
-
+					<Group justify="space-between" px={4}>
+						<Text  fw={700}>
+							{t("মোট পরিশোধ")}:
+						</Text>
+						<Text size="sm" fw={700}>
+							৳ {patientInfo?.total_payable || patientInfo?.total || 0}
+						</Text>
+					</Group>
 					<DashedLine />
-
 					{/* =============== footer section =============== */}
-					<Table withRowBorders={false} fz={10}>
+					<Table withRowBorders={false} >
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
@@ -190,6 +177,6 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 	);
 });
 
-InvoicePosBN.displayName = "InvoicePosBN";
+IPDInvoicePosBn.displayName = "IPDInvoicePosBn";
 
-export default InvoicePosBN;
+export default IPDInvoicePosBn;

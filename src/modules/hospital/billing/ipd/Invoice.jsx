@@ -13,6 +13,8 @@ import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosB
 import { getDataWithoutStore } from "@/services/apiService";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { useDisclosure } from "@mantine/hooks";
+import IPDInvoicePosBn from "@hospital-components/print-formats/ipd/IPDInvoicePosBN";
+import CustomDivider from "@components/core-component/CustomDivider";
 
 const ALLOWED_BILLING_ROLES = [
 	"billing_manager",
@@ -20,6 +22,7 @@ const ALLOWED_BILLING_ROLES = [
 	"admin_hospital",
 	"admin_administrator",
 	"operator_opd",
+	"operator_emergency",
 ];
 const PER_PAGE = 500;
 
@@ -102,6 +105,7 @@ export default function Invoice({ entity }) {
 			{id && (
 				<Grid columns={12} key={item.id} my="xs" bg={"var(--theme-secondary-color-2)"} px="xs" gutter="xs">
 					<Grid.Col span={12}><Text fz="sm">{item.name}</Text></Grid.Col>
+					<CustomDivider />
 					<Grid.Col span={6}>
 						<Flex align="center" gap="3xs">
 							<IconCalendarWeek size={16} stroke={1.5} />
@@ -184,41 +188,26 @@ export default function Invoice({ entity }) {
 									<Flex align="center" gap="sm" mt={"md"} justify="flex-end">
 										{userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
 											<>
-												{item?.process === "New" &&
-													userRoles.some((role) => ALLOWED_BILLING_ROLES.includes(role)) && (
-														<Button
-															onClick={() => handleTest(item.hms_invoice_transaction_id)}
-															size="xs"
-															bg="var(--theme-primary-color-6)"
-															color="white"
-														>
-															{t("Process")}
-														</Button>
-													)}
-												{item?.process === "Done" && (
-													<>
-														<Button
-															onClick={() => handleDetailsView(item)}
-															size="xs"
-															bg="var(--theme-primary-color-6)"
-															color="white"
-														>
-															{t("Show")}
-														</Button>
-														 <Button
-															onClick={() =>
-																handlePrint(
-																	item.hms_invoice_transaction_id
-																)
-															}
-															size="xs"
-															bg="var(--theme-secondary-color-6)"
-															color="white"
-														>
-															{t("Print")}
-														</Button>
-													</>
-												)}
+												<Button
+													onClick={() => handleDetailsView(item)}
+													size="xs"
+													bg="var(--theme-primary-color-6)"
+													color="white"
+												>
+													{t("Show")}
+												</Button>
+												<Button
+													onClick={() =>
+														handlePrint(
+															item.hms_invoice_transaction_id
+														)
+													}
+													size="xs"
+													bg="var(--theme-secondary-color-6)"
+													color="white"
+												>
+													{t("Print")}
+												</Button>
 											</>
 										)}
 									</Flex>
@@ -232,7 +221,7 @@ export default function Invoice({ entity }) {
 					<Box>{t("NoPatientSelected")}</Box>
 				</Stack>
 			)}
-			<InvoicePosBN data={invoicePrintData} ref={invoicePrintRef} />
+			<IPDInvoicePosBn data={invoicePrintData} ref={invoicePrintRef} />
 			{/*<IPDAllPrint data={test} ref={ipdAllPrintRef} />*/}
 
 			<GlobalDrawer

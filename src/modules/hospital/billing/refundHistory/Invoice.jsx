@@ -20,7 +20,7 @@ import {
 	IconUser,
 	IconBuildingHospital,
 } from "@tabler/icons-react";
-import { useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import { useReactToPrint } from "react-to-print";
 import InvoicePosBN from "@hospital-components/print-formats/billing/InvoicePosBN";
 import {modals} from "@mantine/modals";
@@ -81,15 +81,16 @@ export default function Invoice({ setRefetchBillingKey,entity }) {
 	};
 
 	const handlePrint = async (id) => {
-
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.PRINT}/${id}`,
 		});
-		setInvoicePrintData(res.data);
-		requestAnimationFrame(invoicePrint);
+		setInvoicePrintData(res?.data);
 	};
-
-
+	useEffect(() => {
+		if(invoicePrintData){
+			invoicePrint();
+		}
+	}, [invoicePrintData]);
 
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">

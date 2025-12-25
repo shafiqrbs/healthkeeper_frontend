@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import useDomainHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import Barcode from "react-barcode";
 import { t } from "i18next";
+import {capitalizeWords} from "@utils/index";
 
 const DashedLine = () => (
 	<Text size="2xs" ta="center" ff="monospace">
@@ -23,10 +24,10 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 
 	return (
 		<Box display={preview ? "block" : "none"}>
-			<Box ref={ref} w="140mm" p={8} bg="var(--mantine-color-white)" mx="auto">
+			<Box ref={ref} w="140mm" p={8} bg="var(--mantine-color-white)" mx="auto" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
-					<Group justify="space-between" align="center" gap={8}>
+					<Group justify="center" align="center" gap={8}>
 						<Image src={GovtLogo} alt="Govt Logo" width={30} height={30} fit="contain" />
 						<Stack gap={0} ta="left">
 							<Text ta="center" size="xs" fw={700}>
@@ -97,8 +98,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 							<Table.Tr>
 								<Table.Td>
 									<strong>{t("লিঙ্গ")}:</strong>{" "}
-									{patientInfo?.gender &&
-										patientInfo.gender[0].toUpperCase() + patientInfo.gender.slice(1)}
+									{capitalizeWords(patientInfo?.gender) || ""}
 								</Table.Td>
 								<Table.Td align="right">
 									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || ""}
@@ -111,20 +111,6 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 									{[patientInfo?.upazila, patientInfo?.district].filter(Boolean).join(", ")}
 								</Table.Td>
 							</Table.Tr>
-							{patientInfo?.guardian_name && (
-								<Table.Tr>
-									<Table.Td colSpan={2}>
-										<strong>{t("অভিভাবকের নাম")}:</strong> {patientInfo?.guardian_name || ""}
-									</Table.Td>
-								</Table.Tr>
-							)}
-							{patientInfo?.guardian_mobile && patientInfo?.guardian_name && (
-								<Table.Tr>
-									<Table.Td colSpan={2}>
-										<strong>{t("অভিভাবকের মোবাইল")}:</strong> {patientInfo?.guardian_mobile || ""}
-									</Table.Td>
-								</Table.Tr>
-							)}
 							<Table.Tr>
 								<Table.Td colSpan={2} />
 							</Table.Tr>
@@ -132,7 +118,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 					</Table>
 
 					{/* =============== financial summary =============== */}
-					<Table verticalSpacing={1} withRowBorders={false}>
+					<Table verticalSpacing={1} withRowBorders={false} mt={'xl'}>
 						<Table.Tbody>
 							<Table.Tr style={{ borderTop: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th>{t("Particular")}</Table.Th>
