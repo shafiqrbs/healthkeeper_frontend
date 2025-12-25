@@ -2,21 +2,30 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getDataWithoutStore } from "@/services/apiService";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
-import {Box, Button, Flex, Grid, Group, Stack, Text} from "@mantine/core";
+import { Box, Button, Flex, Grid, Group, Stack, Text } from "@mantine/core";
 import { IconPrinter } from "@tabler/icons-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useReactToPrint } from "react-to-print";
 import { useParams } from "react-router";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import LabGroupReportA4BN from "@hospital-components/print-formats/lab-reports/LabGroupReportA4BN";
 
+const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab"];
+
 export default function ReportSubmission({ form, handleSubmit, diagnosticReport }) {
+	console.log("diagnosticReport: ", diagnosticReport);
 	const labReportRef = useRef(null);
 	const { t } = useTranslation();
 	const [labReportData, setLabReportData] = useState(null);
 	const { reportId } = useParams();
 	const { userRoles } = useAppLocalStore();
+
+	useEffect(() => {
+		if (diagnosticReport?.comment) {
+			form.setFieldValue("comment", diagnosticReport?.comment);
+		}
+	}, [diagnosticReport?.comment]);
 
 	const printLabReport = useReactToPrint({
 		content: () => labReportRef.current,
@@ -29,13 +38,6 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 		setLabReportData(res?.data);
 		requestAnimationFrame(printLabReport);
 	};
-	const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab"];
-	const ALLOWED_LAB_USER_ROLES = ["lab_assistant"];
-	const isViewOnly = (diagnosticReport.process === "Done" || (
-		diagnosticReport.process === "In-progress" && userRoles.some((role) =>
-			ALLOWED_LAB_USER_ROLES.includes(role)
-		)));
-
 
 	return (
 		<Stack gap={0} justify="space-between" mt="xs">
@@ -66,58 +68,35 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 									>
 										<Flex direction="column" gap={0}>
 											<Text fz={"xs"}>{t("Print")}</Text>
-											<Flex
-												direction="column"
-												align="center"
-												fz="2xs"
-												c="white"
-											>
+											<Flex direction="column" align="center" fz="2xs" c="white">
 												alt+p
 											</Flex>
 										</Flex>
 									</Button>
-									<Button
-										size="md"
-										className="btnPrimaryBg"
-										type="submit"
-										id="handleSubmit"
-									>
+									<Button size="md" className="btnPrimaryBg" type="submit" id="handleSubmit">
 										<Flex direction="column" gap={0}>
 											<Text fz="md">{t("Save")}</Text>
-											<Flex
-												direction="column"
-												align="center"
-												fz="2xs"
-												c="white"
-											>
+											<Flex direction="column" align="center" fz="2xs" c="white">
 												alt+s
 											</Flex>
 										</Flex>
 									</Button>
-								{
-								userRoles.some((role) =>
-									ALLOWED_LAB_DOCTOR_ROLES.includes(role)
-								) && (
-									<Button
-										size="md"
-										fz={"xs"}
-										bg="var(--theme-primary-color-6)"
-										type="submit"
-										id="handleSubmit"
-									>
-										<Flex direction="column" gap={0}>
-											<Text fz="xs">{t("Confirm")}</Text>
-											<Flex
-												direction="column"
-												align="center"
-												fz="2xs"
-												c="white"
-											>
-												alt+s
+									{userRoles.some((role) => ALLOWED_LAB_DOCTOR_ROLES.includes(role)) && (
+										<Button
+											size="md"
+											fz={"xs"}
+											bg="var(--theme-primary-color-6)"
+											type="submit"
+											id="handleSubmit"
+										>
+											<Flex direction="column" gap={0}>
+												<Text fz="xs">{t("Confirm")}</Text>
+												<Flex direction="column" align="center" fz="2xs" c="white">
+													alt+s
+												</Flex>
 											</Flex>
-										</Flex>
-									</Button>
-								)}
+										</Button>
+									)}
 								</Group>
 							</Box>
 						</Grid.Col>
