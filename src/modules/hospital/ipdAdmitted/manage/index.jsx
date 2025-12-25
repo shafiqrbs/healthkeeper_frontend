@@ -30,6 +30,17 @@ import DeathCertificate from "../common/tabs/DeathCertificate";
 
 const module = MODULES.E_FRESH;
 
+const RELEASE_TAB_MAP = {
+	referred: "room-transfer",
+	discharge: "discharge",
+	death: "death-certificate",
+};
+
+const RELEASE_PRINT_MAP = {
+	discharge: "discharge-print",
+	death: "death-certificate-print",
+};
+
 const TAB_ITEMS = [
 	{
 		label: "Dashboard",
@@ -206,49 +217,34 @@ export default function Index() {
 	}, [ipdData?.data, baseTabValue, setSearchParams]);
 
 	const getFilteredTabs = (tabs) => {
+		const RELEASE_TABS = Object.values(RELEASE_TAB_MAP);
 		// =============== if release_mode is set and process is paid, show only the corresponding tab ================
-		if (releaseMode && isPaid) {
-			if (releaseMode === "referred") {
-				return tabs.filter((tab) => tab.value === "room-transfer");
-			}
-			if (releaseMode === "discharge") {
-				return tabs.filter((tab) => tab.value === "discharge");
-			}
-			if (releaseMode === "death") {
-				return tabs.filter((tab) => tab.value === "death-certificate");
-			}
-		}
-		// =============== if release_mode is set but process is not paid, hide room-transfer, discharge, and death-certificate ================
 		if (!isPaid) {
-			return tabs.filter(
-				(tab) => tab.value !== "room-transfer" && tab.value !== "discharge" && tab.value !== "death-certificate"
-			);
+			return tabs.filter((tab) => !RELEASE_TABS.includes(tab.value));
+		}
+
+		// ✅ Paid + release mode → keep only the matching release tab
+		if (releaseMode && RELEASE_TAB_MAP[releaseMode]) {
+			const allowedReleaseTab = RELEASE_TAB_MAP[releaseMode];
+
+			return tabs.filter((tab) => !RELEASE_TABS.includes(tab.value) || tab.value === allowedReleaseTab);
 		}
 		// =============== if no release_mode, show all tabs ================
 		return tabs;
 	};
 
 	const getFilteredPrintItems = (printItems) => {
-		// =============== if release_mode is set and process is paid, show only the corresponding print item ================
-		if (releaseMode && isPaid) {
-			if (releaseMode === "discharge") {
-				return printItems.filter((item) => item.value === "discharge-print");
-			}
-			if (releaseMode === "death") {
-				return printItems.filter((item) => item.value === "death-certificate-print");
-			}
-			// =============== if release_mode is referred, hide discharge-print and death-certificate-print ================
-			if (releaseMode === "referred") {
-				return printItems.filter(
-					(item) => item.value !== "discharge-print" && item.value !== "death-certificate-print"
-				);
-			}
-		}
-		// =============== if release_mode is set but process is not paid, hide discharge-print and death-certificate-print ================
+		const RELEASE_PRINTS = Object.values(RELEASE_PRINT_MAP);
+		// ❌ Not paid → remove all release-related prints
 		if (!isPaid) {
-			return printItems.filter(
-				(item) => item.value !== "discharge-print" && item.value !== "death-certificate-print"
-			);
+			return printItems.filter((item) => !RELEASE_PRINTS.includes(item.value));
+		}
+
+		// ✅ Paid + release mode → keep only matching release print
+		if (releaseMode && RELEASE_PRINT_MAP[releaseMode]) {
+			const allowedPrint = RELEASE_PRINT_MAP[releaseMode];
+
+			return printItems.filter((item) => !RELEASE_PRINTS.includes(item.value) || item.value === allowedPrint);
 		}
 		// =============== if no release_mode, show all print items ================
 		return printItems;

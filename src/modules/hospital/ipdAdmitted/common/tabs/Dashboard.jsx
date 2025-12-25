@@ -259,7 +259,7 @@ export default function Dashboard() {
 								bg="var(--theme-secondary-color-1)"
 								style={{ borderColor: "var(--theme-secondary-color-4)" }}
 							>
-								<Text fw={600} size="md" c="var(--theme-warn-color-7)">
+								<Text fw={600} size="md" c="var(--theme-secondary-color-7)">
 									{ipd.release_mode.charAt(0).toUpperCase() + ipd.release_mode.slice(1)}: Bill
 									processed successfully
 								</Text>
