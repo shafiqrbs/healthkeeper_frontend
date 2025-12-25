@@ -200,8 +200,6 @@ export default function Index() {
 				setSearchParams({ tab: "dashboard" });
 				return;
 			}
-
-			// =============== if no release_mode, print tabs are accessible ================
 		}
 
 		// =============== if tab is not restricted, it's always accessible ================
@@ -221,7 +219,7 @@ export default function Index() {
 			}
 		}
 		// =============== if release_mode is set but process is not paid, hide room-transfer, discharge, and death-certificate ================
-		if (releaseMode && !isPaid) {
+		if (!isPaid) {
 			return tabs.filter(
 				(tab) => tab.value !== "room-transfer" && tab.value !== "discharge" && tab.value !== "death-certificate"
 			);
@@ -247,7 +245,7 @@ export default function Index() {
 			}
 		}
 		// =============== if release_mode is set but process is not paid, hide discharge-print and death-certificate-print ================
-		if (releaseMode && !isPaid) {
+		if (!isPaid) {
 			return printItems.filter(
 				(item) => item.value !== "discharge-print" && item.value !== "death-certificate-print"
 			);

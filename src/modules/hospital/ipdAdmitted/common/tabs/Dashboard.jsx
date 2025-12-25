@@ -8,6 +8,8 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { modals } from "@mantine/modals";
 import { getDataWithoutStore } from "@/services/apiService";
+import { errorNotification } from "@components/notification/errorNotification";
+import { ERROR_NOTIFICATION_COLOR } from "@/constants";
 
 export default function Dashboard() {
 	const ipdRef = useRef(null);
@@ -28,7 +30,7 @@ export default function Dashboard() {
 		content: () => ipdRef.current,
 	});
 
-	const { data: ipdData } = useDataWithoutStore({
+	const { data: ipdData, refetch } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${ipdId}`,
 	});
 
@@ -49,9 +51,15 @@ export default function Dashboard() {
 	};
 
 	const handleConfirmApproved = async (mode) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.RELEASE}/${id}/${mode}`,
-		});
+		try {
+			await getDataWithoutStore({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.RELEASE}/${id}/${mode}`,
+			});
+			refetch();
+		} catch (err) {
+			console.error(err);
+			errorNotification(err?.message, ERROR_NOTIFICATION_COLOR);
+		}
 	};
 
 	useEffect(() => {
