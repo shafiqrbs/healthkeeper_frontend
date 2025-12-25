@@ -15,7 +15,7 @@ export const getInitialValues = (t) => {
 				if (!value) return t("ParticularModeValidationRequired");
 				return null;
 			},
-			name: hasLength({ min: 2, max: 20 }),
+			name: hasLength({ min:2}),
 		},
 	};
 };

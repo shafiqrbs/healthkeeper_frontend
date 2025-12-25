@@ -307,14 +307,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (values) => {
 								return (
 									<Flex justify="flex-end">
-										{formatDate(new Date()) === formatDate(values?.created_at) && (
-											<ActionIcon
-												variant="transparent"
-												onClick={(e) => patientUpdate(e, values?.id)}
-											>
-												<IconPencil size={18} color="var(--theme-success-color)" />
-											</ActionIcon>
-										)}
 										<Group
 											onClick={(e) => e.stopPropagation()}
 											gap={4}

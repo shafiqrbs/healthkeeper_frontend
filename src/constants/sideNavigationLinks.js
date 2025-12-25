@@ -306,25 +306,18 @@ export const sideNavigationLinks = {
 		},
 
 		{
-			label: t("Lab"),
+			label: t("Test"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX,
 			icon: IconMicroscopeOff,
 			color: "#9E9D24", // Olive
 			allowedRoles: ["doctor_lab", "lab_assistant", "admin_administrator"],
-			subMenu: [
-				{
-					label: t("Lab"),
-					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX,
-					icon: IconMicroscopeOff,
-					allowedRoles: ["doctor_lab", "lab_assistant", "admin_administrator"],
-				},
-				{
-					label: t("TestReports"),
-					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.INDEX_REPORTS,
-					icon: IconEmergencyBed,
-					allowedRoles: ["doctor_lab", "lab_assistant", "admin_administrator"],
-				},
-			],
+		},
+		{
+			label: t("GroupTest"),
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_GROUP_TEST.INDEX,
+			icon: IconMicroscopeOff,
+			color: "#2f62e1", // Olive
+			allowedRoles: ["doctor_lab", "lab_assistant", "admin_administrator"],
 		},
 
 		{

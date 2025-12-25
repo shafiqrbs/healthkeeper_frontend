@@ -54,6 +54,7 @@ const tabs = [
 
 const PER_PAGE = 200;
 const ALLOWED_OPD_ROLES = ["doctor_opd", "admin_administrator"];
+const ALLOWED_ADMIN_DOCTOR_ROLES = ["doctor_approve_opd", "admin_doctor", "admin_administrator"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -388,15 +389,13 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (values) => {
 								return (
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{formatDate(new Date()) === formatDate(values?.created_at) && (
+										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) && (
 											<ActionIcon
 												variant="transparent"
-												onClick={(e) => patientUpdate(e, values?.id)}
-											>
-												<IconPencil size={18} color="var(--theme-success-color)" />
+												onClick={(e) => patientUpdate(e, values?.id)}>
+												<IconPencil size={18} color="var(--theme-success-color)"/>
 											</ActionIcon>
 										)}
-
 										<Menu
 											position="bottom-end"
 											offset={3}

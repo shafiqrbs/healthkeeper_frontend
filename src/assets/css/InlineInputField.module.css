@@ -10,7 +10,7 @@
 
 .inputNumber input{
     border: 1px solid;
-    border-color: var(--theme-tertiary-color-0);
+    border-color: var(--theme-tertiary-color-5);
     text-align: center;
     background-color:white;
 
@@ -18,7 +18,7 @@
 
 .inputText input{
     border: 1px solid;
-    border-color: var(--theme-tertiary-color-0);
+    border-color: var(--theme-tertiary-color-5);
     text-align: left!important;
     font-size: 12px!important;
     width: 100%;
@@ -28,7 +28,7 @@
 }
 .inputText select{
     border: 1px solid;
-    border-color: var(--theme-tertiary-color-0);
+    border-color: var(--theme-tertiary-color-5);
     text-align: left!important;
     font-size: 12px!important;
     width: 100%;

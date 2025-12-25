@@ -1,43 +1,48 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { IconCalendarWeek, IconUser, IconArrowNarrowRight } from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
+import {IconCalendarWeek, IconUser, IconArrowNarrowRight, IconInfoCircle} from "@tabler/icons-react";
+import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 import { MODULES } from "@/constants";
-import { formatDate } from "@utils/index";
+import {formatDate, getLoggedInHospitalUser} from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import { useSelector } from "react-redux";
+import {useForm} from "@mantine/form";
+import {useSelector} from "react-redux";
+import {useAutoRefetch} from "@hooks/useAutoRefetch";
 import CustomDivider from "@components/core-component/CustomDivider";
 
-const module = MODULES.BILLING;
-const PER_PAGE = 500;
+const module = MODULES.LAB_TEST;
+const PER_PAGE = 50;
 
-export default function _Table({ patient_mode }) {
+export default function _Table() {
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
+	const form = useForm();
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
 	const filterData = useSelector((state) => state.crud[module].filterData);
-
+	const hospitalConfig = getLoggedInHospitalUser();
+	const opdRoomIds = hospitalConfig?.particular_details?.diagnostic_room_ids;
 	const handleAdmissionOverview = (id) => {
 		setSelectedPatientId(id);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}`);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_GROUP_TEST.VIEW}/${id}`);
 	};
-
-	const { records, fetching } = useInfiniteTableScroll({
+	const {refetchAll, records,fetching } = useInfiniteTableScroll({
 		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INDEX,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX,
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
 		direction: "desc",
 		filterParams: {
 			created: filterData.created,
-			term: filterData.keywordSearch
+			term: filterData.keywordSearch,
+			room_ids: opdRoomIds,
 		},
 	});
 
-	const handleView = (id) => {
-		console.info(id);
+	useAutoRefetch(refetchAll, 75000, true);
+	const handlePageReload = () => {
+		refetchAll();
 	};
 
 	return (
@@ -50,8 +55,7 @@ export default function _Table({ patient_mode }) {
 					Patient Name
 				</Text>
 			</Flex>
-			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
-				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 174} scrollbars="y" px="3xs">
 				{records?.map((item) => (
 					<Grid
 						columns={12}
@@ -59,36 +63,40 @@ export default function _Table({ patient_mode }) {
 						onClick={() => handleAdmissionOverview(item.uid)}
 						my="xs"
 						bg={
-							String(selectedPatientId) === String(item?.uid)
+							Number(selectedPatientId) === item?.id
 								? "var(--theme-primary-color-0)"
 								: "var(--theme-tertiary-color-0)"
 						}
 						px="xs"
 						gutter="xs"
 					>
-						<Grid.Col span={12}><Text fz="sm" fw={'600'}>{item.name}</Text></Grid.Col>
+						<Grid.Col span={12}>
+							<Flex align="center" gap="3xs">
+								<IconUser size={16} stroke={1.5} />
+								<Text fz="sm">{item.name}</Text>
+							</Flex>
+						</Grid.Col>
 						<CustomDivider />
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />
 								<Text
 									fz="sm"
-									onClick={() => handleView(item?.id)}
+									onClick={() => handleView(item?.uid)}
 									className="activate-link text-nowrap"
 								>
 									{formatDate(item?.created_at)}
 								</Text>
 							</Flex>
 							<Flex align="center" gap="3xs">
-								<IconUser size={16} stroke={1.5} />
-								<Text fz="sm">{item.mobile}</Text>
-
+								<IconInfoCircle size={16} stroke={1.5} />
+								<Text fz="sm">{item.patient_id}</Text>
 							</Flex>
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Flex justify="space-between" align="center" gap="3xs">
 								<Box>
-									<Text fz="sm">{item.patient_id}</Text>
+									<Text fz="sm">{item.mobile}</Text>
 									<Text fz="sm">{item.invoice}</Text>
 								</Box>
 								<Button.Group>
@@ -104,6 +112,25 @@ export default function _Table({ patient_mode }) {
 								</Button.Group>
 							</Flex>
 						</Grid.Col>
+						{/* <Grid.Col span={4}>
+							<Flex justify="space-between" align="center">
+								<Box>
+									<Text fz="sm">{item.patient_payment_mode_name}</Text>
+									<Text fz="sm">{item.visiting_room}</Text>
+								</Box>
+								<Button.Group>
+									<ActionIcon
+										variant="filled"
+										onClick={() => handleAdmissionOverview(item.id)}
+										color="var(--theme-primary-color-6)"
+										radius="xs"
+										aria-label="Settings"
+									>
+										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
+									</ActionIcon>
+								</Button.Group>
+							</Flex>
+						</Grid.Col> */}
 					</Grid>
 				))}
 			</ScrollArea>

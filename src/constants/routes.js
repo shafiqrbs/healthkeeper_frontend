@@ -642,8 +642,22 @@ export const HOSPITAL_DATA_ROUTES = {
 			DELETE: "hospital/lab-investigation",
 			PRINT: "hospital/lab-investigation/print",
 			TAG_PRINT: "hospital/lab-investigation/sample-confirm",
+			CATEGORY_GROUP: "hospital/lab-investigation/category-group",
 			INLINE_UPDATE: "hospital/lab-investigation/report/inline-update",
 		},
+
+		LAB_GROUP_TEST: {
+			INDEX: "hospital/lab-group-report",
+			CREATE: "hospital/lab-group-report",
+			UPDATE: "hospital/lab-group-report",
+			VIEW: "hospital/lab-group-report",
+			DELETE: "hospital/lab-group-report",
+			PRINT: "hospital/lab-group-report/print",
+			TAG_PRINT: "hospital/lab-group-report/sample-confirm",
+			INLINE_UPDATE: "hospital/lab-group-report/report/inline-update",
+		},
+
+
 		EPHARMA: {
 			INDEX: "hospital/epharma",
 			CREATE: "hospital/epharma",
@@ -761,7 +775,16 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "/hospital/lab-test",
 			UPDATE: "/hospital/lab-test",
 			VIEW: "/hospital/lab-test",
+			CATEGORY_GROUP: "/hospital/lab-test/category-group",
 		},
+
+		LAB_GROUP_TEST: {
+			INDEX: "/hospital/lab-group-report",
+			CREATE: "/hospital/lab-group-report",
+			UPDATE: "/hospital/lab-group-report",
+			VIEW: "/hospital/lab-group-report",
+		},
+
 		BILLING: {
 			INDEX: "/hospital/billing",
 			CREATE: "/hospital/billing",

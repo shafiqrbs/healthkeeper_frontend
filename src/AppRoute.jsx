@@ -25,6 +25,7 @@ import VitalIndex from "@modules/hospital/patient-vital";
 import NotFound from "@components/layout/NotFound";
 import CustomerIndex from "@modules/hospital/customer";
 import LabIndex from "@modules/hospital/lab";
+import LabGroupIndex from "@modules/hospital/lab-group";
 import FreePatientIndex from "@modules/hospital/free-patient";
 import PatientWaiverIndex from "@modules/hospital/patient-waiver";
 import PatientWaiverListIndex from "@modules/hospital/patient-waiver/waiver-list";
@@ -32,7 +33,7 @@ import PoliceCaseIndex from "@modules/hospital/police-case";
 import LabInvestigationIndex from "@modules/hospital/lab/investigation";
 import EpharmaIndex from "@modules/hospital/epharma";
 import EpharmaIssueIndex from "@modules/hospital/epharma/issue";
-import LabGroupIndex from "@modules/hospital/lab-group";
+
 import RequisitionIndex from "@modules/hospital/requisition";
 import InvestigationIndex from "@modules/hospital/core/investigation";
 import DashboardCoreIndex from "@modules/hospital/core/dashboard";
@@ -414,6 +415,36 @@ function AppRoute() {
 							</ProtectedRoute>
 						}
 					/>
+
+					<Route
+						path="lab-group-report"
+						element={
+							<ProtectedRoute
+								roles={["lab_assistant", "admin_administrator", "doctor_lab", "lab_doctor", "lab_assistant", "lab_operator"]}
+							>
+								<LabGroupIndex />
+							</ProtectedRoute>
+						}
+					/>
+
+					<Route
+						path="lab-group-report/:id"
+						element={
+							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "doctor_lab", "lab_assistant", "lab_operator"]}>
+								<LabGroupIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="lab-group-report/:id/report/:reportId"
+						element={
+							<ProtectedRoute roles={["lab_assistant", "admin_administrator", "doctor_lab", "lab_assistant", "lab_operator"]}>
+								<LabGroupIndex />
+							</ProtectedRoute>
+						}
+					/>
+
+
 					<Route path="reports" element={<ReportsIndex />} />
 					<Route
 						path="epharma"
@@ -440,7 +471,7 @@ function AppRoute() {
 						}
 					/>
 
-					<Route path="lab-group-test" element={<LabGroupIndex />} />
+
 					<Route path="medicine" element={<MedicineIndex />} />
 					<Route path="medicine-requisition" element={<RequisitionIndex />} />
 					<Route path="investigation" element={<InvestigationIndex />} />
