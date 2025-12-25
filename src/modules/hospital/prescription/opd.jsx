@@ -60,6 +60,10 @@ export default function Index() {
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});
 
+	useEffect(() => {
+		setUpdatedResponse(prescriptionData?.data);
+	}, [prescriptionData]);
+
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
 	const existingMedicines = initialFormValues?.medicines || [];
 	const form = useForm(getPrescriptionFormInitialValues(t, {}));
