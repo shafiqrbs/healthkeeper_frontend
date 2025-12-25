@@ -1,7 +1,7 @@
 import { getDataWithoutStore } from "@/services/apiService";
 
 import { Box, Text, Stack, Grid, Flex, Button, Tabs, Select, ActionIcon } from "@mantine/core";
-import {useEffect, useMemo, useRef, useState} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -22,7 +22,7 @@ import { useHotkeys } from "@mantine/hooks";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { useNavigate } from "react-router";
-import {useReactToPrint} from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 import RefundFormInvestigationBN from "@hospital-components/print-formats/refund/RefundFormInvestigationBN";
 
 const module = MODULES_CORE.BILLING;
@@ -161,7 +161,7 @@ export default function InvoiceDetails({ entity }) {
 	}
 
 	useEffect(() => {
-		if(invoicePrintData){
+		if (invoicePrintData) {
 			invoicePrint();
 		}
 	}, [invoicePrintData]);
@@ -396,6 +396,5 @@ export default function InvoiceDetails({ entity }) {
 			</Box>
 			<RefundFormInvestigationBN data={invoicePrintData} ref={invoicePrintRef} />
 		</Box>
-
 	);
 }
