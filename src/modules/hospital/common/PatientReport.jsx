@@ -152,6 +152,11 @@ export default function PatientReport({
 				};
 
 				form.setFieldValue("dynamicFormData", newDynamicFormData);
+				// =============== trigger instant update with the updated data directly ================
+				if (update && form) {
+					// =============== pass the updated dynamicFormData directly to avoid stale data issues ================
+					update(undefined, newDynamicFormData);
+				}
 				return;
 			}
 		}
@@ -164,6 +169,11 @@ export default function PatientReport({
 			[sectionSlug]: updatedList,
 		};
 		form.setFieldValue("dynamicFormData", newDynamicFormData);
+		// =============== trigger instant update with the updated data directly ================
+		if (update && form) {
+			// =============== pass the updated dynamicFormData directly to avoid stale data issues ================
+			update(undefined, newDynamicFormData);
+		}
 	};
 
 	const handleNextFieldKeyDown = (event, nextField) => {

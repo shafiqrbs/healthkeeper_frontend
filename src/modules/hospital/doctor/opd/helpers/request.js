@@ -1,12 +1,12 @@
 export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
 	const parseDate = (dateValue) => {
-		if (!dateValue) return new Date();
+		if (!dateValue) return "";
 		if (dateValue instanceof Date) return dateValue;
 		if (typeof dateValue === "string") {
 			const parsed = new Date(dateValue);
-			return isNaN(parsed.getTime()) ? new Date() : parsed;
+			return isNaN(parsed.getTime()) ? "" : parsed;
 		}
-		return new Date();
+		return "";
 	};
 
 	const formattedInitialFormValues = {

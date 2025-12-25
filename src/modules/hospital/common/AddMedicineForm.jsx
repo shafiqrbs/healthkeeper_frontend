@@ -95,6 +95,7 @@ export default function AddMedicineForm({
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
+	const prescriptionPrintA4Ref = useRef(null);
 	const [updateKey, setUpdateKey] = useState(0);
 	const { prescriptionId } = useParams();
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -126,6 +127,11 @@ export default function AddMedicineForm({
 	const printPrescription2A4 = useReactToPrint({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,
+	});
+
+	const prescriptionPrintA4 = useReactToPrint({
+		documentTitle: `prescription-${Date.now().toLocaleString()}`,
+		content: () => prescriptionPrintA4Ref.current,
 	});
 
 	const durationModeDropdown = features?.medicineDuration?.modes
@@ -449,6 +455,8 @@ export default function AddMedicineForm({
 		try {
 			const createdBy = user;
 
+			console.log(tabParticulars);
+
 			const formValue = {
 				is_completed: true,
 				medicines,
@@ -464,7 +472,7 @@ export default function AddMedicineForm({
 					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,
 					order: tabParticulars.map((item) => ({
-						[item?.particular_type?.slug]: item?.ordering,
+						[item?.particular_type?.slug || item?.slug]: item?.ordering,
 					})),
 				},
 			};
@@ -501,10 +509,14 @@ export default function AddMedicineForm({
 		}
 	};
 
-	const handlePrescriptionPrint2A4 = async () => {
-		if (updatedResponse) {
-			let transformedData = { ...updatedResponse };
+	const handlePreviewPrint = () => {
+		setShowPrint(true);
+		requestAnimationFrame(printPrescription2A4);
+	};
 
+	const handlePrescriptionPrint2A4 = async () => {
+		if (updatedResponse && Object.keys(updatedResponse).length > 0) {
+			let transformedData = { ...updatedResponse };
 			try {
 				const jsonContent =
 					typeof transformedData.json_content === "string"
@@ -545,7 +557,7 @@ export default function AddMedicineForm({
 			}
 		}
 
-		requestAnimationFrame(printPrescription2A4);
+		requestAnimationFrame(prescriptionPrintA4);
 	};
 
 	const handleAdviseTemplate = (content) => {
@@ -563,6 +575,16 @@ export default function AddMedicineForm({
 
 		form.setFieldValue("advise", content);
 	};
+
+	useEffect(() => {
+		if (!form.values.advise) return;
+
+		const id = setTimeout(() => {
+			handleFieldBlur();
+		}, 800);
+
+		return () => clearTimeout(id);
+	}, [form.values.advise]);
 
 	const populateMedicineData = (v) => {
 		const selectedTreatment = treatmentData?.data?.find((item) => item.id?.toString() === v);
@@ -956,7 +978,9 @@ export default function AddMedicineForm({
 											bg="var(--theme-primary-color-0)"
 											c="dark"
 											key={advise.id}
-											onClick={() => handleAdviseTemplate(advise?.content)}
+											onClick={() => {
+												handleAdviseTemplate(advise?.content);
+											}}
 											px="les"
 											bd="1px solid var(--theme-primary-color-0)"
 											mb="2"
@@ -1072,7 +1096,9 @@ export default function AddMedicineForm({
 					</Button.Group>
 				</>
 			)}
-			{printData2A4 && <PrescriptionFullBN ref={prescription2A4Ref} data={printData2A4} />}
+
+			{/* ======== individual print data only print when click print button ======= */}
+			{printData2A4 && <PrescriptionFullBN ref={prescriptionPrintA4Ref} data={printData2A4} />}
 
 			<GlobalDrawer
 				opened={openedExPrescription}
@@ -1178,8 +1204,7 @@ export default function AddMedicineForm({
 					</Flex>
 				</Stack>
 			</GlobalDrawer>
-			{/* prescription preview */}
-			{printData && showPrint && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />}
+
 			<GlobalDrawer
 				opened={openedPrescriptionPreview}
 				close={() => {
@@ -1209,15 +1234,14 @@ export default function AddMedicineForm({
 						<Button
 							leftSection={<IconDeviceFloppy size={22} />}
 							bg="var(--theme-primary-color-6)"
-							onClick={() => {
-								handlePrescriptionPreview();
-								setShowPrint(true);
-							}}
+							onClick={handlePreviewPrint}
 							w="120px"
 						>
 							{t("Print")}
 						</Button>
 					</Flex>
+					{/* prescription preview */}
+					{printData && showPrint && <PrescriptionFullBN ref={prescription2A4Ref} data={printData} />}
 				</Box>
 			</GlobalDrawer>
 

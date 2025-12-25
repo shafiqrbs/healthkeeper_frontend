@@ -17,7 +17,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const patientReport = jsonContent?.patient_report || {};
 	const order = patientReport?.order || {};
 	const patientExamination = patientReport?.patient_examination || {};
-	// console.log(patientExamination);
 	//const medicines = patientInfo?.prescription_medicine || [];
 	const medicines = jsonContent?.medicines || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
@@ -28,8 +27,11 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 
 	// Normalize order into an array of keys sorted by their index
 	const normalizeOrder = (inputOrder) => {
+		// console.log(inputOrder);
 		if (Array.isArray(inputOrder)) {
+			// console.log(inputOrder);
 			const entries = inputOrder.flatMap((obj) => Object.entries(obj));
+			// console.log(entries);
 			return entries.sort((a, b) => a[1] - b[1]).map(([key]) => key);
 		}
 		if (inputOrder && typeof inputOrder === "object") {
@@ -38,6 +40,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 		return [];
 	};
 	const orderedExamKeys = normalizeOrder(order);
+
 	const hasArrayWithLength = (arr) => Array.isArray(arr) && arr.length > 0;
 	const SectionWrapper = ({ label, children }) => (
 		<Box>
@@ -80,10 +83,9 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	};
 
 	const renderExaminationSection = (key) => {
+		// console.log(key);
 		const dataArray = patientExamination?.[key];
 		if (!hasArrayWithLength(dataArray)) return null;
-
-		// =============== filter items where isActive is true before mapping ================
 
 		switch (key) {
 			case "chief_complaints": {
