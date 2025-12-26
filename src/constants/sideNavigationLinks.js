@@ -317,7 +317,7 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_GROUP_TEST.INDEX,
 			icon: IconMicroscopeOff,
 			color: "#2f62e1", // Olive
-			allowedRoles: ["doctor_lab", "lab_assistant", "admin_administrator"],
+			allowedRoles: ["lab_group_report", "lab_assistant", "admin_administrator"],
 		},
 
 		{

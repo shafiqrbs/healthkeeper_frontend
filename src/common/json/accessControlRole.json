@@ -37,6 +37,7 @@
       { "id": "ipd_admission", "label": "IPD Admission" },
       { "id": "lab_operator", "label": "Lab Operator" },
       { "id": "lab_assistant", "label": "Lab Assistant" },
+      { "id": "lab_group_report", "label": "Lab Group Report" },
       { "id": "operator_manager", "label": "Operator Manager" }
     ]
   },

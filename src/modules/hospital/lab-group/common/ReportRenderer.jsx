@@ -116,7 +116,6 @@ const ReportRenderer = forwardRef(
 					dispatch(setRefetchData({ module, refetching: true }));
 					refetchDiagnosticReport();
 					successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-
 					if (refetchLabReport && typeof refetchLabReport === "function") {
 						refetchLabReport();
 					}
@@ -150,6 +149,9 @@ const ReportRenderer = forwardRef(
 								title: t("S/N"),
 								width: 100,
 								textAlignment: "right",
+								render: (_, index) => index + 1,
+								/*
+
 								render: (item, rowIndex) => (
 									<TextInput
 										size="xs"
@@ -168,6 +170,8 @@ const ReportRenderer = forwardRef(
 										onBlur={(e) => handleFieldChange(item.id, "ordering", e.target.value)}
 									/>
 								),
+
+								*/
 							},
 							{
 								accessor: "name",

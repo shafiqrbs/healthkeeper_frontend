@@ -219,7 +219,7 @@ const LabGroupReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										</Table>
 									</Box>
 									<Box>
-										<Box mt={"md"} h={'650'}>
+										<Box mt={"md"} h={'700'}>
 											<Table
 												withColumnBorders
 												verticalSpacing={0}
@@ -236,44 +236,47 @@ const LabGroupReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 											>
 												<Table.Thead>
 													<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-														<Table.Th w={"30%"} pl={4}>
+														<Table.Th w={"35%"} pl={4}>
 															{t("Parameter")}
 														</Table.Th>
-														<Table.Th w={"20%"} pl={4}>
-															{t("TestResult")}
+														<Table.Th ta={'center'} w={"25%"} pl={4}>
+															{t("Result")}
 														</Table.Th>
-														<Table.Th w={"20%"} pl={4}>
-															{t("Unit")}
-														</Table.Th>
-														<Table.Th w={"30%"} pl={4}>
+														<Table.Th w={"40%"} pl={4}>
 															{t("ReferenceValue")}
 														</Table.Th>
 													</Table.Tr>
 												</Table.Thead>
 												<Table.Tbody>
-													{report?.reports?.map((item, index) => (
-														<Table.Tr key={index}>
-															<Table.Td>
-																<Text fz={"xs"} pl={4}>
-																	{item.name}
-																</Text>
-															</Table.Td>
-															<Table.Td>
-																<Text fz={"xs"} pl={4}>
-																	{item.result}
-																</Text>
-															</Table.Td>
-															<Table.Td>
-																<Text fz={"xs"} pl={4}>
-																	{item.unit}
-																</Text>
-															</Table.Td>
-															<Table.Td>
-																<Text fz={"xs"} pl={4}>
-																	{item.reference_value}
-																</Text>
-															</Table.Td>
-														</Table.Tr>
+													{report?.items?.map((report, index) => (
+														<>
+															{report?.reports?.length > 1 && (
+																<Table.Tr key={index}>
+																	<Table.Td colspan={3}>
+																		<Text fz={"xs"} fw={'600'} pl={4}>{report?.name}</Text>
+																	</Table.Td>
+																</Table.Tr>
+															)}
+															{report?.reports?.map((item, index) => (
+																<Table.Tr key={index}>
+																	<Table.Td>
+																		<Text fz={"xs"} pl={4}>
+																			{item?.name}
+																		</Text>
+																	</Table.Td>
+																	<Table.Td ta={'center'}>
+																		<Text fz={"xs"} pl={4}>
+																			{item?.result} {item?.unit}
+																		</Text>
+																	</Table.Td>
+																	<Table.Td>
+																		<Text fz={"xs"} pl={4}>
+																			{item?.reference_value}
+																		</Text>
+																	</Table.Td>
+																</Table.Tr>
+															))}
+														</>
 													))}
 												</Table.Tbody>
 											</Table>
@@ -294,12 +297,6 @@ const LabGroupReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 											<Grid columns={12} gutter="xs">
 												<Grid.Col span={4}>
 													<Box>
-														<Box h={40} ta="center">
-															{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
-														</Box>
-														<Text fw="bold" size="xs" mb="sm" ta="center">
-															{report?.assign_labuser_name}
-														</Text>
 														<Text fw="bold" ta="center">
 															Medical Technologist(Lab)
 														</Text>
@@ -308,12 +305,6 @@ const LabGroupReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 												<Grid.Col span={4}></Grid.Col>
 												<Grid.Col span={4}>
 													<Box>
-														<Box h={40} ta="center">
-															{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
-														</Box>
-														<Text fw="bold" size="xs" mb="sm" ta="center">
-															{report?.assign_doctor_name}
-														</Text>
 														<Text fw="bold" mb="sm" ta="center">
 															Clinical Pathologist
 														</Text>

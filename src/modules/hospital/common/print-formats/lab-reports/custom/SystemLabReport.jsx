@@ -8,7 +8,7 @@ const SystemLabReport = forwardRef(({reportData,report}) => {
 	};
 	return (
 		<Box>
-			<Box mt={"md"} h={'750'}>
+			<Box mt={"md"} h={'700'}>
 				<Table
 					withColumnBorders
 					verticalSpacing={0}
@@ -25,16 +25,13 @@ const SystemLabReport = forwardRef(({reportData,report}) => {
 				>
 					<Table.Thead>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Table.Th w={"30%"} pl={4}>
+							<Table.Th w={"35%"} pl={4}>
 								{t("Parameter")}
 							</Table.Th>
-							<Table.Th w={"20%"} pl={4}>
-								{t("TestResult")}
+							<Table.Th w={"25%"} pl={4}>
+								{t("Result")}
 							</Table.Th>
-							<Table.Th w={"20%"} pl={4}>
-								{t("Unit")}
-							</Table.Th>
-							<Table.Th w={"30%"} pl={4}>
+							<Table.Th w={"40%"} pl={4}>
 								{t("ReferenceValue")}
 							</Table.Th>
 						</Table.Tr>
@@ -49,12 +46,7 @@ const SystemLabReport = forwardRef(({reportData,report}) => {
 								</Table.Td>
 								<Table.Td>
 									<Text fz={"xs"} pl={4}>
-										{item.result}
-									</Text>
-								</Table.Td>
-								<Table.Td>
-									<Text fz={"xs"} pl={4}>
-										{item.unit}
+										{item.result} {item.unit}
 									</Text>
 								</Table.Td>
 								<Table.Td>
@@ -83,26 +75,14 @@ const SystemLabReport = forwardRef(({reportData,report}) => {
 				<Grid columns={12} gutter="xs">
 					<Grid.Col span={4}>
 						<Box>
-							<Box h={40} ta="center">
-								{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
-							</Box>
-							<Text fw="bold" size="xs" mb="sm" ta="center">
-								{report?.assign_labuser_name}
-							</Text>
 							<Text fw="bold" ta="center">
 								Medical Technologist(Lab)
 							</Text>
 						</Box>
 					</Grid.Col>
-					<Grid.Col span={4}></Grid.Col>
+					<Grid.Col span={4}/>
 					<Grid.Col span={4}>
 						<Box>
-							<Box h={40} ta="center">
-								{/*{renderImagePreview([], patientInfo?.signature_path)}*/}
-							</Box>
-							<Text fw="bold" size="xs" mb="sm" ta="center">
-								{report?.assign_doctor_name}
-							</Text>
 							<Text fw="bold" mb="sm" ta="center">
 								Clinical Pathologist
 							</Text>

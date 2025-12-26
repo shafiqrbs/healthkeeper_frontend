@@ -47,11 +47,13 @@ import InvoiceSummaryReports from "@modules/hospital/reports/sales-summary/Invoi
 import DailySummaryReports from "@hospital-components/print-formats/reports/DailySummaryReports";
 import FreeServiceFormBedBN from "@hospital-components/print-formats/billing/FreeServiceFormBedBN";
 import FreeServiceFormInvestigationBN from "@hospital-components/print-formats/billing/FreeServiceFormInvestigationBN";
+import LabGroupReportA4BN from "@hospital-components/print-formats/lab-reports/LabGroupReportA4BN";
 
 const STATIC_OPD_ID = "843042855688";
 const STATIC_BILLING_ID = 2335;
 const STATIC_PRESCRIPTION_ID = "361001991021";
 const REPORT_ID = "098397134876";
+const REPORTGROUP_ID = "14";
 const REFUND_ID = "1";
 const FREE_SERVICE_ID = "342955236078";
 const PURCHASE_ID = "8";
@@ -78,6 +80,11 @@ export default function Details() {
 	const { data: labReportData, isLoading: isReportLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${REPORT_ID}`,
 	});
+
+	const { data: labGroupReportData, isLoading: isGroupReportLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_GROUP_TEST.PRINT}/${REPORTGROUP_ID}`,
+	});
+
 
 	const { data: billingData, isLoading: isBillingLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.PRINT}/${STATIC_BILLING_ID}`,
@@ -253,9 +260,9 @@ export default function Details() {
 							<LabReportA4EN preview data={labReportData?.data} />
 						</LoadingWrapper>
 					)}
-					{name === "LabReportA4BN" && (
+					{name === "LabGroupReportA4EN" && (
 						<LoadingWrapper isLoading={isReportLoading}>
-							<LabReportA4BN preview data={labReportData?.data} />
+							<LabGroupReportA4BN preview data={labGroupReportData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "DischargeA4BN" && (

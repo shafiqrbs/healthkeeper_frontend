@@ -36,6 +36,7 @@ const templateData = [
 	{ name: "AdmissionInvoiceEN", module: "ipd", id: getUUID() },
 	{ name: "LabReportA4BN", module: "lab-reports", id: getUUID() },
 	{ name: "LabReportA4EN", module: "lab-reports", id: getUUID() },
+	{ name: "LabGroupReportA4EN", module: "lab-group-reports", id: getUUID() },
 	{ name: "DischargeA4BN", module: "discharge", id: getUUID() },
 	{ name: "DischargeA4EN", module: "discharge", id: getUUID() },
 	{ name: "DetailsInvoiceBN", module: "billing", id: getUUID() },
