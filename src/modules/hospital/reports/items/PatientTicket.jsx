@@ -11,7 +11,7 @@ import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
-import { formatDate } from "@/common/utils";
+import {capitalizeWords, formatDate} from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
@@ -23,7 +23,6 @@ const tabs = [
 	{ label: "All", value: "all" },
 	{ label: "OPD", value: "opd" },
 	{ label: "Emergency", value: "emergency" },
-	{ label: "IPD", value: "ipd" },
 ];
 
 const PER_PAGE = 200;
@@ -37,6 +36,7 @@ const CSV_HEADERS = [
 	{ label: "Name", key: "name" },
 	{ label: "Mobile", key: "mobile" },
 	{ label: "Patient", key: "patient_payment_mode_name" },
+	{ label: "Patient Mode", key: "invoice_report_mode" },
 	{ label: "Total", key: "total" },
 	{ label: "CreatedBy", key: "created_by" },
 ];
@@ -94,6 +94,7 @@ export default function PatientTicket() {
 			name: item?.name ?? "",
 			mobile: item?.mobile ?? "",
 			patient_payment_mode_name: item?.patient_payment_mode_name ?? "",
+			invoice_report_mode: capitalizeWords(item?.invoice_report_mode) ?? "",
 			total: item?.amount ?? "",
 			created_by: item?.created_by ?? "",
 		})) || [];
@@ -173,6 +174,9 @@ export default function PatientTicket() {
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "patient_payment_mode_name", title: t("Patient") },
+						{ accessor: "invoice_report_mode", title: t("PatientMode"),
+							render: (item) => capitalizeWords(item.invoice_report_mode),
+						},
 						{
 							accessor: "amount",
 							title: t("Total"),

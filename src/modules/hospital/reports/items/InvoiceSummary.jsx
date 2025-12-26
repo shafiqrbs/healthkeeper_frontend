@@ -88,7 +88,6 @@ export default function InvoiceSummary() {
 	const collectionSummaryData = records?.data?.summary[0] || {};
 	const invoiceModeData = records?.data?.invoiceMode || [];
 	const patientModeCollectionData = records?.data?.patientMode || [];
-	console.log(patientModeCollectionData)
 	const userCollectionData = records?.data?.userBase || [];
 	const serviceGroups = records?.data?.serviceGroups || [];
 	const serviceData = records?.data?.services || [];
@@ -104,16 +103,16 @@ export default function InvoiceSummary() {
 	};
 
 	const totalModeCount = patientModeCollectionData?.reduce(
-		(sum, item) => sum + (item.total_count ?? 0),
+		(sum, item) => sum + (item?.total_count ?? 0),
 		0
 	);
 	const totalModeAmount = patientModeCollectionData?.reduce(
-		(sum, item) => sum + (item.total ?? 0),
+		(sum, item) => sum + (item?.total ?? 0),
 		0
 	);
 
 	const totalInvoiceModeAmount = invoiceModeData?.reduce(
-		(sum, item) => sum + (item.total ?? 0),
+		(sum, item) => sum + (item?.total ?? 0),
 		0
 	);
 
@@ -125,9 +124,9 @@ export default function InvoiceSummary() {
 
 	const totalUserCount = userCollectionData?.reduce(
 		(sum, item) => sum + parseInt(item.total_count, 10),0);
-	const totalUserAmount = userCollectionData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
+	const totalUserAmount = userCollectionData?.reduce((sum, item) => sum + (item?.total ?? 0), 0);
 
-	const totalServiceCount = serviceData?.reduce((sum, item) => sum + parseInt(item.total_count, 10),0);
+	const totalServiceCount = serviceData?.reduce((sum, item) => sum + parseInt(item?.total_count, 10),0);
 	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
 	const totalServieGroupCount = serviceGroups?.reduce(

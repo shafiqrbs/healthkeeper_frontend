@@ -295,18 +295,14 @@ const ReportRenderer = forwardRef(
 								accessor: "result",
 								title: t("Result"),
 								render: (item, rowIndex) =>
-									isViewOnly ? (
-										item.result
-									) : (
-										<TextInput
-											size="xs"
-											fz="xs"
-											value={item.result}
-											ref={(el) => (inputsRef.current[rowIndex] = el)}
-											onKeyDown={(e) => handleKeyDown(e, rowIndex)}
-											onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}
-										/>
-									),
+									<TextInput
+										size="xs"
+										fz="xs"
+										value={item.result}
+										ref={(el) => (inputsRef.current[rowIndex] = el)}
+										onKeyDown={(e) => handleKeyDown(e, rowIndex)}
+										onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}
+									/>
 							},
 							{
 								accessor: "unit",

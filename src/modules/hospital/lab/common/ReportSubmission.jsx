@@ -43,19 +43,13 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 					<Grid columns={12}>
 						<Grid.Col span={8} className="animate-ease-out">
 							<Box w="100%">
-								{isViewOnly ? (
-									<Box h={"56"}>
-										<strong>Comment:</strong> {diagnosticReport?.comment}
-									</Box>
-								) : (
-									<TextAreaForm
-										id="comment"
-										form={form}
-										tooltip={t("EnterComment")}
-										placeholder={t("EnterComment")}
-										name="comment"
-									/>
-								)}
+								<TextAreaForm
+									id="comment"
+									form={form}
+									tooltip={t("EnterComment")}
+									placeholder={t("EnterComment")}
+									name="comment"
+								/>
 							</Box>
 						</Grid.Col>
 						<Grid.Col span={4}>
@@ -66,7 +60,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										<Button
 											onClick={() => handleLabReport(reportId)}
 											size="md"
-											color="var(--theme-secondary-color-5)"
+											color="var(--theme-warn-color-5)"
 											type="button"
 											id="EntityFormSubmit"
 											rightSection={<IconPrinter size="18px" />}
@@ -84,7 +78,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 											</Flex>
 										</Button>
 								)}
-								{diagnosticReport?.process === "Tagged" && (
+
 								<Button
 									size="md"
 									className="btnPrimaryBg"
@@ -103,8 +97,8 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										</Flex>
 									</Flex>
 								</Button>
-								)}
-								{(diagnosticReport?.process === "In-progress" || diagnosticReport?.process === "Done") &&
+
+								{/*{(diagnosticReport?.process === "In-progress" || diagnosticReport?.process === "Done") &&
 								userRoles.some((role) =>
 									ALLOWED_LAB_DOCTOR_ROLES.includes(role)
 								) && (
@@ -127,7 +121,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 											</Flex>
 										</Flex>
 									</Button>
-								)}
+								)}*/}
 								</Group>
 							</Box>
 						</Grid.Col>

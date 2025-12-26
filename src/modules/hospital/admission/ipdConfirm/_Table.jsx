@@ -209,6 +209,7 @@ export default function _Table({ module }) {
 								</Text>
 							),
 						},
+						{ accessor: "patient_mode_name", title: t("PatientMode") },
 						{ accessor: "patient_id", title: t("patientId") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },

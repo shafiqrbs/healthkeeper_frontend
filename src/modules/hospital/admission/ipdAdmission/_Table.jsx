@@ -16,7 +16,7 @@ import ConfirmModal from "../confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
 import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
 import {useDispatch, useSelector} from "react-redux";
-import { formatDate } from "@/common/utils";
+import {capitalizeWords, formatDate} from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
@@ -342,6 +342,9 @@ export default function _Table({ module }) {
 									{formatDate(item.created_at)}
 								</Text>
 							),
+						},
+						{ accessor: "parent_invoice_mode", title: t("PatientMode"),
+							render: (item) => capitalizeWords(item.parent_invoice_mode),
 						},
 						{ accessor: "patient_id", title: t("patientId") },
 						{ accessor: "name", title: t("Name") },

@@ -6,10 +6,11 @@ import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useTranslation } from "react-i18next";
 import useDomainHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import Barcode from "react-barcode";
+import {capitalizeWords} from "@utils/index";
 
 const DashedLine = () => (
 	<Text size="2xs" ta="center" ff="monospace">
-		-----------------------------------------------
+		-----------------------------------------------------------------------
 	</Text>
 );
 
@@ -22,10 +23,10 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 	return (
 		<Box display={preview ? "block" : "none"}>
-			<Box ref={ref} w="80mm" p={8} bg="var(--mantine-color-white)" mx="auto">
+			<Box ref={ref} w="120mm" p={8} bg="var(--mantine-color-white)" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
-					<Group justify="space-between" align="center" gap={8}>
+					<Group justify="center" align="center" gap={8}>
 						<Image
 							src={GovtLogo}
 							alt="Govt Logo"
@@ -65,7 +66,7 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 					{/* =============== patient information section =============== */}
 
-					<Table fz="10px" verticalSpacing={2} withRowBorders={false}>
+					<Table verticalSpacing={2} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td>
@@ -96,9 +97,9 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("বয়স")}</strong> {patientInfo?.year || 0} {t("বছর")}{" "}
-									{patientInfo?.month || 0} {t("মাস")} {patientInfo?.day || 0}{" "}
-									{t("দিন")}
+									<strong>{t("বয়স")}</strong> {patientInfo?.year ? `${patientInfo.year} ${t("বছর")} ` : ""}
+									{patientInfo?.month ? `${patientInfo.month} ${t("মাস")} ` : ""}
+									{patientInfo?.day ? `${patientInfo.day} ${t("দিন")}` : ""}
 								</Table.Td>
 								<Table.Td miw={100} align="right">
 									{patientInfo?.dob && (
@@ -111,23 +112,31 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 							<Table.Tr>
 								<Table.Td>
 									<strong>{t("লিঙ্গ")}:</strong>{" "}
-									{patientInfo?.gender &&
-										patientInfo.gender[0].toUpperCase() +
-											patientInfo.gender.slice(1)}
+									{ capitalizeWords(patientInfo?.gender)}
 								</Table.Td>
 								<Table.Td align="right">
 									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || ""}
 								</Table.Td>
 							</Table.Tr>
 
-							<Table.Tr>
-								<Table.Td colSpan={2}>
-									<strong>{t("ঠিকানা")}</strong>{" "}
-									{[patientInfo?.upazila, patientInfo?.district]
-										.filter(Boolean)
-										.join(", ")}
-								</Table.Td>
-							</Table.Tr>
+							{patientInfo?.address && (
+								<Table.Tr>
+									<Table.Td colSpan={2} fz={'xs'}>
+										<strong>{t("ঠিকানা")}</strong>{" "}
+										{patientInfo?.address}
+									</Table.Td>
+								</Table.Tr>
+							)}
+							{patientInfo?.upazila && (
+								<Table.Tr>
+									<Table.Td colSpan={2} fz={'xs'}>
+										<strong>{t("থানা/জেলা")}</strong>{" "}
+										{[patientInfo?.upazila, patientInfo?.district]
+											.filter(Boolean)
+											.join(", ")}
+									</Table.Td>
+								</Table.Tr>
+							)}
 							{patientInfo?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>

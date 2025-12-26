@@ -100,14 +100,15 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport ,setRe
 												: "var(--mantine-color-white)"
 										}
 										>
-										<Text fz="xs">{item?.name}</Text>
+										<Text fz="xs" fw={'600'}>{item?.name}</Text>
+										<Text fz="xs">{item?.report_name}</Text>
 										<Text fz="xs">Status:{item?.process}</Text>
-										<Flex align="center" gap="mes" mt="xs">
+										<Flex align="right" gap="mes" mt="xs">
 											{userRoles.some((role) =>
 												ALLOWED_LAB_ROLES.includes(role)
 											) && (
 												<>
-													{item?.process === "new" &&
+													{item?.process === "New" &&
 														userRoles.some((role) =>
 															ALLOWED_LAB_ROLES.includes(role)
 														) && (

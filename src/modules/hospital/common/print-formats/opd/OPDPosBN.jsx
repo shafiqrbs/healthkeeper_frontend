@@ -6,6 +6,7 @@ import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useTranslation } from "react-i18next";
 import useDomainHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import Barcode from "react-barcode";
+import {capitalizeWords} from "@utils/index";
 
 const DashedLine = () => (
 	<Text size="2xs" ta="center" ff="monospace">
@@ -25,7 +26,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 			<Box ref={ref} w="120mm" p={8} bg="var(--mantine-color-white)" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
-					<Group justify="space-between" align="center" gap={8}>
+					<Group justify="center" align="center" gap={8}>
 						<Image
 							src={GovtLogo}
 							alt="Govt Logo"
@@ -113,29 +114,30 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 							<Table.Tr>
 								<Table.Td fz={'xs'}>
 									<strong>{t("লিঙ্গ")}:</strong>{" "}
-									{patientInfo?.gender &&
-										patientInfo.gender[0].toUpperCase() +
-											patientInfo.gender.slice(1)}
+									{ capitalizeWords(patientInfo?.gender)}
 								</Table.Td>
 								<Table.Td align="right" fz={'xs'}>
 									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || ""}
 								</Table.Td>
 							</Table.Tr>
-
+							{patientInfo?.address && (
 							<Table.Tr>
 								<Table.Td colSpan={2} fz={'xs'}>
 									<strong>{t("ঠিকানা")}</strong>{" "}
 									{patientInfo?.address}
 								</Table.Td>
 							</Table.Tr>
+							)}
+							{patientInfo?.upazila && (
 							<Table.Tr>
 								<Table.Td colSpan={2} fz={'xs'}>
-									<strong>{t("ঠিকানা")}</strong>{" "}
+									<strong>{t("থানা/জেলা")}</strong>{" "}
 									{[patientInfo?.upazila, patientInfo?.district]
 										.filter(Boolean)
 										.join(", ")}
 								</Table.Td>
 							</Table.Tr>
+							)}
 							{patientInfo?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2} address>
