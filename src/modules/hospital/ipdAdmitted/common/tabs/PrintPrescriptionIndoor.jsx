@@ -10,6 +10,7 @@ export default function PrintPrescriptionIndoor() {
 	const { mainAreaHeight } = useOutletContext();
 	const { id } = useParams();
 	const printRef = useRef(null);
+
 	const { data: ipdResponse, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
 	});

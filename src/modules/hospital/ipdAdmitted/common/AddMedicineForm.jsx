@@ -35,8 +35,7 @@ import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
-import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
+import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 // import useMedicineData from "@hooks/useMedicineData";
 // import useMedicineGenericData from "@hooks/useMedicineGenericData";
@@ -52,7 +51,6 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
 // import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { useNavigate } from "react-router-dom";
-import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import {
 	appendDosageValueToForm,
 	appendGeneralValuesToForm,
@@ -88,7 +86,7 @@ export default function AddMedicineForm({
 	} = useAppLocalStore();
 
 	const medicineIdRef = useRef(null);
-	const genericRef = useRef(null);
+	const printRef = useRef(null);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const prescription2A4Ref = useRef(null);
@@ -98,14 +96,11 @@ export default function AddMedicineForm({
 	const ipdId = searchParams.get("ipd");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
-	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
-	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
-	// const { medicineData } = useMedicineData({ term: medicineTerm });
-	// const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
 	const medicineForm = useForm(getMedicineFormInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const [printData, setPrintData] = useState(null);
+	const [previewPrintData, setPreviewPrintData] = useState(null);
 	const [openedBookmark, { open: openBookmark, close: closeBookmark }] = useDisclosure(false);
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
@@ -289,8 +284,6 @@ export default function AddMedicineForm({
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
 
-		console.log("Value: ", field, value);
-
 		// If medicine field is being changed, auto-populate other fields from medicine data
 		if ((field === "medicine_id" || field === "generic") && value) {
 			const selectedMedicine =
@@ -339,11 +332,19 @@ export default function AddMedicineForm({
 
 	const handleAdd = (values) => {
 		if (editIndex !== null) {
+			// if (isGenericIdDuplicate(medicines, values.generic_id)) {
+			// 	showNotificationComponent(t("Generic already exists"), "red", "lightgray", true, 700, true);
+			// 	return;
+			// }
 			const updated = [...medicines];
 			updated[editIndex] = values;
 			setMedicines(updated);
 			setEditIndex(null);
 		} else {
+			// if (isGenericIdDuplicate(medicines, values.generic_id)) {
+			// 	showNotificationComponent(t("Generic already exists"), "red", "lightgray", true, 700, true);
+			// 	return;
+			// }
 			// =============== assign default order value based on max existing order or medicines length ================
 			const maxOrder =
 				medicines.length > 0 ? Math.max(...medicines.map((med) => med.order ?? 0), medicines.length) : 0;
@@ -492,14 +493,11 @@ export default function AddMedicineForm({
 		if (result.status === 200) {
 			setMedicines(result.data?.prescription_medicine || []);
 			setMountPreviewDrawer(true);
+			setPreviewPrintData(result.data);
 			requestAnimationFrame(() => openPrescriptionPreview());
 		} else {
 			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
 		}
-	};
-
-	const handleMedicineSearch = (value) => {
-		setMedicineTerm(value);
 	};
 
 	const handlePrintPrescription2A4 = async () => {
@@ -512,6 +510,12 @@ export default function AddMedicineForm({
 		} else {
 			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
 		}
+	};
+
+	const handlePrint = useReactToPrint({ content: () => printRef.current });
+
+	const handlePreviewPrint = () => {
+		handlePrint();
 	};
 
 	return (
@@ -536,7 +540,6 @@ export default function AddMedicineForm({
 											searchable
 											limit={20}
 											filter={medicineOptionsFilter}
-											onSearchChange={handleMedicineSearch}
 											id="medicine_id"
 											name="medicine_id"
 											data={medicineData?.map((item) => ({
@@ -571,7 +574,6 @@ export default function AddMedicineForm({
 											value={medicineForm.values.generic}
 											onChange={(v) => {
 												handleChange("generic", v);
-												setMedicineGenericTerm(v);
 											}}
 											onOptionSubmit={(value) => {
 												handleAutocompleteOptionAdd(value, emergencyData?.data, "exEmergency");
@@ -1061,16 +1063,31 @@ export default function AddMedicineForm({
 
 			{/* prescription preview */}
 			{id && mountPreviewDrawer && (
-				<DetailsDrawer
-					type="ipd"
+				<GlobalDrawer
 					opened={openedPrescriptionPreview}
 					close={() => {
 						setMountPreviewDrawer(false);
 						requestAnimationFrame(closePrescriptionPreview);
 					}}
-					ipdId={ipdId || id}
-					prescriptionId={id}
-				/>
+					title={t("PrescriptionPreview")}
+					size="50%"
+				>
+					<Box pos="relative" bg="var(--mantine-color-white)" className="borderRadiusAll">
+						<ScrollArea h={mainAreaHeight - 120} scrollbars="y" p="sm">
+							<IPDPrescriptionFullBN data={previewPrintData} ref={printRef} preview />
+						</ScrollArea>
+						<Box bg="var(--mantine-color-white)" p="sm" className="shadow-2">
+							<Button
+								onClick={handlePreviewPrint}
+								bg="var(--theme-secondary-color-6)"
+								color="white"
+								size="sm"
+							>
+								Print
+							</Button>
+						</Box>
+					</Box>
+				</GlobalDrawer>
 			)}
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 
