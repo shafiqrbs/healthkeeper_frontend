@@ -90,9 +90,9 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					</Text>
 					<Text fz="sm" mt={"xs"}>
 						আমি, ডা. <strong>{data?.doctor_name}</strong>, এই মর্মে জানাচ্ছি যে রোগী জনাব/জনাবা{" "}
-						<strong> {data.name}</strong>, বয়স{" "}
+						<strong> {data?.name}</strong>, বয়স{" "}
 						<strong>
-							{data.year ?? 0} বছর {data.month ?? 0} মাস {data.day ?? 0} দিন
+							{data?.year ?? 0} বছর {data?.month ?? 0} মাস {data?.day ?? 0} দিন
 						</strong>
 						, লিঙ্গ
 						<strong> {data?.gender}</strong>, ঠিকানা <strong>{data?.address}</strong>, আমাদের হাসপাতালে{" "}
@@ -116,10 +116,9 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					</Text>
 					{prescription_data?.medicines?.map((medicine, index) => (
 						<Text key={medicine?.medicine_id} fz="xs" mt="es">
-							{console.log(medicine)}
 							{index + 1}. {medicine?.generic || medicine?.medicine_name} --- {medicine?.dose_details} ---{" "}
-							{medicine?.by_meal || medicine?.dosages[0]?.by_meal} ---
-							{medicine?.quantity} --- {medicine?.opd_quantity} --- {medicine?.dosages[0]?.duration}
+							{medicine?.by_meal || medicine?.dosages?.[0]?.by_meal} ---
+							{medicine?.quantity} --- {medicine?.opd_quantity} --- {medicine?.dosages?.[0]?.duration}
 						</Text>
 					))}
 					<Text fz="sm" mt={"sm"} fw={600}>
@@ -127,7 +126,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					</Text>
 					<Text fz="sm">{prescription_data?.advise}</Text>
 					<br />
-					{data.follow_up_date && (
+					{data?.follow_up_date && (
 						<Text fz="sm" mt="xs">
 							রোগীকে <strong>{formatDate(data?.follow_up_date)}</strong> তারিখে (বা প্রয়োজনবোধে তার আগে)
 							ফলো‑আপের জন্য উপস্থিত হতে পরামর্শ দেওয়া হলো।

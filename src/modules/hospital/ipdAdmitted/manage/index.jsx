@@ -27,6 +27,9 @@ import PrintPrescriptionIndoor from "../common/tabs/PrintPrescriptionIndoor";
 import Discharge from "../common/tabs/Discharge";
 import RoomTransfer from "../common/tabs/RoomTransfer.jsx";
 import DeathCertificate from "../common/tabs/DeathCertificate";
+import DischargePrint from "../common/tabs/DischargePrint";
+import RoomTransferPrint from "../common/tabs/RoomTransferPrint.jsx";
+import DeathCertificatePrint from "../common/tabs/DeathCertificatePrint.jsx";
 
 const module = MODULES.E_FRESH;
 
@@ -427,9 +430,18 @@ export default function Index() {
 						{baseTabValue === "investigation" && <Investigation />}
 						{baseTabValue === "vitals-chart" && <VitalsChart refetch={refetch} data={ipdData?.data} />}
 						{baseTabValue === "insulin-chart" && <InsulinChart refetch={refetch} data={ipdData?.data} />}
-						{baseTabValue === "discharge" && <Discharge />}
+						{baseTabValue === "discharge" && <Discharge data={ipdData?.data} refetch={refetch} />}
 						{baseTabValue === "death-certificate" && <DeathCertificate data={ipdData} />}
 						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
+						{baseTabValue === "discharge-print" && (
+							<DischargePrint data={ipdData?.data} refetch={refetch} />
+						)}
+						{baseTabValue === "death-certificate-print" && (
+							<DeathCertificatePrint data={ipdData?.data} refetch={refetch} />
+						)}
+						{baseTabValue === "room-transfer-print" && (
+							<RoomTransferPrint data={ipdData?.data} refetch={refetch} />
+						)}
 						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
 						{!baseTabValue && (

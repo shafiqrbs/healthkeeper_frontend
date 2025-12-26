@@ -64,6 +64,7 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 const module = MODULES.DISCHARGE;
 
 export default function Prescription({
+	refetch,
 	medicines,
 	setMedicines,
 	setShowHistory = () => {},
@@ -125,6 +126,7 @@ export default function Prescription({
 			const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
 			form.setValues({
 				disease: initialFormValues?.disease || "",
+				advise: initialFormValues?.advise || "",
 			});
 		}
 	}, [prescriptionData]);
@@ -381,6 +383,7 @@ export default function Prescription({
 			} else {
 				showNotificationComponent(t("PrescriptionSavedSuccessfully"), "green", "lightgray", true, 700, true);
 				dispatch(setRefetchData({ module, refetching: true }));
+				refetch();
 				if (redirect)
 					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=dashboard`);
 				return resultAction.payload?.data || {}; // Indicate successful submission
