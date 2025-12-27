@@ -8,7 +8,7 @@ import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import DetailedRoomCard from "../../common/DetailedRoomCard";
 
-const PER_PAGE = 100;
+const PER_PAGE = 2000;
 
 export default function Cabin({ selectedRoom, handleRoomClick }) {
 	const dispatch = useDispatch();

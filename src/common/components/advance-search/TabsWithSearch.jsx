@@ -22,6 +22,7 @@ export default function TabsWithSearch({
 	showDatePicker = true,
 	rightSection = null,
 	module = null,
+	moduleMap = null,
 }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
@@ -30,12 +31,15 @@ export default function TabsWithSearch({
 	const [controlsRefs, setControlsRefs] = useState({});
 	const [date, setDate] = useState();
 	const [search, setSearch] = useDebouncedState("", 300);
+	const [defaultSearch, setDefaultSearch] = useState("");
+
+	// =============== determine the module based on moduleMap or fallback to module prop ================
+	const currentModule = moduleMap && tabValue ? moduleMap[tabValue] : module;
+	const formattedDate = date ? formatDate(date) : undefined;
 
 	useEffect(() => {
-		dispatch(
-			setFilterData({ module, data: { created: date ? formatDate(date) : undefined, keywordSearch: search } })
-		);
-	}, [module, date, search]);
+		dispatch(setFilterData({ module: currentModule, data: { created: formattedDate, keywordSearch: search } }));
+	}, [dispatch, currentModule, formattedDate, search]);
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -121,8 +125,11 @@ export default function TabsWithSearch({
 											<IconSearch size={16} onClick={handleSearch} />
 										</ActionIcon>
 									}
-									defaultValue={search}
-									onChange={(event) => setSearch(event.target.value)}
+									value={defaultSearch}
+									onChange={(event) => {
+										setSearch(event.target.value);
+										setDefaultSearch(event.target.value);
+									}}
 								/>
 							</Flex>
 						)}

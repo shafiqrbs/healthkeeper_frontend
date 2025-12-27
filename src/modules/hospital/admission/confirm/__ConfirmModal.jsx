@@ -160,9 +160,9 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 										<Grid.Col span={10}>
 											<Text fz="sm" fw={500}>
 												{ipdData?.data?.year
-													? `${ipdData?.data?.year} Year, ${ipdData?.data?.month || 0} Month, ${
-															ipdData?.data?.day || 0
-													  } Day`
+													? `${ipdData?.data?.year} Year, ${
+															ipdData?.data?.month || 0
+													  } Month, ${ipdData?.data?.day || 0} Day`
 													: "-"}
 											</Text>
 										</Grid.Col>
@@ -275,7 +275,7 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 								<Button miw={100}>Process</Button>
 							</Flex> */}
 							<TabsWithSearch
-								module="cabin"
+								moduleMap={{ Cabin: "cabin", Bed: "bed" }}
 								tabList={["Cabin", "Bed"]}
 								searchbarContainerBg="var(--theme-primary-color-1)"
 								tabWidth="48%"
@@ -283,11 +283,15 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 								tabPanels={[
 									{
 										tab: "Cabin",
-										component: <Cabin selectedRoom={selectedRoom} handleRoomClick={handleRoomClick} />,
+										component: (
+											<Cabin selectedRoom={selectedRoom} handleRoomClick={handleRoomClick} />
+										),
 									},
 									{
 										tab: "Bed",
-										component: <Bed selectedRoom={selectedRoom} handleRoomClick={handleRoomClick} />,
+										component: (
+											<Bed selectedRoom={selectedRoom} handleRoomClick={handleRoomClick} />
+										),
 									},
 								]}
 							/>

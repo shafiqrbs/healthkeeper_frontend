@@ -8,12 +8,13 @@ import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import { useEffect } from "react";
 import DetailedRoomCard from "../../common/DetailedRoomCard";
 
-const PER_PAGE = 100;
+const PER_PAGE = 2000;
 
 export default function Bed({ selectedRoom, handleRoomClick }) {
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const listData = useSelector((state) => state.crud.bed?.data?.data);
+	const filterData = useSelector((state) => state.crud.bed?.filterData);
 	const height = mainAreaHeight - 320;
 
 	const { data: getParticularPaymentModes } = useGlobalDropdownData({
@@ -31,19 +32,15 @@ export default function Bed({ selectedRoom, handleRoomClick }) {
 			return acc;
 		}, {}) || {};
 
-	const fetchData = () => {
+	useEffect(() => {
 		dispatch(
 			getIndexEntityData({
 				url: MASTER_DATA_ROUTES.API_ROUTES.OPERATIONAL_API.ROOM_CABIN,
 				module: "bed",
-				params: { particular_type: "bed", term: "", page: 1, offset: PER_PAGE },
+				params: { particular_type: "bed", term: filterData?.keywordSearch || "", page: 1, offset: PER_PAGE },
 			})
 		);
-	};
-
-	useEffect(() => {
-		fetchData();
-	}, []);
+	}, [dispatch, filterData?.keywordSearch]);
 
 	return (
 		<Grid columns={24} gutter="xs">

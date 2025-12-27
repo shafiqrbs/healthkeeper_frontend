@@ -3,7 +3,15 @@ import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
-import { IconAdjustments, IconArrowRight, IconChevronUp, IconDotsVertical, IconFileText, IconPrinter, IconSelector } from "@tabler/icons-react";
+import {
+	IconAdjustments,
+	IconArrowRight,
+	IconChevronUp,
+	IconDotsVertical,
+	IconFileText,
+	IconPrinter,
+	IconSelector,
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -15,7 +23,7 @@ import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "../confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues, getAdmissionManageFormInitialValues } from "../helpers/request";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
@@ -27,6 +35,7 @@ import DetailsInvoiceBN from "@hospital-components/print-formats/billing/Details
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 import IPDDetailsDrawer from "@hospital-components/drawer/__IPDDetailsDrawer";
 import ManageModal from "../confirm/ManageModal";
+import { setFilterData } from "@/app/store/core/crudSlice";
 
 const PER_PAGE = 20;
 
@@ -41,6 +50,7 @@ const tabs = [
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm", "admin_administrator"];
 
 export default function _Table({ module }) {
+	const dispatch = useDispatch();
 	const { userRoles } = useAppLocalStore();
 	const admissionFormRef = useRef(null);
 	const prescriptionRef = useRef(null);
@@ -148,6 +158,13 @@ export default function _Table({ module }) {
 		requestAnimationFrame(printAdmissionForm);
 	};
 
+	const handleConfirmClose = () => {
+		closeConfirm();
+		setSelectedId(null);
+		dispatch(setFilterData({ module: "bed", data: { keywordSearch: "" } }));
+		dispatch(setFilterData({ module: "cabin", data: { keywordSearch: "" } }));
+	};
+
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -158,7 +175,12 @@ export default function _Table({ module }) {
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={tab.value}
+								>
 									{t(tab.label)}
 								</Tabs.Tab>
 							))}
@@ -219,7 +241,6 @@ export default function _Table({ module }) {
 									{ accessor: "admit_unit_name", title: t("Unit") },
 									{ accessor: "admit_department_name", title: t("Department") },
 									{ accessor: "admit_doctor_name", title: t("Doctor") },
-
 							  ]
 							: []),
 						{ accessor: "display_room", title: t("Cabin/Bed") },
@@ -236,8 +257,10 @@ export default function _Table({ module }) {
 							render: (values) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-									((values.process?.toLowerCase() === "ipd" && values?.referred_mode === "admission") ||
-										(values.process?.toLowerCase() === "closed" && values?.referred_mode === "admission")) && (
+										((values.process?.toLowerCase() === "ipd" &&
+											values?.referred_mode === "admission") ||
+											(values.process?.toLowerCase() === "closed" &&
+												values?.referred_mode === "admission")) && (
 											<Button
 												variant="filled"
 												bg="var(--theme-primary-color-6)"
@@ -251,8 +274,8 @@ export default function _Table({ module }) {
 												{t("Confirm")}
 											</Button>
 										)}
-									{((values.process?.toLowerCase() === "revised") || (values?.process.toLowerCase() === "confirmed")) && (
-
+									{(values.process?.toLowerCase() === "revised" ||
+										values?.process.toLowerCase() === "confirmed") && (
 										<Button
 											variant="filled"
 											bg="teal.8"
@@ -264,10 +287,17 @@ export default function _Table({ module }) {
 											rightSection={<IconAdjustments size={18} />}
 										>
 											{t("Manage")}
-											</Button>
+										</Button>
 									)}
 
-									<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
+									<Menu
+										position="bottom-end"
+										offset={3}
+										withArrow
+										trigger="hover"
+										openDelay={100}
+										closeDelay={400}
+									>
 										<Menu.Target>
 											<ActionIcon
 												className="border-left-radius-none"
@@ -354,15 +384,18 @@ export default function _Table({ module }) {
 			<DataTableFooter indexData={listData} module="ipd" />
 			<ConfirmModal
 				opened={openedConfirm}
-				close={() => {
-					closeConfirm();
-					setSelectedId(null);
-				}}
+				close={handleConfirmClose}
 				form={confirmForm}
 				selectedId={selectedId}
 				module={module}
 			/>
-			<ManageModal opened={openedManage}  close={closeManage} form={manageForm} selectedId={selectedId} module={module} />
+			<ManageModal
+				opened={openedManage}
+				close={closeManage}
+				form={manageForm}
+				selectedId={selectedId}
+				module={module}
+			/>
 			{/* {selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)} */}
