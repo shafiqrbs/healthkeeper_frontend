@@ -29,7 +29,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { showEntityData } from "@/app/store/core/crudThunk";
 import { capitalizeWords, formatDateTimeAmPm, formatDate, getLoggedInHospitalUser } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import { modals } from "@mantine/modals";
 import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
 import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import { useReactToPrint } from "react-to-print";
@@ -40,7 +39,7 @@ import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import { useAutoRefetch } from "@hooks/useAutoRefetch";
-import OpdRoomModal from "@hospital-components/OpdRoomModal";
+
 import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
 
 const tabs = [

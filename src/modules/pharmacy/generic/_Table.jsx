@@ -69,7 +69,13 @@ const InlineSelect = memo(({ itemId, field, placeholder, data, initialValue, onC
 InlineSelect.displayName = "InlineSelect";
 
 const InlineCheckbox = memo(({ itemId, field, initialValue, onChange }) => {
-	return <Checkbox size="sm" defaultChecked={initialValue ?? false} onChange={(e) => onChange(itemId, field, e.currentTarget.checked)} />;
+	return (
+		<Checkbox
+			size="sm"
+			defaultChecked={initialValue ?? false}
+			onChange={(e) => onChange(itemId, field, e.currentTarget.checked)}
+		/>
+	);
 });
 
 InlineCheckbox.displayName = "InlineCheckbox";

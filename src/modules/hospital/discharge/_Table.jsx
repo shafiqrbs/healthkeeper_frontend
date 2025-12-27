@@ -1,26 +1,26 @@
-import { useNavigate, useOutletContext, useParams, useLocation } from "react-router-dom";
-import { IconCalendarWeek, IconUser, IconArrowNarrowRight, IconBed } from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, ActionIcon, LoadingOverlay } from "@mantine/core";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { IconChevronUp, IconSelector } from "@tabler/icons-react";
+import { Box, Text } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
-import { useDispatch, useSelector } from "react-redux";
-import { formatDate } from "@utils";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
-import { showEntityData } from "@/app/store/core/crudThunk";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import { DataTable } from "mantine-datatable";
+import tableCss from "@assets/css/Table.module.css";
+import { capitalizeWords, formatDateTimeAmPm } from "@utils/index";
+import { useForm } from "@mantine/form";
+import KeywordSearch from "@hospital-components/KeywordSearch";
 
 const module = MODULES.DISCHARGE;
 const PER_PAGE = 50;
 
-export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
+export default function _Table() {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const filterData = useSelector((state) => state.crud[module].filterData);
-	const { dischargeId } = useParams();
 
-	const { records, fetching } = useInfiniteTableScroll({
+	const { records, fetching, handleScrollToBottom, scrollRef, sortStatus, setSortStatus } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
 		filterParams: {
@@ -34,17 +34,18 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 		direction: "desc",
 	});
 
-	const handleAdmissionOverview = (prescriptionId, id) => {
-		setSelectedPrescriptionId(prescriptionId);
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DISCHARGE.INDEX}/${id}`, { replace: true });
-	};
+	const form = useForm({
+		initialValues: {
+			keywordSearch: "",
+			created: "",
+		},
+	});
 
 	const handleProcessConfirmation = async (id) => {
 		if (id) {
-			navigate(
-				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=discharge`,
-				{ replace: true }
-			);
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=discharge`, {
+				replace: true,
+			});
 		} else {
 			showNotificationComponent(t("NoDataAvailable"), "red.6", "lightgray");
 		}
@@ -52,102 +53,80 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode }) {
 
 	return (
 		<Box pos="relative">
-			<LoadingOverlay
-				visible={fetching}
-				zIndex={1000}
-				overlayProps={{ radius: "sm", blur: 2 }}
-				loaderProps={{ color: "red" }}
-			/>
-			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="3xs">
-				<Text ta="center" fz="xs" fw={500}>
-					S/N
-				</Text>
-				<Text ta="center" fz="xs" fw={500}>
-					Patient Name
-				</Text>
-			</Flex>
-			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
-				{records?.length === 0 && (
-					<Flex justify="center" align="center">
-						<Text fz="xs">{t("NoDataAvailable")}</Text>
-					</Flex>
-				)}
-				{records?.map((item) => (
-					<Grid
-						columns={18}
-						key={item.id}
-						onClick={() => handleProcessConfirmation(item.uid)}
-						my="xs"
-						bg={
-							typeof dischargeId !== "undefined" && dischargeId === item?.prescription_id
-								? "var(--theme-primary-color-0)"
-								: "var(--theme-tertiary-color-0)"
-						}
-						px="xs"
-						gutter="xs"
-					>
-						<Grid.Col span={8}>
-							<Flex align="center" gap="3xs">
-								<IconCalendarWeek size={16} stroke={1.5} />
-								<Text
-									fz="xs"
-									onClick={() => handleAdmissionOverview(item.prescription_id)}
-									className="activate-link text-nowrap"
-								>
-									{formatDate(item?.created_at)}
-								</Text>
-							</Flex>
-							<Flex align="center" gap="3xs">
-								<IconUser size={16} stroke={1.5} />
-								<Text fz="xs">{item.patient_id}</Text>
-							</Flex>
-							<Flex align="center" gap="3xs">
-								<IconBed size={16} stroke={1.5} />
-								<Text fz="xs">{item.visiting_room}</Text>
-							</Flex>
-						</Grid.Col>
-						<Grid.Col span={10}>
-							<Flex justify="space-between" align="center">
-								<Box>
-									<Text fz="xs">{item.name}</Text>
-									<Text fz="xs">{item.mobile}</Text>
-									<Text fz="xs">{item.patient_payment_mode_name}</Text>
-								</Box>
-								<Flex direction="column">
-									{ipdMode === "non-prescription" && (
-										<ActionIcon
-											variant="filled"
-											onClick={() => handleProcessConfirmation(item.id)}
-											color="var(--theme-primary-color-6)"
-											radius="xs"
-											aria-label="Settings"
-										>
-											<IconArrowNarrowRight
-												style={{ width: "70%", height: "70%" }}
-												stroke={1.5}
-											/>
-										</ActionIcon>
-									)}
-									{ipdMode === "prescription" && (
-										<ActionIcon
-											variant="filled"
-											onClick={() => handleAdmissionOverview(item.prescription_id)}
-											color="var(--theme-secondary-color-6)"
-											radius="xs"
-											aria-label="Settings"
-										>
-											<IconArrowNarrowRight
-												style={{ width: "70%", height: "70%" }}
-												stroke={1.5}
-											/>
-										</ActionIcon>
-									)}
-								</Flex>
-							</Flex>
-						</Grid.Col>
-					</Grid>
-				))}
-			</ScrollArea>
+			<Box>
+				<KeywordSearch module={module} form={form} />
+			</Box>
+			<Box className="border-top-none">
+				<DataTable
+					striped
+					highlightOnHover
+					pinFirstColumn
+					pinLastColumn
+					stripedColor="var(--theme-tertiary-color-1)"
+					classNames={{
+						root: tableCss.root,
+						table: tableCss.table,
+						header: tableCss.header,
+						footer: tableCss.footer,
+						pagination: tableCss.pagination,
+					}}
+					records={records}
+					onRowClick={({ record }) => {
+						handleProcessConfirmation(record.uid);
+					}}
+					columns={[
+						{
+							accessor: "index",
+							title: t("S/N"),
+							textAlignment: "center",
+							render: (_, index) => index + 1,
+						},
+						{
+							accessor: "created_at",
+							title: t("Created"),
+							textAlignment: "right",
+							sortable: true,
+							render: (item) => <Text fz="xs">{formatDateTimeAmPm(item?.created_at)}</Text>,
+						},
+						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
+						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
+						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
+						{ accessor: "health_id", title: t("HealthID") },
+						{ accessor: "name", sortable: true, title: t("Name") },
+						{ accessor: "mobile", title: t("Mobile") },
+						{ accessor: "gender", sortable: true, title: t("Gender") },
+						{
+							accessor: "patient_payment_mode_name",
+							sortable: true,
+							title: t("Patient"),
+						},
+						{ accessor: "total", title: t("Total") },
+						{
+							accessor: "doctor_name",
+							title: t("Doctor"),
+							render: (item) => item?.doctor_name,
+						},
+						{
+							accessor: "referred_mode",
+							title: t("RefMode"),
+							render: (item) => capitalizeWords(item?.referred_mode),
+						},
+					]}
+					textSelectionDisabled
+					fetching={fetching}
+					loaderSize="xs"
+					loaderColor="grape"
+					height={mainAreaHeight - 164}
+					onScrollToBottom={handleScrollToBottom}
+					scrollViewportRef={scrollRef}
+					sortStatus={sortStatus}
+					onSortStatusChange={setSortStatus}
+					sortIcons={{
+						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
+					}}
+				/>
+			</Box>
 		</Box>
 	);
 }

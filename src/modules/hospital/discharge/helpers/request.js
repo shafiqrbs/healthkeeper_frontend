@@ -14,7 +14,17 @@ export const medicineInitialValues = {
 	opd_quantity: 0,
 };
 
-export const getMedicineFormInitialValues = () => {
+export const getMedicineFormInitialValues = (type) => {
+	if (type === "discharge") {
+		return {
+			initialValues: medicineInitialValues,
+
+			validate: {
+				medicine_dosage_id: (value) => (value ? null : "Dosage is required"),
+			},
+		};
+	}
+
 	return {
 		initialValues: medicineInitialValues,
 

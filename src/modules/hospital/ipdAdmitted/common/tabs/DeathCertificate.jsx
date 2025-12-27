@@ -11,7 +11,7 @@ export default function DeathCertificate({ data }) {
 	const { mainAreaHeight } = useOutletContext();
 	const { diseasesProfile } = useAppLocalStore();
 
-	const diseaseOptions = diseasesProfile.map((disease) => ({
+	const diseaseOptions = diseasesProfile?.map((disease) => ({
 		value: disease.name,
 		label: disease.name,
 	}));

@@ -63,7 +63,7 @@ export default function Index() {
 					<Flex w="100%" gap="xs">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={24} gutter="xs">
-							<Grid.Col span={6} pos="relative" className="animate-ease-out">
+							<Grid.Col span={24} pos="relative" className="animate-ease-out">
 								<Flex
 									align="center"
 									justify="space-between"
@@ -87,24 +87,24 @@ export default function Index() {
 										]}
 									/>
 								</Flex>
-								<TabsWithSearch
+								{/* <TabsWithSearch
 									tabList={["list"]}
 									module={module}
 									tabPanels={[
 										{
 											tab: "list",
-											component: (
-												<Table
-													ipdMode={dischargeMode}
-													selectedPrescriptionId={selectedPrescriptionId}
-													setSelectedPrescriptionId={setSelectedPrescriptionId}
-												/>
-											),
+											component: ( */}
+								<Table
+									ipdMode={dischargeMode}
+									selectedPrescriptionId={selectedPrescriptionId}
+									setSelectedPrescriptionId={setSelectedPrescriptionId}
+								/>
+								{/* ),
 										},
 									]}
-								/>
+								/> */}
 							</Grid.Col>
-							<Grid.Col span={18} className="animate-ease-out">
+							{/* <Grid.Col span={18} className="animate-ease-out">
 								{dischargeId ? (
 									<Prescription
 										setCustomerId={setCustomerId}
@@ -124,7 +124,7 @@ export default function Index() {
 										<Text>No patient selected, please select a patient</Text>
 									</Flex>
 								)}
-							</Grid.Col>
+							</Grid.Col> */}
 							{hasRecords && (
 								<Grid.Col display={showHistory ? "block" : "none"} span={4}>
 									<PatientPrescriptionHistoryList historyList={records} />
