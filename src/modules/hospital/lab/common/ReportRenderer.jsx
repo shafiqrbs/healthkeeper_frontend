@@ -1,7 +1,7 @@
 import { Box, Text, TextInput } from "@mantine/core";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { forwardRef } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import { IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
@@ -31,6 +31,7 @@ import useAppLocalStore from "@hooks/useAppLocalStore";
 import HtmlReportEditor from "@modules/hospital/lab/common/report-formats/HtmlReportEditor";
 import AFBCulture from "./report-formats/AFBCulture";
 import SputumAFB from "./report-formats/SputumAFB";
+import DST from "./report-formats/DST";
 
 const module = MODULES.LAB_TEST;
 
@@ -43,6 +44,35 @@ const ReportRenderer = forwardRef(
 		const { mainAreaHeight } = useOutletContext();
 		const { userRoles } = useAppLocalStore();
 		const ALLOWED_LAB_USER_ROLES = ["lab_assistant"];
+
+		// =============== local state to track input values for editing ================
+		const [inputValues, setInputValues] = useState({});
+
+		// =============== initialize input values from diagnostic report data ================
+		useEffect(() => {
+			if (diagnosticReport?.reports) {
+				const initialValues = {};
+				diagnosticReport.reports.forEach((report) => {
+					initialValues[report.id] = {
+						result: report.result || "",
+					};
+				});
+				setInputValues(initialValues);
+			}
+		}, [diagnosticReport, refreshKey]);
+
+		// =============== handle input value change locally ================
+		const handleInputChange = (rowId, field, value) => {
+			setInputValues((prev) => ({
+				...prev,
+				[rowId]: {
+					...prev[rowId],
+					[field]: value,
+				},
+			}));
+		};
+
+		// =============== save field change to backend ================
 		const handleFieldChange = async (rowId, field, value) => {
 			try {
 				await dispatch(
@@ -184,6 +214,14 @@ const ReportRenderer = forwardRef(
 								refetchLabReport={refetchLabReport}
 							/>
 						);
+					case "dst":
+						return (
+							<DST
+								diagnosticReport={diagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
+							/>
+						);
 					default:
 						return (
 							<HtmlReportEditor
@@ -294,15 +332,17 @@ const ReportRenderer = forwardRef(
 							{
 								accessor: "result",
 								title: t("Result"),
-								render: (item, rowIndex) =>
+								render: (item, rowIndex) => (
 									<TextInput
 										size="xs"
 										fz="xs"
-										value={item.result}
+										value={inputValues[item.id]?.result ?? item.result ?? ""}
 										ref={(el) => (inputsRef.current[rowIndex] = el)}
+										onChange={(e) => handleInputChange(item.id, "result", e.target.value)}
 										onKeyDown={(e) => handleKeyDown(e, rowIndex)}
 										onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}
 									/>
+								),
 							},
 							{
 								accessor: "unit",

@@ -123,7 +123,15 @@ const SelectForm = forwardRef(
 							clearable={clearable}
 							searchable={searchable}
 							error={!!form.errors[name]}
-							value={value === undefined ? null : String(value)}
+							value={
+								value !== undefined
+									? String(value)
+									: form?.values[name] !== undefined &&
+									  form?.values[name] !== null &&
+									  form?.values[name] !== ""
+									? String(form.values[name])
+									: null
+							}
 							onChange={handleChange}
 							withAsterisk={required}
 							comboboxProps={comboboxProps}

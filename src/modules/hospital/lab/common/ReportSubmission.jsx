@@ -2,13 +2,16 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getDataWithoutStore } from "@/services/apiService";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
-import {Box, Button, Flex, Grid, Group, Stack, Text} from "@mantine/core";
+import { Box, Button, Flex, Grid, Group, Stack, Text } from "@mantine/core";
 import { IconPrinter } from "@tabler/icons-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useReactToPrint } from "react-to-print";
 import { useParams } from "react-router";
 import useAppLocalStore from "@hooks/useAppLocalStore";
+
+const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab"];
+const ALLOWED_LAB_USER_ROLES = ["lab_assistant"];
 
 export default function ReportSubmission({ form, handleSubmit, diagnosticReport }) {
 	const labReportRef = useRef(null);
@@ -21,6 +24,12 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 		content: () => labReportRef.current,
 	});
 
+	useEffect(() => {
+		if (diagnosticReport?.comment) {
+			form.setFieldValue("comment", diagnosticReport?.comment);
+		}
+	}, [diagnosticReport?.comment]);
+
 	const handleLabReport = async (id) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${id}`,
@@ -28,13 +37,10 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 		setLabReportData(res?.data);
 		requestAnimationFrame(printLabReport);
 	};
-	const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab"];
-	const ALLOWED_LAB_USER_ROLES = ["lab_assistant"];
-	const isViewOnly = (diagnosticReport.process === "Done" || (
-		diagnosticReport.process === "In-progress" && userRoles.some((role) =>
-			ALLOWED_LAB_USER_ROLES.includes(role)
-		)));
 
+	const isViewOnly =
+		diagnosticReport.process === "Done" ||
+		(diagnosticReport.process === "In-progress" && userRoles.some((role) => ALLOWED_LAB_USER_ROLES.includes(role)));
 
 	return (
 		<Stack gap={0} justify="space-between" mt="xs">
@@ -55,8 +61,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 						<Grid.Col span={4}>
 							<Box>
 								<Group justify="center">
-								{diagnosticReport?.process === "Done" && (
-
+									{diagnosticReport?.process === "Done" && (
 										<Button
 											onClick={() => handleLabReport(reportId)}
 											size="md"
@@ -67,38 +72,23 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 										>
 											<Flex direction="column" gap={0}>
 												<Text fz={"xs"}>{t("Print")}</Text>
-												<Flex
-													direction="column"
-													align="center"
-													fz="2xs"
-													c="white"
-												>
+												<Flex direction="column" align="center" fz="2xs" c="white">
 													alt+p
 												</Flex>
 											</Flex>
 										</Button>
-								)}
+									)}
 
-								<Button
-									size="md"
-									className="btnPrimaryBg"
-									type="submit"
-									id="handleSubmit"
-								>
-									<Flex direction="column" gap={0}>
-										<Text fz="md">{t("Save")}</Text>
-										<Flex
-											direction="column"
-											align="center"
-											fz="2xs"
-											c="white"
-										>
-											alt+s
+									<Button size="md" className="btnPrimaryBg" type="submit" id="handleSubmit">
+										<Flex direction="column" gap={0}>
+											<Text fz="md">{t("Save")}</Text>
+											<Flex direction="column" align="center" fz="2xs" c="white">
+												alt+s
+											</Flex>
 										</Flex>
-									</Flex>
-								</Button>
+									</Button>
 
-								{/*{(diagnosticReport?.process === "In-progress" || diagnosticReport?.process === "Done") &&
+									{/*{(diagnosticReport?.process === "In-progress" || diagnosticReport?.process === "Done") &&
 								userRoles.some((role) =>
 									ALLOWED_LAB_DOCTOR_ROLES.includes(role)
 								) && (
