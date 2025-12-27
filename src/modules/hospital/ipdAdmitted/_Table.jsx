@@ -268,7 +268,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 									justify="right"
 									wrap="nowrap"
 								>
-									{ipdMode === "non-prescription" && (
+									{values.process === "admitted" && ipdMode === "non-prescription" && (
 										<Button
 											rightSection={<IconArrowNarrowRight size={18} />}
 											onClick={() =>

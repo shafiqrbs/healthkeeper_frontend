@@ -27,17 +27,15 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
 	const is_completed = diagnosticReport?.process?.toLowerCase() === "done";
-
+	console.log(custom_report);
 	const form = useForm({
 		initialValues: {
 			afb_diagnosis: custom_report?.afb_diagnosis || "",
-			lab_no: custom_report?.lab_no || "",
-			id: custom_report?.id || "",
-			contaminated: custom_report?.contaminated || "",
+			afb_contaminated: custom_report?.afb_contaminated || "",
 			negative: custom_report?.negative || "",
 			positive: custom_report?.positive || "",
 			atypical_mycobacteria_species: custom_report?.atypical_mycobacteria_species || "",
-			follow_up_month: custom_report?.follow_up_month || "",
+			follow_up_month: custom_report?.follow_up_month ? new Date(custom_report.follow_up_month) : null,
 			colonies_1: custom_report?.colonies_1 || 0,
 			colonies_2: custom_report?.colonies_2 || 0,
 			colonies_3: custom_report?.colonies_3 || 0,
@@ -66,6 +64,7 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 						test_date: formatDateForMySQL(values.test_date),
 					},
 					comment: values.comment,
+					lab_no: values.lab_no,
 				},
 				module,
 			};
@@ -120,72 +119,17 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 							/>
 						</Grid.Col>
 					</Grid>
-					{/* <Box>
-						<Text>Other test results (if any):</Text>
-						<Grid columns={14}>
-							<Grid.Col span={6}>Microscopy</Grid.Col>
-							<Grid.Col span={8}>
-								<InputForm
-									name="microscopy"
-									id="microscopy"
-									nextField="microscopy"
-									form={form}
-									label="Microscopy"
-									placeholder="Enter Microscopy"
-									readOnly={is_completed}
-								/>
-							</Grid.Col>
-							<Grid.Col span={6}>GeneXpert</Grid.Col>
-							<Grid.Col span={8}>
-								<InputForm
-									name="genexpert"
-									id="genexpert"
-									nextField="genexpert"
-									form={form}
-									label="GeneXpert"
-									placeholder="Enter GeneXpert"
-									readOnly={is_completed}
-								/>
-							</Grid.Col>
-							<Grid.Col span={6}>Culture</Grid.Col>
-							<Grid.Col span={8}>
-								<InputForm
-									name="culture"
-									id="culture"
-									nextField="culture"
-									form={form}
-									label="Culture"
-									placeholder="Enter Culture"
-									readOnly={is_completed}
-								/>
-							</Grid.Col>
-							<Grid.Col span={6}>DST</Grid.Col>
-							<Grid.Col span={8}>
-								<InputForm
-									name="dst"
-									id="dst"
-									nextField="dst"
-									form={form}
-									label="DST"
-									placeholder="Enter DST"
-									readOnly={is_completed}
-								/>
-							</Grid.Col>
-						</Grid>
-					</Box> */}
-
 					{/* =============== results table =============== */}
 					<Box my="md">
 						<Table withColumnBorders withTableBorder withRowBorders>
 							<Table.Thead>
 								<Table.Tr>
-									<Table.Th colSpan={5}></Table.Th>
+									<Table.Th colSpan={5}/>
 									<Table.Th colSpan={4} ta="center">
 										Mycobacterium tuberculosis Complex
 									</Table.Th>
 								</Table.Tr>
 								<Table.Tr>
-									<Table.Th ta="center">ID#</Table.Th>
 									<Table.Th ta="center">Contaminated</Table.Th>
 									<Table.Th ta="center">Negative</Table.Th>
 									<Table.Th ta="center">Positive</Table.Th>
@@ -197,22 +141,10 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 								</Table.Tr>
 								<Table.Tr>
 									<Table.Th ta="center">
-										<InputNumberForm
-											w={120}
-											name="id"
-											id="id"
-											nextField="rif_resistance_not_detected"
-											form={form}
-											label=""
-											placeholder="Enter ID"
-											readOnly
-										/>
-									</Table.Th>
-									<Table.Th ta="center">
 										<InputForm
 											w={120}
-											name="contaminated"
-											id="contaminated"
+											name="afb_contaminated"
+											id="afb_contaminated"
 											nextField="negative"
 											form={form}
 											label=""

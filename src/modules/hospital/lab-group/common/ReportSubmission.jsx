@@ -10,6 +10,7 @@ import { useReactToPrint } from "react-to-print";
 import { useParams } from "react-router";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import LabGroupReportA4BN from "@hospital-components/print-formats/lab-reports/LabGroupReportA4BN";
+import InputForm from "@components/form-builders/InputForm";
 
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab"];
 
@@ -24,6 +25,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 	useEffect(() => {
 		if (diagnosticReport?.comment) {
 			form.setFieldValue("comment", diagnosticReport?.comment);
+			form.setFieldValue("lab_no", diagnosticReport?.lab_no);
 		}
 	}, [diagnosticReport?.comment]);
 
@@ -44,7 +46,7 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Box px="md" bg="var(--theme-tertiary-color-2)">
 					<Grid columns={12}>
-						<Grid.Col span={8} className="animate-ease-out">
+						<Grid.Col span={6} className="animate-ease-out">
 							<Box w="100%">
 								<TextAreaForm
 									id="comment"
@@ -55,49 +57,68 @@ export default function ReportSubmission({ form, handleSubmit, diagnosticReport 
 								/>
 							</Box>
 						</Grid.Col>
-						<Grid.Col span={4}>
+						<Grid.Col span={6}>
 							<Box>
-								<Group justify="center">
+								<Grid columns={12}>
+									<Grid.Col span={6} className="animate-ease-out">
+										<InputForm
+											id="lab_no"
+											form={form}
+											tooltip={t("EnterLabNo")}
+											placeholder={t("EnterLabNo")}
+											name="lab_no"
+										/>
+									</Grid.Col>
+									<Grid.Col span={6} className="animate-ease-out">
+										<Group justify="center">
+											{diagnosticReport?.process === "Done" && (
+												<Button
+													onClick={() => handleLabReport(reportId)}
+													size="md"
+													color="var(--theme-warn-color-5)"
+													type="button"
+													id="EntityFormSubmit"
+													rightSection={<IconPrinter size="18px" />}
+												>
+													<Flex direction="column" gap={0}>
+														<Text fz={"xs"}>{t("Print")}</Text>
+													</Flex>
+												</Button>
+											)}
+											<Button size="md" className="btnPrimaryBg" type="submit" id="handleSubmit">
+												<Flex direction="column" gap={0}>
+													<Text fz="md">{t("Save")}</Text>
+												</Flex>
+											</Button>
+
+											{/*{(diagnosticReport?.process === "In-progress" || diagnosticReport?.process === "Done") &&
+								userRoles.some((role) =>
+									ALLOWED_LAB_DOCTOR_ROLES.includes(role)
+								) && (
 									<Button
-										onClick={() => handleLabReport(reportId)}
 										size="md"
-										color="var(--theme-warn-color-5)"
-										type="button"
-										id="EntityFormSubmit"
-										rightSection={<IconPrinter size="18px" />}
+										fz={"xs"}
+										bg="var(--theme-primary-color-6)"
+										type="submit"
+										id="handleSubmit"
 									>
 										<Flex direction="column" gap={0}>
-											<Text fz={"xs"}>{t("Print")}</Text>
-											<Flex direction="column" align="center" fz="2xs" c="white">
-												alt+p
-											</Flex>
-										</Flex>
-									</Button>
-									<Button size="md" className="btnPrimaryBg" type="submit" id="handleSubmit">
-										<Flex direction="column" gap={0}>
-											<Text fz="md">{t("Save")}</Text>
-											<Flex direction="column" align="center" fz="2xs" c="white">
+											<Text fz="xs">{t("Confirm")}</Text>
+											<Flex
+												direction="column"
+												align="center"
+												fz="2xs"
+												c="white"
+											>
 												alt+s
 											</Flex>
 										</Flex>
 									</Button>
-									{userRoles.some((role) => ALLOWED_LAB_DOCTOR_ROLES.includes(role)) && (
-										<Button
-											size="md"
-											fz={"xs"}
-											bg="var(--theme-primary-color-6)"
-											type="submit"
-											id="handleSubmit"
-										>
-											<Flex direction="column" gap={0}>
-												<Text fz="xs">{t("Confirm")}</Text>
-												<Flex direction="column" align="center" fz="2xs" c="white">
-													alt+s
-												</Flex>
-											</Flex>
-										</Button>
-									)}
-								</Group>
+								)}*/}
+										</Group>
+									</Grid.Col>
+								</Grid>
+
 							</Box>
 						</Grid.Col>
 					</Grid>

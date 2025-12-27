@@ -29,16 +29,20 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 
 	const form = useForm({
 		initialValues: {
-			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
-			lab_no: custom_report?.lab_no || "",
-			id: custom_report?.id || "",
 			afb_found: custom_report?.afb_found || 0,
 			afb_not_found: custom_report?.afb_not_found || 0,
-			scanty: custom_report?.scanty || 0,
-			one_plus: custom_report?.one_plus || 0,
-			two_plus: custom_report?.two_plus || 0,
-			three_plus: custom_report?.three_plus || 0,
-			comment: diagnosticReport?.comment || "",
+			afb_scanty: custom_report?.afb_scanty || 0,
+			
+			afb_sample_found: custom_report?.afb_sample_found || 0,
+			afb_sample_not_found: custom_report?.afb_sample_not_found || 0,
+			afb_sample_scanty: custom_report?.afb_sample_scanty || 0,
+			
+			afb_scanty_one: custom_report?.afb_scanty_one || 0,
+			afb_scanty_two: custom_report?.afb_scanty_two || 0,
+			afb_scanty_three: custom_report?.afb_scanty_three || 0,
+			afb_sample_scanty_one: custom_report?.afb_sample_scanty_one || 0,
+			afb_sample_scanty_two: custom_report?.afb_sample_scanty_two || 0,
+			afb_sample_scanty_three: custom_report?.afb_sample_scanty_three || 0,
 		},
 	});
 
@@ -59,8 +63,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.UPDATE}/${reportId}`,
 				data: {
 					json_content: {
-						...values,
-						test_date: formatDateForMySQL(values.test_date),
+						...values
 					},
 					comment: values.comment,
 				},
@@ -114,7 +117,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 							form={form}
 							label="Lab No"
 							placeholder="Enter Lab No"
-							readOnly={is_completed}
+							
 						/>
 					</Group>
 
@@ -140,7 +143,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 												form.setFieldValue("afb_found", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
@@ -150,47 +153,47 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 												form.setFieldValue("afb_not_found", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.scanty}
+											checked={form.values.afb_scanty}
 											onChange={(event) =>
-												form.setFieldValue("scanty", event.currentTarget.checked)
+												form.setFieldValue("afb_scanty", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.one_plus}
+											checked={form.values.afb_scanty_one}
 											onChange={(event) =>
-												form.setFieldValue("one_plus", event.currentTarget.checked)
+												form.setFieldValue("afb_scanty_one", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.two_plus}
+											checked={form.values.afb_scanty_two}
 											onChange={(event) =>
-												form.setFieldValue("two_plus", event.currentTarget.checked)
+												form.setFieldValue("afb_scanty_two", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.three_plus}
+											checked={form.values.afb_scanty_three}
 											onChange={(event) =>
-												form.setFieldValue("three_plus", event.currentTarget.checked)
+												form.setFieldValue("afb_scanty_three", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 								</Table.Tr>
@@ -198,62 +201,62 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 									<Table.Th ta="center">Sample 2</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.afb_found}
+											checked={form.values.afb_sample_found}
 											onChange={(event) =>
-												form.setFieldValue("afb_found", event.currentTarget.checked)
+												form.setFieldValue("afb_sample_found", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.afb_not_found}
+											checked={form.values.afb_sample_not_found}
 											onChange={(event) =>
-												form.setFieldValue("afb_not_found", event.currentTarget.checked)
+												form.setFieldValue("afb_sample_not_found", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.scanty}
+											checked={form.values.afb_sample_scanty}
 											onChange={(event) =>
-												form.setFieldValue("scanty", event.currentTarget.checked)
+												form.setFieldValue("afb_sample_scanty", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.one_plus}
+											checked={form.values.afb_sample_scanty_one}
 											onChange={(event) =>
-												form.setFieldValue("one_plus", event.currentTarget.checked)
+												form.setFieldValue("afb_sample_scanty_one", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.two_plus}
+											checked={form.values.afb_sample_scanty_two}
 											onChange={(event) =>
-												form.setFieldValue("two_plus", event.currentTarget.checked)
+												form.setFieldValue("afb_sample_scanty_two", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
-											checked={form.values.three_plus}
+											checked={form.values.afb_sample_scanty_three}
 											onChange={(event) =>
-												form.setFieldValue("three_plus", event.currentTarget.checked)
+												form.setFieldValue("afb_sample_scanty_three", event.currentTarget.checked)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											readOnly={is_completed}
+											
 										/>
 									</Table.Th>
 								</Table.Tr>

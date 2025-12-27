@@ -13,6 +13,7 @@ import XrayReport from "@hospital-components/print-formats/lab-reports/custom/Xr
 import CTScanReport from "@hospital-components/print-formats/lab-reports/custom/CTScanReport";
 import GeneXperExtraPulmonaryReport
 	from "@hospital-components/print-formats/lab-reports/custom/GeneXperExtraPulmonaryReport";
+import GeneXpert from "@hospital-components/print-formats/lab-reports/custom/GeneXpert";
 
 const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const reportData = JSON.parse(data?.invoiceParticular?.json_report || "{}");
@@ -105,7 +106,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 														) : null}
 													</Table.Td>
 													<Table.Td w={"50%"} align={"center"}>
-														<Text fz={"xl"}>{report?.particular?.category?.name}</Text>
+														<Text fz={"xl"}>{report?.particular?.category?.name} Report</Text>
 													</Table.Td>
 													<Table.Td w={"25%"} align={"right"}>
 														{patientInfo?.patient_id ? (
@@ -142,7 +143,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																<Text size="xs">{t("Lab ID")}</Text>
 															</Grid.Col>
 															<Grid.Col span={12} py={0}>
-																<Text size="xs">{getValue(report?.uid || "")}</Text>
+																<Text size="xs">{getValue(report?.lab_no || report?.uid )}</Text>
 															</Grid.Col>
 															<Grid.Col span={6} py={0}>
 																<Text size="xs">{t("PatientId")}</Text>
@@ -237,11 +238,22 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 														</Grid>
 													</Table.Td>
 												</Table.Tr>
-												<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-													<Table.Td colSpan={"2"}>
-														<strong>Name of Examination: </strong> {report?.name}
-													</Table.Td>
-												</Table.Tr>
+												{reportData?.sample_type ? (
+													<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+															<Table.Td >
+																<strong>Name of Examination: </strong> {report?.name}
+															</Table.Td>
+															<Table.Td ta={'right'}>
+																<strong>Sample Type: </strong>{reportData?.sample_type}
+															</Table.Td>
+													</Table.Tr>
+												):
+													<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+														<Table.Td colspan={2}>
+															<strong>Name of Examination: </strong> {report?.name}
+														</Table.Td>
+													</Table.Tr>
+												}
 											</Table.Tbody>
 										</Table>
 									</Box>
@@ -502,6 +514,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										<XrayReport report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.slug === "sars-cov2" ? (
 										<Box>SARS-CoV-2 Report</Box>
+									) : data?.invoiceParticular?.particular?.slug === "gene-xpert" ? (
+										<GeneXpert report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.slug === "gene-extra-sputum" ? (
 										<Box>Gene Extra Sputum Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "gene-extra-pulmonary" ? (

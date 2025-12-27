@@ -399,7 +399,6 @@ export default function AddMedicineForm({
 
 		try {
 			const createdBy = user;
-
 			const formValue = {
 				is_completed: true,
 				medicines,

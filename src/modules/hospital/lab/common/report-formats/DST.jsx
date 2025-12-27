@@ -34,19 +34,26 @@ const drugColumnsRow1 = [
 	{ key: "dts_rif", label: "RIF" },
 	{ key: "dts_flq", label: "FLQ" },
 	{ key: "dts_lfx", label: "LFX" },
-	{ key: "dts_mfx", label: "MFX" },
-	{ key: "dts_eth", label: "ETH" },
-	{ key: "dts_bdq", label: "BDQ" },
+
 ];
 
 const drugColumnsRow2 = [
+	{ key: "dts_mfx", label: "MFX" },
+	{ key: "dts_eth", label: "ETH" },
+	{ key: "dts_bdq", label: "BDQ" },
 	{ key: "dts_dlm", label: "DLM" },
 	{ key: "dts_pa", label: "PA" },
+];
+
+
+const drugColumnsRow3 = [
+
 	{ key: "dts_lzd", label: "LZD" },
 	{ key: "dts_cfz", label: "CFZ" },
 	{ key: "dts_amk", label: "AMK" },
 	{ key: "dts_kan", label: "KAN" },
 	{ key: "dts_cap", label: "CAP" },
+
 ];
 
 // =============== DTS (Drug Susceptibility Testing) results ===============
@@ -61,6 +68,7 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 	const form = useForm({
 		initialValues: {
 			id: diagnosticReport?.particular?.id || 0,
+			sample_type: custom_report?.sample_type || '',
 			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
 			lab_no: custom_report?.lab_no || "",
 			dts_method: custom_report?.dts_method || "lj",
@@ -138,28 +146,6 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 		<Box className="border-top-none" px="sm" mt="xs">
 			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
-					<Group grow>
-						{/* =============== test date =============== */}
-						<DatePickerForm
-							name="test_date"
-							id="test_date"
-							nextField="lab_no"
-							form={form}
-							label="Test Date"
-							placeholder="Select date"
-						/>
-
-						{/* =============== lab no =============== */}
-						<InputNumberForm
-							name="lab_no"
-							id="lab_no"
-							nextField="dts_id"
-							form={form}
-							label="Lab No"
-							placeholder="Enter Lab No"
-							readOnly={is_completed}
-						/>
-					</Group>
 
 					{/* =============== method used =============== */}
 					<Box my="md">
@@ -204,11 +190,27 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 							<Table.Tbody>
 								{/* Row 1: Headings and Selects for row1 */}
 								<Table.Tr>
-									<Table.Td ta="center" rowSpan={4}>
-										<Text fw={600}>ID #</Text>
-										<Text mt="xs">{form.values.id || 0}</Text>
-									</Table.Td>
 									{drugColumnsRow1.map((drug) => (
+										<Table.Td key={drug.key} ta="center">
+											<Text fw={600} size="sm" mb="xs">
+												{drug.label}
+											</Text>
+											<SelectForm
+												name={drug.key}
+												id={drug.key}
+												form={form}
+												dropdownValue={notions}
+												placeholder="Select"
+												clearable={true}
+												allowDeselect={true}
+												searchable={false}
+												withCheckIcon={false}
+											/>
+										</Table.Td>
+									))}
+								</Table.Tr>
+								<Table.Tr>
+									{drugColumnsRow2.map((drug) => (
 										<Table.Td key={drug.key} ta="center">
 											<Text fw={600} size="sm" mb="xs">
 												{drug.label}
@@ -229,7 +231,7 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 								</Table.Tr>
 								{/* Row 2: Headings and Selects for row2 */}
 								<Table.Tr>
-									{drugColumnsRow2.map((drug) => (
+									{drugColumnsRow3.map((drug) => (
 										<Table.Td key={drug.key} ta="center">
 											<Text fw={600} size="sm" mb="xs">
 												{drug.label}
@@ -247,8 +249,10 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 											/>
 										</Table.Td>
 									))}
-									<Table.Td ta="center">
-										<Text fw={600}>OTHERS</Text>
+								</Table.Tr>
+								<Table.Tr >
+									<Table.Td ta="center"><Text fw={600}>OTHERS</Text></Table.Td>
+									<Table.Td ta="center" colspan={4}>
 										<InputForm
 											name="dts_others"
 											id="dts_others"

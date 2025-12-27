@@ -142,7 +142,7 @@ const LabGroupReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																<Text size="xs">{t("Lab ID")}</Text>
 															</Grid.Col>
 															<Grid.Col span={12} py={0}>
-																<Text size="xs">{getValue(report?.uid || "")}</Text>
+																<Text size="xs">{getValue(report?.lab_no || report?.uid )}</Text>
 															</Grid.Col>
 															<Grid.Col span={6} py={0}>
 																<Text size="xs">{t("PatientId")}</Text>

@@ -1,5 +1,6 @@
 const initialValues = {
 	comment: "",
+	lab_no: "",
 };
 
 export const getFormValues = (t) => {

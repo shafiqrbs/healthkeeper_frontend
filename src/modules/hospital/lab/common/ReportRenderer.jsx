@@ -32,6 +32,8 @@ import HtmlReportEditor from "@modules/hospital/lab/common/report-formats/HtmlRe
 import AFBCulture from "./report-formats/AFBCulture";
 import SputumAFB from "./report-formats/SputumAFB";
 import DST from "./report-formats/DST";
+import GeneXpert from "@modules/hospital/lab/common/report-formats/GeneXpert";
+import MTTest from "@modules/hospital/lab/common/report-formats/MTTest";
 
 const module = MODULES.LAB_TEST;
 
@@ -140,17 +142,25 @@ const ReportRenderer = forwardRef(
 								refetchLabReport={refetchLabReport}
 							/>
 						);
-					case "sars-cov2":
+					/*case "sars-cov2":
 						return (
 							<SarsCov2
 								diagnosticReport={diagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
 								refetchLabReport={refetchLabReport}
 							/>
-						);
+						);*/
 					case "gene-extra-sputum":
 						return (
 							<PulmonaryStatus
+								diagnosticReport={diagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
+							/>
+						);
+					case "gene-xpert":
+						return (
+							<GeneXpert
 								diagnosticReport={diagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
 								refetchLabReport={refetchLabReport}
@@ -206,7 +216,7 @@ const ReportRenderer = forwardRef(
 								refetchLabReport={refetchLabReport}
 							/>
 						);
-					case "sputum-afb":
+					case "afb-sputum":
 						return (
 							<SputumAFB
 								diagnosticReport={diagnosticReport}
@@ -217,6 +227,14 @@ const ReportRenderer = forwardRef(
 					case "dst":
 						return (
 							<DST
+								diagnosticReport={diagnosticReport}
+								refetchDiagnosticReport={refetchDiagnosticReport}
+								refetchLabReport={refetchLabReport}
+							/>
+						);
+					case "mt-test":
+						return (
+							<MTTest
 								diagnosticReport={diagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
 								refetchLabReport={refetchLabReport}

@@ -82,7 +82,6 @@ const Layout = () => {
 	const footerHeight = 58;
 	const padding = 0;
 	const mainAreaHeight = height - headerHeight - footerHeight - padding;
-
 	return (
 		<AppShell padding="0">
 			<AppShell.Header height={headerHeight} bg="gray.0">
