@@ -50,6 +50,7 @@ import FreeServiceFormInvestigationBN from "@hospital-components/print-formats/b
 import LabGroupReportA4BN from "@hospital-components/print-formats/lab-reports/LabGroupReportA4BN";
 
 const STATIC_OPD_ID = "843042855688";
+const STATIC_IPD_ID = "819374367732";
 const STATIC_BILLING_ID = 2335;
 const STATIC_PRESCRIPTION_ID = "361001991021";
 const REPORT_ID = "098397134876";
@@ -70,7 +71,7 @@ export default function Details() {
 	});
 
 	const { data: IPDData, isLoading: isIPDLoading } = useDataWithoutStore({
-		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${STATIC_OPD_ID}`,
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${STATIC_IPD_ID}`,
 	});
 
 	const { data: prescriptionData, isLoading: isPrescriptionLoading } = useDataWithoutStore({
@@ -84,7 +85,6 @@ export default function Details() {
 	const { data: labGroupReportData, isLoading: isGroupReportLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_GROUP_TEST.PRINT}/${REPORTGROUP_ID}`,
 	});
-
 
 	const { data: billingData, isLoading: isBillingLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.PRINT}/${STATIC_BILLING_ID}`,
@@ -266,8 +266,8 @@ export default function Details() {
 						</LoadingWrapper>
 					)}
 					{name === "DischargeA4BN" && (
-						<LoadingWrapper isLoading={isPrescriptionLoading}>
-							<DischargeA4BN preview data={prescriptionData?.data} />
+						<LoadingWrapper isLoading={isIPDLoading}>
+							<DischargeA4BN preview data={IPDData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "DischargeA4EN" && (

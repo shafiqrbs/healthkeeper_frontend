@@ -14,6 +14,7 @@ import {
 	Tooltip,
 	ActionIcon,
 	Textarea,
+	LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
@@ -64,6 +65,7 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 const module = MODULES.DISCHARGE;
 
 export default function Prescription({
+	isLoading,
 	refetch,
 	medicines,
 	setMedicines,
@@ -114,8 +116,7 @@ export default function Prescription({
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
-	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
-		useDisclosure(false);
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] = useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
@@ -387,8 +388,7 @@ export default function Prescription({
 				showNotificationComponent(t("PrescriptionSavedSuccessfully"), "green", "lightgray", true, 700, true);
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetch();
-				if (redirect)
-					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=dashboard`);
+				if (redirect) navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=dashboard`);
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {
@@ -444,6 +444,7 @@ export default function Prescription({
 
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)" pos="relative">
+			<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 			<Grid columns={24} gutter="3xs">
 				<Grid.Col span={5}>
 					<Box bg="var(--theme-primary-color-0)" h="100%">
@@ -702,14 +703,7 @@ export default function Prescription({
 							</Grid.Col>
 						</Grid>
 					</Box>
-					<Flex
-						bg="var(--theme-primary-color-0)"
-						mb="les"
-						justify="space-between"
-						align="center"
-						py="les"
-						mt="xs"
-					>
+					<Flex bg="var(--theme-primary-color-0)" mb="les" justify="space-between" align="center" py="les" mt="xs">
 						<Text fw={500} px="sm">
 							{t("ListOfMedicines")}
 						</Text>
@@ -734,13 +728,7 @@ export default function Prescription({
 						</Flex>
 					</Flex>
 					<ScrollArea
-						h={
-							baseHeight
-								? baseHeight
-								: form.values.comment
-								? mainAreaHeight - 420 - 50
-								: mainAreaHeight - 420
-						}
+						h={baseHeight ? baseHeight : form.values.comment ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
 						bg="var(--mantine-color-white)"
 					>
 						<Stack gap="2px" p="sm">
@@ -837,10 +825,7 @@ export default function Prescription({
 													mb="2"
 													className="cursor-pointer"
 												>
-													<IconReportMedical
-														color="var(--theme-secondary-color-6)"
-														size={13}
-													/>{" "}
+													<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
 													<Text mt="es" fz={13}>
 														{advise?.name}
 													</Text>
@@ -892,11 +877,7 @@ export default function Prescription({
 										</Text>
 									</Stack>
 								</Button>
-								<Button
-									w="100%"
-									bg="var(--theme-secondary-color-6)"
-									onClick={handleDischargePrintSubmit}
-								>
+								<Button w="100%" bg="var(--theme-secondary-color-6)" onClick={handleDischargePrintSubmit}>
 									<Stack gap={0} align="center" justify="center">
 										<Text>{t("Print")}</Text>
 										<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -926,12 +907,7 @@ export default function Prescription({
 
 			{printData && <DischargeA4BN ref={dischargeA4Ref} data={printData} />}
 
-			<GlobalDrawer
-				opened={openedExPrescription}
-				close={closeExPrescription}
-				title={t("EmergencyPrescription")}
-				size="28%"
-			>
+			<GlobalDrawer opened={openedExPrescription} close={closeExPrescription} title={t("EmergencyPrescription")} size="28%">
 				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
 					<Box>
 						<Flex gap="sm" w="100%" align="center">
@@ -958,12 +934,7 @@ export default function Prescription({
 							/>
 							<ActionIcon
 								onClick={() => {
-									handleAutocompleteOptionAdd(
-										autocompleteValue,
-										emergencyData?.data,
-										"exEmergency",
-										true
-									);
+									handleAutocompleteOptionAdd(autocompleteValue, emergencyData?.data, "exEmergency", true);
 									setTimeout(() => {
 										setAutocompleteValue("");
 									}, 0);

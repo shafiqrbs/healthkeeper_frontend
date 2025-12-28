@@ -1,10 +1,10 @@
-import { Box, Text, Grid, Group, Image } from "@mantine/core";
+import { Box, Text, Grid, Group, Image, Flex } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
 import DashedDivider from "@components/core-component/DashedDivider";
-import { formatDate } from "@/common/utils";
+import { formatDate, formatDateTimeAmPm } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
@@ -13,7 +13,6 @@ const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
 const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
-	console.log(data);
 	const { user } = useAppLocalStore();
 
 	const { hospitalConfigData } = useHospitalConfigData();
@@ -73,53 +72,128 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 				<hr />
 
 				<Box mt="sm" fz="sm">
-					<Text fz="sm" fw={700}>
-						তারিখ: {formatDate(new Date())}
-					</Text>
-					<Text fz="sm" mt={"sm"}>
-						বরাবর,
-					</Text>
-					<Text fz="sm">পরিচালক</Text>
-					<Text fz="sm">{hospitalConfigData?.organization_name}</Text>
-					<Text fz="sm">{hospitalConfigData?.address}</Text>
-					<Text fz="sm" mt={"sm"} fw={700}>
-						বিষয়: রোগী ছাড়পত্রের আবেদন।
-					</Text>
-					<Text fz="sm" mt={"sm"}>
-						মহোদয়/মহোদয়া,
-					</Text>
 					<Text fz="sm" mt={"xs"}>
-						আমি, ডা. <strong>{data?.doctor_name}</strong>, এই মর্মে জানাচ্ছি যে রোগী জনাব/জনাবা{" "}
-						<strong> {data?.name}</strong>, বয়স{" "}
+						এটি প্রত্যয়িত যে জনাব/জনাবা <strong>{data?.name}</strong> {data?.patient_id && `(${data?.patient_id})`}।
+						পিতা/স্বামী <strong>{data?.father_name || data?.guardian_name || ""}</strong>। বয়স{" "}
 						<strong>
-							{data?.year ?? 0} বছর {data?.month ?? 0} মাস {data?.day ?? 0} দিন
+							{data?.year ?? 0} বছর, {data?.month ?? 0} মাস, {data?.day ?? 0} দিন
 						</strong>
-						, লিঙ্গ
-						<strong> {data?.gender}</strong>, ঠিকানা <strong>{data?.address}</strong>, আমাদের হাসপাতালে{" "}
-						<strong>{data?.created}</strong> তারিখে ভর্তি হন।
+						।
 					</Text>
 					<Text fz="sm" mt={"xs"}>
-						রোগীকে <strong>{prescription_data?.disease ?? ""}</strong> (প্রাথমিক রোগ/অভিযোগ) কারণে ভর্তি করা
-						হয়। ভর্তি-পরবর্তী সময়ে প্রয়োজনীয় পরীক্ষা-নিরীক্ষা ও চিকিৎসা প্রদান করা হয়েছে। রোগীর অবস্থা ধীরে
-						ধীরে উন্নতি লাভ করে এবং বর্তমানে তিনি স্থিতিশীল ও সন্তোষজনক অবস্থায় রয়েছেন।
+						ঠিকানা <strong>{data?.address}</strong>। NID / Birth Reg. Num. <strong>{data?.nid || ""}</strong>
 					</Text>
 					<Text fz="sm" mt={"xs"}>
-						চিকিৎসাকালীন সময়ে রোগীকে চিকিৎসা প্রদান করা হয়েছে। বর্তমান শারীরিক অবস্থা স্থিতিশীল এবং রোগীকে
-						বাসায় ফেরার উপযোগী বিবেচিত হয়েছে।
+						অত্র হাসপাতালের <strong>{data?.admit_department_name || ""}</strong> বিভাগে,{" "}
+						<strong>{data?.admit_unit_name || ""}</strong> ইউনিটে, <strong>{data?.room_name || ""}</strong>:{" "}
+						<strong>
+							{data?.cabin_name || data?.bed_name || ""} {data?.cabin_number || data?.bed_number || ""}
+						</strong>{" "}
+						শয্যা/কেবিনে
 					</Text>
 					<Text fz="sm" mt={"xs"}>
-						অতএব, রোগীকে আজ <strong>{new Date().toLocaleDateString()}</strong> তারিখে হাসপাতাল থেকে ছাড়পত্র
-						প্রদান করা হলো।
+						<strong>{formatDateTimeAmPm(data?.admission_date)}</strong> হইতে{" "}
+						<strong>
+							{data?.discharge_date ? data?.discharge_date : formatDateTimeAmPm(new Date())} {data?.discharge_time}
+						</strong>{" "}
+						তারিখ পর্যন্ত চিকিৎসাধীন ছিলেন।
+					</Text>
+					<Text fz="sm" mt={"xs"}>
+						তিনি <strong>{`${prescription_data?.disease}, ${prescription_data?.disease_details}`}</strong> রোগে
+						ভুগিতেছিলেন।
+					</Text>
+					{/* =============== first section: results of examination and observation ================ */}
+					<hr style={{ marginTop: "12px", marginBottom: "8px", border: "none", borderTop: "1px solid #ccc" }} />
+					<Text fz="sm" mt={"sm"} fw={600}>
+						পরীক্ষা ও পর্যবেক্ষণের ফলাফল
+					</Text>
+					<Text fz="xs" c="gray">
+						Supplied to Patient
+					</Text>
+					<hr style={{ marginTop: "8px", marginBottom: "12px", border: "none", borderTop: "1px solid #ccc" }} />
+					<Flex>
+						<Text fz="xs" c="gray">
+							{getValue(prescription_data?.examination_investigation, "")}
+						</Text>
+						<Box
+							style={{
+								border: "1px solid black",
+								width: "200px",
+								height: "120px",
+								marginLeft: "auto",
+								marginRight: "0",
+								marginTop: "8px",
+								marginBottom: "12px",
+							}}
+						></Box>
+					</Flex>
+					{/* =============== second section: description of medical and surgical treatment ================ */}
+					<hr style={{ marginTop: "12px", marginBottom: "8px", border: "none", borderTop: "1px solid #ccc" }} />
+					<Text fz="sm" mt={"sm"} fw={600}>
+						প্রদত্ত চিকিৎসা ও শল্য চিকিৎসার বিবরণ
+					</Text>
+					<Text fz="xs" c="gray">
+						Conservative
+					</Text>
+					<hr style={{ marginTop: "8px", marginBottom: "8px", border: "none", borderTop: "1px solid #ccc" }} />
+					<Text fz="xs" c="gray">
+						{getValue(prescription_data?.treatment_medication, "")}
 					</Text>
 					<Text fz="sm" mt={"sm"} fw={600}>
 						প্রেসক্রাইবড ওষুধসমূহ:
 					</Text>
+					<hr style={{ marginTop: "8px", marginBottom: "8px", border: "none", borderTop: "1px solid #ccc" }} />
 					{prescription_data?.medicines?.map((medicine, index) => (
-						<Text key={medicine?.medicine_id} fz="xs" mt="es">
-							{index + 1}. {medicine?.generic || medicine?.medicine_name} --- {medicine?.dose_details} ---{" "}
-							{medicine?.by_meal || medicine?.dosages?.[0]?.by_meal} ---
-							{medicine?.quantity} --- {medicine?.opd_quantity} --- {medicine?.dosages?.[0]?.duration}
-						</Text>
+						<Box key={index}>
+							<Flex
+								gap="2"
+								justify="flex-start"
+								align="center"
+								direction="row"
+								wrap="wrap"
+								fw={"600"}
+								style={{
+									fontSize: "12px",
+								}}
+							>
+								<Text size="xs" fw={600}>
+									{index + 1}.
+								</Text>
+								<Text size="xs" fw={600}>
+									{getValue(medicine.medicine_id ? medicine.medicine_name : medicine.generic)}
+								</Text>
+							</Flex>
+							{medicine.dosages && medicine.dosages.length > 0 ? (
+								(medicine.dosages || []).map((dose, dIdx) => (
+									<Text
+										key={dIdx}
+										style={{
+											fontSize: "11px",
+											color: "var(--theme-tertiary-color-8)",
+											marginLeft: "32px",
+										}}
+									>
+										{getValue(dose.dose_details_bn, dose.dose_details)} {" ---- "}
+										{getValue(dose.by_meal_bn, dose.by_meal)} {" ---- "}
+										{dose?.quantity > 0 && getValue(dose.quantity)}{" "}
+										{dose.duration && getValue(dose.duration_mode_bn, dose.duration)}
+									</Text>
+								))
+							) : (
+								<Text
+									style={{
+										fontSize: "11px",
+										color: "var(--theme-tertiary-color-8)",
+										marginLeft: "32px",
+									}}
+								>
+									{getValue(medicine.dose_details_bn, medicine.dose_details)} {" ---- "}
+									{getValue(medicine.by_meal_bn, medicine.by_meal)} {"----"}
+									{medicine?.quantity > 0 && getValue(medicine.quantity)}{" "}
+									{medicine?.duration && getValue(medicine.duration_mode_bn, medicine.duration)}
+								</Text>
+							)}
+						</Box>
 					))}
 					<Text fz="sm" mt={"sm"} fw={600}>
 						অতিরিক্ত পরামর্শ ও নির্দেশনা:
@@ -128,8 +202,8 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					<br />
 					{data?.follow_up_date && (
 						<Text fz="sm" mt="xs">
-							রোগীকে <strong>{formatDate(data?.follow_up_date)}</strong> তারিখে (বা প্রয়োজনবোধে তার আগে)
-							ফলো‑আপের জন্য উপস্থিত হতে পরামর্শ দেওয়া হলো।
+							রোগীকে <strong>{formatDate(data?.follow_up_date)}</strong> তারিখে (বা প্রয়োজনবোধে তার আগে) ফলো‑আপের
+							জন্য উপস্থিত হতে পরামর্শ দেওয়া হলো।
 						</Text>
 					)}
 					<Text fz="sm" mt={"xs"}>

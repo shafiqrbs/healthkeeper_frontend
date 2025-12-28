@@ -306,8 +306,7 @@ export default function Index() {
 									</Text>
 									<Text fz="xs">{ipdData?.data?.gender}</Text>
 									<Text fz="xs">
-										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m{" "}
-										{ipdData?.data?.day || 0}d{" "}
+										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m {ipdData?.data?.day || 0}d{" "}
 									</Text>
 									<Text fz="xs">
 										{t("Created")} {formatDate(ipdData?.data?.created_at)}
@@ -430,18 +429,14 @@ export default function Index() {
 						{baseTabValue === "investigation" && <Investigation />}
 						{baseTabValue === "vitals-chart" && <VitalsChart refetch={refetch} data={ipdData?.data} />}
 						{baseTabValue === "insulin-chart" && <InsulinChart refetch={refetch} data={ipdData?.data} />}
-						{baseTabValue === "discharge" && <Discharge data={ipdData?.data} refetch={refetch} />}
+						{baseTabValue === "discharge" && <Discharge ipdData={ipdData?.data} refetch={refetch} />}
 						{baseTabValue === "death-certificate" && <DeathCertificate data={ipdData} />}
 						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
-						{baseTabValue === "discharge-print" && (
-							<DischargePrint data={ipdData?.data} refetch={refetch} />
-						)}
+						{baseTabValue === "discharge-print" && <DischargePrint data={ipdData?.data} refetch={refetch} />}
 						{baseTabValue === "death-certificate-print" && (
 							<DeathCertificatePrint data={ipdData?.data} refetch={refetch} />
 						)}
-						{baseTabValue === "room-transfer-print" && (
-							<RoomTransferPrint data={ipdData?.data} refetch={refetch} />
-						)}
+						{baseTabValue === "room-transfer-print" && <RoomTransferPrint data={ipdData?.data} refetch={refetch} />}
 						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
 						{!baseTabValue && (

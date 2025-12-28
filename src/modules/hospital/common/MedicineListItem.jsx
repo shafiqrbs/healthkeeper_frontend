@@ -1,15 +1,7 @@
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { ActionIcon, Box, Flex, Grid, Input, NumberInput, Select, Stack, Switch, Text } from "@mantine/core";
 import { useDebouncedCallback } from "@mantine/hooks";
-import {
-	IconCheck,
-	IconDeviceFloppy,
-	IconMedicineSyrup,
-	IconPencil,
-	IconPlus,
-	IconTrash,
-	IconX,
-} from "@tabler/icons-react";
+import { IconCheck, IconDeviceFloppy, IconMedicineSyrup, IconPencil, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { getByMeal, getDosage, getDurationMode } from "@utils/prescription";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -33,6 +25,7 @@ export default function MedicineListItem({
 	const hasExtendedFeature = type === "opd" || type === "discharge";
 
 	const updateMedicineField = (field, value) => {
+		console.log(field, value);
 		setMedicines((prev) => {
 			let newList;
 
@@ -47,9 +40,7 @@ export default function MedicineListItem({
 				const updatedList = prev.map((med) => {
 					const isMatch =
 						(medicine.id && med.id === medicine.id) ||
-						(medicine.medicine_id &&
-							med.medicine_id === medicine.medicine_id &&
-							med.generic === medicine.generic) ||
+						(medicine.medicine_id && med.medicine_id === medicine.medicine_id && med.generic === medicine.generic) ||
 						(!medicine.medicine_id &&
 							med.generic === medicine.generic &&
 							med.medicine_dosage_id === medicine.medicine_dosage_id);
@@ -110,9 +101,7 @@ export default function MedicineListItem({
 			const existingDosages = current.dosages && current.dosages.length > 0 ? current.dosages : [baseInstruction];
 
 			const toDuplicate =
-				typeof instructionIndex === "number" &&
-				instructionIndex >= 0 &&
-				instructionIndex < existingDosages.length
+				typeof instructionIndex === "number" && instructionIndex >= 0 && instructionIndex < existingDosages.length
 					? existingDosages[instructionIndex]
 					: existingDosages[existingDosages.length - 1];
 
@@ -266,11 +255,7 @@ export default function MedicineListItem({
 					/>
 				) : (
 					<Flex gap="les" justify="flex-end">
-						<ActionIcon
-							variant="outline"
-							color="var(--theme-error-color)"
-							onClick={() => handleDelete(index - 1)}
-						>
+						<ActionIcon variant="outline" color="var(--theme-error-color)" onClick={() => handleDelete(index - 1)}>
 							<IconTrash size={18} stroke={1.5} />
 						</ActionIcon>
 					</Flex>
@@ -285,8 +270,7 @@ export default function MedicineListItem({
 									medicine_dosage_id: medicine?.medicine_dosage_id || "",
 									medicine_bymeal_id: medicine?.medicine_bymeal_id || "",
 									dose_details: getDosage(dosage_options, medicine?.medicine_dosage_id)?.name || "",
-									dose_details_bn:
-										getDosage(dosage_options, medicine?.medicine_dosage_id)?.name_bn || "",
+									dose_details_bn: getDosage(dosage_options, medicine?.medicine_dosage_id)?.name_bn || "",
 									by_meal: getByMeal(by_meal_options, medicine?.medicine_bymeal_id)?.name || "",
 									by_meal_bn: getByMeal(by_meal_options, medicine?.medicine_bymeal_id)?.name_bn || "",
 									quantity: medicine.quantity || "",
@@ -330,9 +314,7 @@ export default function MedicineListItem({
 												}))}
 												value={instruction?.medicine_dosage_id?.toString()}
 												placeholder={t("Dosage")}
-												onChange={(v) =>
-													handleInstructionFieldChange(insIndex, "medicine_dosage_id", v)
-												}
+												onChange={(v) => handleInstructionFieldChange(insIndex, "medicine_dosage_id", v)}
 											/>
 										</Grid.Col>
 										<Grid.Col span={hasExtendedFeature ? 5 : 8}>
@@ -346,9 +328,7 @@ export default function MedicineListItem({
 												}))}
 												value={instruction.medicine_bymeal_id?.toString()}
 												placeholder={t("Timing")}
-												onChange={(v) =>
-													handleInstructionFieldChange(insIndex, "medicine_bymeal_id", v)
-												}
+												onChange={(v) => handleInstructionFieldChange(insIndex, "medicine_bymeal_id", v)}
 											/>
 										</Grid.Col>
 										{hasExtendedFeature && (
@@ -359,9 +339,7 @@ export default function MedicineListItem({
 														label=""
 														value={instruction.quantity}
 														placeholder={t("Quantity")}
-														onChange={(v) =>
-															handleInstructionFieldChange(insIndex, "quantity", v)
-														}
+														onChange={(v) => handleInstructionFieldChange(insIndex, "quantity", v)}
 													/>
 												</Grid.Col>
 												<Grid.Col span={3}>
@@ -375,11 +353,7 @@ export default function MedicineListItem({
 														value={instruction.duration}
 														placeholder={t("Duration")}
 														onChange={(v, option) =>
-															handleInstructionFieldChange(
-																insIndex,
-																"duration",
-																option.label
-															)
+															handleInstructionFieldChange(insIndex, "duration", option.label)
 														}
 													/>
 												</Grid.Col>
@@ -432,8 +406,7 @@ export default function MedicineListItem({
 											c="var(--theme-tertiary-color-8)"
 										>
 											{instruction?.dose_details || instruction.dosage} ---- {instruction.by_meal}{" "}
-											{hasExtendedFeature &&
-												`---- ${instruction.quantity} ---- ${instruction.duration}`}
+											{hasExtendedFeature && `---- ${instruction.quantity} ---- ${instruction.duration}`}
 											{isFirstItem && isMedicine && hasExtendedFeature && (
 												<>
 													{medicine.opd_quantity ? `---- ${medicine.opd_quantity}` : ``}
