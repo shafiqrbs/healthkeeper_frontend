@@ -23,7 +23,7 @@ const referredModes = [
 	{ value: "hospital", label: "Hospital" },
 ];
 
-export default function PatientReferredAction({ module = "emergency", invoiceId, form }) {
+export default function PatientReferredAction({ module = "emergency", invoiceId, form, update }) {
 	const { opdReferredRooms } = useAppLocalStore();
 
 	const dispatch = useDispatch();
@@ -34,7 +34,7 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 			hospital: "",
 			opd_room_id: "",
 			comment: "",
-		}
+		},
 	});
 	const [openedRoomReferred, { open: openRoomReferred, close: closeRoomReferred }] = useDisclosure(false);
 
@@ -62,6 +62,14 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 		handleConfirmSubmission({ ...values });
 		closeRoomReferred();
 		form.setFieldValue("comment", values.comment);
+
+		if (update)
+			update(undefined, undefined, {
+				referred_comment: values.comment,
+				referred_mode: values.referred_mode,
+				referred_hospital: values.hospital,
+				referred_room: values.referred_room,
+			});
 	};
 
 	async function handleConfirmSubmission(values) {
@@ -177,9 +185,14 @@ export default function PatientReferredAction({ module = "emergency", invoiceId,
 										value: room.id?.toString(),
 									}))}
 									value={roomReferredForm.values.opd_room_id}
-									changeValue={(selectedRoomId) =>
-										roomReferredForm.setFieldValue("opd_room_id", selectedRoomId)
-									}
+									changeValue={(selectedRoomId) => {
+										roomReferredForm.setFieldValue("opd_room_id", selectedRoomId);
+										form.setFieldValue(
+											"referred_room",
+											opdReferredRooms.find((room) => room.id?.toString() === selectedRoomId)
+												?.name
+										);
+									}}
 									tooltip={t("RoomValidateMessage")}
 									label=""
 									placeholder={t("Room")}

@@ -461,7 +461,7 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 													{getValue(emergency.value)}
 												</Flex>
 											))}
-											{medicines.map((medicine, index) => (
+											{medicines?.map((medicine, index) => (
 												<Box key={index}>
 													<Flex
 														gap="2"

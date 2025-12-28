@@ -100,7 +100,7 @@ export default function Index() {
 	}, [customerId]);
 	const hasRecords = records && records.length > 0;
 
-	const handlePrescriptionUpdate = async (updatedMedicine, updatedDynamicFormData = null) => {
+	const handlePrescriptionUpdate = async (updatedMedicine, updatedDynamicFormData = null, updatedFormValues = {}) => {
 		try {
 			const createdBy = user;
 			const formValue = {
@@ -120,6 +120,7 @@ export default function Index() {
 						[item.slug]: index,
 					})),
 				},
+				...updatedFormValues,
 			};
 
 			const value = {
@@ -159,7 +160,11 @@ export default function Index() {
 							</Grid.Col>
 							<Grid.Col span={7}>
 								<Flex mt={"xs"} gap="xs" justify="flex-end" align="center" wrap="wrap">
-									<PatientReferredAction form={form} invoiceId={prescriptionData?.data?.invoice_id} />
+									<PatientReferredAction
+										form={form}
+										update={handlePrescriptionUpdate}
+										invoiceId={prescriptionData?.data?.invoice_id}
+									/>
 									<Button
 										onClick={handleOpenViewOverview}
 										size="compact-xs"
