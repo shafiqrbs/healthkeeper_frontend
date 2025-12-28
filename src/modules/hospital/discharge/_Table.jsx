@@ -1,6 +1,6 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { IconChevronUp, IconSelector } from "@tabler/icons-react";
-import { Box, Text } from "@mantine/core";
+import { Box, Button, Text } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
@@ -110,6 +110,20 @@ export default function _Table() {
 							accessor: "referred_mode",
 							title: t("RefMode"),
 							render: (item) => capitalizeWords(item?.referred_mode),
+						},
+						{
+							accessor: "",
+							title: t("Action"),
+							render: (item) => (
+								<Button
+									variant="filled"
+									size="compact-xs"
+									color="var(--theme-primary-color-6)"
+									onClick={() => handleProcessConfirmation(item.useTranslationid)}
+								>
+									{t("Discharge")}
+								</Button>
+							),
 						},
 					]}
 					textSelectionDisabled

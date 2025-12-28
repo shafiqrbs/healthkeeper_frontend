@@ -164,92 +164,78 @@ export default function Index() {
 	useEffect(() => {
 		if (!ipdData?.data || !baseTabValue) return;
 
-		const restrictedTabs = ["room-transfer", "discharge", "death-certificate"];
-		const restrictedPrintTabs = ["discharge-print", "death-certificate-print"];
-		const currentReleaseMode = ipdData?.data?.release_mode;
-		const currentIsPaid = ipdData?.data?.process?.toLowerCase() === "paid";
+		const currentReleaseMode = ipdData.data.release_mode;
+		const currentIsPaid = ipdData.data.process?.toLowerCase() === "paid";
 
-		// =============== check if it's a restricted tab ================
-		if (restrictedTabs.includes(baseTabValue)) {
-			// =============== if release_mode is set and process is paid, check if tab matches ================
-			if (currentReleaseMode && currentIsPaid) {
-				const isAccessible =
-					(currentReleaseMode === "referred" && baseTabValue === "room-transfer") ||
-					(currentReleaseMode === "discharge" && baseTabValue === "discharge") ||
-					(currentReleaseMode === "death" && baseTabValue === "death-certificate");
+		// ❌ If not paid → release tabs & prints are forbidden
+		if (!currentIsPaid) {
+			const forbidden = [...Object.values(RELEASE_TAB_MAP), ...Object.values(RELEASE_PRINT_MAP)];
 
-				if (!isAccessible) {
-					setBaseTabValue("dashboard");
-					setSearchParams({ tab: "dashboard" });
-				}
-				return;
-			}
-
-			// =============== if release_mode is set but process is not paid, restrict all three tabs ================
-			if (currentReleaseMode && !currentIsPaid) {
+			if (forbidden.includes(baseTabValue)) {
 				setBaseTabValue("dashboard");
 				setSearchParams({ tab: "dashboard" });
-				return;
 			}
+			return;
 		}
 
-		// =============== check if it's a restricted print tab ================
-		if (restrictedPrintTabs.includes(baseTabValue)) {
-			// =============== if release_mode is set and process is paid, check if print tab matches ================
-			if (currentReleaseMode && currentIsPaid) {
-				const isAccessible =
-					(currentReleaseMode === "discharge" && baseTabValue === "discharge-print") ||
-					(currentReleaseMode === "death" && baseTabValue === "death-certificate-print");
+		// ✅ Paid + release mode → ONLY dashboard + matching release tab/print
+		if (currentReleaseMode) {
+			const allowedTabs = getAllowedTabsForRelease(currentReleaseMode);
+			const allowedPrints = getAllowedPrintsForRelease(currentReleaseMode);
+			const allowed = [...allowedTabs, ...allowedPrints];
 
-				if (!isAccessible) {
-					setBaseTabValue("dashboard");
-					setSearchParams({ tab: "dashboard" });
-				}
-				return;
-			}
-
-			// =============== if release_mode is set but process is not paid, restrict print tabs ================
-			if (currentReleaseMode && !currentIsPaid) {
+			if (!allowed.includes(baseTabValue)) {
 				setBaseTabValue("dashboard");
 				setSearchParams({ tab: "dashboard" });
-				return;
 			}
 		}
-
-		// =============== if tab is not restricted, it's always accessible ================
 	}, [ipdData?.data, baseTabValue, setSearchParams]);
 
+	const DASHBOARD_TAB = "dashboard";
+
+	const getAllowedTabsForRelease = (releaseMode) => {
+		if (!releaseMode) return [];
+
+		return [DASHBOARD_TAB, RELEASE_TAB_MAP[releaseMode]].filter(Boolean);
+	};
+
+	const getAllowedPrintsForRelease = (releaseMode) => {
+		if (!releaseMode) return [];
+
+		return [RELEASE_PRINT_MAP[releaseMode]].filter(Boolean);
+	};
+
 	const getFilteredTabs = (tabs) => {
-		const RELEASE_TABS = Object.values(RELEASE_TAB_MAP);
-		// =============== if release_mode is set and process is paid, show only the corresponding tab ================
+		// ❌ Not paid → remove all release tabs
 		if (!isPaid) {
+			const RELEASE_TABS = Object.values(RELEASE_TAB_MAP);
 			return tabs.filter((tab) => !RELEASE_TABS.includes(tab.value));
 		}
 
-		// ✅ Paid + release mode → keep only the matching release tab
+		// ✅ Paid + release mode → ONLY dashboard + matching release tab
 		if (releaseMode && RELEASE_TAB_MAP[releaseMode]) {
-			const allowedReleaseTab = RELEASE_TAB_MAP[releaseMode];
-
-			return tabs.filter((tab) => !RELEASE_TABS.includes(tab.value) || tab.value === allowedReleaseTab);
+			const allowedTabs = getAllowedTabsForRelease(releaseMode);
+			return tabs.filter((tab) => allowedTabs.includes(tab.value));
 		}
-		// =============== if no release_mode, show all tabs ================
+
+		// ✅ Paid but no release mode → all tabs
 		return tabs;
 	};
 
 	const getFilteredPrintItems = (printItems) => {
-		const RELEASE_PRINTS = Object.values(RELEASE_PRINT_MAP);
-		// ❌ Not paid → remove all release-related prints
+		// ❌ Not paid → remove all release prints
 		if (!isPaid) {
+			const RELEASE_PRINTS = Object.values(RELEASE_PRINT_MAP);
 			return printItems.filter((item) => !RELEASE_PRINTS.includes(item.value));
 		}
 
-		// ✅ Paid + release mode → keep only matching release print
+		// ✅ Paid + release mode → ONLY matching release print
 		if (releaseMode && RELEASE_PRINT_MAP[releaseMode]) {
-			const allowedPrint = RELEASE_PRINT_MAP[releaseMode];
-
-			return printItems.filter((item) => !RELEASE_PRINTS.includes(item.value) || item.value === allowedPrint);
+			const allowedPrints = getAllowedPrintsForRelease(releaseMode);
+			return printItems.filter((item) => allowedPrints.includes(item.value));
 		}
-		// =============== if no release_mode, show all print items ================
+
+		// ✅ Paid but no release mode → all prints
 		return printItems;
 	};
 
@@ -306,7 +292,8 @@ export default function Index() {
 									</Text>
 									<Text fz="xs">{ipdData?.data?.gender}</Text>
 									<Text fz="xs">
-										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m {ipdData?.data?.day || 0}d{" "}
+										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m{" "}
+										{ipdData?.data?.day || 0}d{" "}
 									</Text>
 									<Text fz="xs">
 										{t("Created")} {formatDate(ipdData?.data?.created_at)}
@@ -432,11 +419,15 @@ export default function Index() {
 						{baseTabValue === "discharge" && <Discharge ipdData={ipdData?.data} refetch={refetch} />}
 						{baseTabValue === "death-certificate" && <DeathCertificate data={ipdData} />}
 						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
-						{baseTabValue === "discharge-print" && <DischargePrint data={ipdData?.data} refetch={refetch} />}
+						{baseTabValue === "discharge-print" && (
+							<DischargePrint data={ipdData?.data} refetch={refetch} />
+						)}
 						{baseTabValue === "death-certificate-print" && (
 							<DeathCertificatePrint data={ipdData?.data} refetch={refetch} />
 						)}
-						{baseTabValue === "room-transfer-print" && <RoomTransferPrint data={ipdData?.data} refetch={refetch} />}
+						{baseTabValue === "room-transfer-print" && (
+							<RoomTransferPrint data={ipdData?.data} refetch={refetch} />
+						)}
 						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
 						{!baseTabValue && (
