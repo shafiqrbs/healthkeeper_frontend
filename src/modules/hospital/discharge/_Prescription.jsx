@@ -61,6 +61,7 @@ import {
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import BookmarkDrawer from "@hospital-components/BookmarkDrawer";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
+import InputForm from "@components/form-builders/InputForm";
 
 const module = MODULES.DISCHARGE;
 
@@ -134,7 +135,7 @@ export default function Prescription({
 				disease_details: initialFormValues?.disease_details || "",
 				examination_investigation: initialFormValues?.examination_investigation || "",
 				treatment_medication: initialFormValues?.treatment_medication || "",
-				follow_up_date: initialFormValues?.follow_up_date ? new Date(initialFormValues?.follow_up_date) : "",
+				follow_up_date: initialFormValues?.follow_up_date || "",
 			});
 		}
 	}, [prescriptionData]);
@@ -475,20 +476,10 @@ export default function Prescription({
 								placeholder={t("DiseaseDetails")}
 								tooltip={t("EnterDiseaseDetails")}
 								showRightSection={false}
-								style={{ input: { height: "60px" } }}
+								resize="vertical"
 							/>
 						</Box>
-						<Box p="sm">
-							<DatePickerForm
-								defaultValue={null}
-								form={form}
-								label="Follow Up Date"
-								tooltip="Enter follow up date"
-								name="follow_up_date"
-								value={form.values.follow_up_date}
-								placeholder="Follow up date"
-							/>
-						</Box>
+
 						<Box pl="sm" pr="sm" pb="sm">
 							<TextAreaForm
 								form={form}
@@ -498,7 +489,7 @@ export default function Prescription({
 								placeholder={t("ExaminationInvestigation")}
 								tooltip={t("EnterExaminationInvestigation")}
 								showRightSection={false}
-								style={{ input: { height: "60px" } }}
+								resize="vertical"
 							/>
 						</Box>
 						<Box pl="sm" pr="sm" pb="sm">
@@ -510,9 +501,23 @@ export default function Prescription({
 								placeholder={t("TreatmentMedication")}
 								tooltip={t("EnterTreatmentMedication")}
 								showRightSection={false}
-								style={{ input: { height: "60px" } }}
+								resize="vertical"
 							/>
 						</Box>
+
+						<Box pl="sm" pr="sm" pb="sm">
+							<TextAreaForm
+								form={form}
+								label="Follow Up Date"
+								name="follow_up_date"
+								value={form.values.follow_up_date}
+								placeholder={t("Follow up date")}
+								tooltip={t("Follow up date")}
+								showRightSection={false}
+								resize="vertical"
+							/>
+						</Box>
+
 					</Box>
 				</Grid.Col>
 				<Grid.Col span={19}>

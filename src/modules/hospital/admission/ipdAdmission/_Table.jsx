@@ -3,7 +3,16 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Divider, Flex, FloatingIndicator, Group, Menu, rem, Select, Stack, Tabs, Text, Textarea } from "@mantine/core";
-import { IconArrowNarrowRight, IconChevronUp, IconDotsVertical, IconFileText, IconPrinter, IconSelector, IconSettings } from "@tabler/icons-react";
+import {
+	IconArrowNarrowRight,
+	IconChevronUp,
+	IconDotsVertical,
+	IconFileText,
+	IconPencil,
+	IconPrinter,
+	IconSelector,
+	IconSettings
+} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -33,6 +42,7 @@ import useVendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDa
 import {setInsertType} from "@/app/store/core/crudSlice";
 import {modals} from "@mantine/modals";
 import {errorNotification} from "@components/notification/errorNotification";
+import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 
 const PER_PAGE = 20;
 
@@ -71,7 +81,9 @@ export default function _Table({ module }) {
 	const [actionType, setActionType] = useState('change');
 	const [actionFormData, setActionFormData] = useState(null);
 	const [drawerPatientId, setDrawerPatientId] = useState(null);
-
+	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] =
+		useDisclosure(false);
+	const [singlePatientData, setSinglePatientData] = useState({});
 
 	// =============== form for action drawer fields ================
 	const actionForm = useForm({
@@ -152,6 +164,16 @@ export default function _Table({ module }) {
 		});
 		setAdmissionFormPrintData(res.data);
 		requestAnimationFrame(printAdmissionForm);
+	};
+
+	const patientUpdate = async (e, id) => {
+		e.stopPropagation();
+
+		const { data } = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${id}`,
+		});
+		setSinglePatientData(data);
+		setTimeout(() => openPatientUpdate(), 100);
 	};
 
 	const handleActionSubmit = () => {
@@ -431,7 +453,7 @@ export default function _Table({ module }) {
 										</Button.Group>
 									)}
 									*/}
-									{/*<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
+									<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
 										<Menu.Target>
 											<ActionIcon
 												className="border-left-radius-none"
@@ -444,22 +466,6 @@ export default function _Table({ module }) {
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
-											<Menu.Item
-												leftSection={
-													<IconPrinter
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-												onClick={(e) => {
-													e.stopPropagation();
-													handleBillingInvoicePrint(item?.id);
-												}}
-											>
-												{t("AdmissionInvoice")}
-											</Menu.Item>
 											<Menu.Item
 												leftSection={
 													<IconFileText
@@ -476,8 +482,52 @@ export default function _Table({ module }) {
 											>
 												{t("AdmissionForm")}
 											</Menu.Item>
+											<Menu.Item
+												leftSection={
+													<IconPrinter
+														style={{
+															width: rem(14),
+															height: rem(14),
+														}}
+													/>
+												}
+												onClick={(e) => {
+													e.stopPropagation();
+													handleBillingInvoicePrint(item?.id);
+												}}
+											>
+												{t("AdmissionInvoice")}
+											</Menu.Item>
+											{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&  item.process?.toLowerCase() === "admitted" && (
+												<>
+												<Menu.Item
+													leftSection={
+														<IconPencil
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+													onClick={(e) => patientUpdate(e, item?.id)}>
+													{t("PatientUpdate")}
+												</Menu.Item>
+												<Menu.Item
+												leftSection={
+												<IconPencil
+													style={{
+														width: rem(14),
+														height: rem(14),
+													}}
+												/>
+											}
+												onClick={(e) => patientUpdate(e, item?.id)}>
+												{t("Room/Bed Transfer")}
+												</Menu.Item>
+												</>
+											)}
 										</Menu.Dropdown>
-									</Menu>*/}
+									</Menu>
 								</Group>
 							),
 						},
@@ -546,7 +596,12 @@ export default function _Table({ module }) {
 					</Box>
 				</Box>
 			</GlobalDrawer>
-
+			<PatientUpdateDrawer
+				type="emergency"
+				opened={openedPatientUpdate}
+				close={closePatientUpdate}
+				data={singlePatientData}
+			/>
 			{selectedPrescriptionId && <DetailsDrawer opened={openedActions} close={closeActions} prescriptionId={selectedPrescriptionId} />}
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
 			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}

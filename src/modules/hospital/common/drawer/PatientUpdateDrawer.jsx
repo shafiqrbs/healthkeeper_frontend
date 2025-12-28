@@ -192,7 +192,7 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 			<Box component="form" onSubmit={form.onSubmit(handleSubmit)} pt="lg">
 				<Stack mih={mainAreaHeight - 100} justify="space-between">
 					<Grid align="center" columns={20}>
-						{type === "opd" && (
+						{type === "opd" ? (
 							<>
 								<Grid.Col span={6}>
 									<Text fz="sm">{t("Room")}</Text>
@@ -214,128 +214,115 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 									/>
 								</Grid.Col>
 							</>
-						)}
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("Name")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<InputForm
-								form={form}
-								label=""
-								tooltip={t("EnterPatientName")}
-								placeholder="Md. Abdul"
-								name="name"
-								id="name"
-								nextField="mobile"
-								value={form.values.name}
-							/>
-						</Grid.Col>
-						{/*<Grid.Col span={6}>
-							<Flex align="center" gap="es">
-								<Text fz="sm">{t("DateOfBirth")}</Text>
-							</Flex>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<DateSelectorForm
-								form={form}
-								placeholder="01-01-2020"
-								tooltip={t("EnterDateOfBirth")}
-								name="dob"
-								id="dob"
-								nextField="year"
-								required
-								disabledFutureDate
-							/>
-						</Grid.Col>*/}
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("Age")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<Flex gap="xs">
-								<InputNumberForm
-									form={form}
-									label=""
-									placeholder="Years"
-									tooltip={t("EnterYears")}
-									name="year"
-									id="year"
-									nextField="month"
-									min={0}
-									max={150}
-								/>
-								<InputNumberForm
-									form={form}
-									label=""
-									placeholder="Months"
-									tooltip={t("EnterMonths")}
-									name="month"
-									id="month"
-									nextField="day"
-									min={0}
-									max={11}
-								/>
-								<InputNumberForm
-									form={form}
-									label=""
-									placeholder="Days"
-									tooltip={t("EnterDays")}
-									name="day"
-									id="day"
-									nextField="month"
-									min={0}
-									max={31}
-								/>
-							</Flex>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("Gender")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14} py="es">
-							<SelectForm
-								form={form}
-								label=""
-								tooltip={t("EnterPatientGender")}
-								placeholder="Male"
-								name="gender"
-								id="gender"
-								value={form.values.gender}
-								dropdownValue={[
-									{ label: t("Male"), value: "male" },
-									{ label: t("Female"), value: "female" },
-									{ label: t("Other"), value: "other" },
-								]}
-								clearable={false}
-							/>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("Mobile")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<InputForm
-								form={form}
-								label=""
-								tooltip={t("EnterPatientMobile")}
-								placeholder="+880 1700000000"
-								name="mobile"
-								id="mobile"
-								nextField="nid"
-								value={form.values.mobile}
-							/>
-						</Grid.Col>
-						<Grid.Col span={6}>
-							<Text fz="sm">{t("NID")}</Text>
-						</Grid.Col>
-						<Grid.Col span={14}>
-							<InputForm
-								form={form}
-								label=""
-								tooltip={t("EnterPatientIdentity")}
-								placeholder="1234567890"
-								name="nid"
-								id="nid"
-								value={form.values.identity}
-							/>
-						</Grid.Col>
+						):(
+							<>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("Name")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterPatientName")}
+										placeholder="Md. Abdul"
+										name="name"
+										id="name"
+										nextField="mobile"
+										value={form.values.name}
+									/>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("Age")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<Flex gap="xs">
+										<InputNumberForm
+											form={form}
+											label=""
+											placeholder="Years"
+											tooltip={t("EnterYears")}
+											name="year"
+											id="year"
+											nextField="month"
+											min={0}
+											max={150}
+										/>
+										<InputNumberForm
+											form={form}
+											label=""
+											placeholder="Months"
+											tooltip={t("EnterMonths")}
+											name="month"
+											id="month"
+											nextField="day"
+											min={0}
+											max={11}
+										/>
+										<InputNumberForm
+											form={form}
+											label=""
+											placeholder="Days"
+											tooltip={t("EnterDays")}
+											name="day"
+											id="day"
+											nextField="month"
+											min={0}
+											max={31}
+										/>
+									</Flex>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("Gender")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14} py="es">
+									<SelectForm
+										form={form}
+										label=""
+										tooltip={t("EnterPatientGender")}
+										placeholder="Male"
+										name="gender"
+										id="gender"
+										value={form.values.gender}
+										dropdownValue={[
+											{ label: t("Male"), value: "male" },
+											{ label: t("Female"), value: "female" },
+											{ label: t("Other"), value: "other" },
+										]}
+										clearable={false}
+									/>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("Mobile")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterPatientMobile")}
+										placeholder="+880 1700000000"
+										name="mobile"
+										id="mobile"
+										nextField="nid"
+										value={form.values.mobile}
+									/>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("NID")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterPatientIdentity")}
+										placeholder="1234567890"
+										name="nid"
+										id="nid"
+										value={form.values.identity}
+									/>
+								</Grid.Col>
+							</>
+							)}
+
 					</Grid>
 
 					<Flex gap="xs" justify="flex-end">

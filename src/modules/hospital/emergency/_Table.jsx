@@ -256,9 +256,7 @@ export default function Table({ module }) {
 		const { data } = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${id}`,
 		});
-
 		setSinglePatientData(data);
-
 		setTimeout(() => openPatientUpdate(), 100);
 	};
 
@@ -297,6 +295,8 @@ export default function Table({ module }) {
 		setType("prescription");
 	};
 
+
+
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -323,16 +323,6 @@ export default function Table({ module }) {
 							/>
 						</Tabs.List>
 					</Tabs>
-					<Button
-						onClick={handleOpenViewOverview}
-						size="xs"
-						radius="es"
-						rightSection={<IconArrowRight size={16} />}
-						bg="var(--theme-success-color)"
-						c="white"
-					>
-						{t("VisitOverview")}
-					</Button>
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
@@ -455,7 +445,6 @@ export default function Table({ module }) {
 											</Button>
 										)}
 
-
 										<Menu
 											position="bottom-end"
 											offset={3}
@@ -464,6 +453,15 @@ export default function Table({ module }) {
 											openDelay={100}
 											closeDelay={400}
 										>
+											{formatDate(new Date()) === formatDate(values?.created_at) && (
+												<ActionIcon
+													variant="transparent"
+													onClick={(e) => patientUpdate(e, values?.id)}
+												>
+													<IconPencil size={18} color="var(--theme-success-color)" />
+												</ActionIcon>
+											)}
+
 											<Menu.Target>
 												<ActionIcon
 													className="action-icon-menu border-left-radius-none"

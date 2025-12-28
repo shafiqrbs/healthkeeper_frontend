@@ -502,7 +502,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			<OPDPosBN data={printData} ref={posRef} />
 			<PrescriptionFullBN data={printData} ref={prescriptionRef} />
 			<PatientUpdateDrawer
-				type="opd"
+				type="prescription"
 				opened={openedPatientUpdate}
 				close={closePatientUpdate}
 				data={singlePatientData}
