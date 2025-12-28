@@ -136,6 +136,7 @@ export default function Prescription({
 				examination_investigation: initialFormValues?.examination_investigation || "",
 				treatment_medication: initialFormValues?.treatment_medication || "",
 				follow_up_date: initialFormValues?.follow_up_date || "",
+				doctor_comment: initialFormValues?.doctor_comment || "",
 			});
 		}
 	}, [prescriptionData]);
@@ -372,6 +373,7 @@ export default function Prescription({
 				disease_details: form.values.disease_details || "",
 				examination_investigation: form.values.examination_investigation || "",
 				treatment_medication: form.values.treatment_medication || "",
+				doctor_comment: form.values.doctor_comment || "",
 			};
 
 			const value = {
@@ -504,7 +506,6 @@ export default function Prescription({
 								resize="vertical"
 							/>
 						</Box>
-
 						<Box pl="sm" pr="sm" pb="sm">
 							<TextAreaForm
 								form={form}
@@ -517,6 +518,19 @@ export default function Prescription({
 								resize="vertical"
 							/>
 						</Box>
+						<Box pl="sm" pr="sm" pb="sm">
+							<TextAreaForm
+								form={form}
+								label="Doctor Comment"
+								name="doctor_comment"
+								value={form.values.doctor_comment}
+								placeholder={t("Doctor Comment")}
+								tooltip={t("Enter Doctor Comment")}
+								showRightSection={false}
+								resize="vertical"
+							/>
+						</Box>
+
 
 					</Box>
 				</Grid.Col>

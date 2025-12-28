@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Group, Image, Flex } from "@mantine/core";
+import {Box, Text, Grid, Group, Image, Flex, Table} from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -45,38 +45,41 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 			>
 				{/* =============== header section with doctor information in bengali and english ================ */}
 				<Box mb="xs">
-					<Grid gutter="md">
-						<Grid.Col span={4}>
-							<Group ml="md" align="center" h="100%" py="xs">
-								<Image src={GLogo} alt="logo" width={80} height={80} />
+					<Flex gap="md" justify="center">
+						<Box>
+							<Group ml="md" align="center" h="100%">
+								<Image src={GLogo} alt="logo" width={60} height={60} />
 							</Group>
-						</Grid.Col>
-						<Grid.Col span={4}>
+						</Box>
+						<Box>
 							<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
-								{getValue(hospitalConfigData?.organization_name, "")}
+								{hospitalConfigData?.organization_name || ""}
 							</Text>
-							<Text ta="center" size="xs" c="gray" mt="2">
-								{getValue(hospitalConfigData?.address, "")}
+							<Text ta="center" size="sm" c="gray" mt="2">
+								{hospitalConfigData?.address || ""}
 							</Text>
-							<Text ta="center" size="xs" c="gray" mb="2">
-								{t("হটলাইন")} {getValue(hospitalConfigData?.hotline, "")}
+							<Text ta="center" size="sm" c="gray" mb="2">
+								{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
 							</Text>
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<Group mr="md" justify="flex-end" align="center" h="100%" py="xs">
-								<Image src={TBLogo} alt="logo" width={80} height={80} />
+						</Box>
+						<Box>
+							<Group mr="md" justify="flex-end" align="center" h="100%">
+								<Image src={TBLogo} alt="logo" width={60} height={60} />
 							</Group>
-						</Grid.Col>
-					</Grid>
+						</Box>
+					</Flex>
+					<hr />
+					<Text ta={'center'} fz={'lg'} fw={'600'}>রোগীর ছাড়পত্র</Text>
 				</Box>
 				<hr />
-
 				<Box mt="sm" fz="sm">
 					<Text fz="sm" mt={"xs"}>
-						এটি প্রত্যয়িত যে জনাব/জনাবা <strong>{data?.name}</strong> {data?.patient_id && `(${data?.patient_id})`}।
+						প্রত্যায়ন করা যাইতেছে যে জনাব/জনাবা <strong>{data?.name}</strong> {data?.patient_id && `(${data?.patient_id})`}।
 						পিতা/স্বামী <strong>{data?.father_name || data?.guardian_name || ""}</strong>। বয়স{" "}
 						<strong>
-							{data?.year ?? 0} বছর, {data?.month ?? 0} মাস, {data?.day ?? 0} দিন
+							{data?.year ? `${data.year} ${t("বছর")} ` : ""}
+							{data?.month ? `${patientInfo.month} ${t("মাস")} ` : ""}
+							{data?.day ? `${data.day} ${t("দিন")}` : ""}
 						</strong>
 						।
 					</Text>
@@ -85,16 +88,10 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					</Text>
 					<Text fz="sm" mt={"xs"}>
 						অত্র হাসপাতালের <strong>{data?.admit_department_name || ""}</strong> বিভাগে,{" "}
-						<strong>{data?.admit_unit_name || ""}</strong> ইউনিটে, <strong>{data?.room_name || ""}</strong>:{" "}
-						<strong>
-							{data?.cabin_name || data?.bed_name || ""} {data?.cabin_number || data?.bed_number || ""}
-						</strong>{" "}
-						শয্যা/কেবিনে
-					</Text>
-					<Text fz="sm" mt={"xs"}>
+						<strong>{data?.admit_unit_name || ""}</strong> ইউনিটে, <strong>{data?.room_name || ""}</strong> {" "}
+						শয্যা/কেবিনে {" "}
 						<strong>{formatDateTimeAmPm(data?.admission_date)}</strong> হইতে{" "}
-						<strong>
-							{data?.discharge_date ? data?.discharge_date : formatDateTimeAmPm(new Date())} {data?.discharge_time}
+						<strong>{formatDateTimeAmPm(data?.release_date)}
 						</strong>{" "}
 						তারিখ পর্যন্ত চিকিৎসাধীন ছিলেন।
 					</Text>
@@ -105,42 +102,25 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					{/* =============== first section: results of examination and observation ================ */}
 					<hr style={{ marginTop: "12px", marginBottom: "8px", border: "none", borderTop: "1px solid #ccc" }} />
 					<Text fz="sm" mt={"sm"} fw={600}>
-						পরীক্ষা ও পর্যবেক্ষণের ফলাফল
+						পরীক্ষা ও পর্যবেক্ষণের ফলাফল:
 					</Text>
-					<Text fz="xs" c="gray">
-						Supplied to Patient
-					</Text>
-					<hr style={{ marginTop: "8px", marginBottom: "12px", border: "none", borderTop: "1px solid #ccc" }} />
+					<hr style={{ border: "none", borderTop: "1px solid #ccc" }} />
 					<Flex>
-						<Text fz="xs" c="gray">
+						<Text>
 							{getValue(prescription_data?.examination_investigation, "")}
 						</Text>
-						<Box
-							style={{
-								border: "1px solid black",
-								width: "200px",
-								height: "120px",
-								marginLeft: "auto",
-								marginRight: "0",
-								marginTop: "8px",
-								marginBottom: "12px",
-							}}
-						></Box>
 					</Flex>
 					{/* =============== second section: description of medical and surgical treatment ================ */}
 					<hr style={{ marginTop: "12px", marginBottom: "8px", border: "none", borderTop: "1px solid #ccc" }} />
 					<Text fz="sm" mt={"sm"} fw={600}>
-						প্রদত্ত চিকিৎসা ও শল্য চিকিৎসার বিবরণ
+						প্রদত্ত চিকিৎসা ও শল্য চিকিৎসার বিবরণ:
 					</Text>
-					<Text fz="xs" c="gray">
-						Conservative
-					</Text>
-					<hr style={{ marginTop: "8px", marginBottom: "8px", border: "none", borderTop: "1px solid #ccc" }} />
-					<Text fz="xs" c="gray">
+					<hr style={{ border: "none", borderTop: "1px solid #ccc" }} />
+					<Text>
 						{getValue(prescription_data?.treatment_medication, "")}
 					</Text>
 					<Text fz="sm" mt={"sm"} fw={600}>
-						প্রেসক্রাইবড ওষুধসমূহ:
+						হাসপাতাল ত্যাগকালে উপদেশ ও ব্যবস্থাপত্র
 					</Text>
 					<hr style={{ marginTop: "8px", marginBottom: "8px", border: "none", borderTop: "1px solid #ccc" }} />
 					{prescription_data?.medicines?.map((medicine, index) => (
@@ -156,19 +136,18 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 									fontSize: "12px",
 								}}
 							>
-								<Text size="xs" fw={600}>
+								<Text size="sm" fw={600}>
 									{index + 1}.
 								</Text>
-								<Text size="xs" fw={600}>
+								<Text size="sm" fw={600}>
 									{getValue(medicine.medicine_id ? medicine.medicine_name : medicine.generic)}
 								</Text>
 							</Flex>
 							{medicine.dosages && medicine.dosages.length > 0 ? (
 								(medicine.dosages || []).map((dose, dIdx) => (
-									<Text
+									<Text size="sm"
 										key={dIdx}
 										style={{
-											fontSize: "11px",
 											color: "var(--theme-tertiary-color-8)",
 											marginLeft: "32px",
 										}}
@@ -180,9 +159,8 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 									</Text>
 								))
 							) : (
-								<Text
+								<Text size="sm"
 									style={{
-										fontSize: "11px",
 										color: "var(--theme-tertiary-color-8)",
 										marginLeft: "32px",
 									}}
@@ -195,23 +173,25 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 							)}
 						</Box>
 					))}
+					{(prescription_data?.advise &&
+						<>
 					<Text fz="sm" mt={"sm"} fw={600}>
-						অতিরিক্ত পরামর্শ ও নির্দেশনা:
+						উপদেশ ও নির্দেশনা:
 					</Text>
 					<Text fz="sm">{prescription_data?.advise}</Text>
+					</>
+					)}
 					<br />
-					{data?.follow_up_date && (
+					{prescription_data?.follow_up_date && (
 						<Text fz="sm" mt="xs">
-							রোগীকে <strong>{formatDate(data?.follow_up_date)}</strong> তারিখে (বা প্রয়োজনবোধে তার আগে) ফলো‑আপের
-							জন্য উপস্থিত হতে পরামর্শ দেওয়া হলো।
+							{prescription_data?.follow_up_date}
 						</Text>
 					)}
-					<Text fz="sm" mt={"xs"}>
-						উপরোক্ত তথ্যসমূহ যথাযথভাবে হাসপাতালের নথিতে সংরক্ষণ করার জন্য অনুরোধ করা হলো।
-					</Text>
-					<Text fz="sm" mt={"sm"}>
-						বিনীত,
-					</Text>
+					{prescription_data?.doctor_comment && (
+						<Text fz="sm" mt="xs">
+							<strong>বিঃ দ্রঃ  {prescription_data?.doctor_comment}</strong>
+						</Text>
+					)}
 					<Text fz="sm">
 						ডা. <strong>{data?.doctor_name}</strong>
 					</Text>
@@ -222,16 +202,6 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					<Text fz="sm">সিল ও স্বাক্ষর: ____________________________</Text>
 				</Box>
 
-				<DashedDivider mt={30} mb={0} />
-				<Box ta="center">
-					<Text size="xs" c="gray" mt="xs">
-						<strong>{t("প্রিন্ট")}: </strong>
-						{user?.name}
-					</Text>
-					<Text fz={8}>
-						{t("প্রিন্টের সময়")}: {new Date().toLocaleString()}
-					</Text>
-				</Box>
 			</Box>
 		</Box>
 	);
