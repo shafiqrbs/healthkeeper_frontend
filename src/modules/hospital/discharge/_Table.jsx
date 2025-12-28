@@ -1,5 +1,5 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { IconChevronUp, IconSelector } from "@tabler/icons-react";
+import { IconArrowRight, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { Box, Button, Text } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
@@ -119,9 +119,10 @@ export default function _Table() {
 									variant="filled"
 									size="compact-xs"
 									color="var(--theme-primary-color-6)"
-									onClick={() => handleProcessConfirmation(item.useTranslationid)}
+									onClick={() => handleProcessConfirmation(item.uid)}
+									rightSection={<IconArrowRight size={14} />}
 								>
-									{t("Discharge")}
+									{t("Process")}
 								</Button>
 							),
 						},
