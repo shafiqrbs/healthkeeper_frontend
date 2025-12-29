@@ -270,7 +270,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("AdmissionID")}:
+											{t("Adm.ID")}:
 										</Text>
 										<Text size="sm">{getValue(patientInfo?.invoice || "")}</Text>
 									</Group>
@@ -278,7 +278,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("PatientType")}:
+											{t("Type")}:
 										</Text>
 										<Text size="sm">{getValue(patientInfo?.payment_mode_name, "")}</Text>
 									</Group>
@@ -375,7 +375,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("GuardianName")}:
+											{t("Guardian/Fath")}:
 										</Text>
 										<Text size="xs">{getValue(patientInfo?.guardian_name, "")}</Text>
 									</Group>
@@ -395,9 +395,9 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										</Text>
 										<Text size="xs">
 											{getValue(patientInfo?.mobile, "")}
-											{patientInfo?.guardian_mobile && (
+											{/*{patientInfo?.guardian_mobile && (
 												<> / {getValue(patientInfo?.guardian_mobile, "")}</>
-											)}
+											)}*/}
 										</Text>
 									</Group>
 								</Table.Td>
@@ -452,6 +452,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										borderRight: "1px solid var(--theme-tertiary-color-8)",
 										padding: "4px",
 										verticalAlign: "top",
+										width:"260px"
 									}}
 								>
 									<Box style={{ position: "relative", minHeight: "550px" }}>
@@ -473,17 +474,19 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Box gap="2">
 											{exEmergencies.map((emergency, index) => (
 												<Box key={index}>
-													<Text size="xs" fw={600}>
+													<Text fw={600}>
 														* {getValue(emergency.value)}
 													</Text>
 												</Box>
 											))}
 											{medicines
-												?.filter((medicine) => medicine?.is_active == 1)
+												?.filter((medicine) => medicine?.is_active === 1)
 												?.sort((a, b) => a.order ?? 0 - b.order ?? 0)
 												?.map((medicine, index) => (
-													<Flex align={"left"} key={index}>
-														<Text size="xs" fw={600}>
+													<Flex align={"left"} key={index} style={{
+														borderBottom: "1px solid #ddd",
+													}}>
+														<Text  fw={600}>
 															{index + 1}.{" "}
 															{getValue(
 																medicine.medicine_id
@@ -493,7 +496,6 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 														</Text>
 														<Text
 															style={{
-																fontSize: "10px",
 																color: "var(--theme-tertiary-color-8)",
 																marginLeft: "8px",
 															}}
@@ -532,7 +534,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												<br />
 												<br />
 												<br />
-												<Text fz="xl">AdmittedBy</Text>
+												<Text fz="md">AdmittedBy</Text>
 											</Grid.Col>
 											<Grid.Col span={6} align={"right"}>
 												<Text size="sm" fw={600} mb="xs">
