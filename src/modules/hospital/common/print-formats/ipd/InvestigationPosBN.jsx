@@ -20,9 +20,7 @@ const InvestigationPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 	const patientInfo = data || {};
 
-	const totalPayable = useMemo(() => {
-		return data?.investigations?.items?.reduce((acc, item) => acc + item.price, 0);
-	}, [data?.investigations?.items]);
+	const totalPayable = patientInfo?.investigations?.items?.reduce((acc, item) => acc + item.price ?? 0, 0);
 
 	return (
 		<Box display={preview ? "block" : "none"}>
