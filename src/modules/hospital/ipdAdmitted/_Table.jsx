@@ -268,7 +268,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 									justify="right"
 									wrap="nowrap"
 								>
-									{values.process === "admitted" && ipdMode === "non-prescription" && (
+									{values.process === "Admitted" && ipdMode === "non-prescription" && (
 										<Button
 											rightSection={<IconArrowNarrowRight size={18} />}
 											onClick={() =>
@@ -394,7 +394,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 											>
 												{t("AdmissionForm")}
 											</Menu.Item>
-
+											{values.process === "Paid" && (
 											<Menu.Item
 												leftSection={
 													<IconFileText
@@ -408,8 +408,9 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 													handleDischargePaperPrint(values?.id)
 												}
 											>
-												{t("DischargePaper")}
+												{t("Discharge")}
 											</Menu.Item>
+											)}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>

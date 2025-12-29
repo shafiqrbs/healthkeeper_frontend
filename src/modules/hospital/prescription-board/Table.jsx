@@ -380,7 +380,11 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						{
 							accessor: "referred_mode",
 							title: t("RefMode"),
-							render: (item) => capitalizeWords(item?.referred_mode),
+							render: (item) => {
+								const mode = capitalizeWords(item?.referred_mode);
+								const room = item?.referred_room_name;
+								return room ? `${mode}/${room}` : mode;
+							},
 						},
 						{
 							title: t(""),
