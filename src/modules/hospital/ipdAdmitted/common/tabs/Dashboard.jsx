@@ -10,6 +10,7 @@ import { modals } from "@mantine/modals";
 import { getDataWithoutStore } from "@/services/apiService";
 import { errorNotification } from "@components/notification/errorNotification";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants";
+import {IconPointFilled} from "@tabler/icons-react";
 
 export default function Dashboard() {
 	const ipdRef = useRef(null);
@@ -19,6 +20,7 @@ export default function Dashboard() {
 	const [vitalRecordList, setVitalRecordList] = useState([]);
 	const [insulinRecordList, setInsulinRecordList] = useState([]);
 	const ipdId = id;
+
 
 	const getNumericValue = (value) => {
 		const numericValue = Number(value);
@@ -38,6 +40,142 @@ export default function Dashboard() {
 	const ipd = ipdData?.data;
 	const invoiceParticulars = ipd?.invoice_particular || [];
 	const prescriptionMedicine = ipd?.prescription_medicine || [];
+	const jsonContent = JSON.parse(ipd?.json_content || "{}");
+	const patientReport = jsonContent?.patient_report || {};
+	const patientExamination = patientReport?.patient_examination || {};
+	const order = patientReport?.order || {};
+
+	const renderExaminationSection = (key) => {
+		const dataArray = patientExamination?.[key];
+		if (!hasArrayWithLength(dataArray)) return null;
+
+		switch (key) {
+			case "chief_complaints": {
+				return (
+					<SectionWrapper label="C/C:">
+						{renderNumberedList(
+							dataArray,
+							(item) => `${item.name}: ${item.value} ${item.duration || "Day"}/s`
+						)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+			case "investigation": {
+				return (
+					<SectionWrapper label="Investigation:">
+						{renderNumberedList(dataArray, (item) => `${item.value}`)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+			case "ho_past_illness": {
+				return (
+					<SectionWrapper label="H/O Past Illness:">
+						{renderPlainJoined(dataArray, (item) => `${item.name}`)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+			case "diagnosis": {
+				return (
+					<SectionWrapper label="Diagnosis:">
+						{renderPlainJoined(dataArray, (item) => `${item.value}`)}
+					</SectionWrapper>
+				);
+			}
+			case "icd_11_listed_diseases": {
+				return (
+					<SectionWrapper label="ICD-11 listed diseases:">
+						<Text size="xs" c="black.5" mt="0">
+							{dataArray.join(", ") || "Headache, Fever"}
+						</Text>
+					</SectionWrapper>
+				);
+			}
+			case "comorbidity": {
+				return (
+					<SectionWrapper label="Comorbidity:">
+						{renderPlainJoined(
+							dataArray.filter((item) => item.value),
+							(item) => `${item.name}`
+						)}
+					</SectionWrapper>
+				);
+			}
+			case "treatment-history": {
+				return (
+					<SectionWrapper label="Treatment History:">
+						{renderPlainJoined(dataArray, (item) => `${item.value}`)}
+					</SectionWrapper>
+				);
+			}
+
+			default: {
+				// Generic renderer: prefer value, fallback to name
+				return (
+					<SectionWrapper label={`${key.replaceAll("_", " ")}:`}>
+						{renderPlainJoined(dataArray, (item) => `${item.value ?? item.name ?? ""}`)}
+						{renderOtherInstructions(key)}
+					</SectionWrapper>
+				);
+			}
+		}
+	};
+
+	console.log(jsonContent);
+	// Normalize order into an array of keys sorted by their index
+	const normalizeOrder = (inputOrder) => {
+		if (Array.isArray(inputOrder)) {
+			const entries = inputOrder.flatMap((obj) => Object.entries(obj));
+			return entries.sort((a, b) => a[1] - b[1]).map(([key]) => key);
+		}
+		if (inputOrder && typeof inputOrder === "object") {
+			return Object.keys(inputOrder).sort((a, b) => (inputOrder?.[a] ?? 0) - (inputOrder?.[b] ?? 0));
+		}
+		return [];
+	};
+
+	const orderedExamKeys = normalizeOrder(order);
+	const hasArrayWithLength = (arr) => Array.isArray(arr) && arr.length > 0;
+	const SectionWrapper = ({ label, children }) => (
+		<Box>
+			<Text size="sm" fw={600}>
+				{label}
+			</Text>
+			{/*<CustomDivider mb="es" borderStyle="dashed" w="90%" />*/}
+			{children}
+		</Box>
+	);
+
+	const renderNumberedList = (items, formatItem) => {
+		return (
+			<Stack gap="0px" mt="0">
+				{items.map((item, idx) => (
+					<Text key={idx} size="xs" c="black.5" mt="0">
+						<IconPointFilled style={{ width: "10", height: "10" }} stroke={1.5} />
+						{formatItem(item)}
+					</Text>
+				))}
+			</Stack>
+		);
+	};
+
+	const renderPlainJoined = (items, mapFn) => (
+		<Text size="xs" c="black.5" mt="0">
+			{items.map(mapFn).join(", ") || "Headache, Fever"}
+		</Text>
+	);
+	const renderOtherInstructions = (key) => {
+		const otherKey = `${key}_other_instructions`;
+		const text = patientExamination?.[otherKey];
+		if (!text) return null;
+		return (
+			<Text size="xs" c="gray" mt="xs">
+				{text}
+			</Text>
+		);
+	};
 
 	const handleReleaseMode = (mode) => {
 		modals.openConfirmModal({
@@ -144,98 +282,134 @@ export default function Dashboard() {
 				<Grid.Col span={4}>
 					<ScrollArea>
 						<Paper h={mainAreaHeight - 10} withBorder p="lg" radius="sm" bg="var(--theme-tertiary-color-0)">
-							<Stack gap="3xs">
-								<Title order={4} fw={700} mb="es">
-									{ipd?.name || "-"}
-								</Title>
-								<Text mt="les" size="sm" c="var(--theme-tertiary-color-7)">
-									Patient ID: {ipd?.patient_id || "-"}
-								</Text>
-								<Text mt="les" size="sm" c="var(--theme-tertiary-color-7)">
-									Invoice: {ipd?.invoice || "-"}
-								</Text>
-								<Text mt="les" size="sm" c="var(--theme-tertiary-color-7)">
-									Health ID: {ipd?.health_id || "-"}
-								</Text>
-								<Group mb="es">
-									<Text size="sm" c="var(--theme-tertiary-color-7)">
-										Age: {ipd?.day ? `${ipd.day} days` : ipd?.year ? `${ipd.year} years` : "-"}
-									</Text>
-									<Text size="sm" c="var(--theme-tertiary-color-7)">
-										| Gender:{" "}
-										{ipd?.gender ? ipd.gender.charAt(0).toUpperCase() + ipd.gender.slice(1) : "-"}
-									</Text>
-								</Group>
-								<Text size="sm" c="var(--theme-tertiary-color-7)">
-									Mobile: {ipd?.mobile || "-"}
-								</Text>
-								<Text size="sm" c="var(--theme-tertiary-color-7)">
-									Religion: {ipd?.religion_name || "-"}
-								</Text>
-								<Text size="sm" c="var(--theme-tertiary-color-7)">
-									Guardian: {ipd?.guardian_name || "-"} ({ipd?.guardian_mobile || "-"})
-								</Text>
-								<Text size="sm" c="var(--theme-tertiary-color-7)">
-									Date: {ipd?.created || "-"}
-								</Text>
-								<Text size="sm" c="var(--theme-tertiary-color-7)">
-									DOB: {ipd?.dob || "-"}
-								</Text>
-								<Text size="sm" c="var(--theme-tertiary-color-7)">
-									Address: {ipd?.address || "-"}
-								</Text>
-								<Text size="sm" c="var(--theme-tertiary-color-7)">
-									Father: {ipd?.father_name || "-"}
-								</Text>
-							</Stack>
-							<Divider
+							<Box style={{ position: "relative", minHeight: "550px" }}>
+								{(orderedExamKeys.length > 0
+										? orderedExamKeys
+										: Object.keys(patientExamination || {})
+								)
+									.filter((key) => hasArrayWithLength(patientExamination?.[key]))
+									.map((key) => (
+										<Box key={key}>{renderExaminationSection(key)}</Box>
+									))}
+							</Box>
+						</Paper>
+					</ScrollArea>
+				</Grid.Col>
+
+
+				{/* =============== Column 2: Financial & Medical Information =============== */}
+				<Grid.Col span={4} h="100%">
+					<ScrollArea h={mainAreaHeight}>
+						<Paper h={mainAreaHeight - 10} withBorder p="lg" radius="sm" bg="white">
+							<Stack gap="lg" h="100%">
+								<Box>
+									<Divider
+										label={
+											<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
+												Medicine History
+											</Text>
+										}
+										labelPosition="left"
+									/>
+									{prescriptionMedicine.length > 0 ? (
+										prescriptionMedicine.map((item, index) => (
+											<Grid columns={12} key={index}>
+												<Grid.Col span={9}>
+													<Text><strong>{index + 1}. {item.medicine_name}</strong></Text>
+													<Text>{item.dose_details}</Text>
+												</Grid.Col>
+												<Grid.Col span={3}>
+													<Text fw={'600'} c={item.is_active ? "green" : "red"}>
+														{item.is_active ? "Active" : "Omit"}
+													</Text>
+												</Grid.Col>
+											</Grid>
+										))
+									) : (
+										<Text size="sm" c="var(--theme-tertiary-color-7)" fs="italic">
+											No Medicine Found
+										</Text>
+									)}
+								</Box>
+								<Box>
+									<Divider
+										mt="xs"
+										label={
+											<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
+												Investigations
+											</Text>
+										}
+										labelPosition="left"
+									/>
+									{invoiceParticulars.length > 0 ? (
+										invoiceParticulars.map((item, index) => (
+											<Grid columns={12} key={index}>
+												<Grid.Col span={9}>
+													{index + 1}. {item.item_name}
+												</Grid.Col>
+												<Grid.Col span={3}>
+													<Text size="xs"> {item.process}</Text>
+												</Grid.Col>
+											</Grid>
+										))
+									) : (
+										<Text size="sm" c="var(--theme-tertiary-color-7)" fs="italic">
+											No invoice particulars found
+										</Text>
+									)}
+								</Box>
+								{/*<Divider
 								mt="xs"
 								label={
 									<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
-										Additional Information
+										Payment Information
 									</Text>
 								}
 								labelPosition="left"
 							/>
 							<Stack gap="3xs" mb="es">
 								<Text fw={500} size="sm">
-									Process:{" "}
+									Sub Total:{" "}
 									<Text span fw={400}>
-										{ipd?.process || "-"}
+										{ipd?.sub_total ? `৳${ipd.sub_total}` : "-"}
 									</Text>
 								</Text>
 								<Text fw={500} size="sm">
-									Is Admission:{" "}
+									Total:{" "}
 									<Text span fw={400}>
-										{ipd?.is_admission ? "Yes" : "No"}
+										{ipd?.total ? `৳${ipd.total}` : "-"}
 									</Text>
 								</Text>
 								<Text fw={500} size="sm">
-									Created By:{" "}
+									Due:{" "}
 									<Text span fw={400}>
-										{ipd?.created_by_name || "-"}
+										{ipd?.due ? `৳${ipd.due}` : "-"}
 									</Text>
 								</Text>
 								<Text fw={500} size="sm">
-									Identity Mode:{" "}
+									Payment Status:{" "}
 									<Text span fw={400}>
-										{ipd?.identity_mode || "-"}
+										{ipd?.payment_status || "-"}
 									</Text>
 								</Text>
-								<Text fw={500} size="sm">
-									NID:{" "}
-									<Text span fw={400}>
-										{ipd?.nid || "-"}
+							</Stack>
+							<Divider
+								mt="xs"
+								label={
+									<Text size="xs" c="var(--theme-tertiary-color-7)">
+										Transaction History
 									</Text>
-								</Text>
+								}
+								labelPosition="left"
+							/>*/}
 							</Stack>
 						</Paper>
 					</ScrollArea>
 				</Grid.Col>
 
-				{/* =============== Column 2: Room & Doctor Information =============== */}
+				{/* =============== Column 3: Room & Doctor Information =============== */}
 				<Grid.Col span={4} h="100%">
-					<Box bg="var(--mantine-color-white)" className="borderRadiusAll">
+					<Box h={mainAreaHeight - 10} bg="var(--mantine-color-white)" className="borderRadiusAll">
 						{ipd?.release_mode && ipd?.process?.toLowerCase() !== "paid" ? (
 							<Paper
 								m="md"
@@ -406,115 +580,6 @@ export default function Dashboard() {
 					</Box>
 				</Grid.Col>
 
-				{/* =============== Column 3: Financial & Medical Information =============== */}
-				<Grid.Col span={4} h="100%">
-					<ScrollArea h={mainAreaHeight}>
-						<Paper h={mainAreaHeight - 16} withBorder p="lg" radius="sm" bg="white">
-							<Stack gap="lg" h="100%">
-								<Box>
-									<Divider
-										label={
-											<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
-												Medicine History
-											</Text>
-										}
-										labelPosition="left"
-									/>
-									{prescriptionMedicine.length > 0 ? (
-										prescriptionMedicine.map((item, index) => (
-											<Grid columns={12} key={index}>
-												<Grid.Col span={9}>
-													<Text>
-														{index + 1}. {item.medicine_name}
-													</Text>
-													<Text size="xs">{item.dose_details}</Text>
-												</Grid.Col>
-												<Grid.Col span={3}>
-													<Text size="xs">{item.is_active ? "Active" : "Omit"}</Text>
-												</Grid.Col>
-											</Grid>
-										))
-									) : (
-										<Text size="sm" c="var(--theme-tertiary-color-7)" fs="italic">
-											No Medicine Found
-										</Text>
-									)}
-								</Box>
-								<Box>
-									<Divider
-										mt="xs"
-										label={
-											<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
-												Investigations
-											</Text>
-										}
-										labelPosition="left"
-									/>
-									{invoiceParticulars.length > 0 ? (
-										invoiceParticulars.map((item, index) => (
-											<Grid columns={12} key={index}>
-												<Grid.Col span={9}>
-													{index + 1}. {item.item_name}
-												</Grid.Col>
-												<Grid.Col span={3}>
-													<Text size="xs"> {item.process}</Text>
-												</Grid.Col>
-											</Grid>
-										))
-									) : (
-										<Text size="sm" c="var(--theme-tertiary-color-7)" fs="italic">
-											No invoice particulars found
-										</Text>
-									)}
-								</Box>
-								{/*<Divider
-								mt="xs"
-								label={
-									<Text size="xs" c="var(--theme-tertiary-color-7)" fw={500}>
-										Payment Information
-									</Text>
-								}
-								labelPosition="left"
-							/>
-							<Stack gap="3xs" mb="es">
-								<Text fw={500} size="sm">
-									Sub Total:{" "}
-									<Text span fw={400}>
-										{ipd?.sub_total ? `৳${ipd.sub_total}` : "-"}
-									</Text>
-								</Text>
-								<Text fw={500} size="sm">
-									Total:{" "}
-									<Text span fw={400}>
-										{ipd?.total ? `৳${ipd.total}` : "-"}
-									</Text>
-								</Text>
-								<Text fw={500} size="sm">
-									Due:{" "}
-									<Text span fw={400}>
-										{ipd?.due ? `৳${ipd.due}` : "-"}
-									</Text>
-								</Text>
-								<Text fw={500} size="sm">
-									Payment Status:{" "}
-									<Text span fw={400}>
-										{ipd?.payment_status || "-"}
-									</Text>
-								</Text>
-							</Stack>
-							<Divider
-								mt="xs"
-								label={
-									<Text size="xs" c="var(--theme-tertiary-color-7)">
-										Transaction History
-									</Text>
-								}
-								labelPosition="left"
-							/>*/}
-							</Stack>
-						</Paper>
-					</ScrollArea>
-				</Grid.Col>
 
 				{/* <Grid.Col span={6}>
 					<Paper withBorder p="lg" h={mainAreaHeight - 350} radius="sm" bg="var(--mantine-color-white)">

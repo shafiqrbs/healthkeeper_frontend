@@ -36,7 +36,6 @@ export default function _Table() {
 			'patient_mode':'ipd',
 		},
 	});
-
 	const handleView = (id) => {
 		console.info(id);
 	};

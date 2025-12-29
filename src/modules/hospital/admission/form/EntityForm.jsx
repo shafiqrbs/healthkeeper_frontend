@@ -364,7 +364,7 @@ export default function EntityForm({ form, module }) {
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("CardNo")}<RequiredAsterisk /></Text>
+											<Text fz="sm">{t("CardNo")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<InputForm
