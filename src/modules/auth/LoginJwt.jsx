@@ -61,6 +61,12 @@ export default function LoginJwt() {
 		[]
 	);
 
+	requestAnimationFrame(() => {
+		if (user?.id) {
+			navigate(-1);
+		}
+	});
+
 	axios.defaults.withCredentials = true;
 
 	function login(data) {
