@@ -121,7 +121,7 @@ export default function LoginJwt() {
 							navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX);
 							return null;
 						}
-						// return navigate("/");
+						return navigate("/");
 					});
 				} else {
 					setErrorMessage(res.data.message);

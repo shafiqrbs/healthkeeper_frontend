@@ -313,12 +313,12 @@ export default function AddMedicineForm({
 		medicineForm.setFieldValue(field, value);
 
 		// If medicine field is being changed, auto-populate other fields from medicine data
-		if ((field === "medicine_id" && value) || (field === "generic" && value)) {
+		if ((field === "medicine_id" || field === "generic") && value) {
 			const selectedMedicine =
 				field === "medicine_id"
 					? medicineData?.find((item) => item.product_id?.toString() === value)
 					: medicineGenericData?.find((item) => item.generic === value);
-			console.log(selectedMedicine);
+
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 
@@ -405,20 +405,6 @@ export default function AddMedicineForm({
 				return;
 			}
 
-			if (values.generic) {
-				console.log(medicineGenericData);
-				const updateNestedState = useAuthStore.getState().updateNestedState;
-				updateNestedState("hospitalConfig.localMedicines", [
-					...medicineGenericData,
-					{
-						generic: values.generic,
-						medicine_name: values.generic,
-						medicine_bymeal_id: values.medicine_bymeal_id,
-						medicine_dosage_id: values.medicine_dosage_id,
-					},
-				]);
-			}
-
 			setMedicines([...medicines, values]);
 			setUpdateKey((prev) => prev + 1);
 
@@ -502,6 +488,8 @@ export default function AddMedicineForm({
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
 				setRefetchData({ module, refetching: true });
+				const updateNestedState = useAuthStore.getState()?.updateNestedState;
+				updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
 				if (redirect) navigate(redirectUrl || HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}

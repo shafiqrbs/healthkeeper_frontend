@@ -62,6 +62,7 @@ import BookmarkDrawer from "@hospital-components/BookmarkDrawer";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import { SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function AddMedicineForm({
 	module,
@@ -289,7 +290,7 @@ export default function AddMedicineForm({
 			const selectedMedicine =
 				field === "medicine_id"
 					? medicineData?.find((item) => item.product_id?.toString() === value?.toString())
-					: medicineGenericData?.find((item) => item.name === value);
+					: medicineGenericData?.find((item) => item.generic === value);
 
 			console.log("Selected-Medicine", selectedMedicine);
 
@@ -430,6 +431,8 @@ export default function AddMedicineForm({
 			if (updateEntityData.rejected.match(resultAction)) {
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
+				const updateNestedState = useAuthStore.getState()?.updateNestedState;
+				updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.localMedicines);
 				if (redirect) {
 					navigate(
 						`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${ipdId || id}?tab=dashboard`
@@ -565,7 +568,7 @@ export default function AddMedicineForm({
 											name="generic"
 											clearable
 											data={medicineGenericData?.map((item, index) => ({
-												label: item?.name || item?.product_name,
+												label: item?.name || item?.medicine_name,
 												value: `${item.name} ${index}`,
 												generic: item?.generic || "",
 											}))}
