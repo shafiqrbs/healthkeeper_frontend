@@ -89,7 +89,6 @@ export default function Invoice({ entity }) {
 		requestAnimationFrame(invoicePrint);
 	};
 
-	//console.log(selectedInvoice);
 
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">

@@ -212,8 +212,6 @@ export default function InvoiceDetails({ entity }) {
 		}, 0);
 	}, [selectedRecords]);
 
-	console.log(selectedRecords);
-
 	const roomSubtotal = useMemo(() => {
 		return (roomItems || []).reduce((accumulator, item) => {
 			const subtotal = Number(item?.subtotal ?? Number(item?.days ?? 0) * Number(item?.price ?? 0));
