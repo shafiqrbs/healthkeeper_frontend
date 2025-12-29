@@ -30,9 +30,9 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import { useTranslation } from "react-i18next";
 import InvestigationPosBN from "@hospital-components/print-formats/ipd/InvestigationPosBN";
 import { useReactToPrint } from "react-to-print";
-import { formatDateTimeAmPm, formatUnixToAmPm } from "@utils/index";
+import { formatUnixToAmPm } from "@utils/index";
 
-export default function Investigation() {
+export default function Investigation({ ipdData }) {
 	const dispatch = useDispatch();
 	const { id } = useParams();
 	const { t } = useTranslation();
@@ -191,11 +191,7 @@ export default function Investigation() {
 							</Stack>
 						</Box>
 						<Box px="xs">
-							<TabsActionButtons
-								isSubmitting={isSubmitting}
-								handleReset={() => {}}
-								handleSave={handleSubmit}
-							/>
+							<TabsActionButtons isSubmitting={isSubmitting} handleReset={() => {}} handleSave={handleSubmit} />
 						</Box>
 					</Box>
 				</Grid.Col>
@@ -203,11 +199,7 @@ export default function Investigation() {
 					<Box className="borderRadiusAll" bg="var(--mantine-color-white)" h="100%">
 						<TabSubHeading title="Investigation Details" />
 						<ScrollArea p="xs" pos="relative" h={mainAreaHeight - 58}>
-							<LoadingOverlay
-								visible={isLoading}
-								zIndex={1000}
-								overlayProps={{ radius: "sm", blur: 2 }}
-							/>
+							<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 							{investigationData?.data?.length === 0 && (
 								<Flex h="100%" justify="center" align="center">
 									<Text fz="sm">{t("NoDataAvailable")}</Text>
@@ -218,12 +210,7 @@ export default function Investigation() {
 									<Flex py="xs" justify="space-between" gap="xs" mb="3xs">
 										<Flex w="90%">
 											<Box w="100%">
-												<Badge
-													variant="light"
-													p="md"
-													size="md"
-													color="var(--theme-secondary-color-8)"
-												>
+												<Badge variant="light" p="md" size="md" color="var(--theme-secondary-color-8)">
 													{/*{index + 1}. */}
 													{formatUnixToAmPm(item.created)}
 												</Badge>
@@ -273,7 +260,7 @@ export default function Investigation() {
 				</Grid.Col>
 			</Grid>
 
-			{/*<InvestigationPosBN data={investigationPrintData} ref={investigationPosBNRef}  />*/}
+			<InvestigationPosBN data={{ ...ipdData, investigations: investigationPrintData }} ref={investigationPosBNRef} />
 		</Box>
 	);
 }

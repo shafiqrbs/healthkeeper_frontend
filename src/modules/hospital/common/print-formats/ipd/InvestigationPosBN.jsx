@@ -1,5 +1,5 @@
 import { Box, Text, Stack, Group, Image, Table } from "@mantine/core";
-import { forwardRef } from "react";
+import { forwardRef, useMemo } from "react";
 import TbImage from "@assets/images/tb_logo.png";
 import GovtLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import useAppLocalStore from "@hooks/useAppLocalStore";
@@ -20,19 +20,17 @@ const InvestigationPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 	const patientInfo = data || {};
 
+	const totalPayable = useMemo(() => {
+		return data?.investigations?.items?.reduce((acc, item) => acc + item.price, 0);
+	}, [data?.investigations?.items]);
+
 	return (
 		<Box display={preview ? "block" : "none"}>
 			<Box ref={ref} w="80mm" p={8} bg="var(--mantine-color-white)" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="space-between" align="center" gap={8}>
-						<Image
-							src={GovtLogo}
-							alt="Govt Logo"
-							width={30}
-							height={30}
-							fit="contain"
-						/>
+						<Image src={GovtLogo} alt="Govt Logo" width={30} height={30} fit="contain" />
 						<Stack gap={0} ta="left">
 							<Text ta="center" size="xs" fw={700}>
 								{hospitalConfigData?.organization_name || "Hospital"}
@@ -44,22 +42,13 @@ const InvestigationPosBN = forwardRef(({ data, preview = false }, ref) => {
 								{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
 							</Text>
 						</Stack>
-						<Image
-							src={TbImage}
-							alt="TB Hospital"
-							width={30}
-							height={30}
-							fit="contain"
-						/>
+						<Image src={TbImage} alt="TB Hospital" width={30} height={30} fit="contain" />
 					</Group>
 					<DashedLine />
 
 					{/* =============== prescription title =============== */}
 					<Text size="sm" fw={700} ta="center">
 						{t("ইনভেস্টিগেশন")} - {patientInfo?.payment_mode_name || "Cash"}
-					</Text>
-					<Text size="xs" fw={700} ta="center">
-						<strong>{t("বিলের বিবরণ")}:</strong> {patientInfo?.room_name || ""}
 					</Text>
 					<DashedLine />
 
@@ -92,47 +81,17 @@ const InvestigationPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 					<DashedLine />
 
-					{/* =============== financial summary =============== */}
+					{/* =============== investigation items list =============== */}
 					<Table fz="10px" verticalSpacing={1} withRowBorders={false}>
 						<Table.Tbody>
-							<Table.Tr>
-								<Table.Td>
-									<strong>{t("ভর্তি ফি")}:</strong>
-								</Table.Td>
-								<Table.Td align="right">
-									৳ {patientInfo?.admission_fee || 0}
-								</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td>
-									<strong>{t("কেবিন ভাড়া")}:</strong>
-								</Table.Td>
-								<Table.Td align="right">৳ {patientInfo?.cabin_rent || 0}</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td>
-									<strong>{t("সর্বমোট জমা")}:</strong>
-								</Table.Td>
-								<Table.Td align="right">
-									৳ {patientInfo?.total_deposit || 0}
-								</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td>
-									<strong>{t("ডিস্কাউন্ট")}:</strong>
-								</Table.Td>
-								<Table.Td align="right">
-									৳ {patientInfo?.discount_amount || 0}
-								</Table.Td>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Td>
-									<strong>{t("ফেরত")}:</strong>
-								</Table.Td>
-								<Table.Td align="right">
-									৳ {patientInfo?.refund_amount || 0}
-								</Table.Td>
-							</Table.Tr>
+							{data?.investigations?.items?.map((item, index) => (
+								<Table.Tr key={item.id || item.unique_id || index}>
+									<Table.Td>
+										<strong>{item.name || ""}</strong>
+									</Table.Td>
+									<Table.Td align="right">৳ {item.price || 0}</Table.Td>
+								</Table.Tr>
+							))}
 						</Table.Tbody>
 					</Table>
 
@@ -142,7 +101,7 @@ const InvestigationPosBN = forwardRef(({ data, preview = false }, ref) => {
 							{t("মোট পরিশোধযোগ্য")}:
 						</Text>
 						<Text size="sm" fw={700}>
-							৳ {patientInfo?.total_payable || patientInfo?.total || 0}
+							৳ {totalPayable}
 						</Text>
 					</Group>
 					<DashedLine />
@@ -152,18 +111,12 @@ const InvestigationPosBN = forwardRef(({ data, preview = false }, ref) => {
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
-									<Barcode
-										fontSize={"12"}
-										width={"1"}
-										height={"40"}
-										value={patientInfo?.invoice}
-									/>
+									<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.invoice} />
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("CreatedBy")}:</strong>{" "}
-									{patientInfo?.created_by_name || ""}
+									<strong>{t("CreatedBy")}:</strong> {patientInfo?.created_by_name || ""}
 								</Table.Td>
 								<Table.Td align="right">
 									<strong>{t("PrintedBy")}:</strong> {user?.name}
@@ -171,15 +124,13 @@ const InvestigationPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
-									<strong>{t("প্রিন্টের সময়")}:</strong>{" "}
-									{new Date().toLocaleString()}
+									<strong>{t("প্রিন্টের সময়")}:</strong> {new Date().toLocaleString()}
 								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
 					<Text size="2xs" ta="center" pb={"xl"}>
-						© {new Date().getFullYear()} {hospitalConfigData?.organization_name}{" "}
-						{t("সর্বস্বত্ব সংরক্ষিত")}।
+						© {new Date().getFullYear()} {hospitalConfigData?.organization_name} {t("সর্বস্বত্ব সংরক্ষিত")}।
 					</Text>
 				</Stack>
 			</Box>

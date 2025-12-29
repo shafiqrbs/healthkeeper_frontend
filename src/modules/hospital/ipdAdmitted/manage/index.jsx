@@ -292,8 +292,7 @@ export default function Index() {
 									</Text>
 									<Text fz="xs">{ipdData?.data?.gender}</Text>
 									<Text fz="xs">
-										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m{" "}
-										{ipdData?.data?.day || 0}d{" "}
+										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m {ipdData?.data?.day || 0}d{" "}
 									</Text>
 									<Text fz="xs">
 										{t("Created")} {formatDate(ipdData?.data?.created_at)}
@@ -413,21 +412,17 @@ export default function Index() {
 						{baseTabValue === "dashboard" && <Dashboard />}
 						{/*{baseTabValue === "issue-medicine" && <IssueMedicine />}*/}
 						{/*{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}*/}
-						{baseTabValue === "investigation" && <Investigation />}
+						{baseTabValue === "investigation" && <Investigation ipdData={ipdData?.data} />}
 						{baseTabValue === "vitals-chart" && <VitalsChart refetch={refetch} data={ipdData?.data} />}
 						{baseTabValue === "insulin-chart" && <InsulinChart refetch={refetch} data={ipdData?.data} />}
 						{baseTabValue === "discharge" && <Discharge ipdData={ipdData?.data} refetch={refetch} />}
-						{baseTabValue === "death-certificate" && <DeathCertificate data={ipdData} />}
+						{baseTabValue === "death-certificate" && <DeathCertificate data={ipdData?.data} />}
 						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
-						{baseTabValue === "discharge-print" && (
-							<DischargePrint data={ipdData?.data} refetch={refetch} />
-						)}
+						{baseTabValue === "discharge-print" && <DischargePrint data={ipdData?.data} refetch={refetch} />}
 						{baseTabValue === "death-certificate-print" && (
 							<DeathCertificatePrint data={ipdData?.data} refetch={refetch} />
 						)}
-						{baseTabValue === "room-transfer-print" && (
-							<RoomTransferPrint data={ipdData?.data} refetch={refetch} />
-						)}
+						{baseTabValue === "room-transfer-print" && <RoomTransferPrint data={ipdData?.data} refetch={refetch} />}
 						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
 						{!baseTabValue && (
