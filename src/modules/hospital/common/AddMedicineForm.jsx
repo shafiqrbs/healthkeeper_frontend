@@ -64,6 +64,7 @@ import {
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import BookmarkDrawer from "./BookmarkDrawer";
 import { notifications } from "@mantine/notifications";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function AddMedicineForm({
 	module,
@@ -404,6 +405,20 @@ export default function AddMedicineForm({
 				return;
 			}
 
+			if (values.generic) {
+				console.log(medicineGenericData);
+				const updateNestedState = useAuthStore.getState().updateNestedState;
+				updateNestedState("hospitalConfig.localMedicines", [
+					...medicineGenericData,
+					{
+						generic: values.generic,
+						medicine_name: values.generic,
+						medicine_bymeal_id: values.medicine_bymeal_id,
+						medicine_dosage_id: values.medicine_dosage_id,
+					},
+				]);
+			}
+
 			setMedicines([...medicines, values]);
 			setUpdateKey((prev) => prev + 1);
 
@@ -454,8 +469,6 @@ export default function AddMedicineForm({
 
 		try {
 			const createdBy = user;
-
-			console.log(tabParticulars);
 
 			const formValue = {
 				is_completed: true,
