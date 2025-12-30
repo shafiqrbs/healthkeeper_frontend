@@ -6,13 +6,14 @@ import Form from "./form/_Form";
 import VisitTable from "./_Table";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
 import { MODULES } from "@/constants";
+import useAppLocalStore from "@hooks/useAppLocalStore";
 
 const module = MODULES.EMERGENCY;
 
 export default function Index() {
+	const { user } = useAppLocalStore();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-
 	return (
 		<>
 			{progress !== 100 ? (

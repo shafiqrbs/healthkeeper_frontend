@@ -112,23 +112,6 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("AssignEmployee")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("AssignEmployeeValidateMessage")}
-												placeholder={t("AssignEmployee")}
-												name="employee_id"
-												id="employee_id"
-												nextField="name"
-												value={form.values.employee_id}
-												dropdownValue={employeeDropdown}
-											/>
-										</Grid.Col>
-									</Grid>
-									<Grid align="center" columns={20} mt="3xs">
-										<Grid.Col span={6}>
 											<Text fz="sm">
 												{t("Name")} <RequiredAsterisk />
 											</Text>

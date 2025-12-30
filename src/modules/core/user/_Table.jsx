@@ -134,6 +134,31 @@ export default function _Table({ module }) {
 		});
 	};
 
+	const handleResetPassword = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: "Confirm", cancel: "Cancel" },
+			confirmProps: { color: "red.6" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: async () => {
+				const resultAction = await dispatch(
+					editEntityData({
+						url: `${MASTER_DATA_ROUTES.API_ROUTES.USER.RESET_PASSWORD}/${id}`,
+						module,
+						id,
+					})
+				);
+				if (editEntityData.fulfilled.match(resultAction)) {
+					showNotificationComponent(t("PasswordResetSuccessfully"), "red.6", "lightgray");
+					dispatch(setRefetchData({ module, refetching: true }));
+				} else {
+					showNotificationComponent(t("DeleteFailed"), "red.6", "lightgray");
+				}
+			},
+		});
+	};
+
 	return (
 		<>
 			<Box className="boxBackground borderRadiusAll border-bottom-none">
@@ -199,7 +224,16 @@ export default function _Table({ module }) {
 											>
 												{t("Edit")}
 											</Menu.Item>
-
+											<Menu.Item
+												target="_blank"
+												component="a"
+												w={200}
+												mt={2}
+												c="green.6"
+												onClick={() => handleResetPassword(data.id)}
+											>
+												{t("Reset Password")}
+											</Menu.Item>
 											<Menu.Item
 												onClick={() => handleShow(data.id)}
 												target="_blank"

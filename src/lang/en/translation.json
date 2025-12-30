@@ -36,6 +36,7 @@
 	"OLDReferenceNo": "OLD Reference No",
 	"Mobile": "Mobile",
 	"MobileValidateMessage": "Number must be digit",
+	"EnterValidPatientMobile": "Mobile no must be 11 digit",
 	"AlternativeMobile": "Alternative Mobile",
 	"Email": "Email",
 	"Location": "Location",

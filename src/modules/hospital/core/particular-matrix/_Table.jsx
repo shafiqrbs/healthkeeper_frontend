@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Text,
@@ -6,7 +6,7 @@ import {
     Stack,
     Select,
     Checkbox,
-    Center
+    Center, TextInput
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
@@ -24,6 +24,8 @@ import {useOutletContext} from "react-router-dom";
 import {setRefetchData} from "@/app/store/core/crudSlice";
 import {DragDropContext, Draggable, Droppable} from "@hello-pangea/dnd";
 import tableCss from "@assets/css/TableAdmin.module.css";
+import inlineInputCss from "@assets/css/InlineInputField.module.css";
+import {DATA_TYPES} from "@/constants";
 
 export default function _Table({ module }) {
     const dispatch = useDispatch();
@@ -76,6 +78,9 @@ export default function _Table({ module }) {
                 if (!newData[item.id]) {
                     newData[item.id] = {
                         is_additional_field: item?.is_additional_field ?? false,
+                        status: item?.status ?? false,
+                        ordering: item?.ordering ?? 999,
+                        data_type: item?.data_type ?? 'Textarea',
                     };
                 }
             });
@@ -113,6 +118,46 @@ export default function _Table({ module }) {
         result.splice(endIndex, 0, removed);
         return result;
     };
+
+    const handleDataTypeChange = (rowId, field, value) => {
+        setSubmitFormData((prev) => ({
+            ...prev,
+            [rowId]: {
+                ...prev[rowId],
+                [field]: value,
+            },
+        }));
+    };
+
+    const handleRowSubmit = async (rowId) => {
+        const formData = submitFormData[rowId];
+        if (!formData) return false;
+
+        // 🔎 find original row data
+        const originalRow = records.find((r) => r.id === rowId);
+        if (!originalRow) return false;
+
+        // ✅ check if there is any change
+        const isChanged = Object.keys(formData).some((key) => formData[key] !== originalRow[key]);
+
+        if (!isChanged) {
+            // nothing changed → do not submit
+            return false;
+        }
+
+        const value = {
+            url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MATRIX.INLINE_UPDATE}/${rowId}`,
+            data: formData,
+            module,
+        };
+        try {
+            const resultAction = await dispatch(storeEntityData(value));
+        } catch (error) {
+            errorNotification(error.message);
+        }
+    };
+
+
 
     const handleDragEnd = async (result) => {
         if (!result.destination) return;
@@ -232,6 +277,45 @@ export default function _Table({ module }) {
                                 </>
                             ),
                         },
+
+                        {
+                            accessor: "data_type",
+                            title: t("DataType"),
+                            width: "220px",
+                            render: (item) => (
+                                <Select
+                                    size="xs"
+                                    className={inlineInputCss.inputText}
+                                    placeholder={t("SelectUnitName")}
+                                    data={DATA_TYPES}
+                                    value={String(submitFormData[item.id]?.data_type) ?? ""}
+                                    onChange={(val) => handleFieldChange(item.id, "data_type", val)}
+                                    rightSection={updatingRows[item.id]}
+                                />
+                            ),
+                        },
+
+                        {
+                            accessor: "ordering",
+                            title: t("Ordering"),
+                            sortable: true,
+                            render: (item) => (
+                                <TextInput
+                                    size="xs"
+                                    className={inlineInputCss.inputText}
+                                    placeholder={t("ordering")}
+                                    value={submitFormData[item.id]?.ordering || ""}
+                                    onChange={(event) =>
+                                        handleDataTypeChange(
+                                            item.id,
+                                            "ordering",
+                                            event.currentTarget.value
+                                        )
+                                    }
+                                    onBlur={() => handleRowSubmit(item.id)}
+                                />
+                            ),
+                        },
                         {
                             accessor: "is_additional_field",
                             title: t("AdditionalField"),
@@ -244,6 +328,24 @@ export default function _Table({ module }) {
                                         handleFieldChange(
                                             item.id,
                                             "is_additional_field",
+                                            val.currentTarget.checked
+                                        )
+                                    }
+                                />
+                            ),
+                        },
+                        {
+                            accessor: "status",
+                            title: t("Status"),
+                            render: (item) => (
+                                <Checkbox
+                                    key={item.id}
+                                    size="sm"
+                                    checked={submitFormData[item.id]?.status ?? false}
+                                    onChange={(val) =>
+                                        handleFieldChange(
+                                            item.id,
+                                            "status",
                                             val.currentTarget.checked
                                         )
                                     }

@@ -122,8 +122,7 @@ export default function Dashboard() {
 			}
 		}
 	};
-
-	console.log(jsonContent);
+	
 	// Normalize order into an array of keys sorted by their index
 	const normalizeOrder = (inputOrder) => {
 		if (Array.isArray(inputOrder)) {

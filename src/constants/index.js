@@ -86,6 +86,7 @@ export const DATA_TYPES = [
 	"RadioButton",
 	"Textarea",
 	"InputWithCheckbox",
+	"SearchWithCheckbox",
 ];
 
 export const DURATION_TYPES = ["Day", "Month", "Year", "Continue"];

@@ -37,6 +37,8 @@ export default function Index({ height }) {
 		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX);
 		return null;
 	}
+	console.log(userRoles)
+
 	return (
 		<>
 			{progress !== 100 ? (

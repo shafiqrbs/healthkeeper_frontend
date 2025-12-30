@@ -53,6 +53,7 @@ export const MASTER_DATA_ROUTES = {
 			UPDATE: "core/user",
 			VIEW: "core/user/view",
 			DELETE: "core/user",
+			RESET_PASSWORD: "core/user/reset-password",
 		},
 
 		SETTING: {

@@ -511,7 +511,7 @@ export default function Update({ module }) {
 														mt={8}
 													/>
 												</Box>
-												<Box mt={"xs"}>
+												{/*<Box mt={"xs"}>
 													<PasswordInputForm
 														form={form}
 														tooltip={t("RequiredPassword")}
@@ -536,7 +536,7 @@ export default function Update({ module }) {
 														nextField={"EntityFormSubmit"}
 														mt={8}
 													/>
-												</Box>
+												</Box>*/}
 											</Box>
 										</ScrollArea>
 									</Box>

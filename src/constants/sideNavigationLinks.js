@@ -81,7 +81,7 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX_BOARD,
 			icon: IconBuildingHospital,
 			color: "#e92214", // Purple
-			allowedRoles: ["role_domain", "admin_administrator", "doctor_opd"],
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_opd", "doctor_ipd"],
 		},
 
 		{
@@ -94,6 +94,7 @@ export const sideNavigationLinks = {
 				"role_domain",
 				"admin_administrator",
 				"doctor_ipd_confirm",
+				"doctor_rs_rp_confirm",
 				"ipd_admission",
 				"operator_emergency",
 				"doctor_ipd",
@@ -112,7 +113,7 @@ export const sideNavigationLinks = {
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.CONFIRM,
 					icon: IconBuildingHospital,
 					color: "#00BCD4", // Cyan
-					allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd_confirm"],
+					allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd_confirm", "doctor_rs_rp_confirm"],
 				},
 				{
 					label: t("Admitted"),
@@ -258,12 +259,11 @@ export const sideNavigationLinks = {
 			allowedRoles: [
 				"role_domain",
 				"admin_administrator",
-				"doctor_ipd",
+				"doctor_rs_rp_confirm",
 				"doctor_emergency",
 				"doctor_opd",
 				"doctor_approve_opd",
 				"doctor_approve_ipd",
-				"doctor_ipd_confirm",
 			],
 			subMenu: [
 				{
@@ -276,7 +276,8 @@ export const sideNavigationLinks = {
 						"doctor_ipd",
 						"doctor_emergency",
 						"doctor_opd",
-						"doctor_ipd_confirm",
+						"doctor_approve_opd",
+						"doctor_approve_ipd",
 					],
 				},
 				{
@@ -291,7 +292,6 @@ export const sideNavigationLinks = {
 						"doctor_opd",
 						"doctor_approve_opd",
 						"doctor_approve_ipd",
-						"doctor_ipd_confirm",
 					],
 				},
 			],
