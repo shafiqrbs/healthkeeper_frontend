@@ -432,7 +432,7 @@ export default function AddMedicineForm({
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
 				const updateNestedState = useAuthStore.getState()?.updateNestedState;
-				updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.localMedicines);
+				updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
 				if (redirect) {
 					navigate(
 						`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${ipdId || id}?tab=dashboard`
