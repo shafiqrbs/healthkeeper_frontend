@@ -66,6 +66,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import AddDosagePopover from "@components/drawers/AddDosagePopover";
 
 export default function AddMedicineForm({
+	showBaseItems = true,
 	module,
 	form,
 	update,
@@ -86,6 +87,8 @@ export default function AddMedicineForm({
 		dosages: dosage_options,
 		meals: by_meal_options,
 	} = useAppLocalStore();
+
+	const mainHeight = showBaseItems ? baseHeight - 520 : baseHeight - 280;
 
 	const medicineIdRef = useRef(null);
 	const printRef = useRef(null);
@@ -752,13 +755,13 @@ export default function AddMedicineForm({
 				</Flex>
 			</Flex>
 			<ScrollArea
-				h={baseHeight ? baseHeight : form.values.instruction ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
+				h={mainHeight ? mainHeight : form.values.instruction ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
 				bg="var(--mantine-color-white)"
 			>
 				<Stack gap="2px" p="sm">
 					{medicines?.length === 0 && form.values.exEmergency?.length === 0 && (
 						<Flex
-							mih={baseHeight ? baseHeight - 50 : 220}
+							mih={mainHeight ? mainHeight - 50 : 220}
 							gap="md"
 							justify="center"
 							align="center"
@@ -844,55 +847,57 @@ export default function AddMedicineForm({
 			{/* =================== Advise form =================== */}
 			{form && (
 				<>
-					<Grid columns={12} gutter="3xs" mt="2xs" p="les">
-						<Grid.Col span={5}>
-							<Box fz="md" c="white">
-								<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
-									{t("AdviseTemplate")}
-								</Text>
-								<ScrollArea h={96} p="les" className="borderRadiusAll">
-									{adviceData?.map((advise) => (
-										<Flex
-											align="center"
-											gap="les"
-											bg="var(--theme-primary-color-0)"
-											c="dark"
-											key={advise.id}
-											onClick={() => handleAdviseTemplate(advise?.content)}
-											px="les"
-											bd="1px solid var(--theme-primary-color-0)"
-											mb="2"
-											className="cursor-pointer"
-										>
-											<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
-											<Text mt="es" fz={13}>
-												{advise?.name}
-											</Text>
-										</Flex>
-									))}
-								</ScrollArea>
-							</Box>
-						</Grid.Col>
-						<Grid.Col span={7}>
-							<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
-								<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
-									{t("Advise")}
-								</Text>
-								<Box p="sm">
-									<TextAreaForm
-										form={form}
-										label=""
-										value={form.values.advise}
-										name="advise"
-										placeholder="Write an advice..."
-										showRightSection={false}
-										style={{ input: { height: "72px" } }}
-										onBlur={handleFieldBlur}
-									/>
+					{showBaseItems && (
+						<Grid columns={12} gutter="3xs" mt="2xs" p="les">
+							<Grid.Col span={5}>
+								<Box fz="md" c="white">
+									<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
+										{t("AdviseTemplate")}
+									</Text>
+									<ScrollArea h={96} p="les" className="borderRadiusAll">
+										{adviceData?.map((advise) => (
+											<Flex
+												align="center"
+												gap="les"
+												bg="var(--theme-primary-color-0)"
+												c="dark"
+												key={advise.id}
+												onClick={() => handleAdviseTemplate(advise?.content)}
+												px="les"
+												bd="1px solid var(--theme-primary-color-0)"
+												mb="2"
+												className="cursor-pointer"
+											>
+												<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
+												<Text mt="es" fz={13}>
+													{advise?.name}
+												</Text>
+											</Flex>
+										))}
+									</ScrollArea>
 								</Box>
-							</Box>
-						</Grid.Col>
-					</Grid>
+							</Grid.Col>
+							<Grid.Col span={7}>
+								<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
+									<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
+										{t("Advise")}
+									</Text>
+									<Box p="sm">
+										<TextAreaForm
+											form={form}
+											label=""
+											value={form.values.advise}
+											name="advise"
+											placeholder="Write an advice..."
+											showRightSection={false}
+											style={{ input: { height: "72px" } }}
+											onBlur={handleFieldBlur}
+										/>
+									</Box>
+								</Box>
+							</Grid.Col>
+						</Grid>
+					)}
 
 					{/* =================== submission button here =================== */}
 					<Button.Group bg="var(--theme-primary-color-0)" p="les">

@@ -93,10 +93,17 @@ export default function AddDosagePopover({ form, bd = "auto" }) {
 		}
 	};
 
-	console.log(dosages);
 	return (
 		<Box style={{ pointerEvents: "auto" }}>
-			<Popover width="500" trapFocus position="bottom" withArrow shadow="xl" opened={advanceSearchFormOpened}>
+			<Popover
+				width="500"
+				trapFocus
+				position="bottom"
+				withArrow
+				shadow="xl"
+				onDismiss={() => setAdvanceSearchFormOpened(false)}
+				opened={advanceSearchFormOpened}
+			>
 				<Popover.Target>
 					<Tooltip
 						multiline

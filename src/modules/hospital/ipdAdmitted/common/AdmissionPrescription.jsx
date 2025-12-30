@@ -15,7 +15,7 @@ import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
 import { getDataWithoutStore } from "@/services/apiService";
 import DetailsDrawer from "@/modules/hospital/common/drawer/__IPDDetailsDrawer";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 
 const module = MODULES.ADMISSION;
 
@@ -30,7 +30,7 @@ export default function AdmissionPrescription() {
 	const { t } = useTranslation();
 	const [tabValue, setTabValue] = useState("All");
 	const { particularsData } = useParticularsData({ modeName: "Admission" });
-
+	const { mainAreaHeight } = useOutletContext();
 	const tabParticulars = particularsData?.map((item) => ({
 		particular_type: item.particular_type,
 		ordering: item?.ordering ?? 0,
@@ -145,6 +145,8 @@ export default function AdmissionPrescription() {
 						setShowHistory={setShowHistory}
 						prescriptionData={prescriptionData}
 						tabParticulars={tabParticulars}
+						showBaseItems={false}
+						baseHeight={mainAreaHeight}
 					/>
 				</Grid.Col>
 				{hasRecords && (
