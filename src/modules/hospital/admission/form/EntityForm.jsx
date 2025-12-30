@@ -98,8 +98,6 @@ export default function EntityForm({ form, module }) {
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${id}`,
 	});
 
-
-
 	useEffect(() => {
 		if (entity?.data === "not_found") {
 			navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.INDEX, { replace: true });

@@ -5,7 +5,6 @@ const useParticularsData = ({ modeName }) => {
 	const dataByMode = particularMatrix?.entities?.filter(
 		(item) => item.mode_name?.toLowerCase() === modeName?.toLowerCase()
 	);
-
 	return { particularsData: dataByMode };
 };
 
