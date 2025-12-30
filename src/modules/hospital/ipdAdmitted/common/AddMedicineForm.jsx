@@ -63,6 +63,7 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 import { useAuthStore } from "@/store/useAuthStore";
+import AddDosagePopover from "@components/drawers/AddDosagePopover";
 
 export default function AddMedicineForm({
 	module,
@@ -545,7 +546,7 @@ export default function AddMedicineForm({
 											id="medicine_id"
 											name="medicine_id"
 											data={medicineData?.map((item) => ({
-												label: item.product_name,
+												label: `${item.product_name} - ${item.generic || ""}`,
 												value: item.product_id?.toString(),
 												generic: item.generic || "",
 											}))}
@@ -614,6 +615,7 @@ export default function AddMedicineForm({
 												tooltip={t("EnterDosage")}
 												onChange={(v) => handleChange("medicine_dosage_id", v)}
 												error={!!medicineForm.errors.medicine_dosage_id}
+												rightSection={<AddDosagePopover form={medicineForm} />}
 											/>
 										</FormValidatorWrapper>
 									</Group>

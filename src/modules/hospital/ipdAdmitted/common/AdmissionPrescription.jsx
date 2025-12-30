@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "../helpers/request";
 import { useForm } from "@mantine/form";
-import { Box, Grid, LoadingOverlay, Stack } from "@mantine/core";
+import { Box, Grid, LoadingOverlay, Stack, ActionIcon, Tooltip } from "@mantine/core";
+import { IconX, IconChevronRight } from "@tabler/icons-react";
 import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "./AddMedicineForm.jsx";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -24,6 +25,7 @@ export default function AdmissionPrescription() {
 	const ipdId = searchParams.get("ipd");
 	const [opened, { close }] = useDisclosure(false);
 	const [showHistory, setShowHistory] = useState(false);
+	const [showPatientReport, setShowPatientReport] = useState(true);
 	const [medicines, setMedicines] = useState([]);
 	const { t } = useTranslation();
 	const [tabValue, setTabValue] = useState("All");
@@ -76,28 +78,64 @@ export default function AdmissionPrescription() {
 
 	const hasRecords = records && records.length > 0;
 
+	const getAddMedicineFormSpan = () => {
+		if (!showPatientReport) {
+			return showHistory ? 20 : 24;
+		}
+		return showHistory ? 13 : 17;
+	};
+
 	return (
 		<Box pos="relative">
 			<LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
+			<Tooltip
+				label={
+					showPatientReport
+						? t("hidePatientReport") || "Hide Patient Report"
+						: t("showPatientReport") || "Show Patient Report"
+				}
+				position={showPatientReport ? "left" : "right"}
+			>
+				<ActionIcon
+					variant="filled"
+					color={showPatientReport ? "red" : "blue"}
+					size="xl"
+					radius="xl"
+					onClick={() => setShowPatientReport(!showPatientReport)}
+					style={{
+						position: "fixed",
+						top: "50%",
+						left: showPatientReport ? "calc(7/24 * 100% + 40px)" : "76px",
+						transform: "translateY(-50%)",
+						zIndex: 99,
+						boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+					}}
+				>
+					{showPatientReport ? <IconX size={18} /> : <IconChevronRight size={18} />}
+				</ActionIcon>
+			</Tooltip>
 			<Grid columns={24} gutter="les">
 				<Grid.Col span={24}>
 					<Stack gap={0} ta="left">
 						<BaseTabs
+							tabWidth="150px"
 							tabValue={tabValue}
 							setTabValue={setTabValue}
 							tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
 						/>
 					</Stack>
 				</Grid.Col>
-				<Grid.Col span={7}>
-					<PatientReport
-						tabValue={tabValue}
-						form={form}
-						prescriptionData={prescriptionData}
-						modeName="Admission"
-					/>
-				</Grid.Col>
-				<Grid.Col span={showHistory ? 13 : 17}>
+				{showPatientReport && (
+					<Grid.Col span={7}>
+						<PatientReport
+							tabValue={tabValue}
+							form={form}
+							prescriptionData={prescriptionData}
+							modeName="Admission"
+						/>
+					</Grid.Col>
+				)}
+				<Grid.Col span={getAddMedicineFormSpan()}>
 					<AddMedicineForm
 						module={module}
 						form={form}
