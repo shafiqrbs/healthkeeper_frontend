@@ -270,7 +270,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("Adm.ID")}:
+											{t("IPD ID")}:
 										</Text>
 										<Text size="sm">{getValue(patientInfo?.invoice || "")}</Text>
 									</Group>
@@ -291,20 +291,12 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 									margin: 0,
 								}}
 							>
-								<Table.Td>
+								<Table.Td colspan={2}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Name")}:
 										</Text>
 										<Text size="sm">{getValue(patientInfo?.name, "")}</Text>
-									</Group>
-								</Table.Td>
-								<Table.Td>
-									<Group gap="xs">
-										<Text size="xs" fw={600}>
-											{t("Gender")}:
-										</Text>
-										<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -323,9 +315,9 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("F/M/H")}:
+											{t("Gender")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.father_name, "")}</Text>
+										<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>

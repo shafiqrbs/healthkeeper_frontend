@@ -232,6 +232,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 							render: (item) => formatDate(item.admission_date),
 						},
 						{ accessor: "patient_id", title: t("patientId") },
+						{ accessor: "invoice", title: t("IPD ID") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "room_name", title: t("Bed/Cabin") },
