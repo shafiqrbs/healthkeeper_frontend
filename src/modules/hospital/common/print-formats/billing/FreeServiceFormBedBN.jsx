@@ -167,7 +167,7 @@ const FreeServiceFormBedBN = forwardRef(({ data, preview = false }, ref) => {
 									</Table.Td>
 								</Table.Tr>
 								<Table.Tr>
-									<Table.Td colspan={"2"}>
+									<Table.Td colSpan={"2"}>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("Name")}:
@@ -198,7 +198,7 @@ const FreeServiceFormBedBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
 										</Group>
 									</Table.Td>
-									<Table.Td colspan={2}>
+									<Table.Td colSpan={2}>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("Mobile")}:

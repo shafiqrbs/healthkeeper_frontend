@@ -34,7 +34,6 @@ const drugColumnsRow1 = [
 	{ key: "dts_rif", label: "RIF" },
 	{ key: "dts_flq", label: "FLQ" },
 	{ key: "dts_lfx", label: "LFX" },
-
 ];
 
 const drugColumnsRow2 = [
@@ -45,15 +44,12 @@ const drugColumnsRow2 = [
 	{ key: "dts_pa", label: "PA" },
 ];
 
-
 const drugColumnsRow3 = [
-
 	{ key: "dts_lzd", label: "LZD" },
 	{ key: "dts_cfz", label: "CFZ" },
 	{ key: "dts_amk", label: "AMK" },
 	{ key: "dts_kan", label: "KAN" },
 	{ key: "dts_cap", label: "CAP" },
-
 ];
 
 // =============== DTS (Drug Susceptibility Testing) results ===============
@@ -68,7 +64,7 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 	const form = useForm({
 		initialValues: {
 			id: diagnosticReport?.particular?.id || 0,
-			sample_type: custom_report?.sample_type || '',
+			sample_type: custom_report?.sample_type || "",
 			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
 			lab_no: custom_report?.lab_no || "",
 			dts_method: custom_report?.dts_method || "lj",
@@ -146,7 +142,6 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 		<Box className="border-top-none" px="sm" mt="xs">
 			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
-
 					{/* =============== method used =============== */}
 					<Box my="md">
 						<Text size="sm" fw={500} mb="xs">
@@ -250,9 +245,11 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 										</Table.Td>
 									))}
 								</Table.Tr>
-								<Table.Tr >
-									<Table.Td ta="center"><Text fw={600}>OTHERS</Text></Table.Td>
-									<Table.Td ta="center" colspan={4}>
+								<Table.Tr>
+									<Table.Td ta="center">
+										<Text fw={600}>OTHERS</Text>
+									</Table.Td>
+									<Table.Td ta="center" colSpan={4}>
 										<InputForm
 											name="dts_others"
 											id="dts_others"

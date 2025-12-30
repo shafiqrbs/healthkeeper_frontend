@@ -58,45 +58,23 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 										<Flex gap="md" justify="center">
 											<Box>
 												<Group ml="md" align="center" h="100%">
-													<Image
-														src={GLogo}
-														alt="logo"
-														width={60}
-														height={60}
-													/>
+													<Image src={GLogo} alt="logo" width={60} height={60} />
 												</Group>
 											</Box>
 											<Box>
-												<Text
-													ta="center"
-													fw="bold"
-													size="lg"
-													c="#1e40af"
-													mt="2"
-												>
+												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
 													{hospitalConfigData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
 													{hospitalConfigData?.address || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mb="2">
-													{t("হটলাইন")}{" "}
-													{hospitalConfigData?.hotline || ""}
+													{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
 												</Text>
 											</Box>
 											<Box>
-												<Group
-													mr="md"
-													justify="flex-end"
-													align="center"
-													h="100%"
-												>
-													<Image
-														src={TBLogo}
-														alt="logo"
-														width={60}
-														height={60}
-													/>
+												<Group mr="md" justify="flex-end" align="center" h="100%">
+													<Image src={TBLogo} alt="logo" width={60} height={60} />
 												</Group>
 											</Box>
 										</Flex>
@@ -105,7 +83,7 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td
-									colspan={6}
+									colSpan={6}
 									style={{
 										textAlign: "center",
 										fontSize: "20px",
@@ -117,37 +95,22 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td>{t("Created")}</Table.Td>
-								<Table.Td>
-									{" "}
-									{patientInfo && patientInfo.created && patientInfo.created}
-								</Table.Td>
+								<Table.Td> {patientInfo && patientInfo.created && patientInfo.created}</Table.Td>
 								<Table.Td>{t("Invoice")}</Table.Td>
-								<Table.Td>
-									{patientInfo && patientInfo.invoice && patientInfo.invoice}
-								</Table.Td>
+								<Table.Td>{patientInfo && patientInfo.invoice && patientInfo.invoice}</Table.Td>
 								<Table.Td> {t("Process")}</Table.Td>
-								<Table.Td>
-									{" "}
-									{patientInfo && patientInfo.process && patientInfo.process}
-								</Table.Td>
+								<Table.Td> {patientInfo && patientInfo.process && patientInfo.process}</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td>{t("Vendor")}</Table.Td>
 								<Table.Td>
 									{" "}
-									{patientInfo &&
-										patientInfo.vendor_name &&
-										patientInfo.vendor_name}
+									{patientInfo && patientInfo.vendor_name && patientInfo.vendor_name}
 								</Table.Td>
 								<Table.Td>{t("CreatedBy")}</Table.Td>
-								<Table.Td>
-									{" "}
-									{patientInfo && patientInfo.cb_name && patientInfo.cb_name}
-								</Table.Td>
+								<Table.Td> {patientInfo && patientInfo.cb_name && patientInfo.cb_name}</Table.Td>
 								<Table.Td>{t("ApprovedBy")}</Table.Td>
-								<Table.Td>
-									{patientInfo && patientInfo.ab_name && patientInfo.ab_name}
-								</Table.Td>
+								<Table.Td>{patientInfo && patientInfo.ab_name && patientInfo.ab_name}</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
@@ -170,9 +133,7 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 						</Table.Thead>
 						<Table.Tbody>
 							{patientInfo?.purchase_items?.map((item, index) => (
-								<Table.Tr
-									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
-								>
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td>{index + 1}.</Table.Td>
 									<Table.Td>{getValue(item?.name)}</Table.Td>
 									<Table.Td>{getValue(item?.quantity, "0")}</Table.Td>

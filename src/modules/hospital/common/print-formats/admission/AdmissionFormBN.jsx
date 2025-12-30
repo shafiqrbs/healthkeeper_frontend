@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import {formatDate, formatDateTimeAmPm} from "@/common/utils";
+import { formatDate, formatDateTimeAmPm } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
@@ -67,45 +67,23 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Flex gap="md" justify="center">
 											<Box>
 												<Group ml="md" align="center" h="100%">
-													<Image
-														src={GLogo}
-														alt="logo"
-														width={60}
-														height={60}
-													/>
+													<Image src={GLogo} alt="logo" width={60} height={60} />
 												</Group>
 											</Box>
 											<Box>
-												<Text
-													ta="center"
-													fw="bold"
-													size="lg"
-													c="#1e40af"
-													mt="2"
-												>
+												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
 													{hospitalConfigData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
 													{hospitalConfigData?.address || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mb="2">
-													{t("হটলাইন")}{" "}
-													{hospitalConfigData?.hotline || ""}
+													{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
 												</Text>
 											</Box>
 											<Box>
-												<Group
-													mr="md"
-													justify="flex-end"
-													align="center"
-													h="100%"
-												>
-													<Image
-														src={TBLogo}
-														alt="logo"
-														width={60}
-														height={60}
-													/>
+												<Group mr="md" justify="flex-end" align="center" h="100%">
+													<Image src={TBLogo} alt="logo" width={60} height={60} />
 												</Group>
 											</Box>
 										</Flex>
@@ -115,8 +93,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colSpan={3} style={{ textAlign: "center", padding: 0 }}>
 									<Text size="md" fw={600}>
-										{t("AdmissionForm&DiseaseDetails")} -{" "}
-										{patientInfo?.parent_patient_mode_name}
+										{t("AdmissionForm&DiseaseDetails")} - {patientInfo?.parent_patient_mode_name}
 									</Text>
 								</Table.Td>
 							</Table.Tr>
@@ -126,9 +103,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("PatientID")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.patient_id || "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.patient_id || "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -136,9 +111,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Add.ID")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.invoice || "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.invoice || "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -146,14 +119,12 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Type")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.payment_mode_name, "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.payment_mode_name, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colspan={2}>
+								<Table.Td colSpan={2}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Name")}:
@@ -166,16 +137,12 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Gender")}:
 										</Text>
-										<Text size="xs">
-											{capitalizeWords(patientInfo?.gender || "")}
-										</Text>
+										<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("Age")}:
 											</Text>
-											<Text size="xs">
-												{patientInfo?.year || 0} Years
-											</Text>
+											<Text size="xs">{patientInfo?.year || 0} Years</Text>
 										</Group>
 									</Group>
 								</Table.Td>
@@ -186,9 +153,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("F/M/H")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.father_name, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.father_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -196,9 +161,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Religion")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.religion_name, "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.religion_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -245,9 +208,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("GuardianName")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.guardian_name, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.guardian_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -255,12 +216,10 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Relation")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.patient_relation, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.patient_relation, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td colspan={2}>
+								<Table.Td colSpan={2}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Mobile")}:
@@ -275,40 +234,31 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colspan={3}>
+								<Table.Td colSpan={3}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("PresentAddress")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.address, "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.address, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colspan={3}>
+								<Table.Td colSpan={3}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("PermanentAddress")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.permanent_address, "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.permanent_address, "")}</Text>
 									</Group>
 								</Table.Td>
-
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
 					<Box pos="relative" mt="lg">
-						<Table
-							withTableBorder
-							withColumnBorders
-							borderColor="var(--theme-tertiary-color-8)"
-						>
+						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colspan={3}>
+								<Table.Td colSpan={3}>
 									<Group gap="xs">
 										<Text size="md" fw={600}>
 											{t("AdmissionInformation")}:
@@ -322,9 +272,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Bed/Cabin")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.room_name, "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.room_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -332,9 +280,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Unit")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.admit_unit_name, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.admit_unit_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -342,9 +288,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Department")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.admit_department_name, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.admit_department_name, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
@@ -354,9 +298,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Consultant")}:
 										</Text>
-										<Text size="sm">
-											{getValue(patientInfo?.admit_consultant_name, "")}
-										</Text>
+										<Text size="sm">{getValue(patientInfo?.admit_consultant_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -364,9 +306,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Card No")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.card_no, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.card_no, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -374,20 +314,14 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("UnitDoctor")}:
 										</Text>
-										<Text size="xs">
-											{getValue(patientInfo?.admit_doctor_name, "")}
-										</Text>
+										<Text size="xs">{getValue(patientInfo?.admit_doctor_name, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
 						</Table>
 					</Box>
-							<Box pos="relative" mt="lg">
-						<Table
-							withTableBorder
-							withColumnBorders
-							borderColor="var(--theme-tertiary-color-8)"
-						>
+					<Box pos="relative" mt="lg">
+						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
 							<Table.Thead>
 								<Table.Tr>
 									<Table.Th>{t("Particular")}</Table.Th>
@@ -412,20 +346,20 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 									</Table.Tr>
 								))}
 								<Table.Tr>
-									<Table.Td fw={600} colspan={3} ta="right" >{t("Total Amount")}</Table.Td>
-									<Table.Td fw={600}>
-										{getValue(admissionData?.total, "0")}
+									<Table.Td fw={600} colSpan={3} ta="right">
+										{t("Total Amount")}
 									</Table.Td>
+									<Table.Td fw={600}>{getValue(admissionData?.total, "0")}</Table.Td>
 								</Table.Tr>
 								<Table.Tr>
-									<Table.Td colspan={2} w={'50%'}>
-										<br/>
-										<br/>
+									<Table.Td colSpan={2} w={"50%"}>
+										<br />
+										<br />
 										{t("AdmittedBy")}
 									</Table.Td>
-									<Table.Td colspan={2}  ta="right">
-										<br/>
-										<br/>
+									<Table.Td colSpan={2} ta="right">
+										<br />
+										<br />
 										{t("Signature")}
 									</Table.Td>
 								</Table.Tr>
@@ -437,12 +371,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 				<Box ta="center">
 					<Text size="xs" c="gray" mt="xs">
 						{patientInfo?.patient_id && (
-							<Barcode
-								fontSize={"12"}
-								width={"1"}
-								height={"24"}
-								value={patientInfo?.patient_id}
-							/>
+							<Barcode fontSize={"12"} width={"1"} height={"24"} value={patientInfo?.patient_id} />
 						)}
 					</Text>
 					<Text fz={8}>

@@ -137,7 +137,8 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 										{t("Age")}:
 									</Text>
 									<Text size="xs">
-										{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon {patientInfo?.day || 0} Day
+										{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
+										{patientInfo?.day || 0} Day
 									</Text>
 								</Group>
 							</Table.Td>
@@ -190,7 +191,9 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs" fw={600}>
 										{t("Add. Date")}:
 									</Text>
-									<Text size="sm">{getValue(formatDateTimeAmPm(patientInfo?.admission_date), "")}</Text>
+									<Text size="sm">
+										{getValue(formatDateTimeAmPm(patientInfo?.admission_date), "")}
+									</Text>
 								</Group>
 							</Table.Td>
 						</Table.Tr>
@@ -212,20 +215,22 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 									<Text size="xs">{getValue(patientInfo?.patient_relation, "")}</Text>
 								</Group>
 							</Table.Td>
-							<Table.Td colspan={2}>
+							<Table.Td colSpan={2}>
 								<Group gap="xs">
 									<Text size="xs" fw={600}>
 										{t("Mobile")}:
 									</Text>
 									<Text size="xs">
 										{getValue(patientInfo?.mobile, "")}
-										{patientInfo?.guardian_mobile && <> / {getValue(patientInfo?.guardian_mobile, "")}</>}
+										{patientInfo?.guardian_mobile && (
+											<> / {getValue(patientInfo?.guardian_mobile, "")}</>
+										)}
 									</Text>
 								</Group>
 							</Table.Td>
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Table.Td colspan={3}>
+							<Table.Td colSpan={3}>
 								<Group gap="xs">
 									<Text size="xs" fw={600}>
 										{t("PresentAddress")}:
@@ -235,7 +240,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Td>
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Table.Td colspan={3}>
+							<Table.Td colSpan={3}>
 								<Group gap="xs">
 									<Text size="xs" fw={600}>
 										{t("PermanentAddress")}:
@@ -245,7 +250,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Td>
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Table.Td colspan={3}>
+							<Table.Td colSpan={3}>
 								<Group gap="xs">
 									<Text size="md" fw={600}>
 										{t("AdmissionInformation")}:
@@ -280,7 +285,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Td>
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Table.Td colspan={2}>
+							<Table.Td colSpan={2}>
 								<Group gap="xs">
 									<Text size="xs" fw={600}>
 										{t("ConsultantDoctor")}:
@@ -303,7 +308,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 					<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
 						<Table.Thead>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colspan={3}>
+								<Table.Td colSpan={3}>
 									<Group gap="xs">
 										<Text size="md" fw={600}>
 											{t("PaymentDetails")}:
@@ -334,7 +339,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Tr>
 							))}
 							<Table.Tr>
-								<Table.Td colspan={3} fw={600}>
+								<Table.Td colSpan={3} fw={600}>
 									{t("Payable")}
 								</Table.Td>
 								<Table.Td width={110} fw={600}>
@@ -342,16 +347,18 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td colspan={3} fw={600}>
+								<Table.Td colSpan={3} fw={600}>
 									{t("Paid")}
 								</Table.Td>
 								<Table.Td fw={600}>৳ {getValue(patientInfo?.amount, "0")}</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td colspan={3} fw={600}>
+								<Table.Td colSpan={3} fw={600}>
 									{t("Balance")}
 								</Table.Td>
-								<Table.Td fw={600}>৳ {Number(patientInfo?.total ?? 0) - Number(patientInfo?.amount ?? 0)}</Table.Td>
+								<Table.Td fw={600}>
+									৳ {Number(patientInfo?.total ?? 0) - Number(patientInfo?.amount ?? 0)}
+								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>

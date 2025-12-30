@@ -1,5 +1,5 @@
 export const getByMeal = (by_meal_options, id) => {
-	if (by_meal_options?.length === 0) return console.error("By meal options are empty");
+	if (by_meal_options?.length === 0) return "";
 	if (!id) return;
 
 	const selectedByMeal = by_meal_options?.find((item) => item.id?.toString() === id?.toString());
@@ -7,16 +7,16 @@ export const getByMeal = (by_meal_options, id) => {
 };
 
 export const getDosage = (dosage_options, id) => {
-	if (dosage_options?.length === 0) return console.error("Dosage options are empty");
-	if (!id) return console.error("Id is required for getting dosage");
+	if (dosage_options?.length === 0) return;
+	if (!id) return;
 
 	const selectedDosage = dosage_options?.find((item) => item.id?.toString() === id?.toString());
 	return selectedDosage;
 };
 
 export const getDurationMode = (duration_mode_options, label) => {
-	if (duration_mode_options?.length === 0) return console.error("Duration mode options are empty");
-	if (!label) return console.error("Label is required for getting duration mode");
+	if (duration_mode_options?.length === 0) return;
+	if (!label) return;
 
 	const selectedDurationMode = duration_mode_options?.find((item) => item.label == label);
 	return selectedDurationMode;
@@ -100,7 +100,8 @@ export const appendGeneralValuesToForm = (form, selectedMedicine) => {
  */
 export const generateMedicinePayload = (form, selectedMedicine, options = {}) => {
 	if (!form) return console.error("form should be passed in generateMedicinePayload function");
-	if (!selectedMedicine) return console.error("selectedMedicine should be passed in generateMedicinePayload function");
+	if (!selectedMedicine)
+		return console.error("selectedMedicine should be passed in generateMedicinePayload function");
 
 	// =============== get dosage details if dosage_options are provided ================
 	const { dosage_options, by_meal_options } = options;

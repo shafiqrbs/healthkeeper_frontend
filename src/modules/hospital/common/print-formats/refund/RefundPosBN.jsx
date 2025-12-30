@@ -53,13 +53,13 @@ const RefundPosBN = forwardRef(({ data, preview = false }, ref) => {
 					<Table verticalSpacing={2} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr>
-								<Table.Td colspan={2}>
+								<Table.Td colSpan={2}>
 									<strong>তারিখ:</strong> {patientInfo?.created || ""}
 								</Table.Td>
 							</Table.Tr>
 							{patientInfo?.health_id && (
 								<Table.Tr>
-									<Table.Td colspan={2} align="center">
+									<Table.Td colSpan={2} align="center">
 										<strong>HID:</strong> {patientInfo?.health_id || ""}
 									</Table.Td>
 								</Table.Tr>
@@ -129,7 +129,7 @@ const RefundPosBN = forwardRef(({ data, preview = false }, ref) => {
 					</Table>
 
 					{/* =============== financial summary =============== */}
-					<Table  verticalSpacing={1} withRowBorders={false}>
+					<Table verticalSpacing={1} withRowBorders={false}>
 						<Table.Tbody>
 							<Table.Tr style={{ borderTop: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th>{t("Particular")}</Table.Th>
@@ -142,12 +142,8 @@ const RefundPosBN = forwardRef(({ data, preview = false }, ref) => {
 									<Table.Td>
 										{index + 1}. {item?.item_name}
 									</Table.Td>
-									<Table.Td style={{ textAlign: "right", width: "60px" }}>
-										{item?.price}
-									</Table.Td>
-									<Table.Td style={{ textAlign: "right", width: "60px" }}>
-										{item?.quantity}
-									</Table.Td>
+									<Table.Td style={{ textAlign: "right", width: "60px" }}>{item?.price}</Table.Td>
+									<Table.Td style={{ textAlign: "right", width: "60px" }}>{item?.quantity}</Table.Td>
 									<Table.Td style={{ textAlign: "right", width: "70px" }}>
 										৳ {item?.sub_total}
 									</Table.Td>

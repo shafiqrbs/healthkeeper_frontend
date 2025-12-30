@@ -388,7 +388,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs">{getValue(patientInfo?.patient_relation, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td colspan={2}>
+								<Table.Td colSpan={2}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Mobile")}:
@@ -429,7 +429,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colspan={2}>
+								<Table.Td colSpan={2}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("ConsultantDoctor")}:
@@ -525,7 +525,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td colspan={3}>
+								<Table.Td colSpan={3}>
 									<Box ta="center">
 										<Grid columns={12} gutter="0">
 											<Grid.Col span={6} align="left">

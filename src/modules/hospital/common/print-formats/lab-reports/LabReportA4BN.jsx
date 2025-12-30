@@ -1,4 +1,4 @@
-import {Box, Text, Grid, Group, Image, Flex, Table, Divider, Stack} from "@mantine/core";
+import { Box, Text, Grid, Group, Image, Flex, Table, Divider, Stack } from "@mantine/core";
 import React, { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -11,8 +11,7 @@ import DefaultCustomReport from "@hospital-components/print-formats/lab-reports/
 import SystemLabReport from "@hospital-components/print-formats/lab-reports/custom/SystemLabReport";
 import XrayReport from "@hospital-components/print-formats/lab-reports/custom/XrayReport";
 import CTScanReport from "@hospital-components/print-formats/lab-reports/custom/CTScanReport";
-import GeneXperExtraPulmonaryReport
-	from "@hospital-components/print-formats/lab-reports/custom/GeneXperExtraPulmonaryReport";
+import GeneXperExtraPulmonaryReport from "@hospital-components/print-formats/lab-reports/custom/GeneXperExtraPulmonaryReport";
 import GeneXpert from "@hospital-components/print-formats/lab-reports/custom/GeneXpert";
 
 const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
@@ -54,16 +53,10 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 					lh={1.5}
 					fz={12}
 				>
-					<Stack
-						h="287mm"
-						bg="var(--mantine-color-body)"
-						align="stretch"
-						justify="space-between"
-						gap="md"
-					>
+					<Stack h="287mm" bg="var(--mantine-color-body)" align="stretch" justify="space-between" gap="md">
 						<Box>
 							{/* =============== Lab Report Header ================ */}
-							<Box mb="sm" >
+							<Box mb="sm">
 								<Grid gutter="md">
 									<Grid.Col span={4}>
 										<Group ml="md" justify="flex-end" align="right" h="100%">
@@ -102,11 +95,18 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 												<Table.Tr>
 													<Table.Td w={"25%"} align={"left"}>
 														{report?.uid ? (
-															<Barcode fontSize="8" width="1" height="32" value={report.uid} />
+															<Barcode
+																fontSize="8"
+																width="1"
+																height="32"
+																value={report.uid}
+															/>
 														) : null}
 													</Table.Td>
 													<Table.Td w={"50%"} align={"center"}>
-														<Text fz={"xl"}>{report?.particular?.category?.name} Report</Text>
+														<Text fz={"xl"}>
+															{report?.particular?.category?.name} Report
+														</Text>
 													</Table.Td>
 													<Table.Td w={"25%"} align={"right"}>
 														{patientInfo?.patient_id ? (
@@ -143,25 +143,33 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																<Text size="xs">{t("Lab ID")}</Text>
 															</Grid.Col>
 															<Grid.Col span={12} py={0}>
-																<Text size="xs">{getValue(report?.lab_no || report?.uid )}</Text>
+																<Text size="xs">
+																	{getValue(report?.lab_no || report?.uid)}
+																</Text>
 															</Grid.Col>
 															<Grid.Col span={6} py={0}>
 																<Text size="xs">{t("PatientId")}</Text>
 															</Grid.Col>
 															<Grid.Col span={12} py={0}>
-																<Text size="xs">{getValue(patientInfo?.patient_id || "")}</Text>
+																<Text size="xs">
+																	{getValue(patientInfo?.patient_id || "")}
+																</Text>
 															</Grid.Col>
 															<Grid.Col span={6} py={0}>
 																<Text size="xs">{t("Name")}</Text>
 															</Grid.Col>
 															<Grid.Col span={12} py={0}>
-																<Text size="xs">{getValue(patientInfo?.name || "")}</Text>
+																<Text size="xs">
+																	{getValue(patientInfo?.name || "")}
+																</Text>
 															</Grid.Col>
 															<Grid.Col span={6} py={0}>
 																<Text size="xs">{t("Mobile")}</Text>
 															</Grid.Col>
 															<Grid.Col span={12} py={0}>
-																<Text size="xs">{getValue(patientInfo?.mobile || "")}</Text>
+																<Text size="xs">
+																	{getValue(patientInfo?.mobile || "")}
+																</Text>
 															</Grid.Col>
 														</Grid>
 													</Table.Td>
@@ -172,7 +180,9 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 															</Grid.Col>
 															<Grid.Col span={12} py={0}>
 																<Text size="xs">
-																	{getValue(formatDateTimeAmPm(report?.created_at) || "")}
+																	{getValue(
+																		formatDateTimeAmPm(report?.created_at) || ""
+																	)}
 																</Text>
 															</Grid.Col>
 															<Grid.Col span={6} py={0}>
@@ -181,7 +191,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 															<Grid.Col span={12} py={0}>
 																<Text size="xs">
 																	{getValue(
-																		formatDateTimeAmPm(report?.collection_date) || ""
+																		formatDateTimeAmPm(report?.collection_date) ||
+																			""
 																	)}
 																</Text>
 															</Grid.Col>
@@ -190,8 +201,10 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 															</Grid.Col>
 															<Grid.Col span={12} py={0}>
 																<Text size="xs">
-																	{patientInfo?.year > 0 && `${patientInfo.year} Years `}
-																	{patientInfo?.month > 0 && `${patientInfo.month} Mon `}
+																	{patientInfo?.year > 0 &&
+																		`${patientInfo.year} Years `}
+																	{patientInfo?.month > 0 &&
+																		`${patientInfo.month} Mon `}
 																	{patientInfo?.day > 0 && `${patientInfo.day} Day`}
 																</Text>
 															</Grid.Col>
@@ -231,7 +244,9 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																) : (
 																	<Text size="xs">
 																		{patientInfo?.patient_mode_name} -{" "}
-																		{getValue(patientInfo?.prescription_doctor_name || "")}
+																		{getValue(
+																			patientInfo?.prescription_doctor_name || ""
+																		)}
 																	</Text>
 																)}
 															</Grid.Col>
@@ -239,21 +254,26 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 													</Table.Td>
 												</Table.Tr>
 												{reportData?.sample_type ? (
-													<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-															<Table.Td >
-																<strong>Name of Examination: </strong> {report?.name}
-															</Table.Td>
-															<Table.Td ta={'right'}>
-																<strong>Sample Type: </strong>{reportData?.sample_type}
-															</Table.Td>
+													<Table.Tr
+														style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+													>
+														<Table.Td>
+															<strong>Name of Examination: </strong> {report?.name}
+														</Table.Td>
+														<Table.Td ta={"right"}>
+															<strong>Sample Type: </strong>
+															{reportData?.sample_type}
+														</Table.Td>
 													</Table.Tr>
-												):
-													<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-														<Table.Td colspan={2}>
+												) : (
+													<Table.Tr
+														style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+													>
+														<Table.Td colSpan={2}>
 															<strong>Name of Examination: </strong> {report?.name}
 														</Table.Td>
 													</Table.Tr>
-												}
+												)}
 											</Table.Tbody>
 										</Table>
 									</Box>
@@ -296,7 +316,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																<Grid.Col span={12} py={0}>
 																	<Text size="xs">
 																		{getValue(
-																			capitalizeWords(reportData?.test_type) || "-"
+																			capitalizeWords(reportData?.test_type) ||
+																				"-"
 																		)}
 																	</Text>
 																</Grid.Col>
@@ -308,7 +329,9 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																<Grid.Col span={12} py={0}>
 																	<Text size="xs">
 																		{reportData?.preservative
-																			? JSON.parse(reportData.preservative).join(", ")
+																			? JSON.parse(reportData.preservative).join(
+																					", "
+																			  )
 																			: "-"}
 																	</Text>
 																</Grid.Col>
@@ -320,7 +343,9 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																<Grid.Col span={12} py={0}>
 																	<Text size="xs">
 																		{reportData?.type_patient
-																			? JSON.parse(reportData.type_patient).join(", ")
+																			? JSON.parse(reportData.type_patient).join(
+																					", "
+																			  )
 																			: "-"}
 																	</Text>
 																</Grid.Col>
@@ -401,7 +426,9 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																</Grid.Col>
 																<Grid.Col span={12} py={0}>
 																	<Text size="xs">
-																		{getValue(reportData?.gene_xpert_hospital || "-")}
+																		{getValue(
+																			reportData?.gene_xpert_hospital || "-"
+																		)}
 																	</Text>
 																</Grid.Col>
 																<Grid.Col span={6} py={0}>
@@ -412,7 +439,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																<Grid.Col span={12} py={0}>
 																	<Text size="xs">
 																		{getValue(
-																			reportData?.specimen_identification_number || "-"
+																			reportData?.specimen_identification_number ||
+																				"-"
 																		)}
 																	</Text>
 																</Grid.Col>
@@ -424,7 +452,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																<Grid.Col span={12} py={0}>
 																	<Text size="xs">
 																		{getValue(
-																			reportData?.reference_laboratory_specimen_id || "-"
+																			reportData?.reference_laboratory_specimen_id ||
+																				"-"
 																		)}
 																	</Text>
 																</Grid.Col>
@@ -443,8 +472,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	<Text size="xs">
 																		{reportData?.date_specimen_collection
 																			? formatDateTimeAmPm(
-																				reportData.date_specimen_collection
-																			)
+																					reportData.date_specimen_collection
+																			  )
 																			: "-"}
 																	</Text>
 																</Grid.Col>
@@ -457,8 +486,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	<Text size="xs">
 																		{reportData?.date_specimen_received
 																			? formatDateTimeAmPm(
-																				reportData.date_specimen_received
-																			)
+																					reportData.date_specimen_received
+																			  )
 																			: "-"}
 																	</Text>
 																</Grid.Col>
@@ -475,8 +504,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	<Text size="xs">
 																		{reportData?.last_covid_test_date
 																			? formatDateTimeAmPm(
-																				reportData.last_covid_test_date
-																			)
+																					reportData.last_covid_test_date
+																			  )
 																			: "-"}
 																	</Text>
 																</Grid.Col>
@@ -510,7 +539,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										<Box>Gene Pulmonary Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "ultrasonography" ? (
 										<Box>Ultrasonography Report</Box>
-									) : (data?.invoiceParticular?.particular?.slug === "x-ray" || data?.invoiceParticular?.particular?.slug === "cxr-chest") ? (
+									) : data?.invoiceParticular?.particular?.slug === "x-ray" ||
+									  data?.invoiceParticular?.particular?.slug === "cxr-chest" ? (
 										<XrayReport report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.slug === "sars-cov2" ? (
 										<Box>SARS-CoV-2 Report</Box>
@@ -527,7 +557,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 									) : data?.invoiceParticular?.particular?.is_custom_report === 1 ? (
 										<DefaultCustomReport report={report} reportData={reportData} />
 									) : (
-										<SystemLabReport report={report} reportData={reportData}/>
+										<SystemLabReport report={report} reportData={reportData} />
 									)}
 								</Box>
 							</Box>

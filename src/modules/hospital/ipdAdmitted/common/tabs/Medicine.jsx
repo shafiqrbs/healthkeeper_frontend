@@ -11,7 +11,10 @@ import {
 	ScrollArea,
 	Select,
 	Stack,
-	Text, Divider, Paper, Table,
+	Text,
+	Divider,
+	Paper,
+	Table,
 } from "@mantine/core";
 import inputCss from "@assets/css/InputField.module.css";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -20,7 +23,7 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { IconCheck, IconPencil, IconPlus, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import {CORE_DROPDOWNS, PHARMACY_DROPDOWNS} from "@/app/store/core/utilitySlice";
+import { CORE_DROPDOWNS, PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import useMedicineData from "@hooks/useMedicineData";
@@ -28,7 +31,7 @@ import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import { getMedicineFormInitialValues } from "../../helpers/request";
 import { useForm } from "@mantine/form";
 import TabsActionButtons from "@hospital-components/TabsActionButtons";
-import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import { errorNotification } from "@components/notification/errorNotification";
@@ -41,12 +44,9 @@ import {
 	getDosage,
 } from "@utils/prescription";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
-import {t} from "i18next";
+import { t } from "i18next";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-
-
-
 
 export default function Medicine(data) {
 	const [medicines, setMedicines] = useState([]);
@@ -116,10 +116,10 @@ export default function Medicine(data) {
 			mode: "medicine",
 		},
 	});
-	const {data: warehouseDropdown} = useGlobalDropdownData({
+	const { data: warehouseDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.USER_WAREHOUSE.PATH,
 		utility: CORE_DROPDOWNS.USER_WAREHOUSE.UTILITY,
-		params: {id: createdBy?.id}
+		params: { id: createdBy?.id },
 	});
 
 	const form = useForm({
@@ -131,14 +131,13 @@ export default function Medicine(data) {
 	console.log(medicineHistoryData);
 	return (
 		<Box bg="var(--mantine-color-white)">
-
 			<ScrollArea h={mainAreaHeight - 120}>
 				<Paper withBorder p="lg" radius="sm" bg="white" h="100%">
 					<Stack gap="lg" h="100%">
 						<Box>
 							<Divider
 								label={
-									<Text size="md" mb={'md'} c="var(--theme-tertiary-color-7)" fw={500}>
+									<Text size="md" mb={"md"} c="var(--theme-tertiary-color-7)" fw={500}>
 										Medicine History
 									</Text>
 								}
@@ -150,13 +149,17 @@ export default function Medicine(data) {
 								horizontalSpacing={0}
 								striped={false}
 								highlightOnHover={false}
-								style={{ margin: 0, padding: 0,borderCollapse: "collapse",
+								style={{
+									margin: 0,
+									padding: 0,
+									borderCollapse: "collapse",
 									width: "100%",
-									border: "1px solid var(--theme-tertiary-color-8)"}}
+									border: "1px solid var(--theme-tertiary-color-8)",
+								}}
 							>
 								<Table.Thead>
 									<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										<Table.Th colspan={'6'} style={{ verticalAlign: "middle" }}>
+										<Table.Th colSpan={"6"} style={{ verticalAlign: "middle" }}>
 											<SelectForm
 												form={form}
 												tooltip={t("ChooseWarehouse")}
@@ -174,26 +177,16 @@ export default function Medicine(data) {
 										<Table.Th pl={4} style={{ verticalAlign: "middle" }}>
 											{t("S/N")}
 										</Table.Th>
-										<Table.Th pl={4}>
-											{t("Medicine")}
-										</Table.Th>
-										<Table.Th  pl={4}>
-											{t("Generic")}
-										</Table.Th>
-										<Table.Th  pl={4}>
-											{t("Dosage")}
-										</Table.Th>
-										<Table.Th  pl={4}>
-											{t("Stock")}
-										</Table.Th>
-										<Table.Th  pl={4}>
-											{t("DayQuantity")}
-										</Table.Th>
+										<Table.Th pl={4}>{t("Medicine")}</Table.Th>
+										<Table.Th pl={4}>{t("Generic")}</Table.Th>
+										<Table.Th pl={4}>{t("Dosage")}</Table.Th>
+										<Table.Th pl={4}>{t("Stock")}</Table.Th>
+										<Table.Th pl={4}>{t("DayQuantity")}</Table.Th>
 									</Table.Tr>
 								</Table.Thead>
 
 								<Table.Tbody>
-									{medicineHistoryData?.data?.length > 0 && (
+									{medicineHistoryData?.data?.length > 0 &&
 										medicineHistoryData?.data?.map((item, index) => (
 											<Table.Tr key={index}>
 												<Table.Td>
@@ -217,7 +210,9 @@ export default function Medicine(data) {
 													</Text>
 												</Table.Td>
 												<Table.Td>
-													<Text fz={"xs"} pl={4}>1000</Text>
+													<Text fz={"xs"} pl={4}>
+														1000
+													</Text>
 												</Table.Td>
 												<Table.Td>
 													<Text fz={"xs"} pl={4}>
@@ -226,16 +221,22 @@ export default function Medicine(data) {
 															className={inlineInputCss.inputNumber}
 															placeholder={t("Quantity")}
 															value={submitFormData[item.id]?.daily_quantity || ""}
-															onChange={(val) => handleDataTypeChange(item.id, "daily_quantity", val)}
+															onChange={(val) =>
+																handleDataTypeChange(item.id, "daily_quantity", val)
+															}
 															onBlur={() => handleRowSubmit(item.id)}
 														/>
 													</Text>
 												</Table.Td>
 											</Table.Tr>
-										)))}
-									<Table.Tr  verticalAlign="right">
-										<Table.Td style={{ verticalAlign: "right" }} verticalAlign="right" colspan={'6'}>
-											<Flex justify="flex-end" mt={'xs'} mb={'xs'} pr={'xs'}>
+										))}
+									<Table.Tr verticalAlign="right">
+										<Table.Td
+											style={{ verticalAlign: "right" }}
+											verticalAlign="right"
+											colSpan={"6"}
+										>
+											<Flex justify="flex-end" mt={"xs"} mb={"xs"} pr={"xs"}>
 												<Button>process</Button>
 											</Flex>
 										</Table.Td>
@@ -246,7 +247,6 @@ export default function Medicine(data) {
 					</Stack>
 				</Paper>
 			</ScrollArea>
-
 		</Box>
 	);
 }

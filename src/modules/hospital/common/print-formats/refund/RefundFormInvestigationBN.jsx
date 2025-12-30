@@ -6,7 +6,7 @@ import "@/index.css";
 import { capitalizeWords, formatDateTimeAmPm } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-import {formatDate} from "@utils/index";
+import { formatDate } from "@utils/index";
 
 const RefundFormInvestigationBN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
@@ -91,7 +91,10 @@ const RefundFormInvestigationBN = forwardRef(({ data, preview = false }, ref) =>
 								<Table.Tr>
 									<Table.Td colSpan={3}>
 										<Box px="mes" pt="2xs" pb="sm">
-											<Text fz={"xs"}>{t("তারিখঃ")}{formatDate(patientInfo?.created_at)}</Text>
+											<Text fz={"xs"}>
+												{t("তারিখঃ")}
+												{formatDate(patientInfo?.created_at)}
+											</Text>
 											<Text fz={"xs"}>{t("বরাবর")}</Text>
 											<Text fz={"xs"}>{t("উপ-পরিচালক")}</Text>
 											<Text fz={"xs"}>{t("২৫০ শয্যা বিশিষ্ট টিবি হাসপাতাল")}</Text>
@@ -105,9 +108,9 @@ const RefundFormInvestigationBN = forwardRef(({ data, preview = false }, ref) =>
 											<Text fz={"xs"}>{t("জনাব")}</Text>
 											<Text fz={"xs"}>
 												{t(
-													`যথাযথ সম্মান প্রদর্শন পূর্বক বিনীত নিবেদন এই যে, আমি ${patientInfo?.name || ""}, বয়স ${
-														patientInfo?.year ? `${patientInfo?.year} বছর` : ""
-													} ${
+													`যথাযথ সম্মান প্রদর্শন পূর্বক বিনীত নিবেদন এই যে, আমি ${
+														patientInfo?.name || ""
+													}, বয়স ${patientInfo?.year ? `${patientInfo?.year} বছর` : ""} ${
 														patientInfo?.month ? `${patientInfo?.month} মাস` : ""
 													}, হাসপাতাল আইডি/রেজিস্ট্রেশন নং ${getValue(
 														patientInfo?.patient_id || ""
@@ -166,10 +169,16 @@ const RefundFormInvestigationBN = forwardRef(({ data, preview = false }, ref) =>
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td colSpan={3}>
 										<Box px="mes" pt="sm" pb="sm">
-											<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
+											<Table
+												withTableBorder
+												withColumnBorders
+												borderColor="var(--theme-tertiary-color-8)"
+											>
 												<Table.Thead>
-													<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-														<Table.Td colspan={3}>
+													<Table.Tr
+														style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+													>
+														<Table.Td colSpan={3}>
 															<Group gap="xs">
 																<Text size="md" fw={600}>
 																	{t("PaymentDetails")}:
@@ -181,7 +190,7 @@ const RefundFormInvestigationBN = forwardRef(({ data, preview = false }, ref) =>
 														<Table.Th>{t("Particular")}</Table.Th>
 														<Table.Th ta="center">{t("Quantity")}</Table.Th>
 														<Table.Th ta="center">{t("Price")}</Table.Th>
-														<Table.Th ta={'right'}>{t("Total")}</Table.Th>
+														<Table.Th ta={"right"}>{t("Total")}</Table.Th>
 													</Table.Tr>
 												</Table.Thead>
 												<Table.Tbody>
@@ -194,16 +203,16 @@ const RefundFormInvestigationBN = forwardRef(({ data, preview = false }, ref) =>
 															<Table.Td width={80} align="center">
 																{item.price}
 															</Table.Td>
-															<Table.Td fw={600} width={110} ta={'right'}>
-																 {item.sub_total}
+															<Table.Td fw={600} width={110} ta={"right"}>
+																{item.sub_total}
 															</Table.Td>
 														</Table.Tr>
 													))}
 													<Table.Tr>
-														<Table.Td colspan={3} fw={600} ta={'right'}>
+														<Table.Td colSpan={3} fw={600} ta={"right"}>
 															{t("Amount")}
 														</Table.Td>
-														<Table.Td width={110} fw={600} ta={'right'}>
+														<Table.Td width={110} fw={600} ta={"right"}>
 															{getValue(patientInfo?.total, "0")}
 														</Table.Td>
 													</Table.Tr>

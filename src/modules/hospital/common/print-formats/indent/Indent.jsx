@@ -57,45 +57,23 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 										<Flex gap="md" justify="center">
 											<Box>
 												<Group ml="md" align="center" h="100%">
-													<Image
-														src={GLogo}
-														alt="logo"
-														width={60}
-														height={60}
-													/>
+													<Image src={GLogo} alt="logo" width={60} height={60} />
 												</Group>
 											</Box>
 											<Box>
-												<Text
-													ta="center"
-													fw="bold"
-													size="lg"
-													c="#1e40af"
-													mt="2"
-												>
+												<Text ta="center" fw="bold" size="lg" c="#1e40af" mt="2">
 													{hospitalConfigData?.organization_name || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mt="2">
 													{hospitalConfigData?.address || ""}
 												</Text>
 												<Text ta="center" size="sm" c="gray" mb="2">
-													{t("হটলাইন")}{" "}
-													{hospitalConfigData?.hotline || ""}
+													{t("হটলাইন")} {hospitalConfigData?.hotline || ""}
 												</Text>
 											</Box>
 											<Box>
-												<Group
-													mr="md"
-													justify="flex-end"
-													align="center"
-													h="100%"
-												>
-													<Image
-														src={TBLogo}
-														alt="logo"
-														width={60}
-														height={60}
-													/>
+												<Group mr="md" justify="flex-end" align="center" h="100%">
+													<Image src={TBLogo} alt="logo" width={60} height={60} />
 												</Group>
 											</Box>
 										</Flex>
@@ -104,7 +82,7 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td
-									colspan={6}
+									colSpan={6}
 									style={{
 										textAlign: "center",
 										fontSize: "20px",
@@ -118,35 +96,24 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>{t("Created")}</Table.Td>
 								<Table.Td>
 									{" "}
-									{patientInfo &&
-										patientInfo.invoice_date &&
-										patientInfo.invoice_date}
+									{patientInfo && patientInfo.invoice_date && patientInfo.invoice_date}
 								</Table.Td>
 								<Table.Td>{t("Store")}</Table.Td>
 								<Table.Td>
-									{patientInfo &&
-										patientInfo.to_warehouse &&
-										patientInfo.to_warehouse}
+									{patientInfo && patientInfo.to_warehouse && patientInfo.to_warehouse}
 								</Table.Td>
 								<Table.Td> {t("Process")}</Table.Td>
-								<Table.Td>
-									{" "}
-									{patientInfo && patientInfo.process && patientInfo.process}
-								</Table.Td>
+								<Table.Td> {patientInfo && patientInfo.process && patientInfo.process}</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td>{t("CreatedBy")}</Table.Td>
-								<Table.Td colspan={2}>
+								<Table.Td colSpan={2}>
 									{" "}
-									{patientInfo &&
-										patientInfo.created_by &&
-										patientInfo.created_by}
+									{patientInfo && patientInfo.created_by && patientInfo.created_by}
 								</Table.Td>
 								<Table.Td>{t("ApprovedBy")}</Table.Td>
-								<Table.Td colspan={2}>
-									{patientInfo &&
-										patientInfo.approved_by &&
-										patientInfo.approved_by}
+								<Table.Td colSpan={2}>
+									{patientInfo && patientInfo.approved_by && patientInfo.approved_by}
 								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
@@ -168,9 +135,7 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 						</Table.Thead>
 						<Table.Tbody>
 							{patientInfo?.stock_transfer_items?.map((item, index) => (
-								<Table.Tr
-									style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
-								>
+								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td>{index + 1}.</Table.Td>
 									<Table.Td>{getValue(item?.name)}</Table.Td>
 									<Table.Td>{getValue(item?.stock_quantity, "0")}</Table.Td>

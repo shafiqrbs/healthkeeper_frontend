@@ -208,7 +208,7 @@ const DeathCertificateEN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs">{getValue(patientInfo?.patient_relation, "")}</Text>
 									</Group>
 								</Table.Td>
-								<Table.Td colspan={2}>
+								<Table.Td colSpan={2}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Mobile")}:
@@ -223,7 +223,7 @@ const DeathCertificateEN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colspan={3}>
+								<Table.Td colSpan={3}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("PresentAddress")}:
@@ -233,7 +233,7 @@ const DeathCertificateEN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colspan={3}>
+								<Table.Td colSpan={3}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("PermanentAddress")}:
@@ -243,7 +243,7 @@ const DeathCertificateEN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colspan={3}>
+								<Table.Td colSpan={3}>
 									<Group gap="xs">
 										<Text size="md" fw={600}>
 											{t("AdmissionInformation")}:
@@ -278,7 +278,7 @@ const DeathCertificateEN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colspan={2}>
+								<Table.Td colSpan={2}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("ConsultantDoctor")}:

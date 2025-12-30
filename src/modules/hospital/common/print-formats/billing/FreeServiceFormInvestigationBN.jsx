@@ -104,9 +104,9 @@ const FreeServiceFormInvestigationBN = forwardRef(({ data, preview = false }, re
 											<Text fz={"xs"}>{t("জনাব")}</Text>
 											<Text fz={"xs"}>
 												{t(
-													`যথাযথ সম্মান প্রদর্শন পূর্বক বিনীত নিবেদন এই যে, আমি ${patientInfo?.name || ""}, বয়স ${
-														patientInfo?.year ? `${patientInfo?.year} বছর` : ""
-													} ${
+													`যথাযথ সম্মান প্রদর্শন পূর্বক বিনীত নিবেদন এই যে, আমি ${
+														patientInfo?.name || ""
+													}, বয়স ${patientInfo?.year ? `${patientInfo?.year} বছর` : ""} ${
 														patientInfo?.month ? `${patientInfo?.month} মাস` : ""
 													}, হাসপাতাল আইডি/রেজিস্ট্রেশন নং ${getValue(
 														patientInfo?.patient_id || ""
@@ -153,7 +153,7 @@ const FreeServiceFormInvestigationBN = forwardRef(({ data, preview = false }, re
 									</Table.Td>
 								</Table.Tr>
 								<Table.Tr>
-									<Table.Td colspan={"2"}>
+									<Table.Td colSpan={"2"}>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("Name")}:
@@ -184,14 +184,16 @@ const FreeServiceFormInvestigationBN = forwardRef(({ data, preview = false }, re
 											<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
 										</Group>
 									</Table.Td>
-									<Table.Td colspan={2}>
+									<Table.Td colSpan={2}>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("Mobile")}:
 											</Text>
 											<Text size="xs">
 												{getValue(patientInfo?.mobile, "")}
-												{patientInfo?.guardian_mobile && <> / {getValue(patientInfo?.guardian_mobile, "")}</>}
+												{patientInfo?.guardian_mobile && (
+													<> / {getValue(patientInfo?.guardian_mobile, "")}</>
+												)}
 											</Text>
 										</Group>
 									</Table.Td>
@@ -233,10 +235,16 @@ const FreeServiceFormInvestigationBN = forwardRef(({ data, preview = false }, re
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td colSpan={3}>
 										<Box px="mes" pt="sm" pb="sm">
-											<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
+											<Table
+												withTableBorder
+												withColumnBorders
+												borderColor="var(--theme-tertiary-color-8)"
+											>
 												<Table.Thead>
-													<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-														<Table.Td colspan={3}>
+													<Table.Tr
+														style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+													>
+														<Table.Td colSpan={3}>
 															<Group gap="xs">
 																<Text size="md" fw={600}>
 																	{t("PaymentDetails")}:
@@ -267,7 +275,7 @@ const FreeServiceFormInvestigationBN = forwardRef(({ data, preview = false }, re
 														</Table.Tr>
 													))}
 													<Table.Tr>
-														<Table.Td colspan={3} fw={600}>
+														<Table.Td colSpan={3} fw={600}>
 															{t("Payable")}
 														</Table.Td>
 														<Table.Td width={110} fw={600}>
@@ -275,17 +283,21 @@ const FreeServiceFormInvestigationBN = forwardRef(({ data, preview = false }, re
 														</Table.Td>
 													</Table.Tr>
 													<Table.Tr>
-														<Table.Td colspan={3} fw={600}>
+														<Table.Td colSpan={3} fw={600}>
 															{t("Paid")}
 														</Table.Td>
-														<Table.Td fw={600}>৳ {getValue(patientInfo?.amount, "0")}</Table.Td>
+														<Table.Td fw={600}>
+															৳ {getValue(patientInfo?.amount, "0")}
+														</Table.Td>
 													</Table.Tr>
 													<Table.Tr>
-														<Table.Td colspan={3} fw={600}>
+														<Table.Td colSpan={3} fw={600}>
 															{t("Balance")}
 														</Table.Td>
 														<Table.Td fw={600}>
-															৳ {Number(patientInfo?.total ?? 0) - Number(patientInfo?.amount ?? 0)}
+															৳{" "}
+															{Number(patientInfo?.total ?? 0) -
+																Number(patientInfo?.amount ?? 0)}
 														</Table.Td>
 													</Table.Tr>
 												</Table.Tbody>

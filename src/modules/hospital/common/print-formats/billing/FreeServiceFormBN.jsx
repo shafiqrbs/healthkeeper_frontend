@@ -140,7 +140,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 									</Table.Td>
 								</Table.Tr>
 								<Table.Tr>
-									<Table.Td colspan={"2"}>
+									<Table.Td colSpan={"2"}>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("Name")}:
@@ -170,7 +170,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
 										</Group>
 									</Table.Td>
-									<Table.Td colspan={2}>
+									<Table.Td colSpan={2}>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("Mobile")}:
@@ -239,7 +239,6 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 										</Grid>
 									</Table.Td>
 								</Table.Tr>
-
 							</Table.Tbody>
 						</Table>
 					</Box>
@@ -277,7 +276,7 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Tr>
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td colSpan={"6"}>
-										<Flex gap="md" align="center" justify="center" fw={'600'}>
+										<Flex gap="md" align="center" justify="center" fw={"600"}>
 											Use for waiver Test List
 										</Flex>
 									</Table.Td>
@@ -348,59 +347,58 @@ const FreeServiceFormBN = forwardRef(({ data, preview = false }, ref) => {
 											<Table.Td>{item?.diagnostic_room_name}</Table.Td>
 										</Table.Tr>
 									))}
-
 							</Table.Tbody>
 						</Table>
 						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
-						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Table.Td colSpan={3}>
-								<SimpleGrid cols={3} spacing="xl" mt="xl">
-									{/* Checked By */}
-									<Box>
-										<Box
-											style={{
-												borderBottom: "2px dashed #999",
-												height: 40,
-											}}
-										/>
-										<Text ta="center" size="sm" mt={4} fw={500}></Text>
-										<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
-											Approved By
-										</Text>
-									</Box>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colSpan={3}>
+									<SimpleGrid cols={3} spacing="xl" mt="xl">
+										{/* Checked By */}
+										<Box>
+											<Box
+												style={{
+													borderBottom: "2px dashed #999",
+													height: 40,
+												}}
+											/>
+											<Text ta="center" size="sm" mt={4} fw={500}></Text>
+											<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
+												Approved By
+											</Text>
+										</Box>
 
-									{/* Approved By */}
-									<Box>
-										<Box
-											style={{
-												borderBottom: "2px dashed #999",
-												height: 40,
-											}}
-										/>
-										<Text ta="center" size="sm" mt={4} fw={500}></Text>
-										<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
-											RP/RS By
-										</Text>
-									</Box>
+										{/* Approved By */}
+										<Box>
+											<Box
+												style={{
+													borderBottom: "2px dashed #999",
+													height: 40,
+												}}
+											/>
+											<Text ta="center" size="sm" mt={4} fw={500}></Text>
+											<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
+												RP/RS By
+											</Text>
+										</Box>
 
-									{/* Created By */}
-									<Box>
-										<Box
-											style={{
-												borderBottom: "2px dashed #999",
-												height: 40,
-											}}
-										/>
-										<Text ta="center" size="sm" mt={4} fw={500}>
-											{/*{patientInfo?.created_by_name || "—"}*/}
-										</Text>
-										<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
-											Medicated of
-										</Text>
-									</Box>
-								</SimpleGrid>
-							</Table.Td>
-						</Table.Tr>
+										{/* Created By */}
+										<Box>
+											<Box
+												style={{
+													borderBottom: "2px dashed #999",
+													height: 40,
+												}}
+											/>
+											<Text ta="center" size="sm" mt={4} fw={500}>
+												{/*{patientInfo?.created_by_name || "—"}*/}
+											</Text>
+											<Text ta="center" size="xs" c="dimmed" pb={"xs"}>
+												Medicated of
+											</Text>
+										</Box>
+									</SimpleGrid>
+								</Table.Td>
+							</Table.Tr>
 						</Table>
 					</Box>
 				</Box>

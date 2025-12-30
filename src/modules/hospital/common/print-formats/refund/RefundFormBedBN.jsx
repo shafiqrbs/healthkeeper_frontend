@@ -6,7 +6,7 @@ import "@/index.css";
 import { capitalizeWords, formatDateTimeAmPm } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-import {formatDate} from "@utils/index";
+import { formatDate } from "@utils/index";
 
 const RefundFromBedBn = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
@@ -91,7 +91,9 @@ const RefundFromBedBn = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Tr>
 									<Table.Td colSpan={3}>
 										<Box px="mes" pt="2xs" pb="sm">
-											<Text fz={"xs"}>{t("তারিখঃ")} {formatDate(patientInfo?.created)}</Text>
+											<Text fz={"xs"}>
+												{t("তারিখঃ")} {formatDate(patientInfo?.created)}
+											</Text>
 											<Text fz={"xs"}>{t("বরাবর")}</Text>
 											<Text fz={"xs"}>{t("উপ-পরিচালক")}</Text>
 											<Text fz={"xs"}>{t("২৫০ শয্যা বিশিষ্ট টিবি হাসপাতাল")}</Text>
@@ -168,7 +170,7 @@ const RefundFromBedBn = forwardRef(({ data, preview = false }, ref) => {
 									</Table.Td>
 								</Table.Tr>
 								<Table.Tr>
-									<Table.Td colspan={"2"}>
+									<Table.Td colSpan={"2"}>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("Name")}:
@@ -199,7 +201,7 @@ const RefundFromBedBn = forwardRef(({ data, preview = false }, ref) => {
 											<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
 										</Group>
 									</Table.Td>
-									<Table.Td colspan={2}>
+									<Table.Td colSpan={2}>
 										<Group gap="xs">
 											<Text size="xs" fw={600}>
 												{t("Mobile")}:
@@ -313,7 +315,11 @@ const RefundFromBedBn = forwardRef(({ data, preview = false }, ref) => {
 														</Table.Td>
 														<Table.Td>
 															<Text size="xs" fw={600}>
-																Paid Amount: {getValue((patientInfo?.payment_day * patientInfo?.room_price), "0")}
+																Paid Amount:{" "}
+																{getValue(
+																	patientInfo?.payment_day * patientInfo?.room_price,
+																	"0"
+																)}
 															</Text>
 														</Table.Td>
 													</Table.Tr>
@@ -331,7 +337,11 @@ const RefundFromBedBn = forwardRef(({ data, preview = false }, ref) => {
 														<Table.Td>
 															<Text size="xs" fw={600}>
 																Hospital Amount:{" "}
-																{getValue((patientInfo?.admission_day * patientInfo?.room_price), "0")}
+																{getValue(
+																	patientInfo?.admission_day *
+																		patientInfo?.room_price,
+																	"0"
+																)}
 															</Text>
 														</Table.Td>
 													</Table.Tr>

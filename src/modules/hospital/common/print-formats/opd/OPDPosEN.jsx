@@ -20,13 +20,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="center" align="center" gap={8}>
-						<Image
-							src={GovtLogo}
-							alt="Govt Logo"
-							width={44}
-							height={44}
-							fit="contain"
-						/>
+						<Image src={GovtLogo} alt="Govt Logo" width={44} height={44} fit="contain" />
 						<Stack gap={0} ta="left">
 							<Text ta="center" size="xs" fw={700}>
 								{t("250BeddedTBHospital")}
@@ -38,13 +32,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 								{t("Hotline: 01969910200")}
 							</Text>
 						</Stack>
-						<Image
-							src={TbImage}
-							alt="TB Hospital"
-							width={44}
-							height={44}
-							fit="contain"
-						/>
+						<Image src={TbImage} alt="TB Hospital" width={44} height={44} fit="contain" />
 					</Group>
 					<DashedLine />
 
@@ -71,7 +59,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							{data?.health_id && (
 								<Table.Tr>
-									<Table.Td colspan={2} align="center">
+									<Table.Td colSpan={2} align="center">
 										<strong>{t("HID")}:</strong> {data?.health_id}
 									</Table.Td>
 								</Table.Tr>
@@ -108,8 +96,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("Age")}</strong> {data?.year}Y {data?.month}M{" "}
-									{data?.day}D
+									<strong>{t("Age")}</strong> {data?.year}Y {data?.month}M {data?.day}D
 								</Table.Td>
 								<Table.Td miw={100} align="right">
 									<strong>{t("DOB")}</strong> {data?.dob}
@@ -130,8 +117,7 @@ const OPDPosBN = forwardRef(({ data, preview = false }, ref) => {
 							{data?.guardian_mobile && data?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>
-										<strong>{t("GuardianMobile")}:</strong>{" "}
-										{data?.guardian_mobile}
+										<strong>{t("GuardianMobile")}:</strong> {data?.guardian_mobile}
 									</Table.Td>
 								</Table.Tr>
 							)}

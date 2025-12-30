@@ -6,7 +6,7 @@ import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useTranslation } from "react-i18next";
 import useDomainHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import Barcode from "react-barcode";
-import {capitalizeWords} from "@utils/index";
+import { capitalizeWords } from "@utils/index";
 
 const DashedLine = () => (
 	<Text size="2xs" ta="center" ff="monospace">
@@ -27,13 +27,7 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="center" align="center" gap={8}>
-						<Image
-							src={GovtLogo}
-							alt="Govt Logo"
-							width={30}
-							height={30}
-							fit="contain"
-						/>
+						<Image src={GovtLogo} alt="Govt Logo" width={30} height={30} fit="contain" />
 						<Stack gap={0} ta="left">
 							<Text ta="center" size="xs" fw={700}>
 								{hospitalConfigData?.organization_name || "Hospital"}
@@ -45,13 +39,7 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 								{t("হটলাইন")} {hospitalConfigData?.hotline || "0987634523"}
 							</Text>
 						</Stack>
-						<Image
-							src={TbImage}
-							alt="TB Hospital"
-							width={30}
-							height={30}
-							fit="contain"
-						/>
+						<Image src={TbImage} alt="TB Hospital" width={30} height={30} fit="contain" />
 					</Group>
 					<DashedLine />
 
@@ -76,7 +64,7 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							{patientInfo?.health_id && (
 								<Table.Tr>
-									<Table.Td colspan={2} align="center">
+									<Table.Td colSpan={2} align="center">
 										<strong>HID:</strong> {patientInfo?.health_id || ""}
 									</Table.Td>
 								</Table.Tr>
@@ -97,7 +85,8 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("বয়স")}</strong> {patientInfo?.year ? `${patientInfo.year} ${t("বছর")} ` : ""}
+									<strong>{t("বয়স")}</strong>{" "}
+									{patientInfo?.year ? `${patientInfo.year} ${t("বছর")} ` : ""}
 									{patientInfo?.month ? `${patientInfo.month} ${t("মাস")} ` : ""}
 									{patientInfo?.day ? `${patientInfo.day} ${t("দিন")}` : ""}
 								</Table.Td>
@@ -111,8 +100,7 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("লিঙ্গ")}:</strong>{" "}
-									{ capitalizeWords(patientInfo?.gender)}
+									<strong>{t("লিঙ্গ")}:</strong> {capitalizeWords(patientInfo?.gender)}
 								</Table.Td>
 								<Table.Td align="right">
 									<strong>{t("মোবাইল")}:</strong> {patientInfo?.mobile || ""}
@@ -121,35 +109,30 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 							{patientInfo?.address && (
 								<Table.Tr>
-									<Table.Td colSpan={2} fz={'xs'}>
-										<strong>{t("ঠিকানা")}</strong>{" "}
-										{patientInfo?.address}
+									<Table.Td colSpan={2} fz={"xs"}>
+										<strong>{t("ঠিকানা")}</strong> {patientInfo?.address}
 									</Table.Td>
 								</Table.Tr>
 							)}
 							{patientInfo?.upazila && (
 								<Table.Tr>
-									<Table.Td colSpan={2} fz={'xs'}>
+									<Table.Td colSpan={2} fz={"xs"}>
 										<strong>{t("থানা/জেলা")}</strong>{" "}
-										{[patientInfo?.upazila, patientInfo?.district]
-											.filter(Boolean)
-											.join(", ")}
+										{[patientInfo?.upazila, patientInfo?.district].filter(Boolean).join(", ")}
 									</Table.Td>
 								</Table.Tr>
 							)}
 							{patientInfo?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>
-										<strong>{t("অভিভাবকের নাম")}:</strong>{" "}
-										{patientInfo?.guardian_name || ""}
+										<strong>{t("অভিভাবকের নাম")}:</strong> {patientInfo?.guardian_name || ""}
 									</Table.Td>
 								</Table.Tr>
 							)}
 							{patientInfo?.guardian_mobile && patientInfo?.guardian_name && (
 								<Table.Tr>
 									<Table.Td colSpan={2}>
-										<strong>{t("অভিভাবকের মোবাইল")}:</strong>{" "}
-										{patientInfo?.guardian_mobile || ""}
+										<strong>{t("অভিভাবকের মোবাইল")}:</strong> {patientInfo?.guardian_mobile || ""}
 									</Table.Td>
 								</Table.Tr>
 							)}
@@ -175,18 +158,12 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 						<Table.Tbody>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
-									<Barcode
-										fontSize={"12"}
-										width={"1"}
-										height={"40"}
-										value={patientInfo?.invoice}
-									/>
+									<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.invoice} />
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td>
-									<strong>{t("CreatedBy")}:</strong>{" "}
-									{patientInfo?.created_by_name || ""}
+									<strong>{t("CreatedBy")}:</strong> {patientInfo?.created_by_name || ""}
 								</Table.Td>
 								<Table.Td align="right">
 									<strong>{t("PrintedBy")}:</strong> {user?.name}
@@ -194,8 +171,7 @@ const EmergencyPosBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={2} align="center">
-									<strong>{t("প্রিন্টের সময়")}:</strong>{" "}
-									{new Date().toLocaleString()}
+									<strong>{t("প্রিন্টের সময়")}:</strong> {new Date().toLocaleString()}
 								</Table.Td>
 							</Table.Tr>
 						</Table.Tbody>
