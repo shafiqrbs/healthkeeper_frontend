@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "../helpers/request";
 import { useForm } from "@mantine/form";
-import { Box, Flex, Grid, LoadingOverlay, ScrollArea, Stack, Text } from "@mantine/core";
+import { Box, Flex, Grid, LoadingOverlay, ScrollArea, Stack, Text, ActionIcon, Tooltip } from "@mantine/core";
 import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -30,6 +30,7 @@ import DeathCertificate from "../common/tabs/DeathCertificate";
 import DischargePrint from "../common/tabs/DischargePrint";
 import RoomTransferPrint from "../common/tabs/RoomTransferPrint.jsx";
 import DeathCertificatePrint from "../common/tabs/DeathCertificatePrint.jsx";
+import { IconX, IconChevronRight } from "@tabler/icons-react";
 
 const module = MODULES.E_FRESH;
 
@@ -113,6 +114,7 @@ export default function Index() {
 	const { id } = useParams();
 	const [opened, { close }] = useDisclosure(false);
 	const [showHistory, setShowHistory] = useState(false);
+	const [showPatientReport, setShowPatientReport] = useState(false);
 	const [medicines, setMedicines] = useState([]);
 	const { t } = useTranslation();
 	const [tabValue, setTabValue] = useState("All");
@@ -271,6 +273,30 @@ export default function Index() {
 	return (
 		<Box pos="relative">
 			<LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
+			{baseTabValue === "e-fresh" && (
+				<Tooltip
+					label={showPatientReport ? t("hidePatientReport") : t("showPatientReport")}
+					position={showPatientReport ? "left" : "right"}
+				>
+					<ActionIcon
+						variant="filled"
+						color={showPatientReport ? "red" : "blue"}
+						size="xl"
+						radius="xl"
+						onClick={() => setShowPatientReport(!showPatientReport)}
+						style={{
+							position: "fixed",
+							top: "50%",
+							left: showPatientReport ? "calc(12.5% + 28%)" : "calc(12.5% + 56px)",
+							transform: "translateY(-50%)",
+							zIndex: 99,
+							boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+						}}
+					>
+						{showPatientReport ? <IconX size={18} /> : <IconChevronRight size={18} />}
+					</ActionIcon>
+				</Tooltip>
+			)}
 			<Flex w="100%" gap="xs" p="16px">
 				<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 				<Grid w="100%" columns={24} gutter="xs">
@@ -292,7 +318,8 @@ export default function Index() {
 									</Text>
 									<Text fz="xs">{ipdData?.data?.gender}</Text>
 									<Text fz="xs">
-										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m {ipdData?.data?.day || 0}d{" "}
+										{ipdData?.data?.year || 0}y {ipdData?.data?.month || 0}m{" "}
+										{ipdData?.data?.day || 0}d{" "}
 									</Text>
 									<Text fz="xs">
 										{t("Created")} {formatDate(ipdData?.data?.created_at)}
@@ -385,26 +412,32 @@ export default function Index() {
 									tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
 								/>
 								<Flex gap="xs" w="100%">
-									<Box w="40%">
-										<PatientReport
-											extraHeight={246}
-											tabValue={tabValue}
+									{showPatientReport && (
+										<Box w="40%">
+											<PatientReport
+												extraHeight={246}
+												tabValue={tabValue}
+												form={form}
+												prescriptionData={ipdData}
+												modeName="E-Fresh Order"
+											/>
+										</Box>
+									)}
+									<Box w="100%">
+										<AddMedicineForm
+											module={module}
 											form={form}
+											medicines={medicines || []}
+											hasRecords={hasRecords}
+											setMedicines={setMedicines}
+											setShowHistory={setShowHistory}
 											prescriptionData={ipdData}
-											modeName="E-Fresh Order"
+											tabParticulars={tabParticulars}
+											section="e-fresh"
+											baseHeight={mainAreaHeight}
+											showBaseItems={false}
 										/>
 									</Box>
-									<AddMedicineForm
-										module={module}
-										form={form}
-										medicines={medicines || []}
-										hasRecords={hasRecords}
-										setMedicines={setMedicines}
-										setShowHistory={setShowHistory}
-										prescriptionData={ipdData}
-										tabParticulars={tabParticulars}
-										section="e-fresh"
-									/>
 								</Flex>
 							</Stack>
 						)}
@@ -418,11 +451,15 @@ export default function Index() {
 						{baseTabValue === "discharge" && <Discharge ipdData={ipdData?.data} refetch={refetch} />}
 						{baseTabValue === "death-certificate" && <DeathCertificate data={ipdData?.data} />}
 						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
-						{baseTabValue === "discharge-print" && <DischargePrint data={ipdData?.data} refetch={refetch} />}
+						{baseTabValue === "discharge-print" && (
+							<DischargePrint data={ipdData?.data} refetch={refetch} />
+						)}
 						{baseTabValue === "death-certificate-print" && (
 							<DeathCertificatePrint data={ipdData?.data} refetch={refetch} />
 						)}
-						{baseTabValue === "room-transfer-print" && <RoomTransferPrint data={ipdData?.data} refetch={refetch} />}
+						{baseTabValue === "room-transfer-print" && (
+							<RoomTransferPrint data={ipdData?.data} refetch={refetch} />
+						)}
 						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
 						{!baseTabValue && (

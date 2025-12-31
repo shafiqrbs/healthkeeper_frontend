@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import {
 	Box,
@@ -27,7 +27,6 @@ import {
 	IconX,
 	IconTrash,
 	IconCaretUpDownFilled,
-	IconMedicineSyrup,
 	IconBookmark,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
@@ -44,7 +43,6 @@ import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
-import MedicineListItem from "@hospital-components/MedicineListItem";
 import inputCss from "@assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
@@ -89,7 +87,10 @@ export default function AddMedicineForm({
 		meals: by_meal_options,
 	} = useAppLocalStore();
 
-	const mainHeight = showBaseItems ? baseHeight - 520 : baseHeight - 280;
+	const mainHeight = useMemo(
+		() => (showBaseItems ? baseHeight - 520 : baseHeight - 280),
+		[showBaseItems, baseHeight]
+	);
 
 	const medicineIdRef = useRef(null);
 	const [dbMedicines, setDbMedicines] = useState([]);
@@ -114,7 +115,8 @@ export default function AddMedicineForm({
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
-	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] = useDisclosure(false);
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
+		useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
@@ -131,6 +133,43 @@ export default function AddMedicineForm({
 		documentTitle: `prescription-${Date.now().toLocaleString()}`,
 		content: () => prescription2A4Ref.current,
 	});
+
+	const medicineOptions = useMemo(
+		() =>
+			medicineData?.map((item) => ({
+				label: `${item.product_name} - ${item.generic || ""}`,
+				value: item.product_id?.toString(),
+			})) ?? [],
+		[medicineData]
+	);
+
+	const medicineGenericOptions = useMemo(
+		() =>
+			medicineGenericData?.map((item, index) => ({
+				label: item?.name || item?.medicine_name,
+				value: `${item.name} ${index}`,
+				generic: item?.generic || "",
+			})) ?? [],
+		[medicineGenericData]
+	);
+
+	const dosageOptions = useMemo(
+		() =>
+			dosage_options?.map((dosage) => ({
+				value: dosage.id?.toString(),
+				label: dosage.name,
+			})) ?? [],
+		[dosage_options]
+	);
+
+	const mealOptions = useMemo(
+		() =>
+			by_meal_options?.map((meal) => ({
+				value: meal.id?.toString(),
+				label: meal.name,
+			})) ?? [],
+		[by_meal_options]
+	);
 
 	useEffect(() => {
 		dispatch(
@@ -157,16 +196,6 @@ export default function AddMedicineForm({
 			})
 		);
 	}, [treatmentRefetching]);
-
-	useEffect(() => {
-		if (medicineDosageSearchValue.length === 0) {
-			medicineForm.setFieldValue("medicine_dosage_id", null);
-		}
-
-		if (medicineByMealSearchValue.length === 0) {
-			medicineForm.setFieldValue("medicine_bymeal_id", null);
-		}
-	}, [medicineDosageSearchValue, medicineByMealSearchValue]);
 
 	useEffect(() => {
 		if (!printData) return;
@@ -197,7 +226,6 @@ export default function AddMedicineForm({
 			if (!value?.trim())
 				return showNotificationComponent(t("Please enter a valid value"), "red", "lightgray", true, 700, true);
 			const newItem = {
-				// id: Date.now(),
 				name: value,
 				value,
 				type,
@@ -237,7 +265,7 @@ export default function AddMedicineForm({
 	};
 
 	// =============== handler for saving emergency prescription ================
-	const handleEmergencyPrescriptionSave = () => {
+	const handleEmergencyPrescriptionSave = async () => {
 		if (tempEmergencyItems.length === 0) {
 			showNotificationComponent(t("Please add at least one emergency item"), "red", "lightgray", true, 700, true);
 			return;
@@ -255,6 +283,32 @@ export default function AddMedicineForm({
 
 		// close drawer
 		closeExPrescription();
+
+		tempEmergencyItems.forEach(async (item) => {
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_UPDATE}`,
+				data: {
+					generic: item.name,
+					prescription_id: prescriptionData?.data?.prescription_uid,
+				},
+				module: "prescription",
+			};
+
+			const resultAction = await dispatch(storeEntityData(value));
+
+			if (storeEntityData.rejected.match(resultAction)) {
+				console.error(resultAction.payload.message);
+			} else {
+				const data = resultAction?.payload?.data?.data || {};
+				const newMedicineData = {
+					medicine_name: data?.medicine_name || "",
+					generic: data?.generic || "",
+					is_active: data?.is_active || 0,
+					id: data?.id,
+				};
+				setDbMedicines((prev) => [...prev, newMedicineData]);
+			}
+		});
 	};
 
 	// Add hotkey for save functionality
@@ -346,7 +400,8 @@ export default function AddMedicineForm({
 			setMedicines(updated);
 			setEditIndex(null);
 		} else {
-			const maxOrder = medicines.length > 0 ? Math.max(...medicines.map((med) => med.order ?? 0), medicines.length) : 0;
+			const maxOrder =
+				medicines.length > 0 ? Math.max(...medicines.map((med) => med.order ?? 0), medicines.length) : 0;
 			const newMedicine = { ...values, order: maxOrder + 1 };
 			const updatedMedicines = [...medicines, newMedicine];
 			setMedicines(updatedMedicines);
@@ -369,7 +424,7 @@ export default function AddMedicineForm({
 				generic: values.generic,
 				medicine_dosage_id: values.medicine_dosage_id,
 				medicine_bymeal_id: values.medicine_bymeal_id,
-				prescription_id: id,
+				prescription_id: prescriptionData?.data?.prescription_uid,
 			},
 			module,
 		};
@@ -473,7 +528,9 @@ export default function AddMedicineForm({
 				const updateNestedState = useAuthStore.getState()?.updateNestedState;
 				updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
 				if (redirect) {
-					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${ipdId || id}?tab=dashboard`);
+					navigate(
+						`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${ipdId || id}?tab=dashboard`
+					);
 				}
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
@@ -581,11 +638,7 @@ export default function AddMedicineForm({
 											filter={medicineOptionsFilter}
 											id="medicine_id"
 											name="medicine_id"
-											data={medicineData?.map((item) => ({
-												label: `${item.product_name} - ${item.generic || ""}`,
-												value: item.product_id?.toString(),
-												generic: item.generic || "",
-											}))}
+											data={medicineOptions}
 											value={medicineForm.values.medicine_id}
 											onChange={(v) => handleChange("medicine_id", v)}
 											placeholder={t("MedicinePlaceholder")}
@@ -604,11 +657,7 @@ export default function AddMedicineForm({
 											id="generic"
 											name="generic"
 											clearable
-											data={medicineGenericData?.map((item, index) => ({
-												label: item?.name || item?.medicine_name,
-												value: `${item.name} ${index}`,
-												generic: item?.generic || "",
-											}))}
+											data={medicineGenericOptions}
 											filter={medicineOptionsFilter}
 											value={medicineForm.values.generic}
 											onChange={(v) => {
@@ -642,10 +691,7 @@ export default function AddMedicineForm({
 												classNames={inputCss}
 												id="medicine_dosage_id"
 												name="medicine_dosage_id"
-												data={dosage_options?.map((dosage) => ({
-													value: dosage.id?.toString(),
-													label: dosage.name,
-												}))}
+												data={dosageOptions}
 												value={medicineForm.values.medicine_dosage_id}
 												placeholder={t("Dosage")}
 												tooltip={t("EnterDosage")}
@@ -670,10 +716,7 @@ export default function AddMedicineForm({
 												classNames={inputCss}
 												id="medicine_bymeal_id"
 												name="medicine_bymeal_id"
-												data={by_meal_options?.map((byMeal) => ({
-													value: byMeal.id?.toString(),
-													label: byMeal.name,
-												}))}
+												data={mealOptions}
 												value={medicineForm.values.medicine_bymeal_id}
 												placeholder={t("ByMeal")}
 												tooltip={t("EnterWhenToTakeMedicine")}
@@ -859,12 +902,18 @@ export default function AddMedicineForm({
 							/>
 						))} */}
 
-					<MedicineListTable
-						tableHeight={
-							mainHeight ? mainHeight : form.values.instruction ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420
-						}
-						medicines={dbMedicines}
-					/>
+					{dbMedicines?.length > 0 && (
+						<MedicineListTable
+							tableHeight={
+								mainHeight
+									? mainHeight
+									: form.values.instruction
+									? mainAreaHeight - 420 - 50
+									: mainAreaHeight - 420
+							}
+							medicines={dbMedicines}
+						/>
+					)}
 				</Stack>
 			</ScrollArea>
 
@@ -1004,7 +1053,12 @@ export default function AddMedicineForm({
 				</>
 			)}
 
-			<GlobalDrawer opened={openedExPrescription} close={closeExPrescription} title={t("EmergencyPrescription")} size="28%">
+			<GlobalDrawer
+				opened={openedExPrescription}
+				close={closeExPrescription}
+				title={t("EmergencyPrescription")}
+				size="28%"
+			>
 				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
 					<Box>
 						<Flex gap="sm" w="100%" align="center">
@@ -1032,7 +1086,12 @@ export default function AddMedicineForm({
 							/>
 							<ActionIcon
 								onClick={() => {
-									handleAutocompleteOptionAdd(autocompleteValue, emergencyData?.data, "exEmergency", true);
+									handleAutocompleteOptionAdd(
+										autocompleteValue,
+										emergencyData?.data,
+										"exEmergency",
+										true
+									);
 									setTimeout(() => {
 										setAutocompleteValue("");
 									}, 0);
@@ -1115,7 +1174,12 @@ export default function AddMedicineForm({
 							<IPDPrescriptionFullBN data={previewPrintData} ref={printRef} preview />
 						</ScrollArea>
 						<Box bg="var(--mantine-color-white)" p="sm" className="shadow-2">
-							<Button onClick={handlePreviewPrint} bg="var(--theme-secondary-color-6)" color="white" size="sm">
+							<Button
+								onClick={handlePreviewPrint}
+								bg="var(--theme-secondary-color-6)"
+								color="white"
+								size="sm"
+							>
 								Print
 							</Button>
 						</Box>

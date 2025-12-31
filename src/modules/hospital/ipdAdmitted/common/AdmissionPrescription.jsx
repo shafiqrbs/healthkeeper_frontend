@@ -124,7 +124,12 @@ export default function AdmissionPrescription() {
 				</Grid.Col>
 				{showPatientReport && (
 					<Grid.Col span={7}>
-						<PatientReport tabValue={tabValue} form={form} prescriptionData={prescriptionData} modeName="Admission" />
+						<PatientReport
+							tabValue={tabValue}
+							form={form}
+							prescriptionData={prescriptionData}
+							modeName="Admission"
+						/>
 					</Grid.Col>
 				)}
 				<Grid.Col span={getAddMedicineFormSpan()}>

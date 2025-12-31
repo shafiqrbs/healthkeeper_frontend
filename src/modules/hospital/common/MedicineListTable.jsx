@@ -3,7 +3,9 @@ import { Center, Flex, Select, Switch, TableTd } from "@mantine/core";
 import { IconCheck, IconGripVertical, IconX } from "@tabler/icons-react";
 import { DataTable, DataTableDraggableRow } from "mantine-datatable";
 import clsx from "clsx";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef, memo } from "react";
+import debounce from "lodash.debounce";
+
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import classes from "./MedicineListTable.module.css";
 import tableCss from "@assets/css/Table.module.css";
@@ -14,160 +16,203 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { errorNotification } from "@components/notification/errorNotification";
 
-export default function MedicineListTable({ medicines, tableHeight = 0 }) {
+const MemoSelect = memo(function MemoSelect({ value, data, placeholder, onChange }) {
+	return (
+		<Select
+			searchable
+			size="xs"
+			data={data}
+			value={value?.toString() ?? null}
+			placeholder={placeholder}
+			onChange={onChange}
+		/>
+	);
+});
+
+const MemoSwitch = memo(function MemoSwitch({ checked, onChange }) {
+	return (
+		<Switch
+			size="md"
+			onLabel="ON"
+			color="teal"
+			offLabel="OFF"
+			radius="sm"
+			checked={checked}
+			onChange={(e) => onChange(e.currentTarget.checked)}
+			thumbIcon={
+				checked ? (
+					<IconCheck size={12} color="var(--mantine-color-teal-6)" stroke={3} />
+				) : (
+					<IconX size={12} color="var(--mantine-color-red-6)" stroke={3} />
+				)
+			}
+		/>
+	);
+});
+
+function MedicineListTable({ medicines, tableHeight = 0 }) {
 	const { id: prescriptionId } = useParams();
 	const { t } = useTranslation();
 	const { dosages, meals } = useAppLocalStore();
 	const dispatch = useDispatch();
-	const recordsWithIds = useMemo(() => {
-		return medicines.map((medicine) => ({
-			...medicine,
-			id: medicine.id?.toString(),
-		}));
-	}, [medicines]);
+
+	const recordsWithIds = useMemo(
+		() =>
+			medicines.map((m) => ({
+				...m,
+				id: m.id?.toString(),
+			})),
+		[medicines]
+	);
 
 	const [records, setRecords] = useState(recordsWithIds);
 
+	// only resync when list length changes
 	useEffect(() => {
-		setRecords(recordsWithIds);
+		setRecords((prev) => (prev.length !== recordsWithIds.length ? recordsWithIds : prev));
 	}, [recordsWithIds]);
 
-	const handleInlineEdit = async (id, field, value) => {
-		setRecords((prevRecords) => {
-			const updatedRecords = prevRecords.map((record) => {
-				if (record.id.toString() === id.toString()) {
-					return { ...record, [field]: value };
-				}
-				return record;
-			});
-			return updatedRecords;
-		});
+	const dosageOptions = useMemo(
+		() =>
+			dosages?.map((d) => ({
+				value: d.id.toString(),
+				label: d.name,
+			})) ?? [],
+		[dosages]
+	);
 
-		// add api call to update the medicine field
-		const updateMedicineValue = {
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INLINE_UPDATE}/${id}`,
-			data: {
-				medicine_id: id,
-				[field]: value,
-				prescription_id: prescriptionId,
-			},
-			module: "prescription",
-		};
-		try {
-			await dispatch(storeEntityData(updateMedicineValue));
-		} catch (error) {
-			console.error(error);
-			errorNotification(t("Failed to update medicine"), "red", "lightgray", true, 700, true);
-		}
-	};
+	const mealOptions = useMemo(
+		() =>
+			meals?.map((m) => ({
+				value: m.id.toString(),
+				label: m.name,
+			})) ?? [],
+		[meals]
+	);
+
+	const debouncedUpdate = useRef(
+		debounce(async (payload) => {
+			try {
+				await dispatch(storeEntityData(payload));
+			} catch {
+				errorNotification(t("Failed to update medicine"), "red", "lightgray", true, 700, true);
+			}
+		}, 300)
+	).current;
+
+	const handleInlineEdit = useCallback(
+		(id, field, value) => {
+			setRecords((prev) => prev.map((r) => (r.id === id ? { ...r, [field]: value } : r)));
+
+			debouncedUpdate({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INLINE_UPDATE}/${id}`,
+				data: {
+					medicine_id: id,
+					[field]: value,
+					prescription_id: prescriptionId,
+				},
+				module: "prescription",
+			});
+		},
+		[debouncedUpdate, prescriptionId]
+	);
 
 	const handleDragEnd = async (result) => {
 		if (!result.destination) return;
-		const oldItems = Array.from(records);
 
-		const items = Array.from(records);
-		const sourceIndex = result.source.index;
-		const destinationIndex = result.destination.index;
-		const [reorderedItem] = items.splice(sourceIndex, 1);
-		items.splice(destinationIndex, 0, reorderedItem);
+		const oldItems = [...records];
+		const items = [...records];
+
+		const [moved] = items.splice(result.source.index, 1);
+		items.splice(result.destination.index, 0, moved);
 
 		setRecords(items);
 
-		// add api call to update the order of the medicines
-		const updateMedicineOrderValue = {
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_REORDER}`,
-			data: {
-				order: items.map((item, index) => ({
-					id: item.id,
-					ordering: index + 1,
-				})),
-			},
-			module: "prescription",
-		};
-		const resultAction = await dispatch(storeEntityData(updateMedicineOrderValue));
+		const resultAction = await dispatch(
+			storeEntityData({
+				url: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_REORDER,
+				data: {
+					order: items.map((item, index) => ({
+						id: item.id,
+						ordering: index + 1,
+					})),
+				},
+				module: "prescription",
+			})
+		);
+
 		if (storeEntityData.rejected.match(resultAction)) {
-			errorNotification("Failed to update medicine order", "red", "lightgray", true, 700, true);
 			setRecords(oldItems);
+			errorNotification("Failed to update medicine order", "red", "lightgray", true, 700, true);
 		}
 	};
+
+	const columns = useMemo(
+		() => [
+			{ accessor: "", hiddenContent: true, width: 40 },
+			{
+				accessor: "index",
+				title: "S/N",
+				width: 50,
+				textAlign: "center",
+				render: (_, index) => index + 1,
+			},
+			{ accessor: "medicine_name", title: "Medicine Name" },
+			{ accessor: "generic", title: "Generic" },
+			{
+				accessor: "medicine_dosage_id",
+				title: "Dosage",
+				render: (record) => (
+					<MemoSelect
+						value={record.medicine_dosage_id}
+						data={dosageOptions}
+						placeholder={t("Dosage")}
+						onChange={(v) => handleInlineEdit(record.id, "medicine_dosage_id", v)}
+					/>
+				),
+			},
+			{
+				accessor: "medicine_bymeal_id",
+				title: "By Meal",
+				render: (record) => (
+					<MemoSelect
+						value={record.medicine_bymeal_id}
+						data={mealOptions}
+						placeholder={t("By Meal")}
+						onChange={(v) => handleInlineEdit(record.id, "medicine_bymeal_id", v)}
+					/>
+				),
+			},
+			{
+				accessor: "action",
+				title: "Action",
+				width: 100,
+				textAlign: "center",
+				render: (record) => (
+					<Flex justify="center">
+						<MemoSwitch
+							checked={record.is_active}
+							onChange={(v) => handleInlineEdit(record.id, "is_active", v)}
+						/>
+					</Flex>
+				),
+			},
+		],
+		[dosageOptions, mealOptions, handleInlineEdit, t]
+	);
 
 	return (
 		<DragDropContext onDragEnd={handleDragEnd}>
 			<DataTable
-				height={tableHeight - 30}
-				columns={[
-					{ accessor: "", hiddenContent: true, width: 40 },
-					{ accessor: "index", textAlign: "center", width: 50, title: "S/N", render: (_record, index) => index + 1 },
-					{ accessor: "medicine_name", title: "Medicine Name" },
-					{ accessor: "generic", title: "Generic" },
-					{
-						accessor: "medicine_dosage_id",
-						title: "Dosage",
-						render: (record) => (
-							<Select
-								searchable
-								size="xs"
-								label=""
-								data={dosages?.map((dosage) => ({
-									value: dosage.id?.toString(),
-									label: dosage.name,
-								}))}
-								value={record.medicine_dosage_id?.toString()}
-								placeholder={t("Dosage")}
-								onChange={(v) => handleInlineEdit(record.id, "medicine_dosage_id", v)}
-							/>
-						),
-					},
-					{
-						accessor: "medicine_bymeal_id",
-						title: "By Meal",
-						render: (record) => (
-							<Select
-								searchable
-								size="xs"
-								label=""
-								data={meals?.map((meal) => ({
-									value: meal.id?.toString(),
-									label: meal.name,
-								}))}
-								value={record.medicine_bymeal_id?.toString()}
-								placeholder={t("By Meal")}
-								onChange={(v) => handleInlineEdit(record.id, "medicine_bymeal_id", v)}
-							/>
-						),
-					},
-					{
-						accessor: "action",
-						width: 100,
-						title: "Action",
-						textAlign: "center",
-						render: (record) => (
-							<Flex justify="center" align="center">
-								<Switch
-									size="md"
-									onLabel="ON"
-									color="teal"
-									offLabel="OFF"
-									checked={record.is_active}
-									onChange={(e) => handleInlineEdit(record.id, "is_active", e.currentTarget.checked)}
-									radius="sm"
-									thumbIcon={
-										record.is_active ? (
-											<IconCheck size={12} color="var(--mantine-color-teal-6)" stroke={3} />
-										) : (
-											<IconX size={12} color="var(--mantine-color-red-6)" stroke={3} />
-										)
-									}
-								/>
-							</Flex>
-						),
-					},
-				]}
 				records={records}
-				withTableBorder
+				columns={columns}
+				height={tableHeight - 30}
+				virtualized
+				rowHeight={44}
 				striped
-				stripedColor="var(--theme-tertiary-color-1)"
+				withTableBorder
 				withColumnBorders
+				stripedColor="var(--theme-tertiary-color-1)"
 				classNames={{
 					root: tableCss.root,
 					table: tableCss.table,
@@ -178,25 +223,24 @@ export default function MedicineListTable({ medicines, tableHeight = 0 }) {
 				tableWrapper={({ children }) => (
 					<Droppable droppableId="medicine-datatable">
 						{(provided) => (
-							<div {...provided.droppableProps} ref={provided.innerRef}>
+							<div ref={provided.innerRef} {...provided.droppableProps}>
 								{children}
 								{provided.placeholder}
 							</div>
 						)}
 					</Droppable>
 				)}
-				styles={{ table: { tableLayout: "fixed" } }}
 				rowFactory={({ record, index, rowProps, children }) => (
-					<Draggable key={record.id} draggableId={record.id?.toString()} index={index}>
+					<Draggable draggableId={record.id} index={index} key={record.id}>
 						{(provided, snapshot) => (
 							<DataTableDraggableRow
-								isDragging={snapshot.isDragging}
 								{...rowProps}
+								isDragging={snapshot.isDragging}
 								className={clsx(rowProps.className, classes.draggableRow)}
 								{...provided.draggableProps}
 							>
 								<TableTd>
-									<Center {...provided.dragHandleProps} ref={provided.innerRef}>
+									<Center ref={provided.innerRef} {...provided.dragHandleProps}>
 										<IconGripVertical size={16} />
 									</Center>
 								</TableTd>
@@ -209,3 +253,5 @@ export default function MedicineListTable({ medicines, tableHeight = 0 }) {
 		</DragDropContext>
 	);
 }
+
+export default memo(MedicineListTable);
