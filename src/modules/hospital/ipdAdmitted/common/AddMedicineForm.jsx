@@ -262,7 +262,6 @@ export default function AddMedicineForm({
 		[
 			"alt+1",
 			() => {
-				setMedicines([]);
 				medicineForm.reset();
 
 				setEditIndex(null);
@@ -399,6 +398,8 @@ export default function AddMedicineForm({
 				id: data?.id,
 			};
 			showNotificationComponent(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+			const updateNestedState = useAuthStore.getState()?.updateNestedState;
+			updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
 			setDbMedicines([...dbMedicines, newMedicineData]);
 		}
 	};
@@ -413,7 +414,6 @@ export default function AddMedicineForm({
 	};
 
 	const handleReset = () => {
-		setMedicines([]);
 		medicineForm.reset();
 		setEditIndex(null);
 		// Clear PatientReport data when resetting
@@ -815,7 +815,7 @@ export default function AddMedicineForm({
 							</Button>
 						</Flex>
 					)}
-					{form.values?.exEmergency?.length > 0 && (
+					{/* {form.values?.exEmergency?.length > 0 && (
 						<>
 							{form.values?.exEmergency?.map((item, idx) => (
 								<Flex justify="space-between" key={idx} align="center" gap="les">
@@ -835,7 +835,7 @@ export default function AddMedicineForm({
 								</Flex>
 							))}
 						</>
-					)}
+					)} */}
 
 					{/* {medicines
 						?.slice()
