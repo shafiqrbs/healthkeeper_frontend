@@ -61,7 +61,7 @@ export default function MedicineListTable({ medicines, tableHeight = 0 }) {
 		}
 	};
 
-	const handleDragEnd = (result) => {
+	const handleDragEnd = async (result) => {
 		if (!result.destination) return;
 
 		const items = Array.from(records);
@@ -73,6 +73,22 @@ export default function MedicineListTable({ medicines, tableHeight = 0 }) {
 		setRecords(items);
 
 		// add api call to update the order of the medicines
+		const updateMedicineOrderValue = {
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_REORDER}`,
+			data: {
+				order: items.map((item, index) => ({
+					id: item.id,
+					ordering: index + 1,
+				})),
+			},
+			module: "prescription",
+		};
+		try {
+			await dispatch(storeEntityData(updateMedicineOrderValue));
+		} catch (error) {
+			console.error(error);
+			errorNotification(t("Failed to update medicine order"), "red", "lightgray", true, 700, true);
+		}
 	};
 
 	return (

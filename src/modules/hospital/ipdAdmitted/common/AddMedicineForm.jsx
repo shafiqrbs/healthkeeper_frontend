@@ -962,14 +962,14 @@ export default function AddMedicineForm({
 								</Text>
 							</Stack>
 						</Button> */}
-						<Button w="100%" bg="var(--theme-error-color)" onClick={handlePrescriptionOverview}>
+						{/* <Button w="100%" bg="var(--theme-error-color)" onClick={handlePrescriptionOverview}>
 							<Stack gap={0} align="center" justify="center">
 								<Text>{t("Preview")}</Text>
 								<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
 									(alt + 4)
 								</Text>
 							</Stack>
-						</Button>
+						</Button> */}
 						<Button
 							w="100%"
 							bg="var(--theme-secondary-color-6)"

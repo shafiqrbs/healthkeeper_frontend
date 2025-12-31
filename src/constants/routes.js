@@ -619,6 +619,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			RELEASE: "hospital/ipd/release",
 			MEDICINE_UPDATE: "hospital/ipdprescription",
 			INLINE_UPDATE: "hospital/ipdprescription/inline-update",
+			MEDICINE_REORDER: "hospital/ipdprescription/ordering",
 		},
 
 		EMERGENCY: {

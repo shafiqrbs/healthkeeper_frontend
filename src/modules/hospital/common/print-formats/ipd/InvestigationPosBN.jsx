@@ -20,7 +20,7 @@ const InvestigationPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 	const patientInfo = data || {};
 
-	const totalPayable = patientInfo?.investigations?.items?.reduce((acc, item) => acc + item.price ?? 0, 0);
+	const totalPayable = patientInfo?.investigations?.items?.reduce((acc, item) => acc + item.price || 0, 0);
 
 	return (
 		<Box display={preview ? "block" : "none"}>
