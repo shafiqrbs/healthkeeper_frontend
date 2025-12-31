@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import { storeEntityData } from "@/app/store/core/crudThunk";
 import { errorNotification } from "@components/notification/errorNotification";
 
 export default function MedicineListTable({ medicines, tableHeight = 0 }) {
@@ -45,19 +45,19 @@ export default function MedicineListTable({ medicines, tableHeight = 0 }) {
 
 		// add api call to update the medicine field
 		const updateMedicineValue = {
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INLINE_UPDATE}/${prescriptionId}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INLINE_UPDATE}/${id}`,
 			data: {
 				medicine_id: id,
 				[field]: value,
 				prescription_id: prescriptionId,
 			},
-			module: "ipd",
+			module: "prescription",
 		};
 		try {
 			await dispatch(storeEntityData(updateMedicineValue));
 		} catch (error) {
 			console.error(error);
-			errorNotification(t("Failed to update medicine"));
+			errorNotification(t("Failed to update medicine"), "red", "lightgray", true, 700, true);
 		}
 	};
 

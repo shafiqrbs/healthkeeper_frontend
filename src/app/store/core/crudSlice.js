@@ -343,16 +343,6 @@ const initialState = {
 		filterData: { term: "" },
 	},
 
-	medicineGeneric: {
-		isLoading: true,
-		refetching: false,
-		error: null,
-		data: {},
-		editData: {},
-		validation: false,
-		filterData: { term: "" },
-	},
-
 	prescriptionItem: {
 		isLoading: true,
 		refetching: false,
