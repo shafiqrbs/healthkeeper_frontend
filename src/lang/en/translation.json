@@ -1672,5 +1672,8 @@
 	"ChangeDay": "Change Day",
 	"BedCabinType": "Bed/Cabin Type",
 	"Bed/CabinNumber": "Bed/Cabin",
+	"DosageName": "Dosage Name",
+	"DosageNameBangla": "Dosage Name Bn",
+	"AddDosage": "Add Dosage",
 	"xxxxxxxx": "xxxxxxxxxxx"
 }

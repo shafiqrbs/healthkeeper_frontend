@@ -37,6 +37,15 @@ const REPORT_TABS = [
 		],
 	},
 	{
+		label: "Daily Gender Patient",
+		value: "daily-opd-emergency-ipd",
+		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd",
+			"reports_basic",
+			"reports_advanced",
+			"reports_hospital"
+		],
+	},
+	{
 		label: "Stock item history",
 		value: "stock-item-history",
 		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist"],
@@ -63,8 +72,7 @@ export default function ReportsIndex() {
 	const { mainAreaHeight } = useOutletContext();
 
 	const { userRoles } = useAppLocalStore();
-	const ALLOWED_LAB_USER_ROLES = ["lab_assistant"];
-	console.log(userRoles);
+
 
 	const handleNavigation = (value) => {
 		navigate(`/hospital/reports?tab=${value}`);

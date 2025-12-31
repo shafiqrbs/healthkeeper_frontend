@@ -8,6 +8,7 @@ import StockItemHistory from "@modules/hospital/reports/items/StockItemHistory.j
 import MedicineIssue from "@modules/hospital/reports/items/MedicineIssue.jsx";
 import StockSummery from "@modules/hospital/reports/items/StockSummery.jsx";
 import DailyCollectionService from "@modules/hospital/reports/items/DailyCollectionService";
+import DailyOpdEmergencyIpdPatient from "@modules/hospital/reports/items/DailyOpdEmergencyIpdPatient";
 
 export default function DetailsRenderer() {
 	const { t } = useTranslation();
@@ -24,6 +25,8 @@ export default function DetailsRenderer() {
 				<PatientTicket />
 			) : tab === "daily-collection-service" ? (
 				<DailyCollectionService height={mainAreaHeight} />
+			) : tab === "daily-opd-emergency-ipd" ? (
+				<DailyOpdEmergencyIpdPatient height={mainAreaHeight} />
 			) : tab === "medicine-issue" ? (
 				<MedicineIssue />
 			) : tab === "stock-summery" ? (

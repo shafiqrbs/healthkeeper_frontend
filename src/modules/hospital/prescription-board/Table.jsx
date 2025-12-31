@@ -53,7 +53,7 @@ const tabs = [
 ];
 
 const PER_PAGE = 200;
-const ALLOWED_OPD_ROLES = ["doctor_opd", "admin_administrator"];
+const ALLOWED_OPD_ROLES = ["doctor_opd","doctor_ipd", "admin_administrator"];
 const ALLOWED_ADMIN_DOCTOR_ROLES = ["doctor_approve_opd", "admin_doctor", "admin_administrator"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
