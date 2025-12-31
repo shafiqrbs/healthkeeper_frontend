@@ -64,6 +64,7 @@ import { SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 import { useAuthStore } from "@/store/useAuthStore";
 import AddDosagePopover from "@components/drawers/AddDosagePopover";
+import MedicineListTable from "@hospital-components/MedicineListTable";
 
 export default function AddMedicineForm({
 	showBaseItems = true,
@@ -91,6 +92,7 @@ export default function AddMedicineForm({
 	const mainHeight = showBaseItems ? baseHeight - 520 : baseHeight - 280;
 
 	const medicineIdRef = useRef(null);
+	const [dbMedicines, setDbMedicines] = useState([]);
 	const printRef = useRef(null);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -112,8 +114,7 @@ export default function AddMedicineForm({
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
-	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
-		useDisclosure(false);
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] = useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
@@ -131,11 +132,6 @@ export default function AddMedicineForm({
 		content: () => prescription2A4Ref.current,
 	});
 
-	// const printPrescriptionFull = useReactToPrint({
-	// 	documentTitle: `prescription-${Date.now().toLocaleString()}`,
-	// 	content: () => prescriptionFullRef.current,
-	// });
-
 	useEffect(() => {
 		dispatch(
 			getIndexEntityData({
@@ -144,6 +140,10 @@ export default function AddMedicineForm({
 			})
 		);
 	}, [emergencyRefetching]);
+
+	useEffect(() => {
+		setDbMedicines(prescriptionData?.data?.prescription_medicine || []);
+	}, [prescriptionData]);
 
 	useEffect(() => {
 		dispatch(
@@ -335,7 +335,8 @@ export default function AddMedicineForm({
 		}
 	};
 
-	const handleAdd = (values) => {
+	const handleAdd = async (values) => {
+		// TODO: legacy code: must be removed later --- start
 		if (editIndex !== null) {
 			// if (isGenericIdDuplicate(medicines, values.generic_id)) {
 			// 	showNotificationComponent(t("Generic already exists"), "red", "lightgray", true, 700, true);
@@ -346,13 +347,7 @@ export default function AddMedicineForm({
 			setMedicines(updated);
 			setEditIndex(null);
 		} else {
-			// if (isGenericIdDuplicate(medicines, values.generic_id)) {
-			// 	showNotificationComponent(t("Generic already exists"), "red", "lightgray", true, 700, true);
-			// 	return;
-			// }
-			// =============== assign default order value based on max existing order or medicines length ================
-			const maxOrder =
-				medicines.length > 0 ? Math.max(...medicines.map((med) => med.order ?? 0), medicines.length) : 0;
+			const maxOrder = medicines.length > 0 ? Math.max(...medicines.map((med) => med.order ?? 0), medicines.length) : 0;
 			const newMedicine = { ...values, order: maxOrder + 1 };
 			const updatedMedicines = [...medicines, newMedicine];
 			setMedicines(updatedMedicines);
@@ -366,6 +361,46 @@ export default function AddMedicineForm({
 			setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
 		}
 		setEditIndex(null);
+		// TODO: legacy code: must be removed later --- end
+
+		const value = {
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_UPDATE}`,
+			data: {
+				medicine_id: values.medicine_id,
+				generic: values.generic,
+				medicine_dosage_id: values.medicine_dosage_id,
+				medicine_bymeal_id: values.medicine_bymeal_id,
+				prescription_id: id,
+			},
+			module,
+		};
+
+		const resultAction = await dispatch(storeEntityData(value));
+
+		if (storeEntityData.rejected.match(resultAction)) {
+			showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+		} else {
+			const data = resultAction?.payload?.data?.data || {};
+			const newMedicineData = {
+				company: data?.company || "",
+				medicine_name: data?.medicine_name || "",
+				generic: data?.generic || "",
+				generic_id: data?.generic_id,
+				medicine_id: data?.medicine_id,
+				stock_item_id: data?.stock_item_id,
+				medicine_dosage_id: data?.medicine_dosage_id || null,
+				medicine_bymeal_id: data?.medicine_bymeal_id || null,
+				dose_details: data?.dose_details || "",
+				dose_details_bn: data?.dose_details_bn || "",
+				daily_quantity: data?.daily_quantity || 0,
+				by_meal: data?.by_meal || "",
+				by_meal_bn: data?.by_meal_bn || "",
+				is_active: data?.is_active || 0,
+				id: data?.id,
+			};
+			showNotificationComponent(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+			setDbMedicines([...dbMedicines, newMedicineData]);
+		}
 	};
 
 	const handleDelete = (idx) => {
@@ -438,9 +473,7 @@ export default function AddMedicineForm({
 				const updateNestedState = useAuthStore.getState()?.updateNestedState;
 				updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
 				if (redirect) {
-					navigate(
-						`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${ipdId || id}?tab=dashboard`
-					);
+					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${ipdId || id}?tab=dashboard`);
 				}
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
@@ -804,10 +837,9 @@ export default function AddMedicineForm({
 						</>
 					)}
 
-					{medicines
+					{/* {medicines
 						?.slice()
 						.sort((a, b) => {
-							// =============== sort medicines by order (null values go to end) ================
 							const orderA = a.order ?? 999999;
 							const orderB = b.order ?? 999999;
 							return orderA - orderB;
@@ -825,7 +857,14 @@ export default function AddMedicineForm({
 								dosage_options={dosage_options}
 								type="ipd"
 							/>
-						))}
+						))} */}
+
+					<MedicineListTable
+						tableHeight={
+							mainHeight ? mainHeight : form.values.instruction ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420
+						}
+						medicines={dbMedicines}
+					/>
 				</Stack>
 			</ScrollArea>
 
@@ -965,12 +1004,7 @@ export default function AddMedicineForm({
 				</>
 			)}
 
-			<GlobalDrawer
-				opened={openedExPrescription}
-				close={closeExPrescription}
-				title={t("EmergencyPrescription")}
-				size="28%"
-			>
+			<GlobalDrawer opened={openedExPrescription} close={closeExPrescription} title={t("EmergencyPrescription")} size="28%">
 				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
 					<Box>
 						<Flex gap="sm" w="100%" align="center">
@@ -998,12 +1032,7 @@ export default function AddMedicineForm({
 							/>
 							<ActionIcon
 								onClick={() => {
-									handleAutocompleteOptionAdd(
-										autocompleteValue,
-										emergencyData?.data,
-										"exEmergency",
-										true
-									);
+									handleAutocompleteOptionAdd(autocompleteValue, emergencyData?.data, "exEmergency", true);
 									setTimeout(() => {
 										setAutocompleteValue("");
 									}, 0);
@@ -1086,12 +1115,7 @@ export default function AddMedicineForm({
 							<IPDPrescriptionFullBN data={previewPrintData} ref={printRef} preview />
 						</ScrollArea>
 						<Box bg="var(--mantine-color-white)" p="sm" className="shadow-2">
-							<Button
-								onClick={handlePreviewPrint}
-								bg="var(--theme-secondary-color-6)"
-								color="white"
-								size="sm"
-							>
+							<Button onClick={handlePreviewPrint} bg="var(--theme-secondary-color-6)" color="white" size="sm">
 								Print
 							</Button>
 						</Box>

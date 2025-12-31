@@ -28,8 +28,7 @@ export default function Index() {
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
-		useDisclosure(false);
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] = useDisclosure(false);
 
 	const { state } = useLocation();
 

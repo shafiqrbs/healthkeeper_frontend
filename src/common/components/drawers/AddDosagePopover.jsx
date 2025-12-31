@@ -94,177 +94,166 @@ export default function AddDosagePopover({ form, bd = "auto" }) {
 	};
 
 	return (
-		<Box style={{ pointerEvents: "auto" }}>
-			<Popover
-				width="500"
-				trapFocus
-				position="bottom"
-				withArrow
-				shadow="xl"
-				onDismiss={() => setAdvanceSearchFormOpened(false)}
-				opened={advanceSearchFormOpened}
-			>
-				<Popover.Target>
-					<Tooltip
-						multiline
-						bg="var(--theme-error-color)"
-						offset={{ crossAxis: "-52", mainAxis: "5" }}
-						position="top"
-						ta="center"
-						withArrow
-						transitionProps={{ duration: 200 }}
-						label={t("AddDosage")}
-					>
-						<ActionIcon
-							c="var(--mantine-color-white)"
-							onMouseDown={(event) => {
-								event.stopPropagation();
-								setAdvanceSearchFormOpened((prev) => !prev);
-							}}
-							bd={bd}
-							style={{ pointerEvents: "auto", cursor: "pointer" }}
-						>
-							<IconPlus size={16} stroke={1.5} />
-						</ActionIcon>
-					</Tooltip>
-				</Popover.Target>
-				<Popover.Dropdown>
-					<form
-						onSubmit={(event) => {
+		<Popover
+			width="500"
+			trapFocus
+			position="bottom"
+			withArrow
+			shadow="xl"
+			onDismiss={() => setAdvanceSearchFormOpened(false)}
+			opened={advanceSearchFormOpened}
+		>
+			<Popover.Target>
+				<Tooltip
+					multiline
+					bg="var(--theme-error-color)"
+					offset={{ crossAxis: "-52", mainAxis: "5" }}
+					position="top"
+					ta="center"
+					withArrow
+					transitionProps={{ duration: 200 }}
+					label={t("AddDosage")}
+				>
+					<ActionIcon
+						c="var(--mantine-color-white)"
+						onMouseDown={(event) => {
 							event.stopPropagation();
-							advanceSearchForm.onSubmit(handleSubmit)(event);
+							setAdvanceSearchFormOpened((prev) => !prev);
 						}}
+						bd={bd}
+						style={{ pointerEvents: "auto", cursor: "pointer" }}
 					>
-						<Box mt="es" pos="relative">
-							<LoadingOverlay
-								visible={isLoading}
-								zIndex={1000}
-								overlayProps={{ radius: "sm", blur: 1 }}
-							/>
-							<Box className="boxBackground borderRadiusAll" pt="les" mb="es" pb="les">
-								<Text ta="center" fw={600} fz="sm">
-									{t("AddDosage")}
-								</Text>
-							</Box>
-							<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
-								<ScrollArea h={height / 3} scrollbarSize={2} scrollbars="y" type="never">
-									<Box p="xs">
-										<Grid columns={20} gutter={{ base: "3xs" }}>
-											<Grid.Col span={6}>
-												<Text ta="left" fw={600} fz="sm" mt="3xs">
-													{t("Name")}{" "}
-													<Text component="span" c="red">
-														*
-													</Text>
-												</Text>
-											</Grid.Col>
-											<Grid.Col span={14}>
-												<InputForm
-													key={key}
-													tooltip={t("NameValidateMessage")}
-													label=""
-													placeholder={t("Name")}
-													nextField={"name_bn"}
-													form={advanceSearchForm}
-													name={"name"}
-													id={"name"}
-													leftSection={<IconUserCircle size={16} opacity={0.5} />}
-													rightIcon={""}
-												/>
-											</Grid.Col>
-										</Grid>
-									</Box>
-									<Box p="xs">
-										<Grid columns={20} gutter={{ base: "3xs" }}>
-											<Grid.Col span={6}>
-												<Text ta="left" fw={600} fz="sm" mt="3xs">
-													{t("NameBangla")}
-												</Text>
-											</Grid.Col>
-											<Grid.Col span={14}>
-												<InputForm
-													key={key}
-													tooltip={t("NameBanglaValidateMessage")}
-													label=""
-													placeholder={t("NameBangla")}
-													nextField={"quantity"}
-													form={advanceSearchForm}
-													name={"name_bn"}
-													id={"name_bn"}
-													rightIcon={""}
-												/>
-											</Grid.Col>
-										</Grid>
-									</Box>
-									<Box p="xs">
-										<Grid columns={20} gutter={{ base: "3xs" }}>
-											<Grid.Col span={6}>
-												<Text ta="left" fw={600} fz="sm" mt="3xs">
-													{t("Quantity")}
-												</Text>
-											</Grid.Col>
-											<Grid.Col span={14}>
-												<InputNumberForm
-													key={key}
-													tooltip={t("QuantityValidateMessage")}
-													label=""
-													placeholder={t("Quantity")}
-													nextField={"EntityFormSubmit"}
-													form={advanceSearchForm}
-													name={"quantity"}
-													id={"quantity"}
-													rightIcon={""}
-												/>
-											</Grid.Col>
-										</Grid>
-									</Box>
-								</ScrollArea>
-							</Box>
+						<IconPlus size={16} stroke={1.5} />
+					</ActionIcon>
+				</Tooltip>
+			</Popover.Target>
+			<Popover.Dropdown>
+				<form
+					onSubmit={(event) => {
+						event.stopPropagation();
+						advanceSearchForm.onSubmit(handleSubmit)(event);
+					}}
+				>
+					<Box mt="es" pos="relative">
+						<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 1 }} />
+						<Box className="boxBackground borderRadiusAll" pt="les" mb="es" pb="les">
+							<Text ta="center" fw={600} fz="sm">
+								{t("AddDosage")}
+							</Text>
 						</Box>
-						<Box className="borderRadiusAll boxBackground" p="les">
-							<Flex gap="es" align="center" justify="space-between">
+						<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
+							<ScrollArea h={height / 3} scrollbarSize={2} scrollbars="y" type="never">
+								<Box p="xs">
+									<Grid columns={20} gutter={{ base: "3xs" }}>
+										<Grid.Col span={6}>
+											<Text ta="left" fw={600} fz="sm" mt="3xs">
+												{t("Name")}{" "}
+												<Text component="span" c="red">
+													*
+												</Text>
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputForm
+												key={key}
+												tooltip={t("NameValidateMessage")}
+												label=""
+												placeholder={t("Name")}
+												nextField={"name_bn"}
+												form={advanceSearchForm}
+												name={"name"}
+												id={"name"}
+												leftSection={<IconUserCircle size={16} opacity={0.5} />}
+												rightIcon={""}
+											/>
+										</Grid.Col>
+									</Grid>
+								</Box>
+								<Box p="xs">
+									<Grid columns={20} gutter={{ base: "3xs" }}>
+										<Grid.Col span={6}>
+											<Text ta="left" fw={600} fz="sm" mt="3xs">
+												{t("NameBangla")}
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputForm
+												key={key}
+												tooltip={t("NameBanglaValidateMessage")}
+												label=""
+												placeholder={t("NameBangla")}
+												nextField={"quantity"}
+												form={advanceSearchForm}
+												name={"name_bn"}
+												id={"name_bn"}
+												rightIcon={""}
+											/>
+										</Grid.Col>
+									</Grid>
+								</Box>
+								<Box p="xs">
+									<Grid columns={20} gutter={{ base: "3xs" }}>
+										<Grid.Col span={6}>
+											<Text ta="left" fw={600} fz="sm" mt="3xs">
+												{t("Quantity")}
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<InputNumberForm
+												key={key}
+												tooltip={t("QuantityValidateMessage")}
+												label=""
+												placeholder={t("Quantity")}
+												nextField={"EntityFormSubmit"}
+												form={advanceSearchForm}
+												name={"quantity"}
+												id={"quantity"}
+												rightIcon={""}
+											/>
+										</Grid.Col>
+									</Grid>
+								</Box>
+							</ScrollArea>
+						</Box>
+					</Box>
+					<Box className="borderRadiusAll boxBackground" p="les">
+						<Flex gap="es" align="center" justify="space-between">
+							<Button
+								variant="outline"
+								c="var(--theme-primary-color-6)"
+								size="xs"
+								onClick={() => setAdvanceSearchFormOpened(false)}
+								style={{ border: "1px solid var(--theme-primary-color-6)" }}
+								leftSection={<IconX size={16} stroke={1.5} />}
+							>
+								<Text fz="sm" fw={400}>
+									{t("Close")}
+								</Text>
+							</Button>
+							<Flex gap="es" align="center">
+								<Button variant="transparent" size="sm" color="var(--theme-error-color)" onClick={handleReset}>
+									<IconRefreshDot size={16} stroke={1.5} />
+								</Button>
+
 								<Button
-									variant="outline"
-									c="var(--theme-primary-color-6)"
 									size="xs"
-									onClick={() => setAdvanceSearchFormOpened(false)}
-									style={{ border: "1px solid var(--theme-primary-color-6)" }}
-									leftSection={<IconX size={16} stroke={1.5} />}
+									color="var(--theme-primary-color-6)"
+									type="submit"
+									id={"EntityFormSubmit"}
+									leftSection={<IconPlus size={16} />}
+									onClick={(event) => {
+										event.stopPropagation();
+									}}
 								>
 									<Text fz="sm" fw={400}>
-										{t("Close")}
+										{t("Add")}
 									</Text>
 								</Button>
-								<Flex gap="es" align="center">
-									<Button
-										variant="transparent"
-										size="sm"
-										color="var(--theme-error-color)"
-										onClick={handleReset}
-									>
-										<IconRefreshDot size={16} stroke={1.5} />
-									</Button>
-
-									<Button
-										size="xs"
-										color="var(--theme-primary-color-6)"
-										type="submit"
-										id={"EntityFormSubmit"}
-										leftSection={<IconPlus size={16} />}
-										onClick={(event) => {
-											event.stopPropagation();
-										}}
-									>
-										<Text fz="sm" fw={400}>
-											{t("Add")}
-										</Text>
-									</Button>
-								</Flex>
 							</Flex>
-						</Box>
-					</form>
-				</Popover.Dropdown>
-			</Popover>
-		</Box>
+						</Flex>
+					</Box>
+				</form>
+			</Popover.Dropdown>
+		</Popover>
 	);
 }

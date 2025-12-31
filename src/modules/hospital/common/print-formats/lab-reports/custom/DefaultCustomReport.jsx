@@ -1,18 +1,18 @@
-import {Box, Text, Grid} from "@mantine/core";
+import { Box, Text, Grid } from "@mantine/core";
 import React, { forwardRef } from "react";
 import "@/index.css";
 import { t } from "i18next";
-import {useOutletContext} from "react-router-dom";
-const DefaultCustomReport = forwardRef(({reportData,report}) => {
+import { useOutletContext } from "react-router-dom";
+const DefaultCustomReport = forwardRef(({ reportData, report }, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
 	const { mainAreaHeight } = useOutletContext();
-	console.log(mainAreaHeight)
+	console.log(mainAreaHeight);
 	return (
 		<Box>
-			<Box mb="md" p={'xl'} pt={'md'} fz={'md'}>
-				<div dangerouslySetInnerHTML={{__html:getValue(reportData?.findings)}}/>
+			<Box mb="md" p={"xl"} pt={"md"} fz={"md"}>
+				<div dangerouslySetInnerHTML={{ __html: getValue(reportData?.findings) }} />
 				{report?.comment && (
 					<Box p="md" pt={0}>
 						<Text fw="bold" size="xs" mb="xs">

@@ -617,6 +617,8 @@ export const HOSPITAL_DATA_ROUTES = {
 			EFRESH_ORDER: "hospital/ipd/efresh-order",
 			PATIENT_CHART: "hospital/ipd/patient-chart",
 			RELEASE: "hospital/ipd/release",
+			MEDICINE_UPDATE: "hospital/ipdprescription",
+			INLINE_UPDATE: "hospital/ipdprescription/inline-update",
 		},
 
 		EMERGENCY: {
@@ -658,7 +660,6 @@ export const HOSPITAL_DATA_ROUTES = {
 			TAG_PRINT: "hospital/lab-group-report/sample-confirm",
 			INLINE_UPDATE: "hospital/lab-group-report/report/inline-update",
 		},
-
 
 		EPHARMA: {
 			INDEX: "hospital/epharma",

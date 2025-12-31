@@ -1,0 +1,7 @@
+.draggableRow {
+    cursor: grab;
+}
+
+.draggableRow:active {
+    cursor: grabbing;
+}

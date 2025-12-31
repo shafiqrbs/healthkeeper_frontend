@@ -31,23 +31,24 @@ export default function AdmissionPrescription() {
 	const [tabValue, setTabValue] = useState("All");
 	const { particularsData } = useParticularsData({ modeName: "Admission" });
 	const { mainAreaHeight } = useOutletContext();
+	const [records, setRecords] = useState([]);
+	const [customerId, setCustomerId] = useState();
+
 	const tabParticulars = particularsData?.map((item) => ({
 		particular_type: item.particular_type,
 		ordering: item?.ordering ?? 0,
 	}));
+
 	const tabList = [...(tabParticulars?.sort((a, b) => a?.ordering - b?.ordering) || [])]?.map(
 		(item) => item?.particular_type?.name
 	);
-
-	const [records, setRecords] = useState([]);
-	const [customerId, setCustomerId] = useState();
 
 	const { data: prescriptionData, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
 	});
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
-	const existingMedicines = initialFormValues?.medicines || [];
+	const existingMedicines = prescriptionData?.data?.prescription_medicine || [];
 
 	const form = useForm(getPrescriptionFormInitialValues(t, {}));
 
@@ -89,11 +90,7 @@ export default function AdmissionPrescription() {
 		<Box pos="relative">
 			<LoadingOverlay visible={isLoading} overlayProps={{ radius: "sm", blur: 2 }} />
 			<Tooltip
-				label={
-					showPatientReport
-						? t("hidePatientReport") || "Hide Patient Report"
-						: t("showPatientReport") || "Show Patient Report"
-				}
+				label={showPatientReport ? t("hidePatientReport") : t("showPatientReport")}
 				position={showPatientReport ? "left" : "right"}
 			>
 				<ActionIcon
@@ -127,12 +124,7 @@ export default function AdmissionPrescription() {
 				</Grid.Col>
 				{showPatientReport && (
 					<Grid.Col span={7}>
-						<PatientReport
-							tabValue={tabValue}
-							form={form}
-							prescriptionData={prescriptionData}
-							modeName="Admission"
-						/>
+						<PatientReport tabValue={tabValue} form={form} prescriptionData={prescriptionData} modeName="Admission" />
 					</Grid.Col>
 				)}
 				<Grid.Col span={getAddMedicineFormSpan()}>
