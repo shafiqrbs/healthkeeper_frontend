@@ -63,6 +63,7 @@ export default function MedicineListTable({ medicines, tableHeight = 0 }) {
 
 	const handleDragEnd = async (result) => {
 		if (!result.destination) return;
+		const oldItems = Array.from(records);
 
 		const items = Array.from(records);
 		const sourceIndex = result.source.index;
@@ -83,11 +84,10 @@ export default function MedicineListTable({ medicines, tableHeight = 0 }) {
 			},
 			module: "prescription",
 		};
-		try {
-			await dispatch(storeEntityData(updateMedicineOrderValue));
-		} catch (error) {
-			console.error(error);
-			errorNotification(t("Failed to update medicine order"), "red", "lightgray", true, 700, true);
+		const resultAction = await dispatch(storeEntityData(updateMedicineOrderValue));
+		if (storeEntityData.rejected.match(resultAction)) {
+			errorNotification("Failed to update medicine order", "red", "lightgray", true, 700, true);
+			setRecords(oldItems);
 		}
 	};
 

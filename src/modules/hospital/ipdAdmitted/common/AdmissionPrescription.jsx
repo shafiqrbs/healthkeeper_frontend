@@ -25,7 +25,7 @@ export default function AdmissionPrescription() {
 	const ipdId = searchParams.get("ipd");
 	const [opened, { close }] = useDisclosure(false);
 	const [showHistory, setShowHistory] = useState(false);
-	const [showPatientReport, setShowPatientReport] = useState(true);
+	const [showPatientReport, setShowPatientReport] = useState(false);
 	const [medicines, setMedicines] = useState([]);
 	const { t } = useTranslation();
 	const [tabValue, setTabValue] = useState("All");
