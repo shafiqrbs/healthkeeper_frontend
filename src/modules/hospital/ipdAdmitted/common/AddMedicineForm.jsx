@@ -292,7 +292,7 @@ export default function AddMedicineForm({
 			const value = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_UPDATE}`,
 				data: {
-					generic: item.name,
+					generic: item.value,
 					prescription_id: prescriptionData?.data?.prescription_uid,
 				},
 				module: "prescription",

@@ -27,6 +27,8 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const order = patientReport?.order || {};
 	const patientExamination = patientReport?.patient_examination || {};
 	const medicines = patientInfo?.prescription_medicine || [];
+	const sortedMedicines = medicines.sort((a, b) => a.order - b.order);
+
 	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useHospitalConfigData();
 	const getValue = (value, defaultValue = "") => {
@@ -191,12 +193,12 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 		<Box display={preview ? "block" : "none"}>
 			<style>
 				{`@media print {
-					table { border-collapse: collapse !important; }
-					table, table th, table td { border: 1px solid #807e7e !important; }
+					#prescription-table table { border-collapse: collapse !important; }
+					#prescription-table table, #prescription-table table th, #prescription-table table td { border: 1px solid #807e7e !important; }
 				}`}
 				{`@media  {
-					table { border-collapse: collapse !important;border: 1px solid #807e7e !important; }
-					table, table th, table td {  padding-top:0!important; padding-bottom:0!important; margin-top:0!important; margin-bottom:0!important; }
+					#prescription-table table { border-collapse: collapse !important;border: 1px solid #807e7e !important; }
+					#prescription-table table, #prescription-table table th, #prescription-table table td {  padding-top:0!important; padding-bottom:0!important; margin-top:0!important; margin-bottom:0!important; }
 				}`}
 			</style>
 			<Stack
@@ -210,7 +212,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 				align="stretch"
 				justify="space-between"
 			>
-				<Box>
+				<Box id="prescription-table">
 					<Table
 						style={{
 							borderCollapse: "collapse",
@@ -444,7 +446,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										borderRight: "1px solid var(--theme-tertiary-color-8)",
 										padding: "4px",
 										verticalAlign: "top",
-										width:"260px"
+										width: "260px",
 									}}
 								>
 									<Box style={{ position: "relative", minHeight: "550px" }}>
@@ -464,21 +466,22 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											<Image src={Rx} alt="logo" width={"32"} height={32} />
 										</Box>
 										<Box gap="2">
-											{exEmergencies.map((emergency, index) => (
+											{/* {exEmergencies.map((emergency, index) => (
 												<Box key={index}>
-													<Text fw={600}>
-														* {getValue(emergency.value)}
-													</Text>
+													<Text fw={600}>* {getValue(emergency.value)}</Text>
 												</Box>
-											))}
-											{medicines
+											))} */}
+											{sortedMedicines
 												?.filter((medicine) => medicine?.is_active === 1)
-												?.sort((a, b) => a.order ?? 0 - b.order ?? 0)
 												?.map((medicine, index) => (
-													<Flex align={"left"} key={index} style={{
-														borderBottom: "1px solid #ddd",
-													}}>
-														<Text  fw={600}>
+													<Flex
+														align={"left"}
+														key={index}
+														style={{
+															borderBottom: "1px solid #ddd",
+														}}
+													>
+														<Text fw={600}>
 															{index + 1}.{" "}
 															{getValue(
 																medicine.medicine_id
