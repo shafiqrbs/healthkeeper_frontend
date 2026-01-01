@@ -12,7 +12,9 @@ export default function BillingTable({ entity }) {
 	const { t } = useTranslation();
 	const [selectedInvoice, setSelectedInvoice] = useState(null);
 	const [invoiceDetailsOpened, { open: openInvoiceDetails, close: closeInvoiceDetails }] = useDisclosure(false);
-	const transactions = entity?.invoice_transaction;
+
+	//const transactions = entity?.invoice_transaction;
+	const transactions = entity?.invoice_particular;
 
 	const handleDetailsView = async (transactionId) => {
 		const res = await getDataWithoutStore({
@@ -24,35 +26,34 @@ export default function BillingTable({ entity }) {
 
 	return (
 		<Stack justify="space-between" h="calc(100% - 50px)" gap="0">
-			<Box p="les">
-				<Flex justify="space-between" bg="var(--theme-primary-color-0)" py="les" px="3xs" mb="3xs">
-					<Text>Created</Text>
-					<Text>Particular</Text>
-					<Text>Amount</Text>
-				</Flex>
-				{transactions?.length > 0 &&
-					transactions.map((item, index) => (
-						<Flex key={index} justify="space-between" py="les" px="3xs">
-							<Text>
-								{index + 1}. {item.created}
-							</Text>
-
-							<Text
-								className="cursor-pointer"
-								onClick={() => handleDetailsView(item.hms_invoice_transaction_id)}
-								ta="left"
-							>
-								{item.mode} Charge
-							</Text>
-
-							<Text>
-								<Box component="span" c="var(--theme-primary-color-7)">
-									৳
-								</Box>{" "}
-								{item.sub_total}
-							</Text>
-						</Flex>
-					))}
+			<Box>
+				<Table
+					style={{
+						borderCollapse: "collapse",
+						width: "100%",
+					}}
+					className="customTable"
+				>
+					<Table.Thead>
+						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-2)" }}>
+							<Table.Th>S/N</Table.Th>
+							<Table.Th>Name</Table.Th>
+							<Table.Th ta={'center'}>Unit</Table.Th>
+							<Table.Th ta={'right'}>Amount</Table.Th>
+						</Table.Tr>
+					</Table.Thead>
+					<Table.Tbody>
+						{transactions?.length > 0 &&
+						transactions.map((item, index) => (
+						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-2)" }}>
+							<Table.Td>{index + 1}.</Table.Td>
+							<Table.Td>{item?.name}</Table.Td>
+							<Table.Td ta={'center'}>{item?.quantity}</Table.Td>
+							<Table.Td ta={'right'}>{item?.sub_total}</Table.Td>
+						</Table.Tr>
+						))}
+					</Table.Tbody>
+				</Table>
 			</Box>
 			<Box p="xs">
 				<Flex justify="space-between" bg="var(--theme-primary-color-0)" py="les" px="3xs">

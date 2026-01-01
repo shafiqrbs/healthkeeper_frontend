@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import Table from "./_Table";
 import { getDataWithoutStore } from "@/services/apiService";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import BillingTransaction from "@hospital-components/BillingTransaction";
 
 const billing = {
 	cabinCharge: 1000,
@@ -81,7 +82,7 @@ export default function Index() {
 								<Box bg="var(--mantine-color-white)" className="borderRadiusAll" h="100%">
 									{id ? (
 										<>
-											<TabSubHeading title="Final Bill" />
+											<TabSubHeading title="Bill Details" />
 											<BillingTable entity={entity} data={billing} />
 										</>
 									) : (
@@ -101,6 +102,10 @@ export default function Index() {
 								>
 									{id ? (
 										<>
+											<Box>
+												<TabSubHeading title="Transactions" />
+												<BillingTransaction entity={entity} />
+											</Box>
 											<Box>
 												<TabSubHeading title="Final Bill Details" />
 												<BillingSummary entity={entity} />

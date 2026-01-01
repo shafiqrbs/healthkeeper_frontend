@@ -60,9 +60,15 @@ export default function BillingActions({entity}) {
 				</Flex>
 			</Flex>
 			<Button.Group mt="xs">
-				<Button disabled={invoicePrintData?.data.process === 'refund' || invoicePrintData?.data.process === 'paid'} w="100%" bg="var(--theme-save-btn-color)" type="button" onClick={handlePrescriptionPosSubmit}>
-					{ receive >= 0 ? 'RECEIVE' : 'REFUND' }
-				</Button>
+				{entity?.process === 'admitted' && receive === 0 && (
+					<Button  w="100%" bg="var(--theme-primary-color-6)" type="button" onClick={handlePrescriptionPosSubmit}>PAID</Button>
+				)}
+				{entity?.process === 'admitted' && receive > 0 && (
+					<Button  w="100%" bg="var(--theme-secondary-color-6)" type="button" onClick={handlePrescriptionPosSubmit}>RECEIVE</Button>
+				)}
+				{entity?.process === 'admitted' && receive < 0 && (
+					<Button  w="100%" bg="var(--theme-warn-color-6)" type="button" onClick={handlePrescriptionPosSubmit}>REFUND</Button>
+				)}
 			</Button.Group>
 			{ receive >= 0 ? <IPDInvoicePosBn data={invoicePrintData?.data} ref={invoicePrintRef} /> : <RefundFromBedBn data={invoicePrintData?.data} ref={invoicePrintRef} /> }
 		</Box>
