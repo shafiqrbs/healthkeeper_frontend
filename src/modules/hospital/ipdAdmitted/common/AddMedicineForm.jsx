@@ -87,6 +87,10 @@ export default function AddMedicineForm({
 		meals: by_meal_options,
 	} = useAppLocalStore();
 
+	const sortedMedicines = useMemo(() => {
+		return medicines.sort((a, b) => a.order - b.order);
+	}, [medicines]);
+
 	const mainHeight = useMemo(
 		() => (showBaseItems ? baseHeight - 520 : baseHeight - 280),
 		[showBaseItems, baseHeight]
@@ -395,15 +399,17 @@ export default function AddMedicineForm({
 			// 	showNotificationComponent(t("Generic already exists"), "red", "lightgray", true, 700, true);
 			// 	return;
 			// }
-			const updated = [...medicines];
+			const updated = [...sortedMedicines];
 			updated[editIndex] = values;
 			setMedicines(updated);
 			setEditIndex(null);
 		} else {
 			const maxOrder =
-				medicines.length > 0 ? Math.max(...medicines.map((med) => med.order ?? 0), medicines.length) : 0;
+				sortedMedicines.length > 0
+					? Math.max(...sortedMedicines.map((med) => med.order ?? 0), sortedMedicines.length)
+					: 0;
 			const newMedicine = { ...values, order: maxOrder + 1 };
-			const updatedMedicines = [...medicines, newMedicine];
+			const updatedMedicines = [...sortedMedicines, newMedicine];
 			setMedicines(updatedMedicines);
 			setUpdateKey((prev) => prev + 1);
 
@@ -460,12 +466,12 @@ export default function AddMedicineForm({
 	};
 
 	const handleDelete = (idx) => {
-		setMedicines(medicines.filter((_, i) => i !== idx));
+		setMedicines(sortedMedicines.filter((_, i) => i !== idx));
 		if (editIndex === idx) {
 			medicineForm.reset();
 			setEditIndex(null);
 		}
-		if (update) update(medicines.filter((_, i) => i !== idx));
+		if (update) update(sortedMedicines.filter((_, i) => i !== idx));
 	};
 
 	const handleReset = () => {
@@ -496,7 +502,7 @@ export default function AddMedicineForm({
 			const createdBy = user;
 			const formValue = {
 				is_completed: true,
-				medicines,
+				medicines: sortedMedicines,
 				advise: form.values.advise || "",
 				follow_up_date: form.values.follow_up_date || null,
 				prescription_date: new Date().toISOString().split("T")[0],
@@ -835,7 +841,7 @@ export default function AddMedicineForm({
 				bg="var(--mantine-color-white)"
 			>
 				<Stack gap="2px" p="sm">
-					{medicines?.length === 0 && form.values.exEmergency?.length === 0 && (
+					{sortedMedicines?.length === 0 && form.values.exEmergency?.length === 0 && (
 						<Flex
 							mih={mainHeight ? mainHeight - 50 : 220}
 							gap="md"

@@ -1,6 +1,6 @@
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { Box, Divider, Grid, Group, Paper, Stack, Text, Title, Button, ScrollArea } from "@mantine/core";
+import { Box, Divider, Grid, Group, Paper, Stack, Text, Button, ScrollArea } from "@mantine/core";
 import { LineChart } from "@mantine/charts";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,7 @@ import { modals } from "@mantine/modals";
 import { getDataWithoutStore } from "@/services/apiService";
 import { errorNotification } from "@components/notification/errorNotification";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants";
-import {IconPointFilled} from "@tabler/icons-react";
+import { IconPointFilled } from "@tabler/icons-react";
 
 export default function Dashboard() {
 	const ipdRef = useRef(null);
@@ -20,7 +20,6 @@ export default function Dashboard() {
 	const [vitalRecordList, setVitalRecordList] = useState([]);
 	const [insulinRecordList, setInsulinRecordList] = useState([]);
 	const ipdId = id;
-
 
 	const getNumericValue = (value) => {
 		const numericValue = Number(value);
@@ -122,7 +121,7 @@ export default function Dashboard() {
 			}
 		}
 	};
-	
+
 	// Normalize order into an array of keys sorted by their index
 	const normalizeOrder = (inputOrder) => {
 		if (Array.isArray(inputOrder)) {
@@ -282,10 +281,7 @@ export default function Dashboard() {
 					<ScrollArea>
 						<Paper h={mainAreaHeight - 10} withBorder p="lg" radius="sm" bg="var(--theme-tertiary-color-0)">
 							<Box style={{ position: "relative", minHeight: "550px" }}>
-								{(orderedExamKeys.length > 0
-										? orderedExamKeys
-										: Object.keys(patientExamination || {})
-								)
+								{(orderedExamKeys.length > 0 ? orderedExamKeys : Object.keys(patientExamination || {}))
 									.filter((key) => hasArrayWithLength(patientExamination?.[key]))
 									.map((key) => (
 										<Box key={key}>{renderExaminationSection(key)}</Box>
@@ -295,11 +291,10 @@ export default function Dashboard() {
 					</ScrollArea>
 				</Grid.Col>
 
-
 				{/* =============== Column 2: Financial & Medical Information =============== */}
 				<Grid.Col span={4} h="100%">
 					<ScrollArea h={mainAreaHeight}>
-						<Paper h={mainAreaHeight - 10} withBorder p="lg" radius="sm" bg="white">
+						<Paper mih={mainAreaHeight - 10} withBorder p="lg" radius="sm" bg="white">
 							<Stack gap="lg" h="100%">
 								<Box>
 									<Divider
@@ -314,11 +309,15 @@ export default function Dashboard() {
 										prescriptionMedicine.map((item, index) => (
 											<Grid columns={12} key={index}>
 												<Grid.Col span={9}>
-													<Text><strong>{index + 1}. {item.medicine_name}</strong></Text>
+													<Text>
+														<strong>
+															{index + 1}. {item.medicine_name}
+														</strong>
+													</Text>
 													<Text>{item.dose_details}</Text>
 												</Grid.Col>
 												<Grid.Col span={3}>
-													<Text fw={'600'} c={item.is_active ? "green" : "red"}>
+													<Text fw={"600"} c={item.is_active ? "green" : "red"}>
 														{item.is_active ? "Active" : "Omit"}
 													</Text>
 												</Grid.Col>
@@ -578,7 +577,6 @@ export default function Dashboard() {
 						</ScrollArea>
 					</Box>
 				</Grid.Col>
-
 
 				{/* <Grid.Col span={6}>
 					<Paper withBorder p="lg" h={mainAreaHeight - 350} radius="sm" bg="var(--mantine-color-white)">
