@@ -634,11 +634,11 @@ export default function _Table({ module }) {
 			>
 				<Box mt="sm">
 					<Box component="form" onSubmit={roomTransferForm.onSubmit(handleRoomTransferSubmit)} noValidate>
-						<Text fw={500} fz="sm" mb="xs">
-							Current Room/Cabin: {selectedRoom?.display_name}
+						<Text fw={500} fz="sm" my="xs">
+							<strong>Current Room/Cabin:</strong> {selectedRoom?.display_name}
 						</Text>
 						<Divider />
-						<Stack gap="md">
+						<Stack mt="xs" gap="md">
 							<Select
 								label={t("Room/Cabin")}
 								placeholder={t("SelectRequestFor")}
@@ -652,7 +652,7 @@ export default function _Table({ module }) {
 								}}
 							/>
 
-							<Stack h={mainAreaHeight - 166} justify="space-between">
+							<Stack h={mainAreaHeight - 190} justify="space-between">
 								<Box>
 									<Textarea
 										label={t("Comment")}

@@ -2,7 +2,22 @@ import { useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Divider, Flex, FloatingIndicator, Group, Menu, rem, Select, Stack, Tabs, Text, Textarea } from "@mantine/core";
+import {
+	ActionIcon,
+	Box,
+	Button,
+	Divider,
+	Flex,
+	FloatingIndicator,
+	Group,
+	Menu,
+	rem,
+	Select,
+	Stack,
+	Tabs,
+	Text,
+	Textarea,
+} from "@mantine/core";
 import {
 	IconArrowNarrowRight,
 	IconChevronUp,
@@ -11,7 +26,7 @@ import {
 	IconPencil,
 	IconPrinter,
 	IconSelector,
-	IconSettings
+	IconSettings,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -23,9 +38,9 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "../confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
-import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
-import {useDispatch, useSelector} from "react-redux";
-import {capitalizeWords, formatDate} from "@/common/utils";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { useDispatch, useSelector } from "react-redux";
+import { capitalizeWords, formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
@@ -35,13 +50,13 @@ import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPre
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import {updateEntityData} from "@/app/store/core/crudThunk";
-import {successNotification} from "@components/notification/successNotification";
-import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
+import { updateEntityData } from "@/app/store/core/crudThunk";
+import { successNotification } from "@components/notification/successNotification";
+import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import useVendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage";
-import {setInsertType} from "@/app/store/core/crudSlice";
-import {modals} from "@mantine/modals";
-import {errorNotification} from "@components/notification/errorNotification";
+import { setInsertType } from "@/app/store/core/crudSlice";
+import { modals } from "@mantine/modals";
+import { errorNotification } from "@components/notification/errorNotification";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 
 const PER_PAGE = 20;
@@ -56,7 +71,7 @@ const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "admin_admi
 
 export default function _Table({ module }) {
 	const { userRoles } = useAppLocalStore();
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const { mainAreaHeight } = useOutletContext();
@@ -78,11 +93,10 @@ export default function _Table({ module }) {
 	const [billingPrintData, setBillingPrintData] = useState(null);
 	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [actionType, setActionType] = useState('change');
+	const [actionType, setActionType] = useState("change");
 	const [actionFormData, setActionFormData] = useState(null);
 	const [drawerPatientId, setDrawerPatientId] = useState(null);
-	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] =
-		useDisclosure(false);
+	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
 	const [singlePatientData, setSinglePatientData] = useState({});
 
 	// =============== form for action drawer fields ================
@@ -192,7 +206,7 @@ export default function _Table({ module }) {
 		try {
 			const actionData = {
 				change_mode: actionType ?? "change",
-				comment : actionForm.values.comment
+				comment: actionForm.values.comment,
 			};
 
 			const payload = {
@@ -218,23 +232,16 @@ export default function _Table({ module }) {
 			}
 			// ✅ Success
 			if (updateEntityData.fulfilled.match(resultAction)) {
-				successNotification(
-					t("UpdateSuccessfully"),
-					SUCCESS_NOTIFICATION_COLOR
-				);
+				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
-			errorNotification(
-				error?.message || t("SomethingWentWrong"),
-				ERROR_NOTIFICATION_COLOR
-			);
+			errorNotification(error?.message || t("SomethingWentWrong"), ERROR_NOTIFICATION_COLOR);
 		} finally {
-			setDrawerPatientId(null)
-			closeActions()
+			setDrawerPatientId(null);
+			closeActions();
 			setIsLoading(false);
 		}
 	}
-
 
 	// =============== handle action form submit conditionally ================
 	const handleConfirmModalx = (values) => {
@@ -249,7 +256,7 @@ export default function _Table({ module }) {
 			data: formValue,
 			module,
 		};
-		const resultAction =  dispatch(updateEntityData(value));
+		const resultAction = dispatch(updateEntityData(value));
 		if (updateEntityData.rejected.match(resultAction)) {
 			const fieldErrors = resultAction.payload.errors;
 
@@ -292,14 +299,14 @@ export default function _Table({ module }) {
 		}
 		// reset form and close drawer after submission
 		actionForm.reset();
-		setActionType('change');
+		setActionType("change");
 		closeActions();
 	};
 
 	// =============== handle drawer close with form reset ================
 	const handleCloseActions = () => {
 		actionForm.reset();
-		setActionType('change');
+		setActionType("change");
 		closeActions();
 	};
 
@@ -313,7 +320,12 @@ export default function _Table({ module }) {
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={tab.value}
+								>
 									{t(tab.label)}
 								</Tabs.Tab>
 							))}
@@ -365,7 +377,9 @@ export default function _Table({ module }) {
 								</Text>
 							),
 						},
-						{ accessor: "parent_invoice_mode", title: t("PatientMode"),
+						{
+							accessor: "parent_invoice_mode",
+							title: t("PatientMode"),
 							render: (item) => capitalizeWords(item.parent_invoice_mode),
 						},
 						{ accessor: "patient_id", title: t("patientId") },
@@ -394,21 +408,22 @@ export default function _Table({ module }) {
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-									(item.process?.toLowerCase() === "confirmed" || item.process?.toLowerCase() === "billing") && (
-									<Button
-										variant="filled"
-										onClick={() => {
-											openActions()
-											setDrawerPatientId(item.uid)
-										}}
-										color="red.6"
-										radius="xs"
-										size={"compact-xs"}
-										aria-label="Settings"
-									>
-										{t("Actions")}
-									</Button>
-									)}
+										(item.process?.toLowerCase() === "confirmed" ||
+											item.process?.toLowerCase() === "billing") && (
+											<Button
+												variant="filled"
+												onClick={() => {
+													openActions();
+													setDrawerPatientId(item.uid);
+												}}
+												color="red.6"
+												radius="xs"
+												size={"compact-xs"}
+												aria-label="Settings"
+											>
+												{t("Actions")}
+											</Button>
+										)}
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
 										item.process?.toLowerCase() === "confirmed" && (
 											<Button.Group>
@@ -424,19 +439,21 @@ export default function _Table({ module }) {
 												</Button>
 											</Button.Group>
 										)}
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&  item.process?.toLowerCase() === "billing" && (
-										<Button.Group>
-											<Button
-												variant="filled"
-												onClick={() => handleAdmissionFormPrint(item.id)}
-												color="var(--theme-secondary-color-6)"
-												radius="xs"
-												size={"compact-xs"}
-												aria-label="Settings"
-											>Print
-											</Button>
-										</Button.Group>
-									)}
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+										item.process?.toLowerCase() === "billing" && (
+											<Button.Group>
+												<Button
+													variant="filled"
+													onClick={() => handleAdmissionFormPrint(item.id)}
+													color="var(--theme-secondary-color-6)"
+													radius="xs"
+													size={"compact-xs"}
+													aria-label="Settings"
+												>
+													Print
+												</Button>
+											</Button.Group>
+										)}
 									{/*{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && item.process?.toLowerCase() === "admitted" && (
 										<Button.Group>
 											<Button
@@ -453,7 +470,14 @@ export default function _Table({ module }) {
 										</Button.Group>
 									)}
 									*/}
-									<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
+									<Menu
+										position="bottom-end"
+										offset={3}
+										withArrow
+										trigger="hover"
+										openDelay={100}
+										closeDelay={400}
+									>
 										<Menu.Target>
 											<ActionIcon
 												className="border-left-radius-none"
@@ -498,34 +522,37 @@ export default function _Table({ module }) {
 											>
 												{t("AdmissionInvoice")}
 											</Menu.Item>
-											{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&  item.process?.toLowerCase() === "admitted" && (
-												<>
-												<Menu.Item
-													leftSection={
-														<IconPencil
-															style={{
-																width: rem(14),
-																height: rem(14),
-															}}
-														/>
-													}
-													onClick={(e) => patientUpdate(e, item?.id)}>
-													{t("PatientUpdate")}
-												</Menu.Item>
-												<Menu.Item
-												leftSection={
-												<IconPencil
-													style={{
-														width: rem(14),
-														height: rem(14),
-													}}
-												/>
-											}
-												onClick={(e) => patientUpdate(e, item?.id)}>
-												{t("Room/Bed Transfer")}
-												</Menu.Item>
-												</>
-											)}
+											{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+												item.process?.toLowerCase() === "admitted" && (
+													<>
+														<Menu.Item
+															leftSection={
+																<IconPencil
+																	style={{
+																		width: rem(14),
+																		height: rem(14),
+																	}}
+																/>
+															}
+															onClick={(e) => patientUpdate(e, item?.id)}
+														>
+															{t("PatientUpdate")}
+														</Menu.Item>
+														<Menu.Item
+															leftSection={
+																<IconPencil
+																	style={{
+																		width: rem(14),
+																		height: rem(14),
+																	}}
+																/>
+															}
+															onClick={(e) => patientUpdate(e, item?.id)}
+														>
+															{t("Room/Bed Transfer")}
+														</Menu.Item>
+													</>
+												)}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>
@@ -602,7 +629,9 @@ export default function _Table({ module }) {
 				close={closePatientUpdate}
 				data={singlePatientData}
 			/>
-			{selectedPrescriptionId && <DetailsDrawer opened={openedActions} close={closeActions} prescriptionId={selectedPrescriptionId} />}
+			{selectedPrescriptionId && (
+				<DetailsDrawer opened={openedActions} close={closeActions} prescriptionId={selectedPrescriptionId} />
+			)}
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
 			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
 			{admissionFormPrintData && <AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />}
