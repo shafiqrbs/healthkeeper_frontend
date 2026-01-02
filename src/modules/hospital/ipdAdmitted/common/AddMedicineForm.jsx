@@ -721,7 +721,7 @@ export default function AddMedicineForm({
 										</FormValidatorWrapper>
 									</Group>
 								</Grid.Col>
-								<Grid.Col span={4}>
+								<Grid.Col span={6}>
 									<Group grow gap="les">
 										<FormValidatorWrapper
 											position="bottom-end"
@@ -744,18 +744,6 @@ export default function AddMedicineForm({
 											/>
 										</FormValidatorWrapper>
 									</Group>
-								</Grid.Col>
-								<Grid.Col span={2}>
-									<Button
-										leftSection={<IconPlus size={16} />}
-										type="submit"
-										variant="filled"
-										bg="var(--theme-secondary-color-6)"
-										w="100%"
-										disabled={!medicineForm.values.medicine_id && !medicineForm.values.generic}
-									>
-										{t("Add")}
-									</Button>
 								</Grid.Col>
 							</Grid>
 						</Group>
@@ -796,64 +784,49 @@ export default function AddMedicineForm({
 							</Grid.Col>
 						</Grid>
 						<Grid w="100%" columns={12} gutter="les" mt="4px">
-							<Grid.Col span={10}>
+							<Grid.Col span={8}>
 								<Button
 									leftSection={<IconPlus size={16} />}
+									type="submit"
+									variant="filled"
+									bg="var(--theme-secondary-color-6)"
 									w="100%"
-									fw={"400"}
-									type="button"
-									color="var(--theme-primary-color-5)"
-									onClick={openDosageForm}
+									disabled={!medicineForm.values.medicine_id && !medicineForm.values.generic}
 								>
-									{t("Dose")}
+									{t("Add")}
 								</Button>
 							</Grid.Col>
-							<Grid.Col span={2}>
-								<ActionIcon
-									fw={"400"}
-									type="button"
-									size="lg"
-									color="var(--theme-secondary-color-5)"
-									onClick={openExPrescription}
-								>
-									{t("Rx")}
-								</ActionIcon>
+							<Grid.Col span={4}>
+								<Flex px="les" gap="les">
+									<ActionIcon
+										fw={"400"}
+										type="button"
+										size="lg"
+										color="var(--theme-secondary-color-5)"
+										onClick={openExPrescription}
+									>
+										{t("Rx")}
+									</ActionIcon>
+									{hasRecords && (
+										<Tooltip label="History">
+											<ActionIcon size="lg" bg={"red"}
+												onClick={() => setShowHistory((prev) => !prev)}>
+												<IconHistory />
+											</ActionIcon>
+										</Tooltip>
+									)}
+								</Flex>
 							</Grid.Col>
 						</Grid>
 					</Grid.Col>
 				</Grid>
 			</Box>
-			<Flex bg="var(--theme-primary-color-0)" mb="les" justify="space-between" align="center" py="les" mt="xs">
-				<Text fw={500} px="sm">
-					{t("ListOfMedicines")}
-				</Text>
-				<Flex px="les" gap="les">
-					{prescriptionData?.data?.patient_referred_id && (
-						<Tooltip label="Referred">
-							<ActionIcon size="lg" bg={"red"} onClick={() => handleReferredViewPrescription()}>
-								<IconFirstAidKit />
-							</ActionIcon>
-						</Tooltip>
-					)}
-					{hasRecords && (
-						<Tooltip label="History">
-							<Button
-								variant="filled"
-								onClick={() => setShowHistory((prev) => !prev)}
-								leftSection={<IconHistory size={14} />}
-								rightSection={<IconArrowRight size={14} />}
-							>
-								{t("History")}
-							</Button>
-						</Tooltip>
-					)}
-				</Flex>
-			</Flex>
+
 			<ScrollArea
-				h={mainHeight ? mainHeight : form.values.instruction ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
+				h={mainHeight+74}
 				bg="var(--mantine-color-white)"
 			>
-				<Stack gap="2px" p="sm">
+				<Stack gap="2px">
 					{sortedMedicines?.length === 0 && form.values.exEmergency?.length === 0 && (
 						<Flex
 							mih={mainHeight ? mainHeight - 50 : 220}
@@ -877,49 +850,6 @@ export default function AddMedicineForm({
 							</Button>
 						</Flex>
 					)}
-					{/* {form.values?.exEmergency?.length > 0 && (
-						<>
-							{form.values?.exEmergency?.map((item, idx) => (
-								<Flex justify="space-between" key={idx} align="center" gap="les">
-									<Flex align="center">
-										<IconMedicineSyrup stroke={1.5} size={20} />
-										<Text className="capitalize" fz="14px">
-											{item.value}
-										</Text>
-									</Flex>
-									<ActionIcon
-										variant="outline"
-										color="var(--theme-error-color)"
-										onClick={() => handleDeleteExEmergency(idx)}
-									>
-										<IconTrash size={16} />
-									</ActionIcon>
-								</Flex>
-							))}
-						</>
-					)} */}
-
-					{/* {medicines
-						?.slice()
-						.sort((a, b) => {
-							const orderA = a.order ?? 999999;
-							const orderB = b.order ?? 999999;
-							return orderA - orderB;
-						})
-						.map((medicine, index) => (
-							<MedicineListItem
-								key={index}
-								index={index + 1}
-								medicines={medicines}
-								medicine={medicine}
-								setMedicines={setMedicines}
-								handleDelete={handleDelete}
-								update={update}
-								by_meal_options={by_meal_options}
-								dosage_options={dosage_options}
-								type="ipd"
-							/>
-						))} */}
 
 					{dbMedicines?.length > 0 && (
 						<MedicineListTable
