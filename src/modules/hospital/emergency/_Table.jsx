@@ -3,25 +3,8 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {
-	ActionIcon,
-	Box,
-	Button,
-	Flex,
-	FloatingIndicator,
-	Grid,
-	Group,
-	Menu,
-	Tabs,
-	Text,
-} from "@mantine/core";
-import {
-	IconArrowRight,
-	IconDotsVertical,
-	IconPencil,
-	IconPrinter,
-	IconScript,
-} from "@tabler/icons-react";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Grid, Group, Menu, Tabs, Text } from "@mantine/core";
+import { IconArrowRight, IconDotsVertical, IconPencil, IconPrinter, IconScript } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { rem } from "@mantine/core";
@@ -36,7 +19,7 @@ import OverviewDrawer from "./__OverviewDrawer";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { showEntityData, storeEntityData } from "@/app/store/core/crudThunk";
-import {formatDate, getLoggedInHospitalUser} from "@utils/index";
+import { formatDate, getLoggedInHospitalUser } from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import CompactDrawer from "@components/drawers/CompactDrawer";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
@@ -85,10 +68,9 @@ export default function Table({ module }) {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [openedAdmission, { open: openAdmission, close: closeAdmission }] = useDisclosure(false);
-	const { user, userRoles } = useAppLocalStore();
+	const { userRoles } = useAppLocalStore();
 	const [processTab, setProcessTab] = useState("all");
-	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] =
-		useDisclosure(false);
+	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
 	const [singlePatientData, setSinglePatientData] = useState({});
 	// removed unused 'today'
 	const hospitalConfig = getLoggedInHospitalUser();
@@ -132,22 +114,21 @@ export default function Table({ module }) {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-			filterParams: {
-				patient_mode: "emergency",
-				term: form.values?.keywordSearch,
-				room_id: form.values?.room_id,
-				room_ids: opdRoomIds,
-				prescription_mode: processTab,
-				created: form.values.created,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "created_at",
-			direction: "desc",
-		});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+		filterParams: {
+			patient_mode: "emergency",
+			term: form.values?.keywordSearch,
+			room_id: form.values?.room_id,
+			room_ids: opdRoomIds,
+			prescription_mode: processTab,
+			created: form.values.created,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+	});
 
 	const handleView = () => {
 		open();
@@ -178,16 +159,10 @@ export default function Table({ module }) {
 		).unwrap();
 		const prescription_id = resultAction?.data?.data.id;
 		if (prescription_id) {
-			navigate(
-				`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`
-			);
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 		} else {
 			console.error(resultAction);
-			showNotificationComponent(
-				t("Something Went wrong , please try again"),
-				"red.6",
-				"lightgray"
-			);
+			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
 		}
 	};
 
@@ -295,8 +270,6 @@ export default function Table({ module }) {
 		setType("prescription");
 	};
 
-
-
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -354,11 +327,7 @@ export default function Table({ module }) {
 							title: t("Created"),
 							textAlignment: "right",
 							render: (item) => (
-								<Text
-									fz="xs"
-									onClick={() => handleView(item.id)}
-									className="activate-link text-nowrap"
-								>
+								<Text fz="xs" onClick={() => handleView(item.id)} className="activate-link text-nowrap">
 									{formatDate(item.created_at)}
 								</Text>
 							),
@@ -379,9 +348,7 @@ export default function Table({ module }) {
 							render: (values) => (
 								<Flex justify="flex-end">
 									<Group gap={4} justify="right" wrap="nowrap">
-										{userRoles.some((role) =>
-											ALLOWED_DOCTOR_ROLES.includes(role)
-										) && (
+										{userRoles.some((role) => ALLOWED_DOCTOR_ROLES.includes(role)) && (
 											<>
 												{["New", "In-progress"].includes(values?.process) &&
 													values?.process !== "Closed" &&
@@ -394,15 +361,9 @@ export default function Table({ module }) {
 															c="white"
 															fw={"400"}
 															size="compact-xs"
-															onClick={() =>
-																handlePrescription(
-																	values.prescription_id
-																)
-															}
+															onClick={() => handlePrescription(values.prescription_id)}
 															radius="es"
-															rightSection={
-																<IconArrowRight size={18} />
-															}
+															rightSection={<IconArrowRight size={18} />}
 														>
 															{t("Prescription")}
 														</Button>
@@ -413,14 +374,10 @@ export default function Table({ module }) {
 															bg="var(--theme-primary-color-6)"
 															c="white"
 															size="compact-xs"
-															onClick={() =>
-																handleProcessPrescription(values.id)
-															}
+															onClick={() => handleProcessPrescription(values.id)}
 															radius="es"
 															fw={"400"}
-															rightSection={
-																<IconArrowRight size={18} />
-															}
+															rightSection={<IconArrowRight size={18} />}
 															className="border-right-radius-none"
 														>
 															{t("Prescription")}
@@ -469,11 +426,7 @@ export default function Table({ module }) {
 													radius="es"
 													aria-label="Settings"
 												>
-													<IconDotsVertical
-														height={18}
-														width={18}
-														stroke={1.5}
-													/>
+													<IconDotsVertical height={18} width={18} stroke={1.5} />
 												</ActionIcon>
 											</Menu.Target>
 											<Menu.Dropdown>
@@ -515,9 +468,7 @@ export default function Table({ module }) {
 																/>
 															}
 															onClick={() =>
-																handlePrescriptionPrint(
-																	values?.prescription_id
-																)
+																handlePrescriptionPrint(values?.prescription_id)
 															}
 														>
 															{t("Prescription")}

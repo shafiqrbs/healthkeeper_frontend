@@ -2,16 +2,29 @@ import { useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Divider, Flex, FloatingIndicator, Group, Menu, rem, Select, Stack, Tabs, Text, Textarea } from "@mantine/core";
 import {
-	IconArrowNarrowRight,
+	ActionIcon,
+	Box,
+	Button,
+	Divider,
+	Flex,
+	FloatingIndicator,
+	Group,
+	Menu,
+	rem,
+	Select,
+	Stack,
+	Tabs,
+	Text,
+	Textarea,
+} from "@mantine/core";
+import {
 	IconChevronUp,
 	IconDotsVertical,
 	IconFileText,
 	IconPencil,
 	IconPrinter,
 	IconSelector,
-	IconSettings
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -23,9 +36,9 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "../confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
-import {HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES} from "@/constants/routes";
-import {useDispatch, useSelector} from "react-redux";
-import {capitalizeWords, formatDate} from "@/common/utils";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { useDispatch, useSelector } from "react-redux";
+import { formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
@@ -35,14 +48,15 @@ import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPre
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
-import {updateEntityData} from "@/app/store/core/crudThunk";
-import {successNotification} from "@components/notification/successNotification";
-import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
+import { updateEntityData } from "@/app/store/core/crudThunk";
+import { successNotification } from "@components/notification/successNotification";
+import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import useVendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage";
-import {setInsertType} from "@/app/store/core/crudSlice";
-import {modals} from "@mantine/modals";
-import {errorNotification} from "@components/notification/errorNotification";
+import { setInsertType } from "@/app/store/core/crudSlice";
+import { modals } from "@mantine/modals";
+import { errorNotification } from "@components/notification/errorNotification";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
+import { CSVLink } from "react-csv";
 
 const PER_PAGE = 20;
 
@@ -52,20 +66,30 @@ const tabs = [
 	{ label: "Occupied", value: "occupied" },
 ];
 
+const CSV_HEADERS = [
+	{ label: "S/N", key: "sn" },
+	{ label: "Created", key: "created" },
+	{ label: "Name", key: "name" },
+	{ label: "Status", key: "status" },
+	{ label: "Gender", key: "gender" },
+	{ label: "IPD", key: "ipd" },
+];
+
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "admin_administrator"];
 
 export default function _Table({ module }) {
+	const csvLinkRef = useRef(null);
 	const { userRoles } = useAppLocalStore();
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
 	const [openedActions, { open: openActions, close: closeActions }] = useDisclosure(false);
+	const [openedRoomBedTransfer, { open: openRoomBedTransfer, close: closeRoomBedTransfer }] = useDisclosure(false);
 	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
-	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module]?.data);
 	const navigate = useNavigate();
 	const [selectedId, setSelectedId] = useState(null);
@@ -78,18 +102,25 @@ export default function _Table({ module }) {
 	const [billingPrintData, setBillingPrintData] = useState(null);
 	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [actionType, setActionType] = useState('change');
+	const [actionType, setActionType] = useState("change");
 	const [actionFormData, setActionFormData] = useState(null);
 	const [drawerPatientId, setDrawerPatientId] = useState(null);
-	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] =
-		useDisclosure(false);
+	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
 	const [singlePatientData, setSinglePatientData] = useState({});
+	const [selectedRoom, setSelectedRoom] = useState({});
 
 	// =============== form for action drawer fields ================
 	const actionForm = useForm({
 		initialValues: {
 			change_mode: "",
 			comment: "",
+		},
+	});
+
+	const roomTransferForm = useForm({
+		initialValues: {
+			comment: "",
+			room_id: "",
 		},
 	});
 
@@ -127,10 +158,6 @@ export default function _Table({ module }) {
 		setTimeout(() => open(), 10);
 	};
 
-	const printPrescription = useReactToPrint({
-		content: () => prescriptionRef.current,
-	});
-
 	const printBillingInvoice = useReactToPrint({
 		content: () => billingInvoiceRef.current,
 	});
@@ -145,14 +172,6 @@ export default function _Table({ module }) {
 		});
 		setBillingPrintData(res.data);
 		requestAnimationFrame(printBillingInvoice);
-	};
-
-	const handlePrescriptionPrint = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
-		});
-		setPrintData(res.data);
-		requestAnimationFrame(printPrescription);
 	};
 
 	const handleAdmissionFormPrint = async (id) => {
@@ -173,6 +192,18 @@ export default function _Table({ module }) {
 		setTimeout(() => openPatientUpdate(), 100);
 	};
 
+	const roomBedTransfer = async (e, id, item) => {
+		e.stopPropagation();
+
+		const { data } = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INTERNAL_TRANSFER}/${id}`,
+		});
+
+		setSelectedRoom({ ...item, availableRooms: data });
+
+		setTimeout(() => openRoomBedTransfer(), 100);
+	};
+
 	const handleActionSubmit = () => {
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
@@ -189,7 +220,7 @@ export default function _Table({ module }) {
 		try {
 			const actionData = {
 				change_mode: actionType ?? "change",
-				comment : actionForm.values.comment
+				comment: actionForm.values.comment,
 			};
 
 			const payload = {
@@ -215,89 +246,69 @@ export default function _Table({ module }) {
 			}
 			// ✅ Success
 			if (updateEntityData.fulfilled.match(resultAction)) {
-				successNotification(
-					t("UpdateSuccessfully"),
-					SUCCESS_NOTIFICATION_COLOR
-				);
+				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		} catch (error) {
-			errorNotification(
-				error?.message || t("SomethingWentWrong"),
-				ERROR_NOTIFICATION_COLOR
-			);
+			errorNotification(error?.message || t("SomethingWentWrong"), ERROR_NOTIFICATION_COLOR);
 		} finally {
-			setDrawerPatientId(null)
-			closeActions()
+			setDrawerPatientId(null);
+			closeActions();
 			setIsLoading(false);
 		}
 	}
 
-
-	// =============== handle action form submit conditionally ================
-	const handleConfirmModalx = (values) => {
-		// =============== store action form data for confirmation modal ================
-		const actionData = {
-			change_mode: actionType,
-			...values,
-		};
-
-		const value = {
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.UPDATE}/${data?.id}`,
-			data: formValue,
-			module,
-		};
-		const resultAction =  dispatch(updateEntityData(value));
-		if (updateEntityData.rejected.match(resultAction)) {
-			const fieldErrors = resultAction.payload.errors;
-
-			// Check if there are field validation errors and dynamically set them
-			if (fieldErrors) {
-				const errorObject = {};
-				Object.keys(fieldErrors).forEach((key) => {
-					errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
-				});
-				// Display the errors using your form's `setErrors` function dynamically
-				form.setErrors(errorObject);
-			}
-		} else if (updateEntityData.fulfilled.match(resultAction)) {
-			successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-			setTimeout(() => {
-				useVendorDataStoreIntoLocalStorage();
-				form.reset();
-				dispatch(setInsertType({ insertType: "create", module }));
-				close(); // close the drawer
-			}, 700);
-		}
-
-		setActionFormData(actionData);
-		if (actionType === "change") {
-			console.log("Change action:", {
-				accommodationType: values.accommodationType,
-				comment: values.comment,
-			});
-			// TODO: implement change action API call
-		} else if (actionType === "cancel") {
-			console.log("Cancel action:", {
-				reason: values.reason,
-			});
-			// TODO: implement cancel action API call
-		} else if (actionType === "day_change") {
-			console.log("Day change action:", {
-				dayChangeComment: values.dayChangeComment,
-			});
-			// TODO: implement day change action API call
-		}
-		// reset form and close drawer after submission
-		actionForm.reset();
-		setActionType('change');
-		closeActions();
-	};
-
 	// =============== handle drawer close with form reset ================
 	const handleCloseActions = () => {
 		actionForm.reset();
-		setActionType('change');
+		setActionType("change");
 		closeActions();
+	};
+
+	const handleCloseRoomBedTransfer = () => {
+		closeRoomBedTransfer();
+		setSelectedRoom({ availableRooms: [] });
+	};
+
+	const handleRoomTransferSubmit = async (values) => {
+		console.log(values);
+
+		try {
+			const payload = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INTERNAL_TRANSFER_PROCESS}/${selectedRoom?.admission_id}`,
+				data: values,
+				module,
+			};
+
+			const resultAction = await dispatch(updateEntityData(payload));
+
+			if (updateEntityData.rejected.match(resultAction)) {
+				errorNotification(resultAction.payload?.message || t("SomethingWentWrong"), ERROR_NOTIFICATION_COLOR);
+			}
+		} catch (error) {
+			errorNotification(error?.message || t("SomethingWentWrong"), ERROR_NOTIFICATION_COLOR);
+		} finally {
+			closeRoomBedTransfer();
+			setSelectedRoom({ availableRooms: [] });
+			successNotification(t("RoomTransferSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+		}
+	};
+
+	const csvData =
+		records?.map((item, index) => ({
+			sn: index + 1,
+			created: formatDate(item?.admission_date),
+			name: item?.name || "",
+			gender: item?.gender_mode_name || "",
+			status: item?.is_booked === 1 ? "Occupied" : "Empty",
+			ipd: item?.invoice || "",
+		})) || [];
+
+	console.log(records);
+
+	const handleCSVDownload = () => {
+		if (csvLinkRef?.current?.link) {
+			csvLinkRef.current.link.click();
+		}
 	};
 
 	return (
@@ -310,7 +321,12 @@ export default function _Table({ module }) {
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
 						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
 							{tabs.map((tab) => (
-								<Tabs.Tab value={tab.value} ref={setControlRef(tab)} className={filterTabsCss.tab} key={tab.value}>
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={tab.value}
+								>
 									{t(tab.label)}
 								</Tabs.Tab>
 							))}
@@ -324,7 +340,14 @@ export default function _Table({ module }) {
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch form={form} module={module} />
+				<KeywordSearch form={form} module={module} handleCSVDownload={handleCSVDownload} />
+				<CSVLink
+					data={csvData}
+					headers={CSV_HEADERS}
+					filename={`bed-cabin-${formatDate(new Date())}.csv`}
+					style={{ display: "none" }}
+					ref={csvLinkRef}
+				/>
 			</Box>
 			<Box className="borderRadiusAll border-top-none" px="sm">
 				<DataTable
@@ -359,17 +382,13 @@ export default function _Table({ module }) {
 							accessor: "is_booked",
 							title: t("Status"),
 							textAlignment: "right",
-							render: (item) => (
-								item.is_booked === 1 ? "Occupied" : "Empty"
-							),
+							render: (item) => (item.is_booked === 1 ? "Occupied" : "Empty"),
 						},
 						{
 							accessor: "admission_date",
 							title: t("Created"),
 							textAlignment: "right",
-							render: (item) => (
-								formatDate(item.admission_date)
-							),
+							render: (item) => formatDate(item.admission_date),
 						},
 						{ accessor: "invoice", title: t("IPD") },
 						{ accessor: "customer_name", title: t("Name") },
@@ -389,21 +408,22 @@ export default function _Table({ module }) {
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-									(item.process?.toLowerCase() === "confirmed" || item.process?.toLowerCase() === "billing") && (
-									<Button
-										variant="filled"
-										onClick={() => {
-											openActions()
-											setDrawerPatientId(item.uid)
-										}}
-										color="red.6"
-										radius="xs"
-										size={"compact-xs"}
-										aria-label="Settings"
-									>
-										{t("Actions")}
-									</Button>
-									)}
+										(item.process?.toLowerCase() === "confirmed" ||
+											item.process?.toLowerCase() === "billing") && (
+											<Button
+												variant="filled"
+												onClick={() => {
+													openActions();
+													setDrawerPatientId(item.uid);
+												}}
+												color="red.6"
+												radius="xs"
+												size={"compact-xs"}
+												aria-label="Settings"
+											>
+												{t("Actions")}
+											</Button>
+										)}
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
 										item.process?.toLowerCase() === "confirmed" && (
 											<Button.Group>
@@ -419,19 +439,21 @@ export default function _Table({ module }) {
 												</Button>
 											</Button.Group>
 										)}
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&  item.process?.toLowerCase() === "billing" && (
-										<Button.Group>
-											<Button
-												variant="filled"
-												onClick={() => handleAdmissionFormPrint(item.id)}
-												color="var(--theme-secondary-color-6)"
-												radius="xs"
-												size={"compact-xs"}
-												aria-label="Settings"
-											>Print
-											</Button>
-										</Button.Group>
-									)}
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+										item.process?.toLowerCase() === "billing" && (
+											<Button.Group>
+												<Button
+													variant="filled"
+													onClick={() => handleAdmissionFormPrint(item.id)}
+													color="var(--theme-secondary-color-6)"
+													radius="xs"
+													size={"compact-xs"}
+													aria-label="Settings"
+												>
+													Print
+												</Button>
+											</Button.Group>
+										)}
 									{/*{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && item.process?.toLowerCase() === "admitted" && (
 										<Button.Group>
 											<Button
@@ -448,7 +470,14 @@ export default function _Table({ module }) {
 										</Button.Group>
 									)}
 									*/}
-									<Menu position="bottom-end" offset={3} withArrow trigger="hover" openDelay={100} closeDelay={400}>
+									<Menu
+										position="bottom-end"
+										offset={3}
+										withArrow
+										trigger="hover"
+										openDelay={100}
+										closeDelay={400}
+									>
 										<Menu.Target>
 											<ActionIcon
 												className="border-left-radius-none"
@@ -493,34 +522,39 @@ export default function _Table({ module }) {
 											>
 												{t("AdmissionInvoice")}
 											</Menu.Item>
-											{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&  item.process?.toLowerCase() === "admitted" && (
-												<>
-												<Menu.Item
-													leftSection={
-														<IconPencil
-															style={{
-																width: rem(14),
-																height: rem(14),
-															}}
-														/>
-													}
-													onClick={(e) => patientUpdate(e, item?.id)}>
-													{t("PatientUpdate")}
-												</Menu.Item>
-												<Menu.Item
-												leftSection={
-												<IconPencil
-													style={{
-														width: rem(14),
-														height: rem(14),
-													}}
-												/>
-											}
-												onClick={(e) => patientUpdate(e, item?.id)}>
-												{t("Room/Bed Transfer")}
-												</Menu.Item>
-												</>
-											)}
+											{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+												item.process?.toLowerCase() === "admitted" && (
+													<>
+														<Menu.Item
+															leftSection={
+																<IconPencil
+																	style={{
+																		width: rem(14),
+																		height: rem(14),
+																	}}
+																/>
+															}
+															onClick={(e) => patientUpdate(e, item?.id)}
+														>
+															{t("PatientUpdate")}
+														</Menu.Item>
+														<Menu.Item
+															leftSection={
+																<IconPencil
+																	style={{
+																		width: rem(14),
+																		height: rem(14),
+																	}}
+																/>
+															}
+															onClick={(e) =>
+																roomBedTransfer(e, item?.admission_id, item)
+															}
+														>
+															{t("Room/Bed Transfer")}
+														</Menu.Item>
+													</>
+												)}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>
@@ -591,13 +625,58 @@ export default function _Table({ module }) {
 					</Box>
 				</Box>
 			</GlobalDrawer>
+			{/* ========== room / bed transfer drawer ========= */}
+			<GlobalDrawer
+				opened={openedRoomBedTransfer}
+				close={handleCloseRoomBedTransfer}
+				title={t("Room/Bed Transfer")}
+				size="25%"
+			>
+				<Box mt="sm">
+					<Box component="form" onSubmit={roomTransferForm.onSubmit(handleRoomTransferSubmit)} noValidate>
+						<Text fw={500} fz="sm" mb="xs">
+							Current Room/Cabin: {selectedRoom?.display_name}
+						</Text>
+						<Divider />
+						<Stack gap="md">
+							<Select
+								label={t("Room/Cabin")}
+								placeholder={t("SelectRequestFor")}
+								data={selectedRoom?.availableRooms?.map((room) => ({
+									value: room.id?.toString(),
+									label: room.name,
+								}))}
+								value={roomTransferForm.values.room_id}
+								onChange={(value) => {
+									roomTransferForm.setFieldValue("room_id", value);
+								}}
+							/>
+
+							<Stack h={mainAreaHeight - 166} justify="space-between">
+								<Box>
+									<Textarea
+										label={t("Comment")}
+										placeholder={t("EnterComment")}
+										name="comment"
+										{...roomTransferForm.getInputProps("comment")}
+										minRows={3}
+									/>
+								</Box>
+								<Button type="submit">{t("Submit")}</Button>
+							</Stack>
+						</Stack>
+					</Box>
+				</Box>
+			</GlobalDrawer>
 			<PatientUpdateDrawer
 				type="emergency"
 				opened={openedPatientUpdate}
 				close={closePatientUpdate}
 				data={singlePatientData}
 			/>
-			{selectedPrescriptionId && <DetailsDrawer opened={openedActions} close={closeActions} prescriptionId={selectedPrescriptionId} />}
+			{selectedPrescriptionId && (
+				<DetailsDrawer opened={openedActions} close={closeActions} prescriptionId={selectedPrescriptionId} />
+			)}
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
 			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
 			{admissionFormPrintData && <AdmissionFormBN data={admissionFormPrintData} ref={admissionFormRef} />}

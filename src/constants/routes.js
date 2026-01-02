@@ -620,6 +620,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			PATIENT_CHART: "hospital/ipd/patient-chart",
 			RELEASE: "hospital/ipd/release",
 			INTERNAL_TRANSFER: "hospital/ipd/internal-transfer",
+			INTERNAL_TRANSFER_PROCESS: "hospital/ipd/internal-transfer-process",
 			MEDICINE_UPDATE: "hospital/ipdprescription",
 			MEDICINE_TEMPLATE: "hospital/ipdprescription/template",
 			INLINE_UPDATE: "hospital/ipdprescription/inline-update",

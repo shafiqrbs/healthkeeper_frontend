@@ -126,7 +126,7 @@ export const sideNavigationLinks = {
 		},
 		{
 			label: t("BED/CABIN"),
-			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.BED_CABIN,
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BED_CABIN.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
 			allowedRoles: [
