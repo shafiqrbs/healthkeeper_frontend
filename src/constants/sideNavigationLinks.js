@@ -129,7 +129,16 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.BED_CABIN,
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
-			allowedRoles: ["role_domain", "doctor_ipd","doctor_rs_rp_confirm", "doctor_ipd_admission","nurse_basic", "admin_nurse", "nurse_incharge", "operator_emergency"],
+			allowedRoles: [
+				"role_domain",
+				"doctor_ipd",
+				"doctor_rs_rp_confirm",
+				"doctor_ipd_admission",
+				"nurse_basic",
+				"admin_nurse",
+				"nurse_incharge",
+				"operator_emergency",
+			],
 		},
 
 		{
@@ -155,7 +164,7 @@ export const sideNavigationLinks = {
 					label: t("IPDBilling"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_BILLING.INDEX,
 					icon: IconDashboard,
-					allowedRoles: ["operator_opd", "operator_emergency","operator_manager", "admin_administrator"],
+					allowedRoles: ["operator_opd", "operator_emergency", "operator_manager", "admin_administrator"],
 				},
 				{
 					label: t("AdmissionBilling"),
@@ -221,7 +230,7 @@ export const sideNavigationLinks = {
 		},
 		{
 			label: t("BED/CABIN"),
-			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.BED_CABIN,
+			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BED_CABIN.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
 			allowedRoles: ["role_domain", "nurse_basic", "admin_nurse", "nurse_incharge", "admin_administrator"],

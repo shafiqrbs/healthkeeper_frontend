@@ -603,11 +603,9 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "hospital/admission",
 			VIEW: "hospital/admission/view",
 		},
-
 		BED_CABIN: {
 			INDEX: "hospital/bed-cabin",
 		},
-
 		IPD: {
 			INDEX: "hospital/ipd",
 			CREATE: "hospital/ipd",
@@ -799,7 +797,9 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/lab-group-report",
 			VIEW: "/hospital/lab-group-report",
 		},
-
+		BED_CABIN: {
+			INDEX: "/hospital/bed-cabin",
+		},
 		BILLING: {
 			INDEX: "/hospital/billing",
 			CREATE: "/hospital/billing",
