@@ -3,7 +3,7 @@ import { Box, Button, Group, Select, Autocomplete, rem, ActionIcon, Grid } from 
 import { useForm } from "@mantine/form";
 import { IconAlertCircle, IconPlus, IconTrashX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { getMedicineFormInitialValues } from "../core/treatmentTemplates/helpers/request";
+import { getTreatmentMedicineInitialValues } from "../core/treatmentTemplates/helpers/request";
 import { useOutletContext, useParams } from "react-router-dom";
 import { useDebouncedState, useHotkeys } from "@mantine/hooks";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
@@ -33,6 +33,7 @@ import {
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
+import AddDosagePopover from "@components/drawers/AddDosagePopover";
 
 export default function TreatmentAddMedicineForm({ medicines, module, setMedicines }) {
 	const {
@@ -49,7 +50,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
 	// const { medicineData } = useMedicineData({ term: medicineTerm });
 	// const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
-	const medicineForm = useForm(getMedicineFormInitialValues());
+	const medicineForm = useForm(getTreatmentMedicineInitialValues());
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const { treatmentId } = useParams();
@@ -107,19 +108,6 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 				medicineForm.setFieldValue("stock_id", selectedMedicine?.stock_id?.toString());
-				// Auto-populate duration and count based on duration_day or duration_month
-
-				// if (selectedMedicine.quantity) {
-				// 	medicineForm.setFieldValue("quantity", selectedMedicine.quantity);
-				// }
-
-				// if (selectedMedicine.duration_mode_id) {
-				// 	appendDurationModeValueToForm(
-				// 		medicineForm,
-				// 		durationModeDropdown,
-				// 		selectedMedicine.duration_mode_id
-				// 	);
-				// }
 
 				if (selectedMedicine.medicine_bymeal_id) {
 					appendMealValueToForm(medicineForm, meals, selectedMedicine.medicine_bymeal_id);
@@ -285,8 +273,6 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 									<Select
 										searchable
 										clearable
-										searchValue={medicineDosageSearchValue}
-										onSearchChange={setMedicineDosageSearchValue}
 										classNames={inputCss}
 										id="medicine_dosage_id"
 										name="medicine_dosage_id"
@@ -299,6 +285,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 										tooltip={t("EnterDosage")}
 										onChange={(v) => handleChange("medicine_dosage_id", v)}
 										error={!!medicineForm.errors.medicine_dosage_id}
+										rightSection={<AddDosagePopover form={medicineForm} />}
 									/>
 								</FormValidatorWrapper>
 
@@ -309,8 +296,6 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 									<Select
 										searchable
 										clearable
-										searchValue={medicineByMealSearchValue}
-										onSearchChange={setMedicineByMealSearchValue}
 										classNames={inputCss}
 										id="medicine_bymeal_id"
 										name="medicine_bymeal_id"
@@ -436,7 +421,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 						{
 							accessor: "duration",
 							title: t("Duration"),
-							render: (item) => `${item?.duration} ${item?.duration_mode?.name}`,
+							render: (item) => `${item?.duration || ""} ${item?.duration_mode?.name || ""}`,
 						},
 						{
 							accessor: "",

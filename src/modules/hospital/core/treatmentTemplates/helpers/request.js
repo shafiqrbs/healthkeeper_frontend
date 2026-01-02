@@ -71,3 +71,22 @@ export const getMedicineFormInitialValues = () => {
 		},
 	};
 };
+
+export const getTreatmentMedicineInitialValues = () => {
+	return {
+		initialValues: medicineInitialValues,
+
+		validate: {
+			medicine_id: (_, values) => {
+				return isEmpty(values?.medicine_id) && isEmpty(values?.generic)
+					? "Medicine or Generic name is required"
+					: null;
+			},
+			generic: (_, values) => {
+				return isEmpty(values?.medicine_id) && isEmpty(values?.generic)
+					? "Medicine or Generic name is required"
+					: null;
+			},
+		},
+	};
+};

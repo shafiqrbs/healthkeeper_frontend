@@ -77,6 +77,7 @@ export default function AddMedicineForm({
 	hasRecords,
 	tabParticulars,
 	section = "ipdPrescription",
+	refetch,
 }) {
 	const {
 		user,
@@ -569,11 +570,21 @@ export default function AddMedicineForm({
 		form.setFieldValue("advise", content);
 	};
 
-	const populateMedicineData = (v) => {
-		const selectedTreatment = treatmentData?.data?.find((item) => item.id?.toString() === v);
-		if (selectedTreatment) {
-			setMedicines(selectedTreatment.treatment_medicine_format);
-			if (update) update(selectedTreatment.treatment_medicine_format);
+	const populateMedicineData = async (v) => {
+		const resultAction = await dispatch(
+			updateEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.TEMPLATE_UPDATE}/${prescriptionData?.data?.prescription_uid}`,
+				data: {
+					template_id: v,
+				},
+				module,
+			})
+		);
+
+		if (updateEntityData.rejected.match(resultAction)) {
+			showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+		} else {
+			refetch();
 		}
 	};
 

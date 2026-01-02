@@ -43,7 +43,11 @@ export default function AdmissionPrescription() {
 		(item) => item?.particular_type?.name
 	);
 
-	const { data: prescriptionData, isLoading } = useDataWithoutStore({
+	const {
+		data: prescriptionData,
+		isLoading,
+		refetch,
+	} = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
 	});
 
@@ -144,6 +148,7 @@ export default function AdmissionPrescription() {
 						tabParticulars={tabParticulars}
 						showBaseItems={false}
 						baseHeight={mainAreaHeight}
+						refetch={refetch}
 					/>
 				</Grid.Col>
 				{hasRecords && (

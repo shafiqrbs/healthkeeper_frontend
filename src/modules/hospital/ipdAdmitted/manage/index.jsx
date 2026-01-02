@@ -436,6 +436,7 @@ export default function Index() {
 											section="e-fresh"
 											baseHeight={mainAreaHeight}
 											showBaseItems={false}
+											refetch={refetch}
 										/>
 									</Box>
 								</Flex>
