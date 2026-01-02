@@ -15,6 +15,7 @@ import {
 	ActionIcon,
 	Textarea,
 	LoadingOverlay,
+	Collapse,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
@@ -29,6 +30,9 @@ import {
 	IconCaretUpDownFilled,
 	IconMedicineSyrup,
 	IconBookmark,
+	IconChevronDown,
+	IconChevronUp,
+	IconChevronRight,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "./helpers/request";
@@ -156,7 +160,13 @@ export default function Prescription({
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
 	const [openedHistoryMedicine, { open: openHistoryMedicine, close: closeHistoryMedicine }] = useDisclosure(false);
-	const { data: prescriptionData } = useDataWithoutStore({
+	const [openedDiseaseProfile, { toggle: toggleDiseaseProfile }] = useDisclosure(true);
+	const [showDiseaseProfile, setShowDiseaseProfile] = useState(true);
+	const {
+		data: prescriptionData,
+		refetch: refetchPrescriptionData,
+		isLoading: isPrescriptionLoading,
+	} = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});
 
@@ -552,10 +562,21 @@ export default function Prescription({
 		form.setFieldValue("advise", content);
 	};
 
-	const populateMedicineData = (v) => {
-		const selectedTreatment = treatmentData?.data?.find((item) => item.id?.toString() === v);
-		if (selectedTreatment) {
-			setMedicines(selectedTreatment.treatment_medicine_format);
+	const populateMedicineData = async (v) => {
+		const resultAction = await dispatch(
+			updateEntityData({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.TEMPLATE_UPDATE}/${prescriptionId}`,
+				data: {
+					template_id: v,
+				},
+				module,
+			})
+		);
+
+		if (updateEntityData.rejected.match(resultAction)) {
+			showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+		} else {
+			refetchPrescriptionData();
 		}
 	};
 
@@ -566,139 +587,205 @@ export default function Prescription({
 		);
 	};
 
+	const getMedicineFormSpan = () => {
+		return showDiseaseProfile ? 19 : 24;
+	};
+
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)" pos="relative">
-			<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+			<LoadingOverlay
+				visible={isLoading || isPrescriptionLoading}
+				zIndex={1000}
+				overlayProps={{ radius: "sm", blur: 2 }}
+			/>
+			<Tooltip
+				label={showDiseaseProfile ? t("hideDiseaseProfile") : t("showDiseaseProfile")}
+				position={showDiseaseProfile ? "left" : "right"}
+			>
+				<ActionIcon
+					variant="filled"
+					color={showDiseaseProfile ? "red" : "blue"}
+					size="xl"
+					radius="xl"
+					onClick={() => setShowDiseaseProfile(!showDiseaseProfile)}
+					style={{
+						position: "fixed",
+						top: "50%",
+						left: showDiseaseProfile ? "calc(5/24 * 100% + 200px)" : "270px",
+						transform: "translateY(-50%)",
+						zIndex: 99,
+						boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+					}}
+				>
+					{showDiseaseProfile ? <IconX size={18} /> : <IconChevronRight size={18} />}
+				</ActionIcon>
+			</Tooltip>
 			<Grid columns={24} gutter="3xs">
-				<Grid.Col span={5}>
-					<ScrollArea h={mainAreaHeight - 0}>
-						<Box bg="var(--theme-primary-color-0)" h="100%">
-							<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="xs">
-								{t("DiseaseProfile")}
-							</Text>
-							<Box pl="sm" pr="sm" pt="sm">
-								<SelectForm
-									dropdownValue={diseasesProfile?.map((disease) => ({
-										value: disease.name,
-										label: disease.name,
-									}))}
-									form={form}
-									label="Select Disease"
-									id="disease"
-									tooltip={t("Disease")}
-									name="disease"
-									value={form.values.disease}
-									placeholder={t("Disease")}
-								/>
-							</Box>
-							<Box pl="sm" pr="sm" pt="sm">
-								<TextAreaForm
-									form={form}
-									label="Disease Details"
-									name="disease_details"
-									value={form.values.disease_details}
-									placeholder={t("DiseaseDetails")}
-									tooltip={t("EnterDiseaseDetails")}
-									showRightSection={false}
-									resize="vertical"
-								/>
-							</Box>
-							<Box pl="sm" pr="sm" pb="sm">
-								<TextAreaForm
-									form={form}
-									label="Examination Investigation"
-									name="examination_investigation"
-									value={form.values.examination_investigation}
-									placeholder={t("ExaminationInvestigation")}
-									tooltip={t("EnterExaminationInvestigation")}
-									showRightSection={false}
-									resize="vertical"
-								/>
-							</Box>
-							<Box pl="sm" pr="sm" pb="sm">
-								<TextAreaForm
-									form={form}
-									label="Treatment Medication"
-									name="treatment_medication"
-									value={form.values.treatment_medication}
-									placeholder={t("TreatmentMedication")}
-									tooltip={t("EnterTreatmentMedication")}
-									showRightSection={false}
-									resize="vertical"
-								/>
-							</Box>
-							<Box pl="sm" pr="sm" pb="sm">
-								<TextAreaForm
-									form={form}
-									label="Follow Up Date"
-									name="follow_up_date"
-									value={form.values.follow_up_date}
-									placeholder={t("Follow up date")}
-									tooltip={t("Follow up date")}
-									showRightSection={false}
-									resize="vertical"
-								/>
-							</Box>
-							<Stack>
-								<Box fz="md" c="white">
-									<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
-										{t("AdviseTemplate")}
+				{showDiseaseProfile && (
+					<Grid.Col span={5}>
+						<ScrollArea h={mainAreaHeight - 0}>
+							<Box bg="var(--theme-primary-color-0)" h="100%">
+								<Flex
+									bg="var(--theme-primary-color-6)"
+									justify="space-between"
+									align="center"
+									px="sm"
+									py="xs"
+									style={{ cursor: "pointer" }}
+									// onClick={toggleDiseaseProfile}
+								>
+									<Text fz="md" c="white">
+										{t("DiseaseProfile")}
 									</Text>
-									<ScrollArea h={80} p="les" className="borderRadiusAll">
-										{adviceData?.map((advise) => (
-											<Flex
-												align="center"
-												gap="les"
-												bg="var(--theme-primary-color-0)"
-												c="dark"
-												key={advise.id}
-												onClick={() => handleAdviseTemplate(advise?.content)}
-												px="les"
-												bd="1px solid var(--theme-primary-color-0)"
-												mb="2"
-												className="cursor-pointer"
-											>
-												<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
-												<Text mt="es" fz={13}>
-													{advise?.name}
+									{/* {openedDiseaseProfile ? (
+										<IconChevronUp size={20} color="white" />
+									) : (
+										<IconChevronDown size={20} color="white" />
+									)} */}
+								</Flex>
+								<Collapse in={openedDiseaseProfile}>
+									<Box>
+										<Box pl="sm" pr="sm" pt="sm">
+											<SelectForm
+												dropdownValue={diseasesProfile?.map((disease) => ({
+													value: disease.name,
+													label: disease.name,
+												}))}
+												form={form}
+												label="Select Disease"
+												id="disease"
+												tooltip={t("Disease")}
+												name="disease"
+												value={form.values.disease}
+												placeholder={t("Disease")}
+											/>
+										</Box>
+										<Box pl="sm" pr="sm" pt="sm">
+											<TextAreaForm
+												form={form}
+												label="Disease Details"
+												name="disease_details"
+												value={form.values.disease_details}
+												placeholder={t("DiseaseDetails")}
+												tooltip={t("EnterDiseaseDetails")}
+												showRightSection={false}
+												resize="vertical"
+											/>
+										</Box>
+										<Box pl="sm" pr="sm" pb="sm">
+											<TextAreaForm
+												form={form}
+												label="Examination Investigation"
+												name="examination_investigation"
+												value={form.values.examination_investigation}
+												placeholder={t("ExaminationInvestigation")}
+												tooltip={t("EnterExaminationInvestigation")}
+												showRightSection={false}
+												resize="vertical"
+											/>
+										</Box>
+										<Box pl="sm" pr="sm" pb="sm">
+											<TextAreaForm
+												form={form}
+												label="Treatment Medication"
+												name="treatment_medication"
+												value={form.values.treatment_medication}
+												placeholder={t("TreatmentMedication")}
+												tooltip={t("EnterTreatmentMedication")}
+												showRightSection={false}
+												resize="vertical"
+											/>
+										</Box>
+										<Box pl="sm" pr="sm" pb="sm">
+											<TextAreaForm
+												form={form}
+												label="Follow Up Date"
+												name="follow_up_date"
+												value={form.values.follow_up_date}
+												placeholder={t("Follow up date")}
+												tooltip={t("Follow up date")}
+												showRightSection={false}
+												resize="vertical"
+											/>
+										</Box>
+										<Stack>
+											<Box fz="md" c="white">
+												<Text
+													bg="var(--theme-save-btn-color)"
+													fz="md"
+													c="white"
+													px="sm"
+													py="les"
+												>
+													{t("AdviseTemplate")}
 												</Text>
-											</Flex>
-										))}
-									</ScrollArea>
-								</Box>
-								<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
-									<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
-										{t("Advise")}
-									</Text>
-									<Box p="sm">
-										<TextAreaForm
-											form={form}
-											label=""
-											value={form.values.advise}
-											name="advise"
-											placeholder="Write an advice..."
-											showRightSection={false}
-											style={{ input: { height: "72px" } }}
-										/>
+												<ScrollArea h={80} p="les" className="borderRadiusAll">
+													{adviceData?.map((advise) => (
+														<Flex
+															align="center"
+															gap="les"
+															bg="var(--theme-primary-color-0)"
+															c="dark"
+															key={advise.id}
+															onClick={() => handleAdviseTemplate(advise?.content)}
+															px="les"
+															bd="1px solid var(--theme-primary-color-0)"
+															mb="2"
+															className="cursor-pointer"
+														>
+															<IconReportMedical
+																color="var(--theme-secondary-color-6)"
+																size={13}
+															/>{" "}
+															<Text mt="es" fz={13}>
+																{advise?.name}
+															</Text>
+														</Flex>
+													))}
+												</ScrollArea>
+											</Box>
+											<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
+												<Text
+													bg="var(--theme-secondary-color-6)"
+													fz="md"
+													c="white"
+													px="sm"
+													py="les"
+												>
+													{t("Advise")}
+												</Text>
+												<Box p="sm">
+													<TextAreaForm
+														form={form}
+														label=""
+														value={form.values.advise}
+														name="advise"
+														placeholder="Write an advice..."
+														showRightSection={false}
+														style={{ input: { height: "72px" } }}
+													/>
+												</Box>
+											</Box>
+										</Stack>
+										<Box pl="sm" pr="sm" pb="sm">
+											<TextAreaForm
+												form={form}
+												label="Doctor Comment"
+												name="doctor_comment"
+												value={form.values.doctor_comment}
+												placeholder={t("Doctor Comment")}
+												tooltip={t("Enter Doctor Comment")}
+												showRightSection={false}
+												resize="vertical"
+											/>
+										</Box>
 									</Box>
-								</Box>
-							</Stack>
-							<Box pl="sm" pr="sm" pb="sm">
-								<TextAreaForm
-									form={form}
-									label="Doctor Comment"
-									name="doctor_comment"
-									value={form.values.doctor_comment}
-									placeholder={t("Doctor Comment")}
-									tooltip={t("Enter Doctor Comment")}
-									showRightSection={false}
-									resize="vertical"
-								/>
+								</Collapse>
 							</Box>
-						</Box>
-					</ScrollArea>
-				</Grid.Col>
-				<Grid.Col span={19}>
+						</ScrollArea>
+					</Grid.Col>
+				)}
+				<Grid.Col span={getMedicineFormSpan()}>
 					<Box
 						onSubmit={medicineForm.onSubmit(handleAdd)}
 						key={updateKey}
