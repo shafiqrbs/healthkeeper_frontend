@@ -207,8 +207,6 @@ function MedicineListTable({ medicines, tableHeight = 0 }) {
 				records={records}
 				columns={columns}
 				height={tableHeight - 30}
-				virtualized
-				rowHeight={44}
 				striped
 				withTableBorder
 				withColumnBorders

@@ -89,9 +89,7 @@ export default function AddMedicineForm({
 	} = useAppLocalStore();
 
 	const sortedMedicines = useMemo(() => {
-		return [...(medicines || [])].sort(
-			(a, b) => (a?.order ?? 0) - (b?.order ?? 0)
-		);
+		return [...(medicines || [])].sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0));
 	}, [medicines]);
 
 	const mainHeight = useMemo(
@@ -188,7 +186,9 @@ export default function AddMedicineForm({
 	}, [emergencyRefetching]);
 
 	useEffect(() => {
-		setDbMedicines(prescriptionData?.data?.prescription_medicine || []);
+		const medicines = prescriptionData?.data?.prescription_medicine || [];
+		const sortedMedicines = [...(medicines || [])].sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0));
+		setDbMedicines(sortedMedicines);
 	}, [prescriptionData]);
 
 	useEffect(() => {
@@ -809,8 +809,11 @@ export default function AddMedicineForm({
 									</ActionIcon>
 									{hasRecords && (
 										<Tooltip label="History">
-											<ActionIcon size="lg" bg={"red"}
-												onClick={() => setShowHistory((prev) => !prev)}>
+											<ActionIcon
+												size="lg"
+												bg={"red"}
+												onClick={() => setShowHistory((prev) => !prev)}
+											>
 												<IconHistory />
 											</ActionIcon>
 										</Tooltip>
@@ -822,10 +825,7 @@ export default function AddMedicineForm({
 				</Grid>
 			</Box>
 
-			<ScrollArea
-				h={mainHeight+74}
-				bg="var(--mantine-color-white)"
-			>
+			<ScrollArea h={mainHeight + 74} bg="var(--mantine-color-white)">
 				<Stack gap="2px">
 					{sortedMedicines?.length === 0 && form.values.exEmergency?.length === 0 && (
 						<Flex
