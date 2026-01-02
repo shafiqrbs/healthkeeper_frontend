@@ -60,6 +60,7 @@ import ListIndex from "@modules/hospital/visit/list";
 import ConfigurationIndex from "@modules/configuration";
 import IpdIndex from "@modules/hospital/admission/ipdConfirm";
 import IpdAdmissionIndex from "@modules/hospital/admission/ipdAdmission";
+import AdmissionBedCabinIndex from "@modules/hospital/admission/bedCabin";
 import IpdAdmittedIndex from "@modules/hospital/ipdAdmitted";
 import UserIndex from "@modules/core/user";
 import SettingIndex from "@modules/core/setting";
@@ -222,6 +223,27 @@ function AppRoute() {
 							}
 						/>
 					</Route>
+					<Route path="bed-cabin">
+						<Route
+							index
+							element={
+								<ProtectedRoute
+									roles={[
+										"role_domain",
+										"admin_administrator",
+										"doctor_ipd_admission",
+										"doctor_rs_rp_confirm",
+										"doctor_ipd",
+										"nurse_basic",
+										"nurse_incharge",
+										"operator_emergency",
+									]}
+								>
+									<AdmissionBedCabinIndex />
+								</ProtectedRoute>
+							}
+						/>
+					</Route>
 					<Route path="ipd-admission">
 						<Route
 							index
@@ -240,6 +262,7 @@ function AppRoute() {
 						/>
 						<Route path=":id" element={<IpdAdmissionIndex />} />
 					</Route>
+
 					<Route path="ipd-admitted">
 						<Route
 							index

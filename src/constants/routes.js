@@ -617,6 +617,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			EFRESH_ORDER: "hospital/ipd/efresh-order",
 			PATIENT_CHART: "hospital/ipd/patient-chart",
 			RELEASE: "hospital/ipd/release",
+			INTERNAL_TRANSFER: "hospital/ipd/internal-transfer",
 			MEDICINE_UPDATE: "hospital/ipdprescription",
 			MEDICINE_TEMPLATE: "hospital/ipdprescription/template",
 			INLINE_UPDATE: "hospital/ipdprescription/inline-update",
@@ -716,6 +717,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/admission",
 			VIEW: "/hospital/admission/view",
 			CONFIRM: "/hospital/admission/confirm",
+			BED_CABIN: "/hospital/bed-cabin",
 		},
 		IPD: {
 			INDEX: "/hospital/ipd",
@@ -730,7 +732,9 @@ export const HOSPITAL_DATA_ROUTES = {
 			CREATE: "/hospital/ipd-admission",
 			UPDATE: "/hospital/ipd-admission",
 			VIEW: "/hospital/ipd-admission",
+			ROOM: "/hospital/ipd-admission/room-cabin",
 		},
+
 		IPD_ADMITTED: {
 			INDEX: "/hospital/ipd-admitted",
 			CREATE: "/hospital/ipd-admitted",
