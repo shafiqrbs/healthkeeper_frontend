@@ -62,6 +62,12 @@ import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import BookmarkDrawer from "@hospital-components/BookmarkDrawer";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import InputForm from "@components/form-builders/InputForm";
+import StarterKit from "@tiptap/starter-kit";
+import { useEditor } from "@tiptap/react";
+import Subscript from "@tiptap/extension-subscript";
+import TextAlign from "@tiptap/extension-text-align";
+import Superscript from "@tiptap/extension-superscript";
+import { RichTextEditor } from "@mantine/tiptap";
 
 const module = MODULES.DISCHARGE;
 
@@ -96,6 +102,24 @@ export default function Prescription({
 			follow_up_date: "",
 		},
 	});
+	const editor = useEditor({
+		extensions: [
+			StarterKit,
+			Highlight,
+			Superscript,
+			Subscript,
+			TextAlign.configure({ types: ["heading", "paragraph"] }),
+		],
+		content: "",
+		shouldRerenderOnTransaction: true,
+	});
+
+	// useEffect(() => {
+	// 	if (editor) {
+	// 		editor.commands.setContent(content);
+	// 	}
+	// }, [content, editor]);
+
 	const { id } = useParams();
 	const createdBy = user;
 	const navigate = useNavigate();
@@ -117,7 +141,8 @@ export default function Prescription({
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
-	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] = useDisclosure(false);
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
+		useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
@@ -391,7 +416,8 @@ export default function Prescription({
 				showNotificationComponent(t("PrescriptionSavedSuccessfully"), "green", "lightgray", true, 700, true);
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetch();
-				if (redirect) navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=dashboard`);
+				if (redirect)
+					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=dashboard`);
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {
@@ -481,7 +507,6 @@ export default function Prescription({
 								resize="vertical"
 							/>
 						</Box>
-
 						<Box pl="sm" pr="sm" pb="sm">
 							<TextAreaForm
 								form={form}
@@ -518,6 +543,50 @@ export default function Prescription({
 								resize="vertical"
 							/>
 						</Box>
+						<Stack>
+							<Box fz="md" c="white">
+								<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
+									{t("AdviseTemplate")}
+								</Text>
+								<ScrollArea h={96} p="les" className="borderRadiusAll">
+									{adviceData?.map((advise) => (
+										<Flex
+											align="center"
+											gap="les"
+											bg="var(--theme-primary-color-0)"
+											c="dark"
+											key={advise.id}
+											onClick={() => handleAdviseTemplate(advise?.content)}
+											px="les"
+											bd="1px solid var(--theme-primary-color-0)"
+											mb="2"
+											className="cursor-pointer"
+										>
+											<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
+											<Text mt="es" fz={13}>
+												{advise?.name}
+											</Text>
+										</Flex>
+									))}
+								</ScrollArea>
+							</Box>
+							<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
+								<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
+									{t("Advise")}
+								</Text>
+								<Box p="sm">
+									<TextAreaForm
+										form={form}
+										label=""
+										value={form.values.advise}
+										name="advise"
+										placeholder="Write an advice..."
+										showRightSection={false}
+										style={{ input: { height: "72px" } }}
+									/>
+								</Box>
+							</Box>
+						</Stack>
 						<Box pl="sm" pr="sm" pb="sm">
 							<TextAreaForm
 								form={form}
@@ -530,8 +599,6 @@ export default function Prescription({
 								resize="vertical"
 							/>
 						</Box>
-
-
 					</Box>
 				</Grid.Col>
 				<Grid.Col span={19}>
@@ -722,7 +789,14 @@ export default function Prescription({
 							</Grid.Col>
 						</Grid>
 					</Box>
-					<Flex bg="var(--theme-primary-color-0)" mb="les" justify="space-between" align="center" py="les" mt="xs">
+					<Flex
+						bg="var(--theme-primary-color-0)"
+						mb="les"
+						justify="space-between"
+						align="center"
+						py="les"
+						mt="xs"
+					>
 						<Text fw={500} px="sm">
 							{t("ListOfMedicines")}
 						</Text>
@@ -747,7 +821,13 @@ export default function Prescription({
 						</Flex>
 					</Flex>
 					<ScrollArea
-						h={baseHeight ? baseHeight : form.values.comment ? mainAreaHeight - 420 - 50 : mainAreaHeight - 420}
+						h={
+							baseHeight
+								? baseHeight
+								: form.values.comment
+								? mainAreaHeight - 420 - 50
+								: mainAreaHeight - 420
+						}
 						bg="var(--mantine-color-white)"
 					>
 						<Stack gap="2px" p="sm">
@@ -813,6 +893,38 @@ export default function Prescription({
 						</Stack>
 					</ScrollArea>
 
+					<Box my="xs">
+						<RichTextEditor editor={editor} variant="subtle" h={mainAreaHeight - 560}>
+							<RichTextEditor.Toolbar sticky stickyOffset="var(--docs-header-height)">
+								<RichTextEditor.ControlsGroup>
+									<RichTextEditor.Bold />
+									<RichTextEditor.Italic />
+									<RichTextEditor.Strikethrough />
+									<RichTextEditor.ClearFormatting />
+								</RichTextEditor.ControlsGroup>
+								<RichTextEditor.ControlsGroup>
+									<RichTextEditor.H1 />
+									<RichTextEditor.H2 />
+									<RichTextEditor.H3 />
+									<RichTextEditor.H4 />
+								</RichTextEditor.ControlsGroup>
+								<RichTextEditor.ControlsGroup>
+									<RichTextEditor.Blockquote />
+									<RichTextEditor.Hr />
+									<RichTextEditor.BulletList />
+									<RichTextEditor.OrderedList />
+								</RichTextEditor.ControlsGroup>
+								<RichTextEditor.ControlsGroup>
+									<RichTextEditor.AlignLeft />
+									<RichTextEditor.AlignCenter />
+									<RichTextEditor.AlignJustify />
+									<RichTextEditor.AlignRight />
+								</RichTextEditor.ControlsGroup>
+							</RichTextEditor.Toolbar>
+							<RichTextEditor.Content />
+						</RichTextEditor>
+					</Box>
+
 					{form.values.comment && (
 						<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between" align="center">
 							<Text w="100%">
@@ -821,59 +933,9 @@ export default function Prescription({
 						</Flex>
 					)}
 
-					{/* =================== Advise form =================== */}
+					{/* =================== submission buttons =================== */}
 					{form && (
 						<>
-							<Grid columns={12} gutter="3xs" mt="2xs" p="les">
-								<Grid.Col span={3}>
-									<Box fz="md" c="white">
-										<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
-											{t("AdviseTemplate")}
-										</Text>
-										<ScrollArea h={96} p="les" className="borderRadiusAll">
-											{adviceData?.map((advise) => (
-												<Flex
-													align="center"
-													gap="les"
-													bg="var(--theme-primary-color-0)"
-													c="dark"
-													key={advise.id}
-													onClick={() => handleAdviseTemplate(advise?.content)}
-													px="les"
-													bd="1px solid var(--theme-primary-color-0)"
-													mb="2"
-													className="cursor-pointer"
-												>
-													<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
-													<Text mt="es" fz={13}>
-														{advise?.name}
-													</Text>
-												</Flex>
-											))}
-										</ScrollArea>
-									</Box>
-								</Grid.Col>
-								<Grid.Col span={9}>
-									<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
-										<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
-											{t("Advise")}
-										</Text>
-										<Box p="sm">
-											<TextAreaForm
-												form={form}
-												label=""
-												value={form.values.advise}
-												name="advise"
-												placeholder="Write an advice..."
-												showRightSection={false}
-												style={{ input: { height: "72px" } }}
-											/>
-										</Box>
-									</Box>
-								</Grid.Col>
-							</Grid>
-
-							{/* =================== submission button here =================== */}
 							<Button.Group bg="var(--theme-primary-color-0)" p="les">
 								<Button
 									w="100%"
@@ -896,7 +958,11 @@ export default function Prescription({
 										</Text>
 									</Stack>
 								</Button>
-								<Button w="100%" bg="var(--theme-secondary-color-6)" onClick={handleDischargePrintSubmit}>
+								<Button
+									w="100%"
+									bg="var(--theme-secondary-color-6)"
+									onClick={handleDischargePrintSubmit}
+								>
 									<Stack gap={0} align="center" justify="center">
 										<Text>{t("Print")}</Text>
 										<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -926,7 +992,12 @@ export default function Prescription({
 
 			{printData && <DischargeA4BN ref={dischargeA4Ref} data={printData} />}
 
-			<GlobalDrawer opened={openedExPrescription} close={closeExPrescription} title={t("EmergencyPrescription")} size="28%">
+			<GlobalDrawer
+				opened={openedExPrescription}
+				close={closeExPrescription}
+				title={t("EmergencyPrescription")}
+				size="28%"
+			>
 				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
 					<Box>
 						<Flex gap="sm" w="100%" align="center">
@@ -953,7 +1024,12 @@ export default function Prescription({
 							/>
 							<ActionIcon
 								onClick={() => {
-									handleAutocompleteOptionAdd(autocompleteValue, emergencyData?.data, "exEmergency", true);
+									handleAutocompleteOptionAdd(
+										autocompleteValue,
+										emergencyData?.data,
+										"exEmergency",
+										true
+									);
 									setTimeout(() => {
 										setAutocompleteValue("");
 									}, 0);
