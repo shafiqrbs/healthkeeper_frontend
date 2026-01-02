@@ -47,7 +47,7 @@ import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer
 const PER_PAGE = 20;
 
 const tabs = [
-	{ label: "Cabin/Bed", value: "" },
+	{ label: "Bed/Cabin", value: "all" },
 	{ label: "Empty", value: "empty" },
 	{ label: "Occupied", value: "occupied" },
 ];
@@ -69,7 +69,7 @@ export default function _Table({ module }) {
 	const listData = useSelector((state) => state.crud[module]?.data);
 	const navigate = useNavigate();
 	const [selectedId, setSelectedId] = useState(null);
-	const [processTab, setProcessTab] = useState("");
+	const [processTab, setProcessTab] = useState("all");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const [printData, setPrintData] = useState(null);
 	const admissionFormRef = useRef(null);
@@ -112,9 +112,9 @@ export default function _Table({ module }) {
 
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ALL_ROOM,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BED_CABIN.INDEX,
 		filterParams: {
-			ipd_mode: processTab,
+			mode: processTab,
 			term: form.values.keywordSearch,
 		},
 		perPage: PER_PAGE,
@@ -352,33 +352,31 @@ export default function _Table({ module }) {
 							textAlignment: "right",
 							render: (_, index) => index + 1,
 						},
+						{ accessor: "display_name", title: t("Name") },
+						{ accessor: "gender_mode_name", title: t("Gender") },
+						{ accessor: "payment_mode_name", title: t("PaymentMode") },
 						{
-							accessor: "created_at",
+							accessor: "is_booked",
+							title: t("Status"),
+							textAlignment: "right",
+							render: (item) => (
+								item.is_booked === 1 ? "Occupied" : "Empty"
+							),
+						},
+						{
+							accessor: "admission_date",
 							title: t("Created"),
 							textAlignment: "right",
 							render: (item) => (
-								<Text fz="xs" onClick={() => handleView(item.id)} className="activate-link">
-									{formatDate(item.created_at)}
-								</Text>
+								formatDate(item.admission_date)
 							),
 						},
-						{ accessor: "parent_invoice_mode", title: t("PatientMode"),
-							render: (item) => capitalizeWords(item.parent_invoice_mode),
-						},
-						{ accessor: "patient_id", title: t("patientId") },
-						{ accessor: "name", title: t("Name") },
-						{ accessor: "mobile", title: t("Mobile") },
-						{ accessor: "gender", title: t("Gender") },
-						{ accessor: "admit_consultant_name", title: t("Consultant") },
-						{ accessor: "admit_unit_name", title: t("Unit") },
-						{ accessor: "admit_department_name", title: t("Department") },
-						{ accessor: "admit_doctor_name", title: t("Doctor") },
-						{ accessor: "room_name", title: t("Cabin/Bed") },
-						{
-							accessor: "total",
-							title: t("Amount"),
-							render: (item) => t(item.total),
-						},
+						{ accessor: "invoice", title: t("IPD") },
+						{ accessor: "customer_name", title: t("Name") },
+						{ accessor: "admission_day", title: t("Admission") },
+						{ accessor: "consume_day", title: t("Consume") },
+						{ accessor: "payment_day", title: t("Consume") },
+						{ accessor: "remaining_day", title: t("Remaining") },
 						{
 							accessor: "process",
 							title: t("Process"),
@@ -543,7 +541,7 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="ipd" />
+			<DataTableFooter indexData={listData} module="bed/cabin" />
 			<ConfirmModal
 				opened={openedConfirm}
 				close={() => {

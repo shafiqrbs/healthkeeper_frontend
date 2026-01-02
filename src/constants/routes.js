@@ -604,6 +604,10 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "hospital/admission/view",
 		},
 
+		BED_CABIN: {
+			INDEX: "hospital/bed-cabin",
+		},
+
 		IPD: {
 			INDEX: "hospital/ipd",
 			CREATE: "hospital/ipd",

@@ -89,7 +89,9 @@ export default function AddMedicineForm({
 	} = useAppLocalStore();
 
 	const sortedMedicines = useMemo(() => {
-		return medicines.sort((a, b) => a.order - b.order);
+		return [...(medicines || [])].sort(
+			(a, b) => (a?.order ?? 0) - (b?.order ?? 0)
+		);
 	}, [medicines]);
 
 	const mainHeight = useMemo(
