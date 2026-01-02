@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import {
 	Box,
@@ -33,19 +33,19 @@ import {
 import { useTranslation } from "react-i18next";
 import { getMedicineFormInitialValues } from "./helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import DatePickerForm from "@components/form-builders/DatePicker";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
+import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
-import { getIndexEntityData, updateEntityData } from "@/app/store/core/crudThunk";
+import { getIndexEntityData, updateEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
+import { SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
-import MedicineListItem from "@hospital-components/MedicineListItem";
 import { MODULES } from "@/constants";
 import inputCss from "@assets/css/InputField.module.css";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
@@ -61,13 +61,15 @@ import {
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import BookmarkDrawer from "@hospital-components/BookmarkDrawer";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import InputForm from "@components/form-builders/InputForm";
 import StarterKit from "@tiptap/starter-kit";
 import { useEditor } from "@tiptap/react";
 import Subscript from "@tiptap/extension-subscript";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
+import Highlight from "@tiptap/extension-highlight";
 import { RichTextEditor } from "@mantine/tiptap";
+import Placeholder from "@tiptap/extension-placeholder";
+import MedicineListTable from "@hospital-components/MedicineListTable";
 
 const module = MODULES.DISCHARGE;
 
@@ -100,6 +102,7 @@ export default function Prescription({
 			examination_investigation: "",
 			treatment_medication: "",
 			follow_up_date: "",
+			extra_medicine: "",
 		},
 	});
 	const editor = useEditor({
@@ -108,17 +111,27 @@ export default function Prescription({
 			Highlight,
 			Superscript,
 			Subscript,
+			Placeholder.configure({ placeholder: "Enter your text here..." }),
 			TextAlign.configure({ types: ["heading", "paragraph"] }),
 		],
-		content: "",
+		content: form.values.extra_medicine || "",
 		shouldRerenderOnTransaction: true,
+		onUpdate: ({ editor }) => {
+			// =============== sync editor content to form field when editor changes ================
+			const htmlContent = editor.getHTML();
+			form.setFieldValue("extra_medicine", htmlContent);
+		},
 	});
 
-	// useEffect(() => {
-	// 	if (editor) {
-	// 		editor.commands.setContent(content);
-	// 	}
-	// }, [content, editor]);
+	// =============== sync form field to editor when form field changes (e.g., from loaded data) ================
+	useEffect(() => {
+		if (editor && form.values.extra_medicine !== undefined) {
+			const currentEditorContent = editor.getHTML();
+			if (currentEditorContent !== form.values.extra_medicine) {
+				editor.commands.setContent(form.values.extra_medicine || "");
+			}
+		}
+	}, [form.values.extra_medicine, editor]);
 
 	const { id } = useParams();
 	const createdBy = user;
@@ -128,10 +141,6 @@ export default function Prescription({
 	const [updateKey, setUpdateKey] = useState(0);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { t } = useTranslation();
-	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
-	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
-	// const { medicineData } = useMedicineData({ term: medicineTerm });
-	// const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
 	const medicineForm = useForm(getMedicineFormInitialValues("discharge"));
 	const [editIndex, setEditIndex] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
@@ -151,6 +160,12 @@ export default function Prescription({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});
 
+	const [dbMedicines, setDbMedicines] = useState([]);
+
+	const sortedMedicines = useMemo(() => {
+		return [...(medicines || [])].sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0));
+	}, [medicines]);
+
 	useEffect(() => {
 		if (prescriptionData?.data) {
 			const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
@@ -162,7 +177,16 @@ export default function Prescription({
 				treatment_medication: initialFormValues?.treatment_medication || "",
 				follow_up_date: initialFormValues?.follow_up_date || "",
 				doctor_comment: initialFormValues?.doctor_comment || "",
+				extra_medicines: initialFormValues?.extra_medicines || [],
+				extra_medicine: initialFormValues?.extra_medicine || "",
 			});
+
+			// =============== sync medicines from prescription data ================
+			const prescriptionMedicines = prescriptionData?.data?.prescription_medicine || [];
+			const sortedPrescriptionMedicines = [...(prescriptionMedicines || [])].sort(
+				(a, b) => (a?.order ?? 0) - (b?.order ?? 0)
+			);
+			setDbMedicines(sortedPrescriptionMedicines);
 		}
 	}, [prescriptionData]);
 
@@ -335,29 +359,99 @@ export default function Prescription({
 		}
 	};
 
-	const handleAdd = (values) => {
+	const handleAdd = async (values) => {
+		// TODO: legacy code: must be removed later --- start
 		if (editIndex !== null) {
-			const updated = [...medicines];
+			const updated = [...sortedMedicines];
 			updated[editIndex] = values;
 			setMedicines(updated);
 			setEditIndex(null);
 		} else {
-			setMedicines([...medicines, values]);
+			const maxOrder =
+				sortedMedicines.length > 0
+					? Math.max(...sortedMedicines.map((med) => med.order ?? 0), sortedMedicines.length)
+					: 0;
+			const newMedicine = { ...values, order: maxOrder + 1 };
+			const updatedMedicines = [...sortedMedicines, newMedicine];
+			setMedicines(updatedMedicines);
 			setUpdateKey((prev) => prev + 1);
 
 			medicineForm.reset();
 			setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
 		}
 		setEditIndex(null);
-	};
+		// TODO: legacy code: must be removed later --- end
 
-	const handleDelete = (idx) => {
-		setMedicines(medicines.filter((_, index) => index !== idx));
-		if (editIndex === idx) {
-			medicineForm.reset();
-			setEditIndex(null);
+		const value = {
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_UPDATE}`,
+			data: {
+				medicine_id: values.medicine_id,
+				generic: values.generic,
+				medicine_dosage_id: values.medicine_dosage_id,
+				medicine_bymeal_id: values.medicine_bymeal_id,
+				quantity: values.quantity,
+				duration: values.duration,
+				prescription_id: prescriptionId,
+			},
+			module,
+		};
+
+		const resultAction = await dispatch(storeEntityData(value));
+
+		if (storeEntityData.rejected.match(resultAction)) {
+			showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+		} else {
+			const data = resultAction?.payload?.data?.data || {};
+			const newMedicineData = {
+				company: data?.company || "",
+				medicine_name: data?.medicine_name || "",
+				generic: data?.generic || "",
+				generic_id: data?.generic_id,
+				medicine_id: data?.medicine_id,
+				stock_item_id: data?.stock_item_id,
+				medicine_dosage_id: data?.medicine_dosage_id || null,
+				medicine_bymeal_id: data?.medicine_bymeal_id || null,
+				dose_details: data?.dose_details || "",
+				dose_details_bn: data?.dose_details_bn || "",
+				daily_quantity: data?.daily_quantity || 0,
+				by_meal: data?.by_meal || "",
+				by_meal_bn: data?.by_meal_bn || "",
+				is_active: data?.is_active || 0,
+				id: data?.id,
+				order: data?.order || 0,
+			};
+			showNotificationComponent(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+			const updateNestedState = useAuthStore.getState()?.updateNestedState;
+			updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
+			setDbMedicines([...dbMedicines, newMedicineData]);
 		}
 	};
+
+	// =============== handler for deleting medicine from database ================
+	const handleDeleteMedicine = useCallback(
+		async (medicineId) => {
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INLINE_UPDATE}/${medicineId}`,
+				data: {
+					medicine_id: medicineId,
+					prescription_id: prescriptionId,
+					is_deleted: true,
+				},
+				module,
+			};
+
+			const resultAction = await dispatch(storeEntityData(value));
+
+			if (storeEntityData.rejected.match(resultAction)) {
+				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+			} else {
+				showNotificationComponent(t("MedicineDeletedSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				setDbMedicines((prev) => prev.filter((med) => med.id?.toString() !== medicineId?.toString()));
+			}
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[dispatch, prescriptionId, t]
+	);
 
 	const handleReset = () => {
 		setMedicines([]);
@@ -399,6 +493,7 @@ export default function Prescription({
 				examination_investigation: form.values.examination_investigation || "",
 				treatment_medication: form.values.treatment_medication || "",
 				doctor_comment: form.values.doctor_comment || "",
+				extra_medicine: form.values.extra_medicine || "",
 			};
 
 			const value = {
@@ -476,130 +571,132 @@ export default function Prescription({
 			<LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 			<Grid columns={24} gutter="3xs">
 				<Grid.Col span={5}>
-					<Box bg="var(--theme-primary-color-0)" h="100%">
-						<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="xs">
-							{t("DiseaseProfile")}
-						</Text>
-						<Box pl="sm" pr="sm" pt="sm">
-							<SelectForm
-								dropdownValue={diseasesProfile?.map((disease) => ({
-									value: disease.name,
-									label: disease.name,
-								}))}
-								form={form}
-								label="Select Disease"
-								id="disease"
-								tooltip={t("Disease")}
-								name="disease"
-								value={form.values.disease}
-								placeholder={t("Disease")}
-							/>
-						</Box>
-						<Box pl="sm" pr="sm" pt="sm">
-							<TextAreaForm
-								form={form}
-								label="Disease Details"
-								name="disease_details"
-								value={form.values.disease_details}
-								placeholder={t("DiseaseDetails")}
-								tooltip={t("EnterDiseaseDetails")}
-								showRightSection={false}
-								resize="vertical"
-							/>
-						</Box>
-						<Box pl="sm" pr="sm" pb="sm">
-							<TextAreaForm
-								form={form}
-								label="Examination Investigation"
-								name="examination_investigation"
-								value={form.values.examination_investigation}
-								placeholder={t("ExaminationInvestigation")}
-								tooltip={t("EnterExaminationInvestigation")}
-								showRightSection={false}
-								resize="vertical"
-							/>
-						</Box>
-						<Box pl="sm" pr="sm" pb="sm">
-							<TextAreaForm
-								form={form}
-								label="Treatment Medication"
-								name="treatment_medication"
-								value={form.values.treatment_medication}
-								placeholder={t("TreatmentMedication")}
-								tooltip={t("EnterTreatmentMedication")}
-								showRightSection={false}
-								resize="vertical"
-							/>
-						</Box>
-						<Box pl="sm" pr="sm" pb="sm">
-							<TextAreaForm
-								form={form}
-								label="Follow Up Date"
-								name="follow_up_date"
-								value={form.values.follow_up_date}
-								placeholder={t("Follow up date")}
-								tooltip={t("Follow up date")}
-								showRightSection={false}
-								resize="vertical"
-							/>
-						</Box>
-						<Stack>
-							<Box fz="md" c="white">
-								<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
-									{t("AdviseTemplate")}
-								</Text>
-								<ScrollArea h={96} p="les" className="borderRadiusAll">
-									{adviceData?.map((advise) => (
-										<Flex
-											align="center"
-											gap="les"
-											bg="var(--theme-primary-color-0)"
-											c="dark"
-											key={advise.id}
-											onClick={() => handleAdviseTemplate(advise?.content)}
-											px="les"
-											bd="1px solid var(--theme-primary-color-0)"
-											mb="2"
-											className="cursor-pointer"
-										>
-											<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
-											<Text mt="es" fz={13}>
-												{advise?.name}
-											</Text>
-										</Flex>
-									))}
-								</ScrollArea>
+					<ScrollArea h={mainAreaHeight - 0}>
+						<Box bg="var(--theme-primary-color-0)" h="100%">
+							<Text bg="var(--theme-primary-color-6)" fz="md" c="white" px="sm" py="xs">
+								{t("DiseaseProfile")}
+							</Text>
+							<Box pl="sm" pr="sm" pt="sm">
+								<SelectForm
+									dropdownValue={diseasesProfile?.map((disease) => ({
+										value: disease.name,
+										label: disease.name,
+									}))}
+									form={form}
+									label="Select Disease"
+									id="disease"
+									tooltip={t("Disease")}
+									name="disease"
+									value={form.values.disease}
+									placeholder={t("Disease")}
+								/>
 							</Box>
-							<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
-								<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
-									{t("Advise")}
-								</Text>
-								<Box p="sm">
-									<TextAreaForm
-										form={form}
-										label=""
-										value={form.values.advise}
-										name="advise"
-										placeholder="Write an advice..."
-										showRightSection={false}
-										style={{ input: { height: "72px" } }}
-									/>
+							<Box pl="sm" pr="sm" pt="sm">
+								<TextAreaForm
+									form={form}
+									label="Disease Details"
+									name="disease_details"
+									value={form.values.disease_details}
+									placeholder={t("DiseaseDetails")}
+									tooltip={t("EnterDiseaseDetails")}
+									showRightSection={false}
+									resize="vertical"
+								/>
+							</Box>
+							<Box pl="sm" pr="sm" pb="sm">
+								<TextAreaForm
+									form={form}
+									label="Examination Investigation"
+									name="examination_investigation"
+									value={form.values.examination_investigation}
+									placeholder={t("ExaminationInvestigation")}
+									tooltip={t("EnterExaminationInvestigation")}
+									showRightSection={false}
+									resize="vertical"
+								/>
+							</Box>
+							<Box pl="sm" pr="sm" pb="sm">
+								<TextAreaForm
+									form={form}
+									label="Treatment Medication"
+									name="treatment_medication"
+									value={form.values.treatment_medication}
+									placeholder={t("TreatmentMedication")}
+									tooltip={t("EnterTreatmentMedication")}
+									showRightSection={false}
+									resize="vertical"
+								/>
+							</Box>
+							<Box pl="sm" pr="sm" pb="sm">
+								<TextAreaForm
+									form={form}
+									label="Follow Up Date"
+									name="follow_up_date"
+									value={form.values.follow_up_date}
+									placeholder={t("Follow up date")}
+									tooltip={t("Follow up date")}
+									showRightSection={false}
+									resize="vertical"
+								/>
+							</Box>
+							<Stack>
+								<Box fz="md" c="white">
+									<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
+										{t("AdviseTemplate")}
+									</Text>
+									<ScrollArea h={80} p="les" className="borderRadiusAll">
+										{adviceData?.map((advise) => (
+											<Flex
+												align="center"
+												gap="les"
+												bg="var(--theme-primary-color-0)"
+												c="dark"
+												key={advise.id}
+												onClick={() => handleAdviseTemplate(advise?.content)}
+												px="les"
+												bd="1px solid var(--theme-primary-color-0)"
+												mb="2"
+												className="cursor-pointer"
+											>
+												<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
+												<Text mt="es" fz={13}>
+													{advise?.name}
+												</Text>
+											</Flex>
+										))}
+									</ScrollArea>
 								</Box>
+								<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
+									<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
+										{t("Advise")}
+									</Text>
+									<Box p="sm">
+										<TextAreaForm
+											form={form}
+											label=""
+											value={form.values.advise}
+											name="advise"
+											placeholder="Write an advice..."
+											showRightSection={false}
+											style={{ input: { height: "72px" } }}
+										/>
+									</Box>
+								</Box>
+							</Stack>
+							<Box pl="sm" pr="sm" pb="sm">
+								<TextAreaForm
+									form={form}
+									label="Doctor Comment"
+									name="doctor_comment"
+									value={form.values.doctor_comment}
+									placeholder={t("Doctor Comment")}
+									tooltip={t("Enter Doctor Comment")}
+									showRightSection={false}
+									resize="vertical"
+								/>
 							</Box>
-						</Stack>
-						<Box pl="sm" pr="sm" pb="sm">
-							<TextAreaForm
-								form={form}
-								label="Doctor Comment"
-								name="doctor_comment"
-								value={form.values.doctor_comment}
-								placeholder={t("Doctor Comment")}
-								tooltip={t("Enter Doctor Comment")}
-								showRightSection={false}
-								resize="vertical"
-							/>
 						</Box>
-					</Box>
+					</ScrollArea>
 				</Grid.Col>
 				<Grid.Col span={19}>
 					<Box
@@ -620,7 +717,6 @@ export default function Prescription({
 												clearable
 												searchable
 												filter={medicineOptionsFilter}
-												onSearchChange={setMedicineTerm}
 												id="medicine_id"
 												name="medicine_id"
 												data={medicineData?.map((item) => ({
@@ -632,7 +728,6 @@ export default function Prescription({
 												placeholder={t("Medicine")}
 												tooltip="Select medicine"
 												nothingFoundMessage="Type to find medicine..."
-												onBlur={() => setMedicineTerm("")}
 												classNames={inputCss}
 											/>
 										</Grid.Col>
@@ -652,10 +747,8 @@ export default function Prescription({
 												value={medicineForm.values.generic}
 												onChange={(v) => {
 													handleChange("generic", v);
-													setMedicineGenericTerm(v);
 												}}
 												placeholder={t("SelfMedicine")}
-												onBlur={() => setMedicineGenericTerm("")}
 												classNames={inputCss}
 											/>
 										</Grid.Col>
@@ -823,7 +916,7 @@ export default function Prescription({
 					<ScrollArea
 						h={
 							baseHeight
-								? baseHeight
+								? baseHeight - 50
 								: form.values.comment
 								? mainAreaHeight - 420 - 50
 								: mainAreaHeight - 420
@@ -831,7 +924,7 @@ export default function Prescription({
 						bg="var(--mantine-color-white)"
 					>
 						<Stack gap="2px" p="sm">
-							{medicines?.length === 0 && form.values.exEmergency?.length === 0 && (
+							{dbMedicines?.length === 0 && form.values.exEmergency?.length === 0 && (
 								<Flex
 									mih={baseHeight ? baseHeight - 50 : 220}
 									gap="md"
@@ -876,7 +969,7 @@ export default function Prescription({
 								</>
 							)}
 
-							{medicines?.map((medicine, index) => (
+							{/* {medicines?.map((medicine, index) => (
 								<MedicineListItem
 									key={index}
 									index={index + 1}
@@ -889,12 +982,28 @@ export default function Prescription({
 									durationModeDropdown={durationModeDropdown}
 									type="discharge"
 								/>
-							))}
+							))} */}
+
+							{dbMedicines?.length > 0 && (
+								<MedicineListTable
+									medicines={dbMedicines}
+									tableHeight={
+										baseHeight
+											? baseHeight - 50
+											: form.values.instruction
+											? mainAreaHeight - 420 - 50
+											: mainAreaHeight - 420
+									}
+									showDelete={true}
+									onDelete={handleDeleteMedicine}
+									prescriptionId={prescriptionId}
+								/>
+							)}
 						</Stack>
 					</ScrollArea>
 
-					<Box my="xs">
-						<RichTextEditor editor={editor} variant="subtle" h={mainAreaHeight - 560}>
+					<Box pr="xs" my="xs">
+						<RichTextEditor editor={editor} variant="subtle" h={mainAreaHeight - 530}>
 							<RichTextEditor.Toolbar sticky stickyOffset="var(--docs-header-height)">
 								<RichTextEditor.ControlsGroup>
 									<RichTextEditor.Bold />

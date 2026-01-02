@@ -1,6 +1,6 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import { Center, Flex, Select, Switch, TableTd } from "@mantine/core";
-import { IconCheck, IconGripVertical, IconX } from "@tabler/icons-react";
+import { Center, Flex, Select, Switch, TableTd, ActionIcon } from "@mantine/core";
+import { IconCheck, IconGripVertical, IconX, IconTrash } from "@tabler/icons-react";
 import { DataTable, DataTableDraggableRow } from "mantine-datatable";
 import clsx from "clsx";
 import { useState, useMemo, useEffect, useCallback, useRef, memo } from "react";
@@ -50,8 +50,15 @@ const MemoSwitch = memo(function MemoSwitch({ checked, onChange }) {
 	);
 });
 
-function MedicineListTable({ medicines, tableHeight = 0 }) {
-	const { id: prescriptionId } = useParams();
+function MedicineListTable({
+	medicines,
+	tableHeight = 0,
+	showDelete = false,
+	onDelete,
+	prescriptionId: propPrescriptionId,
+}) {
+	const { id: paramsPrescriptionId } = useParams();
+	const prescriptionId = propPrescriptionId || paramsPrescriptionId;
 	const { t } = useTranslation();
 	const { dosages, meals } = useAppLocalStore();
 	const dispatch = useDispatch();
@@ -190,10 +197,20 @@ function MedicineListTable({ medicines, tableHeight = 0 }) {
 				textAlign: "center",
 				render: (record) => (
 					<Flex justify="center">
-						<MemoSwitch
-							checked={record.is_active}
-							onChange={(v) => handleInlineEdit(record.id, "is_active", v)}
-						/>
+						{showDelete && onDelete ? (
+							<ActionIcon
+								variant="outline"
+								color="var(--theme-error-color)"
+								onClick={() => onDelete(record.id)}
+							>
+								<IconTrash size={16} />
+							</ActionIcon>
+						) : (
+							<MemoSwitch
+								checked={record.is_active}
+								onChange={(v) => handleInlineEdit(record.id, "is_active", v)}
+							/>
+						)}
 					</Flex>
 				),
 			},
