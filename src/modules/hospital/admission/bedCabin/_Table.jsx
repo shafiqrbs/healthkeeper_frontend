@@ -270,25 +270,23 @@ export default function _Table({ module }) {
 	};
 
 	const handleRoomTransferSubmit = async (values) => {
-		console.log(values);
-
 		try {
 			const payload = {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INTERNAL_TRANSFER_PROCESS}/${selectedRoom?.admission_id}`,
 				data: values,
 				module,
 			};
-
 			const resultAction = await dispatch(updateEntityData(payload));
-
 			if (updateEntityData.rejected.match(resultAction)) {
 				errorNotification(resultAction.payload?.message || t("SomethingWentWrong"), ERROR_NOTIFICATION_COLOR);
+
 			}
 		} catch (error) {
 			errorNotification(error?.message || t("SomethingWentWrong"), ERROR_NOTIFICATION_COLOR);
 		} finally {
 			closeRoomBedTransfer();
 			setSelectedRoom({ availableRooms: [] });
+			actionForm.reset();
 			successNotification(t("RoomTransferSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 		}
 	};
@@ -297,14 +295,11 @@ export default function _Table({ module }) {
 		records?.map((item, index) => ({
 			sn: index + 1,
 			created: formatDate(item?.admission_date),
-			name: item?.name || "",
+			name: item?.display_name || "",
 			gender: item?.gender_mode_name || "",
 			status: item?.is_booked === 1 ? "Occupied" : "Empty",
 			ipd: item?.invoice || "",
 		})) || [];
-
-	console.log(records);
-
 	const handleCSVDownload = () => {
 		if (csvLinkRef?.current?.link) {
 			csvLinkRef.current.link.click();
@@ -407,69 +402,7 @@ export default function _Table({ module }) {
 							titleClassName: "title-right",
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-										(item.process?.toLowerCase() === "confirmed" ||
-											item.process?.toLowerCase() === "billing") && (
-											<Button
-												variant="filled"
-												onClick={() => {
-													openActions();
-													setDrawerPatientId(item.uid);
-												}}
-												color="red.6"
-												radius="xs"
-												size={"compact-xs"}
-												aria-label="Settings"
-											>
-												{t("Actions")}
-											</Button>
-										)}
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-										item.process?.toLowerCase() === "confirmed" && (
-											<Button.Group>
-												<Button
-													variant="filled"
-													onClick={() => handleAdmissionOverview(item.uid)}
-													color="var(--theme-primary-color-6)"
-													radius="xs"
-													size={"compact-xs"}
-													aria-label="Settings"
-												>
-													Process
-												</Button>
-											</Button.Group>
-										)}
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-										item.process?.toLowerCase() === "billing" && (
-											<Button.Group>
-												<Button
-													variant="filled"
-													onClick={() => handleAdmissionFormPrint(item.id)}
-													color="var(--theme-secondary-color-6)"
-													radius="xs"
-													size={"compact-xs"}
-													aria-label="Settings"
-												>
-													Print
-												</Button>
-											</Button.Group>
-										)}
-									{/*{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && item.process?.toLowerCase() === "admitted" && (
-										<Button.Group>
-											<Button
-												variant="filled"
-												onClick={() => handleAdmissionFormPrint(item.id)}
-												color="var(--theme-warning-color)"
-												radius="xs"
-												size={"compact-xs"}
-												aria-label="Settings"
-												leftSection={<IconPrinter style={{ width: "70%", height: "70%" }} stroke={1.5} />}
-											>
-												Invoice
-											</Button>
-										</Button.Group>
-									)}
-									*/}
+
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -490,38 +423,7 @@ export default function _Table({ module }) {
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
-											<Menu.Item
-												leftSection={
-													<IconFileText
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-												onClick={(e) => {
-													e.stopPropagation();
-													handleAdmissionFormPrint(item?.id);
-												}}
-											>
-												{t("AdmissionForm")}
-											</Menu.Item>
-											<Menu.Item
-												leftSection={
-													<IconPrinter
-														style={{
-															width: rem(14),
-															height: rem(14),
-														}}
-													/>
-												}
-												onClick={(e) => {
-													e.stopPropagation();
-													handleBillingInvoicePrint(item?.id);
-												}}
-											>
-												{t("AdmissionInvoice")}
-											</Menu.Item>
+
 											{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
 												item.process?.toLowerCase() === "admitted" && (
 													<>
