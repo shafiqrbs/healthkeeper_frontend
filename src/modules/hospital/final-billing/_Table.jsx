@@ -1,28 +1,50 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { IconCalendarWeek, IconUser, IconArrowNarrowRight } from "@tabler/icons-react";
+import { IconCalendarWeek, IconUser, IconArrowNarrowRight, IconPrinter } from "@tabler/icons-react";
 import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MODULES } from "@/constants";
-import {capitalizeWords, formatDate} from "@utils/index";
+import { capitalizeWords, formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useSelector } from "react-redux";
 import CustomDivider from "@components/core-component/CustomDivider";
+import { getDataWithoutStore } from "@/services/apiService";
+import AdmissionInvoiceDetailsBN from "@hospital-components/print-formats/admission/AdmissionInvoiceDetailsBN";
+import { useReactToPrint } from "react-to-print";
 
 const module = MODULES.FINAL_BILLING;
 const PER_PAGE = 500;
 
 export default function _Table() {
+	const printRef = useRef(null);
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
 	const filterData = useSelector((state) => state.crud[module].filterData);
+	const [printData, setPrintData] = useState(null);
 
 	const handleAdmissionOverview = (id) => {
 		setSelectedPatientId(id);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FINAL_BILLING.VIEW}/${id}`);
 	};
+
+	const invoicePrint = useReactToPrint({ content: () => printRef.current });
+
+	const handleAdmissionBillDetails = async (e, uid) => {
+		e.stopPropagation();
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${uid}/final-bill`,
+		});
+
+		setPrintData(res?.data);
+	};
+
+	useEffect(() => {
+		if (printData) {
+			invoicePrint();
+		}
+	}, [printData]);
 
 	const { records, fetching } = useInfiniteTableScroll({
 		module,
@@ -56,14 +78,32 @@ export default function _Table() {
 						onClick={() => handleAdmissionOverview(item.uid)}
 						my="xs"
 						bg={
-							selectedPatientId === item?.uid
+							selectedPatientId == item?.uid
 								? "var(--theme-primary-color-1)"
 								: "var(--theme-tertiary-color-0)"
 						}
 						px="xs"
 						gutter="xs"
 					>
-						<Grid.Col span={12}><Flex justify='space-between'><Text fz="sm" fw={'600'}>{item.name}</Text> <Text c={'blue'}>{capitalizeWords(item.process)}</Text></Flex></Grid.Col>
+						<Grid.Col span={12}>
+							<Flex justify="space-between">
+								<Text fz="sm" fw={"600"}>
+									{item.name}
+								</Text>{" "}
+								<Flex align="center" gap="les">
+									<Text c={"blue"}>{capitalizeWords(item.process)}</Text>
+									<ActionIcon
+										variant="filled"
+										color="var(--theme-secondary-color-6)"
+										radius="xs"
+										aria-label="Settings"
+										onClick={(e) => handleAdmissionBillDetails(e, item.uid)}
+									>
+										<IconPrinter size={14} stroke={1.5} />
+									</ActionIcon>
+								</Flex>
+							</Flex>
+						</Grid.Col>
 						<CustomDivider />
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
@@ -79,7 +119,6 @@ export default function _Table() {
 							<Flex align="center" gap="3xs">
 								<IconUser size={16} stroke={1.5} />
 								<Text fz="sm">{item.mobile}</Text>
-
 							</Flex>
 						</Grid.Col>
 						<Grid.Col span={6}>
@@ -104,6 +143,8 @@ export default function _Table() {
 					</Grid>
 				))}
 			</ScrollArea>
+
+			{printData && <AdmissionInvoiceDetailsBN data={printData} ref={printRef} />}
 		</Box>
 	);
 }

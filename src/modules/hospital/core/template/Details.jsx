@@ -61,7 +61,7 @@ const FREE_SERVICE_ID = "342955236078";
 const PURCHASE_ID = "8";
 const INDENT_ID = "858945689606";
 const ADMISSION_ID = "1874";
-const FINAL_BILLING_ID = "1";
+const FINAL_BILLING_ID = "819374367732";
 
 export default function Details() {
 	const { name } = useParams();
