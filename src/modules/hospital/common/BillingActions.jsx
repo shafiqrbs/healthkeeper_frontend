@@ -8,15 +8,17 @@ import { useReactToPrint } from "react-to-print";
 import RefundFormInvestigationBN from "@hospital-components/print-formats/refund/RefundFormInvestigationBN";
 import RefundFromBedBn from "@hospital-components/print-formats/refund/RefundFormBedBN";
 import IPDInvoicePosBn from "@hospital-components/print-formats/ipd/IPDInvoicePosBN";
+import AdmissionInvoiceDetailsBN from "@hospital-components/print-formats/admission/AdmissionInvoiceDetailsBN";
 
 export default function BillingActions({ entity }) {
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const invoicePrintRef = useRef(null);
+	const printRef = useRef(null);
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 	const [invoiceEntity, setInvoiceEntity] = useState({});
-
+	const [printData, setPrintData] = useState(null);
 	// const selectPaymentMethod = (method) => {
 	// 	form.setFieldValue("paymentMethod", method);
 	// };
@@ -29,6 +31,13 @@ export default function BillingActions({ entity }) {
 		setInvoicePrintData(res);
 	};
 
+	useEffect(() => {
+		if (entity) {
+			setInvoiceEntity(entity);
+		}
+	}, [entity]);
+
+
 	const handlePrescriptionPrint = async () => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${id}/final-bill-process`,
@@ -37,16 +46,13 @@ export default function BillingActions({ entity }) {
 	};
 
 	useEffect(() => {
-		if (invoicePrintData) {
+		if (printData) {
 			invoicePrint();
 		}
-	}, [invoicePrintData]);
+	}, [printData]);
 
-	useEffect(() => {
-		if (entity) {
-			setInvoiceEntity(entity);
-		}
-	}, [entity]);
+
+
 
 	const receive = invoiceEntity?.remaining_day * invoiceEntity?.room_price
 	const total = Number(invoiceEntity.total ?? 0);
@@ -79,7 +85,7 @@ export default function BillingActions({ entity }) {
 									type="button"
 									onClick={handlePrescriptionPrint}
 								>
-									Print
+									Print Bill
 								</Button>
 							)}
 							{invoiceEntity?.process === "refund" && (
@@ -89,7 +95,7 @@ export default function BillingActions({ entity }) {
 									type="button"
 									onClick={handlePrescriptionPrint}
 								>
-									Print
+									Print Refund
 								</Button>
 							)}
 						</Button.Group>
@@ -99,7 +105,8 @@ export default function BillingActions({ entity }) {
 			</Flex>
 
 			{invoiceEntity?.process === 'paid' && due === 0 && (
-				<IPDInvoicePosBn data={invoicePrintData?.data} ref={invoicePrintRef} />
+				/*<IPDInvoicePosBn data={invoicePrintData?.data} ref={invoicePrintRef} />*/
+				<AdmissionInvoiceDetailsBN data={invoicePrintData?.data} ref={invoicePrintRef} />
 			)}
 			{(invoiceEntity?.process === 'refund') && due < 0 && (
 				<RefundFromBedBn data={invoicePrintData?.data} ref={invoicePrintRef} />
