@@ -77,7 +77,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					<Text fz="md" mt={"xl"}>
 						প্রত্যায়ন করা যাইতেছে যে জনাব/জনাবা <strong>{data?.name}</strong>{" "}
 						{data?.patient_id && `(${data?.patient_id})`}। পিতা/স্বামী{" "}
-						<strong>{data?.father_name || data?.guardian_name || ""}</strong>। বয়স{" "}
+						<strong>{data?.guardian_name || data?.father_name || ""}</strong>। বয়স{" "}
 						<strong>
 							{data?.year ? `${data.year} ${t("বছর")} ` : ""}
 							{data?.month ? `${data.month} ${t("মাস")} ` : ""}
@@ -94,7 +94,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 						শয্যা/কেবিনে <strong>{formatDateTimeAmPm(data?.admission_date)}</strong> হইতে{" "}
 						<strong>{formatDateTimeAmPm(data?.release_date)}</strong> তারিখ পর্যন্ত চিকিৎসাধীন ছিলেন।
 					</Text>
-					<Text fz="md" mt={"xs"}>
+					<Text fz="md" mt={"xs"} style={{ height: "120px" }}>
 						তিনি <strong>{`${prescription_data?.disease || ""}, ${prescription_data?.disease_details || ""}`}</strong>{" "}
 						রোগে ভুগিতেছিলেন।
 					</Text>
@@ -104,14 +104,14 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 						পরীক্ষা ও পর্যবেক্ষণের ফলাফল:
 					</Text>
 					<hr style={{ border: "none", borderTop: "1px solid #ccc" }} />
-					<Text style={{ height: "220px" }}>{getValue(prescription_data?.examination_investigation, "")}</Text>
+					<Text style={{ height: "240px" }}>{getValue(prescription_data?.examination_investigation, "")}</Text>
 					{/* =============== second section: description of medical and surgical treatment ================ */}
 					<hr style={{ marginTop: "12px", marginBottom: "8px", border: "none", borderTop: "1px solid #ccc" }} />
 					<Text fz="md" mt={"sm"} fw={600}>
 						প্রদত্ত চিকিৎসা ও শল্য চিকিৎসার বিবরণ:
 					</Text>
 					<hr style={{ border: "none", borderTop: "1px solid #ccc" }} />
-					<Text style={{ height: "220px" }}>{getValue(prescription_data?.treatment_medication, "")}</Text>
+					<Text style={{ height: "260px" }}>{getValue(prescription_data?.treatment_medication, "")}</Text>
 					<Text fz="md" mt={"sm"} fw={600}>
 						হাসপাতাল ত্যাগকালে উপদেশ ও ব্যবস্থাপত্র
 					</Text>
@@ -119,7 +119,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					{prescription_data?.medicines?.map((medicine, index) => (
 						<Box key={index}>
 							<Flex
-								gap="2"
+								gap="4"
 								justify="flex-start"
 								align="center"
 								direction="row"
@@ -130,13 +130,17 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 								}}
 							>
 								<Text size="sm" fw={600}>
-									{index + 1}.
+									*
 								</Text>
-								<Text size="sm" fw={600}>
+								<Text size="" fw={600}>
 									{getValue(medicine.medicine_id ? medicine.medicine_name : medicine.generic)}
 								</Text>
+								<Text pl={'md'}>  {getValue(medicine.dose_details_bn, medicine.dose_details)} {" ---- "}
+									{getValue(medicine.by_meal_bn, medicine.by_meal)} {"----"}
+									{medicine?.quantity > 0 && getValue(medicine.quantity)}{" "}
+									{medicine?.duration && getValue(medicine.duration_mode_bn, medicine.duration)}</Text>
 							</Flex>
-							{medicine.dosages && medicine.dosages.length > 0 ? (
+							{/*{medicine.dosages && medicine.dosages.length > 0 ? (
 								(medicine.dosages || []).map((dose, dIdx) => (
 									<Text
 										size="sm"
@@ -165,7 +169,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 									{medicine?.quantity > 0 && getValue(medicine.quantity)}{" "}
 									{medicine?.duration && getValue(medicine.duration_mode_bn, medicine.duration)}
 								</Text>
-							)}
+							)}*/}
 						</Box>
 					))}
 					{prescription_data?.advise && (
@@ -187,11 +191,10 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 							<strong>বিঃ দ্রঃ {prescription_data?.doctor_comment}</strong>
 						</Text>
 					)}
-					<Text fz="md">
-						ডা. <strong>{data?.doctor_name}</strong>
+					<Text fz="md"><strong>{data?.doctor_name}</strong>
 					</Text>
 					<Text fz="md">
-						পদবি: <strong>{data?.designation_name}</strong>
+						পদবি: <strong>{data?.designation_name}</strong><br/>
 					</Text>
 					<Text fz="md">বিভাগ: __________________________________</Text>
 					<Text fz="md">সিল ও স্বাক্ষর: ____________________________</Text>

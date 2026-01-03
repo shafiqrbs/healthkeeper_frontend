@@ -857,6 +857,11 @@ export default function Prescription({
 													tooltip={t("EnterDosage")}
 													withCheckIcon={false}
 												/>
+
+											</Group>
+										</Grid.Col>
+										<Grid.Col span={4}>
+											<Group grow gap="les">
 												<SelectForm
 													form={medicineForm}
 													id="medicine_bymeal_id"
@@ -872,7 +877,7 @@ export default function Prescription({
 												/>
 											</Group>
 										</Grid.Col>
-										<Grid.Col span={6}>
+										<Grid.Col span={2}>
 											<Group grow gap="les">
 												<InputNumberForm
 													form={medicineForm}
@@ -883,26 +888,7 @@ export default function Prescription({
 													required
 													tooltip={t("EnterQuantity")}
 												/>
-												<SelectForm
-													form={medicineForm}
-													label=""
-													id="duration"
-													name="duration"
-													dropdownValue={durationModeDropdown}
-													value={medicineForm.values.duration}
-													placeholder={t("Duration")}
-													required
-													tooltip={t("EnterMeditationDuration")}
-													withCheckIcon={false}
-												/>
-												<Button
-													leftSection={<IconPlus size={16} />}
-													type="submit"
-													variant="filled"
-													bg="var(--theme-secondary-color-6)"
-												>
-													{t("Add")}
-												</Button>
+
 											</Group>
 										</Grid.Col>
 									</Grid>
@@ -942,8 +928,8 @@ export default function Prescription({
 									</Grid.Col>
 								</Grid>
 								<Grid w="100%" columns={12} gutter="les" mt="4px">
-									<Grid.Col span={10}>
-										<Button
+									<Grid.Col span={6}>
+										{/*<Button
 											leftSection={<IconPlus size={16} />}
 											w="100%"
 											fw={"400"}
@@ -952,6 +938,28 @@ export default function Prescription({
 											onClick={openDosageForm}
 										>
 											{t("Dose")}
+										</Button>*/}
+										<SelectForm
+											form={medicineForm}
+											label=""
+											id="duration"
+											name="duration"
+											dropdownValue={durationModeDropdown}
+											value={medicineForm.values.duration}
+											placeholder={t("Duration")}
+											required
+											tooltip={t("EnterMeditationDuration")}
+											withCheckIcon={false}
+										/>
+									</Grid.Col>
+									<Grid.Col span={4}>
+										<Button
+											leftSection={<IconPlus size={16} />}
+											type="submit"
+											variant="filled"
+											bg="var(--theme-secondary-color-6)"
+										>
+											{t("Add")}
 										</Button>
 									</Grid.Col>
 									<Grid.Col span={2}>
@@ -969,48 +977,11 @@ export default function Prescription({
 							</Grid.Col>
 						</Grid>
 					</Box>
-					<Flex
-						bg="var(--theme-primary-color-0)"
-						mb="les"
-						justify="space-between"
-						align="center"
-						py="les"
-						mt="xs"
-					>
-						<Text fw={500} px="sm">
-							{t("ListOfMedicines")}
-						</Text>
-						<Flex px="les" gap="les">
-							<Tooltip label={t("HistoryMedicine")}>
-								<ActionIcon size="lg" bg="var(--theme-primary-color-6)" onClick={openHistoryMedicine}>
-									<IconHistory size={16} />
-								</ActionIcon>
-							</Tooltip>
-							{hasRecords && (
-								<Tooltip label="History">
-									<Button
-										variant="filled"
-										onClick={() => setShowHistory((prev) => !prev)}
-										leftSection={<IconHistory size={14} />}
-										rightSection={<IconArrowRight size={14} />}
-									>
-										{t("History")}
-									</Button>
-								</Tooltip>
-							)}
-						</Flex>
-					</Flex>
 					<ScrollArea
-						h={
-							baseHeight
-								? baseHeight - 50
-								: form.values.comment
-								? mainAreaHeight - 420 - 50
-								: mainAreaHeight - 420
-						}
+						h={mainAreaHeight - 452}
 						bg="var(--mantine-color-white)"
 					>
-						<Stack gap="2px" p="sm">
+						<Stack gap="2px">
 							{dbMedicines?.length === 0 && form.values.exEmergency?.length === 0 && (
 								<Flex
 									mih={baseHeight ? baseHeight - 50 : 220}
@@ -1074,13 +1045,6 @@ export default function Prescription({
 							{dbMedicines?.length > 0 && (
 								<MedicineListTable
 									medicines={dbMedicines}
-									tableHeight={
-										baseHeight
-											? baseHeight - 50
-											: form.values.instruction
-											? mainAreaHeight - 420 - 50
-											: mainAreaHeight - 420
-									}
 									showDelete={true}
 									onDelete={handleDeleteMedicine}
 									prescriptionId={prescriptionId}
@@ -1088,7 +1052,6 @@ export default function Prescription({
 							)}
 						</Stack>
 					</ScrollArea>
-
 					<Box pr="xs" my="xs">
 						<RichTextEditor editor={editor} variant="subtle" h={mainAreaHeight - 530}>
 							<RichTextEditor.Toolbar sticky stickyOffset="var(--docs-header-height)">
