@@ -6,7 +6,7 @@ import "@/index.css";
 import { formatDateTimeAmPm } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
-
+import { IconPointFilled, IconPhoneCall } from "@tabler/icons-react";
 const PAPER_WIDTH = 793;
 
 const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
@@ -138,9 +138,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 									fontSize: "12px",
 								}}
 							>
-								<Text size="sm" fw={600}>
-									*
-								</Text>
+								<Text size="sm" fw={600}><IconPointFilled style={{ width: "12", height: "12" }} stroke={1.5}/></Text>
 								<Text size="" fw={600}>
 									{getValue(medicine.medicine_id ? medicine.medicine_name : medicine.generic)}
 								</Text>
@@ -184,7 +182,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 							)}*/}
 						</Box>
 					))}
-					<Box
+					<Box mt={'-md'} fz={'18'} pl={'2'}
 						className="extra-medicine-list"
 						dangerouslySetInnerHTML={{ __html: prescription_data?.extra_medicine }}
 					/>

@@ -11,6 +11,8 @@ import { getDataWithoutStore } from "@/services/apiService";
 import { errorNotification } from "@components/notification/errorNotification";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants";
 import { IconPointFilled } from "@tabler/icons-react";
+import MedicineListItem from "@hospital-components/MedicineListItem";
+import MedicineListTable from "@hospital-components/MedicineListTable";
 
 export default function Dashboard() {
 	const ipdRef = useRef(null);
@@ -292,8 +294,9 @@ export default function Dashboard() {
 				</Grid.Col>
 
 				{/* =============== Column 2: Financial & Medical Information =============== */}
-				<Grid.Col span={9} h="100%">
-					<ScrollArea h={mainAreaHeight}>
+				<Grid.Col span={9} h="100%" bg={'white'} mt={'xs'}>
+					<MedicineListTable medicines={prescriptionMedicine} tableHeight={mainAreaHeight} prescriptionId={ipd?.prescription_id} />
+					{/*<ScrollArea h={mainAreaHeight}>
 						<Paper mih={mainAreaHeight - 10} withBorder p="lg" radius="sm" bg="white">
 							<Stack gap="lg" h="100%">
 								<Box>
@@ -334,7 +337,7 @@ export default function Dashboard() {
 
 							</Stack>
 						</Paper>
-					</ScrollArea>
+					</ScrollArea>*/}
 				</Grid.Col>
 			</Grid>
 		</Box>

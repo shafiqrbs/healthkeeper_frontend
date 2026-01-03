@@ -1013,45 +1013,40 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 							)}
 						</Stack>
 					</ScrollArea>
-					<Box pr="xs" my="xs">
-						<RichTextEditor editor={editor} variant="subtle" h={230}>
-							<RichTextEditor.Toolbar sticky stickyOffset="var(--docs-header-height)">
-								<RichTextEditor.ControlsGroup>
-									<RichTextEditor.Bold />
-									<RichTextEditor.Italic />
-									<RichTextEditor.Strikethrough />
-									<RichTextEditor.ClearFormatting />
-								</RichTextEditor.ControlsGroup>
-								<RichTextEditor.ControlsGroup>
-									<RichTextEditor.H1 />
-									<RichTextEditor.H2 />
-									<RichTextEditor.H3 />
-									<RichTextEditor.H4 />
-								</RichTextEditor.ControlsGroup>
-								<RichTextEditor.ControlsGroup>
-									<RichTextEditor.Blockquote />
-									<RichTextEditor.Hr />
-									<RichTextEditor.BulletList />
-									<RichTextEditor.OrderedList />
-								</RichTextEditor.ControlsGroup>
-								<RichTextEditor.ControlsGroup>
-									<RichTextEditor.AlignLeft />
-									<RichTextEditor.AlignCenter />
-									<RichTextEditor.AlignJustify />
-									<RichTextEditor.AlignRight />
-								</RichTextEditor.ControlsGroup>
-							</RichTextEditor.Toolbar>
-							<RichTextEditor.Content />
-						</RichTextEditor>
-					</Box>
+					<Box pr="xs" my="xs"  h={240} >
+						<div className="tiptap-wrapper">
+								<RichTextEditor editor={editor} variant="subtle" >
+									<RichTextEditor.Toolbar sticky stickyOffset="var(--docs-header-height)">
+										<RichTextEditor.ControlsGroup>
+											<RichTextEditor.Bold />
+											<RichTextEditor.Italic />
+											<RichTextEditor.Strikethrough />
+											<RichTextEditor.ClearFormatting />
+										</RichTextEditor.ControlsGroup>
+										<RichTextEditor.ControlsGroup>
+											<RichTextEditor.H1 />
+											<RichTextEditor.H2 />
+											<RichTextEditor.H3 />
+											<RichTextEditor.H4 />
+										</RichTextEditor.ControlsGroup>
+										<RichTextEditor.ControlsGroup>
+											<RichTextEditor.Blockquote />
+											<RichTextEditor.Hr />
+											<RichTextEditor.BulletList />
+											<RichTextEditor.OrderedList />
+										</RichTextEditor.ControlsGroup>
+										<RichTextEditor.ControlsGroup>
+											<RichTextEditor.AlignLeft />
+											<RichTextEditor.AlignCenter />
+											<RichTextEditor.AlignJustify />
+											<RichTextEditor.AlignRight />
+										</RichTextEditor.ControlsGroup>
+									</RichTextEditor.Toolbar>
+									<RichTextEditor.Content />
+								</RichTextEditor>
+						</div>
 
-					{form.values.comment && (
-						<Flex bg="var(--theme-primary-color-0)" p="sm" justify="space-between" align="center">
-							<Text w="100%">
-								<strong>{t("Referred")}:</strong> {form.values.comment}
-							</Text>
-						</Flex>
-					)}
+					</Box>
 
 					{/* =================== submission buttons =================== */}
 					{form && (

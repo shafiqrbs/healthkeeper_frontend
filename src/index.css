@@ -751,6 +751,11 @@ input.date-selector-input {
         }
     }
 }
+.tiptap-wrapper .mantine-RichTextEditor-content{
+    max-height: 200px;
+    overflow: auto;
+}
+
 
 :root[data-mantine-color-scheme='dark'] {
     --mantine-color-white: #242424;
