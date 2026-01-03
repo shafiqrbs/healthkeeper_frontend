@@ -741,6 +741,17 @@ input.date-selector-input {
     }
 }
 
+.extra-medicine-list {
+    ul {
+        margin-left: -24px;
+
+        p {
+            margin: 0px;
+            line-height: 1;
+        }
+    }
+}
+
 :root[data-mantine-color-scheme='dark'] {
     --mantine-color-white: #242424;
     --mantine-color-gray-0: #1a1a1a;

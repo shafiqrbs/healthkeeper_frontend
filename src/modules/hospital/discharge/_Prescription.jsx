@@ -19,19 +19,13 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
-	IconHistory,
 	IconPlus,
 	IconReportMedical,
 	IconRestore,
-	IconArrowRight,
 	IconDeviceFloppy,
 	IconX,
-	IconTrash,
 	IconCaretUpDownFilled,
-	IconMedicineSyrup,
 	IconBookmark,
-	IconChevronDown,
-	IconChevronUp,
 	IconChevronRight,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
@@ -46,7 +40,6 @@ import useAppLocalStore from "@hooks/useAppLocalStore";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, updateEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { setRefetchData } from "@/app/store/core/crudSlice";
-import { SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
@@ -74,19 +67,11 @@ import Highlight from "@tiptap/extension-highlight";
 import { RichTextEditor } from "@mantine/tiptap";
 import Placeholder from "@tiptap/extension-placeholder";
 import MedicineListTable from "@hospital-components/MedicineListTable";
+import AddDosagePopover from "@components/drawers/AddDosagePopover";
 
 const module = MODULES.DISCHARGE;
 
-export default function Prescription({
-	isLoading,
-	refetch,
-	medicines,
-	setMedicines,
-	setShowHistory = () => {},
-	hasRecords = false,
-	baseHeight = 0,
-	prescriptionId,
-}) {
+export default function Prescription({ isLoading, refetch, medicines, setMedicines, baseHeight = 0, prescriptionId }) {
 	const {
 		diseasesProfile,
 		features: { medicineDuration },
@@ -295,6 +280,32 @@ export default function Prescription({
 
 		// close drawer
 		closeExPrescription();
+
+		tempEmergencyItems.forEach(async (item) => {
+			const value = {
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_UPDATE}`,
+				data: {
+					generic: item.value,
+					prescription_id: prescriptionData?.data?.prescription_uid,
+				},
+				module: "prescription",
+			};
+
+			const resultAction = await dispatch(storeEntityData(value));
+
+			if (storeEntityData.rejected.match(resultAction)) {
+				console.error(resultAction.payload.message);
+			} else {
+				const data = resultAction?.payload?.data?.data || {};
+				const newMedicineData = {
+					medicine_name: data?.medicine_name || "",
+					generic: data?.generic || "",
+					is_active: data?.is_active || 0,
+					id: data?.id,
+				};
+				setDbMedicines((prev) => [...prev, newMedicineData]);
+			}
+		});
 	};
 
 	// Add hotkey for save functionality
@@ -430,7 +441,6 @@ export default function Prescription({
 				id: data?.id,
 				order: data?.order || 0,
 			};
-			showNotificationComponent(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			const updateNestedState = useAuthStore.getState()?.updateNestedState;
 			updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
 			setDbMedicines([...dbMedicines, newMedicineData]);
@@ -455,7 +465,6 @@ export default function Prescription({
 			if (storeEntityData.rejected.match(resultAction)) {
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
-				showNotificationComponent(t("MedicineDeletedSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				setDbMedicines((prev) => prev.filter((med) => med.id?.toString() !== medicineId?.toString()));
 			}
 		},
@@ -518,7 +527,6 @@ export default function Prescription({
 			if (updateEntityData.rejected.match(resultAction)) {
 				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
 			} else {
-				showNotificationComponent(t("PrescriptionSavedSuccessfully"), "green", "lightgray", true, 700, true);
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetch();
 				if (redirect)
@@ -578,13 +586,6 @@ export default function Prescription({
 		} else {
 			refetchPrescriptionData();
 		}
-	};
-
-	const handleDeleteExEmergency = (idx) => {
-		form.setFieldValue(
-			"exEmergency",
-			form.values?.exEmergency?.filter((_, index) => index !== idx)
-		);
 	};
 
 	const getMedicineFormSpan = () => {
@@ -856,8 +857,8 @@ export default function Prescription({
 													required
 													tooltip={t("EnterDosage")}
 													withCheckIcon={false}
+													rightSection={<AddDosagePopover form={medicineForm} />}
 												/>
-
 											</Group>
 										</Grid.Col>
 										<Grid.Col span={4}>
@@ -888,7 +889,6 @@ export default function Prescription({
 													required
 													tooltip={t("EnterQuantity")}
 												/>
-
 											</Group>
 										</Grid.Col>
 									</Grid>
@@ -977,10 +977,7 @@ export default function Prescription({
 							</Grid.Col>
 						</Grid>
 					</Box>
-					<ScrollArea
-						h={mainAreaHeight - 452}
-						bg="var(--mantine-color-white)"
-					>
+					<ScrollArea h={mainAreaHeight - 414} bg="var(--mantine-color-white)">
 						<Stack gap="2px">
 							{dbMedicines?.length === 0 && form.values.exEmergency?.length === 0 && (
 								<Flex
@@ -1005,55 +1002,19 @@ export default function Prescription({
 									</Button>
 								</Flex>
 							)}
-							{form.values?.exEmergency?.length > 0 && (
-								<>
-									{form.values?.exEmergency?.map((item, idx) => (
-										<Flex justify="space-between" key={idx} align="center" gap="les">
-											<Flex align="center">
-												<IconMedicineSyrup stroke={1.5} size={20} />
-												<Text className="capitalize" fz="14px">
-													{item.value}
-												</Text>
-											</Flex>
-											<ActionIcon
-												variant="outline"
-												color="var(--theme-error-color)"
-												onClick={() => handleDeleteExEmergency(idx)}
-											>
-												<IconTrash size={16} />
-											</ActionIcon>
-										</Flex>
-									))}
-								</>
-							)}
-
-							{/* {medicines?.map((medicine, index) => (
-								<MedicineListItem
-									key={index}
-									index={index + 1}
-									medicines={medicines}
-									medicine={medicine}
-									setMedicines={setMedicines}
-									handleDelete={handleDelete}
-									by_meal_options={by_meal_options}
-									dosage_options={dosage_options}
-									durationModeDropdown={durationModeDropdown}
-									type="discharge"
-								/>
-							))} */}
-
 							{dbMedicines?.length > 0 && (
 								<MedicineListTable
 									medicines={dbMedicines}
 									showDelete={true}
 									onDelete={handleDeleteMedicine}
 									prescriptionId={prescriptionId}
+									tableHeight={mainAreaHeight - 386}
 								/>
 							)}
 						</Stack>
 					</ScrollArea>
 					<Box pr="xs" my="xs">
-						<RichTextEditor editor={editor} variant="subtle" h={mainAreaHeight - 530}>
+						<RichTextEditor editor={editor} variant="subtle" h={230}>
 							<RichTextEditor.Toolbar sticky stickyOffset="var(--docs-header-height)">
 								<RichTextEditor.ControlsGroup>
 									<RichTextEditor.Bold />
