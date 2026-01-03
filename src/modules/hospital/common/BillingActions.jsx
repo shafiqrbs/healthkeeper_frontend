@@ -98,7 +98,6 @@ export default function BillingActions({ entity }) {
 				</Flex>
 			</Flex>
 
-
 			{invoiceEntity?.process === 'paid' && due === 0 && (
 				<IPDInvoicePosBn data={invoicePrintData?.data} ref={invoicePrintRef} />
 			)}

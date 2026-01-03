@@ -86,7 +86,7 @@ const AdmissionInvoiceDetailsBN = forwardRef(({ data, preview = false }, ref) =>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colSpan={3} style={{ textAlign: "center", padding: 0 }}>
 									<Text size="md" fw={600}>
-										{t("AdmissionBillDetails")}
+										{t("Admission Bill Details")}
 									</Text>
 								</Table.Td>
 							</Table.Tr>
@@ -305,25 +305,25 @@ const AdmissionInvoiceDetailsBN = forwardRef(({ data, preview = false }, ref) =>
 									<Table.Thead>
 										<Table.Tr>
 											<Table.Th>{t("Particular")}</Table.Th>
-											<Table.Th ta="center">{t("Quantity")}</Table.Th>
-											<Table.Th ta="center">{t("Refund")}</Table.Th>
-											<Table.Th ta="center">{t("Price")}</Table.Th>
-											<Table.Th>{t("Total")}</Table.Th>
+											<Table.Th ta="center" width={50}>{t("Unit")}</Table.Th>
+											<Table.Th ta="right">{t("Price")}</Table.Th>
+											<Table.Th ta="right">{t("Refund")}</Table.Th>
+											<Table.Th ta="right">{t("Total")}</Table.Th>
 										</Table.Tr>
 									</Table.Thead>
 									<Table.Tbody>
 										{admissionData?.invoice_particular?.map((item, index) => (
 											<Table.Tr key={index}>
 												<Table.Td>{item.name || item.item_name || t("Fee")}</Table.Td>
-												<Table.Td width={80} align="center">
+												<Table.Td width={50} align="center">
 													{item.quantity}
 												</Table.Td>
-												<Table.Td>{item.refund}</Table.Td>
-												<Table.Td width={80} align="center">
+												<Table.Td width={60} align="right">
 													{item.price}
 												</Table.Td>
-												<Table.Td fw={600} width={110}>
-													{item.sub_total}
+												<Table.Td align="right">{item.refund_amount}</Table.Td>
+												<Table.Td fw={600} width={60} align="right">
+													{item.sub_total-item.refund_amount}
 												</Table.Td>
 											</Table.Tr>
 										))}
@@ -331,7 +331,7 @@ const AdmissionInvoiceDetailsBN = forwardRef(({ data, preview = false }, ref) =>
 											<Table.Td fw={600} colSpan={4} ta="right">
 												{t("Total Amount")}
 											</Table.Td>
-											<Table.Td fw={600}>{getValue(admissionData?.total, "0")}</Table.Td>
+											<Table.Td fw={600} ta="right">{getValue(admissionData?.total, "0")}</Table.Td>
 										</Table.Tr>
 									</Table.Tbody>
 								</Table>
@@ -375,28 +375,6 @@ const AdmissionInvoiceDetailsBN = forwardRef(({ data, preview = false }, ref) =>
 							</Box>
 						</Flex>
 						{/* Signature Section */}
-						<Box mt="lg">
-							<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
-								<Table.Tbody>
-									<Table.Tr>
-										<Table.Td colSpan={2} w={"50%"}>
-											<br />
-											<br />
-											{t("AdmittedBy")}
-											<br />
-											{patientInfo?.created_by_name}
-										</Table.Td>
-										<Table.Td colSpan={2} ta="right">
-											<br />
-											{t("Signature")}-----------------------------
-											<br />
-											<br />
-											{t("Name")}-----------------------------
-										</Table.Td>
-									</Table.Tr>
-								</Table.Tbody>
-							</Table>
-						</Box>
 					</Box>
 				</Box>
 				{/* =============== payment summary table ================ */}
