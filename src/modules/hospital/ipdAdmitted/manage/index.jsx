@@ -2,7 +2,19 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "../helpers/request";
 import { useForm } from "@mantine/form";
-import { Box, Flex, Grid, LoadingOverlay, ScrollArea, Stack, Text, ActionIcon, Tooltip } from "@mantine/core";
+import {
+	Box,
+	Flex,
+	Grid,
+	LoadingOverlay,
+	ScrollArea,
+	Stack,
+	Text,
+	ActionIcon,
+	Tooltip,
+	Button,
+	Group, Paper
+} from "@mantine/core";
 import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -325,7 +337,9 @@ export default function Index() {
 										{t("Created")} {formatDate(ipdData?.data?.created_at)}
 									</Text>
 								</Box>
+
 							</Box>
+
 							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
 								<Stack h="100%" py="xs" gap={0}>
 									{getFilteredTabs(
@@ -400,7 +414,55 @@ export default function Index() {
 										</Box>
 									))}
 								</Stack>
+								<Box>
+									<Box
+										bg="var(--theme-secondary-color-1)"
+										style={{ borderBottom: "1px solid var(--mantine-color-white)" }}
+										p="xs"
+									>
+										{t("Release Procedure")}
+									</Box>
+									{ipdData?.data?.release_mode && ipdData?.data?.process?.toLowerCase() !== "paid" ? (
+										<Paper
+											m="md"
+											p="md"
+											withBorder
+											radius="sm"
+											bg="var(--theme-warn-color-1)"
+											style={{ borderColor: "var(--theme-warn-color-4)" }}
+										>
+											<Text fw={600} size="md" c="var(--theme-warn-color-7)">
+												{ipdData?.data?.release_mode.charAt(0).toUpperCase() + ipdData?.data?.release_mode.slice(1)}: waiting for
+												the bill to be processed
+											</Text>
+										</Paper>
+									) : ipdData?.data?.release_mode && ipdData?.data?.process?.toLowerCase() === "paid" ? (
+										<Paper
+											withBorder
+											radius="sm"
+											p={'xs'}
+											bg="var(--theme-primary-color-0)"
+											style={{ borderColor: "var(--theme-secondary-color-4)" }}
+										>
+											<Text fw={600} size="md" c="var(--theme-secondary-color-7)">
+												{ipdData?.data?.release_mode.charAt(0).toUpperCase() + ipdData?.data?.release_mode.slice(1)}: Bill
+												processed successfully
+											</Text>
+										</Paper>
+									) : (
+										<Group justify="center" py="md">
+											<Button fullWidth onClick={() => handleReleaseMode("discharge")}> For Discharge </Button>
+											<Button fullWidth color="red"  onClick={() => handleReleaseMode("death")}>
+												For Death
+											</Button>
+											<Button fullWidth color="green" onClick={() => handleReleaseMode("referred")}>
+												For Referred
+											</Button>
+										</Group>
+									)}
+								</Box>
 							</ScrollArea>
+
 						</Box>
 					</Grid.Col>
 					<Grid.Col w="100%" span={showHistory ? 17 : 21}>
