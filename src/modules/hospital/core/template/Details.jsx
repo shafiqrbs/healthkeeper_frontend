@@ -48,6 +48,7 @@ import DailySummaryReports from "@hospital-components/print-formats/reports/Dail
 import FreeServiceFormBedBN from "@hospital-components/print-formats/billing/FreeServiceFormBedBN";
 import FreeServiceFormInvestigationBN from "@hospital-components/print-formats/billing/FreeServiceFormInvestigationBN";
 import LabGroupReportA4BN from "@hospital-components/print-formats/lab-reports/LabGroupReportA4BN";
+import AdmissionInvoiceDetailsBN from "@hospital-components/print-formats/admission/AdmissionInvoiceDetailsBN";
 
 const STATIC_OPD_ID = "843042855688";
 const STATIC_IPD_ID = "819374367732";
@@ -60,6 +61,7 @@ const FREE_SERVICE_ID = "342955236078";
 const PURCHASE_ID = "8";
 const INDENT_ID = "858945689606";
 const ADMISSION_ID = "1874";
+const FINAL_BILLING_ID = "1";
 
 export default function Details() {
 	const { name } = useParams();
@@ -116,6 +118,10 @@ export default function Details() {
 			start_date: "01-12-2025",
 			end_date: "11-12-2025",
 		},
+	});
+
+	const { data: finalBillingData, isLoading: isFinalBillingLoading } = useDataWithoutStore({
+		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${FINAL_BILLING_ID}/final-bill`,
 	});
 
 	//console.log(prescriptionData?.data)
@@ -218,6 +224,11 @@ export default function Details() {
 					{name === "AdmissionFormEN" && (
 						<LoadingWrapper isLoading={isPrescriptionLoading}>
 							<AdmissionFormBN preview data={IPDData?.data} />
+						</LoadingWrapper>
+					)}
+					{name === "AdmissionInvoiceDetailsBN" && (
+						<LoadingWrapper isLoading={isFinalBillingLoading}>
+							<AdmissionInvoiceDetailsBN preview data={finalBillingData?.data} />
 						</LoadingWrapper>
 					)}
 					{name === "IPDInvoicePosEN" && (

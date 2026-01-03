@@ -1,4 +1,4 @@
-import { Box, Text, Grid, Group, Image, Table, Flex } from "@mantine/core";
+import { Box, Text, Group, Image, Table, Flex } from "@mantine/core";
 import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
@@ -21,7 +21,6 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-	console.log(patientInfo);
 
 	return (
 		<Box display={preview ? "block" : "none"}>
