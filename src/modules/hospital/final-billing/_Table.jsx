@@ -4,7 +4,7 @@ import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay }
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 import { MODULES } from "@/constants";
-import { formatDate } from "@utils/index";
+import {capitalizeWords, formatDate} from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useSelector } from "react-redux";
 import CustomDivider from "@components/core-component/CustomDivider";
@@ -56,14 +56,14 @@ export default function _Table() {
 						onClick={() => handleAdmissionOverview(item.uid)}
 						my="xs"
 						bg={
-							Number(selectedPatientId) === item?.uid
-								? "var(--theme-primary-color-0)"
+							selectedPatientId === item?.uid
+								? "var(--theme-primary-color-1)"
 								: "var(--theme-tertiary-color-0)"
 						}
 						px="xs"
 						gutter="xs"
 					>
-						<Grid.Col span={12}><Text fz="sm" fw={'600'}>{item.name}</Text></Grid.Col>
+						<Grid.Col span={12}><Flex justify='space-between'><Text fz="sm" fw={'600'}>{item.name}</Text> <Text c={'blue'}>{capitalizeWords(item.process)}</Text></Flex></Grid.Col>
 						<CustomDivider />
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">

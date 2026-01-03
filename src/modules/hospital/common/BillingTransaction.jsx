@@ -1,8 +1,9 @@
-import {Box, Divider, Flex, Table, Text} from "@mantine/core";
+import {Box, Divider, Flex, ScrollArea, Table, Text} from "@mantine/core";
 
 export default function BillingTransaction({ entity, data }) {
 	const transactions = entity?.invoice_transaction;
 	return (
+		<ScrollArea h={200}>
 		<Table
 			style={{
 				borderCollapse: "collapse",
@@ -28,5 +29,6 @@ export default function BillingTransaction({ entity, data }) {
 				))}
 			</Table.Tbody>
 		</Table>
+		</ScrollArea>
 	);
 }

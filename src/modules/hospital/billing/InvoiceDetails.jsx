@@ -503,7 +503,6 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 													/>
 												</Box>
 											</Grid.Col>
-
 											<Grid.Col
 												span={6}
 												className="animate-ease-out"
@@ -511,15 +510,14 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 												px="xs"
 											>
 												<Grid align="center" gutter="3xs" columns={20}>
-													<Grid.Col span={5}>
+													<Grid.Col span={10}>
 														<Text fz="sm" fw="800">
 															{t("Receive")}
 														</Text>
 													</Grid.Col>
-													<Grid.Col span={8}>{investigationSubtotal || 0}</Grid.Col>
+														<Grid.Col span={10}><Flex align="flex-end" gap="es">{investigationSubtotal || 0}</Flex></Grid.Col>
 												</Grid>
 												<Box mt="xs">
-
 													<Button.Group>
 														<Button
 															disabled={selectedRecords.length === 0}
@@ -697,7 +695,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 											<Box w="100%">
 												<Grid columns={18} gutter="xs">
 													<Grid.Col
-														span={6}
+														span={12}
 														className="animate-ease-out"
 														bg="var(--theme-primary-color-0)"
 														px="xs"
@@ -713,40 +711,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 															/>
 														</Box>
 													</Grid.Col>
-													<Grid.Col
-														span={6}
-														bg="var(--theme-tertiary-color-1)"
-														className="animate-ease-out"
-													>
-														<Box mt="xs">
-															<Grid align="center" columns={20}>
-																<Grid.Col span={8}>
-																	<Flex justify="flex-end" align="center" gap="es">
-																		<Text fz="xs">{t("CreatedBy")}</Text>
-																	</Flex>
-																</Grid.Col>
-																<Grid.Col span={12}>
-																	<Flex align="right" gap="es">
-																		<Text fz="xs">
-																			{invoiceDetails?.created_doctor_info?.name}
-																		</Text>
-																	</Flex>
-																</Grid.Col>
-															</Grid>
-															<Grid align="center" columns={20}>
-																<Grid.Col span={8}>
-																	<Flex justify="flex-end" align="center" gap="es">
-																		<Text fz="sm">{t("Total")}</Text>
-																	</Flex>
-																</Grid.Col>
-																<Grid.Col span={12}>
-																	<Flex align="right" gap="es">
-																		<Text fz="sm">{roomSubtotal || 0}</Text>
-																	</Flex>
-																</Grid.Col>
-															</Grid>
-														</Box>
-													</Grid.Col>
+
 													<Grid.Col
 														span={6}
 														className="animate-ease-out"
@@ -755,15 +720,15 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 													>
 														<Grid align="center" columns={20}>
 															<Grid.Col span={10}>
-																<Flex justify="flex-end" align="center" gap="es">
+																<Flex justify="flex-start" align="center" gap="es">
 																	<Text fz="sm" fw={"800"}>
 																		{t("Receive")}
 																	</Text>
 																</Flex>
 															</Grid.Col>
 															<Grid.Col span={10}>
-																<Flex align="right" gap="es">
-																	<Text fz="sm">{roomSubtotal || 0}</Text>
+																<Flex align="flex-end" gap="es">
+																	<Text fz="sm" fw={"800"}>{roomSubtotal || 0}</Text>
 																</Flex>
 															</Grid.Col>
 														</Grid>

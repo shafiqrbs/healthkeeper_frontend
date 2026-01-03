@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, Text } from "@mantine/core";
+import {Box, Divider, Flex, ScrollArea, Text} from "@mantine/core";
 
 export default function BillingSummary({ entity, data }) {
 	const receive = entity?.remaining_day*entity?.room_price

@@ -7,12 +7,13 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { ScrollArea } from "@mantine/core";
 import { Table } from "@mantine/core";
 import { useTranslation } from "react-i18next";
+import {useOutletContext} from "react-router-dom";
 
 export default function BillingTable({ entity }) {
 	const { t } = useTranslation();
 	const [selectedInvoice, setSelectedInvoice] = useState(null);
 	const [invoiceDetailsOpened, { open: openInvoiceDetails, close: closeInvoiceDetails }] = useDisclosure(false);
-
+	const { mainAreaHeight } = useOutletContext();
 	//const transactions = entity?.invoice_transaction;
 	const transactions = entity?.invoice_particular;
 
@@ -25,8 +26,10 @@ export default function BillingTable({ entity }) {
 	};
 
 	return (
+
 		<Stack justify="space-between" h="calc(100% - 50px)" gap="0">
 			<Box>
+				<ScrollArea h={mainAreaHeight-100}>
 				<Table
 					style={{
 						borderCollapse: "collapse",
@@ -54,9 +57,10 @@ export default function BillingTable({ entity }) {
 						))}
 					</Table.Tbody>
 				</Table>
+				</ScrollArea>
 			</Box>
 			<Box p="xs">
-				<Flex justify="space-between" bg="var(--theme-primary-color-0)" py="les" px="3xs">
+				<Flex justify="space-between" bg="var(--theme-primary-color-4)" py="les" px="3xs">
 					<Text>Total Charge</Text>
 					<Text>
 						<Box component="span" c="var(--theme-primary-color-7)">
@@ -181,5 +185,6 @@ export default function BillingTable({ entity }) {
 				</ScrollArea>
 			</GlobalDrawer>
 		</Stack>
+
 	);
 }
