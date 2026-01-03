@@ -42,6 +42,7 @@ export default function BillingTable({ entity }) {
 							<Table.Th>S/N</Table.Th>
 							<Table.Th>Name</Table.Th>
 							<Table.Th ta={'center'}>Unit</Table.Th>
+							<Table.Th ta={'right'}>Refund</Table.Th>
 							<Table.Th ta={'right'}>Amount</Table.Th>
 						</Table.Tr>
 					</Table.Thead>
@@ -52,7 +53,8 @@ export default function BillingTable({ entity }) {
 							<Table.Td>{index + 1}.</Table.Td>
 							<Table.Td>{item?.name}</Table.Td>
 							<Table.Td ta={'center'}>{item?.quantity}</Table.Td>
-							<Table.Td ta={'right'}>{item?.sub_total}</Table.Td>
+							<Table.Td ta={'right'}>{item?.refund_amount}</Table.Td>
+							<Table.Td ta={'right'}>{item?.sub_total-item?.refund_amount}</Table.Td>
 						</Table.Tr>
 						))}
 					</Table.Tbody>
@@ -60,10 +62,10 @@ export default function BillingTable({ entity }) {
 				</ScrollArea>
 			</Box>
 			<Box p="xs">
-				<Flex justify="space-between" bg="var(--theme-primary-color-4)" py="les" px="3xs">
-					<Text>Total Charge</Text>
-					<Text>
-						<Box component="span" c="var(--theme-primary-color-7)">
+				<Flex justify="space-between" bg="var(--theme-primary-color-8)" py="les" px="3xs">
+					<Text c="white" fw={600}>Total Charge</Text>
+					<Text c="white" fw={600}>
+						<Box fw={600} component="span" c="white">
 							৳
 						</Box>{" "}
 						{entity?.total}
