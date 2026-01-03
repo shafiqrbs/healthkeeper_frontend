@@ -1,6 +1,6 @@
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { Box, Divider, Grid, Group, Paper, Stack, Text, Button, ScrollArea } from "@mantine/core";
+import { Box, Divider, Grid, Group, Paper, Stack, Text, Button, ScrollArea, ActionIcon, Tooltip } from "@mantine/core";
 import { LineChart } from "@mantine/charts";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,7 @@ import { modals } from "@mantine/modals";
 import { getDataWithoutStore } from "@/services/apiService";
 import { errorNotification } from "@components/notification/errorNotification";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants";
-import { IconPointFilled } from "@tabler/icons-react";
+import { IconPointFilled, IconX, IconChevronRight } from "@tabler/icons-react";
 import MedicineListItem from "@hospital-components/MedicineListItem";
 import MedicineListTable from "@hospital-components/MedicineListTable";
 
@@ -21,6 +21,7 @@ export default function Dashboard() {
 	const { id } = useParams();
 	const [vitalRecordList, setVitalRecordList] = useState([]);
 	const [insulinRecordList, setInsulinRecordList] = useState([]);
+	const [showExamination, setShowExamination] = useState(true);
 	const ipdId = id;
 
 	const getNumericValue = (value) => {
@@ -275,27 +276,68 @@ export default function Dashboard() {
 	}, [insulinRecordList]);
 
 	// =============== check if IPD data is available ================
+	const getMedicineTableSpan = () => {
+		return showExamination ? 9 : 12;
+	};
+
 	return (
-		<Box>
+		<Box pos="relative">
+			<Tooltip
+				label={showExamination ? t("hideExamination") : t("showExamination")}
+				position={showExamination ? "left" : "right"}
+			>
+				<ActionIcon
+					variant="filled"
+					color={showExamination ? "red" : "blue"}
+					size="xl"
+					radius="xl"
+					onClick={() => setShowExamination(!showExamination)}
+					style={{
+						position: "fixed",
+						top: "50%",
+						left: showExamination ? "calc(3/12 * 100% + 188px)" : "266px",
+						transform: "translateY(-50%)",
+						zIndex: 99,
+						boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+					}}
+				>
+					{showExamination ? <IconX size={18} /> : <IconChevronRight size={18} />}
+				</ActionIcon>
+			</Tooltip>
 			<Grid columns={12} h="100%" w="100%">
 				{/* =============== Column 1: Patient Information =============== */}
-				<Grid.Col span={3}>
-					<ScrollArea>
-						<Paper h={mainAreaHeight - 10} withBorder p="lg" radius="sm" bg="var(--theme-tertiary-color-0)">
-							<Box style={{ position: "relative", minHeight: "550px" }}>
-								{(orderedExamKeys.length > 0 ? orderedExamKeys : Object.keys(patientExamination || {}))
-									.filter((key) => hasArrayWithLength(patientExamination?.[key]))
-									.map((key) => (
-										<Box key={key}>{renderExaminationSection(key)}</Box>
-									))}
-							</Box>
-						</Paper>
-					</ScrollArea>
-				</Grid.Col>
+				{showExamination && (
+					<Grid.Col span={3}>
+						<ScrollArea>
+							<Paper
+								h={mainAreaHeight - 10}
+								withBorder
+								p="lg"
+								radius="sm"
+								bg="var(--theme-tertiary-color-0)"
+							>
+								<Box style={{ position: "relative", minHeight: "550px" }}>
+									{(orderedExamKeys.length > 0
+										? orderedExamKeys
+										: Object.keys(patientExamination || {})
+									)
+										.filter((key) => hasArrayWithLength(patientExamination?.[key]))
+										.map((key) => (
+											<Box key={key}>{renderExaminationSection(key)}</Box>
+										))}
+								</Box>
+							</Paper>
+						</ScrollArea>
+					</Grid.Col>
+				)}
 
 				{/* =============== Column 2: Financial & Medical Information =============== */}
-				<Grid.Col span={9} h="100%" bg={'white'} mt={'xs'}>
-					<MedicineListTable medicines={prescriptionMedicine} tableHeight={mainAreaHeight} prescriptionId={ipd?.prescription_id} />
+				<Grid.Col span={getMedicineTableSpan()} h="100%" bg={"white"} mt={"xs"}>
+					<MedicineListTable
+						medicines={prescriptionMedicine}
+						tableHeight={mainAreaHeight}
+						prescriptionId={ipd?.prescription_id}
+					/>
 					{/*<ScrollArea h={mainAreaHeight}>
 						<Paper mih={mainAreaHeight - 10} withBorder p="lg" radius="sm" bg="white">
 							<Stack gap="lg" h="100%">
