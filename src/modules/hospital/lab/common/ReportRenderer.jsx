@@ -346,20 +346,29 @@ const ReportRenderer = forwardRef(
 							{
 								accessor: "name",
 								title: t("Name"),
+								render: (item, rowIndex) => (
+									item.is_parent === 1 ? (
+										<Text fw={600}>{item.name}</Text>
+									) : (
+										<Text>{item.name}</Text>
+									)
+								),
 							},
 							{
 								accessor: "result",
 								title: t("Result"),
 								render: (item, rowIndex) => (
-									<TextInput
-										size="xs"
-										fz="xs"
-										value={inputValues[item.id]?.result ?? item.result ?? ""}
-										ref={(el) => (inputsRef.current[rowIndex] = el)}
-										onChange={(e) => handleInputChange(item.id, "result", e.target.value)}
-										onKeyDown={(e) => handleKeyDown(e, rowIndex)}
-										onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}
-									/>
+									item.is_parent !== 1 && (
+										<TextInput
+											size="xs"
+											fz="xs"
+											value={inputValues[item.id]?.result ?? item.result ?? ""}
+											ref={(el) => (inputsRef.current[rowIndex] = el)}
+											onChange={(e) => handleInputChange(item.id, "result", e.target.value)}
+											onKeyDown={(e) => handleKeyDown(e, rowIndex)}
+											onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}
+										/>
+									)
 								),
 							},
 							{
