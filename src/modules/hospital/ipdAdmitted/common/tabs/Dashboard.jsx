@@ -21,7 +21,7 @@ export default function Dashboard() {
 	const { id } = useParams();
 	const [vitalRecordList, setVitalRecordList] = useState([]);
 	const [insulinRecordList, setInsulinRecordList] = useState([]);
-	const [showExamination, setShowExamination] = useState(true);
+	const [showExamination, setShowExamination] = useState(false);
 	const ipdId = id;
 
 	const getNumericValue = (value) => {
