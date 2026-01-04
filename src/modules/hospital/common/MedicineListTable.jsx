@@ -54,6 +54,7 @@ function MedicineListTable({
 	medicines,
 	tableHeight = 0,
 	showDelete = false,
+	showSwitch = true,
 	onDelete,
 	prescriptionId: propPrescriptionId,
 	setMedicines,
@@ -204,25 +205,30 @@ function MedicineListTable({
 			{
 				accessor: "action",
 				title: "Action",
-				width: 100,
+				width: 120,
 				textAlign: "center",
 				render: (record) => (
-					<Flex justify="center">
-						{showDelete && onDelete ? (
-							<ActionIcon variant="outline" color="var(--theme-error-color)" onClick={() => onDelete(record.id)}>
-								<IconTrash size={16} />
-							</ActionIcon>
-						) : (
+					<Flex justify="center" align="center" gap="sm">
+						{showSwitch && (
 							<MemoSwitch
 								checked={record.is_active}
 								onChange={(v) => handleInlineEdit(record.id, "is_active", v)}
 							/>
 						)}
+						{showDelete && onDelete && (
+							<ActionIcon
+								variant="outline"
+								color="var(--theme-error-color)"
+								onClick={() => onDelete(record.id)}
+							>
+								<IconTrash size={16} />
+							</ActionIcon>
+						)}
 					</Flex>
 				),
 			},
 		],
-		[dosageOptions, mealOptions, handleInlineEdit, t]
+		[dosageOptions, mealOptions, handleInlineEdit, showDelete, onDelete, showSwitch, t]
 	);
 
 	return (
