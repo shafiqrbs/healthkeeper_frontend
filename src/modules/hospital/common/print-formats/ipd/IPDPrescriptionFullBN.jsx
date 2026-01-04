@@ -211,6 +211,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 				fz={12}
 				align="stretch"
 				justify="space-between"
+				pl={'80'}
 			>
 				<Box id="prescription-table">
 					<Table
@@ -446,7 +447,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										borderRight: "1px solid var(--theme-tertiary-color-8)",
 										padding: "4px",
 										verticalAlign: "top",
-										width: "260px",
+										width: "220px",
 									}}
 								>
 									<Box style={{ position: "relative", minHeight: "550px" }}>
