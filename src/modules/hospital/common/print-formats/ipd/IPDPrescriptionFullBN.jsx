@@ -308,8 +308,9 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											{t("Age")}:
 										</Text>
 										<Text size="xs">
-											{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
-											{patientInfo?.day || 0} Day
+											{patientInfo?.year ? `${patientInfo.year} ${t("Years")} ` : ""}
+											{patientInfo?.month ? `${patientInfo.month} ${t("Mon")} ` : ""}
+											{patientInfo?.day ? `${patientInfo.day} ${t("Day")}` : ""}
 										</Text>
 									</Group>
 								</Table.Td>
@@ -370,7 +371,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("Guardian/Fath")}:
+											{t("F/M/H")}:
 										</Text>
 										<Text size="xs">{getValue(patientInfo?.guardian_name, "")}</Text>
 									</Group>
@@ -398,20 +399,12 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td>
+								<Table.Td colSpan={2}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Bed/Cabin")}:
 										</Text>
 										<Text size="sm">{getValue(patientInfo?.room_name, "")}</Text>
-									</Group>
-								</Table.Td>
-								<Table.Td>
-									<Group gap="xs">
-										<Text size="xs" fw={600}>
-											{t("Unit")}:
-										</Text>
-										<Text size="xs">{getValue(patientInfo?.admit_unit_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -435,9 +428,9 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("UnitDoctor")}:
+											{t("Unit")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.admit_doctor_name, "")}</Text>
+										<Text size="xs">{getValue(patientInfo?.admit_unit_name, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>

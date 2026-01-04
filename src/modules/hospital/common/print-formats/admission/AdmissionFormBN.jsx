@@ -250,20 +250,12 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td>
+								<Table.Td colSpan={'2'}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
 											{t("Bed/Cabin")}:
 										</Text>
 										<Text size="sm">{getValue(patientInfo?.room_name, "")}</Text>
-									</Group>
-								</Table.Td>
-								<Table.Td>
-									<Group gap="xs">
-										<Text size="xs" fw={600}>
-											{t("Unit")}:
-										</Text>
-										<Text size="xs">{getValue(patientInfo?.admit_unit_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
@@ -287,19 +279,20 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("Card No")}:
+											{t("Unit")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.card_no, "")}</Text>
+										<Text size="xs">{getValue(patientInfo?.admit_unit_name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("UnitDoctor")}:
+											{t("Card No")}:
 										</Text>
-										<Text size="xs">{getValue(patientInfo?.admit_doctor_name, "")}</Text>
+										<Text size="xs">{getValue(patientInfo?.card_no, "")}</Text>
 									</Group>
 								</Table.Td>
+
 							</Table.Tr>
 						</Table>
 					</Box>

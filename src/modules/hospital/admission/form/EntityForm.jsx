@@ -551,6 +551,7 @@ export default function EntityForm({ form, module }) {
 												data={[
 													{ label: t("NID"), value: "NID" },
 													{ label: t("BRID"), value: "BRID" },
+													{ label: t("OTHER"), value: "OTHER" },
 													{ label: t("HID"), value: "HID" },
 												]}
 												onChange={(val) => handleTypeChange(val)}
@@ -560,10 +561,12 @@ export default function EntityForm({ form, module }) {
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												{form.values.identity_mode === "NID"
+												    {form.values.identity_mode === "NID"
 													? t("NID")
 													: form.values.identity_mode === "BRID"
 													? t("BRID")
+													: form.values.identity_mode === "OTHER"
+													? t("OTHER")
 													: t("HID")}
 											</Text>
 										</Grid.Col>
@@ -627,7 +630,7 @@ export default function EntityForm({ form, module }) {
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("GuardianName")}
+												{t("F/M/H Name")}
 												<RequiredAsterisk />
 											</Text>
 										</Grid.Col>
@@ -648,7 +651,7 @@ export default function EntityForm({ form, module }) {
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												{t("GuardianMobile")}
+												{t("F/M/H Mobile")}
 												<RequiredAsterisk />
 											</Text>
 										</Grid.Col>
@@ -912,7 +915,7 @@ export default function EntityForm({ form, module }) {
 											</Grid.Col>
 										</Grid>
 									</Stack>
-									<Grid align="center" columns={20}>
+									{/*<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("FatherName")}</Text>
 										</Grid.Col>
@@ -947,7 +950,7 @@ export default function EntityForm({ form, module }) {
 												required
 											/>
 										</Grid.Col>
-									</Grid>
+									</Grid>*/}
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("RelationWithPatient")}</Text>
@@ -985,7 +988,7 @@ export default function EntityForm({ form, module }) {
 											/>
 										</Grid.Col>
 									</Grid>
-									<Grid align="center" columns={20}>
+									{/*<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("PermanentAddress")}</Text>
 										</Grid.Col>
@@ -1002,7 +1005,7 @@ export default function EntityForm({ form, module }) {
 												required
 											/>
 										</Grid.Col>
-									</Grid>
+									</Grid>*/}
 
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
