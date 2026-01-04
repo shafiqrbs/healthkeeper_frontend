@@ -32,10 +32,10 @@ import { getMedicineFormInitialValues } from "../helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import { useDisclosure, useHotkeys } from "@mantine/hooks";
+import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 // import useMedicineData from "@hooks/useMedicineData";
-// import useMedicineGenericData from "@hooks/useMedicineGenericData";
+import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData, storeEntityData, updateEntityData } from "@/app/store/core/crudThunk";
@@ -61,6 +61,7 @@ import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPre
 import { useAuthStore } from "@/store/useAuthStore";
 import AddDosagePopover from "@components/drawers/AddDosagePopover";
 import MedicineListTable from "@hospital-components/MedicineListTable";
+import AddGenericPopover from "@components/drawers/AddGenericPopover";
 
 export default function AddMedicineForm({
 	showBaseItems = true,
@@ -95,6 +96,7 @@ export default function AddMedicineForm({
 		[showBaseItems, baseHeight]
 	);
 
+	const genericRef = useRef(null);
 	const medicineIdRef = useRef(null);
 	const [dbMedicines, setDbMedicines] = useState([]);
 	const printRef = useRef(null);
@@ -116,6 +118,9 @@ export default function AddMedicineForm({
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [opened, { open, close }] = useDisclosure(false);
+	const [medicineGenericTerm, setMedicineGenericTerm] = useState("");
+	const [medicineGenericDebounce, setMedicineGenericDebounce] = useDebouncedState("", 300);
+	const { medicineGenericData: genericData } = useMedicineGenericData({ term: medicineGenericDebounce });
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
 	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
@@ -349,11 +354,13 @@ export default function AddMedicineForm({
 		medicineForm.setFieldValue(field, value);
 
 		// If medicine field is being changed, auto-populate other fields from medicine data
-		if ((field === "medicine_id" || field === "generic") && value) {
+		if ((field === "medicine_id" || field === "generic" || field === "generic2") && value) {
 			const selectedMedicine =
 				field === "medicine_id"
 					? medicineData?.find((item) => item.product_id?.toString() === value?.toString())
-					: medicineGenericData?.find((item) => item.generic === value);
+					: field === "generic"
+					? medicineGenericData?.find((item) => item.generic === value)
+					: genericData?.find((item) => item.generic_id?.toString() === value);
 
 			console.log("Selected-Medicine", selectedMedicine);
 
@@ -381,8 +388,17 @@ export default function AddMedicineForm({
 			}
 		}
 
-		if (value && (field === "medicine_id" || field === "generic")) {
-			medicineForm.clearFieldError(field === "medicine_id" ? "generic" : "medicine_id");
+		if (value && (field === "medicine_id" || field === "generic" || field === "generic2")) {
+			if (field === "medicine_id") {
+				medicineForm.clearFieldError("generic");
+				medicineForm.clearFieldError("generic2");
+			} else if (field === "generic") {
+				medicineForm.clearFieldError("medicine_id");
+				medicineForm.clearFieldError("generic2");
+			} else if (field === "generic2") {
+				medicineForm.clearFieldError("medicine_id");
+				medicineForm.clearFieldError("generic");
+			}
 		}
 
 		if (field === "medicine_bymeal_id" && value) {
@@ -649,7 +665,7 @@ export default function AddMedicineForm({
 					<Grid.Col span={18}>
 						<Group align="end" gap="les">
 							<Grid w="100%" columns={12} gutter="3xs">
-								<Grid.Col span={6}>
+								<Grid.Col span={4}>
 									<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 										<Select
 											clearable
@@ -671,7 +687,7 @@ export default function AddMedicineForm({
 										/>
 									</FormValidatorWrapper>
 								</Grid.Col>
-								<Grid.Col span={6}>
+								<Grid.Col span={4}>
 									<FormValidatorWrapper opened={medicineForm.errors.generic}>
 										<Autocomplete
 											disabled={medicineForm.values.medicine_id}
@@ -694,6 +710,41 @@ export default function AddMedicineForm({
 											placeholder={t("SelfMedicine")}
 											classNames={inputCss}
 											error={!!medicineForm.errors.generic}
+										/>
+									</FormValidatorWrapper>
+								</Grid.Col>
+								<Grid.Col span={4}>
+									<FormValidatorWrapper opened={medicineForm.errors.generic2}>
+										<Select
+											searchable
+											searchValue={medicineGenericTerm}
+											onSearchChange={(v) => {
+												setMedicineGenericTerm(v);
+												setMedicineGenericDebounce(v);
+											}}
+											clearable
+											disabled={medicineForm.values.medicine_id}
+											ref={genericRef}
+											tooltip={t("EnterGenericName")}
+											id="generic2"
+											name="generic2"
+											data={genericData?.map((item) => ({
+												label: item?.name || item?.product_name || item?.generic,
+												value: `${item.generic_id}`,
+												generic: item?.generic || "",
+											}))}
+											limit={20}
+											filter={medicineOptionsFilter}
+											value={medicineForm.values.generic2}
+											onChange={(v) => {
+												handleChange("generic2", v);
+												setMedicineGenericTerm(v);
+											}}
+											placeholder={t("GenericName")}
+											classNames={inputCss}
+											error={!!medicineForm.errors.generic2}
+											rightSection={<AddGenericPopover form={medicineForm} />}
+											comboboxProps={{ withinPortal: false }}
 										/>
 									</FormValidatorWrapper>
 								</Grid.Col>
@@ -794,7 +845,11 @@ export default function AddMedicineForm({
 									variant="filled"
 									bg="var(--theme-secondary-color-6)"
 									w="100%"
-									disabled={!medicineForm.values.medicine_id && !medicineForm.values.generic}
+									disabled={
+										!medicineForm.values.medicine_id &&
+										!medicineForm.values.generic &&
+										!medicineForm.values.generic2
+									}
 								>
 									{t("Add")}
 								</Button>

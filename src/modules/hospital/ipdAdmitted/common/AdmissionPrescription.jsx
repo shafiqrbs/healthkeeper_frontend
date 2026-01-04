@@ -106,7 +106,7 @@ export default function AdmissionPrescription() {
 					style={{
 						position: "fixed",
 						top: "50%",
-						left: showPatientReport ? "calc(7/24 * 100% + 40px)" : "76px",
+						left: showPatientReport ? "calc(7/24 * 100% + 40px)" : "70px",
 						transform: "translateY(-50%)",
 						zIndex: 99,
 						boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",

@@ -13,7 +13,8 @@ import {
 	ActionIcon,
 	Tooltip,
 	Button,
-	Group, Paper
+	Group,
+	Paper,
 } from "@mantine/core";
 import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
@@ -299,7 +300,7 @@ export default function Index() {
 						style={{
 							position: "fixed",
 							top: "50%",
-							left: showPatientReport ? "calc(12.5% + 28%)" : "calc(12.5% + 56px)",
+							left: showPatientReport ? "calc(12.5% + 27.1%)" : "calc(12.5% + 56px)",
 							transform: "translateY(-50%)",
 							zIndex: 99,
 							boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
@@ -337,7 +338,6 @@ export default function Index() {
 										{t("Created")} {formatDate(ipdData?.data?.created_at)}
 									</Text>
 								</Box>
-
 							</Box>
 
 							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
@@ -432,37 +432,46 @@ export default function Index() {
 											style={{ borderColor: "var(--theme-warn-color-4)" }}
 										>
 											<Text fw={600} size="md" c="var(--theme-warn-color-7)">
-												{ipdData?.data?.release_mode.charAt(0).toUpperCase() + ipdData?.data?.release_mode.slice(1)}: waiting for
-												the bill to be processed
+												{ipdData?.data?.release_mode.charAt(0).toUpperCase() +
+													ipdData?.data?.release_mode.slice(1)}
+												: waiting for the bill to be processed
 											</Text>
 										</Paper>
-									) : ipdData?.data?.release_mode && ipdData?.data?.process?.toLowerCase() === "paid" ? (
+									) : ipdData?.data?.release_mode &&
+									  ipdData?.data?.process?.toLowerCase() === "paid" ? (
 										<Paper
 											withBorder
 											radius="sm"
-											p={'xs'}
+											p={"xs"}
 											bg="var(--theme-primary-color-0)"
 											style={{ borderColor: "var(--theme-secondary-color-4)" }}
 										>
 											<Text fw={600} size="md" c="var(--theme-secondary-color-7)">
-												{ipdData?.data?.release_mode.charAt(0).toUpperCase() + ipdData?.data?.release_mode.slice(1)}: Bill
-												processed successfully
+												{ipdData?.data?.release_mode.charAt(0).toUpperCase() +
+													ipdData?.data?.release_mode.slice(1)}
+												: Bill processed successfully
 											</Text>
 										</Paper>
 									) : (
 										<Group justify="center" py="md">
-											<Button fullWidth onClick={() => handleReleaseMode("discharge")}> For Discharge </Button>
-											<Button fullWidth color="red"  onClick={() => handleReleaseMode("death")}>
+											<Button fullWidth onClick={() => handleReleaseMode("discharge")}>
+												{" "}
+												For Discharge{" "}
+											</Button>
+											<Button fullWidth color="red" onClick={() => handleReleaseMode("death")}>
 												For Death
 											</Button>
-											<Button fullWidth color="green" onClick={() => handleReleaseMode("referred")}>
+											<Button
+												fullWidth
+												color="green"
+												onClick={() => handleReleaseMode("referred")}
+											>
 												For Referred
 											</Button>
 										</Group>
 									)}
 								</Box>
 							</ScrollArea>
-
 						</Box>
 					</Grid.Col>
 					<Grid.Col w="100%" span={showHistory ? 17 : 21}>
