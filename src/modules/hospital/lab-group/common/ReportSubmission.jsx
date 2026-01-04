@@ -15,7 +15,7 @@ import InputForm from "@components/form-builders/InputForm";
 const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab"];
 
 export default function ReportSubmission({ form, handleSubmit, diagnosticReport }) {
-	console.log("diagnosticReport: ", diagnosticReport);
+
 	const labReportRef = useRef(null);
 	const { t } = useTranslation();
 	const [labReportData, setLabReportData] = useState(null);

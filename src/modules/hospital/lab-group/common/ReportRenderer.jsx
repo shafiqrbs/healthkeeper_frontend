@@ -177,12 +177,20 @@ const ReportRenderer = forwardRef(
 								accessor: "name",
 								width: 180,
 								title: t("Name"),
+								render: (item, rowIndex) => (
+									item.is_parent === 1 ? (
+										<Text fw={600}>{item.name}</Text>
+									) : (
+										<Text>{item.name}</Text>
+									)
+								),
 							},
 							{
 								accessor: "result",
 								title: t("Result"),
 								width: 180,
 								render: (item, rowIndex) => (
+									item.is_parent !== 1 && (
 									<TextInput
 										size="xs"
 										fz="xs"
@@ -199,6 +207,7 @@ const ReportRenderer = forwardRef(
 										onKeyDown={(e) => handleKeyDown(e, rowIndex)}
 										onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}
 									/>
+									)
 								),
 							},
 							{

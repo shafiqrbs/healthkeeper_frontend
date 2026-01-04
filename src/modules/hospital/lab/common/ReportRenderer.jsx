@@ -362,6 +362,13 @@ const ReportRenderer = forwardRef(
 										<TextInput
 											size="xs"
 											fz="xs"
+											styles={{
+												input: {
+													width: "100%",
+													textAlign: "center",
+													border: "1px solid blue",
+												},
+											}}
 											value={inputValues[item.id]?.result ?? item.result ?? ""}
 											ref={(el) => (inputsRef.current[rowIndex] = el)}
 											onChange={(e) => handleInputChange(item.id, "result", e.target.value)}

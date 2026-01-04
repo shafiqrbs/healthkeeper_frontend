@@ -38,34 +38,7 @@ const SystemLabReport = forwardRef(({reportData,report}) => {
 					</Table.Thead>
 					<Table.Tbody>
 						{report?.reports?.map((item, index) => (
-							item.is_parent === 1 ? (
-									<Table.Tr key={index} style={{ border: "1px solid var(--theme-tertiary-color-8)" }} >
-										<Table.Td colSPan={3} bg={'red'}>
-											<Text fw={'600'} pl={4}>
-												{item.name}
-											</Text>
-										</Table.Td>
-									</Table.Tr>
-							) : (
-								<Table.Tr key={index}>
-									<Table.Td>
-										<Text  pl={4}>
-											{item.name}
-										</Text>
-									</Table.Td>
-									<Table.Td>
-										<Text  pl={4}>
-											{item.result} {item.unit}
-										</Text>
-									</Table.Td>
-									<Table.Td>
-										<Text  pl={4}>
-											{item.reference_value}
-										</Text>
-									</Table.Td>
-								</Table.Tr>
-								)
-
+							c
 
 						))}
 					</Table.Tbody>
