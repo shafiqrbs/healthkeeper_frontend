@@ -827,7 +827,7 @@ export default function AddMedicineForm({
 
 			<ScrollArea h={mainHeight + 74} bg="var(--mantine-color-white)">
 				<Stack gap="2px">
-					{sortedMedicines?.length === 0 && form.values.exEmergency?.length === 0 && (
+					{dbMedicines?.length === 0 && (
 						<Flex
 							mih={mainHeight ? mainHeight - 50 : 220}
 							gap="md"
@@ -855,9 +855,9 @@ export default function AddMedicineForm({
 						<MedicineListTable
 							tableHeight={
 								mainHeight
-									? mainHeight
+									? mainHeight + 100
 									: form.values.instruction
-									? mainAreaHeight - 420 - 50
+									? mainAreaHeight - 320 - 50
 									: mainAreaHeight - 420
 							}
 							medicines={dbMedicines}

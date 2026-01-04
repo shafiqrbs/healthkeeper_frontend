@@ -37,7 +37,6 @@ export default function BillingActions({ entity }) {
 		}
 	}, [entity]);
 
-
 	const handlePrescriptionPrint = async () => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${id}/final-bill-process`,
@@ -51,10 +50,7 @@ export default function BillingActions({ entity }) {
 		}
 	}, [printData]);
 
-
-
-
-	const receive = invoiceEntity?.remaining_day * invoiceEntity?.room_price
+	const receive = invoiceEntity?.remaining_day * invoiceEntity?.room_price;
 	const total = Number(invoiceEntity.total ?? 0);
 	const amount = Number(invoiceEntity.amount ?? 0);
 	const refund = Number(invoiceEntity.refund_amount ?? 0);
@@ -63,20 +59,42 @@ export default function BillingActions({ entity }) {
 	return (
 		<Box p="xs" mt="xs" bg="var(--theme-tertiary-color-0)">
 			<Flex justify="space-between" align="center">
-
-				<Flex gap="xs" align="center"/>
+				<Flex gap="xs" align="center" />
 				<Flex fz="sm" align="center" gap="xs">
-
 					<Button.Group>
-						{invoiceEntity?.process === 'admitted' && due === 0 && (
-							<Button  w="100%" bg="var(--theme-primary-color-6)" type="button" onClick={handlePrescriptionPosSubmit}>SETTLED</Button>
+						{invoiceEntity?.process === "admitted" && due === 0 && (
+							<Button
+								w="100%"
+								bg="var(--theme-primary-color-6)"
+								type="button"
+								onClick={handlePrescriptionPosSubmit}
+							>
+								SETTLED
+							</Button>
 						)}
-						{invoiceEntity?.process === 'admitted' && due > 0 && (
-							<Button  w="100%" bg="var(--theme-secondary-color-6)" type="button" onClick={handlePrescriptionPosSubmit}>RECEIVE</Button>
+						{invoiceEntity?.process === "admitted" && due > 0 && (
+							<Button
+								w="100%"
+								bg="var(--theme-secondary-color-6)"
+								type="button"
+								onClick={handlePrescriptionPosSubmit}
+							>
+								RECEIVE
+							</Button>
 						)}
-						{(invoiceEntity?.process === 'admitted' || invoiceEntity?.process === 'refund' || invoiceEntity?.process === 'paid') && due < 0 && (
-							<Button  w="100%" bg="var(--theme-warn-color-6)" type="button" onClick={handlePrescriptionPosSubmit}>REFUND</Button>
-						)}
+						{(invoiceEntity?.process === "admitted" ||
+							invoiceEntity?.process === "refund" ||
+							invoiceEntity?.process === "paid") &&
+							due < 0 && (
+								<Button
+									w="100%"
+									bg="var(--theme-warn-color-6)"
+									type="button"
+									onClick={handlePrescriptionPosSubmit}
+								>
+									REFUND
+								</Button>
+							)}
 						<Button.Group>
 							{invoiceEntity?.process === "paid" && (
 								<Button
@@ -99,16 +117,15 @@ export default function BillingActions({ entity }) {
 								</Button>
 							)}
 						</Button.Group>
-
 					</Button.Group>
 				</Flex>
 			</Flex>
 
-			{invoiceEntity?.process === 'paid' && due === 0 && (
+			{invoiceEntity?.process === "paid" && due === 0 && (
 				/*<IPDInvoicePosBn data={invoicePrintData?.data} ref={invoicePrintRef} />*/
 				<AdmissionInvoiceDetailsBN data={invoicePrintData?.data} ref={invoicePrintRef} />
 			)}
-			{(invoiceEntity?.process === 'refund') && due < 0 && (
+			{invoiceEntity?.process === "refund" && due < 0 && (
 				<RefundFromBedBn data={invoicePrintData?.data} ref={invoicePrintRef} />
 			)}
 		</Box>
