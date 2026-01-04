@@ -56,6 +56,7 @@ function MedicineListTable({
 	showDelete = false,
 	onDelete,
 	prescriptionId: propPrescriptionId,
+	setMedicines,
 }) {
 	const { id: paramsPrescriptionId } = useParams();
 	const prescriptionId = propPrescriptionId || paramsPrescriptionId;
@@ -135,6 +136,15 @@ function MedicineListTable({
 
 		setRecords(items);
 
+		if (setMedicines) {
+			setMedicines(
+				items.map((item, index) => ({
+					...item,
+					order: index + 1,
+				}))
+			);
+		}
+
 		const resultAction = await dispatch(
 			storeEntityData({
 				url: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_REORDER,
@@ -150,6 +160,7 @@ function MedicineListTable({
 
 		if (storeEntityData.rejected.match(resultAction)) {
 			setRecords(oldItems);
+			if (setMedicines) setMedicines(oldItems);
 			errorNotification("Failed to update medicine order", "red", "lightgray", true, 700, true);
 		}
 	};
@@ -198,11 +209,7 @@ function MedicineListTable({
 				render: (record) => (
 					<Flex justify="center">
 						{showDelete && onDelete ? (
-							<ActionIcon
-								variant="outline"
-								color="var(--theme-error-color)"
-								onClick={() => onDelete(record.id)}
-							>
+							<ActionIcon variant="outline" color="var(--theme-error-color)" onClick={() => onDelete(record.id)}>
 								<IconTrash size={16} />
 							</ActionIcon>
 						) : (
