@@ -424,7 +424,7 @@ export const sideNavigationLinks = {
 						"admin_administrator",
 					],
 				},
-				{
+				/*{
 					label: t("Dispense"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.DISPENSE.INDEX,
 					icon: IconMedicineSyrup,
@@ -436,7 +436,7 @@ export const sideNavigationLinks = {
 						"pharmacy_doctor",
 						"admin_administrator",
 					],
-				},
+				},*/
 				{
 					label: t("Medicine"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX,
