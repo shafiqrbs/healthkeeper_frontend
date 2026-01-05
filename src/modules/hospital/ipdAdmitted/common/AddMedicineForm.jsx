@@ -117,6 +117,7 @@ export default function AddMedicineForm({
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [medicineGenericDebounce, setMedicineGenericDebounce] = useDebouncedState("", 300);
+	const [medicineGenericSearchValue, setMedicineGenericSearchValue] = useState("");
 	const { medicineGenericData: genericData, fetchData: fetchGenericData } = useMedicineGenericData({
 		term: medicineGenericDebounce,
 	});
@@ -191,6 +192,10 @@ export default function AddMedicineForm({
 	const handleReorderMedicines = useCallback((medicines) => {
 		setDbMedicines(medicines);
 	}, []);
+
+	useEffect(() => {
+		setMedicineGenericDebounce(medicineGenericSearchValue);
+	}, [medicineGenericSearchValue]);
 
 	useEffect(() => {
 		dispatch(
@@ -496,6 +501,7 @@ export default function AddMedicineForm({
 			const updateNestedState = useAuthStore.getState()?.updateNestedState;
 			updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
 			setDbMedicines([...dbMedicines, newMedicineData]);
+			setMedicineGenericSearchValue("");
 		}
 	};
 
@@ -640,7 +646,7 @@ export default function AddMedicineForm({
 			);
 
 			if (getIndexEntityData.rejected.match(resultAction)) {
-				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+				showNotificationComponent("Medicine could not be deleted", "red", "lightgray", true, 700, true);
 			} else {
 				// Use functional update to avoid stale closure issue
 				setDbMedicines((prevMedicines) => {
@@ -720,7 +726,8 @@ export default function AddMedicineForm({
 									<FormValidatorWrapper opened={medicineForm.errors.generic_id}>
 										<Select
 											searchable
-											onSearchChange={setMedicineGenericDebounce}
+											searchValue={medicineGenericSearchValue}
+											onSearchChange={setMedicineGenericSearchValue}
 											clearable
 											disabled={medicineForm.values.medicine_id}
 											ref={genericRef}
@@ -731,11 +738,12 @@ export default function AddMedicineForm({
 											filter={medicineOptionsFilter}
 											value={medicineForm.values.generic_id}
 											onChange={(v, options) => {
+												setMedicineGenericSearchValue(options.label);
 												handleChange("generic_id", v);
 												medicineForm.setFieldValue("medicine_name", options.label);
 												medicineForm.setFieldValue("generic", options.generic);
 											}}
-											onBlur={() => setMedicineGenericDebounce(medicineGenericDebounce)}
+											onBlur={() => setMedicineGenericSearchValue(medicineGenericSearchValue)}
 											placeholder={t("GenericName")}
 											classNames={inputCss}
 											error={!!medicineForm.errors.generic_id}
