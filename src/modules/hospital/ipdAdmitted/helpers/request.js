@@ -49,17 +49,17 @@ export const getMedicineFormInitialValues = () => {
 
 		validate: {
 			medicine_id: (_, values) => {
-				return isEmpty(values?.medicine_id) && isEmpty(values?.generic) && isEmpty(values?.generic2)
+				return isEmpty(values?.medicine_id) && isEmpty(values?.generic) && isEmpty(values?.generic_id)
 					? "Medicine or Generic name is required"
 					: null;
 			},
 			generic: (_, values) => {
-				return isEmpty(values?.medicine_id) && isEmpty(values?.generic) && isEmpty(values?.generic2)
+				return isEmpty(values?.medicine_id) && isEmpty(values?.generic) && isEmpty(values?.generic_id)
 					? "Medicine or Generic name is required"
 					: null;
 			},
-			generic2: (_, values) => {
-				return isEmpty(values?.medicine_id) && isEmpty(values?.generic) && isEmpty(values?.generic2)
+			generic_id: (_, values) => {
+				return isEmpty(values?.medicine_id) && isEmpty(values?.generic) && isEmpty(values?.generic_id)
 					? "Medicine or Generic name is required"
 					: null;
 			},

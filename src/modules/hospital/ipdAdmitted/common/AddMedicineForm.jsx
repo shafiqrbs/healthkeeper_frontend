@@ -183,6 +183,7 @@ export default function AddMedicineForm({
 			genericData?.map((item) => ({
 				value: item.generic_id?.toString(),
 				label: item.name,
+				generic: item.generic,
 			})) ?? [],
 		[genericData]
 	);
@@ -399,14 +400,14 @@ export default function AddMedicineForm({
 			}
 		}
 
-		if (value && (field === "medicine_id" || field === "generic" || field === "generic2")) {
+		if (value && (field === "medicine_id" || field === "generic" || field === "generic_id")) {
 			if (field === "medicine_id") {
 				medicineForm.clearFieldError("generic");
-				medicineForm.clearFieldError("generic2");
+				medicineForm.clearFieldError("generic_id");
 			} else if (field === "generic") {
 				medicineForm.clearFieldError("medicine_id");
-				medicineForm.clearFieldError("generic2");
-			} else if (field === "generic2") {
+				medicineForm.clearFieldError("generic_id");
+			} else if (field === "generic_id") {
 				medicineForm.clearFieldError("medicine_id");
 				medicineForm.clearFieldError("generic");
 			}
@@ -456,6 +457,7 @@ export default function AddMedicineForm({
 		const value = {
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_UPDATE}`,
 			data: {
+				medicine_name: values.medicine_name,
 				medicine_id: values.medicine_id || undefined,
 				generic: values.generic,
 				generic_id: values.generic_id,
@@ -728,8 +730,10 @@ export default function AddMedicineForm({
 											data={genericOptions}
 											filter={medicineOptionsFilter}
 											value={medicineForm.values.generic_id}
-											onChange={(v) => {
+											onChange={(v, options) => {
 												handleChange("generic_id", v);
+												medicineForm.setFieldValue("medicine_name", options.name);
+												medicineForm.setFieldValue("generic", options.generic);
 											}}
 											onBlur={() => setMedicineGenericDebounce(medicineGenericDebounce)}
 											placeholder={t("GenericName")}
@@ -846,7 +850,7 @@ export default function AddMedicineForm({
 									disabled={
 										!medicineForm.values.medicine_id &&
 										!medicineForm.values.generic &&
-										!medicineForm.values.generic2
+										!medicineForm.values.generic_id
 									}
 								>
 									{t("Add")}
