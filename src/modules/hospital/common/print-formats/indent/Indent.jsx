@@ -1,11 +1,12 @@
 import { Box, Text, Grid, Group, Image, Table, Flex } from "@mantine/core";
-import { forwardRef } from "react";
+import React, { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
+import {capitalizeWords} from "@utils/index";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
@@ -24,12 +25,42 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 	return (
 		<Box display={preview ? "block" : "none"}>
 			<style>
+				{`
+					.customTable {
+					  border-collapse: collapse !important;
+					  border-spacing: 0 !important;
+					  margin: 0 !important;
+					  
+					}
+					
+					.customTable th,
+					.customTable td {
+					  padding: 0 !important;
+					  margin: 0 !important;
+					  line-height: 1.8;
+					  padding-left: 8px !important;
+					  
+					
+					}
+					
+					@media print {
+					  .customTable,
+					  .customTable th,
+					  .customTable td {
+						border: 1px solid #807e7e !important;
+						padding-left: 8px !important;
+					  }
+					}
+				`}
+			</style>
+			<style>
 				{`@media print {
 					table { border-collapse: collapse !important; }
 					table, table th, table td { border: 1px solid #807e7e !important; }
 				}`}
 			</style>
 			<Box
+				pos="relative"
 				ref={ref}
 				p="md"
 				w={PAPER_WIDTH}
@@ -37,13 +68,13 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 				style={{ overflow: "hidden" }}
 				className="watermark"
 				ff="Arial, sans-serif"
-				lh={1.5}
 				fz={12}
-				bd="1px solid black"
 			>
-				<Box pos="relative" mb="lg">
+				<Box  mb="lg" h={950} >
 					<Table
 						style={{
+							margin: 0,
+							padding: 0,
 							borderCollapse: "collapse",
 							width: "100%",
 							border: "1px solid var(--theme-tertiary-color-8)",
@@ -52,7 +83,7 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 					>
 						<Table.Tbody>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={"6"}>
+								<Table.Td colSpan={"3"}>
 									<Box>
 										<Flex gap="md" justify="center">
 											<Box>
@@ -82,69 +113,56 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td
-									colSpan={6}
-									style={{
-										textAlign: "center",
-										fontSize: "20px",
-										fontWeight: "blod",
-									}}
+									colSpan={3}
 								>
-									INDENT
+									<Text fw="bold" pt={'md'} fz={'xl'}  ta={'center'}>INDENT</Text>
+									<Flex gap="md" justify="center">
+										<Text fw="bold" ta="left">
+											Created:{patientInfo && patientInfo.invoice_date && patientInfo.invoice_date}
+										</Text>
+										<Text fw="bold" ta="left">
+											{t("Department")}: {patientInfo && patientInfo.to_warehouse && patientInfo.to_warehouse}
+										</Text>
+									</Flex>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td>{t("Created")}</Table.Td>
-								<Table.Td>
-									{" "}
-									{patientInfo && patientInfo.invoice_date && patientInfo.invoice_date}
-								</Table.Td>
-								<Table.Td>{t("Store")}</Table.Td>
-								<Table.Td>
-									{patientInfo && patientInfo.to_warehouse && patientInfo.to_warehouse}
-								</Table.Td>
-								<Table.Td> {t("Process")}</Table.Td>
-								<Table.Td> {patientInfo && patientInfo.process && patientInfo.process}</Table.Td>
-							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td>{t("CreatedBy")}</Table.Td>
-								<Table.Td colSpan={2}>
-									{" "}
-									{patientInfo && patientInfo.created_by && patientInfo.created_by}
-								</Table.Td>
-								<Table.Td>{t("ApprovedBy")}</Table.Td>
-								<Table.Td colSpan={2}>
-									{patientInfo && patientInfo.approved_by && patientInfo.approved_by}
-								</Table.Td>
-							</Table.Tr>
-						</Table.Tbody>
-					</Table>
-					<Table
-						style={{
-							borderCollapse: "collapse",
-							width: "100%",
-							border: "1px solid var(--theme-tertiary-color-8)",
-						}}
-						className="customTable"
-					>
-						<Table.Thead>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Th>{t("S/N")}</Table.Th>
+								<Table.Th ta={'center'}>{t("S/N")}</Table.Th>
 								<Table.Th>{t("MedicineName")}</Table.Th>
 								<Table.Th>{t("Quantity")}</Table.Th>
 							</Table.Tr>
-						</Table.Thead>
-						<Table.Tbody>
 							{patientInfo?.stock_transfer_items?.map((item, index) => (
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Table.Td>{index + 1}.</Table.Td>
-									<Table.Td>{getValue(item?.name)}</Table.Td>
+									<Table.Td ta={'center'} w={'50'}>{index + 1}.</Table.Td>
+									<Table.Td>{getValue(capitalizeWords(item?.name))}</Table.Td>
 									<Table.Td>{getValue(item?.stock_quantity, "0")}</Table.Td>
 								</Table.Tr>
 							))}
 						</Table.Tbody>
 					</Table>
 				</Box>
-				<Box ta="center">
+				<Box  bottom={'20'}  ta="center">
+					<Box p="md" pt={0} pb={0}>
+						<Grid columns={12} gutter="xs">
+							<Grid.Col span={4}>
+								<Text fw="bold" mb="sm" ta="center">
+									Created By
+								</Text>
+							</Grid.Col>
+							<Grid.Col span={4}>
+								<Text fw="bold" mb="sm" ta="center">
+									Department Head
+								</Text>
+							</Grid.Col>
+							<Grid.Col span={4}>
+								<Box>
+									<Text fw="bold" mb="sm" ta="center">
+										Approved By
+									</Text>
+								</Box>
+							</Grid.Col>
+						</Grid>
+					</Box>
 					<Text size="xs" c="gray" mt="xs">
 						<strong>{t("প্রিন্ট")}: </strong>
 						{user?.name}
