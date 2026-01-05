@@ -216,7 +216,11 @@ function MedicineListTable({
 							/>
 						)}
 						{showDelete && onDelete && (
-							<ActionIcon variant="outline" color="var(--theme-error-color)" onClick={() => onDelete(record.id)}>
+							<ActionIcon
+								variant="outline"
+								color="var(--theme-error-color)"
+								onClick={() => onDelete(record.id)}
+							>
 								<IconTrash size={16} />
 							</ActionIcon>
 						)}

@@ -34,7 +34,6 @@ import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-// import useMedicineData from "@hooks/useMedicineData";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
@@ -45,7 +44,6 @@ import inputCss from "@assets/css/InputField.module.css";
 import ReferredPrescriptionDetailsDrawer from "@modules/hospital/visit/__RefrerredPrescriptionDetailsDrawer";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
-// import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { useNavigate } from "react-router-dom";
 import {
 	appendDosageValueToForm,
@@ -91,7 +89,10 @@ export default function AddMedicineForm({
 		return [...(medicines || [])].sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0));
 	}, [medicines]);
 
-	const mainHeight = useMemo(() => (showBaseItems ? baseHeight - 520 : baseHeight - 280), [showBaseItems, baseHeight]);
+	const mainHeight = useMemo(
+		() => (showBaseItems ? baseHeight - 520 : baseHeight - 280),
+		[showBaseItems, baseHeight]
+	);
 
 	const genericRef = useRef(null);
 	const medicineIdRef = useRef(null);
@@ -115,14 +116,14 @@ export default function AddMedicineForm({
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [opened, { open, close }] = useDisclosure(false);
-	const [medicineGenericTerm, setMedicineGenericTerm] = useState("");
 	const [medicineGenericDebounce, setMedicineGenericDebounce] = useDebouncedState("", 300);
 	const { medicineGenericData: genericData, fetchData: fetchGenericData } = useMedicineGenericData({
 		term: medicineGenericDebounce,
 	});
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
-	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] = useDisclosure(false);
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
+		useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
@@ -177,44 +178,18 @@ export default function AddMedicineForm({
 		[by_meal_options]
 	);
 
+	const genericOptions = useMemo(
+		() =>
+			genericData?.map((item) => ({
+				value: item.generic_id?.toString(),
+				label: item.name,
+			})) ?? [],
+		[genericData]
+	);
+
 	const handleReorderMedicines = useCallback((medicines) => {
 		setDbMedicines(medicines);
 	}, []);
-
-	// =============== ensure selected generic2 value is always in the data array ================
-	const generic2Data = useMemo(() => {
-		const mappedData =
-			genericData?.map((item) => ({
-				label: item?.name || item?.product_name || item?.generic,
-				value: item?.generic_id?.toString(),
-				generic: item?.generic || "",
-			})) || [];
-
-		// =============== if form has a generic2 value but it's not in the data, add it ================
-		if (medicineForm.values.generic2) {
-			const selectedValue = medicineForm.values.generic2?.toString();
-			const existsInData = mappedData.some((item) => item.value === selectedValue);
-
-			if (!existsInData) {
-				// =============== create a placeholder entry to keep the value selected ================
-				mappedData.unshift({
-					label: medicineForm.values.generic2_name || selectedValue,
-					value: selectedValue,
-					generic: medicineForm.values.generic2_name || "",
-				});
-			}
-		}
-
-		return mappedData;
-	}, [genericData, medicineForm.values.generic2, medicineForm.values.generic2_name]);
-
-	// =============== fetch generic data when form has a value but data is empty ================
-	useEffect(() => {
-		if (medicineForm.values.generic2 && (!genericData || genericData.length === 0) && !medicineGenericDebounce) {
-			// =============== fetch data with empty term to get initial data ================
-			fetchGenericData({ search: "" });
-		}
-	}, [medicineForm.values.generic2, genericData, medicineGenericDebounce, fetchGenericData]);
 
 	useEffect(() => {
 		dispatch(
@@ -389,14 +364,8 @@ export default function AddMedicineForm({
 
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
-
-		// =============== clear generic2_name when generic2 is cleared ================
-		if (field === "generic2" && !value) {
-			medicineForm.setFieldValue("generic2_name", "");
-		}
-
 		// If medicine field is being changed, auto-populate other fields from medicine data
-		if ((field === "medicine_id" || field === "generic" || field === "generic2") && value) {
+		if ((field === "medicine_id" || field === "generic" || field === "generic_id") && value) {
 			const selectedMedicine =
 				field === "medicine_id"
 					? medicineData?.find((item) => item.product_id?.toString() === value?.toString())
@@ -407,13 +376,6 @@ export default function AddMedicineForm({
 			console.log("Selected-Medicine", selectedMedicine);
 
 			if (selectedMedicine) {
-				// =============== store generic name for generic2 to keep it selected ================
-				if (field === "generic2" && selectedMedicine) {
-					const genericName =
-						selectedMedicine?.name || selectedMedicine?.product_name || selectedMedicine?.generic || "";
-					medicineForm.setFieldValue("generic2_name", genericName);
-				}
-
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 
 				// Auto-populate by_meal if available
@@ -490,14 +452,26 @@ export default function AddMedicineForm({
 		setEditIndex(null);
 		// TODO: legacy code: must be removed later --- end
 
+		// Determine mode based on which field has a value
+		let mode = null;
+		if (values.medicine_id) {
+			mode = "medicine";
+		} else if (values.generic) {
+			mode = "generic";
+		} else if (values.generic2) {
+			mode = "new";
+		}
+
 		const value = {
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_UPDATE}`,
 			data: {
-				medicine_id: values.medicine_id,
+				medicine_id: values.medicine_id || undefined,
 				generic: values.generic,
+				generic_id: values.generic_id,
 				medicine_dosage_id: values.medicine_dosage_id,
 				medicine_bymeal_id: values.medicine_bymeal_id,
 				prescription_id: prescriptionData?.data?.prescription_uid,
+				mode,
 			},
 			module,
 		};
@@ -530,15 +504,6 @@ export default function AddMedicineForm({
 			updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
 			setDbMedicines([...dbMedicines, newMedicineData]);
 		}
-	};
-
-	const handleDelete = (idx) => {
-		setMedicines(sortedMedicines.filter((_, i) => i !== idx));
-		if (editIndex === idx) {
-			medicineForm.reset();
-			setEditIndex(null);
-		}
-		if (update) update(sortedMedicines.filter((_, i) => i !== idx));
 	};
 
 	const handleReset = () => {
@@ -601,7 +566,9 @@ export default function AddMedicineForm({
 				const updateNestedState = useAuthStore.getState()?.updateNestedState;
 				updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
 				if (redirect) {
-					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${ipdId || id}?tab=dashboard`);
+					navigate(
+						`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${ipdId || id}?tab=dashboard`
+					);
 				}
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
@@ -652,31 +619,6 @@ export default function AddMedicineForm({
 		}
 	};
 
-	const handleDeleteExEmergency = (idx) => {
-		form.setFieldValue(
-			"exEmergency",
-			form.values?.exEmergency?.filter((_, index) => index !== idx)
-		);
-		if (update) update();
-	};
-
-	const handleReferredViewPrescription = () => {
-		setTimeout(() => open(), 10);
-	};
-
-	const handlePrescriptionOverview = async () => {
-		const result = await handlePrescriptionSubmit(true, false);
-
-		if (result.status === 200) {
-			setMedicines(result.data?.prescription_medicine || []);
-			setMountPreviewDrawer(true);
-			setPreviewPrintData(result.data);
-			requestAnimationFrame(() => openPrescriptionPreview());
-		} else {
-			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
-		}
-	};
-
 	const handlePrintPrescription2A4 = async () => {
 		const result = await handlePrescriptionSubmit(true, false);
 
@@ -695,11 +637,30 @@ export default function AddMedicineForm({
 		handlePrint();
 	};
 
-	const handleDeleteMedicine = useCallback((id) => {
-		setDbMedicines(dbMedicines.filter((medicine) => medicine.id.toString() !== id.toString()));
-	}, []);
+	const handleDeleteMedicine = useCallback(
+		async (id) => {
+			const resultAction = await dispatch(
+				getIndexEntityData({
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_DELETE}/${id}`,
+					module,
+				})
+			);
 
-	console.log("medicineForm.values", medicineForm.values);
+			if (getIndexEntityData.rejected.match(resultAction)) {
+				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+			} else {
+				// Use functional update to avoid stale closure issue
+				setDbMedicines((prevMedicines) => {
+					const filteredMedicines = prevMedicines.filter(
+						(medicine) => medicine.id.toString() !== id.toString()
+					);
+					return filteredMedicines;
+				});
+				showNotificationComponent(t("DeletedSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+			}
+		},
+		[dispatch, module, t]
+	);
 
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -763,31 +724,33 @@ export default function AddMedicineForm({
 									</FormValidatorWrapper>
 								</Grid.Col>
 								<Grid.Col span={4}>
-									<FormValidatorWrapper opened={medicineForm.errors.generic2}>
+									<FormValidatorWrapper opened={medicineForm.errors.generic_id}>
 										<Select
 											searchable
-											searchValue={medicineGenericTerm}
-											onSearchChange={(v) => {
-												setMedicineGenericTerm(v);
-												setMedicineGenericDebounce(v);
-											}}
+											onSearchChange={setMedicineGenericDebounce}
 											clearable
 											disabled={medicineForm.values.medicine_id}
 											ref={genericRef}
 											tooltip={t("EnterGenericName")}
-											id="generic2"
-											name="generic2"
-											data={generic2Data}
-											limit={20}
+											id="generic_id"
+											name="generic_id"
+											data={genericOptions}
 											filter={medicineOptionsFilter}
-											value={medicineForm.values.generic2}
+											value={medicineForm.values.generic_id}
 											onChange={(v) => {
-												handleChange("generic2", v);
+												handleChange("generic_id", v);
 											}}
+											onBlur={() => setMedicineGenericDebounce(medicineGenericDebounce)}
 											placeholder={t("GenericName")}
 											classNames={inputCss}
-											error={!!medicineForm.errors.generic2}
-											rightSection={<AddGenericPopover form={medicineForm} />}
+											error={!!medicineForm.errors.generic_id}
+											rightSection={
+												<AddGenericPopover
+													dbMedicines={dbMedicines}
+													setDbMedicines={setDbMedicines}
+													prescription_id={prescriptionData?.data?.prescription_uid}
+												/>
+											}
 											comboboxProps={{ withinPortal: false }}
 										/>
 									</FormValidatorWrapper>
@@ -911,7 +874,11 @@ export default function AddMedicineForm({
 									</ActionIcon>
 									{hasRecords && (
 										<Tooltip label="History">
-											<ActionIcon size="lg" bg={"red"} onClick={() => setShowHistory((prev) => !prev)}>
+											<ActionIcon
+												size="lg"
+												bg={"red"}
+												onClick={() => setShowHistory((prev) => !prev)}
+											>
 												<IconHistory />
 											</ActionIcon>
 										</Tooltip>
@@ -1104,7 +1071,12 @@ export default function AddMedicineForm({
 				</>
 			)}
 
-			<GlobalDrawer opened={openedExPrescription} close={closeExPrescription} title={t("EmergencyPrescription")} size="28%">
+			<GlobalDrawer
+				opened={openedExPrescription}
+				close={closeExPrescription}
+				title={t("EmergencyPrescription")}
+				size="28%"
+			>
 				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
 					<Box>
 						<Flex gap="sm" w="100%" align="center">
@@ -1132,7 +1104,12 @@ export default function AddMedicineForm({
 							/>
 							<ActionIcon
 								onClick={() => {
-									handleAutocompleteOptionAdd(autocompleteValue, emergencyData?.data, "exEmergency", true);
+									handleAutocompleteOptionAdd(
+										autocompleteValue,
+										emergencyData?.data,
+										"exEmergency",
+										true
+									);
 									setTimeout(() => {
 										setAutocompleteValue("");
 									}, 0);
@@ -1215,7 +1192,12 @@ export default function AddMedicineForm({
 							<IPDPrescriptionFullBN data={previewPrintData} ref={printRef} preview />
 						</ScrollArea>
 						<Box bg="var(--mantine-color-white)" p="sm" className="shadow-2">
-							<Button onClick={handlePreviewPrint} bg="var(--theme-secondary-color-6)" color="white" size="sm">
+							<Button
+								onClick={handlePreviewPrint}
+								bg="var(--theme-secondary-color-6)"
+								color="white"
+								size="sm"
+							>
 								Print
 							</Button>
 						</Box>

@@ -6,18 +6,17 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { useDispatch } from "react-redux";
-import { setRefetchData } from "@/app/store/core/crudSlice";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR, MODULES_CORE } from "@/constants";
-import { MASTER_DATA_ROUTES } from "@/constants/routes";
-import { successNotification } from "@components/notification/successNotification";
+import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
 import { errorNotification } from "@components/notification/errorNotification";
 import { useAuthStore } from "@/store/useAuthStore";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import SelectForm from "@components/form-builders/SelectForm";
+import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 
 const module = MODULES_CORE.PARTICULAR;
 
-export default function AddGenericPopover({ form, bd = "auto" }) {
+export default function AddGenericPopover({ bd = "auto", dbMedicines, setDbMedicines, prescription_id }) {
 	const { dosages } = useAppLocalStore();
 	const [key, setKey] = useState(0);
 
@@ -72,16 +71,50 @@ export default function AddGenericPopover({ form, bd = "auto" }) {
 				advanceSearchForm.reset();
 				setAdvanceSearchFormOpened(false);
 				setKey(key + 1);
-				dispatch(setRefetchData({ module, refetching: true }));
-				dispatch(setRefetchData({ module: "byMeal", refetching: true }));
-				successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				const updateNestedState = useAuthStore.getState()?.updateNestedState;
 
-				updateNestedState("hospitalConfig.dosages", [...dosages, resultAction.payload?.data?.data]);
+				const value = {
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_UPDATE}`,
+					data: {
+						medicine_name: values.name,
+						generic: values.generic_name,
+						medicine_dosage_id: values.dosage,
+						prescription_id,
+						mode: "new",
+					},
+					module,
+				};
 
-				setTimeout(() => {
-					form.setFieldValue("medicine_dosage_id", resultAction.payload?.data?.data?.id?.toString());
-				}, 500);
+				const resultAction = await dispatch(storeEntityData(value));
+
+				if (storeEntityData.rejected.match(resultAction)) {
+					showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+				} else {
+					const data = resultAction?.payload?.data?.data || {};
+					const newMedicineData = {
+						company: data?.company || "",
+						medicine_name: data?.medicine_name || "",
+						generic: data?.generic || "",
+						generic_id: data?.generic_id,
+						medicine_id: data?.medicine_id,
+						stock_item_id: data?.stock_item_id,
+						medicine_dosage_id: data?.medicine_dosage_id || null,
+						medicine_bymeal_id: data?.medicine_bymeal_id || null,
+						dose_details: data?.dose_details || "",
+						dose_details_bn: data?.dose_details_bn || "",
+						daily_quantity: data?.daily_quantity || 0,
+						by_meal: data?.by_meal || "",
+						by_meal_bn: data?.by_meal_bn || "",
+						is_active: data?.is_active || 0,
+						id: data?.id,
+					};
+					showNotificationComponent(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+					const updateNestedState = useAuthStore.getState()?.updateNestedState;
+					updateNestedState(
+						"hospitalConfig.localMedicines",
+						resultAction.payload?.data?.data?.localMedicines
+					);
+					setDbMedicines([...dbMedicines, newMedicineData]);
+				}
 			}
 		} catch (error) {
 			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);

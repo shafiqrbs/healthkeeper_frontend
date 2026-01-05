@@ -31,7 +31,6 @@ export const medicineInitialValues = {
 	medicine_id: "",
 	medicine_name: "",
 	generic: "",
-	generic2: "",
 	generic_id: "",
 	company: "",
 	dose_details: "",
