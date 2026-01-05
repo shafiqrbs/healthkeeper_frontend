@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SelectForm from "@components/form-builders/SelectForm";
 import {
 	Box,
@@ -91,10 +91,7 @@ export default function AddMedicineForm({
 		return [...(medicines || [])].sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0));
 	}, [medicines]);
 
-	const mainHeight = useMemo(
-		() => (showBaseItems ? baseHeight - 520 : baseHeight - 280),
-		[showBaseItems, baseHeight]
-	);
+	const mainHeight = useMemo(() => (showBaseItems ? baseHeight - 520 : baseHeight - 280), [showBaseItems, baseHeight]);
 
 	const genericRef = useRef(null);
 	const medicineIdRef = useRef(null);
@@ -125,8 +122,7 @@ export default function AddMedicineForm({
 	});
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
-	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
-		useDisclosure(false);
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] = useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
@@ -180,6 +176,10 @@ export default function AddMedicineForm({
 			})) ?? [],
 		[by_meal_options]
 	);
+
+	const handleReorderMedicines = useCallback((medicines) => {
+		setDbMedicines(medicines);
+	}, []);
 
 	// =============== ensure selected generic2 value is always in the data array ================
 	const generic2Data = useMemo(() => {
@@ -601,9 +601,7 @@ export default function AddMedicineForm({
 				const updateNestedState = useAuthStore.getState()?.updateNestedState;
 				updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
 				if (redirect) {
-					navigate(
-						`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${ipdId || id}?tab=dashboard`
-					);
+					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${ipdId || id}?tab=dashboard`);
 				}
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
@@ -697,9 +695,9 @@ export default function AddMedicineForm({
 		handlePrint();
 	};
 
-	const handleDeleteMedicine = (id) => {
+	const handleDeleteMedicine = useCallback((id) => {
 		setDbMedicines(dbMedicines.filter((medicine) => medicine.id.toString() !== id.toString()));
-	};
+	}, []);
 
 	console.log("medicineForm.values", medicineForm.values);
 
@@ -913,11 +911,7 @@ export default function AddMedicineForm({
 									</ActionIcon>
 									{hasRecords && (
 										<Tooltip label="History">
-											<ActionIcon
-												size="lg"
-												bg={"red"}
-												onClick={() => setShowHistory((prev) => !prev)}
-											>
+											<ActionIcon size="lg" bg={"red"} onClick={() => setShowHistory((prev) => !prev)}>
 												<IconHistory />
 											</ActionIcon>
 										</Tooltip>
@@ -965,7 +959,7 @@ export default function AddMedicineForm({
 									: mainAreaHeight - 420
 							}
 							medicines={dbMedicines}
-							setMedicines={setDbMedicines}
+							setMedicines={handleReorderMedicines}
 							showDelete
 							showSwitch
 							onDelete={handleDeleteMedicine}
@@ -1110,12 +1104,7 @@ export default function AddMedicineForm({
 				</>
 			)}
 
-			<GlobalDrawer
-				opened={openedExPrescription}
-				close={closeExPrescription}
-				title={t("EmergencyPrescription")}
-				size="28%"
-			>
+			<GlobalDrawer opened={openedExPrescription} close={closeExPrescription} title={t("EmergencyPrescription")} size="28%">
 				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
 					<Box>
 						<Flex gap="sm" w="100%" align="center">
@@ -1143,12 +1132,7 @@ export default function AddMedicineForm({
 							/>
 							<ActionIcon
 								onClick={() => {
-									handleAutocompleteOptionAdd(
-										autocompleteValue,
-										emergencyData?.data,
-										"exEmergency",
-										true
-									);
+									handleAutocompleteOptionAdd(autocompleteValue, emergencyData?.data, "exEmergency", true);
 									setTimeout(() => {
 										setAutocompleteValue("");
 									}, 0);
@@ -1231,12 +1215,7 @@ export default function AddMedicineForm({
 							<IPDPrescriptionFullBN data={previewPrintData} ref={printRef} preview />
 						</ScrollArea>
 						<Box bg="var(--mantine-color-white)" p="sm" className="shadow-2">
-							<Button
-								onClick={handlePreviewPrint}
-								bg="var(--theme-secondary-color-6)"
-								color="white"
-								size="sm"
-							>
+							<Button onClick={handlePreviewPrint} bg="var(--theme-secondary-color-6)" color="white" size="sm">
 								Print
 							</Button>
 						</Box>
