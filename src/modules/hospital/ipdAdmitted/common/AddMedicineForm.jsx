@@ -732,7 +732,7 @@ export default function AddMedicineForm({
 											value={medicineForm.values.generic_id}
 											onChange={(v, options) => {
 												handleChange("generic_id", v);
-												medicineForm.setFieldValue("medicine_name", options.name);
+												medicineForm.setFieldValue("medicine_name", options.label);
 												medicineForm.setFieldValue("generic", options.generic);
 											}}
 											onBlur={() => setMedicineGenericDebounce(medicineGenericDebounce)}
