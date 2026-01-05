@@ -377,6 +377,15 @@ export const PHARMACY_DATA_ROUTES = {
 			DELETE: "pharmacy/requisition",
 		},
 
+		DISPENSE: {
+			STOCK_ITEM: "pharmacy/dispense/stock-item",
+			INDEX: "pharmacy/dispense",
+			CREATE: "pharmacy/dispense",
+			UPDATE: "pharmacy/dispense",
+			VIEW: "pharmacy/dispense",
+			DELETE: "pharmacy/dispense",
+		},
+
 		PURCHASE: {
 			CREATE: "pharmacy/purchase",
 			INDEX: "pharmacy/purchase",
@@ -460,6 +469,14 @@ export const PHARMACY_DATA_ROUTES = {
 			UPDATE: "/pharmacy/core/workorder/manage",
 			VIEW: "/pharmacy/core/workorder",
 			DELETE: "/pharmacy/core/workorder",
+		},
+
+		DISPENSE: {
+			INDEX: "/pharmacy/core/dispense",
+			CREATE: "/pharmacy/core/dispense/manage",
+			UPDATE: "/pharmacy/core/dispense/manage",
+			VIEW: "/pharmacy/core/dispense",
+			DELETE: "/pharmacy/core/dispense",
 		},
 	},
 };

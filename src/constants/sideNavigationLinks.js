@@ -425,6 +425,19 @@ export const sideNavigationLinks = {
 					],
 				},
 				{
+					label: t("Dispense"),
+					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.DISPENSE.INDEX,
+					icon: IconMedicineSyrup,
+					color: "#009688", // Teal
+					allowedRoles: [
+						"pharmacy_operator",
+						"pharmacy_pharmacist",
+						"pharmacy_manager",
+						"pharmacy_doctor",
+						"admin_administrator",
+					],
+				},
+				{
 					label: t("Medicine"),
 					path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.MEDICINE.INDEX,
 					icon: IconMedicineSyrup,

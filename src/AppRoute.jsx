@@ -76,6 +76,8 @@ import PharmacyWorkorderIndex from "@modules/pharmacy/workorder";
 import StoreIndentIndex from "@modules/pharmacy/store-indent";
 import PharmacyWorkorderManage from "@modules/pharmacy/workorder/manage";
 import IpdManageIndex from "@modules/hospital/ipdAdmitted/manage";
+import DispenseIndex from "@modules/pharmacy/dispense";
+import DispanseManage from "@modules/pharmacy/dispense/manage";
 import StoreRequisitionIndex from "@modules/store/requisition";
 import StoreRequisitionManage from "@modules/store/requisition/manage";
 import StoreStockIndex from "@modules/store/stock";
@@ -164,6 +166,11 @@ function AppRoute() {
 					<Route path="store-indent/:id" element={<StoreIndentIndex mode={"edit"} />} />
 					<Route path="workorder/manage" element={<PharmacyWorkorderManage />} />
 					<Route path="workorder/manage/:id" element={<PharmacyWorkorderManage mode="edit" />} />
+					<Route path="dispense">
+						<Route path="" element={<DispenseIndex />} />
+						<Route path="manage" element={<DispanseManage />} />
+						<Route path="manage/:id" element={<DispanseManage mode="edit" />} />
+					</Route>
 				</Route>
 				<Route path="/store/">
 					<Route path="requisition" element={<StoreRequisitionIndex />} />
