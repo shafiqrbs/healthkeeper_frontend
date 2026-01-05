@@ -468,20 +468,21 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											{sortedMedicines
 												?.filter((medicine) => medicine?.is_active === 1)
 												?.map((medicine, index) => (
+													<>
+														<Box style={{
+															borderBottom: "1px solid #ddd",
+														}}>
 													<Flex
 														align={"left"}
 														key={index}
-														style={{
-															borderBottom: "1px solid #ddd",
-														}}
 													>
 														<Text fw={600}>
 															{index + 1}.{" "}
-															{getValue(
+															{getValue(capitalizeWords(
 																medicine.medicine_id
 																	? medicine.medicine_name
 																	: medicine.generic
-															)}
+															))}
 														</Text>
 														<Text
 															style={{
@@ -494,25 +495,14 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 															{getValue(medicine.by_meal)}
 														</Text>
 													</Flex>
+													<Flex align={"left"}>
+													<Text mt={'-4'} fz={'12'}>{capitalizeWords(medicine.generic)}</Text>
+													</Flex>
+														</Box>
+													</>
 												))}
 										</Box>
 									</Box>
-									{jsonContent.advise && (
-										<Flex
-											mih={50}
-											gap="md"
-											justify="flex-start"
-											align="flex-end"
-											direction="row"
-											wrap="nowrap"
-										>
-											<Box>
-												<Text size="sm" fw={500}>
-													উপদেশ: {getValue(jsonContent.advise)}
-												</Text>
-											</Box>
-										</Flex>
-									)}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>

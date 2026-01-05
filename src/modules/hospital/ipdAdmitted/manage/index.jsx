@@ -21,7 +21,7 @@ import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
 import { useDisclosure } from "@mantine/hooks";
-import { MODULES } from "@/constants";
+import {ERROR_NOTIFICATION_COLOR, MODULES} from "@/constants";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
@@ -44,6 +44,7 @@ import DischargePrint from "../common/tabs/DischargePrint";
 import RoomTransferPrint from "../common/tabs/RoomTransferPrint.jsx";
 import DeathCertificatePrint from "../common/tabs/DeathCertificatePrint.jsx";
 import { IconX, IconChevronRight } from "@tabler/icons-react";
+import {errorNotification} from "@components/notification/errorNotification";
 
 const module = MODULES.E_FRESH;
 
@@ -218,6 +219,29 @@ export default function Index() {
 		if (!releaseMode) return [];
 
 		return [RELEASE_PRINT_MAP[releaseMode]].filter(Boolean);
+	};
+
+	const handleReleaseMode = (mode) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Submit"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleConfirmApproved(mode),
+		});
+	};
+
+	const handleConfirmApproved = async (mode) => {
+		try {
+			await getDataWithoutStore({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.RELEASE}/${id}/${mode}`,
+			});
+			refetch();
+		} catch (err) {
+			console.error(err);
+			errorNotification(err?.message, ERROR_NOTIFICATION_COLOR);
+		}
 	};
 
 	const getFilteredTabs = (tabs) => {
