@@ -120,7 +120,9 @@ export default function AddMedicineForm({
 	const [opened, { open, close }] = useDisclosure(false);
 	const [medicineGenericTerm, setMedicineGenericTerm] = useState("");
 	const [medicineGenericDebounce, setMedicineGenericDebounce] = useDebouncedState("", 300);
-	const { medicineGenericData: genericData } = useMedicineGenericData({ term: medicineGenericDebounce });
+	const { medicineGenericData: genericData, fetchData: fetchGenericData } = useMedicineGenericData({
+		term: medicineGenericDebounce,
+	});
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
 	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
@@ -179,6 +181,41 @@ export default function AddMedicineForm({
 		[by_meal_options]
 	);
 
+	// =============== ensure selected generic2 value is always in the data array ================
+	const generic2Data = useMemo(() => {
+		const mappedData =
+			genericData?.map((item) => ({
+				label: item?.name || item?.product_name || item?.generic,
+				value: item?.generic_id?.toString(),
+				generic: item?.generic || "",
+			})) || [];
+
+		// =============== if form has a generic2 value but it's not in the data, add it ================
+		if (medicineForm.values.generic2) {
+			const selectedValue = medicineForm.values.generic2?.toString();
+			const existsInData = mappedData.some((item) => item.value === selectedValue);
+
+			if (!existsInData) {
+				// =============== create a placeholder entry to keep the value selected ================
+				mappedData.unshift({
+					label: medicineForm.values.generic2_name || selectedValue,
+					value: selectedValue,
+					generic: medicineForm.values.generic2_name || "",
+				});
+			}
+		}
+
+		return mappedData;
+	}, [genericData, medicineForm.values.generic2, medicineForm.values.generic2_name]);
+
+	// =============== fetch generic data when form has a value but data is empty ================
+	useEffect(() => {
+		if (medicineForm.values.generic2 && (!genericData || genericData.length === 0) && !medicineGenericDebounce) {
+			// =============== fetch data with empty term to get initial data ================
+			fetchGenericData({ search: "" });
+		}
+	}, [medicineForm.values.generic2, genericData, medicineGenericDebounce, fetchGenericData]);
+
 	useEffect(() => {
 		dispatch(
 			getIndexEntityData({
@@ -207,10 +244,10 @@ export default function AddMedicineForm({
 		);
 	}, [treatmentRefetching]);
 
-	useEffect(() => {
-		if (!printData) return;
-		printPrescription2A4();
-	}, [printData]);
+	// useEffect(() => {
+	// 	if (!printData) return;
+	// 	printPrescription2A4();
+	// }, [printData]);
 
 	const handleFieldBlur = () => {
 		// Only update if update function exists and form has data
@@ -353,6 +390,11 @@ export default function AddMedicineForm({
 	const handleChange = (field, value) => {
 		medicineForm.setFieldValue(field, value);
 
+		// =============== clear generic2_name when generic2 is cleared ================
+		if (field === "generic2" && !value) {
+			medicineForm.setFieldValue("generic2_name", "");
+		}
+
 		// If medicine field is being changed, auto-populate other fields from medicine data
 		if ((field === "medicine_id" || field === "generic" || field === "generic2") && value) {
 			const selectedMedicine =
@@ -365,6 +407,13 @@ export default function AddMedicineForm({
 			console.log("Selected-Medicine", selectedMedicine);
 
 			if (selectedMedicine) {
+				// =============== store generic name for generic2 to keep it selected ================
+				if (field === "generic2" && selectedMedicine) {
+					const genericName =
+						selectedMedicine?.name || selectedMedicine?.product_name || selectedMedicine?.generic || "";
+					medicineForm.setFieldValue("generic2_name", genericName);
+				}
+
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
 
 				// Auto-populate by_meal if available
@@ -652,6 +701,8 @@ export default function AddMedicineForm({
 		setDbMedicines(dbMedicines.filter((medicine) => medicine.id.toString() !== id.toString()));
 	};
 
+	console.log("medicineForm.values", medicineForm.values);
+
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)">
 			<Box
@@ -728,17 +779,12 @@ export default function AddMedicineForm({
 											tooltip={t("EnterGenericName")}
 											id="generic2"
 											name="generic2"
-											data={genericData?.map((item) => ({
-												label: item?.name || item?.product_name || item?.generic,
-												value: `${item.generic_id}`,
-												generic: item?.generic || "",
-											}))}
+											data={generic2Data}
 											limit={20}
 											filter={medicineOptionsFilter}
 											value={medicineForm.values.generic2}
 											onChange={(v) => {
 												handleChange("generic2", v);
-												setMedicineGenericTerm(v);
 											}}
 											placeholder={t("GenericName")}
 											classNames={inputCss}
