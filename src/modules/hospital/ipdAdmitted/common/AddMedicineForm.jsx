@@ -453,15 +453,6 @@ export default function AddMedicineForm({
 		// TODO: legacy code: must be removed later --- end
 
 		// Determine mode based on which field has a value
-		let mode = null;
-		if (values.medicine_id) {
-			mode = "medicine";
-		} else if (values.generic) {
-			mode = "generic";
-		} else if (values.generic2) {
-			mode = "new";
-		}
-
 		const value = {
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_UPDATE}`,
 			data: {
@@ -471,7 +462,7 @@ export default function AddMedicineForm({
 				medicine_dosage_id: values.medicine_dosage_id,
 				medicine_bymeal_id: values.medicine_bymeal_id,
 				prescription_id: prescriptionData?.data?.prescription_uid,
-				mode,
+				mode: values.medicine_id ? "medicine" : "generic",
 			},
 			module,
 		};
