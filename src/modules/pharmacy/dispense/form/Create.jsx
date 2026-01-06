@@ -1,11 +1,10 @@
 import { useForm } from "@mantine/form";
 import Form from "./__Form";
-import { getWorkorderFormInitialValues } from "../helpers/request";
+import {getDispenseFormInitialValues} from "../helpers/request";
 import { modals } from "@mantine/modals";
 import { rem, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { formatDateForMySQL } from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch } from "react-redux";
@@ -20,23 +19,23 @@ import { IconAlertCircle, IconCheck } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "@mantine/hooks";
 
-const module = MODULES_PHARMACY.PURCHASE;
+const module = MODULES_PHARMACY.DISPENSE;
 
 export default function Create({ form }) {
 	const { user } = useAppLocalStore();
 	const [records, setRecords] = useLocalStorage({
-		key: "workorder-records",
+		key: "dispense-records",
 		defaultValue: [],
 	});
 
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const workOrderForm = useForm(getWorkorderFormInitialValues(t));
+	const dispenseForm = useForm(getDispenseFormInitialValues(t));
 	const [isSaving, setIsSaving] = useState(false);
 	const navigate = useNavigate();
 
-	const handleWorkOrderSave = (values) => {
-		const validation = workOrderForm.validate();
+	const handleDispenseSave = (values) => {
+		const validation = dispenseForm.validate();
 		if (validation.hasErrors) return;
 
 		modals.openConfirmModal({
@@ -45,11 +44,11 @@ export default function Create({ form }) {
 			labels: { confirm: t("Submit"), cancel: t("Cancel") },
 			confirmProps: { color: "red", loading: isSaving },
 			onCancel: () => console.info("Cancelled"),
-			onConfirm: () => saveWorkOrderToDB(values),
+			onConfirm: () => saveDispenseToDB(values),
 		});
 	};
 
-	async function saveWorkOrderToDB(values) {
+	async function saveDispenseToDB(values) {
 		modals.closeAll();
 		setIsSaving(true);
 		try {
@@ -57,14 +56,13 @@ export default function Create({ form }) {
 				...values,
 				items: records.map((r) => ({
 					...r,
-					production_date: formatDateForMySQL(r.production_date),
-					expired_date: formatDateForMySQL(r.expired_date),
 				})),
 				created_by_id: user?.id,
+				warehouse_id: form.values.warehouse_id
 			};
 
 			const requestData = {
-				url: PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.CREATE,
+				url: PHARMACY_DATA_ROUTES.API_ROUTES.DISPENSE.CREATE,
 				data: payload,
 				module,
 			};
@@ -86,15 +84,15 @@ export default function Create({ form }) {
 				}
 			} else if (storeEntityData.fulfilled.match(result)) {
 				form.reset();
-				workOrderForm.reset();
-				localStorage.removeItem("workorder-records");
+				dispenseForm.reset();
+				localStorage.removeItem("dispense-records");
 				setRecords([]);
 				notifications.show({
 					color: SUCCESS_NOTIFICATION_COLOR,
 					title: t("CreateSuccessfully"),
 					icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
 					autoClose: 800,
-					onClose: () => navigate("/pharmacy/core/workorder"),
+					onClose: () => navigate("/pharmacy/core/dispense"),
 				});
 			}
 		} catch (error) {
@@ -114,10 +112,10 @@ export default function Create({ form }) {
 	return (
 		<Form
 			form={form}
-			workOrderForm={workOrderForm}
+			dispenseForm={dispenseForm}
 			items={records}
 			setItems={setRecords}
-			onSave={handleWorkOrderSave}
+			onSave={handleDispenseSave}
 		/>
 	);
 }

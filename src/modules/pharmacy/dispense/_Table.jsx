@@ -1,4 +1,4 @@
-import { Group, Box, ActionIcon, Text, rem, Flex, Button, CloseButton, Badge } from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem, Flex, Button, Badge } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
@@ -7,7 +7,6 @@ import {
 	IconEye,
 	IconChevronUp,
 	IconSelector,
-	IconPrinter,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,24 +19,17 @@ import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
-import { deleteEntityData, editEntityData, showEntityData } from "@/app/store/core/crudThunk";
+import { deleteEntityData, editEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import { successNotification } from "@components/notification/successNotification.jsx";
-import { errorNotification } from "@components/notification/errorNotification.jsx";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useRef, useState } from "react";
-import Indent from "@hospital-components/print-formats/indent/Indent";
-import Workorder from "@hospital-components/print-formats/workorder/Workorder";
-import { useReactToPrint } from "react-to-print";
-import { getDataWithoutStore } from "@/services/apiService";
 
 const PER_PAGE = 50;
 
 export default function _Table({ module }) {
-	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
@@ -47,8 +39,6 @@ export default function _Table({ module }) {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
 	const height = mainAreaHeight - 48;
-	const [invoicePrintData, setInvoicePrintData] = useState(null);
-	const invoicePrintRef = useRef(null);
 
 	// for infinity table data scroll, call the hook
 	const {
@@ -61,7 +51,7 @@ export default function _Table({ module }) {
 		refetchAll,
 	} = useInfiniteTableScroll({
 		module,
-		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.INDEX,
+		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.DISPENSE.INDEX,
 		filterParams: {
 			name: filterData?.name,
 			term: searchKeyword,
@@ -71,7 +61,7 @@ export default function _Table({ module }) {
 	});
 
 	const handleEntityEdit = (id) => {
-		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.UPDATE}/${id}`);
+		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.DISPENSE.UPDATE}/${id}`);
 	};
 
 	const handleDelete = (id) => {
@@ -88,7 +78,7 @@ export default function _Table({ module }) {
 	const handleDeleteSuccess = async (id) => {
 		const res = await dispatch(
 			deleteEntityData({
-				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.DELETE}/${id}`,
+				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.DISPENSE.DELETE}/${id}`,
 				module,
 				id,
 			})
@@ -97,7 +87,7 @@ export default function _Table({ module }) {
 		if (deleteEntityData.fulfilled.match(res)) {
 			dispatch(setRefetchData({ module, refetching: true }));
 			deleteNotification(t("DeletedSuccessfully"), ERROR_NOTIFICATION_COLOR);
-			navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.INDEX);
+			navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.DISPENSE.INDEX);
 			dispatch(setInsertType({ insertType: "create", module }));
 		} else {
 			notifications.show({
@@ -111,20 +101,11 @@ export default function _Table({ module }) {
 	const handleDataShow = (id) => {
 		dispatch(
 			editEntityData({
-				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.VIEW}/${id}`,
+				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.DISPENSE.VIEW}/${id}`,
 				module,
 			})
 		);
 		setViewDrawer(true);
-	};
-
-	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
-	const handleDataPrint = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.VIEW}/${id}`,
-		});
-		setInvoicePrintData(res.data);
-		requestAnimationFrame(invoicePrint);
 	};
 
 	const handleCreateFormNavigate = () => {
@@ -174,8 +155,13 @@ export default function _Table({ module }) {
 							sortable: true,
 						},
 						{
-							accessor: "vendor_name",
-							title: t("VendorName"),
+							accessor: "warehouse_name",
+							title: t("Warehouse"),
+							sortable: true,
+						},
+						{
+							accessor: "dispense_type",
+							title: t("DispenseType"),
 							sortable: true,
 						},
 						{
@@ -204,8 +190,8 @@ export default function _Table({ module }) {
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
 									<Button.Group>
-										{values.process !== "Received" &&
-											!values.received_by_id && (
+										{values.process !== "Approved" &&
+											!values.approved_by_id && (
 												<Button
 													onClick={() => {
 														handleEntityEdit(values.id);
@@ -234,24 +220,10 @@ export default function _Table({ module }) {
 										>
 											{t("View")}
 										</Button>
-										{(values.process === "Approved" ||
-											values.process === "Received") &&
-											values.approved_by_id && (
-												<Button
-													onClick={() => handleDataPrint(values.id)}
-													variant="filled"
-													c="white"
-													size="compact-xs"
-													radius="es"
-													leftSection={<IconPrinter size={16} />}
-													className="border-right-radius-none"
-												>
-													{t("Print")}
-												</Button>
-											)}
 
-										{values.process !== "Received" &&
-											!values.received_by_id && (
+
+										{values.process !== "Approved" &&
+											!values.approved_by_id && (
 												<ActionIcon
 													size={"sm"}
 													onClick={() => handleDelete(values.id)}
@@ -284,7 +256,6 @@ export default function _Table({ module }) {
 			</Box>
 
 			<DataTableFooter indexData={listData} module={module} />
-			<Workorder data={invoicePrintData} ref={invoicePrintRef} />
 			<ViewDrawer
 				viewDrawer={viewDrawer}
 				height={mainAreaHeight}

@@ -10,7 +10,7 @@ import Table from "./_Table";
 import CoreHeaderNavbar from "@hospital-components/CoreHeaderNavbar";
 import { useTranslation } from "react-i18next";
 
-const module = MODULES_PHARMACY.WORKORDER;
+const module = MODULES_PHARMACY.DISPENSE;
 
 export default function Index() {
 	const { t } = useTranslation();

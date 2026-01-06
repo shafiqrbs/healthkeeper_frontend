@@ -65,6 +65,7 @@ export const MODULES_PHARMACY = {
 	STOCK: "stock",
 	GENERIC: "generic",
 	PURCHASE: "purchase",
+	DISPENSE: "dispense",
 	REQUISITION: "requisition",
 	WORKORDER: "workorder",
 	STORE_REQUISTION: "store_requisition",

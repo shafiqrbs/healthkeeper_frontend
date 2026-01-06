@@ -14,17 +14,13 @@ import {
 import { DataTable } from "mantine-datatable";
 import { useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
-import { useDebouncedCallback, useDebouncedState } from "@mantine/hooks";
+import { useDebouncedCallback } from "@mantine/hooks";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
 import { useEffect, useState, useMemo, useRef } from "react";
-import useMedicineData from "@hooks/useMedicineStockData";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import InputForm from "@components/form-builders/InputForm";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import SelectForm from "@components/form-builders/SelectForm";
-import DateSelector from "@components/form-builders/DateSelector";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import genericClass from "@assets/css/Generic.module.css";
 import { MODULES_PHARMACY } from "@/constants";
@@ -33,13 +29,11 @@ import { useSelector } from "react-redux";
 import { notifications } from "@mantine/notifications";
 import {useAuthStore} from "@/store/useAuthStore.js";
 
-const module = MODULES_PHARMACY.STOCK;
+const module = MODULES_PHARMACY.DISPENSE;
 
-export default function __Form({ form, workOrderForm, items, setItems, onSave }) {
+export default function __Form({ form, dispenseForm, items, setItems, onSave }) {
 	const [products, setProducts] = useState([]);
 	const { t } = useTranslation();
-	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
-	const { medicineData } = useMedicineData({ term: medicineTerm });
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 24;
 	const itemFromHeight = mainAreaHeight - 180;
@@ -47,17 +41,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	const [draftProducts, setDraftProducts] = useState([]);
 	const listData = useSelector((state) => state.crud[module].data);
 	const inputsRef = useRef([]);
-
-	const { data: vendorDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.VENDOR.PATH,
-		utility: CORE_DROPDOWNS.VENDOR.UTILITY,
-	});
-
-	const { data: categoryDropdown } = useGlobalDropdownData({
-		path: CORE_DROPDOWNS.CATEGORY.PATH,
-		utility: CORE_DROPDOWNS.CATEGORY.UTILITY,
-		params: { type: "stockable" },
-	});
 
 	const userWarehouse = useAuthStore(state => state.warehouse);
 
@@ -75,16 +58,13 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		setWarehouseDropdown(warehouseOptions);
 	}, [userWarehouse]);
 
-	async function handleWorkOrderAdd(values) {
+	async function handleDispenseAdd(values) {
 		if (!values || !values.stock_item_id) return;
-
 		setItems((prevItems) => {
 			const existingIndex = prevItems.findIndex((item) => item.stock_item_id == values.stock_item_id);
 
 			if (existingIndex >= 0) {
-				// If exists, update quantity
 				const updatedItems = [...prevItems];
-				const oldQty = Number(updatedItems[existingIndex].quantity || 0);
 				const newQty = Number(values.quantity || 0);
 				updatedItems[existingIndex] = {
 					...updatedItems[existingIndex],
@@ -102,29 +82,27 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 			delete copy[values.stock_item_id];
 			return copy;
 		});
-		setMedicineTerm("");
 	}
 
-	const handleWorkOrderDelete = (id) => {
+	const handleDispenseDelete = (id) => {
 		modals.openConfirmModal({
 			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: "Confirm", cancel: "Cancel" },
 			confirmProps: { color: "var(--theme-delete-color)" },
 			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleWorkOrderDeleteSuccess(id),
+			onConfirm: () => handleDispenseDeleteSuccess(id),
 		});
 	};
 
-	const handleWorkOrderDeleteSuccess = async (id) => {
+	const handleDispenseDeleteSuccess = async (id) => {
 		setItems(items.filter((_, index) => index !== id));
 	};
 
-	const handleResetWorkOrder = () => {
+	const handleResetDispense = () => {
 		setItems([]);
-		setMedicineTerm("");
 		form.reset();
-		workOrderForm.reset();
+		dispenseForm.reset();
 	};
 
 	const handleRecordFieldChange = (stockItemId, fieldName, fieldValue) => {
@@ -162,17 +140,9 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		setProducts(records);
 	}, [records]);
 
-	console.log(records)
-
 	const handleProductSearch = useDebouncedCallback((value) => {
 		setSearchValue(value);
 	}, 300);
-
-	const isAllDatesValid = useMemo(() => {
-		if (!items || items.length === 0) return false;
-
-		return items.every((item) => item.production_date && item.expired_date);
-	}, [items]);
 
 	const handleKeyDown = (e, index) => {
 		if (e.key === "Enter") {
@@ -190,7 +160,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 		<Grid columns={24} gutter={{ base: 8 }}>
 			<Grid.Col span={8}>
 				<>
-					<Grid align="center" columns={20} mt="3xs">
+					<Grid align="center" columns={20} mt="xs">
 						<Grid.Col span={20}>
 							<SelectForm
 								form={form}
@@ -198,12 +168,14 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 								placeholder={t("ChooseWarehouse")}
 								name="warehouse_id"
 								id="warehouse_id"
-								nextField="employee_id"
+								nextField="dispense_type"
 								value={form.values.warehouse_id}
 								dropdownValue={warehouseDropdown}
+								disabled={form.values.warehouse_id}
 							/>
 						</Grid.Col>
 					</Grid>
+
 					<Box className={"borderRadiusAll"}>
 						<DataTable
 							classNames={{
@@ -285,7 +257,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 														borderBottomRightRadius: "var(--mantine-radius-sm)",
 													},
 												}}
-												onClick={() => handleWorkOrderAdd(draftProducts[data?.stock_item_id])}
+												onClick={() => handleDispenseAdd(draftProducts[data?.stock_item_id])}
 											>
 												<Flex direction={`column`} gap={0}>
 													<IconShoppingBag size={12} />
@@ -359,23 +331,21 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 								<Box pr={"xs"}>
 									<Button
 										onClick={() => {
-											const newItems = [...items]; // existing items
+											const newItems = [...items];
 											let addedCount = 0;
 
 											Object.values(draftProducts).forEach((product) => {
 												const qty = Number(product.quantity || 0);
-												if (qty <= 0) return; // skip if quantity <= 0
+												if (qty <= 0) return;
 
 												const existingIndex = newItems.findIndex((item) => item.stock_item_id == product.stock_item_id);
 
 												if (existingIndex >= 0) {
-													// Update quantity if exists
 													newItems[existingIndex] = {
 														...newItems[existingIndex],
 														quantity: qty,
 													};
 												} else {
-													// Add new item
 													newItems.push(product);
 												}
 
@@ -384,9 +354,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 
 											if (addedCount > 0) {
 												setItems(newItems);
-												// Clear draftProducts
 												setDraftProducts({});
-												setMedicineTerm("");
 											} else {
 												notifications.show({
 													color: "red",
@@ -437,7 +405,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 								sortable: false,
 								render: (_item, index) => index + 1,
 							},
-
 							{
 								accessor: "name",
 								title: t("MedicineName"),
@@ -457,37 +424,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 								),
 							},
 							{
-								accessor: "production_date",
-								title: t("ExpiryStartDate"),
-								sortable: false,
-								render: (item) => (
-									<Box>
-										<DateSelector
-											className="date-selector-input"
-											value={item?.production_date}
-											onChange={(value) =>
-												handleRecordFieldChange(item?.stock_item_id, "production_date", value ? value.toISOString() : "")
-											}
-										/>
-									</Box>
-								),
-							},
-							{
-								accessor: "expired_date",
-								title: t("ExpiryEndDate"),
-								sortable: false,
-								render: (item) => (
-									<>
-										<DateSelector
-											value={item?.expired_date}
-											onChange={(value) =>
-												handleRecordFieldChange(item?.stock_item_id, "expired_date", value ? value.toISOString() : "")
-											}
-										/>
-									</>
-								),
-							},
-							{
 								accessor: "",
 								title: "",
 								textAlign: "right",
@@ -497,7 +433,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 										<Button.Group>
 											<ActionIcon
 												size="md"
-												onClick={() => handleWorkOrderDelete(index)}
+												onClick={() => handleDispenseDelete(index)}
 												className="border-left-radius-none"
 												variant="transparent"
 												color="var(--theme-delete-color)"
@@ -523,7 +459,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 					<Box
 						w={"100%"}
 						component="form"
-						onSubmit={workOrderForm.onSubmit(onSave)}
+						onSubmit={dispenseForm.onSubmit(onSave)}
 						bg="var(--theme-tertiary-color-0)"
 						justify="space-between"
 						align="left"
@@ -537,9 +473,9 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 									</Text>
 									<Box p="sm">
 										<TextAreaForm
-											form={workOrderForm}
+											form={dispenseForm}
 											label=""
-											value={workOrderForm.values.remark}
+											value={dispenseForm.values.remark}
 											name="remark"
 											placeholder="Write a remark..."
 											showRightSection={false}
@@ -554,42 +490,46 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 									<Box>
 										<Grid align="center" gatter={"2"} columns={20} mt="0">
 											<Grid.Col span={6}>
-												<Text fz="sm">{t("Vendor")}</Text>
+												<Text fz="sm">{t("DispenseType")}</Text>
 											</Grid.Col>
 											<Grid.Col span={14}>
 												<SelectForm
-													form={workOrderForm}
-													tooltip={t("ChooseVendor")}
-													placeholder={t("ChooseVendor")}
-													name="vendor_id"
-													id="vendor_id"
-													nextField="grn"
+													form={dispenseForm}
+													tooltip={t("ChooseDispenseType")}
+													placeholder={t("ChooseDispenseType")}
+													name="dispense_type"
+													id="dispense_type"
+													nextField="dispense_no"
 													required={true}
-													value={workOrderForm.values.vendor_id}
-													dropdownValue={vendorDropdown}
+													value={dispenseForm.values.dispense_type}
+													dropdownValue={[
+														{ value: 'dispense-in', label: 'Dispense In' },
+														{ value: 'dispense-out', label: 'Dispense Out' },
+													]}
 												/>
 											</Grid.Col>
+
 										</Grid>
 										<Grid align="center" columns={20} mt="0">
 											<Grid.Col span={6}>
-												<Text fz="sm">{t("WorkorderNo")}</Text>
+												<Text fz="sm">{t("DispenseNo")}</Text>
 											</Grid.Col>
 											<Grid.Col span={14}>
 												<InputForm
-													form={workOrderForm}
-													tooltip={t("WorkorderNo")}
-													placeholder={t("WorkorderNo")}
-													name="grn"
-													id="grn"
+													form={dispenseForm}
+													tooltip={t("DispenseNo")}
+													placeholder={t("DispenseNo")}
+													name="dispense_no"
+													id="dispense_no"
 													nextField="EntityFormSubmit"
-													value={workOrderForm.values.grn}
+													value={dispenseForm.values.dispense_no}
 													required={true}
 												/>
 											</Grid.Col>
 										</Grid>
 										<Flex gap="les" mt={"xs"}>
 											<Button
-												onClick={handleResetWorkOrder}
+												onClick={handleResetDispense}
 												size="xs"
 												leftSection={<IconHistory size={20} />}
 												type="button"
@@ -599,7 +539,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 											>
 												{t("Reset")}
 											</Button>
-											<Tooltip label={t("PleaseFillAllDates")} disabled={isAllDatesValid}>
+											<Tooltip label={t("PleaseFillAllDates")} >
 												<Button
 													onClick={onSave}
 													size="xs"
@@ -608,7 +548,6 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 													bg="var(--theme-primary-color-6)"
 													color="white"
 													w="200px"
-													disabled={!isAllDatesValid}
 												>
 													{t("Save")}
 												</Button>

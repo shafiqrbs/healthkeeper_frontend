@@ -1676,6 +1676,10 @@
 	"DosageNameBangla": "Dosage Name Bn",
 	"AddDosage": "Add Dosage",
 	"ManageDispense": "Manage Dispense",
+	"ChooseDispenseType": "Choose dispense type",
+	"DispenseType": "Dispense Type",
+	"DispenseNo": "Dispense No",
+	"ApprovedDate": "Approved Date",
 	"xxxxxxxx": "xxxxxxxxxxx",
 	"xxxxxxxx": "xxxxxxxxxxx"
 }

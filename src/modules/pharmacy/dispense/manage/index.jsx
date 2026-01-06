@@ -33,7 +33,7 @@ export default function Index({mode}) {
 
     async function fetchSingleWorkOrderData() {
         const response = await getDataWithoutStore({
-            url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.VIEW}/${id}`,
+            url: `${PHARMACY_DATA_ROUTES.API_ROUTES.DISPENSE.VIEW}/${id}`,
         });
         setData(response?.data);
     }

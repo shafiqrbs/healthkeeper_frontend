@@ -10,11 +10,10 @@ import {Text, rem} from "@mantine/core";
 import {notifications} from "@mantine/notifications";
 import {ERROR_NOTIFICATION_COLOR, MODULES_PHARMACY, SUCCESS_NOTIFICATION_COLOR} from "@/constants";
 import {IconAlertCircle, IconCheck} from "@tabler/icons-react";
-import {formatDateForMySQL} from "@utils/index";
-import {getWorkorderFormInitialValues} from "../helpers/request";
+import {getDispenseFormInitialValues} from "../helpers/request";
 import Form from "./__Form";
 
-const module = MODULES_PHARMACY.PURCHASE;
+const module = MODULES_PHARMACY.DISPENSE;
 export default function Update({form, data}) {
     const [records, setRecords] = useState([]);
 
@@ -22,37 +21,34 @@ export default function Update({form, data}) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const {id} = useParams();
-    const workOrderForm = useForm(getWorkorderFormInitialValues(t));
+    const dispenseForm = useForm(getDispenseFormInitialValues(t));
 
     useEffect(() => {
         if (!data) return;
 
         const entity = data?.data ?? data;
 
-        // bind header/work-order level fields
-        workOrderForm.setValues({
-            grn: entity?.grn || "",
+        dispenseForm.setValues({
             remark: entity?.remark || "",
-            vendor_id: entity?.vendor_id ? String(entity.vendor_id) : "",
+            dispense_type: entity?.dispense_type ? String(entity.dispense_type) : "",
+            dispense_no: entity?.dispense_no ? String(entity.dispense_no) : "",
         });
 
-        // bind line items into records
-        const mappedRecords = Array.isArray(entity?.purchase_items)
-            ? entity.purchase_items.map((purchaseItem) => ({
-                production_date: purchaseItem?.production_date ? new Date(purchaseItem.production_date) : "",
-                expired_date: purchaseItem?.expired_date ? new Date(purchaseItem.expired_date) : "",
-                stock_item_id: purchaseItem?.stock_item_id ? String(purchaseItem.stock_item_id) : "",
-                name: purchaseItem?.name || "",
-                generic: null,
-                quantity: purchaseItem?.quantity || "",
+        form.setFieldValue("warehouse_id", entity?.warehouse_id);
+
+        const mappedRecords = Array.isArray(entity?.dispense_items)
+            ? entity.dispense_items.map((dispenseItem) => ({
+                stock_item_id: dispenseItem?.stock_item_id ? String(dispenseItem.stock_item_id) : "",
+                name: dispenseItem?.name || "",
+                quantity: dispenseItem?.quantity || "",
             }))
             : [];
 
         setRecords(mappedRecords);
     }, [data]);
 
-    const handleWorkOrderUpdate = (values) => {
-        const validation = workOrderForm.validate();
+    const handleDispenseUpdate = (values) => {
+        const validation = dispenseForm.validate();
         if (validation.hasErrors) return;
 
         modals.openConfirmModal({
@@ -61,24 +57,23 @@ export default function Update({form, data}) {
             labels: {confirm: t("Submit"), cancel: t("Cancel")},
             confirmProps: {color: "red"},
             onCancel: () => console.info("Cancelled"),
-            onConfirm: () => saveWorkOrderUpdate(values),
+            onConfirm: () => saveDispenseUpdate(values),
         });
     };
 
-    async function saveWorkOrderUpdate(values) {
+    async function saveDispenseUpdate(values) {
         modals.closeAll();
         try {
             const payload = {
                 ...values,
+                warehouse_id: form.values.warehouse_id,
                 items: records.map((recordItem) => ({
                     ...recordItem,
-                    production_date: formatDateForMySQL(recordItem.production_date),
-                    expired_date: formatDateForMySQL(recordItem.expired_date),
                 })),
             };
 
             const requestData = {
-                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.UPDATE}/${id}`,
+                url: `${PHARMACY_DATA_ROUTES.API_ROUTES.DISPENSE.UPDATE}/${id}`,
                 data: payload,
                 module,
             };
@@ -105,7 +100,7 @@ export default function Update({form, data}) {
                     title: t("UpdateSuccessfully"),
                     icon: <IconCheck style={{width: rem(18), height: rem(18)}}/>,
                     autoClose: 800,
-                    onClose: () => navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.WORKORDER.INDEX),
+                    onClose: () => navigate(PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.DISPENSE.INDEX),
                 });
             }
         } catch (error) {
@@ -123,10 +118,10 @@ export default function Update({form, data}) {
     return (
         <Form
             form={form}
-            workOrderForm={workOrderForm}
+            dispenseForm={dispenseForm}
             items={records}
             setItems={setRecords}
-            onSave={handleWorkOrderUpdate}
+            onSave={handleDispenseUpdate}
         />
     );
 }

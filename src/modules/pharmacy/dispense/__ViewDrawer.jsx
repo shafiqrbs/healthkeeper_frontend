@@ -21,8 +21,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 	const closeDrawer = () => {
 		setViewDrawer(false);
 	};
-
-	const handleWorkOrderApproved = (id) => {
+	const handleDispenseApproved = (id) => {
 		modals.openConfirmModal({
 			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
@@ -47,7 +46,8 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 				}
 				closeDrawer();
 			}
-		} catch (error) {
+		} catch (error) {	const invoicePrintRef = useRef(null);
+
 			errorNotification("Error updating purchase config:" + error.message);
 		} finally {
 			refetchAll();
@@ -101,7 +101,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 						<Flex align="center" gap={8}>
 							<IconArrowLeft size={16} />{" "}
 							<Text mt="es" fz={16} fw={500}>
-								{t("Wordorder")}
+								{t("Dispense")}
 							</Text>
 						</Flex>
 					</Drawer.Title>
@@ -128,20 +128,20 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 							</Grid>
 							<Grid columns={24}>
 								<Grid.Col span={"4"} className="drawer-form-input-label">
-									{t("GRN")}
+									{t("Invoice")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>
-									{entityObject && entityObject.grn && entityObject.grn}
+									{entityObject && entityObject.invoice && entityObject.invoice}
 								</Grid.Col>
 								<Grid.Col span={"4"} className="drawer-form-input-label">
-									{t("Vendor")}
+									{t("Warehouse")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>
 									{entityObject &&
-										entityObject.vendor_name &&
-										entityObject.vendor_name}
+										entityObject.warehouse_name &&
+										entityObject.warehouse_name}
 								</Grid.Col>
 							</Grid>
 
@@ -152,8 +152,8 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>
 									{entityObject &&
-										entityObject.cb_username &&
-										entityObject.cb_username}
+										entityObject.cbName &&
+										entityObject.cbName}
 								</Grid.Col>
 								<Grid.Col span={"4"} className="drawer-form-input-label">
 									{t("Approved By")}
@@ -161,28 +161,25 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>
 									{entityObject &&
-										entityObject.ab_username &&
-										entityObject.ab_username}
+										entityObject.approve_name &&
+										entityObject.approve_name}
 								</Grid.Col>
 							</Grid>
 							<Grid columns={24}>
 								<Grid.Col span={"4"} className="drawer-form-input-label">
-									{t("ReceivedBy")}
 								</Grid.Col>
-								<Grid.Col span={"1"}>:</Grid.Col>
+								<Grid.Col span={"1"}></Grid.Col>
 								<Grid.Col span={"auto"}>
-									{entityObject &&
-										entityObject.re_username &&
-										entityObject.re_username}
+
 								</Grid.Col>
 								<Grid.Col span={"4"} className="drawer-form-input-label">
-									{t("ReceivedDate")}
+									{t("ApprovedDate")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>
 									{entityObject &&
-										entityObject.received_date &&
-										entityObject.received_date}
+										entityObject.approved_date &&
+										entityObject.approved_date}
 								</Grid.Col>
 							</Grid>
 						</Box>
@@ -196,7 +193,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 									footer: tableCss.footer,
 									pagination: tableCss.pagination,
 								}}
-								records={entityObject?.purchase_items || []}
+								records={entityObject?.dispense_items || []}
 								columns={[
 									{
 										accessor: "index",
@@ -216,17 +213,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 										title: t("Quantity"),
 										textAlignment: "right",
 										sortable: false,
-									},
-									{
-										accessor: "production_date",
-										title: t("ExpiryStartDate"),
-										sortable: false,
-									},
-									{
-										accessor: "expired_date",
-										title: t("ExpiryEndDate"),
-										sortable: false,
-									},
+									}
 								]}
 								height={height - 208}
 								textSelectionDisabled
@@ -237,11 +224,11 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 				<Drawer.Header className={"drawer-sticky-header"}>
 					<Drawer.Title>
 						<Flex align="right" gap={8}>
-							{entityObject.process === "Created" && canApprove && (
+							{/*{entityObject.process === "Created" && canApprove && (
 								<Button
 									onClick={(e) => {
 										e.preventDefault();
-										handleWorkOrderApproved(entityObject.id);
+										handleDispenseApproved(entityObject.id);
 									}}
 									variant="filled"
 									c="white"
@@ -270,7 +257,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 									>
 										{t("Received")}
 									</Button>
-								)}
+								)}*/}
 						</Flex>
 					</Drawer.Title>
 				</Drawer.Header>

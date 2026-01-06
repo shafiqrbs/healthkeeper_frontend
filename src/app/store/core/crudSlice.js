@@ -459,6 +459,15 @@ const initialState = {
 	// -------------------- inventory modules stops -------------------------
 	// -------------------- procurement modules starts -------------------------
 
+	dispense: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		editData: {},
+		filterData: { vendor_id: "", start_date: "", end_date: "", searchKeyword: "" },
+	},
 	requisition: {
 		isLoading: true,
 		refetching: true,

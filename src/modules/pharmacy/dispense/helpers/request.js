@@ -1,6 +1,5 @@
+
 const initialValues = {
-	expired_date: "",
-	production_date: "",
 	stock_item_id: "",
 	quantity: "",
 };
@@ -17,22 +16,27 @@ export const getInitialValues = (t) => {
 				if (!value) return t("QuantityValidationRequired");
 				return null;
 			},
+			warehouse_id: (value) => {
+				if (!value) return t("ChooseWarehouse");
+				return null;
+			}
 		},
 	};
 };
 
-export const getWorkorderFormInitialValues = (t) => {
+export const getDispenseFormInitialValues = (t) => {
 	return {
 		initialValues: {
 			remark: "",
-			vendor_id: "",
-            grn: "",
+			dispense_type : "",
+			dispense_no : ""
 		},
 		validate: {
-			vendor_id: (value) => {
-				if (!value) return t("ChooseVendor");
+			dispense_type: (value) => {
+				if (!value) return t("ChooseDispenseType");
 				return null;
-			},
+			}
+
 		},
 	};
 };
