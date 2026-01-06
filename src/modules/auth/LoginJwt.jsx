@@ -63,7 +63,7 @@ export default function LoginJwt() {
 
 	requestAnimationFrame(() => {
 		if (user?.id) {
-			navigate(-1);
+			navigate("/");
 		}
 	});
 

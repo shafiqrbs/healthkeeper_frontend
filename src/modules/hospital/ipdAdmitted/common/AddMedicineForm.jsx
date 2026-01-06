@@ -118,7 +118,7 @@ export default function AddMedicineForm({
 	const [opened, { open, close }] = useDisclosure(false);
 	const [medicineGenericDebounce, setMedicineGenericDebounce] = useDebouncedState("", 300);
 	const [medicineGenericSearchValue, setMedicineGenericSearchValue] = useState("");
-	const { medicineGenericData: genericData, fetchData: fetchGenericData } = useMedicineGenericData({
+	const { medicineGenericData: genericData } = useMedicineGenericData({
 		term: medicineGenericDebounce,
 	});
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
@@ -674,7 +674,7 @@ export default function AddMedicineForm({
 					<Grid.Col span={18}>
 						<Group align="end" gap="les">
 							<Grid w="100%" columns={12} gutter="3xs">
-								<Grid.Col span={4}>
+								<Grid.Col span={6}>
 									<FormValidatorWrapper opened={medicineForm.errors.medicine_id}>
 										<Select
 											clearable
@@ -696,7 +696,7 @@ export default function AddMedicineForm({
 										/>
 									</FormValidatorWrapper>
 								</Grid.Col>
-								<Grid.Col span={4}>
+								{/*<Grid.Col span={4}>
 									<FormValidatorWrapper opened={medicineForm.errors.generic}>
 										<Autocomplete
 											disabled={medicineForm.values.medicine_id}
@@ -721,8 +721,8 @@ export default function AddMedicineForm({
 											error={!!medicineForm.errors.generic}
 										/>
 									</FormValidatorWrapper>
-								</Grid.Col>
-								<Grid.Col span={4}>
+								</Grid.Col>*/}
+								<Grid.Col span={6}>
 									<FormValidatorWrapper opened={medicineForm.errors.generic_id}>
 										<Select
 											searchable
@@ -813,27 +813,24 @@ export default function AddMedicineForm({
 						</Group>
 					</Grid.Col>
 					<Grid.Col span={6} bg="var(--mantine-color-white)">
-						<Grid w="100%" columns={12} gutter="3xs">
-							<Grid.Col span={10}>
-								<Group grow gap="les">
-									<SelectForm
-										form={medicineForm}
-										label=""
-										id="treatments"
-										name="treatments"
-										dropdownValue={treatmentData?.data?.map((item) => ({
-											label: item.name,
-											value: item.id?.toString(),
-										}))}
-										value={medicineForm.values.treatments}
-										placeholder={t("TreatmentTemplate")}
-										tooltip={t("TreatmentTemplate")}
-										withCheckIcon={false}
-										changeValue={populateMedicineData}
-									/>
-								</Group>
-							</Grid.Col>
-							<Grid.Col span={2}>
+						<Flex>
+							<SelectForm
+								form={medicineForm}
+								label=""
+								id="treatments"
+								name="treatments"
+								dropdownValue={treatmentData?.data?.map((item) => ({
+									label: item.name,
+									value: item.id?.toString(),
+								}))}
+								value={medicineForm.values.treatments}
+								placeholder={t("TreatmentTemplate")}
+								tooltip={t("TreatmentTemplate")}
+								withCheckIcon={false}
+								changeValue={populateMedicineData}
+								styles={{ root: { width: "100%" } }}
+							/>
+							<Flex justify="flex-end" px="les">
 								<Tooltip label={t("CreateTreatmentTemplate")}>
 									<ActionIcon
 										fw={"400"}
@@ -845,50 +842,48 @@ export default function AddMedicineForm({
 										<IconBookmark size={16} />
 									</ActionIcon>
 								</Tooltip>
-							</Grid.Col>
-						</Grid>
-						<Grid w="100%" columns={12} gutter="les" mt="4px">
-							<Grid.Col span={8}>
-								<Button
-									leftSection={<IconPlus size={16} />}
-									type="submit"
-									variant="filled"
-									bg="var(--theme-secondary-color-6)"
-									w="100%"
-									disabled={
-										!medicineForm.values.medicine_id &&
-										!medicineForm.values.generic &&
-										!medicineForm.values.generic_id
-									}
+							</Flex>
+						</Flex>
+
+						<Flex mt="les">
+							<Button
+								leftSection={<IconPlus size={16} />}
+								type="submit"
+								variant="filled"
+								bg="var(--theme-secondary-color-6)"
+								w="100%"
+								disabled={
+									!medicineForm.values.medicine_id &&
+									!medicineForm.values.generic &&
+									!medicineForm.values.generic_id
+								}
+							>
+								{t("Add")}
+							</Button>
+
+							<Flex px="les" gap="les">
+								<ActionIcon
+									fw={"400"}
+									type="button"
+									size="lg"
+									color="var(--theme-secondary-color-5)"
+									onClick={openExPrescription}
 								>
-									{t("Add")}
-								</Button>
-							</Grid.Col>
-							<Grid.Col span={4}>
-								<Flex px="les" gap="les">
-									<ActionIcon
-										fw={"400"}
-										type="button"
-										size="lg"
-										color="var(--theme-secondary-color-5)"
-										onClick={openExPrescription}
-									>
-										{t("Rx")}
-									</ActionIcon>
-									{hasRecords && (
-										<Tooltip label="History">
-											<ActionIcon
-												size="lg"
-												bg={"red"}
-												onClick={() => setShowHistory((prev) => !prev)}
-											>
-												<IconHistory />
-											</ActionIcon>
-										</Tooltip>
-									)}
-								</Flex>
-							</Grid.Col>
-						</Grid>
+									{t("Rx")}
+								</ActionIcon>
+								{hasRecords && (
+									<Tooltip label="History">
+										<ActionIcon
+											size="lg"
+											bg={"red"}
+											onClick={() => setShowHistory((prev) => !prev)}
+										>
+											<IconHistory />
+										</ActionIcon>
+									</Tooltip>
+								)}
+							</Flex>
+						</Flex>
 					</Grid.Col>
 				</Grid>
 			</Box>
