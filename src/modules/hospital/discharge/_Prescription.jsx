@@ -43,7 +43,7 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useDispatch, useSelector } from "react-redux";
 import { modals } from "@mantine/modals";
-import { MODULES } from "@/constants";
+import { MODULES, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import inputCss from "@assets/css/InputField.module.css";
 import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import CreateDosageDrawer from "@hospital-components/drawer/CreateDosageDrawer";
@@ -139,7 +139,8 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
 	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
-	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] = useDisclosure(false);
+	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
+		useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
 	const [autocompleteValue, setAutocompleteValue] = useState("");
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
@@ -448,29 +449,29 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 
 	// =============== handler for deleting medicine from database ================
 	const handleDeleteMedicine = useCallback(
-		async (medicineId) => {
-			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INLINE_UPDATE}/${medicineId}`,
-				data: {
-					medicine_id: medicineId,
-					prescription_id: prescriptionId,
-					is_deleted: true,
-				},
-				module,
-			};
+		async (id) => {
+			const resultAction = await dispatch(
+				getIndexEntityData({
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_DELETE}/${id}`,
+					module,
+				})
+			);
 
-			const resultAction = await dispatch(storeEntityData(value));
-
-			if (storeEntityData.rejected.match(resultAction)) {
-				showNotificationComponent(resultAction.payload.message, "red", "lightgray", true, 700, true);
+			if (getIndexEntityData.rejected.match(resultAction)) {
+				showNotificationComponent("Medicine could not be deleted", "red", "lightgray", true, 700, true);
 			} else {
-				setDbMedicines((prev) => prev.filter((med) => med.id?.toString() !== medicineId?.toString()));
+				// Use functional update to avoid stale closure issue
+				setDbMedicines((prevMedicines) => {
+					const filteredMedicines = prevMedicines.filter(
+						(medicine) => medicine.id.toString() !== id.toString()
+					);
+					return filteredMedicines;
+				});
+				showNotificationComponent(t("DeletedSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[dispatch, prescriptionId, t]
+		[dispatch, module, t]
 	);
-
 	const handleReset = () => {
 		setMedicines([]);
 		medicineForm.reset();
@@ -528,7 +529,8 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 			} else {
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetch();
-				if (redirect) navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=dashboard`);
+				if (redirect)
+					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=dashboard`);
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {
@@ -592,7 +594,11 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)" pos="relative">
-			<LoadingOverlay visible={isLoading || isPrescriptionLoading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+			<LoadingOverlay
+				visible={isLoading || isPrescriptionLoading}
+				zIndex={1000}
+				overlayProps={{ radius: "sm", blur: 2 }}
+			/>
 			<Tooltip
 				label={showDiseaseProfile ? t("hideDiseaseProfile") : t("showDiseaseProfile")}
 				position={showDiseaseProfile ? "left" : "right"}
@@ -705,7 +711,13 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 										</Box>
 										<Stack>
 											<Box fz="md" c="white">
-												<Text bg="var(--theme-save-btn-color)" fz="md" c="white" px="sm" py="les">
+												<Text
+													bg="var(--theme-save-btn-color)"
+													fz="md"
+													c="white"
+													px="sm"
+													py="les"
+												>
 													{t("AdviseTemplate")}
 												</Text>
 												<ScrollArea h={80} p="les" className="borderRadiusAll">
@@ -722,7 +734,10 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 															mb="2"
 															className="cursor-pointer"
 														>
-															<IconReportMedical color="var(--theme-secondary-color-6)" size={13} />{" "}
+															<IconReportMedical
+																color="var(--theme-secondary-color-6)"
+																size={13}
+															/>{" "}
 															<Text mt="es" fz={13}>
 																{advise?.name}
 															</Text>
@@ -731,7 +746,13 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 												</ScrollArea>
 											</Box>
 											<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
-												<Text bg="var(--theme-secondary-color-6)" fz="md" c="white" px="sm" py="les">
+												<Text
+													bg="var(--theme-secondary-color-6)"
+													fz="md"
+													c="white"
+													px="sm"
+													py="les"
+												>
 													{t("Advise")}
 												</Text>
 												<Box p="sm">
@@ -1052,7 +1073,11 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 										</Text>
 									</Stack>
 								</Button>
-								<Button w="100%" bg="var(--theme-secondary-color-6)" onClick={handleDischargePrintSubmit}>
+								<Button
+									w="100%"
+									bg="var(--theme-secondary-color-6)"
+									onClick={handleDischargePrintSubmit}
+								>
 									<Stack gap={0} align="center" justify="center">
 										<Text>{t("Print")}</Text>
 										<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -1082,7 +1107,12 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 
 			{printData && <DischargeA4BN ref={dischargeA4Ref} data={printData} />}
 
-			<GlobalDrawer opened={openedExPrescription} close={closeExPrescription} title={t("EmergencyPrescription")} size="28%">
+			<GlobalDrawer
+				opened={openedExPrescription}
+				close={closeExPrescription}
+				title={t("EmergencyPrescription")}
+				size="28%"
+			>
 				<Stack pt="sm" justify="space-between" h={mainAreaHeight - 60}>
 					<Box>
 						<Flex gap="sm" w="100%" align="center">
@@ -1109,7 +1139,12 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 							/>
 							<ActionIcon
 								onClick={() => {
-									handleAutocompleteOptionAdd(autocompleteValue, emergencyData?.data, "exEmergency", true);
+									handleAutocompleteOptionAdd(
+										autocompleteValue,
+										emergencyData?.data,
+										"exEmergency",
+										true
+									);
 									setTimeout(() => {
 										setAutocompleteValue("");
 									}, 0);

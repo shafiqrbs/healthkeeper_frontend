@@ -36,6 +36,7 @@ const SelectForm = forwardRef(
 			onBlur,
 			onSearchChange = () => {},
 			nothingFoundMessage = "",
+			styles = {},
 		},
 		ref
 	) => {
@@ -140,6 +141,7 @@ const SelectForm = forwardRef(
 							disabled={disabled}
 							withCheckIcon={withCheckIcon}
 							nothingFoundMessage={nothingFoundMessage}
+							styles={styles}
 						/>
 					</Tooltip>
 				)}

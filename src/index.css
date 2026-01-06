@@ -751,9 +751,16 @@ input.date-selector-input {
         }
     }
 }
-.tiptap-wrapper .mantine-RichTextEditor-content{
-    max-height: 200px;
-    overflow: auto;
+
+.tiptap-wrapper {
+    .mantine-RichTextEditor-content {
+        max-height: 200px;
+        overflow: auto;
+    }
+
+    .mantine-RichTextEditor-typographyStylesProvider {
+        height: 202px;
+    }
 }
 
 
