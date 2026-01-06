@@ -118,7 +118,7 @@ export default function AddMedicineForm({
 	const [opened, { open, close }] = useDisclosure(false);
 	const [medicineGenericDebounce, setMedicineGenericDebounce] = useDebouncedState("", 300);
 	const [medicineGenericSearchValue, setMedicineGenericSearchValue] = useState("");
-	const { medicineGenericData: genericData, fetchData: fetchGenericData } = useMedicineGenericData({
+	const { medicineGenericData: genericData } = useMedicineGenericData({
 		term: medicineGenericDebounce,
 	});
 	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);

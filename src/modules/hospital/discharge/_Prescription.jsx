@@ -33,7 +33,7 @@ import { getMedicineFormInitialValues } from "./helpers/request";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import { useDisclosure, useHotkeys } from "@mantine/hooks";
+import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import useAppLocalStore from "@hooks/useAppLocalStore";
@@ -68,6 +68,9 @@ import { RichTextEditor } from "@mantine/tiptap";
 import Placeholder from "@tiptap/extension-placeholder";
 import MedicineListTable from "@hospital-components/MedicineListTable";
 import AddDosagePopover from "@components/drawers/AddDosagePopover";
+import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
+import AddGenericPopover from "@components/drawers/AddGenericPopover";
+import useMedicineGenericData from "@hooks/useMedicineGenericData";
 
 const module = MODULES.DISCHARGE;
 
@@ -146,7 +149,12 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
 	const [openedHistoryMedicine, { open: openHistoryMedicine, close: closeHistoryMedicine }] = useDisclosure(false);
 	const [openedDiseaseProfile, { toggle: toggleDiseaseProfile }] = useDisclosure(true);
-	const [showDiseaseProfile, setShowDiseaseProfile] = useState(true);
+	const [showDiseaseProfile, setShowDiseaseProfile] = useState(false);
+	const [medicineGenericDebounce, setMedicineGenericDebounce] = useDebouncedState("", 300);
+	const [medicineGenericSearchValue, setMedicineGenericSearchValue] = useState("");
+	const { medicineGenericData: genericData } = useMedicineGenericData({
+		term: medicineGenericDebounce,
+	});
 	const {
 		data: prescriptionData,
 		refetch: refetchPrescriptionData,
@@ -191,6 +199,10 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 	});
 
 	useEffect(() => {
+		setMedicineGenericDebounce(medicineGenericSearchValue);
+	}, [medicineGenericSearchValue]);
+
+	useEffect(() => {
 		dispatch(
 			getIndexEntityData({
 				url: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX_RXEMERGENCY,
@@ -214,6 +226,16 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 		if (!printData) return;
 		printDischargeA4();
 	}, [printData]);
+
+	const genericOptions = useMemo(
+		() =>
+			genericData?.map((item) => ({
+				value: item.generic_id?.toString(),
+				label: item.name,
+				generic: item.generic,
+			})) ?? [],
+		[genericData]
+	);
 
 	const durationModeDropdown = medicineDuration?.modes
 		? medicineDuration?.modes.map((mode) => ({
@@ -406,13 +428,16 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 		const value = {
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.MEDICINE_UPDATE}`,
 			data: {
-				medicine_id: values.medicine_id,
+				medicine_name: values.medicine_name,
+				medicine_id: values.medicine_id || undefined,
 				generic: values.generic,
+				generic_id: values.generic_id,
 				medicine_dosage_id: values.medicine_dosage_id,
 				medicine_bymeal_id: values.medicine_bymeal_id,
 				quantity: values.quantity,
 				duration: values.duration,
 				prescription_id: prescriptionId,
+				mode: values.medicine_id ? "medicine" : "generic",
 			},
 			module,
 		};
@@ -441,9 +466,11 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 				id: data?.id,
 				order: data?.order || 0,
 			};
+			showNotificationComponent(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			const updateNestedState = useAuthStore.getState()?.updateNestedState;
 			updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
 			setDbMedicines([...dbMedicines, newMedicineData]);
+			setMedicineGenericSearchValue("");
 		}
 	};
 
@@ -820,7 +847,7 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 											/>
 										</Grid.Col>
 										<Grid.Col span={6}>
-											<Autocomplete
+											{/* <Autocomplete
 												clearable
 												disabled={medicineForm.values.medicine_id}
 												limit={20}
@@ -838,7 +865,43 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 												}}
 												placeholder={t("SelfMedicine")}
 												classNames={inputCss}
-											/>
+											/> */}
+
+											<FormValidatorWrapper opened={medicineForm.errors.generic_id}>
+												<Select
+													searchable
+													searchValue={medicineGenericSearchValue}
+													onSearchChange={setMedicineGenericSearchValue}
+													clearable
+													disabled={medicineForm.values.medicine_id}
+													tooltip={t("EnterGenericName")}
+													id="generic_id"
+													name="generic_id"
+													data={genericOptions}
+													filter={medicineOptionsFilter}
+													value={medicineForm.values.generic_id}
+													onChange={(v, options) => {
+														setMedicineGenericSearchValue(options.label);
+														handleChange("generic_id", v);
+														medicineForm.setFieldValue("medicine_name", options.label);
+														medicineForm.setFieldValue("generic", options.generic);
+													}}
+													onBlur={() =>
+														setMedicineGenericSearchValue(medicineGenericSearchValue)
+													}
+													placeholder={t("GenericName")}
+													classNames={inputCss}
+													error={!!medicineForm.errors.generic_id}
+													rightSection={
+														<AddGenericPopover
+															dbMedicines={dbMedicines}
+															setDbMedicines={setDbMedicines}
+															prescription_id={prescriptionData?.data?.prescription_uid}
+														/>
+													}
+													comboboxProps={{ withinPortal: false }}
+												/>
+											</FormValidatorWrapper>
 										</Grid.Col>
 									</Grid>
 									<Grid w="100%" columns={12} gutter="3xs">
@@ -872,7 +935,7 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 														label: byMeal.name,
 													}))}
 													value={medicineForm.values.medicine_bymeal_id}
-													placeholder={t("By Meal")}
+													placeholder={t("ByMeal")}
 													tooltip={t("EnterWhenToTakeMedicine")}
 													withCheckIcon={false}
 												/>
@@ -895,39 +958,37 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 								</Group>
 							</Grid.Col>
 							<Grid.Col span={6} bg="var(--mantine-color-white)">
-								<Grid w="100%" columns={12} gutter="les">
-									<Grid.Col span={10}>
-										<SelectForm
-											form={medicineForm}
-											label=""
-											id="treatments"
-											name="treatments"
-											dropdownValue={treatmentData?.data?.map((item) => ({
-												label: item.name,
-												value: item.id?.toString(),
-											}))}
-											value={medicineForm.values.treatments}
-											placeholder={t("TreatmentTemplate")}
-											tooltip={t("TreatmentTemplate")}
-											withCheckIcon={false}
-											changeValue={populateMedicineData}
-										/>
-									</Grid.Col>
-									<Grid.Col span={2}>
-										<Tooltip label={t("CreateTreatmentTemplate")}>
-											<ActionIcon
-												fw={"400"}
-												type="button"
-												size="lg"
-												color="var(--theme-primary-color-5)"
-												onClick={openBookmark}
-											>
-												<IconBookmark size={16} />
-											</ActionIcon>
-										</Tooltip>
-									</Grid.Col>
-								</Grid>
-								<Grid w="100%" columns={12} gutter="les" mt="4px">
+								<Flex gap="les" pr="les">
+									<SelectForm
+										form={medicineForm}
+										label=""
+										id="treatments"
+										name="treatments"
+										dropdownValue={treatmentData?.data?.map((item) => ({
+											label: item.name,
+											value: item.id?.toString(),
+										}))}
+										value={medicineForm.values.treatments}
+										placeholder={t("TreatmentTemplate")}
+										tooltip={t("TreatmentTemplate")}
+										withCheckIcon={false}
+										changeValue={populateMedicineData}
+										styles={{ root: { width: "100%" } }}
+									/>
+									<Tooltip label={t("CreateTreatmentTemplate")}>
+										<ActionIcon
+											fw={"400"}
+											type="button"
+											size="lg"
+											color="var(--theme-primary-color-5)"
+											onClick={openBookmark}
+										>
+											<IconBookmark size={16} />
+										</ActionIcon>
+									</Tooltip>
+								</Flex>
+
+								<Grid w="100%" columns={12} gutter="les" mt="6px">
 									<Grid.Col span={6}>
 										{/*<Button
 											leftSection={<IconPlus size={16} />}
@@ -952,26 +1013,27 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 											withCheckIcon={false}
 										/>
 									</Grid.Col>
-									<Grid.Col span={4}>
-										<Button
-											leftSection={<IconPlus size={16} />}
-											type="submit"
-											variant="filled"
-											bg="var(--theme-secondary-color-6)"
-										>
-											{t("Add")}
-										</Button>
-									</Grid.Col>
-									<Grid.Col span={2}>
-										<ActionIcon
-											fw={"400"}
-											type="button"
-											size="lg"
-											color="var(--theme-secondary-color-5)"
-											onClick={openExPrescription}
-										>
-											{t("Rx")}
-										</ActionIcon>
+									<Grid.Col span={6}>
+										<Flex gap="les" pr="les">
+											<Button
+												leftSection={<IconPlus size={16} />}
+												type="submit"
+												variant="filled"
+												w="100%"
+												bg="var(--theme-secondary-color-6)"
+											>
+												{t("Add")}
+											</Button>
+											<ActionIcon
+												fw={"400"}
+												type="button"
+												size="lg"
+												color="var(--theme-secondary-color-5)"
+												onClick={openExPrescription}
+											>
+												{t("Rx")}
+											</ActionIcon>
+										</Flex>
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>
