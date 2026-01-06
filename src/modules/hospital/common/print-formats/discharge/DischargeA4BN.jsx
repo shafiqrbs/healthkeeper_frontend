@@ -18,7 +18,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 
 	const prescription_data = JSON.parse(data?.json_content || "{}");
 
-	console.log(prescription_data);
+	console.log(data?.prescription_medicine);
 
 	return (
 		<Box display={preview ? "block" : "none"}>
@@ -125,7 +125,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					<hr
 						style={{ marginTop: "8px", marginBottom: "8px", border: "none", borderTop: "1px solid #ccc" }}
 					/>
-					{prescription_data?.medicines?.map((medicine, index) => (
+					{data?.prescription_medicine?.map((medicine, index) => (
 						<Box key={index}>
 							<Flex
 								gap="4"

@@ -102,15 +102,18 @@ export default function Table({ module, height, closeTable }) {
 		setControlsRefs(controlsRefs);
 	};
 
+
+
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			patient_mode: "opd",
-			term: filterData.keywordSearch,
-			room_id: filterData.room_id,
+			patient_mode: ["opd", "emergency"],
+			term: form.values.keywordSearch,
 			prescription_mode: processTab,
+			created: form.values.created,
+			room_id: form.room_id,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",

@@ -83,7 +83,7 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 					>
 						<Table.Tbody>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={"3"}>
+								<Table.Td colSpan={"6"}>
 									<Box>
 										<Flex gap="md" justify="center">
 											<Box>
@@ -113,7 +113,7 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td
-									colSpan={3}
+									colSpan={6}
 								>
 									<Text fw="bold" pt={'md'} fz={'xl'}  ta={'center'}>INDENT</Text>
 									<Flex gap="md" justify="center">
@@ -137,6 +137,7 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 							{patientInfo?.stock_transfer_items?.map((item, index) => (
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td ta={'center'} w={'50'}>{index + 1}.</Table.Td>
+									<Table.Td>{getValue(capitalizeWords(item?.category_name))}</Table.Td>
 									<Table.Td>{getValue(capitalizeWords(item?.name))}</Table.Td>
 									<Table.Td>{getValue(item?.ExpiryDate, "0")}</Table.Td>
 									<Table.Td>{getValue(item?.stock_quantity, "0")}</Table.Td>
@@ -149,24 +150,24 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 				<Box  bottom={'20'}  ta="center">
 					<Box p="md" pt={0} pb={0}>
 						<Grid columns={12} gutter="xs">
-							<Grid.Col span={4}>
+							<Grid.Col span={3}>
 								<Text fw="bold" mb="sm" ta="center">
 									Requisition By
 								</Text>
 							</Grid.Col>
-							<Grid.Col span={4}>
+							<Grid.Col span={3}>
 								<Text fw="bold" mb="sm" ta="center">
 									Department Head
 								</Text>
 							</Grid.Col>
-							<Grid.Col span={4}>
+							<Grid.Col span={3}>
 								<Box>
 									<Text fw="bold" mb="sm" ta="center">
-										Store Incharge
+										Store In-charge
 									</Text>
 								</Box>
 							</Grid.Col>
-							<Grid.Col span={4}>
+							<Grid.Col span={3}>
 								<Box>
 									<Text fw="bold" mb="sm" ta="center">
 										Store Officer
