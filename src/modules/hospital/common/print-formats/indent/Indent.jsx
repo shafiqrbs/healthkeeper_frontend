@@ -20,7 +20,7 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-	console.log(patientInfo);
+	console.log(patientInfo?.stock_transfer_items);
 
 	return (
 		<Box display={preview ? "block" : "none"}>
@@ -128,13 +128,18 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th ta={'center'}>{t("S/N")}</Table.Th>
+								<Table.Th>{t("Category")}</Table.Th>
 								<Table.Th>{t("MedicineName")}</Table.Th>
-								<Table.Th>{t("Quantity")}</Table.Th>
+								<Table.Th>{t("ExpiryDate")}</Table.Th>
+								<Table.Th>{t("RequisitionQuantity")}</Table.Th>
+								<Table.Th>{t("ActualQuantity")}</Table.Th>
 							</Table.Tr>
 							{patientInfo?.stock_transfer_items?.map((item, index) => (
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td ta={'center'} w={'50'}>{index + 1}.</Table.Td>
 									<Table.Td>{getValue(capitalizeWords(item?.name))}</Table.Td>
+									<Table.Td>{getValue(item?.ExpiryDate, "0")}</Table.Td>
+									<Table.Td>{getValue(item?.stock_quantity, "0")}</Table.Td>
 									<Table.Td>{getValue(item?.stock_quantity, "0")}</Table.Td>
 								</Table.Tr>
 							))}
@@ -146,7 +151,7 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 						<Grid columns={12} gutter="xs">
 							<Grid.Col span={4}>
 								<Text fw="bold" mb="sm" ta="center">
-									Created By
+									Requisition By
 								</Text>
 							</Grid.Col>
 							<Grid.Col span={4}>
@@ -157,7 +162,14 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 							<Grid.Col span={4}>
 								<Box>
 									<Text fw="bold" mb="sm" ta="center">
-										Approved By
+										Store Incharge
+									</Text>
+								</Box>
+							</Grid.Col>
+							<Grid.Col span={4}>
+								<Box>
+									<Text fw="bold" mb="sm" ta="center">
+										Store Officer
 									</Text>
 								</Box>
 							</Grid.Col>
