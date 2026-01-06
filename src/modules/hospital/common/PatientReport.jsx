@@ -17,7 +17,7 @@ import {
 import { useOutletContext } from "react-router-dom";
 import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
-import { IconCaretUpDownFilled, IconEyeClosed, IconEyeEdit, IconX } from "@tabler/icons-react";
+import { IconCaretUpDownFilled, IconEyeClosed, IconEyeEdit, IconSearch, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import inputCss from "@assets/css/InputField.module.css";
 import { DURATION_TYPES } from "@/constants";
@@ -32,6 +32,7 @@ export default function PatientReport({
 	modeName = "Prescription",
 }) {
 	const [showOtherInstruction, setShowOtherInstruction] = useState({});
+	const [searchQueries, setSearchQueries] = useState({});
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - extraHeight;
 	const { t } = useTranslation();
@@ -231,6 +232,79 @@ export default function PatientReport({
 						)}
 					</Stack>
 				);
+
+			case "searchwithcheckbox": {
+				const searchQuery = searchQueries[section.slug] || "";
+				const filteredParticulars = particulars?.filter((particular) =>
+					particular.name.toLowerCase().includes(searchQuery.toLowerCase())
+				);
+				return (
+					<Stack gap="md">
+						<TextInput
+							type="search"
+							placeholder={`Search ${section.name}...`}
+							value={searchQuery}
+							onChange={(event) =>
+								setSearchQueries((prev) => ({
+									...prev,
+									[section.slug]: event.currentTarget.value,
+								}))
+							}
+							size="xs"
+							rightSection={
+								searchQuery ? (
+									<IconX
+										size={16}
+										onClick={() => setSearchQueries((prev) => ({ ...prev, [section.slug]: "" }))}
+									/>
+								) : (
+									<IconSearch size={16} />
+								)
+							}
+						/>
+						{filteredParticulars?.map((particular, index) => {
+							const value = form.values.dynamicFormData?.[section.slug]?.find(
+								(item) => item.id === particular.id && item.name === particular.name
+							)?.value;
+							return (
+								<Checkbox
+									size="xs"
+									key={`${id}-${index}`}
+									label={particular.name}
+									checked={value || false}
+									onChange={(event) =>
+										handleDynamicFormChange({
+											id: particular.id,
+											name: particular.name,
+											value: event.currentTarget.checked,
+											parentSlug: section.slug,
+											isCheckbox: true,
+										})
+									}
+								/>
+							);
+						})}
+						{filteredParticulars?.length === 0 && (
+							<Text fz="sm" c="dimmed">
+								No {section.name} found...
+							</Text>
+						)}
+						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
+							<Textarea
+								label={`Other ${section.name}`}
+								placeholder={`Enter Other ${t(section.name)}`}
+								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								onChange={(event) =>
+									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
+								}
+								onBlur={handleFieldBlur}
+								resize="vertical"
+								minRows={5}
+							/>
+						)}
+					</Stack>
+				);
+			}
 
 			case "select":
 				return (
