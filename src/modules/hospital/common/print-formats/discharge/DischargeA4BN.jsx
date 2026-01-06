@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import { formatDateTimeAmPm } from "@/common/utils";
+import {capitalizeWords, formatDateTimeAmPm} from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { IconPointFilled, IconPhoneCall } from "@tabler/icons-react";
@@ -127,6 +127,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 					/>
 					{data?.prescription_medicine?.map((medicine, index) => (
 						<Box key={index}>
+							{medicine.is_active === 1 && (
 							<Flex
 								gap="4"
 								justify="flex-start"
@@ -140,7 +141,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 							>
 								<Text size="sm" fw={600}><IconPointFilled style={{ width: "12", height: "12" }} stroke={1.5}/></Text>
 								<Text size="" fw={600}>
-									{getValue(medicine.medicine_id ? medicine.medicine_name : medicine.generic)}
+									{getValue(capitalizeWords(medicine.medicine_name))}
 								</Text>
 								<Text pl={"md"}>
 									{" "}
@@ -150,36 +151,7 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 									{medicine?.duration && getValue(medicine.duration_mode_bn, medicine.duration)}
 								</Text>
 							</Flex>
-							{/*{medicine.dosages && medicine.dosages.length > 0 ? (
-								(medicine.dosages || []).map((dose, dIdx) => (
-									<Text
-										size="sm"
-										key={dIdx}
-										style={{
-											color: "var(--theme-tertiary-color-8)",
-											marginLeft: "32px",
-										}}
-									>
-										{getValue(dose.dose_details_bn, dose.dose_details)} {" ---- "}
-										{getValue(dose.by_meal_bn, dose.by_meal)} {" ---- "}
-										{dose?.quantity > 0 && getValue(dose.quantity)}{" "}
-										{dose.duration && getValue(dose.duration_mode_bn, dose.duration)}
-									</Text>
-								))
-							) : (
-								<Text
-									size="sm"
-									style={{
-										color: "var(--theme-tertiary-color-8)",
-										marginLeft: "32px",
-									}}
-								>
-									{getValue(medicine.dose_details_bn, medicine.dose_details)} {" ---- "}
-									{getValue(medicine.by_meal_bn, medicine.by_meal)} {"----"}
-									{medicine?.quantity > 0 && getValue(medicine.quantity)}{" "}
-									{medicine?.duration && getValue(medicine.duration_mode_bn, medicine.duration)}
-								</Text>
-							)}*/}
+							)}
 						</Box>
 					))}
 					<Box mt={'-md'} fz={'18'} pl={'2'}
