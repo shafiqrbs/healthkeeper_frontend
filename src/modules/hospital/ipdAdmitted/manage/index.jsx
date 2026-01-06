@@ -21,7 +21,7 @@ import AddMedicineForm from "../common/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
 import useParticularsData from "@hooks/useParticularsData";
 import { useDisclosure } from "@mantine/hooks";
-import {ERROR_NOTIFICATION_COLOR, MODULES} from "@/constants";
+import { ERROR_NOTIFICATION_COLOR, MODULES } from "@/constants";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
 import PatientPrescriptionHistoryList from "@hospital-components/PatientPrescriptionHistoryList";
@@ -44,7 +44,7 @@ import DischargePrint from "../common/tabs/DischargePrint";
 import RoomTransferPrint from "../common/tabs/RoomTransferPrint.jsx";
 import DeathCertificatePrint from "../common/tabs/DeathCertificatePrint.jsx";
 import { IconX, IconChevronRight } from "@tabler/icons-react";
-import {errorNotification} from "@components/notification/errorNotification";
+import { errorNotification } from "@components/notification/errorNotification";
 
 const module = MODULES.E_FRESH;
 
