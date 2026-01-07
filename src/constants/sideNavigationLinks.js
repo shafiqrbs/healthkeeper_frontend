@@ -465,31 +465,10 @@ export const sideNavigationLinks = {
 		},
 		{
 			label: t("Doctor"),
-			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.DASHBOARD,
+			path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.OPD,
 			icon: IconBuildingHospital,
 			color: "#9C27B0", // Purple
 			allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
-			subMenu: [
-				/*{
-					label: t("Dashboard"),
-					path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.DASHBOARD,
-					icon: IconBuildingHospital,
-					color: "#9C27B0", // Purple
-					allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
-				},*/
-				{
-					label: t("OPD"),
-					path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.OPD,
-					icon: IconBuildingHospital,
-					allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
-				},
-				{
-					label: t("Emergency"),
-					path: DOCTOR_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR.EMERGENCY,
-					icon: IconEmergencyBed,
-					allowedRoles: ["role_domain", "admin_administrator", "admin_doctor"],
-				},
-			],
 		},
 
 		{

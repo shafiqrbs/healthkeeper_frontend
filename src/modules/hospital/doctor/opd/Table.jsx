@@ -113,7 +113,6 @@ export default function Table({ module, height, closeTable }) {
 			term: form.values.keywordSearch,
 			prescription_mode: processTab,
 			created: form.values.created,
-			room_id: form.room_id,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
@@ -255,7 +254,7 @@ export default function Table({ module, height, closeTable }) {
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch showOpdRoom module={module} form={form} />
+				<KeywordSearch  module={module} form={form} />
 			</Box>
 			<Box className="border-top-none" px="sm">
 				<DataTable
@@ -300,12 +299,6 @@ export default function Table({ module, height, closeTable }) {
 							accessor: "patient_payment_mode_name",
 							sortable: true,
 							title: t("Patient"),
-						},
-						{ accessor: "total", title: t("Total") },
-						{
-							accessor: "created_by",
-							title: t("CreatedBy"),
-							render: (item) => item?.created_by || "N/A",
 						},
 						{
 							title: t("Action"),
