@@ -725,6 +725,12 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/discharge",
 			VIEW: "/hospital/discharge/view",
 		},
+
+		PATIENT_ARCHIVE: {
+			INDEX: "/hospital/patient-archive",
+			VIEW: "/hospital/patient-archive/view",
+		},
+
 		PRESCRIPTION: {
 			INDEX: "/hospital/prescription",
 			INDEX_BOARD: "/hospital/prescription-board",

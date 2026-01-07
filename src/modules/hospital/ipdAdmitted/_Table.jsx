@@ -378,7 +378,6 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 							),
 						},
 					]}
-					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"

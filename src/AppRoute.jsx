@@ -42,6 +42,7 @@ import OpdRoomIndex from "@modules/hospital/core/opd-room";
 import DoctorDashboard from "@modules/hospital/doctor/dashboard";
 import DoctorOpdIndex from "@modules/hospital/doctor/opd";
 import PrescriptionBoardIndex from "@modules/hospital/prescription-board";
+import PatientArchiveIndex from "@modules/hospital/patient-archive";
 // import PharmacyIndex from "@modules/pharmacy/dashboard";
 import PharmacyStockIndex from "@modules/pharmacy/stock";
 import MedicineIndex from "@modules/pharmacy/medicine";
@@ -367,6 +368,19 @@ function AppRoute() {
 									roles={["role_domain", "doctor_ipd", "admin_administrator", "doctor_opd"]}
 								>
 									<PrescriptionBoardIndex />
+								</ProtectedRoute>
+							}
+						/>
+					</Route>
+
+					<Route path="patient-archive">
+						<Route
+							index
+							element={
+								<ProtectedRoute
+									roles={["role_domain", "doctor_ipd", "admin_administrator", "doctor_opd"]}
+								>
+									<PatientArchiveIndex />
 								</ProtectedRoute>
 							}
 						/>

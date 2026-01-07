@@ -488,7 +488,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 														>
 															{"--"}
 															{getValue(medicine.dose_details)}{" "}
-															{getValue(medicine.by_meal)}
+															{getValue(medicine.by_meal)} {getValue(medicine.instruction)}
 														</Text>
 													</Flex>
 													<Flex align={"left"}>
