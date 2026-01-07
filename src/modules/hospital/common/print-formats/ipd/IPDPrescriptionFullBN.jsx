@@ -98,7 +98,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 					<SectionWrapper label="C/C:">
 						{renderNumberedList(
 							dataArray,
-							(item) => `${item.name}: ${item.value} ${item.duration || "Day"}/s`
+							(item) => `${item.name} ${item.value || ''} ${item.duration || ''}`
 						)}
 						{renderOtherInstructions(key)}
 					</SectionWrapper>
