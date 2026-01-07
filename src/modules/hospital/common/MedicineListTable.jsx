@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { errorNotification } from "@components/notification/errorNotification";
+import {capitalizeWords} from "@utils/index";
 
 const MemoSelect = memo(function MemoSelect({ value, data, placeholder, onChange }) {
 	return (
@@ -176,8 +177,12 @@ function MedicineListTable({
 				textAlign: "center",
 				render: (_, index) => index + 1,
 			},
-			{ accessor: "medicine_name", title: "Medicine Name" },
-			{ accessor: "generic", title: "Generic" },
+			{ accessor: "medicine_name", title: "Medicine Name",
+				render: (record) => (capitalizeWords(record.medicine_name)),
+			},
+			{ accessor: "generic", title: "Medicine Name",
+				render: (record) => (capitalizeWords(record.generic)),
+			},
 			{
 				accessor: "medicine_dosage_id",
 				title: "Dosage",

@@ -35,6 +35,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 			heart: custom_report?.heart || "Normal is position and size",
 			bony_thorax: custom_report?.bony_thorax || "Appear normal",
 			impression: custom_report?.impression || "",
+			impression_two: custom_report?.impression_two || "",
 			comment: diagnosticReport?.comment || "Normal findings",
 		},
 	});
@@ -168,12 +169,25 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 						<Grid.Col span={9}>
 							<TextAreaForm
 								label=""
-								placeholder="Enter Diaphragm"
+								placeholder="Enter Impression"
 								name="impression"
 								id="impression"
-								nextField="impression"
+								nextField="impression_two"
 								form={form}
 								
+							/>
+						</Grid.Col>
+					</Grid>
+					<Grid>
+						<Grid.Col span={3}/>
+						<Grid.Col span={9}>
+							<TextAreaForm
+								label=""
+								placeholder="Enter Impression Other"
+								name="impression_two"
+								id="impression_two"
+								form={form}
+
 							/>
 						</Grid.Col>
 					</Grid>

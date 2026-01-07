@@ -296,7 +296,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 						</Table>
 					</Box>
-					<Box pos="relative" mt="lg">
+					{/*<Box pos="relative" mt="lg">
 						<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
 							<Table.Thead>
 								<Table.Tr>
@@ -342,7 +342,7 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Tr>
 							</Table.Tbody>
 						</Table>
-					</Box>
+					</Box>*/}
 				</Box>
 				{/* =============== payment summary table ================ */}
 				<Box ta="center">

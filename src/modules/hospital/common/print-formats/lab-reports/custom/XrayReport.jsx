@@ -59,6 +59,12 @@ const XrayReport = forwardRef(({ reportData, report }) => {
 						<div dangerouslySetInnerHTML={{ __html: getValue(reportData?.impression) }} />
 					</Grid.Col>
 				</Grid>
+				<Grid>
+					<Grid.Col span={3}/>
+					<Grid.Col span={9}>
+						<div dangerouslySetInnerHTML={{ __html: getValue(reportData?.impression_two) }} />
+					</Grid.Col>
+				</Grid>
 			</Box>
 			{/* =============== Doctor Information and Signature ================ */}
 		</Box>
