@@ -182,7 +182,7 @@ function MedicineListTable({
 			{ accessor: "medicine_name", title: "Medicine Name",
 				render: (record) => (record.medicine_name),
 			},
-			{ accessor: "generic", title: "Medicine Name",
+			{ accessor: "generic", title: "Generic Name",
 				render: (record) => (record.generic),
 			},
 			{
