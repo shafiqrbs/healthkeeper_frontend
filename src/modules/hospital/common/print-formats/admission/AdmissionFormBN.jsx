@@ -335,14 +335,28 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 										{patientInfo?.created_by_name}
 									</Table.Td>
 									<Table.Td colSpan={2} ta="right">
-										<br />
-										{t("Signature")}-----------------------------<br /><br />
-										{t("Name")}-----------------------------
+
 									</Table.Td>
 								</Table.Tr>
 							</Table.Tbody>
 						</Table>
 					</Box>*/}
+					<Box pos="relative" mt="lg">
+						<Grid>
+							<Grid.Col span={6}>
+								<br />
+								{t("Signature")}-----------------------------<br /><br />
+								{t("AdmittedBy")}<br />
+								{patientInfo?.created_by_name}
+							</Grid.Col>
+							<Grid.Col span={6}>
+								<br />
+								{t("Doctor Signature")}-----------------------------<br /><br />
+								{t("Name")}-----------------------------
+							</Grid.Col>
+						</Grid>
+						<hr/>
+					</Box>
 				</Box>
 				{/* =============== payment summary table ================ */}
 				<Box ta="center">

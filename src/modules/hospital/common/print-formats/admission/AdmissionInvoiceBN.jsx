@@ -303,7 +303,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 						</Table.Tr>
 					</Table.Tbody>
 				</Table>
-				{/*<Box pos="relative" mt="lg">
+				<Box pos="relative" mt="lg">
 					<Table withTableBorder withColumnBorders borderColor="var(--theme-tertiary-color-8)">
 						<Table.Thead>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
@@ -361,7 +361,7 @@ const AdmissionInvoiceBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 						</Table.Tbody>
 					</Table>
-				</Box>*/}
+				</Box>
 
 				<Box ta="center">
 					<Text size="xs" c="gray" mt="xs">
