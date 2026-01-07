@@ -916,6 +916,7 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 																}
 															/>
 														}
+														w="100%"
 														comboboxProps={{ withinPortal: false }}
 													/>
 												</FormValidatorWrapper>
