@@ -1,9 +1,9 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import { Center, Flex, Select, Switch, TableTd, ActionIcon } from "@mantine/core";
+import {Center, Flex, Select, Switch, TableTd, ActionIcon, Text, TextInput} from "@mantine/core";
 import { IconCheck, IconGripVertical, IconX, IconTrash } from "@tabler/icons-react";
 import { DataTable, DataTableDraggableRow } from "mantine-datatable";
 import clsx from "clsx";
-import { useState, useMemo, useEffect, useCallback, useRef, memo } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef, memo } from "react";
 import debounce from "lodash.debounce";
 
 import useAppLocalStore from "@hooks/useAppLocalStore";
@@ -16,6 +16,8 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { errorNotification } from "@components/notification/errorNotification";
 import {capitalizeWords} from "@utils/index";
+import InputForm from "@components/form-builders/InputForm";
+import inlineInputCss from "@assets/css/InlineInputField.module.css";
 
 const MemoSelect = memo(function MemoSelect({ value, data, placeholder, onChange }) {
 	return (
@@ -178,10 +180,10 @@ function MedicineListTable({
 				render: (_, index) => index + 1,
 			},
 			{ accessor: "medicine_name", title: "Medicine Name",
-				render: (record) => (capitalizeWords(record.medicine_name)),
+				render: (record) => (record.medicine_name),
 			},
 			{ accessor: "generic", title: "Medicine Name",
-				render: (record) => (capitalizeWords(record.generic)),
+				render: (record) => (record.generic),
 			},
 			{
 				accessor: "medicine_dosage_id",
@@ -207,6 +209,27 @@ function MedicineListTable({
 					/>
 				),
 			},
+			/*{
+				accessor: "instruction",
+				title: "Notes",
+				width: 200,
+				render: (record) => (
+					<TextInput
+						size="xs"
+						className={inlineInputCss.inputText}
+						placeholder={t("Instruction")}
+						value={record.instruction}
+						onChange={(event) =>
+							handleInlineEdit(
+								record.id,
+								"instruction",
+								event.currentTarget.value
+							)
+						}
+						onBlur={() => handleInlineEdit(item.id)}
+					/>
+				),
+			},*/
 			{
 				accessor: "action",
 				title: "Action",

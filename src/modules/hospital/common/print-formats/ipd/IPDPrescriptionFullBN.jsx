@@ -473,16 +473,12 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 															borderBottom: "1px solid #ddd",
 														}}>
 													<Flex
-														align={"left"}
+														align={"left"}/**/
 														key={index}
 													>
 														<Text fw={600}>
 															{index + 1}.{" "}
-															{getValue(capitalizeWords(
-																medicine.medicine_id
-																	? medicine.medicine_name
-																	: medicine.generic
-															))}
+															{getValue( medicine.medicine_name || medicine.generic)}
 														</Text>
 														<Text
 															style={{
