@@ -1,5 +1,5 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import {Center, Flex, Select, Switch, TableTd, ActionIcon, Text, TextInput} from "@mantine/core";
+import { Center, Flex, Select, Switch, TableTd, ActionIcon, Text, TextInput } from "@mantine/core";
 import { IconCheck, IconGripVertical, IconX, IconTrash } from "@tabler/icons-react";
 import { DataTable, DataTableDraggableRow } from "mantine-datatable";
 import clsx from "clsx";
@@ -15,7 +15,7 @@ import { useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { errorNotification } from "@components/notification/errorNotification";
-import {capitalizeWords} from "@utils/index";
+import { capitalizeWords } from "@utils/index";
 import InputForm from "@components/form-builders/InputForm";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 
@@ -49,6 +49,40 @@ const MemoSwitch = memo(function MemoSwitch({ checked, onChange }) {
 					<IconX size={12} color="var(--mantine-color-red-6)" stroke={3} />
 				)
 			}
+		/>
+	);
+});
+
+const MemoTextInput = memo(function MemoTextInput({ value, placeholder, className, onBlur }) {
+	const [localValue, setLocalValue] = useState(value || "");
+
+	// Sync local state when prop value changes externally
+	useEffect(() => {
+		setLocalValue(value || "");
+	}, [value]);
+
+	const handleChange = (event) => {
+		setLocalValue(event.currentTarget.value);
+	};
+
+	const handleBlur = () => {
+		onBlur(localValue);
+	};
+
+	return (
+		<TextInput
+			size="xs"
+			className={className}
+			placeholder={placeholder}
+			value={localValue}
+			onChange={handleChange}
+			onBlur={handleBlur}
+			styles={{
+				input: {
+					borderRadius: "8px",
+					// padding: "4px 8px",
+				},
+			}}
 		/>
 	);
 });
@@ -179,12 +213,8 @@ function MedicineListTable({
 				textAlign: "center",
 				render: (_, index) => index + 1,
 			},
-			{ accessor: "medicine_name", title: "Medicine Name",
-				render: (record) => (record.medicine_name),
-			},
-			{ accessor: "generic", title: "Generic Name",
-				render: (record) => (record.generic),
-			},
+			{ accessor: "medicine_name", title: "Medicine Name", render: (record) => record.medicine_name },
+			{ accessor: "generic", title: "Generic Name", render: (record) => record.generic },
 			{
 				accessor: "medicine_dosage_id",
 				title: "Dosage",
@@ -209,27 +239,19 @@ function MedicineListTable({
 					/>
 				),
 			},
-			/*{
+			{
 				accessor: "instruction",
 				title: "Notes",
 				width: 200,
 				render: (record) => (
-					<TextInput
-						size="xs"
+					<MemoTextInput
+						value={record.instruction}
 						className={inlineInputCss.inputText}
 						placeholder={t("Instruction")}
-						value={record.instruction}
-						onChange={(event) =>
-							handleInlineEdit(
-								record.id,
-								"instruction",
-								event.currentTarget.value
-							)
-						}
-						onBlur={() => handleInlineEdit(item.id)}
+						onBlur={(value) => handleInlineEdit(record.id, "instruction", value)}
 					/>
 				),
-			},*/
+			},
 			{
 				accessor: "action",
 				title: "Action",

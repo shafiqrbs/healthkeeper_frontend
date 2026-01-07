@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 
-const useMedicineGenericData = ({ term = "" }) => {
+const useMedicineGenericData = ({ term = "", mode = "generic" }) => {
 	const dispatch = useDispatch();
 	const [medicineGenericData, setMedicineGenericData] = useState([]);
 
@@ -11,7 +11,7 @@ const useMedicineGenericData = ({ term = "" }) => {
 			getIndexEntityData({
 				url: "hospital/select/medicine-generic",
 				module: "medicineGeneric",
-				params: { term: search || "" },
+				params: { term: search || "", mode },
 			})
 		).unwrap();
 

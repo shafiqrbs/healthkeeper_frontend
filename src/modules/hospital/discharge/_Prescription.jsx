@@ -16,6 +16,7 @@ import {
 	Textarea,
 	LoadingOverlay,
 	Collapse,
+	Switch,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
@@ -152,8 +153,10 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 	const [showDiseaseProfile, setShowDiseaseProfile] = useState(false);
 	const [medicineGenericDebounce, setMedicineGenericDebounce] = useDebouncedState("", 300);
 	const [medicineGenericSearchValue, setMedicineGenericSearchValue] = useState("");
+	const [medicineMode, setMedicineMode] = useState("generic");
 	const { medicineGenericData: genericData } = useMedicineGenericData({
 		term: medicineGenericDebounce,
+		mode: medicineMode,
 	});
 	const {
 		data: prescriptionData,
@@ -866,42 +869,57 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 												placeholder={t("SelfMedicine")}
 												classNames={inputCss}
 											/> */}
-
-											<FormValidatorWrapper opened={medicineForm.errors.generic_id}>
-												<Select
-													searchable
-													searchValue={medicineGenericSearchValue}
-													onSearchChange={setMedicineGenericSearchValue}
-													clearable
-													disabled={medicineForm.values.medicine_id}
-													tooltip={t("EnterGenericName")}
-													id="generic_id"
-													name="generic_id"
-													data={genericOptions}
-													filter={medicineOptionsFilter}
-													value={medicineForm.values.generic_id}
-													onChange={(v, options) => {
-														setMedicineGenericSearchValue(options.label);
-														handleChange("generic_id", v);
-														medicineForm.setFieldValue("medicine_name", options.label);
-														medicineForm.setFieldValue("generic", options.generic);
-													}}
-													onBlur={() =>
-														setMedicineGenericSearchValue(medicineGenericSearchValue)
+											<Flex gap="les" align="center">
+												<Switch
+													size="lg"
+													radius="sm"
+													onLabel="GEN"
+													offLabel="Brand"
+													checked={medicineMode === "generic"}
+													onChange={(event) =>
+														setMedicineMode(
+															event.currentTarget.checked ? "generic" : "brand"
+														)
 													}
-													placeholder={t("GenericName")}
-													classNames={inputCss}
-													error={!!medicineForm.errors.generic_id}
-													rightSection={
-														<AddGenericPopover
-															dbMedicines={dbMedicines}
-															setDbMedicines={setDbMedicines}
-															prescription_id={prescriptionData?.data?.prescription_uid}
-														/>
-													}
-													comboboxProps={{ withinPortal: false }}
 												/>
-											</FormValidatorWrapper>
+												<FormValidatorWrapper opened={medicineForm.errors.generic_id}>
+													<Select
+														searchable
+														searchValue={medicineGenericSearchValue}
+														onSearchChange={setMedicineGenericSearchValue}
+														clearable
+														disabled={medicineForm.values.medicine_id}
+														tooltip={t("EnterGenericName")}
+														id="generic_id"
+														name="generic_id"
+														data={genericOptions}
+														filter={medicineOptionsFilter}
+														value={medicineForm.values.generic_id}
+														onChange={(v, options) => {
+															setMedicineGenericSearchValue(options.label);
+															handleChange("generic_id", v);
+															medicineForm.setFieldValue("medicine_name", options.label);
+															medicineForm.setFieldValue("generic", options.generic);
+														}}
+														onBlur={() =>
+															setMedicineGenericSearchValue(medicineGenericSearchValue)
+														}
+														placeholder={t("GenericName")}
+														classNames={inputCss}
+														error={!!medicineForm.errors.generic_id}
+														rightSection={
+															<AddGenericPopover
+																dbMedicines={dbMedicines}
+																setDbMedicines={setDbMedicines}
+																prescription_id={
+																	prescriptionData?.data?.prescription_uid
+																}
+															/>
+														}
+														comboboxProps={{ withinPortal: false }}
+													/>
+												</FormValidatorWrapper>
+											</Flex>
 										</Grid.Col>
 									</Grid>
 									<Grid w="100%" columns={12} gutter="3xs">

@@ -515,6 +515,7 @@ export default function Index() {
 												form={form}
 												prescriptionData={ipdData}
 												modeName="E-Fresh Order"
+												showVitals={false}
 											/>
 										</Box>
 									)}

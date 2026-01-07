@@ -30,11 +30,12 @@ export default function PatientReport({
 	update,
 	prescriptionData,
 	modeName = "Prescription",
+	showVitals = true,
 }) {
 	const [showOtherInstruction, setShowOtherInstruction] = useState({});
 	const [searchQueries, setSearchQueries] = useState({});
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - extraHeight;
+	const height = showVitals ? mainAreaHeight - extraHeight : mainAreaHeight - extraHeight + 14;
 	const { t } = useTranslation();
 
 	const [autocompleteValues, setAutocompleteValues] = useState({});
@@ -722,7 +723,12 @@ export default function PatientReport({
 			return (
 				<Box bg="var(--mantine-color-white)" p="les">
 					<ScrollArea h={height}>
-						<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
+						<BasicInfoCard
+							showVitals={showVitals}
+							form={form}
+							prescriptionData={prescriptionData}
+							onBlur={handleFieldBlur}
+						/>
 						<Box p="md">
 							<Text c="dimmed">No data available for {tabValue}</Text>
 						</Box>
@@ -734,7 +740,12 @@ export default function PatientReport({
 		if (tabValue === "All") {
 			return (
 				<Box w="100%">
-					<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
+					<BasicInfoCard
+						showVitals={showVitals}
+						form={form}
+						prescriptionData={prescriptionData}
+						onBlur={handleFieldBlur}
+					/>
 					<ScrollArea h={form.values.is_vital ? height - 20 : height + 54}>
 						<Stack gap="sm" my="les">
 							{currentSection.map((section) => (
@@ -782,7 +793,12 @@ export default function PatientReport({
 		// Handle specific tab
 		return (
 			<Box w="100%">
-				<BasicInfoCard form={form} prescriptionData={prescriptionData} onBlur={handleFieldBlur} />
+				<BasicInfoCard
+					showVitals={showVitals}
+					form={form}
+					prescriptionData={prescriptionData}
+					onBlur={handleFieldBlur}
+				/>
 				<ScrollArea h={form.values.is_vital ? height - 20 : height + 54}>
 					<Box mt="les" w="100%">
 						<Box bg="var(--theme-secondary-color-1)" p="3xs">

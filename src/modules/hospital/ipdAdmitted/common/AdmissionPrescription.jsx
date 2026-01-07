@@ -133,6 +133,7 @@ export default function AdmissionPrescription() {
 							form={form}
 							prescriptionData={prescriptionData}
 							modeName="Admission"
+							showVitals={false}
 						/>
 					</Grid.Col>
 				)}

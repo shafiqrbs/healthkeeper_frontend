@@ -7,7 +7,7 @@ import InputForm from "@components/form-builders/InputForm";
 import { IconWeight } from "@tabler/icons-react";
 import { useEffect } from "react";
 
-export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
+export default function BasicInfoCard({ form, prescriptionData, onBlur, showVitals = true }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 
@@ -74,26 +74,28 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur }) {
 				</Grid>
 			</Stack>
 			<Divider />
-			<Flex gap="lg" justify="space-between" bg={"white"}>
-				<InputForm
-					styles={{ root: { width: "180px" } }}
-					form={form}
-					name="weight"
-					size={"xs"}
-					placeholder={t("Weight/KG")}
-					onBlur={onBlur}
-					rightSection={<IconWeight size={16} />}
-				/>
-				<Switch
-					checked={form.values.is_vital}
-					onChange={handleVitalChange}
-					size="lg"
-					radius="xs"
-					color="red"
-					onLabel="Vital"
-					offLabel="Vital"
-				/>
-			</Flex>
+			{showVitals && (
+				<Flex gap="lg" justify="space-between" bg={"white"}>
+					<InputForm
+						styles={{ root: { width: "180px" } }}
+						form={form}
+						name="weight"
+						size={"xs"}
+						placeholder={t("Weight/KG")}
+						onBlur={onBlur}
+						rightSection={<IconWeight size={16} />}
+					/>
+					<Switch
+						checked={form.values.is_vital}
+						onChange={handleVitalChange}
+						size="lg"
+						radius="xs"
+						color="red"
+						onLabel="Vital"
+						offLabel="Vital"
+					/>
+				</Flex>
+			)}
 			{form.values.is_vital && (
 				<Box bg="var(--mantine-color-white)">
 					<Grid w="100%" columns={24} gutter={"2"} pl={"xs"}>
