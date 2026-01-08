@@ -5,10 +5,18 @@ import SelectForm from "@components/form-builders/SelectForm";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import DateTimePickerForm from "@components/form-builders/DateTimePicker";
+import { updateEntityData } from "@/app/store/core/crudThunk";
+import { useDispatch } from "react-redux";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
+import { successNotification } from "@components/notification/successNotification";
+import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
+import { errorNotification } from "@components/notification/errorNotification";
 
 export default function DeathCertificate({ data }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
+	const dispatch = useDispatch();
 	const { diseasesProfile } = useAppLocalStore();
 
 	const diseaseOptions = diseasesProfile?.map((disease) => ({
@@ -18,26 +26,55 @@ export default function DeathCertificate({ data }) {
 
 	const form = useForm({
 		initialValues: {
-			disease: "",
-			causeOfDeath: "",
-			diseaseDescription: "",
+			cause_death: "hello",
+			about_death: "",
+			death_date_time: new Date(),
 		},
 		validate: {
-			disease: (value) => {
+			cause_death: (value) => {
 				if (!value) {
-					return t("Disease is required");
+					return t("CauseofDeathRequired");
+				}
+				return null;
+			},
+			death_date_time: (value) => {
+				if (!value) {
+					return t("DeathDateTimeRequired");
 				}
 				return null;
 			},
 		},
 	});
 
-	const handleSubmit = (values) => {
-		console.log(values);
+	const handleSubmit = async (values) => {
+		try {
+			const result = await dispatch(
+				updateEntityData({
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DEATH_CERTIFICATE}/${data?.prescription_uid}`,
+					data: values,
+					module: "admission",
+				})
+			);
+			if (updateEntityData.rejected.match(result)) {
+				const fieldErrors = result.payload.errors;
+				if (fieldErrors) {
+					const errorObject = {};
+					Object.keys(fieldErrors).forEach((key) => {
+						errorObject[key] = fieldErrors[key][0];
+					});
+					form.setErrors(errorObject);
+				}
+			} else if (updateEntityData.fulfilled.match(result)) {
+				successNotification(t("UpdatedSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+			}
+		} catch (error) {
+			console.error(error);
+			errorNotification(error.message, ERROR_NOTIFICATION_COLOR);
+		}
 	};
 
 	return (
-		<Box bg="var(--mantine-color-white" h={mainAreaHeight - 63} p="xs">
+		<Box bg="var(--mantine-color-white" h={mainAreaHeight - 14} p="xl">
 			<Text size="lg" fw={600} mb="md">
 				Death Certificate
 			</Text>
@@ -46,24 +83,26 @@ export default function DeathCertificate({ data }) {
 				<SelectForm
 					mt="sm"
 					form={form}
-					name="disease"
-					label="Disease"
-					placeholder="Select Disease"
+					name="cause_death"
+					tooltip="Cause of death is required"
+					label="Cause of death"
+					placeholder="Select Cause of Death"
 					dropdownValue={diseaseOptions}
 				/>
 				<TextAreaForm
 					mt="sm"
-					label="About Disease"
-					name="diseaseDescription"
+					label="About Death"
+					name="about_death"
 					form={form}
-					placeholder="About Disease"
+					placeholder="About Death"
 				/>
-				<TextAreaForm
+				<DateTimePickerForm
 					mt="sm"
-					label="Cause of Death"
-					name="causeOfDeath"
+					tooltip="Death date & time is required"
+					label="Death Date & Time"
+					name="death_date_time"
 					form={form}
-					placeholder="Cause of Death"
+					placeholder="Death Date & Time"
 				/>
 				<Flex gap="sm" justify="flex-end" mt="md">
 					<Button type="button" bg="var(--theme-secondary-color-6)" color="white">

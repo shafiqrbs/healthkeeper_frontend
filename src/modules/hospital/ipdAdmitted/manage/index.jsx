@@ -364,7 +364,11 @@ export default function Index() {
 								</Box>
 							</Box>
 
-							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
+							<ScrollArea
+								bg="var(--mantine-color-white)"
+								h={mainAreaHeight - 80}
+								scrollbars="y"
+							>
 								<Stack h="100%" py="xs" gap={0}>
 									{getFilteredTabs(
 										TAB_ITEMS.filter((tabItem) =>
@@ -446,7 +450,8 @@ export default function Index() {
 									>
 										{t("Release Procedure")}
 									</Box>
-									{ipdData?.data?.release_mode && ipdData?.data?.process?.toLowerCase() !== "paid" ? (
+									{ipdData?.data?.release_mode &&
+									ipdData?.data?.process?.toLowerCase() !== "paid" ? (
 										<Paper
 											m="md"
 											p="md"
@@ -482,7 +487,11 @@ export default function Index() {
 												{" "}
 												For Discharge{" "}
 											</Button>
-											<Button fullWidth color="red" onClick={() => handleReleaseMode("death")}>
+											<Button
+												fullWidth
+												color="red"
+												onClick={() => handleReleaseMode("death")}
+											>
 												For Death
 											</Button>
 											<Button
@@ -543,9 +552,15 @@ export default function Index() {
 						{/*{baseTabValue === "issue-medicine" && <IssueMedicine />}*/}
 						{/*{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}*/}
 						{baseTabValue === "investigation" && <Investigation ipdData={ipdData?.data} />}
-						{baseTabValue === "vitals-chart" && <VitalsChart refetch={refetch} data={ipdData?.data} />}
-						{baseTabValue === "insulin-chart" && <InsulinChart refetch={refetch} data={ipdData?.data} />}
-						{baseTabValue === "discharge" && <Discharge ipdData={ipdData?.data} refetch={refetch} />}
+						{baseTabValue === "vitals-chart" && (
+							<VitalsChart refetch={refetch} data={ipdData?.data} />
+						)}
+						{baseTabValue === "insulin-chart" && (
+							<InsulinChart refetch={refetch} data={ipdData?.data} />
+						)}
+						{baseTabValue === "discharge" && (
+							<Discharge ipdData={ipdData?.data} refetch={refetch} />
+						)}
 						{baseTabValue === "death-certificate" && <DeathCertificate data={ipdData?.data} />}
 						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
 						{baseTabValue === "discharge-print" && (
@@ -560,7 +575,13 @@ export default function Index() {
 						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
 						{!baseTabValue && (
-							<Flex bg="var(--mantine-color-white)" align="center" justify="center" w="100%" h="100%">
+							<Flex
+								bg="var(--mantine-color-white)"
+								align="center"
+								justify="center"
+								w="100%"
+								h="100%"
+							>
 								<Text size="sm" c="dimmed">
 									No item selected
 								</Text>
