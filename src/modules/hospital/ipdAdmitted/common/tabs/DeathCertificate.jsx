@@ -14,6 +14,7 @@ import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constant
 import { errorNotification } from "@components/notification/errorNotification";
 
 export default function DeathCertificate({ data }) {
+
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -23,14 +24,26 @@ export default function DeathCertificate({ data }) {
 		value: disease.name,
 		label: disease.name,
 	}));
-
 	const form = useForm({
 		initialValues: {
-			cause_death: "hello",
+			diseases_profile: "",
+			cause_death: "",
 			about_death: "",
 			death_date_time: new Date(),
 		},
 		validate: {
+			diseases_profile: (value) => {
+				if (!value) {
+					return t("DiseasesProfileRequired");
+				}
+				return null;
+			},
+			about_death: (value) => {
+				if (!value) {
+					return t("AboutDeathRequired");
+				}
+				return null;
+			},
 			cause_death: (value) => {
 				if (!value) {
 					return t("CauseofDeathRequired");
@@ -74,19 +87,18 @@ export default function DeathCertificate({ data }) {
 	};
 
 	return (
-		<Box bg="var(--mantine-color-white" h={mainAreaHeight - 14} p="xl">
+		<Box bg="var(--mantine-color-white"  p="xl" component="form" onSubmit={form.onSubmit(handleSubmit)}>
 			<Text size="lg" fw={600} mb="md">
 				Death Certificate
 			</Text>
-
-			<Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
+			<Box h={mainAreaHeight - 200}>
 				<SelectForm
 					mt="sm"
 					form={form}
-					name="cause_death"
-					tooltip="Cause of death is required"
-					label="Cause of death"
-					placeholder="Select Cause of Death"
+					name="diseases_profile"
+					tooltip="Diseases profile is required"
+					label="Diseases profile"
+					placeholder="Select Diseases profile"
 					dropdownValue={diseaseOptions}
 				/>
 				<TextAreaForm
@@ -95,6 +107,15 @@ export default function DeathCertificate({ data }) {
 					name="about_death"
 					form={form}
 					placeholder="About Death"
+					tooltip={t('Death date & time is required')}
+				/>
+				<TextAreaForm
+					mt="sm"
+					label="Cause of death"
+					name="cause_death"
+					form={form}
+					placeholder="Cause of death"
+					tooltip={t('Cause of death is required')}
 				/>
 				<DateTimePickerForm
 					mt="sm"
@@ -104,6 +125,8 @@ export default function DeathCertificate({ data }) {
 					form={form}
 					placeholder="Death Date & Time"
 				/>
+			</Box>
+			<Box>
 				<Flex gap="sm" justify="flex-end" mt="md">
 					<Button type="button" bg="var(--theme-secondary-color-6)" color="white">
 						Cancel

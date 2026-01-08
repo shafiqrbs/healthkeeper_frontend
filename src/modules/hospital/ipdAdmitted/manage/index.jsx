@@ -14,7 +14,6 @@ import {
 	Tooltip,
 	Button,
 	Group,
-	Paper,
 } from "@mantine/core";
 import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
@@ -43,13 +42,14 @@ import DeathCertificate from "../common/tabs/DeathCertificate";
 import DischargePrint from "../common/tabs/DischargePrint";
 import RoomTransferPrint from "../common/tabs/RoomTransferPrint.jsx";
 import DeathCertificatePrint from "../common/tabs/DeathCertificatePrint.jsx";
+import Referred from "../common/tabs/Referred.jsx";
 import { IconX, IconChevronRight } from "@tabler/icons-react";
 import { errorNotification } from "@components/notification/errorNotification";
 
 const module = MODULES.E_FRESH;
 
 const RELEASE_TAB_MAP = {
-	referred: "room-transfer",
+	referred: "referred",
 	discharge: "discharge",
 	death: "death-certificate",
 };
@@ -85,21 +85,21 @@ const TAB_ITEMS = [
 		value: "insulin-chart",
 		allowedGroups: ["admin_administrator", "nurse_incharge"],
 	},
-	{
-		label: "Room Transfer",
-		value: "room-transfer",
-		allowedGroups: ["admin_administrator", "nurse_incharge"],
-	},
-	{
-		label: "Discharge",
-		value: "discharge",
-		allowedGroups: ["doctor_ipd", "admin_administrator"],
-	},
-	{
-		label: "DeathCertificate",
-		value: "death-certificate",
-		allowedGroups: ["doctor_ipd", "admin_administrator"],
-	},
+	// {
+	// 	label: "Room Transfer",
+	// 	value: "room-transfer",
+	// 	allowedGroups: ["admin_administrator", "nurse_incharge"],
+	// },
+	// {
+	// 	label: "Discharge",
+	// 	value: "discharge",
+	// 	allowedGroups: ["doctor_ipd", "admin_administrator"],
+	// },
+	// {
+	// 	label: "DeathCertificate",
+	// 	value: "death-certificate",
+	// 	allowedGroups: ["doctor_ipd", "admin_administrator"],
+	// },
 ];
 
 const PRINT_SECTION_ITEMS = [
@@ -177,35 +177,35 @@ export default function Index() {
 	const isPaid = ipdData?.data?.process?.toLowerCase() === "paid";
 
 	// =============== redirect to dashboard if current tab is not accessible ================
-	useEffect(() => {
-		if (!ipdData?.data || !baseTabValue) return;
+	// useEffect(() => {
+	// 	if (!ipdData?.data || !baseTabValue) return;
 
-		const currentReleaseMode = ipdData.data.release_mode;
-		const currentIsPaid = ipdData.data.process?.toLowerCase() === "paid";
+	// 	const currentReleaseMode = ipdData.data.release_mode;
+	// 	const currentIsPaid = ipdData.data.process?.toLowerCase() === "paid";
 
-		// ❌ If not paid → release tabs & prints are forbidden
-		if (!currentIsPaid) {
-			const forbidden = [...Object.values(RELEASE_TAB_MAP), ...Object.values(RELEASE_PRINT_MAP)];
+	// 	// ❌ If not paid → release tabs & prints are forbidden
+	// 	// if (!currentIsPaid) {
+	// 	// 	const forbidden = [...Object.values(RELEASE_TAB_MAP), ...Object.values(RELEASE_PRINT_MAP)];
 
-			if (forbidden.includes(baseTabValue)) {
-				setBaseTabValue("dashboard");
-				setSearchParams({ tab: "dashboard" });
-			}
-			return;
-		}
+	// 	// 	if (forbidden.includes(baseTabValue)) {
+	// 	// 		setBaseTabValue("dashboard");
+	// 	// 		setSearchParams({ tab: "dashboard" });
+	// 	// 	}
+	// 	// 	return;
+	// 	// }
 
-		// ✅ Paid + release mode → ONLY dashboard + matching release tab/print
-		if (currentReleaseMode) {
-			const allowedTabs = getAllowedTabsForRelease(currentReleaseMode);
-			const allowedPrints = getAllowedPrintsForRelease(currentReleaseMode);
-			const allowed = [...allowedTabs, ...allowedPrints];
+	// 	// ✅ Paid + release mode → ONLY dashboard + matching release tab/print
+	// 	if (currentReleaseMode) {
+	// 		const allowedTabs = getAllowedTabsForRelease(currentReleaseMode);
+	// 		const allowedPrints = getAllowedPrintsForRelease(currentReleaseMode);
+	// 		const allowed = [...allowedTabs, ...allowedPrints];
 
-			if (!allowed.includes(baseTabValue)) {
-				setBaseTabValue("dashboard");
-				setSearchParams({ tab: "dashboard" });
-			}
-		}
-	}, [ipdData?.data, baseTabValue, setSearchParams]);
+	// 		if (!allowed.includes(baseTabValue)) {
+	// 			setBaseTabValue("dashboard");
+	// 			setSearchParams({ tab: "dashboard" });
+	// 		}
+	// 	}
+	// }, [ipdData?.data, baseTabValue, setSearchParams]);
 
 	const DASHBOARD_TAB = "dashboard";
 
@@ -364,16 +364,10 @@ export default function Index() {
 								</Box>
 							</Box>
 
-							<ScrollArea
-								bg="var(--mantine-color-white)"
-								h={mainAreaHeight - 80}
-								scrollbars="y"
-							>
+							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
 								<Stack h="100%" py="xs" gap={0}>
-									{getFilteredTabs(
-										TAB_ITEMS.filter((tabItem) =>
-											userRoles.some((role) => tabItem.allowedGroups.includes(role))
-										)
+									{TAB_ITEMS.filter((tabItem) =>
+										userRoles.some((role) => tabItem.allowedGroups.includes(role))
 									).map((tabItem, index) => (
 										<Box
 											key={index}
@@ -450,55 +444,34 @@ export default function Index() {
 									>
 										{t("Release Procedure")}
 									</Box>
-									{ipdData?.data?.release_mode &&
-									ipdData?.data?.process?.toLowerCase() !== "paid" ? (
-										<Paper
-											m="md"
-											p="md"
-											withBorder
-											radius="sm"
-											bg="var(--theme-warn-color-1)"
-											style={{ borderColor: "var(--theme-warn-color-4)" }}
-										>
-											<Text fw={600} size="md" c="var(--theme-warn-color-7)">
-												{ipdData?.data?.release_mode.charAt(0).toUpperCase() +
-													ipdData?.data?.release_mode.slice(1)}
-												: waiting for the bill to be processed
-											</Text>
-										</Paper>
-									) : ipdData?.data?.release_mode &&
-									  ipdData?.data?.process?.toLowerCase() === "paid" ? (
-										<Paper
-											withBorder
-											radius="sm"
-											p={"xs"}
-											bg="var(--theme-primary-color-0)"
-											style={{ borderColor: "var(--theme-secondary-color-4)" }}
-										>
-											<Text fw={600} size="md" c="var(--theme-secondary-color-7)">
-												{ipdData?.data?.release_mode.charAt(0).toUpperCase() +
-													ipdData?.data?.release_mode.slice(1)}
-												: Bill processed successfully
-											</Text>
-										</Paper>
-									) : (
+									{ipdData?.data?.release_mode && ipdData?.data?.process?.toLowerCase() && (
+										// <Paper
+										// 	withBorder
+										// 	radius="sm"
+										// 	p={"xs"}
+										// 	bg="var(--theme-primary-color-0)"
+										// 	style={{ borderColor: "var(--theme-secondary-color-4)" }}
+										// >
+										// 	<Text fw={600} size="md" c="var(--theme-secondary-color-7)">
+										// 		{ipdData?.data?.release_mode.charAt(0).toUpperCase() +
+										// 			ipdData?.data?.release_mode.slice(1)}
+										// 		: Bill processed successfully
+										// 	</Text>
+										// </Paper>
+
 										<Group justify="center" py="md">
-											<Button fullWidth onClick={() => handleReleaseMode("discharge")}>
+											<Button fullWidth onClick={() => handleTabClick("discharge")}>
 												{" "}
 												For Discharge{" "}
 											</Button>
 											<Button
 												fullWidth
 												color="red"
-												onClick={() => handleReleaseMode("death")}
+												onClick={() => handleTabClick("death-certificate")}
 											>
 												For Death
 											</Button>
-											<Button
-												fullWidth
-												color="green"
-												onClick={() => handleReleaseMode("referred")}
-											>
+											<Button fullWidth color="green" onClick={() => handleTabClick("referred")}>
 												For Referred
 											</Button>
 										</Group>
@@ -548,19 +521,14 @@ export default function Index() {
 							</Stack>
 						)}
 						{baseTabValue === "room-transfer" && <RoomTransfer data={ipdData?.data} />}
+						{baseTabValue === "referred" && <Referred data={ipdData?.data} />}
 						{baseTabValue === "dashboard" && <Dashboard />}
 						{/*{baseTabValue === "issue-medicine" && <IssueMedicine />}*/}
 						{/*{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}*/}
 						{baseTabValue === "investigation" && <Investigation ipdData={ipdData?.data} />}
-						{baseTabValue === "vitals-chart" && (
-							<VitalsChart refetch={refetch} data={ipdData?.data} />
-						)}
-						{baseTabValue === "insulin-chart" && (
-							<InsulinChart refetch={refetch} data={ipdData?.data} />
-						)}
-						{baseTabValue === "discharge" && (
-							<Discharge ipdData={ipdData?.data} refetch={refetch} />
-						)}
+						{baseTabValue === "vitals-chart" && <VitalsChart refetch={refetch} data={ipdData?.data} />}
+						{baseTabValue === "insulin-chart" && <InsulinChart refetch={refetch} data={ipdData?.data} />}
+						{baseTabValue === "discharge" && <Discharge ipdData={ipdData?.data} refetch={refetch} />}
 						{baseTabValue === "death-certificate" && <DeathCertificate data={ipdData?.data} />}
 						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
 						{baseTabValue === "discharge-print" && (
@@ -575,13 +543,7 @@ export default function Index() {
 						{/*{baseTabValue === "admission form" && <PrintAdmissionForm />}*/}
 
 						{!baseTabValue && (
-							<Flex
-								bg="var(--mantine-color-white)"
-								align="center"
-								justify="center"
-								w="100%"
-								h="100%"
-							>
+							<Flex bg="var(--mantine-color-white)" align="center" justify="center" w="100%" h="100%">
 								<Text size="sm" c="dimmed">
 									No item selected
 								</Text>

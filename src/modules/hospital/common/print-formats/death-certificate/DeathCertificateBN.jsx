@@ -324,7 +324,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Date Time of Death")}:
 										</Text>
-										<Text size="sm">08-01-02026 02:10 PM {/*{getValue(patientInfo?.death_date_time, "")}*/}</Text>
+										<Text size="sm">{getValue(patientInfo?.death_date_time, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>

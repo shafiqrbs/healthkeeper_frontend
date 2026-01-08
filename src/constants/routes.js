@@ -596,6 +596,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			DELETE: "hospital/refund-history",
 			APPROVE: "hospital/refund-history/approve",
 			PRINT: "hospital/refund-history/print",
+			IPD_PRINT: "hospital/refund-history/ipd-print",
 		},
 
 		PATIENT_WAIVER: {
