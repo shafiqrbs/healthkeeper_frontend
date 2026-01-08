@@ -691,7 +691,7 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 												placeholder={t("Disease")}
 											/>
 										</Box>
-										<Box pl="sm" pr="sm" pt="sm">
+										<Box pl="sm" pr="sm" pt="sm" pb="sm">
 											<TextAreaForm
 												form={form}
 												label="Disease Details"
@@ -739,65 +739,17 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 												resize="vertical"
 											/>
 										</Box>
-										<Stack>
-											<Box fz="md" c="white">
-												<Text
-													bg="var(--theme-save-btn-color)"
-													fz="md"
-													c="white"
-													px="sm"
-													py="les"
-												>
-													{t("AdviseTemplate")}
-												</Text>
-												<ScrollArea h={80} p="les" className="borderRadiusAll">
-													{adviceData?.map((advise) => (
-														<Flex
-															align="center"
-															gap="les"
-															bg="var(--theme-primary-color-0)"
-															c="dark"
-															key={advise.id}
-															onClick={() => handleAdviseTemplate(advise?.content)}
-															px="les"
-															bd="1px solid var(--theme-primary-color-0)"
-															mb="2"
-															className="cursor-pointer"
-														>
-															<IconReportMedical
-																color="var(--theme-secondary-color-6)"
-																size={13}
-															/>{" "}
-															<Text mt="es" fz={13}>
-																{advise?.name}
-															</Text>
-														</Flex>
-													))}
-												</ScrollArea>
-											</Box>
-											<Box bg="var(--theme-primary-color-0)" fz="md" c="white">
-												<Text
-													bg="var(--theme-secondary-color-6)"
-													fz="md"
-													c="white"
-													px="sm"
-													py="les"
-												>
-													{t("Advise")}
-												</Text>
-												<Box p="sm">
-													<TextAreaForm
-														form={form}
-														label=""
-														value={form.values.advise}
-														name="advise"
-														placeholder="Write an advice..."
-														showRightSection={false}
-														style={{ input: { height: "72px" } }}
-													/>
-												</Box>
-											</Box>
-										</Stack>
+										<Box px="sm" pb="sm">
+											<TextAreaForm
+												form={form}
+												label="Advise"
+												value={form.values.advise}
+												name="advise"
+												placeholder="Write an advice..."
+												showRightSection={false}
+												style={{ input: { height: "72px" } }}
+											/>
+										</Box>
 										<Box pl="sm" pr="sm" pb="sm">
 											<TextAreaForm
 												form={form}
@@ -1146,7 +1098,7 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 										</Text>
 									</Stack>
 								</Button>
-								<Button w="100%" bg="var(--theme-save-btn-color)" onClick={openPrescriptionPreview}>
+								{/* <Button w="100%" bg="var(--theme-save-btn-color)" onClick={openPrescriptionPreview}>
 									<Stack gap={0} align="center" justify="center">
 										<Text>{t("Preview")}</Text>
 										<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
@@ -1165,7 +1117,7 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 											(alt + 3)
 										</Text>
 									</Stack>
-								</Button>
+								</Button> */}
 								<Button
 									w="100%"
 									bg="var(--theme-save-btn-color)"
