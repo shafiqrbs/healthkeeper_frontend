@@ -3,7 +3,7 @@ import { Center, Flex, Select, Switch, TableTd, ActionIcon, Text, TextInput } fr
 import { IconCheck, IconGripVertical, IconX, IconTrash } from "@tabler/icons-react";
 import { DataTable, DataTableDraggableRow } from "mantine-datatable";
 import clsx from "clsx";
-import React, { useState, useMemo, useEffect, useCallback, useRef, memo } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef, memo } from "react";
 import debounce from "lodash.debounce";
 
 import useAppLocalStore from "@hooks/useAppLocalStore";
@@ -16,7 +16,6 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { errorNotification } from "@components/notification/errorNotification";
 import { capitalizeWords } from "@utils/index";
-import InputForm from "@components/form-builders/InputForm";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 
 const MemoSelect = memo(function MemoSelect({ value, data, placeholder, onChange }) {

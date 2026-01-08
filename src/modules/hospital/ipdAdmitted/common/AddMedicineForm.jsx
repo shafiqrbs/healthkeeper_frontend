@@ -61,6 +61,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import AddDosagePopover from "@components/drawers/AddDosagePopover";
 import MedicineListTable from "@hospital-components/MedicineListTable";
 import AddGenericPopover from "@components/drawers/AddGenericPopover";
+import { getDataWithoutStore } from "@/services/apiService";
 
 export default function AddMedicineForm({
 	showBaseItems = true,
@@ -189,6 +190,11 @@ export default function AddMedicineForm({
 	useEffect(() => {
 		setMedicineGenericDebounce(medicineGenericSearchValue);
 	}, [medicineGenericSearchValue]);
+
+	useEffect(() => {
+		if (!printData) return;
+		printPrescription2A4();
+	}, [printData]);
 
 	useEffect(() => {
 		dispatch(
@@ -612,12 +618,13 @@ export default function AddMedicineForm({
 	};
 
 	const handlePrintPrescription2A4 = async () => {
-		const result = await handlePrescriptionSubmit(true, false);
+		const result = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${ipdId || id}`,
+		});
 
 		if (result.status === 200) {
+			console.log(result.data);
 			setPrintData(result.data);
-
-			requestAnimationFrame(() => printPrescription2A4());
 		} else {
 			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
 		}
