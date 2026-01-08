@@ -14,7 +14,6 @@ import {
 	Tooltip,
 	Button,
 	Group,
-	Paper,
 } from "@mantine/core";
 import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "../common/AddMedicineForm";
@@ -43,13 +42,14 @@ import DeathCertificate from "../common/tabs/DeathCertificate";
 import DischargePrint from "../common/tabs/DischargePrint";
 import RoomTransferPrint from "../common/tabs/RoomTransferPrint.jsx";
 import DeathCertificatePrint from "../common/tabs/DeathCertificatePrint.jsx";
+import Referred from "../common/tabs/Referred.jsx";
 import { IconX, IconChevronRight } from "@tabler/icons-react";
 import { errorNotification } from "@components/notification/errorNotification";
 
 const module = MODULES.E_FRESH;
 
 const RELEASE_TAB_MAP = {
-	referred: "room-transfer",
+	referred: "referred",
 	discharge: "discharge",
 	death: "death-certificate",
 };
@@ -471,11 +471,7 @@ export default function Index() {
 											>
 												For Death
 											</Button>
-											<Button
-												fullWidth
-												color="green"
-												onClick={() => handleTabClick("room-transfer")}
-											>
+											<Button fullWidth color="green" onClick={() => handleTabClick("referred")}>
 												For Referred
 											</Button>
 										</Group>
@@ -525,6 +521,7 @@ export default function Index() {
 							</Stack>
 						)}
 						{baseTabValue === "room-transfer" && <RoomTransfer data={ipdData?.data} />}
+						{baseTabValue === "referred" && <Referred data={ipdData?.data} />}
 						{baseTabValue === "dashboard" && <Dashboard />}
 						{/*{baseTabValue === "issue-medicine" && <IssueMedicine />}*/}
 						{/*{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}*/}
