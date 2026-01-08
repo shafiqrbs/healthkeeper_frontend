@@ -187,6 +187,13 @@ export const MASTER_DATA_ROUTES = {
 			UPDATE: "hospital/core/treatment",
 			DELETE: "hospital/core/treatment",
 		},
+		MANAGE_FILE: {
+			INDEX: "core/file-upload",
+			CREATE: "core/file-upload/store",
+			UPDATE: "core/file",
+			VIEW: "core/file",
+			DELETE: "core/file-upload",
+		},
 	},
 	NAVIGATION_LINKS: {
 		USER: {
@@ -205,6 +212,14 @@ export const MASTER_DATA_ROUTES = {
 
 		STORE_USER: {
 			INDEX: "/hospital/core/store-user",
+		},
+
+		MANAGE_FILE: {
+			INDEX: "/core/file",
+			CREATE: "core/file",
+			UPDATE: "core/file",
+			VIEW: "core/file",
+			DELETE: "core/file",
 		},
 
 		SETTING: {
@@ -379,6 +394,7 @@ export const PHARMACY_DATA_ROUTES = {
 
 		DISPENSE: {
 			STOCK_ITEM: "pharmacy/dispense/stock-item",
+			APPROVE: "pharmacy/dispense/approve",
 			INDEX: "pharmacy/dispense",
 			CREATE: "pharmacy/dispense",
 			UPDATE: "pharmacy/dispense",

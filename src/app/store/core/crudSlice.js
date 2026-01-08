@@ -524,6 +524,15 @@ const initialState = {
 		editData: {},
 		filterData: { name: "" },
 	},
+	file_upload: {
+		isLoading: true,
+		refetching: true,
+		error: null,
+		validation: false,
+		data: {},
+		editData: {},
+		filterData: { name: "" },
+	},
 	recipeItems: {
 		isLoading: true,
 		refetching: true,

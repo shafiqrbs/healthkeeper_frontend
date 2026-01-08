@@ -21,11 +21,11 @@ import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
 import { deleteEntityData, editEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
-import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
+import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import useAppLocalStore from "@hooks/useAppLocalStore";
-import { useRef, useState } from "react";
+import { useState } from "react";
+import {successNotification} from "@components/notification/successNotification.jsx";
 
 const PER_PAGE = 50;
 
@@ -63,6 +63,39 @@ export default function _Table({ module }) {
 	const handleEntityEdit = (id) => {
 		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.DISPENSE.UPDATE}/${id}`);
 	};
+
+	const handleDispenseApproved = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: "Confirm", cancel: "Cancel" },
+			confirmProps: { color: "var(--theme-delete-color)" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleDispenseConfirm(id),
+		});
+	};
+
+	const handleDispenseConfirm = async (id) => {
+		const res = await dispatch(
+			editEntityData({
+				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.DISPENSE.APPROVE}/${id}`,
+				module,
+				id,
+			})
+		);
+
+		if (editEntityData.fulfilled.match(res)) {
+			dispatch(setRefetchData({module, refetching: true}));
+			successNotification(res.payload?.data?.message || 'Dispense Approved successfully', SUCCESS_NOTIFICATION_COLOR);
+			refetchAll()
+		} else {
+			notifications.show({
+				color: ERROR_NOTIFICATION_COLOR,
+				title: t("DeleteFailed"),
+				icon: <IconAlertCircle style={{width: rem(18), height: rem(18)}}/>,
+			});
+		}
+	}
 
 	const handleDelete = (id) => {
 		modals.openConfirmModal({
@@ -190,7 +223,23 @@ export default function _Table({ module }) {
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
 									<Button.Group>
-										{values.process !== "Approved" &&
+										{values.process == "Created" &&
+											!values.approved_by_id && (
+												<Button
+													onClick={() => {
+														handleDispenseApproved(values.id);
+													}}
+													variant="filled"
+													c="white"
+													fw={400}
+													size="compact-xs"
+													radius="es"
+													className="border-left-radius-none --theme-warn-color-6"
+												>
+													{t("Approved")}
+												</Button>
+											)}
+										{values.process == "Created" &&
 											!values.approved_by_id && (
 												<Button
 													onClick={() => {

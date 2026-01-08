@@ -13,7 +13,7 @@ import { useOutletContext } from "react-router-dom";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import __ProductionSettingFilterForm from "@modules/production/settings/__ProductionSettingFilterForm.jsx";
 import WarehouseFilterForm from "@modules/core/warehouse/WarehouseFilterForm.jsx";
-import FileUploadFilterForm from "@modules/core/file-upload/FIleUploadFIlterForm.jsx";
+import FileUploadFilterForm from "@modules/core/file-upload-bk/FIleUploadFIlterForm.jsx";
 
 function FilterModel({ filterModel, setFilterModel, module }) {
 	const { t } = useTranslation();

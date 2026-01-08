@@ -712,6 +712,13 @@ export const sideNavigationLinks = {
 			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
 		},
 		{
+			label: t("ManageFile"),
+			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.MANAGE_FILE.INDEX,
+			icon: IconShoppingBag,
+			color: "#F59E0B",
+			allowedRoles: ["role_domain", "admin_administrator", "admin_hospital"],
+		},
+		{
 			label: t("Setting"),
 			path: MASTER_DATA_ROUTES.NAVIGATION_LINKS.SETTING.INDEX,
 			icon: IconDashboard,

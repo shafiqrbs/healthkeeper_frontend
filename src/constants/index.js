@@ -25,6 +25,7 @@ export const MODULES = {
 	USER: "user",
 	SETTING: "setting",
 	STORE: "store",
+	FILE_UPLOAD: "file_upload",
 	LAB_TEST: "labTest",
 	BILLING: "billing",
 	FINAL_BILLING: "finalBilling",

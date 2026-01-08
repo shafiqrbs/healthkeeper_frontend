@@ -35,7 +35,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 	const handleConfirmApproved = async (id) => {
 		try {
 			const value = {
-				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.APPROVE}/${id}`,
+				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.DISPENSE.APPROVE}/${id}`,
 				module,
 			};
 
@@ -46,39 +46,6 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 				}
 				closeDrawer();
 			}
-		} catch (error) {	const invoicePrintRef = useRef(null);
-
-			errorNotification("Error updating purchase config:" + error.message);
-		} finally {
-			refetchAll();
-		}
-	};
-
-	const handleWorkOrderReceived = (id) => {
-		modals.openConfirmModal({
-			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
-			labels: { confirm: "Confirm", cancel: "Cancel" },
-			confirmProps: { color: "var(--theme-delete-color)" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleConfirmReceived(id),
-		});
-	};
-
-	const handleConfirmReceived = async (id) => {
-		try {
-			const value = {
-				url: `${PHARMACY_DATA_ROUTES.API_ROUTES.PURCHASE.RECEIVE}/${id}`,
-				module,
-			};
-
-			const resultAction = await dispatch(showEntityData(value));
-			if (showEntityData.fulfilled.match(resultAction)) {
-				if (resultAction.payload.data.status === 200) {
-					successNotification(resultAction.payload.data.message);
-				}
-			}
-			closeDrawer();
 		} catch (error) {
 			errorNotification("Error updating purchase config:" + error.message);
 		} finally {
@@ -224,7 +191,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 				<Drawer.Header className={"drawer-sticky-header"}>
 					<Drawer.Title>
 						<Flex align="right" gap={8}>
-							{/*{entityObject.process === "Created" && canApprove && (
+							{entityObject.process === "Created" && (
 								<Button
 									onClick={(e) => {
 										e.preventDefault();
@@ -240,24 +207,6 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 									{t("Approved")}
 								</Button>
 							)}
-							{entityObject.process === "Approved" &&
-								entityObject.approved_by_id &&
-								canApprove && (
-									<Button
-										onClick={(e) => {
-											e.preventDefault();
-											handleWorkOrderReceived(entityObject.id);
-										}}
-										variant="filled"
-										c="white"
-										bg="var(--theme-warn-color-6)"
-										size="xs"
-										radius="es"
-										leftSection={<IconDeviceFloppy size={16} />}
-									>
-										{t("Received")}
-									</Button>
-								)}*/}
 						</Flex>
 					</Drawer.Title>
 				</Drawer.Header>

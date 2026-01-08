@@ -1,5 +1,5 @@
 import { ActionIcon, Flex, Select, TextInput } from "@mantine/core";
-import { IconFileTypeXls, IconRestore, IconSearch, IconX } from "@tabler/icons-react";
+import {IconFile, IconFileTypeXls, IconRestore, IconSearch, IconX} from "@tabler/icons-react";
 import AdvancedFilter from "../../../common/components/advance-search/AdvancedFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilterData } from "@/app/store/core/crudSlice";
@@ -34,8 +34,11 @@ export default function ReportFilterSearch({
 	showUnits = false,
 	className = "keyword-search-box",
 	handleCSVDownload = () => {},
+											   handleCSVDownloadForUpload = () => {},
     showStockItems = false,
-    showWarehouse = false})
+    showWarehouse = false,
+											   downloadOpeningTemplate = false,
+})
 	{
 	const dispatch = useDispatch();
 	const [fetching, setFetching] = useState(false);
@@ -295,6 +298,17 @@ export default function ReportFilterSearch({
 				>
 					<IconFileTypeXls size={16} stroke={1.5} />
 				</ActionIcon>
+
+				{downloadOpeningTemplate &&
+
+				<ActionIcon
+					c="var(--theme-success-color-3)"
+					bg="var(--mantine-color-white)"
+					onClick={handleCSVDownloadForUpload}
+				>
+					<IconFile size={16} stroke={1.5} />
+				</ActionIcon>
+				}
 			</Flex>
 		</Flex>
 	);

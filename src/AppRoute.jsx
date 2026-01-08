@@ -20,6 +20,7 @@ import ParticularTypeIndex from "@modules/hospital/core/particular-type";
 import CategoryIndex from "@modules/hospital/core/category";
 import StoreUserIndex from "@modules/hospital/core/store-user";
 import StoreIndex from "@modules/core/store";
+import FileUploadIndex from "@modules/core/file-upload";
 import EmergencyIndex from "@modules/hospital/emergency";
 import VitalIndex from "@modules/hospital/patient-vital";
 import NotFound from "@components/layout/NotFound";
@@ -78,7 +79,7 @@ import StoreIndentIndex from "@modules/pharmacy/store-indent";
 import PharmacyWorkorderManage from "@modules/pharmacy/workorder/manage";
 import IpdManageIndex from "@modules/hospital/ipdAdmitted/manage";
 import DispenseIndex from "@modules/pharmacy/dispense";
-import DispanseManage from "@modules/pharmacy/dispense/manage";
+import DispenseManage from "@modules/pharmacy/dispense/manage";
 import StoreRequisitionIndex from "@modules/store/requisition";
 import StoreRequisitionManage from "@modules/store/requisition/manage";
 import StoreStockIndex from "@modules/store/stock";
@@ -96,6 +97,7 @@ function AppRoute() {
 					<Route path="user/:id" element={<UserIndex mode="edit" />} />
 					<Route path="setting" element={<SettingIndex />} />
 					<Route path="setting/:id" element={<SettingIndex mode="edit" />} />
+					<Route path="file" element={<FileUploadIndex />} />
 					<Route path="store" element={<StoreIndex />} />
 					<Route path="store/:id" element={<StoreIndex mode={"edit"} />} />
 					<Route path="vendor" element={<VendorIndex />} />
@@ -169,8 +171,8 @@ function AppRoute() {
 					<Route path="workorder/manage/:id" element={<PharmacyWorkorderManage mode="edit" />} />
 					<Route path="dispense">
 						<Route path="" element={<DispenseIndex />} />
-						<Route path="manage" element={<DispanseManage />} />
-						<Route path="manage/:id" element={<DispanseManage mode="edit" />} />
+						<Route path="manage" element={<DispenseManage />} />
+						<Route path="manage/:id" element={<DispenseManage mode="edit" />} />
 					</Route>
 				</Route>
 				<Route path="/store/">

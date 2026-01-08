@@ -157,7 +157,7 @@ export const CORE_NAV_LINKS = [
 
 export const CORE_NAV_LINKS2 = [
 	{
-		href: "core/file-upload",
+		href: "core/file-upload-bk",
 		label: "ManageFile",
 		icon: IconUsers,
 	},

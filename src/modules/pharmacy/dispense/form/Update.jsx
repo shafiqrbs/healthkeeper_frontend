@@ -38,9 +38,11 @@ export default function Update({form, data}) {
 
         const mappedRecords = Array.isArray(entity?.dispense_items)
             ? entity.dispense_items.map((dispenseItem) => ({
-                stock_item_id: dispenseItem?.stock_item_id ? String(dispenseItem.stock_item_id) : "",
-                name: dispenseItem?.name || "",
-                quantity: dispenseItem?.quantity || "",
+                stock_item_id: dispenseItem?.stock_item_id ? String(dispenseItem.stock_item_id) : null,
+                name: dispenseItem?.name || null,
+                quantity: dispenseItem?.quantity || 0,
+                config_id: dispenseItem?.config_id || null,
+                warehouse_id: dispenseItem?.warehouse_id || null,
             }))
             : [];
 

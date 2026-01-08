@@ -29,12 +29,25 @@ const CSV_HEADERS = [
 	{ label: "Closing quantity", key: "closing_quantity" },
 ];
 
+const CSV_HEADERS_UPLOAD = [
+	{ label: "S/N", key: "sn" },
+	{ label: "Warehouse Name", key: "warehouse_name" },
+	{ label: "WarehouseID", key: "warehouse_id" },
+	{ label: "Item Name", key: "name" },
+	{ label: "Stock ItemID", key: "stock_item_id" },
+	{ label: "OpeningQuantity", key: "opening_quantity" },
+	{ label: "ProductionDate", key: "production_date" },
+	{ label: "ExpiredDate", key: "expired_date" },
+];
+
+
 
 const module = MODULES.REPORT.STOCK_SUMMERY;
 
 export default function StockSummery() {
 	const { mainAreaHeight } = useOutletContext();
 	const csvLinkRef = useRef(null);
+	const csvLinkRefForUpload = useRef(null);
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state?.crud[module]?.data);
 
@@ -69,9 +82,27 @@ export default function StockSummery() {
 			closing_quantity: item?.closing_quantity ?? "",
 		})) || [];
 
+	const csvDataForUpload =
+		records?.map((item, index) => ({
+			sn: index + 1,
+			warehouse_name: item?.warehouse_name ?? "",
+			warehouse_id: item?.warehouse_id ?? "",
+			name: item?.name ?? "",
+			stock_item_id: item?.stock_item_id ?? "",
+			opening_quantity: null,
+			production_date: "2025-12-25",
+			expired_date: "2025-12-25",
+		})) || [];
+
 	const handleCSVDownload = () => {
 		if (csvLinkRef?.current?.link) {
 			csvLinkRef.current.link.click();
+		}
+	};
+
+	const handleCSVDownloadForUpload = () => {
+		if (csvLinkRefForUpload?.current?.link) {
+			csvLinkRefForUpload.current.link.click();
 		}
 	};
 
@@ -87,7 +118,9 @@ export default function StockSummery() {
 					module={module}
 					form={form}
 					handleCSVDownload={handleCSVDownload}
+					handleCSVDownloadForUpload={handleCSVDownloadForUpload}
                     showWarehouse={true}
+					downloadOpeningTemplate={true}
 				/>
 			</Box>
 			<Box className="border-top-none" px="sm">
@@ -162,6 +195,13 @@ export default function StockSummery() {
 				filename={`Stock-summery-${formatDate(new Date())}.csv`}
 				style={{ display: "none" }}
 				ref={csvLinkRef}
+			/>
+			<CSVLink
+				data={csvDataForUpload}
+				headers={CSV_HEADERS_UPLOAD}
+				filename={`Stock-summery-upload-template-${formatDate(new Date())}.csv`}
+				style={{ display: "none" }}
+				ref={csvLinkRefForUpload}
 			/>
 		</Box>
 	);
