@@ -476,9 +476,9 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 														align={"left"}/**/
 														key={index}
 													>
-														<Text fw={600}>
+														<Text fw={600} fz={'14'} >
 															{index + 1}.{" "}
-															{getValue( medicine.medicine_name || medicine.generic)}
+															{getValue( medicine?.medicine_name || medicine?.generic)}
 														</Text>
 														<Text
 															style={{
@@ -487,13 +487,15 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 															}}
 														>
 															{"--"}
-															{getValue(medicine.dose_details)}{" "}
-															{getValue(medicine.by_meal)} {getValue(medicine.instruction)}
+															{getValue(medicine?.dose_details)}{" "}
+															{getValue(medicine?.by_meal)} {getValue(medicine?.instruction)}
 														</Text>
 													</Flex>
-													<Flex align={"left"}>
-													<Text mt={'-4'} fz={'12'}>{capitalizeWords(medicine.generic)}</Text>
-													</Flex>
+															{medicine.generic && (
+														<Flex align={"left"}>
+														<Text mt={'-4'} fz={'11'}>{capitalizeWords(medicine?.generic)} [SF: {formatDate(medicine?.start_date)} ]</Text>
+														</Flex>
+															)}
 														</Box>
 													</>
 												))}
