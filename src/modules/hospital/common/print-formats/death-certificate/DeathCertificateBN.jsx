@@ -8,6 +8,7 @@ import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { capitalizeWords } from "@utils/index";
+import {DateTimePicker} from "@mantine/dates";
 
 const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 	const { user } = useAppLocalStore();
@@ -292,6 +293,38 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 											{t("UnitDoctor")}:
 										</Text>
 										<Text size="xs">{getValue(patientInfo?.admit_doctor_name, "")}</Text>
+									</Group>
+								</Table.Td>
+							</Table.Tr>
+
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colSpan={2}>
+									<Group gap="xs">
+										<Text size="xs" fw={600}>
+											{t("About Disease")}:
+										</Text>
+										<Text size="sm">PTB{getValue(patientInfo?.about_death, "")}</Text>
+									</Group>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colSpan={2}>
+									<Group gap="xs">
+										<Text size="xs" fw={600}>
+											{t("Cause of Death")}:
+										</Text>
+										<Text size="sm">Cardio Respiratory Failure{getValue(patientInfo?.cause_death, "")}</Text>
+									</Group>
+								</Table.Td>
+							</Table.Tr>
+
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colSpan={2}>
+									<Group gap="xs">
+										<Text size="xs" fw={600}>
+											{t("Date Time of Death")}:
+										</Text>
+										<Text size="sm">08-01-02026 02:10 PM {/*{getValue(patientInfo?.death_date_time, "")}*/}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
