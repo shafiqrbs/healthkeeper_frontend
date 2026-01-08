@@ -13,12 +13,17 @@ import AdmissionInvoiceDetailsBN from "@hospital-components/print-formats/admiss
 export default function BillingActions({ entity }) {
 	const { t } = useTranslation();
 	const { id } = useParams();
-	const invoicePrintRef = useRef(null);
-	const printRef = useRef(null);
-	const [invoicePrintData, setInvoicePrintData] = useState(null);
-	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
-	const [invoiceEntity, setInvoiceEntity] = useState({});
+
 	const [printData, setPrintData] = useState(null);
+	const printRef = useRef(null);
+	const invoicePrint = useReactToPrint({ content: () => printRef.current });
+
+
+	const invoicePrintRef = useRef(null);
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
+	const invoiceRefundPrint = useReactToPrint({ content: () => invoicePrintRef.current });
+
+	const [invoiceEntity, setInvoiceEntity] = useState({});
 	// const selectPaymentMethod = (method) => {
 	// 	form.setFieldValue("paymentMethod", method);
 	// };
@@ -30,7 +35,6 @@ export default function BillingActions({ entity }) {
 		setInvoiceEntity(res?.data);
 		setInvoicePrintData(res);
 	};
-
 	useEffect(() => {
 		if (entity) {
 			setInvoiceEntity(entity);
@@ -41,7 +45,15 @@ export default function BillingActions({ entity }) {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${id}/final-bill-process`,
 		});
-		setInvoicePrintData(res);
+	};
+
+	const handleAdmissionBillDetails = async (e, uid) => {
+		e.stopPropagation();
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${uid}/final-bill`,
+		});
+
+		setPrintData(res?.data);
 	};
 
 	useEffect(() => {
@@ -49,6 +61,21 @@ export default function BillingActions({ entity }) {
 			invoicePrint();
 		}
 	}, [printData]);
+
+
+	const handleRefundPrint = async (e,id) => {
+		e.stopPropagation();
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.IPD_PRINT}/${id}`,
+		});
+		setInvoicePrintData(res?.data);
+	};
+	useEffect(() => {
+		if(invoicePrintData){
+			invoiceRefundPrint();
+		}
+	}, [invoicePrintData]);
+
 
 	const receive = invoiceEntity?.remaining_day * invoiceEntity?.room_price;
 	const total = Number(invoiceEntity.total ?? 0);
@@ -101,7 +128,7 @@ export default function BillingActions({ entity }) {
 									w="100%"
 									bg="var(--theme-primary-color-6)"
 									type="button"
-									onClick={handlePrescriptionPrint}
+									onClick={(e) => handleAdmissionBillDetails(e, invoiceEntity.uid)}
 								>
 									Print Bill
 								</Button>
@@ -111,7 +138,7 @@ export default function BillingActions({ entity }) {
 									w="100%"
 									bg="var(--theme-warn-color-6)"
 									type="button"
-									onClick={handlePrescriptionPrint}
+									onClick={(e) => handleRefundPrint(e, invoiceEntity.uid)}
 								>
 									Print Refund
 								</Button>
@@ -121,12 +148,11 @@ export default function BillingActions({ entity }) {
 				</Flex>
 			</Flex>
 
-			{invoiceEntity?.process === "paid" && due === 0 && (
-				/*<IPDInvoicePosBn data={invoicePrintData?.data} ref={invoicePrintRef} />*/
-				<AdmissionInvoiceDetailsBN data={invoicePrintData?.data} ref={invoicePrintRef} />
+			{invoiceEntity?.process === "paid" && (
+				 <AdmissionInvoiceDetailsBN data={printData} ref={printRef} />
 			)}
-			{invoiceEntity?.process === "refund" && due < 0 && (
-				<RefundFromBedBn data={invoicePrintData?.data} ref={invoicePrintRef} />
+			{invoiceEntity?.process === "refund" && (
+				<RefundFromBedBn data={invoicePrintData} ref={invoicePrintRef} />
 			)}
 		</Box>
 	);
