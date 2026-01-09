@@ -676,10 +676,11 @@ input[type=radio]:checked+label>img {
 }
 
 .react-datepicker__input-container input {
-    height: 38px !important;
+    height: 32px !important;
     border-radius: 4px;
     padding-inline: 8px;
     border-color: var(--mantine-color-gray-3);
+    font-size: 12px;
 }
 
 .react-datepicker__input-container :is(#vital-date, #insulin-date) {
@@ -751,13 +752,6 @@ input.date-selector-input {
         }
     }
 }
-
-/* #start_time-date-picker { */
-.mantine-DateTimePicker-timeWrapper {
-    display: none !important;
-}
-
-/* } */
 
 .tiptap-wrapper {
     .mantine-RichTextEditor-content {

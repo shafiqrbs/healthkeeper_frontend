@@ -16,7 +16,8 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { errorNotification } from "@components/notification/errorNotification";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
-import { DateTimePicker } from "@mantine/dates";
+import { DatePickerInput } from "@mantine/dates";
+import DateSelector from "@components/form-builders/DateSelector";
 
 const MemoSelect = memo(function MemoSelect({ value, data, placeholder, onChange }) {
 	return (
@@ -272,10 +273,8 @@ function MedicineListTable({
 				accessor: "start_date",
 				title: "Start Date",
 				render: (record) => (
-					<DateTimePicker
-						id="start_time-date-picker"
+					<DateSelector
 						size="xs"
-						valueFormat="DD/MM/YYYY"
 						value={parseSafeDate(record.start_date)}
 						className={inlineInputCss.inputText}
 						placeholder={t("Start Date")}
