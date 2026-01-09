@@ -463,42 +463,43 @@ export default function Index() {
 									>
 										{t("Release Procedure")}
 									</Box>
-									{ipdData?.data?.release_mode && ipdData?.data?.process?.toLowerCase() && (
-										// <Paper
-										// 	withBorder
-										// 	radius="sm"
-										// 	p={"xs"}
-										// 	bg="var(--theme-primary-color-0)"
-										// 	style={{ borderColor: "var(--theme-secondary-color-4)" }}
-										// >
-										// 	<Text fw={600} size="md" c="var(--theme-secondary-color-7)">
-										// 		{ipdData?.data?.release_mode.charAt(0).toUpperCase() +
-										// 			ipdData?.data?.release_mode.slice(1)}
-										// 		: Bill processed successfully
-										// 	</Text>
-										// </Paper>
+									{ipdData?.data?.release_mode &&
+										ipdData?.data?.process?.toLowerCase() === "paid" && (
+											// <Paper
+											// 	withBorder
+											// 	radius="sm"
+											// 	p={"xs"}
+											// 	bg="var(--theme-primary-color-0)"
+											// 	style={{ borderColor: "var(--theme-secondary-color-4)" }}
+											// >
+											// 	<Text fw={600} size="md" c="var(--theme-secondary-color-7)">
+											// 		{ipdData?.data?.release_mode.charAt(0).toUpperCase() +
+											// 			ipdData?.data?.release_mode.slice(1)}
+											// 		: Bill processed successfully
+											// 	</Text>
+											// </Paper>
 
-										<Group justify="center" py="md">
-											<Button fullWidth onClick={() => handleReleaseProcedure("discharge")}>
-												{" "}
-												For Discharge{" "}
-											</Button>
-											<Button
-												fullWidth
-												color="red"
-												onClick={() => handleReleaseProcedure("death")}
-											>
-												For Death
-											</Button>
-											<Button
-												fullWidth
-												color="green"
-												onClick={() => handleReleaseProcedure("referred")}
-											>
-												For Referred
-											</Button>
-										</Group>
-									)}
+											<Group justify="center" py="md">
+												<Button fullWidth onClick={() => handleReleaseProcedure("discharge")}>
+													{" "}
+													For Discharge{" "}
+												</Button>
+												<Button
+													fullWidth
+													color="red"
+													onClick={() => handleReleaseProcedure("death")}
+												>
+													For Death
+												</Button>
+												<Button
+													fullWidth
+													color="green"
+													onClick={() => handleReleaseProcedure("referred")}
+												>
+													For Referred
+												</Button>
+											</Group>
+										)}
 								</Box>
 							</ScrollArea>
 						</Box>
