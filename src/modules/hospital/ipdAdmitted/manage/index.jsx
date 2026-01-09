@@ -238,28 +238,30 @@ export default function Index() {
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.RELEASE}/${id}/${mode}`,
 			});
 			refetch();
+			setBaseTabValue(mode?.toLowerCase());
+			setSearchParams({ tab: mode?.toLowerCase() });
 		} catch (err) {
 			console.error(err);
 			errorNotification(err?.message, ERROR_NOTIFICATION_COLOR);
 		}
 	};
 
-	const getFilteredTabs = (tabs) => {
-		// ❌ Not paid → remove all release tabs
-		if (!isPaid) {
-			const RELEASE_TABS = Object.values(RELEASE_TAB_MAP);
-			return tabs.filter((tab) => !RELEASE_TABS.includes(tab.value));
-		}
+	// const getFilteredTabs = (tabs) => {
+	// 	// ❌ Not paid → remove all release tabs
+	// 	if (!isPaid) {
+	// 		const RELEASE_TABS = Object.values(RELEASE_TAB_MAP);
+	// 		return tabs.filter((tab) => !RELEASE_TABS.includes(tab.value));
+	// 	}
 
-		// ✅ Paid + release mode → ONLY dashboard + matching release tab
-		if (releaseMode && RELEASE_TAB_MAP[releaseMode]) {
-			const allowedTabs = getAllowedTabsForRelease(releaseMode);
-			return tabs.filter((tab) => allowedTabs.includes(tab.value));
-		}
+	// 	// ✅ Paid + release mode → ONLY dashboard + matching release tab
+	// 	if (releaseMode && RELEASE_TAB_MAP[releaseMode]) {
+	// 		const allowedTabs = getAllowedTabsForRelease(releaseMode);
+	// 		return tabs.filter((tab) => allowedTabs.includes(tab.value));
+	// 	}
 
-		// ✅ Paid but no release mode → all tabs
-		return tabs;
-	};
+	// 	// ✅ Paid but no release mode → all tabs
+	// 	return tabs;
+	// };
 
 	const getFilteredPrintItems = (printItems) => {
 		// ❌ Not paid → remove all release prints
@@ -303,6 +305,19 @@ export default function Index() {
 			setBaseTabValue(value?.toLowerCase());
 			setSearchParams({ tab: value?.toLowerCase() });
 		}
+	};
+
+	const handleReleaseProcedure = (mode) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => {
+				handleConfirmApproved(mode);
+			},
+		});
 	};
 
 	const hasRecords = records && records.length > 0;
@@ -460,18 +475,22 @@ export default function Index() {
 										// </Paper>
 
 										<Group justify="center" py="md">
-											<Button fullWidth onClick={() => handleTabClick("discharge")}>
+											<Button fullWidth onClick={() => handleReleaseProcedure("discharge")}>
 												{" "}
 												For Discharge{" "}
 											</Button>
 											<Button
 												fullWidth
 												color="red"
-												onClick={() => handleTabClick("death-certificate")}
+												onClick={() => handleReleaseProcedure("death-certificate")}
 											>
 												For Death
 											</Button>
-											<Button fullWidth color="green" onClick={() => handleTabClick("referred")}>
+											<Button
+												fullWidth
+												color="green"
+												onClick={() => handleReleaseProcedure("referred")}
+											>
 												For Referred
 											</Button>
 										</Group>
