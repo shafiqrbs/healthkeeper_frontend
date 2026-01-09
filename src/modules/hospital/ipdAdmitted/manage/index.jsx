@@ -51,12 +51,13 @@ const module = MODULES.E_FRESH;
 const RELEASE_TAB_MAP = {
 	referred: "referred",
 	discharge: "discharge",
-	death: "death-certificate",
+	death: "death",
 };
 
 const RELEASE_PRINT_MAP = {
 	discharge: "discharge-print",
 	death: "death-certificate-print",
+	referred: "referred-print",
 };
 
 const TAB_ITEMS = [
@@ -86,25 +87,25 @@ const TAB_ITEMS = [
 		allowedGroups: ["admin_administrator", "nurse_incharge"],
 	},
 	{
-	 	label: "Room Transfer",
+		label: "Room Transfer",
 		value: "room-transfer",
-	 	allowedGroups: ["admin_administrator", "nurse_incharge"],
-	 },
-	 {
-	 	label: "Discharge",
-	 	value: "discharge",
-	 	allowedGroups: ["doctor_ipd", "admin_administrator"],
-	 },
-	 {
-	 	label: "DeathCertificate",
-	 	value: "death-certificate",
-	 	allowedGroups: ["doctor_ipd", "admin_administrator"],
-	 },
+		allowedGroups: ["admin_administrator", "nurse_incharge"],
+	},
 	{
-	 	label: "Referred",
-	 	value: "referred",
-	 	allowedGroups: ["doctor_ipd", "admin_administrator"],
-	 },
+		label: "Discharge",
+		value: "discharge",
+		allowedGroups: ["doctor_ipd", "admin_administrator"],
+	},
+	{
+		label: "DeathCertificate",
+		value: "death",
+		allowedGroups: ["doctor_ipd", "admin_administrator"],
+	},
+	{
+		label: "Referred",
+		value: "referred",
+		allowedGroups: ["doctor_ipd", "admin_administrator"],
+	},
 ];
 
 const PRINT_SECTION_ITEMS = [
@@ -231,17 +232,6 @@ export default function Index() {
 		return [RELEASE_PRINT_MAP[releaseMode]].filter(Boolean);
 	};
 
-	const handleReleaseMode = (mode) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: { confirm: t("Submit"), cancel: t("Cancel") },
-			confirmProps: { color: "red" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleConfirmApproved(mode),
-		});
-	};
-
 	const handleConfirmApproved = async (mode) => {
 		try {
 			await getDataWithoutStore({
@@ -257,21 +247,23 @@ export default function Index() {
 	};
 
 	const getFilteredTabs = (tabs) => {
-	// 	// ❌ Not paid → remove all release tabs
-	 	if (!isPaid) {
-	 		const RELEASE_TABS = Object.values(RELEASE_TAB_MAP);
-	 		return tabs.filter((tab) => !RELEASE_TABS.includes(tab.value));
-	 	}
+		// 	// ❌ Not paid → remove all release tabs
+		if (!isPaid) {
+			const RELEASE_TABS = Object.values(RELEASE_TAB_MAP);
+			return tabs.filter((tab) => !RELEASE_TABS.includes(tab.value));
+		}
 
-	// 	// ✅ Paid + release mode → ONLY dashboard + matching release tab
-	 	if (releaseMode && RELEASE_TAB_MAP[releaseMode]) {
+		// 	// ✅ Paid + release mode → ONLY dashboard + matching release tab
+		if (releaseMode && RELEASE_TAB_MAP[releaseMode]) {
 			const allowedTabs = getAllowedTabsForRelease(releaseMode);
-	 		return tabs.filter((tab) => allowedTabs.includes(tab.value));
-	 	}
+			return tabs.filter((tab) => allowedTabs.includes(tab.value));
+		}
 
-	// 	// ✅ Paid but no release mode → all tabs
-	 	return tabs;
-	 };
+		console.log(tabs);
+
+		// 	// ✅ Paid but no release mode → all tabs
+		return tabs;
+	};
 
 	const getFilteredPrintItems = (printItems) => {
 		// ❌ Not paid → remove all release prints
@@ -363,7 +355,7 @@ export default function Index() {
 				<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 				<Grid w="100%" columns={24} gutter="xs">
 					<Grid.Col span={3}>
-						<Box style={{ overflow: "hidden" }} h={mainAreaHeight - 14}>
+						<Box>
 							<Box mb="xs" bg="var(--theme-primary-color-1)">
 								<Box
 									bg="var(--theme-primary-color-1)"
@@ -389,10 +381,12 @@ export default function Index() {
 								</Box>
 							</Box>
 
-							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
+							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 180} scrollbars="y">
 								<Stack h="100%" py="xs" gap={0}>
-									{getFilteredTabs(TAB_ITEMS.filter((tabItem) =>
-										userRoles.some((role) => tabItem.allowedGroups.includes(role))
+									{getFilteredTabs(
+										TAB_ITEMS.filter((tabItem) =>
+											userRoles.some((role) => tabItem.allowedGroups.includes(role))
+										)
 									).map((tabItem, index) => (
 										<Box
 											key={index}
@@ -420,7 +414,7 @@ export default function Index() {
 												{t(tabItem.label)}
 											</Text>
 										</Box>
-									)))}
+									))}
 
 									<Box bg="var(--mantine-color-gray-0)" my="3xs" py="sm" px="md">
 										<Text size="sm" fw={600}>
@@ -492,7 +486,7 @@ export default function Index() {
 											<Button
 												fullWidth
 												color="red"
-												onClick={() => handleReleaseProcedure("death-certificate")}
+												onClick={() => handleReleaseProcedure("death")}
 											>
 												For Death
 											</Button>
@@ -558,7 +552,7 @@ export default function Index() {
 						{baseTabValue === "vitals-chart" && <VitalsChart refetch={refetch} data={ipdData?.data} />}
 						{baseTabValue === "insulin-chart" && <InsulinChart refetch={refetch} data={ipdData?.data} />}
 						{baseTabValue === "discharge" && <Discharge ipdData={ipdData?.data} refetch={refetch} />}
-						{baseTabValue === "death-certificate" && <DeathCertificate data={ipdData?.data} />}
+						{baseTabValue === "death" && <DeathCertificate data={ipdData?.data} />}
 						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
 						{baseTabValue === "discharge-print" && (
 							<DischargePrint data={ipdData?.data} refetch={refetch} />
