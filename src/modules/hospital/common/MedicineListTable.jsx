@@ -1,5 +1,5 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import { Center, Flex, Select, Switch, TableTd, ActionIcon, Text, TextInput } from "@mantine/core";
+import { Center, Flex, Select, Switch, TableTd, ActionIcon, TextInput } from "@mantine/core";
 import { IconCheck, IconGripVertical, IconX, IconTrash } from "@tabler/icons-react";
 import { DataTable, DataTableDraggableRow } from "mantine-datatable";
 import clsx from "clsx";
@@ -15,8 +15,8 @@ import { useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { storeEntityData } from "@/app/store/core/crudThunk";
 import { errorNotification } from "@components/notification/errorNotification";
-import { capitalizeWords } from "@utils/index";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
+import { DateTimePicker } from "@mantine/dates";
 
 const MemoSelect = memo(function MemoSelect({ value, data, placeholder, onChange }) {
 	return (
@@ -79,12 +79,25 @@ const MemoTextInput = memo(function MemoTextInput({ value, placeholder, classNam
 			styles={{
 				input: {
 					borderRadius: "8px",
-					// padding: "4px 8px",
 				},
 			}}
 		/>
 	);
 });
+
+// =============== helper function to safely parse date strings ================
+const parseSafeDate = (dateValue) => {
+	if (!dateValue) return null;
+
+	const parsedDate = new Date(dateValue);
+
+	// =============== check if the date is valid ================
+	if (isNaN(parsedDate.getTime())) {
+		return null;
+	}
+
+	return parsedDate;
+};
 
 function MedicineListTable({
 	medicines,
@@ -94,6 +107,7 @@ function MedicineListTable({
 	onDelete,
 	prescriptionId: propPrescriptionId,
 	setMedicines,
+	forDischarge = false,
 }) {
 	const { id: paramsPrescriptionId } = useParams();
 	const prescriptionId = propPrescriptionId || paramsPrescriptionId;
@@ -202,8 +216,8 @@ function MedicineListTable({
 		}
 	};
 
-	const columns = useMemo(
-		() => [
+	const columns = useMemo(() => {
+		const cols = [
 			{ accessor: "", hiddenContent: true, width: 40 },
 			{
 				accessor: "index",
@@ -212,8 +226,8 @@ function MedicineListTable({
 				textAlign: "center",
 				render: (_, index) => index + 1,
 			},
-			{ accessor: "medicine_name", title: "Medicine Name", render: (record) => record.medicine_name },
-			{ accessor: "generic", title: "Generic Name", render: (record) => record.generic },
+			{ accessor: "medicine_name", title: "Medicine Name" },
+			{ accessor: "generic", title: "Generic Name" },
 			{
 				accessor: "medicine_dosage_id",
 				title: "Dosage",
@@ -251,34 +265,54 @@ function MedicineListTable({
 					/>
 				),
 			},
-			{
-				accessor: "action",
-				title: "Action",
-				width: 120,
-				textAlign: "center",
+		];
+
+		if (!forDischarge) {
+			cols.push({
+				accessor: "start_date",
+				title: "Start Date",
 				render: (record) => (
-					<Flex justify="center" align="center" gap="sm">
-						{showSwitch && (
-							<MemoSwitch
-								checked={record.is_active}
-								onChange={(v) => handleInlineEdit(record.id, "is_active", v)}
-							/>
-						)}
-						{showDelete && onDelete && (
-							<ActionIcon
-								variant="outline"
-								color="var(--theme-error-color)"
-								onClick={() => onDelete(record.id)}
-							>
-								<IconTrash size={16} />
-							</ActionIcon>
-						)}
-					</Flex>
+					<DateTimePicker
+						id="start_time-date-picker"
+						size="xs"
+						valueFormat="DD/MM/YYYY"
+						value={parseSafeDate(record.start_date)}
+						className={inlineInputCss.inputText}
+						placeholder={t("Start Date")}
+						onChange={(value) => handleInlineEdit(record.id, "start_date", value)}
+					/>
 				),
-			},
-		],
-		[dosageOptions, mealOptions, handleInlineEdit, showDelete, onDelete, showSwitch, t]
-	);
+			});
+		}
+
+		cols.push({
+			accessor: "action",
+			title: "Action",
+			width: 120,
+			textAlign: "center",
+			render: (record) => (
+				<Flex justify="center" align="center" gap="sm">
+					{showSwitch && (
+						<MemoSwitch
+							checked={record.is_active}
+							onChange={(v) => handleInlineEdit(record.id, "is_active", v)}
+						/>
+					)}
+					{showDelete && onDelete && (
+						<ActionIcon
+							variant="outline"
+							color="var(--theme-error-color)"
+							onClick={() => onDelete(record.id)}
+						>
+							<IconTrash size={16} />
+						</ActionIcon>
+					)}
+				</Flex>
+			),
+		});
+
+		return cols;
+	}, [dosageOptions, mealOptions, handleInlineEdit, showDelete, onDelete, showSwitch, t, forDischarge]);
 
 	return (
 		<DragDropContext onDragEnd={handleDragEnd}>

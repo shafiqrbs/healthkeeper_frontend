@@ -1043,6 +1043,7 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 									prescriptionId={prescriptionId}
 									tableHeight={mainAreaHeight - 386}
 									setMedicines={setDbMedicines}
+									forDischarge
 								/>
 							)}
 						</Stack>
