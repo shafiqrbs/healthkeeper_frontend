@@ -14,7 +14,6 @@ import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constant
 import { errorNotification } from "@components/notification/errorNotification";
 
 export default function DeathCertificate({ data }) {
-
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -63,7 +62,7 @@ export default function DeathCertificate({ data }) {
 		try {
 			const result = await dispatch(
 				updateEntityData({
-					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DEATH_CERTIFICATE}/${data?.prescription_uid}`,
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PRESCRIPTION}/${data?.prescription_uid}`,
 					data: values,
 					module: "admission",
 				})
@@ -87,7 +86,7 @@ export default function DeathCertificate({ data }) {
 	};
 
 	return (
-		<Box bg="var(--mantine-color-white"  p="xl" component="form" onSubmit={form.onSubmit(handleSubmit)}>
+		<Box bg="var(--mantine-color-white" p="xl" component="form" onSubmit={form.onSubmit(handleSubmit)}>
 			<Text size="lg" fw={600} mb="md">
 				Death Certificate
 			</Text>
@@ -107,7 +106,7 @@ export default function DeathCertificate({ data }) {
 					name="about_death"
 					form={form}
 					placeholder="About Death"
-					tooltip={t('Death date & time is required')}
+					tooltip={t("Death date & time is required")}
 				/>
 				<TextAreaForm
 					mt="sm"
@@ -115,7 +114,7 @@ export default function DeathCertificate({ data }) {
 					name="cause_death"
 					form={form}
 					placeholder="Cause of death"
-					tooltip={t('Cause of death is required')}
+					tooltip={t("Cause of death is required")}
 				/>
 				<DateTimePickerForm
 					mt="sm"
