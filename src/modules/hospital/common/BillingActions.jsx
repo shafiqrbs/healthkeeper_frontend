@@ -10,7 +10,7 @@ import RefundFromBedBn from "@hospital-components/print-formats/refund/RefundFor
 import IPDInvoicePosBn from "@hospital-components/print-formats/ipd/IPDInvoicePosBN";
 import AdmissionInvoiceDetailsBN from "@hospital-components/print-formats/admission/AdmissionInvoiceDetailsBN";
 
-export default function BillingActions({ entity }) {
+export default function BillingActions({ entity,refetchAll,setRefetchBillingKey }) {
 	const { t } = useTranslation();
 	const { id } = useParams();
 
@@ -34,6 +34,8 @@ export default function BillingActions({ entity }) {
 		});
 		setInvoiceEntity(res?.data);
 		setInvoicePrintData(res);
+		refetchAll()
+		setRefetchBillingKey(true)
 	};
 	useEffect(() => {
 		if (entity) {
@@ -52,7 +54,6 @@ export default function BillingActions({ entity }) {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${uid}/final-bill`,
 		});
-
 		setPrintData(res?.data);
 	};
 
@@ -78,9 +79,9 @@ export default function BillingActions({ entity }) {
 
 
 	const receive = invoiceEntity?.remaining_day * invoiceEntity?.room_price;
-	const total = Number(invoiceEntity.total ?? 0);
-	const amount = Number(invoiceEntity.amount ?? 0);
-	const refund = Number(invoiceEntity.refund_amount ?? 0);
+	const total = Number(invoiceEntity?.total ?? 0);
+	const amount = Number(invoiceEntity?.amount ?? 0);
+	const refund = Number(invoiceEntity?.refund_amount ?? 0);
 	const due = total - (amount - refund);
 
 	return (

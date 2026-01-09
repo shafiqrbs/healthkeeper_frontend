@@ -15,6 +15,8 @@ import Table from "./_Table";
 import { getDataWithoutStore } from "@/services/apiService";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import BillingTransaction from "@hospital-components/BillingTransaction";
+import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import {useSelector} from "react-redux";
 
 const billing = {
 	cabinCharge: 1000,
@@ -25,15 +27,30 @@ const billing = {
 };
 
 const module = MODULES.FINAL_BILLING;
+const PER_PAGE = 500;
 
 export default function Index() {
 	const { id } = useParams();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
 	const [isOpenPatientInfo, setIsOpenPatientInfo] = useState(true);
-	const [refetchBillingKey, setRefetchBillingKey] = useState(0);
+	const [refetchBillingKey, setRefetchBillingKey] = useState(false);
 	const [diagnosticReport, setDiagnosticReport] = useState([]);
+	const filterData = useSelector((state) => state.crud[module].filterData);
 	const { t } = useTranslation();
+
+
+	const { records, fetching,refetchAll } = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.INDEX,
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+		filterParams: {
+			created: filterData.created,
+			term: filterData.keywordSearch,
+		},
+	});
 
 	useEffect(() => {
 		if (id) {
@@ -41,6 +58,7 @@ export default function Index() {
 				const res = await getDataWithoutStore({
 					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${id}/final-bill`,
 				});
+				setRefetchBillingKey(false)
 				setDiagnosticReport(res?.data);
 			})();
 		}
@@ -68,6 +86,8 @@ export default function Index() {
 												tab: "list",
 												component: (
 													<Table
+														records={records}
+														fetching={fetching}
 														selectedId={id}
 														isOpenPatientInfo={isOpenPatientInfo}
 														setIsOpenPatientInfo={setIsOpenPatientInfo}
@@ -83,7 +103,7 @@ export default function Index() {
 									{id ? (
 										<>
 											<TabSubHeading title="Bill Details" />
-											<BillingTable entity={entity} data={billing} />
+											<BillingTable  entity={entity} data={billing} />
 										</>
 									) : (
 										<Flex align="center" justify="center" h="100%">
@@ -112,7 +132,7 @@ export default function Index() {
 											</Box>
 											<Box p="xs" bg="var(--mantine-color-white)">
 												<Box>
-													<BillingActions entity={entity} />
+													<BillingActions setRefetchBillingKey={setRefetchBillingKey} refetchAll={refetchAll} entity={entity} />
 												</Box>
 											</Box>
 										</>

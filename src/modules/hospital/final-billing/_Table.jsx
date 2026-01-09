@@ -16,13 +16,13 @@ import RefundFromBedBn from "@hospital-components/print-formats/refund/RefundFor
 const module = MODULES.FINAL_BILLING;
 const PER_PAGE = 500;
 
-export default function _Table() {
+export default function _Table({fetching,records}) {
 
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
-	const filterData = useSelector((state) => state.crud[module].filterData);
+
 
 	const [printData, setPrintData] = useState(null);
 	const printRef = useRef(null);
@@ -56,17 +56,7 @@ export default function _Table() {
 		}
 	}, [printData]);
 
-	const { records, fetching } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.INDEX,
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-		filterParams: {
-			created: filterData.created,
-			term: filterData.keywordSearch,
-		},
-	});
+
 
 	const handleRefundPrint = async (e,id) => {
 		e.stopPropagation();
@@ -180,7 +170,6 @@ export default function _Table() {
 					</Grid>
 				))}
 			</ScrollArea>
-
 			{printData && <AdmissionInvoiceDetailsBN data={printData} ref={printRef} />}
 			<RefundFromBedBn data={invoicePrintData} ref={invoicePrintRef} />
 		</Box>
