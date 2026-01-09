@@ -27,7 +27,7 @@ const billing = {
 };
 
 const module = MODULES.FINAL_BILLING;
-const PER_PAGE = 500;
+const PER_PAGE = 100;
 
 export default function Index() {
 	const { id } = useParams();
