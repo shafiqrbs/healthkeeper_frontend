@@ -20,6 +20,7 @@ export default function DateSelector({
 	required,
 	nextField,
 	tooltip,
+	className,
 	mt,
 	id,
 	size = "xs",
@@ -158,6 +159,7 @@ export default function DateSelector({
 						onChange={handleDateChange}
 						placeholderText={placeholder}
 						disabled={disabled}
+						className={className}
 						minDate={disable ? new Date() : undefined}
 						maxDate={disabledFutureDate ? new Date() : undefined}
 						renderCustomHeader={renderCustomHeader}

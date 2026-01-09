@@ -18,13 +18,14 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useOutletContext, useParams } from "react-router-dom";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
+import InputForm from "@components/form-builders/InputForm";
 
-function Referred({ data }) {
+function Referred({ data,refetch }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
 	const form = useForm({
-		initialValues: { reason: "" },
+		initialValues: { reason: "", referred_hospital: "" },
 		validate: {
 			reason: (value) => {
 				if (!value) return "Reason is required";
@@ -55,6 +56,7 @@ function Referred({ data }) {
 				}
 			} else if (updateEntityData.fulfilled.match(result)) {
 				successNotification(t("UpdatedSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				refetch()
 			}
 		} catch (error) {
 			console.error(error);
@@ -64,6 +66,7 @@ function Referred({ data }) {
 	useEffect(() => {
 		form.setValues({
 			reason: data?.reason,
+			referred_hospital: data?.referred_hospital,
 		});
 	}, [data]);
 
@@ -73,6 +76,14 @@ function Referred({ data }) {
 			<Box pr="xs" my="xs" h={240}>
 				<Box component="form" h="100%" onSubmit={form.onSubmit(handleReferredSubmit)}>
 					<Box className="tiptap-wrapper">
+						<InputForm
+							mt="sm"
+							label="Name of Hospital"
+							name="referred_hospital"
+							form={form}
+							value={form?.values?.referred_hospital}
+							placeholder="Name of Hospital"
+						/>
 						<TextAreaForm
 							mt="sm"
 							label="Referred Reason"

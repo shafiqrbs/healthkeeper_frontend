@@ -8,9 +8,8 @@ import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { capitalizeWords } from "@utils/index";
-import {DateTimePicker} from "@mantine/dates";
 
-const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
+const ReferredCertificateEN = forwardRef(({ data, preview = false }, ref) => {
 	const { user } = useAppLocalStore();
 
 	const admissionData = data || {};
@@ -131,9 +130,8 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 											{t("Age")}:
 										</Text>
 										<Text size="xs">
-											{patientInfo?.year ? `${patientInfo.year} ${t("বছর")} ` : ""}
-											{patientInfo?.month ? `${patientInfo.month} ${t("মাস")} ` : ""}
-											{patientInfo?.day ? `${patientInfo.day} ${t("দিন")}` : ""}
+											{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
+											{patientInfo?.day || 0} Day
 										</Text>
 									</Group>
 								</Table.Td>
@@ -228,9 +226,19 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td colSpan={3}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("Address")}:
+											{t("PresentAddress")}:
 										</Text>
 										<Text size="sm">{getValue(patientInfo?.address, "")}</Text>
+									</Group>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colSpan={3}>
+									<Group gap="xs">
+										<Text size="xs" fw={600}>
+											{t("PermanentAddress")}:
+										</Text>
+										<Text size="sm">{getValue(patientInfo?.permanent_address, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
@@ -287,38 +295,6 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 									</Group>
 								</Table.Td>
 							</Table.Tr>
-
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={2}>
-									<Group gap="xs">
-										<Text size="xs" fw={600}>
-											{t("About Disease")}:
-										</Text>
-										<Text size="sm">{getValue(patientInfo?.about_death, "")}</Text>
-									</Group>
-								</Table.Td>
-							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={2}>
-									<Group gap="xs">
-										<Text size="xs" fw={600}>
-											{t("Cause of Death")}:
-										</Text>
-										<Text size="sm">{getValue(patientInfo?.cause_death, "")}</Text>
-									</Group>
-								</Table.Td>
-							</Table.Tr>
-
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={2}>
-									<Group gap="xs">
-										<Text size="xs" fw={600}>
-											{t("Date Time of Death")}:
-										</Text>
-										<Text size="sm">{getValue(patientInfo?.death_date_time, "")}</Text>
-									</Group>
-								</Table.Td>
-							</Table.Tr>
 						</Table.Tbody>
 					</Table>
 				</Box>
@@ -327,6 +303,6 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 	);
 });
 
-DeathCertificateBN.displayName = "DeathCertificateBN";
+ReferredCertificateEN.displayName = "ReferredCertificateEN";
 
-export default DeathCertificateBN;
+export default ReferredCertificateEN;

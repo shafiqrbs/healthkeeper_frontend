@@ -676,17 +676,19 @@ input[type=radio]:checked+label>img {
 }
 
 .react-datepicker__input-container input {
-    height: 32px !important;
+    height: 36px !important;
     border-radius: 4px;
     padding-inline: 8px;
     border-color: var(--mantine-color-gray-3);
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .react-datepicker__input-container :is(#vital-date, #insulin-date) {
     height: 30px !important;
-    font-size: 12px;
+    font-size: 14px;
 }
+
+
 
 .inner-title-box {
     margin-left: -16px;

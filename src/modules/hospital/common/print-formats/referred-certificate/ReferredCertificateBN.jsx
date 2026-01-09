@@ -10,7 +10,7 @@ import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { capitalizeWords } from "@utils/index";
 import {DateTimePicker} from "@mantine/dates";
 
-const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
+const ReferredCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 	const { user } = useAppLocalStore();
 
 	const admissionData = data || {};
@@ -78,7 +78,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colSpan={3} style={{ textAlign: "center", padding: 0 }}>
 									<Text size="md" fw={600}>
-										{t("DeathCertificate")}
+										{t("REFERRED")}
 									</Text>
 								</Table.Td>
 							</Table.Tr>
@@ -287,14 +287,13 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 									</Group>
 								</Table.Td>
 							</Table.Tr>
-
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colSpan={2}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("About Disease")}:
+											{t("Name of Hospital")}:
 										</Text>
-										<Text size="sm">{getValue(patientInfo?.about_death, "")}</Text>
+										<Text size="sm">{getValue(patientInfo?.referred_hospital, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
@@ -302,20 +301,9 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td colSpan={2}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("Cause of Death")}:
+											{t("About Reason")}:
 										</Text>
-										<Text size="sm">{getValue(patientInfo?.cause_death, "")}</Text>
-									</Group>
-								</Table.Td>
-							</Table.Tr>
-
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={2}>
-									<Group gap="xs">
-										<Text size="xs" fw={600}>
-											{t("Date Time of Death")}:
-										</Text>
-										<Text size="sm">{getValue(patientInfo?.death_date_time, "")}</Text>
+										<Text size="sm">{getValue(patientInfo?.reason, "")}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
@@ -327,6 +315,6 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 	);
 });
 
-DeathCertificateBN.displayName = "DeathCertificateBN";
+ReferredCertificateBN.displayName = "ReferredCertificateBN";
 
-export default DeathCertificateBN;
+export default ReferredCertificateBN;

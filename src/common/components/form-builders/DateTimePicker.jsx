@@ -15,6 +15,7 @@ function DateTimePickerForm({
 	form,
 	tooltip,
 	mt,
+	className,
 	id,
 	size = "sm",
 	closeIcon,
@@ -48,6 +49,7 @@ function DateTimePickerForm({
 				clearable
 				defaultValue={defaultValue}
 				size={size}
+				className={className}
 				classNames={inputCss}
 				disabled={disabled}
 				minDate={disable && new Date()}

@@ -276,7 +276,7 @@ function MedicineListTable({
 					<DateSelector
 						size="xs"
 						value={parseSafeDate(record.start_date)}
-						className={inlineInputCss.inputText}
+						className={inlineInputCss.date_picker_custom}
 						placeholder={t("Start Date")}
 						onChange={(value) => handleInlineEdit(record.id, "start_date", value)}
 					/>

@@ -15,7 +15,7 @@ import { errorNotification } from "@components/notification/errorNotification";
 import {useEffect} from "react";
 import {formatDate, formatDateTime} from "@utils/index";
 
-export default function DeathCertificate({ data }) {
+export default function DeathCertificate({ data,refetch }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -91,6 +91,7 @@ export default function DeathCertificate({ data }) {
 				}
 			} else if (updateEntityData.fulfilled.match(result)) {
 				successNotification(t("UpdatedSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
+				refetch()
 			}
 		} catch (error) {
 			console.error(error);

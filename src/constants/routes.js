@@ -526,6 +526,14 @@ export const CORE_DATA_ROUTES = {
 };
 export const HOSPITAL_DATA_ROUTES = {
 	API_ROUTES: {
+
+		PATIENT_ARCHIVE: {
+
+			INDEX: "hospital/patient-archive",
+			CREATE: "hospital/patient-archive",
+			READMISSION: "hospital/patient-archive/re-admission",
+		},
+
 		OPD: {
 			INDEX: "hospital/opd",
 			CREATE: "hospital/opd",

@@ -53,3 +53,16 @@
  }
 }
 
+.date_picker_custom{
+    height: 20px !important;
+    border-radius: 4px;
+    padding-inline: 8px;
+    border-color: #878181 !important;
+    font-size: 12px;
+    width: 80px!important;
+    input{
+        height: 20px !important;
+    }
+}
+
+

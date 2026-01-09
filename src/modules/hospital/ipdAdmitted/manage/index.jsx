@@ -45,6 +45,8 @@ import DeathCertificatePrint from "../common/tabs/DeathCertificatePrint.jsx";
 import Referred from "../common/tabs/Referred.jsx";
 import { IconX, IconChevronRight } from "@tabler/icons-react";
 import { errorNotification } from "@components/notification/errorNotification";
+import ReferredCertificateBN from "@hospital-components/print-formats/referred-certificate/ReferredCertificateBN";
+import ReferredPrint from "@modules/hospital/ipdAdmitted/common/tabs/ReferredPrint";
 
 const module = MODULES.E_FRESH;
 
@@ -545,7 +547,7 @@ export default function Index() {
 							</Stack>
 						)}
 						{baseTabValue === "room-transfer" && <RoomTransfer data={ipdData?.data} />}
-						{baseTabValue === "referred" && <Referred data={ipdData?.data} />}
+						{baseTabValue === "referred" && <Referred data={ipdData?.data} refetch={refetch} />}
 						{baseTabValue === "dashboard" && <Dashboard />}
 						{/*{baseTabValue === "issue-medicine" && <IssueMedicine />}*/}
 						{/*{baseTabValue === "medicine" && <Medicine refetch={refetch} data={prescriptionData?.data}  />}*/}
@@ -553,8 +555,9 @@ export default function Index() {
 						{baseTabValue === "vitals-chart" && <VitalsChart refetch={refetch} data={ipdData?.data} />}
 						{baseTabValue === "insulin-chart" && <InsulinChart refetch={refetch} data={ipdData?.data} />}
 						{baseTabValue === "discharge" && <Discharge ipdData={ipdData?.data} refetch={refetch} />}
-						{baseTabValue === "death" && <DeathCertificate data={ipdData?.data} />}
-						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
+						{baseTabValue === "death" && <DeathCertificate data={ipdData?.data} refetch={refetch} />}
+						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor data={ipdData?.data}  />}
+						{baseTabValue === "referred-print" && <ReferredPrint data={ipdData?.data}  />}
 						{baseTabValue === "discharge-print" && (
 							<DischargePrint data={ipdData?.data} refetch={refetch} />
 						)}

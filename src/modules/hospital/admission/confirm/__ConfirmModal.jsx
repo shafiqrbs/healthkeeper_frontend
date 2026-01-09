@@ -16,7 +16,7 @@ import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constant
 import { useDispatch } from "react-redux";
 import { capitalizeWords } from "@/common/utils";
 
-export default function ConfirmModal({ opened, close, form, selectedId, module }) {
+export default function ConfirmModal({ opened, close, form, selectedId, module,isReadmission = false }) {
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 140;
@@ -36,13 +36,11 @@ export default function ConfirmModal({ opened, close, form, selectedId, module }
 	const handleSubmit = async (values) => {
 		try {
 			const formValue = { ...values, hms_invoice_id: selectedId };
-
 			const value = {
-				url: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.CREATE,
+				url: isReadmission ? HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_ARCHIVE.CREATE : HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.CREATE,
 				data: formValue,
 				module,
 			};
-
 			const resultAction = await dispatch(storeEntityData(value));
 			if (storeEntityData.rejected.match(resultAction)) {
 				const fieldErrors = resultAction.payload.errors;
