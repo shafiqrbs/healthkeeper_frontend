@@ -1,5 +1,5 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import { Center, Flex, Select, Switch, TableTd, ActionIcon, TextInput } from "@mantine/core";
+import {Center, Flex, Select, Switch, TableTd, ActionIcon, TextInput, Text} from "@mantine/core";
 import { IconCheck, IconGripVertical, IconX, IconTrash } from "@tabler/icons-react";
 import { DataTable, DataTableDraggableRow } from "mantine-datatable";
 import clsx from "clsx";
@@ -18,6 +18,7 @@ import { errorNotification } from "@components/notification/errorNotification";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { DatePickerInput } from "@mantine/dates";
 import DateSelector from "@components/form-builders/DateSelector";
+import {formatDate} from "@utils/index";
 
 const MemoSelect = memo(function MemoSelect({ value, data, placeholder, onChange }) {
 	return (
@@ -220,15 +221,20 @@ function MedicineListTable({
 	const columns = useMemo(() => {
 		const cols = [
 			{ accessor: "", hiddenContent: true, width: 40 },
-			{
+			/*{
 				accessor: "index",
 				title: "S/N",
 				width: 50,
 				textAlign: "center",
 				render: (_, index) => index + 1,
+			},*/
+			{ accessor: "medicine_name", title: "Medicine Name",
+				render: (item) => <Text fz="xs">{item?.medicine_name}</Text>
 			},
-			{ accessor: "medicine_name", title: "Medicine Name" },
-			{ accessor: "generic", title: "Generic Name" },
+			{ accessor: "generic",
+				title: "Generic Name",
+				render: (item) => <Text fz="xs">{item?.generic}</Text>,
+			},
 			{
 				accessor: "medicine_dosage_id",
 				title: "Dosage",

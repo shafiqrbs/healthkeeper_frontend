@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { editEntityData } from "@/app/store/core/crudThunk";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import InputForm from "@components/form-builders/InputForm";
-import { IconWeight } from "@tabler/icons-react";
+import {IconClock, IconWeight} from "@tabler/icons-react";
 import { useEffect } from "react";
 
 export default function BasicInfoCard({ form, prescriptionData, onBlur, showVitals = true }) {
@@ -60,15 +60,15 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur, showVita
 					</Grid.Col>
 				</Grid>
 				<Grid w="100%" columns={24}>
-					<Grid.Col span={12}>
-						<Text fz="xs">
-							{t("Created")} {prescriptionData?.data?.created}
+					<Grid.Col span={8}>
+						<Flex gap={'4'}>
+						<IconClock size={18} pt={'mt'}/>
+						<Text fz="xs" >
+							{prescriptionData?.data?.created}
 						</Text>
+						</Flex>
 					</Grid.Col>
-					<Grid.Col span={4} fz="xs" align={"right"}>
-						{prescriptionData?.data?.payment_mode_name}
-					</Grid.Col>
-					<Grid.Col span={6} fz="xs">
+					<Grid.Col span={16} fz="xs">
 						{prescriptionData?.data?.room_name}
 					</Grid.Col>
 				</Grid>

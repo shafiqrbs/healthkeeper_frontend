@@ -31,6 +31,7 @@ export default function PatientReport({
 	prescriptionData,
 	modeName = "Prescription",
 	showVitals = true,
+	showPatientInfo = true,
 }) {
 	const [showOtherInstruction, setShowOtherInstruction] = useState({});
 	const [searchQueries, setSearchQueries] = useState({});
@@ -740,13 +741,15 @@ export default function PatientReport({
 		if (tabValue === "All") {
 			return (
 				<Box w="100%">
-					<BasicInfoCard
-						showVitals={showVitals}
-						form={form}
-						prescriptionData={prescriptionData}
-						onBlur={handleFieldBlur}
-					/>
-					<ScrollArea h={form.values.is_vital ? height - 20 : height + 54}>
+					{showPatientInfo &&(
+						<BasicInfoCard
+							showVitals={showVitals}
+							form={form}
+							prescriptionData={prescriptionData}
+							onBlur={handleFieldBlur}
+						/>
+					)}
+					<ScrollArea h={!showPatientInfo ? height+172 : form.values.is_vital ? height - 20 : height + 80}>
 						<Stack gap="sm" my="les">
 							{currentSection.map((section) => (
 								<Box key={section.id}>
@@ -793,13 +796,15 @@ export default function PatientReport({
 		// Handle specific tab
 		return (
 			<Box w="100%">
+				{showPatientInfo &&(
 				<BasicInfoCard
 					showVitals={showVitals}
 					form={form}
 					prescriptionData={prescriptionData}
 					onBlur={handleFieldBlur}
 				/>
-				<ScrollArea h={form.values.is_vital ? height - 20 : height + 54}>
+				)}
+				<ScrollArea h={!showPatientInfo ? height+172 :form.values.is_vital ? height - 20 : height + 80}>
 					<Box mt="les" w="100%">
 						<Box bg="var(--theme-secondary-color-1)" p="3xs">
 							<Flex justify="space-between" align="center">
