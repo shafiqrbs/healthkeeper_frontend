@@ -65,6 +65,7 @@ import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper
 import BookmarkDrawer from "./BookmarkDrawer";
 import { notifications } from "@mantine/notifications";
 import { useAuthStore } from "@/store/useAuthStore";
+import OpdBookmarkDrawer from "./OpdBookmarkDrawer";
 
 export default function AddMedicineForm({
 	module,
@@ -1251,7 +1252,7 @@ export default function AddMedicineForm({
 			<ReferredPrescriptionDetailsDrawer opened={opened} close={close} prescriptionData={prescriptionData} />
 			<CreateDosageDrawer opened={openedDosageForm} close={closeDosageForm} />
 
-			<BookmarkDrawer opened={openedBookmark} close={closeBookmark} />
+			<OpdBookmarkDrawer opened={openedBookmark} close={closeBookmark} />
 		</Box>
 	);
 }

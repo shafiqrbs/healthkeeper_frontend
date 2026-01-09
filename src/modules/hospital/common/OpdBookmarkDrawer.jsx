@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext, useParams, useSearchParams } from "react-router-dom";
-import TreatmentAddMedicineForm from "@hospital-components/__TreatmentAddMedicineForm";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
@@ -17,11 +16,12 @@ import InputForm from "@components/form-builders/InputForm";
 import { useForm } from "@mantine/form";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { modals } from "@mantine/modals";
+import OpdTreatmentAddMedicineForm from "./__OpdTreatmentAddMedicineForm";
 
 const module = MODULES_CORE.USER_TREATMENT;
 const treatmentModule = MODULES_CORE.TREATMENT_TEMPLATES;
 
-export default function BookmarkDrawer({ opened, close, type = "opd-treatment", section = "discharge" }) {
+export default function OpdBookmarkDrawer({ opened, close, type = "opd-treatment", section = "discharge" }) {
 	const { features } = useAppLocalStore();
 	const { prescriptionId, treatmentId, id, dischargeId } = useParams();
 	const [searchParams] = useSearchParams();
@@ -243,7 +243,7 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 				<Grid.Col span={9}>
 					{treatmentId ? (
 						<Box mt="sm">
-							<TreatmentAddMedicineForm
+							<OpdTreatmentAddMedicineForm
 								medicines={medicines}
 								module={module}
 								setMedicines={setMedicines}
