@@ -1,32 +1,47 @@
-import {Group, Box, ActionIcon, Text, rem, Flex, Button, Chip} from "@mantine/core";
+import {
+	Group,
+	Box,
+	ActionIcon,
+	Text,
+	Flex,
+	Button,
+	Chip,
+	LoadingOverlay,
+} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
 	IconAlertCircle,
 	IconEye,
 	IconChevronUp,
-	IconSelector, IconCheck,
+	IconSelector,
+	IconCheck,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
-import KeywordSearch from "@modules/filter/KeywordSearch";
-import ViewDrawer from "./__ViewDrawer";
 import { notifications } from "@mantine/notifications";
 import { useOs, useHotkeys } from "@mantine/hooks";
+import { useCallback, useState } from "react";
+import axios from "axios";
+
+import KeywordSearch from "@modules/filter/KeywordSearch";
 import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
+import ViewDrawer from "./__ViewDrawer";
+
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
+import { ERROR_NOTIFICATION_COLOR } from "@/constants";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { deleteEntityData, editEntityData } from "@/app/store/core/crudThunk";
-import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
-import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
+
+import { deleteEntityData } from "@/app/store/core/crudThunk";
+import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import { useState } from "react";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import axios from "axios";
-import {API_GATEWAY_URL} from "@/config.js";
+
+import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import { API_GATEWAY_URL } from "@/config";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const PER_PAGE = 50;
 
@@ -34,27 +49,49 @@ export default function _Table({ module, open }) {
 	const { t } = useTranslation();
 	const os = useOs();
 	const dispatch = useDispatch();
-	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const height = mainAreaHeight - 78;
-	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
-	const filterData = useSelector((state) => state.crud[module].filterData);
-	const listData = useSelector((state) => state.crud[module].data);
+	const { mainAreaHeight } = useOutletContext();
 
-	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.MANAGE_FILE.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				term: searchKeyword,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "name",
-		});
+	const height = mainAreaHeight - 78;
+
+	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
+	const filterData = useSelector((state) => state.crud[module]?.filterData);
+	const listData = useSelector((state) => state.crud[module]?.data);
+
+	const { token, user } = useAuthStore.getState();
+
+	const {
+		scrollRef,
+		records,
+		fetching,
+		sortStatus,
+		setSortStatus,
+		handleScrollToBottom,
+		refetchAll,
+	} = useInfiniteTableScroll({
+		module,
+		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.MANAGE_FILE.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			term: searchKeyword,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "name",
+	});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
+	const [loading, setLoading] = useState(false);
+
+	/* ---------------- CREATE ---------------- */
+
+	const handleCreateForm = useCallback(() => {
+		open();
+		dispatch(setInsertType({ insertType: "create", module }));
+	}, [open, dispatch, module]);
+
+	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", handleCreateForm]]);
+
+	/* ---------------- DELETE ---------------- */
 
 	const handleDelete = (id) => {
 		modals.openConfirmModal({
@@ -62,12 +99,11 @@ export default function _Table({ module, open }) {
 			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
 			labels: { confirm: "Confirm", cancel: "Cancel" },
 			confirmProps: { color: "var(--theme-delete-color)" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleDeleteSuccess(id),
+			onConfirm: () => handleDeleteConfirm(id),
 		});
 	};
 
-	const handleDeleteSuccess = async (id) => {
+	const handleDeleteConfirm = async (id) => {
 		const res = await dispatch(
 			deleteEntityData({
 				url: `${MASTER_DATA_ROUTES.API_ROUTES.MANAGE_FILE.DELETE}/${id}`,
@@ -85,70 +121,72 @@ export default function _Table({ module, open }) {
 			notifications.show({
 				color: ERROR_NOTIFICATION_COLOR,
 				title: t("Delete Failed"),
-				icon: <IconAlertCircle style={{ width: rem(18), height: rem(18) }} />,
+				icon: <IconAlertCircle size={18} />,
 			});
 		}
 	};
 
-	const handleCreateForm = () => {
-		open();
-		dispatch(setInsertType({ insertType: "create", module }));
-	};
-
-	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
+	/* ---------------- PROCESS FILE ---------------- */
 
 	const processUploadFile = (id) => {
-		// setLoading(true);
-		axios({
-			method: "get",
-			url: `${API_GATEWAY_URL + "core/file-upload/process"}`,
-			headers: {
-				Accept: `application/json`,
-				"Content-Type": `application/json`,
-				"Access-Control-Allow-Origin": "*",
-				"X-Api-Key": import.meta.env.VITE_API_KEY,
-				"X-Api-User": JSON.parse(localStorage.getItem("user")).id,
-			},
-			params: {
-				file_id: id,
-			},
-		})
-			.then((res) => {
-				if (res.data.status == 200) {
-					// productsDataStoreIntoLocalStorage();
-					// setLoading(false);
-					setTimeout(() => {
-						notifications.show({
-							color: "teal",
-							title: "Process " + res.data.row + " rows successfully",
-							icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-							loading: false,
-							autoClose: 2000,
-							style: { backgroundColor: "lightgray" },
-						});
-					});
-				}
-			})
-			.catch(function (error) {
-				console.error(error.response.data.message);
-				// setLoading(false);
-				if (error?.response?.data?.message) {
-					notifications.show({
-						color: "red",
-						title: error.response.data.message,
-						icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-						loading: false,
-						autoClose: 2000,
-						style: { backgroundColor: "lightgray" },
-					});
-				}
-			});
+		modals.openConfirmModal({
+			title: <Text size="md">{t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm">{t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: "Confirm", cancel: "Cancel" },
+			confirmProps: { color: "var(--theme-primary-color-6)" },
+			onConfirm: () => handleProcessConfirm(id),
+		});
 	};
 
+	const handleProcessConfirm = async (id) => {
+		setLoading(true);
+
+		try {
+			const res = await axios.get(
+				`${API_GATEWAY_URL}/core/file-upload/process`,
+				{
+					headers: {
+						Accept: "application/json",
+						Authorization: `Bearer ${token}`,
+						"X-Api-Key": import.meta.env.VITE_API_KEY,
+						"X-Api-User": user?.id,
+					},
+					params: {
+						file_id: id,
+					},
+				}
+			);
+
+			if (res.data?.status === 200) {
+				refetchAll();
+
+				notifications.show({
+					color: "teal",
+					title: `Processed ${res.data.row} rows successfully`,
+					icon: <IconCheck size={18} />,
+					autoClose: 2000,
+				});
+			}
+		} catch (error) {
+			refetchAll();
+
+			notifications.show({
+				color: "red",
+				title: error?.response?.data?.message || "Processing failed",
+				icon: <IconAlertCircle size={18} />,
+			});
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	/* ---------------- RENDER ---------------- */
 
 	return (
 		<>
-			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none ">
+			<LoadingOverlay visible={loading} zIndex={1000} blur={2} />
+
+			<Box p="xs" className="boxBackground borderRadiusAll border-bottom-none">
 				<Flex align="center" justify="space-between" gap={4}>
 					<KeywordSearch module={module} />
 					<CreateButton handleModal={handleCreateForm} text="AddNew" />
@@ -157,22 +195,26 @@ export default function _Table({ module, open }) {
 
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
-					classNames={{
-						root: tableCss.root,
-						table: tableCss.table,
-						body: tableCss.body,
-						header: tableCss.header,
-						footer: tableCss.footer,
-						pagination: tableCss.pagination,
-					}}
+					classNames={tableCss}
 					records={records}
+					fetching={fetching}
+					height={height - 72}
+					scrollViewportRef={scrollRef}
+					onScrollToBottom={handleScrollToBottom}
+					sortStatus={sortStatus}
+					onSortStatusChange={setSortStatus}
+					loaderSize="xs"
+					loaderColor="grape"
+					sortIcons={{
+						sorted: <IconChevronUp size={14} />,
+						unsorted: <IconSelector size={14} />,
+					}}
 					columns={[
 						{
 							accessor: "index",
 							title: t("S/N"),
-							textAlignment: "right",
-							sortable: false,
-							render: (_item, index) => index + 1,
+							textAlign: "right",
+							render: (_, index) => index + 1,
 						},
 						{ accessor: "file_type", title: t("FileType") },
 						{ accessor: "original_name", title: t("FileName") },
@@ -182,11 +224,11 @@ export default function _Table({ module, open }) {
 							title: t("Status"),
 							render: (item) => (
 								<Chip
-									defaultChecked
-									color={item.is_process === 1 ? "green" : "red"}
+									checked
+									color={item.is_process ? "green" : "red"}
 									variant="light"
 								>
-									{item.is_process === 1 ? "Completed" : "Created"}
+									{item.is_process ? "Completed" : "Created"}
 								</Chip>
 							),
 						},
@@ -196,7 +238,7 @@ export default function _Table({ module, open }) {
 							textAlign: "center",
 							render: (item) =>
 								item.process_row > 0 && (
-									<Button variant="subtle" color="red" radius="xl">
+									<Button variant="subtle" radius="xl">
 										{item.process_row}
 									</Button>
 								),
@@ -204,62 +246,37 @@ export default function _Table({ module, open }) {
 						{
 							title: "",
 							textAlign: "right",
-							titleClassName: "title-right",
-							render: (values) =>
-								values.is_default ? null : (
-									<Group gap={4} justify="right" wrap="nowrap">
-										<Button.Group>
-											{!values.is_process && (
-												<Button
-													onClick={(e) => {
-														console.log('process')
-														// processUploadFile(values.id);
-													}}
-													variant="filled"
-													c="white"
-													bg="var(--theme-primary-color-6)"
-													size="compact-xs"
-													radius="es"
-													fw={400}
-													leftSection={<IconEye size={12} />}
-													className="border-left-radius-none"
-												>
-													{t("FileProcess")}
-												</Button>
-											)}
-											<ActionIcon
-												size="xs"
-												onClick={() => handleDelete(values.id)}
-												variant="light"
-												color="var(--theme-delete-color)"
-												radius="es"
-												aria-label="Settings"
-											>
-												<IconTrashX stroke={1.5} />
-											</ActionIcon>
-										</Button.Group>
+							render: (row) =>
+								!row.is_process && (
+									<Group gap={4} justify="right">
+										<Button
+											size="compact-xs"
+											leftSection={<IconEye size={12} />}
+											onClick={() => processUploadFile(row.id)}
+										>
+											{t("FileProcess")}
+										</Button>
+
+										<ActionIcon
+											size="xs"
+											color="red"
+											onClick={() => handleDelete(row.id)}
+										>
+											<IconTrashX size={14} />
+										</ActionIcon>
 									</Group>
 								),
 						},
 					]}
-					textSelectionDisabled
-					fetching={fetching}
-					loaderSize="xs"
-					loaderColor="grape"
-					height={height - 72}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
-					sortStatus={sortStatus}
-					onSortStatusChange={setSortStatus}
-					sortIcons={{
-						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
-						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
-					}}
 				/>
 			</Box>
 
 			<DataTableFooter indexData={listData} module={module} />
-			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module} />
+			<ViewDrawer
+				viewDrawer={viewDrawer}
+				setViewDrawer={setViewDrawer}
+				module={module}
+			/>
 		</>
 	);
 }

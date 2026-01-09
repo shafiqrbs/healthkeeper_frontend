@@ -34,7 +34,7 @@ const CSV_HEADERS_UPLOAD = [
 	{ label: "Warehouse Name", key: "warehouse_name" },
 	{ label: "WarehouseID", key: "warehouse_id" },
 	{ label: "Item Name", key: "name" },
-	{ label: "Stock ItemID", key: "stock_item_id" },
+	{ label: "StockItemID", key: "stock_item_id" },
 	{ label: "OpeningQuantity", key: "opening_quantity" },
 	{ label: "ProductionDate", key: "production_date" },
 	{ label: "ExpiredDate", key: "expired_date" },
@@ -199,7 +199,7 @@ export default function StockSummery() {
 			<CSVLink
 				data={csvDataForUpload}
 				headers={CSV_HEADERS_UPLOAD}
-				filename={`Stock-summery-upload-template-${formatDate(new Date())}.csv`}
+				filename={`Stock-opening-upload-template-${formatDate(new Date())}.csv`}
 				style={{ display: "none" }}
 				ref={csvLinkRefForUpload}
 			/>

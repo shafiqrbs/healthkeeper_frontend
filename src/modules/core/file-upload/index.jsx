@@ -1,4 +1,4 @@
-import { Box, Grid, Progress } from "@mantine/core";
+import {Box, Flex, Progress} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
@@ -35,34 +35,43 @@ export default function Index({ mode = "create" }) {
 				/>
 			) : (
 				<>
-					<CoreHeaderNavbar
-						module="core"
-						pageTitle={t("ManageCustomer")}
-						roles={t("Roles")}
-						allowZeroPercentage=""
-						currencySymbol=""
-					/>
-					<Box p="8">
-						<Grid columns={36} gutter={{ base: 8 }}>
-							{!matches && (
-								<Grid.Col span={6}>
-									<Navigation menu="base" subMenu={"baseSubmenu"} mainAreaHeight={mainAreaHeight} />
-								</Grid.Col>
-							)}
-							<Grid.Col span={matches ? 30 : 30}>
-								<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
+					{progress !== 100 ? (
+						<Progress
+							color="var(--theme-reset-btn-color)"
+							size="sm"
+							striped
+							animated
+							value={progress}
+							transitionDuration={200}
+						/>
+					) : (
+						<Box p="16px">
+							<Flex gap="8px">
+								{!matches && (
+									<Navigation menu="base" subMenu={"basePharmacySubmenu"} mainAreaHeight={mainAreaHeight} />
+								)}
+								<Box bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll" w="100%">
+									<CoreHeaderNavbar
+										module="pharmacy"
+										pageTitle={t("ManageFile")}
+										roles={t("Roles")}
+										allowZeroPercentage=""
+										currencySymbol=""
+									/>
 									<_Table module={module} open={open} close={close} />
+
+									<GlobalDrawer
+										opened={opened}
+										close={close}
+										title={mode === "create" ? t("CreateFile") : t("UpdateFile")}
+									>
+										<IndexForm module={module} form={form} mode={mode} close={close} />
+									</GlobalDrawer>
 								</Box>
-							</Grid.Col>
-						</Grid>
-						<GlobalDrawer
-							opened={opened}
-							close={close}
-							title={mode === "create" ? t("CreateFile") : t("UpdateFile")}
-						>
-							<IndexForm module={module} form={form} mode={mode} close={close} />
-						</GlobalDrawer>
-					</Box>
+							</Flex>
+						</Box>
+
+					)}
 				</>
 			)}
 		</>

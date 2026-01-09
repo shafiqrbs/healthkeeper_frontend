@@ -191,7 +191,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 				<Drawer.Header className={"drawer-sticky-header"}>
 					<Drawer.Title>
 						<Flex align="right" gap={8}>
-							{entityObject.process === "Created" && (
+							{entityObject?.process === "Created" && (
 								<Button
 									onClick={(e) => {
 										e.preventDefault();

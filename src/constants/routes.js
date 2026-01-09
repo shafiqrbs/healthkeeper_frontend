@@ -214,14 +214,6 @@ export const MASTER_DATA_ROUTES = {
 			INDEX: "/hospital/core/store-user",
 		},
 
-		MANAGE_FILE: {
-			INDEX: "/core/file",
-			CREATE: "core/file",
-			UPDATE: "core/file",
-			VIEW: "core/file",
-			DELETE: "core/file",
-		},
-
 		SETTING: {
 			INDEX: "/core/setting",
 			CREATE: "/core/setting",
@@ -441,6 +433,13 @@ export const PHARMACY_DATA_ROUTES = {
 			UPDATE: "/pharmacy/core/medicine",
 			VIEW: "/pharmacy/core/medicine",
 			DELETE: "/pharmacy/core/medicine",
+		},
+		MANAGE_FILE: {
+			INDEX: "/core/file",
+			CREATE: "core/file",
+			UPDATE: "core/file",
+			VIEW: "core/file",
+			DELETE: "core/file",
 		},
 
 		GENERIC: {
