@@ -85,21 +85,26 @@ const TAB_ITEMS = [
 		value: "insulin-chart",
 		allowedGroups: ["admin_administrator", "nurse_incharge"],
 	},
-	// {
-	// 	label: "Room Transfer",
-	// 	value: "room-transfer",
-	// 	allowedGroups: ["admin_administrator", "nurse_incharge"],
-	// },
-	// {
-	// 	label: "Discharge",
-	// 	value: "discharge",
-	// 	allowedGroups: ["doctor_ipd", "admin_administrator"],
-	// },
-	// {
-	// 	label: "DeathCertificate",
-	// 	value: "death-certificate",
-	// 	allowedGroups: ["doctor_ipd", "admin_administrator"],
-	// },
+	{
+	 	label: "Room Transfer",
+		value: "room-transfer",
+	 	allowedGroups: ["admin_administrator", "nurse_incharge"],
+	 },
+	 {
+	 	label: "Discharge",
+	 	value: "discharge",
+	 	allowedGroups: ["doctor_ipd", "admin_administrator"],
+	 },
+	 {
+	 	label: "DeathCertificate",
+	 	value: "death-certificate",
+	 	allowedGroups: ["doctor_ipd", "admin_administrator"],
+	 },
+	{
+	 	label: "Referred",
+	 	value: "referred",
+	 	allowedGroups: ["doctor_ipd", "admin_administrator"],
+	 },
 ];
 
 const PRINT_SECTION_ITEMS = [
@@ -116,6 +121,11 @@ const PRINT_SECTION_ITEMS = [
 	{
 		label: "Death Certificate Print",
 		value: "death-certificate-print",
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+	},
+	{
+		label: "Referred Print",
+		value: "referred-print",
 		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
 	},
 ];
@@ -246,22 +256,22 @@ export default function Index() {
 		}
 	};
 
-	// const getFilteredTabs = (tabs) => {
+	const getFilteredTabs = (tabs) => {
 	// 	// ❌ Not paid → remove all release tabs
-	// 	if (!isPaid) {
-	// 		const RELEASE_TABS = Object.values(RELEASE_TAB_MAP);
-	// 		return tabs.filter((tab) => !RELEASE_TABS.includes(tab.value));
-	// 	}
+	 	if (!isPaid) {
+	 		const RELEASE_TABS = Object.values(RELEASE_TAB_MAP);
+	 		return tabs.filter((tab) => !RELEASE_TABS.includes(tab.value));
+	 	}
 
 	// 	// ✅ Paid + release mode → ONLY dashboard + matching release tab
-	// 	if (releaseMode && RELEASE_TAB_MAP[releaseMode]) {
-	// 		const allowedTabs = getAllowedTabsForRelease(releaseMode);
-	// 		return tabs.filter((tab) => allowedTabs.includes(tab.value));
-	// 	}
+	 	if (releaseMode && RELEASE_TAB_MAP[releaseMode]) {
+			const allowedTabs = getAllowedTabsForRelease(releaseMode);
+	 		return tabs.filter((tab) => allowedTabs.includes(tab.value));
+	 	}
 
 	// 	// ✅ Paid but no release mode → all tabs
-	// 	return tabs;
-	// };
+	 	return tabs;
+	 };
 
 	const getFilteredPrintItems = (printItems) => {
 		// ❌ Not paid → remove all release prints
@@ -381,7 +391,7 @@ export default function Index() {
 
 							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
 								<Stack h="100%" py="xs" gap={0}>
-									{TAB_ITEMS.filter((tabItem) =>
+									{getFilteredTabs(TAB_ITEMS.filter((tabItem) =>
 										userRoles.some((role) => tabItem.allowedGroups.includes(role))
 									).map((tabItem, index) => (
 										<Box
@@ -410,7 +420,7 @@ export default function Index() {
 												{t(tabItem.label)}
 											</Text>
 										</Box>
-									))}
+									)))}
 
 									<Box bg="var(--mantine-color-gray-0)" my="3xs" py="sm" px="md">
 										<Text size="sm" fw={600}>

@@ -39,7 +39,7 @@ function Referred({ data }) {
 		try {
 			const result = await dispatch(
 				updateEntityData({
-					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DEATH_CERTIFICATE}/${data?.prescription_uid}`,
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PRESCRIPTION}/${data?.prescription_uid}`,
 					data: values,
 					module: "admission",
 				})
