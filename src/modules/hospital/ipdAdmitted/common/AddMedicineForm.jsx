@@ -550,7 +550,7 @@ export default function AddMedicineForm({
 			};
 
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${prescriptionData?.data?.prescription_uid}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PRESCRIPTION}/${prescriptionData?.data?.prescription_uid}`,
 				data: formValue,
 				module,
 			};

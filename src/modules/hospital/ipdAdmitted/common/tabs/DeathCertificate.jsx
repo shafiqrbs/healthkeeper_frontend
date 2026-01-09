@@ -12,9 +12,10 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
+import {useEffect} from "react";
+import {formatDate, formatDateTime} from "@utils/index";
 
 export default function DeathCertificate({ data }) {
-
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -24,13 +25,15 @@ export default function DeathCertificate({ data }) {
 		value: disease.name,
 		label: disease.name,
 	}));
+	console.log( data?.cause_death);
 	const form = useForm({
 		initialValues: {
-			diseases_profile: "",
-			cause_death: "",
-			about_death: "",
+			diseases_profile: '',
+			cause_death:'',
+			about_death:'',
 			death_date_time: new Date(),
 		},
+
 		validate: {
 			diseases_profile: (value) => {
 				if (!value) {
@@ -59,11 +62,20 @@ export default function DeathCertificate({ data }) {
 		},
 	});
 
+	useEffect(() => {
+		form.setValues({
+			diseases_profile: data?.diseases_profile,
+			cause_death: data?.cause_death,
+			about_death: data?.about_death,
+			death_date_time: new Date(),
+		});
+	}, [data]);
+
 	const handleSubmit = async (values) => {
 		try {
 			const result = await dispatch(
 				updateEntityData({
-					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DEATH_CERTIFICATE}/${data?.prescription_uid}`,
+					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PRESCRIPTION}/${data?.prescription_uid}`,
 					data: values,
 					module: "admission",
 				})
@@ -87,7 +99,7 @@ export default function DeathCertificate({ data }) {
 	};
 
 	return (
-		<Box bg="var(--mantine-color-white"  p="xl" component="form" onSubmit={form.onSubmit(handleSubmit)}>
+		<Box bg="var(--mantine-color-white" p="xl" component="form" onSubmit={form.onSubmit(handleSubmit)}>
 			<Text size="lg" fw={600} mb="md">
 				Death Certificate
 			</Text>
@@ -95,6 +107,7 @@ export default function DeathCertificate({ data }) {
 				<SelectForm
 					mt="sm"
 					form={form}
+					value={form?.values?.diseases_profile}
 					name="diseases_profile"
 					tooltip="Diseases profile is required"
 					label="Diseases profile"
@@ -106,19 +119,22 @@ export default function DeathCertificate({ data }) {
 					label="About Death"
 					name="about_death"
 					form={form}
+					value={form?.values?.about_death}
 					placeholder="About Death"
-					tooltip={t('Death date & time is required')}
+					tooltip={t("Death date & time is required")}
 				/>
 				<TextAreaForm
 					mt="sm"
 					label="Cause of death"
 					name="cause_death"
 					form={form}
+					value={form?.values?.cause_death}
 					placeholder="Cause of death"
-					tooltip={t('Cause of death is required')}
+					tooltip={t("Cause of death is required")}
 				/>
 				<DateTimePickerForm
 					mt="sm"
+					value={form?.values?.death_date_time}
 					tooltip="Death date & time is required"
 					label="Death Date & Time"
 					name="death_date_time"

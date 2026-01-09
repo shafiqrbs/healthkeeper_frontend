@@ -15,8 +15,6 @@ import { MODULES_CORE } from "@/constants";
 import { setRefetchData } from "@/app/store/core/crudSlice";
 import InputForm from "@components/form-builders/InputForm";
 import { useForm } from "@mantine/form";
-import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { modals } from "@mantine/modals";
 
@@ -122,6 +120,27 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 		}
 	};
 
+	const handleClose = () => {
+		close();
+		resetUrlByType();
+	};
+
+	const resetUrlByType = () => {
+		if (type === "opd-treatment") {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescriptionId}`);
+		} else if (type === "ipd-treatment" && section === "discharge") {
+			if (activeTab === "discharge") {
+				return navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=discharge`);
+			}
+
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DISCHARGE.INDEX}/${dischargeId}`);
+		} else if (type === "ipd-treatment" && section === "ipdPrescription") {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.IPD_PRESCRIPTION}/${id}?ipd=${ipdId}`);
+		} else {
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=e-fresh`);
+		}
+	};
+
 	const handleDelete = (e, tabItem) => {
 		e.stopPropagation();
 
@@ -143,10 +162,11 @@ export default function BookmarkDrawer({ opened, close, type = "opd-treatment", 
 				id,
 			})
 		);
+		resetUrlByType();
 	};
 
 	return (
-		<GlobalDrawer size="100%" opened={opened} close={close} title="Treatment template for medicine">
+		<GlobalDrawer size="100%" opened={opened} close={handleClose} title="Treatment template for medicine">
 			<Grid columns={12} gutter="xs">
 				<Grid.Col span={3}>
 					<ScrollArea bg="var(--theme-tertiary-color-0)" mt="sm" h={mainAreaHeight - 80} scrollbars="y">

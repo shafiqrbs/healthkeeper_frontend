@@ -2,17 +2,14 @@ import { Box, Button, Flex, Tooltip } from "@mantine/core";
 import { getHotkeyHandler } from "@mantine/hooks";
 import { IconInfoCircle, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import inputCss from "@assets/css/InputField.module.css";
 import DatePicker from "react-datepicker";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getYear, getMonth } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 
 const range = (start, end, step = 1) => {
 	const result = [];
-	for (let i = start; i <= end; i += step) {
-		result.push(i);
-	}
+	for (let i = start; i <= end; i += step) result.push(i);
 	return result;
 };
 
@@ -37,11 +34,35 @@ export default function DateSelector({
 }) {
 	const { t } = useTranslation();
 
-	// =============== state for selected date ================
+	// ================== STATE ==================
 	const [selectedDate, setSelectedDate] = useState(value ? new Date(value) : null);
 
-	// =============== years and months for custom header ================
-	const years = range(1940, getYear(new Date()) + 5, 1);
+	// ================== KEEP IN SYNC WITH PARENT ==================
+	useEffect(() => {
+		if (!value) {
+			setSelectedDate(null);
+			return;
+		}
+
+		const next = new Date(value);
+		if (!selectedDate || next.getTime() !== selectedDate.getTime()) {
+			setSelectedDate(next);
+		}
+	}, [value]);
+
+	// ================== HANDLERS ==================
+	const handleDateChange = (date) => {
+		setSelectedDate(date);
+		onChange?.(date ?? "");
+	};
+
+	const handleClearDate = () => {
+		setSelectedDate(null);
+		onChange?.("");
+	};
+
+	// ================== HEADER DATA ==================
+	const years = range(1940, getYear(new Date()) + 5);
 	const months = [
 		"January",
 		"February",
@@ -57,30 +78,7 @@ export default function DateSelector({
 		"December",
 	];
 
-	// =============== update form value when date changes ================
-	useEffect(() => {
-		if (selectedDate) {
-			onChange(selectedDate);
-		} else {
-			onChange("");
-		}
-	}, [selectedDate]);
-
-	// =============== handle date change ================
-	const handleDateChange = (date) => {
-		if (onChange) {
-			onChange();
-		}
-		setSelectedDate(date);
-	};
-
-	// =============== handle clear date ================
-	const handleClearDate = () => {
-		setSelectedDate(null);
-		onChange("");
-	};
-
-	// =============== custom header component ================
+	// ================== CUSTOM HEADER ==================
 	const renderCustomHeader = ({
 		date,
 		changeYear,
@@ -101,30 +99,19 @@ export default function DateSelector({
 			>
 				{"<"}
 			</Button>
-			<select
-				value={getYear(date)}
-				onChange={({ target: { value } }) => changeYear(value)}
-				radius="xs"
-				size="xs"
-				color="gray"
-			>
-				{years.map((option) => (
-					<option key={option} value={option}>
-						{option}
+
+			<select value={getYear(date)} onChange={(e) => changeYear(Number(e.target.value))}>
+				{years.map((y) => (
+					<option key={y} value={y}>
+						{y}
 					</option>
 				))}
 			</select>
 
-			<select
-				value={months[getMonth(date)]}
-				onChange={({ target: { value } }) => changeMonth(months.indexOf(value))}
-				radius="xs"
-				size="xs"
-				color="gray"
-			>
-				{months.map((option) => (
-					<option key={option} value={option}>
-						{option}
+			<select value={months[getMonth(date)]} onChange={(e) => changeMonth(months.indexOf(e.target.value))}>
+				{months.map((m) => (
+					<option key={m} value={m}>
+						{m}
 					</option>
 				))}
 			</select>
@@ -142,51 +129,29 @@ export default function DateSelector({
 		</Flex>
 	);
 
+	// ================== RENDER ==================
 	return (
-		<Tooltip
-			label={tooltip}
-			opened={false}
-			px={16}
-			py={2}
-			position="top-end"
-			bg="var(--theme-validation-error-color)"
-			c="white"
-			withArrow
-			offset={2}
-			zIndex={999}
-			transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
-		>
+		<Tooltip label={tooltip} opened={false} withArrow position="top-end">
 			<Box mt={mt} miw={miw}>
 				{label && (
-					<label
-						htmlFor={id}
-						style={{
-							display: "block",
-							marginBottom: "8px",
-							fontSize: "14px",
-							fontWeight: "500",
-							color: "var(--mantine-color-text)",
-						}}
-					>
+					<label htmlFor={id} style={{ marginBottom: 8, display: "block" }}>
 						{label}
 						{required && <span style={{ color: "red" }}> *</span>}
 					</label>
 				)}
+
 				<Box pos="relative">
 					{leftSection && (
 						<Box
-							style={{
-								position: "absolute",
-								left: "12px",
-								top: "50%",
-								transform: "translateY(-50%)",
-								zIndex: 1,
-								pointerEvents: "none",
-							}}
+							pos="absolute"
+							left={12}
+							top="50%"
+							style={{ transform: "translateY(-50%)", pointerEvents: "none" }}
 						>
 							{leftSection}
 						</Box>
 					)}
+
 					<DatePicker
 						id={id}
 						selected={selectedDate}
@@ -197,72 +162,43 @@ export default function DateSelector({
 						maxDate={disabledFutureDate ? new Date() : undefined}
 						renderCustomHeader={renderCustomHeader}
 						dateFormat="dd-MM-yyyy"
-						showYearDropdown
-						showMonthDropdown
-						dropdownMode="select"
 						onKeyDown={getHotkeyHandler([
 							[
 								"Enter",
 								() => {
-									nextField === "EntityFormSubmit"
-										? document.getElementById(nextField).click()
-										: document.getElementById(nextField).focus();
+									if (!nextField) return;
+									const el = document.getElementById(nextField);
+									el?.focus?.() || el?.click?.();
 								},
 							],
 						])}
 						style={{
 							width: "100%",
 							padding: size === "xs" ? "4px 10px" : size === "sm" ? "8px 12px" : "12px 16px",
-							paddingLeft: leftSection ? "40px" : "12px",
-							paddingRight: (value && closeIcon) || rightSection ? "40px" : "12px",
-							// border:
-							// 	name in form.errors && form.errors[name]
-							// 		? "1px solid var(--theme-validation-error-color)"
-							// 		: "1px solid var(--mantine-color-gray-3)",
-							borderRadius: "4px",
-							fontSize: "12px",
-							backgroundColor: disabled ? "var(--mantine-color-gray-1)" : "white",
-							color: "var(--mantine-color-text)",
-							cursor: disabled ? "not-allowed" : "text",
+							paddingLeft: leftSection ? 40 : 12,
+							paddingRight: rightSection || closeIcon ? 40 : 12,
+							borderRadius: 4,
+							fontSize: 12,
+							backgroundColor: disabled ? "#f1f3f5" : "#fff",
 						}}
-						className="date-selector-input"
 						autoComplete="off"
 					/>
+
 					{rightSection && (
-						<div
-							style={{
-								position: "absolute",
-								right: "12px",
-								top: "50%",
-								transform: "translateY(-50%)",
-								zIndex: 1,
-								cursor: "pointer",
-							}}
+						<Box
+							pos="absolute"
+							right={12}
+							top="50%"
+							style={{ transform: "translateY(-50%)", cursor: "pointer" }}
 						>
-							{value && closeIcon ? (
-								<Tooltip label={t("Close")} withArrow bg="var(--theme-error-color)" c="white">
-									<IconX
-										color="var(--theme-error-color)"
-										size={16}
-										opacity={0.5}
-										onClick={handleClearDate}
-									/>
+							{selectedDate && closeIcon ? (
+								<Tooltip label={t("Close")} withArrow>
+									<IconX size={16} onClick={handleClearDate} />
 								</Tooltip>
 							) : (
-								<Tooltip
-									label={tooltip}
-									px={16}
-									py={2}
-									withArrow
-									position={"left"}
-									c="white"
-									bg="var(--theme-info-color)"
-									transitionProps={{ transition: "pop-bottom-left", duration: 500 }}
-								>
-									{rightSection ? rightSection : <IconInfoCircle size={16} opacity={0.5} />}
-								</Tooltip>
+								rightSection || <IconInfoCircle size={16} />
 							)}
-						</div>
+						</Box>
 					)}
 				</Box>
 			</Box>

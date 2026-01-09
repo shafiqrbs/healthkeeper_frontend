@@ -51,12 +51,13 @@ const module = MODULES.E_FRESH;
 const RELEASE_TAB_MAP = {
 	referred: "referred",
 	discharge: "discharge",
-	death: "death-certificate",
+	death: "death",
 };
 
 const RELEASE_PRINT_MAP = {
 	discharge: "discharge-print",
 	death: "death-certificate-print",
+	referred: "referred-print",
 };
 
 const TAB_ITEMS = [
@@ -85,21 +86,26 @@ const TAB_ITEMS = [
 		value: "insulin-chart",
 		allowedGroups: ["admin_administrator", "nurse_incharge"],
 	},
-	// {
-	// 	label: "Room Transfer",
-	// 	value: "room-transfer",
-	// 	allowedGroups: ["admin_administrator", "nurse_incharge"],
-	// },
-	// {
-	// 	label: "Discharge",
-	// 	value: "discharge",
-	// 	allowedGroups: ["doctor_ipd", "admin_administrator"],
-	// },
-	// {
-	// 	label: "DeathCertificate",
-	// 	value: "death-certificate",
-	// 	allowedGroups: ["doctor_ipd", "admin_administrator"],
-	// },
+	{
+		label: "Room Transfer",
+		value: "room-transfer",
+		allowedGroups: ["admin_administrator", "nurse_incharge"],
+	},
+	{
+		label: "Discharge",
+		value: "discharge",
+		allowedGroups: ["doctor_ipd", "admin_administrator"],
+	},
+	{
+		label: "DeathCertificate",
+		value: "death",
+		allowedGroups: ["doctor_ipd", "admin_administrator"],
+	},
+	{
+		label: "Referred",
+		value: "referred",
+		allowedGroups: ["doctor_ipd", "admin_administrator"],
+	},
 ];
 
 const PRINT_SECTION_ITEMS = [
@@ -116,6 +122,11 @@ const PRINT_SECTION_ITEMS = [
 	{
 		label: "Death Certificate Print",
 		value: "death-certificate-print",
+		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
+	},
+	{
+		label: "Referred Print",
+		value: "referred-print",
 		allowedGroups: ["doctor_ipd", "admin_administrator", "nurse_incharge"],
 	},
 ];
@@ -221,23 +232,14 @@ export default function Index() {
 		return [RELEASE_PRINT_MAP[releaseMode]].filter(Boolean);
 	};
 
-	const handleReleaseMode = (mode) => {
-		modals.openConfirmModal({
-			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
-			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
-			labels: { confirm: t("Submit"), cancel: t("Cancel") },
-			confirmProps: { color: "red" },
-			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handleConfirmApproved(mode),
-		});
-	};
-
 	const handleConfirmApproved = async (mode) => {
 		try {
 			await getDataWithoutStore({
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.RELEASE}/${id}/${mode}`,
 			});
 			refetch();
+			setBaseTabValue(mode?.toLowerCase());
+			setSearchParams({ tab: mode?.toLowerCase() });
 		} catch (err) {
 			console.error(err);
 			errorNotification(err?.message, ERROR_NOTIFICATION_COLOR);
@@ -245,19 +247,21 @@ export default function Index() {
 	};
 
 	const getFilteredTabs = (tabs) => {
-		// ❌ Not paid → remove all release tabs
+		// 	// ❌ Not paid → remove all release tabs
 		if (!isPaid) {
 			const RELEASE_TABS = Object.values(RELEASE_TAB_MAP);
 			return tabs.filter((tab) => !RELEASE_TABS.includes(tab.value));
 		}
 
-		// ✅ Paid + release mode → ONLY dashboard + matching release tab
+		// 	// ✅ Paid + release mode → ONLY dashboard + matching release tab
 		if (releaseMode && RELEASE_TAB_MAP[releaseMode]) {
 			const allowedTabs = getAllowedTabsForRelease(releaseMode);
 			return tabs.filter((tab) => allowedTabs.includes(tab.value));
 		}
 
-		// ✅ Paid but no release mode → all tabs
+		console.log(tabs);
+
+		// 	// ✅ Paid but no release mode → all tabs
 		return tabs;
 	};
 
@@ -305,6 +309,19 @@ export default function Index() {
 		}
 	};
 
+	const handleReleaseProcedure = (mode) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => {
+				handleConfirmApproved(mode);
+			},
+		});
+	};
+
 	const hasRecords = records && records.length > 0;
 
 	return (
@@ -338,7 +355,7 @@ export default function Index() {
 				<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 				<Grid w="100%" columns={24} gutter="xs">
 					<Grid.Col span={3}>
-						<Box style={{ overflow: "hidden" }} h={mainAreaHeight - 14}>
+						<Box>
 							<Box mb="xs" bg="var(--theme-primary-color-1)">
 								<Box
 									bg="var(--theme-primary-color-1)"
@@ -364,10 +381,12 @@ export default function Index() {
 								</Box>
 							</Box>
 
-							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 80} scrollbars="y">
+							<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 180} scrollbars="y">
 								<Stack h="100%" py="xs" gap={0}>
-									{TAB_ITEMS.filter((tabItem) =>
-										userRoles.some((role) => tabItem.allowedGroups.includes(role))
+									{getFilteredTabs(
+										TAB_ITEMS.filter((tabItem) =>
+											userRoles.some((role) => tabItem.allowedGroups.includes(role))
+										)
 									).map((tabItem, index) => (
 										<Box
 											key={index}
@@ -444,38 +463,43 @@ export default function Index() {
 									>
 										{t("Release Procedure")}
 									</Box>
-									{ipdData?.data?.release_mode && ipdData?.data?.process?.toLowerCase() && (
-										// <Paper
-										// 	withBorder
-										// 	radius="sm"
-										// 	p={"xs"}
-										// 	bg="var(--theme-primary-color-0)"
-										// 	style={{ borderColor: "var(--theme-secondary-color-4)" }}
-										// >
-										// 	<Text fw={600} size="md" c="var(--theme-secondary-color-7)">
-										// 		{ipdData?.data?.release_mode.charAt(0).toUpperCase() +
-										// 			ipdData?.data?.release_mode.slice(1)}
-										// 		: Bill processed successfully
-										// 	</Text>
-										// </Paper>
+									{ipdData?.data?.release_mode &&
+										ipdData?.data?.process?.toLowerCase() === "paid" && (
+											// <Paper
+											// 	withBorder
+											// 	radius="sm"
+											// 	p={"xs"}
+											// 	bg="var(--theme-primary-color-0)"
+											// 	style={{ borderColor: "var(--theme-secondary-color-4)" }}
+											// >
+											// 	<Text fw={600} size="md" c="var(--theme-secondary-color-7)">
+											// 		{ipdData?.data?.release_mode.charAt(0).toUpperCase() +
+											// 			ipdData?.data?.release_mode.slice(1)}
+											// 		: Bill processed successfully
+											// 	</Text>
+											// </Paper>
 
-										<Group justify="center" py="md">
-											<Button fullWidth onClick={() => handleTabClick("discharge")}>
-												{" "}
-												For Discharge{" "}
-											</Button>
-											<Button
-												fullWidth
-												color="red"
-												onClick={() => handleTabClick("death-certificate")}
-											>
-												For Death
-											</Button>
-											<Button fullWidth color="green" onClick={() => handleTabClick("referred")}>
-												For Referred
-											</Button>
-										</Group>
-									)}
+											<Group justify="center" py="md">
+												<Button fullWidth onClick={() => handleReleaseProcedure("discharge")}>
+													{" "}
+													For Discharge{" "}
+												</Button>
+												<Button
+													fullWidth
+													color="red"
+													onClick={() => handleReleaseProcedure("death")}
+												>
+													For Death
+												</Button>
+												<Button
+													fullWidth
+													color="green"
+													onClick={() => handleReleaseProcedure("referred")}
+												>
+													For Referred
+												</Button>
+											</Group>
+										)}
 								</Box>
 							</ScrollArea>
 						</Box>
@@ -529,7 +553,7 @@ export default function Index() {
 						{baseTabValue === "vitals-chart" && <VitalsChart refetch={refetch} data={ipdData?.data} />}
 						{baseTabValue === "insulin-chart" && <InsulinChart refetch={refetch} data={ipdData?.data} />}
 						{baseTabValue === "discharge" && <Discharge ipdData={ipdData?.data} refetch={refetch} />}
-						{baseTabValue === "death-certificate" && <DeathCertificate data={ipdData?.data} />}
+						{baseTabValue === "death" && <DeathCertificate data={ipdData?.data} />}
 						{baseTabValue === "e-fresh-print" && <PrintPrescriptionIndoor />}
 						{baseTabValue === "discharge-print" && (
 							<DischargePrint data={ipdData?.data} refetch={refetch} />

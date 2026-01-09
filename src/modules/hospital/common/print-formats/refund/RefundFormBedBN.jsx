@@ -11,7 +11,6 @@ import { formatDate } from "@utils/index";
 const RefundFromBedBn = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const { hospitalConfigData } = useHospitalConfigData();
-	console.log(patientInfo);
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
@@ -43,7 +42,7 @@ const RefundFromBedBn = forwardRef(({ data, preview = false }, ref) => {
 				gap="xl"
 			>
 				<Box>
-					<Box px={"xl"}>
+					<Box px={"xl"} mt={'xl'}>
 						<Table
 							style={{
 								borderCollapse: "collapse",
@@ -146,76 +145,6 @@ const RefundFromBedBn = forwardRef(({ data, preview = false }, ref) => {
 										</Box>
 									</Table.Td>
 								</Table.Tr>
-								{/*<Table.Tr>
-									<Table.Td>
-										<Group gap="xs">
-											<Text size="xs" fw={600}>
-												{t("PatientID")}:
-											</Text>
-											<Text size="sm">{getValue(patientInfo?.patient_id || "")}</Text>
-										</Group>
-									</Table.Td>
-									<Table.Td>
-										<Group gap="xs">
-											<Text size="sm">{getValue(patientInfo?.invoice || "")}</Text>
-										</Group>
-									</Table.Td>
-									<Table.Td>
-										<Group gap="xs">
-											<Text size="xs" fw={600}>
-												{t("PatientType")}:
-											</Text>
-											<Text size="sm">{getValue(patientInfo?.payment_mode_name, "")}</Text>
-										</Group>
-									</Table.Td>
-								</Table.Tr>
-								<Table.Tr>
-									<Table.Td colSpan={"2"}>
-										<Group gap="xs">
-											<Text size="xs" fw={600}>
-												{t("Name")}:
-											</Text>
-											<Text size="sm">{getValue(patientInfo?.name, "")}</Text>
-										</Group>
-									</Table.Td>
-
-									<Table.Td>
-										<Group gap="xs">
-											<Text size="xs" fw={600}>
-												{t("Age")}:
-											</Text>
-											<Text size="xs">
-												{patientInfo?.year ? `${patientInfo?.year} Years` : ""}{" "}
-												{patientInfo?.month ? `${patientInfo?.month} Mon` : ""}{" "}
-												{patientInfo?.day ? `${patientInfo?.day} Day` : ""}
-											</Text>
-										</Group>
-									</Table.Td>
-								</Table.Tr>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Table.Td>
-										<Group gap="xs">
-											<Text size="xs" fw={600}>
-												{t("Gender")}:
-											</Text>
-											<Text size="xs">{capitalizeWords(patientInfo?.gender || "")}</Text>
-										</Group>
-									</Table.Td>
-									<Table.Td colSpan={2}>
-										<Group gap="xs">
-											<Text size="xs" fw={600}>
-												{t("Mobile")}:
-											</Text>
-											<Text size="xs">
-												{getValue(patientInfo?.mobile, "")}
-												{patientInfo?.guardian_mobile && (
-													<> / {getValue(patientInfo?.guardian_mobile, "")}</>
-												)}
-											</Text>
-										</Group>
-									</Table.Td>
-								</Table.Tr>
-*/}
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td colSpan={3}>
 										<Grid columns={12} gutter="0" mt={"md"}>

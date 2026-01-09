@@ -546,7 +546,7 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 			};
 
 			const value = {
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.UPDATE}/${prescriptionId}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PRESCRIPTION}/${prescriptionId}`,
 				data: formValue,
 				module,
 			};
@@ -1043,6 +1043,7 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 									prescriptionId={prescriptionId}
 									tableHeight={mainAreaHeight - 386}
 									setMedicines={setDbMedicines}
+									forDischarge
 								/>
 							)}
 						</Stack>

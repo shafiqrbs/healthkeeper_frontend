@@ -189,6 +189,7 @@ export const sideNavigationLinks = {
 				},
 			],
 		},
+
 		{
 			label: t("Refund"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,
@@ -200,6 +201,7 @@ export const sideNavigationLinks = {
 				"operator_opd",
 				"operator_emergency",
 				"operator_manager",
+				"role_domain", "doctor_ipd","doctor_emergency","doctor_rs_rp_confirm", "admin_administrator", "doctor_opd"
 			],
 			subMenu: [
 				{
@@ -219,6 +221,12 @@ export const sideNavigationLinks = {
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.IPD,
 					icon: IconBuildingHospital,
 					allowedRoles: ["operator_opd", "operator_emergency", "operator_manager", "admin_administrator"],
+				},
+				{
+					label: t("Confirm"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.CONFIRM,
+					icon: IconBuildingHospital,
+					allowedRoles: ["role_domain", "doctor_ipd","doctor_emergency","doctor_rs_rp_confirm", "admin_administrator", "doctor_opd"],
 				},
 			],
 		},

@@ -660,7 +660,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			MEDICINE_REORDER: "hospital/ipdprescription/ordering",
 			TEMPLATE_UPDATE: "hospital/ipdprescription/update-template",
 			MEDICINE_DELETE: "hospital/ipdprescription/medicine-delete",
-			DEATH_CERTIFICATE: "hospital/ipdprescription",
+			PRESCRIPTION: "hospital/ipdprescription",
 		},
 
 		EMERGENCY: {
@@ -872,6 +872,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			VIEW: "/hospital/refund-history",
 			IPD: "/hospital/refund-ipd-history",
 			IPD_VIEW: "/hospital/refund-ipd-history",
+			CONFIRM: "/hospital/refund-confirm",
 		},
 
 		FINAL_BILLING: {
