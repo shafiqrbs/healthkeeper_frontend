@@ -226,7 +226,7 @@ export const sideNavigationLinks = {
 					label: t("Confirm"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.REFUND_HISTORY.CONFIRM,
 					icon: IconBuildingHospital,
-					allowedRoles: ["role_domain", "doctor_ipd","doctor_emergency","doctor_rs_rp_confirm", "admin_administrator", "doctor_opd"],
+					allowedRoles: ["role_domain", "doctor_ipd","doctor_emergency","doctor_rs_rp_confirm", "admin_administrator","operator_emergency", "doctor_opd"],
 				},
 			],
 		},

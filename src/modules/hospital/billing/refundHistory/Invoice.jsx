@@ -12,7 +12,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { formatDate } from "@utils/index";
+import {capitalizeWords, formatDate} from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import {
 	IconArrowNarrowRight,
@@ -181,7 +181,7 @@ export default function Invoice({ setRefetchBillingKey,entity }) {
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={4} py={0}>
-											<Text size="xs">{item?.mode}</Text>
+											<Text size="xs">{capitalizeWords(item?.mode)}</Text>
 										</Grid.Col>
 										<Grid.Col span={4} py={0}>
 											<Text size="xs" fw={600}>
@@ -197,7 +197,7 @@ export default function Invoice({ setRefetchBillingKey,entity }) {
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={4} py={0}>
-											<Text size="xs">{item?.process}</Text>
+											<Text size="xs">{ capitalizeWords(item?.process)}</Text>
 										</Grid.Col>
 									</Grid>
 									<Flex align="center" gap="sm" mt={"md"} justify="flex-end">
@@ -205,7 +205,7 @@ export default function Invoice({ setRefetchBillingKey,entity }) {
 											ALLOWED_BILLING_ROLES.includes(role)
 										) && (
 											<>
-											{item?.process === "In-progress" &&(
+											{/*{item?.process === "In-progress" &&(
 													<Button
 														onClick={() =>
 															handleApprove(
@@ -218,7 +218,7 @@ export default function Invoice({ setRefetchBillingKey,entity }) {
 													>
 														{t("Confirm")}
 													</Button>
-												)}
+												)}*/}
 												<Button
 													onClick={() =>
 														handlePrint(
@@ -230,19 +230,6 @@ export default function Invoice({ setRefetchBillingKey,entity }) {
 													color="white"
 												>
 													{t("Print")}
-												</Button>
-
-												<Button
-													onClick={() =>
-														handleTest(
-															item.hms_invoice_transaction_id
-														)
-													}
-													size="xs"
-													bg="var(--theme-secondary-color-6)"
-													color="white"
-												>
-													{t("View")}
 												</Button>
 											</>
 										)}

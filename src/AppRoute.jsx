@@ -394,7 +394,7 @@ function AppRoute() {
 							index
 							element={
 								<ProtectedRoute
-									roles={["role_domain", "doctor_ipd","doctor_emergency","doctor_rs_rp_confirm", "admin_administrator", "doctor_opd"]}
+									roles={["role_domain", "doctor_ipd","doctor_emergency","doctor_rs_rp_confirm", "admin_administrator", "doctor_opd", "operator_emergency"]}
 								>
 									<RefundConfirmIndex />
 								</ProtectedRoute>

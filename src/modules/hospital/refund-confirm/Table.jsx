@@ -47,15 +47,14 @@ import RefundFromBedBn from "@hospital-components/print-formats/refund/RefundFor
 
 const tabs = [
 	{ label: "All", value: "all" },
-	{ label: "OPD", value: "opd" },
-	{ label: "Emergency", value: "emergency" },
-	{ label: "IPD", value: "ipd" },
+	{ label: "Investigation", value: "investigation" },
+	{ label: "Bill", value: "bill" },
 ];
 
 const module = MODULES_CORE.REFUND_HISTORY;
 const PER_PAGE = 100;
 const ALLOWED_OPD_ROLES = ["doctor_opd","doctor_ipd", "admin_administrator"];
-const ALLOWED_ADMIN_DOCTOR_ROLES = ["doctor_approve_opd", "admin_doctor", "admin_administrator"];
+const ALLOWED_ADMIN_DOCTOR_ROLES = ["doctor_approve_opd", "admin_doctor",  "doctor_emergency",  "doctor_rs_rp_confirm","doctor_ipd",  "doctor_rs_rp_confirm", "operator_emergency"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -261,18 +260,24 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
 						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
 						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
-						{ accessor: "health_id", title: t("HealthID") },
 						{ accessor: "name", sortable: true, title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "gender", sortable: true, title: t("Gender") },
-						{
-							accessor: "patient_payment_mode_name",
-							sortable: true,
-							title: t("Patient"),
-						},
+
 						{
 							accessor: "process",
 							title: t("Process"),
+						},
+
+						{
+							accessor: "mode",
+							title: t("Mode"),
+							render: (item) => capitalizeWords(item?.mode),
+						},
+
+						{
+							accessor: "approve_by",
+							title: t("Approved By"),
 						},
 
 						{
