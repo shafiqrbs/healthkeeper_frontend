@@ -36,11 +36,11 @@ import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import { useAutoRefetch } from "@hooks/useAutoRefetch";
 
 import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
+import usePagination from "@hooks/usePagination";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -51,7 +51,7 @@ const tabs = [
 	{ label: "Referred", value: "hospital" },
 ];
 
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 const ALLOWED_OPD_ROLES = ["doctor_opd", "admin_administrator"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
@@ -126,8 +126,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setControlsRefs(controlsRefs);
 	};
 
-	const { refetchAll, scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
+	const { refetchAll, records, fetching, sortStatus, setSortStatus, handlePageChange, page, total, perPage } =
+		usePagination({
 			module,
 			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 			filterParams: {
@@ -486,18 +486,20 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height + 50}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
 						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 					}}
+					scrollAreaProps={{ type: "never" }}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="visit" />
 			{selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
