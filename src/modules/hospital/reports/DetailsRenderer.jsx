@@ -9,6 +9,8 @@ import MedicineIssue from "@modules/hospital/reports/items/MedicineIssue.jsx";
 import StockSummery from "@modules/hospital/reports/items/StockSummery.jsx";
 import DailyCollectionService from "@modules/hospital/reports/items/DailyCollectionService";
 import DailyOpdEmergencyIpdPatient from "@modules/hospital/reports/items/DailyOpdEmergencyIpdPatient";
+import UserDailyInvoiceSummary from "@modules/hospital/reports/items/UserDailyInvoiceSummary";
+
 
 export default function DetailsRenderer() {
 	const { t } = useTranslation();
@@ -21,6 +23,8 @@ export default function DetailsRenderer() {
 				<InvoiceSummary height={mainAreaHeight} />
 			) : tab === "dashboard-daily-summary" ? (
 				<InvoiceSummary />
+			) : tab === "user-daily-summary" ? (
+				<UserDailyInvoiceSummary />
 			) : tab === "patient-ticket" ? (
 				<PatientTicket />
 			) : tab === "daily-collection-service" ? (
