@@ -239,7 +239,7 @@ function MedicineListTable({
 			{
 				accessor: "medicine_dosage",
 				title: "Dosage",
-				width: 200,
+				width: '20%',
 				render: (record) => (
 					<MemoTextInput
 						value={record.dose_details}
@@ -266,7 +266,7 @@ function MedicineListTable({
 			{
 				accessor: "by_meal",
 				title: "By meal",
-				width: 200,
+				width: '10%',
 				render: (record) => (
 					<MemoTextInput
 						value={record.by_meal}
@@ -279,7 +279,7 @@ function MedicineListTable({
 			{
 				accessor: "instruction",
 				title: "Notes",
-				width: 200,
+				width: '20%',
 				render: (record) => (
 					<MemoTextInput
 						value={record.instruction}
@@ -295,6 +295,7 @@ function MedicineListTable({
 			cols.push({
 				accessor: "start_date",
 				title: "Start Date",
+				width: '120',
 				render: (record) => (
 					<DateSelector
 						size="xs"

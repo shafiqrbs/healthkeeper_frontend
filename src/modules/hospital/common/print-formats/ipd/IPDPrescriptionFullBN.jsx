@@ -510,14 +510,10 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											<Grid.Col span={6} align="left">
 												<br />
 												<br />
-												<br />
 												<Text fz="md">AdmittedBy</Text>
 											</Grid.Col>
 											<Grid.Col span={6} align={"right"}>
 												<Text size="sm" fw={600} mb="xs">
-													<Text mt={"md"}>
-														<br />
-													</Text>
 													<Text mt={"md"}>
 														<br />
 													</Text>
