@@ -11,7 +11,7 @@ import usePagination from "@hooks/usePagination";
 import PaginationBottomSection from "@components/tables/PaginationBottomSection";
 
 const module = MODULES.BILLING;
-const PER_PAGE = 100;
+const PER_PAGE = 25;
 
 export default function _Table({ patient_mode }) {
 	const { id } = useParams();
@@ -43,15 +43,32 @@ export default function _Table({ patient_mode }) {
 
 	return (
 		<Box>
-			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="3xs">
-				<Text ta="center" fz="sm" fw={500}>
-					S/N
-				</Text>
-				<Text ta="center" fz="sm" fw={500}>
-					Patient Name
-				</Text>
+			<Flex
+				justify="space-between"
+				align="center"
+				gap="sm"
+				p="les"
+				c="white"
+				bg="var(--theme-primary-color-6)"
+				mt="3xs"
+			>
+				<Flex align="center" justify="space-between" gap="sm">
+					<Text ta="center" fz="sm" fw={500}>
+						S/N
+					</Text>
+					<Text ta="center" fz="sm" fw={500}>
+						Patient Name
+					</Text>
+				</Flex>
+				<PaginationBottomSection
+					perPage={perPage}
+					page={page}
+					totalPages={totalPages}
+					handlePageChange={handlePageChange}
+					total={total}
+				/>
 			</Flex>
-			<ScrollArea pos="relative" bg="var(--mantine-color-white)" h={mainAreaHeight - 206} scrollbars="y" px="3xs">
+			<ScrollArea pos="relative" bg="var(--mantine-color-white)" h={mainAreaHeight - 176} scrollbars="y" px="3xs">
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid
@@ -116,13 +133,6 @@ export default function _Table({ patient_mode }) {
 					</Grid>
 				))}
 			</ScrollArea>
-			<PaginationBottomSection
-				perPage={perPage}
-				page={page}
-				totalPages={totalPages}
-				handlePageChange={handlePageChange}
-				total={total}
-			/>
 		</Box>
 	);
 }
