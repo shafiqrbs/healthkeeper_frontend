@@ -12,7 +12,7 @@ import CustomDivider from "@components/core-component/CustomDivider";
 import PaginationBottomSection from "@components/tables/PaginationBottomSection";
 
 const module = MODULES.LAB_TEST;
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 
 export default function _Table() {
 	const { id } = useParams();
@@ -61,6 +61,7 @@ export default function _Table() {
 					</Text>
 				</Flex>
 				<PaginationBottomSection
+					isCompact={true}
 					perPage={perPage}
 					page={page}
 					totalPages={totalPages}
@@ -68,7 +69,7 @@ export default function _Table() {
 					total={total}
 				/>
 			</Flex>
-			<ScrollArea pos="relative" bg="var(--mantine-color-white)" h={mainAreaHeight - 176} scrollbars="y" px="3xs">
+			<ScrollArea pos="relative" bg="var(--mantine-color-white)" h={mainAreaHeight - 246} scrollbars="y" px="3xs">
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid
@@ -144,6 +145,13 @@ export default function _Table() {
 					</Grid>
 				))}
 			</ScrollArea>
+			<PaginationBottomSection
+				perPage={perPage}
+				page={page}
+				totalPages={totalPages}
+				handlePageChange={handlePageChange}
+				total={total}
+			/>
 		</Box>
 	);
 }

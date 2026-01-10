@@ -61,6 +61,7 @@ export default function _Table({ patient_mode }) {
 					</Text>
 				</Flex>
 				<PaginationBottomSection
+					isCompact={true}
 					perPage={perPage}
 					page={page}
 					totalPages={totalPages}
@@ -68,7 +69,7 @@ export default function _Table({ patient_mode }) {
 					total={total}
 				/>
 			</Flex>
-			<ScrollArea pos="relative" bg="var(--mantine-color-white)" h={mainAreaHeight - 176} scrollbars="y" px="3xs">
+			<ScrollArea pos="relative" bg="var(--mantine-color-white)" h={mainAreaHeight - 216} scrollbars="y" px="3xs">
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid
@@ -133,6 +134,13 @@ export default function _Table({ patient_mode }) {
 					</Grid>
 				))}
 			</ScrollArea>
+			<PaginationBottomSection
+				perPage={perPage}
+				page={page}
+				totalPages={totalPages}
+				handlePageChange={handlePageChange}
+				total={total}
+			/>
 		</Box>
 	);
 }

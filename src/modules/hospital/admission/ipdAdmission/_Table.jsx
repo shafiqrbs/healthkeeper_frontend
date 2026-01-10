@@ -399,7 +399,7 @@ export default function _Table({ module }) {
 						{
 							accessor: "process",
 							title: t("Process"),
-							render: (item) => t(item.process),
+							render: (item) => capitalizeWords(item.process),
 						},
 						{
 							title: t("Action"),
@@ -537,19 +537,6 @@ export default function _Table({ module }) {
 															onClick={(e) => patientUpdate(e, item?.id)}
 														>
 															{t("PatientUpdate")}
-														</Menu.Item>
-														<Menu.Item
-															leftSection={
-																<IconPencil
-																	style={{
-																		width: rem(14),
-																		height: rem(14),
-																	}}
-																/>
-															}
-															onClick={(e) => patientUpdate(e, item?.id)}
-														>
-															{t("Room/Bed Transfer")}
 														</Menu.Item>
 													</>
 												)}

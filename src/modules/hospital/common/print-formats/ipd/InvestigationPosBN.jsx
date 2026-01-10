@@ -24,7 +24,7 @@ const InvestigationPosBN = forwardRef(({ data, preview = false }, ref) => {
 
 	return (
 		<Box display={preview ? "block" : "none"}>
-			<Box ref={ref} w="80mm" p={8} bg="var(--mantine-color-white)" mx="auto">
+			<Box ref={ref} w="160mm" p={8} bg="var(--mantine-color-white)" mx="auto">
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="space-between" align="center" gap={8}>
@@ -58,7 +58,7 @@ const InvestigationPosBN = forwardRef(({ data, preview = false }, ref) => {
 									<strong>{t("তারিখ")}:</strong> {patientInfo?.created || ""}
 								</Table.Td>
 								<Table.Td align="right">
-									<strong>{t("ID")}:</strong> {patientInfo?.patient_id || ""}
+									<strong>{t("IPD ID")}:</strong> {patientInfo?.invoice || ""}
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
@@ -113,10 +113,7 @@ const InvestigationPosBN = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
-								<Table.Td>
-									<strong>{t("CreatedBy")}:</strong> {patientInfo?.created_by_name || ""}
-								</Table.Td>
-								<Table.Td align="right">
+								<Table.Td colSpan={2} align="center">
 									<strong>{t("PrintedBy")}:</strong> {user?.name}
 								</Table.Td>
 							</Table.Tr>

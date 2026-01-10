@@ -19,6 +19,15 @@ const REPORT_TABS = [
 		],
 	},
 	{
+		label: "User Daily Summary",
+		value: "user-daily-summary",
+		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd",
+			"reports_basic",
+			"reports_advanced",
+			"reports_hospital"
+		],
+	},
+	{
 		label: "Patient Ticket",
 		value: "patient-ticket",
 		allowedGroups: ["role_domain", "admin_administrator", "operator_manager", "operator_emergency", "operator_opd",
