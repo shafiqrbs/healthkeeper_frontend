@@ -230,7 +230,7 @@ export default function UserDailyInvoiceSummary() {
 			</Box>
 			{records?.data && (
 				<UserDailySummaryReports ref={summaryReportsRef}  records={records?.data || []} />
-			)}}
+			)}
 		</Box>
 	);
 }
