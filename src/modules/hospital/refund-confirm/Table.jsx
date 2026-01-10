@@ -44,6 +44,7 @@ import OpdRoomModal from "@hospital-components/OpdRoomModal";
 import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
 import {MODULES_CORE} from "@/constants";
 import RefundFromBedBn from "@hospital-components/print-formats/refund/RefundFormBedBN";
+import RefundFormInvestigationBN from "@hospital-components/print-formats/refund/RefundFormInvestigationBN";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -109,15 +110,11 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
 
-	useEffect(() => {
-		if (type === "a4") {
-			handleA4();
-		} else if (type === "pos") {
-			handlePos();
-		} else if (type === "prescription") {
-			handlePrescriptionOption();
-		}
-	}, [printData, type]);
+	const investigationPrintRef = useRef(null);
+	const [investigationPrintData, setInvestigationPrintData] = useState(null);
+	const investigationPrint = useReactToPrint({ content: () => investigationPrintRef.current });
+
+
 
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
@@ -162,21 +159,29 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		if(res.status === 200){
 			refetchAll();
 		}
-
-
 	};
 
-	const handlePrint = async (id) => {
+	const handlePrint = async (id,mode) => {
 		const res = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.PRINT}/${id}`,
 		});
-		setInvoicePrintData(res?.data);
+		if(mode === 'bill'){
+			setInvoicePrintData(res?.data);
+		}else{
+			setInvestigationPrintData(res?.data);
+		}
 	};
 	useEffect(() => {
 		if(invoicePrintData){
 			invoicePrint();
 		}
 	}, [invoicePrintData]);
+
+	useEffect(() => {
+		if(investigationPrintData){
+			investigationPrint();
+		}
+	}, [investigationPrintData]);
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
@@ -321,6 +326,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												</ActionIcon>
 											</Menu.Target>
 											<Menu.Dropdown>
+												{values.mode === "investigation" && (
 												<Menu.Item
 													leftSection={
 														<IconPrinter
@@ -330,10 +336,26 @@ export default function Table({ module, height, closeTable, availableClose = fal
 															}}
 														/>
 													}
-													onClick={() =>handlePrint(values?.id)}
+													onClick={() =>handlePrint(values?.id,'investigation')}
 												>
 													{t("Print")}
 												</Menu.Item>
+												)}
+												{values.mode === "bill" && (
+												<Menu.Item
+													leftSection={
+														<IconPrinter
+															style={{
+																width: rem(14),
+																height: rem(14),
+															}}
+														/>
+													}
+													onClick={() =>handlePrint(values?.id,'bill')}
+												>
+													{t("Print")}
+												</Menu.Item>
+												)}
 											</Menu.Dropdown>
 										</Menu>
 									</Group>
@@ -356,24 +378,8 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				/>
 			</Box>
 			<DataTableFooter indexData={listData} module="visit" />
-			{selectedPrescriptionId && (
-				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
-			)}
-
-			<OPDA4BN data={printData} ref={a4Ref} />
-			<OPDPosBN data={printData} ref={posRef} />
-			<PrescriptionFullBN data={printData} ref={prescriptionRef} />
-			<PatientUpdateDrawer
-				type="prescription"
-				opened={openedPatientUpdate}
-				close={closePatientUpdate}
-				data={singlePatientData}
-			/>
-
-			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered withCloseButton={false}>
-				<OpdRoomStatusModal closeOpdRoom={closeOpdRoom} closeTable={close} height={mainAreaHeight - 220} />
-			</Modal>
 			<RefundFromBedBn data={invoicePrintData} ref={invoicePrintRef} />
+			<RefundFormInvestigationBN data={invoicePrintData} ref={investigationPrintRef} />
 		</Box>
 	);
 }

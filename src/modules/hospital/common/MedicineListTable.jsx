@@ -127,13 +127,14 @@ function MedicineListTable({
 	);
 
 	const [records, setRecords] = useState(recordsWithIds);
+	//console.log(records)
 
 	// only resync when list length changes
 	useEffect(() => {
 		setRecords((prev) => (prev.length !== recordsWithIds.length ? recordsWithIds : prev));
 	}, [recordsWithIds]);
 
-	const dosageOptions = useMemo(
+	/*const dosageOptions = useMemo(
 		() =>
 			dosages?.map((d) => ({
 				value: d.id.toString(),
@@ -150,7 +151,7 @@ function MedicineListTable({
 			})) ?? [],
 		[meals]
 	);
-
+*/
 	const debouncedUpdate = useRef(
 		debounce(async (payload) => {
 			try {
@@ -236,18 +237,19 @@ function MedicineListTable({
 				render: (item) => <Text fz="xs">{item?.generic}</Text>,
 			},
 			{
-				accessor: "medicine_dosage_id",
+				accessor: "medicine_dosage",
 				title: "Dosage",
+				width: 200,
 				render: (record) => (
-					<MemoSelect
-						value={record.medicine_dosage_id}
-						data={dosageOptions}
-						placeholder={t("Dosage")}
-						onChange={(v) => handleInlineEdit(record.id, "medicine_dosage_id", v)}
+					<MemoTextInput
+						value={record.dose_details}
+						className={inlineInputCss.inputText}
+						placeholder={t("Medicine Dosage")}
+						onBlur={(value) => handleInlineEdit(record.id, "dose_details", value)}
 					/>
 				),
 			},
-			{
+			/*{
 				accessor: "medicine_bymeal_id",
 				title: "By Meal",
 				render: (record) => (
@@ -256,6 +258,21 @@ function MedicineListTable({
 						data={mealOptions}
 						placeholder={t("By Meal")}
 						onChange={(v) => handleInlineEdit(record.id, "medicine_bymeal_id", v)}
+					/>
+				),
+			},
+
+*/
+			{
+				accessor: "by_meal",
+				title: "By meal",
+				width: 200,
+				render: (record) => (
+					<MemoTextInput
+						value={record.by_meal}
+						className={inlineInputCss.inputText}
+						placeholder={t("By meal")}
+						onBlur={(value) => handleInlineEdit(record.id, "by_meal", value)}
 					/>
 				),
 			},
@@ -317,7 +334,7 @@ function MedicineListTable({
 		});
 
 		return cols;
-	}, [dosageOptions, mealOptions, handleInlineEdit, showDelete, onDelete, showSwitch, t, forDischarge]);
+	}, [ handleInlineEdit, showDelete, onDelete, showSwitch, t, forDischarge]);
 
 	return (
 		<DragDropContext onDragEnd={handleDragEnd}>

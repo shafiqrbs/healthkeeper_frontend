@@ -18,11 +18,6 @@ export const getInitialValues = (t) => {
 		validate: {
 			name: hasLength({ min: 1}),
 
-			financial_service_id: (value) => {
-				if (!value) return t("FinancialServiceValidationRequired");
-				return null;
-			},
-
 			patient_type_id: (value) => {
 				if (!value) return t("PatientTypeValidationRequired");
 				return null;

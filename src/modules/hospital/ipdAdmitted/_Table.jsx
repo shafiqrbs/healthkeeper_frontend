@@ -11,7 +11,7 @@ import { Box, Flex, Text, ActionIcon, Group, Button, SegmentedControl, Menu, rem
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDate } from "@utils/index";
+import {capitalizeWords, formatDate} from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
@@ -34,7 +34,7 @@ import AdmissionFormBN from "@hospital-components/print-formats/admission/Admiss
 import __IssueMedicineDrawer from "@modules/hospital/ipdAdmitted/__IssueMedicineDrawer.jsx";
 
 const module = MODULES.ADMISSION;
-const PER_PAGE = 100;
+const PER_PAGE = 150;
 
 const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse"];
 
@@ -49,6 +49,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const filterData = useSelector((state) => state.crud[module].filterData);
+	const listData = useSelector((state) => state.crud[module].data);
 	const [printData, setPrintData] = useState(null);
 	const [billingPrintData, setBillingPrintData] = useState(null);
 	const [dischargePaperPrintData, setDischargePaperPrintData] = useState(null);
@@ -157,9 +158,9 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 	return (
 		<Box pos="relative">
 			<Flex align="center" justify="space-between">
-				<KeywordSearch showOpdRoom showUnits form={form} module={module} />
+				<KeywordSearch  showUnits form={form} module={module} />
 
-				<SegmentedControl
+				{/*<SegmentedControl
 					w={220}
 					size="sm"
 					color="var(--theme-primary-color-6)"
@@ -174,7 +175,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 						{ label: t("Prescription"), value: "non-prescription" },
 						{ label: t("Manage"), value: "prescription" },
 					]}
-				/>
+				/>*/}
 			</Flex>
 			<Box className="borderRadiusAll border-top-none">
 				<DataTable
@@ -208,38 +209,29 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 								</Text>
 							),
 						},
-						{
-							accessor: "admission_date",
-							title: t("AdmissionDate"),
-							textAlignment: "right",
-							render: (item) => formatDate(item.admission_date),
-						},
-						{ accessor: "patient_id", title: t("patientId") },
-						{ accessor: "invoice", title: t("IPD ID") },
-						{ accessor: "name", title: t("Name") },
+						/*{ accessor: "patient_id", title: t("patientId") },*/
+						{ accessor: "invoice", title: t("IPD ID"),render: (item) => (
+								<Text fz="14" fw={'600'}>
+									{item.invoice}
+								</Text>
+							)},
+						{ accessor: "name", title: t("Name"),render: (item) => capitalizeWords(item.name), },
 						{ accessor: "mobile", title: t("Mobile") },
-						{ accessor: "room_name", title: t("Bed/Cabin") },
+						{ accessor: "gender", title: t("Gender") },
+						{ accessor: "room_name", title: t("Bed/Cabin"),
+							render: (item) => (
+								<Text fz="14" fw={'600'}>
+									{item.room_name}
+								</Text>
+							)},
 						{ accessor: "admission_day", title: t("AdmissionDay") },
 						{ accessor: "consume_day", title: t("PaymentDay") },
 						{ accessor: "remaining_day", title: t("RemainingDay") },
-						{
-							accessor: "total",
-							title: t("Total"),
-							render: (item) => t(item.total),
-						},
-						{
-							accessor: "amount",
-							title: t("Amount"),
-							render: (item) => t(item.amount),
-						},
-						{
-							accessor: "due",
-							title: t("Due"),
-							render: (item) => t(item.total - item.amount),
-						},
+
 						{
 							accessor: "process",
 							title: t("Process"),
+							render: (item) => capitalizeWords(item.process),
 						},
 						{
 							title: t("Action"),
@@ -247,7 +239,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{values.process === "Admitted" && ipdMode === "non-prescription" && (
+									{values.process === "admitted" && !values.prescription_id && (
 										<Button
 											rightSection={<IconArrowNarrowRight size={18} />}
 											onClick={() => handleProcessConfirmation(values.id, values.uid)}
@@ -261,19 +253,19 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 											{t("Prescription")}
 										</Button>
 									)}
-									{ipdMode === "prescription" && values.prescription_id && (
+									{values.process === "admitted" && values.prescription_id && (
 										<Stack gap={2}>
 											<Button
 												rightSection={<IconArrowNarrowRight size={18} />}
 												onClick={() => handleManageOverview(values.uid, values.id)}
 												variant="filled"
-												color="var(--theme-primary-color-6)"
+												color="var(--theme-warn-color-6)"
 												radius="xs"
 												aria-label="Settings"
 												size="compact-xs"
 												fw={400}
 											>
-												{t("Manage")}
+												{t("eFresh")}
 											</Button>
 
 											{ALLOWED_NURSE_ROLES?.some((role) => userRoles.includes(role)) && (
@@ -392,7 +384,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={records} module="ipd" />
+			<DataTableFooter indexData={listData} module="ipd" />
 
 			<IpdManageDrawer opened={openedManageIpd} close={closeManageIpd} />
 

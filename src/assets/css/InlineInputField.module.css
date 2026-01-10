@@ -17,8 +17,8 @@
 }
 
 .inputText input{
-    border: 1px solid;
-    border-color: var(--theme-tertiary-color-5);
+    border: 2px solid;
+    border-color: #878181 !important;
     text-align: left!important;
     font-size: 12px!important;
     width: 100%;
@@ -27,8 +27,8 @@
     border-radius: 2px!important;
 }
 .inputText select{
-    border: 1px solid;
-    border-color: var(--theme-tertiary-color-5);
+    border: 2px solid;
+    border-color: #878181 !important;
     text-align: left!important;
     font-size: 12px!important;
     width: 100%;
@@ -47,8 +47,8 @@
 .input{
     transition: none;
 &:focus-within {
-     border: 1px solid;
-     border-color: var(--theme-secondary-color-5);
+     border: 2px solid;
+     border-color: #878181 !important;
      background: #fbf7ef;
  }
 }

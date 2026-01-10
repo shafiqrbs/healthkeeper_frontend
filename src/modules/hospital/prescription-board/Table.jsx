@@ -40,8 +40,15 @@ import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import { useAutoRefetch } from "@hooks/useAutoRefetch";
-import OpdRoomModal from "@hospital-components/OpdRoomModal";
 import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
+import ConfirmModal from "@modules/hospital/admission/confirm/__ConfirmModal";
+import {
+	getAdmissionConfirmFormInitialValues,
+	getAdmissionManageFormInitialValues
+} from "@modules/hospital/admission/helpers/request";
+import {setFilterData} from "@/app/store/core/crudSlice";
+
+
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -52,9 +59,10 @@ const tabs = [
 	{ label: "Referred", value: "referred" },
 ];
 
-const PER_PAGE = 200;
+const PER_PAGE = 50;
 const ALLOWED_OPD_ROLES = ["doctor_opd","doctor_ipd", "admin_administrator"];
-const ALLOWED_ADMIN_DOCTOR_ROLES = ["doctor_approve_opd", "admin_doctor", "admin_administrator"];
+const ALLOWED_ADMIN_DOCTOR_ROLES = ["doctor_rs_rp_confirm", "admin_doctor", "admin_administrator"];
+const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm", "admin_administrator"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -64,19 +72,19 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
+	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
 	const listData = useSelector((state) => state.crud[module].data);
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const hospitalConfig = getLoggedInHospitalUser();
 	const userId = hospitalConfig?.employee_id;
-
-	const opdRoomId = hospitalConfig?.particular_details?.room_id;
-	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
+	const [selectedId, setSelectedId] = useState(null);
+	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
+	const manageForm = useForm(getAdmissionManageFormInitialValues());
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
 			created: formatDate(new Date()),
-			room_id: opdRoomId,
 		},
 	});
 
@@ -193,9 +201,21 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		}
 	};
 
+	const handleConfirm = (id) => {
+		setSelectedId(id);
+		openConfirm();
+	};
+	const handleConfirmClose = () => {
+		closeConfirm();
+		setSelectedId(null);
+		dispatch(setFilterData({ module: "bed", data: { keywordSearch: "" } }));
+		dispatch(setFilterData({ module: "cabin", data: { keywordSearch: "" } }));
+	};
+
+
+
 	const patientUpdate = async (e, id) => {
 		e.stopPropagation();
-
 		const { data } = await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.VIEW}/${id}`,
 		});
@@ -311,7 +331,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 													>
 														{t("Prescription")}
 													</Button>
-												) : values?.prescription_id && values.referred_mode === "room" ? (
+												) : values?.prescription_id && ( values.referred_mode === "room" || userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role))) ? (
 													<Button
 														variant="filled"
 														bg="var(--theme-success-color)"
@@ -325,7 +345,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 													>
 														{t("Prescription")}
 													</Button>
-												) : !values?.prescription_id || values.referred_mode === "room" ? (
+												) : !values?.prescription_id || values.referred_mode === "room" || userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) ? (
 													<Button
 														fw={400}
 														variant="filled"
@@ -346,12 +366,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 								);
 							},
 						},
-						{
-							accessor: "index",
-							title: t("S/N"),
-							textAlignment: "center",
-							render: (_, index) => index + 1,
-						},
+
 						{
 							accessor: "created_at",
 							title: t("Created"),
@@ -362,7 +377,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
 						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
 						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
-						{ accessor: "health_id", title: t("HealthID") },
 						{ accessor: "name", sortable: true, title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "gender", sortable: true, title: t("Gender") },
@@ -400,6 +414,22 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												<IconPencil size={18} color="var(--theme-success-color)"/>
 											</ActionIcon>
 										)}
+										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+										((values.process?.toLowerCase() === "closed" && values?.referred_mode === "admission")
+											|| (values?.referred_mode === "room") || !values?.prescription_id) && (
+											<Button
+												variant="filled"
+												bg="var(--theme-primary-color-6)"
+												c="white"
+												size="compact-xs"
+												onClick={() => handleConfirm(values.uid || values.id)}
+												radius="es"
+												fw={400}
+												rightSection={<IconArrowRight size={18} />}
+											>
+												{t("Admission")}
+											</Button>
+										)}
 										<Menu
 											position="bottom-end"
 											offset={3}
@@ -420,32 +450,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												</ActionIcon>
 											</Menu.Target>
 											<Menu.Dropdown>
-												<Menu.Item
-													leftSection={
-														<IconScript
-															style={{
-																width: rem(14),
-																height: rem(14),
-															}}
-														/>
-													}
-													onClick={() => handleA4Print(values?.id)}
-												>
-													{t("A4Print")}
-												</Menu.Item>
-												<Menu.Item
-													leftSection={
-														<IconPrinter
-															style={{
-																width: rem(14),
-																height: rem(14),
-															}}
-														/>
-													}
-													onClick={() => handlePosPrint(values?.id)}
-												>
-													{t("Pos")}
-												</Menu.Item>
+
 												{values?.prescription_id && (
 													<>
 														<Menu.Item
@@ -500,6 +505,13 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				opened={openedPatientUpdate}
 				close={closePatientUpdate}
 				data={singlePatientData}
+			/>
+			<ConfirmModal
+				opened={openedConfirm}
+				close={handleConfirmClose}
+				form={confirmForm}
+				selectedId={selectedId}
+				module={module}
 			/>
 
 			<Modal opened={openedOpdRoom} onClose={closeOpdRoom} size="100%" centered withCloseButton={false}>

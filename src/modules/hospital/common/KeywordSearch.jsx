@@ -10,6 +10,8 @@ import { useDebouncedCallback } from "@mantine/hooks";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
 import { MODULES_CORE } from "@/constants";
+import SelectForm from "@components/form-builders/SelectForm";
+import useHospitalSettingData from "@hooks/config-data/useHospitalSettingData";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
 const units = ["Unit 1", "Unit 2", "Unit 3"];
@@ -35,7 +37,7 @@ export default function KeywordSearch({
 	const [keywordSearch, setKeywordSearch] = useState(form.values.keywordSearch || "");
 	const [date, setDate] = useState(null);
 	const rooms = useSelector((state) => state.crud[roomModule].data);
-
+	const { hospitalSettingData } = useHospitalSettingData();
 	// =============== debounce keyword to control api calls via form state ================
 	const debouncedSetKeywordInForm = useDebouncedCallback((value) => {
 		form.setFieldValue("keywordSearch", value);
@@ -167,14 +169,20 @@ export default function KeywordSearch({
 				/>
 			)}
 			{showUnits && (
-				<Select
-					clearable
-					placeholder="Unit"
-					loading={fetching}
-					data={units.map((item) => ({ label: item, value: item }))}
-					value={form.values.unit_id}
-					onChange={(value) => form.setFieldValue("unit_id", value)}
-					w={250}
+
+				<SelectForm
+				form={form}
+				label=""
+				placeholder="UnitName"
+				name="admit_unit_id"
+				id="admit_unit_id"
+				value={form.values.admit_unit_id?.toString()}
+				dropdownValue={hospitalSettingData?.["unit-group"]?.modes.map(
+				(mode) => ({
+					label: mode.name,
+					value: mode.id?.toString(),
+				})
+			)}
 				/>
 			)}
 			<Flex gap="3xs" align="center">

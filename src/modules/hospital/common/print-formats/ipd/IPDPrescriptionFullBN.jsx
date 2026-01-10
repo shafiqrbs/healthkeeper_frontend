@@ -440,7 +440,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 										borderRight: "1px solid var(--theme-tertiary-color-8)",
 										padding: "4px",
 										verticalAlign: "top",
-										width: "220px",
+										width: "180px",
 									}}
 								>
 									<Box style={{ position: "relative", minHeight: "550px" }}>
@@ -476,11 +476,11 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 														align={"left"}/**/
 														key={index}
 													>
-														<Text fw={600} fz={'14'} >
+														<Text fw={600} fz={'13'} >
 															{index + 1}.{" "}
 															{getValue( medicine?.medicine_name || medicine?.generic)}
 														</Text>
-														<Text
+														<Text fz={'12'}
 															style={{
 																color: "var(--theme-tertiary-color-8)",
 																marginLeft: "8px",

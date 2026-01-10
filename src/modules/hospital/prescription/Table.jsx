@@ -51,7 +51,7 @@ const tabs = [
 	{ label: "Referred", value: "hospital" },
 ];
 
-const PER_PAGE = 200;
+const PER_PAGE = 50;
 const ALLOWED_OPD_ROLES = ["doctor_opd", "admin_administrator"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
