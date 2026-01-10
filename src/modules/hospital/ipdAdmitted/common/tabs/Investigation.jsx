@@ -137,7 +137,7 @@ export default function Investigation({ ipdData }) {
 	return (
 		<Box w="100%" h={mainAreaHeight - 63}>
 			<Grid w="100%" columns={24} gutter="xs" h="100%" styles={{ inner: { height: "100%", width: "100%" } }}>
-				<Grid.Col span={15}>
+				<Grid.Col span={18}>
 					<Box bg="var(--mantine-color-white)" className="borderRadiusAll" h="100%">
 						<TabSubHeading title="Investigation" />
 						<Box p="3xs">
@@ -188,7 +188,7 @@ export default function Investigation({ ipdData }) {
 						</Box>
 					</Box>
 				</Grid.Col>
-				<Grid.Col span={9}>
+				<Grid.Col span={6}>
 					<Box className="borderRadiusAll" bg="var(--mantine-color-white)" h="100%">
 						<TabSubHeading title="Investigation Details" />
 						<ScrollArea p="xs" pos="relative" h={mainAreaHeight - 58}>

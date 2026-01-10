@@ -44,6 +44,7 @@ import DoctorDashboard from "@modules/hospital/doctor/dashboard";
 import DoctorOpdIndex from "@modules/hospital/doctor/opd";
 import PrescriptionBoardIndex from "@modules/hospital/prescription-board";
 import PatientArchiveIndex from "@modules/hospital/patient-archive";
+import AdminPatientIndex from "@modules/hospital/admin-patient";
 import RefundConfirmIndex from "@modules/hospital/refund-confirm";
 // import PharmacyIndex from "@modules/pharmacy/dashboard";
 import PharmacyStockIndex from "@modules/pharmacy/stock";
@@ -388,7 +389,18 @@ function AppRoute() {
 							}
 						/>
 					</Route>
-
+					<Route path="patients">
+						<Route
+							index
+							element={
+								<ProtectedRoute
+									roles={["role_domain", "admin_administrator"]}
+								>
+									<AdminPatientIndex />
+								</ProtectedRoute>
+							}
+						/>
+					</Route>
 					<Route path="refund-confirm">
 						<Route
 							index
