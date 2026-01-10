@@ -4,13 +4,14 @@ import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay }
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 import { MODULES } from "@/constants";
-import {capitalizeWords, formatDate} from "@utils/index";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import { capitalizeWords, formatDate } from "@utils/index";
 import { useSelector } from "react-redux";
 import CustomDivider from "@components/core-component/CustomDivider";
+import usePagination from "@hooks/usePagination";
+import PaginationBottomSection from "@components/tables/PaginationBottomSection";
 
 const module = MODULES.BILLING;
-const PER_PAGE = 500;
+const PER_PAGE = 100;
 
 export default function _Table({ patient_mode }) {
 	const { id } = useParams();
@@ -24,7 +25,7 @@ export default function _Table({ patient_mode }) {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.VIEW}/${id}`);
 	};
 
-	const { records, fetching } = useInfiniteTableScroll({
+	const { records, fetching, handlePageChange, page, total, totalPages, perPage } = usePagination({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INDEX,
 		perPage: PER_PAGE,
@@ -32,7 +33,7 @@ export default function _Table({ patient_mode }) {
 		direction: "desc",
 		filterParams: {
 			created: filterData.created,
-			term: filterData.keywordSearch
+			term: filterData.keywordSearch,
 		},
 	});
 
@@ -50,7 +51,7 @@ export default function _Table({ patient_mode }) {
 					Patient Name
 				</Text>
 			</Flex>
-			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
+			<ScrollArea pos="relative" bg="var(--mantine-color-white)" h={mainAreaHeight - 206} scrollbars="y" px="3xs">
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid
@@ -68,9 +69,14 @@ export default function _Table({ patient_mode }) {
 					>
 						<Grid.Col span={12}>
 							<Flex justify="space-between" gap="es">
-							<Text fz="sm" fw={'600'}>{item.name}</Text><Text fz="xs" c={'red'} fw={'600'}>{capitalizeWords(item.process)}</Text>
+								<Text fz="sm" fw={"600"}>
+									{item.name}
+								</Text>
+								<Text fz="xs" c={"red"} fw={"600"}>
+									{capitalizeWords(item.process)}
+								</Text>
 							</Flex>
-							</Grid.Col>
+						</Grid.Col>
 						<CustomDivider />
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
@@ -86,7 +92,6 @@ export default function _Table({ patient_mode }) {
 							<Flex align="center" gap="3xs">
 								<IconUser size={16} stroke={1.5} />
 								<Text fz="sm">{item.mobile}</Text>
-
 							</Flex>
 						</Grid.Col>
 						<Grid.Col span={6}>
@@ -111,6 +116,13 @@ export default function _Table({ patient_mode }) {
 					</Grid>
 				))}
 			</ScrollArea>
+			<PaginationBottomSection
+				perPage={perPage}
+				page={page}
+				totalPages={totalPages}
+				handlePageChange={handlePageChange}
+				total={total}
+			/>
 		</Box>
 	);
 }

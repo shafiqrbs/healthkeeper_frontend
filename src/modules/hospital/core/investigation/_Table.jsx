@@ -1,25 +1,6 @@
-import {
-	Group,
-	Box,
-	ActionIcon,
-	Text,
-	rem,
-	Flex,
-	Button,
-	TextInput,
-	NumberInput,
-	Checkbox,
-	Select,
-} from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, NumberInput, Select } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconTrashX,
-	IconAlertCircle,
-	IconEdit,
-	IconEye,
-	IconChevronUp,
-	IconSelector,
-} from "@tabler/icons-react";
+import { IconTrashX, IconAlertCircle, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -38,11 +19,10 @@ import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import { useEffect, useState } from "react";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import { errorNotification } from "@components/notification/errorNotification";
-import { useForm } from "@mantine/form";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import usePagination from "@hooks/usePagination";
 
 const PER_PAGE = 50;
 
@@ -59,19 +39,17 @@ export default function _Table({ module, open }) {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
 
-	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				particular_type: "investigation",
-				term: searchKeyword,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "name",
-		});
+	const { records, fetching, sortStatus, setSortStatus, handlePageChange, page, total, perPage } = usePagination({
+		module,
+		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.INVESTIGATION.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			particular_type: "investigation",
+			term: searchKeyword,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "name",
+	});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -272,11 +250,7 @@ export default function _Table({ module, open }) {
 									placeholder={t("Name")}
 									value={submitFormData[item.id]?.name || ""}
 									onChange={(event) =>
-										handleDataTypeChange(
-											item.id,
-											"name",
-											event.currentTarget.value
-										)
+										handleDataTypeChange(item.id, "name", event.currentTarget.value)
 									}
 									onBlur={() => handleRowSubmit(item.id)}
 								/>
@@ -287,11 +261,7 @@ export default function _Table({ module, open }) {
 							title: t("DisplayName"),
 							sortable: true,
 							render: (values) => (
-								<Text
-									className="activate-link"
-									fz="xs"
-									onClick={() => handleDataShow(values.id)}
-								>
+								<Text className="activate-link" fz="xs" onClick={() => handleDataShow(values.id)}>
 									{values.display_name}
 								</Text>
 							),
@@ -307,12 +277,7 @@ export default function _Table({ module, open }) {
 									data={departmentDropdown}
 									value={submitFormData[item.id]?.diagnostic_department_id ?? ""}
 									onChange={(val) => {
-										handleDataTypeChange(
-											item.id,
-											"diagnostic_department_id",
-											val,
-											true
-										);
+										handleDataTypeChange(item.id, "diagnostic_department_id", val, true);
 									}}
 									onBlur={() => handleRowSubmit(item.id)}
 									rightSection={updatingRows[item.id]}
@@ -331,12 +296,7 @@ export default function _Table({ module, open }) {
 									data={roomDropdown}
 									value={submitFormData[item.id]?.diagnostic_room_id ?? ""}
 									onChange={(val) => {
-										handleDataTypeChange(
-											item.id,
-											"diagnostic_room_id",
-											val,
-											true
-										);
+										handleDataTypeChange(item.id, "diagnostic_room_id", val, true);
 									}}
 									onBlur={() => handleRowSubmit(item.id)}
 									rightSection={updatingRows[item.id]}
@@ -363,22 +323,21 @@ export default function _Table({ module, open }) {
 							accessor: "is_available",
 							title: t("Available"),
 							sortable: true,
-							render: (item) => item.is_available ? "Yes" : "No",
+							render: (item) => (item.is_available ? "Yes" : "No"),
 						},
 
 						{
 							accessor: "is_report_format",
 							title: t("Report"),
 							sortable: true,
-							render: (item) => item.is_report_format ? "Yes" : "No",
-
+							render: (item) => (item.is_report_format ? "Yes" : "No"),
 						},
 
 						{
 							accessor: "is_custom_report",
 							title: t("CustomReport"),
 							sortable: true,
-							render: (item) => item.is_custom_report ? "Yes" : "No",
+							render: (item) => (item.is_custom_report ? "Yes" : "No"),
 						},
 
 						{
@@ -446,19 +405,20 @@ export default function _Table({ module, open }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 72}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height - 32}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
 						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 					}}
+					scrollAreaProps={{ type: "never" }}
 				/>
 			</Box>
-
-			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module} />
 		</>
 	);
