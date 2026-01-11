@@ -11,7 +11,7 @@ import { Box, Flex, Text, ActionIcon, Group, Button, SegmentedControl, Menu, rem
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
-import {capitalizeWords, formatDate} from "@utils/index";
+import { capitalizeWords, formatDate } from "@utils/index";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
@@ -69,7 +69,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
 		filterParams: {
 			patient_mode: "ipd",
-			prescription_mode: ipdMode,
+			// prescription_mode: ipdMode,
 			term: form.values?.keywordSearch,
 			created: form.values.created,
 		},
@@ -158,7 +158,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 	return (
 		<Box pos="relative">
 			<Flex align="center" justify="space-between">
-				<KeywordSearch  showUnits form={form} module={module} />
+				<KeywordSearch showUnits form={form} module={module} />
 
 				{/*<SegmentedControl
 					w={220}
@@ -210,20 +210,27 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 							),
 						},
 						/*{ accessor: "patient_id", title: t("patientId") },*/
-						{ accessor: "invoice", title: t("IPD ID"),render: (item) => (
-								<Text fz="14" fw={'600'}>
+						{
+							accessor: "invoice",
+							title: t("IPD ID"),
+							render: (item) => (
+								<Text fz="14" fw={"600"}>
 									{item.invoice}
 								</Text>
-							)},
-						{ accessor: "name", title: t("Name"),render: (item) => capitalizeWords(item.name), },
+							),
+						},
+						{ accessor: "name", title: t("Name"), render: (item) => capitalizeWords(item.name) },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "gender", title: t("Gender") },
-						{ accessor: "room_name", title: t("Bed/Cabin"),
+						{
+							accessor: "room_name",
+							title: t("Bed/Cabin"),
 							render: (item) => (
-								<Text fz="14" fw={'600'}>
+								<Text fz="14" fw={"600"}>
 									{item.room_name}
 								</Text>
-							)},
+							),
+						},
 						{ accessor: "admission_day", title: t("AdmissionDay") },
 						{ accessor: "consume_day", title: t("PaymentDay") },
 						{ accessor: "remaining_day", title: t("RemainingDay") },
@@ -239,7 +246,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{values.process === "admitted" && !values.prescription_id && (
+									{values.process?.toLowerCase() === "admitted" && !values.prescription_id && (
 										<Button
 											rightSection={<IconArrowNarrowRight size={18} />}
 											onClick={() => handleProcessConfirmation(values.id, values.uid)}
@@ -253,7 +260,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 											{t("Prescription")}
 										</Button>
 									)}
-									{values.process === "admitted" && values.prescription_id && (
+									{values.process?.toLowerCase() === "admitted" && values.prescription_id && (
 										<Stack gap={2}>
 											<Button
 												rightSection={<IconArrowNarrowRight size={18} />}

@@ -98,7 +98,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 					<SectionWrapper label="C/C:">
 						{renderNumberedList(
 							dataArray,
-							(item) => `${item.name} ${item.value || ''} ${item.duration || ''}`
+							(item) => `${item.name} ${item.value || ""} ${item.duration || ""}`
 						)}
 						{renderOtherInstructions(key)}
 					</SectionWrapper>
@@ -107,7 +107,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 			case "investigation": {
 				return (
 					<SectionWrapper label="Investigation:">
-						{renderNumberedList(dataArray, (item) => `${item.value}`)}
+						{renderNumberedList(dataArray, (item) => `${item.name}`)}
 						{renderOtherInstructions(key)}
 					</SectionWrapper>
 				);
@@ -211,7 +211,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 				fz={12}
 				align="stretch"
 				justify="space-between"
-				pl={'80'}
+				pl={"80"}
 			>
 				<Box id="prescription-table">
 					<Table
@@ -469,32 +469,38 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 												?.filter((medicine) => medicine?.is_active === 1)
 												?.map((medicine, index) => (
 													<>
-														<Box style={{
-															borderBottom: "1px solid #ddd",
-														}}>
-													<Flex
-														align={"left"}/**/
-														key={index}
-													>
-														<Text fw={600} fz={'13'} >
-															{index + 1}.{" "}
-															{getValue( medicine?.medicine_name || medicine?.generic)}
-														</Text>
-														<Text fz={'12'}
+														<Box
 															style={{
-																color: "var(--theme-tertiary-color-8)",
-																marginLeft: "8px",
+																borderBottom: "1px solid #ddd",
 															}}
 														>
-															{"--"}
-															{getValue(medicine?.dose_details)}{" "}
-															{getValue(medicine?.by_meal)} {getValue(medicine?.instruction)}
-														</Text>
-													</Flex>
+															<Flex align={"left"} /**/ key={index}>
+																<Text fw={600} fz={"13"}>
+																	{index + 1}.{" "}
+																	{getValue(
+																		medicine?.medicine_name || medicine?.generic
+																	)}
+																</Text>
+																<Text
+																	fz={"12"}
+																	style={{
+																		color: "var(--theme-tertiary-color-8)",
+																		marginLeft: "8px",
+																	}}
+																>
+																	{"--"}
+																	{getValue(medicine?.dose_details)}{" "}
+																	{getValue(medicine?.by_meal)}{" "}
+																	{getValue(medicine?.instruction)}
+																</Text>
+															</Flex>
 															{medicine.generic && (
-														<Flex align={"left"}>
-														<Text mt={'-4'} fz={'11'}>{capitalizeWords(medicine?.generic)} [SF: {formatDate(medicine?.start_date)} ]</Text>
-														</Flex>
+																<Flex align={"left"}>
+																	<Text mt={"-4"} fz={"11"}>
+																		{capitalizeWords(medicine?.generic)} [SF:{" "}
+																		{formatDate(medicine?.start_date)} ]
+																	</Text>
+																</Flex>
 															)}
 														</Box>
 													</>

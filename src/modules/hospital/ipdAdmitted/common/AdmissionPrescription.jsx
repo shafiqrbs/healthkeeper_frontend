@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { getPrescriptionFormInitialValues } from "../helpers/request";
 import { useForm } from "@mantine/form";
 import { Box, Grid, LoadingOverlay, Stack, ActionIcon, Tooltip } from "@mantine/core";
-import { IconX, IconChevronRight } from "@tabler/icons-react";
+import { IconLayoutSidebarRightCollapse, IconLayoutSidebarRightExpand } from "@tabler/icons-react";
 import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "./AddMedicineForm.jsx";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -101,7 +101,6 @@ export default function AdmissionPrescription() {
 					variant="filled"
 					color={showPatientReport ? "red" : "blue"}
 					size="xl"
-					radius="xl"
 					onClick={() => setShowPatientReport(!showPatientReport)}
 					style={{
 						position: "fixed",
@@ -110,9 +109,15 @@ export default function AdmissionPrescription() {
 						transform: "translateY(-50%)",
 						zIndex: 99,
 						boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+						borderTopRightRadius: "12px",
+						borderBottomRightRadius: "12px",
 					}}
 				>
-					{showPatientReport ? <IconX size={18} /> : <IconChevronRight size={18} />}
+					{showPatientReport ? (
+						<IconLayoutSidebarRightExpand size={18} />
+					) : (
+						<IconLayoutSidebarRightCollapse size={18} />
+					)}
 				</ActionIcon>
 			</Tooltip>
 			<Grid columns={24} gutter="les">
