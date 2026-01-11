@@ -189,7 +189,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		<Box w="100%" bg="var(--mantine-color-white)">
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
-					{t("PatientArchive")}
+					{t("Patient Refund")}
 				</Text>
 				<Flex gap="xs" align="center">
 					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>

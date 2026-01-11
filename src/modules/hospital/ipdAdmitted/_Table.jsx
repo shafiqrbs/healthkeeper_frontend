@@ -69,7 +69,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
 		filterParams: {
 			patient_mode: "ipd",
-			// prescription_mode: ipdMode,
+			prescription_mode: ipdMode,
 			term: form.values?.keywordSearch,
 			created: form.values.created,
 		},
