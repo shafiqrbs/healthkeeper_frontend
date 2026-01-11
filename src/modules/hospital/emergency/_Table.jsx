@@ -26,7 +26,6 @@ import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { modals } from "@mantine/modals";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { getDataWithoutStore } from "@/services/apiService";
@@ -36,8 +35,9 @@ import EmergencyPosBN from "@hospital-components/print-formats/emergency/Emergen
 import Prescription from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useReactToPrint } from "react-to-print";
 import VitalUpdateDrawer from "@hospital-components/drawer/VitalUpdateDrawer";
+import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 200;
+const PER_PAGE = 25;
 const tabs = [
 	{ label: "All", value: "all" },
 	{ label: "Admission", value: "admission" },
@@ -114,21 +114,22 @@ export default function Table({ module }) {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-		filterParams: {
-			patient_mode: "emergency",
-			term: form.values?.keywordSearch,
-			room_id: form.values?.room_id,
-			room_ids: opdRoomIds,
-			prescription_mode: processTab,
-			created: form.values.created,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, total, perPage, page, handlePageChange } =
+		usePagination({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+			filterParams: {
+				patient_mode: "emergency",
+				term: form.values?.keywordSearch,
+				room_id: form.values?.room_id,
+				room_ids: opdRoomIds,
+				prescription_mode: processTab,
+				created: form.values.created,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+		});
 
 	const handleView = () => {
 		open();
@@ -486,14 +487,16 @@ export default function Table({ module }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 118}
-					onScrollToBottom={handleScrollToBottom}
+					height={height - 80}
 					scrollViewportRef={scrollRef}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="emergency" />
 			<DetailsDrawer opened={opened} close={close} />
 			<OverviewDrawer opened={openedOverview} close={closeOverview} />
 

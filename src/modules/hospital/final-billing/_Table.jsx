@@ -3,43 +3,32 @@ import { IconCalendarWeek, IconUser, IconArrowNarrowRight, IconPrinter } from "@
 import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useEffect, useRef, useState } from "react";
-import { MODULES } from "@/constants";
 import { capitalizeWords, formatDate } from "@utils/index";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import { useSelector } from "react-redux";
 import CustomDivider from "@components/core-component/CustomDivider";
 import { getDataWithoutStore } from "@/services/apiService";
 import AdmissionInvoiceDetailsBN from "@hospital-components/print-formats/admission/AdmissionInvoiceDetailsBN";
 import { useReactToPrint } from "react-to-print";
 import RefundFromBedBn from "@hospital-components/print-formats/refund/RefundFormBedBN";
+import PaginationBottomSection from "@components/tables/PaginationBottomSection";
 
-const module = MODULES.FINAL_BILLING;
-const PER_PAGE = 500;
-
-export default function _Table({fetching,records}) {
-
+export default function _Table({ fetching, records, handlePageChange, page, total, totalPages, perPage }) {
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
 
-
 	const [printData, setPrintData] = useState(null);
 	const printRef = useRef(null);
 	const invoicePrint = useReactToPrint({ content: () => printRef.current });
-
 
 	const invoicePrintRef = useRef(null);
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const invoiceRefundPrint = useReactToPrint({ content: () => invoicePrintRef.current });
 
-
-
 	const handleAdmissionOverview = (id) => {
 		setSelectedPatientId(id);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.FINAL_BILLING.VIEW}/${id}`);
 	};
-
 
 	const handleAdmissionBillDetails = async (e, uid) => {
 		e.stopPropagation();
@@ -56,18 +45,16 @@ export default function _Table({fetching,records}) {
 		}
 	}, [printData]);
 
-
-
-	const handleRefundPrint = async (e,id) => {
+	const handleRefundPrint = async (e, id) => {
 		e.stopPropagation();
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.IPD_PRINT}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.IPD_PRINT}/${id}`,
 		});
 		setInvoicePrintData(res?.data);
 	};
 
 	useEffect(() => {
-		if(invoicePrintData){
+		if (invoicePrintData) {
 			invoiceRefundPrint();
 		}
 	}, [invoicePrintData]);
@@ -79,11 +66,21 @@ export default function _Table({fetching,records}) {
 	return (
 		<Box>
 			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="3xs">
-				<Text ta="center" fz="sm" fw={500}>
-					Patient Name
-				</Text>
+				<Flex w="100%" align="center" justify="space-between" gap="sm">
+					<Text ta="center" fz="sm" fw={500}>
+						Patient Name
+					</Text>
+					<PaginationBottomSection
+						isCompact={true}
+						perPage={perPage}
+						page={page}
+						totalPages={totalPages}
+						handlePageChange={handlePageChange}
+						total={total}
+					/>
+				</Flex>
 			</Flex>
-			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
+			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 204} scrollbars="y" px="3xs">
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid
@@ -105,28 +102,30 @@ export default function _Table({fetching,records}) {
 									{item.name}
 								</Text>{" "}
 								<Flex align="center" gap="les">
-									<Text c={item.process === 'paid' ? 'green':'red' } >{capitalizeWords(item.process)}</Text>
-									{item.process === 'paid' && (
-									<ActionIcon
-										variant="filled"
-										color="var(--theme-secondary-color-6)"
-										radius="xs"
-										aria-label="Settings"
-										onClick={(e) => handleAdmissionBillDetails(e, item.uid)}
-									>
-										<IconPrinter size={14} stroke={1.5} />
-									</ActionIcon>
+									<Text c={item.process === "paid" ? "green" : "red"}>
+										{capitalizeWords(item.process)}
+									</Text>
+									{item.process === "paid" && (
+										<ActionIcon
+											variant="filled"
+											color="var(--theme-secondary-color-6)"
+											radius="xs"
+											aria-label="Settings"
+											onClick={(e) => handleAdmissionBillDetails(e, item.uid)}
+										>
+											<IconPrinter size={14} stroke={1.5} />
+										</ActionIcon>
 									)}
-									{item.process === 'refund' && (
-									<ActionIcon
-										variant="filled"
-										color="red"
-										radius="xs"
-										aria-label="Settings"
-										onClick={(e) => handleRefundPrint(e, item.uid)}
-									>
-										<IconPrinter size={14} stroke={1.5} />
-									</ActionIcon>
+									{item.process === "refund" && (
+										<ActionIcon
+											variant="filled"
+											color="red"
+											radius="xs"
+											aria-label="Settings"
+											onClick={(e) => handleRefundPrint(e, item.uid)}
+										>
+											<IconPrinter size={14} stroke={1.5} />
+										</ActionIcon>
 									)}
 								</Flex>
 							</Flex>
@@ -170,6 +169,13 @@ export default function _Table({fetching,records}) {
 					</Grid>
 				))}
 			</ScrollArea>
+			<PaginationBottomSection
+				perPage={perPage}
+				page={page}
+				totalPages={totalPages}
+				handlePageChange={handlePageChange}
+				total={total}
+			/>
 			{printData && <AdmissionInvoiceDetailsBN data={printData} ref={printRef} />}
 			<RefundFromBedBn data={invoicePrintData} ref={invoicePrintRef} />
 		</Box>

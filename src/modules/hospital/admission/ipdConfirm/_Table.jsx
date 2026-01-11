@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
-import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
 import {
 	IconAdjustments,
@@ -26,8 +25,6 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
@@ -36,8 +33,9 @@ import AdmissionFormBN from "@hospital-components/print-formats/admission/Admiss
 import IPDDetailsDrawer from "@hospital-components/drawer/__IPDDetailsDrawer";
 import ManageModal from "../confirm/ManageModal";
 import { setFilterData } from "@/app/store/core/crudSlice";
+import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 20;
+const PER_PAGE = 25;
 
 const tabs = [
 	{ label: "New", value: "new" },
@@ -66,10 +64,8 @@ export default function _Table({ module }) {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
 	const [openedManage, { open: openManage, close: closeManage }] = useDisclosure(false);
-	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
-	const listData = useSelector((state) => state.crud[module]?.data);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const [selectedId, setSelectedId] = useState(null);
 	const [processTab, setProcessTab] = useState("new");
@@ -100,28 +96,25 @@ export default function _Table({ module }) {
 		setControlsRefs(controlsRefs);
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
-		filterParams: {
-			name: filterData?.name,
-			referred_mode: "admission",
-			ipd_mode: processTab,
-			created: form.values.created,
-			term: filterData.keywordSearch,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
+		usePagination({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
+			filterParams: {
+				name: filterData?.name,
+				referred_mode: "admission",
+				ipd_mode: processTab,
+				created: form.values.created,
+				term: filterData.keywordSearch,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+		});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
 		setTimeout(() => open(), 10);
-	};
-
-	const handleOpenViewOverview = () => {
-		openOverview();
 	};
 
 	const handleConfirm = (id) => {
@@ -370,8 +363,11 @@ export default function _Table({ module }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					onScrollToBottom={handleScrollToBottom}
+					height={height + 50}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					onPageChange={handlePageChange}
 					scrollViewportRef={scrollRef}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
@@ -381,7 +377,6 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="ipd" />
 			<ConfirmModal
 				opened={openedConfirm}
 				close={handleConfirmClose}

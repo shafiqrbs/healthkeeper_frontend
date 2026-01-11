@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { CSVLink } from "react-csv";
 
-import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Modal, Tabs, Text } from "@mantine/core";
 import {
 	IconArrowRight,
@@ -31,12 +30,12 @@ import useAppLocalStore from "@hooks/useAppLocalStore";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useForm } from "@mantine/form";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
 import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
+import usePagination from "@hooks/usePagination";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -44,7 +43,7 @@ const tabs = [
 	{ label: "Non-prescription", value: "non-prescription" },
 ];
 
-const PER_PAGE = 200;
+const PER_PAGE = 25;
 
 const CSV_HEADERS = [
 	{ label: "S/N", key: "sn" },
@@ -64,7 +63,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const listData = useSelector((state) => state.crud[module].data);
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
@@ -120,24 +118,25 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setControlsRefs(controlsRefs);
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-		filterParams: {
-			patient_mode: "opd",
-			term: form.values.keywordSearch,
-			// room_id: form.values.room_id,
-			prescription_mode: processTab,
-			created: form.values.created,
-			created_by_id:
-				userRoles.includes("operator_manager") || userRoles.includes("admin_administrator")
-					? undefined
-					: user?.id,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handlePageChange, page, total, perPage } =
+		usePagination({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+			filterParams: {
+				patient_mode: "opd",
+				term: form.values.keywordSearch,
+				// room_id: form.values.room_id,
+				prescription_mode: processTab,
+				created: form.values.created,
+				created_by_id:
+					userRoles.includes("operator_manager") || userRoles.includes("admin_administrator")
+						? undefined
+						: user?.id,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+		});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
@@ -397,9 +396,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					onScrollToBottom={handleScrollToBottom}
+					height={height - 110}
 					scrollViewportRef={scrollRef}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -408,7 +410,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="visit" />
 			{selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}

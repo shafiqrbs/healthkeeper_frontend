@@ -6,7 +6,7 @@ import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { DataTable } from "mantine-datatable";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import {IconCaretUpDownFilled, IconChevronUp, IconPrinter, IconSelector, IconX} from "@tabler/icons-react";
+import { IconCaretUpDownFilled, IconChevronUp, IconPrinter, IconSelector, IconX } from "@tabler/icons-react";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/lab/helpers/request";
@@ -324,27 +324,7 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 		}, 0);
 	}, [roomItems]);
 
-	// =============== compute receive/due/return for investigation and room ================
-	const investigationAmountValue = Number(investigationForm.values.amount || 0);
-	const investigationDifference = investigationAmountValue - investigationSubtotal;
-	const isInvestigationEqualZero = investigationSubtotal === 0 && investigationAmountValue === 0;
-	const isInvestigationDue = investigationDifference < 0 && !isInvestigationEqualZero;
-	const isInvestigationReturn = investigationDifference > 0 || isInvestigationEqualZero;
-	const investigationDueAmount = isInvestigationDue ? Math.abs(investigationDifference) : 0;
-	const investigationReturnAmount = isInvestigationReturn ? Math.abs(investigationDifference) : 0;
-
-	const roomAmountValue = Number(roomForm.values.amount || 0);
-	const roomDifference = roomAmountValue - roomSubtotal;
-	const isRoomEqualZero = roomSubtotal === 0 && roomAmountValue === 0;
-	const isRoomDue = roomDifference < 0 && !isRoomEqualZero;
-	const isRoomReturn = roomDifference > 0 || isRoomEqualZero;
-	const roomDueAmount = isRoomDue ? Math.abs(roomDifference) : 0;
-	const roomReturnAmount = isRoomReturn ? Math.abs(roomDifference) : 0;
-	useHotkeys(
-		[
-			["alt+p", createSubmitHandler],
-		],
-	);
+	useHotkeys([["alt+p", createSubmitHandler]]);
 
 	return (
 		<Box pos="relative" className="borderRadiusAll" bg="var(--mantine-color-white)">
@@ -515,7 +495,11 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 															{t("Receive")}
 														</Text>
 													</Grid.Col>
-														<Grid.Col span={10}><Flex align="flex-end" gap="es">{investigationSubtotal || 0}</Flex></Grid.Col>
+													<Grid.Col span={10}>
+														<Flex align="flex-end" gap="es">
+															{investigationSubtotal || 0}
+														</Flex>
+													</Grid.Col>
 												</Grid>
 												<Box mt="xs">
 													<Button.Group>
@@ -534,7 +518,11 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 														>
 															<Stack gap={0} align="center" justify="center">
 																<Text fz="md">{t("Print")}</Text>
-																<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+																<Text
+																	mt="-les"
+																	fz="xs"
+																	c="var(--theme-secondary-color)"
+																>
 																	(alt + p)
 																</Text>
 															</Stack>
@@ -728,7 +716,9 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 															</Grid.Col>
 															<Grid.Col span={10}>
 																<Flex align="flex-end" gap="es">
-																	<Text fz="sm" fw={"800"}>{roomSubtotal || 0}</Text>
+																	<Text fz="sm" fw={"800"}>
+																		{roomSubtotal || 0}
+																	</Text>
 																</Flex>
 															</Grid.Col>
 														</Grid>
@@ -748,7 +738,11 @@ export default function InvoiceDetails({ entity, setRefetchBillingKey }) {
 																>
 																	<Stack gap={0} align="center" justify="center">
 																		<Text fz="md">{t("Print")}</Text>
-																		<Text mt="-les" fz="xs" c="var(--theme-secondary-color)">
+																		<Text
+																			mt="-les"
+																			fz="xs"
+																			c="var(--theme-secondary-color)"
+																		>
 																			(alt + p)
 																		</Text>
 																	</Stack>

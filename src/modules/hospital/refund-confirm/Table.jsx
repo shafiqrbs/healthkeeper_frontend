@@ -1,20 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
 
-import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Modal, Tabs, Text } from "@mantine/core";
-import {
-	IconArrowRight,
-	IconChevronUp,
-	IconDotsVertical,
-	IconSelector,
-	IconX,
-	IconPrinter,
-	IconScript,
-	IconPencil,
-	IconRefresh,
-	IconAdjustmentsCog,
-} from "@tabler/icons-react";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
+import { IconArrowRight, IconChevronUp, IconDotsVertical, IconSelector, IconX, IconPrinter } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { rem } from "@mantine/core";
@@ -22,29 +9,17 @@ import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
 import KeywordSearch from "../common/KeywordSearch";
-import { useDisclosure } from "@mantine/hooks";
-import DetailsDrawer from "../common/drawer/__DetailsDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useDispatch, useSelector } from "react-redux";
-import { showEntityData } from "@/app/store/core/crudThunk";
+import { useSelector } from "react-redux";
 import { capitalizeWords, formatDateTimeAmPm, formatDate, getLoggedInHospitalUser } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { modals } from "@mantine/modals";
-import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
-import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
-import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
-import { useAutoRefetch } from "@hooks/useAutoRefetch";
-import OpdRoomModal from "@hospital-components/OpdRoomModal";
-import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
-import {MODULES_CORE} from "@/constants";
 import RefundFromBedBn from "@hospital-components/print-formats/refund/RefundFormBedBN";
 import RefundFormInvestigationBN from "@hospital-components/print-formats/refund/RefundFormInvestigationBN";
+import usePagination from "@hooks/usePagination";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -52,27 +27,23 @@ const tabs = [
 	{ label: "Bill", value: "bill" },
 ];
 
-const module = MODULES_CORE.REFUND_HISTORY;
-const PER_PAGE = 100;
-const ALLOWED_OPD_ROLES = ["doctor_opd","doctor_ipd", "admin_administrator"];
-const ALLOWED_ADMIN_DOCTOR_ROLES = ["doctor_approve_opd", "admin_doctor",  "doctor_emergency",  "doctor_rs_rp_confirm","doctor_ipd",  "doctor_rs_rp_confirm", "operator_emergency"];
+const PER_PAGE = 25;
+const ALLOWED_ADMIN_DOCTOR_ROLES = [
+	"doctor_approve_opd",
+	"admin_doctor",
+	"doctor_emergency",
+	"doctor_rs_rp_confirm",
+	"doctor_ipd",
+	"doctor_rs_rp_confirm",
+	"operator_emergency",
+];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
-	const { mainAreaHeight } = useOutletContext();
-	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
 	const { userRoles } = useAppLocalStore();
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const listData = useSelector((state) => state.crud[module].data);
-	const prescriptionRef = useRef(null);
-	const [opened, { open, close }] = useDisclosure(false);
 	const hospitalConfig = getLoggedInHospitalUser();
-	const userId = hospitalConfig?.employee_id;
 
 	const opdRoomId = hospitalConfig?.particular_details?.room_id;
-	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -81,29 +52,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		},
 	});
 
-	const handlePos = useReactToPrint({
-		content: () => posRef.current,
-	});
-
-	const handleA4 = useReactToPrint({
-		content: () => a4Ref.current,
-	});
-
-	const handlePrescriptionOption = useReactToPrint({
-		content: () => prescriptionRef.current,
-	});
-
 	const [rootRef, setRootRef] = useState(null);
 	const [processTab, setProcessTab] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
-	const [printData, setPrintData] = useState({});
-	const [type, setType] = useState(null);
-
-	const posRef = useRef(null);
-	const a4Ref = useRef(null);
-	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
-	const [singlePatientData, setSinglePatientData] = useState({});
 	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	const invoicePrintRef = useRef(null);
@@ -114,20 +66,18 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const [investigationPrintData, setInvestigationPrintData] = useState(null);
 	const investigationPrint = useReactToPrint({ content: () => investigationPrintRef.current });
 
-
-
 	const setControlRef = (val) => (node) => {
 		controlsRefs[val] = node;
 		setControlsRefs(controlsRefs);
 	};
 
-	const { refetchAll, scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
+	const { refetchAll, records, fetching, sortStatus, setSortStatus, total, perPage, page, handlePageChange } =
+		usePagination({
 			module,
 			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.INDEX,
 			filterParams: {
 				name: filterData?.name,
-				patient_mode:processTab,
+				patient_mode: processTab,
 				term: form.values.keywordSearch,
 				created: form.values.created,
 			},
@@ -135,13 +85,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			sortByKey: "created_at",
 		});
 
-	// auto-refetch every 15 seconds
-	const handlePageReload = () => {
-		refetchAll();
-	};
-
 	const handleApprove = async (id) => {
-
 		modals.openConfirmModal({
 			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
@@ -150,37 +94,36 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			onCancel: () => console.info("Cancel"),
 			onConfirm: () => handleApproveConfirm(id),
 		});
-	}
+	};
 
 	const handleApproveConfirm = async (id) => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.APPROVE}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.APPROVE}/${id}`,
 		});
-		if(res.status === 200){
+		if (res.status === 200) {
 			refetchAll();
 		}
 	};
 
-	const handlePrint = async (id,mode) => {
+	const handlePrint = async (id, mode) => {
 		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.PRINT}/${id}`,
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.REFUND_HISTORY.PRINT}/${id}`,
 		});
-		if(mode === 'bill'){
+		if (mode === "bill") {
 			setInvoicePrintData(res?.data);
-		}else{
+		} else {
 			setInvestigationPrintData(res?.data);
-
 		}
 	};
 
 	useEffect(() => {
-		if(invoicePrintData){
+		if (invoicePrintData) {
 			invoicePrint();
 		}
 	}, [invoicePrintData]);
 
 	useEffect(() => {
-		if(investigationPrintData){
+		if (investigationPrintData) {
 			investigationPrint();
 		}
 	}, [investigationPrintData]);
@@ -246,11 +189,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						pagination: tableCss.pagination,
 					}}
 					records={records}
-					onRowClick={({ record }) => {
-						handleView(record?.prescription_id);
-					}}
 					columns={[
-
 						{
 							accessor: "index",
 							title: t("S/N"),
@@ -294,20 +233,21 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (values) => {
 								return (
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) && values.process === "In-progress" && (
-											<Button
-												variant="filled"
-												bg="var(--theme-primary-color-6)"
-												c="white"
-												size="compact-xs"
-												onClick={() =>handleApprove(values.id)}
-												radius="es"
-												fw={400}
-												rightSection={<IconArrowRight size={18} />}
-											>
-												{t("Confirm")}
-											</Button>
-										)}
+										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) &&
+											values.process === "In-progress" && (
+												<Button
+													variant="filled"
+													bg="var(--theme-primary-color-6)"
+													c="white"
+													size="compact-xs"
+													onClick={() => handleApprove(values.id)}
+													radius="es"
+													fw={400}
+													rightSection={<IconArrowRight size={18} />}
+												>
+													{t("Confirm")}
+												</Button>
+											)}
 										<Menu
 											position="bottom-end"
 											offset={3}
@@ -329,34 +269,34 @@ export default function Table({ module, height, closeTable, availableClose = fal
 											</Menu.Target>
 											<Menu.Dropdown>
 												{values.mode === "investigation" && (
-												<Menu.Item
-													leftSection={
-														<IconPrinter
-															style={{
-																width: rem(14),
-																height: rem(14),
-															}}
-														/>
-													}
-													onClick={() =>handlePrint(values?.id,'investigation')}
-												>
-													{t("Print")}
-												</Menu.Item>
+													<Menu.Item
+														leftSection={
+															<IconPrinter
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
+														}
+														onClick={() => handlePrint(values?.id, "investigation")}
+													>
+														{t("Print")}
+													</Menu.Item>
 												)}
 												{values.mode === "bill" && (
-												<Menu.Item
-													leftSection={
-														<IconPrinter
-															style={{
-																width: rem(14),
-																height: rem(14),
-															}}
-														/>
-													}
-													onClick={() =>handlePrint(values?.id,'bill')}
-												>
-													{t("Print")}
-												</Menu.Item>
+													<Menu.Item
+														leftSection={
+															<IconPrinter
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
+														}
+														onClick={() => handlePrint(values?.id, "bill")}
+													>
+														{t("Print")}
+													</Menu.Item>
 												)}
 											</Menu.Dropdown>
 										</Menu>
@@ -368,9 +308,11 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height + 50}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -379,7 +321,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="visit" />
 			<RefundFromBedBn data={invoicePrintData} ref={invoicePrintRef} />
 			<RefundFormInvestigationBN data={investigationPrintData} ref={investigationPrintRef} />
 		</Box>

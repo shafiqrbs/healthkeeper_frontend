@@ -3,7 +3,6 @@ import { IconArrowRight, IconChevronUp, IconSelector } from "@tabler/icons-react
 import { Box, Button, Text } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useTranslation } from "react-i18next";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import { DataTable } from "mantine-datatable";
@@ -11,16 +10,17 @@ import tableCss from "@assets/css/Table.module.css";
 import { capitalizeWords, formatDateTimeAmPm } from "@utils/index";
 import { useForm } from "@mantine/form";
 import KeywordSearch from "@hospital-components/KeywordSearch";
+import usePagination from "@hooks/usePagination";
 
 const module = MODULES.DISCHARGE;
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 
 export default function _Table() {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 
-	const { records, fetching, handleScrollToBottom, scrollRef, sortStatus, setSortStatus } = useInfiniteTableScroll({
+	const { records, fetching, sortStatus, setSortStatus, total, perPage, page, handlePageChange } = usePagination({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
 		filterParams: {
@@ -131,9 +131,11 @@ export default function _Table() {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={mainAreaHeight - 164}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={mainAreaHeight - 114}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
