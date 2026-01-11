@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import {
@@ -18,14 +18,7 @@ import {
 	Text,
 	Textarea,
 } from "@mantine/core";
-import {
-	IconChevronUp,
-	IconDotsVertical,
-	IconFileText,
-	IconPencil,
-	IconPrinter,
-	IconSelector,
-} from "@tabler/icons-react";
+import { IconChevronUp, IconDotsVertical, IconPencil, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -40,10 +33,8 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { getDataWithoutStore } from "@/services/apiService";
-import { useReactToPrint } from "react-to-print";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
@@ -51,14 +42,13 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import useVendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage";
-import { setInsertType } from "@/app/store/core/crudSlice";
 import { modals } from "@mantine/modals";
 import { errorNotification } from "@components/notification/errorNotification";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import { CSVLink } from "react-csv";
+import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 20;
+const PER_PAGE = 25;
 
 const tabs = [
 	{ label: "Bed/Cabin", value: "all" },
@@ -90,8 +80,6 @@ export default function _Table({ module }) {
 	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
-	const listData = useSelector((state) => state.crud[module]?.data);
-	const navigate = useNavigate();
 	const [selectedId, setSelectedId] = useState(null);
 	const [processTab, setProcessTab] = useState("all");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
@@ -137,11 +125,7 @@ export default function _Table({ module }) {
 		setControlsRefs(controlsRefs);
 	};
 
-	const handleAdmissionOverview = (id) => {
-		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.VIEW}/${id}`);
-	};
-
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+	const { records, fetching, sortStatus, setSortStatus, total, perPage, page, handlePageChange } = usePagination({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BED_CABIN.INDEX,
 		filterParams: {
@@ -156,30 +140,6 @@ export default function _Table({ module }) {
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
 		setTimeout(() => open(), 10);
-	};
-
-	const printBillingInvoice = useReactToPrint({
-		content: () => billingInvoiceRef.current,
-	});
-
-	const printAdmissionForm = useReactToPrint({
-		content: () => admissionFormRef.current,
-	});
-
-	const handleBillingInvoicePrint = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${id}`,
-		});
-		setBillingPrintData(res.data);
-		requestAnimationFrame(printBillingInvoice);
-	};
-
-	const handleAdmissionFormPrint = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ADMISSION_VIEW}/${id}`,
-		});
-		setAdmissionFormPrintData(res.data);
-		requestAnimationFrame(printAdmissionForm);
 	};
 
 	const patientUpdate = async (e, id) => {
@@ -279,7 +239,6 @@ export default function _Table({ module }) {
 			const resultAction = await dispatch(updateEntityData(payload));
 			if (updateEntityData.rejected.match(resultAction)) {
 				errorNotification(resultAction.payload?.message || t("SomethingWentWrong"), ERROR_NOTIFICATION_COLOR);
-
 			}
 		} catch (error) {
 			errorNotification(error?.message || t("SomethingWentWrong"), ERROR_NOTIFICATION_COLOR);
@@ -402,7 +361,6 @@ export default function _Table({ module }) {
 							titleClassName: "title-right",
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-
 									<Menu
 										position="bottom-end"
 										offset={3}
@@ -423,7 +381,6 @@ export default function _Table({ module }) {
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
-
 											{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
 												item.process?.toLowerCase() === "admitted" && (
 													<>
@@ -466,9 +423,11 @@ export default function _Table({ module }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height + 50}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -477,7 +436,6 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="bed/cabin" />
 			<ConfirmModal
 				opened={openedConfirm}
 				close={() => {

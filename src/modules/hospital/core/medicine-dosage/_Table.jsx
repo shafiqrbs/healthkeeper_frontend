@@ -1,27 +1,9 @@
-import {
-	Group,
-	Box,
-	ActionIcon,
-	Text,
-	rem,
-	Flex,
-	Button,
-	NumberInput,
-	TextInput,
-	Checkbox,
-} from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem, Flex, Button } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconTrashX,
-	IconAlertCircle,
-	IconEdit,
-	IconEye,
-	IconChevronUp,
-	IconSelector,
-} from "@tabler/icons-react";
+import { IconTrashX, IconAlertCircle, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
@@ -31,17 +13,14 @@ import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/TableAdmin.module.css";
-import { deleteEntityData, editEntityData, storeEntityData } from "@/app/store/core/crudThunk";
+import { deleteEntityData, editEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import React, { useEffect, useState } from "react";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import inlineInputCss from "@assets/css/InlineInputField.module.css";
-import { useForm } from "@mantine/form";
-import { errorNotification } from "@components/notification/errorNotification";
+import { useEffect, useState } from "react";
+import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 
 export default function _Table({ module, open }) {
 	const { t } = useTranslation();
@@ -49,25 +28,22 @@ export default function _Table({ module, open }) {
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const { id } = useParams();
 	const height = mainAreaHeight - 78;
 	const [submitFormData, setSubmitFormData] = useState({});
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
-	const [updatingRows, setUpdatingRows] = useState({});
 	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.DOSAGE.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				term: searchKeyword,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "name",
-		});
+	const { records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } = usePagination({
+		module,
+		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.DOSAGE.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			term: searchKeyword,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "name",
+	});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -132,17 +108,11 @@ export default function _Table({ module, open }) {
 		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.DOSAGE.INDEX);
 	};
 
-	const form = useForm({
-		initialValues: {
-			name: "",
-		},
-	});
-
 	useEffect(() => {
 		if (!records?.length) return;
 		setSubmitFormData((prev) => {
 			const newData = { ...prev };
-			records.forEach((item, idx) => {
+			records.forEach((item) => {
 				if (!newData[item.id]) {
 					newData[item.id] = {
 						name: item.name ?? "",
@@ -154,67 +124,6 @@ export default function _Table({ module, open }) {
 			return newData;
 		});
 	}, [records]);
-
-	const handleDataTypeChange = (rowId, field, value) => {
-		setSubmitFormData((prev) => ({
-			...prev,
-			[rowId]: {
-				...prev[rowId],
-				[field]: value,
-			},
-		}));
-	};
-
-	const handleFieldChange = async (rowId, field, value) => {
-		setSubmitFormData((prev) => ({
-			...prev,
-			[rowId]: { ...prev[rowId], [field]: value },
-		}));
-
-		setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
-
-		try {
-			await dispatch(
-				storeEntityData({
-					url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
-					data: { [field]: value },
-					module,
-				})
-			);
-		} catch (error) {
-			errorNotification(error.message);
-		} finally {
-			setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
-		}
-	};
-
-	const handleRowSubmit = async (rowId) => {
-		const formData = submitFormData[rowId];
-		if (!formData) return false;
-
-		// 🔎 find original row data
-		const originalRow = records.find((r) => r.id === rowId);
-		if (!originalRow) return false;
-
-		// ✅ check if there is any change
-		const isChanged = Object.keys(formData).some((key) => formData[key] !== originalRow[key]);
-
-		if (!isChanged) {
-			// nothing changed → do not submit
-			return false;
-		}
-
-		const value = {
-			url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
-			data: formData,
-			module,
-		};
-		try {
-			const resultAction = await dispatch(storeEntityData(value));
-		} catch (error) {
-			errorNotification(error.message);
-		}
-	};
 
 	useHotkeys([[os === "macos" ? "ctrl+n" : "alt+n", () => handleCreateForm()]]);
 
@@ -328,9 +237,11 @@ export default function _Table({ module, open }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 72}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height - 12}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -340,7 +251,6 @@ export default function _Table({ module, open }) {
 				/>
 			</Box>
 
-			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module} />
 		</>
 	);

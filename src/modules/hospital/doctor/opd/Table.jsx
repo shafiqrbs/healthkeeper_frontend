@@ -38,7 +38,7 @@ import { getDataWithoutStore } from "@/services/apiService";
 import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
 import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import usePagination from "@hooks/usePagination";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -46,7 +46,7 @@ const tabs = [
 	{ label: "Non-prescription", value: "non-prescription" },
 ];
 
-const PER_PAGE = 200;
+const PER_PAGE = 25;
 
 export default function Table({ module, height, closeTable }) {
 	const dispatch = useDispatch();
@@ -102,9 +102,7 @@ export default function Table({ module, height, closeTable }) {
 		setControlsRefs(controlsRefs);
 	};
 
-
-
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+	const { records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } = usePagination({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
@@ -254,7 +252,7 @@ export default function Table({ module, height, closeTable }) {
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<KeywordSearch  module={module} form={form} />
+				<KeywordSearch module={module} form={form} />
 			</Box>
 			<Box className="border-top-none" px="sm">
 				<DataTable
@@ -421,9 +419,11 @@ export default function Table({ module, height, closeTable }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height + 30}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -432,7 +432,6 @@ export default function Table({ module, height, closeTable }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="visit" />
 			{selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}

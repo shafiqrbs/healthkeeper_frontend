@@ -17,7 +17,6 @@ import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
 import { notifications } from "@mantine/notifications";
 import CreateButton from "@components/buttons/CreateButton";
-import DataTableFooter from "@components/tables/DataTableFooter";
 import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
 import { deleteEntityData, editEntityData } from "@/app/store/core/crudThunk";
@@ -25,16 +24,14 @@ import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import { useRef, useState } from "react";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import useAppLocalStore from "@hooks/useAppLocalStore";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
 import Indent from "@hospital-components/print-formats/indent/Indent";
+import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 
 export default function _Table({ module }) {
-	const { user, userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
@@ -42,33 +39,21 @@ export default function _Table({ module }) {
 	const [viewDrawer, setViewDrawer] = useState(false);
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const listData = useSelector((state) => state.crud[module].data);
 	const height = mainAreaHeight - 48;
 	const [invoicePrintData, setInvoicePrintData] = useState(null);
 	const invoicePrintRef = useRef(null);
-	// console.log(user.id)
-	const ALLOWED_OPD_ROLES = ["nurse_incharge"];
-	const canApprove = userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role));
-	// for infinity table data scroll, call the hook
-	const {
-		scrollRef,
-		records,
-		fetching,
-		sortStatus,
-		setSortStatus,
-		handleScrollToBottom,
-		refetchAll,
-	} = useInfiniteTableScroll({
-		module,
-		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			term: searchKeyword,
-			//  ...(userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role)) && { user_id: user.id }),
-		},
-		perPage: PER_PAGE,
-		sortByKey: "name",
-	});
+
+	const { records, fetching, sortStatus, setSortStatus, total, perPage, page, handlePageChange, refetchAll } =
+		usePagination({
+			module,
+			fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK_TRANSFER.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				term: searchKeyword,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "name",
+		});
 
 	const handleEntityEdit = (id) => {
 		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.REQUISITION.UPDATE}/${id}`);
@@ -219,20 +204,19 @@ export default function _Table({ module }) {
 							render: (values) => (
 								<Group gap={4} justify="right" wrap="nowrap">
 									<Button.Group>
-										{values.process !== "Approved" &&
-											!values.approved_by_id && (
-												<Button
-													onClick={() => handleEntityEdit(values.uid)}
-													variant="filled"
-													c="white"
-													size="compact-xs"
-													radius="es"
-													leftSection={<IconEdit size={16} />}
-													className="border-right-radius-none btnPrimaryBg"
-												>
-													{t("Edit")}
-												</Button>
-											)}
+										{values.process !== "Approved" && !values.approved_by_id && (
+											<Button
+												onClick={() => handleEntityEdit(values.uid)}
+												variant="filled"
+												c="white"
+												size="compact-xs"
+												radius="es"
+												leftSection={<IconEdit size={16} />}
+												className="border-right-radius-none btnPrimaryBg"
+											>
+												{t("Edit")}
+											</Button>
+										)}
 										<Button
 											onClick={() => handleDataShow(values.uid)}
 											variant="filled"
@@ -245,8 +229,7 @@ export default function _Table({ module }) {
 										>
 											{t("View")}
 										</Button>
-										{(values.process === "Approved" ||
-											values.process === "Received") &&
+										{(values.process === "Approved" || values.process === "Received") &&
 											values.approved_by_id && (
 												<Button
 													onClick={() => handleDataPrint(values.uid)}
@@ -261,23 +244,18 @@ export default function _Table({ module }) {
 												</Button>
 											)}
 
-										{values.process !== "Approved" &&
-											!values.approved_by_id && (
-												<ActionIcon
-													size={"ms"}
-													onClick={() => handleDelete(values.uid)}
-													variant="transparent"
-													color="var(--theme-delete-color)"
-													radius="es"
-													aria-label="Settings"
-												>
-													<IconTrashX
-														height={18}
-														width={18}
-														stroke={1.5}
-													/>
-												</ActionIcon>
-											)}
+										{values.process !== "Approved" && !values.approved_by_id && (
+											<ActionIcon
+												size={"ms"}
+												onClick={() => handleDelete(values.uid)}
+												variant="transparent"
+												color="var(--theme-delete-color)"
+												radius="es"
+												aria-label="Settings"
+											>
+												<IconTrashX height={18} width={18} stroke={1.5} />
+											</ActionIcon>
+										)}
 									</Button.Group>
 								</Group>
 							),
@@ -288,8 +266,10 @@ export default function _Table({ module }) {
 					loaderSize="xs"
 					loaderColor="grape"
 					height={height - 72}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -299,7 +279,6 @@ export default function _Table({ module }) {
 				/>
 			</Box>
 			<Indent data={invoicePrintData} ref={invoicePrintRef} />
-			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer
 				viewDrawer={viewDrawer}
 				height={height}

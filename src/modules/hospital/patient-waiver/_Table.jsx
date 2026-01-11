@@ -2,29 +2,13 @@ import { useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {
-	ActionIcon,
-	Box,
-	Button,
-	Flex,
-	FloatingIndicator,
-	Group,
-	Menu,
-	rem,
-	Tabs,
-	Text,
-} from "@mantine/core";
-import {
-	IconArrowNarrowRight,
-	IconChevronUp,
-	IconDotsVertical,
-	IconPrinter,
-	IconSelector,
-} from "@tabler/icons-react";
+import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
+import { IconArrowNarrowRight, IconChevronUp, IconDotsVertical, IconPrinter, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
+import usePagination from "@hooks/usePagination";
 
 import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useForm } from "@mantine/form";
@@ -40,7 +24,7 @@ import { useReactToPrint } from "react-to-print";
 import IPDPrescriptionFullBN from "@hospital-components/print-formats/ipd/IPDPrescriptionFullBN";
 import DetailsInvoiceBN from "@hospital-components/print-formats/billing/DetailsInvoiceBN";
 
-const PER_PAGE = 20;
+const PER_PAGE = 25;
 
 const tabs = [
 	{ label: "OPD Investigation", value: "opd_investigation" },
@@ -67,7 +51,6 @@ export default function _Table({ module }) {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
-	const filterData = useSelector((state) => state.crud[module].filterData);
 	const navigate = useNavigate();
 	const [processTab, setProcessTab] = useState("opd_investigation");
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
@@ -93,20 +76,18 @@ export default function _Table({ module }) {
 		setControlsRefs(controlsRefs);
 	};
 
-
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.INVOICE,
-			filterParams: {
-				mode: processTab,
-				created: form.values.created,
-				term: form.values.keywordSearch,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "created_at",
-			direction: "desc",
-		});
+	const { records, fetching, sortStatus, setSortStatus, total, perPage, page, handlePageChange } = usePagination({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.INVOICE,
+		filterParams: {
+			mode: processTab,
+			created: form.values.created,
+			term: form.values.keywordSearch,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+		direction: "desc",
+	});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
@@ -183,11 +164,7 @@ export default function _Table({ module }) {
 							title: t("Created"),
 							textAlignment: "right",
 							render: (item) => (
-								<Text
-									fz="xs"
-									onClick={() => handleView(item.id)}
-									className="activate-link"
-								>
+								<Text fz="xs" onClick={() => handleView(item.id)} className="activate-link">
 									{formatDate(item.created_at)}
 								</Text>
 							),
@@ -211,15 +188,8 @@ export default function _Table({ module }) {
 							textAlign: "right",
 							titleClassName: "title-right",
 							render: (item) => (
-								<Group
-									onClick={(e) => e.stopPropagation()}
-									gap={4}
-									justify="right"
-									wrap="nowrap"
-								>
-									{userRoles.some((role) =>
-										ALLOWED_CONFIRMED_ROLES.includes(role)
-									) && (
+								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && (
 										<Button.Group>
 											<Button
 												variant="filled"
@@ -255,11 +225,7 @@ export default function _Table({ module }) {
 												radius="es"
 												aria-label="Settings"
 											>
-												<IconDotsVertical
-													height={18}
-													width={18}
-													stroke={1.5}
-												/>
+												<IconDotsVertical height={18} width={18} stroke={1.5} />
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
@@ -308,9 +274,11 @@ export default function _Table({ module }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height + 50}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -319,18 +287,11 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={records} module="waiver" />
 			{selectedPrescriptionId && (
-				<DetailsDrawer
-					opened={opened}
-					close={close}
-					prescriptionId={selectedPrescriptionId}
-				/>
+				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}
 			{printData && <IPDPrescriptionFullBN data={printData} ref={prescriptionRef} />}
-			{billingPrintData && (
-				<DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />
-			)}
+			{billingPrintData && <DetailsInvoiceBN data={billingPrintData} ref={billingInvoiceRef} />}
 		</Box>
 	);
 }

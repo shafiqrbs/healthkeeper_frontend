@@ -18,13 +18,13 @@ import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import React, { useEffect, useRef, useCallback, memo } from "react";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { errorNotification } from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
 import { CORE_DROPDOWNS, HOSPITAL_DROPDOWNS, PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
+import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 
 // Memoized inline input components to prevent re-renders
 const InlineTextInput = memo(({ itemId, field, placeholder, onSubmit, initialValue }) => {
@@ -115,7 +115,7 @@ export default function _Table({ module, open }) {
 		identifierName: "medicine-duration-mode",
 	});
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+	const { records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } = usePagination({
 		module,
 		fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.STOCK.GENERIC,
 		filterParams: {
@@ -454,9 +454,11 @@ export default function _Table({ module, open }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 72}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height - 20}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -465,8 +467,6 @@ export default function _Table({ module, open }) {
 					}}
 				/>
 			</Box>
-
-			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module} />
 		</>
 	);

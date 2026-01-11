@@ -32,9 +32,10 @@ import { useDisclosure } from "@mantine/hooks";
 import IpdManageDrawer from "@hospital-components/drawer/IpdManageDrawer";
 import AdmissionFormBN from "@hospital-components/print-formats/admission/AdmissionFormBN";
 import __IssueMedicineDrawer from "@modules/hospital/ipdAdmitted/__IssueMedicineDrawer.jsx";
+import usePagination from "@hooks/usePagination";
 
 const module = MODULES.ADMISSION;
-const PER_PAGE = 150;
+const PER_PAGE = 25;
 
 const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse"];
 
@@ -48,7 +49,6 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
 	const [printData, setPrintData] = useState(null);
 	const [billingPrintData, setBillingPrintData] = useState(null);
@@ -64,26 +64,23 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 		},
 	});
 
-	const { records, fetching, sortStatus, setSortStatus, handleScrollToBottom, scrollRef } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
-		filterParams: {
-			patient_mode: "ipd",
-			prescription_mode: ipdMode,
-			term: form.values?.keywordSearch,
-			created: form.values.created,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-	});
+	const { records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange, scrollRef } =
+		usePagination({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
+			filterParams: {
+				patient_mode: "ipd",
+				prescription_mode: ipdMode,
+				term: form.values?.keywordSearch,
+				created: form.values.created,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+		});
 
 	const printPrescription = useReactToPrint({
 		content: () => prescriptionRef.current,
-	});
-
-	const printBillingInvoice = useReactToPrint({
-		content: () => billingInvoiceRef.current,
 	});
 
 	const printDischargePaper = useReactToPrint({
@@ -122,10 +119,6 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 		setIssueMedicinePrescriptionUUId(prescriptionId);
 		setIssueMedicinePrescriptionId(id);
 		setIssueMedicineDrawer(true);
-	};
-
-	const handleChangeIpdMode = () => {
-		navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.INDEX);
 	};
 
 	const handleAdmissionFormPrint = async (id) => {
@@ -380,8 +373,11 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					onScrollToBottom={handleScrollToBottom}
+					height={height + 50}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					onPageChange={handlePageChange}
 					scrollViewportRef={scrollRef}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
@@ -391,7 +387,6 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="ipd" />
 
 			<IpdManageDrawer opened={openedManageIpd} close={closeManageIpd} />
 

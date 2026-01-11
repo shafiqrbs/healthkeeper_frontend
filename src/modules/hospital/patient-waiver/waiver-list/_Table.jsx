@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
-import DataTableFooter from "@components/tables/DataTableFooter";
 import { Box, Button, Flex, FloatingIndicator, Group, Stack, Table, Tabs, Text, Checkbox } from "@mantine/core";
 import { IconArrowNarrowRight, IconChevronUp, IconSelector, IconPrinter } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
@@ -13,10 +12,9 @@ import KeywordSearch from "@hospital-components/KeywordSearch";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import DetailsDrawer from "@hospital-components/drawer/__DetailsDrawer";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
@@ -25,8 +23,9 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { successNotification } from "@components/notification/successNotification";
 import { SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { setRefetchData } from "@/app/store/core/crudSlice";
+import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 20;
+const PER_PAGE = 25;
 
 const tabs = [
 	{ label: "OPD Investigation", value: "opd_investigation" },
@@ -67,7 +66,6 @@ export default function _Table({ module }) {
 
 	// Auth & Redux
 	const { userRoles } = useAppLocalStore();
-	const { filterData } = useSelector((state) => state.crud[module]);
 
 	// Table & Modal states
 	const [processTab, setProcessTab] = useState("opd_investigation");
@@ -143,7 +141,7 @@ export default function _Table({ module }) {
 	};
 
 	// Infinite scroll table loading
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+	const { records, fetching, sortStatus, setSortStatus, total, perPage, page, handlePageChange } = usePagination({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_WAIVER.INDEX,
 		filterParams: {
@@ -329,9 +327,11 @@ export default function _Table({ module }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height + 50}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -340,8 +340,6 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-
-			<DataTableFooter indexData={records} module="waiver" />
 
 			{selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />

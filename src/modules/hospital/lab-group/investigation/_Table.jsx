@@ -1,36 +1,27 @@
 import { useNavigate } from "react-router-dom";
-import {
-	IconPrinter,
-	IconChevronUp,
-	IconSelector,
-	IconArrowRight,
-	IconBarcode,
-} from "@tabler/icons-react";
+import { IconPrinter, IconChevronUp, IconSelector, IconArrowRight, IconBarcode } from "@tabler/icons-react";
 import { Box, Flex, Text, Button, Tabs, FloatingIndicator } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useRef, useState } from "react";
 import { MODULES } from "@/constants";
 import { formatDate } from "@utils/index";
-import useAppLocalStore from "@hooks/useAppLocalStore";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import tableCss from "@assets/css/Table.module.css";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 import KeywordSearch from "@hospital-components/KeywordSearch";
-import DataTableFooter from "@components/tables/DataTableFooter";
 
 import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
 import { CSVLink } from "react-csv";
-import { useSelector } from "react-redux";
 import Barcode from "react-barcode";
 import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
 import { useReactToPrint } from "react-to-print";
 import { getDataWithoutStore } from "@/services/apiService";
+import usePagination from "@hooks/usePagination";
 
 const module = MODULES.LAB_TEST;
-const PER_PAGE = 500;
+const PER_PAGE = 25;
 
 const CSV_HEADERS = [
 	{ label: "S/N", key: "sn" },
@@ -55,14 +46,12 @@ const tabs = [
 ];
 
 export default function _Table({ height }) {
-	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const csvLinkRef = useRef(null);
 	const [processTab, setProcessTab] = useState("all");
 	const [rootRef, setRootRef] = useState(null);
 	const [controlsRefs, setControlsRefs] = useState({});
-	const listData = useSelector((state) => state.crud[module].data);
 	const form = useForm();
 	const barCodeRef = useRef(null);
 	const [barcodeValue, setBarcodeValue] = useState("");
@@ -73,8 +62,8 @@ export default function _Table({ height }) {
 		content: () => labReportRef.current,
 	});
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, total, perPage, page, handlePageChange } =
+		usePagination({
 			module,
 			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX_REPORTS,
 			filterParams: {
@@ -121,9 +110,7 @@ export default function _Table({ height }) {
 	};
 
 	const handleTest = (invoice, reportId) => {
-		navigate(
-			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${invoice}/report/${reportId}`
-		);
+		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${invoice}/report/${reportId}`);
 	};
 
 	const handleLabReport = async (id, reportSlug) => {
@@ -227,9 +214,7 @@ export default function _Table({ height }) {
 									<Flex justify="flex-end" gap="2">
 										{values?.process === "New" && (
 											<Button
-												onClick={() =>
-													handleBarcodeTag(values?.barcode, values?.uid)
-												}
+												onClick={() => handleBarcodeTag(values?.barcode, values?.uid)}
 												size="compact-xs"
 												fz={"xs"}
 												leftSection={<IconBarcode size={14} />}
@@ -239,12 +224,9 @@ export default function _Table({ height }) {
 												{t("Tag")}
 											</Button>
 										)}
-										{(values?.process === "In-progress" ||
-											values?.process === "Tagged") && (
+										{(values?.process === "In-progress" || values?.process === "Tagged") && (
 											<Button
-												onClick={() =>
-													handleTest(values?.invoice_uid, values?.uid)
-												}
+												onClick={() => handleTest(values?.invoice_uid, values?.uid)}
 												size="compact-xs"
 												fz={"xs"}
 												fw={"400"}
@@ -275,8 +257,11 @@ export default function _Table({ height }) {
 					loaderSize="xs"
 					loaderColor="grape"
 					height={height}
-					onScrollToBottom={handleScrollToBottom}
 					scrollViewportRef={scrollRef}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -285,7 +270,6 @@ export default function _Table({ height }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="Reports" />
 			<OPDA4BN data={printData} ref={a4Ref} />
 
 			{/* Hidden CSV link for exporting current table rows */}
@@ -298,12 +282,7 @@ export default function _Table({ height }) {
 			/>
 			<Box display="none">
 				<Box ref={barCodeRef}>
-					<Barcode
-						fontSize="10"
-						width="1"
-						height="30"
-						value={barcodeValue || "BARCODETEST"}
-					/>
+					<Barcode fontSize="10" width="1" height="30" value={barcodeValue || "BARCODETEST"} />
 				</Box>
 			</Box>
 			<LabReportA4BN data={labReportData} ref={labReportRef} />

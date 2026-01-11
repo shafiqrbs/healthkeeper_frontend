@@ -19,14 +19,12 @@ import {
 	Textarea,
 } from "@mantine/core";
 import {
-	IconArrowNarrowRight,
 	IconChevronUp,
 	IconDotsVertical,
 	IconFileText,
 	IconPencil,
 	IconPrinter,
 	IconSelector,
-	IconSettings,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -38,7 +36,7 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import ConfirmModal from "../confirm/__ConfirmModal";
 import { getAdmissionConfirmFormInitialValues } from "../helpers/request";
-import { HOSPITAL_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
 import { capitalizeWords, formatDate } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
@@ -53,11 +51,10 @@ import GlobalDrawer from "@components/drawers/GlobalDrawer";
 import { updateEntityData } from "@/app/store/core/crudThunk";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
-import useVendorDataStoreIntoLocalStorage from "@hooks/local-storage/useVendorDataStoreIntoLocalStorage";
-import { setInsertType } from "@/app/store/core/crudSlice";
 import { modals } from "@mantine/modals";
 import { errorNotification } from "@components/notification/errorNotification";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
+import usePagination from "@hooks/usePagination";
 
 const PER_PAGE = 20;
 
@@ -124,29 +121,26 @@ export default function _Table({ module }) {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMISSION.VIEW}/${id}`);
 	};
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
-		filterParams: {
-			name: filterData?.name,
-			patient_mode: "ipd",
-			//created: form.values.created,
-			ipd_mode: processTab,
-			term: form.values.keywordSearch,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "updated_at",
-		direction: "desc",
-	});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
+		usePagination({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX,
+			filterParams: {
+				name: filterData?.name,
+				patient_mode: "ipd",
+				//created: form.values.created,
+				ipd_mode: processTab,
+				term: form.values.keywordSearch,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "updated_at",
+			direction: "desc",
+		});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
 		setTimeout(() => open(), 10);
 	};
-
-	const printPrescription = useReactToPrint({
-		content: () => prescriptionRef.current,
-	});
 
 	const printBillingInvoice = useReactToPrint({
 		content: () => billingInvoiceRef.current,
@@ -162,14 +156,6 @@ export default function _Table({ module }) {
 		});
 		setBillingPrintData(res.data);
 		requestAnimationFrame(printBillingInvoice);
-	};
-
-	const handlePrescriptionPrint = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${id}`,
-		});
-		setPrintData(res.data);
-		requestAnimationFrame(printPrescription);
 	};
 
 	const handleAdmissionFormPrint = async (id) => {
@@ -242,66 +228,6 @@ export default function _Table({ module }) {
 			setIsLoading(false);
 		}
 	}
-
-	// =============== handle action form submit conditionally ================
-	const handleConfirmModalx = (values) => {
-		// =============== store action form data for confirmation modal ================
-		const actionData = {
-			change_mode: actionType,
-			...values,
-		};
-
-		const value = {
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.UPDATE}/${data?.id}`,
-			data: formValue,
-			module,
-		};
-		const resultAction = dispatch(updateEntityData(value));
-		if (updateEntityData.rejected.match(resultAction)) {
-			const fieldErrors = resultAction.payload.errors;
-
-			// Check if there are field validation errors and dynamically set them
-			if (fieldErrors) {
-				const errorObject = {};
-				Object.keys(fieldErrors).forEach((key) => {
-					errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
-				});
-				// Display the errors using your form's `setErrors` function dynamically
-				form.setErrors(errorObject);
-			}
-		} else if (updateEntityData.fulfilled.match(resultAction)) {
-			successNotification(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-			setTimeout(() => {
-				useVendorDataStoreIntoLocalStorage();
-				form.reset();
-				dispatch(setInsertType({ insertType: "create", module }));
-				close(); // close the drawer
-			}, 700);
-		}
-
-		setActionFormData(actionData);
-		if (actionType === "change") {
-			console.log("Change action:", {
-				accommodationType: values.accommodationType,
-				comment: values.comment,
-			});
-			// TODO: implement change action API call
-		} else if (actionType === "cancel") {
-			console.log("Cancel action:", {
-				reason: values.reason,
-			});
-			// TODO: implement cancel action API call
-		} else if (actionType === "day_change") {
-			console.log("Day change action:", {
-				dayChangeComment: values.dayChangeComment,
-			});
-			// TODO: implement day change action API call
-		}
-		// reset form and close drawer after submission
-		actionForm.reset();
-		setActionType("change");
-		closeActions();
-	};
 
 	// =============== handle drawer close with form reset ================
 	const handleCloseActions = () => {
@@ -549,9 +475,12 @@ export default function _Table({ module }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					onScrollToBottom={handleScrollToBottom}
+					height={height + 50}
 					scrollViewportRef={scrollRef}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -560,7 +489,6 @@ export default function _Table({ module }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="ipd" />
 			<ConfirmModal
 				opened={openedConfirm}
 				close={() => {

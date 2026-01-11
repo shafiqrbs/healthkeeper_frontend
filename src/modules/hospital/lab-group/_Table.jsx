@@ -1,24 +1,23 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import {IconCalendarWeek, IconUser, IconArrowNarrowRight, IconInfoCircle} from "@tabler/icons-react";
+import { IconCalendarWeek, IconUser, IconArrowNarrowRight, IconInfoCircle } from "@tabler/icons-react";
 import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon } from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 import { MODULES } from "@/constants";
-import {formatDate, getLoggedInHospitalUser} from "@utils/index";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import {useForm} from "@mantine/form";
-import {useSelector} from "react-redux";
-import {useAutoRefetch} from "@hooks/useAutoRefetch";
+import { formatDate, getLoggedInHospitalUser } from "@utils/index";
+import { useSelector } from "react-redux";
+import { useAutoRefetch } from "@hooks/useAutoRefetch";
 import CustomDivider from "@components/core-component/CustomDivider";
+import usePagination from "@hooks/usePagination";
+import PaginationBottomSection from "@components/tables/PaginationBottomSection";
 
 const module = MODULES.LAB_TEST;
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 
 export default function _Table() {
 	const { id } = useParams();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const form = useForm();
 	const [selectedPatientId, setSelectedPatientId] = useState(id);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const hospitalConfig = getLoggedInHospitalUser();
@@ -27,7 +26,7 @@ export default function _Table() {
 		setSelectedPatientId(id);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_GROUP_TEST.VIEW}/${id}`);
 	};
-	const {refetchAll, records,fetching } = useInfiniteTableScroll({
+	const { refetchAll, records, totalPages, total, perPage, page, handlePageChange } = usePagination({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX,
 		perPage: PER_PAGE,
@@ -41,19 +40,27 @@ export default function _Table() {
 	});
 
 	useAutoRefetch(refetchAll, 75000, true);
-	const handlePageReload = () => {
-		refetchAll();
-	};
 
 	return (
 		<Box>
-			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="3xs">
-				<Text ta="center" fz="sm" fw={500}>
-					S/N
-				</Text>
-				<Text ta="center" fz="sm" fw={500}>
-					Patient Name
-				</Text>
+			<Flex gap="sm" p="les" c="white" justify="space-between" bg="var(--theme-primary-color-6)" mt="3xs">
+				<Flex align="center" gap="sm">
+					<Text ta="center" fz="sm" fw={500}>
+						S/N
+					</Text>
+					<Text ta="center" fz="sm" fw={500}>
+						Patient Name
+					</Text>
+				</Flex>
+
+				<PaginationBottomSection
+					isCompact={true}
+					perPage={perPage}
+					page={page}
+					totalPages={totalPages}
+					handlePageChange={handlePageChange}
+					total={total}
+				/>
 			</Flex>
 			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 174} scrollbars="y" px="3xs">
 				{records?.map((item) => (
@@ -80,11 +87,7 @@ export default function _Table() {
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />
-								<Text
-									fz="sm"
-									onClick={() => handleView(item?.uid)}
-									className="activate-link text-nowrap"
-								>
+								<Text fz="sm" className="activate-link text-nowrap">
 									{formatDate(item?.created_at)}
 								</Text>
 							</Flex>
@@ -134,6 +137,13 @@ export default function _Table() {
 					</Grid>
 				))}
 			</ScrollArea>
+			<PaginationBottomSection
+				perPage={perPage}
+				page={page}
+				totalPages={totalPages}
+				handlePageChange={handlePageChange}
+				total={total}
+			/>
 		</Box>
 	);
 }

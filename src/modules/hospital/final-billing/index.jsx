@@ -15,8 +15,8 @@ import Table from "./_Table";
 import { getDataWithoutStore } from "@/services/apiService";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import BillingTransaction from "@hospital-components/BillingTransaction";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
+import usePagination from "@hooks/usePagination";
 
 const billing = {
 	cabinCharge: 1000,
@@ -27,7 +27,7 @@ const billing = {
 };
 
 const module = MODULES.FINAL_BILLING;
-const PER_PAGE = 100;
+const PER_PAGE = 25;
 
 export default function Index() {
 	const { id } = useParams();
@@ -39,8 +39,7 @@ export default function Index() {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const { t } = useTranslation();
 
-
-	const { records, fetching,refetchAll } = useInfiniteTableScroll({
+	const { records, fetching, refetchAll, handlePageChange, page, total, totalPages, perPage } = usePagination({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.INDEX,
 		perPage: PER_PAGE,
@@ -58,7 +57,7 @@ export default function Index() {
 				const res = await getDataWithoutStore({
 					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${id}/final-bill`,
 				});
-				setRefetchBillingKey(false)
+				setRefetchBillingKey(false);
 				setDiagnosticReport(res?.data);
 			})();
 		}
@@ -91,6 +90,11 @@ export default function Index() {
 														selectedId={id}
 														isOpenPatientInfo={isOpenPatientInfo}
 														setIsOpenPatientInfo={setIsOpenPatientInfo}
+														handlePageChange={handlePageChange}
+														page={page}
+														total={total}
+														totalPages={totalPages}
+														perPage={perPage}
 													/>
 												),
 											},
@@ -103,7 +107,7 @@ export default function Index() {
 									{id ? (
 										<>
 											<TabSubHeading title="Bill Details" />
-											<BillingTable  entity={entity} data={billing} />
+											<BillingTable entity={entity} data={billing} />
 										</>
 									) : (
 										<Flex align="center" justify="center" h="100%">
@@ -132,7 +136,11 @@ export default function Index() {
 											</Box>
 											<Box p="xs" bg="var(--mantine-color-white)">
 												<Box>
-													<BillingActions setRefetchBillingKey={setRefetchBillingKey} refetchAll={refetchAll} entity={entity} />
+													<BillingActions
+														setRefetchBillingKey={setRefetchBillingKey}
+														refetchAll={refetchAll}
+														entity={entity}
+													/>
 												</Box>
 											</Box>
 										</>

@@ -44,11 +44,10 @@ import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
 import ConfirmModal from "@modules/hospital/admission/confirm/__ConfirmModal";
 import {
 	getAdmissionConfirmFormInitialValues,
-	getAdmissionManageFormInitialValues
+	getAdmissionManageFormInitialValues,
 } from "@modules/hospital/admission/helpers/request";
-import {setFilterData} from "@/app/store/core/crudSlice";
-
-
+import { setFilterData } from "@/app/store/core/crudSlice";
+import usePagination from "@hooks/usePagination";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -59,8 +58,8 @@ const tabs = [
 	{ label: "Referred", value: "referred" },
 ];
 
-const PER_PAGE = 50;
-const ALLOWED_OPD_ROLES = ["doctor_opd","doctor_ipd", "admin_administrator"];
+const PER_PAGE = 25;
+const ALLOWED_OPD_ROLES = ["doctor_opd", "doctor_ipd", "admin_administrator"];
 const ALLOWED_ADMIN_DOCTOR_ROLES = ["doctor_rs_rp_confirm", "admin_doctor", "admin_administrator"];
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm", "admin_administrator"];
 
@@ -80,7 +79,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const userId = hospitalConfig?.employee_id;
 	const [selectedId, setSelectedId] = useState(null);
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
-	const manageForm = useForm(getAdmissionManageFormInitialValues());
+
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -128,20 +127,30 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setControlsRefs(controlsRefs);
 	};
 
-	const { refetchAll, scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				patient_mode: ["opd", "emergency"],
-				term: form.values.keywordSearch,
-				prescription_mode: processTab,
-				created: form.values.created,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "created_at",
-		});
+	const {
+		refetchAll,
+		scrollRef,
+		records,
+		fetching,
+		sortStatus,
+		setSortStatus,
+		total,
+		perPage,
+		page,
+		handlePageChange,
+	} = usePagination({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			patient_mode: ["opd", "emergency"],
+			term: form.values.keywordSearch,
+			prescription_mode: processTab,
+			created: form.values.created,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+	});
 
 	// auto-refetch every 15 seconds
 	useAutoRefetch(refetchAll, 180000, true);
@@ -157,22 +166,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const handlePrescription = async (prescription_id) => {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
 		if (closeTable) closeTable();
-	};
-
-	const handleA4Print = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}`,
-		});
-		setPrintData(res.data);
-		setType("a4");
-	};
-
-	const handlePosPrint = async (id) => {
-		const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${id}`,
-		});
-		setPrintData(res.data);
-		setType("pos");
 	};
 
 	const handlePrescriptionPrint = async (prescription_id) => {
@@ -211,8 +204,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		dispatch(setFilterData({ module: "bed", data: { keywordSearch: "" } }));
 		dispatch(setFilterData({ module: "cabin", data: { keywordSearch: "" } }));
 	};
-
-
 
 	const patientUpdate = async (e, id) => {
 		e.stopPropagation();
@@ -331,7 +322,11 @@ export default function Table({ module, height, closeTable, availableClose = fal
 													>
 														{t("Prescription")}
 													</Button>
-												) : values?.prescription_id && ( values.referred_mode === "room" || userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role))) ? (
+												) : values?.prescription_id &&
+												  (values.referred_mode === "room" ||
+														userRoles.some((role) =>
+															ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)
+														)) ? (
 													<Button
 														variant="filled"
 														bg="var(--theme-success-color)"
@@ -345,7 +340,11 @@ export default function Table({ module, height, closeTable, availableClose = fal
 													>
 														{t("Prescription")}
 													</Button>
-												) : !values?.prescription_id || values.referred_mode === "room" || userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) ? (
+												) : !values?.prescription_id ||
+												  values.referred_mode === "room" ||
+												  userRoles.some((role) =>
+														ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)
+												  ) ? (
 													<Button
 														fw={400}
 														variant="filled"
@@ -410,26 +409,29 @@ export default function Table({ module, height, closeTable, availableClose = fal
 										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) && (
 											<ActionIcon
 												variant="transparent"
-												onClick={(e) => patientUpdate(e, values?.id)}>
-												<IconPencil size={18} color="var(--theme-success-color)"/>
+												onClick={(e) => patientUpdate(e, values?.id)}
+											>
+												<IconPencil size={18} color="var(--theme-success-color)" />
 											</ActionIcon>
 										)}
 										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-										((values.process?.toLowerCase() === "closed" && values?.referred_mode === "admission")
-											|| (values?.referred_mode === "room") || !values?.prescription_id) && (
-											<Button
-												variant="filled"
-												bg="var(--theme-primary-color-6)"
-												c="white"
-												size="compact-xs"
-												onClick={() => handleConfirm(values.uid || values.id)}
-												radius="es"
-												fw={400}
-												rightSection={<IconArrowRight size={18} />}
-											>
-												{t("Admission")}
-											</Button>
-										)}
+											((values.process?.toLowerCase() === "closed" &&
+												values?.referred_mode === "admission") ||
+												values?.referred_mode === "room" ||
+												!values?.prescription_id) && (
+												<Button
+													variant="filled"
+													bg="var(--theme-primary-color-6)"
+													c="white"
+													size="compact-xs"
+													onClick={() => handleConfirm(values.uid || values.id)}
+													radius="es"
+													fw={400}
+													rightSection={<IconArrowRight size={18} />}
+												>
+													{t("Admission")}
+												</Button>
+											)}
 										<Menu
 											position="bottom-end"
 											offset={3}
@@ -450,7 +452,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												</ActionIcon>
 											</Menu.Target>
 											<Menu.Dropdown>
-
 												{values?.prescription_id && (
 													<>
 														<Menu.Item
@@ -481,9 +482,12 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height}
-					onScrollToBottom={handleScrollToBottom}
+					height={height + 50}
 					scrollViewportRef={scrollRef}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -492,7 +496,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module="visit" />
 			{selectedPrescriptionId && (
 				<DetailsDrawer opened={opened} close={close} prescriptionId={selectedPrescriptionId} />
 			)}

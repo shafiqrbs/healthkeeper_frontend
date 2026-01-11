@@ -1,25 +1,6 @@
-import {
-	Group,
-	Box,
-	ActionIcon,
-	Text,
-	rem,
-	Flex,
-	Button,
-	TextInput,
-	Select,
-	Checkbox,
-	CloseButton,
-} from "@mantine/core";
+import { Group, Box, Text, rem, Flex, Button, Checkbox, CloseButton } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconAlertCircle,
-	IconEdit,
-	IconChevronUp,
-	IconSelector,
-	IconEye,
-	IconTrashX,
-} from "@tabler/icons-react";
+import { IconAlertCircle, IconEdit, IconChevronUp, IconSelector, IconEye, IconTrashX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -27,27 +8,20 @@ import { modals } from "@mantine/modals";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
 import { notifications } from "@mantine/notifications";
-import {useOs, useHotkeys, useDebouncedState} from "@mantine/hooks";
+import { useOs, useHotkeys } from "@mantine/hooks";
 import CreateButton from "@components/buttons/CreateButton";
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { MASTER_DATA_ROUTES, PHARMACY_DATA_ROUTES } from "@/constants/routes";
+import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/Table.module.css";
 import { deleteEntityData, storeEntityData } from "@/app/store/core/crudThunk";
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import React, { useEffect, useState } from "react";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import inlineInputCss from "@assets/css/InlineInputField.module.css";
+import { useEffect, useState } from "react";
 import { errorNotification } from "@components/notification/errorNotification";
-import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
-import { PHARMACY_DROPDOWNS } from "@/app/store/core/utilitySlice";
-import {useForm} from "@mantine/form";
-import {getMedicineFormInitialValues} from "@modules/hospital/prescription/helpers/request";
-import useMedicineGenericData from "@hooks/useMedicineGenericData";
-import useMedicineData from "@hooks/useMedicineData";
+import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 
 export default function _Table({ module, open }) {
 	const { t } = useTranslation();
@@ -61,14 +35,10 @@ export default function _Table({ module, open }) {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
 	const [updatingRows, setUpdatingRows] = useState({});
-	const [medicineIdDropdownOpened, setMedicineIdDropdownOpened] = useState(true);
-	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
-	const medicineForm = useForm(getMedicineFormInitialValues());
-	const { medicineData } = useMedicineData({ term: medicineTerm });
 
 	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
+		usePagination({
 			module,
 			fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.INDEX,
 			filterParams: {
@@ -139,40 +109,6 @@ export default function _Table({ module, open }) {
 
 		setSubmitFormData(initialFormData);
 	}, [records]);
-
-	const handleDataTypeChange = (rowId, field, value, submitNow = false) => {
-		const updatedRow = {
-			...submitFormData[rowId],
-			[field]: value,
-		};
-
-		setSubmitFormData((prev) => ({
-			...prev,
-			[rowId]: updatedRow,
-		}));
-
-		// optional immediate submit (for Select)
-		if (submitNow) {
-			handleRowSubmit(rowId, updatedRow);
-		}
-	};
-
-	const handleRowSubmit = async (rowId, updatedRow = null) => {
-		const rowData = updatedRow || submitFormData[rowId];
-		if (!rowData) return;
-
-		const value = {
-			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.MEDICINE.INLINE_UPDATE}/${rowId}`,
-			data: rowData,
-			module,
-		};
-
-		try {
-			await dispatch(storeEntityData(value));
-		} catch (error) {
-			errorNotification(error.message);
-		}
-	};
 
 	const handleFieldChange = async (rowId, field, value) => {
 		setSubmitFormData((prev) => ({
@@ -283,13 +219,7 @@ export default function _Table({ module, open }) {
 									key={item.id}
 									size="sm"
 									checked={submitFormData[item.id]?.status ?? false}
-									onChange={(val) =>
-										handleFieldChange(
-											item.id,
-											"status",
-											val.currentTarget.checked
-										)
-									}
+									onChange={(val) => handleFieldChange(item.id, "status", val.currentTarget.checked)}
 								/>
 							),
 						},
@@ -316,7 +246,6 @@ export default function _Table({ module, open }) {
 											{t("Edit")}
 										</Button>
 										<Button
-											onClick={() => handleDataShow(values.id)}
 											variant="filled"
 											c="white"
 											bg="var(--theme-primary-color-6)"
@@ -343,8 +272,11 @@ export default function _Table({ module, open }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 72}
-					onScrollToBottom={handleScrollToBottom}
+					height={height - 12}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					scrollViewportRef={scrollRef}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
@@ -354,8 +286,6 @@ export default function _Table({ module, open }) {
 					}}
 				/>
 			</Box>
-
-			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module} />
 		</>
 	);

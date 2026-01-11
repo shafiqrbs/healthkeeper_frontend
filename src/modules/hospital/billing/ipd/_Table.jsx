@@ -8,9 +8,11 @@ import { formatDate } from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useSelector } from "react-redux";
 import CustomDivider from "@components/core-component/CustomDivider";
+import usePagination from "@hooks/usePagination";
+import PaginationBottomSection from "@components/tables/PaginationBottomSection";
 
 const module = MODULES.BILLING;
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 
 export default function _Table() {
 	const { id } = useParams();
@@ -24,7 +26,7 @@ export default function _Table() {
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_BILLING.VIEW}/${id}`);
 	};
 
-	const { records, fetching } = useInfiniteTableScroll({
+	const { records, fetching, handlePageChange, page, total, totalPages, perPage } = usePagination({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BILLING.INDEX,
 		perPage: PER_PAGE,
@@ -33,7 +35,7 @@ export default function _Table() {
 		filterParams: {
 			created: filterData.created,
 			term: filterData.keywordSearch,
-			'patient_mode':'ipd',
+			patient_mode: "ipd",
 		},
 	});
 	const handleView = (id) => {
@@ -43,11 +45,21 @@ export default function _Table() {
 	return (
 		<Box>
 			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="3xs">
-				<Text ta="center" fz="sm" fw={500}>
-					Patient Name
-				</Text>
+				<Flex w="100%" align="center" justify="space-between">
+					<Text ta="center" fz="sm" fw={500}>
+						Patient Name
+					</Text>
+					<PaginationBottomSection
+						isCompact={true}
+						perPage={perPage}
+						page={page}
+						totalPages={totalPages}
+						handlePageChange={handlePageChange}
+						total={total}
+					/>
+				</Flex>
 			</Flex>
-			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 164} scrollbars="y" px="3xs">
+			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 220} scrollbars="y" px="3xs">
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid
@@ -63,7 +75,11 @@ export default function _Table() {
 						px="xs"
 						gutter="xs"
 					>
-						<Grid.Col span={12}><Text fz="sm" fw={'600'}>{item.name}</Text></Grid.Col>
+						<Grid.Col span={12}>
+							<Text fz="sm" fw={"600"}>
+								{item.name}
+							</Text>
+						</Grid.Col>
 						<CustomDivider />
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
@@ -80,7 +96,6 @@ export default function _Table() {
 							<Flex align="center" gap="3xs">
 								<IconUser size={16} stroke={1.5} />
 								<Text fz="sm">{item.mobile}</Text>
-
 							</Flex>
 						</Grid.Col>
 						<Grid.Col span={6}>
@@ -105,6 +120,13 @@ export default function _Table() {
 					</Grid>
 				))}
 			</ScrollArea>
+			<PaginationBottomSection
+				perPage={perPage}
+				page={page}
+				totalPages={totalPages}
+				handlePageChange={handlePageChange}
+				total={total}
+			/>
 		</Box>
 	);
 }
