@@ -618,12 +618,13 @@ export default function AddMedicineForm({
 	};
 
 	const handlePrintPrescription2A4 = async () => {
-		const result = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${ipdId || id}`,
-		});
+		const result = await handlePrescriptionSubmit(true, false);
+		// : await getDataWithoutStore({
+		// 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${ipdId || id}`,
+		//   });
 
 		if (result.status === 200) {
-			console.log(result.data);
+			// console.log(result.data);
 			setPrintData(result.data);
 		} else {
 			showNotificationComponent(t("Something went wrong"), "red", "lightgray", true, 700, true);
