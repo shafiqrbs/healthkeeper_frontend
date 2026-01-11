@@ -169,8 +169,10 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			setInvoicePrintData(res?.data);
 		}else{
 			setInvestigationPrintData(res?.data);
+
 		}
 	};
+
 	useEffect(() => {
 		if(invoicePrintData){
 			invoicePrint();
@@ -379,7 +381,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			</Box>
 			<DataTableFooter indexData={listData} module="visit" />
 			<RefundFromBedBn data={invoicePrintData} ref={invoicePrintRef} />
-			<RefundFormInvestigationBN data={invoicePrintData} ref={investigationPrintRef} />
+			<RefundFormInvestigationBN data={investigationPrintData} ref={investigationPrintRef} />
 		</Box>
 	);
 }
