@@ -31,7 +31,7 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 	const totalModeCount = patientModeCollectionData?.reduce((sum, item) => sum + (item.patient ?? 0), 0);
 	const totalModeAmount = patientModeCollectionData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
-	const totalInvoiceModeAmount = invoiceModeData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
+	const totalInvoiceModeAmount = invoiceModeData?.reduce((sum, item) => sum + (item.sub_total ?? 0), 0);
 	const totalPatientServiceAmount = patientServiceModeData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 	const totalPatientServiceCount = patientServiceModeData?.reduce((sum, item) => sum + parseInt(item.patient, 10), 0);
 
@@ -42,7 +42,7 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
 	const totalFinancialServiceCount = financialServices?.reduce((sum, item) => sum + (item.total_count ?? 0), 0);
-	const totalFinancialServiceAmount = financialServices?.reduce((sum, item) => sum + (item.total ?? 0), 0);
+	const totalFinancialServiceAmount = financialServices?.reduce((sum, item) => sum + (item.sub_total ?? 0), 0);
 
 	const totalServieGroupCount = serviceGroups?.reduce((sum, item) => sum + (item.total_count ?? 0), 0);
 	const totalServiceGroupAmount = serviceGroups?.reduce((sum, item) => sum + (item.total ?? 0), 0);
@@ -226,6 +226,8 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 											>
 												<Table.Th width={"88%"}>Particular</Table.Th>
 												<Table.Th>Amount</Table.Th>
+												<Table.Th>Refund</Table.Th>
+												<Table.Th>Total</Table.Th>
 											</Table.Tr>
 										</Table.Thead>
 										<Table.Tbody>
@@ -238,13 +240,15 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 													>
 														<Table.Td>{item?.name}</Table.Td>
 														<Table.Td>{item?.total}</Table.Td>
+														<Table.Td>{item?.refund}</Table.Td>
+														<Table.Td>{item?.sub_total}</Table.Td>
 													</Table.Tr>
 												))}
 											<Table.Tr
 												bg="var(--theme-primary-color-1)"
 												style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
 											>
-												<Table.Th>Total</Table.Th>
+												<Table.Th colSpan={3}>Total</Table.Th>
 												<Table.Th>{totalFinancialServiceAmount}</Table.Th>
 											</Table.Tr>
 										</Table.Tbody>
@@ -268,21 +272,25 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 											<Table.Tr py="xs" bg="var(--theme-secondary-color-0)">
 												<Table.Th width={"85%"}>Invoice Mode</Table.Th>
 												<Table.Th width={"15%"}> Amount</Table.Th>
+												<Table.Th width={"15%"}> Refund</Table.Th>
+												<Table.Th width={"15%"}> Total</Table.Th>
 											</Table.Tr>
 										</Table.Thead>
 										<Table.Tbody>
 											{invoiceModeData &&
 												invoiceModeData?.map((item, index) => (
 													<Table.Tr key={item.id || index} py="xs">
-														<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+														<Table.Td>{capitalizeWords(item?.name === 'ipd' ? 'Admission' : item?.name ?? '')}</Table.Td>
 														<Table.Td>{item?.total}</Table.Td>
+														<Table.Td>{item?.refund}</Table.Td>
+														<Table.Td>{item?.sub_total}</Table.Td>
 													</Table.Tr>
 												))}
 											<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
-												<Table.Th fz={"md"} fw={"800"}>
+												<Table.Th colSpan={3} fz={"md"} fw={"800"}>
 													Total
 												</Table.Th>
-												<Table.Th fz={"md"} fw={"800"}>
+												<Table.Th fz={"md"} colSpan={3} fw={"800"}>
 													{totalInvoiceModeAmount}
 												</Table.Th>
 											</Table.Tr>
@@ -307,6 +315,8 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 												<Table.Th width={"60%"}>Particular</Table.Th>
 												<Table.Th width={"20%"}>Number of service</Table.Th>
 												<Table.Th>Amount</Table.Th>
+												<Table.Th>Refund</Table.Th>
+												<Table.Th>Total</Table.Th>
 											</Table.Tr>
 										</Table.Thead>
 										<Table.Tbody>
@@ -316,11 +326,12 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 														<Table.Td>{item?.name}</Table.Td>
 														<Table.Td>{item?.total_count}</Table.Td>
 														<Table.Td>{item?.total}</Table.Td>
+														<Table.Td>{item?.refund}</Table.Td>
+														<Table.Td>{item?.sub_total}</Table.Td>
 													</Table.Tr>
 												))}
 											<Table.Tr bg="var(--theme-primary-color-1)">
-												<Table.Th>Total</Table.Th>
-												<Table.Th>{totalServiceCount}</Table.Th>
+												<Table.Th colSpan={4}>Total</Table.Th>
 												<Table.Th>{totalServiceAmount}</Table.Th>
 											</Table.Tr>
 										</Table.Tbody>

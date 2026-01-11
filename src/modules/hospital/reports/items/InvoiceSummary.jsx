@@ -86,6 +86,8 @@ export default function InvoiceSummary() {
 	});
 
 	const collectionSummaryData = records?.data?.summary[0] || {};
+	const refundTotal = records?.data?.refundTotal || 0;
+	console.log(refundTotal?.refund);
 	const invoiceModeData = records?.data?.invoiceMode || [];
 	const patientModeCollectionData = records?.data?.patientMode || [];
 	const userCollectionData = records?.data?.userBase || [];
@@ -112,14 +114,14 @@ export default function InvoiceSummary() {
 	);
 
 	const totalInvoiceModeAmount = invoiceModeData?.reduce(
-		(sum, item) => sum + (item?.total ?? 0),
+		(sum, item) => sum + (item?.sub_total ?? 0),
 		0
 	);
 
 	const totalPatientServiceAmount = patientServiceModeData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 	const totalPatientServiceCount = patientServiceModeData?.reduce((sum, item) => sum + parseInt(item.patient, 0),0);
 	const totalFinancialServiceCount = financialServices?.reduce((sum, item) => sum + (item.total_count ?? 0), 0);
-	const totalFinancialServiceAmount = financialServices?.reduce((sum, item) => sum + (item.total ?? 0), 0);
+	const totalFinancialServiceAmount = financialServices?.reduce((sum, item) => sum + (item.sub_total ?? 0), 0);
 
 
 	const totalUserCount = userCollectionData?.reduce(
@@ -127,7 +129,7 @@ export default function InvoiceSummary() {
 	const totalUserAmount = userCollectionData?.reduce((sum, item) => sum + (item?.total ?? 0), 0);
 
 	const totalServiceCount = serviceData?.reduce((sum, item) => sum + parseInt(item?.total_count, 10),0);
-	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
+	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.sub_total ?? 0), 0);
 
 	const totalServieGroupCount = serviceGroups?.reduce(
 		(sum, item) => sum + parseInt(item.total_count, 10),0);
@@ -135,6 +137,7 @@ export default function InvoiceSummary() {
 		(sum, item) => sum + (item.total ?? 0),
 		0
 	);
+
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
@@ -183,9 +186,17 @@ export default function InvoiceSummary() {
 						<Box className="borderRadiusAll" mt="3xs" px="xs">
 							<Flex justify="space-between" align="center" py="3xs">
 								<Text>{t("Grand Collection Amount")}</Text>
-								<Flex align="center" gap="xs" w="80px">
+								<Flex align="center" gap="xs" w="120px">
 									<IconCoinTaka color="var(--theme-primary-color-6)" />
-									<Text fz="sm">{collectionSummaryData?.total || 0}</Text>
+									Total <Text fz="sm">{collectionSummaryData?.total || 0}</Text>
+								</Flex>
+								<Flex align="center" gap="xs" w="120px">
+									<IconCoinTaka color="var(--theme-primary-color-6)" />
+									Refund <Text fz="sm">{refundTotal?.refund || 0}</Text>
+								</Flex>
+								<Flex align="center" gap="xs" w="220px">
+									<IconCoinTaka color="var(--theme-primary-color-6)" />
+									Grand Total <Text fz="sm">{(collectionSummaryData?.total - refundTotal?.refund) || 0}</Text>
 								</Flex>
 							</Flex>
 						</Box>
@@ -290,18 +301,22 @@ export default function InvoiceSummary() {
 									<Table.Tr py="xs" bg="var(--theme-secondary-color-0)">
 										<Table.Td width={"85%"}>Invoice Mode</Table.Td>
 										<Table.Td width={"15%"}> Amount</Table.Td>
+										<Table.Td width={"15%"}> Refund</Table.Td>
+										<Table.Td width={"15%"}> Total</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
 									{invoiceModeData &&
 										invoiceModeData?.map((item, index) => (
 											<Table.Tr key={item.id || index} py="xs">
-												<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+												<Table.Td>{capitalizeWords(item?.name == 'ipd' ? 'Admission':item?.name)}</Table.Td>
 												<Table.Td>{item?.total}</Table.Td>
+												<Table.Td>{item?.refund}</Table.Td>
+												<Table.Td>{item?.sub_total}</Table.Td>
 											</Table.Tr>
 										))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
-										<Table.Td>Total</Table.Td>
+										<Table.Td colSpan={3}>Total</Table.Td>
 										<Table.Td>{totalInvoiceModeAmount}</Table.Td>
 									</Table.Tr>
 								</Table.Tbody>
@@ -326,7 +341,7 @@ export default function InvoiceSummary() {
 							<Table>
 								<Table.Thead bg="var(--theme-secondary-color-0)">
 									<Table.Tr py="xs">
-										<Table.Td width={"85%"}>Particular</Table.Td>
+										<Table.Td width={"85%"}>Employee Name</Table.Td>
 										<Table.Td>Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
@@ -368,6 +383,8 @@ export default function InvoiceSummary() {
 								<Table.Tr py="xs">
 									<Table.Td  width={"70%"}>Particular</Table.Td>
 									<Table.Td>Amount</Table.Td>
+									<Table.Td>Refund</Table.Td>
+									<Table.Td>Total</Table.Td>
 								</Table.Tr>
 							</Table.Thead>
 							<Table.Tbody>
@@ -376,11 +393,13 @@ export default function InvoiceSummary() {
 										<Table.Tr key={item.id || index} py="xs">
 											<Table.Td>{item?.name}</Table.Td>
 											<Table.Td>{item?.total}</Table.Td>
+											<Table.Td>{item?.refund}</Table.Td>
+											<Table.Td>{item?.sub_total}</Table.Td>
 										</Table.Tr>
 									))
 								)}
 								<Table.Tr bg="var(--theme-primary-color-1)">
-									<Table.Td>Total</Table.Td>
+									<Table.Td colSpan={'3'}>Total</Table.Td>
 									<Table.Td>{totalFinancialServiceAmount}</Table.Td>
 								</Table.Tr>
 							</Table.Tbody>
@@ -407,6 +426,8 @@ export default function InvoiceSummary() {
 										<Table.Td width={"70%"}>Particular</Table.Td>
 										<Table.Td width={"15%"}>Number of service</Table.Td>
 										<Table.Td>Amount</Table.Td>
+										<Table.Td>Refund</Table.Td>
+										<Table.Td>Total</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
@@ -416,11 +437,12 @@ export default function InvoiceSummary() {
 												<Table.Td>{item?.name}</Table.Td>
 												<Table.Td>{item?.total_count}</Table.Td>
 												<Table.Td>{item?.total}</Table.Td>
+												<Table.Td>{item?.refund}</Table.Td>
+												<Table.Td>{item?.sub_total}</Table.Td>
 											</Table.Tr>
 										))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
-										<Table.Td>Total</Table.Td>
-										<Table.Td>{totalServiceCount}</Table.Td>
+										<Table.Td colSpan={'4'}>Total</Table.Td>
 										<Table.Td>{totalServiceAmount}</Table.Td>
 									</Table.Tr>
 								</Table.Tbody>
