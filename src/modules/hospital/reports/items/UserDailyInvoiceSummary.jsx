@@ -178,11 +178,11 @@ export default function UserDailyInvoiceSummary() {
 												<Table>
 													<Table.Thead>
 														<Table.Tr>
-															<Table.Th>#</Table.Th>
+															<Table.Th width={'50'}>#</Table.Th>
 															<Table.Th>Name</Table.Th>
-															<Table.Th width={'100'} ta="right">Total</Table.Th>
-															<Table.Th width={'100'} ta="right">Refund</Table.Th>
-															<Table.Th width={'100'} ta="right">Sub Total</Table.Th>
+															<Table.Th width={'120'} ta="right">Total</Table.Th>
+															<Table.Th width={'120'} ta="right">Refund</Table.Th>
+															<Table.Th width={'120'} ta="right">Sub Total</Table.Th>
 														</Table.Tr>
 													</Table.Thead>
 													<Table.Tbody>
