@@ -39,7 +39,7 @@ const DailySummaryReports = forwardRef(({ records, preview = false }, ref) => {
 	const totalUserAmount = userCollectionData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
 	const totalServiceCount = serviceData?.reduce((sum, item) => sum + parseInt(item.total_count, 10), 0);
-	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
+	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.sub_total ?? 0), 0);
 
 	const totalFinancialServiceCount = financialServices?.reduce((sum, item) => sum + (item.total_count ?? 0), 0);
 	const totalFinancialServiceAmount = financialServices?.reduce((sum, item) => sum + (item.sub_total ?? 0), 0);
