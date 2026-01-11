@@ -1,72 +1,50 @@
-import { useEffect, useState, useRef, useCallback } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { Group, Box, ActionIcon, Text, rem, Flex, Button } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconTrashX,
-	IconAlertCircle,
-	IconCheck,
-	IconEdit,
-	IconEye,
-	IconChevronUp,
-	IconSelector,
-} from "@tabler/icons-react";
+import { IconTrashX, IconAlertCircle, IconCheck, IconEdit, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import { modals } from "@mantine/modals";
-import { useHotkeys, useMounted } from "@mantine/hooks";
-import {
-	deleteEntityData,
-	getIndexEntityData,
-	editEntityData,
-} from "@/app/store/core/crudThunk.js";
-import { setRefetchData, setInsertType, setItemData } from "@/app/store/core/crudSlice.js";
+import { useHotkeys } from "@mantine/hooks";
+import { deleteEntityData, editEntityData } from "@/app/store/core/crudThunk.js";
+import { setRefetchData, setInsertType } from "@/app/store/core/crudSlice.js";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import ViewDrawer from "./__ViewDrawer.jsx";
 import { notifications } from "@mantine/notifications";
 import { getCustomers } from "@/common/utils";
 import { SUCCESS_NOTIFICATION_COLOR, ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import CreateButton from "@components/buttons/CreateButton.jsx";
-import DataTableFooter from "@components/tables/DataTableFooter.jsx";
-import { sortBy } from "lodash";
 import { useOs } from "@mantine/hooks";
-import { MASTER_DATA_ROUTES } from "@/constants/routes.js";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
+import { CORE_DATA_ROUTES, MASTER_DATA_ROUTES } from "@/constants/routes.js";
+import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 100;
+const PER_PAGE = 25;
 
-export default function _Table({ module, open, close }) {
-	const isMounted = useMounted();
+export default function _Table({ module, open }) {
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const { id } = useParams();
-	const height = mainAreaHeight - 78; //TabList height 104
-	const scrollViewportRef = useRef(null);
+	const height = mainAreaHeight - 78;
 	const os = useOs();
-	const [page, setPage] = useState(1);
-	const [hasMore, setHasMore] = useState(true);
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
-	const refetchData = useSelector((state) => state.crud[module].refetching);
-	const listData = useSelector((state) => state.crud[module].data);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 
 	const [customerObject, setCustomerObject] = useState({});
 	const navigate = useNavigate();
 	const [viewDrawer, setViewDrawer] = useState(false);
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MODE.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				term: searchKeyword,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "name",
-		});
+	const { records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } = usePagination({
+		module,
+		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR_MODE.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			term: searchKeyword,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "name",
+	});
 
 	const handleEntityEdit = (id) => {
 		dispatch(setInsertType({ insertType: "update", module }));
@@ -192,11 +170,7 @@ export default function _Table({ module, open, close }) {
 							title: t("Name"),
 							sortable: true,
 							render: (values) => (
-								<Text
-									className="activate-link"
-									fz="xs"
-									onClick={() => handleDataShow(values.id)}
-								>
+								<Text className="activate-link" fz="xs" onClick={() => handleDataShow(values.id)}>
 									{values.name}
 								</Text>
 							),
@@ -253,9 +227,11 @@ export default function _Table({ module, open, close }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 72}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height - 22}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -264,12 +240,7 @@ export default function _Table({ module, open, close }) {
 					}}
 				/>
 			</Box>
-			<DataTableFooter indexData={listData} module={module} />
-			<ViewDrawer
-				viewDrawer={viewDrawer}
-				setViewDrawer={setViewDrawer}
-				entityObject={customerObject}
-			/>
+			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} entityObject={customerObject} />
 		</>
 	);
 }

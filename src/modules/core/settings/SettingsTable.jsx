@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Group, Box, ActionIcon, Text, rem, Menu, Switch } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { IconEdit, IconTrash, IconCheck, IconDotsVertical, IconTrashX } from "@tabler/icons-react";
+import { IconCheck, IconDotsVertical, IconTrashX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	editEntityData,
 	getIndexEntityData,
 	setDeleteMessage,
-	setFetching,
 	setFormLoading,
 	setInsertType,
 } from "../../../../store/core/crudSlice.js";
@@ -34,9 +33,7 @@ function SettingsTable(props) {
 	const searchKeyword = useSelector((state) => state.crudSlice.searchKeyword);
 	const fetchingReload = useSelector((state) => state.crudSlice.fetching);
 	const entityDataDelete = useSelector((state) => state.inventoryCrudSlice.entityDataDelete);
-	const productionSettingFilterData = useSelector(
-		(state) => state.productionCrudSlice.productionSettingFilterData
-	);
+	const productionSettingFilterData = useSelector((state) => state.productionCrudSlice.productionSettingFilterData);
 
 	const [settingsData, setSettingsData] = useState([]);
 
@@ -84,8 +81,7 @@ function SettingsTable(props) {
 					term: searchKeyword,
 					name: productionSettingFilterData.name && productionSettingFilterData.name,
 					setting_type_id:
-						productionSettingFilterData.setting_type_id &&
-						productionSettingFilterData.setting_type_id,
+						productionSettingFilterData.setting_type_id && productionSettingFilterData.setting_type_id,
 					page: page,
 					offset: perPage,
 				},
@@ -110,13 +106,7 @@ function SettingsTable(props) {
 
 	return (
 		<>
-			<Box
-				pl={`xs`}
-				pr={8}
-				pt={"6"}
-				pb={"4"}
-				className={"boxBackground borderRadiusAll border-bottom-none"}
-			>
+			<Box pl={`xs`} pr={8} pt={"6"} pb={"4"} className={"boxBackground borderRadiusAll border-bottom-none"}>
 				<KeywordSearch module={"production-setting"} />
 			</Box>
 			<Box className={"borderRadiusAll border-top-none"}>
@@ -179,20 +169,14 @@ function SettingsTable(props) {
 												radius="xl"
 												aria-label="Settings"
 											>
-												<IconDotsVertical
-													height={"18"}
-													width={"18"}
-													stroke={1.5}
-												/>
+												<IconDotsVertical height={"18"} width={"18"} stroke={1.5} />
 											</ActionIcon>
 										</Menu.Target>
 										<Menu.Dropdown>
 											<Menu.Item
 												onClick={() => {
 													dispatch(setInsertType("update"));
-													dispatch(
-														editEntityData("core/setting/" + data.id)
-													);
+													dispatch(editEntityData("core/setting/" + data.id));
 													dispatch(setFormLoading(true));
 													navigate(`/core/setting/${data.id}`);
 												}}
@@ -221,17 +205,9 @@ function SettingsTable(props) {
 												c={"red.6"}
 												onClick={() => {
 													modals.openConfirmModal({
-														title: (
-															<Text size="md">
-																{" "}
-																{t("FormConfirmationTitle")}
-															</Text>
-														),
+														title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
 														children: (
-															<Text size="sm">
-																{" "}
-																{t("FormConfirmationMessage")}
-															</Text>
+															<Text size="sm"> {t("FormConfirmationMessage")}</Text>
 														),
 														labels: {
 															confirm: "Confirm",
@@ -240,11 +216,7 @@ function SettingsTable(props) {
 														confirmProps: { color: "red.6" },
 														onCancel: () => console.info("Cancel"),
 														onConfirm: () => {
-															dispatch(
-																deleteEntityData(
-																	"core/setting/" + data.id
-																)
-															);
+															dispatch(deleteEntityData("core/setting/" + data.id));
 															dispatch(setFetching(true));
 															notifications.show({
 																color: "red",
@@ -267,9 +239,7 @@ function SettingsTable(props) {
 													});
 												}}
 												rightSection={
-													<IconTrashX
-														style={{ width: rem(14), height: rem(14) }}
-													/>
+													<IconTrashX style={{ width: rem(14), height: rem(14) }} />
 												}
 											>
 												{t("Delete")}

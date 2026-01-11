@@ -1,27 +1,9 @@
-import {
-	Group,
-	Box,
-	ActionIcon,
-	Text,
-	rem,
-	Flex,
-	Button,
-	NumberInput,
-	TextInput,
-	Checkbox,
-} from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, Checkbox } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconTrashX,
-	IconAlertCircle,
-	IconEdit,
-	IconEye,
-	IconChevronUp,
-	IconSelector,
-} from "@tabler/icons-react";
+import { IconTrashX, IconAlertCircle, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { modals } from "@mantine/modals";
 import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
@@ -35,13 +17,12 @@ import { deleteEntityData, editEntityData, storeEntityData } from "@/app/store/c
 import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
-import React, { useEffect, useState } from "react";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
+import { useEffect, useState } from "react";
+import usePagination from "@hooks/usePagination";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
-import { useForm } from "@mantine/form";
 import { errorNotification } from "@components/notification/errorNotification";
 
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 
 export default function _Table({ module, open }) {
 	const { t } = useTranslation();
@@ -49,7 +30,6 @@ export default function _Table({ module, open }) {
 	const dispatch = useDispatch();
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
-	const { id } = useParams();
 	const height = mainAreaHeight - 78;
 	const [submitFormData, setSubmitFormData] = useState({});
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
@@ -57,17 +37,16 @@ export default function _Table({ module, open }) {
 	const listData = useSelector((state) => state.crud[module].data);
 	const [updatingRows, setUpdatingRows] = useState({});
 	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				term: searchKeyword,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "name",
-		});
+	const { records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } = usePagination({
+		module,
+		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			term: searchKeyword,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "name",
+	});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -131,12 +110,6 @@ export default function _Table({ module, open }) {
 		dispatch(setInsertType({ insertType: "create", module }));
 		navigate(MASTER_DATA_ROUTES.NAVIGATION_LINKS.PARTICULAR.INDEX);
 	};
-
-	const form = useForm({
-		initialValues: {
-			name: "",
-		},
-	});
 
 	useEffect(() => {
 		if (!records?.length) return;
@@ -208,7 +181,7 @@ export default function _Table({ module, open }) {
 			module,
 		};
 		try {
-			const resultAction = await dispatch(storeEntityData(value));
+			await dispatch(storeEntityData(value));
 		} catch (error) {
 			errorNotification(error.message);
 		}
@@ -262,11 +235,7 @@ export default function _Table({ module, open }) {
 									placeholder={t("Name")}
 									value={submitFormData[item.id]?.name || ""}
 									onChange={(event) =>
-										handleDataTypeChange(
-											item.id,
-											"name",
-											event.currentTarget.value
-										)
+										handleDataTypeChange(item.id, "name", event.currentTarget.value)
 									}
 									onBlur={() => handleRowSubmit(item.id)}
 								/>
@@ -289,11 +258,7 @@ export default function _Table({ module, open }) {
 									placeholder={t("ordering")}
 									value={submitFormData[item.id]?.ordering || ""}
 									onChange={(event) =>
-										handleDataTypeChange(
-											item.id,
-											"ordering",
-											event.currentTarget.value
-										)
+										handleDataTypeChange(item.id, "ordering", event.currentTarget.value)
 									}
 									onBlur={() => handleRowSubmit(item.id)}
 								/>
@@ -307,13 +272,7 @@ export default function _Table({ module, open }) {
 									key={item.id}
 									size="sm"
 									checked={submitFormData[item.id]?.status ?? false}
-									onChange={(val) =>
-										handleFieldChange(
-											item.id,
-											"status",
-											val.currentTarget.checked
-										)
-									}
+									onChange={(val) => handleFieldChange(item.id, "status", val.currentTarget.checked)}
 								/>
 							),
 						},
@@ -370,9 +329,11 @@ export default function _Table({ module, open }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 72}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height - 16}
+					page={page}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -382,7 +343,6 @@ export default function _Table({ module, open }) {
 				/>
 			</Box>
 
-			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module} />
 		</>
 	);
