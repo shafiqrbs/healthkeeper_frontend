@@ -46,9 +46,24 @@ export default function __IssueMedicineDrawer({
 
 	// Form for warehouse
 	const form = useForm({
-		initialValues: { warehouse_id: "" },
-		validate: { warehouse_id: (val) => (!val ? t("Warehouse required") : null) },
+		initialValues: {
+			warehouse_id: null,
+		},
+		validate: {
+			warehouse_id: (val) => (!val ? t("Warehouse required") : null),
+		},
 	});
+
+
+	useEffect(() => {
+		const firstWarehouse = Object.values(warehouseDropdown ?? {})[0];
+
+		if (firstWarehouse?.value) {
+			form.setFieldValue("warehouse_id", Number(firstWarehouse.value));
+		}
+	}, [warehouseDropdown]);
+
+
 
 	// medicine history from API
 	const { data: medicineHistoryData, refetch: refetchMedicineData } = useDataWithoutStore({
@@ -107,7 +122,7 @@ export default function __IssueMedicineDrawer({
 				validationError = true;
 			}
 
-			if (quantity > 0) {
+			if (quantity > 0 && row.stock_quantity > 0 && row.stock_item_id !== null && row.stock_item_id !== "" ) {
 				json_content.push({
 					id: row.id,
 					stock_id: row.stock_item_id,
@@ -209,6 +224,7 @@ export default function __IssueMedicineDrawer({
 												<Table.Th colSpan={6}>
 													<SelectForm
 														form={form}
+														disabled={true}
 														tooltip={t("Choose Warehouse")}
 														placeholder={t("Choose Warehouse")}
 														name="warehouse_id"
@@ -237,19 +253,24 @@ export default function __IssueMedicineDrawer({
 													<Table.Td>{item.medicine_name}</Table.Td>
 													<Table.Td>{item.generic}</Table.Td>
 													<Table.Td>{item.dose_details}</Table.Td>
-													<Table.Td>1000</Table.Td>
+													<Table.Td>{item.stock_quantity}</Table.Td>
 													<Table.Td>
-														<NumberInput
-															size="xs"
-															className={inlineInputCss.inputNumber}
-															value={
-																submitFormData[item.id]?.quantity ??
-																Number(item.daily_quantity)
-															}
-															clampBehavior="strict"
-															max={Number(item.daily_quantity)}
-															onChange={(val) => handleDataTypeChange(item.id, val)}
-														/>
+														{
+															item.stock_quantity > 0 ?
+																<NumberInput
+																	size="xs"
+																	className={inlineInputCss.inputNumber}
+																	value={
+																		submitFormData[item.id]?.quantity ??
+																		Number(item.daily_quantity)
+																	}
+																	clampBehavior="strict"
+																	max={Number(item.daily_quantity)}
+																	onChange={(val) => handleDataTypeChange(item.id, val)}
+																/>
+																: item.daily_quantity
+														}
+
 													</Table.Td>
 												</Table.Tr>
 											))}
