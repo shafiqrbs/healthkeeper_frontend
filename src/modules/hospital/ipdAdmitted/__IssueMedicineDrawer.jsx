@@ -11,7 +11,7 @@ import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData.js";
 import { CORE_DROPDOWNS } from "@/app/store/core/utilitySlice.js";
 import { useForm } from "@mantine/form";
 import useDataWithoutStore from "@hooks/useDataWithoutStore.js";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
 import { modals } from "@mantine/modals";
@@ -20,7 +20,6 @@ import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constant
 export default function __IssueMedicineDrawer({
 	issueMedicineDrawer,
 	setIssueMedicineDrawer,
-	issueMedicinePrescriptionId,
 	setIssueMedicinePrescriptionId,
 	issueMedicinePrescriptionUUId,
 	setIssueMedicinePrescriptionUUId,
@@ -37,11 +36,13 @@ export default function __IssueMedicineDrawer({
 		setIssueMedicineDrawer(false);
 	};
 
+	const warehouseParams = useMemo(() => ({ id: createdBy?.id }), [createdBy?.id]);
+
 	// warehouse dropdown
 	const { data: warehouseDropdown } = useGlobalDropdownData({
 		path: CORE_DROPDOWNS.USER_WAREHOUSE.PATH,
 		utility: CORE_DROPDOWNS.USER_WAREHOUSE.UTILITY,
-		params: { id: createdBy?.id },
+		params: warehouseParams,
 	});
 
 	// Form for warehouse
@@ -54,7 +55,6 @@ export default function __IssueMedicineDrawer({
 		},
 	});
 
-
 	useEffect(() => {
 		const firstWarehouse = Object.values(warehouseDropdown ?? {})[0];
 
@@ -63,10 +63,8 @@ export default function __IssueMedicineDrawer({
 		}
 	}, [warehouseDropdown]);
 
-
-
 	// medicine history from API
-	const { data: medicineHistoryData, refetch: refetchMedicineData } = useDataWithoutStore({
+	const { data: medicineHistoryData } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.TRANSACTION}/${issueMedicinePrescriptionUUId}`,
 		params: { mode: "medicine" },
 	});
@@ -122,7 +120,7 @@ export default function __IssueMedicineDrawer({
 				validationError = true;
 			}
 
-			if (quantity > 0 && row.stock_quantity > 0 && row.stock_item_id !== null && row.stock_item_id !== "" ) {
+			if (quantity > 0 && row.stock_quantity > 0 && row.stock_item_id !== null && row.stock_item_id !== "") {
 				json_content.push({
 					id: row.id,
 					stock_id: row.stock_item_id,
@@ -255,22 +253,21 @@ export default function __IssueMedicineDrawer({
 													<Table.Td>{item.dose_details}</Table.Td>
 													<Table.Td>{item.stock_quantity}</Table.Td>
 													<Table.Td>
-														{
-															item.stock_quantity > 0 ?
-																<NumberInput
-																	size="xs"
-																	className={inlineInputCss.inputNumber}
-																	value={
-																		submitFormData[item.id]?.quantity ??
-																		Number(item.daily_quantity)
-																	}
-																	clampBehavior="strict"
-																	max={Number(item.daily_quantity)}
-																	onChange={(val) => handleDataTypeChange(item.id, val)}
-																/>
-																: item.daily_quantity
-														}
-
+														{item.stock_quantity > 0 ? (
+															<NumberInput
+																size="xs"
+																className={inlineInputCss.inputNumber}
+																value={
+																	submitFormData[item.id]?.quantity ??
+																	Number(item.daily_quantity)
+																}
+																clampBehavior="strict"
+																max={Number(item.daily_quantity)}
+																onChange={(val) => handleDataTypeChange(item.id, val)}
+															/>
+														) : (
+															item.daily_quantity
+														)}
 													</Table.Td>
 												</Table.Tr>
 											))}

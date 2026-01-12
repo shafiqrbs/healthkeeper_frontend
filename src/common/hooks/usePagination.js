@@ -26,14 +26,23 @@ const usePagination = ({
 		direction,
 	});
 
-	// =============== use data from redux store (keeps server-sorted) ================
-	const records = Array.isArray(listData.data) ? listData.data : [];
+	// =============== clear records when fetching to prevent showing old data ================
+	const records = fetching ? [] : Array.isArray(listData.data) ? listData.data : [];
 	const total = listData.total || 0;
 	const totalPages = Math.ceil(total / perPage);
 
 	// =============== fetch data from API ================
 	const fetchData = async (pageNum = 1) => {
 		setFetching(true);
+		dispatch(
+			setItemData({
+				module,
+				data: {
+					data: [],
+					total: 0,
+				},
+			})
+		);
 
 		const value = {
 			url: fetchUrl,
@@ -56,7 +65,6 @@ const usePagination = ({
 				setItemData({
 					module,
 					data: {
-						...listData,
 						data: newItems,
 						total: totalCount,
 					},
@@ -83,6 +91,18 @@ const usePagination = ({
 		setPage(1);
 		fetchData(1);
 	}, [sortStatus, filterParams]);
+
+	useEffect(() => {
+		dispatch(
+			setItemData({
+				module,
+				data: {
+					data: [],
+					total: 0,
+				},
+			})
+		);
+	}, [module, fetchUrl, dispatch]);
 
 	// =============== trigger refetch when filters, sort, or refetching changes ================
 	useEffect(() => {

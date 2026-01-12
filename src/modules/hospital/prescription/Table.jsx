@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
-import DataTableFooter from "@components/tables/DataTableFooter";
 import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Modal, Tabs, Text } from "@mantine/core";
 import {
 	IconArrowRight,
@@ -62,7 +61,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const listData = useSelector((state) => state.crud[module].data);
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const hospitalConfig = getLoggedInHospitalUser();
@@ -78,13 +76,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 			room_id: opdRoomId,
 		},
 	});
-
-	const isWithinThreeDays = (date) => {
-		const created = new Date(date);
-		const today = new Date();
-		const diff = (today - created) / (1000 * 60 * 60 * 24); // difference in days
-		return diff <= 3; // allow 3 days
-	};
 
 	const handlePos = useReactToPrint({
 		content: () => posRef.current,

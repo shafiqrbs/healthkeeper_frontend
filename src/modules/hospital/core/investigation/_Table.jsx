@@ -36,7 +36,6 @@ export default function _Table({ module, open }) {
 	const [updatingRows, setUpdatingRows] = useState({});
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const listData = useSelector((state) => state.crud[module].data);
 
 	const { records, fetching, sortStatus, setSortStatus, handlePageChange, page, total, perPage } = usePagination({
 		module,

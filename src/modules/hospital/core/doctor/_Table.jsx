@@ -1,15 +1,4 @@
-import {
-	Group,
-	Box,
-	ActionIcon,
-	Text,
-	rem,
-	Flex,
-	Button,
-	TextInput,
-	Select,
-	MultiSelect,
-} from "@mantine/core";
+import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, Select, MultiSelect } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {
 	IconTrashX,
@@ -28,7 +17,6 @@ import KeywordSearch from "@modules/filter/KeywordSearch";
 import ViewDrawer from "./__ViewDrawer";
 import { notifications } from "@mantine/notifications";
 import { useOs, useHotkeys } from "@mantine/hooks";
-import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import { deleteEntityData, editEntityData, storeEntityData } from "@/app/store/core/crudThunk";
@@ -36,7 +24,6 @@ import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import { useEffect, useState } from "react";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import { errorNotification } from "@components/notification/errorNotification";
 import useGlobalDropdownData from "@hooks/dropdown/useGlobalDropdownData";
@@ -44,8 +31,9 @@ import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 
 // ✅ drag and drop
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 
 export default function _Table({ module, open }) {
 	const { t } = useTranslation();
@@ -61,22 +49,19 @@ export default function _Table({ module, open }) {
 
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const listData = useSelector((state) => state.crud[module].data);
 
-	// infinite table scroll
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.DOCTOR.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				particular_type: "doctor",
-				user_group: "doctor",
-				term: searchKeyword,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "name",
-		});
+	const { records, fetching, sortStatus, setSortStatus, handlePageChange, page, total, perPage } = usePagination({
+		module,
+		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.DOCTOR.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			particular_type: "doctor",
+			user_group: "doctor",
+			term: searchKeyword,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "name",
+	});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -292,11 +277,7 @@ export default function _Table({ module, open }) {
 											title: "",
 											width: 40,
 											render: (item, index) => (
-												<Draggable
-													key={item.id}
-													draggableId={item.id.toString()}
-													index={index}
-												>
+												<Draggable key={item.id} draggableId={item.id.toString()} index={index}>
 													{(provided) => (
 														<div
 															ref={provided.innerRef}
@@ -357,9 +338,7 @@ export default function _Table({ module, open }) {
 													placeholder={t("SelectUnitName")}
 													data={getParticularUnits}
 													value={submitFormData[item.id]?.unit_id ?? ""}
-													onChange={(val) =>
-														handleFieldChange(item.id, "unit_id", val)
-													}
+													onChange={(val) => handleFieldChange(item.id, "unit_id", val)}
 													rightSection={updatingRows[item.id]}
 												/>
 											),
@@ -399,9 +378,7 @@ export default function _Table({ module, open }) {
 															{t("Edit")}
 														</Button>
 														<Button
-															onClick={() =>
-																handleDataShow(values.id)
-															}
+															onClick={() => handleDataShow(values.id)}
 															variant="filled"
 															c="white"
 															bg="var(--theme-primary-color-6)"
@@ -431,24 +408,16 @@ export default function _Table({ module, open }) {
 									fetching={fetching}
 									loaderSize="xs"
 									loaderColor="grape"
-									height={height - 72}
-									onScrollToBottom={handleScrollToBottom}
-									scrollViewportRef={scrollRef}
+									height={height - 22}
+									totalRecords={total}
+									recordsPerPage={perPage}
+									page={page}
+									onPageChange={handlePageChange}
 									sortStatus={sortStatus}
 									onSortStatusChange={setSortStatus}
 									sortIcons={{
-										sorted: (
-											<IconChevronUp
-												color="var(--theme-tertiary-color-7)"
-												size={14}
-											/>
-										),
-										unsorted: (
-											<IconSelector
-												color="var(--theme-tertiary-color-7)"
-												size={14}
-											/>
-										),
+										sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
+										unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 									}}
 								/>
 								{provided.placeholder}
@@ -458,7 +427,6 @@ export default function _Table({ module, open }) {
 				</DragDropContext>
 			</Box>
 
-			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module} />
 		</>
 	);

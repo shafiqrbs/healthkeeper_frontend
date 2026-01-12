@@ -1,12 +1,6 @@
 import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconTrashX,
-	IconAlertCircle,
-	IconEdit,
-	IconChevronUp,
-	IconSelector,
-} from "@tabler/icons-react";
+import { IconTrashX, IconAlertCircle, IconEdit, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -16,7 +10,6 @@ import ViewDrawer from "./__ViewDrawer";
 import { notifications } from "@mantine/notifications";
 import { useOs, useHotkeys } from "@mantine/hooks";
 import CreateButton from "@components/buttons/CreateButton";
-import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
@@ -25,10 +18,10 @@ import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import { useEffect, useState } from "react";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
+import usePagination from "@hooks/usePagination";
 import { errorNotification } from "@components/notification/errorNotification";
 
-const PER_PAGE = 50;
+const PER_PAGE = 25;
 
 export default function _Table({ module, open }) {
 	const { t } = useTranslation();
@@ -40,22 +33,20 @@ export default function _Table({ module, open }) {
 	const [submitFormData, setSubmitFormData] = useState({});
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const listData = useSelector((state) => state.crud[module].data);
 	const [viewDrawer, setViewDrawer] = useState(false);
 
 	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				particular_type: "treatment-template",
-				term: searchKeyword,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "name",
-		});
+	const { records, fetching, sortStatus, setSortStatus, handlePageChange, page, total, perPage } = usePagination({
+		module,
+		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			particular_type: "treatment-template",
+			term: searchKeyword,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "name",
+	});
 
 	const handleEntityEdit = (id) => {
 		dispatch(setInsertType({ insertType: "update", module }));
@@ -119,9 +110,7 @@ export default function _Table({ module, open }) {
 				module,
 			})
 		);
-		navigate(
-			`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.TREATMENT_MEDICINE}/${id}`
-		);
+		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.TREATMENT_TEMPLATES.TREATMENT_MEDICINE}/${id}`);
 	};
 
 	const handleCreateForm = () => {
@@ -231,11 +220,7 @@ export default function _Table({ module, open }) {
 									placeholder={t("Name")}
 									value={submitFormData[item.id]?.name || ""}
 									onChange={(event) =>
-										handleDataTypeChange(
-											item.id,
-											"name",
-											event.currentTarget.value
-										)
+										handleDataTypeChange(item.id, "name", event.currentTarget.value)
 									}
 									onBlur={() => handleRowSubmit(item.id)}
 								/>
@@ -306,9 +291,11 @@ export default function _Table({ module, open }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 72}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height - 22}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -318,7 +305,6 @@ export default function _Table({ module, open }) {
 				/>
 			</Box>
 
-			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module} />
 		</>
 	);

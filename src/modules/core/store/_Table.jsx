@@ -1,13 +1,6 @@
 import { Group, Box, ActionIcon, Text, rem, Flex, Button } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import {
-	IconTrashX,
-	IconAlertCircle,
-	IconEdit,
-	IconEye,
-	IconChevronUp,
-	IconSelector,
-} from "@tabler/icons-react";
+import { IconTrashX, IconAlertCircle, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -17,7 +10,6 @@ import ViewDrawer from "./__ViewDrawer";
 import { notifications } from "@mantine/notifications";
 import { useOs, useHotkeys } from "@mantine/hooks";
 import CreateButton from "@components/buttons/CreateButton";
-import DataTableFooter from "@components/tables/DataTableFooter";
 import { MASTER_DATA_ROUTES } from "@/constants/routes";
 import tableCss from "@assets/css/TableAdmin.module.css";
 import { deleteEntityData, editEntityData } from "@/app/store/core/crudThunk";
@@ -25,7 +17,7 @@ import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import { ERROR_NOTIFICATION_COLOR } from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import { useState } from "react";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
+import usePagination from "@hooks/usePagination";
 
 const PER_PAGE = 50;
 
@@ -38,20 +30,18 @@ export default function _Table({ module, open }) {
 	const height = mainAreaHeight - 78;
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
-	const listData = useSelector((state) => state.crud[module].data);
 
 	// for infinity table data scroll, call the hook
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.STORE.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				term: searchKeyword,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "name",
-		});
+	const { records, fetching, sortStatus, setSortStatus, handlePageChange, page, total, perPage } = usePagination({
+		module,
+		fetchUrl: MASTER_DATA_ROUTES.API_ROUTES.STORE.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			term: searchKeyword,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "name",
+	});
 
 	const [viewDrawer, setViewDrawer] = useState(false);
 
@@ -151,11 +141,7 @@ export default function _Table({ module, open }) {
 							title: t("Name"),
 							sortable: true,
 							render: (values) => (
-								<Text
-									className="activate-link"
-									fz="xs"
-									onClick={() => handleDataShow(values.id)}
-								>
+								<Text className="activate-link" fz="xs" onClick={() => handleDataShow(values.id)}>
 									{values.name}
 								</Text>
 							),
@@ -215,9 +201,12 @@ export default function _Table({ module, open }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height - 72}
-					onScrollToBottom={handleScrollToBottom}
-					scrollViewportRef={scrollRef}
+					height={height - 22}
+					totalRecords={total}
+					recordsPerPage={perPage}
+					page={page}
+					scrollViewportRef={page}
+					onPageChange={handlePageChange}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
@@ -227,7 +216,6 @@ export default function _Table({ module, open }) {
 				/>
 			</Box>
 
-			<DataTableFooter indexData={listData} module={module} />
 			<ViewDrawer viewDrawer={viewDrawer} setViewDrawer={setViewDrawer} module={module} />
 		</>
 	);
