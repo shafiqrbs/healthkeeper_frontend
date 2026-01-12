@@ -318,9 +318,11 @@ export default function Update({ module }) {
 
 				if (updateEntityData.rejected.match(resultAction)) {
 					const fieldErrors = resultAction.payload.errors;
+					console.log(fieldErrors)
 					if (fieldErrors) {
 						const errorObject = {};
 						Object.keys(fieldErrors).forEach((key) => {
+							console.log(errorObject[key])
 							errorObject[key] = fieldErrors[key][0];
 						});
 						form.setErrors(errorObject);

@@ -361,7 +361,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						{ accessor: "visiting_room", sortable: true, title: t("RoomNo") },
 						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
 						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
-						{ accessor: "health_id", title: t("HealthID") },
 						{ accessor: "name", sortable: true, title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "gender", sortable: true, title: t("Gender") },

@@ -773,7 +773,7 @@ const crudSlice = createSlice({
 			if (action.payload.data.message === "success") {
 				// state[module].refetching = true;
 			} else {
-				state[module].validationMessages = data.data;
+				state[module].validationMessages = data?.message;
 				state[module].validation = true;
 			}
 		});
@@ -783,14 +783,14 @@ const crudSlice = createSlice({
 			if (action.payload.data.message === "success") {
 				state[module].refetching = true;
 			} else {
-				state[module].validationMessages = data.data;
+				state[module].validationMessages = data?.message;
 				state[module].validation = true;
 			}
 		});
 
 		builder.addCase(storeEntityData.rejected, (state, action) => {
 			const { module, errors } = action.payload;
-			state[module].validationMessages = errors;
+			state[module].validationMessages = data?.message;
 			state[module].validation = true;
 		});
 
@@ -808,7 +808,7 @@ const crudSlice = createSlice({
 
 		builder.addCase(updateEntityData.rejected, (state, action) => {
 			const { module, data } = action.payload;
-			state[module].validationMessages = data.data;
+			state[module].validationMessages = data?.message;
 			state[module].validation = true;
 		});
 
@@ -828,7 +828,7 @@ const crudSlice = createSlice({
 
 		builder.addCase(deleteEntityData.rejected, (state, action) => {
 			const { module, data } = action.payload;
-			state[module].validationMessages = data?.data;
+			state[module].validationMessages = data?.message;
 			state[module].validation = true;
 		});
 
