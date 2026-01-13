@@ -13,8 +13,8 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
-import { formatDateForMySQL } from "@utils/index";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
+import InputForm from "@components/form-builders/InputForm";
 
 const module = MODULES.LAB_TEST;
 
@@ -25,18 +25,17 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
-	const is_completed = diagnosticReport?.process === "Done";
 
 	const form = useForm({
 		initialValues: {
-			afb_found: custom_report?.afb_found || 0,
-			afb_not_found: custom_report?.afb_not_found || 0,
-			afb_scanty: custom_report?.afb_scanty || 0,
-			
-			afb_sample_found: custom_report?.afb_sample_found || 0,
-			afb_sample_not_found: custom_report?.afb_sample_not_found || 0,
-			afb_sample_scanty: custom_report?.afb_sample_scanty || 0,
-			
+			afb_found: custom_report?.afb_found || "",
+			afb_not_found: custom_report?.afb_not_found || "",
+			afb_scanty: custom_report?.afb_scanty || "",
+
+			afb_sample_found: custom_report?.afb_sample_found || "",
+			afb_sample_not_found: custom_report?.afb_sample_not_found || "",
+			afb_sample_scanty: custom_report?.afb_sample_scanty || "",
+
 			afb_scanty_one: custom_report?.afb_scanty_one || 0,
 			afb_scanty_two: custom_report?.afb_scanty_two || 0,
 			afb_scanty_three: custom_report?.afb_scanty_three || 0,
@@ -63,7 +62,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.UPDATE}/${reportId}`,
 				data: {
 					json_content: {
-						...values
+						...values,
 					},
 					comment: values.comment,
 				},
@@ -117,7 +116,6 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 							form={form}
 							label="Lab No"
 							placeholder="Enter Lab No"
-							
 						/>
 					</Group>
 
@@ -137,133 +135,150 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 								<Table.Tr>
 									<Table.Th ta="center">Sample 1</Table.Th>
 									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.afb_found}
-											onChange={(event) =>
-												form.setFieldValue("afb_found", event.currentTarget.checked)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											
+										<InputForm
+											w={120}
+											name="afb_found"
+											id="afb_found"
+											nextField="afb_not_found"
+											form={form}
+											label=""
+											placeholder="Enter value"
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.afb_not_found}
-											onChange={(event) =>
-												form.setFieldValue("afb_not_found", event.currentTarget.checked)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											
+										<InputForm
+											w={120}
+											name="afb_not_found"
+											id="afb_not_found"
+											nextField="afb_scanty"
+											form={form}
+											label=""
+											placeholder="Enter value"
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.afb_scanty}
-											onChange={(event) =>
-												form.setFieldValue("afb_scanty", event.currentTarget.checked)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											
+										<InputForm
+											w={120}
+											name="afb_scanty"
+											id="afb_scanty"
+											nextField="afb_scanty_one"
+											form={form}
+											label=""
+											placeholder="Enter value"
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
 											checked={form.values.afb_scanty_one}
 											onChange={(event) =>
-												form.setFieldValue("afb_scanty_one", event.currentTarget.checked)
+												form.setFieldValue(
+													"afb_scanty_one",
+													event.currentTarget.checked
+												)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
 											checked={form.values.afb_scanty_two}
 											onChange={(event) =>
-												form.setFieldValue("afb_scanty_two", event.currentTarget.checked)
+												form.setFieldValue(
+													"afb_scanty_two",
+													event.currentTarget.checked
+												)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
 											checked={form.values.afb_scanty_three}
 											onChange={(event) =>
-												form.setFieldValue("afb_scanty_three", event.currentTarget.checked)
+												form.setFieldValue(
+													"afb_scanty_three",
+													event.currentTarget.checked
+												)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											
 										/>
 									</Table.Th>
 								</Table.Tr>
 								<Table.Tr>
 									<Table.Th ta="center">Sample 2</Table.Th>
 									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.afb_sample_found}
-											onChange={(event) =>
-												form.setFieldValue("afb_sample_found", event.currentTarget.checked)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											
+										<InputForm
+											w={120}
+											name="afb_sample_found"
+											id="afb_sample_found"
+											nextField="afb_sample_not_found"
+											form={form}
+											label=""
+											placeholder="Enter value"
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.afb_sample_not_found}
-											onChange={(event) =>
-												form.setFieldValue("afb_sample_not_found", event.currentTarget.checked)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											
+										<InputForm
+											w={120}
+											name="afb_sample_not_found"
+											id="afb_sample_not_found"
+											nextField="afb_sample_scanty"
+											form={form}
+											label=""
+											placeholder="Enter value"
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
-										<Checkbox
-											checked={form.values.afb_sample_scanty}
-											onChange={(event) =>
-												form.setFieldValue("afb_sample_scanty", event.currentTarget.checked)
-											}
-											styles={{ body: { justifyContent: "center" } }}
-											
+										<InputForm
+											w={120}
+											name="afb_sample_scanty"
+											id="afb_sample_scanty"
+											nextField="afb_sample_scanty_one"
+											form={form}
+											label=""
+											placeholder="Enter value"
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
 											checked={form.values.afb_sample_scanty_one}
 											onChange={(event) =>
-												form.setFieldValue("afb_sample_scanty_one", event.currentTarget.checked)
+												form.setFieldValue(
+													"afb_sample_scanty_one",
+													event.currentTarget.checked
+												)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
 											checked={form.values.afb_sample_scanty_two}
 											onChange={(event) =>
-												form.setFieldValue("afb_sample_scanty_two", event.currentTarget.checked)
+												form.setFieldValue(
+													"afb_sample_scanty_two",
+													event.currentTarget.checked
+												)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
 										<Checkbox
 											checked={form.values.afb_sample_scanty_three}
 											onChange={(event) =>
-												form.setFieldValue("afb_sample_scanty_three", event.currentTarget.checked)
+												form.setFieldValue(
+													"afb_sample_scanty_three",
+													event.currentTarget.checked
+												)
 											}
 											styles={{ body: { justifyContent: "center" } }}
-											
 										/>
 									</Table.Th>
 								</Table.Tr>
 							</Table.Thead>
 						</Table>
 					</Box>
-					{/* =============== text date =============== */}
 				</Stack>
 			</ScrollArea>
 			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />

@@ -8,7 +8,10 @@ export default function PaginationBottomSection({
 	handlePageChange,
 	total,
 }) {
-	const message = `${perPage * (page - 1) + 1} – ${Math.min(total, perPage * page)} of ${total}`;
+	const message = `${total > 0 ? perPage * (page - 1) + 1 : 0} – ${Math.min(
+		total,
+		perPage * page
+	)} of ${total}`;
 
 	return (
 		<Flex mih={32} align="center" justify="space-between" p={isCompact ? undefined : "sm"} gap="sm">

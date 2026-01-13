@@ -40,7 +40,7 @@ export default function _Table() {
 			},
 		});
 
-	useAutoRefetch(refetchAll, 75000, true);
+	// useAutoRefetch(refetchAll, 75000, true);
 
 	return (
 		<Box>
