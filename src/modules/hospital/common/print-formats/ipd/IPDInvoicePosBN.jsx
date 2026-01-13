@@ -24,7 +24,7 @@ const IPDInvoicePosBn = forwardRef(({ data, preview = false }, ref) => {
 	console.log(patientInfo);
 	return (
 		<Box display={preview ? "block" : "none"}>
-			<Box ref={ref} w="140mm" p={8} bg="var(--mantine-color-white)" mx="auto" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+			<Box ref={ref} w="140mm" p={8} mt={'50'} bg="var(--mantine-color-white)" mx="auto" style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 				<Stack gap={2}>
 					{/* =============== header section with logo and hospital info =============== */}
 					<Group justify="center" align="center" gap={8}>

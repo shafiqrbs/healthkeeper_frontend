@@ -28,6 +28,7 @@ const InvoicePosBN = forwardRef(({ data, preview = false }, ref) => {
 				ref={ref}
 				w="140mm"
 				p={8}
+				mt={'50px'}
 				bg="var(--mantine-color-white)"
 				mx="auto"
 				style={{ border: "1px solid var(--theme-tertiary-color-8)" }}

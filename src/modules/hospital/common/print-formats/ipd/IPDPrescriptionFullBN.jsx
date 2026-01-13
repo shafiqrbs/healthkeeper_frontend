@@ -496,7 +496,7 @@ const IPDPrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 															</Flex>
 															{medicine.generic && (
 																<Flex align={"left"}>
-																	<Text mt={"-4"} fz={"11"}>
+																	<Text mt={"-4"} fz={"11"} c="var(--theme-tertiary-color-7)">
 																		{capitalizeWords(medicine?.generic)} [SF:{" "}
 																		{formatDate(medicine?.start_date)} ]
 																	</Text>
