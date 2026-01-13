@@ -26,18 +26,19 @@ export default function _Table() {
 		setSelectedPatientId(id);
 		navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}`);
 	};
-	const { refetchAll, records, handlePageChange, page, total, totalPages, perPage, fetching } = usePagination({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX,
-		perPage: PER_PAGE,
-		sortByKey: "created_at",
-		direction: "desc",
-		filterParams: {
-			created: filterData.created,
-			term: filterData.keywordSearch,
-			room_ids: opdRoomIds,
-		},
-	});
+	const { refetchAll, records, handlePageChange, page, total, totalPages, perPage, fetching } =
+		usePagination({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX,
+			perPage: PER_PAGE,
+			sortByKey: "created_at",
+			direction: "desc",
+			filterParams: {
+				created: filterData.created,
+				term: filterData.keywordSearch,
+				room_ids: opdRoomIds,
+			},
+		});
 
 	useAutoRefetch(refetchAll, 75000, true);
 
@@ -69,7 +70,13 @@ export default function _Table() {
 					total={total}
 				/>
 			</Flex>
-			<ScrollArea pos="relative" bg="var(--mantine-color-white)" h={mainAreaHeight - 246} scrollbars="y" px="3xs">
+			<ScrollArea
+				pos="relative"
+				bg="var(--mantine-color-white)"
+				h={mainAreaHeight - 246}
+				scrollbars="y"
+				px="3xs"
+			>
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid
@@ -78,7 +85,7 @@ export default function _Table() {
 						onClick={() => handleAdmissionOverview(item.uid)}
 						my="xs"
 						bg={
-							Number(selectedPatientId) === item?.id
+							selectedPatientId == item?.uid
 								? "var(--theme-primary-color-0)"
 								: "var(--theme-tertiary-color-0)"
 						}
@@ -118,7 +125,10 @@ export default function _Table() {
 										radius="xs"
 										aria-label="Settings"
 									>
-										<IconArrowNarrowRight style={{ width: "70%", height: "70%" }} stroke={1.5} />
+										<IconArrowNarrowRight
+											style={{ width: "70%", height: "70%" }}
+											stroke={1.5}
+										/>
 									</ActionIcon>
 								</Button.Group>
 							</Flex>

@@ -11,7 +11,7 @@ export default function PaginationBottomSection({
 	const message = `${perPage * (page - 1) + 1} – ${Math.min(total, perPage * page)} of ${total}`;
 
 	return (
-		<Flex align="center" justify="space-between" p={isCompact ? undefined : "sm"} gap="sm">
+		<Flex mih={32} align="center" justify="space-between" p={isCompact ? undefined : "sm"} gap="sm">
 			{!isCompact && <Text size="sm">{message}</Text>}
 			<Pagination total={totalPages} value={page} onChange={handlePageChange} withPages={false} />
 		</Flex>

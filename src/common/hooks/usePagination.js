@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useMounted } from "@mantine/hooks";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
@@ -20,6 +20,7 @@ const usePagination = ({
 
 	const [page, setPage] = useState(1);
 	const [fetching, setFetching] = useState(false);
+	const previousTotalRef = useRef(0);
 
 	const [sortStatus, setSortStatus] = useState({
 		columnAccessor: sortByKey,
@@ -28,7 +29,13 @@ const usePagination = ({
 
 	// =============== clear records when fetching to prevent showing old data ================
 	const records = fetching ? [] : Array.isArray(listData.data) ? listData.data : [];
-	const total = listData.total || 0;
+	const currentTotal = listData.total || 0;
+	// =============== use previous total during fetching to keep pagination visible ================
+	const total = fetching && previousTotalRef.current > 0 ? previousTotalRef.current : currentTotal;
+	// =============== update ref when we have a valid total ================
+	if (currentTotal > 0) {
+		previousTotalRef.current = currentTotal;
+	}
 	const totalPages = Math.ceil(total / perPage);
 
 	// =============== fetch data from API ================
@@ -109,7 +116,13 @@ const usePagination = ({
 		if (isMounted || refetching) {
 			refetchAll();
 		}
-	}, [isMounted, JSON.stringify(filterParams), refetching, sortStatus.columnAccessor, sortStatus.direction]);
+	}, [
+		isMounted,
+		JSON.stringify(filterParams),
+		refetching,
+		sortStatus.columnAccessor,
+		sortStatus.direction,
+	]);
 
 	return {
 		records,

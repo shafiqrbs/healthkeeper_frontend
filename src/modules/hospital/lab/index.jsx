@@ -14,6 +14,9 @@ import useGetDataWithoutStore from "@/common/hooks/useDataWithoutStore";
 import { MODULES } from "@/constants";
 
 const module = MODULES.LAB_TEST;
+
+const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
+
 export default function Index() {
 	const { t } = useTranslation();
 	const progress = useGetLoadingProgress();
@@ -32,7 +35,7 @@ export default function Index() {
 	});
 
 	const entity = reportInformation?.data || {};
-	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
+
 	const col1 = [
 		{ label: "Patient ID", value: safe(entity.patient_id) },
 		{ label: "Health ID", value: safe(entity.health_id) },
@@ -110,7 +113,10 @@ export default function Index() {
 											<Grid.Col key={colIdx} span={6}>
 												<Stack gap={2}>
 													{rows.map((row, idx) => (
-														<Text key={idx} fz="sm">{`${row.label}: ${row.value}`}</Text>
+														<Text
+															key={idx}
+															fz="sm"
+														>{`${row.label}: ${row.value}`}</Text>
 													))}
 												</Stack>
 											</Grid.Col>
