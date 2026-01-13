@@ -67,7 +67,7 @@ export default function BillingTable({ entity }) {
 						</Grid.Col>
 					</Grid>
 				)}
-				<ScrollArea h={mainAreaHeight-220}>
+				<ScrollArea h={mainAreaHeight-280}>
 				<Table
 					style={{
 						borderCollapse: "collapse",
@@ -109,121 +109,26 @@ export default function BillingTable({ entity }) {
 						{entity?.total}
 					</Text>
 				</Flex>
+				<Flex justify="space-between" bg="var(--theme-secondary-color-8)" py="les" px="3xs">
+					<Text c="white" fw={600}>Total Payment</Text>
+					<Text c="white" fw={600}>
+						<Box fw={600} component="span" c="white">
+							৳
+						</Box>{" "}
+						{entity?.amount}
+					</Text>
+				</Flex>
+				<Flex justify="space-between" bg="orange" py="les" px="3xs">
+					<Text c="white" fw={600}> {Number(entity?.total) >= Number(entity?.amount) ? 'Receivable':'Payable'}</Text>
+					<Text c="white" fw={600}>
+						<Box fw={600} component="span" c="white">
+							৳
+						</Box>{" "}
+						{Number(entity?.total)- Number(entity?.amount)}
+					</Text>
+				</Flex>
 			</Box>
-			<GlobalDrawer opened={invoiceDetailsOpened} close={closeInvoiceDetails} title={t("InvoiceDetails")}>
-				<ScrollArea>
-					<Stack gap="md" mt="sm">
-						<Box p="md" bg="var(--theme-primary-color-0)" style={{ borderRadius: "4px" }}>
-							<Stack gap="xs">
-								<Flex justify="space-between">
-									<Text fw={500}>{t("Amount")}:</Text>
-									<Text>
-										{selectedInvoice?.amount ? (
-											<>
-												<Box component="span" c="var(--theme-primary-color-7)">
-													৳
-												</Box>{" "}
-												{selectedInvoice.amount}
-											</>
-										) : (
-											"N/A"
-										)}
-									</Text>
-								</Flex>
-								<Flex justify="space-between">
-									<Text fw={500}>{t("SubTotal")}:</Text>
-									<Text>
-										{selectedInvoice?.sub_total ? (
-											<>
-												<Box component="span" c="var(--theme-primary-color-7)">
-													৳
-												</Box>{" "}
-												{selectedInvoice.sub_total}
-											</>
-										) : (
-											"N/A"
-										)}
-									</Text>
-								</Flex>
-								<Flex justify="space-between">
-									<Text fw={500}>{t("Total")}:</Text>
-									<Text>
-										{selectedInvoice?.total ? (
-											<>
-												<Box component="span" c="var(--theme-primary-color-7)">
-													৳
-												</Box>{" "}
-												{selectedInvoice.total}
-											</>
-										) : (
-											"N/A"
-										)}
-									</Text>
-								</Flex>
-								<Flex justify="space-between">
-									<Text fw={500}>{t("Discount")}:</Text>
-									<Text>
-										{selectedInvoice?.discount ? (
-											<>
-												<Box component="span" c="var(--theme-primary-color-7)">
-													৳
-												</Box>{" "}
-												{selectedInvoice.discount}
-											</>
-										) : (
-											"0"
-										)}
-									</Text>
-								</Flex>
-								<Flex justify="space-between">
-									<Text fw={500}>{t("VAT")}:</Text>
-									<Text>
-										{selectedInvoice?.vat ? (
-											<>
-												<Box component="span" c="var(--theme-primary-color-7)">
-													৳
-												</Box>{" "}
-												{selectedInvoice.vat}
-											</>
-										) : (
-											"0"
-										)}
-									</Text>
-								</Flex>
-								<Flex justify="space-between">
-									<Text fw={500}>{t("RoomName")}:</Text>
-									<Text>{selectedInvoice?.room_name || "N/A"}</Text>
-								</Flex>
-							</Stack>
-						</Box>
 
-						<Table striped highlightOnHover withTableBorder withColumnBorders>
-							<Table.Thead>
-								<Table.Tr>
-									<Table.Th>{t("ItemName")}</Table.Th>
-									<Table.Th>{t("Quantity")}</Table.Th>
-									<Table.Th>{t("Process")}</Table.Th>
-								</Table.Tr>
-							</Table.Thead>
-							<Table.Tbody>
-								{selectedInvoice?.items.length ? (
-									selectedInvoice?.items?.map((item, index) => (
-										<Table.Tr key={index}>
-											<Table.Td>{item.item_name}</Table.Td>
-											<Table.Td>{item.quantity}</Table.Td>
-											<Table.Td>{item.process}</Table.Td>
-										</Table.Tr>
-									))
-								) : (
-									<Table.Tr>
-										<Table.Td colSpan={3}>{t("NoDataFound")}</Table.Td>
-									</Table.Tr>
-								)}
-							</Table.Tbody>
-						</Table>
-					</Stack>
-				</ScrollArea>
-			</GlobalDrawer>
 		</Stack>
 
 	);

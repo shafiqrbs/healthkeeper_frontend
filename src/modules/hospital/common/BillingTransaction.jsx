@@ -1,9 +1,11 @@
 import {Box, Divider, Flex, ScrollArea, Table, Text} from "@mantine/core";
+import {useOutletContext} from "react-router-dom";
 
 export default function BillingTransaction({ entity, data }) {
 	const transactions = entity?.invoice_transaction;
+	const { mainAreaHeight } = useOutletContext();
 	return (
-		<ScrollArea h={200}>
+		<ScrollArea h={mainAreaHeight-360}>
 		<Table
 			style={{
 				borderCollapse: "collapse",
@@ -27,6 +29,10 @@ export default function BillingTransaction({ entity, data }) {
 						<Table.Td ta={'right'}>{item?.sub_total}</Table.Td>
 					</Table.Tr>
 				))}
+				<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-2)" }}>
+					<Table.Th colSpan={'2'}>Total Payment</Table.Th>
+					<Table.Th ta={'right'}>{entity?.amount}</Table.Th>
+				</Table.Tr>
 			</Table.Tbody>
 		</Table>
 		</ScrollArea>

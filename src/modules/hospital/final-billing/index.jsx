@@ -130,10 +130,7 @@ export default function Index() {
 												<TabSubHeading title="Transactions" />
 												<BillingTransaction entity={entity} />
 											</Box>
-											<Box>
-												<TabSubHeading title="Final Bill Details" />
-												<BillingSummary entity={entity} />
-											</Box>
+
 											<Box p="xs" bg="var(--mantine-color-white)">
 												<Box>
 													<BillingActions

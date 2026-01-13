@@ -9,17 +9,20 @@ export default function BillingSummary({ entity, data }) {
 
 	return (
 		<Box p="xs" bg="var(--theme-primary-color-0)">
+			<Text bg={'green'} c={'white'} fz={'md'} p={'xs'}>Room/Bed Summary</Text>
 			<Box bg="var(--mantine-color-white)" p="xs">
 				<Flex justify="space-between" align={'center'}>
 					<Text>Admission</Text>
-					<Text>{entity.admission_day} Days </Text>
+					<Text>{entity.admission_day} Days</Text>
 					<Text>৳ {entity.admission_day * entity?.room_price}</Text>
 				</Flex>
+				{entity?.is_free_bed !== 1 && (
 				<Flex justify="space-between" align={'center'}>
 					<Text>Payment</Text>
 					<Text>{entity.consume_day} Days </Text>
 					<Text>৳ {entity.consume_day  * entity?.room_price}</Text>
 				</Flex>
+				)}
 				{entity.remaining_day > 0 && (
 					<>
 						<Divider my="xs" />
@@ -30,7 +33,7 @@ export default function BillingSummary({ entity, data }) {
 						</Flex>
 					</>
 					)}
-				{entity.remaining_day < 0  && (
+				{entity.remaining_day < 0 && due < 0   && (
 					<>
 						<Divider my="xs" />
 						<Flex justify="space-between"  align={'center'}>
@@ -39,11 +42,11 @@ export default function BillingSummary({ entity, data }) {
 							<Text>৳ {entity.remaining_day  * entity?.room_price}</Text>
 						</Flex>
 					</>
-					)}
+				)}
 				<Divider my="xs" />
 				{due > 0 && (
 					<Flex  c="white" justify="space-between" bg="var(--theme-secondary-color-8)" py="les" px="3xs">
-						<Text>{ due >= 0 ? "" : "Refund" } </Text>
+						<Text>Receive</Text>
 						<Text>৳ {due}</Text>
 					</Flex>
 				)}
