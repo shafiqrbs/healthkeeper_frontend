@@ -35,18 +35,14 @@ export default function DeathCertificate({ data,refetch }) {
 		},
 
 		validate: {
-			diseases_profile: (value) => {
-				if (!value) {
-					return t("DiseasesProfileRequired");
-				}
-				return null;
-			},
+
 			about_death: (value) => {
 				if (!value) {
 					return t("AboutDeathRequired");
 				}
 				return null;
 			},
+
 			cause_death: (value) => {
 				if (!value) {
 					return t("CauseofDeathRequired");
@@ -61,13 +57,17 @@ export default function DeathCertificate({ data,refetch }) {
 			},
 		},
 	});
-
+	console.log(data);
 	useEffect(() => {
+		if (!data) return;
+
 		form.setValues({
-			diseases_profile: data?.diseases_profile,
-			cause_death: data?.cause_death,
-			about_death: data?.about_death,
-			death_date_time: new Date(),
+			diseases_profile: data.diseases_profile ?? "",
+			cause_death: data.cause_death ?? "",
+			about_death: data.about_death ?? "",
+			death_date_time: data.death_date_time
+				? new Date(data.death_date_time)
+				: new Date(),
 		});
 	}, [data]);
 
@@ -111,17 +111,17 @@ export default function DeathCertificate({ data,refetch }) {
 					value={form?.values?.diseases_profile}
 					name="diseases_profile"
 					tooltip="Diseases profile is required"
-					label="Diseases profile"
-					placeholder="Select Diseases profile"
+					label="Diagnosis"
+					placeholder="Select Diagnosis"
 					dropdownValue={diseaseOptions}
 				/>
 				<TextAreaForm
 					mt="sm"
-					label="About Death"
+					label="Diseases profile"
 					name="about_death"
 					form={form}
 					value={form?.values?.about_death}
-					placeholder="About Death"
+					placeholder="Diseases profile"
 					tooltip={t("Death date & time is required")}
 				/>
 				<TextAreaForm

@@ -288,7 +288,7 @@ export const sideNavigationLinks = {
 			path: "/hospital/discharge",
 			icon: IconBuildingHospital,
 			color: "#795548", // Brown
-			allowedRoles: ["role_domain", "admin_administrator", "doctor_ipd"],
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_emergency", "nurse_basic", "nurse_incharge", "doctor_ipd", "operator_emergency"],
 		},
 
 		{

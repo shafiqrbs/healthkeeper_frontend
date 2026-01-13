@@ -114,7 +114,7 @@ export default function Invoice({ entity }) {
 						<Flex align="center" gap="3xs">
 							<IconCalendarWeek size={16} stroke={1.5} />
 							<Text fz="sm" className="activate-link text-nowrap">
-								{formatDate(item?.created_at)}
+								{formatDate(item?.admission_date)}
 							</Text>
 						</Flex>
 						<Flex align="center" gap="3xs">
@@ -123,7 +123,7 @@ export default function Invoice({ entity }) {
 						</Flex>
 						<Flex align="center" gap="3xs">
 							<IconBuildingHospital size={16} stroke={1.5} />
-							<Text fz="sm">{item.mode_name}</Text>
+							<Text fz="sm">{item.invoice}</Text>
 						</Flex>
 					</Grid.Col>
 					<Grid.Col span={6}>

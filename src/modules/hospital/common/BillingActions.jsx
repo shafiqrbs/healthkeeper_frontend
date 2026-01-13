@@ -78,11 +78,12 @@ export default function BillingActions({ entity,refetchAll,setRefetchBillingKey 
 	}, [invoicePrintData]);
 
 
-	const receive = invoiceEntity?.remaining_day * invoiceEntity?.room_price;
+
 	const total = Number(invoiceEntity?.total ?? 0);
 	const amount = Number(invoiceEntity?.amount ?? 0);
 	const refund = Number(invoiceEntity?.refund_amount ?? 0);
 	const due = total - (amount - refund);
+
 
 	return (
 		<Box p="xs" mt="xs" bg="var(--theme-tertiary-color-0)">

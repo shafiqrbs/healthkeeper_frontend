@@ -115,7 +115,6 @@ export const calculateDetailedAge = (dob) => {
 		years--;
 		months += 12;
 	}
-
 	return { years, months, days };
 };
 
@@ -141,8 +140,8 @@ export const formatDateTime = (date) => {
 };
 
 export const formatDateTimeAmPm = (date) => {
-	if (!date) return null;
 
+	if (!date) return null;
 	const d = new Date(date);
 	const day = String(d.getDate()).padStart(2, "0");
 	const month = String(d.getMonth() + 1).padStart(2, "0");

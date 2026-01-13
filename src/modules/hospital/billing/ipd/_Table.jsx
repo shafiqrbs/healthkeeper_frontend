@@ -4,7 +4,7 @@ import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay }
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 import { MODULES } from "@/constants";
-import { formatDate } from "@utils/index";
+import {capitalizeWords, formatDate} from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useSelector } from "react-redux";
 import CustomDivider from "@components/core-component/CustomDivider";
@@ -76,9 +76,14 @@ export default function _Table() {
 						gutter="xs"
 					>
 						<Grid.Col span={12}>
-							<Text fz="sm" fw={"600"}>
-								{item.name}
-							</Text>
+							<Flex justify="space-between" gap="es">
+								<Text fz="sm" fw={"600"}>
+									{item.name}
+								</Text>
+								<Text fz="xs" c={"red"} fw={"600"}>
+									{capitalizeWords(item.process)}
+								</Text>
+							</Flex>
 						</Grid.Col>
 						<CustomDivider />
 						<Grid.Col span={6}>

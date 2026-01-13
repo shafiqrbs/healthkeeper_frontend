@@ -1,4 +1,4 @@
-import { Box, Flex, Stack, Text } from "@mantine/core";
+import {Box, Flex, Grid, Stack, Text} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import { getDataWithoutStore } from "@/services/apiService";
@@ -8,6 +8,9 @@ import { ScrollArea } from "@mantine/core";
 import { Table } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import {useOutletContext} from "react-router-dom";
+import CustomDivider from "@components/core-component/CustomDivider";
+import {IconBuildingHospital, IconCalendarWeek, IconUser} from "@tabler/icons-react";
+import {formatDate} from "@utils/index";
 
 export default function BillingTable({ entity }) {
 	const { t } = useTranslation();
@@ -16,6 +19,7 @@ export default function BillingTable({ entity }) {
 	const { mainAreaHeight } = useOutletContext();
 	//const transactions = entity?.invoice_transaction;
 	const transactions = entity?.invoice_particular;
+	const item = entity;
 
 	const handleDetailsView = async (transactionId) => {
 		const res = await getDataWithoutStore({
@@ -25,11 +29,45 @@ export default function BillingTable({ entity }) {
 		requestAnimationFrame(openInvoiceDetails);
 	};
 
+
 	return (
 
 		<Stack justify="space-between" h="calc(100% - 50px)" gap="0">
 			<Box>
-				<ScrollArea h={mainAreaHeight-100}>
+				{item && (
+					<Grid columns={12} key={item.id} my="xs" bg={"var(--theme-secondary-color-2)"} px="xs" gutter="xs">
+						<Grid.Col span={12}><Text fz="sm">{item.name}</Text></Grid.Col>
+						<CustomDivider />
+						<Grid.Col span={6}>
+							<Flex align="center" gap="3xs">
+								<IconCalendarWeek size={16} stroke={1.5} />
+								<Text fz="sm" className="activate-link text-nowrap">
+									{formatDate(item?.admission_date)}
+								</Text>
+							</Flex>
+							<Flex align="center" gap="3xs">
+								<IconUser size={16} stroke={1.5} />
+								<Text fz="sm">{item.patient_id}</Text>
+							</Flex>
+							<Flex align="center" gap="3xs">
+								<IconBuildingHospital size={16} stroke={1.5} />
+								<Text fz="sm">{item.invoice}</Text>
+							</Flex>
+						</Grid.Col>
+						<Grid.Col span={6}>
+							<Flex justify="space-between" align="center" gap="3xs">
+								<Box>
+									<Text fz="sm">{item.mobile}</Text>
+									<Text fz="sm">{item.payment_mode_name}</Text>
+								</Box>
+							</Flex>
+							<Flex align="center" gap="3xs">
+								<Text fz="sm">Year: {item.year}</Text>
+							</Flex>
+						</Grid.Col>
+					</Grid>
+				)}
+				<ScrollArea h={mainAreaHeight-220}>
 				<Table
 					style={{
 						borderCollapse: "collapse",

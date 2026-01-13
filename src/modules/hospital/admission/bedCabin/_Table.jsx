@@ -18,7 +18,7 @@ import {
 	Text,
 	Textarea,
 } from "@mantine/core";
-import { IconChevronUp, IconDotsVertical, IconPencil, IconSelector } from "@tabler/icons-react";
+import {IconChevronUp, IconDotsVertical, IconPencil, IconRepeatOff, IconSelector} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -51,9 +51,14 @@ import usePagination from "@hooks/usePagination";
 const PER_PAGE = 25;
 
 const tabs = [
-	{ label: "Bed/Cabin", value: "all" },
+	{ label: "Bed/Cabin", value:"all" },
 	{ label: "Empty", value: "empty" },
 	{ label: "Occupied", value: "occupied" },
+	{ label: "Non-paying", value:"non-paying" },
+	{ label: "Paying", value: "paying" },
+	{ label: "Bed", value: "bed" },
+	{ label: "Cabin", value: "cabin" },
+
 ];
 
 const CSV_HEADERS = [
@@ -65,7 +70,7 @@ const CSV_HEADERS = [
 	{ label: "IPD", key: "ipd" },
 ];
 
-const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "admin_administrator"];
+const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator"];
 
 export default function _Table({ module }) {
 	const csvLinkRef = useRef(null);
@@ -125,7 +130,7 @@ export default function _Table({ module }) {
 		setControlsRefs(controlsRefs);
 	};
 
-	const { records, fetching, sortStatus, setSortStatus, total, perPage, page, handlePageChange } = usePagination({
+	const { records, fetching,refetchAll, sortStatus, setSortStatus, total, perPage, page, handlePageChange } = usePagination({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BED_CABIN.INDEX,
 		filterParams: {
@@ -175,6 +180,7 @@ export default function _Table({ module }) {
 		});
 	};
 
+
 	async function handleConfirmModal() {
 		setIsLoading(true);
 		try {
@@ -216,6 +222,26 @@ export default function _Table({ module }) {
 			setIsLoading(false);
 		}
 	}
+
+	const handlePatientDischarge = (e, id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Submit"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleConfirmDischargeModal(e, id),
+		});
+	};
+
+	const handleConfirmDischargeModal = async (e, id) => {
+		e.stopPropagation();
+		const { data } = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.FREE_DISCHARGE}/${id}`,
+		});
+		refetchAll()
+	};
+
 
 	// =============== handle drawer close with form reset ================
 	const handleCloseActions = () => {
@@ -332,6 +358,7 @@ export default function _Table({ module }) {
 						{ accessor: "display_name", title: t("Name") },
 						{ accessor: "gender_mode_name", title: t("Gender") },
 						{ accessor: "payment_mode_name", title: t("PaymentMode") },
+						{ accessor: "price", title: t("Price") },
 						{
 							accessor: "is_booked",
 							title: t("Status"),
@@ -412,6 +439,24 @@ export default function _Table({ module }) {
 														>
 															{t("Room/Bed Transfer")}
 														</Menu.Item>
+														{Number(item?.price) === 0 && item?.is_free_bed === 1 && (
+															<Menu.Item
+																bg={'red'}
+																c='white'
+																leftSection={
+																	<IconRepeatOff
+																		style={{
+																			width: rem(14),
+																			height: rem(14),
+																		}}
+																	/>
+																}
+																onClick={(e) =>
+																	handlePatientDischarge(e, item?.admission_id)
+																}>
+																{t("Discharge")}
+															</Menu.Item>
+														)}
 													</>
 												)}
 										</Menu.Dropdown>

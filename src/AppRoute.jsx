@@ -213,23 +213,7 @@ function AppRoute() {
 						<Route
 							index
 							element={
-								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_ipd"]}>
-									<DischargeIndex />
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path=":dischargeId"
-							element={
-								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_ipd"]}>
-									<DischargeIndex />
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path=":dischargeId/:treatmentId"
-							element={
-								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_ipd"]}>
+								<ProtectedRoute roles={["role_domain", "admin_administrator", "doctor_emergency", "nurse_basic", "nurse_incharge", "doctor_ipd", "operator_emergency"]}>
 									<DischargeIndex />
 								</ProtectedRoute>
 							}

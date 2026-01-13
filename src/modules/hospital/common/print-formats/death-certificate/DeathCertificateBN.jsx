@@ -184,7 +184,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("Add. Date")}:
+											{t("Admission Date")}:
 										</Text>
 										<Text size="sm">
 											{getValue(formatDateTimeAmPm(patientInfo?.admission_date), "")}
@@ -292,7 +292,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td colSpan={2}>
 									<Group gap="xs">
 										<Text size="xs" fw={600}>
-											{t("About Disease")}:
+											{t("Diseases Profile")}:
 										</Text>
 										<Text size="sm">{getValue(patientInfo?.about_death, "")}</Text>
 									</Group>
