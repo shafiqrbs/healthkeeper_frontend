@@ -195,9 +195,9 @@ export default function EntityForm({ form, module }) {
 		Object.entries(item || {})?.forEach(([key, value]) => {
 			form.setFieldValue(key, value);
 		});
+
+		form.setFieldValue("identity", item?.nid);
 	}, [item]);
-
-
 
 	useEffect(() => {
 		handleDobChange();
@@ -244,7 +244,7 @@ export default function EntityForm({ form, module }) {
 	const handleTypeChange = (val) => {
 		form.setFieldValue("identity_mode", val);
 	};
-	console.log(form.values.guardian_name)
+	console.log(form.values.guardian_name);
 
 	return (
 		<Box pos="relative">
@@ -285,10 +285,16 @@ export default function EntityForm({ form, module }) {
 										</Grid.Col>
 									</Grid>
 
-									<Flex className="form-action-header full-bleed" c={'white'} bg={'red'} pl={'xs'} pr={'xs'} >
-										<Text  fw={'600'}>{t("Cabin/Bed")}</Text>
+									<Flex
+										className="form-action-header full-bleed"
+										c={"white"}
+										bg={"red"}
+										pl={"xs"}
+										pr={"xs"}
+									>
+										<Text fw={"600"}>{t("Cabin/Bed")}</Text>
 										<Flex align="center" gap="xs">
-											<Text  fw={'600'}>{entity?.data?.room_name}</Text>
+											<Text fw={"600"}>{entity?.data?.room_name}</Text>
 										</Flex>
 									</Flex>
 
@@ -555,7 +561,7 @@ export default function EntityForm({ form, module }) {
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">
-												    {form.values.identity_mode === "NID"
+												{form.values.identity_mode === "NID"
 													? t("NID")
 													: form.values.identity_mode === "BRID"
 													? t("BRID")
@@ -873,7 +879,7 @@ export default function EntityForm({ form, module }) {
 											</Grid.Col>
 										</Grid>
 									</Stack>
-									<Flex className="form-action-header full-bleed" bg={'green'} c={'white'} pl={'xs'} >
+									<Flex className="form-action-header full-bleed" bg={"green"} c={"white"} pl={"xs"}>
 										<Text fz="sm">{t("Other Information")}</Text>
 									</Flex>
 									<Grid align="center" columns={20}>
@@ -913,7 +919,6 @@ export default function EntityForm({ form, module }) {
 												/>
 											</Flex>
 										</Grid.Col>
-
 									</Grid>
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>

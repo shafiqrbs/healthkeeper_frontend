@@ -1,23 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {ActionIcon, Badge, Box, Button, Flex, FloatingIndicator, Group, Menu, Modal, Tabs, Text} from "@mantine/core";
-import {
-	IconArrowRight,
-	IconChevronUp,
-	IconDotsVertical,
-	IconSelector,
-	IconX,
-	IconPrinter,
-	IconScript,
-	IconPencil,
-	IconRefresh,
-	IconAdjustmentsCog,
-} from "@tabler/icons-react";
+import { Badge, Box, Button, Flex, FloatingIndicator, Group, Tabs, Text } from "@mantine/core";
+import { IconArrowRight, IconChevronUp, IconSelector, IconX } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
-import { rem } from "@mantine/core";
 import tableCss from "@assets/css/Table.module.css";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
 
@@ -26,26 +13,14 @@ import { useDisclosure } from "@mantine/hooks";
 import DetailsDrawer from "../common/drawer/__DetailsDrawer";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useDispatch, useSelector } from "react-redux";
-import { showEntityData } from "@/app/store/core/crudThunk";
-import { capitalizeWords, formatDateTimeAmPm, formatDate, getLoggedInHospitalUser } from "@/common/utils";
+import { formatDate, getLoggedInHospitalUser } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import { modals } from "@mantine/modals";
-import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
-import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import { useReactToPrint } from "react-to-print";
-import { getDataWithoutStore } from "@/services/apiService";
-import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
-import { useAutoRefetch } from "@hooks/useAutoRefetch";
-import OpdRoomModal from "@hospital-components/OpdRoomModal";
-import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
-import {setFilterData} from "@/app/store/core/crudSlice";
-import IPDDetailsDrawer from "@hospital-components/drawer/__IPDDetailsDrawer";
+import { setFilterData } from "@/app/store/core/crudSlice";
 import ConfirmModal from "@modules/hospital/admission/confirm/__ConfirmModal";
-import {getAdmissionConfirmFormInitialValues} from "@modules/hospital/admission/helpers/request";
+import { getAdmissionConfirmFormInitialValues } from "@modules/hospital/admission/helpers/request";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -55,26 +30,33 @@ const tabs = [
 ];
 
 const PER_PAGE = 100;
-const ALLOWED_OPD_ROLES = ["doctor_opd","doctor_ipd", "admin_administrator"];
 const ALLOWED_ADMIN_DOCTOR_ROLES = ["operator_emergency", "doctor_ipd_confirm", "admin_doctor", "admin_administrator"];
+
+const processColorMap = {
+	admitted: "red",
+	paid: "green",
+	discharged: "orange",
+	empty: "gray",
+	Done: "blue",
+	New: "cyan",
+	refund: "yellow",
+	released: "gray",
+	closed: "purple",
+};
+
 export default function Table({ module, height, closeTable, availableClose = false }) {
-	const { mainAreaHeight } = useOutletContext();
-	const [openedOpdRoom, { open: openOpdRoom, close: closeOpdRoom }] = useDisclosure(false);
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const { userRoles } = useAppLocalStore();
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 	const listData = useSelector((state) => state.crud[module].data);
 	const prescriptionRef = useRef(null);
 	const [opened, { open, close }] = useDisclosure(false);
 	const hospitalConfig = getLoggedInHospitalUser();
-	const userId = hospitalConfig?.employee_id;
 	const [selectedId, setSelectedId] = useState(null);
 
 	const opdRoomId = hospitalConfig?.particular_details?.room_id;
-	const opdRoomIds = hospitalConfig?.particular_details?.opd_room_ids;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -120,42 +102,30 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setControlsRefs(controlsRefs);
 	};
 
-	const { refetchAll, scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
-		useInfiniteTableScroll({
-			module,
-			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_ARCHIVE.INDEX,
-			filterParams: {
-				name: filterData?.name,
-				patient_mode:processTab,
-				term: form.values.keywordSearch,
-				created: form.values.created,
-			},
-			perPage: PER_PAGE,
-			sortByKey: "created_at",
-		});
+	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } = useInfiniteTableScroll({
+		module,
+		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.PATIENT_ARCHIVE.INDEX,
+		filterParams: {
+			name: filterData?.name,
+			patient_mode: processTab,
+			term: form.values.keywordSearch,
+			created: form.values.created,
+		},
+		perPage: PER_PAGE,
+		sortByKey: "created_at",
+	});
 
 	const handleReadmission = (id) => {
 		setSelectedId(id);
 		openConfirm();
 	};
-	const processColorMap = {
-		admitted: "red",
-		paid: "green",
-		discharged: "orange",
-		empty: "gray",
-		Done: "blue",
-		New: "cyan",
-		refund: "yellow",
-		released: "gray",
-		closed: "purple"
-	};
+
 	const handleConfirmClose = () => {
 		closeConfirm();
 		setSelectedId(null);
 		dispatch(setFilterData({ module: "bed", data: { keywordSearch: "" } }));
 		dispatch(setFilterData({ module: "cabin", data: { keywordSearch: "" } }));
 	};
-
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
@@ -218,9 +188,6 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						pagination: tableCss.pagination,
 					}}
 					records={records}
-					onRowClick={({ record }) => {
-						handleView(record?.prescription_id);
-					}}
 					columns={[
 						{
 							accessor: "index",
@@ -254,7 +221,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 								const color = processColorMap[item.process] || ""; // fallback for unknown status
 								return (
 									<Badge size="xs" radius="sm" color={color}>
-										{item.process || 'empty'}
+										{item.process || "empty"}
 									</Badge>
 								);
 							},
@@ -268,20 +235,22 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (values) => {
 								return (
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) && (values.process === "paid" || values.process === "discharged")  && (
-											<Button
-												variant="filled"
-												bg="red"
-												c="white"
-												size="compact-xs"
-												onClick={() =>handleReadmission(values.uid)}
-												radius="es"
-												fw={400}
-												rightSection={<IconArrowRight size={18} />}
-											>
-												{t("Re-admission")}
-											</Button>
-										)}
+										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) &&
+											(values.process?.toLowerCase() === "paid" ||
+												values.process?.toLowerCase() === "discharged") && (
+												<Button
+													variant="filled"
+													bg="red"
+													c="white"
+													size="compact-xs"
+													onClick={() => handleReadmission(values.uid)}
+													radius="es"
+													fw={400}
+													rightSection={<IconArrowRight size={18} />}
+												>
+													{t("Re-admission")}
+												</Button>
+											)}
 									</Group>
 								);
 							},
