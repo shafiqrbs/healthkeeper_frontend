@@ -64,9 +64,9 @@ export default function Investigation({ ipdData }) {
 	const investigationPrint = useReactToPrint({ content: () => investigationPosBNRef.current });
 
 	const filteredInvestigations =
-		investigationParticulars?.particular_type?.particulars?.filter((particular) =>
-			particular.name?.toLowerCase().includes(searchQuery.toLowerCase())
-		) || [];
+		investigationParticulars?.particular_type?.particulars
+			?.filter((particular) => particular.name?.toLowerCase().includes(searchQuery.toLowerCase()))
+			?.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" })) || [];
 
 	const handleCheckboxChange = (particular, checked) => {
 		const currentList = Array.isArray(form.values.investigation) ? form.values.investigation : [];

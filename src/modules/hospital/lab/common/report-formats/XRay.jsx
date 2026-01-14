@@ -124,7 +124,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 									showRightSection={false}
 								/>
 
-								<Popover
+								{/* <Popover
 									opened={suggestionsPopoverOpened}
 									onChange={setSuggestionsPopoverOpened}
 									position="bottom-end"
@@ -160,7 +160,7 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 											))}
 										</List>
 									</Popover.Dropdown>
-								</Popover>
+								</Popover> */}
 							</Box>
 						</Grid.Col>
 					</Grid>
