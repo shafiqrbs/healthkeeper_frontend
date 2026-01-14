@@ -1,10 +1,8 @@
-import { Box, Stack, Table, Group, Text, ScrollArea, Grid } from "@mantine/core";
+import { useState } from "react";
+import { Box, Stack, Text, ScrollArea, Grid, Popover, ActionIcon, List } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Checkbox, Radio } from "@mantine/core";
 import ReportSubmission from "../ReportSubmission";
 import { useOutletContext, useParams } from "react-router-dom";
-import DatePickerForm from "@components/form-builders/DatePicker";
-import InputForm from "@components/form-builders/InputForm";
 import { useTranslation } from "react-i18next";
 import { modals } from "@mantine/modals";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -14,10 +12,21 @@ import { setRefetchData } from "@/app/store/core/crudSlice";
 import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
-import { formatDateForMySQL } from "@utils/index";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
+import { IconBulb } from "@tabler/icons-react";
 
 const module = MODULES.LAB_TEST;
+
+const SUGGESTIONS_DATA = [
+	"Central in position",
+	"Normal is position and contour",
+	"Clear",
+	"Normal is position and size",
+	"Appear normal",
+	"Normal findings",
+	"Normal X-ray of chest",
+	"Normal X-ray of chest",
+];
 
 // =============== sars cov2 results are now handled as individual boolean properties ===============
 export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
@@ -26,7 +35,14 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
-	const is_completed = diagnosticReport?.process === "Done";
+
+	const [suggestionsPopoverOpened, setSuggestionsPopoverOpened] = useState(false);
+
+	const insertSuggestion = (field, value) => {
+		form.setFieldValue(field, value);
+		setSuggestionsPopoverOpened(false);
+	};
+
 	const form = useForm({
 		initialValues: {
 			trachea: custom_report?.trachea || "Central in position",
@@ -97,15 +113,55 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 					<Grid>
 						<Grid.Col span={3}>Trachea</Grid.Col>
 						<Grid.Col span={9}>
-							<TextAreaForm
-								label=""
-								placeholder="Enter Trachea"
-								name="trachea"
-								id="trachea"
-								nextField="diaphragm"
-								form={form}
-								
-							/>
+							<Box pos="relative">
+								<TextAreaForm
+									label=""
+									placeholder="Enter Trachea"
+									name="trachea"
+									id="trachea"
+									nextField="diaphragm"
+									form={form}
+									showRightSection={false}
+								/>
+
+								<Popover
+									opened={suggestionsPopoverOpened}
+									onChange={setSuggestionsPopoverOpened}
+									position="bottom-end"
+									withArrow
+									shadow="md"
+									trapFocus={false}
+								>
+									<Popover.Target>
+										<ActionIcon
+											size="lg"
+											variant="light"
+											color="orange"
+											pos="absolute"
+											top={10}
+											aria-label="Suggestions"
+											right={8}
+											onClick={() => setSuggestionsPopoverOpened((o) => !o)}
+										>
+											<IconBulb color="#ff7800" size={24} opacity={0.5} />
+										</ActionIcon>
+									</Popover.Target>
+
+									<Popover.Dropdown p="xs">
+										<List spacing="xs" size="sm">
+											{SUGGESTIONS_DATA.map((item, index) => (
+												<List.Item
+													key={index}
+													className="cursor-pointer hover:text-primary"
+													onClick={() => insertSuggestion("trachea", item)}
+												>
+													{item}
+												</List.Item>
+											))}
+										</List>
+									</Popover.Dropdown>
+								</Popover>
+							</Box>
 						</Grid.Col>
 					</Grid>
 					<Grid>
@@ -118,7 +174,6 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								id="diaphragm"
 								nextField="referral_center"
 								form={form}
-								
 							/>
 						</Grid.Col>
 					</Grid>
@@ -132,7 +187,6 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								id="lungs"
 								nextField="heart"
 								form={form}
-								
 							/>
 						</Grid.Col>
 					</Grid>
@@ -146,7 +200,6 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								id="heart"
 								nextField="bony_thorax"
 								form={form}
-								
 							/>
 						</Grid.Col>
 					</Grid>
@@ -160,7 +213,6 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								id="bony_thorax"
 								nextField="impression"
 								form={form}
-								
 							/>
 						</Grid.Col>
 					</Grid>
@@ -174,12 +226,11 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								id="impression"
 								nextField="impression_two"
 								form={form}
-								
 							/>
 						</Grid.Col>
 					</Grid>
 					<Grid>
-						<Grid.Col span={3}/>
+						<Grid.Col span={3} />
 						<Grid.Col span={9}>
 							<TextAreaForm
 								label=""
@@ -187,17 +238,12 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 								name="impression_two"
 								id="impression_two"
 								form={form}
-
 							/>
 						</Grid.Col>
 					</Grid>
 				</Stack>
 			</ScrollArea>
-			<ReportSubmission
-				diagnosticReport={diagnosticReport}
-				form={form}
-				handleSubmit={handleSubmit}
-			/>
+			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
 		</Box>
 	);
 }

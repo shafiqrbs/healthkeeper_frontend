@@ -33,7 +33,7 @@ import { HOSPITAL_DROPDOWNS } from "@/app/store/core/utilitySlice";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import usePagination from "@hooks/usePagination";
 
-const PER_PAGE = 25;
+const PER_PAGE = 50;
 
 export default function _Table({ module, open }) {
 	const { t } = useTranslation();

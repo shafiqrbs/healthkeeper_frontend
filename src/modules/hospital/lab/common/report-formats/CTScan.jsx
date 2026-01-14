@@ -1,4 +1,4 @@
-import {Box, Stack, Group, Text, ScrollArea, Grid} from "@mantine/core";
+import { Box, Stack, Group, Text, ScrollArea, Grid } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import ReportSubmission from "../ReportSubmission";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -110,7 +110,6 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 									id="technique"
 									placeholder="5 mm non-contrast and contrast CT scan of chest were obtaiend"
 									minRows={3}
-									
 								/>
 							</Grid.Col>
 						</Grid>
@@ -125,7 +124,6 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 									name="parenchyma"
 									id="parenchyma"
 									placeholder="No local or diffuse sen in lunge parenchyma Parenchyma"
-									
 								/>
 							</Grid.Col>
 						</Grid>
@@ -133,81 +131,79 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 							<Grid.Col span={12}>Mediastinum</Grid.Col>
 						</Grid>
 						<Grid>
-							<Grid.Col span={1}/>
-							<Grid.Col span={2} fz={'xs'}>a. Vessels</Grid.Col>
+							<Grid.Col span={1} />
+							<Grid.Col span={2} fz={"xs"}>
+								a. Vessels
+							</Grid.Col>
 							<Grid.Col span={9}>
 								<InputForm
 									form={form}
 									name="mediastinum_vessels"
 									id="mediastinum_vessels"
 									placeholder="Appear normal"
-									
 								/>
 							</Grid.Col>
 						</Grid>
 						<Grid>
-							<Grid.Col span={1}/>
-							<Grid.Col span={2} fz={'xs'}>b. Trachea-</Grid.Col>
+							<Grid.Col span={1} />
+							<Grid.Col span={2} fz={"xs"}>
+								b. Trachea-
+							</Grid.Col>
 							<Grid.Col span={9}>
 								<InputForm
 									form={form}
 									name="mediastinum_trachea"
 									id="mediastinum_trachea"
 									placeholder="Central position"
-									
 								/>
 							</Grid.Col>
 						</Grid>
 						<Grid>
-							<Grid.Col span={1}/>
-							<Grid.Col span={2} fz={'xs'}>c. Oesophagus-</Grid.Col>
+							<Grid.Col span={1} />
+							<Grid.Col span={2} fz={"xs"}>
+								c. Oesophagus-
+							</Grid.Col>
 							<Grid.Col span={9}>
 								<InputForm
 									form={form}
 									name="mediastinum_oesophagus"
 									id="mediastinum_oesophagus"
 									placeholder="Appear normal"
-									
 								/>
 							</Grid.Col>
 						</Grid>
 						<Grid>
-							<Grid.Col span={1}/>
-							<Grid.Col span={2} fz={'xs'}>d. Thymus-</Grid.Col>
+							<Grid.Col span={1} />
+							<Grid.Col span={2} fz={"xs"}>
+								d. Thymus-
+							</Grid.Col>
 							<Grid.Col span={9}>
 								<InputForm
 									form={form}
 									name="mediastinum_thymus"
 									id="mediastinum_thymus"
 									placeholder="Not enlarged"
-									
 								/>
 							</Grid.Col>
 						</Grid>
 						<Grid>
-							<Grid.Col span={1}/>
-							<Grid.Col span={2} fz={'xs'}>d. Lymph Nodes-</Grid.Col>
+							<Grid.Col span={1} />
+							<Grid.Col span={2} fz={"xs"}>
+								d. Lymph Nodes-
+							</Grid.Col>
 							<Grid.Col span={9}>
 								<InputForm
 									form={form}
 									name="mediastinum_lymph_nodes"
 									id="mediastinum_lymph_nodes"
 									placeholder="Not enlarged"
-									
 								/>
 							</Grid.Col>
 						</Grid>
 						<Grid>
 							<Grid.Col span={3}>Heart</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
-									form={form}
-									name="heart"
-									id="heart"
-									placeholder="Normal in ID"
-									minRows={3}
-									
-								/>
+								<InputForm form={form} name="heart" id="heart" placeholder="Normal in ID" minRows={3} />
 							</Grid.Col>
 						</Grid>
 
@@ -220,7 +216,6 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 									id="pleura"
 									placeholder="Appear normal"
 									minRows={3}
-									
 								/>
 							</Grid.Col>
 						</Grid>
@@ -233,7 +228,6 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 									id="bones"
 									placeholder="Appear normal"
 									minRows={3}
-									
 								/>
 							</Grid.Col>
 						</Grid>
@@ -246,11 +240,9 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 									id="after_iv_contrast"
 									placeholder="No abnormal contrast uptake is seen"
 									minRows={3}
-									
 								/>
 							</Grid.Col>
 						</Grid>
-
 
 						<Grid>
 							<Grid.Col span={3}>Impression</Grid.Col>
@@ -261,18 +253,13 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 									id="impression"
 									placeholder="Normal CT scan of chest"
 									minRows={3}
-									
 								/>
 							</Grid.Col>
 						</Grid>
 					</Stack>
 				</ScrollArea>
 			</Box>
-			<ReportSubmission
-				diagnosticReport={diagnosticReport}
-				form={form}
-				handleSubmit={handleSubmit}
-			/>
+			<ReportSubmission diagnosticReport={diagnosticReport} form={form} handleSubmit={handleSubmit} />
 		</>
 	);
 }

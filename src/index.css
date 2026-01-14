@@ -772,6 +772,13 @@ input.date-selector-input {
     }
 }
 
+.hover\:text-primary {
+    transition: all 0.3s ease;
+}
+
+.hover\:text-primary:hover {
+    color: var(--theme-primary-color-6) !important;
+}
 
 :root[data-mantine-color-scheme='dark'] {
     --mantine-color-white: #242424;
