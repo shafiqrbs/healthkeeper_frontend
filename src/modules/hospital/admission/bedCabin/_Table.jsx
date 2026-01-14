@@ -373,9 +373,8 @@ export default function _Table({ module }) {
 						},
 						{ accessor: "invoice", title: t("IPD") },
 						{ accessor: "customer_name", title: t("Name") },
-						{ accessor: "admission_day", title: t("Admission") },
-						{ accessor: "consume_day", title: t("Consume") },
-						{ accessor: "payment_day", title: t("Consume") },
+						{ accessor: "admission_day", title: t("Admission Day") },
+						{ accessor: "consume_day", title: t("Payment") },
 						{ accessor: "remaining_day", title: t("Remaining") },
 						{
 							accessor: "process",

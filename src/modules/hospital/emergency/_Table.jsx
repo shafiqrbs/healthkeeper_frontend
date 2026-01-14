@@ -333,15 +333,17 @@ export default function Table({ module }) {
 								</Text>
 							),
 						},
+
+						{ accessor: "patient_id", title: t("patientId") },
+						{ accessor: "name", title: t("Name") },
+						{ accessor: "age", title: t("Age") },
+						{ accessor: "mobile", title: t("Mobile") },
+						{ accessor: "total", title: t("Total") },
 						{
 							accessor: "created_by",
 							title: t("CreatedBy"),
 							render: (item) => item.created_by || "N/A",
 						},
-						{ accessor: "patient_id", title: t("patientId") },
-						{ accessor: "name", title: t("Name") },
-						{ accessor: "mobile", title: t("Mobile") },
-						{ accessor: "total", title: t("Total") },
 						{
 							title: t("Action"),
 							textAlign: "right",

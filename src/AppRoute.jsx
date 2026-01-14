@@ -366,7 +366,7 @@ function AppRoute() {
 							index
 							element={
 								<ProtectedRoute
-									roles={["role_domain", "doctor_ipd", "doctor_emergency","doctor_rs_rp_confirm", "doctor_opd", "operator_emergency"]}
+									roles={["role_domain","admin_administrator", "doctor_ipd", "doctor_emergency","doctor_rs_rp_confirm", "doctor_opd", "operator_emergency"]}
 								>
 									<PatientArchiveIndex />
 								</ProtectedRoute>
