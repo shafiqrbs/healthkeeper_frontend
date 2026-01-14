@@ -140,7 +140,6 @@ export const formatDateTime = (date) => {
 };
 
 export const formatDateTimeAmPm = (date) => {
-
 	if (!date) return null;
 	const d = new Date(date);
 	const day = String(d.getDate()).padStart(2, "0");
@@ -256,3 +255,27 @@ export const getUUID = () =>
 		: ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
 				(c ^ (crypto?.getRandomValues?.(new Uint8Array(1))?.[0] & (15 >> (c / 4)))).toString(16)
 		  );
+
+export function toLocalDateTimeString(date) {
+	if (!date) return null;
+
+	const pad = (n) => String(n).padStart(2, "0");
+
+	return (
+		`${date.getFullYear()}-` +
+		`${pad(date.getMonth() + 1)}-` +
+		`${pad(date.getDate())} ` +
+		`${pad(date.getHours())}:` +
+		`${pad(date.getMinutes())}:00`
+	);
+}
+
+export function parseLocalDateTime(str) {
+	if (!str) return null;
+
+	const [date, time] = str.split(" ");
+	const [y, m, d] = date.split("-").map(Number);
+	const [hh, mm, ss] = time.split(":").map(Number);
+
+	return new Date(y, m - 1, d, hh, mm, ss);
+}

@@ -12,11 +12,11 @@ import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { successNotification } from "@components/notification/successNotification";
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
-import {useEffect} from "react";
-import {formatDate, formatDateTime} from "@utils/index";
+import { useEffect } from "react";
+import { formatDate, formatDateTime, toLocalDateTimeString } from "@utils/index";
 import InputForm from "@components/form-builders/InputForm";
 
-export default function DeathCertificate({ data,refetch }) {
+export default function DeathCertificate({ data, refetch }) {
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const dispatch = useDispatch();
@@ -26,18 +26,17 @@ export default function DeathCertificate({ data,refetch }) {
 		value: disease.name,
 		label: disease.name,
 	}));
-	console.log( data?.cause_death);
+	console.log(data?.cause_death);
 	const form = useForm({
 		initialValues: {
-			diseases_profile: '',
-			cause_death:'',
-			about_death:'',
-			dead_date_time:'',
+			diseases_profile: "",
+			cause_death: "",
+			about_death: "",
+			dead_date_time: "",
 			death_date_time: new Date(),
 		},
 
 		validate: {
-
 			about_death: (value) => {
 				if (!value) {
 					return t("AboutDeathRequired");
@@ -68,9 +67,7 @@ export default function DeathCertificate({ data,refetch }) {
 			cause_death: data.cause_death ?? "",
 			about_death: data.about_death ?? "",
 			dead_date_time: data.dead_date_time ?? "",
-			death_date_time: data.death_date_time
-				? new Date(data.death_date_time)
-				: new Date(),
+			death_date_time: data.death_date_time ? new Date(data.death_date_time) : new Date(),
 		});
 	}, [data]);
 
@@ -79,7 +76,7 @@ export default function DeathCertificate({ data,refetch }) {
 			const result = await dispatch(
 				updateEntityData({
 					url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.PRESCRIPTION}/${data?.prescription_uid}`,
-					data: values,
+					data: { ...values, death_date_time: toLocalDateTimeString(values.death_date_time) },
 					module: "admission",
 				})
 			);
@@ -94,7 +91,7 @@ export default function DeathCertificate({ data,refetch }) {
 				}
 			} else if (updateEntityData.fulfilled.match(result)) {
 				successNotification(t("UpdatedSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
-				refetch()
+				refetch();
 			}
 		} catch (error) {
 			console.error(error);
@@ -136,7 +133,7 @@ export default function DeathCertificate({ data,refetch }) {
 					placeholder="Cause of death"
 					tooltip={t("Cause of death is required")}
 				/>
-				{/*<DateTimePickerForm
+				<DateTimePickerForm
 					mt="sm"
 					value={form?.values?.death_date_time}
 					tooltip="Death date & time is required"
@@ -144,8 +141,8 @@ export default function DeathCertificate({ data,refetch }) {
 					name="death_date_time"
 					form={form}
 					placeholder="Death Date & Time"
-				/>*/}
-				<InputForm
+				/>
+				{/*<InputForm
 					mt="sm"
 					value={form?.values?.dead_date_time}
 					tooltip="Death date & time is required"
@@ -153,7 +150,7 @@ export default function DeathCertificate({ data,refetch }) {
 					name="dead_date_time"
 					form={form}
 					placeholder="DD-MM-YYYY H:M"
-				/>
+				/>*/}
 			</Box>
 			<Box>
 				<Flex gap="sm" justify="flex-end" mt="md">
