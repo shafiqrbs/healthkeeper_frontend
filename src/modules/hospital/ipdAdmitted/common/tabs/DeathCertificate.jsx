@@ -13,7 +13,7 @@ import { successNotification } from "@components/notification/successNotificatio
 import { ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR } from "@/constants";
 import { errorNotification } from "@components/notification/errorNotification";
 import { useEffect } from "react";
-import { formatDate, formatDateTime, toLocalDateTimeString } from "@utils/index";
+import { formatDate, formatDateTime, parseLocalDateTime, toLocalDateTimeString } from "@utils/index";
 import InputForm from "@components/form-builders/InputForm";
 
 export default function DeathCertificate({ data, refetch }) {
@@ -32,8 +32,7 @@ export default function DeathCertificate({ data, refetch }) {
 			diseases_profile: "",
 			cause_death: "",
 			about_death: "",
-			dead_date_time: "",
-			death_date_time: new Date(),
+			death_date_time: null,
 		},
 
 		validate: {
@@ -66,8 +65,8 @@ export default function DeathCertificate({ data, refetch }) {
 			diseases_profile: data.diseases_profile ?? "",
 			cause_death: data.cause_death ?? "",
 			about_death: data.about_death ?? "",
-			dead_date_time: data.dead_date_time ?? "",
-			death_date_time: data.death_date_time ? new Date(data.death_date_time) : new Date(),
+			// dead_date_time: data.dead_date_time ?? "",
+			death_date_time: data.death_date_time ? parseLocalDateTime(data.death_date_time) : null,
 		});
 	}, [data]);
 

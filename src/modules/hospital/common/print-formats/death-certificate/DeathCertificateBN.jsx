@@ -3,17 +3,12 @@ import { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
-import { formatDateTimeAmPm } from "@/common/utils";
-import useAppLocalStore from "@hooks/useAppLocalStore";
+import { formatDateTimeAmPm, formatUnixToAmPm, parseLocalDateTime } from "@/common/utils";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
 import { capitalizeWords } from "@utils/index";
-import {DateTimePicker} from "@mantine/dates";
 
 const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
-	const { user } = useAppLocalStore();
-
-	const admissionData = data || {};
 	const patientInfo = data || {};
 	const { hospitalConfigData } = useHospitalConfigData();
 	const getValue = (value, defaultValue = "") => {
@@ -315,7 +310,7 @@ const DeathCertificateBN = forwardRef(({ data, preview = false }, ref) => {
 										<Text size="xs" fw={600}>
 											{t("Date Time of Death")}:
 										</Text>
-										<Text size="sm">{getValue(patientInfo?.dead_date_time, "")}</Text>
+										<Text size="sm">{formatDateTimeAmPm(patientInfo?.death_date_time)}</Text>
 									</Group>
 								</Table.Td>
 							</Table.Tr>
