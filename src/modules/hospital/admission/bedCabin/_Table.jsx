@@ -3,7 +3,7 @@ import { useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import {
-	ActionIcon,
+	ActionIcon, Badge,
 	Box,
 	Button,
 	Divider,
@@ -120,7 +120,7 @@ export default function _Table({ module }) {
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: formatDate(new Date()),
+			created: "",
 			room_id: "",
 		},
 	});
@@ -136,6 +136,7 @@ export default function _Table({ module }) {
 		filterParams: {
 			mode: processTab,
 			term: form.values.keywordSearch,
+			created: form.values.created,
 		},
 		perPage: PER_PAGE,
 		sortByKey: "updated_at",
@@ -291,6 +292,9 @@ export default function _Table({ module }) {
 		}
 	};
 
+	const processColorMap = { admitted: "Red", paid: "green", discharged: "blue" , empty: "blue" };
+	const statusColorMap = { Occupied: "Red", Empty: "blue" };
+
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -363,8 +367,17 @@ export default function _Table({ module }) {
 							accessor: "is_booked",
 							title: t("Status"),
 							textAlignment: "right",
-							render: (item) => (item.is_booked === 1 ? "Occupied" : "Empty"),
+							render: (item) => {
+								const color = statusColorMap[item.is_booked === 1 ? "Occupied" : "Empty"] || ""; // fallback for unknown status
+								return (
+									<Badge size="xs" radius="sm" color={color}>
+										{item.is_booked === 1 ? "Occupied" : "Empty"}
+									</Badge>
+								);
+							},
+							cellsClassName: tableCss.statusBackground,
 						},
+
 						{
 							accessor: "admission_date",
 							title: t("Created"),
@@ -373,13 +386,23 @@ export default function _Table({ module }) {
 						},
 						{ accessor: "invoice", title: t("IPD") },
 						{ accessor: "customer_name", title: t("Name") },
-						{ accessor: "admission_day", title: t("Admission Day") },
-						{ accessor: "consume_day", title: t("Payment") },
-						{ accessor: "remaining_day", title: t("Remaining") },
+						{ accessor: "admission_day", title: t("Admission Day"),cellsClassName: tableCss.admissionBackground },
+						{ accessor: "consume_day", title: t("Payment"),cellsClassName: tableCss.paymentBackground },
+						{ accessor: "remaining_day", title: t("Remaining"),cellsClassName: tableCss.remainingBackground},
+
 						{
 							accessor: "process",
+							textAlign: "center",
 							title: t("Process"),
-							render: (item) => t(item.process),
+							render: (item) => {
+								const color = processColorMap[item.process] || ""; // fallback for unknown status
+								return (
+									<Badge size="xs" radius="sm" color={color}>
+										{item.process || 'empty'}
+									</Badge>
+								);
+							},
+							cellsClassName: tableCss.statusBackground,
 						},
 						{
 							title: t("Action"),

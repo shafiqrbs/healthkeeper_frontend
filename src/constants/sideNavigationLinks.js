@@ -89,9 +89,8 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_ARCHIVE.INDEX,
 			icon: IconBuildingHospital,
 			color: "#e92214", // Purple
-			allowedRoles: ["role_domain", "admin_administrator", "doctor_opd", "doctor_ipd"],
+			allowedRoles: ["role_domain","operator_emergency", "admin_administrator", "doctor_opd", "doctor_ipd"],
 		},
-
 
 		{
 			label: t("IPD"),

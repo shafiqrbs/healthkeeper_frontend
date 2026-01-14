@@ -88,3 +88,24 @@
 .statusBackground {
     background-color: var(--mantine-color-gray-2) !important;
 }
+
+.admissionBackground {
+    background-color: var(--mantine-color-blue-1) !important;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.paymentBackground {
+    background-color: var(--mantine-color-green-1) !important;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.remainingBackground {
+    background-color: var(--mantine-color-orange-1) !important;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+}

@@ -1,6 +1,6 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { IconCalendarWeek, IconUser, IconArrowNarrowRight } from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
+import {Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay, Badge} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 import { MODULES } from "@/constants";
@@ -34,9 +34,21 @@ export default function _Table({ patient_mode }) {
 		filterParams: {
 			created: filterData.created,
 			term: filterData.keywordSearch,
+			patient_mode: ['ipd','emergency','opd'],
+			process_mode: "investigation",
 		},
 	});
-
+	const processColorMap = {
+		admitted: "red",
+		paid: "green",
+		discharged: "orange",
+		empty: "gray",
+		Done: "blue",
+		New: "cyan",
+		refund: "yellow",
+		'in-progress': "gray",
+		closed: "purple"
+	};
 	const handleView = (id) => {
 		console.info(id);
 	};
@@ -52,22 +64,20 @@ export default function _Table({ patient_mode }) {
 				bg="var(--theme-primary-color-6)"
 				mt="3xs"
 			>
-				<Flex align="center" justify="space-between" gap="sm">
-					<Text ta="center" fz="sm" fw={500}>
-						S/N
-					</Text>
+				<Flex w="100%" align="center" justify="space-between" gap="sm">
 					<Text ta="center" fz="sm" fw={500}>
 						Patient Name
 					</Text>
+					<PaginationBottomSection
+						isCompact={true}
+						perPage={perPage}
+						page={page}
+						totalPages={totalPages}
+						handlePageChange={handlePageChange}
+						total={total}
+					/>
 				</Flex>
-				<PaginationBottomSection
-					isCompact={true}
-					perPage={perPage}
-					page={page}
-					totalPages={totalPages}
-					handlePageChange={handlePageChange}
-					total={total}
-				/>
+
 			</Flex>
 			<ScrollArea pos="relative" bg="var(--mantine-color-white)" h={mainAreaHeight - 216} scrollbars="y" px="3xs">
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
@@ -90,9 +100,11 @@ export default function _Table({ patient_mode }) {
 								<Text fz="sm" fw={"600"}>
 									{item.name}
 								</Text>
-								<Text fz="xs" c={"red"} fw={"600"}>
-									{capitalizeWords(item.process)}
-								</Text>
+								<Badge
+									size="xs"
+									radius="sm"
+									color={processColorMap[item.process] || "gray"}>{capitalizeWords(item.process)}
+								</Badge>
 							</Flex>
 						</Grid.Col>
 						<CustomDivider />

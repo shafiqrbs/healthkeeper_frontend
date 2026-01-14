@@ -197,6 +197,8 @@ export default function EntityForm({ form, module }) {
 		});
 	}, [item]);
 
+
+
 	useEffect(() => {
 		handleDobChange();
 	}, [JSON.stringify(form.values.dob)]);
@@ -242,6 +244,7 @@ export default function EntityForm({ form, module }) {
 	const handleTypeChange = (val) => {
 		form.setFieldValue("identity_mode", val);
 	};
+	console.log(form.values.guardian_name)
 
 	return (
 		<Box pos="relative">
@@ -282,10 +285,10 @@ export default function EntityForm({ form, module }) {
 										</Grid.Col>
 									</Grid>
 
-									<Flex className="form-action-header full-bleed">
-										<Text fz="sm">{t("Cabin/Bed")}</Text>
+									<Flex className="form-action-header full-bleed" c={'white'} bg={'red'} pl={'xs'} pr={'xs'} >
+										<Text  fw={'600'}>{t("Cabin/Bed")}</Text>
 										<Flex align="center" gap="xs">
-											<Text fz="sm">{entity?.data?.room_name}</Text>
+											<Text  fw={'600'}>{entity?.data?.room_name}</Text>
 										</Flex>
 									</Flex>
 
@@ -393,15 +396,6 @@ export default function EntityForm({ form, module }) {
 												value={form.values.comment}
 												style={{ input: { height: "60px" } }}
 											/>
-										</Grid.Col>
-									</Grid>
-
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("PrescriptionDoctor")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<Text fz="sm">{item?.prescription_doctor_name}</Text>
 										</Grid.Col>
 									</Grid>
 								</Stack>
@@ -579,7 +573,7 @@ export default function EntityForm({ form, module }) {
 												name="identity"
 												id="identity"
 												nextField="guardian_name"
-												value={form.values.identity}
+												value={form.values.nid}
 												rightSection={
 													<ActionIcon
 														onClick={handleHSIDSearch}
@@ -768,24 +762,6 @@ export default function EntityForm({ form, module }) {
 										</Grid>
 										<Grid align="center" columns={20}>
 											<Grid.Col span={6}>
-												<Text fz="sm">{t("Weight")}</Text>
-											</Grid.Col>
-											<Grid.Col span={5}>
-												<Flex gap="les">
-													<InputNumberForm
-														form={form}
-														label=""
-														placeholder="60"
-														tooltip={t("EnterPatientWeight")}
-														name="weight"
-														id="weight"
-														nextField="bp"
-														value={form.values.weight}
-														required
-													/>
-												</Flex>
-											</Grid.Col>
-											<Grid.Col span={4}>
 												<Text fz="sm">{t("Blood/Presure")}</Text>
 											</Grid.Col>
 											<Grid.Col span={5}>
@@ -799,6 +775,24 @@ export default function EntityForm({ form, module }) {
 														id="bp"
 														nextField="pulse"
 														value={form.values.bp}
+														required
+													/>
+												</Flex>
+											</Grid.Col>
+											<Grid.Col span={4}>
+												<Text fz="sm">{t("Respiration")}</Text>
+											</Grid.Col>
+											<Grid.Col span={5}>
+												<Flex gap="les">
+													<InputForm
+														form={form}
+														label=""
+														placeholder={t("Respiration")}
+														tooltip={t("Respiration")}
+														name="respiration"
+														id="respiration"
+														nextField="name"
+														value={form.values.respiration}
 														required
 													/>
 												</Flex>
@@ -878,11 +872,34 @@ export default function EntityForm({ form, module }) {
 												</Flex>
 											</Grid.Col>
 										</Grid>
-										<Grid align="center" columns={20}>
-											<Grid.Col span={6}>
-												<Text fz="sm">{t("bloodGroup")}</Text>
-											</Grid.Col>
-											<Grid.Col span={5}>
+									</Stack>
+									<Flex className="form-action-header full-bleed" bg={'green'} c={'white'} pl={'xs'} >
+										<Text fz="sm">{t("Other Information")}</Text>
+									</Flex>
+									<Grid align="center" columns={20}>
+										<Grid.Col span={6}>
+											<Text fz="sm">{t("Weight")}</Text>
+										</Grid.Col>
+										<Grid.Col span={5}>
+											<Flex gap="les">
+												<InputNumberForm
+													form={form}
+													label=""
+													placeholder="60"
+													tooltip={t("EnterPatientWeight")}
+													name="weight"
+													id="weight"
+													nextField="bp"
+													value={form.values.weight}
+													required
+												/>
+											</Flex>
+										</Grid.Col>
+										<Grid.Col span={4}>
+											<Text fz="sm">{t("bloodGroup")}</Text>
+										</Grid.Col>
+										<Grid.Col span={5}>
+											<Flex gap="les">
 												<SelectForm
 													form={form}
 													name="blood_group"
@@ -894,63 +911,10 @@ export default function EntityForm({ form, module }) {
 													pt={0}
 													placeholder="A+"
 												/>
-											</Grid.Col>
-											<Grid.Col span={4}>
-												<Text fz="sm">{t("Respiration")}</Text>
-											</Grid.Col>
-											<Grid.Col span={5}>
-												<Flex gap="les">
-													<InputForm
-														form={form}
-														label=""
-														placeholder={t("Respiration")}
-														tooltip={t("Respiration")}
-														name="respiration"
-														id="respiration"
-														nextField="name"
-														value={form.values.respiration}
-														required
-													/>
-												</Flex>
-											</Grid.Col>
-										</Grid>
-									</Stack>
-									{/*<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("FatherName")}</Text>
+											</Flex>
 										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputForm
-												form={form}
-												label=""
-												tooltip={t("EnterFatherName")}
-												placeholder={t("EnterFatherName")}
-												name="father_name"
-												id="father_name"
-												nextField="father_name"
-												value={form.values.father_name}
-												required
-											/>
-										</Grid.Col>
+
 									</Grid>
-									<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("MotherName")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<InputForm
-												form={form}
-												label=""
-												tooltip={t("EnterMotherName")}
-												placeholder={t("EnterMotherName")}
-												name="mother_name"
-												id="mother_name"
-												nextField="identity"
-												value={form.values.mother_name}
-												required
-											/>
-										</Grid.Col>
-									</Grid>*/}
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("RelationWithPatient")}</Text>
@@ -969,7 +933,6 @@ export default function EntityForm({ form, module }) {
 											/>
 										</Grid.Col>
 									</Grid>
-
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Profession")}</Text>
@@ -988,25 +951,6 @@ export default function EntityForm({ form, module }) {
 											/>
 										</Grid.Col>
 									</Grid>
-									{/*<Grid align="center" columns={20}>
-										<Grid.Col span={6}>
-											<Text fz="sm">{t("PermanentAddress")}</Text>
-										</Grid.Col>
-										<Grid.Col span={14}>
-											<TextAreaForm
-												form={form}
-												label=""
-												tooltip={t("EnterPermanentAddress")}
-												placeholder="12 street, 123456"
-												name="permanent_address"
-												id="permanent_address"
-												nextField="dateOfBirth"
-												value={form.values.permanentAddress}
-												required
-											/>
-										</Grid.Col>
-									</Grid>*/}
-
 									<Grid align="center" columns={20}>
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Nationality")}</Text>

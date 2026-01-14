@@ -1,6 +1,6 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { IconCalendarWeek, IconUser, IconArrowNarrowRight } from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
+import {Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay, Badge} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 import { MODULES } from "@/constants";
@@ -41,7 +41,7 @@ export default function _Table() {
 	const handleView = (id) => {
 		console.info(id);
 	};
-
+	const processColorMap = { admitted: "Red", paid: "green", discharged: "blue" , empty: "blue" };
 	return (
 		<Box>
 			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="3xs">
@@ -80,9 +80,11 @@ export default function _Table() {
 								<Text fz="sm" fw={"600"}>
 									{item.name}
 								</Text>
-								<Text fz="xs" c={"red"} fw={"600"}>
-									{capitalizeWords(item.process)}
-								</Text>
+								<Badge
+									size="xs"
+									radius="sm"
+									color={processColorMap[item.process] || "gray"}>{capitalizeWords(item.process)}
+								</Badge>
 							</Flex>
 						</Grid.Col>
 						<CustomDivider />

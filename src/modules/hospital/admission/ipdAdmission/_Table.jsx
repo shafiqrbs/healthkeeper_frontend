@@ -60,6 +60,7 @@ const PER_PAGE = 20;
 
 const tabs = [
 	{ label: "Admission", value: "admission" },
+	{ label: "Billing", value: "billing" },
 	{ label: "Admitted", value: "admitted" },
 	{ label: "Revised", value: "revised" },
 ];
@@ -107,7 +108,7 @@ export default function _Table({ module }) {
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: formatDate(new Date()),
+			created: "",
 			room_id: "",
 		},
 	});
@@ -128,8 +129,8 @@ export default function _Table({ module }) {
 			filterParams: {
 				name: filterData?.name,
 				patient_mode: "ipd",
-				//created: form.values.created,
 				ipd_mode: processTab,
+				created: form.values.created,
 				term: form.values.keywordSearch,
 			},
 			perPage: PER_PAGE,
@@ -309,6 +310,7 @@ export default function _Table({ module }) {
 							render: (item) => capitalizeWords(item.parent_invoice_mode),
 						},
 						{ accessor: "patient_id", title: t("patientId") },
+						{ accessor: "invoice", title: t("IPD ID") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						{ accessor: "gender", title: t("Gender") },

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, Modal, Tabs, Text } from "@mantine/core";
+import {ActionIcon, Badge, Box, Button, Flex, FloatingIndicator, Group, Menu, Modal, Tabs, Text} from "@mantine/core";
 import {
 	IconArrowRight,
 	IconChevronUp,
@@ -138,7 +138,17 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		setSelectedId(id);
 		openConfirm();
 	};
-
+	const processColorMap = {
+		admitted: "red",
+		paid: "green",
+		discharged: "orange",
+		empty: "gray",
+		Done: "blue",
+		New: "cyan",
+		refund: "yellow",
+		released: "gray",
+		closed: "purple"
+	};
 	const handleConfirmClose = () => {
 		closeConfirm();
 		setSelectedId(null);
@@ -238,7 +248,17 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						},
 						{
 							accessor: "process",
+							textAlign: "center",
 							title: t("Process"),
+							render: (item) => {
+								const color = processColorMap[item.process] || ""; // fallback for unknown status
+								return (
+									<Badge size="xs" radius="sm" color={color}>
+										{item.process || 'empty'}
+									</Badge>
+								);
+							},
+							cellsClassName: tableCss.statusBackground,
 						},
 
 						{
@@ -248,7 +268,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							render: (values) => {
 								return (
 									<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) && values.process === "Paid"  && (
+										{userRoles.some((role) => ALLOWED_ADMIN_DOCTOR_ROLES.includes(role)) && (values.process === "paid" || values.process === "discharged")  && (
 											<Button
 												variant="filled"
 												bg="red"

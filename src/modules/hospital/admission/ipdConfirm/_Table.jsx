@@ -40,6 +40,7 @@ const PER_PAGE = 25;
 const tabs = [
 	{ label: "New", value: "new" },
 	{ label: "Confirmed", value: "confirmed" },
+	{ label: "Billing", value: "billing" },
 	{ label: "Admitted", value: "admitted" },
 	{ label: "Revised", value: "revised" },
 	{ label: "Canceled", value: "canceled" },
@@ -86,7 +87,7 @@ export default function _Table({ module }) {
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: formatDate(new Date()),
+			created: "",
 			room_id: "",
 		},
 	});
@@ -226,6 +227,7 @@ export default function _Table({ module }) {
 						},
 						{ accessor: "patient_mode_name", title: t("PatientMode") },
 						{ accessor: "patient_id", title: t("patientId") },
+						{ accessor: "invoice", title: t("IPD ID") },
 						{ accessor: "name", title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
 						...(processTab === "admitted"

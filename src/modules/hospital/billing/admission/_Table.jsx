@@ -45,24 +45,22 @@ export default function _Table({ patient_mode }) {
 	return (
 		<Box>
 			<Flex gap="sm" p="les" c="white" bg="var(--theme-primary-color-6)" mt="3xs">
-				<Flex align="center" justify="space-between" gap="sm">
-					<Text ta="center" fz="sm" fw={500}>
-						S/N
-					</Text>
+				<Flex w="100%" align="center" justify="space-between">
 					<Text ta="center" fz="sm" fw={500}>
 						Patient Name
 					</Text>
+					<PaginationBottomSection
+						isCompact={true}
+						perPage={perPage}
+						page={page}
+						totalPages={totalPages}
+						handlePageChange={handlePageChange}
+						total={total}
+					/>
 				</Flex>
-				<PaginationBottomSection
-					isCompact={true}
-					perPage={perPage}
-					page={page}
-					totalPages={totalPages}
-					handlePageChange={handlePageChange}
-					total={total}
-				/>
+
 			</Flex>
-			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 200} scrollbars="y" px="3xs">
+			<ScrollArea bg="var(--mantine-color-white)" h={mainAreaHeight - 220} scrollbars="y" px="3xs">
 				<LoadingOverlay visible={fetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 				{records?.map((item) => (
 					<Grid

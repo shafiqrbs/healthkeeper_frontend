@@ -1,6 +1,6 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { IconCalendarWeek, IconUser, IconArrowNarrowRight, IconPrinter } from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
+import {Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay, Badge} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useEffect, useRef, useState } from "react";
 import { capitalizeWords, formatDate } from "@utils/index";
@@ -62,6 +62,7 @@ export default function _Table({ fetching, records, handlePageChange, page, tota
 	const handleView = (id) => {
 		console.info(id);
 	};
+	const processColorMap = { admitted: "Red", paid: "green", discharged: "blue" , empty: "blue" };
 
 	return (
 		<Box>
@@ -102,9 +103,11 @@ export default function _Table({ fetching, records, handlePageChange, page, tota
 									{item.name}
 								</Text>{" "}
 								<Flex align="center" gap="les">
-									<Text c={item.process === "paid" ? "green" : "red"}>
-										{capitalizeWords(item.process)}
-									</Text>
+									<Badge
+										size="xs"
+										radius="sm"
+										color={processColorMap[item.process] || "gray"}>{capitalizeWords(item.process)}
+									</Badge>
 									{item.process === "paid" && (
 										<ActionIcon
 											variant="filled"
