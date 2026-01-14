@@ -1,6 +1,6 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { IconArrowRight, IconChevronUp, IconSelector } from "@tabler/icons-react";
-import { Box, Button, Text } from "@mantine/core";
+import {Badge, Box, Button, Text} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useTranslation } from "react-i18next";
@@ -14,6 +14,7 @@ import usePagination from "@hooks/usePagination";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import {getDataWithoutStore} from "@/services/apiService";
 import {useSelector} from "react-redux";
+import {modals} from "@mantine/modals";
 
 const module = MODULES.DISCHARGE;
 const PER_PAGE = 25;
@@ -26,7 +27,6 @@ export default function _Table() {
 	const navigate = useNavigate();
 	const { userRoles } = useAppLocalStore();
 	const filterData = useSelector((state) => state.crud[module].filterData);
-
 
 	const form = useForm({
 		initialValues: {
@@ -52,7 +52,18 @@ export default function _Table() {
 			direction: "desc",
 		});
 
-	const handleProcessConfirmation = async (id) => {
+	const handleProcessConfirmation  = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handlePatientDischarge(id),
+		});
+	};
+
+	const handlePatientDischarge = async (id) => {
 		if (id) {
 			const { data } = await getDataWithoutStore({
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DISCHARGE_PROCESS}/${id}`,
@@ -64,6 +75,8 @@ export default function _Table() {
 			showNotificationComponent(t("NoDataAvailable"), "red.6", "lightgray");
 		}
 	};
+	const processColorMap = { paid: "red", discharged: "blue" , refund: "orange" , empty: "blue" };
+
 
 	return (
 		<Box pos="relative">
@@ -99,22 +112,37 @@ export default function _Table() {
 							sortable: true,
 							render: (item) => <Text fz="xs">{formatDateTimeAmPm(item?.created_at)}</Text>,
 						},
+						{
+							accessor: "admission_date",
+							title: t("Admission date"),
+							textAlignment: "right",
+							sortable: true,
+							render: (item) => <Text fz="xs">{formatDateTimeAmPm(item?.admission_date)}</Text>,
+						},
 						{ accessor: "room_name", sortable: true, title: t("RoomNo") },
-						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
+						{ accessor: "invoice", sortable: true, title: t("IPD ID") },
 						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
 						{ accessor: "name", sortable: true, title: t("Name") },
 						{ accessor: "mobile", title: t("Mobile") },
-						{ accessor: "gender", sortable: true, title: t("Gender") },
-						{
-							accessor: "patient_payment_mode_name",
-							sortable: true,
-							title: t("Patient"),
-						},
-						{ accessor: "total", title: t("Total") },
+						{ accessor: "age", sortable: true, title: t("Age") },
 						{
 							accessor: "doctor_name",
 							title: t("Doctor"),
 							render: (item) => item?.doctor_name,
+						},
+						{
+							accessor: "process",
+							textAlign: "center",
+							title: t("Process"),
+							render: (item) => {
+								const color = processColorMap[item.process] || ""; // fallback for unknown status
+								return (
+									<Badge size="xs" radius="sm" color={color}>
+										{item.process}
+									</Badge>
+								);
+							},
+							cellsClassName: tableCss.statusBackground,
 						},
 						{
 							accessor: "release_mode",

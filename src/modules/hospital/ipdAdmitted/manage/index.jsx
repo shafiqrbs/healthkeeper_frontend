@@ -187,7 +187,7 @@ export default function Index() {
 
 	// =============== filter tabs based on release_mode and process status ================
 	const releaseMode = ipdData?.data?.release_mode;
-	const isPaid = ipdData?.data?.process?.toLowerCase() === "paid";
+	const isPaid = ipdData?.data?.process?.toLowerCase() === "discharged";
 
 	// =============== redirect to dashboard if current tab is not accessible ================
 	// useEffect(() => {
@@ -261,7 +261,6 @@ export default function Index() {
 			return tabs.filter((tab) => allowedTabs.includes(tab.value));
 		}
 
-		console.log(tabs);
 
 		// 	// ✅ Paid but no release mode → all tabs
 		return tabs;
@@ -466,7 +465,7 @@ export default function Index() {
 										{t("Release Procedure")}
 									</Box>
 									{ipdData?.data?.release_mode &&
-										ipdData?.data?.process?.toLowerCase() === "paid" && (
+										ipdData?.data?.process?.toLowerCase() === "discharged" && (
 											// <Paper
 											// 	withBorder
 											// 	radius="sm"

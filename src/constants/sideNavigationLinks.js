@@ -133,7 +133,7 @@ export const sideNavigationLinks = {
 			],
 		},
 		{
-			label: t("BED/CABIN"),
+			label: t("Bed/Cabin"),
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BED_CABIN.INDEX,
 			icon: IconMedicineSyrup,
 			color: "#009688", // Teal
@@ -244,13 +244,7 @@ export const sideNavigationLinks = {
 			color: "#009688", // Teal
 			allowedRoles: ["role_domain", "nurse_basic", "admin_nurse", "nurse_incharge", "admin_administrator"],
 		},
-		{
-			label: t("BED/CABIN"),
-			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BED_CABIN.INDEX,
-			icon: IconMedicineSyrup,
-			color: "#009688", // Teal
-			allowedRoles: ["role_domain", "nurse_basic", "admin_nurse", "nurse_incharge", "admin_administrator"],
-		},
+
 		{
 			label: t("Stock"),
 			path: PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.STORE_STOCK.INDEX,
@@ -286,7 +280,7 @@ export const sideNavigationLinks = {
 			label: t("Discharge"),
 			path: "/hospital/discharge",
 			icon: IconBuildingHospital,
-			color: "#795548", // Brown
+			color: "#f5d307", // Brown
 			allowedRoles: ["role_domain", "admin_administrator", "doctor_emergency", "nurse_basic", "nurse_incharge", "doctor_ipd", "operator_emergency"],
 		},
 

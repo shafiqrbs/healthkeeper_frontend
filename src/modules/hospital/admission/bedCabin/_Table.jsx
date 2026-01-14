@@ -47,6 +47,7 @@ import { errorNotification } from "@components/notification/errorNotification";
 import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
 import { CSVLink } from "react-csv";
 import usePagination from "@hooks/usePagination";
+import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 
 const PER_PAGE = 25;
 
@@ -101,6 +102,7 @@ export default function _Table({ module }) {
 	const [openedPatientUpdate, { open: openPatientUpdate, close: closePatientUpdate }] = useDisclosure(false);
 	const [singlePatientData, setSinglePatientData] = useState({});
 	const [selectedRoom, setSelectedRoom] = useState({});
+	const listData = useSelector((state) => state.crud[module].data);
 
 	// =============== form for action drawer fields ================
 	const actionForm = useForm({
@@ -130,18 +132,19 @@ export default function _Table({ module }) {
 		setControlsRefs(controlsRefs);
 	};
 
-		const { records, fetching,refetchAll, sortStatus, setSortStatus, total, perPage, page, handlePageChange } = usePagination({
-		module,
-		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BED_CABIN.INDEX,
-		filterParams: {
-			mode: processTab,
-			term: form.values.keywordSearch,
-			created: form.values.created,
-		},
-		perPage: PER_PAGE,
-		sortByKey: "updated_at",
-		direction: "desc",
-	});
+	const { refetchAll, scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
+		useInfiniteTableScroll({
+			module,
+			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BED_CABIN.INDEX,
+			filterParams: {
+				mode: processTab,
+				term: form.values.keywordSearch,
+				created: form.values.created,
+			},
+			perPage: PER_PAGE,
+			sortByKey: "updated_at",
+			direction: "desc",
+		});
 
 	const handleView = (id) => {
 		setSelectedPrescriptionId(id);
@@ -292,7 +295,7 @@ export default function _Table({ module }) {
 		}
 	};
 
-	const processColorMap = { admitted: "Red", paid: "green", discharged: "blue" , empty: "blue" };
+	const processColorMap = { admitted: "Red", paid: "green", discharged: "blue" , refund: "orange" , empty: "blue" };
 	const statusColorMap = { Occupied: "Red", Empty: "blue" };
 
 	return (
@@ -348,10 +351,6 @@ export default function _Table({ module }) {
 						pagination: tableCss.pagination,
 					}}
 					records={records}
-					onRowClick={({ record }) => {
-						if (!record?.prescription_id) return "";
-						handleView(record?.prescription_id);
-					}}
 					columns={[
 						{
 							accessor: "index",
@@ -490,19 +489,19 @@ export default function _Table({ module }) {
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
-					height={height + 50}
-					totalRecords={total}
-					recordsPerPage={perPage}
-					page={page}
-					onPageChange={handlePageChange}
+					height={height}
+					onScrollToBottom={handleScrollToBottom}
+					scrollViewportRef={scrollRef}
 					sortStatus={sortStatus}
 					onSortStatusChange={setSortStatus}
 					sortIcons={{
 						sorted: <IconChevronUp color="var(--theme-tertiary-color-7)" size={14} />,
 						unsorted: <IconSelector color="var(--theme-tertiary-color-7)" size={14} />,
 					}}
+
 				/>
 			</Box>
+			<DataTableFooter indexData={listData} module="Room/Bed" />
 			<ConfirmModal
 				opened={openedConfirm}
 				close={() => {
