@@ -1,6 +1,6 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { IconArrowRight, IconChevronUp, IconSelector } from "@tabler/icons-react";
-import {Badge, Box, Button, Text} from "@mantine/core";
+import {Badge, Box, Button, Flex, FloatingIndicator, Tabs, Text} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useTranslation } from "react-i18next";
@@ -15,11 +15,17 @@ import useAppLocalStore from "@hooks/useAppLocalStore";
 import {getDataWithoutStore} from "@/services/apiService";
 import {useSelector} from "react-redux";
 import {modals} from "@mantine/modals";
+import filterTabsCss from "@assets/css/FilterTabs.module.css";
+import {useState} from "react";
 
 const module = MODULES.DISCHARGE;
 const PER_PAGE = 25;
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd","doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator"];
 
+const tabs = [
+	{ label: "Current", value: "paid" },
+	{ label: "Discharged", value: "discharged" },
+];
 
 export default function _Table() {
 	const { t } = useTranslation();
@@ -27,11 +33,19 @@ export default function _Table() {
 	const navigate = useNavigate();
 	const { userRoles } = useAppLocalStore();
 	const filterData = useSelector((state) => state.crud[module].filterData);
+	const [rootRef, setRootRef] = useState(null);
+	const [processTab, setProcessTab] = useState("paid");
+	const [controlsRefs, setControlsRefs] = useState({});
+
+	const setControlRef = (val) => (node) => {
+		controlsRefs[val] = node;
+		setControlsRefs(controlsRefs);
+	};
 
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: formatDate(new Date()),
+			created: "",
 			room_id: "",
 		},
 	});
@@ -43,7 +57,7 @@ export default function _Table() {
 			filterParams: {
 				name: filterData?.name,
 				patient_mode: "ipd",
-				process: "paid",
+				process: processTab,
 				created: form.values.created,
 				term: form.values.keywordSearch,
 			},
@@ -75,11 +89,37 @@ export default function _Table() {
 			showNotificationComponent(t("NoDataAvailable"), "red.6", "lightgray");
 		}
 	};
-	const processColorMap = { paid: "red", discharged: "blue" , refund: "orange" , empty: "blue" };
-
+	const processColorMap = { paid: "red", discharged: "green" , refund: "orange" , empty: "blue" };
 
 	return (
-		<Box pos="relative">
+		<Box w="100%" bg="var(--mantine-color-white)">
+			<Flex justify="space-between" align="center" px="sm">
+				<Text fw={600} fz="sm" py="xs">
+					{t("PatientArchive")}
+				</Text>
+				<Flex gap="xs" align="center">
+					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
+						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
+							{tabs.map((tab, index) => (
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={index}
+								>
+									{t(tab.label)}
+								</Tabs.Tab>
+							))}
+							<FloatingIndicator
+								target={processTab ? controlsRefs[processTab] : null}
+								parent={rootRef}
+								className={filterTabsCss.indicator}
+							/>
+						</Tabs.List>
+					</Tabs>
+
+				</Flex>
+			</Flex>
 			<Box>
 				<KeywordSearch module={module} form={form} />
 			</Box>
@@ -154,7 +194,7 @@ export default function _Table() {
 							title: t("Action"),
 							render: (item) => (
 								userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-								item.process?.toLowerCase() === "paid" && (
+								(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "discharged") && (
 									<Button
 										variant="filled"
 										size="compact-xs"

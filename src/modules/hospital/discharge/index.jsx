@@ -64,67 +64,12 @@ export default function Index() {
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
 						<Grid w="100%" columns={24} gutter="xs">
 							<Grid.Col span={24} pos="relative" className="animate-ease-out">
-								<Flex
-									align="center"
-									justify="space-between"
-									px="sm"
-									py="xs"
-									bg="var(--mantine-color-white)"
-								>
-									<Text fw={600} fz="sm">
-										{t("PatientInformation")}
-									</Text>
-									<SegmentedControl
-										size="sm"
-										color="var(--theme-primary-color-6)"
-										value={dischargeMode}
-										onChange={(value) => {
-											setDischargeMode(value);
-										}}
-										data={[
-											{ label: t("Current"), value: "current" },
-											{ label: t("Archive"), value: "archive" },
-										]}
-									/>
-								</Flex>
-								{/* <TabsWithSearch
-									tabList={["list"]}
-									module={module}
-									tabPanels={[
-										{
-											tab: "list",
-											component: ( */}
 								<Table
 									ipdMode={dischargeMode}
 									selectedPrescriptionId={selectedPrescriptionId}
 									setSelectedPrescriptionId={setSelectedPrescriptionId}
 								/>
-								{/* ),
-										},
-									]}
-								/> */}
 							</Grid.Col>
-							{/* <Grid.Col span={18} className="animate-ease-out">
-								{dischargeId ? (
-									<Prescription
-										setCustomerId={setCustomerId}
-										hasRecords={hasRecords}
-										setShowHistory={setShowHistory}
-										baseHeight={mainAreaHeight - 370}
-									/>
-								) : (
-									<Flex
-										justify="center"
-										align="center"
-										p="sm"
-										px="md"
-										bg="var(--mantine-color-white)"
-										h={mainAreaHeight - 12}
-									>
-										<Text>No patient selected, please select a patient</Text>
-									</Flex>
-								)}
-							</Grid.Col> */}
 							{hasRecords && (
 								<Grid.Col display={showHistory ? "block" : "none"} span={4}>
 									<PatientPrescriptionHistoryList historyList={records} />

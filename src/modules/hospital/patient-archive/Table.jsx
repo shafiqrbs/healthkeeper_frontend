@@ -185,21 +185,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							/>
 						</Tabs.List>
 					</Tabs>
-
-					{availableClose ? (
-						<Flex gap="xs" align="center">
-							<Button
-								onClick={closeTable}
-								variant="outline"
-								size="xs"
-								radius="es"
-								leftSection={<IconX size={16} />}
-								color="var(--theme-delete-color)"
-							>
-								{t("Close")}
-							</Button>
-						</Flex>
-					) : null}
+					
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
