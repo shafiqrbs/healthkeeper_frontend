@@ -692,7 +692,9 @@ button[data-active='true'].mantine-focus-auto.mantine-active.mantine-datatable-p
     font-size: 14px;
 }
 
-
+.mantine-InputWrapper-error.mantine-DateTimePicker-error {
+    display: none !important;
+}
 
 .inner-title-box {
     margin-left: -16px;

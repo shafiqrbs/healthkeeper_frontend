@@ -140,6 +140,7 @@ export default function DeathCertificate({ data, refetch }) {
 					name="death_date_time"
 					form={form}
 					placeholder="Death Date & Time"
+					closeIcon
 				/>
 				{/*<InputForm
 					mt="sm"
