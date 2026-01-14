@@ -130,7 +130,7 @@ export default function _Table({ module }) {
 		setControlsRefs(controlsRefs);
 	};
 
-	const { records, fetching,refetchAll, sortStatus, setSortStatus, total, perPage, page, handlePageChange } = usePagination({
+		const { records, fetching,refetchAll, sortStatus, setSortStatus, total, perPage, page, handlePageChange } = usePagination({
 		module,
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.BED_CABIN.INDEX,
 		filterParams: {
@@ -420,7 +420,7 @@ export default function _Table({ module }) {
 																	}}
 																/>
 															}
-															onClick={(e) => patientUpdate(e, item?.id)}
+															onClick={(e) => patientUpdate(e, item?.invoice_id)}
 														>
 															{t("PatientUpdate")}
 														</Menu.Item>
