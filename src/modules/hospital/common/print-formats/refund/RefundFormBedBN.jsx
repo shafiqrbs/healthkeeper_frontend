@@ -279,16 +279,14 @@ const RefundFromBedBn = forwardRef(({ data, preview = false }, ref) => {
 															<Text size="xs" fw={600}>
 																Refund Day(s):{" "}
 																{getValue(
-																	patientInfo?.refund_day ||
-																		patientInfo?.remaining_day,
-																	"0"
+																	patientInfo?.refundRoom?.refund_quantity,"0"
 																)}
 															</Text>
 														</Table.Td>
 														<Table.Td>
 															<Text size="xs" fw={600}>
 																Refund Amount:{" "}
-																{getValue(patientInfo?.refund_amount, "0")}
+																{getValue(patientInfo?.refundRoom?.refund_amount, "0")}
 															</Text>
 														</Table.Td>
 													</Table.Tr>
