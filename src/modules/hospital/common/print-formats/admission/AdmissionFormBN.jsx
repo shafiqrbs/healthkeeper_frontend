@@ -126,10 +126,10 @@ const AdmissionFormBN = forwardRef(({ data, preview = false }, ref) => {
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td colSpan={2}>
 									<Group gap="xs">
-										<Text size="xs" fw={600}>
+										<Text fz={'md'} fw={600}>
 											{t("Name")}:
 										</Text>
-										<Text size="sm">{getValue(patientInfo?.name, "")}</Text>
+										<Text fz={'md'} fw={'600'}>{getValue(patientInfo?.name, "")}</Text>
 									</Group>
 								</Table.Td>
 								<Table.Td>

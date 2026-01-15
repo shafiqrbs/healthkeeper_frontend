@@ -55,7 +55,7 @@ const tabs = [
 	{ label: "IPD", value: "ipd" },
 ];
 
-const PER_PAGE = 100;
+const PER_PAGE = 25;
 const ALLOWED_OPD_ROLES = ["doctor_opd","doctor_ipd", "admin_administrator"];
 const ALLOWED_ADMIN_DOCTOR_ROLES = ["operator_emergency", "doctor_ipd_confirm", "admin_doctor", "admin_administrator"];
 export default function Table({ module, height, closeTable, availableClose = false }) {
@@ -185,7 +185,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 							/>
 						</Tabs.List>
 					</Tabs>
-					
+
 				</Flex>
 			</Flex>
 			<Box px="sm" mb="sm">
