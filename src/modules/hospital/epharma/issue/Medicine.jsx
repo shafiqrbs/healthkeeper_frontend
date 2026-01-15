@@ -1,4 +1,4 @@
-import { Box, Text, Stack, Grid, Flex, Button } from "@mantine/core";
+import { Box, Text, Grid, Flex, Button, Stack } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -56,8 +56,8 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 				barcodeForm.reset();
 				setResetKey((prev) => prev + 1);
 				dispatch(setRefetchData({ module, refetching: true }));
-				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				setEntity([]);
+				successNotification(t("UpdateSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EPHARMA.ISSUE);
 			}
 		} catch (error) {

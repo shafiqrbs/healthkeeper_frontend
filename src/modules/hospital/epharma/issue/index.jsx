@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
@@ -12,6 +12,8 @@ import { useForm } from "@mantine/form";
 import { getFormValues } from "@modules/hospital/epharma/helpers/request";
 import Medicine from "@modules/hospital/epharma/issue/Medicine";
 
+const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
+
 export default function Index() {
 	const { t } = useTranslation();
 	const progress = useGetLoadingProgress();
@@ -21,7 +23,8 @@ export default function Index() {
 	const navigate = useNavigate();
 	const [fetching, setFetching] = useState(false);
 	const [resetKey, setResetKey] = useState(0);
-	console.log(resetKey)
+	const barcodeRef = useRef(null);
+
 	useEffect(() => {
 		if (id) {
 			(async () => {
@@ -36,7 +39,12 @@ export default function Index() {
 		}
 	}, [id]);
 
-	const safe = (value) => (value === null || value === undefined || value === "" ? "-" : String(value));
+	useEffect(() => {
+		if (barcodeRef.current) {
+			barcodeRef.current.focus();
+		}
+	}, [id, resetKey]);
+
 	const sales = entity?.sales || {};
 
 	const col1 = [
@@ -101,6 +109,7 @@ export default function Index() {
 										<Input
 											label=""
 											key={resetKey}
+											ref={barcodeRef}
 											tooltip={t("PatientBarcodeScan")}
 											placeholder={t("PatientBarcodeScan")}
 											name="barcode"
@@ -143,7 +152,12 @@ export default function Index() {
 								</Box>
 							</Grid.Col>
 							<Grid.Col span={18} className="animate-ease-out">
-								<Medicine setResetKey={setResetKey} barcodeForm={form} setEntity={setEntity} entity={sales} />
+								<Medicine
+									setResetKey={setResetKey}
+									barcodeForm={form}
+									setEntity={setEntity}
+									entity={sales}
+								/>
 							</Grid.Col>
 						</Grid>
 					</Flex>
