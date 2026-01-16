@@ -1,10 +1,8 @@
-import { Box, Stack, Group, Text, ScrollArea, Grid } from "@mantine/core";
+import { Box, Stack, Text, ScrollArea, Grid, Autocomplete } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import ReportSubmission from "../ReportSubmission";
 import { useOutletContext, useParams } from "react-router-dom";
-import DatePickerForm from "@components/form-builders/DatePicker";
 import InputForm from "@components/form-builders/InputForm";
-import TextAreaForm from "@components/form-builders/TextAreaForm";
 import { useTranslation } from "react-i18next";
 import { modals } from "@mantine/modals";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
@@ -15,8 +13,11 @@ import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@
 import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
 import { formatDateForMySQL } from "@utils/index";
+import inputCss from "@assets/css/InputField.module.css";
 
 const module = MODULES.LAB_TEST;
+
+const autocompleteValues = ["hello world", "Dhaka optics", "Notification unit", "Discharge invoice billing"];
 
 export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
 	const { reportId } = useParams();
@@ -24,7 +25,6 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
-	const is_completed = diagnosticReport?.process === "Done";
 
 	const form = useForm({
 		initialValues: {
@@ -100,16 +100,17 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 			<Box className="border-top-none" px="sm" mt="xs">
 				<ScrollArea h={mainAreaHeight - 232} scrollbarSize={2} scrollbars="y">
 					<Stack gap="md">
-						{/* =============== test date and lab no =============== */}
 						<Grid>
 							<Grid.Col span={3}>Technique</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
-									form={form}
+								<Autocomplete
 									name="technique"
 									id="technique"
-									placeholder="5 mm non-contrast and contrast CT scan of chest were obtaiend"
-									minRows={3}
+									onChange={(value) => form.setFieldValue("technique", value)}
+									data={autocompleteValues}
+									clearable
+									classNames={inputCss}
+									placeholder="5 mm non-contrast and contrast CT scan of chest were obtained"
 								/>
 							</Grid.Col>
 						</Grid>

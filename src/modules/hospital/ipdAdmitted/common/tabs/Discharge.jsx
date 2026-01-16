@@ -38,6 +38,7 @@ export default function Discharge({ ipdData, refetch }) {
 				setMedicines={setMedicines}
 				baseHeight={mainAreaHeight - 376}
 				prescriptionId={ipdData?.prescription_id}
+				forDischarge
 			/>
 		</Box>
 	);

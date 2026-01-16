@@ -21,7 +21,6 @@ import {
 import { useForm } from "@mantine/form";
 import {
 	IconPlus,
-	IconReportMedical,
 	IconRestore,
 	IconDeviceFloppy,
 	IconX,
@@ -72,14 +71,22 @@ import AddDosagePopover from "@components/drawers/AddDosagePopover";
 import FormValidatorWrapper from "@components/form-builders/FormValidatorWrapper";
 import AddGenericPopover from "@components/drawers/AddGenericPopover";
 import useMedicineGenericData from "@hooks/useMedicineGenericData";
+import DischargeMedicineListTable from "@hospital-components/DischargeMedicineListTable";
 
 const module = MODULES.DISCHARGE;
 
-export default function Prescription({ isLoading, refetch, medicines, setMedicines, baseHeight = 0, prescriptionId }) {
+export default function Prescription({
+	isLoading,
+	refetch,
+	medicines,
+	setMedicines,
+	baseHeight = 0,
+	prescriptionId,
+	forDischarge = false,
+}) {
 	const {
 		diseasesProfile,
 		features: { medicineDuration },
-		advices: adviceData,
 		user,
 		dosages: dosage_options,
 		meals: by_meal_options,
@@ -572,32 +579,8 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 		}
 	};
 
-	const handleDischargePrintSubmit = async () => {
-		const result = await handleDischargeSubmit({ skipLoading: false, redirect: false });
-
-		if (result.status === 200) {
-			setPrintData(result.data);
-		}
-	};
-
 	const handleHoldData = () => {
 		console.log("HoldYourData");
-	};
-
-	const handleAdviseTemplate = (content) => {
-		if (!content) {
-			showNotificationComponent(t("AdviseContentNotAvailable"), "red", "lightgray", true, 700, true);
-			return;
-		}
-
-		const existingAdvise = form.values.advise;
-
-		if (existingAdvise?.includes(content)) {
-			showNotificationComponent(t("AdviseAlreadyExists"), "red", "lightgray", true, 700, true);
-			return;
-		}
-
-		form.setFieldValue("advise", content);
 	};
 
 	const populateMedicineData = async (v) => {
@@ -1035,17 +1018,28 @@ export default function Prescription({ isLoading, refetch, medicines, setMedicin
 									</Button>
 								</Flex>
 							)}
-							{dbMedicines?.length > 0 && (
-								<MedicineListTable
-									medicines={dbMedicines}
-									showDelete={true}
-									onDelete={handleDeleteMedicine}
-									prescriptionId={prescriptionId}
-									tableHeight={mainAreaHeight - 386}
-									setMedicines={setDbMedicines}
-									forDischarge
-								/>
-							)}
+							{dbMedicines?.length > 0 &&
+								(forDischarge ? (
+									<DischargeMedicineListTable
+										medicines={dbMedicines}
+										showDelete={true}
+										onDelete={handleDeleteMedicine}
+										prescriptionId={prescriptionId}
+										tableHeight={mainAreaHeight - 386}
+										setMedicines={setDbMedicines}
+										forDischarge
+									/>
+								) : (
+									<MedicineListTable
+										medicines={dbMedicines}
+										showDelete={true}
+										onDelete={handleDeleteMedicine}
+										prescriptionId={prescriptionId}
+										tableHeight={mainAreaHeight - 386}
+										setMedicines={setDbMedicines}
+										forDischarge
+									/>
+								))}
 						</Stack>
 					</ScrollArea>
 					<Box pr="xs" my="xs" h={240}>
