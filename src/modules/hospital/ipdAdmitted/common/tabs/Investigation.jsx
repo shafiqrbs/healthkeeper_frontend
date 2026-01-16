@@ -227,30 +227,34 @@ export default function Investigation({ ipdData }) {
 											</Button>
 										</Flex>
 										<Box mt="md" px="xs" fz="sm" w={"100%"}>
-											{item?.items?.map((particular, idx) => (
-												<Flex key={idx} justify="space-between" align="center">
-													<Text fz="xs">
-														{idx + 1}. {particular.name}
-													</Text>
+											{item?.items
+												?.sort((a, b) =>
+													a.name?.localeCompare(b.name, undefined, { sensitivity: "base" })
+												)
+												.map((particular, idx) => (
+													<Flex key={idx} justify="space-between" align="center">
+														<Text fz="xs">
+															{idx + 1}. {particular.name}
+														</Text>
 
-													<Text fz="xs" ta="right">
-														{particular.process === "New" && (
-															<Badge variant="light" size="xs" color="red">
-																{particular.process}
-															</Badge>
-														)}
-														{particular.process === "Done" && (
-															<Badge
-																variant="light"
-																size="xs"
-																color="var(--theme-primary-color-8)"
-															>
-																{particular.process}
-															</Badge>
-														)}
-													</Text>
-												</Flex>
-											))}
+														<Text fz="xs" ta="right">
+															{particular.process?.toLowerCase() === "new" && (
+																<Badge variant="light" size="xs" color="red">
+																	{particular.process}
+																</Badge>
+															)}
+															{particular.process?.toLowerCase() === "done" && (
+																<Badge
+																	variant="light"
+																	size="xs"
+																	color="var(--theme-primary-color-8)"
+																>
+																	{particular.process}
+																</Badge>
+															)}
+														</Text>
+													</Flex>
+												))}
 										</Box>
 									</Box>
 									<Divider />

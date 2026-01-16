@@ -11,6 +11,27 @@ import { t } from "i18next";
 import Barcode from "react-barcode";
 import { IconPointFilled, IconPhoneCall } from "@tabler/icons-react";
 
+const getValue = (value, defaultValue = "") => {
+	return value || defaultValue;
+};
+
+// Normalize order into an array of keys sorted by their index
+const normalizeOrder = (inputOrder) => {
+	// console.log(inputOrder);
+	if (Array.isArray(inputOrder)) {
+		// console.log(inputOrder);
+		const entries = inputOrder.flatMap((obj) => Object.entries(obj));
+		// console.log(entries);
+		return entries.sort((a, b) => a[1] - b[1]).map(([key]) => key);
+	}
+	if (inputOrder && typeof inputOrder === "object") {
+		return Object.keys(inputOrder).sort((a, b) => (inputOrder?.[a] ?? 0) - (inputOrder?.[b] ?? 0));
+	}
+	return [];
+};
+
+const hasArrayWithLength = (arr) => Array.isArray(arr) && arr.length > 0;
+
 const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const patientInfo = data || {};
 	const jsonContent = JSON.parse(patientInfo?.json_content || "{}");
@@ -21,27 +42,9 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const medicines = jsonContent?.medicines || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useHospitalConfigData();
-	const getValue = (value, defaultValue = "") => {
-		return value || defaultValue;
-	};
 
-	// Normalize order into an array of keys sorted by their index
-	const normalizeOrder = (inputOrder) => {
-		// console.log(inputOrder);
-		if (Array.isArray(inputOrder)) {
-			// console.log(inputOrder);
-			const entries = inputOrder.flatMap((obj) => Object.entries(obj));
-			// console.log(entries);
-			return entries.sort((a, b) => a[1] - b[1]).map(([key]) => key);
-		}
-		if (inputOrder && typeof inputOrder === "object") {
-			return Object.keys(inputOrder).sort((a, b) => (inputOrder?.[a] ?? 0) - (inputOrder?.[b] ?? 0));
-		}
-		return [];
-	};
 	const orderedExamKeys = normalizeOrder(order);
 
-	const hasArrayWithLength = (arr) => Array.isArray(arr) && arr.length > 0;
 	const SectionWrapper = ({ label, children }) => (
 		<Box>
 			<Text size="sm" fw={600}>
@@ -107,7 +110,12 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 			case "investigation": {
 				return (
 					<SectionWrapper label="Investigation:">
-						{renderNumberedList(dataArray, (item) => `${item.value}`)}
+						{renderNumberedList(
+							dataArray?.sort((a, b) =>
+								a?.name?.localeCompare(b?.name, undefined, { sensitivity: "base" })
+							),
+							(item) => `${item?.name}`
+						)}
 						{renderOtherInstructions(key)}
 					</SectionWrapper>
 				);
