@@ -119,11 +119,15 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 						<Grid>
 							<Grid.Col span={3}>Parenchyma</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
+								<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="parenchyma"
 									form={form}
 									name="parenchyma"
 									id="parenchyma"
 									placeholder="No local or diffuse sen in lunge parenchyma Parenchyma"
+									clearable
 								/>
 							</Grid.Col>
 						</Grid>
