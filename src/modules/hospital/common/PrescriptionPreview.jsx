@@ -444,7 +444,7 @@ const PrescriptionPreview = forwardRef(({ prescriptionId }, ref) => {
 						))}
 					</Box>
 					<Box align={"center"}>
-						<Barcode fontSize={"12"} width={"1"} height={"40"} value={patientInfo?.barcode} />
+						<Barcode fontSize={"12"} width={1} height={40} value={patientInfo?.barcode} />
 					</Box>
 				</Grid.Col>
 			</Grid>

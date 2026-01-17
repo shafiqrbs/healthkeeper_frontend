@@ -526,9 +526,7 @@ export const CORE_DATA_ROUTES = {
 };
 export const HOSPITAL_DATA_ROUTES = {
 	API_ROUTES: {
-
 		PATIENT_ARCHIVE: {
-
 			INDEX: "hospital/patient-archive",
 			CREATE: "hospital/patient-archive",
 			READMISSION: "hospital/patient-archive/re-admission",
@@ -700,6 +698,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			TAG_PRINT: "hospital/lab-investigation/sample-confirm",
 			CATEGORY_GROUP: "hospital/lab-investigation/category-group",
 			INLINE_UPDATE: "hospital/lab-investigation/report/inline-update",
+			SUGGESTIONS: "hospital/lab-investigation/report-keyword-search",
 		},
 
 		LAB_GROUP_TEST: {

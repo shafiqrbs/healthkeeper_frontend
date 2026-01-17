@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Box, Stack, Text, ScrollArea, Grid, Popover, ActionIcon, List } from "@mantine/core";
+import { Box, Stack, Text, ScrollArea, Grid } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import ReportSubmission from "../ReportSubmission";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -13,35 +12,16 @@ import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@
 import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
 import TextAreaForm from "@components/form-builders/TextAreaForm";
-import { IconBulb } from "@tabler/icons-react";
+import ReportKeywordSearchPopover from "@components/form-builders/ReportKeywordSearchPopover";
 
 const module = MODULES.LAB_TEST;
 
-const SUGGESTIONS_DATA = [
-	"Central in position",
-	"Normal is position and contour",
-	"Clear",
-	"Normal is position and size",
-	"Appear normal",
-	"Normal findings",
-	"Normal X-ray of chest",
-	"Normal X-ray of chest",
-];
-
-// =============== sars cov2 results are now handled as individual boolean properties ===============
 export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
-
-	const [suggestionsPopoverOpened, setSuggestionsPopoverOpened] = useState(false);
-
-	const insertSuggestion = (field, value) => {
-		form.setFieldValue(field, value);
-		setSuggestionsPopoverOpened(false);
-	};
 
 	const form = useForm({
 		initialValues: {
@@ -108,8 +88,6 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 		<Box className="border-top-none" px="sm" mt="xs">
 			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
-					{/* =============== date specimen collection =============== */}
-
 					<Grid>
 						<Grid.Col span={3}>Trachea</Grid.Col>
 						<Grid.Col span={9}>
@@ -124,121 +102,158 @@ export default function XRay({ diagnosticReport, refetchDiagnosticReport, refetc
 									showRightSection={false}
 								/>
 
-								{/* <Popover
-									opened={suggestionsPopoverOpened}
-									onChange={setSuggestionsPopoverOpened}
-									position="bottom-end"
-									withArrow
-									shadow="md"
-									trapFocus={false}
-								>
-									<Popover.Target>
-										<ActionIcon
-											size="lg"
-											variant="light"
-											color="orange"
-											pos="absolute"
-											top={10}
-											aria-label="Suggestions"
-											right={8}
-											onClick={() => setSuggestionsPopoverOpened((o) => !o)}
-										>
-											<IconBulb color="#ff7800" size={24} opacity={0.5} />
-										</ActionIcon>
-									</Popover.Target>
-
-									<Popover.Dropdown p="xs">
-										<List spacing="xs" size="sm">
-											{SUGGESTIONS_DATA.map((item, index) => (
-												<List.Item
-													key={index}
-													className="cursor-pointer hover:text-primary"
-													onClick={() => insertSuggestion("trachea", item)}
-												>
-													{item}
-												</List.Item>
-											))}
-										</List>
-									</Popover.Dropdown>
-								</Popover> */}
+								<ReportKeywordSearchPopover
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="trachea"
+									form={form}
+									formFieldName="trachea"
+									placeholder="Search trachea keywords..."
+								/>
 							</Box>
 						</Grid.Col>
 					</Grid>
 					<Grid>
 						<Grid.Col span={3}>Diaphragm</Grid.Col>
 						<Grid.Col span={9}>
-							<TextAreaForm
-								label=""
-								placeholder="Enter Diaphragm"
-								name="diaphragm"
-								id="diaphragm"
-								nextField="referral_center"
-								form={form}
-							/>
+							<Box pos="relative">
+								<TextAreaForm
+									label=""
+									placeholder="Enter Diaphragm"
+									name="diaphragm"
+									id="diaphragm"
+									nextField="referral_center"
+									form={form}
+									showRightSection={false}
+								/>
+								<ReportKeywordSearchPopover
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="diaphragm"
+									form={form}
+									formFieldName="diaphragm"
+									placeholder="Search diaphragm keywords..."
+								/>
+							</Box>
 						</Grid.Col>
 					</Grid>
 					<Grid>
 						<Grid.Col span={3}>Lungs</Grid.Col>
 						<Grid.Col span={9}>
-							<TextAreaForm
-								label=""
-								placeholder="Enter Diaphragm"
-								name="lungs"
-								id="lungs"
-								nextField="heart"
-								form={form}
-							/>
+							<Box pos="relative">
+								<TextAreaForm
+									label=""
+									placeholder="Enter Lungs"
+									name="lungs"
+									id="lungs"
+									nextField="heart"
+									form={form}
+									showRightSection={false}
+								/>
+								<ReportKeywordSearchPopover
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="lungs"
+									form={form}
+									formFieldName="lungs"
+									placeholder="Search lungs keywords..."
+								/>
+							</Box>
 						</Grid.Col>
 					</Grid>
 					<Grid>
 						<Grid.Col span={3}>heart</Grid.Col>
 						<Grid.Col span={9}>
-							<TextAreaForm
-								label=""
-								placeholder="Enter Diaphragm"
-								name="heart"
-								id="heart"
-								nextField="bony_thorax"
-								form={form}
-							/>
+							<Box pos="relative">
+								<TextAreaForm
+									label=""
+									placeholder="Enter Heart"
+									name="heart"
+									id="heart"
+									nextField="bony_thorax"
+									form={form}
+									showRightSection={false}
+								/>
+								<ReportKeywordSearchPopover
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="heart"
+									form={form}
+									formFieldName="heart"
+									placeholder="Search heart keywords..."
+								/>
+							</Box>
 						</Grid.Col>
 					</Grid>
 					<Grid>
 						<Grid.Col span={3}>Bony Thorax</Grid.Col>
 						<Grid.Col span={9}>
-							<TextAreaForm
-								label=""
-								placeholder="Enter Diaphragm"
-								name="bony_thorax"
-								id="bony_thorax"
-								nextField="impression"
-								form={form}
-							/>
+							<Box pos="relative">
+								<TextAreaForm
+									label=""
+									placeholder="Enter Bony Thorax"
+									name="bony_thorax"
+									id="bony_thorax"
+									nextField="impression"
+									form={form}
+									showRightSection={false}
+								/>
+								<ReportKeywordSearchPopover
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="bony_thorax"
+									form={form}
+									formFieldName="bony_thorax"
+									placeholder="Search bony thorax keywords..."
+								/>
+							</Box>
 						</Grid.Col>
 					</Grid>
 					<Grid>
 						<Grid.Col span={3}>Impression</Grid.Col>
 						<Grid.Col span={9}>
-							<TextAreaForm
-								label=""
-								placeholder="Enter Impression"
-								name="impression"
-								id="impression"
-								nextField="impression_two"
-								form={form}
-							/>
+							<Box pos="relative">
+								<TextAreaForm
+									label=""
+									placeholder="Enter Impression"
+									name="impression"
+									id="impression"
+									nextField="impression_two"
+									form={form}
+									showRightSection={false}
+								/>
+								<ReportKeywordSearchPopover
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="impression"
+									form={form}
+									formFieldName="impression"
+									placeholder="Search impression keywords..."
+								/>
+							</Box>
 						</Grid.Col>
 					</Grid>
 					<Grid>
 						<Grid.Col span={3} />
 						<Grid.Col span={9}>
-							<TextAreaForm
-								label=""
-								placeholder="Enter Impression Other"
-								name="impression_two"
-								id="impression_two"
-								form={form}
-							/>
+							<Box pos="relative">
+								<TextAreaForm
+									label=""
+									placeholder="Enter Impression Two"
+									name="impression_two"
+									id="impression_two"
+									form={form}
+									showRightSection={false}
+								/>
+								<ReportKeywordSearchPopover
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="impression_two"
+									form={form}
+									formFieldName="impression_two"
+									placeholder="Search impression other keywords..."
+								/>
+							</Box>
 						</Grid.Col>
 					</Grid>
 				</Stack>

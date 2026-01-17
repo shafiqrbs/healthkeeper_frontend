@@ -143,7 +143,6 @@ function DischargeMedicineListTable({
 	);
 
 	const [records, setRecords] = useState(recordsWithIds);
-	//console.log(records)
 
 	// =============== only resync when list length changes ================
 	useEffect(() => {
