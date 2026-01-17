@@ -1,4 +1,4 @@
-import { Box, Stack, Text, ScrollArea, Grid, Autocomplete } from "@mantine/core";
+import { Box, Stack, Text, ScrollArea, Grid } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import ReportSubmission from "../ReportSubmission";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -13,11 +13,9 @@ import { ERROR_NOTIFICATION_COLOR, MODULES, SUCCESS_NOTIFICATION_COLOR } from "@
 import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
 import { formatDateForMySQL } from "@utils/index";
-import inputCss from "@assets/css/InputField.module.css";
+import ReportKeywordAutocomplete from "@components/form-builders/ReportKeywordAutocomplete";
 
 const module = MODULES.LAB_TEST;
-
-const autocompleteValues = ["hello world", "Dhaka optics", "Notification unit", "Discharge invoice billing"];
 
 export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
 	const { reportId } = useParams();
@@ -103,14 +101,15 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 						<Grid>
 							<Grid.Col span={3}>Technique</Grid.Col>
 							<Grid.Col span={9}>
-								<Autocomplete
+								<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="technique"
+									form={form}
 									name="technique"
 									id="technique"
-									onChange={(value) => form.setFieldValue("technique", value)}
-									data={autocompleteValues}
-									clearable
-									classNames={inputCss}
 									placeholder="5 mm non-contrast and contrast CT scan of chest were obtained"
+									clearable
 								/>
 							</Grid.Col>
 						</Grid>
