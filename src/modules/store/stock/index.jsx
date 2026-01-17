@@ -43,7 +43,7 @@ export default function Index({ mode = "create" }) {
 						<Box w="100%" bg="var(--mantine-color-white)" p="xs" className="borderRadiusAll">
 							<CoreHeaderNavbar
 								module="store"
-								pageTitle={t("ManageIndent")}
+								pageTitle={t("ManageStock")}
 								roles={t("Roles")}
 								allowZeroPercentage=""
 								currencySymbol=""

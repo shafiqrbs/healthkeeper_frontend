@@ -69,6 +69,10 @@ export default function __IssueMedicineDrawer({
 		params: { mode: "medicine" },
 	});
 
+	const hasProcessableItem = medicineHistoryData?.data?.some(
+		(item) => item.stock_quantity > 0 && !item.daily_history_id
+	);
+
 	// Store user-edited quantities
 	const [submitFormData, setSubmitFormData] = useState({});
 
@@ -246,14 +250,19 @@ export default function __IssueMedicineDrawer({
 
 										<Table.Tbody>
 											{medicineHistoryData?.data?.map((item, index) => (
-												<Table.Tr key={item.id}>
+												<Table.Tr
+													key={item.id}
+													style={{
+														backgroundColor: item.daily_history_id ? "#a7f88f" : "white",
+													}}
+												>
 													<Table.Td>{index + 1}</Table.Td>
 													<Table.Td>{item.medicine_name}</Table.Td>
 													<Table.Td>{item.generic}</Table.Td>
 													<Table.Td>{item.dose_details}</Table.Td>
 													<Table.Td>{item.stock_quantity}</Table.Td>
 													<Table.Td>
-														{item.stock_quantity > 0 ? (
+														{item.stock_quantity > 0 && !item.daily_history_id ? (
 															<NumberInput
 																size="xs"
 																className={inlineInputCss.inputNumber}
@@ -272,16 +281,17 @@ export default function __IssueMedicineDrawer({
 												</Table.Tr>
 											))}
 
-											<Table.Tr>
-												<Table.Td colSpan={6}>
-													<Flex justify="flex-end" mt="xs" mb="xs" pr="xs">
-														{medicineHistoryData?.data?.length > 0 && (
+											{hasProcessableItem && (
+												<Table.Tr>
+													<Table.Td colSpan={6}>
+														<Flex justify="flex-end" mt="xs" mb="xs" pr="xs">
 															<Button onClick={handleProcess}>{t("Process")}</Button>
-														)}
-													</Flex>
-												</Table.Td>
-											</Table.Tr>
+														</Flex>
+													</Table.Td>
+												</Table.Tr>
+											)}
 										</Table.Tbody>
+
 									</Table>
 								</Box>
 							</Stack>

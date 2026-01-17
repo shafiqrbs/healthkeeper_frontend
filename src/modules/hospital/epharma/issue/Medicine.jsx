@@ -101,6 +101,10 @@ export default function Medicine({ entity, setEntity, barcodeForm, setResetKey }
 									},
 									{ accessor: "name", title: t("Name") },
 									{
+										accessor: "current_warehouse_stock.quantity",
+										title: t("Stock"),
+									},
+									{
 										accessor: "quantity",
 										width: "200px",
 										title: t("Quantity"),
