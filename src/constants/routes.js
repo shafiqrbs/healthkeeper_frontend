@@ -557,6 +557,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "hospital/discharge",
 			VIEW: "hospital/discharge",
 			DELETE: "hospital/discharge",
+			DOSAGE_MEALS_SUGGESTIONS: "hospital/ipdprescription/dosage-meal-search",
 		},
 		LOCATIONS: {
 			INDEX: "hospital/select/location",

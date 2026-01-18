@@ -56,12 +56,11 @@ export default function ReportKeywordSearchPopover({
 		}
 	};
 
-	// =============== extract display text from different response formats ================
 	const getDisplayText = (item) => {
 		if (typeof item === "string") {
 			return item;
 		}
-		return item?.text || item?.name || item?.value || item?.label || JSON.stringify(item);
+		return item?.name;
 	};
 
 	return (

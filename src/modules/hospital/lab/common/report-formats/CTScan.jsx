@@ -140,11 +140,15 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 								a. Vessels
 							</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
+								<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="mediastinum_vessels"
 									form={form}
 									name="mediastinum_vessels"
 									id="mediastinum_vessels"
 									placeholder="Appear normal"
+									clearable
 								/>
 							</Grid.Col>
 						</Grid>
@@ -154,11 +158,15 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 								b. Trachea-
 							</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
+								<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="mediastinum_trachea"
 									form={form}
 									name="mediastinum_trachea"
 									id="mediastinum_trachea"
 									placeholder="Central position"
+									clearable
 								/>
 							</Grid.Col>
 						</Grid>
@@ -168,11 +176,15 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 								c. Oesophagus-
 							</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
+								<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="mediastinum_oesophagus"
 									form={form}
 									name="mediastinum_oesophagus"
 									id="mediastinum_oesophagus"
 									placeholder="Appear normal"
+									clearable
 								/>
 							</Grid.Col>
 						</Grid>
@@ -182,11 +194,15 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 								d. Thymus-
 							</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
+								<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="mediastinum_thymus"
 									form={form}
 									name="mediastinum_thymus"
 									id="mediastinum_thymus"
 									placeholder="Not enlarged"
+									clearable
 								/>
 							</Grid.Col>
 						</Grid>
@@ -196,29 +212,46 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 								d. Lymph Nodes-
 							</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
+								<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="mediastinum_lymph_nodes"
 									form={form}
 									name="mediastinum_lymph_nodes"
 									id="mediastinum_lymph_nodes"
-									placeholder="Not enlarged"
+									placeholder="Central position"
+									clearable
 								/>
 							</Grid.Col>
 						</Grid>
 						<Grid>
 							<Grid.Col span={3}>Heart</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm form={form} name="heart" id="heart" placeholder="Normal in ID" minRows={3} />
+								<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="heart"
+									form={form}
+									name="heart"
+									id="heart"
+									placeholder="Normal in ID"
+									clearable
+								/>
 							</Grid.Col>
 						</Grid>
 
 						<Grid>
 							<Grid.Col span={3}>Pleura</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
+								<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="pleura"
 									form={form}
 									name="pleura"
 									id="pleura"
 									placeholder="Appear normal"
+									clearable
 									minRows={3}
 								/>
 							</Grid.Col>
@@ -226,24 +259,30 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 						<Grid>
 							<Grid.Col span={3}>Bones</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
+									<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="bones"
 									form={form}
 									name="bones"
 									id="bones"
 									placeholder="Appear normal"
-									minRows={3}
+									clearable
 								/>
 							</Grid.Col>
 						</Grid>
 						<Grid>
 							<Grid.Col span={3}>After I/V Contrast</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
+								<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="after_iv_contrast"
 									form={form}
 									name="after_iv_contrast"
 									id="after_iv_contrast"
 									placeholder="No abnormal contrast uptake is seen"
-									minRows={3}
+									clearable
 								/>
 							</Grid.Col>
 						</Grid>
@@ -251,12 +290,15 @@ export default function CTScan({ diagnosticReport, refetchDiagnosticReport, refe
 						<Grid>
 							<Grid.Col span={3}>Impression</Grid.Col>
 							<Grid.Col span={9}>
-								<InputForm
+								<ReportKeywordAutocomplete
+									particularId={diagnosticReport?.particular_id}
+									baseUrl={HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.SUGGESTIONS}
+									fieldName="impression"
 									form={form}
 									name="impression"
 									id="impression"
 									placeholder="Normal CT scan of chest"
-									minRows={3}
+									clearable
 								/>
 							</Grid.Col>
 						</Grid>

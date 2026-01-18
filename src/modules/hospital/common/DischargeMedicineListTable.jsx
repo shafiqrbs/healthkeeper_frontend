@@ -1,5 +1,5 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import { Center, Flex, Switch, TableTd, ActionIcon, TextInput, Text, Autocomplete } from "@mantine/core";
+import { Center, Flex, Switch, TableTd, ActionIcon, TextInput, Text, Autocomplete, Loader } from "@mantine/core";
 import { IconCheck, IconGripVertical, IconX, IconTrash } from "@tabler/icons-react";
 import { DataTable, DataTableDraggableRow } from "mantine-datatable";
 import clsx from "clsx";
@@ -16,7 +16,7 @@ import { storeEntityData } from "@/app/store/core/crudThunk";
 import { errorNotification } from "@components/notification/errorNotification";
 import inlineInputCss from "@assets/css/InlineInputField.module.css";
 import DateSelector from "@components/form-builders/DateSelector";
-import useAppLocalStore from "@hooks/useAppLocalStore";
+import useAutocompleteSuggestions from "@hooks/useAutocompleteSuggestions";
 
 const MemoSwitch = memo(function MemoSwitch({ checked, onChange }) {
 	return (
@@ -40,12 +40,12 @@ const MemoSwitch = memo(function MemoSwitch({ checked, onChange }) {
 });
 
 const MemoTextInput = memo(function MemoTextInput({ value, placeholder, className, onBlur }) {
-	const [localValue, setLocalValue] = useState(value || "");
+	const [ localValue, setLocalValue ] = useState(value || "");
 
 	// =============== sync local state when prop value changes externally ================
 	useEffect(() => {
 		setLocalValue(value || "");
-	}, [value]);
+	}, [ value ]);
 
 	const handleChange = (event) => {
 		setLocalValue(event.currentTarget.value);
@@ -72,15 +72,37 @@ const MemoTextInput = memo(function MemoTextInput({ value, placeholder, classNam
 	);
 });
 
-const MemoAutocomplete = memo(function MemoAutocomplete({ value, placeholder, className, onBlur, data }) {
-	const [localValue, setLocalValue] = useState(value || "");
+const MemoAutocomplete = memo(function MemoAutocomplete({ value, placeholder, className, onBlur, fieldName, data }) {
+	const [ localValue, setLocalValue ] = useState(value || "");
+
+	const shouldUseApi = !!fieldName;
+	const { searchResults, isSearching, handleSearchChange } = useAutocompleteSuggestions({
+		baseUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.DISCHARGE.DOSAGE_MEALS_SUGGESTIONS,
+		fieldName,
+		debounceDelay: 300,
+	});
 
 	useEffect(() => {
 		setLocalValue(value || "");
-	}, [value]);
+	}, [ value ]);
+
+	// =============== extract display text from different response formats ================
+	const getDisplayText = (item) => {
+		if (typeof item === "string") {
+			return item;
+		}
+		return item?.by_meal_bn || item?.dose_details_bn || JSON.stringify(item);
+	};
+
+	const autocompleteData = shouldUseApi
+		? searchResults.map((item) => getDisplayText(item))
+		: data || [];
 
 	const handleChange = (newValue) => {
 		setLocalValue(newValue);
+		if (shouldUseApi && newValue && newValue.trim()) {
+			handleSearchChange(newValue);
+		}
 	};
 
 	const handleBlur = () => {
@@ -93,9 +115,10 @@ const MemoAutocomplete = memo(function MemoAutocomplete({ value, placeholder, cl
 			className={className}
 			placeholder={placeholder}
 			value={localValue}
-			data={data}
+			data={autocompleteData}
 			onChange={handleChange}
 			onBlur={handleBlur}
+			rightSection={shouldUseApi && isSearching ? <Loader size="xs" /> : null}
 			styles={{
 				input: {
 					borderRadius: "8px",
@@ -131,7 +154,6 @@ function DischargeMedicineListTable({
 	const prescriptionId = propPrescriptionId || paramsPrescriptionId;
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
-	const { dosages, meals } = useAppLocalStore();
 
 	const recordsWithIds = useMemo(
 		() =>
@@ -139,22 +161,15 @@ function DischargeMedicineListTable({
 				...m,
 				id: m.id?.toString(),
 			})),
-		[medicines]
+		[ medicines ]
 	);
 
-	const [records, setRecords] = useState(recordsWithIds);
+	const [ records, setRecords ] = useState(recordsWithIds);
 
 	// =============== only resync when list length changes ================
 	useEffect(() => {
 		setRecords((prev) => (prev.length !== recordsWithIds.length ? recordsWithIds : prev));
-	}, [recordsWithIds]);
-
-	// =============== prepare dosage options for autocomplete ================
-	const dosageOptions = useMemo(() => dosages?.map((dosage) => dosage.name) ?? [], [dosages]);
-	const dosageOptionsData = [...new Set(dosageOptions)];
-
-	const mealOptions = useMemo(() => meals?.map((meal) => meal.name) ?? [], [meals]);
-	const mealOptionsData = [...new Set(mealOptions)];
+	}, [ recordsWithIds ]);
 
 	const debouncedUpdate = useRef(
 		debounce(async (payload) => {
@@ -168,28 +183,28 @@ function DischargeMedicineListTable({
 
 	const handleInlineEdit = useCallback(
 		(id, field, value) => {
-			setRecords((prev) => prev.map((r) => (r.id === id ? { ...r, [field]: value } : r)));
+			setRecords((prev) => prev.map((r) => (r.id === id ? { ...r, [ field ]: value } : r)));
 
 			debouncedUpdate({
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INLINE_UPDATE}/${id}`,
 				data: {
 					medicine_id: id,
-					[field]: value,
+					[ field ]: value,
 					prescription_id: prescriptionId,
 				},
 				module: "prescription",
 			});
 		},
-		[debouncedUpdate, prescriptionId]
+		[ debouncedUpdate, prescriptionId ]
 	);
 
 	const handleDragEnd = async (result) => {
 		if (!result.destination) return;
 
-		const oldItems = [...records];
-		const items = [...records];
+		const oldItems = [ ...records ];
+		const items = [ ...records ];
 
-		const [moved] = items.splice(result.source.index, 1);
+		const [ moved ] = items.splice(result.source.index, 1);
 		items.splice(result.destination.index, 0, moved);
 
 		setRecords(items);
@@ -241,7 +256,7 @@ function DischargeMedicineListTable({
 						value={record.dose_details}
 						className={inlineInputCss.inputText}
 						placeholder={t("Medicine Dosage")}
-						data={dosageOptionsData}
+						fieldName="dose_details_bn"
 						onBlur={(value) => handleInlineEdit(record.id, "dose_details", value)}
 					/>
 				),
@@ -255,7 +270,7 @@ function DischargeMedicineListTable({
 						value={record.by_meal}
 						className={inlineInputCss.inputText}
 						placeholder={t("By meal")}
-						data={mealOptionsData}
+						fieldName="by_meal_bn"
 						onBlur={(value) => handleInlineEdit(record.id, "by_meal", value)}
 					/>
 				),
@@ -319,7 +334,7 @@ function DischargeMedicineListTable({
 		});
 
 		return cols;
-	}, [handleInlineEdit, showDelete, onDelete, showSwitch, t, forDischarge, dosageOptions, mealOptions]);
+	}, [ handleInlineEdit, showDelete, onDelete, showSwitch, t, forDischarge ]);
 
 	return (
 		<DragDropContext onDragEnd={handleDragEnd}>

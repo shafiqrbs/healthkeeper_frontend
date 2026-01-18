@@ -44,9 +44,6 @@ export default function ReportKeywordAutocomplete({
 		debounceDelay,
 	});
 
-	console.log(searchResults);
-
-	// =============== sync input value with form value ================
 	useEffect(() => {
 		if (form && name) {
 			const formValue = form.values[name] || "";
@@ -59,15 +56,13 @@ export default function ReportKeywordAutocomplete({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [form?.values[name], value, name]);
 
-	// =============== extract display text from different response formats ================
 	const getDisplayText = (item) => {
 		if (typeof item === "string") {
 			return item;
 		}
-		return item?.text || item?.name || item?.value || item?.label || JSON.stringify(item);
+		return item?.name;
 	};
 
-	// =============== convert search results to autocomplete data format ================
 	const autocompleteData = searchResults.map((item) => getDisplayText(item));
 
 	const handleInputChange = (newValue) => {
