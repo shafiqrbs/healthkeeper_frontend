@@ -52,6 +52,7 @@ import MedicineIndex from "@modules/pharmacy/medicine";
 import GenericIndex from "@modules/pharmacy/generic";
 import BillingIndex from "@modules/hospital/billing";
 import BillingAdmissionIndex from "@modules/hospital/billing/admission";
+import BillingControlIndex from "@modules/hospital/billing/control";
 import BillingIpdIndex from "@modules/hospital/billing/ipd";
 import BillingRefundIndex from "@modules/hospital/billing/refund";
 import BillingRefundHistoryIndex from "@modules/hospital/billing/refundHistory";
@@ -366,7 +367,7 @@ function AppRoute() {
 							index
 							element={
 								<ProtectedRoute
-									roles={["role_domain","admin_administrator", "doctor_ipd", "doctor_emergency","doctor_rs_rp_confirm", "doctor_opd", "operator_emergency"]}
+									roles={["role_domain","admin_administrator", "operator_opd", "doctor_ipd", "doctor_emergency","doctor_rs_rp_confirm", "doctor_opd", "operator_emergency"]}
 								>
 									<PatientArchiveIndex />
 								</ProtectedRoute>
@@ -812,6 +813,32 @@ function AppRoute() {
 								]}
 							>
 								<BillingAdmissionIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="billing-control"
+						element={
+							<ProtectedRoute
+								roles={[
+									"admin_administrator",
+									"admin_hospital",
+								]}
+							>
+								<BillingControlIndex />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="billing-control/:id"
+						element={
+							<ProtectedRoute
+								roles={[
+									"admin_administrator",
+									"admin_hospital",
+								]}
+							>
+								<BillingControlIndex />
 							</ProtectedRoute>
 						}
 					/>

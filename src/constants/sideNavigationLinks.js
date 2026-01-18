@@ -89,7 +89,7 @@ export const sideNavigationLinks = {
 			path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PATIENT_ARCHIVE.INDEX,
 			icon: IconBuildingHospital,
 			color: "#e92214", // Purple
-			allowedRoles: ["role_domain","operator_emergency", "admin_administrator", "doctor_opd", "doctor_ipd"],
+			allowedRoles: ["role_domain","operator_emergency", "operator_opd", "admin_administrator", "doctor_opd", "doctor_ipd"],
 		},
 
 		{
@@ -162,6 +162,12 @@ export const sideNavigationLinks = {
 				"operator_manager",
 			],
 			subMenu: [
+				{
+					label: t("Control"),
+					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING_CONTROL.INDEX,
+					icon: IconDashboard,
+					allowedRoles: ["admin_administrator"],
+				},
 				{
 					label: t("OPDBilling"),
 					path: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.BILLING.INDEX,

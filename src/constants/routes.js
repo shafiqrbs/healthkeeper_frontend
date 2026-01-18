@@ -584,6 +584,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			DELETE: "hospital/billing",
 		},
 
+
 		REFUND: {
 			INDEX: "hospital/refund",
 			CREATE: "hospital/refund",
@@ -859,6 +860,14 @@ export const HOSPITAL_DATA_ROUTES = {
 			UPDATE: "/hospital/billing",
 			VIEW: "/hospital/billing",
 		},
+
+		BILLING_CONTROL: {
+			INDEX: "/hospital/billing-control",
+			CREATE: "/hospital/billing-control",
+			UPDATE: "/hospital/billing-control",
+			VIEW: "/hospital/billing-control",
+		},
+
 		IPD_BILLING: {
 			INDEX: "/hospital/billing-ipd",
 			CREATE: "/hospital/billing-ipd",

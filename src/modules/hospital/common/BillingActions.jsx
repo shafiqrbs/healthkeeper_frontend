@@ -160,7 +160,6 @@ export default function BillingActions({ entity,refetchAll,setRefetchBillingKey 
 							</Button>
 						)}
 						{(invoiceEntity?.process === "admitted" ||
-							invoiceEntity?.process === "refund" ||
 							invoiceEntity?.process === "paid") &&
 							due < 0 && (
 								<Button

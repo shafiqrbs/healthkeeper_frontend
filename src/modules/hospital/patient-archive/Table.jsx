@@ -79,7 +79,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
-			created: formatDate(new Date()),
+			created: '',
 			room_id: opdRoomId,
 		},
 	});
