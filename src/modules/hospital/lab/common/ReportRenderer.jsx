@@ -218,7 +218,7 @@ const ReportRenderer = forwardRef(
 								refetchLabReport={refetchLabReport}
 							/>
 						);
-					case "afb-sputum":
+					case "sputum-afb":
 						return (
 							<SputumAFB
 								diagnosticReport={diagnosticReport}

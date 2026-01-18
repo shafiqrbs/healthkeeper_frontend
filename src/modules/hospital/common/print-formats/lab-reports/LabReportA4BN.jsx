@@ -13,6 +13,8 @@ import XrayReport from "@hospital-components/print-formats/lab-reports/custom/Xr
 import CTScanReport from "@hospital-components/print-formats/lab-reports/custom/CTScanReport";
 import GeneXperExtraPulmonaryReport from "@hospital-components/print-formats/lab-reports/custom/GeneXperExtraPulmonaryReport";
 import GeneXpert from "@hospital-components/print-formats/lab-reports/custom/GeneXpert";
+import AFBCultureReport from "@hospital-components/print-formats/lab-reports/custom/AFBCultureReport";
+import SputumAFBReport from "@hospital-components/print-formats/lab-reports/custom/SputumAFBReport";
 
 const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const reportData = JSON.parse(data?.invoiceParticular?.json_report || "{}");
@@ -22,6 +24,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
+	console.log(data?.invoiceParticular?.particular?.slug)
 	const renderImagePreview = (imageArray, fallbackSrc = null) => {
 		if (imageArray.length > 0) {
 			const imageUrl = URL.createObjectURL(imageArray[0]);
@@ -277,6 +280,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 											</Table.Tbody>
 										</Table>
 									</Box>
+
 									{data?.invoiceParticular?.particular?.slug === "covid-19" ? (
 										<Box mt={"md"}>
 											{/* =============== covid-19 report data table ================ */}
@@ -554,6 +558,10 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										<Box>LPA Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "ct-scan" ? (
 										<CTScanReport report={report} reportData={reportData} />
+									) : data?.invoiceParticular?.particular?.slug === "afb-culture" ? (
+										<AFBCultureReport report={report} reportData={reportData} />
+									) : data?.invoiceParticular?.particular?.slug === "sputum-afb" ? (
+										<SputumAFBReport report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.is_custom_report === 1 ? (
 										<DefaultCustomReport report={report} reportData={reportData} />
 									) : (

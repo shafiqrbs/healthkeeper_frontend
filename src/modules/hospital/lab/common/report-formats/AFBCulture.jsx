@@ -27,7 +27,6 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
 	const is_completed = diagnosticReport?.process?.toLowerCase() === "done";
-	console.log(custom_report);
 	const form = useForm({
 		initialValues: {
 			afb_diagnosis: custom_report?.afb_diagnosis || "",

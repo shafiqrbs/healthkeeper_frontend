@@ -97,8 +97,8 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 		<Box className="border-top-none" px="sm" mt="xs">
 			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
-					<Group grow>
-						{/* =============== genexpert site/hospital =============== */}
+					{/*<Group grow>
+						 =============== genexpert site/hospital ===============
 						<DatePickerForm
 							name="test_date"
 							id="test_date"
@@ -108,7 +108,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 							placeholder="Select date"
 						/>
 
-						{/* =============== reference laboratory specimen id =============== */}
+						 =============== reference laboratory specimen id ===============
 						<InputNumberForm
 							name="lab_no"
 							id="lab_no"
@@ -117,7 +117,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 							label="Lab No"
 							placeholder="Enter Lab No"
 						/>
-					</Group>
+					</Group>*/}
 
 					{/* =============== results table =============== */}
 					<Box my="md">
@@ -125,8 +125,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 							<Table.Thead>
 								<Table.Tr>
 									<Table.Th ta="center"></Table.Th>
-									<Table.Th>AFB FOUND</Table.Th>
-									<Table.Th>AFB NOT FOUND</Table.Th>
+									<Table.Th>NO AFB FOUND</Table.Th>
 									<Table.Th>SCANTY</Table.Th>
 									<Table.Th>1+</Table.Th>
 									<Table.Th>2+</Table.Th>
@@ -134,7 +133,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 								</Table.Tr>
 								<Table.Tr>
 									<Table.Th ta="center">Sample 1</Table.Th>
-									<Table.Th ta="center">
+									{/*<Table.Th ta="center">
 										<InputForm
 											w={120}
 											name="afb_found"
@@ -144,7 +143,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 											label=""
 											placeholder="Enter value"
 										/>
-									</Table.Th>
+									</Table.Th>*/}
 									<Table.Th ta="center">
 										<InputForm
 											w={120}
@@ -206,7 +205,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 								</Table.Tr>
 								<Table.Tr>
 									<Table.Th ta="center">Sample 2</Table.Th>
-									<Table.Th ta="center">
+									{/*<Table.Th ta="center">
 										<InputForm
 											w={120}
 											name="afb_sample_found"
@@ -216,7 +215,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 											label=""
 											placeholder="Enter value"
 										/>
-									</Table.Th>
+									</Table.Th>*/}
 									<Table.Th ta="center">
 										<InputForm
 											w={120}

@@ -54,7 +54,7 @@ const STATIC_OPD_ID = "843042855688";
 const STATIC_IPD_ID = "819374367732";
 const STATIC_BILLING_ID = 2335;
 const STATIC_PRESCRIPTION_ID = "361001991021";
-const REPORT_ID = "098397134876";
+const REPORT_ID = "051133036932";
 const REPORTGROUP_ID = "14";
 const REFUND_ID = "1";
 const FREE_SERVICE_ID = "342955236078";
@@ -68,7 +68,7 @@ export default function Details() {
 	const { mainAreaHeight } = useOutletContext();
 	const navigate = useNavigate();
 
-	const { data: OPDData, isLoading: isOPDLoading } = useDataWithoutStore({
+	/*const { data: OPDData, isLoading: isOPDLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX}/${STATIC_OPD_ID}`,
 	});
 
@@ -78,13 +78,13 @@ export default function Details() {
 
 	const { data: prescriptionData, isLoading: isPrescriptionLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${STATIC_PRESCRIPTION_ID}`,
-	});
+	});*/
 
 	const { data: labReportData, isLoading: isReportLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.PRINT}/${REPORT_ID}`,
 	});
 
-	const { data: labGroupReportData, isLoading: isGroupReportLoading } = useDataWithoutStore({
+	/*const { data: labGroupReportData, isLoading: isGroupReportLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_GROUP_TEST.PRINT}/${REPORTGROUP_ID}`,
 	});
 
@@ -122,9 +122,8 @@ export default function Details() {
 
 	const { data: finalBillingData, isLoading: isFinalBillingLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${FINAL_BILLING_ID}/final-bill`,
-	});
+	});*/
 
-	//console.log(prescriptionData?.data)
 
 	return (
 		<>
