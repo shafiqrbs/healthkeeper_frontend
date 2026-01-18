@@ -90,6 +90,8 @@ const ReportRenderer = forwardRef(
 			}
 		};
 
+
+
 		const renderCustomReport = () => {
 			if (diagnosticReport?.particular?.is_custom_report === 1) {
 				const slug = diagnosticReport?.particular?.slug;
