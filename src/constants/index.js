@@ -32,6 +32,7 @@ export const MODULES = {
 	DOCTOR: "doctor",
 	E_FRESH: "e_fresh",
 	REPORT: {
+		PATIENT_MEDICINE_ISSUE: "patientMedicineIssue",
 		MEDICINE_ISSUE: "medicineIssue",
 		STOCK_SUMMERY: "stockSummery",
 	},

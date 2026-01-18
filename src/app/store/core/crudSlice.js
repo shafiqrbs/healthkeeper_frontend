@@ -685,6 +685,13 @@ const initialState = {
 	},
 
 	// Report medicine issue module starts
+	patientMedicineIssue: {
+		isLoading: true,
+		refetching: false,
+		error: null,
+		validation: false,
+		data: [],
+	},
 	medicineIssue: {
 		isLoading: true,
 		refetching: false,

@@ -60,6 +60,11 @@ const REPORT_TABS = [
 		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist"],
 	},
 	{
+		label: "Patient Medicine Issue",
+		value: "patient-medicine-issue",
+		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator"],
+	},
+	{
 		label: "Medicine Issue",
 		value: "medicine-issue",
 		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator"],

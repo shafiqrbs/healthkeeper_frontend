@@ -10,6 +10,7 @@ import StockSummery from "@modules/hospital/reports/items/StockSummery.jsx";
 import DailyCollectionService from "@modules/hospital/reports/items/DailyCollectionService";
 import DailyOpdEmergencyIpdPatient from "@modules/hospital/reports/items/DailyOpdEmergencyIpdPatient";
 import UserDailyInvoiceSummary from "@modules/hospital/reports/items/UserDailyInvoiceSummary";
+import PatientMedicineIssue from "@modules/hospital/reports/items/PatientMedicineIssue.jsx";
 
 
 export default function DetailsRenderer() {
@@ -31,6 +32,8 @@ export default function DetailsRenderer() {
 				<DailyCollectionService height={mainAreaHeight} />
 			) : tab === "daily-opd-emergency-ipd" ? (
 				<DailyOpdEmergencyIpdPatient height={mainAreaHeight} />
+			) : tab === "patient-medicine-issue" ? (
+				<PatientMedicineIssue />
 			) : tab === "medicine-issue" ? (
 				<MedicineIssue />
 			) : tab === "stock-summery" ? (

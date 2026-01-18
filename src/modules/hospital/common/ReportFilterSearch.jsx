@@ -37,6 +37,7 @@ export default function ReportFilterSearch({
 											   handleCSVDownloadForUpload = () => {},
     showStockItems = false,
     showWarehouse = false,
+											   showInvoiceMode = false,
 											   downloadOpeningTemplate = false,
 })
 	{
@@ -263,17 +264,21 @@ export default function ReportFilterSearch({
 					w={250}
 				/>
 			)}
-			<Select
-				clearable
-				placeholder="InvoiceMode"
-				loading={fetching}
-				data={invoiceModes.map((item) => ({
-					label: item.name,
-					value: item.id,
-				}))}
-				value={form.values?.invoice_mode}
-				onChange={(value) => form.setFieldValue("invoice_mode", value)}
-			/>
+
+			{showInvoiceMode && (
+				<Select
+					clearable
+					placeholder="InvoiceMode"
+					loading={fetching}
+					data={invoiceModes.map((item) => ({
+						label: item.name,
+						value: item.id,
+					}))}
+					value={form.values?.invoice_mode}
+					onChange={(value) => form.setFieldValue("invoice_mode", value)}
+				/>
+			)}
+
 			<Flex gap="3xs" align="center">
 				<ActionIcon
 					c="var(--theme-primary-color-6)"

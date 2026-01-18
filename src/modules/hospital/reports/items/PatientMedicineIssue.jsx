@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
@@ -8,7 +8,7 @@ import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
 
-import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
+import {PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import { useForm } from "@mantine/form";
@@ -18,9 +18,21 @@ import { useOutletContext } from "react-router-dom";
 import ReportFilterSearch from "@hospital-components/ReportFilterSearch";
 
 const PER_PAGE = 200;
-const module = MODULES.REPORT.MEDICINE_ISSUE;
 
-export default function MedicineIssue() {
+const CSV_HEADERS = [
+	{ label: "S/N", key: "sn" },
+	{ label: "Created", key: "created_date" },
+	{ label: "Item Name", key: "name" },
+	{ label: "Quantity", key: "quantity" },
+	{ label: "Status", key: "process" },
+	{ label: "Warehouse", key: "warehouse_name" },
+	{ label: "Customer Name", key: "customer_name" },
+	{ label: "Invoice No", key: "invoice" },
+];
+
+const module = MODULES.REPORT.PATIENT_MEDICINE_ISSUE;
+
+export default function PatientMedicineIssue() {
 	const { mainAreaHeight } = useOutletContext();
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
@@ -30,68 +42,33 @@ export default function MedicineIssue() {
 		initialValues: {
 			start_date: null,
 			end_date: null,
-			warehouse_id: null,
+            warehouse_id: null,
 		},
 	});
 
 	const { scrollRef, records, fetching, sortStatus, setSortStatus, handleScrollToBottom } =
 		useInfiniteTableScroll({
 			module,
-			fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.REPORT.MEDICINE_ISSUE_REPORT,
-			filterParams: {
-				start_date: form.values.start_date ?? null,
-				end_date: form.values.end_date ?? null,
+			fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.REPORT.PATIENT_MEDICINE_ISSUE_REPORT,
+            filterParams: {
+                start_date: form.values.start_date ?? null,
+                end_date: form.values.end_date ?? null,
 				warehouse_id: form.values.warehouse_id ?? null,
-			},
-			perPage: PER_PAGE,
+            },
+            perPage: PER_PAGE,
 		});
 
-	// Process records: convert medicines object into dynamic columns
-	const processedRecords = useMemo(() => {
-		if (!records) return [];
-		return records.map((r) => {
-			const row = {
-				patient_id: r.patient_id,
-				room_no: r.room_no,
-				customer_name: r.customer_name,
-			};
-			if (r.medicines) {
-				Object.entries(r.medicines).forEach(([medName, qty]) => {
-					row[medName] = qty;
-				});
-			}
-			return row;
-		});
-	}, [records]);
-
-	// Generate dynamic columns: find all unique medicine names across all records
-	const medicineColumns = useMemo(() => {
-		const meds = new Set();
-		records?.forEach((r) => {
-			if (r.medicines) {
-				Object.keys(r.medicines).forEach((name) => meds.add(name));
-			}
-		});
-		return Array.from(meds).map((name) => ({
-			accessor: name,
-			title: name,
-		}));
-	}, [records]);
-
-	const columns = useMemo(() => {
-		const baseColumns = [
-			{ accessor: "patient_id", title: t("PatientId") },
-			{ accessor: "room_no", title: t("RoomNo") },
-			{ accessor: "customer_name", title: t("CustomerName") },
-		];
-		return [...baseColumns, ...medicineColumns];
-	}, [medicineColumns, t]);
-
-	// CSV headers
-	const CSV_HEADERS = useMemo(
-		() => columns.map((col) => ({ label: col.title, key: col.accessor })),
-		[columns]
-	);
+	const csvData =
+		records?.map((item, index) => ({
+			sn: index + 1,
+            created_date: formatDate(item?.created_date),
+			name: item?.name ?? "",
+			quantity: item?.quantity ?? "",
+            process: item?.process ?? "",
+			warehouse_name: item?.warehouse_name ?? "",
+			customer_name: item?.customer_name ?? "",
+			invoice: item?.invoice ?? "",
+		})) || [];
 
 	const handleCSVDownload = () => {
 		if (csvLinkRef?.current?.link) {
@@ -103,23 +80,19 @@ export default function MedicineIssue() {
 		<Box w="100%" bg="var(--mantine-color-white)">
 			<Flex justify="space-between" align="center" px="sm">
 				<Text fw={600} fz="sm" py="xs">
-					{t("MedicineIssue")}
+					{t("PatientMedicineIssue")}
 				</Text>
 			</Flex>
-
 			<Box px="sm" mb="sm">
 				<ReportFilterSearch
 					module={module}
 					form={form}
 					handleCSVDownload={handleCSVDownload}
-					showWarehouse={false}
+                    showWarehouse={true}
 				/>
 			</Box>
-
 			<Box className="border-top-none" px="sm">
 				<DataTable
-					records={processedRecords}
-					columns={columns}
 					striped
 					highlightOnHover
 					pinFirstColumn
@@ -132,6 +105,28 @@ export default function MedicineIssue() {
 						footer: tableCss.footer,
 						pagination: tableCss.pagination,
 					}}
+					records={records}
+					columns={[
+						{
+							accessor: "index",
+							title: t("S/N"),
+							ta: "right",
+							render: (_, index) => index + 1,
+							footer: `Total: ${records.length}`,
+						},
+						{
+							accessor: "created_date",
+							title: t("Created"),
+							textAlignment: "right",
+							render: (item) => formatDate(item?.created_date),
+						},
+						{ accessor: "name", title: t("Item Name") },
+						{ accessor: "quantity", title: t("Quantity") },
+						{ accessor: "process", title: t("Status") },
+						{ accessor: "warehouse_name", title: t("Warehouse") },
+						{ accessor: "customer_name", title: t("CustomerName") },
+						{ accessor: "invoice", title: t("InvoiceNo") },
+					]}
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
@@ -146,12 +141,10 @@ export default function MedicineIssue() {
 					}}
 				/>
 			</Box>
-
 			<DataTableFooter indexData={listData} module="visit" />
-
 			{/* Hidden CSV link for exporting current table rows */}
 			<CSVLink
-				data={processedRecords}
+				data={csvData}
 				headers={CSV_HEADERS}
 				filename={`medicine-issue-${formatDate(new Date())}.csv`}
 				style={{ display: "none" }}
