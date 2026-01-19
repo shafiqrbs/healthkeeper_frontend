@@ -550,7 +550,7 @@ export default function AddMedicineForm({
 				transformedData.json_content = JSON.stringify(jsonContent);
 				setPrintData2A4(transformedData);
 				// background prescription saving
-				handlePrescriptionSubmit({ skipLoading: false, redirect: false });
+				// handlePrescriptionSubmit({ skipLoading: false, redirect: false });
 			} catch (error) {
 				console.error("Error transforming updatedResponse:", error);
 				setPrintData2A4(updatedResponse);
