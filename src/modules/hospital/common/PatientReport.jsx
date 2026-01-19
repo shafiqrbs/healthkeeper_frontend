@@ -19,6 +19,7 @@ import BasicInfoCard from "./tab-items/BasicInfoCard";
 import useParticularsData from "@hooks/useParticularsData";
 import { IconCaretUpDownFilled, IconEyeClosed, IconEyeEdit, IconSearch, IconX } from "@tabler/icons-react";
 import { useState } from "react";
+import { useDebouncedCallback } from "@mantine/hooks";
 import inputCss from "@assets/css/InputField.module.css";
 import { DURATION_TYPES } from "@/constants";
 import { useTranslation } from "react-i18next";
@@ -33,19 +34,35 @@ export default function PatientReport({
 	showVitals = true,
 	showPatientInfo = true,
 }) {
-	const [showOtherInstruction, setShowOtherInstruction] = useState({});
-	const [searchQueries, setSearchQueries] = useState({});
+	const [ showOtherInstruction, setShowOtherInstruction ] = useState({});
+	const [ searchQueries, setSearchQueries ] = useState({});
 	const { mainAreaHeight } = useOutletContext();
 	const height = showVitals ? mainAreaHeight - extraHeight : mainAreaHeight - extraHeight + 14;
 	const { t } = useTranslation();
 
-	const [autocompleteValues, setAutocompleteValues] = useState({});
-	// Handle onBlur update for form fields
+	const [ autocompleteValues, setAutocompleteValues ] = useState({});
+
+	// =============== handle onBlur update for form fields (commented out but kept for reference) ================
 	const handleFieldBlur = () => {
 		// Only update if update function exists and form has data
 		if (update && form && form.values) {
 			update();
 		}
+	};
+
+	// =============== debounced update function for text fields (300ms delay) ================
+	const debouncedUpdate = useDebouncedCallback(() => {
+		if (update && form && form.values) {
+			update();
+		}
+	}, 300);
+
+	// =============== handler for weight field onChange with debounce ================
+	const handleWeightChange = (event) => {
+		// =============== update form value first ================
+		form.setFieldValue("weight", event.currentTarget.value);
+		// =============== trigger debounced update ================
+		debouncedUpdate();
 	};
 
 	const { particularsData } = useParticularsData({ modeName });
@@ -61,17 +78,19 @@ export default function PatientReport({
 		value,
 		parentSlug,
 		isCheckbox = false,
+		isRadio = false,
+		isSelect = false,
 		duration = null,
 		isActive = null,
 	}) => {
-		const existingList = Array.isArray(form.values.dynamicFormData[parentSlug])
-			? form.values.dynamicFormData[parentSlug]
+		const existingList = Array.isArray(form.values.dynamicFormData[ parentSlug ])
+			? form.values.dynamicFormData[ parentSlug ]
 			: [];
 
 		const existingIndex = existingList.findIndex((item) => item.id === id && item.name === name);
 
 		// =============== preserve existing duration if not provided ================
-		const existingItem = existingIndex > -1 ? existingList[existingIndex] : null;
+		const existingItem = existingIndex > -1 ? existingList[ existingIndex ] : null;
 		const preservedDuration = duration !== null ? duration : existingItem?.duration || null;
 
 		// =============== include isActive in the item if provided ================
@@ -84,36 +103,41 @@ export default function PatientReport({
 		}
 		const updatedList =
 			existingIndex > -1
-				? [...existingList.slice(0, existingIndex), updatedItem, ...existingList.slice(existingIndex + 1)]
-				: [...existingList, updatedItem];
+				? [ ...existingList.slice(0, existingIndex), updatedItem, ...existingList.slice(existingIndex + 1) ]
+				: [ ...existingList, updatedItem ];
 
 		const newDynamicFormData = {
 			...form.values.dynamicFormData,
-			[parentSlug]: updatedList,
+			[ parentSlug ]: updatedList,
 		};
 
 		form.setFieldValue("dynamicFormData", newDynamicFormData);
 
-		// =============== for checkboxes, trigger instant update with the updated data directly ================
-		if (isCheckbox && update && form) {
+		// =============== for checkboxes, radio buttons, and select fields, trigger instant update with the updated data directly ================
+		if ((isCheckbox || isRadio || isSelect) && update && form) {
 			// =============== pass the updated dynamicFormData directly to avoid stale data issues ================
 			update(undefined, newDynamicFormData);
+		} else {
+			// =============== for text fields, trigger debounced update ================
+			debouncedUpdate();
 		}
 	};
 
 	// =============== handler for other instructions field ================
 	const handleOtherInstructionsChange = (parentSlug, value) => {
-		const currentData = form.values.dynamicFormData[parentSlug] || [];
+		const currentData = form.values.dynamicFormData[ parentSlug ] || [];
 
 		// if currentData is an array, we need to store other_instructions separately
 		// if it's an object, we can add the property directly
 		const newDynamicFormData = {
 			...form.values.dynamicFormData,
-			[parentSlug]: Array.isArray(currentData) ? currentData : { ...currentData, other_instructions: value },
-			[`${parentSlug}_other_instructions`]: value,
+			[ parentSlug ]: Array.isArray(currentData) ? currentData : { ...currentData, other_instructions: value },
+			[ `${parentSlug}_other_instructions` ]: value,
 		};
 
 		form.setFieldValue("dynamicFormData", newDynamicFormData);
+		// =============== trigger debounced update for textarea fields ================
+		debouncedUpdate();
 	};
 
 	const handleAutocompleteOptionAdd = (value, sectionParticulars = null, sectionSlug = null) => {
@@ -131,8 +155,8 @@ export default function PatientReport({
 
 		if (selectedParticular) {
 			// Add to dynamicFormData with the correct structure
-			const existingList = Array.isArray(form.values.dynamicFormData[sectionSlug])
-				? form.values.dynamicFormData[sectionSlug]
+			const existingList = Array.isArray(form.values.dynamicFormData[ sectionSlug ])
+				? form.values.dynamicFormData[ sectionSlug ]
 				: [];
 
 			// Check if this value already exists
@@ -148,10 +172,10 @@ export default function PatientReport({
 					value: selectedParticular.name,
 				};
 
-				const updatedList = [...existingList, newItem];
+				const updatedList = [ ...existingList, newItem ];
 				const newDynamicFormData = {
 					...form.values.dynamicFormData,
-					[sectionSlug]: updatedList,
+					[ sectionSlug ]: updatedList,
 				};
 
 				form.setFieldValue("dynamicFormData", newDynamicFormData);
@@ -166,10 +190,10 @@ export default function PatientReport({
 	};
 
 	const handleAutocompleteOptionRemove = (idx, sectionSlug) => {
-		const updatedList = form.values.dynamicFormData[sectionSlug].filter((_, index) => index !== idx);
+		const updatedList = form.values.dynamicFormData[ sectionSlug ].filter((_, index) => index !== idx);
 		const newDynamicFormData = {
 			...form.values.dynamicFormData,
-			[sectionSlug]: updatedList,
+			[ sectionSlug ]: updatedList,
 		};
 		form.setFieldValue("dynamicFormData", newDynamicFormData);
 		// =============== trigger instant update with the updated data directly ================
@@ -198,7 +222,7 @@ export default function PatientReport({
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => {
-							const value = form.values.dynamicFormData?.[section.slug]?.find(
+							const value = form.values.dynamicFormData?.[ section.slug ]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
 							)?.value;
 							return (
@@ -219,15 +243,15 @@ export default function PatientReport({
 								/>
 							);
 						})}
-						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
+						{is_additional_field === 1 && showOtherInstruction[ section.slug ] && (
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={form.values.dynamicFormData?.[ `${section.slug}_other_instructions` ] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
-								onBlur={handleFieldBlur}
+								// onBlur={handleFieldBlur}
 								resize="vertical"
 								minRows={5}
 							/>
@@ -236,7 +260,7 @@ export default function PatientReport({
 				);
 
 			case "searchwithcheckbox": {
-				const searchQuery = searchQueries[section.slug] || "";
+				const searchQuery = searchQueries[ section.slug ] || "";
 				const filteredParticulars =
 					particulars
 						?.filter((particular) => particular.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -250,7 +274,7 @@ export default function PatientReport({
 							onChange={(event) =>
 								setSearchQueries((prev) => ({
 									...prev,
-									[section.slug]: event.currentTarget.value,
+									[ section.slug ]: event.currentTarget.value,
 								}))
 							}
 							size="xs"
@@ -258,7 +282,7 @@ export default function PatientReport({
 								searchQuery ? (
 									<IconX
 										size={16}
-										onClick={() => setSearchQueries((prev) => ({ ...prev, [section.slug]: "" }))}
+										onClick={() => setSearchQueries((prev) => ({ ...prev, [ section.slug ]: "" }))}
 									/>
 								) : (
 									<IconSearch size={16} />
@@ -266,7 +290,7 @@ export default function PatientReport({
 							}
 						/>
 						{filteredParticulars?.map((particular, index) => {
-							const value = form.values.dynamicFormData?.[section.slug]?.find(
+							const value = form.values.dynamicFormData?.[ section.slug ]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
 							)?.value;
 							return (
@@ -292,15 +316,15 @@ export default function PatientReport({
 								No {section.name} found...
 							</Text>
 						)}
-						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
+						{is_additional_field === 1 && showOtherInstruction[ section.slug ] && (
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={form.values.dynamicFormData?.[ `${section.slug}_other_instructions` ] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
-								onBlur={handleFieldBlur}
+								// onBlur={handleFieldBlur}
 								resize="vertical"
 								minRows={5}
 							/>
@@ -320,7 +344,7 @@ export default function PatientReport({
 								label: particular.name,
 							}))}
 							value={
-								form.values.dynamicFormData?.[section.slug]?.find(
+								form.values.dynamicFormData?.[ section.slug ]?.find(
 									(item) => item.id === id && item.name === name
 								)?.value || ""
 							}
@@ -330,20 +354,21 @@ export default function PatientReport({
 									name: name,
 									value: value,
 									parentSlug: section.slug,
+									isSelect: true,
 								})
 							}
-							onBlur={handleFieldBlur}
+							// onBlur={handleFieldBlur}
 							resize="vertical"
 						/>
-						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
+						{is_additional_field === 1 && showOtherInstruction[ section.slug ] && (
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={form.values.dynamicFormData?.[ `${section.slug}_other_instructions` ] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
-								onBlur={handleFieldBlur}
+								// onBlur={handleFieldBlur}
 								resize="vertical"
 							/>
 						)}
@@ -354,7 +379,7 @@ export default function PatientReport({
 				return (
 					<Stack gap="2xs">
 						{particulars?.map((particular, index) => {
-							const value = form.values.dynamicFormData?.[section.slug]?.find(
+							const value = form.values.dynamicFormData?.[ section.slug ]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
 							)?.value;
 							return (
@@ -379,22 +404,22 @@ export default function PatientReport({
 													parentSlug: section.slug,
 												})
 											}
-											onBlur={handleFieldBlur}
+										// onBlur={handleFieldBlur}
 										/>
 									</Grid.Col>
 								</Grid>
 							);
 						})}
 
-						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
+						{is_additional_field === 1 && showOtherInstruction[ section.slug ] && (
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={form.values.dynamicFormData?.[ `${section.slug}_other_instructions` ] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
-								onBlur={handleFieldBlur}
+								// onBlur={handleFieldBlur}
 								resize="vertical"
 								minRows={5}
 							/>
@@ -406,7 +431,7 @@ export default function PatientReport({
 				return (
 					<Stack gap="2xs">
 						{particulars?.map((particular, index) => {
-							const existingItem = form.values.dynamicFormData?.[section.slug]?.find(
+							const existingItem = form.values.dynamicFormData?.[ section.slug ]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
 							);
 							const value = existingItem?.value;
@@ -464,7 +489,7 @@ export default function PatientReport({
 														parentSlug: section.slug,
 													})
 												}
-												onBlur={handleFieldBlur}
+											// onBlur={handleFieldBlur}
 											/>
 											<Select
 												w={"30%"}
@@ -482,9 +507,10 @@ export default function PatientReport({
 														duration: option || "",
 														isActive: existingItem?.isActive,
 														parentSlug: section.slug,
+														isSelect: true,
 													});
 												}}
-												onBlur={handleFieldBlur}
+											// onBlur={handleFieldBlur}
 											/>
 										</Flex>
 									</Grid.Col>
@@ -492,15 +518,15 @@ export default function PatientReport({
 							);
 						})}
 
-						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
+						{is_additional_field === 1 && showOtherInstruction[ section.slug ] && (
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={form.values.dynamicFormData?.[ `${section.slug}_other_instructions` ] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
-								onBlur={handleFieldBlur}
+								// onBlur={handleFieldBlur}
 								resize="vertical"
 							/>
 						)}
@@ -511,7 +537,7 @@ export default function PatientReport({
 				return (
 					<Stack gap="md">
 						{particulars?.map((particular, index) => {
-							const value = form.values.dynamicFormData?.[section.slug]?.find(
+							const value = form.values.dynamicFormData?.[ section.slug ]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
 							)?.value;
 							return (
@@ -529,21 +555,21 @@ export default function PatientReport({
 											parentSlug: section.slug,
 										})
 									}
-									onBlur={handleFieldBlur}
+									// onBlur={handleFieldBlur}
 									resize="vertical"
 								/>
 							);
 						})}
 
-						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
+						{is_additional_field === 1 && showOtherInstruction[ section.slug ] && (
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={form.values.dynamicFormData?.[ `${section.slug}_other_instructions` ] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
-								onBlur={handleFieldBlur}
+								// onBlur={handleFieldBlur}
 								resize="vertical"
 							/>
 						)}
@@ -559,7 +585,7 @@ export default function PatientReport({
 							placeholder={`Select ${name}`}
 							data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
 							value={
-								form.values.dynamicFormData?.[section.slug]?.find(
+								form.values.dynamicFormData?.[ section.slug ]?.find(
 									(item) => item.id === id && item.name === name
 								)?.value || ""
 							}
@@ -569,19 +595,20 @@ export default function PatientReport({
 									name: name,
 									value: value,
 									parentSlug: section.slug,
+									isSelect: true,
 								})
 							}
-							onBlur={handleFieldBlur}
+						// onBlur={handleFieldBlur}
 						/>
-						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
+						{is_additional_field === 1 && showOtherInstruction[ section.slug ] && (
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={form.values.dynamicFormData?.[ `${section.slug}_other_instructions` ] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
-								onBlur={handleFieldBlur}
+							// onBlur={handleFieldBlur}
 							/>
 						)}
 					</Stack>
@@ -591,7 +618,7 @@ export default function PatientReport({
 				return (
 					<Stack gap="md" fz={"xs"}>
 						{particulars?.map((particular, index) => {
-							const value = form.values.dynamicFormData?.[section.slug]?.find(
+							const value = form.values.dynamicFormData?.[ section.slug ]?.find(
 								(item) => item.id === particular.id && item.name === particular.name
 							)?.value;
 							return (
@@ -605,22 +632,23 @@ export default function PatientReport({
 											name: particular.name,
 											value: event.currentTarget.checked ? particular.name : "",
 											parentSlug: section.slug,
+											isRadio: true,
 										})
 									}
-									onBlur={handleFieldBlur}
+								// onBlur={handleFieldBlur}
 								/>
 							);
 						})}
 
-						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
+						{is_additional_field === 1 && showOtherInstruction[ section.slug ] && (
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={form.values.dynamicFormData?.[ `${section.slug}_other_instructions` ] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
-								onBlur={handleFieldBlur}
+							// onBlur={handleFieldBlur}
 							/>
 						)}
 					</Stack>
@@ -633,11 +661,11 @@ export default function PatientReport({
 							label=""
 							placeholder={`Pick value or enter ${name}`}
 							data={particulars?.map((p) => ({ value: p.name, label: p.name }))}
-							value={autocompleteValues[section.slug] || ""}
+							value={autocompleteValues[ section.slug ] || ""}
 							onChange={(value) =>
 								setAutocompleteValues((prev) => ({
 									...prev,
-									[section.slug]: value,
+									[ section.slug ]: value,
 								}))
 							}
 							onOptionSubmit={(value) => {
@@ -645,16 +673,16 @@ export default function PatientReport({
 								setTimeout(() => {
 									setAutocompleteValues((prev) => ({
 										...prev,
-										[section.slug]: "",
+										[ section.slug ]: "",
 									}));
 								}, 0);
 							}}
 							classNames={inputCss}
-							onBlur={handleFieldBlur}
+							// onBlur={handleFieldBlur}
 							rightSection={<IconCaretUpDownFilled size={16} />}
 						/>
 						<Stack gap={0} bg="var(--mantine-color-white)" px="sm" className="borderRadiusAll" mt="2xs">
-							{form.values.dynamicFormData?.[section.slug]?.map((item, idx) => (
+							{form.values.dynamicFormData?.[ section.slug ]?.map((item, idx) => (
 								<Flex
 									key={idx}
 									align="center"
@@ -663,7 +691,7 @@ export default function PatientReport({
 									py="xs"
 									style={{
 										borderBottom:
-											idx !== form.values.dynamicFormData?.[section.slug]?.length - 1
+											idx !== form.values.dynamicFormData?.[ section.slug ]?.length - 1
 												? "1px solid var(--theme-tertiary-color-4)"
 												: "none",
 									}}
@@ -683,15 +711,15 @@ export default function PatientReport({
 							))}
 						</Stack>
 
-						{is_additional_field === 1 && showOtherInstruction[section.slug] && (
+						{is_additional_field === 1 && showOtherInstruction[ section.slug ] && (
 							<Textarea
 								label={`Other ${section.name}`}
 								placeholder={`Enter Other ${t(section.name)}`}
-								value={form.values.dynamicFormData?.[`${section.slug}_other_instructions`] || ""}
+								value={form.values.dynamicFormData?.[ `${section.slug}_other_instructions` ] || ""}
 								onChange={(event) =>
 									handleOtherInstructionsChange(section.slug, event.currentTarget.value)
 								}
-								onBlur={handleFieldBlur}
+								// onBlur={handleFieldBlur}
 								resize="vertical"
 							/>
 						)}
@@ -729,6 +757,7 @@ export default function PatientReport({
 							showVitals={showVitals}
 							form={form}
 							prescriptionData={prescriptionData}
+							onChange={handleWeightChange}
 							onBlur={handleFieldBlur}
 						/>
 						<Box p="md">
@@ -747,6 +776,7 @@ export default function PatientReport({
 							showVitals={showVitals}
 							form={form}
 							prescriptionData={prescriptionData}
+							onChange={handleWeightChange}
 							onBlur={handleFieldBlur}
 						/>
 					)}
@@ -767,18 +797,18 @@ export default function PatientReport({
 													styles={{
 														track: {
 															backgroundColor:
-																showOtherInstruction[currentSection.slug] ?? false
+																showOtherInstruction[ currentSection.slug ] ?? false
 																	? "green"
 																	: "red",
 														},
 													}}
 													onLabel={<IconEyeEdit size={16} stroke={2.5} />}
 													offLabel={<IconEyeClosed size={16} stroke={2.5} />}
-													checked={showOtherInstruction[currentSection.slug] ?? false}
+													checked={showOtherInstruction[ currentSection.slug ] ?? false}
 													onChange={(event) =>
 														setShowOtherInstruction((prev) => ({
 															...prev,
-															[currentSection.slug]: event.currentTarget.checked,
+															[ currentSection.slug ]: event.currentTarget.checked,
 														}))
 													}
 												/>
@@ -802,6 +832,7 @@ export default function PatientReport({
 						showVitals={showVitals}
 						form={form}
 						prescriptionData={prescriptionData}
+						onChange={handleWeightChange}
 						onBlur={handleFieldBlur}
 					/>
 				)}
@@ -820,18 +851,18 @@ export default function PatientReport({
 										styles={{
 											track: {
 												backgroundColor:
-													showOtherInstruction[currentSection.slug] ?? false
+													showOtherInstruction[ currentSection.slug ] ?? false
 														? "green"
 														: "red",
 											},
 										}}
 										onLabel={<IconEyeEdit size={16} stroke={2.5} />}
 										offLabel={<IconEyeClosed size={16} stroke={2.5} />}
-										checked={showOtherInstruction[currentSection.slug] ?? false}
+										checked={showOtherInstruction[ currentSection.slug ] ?? false}
 										onChange={(event) =>
 											setShowOtherInstruction((prev) => ({
 												...prev,
-												[currentSection.slug]: event.currentTarget.checked,
+												[ currentSection.slug ]: event.currentTarget.checked,
 											}))
 										}
 									/>

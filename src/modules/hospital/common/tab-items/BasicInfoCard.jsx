@@ -4,24 +4,23 @@ import { useDispatch } from "react-redux";
 import { editEntityData } from "@/app/store/core/crudThunk";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import InputForm from "@components/form-builders/InputForm";
-import {IconClock, IconWeight} from "@tabler/icons-react";
+import { IconClock, IconWeight } from "@tabler/icons-react";
 import { useEffect } from "react";
 
-export default function BasicInfoCard({ form, prescriptionData, onBlur, showVitals = true }) {
+export default function BasicInfoCard({ form, prescriptionData, onBlur, onChange, showVitals = true }) {
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 
 	useEffect(() => {
 		form.setFieldValue("is_vital", !!prescriptionData?.data?.is_vital);
-	}, [prescriptionData]);
+	}, [ prescriptionData ]);
 
 	async function handleVitalChange(event) {
 		form.setValues({ is_vital: !!event.currentTarget.checked });
 		await dispatch(
 			editEntityData({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_VITAL}/${
-					prescriptionData?.data?.prescription_id || prescriptionData?.data?.id
-				}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.PATIENT_VITAL}/${prescriptionData?.data?.prescription_id || prescriptionData?.data?.id
+					}`,
 				module: "prescription",
 			})
 		).unwrap();
@@ -62,10 +61,10 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur, showVita
 				<Grid w="100%" columns={24}>
 					<Grid.Col span={8}>
 						<Flex gap={'4'}>
-						<IconClock size={18} pt={'mt'}/>
-						<Text fz="xs" >
-							{prescriptionData?.data?.created}
-						</Text>
+							<IconClock size={18} pt={'mt'} />
+							<Text fz="xs" >
+								{prescriptionData?.data?.created}
+							</Text>
 						</Flex>
 					</Grid.Col>
 					<Grid.Col span={16} fz="xs">
@@ -82,6 +81,7 @@ export default function BasicInfoCard({ form, prescriptionData, onBlur, showVita
 						name="weight"
 						size={"xs"}
 						placeholder={t("Weight/KG")}
+						handleChange={onChange}
 						onBlur={onBlur}
 						rightSection={<IconWeight size={16} />}
 					/>
