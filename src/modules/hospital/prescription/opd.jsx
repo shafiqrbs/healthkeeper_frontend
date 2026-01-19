@@ -29,32 +29,32 @@ const module = MODULES.PRESCRIPTION;
 
 export default function Index() {
 	const { user } = useAppLocalStore();
-	const [opened, { open, close }] = useDisclosure(false);
-	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const [showHistory, setShowHistory] = useState(false);
-	const [medicines, setMedicines] = useState([]);
+	const [ opened, { open, close } ] = useDisclosure(false);
+	const [ selectedPrescriptionId, setSelectedPrescriptionId ] = useState(null);
+	const [ showHistory, setShowHistory ] = useState(false);
+	const [ medicines, setMedicines ] = useState([]);
 	const { t } = useTranslation();
 	const { ref } = useElementSize();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-	const [tabValue, setTabValue] = useState("Chief Complaints");
+	const [ tabValue, setTabValue ] = useState("Chief Complaints");
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
-	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
+	const [ openedOverview, { open: openOverview, close: closeOverview } ] = useDisclosure(false);
 	const { prescriptionId } = useParams();
 	const dispatch = useDispatch();
-	const [updatedResponse, setUpdatedResponse] = useState({});
-
+	const [ updatedResponse, setUpdatedResponse ] = useState({});
+	const [ updating, setUpdating ] = useState(false);
 	const tabParticulars = particularsData?.map((item) => ({
 		particular_type: item.particular_type,
 		ordering: item?.ordering ?? 0,
 	}));
 
-	const tabList = [...(tabParticulars?.sort((a, b) => a?.ordering - b?.ordering) || [])]?.map(
+	const tabList = [ ...(tabParticulars?.sort((a, b) => a?.ordering - b?.ordering) || []) ]?.map(
 		(item) => item?.particular_type?.name
 	);
 
-	const [records, setRecords] = useState([]);
-	const [customerId, setCustomerId] = useState();
+	const [ records, setRecords ] = useState([]);
+	const [ customerId, setCustomerId ] = useState();
 
 	const { data: prescriptionData, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
@@ -62,7 +62,7 @@ export default function Index() {
 
 	useEffect(() => {
 		setUpdatedResponse(prescriptionData?.data);
-	}, [prescriptionData]);
+	}, [ prescriptionData ]);
 
 	const initialFormValues = JSON.parse(prescriptionData?.data?.json_content || "{}");
 	const existingMedicines = initialFormValues?.medicines || [];
@@ -76,7 +76,7 @@ export default function Index() {
 		form.setValues({ weight: prescriptionData?.data?.weight || "" });
 		setMedicines(existingMedicines || []);
 		setCustomerId(prescriptionData?.data?.customer_id);
-	}, [prescriptionData]);
+	}, [ prescriptionData ]);
 
 	const handleOpenViewOverview = () => {
 		openOverview();
@@ -97,10 +97,11 @@ export default function Index() {
 		if (customerId) {
 			fetchData();
 		}
-	}, [customerId]);
+	}, [ customerId ]);
 	const hasRecords = records && records.length > 0;
 
 	const handlePrescriptionUpdate = async (updatedMedicine, updatedDynamicFormData = null, updatedFormValues = {}) => {
+		setUpdating(true);
 		try {
 			const createdBy = user;
 			const formValue = {
@@ -109,7 +110,7 @@ export default function Index() {
 				advise: form.values.advise || "",
 				weight: form.values.weight || "",
 				follow_up_date: form.values.follow_up_date || null,
-				prescription_date: new Date()?.toISOString()?.split("T")[0],
+				prescription_date: new Date()?.toISOString()?.split("T")[ 0 ],
 				created_by_id: createdBy?.id,
 				exEmergency: form.values.exEmergency || [],
 				instruction: form.values.instruction || "",
@@ -117,7 +118,7 @@ export default function Index() {
 					basic_info: form.values.basic_info || {},
 					patient_examination: updatedDynamicFormData || form.values.dynamicFormData,
 					order: tabParticulars.map((item, index) => ({
-						[item.slug]: index,
+						[ item.slug ]: index,
 					})),
 				},
 				...updatedFormValues,
@@ -138,6 +139,8 @@ export default function Index() {
 			}
 		} catch (error) {
 			console.error(error);
+		} finally {
+			setUpdating(false);
 		}
 	};
 
@@ -155,7 +158,7 @@ export default function Index() {
 								<BaseTabs
 									tabValue={tabValue}
 									setTabValue={setTabValue}
-									tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
+									tabList={[ "All", ...(tabList?.length > 0 ? tabList : [ "No data" ]) ]}
 								/>
 							</Grid.Col>
 							<Grid.Col span={7}>
@@ -198,6 +201,7 @@ export default function Index() {
 									prescriptionData={prescriptionData}
 									tabParticulars={tabParticulars}
 									updatedResponse={updatedResponse}
+									updating={updating}
 								/>
 							</Grid.Col>
 							{hasRecords && (
