@@ -52,11 +52,11 @@ export default function Table({ module, height, closeTable }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const listData = useSelector((state) => state.crud[module].data);
+	const [ selectedPrescriptionId, setSelectedPrescriptionId ] = useState(null);
+	const listData = useSelector((state) => state.crud[ module ].data);
 	const prescriptionRef = useRef(null);
-	const [opened, { open, close }] = useDisclosure(false);
-	const [processTab, setProcessTab] = useState("all");
+	const [ opened, { open, close } ] = useDisclosure(false);
+	const [ processTab, setProcessTab ] = useState("all");
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -76,16 +76,16 @@ export default function Table({ module, height, closeTable }) {
 		content: () => prescriptionRef.current,
 	});
 
-	const [rootRef, setRootRef] = useState(null);
-	const [controlsRefs, setControlsRefs] = useState({});
+	const [ rootRef, setRootRef ] = useState(null);
+	const [ controlsRefs, setControlsRefs ] = useState({});
 
-	const [printData, setPrintData] = useState({});
-	const [type, setType] = useState(null);
+	const [ printData, setPrintData ] = useState({});
+	const [ type, setType ] = useState(null);
 
 	const posRef = useRef(null);
 	const a4Ref = useRef(null);
 
-	const filterData = useSelector((state) => state.crud[module].filterData);
+	const filterData = useSelector((state) => state.crud[ module ].filterData);
 
 	useEffect(() => {
 		if (type === "a4") {
@@ -95,10 +95,10 @@ export default function Table({ module, height, closeTable }) {
 		} else if (type === "prescription") {
 			handlePrescriptionOption();
 		}
-	}, [printData, type]);
+	}, [ printData, type ]);
 
 	const setControlRef = (val) => (node) => {
-		controlsRefs[val] = node;
+		controlsRefs[ val ] = node;
 		setControlsRefs(controlsRefs);
 	};
 
@@ -107,7 +107,7 @@ export default function Table({ module, height, closeTable }) {
 		fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.OPD.INDEX,
 		filterParams: {
 			name: filterData?.name,
-			patient_mode: ["opd", "emergency"],
+			patient_mode: [ "opd", "emergency" ],
 			term: form.values.keywordSearch,
 			prescription_mode: processTab,
 			created: form.values.created,
@@ -216,7 +216,7 @@ export default function Table({ module, height, closeTable }) {
 		const prescription_id = resultAction?.data?.data.id;
 		if (prescription_id) {
 			if (closeTable) closeTable();
-			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX}/${prescription_id}`);
+			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DOCTOR_OPD.INDEX}/${prescription_id}`);
 		} else {
 			console.error(resultAction);
 			showNotificationComponent(t("Something Went wrong , please try again"), "red.6", "lightgray");
@@ -243,7 +243,7 @@ export default function Table({ module, height, closeTable }) {
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={processTab ? controlsRefs[processTab] : null}
+								target={processTab ? controlsRefs[ processTab ] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>

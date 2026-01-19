@@ -14,6 +14,7 @@ import {
 	Tooltip,
 	ActionIcon,
 	Textarea,
+	rem,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
@@ -361,10 +362,30 @@ export default function AddMedicineForm({
 				setMedicineTerm("");
 				setDurationModeKey((prev) => prev + 100);
 				notifications.show({
-					title: `Automatically Added`,
-					message: `Medicine added successfully`,
-					color: "green",
+					title: "Automatically Added",
+					message: <span style={{ color: "white" }}><strong>{selectedMedicine.product_name}</strong> added successfully</span>,
+					color: "white",
 					position: "top-center",
+					autoClose: 4000,
+					styles: {
+						root: {
+							backgroundColor: "var(--theme-secondary-color-7)",
+							height: 76,
+						},
+						title: {
+							color: "white",
+							fontSize: rem(18),
+						},
+						description: {
+							color: "white",
+							fontSize: rem(16),
+						},
+						closeButton: {
+							color: "white",
+							background: "#ffffff36"
+						}
+
+					},
 				});
 				requestAnimationFrame(() => document.getElementById("medicine_id").focus());
 			}
