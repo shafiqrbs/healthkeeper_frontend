@@ -9,8 +9,10 @@ import { formatDate } from "@/common/utils";
 import { useDebouncedCallback } from "@mantine/hooks";
 import {HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
-import { MODULES_CORE } from "@/constants";
+import {ERROR_NOTIFICATION_COLOR, MODULES_CORE} from "@/constants";
 import {useAuthStore} from "@/store/useAuthStore.js";
+import {notifications} from "@mantine/notifications";
+import {errorNotification} from "@components/notification/errorNotification.jsx";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
 const units = ["Unit 1", "Unit 2", "Unit 3"];
@@ -45,6 +47,7 @@ export default function ReportFilterSearch({
 	const [fetching, setFetching] = useState(false);
 	const [records, setRecords] = useState([]);
 	const [stockItems, setStockItems] = useState([]);
+	const [warehouseData, setWarehouseData] = useState([]);
 	const [warehouse, setWarehouse] = useState([]);
 	const [keywordSearch, setKeywordSearch] = useState(form.values.keywordSearch || "");
 	const [date, setDate] = useState(null);
@@ -136,17 +139,36 @@ export default function ReportFilterSearch({
 
 	// =============== handle search functionality ================
 	const handleSearch = (searchData) => {
+
+		if (module === 'medicineIssue'){
+			if (!startDate){
+				errorNotification('Start Date is required.',ERROR_NOTIFICATION_COLOR)
+				return;
+			}
+			if (!endDate){
+				errorNotification('End Date is required.',ERROR_NOTIFICATION_COLOR)
+				return;
+			}
+
+			if (!warehouseData || warehouseData.length === 0){
+				errorNotification('Warehouse is required.',ERROR_NOTIFICATION_COLOR)
+				return;
+			}
+		}
+
 		const data = searchData || {
 			keywordSearch,
 			created: date ? formatDate(date) : "",
 			room_id: form.values.room_id,
             stock_item_id: form.values.stock_item_id,
             warehouse_id: form.values.warehouse_id,
+			start_date: startDate ? formatDate(startDate) : "",
+			end_date: endDate ? formatDate(endDate) : "",
 		};
 		form.setFieldValue("start_date", startDate ? formatDate(startDate) : "");
 		form.setFieldValue("end_date", endDate ? formatDate(endDate) : "");
 		if (onSearch) {
-			onSearch(data);production
+			onSearch(data);
 		}
 	};
 
@@ -190,6 +212,7 @@ export default function ReportFilterSearch({
 
 	const handleWarehouseChange = (value) => {
 		form.setFieldValue("warehouse_id", value);
+		setWarehouseData(value);
 		handleSearch({ keywordSearch, created: date, warehouse_id: value });
 	};
 
@@ -232,7 +255,6 @@ export default function ReportFilterSearch({
 
             {showWarehouse && (
                 <Select
-                    clearable
                     placeholder="Warehouse"
                     loading={fetching}
                     data={warehouse.map((item) => ({ label: item?.warehouse_name, value: item?.id?.toString() }))}

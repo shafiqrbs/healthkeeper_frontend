@@ -20,6 +20,17 @@ export default function __ViewDrawer({ viewDrawer, height, setViewDrawer, module
 	const ALLOWED_OPD_ROLES = ["pharmacy_pharmacist", "pharmacy_doctor", "admin_administrator"];
 	const canApprove = userRoles.some((role) => ALLOWED_OPD_ROLES.includes(role));
 
+	const stockItems = entityObject?.stock_transfer_items || [];
+
+	const totalItems = stockItems.length;
+
+	const issuedItems = stockItems.filter(
+		(item) => item.purchase_item_id !== null
+	).length;
+
+	const hasAnyIssuedItem = issuedItems > 0;
+
+
 	const closeDrawer = () => {
 		setViewDrawer(false);
 	};
@@ -116,6 +127,20 @@ export default function __ViewDrawer({ viewDrawer, height, setViewDrawer, module
 										entityObject.created_by}
 								</Grid.Col>
 							</Grid>
+							<Grid columns={24}>
+								<Grid.Col span={"10"} className="drawer-form-input-label">
+									{hasAnyIssuedItem && (
+										<Text c="red" className="drawer-form-input-label">
+											Found {issuedItems} purchase batch out of {totalItems} Items.
+										</Text>
+									)}
+									{totalItems > 0 && issuedItems === 0 && (
+										<Text c="red" className="drawer-form-input-label">
+											No purchase batch have been found yet.
+										</Text>
+									)}
+								</Grid.Col>
+							</Grid>
 						</Box>
 						<Box>
 							<DataTable
@@ -155,7 +180,7 @@ export default function __ViewDrawer({ viewDrawer, height, setViewDrawer, module
 										sortable: false,
 									},
 								]}
-								height={height - 96}
+								height={height - 130}
 							/>
 						</Box>
 					</Box>
@@ -165,7 +190,7 @@ export default function __ViewDrawer({ viewDrawer, height, setViewDrawer, module
 						<Flex align="right" gap={8}>
 							{entityObject.process === "Approved" &&
 								entityObject.approved_by_id &&
-								canApprove && (
+								canApprove && hasAnyIssuedItem && (
 									<Button
 										onClick={(e) => {
 											e.preventDefault();

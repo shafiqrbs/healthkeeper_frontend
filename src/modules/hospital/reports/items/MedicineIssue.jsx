@@ -112,7 +112,7 @@ export default function MedicineIssue() {
 					module={module}
 					form={form}
 					handleCSVDownload={handleCSVDownload}
-					showWarehouse={false}
+					showWarehouse={true}
 				/>
 			</Box>
 
