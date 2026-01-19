@@ -15,6 +15,7 @@ import { errorNotification } from "@components/notification/errorNotification";
 import { successNotification } from "@components/notification/successNotification";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 import InputForm from "@components/form-builders/InputForm";
+import {formatDateForMySQL} from "@utils/index";
 
 const module = MODULES.LAB_TEST;
 
@@ -28,6 +29,11 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 
 	const form = useForm({
 		initialValues: {
+			sample_id: custom_report?.sample_id || '',
+			test_id: custom_report?.test_id || '',
+			test_date: custom_report?.test_date
+				? new Date(custom_report.test_date)
+				: null,
 			afb_found: custom_report?.afb_found || "",
 			afb_not_found: custom_report?.afb_not_found || "",
 			afb_scanty: custom_report?.afb_scanty || "",
@@ -63,6 +69,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 				data: {
 					json_content: {
 						...values,
+						test_date: formatDateForMySQL(values.test_date),
 					},
 					comment: values.comment,
 				},
@@ -97,28 +104,34 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 		<Box className="border-top-none" px="sm" mt="xs">
 			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
-					{/*<Group grow>
-						 =============== genexpert site/hospital ===============
+					<Group grow>
+						{/* =============== genexpert site/hospital =============== */}
 						<DatePickerForm
 							name="test_date"
 							id="test_date"
-							nextField="comment"
+							nextField="test_id"
 							form={form}
 							label="Test Date"
 							placeholder="Select date"
 						/>
-
-						 =============== reference laboratory specimen id ===============
+						{/* =============== reference laboratory specimen id =============== */}
 						<InputNumberForm
-							name="lab_no"
-							id="lab_no"
+							name="sample_id"
+							id="sample_id"
 							nextField="id"
 							form={form}
-							label="Lab No"
-							placeholder="Enter Lab No"
+							label="Sample ID"
+							placeholder="Enter Sample ID"
 						/>
-					</Group>*/}
-
+						<InputNumberForm
+							name="test_id"
+							id="test_id"
+							nextField="id"
+							form={form}
+							label="Lab Test ID"
+							placeholder="Enter Lab Test ID"
+						/>
+					</Group>
 					{/* =============== results table =============== */}
 					<Box my="md">
 						<Table withColumnBorders withTableBorder withRowBorders>

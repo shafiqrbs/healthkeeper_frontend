@@ -26,8 +26,19 @@ const AFBCultureReport = forwardRef(({reportData,report}) => {
 				}`}
 			</style>
 
-			<Box id="prescription-table" mb="md" pt={'100'}  fz={'md'}>
+			<Box id="prescription-table" mb="md" pt={'xs'}  fz={'md'}>
 				<Box mb='md'>
+					<Grid columns={12}>
+						<Grid.Col span={4}>
+							<strong>Test Date: </strong>{formatDate(reportData?.test_date)}
+						</Grid.Col>
+						<Grid.Col span={4}>
+							<strong>Sample ID: </strong>{reportData?.sample_id}
+						</Grid.Col>
+						<Grid.Col span={4}>
+							<strong>Lab Test ID: </strong>{reportData?.test_id}
+						</Grid.Col>
+					</Grid>
 					<Grid columns={12}>
 						<Grid.Col span={8}>
 							<strong>Diagnosis: </strong>{reportData?.afb_diagnosis}
@@ -61,34 +72,41 @@ const AFBCultureReport = forwardRef(({reportData,report}) => {
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Th ta="center">
 								{reportData?.afb_contaminated}
+								{reportData?.afb_contaminated == 1  && (
+									<Box ta={'center'}><IconCheck size="60px" color={'green'} /></Box>
+								)}
 							</Table.Th>
 							<Table.Th ta="center">
-								{reportData?.negative}
+								{reportData?.negative == 1  && (
+									<Box ta={'center'}><IconCheck size="60px" color={'green'} /></Box>
+								)}
 							</Table.Th>
 							<Table.Th ta="center">
-								{reportData?.positive}
+								{reportData?.positive == 1  && (
+									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
+								)}
 							</Table.Th>
 							<Table.Th ta="center">
-								{reportData?.atypical_mycobacteria_species}
+								<Text style={{ color:"red" }}><strong>{reportData?.atypical_mycobacteria_species}</strong></Text>
 							</Table.Th>
 							<Table.Th ta="center">
 								{reportData?.colonies_1 === 1  && (
-								<Box ta={'center'}><IconCheck size="60px" color={'green'} /></Box>
+								<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th ta="center">
 								{reportData?.colonies_2 === 1  && (
-									<Box ta={'center'}><IconCheck size="60px" color={'green'} /></Box>
+									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th ta="center">
 								{reportData?.colonies_3 === 1  && (
-									<Box ta={'center'}><IconCheck size="60px" color={'green'} /></Box>
+									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th ta="center">
 								{reportData?.colonies_4 === 1  && (
-									<Box ta={'center'}><IconCheck size="60px" color={'green'} /></Box>
+									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>
 						</Table.Tr>

@@ -7,7 +7,7 @@ import InputForm from "@components/form-builders/InputForm";
 import { IconCheck } from "@tabler/icons-react";
 import {formatDate} from "@utils/index";
 
-const GeneXpert = forwardRef(({reportData,report}) => {
+const DSTReport = forwardRef(({reportData,report}) => {
 
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
@@ -16,7 +16,7 @@ const GeneXpert = forwardRef(({reportData,report}) => {
 	const { mainAreaHeight } = useOutletContext();
 	return (
 		<>
-		<Box h={650}>
+		<Box h={500}>
 			<Box mb='md' pt={'xs'} >
 				<Grid columns={12}>
 					<Grid.Col span={4}>
@@ -31,130 +31,60 @@ const GeneXpert = forwardRef(({reportData,report}) => {
 				</Grid>
 			</Box>
 			<Box mb="md"  fz={'md'} >
-				<Table
-					withColumnBorders
-					verticalSpacing={6}
-					horizontalSpacing={6}
-					striped={false}
-					highlightOnHover={false}
-					style={{
-						borderCollapse: "collapse",
-						width: "100%",
-						border: "1px solid var(--theme-tertiary-color-8)",
-					}}  w="100%">
-					<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Text>T = MTB Detected, Rif Resistance not Detected</Text>
-						</Table.Th>
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Text>RR = MTB Detected, Rif Resistance Detected</Text>
-						</Table.Th>
-
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Text>TI = MTB Detected, Rif Resistance </Text>
-						</Table.Th>
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Text>TT = MTB Trace Detected</Text>
-						</Table.Th>
-
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Text>N = MTB Not Detected</Text>
-						</Table.Th>
-
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Text>I = INVALID/ERROR/NO RESULT</Text>
-						</Table.Th>
-					</Table.Tr>
-					<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							{reportData?.gene_xpert_value === "not_detected" && (
-							<Box ta={'center'}><IconCheck size="80px" color={'red'} /></Box>
-							)}
-						</Table.Th>
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							{reportData?.gene_xpert_value === "detected" && (
-								<Box ta={'center'}><IconCheck size="80px" color={'red'} /></Box>
-							)}
-						</Table.Th>
-
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							{reportData?.gene_xpert_value === "indeterminate" && (
-								<Box ta={'center'}><IconCheck size="80px" color={'red'} /></Box>
-							)}
-						</Table.Th>
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							{reportData?.gene_xpert_value === "trace_detected" && (
-								<Box ta={'center'}><IconCheck size="80px" color={'red'} /></Box>
-							)}
-						</Table.Th>
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							{reportData?.gene_xpert_value === "mtb_not_detected" && (
-								<Box ta={'center'}><IconCheck size="80px" color={'green'} /></Box>
-							)}
-						</Table.Th>
-						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							{reportData?.gene_xpert_value === "invalid" && (
-								<Box ta={'center'}><IconCheck size="80px" color={'green'} /></Box>
-							)}
-						</Table.Th>
-					</Table.Tr>
-				</Table>
-			</Box>
-			<Box mb="md"  fz={'md'} >
-				<Box my="md">
-					<Text size="sm" fw={500} mb="xs">
-						<strong>Method Used:</strong>
-					</Text>
+					<Box my="md">
+						<Text size="sm" fw={500} mb="xs">
+							<strong>Method Used:</strong>
+						</Text>
+						<Table
+							withColumnBorders
+							verticalSpacing={6}
+							horizontalSpacing={6}
+							striped={false}
+							highlightOnHover={false}
+							style={{
+								borderCollapse: "collapse",
+								width: "100%",
+								border: "1px solid var(--theme-tertiary-color-8)",
+							}}  w="100%">
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									Proportion method (LJ)
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									Liquid (MGIT)
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									Line Probe Assay (LPA)
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									Xpert XDR
+								</Table.Th>
+							</Table.Tr>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									{(reportData?.dts_method === 'lj')  && (
+									<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
+									)}
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									{(reportData?.dts_method === 'mgit')  && (
+										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
+									)}
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									{(reportData?.dts_method === 'lpa')  && (
+										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
+									)}
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									{(reportData?.dts_method === 'xdr')  && (
+										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
+									)}
+								</Table.Th>
+							</Table.Tr>
+						</Table>
+					</Box>
 					<Table
-						withColumnBorders
-						verticalSpacing={6}
-						horizontalSpacing={6}
-						striped={false}
-						highlightOnHover={false}
-						style={{
-							borderCollapse: "collapse",
-							width: "100%",
-							border: "1px solid var(--theme-tertiary-color-8)",
-						}}  w="100%">
-						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								Proportion method (LJ)
-							</Table.Th>
-							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								Liquid (MGIT)
-							</Table.Th>
-							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								Line Probe Assay (LPA)
-							</Table.Th>
-							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								Xpert XDR
-							</Table.Th>
-						</Table.Tr>
-						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								{(reportData?.dts_method === 'lj')  && (
-									<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-								)}
-							</Table.Th>
-							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								{(reportData?.dts_method === 'mgit')  && (
-									<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-								)}
-							</Table.Th>
-							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								{(reportData?.dts_method === 'lpa')  && (
-									<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-								)}
-							</Table.Th>
-							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								{(reportData?.dts_method === 'xdr')  && (
-									<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-								)}
-							</Table.Th>
-						</Table.Tr>
-					</Table>
-				</Box>
-				<Table
 					withColumnBorders
 					verticalSpacing={6}
 					horizontalSpacing={6}
@@ -310,5 +240,5 @@ const GeneXpert = forwardRef(({reportData,report}) => {
 		</>
 	);
 });
-GeneXpert.displayName = "GeneXpert";
-export default GeneXpert;
+DSTReport.displayName = "DSTReport";
+export default DSTReport;

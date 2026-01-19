@@ -1,4 +1,4 @@
-import { Box, Stack, Table, Text, ScrollArea, Grid } from "@mantine/core";
+import {Box, Stack, Table, Text, ScrollArea, Grid, Group} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Checkbox } from "@mantine/core";
 import ReportSubmission from "../ReportSubmission";
@@ -29,6 +29,11 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 	const is_completed = diagnosticReport?.process?.toLowerCase() === "done";
 	const form = useForm({
 		initialValues: {
+			sample_id: custom_report?.sample_id || '',
+			test_id: custom_report?.test_id || '',
+			test_date: custom_report?.test_date
+				? new Date(custom_report.test_date)
+				: null,
 			afb_diagnosis: custom_report?.afb_diagnosis || "",
 			afb_contaminated: custom_report?.afb_contaminated || "",
 			negative: custom_report?.negative || "",
@@ -96,8 +101,44 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 		<Box className="border-top-none" px="sm" mt="xs">
 			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
+					<Group grow>
+						{/* =============== genexpert site/hospital =============== */}
+						<DatePickerForm
+							name="test_date"
+							id="test_date"
+							nextField="test_id"
+							form={form}
+							label="Test Date"
+							placeholder="Select date"
+						/>
+						<DatePickerForm
+							name="follow_up_month"
+							id="follow_up_month"
+							nextField="test_name"
+							form={form}
+							label="Follow Up Month"
+							placeholder="Select Follow Up Month"
+						/>
+						{/* =============== reference laboratory specimen id =============== */}
+						<InputNumberForm
+							name="sample_id"
+							id="sample_id"
+							nextField="id"
+							form={form}
+							label="Sample ID"
+							placeholder="Enter Sample ID"
+						/>
+						<InputNumberForm
+							name="test_id"
+							id="test_id"
+							nextField="id"
+							form={form}
+							label="Lab Test ID"
+							placeholder="Enter Lab Test ID"
+						/>
+					</Group>
 					<Grid columns={12}>
-						<Grid.Col span={6}>
+						<Grid.Col span={12}>
 							<InputForm
 								name="afb_diagnosis"
 								id="afb_diagnosis"
@@ -107,23 +148,13 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 								placeholder="Enter Diagnosis"
 							/>
 						</Grid.Col>
-						<Grid.Col span={6}>
-							<DatePickerForm
-								name="follow_up_month"
-								id="follow_up_month"
-								nextField="test_name"
-								form={form}
-								label="Follow Up Month"
-								placeholder="Select Follow Up Month"
-							/>
-						</Grid.Col>
 					</Grid>
 					{/* =============== results table =============== */}
 					<Box my="md">
 						<Table withColumnBorders withTableBorder withRowBorders>
 							<Table.Thead>
 								<Table.Tr>
-									<Table.Th colSpan={5}/>
+									<Table.Th colSpan={4}/>
 									<Table.Th colSpan={4} ta="center">
 										Mycobacterium tuberculosis Complex
 									</Table.Th>
@@ -140,36 +171,30 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 								</Table.Tr>
 								<Table.Tr>
 									<Table.Th ta="center">
-										<InputForm
-											w={120}
-											name="afb_contaminated"
-											id="afb_contaminated"
-											nextField="negative"
-											form={form}
-											label=""
-											placeholder="Yes/No"
+										<Checkbox
+											checked={form.values.afb_contaminated}
+											onChange={(event) =>
+												form.setFieldValue("afb_contaminated", event.currentTarget.checked)
+											}
+											styles={{ body: { justifyContent: "center" } }}
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
-										<InputForm
-											w={120}
-											name="negative"
-											id="negative"
-											nextField="positive"
-											form={form}
-											label=""
-											placeholder="Yes/No"
+										<Checkbox
+											checked={form.values.negative}
+											onChange={(event) =>
+												form.setFieldValue("negative", event.currentTarget.checked)
+											}
+											styles={{ body: { justifyContent: "center" } }}
 										/>
 									</Table.Th>
 									<Table.Th ta="center">
-										<InputForm
-											w={120}
-											name="positive"
-											id="positive"
-											nextField="atypical_mycobacteria_species"
-											form={form}
-											label=""
-											placeholder="Yes/No"
+										<Checkbox
+											checked={form.values.positive}
+											onChange={(event) =>
+												form.setFieldValue("positive", event.currentTarget.checked)
+											}
+											styles={{ body: { justifyContent: "center" } }}
 										/>
 									</Table.Th>
 									<Table.Th ta="center">

@@ -63,9 +63,13 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 
 	const form = useForm({
 		initialValues: {
+			sample_id: custom_report?.sample_id || '',
+			test_id: custom_report?.test_id || '',
+			test_date: custom_report?.test_date
+				? new Date(custom_report.test_date)
+				: null,
 			id: diagnosticReport?.particular?.id || 0,
 			sample_type: custom_report?.sample_type || "",
-			test_date: custom_report?.test_date ? new Date(custom_report.test_date) : null,
 			lab_no: custom_report?.lab_no || "",
 			dts_method: custom_report?.dts_method || "lj",
 			dts_id: custom_report?.dts_id || "",
@@ -142,6 +146,35 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 		<Box className="border-top-none" px="sm" mt="xs">
 			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
 				<Stack gap="md">
+					<Group grow>
+						{/* =============== genexpert site/hospital =============== */}
+						<DatePickerForm
+							name="test_date"
+							id="test_date"
+							nextField="comment"
+							form={form}
+							label="Test Date"
+							placeholder="Select date"
+						/>
+
+						{/* =============== reference laboratory specimen id =============== */}
+						<InputNumberForm
+							name="test_id"
+							id="test_id"
+							nextField="id"
+							form={form}
+							label="Lab Test ID"
+							placeholder="Enter Lab Test ID"
+						/>
+						<InputNumberForm
+							name="sample_id"
+							id="sample_id"
+							nextField="id"
+							form={form}
+							label="Sample ID"
+							placeholder="Enter Sample ID"
+						/>
+					</Group>
 					{/* =============== method used =============== */}
 					<Box my="md">
 						<Text size="sm" fw={500} mb="xs">

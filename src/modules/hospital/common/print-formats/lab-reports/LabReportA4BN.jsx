@@ -15,6 +15,7 @@ import GeneXperExtraPulmonaryReport from "@hospital-components/print-formats/lab
 import GeneXpert from "@hospital-components/print-formats/lab-reports/custom/GeneXpert";
 import AFBCultureReport from "@hospital-components/print-formats/lab-reports/custom/AFBCultureReport";
 import SputumAFBReport from "@hospital-components/print-formats/lab-reports/custom/SputumAFBReport";
+import DSTReport from "@hospital-components/print-formats/lab-reports/custom/DSTReport";
 
 const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const reportData = JSON.parse(data?.invoiceParticular?.json_report || "{}");
@@ -85,17 +86,10 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 							{/* =============== Patient Information Section ================ */}
 							<Box mb="md">
 								<Box p="md">
-									<Box bd="1px solid var(--theme-tertiary-color-8)">
-										<Table
-											withColumnBorders
-											verticalSpacing={0}
-											horizontalSpacing={0}
-											striped={false}
-											highlightOnHover={false}
-											style={{ margin: 0, padding: 0 }}
-										>
+									<Box>
+										<Table>
 											<Table.Tbody>
-												<Table.Tr>
+												<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 													<Table.Td w={"25%"} align={"left"}>
 														{report?.uid ? (
 															<Barcode
@@ -139,7 +133,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 											}}
 										>
 											<Table.Tbody>
-												<Table.Tr>
+												<Table.Tr >
 													<Table.Td>
 														<Grid columns={18} gap={0} gutter="xs">
 															<Grid.Col span={6} py={0}>
@@ -562,6 +556,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										<AFBCultureReport report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.slug === "sputum-afb" ? (
 										<SputumAFBReport report={report} reportData={reportData} />
+									) : data?.invoiceParticular?.particular?.slug === "dst" ? (
+										<DSTReport report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.is_custom_report === 1 ? (
 										<DefaultCustomReport report={report} reportData={reportData} />
 									) : (

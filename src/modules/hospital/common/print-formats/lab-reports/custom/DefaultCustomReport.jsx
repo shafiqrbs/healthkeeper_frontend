@@ -8,7 +8,6 @@ const DefaultCustomReport = forwardRef(({ reportData, report }, ref) => {
 		return value || defaultValue;
 	};
 	const { mainAreaHeight } = useOutletContext();
-	console.log(mainAreaHeight);
 	return (
 		<Box>
 			<Box mb="md" p={"xl"} pt={"md"} fz={"md"}>
