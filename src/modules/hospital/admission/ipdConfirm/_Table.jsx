@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
-import { ActionIcon, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text } from "@mantine/core";
+import {ActionIcon, Badge, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text} from "@mantine/core";
 import {
 	IconAdjustments,
 	IconArrowRight,
@@ -159,6 +159,17 @@ export default function _Table({ module }) {
 		dispatch(setFilterData({ module: "cabin", data: { keywordSearch: "" } }));
 	};
 
+	const processColorMap = {
+		admitted: "red",
+		paid: "green",
+		ipd: "orange",
+		billing: "blue",
+		New: "cyan",
+		revised: "yellow",
+		canceled: "gray",
+		closed: "purple"
+	};
+
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -244,7 +255,20 @@ export default function _Table({ module }) {
 							title: t("Amount"),
 							render: (item) => t(item.total),
 						},
-						{ accessor: "process", title: t("Process") },
+						{
+							accessor: "process",
+							textAlign: "center",
+							title: t("Process"),
+							render: (item) => {
+								const color = processColorMap[item.process] || ""; // fallback for unknown status
+								return (
+									<Badge size="xs" radius="sm" color={color}>
+										{item.process || 'empty'}
+									</Badge>
+								);
+							},
+							cellsClassName: tableCss.statusBackground,
+						},
 						{
 							title: t("Action"),
 							textAlign: "right",

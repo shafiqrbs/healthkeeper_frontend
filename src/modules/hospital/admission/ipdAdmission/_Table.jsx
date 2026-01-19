@@ -3,7 +3,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
 import {
-	ActionIcon,
+	ActionIcon, Badge,
 	Box,
 	Button,
 	Divider,
@@ -237,6 +237,18 @@ export default function _Table({ module }) {
 		closeActions();
 	};
 
+	const processColorMap = {
+		admitted: "red",
+		paid: "green",
+		ipd: "orange",
+		billing: "blue",
+		New: "cyan",
+		revised: "yellow",
+		canceled: "gray",
+		closed: "purple"
+	};
+
+
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -326,8 +338,17 @@ export default function _Table({ module }) {
 						},
 						{
 							accessor: "process",
+							textAlign: "center",
 							title: t("Process"),
-							render: (item) => capitalizeWords(item.process),
+							render: (item) => {
+								const color = processColorMap[item.process] || ""; // fallback for unknown status
+								return (
+									<Badge size="xs" radius="sm" color={color}>
+										{item.process || 'empty'}
+									</Badge>
+								);
+							},
+							cellsClassName: tableCss.statusBackground,
 						},
 						{
 							title: t("Action"),

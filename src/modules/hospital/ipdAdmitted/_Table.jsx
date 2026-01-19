@@ -7,7 +7,7 @@ import {
 	IconPrinter,
 	IconFileText,
 } from "@tabler/icons-react";
-import { Box, Flex, Text, ActionIcon, Group, Button, SegmentedControl, Menu, rem, Stack } from "@mantine/core";
+import {Box, Flex, Text, ActionIcon, Group, Button, SegmentedControl, Menu, rem, Stack, Badge} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +38,7 @@ const module = MODULES.ADMISSION;
 const PER_PAGE = 25;
 
 const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse"];
+const ALLOWED_DOCTOR_ROLES = ["role_domain", "admin_administrator", "ipd_doctor"];
 
 export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode }) {
 	const { userRoles } = useAppLocalStore();
@@ -148,6 +149,15 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 		}
 	};
 
+	const processColorMap = {
+		admitted: "red",
+		paid: "green",
+		ipd: "orange",
+		revised: "yellow",
+		canceled: "gray",
+		closed: "purple"
+	};
+
 	return (
 		<Box pos="relative">
 			<Flex align="center" justify="space-between">
@@ -230,8 +240,17 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 
 						{
 							accessor: "process",
+							textAlign: "center",
 							title: t("Process"),
-							render: (item) => capitalizeWords(item.process),
+							render: (item) => {
+								const color = processColorMap[item.process] || ""; // fallback for unknown status
+								return (
+									<Badge size="xs" radius="sm" color={color}>
+										{item.process || 'empty'}
+									</Badge>
+								);
+							},
+							cellsClassName: tableCss.statusBackground,
 						},
 						{
 							title: t("Action"),
@@ -239,7 +258,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 							titleClassName: "title-right",
 							render: (values) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{values.process?.toLowerCase() === "admitted" && !values.prescription_id && (
+									{ALLOWED_DOCTOR_ROLES?.some((role) => userRoles.includes(role))  && values.process?.toLowerCase() === "admitted" && !values.prescription_id && (
 										<Button
 											rightSection={<IconArrowNarrowRight size={18} />}
 											onClick={() => handleProcessConfirmation(values.id, values.uid)}
@@ -253,21 +272,22 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 											{t("Prescription")}
 										</Button>
 									)}
-									{values.process?.toLowerCase() === "admitted" && values.prescription_id && (
-										<Stack gap={2}>
-											<Button
-												rightSection={<IconArrowNarrowRight size={18} />}
-												onClick={() => handleManageOverview(values.uid, values.id)}
-												variant="filled"
-												color="var(--theme-warn-color-6)"
-												radius="xs"
-												aria-label="Settings"
-												size="compact-xs"
-												fw={400}
-											>
-												{t("eFresh")}
-											</Button>
 
+										<Stack gap={2}>
+											{ALLOWED_DOCTOR_ROLES?.some((role) => userRoles.includes(role))  && values.process?.toLowerCase() === "admitted" && values.prescription_id && (
+												<Button
+													rightSection={<IconArrowNarrowRight size={18} />}
+													onClick={() => handleManageOverview(values.uid, values.id)}
+													variant="filled"
+													color="var(--theme-warn-color-6)"
+													radius="xs"
+													aria-label="Settings"
+													size="compact-xs"
+													fw={400}
+												>
+													{t("eFresh")}
+												</Button>
+											)}
 											{ALLOWED_NURSE_ROLES?.some((role) => userRoles.includes(role)) && (
 												<Button
 													rightSection={<IconArrowNarrowRight size={18} />}
@@ -296,7 +316,7 @@ export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode 
 												{t("Instant")}
 											</Button> */}
 										</Stack>
-									)}
+
 
 									<Menu
 										position="bottom-end"
