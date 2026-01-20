@@ -199,7 +199,7 @@ export default function AddDosagePopover({ form, bd = "auto" }) {
 									<Grid columns={20} gutter={{ base: "3xs" }}>
 										<Grid.Col span={6}>
 											<Text ta="left" fw={600} fz="sm" mt="3xs">
-												{t("Quantity")}
+												{t("Daily Quantity")}
 											</Text>
 										</Grid.Col>
 										<Grid.Col span={4}>

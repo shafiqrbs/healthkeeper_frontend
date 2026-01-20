@@ -785,98 +785,85 @@ export default function Prescription({
 											/>
 										</Grid.Col>
 										<Grid.Col span={6}>
-											{/* <Autocomplete
-												clearable
-												disabled={medicineForm.values.medicine_id}
-												limit={20}
-												filter={medicineOptionsFilter}
-												tooltip={t("EnterSelfMedicine")}
-												id="generic"
-												name="generic"
-												data={medicineGenericData?.map((item, index) => ({
-													label: item.generic,
-													value: `${item.name} ${index}`,
-												}))}
-												value={medicineForm.values.generic}
-												onChange={(v) => {
-													handleChange("generic", v);
-												}}
-												placeholder={t("SelfMedicine")}
-												classNames={inputCss}
-											/> */}
-											<Flex gap="les" align="center">
-												<Switch
-													size="lg"
-													radius="sm"
-													onLabel="GEN"
-													offLabel="Brand"
-													checked={medicineMode === "generic"}
-													onChange={(event) =>
-														setMedicineMode(
-															event.currentTarget.checked ? "generic" : "brand"
-														)
-													}
-												/>
-												<FormValidatorWrapper opened={medicineForm.errors.generic_id}>
-													<Select
-														searchable
-														searchValue={medicineGenericSearchValue}
-														onSearchChange={setMedicineGenericSearchValue}
-														clearable
-														disabled={medicineForm.values.medicine_id}
-														tooltip={t("EnterGenericName")}
-														id="generic_id"
-														name="generic_id"
-														data={genericOptions}
-														filter={medicineOptionsFilter}
-														value={medicineForm.values.generic_id}
-														onChange={(v, options) => {
-															setMedicineGenericSearchValue(options.label);
-															handleChange("generic_id", v);
-															medicineForm.setFieldValue("medicine_name", options.label);
-															medicineForm.setFieldValue("generic", options.generic);
-														}}
-														onBlur={() =>
-															setMedicineGenericSearchValue(medicineGenericSearchValue)
+											<Grid w="100%" columns={24} gutter="3xs">
+												<Grid.Col span={3} mt={'3'}>
+													<Switch
+														size="lg"
+														radius="sm"
+														onLabel="GEN"
+														offLabel="Brand"
+														checked={medicineMode === "generic"}
+														onChange={(event) =>
+															setMedicineMode(
+																event.currentTarget.checked ? "generic" : "brand"
+															)
 														}
-														placeholder={t("GenericName")}
-														classNames={inputCss}
-														error={!!medicineForm.errors.generic_id}
-														rightSection={
-															<AddGenericPopover
-																dbMedicines={dbMedicines}
-																setDbMedicines={setDbMedicines}
-																prescription_id={
-																	prescriptionData?.data?.prescription_uid
-																}
-															/>
-														}
-														w="100%"
-														comboboxProps={{ withinPortal: false }}
 													/>
-												</FormValidatorWrapper>
-											</Flex>
+												</Grid.Col>
+												<Grid.Col span={19}>
+													<FormValidatorWrapper opened={medicineForm.errors.generic_id}>
+														<Select
+															searchable
+															searchValue={medicineGenericSearchValue}
+															onSearchChange={setMedicineGenericSearchValue}
+															clearable
+															disabled={medicineForm.values.medicine_id}
+															tooltip={t("EnterGenericName")}
+															id="generic_id"
+															name="generic_id"
+															data={genericOptions}
+															filter={medicineOptionsFilter}
+															value={medicineForm.values.generic_id}
+															onChange={(v, options) => {
+																setMedicineGenericSearchValue(options.label);
+																handleChange("generic_id", v);
+																medicineForm.setFieldValue("medicine_name", options.label);
+																medicineForm.setFieldValue("generic", options.generic);
+															}}
+															onBlur={() =>
+																setMedicineGenericSearchValue(medicineGenericSearchValue)
+															}
+															placeholder={t("GenericName")}
+															classNames={inputCss}
+															error={!!medicineForm.errors.generic_id}
+															w="100%"
+															comboboxProps={{ withinPortal: false }}
+														/>
+													</FormValidatorWrapper>
+												</Grid.Col>
+												<Grid.Col span={2} mt={'4'}>
+													<AddGenericPopover
+														dbMedicines={dbMedicines}
+														setDbMedicines={setDbMedicines}
+														prescription_id={
+															prescriptionData?.data?.prescription_uid
+														}
+													/>
+												</Grid.Col>
+											</Grid>
 										</Grid.Col>
 									</Grid>
 									<Grid w="100%" columns={12} gutter="3xs">
 										<Grid.Col span={6}>
-											<Group grow gap="les">
-												<SelectForm
-													form={medicineForm}
-													id="medicine_dosage_id"
-													name="medicine_dosage_id"
-													dropdownValue={dosage_options?.map((dosage) => ({
-														value: dosage.id?.toString(),
-														label: dosage.name,
-													}))}
-													value={medicineForm.values.medicine_dosage_id}
-													placeholder={t("Dosage")}
-													required
-													tooltip={t("EnterDosage")}
-													withCheckIcon={false}
-													rightSection={<AddDosagePopover form={medicineForm} />}
-												/>
-											</Group>
+											<Grid w="100%" columns={24} gutter="3xs">
+												<Grid.Col span={22}>
+													<SelectForm
+														form={medicineForm}
+														id="medicine_dosage_id"
+														name="medicine_dosage_id"
+														dropdownValue={dosage_options?.map((dosage) => ({
+															value: dosage.id?.toString(),
+															label: dosage.name,
+														}))}
+														value={medicineForm.values.medicine_dosage_id}
+														placeholder={t("Dosage")}
+														required
+														tooltip={t("EnterDosage")}
+														withCheckIcon={false}
+													/>
+												</Grid.Col>
+												<Grid.Col span={2} mt={'4'}><AddDosagePopover form={medicineForm} /></Grid.Col>
+											</Grid>
 										</Grid.Col>
 										<Grid.Col span={4}>
 											<Group grow gap="les">
