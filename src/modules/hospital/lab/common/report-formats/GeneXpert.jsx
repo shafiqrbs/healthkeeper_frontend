@@ -1,6 +1,5 @@
-import { Box, Stack, Table, Group, Text, ScrollArea, Radio, List } from "@mantine/core";
+import { Box, Stack, Table, Group, Text, ScrollArea, Radio, Switch } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Checkbox } from "@mantine/core";
 import ReportSubmission from "../ReportSubmission";
 import { useOutletContext, useParams } from "react-router-dom";
 import DatePickerForm from "@components/form-builders/DatePicker";
@@ -18,6 +17,7 @@ import InputNumberForm from "@components/form-builders/InputNumberForm";
 import { useEffect } from "react";
 import InputForm from "@components/form-builders/InputForm";
 import SelectForm from "@components/form-builders/SelectForm";
+import { IconCheck, IconX } from "@tabler/icons-react";
 
 const module = MODULES.LAB_TEST;
 
@@ -61,8 +61,7 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
-	const is_completed = diagnosticReport?.process === "Done";
-	console.log(custom_report)
+
 	const form = useForm({
 		initialValues: {
 			gene_xpert_value: custom_report?.gene_xpert_value || 0,
@@ -90,6 +89,7 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 			dts_kan: custom_report?.dts_kan || "",
 			dts_cap: custom_report?.dts_cap || "",
 			dts_others: custom_report?.dts_others || "",
+			is_dst_genexpert: custom_report?.is_dst_genexpert || false,
 		},
 	});
 	const handleSubmit = (values) => {
@@ -122,7 +122,7 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+						errorObject[ key ] = fieldErrors[ key ][ 0 ];
 					});
 					console.error("Field Error occurred!", errorObject);
 					form.setErrors(errorObject);
@@ -141,14 +141,6 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 		}
 	}
 
-	const rifOptions = [
-		{ value: "not_detected", label: "T-MTB Detected, Rif Resistance not Detected" },
-		{ value: "detected", label: "RR-MTB Detected, Rif Resistance Detected" },
-		{ value: "indeterminate", label: "Indeterminate" },
-		{ value: "mtb_not_detected", label: "MTB Not Detected" },
-		{ value: "invalid", label: "Invalid" },
-	];
-
 	useEffect(() => {
 		if (custom_report?.rif_result) {
 			form.setFieldValue("rif_result", custom_report.rif_result);
@@ -156,7 +148,7 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 		if (custom_report?.rif_table_result) {
 			form.setFieldValue("rif_table_result", custom_report.rif_table_result);
 		}
-	}, [custom_report]);
+	}, [ custom_report ]);
 
 	return (
 		<Box className="border-top-none" px="sm" mt="xs">
@@ -257,121 +249,141 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 						</Table>
 					</Box>
 					{/* =============== method used =============== */}
-					<Box my="md">
-						<Text size="sm" fw={500} mb="xs">
-							Method Used:
-						</Text>
-						<Radio.Group
-							value={form.values?.dts_method}
-							onChange={(value) => form.setFieldValue("dts_method", value)}
-							style={{ width: "100%" }}
-						>
-							<Table withColumnBorders withTableBorder w="100%">
-								<Table.Tr>
-									<Table.Th>
-										<Radio value="lj" label="Proportion method (LJ)" />
-									</Table.Th>
-									<Table.Th>
-										<Radio value="mgit" label="Liquid (MGIT)" />
-									</Table.Th>
-									<Table.Th>
-										<Radio value="lpa" label="Line Probe Assay (LPA)" />
-									</Table.Th>
-									<Table.Th>
-										<Radio value="xdr" label="Xpert XDR" />
-									</Table.Th>
-								</Table.Tr>
+					<Box>
+						<Switch
+							name="is_dst_genexpert"
+							id="is_dst_genexpert"
+							onChange={(event) => form.setFieldValue("is_dst_genexpert", event.currentTarget.checked)}
+							checked={form.values.is_dst_genexpert}
+							label="DST Genexpert"
+							size="md"
+							thumbIcon={
+								form.values.is_dst_genexpert ? (
+									<IconCheck size={12} color="var(--mantine-color-teal-6)" stroke={3} />
+								) : (
+									<IconX size={12} color="var(--mantine-color-red-6)" stroke={3} />
+								)
+							}
+							className="cursor-pointer"
+							styles={{ track: { cursor: 'pointer', border: "1px solid var(--mantine-color-gray-4)" } }}
+						/>
+					</Box>
+					{form.values.is_dst_genexpert && <>
+						<Box my="md">
+							<Text size="sm" fw={500} mb="xs">
+								Method Used:
+							</Text>
+							<Radio.Group
+								value={form.values?.dts_method}
+								onChange={(value) => form.setFieldValue("dts_method", value)}
+								style={{ width: "100%" }}
+							>
+								<Table withColumnBorders withTableBorder w="100%">
+									<Table.Tr>
+										<Table.Th>
+											<Radio value="lj" label="Proportion method (LJ)" />
+										</Table.Th>
+										<Table.Th>
+											<Radio value="mgit" label="Liquid (MGIT)" />
+										</Table.Th>
+										<Table.Th>
+											<Radio value="lpa" label="Line Probe Assay (LPA)" />
+										</Table.Th>
+										<Table.Th>
+											<Radio value="xdr" label="Xpert XDR" />
+										</Table.Th>
+									</Table.Tr>
+								</Table>
+							</Radio.Group>
+						</Box>
+						{/* =============== notation legend =============== */}
+						<Box my="xs">
+							<Text size="sm" fw={500}>
+								Notation: (R= Resistance Detected; S= Resistance Not Detected; C= Contaminated; IN=
+								Indeterminate/Non-interpretable; NA= Not Done)
+							</Text>
+						</Box>
+						<Box mb="md">
+							<Table withColumnBorders withTableBorder withRowBorders>
+								<Table.Tbody>
+									{/* Row 1: Headings and Selects for row1 */}
+									<Table.Tr>
+										{drugColumnsRow1.map((drug) => (
+											<Table.Td key={drug.key} ta="center">
+												<Text fw={600} size="sm" mb="xs">
+													{drug.label}
+												</Text>
+												<SelectForm
+													name={drug.key}
+													id={drug.key}
+													form={form}
+													dropdownValue={notions}
+													placeholder="Select"
+													clearable={true}
+													allowDeselect={true}
+													searchable={false}
+													withCheckIcon={false}
+												/>
+											</Table.Td>
+										))}
+									</Table.Tr>
+									<Table.Tr>
+										{drugColumnsRow2.map((drug) => (
+											<Table.Td key={drug.key} ta="center">
+												<Text fw={600} size="sm" mb="xs">
+													{drug.label}
+												</Text>
+												<SelectForm
+													name={drug.key}
+													id={drug.key}
+													form={form}
+													dropdownValue={notions}
+													placeholder="Select"
+													clearable={true}
+													allowDeselect={true}
+													searchable={false}
+													withCheckIcon={false}
+												/>
+											</Table.Td>
+										))}
+									</Table.Tr>
+									{/* Row 2: Headings and Selects for row2 */}
+									<Table.Tr>
+										{drugColumnsRow3.map((drug) => (
+											<Table.Td key={drug.key} ta="center">
+												<Text fw={600} size="sm" mb="xs">
+													{drug.label}
+												</Text>
+												<SelectForm
+													name={drug.key}
+													id={drug.key}
+													form={form}
+													dropdownValue={notions}
+													placeholder="Select"
+													clearable={true}
+													allowDeselect={true}
+													searchable={false}
+													withCheckIcon={false}
+												/>
+											</Table.Td>
+										))}
+									</Table.Tr>
+									<Table.Tr>
+										<Table.Td ta="center">
+											<Text fw={600}>OTHERS</Text>
+										</Table.Td>
+										<Table.Td ta="center" colSpan={4}>
+											<InputForm
+												name="dts_others"
+												id="dts_others"
+												form={form}
+												placeholder="Enter Others"
+											/>
+										</Table.Td>
+									</Table.Tr>
+								</Table.Tbody>
 							</Table>
-						</Radio.Group>
-					</Box>
-					{/* =============== notation legend =============== */}
-					<Box my="xs">
-						<Text size="sm" fw={500}>
-							Notation: (R= Resistance Detected; S= Resistance Not Detected; C= Contaminated; IN=
-							Indeterminate/Non-interpretable; NA= Not Done)
-						</Text>
-					</Box>
-					<Box mb="md">
-						<Table withColumnBorders withTableBorder withRowBorders>
-							<Table.Tbody>
-								{/* Row 1: Headings and Selects for row1 */}
-								<Table.Tr>
-									{drugColumnsRow1.map((drug) => (
-										<Table.Td key={drug.key} ta="center">
-											<Text fw={600} size="sm" mb="xs">
-												{drug.label}
-											</Text>
-											<SelectForm
-												name={drug.key}
-												id={drug.key}
-												form={form}
-												dropdownValue={notions}
-												placeholder="Select"
-												clearable={true}
-												allowDeselect={true}
-												searchable={false}
-												withCheckIcon={false}
-											/>
-										</Table.Td>
-									))}
-								</Table.Tr>
-								<Table.Tr>
-									{drugColumnsRow2.map((drug) => (
-										<Table.Td key={drug.key} ta="center">
-											<Text fw={600} size="sm" mb="xs">
-												{drug.label}
-											</Text>
-											<SelectForm
-												name={drug.key}
-												id={drug.key}
-												form={form}
-												dropdownValue={notions}
-												placeholder="Select"
-												clearable={true}
-												allowDeselect={true}
-												searchable={false}
-												withCheckIcon={false}
-											/>
-										</Table.Td>
-									))}
-								</Table.Tr>
-								{/* Row 2: Headings and Selects for row2 */}
-								<Table.Tr>
-									{drugColumnsRow3.map((drug) => (
-										<Table.Td key={drug.key} ta="center">
-											<Text fw={600} size="sm" mb="xs">
-												{drug.label}
-											</Text>
-											<SelectForm
-												name={drug.key}
-												id={drug.key}
-												form={form}
-												dropdownValue={notions}
-												placeholder="Select"
-												clearable={true}
-												allowDeselect={true}
-												searchable={false}
-												withCheckIcon={false}
-											/>
-										</Table.Td>
-									))}
-								</Table.Tr>
-								<Table.Tr>
-									<Table.Td ta="center">
-										<Text fw={600}>OTHERS</Text>
-									</Table.Td>
-									<Table.Td ta="center" colSpan={4}>
-										<InputForm
-											name="dts_others"
-											id="dts_others"
-											form={form}
-											placeholder="Enter Others"
-										/>
-									</Table.Td>
-								</Table.Tr>
-							</Table.Tbody>
-						</Table>
-					</Box>
+						</Box></>}
 					{/* =============== text date =============== */}
 				</Stack>
 			</ScrollArea>

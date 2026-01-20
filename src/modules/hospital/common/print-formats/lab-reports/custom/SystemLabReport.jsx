@@ -1,11 +1,9 @@
-import {Box, Text, Grid, Table} from "@mantine/core";
-import React, { forwardRef } from "react";
+import { Box, Text, Grid, Table } from "@mantine/core";
+import { forwardRef } from "react";
 import "@/index.css";
 import { t } from "i18next";
-const SystemLabReport = forwardRef(({reportData,report}) => {
-	const getValue = (value, defaultValue = "") => {
-		return value || defaultValue;
-	};
+
+const SystemLabReport = forwardRef(({ reportData, report }, ref) => {
 	return (
 		<Box>
 			<Box mt={"md"} h={'700'}>
@@ -39,39 +37,39 @@ const SystemLabReport = forwardRef(({reportData,report}) => {
 					<Table.Tbody>
 						{report?.reports?.map((item, index) => (
 							item.is_parent === 1 ? (
-									<Table.Tr key={index} style={{ border: "1px solid var(--theme-tertiary-color-8)" }} >
-										<Table.Td colSPan={3} bg={'red'}>
-											<Text fw={'600'} pl={4}>
-												{item.name}
-											</Text>
-										</Table.Td>
-									</Table.Tr>
+								<Table.Tr key={index} style={{ border: "1px solid var(--theme-tertiary-color-8)" }} >
+									<Table.Td colSPan={3} bg={'red'}>
+										<Text fw={'600'} pl={4}>
+											{item.name}
+										</Text>
+									</Table.Td>
+								</Table.Tr>
 							) : (
 								<Table.Tr key={index}>
 									<Table.Td>
-										<Text  pl={4}>
+										<Text pl={4}>
 											{item.name}
 										</Text>
 									</Table.Td>
 									<Table.Td>
-										<Text  pl={4}>
+										<Text pl={4}>
 											{item.result} {item.unit}
 										</Text>
 									</Table.Td>
 									<Table.Td>
-										<Text  pl={4}>
+										<Text pl={4}>
 											{item.reference_value}
 										</Text>
 									</Table.Td>
 								</Table.Tr>
-								)
+							)
 
 
 						))}
 					</Table.Tbody>
 				</Table>
 				{report?.comment && (
-					<Box  pt={0}>
+					<Box pt={0}>
 						<Text fw="bold" size="xs" mb="xs" mt={'md'}>
 							{t("Comment")}
 						</Text>
@@ -92,7 +90,7 @@ const SystemLabReport = forwardRef(({reportData,report}) => {
 							</Text>
 						</Box>
 					</Grid.Col>
-					<Grid.Col span={4}/>
+					<Grid.Col span={4} />
 					<Grid.Col span={4}>
 						<Box>
 							<Text fw="bold" mb="sm" ta="center">

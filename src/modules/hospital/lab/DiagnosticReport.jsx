@@ -8,18 +8,17 @@ import { useHotkeys } from "@mantine/hooks";
 import ReportRenderer from "./common/ReportRenderer";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 
-const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant"];
-const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
+const ALLOWED_LAB_ROLES = [ "doctor_lab", "lab_assistant" ];
 
-export default function DiagnosticReport({ refetchDiagnosticReport ,refreshKey}) {
+export default function DiagnosticReport({ refetchDiagnosticReport, refreshKey }) {
 	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const inputsRef = useRef([]);
 	const { mainAreaHeight } = useOutletContext();
-	const [diagnosticReport, setDiagnosticReport] = useState([]);
+	const [ diagnosticReport, setDiagnosticReport ] = useState([]);
 
 	const { id, reportId } = useParams();
-	const [fetching, setFetching] = useState(false);
+	const [ fetching, setFetching ] = useState(false);
 
 	const fetchLabReport = useCallback(async () => {
 		setFetching(true);
@@ -28,19 +27,19 @@ export default function DiagnosticReport({ refetchDiagnosticReport ,refreshKey})
 		});
 		setDiagnosticReport(res?.data);
 		setFetching(false);
-	}, [id, reportId]);
+	}, [ id, reportId ]);
 
 	useEffect(() => {
 		if (id && reportId) {
 			fetchLabReport();
 		}
-	}, [id, reportId, fetchLabReport]);
+	}, [ id, reportId, fetchLabReport ]);
 
-	useHotkeys([["alt+s", () => document.getElementById("EntityFormSubmit").click()]], []);
+	useHotkeys([ [ "alt+s", () => document.getElementById("EntityFormSubmit").click() ] ], []);
 
 
 	return (
-		<Box className="borderRadiusAll" bg="var(--mantine-color-white)" h={mainAreaHeight-96	}>
+		<Box className="borderRadiusAll" bg="var(--mantine-color-white)" h={mainAreaHeight - 96}>
 			<Box bg="var(--theme-primary-color-0)" p="sm">
 				<Text fw={600} fz="sm" py="es">
 					{t("DiagnosticReportPrepared")}: {diagnosticReport?.name}

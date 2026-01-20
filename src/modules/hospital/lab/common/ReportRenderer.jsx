@@ -22,12 +22,11 @@ import GenePulmonary from "./report-formats/GenePulmonary";
 import XRay from "./report-formats/XRay";
 import LPA from "./report-formats/LPA";
 import Ultrasonography from "./report-formats/Ultrasonography";
-import SarsCov2 from "./report-formats/SarsCov2";
+// import SarsCov2 from "./report-formats/SarsCov2";
 import PulmonaryStatus from "./report-formats/PulmonaryStatus";
 import Dengue from "./report-formats/Dengue";
 import CTScan from "./report-formats/CTScan";
 import Serology from "./report-formats/Serology";
-import useAppLocalStore from "@hooks/useAppLocalStore";
 import HtmlReportEditor from "@modules/hospital/lab/common/report-formats/HtmlReportEditor";
 import AFBCulture from "./report-formats/AFBCulture";
 import SputumAFB from "./report-formats/SputumAFB";
@@ -38,38 +37,36 @@ import MTTest from "@modules/hospital/lab/common/report-formats/MTTest";
 const module = MODULES.LAB_TEST;
 
 const ReportRenderer = forwardRef(
-	({ diagnosticReport, fetching, inputsRef, refetchDiagnosticReport, refetchLabReport, refreshKey }) => {
+	({ diagnosticReport, fetching, inputsRef, refetchDiagnosticReport, refetchLabReport, refreshKey }, ref) => {
 		const { t } = useTranslation();
 		const form = useForm(getFormValues(t));
 		const { reportId } = useParams();
 		const dispatch = useDispatch();
 		const { mainAreaHeight } = useOutletContext();
-		const { userRoles } = useAppLocalStore();
-		const ALLOWED_LAB_USER_ROLES = ["lab_assistant"];
 
 		// =============== local state to track input values for editing ================
-		const [inputValues, setInputValues] = useState({});
+		const [ inputValues, setInputValues ] = useState({});
 
 		// =============== initialize input values from diagnostic report data ================
 		useEffect(() => {
 			if (diagnosticReport?.reports) {
 				const initialValues = {};
 				diagnosticReport.reports.forEach((report) => {
-					initialValues[report.id] = {
+					initialValues[ report.id ] = {
 						result: report.result || "",
 					};
 				});
 				setInputValues(initialValues);
 			}
-		}, [diagnosticReport, refreshKey]);
+		}, [ diagnosticReport, refreshKey ]);
 
 		// =============== handle input value change locally ================
 		const handleInputChange = (rowId, field, value) => {
 			setInputValues((prev) => ({
 				...prev,
-				[rowId]: {
-					...prev[rowId],
-					[field]: value,
+				[ rowId ]: {
+					...prev[ rowId ],
+					[ field ]: value,
 				},
 			}));
 		};
@@ -80,7 +77,7 @@ const ReportRenderer = forwardRef(
 				await dispatch(
 					storeEntityData({
 						url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INLINE_UPDATE}/${rowId}`,
-						data: { [field]: value },
+						data: { [ field ]: value },
 						module,
 					})
 				);
@@ -163,6 +160,7 @@ const ReportRenderer = forwardRef(
 					case "gene-xpert":
 						return (
 							<GeneXpert
+								key={diagnosticReport.id}
 								diagnosticReport={diagnosticReport}
 								refetchDiagnosticReport={refetchDiagnosticReport}
 								refetchLabReport={refetchLabReport}
@@ -259,7 +257,7 @@ const ReportRenderer = forwardRef(
 			if (e.key === "Enter") {
 				e.preventDefault();
 				if (inputsRef?.current) {
-					const nextInput = inputsRef.current[index + 1];
+					const nextInput = inputsRef.current[ index + 1 ];
 					if (nextInput) {
 						nextInput.focus();
 					}
@@ -298,7 +296,7 @@ const ReportRenderer = forwardRef(
 					if (fieldErrors) {
 						const errorObject = {};
 						Object.keys(fieldErrors).forEach((key) => {
-							errorObject[key] = fieldErrors[key][0];
+							errorObject[ key ] = fieldErrors[ key ][ 0 ];
 						});
 						form.setErrors(errorObject);
 					}
@@ -317,14 +315,14 @@ const ReportRenderer = forwardRef(
 			}
 		}
 
-		const isViewOnly =
-			diagnosticReport.process === "Done" ||
-			(diagnosticReport.process === "In-progress" &&
-				userRoles.some((role) => ALLOWED_LAB_USER_ROLES.includes(role)));
+		// const isViewOnly =
+		// 	diagnosticReport.process === "Done" ||
+		// 	(diagnosticReport.process === "In-progress" &&
+		// 		userRoles.some((role) => ALLOWED_LAB_USER_ROLES.includes(role)));
 		// default reports table and submission form
 		return (
 			<>
-				<Box className="border-top-none" px="sm" mt={"xs"}>
+				<Box className="border-top-none" px="sm" mt={"xs"} ref={ref}>
 					<DataTable
 						striped
 						highlightOnHover
@@ -348,7 +346,7 @@ const ReportRenderer = forwardRef(
 							{
 								accessor: "name",
 								title: t("Name"),
-								render: (item, rowIndex) => (
+								render: (item) => (
 									item.is_parent === 1 ? (
 										<Text fw={600}>{item.name}</Text>
 									) : (
@@ -371,8 +369,8 @@ const ReportRenderer = forwardRef(
 													border: "1px solid blue",
 												},
 											}}
-											value={inputValues[item.id]?.result ?? item.result ?? ""}
-											ref={(el) => (inputsRef.current[rowIndex] = el)}
+											value={inputValues[ item.id ]?.result ?? item.result ?? ""}
+											ref={(el) => (inputsRef.current[ rowIndex ] = el)}
 											onChange={(e) => handleInputChange(item.id, "result", e.target.value)}
 											onKeyDown={(e) => handleKeyDown(e, rowIndex)}
 											onBlur={(e) => handleFieldChange(item.id, "result", e.target.value)}

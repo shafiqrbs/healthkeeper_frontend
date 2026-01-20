@@ -52,14 +52,13 @@ const drugColumnsRow3 = [
 	{ key: "dts_cap", label: "CAP" },
 ];
 
-// =============== DTS (Drug Susceptibility Testing) results ===============
+// =============== DST (Drug Susceptibility Testing) results ===============
 export default function DST({ diagnosticReport, refetchDiagnosticReport, refetchLabReport }) {
 	const { reportId } = useParams();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
 	const custom_report = diagnosticReport?.custom_report || {};
-	const is_completed = diagnosticReport?.process === "Done";
 
 	const form = useForm({
 		initialValues: {
@@ -123,7 +122,7 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+						errorObject[ key ] = fieldErrors[ key ][ 0 ];
 					});
 					console.error("Field Error occurred!", errorObject);
 					form.setErrors(errorObject);
@@ -186,20 +185,22 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 							style={{ width: "100%" }}
 						>
 							<Table withColumnBorders withTableBorder w="100%">
-								<Table.Tr>
-									<Table.Th>
-										<Radio value="lj" label="Proportion method (LJ)" />
-									</Table.Th>
-									<Table.Th>
-										<Radio value="mgit" label="Liquid (MGIT)" />
-									</Table.Th>
-									<Table.Th>
-										<Radio value="lpa" label="Line Probe Assay (LPA)" />
-									</Table.Th>
-									<Table.Th>
-										<Radio value="xdr" label="Xpert XDR" />
-									</Table.Th>
-								</Table.Tr>
+								<Table.Tbody>
+									<Table.Tr>
+										<Table.Th>
+											<Radio value="lj" label="Proportion method (LJ)" />
+										</Table.Th>
+										<Table.Th>
+											<Radio value="mgit" label="Liquid (MGIT)" />
+										</Table.Th>
+										<Table.Th>
+											<Radio value="lpa" label="Line Probe Assay (LPA)" />
+										</Table.Th>
+										<Table.Th>
+											<Radio value="xdr" label="Xpert XDR" />
+										</Table.Th>
+									</Table.Tr>
+								</Table.Tbody>
 							</Table>
 						</Radio.Group>
 					</Box>

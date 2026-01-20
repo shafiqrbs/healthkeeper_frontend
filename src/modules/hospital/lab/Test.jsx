@@ -12,10 +12,10 @@ import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabRep
 import CustomDivider from "@components/core-component/CustomDivider";
 import { getDataWithoutStore } from "@/services/apiService";
 
-const ALLOWED_LAB_ROLES = ["doctor_lab", "lab_assistant", "admin_administrator"];
-const ALLOWED_LAB_DOCTOR_ROLES = ["doctor_lab", "admin_administrator"];
+const ALLOWED_LAB_ROLES = [ "doctor_lab", "lab_assistant", "admin_administrator" ];
+const ALLOWED_LAB_DOCTOR_ROLES = [ "doctor_lab", "admin_administrator" ];
 
-export default function Test({ entity, isLoading, refetchDiagnosticReport ,setRefreshKey}) {
+export default function Test({ entity, isLoading, refetchDiagnosticReport, setRefreshKey }) {
 	const { userRoles } = useAppLocalStore();
 	const { t } = useTranslation();
 	const { mainAreaHeight } = useOutletContext();
@@ -23,10 +23,10 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport ,setRe
 	const { id, reportId } = useParams();
 	const navigate = useNavigate();
 	const barCodeRef = useRef(null);
-	const [barcodeValue, setBarcodeValue] = useState("");
+	const [ barcodeValue, setBarcodeValue ] = useState("");
 	const labReportRef = useRef(null);
-	const [labReportData, setLabReportData] = useState(null);
-	const [customReportName, setCustomeReportName] = useState(null);
+	const [ labReportData, setLabReportData ] = useState(null);
+	const [ customReportName, setCustomeReportName ] = useState(null);
 
 	const printLabReport = useReactToPrint({
 		content: () => labReportRef.current,
@@ -42,7 +42,7 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport ,setRe
 			`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.LAB_TEST.VIEW}/${id}/report/${report_id}`,
 			{ replace: true }
 		);
-		setTimeout(()=> {setRefreshKey(((prev) => prev +1))},0)
+		setTimeout(() => { setRefreshKey(((prev) => prev + 1)) }, 0)
 
 	};
 
@@ -59,9 +59,9 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport ,setRe
 		await getDataWithoutStore({
 			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.TAG_PRINT}/${report_id}`,
 		});
-	//	setBarcodeValue(report_id);
+		//	setBarcodeValue(report_id);
 		refetchDiagnosticReport();
-	//	requestAnimationFrame(printBarCodeValue);
+		//	requestAnimationFrame(printBarCodeValue);
 	}
 
 	return (
@@ -106,102 +106,102 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport ,setRe
 											{userRoles.some((role) =>
 												ALLOWED_LAB_ROLES.includes(role)
 											) && (
-												<>
-													{item?.process === "Tagged" &&
-														userRoles.some((role) =>
-															ALLOWED_LAB_ROLES.includes(role)
-														) && (
-															<Button
-																onClick={() =>
-																	handleTest(
-																		item.invoice_particular_id
-																	)
-																}
-																size="compact-xs"
-																bg="var(--theme-primary-color-6)"
-																color="white"
-															>
-																{t("Process")}
-															</Button>
+													<>
+														{item?.process === "Tagged" &&
+															userRoles.some((role) =>
+																ALLOWED_LAB_ROLES.includes(role)
+															) && (
+																<Button
+																	onClick={() =>
+																		handleTest(
+																			item.invoice_particular_id
+																		)
+																	}
+																	size="compact-xs"
+																	bg="var(--theme-primary-color-6)"
+																	color="white"
+																>
+																	{t("Process")}
+																</Button>
+															)}
+														{item?.process === "In-progress" &&
+															userRoles.some((role) =>
+																ALLOWED_LAB_DOCTOR_ROLES.includes(role)
+															) && (
+																<Button
+																	onClick={() =>
+																		handleTest(
+																			item.invoice_particular_id
+																		)
+																	}
+																	size="compact-xs"
+																	bg="var(--theme-warn-color-6)"
+																	color="white"
+																>
+																	{t("Confirm")}
+																</Button>
+															)}
+														{item?.process === "Done" && (
+															<>
+																<Button
+																	onClick={() =>
+																		handleTest(
+																			item.invoice_particular_id
+																		)
+																	}
+																	size="compact-xs"
+																	bg="var(--theme-primary-color-6)"
+																	color="white"
+																	leftSection={
+																		<IconEye
+																			color="white"
+																			size={16}
+																		/>
+																	}
+																>
+																	{t("Show")}
+																</Button>
+																<Button
+																	size="compact-xs"
+																	bg="var(--theme-secondary-color-6)"
+																	onClick={() =>
+																		handleLabReport(
+																			item?.invoice_particular_id,
+																			"covid-19"
+																		)
+																	}
+																	color="white"
+																	leftSection={
+																		<IconPrinter
+																			color="white"
+																			size={16}
+																		/>
+																	}
+																>
+																	{t("Print")}
+																</Button>
+															</>
 														)}
-													{item?.process === "In-progress" &&
-														userRoles.some((role) =>
-															ALLOWED_LAB_DOCTOR_ROLES.includes(role)
-														) && (
+														{item?.process == "New" && (
 															<Button
-																onClick={() =>
-																	handleTest(
-																		item.invoice_particular_id
-																	)
-																}
-																size="compact-xs"
-																bg="var(--theme-warn-color-6)"
-																color="white"
-															>
-																{t("Confirm")}
-															</Button>
-														)}
-													{item?.process === "Done" && (
-														<>
-															<Button
-																onClick={() =>
-																	handleTest(
-																		item.invoice_particular_id
-																	)
-																}
-																size="compact-xs"
-																bg="var(--theme-primary-color-6)"
-																color="white"
 																leftSection={
-																	<IconEye
-																		color="white"
-																		size={16}
-																	/>
+																	<IconTag stroke={1.2} size={12} />
 																}
-															>
-																{t("Show")}
-															</Button>
-															<Button
+																onClick={() =>
+																	handleBarcodeTag(
+																		item?.barcode,
+																		item?.invoice_particular_id
+																	)
+																}
 																size="compact-xs"
 																bg="var(--theme-secondary-color-6)"
-																onClick={() =>
-																	handleLabReport(
-																		item?.invoice_particular_id,
-																		"covid-19"
-																	)
-																}
 																color="white"
-																leftSection={
-																	<IconPrinter
-																		color="white"
-																		size={16}
-																	/>
-																}
 															>
-																{t("Print")}
+																{t("Tag")}
 															</Button>
-														</>
-													)}
-													{item?.process == "New" && (
-														<Button
-															leftSection={
-																<IconTag stroke={1.2} size={12} />
-															}
-															onClick={() =>
-																handleBarcodeTag(
-																	item?.barcode,
-																	item?.invoice_particular_id
-																)
-															}
-															size="compact-xs"
-															bg="var(--theme-secondary-color-6)"
-															color="white"
-														>
-															{t("Tag")}
-														</Button>
-													)}
-												</>
-											)}
+														)}
+													</>
+												)}
 										</Flex>
 									</Box>
 								))}
@@ -225,9 +225,9 @@ export default function Test({ entity, isLoading, refetchDiagnosticReport ,setRe
 			<Box display="none">
 				<Box ref={barCodeRef} mx="auto">
 					<Barcode
-						fontSize="10"
-						width="1"
-						height="30"
+						fontSize={10}
+						width={1}
+						height={30}
 						value={barcodeValue || "BARCODETEST"}
 					/>
 				</Box>

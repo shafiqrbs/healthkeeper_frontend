@@ -1,13 +1,12 @@
-import { Box, Text, Grid } from "@mantine/core";
-import React, { forwardRef } from "react";
+import { Box, Grid } from "@mantine/core";
+import { forwardRef } from "react";
 import "@/index.css";
-import { t } from "i18next";
-import { useOutletContext } from "react-router-dom";
-const XrayReport = forwardRef(({ reportData, report }) => {
+
+const XrayReport = forwardRef(({ reportData, report }, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-	const { mainAreaHeight } = useOutletContext();
+
 	return (
 		<Box>
 			<Box mb="md" p={"xl"} fz={"md"} h={600}>
@@ -60,7 +59,7 @@ const XrayReport = forwardRef(({ reportData, report }) => {
 					</Grid.Col>
 				</Grid>
 				<Grid>
-					<Grid.Col span={3}/>
+					<Grid.Col span={3} />
 					<Grid.Col span={9}>
 						<div dangerouslySetInnerHTML={{ __html: getValue(reportData?.impression_two) }} />
 					</Grid.Col>

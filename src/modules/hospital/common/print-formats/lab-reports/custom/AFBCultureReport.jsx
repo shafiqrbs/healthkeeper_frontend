@@ -1,18 +1,10 @@
-import {Box, Text, Grid, Stack, Table, Checkbox} from "@mantine/core";
-import React, { forwardRef } from "react";
+import { Box, Text, Grid, Table } from "@mantine/core";
+import { forwardRef } from "react";
 import "@/index.css";
-import { t } from "i18next";
-import {useOutletContext} from "react-router-dom";
-import InputForm from "@components/form-builders/InputForm";
-import DatePickerForm from "@components/form-builders/DatePicker";
-import {formatDate} from "@utils/index";
-import {IconCheck} from "@tabler/icons-react";
-const AFBCultureReport = forwardRef(({reportData,report}) => {
-	const getValue = (value, defaultValue = "") => {
-		return value || defaultValue;
-	};
-	console.log(report);
-	const { mainAreaHeight } = useOutletContext();
+import { formatDate } from "@utils/index";
+import { IconCheck } from "@tabler/icons-react";
+
+const AFBCultureReport = forwardRef(({ reportData, report }, ref) => {
 	return (
 		<Box h={600}>
 			<style>
@@ -26,7 +18,7 @@ const AFBCultureReport = forwardRef(({reportData,report}) => {
 				}`}
 			</style>
 
-			<Box id="prescription-table" mb="md" pt={'xs'}  fz={'md'}>
+			<Box id="prescription-table" mb="md" pt={'xs'} fz={'md'}>
 				<Box mb='md'>
 					<Grid columns={12}>
 						<Grid.Col span={4}>
@@ -54,7 +46,7 @@ const AFBCultureReport = forwardRef(({reportData,report}) => {
 				}} className="customTable">
 					<Table.Thead>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-							<Table.Th colSpan={4}/>
+							<Table.Th colSpan={4} />
 							<Table.Th colSpan={4} ta="center">
 								Mycobacterium tuberculosis Complex
 							</Table.Th>
@@ -72,40 +64,40 @@ const AFBCultureReport = forwardRef(({reportData,report}) => {
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Th ta="center">
 								{reportData?.afb_contaminated}
-								{reportData?.afb_contaminated == 1  && (
+								{reportData?.afb_contaminated == 1 && (
 									<Box ta={'center'}><IconCheck size="60px" color={'green'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th ta="center">
-								{reportData?.negative == 1  && (
+								{reportData?.negative == 1 && (
 									<Box ta={'center'}><IconCheck size="60px" color={'green'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th ta="center">
-								{reportData?.positive == 1  && (
+								{reportData?.positive == 1 && (
 									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th ta="center">
-								<Text style={{ color:"red" }}><strong>{reportData?.atypical_mycobacteria_species}</strong></Text>
+								<Text style={{ color: "red" }}><strong>{reportData?.atypical_mycobacteria_species}</strong></Text>
 							</Table.Th>
 							<Table.Th ta="center">
-								{reportData?.colonies_1 === 1  && (
-								<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
-								)}
-							</Table.Th>
-							<Table.Th ta="center">
-								{reportData?.colonies_2 === 1  && (
+								{reportData?.colonies_1 === 1 && (
 									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th ta="center">
-								{reportData?.colonies_3 === 1  && (
+								{reportData?.colonies_2 === 1 && (
 									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th ta="center">
-								{reportData?.colonies_4 === 1  && (
+								{reportData?.colonies_3 === 1 && (
+									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
+								)}
+							</Table.Th>
+							<Table.Th ta="center">
+								{reportData?.colonies_4 === 1 && (
 									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>

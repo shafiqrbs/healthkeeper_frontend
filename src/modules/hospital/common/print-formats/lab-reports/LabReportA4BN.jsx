@@ -25,24 +25,6 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-	console.log(data?.invoiceParticular?.particular?.slug)
-	const renderImagePreview = (imageArray, fallbackSrc = null) => {
-		if (imageArray.length > 0) {
-			const imageUrl = URL.createObjectURL(imageArray[0]);
-			return (
-				<Flex h={80} justify={"center"} align={"center"} mt={"xs"}>
-					<Image h={80} w={80} fit="cover" src={imageUrl} onLoad={() => URL.revokeObjectURL(imageUrl)} />
-				</Flex>
-			);
-		} else if (fallbackSrc) {
-			return (
-				<Flex h={80} justify={"center"} align={"center"} mt={"xs"}>
-					<Image h={80} w={80} fit="cover" src={fallbackSrc} />
-				</Flex>
-			);
-		}
-		return null;
-	};
 
 	return (
 		<Box display={preview ? "block" : "none"}>
@@ -189,7 +171,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																<Text size="xs">
 																	{getValue(
 																		formatDateTimeAmPm(report?.collection_date) ||
-																			""
+																		""
 																	)}
 																</Text>
 															</Grid.Col>
@@ -315,7 +297,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	<Text size="xs">
 																		{getValue(
 																			capitalizeWords(reportData?.test_type) ||
-																				"-"
+																			"-"
 																		)}
 																	</Text>
 																</Grid.Col>
@@ -328,8 +310,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	<Text size="xs">
 																		{reportData?.preservative
 																			? JSON.parse(reportData.preservative).join(
-																					", "
-																			  )
+																				", "
+																			)
 																			: "-"}
 																	</Text>
 																</Grid.Col>
@@ -342,8 +324,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	<Text size="xs">
 																		{reportData?.type_patient
 																			? JSON.parse(reportData.type_patient).join(
-																					", "
-																			  )
+																				", "
+																			)
 																			: "-"}
 																	</Text>
 																</Grid.Col>
@@ -438,7 +420,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	<Text size="xs">
 																		{getValue(
 																			reportData?.specimen_identification_number ||
-																				"-"
+																			"-"
 																		)}
 																	</Text>
 																</Grid.Col>
@@ -451,7 +433,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	<Text size="xs">
 																		{getValue(
 																			reportData?.reference_laboratory_specimen_id ||
-																				"-"
+																			"-"
 																		)}
 																	</Text>
 																</Grid.Col>
@@ -470,8 +452,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	<Text size="xs">
 																		{reportData?.date_specimen_collection
 																			? formatDateTimeAmPm(
-																					reportData.date_specimen_collection
-																			  )
+																				reportData.date_specimen_collection
+																			)
 																			: "-"}
 																	</Text>
 																</Grid.Col>
@@ -484,8 +466,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	<Text size="xs">
 																		{reportData?.date_specimen_received
 																			? formatDateTimeAmPm(
-																					reportData.date_specimen_received
-																			  )
+																				reportData.date_specimen_received
+																			)
 																			: "-"}
 																	</Text>
 																</Grid.Col>
@@ -502,8 +484,8 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																	<Text size="xs">
 																		{reportData?.last_covid_test_date
 																			? formatDateTimeAmPm(
-																					reportData.last_covid_test_date
-																			  )
+																				reportData.last_covid_test_date
+																			)
 																			: "-"}
 																	</Text>
 																</Grid.Col>
@@ -538,7 +520,7 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 									) : data?.invoiceParticular?.particular?.slug === "ultrasonography" ? (
 										<Box>Ultrasonography Report</Box>
 									) : data?.invoiceParticular?.particular?.slug === "x-ray" ||
-									  data?.invoiceParticular?.particular?.slug === "cxr-chest" ? (
+										data?.invoiceParticular?.particular?.slug === "cxr-chest" ? (
 										<XrayReport report={report} reportData={reportData} />
 									) : data?.invoiceParticular?.particular?.slug === "sars-cov2" ? (
 										<Box>SARS-CoV-2 Report</Box>

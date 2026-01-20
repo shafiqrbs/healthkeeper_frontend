@@ -1,24 +1,14 @@
-import {Box, Text, Grid, Stack, Table, Radio} from "@mantine/core";
-import React, { forwardRef } from "react";
+import { Box, Text, Table } from "@mantine/core";
+import { forwardRef } from "react";
 import "@/index.css";
-import { t } from "i18next";
-import {useOutletContext} from "react-router-dom";
-import InputForm from "@components/form-builders/InputForm";
 import { IconCheck } from "@tabler/icons-react";
 
 
-const GeneXperExtraPulmonaryReport = forwardRef(({reportData,report}) => {
-	const getValue = (value, defaultValue = "") => {
-		return value || defaultValue;
-	};
+const GeneXperExtraPulmonaryReport = forwardRef(({ reportData, report }, ref) => {
 
-	console.log(reportData);
-//	const custom_report = diagnosticReport?.custom_report || {};
-
-	const { mainAreaHeight } = useOutletContext();
 	return (
 		<Box>
-			<Box mb="md" pt={'xs'}  fz={'md'} h={600}>
+			<Box mb="md" pt={'xs'} fz={'md'} h={600}>
 				<Table
 					withColumnBorders
 					verticalSpacing={6}
@@ -29,7 +19,7 @@ const GeneXperExtraPulmonaryReport = forwardRef(({reportData,report}) => {
 						borderCollapse: "collapse",
 						width: "100%",
 						border: "1px solid var(--theme-tertiary-color-8)",
-					}}  w="100%">
+					}} w="100%">
 					<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Text>T-MTB Detected, Rif Resistance not Detected</Text>
@@ -53,7 +43,7 @@ const GeneXperExtraPulmonaryReport = forwardRef(({reportData,report}) => {
 					<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							{reportData?.gene_xpert_value === "not_detected" && (
-							<Box ta={'center'}><IconCheck size="120px" color={'green'} /></Box>
+								<Box ta={'center'}><IconCheck size="120px" color={'green'} /></Box>
 							)}
 						</Table.Th>
 						<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
