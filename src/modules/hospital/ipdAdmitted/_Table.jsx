@@ -38,7 +38,7 @@ const module = MODULES.ADMISSION;
 const PER_PAGE = 25;
 
 const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse"];
-const ALLOWED_DOCTOR_ROLES = ["role_domain", "admin_administrator", "ipd_doctor"];
+const ALLOWED_DOCTOR_ROLES = ["role_domain", "admin_administrator", "doctor_ipd"];
 
 export default function _Table({ setSelectedPrescriptionId, ipdMode, setIpdMode }) {
 	const { userRoles } = useAppLocalStore();

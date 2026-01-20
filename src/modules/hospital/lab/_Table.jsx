@@ -31,7 +31,7 @@ export default function _Table() {
 			module,
 			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.LAB_TEST.INDEX,
 			perPage: PER_PAGE,
-			sortByKey: "created_at",
+			sortByKey: "updated_at",
 			direction: "desc",
 			filterParams: {
 				created: filterData.created,
@@ -54,9 +54,6 @@ export default function _Table() {
 				mt="3xs"
 			>
 				<Flex align="center" justify="space-between" gap="sm">
-					<Text ta="center" fz="sm" fw={500}>
-						S/N
-					</Text>
 					<Text ta="center" fz="sm" fw={500}>
 						Patient Name
 					</Text>
