@@ -1,12 +1,19 @@
-import { Box, Text, Grid, Table } from "@mantine/core";
-import { forwardRef } from "react";
+import {Box, Text, Grid, Stack, Table, Radio} from "@mantine/core";
+import React, { forwardRef } from "react";
 import "@/index.css";
 import { t } from "i18next";
+import {useOutletContext} from "react-router-dom";
+import InputForm from "@components/form-builders/InputForm";
 import { IconCheck } from "@tabler/icons-react";
-import { formatDate } from "@utils/index";
+import {formatDate} from "@utils/index";
 
-const GeneXpert = forwardRef(({ reportData, report }, ref) => {
+const GeneXpert = forwardRef(({reportData,report}) => {
 
+	const getValue = (value, defaultValue = "") => {
+		return value || defaultValue;
+	};
+
+	const { mainAreaHeight } = useOutletContext();
 	return (
 		<>
 			<Box h={650}>
@@ -23,7 +30,7 @@ const GeneXpert = forwardRef(({ reportData, report }, ref) => {
 						</Grid.Col>
 					</Grid>
 				</Box>
-				<Box mb="md" fz={'md'} >
+				<Box mb="md"  fz={'md'} >
 					<Table
 						withColumnBorders
 						verticalSpacing={6}
@@ -34,7 +41,7 @@ const GeneXpert = forwardRef(({ reportData, report }, ref) => {
 							borderCollapse: "collapse",
 							width: "100%",
 							border: "1px solid var(--theme-tertiary-color-8)",
-						}} w="100%">
+						}}  w="100%">
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Text>T = MTB Detected, Rif Resistance not Detected</Text>
@@ -93,7 +100,8 @@ const GeneXpert = forwardRef(({ reportData, report }, ref) => {
 						</Table.Tr>
 					</Table>
 				</Box>
-				<Box mb="md" fz={'md'} >
+				{reportData?.is_dst_genexpert == 1 &&  (
+				<Box mb="md"  fz={'md'} >
 					<Box my="md">
 						<Text size="sm" fw={500} mb="xs">
 							<strong>Method Used:</strong>
@@ -108,7 +116,7 @@ const GeneXpert = forwardRef(({ reportData, report }, ref) => {
 								borderCollapse: "collapse",
 								width: "100%",
 								border: "1px solid var(--theme-tertiary-color-8)",
-							}} w="100%">
+							}}  w="100%">
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									Proportion method (LJ)
@@ -125,22 +133,22 @@ const GeneXpert = forwardRef(({ reportData, report }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									{(reportData?.dts_method === 'lj') && (
+									{(reportData?.dst_method === 'lj')  && (
 										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
 									)}
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									{(reportData?.dts_method === 'mgit') && (
+									{(reportData?.dst_method === 'mgit')  && (
 										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
 									)}
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									{(reportData?.dts_method === 'lpa') && (
+									{(reportData?.dst_method === 'lpa')  && (
 										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
 									)}
 								</Table.Th>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									{(reportData?.dts_method === 'xdr') && (
+									{(reportData?.dst_method === 'xdr')  && (
 										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
 									)}
 								</Table.Th>
@@ -157,7 +165,7 @@ const GeneXpert = forwardRef(({ reportData, report }, ref) => {
 							borderCollapse: "collapse",
 							width: "100%",
 							border: "1px solid var(--theme-tertiary-color-8)",
-						}} w="100%">
+						}}  w="100%">
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Td colSpan={'16'}><Box my="xs">
 								<Text size="sm" fw={500}>
@@ -219,57 +227,58 @@ const GeneXpert = forwardRef(({ reportData, report }, ref) => {
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_mtb}</Text>
+								<Text>{reportData?.dst_mtb}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_inh}</Text>
+								<Text>{reportData?.dst_inh}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_rif}</Text>
+								<Text>{reportData?.dst_rif}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_flq}</Text>
+								<Text>{reportData?.dst_flq}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_lfx}</Text>
+								<Text>{reportData?.dst_lfx}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_mfx}</Text>
+								<Text>{reportData?.dst_mfx}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_eth}</Text>
+								<Text>{reportData?.dst_eth}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_bdq}</Text>
+								<Text>{reportData?.dst_bdq}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_dlm}</Text>
+								<Text>{reportData?.dst_dlm}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_pa}</Text>
+								<Text>{reportData?.dst_pa}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_lzd}</Text>
+								<Text>{reportData?.dst_lzd}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_cfz}</Text>
+								<Text>{reportData?.dst_cfz}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_amk}</Text>
+								<Text>{reportData?.dst_amk}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_kan}</Text>
+								<Text>{reportData?.dst_kan}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_cap}</Text>
+								<Text>{reportData?.dst_cap}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_others}</Text>
+								<Text>{reportData?.dst_others}</Text>
 							</Table.Th>
 						</Table.Tr>
 					</Table>
 				</Box>
-				<Box pt={0}>
+				)}
+				<Box  pt={0}>
 					<Text fw="bold" size="xs" mb="xs" mt={'md'}>
 						{t("Comment")}
 					</Text>
@@ -290,7 +299,7 @@ const GeneXpert = forwardRef(({ reportData, report }, ref) => {
 							</Text>
 						</Box>
 					</Grid.Col>
-					<Grid.Col span={4} />
+					<Grid.Col span={4}/>
 					<Grid.Col span={4}>
 						<Box>
 							<Text fw="bold" mb="sm" ta="center">

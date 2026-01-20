@@ -1,12 +1,19 @@
-import { Box, Text, Grid, Table } from "@mantine/core";
-import { forwardRef } from "react";
+import {Box, Text, Grid, Stack, Table, Radio} from "@mantine/core";
+import React, { forwardRef } from "react";
 import "@/index.css";
 import { t } from "i18next";
+import {useOutletContext} from "react-router-dom";
+import InputForm from "@components/form-builders/InputForm";
 import { IconCheck } from "@tabler/icons-react";
-import { formatDate } from "@utils/index";
+import {formatDate} from "@utils/index";
 
-const DSTReport = forwardRef(({ reportData, report }, ref) => {
+const DSTReport = forwardRef(({reportData,report}) => {
 
+	const getValue = (value, defaultValue = "") => {
+		return value || defaultValue;
+	};
+
+	const { mainAreaHeight } = useOutletContext();
 	return (
 		<>
 			<Box h={500}>
@@ -23,7 +30,7 @@ const DSTReport = forwardRef(({ reportData, report }, ref) => {
 						</Grid.Col>
 					</Grid>
 				</Box>
-				<Box mb="md" fz={'md'} >
+				<Box mb="md"  fz={'md'} >
 					<Box my="md">
 						<Text size="sm" fw={500} mb="xs">
 							<strong>Method Used:</strong>
@@ -38,45 +45,43 @@ const DSTReport = forwardRef(({ reportData, report }, ref) => {
 								borderCollapse: "collapse",
 								width: "100%",
 								border: "1px solid var(--theme-tertiary-color-8)",
-							}} w="100%">
-							<Table.Tbody>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										Proportion method (LJ)
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										Liquid (MGIT)
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										Line Probe Assay (LPA)
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										Xpert XDR
-									</Table.Th>
-								</Table.Tr>
-								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										{(reportData?.dts_method === 'lj') && (
-											<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-										)}
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										{(reportData?.dts_method === 'mgit') && (
-											<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-										)}
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										{(reportData?.dts_method === 'lpa') && (
-											<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-										)}
-									</Table.Th>
-									<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-										{(reportData?.dts_method === 'xdr') && (
-											<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
-										)}
-									</Table.Th>
-								</Table.Tr>
-							</Table.Tbody>
+							}}  w="100%">
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									Proportion method (LJ)
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									Liquid (MGIT)
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									Line Probe Assay (LPA)
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									Xpert XDR
+								</Table.Th>
+							</Table.Tr>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									{(reportData?.dst_method === 'lj')  && (
+										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
+									)}
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									{(reportData?.dst_method === 'mgit')  && (
+										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
+									)}
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									{(reportData?.dst_method === 'lpa')  && (
+										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
+									)}
+								</Table.Th>
+								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									{(reportData?.dst_method === 'xdr')  && (
+										<Box ta={'center'}><IconCheck size="24px" color={'green'} /></Box>
+									)}
+								</Table.Th>
+							</Table.Tr>
 						</Table>
 					</Box>
 					<Table
@@ -89,7 +94,7 @@ const DSTReport = forwardRef(({ reportData, report }, ref) => {
 							borderCollapse: "collapse",
 							width: "100%",
 							border: "1px solid var(--theme-tertiary-color-8)",
-						}} w="100%">
+						}}  w="100%">
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Td colSpan={'16'}><Box my="xs">
 								<Text size="sm" fw={500}>
@@ -151,57 +156,57 @@ const DSTReport = forwardRef(({ reportData, report }, ref) => {
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_mtb}</Text>
+								<Text>{report?.dst_mtb}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_inh}</Text>
+								<Text>{report?.dst_inh}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_rif}</Text>
+								<Text>{report?.dst_rif}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_flq}</Text>
+								<Text>{report?.dst_flq}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_lfx}</Text>
+								<Text>{report?.dst_lfx}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_mfx}</Text>
+								<Text>{report?.dst_mfx}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_eth}</Text>
+								<Text>{report?.dst_eth}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_bdq}</Text>
+								<Text>{report?.dst_bdq}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_dlm}</Text>
+								<Text>{report?.dst_dlm}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_pa}</Text>
+								<Text>{report?.dst_pa}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_lzd}</Text>
+								<Text>{report?.dst_lzd}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_cfz}</Text>
+								<Text>{report?.dst_cfz}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_amk}</Text>
+								<Text>{report?.dst_amk}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_kan}</Text>
+								<Text>{report?.dst_kan}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_cap}</Text>
+								<Text>{report?.dst_cap}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dts_others}</Text>
+								<Text>{report?.dst_others}</Text>
 							</Table.Th>
 						</Table.Tr>
 					</Table>
 				</Box>
-				<Box pt={0}>
+				<Box  pt={0}>
 					<Text fw="bold" size="xs" mb="xs" mt={'md'}>
 						{t("Comment")}
 					</Text>
@@ -222,7 +227,7 @@ const DSTReport = forwardRef(({ reportData, report }, ref) => {
 							</Text>
 						</Box>
 					</Grid.Col>
-					<Grid.Col span={4} />
+					<Grid.Col span={4}/>
 					<Grid.Col span={4}>
 						<Box>
 							<Text fw="bold" mb="sm" ta="center">

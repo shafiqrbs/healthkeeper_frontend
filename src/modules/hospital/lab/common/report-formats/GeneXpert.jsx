@@ -31,27 +31,27 @@ const notions = [
 
 // drug columns configuration - split into two rows
 const drugColumnsRow1 = [
-	{ key: "dts_mtb", label: "MTB" },
-	{ key: "dts_inh", label: "INH" },
-	{ key: "dts_rif", label: "RIF" },
-	{ key: "dts_flq", label: "FLQ" },
-	{ key: "dts_lfx", label: "LFX" },
+	{ key: "dst_mtb", label: "MTB" },
+	{ key: "dst_inh", label: "INH" },
+	{ key: "dst_rif", label: "RIF" },
+	{ key: "dst_flq", label: "FLQ" },
+	{ key: "dst_lfx", label: "LFX" },
 ];
 
 const drugColumnsRow2 = [
-	{ key: "dts_mfx", label: "MFX" },
-	{ key: "dts_eth", label: "ETH" },
-	{ key: "dts_bdq", label: "BDQ" },
-	{ key: "dts_dlm", label: "DLM" },
-	{ key: "dts_pa", label: "PA" },
+	{ key: "dst_mfx", label: "MFX" },
+	{ key: "dst_eth", label: "ETH" },
+	{ key: "dst_bdq", label: "BDQ" },
+	{ key: "dst_dlm", label: "DLM" },
+	{ key: "dst_pa", label: "PA" },
 ];
 
 const drugColumnsRow3 = [
-	{ key: "dts_lzd", label: "LZD" },
-	{ key: "dts_cfz", label: "CFZ" },
-	{ key: "dts_amk", label: "AMK" },
-	{ key: "dts_kan", label: "KAN" },
-	{ key: "dts_cap", label: "CAP" },
+	{ key: "dst_lzd", label: "LZD" },
+	{ key: "dst_cfz", label: "CFZ" },
+	{ key: "dst_amk", label: "AMK" },
+	{ key: "dst_kan", label: "KAN" },
+	{ key: "dst_cap", label: "CAP" },
 ];
 
 // =============== sars cov2 results are now handled as individual boolean properties ===============
@@ -71,25 +71,25 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 			test_date: custom_report?.test_date
 				? new Date(custom_report.test_date)
 				: null,
-			dts_method: custom_report?.dts_method || "lj",
-			dts_id: custom_report?.dts_id || "",
-			dts_mtb: custom_report?.dts_mtb || "",
-			dts_inh: custom_report?.dts_inh || "",
-			dts_rif: custom_report?.dts_rif || "",
-			dts_flq: custom_report?.dts_flq || "",
-			dts_lfx: custom_report?.dts_lfx || "",
-			dts_mfx: custom_report?.dts_mfx || "",
-			dts_eth: custom_report?.dts_eth || "",
-			dts_bdq: custom_report?.dts_bdq || "",
-			dts_dlm: custom_report?.dts_dlm || "",
-			dts_pa: custom_report?.dts_pa || "",
-			dts_lzd: custom_report?.dts_lzd || "",
-			dts_cfz: custom_report?.dts_cfz || "",
-			dts_amk: custom_report?.dts_amk || "",
-			dts_kan: custom_report?.dts_kan || "",
-			dts_cap: custom_report?.dts_cap || "",
-			dts_others: custom_report?.dts_others || "",
 			is_dst_genexpert: custom_report?.is_dst_genexpert || false,
+			dst_method: custom_report?.dst_method || "",
+			dst_id: custom_report?.dst_id || "",
+			dst_mtb: custom_report?.dst_mtb || "",
+			dst_inh: custom_report?.dst_inh || "",
+			dst_rif: custom_report?.dst_rif || "",
+			dst_flq: custom_report?.dst_flq || "",
+			dst_lfx: custom_report?.dst_lfx || "",
+			dst_mfx: custom_report?.dst_mfx || "",
+			dst_eth: custom_report?.dst_eth || "",
+			dst_bdq: custom_report?.dst_bdq || "",
+			dst_dlm: custom_report?.dst_dlm || "",
+			dst_pa: custom_report?.dst_pa || "",
+			dst_lzd: custom_report?.dst_lzd || "",
+			dst_cfz: custom_report?.dst_cfz || "",
+			dst_amk: custom_report?.dst_amk || "",
+			dst_kan: custom_report?.dst_kan || "",
+			dst_cap: custom_report?.dst_cap || "",
+			dst_others: custom_report?.dst_others || "",
 		},
 	});
 	const handleSubmit = (values) => {
@@ -249,6 +249,7 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 						</Table>
 					</Box>
 					{/* =============== method used =============== */}
+
 					<Box>
 						<Switch
 							name="is_dst_genexpert"
@@ -267,123 +268,166 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 							className="cursor-pointer"
 							styles={{ track: { cursor: 'pointer', border: "1px solid var(--mantine-color-gray-4)" } }}
 						/>
-					</Box>
-					{form.values.is_dst_genexpert && <>
-						<Box my="md">
-							<Text size="sm" fw={500} mb="xs">
-								Method Used:
-							</Text>
-							<Radio.Group
-								value={form.values?.dts_method}
-								onChange={(value) => form.setFieldValue("dts_method", value)}
-								style={{ width: "100%" }}
-							>
-								<Table withColumnBorders withTableBorder w="100%">
-									<Table.Tr>
-										<Table.Th>
-											<Radio value="lj" label="Proportion method (LJ)" />
-										</Table.Th>
-										<Table.Th>
-											<Radio value="mgit" label="Liquid (MGIT)" />
-										</Table.Th>
-										<Table.Th>
-											<Radio value="lpa" label="Line Probe Assay (LPA)" />
-										</Table.Th>
-										<Table.Th>
-											<Radio value="xdr" label="Xpert XDR" />
-										</Table.Th>
-									</Table.Tr>
+
+
+					{/* =============== notation legend =============== */}
+
+						{form.values.is_dst_genexpert && <>
+							<Box my="md">
+								<Text size="sm" fw={500} mb="xs">
+									Method Used:
+								</Text>
+								<Radio.Group
+									value={form.values?.dst_method}
+									onChange={(value) => form.setFieldValue("dst_method", value)}
+									style={{ width: "100%" }}
+								>
+									<Table withColumnBorders withTableBorder w="100%">
+										<Table.Tr>
+											<Table.Th>
+												<Radio value="lj" label="Proportion method (LJ)" />
+											</Table.Th>
+											<Table.Th>
+												<Radio value="mgit" label="Liquid (MGIT)" />
+											</Table.Th>
+											<Table.Th>
+												<Radio value="lpa" label="Line Probe Assay (LPA)" />
+											</Table.Th>
+											<Table.Th>
+												<Radio value="xdr" label="Xpert XDR" />
+											</Table.Th>
+										</Table.Tr>
+									</Table>
+								</Radio.Group>
+							</Box>
+							<Box my="xs">
+								<Text size="sm" fw={500}>
+									Notation: (R= Resistance Detected; S= Resistance Not Detected; C= Contaminated; IN=
+									Indeterminate/Non-interpretable; NA= Not Done)
+								</Text>
+							</Box>
+							<Box my="md">
+								<Text size="sm" fw={500} mb="xs">
+									Method Used:
+								</Text>
+								<Radio.Group
+									value={form.values?.dts_method}
+									onChange={(value) => form.setFieldValue("dts_method", value)}
+									style={{ width: "100%" }}
+								>
+									<Table withColumnBorders withTableBorder w="100%">
+										<Table.Tr>
+											<Table.Th>
+												<Radio value="lj" label="Proportion method (LJ)" />
+											</Table.Th>
+											<Table.Th>
+												<Radio value="mgit" label="Liquid (MGIT)" />
+											</Table.Th>
+											<Table.Th>
+												<Radio value="lpa" label="Line Probe Assay (LPA)" />
+											</Table.Th>
+											<Table.Th>
+												<Radio value="xdr" label="Xpert XDR" />
+											</Table.Th>
+										</Table.Tr>
+									</Table>
+								</Radio.Group>
+							</Box>
+							{/* =============== notation legend =============== */}
+							<Box my="xs">
+								<Text size="sm" fw={500}>
+									Notation: (R= Resistance Detected; S= Resistance Not Detected; C= Contaminated; IN=
+									Indeterminate/Non-interpretable; NA= Not Done)
+								</Text>
+							</Box>
+							<Box mb="md">
+								<Table withColumnBorders withTableBorder withRowBorders>
+									<Table.Tbody>
+										{/* Row 1: Headings and Selects for row1 */}
+										<Table.Tr>
+											{drugColumnsRow1.map((drug) => (
+												<Table.Td key={drug.key} ta="center">
+													<Text fw={600} size="sm" mb="xs">
+														{drug.label}
+													</Text>
+													<SelectForm
+														name={drug.key}
+														id={drug.key}
+														form={form}
+														dropdownValue={notions}
+														placeholder="Select"
+														clearable={true}
+														allowDeselect={true}
+														searchable={false}
+														withCheckIcon={false}
+													/>
+												</Table.Td>
+											))}
+										</Table.Tr>
+										<Table.Tr>
+											{drugColumnsRow2.map((drug) => (
+												<Table.Td key={drug.key} ta="center">
+													<Text fw={600} size="sm" mb="xs">
+														{drug.label}
+													</Text>
+													<SelectForm
+														name={drug.key}
+														id={drug.key}
+														form={form}
+														dropdownValue={notions}
+														placeholder="Select"
+														clearable={true}
+														allowDeselect={true}
+														searchable={false}
+														withCheckIcon={false}
+													/>
+												</Table.Td>
+											))}
+										</Table.Tr>
+										{/* Row 2: Headings and Selects for row2 */}
+										<Table.Tr>
+											{drugColumnsRow3.map((drug) => (
+												<Table.Td key={drug.key} ta="center">
+													<Text fw={600} size="sm" mb="xs">
+														{drug.label}
+													</Text>
+													<SelectForm
+														name={drug.key}
+														id={drug.key}
+														form={form}
+														dropdownValue={notions}
+														placeholder="Select"
+														clearable={true}
+														allowDeselect={true}
+														searchable={false}
+														withCheckIcon={false}
+													/>
+												</Table.Td>
+											))}
+										</Table.Tr>
+										<Table.Tr>
+											<Table.Td ta="center">
+												<Text fw={600}>OTHERS</Text>
+											</Table.Td>
+											<Table.Td ta="center" colSpan={4}>
+												<InputForm
+													name="dts_others"
+													id="dts_others"
+													form={form}
+													placeholder="Enter Others"
+												/>
+											</Table.Td>
+										</Table.Tr>
+									</Table.Tbody>
 								</Table>
-							</Radio.Group>
-						</Box>
-						{/* =============== notation legend =============== */}
-						<Box my="xs">
-							<Text size="sm" fw={500}>
-								Notation: (R= Resistance Detected; S= Resistance Not Detected; C= Contaminated; IN=
-								Indeterminate/Non-interpretable; NA= Not Done)
-							</Text>
-						</Box>
-						<Box mb="md">
-							<Table withColumnBorders withTableBorder withRowBorders>
-								<Table.Tbody>
-									{/* Row 1: Headings and Selects for row1 */}
-									<Table.Tr>
-										{drugColumnsRow1.map((drug) => (
-											<Table.Td key={drug.key} ta="center">
-												<Text fw={600} size="sm" mb="xs">
-													{drug.label}
-												</Text>
-												<SelectForm
-													name={drug.key}
-													id={drug.key}
-													form={form}
-													dropdownValue={notions}
-													placeholder="Select"
-													clearable={true}
-													allowDeselect={true}
-													searchable={false}
-													withCheckIcon={false}
-												/>
-											</Table.Td>
-										))}
-									</Table.Tr>
-									<Table.Tr>
-										{drugColumnsRow2.map((drug) => (
-											<Table.Td key={drug.key} ta="center">
-												<Text fw={600} size="sm" mb="xs">
-													{drug.label}
-												</Text>
-												<SelectForm
-													name={drug.key}
-													id={drug.key}
-													form={form}
-													dropdownValue={notions}
-													placeholder="Select"
-													clearable={true}
-													allowDeselect={true}
-													searchable={false}
-													withCheckIcon={false}
-												/>
-											</Table.Td>
-										))}
-									</Table.Tr>
-									{/* Row 2: Headings and Selects for row2 */}
-									<Table.Tr>
-										{drugColumnsRow3.map((drug) => (
-											<Table.Td key={drug.key} ta="center">
-												<Text fw={600} size="sm" mb="xs">
-													{drug.label}
-												</Text>
-												<SelectForm
-													name={drug.key}
-													id={drug.key}
-													form={form}
-													dropdownValue={notions}
-													placeholder="Select"
-													clearable={true}
-													allowDeselect={true}
-													searchable={false}
-													withCheckIcon={false}
-												/>
-											</Table.Td>
-										))}
-									</Table.Tr>
-									<Table.Tr>
-										<Table.Td ta="center">
-											<Text fw={600}>OTHERS</Text>
-										</Table.Td>
-										<Table.Td ta="center" colSpan={4}>
-											<InputForm
-												name="dts_others"
-												id="dts_others"
-												form={form}
-												placeholder="Enter Others"
-											/>
-										</Table.Td>
-									</Table.Tr>
-								</Table.Tbody>
-							</Table>
-						</Box></>}
+							</Box>
+						</>
+						}
+
+
+
+					</Box>
+
 					{/* =============== text date =============== */}
 				</Stack>
 			</ScrollArea>

@@ -29,27 +29,27 @@ const notions = [
 
 // drug columns configuration - split into two rows
 const drugColumnsRow1 = [
-	{ key: "dts_mtb", label: "MTB" },
-	{ key: "dts_inh", label: "INH" },
-	{ key: "dts_rif", label: "RIF" },
-	{ key: "dts_flq", label: "FLQ" },
-	{ key: "dts_lfx", label: "LFX" },
+	{ key: "dst_mtb", label: "MTB" },
+	{ key: "dst_inh", label: "INH" },
+	{ key: "dst_rif", label: "RIF" },
+	{ key: "dst_flq", label: "FLQ" },
+	{ key: "dst_lfx", label: "LFX" },
 ];
 
 const drugColumnsRow2 = [
-	{ key: "dts_mfx", label: "MFX" },
-	{ key: "dts_eth", label: "ETH" },
-	{ key: "dts_bdq", label: "BDQ" },
-	{ key: "dts_dlm", label: "DLM" },
-	{ key: "dts_pa", label: "PA" },
+	{ key: "dst_mfx", label: "MFX" },
+	{ key: "dst_eth", label: "ETH" },
+	{ key: "dst_bdq", label: "BDQ" },
+	{ key: "dst_dlm", label: "DLM" },
+	{ key: "dst_pa", label: "PA" },
 ];
 
 const drugColumnsRow3 = [
-	{ key: "dts_lzd", label: "LZD" },
-	{ key: "dts_cfz", label: "CFZ" },
-	{ key: "dts_amk", label: "AMK" },
-	{ key: "dts_kan", label: "KAN" },
-	{ key: "dts_cap", label: "CAP" },
+	{ key: "dst_lzd", label: "LZD" },
+	{ key: "dst_cfz", label: "CFZ" },
+	{ key: "dst_amk", label: "AMK" },
+	{ key: "dst_kan", label: "KAN" },
+	{ key: "dst_cap", label: "CAP" },
 ];
 
 // =============== DST (Drug Susceptibility Testing) results ===============
@@ -70,24 +70,24 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 			id: diagnosticReport?.particular?.id || 0,
 			sample_type: custom_report?.sample_type || "",
 			lab_no: custom_report?.lab_no || "",
-			dts_method: custom_report?.dts_method || "lj",
-			dts_id: custom_report?.dts_id || "",
-			dts_mtb: custom_report?.dts_mtb || "",
-			dts_inh: custom_report?.dts_inh || "",
-			dts_rif: custom_report?.dts_rif || "",
-			dts_flq: custom_report?.dts_flq || "",
-			dts_lfx: custom_report?.dts_lfx || "",
-			dts_mfx: custom_report?.dts_mfx || "",
-			dts_eth: custom_report?.dts_eth || "",
-			dts_bdq: custom_report?.dts_bdq || "",
-			dts_dlm: custom_report?.dts_dlm || "",
-			dts_pa: custom_report?.dts_pa || "",
-			dts_lzd: custom_report?.dts_lzd || "",
-			dts_cfz: custom_report?.dts_cfz || "",
-			dts_amk: custom_report?.dts_amk || "",
-			dts_kan: custom_report?.dts_kan || "",
-			dts_cap: custom_report?.dts_cap || "",
-			dts_others: custom_report?.dts_others || "",
+			dst_method: custom_report?.dst_method || "lj",
+			dst_id: custom_report?.dst_id || "",
+			dst_mtb: custom_report?.dst_mtb || "",
+			dst_inh: custom_report?.dst_inh || "",
+			dst_rif: custom_report?.dst_rif || "",
+			dst_flq: custom_report?.dst_flq || "",
+			dst_lfx: custom_report?.dst_lfx || "",
+			dst_mfx: custom_report?.dst_mfx || "",
+			dst_eth: custom_report?.dst_eth || "",
+			dst_bdq: custom_report?.dst_bdq || "",
+			dst_dlm: custom_report?.dst_dlm || "",
+			dst_pa: custom_report?.dst_pa || "",
+			dst_lzd: custom_report?.dst_lzd || "",
+			dst_cfz: custom_report?.dst_cfz || "",
+			dst_amk: custom_report?.dst_amk || "",
+			dst_kan: custom_report?.dst_kan || "",
+			dst_cap: custom_report?.dst_cap || "",
+			dst_others: custom_report?.dst_others || "",
 			comment: diagnosticReport?.comment || "",
 		},
 	});
@@ -180,8 +180,8 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 							Method Used:
 						</Text>
 						<Radio.Group
-							value={form.values?.dts_method}
-							onChange={(value) => form.setFieldValue("dts_method", value)}
+							value={form.values?.dst_method}
+							onChange={(value) => form.setFieldValue("dst_method", value)}
 							style={{ width: "100%" }}
 						>
 							<Table withColumnBorders withTableBorder w="100%">
@@ -285,8 +285,8 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 									</Table.Td>
 									<Table.Td ta="center" colSpan={4}>
 										<InputForm
-											name="dts_others"
-											id="dts_others"
+											name="dst_others"
+											id="dst_others"
 											form={form}
 											placeholder="Enter Others"
 										/>
