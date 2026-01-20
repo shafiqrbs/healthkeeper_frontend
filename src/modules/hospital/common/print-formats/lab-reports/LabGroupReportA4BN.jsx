@@ -231,7 +231,7 @@ const LabGroupReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										</Table>
 									</Box>
 									<Box>
-										<Box mt={"md"} h={"700"}>
+										<Box mt={"md"} mt={'50'} h={"650"}>
 											<Table
 												withColumnBorders
 												verticalSpacing={0}
@@ -251,13 +251,13 @@ const LabGroupReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 														style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
 													>
 														<Table.Th w={"35%"} pl={4}>
-															{t("Parameter")}
+															<Text fw={'600'} fz={'18px'} >{t("Parameter")}</Text>
 														</Table.Th>
-														<Table.Th ta={"center"} w={"25%"} pl={4}>
-															{t("Result")}
+														<Table.Th w={"25%"} pl={4}>
+															<Text fw={'600'} fz={'18px'} >{t("Result")}</Text>
 														</Table.Th>
 														<Table.Th w={"40%"} pl={4}>
-															{t("ReferenceValue")}
+															<Text fw={'600'} fz={'18px'} >{t("ReferenceValue")}</Text>
 														</Table.Th>
 													</Table.Tr>
 												</Table.Thead>
@@ -267,7 +267,7 @@ const LabGroupReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 															{report?.reports?.length > 1 && (
 																<Table.Tr key={index}>
 																	<Table.Td colSpan={3}>
-																		<Text fz={"xs"} fw={"600"} pl={4}>
+																		<Text fw={'600'} pl={4} fz={'16px'}>
 																			{report?.name}
 																		</Text>
 																	</Table.Td>
@@ -277,7 +277,7 @@ const LabGroupReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																item.is_parent === 1 ? (
 																	<Table.Tr key={index} style={{ border: "1px solid var(--theme-tertiary-color-8)" }} >
 																		<Table.Td colSPan={3} bg={'red'}>
-																			<Text fw={'600'} pl={4}>
+																			<Text fw={'600'} pl={4} fz={'16px'}>
 																				{item.name}
 																			</Text>
 																		</Table.Td>
@@ -285,17 +285,17 @@ const LabGroupReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 																) : (
 																	<Table.Tr key={index}>
 																		<Table.Td>
-																			<Text  pl={4}>
+																			<Text pl={4} fz={'14px'}>
 																				{item.name}
 																			</Text>
 																		</Table.Td>
 																		<Table.Td>
-																			<Text  pl={4}>
+																			<Text pl={4} fz={'14px'}>
 																				{item.result} {item.unit}
 																			</Text>
 																		</Table.Td>
 																		<Table.Td>
-																			<Text  pl={4}>
+																			<Text pl={4} fz={'14px'}>
 																				{item.reference_value}
 																			</Text>
 																		</Table.Td>

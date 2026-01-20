@@ -6,7 +6,7 @@ import { t } from "i18next";
 const SystemLabReport = forwardRef(({ reportData, report }, ref) => {
 	return (
 		<Box>
-			<Box mt={"md"} h={'700'}>
+			<Box mt={"50px"} h={'650'}>
 				<Table
 					withColumnBorders
 					verticalSpacing={0}
@@ -24,13 +24,13 @@ const SystemLabReport = forwardRef(({ reportData, report }, ref) => {
 					<Table.Thead>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Th w={"35%"} pl={4}>
-								{t("Parameter")}
+								<Text fw={'600'} fz={'18px'} >{t("Parameter")}</Text>
 							</Table.Th>
 							<Table.Th w={"25%"} pl={4}>
-								{t("Result")}
+								<Text fw={'600'} fz={'18px'} >{t("Result")}</Text>
 							</Table.Th>
 							<Table.Th w={"40%"} pl={4}>
-								{t("ReferenceValue")}
+								<Text fw={'600'} fz={'18px'} >{t("ReferenceValue")}</Text>
 							</Table.Th>
 						</Table.Tr>
 					</Table.Thead>
@@ -39,7 +39,7 @@ const SystemLabReport = forwardRef(({ reportData, report }, ref) => {
 							item.is_parent === 1 ? (
 								<Table.Tr key={index} style={{ border: "1px solid var(--theme-tertiary-color-8)" }} >
 									<Table.Td colSPan={3} bg={'red'}>
-										<Text fw={'600'} pl={4}>
+										<Text fw={'600'} pl={4} fz={'16px'}>
 											{item.name}
 										</Text>
 									</Table.Td>
@@ -47,24 +47,22 @@ const SystemLabReport = forwardRef(({ reportData, report }, ref) => {
 							) : (
 								<Table.Tr key={index}>
 									<Table.Td>
-										<Text pl={4}>
+										<Text pl={4} fz={'14px'}>
 											{item.name}
 										</Text>
 									</Table.Td>
 									<Table.Td>
-										<Text pl={4}>
+										<Text pl={4} fz={'14px'}>
 											{item.result} {item.unit}
 										</Text>
 									</Table.Td>
 									<Table.Td>
-										<Text pl={4}>
+										<Text pl={4} fz={'14px'}>
 											{item.reference_value}
 										</Text>
 									</Table.Td>
 								</Table.Tr>
 							)
-
-
 						))}
 					</Table.Tbody>
 				</Table>
