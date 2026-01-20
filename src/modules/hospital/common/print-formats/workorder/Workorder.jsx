@@ -1,11 +1,12 @@
 import { Box, Text, Grid, Group, Image, Table, Flex } from "@mantine/core";
-import { forwardRef } from "react";
+import React, { forwardRef } from "react";
 import GLogo from "@assets/images/government_seal_of_bangladesh.svg";
 import TBLogo from "@assets/images/tb_logo.png";
 import "@/index.css";
 import useAppLocalStore from "@hooks/useAppLocalStore";
 import { t } from "i18next";
 import useHospitalConfigData from "@hooks/config-data/useHospitalConfigData";
+import {capitalizeWords, formatDate} from "@utils/index";
 
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
@@ -19,9 +20,39 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-	console.log(patientInfo);
+
+
 	return (
 		<Box display={preview ? "block" : "none"}>
+			<style>
+				{`
+					.customTable {
+					  border-collapse: collapse !important;
+					  border-spacing: 0 !important;
+					  margin: 0 !important;
+					  
+					}
+					
+					.customTable th,
+					.customTable td {
+					  padding: 0 !important;
+					  margin: 0 !important;
+					  line-height: 1.8;
+					  padding-left: 8px !important;
+					  
+					
+					}
+					
+					@media print {
+					  .customTable,
+					  .customTable th,
+					  .customTable td {
+						border: 1px solid #807e7e !important;
+						padding-left: 8px !important;
+					  }
+					}
+				`}
+			</style>
 			<style>
 				{`@media print {
 					table { border-collapse: collapse !important; }
@@ -29,6 +60,7 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 				}`}
 			</style>
 			<Box
+				pos="relative"
 				ref={ref}
 				p="md"
 				w={PAPER_WIDTH}
@@ -36,15 +68,13 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 				style={{ overflow: "hidden" }}
 				className="watermark"
 				ff="Arial, sans-serif"
-				lh={1.5}
 				fz={12}
-				bd="1px solid black"
 			>
-				{/* =============== header section with doctor information in bengali and english ================ */}
-
-				<Box pos="relative" mb="lg">
+				<Box  mb="lg" h={980} >
 					<Table
 						style={{
+							margin: 0,
+							padding: 0,
 							borderCollapse: "collapse",
 							width: "100%",
 							border: "1px solid var(--theme-tertiary-color-8)",
@@ -82,47 +112,32 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td
-									colSpan={6}
-									style={{
-										textAlign: "center",
-										fontSize: "20px",
-										fontWeight: "blod",
-									}}
+								<Table.Td style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+										  colSpan={5}
 								>
-									WORK ORDER
+									<Text fw="bold" fz={'xl'}  ta={'center'}>Workorder Approval</Text>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td>{t("Created")}</Table.Td>
-								<Table.Td> {patientInfo && patientInfo.created && patientInfo.created}</Table.Td>
-								<Table.Td>{t("Invoice")}</Table.Td>
-								<Table.Td>{patientInfo && patientInfo.invoice && patientInfo.invoice}</Table.Td>
-								<Table.Td> {t("Process")}</Table.Td>
-								<Table.Td> {patientInfo && patientInfo.process && patientInfo.process}</Table.Td>
-							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td>{t("Vendor")}</Table.Td>
-								<Table.Td>
-									{" "}
-									{patientInfo && patientInfo.vendor_name && patientInfo.vendor_name}
+								<Table.Td style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
+										  colSpan={5}
+								>
+									<Flex gap="md" justify="center">
+										<Text fw="bold" ta="left" fz={'12'}>
+											GRN No:{patientInfo && patientInfo.invoice && patientInfo.invoice}
+										</Text>
+										<Text fw="bold" ta="left" fz={'12'}>
+											Date:{patientInfo && patientInfo.received_date && patientInfo.received_date}
+										</Text>
+										<Text fw="bold" ta="left" fz={'12'}>
+											Vendor:{patientInfo && patientInfo.vendor_name && patientInfo.vendor_name}
+										</Text>
+									</Flex>
 								</Table.Td>
-								<Table.Td>{t("CreatedBy")}</Table.Td>
-								<Table.Td> {patientInfo && patientInfo.cb_name && patientInfo.cb_name}</Table.Td>
-								<Table.Td>{t("ApprovedBy")}</Table.Td>
-								<Table.Td>{patientInfo && patientInfo.ab_name && patientInfo.ab_name}</Table.Td>
 							</Table.Tr>
-						</Table.Tbody>
-					</Table>
-					<Table
-						style={{
-							borderCollapse: "collapse",
-							width: "100%",
-							border: "1px solid var(--theme-tertiary-color-8)",
-						}}
-						className="customTable"
-					>
-						<Table.Thead>
+							<Table.Tr>
+								<Table.Td colSpan={5} style={{ height: 16 }}>&nbsp;</Table.Td>
+							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th>{t("S/N")}</Table.Th>
 								<Table.Th>{t("MedicineName")}</Table.Th>
@@ -130,8 +145,6 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Th>{t("Expiry Date")}</Table.Th>
 								<Table.Th>{t("End Date")}</Table.Th>
 							</Table.Tr>
-						</Table.Thead>
-						<Table.Tbody>
 							{patientInfo?.purchase_items?.map((item, index) => (
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td>{index + 1}.</Table.Td>
@@ -144,7 +157,33 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 						</Table.Tbody>
 					</Table>
 				</Box>
-				<Box ta="center">
+				<Box  bottom={'20'}  ta="center">
+					<Box p="md" pt={0} pb={0}>
+						<Grid columns={12} gutter="xs">
+							<Grid.Col span={4}>
+								--------------------------------
+								<Text fw="bold" mb="sm" ta="center">
+									Prepared By
+								</Text>
+							</Grid.Col>
+							<Grid.Col span={4}>
+								<Box>
+									--------------------------------
+									<Text fw="bold" mb="sm" ta="center">
+										Store In-charge
+									</Text>
+								</Box>
+							</Grid.Col>
+							<Grid.Col span={4}>
+								<Box>
+									--------------------------------
+									<Text fw="bold" mb="sm" ta="center">
+										Store Officer
+									</Text>
+								</Box>
+							</Grid.Col>
+						</Grid>
+					</Box>
 					<Text size="xs" c="gray" mt="xs">
 						<strong>{t("প্রিন্ট")}: </strong>
 						{user?.name}
@@ -159,5 +198,4 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 });
 
 Workorder.displayName = "Workorder";
-
 export default Workorder;

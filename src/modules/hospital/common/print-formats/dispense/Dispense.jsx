@@ -11,7 +11,7 @@ import {capitalizeWords, formatDate} from "@utils/index";
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
-const Indent = forwardRef(({ data, preview = false }, ref) => {
+const Dispense = forwardRef(({ data, preview = false }, ref) => {
 	const { user } = useAppLocalStore();
 
 	const patientInfo = data || {};
@@ -21,6 +21,7 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 		return value || defaultValue;
 	};
 
+	
 	return (
 		<Box display={preview ? "block" : "none"}>
 			<style>
@@ -126,13 +127,10 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 											Requisition No:{patientInfo && patientInfo.invoice && patientInfo.invoice}
 										</Text>
 										<Text fw="bold" ta="left" fz={'12'}>
-											Date:{patientInfo && patientInfo.invoice_date && patientInfo.invoice_date}
+											Date:{patientInfo && patientInfo.approved_date && patientInfo.approved_date}
 										</Text>
 										<Text fw="bold" ta="left" fz={'12'}>
-											{t("Department")}: {patientInfo && patientInfo.to_warehouse && patientInfo.to_warehouse}
-										</Text>
-										<Text fw="bold" ta="left" fz={'12'}>
-											From:{patientInfo && patientInfo.created_by && patientInfo.created_by}
+											{t("Department")}: {patientInfo && patientInfo.warehouse_name && patientInfo.warehouse_name}
 										</Text>
 									</Flex>
 								</Table.Td>
@@ -143,17 +141,13 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th ta={'center'}>{t("S/N")}</Table.Th>
 								<Table.Th>{t("Generic")}</Table.Th>
-								<Table.Th>{t("Exp Date")}</Table.Th>
-								<Table.Th>{t("Requisition QTY")}</Table.Th>
-								<Table.Th>{t("Approve QTY")}</Table.Th>
+								<Table.Th>{t("Quantity")}</Table.Th>
 							</Table.Tr>
-							{patientInfo?.stock_transfer_items?.map((item, index) => (
+							{patientInfo?.dispense_items?.map((item, index) => (
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td ta={'center'} w={'50'}>{index + 1}.</Table.Td>
 									<Table.Td>{getValue(capitalizeWords(item?.name))}</Table.Td>
-									<Table.Td>{getValue(item?.expired_date)}</Table.Td>
-									<Table.Td>{getValue(item?.request_quantity, "0")}</Table.Td>
-									<Table.Td>{getValue(item?.stock_quantity, "0")}</Table.Td>
+									<Table.Td>{getValue(item?.quantity, "0")}</Table.Td>
 								</Table.Tr>
 							))}
 						</Table.Tbody>
@@ -205,6 +199,6 @@ const Indent = forwardRef(({ data, preview = false }, ref) => {
 	);
 });
 
-Indent.displayName = "Indent";
+Dispense.displayName = "Dispense";
 
-export default Indent;
+export default Dispense;

@@ -1,9 +1,9 @@
-import { IconPrinter, IconChevronUp, IconSelector } from "@tabler/icons-react";
-import { Box, Flex, Text, Button } from "@mantine/core";
+import { IconPrinter, IconChevronUp, IconSelector,IconEye } from "@tabler/icons-react";
+import {Box, Flex, Text, Button, ScrollArea, Table} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useRef, useState } from "react";
 import { MODULES } from "@/constants";
-import { formatDate } from "@utils/index";
+import {formatDate, formatDateTime, formatDateTimeAmPm} from "@utils/index";
 import tableCss from "@assets/css/Table.module.css";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
@@ -15,9 +15,12 @@ import { CSVLink } from "react-csv";
 import Barcode from "react-barcode";
 import LabReportA4BN from "@hospital-components/print-formats/lab-reports/LabReportA4BN";
 import usePagination from "@hooks/usePagination";
+import GlobalDrawer from "@components/drawers/GlobalDrawer";
+import {useDisclosure} from "@mantine/hooks";
+import {getDataWithoutStore} from "@/services/apiService";
 
 const module = MODULES.LAB_TEST;
-const PER_PAGE = 25;
+const PER_PAGE = 50;
 
 const CSV_HEADERS = [
 	{ label: "S/N", key: "sn" },
@@ -39,8 +42,8 @@ export default function _Table({ height }) {
 	const form = useForm();
 	const barCodeRef = useRef(null);
 	const [barcodeValue, setBarcodeValue] = useState("");
-	const labReportRef = useRef(null);
-	const [labReportData, setLabReportData] = useState(null);
+	const [invoiceDetailsOpened, { open: openInvoiceDetails, close: closeInvoiceDetails }] = useDisclosure(false);
+	const [selectedInvoice, setSelectedInvoice] = useState({});
 
 	const { records, fetching, sortStatus, setSortStatus, total, perPage, page, handlePageChange } = usePagination({
 		module,
@@ -74,19 +77,10 @@ export default function _Table({ height }) {
 			csvLinkRef.current.link.click();
 		}
 	};
-
-	const [printData, setPrintData] = useState({});
-	const a4Ref = useRef(null);
-
-	const handlePrint = async (id) => {
-		/*const res = await getDataWithoutStore({
-			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.EPHARMA.INDEX}/${id}`,
-		});
-		console.log(res);
-		setLabReportData(res?.data);
-		requestAnimationFrame(printLabReport);*/
+	const handleDetailsView = async (transaction) => {
+		setSelectedInvoice(transaction);
+		requestAnimationFrame(openInvoiceDetails);
 	};
-
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
 			<Flex justify="space-between" align="center" px="sm">
@@ -126,18 +120,19 @@ export default function _Table({ height }) {
 							sortable: true,
 							render: (item) => <Text fz="xs">{formatDate(item?.created_at)}</Text>,
 						},
-						{ accessor: "invoice", sortable: true, title: t("InvoiceID") },
-						{ accessor: "patient_id", sortable: true, title: t("PatientID") },
-						{ accessor: "name", sortable: true, title: t("Name") },
-						{ accessor: "mobile", sortable: true, title: t("Mobile") },
-						{ accessor: "process", sortable: true, title: t("Process") },
-						{ accessor: "delivered_by", sortable: true, title: t("DeliveredBy") },
+						{ accessor: "barcode", sortable: false, title: t("Barcode") },
+						{ accessor: "invoice", sortable: false, title: t("InvoiceID") },
+						{ accessor: "patient_id", sortable: false, title: t("PatientID") },
+						{ accessor: "name", sortable: false, title: t("Name") },
+						{ accessor: "mobile", sortable: false, title: t("Mobile") },
+						{ accessor: "process", sortable: false, title: t("Process") },
+						{ accessor: "delivered_by", sortable: false, title: t("DeliveredBy") },
 						{
 							accessor: "delivered_date",
 							title: t("DeliveredDate"),
 							textAlignment: "right",
 							sortable: true,
-							render: (item) => <Text fz="xs">{formatDate(item?.delivered_date)}</Text>,
+							render: (item) => <Text fz="xs">{formatDateTimeAmPm(item?.delivered_date)}</Text>,
 						},
 						{
 							title: t("Action"),
@@ -148,14 +143,14 @@ export default function _Table({ height }) {
 									<Flex justify="flex-end" gap="2">
 										{values?.process === "Done" && (
 											<Button
-												onClick={() => handlePrint(values?.uid)}
+												onClick={() => handleDetailsView(values)}
 												size="compact-xs"
 												fz={"xs"}
 												fw={"400"}
-												leftSection={<IconPrinter size={14} />}
+												leftSection={<IconEye size={14} />}
 												color="var(--theme-print-btn-color)"
 											>
-												{t("Print")}
+												{t("Show")}
 											</Button>
 										)}
 									</Flex>
@@ -163,7 +158,6 @@ export default function _Table({ height }) {
 							},
 						},
 					]}
-					textSelectionDisabled
 					fetching={fetching}
 					loaderSize="xs"
 					loaderColor="grape"
@@ -180,7 +174,6 @@ export default function _Table({ height }) {
 					}}
 				/>
 			</Box>
-			<OPDA4BN data={printData} ref={a4Ref} />
 
 			{/* Hidden CSV link for exporting current table rows */}
 			<CSVLink
@@ -195,7 +188,33 @@ export default function _Table({ height }) {
 					<Barcode fontSize="10" width="1" height="30" value={barcodeValue || "BARCODETEST"} />
 				</Box>
 			</Box>
-			<LabReportA4BN data={labReportData} ref={labReportRef} />
+			<GlobalDrawer
+				size="50%"
+				opened={invoiceDetailsOpened}
+				close={closeInvoiceDetails}
+				title={t("InvoiceDetails")}
+			>
+				<ScrollArea>
+					<Table mt="sm" striped highlightOnHover withTableBorder withColumnBorders>
+						<Table.Thead>
+							<Table.Tr>
+								<Table.Th>{t("S/N")}</Table.Th>
+								<Table.Th>{t("ItemName")}</Table.Th>
+								<Table.Th>{t("Quantity")}</Table.Th>
+							</Table.Tr>
+						</Table.Thead>
+						<Table.Tbody>
+							{selectedInvoice?.sales_items?.map((item, index) => (
+								<Table.Tr key={index}>
+									<Table.Td>{index + 1}</Table.Td>
+									<Table.Td>{item.name}</Table.Td>
+									<Table.Td>{item?.quantity}</Table.Td>
+								</Table.Tr>
+							))}
+						</Table.Tbody>
+					</Table>
+				</ScrollArea>
+			</GlobalDrawer>
 		</Box>
 	);
 }

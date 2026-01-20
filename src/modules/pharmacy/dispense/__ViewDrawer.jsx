@@ -102,7 +102,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 									{entityObject && entityObject.invoice && entityObject.invoice}
 								</Grid.Col>
 								<Grid.Col span={"4"} className="drawer-form-input-label">
-									{t("Warehouse")}
+									{t("Department")}
 								</Grid.Col>
 								<Grid.Col span={"1"}>:</Grid.Col>
 								<Grid.Col span={"auto"}>

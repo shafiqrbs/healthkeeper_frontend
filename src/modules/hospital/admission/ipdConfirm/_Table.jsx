@@ -106,7 +106,7 @@ export default function _Table({ module }) {
 				referred_mode: "admission",
 				ipd_mode: processTab,
 				created: form.values.created,
-				term: filterData.keywordSearch,
+				term: form.values.keywordSearch,
 			},
 			perPage: PER_PAGE,
 			sortByKey: "created_at",

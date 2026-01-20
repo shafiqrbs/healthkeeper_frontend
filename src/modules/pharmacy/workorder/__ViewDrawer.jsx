@@ -16,7 +16,7 @@ export default function __ViewDrawer({ viewDrawer, setViewDrawer, height, module
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const entityObject = useSelector((state) => state.crud[module].editData);
-	const ALLOWED_PHARMACIST_ROLES = ["pharmacy_doctor", "admin_administrator"];
+	const ALLOWED_PHARMACIST_ROLES = ["pharmacy_doctor","pharmacy_pharmacist", "admin_administrator"];
 	const canApprove = userRoles.some((role) => ALLOWED_PHARMACIST_ROLES.includes(role));
 	const closeDrawer = () => {
 		setViewDrawer(false);

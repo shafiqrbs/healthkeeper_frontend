@@ -64,20 +64,20 @@ import AddGenericPopover from "@components/drawers/AddGenericPopover";
 import { getDataWithoutStore } from "@/services/apiService";
 
 export default function AddMedicineForm({
-	showBaseItems = true,
-	module,
-	form,
-	update,
-	medicines,
-	setMedicines,
-	baseHeight,
-	setShowHistory,
-	prescriptionData,
-	hasRecords,
-	tabParticulars,
-	section = "ipdPrescription",
-	refetch,
-}) {
+											showBaseItems = true,
+											module,
+											form,
+											update,
+											medicines,
+											setMedicines,
+											baseHeight,
+											setShowHistory,
+											prescriptionData,
+											hasRecords,
+											tabParticulars,
+											section = "ipdPrescription",
+											refetch,
+										}) {
 	const {
 		user,
 		advices: adviceData,

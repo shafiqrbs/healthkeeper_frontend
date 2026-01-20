@@ -6,7 +6,7 @@ import {
 	IconEdit,
 	IconEye,
 	IconChevronUp,
-	IconSelector,
+	IconSelector, IconPrinter,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,8 +24,11 @@ import { setInsertType, setRefetchData } from "@/app/store/core/crudSlice.js";
 import {ERROR_NOTIFICATION_COLOR, SUCCESS_NOTIFICATION_COLOR} from "@/constants/index.js";
 import { deleteNotification } from "@components/notification/deleteNotification";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll.js";
-import { useState } from "react";
+import {useRef, useState} from "react";
 import {successNotification} from "@components/notification/successNotification.jsx";
+import {useReactToPrint} from "react-to-print";
+import {getDataWithoutStore} from "@/services/apiService";
+import Dispense from "@hospital-components/print-formats/dispense/Dispense";
 
 const PER_PAGE = 50;
 
@@ -39,6 +42,9 @@ export default function _Table({ module }) {
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const listData = useSelector((state) => state.crud[module].data);
 	const height = mainAreaHeight - 48;
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
+	const invoicePrintRef = useRef(null);
+
 
 	// for infinity table data scroll, call the hook
 	const {
@@ -144,6 +150,16 @@ export default function _Table({ module }) {
 	const handleCreateFormNavigate = () => {
 		navigate(`${PHARMACY_DATA_ROUTES.NAVIGATION_LINKS.DISPENSE.CREATE}`);
 	};
+
+	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
+	const handleDataPrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${PHARMACY_DATA_ROUTES.API_ROUTES.DISPENSE.VIEW}/${id}`,
+		});
+		setInvoicePrintData(res.data);
+		requestAnimationFrame(invoicePrint);
+	};
+
 
 	const processColorMap = { Created: "Red", Received: "green", Approved: "blue" };
 
@@ -269,6 +285,21 @@ export default function _Table({ module }) {
 										>
 											{t("View")}
 										</Button>
+										{(values.process === "Approved" ||
+											values.process === "Received") &&
+										values.approved_by_id && (
+											<Button
+												onClick={() => handleDataPrint(values.id)}
+												variant="filled"
+												c="white"
+												size="compact-xs"
+												radius="es"
+												leftSection={<IconPrinter size={16} />}
+												className="border-right-radius-none"
+											>
+												{t("Print")}
+											</Button>
+										)}
 
 
 										{values.process !== "Approved" &&
@@ -305,6 +336,7 @@ export default function _Table({ module }) {
 			</Box>
 
 			<DataTableFooter indexData={listData} module={module} />
+			<Dispense data={invoicePrintData} ref={invoicePrintRef} />
 			<ViewDrawer
 				viewDrawer={viewDrawer}
 				height={mainAreaHeight}
