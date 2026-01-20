@@ -13,14 +13,11 @@ const PAPER_WIDTH = 793;
 
 const Workorder = forwardRef(({ data, preview = false }, ref) => {
 	const { user } = useAppLocalStore();
-
 	const patientInfo = data || {};
 	const { hospitalConfigData } = useHospitalConfigData();
-
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
-
 
 	return (
 		<Box display={preview ? "block" : "none"}>
