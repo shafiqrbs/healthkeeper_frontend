@@ -156,52 +156,52 @@ const DSTReport = forwardRef(({reportData,report}) => {
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_mtb}</Text>
+								<Text>{reportData?.dst_mtb}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_inh}</Text>
+								<Text>{reportData?.dst_inh}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_rif}</Text>
+								<Text>{reportData?.dst_rif}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_flq}</Text>
+								<Text>{reportData?.dst_flq}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_lfx}</Text>
+								<Text>{reportData?.dst_lfx}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_mfx}</Text>
+								<Text>{reportData?.dst_mfx}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_eth}</Text>
+								<Text>{reportData?.dst_eth}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_bdq}</Text>
+								<Text>{reportData?.dst_bdq}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_dlm}</Text>
+								<Text>{reportData?.dst_dlm}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_pa}</Text>
+								<Text>{reportData?.dst_pa}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_lzd}</Text>
+								<Text>{reportData?.dst_lzd}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_cfz}</Text>
+								<Text>{reportData?.dst_cfz}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_amk}</Text>
+								<Text>{reportData?.dst_amk}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_kan}</Text>
+								<Text>{reportData?.dst_kan}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_cap}</Text>
+								<Text>{reportData?.dst_cap}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{report?.dst_others}</Text>
+								<Text>{reportData?.dst_others}</Text>
 							</Table.Th>
 						</Table.Tr>
 					</Table>
