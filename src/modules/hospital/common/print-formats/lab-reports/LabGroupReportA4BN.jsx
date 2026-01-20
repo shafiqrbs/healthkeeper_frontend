@@ -231,7 +231,7 @@ const LabGroupReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 										</Table>
 									</Box>
 									<Box>
-										<Box mt={"md"} mt={'50'} h={"650"}>
+										<Box  mt={'50'} h={"650"}>
 											<Table
 												withColumnBorders
 												verticalSpacing={0}
