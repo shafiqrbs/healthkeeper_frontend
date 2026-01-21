@@ -91,7 +91,7 @@ const MemoAutocomplete = memo(function MemoAutocomplete({ value, placeholder, cl
 		if (typeof item === "string") {
 			return item;
 		}
-		return item?.by_meal_bn || item?.dose_details_bn || JSON.stringify(item);
+		return item?.by_meal_bn || item?.dose_details_bn || item?.instruction || JSON.stringify(item);
 	};
 
 	const autocompleteData = shouldUseApi
@@ -246,7 +246,7 @@ function DischargeMedicineListTable({
 				title: "Medicine Name",
 				render: (item) => <Text fz="xs">{item?.medicine_name}</Text>,
 			},
-			{ accessor: "generic", title: "Generic Name", render: (item) => <Text fz="xs">{item?.generic}</Text> },
+
 			// {
 			// 	accessor: "medicine_dosage",
 			// 	title: "Dosage",
@@ -277,10 +277,11 @@ function DischargeMedicineListTable({
 			// },
 			{
 				accessor: "instruction",
-				title: "Notes",
-				width: "40%",
+				title: "Dosages & Instruction",
+				width: "55%",
 				render: (record) => (
-					<MemoTextInput
+					<MemoAutocomplete
+						fieldName="instruction"
 						value={record.instruction}
 						className={inlineInputCss.inputText}
 						placeholder={t("Dosages & Instruction")}
@@ -290,36 +291,14 @@ function DischargeMedicineListTable({
 			},
 		];
 
-		if (!forDischarge) {
-			cols.push({
-				accessor: "start_date",
-				title: "Start Date",
-				width: "120",
-				render: (record) => (
-					<DateSelector
-						size="xs"
-						value={parseSafeDate(record.start_date)}
-						className={inlineInputCss.date_picker_custom}
-						placeholder={t("Start Date")}
-						onChange={(value) => handleInlineEdit(record.id, "start_date", value)}
-					/>
-				),
-			});
-		}
 
 		cols.push({
 			accessor: "action",
 			title: "Action",
-			width: 120,
+			width: 60,
 			textAlign: "center",
 			render: (record) => (
 				<Flex justify="center" align="center" gap="sm">
-					{showSwitch && (
-						<MemoSwitch
-							checked={record.is_active}
-							onChange={(v) => handleInlineEdit(record.id, "is_active", v)}
-						/>
-					)}
 					{showDelete && onDelete && (
 						<ActionIcon
 							variant="outline"

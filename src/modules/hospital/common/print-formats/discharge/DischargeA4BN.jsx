@@ -145,10 +145,11 @@ const DischargeA4BN = forwardRef(({ data, preview = false }, ref) => {
 								</Text>
 								<Text pl={"md"}>
 									{" "}
-									{getValue(medicine.dose_details_bn, medicine.dose_details)} {" ---- "}
+									{getValue(medicine.instruction, medicine.instruction)}
+									{/*{getValue(medicine.dose_details_bn, medicine.dose_details)} {" ---- "}
 									{getValue(medicine.by_meal_bn, medicine.by_meal)} {"----"}
 									{medicine?.quantity > 0 && getValue(medicine.quantity)}{" "}
-									{medicine?.duration && getValue(medicine.duration_mode_bn, medicine.duration)}
+									{medicine?.duration && getValue(medicine.duration_mode_bn, medicine.duration)}*/}
 								</Text>
 							</Flex>
 							)}

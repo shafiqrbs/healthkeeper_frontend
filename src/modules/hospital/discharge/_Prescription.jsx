@@ -323,9 +323,7 @@ export default function Prescription({
 				},
 				module: "prescription",
 			};
-
 			const resultAction = await dispatch(storeEntityData(value));
-
 			if (storeEntityData.rejected.match(resultAction)) {
 				console.error(resultAction.payload.message);
 			} else {
@@ -568,7 +566,7 @@ export default function Prescription({
 				dispatch(setRefetchData({ module, refetching: true }));
 				refetch();
 				if (redirect)
-					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=dashboard`);
+					navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=discharge-print`);
 				return resultAction.payload?.data || {}; // Indicate successful submission
 			}
 		} catch (error) {
