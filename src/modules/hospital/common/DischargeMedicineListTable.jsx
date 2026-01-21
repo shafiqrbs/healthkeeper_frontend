@@ -247,43 +247,43 @@ function DischargeMedicineListTable({
 				render: (item) => <Text fz="xs">{item?.medicine_name}</Text>,
 			},
 			{ accessor: "generic", title: "Generic Name", render: (item) => <Text fz="xs">{item?.generic}</Text> },
-			{
-				accessor: "medicine_dosage",
-				title: "Dosage",
-				width: "20%",
-				render: (record) => (
-					<MemoAutocomplete
-						value={record.dose_details}
-						className={inlineInputCss.inputText}
-						placeholder={t("Medicine Dosage")}
-						fieldName="dose_details_bn"
-						onBlur={(value) => handleInlineEdit(record.id, "dose_details", value)}
-					/>
-				),
-			},
-			{
-				accessor: "by_meal",
-				title: "By meal",
-				width: "10%",
-				render: (record) => (
-					<MemoAutocomplete
-						value={record.by_meal}
-						className={inlineInputCss.inputText}
-						placeholder={t("By meal")}
-						fieldName="by_meal_bn"
-						onBlur={(value) => handleInlineEdit(record.id, "by_meal", value)}
-					/>
-				),
-			},
+			// {
+			// 	accessor: "medicine_dosage",
+			// 	title: "Dosage",
+			// 	width: "20%",
+			// 	render: (record) => (
+			// 		<MemoAutocomplete
+			// 			value={record.dose_details}
+			// 			className={inlineInputCss.inputText}
+			// 			placeholder={t("Medicine Dosage")}
+			// 			fieldName="dose_details_bn"
+			// 			onBlur={(value) => handleInlineEdit(record.id, "dose_details", value)}
+			// 		/>
+			// 	),
+			// },
+			// {
+			// 	accessor: "by_meal",
+			// 	title: "By meal",
+			// 	width: "10%",
+			// 	render: (record) => (
+			// 		<MemoAutocomplete
+			// 			value={record.by_meal}
+			// 			className={inlineInputCss.inputText}
+			// 			placeholder={t("By meal")}
+			// 			fieldName="by_meal_bn"
+			// 			onBlur={(value) => handleInlineEdit(record.id, "by_meal", value)}
+			// 		/>
+			// 	),
+			// },
 			{
 				accessor: "instruction",
 				title: "Notes",
-				width: "20%",
+				width: "40%",
 				render: (record) => (
 					<MemoTextInput
 						value={record.instruction}
 						className={inlineInputCss.inputText}
-						placeholder={t("Instruction")}
+						placeholder={t("Dosages & Instruction")}
 						onBlur={(value) => handleInlineEdit(record.id, "instruction", value)}
 					/>
 				),
@@ -341,7 +341,7 @@ function DischargeMedicineListTable({
 			<DataTable
 				records={records}
 				columns={columns}
-				height={tableHeight - 30}
+				height={tableHeight}
 				striped
 				withTableBorder
 				withColumnBorders

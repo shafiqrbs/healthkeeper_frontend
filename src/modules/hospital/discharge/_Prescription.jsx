@@ -763,7 +763,7 @@ export default function Prescription({
 						p="sm"
 					>
 						<Grid w="100%" columns={24} gutter="3xs">
-							<Grid.Col span={18}>
+							<Grid.Col span={15}>
 								<Group align="end" gap="les">
 									<Grid w="100%" columns={12} gutter="3xs">
 										<Grid.Col span={6}>
@@ -788,71 +788,67 @@ export default function Prescription({
 											/>
 										</Grid.Col>
 										<Grid.Col span={6}>
-											<Grid w="100%" columns={24} gutter="3xs">
-												<Grid.Col span={3} mt={'3'}>
-													<Switch
-														size="lg"
-														radius="sm"
-														onLabel="GEN"
-														offLabel="Brand"
-														checked={medicineMode === "generic"}
-														onChange={(event) =>
-															setMedicineMode(
-																event.currentTarget.checked ? "generic" : "brand"
-															)
+											<Flex w="100%" gap="les" align="center">
+												<Switch
+													size="lg"
+													radius="sm"
+													onLabel="GEN"
+													offLabel="Brand"
+													checked={medicineMode === "generic"}
+													onChange={(event) =>
+														setMedicineMode(
+															event.currentTarget.checked ? "generic" : "brand"
+														)
+													}
+												/>
+												<FormValidatorWrapper opened={medicineForm.errors.generic_id}>
+													<Select
+														searchable
+														searchValue={medicineGenericSearchValue}
+														onSearchChange={setMedicineGenericSearchValue}
+														clearable
+														disabled={medicineForm.values.medicine_id}
+														tooltip={t("EnterGenericName")}
+														id="generic_id"
+														name="generic_id"
+														data={genericOptions}
+														filter={medicineOptionsFilter}
+														value={medicineForm.values.generic_id}
+														onChange={(v, options) => {
+															setMedicineGenericSearchValue(options.label);
+															handleChange("generic_id", v);
+															medicineForm.setFieldValue("medicine_name", options.label);
+															medicineForm.setFieldValue("generic", options.generic);
+														}}
+														onBlur={() =>
+															setMedicineGenericSearchValue(medicineGenericSearchValue)
 														}
+														placeholder={t("GenericName")}
+														classNames={inputCss}
+														error={!!medicineForm.errors.generic_id}
+														w="100%"
+														comboboxProps={{ withinPortal: false }}
+														rightSection={
+															<Flex align="center" gap="les" w="100%" pt="es" pr="3px" justify="flex-end">
+																{medicineForm.values?.generic_id && <IconX color="var(--theme-error-color)" className="cursor-pointer" size={16} onClick={() => {
+																	medicineForm.setFieldValue("generic_id", null);
+																	medicineForm.setFieldValue("generic", null);
+																}} />}
+																<AddGenericPopover
+																	dbMedicines={dbMedicines}
+																	setDbMedicines={setDbMedicines}
+																	prescription_id={prescriptionData?.data?.prescription_uid}
+																/>
+															</Flex>
+														}
+														rightSectionWidth={60}
 													/>
-												</Grid.Col>
-												<Grid.Col span={21}>
-													<FormValidatorWrapper opened={medicineForm.errors.generic_id}>
-														<Select
-															searchable
-															searchValue={medicineGenericSearchValue}
-															onSearchChange={setMedicineGenericSearchValue}
-															clearable
-															disabled={medicineForm.values.medicine_id}
-															tooltip={t("EnterGenericName")}
-															id="generic_id"
-															name="generic_id"
-															data={genericOptions}
-															filter={medicineOptionsFilter}
-															value={medicineForm.values.generic_id}
-															onChange={(v, options) => {
-																setMedicineGenericSearchValue(options.label);
-																handleChange("generic_id", v);
-																medicineForm.setFieldValue("medicine_name", options.label);
-																medicineForm.setFieldValue("generic", options.generic);
-															}}
-															onBlur={() =>
-																setMedicineGenericSearchValue(medicineGenericSearchValue)
-															}
-															placeholder={t("GenericName")}
-															classNames={inputCss}
-															error={!!medicineForm.errors.generic_id}
-															w="100%"
-															comboboxProps={{ withinPortal: false }}
-															rightSection={
-																<Flex align="center" gap="les" w="100%" pt="es" pr="3px" justify="flex-end">
-																	{medicineForm.values?.generic_id && <IconX color="var(--theme-error-color)" className="cursor-pointer" size={16} onClick={() => {
-																		medicineForm.setFieldValue("generic_id", null);
-																		medicineForm.setFieldValue("generic", null);
-																	}} />}
-																	<AddGenericPopover
-																		dbMedicines={dbMedicines}
-																		setDbMedicines={setDbMedicines}
-																		prescription_id={prescriptionData?.data?.prescription_uid}
-																	/>
-																</Flex>
-															}
-															rightSectionWidth={60}
-														/>
-													</FormValidatorWrapper>
-												</Grid.Col>
-											</Grid>
+												</FormValidatorWrapper>
+											</Flex>
 										</Grid.Col>
 									</Grid>
 									<Grid w="100%" columns={12} gutter="3xs">
-										<Grid.Col span={6}>
+										{/* <Grid.Col span={6}>
 											<SelectForm
 												form={medicineForm}
 												id="medicine_dosage_id"
@@ -908,12 +904,12 @@ export default function Prescription({
 													tooltip={t("EnterQuantity")}
 												/>
 											</Group>
-										</Grid.Col>
+										</Grid.Col> */}
 									</Grid>
 								</Group>
 							</Grid.Col>
-							<Grid.Col span={6} bg="var(--mantine-color-white)">
-								<Flex gap="les" pr="les">
+							<Grid.Col span={9}>
+								<Flex gap="les">
 									<SelectForm
 										form={medicineForm}
 										label=""
@@ -930,6 +926,24 @@ export default function Prescription({
 										changeValue={populateMedicineData}
 										styles={{ root: { width: "100%" } }}
 									/>
+									<Button
+										leftSection={<IconPlus size={16} />}
+										type="submit"
+										variant="filled"
+										w="100%"
+										bg="var(--theme-secondary-color-6)"
+									>
+										{t("Add")}
+									</Button>
+									<ActionIcon
+										fw={"400"}
+										type="button"
+										size="lg"
+										color="var(--theme-secondary-color-5)"
+										onClick={openExPrescription}
+									>
+										{t("Rx")}
+									</ActionIcon>
 									<Tooltip label={t("CreateTreatmentTemplate")}>
 										<ActionIcon
 											fw={"400"}
@@ -955,7 +969,7 @@ export default function Prescription({
 										>
 											{t("Dose")}
 										</Button>*/}
-										<SelectForm
+										{/* <SelectForm
 											form={medicineForm}
 											label=""
 											id="duration"
@@ -966,10 +980,10 @@ export default function Prescription({
 											required
 											tooltip={t("EnterMeditationDuration")}
 											withCheckIcon={false}
-										/>
+										/> */}
 									</Grid.Col>
 									<Grid.Col span={6}>
-										<Flex gap="les" pr="les">
+										{/* <Flex gap="les" pr="les">
 											<Button
 												leftSection={<IconPlus size={16} />}
 												type="submit"
@@ -988,13 +1002,13 @@ export default function Prescription({
 											>
 												{t("Rx")}
 											</ActionIcon>
-										</Flex>
+										</Flex> */}
 									</Grid.Col>
 								</Grid>
 							</Grid.Col>
 						</Grid>
 					</Box>
-					<ScrollArea h={mainAreaHeight - 414} bg="var(--mantine-color-white)">
+					<ScrollArea h={mainAreaHeight - 378} bg="var(--mantine-color-white)">
 						<Stack gap="2px">
 							{dbMedicines?.length === 0 && form.values.exEmergency?.length === 0 && (
 								<Flex
@@ -1026,7 +1040,7 @@ export default function Prescription({
 										showDelete={true}
 										onDelete={handleDeleteMedicine}
 										prescriptionId={prescriptionId}
-										tableHeight={mainAreaHeight - 386}
+										tableHeight={mainAreaHeight - 380}
 										setMedicines={setDbMedicines}
 										forDischarge
 									/>
