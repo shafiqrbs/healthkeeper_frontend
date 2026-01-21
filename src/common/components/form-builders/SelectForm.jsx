@@ -34,9 +34,10 @@ const SelectForm = forwardRef(
 			disabled = false,
 			withCheckIcon = true,
 			onBlur,
-			onSearchChange = () => {},
+			onSearchChange = () => { },
 			nothingFoundMessage = "",
 			styles = {},
+			rightSectionWidth = undefined,
 		},
 		ref
 	) => {
@@ -44,10 +45,10 @@ const SelectForm = forwardRef(
 
 		// Sync form value with local state when form value changes
 		useEffect(() => {
-			if (form && form.values[name] && changeValue) {
-				changeValue(form.values[name]);
+			if (form && form.values[ name ] && changeValue) {
+				changeValue(form.values[ name ]);
 			}
-		}, [form?.values[name]]);
+		}, [ form?.values[ name ] ]);
 
 		const handleChange = async (e) => {
 			// Update local state first
@@ -97,7 +98,7 @@ const SelectForm = forwardRef(
 				{form && (
 					<Tooltip
 						label={tooltip}
-						opened={name in form.errors && !!form.errors[name]}
+						opened={name in form.errors && !!form.errors[ name ]}
 						px={16}
 						py={2}
 						position={position && position ? position : "top-end"}
@@ -123,15 +124,15 @@ const SelectForm = forwardRef(
 							autoComplete="off"
 							clearable={clearable}
 							searchable={searchable}
-							error={!!form.errors[name]}
+							error={!!form.errors[ name ]}
 							value={
 								value !== undefined
 									? String(value)
-									: form?.values[name] !== undefined &&
-									  form?.values[name] !== null &&
-									  form?.values[name] !== ""
-									? String(form.values[name])
-									: null
+									: form?.values[ name ] !== undefined &&
+										form?.values[ name ] !== null &&
+										form?.values[ name ] !== ""
+										? String(form.values[ name ])
+										: null
 							}
 							onChange={handleChange}
 							withAsterisk={required}
@@ -142,6 +143,7 @@ const SelectForm = forwardRef(
 							withCheckIcon={withCheckIcon}
 							nothingFoundMessage={nothingFoundMessage}
 							styles={styles}
+							rightSectionWidth={rightSectionWidth}
 						/>
 					</Tooltip>
 				)}

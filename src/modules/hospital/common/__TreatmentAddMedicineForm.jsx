@@ -60,25 +60,25 @@ const treatmentModule = MODULES_CORE.TREATMENT_TEMPLATES;
 export default function TreatmentAddMedicineForm({ medicines, module, setMedicines }) {
 	const { features, meals, dosages, medicines: medicineData } = useAppLocalStore();
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
-	const [autocompleteValue, setAutocompleteValue] = useState("");
-	const [updateKey, setUpdateKey] = useState(0);
+	const [ autocompleteValue, setAutocompleteValue ] = useState("");
+	const [ updateKey, setUpdateKey ] = useState(0);
 	const { t } = useTranslation();
-	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
+	const [ medicineTerm, setMedicineTerm ] = useDebouncedState("", 300);
 	// const { medicineData } = useMedicineData({ term: medicineTerm });
 	// const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
 	const medicineForm = useForm(getTreatmentMedicineInitialValues());
-	const [editIndex, setEditIndex] = useState(null);
+	const [ editIndex, setEditIndex ] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const { treatmentId } = useParams();
 	const dispatch = useDispatch();
-	const [medicineGenericDebounce, setMedicineGenericDebounce] = useDebouncedState("", 300);
-	const [medicineGenericSearchValue, setMedicineGenericSearchValue] = useState("");
-	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
-	const [durationModeKey, setDurationModeKey] = useState(0);
+	const [ medicineGenericDebounce, setMedicineGenericDebounce ] = useDebouncedState("", 300);
+	const [ medicineGenericSearchValue, setMedicineGenericSearchValue ] = useState("");
+	const [ openedExPrescription, { open: openExPrescription, close: closeExPrescription } ] = useDisclosure(false);
+	const [ durationModeKey, setDurationModeKey ] = useState(0);
 	const genericRef = useRef(null);
-	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
+	const [ tempEmergencyItems, setTempEmergencyItems ] = useState([]);
 	const emergencyRefetching = useSelector((state) => state.crud.exemergency.refetching);
-	const [medicineMode, setMedicineMode] = useState("generic");
+	const [ medicineMode, setMedicineMode ] = useState("generic");
 	const { medicineGenericData: genericData } = useMedicineGenericData({
 		term: medicineGenericDebounce,
 		mode: medicineMode,
@@ -96,7 +96,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 		if (medicineTerm.length === 0) {
 			medicineForm.setFieldValue("medicine_id", "");
 		}
-	}, [medicineTerm]);
+	}, [ medicineTerm ]);
 
 	useEffect(() => {
 		dispatch(
@@ -105,14 +105,14 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 				module: "exemergency",
 			})
 		);
-	}, [emergencyRefetching]);
+	}, [ emergencyRefetching ]);
 
 	const durationModeDropdown = features?.medicineDuration?.modes
 		? features?.medicineDuration?.modes.map((mode) => ({
-				value: mode.id?.toString(),
-				label: mode.name,
-				name_bn: mode.name_bn,
-		  }))
+			value: mode.id?.toString(),
+			label: mode.name,
+			name_bn: mode.name_bn,
+		}))
 		: [];
 
 	// Add hotkey for save functionality
@@ -130,7 +130,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 
 	useEffect(() => {
 		setMedicineGenericDebounce(medicineGenericSearchValue);
-	}, [medicineGenericSearchValue]);
+	}, [ medicineGenericSearchValue ]);
 
 	const handleAutocompleteOptionAdd = async (value, data, type, custom = false) => {
 		if (!custom) {
@@ -143,7 +143,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 					type: type,
 					isEditable: true,
 				};
-				setTempEmergencyItems((prev) => [...prev, newItem]);
+				setTempEmergencyItems((prev) => [ ...prev, newItem ]);
 			}
 		} else {
 			if (!value?.trim())
@@ -173,7 +173,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 				showNotificationComponent(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 				dispatch(setRefetchData({ module: "exemergency", refetching: true }));
 				dispatch(setRefetchData({ module: treatmentModule, refetching: true }));
-				setTempEmergencyItems((prev) => [...prev, newItem]);
+				setTempEmergencyItems((prev) => [ ...prev, newItem ]);
 			}
 		}
 	};
@@ -226,7 +226,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 
 		submitTreatmentValue(values);
 
-		setMedicines([...medicines, values]);
+		setMedicines([ ...medicines, values ]);
 
 		setUpdateKey((prev) => prev + 1);
 		medicineForm.reset();
@@ -246,7 +246,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+						errorObject[ key ] = fieldErrors[ key ][ 0 ];
 					});
 					medicineForm.setErrors(errorObject);
 				}
@@ -270,7 +270,7 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 				label: item.name,
 				generic: item.generic,
 			})) ?? [],
-		[genericData]
+		[ genericData ]
 	);
 
 	const handleDeleteSuccess = async (report, id) => {
@@ -434,7 +434,13 @@ export default function TreatmentAddMedicineForm({ medicines, module, setMedicin
 										tooltip={t("EnterDosage")}
 										onChange={(v) => handleChange("medicine_dosage_id", v)}
 										error={!!medicineForm.errors.medicine_dosage_id}
-										rightSection={<AddDosagePopover form={medicineForm} />}
+										rightSection={
+											<Flex align="center" gap="les" w="100%" pt="es" pr="3px" justify="flex-end">
+												{medicineForm.values?.medicine_dosage_id && <IconX color="var(--theme-error-color)" className="cursor-pointer" size={16} onClick={() => medicineForm.setFieldValue("medicine_dosage_id", null)} />}
+												<AddDosagePopover form={medicineForm} />
+											</Flex>
+										}
+										rightSectionWidth={60}
 									/>
 								</FormValidatorWrapper>
 

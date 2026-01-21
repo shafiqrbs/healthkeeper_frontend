@@ -112,7 +112,7 @@ export default function Prescription({
 			Superscript,
 			Subscript,
 			Placeholder.configure({ placeholder: "Enter your text here..." }),
-			TextAlign.configure({ types: ["heading", "paragraph"] }),
+			TextAlign.configure({ types: [ "heading", "paragraph" ] }),
 		],
 		content: form.values.extra_medicine || "",
 		shouldRerenderOnTransaction: true,
@@ -131,36 +131,37 @@ export default function Prescription({
 				editor.commands.setContent(form.values.extra_medicine || "");
 			}
 		}
-	}, [form.values.extra_medicine, editor]);
+	}, [ form.values.extra_medicine, editor ]);
 
 	const { id } = useParams();
 	const createdBy = user;
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const dischargeA4Ref = useRef(null);
-	const [updateKey, setUpdateKey] = useState(0);
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [ updateKey, setUpdateKey ] = useState(0);
+	const [ isSubmitting, setIsSubmitting ] = useState(false);
 	const { t } = useTranslation();
 	const medicineForm = useForm(getMedicineFormInitialValues("discharge"));
-	const [editIndex, setEditIndex] = useState(null);
+	const [ editIndex, setEditIndex ] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
-	const [openedBookmark, { open: openBookmark, close: closeBookmark }] = useDisclosure(false);
-	const [printData, setPrintData] = useState(null);
+	const [ openedBookmark, { open: openBookmark, close: closeBookmark } ] = useDisclosure(false);
+	const [ printData, setPrintData ] = useState(null);
 	const emergencyData = useSelector((state) => state.crud.exemergency.data);
 	const treatmentData = useSelector((state) => state.crud.treatment.data);
-	const [openedDosageForm, { open: openDosageForm, close: closeDosageForm }] = useDisclosure(false);
-	const [openedExPrescription, { open: openExPrescription, close: closeExPrescription }] = useDisclosure(false);
-	const [openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview }] =
+	const [ openedDosageForm, { open: openDosageForm, close: closeDosageForm } ] = useDisclosure(false);
+	const [ openedExPrescription, { open: openExPrescription, close: closeExPrescription } ] = useDisclosure(false);
+	const [ openedPrescriptionPreview, { open: openPrescriptionPreview, close: closePrescriptionPreview } ] =
 		useDisclosure(false);
 	// =============== autocomplete state for emergency prescription ================
-	const [autocompleteValue, setAutocompleteValue] = useState("");
-	const [tempEmergencyItems, setTempEmergencyItems] = useState([]);
-	const [openedHistoryMedicine, { open: openHistoryMedicine, close: closeHistoryMedicine }] = useDisclosure(false);
-	const [openedDiseaseProfile, { toggle: toggleDiseaseProfile }] = useDisclosure(true);
-	const [showDiseaseProfile, setShowDiseaseProfile] = useState(false);
-	const [medicineGenericDebounce, setMedicineGenericDebounce] = useDebouncedState("", 300);
-	const [medicineGenericSearchValue, setMedicineGenericSearchValue] = useState("");
-	const [medicineMode, setMedicineMode] = useState("generic");
+	const [ autocompleteValue, setAutocompleteValue ] = useState("");
+	const [ tempEmergencyItems, setTempEmergencyItems ] = useState([]);
+	const [ openedHistoryMedicine, { open: openHistoryMedicine, close: closeHistoryMedicine } ] = useDisclosure(false);
+	const [ openedDiseaseProfile, { toggle: toggleDiseaseProfile } ] = useDisclosure(true);
+	const [ showDiseaseProfile, setShowDiseaseProfile ] = useState(false);
+	const [ medicineGenericDebounce, setMedicineGenericDebounce ] = useDebouncedState("", 300);
+	const [ medicineGenericSearchValue, setMedicineGenericSearchValue ] = useState("");
+	const [ medicineMode, setMedicineMode ] = useState("generic");
+	const [ resetDosageKey, setResetDosageKey ] = useState(0);
 	const { medicineGenericData: genericData } = useMedicineGenericData({
 		term: medicineGenericDebounce,
 		mode: medicineMode,
@@ -173,11 +174,11 @@ export default function Prescription({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
 	});
 
-	const [dbMedicines, setDbMedicines] = useState([]);
+	const [ dbMedicines, setDbMedicines ] = useState([]);
 
 	const sortedMedicines = useMemo(() => {
-		return [...(medicines || [])].sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0));
-	}, [medicines]);
+		return [ ...(medicines || []) ].sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0));
+	}, [ medicines ]);
 
 	useEffect(() => {
 		if (prescriptionData?.data) {
@@ -196,12 +197,12 @@ export default function Prescription({
 
 			// =============== sync medicines from prescription data ================
 			const prescriptionMedicines = prescriptionData?.data?.prescription_medicine || [];
-			const sortedPrescriptionMedicines = [...(prescriptionMedicines || [])].sort(
+			const sortedPrescriptionMedicines = [ ...(prescriptionMedicines || []) ].sort(
 				(a, b) => (a?.order ?? 0) - (b?.order ?? 0)
 			);
 			setDbMedicines(sortedPrescriptionMedicines);
 		}
-	}, [prescriptionData]);
+	}, [ prescriptionData ]);
 
 	const printDischargeA4 = useReactToPrint({
 		documentTitle: `discharge-${Date.now().toLocaleString()}`,
@@ -210,7 +211,7 @@ export default function Prescription({
 
 	useEffect(() => {
 		setMedicineGenericDebounce(medicineGenericSearchValue);
-	}, [medicineGenericSearchValue]);
+	}, [ medicineGenericSearchValue ]);
 
 	useEffect(() => {
 		dispatch(
@@ -235,7 +236,7 @@ export default function Prescription({
 	useEffect(() => {
 		if (!printData) return;
 		printDischargeA4();
-	}, [printData]);
+	}, [ printData ]);
 
 	const genericOptions = useMemo(
 		() =>
@@ -244,15 +245,15 @@ export default function Prescription({
 				label: item.name,
 				generic: item.generic,
 			})) ?? [],
-		[genericData]
+		[ genericData ]
 	);
 
 	const durationModeDropdown = medicineDuration?.modes
 		? medicineDuration?.modes.map((mode) => ({
-				value: mode.id?.toString(),
-				label: mode.name,
-				name_bn: mode.name_bn,
-		  }))
+			value: mode.id?.toString(),
+			label: mode.name,
+			name_bn: mode.name_bn,
+		}))
 		: [];
 
 	// =============== handler for adding autocomplete option to temporary list ================
@@ -267,7 +268,7 @@ export default function Prescription({
 					type: type,
 					isEditable: true,
 				};
-				setTempEmergencyItems((prev) => [...prev, newItem]);
+				setTempEmergencyItems((prev) => [ ...prev, newItem ]);
 			}
 		} else {
 			if (!value?.trim())
@@ -279,7 +280,7 @@ export default function Prescription({
 				type: type,
 				isEditable: true,
 			};
-			setTempEmergencyItems((prev) => [...prev, newItem]);
+			setTempEmergencyItems((prev) => [ ...prev, newItem ]);
 		}
 	};
 
@@ -302,7 +303,7 @@ export default function Prescription({
 
 		// add temporary items to form.values.exEmergency
 		const currentExEmergency = form.values.exEmergency || [];
-		const newExEmergency = [...currentExEmergency, ...tempEmergencyItems];
+		const newExEmergency = [ ...currentExEmergency, ...tempEmergencyItems ];
 
 		form.setFieldValue("exEmergency", newExEmergency);
 
@@ -335,7 +336,7 @@ export default function Prescription({
 					is_active: data?.is_active || 0,
 					id: data?.id,
 				};
-				setDbMedicines((prev) => [...prev, newMedicineData]);
+				setDbMedicines((prev) => [ ...prev, newMedicineData ]);
 			}
 		});
 	};
@@ -415,8 +416,8 @@ export default function Prescription({
 	const handleAdd = async (values) => {
 		// TODO: legacy code: must be removed later --- start
 		if (editIndex !== null) {
-			const updated = [...sortedMedicines];
-			updated[editIndex] = values;
+			const updated = [ ...sortedMedicines ];
+			updated[ editIndex ] = values;
 			setMedicines(updated);
 			setEditIndex(null);
 		} else {
@@ -425,12 +426,12 @@ export default function Prescription({
 					? Math.max(...sortedMedicines.map((med) => med.order ?? 0), sortedMedicines.length)
 					: 0;
 			const newMedicine = { ...values, order: maxOrder + 1 };
-			const updatedMedicines = [...sortedMedicines, newMedicine];
+			const updatedMedicines = [ ...sortedMedicines, newMedicine ];
 			setMedicines(updatedMedicines);
 			setUpdateKey((prev) => prev + 1);
 
 			medicineForm.reset();
-			setTimeout(() => document.getElementById("medicine_id").focus(), [100]);
+			setTimeout(() => document.getElementById("medicine_id").focus(), [ 100 ]);
 		}
 		setEditIndex(null);
 		// TODO: legacy code: must be removed later --- end
@@ -479,7 +480,7 @@ export default function Prescription({
 			showNotificationComponent(t("InsertSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			const updateNestedState = useAuthStore.getState()?.updateNestedState;
 			updateNestedState("hospitalConfig.localMedicines", resultAction.payload?.data?.data?.localMedicines);
-			setDbMedicines([...dbMedicines, newMedicineData]);
+			setDbMedicines([ ...dbMedicines, newMedicineData ]);
 			setMedicineGenericSearchValue("");
 		}
 	};
@@ -500,14 +501,14 @@ export default function Prescription({
 				// Use functional update to avoid stale closure issue
 				setDbMedicines((prevMedicines) => {
 					const filteredMedicines = prevMedicines.filter(
-						(medicine) => medicine.id.toString() !== id.toString()
+						(medicine) => medicine?.id?.toString() !== id?.toString()
 					);
 					return filteredMedicines;
 				});
 				showNotificationComponent(t("DeletedSuccessfully"), SUCCESS_NOTIFICATION_COLOR);
 			}
 		},
-		[dispatch, module, t]
+		[ dispatch, module, t ]
 	);
 	const handleReset = () => {
 		setMedicines([]);
@@ -540,7 +541,7 @@ export default function Prescription({
 				medicines,
 				advise: form.values.advise || "",
 				follow_up_date: form.values.follow_up_date || null,
-				prescription_date: new Date().toISOString().split("T")[0],
+				prescription_date: new Date().toISOString().split("T")[ 0 ],
 				created_by_id: createdBy?.id,
 				exEmergency: form.values.exEmergency || [],
 				instruction: form.values.instruction || "",
@@ -605,6 +606,8 @@ export default function Prescription({
 		return showDiseaseProfile ? 19 : 24;
 	};
 
+	console.log(medicineForm.values?.medicine_dosage_id);
+
 	return (
 		<Box className="borderRadiusAll" bg="var(--mantine-color-white)" pos="relative">
 			<LoadingOverlay
@@ -646,7 +649,7 @@ export default function Prescription({
 									px="sm"
 									py="xs"
 									style={{ cursor: "pointer" }}
-									// onClick={toggleDiseaseProfile}
+								// onClick={toggleDiseaseProfile}
 								>
 									<Text fz="md" c="white">
 										{t("DiseaseProfile")}
@@ -800,7 +803,7 @@ export default function Prescription({
 														}
 													/>
 												</Grid.Col>
-												<Grid.Col span={19}>
+												<Grid.Col span={21}>
 													<FormValidatorWrapper opened={medicineForm.errors.generic_id}>
 														<Select
 															searchable
@@ -828,42 +831,53 @@ export default function Prescription({
 															error={!!medicineForm.errors.generic_id}
 															w="100%"
 															comboboxProps={{ withinPortal: false }}
+															rightSection={
+																<Flex align="center" gap="les" w="100%" pt="es" pr="3px" justify="flex-end">
+																	{medicineForm.values?.generic_id && <IconX color="var(--theme-error-color)" className="cursor-pointer" size={16} onClick={() => {
+																		medicineForm.setFieldValue("generic_id", null);
+																		medicineForm.setFieldValue("generic", null);
+																	}} />}
+																	<AddGenericPopover
+																		dbMedicines={dbMedicines}
+																		setDbMedicines={setDbMedicines}
+																		prescription_id={prescriptionData?.data?.prescription_uid}
+																	/>
+																</Flex>
+															}
+															rightSectionWidth={60}
 														/>
 													</FormValidatorWrapper>
-												</Grid.Col>
-												<Grid.Col span={2} mt={'4'}>
-													<AddGenericPopover
-														dbMedicines={dbMedicines}
-														setDbMedicines={setDbMedicines}
-														prescription_id={
-															prescriptionData?.data?.prescription_uid
-														}
-													/>
 												</Grid.Col>
 											</Grid>
 										</Grid.Col>
 									</Grid>
 									<Grid w="100%" columns={12} gutter="3xs">
 										<Grid.Col span={6}>
-											<Grid w="100%" columns={24} gutter="3xs">
-												<Grid.Col span={22}>
-													<SelectForm
-														form={medicineForm}
-														id="medicine_dosage_id"
-														name="medicine_dosage_id"
-														dropdownValue={dosage_options?.map((dosage) => ({
-															value: dosage.id?.toString(),
-															label: dosage.name,
-														}))}
-														value={medicineForm.values.medicine_dosage_id}
-														placeholder={t("Dosage")}
-														required
-														tooltip={t("EnterDosage")}
-														withCheckIcon={false}
-													/>
-												</Grid.Col>
-												<Grid.Col span={2} mt={'4'}><AddDosagePopover form={medicineForm} /></Grid.Col>
-											</Grid>
+											<SelectForm
+												form={medicineForm}
+												id="medicine_dosage_id"
+												name="medicine_dosage_id"
+												dropdownValue={dosage_options?.map((dosage) => ({
+													value: dosage.id?.toString(),
+													label: dosage.name,
+												}))}
+												value={medicineForm.values.medicine_dosage_id}
+												placeholder={t("Dosage")}
+												required
+												tooltip={t("EnterDosage")}
+												withCheckIcon={false}
+												rightSection={
+													<Flex align="center" gap="les" w="100%" pt="es" pr="3px" justify="flex-end">
+														{medicineForm.values?.medicine_dosage_id && <IconX color="var(--theme-error-color)" className="cursor-pointer" size={16} onClick={() => {
+															medicineForm.setFieldValue("medicine_dosage_id", null);
+															setResetDosageKey((prev) => prev + 1);
+														}} />}
+														<AddDosagePopover form={medicineForm} />
+													</Flex>
+												}
+												rightSectionWidth={60}
+												key={resetDosageKey}
+											/>
 										</Grid.Col>
 										<Grid.Col span={4}>
 											<Group grow gap="les">

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, Button, Group, Select, Autocomplete, rem, ActionIcon, Grid } from "@mantine/core";
+import { Box, Button, Group, Select, Autocomplete, rem, ActionIcon, Grid, Flex } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconAlertCircle, IconPlus, IconTrashX } from "@tabler/icons-react";
+import { IconAlertCircle, IconPlus, IconTrashX, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { getTreatmentMedicineInitialValues } from "../core/treatmentTemplates/helpers/request";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -44,20 +44,20 @@ export default function OpdTreatmentAddMedicineForm({ medicines, module, setMedi
 		localMedicines: medicineGenericData,
 	} = useAppLocalStore();
 
-	const [updateKey, setUpdateKey] = useState(0);
+	const [ updateKey, setUpdateKey ] = useState(0);
 	const { t } = useTranslation();
-	const [medicineTerm, setMedicineTerm] = useDebouncedState("", 300);
-	const [medicineGenericTerm, setMedicineGenericTerm] = useDebouncedState("", 300);
+	const [ medicineTerm, setMedicineTerm ] = useDebouncedState("", 300);
+	const [ medicineGenericTerm, setMedicineGenericTerm ] = useDebouncedState("", 300);
 	// const { medicineData } = useMedicineData({ term: medicineTerm });
 	// const { medicineGenericData } = useMedicineGenericData({ term: medicineGenericTerm });
 	const medicineForm = useForm(getTreatmentMedicineInitialValues());
-	const [editIndex, setEditIndex] = useState(null);
+	const [ editIndex, setEditIndex ] = useState(null);
 	const { mainAreaHeight } = useOutletContext();
 	const { treatmentId } = useParams();
 	const dispatch = useDispatch();
-	const [medicineByMealSearchValue, setMedicineByMealSearchValue] = useState("");
-	const [medicineDosageSearchValue, setMedicineDosageSearchValue] = useState("");
-	const [durationModeKey, setDurationModeKey] = useState(0);
+	const [ medicineByMealSearchValue, setMedicineByMealSearchValue ] = useState("");
+	const [ medicineDosageSearchValue, setMedicineDosageSearchValue ] = useState("");
+	const [ durationModeKey, setDurationModeKey ] = useState(0);
 	const genericRef = useRef(null);
 
 	const {
@@ -73,14 +73,14 @@ export default function OpdTreatmentAddMedicineForm({ medicines, module, setMedi
 		if (medicineTerm.length === 0) {
 			medicineForm.setFieldValue("medicine_id", "");
 		}
-	}, [medicineTerm]);
+	}, [ medicineTerm ]);
 
 	const durationModeDropdown = features?.medicineDuration?.modes
 		? features?.medicineDuration?.modes.map((mode) => ({
-				value: mode.id?.toString(),
-				label: mode.name,
-				name_bn: mode.name_bn,
-		  }))
+			value: mode.id?.toString(),
+			label: mode.name,
+			name_bn: mode.name_bn,
+		}))
 		: [];
 
 	// Add hotkey for save functionality
@@ -134,7 +134,7 @@ export default function OpdTreatmentAddMedicineForm({ medicines, module, setMedi
 
 		handleConfirmModal(values);
 
-		setMedicines([...medicines, values]);
+		setMedicines([ ...medicines, values ]);
 
 		setUpdateKey((prev) => prev + 1);
 		medicineForm.reset();
@@ -154,7 +154,7 @@ export default function OpdTreatmentAddMedicineForm({ medicines, module, setMedi
 				if (fieldErrors) {
 					const errorObject = {};
 					Object.keys(fieldErrors).forEach((key) => {
-						errorObject[key] = fieldErrors[key][0];
+						errorObject[ key ] = fieldErrors[ key ][ 0 ];
 					});
 					medicineForm.setErrors(errorObject);
 				}
@@ -290,7 +290,13 @@ export default function OpdTreatmentAddMedicineForm({ medicines, module, setMedi
 										tooltip={t("EnterDosage")}
 										onChange={(v) => handleChange("medicine_dosage_id", v)}
 										error={!!medicineForm.errors.medicine_dosage_id}
-										rightSection={<AddDosagePopover form={medicineForm} />}
+										rightSection={
+											<Flex align="center" gap="les" w="100%" pt="es" pr="3px" justify="flex-end">
+												{medicineForm.values?.medicine_dosage_id && <IconX color="var(--theme-error-color)" className="cursor-pointer" size={16} onClick={() => medicineForm.setFieldValue("medicine_dosage_id", null)} />}
+												<AddDosagePopover form={medicineForm} />
+											</Flex>
+										}
+										rightSectionWidth={60}
 									/>
 								</FormValidatorWrapper>
 
