@@ -21,17 +21,23 @@ import { IconCheck, IconX } from "@tabler/icons-react";
 
 const module = MODULES.LAB_TEST;
 
+const xdr = [
+	{ label: "Detected", value: "Detected" },
+	{ label: "Not detected", value: "Not detected" },
+];
+
 const notions = [
 	{ label: "R", value: "R" },
 	{ label: "S", value: "S" },
-	{ label: "C", value: "C" },
-	{ label: "IN", value: "IN" },
-	{ label: "NA", value: "NA" },
 ];
 
 // drug columns configuration - split into two rows
-const drugColumnsRow1 = [
+
+const drugColumnsRow1XDR = [
 	{ key: "dst_mtb", label: "MTB" },
+];
+
+const drugColumnsRow1 = [
 	{ key: "dst_inh", label: "INH" },
 	{ key: "dst_rif", label: "RIF" },
 	{ key: "dst_flq", label: "FLQ" },
@@ -70,6 +76,9 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 			test_id: custom_report?.test_id || '',
 			test_date: custom_report?.test_date
 				? new Date(custom_report.test_date)
+				: null,
+			date_specimen_received: custom_report?.date_specimen_received
+				? new Date(custom_report.date_specimen_received)
 				: null,
 			is_dst_genexpert: custom_report?.is_dst_genexpert || false,
 			dst_method: custom_report?.dst_method || "",
@@ -111,6 +120,7 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 					json_content: {
 						...values,
 						test_date: formatDateForMySQL(values.test_date),
+						date_specimen_received: formatDateForMySQL(values.date_specimen_received),
 					},
 					comment: values.comment,
 				},
@@ -150,6 +160,7 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 		}
 	}, [ custom_report ]);
 
+
 	return (
 		<Box className="border-top-none" px="sm" mt="xs">
 			<ScrollArea h={mainAreaHeight - 260} scrollbarSize={2} scrollbars="y">
@@ -165,7 +176,14 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 							placeholder="Select date"
 						/>
 
-						{/* =============== reference laboratory specimen id =============== */}
+						<DatePickerForm
+							name="date_specimen_received"
+							id="date_specimen_received"
+							nextField="comment"
+							form={form}
+							label="Receive Date"
+							placeholder="Select receive date"
+						/>
 						<InputNumberForm
 							name="test_id"
 							id="test_id"
@@ -273,6 +291,7 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 					{/* =============== notation legend =============== */}
 
 						{form.values.is_dst_genexpert && <>
+
 							<Box my="md">
 								<Text size="sm" fw={500} mb="xs">
 									Method Used:
@@ -280,39 +299,6 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 								<Radio.Group
 									value={form.values?.dst_method}
 									onChange={(value) => form.setFieldValue("dst_method", value)}
-									style={{ width: "100%" }}
-								>
-									<Table withColumnBorders withTableBorder w="100%">
-										<Table.Tr>
-											<Table.Th>
-												<Radio value="lj" label="Proportion method (LJ)" />
-											</Table.Th>
-											<Table.Th>
-												<Radio value="mgit" label="Liquid (MGIT)" />
-											</Table.Th>
-											<Table.Th>
-												<Radio value="lpa" label="Line Probe Assay (LPA)" />
-											</Table.Th>
-											<Table.Th>
-												<Radio value="xdr" label="Xpert XDR" />
-											</Table.Th>
-										</Table.Tr>
-									</Table>
-								</Radio.Group>
-							</Box>
-							<Box my="xs">
-								<Text size="sm" fw={500}>
-									Notation: (R= Resistance Detected; S= Resistance Not Detected; C= Contaminated; IN=
-									Indeterminate/Non-interpretable; NA= Not Done)
-								</Text>
-							</Box>
-							<Box my="md">
-								<Text size="sm" fw={500} mb="xs">
-									Method Used:
-								</Text>
-								<Radio.Group
-									value={form.values?.dts_method}
-									onChange={(value) => form.setFieldValue("dts_method", value)}
 									style={{ width: "100%" }}
 								>
 									<Table withColumnBorders withTableBorder w="100%">
@@ -345,6 +331,24 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 									<Table.Tbody>
 										{/* Row 1: Headings and Selects for row1 */}
 										<Table.Tr>
+											{drugColumnsRow1XDR.map((drug) => (
+												<Table.Td key={drug.key} ta="center">
+													<Text fw={600} size="sm" mb="xs">
+														{drug.label}
+													</Text>
+													<SelectForm
+														name={drug.key}
+														id={drug.key}
+														form={form}
+														dropdownValue={xdr}
+														placeholder="Select"
+														clearable={true}
+														allowDeselect={true}
+														searchable={false}
+														withCheckIcon={false}
+													/>
+												</Table.Td>
+											))}
 											{drugColumnsRow1.map((drug) => (
 												<Table.Td key={drug.key} ta="center">
 													<Text fw={600} size="sm" mb="xs">

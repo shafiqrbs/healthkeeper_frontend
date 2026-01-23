@@ -236,12 +236,20 @@ const LabReportA4BN = forwardRef(({ data, preview = false }, ref) => {
 													<Table.Tr
 														style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
 													>
-														<Table.Td>
-															<strong>Name of Examination: </strong> {report?.name}
-														</Table.Td>
-														<Table.Td ta={"right"}>
-															<strong>Sample Type: </strong>
-															{reportData?.sample_type}
+														<Table.Td colSpan={2}>
+																<Box>
+																<Grid columns={12}>
+																	<Grid.Col span={8}>
+																		<strong>Name of Examination: </strong> {report?.name}
+																	</Grid.Col>
+																	<Grid.Col span={4}>
+																		<Text ta={'right'}>
+																			<strong>Sample Type: </strong>
+																			{reportData?.sample_type}
+																		</Text>
+																	</Grid.Col>
+																</Grid>
+															</Box>
 														</Table.Td>
 													</Table.Tr>
 												) : (

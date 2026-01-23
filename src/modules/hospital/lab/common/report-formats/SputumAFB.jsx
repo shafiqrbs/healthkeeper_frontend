@@ -34,6 +34,9 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 			test_date: custom_report?.test_date
 				? new Date(custom_report.test_date)
 				: null,
+			date_specimen_received: custom_report?.date_specimen_received
+				? new Date(custom_report.date_specimen_received)
+				: null,
 			afb_found: custom_report?.afb_found || "",
 			afb_not_found: custom_report?.afb_not_found || "",
 			afb_scanty: custom_report?.afb_scanty || "",
@@ -70,6 +73,7 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 					json_content: {
 						...values,
 						test_date: formatDateForMySQL(values.test_date),
+						date_specimen_received: formatDateForMySQL(values.date_specimen_received),
 					},
 					comment: values.comment,
 				},
@@ -113,6 +117,14 @@ export default function SputumAFB({ diagnosticReport, refetchDiagnosticReport, r
 							form={form}
 							label="Test Date"
 							placeholder="Select date"
+						/>
+						<DatePickerForm
+							name="date_specimen_received"
+							id="date_specimen_received"
+							nextField="comment"
+							form={form}
+							label="Receive Date"
+							placeholder="Select receive date"
 						/>
 						{/* =============== reference laboratory specimen id =============== */}
 						<InputNumberForm

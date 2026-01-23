@@ -14,22 +14,12 @@ const GeneXpert = forwardRef(({reportData,report}) => {
 	};
 
 	const { mainAreaHeight } = useOutletContext();
+	const mt = reportData?.is_dst_genexpert == 1 ? 48 : 48;
+	const boxHeight = reportData?.is_dst_genexpert == 1 ? 620 : 450;
 	return (
 		<>
-			<Box h={650}>
-				<Box mb='md' pt={'xs'} >
-					<Grid columns={12}>
-						<Grid.Col span={4}>
-							<strong>Test Date: </strong>{formatDate(reportData?.test_date)}
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<strong>Sample ID: </strong>{reportData?.sample_id}
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<strong>Lab Test ID: </strong>{reportData?.test_id}
-						</Grid.Col>
-					</Grid>
-				</Box>
+			<Box h={boxHeight} mt={mt}>
+
 				<Box mb="md"  fz={'md'} >
 					<Table
 						withColumnBorders
@@ -42,6 +32,26 @@ const GeneXpert = forwardRef(({reportData,report}) => {
 							width: "100%",
 							border: "1px solid var(--theme-tertiary-color-8)",
 						}}  w="100%">
+						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+							<Table.Td colSpan={6} style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Box>
+									<Grid columns={12}>
+										<Grid.Col span={3}>
+											<strong>Test: </strong>{formatDate(reportData?.test_date)}
+										</Grid.Col>
+										<Grid.Col span={3}>
+											<strong>Receive: </strong>{formatDate(reportData?.date_specimen_received)}
+										</Grid.Col>
+										<Grid.Col span={3}>
+											<strong>Sample ID: </strong>{reportData?.sample_id}
+										</Grid.Col>
+										<Grid.Col span={3}>
+											<strong>Lab Test ID: </strong>{reportData?.test_id}
+										</Grid.Col>
+									</Grid>
+								</Box>
+							</Table.Td>
+						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Text>T = MTB Detected, Rif Resistance not Detected</Text>
@@ -68,33 +78,33 @@ const GeneXpert = forwardRef(({reportData,report}) => {
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								{reportData?.gene_xpert_value === "not_detected" && (
-									<Box ta={'center'}><IconCheck size="80px" color={'red'} /></Box>
+									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								{reportData?.gene_xpert_value === "detected" && (
-									<Box ta={'center'}><IconCheck size="80px" color={'red'} /></Box>
+									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>
 
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								{reportData?.gene_xpert_value === "indeterminate" && (
-									<Box ta={'center'}><IconCheck size="80px" color={'red'} /></Box>
+									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								{reportData?.gene_xpert_value === "trace_detected" && (
-									<Box ta={'center'}><IconCheck size="80px" color={'red'} /></Box>
+									<Box ta={'center'}><IconCheck size="60px" color={'red'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								{reportData?.gene_xpert_value === "mtb_not_detected" && (
-									<Box ta={'center'}><IconCheck size="80px" color={'green'} /></Box>
+									<Box ta={'center'}><IconCheck size="60px" color={'green'} /></Box>
 								)}
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								{reportData?.gene_xpert_value === "invalid" && (
-									<Box ta={'center'}><IconCheck size="80px" color={'green'} /></Box>
+									<Box ta={'center'}><IconCheck size="60px" color={'green'} /></Box>
 								)}
 							</Table.Th>
 						</Table.Tr>
@@ -227,52 +237,52 @@ const GeneXpert = forwardRef(({reportData,report}) => {
 						</Table.Tr>
 						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_mtb}</Text>
+								<Text c={reportData?.dst_mtb === 'detected' ? 'red.6' : 'green.6'} >{reportData?.dst_mtb}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_inh}</Text>
+								<Text ta="center" c={reportData?.dst_inh === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_inh}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_rif}</Text>
+								<Text ta="center" c={reportData?.dst_rif === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_rif}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_flq}</Text>
+								<Text ta="center" c={reportData?.dst_flq === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_flq}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_lfx}</Text>
+								<Text ta="center" c={reportData?.dst_lfx === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_lfx}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_mfx}</Text>
+								<Text ta="center" c={reportData?.dst_mfx === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_mfx}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_eth}</Text>
+								<Text ta="center" c={reportData?.dst_eth === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_eth}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_bdq}</Text>
+								<Text ta="center" c={reportData?.dst_bdq === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_bdq}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_dlm}</Text>
+								<Text ta="center" c={reportData?.dst_dlm === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_dlm}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_pa}</Text>
+								<Text ta="center" c={reportData?.dst_pa === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_pa}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_lzd}</Text>
+								<Text ta="center" c={reportData?.dst_lzd === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_lzd}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_cfz}</Text>
+								<Text ta="center" c={reportData?.dst_cfz === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_cfz}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_amk}</Text>
+								<Text ta="center" c={reportData?.dst_amk === 'R' ? 'red.6' : 'green.6'} >{reportData?.dst_amk}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_kan}</Text>
+								<Text ta="center" c={reportData?.dst_kan === 'R' ? 'red.6' : 'green.6'}>{reportData?.dst_kan}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_cap}</Text>
+								<Text ta="center" c={reportData?.dst_cap === 'R' ? 'red.6' : 'green.6'}>{reportData?.dst_cap}</Text>
 							</Table.Th>
 							<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Text>{reportData?.dst_others}</Text>
+								<Text ta="center" c={reportData?.dst_others === 'R' ? 'red.6' : 'green.6'}>{reportData?.dst_others}</Text>
 							</Table.Th>
 						</Table.Tr>
 					</Table>

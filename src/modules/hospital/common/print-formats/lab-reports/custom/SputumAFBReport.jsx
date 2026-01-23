@@ -1,5 +1,5 @@
 import { Box, Text, Grid, Table } from "@mantine/core";
-import { forwardRef } from "react";
+import React, { forwardRef } from "react";
 import "@/index.css";
 import { t } from "i18next";
 import { formatDate } from "@utils/index";
@@ -8,7 +8,7 @@ import { IconCheck } from "@tabler/icons-react";
 const SputumAFBReport = forwardRef(({ reportData, report }, ref) => {
 	return (
 		<>
-			<Box h={500}>
+			<Box h={500} mt={'80'}>
 				<style>
 					{`@media print {
 					#prescription-table table { border-collapse: collapse !important; }
@@ -20,87 +20,93 @@ const SputumAFBReport = forwardRef(({ reportData, report }, ref) => {
 				}`}
 				</style>
 				<Box id="prescription-table" mb="md" pt={'xs'} fz={'md'}>
-					<Box mb='md'>
-						<Grid columns={12}>
-							<Grid.Col span={4}>
-								<strong>Test Date: </strong>{formatDate(reportData?.test_date)}
-							</Grid.Col>
-							<Grid.Col span={4}>
-								<strong>Sample ID: </strong>{reportData?.sample_id}
-							</Grid.Col>
-							<Grid.Col span={4}>
-								<strong>Lab Test ID: </strong>{reportData?.test_id}
-							</Grid.Col>
-						</Grid>
-					</Box>
+
 					<Table style={{
 						borderCollapse: "collapse",
 						width: "100%",
 					}} className="customTable">
-						<Table.Thead>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Th ta="center" />
-								<Table.Th ta="center">NO AFB FOUND</Table.Th>
-								<Table.Th ta="center">SCANTY</Table.Th>
-								<Table.Th ta="center">1+</Table.Th>
-								<Table.Th ta="center">2+</Table.Th>
-								<Table.Th ta="center">3+</Table.Th>
-							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Th ta="center">Sample 1</Table.Th>
-								{/*<Table.Th ta="center">
+						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+							<Table.Td colSpan={6} style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Box>
+									<Grid columns={12}>
+										<Grid.Col span={3}>
+											<strong>Test: </strong>{formatDate(reportData?.test_date)}
+										</Grid.Col>
+										<Grid.Col span={3}>
+											<strong>Receive: </strong>{formatDate(reportData?.date_specimen_received)}
+										</Grid.Col>
+										<Grid.Col span={3}>
+											<strong>Sample ID: </strong>{reportData?.sample_id}
+										</Grid.Col>
+										<Grid.Col span={3}>
+											<strong>Lab Test ID: </strong>{reportData?.test_id}
+										</Grid.Col>
+									</Grid>
+								</Box>
+							</Table.Td>
+						</Table.Tr>
+						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+							<Table.Th ta="center" />
+							<Table.Th ta="center">NO AFB FOUND</Table.Th>
+							<Table.Th ta="center">SCANTY</Table.Th>
+							<Table.Th ta="center">1+</Table.Th>
+							<Table.Th ta="center">2+</Table.Th>
+							<Table.Th ta="center">3+</Table.Th>
+						</Table.Tr>
+						<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+							<Table.Th ta="center">Sample 1</Table.Th>
+							{/*<Table.Th ta="center">
 								{reportData?.afb_found}
 							</Table.Th>*/}
-								<Table.Th ta="center">
-									<Text style={{ color: "green" }}><strong>{reportData?.afb_not_found}</strong></Text>
-								</Table.Th>
-								<Table.Th ta="center" >
-									<Text style={{ color: "red" }}><strong>{reportData?.afb_scanty}</strong></Text>
-								</Table.Th>
-								<Table.Th ta="center">
-									{(reportData?.afb_scanty_one === true || reportData?.afb_scanty_one === 1) && (
-										<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
-									)}
-								</Table.Th>
-								<Table.Th ta="center">
-									{(reportData?.afb_scanty_two === true || reportData?.afb_scanty_two === 1) && (
-										<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
-									)}
-								</Table.Th>
-								<Table.Th ta="center">
-									{(reportData?.afb_scanty_three === true || reportData?.afb_scanty_three === 1) && (
-										<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
-									)}
-								</Table.Th>
-							</Table.Tr>
-							<Table.Tr>
-								<Table.Th ta="center">Sample 2</Table.Th>
-								{/*<Table.Th ta="center">
+							<Table.Th ta="center">
+								<Text style={{ color: "green" }}><strong>{reportData?.afb_not_found}</strong></Text>
+							</Table.Th>
+							<Table.Th ta="center" >
+								<Text style={{ color: "red" }}><strong>{reportData?.afb_scanty}</strong></Text>
+							</Table.Th>
+							<Table.Th ta="center">
+								{(reportData?.afb_scanty_one === true || reportData?.afb_scanty_one === 1) && (
+									<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
+								)}
+							</Table.Th>
+							<Table.Th ta="center">
+								{(reportData?.afb_scanty_two === true || reportData?.afb_scanty_two === 1) && (
+									<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
+								)}
+							</Table.Th>
+							<Table.Th ta="center">
+								{(reportData?.afb_scanty_three === true || reportData?.afb_scanty_three === 1) && (
+									<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
+								)}
+							</Table.Th>
+						</Table.Tr>
+						<Table.Tr>
+							<Table.Th ta="center">Sample 2</Table.Th>
+							{/*<Table.Th ta="center">
 								{reportData?.afb_sample_found}
 							</Table.Th>*/}
-								<Table.Th ta="center">
-									<Text style={{ color: "green" }}><strong>{reportData?.afb_sample_not_found}</strong></Text>
-								</Table.Th>
-								<Table.Th ta="center">
-									<Text style={{ color: "red" }}><strong>{reportData?.afb_sample_scanty}</strong></Text>
-								</Table.Th>
-								<Table.Th ta="center">
-									{(reportData?.afb_sample_scanty_one === true || reportData?.afb_sample_scanty_one === 1) && (
-										<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
-									)}
-								</Table.Th>
-								<Table.Th ta="center">
-									{(reportData?.afb_sample_scanty_two === true || reportData?.afb_sample_scanty_two === 1) && (
-										<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
-									)}
-								</Table.Th>
-								<Table.Th ta="center">
-									{(reportData?.afb_sample_scanty_three === true || reportData?.afb_sample_scanty_three === 1) && (
-										<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
-									)}
-								</Table.Th>
-							</Table.Tr>
-						</Table.Thead>
+							<Table.Th ta="center">
+								<Text style={{ color: "green" }}><strong>{reportData?.afb_sample_not_found}</strong></Text>
+							</Table.Th>
+							<Table.Th ta="center">
+								<Text style={{ color: "red" }}><strong>{reportData?.afb_sample_scanty}</strong></Text>
+							</Table.Th>
+							<Table.Th ta="center">
+								{(reportData?.afb_sample_scanty_one === true || reportData?.afb_sample_scanty_one === 1) && (
+									<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
+								)}
+							</Table.Th>
+							<Table.Th ta="center">
+								{(reportData?.afb_sample_scanty_two === true || reportData?.afb_sample_scanty_two === 1) && (
+									<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
+								)}
+							</Table.Th>
+							<Table.Th ta="center">
+								{(reportData?.afb_sample_scanty_three === true || reportData?.afb_sample_scanty_three === 1) && (
+									<Box ta={'center'}><IconCheck size="42px" color={'red'} /></Box>
+								)}
+							</Table.Th>
+						</Table.Tr>
 					</Table>
 				</Box>
 				{/* =============== Doctor Information and Signature ================ */}

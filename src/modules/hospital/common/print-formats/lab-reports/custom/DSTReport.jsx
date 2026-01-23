@@ -16,25 +16,9 @@ const DSTReport = forwardRef(({reportData,report}) => {
 	const { mainAreaHeight } = useOutletContext();
 	return (
 		<>
-			<Box h={500}>
-				<Box mb='md' pt={'xs'} >
-					<Grid columns={12}>
-						<Grid.Col span={4}>
-							<strong>Test Date: </strong>{formatDate(reportData?.test_date)}
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<strong>Sample ID: </strong>{reportData?.sample_id}
-						</Grid.Col>
-						<Grid.Col span={4}>
-							<strong>Lab Test ID: </strong>{reportData?.test_id}
-						</Grid.Col>
-					</Grid>
-				</Box>
+			<Box h={500} mt={'80'}>
 				<Box mb="md"  fz={'md'} >
 					<Box my="md">
-						<Text size="sm" fw={500} mb="xs">
-							<strong>Method Used:</strong>
-						</Text>
 						<Table
 							withColumnBorders
 							verticalSpacing={6}
@@ -46,6 +30,35 @@ const DSTReport = forwardRef(({reportData,report}) => {
 								width: "100%",
 								border: "1px solid var(--theme-tertiary-color-8)",
 							}}  w="100%">
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colSpan={4} style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Box>
+										<Grid columns={12}>
+											<Grid.Col span={3}>
+												<strong>Test: </strong>{formatDate(reportData?.test_date)}
+											</Grid.Col>
+											<Grid.Col span={3}>
+												<strong>Receive: </strong>{formatDate(reportData?.date_specimen_received)}
+											</Grid.Col>
+											<Grid.Col span={3}>
+												<strong>Sample ID: </strong>{reportData?.sample_id}
+											</Grid.Col>
+											<Grid.Col span={3}>
+												<strong>Lab Test ID: </strong>{reportData?.test_id}
+											</Grid.Col>
+										</Grid>
+									</Box>
+								</Table.Td>
+							</Table.Tr>
+							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+								<Table.Td colSpan={4} style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
+									<Box>
+										<Text size="md" fw={500}>
+											<strong>Method Used:</strong>
+										</Text>
+									</Box>
+								</Table.Td>
+							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									Proportion method (LJ)

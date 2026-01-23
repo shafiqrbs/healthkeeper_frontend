@@ -294,7 +294,8 @@ export default function _Table({ module }) {
 											</Button>
 										)}
 									{(values.process?.toLowerCase() === "revised" ||
-										values?.process.toLowerCase() === "confirmed") && (
+										values?.process.toLowerCase() === "confirmed" ||
+										values?.process.toLowerCase() === "billing") && (
 										<Button
 											variant="filled"
 											bg="teal.8"
@@ -347,7 +348,8 @@ export default function _Table({ module }) {
 													{t("Prescription")}
 												</Menu.Item>
 											)}
-
+											{(values.process?.toLowerCase() === "paid" ||
+												values?.process.toLowerCase() === "discharged") && (
 											<Menu.Item
 												leftSection={
 													<IconPrinter
@@ -364,6 +366,9 @@ export default function _Table({ module }) {
 											>
 												{t("BillingInvoice")}
 											</Menu.Item>
+											)}
+											{(values.process?.toLowerCase() === "billing" ||
+												values?.process.toLowerCase() === "admitted") && (
 											<Menu.Item
 												leftSection={
 													<IconFileText
@@ -380,6 +385,7 @@ export default function _Table({ module }) {
 											>
 												{t("AdmissionForm")}
 											</Menu.Item>
+											)}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>

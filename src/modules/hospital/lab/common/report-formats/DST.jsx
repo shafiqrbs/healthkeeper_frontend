@@ -67,6 +67,9 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 			test_date: custom_report?.test_date
 				? new Date(custom_report.test_date)
 				: null,
+			date_specimen_received: custom_report?.date_specimen_received
+				? new Date(custom_report.date_specimen_received)
+				: null,
 			id: diagnosticReport?.particular?.id || 0,
 			sample_type: custom_report?.sample_type || "",
 			lab_no: custom_report?.lab_no || "",
@@ -111,6 +114,7 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 					json_content: {
 						...values,
 						test_date: formatDateForMySQL(values.test_date),
+						date_specimen_received: formatDateForMySQL(values.date_specimen_received),
 					},
 					comment: values.comment,
 				},
@@ -154,6 +158,14 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 							form={form}
 							label="Test Date"
 							placeholder="Select date"
+						/>
+						<DatePickerForm
+							name="date_specimen_received"
+							id="date_specimen_received"
+							nextField="comment"
+							form={form}
+							label="Receive Date"
+							placeholder="Select receive date"
 						/>
 
 						{/* =============== reference laboratory specimen id =============== */}
