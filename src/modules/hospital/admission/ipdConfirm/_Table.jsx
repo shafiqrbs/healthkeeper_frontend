@@ -169,7 +169,6 @@ export default function _Table({ module }) {
 		canceled: "gray",
 		closed: "purple"
 	};
-
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)" style={{ borderRadius: "4px" }}>
 			<Flex justify="space-between" align="center" px="sm">
@@ -273,124 +272,118 @@ export default function _Table({ module }) {
 							title: t("Action"),
 							textAlign: "right",
 							titleClassName: "title-right",
-							render: (values) => (
-								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
-									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-										((values.process?.toLowerCase() === "ipd" &&
-											values?.referred_mode === "admission") ||
-											(values.process?.toLowerCase() === "closed" &&
-												values?.referred_mode === "admission")) && (
+							render: (values) => {
+								const process = values?.process?.toLowerCase() || "";
+								const isAdmission = values?.referred_mode === "admission";
+
+								const canConfirm =
+									userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+									isAdmission &&
+									["ipd", "closed"].includes(process);
+
+								const canManage = ["revised", "confirmed", "billing"].includes(process);
+								const canPrintBilling = ["paid", "discharged"].includes(process);
+								const canPrintAdmission = ["billing", "admitted"].includes(process);
+
+								return (
+									<Group
+										onClick={(e) => e.stopPropagation()}
+										gap={4}
+										justify="right"
+										wrap="nowrap"
+									>
+										{canConfirm && (
 											<Button
 												variant="filled"
 												bg="var(--theme-primary-color-6)"
 												c="white"
 												size="compact-xs"
-												onClick={() => handleConfirm(values.uid || values.id)}
-												radius="es"
+												onClick={() => handleConfirm(values.uid ?? values.id)}
+												radius="xs"
 												fw={400}
 												rightSection={<IconArrowRight size={18} />}
 											>
 												{t("Confirm")}
 											</Button>
 										)}
-									{(values.process?.toLowerCase() === "revised" ||
-										values?.process.toLowerCase() === "confirmed" ||
-										values?.process.toLowerCase() === "billing") && (
-										<Button
-											variant="filled"
-											bg="teal.8"
-											c="var(--mantine-color-white)"
-											size="compact-xs"
-											onClick={() => handleManage(values.uid || values.id)}
-											radius="es"
-											fw={400}
-											rightSection={<IconAdjustments size={18} />}
-										>
-											{t("Manage")}
-										</Button>
-									)}
 
-									<Menu
-										position="bottom-end"
-										offset={3}
-										withArrow
-										trigger="hover"
-										openDelay={100}
-										closeDelay={400}
-									>
-										<Menu.Target>
-											<ActionIcon
-												className="border-left-radius-none"
-												variant="transparent"
-												color="var(--theme-menu-three-dot)"
-												radius="es"
-												aria-label="Actions"
+										{canManage && (
+											<Button
+												variant="filled"
+												bg="teal.8"
+												c="white"
+												size="compact-xs"
+												onClick={() => handleManage(values.uid ?? values.id)}
+												radius="xs"
+												fw={400}
+												rightSection={<IconAdjustments size={18} />}
 											>
-												<IconDotsVertical height={18} width={18} stroke={1.5} />
-											</ActionIcon>
-										</Menu.Target>
-										<Menu.Dropdown>
-											{values?.prescription_id && (
-												<Menu.Item
-													leftSection={
-														<IconPrinter
-															style={{
-																width: rem(14),
-																height: rem(14),
-															}}
-														/>
-													}
-													onClick={(e) => {
-														e.stopPropagation();
-														handlePrescriptionPrint(values?.prescription_id);
-													}}
+												{t("Manage")}
+											</Button>
+										)}
+
+										<Menu
+											position="bottom-end"
+											offset={3}
+											withArrow
+											trigger="hover"
+											openDelay={100}
+											closeDelay={400}
+										>
+											<Menu.Target>
+												<ActionIcon
+													variant="transparent"
+													color="var(--theme-menu-three-dot)"
+													radius="xs"
+													aria-label="Actions"
 												>
-													{t("Prescription")}
-												</Menu.Item>
-											)}
-											{(values.process?.toLowerCase() === "paid" ||
-												values?.process.toLowerCase() === "discharged") && (
-											<Menu.Item
-												leftSection={
-													<IconPrinter
-														style={{
-															width: rem(14),
-															height: rem(14),
+													<IconDotsVertical size={18} stroke={1.5} />
+												</ActionIcon>
+											</Menu.Target>
+
+											<Menu.Dropdown>
+												{values?.prescription_id && (
+													<Menu.Item
+														leftSection={<IconPrinter size={14} />}
+														onClick={(e) => {
+															e.stopPropagation();
+															handlePrescriptionPrint(values.prescription_id);
 														}}
-													/>
-												}
-												onClick={(e) => {
-													e.stopPropagation();
-													handleBillingInvoicePrint(values?.id);
-												}}
-											>
-												{t("BillingInvoice")}
-											</Menu.Item>
-											)}
-											{(values.process?.toLowerCase() === "billing" ||
-												values?.process.toLowerCase() === "admitted") && (
-											<Menu.Item
-												leftSection={
-													<IconFileText
-														style={{
-															width: rem(14),
-															height: rem(14),
+													>
+														{t("Prescription")}
+													</Menu.Item>
+												)}
+
+												{canPrintBilling && (
+													<Menu.Item
+														leftSection={<IconPrinter size={14} />}
+														onClick={(e) => {
+															e.stopPropagation();
+															handleBillingInvoicePrint(values.id);
 														}}
-													/>
-												}
-												onClick={(e) => {
-													e.stopPropagation();
-													handleAdmissionFormPrint(values?.id);
-												}}
-											>
-												{t("AdmissionForm")}
-											</Menu.Item>
-											)}
-										</Menu.Dropdown>
-									</Menu>
-								</Group>
-							),
+													>
+														{t("BillingInvoice")}
+													</Menu.Item>
+												)}
+
+												{canPrintAdmission && (
+													<Menu.Item
+														leftSection={<IconFileText size={14} />}
+														onClick={(e) => {
+															e.stopPropagation();
+															handleAdmissionFormPrint(values.id);
+														}}
+													>
+														{t("AdmissionForm")}
+													</Menu.Item>
+												)}
+											</Menu.Dropdown>
+										</Menu>
+									</Group>
+								);
+							},
 						},
+
 					]}
 					fetching={fetching}
 					loaderSize="xs"

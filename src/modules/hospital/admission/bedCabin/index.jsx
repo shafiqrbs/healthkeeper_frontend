@@ -23,13 +23,7 @@ export default function Index() {
 				<Box p="md">
 					<Flex w="100%" gap="sm">
 						<Navigation module="home" mainAreaHeight={mainAreaHeight} />
-						{id ? (
-							<Box w="100%">
-								<EntityForm form={form} module={module} />
-							</Box>
-						) : (
-							<Table module={module} />
-						)}
+						<Table module={module} />
 					</Flex>
 				</Box>
 			)}

@@ -246,6 +246,25 @@ export default function _Table({ module }) {
 		refetchAll()
 	};
 
+	const handlePatientCancel = (e, id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Submit"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handleConfirmCancelModal(e, id),
+		});
+	};
+
+	const handleConfirmCancelModal = async (e, id) => {
+		e.stopPropagation();
+		const { data } = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.ROOM_CANCEL}/${id}`,
+		});
+		refetchAll()
+	};
+
 
 	// =============== handle drawer close with form reset ================
 	const handleCloseActions = () => {
@@ -480,6 +499,27 @@ export default function _Table({ module }) {
 														)}
 													</>
 												)}
+											{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+											(item.process?.toLowerCase() === "confirmed" || item.process?.toLowerCase() === "billing") && (
+												<>
+													<Menu.Item
+														bg={'yellow'}
+														c='white'
+														leftSection={
+															<IconRepeatOff
+																style={{
+																	width: rem(14),
+																	height: rem(14),
+																}}
+															/>
+														}
+														onClick={(e) =>
+															handlePatientCancel(e, item?.admission_id)
+														}>
+														{t("Cancel")}
+													</Menu.Item>
+												</>
+											)}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>
