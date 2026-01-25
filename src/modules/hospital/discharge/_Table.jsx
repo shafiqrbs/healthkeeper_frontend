@@ -194,7 +194,7 @@ export default function _Table() {
 							title: t("Action"),
 							render: (item) => (
 								userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-								(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "discharged") && (
+								(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "refund" || item.process?.toLowerCase() === "discharged") && (
 									<Button
 										variant="filled"
 										size="compact-xs"

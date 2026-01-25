@@ -61,7 +61,7 @@ const tabs = [
 const PER_PAGE = 25;
 const ALLOWED_OPD_ROLES = ["doctor_opd", "doctor_ipd", "admin_administrator"];
 const ALLOWED_ADMIN_DOCTOR_ROLES = ["doctor_rs_rp_confirm", "admin_doctor", "admin_administrator"];
-const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm", "admin_administrator"];
+const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm","doctor_rs_rp_confirm", "admin_administrator"];
 
 export default function Table({ module, height, closeTable, availableClose = false }) {
 	const { mainAreaHeight } = useOutletContext();
@@ -414,24 +414,20 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												<IconPencil size={18} color="var(--theme-success-color)" />
 											</ActionIcon>
 										)}
-										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-											((values.process?.toLowerCase() === "closed" &&
-												values?.referred_mode === "admission") ||
-												values?.referred_mode === "room" ||
-												!values?.prescription_id) && (
-												<Button
-													variant="filled"
-													bg="var(--theme-primary-color-6)"
-													c="white"
-													size="compact-xs"
-													onClick={() => handleConfirm(values.uid || values.id)}
-													radius="es"
-													fw={400}
-													rightSection={<IconArrowRight size={18} />}
-												>
-													{t("Admission")}
-												</Button>
-											)}
+										{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) && (
+											 <Button
+												 variant="filled"
+												 bg="var(--theme-primary-color-6)"
+												 c="white"
+												 size="compact-xs"
+												 onClick={() => handleConfirm(values.uid || values.id)}
+												 radius="es"
+												 fw={400}
+												 rightSection={<IconArrowRight size={18} />}
+											 >
+												 {t("Admission")}
+											 </Button>
+										)}
 										<Menu
 											position="bottom-end"
 											offset={3}
