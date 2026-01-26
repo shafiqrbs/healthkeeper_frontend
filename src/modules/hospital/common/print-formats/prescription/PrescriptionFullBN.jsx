@@ -42,7 +42,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 	const medicines = jsonContent?.medicines || [];
 	const exEmergencies = jsonContent?.exEmergency || [];
 	const { hospitalConfigData } = useHospitalConfigData();
-
 	const orderedExamKeys = normalizeOrder(order);
 
 	const SectionWrapper = ({ label, children }) => (
@@ -290,7 +289,6 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td
-									colSpan={2}
 									style={{
 										border: "1px solid var(--theme-tertiary-color-8)",
 										padding: "4px",
@@ -301,8 +299,19 @@ const PrescriptionFullBN = forwardRef(({ data, preview = false }, ref) => {
 											{t("Age")}:
 										</Text>
 										<Text size="xs">
-											{patientInfo?.year || 0} Years {patientInfo?.month || 0} Mon{" "}
-											{patientInfo?.day || 0} Day
+											{patientInfo?.year ? `${patientInfo.year} ${t("Years")} ` : ""}
+										</Text>
+									</Group>
+								</Table.Td>
+								<Table.Td
+									style={{
+										border: "1px solid var(--theme-tertiary-color-8)",
+										padding: "4px",
+									}}
+								>
+									<Group gap="xs">
+										<Text size="xs" fw={500}>
+											{t("Room")}:{patientInfo?.room_name}
 										</Text>
 									</Group>
 								</Table.Td>
