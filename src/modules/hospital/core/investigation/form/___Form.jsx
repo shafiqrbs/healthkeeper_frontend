@@ -159,7 +159,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("Room")}<RequiredAsterisk /></Text>
+											<Text fz="sm">{t("Room")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm

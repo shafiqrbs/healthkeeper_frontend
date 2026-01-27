@@ -1,4 +1,4 @@
-import { Group, Box, ActionIcon, Text, rem, Flex, Button, NumberInput } from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, NumberInput, Checkbox} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconTrashX, IconAlertCircle, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
@@ -31,6 +31,7 @@ export default function _Table({ module, open }) {
 	const navigate = useNavigate();
 	const height = mainAreaHeight - 78;
 	const [submitFormData, setSubmitFormData] = useState({});
+	const [updatingRows, setUpdatingRows] = useState({});
 	const searchKeyword = useSelector((state) => state.crud.searchKeyword);
 	const filterData = useSelector((state) => state.crud[module].filterData);
 
@@ -58,6 +59,30 @@ export default function _Table({ module, open }) {
 			})
 		);
 		navigate(`${MASTER_DATA_ROUTES.NAVIGATION_LINKS.BED.INDEX}/${id}`);
+	};
+
+
+	const handleFieldChange = async (rowId, field, value) => {
+		setSubmitFormData((prev) => ({
+			...prev,
+			[rowId]: { ...prev[rowId], [field]: value },
+		}));
+
+		setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
+
+		try {
+			await dispatch(
+				storeEntityData({
+					url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
+					data: { [field]: value },
+					module,
+				})
+			);
+		} catch (error) {
+			errorNotification(error.message);
+		} finally {
+			setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
+		}
 	};
 
 	const handleDelete = (id) => {
@@ -115,6 +140,7 @@ export default function _Table({ module, open }) {
 		const initialFormData = records.reduce((acc, item) => {
 			acc[item.id] = {
 				price: item.price?.toString() || 0,
+				status: item?.status ?? false,
 			};
 			return acc;
 		}, {});
@@ -257,6 +283,18 @@ export default function _Table({ module, open }) {
 									value={submitFormData[item.id]?.price || ""}
 									onChange={(val) => handleDataTypeChange(item.id, "price", val)}
 									onBlur={() => handleRowSubmit(item.id)}
+								/>
+							),
+						},
+						{
+							accessor: "status",
+							title: t("Status"),
+							render: (item) => (
+								<Checkbox
+									key={item.id}
+									size="sm"
+									checked={submitFormData[item.id]?.status ?? false}
+									onChange={(val) => handleFieldChange(item.id, "status", val.currentTarget.checked)}
 								/>
 							),
 						},

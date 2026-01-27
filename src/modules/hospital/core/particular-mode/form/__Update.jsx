@@ -59,7 +59,7 @@ export default function __Update({ module, form, close }) {
 			} else if (updateEntityData.fulfilled.match(resultAction)) {
 				successNotification(t("InsertSuccessfully"),SUCCESS_NOTIFICATION_COLOR);
 				setTimeout(() => {
-					useVendorDataStoreIntoLocalStorage();
+
 					form.reset();
 					dispatch(setInsertType({ insertType: "create", module }));
 					setIsLoading(false);

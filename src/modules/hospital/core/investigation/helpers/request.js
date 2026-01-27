@@ -27,10 +27,6 @@ export const getInitialValues = (t) => {
 				if (!value) return t("NameValidationRequired");
 				return null;
 			},
-			diagnostic_room_id: (value) => {
-				if (!value) return t("NameValidationRequired");
-				return null;
-			},
 			name: hasLength({ min: 1 }),
 		},
 	};

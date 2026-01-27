@@ -5,6 +5,7 @@ const initialValues = {
 	patient_type_id: "",
 	payment_mode_id: "",
 	financial_service_id: "",
+	gender_mode_id: "",
 	cabin_mode_id: "",
 	name: "",
 	price: "",

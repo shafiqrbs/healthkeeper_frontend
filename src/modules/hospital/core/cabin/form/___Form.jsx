@@ -44,6 +44,12 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_MODE_FINANCIAL_SERVICE.TYPE },
 	});
 
+	const { data: getParticularGenderModes } = useGlobalDropdownData({
+		path: HOSPITAL_DROPDOWNS.PARTICULAR_GENDER_MODE.PATH,
+		params: { "dropdown-type": HOSPITAL_DROPDOWNS.PARTICULAR_GENDER_MODE.TYPE },
+		utility: HOSPITAL_DROPDOWNS.PARTICULAR_GENDER_MODE.UTILITY,
+	});
+
 	useEffect(() => {
 		if (data && type === "update") {
 			setIsLoading(true);
@@ -51,6 +57,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				patient_type_id: data?.particular_details?.patient_type_id,
 				payment_mode_id: data?.particular_details?.payment_mode_id,
 				cabin_mode_id: data?.particular_details?.cabin_mode_id,
+				gender_mode_id: data?.particular_details?.gender_mode_id,
 				financial_service_id: data.financial_service_id,
 				name: data.name,
 				price: data.price,
@@ -85,7 +92,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 								<Stack>
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("FinancialService")}<RequiredAsterisk /></Text>
+											<Text fz="sm">{t("FinancialService")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
 											<SelectForm
@@ -150,9 +157,29 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 												placeholder={t("CabinMode")}
 												name="cabin_mode_id"
 												id="cabin_mode_id"
-												nextField="name"
+												nextField="gender_mode_id"
 												value={form.values.cabin_mode_id}
 												dropdownValue={getParticularCabinModes}
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6}>
+											<Text fz="sm">
+												{t("GenderMode")}
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("GenderModeValidateMessage")}
+												placeholder={t("GenderMode")}
+												name="gender_mode_id"
+												id="gender_mode_id"
+												nextField="name"
+												required={true}
+												value={form.values.gender_mode_id}
+												dropdownValue={getParticularGenderModes}
 											/>
 										</Grid.Col>
 									</Grid>

@@ -66,7 +66,7 @@ export default function __Update({ module, form, close }) {
 				});
 
 				setTimeout(() => {
-					useVendorDataStoreIntoLocalStorage();
+
 					form.reset();
 					dispatch(setInsertType({ insertType: "create", module }));
 					setIsLoading(false);

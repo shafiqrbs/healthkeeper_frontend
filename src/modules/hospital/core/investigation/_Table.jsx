@@ -1,4 +1,4 @@
-import { Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, NumberInput, Select } from "@mantine/core";
+import {Group, Box, ActionIcon, Text, rem, Flex, Button, TextInput, NumberInput, Select, Checkbox} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { IconTrashX, IconAlertCircle, IconEdit, IconEye, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
@@ -141,6 +141,7 @@ export default function _Table({ module, open }) {
 				name: item.name || "",
 				price: item.price?.toString() || 0,
 				is_available: item?.is_available ?? false,
+				status: item?.status ?? false,
 				report_format: item?.report_format ?? false,
 				is_custom_report: item?.is_custom_report ?? false,
 				diagnostic_department_id: item.diagnostic_department_id?.toString() ?? "",
@@ -166,6 +167,29 @@ export default function _Table({ module, open }) {
 		// optional immediate submit (for Select)
 		if (submitNow) {
 			handleRowSubmit(rowId, updatedRow);
+		}
+	};
+
+	const handleFieldChange = async (rowId, field, value) => {
+		setSubmitFormData((prev) => ({
+			...prev,
+			[rowId]: { ...prev[rowId], [field]: value },
+		}));
+
+		setUpdatingRows((prev) => ({ ...prev, [rowId]: true }));
+
+		try {
+			await dispatch(
+				storeEntityData({
+					url: `${MASTER_DATA_ROUTES.API_ROUTES.PARTICULAR.INLINE_UPDATE}/${rowId}`,
+					data: { [field]: value },
+					module,
+				})
+			);
+		} catch (error) {
+			errorNotification(error.message);
+		} finally {
+			setUpdatingRows((prev) => ({ ...prev, [rowId]: false }));
 		}
 	};
 
@@ -314,6 +338,18 @@ export default function _Table({ module, open }) {
 									value={submitFormData[item.id]?.price || ""}
 									onChange={(val) => handleDataTypeChange(item.id, "price", val)}
 									onBlur={() => handleRowSubmit(item.id)}
+								/>
+							),
+						},
+						{
+							accessor: "status",
+							title: t("Status"),
+							render: (item) => (
+								<Checkbox
+									key={item.id}
+									size="sm"
+									checked={submitFormData[item.id]?.status ?? false}
+									onChange={(val) => handleFieldChange(item.id, "status", val.currentTarget.checked)}
 								/>
 							),
 						},
