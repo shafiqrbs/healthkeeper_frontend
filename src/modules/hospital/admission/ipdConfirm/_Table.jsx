@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
-import {ActionIcon, Badge, Box, Button, Flex, FloatingIndicator, Group, Menu, rem, Tabs, Text} from "@mantine/core";
+import { ActionIcon, Badge, Box, Button, Flex, FloatingIndicator, Group, Menu, Tabs, Text } from "@mantine/core";
 import {
 	IconAdjustments,
 	IconArrowRight,
@@ -46,7 +46,7 @@ const tabs = [
 	{ label: "Canceled", value: "canceled" },
 ];
 
-const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd_confirm", "admin_administrator"];
+const ALLOWED_CONFIRMED_ROLES = [ "doctor_ipd_confirm", "admin_administrator" ];
 
 export default function _Table({ module }) {
 	const dispatch = useDispatch();
@@ -54,23 +54,23 @@ export default function _Table({ module }) {
 	const admissionFormRef = useRef(null);
 	const prescriptionRef = useRef(null);
 	const billingInvoiceRef = useRef(null);
-	const [printData, setPrintData] = useState(null);
-	const [billingPrintData, setBillingPrintData] = useState(null);
-	const [admissionFormPrintData, setAdmissionFormPrintData] = useState(null);
+	const [ printData, setPrintData ] = useState(null);
+	const [ billingPrintData, setBillingPrintData ] = useState(null);
+	const [ admissionFormPrintData, setAdmissionFormPrintData ] = useState(null);
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const manageForm = useForm(getAdmissionManageFormInitialValues());
 	const { mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 158;
-	const [opened, { open, close }] = useDisclosure(false);
-	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
-	const [openedManage, { open: openManage, close: closeManage }] = useDisclosure(false);
-	const [rootRef, setRootRef] = useState(null);
-	const [controlsRefs, setControlsRefs] = useState({});
-	const filterData = useSelector((state) => state.crud[module].filterData);
-	const [selectedId, setSelectedId] = useState(null);
-	const [processTab, setProcessTab] = useState("new");
-	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
+	const [ opened, { open, close } ] = useDisclosure(false);
+	const [ openedConfirm, { open: openConfirm, close: closeConfirm } ] = useDisclosure(false);
+	const [ openedManage, { open: openManage, close: closeManage } ] = useDisclosure(false);
+	const [ rootRef, setRootRef ] = useState(null);
+	const [ controlsRefs, setControlsRefs ] = useState({});
+	const filterData = useSelector((state) => state.crud[ module ].filterData);
+	const [ selectedId, setSelectedId ] = useState(null);
+	const [ processTab, setProcessTab ] = useState("new");
+	const [ selectedPrescriptionId, setSelectedPrescriptionId ] = useState(null);
 
 	const printPrescription = useReactToPrint({
 		content: () => prescriptionRef.current,
@@ -93,7 +93,7 @@ export default function _Table({ module }) {
 	});
 
 	const setControlRef = (val) => (node) => {
-		controlsRefs[val] = node;
+		controlsRefs[ val ] = node;
 		setControlsRefs(controlsRefs);
 	};
 
@@ -189,7 +189,7 @@ export default function _Table({ module }) {
 								</Tabs.Tab>
 							))}
 							<FloatingIndicator
-								target={processTab ? controlsRefs[processTab] : null}
+								target={processTab ? controlsRefs[ processTab ] : null}
 								parent={rootRef}
 								className={filterTabsCss.indicator}
 							/>
@@ -242,11 +242,11 @@ export default function _Table({ module }) {
 						{ accessor: "mobile", title: t("Mobile") },
 						...(processTab === "admitted"
 							? [
-									{ accessor: "admit_consultant_name", title: t("Consultant") },
-									{ accessor: "admit_unit_name", title: t("Unit") },
-									{ accessor: "admit_department_name", title: t("Department") },
-									{ accessor: "admit_doctor_name", title: t("Doctor") },
-							  ]
+								{ accessor: "admit_consultant_name", title: t("Consultant") },
+								{ accessor: "admit_unit_name", title: t("Unit") },
+								{ accessor: "admit_department_name", title: t("Department") },
+								{ accessor: "admit_doctor_name", title: t("Doctor") },
+							]
 							: []),
 						{ accessor: "room_name", title: t("Cabin/Bed") },
 						{
@@ -259,7 +259,7 @@ export default function _Table({ module }) {
 							textAlign: "center",
 							title: t("Process"),
 							render: (item) => {
-								const color = processColorMap[item.process] || ""; // fallback for unknown status
+								const color = processColorMap[ item.process ] || ""; // fallback for unknown status
 								return (
 									<Badge size="xs" radius="sm" color={color}>
 										{item.process || 'empty'}
@@ -279,11 +279,11 @@ export default function _Table({ module }) {
 								const canConfirm =
 									userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
 									isAdmission &&
-									["ipd", "closed"].includes(process);
+									[ "ipd", "closed" ].includes(process);
 
-								const canManage = ["revised", "confirmed", "billing"].includes(process);
-								const canPrintBilling = ["paid", "discharged"].includes(process);
-								const canPrintAdmission = ["billing", "admitted"].includes(process);
+								const canManage = [ "revised", "confirmed", "billing" ].includes(process);
+								const canPrintBilling = [ "paid", "discharged" ].includes(process);
+								const canPrintAdmission = [ "billing", "admitted" ].includes(process);
 
 								return (
 									<Group
