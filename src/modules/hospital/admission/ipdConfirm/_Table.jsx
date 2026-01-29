@@ -48,7 +48,7 @@ const tabs = [
 
 const ALLOWED_CONFIRMED_ROLES = [ "doctor_ipd_confirm", "admin_administrator" ];
 
-export default function _Table({ module }) {
+export default function _Table({ module,height }) {
 	const dispatch = useDispatch();
 	const { userRoles } = useAppLocalStore();
 	const admissionFormRef = useRef(null);
@@ -60,8 +60,6 @@ export default function _Table({ module }) {
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const manageForm = useForm(getAdmissionManageFormInitialValues());
-	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 158;
 	const [ opened, { open, close } ] = useDisclosure(false);
 	const [ openedConfirm, { open: openConfirm, close: closeConfirm } ] = useDisclosure(false);
 	const [ openedManage, { open: openManage, close: closeManage } ] = useDisclosure(false);

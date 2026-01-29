@@ -115,7 +115,7 @@ const Dispense = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Td style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
 									colSpan={5}
 								>
-									<Text fw="bold" fz={'xl'}  ta={'center'}>Nurse/Pharma Requisition Approval</Text>
+									<Text fw="bold" fz={'xl'}  ta={'center'}>Nurse/Pharmacy Dispense Approval</Text>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>

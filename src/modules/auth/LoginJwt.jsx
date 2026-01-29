@@ -102,9 +102,15 @@ export default function LoginJwt() {
 
 						const userRoles = JSON.parse(decoded.access_control_role || []);
 						const ALLOWED_OPD_DOCTOR_ROLES = ["doctor_opd"];
+						const ALLOWED_RS_RP_DOCTOR_ROLES = ["admin_doctor"];
 						const ALLOWED_IPD_DOCTOR_ROLES = ["doctor_ipd"];
 						const ALLOWED_LAB_ROLES = ["lab_operator", "lab_assistant", "doctor_lab"];
 						const ALLOWED_EMERGENCY_ROLES = ["doctor_emergency", "operator_emergency"];
+						console.log(userRoles);
+						if (userRoles.some((role) => ALLOWED_RS_RP_DOCTOR_ROLES.includes(role))) {
+							navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.DASHBOARD.RP_RS);
+							return null;
+						}
 						if (userRoles.some((role) => ALLOWED_OPD_DOCTOR_ROLES.includes(role))) {
 							navigate(HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.PRESCRIPTION.INDEX);
 							return null;

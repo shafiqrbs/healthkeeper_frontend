@@ -737,6 +737,9 @@ export const HOSPITAL_DATA_ROUTES = {
 		},
 	},
 	NAVIGATION_LINKS: {
+		DASHBOARD: {
+			RP_RS: "/hospital/control-panel",
+		},
 		VISIT: {
 			INDEX: "/hospital/visit",
 			CREATE: "/hospital/visit/create",

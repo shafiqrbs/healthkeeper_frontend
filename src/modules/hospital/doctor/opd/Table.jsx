@@ -395,7 +395,7 @@ export default function Table({ module, height, closeTable }) {
 													</Menu.Item>
 												</>
 											)}
-											<Menu.Item
+											{/*<Menu.Item
 												onClick={() => handleDelete(values.id)}
 												c="red.6"
 												leftSection={
@@ -408,7 +408,7 @@ export default function Table({ module, height, closeTable }) {
 												}
 											>
 												{t("Delete")}
-											</Menu.Item>
+											</Menu.Item>*/}
 										</Menu.Dropdown>
 									</Menu>
 								</Group>

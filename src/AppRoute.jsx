@@ -192,8 +192,8 @@ function AppRoute() {
 							roles={[
 								"role_domain",
 								"admin_administrator",
-								"doctor_ipd_admission",
-								"operator_emergency",
+								"admin_doctor",
+								"doctor_rs_rp_confirm"
 							]}
 						>
 							<ControlPanelIndex />

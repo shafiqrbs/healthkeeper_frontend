@@ -73,14 +73,13 @@ const CSV_HEADERS = [
 
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd", "operator_emergency", "doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator"];
 
-export default function _Table({ module }) {
+export default function _Table({ module,height }) {
 	const csvLinkRef = useRef(null);
 	const { userRoles } = useAppLocalStore();
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
 	const confirmForm = useForm(getAdmissionConfirmFormInitialValues());
 	const { mainAreaHeight } = useOutletContext();
-	const height = mainAreaHeight - 158;
 	const [openedActions, { open: openActions, close: closeActions }] = useDisclosure(false);
 	const [openedRoomBedTransfer, { open: openRoomBedTransfer, close: closeRoomBedTransfer }] = useDisclosure(false);
 	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
