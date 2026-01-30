@@ -1,5 +1,5 @@
 import { BarChart } from "@mantine/charts";
-import { Box, Card, Stack, Text } from "@mantine/core";
+import { Box, Card, Flex, Stack, Text } from "@mantine/core";
 import { useMemo } from "react";
 import { format, parseISO } from "date-fns";
 import { useOutletContext } from "react-router-dom";
@@ -14,7 +14,7 @@ function transformSectionDataToChartData(records) {
 
     return sorted.map((entry) => ({
         date: entry.date,
-        dateLabel: format(parseISO(entry.date), "MMM d"),
+        dateLabel: format(parseISO(entry.date), "d"),
         total: entry.total ?? 0,
     }));
 }
@@ -32,6 +32,7 @@ export default function DashboardOverviewChart({ data, sectionLabel, color = "bl
         () =>
             transformSectionDataToChartData(data).map((row) => ({
                 dateLabel: row.dateLabel,
+                fullDateLabel: format(parseISO(row.date), "MMMM d"),
                 [ seriesName ]: row.total,
             })),
         [ data, seriesName ]
@@ -67,13 +68,33 @@ export default function DashboardOverviewChart({ data, sectionLabel, color = "bl
                     <Text size="sm" fw={500}>{sectionLabel}</Text>
                 </Box>
                 <BarChart
-                    h={180}
+                    h={(mainAreaHeight - 190) / 2}
                     data={chartRows}
                     dataKey="dateLabel"
                     withLegend={false}
                     tickLine="y"
                     series={seriesConfig}
+                    getBarColor={(value) => (value > 5 ? color : "red.8")}
                     valueFormatter={(value) => new Intl.NumberFormat("en-US").format(value)}
+                    tooltipProps={{
+                        content: ({ label, payload }) => {
+                            const fullDateLabel = payload?.[ 0 ]?.payload?.fullDateLabel ?? label;
+                            return (
+                                <Box px="sm" py="xs" bg="white" style={{ boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.1)", borderRadius: 3 }}>
+                                    <Text size="sm">{fullDateLabel}</Text>
+                                    {payload?.map((item) => (
+                                        <Flex gap="lg" justify="space-between" key={item.name} mt="sm">
+                                            <Text size="xs">
+                                                <span style={{ width: 8, display: "inline-block", marginRight: 5, height: 8, backgroundColor: item.color, borderRadius: 50 }}></span>
+                                                {item.name}
+                                            </Text>
+                                            <Text size="xs" c="black">{new Intl.NumberFormat("en-US").format(item.value)}</Text>
+                                        </Flex>
+                                    ))}
+                                </Box>
+                            );
+                        },
+                    }}
                 />
             </Stack>
         </Card>
