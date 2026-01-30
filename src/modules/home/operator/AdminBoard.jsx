@@ -13,7 +13,7 @@ import {
 	IconTestPipe2,
 	IconWallet,
 } from "@tabler/icons-react";
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useNavigate, useOutletContext} from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useAppLocalStore from "@hooks/useAppLocalStore";
@@ -33,7 +33,7 @@ export default function AdminBoard() {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [ opened, { open, close } ] = useDisclosure(false);
-
+	const { mainAreaHeight } = useOutletContext();
 	const { data: records, isLoading } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_OVERVIEW
 	});
@@ -139,6 +139,7 @@ export default function AdminBoard() {
 							data={monthlyOverview?.[section.key] ?? []}
 							sectionLabel={section.label}
 							color={section.color}
+							mainAreaHeight={mainAreaHeight-120}
 						/>
 					</Grid.Col>
 				))}

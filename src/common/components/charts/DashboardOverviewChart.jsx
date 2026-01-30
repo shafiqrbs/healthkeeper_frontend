@@ -23,11 +23,10 @@ function transformSectionDataToChartData(records) {
  * Single-section bar chart. Pass the section's data (array of { date, total }),
  * sectionLabel for the title, and color for the bars.
  */
-export default function DashboardOverviewChart({ data, sectionLabel, color = "blue.6" }) {
-    const { mainAreaHeight } = useOutletContext();
+export default function DashboardOverviewChart({ data, sectionLabel,mainAreaHeight, color = "blue.6" }) {
+
     const seriesName = sectionLabel ?? "Total";
     const seriesConfig = [ { name: seriesName, color } ];
-
     const chartRows = useMemo(
         () =>
             transformSectionDataToChartData(data).map((row) => ({
