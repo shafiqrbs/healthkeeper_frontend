@@ -66,6 +66,7 @@ export default function Index() {
 
 		const normalizedMedicines = (existingMedicines || []).map((medicineItem) => ({
 			admin_status: medicineItem.admin_status ?? 0,
+			opd_status: medicineItem.opd_status ?? 0,
 			...medicineItem,
 		}));
 

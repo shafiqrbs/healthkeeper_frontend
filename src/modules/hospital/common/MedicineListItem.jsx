@@ -80,7 +80,7 @@ export default function MedicineListItem({
 			}
 		}
 
-		if (!medicine.admin_status) {
+		if (ignoreOpdQuantityLimit && !medicine.admin_status) {
 			showNotificationComponent(t("This medicine is not permissible to edit the OPD quantity"), "error", "", "", "", 3000);
 			return;
 		}
@@ -397,7 +397,7 @@ export default function MedicineListItem({
 													<Input
 														size="xs"
 														label=""
-														disabled={!medicine.admin_status}
+														disabled={ignoreOpdQuantityLimit ? !medicine.admin_status : !medicine.opd_status}
 														type="number"
 														placeholder={t("OutdoorMedicineNumber")}
 														value={medicine.opd_quantity}

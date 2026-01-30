@@ -39,7 +39,7 @@ function safeGet(root, path, fallback) {
 			warnMissingPath(path);
 			return fallback;
 		}
-		current = current[segment];
+		current = current[ segment ];
 	}
 
 	return current === undefined ? fallback : current;
@@ -198,7 +198,7 @@ export default function useAppLocalStore() {
 			/** Matrix */
 			particularMatrix: safeGet(authStorage, "hospitalConfig.particularMatrix", null),
 		};
-	}, [authStorage]);
+	}, [ authStorage ]);
 
 	return store;
 }

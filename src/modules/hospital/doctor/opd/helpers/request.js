@@ -40,6 +40,7 @@ export const medicineInitialValues = {
 	duration: "Day",
 	quantity: 1,
 	opd_quantity: 0,
+	opd_status: 0,
 };
 
 export const getMedicineFormInitialValues = () => {

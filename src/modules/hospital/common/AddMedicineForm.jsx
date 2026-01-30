@@ -683,7 +683,6 @@ export default function AddMedicineForm({
 												value: item.product_id?.toString(),
 												generic: item.generic || "",
 											}))}
-											limit={20}
 											value={medicineForm.values.medicine_id}
 											onChange={(v) => handleChange("medicine_id", v)}
 											placeholder={t("MedicinePlaceholder")}
