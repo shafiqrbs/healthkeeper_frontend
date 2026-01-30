@@ -1,13 +1,14 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { IconCalendarWeek, IconUser, IconArrowNarrowRight } from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
+import {Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay, Badge} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 import { MODULES_CORE } from "@/constants";
-import { formatDate } from "@utils/index";
+import {capitalizeWords, formatDate} from "@utils/index";
 import { useSelector } from "react-redux";
 import usePagination from "@hooks/usePagination";
 import PaginationBottomSection from "@components/tables/PaginationBottomSection";
+import CustomDivider from "@components/core-component/CustomDivider";
 
 const module = MODULES_CORE.REFUND_HISTORY;
 const PER_PAGE = 25;
@@ -40,6 +41,7 @@ export default function _Table({ patient_mode }) {
 	const handleView = (id) => {
 		console.info(id);
 	};
+	const processColorMap = { 'In-progress': "Red", Done: "green", discharged: "blue" , empty: "blue" };
 
 	return (
 		<Box>
@@ -85,10 +87,22 @@ export default function _Table({ patient_mode }) {
 						px="xs"
 						gutter="xs"
 					>
+						<Grid.Col span={12}>
+							<Flex justify="space-between" gap="es">
+								<Text fz="sm" fw={"600"}>
+									{item.name}
+								</Text>
+								<Badge
+									size="xs"
+									radius="sm"
+									color={processColorMap[item.process] || "gray"}>{capitalizeWords(item.process)}
+								</Badge>
+							</Flex>
+						</Grid.Col>
+						<CustomDivider />
 						<Grid.Col span={6}>
 							<Flex align="center" gap="3xs">
 								<IconCalendarWeek size={16} stroke={1.5} />
-
 								<Text
 									fz="sm"
 									onClick={() => handleView(item?.id)}
@@ -99,14 +113,14 @@ export default function _Table({ patient_mode }) {
 							</Flex>
 							<Flex align="center" gap="3xs">
 								<IconUser size={16} stroke={1.5} />
-								<Text fz="sm">{item.patient_id}</Text>
+								<Text fz="sm">{item.mobile}</Text>
 							</Flex>
 						</Grid.Col>
 						<Grid.Col span={6}>
 							<Flex justify="space-between" align="center" gap="3xs">
 								<Box>
-									<Text fz="sm">{item.name}</Text>
-									<Text fz="sm">{item.mobile}</Text>
+									<Text fz="sm">{item.patient_id}</Text>
+									<Text fz="sm">{item.invoice}</Text>
 								</Box>
 								<Button.Group>
 									<ActionIcon

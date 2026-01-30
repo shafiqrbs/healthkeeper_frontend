@@ -1,10 +1,10 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { IconCalendarWeek, IconUser, IconArrowNarrowRight, IconInfoCircle } from "@tabler/icons-react";
-import { Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay } from "@mantine/core";
+import {Box, Flex, Grid, Text, ScrollArea, Button, ActionIcon, LoadingOverlay, Badge} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useState } from "react";
 import { MODULES_CORE } from "@/constants";
-import { formatDate } from "@utils/index";
+import {capitalizeWords, formatDate} from "@utils/index";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { useSelector } from "react-redux";
 import CustomDivider from "@components/core-component/CustomDivider";
@@ -42,6 +42,7 @@ export default function _Table({ patient_mode }) {
 	const handleView = (id) => {
 		console.info(id);
 	};
+	const processColorMap = { 'In-progress': "Red", Done: "green", discharged: "blue" , empty: "blue" };
 
 	return (
 		<Box>
@@ -85,9 +86,15 @@ export default function _Table({ patient_mode }) {
 						gutter="xs"
 					>
 						<Grid.Col span={12}>
-							<Flex align="center" gap="3xs">
-								<IconUser size={16} stroke={1.5} />
-								<Text fz="sm">{item.name}</Text>
+							<Flex justify="space-between" gap="es">
+								<Text fz="sm" fw={"600"}>
+									{item.name}
+								</Text>
+								<Badge
+									size="xs"
+									radius="sm"
+									color={processColorMap[item.process] || "gray"}>{capitalizeWords(item.process)}
+								</Badge>
 							</Flex>
 						</Grid.Col>
 						<CustomDivider />

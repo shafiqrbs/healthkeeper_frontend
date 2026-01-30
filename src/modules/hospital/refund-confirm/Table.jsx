@@ -211,6 +211,16 @@ export default function Table({ module, height, closeTable, availableClose = fal
 						{ accessor: "gender", sortable: true, title: t("Gender") },
 
 						{
+							accessor: "refund_day",
+							title: t("Days"),
+						},
+
+						{
+							accessor: "refund_amount",
+							title: t("Amount"),
+						},
+
+						{
 							accessor: "process",
 							title: t("Process"),
 						},
