@@ -25,116 +25,12 @@ import { useReactToPrint } from "react-to-print";
 import { useDisclosure } from "@mantine/hooks";
 import DashboardOverviewChart from "@components/charts/DashboardOverviewChart";
 
-const quickBrowseButtonData = [
-	{
-		label: "Outdoor Ticket",
-		icon: IconStethoscope,
-		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
-		color: "var(--mantine-color-yellow-8)",
-		allowedRoles: [ "admin_administrator", "operator_opd", "operator_manager" ],
-	},
-	{
-		label: "IPD",
-		icon: IconBed,
-		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.ADMISSION.INDEX,
-		color: "var(--mantine-color-blue-7)",
-		allowedRoles: [ "admin_administrator", "operator_opd", "operator_manager" ],
-	},
-	{
-		label: "Emergency",
-		icon: IconTestPipe2,
-		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EMERGENCY.INDEX,
-		color: "var(--mantine-color-cyan-8)",
-		allowedRoles: [ "admin_administrator", "operator_opd", "operator_manager" ],
-	},
-	{
-		label: "reportDelivery",
-		icon: IconMailForward,
-		route: "/report-delivery",
-		color: "var(--mantine-color-indigo-8)",
-		allowedRoles: [ "doctor", "nurse", "admin" ],
-	},
-	{
-		label: "Medicine",
-		icon: IconTestPipe,
-		route: "/add-diagnostic",
-		color: "var(--theme-secondary-color-8)",
-		allowedRoles: [ "doctor", "nurse", "admin" ],
-	},
-
-	{
-		label: "reportPrepared",
-		icon: IconClipboardText,
-		route: "/report-prepare",
-		color: "var(--mantine-color-red-8)",
-		allowedRoles: [ "doctor", "nurse", "admin" ],
-	},
-];
-
-const quickBrowseCardData = [
-	{
-		label: "OPD Ticket",
-		icon: IconMicroscope,
-		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.VISIT.INDEX,
-		color: "var(--theme-secondary-color-9)",
-		backgroundColor: "var(--theme-secondary-color-0)",
-		allowedRoles: [ "admin_administrator", "operator_opd", "operator_manager" ],
-	},
-	{
-		label: "Emergency",
-		icon: IconWallet,
-		route: HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.EMERGENCY.INDEX,
-		color: "var(--mantine-color-cyan-8)",
-		backgroundColor: "var(--mantine-color-cyan-0)",
-		allowedRoles: [ "admin_administrator", "operator_ipd", "operator_manager" ],
-	},
-	{
-		label: "IPD",
-		icon: IconWallet,
-		route: "/payment",
-		color: "var(--mantine-color-cyan-7)",
-		backgroundColor: "var(--mantine-color-cyan-0)",
-		allowedRoles: [ "admin_administrator", "operator_ipd", "operator_manager" ],
-	},
-
-	/*{
-		label: "itemIssue",
-		icon: IconBuildingHospital,
-		route: "/item-issue",
-		color: "var(--mantine-color-red-7)",
-		backgroundColor: "var(--mantine-color-red-0)",
-		allowedRoles: ["doctor", "nurse", "admin"],
-	},*/
-	{
-		label: "OPDQueue",
-		icon: IconStethoscope,
-		route: "/hospital/visit",
-		color: "var(--mantine-color-yellow-7)",
-		backgroundColor: "var(--mantine-color-yellow-0)",
-		allowedRoles: [ "doctor", "nurse", "admin" ],
-	},
-	/*{
-		label: "manageStock",
-		icon: IconPackageExport,
-		route: "/manage-stock",
-		color: "var(--mantine-color-blue-7)",
-		backgroundColor: "var(--mantine-color-blue-0)",
-	},*/
-];
 
 export default function AdminBoard() {
 	const { userRoles } = useAppLocalStore();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [ opened, { open, close } ] = useDisclosure(false);
-
-	const filteredQuickBrowseButtonData = quickBrowseButtonData.filter((item) =>
-		item.allowedRoles.some((role) => userRoles.includes(role))
-	);
-
-	const filteredQuickBrowseCardData = quickBrowseCardData.filter((item) =>
-		item.allowedRoles.some((role) => userRoles.includes(role))
-	);
 
 	const { data: records, isLoading } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_OVERVIEW
@@ -145,10 +41,10 @@ export default function AdminBoard() {
 	const overviewChartSections = [
 		{ key: "monthlyOpd", label: "OPD", color: "yellow.7" },
 		{ key: "monthlyEmergency", label: "Emergency", color: "cyan.7" },
-		{ key: "monthlyIpd", label: "IPD", color: "blue.7" },
+		{ key: "monthlyIpd", label: "Admission", color: "blue.7" },
 		{ key: "monthlyDischarged", label: "Discharged", color: "teal.7" },
 	];
-
+	const patientStatus = records?.data?.patientStatus;
 	const collectionSummaryData = records?.data?.summary[ 0 ] || {};
 	const invoiceModeData = records?.data?.invoiceMode || [];
 	const patientModeCollectionData = records?.data?.patientMode || [];
@@ -166,6 +62,28 @@ export default function AdminBoard() {
 			<ActionIcon size={50} onClick={open} styles={{ root: { right: 0, position: "absolute", top: "50%", zIndex: 99, borderTopRightRadius: 0, borderBottomRightRadius: 0 } }}>
 				<IconChartAreaLineFilled color="white" />
 			</ActionIcon>
+			<Box mt={'xs'}>
+				<Grid>
+					<Grid.Col span={4}>
+						<Card radius="xs" bg="var(--mantine-color-green-0)" shadow="sm" withBorder >
+							<Text size="sm"  c="green" fw={600} ta="center">ADMISSION</Text>
+							<Text size="xl" fw={700} ta="center">{patientStatus?.patient_admission}</Text>
+						</Card>
+					</Grid.Col>
+					<Grid.Col span={4}>
+						<Card radius="xs" bg="var(--mantine-color-red-0)" shadow="sm" withBorder >
+							<Text size="sm" c="red"  fw={600} ta="center">DISCHARGED</Text>
+							<Text size="xl" fw={700} ta="center">{patientStatus?.patient_discharged}</Text>
+						</Card>
+					</Grid.Col>
+					<Grid.Col span={4}>
+						<Card radius="xs" bg="var(--mantine-color-blue-0)" shadow="sm" withBorder>
+							<Text size="sm" c="blue" fw={600}  ta="center">ACTIVE PATIENT</Text>
+							<Text size="xl" fw={700} ta="center">{patientStatus?.patient_total}</Text>
+						</Card>
+					</Grid.Col>
+				</Grid>
+			</Box>
 			<Grid columns={40} gutter={{ base: "md" }}>
 				{overviewChartSections.map((section) => (
 					<Grid.Col key={section.key} span={20}>
