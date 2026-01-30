@@ -119,7 +119,7 @@ const quickBrowseCardData = [
 	},*/
 ];
 
-export default function AdminBoard() {
+export default function AdmissionBoard() {
 	const { userRoles } = useAppLocalStore();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -135,7 +135,6 @@ export default function AdminBoard() {
 	const { data: records, isLoading } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_OVERVIEW
 	});
-	console.log(records);
 	const collectionSummaryData = records?.data?.summary[0] || {};
 	const invoiceModeData = records?.data?.invoiceMode || [];
 	const patientModeCollectionData = records?.data?.patientMode || [];

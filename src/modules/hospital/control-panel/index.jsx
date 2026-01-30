@@ -4,6 +4,7 @@ import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProg
 import { Box, Flex } from "@mantine/core";
 import { useOutletContext, useSearchParams } from "react-router-dom";
 import DashboardTable from "@modules/home/operator/AdminBoard";
+import AdmissionDashboard from "@modules/home/operator/AdmissionBoard";
 import PrescriptionTable from "@modules/hospital/prescription/Table";
 import PrescriptionBoardTable from "@modules/hospital/prescription-board/Table";
 import IPDConfirmTable from "@modules/hospital/admission/ipdConfirm/_Table";
@@ -20,7 +21,7 @@ import DashboardTab from "@components/tabs/DashboardTabs";
 const prescriptionModule = MODULES.PRESCRIPTION;
 const ipdConfirmModule = MODULES.ADMISSION;
 
-const tabs = [ "Dashboard",  "Prescription", "Pres.Board", "IPD Confirm","Bed/Cabin","Refund" ,"Waiver" ,"Re-admission","Medicine" ];
+const tabs = [ "Dashboard", "Admission",  "Prescription", "Pres.Board", "IPD Confirm","Bed/Cabin","Refund" ,"Waiver" ,"Re-admission","Medicine" ];
 const DEFAULT_TAB = "Dashboard";
 
 export default function Index() {
@@ -57,6 +58,9 @@ export default function Index() {
                             <DashboardTab tabList={tabs} tabValue={tabValue} setTabValue={handleTabChange} />
                             {tabValue === "Dashboard" && (
                                 <DashboardTable module={prescriptionModule} height={mainAreaHeight - 210} />
+                            )}
+                            {tabValue === "Admission" && (
+                                <AdmissionDashboard module={prescriptionModule} height={mainAreaHeight - 210} />
                             )}
                             {tabValue === "Prescription" && (
                                 <PrescriptionTable module={prescriptionModule} height={mainAreaHeight - 210} />

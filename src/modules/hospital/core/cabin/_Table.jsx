@@ -230,6 +230,13 @@ export default function _Table({ module, open }) {
 							render: (item) => item.patient_type_name,
 						},
 						{
+							accessor: "gender_mode_name",
+							title: t("GenderMode"),
+							textAlignment: "right",
+							sortable: true,
+							render: (item) => item.gender_mode_name,
+						},
+						{
 							accessor: "payment_mode_name",
 							title: t("PaymentMode"),
 							textAlignment: "right",

@@ -730,6 +730,7 @@ export const HOSPITAL_DATA_ROUTES = {
 		},
 		REPORT: {
 			PATIENT_TICKET: "hospital/reports/patient-ticket",
+			DASHBOARD_OVERVIEW: "hospital/reports/dashboard-overview",
 			DASHBOARD_DAILY_SUMMARY: "hospital/reports/dashboard-daily-summary",
 			USER_DAILY_INVOICE_SUMMARY: "hospital/reports/user-daily-invoice-summary",
 			DAILY_COLLECTIION_SERVICE: "hospital/reports/daily-collection-service-report",
