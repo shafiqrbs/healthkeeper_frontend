@@ -243,7 +243,6 @@ export default function AddMedicineForm({
 
 	// =============== handler for updating temporary item value ================
 	const handleTempItemChange = (index, newValue) => {
-		console.log(newValue);
 		setTempEmergencyItems((prev) => prev.map((item, idx) => (idx === index ? { ...item, value: newValue } : item)));
 	};
 
@@ -321,6 +320,8 @@ export default function AddMedicineForm({
 				field === "medicine_id"
 					? medicineData?.find((item) => item.product_id?.toString() === value)
 					: medicineGenericData?.find((item) => item.generic === value);
+
+			console.log(selectedMedicine)
 
 			if (selectedMedicine) {
 				appendGeneralValuesToForm(medicineForm, selectedMedicine);
@@ -617,6 +618,7 @@ export default function AddMedicineForm({
 
 		const medicinesFormat = selectedTreatment?.treatment_medicine_format.map((item) => ({
 			...item,
+			admin_status: item.admin_status ?? 0,
 			dose_details: item.medicine_dosage?.name,
 			dose_details_bn: item.medicine_dosage?.name_bn,
 			by_meal: item.medicine_bymeal?.name,

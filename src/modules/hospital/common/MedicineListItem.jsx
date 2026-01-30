@@ -27,9 +27,9 @@ export default function MedicineListItem({
 	durationModeDropdown,
 }) {
 	const { t } = useTranslation();
-	const [mode] = useState("view");
-	const [editingInstructionIndex, setEditingInstructionIndex] = useState(null);
-	const [viewAction, setViewAction] = useState(true);
+	const [ mode ] = useState("view");
+	const [ editingInstructionIndex, setEditingInstructionIndex ] = useState(null);
+	const [ viewAction, setViewAction ] = useState(true);
 	const hasExtendedFeature = type === "opd" || type === "discharge";
 
 	const updateMedicineField = (field, value) => {
@@ -39,7 +39,7 @@ export default function MedicineListItem({
 			if (field === "duration") {
 				const durationMode = getDurationMode(durationModeDropdown, value);
 				newList = prev.map((med, idx) =>
-					idx === index - 1 ? { ...med, [field]: value, duration_mode_bn: durationMode?.name_bn || "" } : med
+					idx === index - 1 ? { ...med, [ field ]: value, duration_mode_bn: durationMode?.name_bn || "" } : med
 				);
 			} else if (field === "order" && (type === "ipd" || type === "discharge")) {
 				const orderValue = value === "" || value === null ? null : Number(value);
@@ -57,13 +57,13 @@ export default function MedicineListItem({
 					return isMatch ? { ...med, order: orderValue } : med;
 				});
 
-				newList = [...updatedList].sort((a, b) => {
+				newList = [ ...updatedList ].sort((a, b) => {
 					const orderA = a.order ?? 999999;
 					const orderB = b.order ?? 999999;
 					return orderA - orderB;
 				});
 			} else {
-				newList = prev.map((med, idx) => (idx === index - 1 ? { ...med, [field]: value } : med));
+				newList = prev.map((med, idx) => (idx === index - 1 ? { ...med, [ field ]: value } : med));
 			}
 
 			if (typeof update === "function") update(newList);
@@ -80,6 +80,11 @@ export default function MedicineListItem({
 			}
 		}
 
+		if (!medicine.admin_status) {
+			showNotificationComponent(t("This medicine is not permissible to edit the OPD quantity"), "error", "", "", "", 3000);
+			return;
+		}
+
 		updateMedicineField(field, value);
 	};
 
@@ -90,7 +95,7 @@ export default function MedicineListItem({
 	const handleAddInstruction = (instructionIndex) => {
 		setMedicines((prev) => {
 			const medicineIndex = index - 1;
-			const current = prev[medicineIndex];
+			const current = prev[ medicineIndex ];
 
 			const byMeal = getByMeal(by_meal_options, current?.medicine_bymeal_id);
 			const dosage = getDosage(dosage_options, current?.medicine_dosage_id);
@@ -108,16 +113,16 @@ export default function MedicineListItem({
 				duration_mode_bn: durationMode?.name_bn || "",
 			};
 
-			const existingDosages = current.dosages && current.dosages.length > 0 ? current.dosages : [baseInstruction];
+			const existingDosages = current.dosages && current.dosages.length > 0 ? current.dosages : [ baseInstruction ];
 
 			const toDuplicate =
 				typeof instructionIndex === "number" &&
-				instructionIndex >= 0 &&
-				instructionIndex < existingDosages.length
-					? existingDosages[instructionIndex]
-					: existingDosages[existingDosages.length - 1];
+					instructionIndex >= 0 &&
+					instructionIndex < existingDosages.length
+					? existingDosages[ instructionIndex ]
+					: existingDosages[ existingDosages.length - 1 ];
 
-			const updatedDosages = [...existingDosages, { ...toDuplicate }];
+			const updatedDosages = [ ...existingDosages, { ...toDuplicate } ];
 			const updatedMedicine = { ...current, dosages: updatedDosages };
 
 			const newList = prev.map((medicine, index) => (index === medicineIndex ? updatedMedicine : medicine));
@@ -130,7 +135,7 @@ export default function MedicineListItem({
 	const handleDeleteInstruction = (instructionIndex) => {
 		setMedicines((prev) => {
 			const medicineIndex = index - 1;
-			const current = prev[medicineIndex];
+			const current = prev[ medicineIndex ];
 			const existingDosages = current.dosages || [];
 			let updatedMedicine = { ...current };
 
@@ -154,7 +159,7 @@ export default function MedicineListItem({
 		if (!medicine.dosages || medicine.dosages.length === 0) {
 			setMedicines((prev) => {
 				const medicineIndex = index - 1;
-				const current = prev[medicineIndex];
+				const current = prev[ medicineIndex ];
 				const byMeal = getByMeal(by_meal_options, current?.medicine_bymeal_id);
 				const dosage = getDosage(dosage_options, current?.medicine_dosage_id);
 				const durationMode = getDurationMode(durationModeDropdown, current?.duration);
@@ -187,38 +192,38 @@ export default function MedicineListItem({
 	const handleInstructionFieldChange = (insIndex, field, value) => {
 		setMedicines((prev) => {
 			const medicineIndex = index - 1;
-			const current = prev[medicineIndex];
-			const dosages = current.dosages ? [...current.dosages] : [];
+			const current = prev[ medicineIndex ];
+			const dosages = current.dosages ? [ ...current.dosages ] : [];
 
 			if (field === "medicine_bymeal_id") {
 				const byMeal = getByMeal(by_meal_options, value);
 
-				dosages[insIndex] = {
-					...dosages[insIndex],
-					[field]: value,
+				dosages[ insIndex ] = {
+					...dosages[ insIndex ],
+					[ field ]: value,
 					by_meal: byMeal?.name || "",
 					by_meal_bn: byMeal?.name_bn || "",
 				};
 			} else if (field === "medicine_dosage_id") {
 				const dosage = getDosage(dosage_options, value);
 
-				dosages[insIndex] = {
-					...dosages[insIndex],
-					[field]: value,
+				dosages[ insIndex ] = {
+					...dosages[ insIndex ],
+					[ field ]: value,
 					dose_details: dosage?.name || "",
 					dose_details_bn: dosage?.name_bn || "",
 				};
 			} else if (field === "duration") {
 				// =============== get duration mode using the new value (label) instead of current medicine duration ================
 				const durationMode = getDurationMode(durationModeDropdown, value);
-				dosages[insIndex] = {
-					...dosages[insIndex],
-					[field]: value,
+				dosages[ insIndex ] = {
+					...dosages[ insIndex ],
+					[ field ]: value,
 					duration: value,
 					duration_mode_bn: durationMode?.name_bn || "",
 				};
 			} else {
-				dosages[insIndex] = { ...dosages[insIndex], [field]: value };
+				dosages[ insIndex ] = { ...dosages[ insIndex ], [ field ]: value };
 			}
 
 			const updatedMedicine = { ...current, dosages };
@@ -282,19 +287,19 @@ export default function MedicineListItem({
 					{(medicine.dosages && medicine.dosages.length > 0
 						? medicine.dosages
 						: [
-								{
-									medicine_dosage_id: medicine?.medicine_dosage_id || "",
-									medicine_bymeal_id: medicine?.medicine_bymeal_id || "",
-									dose_details: getDosage(dosage_options, medicine?.medicine_dosage_id)?.name || "",
-									dose_details_bn:
-										getDosage(dosage_options, medicine?.medicine_dosage_id)?.name_bn || "",
-									by_meal: getByMeal(by_meal_options, medicine?.medicine_bymeal_id)?.name || "",
-									by_meal_bn: getByMeal(by_meal_options, medicine?.medicine_bymeal_id)?.name_bn || "",
-									quantity: medicine.quantity || "",
-									duration: medicine.duration || "",
-									duration_mode_bn: medicine?.duration_mode_bn || "",
-								},
-						  ]
+							{
+								medicine_dosage_id: medicine?.medicine_dosage_id || "",
+								medicine_bymeal_id: medicine?.medicine_bymeal_id || "",
+								dose_details: getDosage(dosage_options, medicine?.medicine_dosage_id)?.name || "",
+								dose_details_bn:
+									getDosage(dosage_options, medicine?.medicine_dosage_id)?.name_bn || "",
+								by_meal: getByMeal(by_meal_options, medicine?.medicine_bymeal_id)?.name || "",
+								by_meal_bn: getByMeal(by_meal_options, medicine?.medicine_bymeal_id)?.name_bn || "",
+								quantity: medicine.quantity || "",
+								duration: medicine.duration || "",
+								duration_mode_bn: medicine?.duration_mode_bn || "",
+							},
+						]
 					).map((instruction, insIndex) => {
 						const isFirstItem = insIndex === 0;
 						const isMedicine = !!medicine.medicine_id;
@@ -392,6 +397,7 @@ export default function MedicineListItem({
 													<Input
 														size="xs"
 														label=""
+														disabled={!medicine.admin_status}
 														type="number"
 														placeholder={t("OutdoorMedicineNumber")}
 														value={medicine.opd_quantity}

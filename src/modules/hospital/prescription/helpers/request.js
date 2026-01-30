@@ -27,6 +27,7 @@ export const getPrescriptionFormInitialValues = (t, initialFormValues) => {
 };
 
 export const medicineInitialValues = {
+	admin_status: 0,
 	medicine_id: "",
 	medicine_name: "",
 	generic: "",

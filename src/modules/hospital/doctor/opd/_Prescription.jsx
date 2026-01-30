@@ -6,7 +6,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { useGetLoadingProgress } from "@hooks/loading-progress/useGetLoadingProgress";
 import DefaultSkeleton from "@components/skeletons/DefaultSkeleton";
-import { Box, Button, Flex, Grid, Modal, LoadingOverlay, Switch } from "@mantine/core";
+import { Box, Button, Flex, Grid, Modal, LoadingOverlay } from "@mantine/core";
 import PatientReport from "@hospital-components/PatientReport";
 import AddMedicineForm from "@hospital-components/AddMedicineForm";
 import BaseTabs from "@components/tabs/BaseTabs";
@@ -29,26 +29,26 @@ const module = MODULES.PRESCRIPTION;
 
 export default function Index() {
 	const { user } = useAppLocalStore();
-	const [showOtherInstruction, setShowOtherInstruction] = useState(false);
-	const [opened, { open, close }] = useDisclosure(false);
-	const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
-	const [showHistory, setShowHistory] = useState(false);
-	const [medicines, setMedicines] = useState([]);
+	const [ showOtherInstruction, setShowOtherInstruction ] = useState(false);
+	const [ opened, { open, close } ] = useDisclosure(false);
+	const [ selectedPrescriptionId, setSelectedPrescriptionId ] = useState(null);
+	const [ showHistory, setShowHistory ] = useState(false);
+	const [ medicines, setMedicines ] = useState([]);
 	const { t } = useTranslation();
 	const { ref } = useElementSize();
 	const progress = useGetLoadingProgress();
 	const { mainAreaHeight } = useOutletContext();
-	const [tabValue, setTabValue] = useState("All");
+	const [ tabValue, setTabValue ] = useState("All");
 	const { particularsData } = useParticularsData({ modeName: "Prescription" });
-	const [openedOverview, { open: openOverview, close: closeOverview }] = useDisclosure(false);
+	const [ openedOverview, { open: openOverview, close: closeOverview } ] = useDisclosure(false);
 	const { prescriptionId } = useParams();
 	const dispatch = useDispatch();
 	const tabParticulars = particularsData?.map((item) => item.particular_type);
 	const tabList = tabParticulars?.map((item) => item.name);
 
-	const [fetching, setFetching] = useState(false);
-	const [records, setRecords] = useState([]);
-	const [customerId, setCustomerId] = useState();
+	const [ fetching, setFetching ] = useState(false);
+	const [ records, setRecords ] = useState([]);
+	const [ customerId, setCustomerId ] = useState();
 
 	const { data: prescriptionData, isLoading } = useDataWithoutStore({
 		url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.PRESCRIPTION.INDEX}/${prescriptionId}`,
@@ -63,9 +63,15 @@ export default function Index() {
 		// Always reset the form when prescription data changes
 		const updatedFormValues = getPrescriptionFormInitialValues(t, initialFormValues);
 		form.setValues(updatedFormValues.initialValues);
-		setMedicines(existingMedicines || []);
+
+		const normalizedMedicines = (existingMedicines || []).map((medicineItem) => ({
+			admin_status: medicineItem.admin_status ?? 0,
+			...medicineItem,
+		}));
+
+		setMedicines(normalizedMedicines);
 		setCustomerId(prescriptionData?.data?.customer_id);
-	}, [prescriptionData]);
+	}, [ prescriptionData ]);
 
 	const handleOpenViewOverview = () => {
 		openOverview();
@@ -89,7 +95,7 @@ export default function Index() {
 		if (customerId) {
 			fetchData();
 		}
-	}, [customerId]);
+	}, [ customerId ]);
 
 	const hasRecords = records && records.length > 0;
 
@@ -102,7 +108,7 @@ export default function Index() {
 				medicines: updatedMedicine || medicines,
 				advise: form.values.advise || "",
 				follow_up_date: form.values.follow_up_date || null,
-				prescription_date: new Date()?.toISOString()?.split("T")[0],
+				prescription_date: new Date()?.toISOString()?.split("T")[ 0 ],
 				created_by_id: createdBy?.id,
 				exEmergency: form.values.exEmergency || [],
 				instruction: form.values.instruction || "",
@@ -110,7 +116,7 @@ export default function Index() {
 					basic_info: form.values.basic_info || {},
 					patient_examination: form.values.dynamicFormData,
 					order: tabParticulars.map((item, index) => ({
-						[item.slug]: index,
+						[ item.slug ]: index,
 					})),
 				},
 			};
@@ -146,12 +152,12 @@ export default function Index() {
 										tabWidth="100%"
 										tabValue={tabValue}
 										setTabValue={setTabValue}
-										tabList={["All", ...(tabList?.length > 0 ? tabList : ["No data"])]}
+										tabList={[ "All", ...(tabList?.length > 0 ? tabList : [ "No data" ]) ]}
 									/>
 								</Flex>
 							</Grid.Col>
 							<Grid.Col span={8}>
-								<Flex mt={"xs"} gap="md" justify="flex-end" align="center" wrap="wrap">
+								<Flex mt="xs" gap="md" justify="flex-end" align="center" wrap="wrap">
 									<PatientReferredAction form={form} invoiceId={prescriptionData?.data?.invoice_id} />
 									<Button
 										onClick={handleOpenViewOverview}

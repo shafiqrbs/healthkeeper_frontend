@@ -65,6 +65,7 @@ export const appendDurationModeValueToForm = (form, duration_mode_options, label
  * @returns {void}
  */
 export const appendGeneralValuesToForm = (form, selectedMedicine) => {
+	console.log("selectedMedicine: ", selectedMedicine?.admin_status);
 	if (!form) return console.error("form should be passed in general values function");
 	if (!selectedMedicine) return console.error("selected medicine should be passed in general values function");
 
@@ -74,6 +75,7 @@ export const appendGeneralValuesToForm = (form, selectedMedicine) => {
 		form.setFieldValue("duration_mode_bn", selectedMedicine.duration_mode_bn);
 	}
 	// form.setFieldValue("generic", selectedMedicine.generic);
+	form.setFieldValue("admin_status", selectedMedicine.admin_status);
 	form.setFieldValue("generic_id", selectedMedicine.generic_id);
 	form.setFieldValue("company", selectedMedicine.company);
 	form.setFieldValue("opd_quantity", selectedMedicine?.opd_quantity || 0);
@@ -119,6 +121,7 @@ export const generateMedicinePayload = (form, selectedMedicine, options = {}) =>
 
 	// =============== build the complete payload object ================
 	const payload = {
+		admin_status: selectedMedicine.admin_status || form.values.admin_status,
 		medicine_id: form.values.medicine_id || selectedMedicine.product_id,
 		medicine_name: selectedMedicine.product_name || form.values.medicine_name,
 		generic: selectedMedicine.generic || form.values.generic,
@@ -151,7 +154,7 @@ export const medicineOptionsFilter = ({ options, search, limit = 150 }) => {
 	for (const option of options) {
 		const labelWords = option?.label?.toLowerCase()?.trim()?.split(" ") || [];
 		const genericWords = (option?.generic || "").toLowerCase()?.trim()?.split(" ") || [];
-		const allWords = [...labelWords, ...genericWords];
+		const allWords = [ ...labelWords, ...genericWords ];
 
 		const isMatch = splittedSearch.every((searchWord) => allWords.some((word) => word.includes(searchWord)));
 
