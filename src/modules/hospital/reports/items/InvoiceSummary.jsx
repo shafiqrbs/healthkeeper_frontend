@@ -87,7 +87,7 @@ export default function InvoiceSummary() {
 
 	const collectionSummaryData = records?.data?.summary[0] || {};
 	const refundTotal = records?.data?.refundTotal || 0;
-	console.log(refundTotal?.refund);
+
 	const invoiceModeData = records?.data?.invoiceMode || [];
 	const patientModeCollectionData = records?.data?.patientMode || [];
 	const userCollectionData = records?.data?.userBase || [];
