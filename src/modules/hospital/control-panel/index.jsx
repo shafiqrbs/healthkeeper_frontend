@@ -14,14 +14,13 @@ import RefundTable from "@modules/hospital/refund-confirm/Table";
 import ReadmissionTable from "@modules/hospital/patient-archive/Table";
 import DoctorOpdTable from "@modules/hospital/doctor/opd/Table";
 import { MODULES } from "@/constants";
-import BaseTabs from "@components/tabs/BaseTabs";
 import { useState, useEffect } from "react";
 import DashboardTab from "@components/tabs/DashboardTabs";
 
 const prescriptionModule = MODULES.PRESCRIPTION;
 const ipdConfirmModule = MODULES.ADMISSION;
 
-const tabs = [ "Dashboard", "Admission",  "Prescription", "Pres.Board", "IPD Confirm","Bed/Cabin","Refund" ,"Waiver" ,"Re-admission","Medicine" ];
+const tabs = [ "Dashboard", "Admission", "Prescription", "Pres.Board", "IPD Confirm", "Bed/Cabin", "Refund", "Waiver", "Re-admission", "Medicine" ];
 const DEFAULT_TAB = "Dashboard";
 
 export default function Index() {
@@ -66,7 +65,7 @@ export default function Index() {
                                 <PrescriptionTable module={prescriptionModule} height={mainAreaHeight - 210} />
                             )}
                             {tabValue === "Pres.Board" && (
-                                <PrescriptionBoardTable module={prescriptionModule} height={mainAreaHeight-210} />
+                                <PrescriptionBoardTable module={prescriptionModule} height={mainAreaHeight - 210} />
                             )}
                             {tabValue === "IPD Confirm" && (
                                 <IPDConfirmTable module={ipdConfirmModule} height={mainAreaHeight - 156} />
@@ -81,10 +80,10 @@ export default function Index() {
                                 <BedRoomTable module={prescriptionModule} height={mainAreaHeight - 210} />
                             )}
                             {tabValue === "Re-admission" && (
-                                <ReadmissionTable module={ipdConfirmModule} height={mainAreaHeight-210} />
+                                <ReadmissionTable module={ipdConfirmModule} height={mainAreaHeight - 210} />
                             )}
                             {tabValue === "Medicine" && (
-                                <DoctorOpdTable module={ipdConfirmModule} height={mainAreaHeight-188} />
+                                <DoctorOpdTable module={ipdConfirmModule} height={mainAreaHeight - 188} />
                             )}
                         </Box>
                     </Flex>

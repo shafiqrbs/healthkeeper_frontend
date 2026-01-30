@@ -1,5 +1,9 @@
 export const MASTER_DATA_ROUTES = {
 	API_ROUTES: {
+		CONTROL_PANEL: {
+			INDEX: "hospital/control-panel",
+		},
+
 		TREATMENT_TEMPLATES: {
 			INDEX: "hospital/core/treatment",
 			INDEX_USER: "hospital/core/treatment-user",
