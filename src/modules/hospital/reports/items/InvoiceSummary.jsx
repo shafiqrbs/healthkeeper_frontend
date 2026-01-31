@@ -65,7 +65,7 @@ export default function InvoiceSummary({ mainAreaHeight }) {
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state.crud[ module ].data);
-	const height = mainAreaHeight - 156;
+	const height = mainAreaHeight - 256;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
