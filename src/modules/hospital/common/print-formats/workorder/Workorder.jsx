@@ -61,7 +61,6 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 				ref={ref}
 				p="md"
 				w={PAPER_WIDTH}
-				h={PAPER_HEIGHT}
 				style={{ overflow: "hidden" }}
 				className="watermark"
 				ff="Arial, sans-serif"

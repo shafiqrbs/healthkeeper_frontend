@@ -29,24 +29,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { showEntityData } from "@/app/store/core/crudThunk";
 import { capitalizeWords, formatDateTimeAmPm, formatDate, getLoggedInHospitalUser } from "@/common/utils";
 import useAppLocalStore from "@hooks/useAppLocalStore";
-import { modals } from "@mantine/modals";
-import OPDA4BN from "@hospital-components/print-formats/opd/OPDA4BN";
-import OPDPosBN from "@hospital-components/print-formats/opd/OPDPosBN";
 import { useReactToPrint } from "react-to-print";
-import { getDataWithoutStore } from "@/services/apiService";
-import { showNotificationComponent } from "@components/core-component/showNotificationComponent";
-import PrescriptionFullBN from "@hospital-components/print-formats/prescription/PrescriptionFullBN";
 import { useForm } from "@mantine/form";
-import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
-import PatientUpdateDrawer from "@hospital-components/drawer/PatientUpdateDrawer";
-import { useAutoRefetch } from "@hooks/useAutoRefetch";
-import OpdRoomModal from "@hospital-components/OpdRoomModal";
-import OpdRoomStatusModal from "@hospital-components/OpdRoomStatusModal";
 import {setFilterData} from "@/app/store/core/crudSlice";
-import IPDDetailsDrawer from "@hospital-components/drawer/__IPDDetailsDrawer";
 import ConfirmModal from "@modules/hospital/admission/confirm/__ConfirmModal";
 import {getAdmissionConfirmFormInitialValues} from "@modules/hospital/admission/helpers/request";
 import usePagination from "@hooks/usePagination";
+import AdmissionInvoiceDetailsBN from "@hospital-components/print-formats/admission/AdmissionInvoiceDetailsBN";
+import {getDataWithoutStore} from "@/services/apiService";
 
 const tabs = [
 	{ label: "All", value: "all" },
@@ -55,7 +45,7 @@ const tabs = [
 	{ label: "IPD", value: "ipd" },
 ];
 
-const PER_PAGE = 25;
+const PER_PAGE = 50;
 const ALLOWED_OPD_ROLES = ["doctor_opd","doctor_ipd", "admin_administrator"];
 const ALLOWED_ADMIN_DOCTOR_ROLES = ["operator_emergency", "doctor_ipd_confirm", "admin_doctor", "admin_administrator"];
 export default function Table({ module, height, closeTable, availableClose = false }) {
@@ -100,11 +90,15 @@ export default function Table({ module, height, closeTable, availableClose = fal
 	const [processTab, setProcessTab] = useState("all");
 	const [controlsRefs, setControlsRefs] = useState({});
 
-	const [printData, setPrintData] = useState({});
 	const [type, setType] = useState(null);
 
 	const [openedConfirm, { open: openConfirm, close: closeConfirm }] = useDisclosure(false);
 	const filterData = useSelector((state) => state.crud[module].filterData);
+
+	const [printData, setPrintData] = useState(null);
+	const printRef = useRef(null);
+	const invoicePrint = useReactToPrint({ content: () => printRef.current });
+
 
 	useEffect(() => {
 		if (type === "a4") {
@@ -135,6 +129,21 @@ export default function Table({ module, height, closeTable, availableClose = fal
 		perPage: PER_PAGE,
 		sortByKey: "created_at",
 	});
+
+	const handleAdmissionBillDetails = async (e, uid) => {
+		e.stopPropagation();
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.FINAL_BILLING.VIEW}/${uid}/final-bill`,
+		});
+
+		setPrintData(res?.data);
+	};
+
+	useEffect(() => {
+		if (printData) {
+			invoicePrint();
+		}
+	}, [printData]);
 
 	const handleReadmission = (id) => {
 		setSelectedId(id);
@@ -270,6 +279,18 @@ export default function Table({ module, height, closeTable, availableClose = fal
 												{t("Re-admission")}
 											</Button>
 										)}
+										{(values.process === "paid" || values.process === "discharged")  && (
+											<ActionIcon
+											variant="filled"
+											color="var(--theme-secondary-color-6)"
+											radius="es"
+											size="compact-xs"
+											aria-label="Settings"
+											onClick={(e) => handleAdmissionBillDetails(e, values.uid)}
+										>
+												<IconPrinter size={14}/>
+											</ActionIcon>
+										)}
 									</Group>
 								);
 							},
@@ -303,6 +324,7 @@ export default function Table({ module, height, closeTable, availableClose = fal
 				isReadmission={true}
 				module={module}
 			/>
+			{printData && <AdmissionInvoiceDetailsBN data={printData} ref={printRef} />}
 		</Box>
 	);
 }

@@ -45,6 +45,7 @@ export default function _Table({ fetching, records, handlePageChange, page, tota
 		}
 	}, [printData]);
 
+
 	const handleRefundPrint = async (e, id) => {
 		e.stopPropagation();
 		const res = await getDataWithoutStore({
