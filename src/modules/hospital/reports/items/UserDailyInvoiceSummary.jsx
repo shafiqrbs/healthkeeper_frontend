@@ -67,7 +67,7 @@ export default function UserDailyInvoiceSummary() {
 	const { mainAreaHeight } = useOutletContext();
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
-	const listData = useSelector((state) => state.crud[module].data);
+	const listData = useSelector((state) => state.crud[ module ].data);
 	const height = mainAreaHeight - 156;
 	const form = useForm({
 		initialValues: {
@@ -76,7 +76,7 @@ export default function UserDailyInvoiceSummary() {
 		},
 	});
 
-	const [controlsRefs, setControlsRefs] = useState({});
+	const [ controlsRefs, setControlsRefs ] = useState({});
 	const { data: records, isLoading } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.USER_DAILY_INVOICE_SUMMARY,
 		params: {
@@ -86,10 +86,7 @@ export default function UserDailyInvoiceSummary() {
 		},
 	});
 
-
-
-
-	const collectionSummaryData = records?.data?.summary[0] || {};
+	const collectionSummaryData = records?.data?.summary[ 0 ] || {};
 	const userCollectionData = records?.data?.userBase || [];
 	const summaryReportsRef = useRef(null);
 	const handleHomeOverviewPrint = useReactToPrint({
@@ -105,8 +102,6 @@ export default function UserDailyInvoiceSummary() {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		});
-
-
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
@@ -164,7 +159,7 @@ export default function UserDailyInvoiceSummary() {
 						<Box className="borderRadiusAll">
 							<Paper radius="md" p="md" shadow="sm">
 								<Stack gap="lg">
-									{Object.entries(userCollectionData).map(([groupName, rows]) => {
+									{Object.entries(userCollectionData).map(([ groupName, rows ]) => {
 										const total = rows.reduce((sum, r) => sum + r.total, 0);
 										const refund = rows.reduce((sum, r) => sum + r.refund, 0);
 										const subTotal = rows.reduce((sum, r) => sum + r.sub_total, 0);
@@ -229,7 +224,7 @@ export default function UserDailyInvoiceSummary() {
 				</Box>
 			</Box>
 			{records?.data && (
-				<UserDailySummaryReports ref={summaryReportsRef}  records={records?.data || []} />
+				<UserDailySummaryReports ref={summaryReportsRef} records={records?.data || []} />
 			)}
 		</Box>
 	);

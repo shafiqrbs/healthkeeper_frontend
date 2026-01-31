@@ -139,11 +139,6 @@ export default function InvoiceSummary({ mainAreaHeight }) {
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
-			<Flex justify="space-between" align="center" px="sm">
-				<Text fw={600} fz="sm" py="xs">
-					{t("PatientTickets")}
-				</Text>
-			</Flex>
 			<Box px="sm" mb="sm">
 				<ReportFilterSearch
 					mainAreaHeight={mainAreaHeight}
