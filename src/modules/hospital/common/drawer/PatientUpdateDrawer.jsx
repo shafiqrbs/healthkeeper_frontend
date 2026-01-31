@@ -213,6 +213,40 @@ export default function PatientUpdateDrawer({ opened, close, type, data }) {
 										clearable={false}
 									/>
 								</Grid.Col>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("Gender")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14} py="es">
+									<SelectForm
+										form={form}
+										label=""
+										tooltip={t("EnterPatientGender")}
+										placeholder="Male"
+										name="gender"
+										id="gender"
+										value={form.values.gender}
+										dropdownValue={[
+											{ label: t("Male"), value: "male" },
+											{ label: t("Female"), value: "female" },
+											{ label: t("Other"), value: "other" },
+										]}
+										clearable={false}
+									/>
+								</Grid.Col>
+								<Grid.Col span={6}>
+									<Text fz="sm">{t("NID")}</Text>
+								</Grid.Col>
+								<Grid.Col span={14}>
+									<InputForm
+										form={form}
+										label=""
+										tooltip={t("EnterPatientIdentity")}
+										placeholder="1234567890"
+										name="nid"
+										id="nid"
+										value={form.values.identity}
+									/>
+								</Grid.Col>
 							</>
 						):(
 							<>

@@ -588,7 +588,7 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 										tooltip={t("EnterYears")}
 										name="year"
 										id="year"
-										nextField="mobile"
+										nextField="address"
 										min={0}
 										max={150}
 										readOnly={form.values.dob}
@@ -642,26 +642,7 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 								/>
 							</Grid.Col>
 						</Grid>
-						<Grid align="center" columns={20}>
-							<Grid.Col span={6}>
-								<Flex align="center" gap="es">
-									<Text fz="sm">{t("Mobile")}<RequiredAsterisk /></Text>
-								</Flex>
-							</Grid.Col>
-							<Grid.Col span={14}>
-								<InputNumberForm
-									form={form}
-									label=""
-									tooltip={t("EnterPatientMobile")}
-									placeholder="+880 1717171717"
-									name="mobile"
-									id="mobile"
-									required
-									nextField="address"
-									value={form.values.mobile}
-								/>
-							</Grid.Col>
-						</Grid>
+
 						<Grid align="center" columns={20}>
 							<Grid.Col span={6}>
 								<Flex align="center" gap="es">
@@ -677,7 +658,7 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 									name="address"
 									id="address"
 									nextField="upazilla_id"
-									value={form.values.mobile}
+									value={form.values.address}
 								/>
 							</Grid.Col>
 						</Grid>
@@ -702,6 +683,26 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 										value: location.id?.toString(),
 									}))}
 									searchable
+								/>
+							</Grid.Col>
+						</Grid>
+						<Grid align="center" columns={20}>
+							<Grid.Col span={6}>
+								<Flex align="center" gap="es">
+									<Text fz="sm">{t("Mobile")}<RequiredAsterisk /></Text>
+								</Flex>
+							</Grid.Col>
+							<Grid.Col span={14}>
+								<InputNumberForm
+									form={form}
+									label=""
+									tooltip={t("EnterPatientMobile")}
+									placeholder="+880 1717171717"
+									name="mobile"
+									id="mobile"
+									required
+									nextField="address"
+									value={form.values.mobile}
 								/>
 							</Grid.Col>
 						</Grid>
