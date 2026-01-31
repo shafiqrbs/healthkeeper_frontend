@@ -1,5 +1,5 @@
 import { Box } from "@mantine/core";
-import {useOutletContext, useSearchParams} from "react-router-dom";
+import { useOutletContext, useSearchParams } from "react-router-dom";
 import DashboardDailySummary from "./items/DashboardDailySummary";
 import PatientTicket from "./items/PatientTicket";
 import { useTranslation } from "react-i18next";
@@ -15,17 +15,17 @@ import PatientMedicineIssue from "@modules/hospital/reports/items/PatientMedicin
 
 export default function DetailsRenderer() {
 	const { t } = useTranslation();
-	const [searchParams] = useSearchParams();
+	const [ searchParams ] = useSearchParams();
 	const tab = searchParams.get("tab");
 	const { mainAreaHeight } = useOutletContext();
 	return (
 		<Box>
 			{!tab ? (
-				<InvoiceSummary height={mainAreaHeight} />
+				<InvoiceSummary mainAreaHeight={mainAreaHeight} />
 			) : tab === "dashboard-daily-summary" ? (
-				<InvoiceSummary />
+				<InvoiceSummary mainAreaHeight={mainAreaHeight} />
 			) : tab === "user-daily-summary" ? (
-				<UserDailyInvoiceSummary />
+				<UserDailyInvoiceSummary mainAreaHeight={mainAreaHeight} />
 			) : tab === "patient-ticket" ? (
 				<PatientTicket />
 			) : tab === "daily-collection-service" ? (

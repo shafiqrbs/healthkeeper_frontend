@@ -65,7 +65,7 @@ export default function InvoiceSummary({ mainAreaHeight }) {
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state.crud[ module ].data);
-	const height = mainAreaHeight - 256;
+	const height = mainAreaHeight - 126;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -135,7 +135,6 @@ export default function InvoiceSummary({ mainAreaHeight }) {
 		(sum, item) => sum + (item.total ?? 0),
 		0
 	);
-
 
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
