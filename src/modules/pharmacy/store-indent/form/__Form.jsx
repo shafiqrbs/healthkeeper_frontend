@@ -233,8 +233,13 @@ export default function __Form({ form, requisitionForm, items, setItems, onSave 
                                 ),
                             },
                             {
+                                accessor: "request_quantity",
+                                title: t("RequestQuantity"),
+                                render: (item) => item.request_quantity,
+                            },
+                            {
                                 accessor: "quantity",
-                                title: t("IssueQuantity"),
+                                title: t("ApproveQuantity"),
                                 render: (item) => (
                                     <QuantityChange
                                         item={item}
@@ -244,11 +249,7 @@ export default function __Form({ form, requisitionForm, items, setItems, onSave 
                                     />
                                 ),
                             },
-                            {
-                                accessor: "request_quantity",
-                                title: t("RequestQuantity"),
-                                render: (item) => item.request_quantity,
-                            },
+
                         ]}
                         textSelectionDisabled
                         loaderSize="xs"
