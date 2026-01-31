@@ -155,7 +155,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 	const isAllDatesValid = useMemo(() => {
 		if (!items || items.length === 0) return false;
 
-		return items.every((item) => item.production_date && item.expired_date);
+		return items.every((item) => item.expired_date);
 	}, [items]);
 
 	const handleKeyDown = (e, index) => {
@@ -440,7 +440,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 									/>
 								),
 							},
-							{
+							/*{
 								accessor: "production_date",
 								title: t("ExpiryStartDate"),
 								sortable: false,
@@ -455,7 +455,7 @@ export default function __Form({ form, workOrderForm, items, setItems, onSave })
 										/>
 									</Box>
 								),
-							},
+							},*/
 							{
 								accessor: "expired_date",
 								title: t("ExpiryEndDate"),
