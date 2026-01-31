@@ -1,4 +1,4 @@
-import {ActionIcon, Box, Button, Card, Divider, Flex, Grid, Modal, Stack, Table, Text} from "@mantine/core";
+import { ActionIcon, Box, Button, Card, Divider, Flex, Grid, Modal, Stack, Table, Text } from "@mantine/core";
 import {
 	IconBed,
 	IconBuildingHospital,
@@ -13,7 +13,7 @@ import {
 	IconTestPipe2,
 	IconWallet,
 } from "@tabler/icons-react";
-import {Link, useNavigate, useOutletContext} from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import useAppLocalStore from "@hooks/useAppLocalStore";
@@ -24,16 +24,15 @@ import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { useDisclosure } from "@mantine/hooks";
 import DashboardOverviewChart from "@components/charts/DashboardOverviewChart";
-import {capitalizeWords} from "@utils/index";
+import { capitalizeWords } from "@utils/index";
 import InvoiceSummary from "@modules/hospital/reports/items/InvoiceSummary";
 
 
-export default function AdminBoard() {
+export default function AdminBoard({ height }) {
 	const { userRoles } = useAppLocalStore();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const [ opened, { open, close } ] = useDisclosure(false);
-	const { mainAreaHeight } = useOutletContext();
 	const { data: records, isLoading } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_OVERVIEW
 	});
@@ -49,7 +48,7 @@ export default function AdminBoard() {
 	const patientStatus = records?.data?.patientStatus;
 
 
-	const collectionSummaryData = records?.data?.summary[0] || {};
+	const collectionSummaryData = records?.data?.summary[ 0 ] || {};
 	const refundTotal = records?.data?.refundTotal || 0;
 	const waiverTotal = records?.data?.waiver_amount || 0;
 
@@ -77,27 +76,27 @@ export default function AdminBoard() {
 			</ActionIcon>
 			<Box mt={'xs'}>
 				<Grid columns={40} gutter={{ base: "md" }}>
-						<Grid.Col  span={20}>
-							<Grid columns={12}  gutter={{ base: "md" }}>
-								<Grid.Col span={4}>
-									<Card radius="xs" bg="var(--mantine-color-green-0)" shadow="sm" withBorder >
-										<Text size="sm"  c="green" fw={600} ta="center">Grand total</Text>
-										<Text size="xl" fw={700} ta="center">TK. {formatMoney(collectionSummaryData?.total - refundTotal?.refund) || 0}</Text>
-									</Card>
-								</Grid.Col>
-								<Grid.Col span={4}>
-									<Card radius="xs" bg="var(--mantine-color-purple-0)" shadow="sm" withBorder >
-										<Text size="sm"  c="purple" fw={600} ta="center">Refund</Text>
-										<Text size="xl" fw={700} ta="center">TK. {formatMoney(refundTotal?.refund) || 0}</Text>
-									</Card>
-								</Grid.Col>
-								<Grid.Col span={4}>
-									<Card radius="xs" bg="var(--mantine-color-orange-0)" shadow="sm" withBorder >
-										<Text size="sm"  c="orange" fw={600} ta="center">Waiver</Text>
-										<Text size="xl" fw={700} ta="center">TK. {formatMoney(waiverTotal) || 0}</Text>
-									</Card>
-								</Grid.Col>
-								{/*{patientModeCollectionData &&
+					<Grid.Col span={20}>
+						<Grid columns={12} gutter={{ base: "md" }}>
+							<Grid.Col span={4}>
+								<Card radius="xs" bg="var(--mantine-color-green-0)" shadow="sm" withBorder >
+									<Text size="sm" c="green" fw={600} ta="center">Grand total</Text>
+									<Text size="xl" fw={700} ta="center">TK. {formatMoney(collectionSummaryData?.total - refundTotal?.refund) || 0}</Text>
+								</Card>
+							</Grid.Col>
+							<Grid.Col span={4}>
+								<Card radius="xs" bg="var(--mantine-color-purple-0)" shadow="sm" withBorder >
+									<Text size="sm" c="purple" fw={600} ta="center">Refund</Text>
+									<Text size="xl" fw={700} ta="center">TK. {formatMoney(refundTotal?.refund) || 0}</Text>
+								</Card>
+							</Grid.Col>
+							<Grid.Col span={4}>
+								<Card radius="xs" bg="var(--mantine-color-orange-0)" shadow="sm" withBorder >
+									<Text size="sm" c="orange" fw={600} ta="center">Waiver</Text>
+									<Text size="xl" fw={700} ta="center">TK. {formatMoney(waiverTotal) || 0}</Text>
+								</Card>
+							</Grid.Col>
+							{/*{patientModeCollectionData &&
 								patientModeCollectionData?.map((item, index) => (
 									<Grid.Col span={4} key={item.id || index}>
 									<Card radius="xs" bg="var(--mantine-color-red-0)" shadow="sm" withBorder >
@@ -108,23 +107,23 @@ export default function AdminBoard() {
 								))}*/}
 						</Grid>
 					</Grid.Col>
-					<Grid.Col  span={20}>
-						<Grid  gutter={{ base: "md" }}>
+					<Grid.Col span={20}>
+						<Grid gutter={{ base: "md" }}>
 							<Grid.Col span={4}>
 								<Card radius="xs" bg="var(--mantine-color-green-0)" shadow="sm" withBorder >
-									<Text size="sm"  c="green" fw={600} ta="center">ADMISSION</Text>
+									<Text size="sm" c="green" fw={600} ta="center">ADMISSION</Text>
 									<Text size="xl" fw={700} ta="center">{patientStatus?.patient_admission}</Text>
 								</Card>
 							</Grid.Col>
 							<Grid.Col span={4}>
 								<Card radius="xs" bg="var(--mantine-color-red-0)" shadow="sm" withBorder >
-									<Text size="sm" c="red"  fw={600} ta="center">DISCHARGED</Text>
+									<Text size="sm" c="red" fw={600} ta="center">DISCHARGED</Text>
 									<Text size="xl" fw={700} ta="center">{patientStatus?.patient_discharged}</Text>
 								</Card>
 							</Grid.Col>
 							<Grid.Col span={4}>
 								<Card radius="xs" bg="var(--mantine-color-blue-0)" shadow="sm" withBorder>
-									<Text size="sm" c="blue" fw={600}  ta="center">ACTIVE PATIENT</Text>
+									<Text size="sm" c="blue" fw={600} ta="center">ACTIVE PATIENT</Text>
 									<Text size="xl" fw={700} ta="center">{patientStatus?.patient_total}</Text>
 								</Card>
 							</Grid.Col>
@@ -136,10 +135,10 @@ export default function AdminBoard() {
 				{overviewChartSections.map((section) => (
 					<Grid.Col key={section.key} span={20}>
 						<DashboardOverviewChart
-							data={monthlyOverview?.[section.key] ?? []}
+							data={monthlyOverview?.[ section.key ] ?? []}
 							sectionLabel={section.label}
 							color={section.color}
-							mainAreaHeight={mainAreaHeight-120}
+							mainAreaHeight={height - 120}
 						/>
 					</Grid.Col>
 				))}
