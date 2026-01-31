@@ -16,7 +16,7 @@ import {getDataWithoutStore} from "@/services/apiService";
 import {useSelector} from "react-redux";
 import {modals} from "@mantine/modals";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {useReactToPrint} from "react-to-print";
 import RefundFromBedBn from "@hospital-components/print-formats/refund/RefundFormBedBN";
 import DrobFormBN from "@hospital-components/print-formats/dorb/DorbFormBN";
@@ -103,11 +103,6 @@ export default function Table() {
 		});
 		setInvoicePrintData(res?.data);
 	};
-	useEffect(() => {
-		if (invoicePrintData) {
-			invoicePrint();
-		}
-	}, [invoicePrintData]);
 	const processColorMap = { paid: "red", discharged: "green" , refund: "orange" , empty: "blue" };
 
 	return (

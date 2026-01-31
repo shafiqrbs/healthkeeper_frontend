@@ -676,7 +676,7 @@ export function Form({ form, showTitle = false, module, type = "opd_ticket", vis
 									placeholder="District - Upazilla"
 									name="upazilla_id"
 									id="upazilla_id"
-									nextField="identity"
+									nextField="mobile"
 									value={form.values.upazilla_id}
 									dropdownValue={locations?.data?.map((location) => ({
 										label: `${location.district || "District"} - ${location.name}`,

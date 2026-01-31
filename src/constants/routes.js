@@ -669,6 +669,7 @@ export const HOSPITAL_DATA_ROUTES = {
 			FREE_DISCHARGE: "hospital/ipd/free-discharge",
 			ROOM_CANCEL: "hospital/ipd/room-cancel",
 			DISCHARGE_PROCESS: "hospital/ipd/discharge-process",
+			DORB_PROCESS: "hospital/ipd/dorb-process",
 			INTERNAL_TRANSFER_PROCESS: "hospital/ipd/internal-transfer-process",
 			MEDICINE_UPDATE: "hospital/ipdprescription",
 			MEDICINE_TEMPLATE: "hospital/ipdprescription/template",

@@ -1,6 +1,6 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { IconArrowRight, IconChevronUp, IconSelector } from "@tabler/icons-react";
-import {Badge, Box, Button, Flex, FloatingIndicator, Tabs, Text} from "@mantine/core";
+import {Badge, Box, Button, Flex, FloatingIndicator, Group, Tabs, Text} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
 import { useTranslation } from "react-i18next";
@@ -21,6 +21,7 @@ import {useState} from "react";
 const module = MODULES.DISCHARGE;
 const PER_PAGE = 25;
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd","doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator"];
+const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse"];
 
 const tabs = [
 	{ label: "Current", value: "paid" },
@@ -89,6 +90,28 @@ export default function _Table() {
 			showNotificationComponent(t("NoDataAvailable"), "red.6", "lightgray");
 		}
 	};
+
+	const handleProcessDorbConfirmation  = (id) => {
+		modals.openConfirmModal({
+			title: <Text size="md"> {t("FormConfirmationTitle")}</Text>,
+			children: <Text size="sm"> {t("FormConfirmationMessage")}</Text>,
+			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
+			confirmProps: { color: "red" },
+			onCancel: () => console.info("Cancel"),
+			onConfirm: () => handlePatientDORB(id),
+		});
+	};
+
+	const handlePatientDORB = async (id) => {
+		if (id) {
+			const { data } = await getDataWithoutStore({
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DORB_PROCESS}/${id}`,
+			});
+		} else {
+			showNotificationComponent(t("NoDataAvailable"), "red.6", "lightgray");
+		}
+	};
+
 	const processColorMap = { paid: "red", discharged: "green" , refund: "orange" , empty: "blue" };
 
 	return (
@@ -193,19 +216,33 @@ export default function _Table() {
 							accessor: "",
 							title: t("Action"),
 							render: (item) => (
-								userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-								(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "refund" || item.process?.toLowerCase() === "discharged") && (
-									<Button
-										variant="filled"
-										size="compact-xs"
-										color="var(--theme-primary-color-6)"
-										onClick={() => handleProcessConfirmation(item.uid)}
-										rightSection={<IconArrowRight size={14} />}
-									>
-										{t("Process")}
-									</Button>
-								)
-							),
+								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
+									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
+									(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "refund" || item.process?.toLowerCase() === "discharged") && (
+										<Button
+											variant="filled"
+											size="compact-xs"
+											color="var(--theme-primary-color-6)"
+											onClick={() => handleProcessConfirmation(item.uid)}
+											rightSection={<IconArrowRight size={14} />}
+										>
+											{t("Process")}
+										</Button>
+									)}
+									{userRoles.some((role) => ALLOWED_NURSE_ROLES.includes(role)) &&
+									(item.process?.toLowerCase() === "paid" || item.process?.toLowerCase() === "refund") && (
+										<Button
+											variant="filled"
+											size="compact-xs"
+											color="red"
+											onClick={() => handleProcessDorbConfirmation(item.uid)}
+											rightSection={<IconArrowRight size={14} />}
+										>
+											{t("DORB")}
+										</Button>
+									)}
+								</Group>
+							)
 						}
 					]}
 					fetching={fetching}
