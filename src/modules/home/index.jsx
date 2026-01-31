@@ -9,14 +9,15 @@ import { MODULES } from "@/constants";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { useNavigate } from "react-router-dom";
 
-const ALLOWED_ADMIN_ROLES = ["admin_hospital", "admin_administrator"];
-const ALLOWED_OPERATOR_ROLES = ["operator_opd", "operator_manager", "operator_emergency"];
-const ALLOWED_OPD_DOCTOR_ROLES = ["doctor_opd"];
-const ALLOWED_IPD_DOCTOR_ROLES = ["doctor_ipd"];
-const ALLOWED_RS_RP_DOCTOR_ROLES = ["admin_doctor"];
-const ALLOWED_LAB_ROLES = ["lab_operator", "lab_assistant", "doctor_lab"];
-const ALLOWED_EMERGENCY_ROLES = ["doctor_emergency", "operator_emergency"];
+const ALLOWED_ADMIN_ROLES = [ "admin_hospital", "admin_administrator" ];
+const ALLOWED_OPERATOR_ROLES = [ "operator_opd", "operator_manager", "operator_emergency" ];
+const ALLOWED_OPD_DOCTOR_ROLES = [ "doctor_opd" ];
+const ALLOWED_IPD_DOCTOR_ROLES = [ "doctor_ipd" ];
+const ALLOWED_RS_RP_DOCTOR_ROLES = [ "admin_doctor" ];
+const ALLOWED_LAB_ROLES = [ "lab_operator", "lab_assistant", "doctor_lab" ];
+const ALLOWED_EMERGENCY_ROLES = [ "doctor_emergency", "operator_emergency" ];
 const module = MODULES.VISIT;
+
 export default function Index({ height }) {
 	const { userRoles } = useAppLocalStore();
 	const progress = useGetLoadingProgress();

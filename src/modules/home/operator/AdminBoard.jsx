@@ -1,69 +1,35 @@
-import { ActionIcon, Box, Button, Card, Divider, Flex, Grid, Modal, Stack, Table, Text } from "@mantine/core";
+import { ActionIcon, Box, Card, Grid, Modal, Text } from "@mantine/core";
 import {
-	IconBed,
-	IconBuildingHospital,
 	IconChartAreaLineFilled,
-	IconChecklist,
-	IconClipboardText,
-	IconMailForward,
-	IconMicroscope,
-	IconPackageExport,
-	IconStethoscope,
-	IconTestPipe,
-	IconTestPipe2,
-	IconWallet,
+
 } from "@tabler/icons-react";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
-import useAppLocalStore from "@hooks/useAppLocalStore";
-import OperatorOverview from "@modules/home/operator/OperatorOverview";
-import DailyOverview from "@modules/home/common/DailyOverview";
 import useDataWithoutStore from "@hooks/useDataWithoutStore";
-import { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
 import { useDisclosure } from "@mantine/hooks";
 import DashboardOverviewChart from "@components/charts/DashboardOverviewChart";
-import { capitalizeWords } from "@utils/index";
 import InvoiceSummary from "@modules/hospital/reports/items/InvoiceSummary";
 
+const OVERVIEW_CHART_SECTION = [
+	{ key: "monthlyOpd", label: "OPD", color: "yellow.7" },
+	{ key: "monthlyEmergency", label: "Emergency", color: "cyan.7" },
+	{ key: "monthlyIpd", label: "Admission", color: "blue.7" },
+	{ key: "monthlyDischarged", label: "Discharged", color: "teal.7" },
+];
 
 export default function AdminBoard({ height }) {
-	const { userRoles } = useAppLocalStore();
-	const navigate = useNavigate();
-	const { t } = useTranslation();
 	const [ opened, { open, close } ] = useDisclosure(false);
-	const { data: records, isLoading } = useDataWithoutStore({
+	const { data: records } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_OVERVIEW
 	});
 	const monthlyOverview = records?.data?.monthlyOverview ?? records?.monthlyOverview ?? null;
 
-	// =============== one chart per section: OPD, Emergency, IPD, Discharged ===============
-	const overviewChartSections = [
-		{ key: "monthlyOpd", label: "OPD", color: "yellow.7" },
-		{ key: "monthlyEmergency", label: "Emergency", color: "cyan.7" },
-		{ key: "monthlyIpd", label: "Admission", color: "blue.7" },
-		{ key: "monthlyDischarged", label: "Discharged", color: "teal.7" },
-	];
-	const patientStatus = records?.data?.patientStatus;
 
+	const patientStatus = records?.data?.patientStatus;
 
 	const collectionSummaryData = records?.data?.summary[ 0 ] || {};
 	const refundTotal = records?.data?.refundTotal || 0;
 	const waiverTotal = records?.data?.waiver_amount || 0;
 
-
-	console.log(collectionSummaryData)
-	const invoiceModeData = records?.data?.invoiceMode || [];
-	const patientModeCollectionData = records?.data?.patientMode || [];
-	const userCollectionData = records?.data?.userBase || [];
-	const serviceGroups = records?.data?.serviceGroups || [];
-	const serviceData = records?.data?.services || [];
-	const patientServiceModeData = records?.data?.patientServiceMode || [];
-	const summaryReportsRef = useRef(null);
-	const handleHomeOverviewPrint = useReactToPrint({
-		content: () => summaryReportsRef.current,
-	});
 	const formatMoney = (value) =>
 		new Intl.NumberFormat("en-BD", {
 			minimumFractionDigits: 0,
@@ -132,13 +98,13 @@ export default function AdminBoard({ height }) {
 				</Grid>
 			</Box>
 			<Grid columns={40} gutter={{ base: "md" }}>
-				{overviewChartSections.map((section) => (
+				{OVERVIEW_CHART_SECTION.map((section) => (
 					<Grid.Col key={section.key} span={20}>
 						<DashboardOverviewChart
 							data={monthlyOverview?.[ section.key ] ?? []}
 							sectionLabel={section.label}
 							color={section.color}
-							mainAreaHeight={height - 120}
+							mainAreaHeight={height}
 						/>
 					</Grid.Col>
 				))}

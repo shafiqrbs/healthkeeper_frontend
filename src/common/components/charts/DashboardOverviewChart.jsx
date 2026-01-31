@@ -23,7 +23,6 @@ function transformSectionDataToChartData(records) {
  * sectionLabel for the title, and color for the bars.
  */
 export default function DashboardOverviewChart({ data, sectionLabel, mainAreaHeight, color = "blue.6" }) {
-
     const seriesName = sectionLabel ?? "Total";
     const seriesConfig = [ { name: seriesName, color } ];
     const chartRows = useMemo(
@@ -66,7 +65,7 @@ export default function DashboardOverviewChart({ data, sectionLabel, mainAreaHei
                     <Text size="sm" fw={500}>{sectionLabel}</Text>
                 </Box>
                 <BarChart
-                    h={(mainAreaHeight - 140) / 2}
+                    h={(mainAreaHeight - 300) / 2}
                     data={chartRows}
                     dataKey="dateLabel"
                     withLegend={false}

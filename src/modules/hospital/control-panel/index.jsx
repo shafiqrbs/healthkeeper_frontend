@@ -56,7 +56,7 @@ export default function Index() {
                         <Box w="100%">
                             <DashboardTab tabList={tabs} tabValue={tabValue} setTabValue={handleTabChange} />
                             {tabValue === "Dashboard" && (
-                                <DashboardTable module={prescriptionModule} height={mainAreaHeight - 210} />
+                                <DashboardTable module={prescriptionModule} height={mainAreaHeight} />
                             )}
                             {tabValue === "Admission" && (
                                 <AdmissionDashboard module={prescriptionModule} height={mainAreaHeight - 210} />

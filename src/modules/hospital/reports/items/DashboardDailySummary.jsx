@@ -63,13 +63,13 @@ const CSV_HEADERS = [
 
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
-export default function DashboardDailySummary({height:mainAreaHeight}) {
+export default function DashboardDailySummary({ height: mainAreaHeight }) {
 
-//	const { mainAreaHeight } = useOutletContext();
+	//	const { mainAreaHeight } = useOutletContext();
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
-	const listData = useSelector((state) => state.crud[module].data);
-	const  height = mainAreaHeight-98;
+	const listData = useSelector((state) => state.crud[ module ].data);
+	const height = mainAreaHeight - 98;
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -77,7 +77,7 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 		},
 	});
 
-	const [controlsRefs, setControlsRefs] = useState({});
+	const [ controlsRefs, setControlsRefs ] = useState({});
 	const { data: records, isLoading } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_DAILY_SUMMARY,
 		params: {
@@ -85,7 +85,7 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 			end_date: form.values.end_date,
 		},
 	});
-	const collectionSummaryData = records?.data?.summary[0] || {};
+	const collectionSummaryData = records?.data?.summary[ 0 ] || {};
 	const invoiceModeData = records?.data?.invoiceMode || [];
 	const patientModeCollectionData = records?.data?.patientMode || [];
 	const userCollectionData = records?.data?.userBase || [];
@@ -115,18 +115,18 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 	);
 
 	const totalPatientServiceAmount = patientServiceModeData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
-	const totalPatientServiceCount = patientServiceModeData?.reduce((sum, item) => sum + parseInt(item.patient, 10),0);
+	const totalPatientServiceCount = patientServiceModeData?.reduce((sum, item) => sum + parseInt(item.patient, 10), 0);
 
 
 	const totalUserCount = userCollectionData?.reduce(
-		(sum, item) => sum + parseInt(item.total_count, 10),0);
+		(sum, item) => sum + parseInt(item.total_count, 10), 0);
 	const totalUserAmount = userCollectionData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
-	const totalServiceCount = serviceData?.reduce((sum, item) => sum + parseInt(item.total_count, 10),0);
+	const totalServiceCount = serviceData?.reduce((sum, item) => sum + parseInt(item.total_count, 10), 0);
 	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
 
 	const totalServieGroupCount = serviceGroups?.reduce(
-		(sum, item) => sum + parseInt(item.total_count, 10),0);
+		(sum, item) => sum + parseInt(item.total_count, 10), 0);
 	const totalServiceGroupAmount = serviceGroups?.reduce(
 		(sum, item) => sum + (item.total ?? 0),
 		0
@@ -203,13 +203,13 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 								</Table.Thead>
 								<Table.Tbody>
 									{patientModeCollectionData &&
-									patientModeCollectionData?.map((item, index) => (
-										<Table.Tr key={item.id || index} py="xs">
-											<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
-											<Table.Td>{item?.total_count}</Table.Td>
-											<Table.Td>{item?.total}</Table.Td>
-										</Table.Tr>
-									))}
+										patientModeCollectionData?.map((item, index) => (
+											<Table.Tr key={item.id || index} py="xs">
+												<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+												<Table.Td>{item?.total_count}</Table.Td>
+												<Table.Td>{item?.total}</Table.Td>
+											</Table.Tr>
+										))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
 										<Table.Td>{totalModeCount}</Table.Td>
@@ -283,12 +283,12 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 								</Table.Thead>
 								<Table.Tbody>
 									{invoiceModeData &&
-									invoiceModeData?.map((item, index) => (
-										<Table.Tr key={item.id || index} py="xs">
-											<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
-											<Table.Td>{item?.total}</Table.Td>
-										</Table.Tr>
-									))}
+										invoiceModeData?.map((item, index) => (
+											<Table.Tr key={item.id || index} py="xs">
+												<Table.Td>{capitalizeWords(item?.name)}</Table.Td>
+												<Table.Td>{item?.total}</Table.Td>
+											</Table.Tr>
+										))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
 										<Table.Td>{totalInvoiceModeAmount}</Table.Td>
@@ -320,12 +320,12 @@ export default function DashboardDailySummary({height:mainAreaHeight}) {
 								</Table.Thead>
 								<Table.Tbody>
 									{userCollectionData &&
-									userCollectionData?.map((item, index) => (
-										<Table.Tr key={item.id || index} py="xs">
-											<Table.Td>{item?.name}</Table.Td>
-											<Table.Td>{item?.total}</Table.Td>
-										</Table.Tr>
-									))}
+										userCollectionData?.map((item, index) => (
+											<Table.Tr key={item.id || index} py="xs">
+												<Table.Td>{item?.name}</Table.Td>
+												<Table.Td>{item?.total}</Table.Td>
+											</Table.Tr>
+										))}
 									<Table.Tr py="xs" bg="var(--theme-primary-color-1)">
 										<Table.Td>Total</Table.Td>
 										<Table.Td>{totalUserAmount}</Table.Td>
