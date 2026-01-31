@@ -255,7 +255,7 @@ export default function ReportFilterSearch({
 
             {showWarehouse && (
                 <Select
-                    placeholder="Warehouse"
+                    placeholder="Department"
                     loading={fetching}
                     data={warehouse.map((item) => ({ label: item?.warehouse_name, value: item?.id?.toString() }))}
                     value={form.values.warehouse_id}

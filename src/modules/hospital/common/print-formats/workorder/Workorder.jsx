@@ -67,7 +67,7 @@ const Workorder = forwardRef(({ data, preview = false }, ref) => {
 				ff="Arial, sans-serif"
 				fz={12}
 			>
-				<Box  mb="lg" h={980} >
+				<Box  mb="lg">
 					<Table
 						style={{
 							margin: 0,

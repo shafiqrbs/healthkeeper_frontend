@@ -67,7 +67,7 @@ export default function DashboardOverviewChart({ data, sectionLabel,mainAreaHeig
                     <Text size="sm" fw={500}>{sectionLabel}</Text>
                 </Box>
                 <BarChart
-                    h={(mainAreaHeight - 270) / 2}
+                    h={(mainAreaHeight - 190) / 2}
                     data={chartRows}
                     dataKey="dateLabel"
                     withLegend={false}

@@ -1,9 +1,9 @@
-import { useRef } from "react";
+import {useRef, useState} from "react";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import { Box, Flex, Text } from "@mantine/core";
-import { IconChevronUp, IconSelector } from "@tabler/icons-react";
+import {Box, Flex, Text, Grid, Button} from "@mantine/core";
+import {IconChevronUp, IconPrinter, IconSelector} from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
@@ -16,12 +16,15 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { MODULES } from "@/constants";
 import { useOutletContext } from "react-router-dom";
 import ReportFilterSearch from "@hospital-components/ReportFilterSearch";
+import DailySummaryReports from "@hospital-components/print-formats/reports/DailySummaryReports";
+import {useReactToPrint} from "react-to-print";
+import StockReport from "@hospital-components/print-formats/stock-summary/stockReport";
 
 const PER_PAGE = 200;
 
 const CSV_HEADERS = [
 	{ label: "S/N", key: "sn" },
-	{ label: "Warehouse", key: "warehouse_name" },
+	{ label: "Department", key: "warehouse_name" },
 	{ label: "Item Name", key: "name" },
 	{ label: "Opening quantity", key: "opening_quantity" },
 	{ label: "Stock In", key: "total_in_quantity" },
@@ -31,7 +34,7 @@ const CSV_HEADERS = [
 
 const CSV_HEADERS_UPLOAD = [
 	{ label: "S/N", key: "sn" },
-	{ label: "Warehouse Name", key: "warehouse_name" },
+	{ label: "Department", key: "warehouse_name" },
 	{ label: "WarehouseID", key: "warehouse_id" },
 	{ label: "Item Name", key: "name" },
 	{ label: "StockItemID", key: "stock_item_id" },
@@ -50,6 +53,13 @@ export default function StockSummery() {
 	const csvLinkRefForUpload = useRef(null);
 	const { t } = useTranslation();
 	const listData = useSelector((state) => state?.crud[module]?.data);
+
+	const summaryReportsRef = useRef(null);
+	const invoicePrint = useReactToPrint({ content: () => summaryReportsRef.current });
+	console.log(invoicePrint);
+	const handlePrintReport = () => {
+		requestAnimationFrame(invoicePrint);
+	};
 
 	const form = useForm({
 		initialValues: {
@@ -106,6 +116,7 @@ export default function StockSummery() {
 		}
 	};
 
+
 	return (
 		<Box w="100%" bg="var(--mantine-color-white)">
 			<Flex justify="space-between" align="center" px="sm">
@@ -114,14 +125,29 @@ export default function StockSummery() {
 				</Text>
 			</Flex>
 			<Box px="sm" mb="sm">
-				<ReportFilterSearch
-					module={module}
-					form={form}
-					handleCSVDownload={handleCSVDownload}
-					handleCSVDownloadForUpload={handleCSVDownloadForUpload}
-                    showWarehouse={true}
-					downloadOpeningTemplate={true}
-				/>
+				<Grid columns={18} gutter={{ base: "md" }}>
+					<Grid.Col span={'16'}>
+						<ReportFilterSearch
+						module={module}
+						form={form}
+						handleCSVDownload={handleCSVDownload}
+						handleCSVDownloadForUpload={handleCSVDownloadForUpload}
+						showWarehouse={true}
+						downloadOpeningTemplate={true}
+					/>
+					</Grid.Col>
+					<Grid.Col span={'2'} mt={'xs'}>
+						<Button
+							onClick={() => handlePrintReport()}
+							variant="filled"
+							c="white"
+							size="xs"
+							leftSection={<IconPrinter size={16} />}
+						>
+							{t("Print")}
+						</Button>
+					</Grid.Col>
+				</Grid>
 			</Box>
 			<Box className="border-top-none" px="sm">
 				<DataTable
@@ -146,11 +172,11 @@ export default function StockSummery() {
 							render: (_, index) => index + 1,
 							footer: `Total: ${records.length}`,
 						},
-						{ accessor: "warehouse_name", title: t("Warehouse") },
+						{ accessor: "warehouse_name", title: t("Department") },
 						{ accessor: "name", title: t("Item Name") },
 						{
 							accessor: "opening_quantity",
-							title: t("OpeningQuantity"),
+							title: t("Opening"),
 							textAlign: "right",
 							render: ({ opening_quantity }) => opening_quantity ?? 0
 						},
@@ -168,7 +194,7 @@ export default function StockSummery() {
 						},
 						{
 							accessor: "closing_quantity",
-							title: t("ClosingQuantity"),
+							title: t("Closing"),
 							textAlign: "right",
 							render: ({ closing_quantity }) => closing_quantity ?? 0
 						},
@@ -203,6 +229,9 @@ export default function StockSummery() {
 				style={{ display: "none" }}
 				ref={csvLinkRefForUpload}
 			/>
+			{records && (
+				<StockReport ref={summaryReportsRef}  data={records || []} />
+			)}
 		</Box>
 	);
 }

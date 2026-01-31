@@ -11,17 +11,16 @@ import {capitalizeWords, formatDate} from "@utils/index";
 const PAPER_HEIGHT = 1122;
 const PAPER_WIDTH = 793;
 
-const Dispense = forwardRef(({ data, preview = false }, ref) => {
+const StockReport = forwardRef(({ data, preview = false }, ref) => {
 	const { user } = useAppLocalStore();
 
-	const patientInfo = data || {};
+//	const data = data || {};
 	const { hospitalConfigData } = useHospitalConfigData();
-
+	console.log(data)
 	const getValue = (value, defaultValue = "") => {
 		return value || defaultValue;
 	};
 
-	
 	return (
 		<Box display={preview ? "block" : "none"}>
 			<style>
@@ -64,7 +63,6 @@ const Dispense = forwardRef(({ data, preview = false }, ref) => {
 				ref={ref}
 				p="md"
 				w={PAPER_WIDTH}
-				h={PAPER_HEIGHT}
 				style={{ overflow: "hidden" }}
 				className="watermark"
 				ff="Arial, sans-serif"
@@ -81,9 +79,9 @@ const Dispense = forwardRef(({ data, preview = false }, ref) => {
 						}}
 						className="customTable"
 					>
-						<Table.Tbody>
+
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td colSpan={"6"}>
+								<Table.Td colSpan={"7"}>
 									<Box>
 										<Flex gap="md" justify="center">
 											<Box>
@@ -113,48 +111,52 @@ const Dispense = forwardRef(({ data, preview = false }, ref) => {
 							</Table.Tr>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Td style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
-									colSpan={5}
+									colSpan={7}
 								>
-									<Text fw="bold" fz={'xl'}  ta={'center'}>Nurse/Pharmacy Dispense Approval</Text>
-								</Table.Td>
-							</Table.Tr>
-							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
-								<Table.Td style={{ border: "1px solid var(--theme-tertiary-color-8)" }}
-										  colSpan={5}
-								>
-									<Flex gap="md" justify="center">
-										<Text fw="bold" ta="left" fz={'12'}>
-											Requisition No:{patientInfo && patientInfo.invoice && patientInfo.invoice}
-										</Text>
-										<Text fw="bold" ta="left" fz={'12'}>
-											Date:{patientInfo && patientInfo.approved_date && patientInfo.approved_date}
-										</Text>
-										<Text fw="bold" ta="left" fz={'12'}>
-											{t("Department")}: {patientInfo && patientInfo.warehouse_name && patientInfo.warehouse_name}
-										</Text>
-									</Flex>
+									<Text fw="bold" fz={'xl'}  ta={'center'}>Department Stock Summary Report</Text>
 								</Table.Td>
 							</Table.Tr>
 							<Table.Tr>
 								<Table.Td colSpan={5} style={{ height: 16 }}>&nbsp;</Table.Td>
 							</Table.Tr>
+					</Table>
+					<Table
+						style={{
+							padding: 0,
+							borderCollapse: "collapse",
+							width: "100%",
+							border: "1px solid var(--theme-tertiary-color-8)",
+						}}
+						className="customTable"
+					>
+						<Table.Thead>
 							<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 								<Table.Th ta={'center'}>{t("S/N")}</Table.Th>
-								<Table.Th>{t("Generic")}</Table.Th>
-								<Table.Th>{t("Quantity")}</Table.Th>
+								<Table.Th>{t("Department")}</Table.Th>
+								<Table.Th>{t("Name")}</Table.Th>
+								<Table.Th w={'80'}>{t("Opening")}</Table.Th>
+								<Table.Th w={'80'}>{t("Stock In")}</Table.Th>
+								<Table.Th w={'80'}>{t("Stock Out")}</Table.Th>
+								<Table.Th w={'80'}>{t("Closing")}</Table.Th>
 							</Table.Tr>
-							{patientInfo?.dispense_items?.map((item, index) => (
+						</Table.Thead>
+						<Table.Tbody>
+							{data?.map((item, index) => (
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td ta={'center'} w={'50'}>{index + 1}.</Table.Td>
-									<Table.Td>{getValue(capitalizeWords(item?.name))}</Table.Td>
-									<Table.Td>{getValue(item?.quantity, "0")}</Table.Td>
+									<Table.Td>{getValue(item?.warehouse_name)}</Table.Td>
+									<Table.Td>{getValue(item?.name)}</Table.Td>
+									<Table.Td>{getValue(item?.opening_quantity)}</Table.Td>
+									<Table.Td>{getValue(item?.total_in_quantity, "0")}</Table.Td>
+									<Table.Td>{getValue(item?.total_out_quantity, "0")}</Table.Td>
+									<Table.Td>{getValue(item?.closing_quantity, "0")}</Table.Td>
 								</Table.Tr>
 							))}
 						</Table.Tbody>
 					</Table>
 				</Box>
 				<Box  bottom={'20'}  ta="center">
-					<Box p="md" pt={0} pb={0}>
+					<Box p="md" pt={'50'} pb={0}>
 						<Grid columns={12} gutter="xs">
 							<Grid.Col span={3}>
 								--------------------------------
@@ -199,6 +201,6 @@ const Dispense = forwardRef(({ data, preview = false }, ref) => {
 	);
 });
 
-Dispense.displayName = "Dispense";
+StockReport.displayName = "StockReport";
 
-export default Dispense;
+export default StockReport;
