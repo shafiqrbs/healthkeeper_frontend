@@ -15,6 +15,8 @@ const DrobFormBN = forwardRef(({ data, preview = false }, ref) => {
 		return value || defaultValue;
 	};
 
+	console.log(patientInfo);
+
 	return (
 		<Box display={preview ? "block" : "none"}>
 			<style>
@@ -83,7 +85,7 @@ const DrobFormBN = forwardRef(({ data, preview = false }, ref) => {
 								<Table.Tr style={{ border: "1px solid var(--theme-tertiary-color-8)" }}>
 									<Table.Td colSpan={3}>
 										<Text ta="center" py="mes" size="md" fw={600}>
-											{t("বিছানা ভাড়া বাবদ (অতিরিক্ত) টাকা ফেরত পাওয়ার জন্য আবেদন ফর্ম")}
+											{t("দায়মুক্তি/অঙ্গীকারনামা জন্য আবেদন ফর্ম")}
 										</Text>
 									</Table.Td>
 								</Table.Tr>
@@ -91,7 +93,7 @@ const DrobFormBN = forwardRef(({ data, preview = false }, ref) => {
 									<Table.Td colSpan={3}>
 										<Box px="mes" pt="2xs" pb="sm">
 											<Text fz={"xs"}>
-												{t("তারিখঃ")} {formatDate(patientInfo?.created)}
+												{t("তারিখঃ")} {formatDate(patientInfo?.updated_at)}
 											</Text>
 											<Text fz={"xs"}>{t("বরাবর")}</Text>
 											<Text fz={"xs"}>{t("উপ-পরিচালক")}</Text>
@@ -100,7 +102,7 @@ const DrobFormBN = forwardRef(({ data, preview = false }, ref) => {
 
 											<Text my="sm" fz={"xs"}>
 												{t(
-													"বিষয়ঃ বিছানা ভাড়া বাবদ (অতিরিক্ত) টাকা ফেরত পাওয়ার জন্য আবেদন ফর্ম"
+													"বিষয়ঃ নিজ দায়িত্বে রোগী স্থানান্তর/রিলিজ ছাড়পত্র (দায়মুক্তি অঙ্গীকারনামা)"
 												)}
 											</Text>
 											<Text fz={"xs"}>{t("জনাব")}</Text>
@@ -114,11 +116,9 @@ const DrobFormBN = forwardRef(({ data, preview = false }, ref) => {
 														patientInfo?.day ? `${patientInfo?.day} দিন` : ""
 													}, হাসপাতাল আইডি/রেজিস্ট্রেশন নং ${getValue(
 														patientInfo?.patient_id || ""
-													)} আমি গত ${formatDateTimeAmPm(
-														patientInfo?.admission_date
-													)} তারিখ হইতে ${formatDateTimeAmPm(
-														patientInfo?.created
-													)} তারিখ পর্যন্ত অত্র হাসপাতাল বিভাগ ${getValue(
+													)} আমি গত ${patientInfo?.admission_date} তারিখ হইতে ${
+														patientInfo?.release_date
+													} তারিখ পর্যন্ত অত্র হাসপাতাল বিভাগ ${getValue(
 														patientInfo?.admit_department_name,
 														""
 													)}, ওয়ার্ড নং ${getValue(
@@ -130,11 +130,7 @@ const DrobFormBN = forwardRef(({ data, preview = false }, ref) => {
 													)}/ কেবিন নং ${getValue(
 														patientInfo?.room_name,
 														""
-													)} এ ভর্তি ছিলাম এবং অদ্য ${formatDateTimeAmPm(
-														new Date()
-													)} তারিখ আমায় হাসপাতাল থেকে ছুটি প্রদান করা হয়। এমতাবস্থায় আমি বিছানাভাড়া (রিফান্ড বিল মোতাবেক) বাবদ ${
-														patientInfo?.amount
-													} টাকা অতিরিক্ত প্রদান করায় ফেরত পেতে ইচ্ছুক।`
+													)} এ ভর্তি ছিলাম । আমি স্বেচ্ছায় এবং সম্পূর্ণ নিজ দায়িত্বে আমার রোগীকে এই হাসপাতাল থেকে অন্য হাসপাতালে/বাড়িতে স্থানান্তর করছি। এর ফলে রোগীর কোনো শারীরিক ক্ষতি, জটিলতা বা অনাকাঙ্ক্ষিত পরিস্থিতি সৃষ্টি হলে তার সম্পূর্ণ দায়ভার আমার ওপর বর্তাবে। এ বিষয়ে হাসপাতাল কর্তৃপক্ষ বা চিকিৎসক কোনোভাবেই দায়ী থাকবেন না।`
 												)}
 											</Text>
 											<Text fz={"xs"} mt="sm">

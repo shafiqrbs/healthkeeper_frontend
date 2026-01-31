@@ -1,5 +1,5 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { IconArrowRight, IconChevronUp, IconSelector } from "@tabler/icons-react";
+import {IconArrowRight, IconChevronUp, IconPrinter, IconSelector} from "@tabler/icons-react";
 import {Badge, Box, Button, Flex, FloatingIndicator, Group, Tabs, Text} from "@mantine/core";
 import { HOSPITAL_DATA_ROUTES } from "@/constants/routes";
 import { MODULES } from "@/constants";
@@ -16,7 +16,9 @@ import {getDataWithoutStore} from "@/services/apiService";
 import {useSelector} from "react-redux";
 import {modals} from "@mantine/modals";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
+import {useReactToPrint} from "react-to-print";
+import DrobFormBN from "@hospital-components/print-formats/dorb/DorbFormBN";
 
 const module = MODULES.DISCHARGE;
 const PER_PAGE = 25;
@@ -25,6 +27,7 @@ const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic"
 
 const tabs = [
 	{ label: "Current", value: "paid" },
+	{ label: "DORB", value: "DORB" },
 	{ label: "Discharged", value: "discharged" },
 ];
 
@@ -43,6 +46,11 @@ export default function _Table() {
 		setControlsRefs(controlsRefs);
 	};
 
+	const invoicePrintRef = useRef(null);
+	const [invoicePrintData, setInvoicePrintData] = useState(null);
+	const invoicePrint = useReactToPrint({ content: () => invoicePrintRef.current });
+
+
 	const form = useForm({
 		initialValues: {
 			keywordSearch: "",
@@ -51,7 +59,7 @@ export default function _Table() {
 		},
 	});
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
+	const { refetchAll,scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
 		usePagination({
 			module,
 			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
@@ -107,10 +115,25 @@ export default function _Table() {
 			const { data } = await getDataWithoutStore({
 				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DORB_PROCESS}/${id}`,
 			});
+			if (res.status === 200) {
+				refetchAll();
+			}
 		} else {
 			showNotificationComponent(t("NoDataAvailable"), "red.6", "lightgray");
 		}
 	};
+
+	const handleDorbPrint = async (id) => {
+		const res = await getDataWithoutStore({
+			url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.INDEX}/${id}`,
+		});
+		setInvoicePrintData(res?.data);
+	};
+	useEffect(() => {
+		if (invoicePrintData) {
+			invoicePrint();
+		}
+	}, [invoicePrintData]);
 
 	const processColorMap = { paid: "red", discharged: "green" , refund: "orange" , empty: "blue" };
 
@@ -241,6 +264,17 @@ export default function _Table() {
 											{t("DORB")}
 										</Button>
 									)}
+									{item?.release_mode === 'DORB' && (
+										<Button
+											variant="filled"
+											size="compact-xs"
+											color="red"
+											onClick={() => handleDorbPrint(item.uid)}
+											leftSection={<IconPrinter size={14} />}
+										>
+											{t("Print")}
+										</Button>
+									)}
 								</Group>
 							)
 						}
@@ -262,6 +296,7 @@ export default function _Table() {
 					}}
 				/>
 			</Box>
+			<DrobFormBN data={invoicePrintData} ref={invoicePrintRef} />
 		</Box>
 	);
 }

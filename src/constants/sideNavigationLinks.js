@@ -282,6 +282,15 @@ export const sideNavigationLinks = {
 			],
 		},
 
+
+
+		{
+			label: t("DORB"),
+			path: "/hospital/dorb-confirm",
+			icon: IconBuildingHospital,
+			color: "#16486a", // Brown
+			allowedRoles: ["role_domain", "admin_administrator", "doctor_emergency", "nurse_basic", "nurse_incharge", "doctor_ipd", "operator_emergency"],
+		},
 		{
 			label: t("Discharge"),
 			path: "/hospital/discharge",

@@ -16,7 +16,7 @@ import {getDataWithoutStore} from "@/services/apiService";
 import {useSelector} from "react-redux";
 import {modals} from "@mantine/modals";
 import filterTabsCss from "@assets/css/FilterTabs.module.css";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useReactToPrint} from "react-to-print";
 import RefundFromBedBn from "@hospital-components/print-formats/refund/RefundFormBedBN";
 import DrobFormBN from "@hospital-components/print-formats/dorb/DorbFormBN";
@@ -26,7 +26,10 @@ const PER_PAGE = 25;
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd","doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator"];
 const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse"];
 
-
+const tabs = [
+	{ label: "DORB", value: "DORB" },
+	{ label: "Archived", value: "discharged" },
+];
 
 export default function Table() {
 	const { t } = useTranslation();
@@ -35,7 +38,7 @@ export default function Table() {
 	const { userRoles } = useAppLocalStore();
 	const filterData = useSelector((state) => state.crud[module].filterData);
 	const [rootRef, setRootRef] = useState(null);
-	const [processTab, setProcessTab] = useState("paid");
+	const [processTab, setProcessTab] = useState("DORB");
 	const [controlsRefs, setControlsRefs] = useState({});
 
 	const setControlRef = (val) => (node) => {
@@ -56,14 +59,14 @@ export default function Table() {
 		},
 	});
 
-	const { scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
+	const { refetchAll,scrollRef, records, fetching, sortStatus, setSortStatus, page, total, perPage, handlePageChange } =
 		usePagination({
 			module,
 			fetchUrl: HOSPITAL_DATA_ROUTES.API_ROUTES.ADMISSION.INDEX_CONFIRM,
 			filterParams: {
 				name: filterData?.name,
 				patient_mode: "ipd",
-				process: 'discharged',
+				process: processTab,
 				release_mode: 'DORB',
 				created: form.values.created,
 				term: form.values.keywordSearch,
@@ -80,18 +83,16 @@ export default function Table() {
 			labels: { confirm: t("Confirm"), cancel: t("Cancel") },
 			confirmProps: { color: "red" },
 			onCancel: () => console.info("Cancel"),
-			onConfirm: () => handlePatientDischarge(id),
+			onConfirm: () => handlePatientDORB(id),
 		});
 	};
 
-	const handlePatientDischarge = async (id) => {
+	const handlePatientDORB = async (id) => {
 		if (id) {
 			const { data } = await getDataWithoutStore({
-				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DISCHARGE_PROCESS}/${id}`,
+				url: `${HOSPITAL_DATA_ROUTES.API_ROUTES.IPD.DORB_CONFIRM_PROCESS}/${id}`,
 			});
-			navigate(`${HOSPITAL_DATA_ROUTES.NAVIGATION_LINKS.IPD_ADMITTED.MANAGE}/${id}?tab=discharge`, {
-				replace: true,
-			});
+			refetchAll();
 		} else {
 			showNotificationComponent(t("NoDataAvailable"), "red.6", "lightgray");
 		}
@@ -103,6 +104,12 @@ export default function Table() {
 		});
 		setInvoicePrintData(res?.data);
 	};
+	useEffect(() => {
+		if (invoicePrintData) {
+			invoicePrint();
+		}
+	}, [invoicePrintData]);
+
 	const processColorMap = { paid: "red", discharged: "green" , refund: "orange" , empty: "blue" };
 
 	return (
@@ -111,6 +118,28 @@ export default function Table() {
 				<Text fw={600} fz="sm" py="xs">
 					{t("Patient DORB")}
 				</Text>
+				<Flex gap="xs" align="center">
+					<Tabs mt="xs" variant="none" value={processTab} onChange={setProcessTab}>
+						<Tabs.List ref={setRootRef} className={filterTabsCss.list}>
+							{tabs.map((tab, index) => (
+								<Tabs.Tab
+									value={tab.value}
+									ref={setControlRef(tab)}
+									className={filterTabsCss.tab}
+									key={index}
+								>
+									{t(tab.label)}
+								</Tabs.Tab>
+							))}
+							<FloatingIndicator
+								target={processTab ? controlsRefs[processTab] : null}
+								parent={rootRef}
+								className={filterTabsCss.indicator}
+							/>
+						</Tabs.List>
+					</Tabs>
+
+				</Flex>
 
 			</Flex>
 			<Box>
@@ -188,7 +217,7 @@ export default function Table() {
 							render: (item) => (
 								<Group onClick={(e) => e.stopPropagation()} gap={4} justify="right" wrap="nowrap">
 									{userRoles.some((role) => ALLOWED_CONFIRMED_ROLES.includes(role)) &&
-									(item.process?.toLowerCase() === "discharged" && !item.dorb_approved_by_id) && (
+									(item.process?.toLowerCase() === "dorb" && !item.dorb_approved_by_id) && (
 										<Button
 											variant="filled"
 											size="compact-xs"
