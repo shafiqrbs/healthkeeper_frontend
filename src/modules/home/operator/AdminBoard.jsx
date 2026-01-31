@@ -146,7 +146,7 @@ export default function AdminBoard({ height }) {
 
 			<Modal size="85%" opened={opened} onClose={close} title="Collection Overview" centered>
 				<Card padding="lg" radius="sm" h="100%">
-					<InvoiceSummary />
+					<InvoiceSummary mainAreaHeight={height} />
 				</Card>
 			</Modal>
 		</>

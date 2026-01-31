@@ -62,11 +62,10 @@ const CSV_HEADERS = [
 
 const module = MODULES_CORE.DASHBOARD_DAILY_SUMMARY;
 
-export default function InvoiceSummary() {
-	const { mainAreaHeight } = useOutletContext();
+export default function InvoiceSummary({ mainAreaHeight }) {
 	const csvLinkRef = useRef(null);
 	const { t } = useTranslation();
-	const listData = useSelector((state) => state.crud[module].data);
+	const listData = useSelector((state) => state.crud[ module ].data);
 	const height = mainAreaHeight - 156;
 	const form = useForm({
 		initialValues: {
@@ -75,7 +74,7 @@ export default function InvoiceSummary() {
 		},
 	});
 
-	const [controlsRefs, setControlsRefs] = useState({});
+	const [ controlsRefs, setControlsRefs ] = useState({});
 	const { data: records, isLoading } = useDataWithoutStore({
 		url: HOSPITAL_DATA_ROUTES.API_ROUTES.REPORT.DASHBOARD_DAILY_SUMMARY,
 		params: {
@@ -85,7 +84,7 @@ export default function InvoiceSummary() {
 		},
 	});
 
-	const collectionSummaryData = records?.data?.summary[0] || {};
+	const collectionSummaryData = records?.data?.summary[ 0 ] || {};
 	const refundTotal = records?.data?.refundTotal || 0;
 
 	const invoiceModeData = records?.data?.invoiceMode || [];
@@ -119,20 +118,20 @@ export default function InvoiceSummary() {
 	);
 
 	const totalPatientServiceAmount = patientServiceModeData?.reduce((sum, item) => sum + (item.total ?? 0), 0);
-	const totalPatientServiceCount = patientServiceModeData?.reduce((sum, item) => sum + parseInt(item.patient, 0),0);
+	const totalPatientServiceCount = patientServiceModeData?.reduce((sum, item) => sum + parseInt(item.patient, 0), 0);
 	const totalFinancialServiceCount = financialServices?.reduce((sum, item) => sum + (item.total_count ?? 0), 0);
 	const totalFinancialServiceAmount = financialServices?.reduce((sum, item) => sum + (item.sub_total ?? 0), 0);
 
 
 	const totalUserCount = userCollectionData?.reduce(
-		(sum, item) => sum + parseInt(item.total_count, 10),0);
+		(sum, item) => sum + parseInt(item.total_count, 10), 0);
 	const totalUserAmount = userCollectionData?.reduce((sum, item) => sum + (item?.total ?? 0), 0);
 
-	const totalServiceCount = serviceData?.reduce((sum, item) => sum + parseInt(item?.total_count, 10),0);
+	const totalServiceCount = serviceData?.reduce((sum, item) => sum + parseInt(item?.total_count, 10), 0);
 	const totalServiceAmount = serviceData?.reduce((sum, item) => sum + (item.sub_total ?? 0), 0);
 
 	const totalServieGroupCount = serviceGroups?.reduce(
-		(sum, item) => sum + parseInt(item.total_count, 10),0);
+		(sum, item) => sum + parseInt(item.total_count, 10), 0);
 	const totalServiceGroupAmount = serviceGroups?.reduce(
 		(sum, item) => sum + (item.total ?? 0),
 		0
@@ -219,8 +218,8 @@ export default function InvoiceSummary() {
 								<Table.Thead bg="var(--theme-secondary-color-0)">
 									<Table.Tr py="xs">
 										<Table.Td width={'70%'}>Particular</Table.Td>
-										<Table.Td  width={'15%'}>Patient</Table.Td>
-										<Table.Td  width={'15%'}>Amount</Table.Td>
+										<Table.Td width={'15%'}>Patient</Table.Td>
+										<Table.Td width={'15%'}>Amount</Table.Td>
 									</Table.Tr>
 								</Table.Thead>
 								<Table.Tbody>
@@ -309,7 +308,7 @@ export default function InvoiceSummary() {
 									{invoiceModeData &&
 										invoiceModeData?.map((item, index) => (
 											<Table.Tr key={item.id || index} py="xs">
-												<Table.Td>{capitalizeWords(item?.name == 'ipd' ? 'Admission':item?.name)}</Table.Td>
+												<Table.Td>{capitalizeWords(item?.name == 'ipd' ? 'Admission' : item?.name)}</Table.Td>
 												<Table.Td>{item?.total}</Table.Td>
 												<Table.Td>{item?.refund}</Table.Td>
 												<Table.Td>{item?.sub_total}</Table.Td>
@@ -375,35 +374,35 @@ export default function InvoiceSummary() {
 									</Flex>
 								</Card.Section>
 							</Card>
-						<Table style={{
-							borderCollapse: "collapse",
-							width: "100%",
-						}}>
-							<Table.Thead bg="var(--theme-secondary-color-0)">
-								<Table.Tr py="xs">
-									<Table.Td  width={"70%"}>Particular</Table.Td>
-									<Table.Td>Amount</Table.Td>
-									<Table.Td>Refund</Table.Td>
-									<Table.Td>Total</Table.Td>
-								</Table.Tr>
-							</Table.Thead>
-							<Table.Tbody>
-								{financialServices && (
-									financialServices?.map((item, index) => (
-										<Table.Tr key={item.id || index} py="xs">
-											<Table.Td>{item?.name}</Table.Td>
-											<Table.Td>{item?.total}</Table.Td>
-											<Table.Td>{item?.refund}</Table.Td>
-											<Table.Td>{item?.sub_total}</Table.Td>
-										</Table.Tr>
-									))
-								)}
-								<Table.Tr bg="var(--theme-primary-color-1)">
-									<Table.Td colSpan={'3'}>Total</Table.Td>
-									<Table.Td>{totalFinancialServiceAmount}</Table.Td>
-								</Table.Tr>
-							</Table.Tbody>
-						</Table>
+							<Table style={{
+								borderCollapse: "collapse",
+								width: "100%",
+							}}>
+								<Table.Thead bg="var(--theme-secondary-color-0)">
+									<Table.Tr py="xs">
+										<Table.Td width={"70%"}>Particular</Table.Td>
+										<Table.Td>Amount</Table.Td>
+										<Table.Td>Refund</Table.Td>
+										<Table.Td>Total</Table.Td>
+									</Table.Tr>
+								</Table.Thead>
+								<Table.Tbody>
+									{financialServices && (
+										financialServices?.map((item, index) => (
+											<Table.Tr key={item.id || index} py="xs">
+												<Table.Td>{item?.name}</Table.Td>
+												<Table.Td>{item?.total}</Table.Td>
+												<Table.Td>{item?.refund}</Table.Td>
+												<Table.Td>{item?.sub_total}</Table.Td>
+											</Table.Tr>
+										))
+									)}
+									<Table.Tr bg="var(--theme-primary-color-1)">
+										<Table.Td colSpan={'3'}>Total</Table.Td>
+										<Table.Td>{totalFinancialServiceAmount}</Table.Td>
+									</Table.Tr>
+								</Table.Tbody>
+							</Table>
 						</Box>
 						<Box className="borderRadiusAll">
 							<Card padding="lg" radius="sm">
@@ -453,7 +452,7 @@ export default function InvoiceSummary() {
 				</Box>
 			</Box>
 			{records?.data && (
-				<DailySummaryReports ref={summaryReportsRef}  records={records?.data || []} />
+				<DailySummaryReports ref={summaryReportsRef} records={records?.data || []} />
 			)}
 		</Box>
 	);
