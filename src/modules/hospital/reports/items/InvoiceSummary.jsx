@@ -34,7 +34,6 @@ import { capitalizeWords, formatDate } from "@/common/utils";
 import { useForm } from "@mantine/form";
 import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { MODULES, MODULES_CORE } from "@/constants";
-import { useOutletContext } from "react-router-dom";
 import ReportFilterSearch from "@hospital-components/ReportFilterSearch";
 import { getDataWithoutStore } from "@/services/apiService";
 import { useReactToPrint } from "react-to-print";
@@ -147,6 +146,7 @@ export default function InvoiceSummary({ mainAreaHeight }) {
 			</Flex>
 			<Box px="sm" mb="sm">
 				<ReportFilterSearch
+					mainAreaHeight={mainAreaHeight}
 					module={module}
 					form={form}
 					handleCSVDownload={handleCSVDownload}

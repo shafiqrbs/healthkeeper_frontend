@@ -12,29 +12,27 @@ import {
 import InputForm from "@components/form-builders/InputForm";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
-import { useOutletContext } from "react-router-dom";
 import SelectForm from "@components/form-builders/SelectForm";
 import { ADVANCED_FILTER_SEARCH_OPERATOR } from "@/constants";
 import InputNumberForm from "@components/form-builders/InputNumberForm";
 
-const DROPDOWN_DATA = Object.entries(ADVANCED_FILTER_SEARCH_OPERATOR.INPUT_PARAMETER).map(([key, value], index) => ({
+const DROPDOWN_DATA = Object.entries(ADVANCED_FILTER_SEARCH_OPERATOR.INPUT_PARAMETER).map(([ key, value ], index) => ({
 	id: index,
 	label: value,
 	value: value,
 }));
 
-export default function AdvancedFilter({ setRefreshCustomerDropdown, focusField, fieldPrefix, bd = "auto" }) {
-	const [key, setKey] = useState(0);
-	const { mainAreaHeight } = useOutletContext();
+export default function AdvancedFilter({ mainAreaHeight, setRefreshCustomerDropdown, focusField, fieldPrefix, bd = "auto" }) {
+	const [ key, setKey ] = useState(0);
 	const height = mainAreaHeight;
 
 	const { t } = useTranslation();
 
 	/*START CUSTOMER ADDED FORM INITIAL*/
-	const [advanceSearchFormOpened, setAdvanceSearchFormOpened] = useState(false);
-	const [nameDropdown, setNameDropdown] = useState(DROPDOWN_DATA[0].value);
-	const [mobileDropdown, setMobileDropdown] = useState(DROPDOWN_DATA[0].value);
-	const [companyNameDropdown, setCompanyNameDropdown] = useState(DROPDOWN_DATA[0].value);
+	const [ advanceSearchFormOpened, setAdvanceSearchFormOpened ] = useState(false);
+	const [ nameDropdown, setNameDropdown ] = useState(DROPDOWN_DATA[ 0 ].value);
+	const [ mobileDropdown, setMobileDropdown ] = useState(DROPDOWN_DATA[ 0 ].value);
+	const [ companyNameDropdown, setCompanyNameDropdown ] = useState(DROPDOWN_DATA[ 0 ].value);
 
 	const advanceSearchForm = useForm({
 		initialValues: {

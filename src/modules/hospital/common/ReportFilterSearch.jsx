@@ -1,21 +1,21 @@
 import { ActionIcon, Flex, Select, TextInput } from "@mantine/core";
-import {IconFile, IconFileTypeXls, IconRestore, IconSearch, IconX} from "@tabler/icons-react";
-import AdvancedFilter from "../../../common/components/advance-search/AdvancedFilter";
+import { IconFile, IconFileTypeXls, IconRestore, IconSearch, IconX } from "@tabler/icons-react";
+import AdvancedFilter from "@components/advance-search/AdvancedFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilterData } from "@/app/store/core/crudSlice";
 import { useState, useCallback, useEffect } from "react";
 import { DateInput } from "@mantine/dates";
 import { formatDate } from "@/common/utils";
 import { useDebouncedCallback } from "@mantine/hooks";
-import {HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES} from "@/constants/routes";
+import { HOSPITAL_DATA_ROUTES, PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import { getIndexEntityData } from "@/app/store/core/crudThunk";
-import {ERROR_NOTIFICATION_COLOR, MODULES_CORE} from "@/constants";
-import {useAuthStore} from "@/store/useAuthStore.js";
-import {notifications} from "@mantine/notifications";
-import {errorNotification} from "@components/notification/errorNotification.jsx";
+import { ERROR_NOTIFICATION_COLOR, MODULES_CORE } from "@/constants";
+import { useAuthStore } from "@/store/useAuthStore.js";
+import { notifications } from "@mantine/notifications";
+import { errorNotification } from "@components/notification/errorNotification.jsx";
 
 const roomModule = MODULES_CORE.OPD_ROOM;
-const units = ["Unit 1", "Unit 2", "Unit 3"];
+const units = [ "Unit 1", "Unit 2", "Unit 3" ];
 const invoiceModes = [
 	{ id: "all", name: "All" },
 	{ id: "opd", name: "OPD" },
@@ -35,28 +35,28 @@ export default function ReportFilterSearch({
 	showOpdRoom = false,
 	showUnits = false,
 	className = "keyword-search-box",
-	handleCSVDownload = () => {},
-											   handleCSVDownloadForUpload = () => {},
-    showStockItems = false,
-    showWarehouse = false,
-											   showInvoiceMode = false,
-											   downloadOpeningTemplate = false,
-})
-	{
+	handleCSVDownload = () => { },
+	handleCSVDownloadForUpload = () => { },
+	showStockItems = false,
+	showWarehouse = false,
+	showInvoiceMode = false,
+	downloadOpeningTemplate = false,
+	mainAreaHeight,
+}) {
 	const dispatch = useDispatch();
-	const [fetching, setFetching] = useState(false);
-	const [records, setRecords] = useState([]);
-	const [stockItems, setStockItems] = useState([]);
-	const [warehouseData, setWarehouseData] = useState([]);
-	const [warehouse, setWarehouse] = useState([]);
-	const [keywordSearch, setKeywordSearch] = useState(form.values.keywordSearch || "");
-	const [date, setDate] = useState(null);
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
-	const rooms = useSelector((state) => state.crud[roomModule].data);
-    const userWarehouse = useAuthStore(state => state.warehouse);
+	const [ fetching, setFetching ] = useState(false);
+	const [ records, setRecords ] = useState([]);
+	const [ stockItems, setStockItems ] = useState([]);
+	const [ warehouseData, setWarehouseData ] = useState([]);
+	const [ warehouse, setWarehouse ] = useState([]);
+	const [ keywordSearch, setKeywordSearch ] = useState(form.values.keywordSearch || "");
+	const [ date, setDate ] = useState(null);
+	const [ startDate, setStartDate ] = useState(null);
+	const [ endDate, setEndDate ] = useState(null);
+	const rooms = useSelector((state) => state.crud[ roomModule ].data);
+	const userWarehouse = useAuthStore(state => state.warehouse);
 
-    // =============== debounce keyword to control api calls via form state ================
+	// =============== debounce keyword to control api calls via form state ================
 	const debouncedSetKeywordInForm = useDebouncedCallback((value) => {
 		form.setFieldValue("keywordSearch", value);
 	}, 500);
@@ -71,7 +71,7 @@ export default function ReportFilterSearch({
 		try {
 			const result = await dispatch(getIndexEntityData(value)).unwrap();
 			const itemData = result?.data?.data || [];
-            setStockItems(itemData);
+			setStockItems(itemData);
 		} catch (err) {
 			console.error("Unexpected error:", err);
 		} finally {
@@ -79,10 +79,10 @@ export default function ReportFilterSearch({
 		}
 	};
 
-    useEffect(() => {
-        fetchStockItemData()
-        setWarehouse(userWarehouse)
-    }, []);
+	useEffect(() => {
+		fetchStockItemData()
+		setWarehouse(userWarehouse)
+	}, []);
 
 
 
@@ -125,7 +125,7 @@ export default function ReportFilterSearch({
 			setKeywordSearch(form.values.keywordSearch);
 		}
 		if (form.values?.created) {
-			const [day, month, year] = String(form.values.created).split("-");
+			const [ day, month, year ] = String(form.values.created).split("-");
 			const parsed = new Date(Number(year), Number(month) - 1, Number(day));
 			setDate(isNaN(parsed) ? null : parsed);
 		}
@@ -140,18 +140,18 @@ export default function ReportFilterSearch({
 	// =============== handle search functionality ================
 	const handleSearch = (searchData) => {
 
-		if (module === 'medicineIssue'){
-			if (!startDate){
-				errorNotification('Start Date is required.',ERROR_NOTIFICATION_COLOR)
+		if (module === 'medicineIssue') {
+			if (!startDate) {
+				errorNotification('Start Date is required.', ERROR_NOTIFICATION_COLOR)
 				return;
 			}
-			if (!endDate){
-				errorNotification('End Date is required.',ERROR_NOTIFICATION_COLOR)
+			if (!endDate) {
+				errorNotification('End Date is required.', ERROR_NOTIFICATION_COLOR)
 				return;
 			}
 
-			if (!warehouseData || warehouseData.length === 0){
-				errorNotification('Warehouse is required.',ERROR_NOTIFICATION_COLOR)
+			if (!warehouseData || warehouseData.length === 0) {
+				errorNotification('Warehouse is required.', ERROR_NOTIFICATION_COLOR)
 				return;
 			}
 		}
@@ -160,8 +160,8 @@ export default function ReportFilterSearch({
 			keywordSearch,
 			created: date ? formatDate(date) : "",
 			room_id: form.values.room_id,
-            stock_item_id: form.values.stock_item_id,
-            warehouse_id: form.values.warehouse_id,
+			stock_item_id: form.values.stock_item_id,
+			warehouse_id: form.values.warehouse_id,
 			start_date: startDate ? formatDate(startDate) : "",
 			end_date: endDate ? formatDate(endDate) : "",
 		};
@@ -180,9 +180,9 @@ export default function ReportFilterSearch({
 
 	// =============== handle date change ================
 	const handleDateChange = (value) => {
-	//	form.setFieldValue("created", value ? formatDate(value) : "");
+		//	form.setFieldValue("created", value ? formatDate(value) : "");
 		setDate(value);
-	//	handleSearch({ keywordSearch, created: value ? formatDate(value) : "", room_id: form.values.room_id });
+		//	handleSearch({ keywordSearch, created: value ? formatDate(value) : "", room_id: form.values.room_id });
 	};
 
 	// =============== handle reset functionality ================
@@ -198,7 +198,7 @@ export default function ReportFilterSearch({
 		if (onReset) {
 			onReset(resetData);
 		}
-	}, [dispatch, module, onReset]);
+	}, [ dispatch, module, onReset ]);
 
 	const handleRoomChange = (value) => {
 		form.setFieldValue("room_id", value);
@@ -217,28 +217,28 @@ export default function ReportFilterSearch({
 	};
 
 	return (
-		<Flex  justify="flex-end"
-			   align="center"
-			   direction="row" className={className}>
+		<Flex justify="flex-end"
+			align="center"
+			direction="row" className={className}>
 			{showDatePicker && (
 				<>
-				<DateInput
-					clearable
-					name="start_date"
-					placeholder="Select Date"
-					value={startDate}
-					onChange={(start_date)=>setStartDate(start_date)}
-					miw={200}
-				/>
-				<DateInput
-					clearable
-					name="end_date"
-					placeholder="Select Date"
-					value={endDate}
-					onChange={(end_date)=>setEndDate(end_date)}
-					miw={200}
-				/>
-					</>
+					<DateInput
+						clearable
+						name="start_date"
+						placeholder="Select Date"
+						value={startDate}
+						onChange={(start_date) => setStartDate(start_date)}
+						miw={200}
+					/>
+					<DateInput
+						clearable
+						name="end_date"
+						placeholder="Select Date"
+						value={endDate}
+						onChange={(end_date) => setEndDate(end_date)}
+						miw={200}
+					/>
+				</>
 			)}
 
 			{showOpdRoom && (
@@ -253,16 +253,16 @@ export default function ReportFilterSearch({
 				/>
 			)}
 
-            {showWarehouse && (
-                <Select
-                    placeholder="Department"
-                    loading={fetching}
-                    data={warehouse.map((item) => ({ label: item?.warehouse_name, value: item?.id?.toString() }))}
-                    value={form.values.warehouse_id}
-                    onChange={(value) => handleWarehouseChange(value)}
-                    w={250}
-                />
-            )}
+			{showWarehouse && (
+				<Select
+					placeholder="Department"
+					loading={fetching}
+					data={warehouse.map((item) => ({ label: item?.warehouse_name, value: item?.id?.toString() }))}
+					value={form.values.warehouse_id}
+					onChange={(value) => handleWarehouseChange(value)}
+					w={250}
+				/>
+			)}
 
 			{showStockItems && (
 				<Select
@@ -316,7 +316,7 @@ export default function ReportFilterSearch({
 					</ActionIcon>
 				)}
 
-				{showAdvancedFilter && <AdvancedFilter />}
+				{showAdvancedFilter && <AdvancedFilter mainAreaHeight={mainAreaHeight} />}
 
 				<ActionIcon
 					c="var(--theme-success-color-3)"
@@ -328,13 +328,13 @@ export default function ReportFilterSearch({
 
 				{downloadOpeningTemplate &&
 
-				<ActionIcon
-					c="var(--theme-success-color-3)"
-					bg="var(--mantine-color-white)"
-					onClick={handleCSVDownloadForUpload}
-				>
-					<IconFile size={16} stroke={1.5} />
-				</ActionIcon>
+					<ActionIcon
+						c="var(--theme-success-color-3)"
+						bg="var(--mantine-color-white)"
+						onClick={handleCSVDownloadForUpload}
+					>
+						<IconFile size={16} stroke={1.5} />
+					</ActionIcon>
 				}
 			</Flex>
 		</Flex>
