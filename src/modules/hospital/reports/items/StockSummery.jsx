@@ -1,14 +1,14 @@
-import {useRef, useState} from "react";
+import { useRef } from "react";
 import { CSVLink } from "react-csv";
 
 import DataTableFooter from "@components/tables/DataTableFooter";
-import {Box, Flex, Text, Grid, Button} from "@mantine/core";
-import {IconChevronUp, IconPrinter, IconSelector} from "@tabler/icons-react";
+import { Box, Flex, Text, Grid, Button } from "@mantine/core";
+import { IconChevronUp, IconPrinter, IconSelector } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { useTranslation } from "react-i18next";
 import tableCss from "@assets/css/Table.module.css";
 
-import {PHARMACY_DATA_ROUTES} from "@/constants/routes";
+import { PHARMACY_DATA_ROUTES } from "@/constants/routes";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import { useForm } from "@mantine/form";
@@ -16,8 +16,7 @@ import useInfiniteTableScroll from "@hooks/useInfiniteTableScroll";
 import { MODULES } from "@/constants";
 import { useOutletContext } from "react-router-dom";
 import ReportFilterSearch from "@hospital-components/ReportFilterSearch";
-import DailySummaryReports from "@hospital-components/print-formats/reports/DailySummaryReports";
-import {useReactToPrint} from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 import StockReport from "@hospital-components/print-formats/stock-summary/stockReport";
 
 const PER_PAGE = 200;
@@ -43,8 +42,6 @@ const CSV_HEADERS_UPLOAD = [
 	{ label: "ExpiredDate", key: "expired_date" },
 ];
 
-
-
 const module = MODULES.REPORT.STOCK_SUMMERY;
 
 export default function StockSummery() {
@@ -52,11 +49,11 @@ export default function StockSummery() {
 	const csvLinkRef = useRef(null);
 	const csvLinkRefForUpload = useRef(null);
 	const { t } = useTranslation();
-	const listData = useSelector((state) => state?.crud[module]?.data);
+	const listData = useSelector((state) => state?.crud[ module ]?.data);
 
 	const summaryReportsRef = useRef(null);
 	const invoicePrint = useReactToPrint({ content: () => summaryReportsRef.current });
-	console.log(invoicePrint);
+
 	const handlePrintReport = () => {
 		requestAnimationFrame(invoicePrint);
 	};
@@ -65,7 +62,7 @@ export default function StockSummery() {
 		initialValues: {
 			start_date: null,
 			end_date: null,
-            warehouse_id: null,
+			warehouse_id: null,
 		},
 	});
 
@@ -73,12 +70,12 @@ export default function StockSummery() {
 		useInfiniteTableScroll({
 			module,
 			fetchUrl: PHARMACY_DATA_ROUTES.API_ROUTES.REPORT.STOCK_SUMMERY_REPORT,
-            filterParams: {
-                start_date: form.values.start_date ?? null,
-                end_date: form.values.end_date ?? null,
+			filterParams: {
+				start_date: form.values.start_date ?? null,
+				end_date: form.values.end_date ?? null,
 				warehouse_id: form.values.warehouse_id ?? null,
-            },
-            perPage: PER_PAGE,
+			},
+			perPage: PER_PAGE,
 		});
 
 	const csvData =
@@ -128,13 +125,13 @@ export default function StockSummery() {
 				<Grid columns={18} gutter={{ base: "md" }}>
 					<Grid.Col span={'16'}>
 						<ReportFilterSearch
-						module={module}
-						form={form}
-						handleCSVDownload={handleCSVDownload}
-						handleCSVDownloadForUpload={handleCSVDownloadForUpload}
-						showWarehouse={true}
-						downloadOpeningTemplate={true}
-					/>
+							module={module}
+							form={form}
+							handleCSVDownload={handleCSVDownload}
+							handleCSVDownloadForUpload={handleCSVDownloadForUpload}
+							showWarehouse={true}
+							downloadOpeningTemplate={true}
+						/>
 					</Grid.Col>
 					<Grid.Col span={'2'} mt={'xs'}>
 						<Button
@@ -230,7 +227,7 @@ export default function StockSummery() {
 				ref={csvLinkRefForUpload}
 			/>
 			{records && (
-				<StockReport ref={summaryReportsRef}  data={records || []} />
+				<StockReport ref={summaryReportsRef} data={records || []} />
 			)}
 		</Box>
 	);

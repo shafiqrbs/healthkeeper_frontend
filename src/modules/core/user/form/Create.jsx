@@ -30,10 +30,10 @@ export default function Create({ module }) {
 	const { isOnline, mainAreaHeight } = useOutletContext();
 	const height = mainAreaHeight - 100; //TabList height 104
 	const form = useForm(getUserFormValues(t));
-	const [saveCreateLoading, setSaveCreateLoading] = useState(false);
+	const [ saveCreateLoading, setSaveCreateLoading ] = useState(false);
 	const navigate = useNavigate();
 
-	const [groupDrawer, setGroupDrawer] = useState(false);
+	const [ groupDrawer, setGroupDrawer ] = useState(false);
 
 	useHotkeys(
 		[
@@ -110,7 +110,7 @@ export default function Create({ module }) {
 					if (fieldErrors) {
 						const errorObject = {};
 						Object.keys(fieldErrors).forEach((key) => {
-							errorObject[key] = fieldErrors[key][0]; // Assign the first error message for each field
+							errorObject[ key ] = fieldErrors[ key ][ 0 ]; // Assign the first error message for each field
 						});
 						// Display the errors using your form's `setErrors` function dynamically
 						form.setErrors(errorObject);
@@ -164,8 +164,7 @@ export default function Create({ module }) {
 								<Box
 									pl={`xs`}
 									pr={8}
-									pt={"6"}
-									pb={"6"}
+									py={"6"}
 									mb={"4"}
 									className={"boxBackground borderRadiusAll"}
 								>

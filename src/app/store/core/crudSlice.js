@@ -723,16 +723,16 @@ const crudSlice = createSlice({
 		setFilterData: (state, action) => {
 			const { module, data } = action.payload;
 
-			if (state?.[module]?.filterData) {
-				state[module].filterData = {
-					...state[module].filterData,
+			if (state?.[ module ]?.filterData) {
+				state[ module ].filterData = {
+					...state[ module ].filterData,
 					...data,
 				};
 			}
 		},
 		setInsertType: (state, action) => {
 			const { module, insertType } = action.payload;
-			state[module].insertType = insertType;
+			state[ module ].insertType = insertType;
 		},
 		setKeyWordSearch: (state, action) => {
 			state.searchKeyword = action.payload;
@@ -754,11 +754,11 @@ const crudSlice = createSlice({
 		},
 		setRefetchData: (state, action) => {
 			const { module, refetching } = action.payload;
-			state[module].refetching = refetching;
+			state[ module ].refetching = refetching;
 		},
 		setItemData: (state, action) => {
 			const { module, data } = action.payload;
-			state[module].data = data;
+			state[ module ].data = data;
 		},
 	},
 
@@ -767,12 +767,12 @@ const crudSlice = createSlice({
 			.addCase(getIndexEntityData.fulfilled, (state, action) => {
 				const { module, data } = action.payload;
 
-				state[module].data = data;
-				state[module].refetching = false;
+				state[ module ].data = data;
+				state[ module ].refetching = false;
 			})
 			.addCase(getIndexEntityData.rejected, (state, action) => {
 				const { module } = action.payload;
-				state[module].error = action.payload; // Save error
+				state[ module ].error = action.payload; // Save error
 			});
 
 		builder.addCase(inlineUpdateEntityData.fulfilled, (state, action) => {
@@ -780,48 +780,48 @@ const crudSlice = createSlice({
 			if (action.payload.data.message === "success") {
 				// state[module].refetching = true;
 			} else {
-				state[module].validationMessages = data?.message;
-				state[module].validation = true;
+				state[ module ].validationMessages = data?.message;
+				state[ module ].validation = true;
 			}
 		});
 
 		builder.addCase(storeEntityData.fulfilled, (state, action) => {
 			const { module, data } = action.payload;
 			if (action.payload.data.message === "success") {
-				state[module].refetching = true;
+				state[ module ].refetching = true;
 			} else {
-				state[module].validationMessages = data?.message;
-				state[module].validation = true;
+				state[ module ].validationMessages = data?.message;
+				state[ module ].validation = true;
 			}
 		});
 
 		builder.addCase(storeEntityData.rejected, (state, action) => {
-			const { module, errors } = action.payload;
-			state[module].validationMessages = data?.message;
-			state[module].validation = true;
+			const { module, data } = action.payload;
+			state[ module ].validationMessages = data?.message;
+			state[ module ].validation = true;
 		});
 
 		builder.addCase(editEntityData.fulfilled, (state, action) => {
 			const { module } = action.payload;
-			state[module].editData = action.payload.data.data;
-			state[module].refetching = true;
+			state[ module ].editData = action.payload.data.data;
+			state[ module ].refetching = true;
 		});
 
 		builder.addCase(updateEntityData.fulfilled, (state, action) => {
 			const { module } = action.payload;
-			state[module].refetching = true;
-			state[module].editData = {};
+			state[ module ].refetching = true;
+			state[ module ].editData = {};
 		});
 
 		builder.addCase(updateEntityData.rejected, (state, action) => {
 			const { module, data } = action.payload;
-			state[module].validationMessages = data?.message;
-			state[module].validation = true;
+			state[ module ].validationMessages = data?.message;
+			state[ module ].validation = true;
 		});
 
 		builder.addCase(updateEntityDataWithFile.fulfilled, (state, action) => {
 			const { module } = action.payload;
-			state[module].refetching = true;
+			state[ module ].refetching = true;
 		});
 
 		builder.addCase(showEntityData.fulfilled, (state, action) => {
@@ -830,13 +830,13 @@ const crudSlice = createSlice({
 
 		builder.addCase(deleteEntityData.fulfilled, (state, action) => {
 			const { module } = action.payload;
-			state[module].refetching = true;
+			state[ module ].refetching = true;
 		});
 
 		builder.addCase(deleteEntityData.rejected, (state, action) => {
 			const { module, data } = action.payload;
-			state[module].validationMessages = data?.message;
-			state[module].validation = true;
+			state[ module ].validationMessages = data?.message;
+			state[ module ].validation = true;
 		});
 
 		builder.addCase(getStatusInlineUpdateData.fulfilled, (state, action) => {
