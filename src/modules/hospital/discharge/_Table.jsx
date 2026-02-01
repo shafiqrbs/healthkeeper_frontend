@@ -23,7 +23,7 @@ import DrobFormBN from "@hospital-components/print-formats/dorb/DorbFormBN";
 const module = MODULES.DISCHARGE;
 const PER_PAGE = 25;
 const ALLOWED_CONFIRMED_ROLES = ["doctor_ipd","doctor_rs_rp_confirm", "doctor_emergency", "admin_administrator"];
-const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse"];
+const ALLOWED_NURSE_ROLES = ["role_domain", "admin_administrator", "nurse_basic", "nurse_incharge", "admin_nurse", "doctor_rs_rp_confirm"];
 
 const tabs = [
 	{ label: "Current", value: "paid" },
