@@ -168,15 +168,6 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 					<Group grow>
 						{/* =============== genexpert site/hospital =============== */}
 						<DatePickerForm
-							name="test_date"
-							id="test_date"
-							nextField="comment"
-							form={form}
-							label="Test Date"
-							placeholder="Select date"
-						/>
-
-						<DatePickerForm
 							name="date_specimen_received"
 							id="date_specimen_received"
 							nextField="comment"
@@ -184,13 +175,13 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 							label="Receive Date"
 							placeholder="Select receive date"
 						/>
-						<InputNumberForm
-							name="test_id"
-							id="test_id"
-							nextField="id"
+						<DatePickerForm
+							name="test_date"
+							id="test_date"
+							nextField="comment"
 							form={form}
-							label="Lab Test ID"
-							placeholder="Enter Lab Test ID"
+							label="Test Date"
+							placeholder="Select date"
 						/>
 						<InputNumberForm
 							name="sample_id"
@@ -200,6 +191,15 @@ export default function GeneXpert({ diagnosticReport, refetchDiagnosticReport, r
 							label="Sample ID"
 							placeholder="Enter Sample ID"
 						/>
+						<InputNumberForm
+							name="test_id"
+							id="test_id"
+							nextField="id"
+							form={form}
+							label="Lab Test ID"
+							placeholder="Enter Lab Test ID"
+						/>
+
 					</Group>
 					<Group grow>
 						{/* =============== lab no =============== */}

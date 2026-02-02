@@ -288,7 +288,7 @@ export default function _Table({ module, open }) {
 								</Text>
 							),
 						},
-						{
+						/*{
 							accessor: "diagnostic_department_id",
 							title: t("Department"),
 							render: (item) => (
@@ -305,11 +305,19 @@ export default function _Table({ module, open }) {
 									rightSection={updatingRows[item.id]}
 								/>
 							),
+						},*/
+						{
+							accessor: "diagnostic_department",
+							title: t("Department"),
+							textAlignment: "right",
+							sortable: true,
+							render: (item) => item.diagnostic_department,
 						},
 						{
 							accessor: "diagnostic_room_id",
 							title: t("Room"),
 							sortable: true,
+							width:80,
 							render: (item) => (
 								<Select
 									size="xs"
@@ -329,6 +337,7 @@ export default function _Table({ module, open }) {
 						{
 							accessor: "price",
 							title: t("Price"),
+							width:100,
 							sortable: true,
 							render: (item) => (
 								<NumberInput

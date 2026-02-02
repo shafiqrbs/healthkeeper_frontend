@@ -103,6 +103,14 @@ export default function GenePulmonary({
 					<Group grow>
 						{/* =============== genexpert site/hospital =============== */}
 						<DatePickerForm
+							name="date_specimen_received"
+							id="date_specimen_received"
+							nextField="comment"
+							form={form}
+							label="Receive Date"
+							placeholder="Select receive date"
+						/>
+						<DatePickerForm
 							name="test_date"
 							id="test_date"
 							nextField="comment"
@@ -110,26 +118,23 @@ export default function GenePulmonary({
 							label="Test Date"
 							placeholder="Select date"
 						/>
-
-						{/* =============== reference laboratory specimen id =============== */}
 						<InputNumberForm
-							name="lab_no"
-							id="lab_no"
+							name="sample_id"
+							id="sample_id"
 							nextField="id"
 							form={form}
-							label="Lab No"
-							placeholder="Enter Lab No"
-							readOnly={is_completed}
+							label="Sample ID"
+							placeholder="Enter Sample ID"
 						/>
-						<InputForm
-							name="type_of_sample"
-							id="type_of_sample"
-							nextField="comment"
+						<InputNumberForm
+							name="test_id"
+							id="test_id"
+							nextField="id"
 							form={form}
-							label="Type of Sample"
-							placeholder="Enter Type of Sample"
-							readOnly={is_completed}
+							label="Lab Test ID"
+							placeholder="Enter Lab Test ID"
 						/>
+
 					</Group>
 
 					{/* =============== results table =============== */}

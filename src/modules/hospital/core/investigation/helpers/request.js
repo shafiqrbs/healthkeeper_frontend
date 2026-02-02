@@ -10,8 +10,10 @@ const initialValues = {
 	specimen: "",
 	is_available: false,
 	report_format: 1,
+	slug: '',
 	is_report_format: false,
 	is_custom_report: false,
+	is_free: false,
 	price: "",
 };
 

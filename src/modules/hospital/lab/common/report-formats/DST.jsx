@@ -152,14 +152,6 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 					<Group grow>
 						{/* =============== genexpert site/hospital =============== */}
 						<DatePickerForm
-							name="test_date"
-							id="test_date"
-							nextField="comment"
-							form={form}
-							label="Test Date"
-							placeholder="Select date"
-						/>
-						<DatePickerForm
 							name="date_specimen_received"
 							id="date_specimen_received"
 							nextField="comment"
@@ -167,15 +159,13 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 							label="Receive Date"
 							placeholder="Select receive date"
 						/>
-
-						{/* =============== reference laboratory specimen id =============== */}
-						<InputNumberForm
-							name="test_id"
-							id="test_id"
-							nextField="id"
+						<DatePickerForm
+							name="test_date"
+							id="test_date"
+							nextField="comment"
 							form={form}
-							label="Lab Test ID"
-							placeholder="Enter Lab Test ID"
+							label="Test Date"
+							placeholder="Select date"
 						/>
 						<InputNumberForm
 							name="sample_id"
@@ -185,6 +175,15 @@ export default function DST({ diagnosticReport, refetchDiagnosticReport, refetch
 							label="Sample ID"
 							placeholder="Enter Sample ID"
 						/>
+						<InputNumberForm
+							name="test_id"
+							id="test_id"
+							nextField="id"
+							form={form}
+							label="Lab Test ID"
+							placeholder="Enter Lab Test ID"
+						/>
+
 					</Group>
 					{/* =============== method used =============== */}
 					<Box my="md">

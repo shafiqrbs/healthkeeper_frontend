@@ -167,14 +167,6 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 					<Group grow>
 						{/* =============== genexpert site/hospital =============== */}
 						<DatePickerForm
-							name="test_date"
-							id="test_date"
-							nextField="test_id"
-							form={form}
-							label="Test Date"
-							placeholder="Select date"
-						/>
-						<DatePickerForm
 							name="date_specimen_received"
 							id="date_specimen_received"
 							nextField="comment"
@@ -183,14 +175,13 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 							placeholder="Select receive date"
 						/>
 						<DatePickerForm
-							name="follow_up_month"
-							id="follow_up_month"
-							nextField="test_name"
+							name="test_date"
+							id="test_date"
+							nextField="comment"
 							form={form}
-							label="Follow Up Month"
-							placeholder="Select Follow Up Month"
+							label="Test Date"
+							placeholder="Select date"
 						/>
-						{/* =============== reference laboratory specimen id =============== */}
 						<InputNumberForm
 							name="sample_id"
 							id="sample_id"
@@ -207,6 +198,7 @@ export default function AFBCulture({ diagnosticReport, refetchDiagnosticReport, 
 							label="Lab Test ID"
 							placeholder="Enter Lab Test ID"
 						/>
+
 					</Group>
 					<Grid columns={12}>
 						<Grid.Col span={12}>

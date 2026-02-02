@@ -1685,6 +1685,8 @@
 	"DoctorOPDInformation": "Doctor Prescription",
 	"RequestQuantity": "Request Quantity",
 	"ApproveQuantity": "Approve Quantity",
-	"xxxxxxxx": "xxxxxxxxxxx",
+	"CustomReportType": "Custom Report Type",
+	"ReportFormat": "Report Format",
+	"FinancialService": "Financial Service",
 	"xxxxxxxx": "xxxxxxxxxxx"
 }

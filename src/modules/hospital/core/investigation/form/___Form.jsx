@@ -56,6 +56,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				financial_service_id: data.financial_service_id,
 				instruction: data.instruction,
 				specimen: data.specimen,
+				slug: data.slug,
 				report_machine: data.report_machine,
 				investigation_room: data.investigation_room,
 				is_report_content: data.is_report_content,
@@ -66,6 +67,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 				report_format: data.report_format,
 				is_available: data.is_available,
 				is_custom_report: data.is_custom_report,
+				is_free: data.is_free,
 				is_report_format: data.is_report_format,
 				price: data.price,
 			});
@@ -157,6 +159,7 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
+
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
 											<Text fz="sm">{t("Room")}</Text>
@@ -243,6 +246,33 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 									</Grid>
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
+											<Text fz="sm">
+												{t("CustomReportType")}
+											</Text>
+										</Grid.Col>
+										<Grid.Col span={14}>
+											<SelectForm
+												form={form}
+												tooltip={t("CustomReportType")}
+												placeholder={t("CustomReportType")}
+												name="slug"
+												id="slug"
+												required={false}
+												value={form.values.slug}
+												dropdownValue={[
+													{ value: 'system', label: 'System' },
+													{ value: 'gene-xpert', label: 'Gene-Xpert' },
+													{ value: 'sputum-afb', label: 'Sputum for AFB' },
+													{ value: 'ct-scan', label: 'CT scan' },
+													{ value: 'mt-test', label: 'MT Test' },
+													{ value: 'dst', label: 'DST' },
+													{ value: 'afb-culture', label: 'AFB Culture' },
+												]}
+											/>
+										</Grid.Col>
+									</Grid>
+									<Grid align="center" columns={20} mt="3xs">
+										<Grid.Col span={6}>
 											<Text fz="sm">{t("Available")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
@@ -280,26 +310,22 @@ export default function ___Form({ form, type = "create", data, handleSubmit, set
 											/>
 										</Grid.Col>
 									</Grid>
-
-
 									<Grid align="center" columns={20} mt="3xs">
 										<Grid.Col span={6}>
-											<Text fz="sm">{t("ReportFormat")}</Text>
+											<Text fz="sm">{t("Is Free")}</Text>
 										</Grid.Col>
 										<Grid.Col span={14}>
-											<SelectForm
-												form={form}
-												tooltip={t("PriceValidateMessage")}
-												placeholder={t("ReportFormat")}
-												dropdownValue={selectReportFormat}
-												required={false}
-												name="report_format"
-												id="report_format"
-												value={form.values.report_format || 1}
-												nextField=""
+											<Switch
+												name="is_free"
+												id="is_free"
+												checked={form?.values?.is_free}
+												onChange={(event) => form.setFieldValue("is_free", event.currentTarget.checked)}
 											/>
 										</Grid.Col>
 									</Grid>
+
+
+
 								</Stack>
 							</ScrollArea>
 							<DrawerStickyFooter type={type} />
