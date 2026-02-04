@@ -1688,5 +1688,9 @@
 	"CustomReportType": "Custom Report Type",
 	"ReportFormat": "Report Format",
 	"FinancialService": "Financial Service",
+	"BatchWiseStock": "Batch Wise Stock",
+	"IndentQuantity": "Indent Quantity",
+	"RemainingQuantity": "Remaining Quantity",
+	"xxxxxxxx": "xxxxxxxxxxx",
 	"xxxxxxxx": "xxxxxxxxxxx"
 }

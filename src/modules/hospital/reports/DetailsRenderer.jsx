@@ -11,6 +11,7 @@ import DailyCollectionService from "@modules/hospital/reports/items/DailyCollect
 import DailyOpdEmergencyIpdPatient from "@modules/hospital/reports/items/DailyOpdEmergencyIpdPatient";
 import UserDailyInvoiceSummary from "@modules/hospital/reports/items/UserDailyInvoiceSummary";
 import PatientMedicineIssue from "@modules/hospital/reports/items/PatientMedicineIssue.jsx";
+import BatchWiseStock from "@modules/hospital/reports/items/BatchWiseStock.jsx";
 
 
 export default function DetailsRenderer() {
@@ -38,6 +39,8 @@ export default function DetailsRenderer() {
 				<MedicineIssue />
 			) : tab === "stock-summery" ? (
 				<StockSummery />
+			) : tab === "batch-wise-stock" ? (
+				<BatchWiseStock />
 			) : null}
 		</Box>
 	);

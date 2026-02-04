@@ -35,6 +35,7 @@ export const MODULES = {
 		PATIENT_MEDICINE_ISSUE: "patientMedicineIssue",
 		MEDICINE_ISSUE: "medicineIssue",
 		STOCK_SUMMERY: "stockSummery",
+		BATCH_WISE_STOCK: "batchWiseStock",
 	},
 };
 

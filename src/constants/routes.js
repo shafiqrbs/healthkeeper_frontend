@@ -354,6 +354,7 @@ export const PHARMACY_DATA_ROUTES = {
 			PATIENT_MEDICINE_ISSUE_REPORT: "pharmacy/patient-medicine-issue-report",
 			MEDICINE_ISSUE_REPORT: "pharmacy/medicine-issue-report",
 			STOCK_SUMMERY_REPORT: "pharmacy/medicine-summery-report",
+			BATCH_WISE_STOCK_REPORT: "pharmacy/batch-wise-stock-report",
 		},
 		STOCK: {
 			MEDICINE_STOCK_DROPDOWN: "medicine/select/stock",

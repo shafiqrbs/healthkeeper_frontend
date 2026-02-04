@@ -74,6 +74,11 @@ const REPORT_TABS = [
 		value: "stock-summery",
 		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator"],
 	},
+	{
+		label: "Batch wise stock",
+		value: "batch-wise-stock",
+		allowedGroups: ["pharmacy_manager","pharmacy_pharmacist","admin_administrator"],
+	},
 
 ];
 
