@@ -90,11 +90,11 @@ export default function _Table({ module }) {
                             sortable: false,
                             render: (_item, index) => (page - 1) * perPage + index + 1,
                         },
-                        {
+                        /*{
                             accessor: "category_name",
                             title: t("CategoryName"),
                             sortable: true,
-                        },
+                        },*/
                         {
                             accessor: "name",
                             title: t("MedicineName"),
